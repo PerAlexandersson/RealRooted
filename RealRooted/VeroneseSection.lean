@@ -1113,18 +1113,6 @@ This isolates exactly where the orientation analytic content is needed: it is
 used only when the two polynomials have equal degree (equivalently, for the
 odd/even polynomial, only when its degree is odd). -/
 
-/-- The proper-position relation respects degree: `Prec f g` forces
-`f.natDegree ≤ g.natDegree`.  Both interlacing shapes (`differ-by-1` and
-`same-degree`) only increase the length of the right-hand root list. -/
-theorem Prec.natDegree_le {f g : ℝ[X]} (h : Prec f g) :
-    f.natDegree ≤ g.natDegree := by
-  obtain ⟨⟨_, hfs⟩, ⟨_, hgs⟩, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩ := h
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfs]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hgs]
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
-
 /-- Elementary orientation resolution by degree.  A disjunctive proper-position
 conclusion `Prec g f ∨ Prec f g` collapses to the oriented branch `Prec g f`
 as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since

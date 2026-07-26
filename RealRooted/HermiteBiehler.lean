@@ -2899,7 +2899,8 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
       · push Not at hd₁
         have hf₁deg₀ : (f /ₘ (X - C r)).natDegree = 0 := by lia
         have hg₁deg₀ : (g /ₘ (X - C r)).natDegree = 0 := by
-          have := natDegree_bounds_of_prec hpq₁; lia
+          have hg₁_le := hpq₁.natDegree_le
+          lia
         have hf₁c : complexify (f /ₘ (X - C r)) = C ((f /ₘ (X - C r)).coeff 0 : ℂ) := by
           rw [complexify, eq_C_of_natDegree_eq_zero hf₁deg₀]; simp
         have hg₁c : complexify (g /ₘ (X - C r)) = C ((g /ₘ (X - C r)).coeff 0 : ℂ) := by

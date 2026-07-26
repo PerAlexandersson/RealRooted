@@ -1881,7 +1881,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
         f = C c * g + weightedSum l := by
   classical
   rcases exists_C_mul_sub_natDegree_lt_of_le hfg.2.1.1 hgdeg
-      (natDegree_bounds_of_prec hfg).1 with ⟨c, hcdeg⟩
+      hfg.natDegree_le with ⟨c, hcdeg⟩
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
   have hroot : ∀ u ∈ roots, g.IsRoot u := by
@@ -2106,7 +2106,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
         ∃ ap ∈ l, 0 < ap.1 := by
   classical
   rcases exists_nonneg_C_mul_sub_natDegree_lt_of_le hfpos hgpos hgdeg
-      (natDegree_bounds_of_prec hfg).1 with ⟨c, hc_nonneg, hcdeg⟩
+      hfg.natDegree_le with ⟨c, hc_nonneg, hcdeg⟩
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
   have hroot : ∀ u ∈ roots, g.IsRoot u := by
@@ -2203,7 +2203,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero {f g : �
         (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   have hfdeg : f.natDegree = 0 := by
-    have hbounds := natDegree_bounds_of_prec hfg
+    have hfg_le := hfg.natDegree_le
     lia
   let c : ℝ := f.leadingCoeff / g.leadingCoeff
   have hc_pos : 0 < c := by
@@ -2645,7 +2645,7 @@ theorem IsPFPolynomial.derivative_prec0_self {p : ℝ[X]}
     exact prec0_zero_left p
   by_cases hdeg1 : p.natDegree = 1
   · have hder_ne : p.derivative ≠ 0 :=
-      derivative_ne_zero_of_natDegree_ne_zero hdeg0
+      Polynomial.derivative_ne_zero.mpr hdeg0
     have hder_deg0 : p.derivative.natDegree = 0 := by
       rw [p.natDegree_derivative, hdeg1]
     exact
@@ -2942,7 +2942,7 @@ theorem gwSchurProductPFAndPrec :
           · exact gwSchurProduct_prec0_of_right_natDegree_eq_zero f g p hpdeg0
           by_cases hgdeg0 : g.natDegree = 0
           · have hfdeg0 : f.natDegree = 0 := by
-              have hbounds := natDegree_bounds_of_prec hstrict
+              have hstrict_le := hstrict.natDegree_le
               lia
             have hleftdeg : (gwSchurProduct f p).natDegree = 0 := by
               exact le_antisymm

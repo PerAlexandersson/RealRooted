@@ -211,7 +211,7 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
 ### The `X^2 * P'` derivative-lag obstruction
 
 A natural attempt to extend the derivative-lag bridge to a cross-row lag is to
-try to place the degree-matched tail `X^2 * f'`, where `f = P_{n-1}` and
+place the degree-matched tail `X^2 * f'`, where `f = P_{n-1}` and
 `g = P_n` with `deg g = deg f + 1`, into proper position with the current row
 `g`.  This fails in the generic OEIS case where `g.coeff 0 ≠ 0`: `X^2 * f'`
 has `0` as a root, while a real-rooted nonnegative-coefficient `g` with
@@ -253,7 +253,7 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
   have hXdeg : 2 ≤ (X ^ 2 * f.derivative).natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X]
     lia
-  obtain ⟨hb1, _⟩ := natDegree_bounds_of_prec h
+  have hb1 := h.natDegree_le
   have hgdeg : 1 ≤ g.natDegree := by
     lia
   obtain ⟨c, hc_neg, hc_max⟩ :=

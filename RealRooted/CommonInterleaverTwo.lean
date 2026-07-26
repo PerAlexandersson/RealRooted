@@ -4791,8 +4791,8 @@ theorem posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x _hxf _hxg
   obtain ⟨h, hhf, hhg⟩ :=
     hleft hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
-  have hbf := natDegree_bounds_of_prec hhf
-  have hbg := natDegree_bounds_of_prec hhg
+  have hhf_le := hhf.natDegree_le
+  have hhg_le_succ := hhg.natDegree_le_succ
   have hdh : f.natDegree = h.natDegree := by lia
   have hdg : g.natDegree = h.natDegree + 1 := by lia
   obtain ⟨hA1, hA2⟩ := sameDegreeRootCountOriented_of_prec hhf hdh x

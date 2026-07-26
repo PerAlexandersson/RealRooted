@@ -1,4 +1,6 @@
 import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.ASWKarlinThreshold
+import RealRooted.ASWKarlinKernel
 import RealRooted.ASWCubicDegreeThree
 import RealRooted.DegreeDropReversal
 import RealRooted.QuadraticRoot
@@ -241,25 +243,6 @@ theorem aissenSchoenbergWhitneyForward_of_natDegree_le_two {p : ℝ[X]}
 
 /-! ### Karlin sector endgame -/
 
-/-- The zero-free sector threshold in Karlin, *Total Positivity*, Vol. I,
-Chapter 8, Theorem 3.1, for a polynomial of degree `degree` whose coefficient
-sequence is PF of order `order`. -/
-def aswSectorThreshold (degree order : ℕ) : ℝ :=
-  (order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi
-
-/-- For fixed degree, Karlin's finite-order sector threshold tends to `π` as
-the PF order tends to infinity. -/
-lemma tendsto_aswSectorThreshold (degree : ℕ) :
-    Tendsto (aswSectorThreshold degree) atTop (nhds Real.pi) := by
-  have hlim :=
-    (tendsto_natCast_div_add_atTop ((degree : ℝ) - 1)).mul_const Real.pi
-  convert hlim using 1
-  · funext n
-    simp only [aswSectorThreshold]
-    congr 2
-    ring
-  · simp
-
 /-- A complex number excluded from every open Karlin sector has maximal
 absolute argument. -/
 lemma abs_arg_eq_pi_of_forall_aswSectorThreshold {z : ℂ} {degree : ℕ}
@@ -296,6 +279,18 @@ theorem splits_of_forall_complex_root_aswSectorThreshold {p : ℝ[X]}
     Complex.arg_eq_pi_iff.mp hzarg
   refine ⟨z.re, Complex.ext ?_ hzneg.2.symm⟩
   simp
+
+/-- Karlin's finite-order sector estimate, in the threshold notation used by
+the ASW endgame. -/
+theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff)
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (order : ℕ) :
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_cases horder : order = 0
+  · simp [aswSectorThreshold, horder]
+  · exact aswKarlinSectorThreshold_le_abs_arg (p := p) (z := z) hz hdegree
+      hconst hpf (horder := Nat.pos_of_ne_zero horder)
 
 /-! ### Reduction to positive constant coefficient -/
 
@@ -363,7 +358,10 @@ theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
     {p : ℝ[X]} (hdeg : 4 ≤ p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits := by
-  sorry
+  apply splits_of_forall_complex_root_aswSectorThreshold
+  intro z hz order
+  exact aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff
+    (by lia) hconst hpf hz order
 
 /-- Degree-at-least-three, positive-constant-coefficient case of the forward
 Aissen--Schoenberg--Whitney splitting theorem.  Exact degree three is the

@@ -443,7 +443,7 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
   have hdegpos : 1 ≤ f.natDegree := by lia
   have hf_pos : HasPosLeadingCoeff f := hf.hasNonnegCoeffs.pos_leadingCoeff hf0
   have hder_ne : f.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero hdeg0
+    Polynomial.derivative_ne_zero.mpr hdeg0
   have hder_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf0 hfrr.2 hf_pos hdegpos
@@ -508,6 +508,11 @@ private theorem basisTransform_touchard_preservesPF {p : ℝ[X]}
   by_cases hp0 : p = 0
   · simpa [hp0] using IsPFPolynomial.zero
   exact basisTransform_touchard_preservesPF_aux p.natDegree p rfl hp0 hp
+
+/-- The Touchard basis transform preserves PF polynomials. -/
+theorem touchardTransformPreservesPF {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform touchard p) :=
+  basisTransform_touchard_preservesPF hp
 
 /-- The falling-factorial basis transform is the identity on degree-one
 polynomials. -/
@@ -907,9 +912,9 @@ abbrev brentiFallingFactorialDegreeAtLeastThreeStatement : Prop :=
       HasOnlyNonposRoots p
 
 /-- Degree-at-least-three case of Brenti's falling-factorial inverse transform. -/
-theorem brentiFallingFactorial_degreeAtLeastThree {p : ℝ[X]} (hpdeg : 3 ≤ p.natDegree)
-    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
-    HasOnlyNonposRoots p := by
+theorem brentiFallingFactorial_degreeAtLeastThree :
+    brentiFallingFactorialDegreeAtLeastThreeStatement := by
+  intro p hpdeg h
   let q := basisTransform fallingFactorialPolynomial p
   have hinv : basisTransform touchard q = p :=
     basisTransform_touchard_fallingFactorial_leftInverse p
@@ -962,17 +967,16 @@ theorem brentiFallingFactorial_degreeAtLeastTwo {p : ℝ[X]} (hpdeg : 2 ≤ p.na
   · exact brentiFallingFactorial_degreeAtLeastThree (by lia) h
 
 /-- Positive-degree case of Brenti's falling-factorial inverse transform. -/
-theorem brentiFallingFactorial_positiveDegree {p : ℝ[X]} (hpdeg : 0 < p.natDegree)
-    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
-    HasOnlyNonposRoots p := by
+theorem brentiFallingFactorial_positiveDegree :
+    brentiFallingFactorialPositiveDegreeStatement := by
+  intro p hpdeg h
   by_cases hdeg1 : p.natDegree = 1
   · exact brentiFallingFactorial_of_natDegree_eq_one hdeg1 h
   · exact brentiFallingFactorial_degreeAtLeastTwo (by lia) h
 
 /-- Brenti's falling-factorial inverse transform. -/
-theorem brentiFallingFactorial {p : ℝ[X]}
-    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
-    HasOnlyNonposRoots p := by
+theorem brentiFallingFactorial : brentiFallingFactorialStatement := by
+  intro p h
   rcases Nat.eq_zero_or_pos p.natDegree with hpdeg | hpdeg
   · exact brentiFallingFactorial_of_natDegree_eq_zero hpdeg h
   · exact brentiFallingFactorial_positiveDegree hpdeg h
@@ -1086,9 +1090,9 @@ abbrev generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement : Prop :
 
 /-- Degree-at-least-three case of the Su--Yang--Zhang generalized rising-factorial
 transform. -/
-theorem generalizedRisingFactorialPreservesPF_degreeAtLeastThree {μ : ℝ} (hμ : 0 < μ)
-    {p : ℝ[X]} (hpdeg : 3 ≤ p.natDegree) (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+theorem generalizedRisingFactorialPreservesPF_degreeAtLeastThree :
+    generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement := by
+  intro μ hμ p hpdeg hp
   exact (generalizedRisingFactorialPreservesPF_shiftPrec hμ p.natDegree p rfl
     (by intro hpzero; simp [hpzero] at hpdeg) hp).1
 
@@ -1103,17 +1107,17 @@ theorem generalizedRisingFactorialPreservesPF_degreeAtLeastTwo {μ : ℝ} (hμ :
 
 /-- Positive-degree case of the Su--Yang--Zhang generalized rising-factorial
 transform. -/
-theorem generalizedRisingFactorialPreservesPF_positiveDegree {μ : ℝ} (hμ : 0 < μ)
-    {p : ℝ[X]} (hpdeg : 0 < p.natDegree) (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+theorem generalizedRisingFactorialPreservesPF_positiveDegree :
+    generalizedRisingFactorialPreservesPFPositiveDegreeStatement := by
+  intro μ hμ p hpdeg hp
   by_cases hdeg1 : p.natDegree = 1
   · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_one hdeg1 hp
   · exact generalizedRisingFactorialPreservesPF_degreeAtLeastTwo hμ (by lia) hp
 
 /-- Su--Yang--Zhang generalized rising-factorial transform preserves PF polynomials. -/
-theorem generalizedRisingFactorialPreservesPF {μ : ℝ} (hμ : 0 < μ) {p : ℝ[X]}
-    (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+theorem generalizedRisingFactorialPreservesPF :
+    generalizedRisingFactorialPreservesPFStatement := by
+  intro μ hμ p hp
   rcases Nat.eq_zero_or_pos p.natDegree with hpdeg | hpdeg
   · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_zero hpdeg hp
   · exact generalizedRisingFactorialPreservesPF_positiveDegree hμ hpdeg hp
@@ -1274,11 +1278,16 @@ Narayana polynomials, paper Lemma 2.5. -/
 abbrev narayanaPolynomialRootLocationStatement : Prop :=
   ∀ m n : ℕ, IsPFPolynomial (narayanaPolynomial m n)
 
-
 /-- Mao--Wang Theorem 1.1 in zero-aware PF-polynomial form. -/
 abbrev narayanaTransformPreservesPFStatement : Prop :=
   ∀ (m : ℕ) {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p)
+
+/-- Mao--Wang Theorem 1.1 in the paper-facing nonpositive-root form. -/
+abbrev narayanaTransformPreservesNonposRootsStatement : Prop :=
+  ∀ (m : ℕ) {p : ℝ[X]},
+    HasNonnegCoeffs p → p.Splits →
+      HasOnlyNonposRoots (narayanaTransform m p)
 
 @[simp] theorem rectangularConvolutionCoeff_zero (m : ℕ) (f g : ℝ[X]) :
     rectangularConvolutionCoeff m 0 f g 0 = f.coeff 0 * g.coeff 0 := by
@@ -2016,7 +2025,7 @@ theorem mvRealStable_xyLift_rectangularAdditiveConvolution
   have hFma := isMultiaffine_reciprocalRectangularPolarization
     m n (g.map Complex.ofRealHom)
   have hGma := isMultiaffine_rectangularPolarization m n (f.map Complex.ofRealHom)
-  rcases hFstable.liebSokal_multiaffine hGstable hFma hGma with hzero | hstable
+  rcases liebSokal_multiaffine hFstable hGstable hFma hGma with hzero | hstable
   · have hconvne : rectangularAdditiveConvolution m n f g ≠ 0 := by
       intro hzeroConv
       have htop := congrArg (fun p : ℝ[X] => p.coeff n) hzeroConv
@@ -2045,12 +2054,9 @@ theorem mvRealStable_xyLift_rectangularAdditiveConvolution
 
 /-- Degree-at-least-three case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
-    {m n : ℕ} {f g : ℝ[X]}
-    (hfdeg : f.natDegree = n + 1 + 1 + 1) (hgdeg : g.natDegree = n + 1 + 1 + 1)
-    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
-    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
-    HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g) := by
+theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree :
+    rectangularAdditiveConvolutionPreservesNonnegRootsDegreeAtLeastThreeStatement := by
+  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   apply rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
     hfdeg hgdeg hflead hglead
   exact mvRealStable_xyLift_rectangularAdditiveConvolution
@@ -2072,12 +2078,9 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastTwo
 
 /-- Positive-degree case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree
-    {m n : ℕ} {f g : ℝ[X]}
-    (hfdeg : f.natDegree = n + 1) (hgdeg : g.natDegree = n + 1)
-    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
-    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
-    HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1) f g) := by
+theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree :
+    rectangularAdditiveConvolutionPreservesNonnegRootsPositiveDegreeStatement := by
+  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   rcases n with _ | n
   · exact rectangularAdditiveConvolutionPreservesNonnegRoots_one
       hfdeg hgdeg hflead hglead hfroots hgroots
@@ -2085,11 +2088,9 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree
       hfdeg hgdeg hflead hglead hfroots hgroots
 
 /-- Gribinski--Marcus preservation theorem for rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots {m n : ℕ} {f g : ℝ[X]}
-    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
-    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
-    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
-    HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
+theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
+    rectangularAdditiveConvolutionPreservesNonnegRootsStatement := by
+  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   rcases n with _ | n
   · exact rectangularAdditiveConvolutionPreservesNonnegRoots_zero
       hfdeg hgdeg hflead hglead hfroots hgroots
@@ -2208,7 +2209,9 @@ lemma narayanaTransformCoeff_deriv_lag_rec (m n k : ℕ) (hkpos : k ≠ 0) (hk :
   let F : ℝ := (Nat.factorial (n + 1) : ℝ) * Nat.factorial (n + 1 + m) * Nat.factorial m /
     ((Nat.factorial (n + 2 - k) : ℝ) * Nat.factorial (n + 2 + m - k) * Nat.factorial k *
       Nat.factorial (m + k))
-  have hF_eq₁ : (narayanaTransformCoeff m (n + 2) k : ℝ) = ((n : ℝ) + 2) * (n + 2 + m) * F := by
+  have hF_eq₁ :
+      (narayanaTransformCoeff m (n + 2) k : ℝ) =
+        ((n : ℝ) + 2) * (n + 2 + m) * F := by
     rw [narayanaTransformCoeff_eq_factorial m (n + 2) k (by lia)]
     dsimp only [F]
     rw [show n + 1 + m = n + m + 1 by ring]
@@ -2463,16 +2466,19 @@ lemma coeff_narayanaPolynomial_pure_rec_boundary (m n : ℕ) (hn : n ≠ 0) :
   rw [heq₃, heq₄, heq₅, heq₆, heq₇, heq₈, Nat.factorial_one]
   have hn₂_fac := factorial_succ_succ_cast n
   have hn₁_fac := factorial_succ_cast n
-  have hn₂m_fac : ((n + 2 + m).factorial : ℝ) = (n + 2 + m) * (n + 1 + m) * (n + m).factorial := by
+  have hn₂m_fac : ((n + 2 + m).factorial : ℝ) =
+      (n + 2 + m) * (n + 1 + m) * (n + m).factorial := by
     rw [show n + 2 + m = n + m + 2 by ring, factorial_succ_succ_cast]
     push_cast
     ring
-  have hn₁m_fac : ((n + 1 + m).factorial : ℝ) = (n + 1 + m) * (n + m).factorial := by
+  have hn₁m_fac : ((n + 1 + m).factorial : ℝ) =
+      (n + 1 + m) * (n + m).factorial := by
     rw [show n + 1 + m = n + m + 1 by ring, factorial_succ_cast (n + m)]
     push_cast
     ring
   have hn_fac := factorial_cast_pred hn
-  have hnm_fac : ((n + m).factorial : ℝ) = (n + m) * (m + (n - 1)).factorial := by
+  have hnm_fac : ((n + m).factorial : ℝ) =
+      (n + m) * (m + (n - 1)).factorial := by
     rw [show n + m = m + (n - 1) + 1 by lia, factorial_succ_cast (m + (n - 1))]
     push_cast
     rw [Nat.cast_sub (by lia : 1 ≤ n)]
@@ -2490,10 +2496,12 @@ lemma coeff_narayanaPolynomial_pure_rec_boundary (m n : ℕ) (hn : n ≠ 0) :
       factorial_succ_cast (m + n)]
     push_cast
     ring
-  simp only [hn₂_fac, hn₁_fac, hn₂m_fac, hn₁m_fac, hmn₁_fac, hn_fac, hnm_fac, hmn_fac, hm_fac]
+  simp only [hn₂_fac, hn₁_fac, hn₂m_fac, hn₁m_fac, hmn₁_fac, hn_fac,
+    hnm_fac, hmn_fac, hm_fac]
   have : (Nat.factorial m : ℝ) ≠ 0 := factorial_cast_ne_zero m
   have : (Nat.factorial (n - 1) : ℝ) ≠ 0 := factorial_cast_ne_zero (n - 1)
-  have : (Nat.factorial (m + (n - 1)) : ℝ) ≠ 0 := factorial_cast_ne_zero (m + (n - 1))
+  have : (Nat.factorial (m + (n - 1)) : ℝ) ≠ 0 :=
+    factorial_cast_ne_zero (m + (n - 1))
   have : (n : ℝ) ≠ 0 := by positivity
   have : (m : ℝ) + 1 ≠ 0 := by positivity
   have : (m : ℝ) + n ≠ 0 := by positivity
@@ -2660,7 +2668,9 @@ theorem prec_narayanaPolynomial_one_two (m : ℕ) :
   have hprod_neg : ((-1 : ℝ) - r₁) * ((-1 : ℝ) - r₂) < 0 := by
     calc ((-1 : ℝ) - r₁) * ((-1 : ℝ) - r₂)
       _ = 2 - c := by
-          have : ((-1 : ℝ) - r₁) * ((-1 : ℝ) - r₂) = 1 + (r₁ + r₂) + r₁ * r₂ := by ring
+          have : ((-1 : ℝ) - r₁) * ((-1 : ℝ) - r₂) =
+              1 + (r₁ + r₂) + r₁ * r₂ := by
+            ring
           rw [this, hsum, hprod]
           ring
       _ < 0 := by linarith [hcgt]
@@ -2671,8 +2681,9 @@ theorem prec_narayanaPolynomial_one_two (m : ℕ) :
     · by_contra h
       have : r₂ < -1 := not_le.mp h
       nlinarith [hprod_neg, hr₁₂, this]
-  refine ⟨⟨narayanaPolynomial_ne_zero m 1, hsplit₁⟩, ⟨narayanaPolynomial_ne_zero m 2, hsplit₂⟩,
-    [(-1 : ℝ)], [r₁, r₂], ?_, ?_, ?_, ?_, Or.inl ⟨?_, ?_⟩⟩
+  refine ⟨⟨narayanaPolynomial_ne_zero m 1, hsplit₁⟩,
+    ⟨narayanaPolynomial_ne_zero m 2, hsplit₂⟩, [(-1 : ℝ)], [r₁, r₂],
+    ?_, ?_, ?_, ?_, Or.inl ⟨?_, ?_⟩⟩
   · exact List.pairwise_singleton _ _
   · simp [hr₁₂]
   · have : (X + C (1 : ℝ)) = X - C (-1) := by simp
@@ -2706,23 +2717,29 @@ theorem splits_narayanaPolynomial (m n : ℕ) :
         (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
           (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)
             + C ((3 * (k + 1 : ℕ) : ℝ) + 2 * m + 4) * X)) * P (k + 1)
-        + (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)) *
+        + (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
+            (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)) *
             (P (k + 1)).derivative
         + 0 * P k := by
     grind [narayanaPolynomial_deriv_lag_rec m (k + 1)]
   have hbase : Prec (P 0) (P 1) := prec_narayanaPolynomial_one_two m
   have hV_nonpos (k : ℕ) (r : ℝ) (hr : (P (k + 1)).IsRoot r) :
-      (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)).eval r ≤ 0 := by
+      (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
+        (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)).eval r ≤ 0 := by
     rw [eval_mul, eval_C]
     have : 0 ≤ (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ := by positivity
     exact mul_nonpos_of_nonneg_of_nonpos this
       (two_mul_sub_two_mul_sq_nonpos_of_nonpos (narayanaPolynomial_root_nonpos hr))
-  have hW_nonpos (k : ℕ) (r : ℝ) (_ : (P (k + 1)).IsRoot r) : (0 : ℝ[X]).eval r ≤ 0 := by simp
+  have hW_nonpos (k : ℕ) (r : ℝ) (_ : (P (k + 1)).IsRoot r) :
+      (0 : ℝ[X]).eval r ≤ 0 := by
+    simp
   have hbuild := isRealRooted_of_lw_derivative_lag_sequence
     (P := P)
     (U := fun k ↦ C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
-      (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2) + C ((3 * (k + 1 : ℕ) : ℝ) + 2 * m + 4) * X))
-    (V := fun k => C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2))
+      (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2) +
+        C ((3 * (k + 1 : ℕ) : ℝ) + 2 * m + 4) * X))
+    (V := fun k => C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
+      (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2))
     (W := fun _ => 0)
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   rcases Nat.eq_zero_or_pos n with rfl | hn
@@ -2731,16 +2748,18 @@ theorem splits_narayanaPolynomial (m n : ℕ) :
     exact (hbuild (n - 1)).2
 
 /-- The generalized Narayana polynomials are PF polynomials. -/
-theorem narayanaPolynomialRootLocation (m n : ℕ) :
-    IsPFPolynomial (narayanaPolynomial m n) :=
-  IsPFPolynomial.of_realRooted_nonneg
-    (hasNonnegCoeffs_narayanaPolynomial m n)
-    (splits_narayanaPolynomial m n)
+theorem narayanaPolynomialRootLocation :
+    narayanaPolynomialRootLocationStatement :=
+  fun m n =>
+    IsPFPolynomial.of_realRooted_nonneg
+      (hasNonnegCoeffs_narayanaPolynomial m n)
+      (splits_narayanaPolynomial m n)
 
 /-- The Narayana transform preserves PF polynomials, reduced to the
 Gribinski--Marcus rectangular additive convolution theorem. -/
-theorem narayanaTransformPreservesPF (m : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (narayanaTransform m p) := by
+theorem narayanaTransformPreservesPF :
+    narayanaTransformPreservesPFStatement := by
+  intro m p hp
   refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     hp.hasNonnegCoeffs.narayanaTransform ?_
   by_cases hp0 : p = 0
@@ -2795,5 +2814,12 @@ theorem narayanaTransformPreservesPF (m : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial
       · simp [hzero]
       · exact hsplits
     exact splits_of_degreeSignFlip_splits hqdeg hsign_splits
+
+/-- Paper-facing nonpositive-root form of the Narayana transform theorem. -/
+theorem narayanaTransformPreservesNonposRoots :
+    narayanaTransformPreservesNonposRootsStatement := by
+  intro m p hpnn hpsplits
+  exact (narayanaTransformPreservesPF m
+    (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).hasOnlyNonposRoots
 
 end RealRooted

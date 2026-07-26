@@ -230,7 +230,8 @@ lemma rootMultiplicity_TDeriv_of_multiple
 /-! ## Degree and real-rootedness preservation -/
 
 /-- T_ε preserves the degree (the ε·p' term has strictly lower degree). -/
-@[simp] lemma natDegree_TDeriv (eps : ℝ) (p : ℝ[X]) : (TDeriv eps p).natDegree = p.natDegree := by
+@[simp] lemma natDegree_TDeriv (eps : ℝ) (p : ℝ[X]) :
+    (TDeriv eps p).natDegree = p.natDegree := by
   obtain hp | hp := eq_zero_or_pos p.natDegree
   · simp [tderiv_of_natDegree_eq_zero hp]
   unfold TDeriv
@@ -247,7 +248,8 @@ strictly smaller degree. This is the key normalization fact behind the
 `ε → 0` route in the Obreschkoff converse: after sign-normalizing once, the
 regularized family stays sign-normalized without any ε-dependent rescaling. -/
 @[simp]
-lemma leadingCoeff_TDeriv (eps : ℝ) (p : ℝ[X]) : (TDeriv eps p).leadingCoeff = p.leadingCoeff := by
+lemma leadingCoeff_TDeriv (eps : ℝ) (p : ℝ[X]) :
+    (TDeriv eps p).leadingCoeff = p.leadingCoeff := by
   obtain hp | hp := eq_zero_or_pos p.natDegree
   · simp [tderiv_of_natDegree_eq_zero hp]
   rw [Polynomial.leadingCoeff, natDegree_TDeriv, TDeriv, coeff_sub]
@@ -421,7 +423,7 @@ theorem derivative_prec_TDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
   have hder_C : p.derivative = C (p.derivative.coeff 0) := by
     exact eq_C_of_natDegree_eq_zero hder_deg
   have hder_ne : p.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero (by rw [hdeg]; norm_num)
+    Polynomial.derivative_ne_zero.mpr (by rw [hdeg]; norm_num)
   have hcoeff_ne : p.derivative.coeff 0 ≠ 0 := by
     intro hcoeff
     exact hder_ne (by rw [hder_C, hcoeff]; simp)
@@ -901,7 +903,8 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
     (hp : p.Splits) :
     Prec p (TDeriv eps p) := by
   by_cases hdeg2 : 2 ≤ p.natDegree
-  · rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hp₀) with hneg | (hpos : HasPosLeadingCoeff p)
+  · rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hp₀) with hneg |
+      (hpos : HasPosLeadingCoeff p)
     · have hneg_rr : ((-p) ≠ 0 ∧ (-p).Splits) :=
         ⟨neg_ne_zero.mpr hp₀, by simp_all⟩
       have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
@@ -1482,7 +1485,8 @@ lemma rootMultiplicity_ge_two_of_TDeriv_ge_two
     (rootMultiplicity_pos (TDeriv_ne_zero hp_ne)).mp (by lia)
   lia
 
-lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits) (hdeg : 1 ≤ p.natDegree)
+lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
+    (hdeg : 1 ≤ p.natDegree)
     (ha : p.eval a ≠ 0) :
     p.derivative.derivative.eval a * p.eval a < p.derivative.eval a ^ 2 := by
   -- Strong induction on degree

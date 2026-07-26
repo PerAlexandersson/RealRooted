@@ -10,6 +10,17 @@ polynomials*, Theorem 2.4.
 
 namespace RealRooted
 
+/-- Issue-facing statement of the multiaffine Lieb--Sokal
+constant-coefficient differential theorem. -/
+abbrev liebSokalMultiaffineStatement : Prop :=
+  ∀ {sigma : Type*} [Fintype sigma] {F G : MvPolynomial sigma ℂ},
+    MvUpperHalfPlaneStable F →
+      MvUpperHalfPlaneStable G →
+        MvPolynomial.IsMultiaffine F →
+          MvPolynomial.IsMultiaffine G →
+            applyNegDifferential F G = 0 ∨
+              MvUpperHalfPlaneStable (applyNegDifferential F G)
+
 /-- The constant-coefficient differential action `F(-∂){G}` of two stable
 multiaffine polynomials is zero or stable. -/
 theorem MvUpperHalfPlaneStable.liebSokal_multiaffine
@@ -37,5 +48,10 @@ theorem MvUpperHalfPlaneStable.liebSokal_multiaffine
       | inr i => exact hz i
     rw [MvPolynomial.eval_rename] at hne
     simpa using hne
+
+/-- Issue-facing projection of the multiaffine Lieb--Sokal theorem. -/
+theorem liebSokal_multiaffine : liebSokalMultiaffineStatement := by
+  intro sigma _ F G hF hG hFma hGma
+  exact hF.liebSokal_multiaffine hG hFma hGma
 
 end RealRooted

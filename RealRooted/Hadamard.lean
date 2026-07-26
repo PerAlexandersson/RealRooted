@@ -825,7 +825,7 @@ theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
     finiteSchurSzegoComposition_of_nonzero⟩
 
 /-- The backward direction of the finite Pólya--Schur theorem follows, by a
-`sorry`-free reduction, from the finite Schur--Szegő composition theorem: the
+fully checked reduction, from the finite Schur--Szegő composition theorem: the
 diagonal operator attached to `gamma` acting on a polynomial `p` of degree at
 most `n` is exactly the Schur--Szegő composition of the PF Jensen polynomial of
 `gamma` with `p`. -/
@@ -2193,7 +2193,7 @@ theorem diagonalOperator_pred_eq_reflect_derivative (n : Nat) (hn : 1 ≤ n)
       apply Polynomial.coeff_eq_zero_of_natDegree_lt
       rw [revAt_eq_self_of_lt (by lia : n - 1 < k)]
       calc (derivative (reflect n q)).natDegree
-          ≤ (reflect n q).natDegree - 1 := Polynomial.natDegree_derivative_le _
+          = (reflect n q).natDegree - 1 := (reflect n q).natDegree_derivative
         _ ≤ n - 1 := by
             have := Polynomial.natDegree_reflect_le (N := n) (p := q)
             simp_all
@@ -2229,7 +2229,7 @@ theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
       (DegreeDropReversal.splits_reflect_iff hq).mpr hsplit
     have hder : (derivative (reflect n q)).Splits := splits_derivative hrq
     refine DegreeDropReversal.splits_reflect_of_splits hder ?_
-    refine le_trans (Polynomial.natDegree_derivative_le _) ?_
+    rw [(reflect n q).natDegree_derivative]
     have := Polynomial.natDegree_reflect_le (N := n) (p := q)
     simp_all
 
@@ -2289,7 +2289,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
           rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator, h]
           simp
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
-            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+            (by rw [p.natDegree_derivative]; simp [*])
       have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := f.divX) (p := p) hinner
       grind
     by_cases hp00 : p.coeff 0 = 0
@@ -2307,7 +2307,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
           hp1split
         · intro h; rw [h] at hz; simp at hz
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
-            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+            (by rw [f.natDegree_derivative]; simp [*])
         · grind
         · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]; lia
       have := splits_schurSzegoComp_X_mul_right hn1 (f := f)
@@ -2358,7 +2358,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
         · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hRf_deg]
         · intro h; rw [h] at hz; simp at hz
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
-            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+            (by rw [(reflect n p).natDegree_derivative]; simp [*])
       have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := (reflect n f).divX)
         (p := reflect n p) hinner
       grind
@@ -2538,7 +2538,7 @@ to two parts: nonnegativity of the coefficients and right-half-plane stability
 of the complexification.  The first part is elementary
 (`HasNonnegCoeffs.hadamardProduct`); the genuinely deep content is the second
 part.  We record that split, and the faithful Hurwitz-matrix decomposition of
-Garloff--Wagner Theorem 1, as checked `sorry`-free reductions. -/
+Garloff--Wagner Theorem 1, as fully checked reductions. -/
 
 /-- The deep half of Garloff--Wagner Theorem 1: the complexified coefficientwise
 Hadamard product of two right-half-plane-stable, nonnegative-coefficient
@@ -2924,7 +2924,7 @@ theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
 The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
-with a fully checked (`sorry`-free) reduction, from the following classical
+with a fully checked reduction, from the following classical
 inputs (the latter three are pre-existing interfaces from
 `RealRooted.VeroneseSection`):
 
@@ -2977,7 +2977,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
 inputs** (issue #34 / TODO T9).
 
 This composes the existing checked reductions for the four mid-level interfaces
-used by `garloffWagnerHadamardNonnegPrec_of_oddEven` into a single `sorry`-free
+used by `garloffWagnerHadamardNonnegPrec_of_oddEven` into a single fully checked
 reduction of the #34 target `garloffWagnerHadamardNonnegPrecStatement` onto six
 classical bottom-level inputs:
 

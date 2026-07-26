@@ -8,17 +8,52 @@ namespace Matrix
 variable {ι κ R : Type*} [PartialOrder ι] [PartialOrder κ] [CommRing R] [PartialOrder R]
   {M : Matrix ι ι R} {i j : ι} {f g : κ → ι}
 
+/-- A rectangular matrix is totally nonnegative if all its square minors have
+nonnegative determinant. -/
+@[expose]
+def IsTotallyNonnegRect (M : Matrix ι κ R) : Prop :=
+  ∀ ⦃n : ℕ⦄ ⦃rows : Fin n → ι⦄ ⦃cols : Fin n → κ⦄,
+    StrictMono rows → StrictMono cols → 0 ≤ (M.submatrix rows cols).det
+
 /-- A matrix is totally nonnegative if all its finite minors have nonnegative determinant. -/
 @[expose]
 def IsTotallyNonneg (M : Matrix ι ι R) : Prop :=
   ∀ ⦃n : ℕ⦄ ⦃rows cols : Fin n → ι⦄, StrictMono rows → StrictMono cols →
     0 ≤ (M.submatrix rows cols).det
 
+/-- Square total nonnegativity as rectangular total nonnegativity. -/
+protected lemma IsTotallyNonneg.toRect (hM : M.IsTotallyNonneg) :
+    M.IsTotallyNonnegRect :=
+  hM
+
+/-- Rectangular total nonnegativity specializes to the square predicate. -/
+protected lemma IsTotallyNonnegRect.toSquare (hM : M.IsTotallyNonnegRect) :
+    M.IsTotallyNonneg :=
+  hM
+
+protected lemma IsTotallyNonnegRect.submatrix {ι' κ' : Type*}
+    [PartialOrder ι'] [PartialOrder κ'] {M : Matrix ι κ R}
+    (hM : M.IsTotallyNonnegRect) {rows : ι' → ι} {cols : κ' → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).IsTotallyNonnegRect :=
+  fun n rows' cols' hrows' hcols' => by
+    simpa using hM (hrows.comp hrows') (hcols.comp hcols')
+
+protected lemma IsTotallyNonnegRect.transpose {M : Matrix ι κ R}
+    (hM : M.IsTotallyNonnegRect) : M.transpose.IsTotallyNonnegRect := by
+  intro n rows cols hrows hcols
+  rw [← Matrix.det_transpose, transpose_submatrix]
+  exact hM hcols hrows
+
 protected lemma IsTotallyNonneg.submatrix (hM : M.IsTotallyNonneg) (hf : StrictMono f)
     (hg : StrictMono g) : (M.submatrix f g).IsTotallyNonneg :=
   fun n rows cols hrows hcols ↦ by simpa using hM (hf.comp hrows) (hg.comp hcols)
 
 lemma IsTotallyNonneg.nonneg (hM : M.IsTotallyNonneg) (i j : ι) : 0 ≤ M i j := by
+  simpa using hM (rows := ![i]) (cols := ![j])
+
+lemma IsTotallyNonnegRect.nonneg {M : Matrix ι κ R}
+    (hM : M.IsTotallyNonnegRect) (i : ι) (j : κ) : 0 ≤ M i j := by
   simpa using hM (rows := ![i]) (cols := ![j])
 
 variable [IsStrictOrderedRing R]

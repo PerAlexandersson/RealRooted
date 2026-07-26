@@ -59,6 +59,10 @@ lake build RealRooted.Bezoutian
 - `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
   row-threshold and threshold-matrix preservers, including the
   Gustafsson-Solus and Haglund-Zhang/A046802 backends.
+- `RealRooted/NarayanaTransformation.lean`, `LowerTriangularMatrix.lean`, and
+  `MaoWangMatrixProduct.lean` contain the Mao--Wang Narayana transformation,
+  its lower-triangular row-generating-function API, and matrix-product
+  endpoint wrappers.
 - `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
   contain the current Liu opposite-leading-sign root-count interface.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
@@ -148,6 +152,15 @@ the checked or challenge-facing highlights are:
   line-graph reduction.  See `Graph.clawFree_indepPoly_splits` and
   `RealRooted.Challenges.ChudnovskySeymour`; references include
   Chudnovsky--Seymour (2007) and Heilmann--Lieb (1972).
+- Mao--Wang Narayana transformation: the formalization proves the Narayana
+  transform preserves PF polynomials and packages the lower-triangular
+  matrix-product criterion for admissible affine, Touchard/Stirling,
+  rising-factorial, and Narayana matrix factors.  See
+  `narayanaTransformPreservesPF`,
+  `LowerTriangularMatrix.maoWang_matrixProduct_rowGeneratingFunctions_pf`,
+  and
+  `LowerTriangularMatrix.maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots`;
+  reference: Mao--Wang (2026).
 
 The challenge surface also records theorem-shaped targets as they mature.
 Kurtz's coefficient inequality criterion and the finite Hermite--Poulain

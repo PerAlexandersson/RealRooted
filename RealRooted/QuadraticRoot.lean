@@ -63,6 +63,18 @@ lemma quadraticPoly_splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     linear_combination hx
   exact Polynomial.Splits.of_natDegree_eq_two hdeg heval
 
+/-- A real polynomial written in quadratic form splits when its discriminant
+is nonnegative; if the quadratic coefficient is zero, this is the linear case.
+-/
+lemma quadraticPoly_splits_of_discrim_nonneg_or_linear {a b c : ℝ}
+    (hdisc : 0 ≤ discrim a b c) :
+    ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
+  by_cases ha : a = 0
+  · have hlinear : ((C b * X + C c) : ℝ[X]).Splits :=
+      Polynomial.Splits.of_natDegree_le_one (by compute_degree)
+    simpa [ha] using hlinear
+  · exact quadraticPoly_splits_of_discrim_nonneg ha hdisc
+
 /-- A real quadratic polynomial with nonzero leading coefficient and negative
 discriminant does not split over `ℝ`. -/
 lemma quadraticPoly_not_splits_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)

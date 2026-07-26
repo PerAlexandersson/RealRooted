@@ -68,11 +68,13 @@ import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Linear
 import RealRooted.LinearPowerFamily
+import RealRooted.LowerTriangularMatrix
 import RealRooted.LiuOppositeSigns
 import RealRooted.LiuOppositeSignsTheorem
 import RealRooted.LiuWangBenchmark
 import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
+import RealRooted.MaoWangMatrixProduct
 import RealRooted.MagnitudeDominated
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative

@@ -252,6 +252,53 @@ theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
 theorem isPFPolynomial_X_add_one : IsPFPolynomial (X + 1 : ℝ[X]) := by
   simpa using isPFPolynomial_X_add_C (a := 1) zero_le_one
 
+namespace IsPFPolynomial
+
+/-- A positive affine shift of a nonpositive linear root factor is PF. -/
+theorem C_mul_X_add_C_sub_C {a d u : ℝ}
+    (ha : 0 < a) (hd : 0 ≤ d) (hu : u ≤ 0) :
+    IsPFPolynomial (C a * X + C d - C u : ℝ[X]) := by
+  have hlin : (C a * X + C d - C u : ℝ[X]) = C a * X + C (d - u) := by
+    rw [sub_eq_add_neg, add_assoc, ← Polynomial.C_neg, ← Polynomial.C_add]
+    simp [sub_eq_add_neg]
+  rw [hlin]
+  have hfactor : (C a * X + C (d - u) : ℝ[X]) =
+      C a * (X + C ((d - u) / a)) := by
+    rw [mul_add, ← Polynomial.C_mul]
+    congr 1
+    field_simp [ha.ne']
+  rw [hfactor]
+  have hdsub : 0 ≤ d - u := by linarith
+  exact (isPFPolynomial_X_add_C (div_nonneg hdsub ha.le)).const_mul ha
+
+/-- PF polynomials are closed under positive affine substitution
+`x ↦ a * x + d` with nonnegative constant term. -/
+theorem comp_C_mul_X_add_C {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d)
+    {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (p.comp (C a * X + C d)) := by
+  induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
+  | h n ih =>
+      by_cases hp0 : p = 0
+      · simpa [hp0] using IsPFPolynomial.zero
+      by_cases hn0 : n = 0
+      · have hpC : p = C (p.coeff 0) :=
+          Polynomial.eq_C_of_natDegree_eq_zero (by simpa [hdeg] using hn0)
+        rw [hpC]
+        have hcoeff_nonneg : 0 ≤ p.coeff 0 := hp.hasNonnegCoeffs 0
+        simpa using IsPFPolynomial.of_C_nonneg hcoeff_nonneg
+      · have hpos : 0 < p.natDegree := by
+          rw [hdeg]
+          exact Nat.pos_of_ne_zero hn0
+        obtain ⟨u, q, hu, hfactor, hq, hqdeg⟩ :=
+          hp.exists_X_sub_C_factor_of_pos_natDegree hpos
+        rw [hfactor]
+        simp only [Polynomial.comp, Polynomial.eval₂_mul, Polynomial.eval₂_sub,
+          Polynomial.eval₂_X, Polynomial.eval₂_C]
+        exact (C_mul_X_add_C_sub_C ha hd hu).mul
+          (ih q.natDegree (by simpa [hdeg] using hqdeg) hq rfl)
+
+end IsPFPolynomial
+
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by
   by_cases hr0 : r = 0

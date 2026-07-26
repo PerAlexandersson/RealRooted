@@ -190,7 +190,8 @@ private theorem interlaces_of_consecutive_signs_of_natDegree_lt
     exists_roots_strictly_interlacing_of_consecutive_signs
       (F := F) hrs_sorted (by grind)
   have hrs_len : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hf_splits]
+    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
+      card_roots_of_splits hf_splits]
   have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
     intro x hx
@@ -216,7 +217,8 @@ private theorem interlaces_of_consecutive_signs_of_natDegree_lt
     refine ⟨hF_ne, splits_of_card_roots ?_⟩
     rw [← hus_eq, Multiset.coe_card, hus_len_deg]
   exact
-    ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted, hus_pw.imp le_of_lt, hrs_eq, hus_eq, hus_int⟩
+    ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted, hus_pw.imp le_of_lt,
+      hrs_eq, hus_eq, hus_int⟩
 
 /-- The right-family pair `(f + g, f + 2g)` stays in the same Obreschkoff plane.
 
@@ -806,7 +808,9 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       apply Multiset.card_eq_zero.mp
       rw [card_roots_of_splits hg_splits, hgdeg0]
     left
-    refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [], by simp, by simp, ?_, ?_, ?_⟩
+    refine
+      ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [], by simp, by simp,
+        ?_, ?_, ?_⟩
     · simp [hroots_f]
     · simp [hroots_g]
     · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
@@ -1218,7 +1222,8 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     exists_roots_strictly_interlacing_of_consecutive_signs
       (F := F) hrs_sorted (by grind)
   have hrs_len : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hf_splits]
+    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
+      card_roots_of_splits hf_splits]
   have hrs_ne : rs ≠ [] := by
     grind
   have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
@@ -2166,7 +2171,8 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
   by_cases hβ0 : β = 0
   · by_cases hα0 : α = 0
     · simp [hα0, hβ0]
-    · have hrr : ((C α * f) ≠ 0 ∧ (C α * f).Splits) := isRealRooted_C_mul hfg.1.1 hfg.1.2 hα0
+    · have hrr : ((C α * f) ≠ 0 ∧ (C α * f).Splits) :=
+        isRealRooted_C_mul hfg.1.1 hfg.1.2 hα0
       simp_all
   · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
     · by_cases hα_nonpos : α ≤ 0
@@ -2453,7 +2459,8 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     (hβ : 0 < β)
     (hF_ne : C α * f + C β * ((X - C uR) * q) ≠ 0)
     (hdeg_pos : 1 ≤ f.natDegree) :
-    ((C α * f + C β * ((X - C uR) * q)) ≠ 0 ∧ (C α * f + C β * ((X - C uR) * q)).Splits) := by
+    ((C α * f + C β * ((X - C uR) * q)) ≠ 0 ∧
+      (C α * f + C β * ((X - C uR) * q)).Splits) := by
   let F : ℝ[X] := C α * f + C β * ((X - C uR) * q)
   have hf : (f ≠ 0 ∧ f.Splits) := hqf.1
   have hq : (q ≠ 0 ∧ q.Splits) := hqf.2.1
@@ -2693,7 +2700,8 @@ private theorem allComboRealRooted_of_prec_sameDegree
 theorem allComboRealRooted_of_prec {f g : ℝ[X]}
     (hfg : Prec f g) :
     AllComboRealRooted f g := by
-  have hdeg_bounds := natDegree_bounds_of_prec hfg
+  have hfg_le := hfg.natDegree_le
+  have hgf_le := hfg.natDegree_le_succ
   have hdeg :
       f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
@@ -3050,7 +3058,8 @@ theorem derivativePreservesPrec0_of_sameDegree
     exact prec0_zero_left _
   · rw [hgzero, derivative_zero]
     exact prec0_zero_right _
-  · have hbounds := natDegree_bounds_of_prec hfg'
+  · have hfg_le := hfg'.natDegree_le
+    have hgf_le := hfg'.natDegree_le_succ
     by_cases hdeg : f.natDegree = g.natDegree
     · exact hsame hfg' hdeg
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)

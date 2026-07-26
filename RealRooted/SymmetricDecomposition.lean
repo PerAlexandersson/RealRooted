@@ -880,7 +880,9 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
           simp_all
         have hfu0 : fPolynomial u.natDegree u ≠ 0 := by
           simp_all
-        have hfu_rr : ((fPolynomial u.natDegree u) ≠ 0 ∧ (fPolynomial u.natDegree u).Splits) := by
+        have hfu_rr :
+            ((fPolynomial u.natDegree u) ≠ 0 ∧
+              (fPolynomial u.natDegree u).Splits) := by
           apply isRealRooted_of_dvd hscaled_rr.1 hscaled_rr.2 hfu0
           simp
         have hfu_deg : (fPolynomial u.natDegree u).natDegree = u.natDegree := by
@@ -2550,7 +2552,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
     simpa [hp_eq] using
       natDegree_add_X_mul_ge_of_hasNonnegCoeffs ha_nonneg hb_nonneg hb0
   have hdeg_hi : p.natDegree ≤ a.natDegree + 1 :=
-    (natDegree_bounds_of_prec hap).2
+    hap.natDegree_le_succ
   have hp_deg : p.natDegree = b.natDegree + 1 := by
     lia
   have hab_eq : a.natDegree = b.natDegree := by
@@ -2727,8 +2729,7 @@ private theorem prec_b_component_of_prec_left_top
       PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
         (f := X * b) (g := a) (c := c) (r := 0)
         hprec_or hac_le hXb_root0 hc_lt0
-    have hbound : a.natDegree ≤ (X * b).natDegree :=
-      (natDegree_bounds_of_prec hbad).1
+    have hbound : a.natDegree ≤ (X * b).natDegree := hbad.natDegree_le
     lia
 
 private theorem prec_b_component_of_prec_right_top
@@ -3071,7 +3072,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       linarith
     rcases hprec_or with hth | hht
     · lia
-    · have hbound : h.natDegree ≤ t.natDegree := (natDegree_bounds_of_prec hht).1
+    · have hbound : h.natDegree ≤ t.natDegree := hht.natDegree_le
       lia
 
 theorem brandenSolusTheorem26_third_equiv_of_top_degree

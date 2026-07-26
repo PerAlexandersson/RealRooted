@@ -27,18 +27,7 @@ using API that is stable across the Mathlib versions this file is built against.
 /-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
 lemma natDegree_derivative_eq (p : ℝ[X]) :
     p.derivative.natDegree = p.natDegree - 1 := by
-  rcases eq_or_ne p.natDegree 0 with h | h
-  · have hle := Polynomial.natDegree_derivative_le p
-    rw [h] at hle ⊢
-    simpa using hle
-  · refine le_antisymm (Polynomial.natDegree_derivative_le p) ?_
-    refine Polynomial.le_natDegree_of_ne_zero ?_
-    have hp0 : p ≠ 0 := fun hc => h (by simp [hc])
-    have hidx : p.natDegree - 1 + 1 = p.natDegree := by lia
-    rw [Polynomial.coeff_derivative, hidx]
-    refine mul_ne_zero ?_ (by positivity)
-    change p.leadingCoeff ≠ 0
-    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+  exact p.natDegree_derivative
 
 /-- A polynomial of `natDegree` zero has vanishing derivative. -/
 lemma derivative_eq_zero_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
@@ -76,7 +65,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
     HasPosLeadingCoeff f.derivative := by
   unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq f, coeff_derivative]
+  rw [leadingCoeff, f.natDegree_derivative, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
   nlinarith
 
@@ -105,7 +94,7 @@ lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
       _ ≤ p.roots.card := p.roots.count_le_card x
       _ ≤ p.natDegree := card_roots' p
   have hpd_ne : p.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+    Polynomial.derivative_ne_zero.mpr (by lia)
   have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
   intro hder2
@@ -363,7 +352,7 @@ private lemma one_le_card_roots_filter_derivative_of_exists
     le_trans (Multiset.card_le_card (Multiset.filter_le _ p.roots))
       (Polynomial.card_roots' p)
   have hderiv_ne : p.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+    Polynomial.derivative_ne_zero.mpr (by lia)
   obtain ⟨x, hxq, hroot⟩ := hexists
   have hx_mem : x ∈ p.derivative.roots.filter q :=
     Multiset.mem_filter.mpr ⟨Polynomial.mem_roots'.mpr ⟨hderiv_ne, hroot⟩, hxq⟩
@@ -551,7 +540,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     have ih := mkInterleaving_sub_multiset f hdeg (r₂ :: rest) hrest hsorted_tail hsub_tail
     have hf'_ne : f.derivative ≠ 0 :=
-      derivative_ne_zero_of_natDegree_ne_zero (by lia)
+      Polynomial.derivative_ne_zero.mpr (by lia)
     have hge_tail : ∀ x ∈ mkInterleaving f (r₂ :: rest) hrest, r₂ ≤ x :=
       mkInterleaving_ge f r₂ rest hrest hsorted_tail hsub_tail
     -- Definitionally unfold mkInterleaving via let + rfl
@@ -676,11 +665,11 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
     (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
   -- Degree and cardinality → f' is real-rooted
   have hf'_ne : f.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+    Polynomial.derivative_ne_zero.mpr (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree
-      _ = f.natDegree - 1 := natDegree_derivative_eq f
+      _ = f.natDegree - 1 := f.natDegree_derivative
       _ = ss.length := hss_length.symm
       _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
       _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
@@ -689,13 +678,13 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   -- Multiset equality (sub-multiset + same cardinality)
   have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
     Multiset.eq_of_le_of_card_le hsub
-      (le_of_eq (by rw [hf'_card, natDegree_derivative_eq f, ← hss_length,
+      (le_of_eq (by rw [hf'_card, f.natDegree_derivative, ← hss_length,
         ← Multiset.coe_card]))
   -- Sortedness from interleaving
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
   -- Assemble
-  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [natDegree_derivative_eq f]; lia,
+  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 /-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
@@ -748,7 +737,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   by_cases hdeg0 : p.natDegree = 0
   · exact Or.inl (derivative_eq_zero_of_natDegree_eq_zero hdeg0)
   by_cases hdeg1 : p.natDegree = 1
-  · exact Or.inr (splits_of_natDegree_eq_zero (by rw [natDegree_derivative_eq p, hdeg1]))
+  · exact Or.inr (splits_of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1]))
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp hdeg2).2.1.2
 
@@ -762,9 +751,9 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
     exact derivative_eq_zero_of_natDegree_eq_zero hdeg0
   by_cases hdeg1 : p.natDegree = 1
   · right
-    have hder_ne : p.derivative ≠ 0 := derivative_ne_zero_of_natDegree_ne_zero hdeg0
+    have hder_ne : p.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr hdeg0
     have hder_splits : p.derivative.Splits :=
-      splits_of_natDegree_eq_zero (by rw [natDegree_derivative_eq p, hdeg1])
+      splits_of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1])
     exact ⟨hder_ne, hder_splits⟩
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
@@ -945,7 +934,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
   · simp [derivative_eq_zero_of_natDegree_eq_zero hdeg0]
   by_cases hdeg1 : p.natDegree = 1
   · have hderdeg : p.derivative.natDegree = 0 := by
-      rw [natDegree_derivative_eq p, hdeg1]
+      rw [p.natDegree_derivative, hdeg1]
     have hderC : p.derivative = C (p.derivative.coeff 0) :=
       eq_C_of_natDegree_eq_zero hderdeg
     rw [hderC]

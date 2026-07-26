@@ -873,8 +873,8 @@ theorem commonInterleaver_natDegree_eq_of_sameDegree
     k.natDegree = g.natDegree := by
   have hdelete_succ :=
     h.delete_natDegree_add_one_eq_of_sameDegree hf_ne hdeg
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.1
-  have hright_bounds := natDegree_bounds_of_prec hcommon.2
+  have hupper := hcommon.1.natDegree_le_succ
+  have hlower := hcommon.2.natDegree_le
   lia
 
 theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
@@ -884,8 +884,8 @@ theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
     k.natDegree = g.natDegree ∨ k.natDegree = g.natDegree + 1 := by
   have hdelete := h.delete_natDegree_eq_of_succDegree hf_ne hdeg
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.1
-  have hright_bounds := natDegree_bounds_of_prec hcommon.2
+  have hupper := hcommon.1.natDegree_le_succ
+  have hlower := hcommon.2.natDegree_le
   by_cases hk : k.natDegree = g.natDegree
   · exact Or.inl hk
   · right
@@ -898,8 +898,8 @@ theorem commonInterleaver_natDegree_eq_delete_of_twoDegree
     (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
     k.natDegree = (deleteRootFactor f r).natDegree := by
   have hdelete := h.delete_natDegree_eq_succ_of_twoDegree hf_ne hdeg
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.1
-  have hright_bounds := natDegree_bounds_of_prec hcommon.2
+  have hlower := hcommon.1.natDegree_le
+  have hupper := hcommon.2.natDegree_le_succ
   lia
 
 theorem commonInterleaver_natDegree_eq_succ_of_twoDegree
@@ -1127,8 +1127,8 @@ theorem commonInterleaver_natDegree_eq_of_sameDegree
     k.natDegree = f.natDegree := by
   have hdelete_succ :=
     h.delete_natDegree_add_one_eq_of_sameDegree hg_ne hdeg
-  have hleft_bounds := natDegree_bounds_of_prec hcommon.1
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.2
+  have hlower := hcommon.1.natDegree_le
+  have hupper := hcommon.2.natDegree_le_succ
   lia
 
 theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
@@ -1138,8 +1138,8 @@ theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
     k.natDegree = f.natDegree ∨ k.natDegree = f.natDegree + 1 := by
   have hdelete := h.delete_natDegree_eq_of_succDegree hg_ne hdeg
-  have hleft_bounds := natDegree_bounds_of_prec hcommon.1
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.2
+  have hlower := hcommon.1.natDegree_le
+  have hupper := hcommon.2.natDegree_le_succ
   by_cases hk : k.natDegree = f.natDegree
   · exact Or.inl hk
   · right
@@ -1152,8 +1152,8 @@ theorem commonInterleaver_natDegree_eq_delete_of_twoDegree
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
     k.natDegree = (deleteRootFactor g s).natDegree := by
   have hdelete := h.delete_natDegree_eq_succ_of_twoDegree hg_ne hdeg
-  have hleft_bounds := natDegree_bounds_of_prec hcommon.1
-  have hdelete_bounds := natDegree_bounds_of_prec hcommon.2
+  have hupper := hcommon.1.natDegree_le_succ
+  have hlower := hcommon.2.natDegree_le
   lia
 
 theorem commonInterleaver_natDegree_eq_succ_of_twoDegree

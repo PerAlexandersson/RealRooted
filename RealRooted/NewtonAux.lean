@@ -35,8 +35,8 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
         lia
       have h_deg :
           (Polynomial.derivative (derivative^[k] p)).natDegree ≤
-            (derivative^[k] p).natDegree - 1 :=
-        Polynomial.natDegree_derivative_le _
+            (derivative^[k] p).natDegree - 1 := by
+        rw [(derivative^[k] p).natDegree_derivative]
       have h_card :
           Multiset.card (Polynomial.roots (Polynomial.derivative (derivative^[k] p))) ≤
             (Polynomial.derivative (derivative^[k] p)).natDegree :=

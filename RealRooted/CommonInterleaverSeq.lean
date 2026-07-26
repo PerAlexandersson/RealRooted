@@ -828,15 +828,13 @@ private lemma mem_rootSlotInterval_of_prec
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
       simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
-        rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-        have hdeg :=
-          (natDegree_bounds_of_prec
-            ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
+        have hdeg := hfg.natDegree_le_succ
+        rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
         simpa [hf.2, hg.2] using lt_of_lt_of_le j.2 hdeg⟩ := by
+  have hdeg := hfg.natDegree_le_succ
   rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_desc : rootSeqDesc f = ss.reverse := rootSeqDesc_eq_reverse_of_pairwise hss hss_eq
   have hrs_desc : rootSeqDesc g = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs hrs_eq
-  have hdeg := (natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
@@ -1056,9 +1054,10 @@ private lemma mem_shifted_rootSlotInterval_of_prec
       simp [rootSeqDesc, card_roots_of_splits hh.2]⟩ ∈
       rootSlotInterval (rootSeqDesc f)
         ⟨j.1 + 1, by
-          have hdeg := (natDegree_bounds_of_prec hhf).1
+          have hdeg := hhf.natDegree_le
           have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
           simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩ := by
+  have hdeg_hhf := hhf.natDegree_le
   rcases hhf with ⟨hh, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_desc : rootSeqDesc h = ss.reverse := rootSeqDesc_eq_reverse_of_pairwise hss hss_eq
   have hrs_desc : rootSeqDesc f = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs hrs_eq
@@ -1071,13 +1070,11 @@ private lemma mem_shifted_rootSlotInterval_of_prec
   let jh_rev : Fin ss.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hss_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1 + 1, by
-    have hdeg := (natDegree_bounds_of_prec
-      ⟨hh, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).1
+    have hdeg := hdeg_hhf
     have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
     simpa [rootSeqDesc_length hf.2] using Nat.succ_lt_succ hjf⟩
   let jf_rev : Fin (rs.reverse.length + 1) := ⟨j.1 + 1, by
-    have hdeg := (natDegree_bounds_of_prec
-      ⟨hh, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).1
+    have hdeg := hdeg_hhf
     have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
     simpa [List.length_reverse, hrs_len] using Nat.succ_lt_succ hjf⟩
   have hmem_rev : ss.reverse.get jh_rev ∈ rootSlotInterval rs.reverse jf_rev := by
@@ -1234,11 +1231,11 @@ lemma natDegree_ge_csDegree_sub_one_of_pairwiseHasCommonInterleaver
   rcases lt_trichotomy i j with hij | rfl | hji
   · obtain ⟨h, hfh, hgh⟩ := hpair i j hij
     rw [← hgj]
-    exact le_trans (natDegree_bounds_of_prec hfh).1 (natDegree_bounds_of_prec hgh).2
+    exact le_trans hfh.natDegree_le hgh.natDegree_le_succ
   · lia
   · obtain ⟨h, hgh, hfh⟩ := hpair j i hji
     rw [← hgj]
-    exact le_trans (natDegree_bounds_of_prec hfh).1 (natDegree_bounds_of_prec hgh).2
+    exact le_trans hfh.natDegree_le hgh.natDegree_le_succ
 
 lemma csDegree_le_natDegree_succ_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]} {f : ℝ[X]}
@@ -1319,13 +1316,11 @@ lemma natDegree_le_natDegree_succ_of_pairwiseHasCommonLeftInterleaver
   rcases lt_trichotomy i j with hij | rfl | hji
   · obtain ⟨h, hhf, hhg⟩ := hpair i j hij
     rw [← hgj]
-    exact le_trans (natDegree_bounds_of_prec hhf).2 <|
-      Nat.succ_le_succ (natDegree_bounds_of_prec hhg).1
+    exact le_trans hhf.natDegree_le_succ <| Nat.succ_le_succ hhg.natDegree_le
   · lia
   · obtain ⟨h, hhg, hhf⟩ := hpair j i hji
     rw [← hgj]
-    exact le_trans (natDegree_bounds_of_prec hhf).2 <|
-      Nat.succ_le_succ (natDegree_bounds_of_prec hhg).1
+    exact le_trans hhf.natDegree_le_succ <| Nat.succ_le_succ hhg.natDegree_le
 
 lemma natDegree_le_leftCsDegree_succ_of_pairwiseHasCommonLeftInterleaver
     {fs : List ℝ[X]} {f : ℝ[X]}
@@ -1356,10 +1351,10 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
   let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j, by simpa [hgh.1.2] using hjg⟩
   change (rootSlotInterval (rootSeqDesc f) jf ∩
     rootSlotInterval (rootSeqDesc g) jg).Nonempty
-  have hdeg_fh : f.natDegree ≤ h.natDegree ∧ h.natDegree ≤ f.natDegree + 1 :=
-    natDegree_bounds_of_prec hfh
-  have hdeg_gh : g.natDegree ≤ h.natDegree ∧ h.natDegree ≤ g.natDegree + 1 :=
-    natDegree_bounds_of_prec hgh
+  have hfh_lower := hfh.natDegree_le
+  have hfh_upper := hfh.natDegree_le_succ
+  have hgh_lower := hgh.natDegree_le
+  have hgh_upper := hgh.natDegree_le_succ
   by_cases hjh : j < h.natDegree
   · let jh : Fin h.natDegree := ⟨j, hjh⟩
     let x : ℝ := (rootSeqDesc h).get ⟨j, by
@@ -1536,7 +1531,7 @@ def PrecLeftShiftedSlotStatement : Prop :=
       simp [rootSeqDesc_length hhf.1.2, j.2]⟩ ∈
       rootSlotInterval (rootSeqDesc f)
         ⟨j.1 + 1, by
-          have hdeg := (natDegree_bounds_of_prec hhf).1
+          have hdeg := hhf.natDegree_le
           have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
           simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
 
@@ -1570,10 +1565,10 @@ theorem commonLeftInterleaverShiftedSlot_of_precLeft
   let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j + 1, hjg⟩
   change (rootSlotInterval (rootSeqDesc f) jf ∩
     rootSlotInterval (rootSeqDesc g) jg).Nonempty
-  have hdeg_hf : h.natDegree ≤ f.natDegree ∧ f.natDegree ≤ h.natDegree + 1 :=
-    natDegree_bounds_of_prec hhf
-  have hdeg_hg : h.natDegree ≤ g.natDegree ∧ g.natDegree ≤ h.natDegree + 1 :=
-    natDegree_bounds_of_prec hhg
+  have hhf_lower := hhf.natDegree_le
+  have hhf_upper := hhf.natDegree_le_succ
+  have hhg_lower := hhg.natDegree_le
+  have hhg_upper := hhg.natDegree_le_succ
   by_cases hjh : j < h.natDegree
   · let jh : Fin h.natDegree := ⟨j, hjh⟩
     let x : ℝ := (rootSeqDesc h).get ⟨j, by
@@ -2732,9 +2727,8 @@ theorem mem_rootSlotInterval_of_prec_desc
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
       simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
-        rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-        have hdeg := (natDegree_bounds_of_prec
-          ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
+        have hdeg := hfg.natDegree_le_succ
+        rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
         simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
   mem_rootSlotInterval_of_prec hfg j
 
@@ -2755,8 +2749,10 @@ theorem shiftedSlotIntersections_of_commonInterleaver
   let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j + 1, hjg⟩
   change (rootSlotInterval (rootSeqDesc f) jf ∩
     rootSlotInterval (rootSeqDesc g) jg).Nonempty
-  have hdeg_fh := natDegree_bounds_of_prec hfh
-  have hdeg_gh := natDegree_bounds_of_prec hgh
+  have hfh_lower := hfh.natDegree_le
+  have hfh_upper := hfh.natDegree_le_succ
+  have hgh_lower := hgh.natDegree_le
+  have hgh_upper := hgh.natDegree_le_succ
   have hjf_nat : j < f.natDegree := by
     have hjf' : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
     simpa [rootSeqDesc_length hfh.1.2] using hjf'
@@ -2775,7 +2771,7 @@ theorem shiftedSlotIntersections_of_commonInterleaver
   · have hjh_le : h.natDegree ≤ j + 1 := by
       exact Nat.le_of_not_gt hjh
     have hjh_ge : j + 1 ≤ h.natDegree := by
-      exact (Nat.succ_le_iff.mpr hjf_nat).trans hdeg_fh.1
+      exact (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
     have hjh_eq : j + 1 = h.natDegree := le_antisymm hjh_ge hjh_le
     have hf_eq_h : f.natDegree = h.natDegree := by lia
     have hg_eq_h : g.natDegree = h.natDegree := by lia

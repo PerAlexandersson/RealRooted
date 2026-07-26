@@ -566,6 +566,34 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   lia
 
+/-- The proper-position relation respects degree: `Prec f g` forces
+`f.natDegree ≤ g.natDegree`. -/
+theorem Prec.natDegree_le {f g : ℝ[X]} (h : Prec f g) :
+    f.natDegree ≤ g.natDegree :=
+  (natDegree_bounds_of_prec h).1
+
+/-- The right endpoint in `Prec f g` has degree at most one more than the left
+endpoint. -/
+theorem Prec.natDegree_le_succ {f g : ℝ[X]} (h : Prec f g) :
+    g.natDegree ≤ f.natDegree + 1 :=
+  (natDegree_bounds_of_prec h).2
+
+/-- A polynomial cannot be in `Prec` with a right endpoint of strictly lower
+degree. -/
+theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}
+    (hdeg : g.natDegree < f.natDegree) :
+    ¬ Prec f g := by
+  intro hprec
+  exact (not_le_of_gt hdeg) hprec.natDegree_le
+
+/-- A polynomial cannot be in `Prec` with a right endpoint whose degree is more
+than one larger. -/
+theorem not_prec_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
+    (hdeg : f.natDegree + 1 < g.natDegree) :
+    ¬ Prec f g := by
+  intro hprec
+  exact (not_le_of_gt hdeg) hprec.natDegree_le_succ
+
 lemma prec_forward_of_orientation_of_succDegree
     {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1)
@@ -573,8 +601,7 @@ lemma prec_forward_of_orientation_of_succDegree
     Prec f g := by
   rcases hprec_or with hprec | hprec
   · exact hprec
-  · have hbounds := natDegree_bounds_of_prec hprec
-    lia
+  · exact (not_prec_of_right_natDegree_lt_left (by lia) hprec).elim
 
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `Prec` witness. -/

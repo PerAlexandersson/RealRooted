@@ -247,9 +247,9 @@ theorem polarTheta_preserves_pf : polarThetaPreservesPFStatement := by
     unfold reciprocalShift
     exact (Polynomial.natDegree_reflect_le (N := N) (p := p)).trans
       (max_le le_rfl hdeg)
-  have hder_deg : (reciprocalShift N p).derivative.natDegree ≤ N - 1 :=
-    (Polynomial.natDegree_derivative_le (reciprocalShift N p)).trans
-      (Nat.sub_le_sub_right hdeg_shift 1)
+  have hder_deg : (reciprocalShift N p).derivative.natDegree ≤ N - 1 := by
+    rw [(reciprocalShift N p).natDegree_derivative]
+    exact Nat.sub_le_sub_right hdeg_shift 1
   exact reciprocalShift_preserves_pf hshift.derivative hder_deg
 
 theorem polarThetaPreservesPF_of_realRootedOrZero
