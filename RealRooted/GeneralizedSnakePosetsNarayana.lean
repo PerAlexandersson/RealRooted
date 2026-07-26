@@ -199,5 +199,102 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_two :
   rw [hC3]
   ring_nf
 
+/-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
+recurrence as the quotient-style modified Narayana sequence. -/
+theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
+    narayanaPolynomial 1 (n + 2) =
+      narayanaCoeffA (n + 1) * narayanaPolynomial 1 (n + 1) +
+        narayanaCoeffB (n + 1) * narayanaPolynomial 1 n := by
+  have hrec := narayanaPolynomial_pure_rec 1 n
+  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 := by
+    exact Polynomial.C_ne_zero.mpr (by positivity)
+  have hA : C ((n : ℝ) + 4) * narayanaCoeffA (n + 1) =
+      C ((2 * n : ℝ) + 5) * (1 + X) := by
+    unfold narayanaCoeffA
+    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
+      push_cast
+      ring
+    have hscalar : ((n : ℝ) + 4) *
+        ((2 * ((n + 1 : ℕ) : ℝ) + 3) /
+          (((n + 1 : ℕ) : ℝ) + 3)) = (2 * n : ℝ) + 5 := by
+      rw [hden_cast]
+      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
+      push_cast
+      ring
+    rw [← mul_assoc, ← map_mul, hscalar]
+  have hB : C ((n : ℝ) + 4) * narayanaCoeffB (n + 1) =
+      -C ((n : ℝ) + 1) * (1 - X) ^ 2 := by
+    unfold narayanaCoeffB
+    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
+      push_cast
+      ring
+    have hscalar : ((n : ℝ) + 4) *
+        (-((n + 1 : ℕ) : ℝ) /
+          (((n + 1 : ℕ) : ℝ) + 3)) = -((n : ℝ) + 1) := by
+      rw [hden_cast]
+      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
+      push_cast
+      ring
+    rw [← mul_assoc, ← map_mul, hscalar, map_neg]
+  apply mul_left_cancel₀ hden
+  rw [mul_add]
+  rw [← mul_assoc, hA, ← mul_assoc, hB]
+  convert hrec using 1 <;> ring_nf
+
+/-- The quotient-style and coefficient-side modified Narayana models agree. -/
+theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
+    modifiedNarayanaPolynomial n = modifiedNarayanaCoeffPolynomial n := by
+  induction n using Nat.twoStepInduction with
+  | zero => simp
+  | one => simp
+  | more n ih ih_succ =>
+      change narayanaQuot (n + 3) = narayanaPolynomial 1 (n + 2)
+      have ih' : narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
+        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial] using ih
+      have ih_succ' :
+          narayanaQuot (n + 2) = narayanaPolynomial 1 (n + 1) := by
+        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial,
+          Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih_succ
+      rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
+        ih', ih_succ']
+
+/-- The quotient Narayana sequence has nonnegative coefficients, via the
+coefficient-side model. -/
+theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
+    HasNonnegCoeffs (narayanaQuot n) := by
+  cases n with
+  | zero => simp [HasNonnegCoeffs]
+  | succ n =>
+      have heq : narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
+        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial]
+          using modifiedNarayanaPolynomial_eq_coeffPolynomial n
+      rw [heq]
+      exact hasNonnegCoeffs_narayanaPolynomial 1 n
+
+/-- Modified Narayana polynomials have nonnegative coefficients. -/
+theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
+    HasNonnegCoeffs (modifiedNarayanaPolynomial n) := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial n]
+  exact modifiedNarayanaCoeffPolynomial_hasNonnegCoeffs n
+
+@[simp] theorem modifiedNarayanaPolynomial_two :
+    modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_two]
+
+/-- Unconditional consecutive proper position for the modified Narayana
+family. -/
+theorem modifiedNarayanaPolynomial_prec_succ (n : ℕ) :
+    Prec (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
+  modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs n
+    narayanaQuot_hasNonnegCoeffs
+
+/-- Unconditional consecutive interlacing for the modified Narayana family. -/
+theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
+    Interlaces (modifiedNarayanaPolynomial n)
+      (modifiedNarayanaPolynomial (n + 1)) :=
+  modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
+    narayanaQuot_hasNonnegCoeffs
+
 end GeneralizedSnakePosets
 end RealRooted
