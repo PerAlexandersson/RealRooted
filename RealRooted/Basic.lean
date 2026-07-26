@@ -729,6 +729,26 @@ lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
     rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
+/-- Multiplying the left polynomial in a proper-position relation by a nonzero
+real scalar preserves proper position. -/
+lemma Prec.C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
+    Prec (C a * f) g := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  refine ⟨?_, hg, ss, rs, hss, hrs, ?_, hrs_eq, hshape⟩
+  · exact ⟨mul_ne_zero (C_ne_zero.mpr ha) hf.1, hf.2.C_mul a⟩
+  · rw [roots_C_mul _ ha]
+    exact hss_eq
+
+/-- Multiplying the right polynomial in a proper-position relation by a nonzero
+real scalar preserves proper position. -/
+lemma Prec.C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
+    Prec f (C a * g) := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  refine ⟨hf, ?_, ss, rs, hss, hrs, hss_eq, ?_, hshape⟩
+  · exact ⟨mul_ne_zero (C_ne_zero.mpr ha) hg.1, hg.2.C_mul a⟩
+  · rw [roots_C_mul _ ha]
+    exact hrs_eq
+
 lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
     IsGeneralizedSturmSeq ps := by
   induction ps with grind [IsGeneralizedSturmSeq, eq_def, Interlaces.toPrec]

@@ -573,6 +573,95 @@ def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
     truncatedStaircaseRookPolynomial n 0 = 1 := by
   simp [truncatedStaircaseRookPolynomial]
 
+/-- The one-row truncated staircase with two cells has rook polynomial
+`1 + 2X`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_two_one :
+    truncatedStaircaseRookPolynomial 2 1 = 1 + C (2 : ℝ) * X := by
+  classical
+  have hcells :
+      (truncatedStaircase 2 1).cells =
+        ({(0, 0), (0, 1)} : Finset (ℕ × ℕ)) := by
+    ext x
+    constructor
+    · intro hx
+      simp only [truncatedStaircase, Finset.mem_biUnion, Finset.mem_range,
+        Finset.mem_image] at hx
+      rcases hx with ⟨row, hrow, col, hcol, hx⟩
+      interval_cases row
+      interval_cases col <;> simp_all
+    · intro hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · simp only [truncatedStaircase, Finset.mem_biUnion, Finset.mem_range,
+          Finset.mem_image]
+        exact ⟨0, by norm_num, 0, by norm_num, rfl⟩
+      · simp only [truncatedStaircase, Finset.mem_biUnion, Finset.mem_range,
+          Finset.mem_image]
+        exact ⟨0, by norm_num, 1, by norm_num, rfl⟩
+  have hplacements :
+      (truncatedStaircase 2 1).cells.powerset.filter
+        (fun P => (truncatedStaircase 2 1).IsNonNestingPlacement P) =
+        ({∅, {(0, 0)}, {(0, 1)}} : Finset (Finset (ℕ × ℕ))) := by
+    rw [hcells]
+    ext P
+    simp only [IsNonNestingPlacement, hcells, Finset.mem_filter, Finset.mem_powerset,
+      Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · intro h
+      by_cases h00 : (0, 0) ∈ P
+      · by_cases h01 : (0, 1) ∈ P
+        · exfalso
+          have hne : (0, 0) ≠ (0, 1) := by
+            norm_num
+          have hrow := h.2.2.1 (0, 0) h00 (0, 1) h01 hne
+          exact hrow rfl
+        · right
+          left
+          ext x
+          constructor
+          · intro hx
+            have hxsub := h.1 hx
+            simp only [Finset.mem_insert, Finset.mem_singleton] at hxsub
+            rcases hxsub with rfl | rfl
+            · simp
+            · exact (h01 hx).elim
+          · intro hx
+            rw [Finset.mem_singleton] at hx
+            rw [hx]
+            exact h00
+      · by_cases h01 : (0, 1) ∈ P
+        · right
+          right
+          ext x
+          constructor
+          · intro hx
+            have hxsub := h.1 hx
+            simp only [Finset.mem_insert, Finset.mem_singleton] at hxsub
+            rcases hxsub with rfl | rfl
+            · exact (h00 hx).elim
+            · simp
+          · intro hx
+            rw [Finset.mem_singleton] at hx
+            rw [hx]
+            exact h01
+        · left
+          ext x
+          constructor
+          · intro hx
+            have hxsub := h.1 hx
+            simp only [Finset.mem_insert, Finset.mem_singleton] at hxsub
+            rcases hxsub with rfl | rfl
+            · exact (h00 hx).elim
+            · exact (h01 hx).elim
+          · intro hx
+            simp at hx
+    · rintro (rfl | rfl | rfl) <;> simp
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements]
+  norm_num
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
+  rw [hC2]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
@@ -592,6 +681,15 @@ def auxiliaryG : ℕ → ℝ[X] :=
 @[simp] theorem auxiliaryG_one :
     auxiliaryG 1 = 1 := by
   simp [auxiliaryG]
+
+/-- The finite-board auxiliary polynomial `G_2` is `2 + 2X`. -/
+@[simp] theorem auxiliaryG_two :
+    auxiliaryG 2 = 2 + C (2 : ℝ) * X := by
+  rw [auxiliaryG, show List.range 2 = [0, 1] by rfl]
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
+  rw [truncatedStaircaseRookPolynomial_zero_rows,
+    truncatedStaircaseRookPolynomial_two_one]
+  ring_nf
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
