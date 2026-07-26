@@ -98,8 +98,12 @@ theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
   simpa [IsPolyaFreqSeq, ← hurwitz_submatrix_odd_eq_toeplitz] using
     hc.submatrix (strictMono_nat_of_lt_succ fun _ => by lia) strictMono_id
 
+/- The row-oriented Hurwitz-matrix criterion and converse are retained only as
+explicit `Legacy` scaffolding. Counterexamples below show that these are not
+valid theorem targets for the current coefficient convention. -/
+
 /-- Unfolded finite-minor form of
-`HurwitzStableToMatrixTotallyNonnegativeStatement`.
+`LegacyHurwitzStableToMatrixTotallyNonnegativeStatement`.
 
 This candidate statement is false for the current row orientation; see
 `not_hurwitzStableToMatrixTotallyNonnegativeStatement`. -/
@@ -107,7 +111,7 @@ def HurwitzStableToHurwitzMatrixMinorsStatement : Prop :=
   ∀ {p : ℝ[X]}, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
 
 theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
-    HurwitzStableToMatrixTotallyNonnegativeStatement ↔
+    LegacyHurwitzStableToMatrixTotallyNonnegativeStatement ↔
       HurwitzStableToHurwitzMatrixMinorsStatement :=
   Iff.rfl
 
@@ -115,14 +119,14 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
 hypothesis rules out the zero-polynomial typo, but the statement remains false
 for the current row convention; see
 `not_hurwitzMatrixTotallyNonnegativeToStableStatement`. -/
-abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
+abbrev LegacyHurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
 
 /-- The legacy converse Hurwitz-matrix criterion gives the converse odd/even
 Lace bridge by the explicit Hurwitz/Lace matrix identity. -/
 theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
-    FullyInterlacingPairToHurwitzOddEvenStableStatement :=
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement) :
+    LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fun {p q} hpq0 hfull =>
     hMatrixToStable
       (oddEvenPolynomial_ne_zero_iff.mpr hpq0)
@@ -132,40 +136,40 @@ theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
 /-- Full legacy row-oriented Hurwitz-matrix criterion in the coefficient
 convention used in this project.  The bundled statement is false for the
 current orientation; see `not_hurwitzMatrixCriterionStatement`. -/
-abbrev HurwitzMatrixCriterionStatement : Prop :=
-  HurwitzStableToMatrixTotallyNonnegativeStatement ∧
-    HurwitzMatrixTotallyNonnegativeToStableStatement
+abbrev LegacyHurwitzMatrixCriterionStatement : Prop :=
+  LegacyHurwitzStableToMatrixTotallyNonnegativeStatement ∧
+    LegacyHurwitzMatrixTotallyNonnegativeToStableStatement
 
 theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzStableToMatrixTotallyNonnegativeStatement :=
+    (h : LegacyHurwitzMatrixCriterionStatement) :
+    LegacyHurwitzStableToMatrixTotallyNonnegativeStatement :=
   h.1
 
 theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
+    (h : LegacyHurwitzMatrixCriterionStatement) :
     HurwitzStableToHurwitzMatrixMinorsStatement :=
   fun hstab => h.1 hstab
 
 theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzMatrixTotallyNonnegativeToStableStatement :=
+    (h : LegacyHurwitzMatrixCriterionStatement) :
+    LegacyHurwitzMatrixTotallyNonnegativeToStableStatement :=
   h.2
 
 theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    FullyInterlacingPairToHurwitzOddEvenStableStatement :=
+    (h : LegacyHurwitzMatrixCriterionStatement) :
+    LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN h.2
 
 theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
-    HurwitzOddEvenToFullyInterlacingPairStatement :=
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement) :
+    LegacyHurwitzOddEvenToFullyInterlacingPairStatement :=
   fun {p q} hstab =>
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
       (hStableToMatrix hstab)
 
 theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzOddEvenToFullyInterlacingPairStatement :=
+    (h : LegacyHurwitzMatrixCriterionStatement) :
+    LegacyHurwitzOddEvenToFullyInterlacingPairStatement :=
   hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors h.1
 
 /-! ### Entrywise Hadamard structure of Hurwitz matrices
@@ -1523,7 +1527,7 @@ theorem not_isHurwitzStable_hurwitzMatrixCriterionCounterexample :
 /-- Total nonnegativity of the current row-oriented Hurwitz matrix does not
 imply Hurwitz stability, even for a nonzero polynomial. -/
 theorem not_hurwitzMatrixTotallyNonnegativeToStableStatement :
-    ¬ HurwitzMatrixTotallyNonnegativeToStableStatement := by
+    ¬ LegacyHurwitzMatrixTotallyNonnegativeToStableStatement := by
   intro h
   exact not_isHurwitzStable_hurwitzMatrixCriterionCounterexample
     (h (by
@@ -1534,7 +1538,7 @@ theorem not_hurwitzMatrixTotallyNonnegativeToStableStatement :
       hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg)
 
 /-- The two-sided row-oriented Hurwitz criterion is false. -/
-theorem not_hurwitzMatrixCriterionStatement : ¬ HurwitzMatrixCriterionStatement :=
+theorem not_hurwitzMatrixCriterionStatement : ¬ LegacyHurwitzMatrixCriterionStatement :=
   fun h => not_hurwitzStableToMatrixTotallyNonnegativeStatement h.1
 
 /-- Counterexample first column: the binomial sequence `k ↦ C(16, k)`. -/

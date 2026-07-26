@@ -309,7 +309,7 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
 
 /-- Veronese pair-section row-family `Prec` exit exposed through the OEIS facade. -/
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
     (hpq : ∀ n : Nat, Prec (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)

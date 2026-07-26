@@ -36,7 +36,7 @@ abbrev HermiteBiehlerConverseTarget : Prop :=
 /-- Challenge-facing name for the proposed row-oriented Hurwitz-matrix
 total-nonnegativity criterion. -/
 abbrev HurwitzMatrixCriterionTarget : Prop :=
-  RealRooted.HurwitzMatrixCriterionStatement
+  RealRooted.LegacyHurwitzMatrixCriterionStatement
 
 /-- Sign-normalized forward Hermite--Biehler target. -/
 theorem hermiteBiehler_forward :

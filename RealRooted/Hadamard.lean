@@ -2590,8 +2590,8 @@ def hadamardPreservesHurwitzMatrixTNStatement : Prop :=
 The two criterion hypotheses are explicit because both are false for the
 row-oriented `hurwitz` matrix used in this project. -/
 theorem hadamardPreservesHurwitzStable_of_matrixRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hHad : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
   fun ha hb hprod =>
@@ -2810,8 +2810,8 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
 Schur-product core. The two criterion assumptions are refuted for the current
 matrix orientation. -/
 theorem hadamardPreservesHurwitzStable_of_hurwitzSchur
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
   hadamardPreservesHurwitzStable_of_matrixRoute hStableToMatrix hMatrixToStable
@@ -2822,8 +2822,8 @@ Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
 criterion.  Together with `hadamardPreservesHurwitzStable_of_matrixRoute`, this
 records the equivalence of the matrix leaf and Theorem 1 modulo that criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
   fun {a b} ha hb => by
@@ -2842,8 +2842,8 @@ theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
 /-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
 plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
@@ -2853,8 +2853,8 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
 /-- Odd/even PF consequence from Garloff--Wagner Theorem 1 plus both
 directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
@@ -2864,8 +2864,8 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute
 /-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
 Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzStable_iff_matrixTN
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement) :
     hadamardPreservesHurwitzStableStatement ↔
       hadamardPreservesHurwitzMatrixTNStatement :=
   ⟨hadamardPreservesHurwitzMatrixTN_of_stableRoute hStableToMatrix hMatrixToStable,
@@ -2874,8 +2874,8 @@ theorem hadamardPreservesHurwitzStable_iff_matrixTN
 /-- Under the Hurwitz-matrix criterion, the right-half-plane analytic core of
 Garloff--Wagner Theorem 1 is equivalent to the matrix Hadamard leaf. -/
 theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement) :
     hadamardPreservesRightHalfPlaneStableStatement ↔
       hadamardPreservesHurwitzMatrixTNStatement :=
   hadamardPreservesHurwitzStable_iff_rightHalfPlane.symm.trans
@@ -2883,8 +2883,8 @@ theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN
 
 /-- The matrix route also gives the right-half-plane analytic core directly. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_matrixRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement) :
     hadamardPreservesHurwitzMatrixTNStatement →
       hadamardPreservesRightHalfPlaneStableStatement :=
   (hadamardPreservesRightHalfPlaneStable_iff_matrixTN
@@ -2893,8 +2893,8 @@ theorem hadamardPreservesRightHalfPlaneStable_of_matrixRoute
 /-- Conversely, the right-half-plane analytic core gives the matrix leaf through
 the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute :
-    HurwitzStableToMatrixTotallyNonnegativeStatement →
-      HurwitzMatrixTotallyNonnegativeToStableStatement →
+    LegacyHurwitzStableToMatrixTotallyNonnegativeStatement →
+      LegacyHurwitzMatrixTotallyNonnegativeToStableStatement →
     hadamardPreservesRightHalfPlaneStableStatement →
       hadamardPreservesHurwitzMatrixTNStatement := fun hStableToMatrix hMatrixToStable =>
   (hadamardPreservesRightHalfPlaneStable_iff_matrixTN
@@ -2903,8 +2903,8 @@ theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute :
 /-- Odd/even PF consequence from the right-half-plane analytic core plus the
 Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hRHP : hadamardPreservesRightHalfPlaneStableStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
@@ -2914,8 +2914,8 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
 /-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
 core, modulo the two directions of the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
-    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
   hadamardPreservesRightHalfPlaneStable_of_matrixRoute hStableToMatrix hMatrixToStable
@@ -2934,7 +2934,7 @@ latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
 * `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
   from proper position `Prec f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
-* `HurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
+* `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
   Hurwitz-to-Lace bridge, now known false as a general theorem; and
 * `FullyInterlacingPairToPrec0Statement` — the converse lace-to-interlacing
   bridge back to zero-aware proper position.
@@ -2955,7 +2955,7 @@ single-polynomial real-rootedness fact
 theorem garloffWagnerHadamardNonnegPrec_of_oddEven
     (hThm1 : hadamardPreservesHurwitzStableStatement)
     (hPrecToHurwitz : NonnegPrecToHurwitzOddEvenStatement)
-    (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement)
+    (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
@@ -2988,7 +2988,7 @@ conditional reduction of the #34 target
 * `hermiteBiehlerForwardPosStatement` and
   `HermiteBiehlerStableToHurwitzOddEvenStatement` — the forward
   Hermite--Biehler bridge and conformal substitution;
-* `HurwitzStableToMatrixTotallyNonnegativeStatement` — the legacy row-oriented
+* `LegacyHurwitzStableToMatrixTotallyNonnegativeStatement` — the legacy row-oriented
   forward matrix Hurwitz criterion, now known false as a general theorem;
 * `aissenSchoenbergWhitneyForwardStatement` and
   `FullyInterlacingPairInterlaceStatement` — forward
@@ -3002,7 +3002,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
     (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     ∀ {f g p q : ℝ[X]},
@@ -3048,7 +3048,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
     h.fullyInterlacingPairInterlace
 
 theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
-    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     ∀ {f g p q : ℝ[X]},
@@ -3075,7 +3075,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
 
 /-- Garloff--Wagner two-pair theorem via the pure Hurwitz Schur-product core. -/
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
-    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     ∀ {f g p q : ℝ[X]},
@@ -3129,14 +3129,14 @@ theorem garloffWagnerHadamardPFPrec_of_nonnegPrec :
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 theorem garloffWagnerHadamardPFPrec_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardPFPrecStatement :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardPFPrecStatement :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
@@ -3145,7 +3145,7 @@ theorem garloffWagnerHadamardPFPrec_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrecStatement :=
@@ -3202,14 +3202,14 @@ theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec :
     garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardPFPrec0Statement :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardPFPrec0Statement :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
@@ -3218,7 +3218,7 @@ theorem garloffWagnerHadamardPFPrec0_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrec0Statement :=
@@ -3261,7 +3261,7 @@ theorem hadamardProduct_preserves_pf_of_nonnegPrec :
     garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
@@ -3269,7 +3269,7 @@ theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
   hadamardProduct_preserves_pf_of_nonnegPrec
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
@@ -3280,7 +3280,7 @@ theorem hadamardProduct_preserves_pf_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
@@ -3323,14 +3323,14 @@ theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec
     (garloffWagnerHadamardPFPrec0_of_prec hGW)
 
 theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
 
 theorem schurPolyaWagnerHadamardPF_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
@@ -3339,7 +3339,7 @@ theorem schurPolyaWagnerHadamardPF_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
@@ -3383,14 +3383,14 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hSchur : HurwitzMatrixSchurProductTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
@@ -3400,7 +3400,7 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
@@ -3491,14 +3491,14 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner :
     garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem hadamardReciprocalConeClosure_of_matrixHadamardBridges
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     hadamardReciprocalConeClosureStatement :=
   hadamardReciprocalConeClosure_of_garloffWagner
 
 theorem hadamardReciprocalConeClosure_of_hurwitzSchur
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     hadamardReciprocalConeClosureStatement :=
   hadamardReciprocalConeClosure_of_garloffWagner
@@ -3507,7 +3507,7 @@ theorem hadamardReciprocalConeClosure_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     hadamardReciprocalConeClosureStatement :=
@@ -3579,7 +3579,7 @@ theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec
 
 theorem polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     polyaFrequencyHadamardCoeffStatement :=
@@ -3587,7 +3587,7 @@ theorem polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
 
 theorem polyaFrequencyHadamardCoeff_of_hurwitzSchur
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (_hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     polyaFrequencyHadamardCoeffStatement :=
   polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW
@@ -3597,7 +3597,7 @@ theorem polyaFrequencyHadamardCoeff_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (_hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     polyaFrequencyHadamardCoeffStatement :=
