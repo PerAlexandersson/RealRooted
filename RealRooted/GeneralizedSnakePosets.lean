@@ -388,6 +388,11 @@ def rookPolynomial (B : FiniteSkewBoard) : ℝ[X] := by
   exact (B.cells.powerset.filter (fun P => B.IsNonNestingPlacement P)).sum
     (fun P => X ^ P.card)
 
+/-- The empty placement is non-nesting on every finite skew board. -/
+@[simp] theorem isNonNestingPlacement_empty (B : FiniteSkewBoard) :
+    B.IsNonNestingPlacement ∅ := by
+  simp [IsNonNestingPlacement]
+
 /-- Powers of `X` have nonnegative coefficients. -/
 private lemma xPow_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
@@ -426,6 +431,29 @@ theorem rookPolynomial_hasNonnegCoeffs (B : FiniteSkewBoard) :
   exact Finset.sum_nonneg fun (P : Finset (ℕ × ℕ)) _ =>
     xPow_hasNonnegCoeffs P.card k
 
+/-- The empty placement gives the constant coefficient of a finite skew board
+rook polynomial. -/
+@[simp] theorem rookPolynomial_coeff_zero (B : FiniteSkewBoard) :
+    B.rookPolynomial.coeff 0 = 1 := by
+  classical
+  rw [rookPolynomial, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
+  · simp
+  · intro P _hP hne
+    have hP_nonzero : P.card ≠ 0 := by
+      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
+    have hzero : ¬ 0 = P.card := fun h => hP_nonzero h.symm
+    simp [Polynomial.coeff_X_pow, hzero]
+  · intro hnot
+    simp at hnot
+
+/-- Finite skew board rook polynomials are nonzero. -/
+theorem rookPolynomial_ne_zero (B : FiniteSkewBoard) :
+    B.rookPolynomial ≠ 0 := by
+  intro hzero
+  have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
+  rw [rookPolynomial_coeff_zero] at hcoeff
+  norm_num at hcoeff
+
 /-- A finite list sum of nonnegative-coefficient polynomials has nonnegative
 coefficients. -/
 private lemma listSum_hasNonnegCoeffs {ps : List ℝ[X]}
@@ -453,6 +481,16 @@ def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where
 /-- The non-nesting rook polynomial of the truncated staircase `mu_{n,i}`. -/
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   (truncatedStaircase n i).rookPolynomial
+
+/-- Truncated-staircase rook polynomials have constant coefficient one. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_coeff_zero (n i : ℕ) :
+    (truncatedStaircaseRookPolynomial n i).coeff 0 = 1 :=
+  rookPolynomial_coeff_zero _
+
+/-- Truncated-staircase rook polynomials are nonzero. -/
+theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
+    truncatedStaircaseRookPolynomial n i ≠ 0 :=
+  rookPolynomial_ne_zero _
 
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
@@ -501,6 +539,19 @@ def squarecaseRookModelOfFiniteSkewBoard
     (squarecaseRookModelOfFiniteSkewBoard boardOfSnake).snakePolynomial w =
       (boardOfSnake w).rookPolynomial :=
   rfl
+
+/-- Finite-skew-board squarecase models have constant coefficient one for every
+snake-word polynomial. -/
+@[simp] theorem squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_coeff_zero
+    (boardOfSnake : SnakeWord → FiniteSkewBoard) (w : SnakeWord) :
+    ((squarecaseRookModelOfFiniteSkewBoard boardOfSnake).snakePolynomial w).coeff 0 = 1 :=
+  FiniteSkewBoard.rookPolynomial_coeff_zero _
+
+/-- Finite-skew-board squarecase models have nonzero snake-word polynomials. -/
+theorem squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_ne_zero
+    (boardOfSnake : SnakeWord → FiniteSkewBoard) (w : SnakeWord) :
+    (squarecaseRookModelOfFiniteSkewBoard boardOfSnake).snakePolynomial w ≠ 0 :=
+  FiniteSkewBoard.rookPolynomial_ne_zero _
 
 /-- Statement interface for Braun--Jal Theorem 4.1, with the non-nesting rook
 polynomial supplied as a parameter. -/
