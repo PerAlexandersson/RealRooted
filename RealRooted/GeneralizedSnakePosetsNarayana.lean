@@ -160,6 +160,20 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
   norm_num
   ring_nf
 
+@[simp] theorem modifiedNarayanaCoeffPolynomial_three :
+    modifiedNarayanaCoeffPolynomial 3 =
+      1 + C (6 : ℝ) * X + C (6 : ℝ) * X ^ 2 + X ^ 3 := by
+  ext k
+  by_cases hk : k ≤ 3
+  · interval_cases k <;>
+      norm_num [modifiedNarayanaCoeffPolynomial, narayanaTransformCoeff, Nat.choose,
+        coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
+  · have hklt : 3 < k := Nat.lt_of_not_ge hk
+    simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
+      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
+      show k ≠ 3 by lia]
+
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
@@ -197,6 +211,20 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_two :
   have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 :=
     Polynomial.C_eq_natCast (R := ℝ) 3
   rw [hC3]
+  ring_nf
+
+/-- The `n = 3` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_three :
+    X * FiniteSkewBoard.auxiliaryG 2 =
+      modifiedNarayanaCoeffPolynomial 3 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 2 := by
+  rw [FiniteSkewBoard.auxiliaryG_two, modifiedNarayanaCoeffPolynomial_two,
+    modifiedNarayanaCoeffPolynomial_three]
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  rw [hC2, hC3, hC6]
   ring_nf
 
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
@@ -282,6 +310,12 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_two]
 
+@[simp] theorem modifiedNarayanaPolynomial_three :
+    modifiedNarayanaPolynomial 3 =
+      1 + C (6 : ℝ) * X + C (6 : ℝ) * X ^ 2 + X ^ 3 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_three]
+
 /-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_two :
@@ -291,6 +325,16 @@ theorem narayanaAuxiliaryGRecurrence_modified_two :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 1,
     modifiedNarayanaPolynomial_eq_coeffPolynomial 2]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_two
+
+/-- The `n = 3` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_three :
+    X * FiniteSkewBoard.auxiliaryG 2 =
+      modifiedNarayanaPolynomial 3 -
+        (1 + X) * modifiedNarayanaPolynomial 2 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 2,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 3]
+  exact narayanaCoeffAuxiliaryGRecurrence_modified_three
 
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
@@ -302,6 +346,18 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
   interval_cases n
   · exact narayanaAuxiliaryGRecurrence_modified_base
   · exact narayanaAuxiliaryGRecurrence_modified_two
+
+/-- The checked initial cases `n = 1, 2, 3` of Braun--Jal equation (2), for the
+quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_three
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₃ : n ≤ 3) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaAuxiliaryGRecurrence_modified_base
+  · exact narayanaAuxiliaryGRecurrence_modified_two
+  · exact narayanaAuxiliaryGRecurrence_modified_three
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
