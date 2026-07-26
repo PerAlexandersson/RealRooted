@@ -635,9 +635,9 @@ def NonnegPrecToHurwitzOddEvenStatement : Prop :=
     Prec p q →
     IsHurwitzStable (oddEvenPolynomial p q)
 
-/-- Hurwitz-to-Lace bridge target: total nonnegativity of the Hurwitz matrix of
-`q(x^2) + x p(x^2)` should be exactly full interlacing of the two coefficient
-rows. -/
+/-- Legacy Hurwitz-to-Lace bridge candidate for the current row-oriented Lace
+matrix.  This statement is false for the current row orientation; see
+`not_hurwitzOddEvenToFullyInterlacingPairStatement` below. -/
 def HurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     IsHurwitzStable (oddEvenPolynomial p q) →
@@ -735,6 +735,17 @@ theorem nonnegPrecToFullyInterlacingPair_of_hurwitzOddEvenDirect
     (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
   fun hpnn hqnn hpq => hHurwitzToFull (hPrecToHurwitz hpnn hqnn hpq)
+
+/-- `HurwitzOddEvenToFullyInterlacingPairStatement` is false for the current
+row-oriented Lace matrix. -/
+theorem not_hurwitzOddEvenToFullyInterlacingPairStatement :
+    ¬ HurwitzOddEvenToFullyInterlacingPairStatement := by
+  intro h
+  exact not_nonnegPrecToFullyInterlacingPairStatement
+    (nonnegPrecToFullyInterlacingPair_of_hurwitzOddEvenDirect
+      (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos
+        @hermiteBiehlerForwardPos @hermiteBiehlerStableToHurwitzOddEven)
+      h)
 
 /-- The matrix form of the Hurwitz criterion gives the Hurwitz-to-Lace bridge
 for odd/even polynomials by the explicit matrix identity above. -/

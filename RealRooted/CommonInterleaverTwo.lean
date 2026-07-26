@@ -658,10 +658,12 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_di
       pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos htwo hpos hpair,
     fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
-/-- Two-polynomial common-right bridge: compatibility implies a common right
-interleaver, without carrying family-level positivity hypotheses. -/
+/-- Positive-leading two-polynomial common-right bridge: compatibility implies
+a common right interleaver. -/
 def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
     Compatible f g →
     ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
@@ -680,9 +682,14 @@ interleavers. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
     (htwo : CompatiblePairHasCommonRightInterleaverStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij => by simpa using htwo (hpair i j hij)
+  fun i j hij =>
+    htwo
+      (hpos (fs.get i) (fs.get_mem i))
+      (hpos (fs.get j) (fs.get_mem j))
+      (hpair i j hij)
 
 /-- Same-degree branch of the positive-leading compatibility bridge. This is
 the honest `Compatible`-level version of article 3.6.1 → 3.6.2 in the equal-
@@ -10402,7 +10409,7 @@ theorem chudnovskySeymour_fourWay_of_pairBridge
     (htwo : CompatiblePairHasCommonRightInterleaverStatement) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible htwo
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible htwo hpos
 
 /-- Chudnovsky--Seymour four-way package with the natural two-polynomial bridge
 assumption (requiring positive leading coefficients on the pair). -/
