@@ -296,5 +296,45 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
   modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 
+/-- The coefficient-side modified Narayana family also satisfies the
+Braun--Jal modified-family interface. -/
+theorem modifiedNarayanaFamily_coeff :
+    ModifiedNarayanaFamilyStatement narayana modifiedNarayanaCoeffPolynomial := by
+  constructor
+  · simp
+  · intro n
+    rw [← modifiedNarayanaPolynomial_eq_coeffPolynomial]
+    exact modifiedNarayanaFamily_narayana.2 n
+
+/-- Coefficient-side modified Narayana polynomials are PF polynomials. -/
+theorem modifiedNarayanaCoeffPolynomial_isPFPolynomial (n : ℕ) :
+    IsPFPolynomial (modifiedNarayanaCoeffPolynomial n) := by
+  simpa [modifiedNarayanaCoeffPolynomial] using
+    narayanaPolynomialRootLocation 1 n
+
+/-- Modified Narayana polynomials are PF polynomials. -/
+theorem modifiedNarayanaPolynomial_isPFPolynomial (n : ℕ) :
+    IsPFPolynomial (modifiedNarayanaPolynomial n) := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial n]
+  exact modifiedNarayanaCoeffPolynomial_isPFPolynomial n
+
+/-- Modified Narayana polynomials split over the reals. -/
+theorem modifiedNarayanaPolynomial_splits (n : ℕ) :
+    (modifiedNarayanaPolynomial n).Splits :=
+  (modifiedNarayanaPolynomial_isPFPolynomial n).ne_zero_and_splits
+    (modifiedNarayanaPolynomial_ne_zero n) |>.2
+
+/-- Modified Narayana polynomials are nonzero and split over the reals. -/
+theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :
+    modifiedNarayanaPolynomial n ≠ 0 ∧
+      (modifiedNarayanaPolynomial n).Splits :=
+  (modifiedNarayanaPolynomial_isPFPolynomial n).ne_zero_and_splits
+    (modifiedNarayanaPolynomial_ne_zero n)
+
+/-- All real roots of a modified Narayana polynomial are nonpositive. -/
+theorem modifiedNarayanaPolynomial_roots_nonpos (n : ℕ) :
+    ∀ r ∈ (modifiedNarayanaPolynomial n).roots, r ≤ 0 :=
+  (modifiedNarayanaPolynomial_isPFPolynomial n).roots_nonpos
+
 end GeneralizedSnakePosets
 end RealRooted
