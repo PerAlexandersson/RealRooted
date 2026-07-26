@@ -903,6 +903,40 @@ def OrderPolytopeHStarRealRootedStatement
     (hStar : SnakeWord → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord}, 1 ≤ w.length → hStar w ≠ 0 ∧ (hStar w).Splits
 
+/-- Final order-polytope `h^*` interlacing statement, isolated from the
+rook-polynomial model. -/
+def OrderPolytopeHStarInterlacesStatement
+    (hStar : SnakeWord → ℝ[X]) : Prop :=
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    Interlaces (hStar w.deleteFinal) (hStar w)
+
+/-- Full order-polytope `h^*` form of Braun--Jal Theorem 4.1 after the
+Stanley/Alexandersson--Jal matching interface has identified the `h^*`
+polynomials with non-nesting rook polynomials. -/
+def OrderPolytopeHStarTheorem41Statement
+    (hStar : SnakeWord → ℝ[X]) : Prop :=
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    (hStar w ≠ 0 ∧ (hStar w).Splits) ∧
+      Interlaces (hStar w.deleteFinal) (hStar w)
+
+/-- The full order-polytope `h^*` Theorem 4.1 wrapper implies its
+real-rootedness projection. -/
+theorem orderPolytopeHStarRealRooted_of_hStarTheorem41
+    {hStar : SnakeWord → ℝ[X]}
+    (h : OrderPolytopeHStarTheorem41Statement hStar) :
+    OrderPolytopeHStarRealRootedStatement hStar := by
+  intro w hw
+  exact (h hw).1
+
+/-- The full order-polytope `h^*` Theorem 4.1 wrapper implies its interlacing
+projection. -/
+theorem orderPolytopeHStarInterlaces_of_hStarTheorem41
+    {hStar : SnakeWord → ℝ[X]}
+    (h : OrderPolytopeHStarTheorem41Statement hStar) :
+    OrderPolytopeHStarInterlacesStatement hStar := by
+  intro w hw
+  exact (h hw).2
+
 /-- Theorem 4.1 plus the Stanley/Alexandersson--Jal matching interface implies
 the order-polytope `h^*` real-rootedness wrapper. -/
 theorem orderPolytopeHStarRealRooted_of_theorem41
@@ -913,6 +947,28 @@ theorem orderPolytopeHStarRealRooted_of_theorem41
   intro w hw
   simpa [hmatch w] using
     nonNestingRook_ne_zero_and_splits_of_theorem41 hBJ (w := w) hw
+
+/-- Theorem 4.1 plus the Stanley/Alexandersson--Jal matching interface implies
+the order-polytope `h^*` interlacing wrapper. -/
+theorem orderPolytopeHStarInterlaces_of_theorem41
+    {hStar M : SnakeWord → ℝ[X]}
+    (hBJ : Theorem41NonNestingRookStatement M)
+    (hmatch : OrderPolytopeHStarMatchesNonNestingRook hStar M) :
+    OrderPolytopeHStarInterlacesStatement hStar := by
+  intro w hw
+  simpa [hmatch w, hmatch w.deleteFinal] using
+    nonNestingRook_deleteFinal_interlaces_of_theorem41 hBJ (w := w) hw
+
+/-- Theorem 4.1 plus the Stanley/Alexandersson--Jal matching interface gives
+the full order-polytope `h^*` version of Braun--Jal Theorem 4.1. -/
+theorem orderPolytopeHStarTheorem41_of_theorem41
+    {hStar M : SnakeWord → ℝ[X]}
+    (hBJ : Theorem41NonNestingRookStatement M)
+    (hmatch : OrderPolytopeHStarMatchesNonNestingRook hStar M) :
+    OrderPolytopeHStarTheorem41Statement hStar := by
+  intro w hw
+  exact ⟨orderPolytopeHStarRealRooted_of_theorem41 hBJ hmatch hw,
+    orderPolytopeHStarInterlaces_of_theorem41 hBJ hmatch hw⟩
 
 /-- A statement-level squarecase Section 3 witness plus the abstract induction
 route and order-polytope matching proves the final `h^*` real-rootedness
@@ -927,6 +983,36 @@ theorem orderPolytopeHStarRealRooted_of_squarecaseSection3Statement
       OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
     OrderPolytopeHStarRealRootedStatement hStar :=
   orderPolytopeHStarRealRooted_of_theorem41
+    (theorem41_of_squarecaseSection3Statement hroute hsection) hmatch
+
+/-- A statement-level squarecase Section 3 witness plus the abstract induction
+route and order-polytope matching proves the final `h^*` interlacing wrapper.
+-/
+theorem orderPolytopeHStarInterlaces_of_squarecaseSection3Statement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3Statement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarInterlacesStatement hStar :=
+  orderPolytopeHStarInterlaces_of_theorem41
+    (theorem41_of_squarecaseSection3Statement hroute hsection) hmatch
+
+/-- A statement-level squarecase Section 3 witness plus the abstract induction
+route and order-polytope matching proves the full final `h^*` Theorem 4.1
+wrapper. -/
+theorem orderPolytopeHStarTheorem41_of_squarecaseSection3Statement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3Statement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarTheorem41Statement hStar :=
+  orderPolytopeHStarTheorem41_of_theorem41
     (theorem41_of_squarecaseSection3Statement hroute hsection) hmatch
 
 /-- A squarecase Section 3 package, a matching computable induction route, and
@@ -944,6 +1030,36 @@ theorem orderPolytopeHStarRealRooted_of_squarecaseSection3Package
   orderPolytopeHStarRealRooted_of_theorem41
     (hsection.theorem41Computable hroute) hmatch
 
+/-- A squarecase Section 3 package, a matching computable induction route, and
+the order-polytope matching interface prove the final `h^*` interlacing
+wrapper. -/
+theorem orderPolytopeHStarInterlaces_of_squarecaseSection3Package
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3Package model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement
+        model.snakePolynomial hsection.P hsection.G)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarInterlacesStatement hStar :=
+  orderPolytopeHStarInterlaces_of_theorem41
+    (hsection.theorem41Computable hroute) hmatch
+
+/-- A squarecase Section 3 package, a matching computable induction route, and
+the order-polytope matching interface prove the full final `h^*` Theorem 4.1
+wrapper. -/
+theorem orderPolytopeHStarTheorem41_of_squarecaseSection3Package
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3Package model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement
+        model.snakePolynomial hsection.P hsection.G)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarTheorem41Statement hStar :=
+  orderPolytopeHStarTheorem41_of_theorem41
+    (hsection.theorem41Computable hroute) hmatch
+
 /-- A statement-level squarecase Section 3 witness plus a computable abstract
 induction route and order-polytope matching proves the final `h^*`
 real-rootedness wrapper. -/
@@ -957,6 +1073,38 @@ theorem orderPolytopeHStarRealRooted_of_squarecaseSection3ComputableStatement
       OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
     OrderPolytopeHStarRealRootedStatement hStar :=
   orderPolytopeHStarRealRooted_of_theorem41
+    (theorem41_of_squarecaseSection3ComputableStatement hroute hsection)
+    hmatch
+
+/-- A statement-level squarecase Section 3 witness plus a computable abstract
+induction route and order-polytope matching proves the final `h^*`
+interlacing wrapper. -/
+theorem orderPolytopeHStarInterlaces_of_squarecaseSection3ComputableStatement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteComputableStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3Statement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarInterlacesStatement hStar :=
+  orderPolytopeHStarInterlaces_of_theorem41
+    (theorem41_of_squarecaseSection3ComputableStatement hroute hsection)
+    hmatch
+
+/-- A statement-level squarecase Section 3 witness plus a computable abstract
+induction route and order-polytope matching proves the full final `h^*`
+Theorem 4.1 wrapper. -/
+theorem orderPolytopeHStarTheorem41_of_squarecaseSection3ComputableStatement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteComputableStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3Statement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarTheorem41Statement hStar :=
+  orderPolytopeHStarTheorem41_of_theorem41
     (theorem41_of_squarecaseSection3ComputableStatement hroute hsection)
     hmatch
 
