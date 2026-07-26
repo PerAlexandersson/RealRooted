@@ -554,7 +554,7 @@ theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
 
 /-! ## Conditional bridge to polynomial interlacing -/
 
-/-- Strong candidate interface for the polynomial-to-lace direction.
+/-- Legacy candidate interface for the polynomial-to-lace direction.
 
 This is stronger than the Athanasiadis--Wagner polynomial setting: plain
 `Prec p q` does not include nonnegative coefficients or the AESW/PF condition.
@@ -564,7 +564,7 @@ def PrecToFullyInterlacingPairStatement : Prop :=
   ∀ {p q : ℝ[X]}, Prec p q →
     FullyInterlacingPair p.coeff q.coeff
 
-/-- Candidate polynomial-to-lace interface in the AESW/Pólya-frequency regime
+/-- Legacy polynomial-to-lace interface in the AESW/Pólya-frequency regime
 used by Athanasiadis--Wagner.
 
 This statement is also false for the current row orientation; see
@@ -576,7 +576,7 @@ def PfPrecToFullyInterlacingPairStatement : Prop :=
     Prec p q →
     FullyInterlacingPair p.coeff q.coeff
 
-/-- Candidate polynomial-to-lace interface in the real-rooted,
+/-- Legacy polynomial-to-lace interface in the real-rooted,
 nonnegative-coefficient regime.
 
 This statement is false for the current row orientation; see
@@ -587,6 +587,34 @@ def NonnegPrecToFullyInterlacingPairStatement : Prop :=
     HasNonnegCoeffs q →
     Prec p q →
     FullyInterlacingPair p.coeff q.coeff
+
+/-- Orientation-explicit replacement target for the strong polynomial-to-lace
+direction with reversed Lace rows.
+
+The legacy target `FullyInterlacingPair p.coeff q.coeff` is refuted by
+`p = X + 2`, `q = X + 1`.  This definition records the reversed row order so
+future bridges do not silently reuse the known-false orientation. -/
+def PrecToReverseFullyInterlacingPairStatement : Prop :=
+  ∀ {p q : ℝ[X]}, Prec p q →
+    FullyInterlacingPair q.coeff p.coeff
+
+/-- Orientation-explicit PF polynomial-to-lace target with reversed Lace rows.
+-/
+def PfPrecToReverseFullyInterlacingPairStatement : Prop :=
+  ∀ {p q : ℝ[X]},
+    IsPolyaFreqSeq p.coeff →
+    IsPolyaFreqSeq q.coeff →
+    Prec p q →
+    FullyInterlacingPair q.coeff p.coeff
+
+/-- Orientation-explicit nonnegative-coefficient polynomial-to-lace target with
+reversed Lace rows. -/
+def NonnegPrecToReverseFullyInterlacingPairStatement : Prop :=
+  ∀ {p q : ℝ[X]},
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    Prec p q →
+    FullyInterlacingPair q.coeff p.coeff
 
 /-- The linear pair `X + 2`, `X + 1` violates the current Lace orientation:
 the minor on rows `2, 3` and columns `0, 1` has determinant `-1`. -/
@@ -643,6 +671,17 @@ def HurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
     IsHurwitzStable (oddEvenPolynomial p q) →
     FullyInterlacingPair p.coeff q.coeff
 
+/-- Orientation-explicit Hurwitz-to-Lace target with reversed Lace rows.  This
+is a replacement target to investigate instead of the known-false legacy row
+order. -/
+def HurwitzOddEvenToReverseFullyInterlacingPairStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    IsHurwitzStable (oddEvenPolynomial p q) →
+    FullyInterlacingPair q.coeff p.coeff
+
+/-- Legacy row-oriented forward Hurwitz-matrix criterion.  It is false for the
+current coefficient convention; see
+`not_hurwitzStableToMatrixTotallyNonnegativeStatement`. -/
 abbrev HurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
 
@@ -664,6 +703,32 @@ nonpositive. -/
 theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
     (hPfToFull : PfPrecToFullyInterlacingPairStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
+  fun hpnn hqnn hpq =>
+    hPfToFull
+    (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
+    (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
+    hpq
+
+/-- The orientation-explicit strong reverse interface implies the PF reverse
+interface. -/
+theorem pfPrecToReverseFullyInterlacingPair_of_precToReverseFully
+    (h : PrecToReverseFullyInterlacingPairStatement) :
+    PfPrecToReverseFullyInterlacingPairStatement :=
+  fun _ _ => h
+
+/-- The orientation-explicit strong reverse interface implies the
+nonnegative-coefficient reverse interface. -/
+theorem nonnegPrecToReverseFullyInterlacingPair_of_precToReverseFully
+    (h : PrecToReverseFullyInterlacingPairStatement) :
+    NonnegPrecToReverseFullyInterlacingPairStatement :=
+  fun _ _ => h
+
+/-- Reverse ASW turns the PF reverse bridge into the nonnegative-coefficient
+reverse bridge, because real-rooted polynomials with nonnegative coefficients
+have all roots nonpositive. -/
+theorem nonnegPrecToReverseFullyInterlacingPair_of_pfPrec
+    (hPfToFull : PfPrecToReverseFullyInterlacingPairStatement) :
+    NonnegPrecToReverseFullyInterlacingPairStatement :=
   fun hpnn hqnn hpq =>
     hPfToFull
     (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))

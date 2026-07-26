@@ -15346,6 +15346,48 @@ theorem
   theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
 
+/-- Pack the degree-three-right endpoint terminal as a predicate-restricted
+translated right-family target, modulo the normalized monic quartic/cubic
+arithmetic leaf. -/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three_of_monic
+    (hmono : xSubQuarticCubicSplitsStatement) :
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+    (positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
+      hmono)
+
+/-- Pack the degree-three-right endpoint terminal as a predicate-restricted
+translated right-family target. -/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three :
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three
+
+/-- Pack the endpoint cases through right degree three as a predicate-restricted
+translated right-family target, modulo the normalized monic quartic/cubic
+arithmetic leaf. -/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_le_three_of_monic
+    (hmono : xSubQuarticCubicSplitsStatement) :
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+    (positiveSplitLeftSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
+      hmono)
+
+/-- Pack the endpoint cases through right degree three as a predicate-restricted
+translated right-family target. -/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_le_three :
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+    positiveSplitLeftSuccXSubFamilyPredicate_of_right_natDegree_le_three
+
 /-- A fixed right-degree sign-normalized x-subtraction leaf gives the translated
 right-family target after the Liu sign normalization. -/
 theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_xSub_rightDegree
@@ -15897,6 +15939,75 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_right_natDegr
           C μ * g.comp (X + C r)).Splits := by
   exact
     theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_right_natDegree_le_two
+      hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-three-right-endpoint case for the translated two-degree Liu
+right-family target, modulo the normalized monic quartic/cubic arithmetic leaf.
+-/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_three_of_monic
+    (hmono : xSubQuarticCubicSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 2)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 3) :
+    ∀ μ : ℝ, 0 < μ →
+      (X * (deleteRootFactor f r).comp (X + C r) +
+          C μ * g.comp (X + C r)).Splits := by
+  exact
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three_of_monic
+      hmono hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-three-right-endpoint case for the translated two-degree Liu
+right-family target. -/
+theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 2)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 3) :
+    ∀ μ : ℝ, 0 < μ →
+      (X * (deleteRootFactor f r).comp (X + C r) +
+          C μ * g.comp (X + C r)).Splits := by
+  exact theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree three for the translated two-degree Liu
+right-family target, modulo the normalized monic quartic/cubic arithmetic leaf.
+-/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_le_three_of_monic
+    (hmono : xSubQuarticCubicSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 2)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 3) :
+    ∀ μ : ℝ, 0 < μ →
+      (X * (deleteRootFactor f r).comp (X + C r) +
+          C μ * g.comp (X + C r)).Splits := by
+  exact
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_le_three_of_monic
+      hmono hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree three for the translated two-degree Liu
+right-family target. -/
+theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_le_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 2)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 3) :
+    ∀ μ : ℝ, 0 < μ →
+      (X * (deleteRootFactor f r).comp (X + C r) +
+          C μ * g.comp (X + C r)).Splits := by
+  exact
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_le_three
       hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Pointwise right-family form of a translated left-branch Liu compatibility

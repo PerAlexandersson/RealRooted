@@ -26,19 +26,32 @@ def AswKarlinKernelSignVariationLowerBound
     (degree order : ℕ) (u : ℕ → ℝ) : Prop :=
   Matrix.KernelSignVariationLowerBound (aswKarlinMatrix u degree order 1) order
 
-/-- Classical sign-regular kernel lower bound for a PF one-block Karlin
+/-- Specialized classical input needed for the one-block Karlin
 coefficient-window matrix.
 
-This is the only remaining non-elementary input in the current Karlin sector
-proof.  It should eventually be proved from the specialized sign-regular
-variation-diminishing theorem for a full-row-rank totally nonnegative Toeplitz
-window matrix. -/
-theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound
-    {u : ℕ → ℝ} (hpf : IsPolyaFreqSeq u) (degree order : ℕ)
-    (hdegree : 0 < degree) (horder : 0 < order) (hconst : 0 < u 0)
-    (hlead : 0 < u degree) (hsupport : ∀ k, degree < k → u k = 0) :
+The hypotheses are exactly the checked data produced from a positive-endpoint
+PF polynomial: total nonnegativity of the finite window matrix, full row rank
+as surjectivity of `mulVec`, and finite support through `degree`. -/
+def AswKarlinKernelSignVariationClassicalInputStatement : Prop :=
+  ∀ {u : ℕ → ℝ} {degree order : ℕ},
+    0 < degree →
+    0 < order →
+    0 < u 0 →
+    0 < u degree →
+    (∀ k, degree < k → u k = 0) →
+    (aswKarlinMatrix u degree order 1).IsTotallyNonnegRect →
+    Function.Surjective (aswKarlinMatrix u degree order 1).mulVec →
+    AswKarlinKernelSignVariationLowerBound degree order u
+
+/-- Checked reduction from the specialized classical input to the PF one-block
+Karlin coefficient-window kernel lower bound. -/
+theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound_of_classicalInput
+    {u : ℕ → ℝ} (hpf : IsPolyaFreqSeq u)
+    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
+    (degree order : ℕ) (hdegree : 0 < degree) (horder : 0 < order)
+    (hconst : 0 < u 0) (hlead : 0 < u degree)
+    (hsupport : ∀ k, degree < k → u k = 0) :
     AswKarlinKernelSignVariationLowerBound degree order u := by
-  intro v hker hvec_ne
   have htn :
       (aswKarlinMatrix u degree order 1).IsTotallyNonnegRect :=
     hpf.aswKarlinMatrix_isTotallyNonnegRect degree order 1
@@ -46,10 +59,35 @@ theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound
       Function.Surjective (aswKarlinMatrix u degree order 1).mulVec :=
     aswKarlinMatrix_mulVec_surjective (u := u) degree order 1
       hdegree horder hconst
-  -- Remaining classical step: use the PF-derived `htn`, `hsurj`, the support
-  -- data `hlead`/`hsupport`, `hker`, and `hvec_ne` to prove the kernel
-  -- sign-variation lower bound.
+  intro v hker hvec_ne
+  exact hclassical hdegree horder hconst hlead hsupport htn hsurj
+    hker hvec_ne
+
+/-- Remaining classical sign-regular kernel lower bound for a full-row-rank
+totally nonnegative one-block Karlin coefficient-window matrix.
+
+This is the only remaining non-elementary input in the current Karlin sector
+proof.  It should eventually be proved from the specialized sign-regular
+variation-diminishing theorem for a full-row-rank totally nonnegative Toeplitz
+window matrix. -/
+theorem aswKarlinKernelSignVariationClassicalInput :
+    AswKarlinKernelSignVariationClassicalInputStatement := by
+  intro u degree order hdegree horder hconst hlead hsupport htn hsurj
+  intro v hker hvec_ne
+  -- Remaining classical step: use `htn`, `hsurj`, the endpoint/support data,
+  -- `hker`, and `hvec_ne` to prove the kernel sign-variation lower bound.
   sorry
+
+/-- Classical sign-regular kernel lower bound for a PF one-block Karlin
+coefficient-window matrix. -/
+theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound
+    {u : ℕ → ℝ} (hpf : IsPolyaFreqSeq u) (degree order : ℕ)
+    (hdegree : 0 < degree) (horder : 0 < order) (hconst : 0 < u 0)
+    (hlead : 0 < u degree) (hsupport : ∀ k, degree < k → u k = 0) :
+    AswKarlinKernelSignVariationLowerBound degree order u := by
+  exact hpf.aswKarlinKernelSignVariationLowerBound_of_classicalInput
+    aswKarlinKernelSignVariationClassicalInput degree order hdegree horder
+    hconst hlead hsupport
 
 /-- The final sector inequality follows once the two sign-variation bounds are
 available: a lower bound from the full-row-rank TN kernel theorem and an upper

@@ -2921,12 +2921,12 @@ theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
   hadamardPreservesRightHalfPlaneStable_of_matrixRoute hStableToMatrix hMatrixToStable
     (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
-/-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
+/-- **Garloff--Wagner, Theorem 4(b), reduced to legacy odd/even inputs**
+(TODO T9).
 
 The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
-with a fully checked reduction, from the following classical
-inputs (the latter three are pre-existing interfaces from
-`RealRooted.VeroneseSection`):
+with a fully checked conditional reduction, from the following inputs (the
+latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
 
 * `hadamardPreservesHurwitzStableStatement` — Garloff--Wagner Theorem 1
   (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
@@ -2934,8 +2934,8 @@ inputs (the latter three are pre-existing interfaces from
 * `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
   from proper position `Prec f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
-* `HurwitzOddEvenToFullyInterlacingPairStatement` — from Hurwitz stability of
-  the odd/even polynomial to full interlacing of the coefficient rows; and
+* `HurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
+  Hurwitz-to-Lace bridge, now known false as a general theorem; and
 * `FullyInterlacingPairToPrec0Statement` — the converse lace-to-interlacing
   bridge back to zero-aware proper position.
 
@@ -2945,7 +2945,8 @@ algebraic identity `hadamardProduct_oddEvenPolynomial`:
    = oddEvenPolynomial (f ⊙ p) (g ⊙ q)`,
 whose even part is `g ⊙ q` and whose odd part is `f ⊙ p`.
 
-Thus all of the interlacing bookkeeping of Theorem 4(b) is discharged here.
+Thus all of the interlacing bookkeeping of Theorem 4(b) is discharged here once
+these conditional inputs are supplied.
 Note that the odd/even polynomial of an interlacing pair is Hurwitz stable, not
 real-rooted (e.g. `f = 1`, `g = X + 1` gives `X² + X + 1`), which is why the
 reduction goes through `IsHurwitzStable` (Theorem 1) rather than the
@@ -2973,13 +2974,13 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
   exact hFullToPrec0 (hHurwitzToFull (by
     simpa [hadamardProduct_oddEvenPolynomial] using hThm1 hOE1 hOE2 hOEprod0))
 
-/-- **Garloff--Wagner two-pair theorem reduced to its irreducible classical
-inputs** (issue #34 / TODO T9).
+/-- **Garloff--Wagner two-pair theorem reduced to legacy matrix inputs**
+(issue #34 / TODO T9).
 
 This composes the existing checked reductions for the four mid-level interfaces
 used by `garloffWagnerHadamardNonnegPrec_of_oddEven` into a single fully checked
-reduction of the #34 target `garloffWagnerHadamardNonnegPrecStatement` onto six
-classical bottom-level inputs:
+conditional reduction of the #34 target
+`garloffWagnerHadamardNonnegPrecStatement` onto six bottom-level inputs:
 
 * `hadamardPreservesRightHalfPlaneStableStatement` — the analytic core of
   Garloff--Wagner Theorem 1, with the nonzero-product side condition imposed by
@@ -2987,15 +2988,16 @@ classical bottom-level inputs:
 * `hermiteBiehlerForwardPosStatement` and
   `HermiteBiehlerStableToHurwitzOddEvenStatement` — the forward
   Hermite--Biehler bridge and conformal substitution;
-* `HurwitzStableToMatrixTotallyNonnegativeStatement` — the forward matrix
-  Hurwitz criterion;
+* `HurwitzStableToMatrixTotallyNonnegativeStatement` — the legacy row-oriented
+  forward matrix Hurwitz criterion, now known false as a general theorem;
 * `aissenSchoenbergWhitneyForwardStatement` and
   `FullyInterlacingPairInterlaceStatement` — forward
   Aissen--Schoenberg--Whitney and the combinatorial interlacing-extraction
   core.
 
 This pins down the remaining analytic and combinatorial obligations for the
-#34 target in one place. -/
+#34 target in one place, while keeping the false row-oriented matrix input
+explicit rather than treating it as available theory. -/
 theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
     (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (hHB : hermiteBiehlerForwardPosStatement)

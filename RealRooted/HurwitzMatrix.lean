@@ -111,11 +111,15 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
       HurwitzStableToHurwitzMatrixMinorsStatement :=
   Iff.rfl
 
+/-- Legacy row-oriented converse Hurwitz-matrix criterion.  The nonzero
+hypothesis rules out the zero-polynomial typo, but the statement remains false
+for the current row convention; see
+`not_hurwitzMatrixTotallyNonnegativeToStableStatement`. -/
 abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
 
-/-- The converse Hurwitz-matrix criterion gives the converse odd/even Lace
-bridge by the explicit Hurwitz/Lace matrix identity. -/
+/-- The legacy converse Hurwitz-matrix criterion gives the converse odd/even
+Lace bridge by the explicit Hurwitz/Lace matrix identity. -/
 theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
     (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
@@ -125,8 +129,9 @@ theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
 
-/-- Full weak Hurwitz-matrix criterion in the coefficient-nonnegative
-convention used in this project. -/
+/-- Full legacy row-oriented Hurwitz-matrix criterion in the coefficient
+convention used in this project.  The bundled statement is false for the
+current orientation; see `not_hurwitzMatrixCriterionStatement`. -/
 abbrev HurwitzMatrixCriterionStatement : Prop :=
   HurwitzStableToMatrixTotallyNonnegativeStatement ∧
     HurwitzMatrixTotallyNonnegativeToStableStatement
