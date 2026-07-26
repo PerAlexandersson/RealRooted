@@ -57,6 +57,7 @@ import RealRooted.FolkloreLemma
 import RealRooted.GammaRealRoots
 import RealRooted.GustafssonSolus
 import RealRooted.GeneralizedSnakePosets
+import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GraceHalfPlane
 import RealRooted.Hadamard
