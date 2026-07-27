@@ -191,6 +191,76 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_succ_add {n r k : ℕ}
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
+/-- In a final `R` suffix after a last-change index, walking `steps` column
+steps and then taking the suffix cross edge reaches row `c + steps + 1`. -/
+theorem snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
+    {w : SnakeWord} {last c steps : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hcs : c + steps < w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
+    snakeReachableFuel w (steps + 1)
+      (snakeColCode c) (snakeRowCode (c + steps + 1)) = true := by
+  induction steps generalizing c with
+  | zero =>
+      have hrow_bound : snakeRowCode (c + 1) < snakeCodeBound w := by
+        simp [snakeRowCode, snakeCodeBound]
+        lia
+      have hcross := snakeCrossCoverEdge_suffix_R_of_isLastChangeIndex
+        (w := w) (k := last) (d := c) hlast (by simpa using hcs) hfinal
+      have hcover :
+          snakeCoverEdge w (snakeColCode c) (snakeRowCode (c + 1)) = true := by
+        rw [snakeCoverEdge]
+        simp [hcross]
+      exact snakeReachableFuel_succ_of_coverEdge hrow_bound hcover
+  | succ steps ih =>
+      have hc : c < w.length := by
+        lia
+      have hnext_bound : snakeColCode (c + 1) < snakeCodeBound w := by
+        simp [snakeColCode, snakeCodeBound]
+        lia
+      have hcover := snakeCoverEdge_colCode_succ (w := w) (c := c) hc
+      have htail : c + 1 + steps < w.length - (last + 1) := by
+        lia
+      have hreach := ih (c := c + 1) htail
+      have hend : c + (steps + 1) + 1 = c + 1 + steps + 1 := by
+        lia
+      rw [hend]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+
+/-- In a final `L` suffix after a last-change index, walking `steps` row steps
+and then taking the suffix cross edge reaches column `r + steps + 1`. -/
+theorem snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
+    {w : SnakeWord} {last r steps : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hrs : r + steps < w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
+    snakeReachableFuel w (steps + 1)
+      (snakeRowCode r) (snakeColCode (r + steps + 1)) = true := by
+  induction steps generalizing r with
+  | zero =>
+      have hcol_bound : snakeColCode (r + 1) < snakeCodeBound w := by
+        simp [snakeColCode, snakeCodeBound]
+        lia
+      have hcross := snakeCrossCoverEdge_suffix_L_of_isLastChangeIndex
+        (w := w) (k := last) (d := r) hlast (by simpa using hrs) hfinal
+      have hcover :
+          snakeCoverEdge w (snakeRowCode r) (snakeColCode (r + 1)) = true := by
+        rw [snakeCoverEdge]
+        simp [hcross]
+      exact snakeReachableFuel_succ_of_coverEdge hcol_bound hcover
+  | succ steps ih =>
+      have hr : r < w.length := by
+        lia
+      have hnext_bound : snakeRowCode (r + 1) < snakeCodeBound w := by
+        simp [snakeRowCode, snakeCodeBound]
+        lia
+      have hcover := snakeCoverEdge_rowCode_succ (w := w) (r := r) hr
+      have htail : r + 1 + steps < w.length - (last + 1) := by
+        lia
+      have hreach := ih (r := r + 1) htail
+      have hend : r + (steps + 1) + 1 = r + 1 + steps + 1 := by
+        lia
+      rw [hend]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+
 /-- In an all-`R` snake word, a column reaches exactly the higher rows in exact
 path fuel. -/
 theorem snakeReachableFuel_replicate_R_colCode_rowCode_of_lt {n c r : ℕ}
@@ -427,6 +497,52 @@ theorem snakeElementReachable_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
   unfold snakeElementReachable
   exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia)
     (snakeReachableFuel_replicate_L_rowCode_colCode_of_lt hrc hc)
+
+/-- In a final `R` suffix after a last-change index, a suffix column is below
+any higher suffix row. -/
+theorem snakeElementReachable_suffix_R_colCode_rowCode_of_lt
+    {w : SnakeWord} {last c r : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hcr : c < r) (hr : r ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
+    snakeElementReachable w (snakeColCode c) (snakeRowCode r) = true := by
+  unfold snakeElementReachable
+  have hgap : c + (r - c - 1) < w.length - (last + 1) := by
+    lia
+  have hreach := snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
+    (w := w) (last := last) (c := c) (steps := r - c - 1) hlast hgap hfinal
+  have hreach_exact :
+      snakeReachableFuel w (r - c) (snakeColCode c) (snakeRowCode r) = true := by
+    have htarget :
+        snakeReachableFuel w (r - c) (snakeColCode c) (snakeRowCode r) =
+          snakeReachableFuel w (r - c - 1 + 1) (snakeColCode c)
+            (snakeRowCode (c + (r - c - 1) + 1)) := by
+      congr 2 <;> lia
+    rw [htarget]
+    exact hreach
+  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia) hreach_exact
+
+/-- In a final `L` suffix after a last-change index, a suffix row is below any
+higher suffix column. -/
+theorem snakeElementReachable_suffix_L_rowCode_colCode_of_lt
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hrc : r < c) (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
+    snakeElementReachable w (snakeRowCode r) (snakeColCode c) = true := by
+  unfold snakeElementReachable
+  have hgap : r + (c - r - 1) < w.length - (last + 1) := by
+    lia
+  have hreach := snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
+    (w := w) (last := last) (r := r) (steps := c - r - 1) hlast hgap hfinal
+  have hreach_exact :
+      snakeReachableFuel w (c - r) (snakeRowCode r) (snakeColCode c) = true := by
+    have htarget :
+        snakeReachableFuel w (c - r) (snakeRowCode r) (snakeColCode c) =
+          snakeReachableFuel w (c - r - 1 + 1) (snakeRowCode r)
+            (snakeColCode (r + (c - r - 1) + 1)) := by
+      congr 2 <;> lia
+    rw [htarget]
+    exact hreach
+  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia) hreach_exact
 
 /-- At the `snakeElementReachable` level, all-`R` rows never reach columns. -/
 theorem snakeElementReachable_replicate_R_rowCode_colCode_eq_false
