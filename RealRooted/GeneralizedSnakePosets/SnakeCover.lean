@@ -123,6 +123,56 @@ theorem snakeCrossCoverEdge_replicate_L {n a b : ℕ} :
       simp only [List.getD_eq_getElem?_getD, hget, ha, hgap, BEq.rfl, hb,
         Bool.and_self]⟩
 
+/-- Arithmetic for the reverse enumeration of final-suffix cover gaps. -/
+theorem snakeSuffixCoverIndex_spec {n k d : ℕ}
+    (hd : d < n - (k + 1)) :
+    let idx := n - 1 - d
+    idx < n ∧ n - (idx + 1) = d ∧ k < idx := by
+  dsimp
+  lia
+
+/-- If the final constant suffix after a last-change index consists of `R`
+letters, then every suffix gap contributes the corresponding cross cover. -/
+theorem snakeCrossCoverEdge_suffix_R_of_isLastChangeIndex
+    {w : SnakeWord} {k d : ℕ} (hlast : w.IsLastChangeIndex k)
+    (hd : d < w.length - (k + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
+    snakeCrossCoverEdge w (snakeColCode d) (snakeRowCode (d + 1)) = true := by
+  rw [snakeCrossCoverEdge]
+  simp only [List.any_eq_true, List.mem_range]
+  let idx := w.length - 1 - d
+  have hspec := snakeSuffixCoverIndex_spec (n := w.length) (k := k) (d := d) hd
+  have hidx_lt : idx < w.length := hspec.1
+  have hgap : w.length - (idx + 1) = d := hspec.2.1
+  have hkidx : k < idx := hspec.2.2
+  have hletter : w.getD idx SnakeLetter.L = SnakeLetter.R := by
+    rw [hlast.getD_eq_final_of_lt hkidx hidx_lt, hfinal]
+  have hletter? : w[idx]?.getD SnakeLetter.L = SnakeLetter.R := by
+    simpa [List.getD_eq_getElem?_getD] using hletter
+  refine ⟨idx, hidx_lt, ?_⟩
+  simp [hletter?, hgap]
+
+/-- If the final constant suffix after a last-change index consists of `L`
+letters, then every suffix gap contributes the corresponding cross cover. -/
+theorem snakeCrossCoverEdge_suffix_L_of_isLastChangeIndex
+    {w : SnakeWord} {k d : ℕ} (hlast : w.IsLastChangeIndex k)
+    (hd : d < w.length - (k + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
+    snakeCrossCoverEdge w (snakeRowCode d) (snakeColCode (d + 1)) = true := by
+  rw [snakeCrossCoverEdge]
+  simp only [List.any_eq_true, List.mem_range]
+  let idx := w.length - 1 - d
+  have hspec := snakeSuffixCoverIndex_spec (n := w.length) (k := k) (d := d) hd
+  have hidx_lt : idx < w.length := hspec.1
+  have hgap : w.length - (idx + 1) = d := hspec.2.1
+  have hkidx : k < idx := hspec.2.2
+  have hletter : w.getD idx SnakeLetter.L = SnakeLetter.L := by
+    rw [hlast.getD_eq_final_of_lt hkidx hidx_lt, hfinal]
+  have hletter? : w[idx]?.getD SnakeLetter.L = SnakeLetter.L := by
+    simpa [List.getD_eq_getElem?_getD] using hletter
+  refine ⟨idx, hidx_lt, ?_⟩
+  simp [hletter?, hgap]
+
 /-- One cover edge of the generalized snake poset: either a chain edge or one
 of Braun--Jal's cross-chain covers. -/
 def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
