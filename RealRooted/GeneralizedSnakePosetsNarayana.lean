@@ -658,6 +658,100 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial n]
   exact modifiedNarayanaCoeffPolynomial_hasNonnegCoeffs n
 
+/-- The `m = 1` Narayana coefficients are monotone in the polynomial index. -/
+theorem narayanaTransformCoeff_one_mono_right {n k : ℕ} (hn : 1 ≤ n) :
+    narayanaTransformCoeff 1 (n - 1) k ≤ narayanaTransformCoeff 1 n k := by
+  unfold narayanaTransformCoeff
+  by_cases hk : k ≤ n - 1
+  · have hchoose₁ : (Nat.choose (n - 1) k : ℝ) ≤ Nat.choose n k := by
+      exact_mod_cast Nat.choose_mono k (Nat.sub_le n 1)
+    have hchoose₂ :
+        (Nat.choose ((n - 1) + 1) k : ℝ) ≤ Nat.choose (n + 1) k := by
+      exact_mod_cast Nat.choose_mono k (by lia : (n - 1) + 1 ≤ n + 1)
+    gcongr
+  · by_cases hkn : k ≤ n
+    · have hk_eq : k = n := by lia
+      subst k
+      have hlt_prev : n - 1 < n := Nat.sub_one_lt (Nat.ne_of_gt hn)
+      have hchoose_prev : Nat.choose (n - 1) n = 0 :=
+        Nat.choose_eq_zero_of_lt hlt_prev
+      rw [hchoose_prev]
+      simpa using div_nonneg (by positivity : 0 ≤ ((n : ℝ) + 1))
+        (by positivity : 0 ≤ ((Nat.choose (1 + n) n : ℕ) : ℝ))
+    · have hlt_prev : n - 1 < k := Nat.lt_of_not_ge hk
+      have hlt : n < k := Nat.lt_of_not_ge hkn
+      have hchoose_prev : Nat.choose (n - 1) k = 0 :=
+        Nat.choose_eq_zero_of_lt hlt_prev
+      have hchoose : Nat.choose n k = 0 := Nat.choose_eq_zero_of_lt hlt
+      simp [hchoose_prev, hchoose]
+
+/-- The modified Narayana difference `P_n - P_{n-1}` has nonnegative
+coefficients.  This is the coefficient fact used in Braun--Jal Lemma 3.4 to
+show that the Liu--Wang lower polynomial has no positive real roots. -/
+theorem modifiedNarayanaPolynomial_sub_prev_hasNonnegCoeffs
+    {n : ℕ} (hn : 1 ≤ n) :
+    HasNonnegCoeffs
+      (modifiedNarayanaPolynomial n - modifiedNarayanaPolynomial (n - 1)) := by
+  intro k
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial n,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial (n - 1), coeff_sub]
+  dsimp [modifiedNarayanaCoeffPolynomial]
+  by_cases hkprev : k ≤ n - 1
+  · rw [coeff_narayanaPolynomial_of_le (m := 1) hkprev]
+    have hkn : k ≤ n := by lia
+    rw [coeff_narayanaPolynomial_of_le (m := 1) hkn]
+    exact sub_nonneg.mpr
+      (narayanaTransformCoeff_one_mono_right (n := n) (k := k) hn)
+  · by_cases hkn : k ≤ n
+    · have hk_eq : k = n := by lia
+      subst k
+      have hprev_lt : n - 1 < n := Nat.sub_one_lt (Nat.ne_of_gt hn)
+      rw [coeff_narayanaPolynomial_of_le (m := 1) le_rfl,
+        coeff_narayanaPolynomial_of_lt (m := 1) hprev_lt]
+      simp
+    · have hn_lt : n < k := Nat.lt_of_not_ge hkn
+      have hprev_lt : n - 1 < k := by lia
+      rw [coeff_narayanaPolynomial_of_lt (m := 1) hn_lt,
+        coeff_narayanaPolynomial_of_lt (m := 1) hprev_lt]
+      norm_num
+
+/-- The named difference `Q_n = P_n - P_{n-1}` has nonnegative
+coefficients for the concrete modified Narayana family. -/
+theorem narayanaDifference_modified_hasNonnegCoeffs {n : ℕ} (hn : 1 ≤ n) :
+    HasNonnegCoeffs (narayanaDifference modifiedNarayanaPolynomial n) := by
+  simpa [narayanaDifference] using
+    modifiedNarayanaPolynomial_sub_prev_hasNonnegCoeffs (n := n) hn
+
+/-- The affine-linear multiple appearing in Braun--Jal's shifted Lemma 3.4 has
+nonnegative coefficients for nonnegative parameters. -/
+theorem modifiedNarayana_linear_hasNonnegCoeffs
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    HasNonnegCoeffs
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1)) := by
+  have hlin : HasNonnegCoeffs (C lam * X + C mu : ℝ[X]) :=
+    (nonnegCoeffs_C_mul hlam hasNonnegCoeffs_X).add (hasNonnegCoeffs_C hmu)
+  exact hlin.mul (modifiedNarayanaPolynomial_hasNonnegCoeffs (m - 1))
+
+/-- The left-hand polynomial in Braun--Jal's shifted Lemma 3.4 has
+nonnegative coefficients. -/
+theorem lemma34ModifiedNarayanaShifted_left_hasNonnegCoeffs
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    HasNonnegCoeffs
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m) :=
+  (modifiedNarayana_linear_hasNonnegCoeffs (m := m) hlam hmu).add
+    (narayanaDifference_modified_hasNonnegCoeffs hm)
+
+/-- The right-hand polynomial in Braun--Jal's shifted Lemma 3.4 has
+nonnegative coefficients. -/
+theorem lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    HasNonnegCoeffs
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)) :=
+  (modifiedNarayana_linear_hasNonnegCoeffs (m := m + 1) hlam hmu).add
+    (narayanaDifference_modified_hasNonnegCoeffs (by lia : 1 ≤ m + 1))
+
 @[simp] theorem modifiedNarayanaPolynomial_two :
     modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
