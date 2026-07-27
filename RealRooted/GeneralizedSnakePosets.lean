@@ -4172,6 +4172,19 @@ def snakeColCode (c : ℕ) : ℕ :=
 def snakeCodeBound (w : SnakeWord) : ℕ :=
   2 * (w.length + 1)
 
+/-- Arithmetic core of the constant-suffix reachability calculation in
+Braun--Jal Theorem 3.5: a final constant suffix has a cross edge from some
+column `d` to a row above it exactly when the starting column is strictly below
+the target row. -/
+theorem exists_constantSuffixCrossIndex_iff_lt {n c r : ℕ} (hr : r ≤ n) :
+    (∃ d, c ≤ d ∧ d < n ∧ d + 1 ≤ r) ↔ c < r := by
+  constructor
+  · rintro ⟨d, hcd, _hd, hdr⟩
+    exact Nat.lt_of_lt_of_le (Nat.lt_succ_of_le hcd) hdr
+  · intro hcr
+    refine ⟨c, le_rfl, ?_, Nat.succ_le_iff.mpr hcr⟩
+    exact Nat.lt_of_lt_of_le hcr hr
+
 /-- The cross-chain cover edges of Braun--Jal's generalized snake poset.
 
 If the letter at gap `g` is `L`, the cover is `row (g - 1) < col g`;
