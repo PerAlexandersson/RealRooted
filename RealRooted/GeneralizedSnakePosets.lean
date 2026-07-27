@@ -3837,6 +3837,17 @@ poset.  Columns are indexed from left to right. -/
 def snakeColCode (c : ℕ) : ℕ :=
   2 * c + 1
 
+/-- Row and column codes have opposite parity. -/
+theorem snakeRowCode_ne_colCode (r c : ℕ) :
+    snakeRowCode r ≠ snakeColCode c := by
+  simp [snakeRowCode, snakeColCode]
+  lia
+
+/-- Column and row codes have opposite parity. -/
+theorem snakeColCode_ne_rowCode (c r : ℕ) :
+    snakeColCode c ≠ snakeRowCode r :=
+  (snakeRowCode_ne_colCode r c).symm
+
 /-- Number of coded chain elements in the generalized snake poset for `w`. -/
 def snakeCodeBound (w : SnakeWord) : ℕ :=
   2 * (w.length + 1)
@@ -3930,6 +3941,29 @@ of Braun--Jal's cross-chain covers. -/
 def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
   (a + 2 == b && b < snakeCodeBound w) || snakeCrossCoverEdge w a b
 
+/-- Every cover edge strictly increases the numeric code. -/
+theorem snakeCoverEdge_lt {w : SnakeWord} {a b : ℕ}
+    (hcover : snakeCoverEdge w a b = true) :
+    a < b := by
+  rw [snakeCoverEdge] at hcover
+  rw [Bool.or_eq_true] at hcover
+  rcases hcover with hchain | hcross
+  · rw [Bool.and_eq_true] at hchain
+    rcases hchain with ⟨hnext, _hbound⟩
+    rw [beq_iff_eq] at hnext
+    lia
+  · rw [snakeCrossCoverEdge] at hcross
+    simp only [List.any_eq_true, List.mem_range] at hcross
+    rcases hcross with ⟨idx, _hidx, hbool⟩
+    split at hbool
+    · simp only [Bool.and_eq_true, beq_iff_eq] at hbool
+      rcases hbool with ⟨rfl, rfl⟩
+      simp [snakeRowCode, snakeColCode]
+    · simp only [Bool.and_eq_true, beq_iff_eq] at hbool
+      rcases hbool with ⟨rfl, rfl⟩
+      simp [snakeRowCode, snakeColCode]
+      lia
+
 /-- Covers in an all-`R` snake word are same-chain successor covers or the
 constant-`R` cross-chain covers. -/
 theorem snakeCoverEdge_replicate_R {n a b : ℕ} :
@@ -3992,6 +4026,35 @@ def snakeReachableFuel (w : SnakeWord) : ℕ → ℕ → ℕ → Bool
 @[simp] theorem snakeReachableFuel_self (w : SnakeWord) (fuel a : ℕ) :
     snakeReachableFuel w fuel a a = true := by
   cases fuel <;> simp [snakeReachableFuel]
+
+/-- Reachability in the cover graph weakly increases the numeric code. -/
+theorem snakeReachableFuel_le {w : SnakeWord} {fuel a b : ℕ}
+    (hreach : snakeReachableFuel w fuel a b = true) :
+    a ≤ b := by
+  induction fuel generalizing a with
+  | zero =>
+      simp only [snakeReachableFuel, beq_iff_eq] at hreach
+      subst b
+      exact le_rfl
+  | succ fuel ih =>
+      change ((a == b) ||
+        (List.range (snakeCodeBound w)).any fun c =>
+          snakeCoverEdge w a c && snakeReachableFuel w fuel c b) = true at hreach
+      rw [Bool.or_eq_true] at hreach
+      rcases hreach with hab | hstep
+      · rw [beq_iff_eq] at hab
+        subst b
+        exact le_rfl
+      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+        rcases hstep with ⟨c, _hc, hcover, htail⟩
+        exact le_trans (Nat.le_of_lt (snakeCoverEdge_lt hcover)) (ih htail)
+
+/-- If the target code is smaller than the source code, no fuel can reach it. -/
+theorem snakeReachableFuel_eq_false_of_target_lt {w : SnakeWord}
+    {fuel a b : ℕ} (hba : b < a) :
+    snakeReachableFuel w fuel a b = false := by
+  exact Bool.eq_false_of_not_eq_true fun hreach =>
+    (not_lt_of_ge (snakeReachableFuel_le hreach)) hba
 
 /-- Prepend one cover edge to an already reachable path. -/
 theorem snakeReachableFuel_succ_of_coverEdge_of_reachable {w : SnakeWord}
@@ -4165,6 +4228,140 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
   rw [htarget]
   exact hreach
 
+/-- In an all-`R` word, rows never reach columns. -/
+theorem snakeReachableFuel_replicate_R_rowCode_colCode_eq_false
+    {n fuel r c : ℕ} :
+    snakeReachableFuel (List.replicate n SnakeLetter.R) fuel
+      (snakeRowCode r) (snakeColCode c) = false := by
+  induction fuel generalizing r with
+  | zero =>
+      exact Bool.eq_false_of_not_eq_true fun hreach => by
+        simp only [snakeReachableFuel, beq_iff_eq] at hreach
+        exact snakeRowCode_ne_colCode r c hreach
+  | succ fuel ih =>
+      apply Bool.eq_false_of_not_eq_true
+      intro hreach
+      change ((snakeRowCode r == snakeColCode c) ||
+        (List.range (snakeCodeBound (List.replicate n SnakeLetter.R))).any fun x =>
+          snakeCoverEdge (List.replicate n SnakeLetter.R) (snakeRowCode r) x &&
+            snakeReachableFuel (List.replicate n SnakeLetter.R) fuel x
+              (snakeColCode c)) = true at hreach
+      rw [Bool.or_eq_true] at hreach
+      rcases hreach with heq | hstep
+      · rw [beq_iff_eq] at heq
+        exact snakeRowCode_ne_colCode r c heq
+      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+        rcases hstep with ⟨x, _hx, hcover, htail⟩
+        rw [snakeCoverEdge_replicate_R] at hcover
+        rcases hcover with hchain | hcross
+        · rcases hchain with ⟨hnext, _hbound⟩
+          have hx : x = snakeRowCode (r + 1) := by
+            rw [← hnext]
+            simp [snakeRowCode]
+            lia
+          rw [hx] at htail
+          have hfalse := ih (r := r + 1)
+          rw [hfalse] at htail
+          cases htail
+        · rcases hcross with ⟨d, _hd, hrow, _hx⟩
+          exact snakeRowCode_ne_colCode r d hrow
+
+/-- In an all-`L` word, columns never reach rows. -/
+theorem snakeReachableFuel_replicate_L_colCode_rowCode_eq_false
+    {n fuel c r : ℕ} :
+    snakeReachableFuel (List.replicate n SnakeLetter.L) fuel
+      (snakeColCode c) (snakeRowCode r) = false := by
+  induction fuel generalizing c with
+  | zero =>
+      exact Bool.eq_false_of_not_eq_true fun hreach => by
+        simp only [snakeReachableFuel, beq_iff_eq] at hreach
+        exact snakeColCode_ne_rowCode c r hreach
+  | succ fuel ih =>
+      apply Bool.eq_false_of_not_eq_true
+      intro hreach
+      change ((snakeColCode c == snakeRowCode r) ||
+        (List.range (snakeCodeBound (List.replicate n SnakeLetter.L))).any fun x =>
+          snakeCoverEdge (List.replicate n SnakeLetter.L) (snakeColCode c) x &&
+            snakeReachableFuel (List.replicate n SnakeLetter.L) fuel x
+              (snakeRowCode r)) = true at hreach
+      rw [Bool.or_eq_true] at hreach
+      rcases hreach with heq | hstep
+      · rw [beq_iff_eq] at heq
+        exact snakeColCode_ne_rowCode c r heq
+      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+        rcases hstep with ⟨x, _hx, hcover, htail⟩
+        rw [snakeCoverEdge_replicate_L] at hcover
+        rcases hcover with hchain | hcross
+        · rcases hchain with ⟨hnext, _hbound⟩
+          have hx : x = snakeColCode (c + 1) := by
+            rw [← hnext]
+            simp [snakeColCode]
+            lia
+          rw [hx] at htail
+          have hfalse := ih (c := c + 1)
+          rw [hfalse] at htail
+          cases htail
+        · rcases hcross with ⟨d, _hd, hcol, _hx⟩
+          exact snakeColCode_ne_rowCode c d hcol
+
+/-- In an all-`R` word, columns cannot reach rows weakly below them. -/
+theorem snakeReachableFuel_replicate_R_colCode_rowCode_eq_false_of_le
+    {n fuel c r : ℕ} (hrc : r ≤ c) :
+    snakeReachableFuel (List.replicate n SnakeLetter.R) fuel
+      (snakeColCode c) (snakeRowCode r) = false := by
+  exact snakeReachableFuel_eq_false_of_target_lt (by
+    simp [snakeRowCode, snakeColCode]
+    lia)
+
+/-- In an all-`L` word, rows cannot reach columns weakly below them. -/
+theorem snakeReachableFuel_replicate_L_rowCode_colCode_eq_false_of_le
+    {n fuel r c : ℕ} (hcr : c ≤ r) :
+    snakeReachableFuel (List.replicate n SnakeLetter.L) fuel
+      (snakeRowCode r) (snakeColCode c) = false := by
+  induction fuel generalizing r with
+  | zero =>
+      exact Bool.eq_false_of_not_eq_true fun hreach => by
+        simp only [snakeReachableFuel, beq_iff_eq] at hreach
+        exact snakeRowCode_ne_colCode r c hreach
+  | succ fuel ih =>
+      apply Bool.eq_false_of_not_eq_true
+      intro hreach
+      change ((snakeRowCode r == snakeColCode c) ||
+        (List.range (snakeCodeBound (List.replicate n SnakeLetter.L))).any fun x =>
+          snakeCoverEdge (List.replicate n SnakeLetter.L) (snakeRowCode r) x &&
+            snakeReachableFuel (List.replicate n SnakeLetter.L) fuel x
+              (snakeColCode c)) = true at hreach
+      rw [Bool.or_eq_true] at hreach
+      rcases hreach with heq | hstep
+      · rw [beq_iff_eq] at heq
+        exact snakeRowCode_ne_colCode r c heq
+      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+        rcases hstep with ⟨x, _hx, hcover, htail⟩
+        rw [snakeCoverEdge_replicate_L] at hcover
+        rcases hcover with hchain | hcross
+        · rcases hchain with ⟨hnext, _hbound⟩
+          have hx : x = snakeRowCode (r + 1) := by
+            rw [← hnext]
+            simp [snakeRowCode]
+            lia
+          rw [hx] at htail
+          have hfalse := ih (r := r + 1) (by lia)
+          rw [hfalse] at htail
+          cases htail
+        · rcases hcross with ⟨d, _hd, hrow, hxcol⟩
+          have hrd : r = d := by
+            simpa [snakeRowCode] using hrow
+          rw [← hrd] at hxcol
+          rw [hxcol] at htail
+          have hdrop : snakeColCode c < snakeColCode (r + 1) := by
+            simp [snakeColCode]
+            lia
+          have hfalse := snakeReachableFuel_eq_false_of_target_lt
+            (w := List.replicate n SnakeLetter.L) (fuel := fuel)
+            (a := snakeColCode (r + 1)) (b := snakeColCode c) hdrop
+          rw [hfalse] at htail
+          cases htail
+
 /-- Adding one unit of fuel preserves reachability. -/
 theorem snakeReachableFuel_succ_of_reachable {w : SnakeWord} {fuel a b : ℕ}
     (hreach : snakeReachableFuel w fuel a b = true) :
@@ -4227,6 +4424,55 @@ theorem snakeElementReachable_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
   unfold snakeElementReachable
   exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia)
     (snakeReachableFuel_replicate_L_rowCode_colCode_of_lt hrc hc)
+
+/-- At the `snakeElementReachable` level, all-`R` rows never reach columns. -/
+theorem snakeElementReachable_replicate_R_rowCode_colCode_eq_false
+    {n r c : ℕ} :
+    snakeElementReachable (List.replicate n SnakeLetter.R)
+      (snakeRowCode r) (snakeColCode c) = false :=
+  snakeReachableFuel_replicate_R_rowCode_colCode_eq_false
+
+/-- At the `snakeElementReachable` level, all-`L` columns never reach rows. -/
+theorem snakeElementReachable_replicate_L_colCode_rowCode_eq_false
+    {n c r : ℕ} :
+    snakeElementReachable (List.replicate n SnakeLetter.L)
+      (snakeColCode c) (snakeRowCode r) = false :=
+  snakeReachableFuel_replicate_L_colCode_rowCode_eq_false
+
+/-- All-`R` column-to-row reachability is exactly the strict index inequality. -/
+theorem snakeElementReachable_replicate_R_colCode_rowCode_eq_true_iff
+    {n c r : ℕ} (hr : r ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.R)
+      (snakeColCode c) (snakeRowCode r) = true ↔ c < r := by
+  constructor
+  · intro hreach
+    have hle := snakeReachableFuel_le hreach
+    simp [snakeRowCode, snakeColCode] at hle
+    lia
+  · intro hcr
+    exact snakeElementReachable_replicate_R_colCode_rowCode_of_lt hcr hr
+
+/-- All-`L` row-to-column reachability is exactly the strict index inequality. -/
+theorem snakeElementReachable_replicate_L_rowCode_colCode_eq_true_iff
+    {n r c : ℕ} (hc : c ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.L)
+      (snakeRowCode r) (snakeColCode c) = true ↔ r < c := by
+  constructor
+  · intro hreach
+    by_contra hnot
+    have hcr : c ≤ r := Nat.le_of_not_gt hnot
+    have hreachFuel :
+        snakeReachableFuel (List.replicate n SnakeLetter.L)
+          (snakeCodeBound (List.replicate n SnakeLetter.L))
+          (snakeRowCode r) (snakeColCode c) = true := by
+      simpa [snakeElementReachable] using hreach
+    have hfalse :=
+      snakeReachableFuel_replicate_L_rowCode_colCode_eq_false_of_le
+        (n := n) (fuel := snakeCodeBound (List.replicate n SnakeLetter.L)) hcr
+    rw [hfalse] at hreachFuel
+    cases hreachFuel
+  · intro hrc
+    exact snakeElementReachable_replicate_L_rowCode_colCode_of_lt hrc hc
 
 /-- The concrete finite squarecase board attached to a generalized snake word.
 
