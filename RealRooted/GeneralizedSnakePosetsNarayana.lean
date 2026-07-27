@@ -752,6 +752,113 @@ theorem lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs
   (modifiedNarayana_linear_hasNonnegCoeffs (m := m + 1) hlam hmu).add
     (narayanaDifference_modified_hasNonnegCoeffs (by lia : 1 ≤ m + 1))
 
+/-- The left-hand polynomial in the shifted Lemma 3.4 route has no positive
+roots. -/
+theorem lemma34ModifiedNarayanaShifted_left_roots_nonpos
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    ∀ r ∈ (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+      narayanaDifference modifiedNarayanaPolynomial m).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (lemma34ModifiedNarayanaShifted_left_hasNonnegCoeffs hm hlam hmu)
+
+/-- IsRoot-facing form of
+`lemma34ModifiedNarayanaShifted_left_roots_nonpos`. -/
+theorem lemma34ModifiedNarayanaShifted_left_isRoot_nonpos
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam)
+    (hmu : 0 ≤ mu)
+    (hne :
+      (C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m ≠ 0) :
+    ∀ r,
+      (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r) → r ≤ 0 := by
+  intro r hr
+  exact lemma34ModifiedNarayanaShifted_left_roots_nonpos hm hlam hmu r
+    ((Polynomial.mem_roots hne).mpr hr)
+
+/-- The right-hand polynomial in the shifted Lemma 3.4 route has no positive
+roots. -/
+theorem lemma34ModifiedNarayanaShifted_right_roots_nonpos
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    ∀ r ∈ (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+      narayanaDifference modifiedNarayanaPolynomial (m + 1)).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs hlam hmu)
+
+/-- IsRoot-facing form of
+`lemma34ModifiedNarayanaShifted_right_roots_nonpos`. -/
+theorem lemma34ModifiedNarayanaShifted_right_isRoot_nonpos
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
+    (hne :
+      (C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1) ≠ 0) :
+    ∀ r,
+      (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)).IsRoot r) →
+          r ≤ 0 := by
+  intro r hr
+  exact lemma34ModifiedNarayanaShifted_right_roots_nonpos hlam hmu r
+    ((Polynomial.mem_roots hne).mpr hr)
+
+/-- The paper-shaped left-hand polynomial in Braun--Jal Lemma 3.4 has
+nonnegative coefficients when `ν ≥ -1`. -/
+theorem lemma34ModifiedNarayana_left_hasNonnegCoeffs
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    HasNonnegCoeffs
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m) := by
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase :=
+    lemma34ModifiedNarayanaShifted_left_hasNonnegCoeffs
+      (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
+  have hpoly :
+      ((C lam * X + (C nu + 1)) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) := by
+    rw [narayanaDifference]
+    ring_nf
+  simpa [hpoly] using hbase
+
+/-- The paper-shaped right-hand polynomial in Braun--Jal Lemma 3.4 has
+nonnegative coefficients when `ν ≥ -1`. -/
+theorem lemma34ModifiedNarayana_right_hasNonnegCoeffs
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    HasNonnegCoeffs
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)) := by
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase :=
+    lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs
+      (m := m) (lam := lam) (mu := nu + 1) hlam hmu
+  have hpoly :
+      ((C lam * X + (C nu + 1)) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)) := by
+    rw [narayanaDifference]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  simpa [hpoly] using hbase
+
+/-- The paper-shaped left-hand polynomial in Braun--Jal Lemma 3.4 has no
+positive roots. -/
+theorem lemma34ModifiedNarayana_left_roots_nonpos
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    ∀ r ∈ (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (lemma34ModifiedNarayana_left_hasNonnegCoeffs hm hlam hnu)
+
+/-- The paper-shaped right-hand polynomial in Braun--Jal Lemma 3.4 has no
+positive roots. -/
+theorem lemma34ModifiedNarayana_right_roots_nonpos
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    ∀ r ∈ (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+      modifiedNarayanaPolynomial (m + 1)).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (lemma34ModifiedNarayana_right_hasNonnegCoeffs hlam hnu)
+
 @[simp] theorem modifiedNarayanaPolynomial_two :
     modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
