@@ -4319,6 +4319,31 @@ def snakeReachableFuel (w : SnakeWord) : ℕ → ℕ → ℕ → Bool
         (List.range (snakeCodeBound w)).any fun c =>
           snakeCoverEdge w a c && snakeReachableFuel w fuel c b
 
+/-- Bounded reachability is reflexive for every amount of fuel. -/
+@[simp] theorem snakeReachableFuel_self (w : SnakeWord) (fuel a : ℕ) :
+    snakeReachableFuel w fuel a a = true := by
+  cases fuel <;> simp [snakeReachableFuel]
+
+/-- Prepend one cover edge to an already reachable path. -/
+theorem snakeReachableFuel_succ_of_coverEdge_of_reachable {w : SnakeWord}
+    {fuel a b c : ℕ} (hc : c < snakeCodeBound w)
+    (hcover : snakeCoverEdge w a c = true)
+    (hreach : snakeReachableFuel w fuel c b = true) :
+    snakeReachableFuel w (fuel + 1) a b = true := by
+  simp only [snakeReachableFuel]
+  by_cases hab : a = b
+  · simp [hab]
+  · simp only [Bool.or_eq_true, beq_iff_eq, List.any_eq_true, List.mem_range,
+      Bool.and_eq_true]
+    exact Or.inr ⟨c, hc, hcover, hreach⟩
+
+/-- A single cover edge is reachable with any positive amount of fuel. -/
+theorem snakeReachableFuel_succ_of_coverEdge {w : SnakeWord} {fuel a b : ℕ}
+    (hb : b < snakeCodeBound w) (hcover : snakeCoverEdge w a b = true) :
+    snakeReachableFuel w (fuel + 1) a b = true :=
+  snakeReachableFuel_succ_of_coverEdge_of_reachable hb hcover
+    (snakeReachableFuel_self w fuel b)
+
 /-- Reachability in the generalized snake poset cover graph. -/
 def snakeElementReachable (w : SnakeWord) (a b : ℕ) : Bool :=
   snakeReachableFuel w (snakeCodeBound w) a b
