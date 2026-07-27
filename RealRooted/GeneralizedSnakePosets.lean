@@ -4233,6 +4233,26 @@ theorem snakeElementReachable_replicate_L_rowCode_colCode_eq_true_iff
   · intro hrc
     exact snakeElementReachable_replicate_L_rowCode_colCode_of_lt hrc hc
 
+/-- In an all-`R` word, a column fails to reach a row exactly when the row is
+weakly below the column. -/
+theorem snakeElementReachable_replicate_R_colCode_rowCode_eq_false_iff
+    {n c r : ℕ} (hr : r ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.R)
+      (snakeColCode c) (snakeRowCode r) = false ↔ r ≤ c := by
+  rw [← Bool.not_eq_true]
+  rw [snakeElementReachable_replicate_R_colCode_rowCode_eq_true_iff hr]
+  exact not_lt
+
+/-- In an all-`L` word, a row fails to reach a column exactly when the column is
+weakly below the row. -/
+theorem snakeElementReachable_replicate_L_rowCode_colCode_eq_false_iff
+    {n r c : ℕ} (hc : c ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.L)
+      (snakeRowCode r) (snakeColCode c) = false ↔ c ≤ r := by
+  rw [← Bool.not_eq_true]
+  rw [snakeElementReachable_replicate_L_rowCode_colCode_eq_true_iff hc]
+  exact not_lt
+
 /-- The concrete finite squarecase board attached to a generalized snake word.
 
 The cells are the cross-chain pairs that are incomparable in the generalized
@@ -4244,6 +4264,68 @@ def generalizedSnakeBoard (w : SnakeWord) : FiniteSkewBoard where
       fun cell =>
         (!snakeElementReachable w (snakeRowCode cell.1) (snakeColCode cell.2) &&
           !snakeElementReachable w (snakeColCode cell.2) (snakeRowCode cell.1)) = true
+
+/-- The cells of an all-`R` snake board form the upper triangular staircase in
+the `(n + 1) × (n + 1)` square. -/
+theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
+    (r, c) ∈ (generalizedSnakeBoard (List.replicate n SnakeLetter.R)).cells ↔
+      r ≤ n ∧ c ≤ n ∧ r ≤ c := by
+  constructor
+  · intro h
+    rw [generalizedSnakeBoard, Finset.mem_filter] at h
+    simp only [List.length_replicate] at h
+    rcases h with ⟨hbound, hcell⟩
+    have hbounds : r ≤ n ∧ c ≤ n := by
+      simpa [Finset.mem_product] using hbound
+    rw [Bool.and_eq_true] at hcell
+    rcases hcell with ⟨_hrow_col, hcol_row⟩
+    have hrc : r ≤ c := by
+      exact (snakeElementReachable_replicate_R_colCode_rowCode_eq_false_iff
+        (n := n) (c := c) (r := r) hbounds.1).mp (by simpa using hcol_row)
+    exact ⟨hbounds.1, hbounds.2, hrc⟩
+  · rintro ⟨hr, hc, hrc⟩
+    rw [generalizedSnakeBoard, Finset.mem_filter]
+    simp only [List.length_replicate]
+    constructor
+    · simpa [Finset.mem_product] using ⟨hr, hc⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · simp [snakeElementReachable_replicate_R_rowCode_colCode_eq_false]
+      · have hfalse :=
+          (snakeElementReachable_replicate_R_colCode_rowCode_eq_false_iff
+            (n := n) (c := c) (r := r) hr).mpr hrc
+        simp [hfalse]
+
+/-- The cells of an all-`L` snake board form the lower triangular staircase in
+the `(n + 1) × (n + 1)` square. -/
+theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
+    (r, c) ∈ (generalizedSnakeBoard (List.replicate n SnakeLetter.L)).cells ↔
+      r ≤ n ∧ c ≤ n ∧ c ≤ r := by
+  constructor
+  · intro h
+    rw [generalizedSnakeBoard, Finset.mem_filter] at h
+    simp only [List.length_replicate] at h
+    rcases h with ⟨hbound, hcell⟩
+    have hbounds : r ≤ n ∧ c ≤ n := by
+      simpa [Finset.mem_product] using hbound
+    rw [Bool.and_eq_true] at hcell
+    rcases hcell with ⟨hrow_col, _hcol_row⟩
+    have hcr : c ≤ r := by
+      exact (snakeElementReachable_replicate_L_rowCode_colCode_eq_false_iff
+        (n := n) (r := r) (c := c) hbounds.2).mp (by simpa using hrow_col)
+    exact ⟨hbounds.1, hbounds.2, hcr⟩
+  · rintro ⟨hr, hc, hcr⟩
+    rw [generalizedSnakeBoard, Finset.mem_filter]
+    simp only [List.length_replicate]
+    constructor
+    · simpa [Finset.mem_product] using ⟨hr, hc⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · have hfalse :=
+          (snakeElementReachable_replicate_L_rowCode_colCode_eq_false_iff
+            (n := n) (r := r) (c := c) hc).mpr hcr
+        simp [hfalse]
+      · simp [snakeElementReachable_replicate_L_colCode_rowCode_eq_false]
 
 /-- The concrete finite-board squarecase model for generalized snake words. -/
 def generalizedSnakeRookModel : SquarecaseRookModel :=
