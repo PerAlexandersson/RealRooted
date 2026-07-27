@@ -1262,6 +1262,220 @@ theorem auxiliaryG_six_factor :
   rw [hC2, hC3, hC6, hC32, hC70, hC73, hC210]
   ring
 
+/-- Scaled real-quadratic factorization of the quartic factor in `G_6`. -/
+theorem auxiliaryG_six_quartic_scaled_factor :
+    C (3 : ℝ) *
+        (C (3 : ℝ) * X ^ 4 + C (32 : ℝ) * X ^ 3 +
+          C (73 : ℝ) * X ^ 2 + C (32 : ℝ) * X + C (3 : ℝ)) =
+      (C (3 : ℝ) * X ^ 2 + C ((16 : ℝ) + Real.sqrt (55 : ℝ)) * X +
+          C (3 : ℝ)) *
+        (C (3 : ℝ) * X ^ 2 + C ((16 : ℝ) - Real.sqrt (55 : ℝ)) * X +
+          C (3 : ℝ)) := by
+  have hs_sq' : Real.sqrt (55 : ℝ) ^ 2 = (55 : ℝ) :=
+    Real.sq_sqrt (by norm_num)
+  have hCsq : (C (Real.sqrt (55 : ℝ)) : ℝ[X]) ^ 2 = C (55 : ℝ) := by
+    rw [← map_pow, hs_sq']
+  have hCplus :
+      (C ((16 : ℝ) + Real.sqrt (55 : ℝ)) : ℝ[X]) =
+        C (16 : ℝ) + C (Real.sqrt (55 : ℝ)) := by
+    rw [map_add]
+  have hCminus :
+      (C ((16 : ℝ) - Real.sqrt (55 : ℝ)) : ℝ[X]) =
+        C (16 : ℝ) - C (Real.sqrt (55 : ℝ)) := by
+    rw [map_sub]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC16 : (C (16 : ℝ) : ℝ[X]) = 16 := Polynomial.C_eq_natCast (R := ℝ) 16
+  have hC32 : (C (32 : ℝ) : ℝ[X]) = 32 := Polynomial.C_eq_natCast (R := ℝ) 32
+  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 := Polynomial.C_eq_natCast (R := ℝ) 55
+  have hC73 : (C (73 : ℝ) : ℝ[X]) = 73 := Polynomial.C_eq_natCast (R := ℝ) 73
+  rw [hCplus, hCminus]
+  rw [hC3, hC16, hC32, hC73]
+  ring_nf
+  rw [hCsq, hC55]
+  ring_nf
+
+/-- Root multiset of the `G_6` auxiliary polynomial. -/
+theorem auxiliaryG_six_roots :
+    let s : ℝ := Real.sqrt (55 : ℝ)
+    let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+    let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+    let u : ℝ := (-s + -16 - α) / 6
+    let v : ℝ := (s - 16 - β) / 6
+    let w : ℝ := -(1 : ℝ)
+    let z : ℝ := (s - 16 + β) / 6
+    let y : ℝ := (-s + -16 + α) / 6
+    (FiniteSkewBoard.auxiliaryG 6).roots = (↑[u, v, w, z, y] : Multiset ℝ) := by
+  dsimp
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  let u : ℝ := (-s + -16 - α) / 6
+  let v : ℝ := (s - 16 - β) / 6
+  let w : ℝ := -(1 : ℝ)
+  let z : ℝ := (s - 16 + β) / 6
+  let y : ℝ := (-s + -16 + α) / 6
+  let quartic : ℝ[X] :=
+    C (3 : ℝ) * X ^ 4 + C (32 : ℝ) * X ^ 3 +
+      C (73 : ℝ) * X ^ 2 + C (32 : ℝ) * X + C (3 : ℝ)
+  let qPlus : ℝ[X] :=
+    C (3 : ℝ) * X ^ 2 + C ((16 : ℝ) + s) * X + C (3 : ℝ)
+  let qMinus : ℝ[X] :=
+    C (3 : ℝ) * X ^ 2 + C ((16 : ℝ) - s) * X + C (3 : ℝ)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have hqPlus_deg : qPlus.natDegree = 2 := by
+    dsimp [qPlus]
+    compute_degree!
+  have hqPlus_ne : qPlus ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqPlus_deg
+    norm_num at hqPlus_deg
+  have hqMinus_deg : qMinus.natDegree = 2 := by
+    dsimp [qMinus]
+    compute_degree!
+  have hqMinus_ne : qMinus ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqMinus_deg
+    norm_num at hqMinus_deg
+  have hquartic_deg : quartic.natDegree = 4 := by
+    dsimp [quartic]
+    compute_degree!
+  have hquartic_ne : quartic ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquartic_deg
+    norm_num at hquartic_deg
+  have hquartic_scaled : C (3 : ℝ) * quartic = qPlus * qMinus := by
+    dsimp [quartic, qPlus, qMinus, s]
+    exact auxiliaryG_six_quartic_scaled_factor
+  have hdiscPlus : ((16 : ℝ) + s) ^ 2 - 4 * (3 : ℝ) * (3 : ℝ) =
+      (275 : ℝ) + 32 * s := by
+    nlinarith only [hs_sq]
+  have hdiscMinus : ((16 : ℝ) - s) ^ 2 - 4 * (3 : ℝ) * (3 : ℝ) =
+      (275 : ℝ) - 32 * s := by
+    nlinarith only [hs_sq]
+  have hdiscPlus_nonneg :
+      0 ≤ ((16 : ℝ) + s) ^ 2 - 4 * (3 : ℝ) * (3 : ℝ) := by
+    rw [hdiscPlus]
+    positivity
+  have hdiscMinus_nonneg :
+      0 ≤ ((16 : ℝ) - s) ^ 2 - 4 * (3 : ℝ) * (3 : ℝ) := by
+    rw [hdiscMinus]
+    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hquartic_roots : quartic.roots = (↑[u, y, v, z] : Multiset ℝ) := by
+    rw [← roots_C_mul quartic (show (3 : ℝ) ≠ 0 by norm_num)]
+    rw [hquartic_scaled]
+    rw [roots_mul (mul_ne_zero hqPlus_ne hqMinus_ne)]
+    rw [roots_quadratic_posLead (a := (3 : ℝ)) (b := ((16 : ℝ) + s))
+      (c := (3 : ℝ)) (by norm_num) hdiscPlus_nonneg]
+    rw [roots_quadratic_posLead (a := (3 : ℝ)) (b := ((16 : ℝ) - s))
+      (c := (3 : ℝ)) (by norm_num) hdiscMinus_nonneg]
+    rw [hdiscPlus, hdiscMinus]
+    dsimp [u, y, v, z, α, β]
+    norm_num
+    change (↑[v, u, y, z] : Multiset ℝ) = ↑[u, y, v, z]
+    rw [Multiset.coe_eq_coe]
+    exact (List.Perm.swap _ _ _).trans (List.Perm.cons _ (List.Perm.swap _ _ _))
+  have hGfactor :
+      FiniteSkewBoard.auxiliaryG 6 = C (2 : ℝ) * (X - C w) * quartic := by
+    rw [auxiliaryG_six_factor]
+    dsimp [quartic, w]
+    have hCneg1 : (C (-(1 : ℝ)) : ℝ[X]) = -1 := by simp
+    rw [hCneg1]
+    ring_nf
+  rw [hGfactor]
+  rw [roots_mul
+    (mul_ne_zero (mul_ne_zero (Polynomial.C_ne_zero.mpr (by norm_num))
+      (X_sub_C_ne_zero w)) hquartic_ne)]
+  rw [roots_mul (mul_ne_zero (Polynomial.C_ne_zero.mpr (by norm_num))
+    (X_sub_C_ne_zero w))]
+  rw [roots_C, roots_X_sub_C, hquartic_roots]
+  dsimp [w]
+  change (↑[-1, u, y, v, z] : Multiset ℝ) = ↑[u, v, -1, z, y]
+  rw [Multiset.coe_eq_coe]
+  exact List.Perm.trans (List.Perm.swap _ _ _)
+    (List.Perm.cons _ <|
+      List.Perm.trans
+        (List.Perm.cons _ (List.Perm.swap _ _ _))
+        (List.Perm.trans (List.Perm.swap _ _ _)
+          (List.Perm.cons _ (List.Perm.cons _ (List.Perm.swap _ _ _)))))
+
+/-- The displayed roots in `auxiliaryG_six_roots` are ordered increasingly. -/
+theorem auxiliaryG_six_root_order :
+    let s : ℝ := Real.sqrt (55 : ℝ)
+    let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+    let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+    let u : ℝ := (-s + -16 - α) / 6
+    let v : ℝ := (s - 16 - β) / 6
+    let w : ℝ := -(1 : ℝ)
+    let z : ℝ := (s - 16 + β) / 6
+    let y : ℝ := (-s + -16 + α) / 6
+    u ≤ v ∧ v ≤ w ∧ w ≤ z ∧ z ≤ y := by
+  dsimp
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  let u : ℝ := (-s + -16 - α) / 6
+  let v : ℝ := (s - 16 - β) / 6
+  let w : ℝ := -(1 : ℝ)
+  let z : ℝ := (s - 16 + β) / 6
+  let y : ℝ := (-s + -16 + α) / 6
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have hs_ge7 : (7 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_le8 : s ≤ (8 : ℝ) := by
+    dsimp [s]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
+    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
+    dsimp [β]
+    exact Real.sq_sqrt hβ_arg_nonneg
+  have hα_nonneg : 0 ≤ α := by
+    dsimp [α]
+    exact Real.sqrt_nonneg _
+  have hβ_nonneg : 0 ≤ β := by
+    dsimp [β]
+    exact Real.sqrt_nonneg _
+  have hβ_le8 : β ≤ (8 : ℝ) := by
+    dsimp [β]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith [hs_ge7]
+  have hβ_le_2sα : β ≤ 2 * s + α := by
+    nlinarith [hβ_nonneg, hs_nonneg, hα_nonneg]
+  have hten_minus_s_leβ : (10 : ℝ) - s ≤ β := by
+    dsimp [β]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith [hs_sq, hs_le8]
+  have h2sβ_leα : 2 * s + β ≤ α := by
+    have hmul : 4 * s * β ≤ 4 * s * 8 := by
+      exact mul_le_mul_of_nonneg_left hβ_le8 (by positivity)
+    have hsq_le : (2 * s + β) ^ 2 ≤ α ^ 2 := by
+      nlinarith [hs_sq, hβ_sq, hα_sq, hmul, hs_ge7]
+    nlinarith [sq_nonneg (α - (2 * s + β)), hsq_le, hα_nonneg, hs_nonneg,
+      hβ_nonneg]
+  constructor
+  · nlinarith [hβ_le_2sα]
+  constructor
+  · nlinarith [hs_le8, hβ_nonneg]
+  constructor
+  · nlinarith [hten_minus_s_leβ]
+  · nlinarith [h2sβ_leα]
+
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
