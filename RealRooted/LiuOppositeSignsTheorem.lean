@@ -9400,6 +9400,168 @@ lemma exists_cubicSubQuadratic_not_splits_of_left_roots_below_strict
   exact (not_le.mpr hdisc)
     (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
 
+/-- Tangent coefficient for the lower-side cubic/quadratic obstruction when
+the quadratic has a double root. -/
+lemma cubicSubQuadratic_left_double_roots_below_mu_pos
+    {a b c u : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hua : u < a) :
+    0 < (b - u) * (c - u) / (a - u) := by
+  have hau : 0 < a - u := sub_pos.mpr hua
+  have hbu : 0 < b - u := sub_pos.mpr (lt_of_lt_of_le hua hab)
+  have hcu : 0 < c - u := sub_pos.mpr (lt_of_lt_of_le hua (hab.trans hbc))
+  exact div_pos (mul_pos hbu hcu) hau
+
+private def cubicSubQuadraticLeftDoubleBelowBracket
+    (sav dab dbc : ℝ) : ℝ :=
+  3 * dab ^ 8 + 31 * sav ^ 8 + 3 * dab ^ 4 * dbc ^ 4 +
+    12 * dab ^ 7 * dbc + 12 * dab ^ 5 * dbc ^ 3 +
+    16 * dbc ^ 4 * sav ^ 4 + 18 * dab ^ 6 * dbc ^ 2 +
+    40 * dab ^ 7 * sav + 72 * dbc ^ 3 * sav ^ 5 +
+    106 * dbc * sav ^ 7 + 131 * dbc ^ 2 * sav ^ 6 +
+    212 * dab * sav ^ 7 + 216 * dab ^ 6 * sav ^ 2 +
+    612 * dab ^ 5 * sav ^ 3 + 624 * dab ^ 2 * sav ^ 6 +
+    1014 * dab ^ 4 * sav ^ 4 + 1024 * dab ^ 3 * sav ^ 5 +
+    20 * dab ^ 3 * dbc ^ 4 * sav + 48 * dab * dbc ^ 4 * sav ^ 3 +
+    48 * dab ^ 2 * dbc ^ 4 * sav ^ 2 +
+    100 * dab ^ 4 * dbc ^ 3 * sav + 140 * dab ^ 6 * dbc * sav +
+    180 * dab ^ 5 * dbc ^ 2 * sav + 296 * dab * dbc ^ 3 * sav ^ 4 +
+    312 * dab ^ 3 * dbc ^ 3 * sav ^ 2 +
+    450 * dab ^ 2 * dbc ^ 3 * sav ^ 3 +
+    624 * dab * dbc * sav ^ 6 + 648 * dab ^ 5 * dbc * sav ^ 2 +
+    656 * dab * dbc ^ 2 * sav ^ 5 +
+    696 * dab ^ 4 * dbc ^ 2 * sav ^ 2 +
+    1310 * dab ^ 2 * dbc ^ 2 * sav ^ 4 +
+    1320 * dab ^ 3 * dbc ^ 2 * sav ^ 3 +
+    1530 * dab ^ 4 * dbc * sav ^ 3 +
+    1536 * dab ^ 2 * dbc * sav ^ 5 +
+    2028 * dab ^ 3 * dbc * sav ^ 4
+
+private lemma cubicSubQuadraticLeftDoubleBelowBracket_pos
+    {sav dab dbc : ℝ} (hsav : 0 < sav) (hdab : 0 ≤ dab) (hdbc : 0 ≤ dbc) :
+    0 < cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc := by
+  dsimp [cubicSubQuadraticLeftDoubleBelowBracket]
+  positivity
+
+/-- Normalized gap-coordinate discriminant identity for the lower-side
+cubic/quadratic obstruction with a double quadratic root. -/
+private lemma cubicDiscr_cubicSubQuadratic_left_double_roots_below_norm
+    (sav dab dbc : ℝ) (hsav_ne : sav ≠ 0) :
+    let μ : ℝ := (sav + dab) * (sav + dab + dbc) / sav
+    cubicDiscr
+      (((X - C sav) * (X - C (sav + dab)) *
+          (X - C (sav + dab + dbc))) -
+        C μ * ((X - C 0) * (X - C 0))) =
+      -(cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc / sav ^ 2) := by
+  intro μ
+  have hpoly :
+      ((X - C sav) * (X - C (sav + dab)) *
+            (X - C (sav + dab + dbc)) -
+          C μ * ((X - C 0) * (X - C 0))) =
+        C 1 * X ^ 3 +
+          C ((-(dab ^ 2) - dab * dbc - 4 * dab * sav -
+              2 * dbc * sav - 4 * sav ^ 2) / sav) * X ^ 2 +
+          C (dab ^ 2 + dab * dbc + 4 * dab * sav + 2 * dbc * sav +
+              3 * sav ^ 2) * X +
+          C (-(dab ^ 2 * sav) - dab * dbc * sav - 2 * dab * sav ^ 2 -
+              dbc * sav ^ 2 - sav ^ 3) := by
+    apply Polynomial.funext
+    intro x
+    simp only [eval_add, eval_mul, eval_sub, eval_pow, eval_X, eval_C]
+    dsimp [μ]
+    field_simp [hsav_ne]
+    ring_nf
+  rw [hpoly, cubicDiscr_of_coeffs]
+  dsimp [cubicSubQuadraticLeftDoubleBelowBracket]
+  field_simp [hsav_ne]
+  ring_nf
+
+/-- If the quadratic has a double root strictly below the cubic root interval,
+then the tangent coefficient gives a negative cubic discriminant. -/
+lemma cubicDiscr_cubicSubQuadratic_left_double_roots_below_neg
+    {a b c u : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hua : u < a) :
+    let μ : ℝ := (b - u) * (c - u) / (a - u)
+    cubicDiscr
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C u))) < 0 := by
+  intro μ
+  let sav : ℝ := a - u
+  let dab : ℝ := b - a
+  let dbc : ℝ := c - b
+  have hsav_ne : sav ≠ 0 := ne_of_gt (by dsimp [sav]; linarith)
+  let P : ℝ[X] :=
+    ((X - C a) * (X - C b) * (X - C c)) -
+      C μ * ((X - C u) * (X - C u))
+  have hshift : cubicDiscr P = cubicDiscr (P.comp (X + C u)) := by
+    dsimp [P]
+    rw [cubicSubQuadratic_eq_cubic_expansion]
+    exact
+      (cubicDiscr_cubic_comp_X_add_C
+        1 (-(a + b + c + μ))
+        (a * b + a * c + b * c + μ * (u + u))
+        (-(a * b * c) - μ * (u * u)) u).symm
+  have hcomp_eq :
+      P.comp (X + C u) =
+        ((X - C sav) * (X - C (sav + dab)) *
+            (X - C (sav + dab + dbc))) -
+          C ((sav + dab) * (sav + dab + dbc) / sav) *
+            ((X - C 0) * (X - C 0)) := by
+    dsimp [P]
+    apply Polynomial.funext
+    intro x
+    simp only [eval_comp, eval_add, eval_mul, eval_sub, eval_X, eval_C]
+    dsimp [μ, sav, dab, dbc]
+    field_simp [hsav_ne]
+    ring_nf
+  have hdisc_eq :
+      cubicDiscr P =
+        -(cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc / sav ^ 2) := by
+    rw [hshift, hcomp_eq]
+    exact cubicDiscr_cubicSubQuadratic_left_double_roots_below_norm
+      sav dab dbc hsav_ne
+  change cubicDiscr P < 0
+  rw [hdisc_eq]
+  have hsav_pos : 0 < sav := by
+    dsimp [sav]
+    linarith
+  have hdab_nonneg : 0 ≤ dab := by
+    dsimp [dab]
+    linarith
+  have hdbc_nonneg : 0 ≤ dbc := by
+    dsimp [dbc]
+    linarith
+  have hbracket : 0 < cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc :=
+    cubicSubQuadraticLeftDoubleBelowBracket_pos hsav_pos hdab_nonneg hdbc_nonneg
+  have hfrac :
+      0 < cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc / sav ^ 2 :=
+    div_pos hbracket (by positivity)
+  nlinarith
+
+/-- If the quadratic has a double root strictly below the cubic roots, then
+some positive subtraction coefficient makes the monic cubic-minus-quadratic
+pencil fail to split. -/
+lemma exists_cubicSubQuadratic_not_splits_of_left_double_roots_below
+    {a b c u : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hua : u < a) :
+    ∃ μ : ℝ, 0 < μ ∧
+      ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C u))).Splits := by
+  let μ : ℝ := (b - u) * (c - u) / (a - u)
+  have hμ : 0 < μ := by
+    dsimp [μ]
+    exact cubicSubQuadratic_left_double_roots_below_mu_pos hab hbc hua
+  refine ⟨μ, hμ, ?_⟩
+  have hdeg :
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C u))).natDegree ≤ 3 := by
+    rw [natDegree_cubicSubQuadratic]
+  have hdisc :
+      cubicDiscr
+        (((X - C a) * (X - C b) * (X - C c)) -
+          C μ * ((X - C u) * (X - C u))) < 0 := by
+    dsimp [μ]
+    exact cubicDiscr_cubicSubQuadratic_left_double_roots_below_neg hab hbc hua
+  intro hsplit
+  exact (not_le.mpr hdisc)
+    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+
 /-- The cubic/linear factor endpoint is not compatible when the leading
 coefficients have opposite signs and the linear root lies strictly above the
 cubic root interval. -/
@@ -9695,6 +9857,78 @@ lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below_stri
     · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
     · exact hnot_splits hsplit
 
+private lemma not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+    {P Q : ℝ[X]} {A B μ : ℝ} (hAB : A * B < 0) (hμ : 0 < μ)
+    (hnot_splits : ¬ (P - C μ * Q).Splits) :
+    ¬ Compatible (C A * P) (C B * Q) := by
+  have hA_ne : A ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).1
+  have hB_ne : B ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).2
+  intro hcompat
+  rcases lt_or_gt_of_ne hA_ne with hA_neg | hA_pos
+  · have hB_pos : 0 < B := by
+      by_contra hB_not
+      have hB_nonpos : B ≤ 0 := le_of_not_gt hB_not
+      have hprod_nonneg : 0 ≤ A * B :=
+        mul_nonneg_of_nonpos_of_nonpos (le_of_lt hA_neg) hB_nonpos
+      linarith
+    have hnegA_pos : 0 < -A := by linarith
+    have hα : 0 ≤ 1 / (-A) := by positivity
+    have hβ : 0 ≤ μ / B := by positivity
+    have hcase := hcompat (1 / (-A)) (μ / B) hα hβ
+    have hcombo_eq :
+        C (1 / (-A)) * (C A * P) + C (μ / B) * (C B * Q) =
+          -(P - C μ * Q) := by
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_neg, eval_sub, eval_C]
+      field_simp [hA_ne, hB_ne]
+      ring
+    rw [hcombo_eq] at hcase
+    rcases hcase with hzero | ⟨_, hsplit⟩
+    · have hzero' : P - C μ * Q = 0 := by
+        rw [← neg_eq_zero]
+        simpa using hzero
+      exact hnot_splits (hzero'.symm ▸ Polynomial.Splits.zero)
+    · exact hnot_splits (by simpa using hsplit.neg)
+  · have hB_neg : B < 0 := by
+      by_contra hB_not
+      have hB_nonneg : 0 ≤ B := le_of_not_gt hB_not
+      have hprod_nonneg : 0 ≤ A * B := mul_nonneg (le_of_lt hA_pos) hB_nonneg
+      linarith
+    have hnegB_pos : 0 < -B := by linarith
+    have hα : 0 ≤ 1 / A := by positivity
+    have hβ : 0 ≤ μ / (-B) := by positivity
+    have hcase := hcompat (1 / A) (μ / (-B)) hα hβ
+    have hcombo_eq :
+        C (1 / A) * (C A * P) + C (μ / (-B)) * (C B * Q) =
+          P - C μ * Q := by
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_sub, eval_C]
+      field_simp [hA_ne, hB_ne]
+      ring
+    rw [hcombo_eq] at hcase
+    rcases hcase with hzero | ⟨_, hsplit⟩
+    · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
+    · exact hnot_splits hsplit
+
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and the quadratic has a double root strictly
+below the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_below
+    {a b c u A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hua : u < a) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C u))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_cubicSubQuadratic_not_splits_of_left_double_roots_below hab hbc hua
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := (X - C a) * (X - C b) * (X - C c))
+      (Q := (X - C u) * (X - C u))
+      hAB hμ hnot_splits
+
 /-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
 rules out the case where the average of the quadratic roots lies strictly above
 the cubic root interval. -/
@@ -9769,6 +10003,35 @@ lemma not_left_roots_below_strict_of_compatible_natDegree_three_two
     not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below_strict
       (A := f.leadingCoeff) (B := g.leadingCoeff)
       hsgn hab hbc huv hva hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
+rules out the case where a double quadratic root lies strictly below the cubic
+root interval. -/
+lemma not_left_double_roots_below_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, u}) :
+    ¬ u < a := by
+  intro hua
+  have hffac :
+      f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
+    eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
+  have hgfac :
+      g = C g.leadingCoeff * ((X - C u) * (X - C u)) := by
+    have hprod := hg.eq_prod_roots
+    rw [hgroots] at hprod
+    simpa using hprod
+  have hcompat_fac :
+      Compatible
+        (C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)))
+        (C g.leadingCoeff * ((X - C u) * (X - C u))) := by
+    rw [← hffac, ← hgfac]
+    exact hcompat
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_below
+      (A := f.leadingCoeff) (B := g.leadingCoeff)
+      hsgn hab hbc hua hcompat_fac
 
 /-- Compatible opposite-sign cubic/linear pairs have the linear root in the
 closed interval spanned by the cubic roots. -/
