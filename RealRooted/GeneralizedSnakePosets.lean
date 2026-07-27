@@ -666,9 +666,230 @@ def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where
     (Finset.range i).biUnion fun row =>
       (Finset.range (n - row)).image fun col => (row, col)
 
+/-- Membership in a truncated staircase cell set. -/
+@[simp] theorem mem_truncatedStaircase_cells {n i row col : ℕ} :
+    (row, col) ∈ (truncatedStaircase n i).cells ↔ row < i ∧ col < n - row := by
+  simp [truncatedStaircase]
+
 /-- The non-nesting rook polynomial of the truncated staircase `mu_{n,i}`. -/
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   (truncatedStaircase n i).rookPolynomial
+
+/-- Shift every column of a finite cell set down by `c + 1`. -/
+def shiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  P.image fun a => (a.1, a.2 - (c + 1))
+
+/-- Remove a bottom-row rook `(i,c)` and shift the remaining columns down by
+`c + 1`. -/
+def bottomRookRemainder (i c : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  shiftColumnsAfter c (P.erase (i, c))
+
+/-- Shift every column of a finite cell set up by `c + 1`. -/
+def unshiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  P.image fun a => (a.1, a.2 + (c + 1))
+
+/-- Insert a bottom-row rook `(i,c)` and shift the remaining columns up by
+`c + 1`. -/
+def bottomRookExtension (i c : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  insert (i, c) (unshiftColumnsAfter c P)
+
+/-- Any rook left after removing a bottom-row rook from a valid placement lies
+strictly above the bottom row. -/
+theorem row_lt_of_mem_erase_bottomRook
+    {n i c : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n (i + 1)).IsNonNestingPlacement P)
+    (hbottom : (i, c) ∈ P) {a : ℕ × ℕ}
+    (ha : a ∈ P.erase (i, c)) :
+    a.1 < i := by
+  have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+  have ha_cell := hP.1 haP
+  rw [mem_truncatedStaircase_cells] at ha_cell
+  have hrow_le : a.1 ≤ i := Nat.lt_succ_iff.mp ha_cell.1
+  have hrow_ne : a.1 ≠ i := by
+    exact hP.2.1 a haP (i, c) hbottom (Finset.mem_erase.mp ha).1
+  exact lt_of_le_of_ne hrow_le hrow_ne
+
+/-- Any rook left after removing a bottom-row rook from a valid placement lies
+strictly to the right of the removed rook. -/
+theorem bottom_col_lt_of_mem_erase_bottomRook
+    {n i c : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n (i + 1)).IsNonNestingPlacement P)
+    (hbottom : (i, c) ∈ P) {a : ℕ × ℕ}
+    (ha : a ∈ P.erase (i, c)) :
+    c < a.2 :=
+  hP.2.2 a (Finset.mem_erase.mp ha).2 (i, c) hbottom
+    (row_lt_of_mem_erase_bottomRook hP hbottom ha)
+
+/-- If a valid placement in `mu_{n,i+1}` contains the bottom-row rook `(i,c)`,
+then removing that rook and shifting all remaining columns down by `c+1`
+gives a valid placement in `mu_{n-c-1,i}`. -/
+theorem bottomRookRemainder_isNonNestingPlacement
+    {n i c : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n (i + 1)).IsNonNestingPlacement P)
+    (hbottom : (i, c) ∈ P) :
+    (truncatedStaircase (n - c - 1) i).IsNonNestingPlacement
+      (bottomRookRemainder i c P) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [bottomRookRemainder, shiftColumnsAfter] at hx
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases a with ⟨row, col⟩
+    have haP : (row, col) ∈ P := (Finset.mem_erase.mp ha).2
+    have ha_cell := hP.1 haP
+    rw [mem_truncatedStaircase_cells] at ha_cell ⊢
+    have hrow : row < i := row_lt_of_mem_erase_bottomRook hP hbottom ha
+    have hcol_gt : c < col := bottom_col_lt_of_mem_erase_bottomRook hP hbottom ha
+    have hcol_row : col + row < n := Nat.add_lt_of_lt_sub ha_cell.2
+    refine ⟨hrow, ?_⟩
+    lia
+  · intro x hx y hy hxy
+    rw [bottomRookRemainder, shiftColumnsAfter] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    intro hrow
+    have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+    have hbP : b ∈ P := (Finset.mem_erase.mp hb).2
+    have hab : a ≠ b := by
+      intro hab
+      subst b
+      exact hxy rfl
+    exact hP.2.1 a haP b hbP hab hrow
+  · intro x hx y hy hxy
+    rw [bottomRookRemainder, shiftColumnsAfter] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+    have hbP : b ∈ P := (Finset.mem_erase.mp hb).2
+    have hcol := hP.2.2 a haP b hbP hxy
+    have hb_col_gt : c < b.2 := bottom_col_lt_of_mem_erase_bottomRook hP hbottom hb
+    exact Nat.sub_lt_sub_right (Nat.succ_le_of_lt hb_col_gt) hcol
+
+/-- Removing a bottom-row rook and shifting columns preserves the cardinality
+of the remaining placement. -/
+theorem bottomRookRemainder_card_add_one
+    {n i c : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n (i + 1)).IsNonNestingPlacement P)
+    (hbottom : (i, c) ∈ P) :
+    (bottomRookRemainder i c P).card + 1 = P.card := by
+  classical
+  rw [bottomRookRemainder, shiftColumnsAfter]
+  have hinj :
+      Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - (c + 1)))
+        ↑(P.erase (i, c)) := by
+    intro a ha b hb hmap
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_sub : a.2 - (c + 1) = b.2 - (c + 1) := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have hac : c < a.2 := bottom_col_lt_of_mem_erase_bottomRook hP hbottom ha
+    have hbc : c < b.2 := bottom_col_lt_of_mem_erase_bottomRook hP hbottom hb
+    have hcol : a.2 = b.2 := by
+      have hac_le : c + 1 ≤ a.2 := Nat.succ_le_of_lt hac
+      have hbc_le : c + 1 ≤ b.2 := Nat.succ_le_of_lt hbc
+      calc
+        a.2 = (a.2 - (c + 1)) + (c + 1) := (Nat.sub_add_cancel hac_le).symm
+        _ = (b.2 - (c + 1)) + (c + 1) := by rw [hcol_sub]
+        _ = b.2 := Nat.sub_add_cancel hbc_le
+    exact Prod.ext hrow hcol
+  rw [Finset.card_image_of_injOn hinj]
+  exact Finset.card_erase_add_one hbottom
+
+/-- If a valid placement in `mu_{n-c-1,i}` is shifted back right and the
+bottom-row rook `(i,c)` is reinserted, then the result is a valid placement in
+`mu_{n,i+1}`. -/
+theorem bottomRookExtension_isNonNestingPlacement
+    {n i c : ℕ} {Q : Finset (ℕ × ℕ)}
+    (hQ : (truncatedStaircase (n - c - 1) i).IsNonNestingPlacement Q)
+    (hbottom : (i, c) ∈ (truncatedStaircase n (i + 1)).cells) :
+    (truncatedStaircase n (i + 1)).IsNonNestingPlacement
+      (bottomRookExtension i c Q) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [bottomRookExtension] at hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · exact hbottom
+    · rw [unshiftColumnsAfter] at hx
+      rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+      rcases a with ⟨row, col⟩
+      have ha_cell := hQ.1 ha
+      rw [mem_truncatedStaircase_cells] at ha_cell ⊢
+      have hcol_row : col + row < n - c - 1 := Nat.add_lt_of_lt_sub ha_cell.2
+      refine ⟨Nat.lt_trans ha_cell.1 (Nat.lt_succ_self i), ?_⟩
+      exact Nat.lt_sub_iff_add_lt.mpr (by lia)
+  · intro x hx y hy hxy
+    rw [bottomRookExtension] at hx hy
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · exact (hxy rfl).elim
+      · rw [unshiftColumnsAfter] at hy
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hb_cell := hQ.1 hb
+        rw [mem_truncatedStaircase_cells] at hb_cell
+        exact ne_of_gt hb_cell.1
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · rw [unshiftColumnsAfter] at hx
+        rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        have ha_cell := hQ.1 ha
+        rw [mem_truncatedStaircase_cells] at ha_cell
+        exact ne_of_lt ha_cell.1
+      · rw [unshiftColumnsAfter] at hx hy
+        rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hab : a ≠ b := by
+          intro hab
+          subst b
+          exact hxy rfl
+        exact hQ.2.1 a ha b hb hab
+  · intro x hx y hy hrow
+    rw [bottomRookExtension] at hx hy
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · exact (Nat.lt_irrefl i hrow).elim
+      · rw [unshiftColumnsAfter] at hy
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hb_cell := hQ.1 hb
+        rw [mem_truncatedStaircase_cells] at hb_cell
+        exact (not_lt_of_ge (Nat.le_of_lt hb_cell.1) hrow).elim
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · rw [unshiftColumnsAfter] at hx
+        rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        lia
+      · rw [unshiftColumnsAfter] at hx hy
+        rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        exact Nat.add_lt_add_right (hQ.2.2 a ha b hb hrow) (c + 1)
+
+/-- Shifting a valid remainder back right and reinserting the bottom-row rook
+increases cardinality by one. -/
+theorem bottomRookExtension_card
+    {n i c : ℕ} {Q : Finset (ℕ × ℕ)}
+    (hQ : (truncatedStaircase (n - c - 1) i).IsNonNestingPlacement Q) :
+    (bottomRookExtension i c Q).card = Q.card + 1 := by
+  classical
+  rw [bottomRookExtension, unshiftColumnsAfter]
+  have hnot : (i, c) ∉ Q.image (fun a => (a.1, a.2 + (c + 1))) := by
+    intro hi
+    rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
+    have hrow : a.1 = i := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have ha_cell := hQ.1 ha
+    rw [mem_truncatedStaircase_cells] at ha_cell
+    exact (ne_of_lt ha_cell.1 hrow).elim
+  have hinj :
+      Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 + (c + 1))) ↑Q := by
+    intro a _ha b _hb hmap
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_add : a.2 + (c + 1) = b.2 + (c + 1) := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
+  rw [Finset.card_insert_eq_ite, if_neg hnot, Finset.card_image_of_injOn hinj]
 
 /-- The truncated staircase with zero rows is the empty board. -/
 @[simp] theorem truncatedStaircase_zero_rows (n : ℕ) :
