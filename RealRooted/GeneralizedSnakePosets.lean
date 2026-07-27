@@ -634,6 +634,11 @@ def partitionSubOne (lam : List ℕ) : List ℕ :=
 def partitionPrefix (lam : List ℕ) (i : ℕ) : List ℕ :=
   lam.take i
 
+/-- A list of row lengths is an integer partition in Braun--Jal's sense:
+positive parts in weakly decreasing order. -/
+def IsIntegerPartition (lam : List ℕ) : Prop :=
+  lam.Pairwise (· ≥ ·) ∧ ∀ n ∈ lam, 0 < n
+
 /-- Skew Ferrers rook polynomials have nonnegative coefficients. -/
 theorem skewFerrersRookPolynomial_hasNonnegCoeffs (lam mu : List ℕ) :
     HasNonnegCoeffs (skewFerrersRookPolynomial lam mu) :=
@@ -664,10 +669,12 @@ theorem ferrersRookPolynomial_ne_zero (lam : List ℕ) :
     ferrersRookPolynomial lam ≠ 0 :=
   rookPolynomial_ne_zero _
 
-/-- Braun--Jal Proposition 3.2, stated for any straight Ferrers rook-polynomial
-family indexed by row lengths. -/
+/-- Braun--Jal Proposition 3.2, stated for a straight Ferrers rook-polynomial
+family indexed by integer partitions.  The partition hypothesis is needed:
+without positive row lengths, the one-row list `[0]` gives the false identity
+`1 = 1 + X`. -/
 def FerrersFirstColumnDeletionStatement (M : List ℕ → ℝ[X]) : Prop :=
-  ∀ lam : List ℕ,
+  ∀ lam : List ℕ, IsIntegerPartition lam →
     M lam =
       M (partitionSubOne lam) +
         X * ((List.range lam.length).map fun i =>
