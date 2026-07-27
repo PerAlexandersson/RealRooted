@@ -357,6 +357,21 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
   rw [hC5, hC15, hC21, hC40, hC50, hC75, hC105, hC175]
   ring_nf
 
+/-- The `n = 6` Braun--Jal equation (2) reduces to the remaining three-row
+and four-row truncated-staircase rook-polynomial computations. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_staircase_five_tail
+    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
+    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaCoeffPolynomial 6 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
+      h53 h54)
+
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
 theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
@@ -543,6 +558,22 @@ theorem narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     modifiedNarayanaPolynomial_eq_coeffPolynomial 6]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
 
+/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
+Narayana family, reduces to the remaining three-row and four-row
+truncated-staircase rook-polynomial computations. -/
+theorem narayanaAuxiliaryGRecurrence_modified_six_of_staircase_five_tail
+    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
+    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaPolynomial 6 -
+        (1 + X) * modifiedNarayanaPolynomial 5 :=
+  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
+      h53 h54)
+
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
@@ -639,6 +670,23 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
   · exact narayanaAuxiliaryGRecurrence_modified_four
   · exact narayanaAuxiliaryGRecurrence_modified_five
   · exact narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
+
+/-- The checked initial cases through `n = 6`, reducing the last case to the
+remaining three-row and four-row truncated-staircase computations. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_staircase_five_tail
+    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
+    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4)
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
+      h53 h54)
+    hn₁ hn₆
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/

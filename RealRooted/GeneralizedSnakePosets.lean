@@ -1097,6 +1097,95 @@ has rook polynomial `1 + 9X + 14X^2 + 4X^3`. -/
   rw [hC4, hC9, hC14]
   ring_nf
 
+/-- Convert a verified finite placement list into the corresponding
+truncated-staircase rook-polynomial sum. -/
+private lemma truncatedStaircaseRookPolynomial_eq_placementList_sum
+    {n i : ℕ} {cells : Finset (ℕ × ℕ)}
+    {placements : List (Finset (ℕ × ℕ))}
+    (hcells : (truncatedStaircase n i).cells = cells)
+    (hplacements_bool :
+      cells.powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase n i) P) =
+        placements.toFinset)
+    (hplacements_nodup : placements.Nodup) :
+    truncatedStaircaseRookPolynomial n i =
+      (placements.map fun P => (X : ℝ[X]) ^ P.card).sum := by
+  classical
+  have hplacements :
+      (truncatedStaircase n i).cells.powerset.filter
+        (fun P => (truncatedStaircase n i).IsNonNestingPlacement P) =
+        placements.toFinset := by
+    rw [hcells, ← hplacements_bool]
+    ext P
+    simp only [Finset.mem_filter]
+    constructor
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase n i) P).mpr h.2⟩
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase n i) P).mp h.2⟩
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements]
+  exact List.sum_toFinset (fun P => (X : ℝ[X]) ^ P.card) hplacements_nodup
+
+/-- The one-row truncated staircase with five cells has rook polynomial
+`1 + 5X`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_five_one :
+    truncatedStaircaseRookPolynomial 5 1 = 1 + C (5 : ℝ) * X := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(0, 4)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  let cells : Finset (ℕ × ℕ) :=
+    ({(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)} : Finset (ℕ × ℕ))
+  have hcells : (truncatedStaircase 5 1).cells = cells := by
+    decide
+  have hplacements_bool :
+      cells.powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 5 1) P) =
+        placements.toFinset := by
+    decide
+  rw [truncatedStaircaseRookPolynomial_eq_placementList_sum hcells
+    hplacements_bool hplacements_nodup]
+  norm_num [placements]
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  rw [hC5]
+  ring_nf
+
+/-- The two-row truncated staircase with row lengths five and four has rook
+polynomial `1 + 9X + 10X^2`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_five_two :
+    truncatedStaircaseRookPolynomial 5 2 =
+      1 + C (9 : ℝ) * X + C (10 : ℝ) * X ^ 2 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅,
+      {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(0, 4)}, {(1, 0)}, {(1, 1)},
+      {(1, 2)}, {(1, 3)},
+      {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+      {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
+      {(0, 4), (1, 0)}, {(0, 4), (1, 1)}, {(0, 4), (1, 2)},
+      {(0, 4), (1, 3)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  let cells : Finset (ℕ × ℕ) :=
+    ({(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (1, 1), (1, 2),
+      (1, 3)} : Finset (ℕ × ℕ))
+  have hcells : (truncatedStaircase 5 2).cells = cells := by
+    decide
+  have hplacements_bool :
+      cells.powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 5 2) P) =
+        placements.toFinset := by
+    decide
+  rw [truncatedStaircaseRookPolynomial_eq_placementList_sum hcells
+    hplacements_bool hplacements_nodup]
+  norm_num [placements]
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  rw [hC9, hC10]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
@@ -1178,6 +1267,41 @@ theorem auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_three
       C (4 : ℝ) * X ^ 3 :=
   auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_three
     truncatedStaircaseRookPolynomial_four_three
+
+/-- The expected `G_5` finite-board value follows from the remaining
+three-row and four-row truncated-staircase computations. -/
+theorem auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
+    (h53 : truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
+    (h54 : truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
+    auxiliaryG 5 =
+      5 + C (40 : ℝ) * X + C (75 : ℝ) * X ^ 2 +
+        C (40 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 := by
+  rw [auxiliaryG, show List.range 5 = [0, 1, 2, 3, 4] by rfl]
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
+  rw [truncatedStaircaseRookPolynomial_zero_rows,
+    truncatedStaircaseRookPolynomial_five_one,
+    truncatedStaircaseRookPolynomial_five_two, h53, h54]
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
+    Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
+    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
+    Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
+    Polynomial.C_eq_natCast (R := ℝ) 30
+  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
+    Polynomial.C_eq_natCast (R := ℝ) 40
+  have hC75 : (C (75 : ℝ) : ℝ[X]) = 75 :=
+    Polynomial.C_eq_natCast (R := ℝ) 75
+  rw [hC5, hC9, hC10, hC12, hC14, hC25, hC30, hC40, hC75]
+  ring_nf
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
