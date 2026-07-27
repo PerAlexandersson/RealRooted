@@ -1596,6 +1596,106 @@ theorem auxiliaryG_six_splits : (FiniteSkewBoard.auxiliaryG 6).Splits := by
 abbrev modifiedNarayanaPolynomialSix : ℝ[X] :=
   modifiedNarayanaPolynomial 6
 
+/-- Evaluation of `P_6` at a root of the `+ sqrt 55` quadratic factor of
+`G_6`. -/
+theorem modifiedNarayanaPolynomial_six_eval_of_qPlus_root {s x : ℝ}
+    (hs : s ^ 2 = (55 : ℝ))
+    (hx : (3 : ℝ) * x ^ 2 + ((16 : ℝ) + s) * x + 3 = 0) :
+    243 * modifiedNarayanaPolynomialSix.eval x =
+      139370 * s * x + 18480 * s + 1015520 * x + 129855 := by
+  rw [modifiedNarayanaPolynomialSix, modifiedNarayanaPolynomial_six]
+  simp only [eval_add, eval_mul, eval_pow, eval_C, eval_X, eval_one]
+  have hs0 : s ^ 2 - 55 = 0 := by nlinarith [hs]
+  linear_combination
+    (81 * x ^ 4 + 1269 * x ^ 3 + 1656 * x ^ 2 + 4074 * x - 14879
+      - 27 * s * x ^ 3 - 279 * s * x ^ 2 + 963 * s * x - 6215 * s
+      + 9 * s ^ 2 * x ^ 2 + 45 * s ^ 2 * x - 570 * s ^ 2
+      - 3 * s ^ 3 * x + s ^ 3 + s ^ 4) * hx
+    - (s ^ 3 * x + 17 * s ^ 2 * x + 3 * s ^ 2 - 508 * s * x + 3 * s
+      - 14265 * x - 1545) * hs0
+
+/-- Evaluation of `P_6` at a root of the `- sqrt 55` quadratic factor of
+`G_6`. -/
+theorem modifiedNarayanaPolynomial_six_eval_of_qMinus_root {s x : ℝ}
+    (hs : s ^ 2 = (55 : ℝ))
+    (hx : (3 : ℝ) * x ^ 2 + ((16 : ℝ) - s) * x + 3 = 0) :
+    243 * modifiedNarayanaPolynomialSix.eval x =
+      -139370 * s * x - 18480 * s + 1015520 * x + 129855 := by
+  rw [modifiedNarayanaPolynomialSix, modifiedNarayanaPolynomial_six]
+  simp only [eval_add, eval_mul, eval_pow, eval_C, eval_X, eval_one]
+  have hs0 : s ^ 2 - 55 = 0 := by nlinarith [hs]
+  linear_combination
+    (81 * x ^ 4 + 1269 * x ^ 3 + 1656 * x ^ 2 + 4074 * x - 14879
+      + 27 * s * x ^ 3 + 279 * s * x ^ 2 - 963 * s * x + 6215 * s
+      + 9 * s ^ 2 * x ^ 2 + 45 * s ^ 2 * x - 570 * s ^ 2
+      + 3 * s ^ 3 * x - s ^ 3 + s ^ 4) * hx
+    + (s ^ 3 * x - 17 * s ^ 2 * x - 3 * s ^ 2 - 508 * s * x + 3 * s
+      + 14265 * x + 1545) * hs0
+
+/-- The first named `G_6` root lies on the `+ sqrt 55` quadratic factor. -/
+theorem auxiliaryG_six_root0_qPlus :
+    (3 : ℝ) * auxiliaryG_six_root0 ^ 2 +
+      ((16 : ℝ) + Real.sqrt (55 : ℝ)) * auxiliaryG_six_root0 + 3 = 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  dsimp [auxiliaryG_six_root0, s, α] at *
+  nlinarith
+
+/-- The second named `G_6` root lies on the `- sqrt 55` quadratic factor. -/
+theorem auxiliaryG_six_root1_qMinus :
+    (3 : ℝ) * auxiliaryG_six_root1 ^ 2 +
+      ((16 : ℝ) - Real.sqrt (55 : ℝ)) * auxiliaryG_six_root1 + 3 = 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
+    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
+    dsimp [β]
+    exact Real.sq_sqrt hβ_arg_nonneg
+  dsimp [auxiliaryG_six_root1, s, β] at *
+  nlinarith
+
+/-- The fourth named `G_6` root lies on the `- sqrt 55` quadratic factor. -/
+theorem auxiliaryG_six_root3_qMinus :
+    (3 : ℝ) * auxiliaryG_six_root3 ^ 2 +
+      ((16 : ℝ) - Real.sqrt (55 : ℝ)) * auxiliaryG_six_root3 + 3 = 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
+    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
+    dsimp [β]
+    exact Real.sq_sqrt hβ_arg_nonneg
+  dsimp [auxiliaryG_six_root3, s, β] at *
+  nlinarith
+
+/-- The fifth named `G_6` root lies on the `+ sqrt 55` quadratic factor. -/
+theorem auxiliaryG_six_root4_qPlus :
+    (3 : ℝ) * auxiliaryG_six_root4 ^ 2 +
+      ((16 : ℝ) + Real.sqrt (55 : ℝ)) * auxiliaryG_six_root4 + 3 = 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  dsimp [auxiliaryG_six_root4, s, α] at *
+  nlinarith
+
 /-- The sign pattern of `P_6` at the named `G_6` roots. -/
 def ModifiedNarayanaSixAuxiliaryGSignCertificate : Prop :=
   modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 ∧
@@ -1603,6 +1703,181 @@ def ModifiedNarayanaSixAuxiliaryGSignCertificate : Prop :=
       modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 < 0 ∧
         0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 ∧
           modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0
+
+/-- `P_6` is negative at the first named `G_6` root. -/
+theorem modifiedNarayanaPolynomial_six_eval_root0_neg :
+    modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  have hα_nonneg : 0 ≤ α := by
+    dsimp [α]
+    exact Real.sqrt_nonneg _
+  have hroot0 :
+      (3 : ℝ) * auxiliaryG_six_root0 ^ 2 +
+        ((16 : ℝ) + s) * auxiliaryG_six_root0 + 3 = 0 := by
+    dsimp [s]
+    exact auxiliaryG_six_root0_qPlus
+  have h0_num :
+      139370 * s * auxiliaryG_six_root0 + 18480 * s +
+          1015520 * auxiliaryG_six_root0 + 129855 < 0 := by
+    dsimp [auxiliaryG_six_root0, s, α] at *
+    nlinarith
+  have h0_scaled :
+      243 * modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 := by
+    rwa [modifiedNarayanaPolynomial_six_eval_of_qPlus_root hs_sq hroot0]
+  nlinarith
+
+/-- `P_6` is positive at the second named `G_6` root. -/
+theorem modifiedNarayanaPolynomial_six_eval_root1_pos :
+    0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_ge37div5 : (37 / 5 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hβ_nonneg : 0 ≤ β := by
+    dsimp [β]
+    exact Real.sqrt_nonneg _
+  have hroot1 :
+      (3 : ℝ) * auxiliaryG_six_root1 ^ 2 +
+        ((16 : ℝ) - s) * auxiliaryG_six_root1 + 3 = 0 := by
+    dsimp [s]
+    exact auxiliaryG_six_root1_qMinus
+  have h1_num :
+      0 < -139370 * s * auxiliaryG_six_root1 - 18480 * s +
+        1015520 * auxiliaryG_six_root1 + 129855 := by
+    dsimp [auxiliaryG_six_root1, s, β] at *
+    nlinarith
+  have h1_scaled :
+      0 < 243 * modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 := by
+    rwa [modifiedNarayanaPolynomial_six_eval_of_qMinus_root hs_sq hroot1]
+  nlinarith
+
+/-- `P_6` is negative at the middle named `G_6` root. -/
+theorem modifiedNarayanaPolynomial_six_eval_root2_neg :
+    modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 < 0 := by
+  norm_num [modifiedNarayanaPolynomialSix, auxiliaryG_six_root2]
+
+/-- `P_6` is positive at the fourth named `G_6` root. -/
+theorem modifiedNarayanaPolynomial_six_eval_root3_pos :
+    0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let β : ℝ := Real.sqrt ((275 : ℝ) - 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_ge37div5 : (37 / 5 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_le149div20 : s ≤ (149 / 20 : ℝ) := by
+    dsimp [s]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
+    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
+    dsimp [β]
+    exact Real.sq_sqrt hβ_arg_nonneg
+  have hβ_nonneg : 0 ≤ β := by
+    dsimp [β]
+    exact Real.sqrt_nonneg _
+  have hroot3 :
+      (3 : ℝ) * auxiliaryG_six_root3 ^ 2 +
+        ((16 : ℝ) - s) * auxiliaryG_six_root3 + 3 = 0 := by
+    dsimp [s]
+    exact auxiliaryG_six_root3_qMinus
+  have h3_num :
+      0 < -139370 * s * auxiliaryG_six_root3 - 18480 * s +
+        1015520 * auxiliaryG_six_root3 + 129855 := by
+    have hcoeff_nonneg : 0 ≤ (1267 : ℝ) * s - 9232 := by nlinarith
+    have hA_nonneg : 0 ≤ ((1267 : ℝ) * s - 9232) * β :=
+      mul_nonneg hcoeff_nonneg hβ_nonneg
+    have hB_nonneg : 0 ≤ (28496 : ℝ) * s - 210314 := by nlinarith
+    have hsq :
+        (((1267 : ℝ) * s - 9232) * β) ^ 2 <
+          ((28496 : ℝ) * s - 210314) ^ 2 := by
+      have hdiff :
+          0 < ((28496 : ℝ) * s - 210314) ^ 2 -
+            (((1267 : ℝ) * s - 9232) * β) ^ 2 := by
+        nlinarith [hs_sq, hβ_sq, hs_le149div20]
+      nlinarith
+    have hlt : ((1267 : ℝ) * s - 9232) * β < (28496 : ℝ) * s - 210314 := by
+      have h_abs := (sq_lt_sq.mp hsq)
+      simpa [abs_of_nonneg hA_nonneg, abs_of_nonneg hB_nonneg] using h_abs
+    dsimp [auxiliaryG_six_root3, s, β] at *
+    nlinarith
+  have h3_scaled :
+      0 < 243 * modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 := by
+    rwa [modifiedNarayanaPolynomial_six_eval_of_qMinus_root hs_sq hroot3]
+  nlinarith
+
+/-- `P_6` is negative at the fifth named `G_6` root. -/
+theorem modifiedNarayanaPolynomial_six_eval_root4_neg :
+    modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0 := by
+  let s : ℝ := Real.sqrt (55 : ℝ)
+  let α : ℝ := Real.sqrt ((275 : ℝ) + 32 * s)
+  have hs_sq : s ^ 2 = (55 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  have hα_nonneg : 0 ≤ α := by
+    dsimp [α]
+    exact Real.sqrt_nonneg _
+  have hroot4 :
+      (3 : ℝ) * auxiliaryG_six_root4 ^ 2 +
+        ((16 : ℝ) + s) * auxiliaryG_six_root4 + 3 = 0 := by
+    dsimp [s]
+    exact auxiliaryG_six_root4_qPlus
+  have h4_num :
+      139370 * s * auxiliaryG_six_root4 + 18480 * s +
+          1015520 * auxiliaryG_six_root4 + 129855 < 0 := by
+    have hA_nonneg : 0 ≤ ((9232 : ℝ) + 1267 * s) * α := by positivity
+    have hB_nonneg : 0 ≤ (210314 : ℝ) + 28496 * s := by positivity
+    have hsq :
+        (((9232 : ℝ) + 1267 * s) * α) ^ 2 <
+          ((210314 : ℝ) + 28496 * s) ^ 2 := by
+      have hdiff :
+          0 < ((210314 : ℝ) + 28496 * s) ^ 2 -
+            (((9232 : ℝ) + 1267 * s) * α) ^ 2 := by
+        nlinarith [hs_sq, hα_sq, hs_nonneg]
+      nlinarith
+    have hlt : ((9232 : ℝ) + 1267 * s) * α < (210314 : ℝ) + 28496 * s := by
+      have h_abs := (sq_lt_sq.mp hsq)
+      simpa [abs_of_nonneg hA_nonneg, abs_of_nonneg hB_nonneg] using h_abs
+    dsimp [auxiliaryG_six_root4, s, α] at *
+    nlinarith
+  have h4_scaled :
+      243 * modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0 := by
+    rwa [modifiedNarayanaPolynomial_six_eval_of_qPlus_root hs_sq hroot4]
+  nlinarith
+
+/-- The concrete sign pattern of `P_6` at the five named `G_6` roots. -/
+theorem modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate :
+    ModifiedNarayanaSixAuxiliaryGSignCertificate :=
+  ⟨modifiedNarayanaPolynomial_six_eval_root0_neg,
+    modifiedNarayanaPolynomial_six_eval_root1_pos,
+    modifiedNarayanaPolynomial_six_eval_root2_neg,
+    modifiedNarayanaPolynomial_six_eval_root3_pos,
+    modifiedNarayanaPolynomial_six_eval_root4_neg⟩
 
 /-- The roots of `P_6` are isolated across the five named `G_6` roots. -/
 def ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate : Prop :=
@@ -1917,6 +2192,17 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
     Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
   (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs hsign).toPrec
+
+/-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
+    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
+    modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate
+
+/-- The checked `n = 6` Braun--Jal Lemma 3.3 proper-position case. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six :
+    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  lemma33AuxiliaryGInterlaces_modified_six_interlaces.toPrec
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
@@ -2749,6 +3035,15 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
         (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
         hab hbc hcd hde her hsign)
     hn₁ hn₆
+
+/-- The checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
+Lemma 3.3, for the concrete modified Narayana family and the finite-board
+auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_six
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
+  lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
+    modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate hn₁ hn₆
 
 end GeneralizedSnakePosets
 end RealRooted
