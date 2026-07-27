@@ -20822,6 +20822,23 @@ theorem
   theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
     theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_three
 
+/-- Bounded Liu Theorem 2.1 package through endpoint degree two.  The forward
+direction is the ordinary Liu forward direction, while the reverse direction is
+restricted to branch data whose selected lower-degree endpoint has degree at
+most two. -/
+def theorem21CompatibleRootCountEndpointLeTwoStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    (Compatible f g → theorem21RootCountBranches f g) ∧
+      (theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g)
+
+/-- Nonconstant bounded Liu Theorem 2.1 package through endpoint degree two.
+-/
+def theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      (Compatible f g → theorem21RootCountBranches f g) ∧
+        (theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g)
+
 /-- Bounded Liu Theorem 2.1 package through endpoint degree three.  The forward
 direction is the ordinary Liu forward direction, while the reverse direction is
 restricted to branch data whose selected lower-degree endpoint has degree at
@@ -20958,6 +20975,101 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_forward
   · intro hbranches
     exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
       hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
+
+/-- Reassemble the bounded endpoint-degree-two theorem package from the full
+forward direction and the bounded endpoint-degree-two reverse direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_reverse
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreverse :
+      ∀ {f g : ℝ[X]},
+        f.Splits → g.Splits → OppositeLeadingSigns f g →
+          theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement := by
+  intro f g hf hg hsgn
+  exact ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
+
+/-- Current bounded endpoint-degree-two Liu package, assuming the isolated
+forward direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_reverse
+    hforward theorem21RootCountBranchesToCompatible_of_endpoint_le_two
+
+/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
+from the nonconstant forward direction and the bounded endpoint-degree-two
+reverse direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreverse :
+      ∀ {f g : ℝ[X]},
+        f.Splits → g.Splits → OppositeLeadingSigns f g →
+          f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+            theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne
+  exact ⟨hforward hf hg hsgn hfdeg_ne hgdeg_ne,
+    hreverse hf hg hsgn hfdeg_ne hgdeg_ne⟩
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package, assuming the
+isolated nonconstant forward direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
+    hforward theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_two
+
+/-- The bounded endpoint-degree-two package restricts to the ordinary
+low-degree statement with explicit endpoint degree bounds. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo
+    (h : theorem21CompatibleRootCountEndpointLeTwoStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoStatement := by
+  intro f g hf hg hsgn hfdeg hgdeg
+  constructor
+  · exact (h f g hf hg hsgn).1
+  · intro hbranches
+    exact (h f g hf hg hsgn).2
+      (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
+        hfdeg hgdeg hbranches)
+
+/-- The bounded endpoint-degree-two package restricts to its nonconstant
+endpoint-degree-two form. -/
+theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_endpointLeTwo
+    (h : theorem21CompatibleRootCountEndpointLeTwoStatement) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne
+  exact h f g hf hg hsgn
+
+/-- The ordinary endpoint-degree-two Liu package restricts to its nonconstant
+form. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_natDegreeLeTwo
+    (h : theorem21CompatibleRootCountNatDegreeLeTwoStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg
+  exact h f g hf hg hsgn hfdeg hgdeg
+
+/-- The nonconstant bounded endpoint-degree-two package restricts to the
+ordinary nonconstant low-degree statement with explicit endpoint degree bounds.
+-/
+theorem
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_endpointLeTwoNonconstant
+    (h : theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
+  constructor
+  · exact (h f g hf hg hsgn hfdeg_ne hgdeg_ne).1
+  · intro hbranches
+    exact (h f g hf hg hsgn hfdeg_ne hgdeg_ne).2
+      (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
+        hfdeg hgdeg hbranches)
+
+/-- The bounded endpoint-degree-two package restricts directly to the
+ordinary nonconstant low-degree statement. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_endpointLeTwo
+    (h : theorem21CompatibleRootCountEndpointLeTwoStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_natDegreeLeTwo
+    (theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo h)
 
 /-- The bounded endpoint-degree-three package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
