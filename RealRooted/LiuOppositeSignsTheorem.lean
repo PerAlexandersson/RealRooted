@@ -10147,6 +10147,22 @@ private lemma not_compatible_scaled_pair_of_opposite_of_sub_not_splits
     · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
     · exact hnot_splits hsplit
 
+private lemma not_compatible_scaled_common_factor_of_opposite_of_sub_not_splits
+    {D P Q : ℝ[X]} {A B μ : ℝ} (hD_ne : D ≠ 0) (hD_splits : D.Splits)
+    (hAB : A * B < 0) (hμ : 0 < μ)
+    (hnot_splits : ¬ (P - C μ * Q).Splits) :
+    ¬ Compatible (C A * (D * P)) (C B * (D * Q)) := by
+  have hnot_product : ¬ (D * (P - C μ * Q)).Splits := by
+    intro hsplits
+    exact hnot_splits ((splits_mul_iff_right hD_ne hD_splits).mp hsplits)
+  have hsub_eq : D * P - C μ * (D * Q) = D * (P - C μ * Q) := by
+    ring
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := D * P) (Q := D * Q) hAB hμ (by
+        intro hsplits
+        exact hnot_product (by simpa [hsub_eq] using hsplits))
+
 /-- The cubic/quadratic endpoint is not compatible when the leading
 coefficients have opposite signs, the lower quadratic root lies weakly below
 the cubic interval, and the upper quadratic root lies strictly above it. -/
@@ -10182,6 +10198,29 @@ lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_bel
       (P := (X - C a) * (X - C b) * (X - C c))
       (Q := (X - C u) * (X - C u))
       hAB hμ hnot_splits
+
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs, the lower quadratic root is the middle cubic
+root, and the upper quadratic root lies strictly above the cubic root interval.
+-/
+private lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_common_root_upper
+    {a b c v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcv : c < v) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C b) * (X - C v))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_quadraticSubLinear_not_splits_of_upper_lt_right_root
+      (a := a) (b := c) (c := v) (hab.trans hbc) hcv
+  have hbad :
+      ¬ Compatible
+        (C A * ((X - C b) * ((X - C a) * (X - C c))))
+        (C B * ((X - C b) * (X - C v))) :=
+    not_compatible_scaled_common_factor_of_opposite_of_sub_not_splits
+      (D := X - C b) (P := (X - C a) * (X - C c)) (Q := X - C v)
+      (X_sub_C_ne_zero b) (Polynomial.Splits.X_sub_C b) hAB hμ hnot_splits
+  intro hcompat
+  exact hbad (by simpa [mul_comm, mul_left_comm, mul_assoc] using hcompat)
 
 /-- The cubic/quadratic endpoint is not compatible when the leading
 coefficients have opposite signs and both quadratic roots lie weakly below the
@@ -10277,6 +10316,35 @@ lemma not_right_protruding_left_below_of_compatible_natDegree_three_two
     not_compatible_scaled_cubic_quadratic_of_opposite_of_right_protruding_left_below
       (A := f.leadingCoeff) (B := g.leadingCoeff)
       hsgn hab hbc hua hcv hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
+rules out the right-protruding boundary case where the lower quadratic root is
+the middle cubic root. -/
+lemma not_right_protruding_middle_common_root_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (hub : u = b) (hfroots : f.roots = {a, b, c})
+    (hgroots : g.roots = {u, v}) :
+    ¬ c < v := by
+  subst u
+  intro hcv
+  have hffac :
+      f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
+    eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
+  have hgfac : g = C g.leadingCoeff * ((X - C b) * (X - C v)) := by
+    have hprod := hg.eq_prod_roots
+    rw [hgroots] at hprod
+    simpa using hprod
+  have hcompat_fac :
+      Compatible
+        (C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)))
+        (C g.leadingCoeff * ((X - C b) * (X - C v))) := by
+    rw [← hffac, ← hgfac]
+    exact hcompat
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_common_root_upper
+      (A := f.leadingCoeff) (B := g.leadingCoeff) hsgn hab hbc hcv hcompat_fac
 
 /-- In an arbitrary split opposite-sign cubic/quadratic pair, if the lower
 quadratic root lies weakly below the lower cubic root, then the upper quadratic
