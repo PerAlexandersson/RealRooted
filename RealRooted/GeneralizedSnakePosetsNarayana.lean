@@ -796,6 +796,83 @@ theorem jacobi11TransportPolynomial_eq_modifiedNarayanaPolynomial (n : ℕ) :
   rw [jacobi11TransportPolynomial_eq_coeffPolynomial,
     modifiedNarayanaPolynomial_eq_coeffPolynomial]
 
+/-- The `α = β = 1` normalized Jacobi polynomial in the explicit form used by
+Braun--Jal Lemma 3.1. -/
+def jacobi11NormalizedPolynomial (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1),
+    C (jacobi11TransportCoeff n k) *
+      (C ((2 : ℝ)⁻¹) * (X - 1)) ^ (n - k) *
+        (C ((2 : ℝ)⁻¹) * (X + 1)) ^ k
+
+/-- The explicit `α = β = 1` Jacobi polynomial is normalized to take value
+`1` at `1`. -/
+theorem jacobi11NormalizedPolynomial_eval_one (n : ℕ) :
+    (jacobi11NormalizedPolynomial n).eval 1 = 1 := by
+  rw [jacobi11NormalizedPolynomial]
+  simp only [Polynomial.eval_finsetSum, Polynomial.eval_mul,
+    Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_sub,
+    Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one]
+  rw [Finset.sum_eq_single n]
+  · rw [jacobi11TransportCoeff, Nat.choose_succ_self_right]
+    norm_num
+    positivity
+  · intro k hkmem hk_ne
+    have hk_le : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkmem)
+    have hk_lt : k < n := lt_of_le_of_ne hk_le hk_ne
+    have hsub_pos : 0 < n - k := Nat.sub_pos_of_lt hk_lt
+    simp [hsub_pos.ne']
+  · simp
+
+private theorem jacobi11Transport_denominator_cancel
+    {n k : ℕ} {r : ℝ} (hk : k ≤ n) (hden : r - 1 ≠ 0) :
+    (r - 1) ^ n * ((r - 1)⁻¹) ^ (n - k) * (r / (r - 1)) ^ k = r ^ k := by
+  have hsum : n - k + k = n := Nat.sub_add_cancel hk
+  rw [div_eq_mul_inv, mul_pow]
+  calc
+    (r - 1) ^ n * (r - 1)⁻¹ ^ (n - k) *
+        (r ^ k * (r - 1)⁻¹ ^ k)
+        = r ^ k * ((r - 1) ^ n *
+          ((r - 1)⁻¹ ^ (n - k) * (r - 1)⁻¹ ^ k)) := by
+            ring
+    _ = r ^ k * ((r - 1) ^ n * ((r - 1)⁻¹ ^ n)) := by
+      rw [← pow_add, hsum]
+    _ = r ^ k := by simp [hden]
+
+/-- After Braun--Jal's change of variables, multiplying by `(r - 1)^n`
+transports the normalized Jacobi polynomial to the polynomial from #108. -/
+theorem jacobi11NormalizedPolynomial_transport_eval
+    {n : ℕ} {r : ℝ} (hr : r ≠ 1) :
+    (r - 1) ^ n *
+        (jacobi11NormalizedPolynomial n).eval (jacobi11ChangeOfVariables r) =
+      (jacobi11TransportPolynomial n).eval r := by
+  rw [jacobi11NormalizedPolynomial, jacobi11TransportPolynomial]
+  simp only [Polynomial.eval_finsetSum, Polynomial.eval_mul,
+    Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_sub,
+    Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro k hkmem
+  have hk : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkmem)
+  have hden : r - 1 ≠ 0 := sub_ne_zero.mpr hr
+  have hxsub :
+      (2 : ℝ)⁻¹ * ((r + 1) / (r - 1) - 1) = (r - 1)⁻¹ := by
+    field_simp [hden]
+    ring
+  have hxadd :
+      (2 : ℝ)⁻¹ * ((r + 1) / (r - 1) + 1) = r / (r - 1) := by
+    field_simp [hden]
+    ring
+  rw [jacobi11ChangeOfVariables, hxsub, hxadd]
+  calc
+    (r - 1) ^ n * (jacobi11TransportCoeff n k *
+        (r - 1)⁻¹ ^ (n - k) * (r / (r - 1)) ^ k)
+        = jacobi11TransportCoeff n k *
+          ((r - 1) ^ n * (r - 1)⁻¹ ^ (n - k) *
+            (r / (r - 1)) ^ k) := by
+            ring
+    _ = jacobi11TransportCoeff n k * r ^ k := by
+      rw [jacobi11Transport_denominator_cancel hk hden]
+
 /-- The quotient Narayana sequence has nonnegative coefficients, via the
 coefficient-side model. -/
 theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
