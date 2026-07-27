@@ -467,15 +467,6 @@ theorem isNonNestingPlacementBool_iff (B : FiniteSkewBoard)
       · exact Or.inr (hnest a b hab c d hcd hlt)
       · exact Or.inl (le_of_not_gt hlt)
 
-/-- Powers of `X` have nonnegative coefficients. -/
-private lemma xPow_hasNonnegCoeffs (n : ℕ) :
-    HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
-  intro k
-  by_cases hk : k = n
-  · subst k
-    simp
-  · simp [coeff_X_pow, hk]
-
 /-- The empty board has rook polynomial `1`. -/
 @[simp] theorem rookPolynomial_empty :
     empty.rookPolynomial = 1 := by
@@ -498,12 +489,9 @@ private lemma xPow_hasNonnegCoeffs (n : ℕ) :
 /-- Finite skew board rook polynomials have nonnegative coefficients. -/
 theorem rookPolynomial_hasNonnegCoeffs (B : FiniteSkewBoard) :
     HasNonnegCoeffs B.rookPolynomial := by
-  classical
-  unfold rookPolynomial
   intro k
-  rw [Polynomial.finsetSum_coeff]
-  exact Finset.sum_nonneg fun (P : Finset (ℕ × ℕ)) _ =>
-    xPow_hasNonnegCoeffs P.card k
+  rw [rookPolynomial_coeff]
+  positivity
 
 /-- The empty placement gives the constant coefficient of a finite skew board
 rook polynomial. -/
