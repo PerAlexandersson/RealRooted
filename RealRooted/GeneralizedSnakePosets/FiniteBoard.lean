@@ -332,6 +332,24 @@ theorem rookPolynomial_eq_nonNestingPlacements_sum (B : FiniteSkewBoard) :
   classical
   rw [rookPolynomial, nonNestingPlacements]
 
+/-- The coefficient of `X^k` in a finite skew-board rook polynomial counts
+non-nesting placements of cardinality `k`. -/
+theorem rookPolynomial_coeff (B : FiniteSkewBoard) (k : ℕ) :
+    B.rookPolynomial.coeff k =
+      ((B.nonNestingPlacements.filter fun P => P.card = k).card : ℝ) := by
+  classical
+  rw [rookPolynomial_eq_nonNestingPlacements_sum, Polynomial.finsetSum_coeff]
+  trans B.nonNestingPlacements.sum fun P =>
+      if P.card = k then (1 : ℝ) else 0
+  · apply Finset.sum_congr rfl
+    intro P _hP
+    by_cases hcard : P.card = k
+    · simp [Polynomial.coeff_X_pow, hcard]
+    · have hne : k ≠ P.card := fun h => hcard h.symm
+      simp [Polynomial.coeff_X_pow, hcard, hne]
+  · rw [← Finset.sum_filter]
+    simp
+
 /-- The empty placement is non-nesting on every finite skew board. -/
 @[simp] theorem isNonNestingPlacement_empty (B : FiniteSkewBoard) :
     B.IsNonNestingPlacement ∅ := by
