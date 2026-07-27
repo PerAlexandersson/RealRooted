@@ -4196,6 +4196,66 @@ def snakeCrossCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
     | SnakeLetter.L => a == snakeRowCode gap && b == snakeColCode (gap + 1)
     | SnakeLetter.R => a == snakeColCode gap && b == snakeRowCode (gap + 1)
 
+/-- Cross-chain covers in an all-`R` snake word are exactly the edges
+`col d < row (d + 1)` for `d < n`. -/
+theorem snakeCrossCoverEdge_replicate_R {n a b : ℕ} :
+    snakeCrossCoverEdge (List.replicate n SnakeLetter.R) a b = true ↔
+      ∃ d, d < n ∧ a = snakeColCode d ∧ b = snakeRowCode (d + 1) := by
+  rw [snakeCrossCoverEdge]
+  simp only [List.length_replicate, List.any_eq_true, List.mem_range]
+  constructor
+  · rintro ⟨idx, hidx, hbool⟩
+    have hget : (List.replicate n SnakeLetter.R)[idx]?.getD SnakeLetter.L =
+        SnakeLetter.R := by
+      simp [hidx]
+    simp only [List.getD_eq_getElem?_getD, hget, Bool.and_eq_true, beq_iff_eq] at hbool
+    rcases hbool with ⟨ha, hb⟩
+    exact ⟨n - (idx + 1), by lia, ha, hb⟩
+  · rintro ⟨d, hd, ha, hb⟩
+    let idx := n - 1 - d
+    have hidx : idx < n := by
+      dsimp [idx]
+      lia
+    have hgap : n - (idx + 1) = d := by
+      dsimp [idx]
+      lia
+    have hget : (List.replicate n SnakeLetter.R)[idx]?.getD SnakeLetter.L =
+        SnakeLetter.R := by
+      simp [hidx]
+    exact ⟨idx, hidx, by
+      simp only [List.getD_eq_getElem?_getD, hget, ha, hgap, BEq.rfl, hb,
+        Bool.and_self]⟩
+
+/-- Cross-chain covers in an all-`L` snake word are exactly the edges
+`row d < col (d + 1)` for `d < n`. -/
+theorem snakeCrossCoverEdge_replicate_L {n a b : ℕ} :
+    snakeCrossCoverEdge (List.replicate n SnakeLetter.L) a b = true ↔
+      ∃ d, d < n ∧ a = snakeRowCode d ∧ b = snakeColCode (d + 1) := by
+  rw [snakeCrossCoverEdge]
+  simp only [List.length_replicate, List.any_eq_true, List.mem_range]
+  constructor
+  · rintro ⟨idx, hidx, hbool⟩
+    have hget : (List.replicate n SnakeLetter.L)[idx]?.getD SnakeLetter.L =
+        SnakeLetter.L := by
+      simp [hidx]
+    simp only [List.getD_eq_getElem?_getD, hget, Bool.and_eq_true, beq_iff_eq] at hbool
+    rcases hbool with ⟨ha, hb⟩
+    exact ⟨n - (idx + 1), by lia, ha, hb⟩
+  · rintro ⟨d, hd, ha, hb⟩
+    let idx := n - 1 - d
+    have hidx : idx < n := by
+      dsimp [idx]
+      lia
+    have hgap : n - (idx + 1) = d := by
+      dsimp [idx]
+      lia
+    have hget : (List.replicate n SnakeLetter.L)[idx]?.getD SnakeLetter.L =
+        SnakeLetter.L := by
+      simp [hidx]
+    exact ⟨idx, hidx, by
+      simp only [List.getD_eq_getElem?_getD, hget, ha, hgap, BEq.rfl, hb,
+        Bool.and_self]⟩
+
 /-- One cover edge of the generalized snake poset: either a chain edge or one
 of Braun--Jal's cross-chain covers. -/
 def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
