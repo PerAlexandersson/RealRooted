@@ -618,6 +618,12 @@ def skewFerrers (lam mu : List ℕ) : FiniteSkewBoard where
 def ferrers (lam : List ℕ) : FiniteSkewBoard :=
   skewFerrers lam []
 
+/-- Membership in a straight Ferrers-board cell set. -/
+@[simp] theorem mem_ferrers_cells {lam : List ℕ} {row col : ℕ} :
+    (row, col) ∈ (ferrers lam).cells ↔
+      row < lam.length ∧ 0 < col ∧ col ≤ lam.getD row 0 := by
+  simp [ferrers, skewFerrers]
+
 /-- The non-nesting rook polynomial of a zero-based skew Ferrers board. -/
 def skewFerrersRookPolynomial (lam mu : List ℕ) : ℝ[X] :=
   (skewFerrers lam mu).rookPolynomial
@@ -630,6 +636,12 @@ def ferrersRookPolynomial (lam : List ℕ) : ℝ[X] :=
 def partitionSubOne (lam : List ℕ) : List ℕ :=
   lam.map fun n => n - 1
 
+@[simp] theorem partitionSubOne_getD (lam : List ℕ) (row : ℕ) :
+    (partitionSubOne lam).getD row 0 = lam.getD row 0 - 1 := by
+  rw [partitionSubOne, List.getD_eq_getElem?_getD,
+    List.getD_eq_getElem?_getD, List.getElem?_map]
+  cases lam[row]? <;> simp
+
 /-- Keep the first `i` row-length entries. -/
 def partitionPrefix (lam : List ℕ) (i : ℕ) : List ℕ :=
   lam.take i
@@ -638,6 +650,41 @@ def partitionPrefix (lam : List ℕ) (i : ℕ) : List ℕ :=
 positive parts in weakly decreasing order. -/
 def IsIntegerPartition (lam : List ℕ) : Prop :=
   lam.Pairwise (· ≥ ·) ∧ ∀ n ∈ lam, 0 < n
+
+/-- The first-column cells of a straight Ferrers board. -/
+def firstColumnCells (lam : List ℕ) : Finset (ℕ × ℕ) :=
+  (Finset.range lam.length).image fun row => (row, 1)
+
+@[simp] theorem mem_firstColumnCells {lam : List ℕ} {a : ℕ × ℕ} :
+    a ∈ firstColumnCells lam ↔ a.1 < lam.length ∧ a.2 = 1 := by
+  classical
+  rw [firstColumnCells, Finset.mem_image]
+  constructor
+  · rintro ⟨row, hrow, rfl⟩
+    exact ⟨Finset.mem_range.mp hrow, rfl⟩
+  · rintro ⟨hrow, hcol⟩
+    refine ⟨a.1, Finset.mem_range.mpr hrow, ?_⟩
+    ext <;> simp [hcol]
+
+/-- Remove a first-column rook and shift all remaining columns left by one. -/
+def firstColumnRemainder (i : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  (P.erase (i, 1)).image fun a => (a.1, a.2 - 1)
+
+/-- Shift a placement right by one column and reinsert the first-column rook. -/
+def firstColumnExtension (i : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  insert (i, 1) (P.image fun a => (a.1, a.2 + 1))
+
+/-- Delete the first column from a placement by shifting all columns left. -/
+def deleteFirstColumnPlacement (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  P.image fun a => (a.1, a.2 - 1)
+
+/-- Add a first column to a placement by shifting all columns right. -/
+def addFirstColumnPlacement (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  P.image fun a => (a.1, a.2 + 1)
 
 /-- Skew Ferrers rook polynomials have nonnegative coefficients. -/
 theorem skewFerrersRookPolynomial_hasNonnegCoeffs (lam mu : List ℕ) :
@@ -684,6 +731,396 @@ def FerrersFirstColumnDeletionStatement (M : List ℕ → ℝ[X]) : Prop :=
 Ferrers-board rook-polynomial model. -/
 def ferrersFirstColumnDeletionStatement : Prop :=
   FerrersFirstColumnDeletionStatement ferrersRookPolynomial
+
+/-- Valid Ferrers placements with no rook in the first column. -/
+def nonNestingPlacementsWithoutFirstColumn (lam : List ℕ) :
+    Finset (Finset (ℕ × ℕ)) := by
+  classical
+  exact (ferrers lam).nonNestingPlacements.filter fun P => ∀ row, (row, 1) ∉ P
+
+/-- Valid Ferrers placements containing a fixed first-column cell. -/
+def nonNestingPlacementsWithFirstColumnCell (lam : List ℕ) (row : ℕ) :
+    Finset (Finset (ℕ × ℕ)) :=
+  (ferrers lam).nonNestingPlacementsWithCell (row, 1)
+
+/-- Valid Ferrers placements with a rook somewhere in the first column. -/
+def nonNestingPlacementsWithFirstColumn (lam : List ℕ) :
+    Finset (Finset (ℕ × ℕ)) :=
+  (firstColumnCells lam).biUnion fun a =>
+    (ferrers lam).nonNestingPlacementsWithCell a
+
+@[simp] theorem mem_nonNestingPlacementsWithoutFirstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ nonNestingPlacementsWithoutFirstColumn lam ↔
+      (ferrers lam).IsNonNestingPlacement P ∧ ∀ row, (row, 1) ∉ P := by
+  classical
+  simp [nonNestingPlacementsWithoutFirstColumn]
+
+@[simp] theorem mem_nonNestingPlacementsWithFirstColumnCell
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {row : ℕ} :
+    P ∈ nonNestingPlacementsWithFirstColumnCell lam row ↔
+      (ferrers lam).IsNonNestingPlacement P ∧ (row, 1) ∈ P := by
+  classical
+  simp [nonNestingPlacementsWithFirstColumnCell]
+
+@[simp] theorem mem_nonNestingPlacementsWithFirstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ nonNestingPlacementsWithFirstColumn lam ↔
+      (ferrers lam).IsNonNestingPlacement P ∧
+        ∃ a ∈ firstColumnCells lam, a ∈ P := by
+  classical
+  rw [nonNestingPlacementsWithFirstColumn, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨a, ha, hP⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
+  · rintro ⟨hP, a, ha, haP⟩
+    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+
+/-- First-column-free placements and placements using the first column are
+disjoint. -/
+theorem disjoint_nonNestingPlacementsWithoutFirstColumn_withFirstColumn
+    (lam : List ℕ) :
+    Disjoint (nonNestingPlacementsWithoutFirstColumn lam)
+      (nonNestingPlacementsWithFirstColumn lam) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro P hfree hfirst
+  rw [mem_nonNestingPlacementsWithoutFirstColumn] at hfree
+  rw [mem_nonNestingPlacementsWithFirstColumn] at hfirst
+  rcases hfirst.2 with ⟨a, ha, haP⟩
+  have hcol : a.2 = 1 := (mem_firstColumnCells.mp ha).2
+  have hcell : (a.1, 1) = a := by
+    ext <;> simp [hcol]
+  exact hfree.2 a.1 (by simpa [hcell] using haP)
+
+/-- Valid Ferrers placements split into those avoiding the first column and
+those using it. -/
+theorem union_nonNestingPlacementsWithoutFirstColumn_withFirstColumn
+    (lam : List ℕ) :
+    nonNestingPlacementsWithoutFirstColumn lam ∪
+        nonNestingPlacementsWithFirstColumn lam =
+      (ferrers lam).nonNestingPlacements := by
+  classical
+  ext P
+  rw [Finset.mem_union, mem_nonNestingPlacementsWithoutFirstColumn,
+    mem_nonNestingPlacementsWithFirstColumn, mem_nonNestingPlacements]
+  constructor
+  · rintro (h | h) <;> exact h.1
+  · intro hP
+    by_cases hfirst : ∃ row, (row, 1) ∈ P
+    · rcases hfirst with ⟨row, hrowP⟩
+      have hcell := hP.1 hrowP
+      rw [mem_ferrers_cells] at hcell
+      exact Or.inr ⟨hP, ⟨(row, 1), mem_firstColumnCells.mpr
+        ⟨hcell.1, rfl⟩, hrowP⟩⟩
+    · exact Or.inl ⟨hP, fun row hrowP => hfirst ⟨row, hrowP⟩⟩
+
+/-- A valid placement can contain at most one first-column cell. -/
+theorem pairwiseDisjoint_nonNestingPlacementsWithCell_firstColumn
+    (lam : List ℕ) :
+    (↑(firstColumnCells lam) : Set (ℕ × ℕ)).PairwiseDisjoint
+      (fun a => (ferrers lam).nonNestingPlacementsWithCell a) := by
+  classical
+  intro a ha b hb hne
+  change Disjoint ((ferrers lam).nonNestingPlacementsWithCell a)
+    ((ferrers lam).nonNestingPlacementsWithCell b)
+  rw [Finset.disjoint_iff_ne]
+  intro P hPa Q hQ hPQ
+  rw [mem_nonNestingPlacementsWithCell] at hPa hQ
+  subst Q
+  have hcol_a : a.2 = 1 := (mem_firstColumnCells.mp ha).2
+  have hcol_b : b.2 = 1 := (mem_firstColumnCells.mp hb).2
+  by_cases hrow : a.1 = b.1
+  · have hab : a = b := by
+      ext <;> simp [hrow, hcol_a, hcol_b]
+    exact hne hab
+  · rcases Nat.lt_or_gt_of_ne hrow with hlt | hgt
+    · have hcol := hPa.1.2.2 a hPa.2 b hQ.2 hlt
+      simp [hcol_a, hcol_b] at hcol
+    · have hcol := hPa.1.2.2 b hQ.2 a hPa.2 hgt
+      simp [hcol_a, hcol_b] at hcol
+
+/-- The sum over placements using the first column is the sum over fixed
+first-column cells. -/
+theorem sum_nonNestingPlacementsWithFirstColumn
+    (lam : List ℕ) :
+    (nonNestingPlacementsWithFirstColumn lam).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        (firstColumnCells lam).sum (fun a =>
+          ((ferrers lam).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) := by
+  classical
+  rw [nonNestingPlacementsWithFirstColumn]
+  exact Finset.sum_biUnion
+    (pairwiseDisjoint_nonNestingPlacementsWithCell_firstColumn lam)
+
+/-- The placement sum for a Ferrers board splits according to first-column
+occupancy. -/
+theorem sum_nonNestingPlacements_eq_withoutFirstColumn_add_withFirstColumn
+    (lam : List ℕ) :
+    ((ferrers lam).nonNestingPlacements).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        (nonNestingPlacementsWithoutFirstColumn lam).sum
+          (fun P => (X : ℝ[X]) ^ P.card) +
+        (firstColumnCells lam).sum (fun a =>
+          ((ferrers lam).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) := by
+  classical
+  rw [← union_nonNestingPlacementsWithoutFirstColumn_withFirstColumn lam]
+  rw [Finset.sum_union
+    (disjoint_nonNestingPlacementsWithoutFirstColumn_withFirstColumn lam)]
+  rw [sum_nonNestingPlacementsWithFirstColumn]
+
+/-- Deleting the first column sends a first-column-free placement in `lam` to
+a placement in `partitionSubOne lam`. -/
+theorem deleteFirstColumnPlacement_isNonNestingPlacement
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfree : ∀ row, (row, 1) ∉ P) :
+    (ferrers (partitionSubOne lam)).IsNonNestingPlacement
+      (deleteFirstColumnPlacement P) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [deleteFirstColumnPlacement] at hx
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases a with ⟨row, col⟩
+    have ha_cell := hP.1 ha
+    rw [mem_ferrers_cells] at ha_cell ⊢
+    have hcol_ne : col ≠ 1 := by
+      intro hcol
+      exact hfree row (by simpa [hcol] using ha)
+    have hcol_gt : 1 < col := by
+      exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
+    refine ⟨by simpa [partitionSubOne] using ha_cell.1,
+      Nat.sub_pos_of_lt hcol_gt, ?_⟩
+    rw [partitionSubOne_getD]
+    exact Nat.sub_le_sub_right ha_cell.2.2 1
+  · intro x hx y hy hxy
+    rw [deleteFirstColumnPlacement] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have hab : a ≠ b := by
+      intro hab
+      subst b
+      exact hxy rfl
+    exact hP.2.1 a ha b hb hab
+  · intro x hx y hy hxy
+    rw [deleteFirstColumnPlacement] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have hrow : a.1 < b.1 := hxy
+    have hcol := hP.2.2 a ha b hb hrow
+    have hb_cell := hP.1 hb
+    rw [mem_ferrers_cells] at hb_cell
+    have hb_col_ne : b.2 ≠ 1 := by
+      intro hcol_one
+      have hb_eq : (b.1, 1) = b := by
+        ext <;> simp [hcol_one]
+      exact hfree b.1 (by simpa [hb_eq] using hb)
+    have hb_col_gt : 1 < b.2 := by
+      exact lt_of_le_of_ne (Nat.succ_le_of_lt hb_cell.2.1) hb_col_ne.symm
+    exact Nat.sub_lt_sub_right hb_cell.2.1 hcol
+
+/-- Adding a first column sends a placement of `partitionSubOne lam` back to a
+first-column-free placement in `lam`. -/
+theorem addFirstColumnPlacement_isNonNestingPlacement
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (ferrers (partitionSubOne lam)).IsNonNestingPlacement P) :
+    (ferrers lam).IsNonNestingPlacement (addFirstColumnPlacement P) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [addFirstColumnPlacement] at hx
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases a with ⟨row, col⟩
+    have ha_cell := hP.1 ha
+    rw [mem_ferrers_cells] at ha_cell ⊢
+    refine ⟨by simpa [partitionSubOne] using ha_cell.1, by lia, ?_⟩
+    rw [partitionSubOne_getD] at ha_cell
+    lia
+  · intro x hx y hy hxy
+    rw [addFirstColumnPlacement] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have hab : a ≠ b := by
+      intro hab
+      subst b
+      exact hxy rfl
+    exact hP.2.1 a ha b hb hab
+  · intro x hx y hy hxy
+    rw [addFirstColumnPlacement] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    exact Nat.add_lt_add_right (hP.2.2 a ha b hb hxy) 1
+
+/-- A shifted placement from `partitionSubOne lam` avoids the first column. -/
+theorem addFirstColumnPlacement_avoids_firstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (ferrers (partitionSubOne lam)).IsNonNestingPlacement P) :
+    ∀ row, (row, 1) ∉ addFirstColumnPlacement P := by
+  intro row hrow
+  rw [addFirstColumnPlacement] at hrow
+  rcases Finset.mem_image.mp hrow with ⟨a, ha, hmap⟩
+  have hcol : a.2 + 1 = 1 := by
+    simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+  have ha_cell := hP.1 ha
+  rw [mem_ferrers_cells] at ha_cell
+  lia
+
+/-- Deleting the first column after adding it returns the original placement. -/
+theorem deleteFirstColumnPlacement_addFirstColumnPlacement
+    (P : Finset (ℕ × ℕ)) :
+    deleteFirstColumnPlacement (addFirstColumnPlacement P) = P := by
+  classical
+  ext x
+  constructor
+  · intro hx
+    rw [deleteFirstColumnPlacement, addFirstColumnPlacement] at hx
+    rcases Finset.mem_image.mp hx with ⟨y, hy, hxy⟩
+    rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
+    subst y
+    have hxa : x = a := by
+      simpa using hxy.symm
+    simpa [hxa] using ha
+  · intro hx
+    rw [deleteFirstColumnPlacement, addFirstColumnPlacement]
+    refine Finset.mem_image.mpr ⟨(x.1, x.2 + 1), ?_, ?_⟩
+    · exact Finset.mem_image.mpr ⟨x, hx, rfl⟩
+    · simp
+
+/-- Adding back a deleted first column recovers a placement that avoided the
+first column. -/
+theorem addFirstColumnPlacement_deleteFirstColumnPlacement
+    {P : Finset (ℕ × ℕ)} (hcol : ∀ a ∈ P, 1 < a.2) :
+    addFirstColumnPlacement (deleteFirstColumnPlacement P) = P := by
+  classical
+  ext x
+  constructor
+  · intro hx
+    rw [addFirstColumnPlacement, deleteFirstColumnPlacement] at hx
+    rcases Finset.mem_image.mp hx with ⟨y, hy, hxy⟩
+    rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
+    subst y
+    have hone : 1 ≤ a.2 := Nat.le_of_lt (hcol a ha)
+    have hxa : x = a := by
+      simpa [Nat.sub_add_cancel hone] using hxy.symm
+    simpa [hxa] using ha
+  · intro hx
+    rw [addFirstColumnPlacement, deleteFirstColumnPlacement]
+    refine Finset.mem_image.mpr ⟨(x.1, x.2 - 1), ?_, ?_⟩
+    · exact Finset.mem_image.mpr ⟨x, hx, rfl⟩
+    · have hone : 1 ≤ x.2 := Nat.le_of_lt (hcol x hx)
+      ext <;> simp [Nat.sub_add_cancel hone]
+
+/-- Deleting the first column preserves cardinality for placements avoiding
+that column. -/
+theorem deleteFirstColumnPlacement_card
+    {P : Finset (ℕ × ℕ)} (hcol : ∀ a ∈ P, 1 < a.2) :
+    (deleteFirstColumnPlacement P).card = P.card := by
+  classical
+  rw [deleteFirstColumnPlacement]
+  have hinj : Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - 1)) ↑P := by
+    intro a ha b hb hmap
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_sub : a.2 - 1 = b.2 - 1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have haone : 1 ≤ a.2 := Nat.le_of_lt (hcol a ha)
+    have hbone : 1 ≤ b.2 := Nat.le_of_lt (hcol b hb)
+    have hcol_eq : a.2 = b.2 := by
+      calc
+        a.2 = (a.2 - 1) + 1 := (Nat.sub_add_cancel haone).symm
+        _ = (b.2 - 1) + 1 := by rw [hcol_sub]
+        _ = b.2 := Nat.sub_add_cancel hbone
+    exact Prod.ext hrow hcol_eq
+  exact Finset.card_image_of_injOn hinj
+
+/-- A first-column-free valid placement has every rook strictly after the first
+column. -/
+theorem one_lt_col_of_mem_withoutFirstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : P ∈ nonNestingPlacementsWithoutFirstColumn lam) :
+    ∀ a ∈ P, 1 < a.2 := by
+  rw [mem_nonNestingPlacementsWithoutFirstColumn] at hP
+  intro a ha
+  have ha_cell := hP.1.1 ha
+  rw [mem_ferrers_cells] at ha_cell
+  have hcol_ne : a.2 ≠ 1 := by
+    intro hcol
+    exact hP.2 a.1 (by
+      have ha_eq : (a.1, 1) = a := by
+        ext <;> simp [hcol]
+      simpa [ha_eq] using ha)
+  exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
+
+/-- Deleting the first column identifies the first-column-free placement slice
+with placements on `partitionSubOne lam`. -/
+theorem deleteFirstColumnPlacement_image_withoutFirstColumn (lam : List ℕ) :
+    (nonNestingPlacementsWithoutFirstColumn lam).image deleteFirstColumnPlacement =
+      (ferrers (partitionSubOne lam)).nonNestingPlacements := by
+  classical
+  ext Q
+  constructor
+  · intro hQ
+    rcases Finset.mem_image.mp hQ with ⟨P, hP, rfl⟩
+    rw [mem_nonNestingPlacementsWithoutFirstColumn] at hP
+    exact mem_nonNestingPlacements.mpr
+      (deleteFirstColumnPlacement_isNonNestingPlacement hP.1 hP.2)
+  · intro hQ
+    have hQvalid := mem_nonNestingPlacements.mp hQ
+    refine Finset.mem_image.mpr ⟨addFirstColumnPlacement Q, ?_, ?_⟩
+    · rw [mem_nonNestingPlacementsWithoutFirstColumn]
+      exact ⟨addFirstColumnPlacement_isNonNestingPlacement hQvalid,
+        addFirstColumnPlacement_avoids_firstColumn hQvalid⟩
+    · exact deleteFirstColumnPlacement_addFirstColumnPlacement Q
+
+/-- Deleting the first column is injective on first-column-free placements. -/
+theorem deleteFirstColumnPlacement_injOn_withoutFirstColumn (lam : List ℕ) :
+    Set.InjOn deleteFirstColumnPlacement
+      ↑(nonNestingPlacementsWithoutFirstColumn lam) := by
+  intro P hP Q hQ hdel
+  calc
+    P = addFirstColumnPlacement (deleteFirstColumnPlacement P) :=
+      (addFirstColumnPlacement_deleteFirstColumnPlacement
+        (one_lt_col_of_mem_withoutFirstColumn hP)).symm
+    _ = addFirstColumnPlacement (deleteFirstColumnPlacement Q) := by rw [hdel]
+    _ = Q :=
+      addFirstColumnPlacement_deleteFirstColumnPlacement
+        (one_lt_col_of_mem_withoutFirstColumn hQ)
+
+/-- The no-first-column contribution is the rook polynomial after deleting the
+first column. -/
+theorem sum_nonNestingPlacementsWithoutFirstColumn_eq_partitionSubOne
+    (lam : List ℕ) :
+    (nonNestingPlacementsWithoutFirstColumn lam).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        ferrersRookPolynomial (partitionSubOne lam) := by
+  classical
+  let S := nonNestingPlacementsWithoutFirstColumn lam
+  let T := (ferrers (partitionSubOne lam)).nonNestingPlacements
+  have himage : S.image deleteFirstColumnPlacement = T := by
+    simpa [S, T] using deleteFirstColumnPlacement_image_withoutFirstColumn lam
+  have hinj : Set.InjOn deleteFirstColumnPlacement ↑S := by
+    simpa [S] using deleteFirstColumnPlacement_injOn_withoutFirstColumn lam
+  have hsum_image :
+      (S.image deleteFirstColumnPlacement).sum (fun Q => (X : ℝ[X]) ^ Q.card) =
+        S.sum (fun P => (X : ℝ[X]) ^ (deleteFirstColumnPlacement P).card) := by
+    simpa using
+      (Finset.sum_image (s := S) (g := deleteFirstColumnPlacement)
+        (f := fun Q => (X : ℝ[X]) ^ Q.card) hinj)
+  calc
+    S.sum (fun P => (X : ℝ[X]) ^ P.card)
+        = S.sum (fun P => (X : ℝ[X]) ^ (deleteFirstColumnPlacement P).card) := by
+          apply Finset.sum_congr rfl
+          intro P hP
+          rw [deleteFirstColumnPlacement_card
+            (one_lt_col_of_mem_withoutFirstColumn (by simpa [S] using hP))]
+    _ = T.sum (fun Q => (X : ℝ[X]) ^ Q.card) := by
+          rw [← hsum_image, himage]
+    _ = ferrersRookPolynomial (partitionSubOne lam) := by
+          rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
 
 /-- A finite list sum of nonnegative-coefficient polynomials has nonnegative
 coefficients. -/
