@@ -1813,19 +1813,6 @@ lemma interlace_core_posLead {a b u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     nlinarith [sq_nonneg a, sq_nonneg b]
   · rw [hb₁, hb₂]; ring
 
-lemma roots_quadratic_posLead {a b c : ℝ} (ha : 0 < a) (hd : 0 ≤ b ^ 2 - 4 * a * c) :
-    (C a * X ^ 2 + C b * X + C c).roots
-      = {(-b - Real.sqrt (b ^ 2 - 4 * a * c)) / (2 * a),
-         (-b + Real.sqrt (b ^ 2 - 4 * a * c)) / (2 * a)} := by
-  have hs₂ : Real.sqrt (b ^ 2 - 4 * a * c) ^ 2 = b ^ 2 - 4 * a * c := Real.sq_sqrt hd
-  apply (Polynomial.roots_quadratic_eq_pair_iff_of_ne_zero'
-    (a := a) (b := b) (c := c) (ha := ne_of_gt ha)).2
-  constructor
-  · field_simp
-    ring
-  · field_simp
-    nlinarith [hs₂]
-
 theorem prec_of_stable_two {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)

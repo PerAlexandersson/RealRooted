@@ -546,5 +546,126 @@ theorem modifiedNarayanaPolynomial_roots_nonpos (n : ℕ) :
     ∀ r ∈ (modifiedNarayanaPolynomial n).roots, r ≤ 0 :=
   (modifiedNarayanaPolynomial_isPFPolynomial n).roots_nonpos
 
+/-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+interlacing form. -/
+theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
+    Interlaces (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
+  let a : ℝ := (-(5 : ℝ) - Real.sqrt (21 : ℝ)) / 2
+  let b : ℝ := -(1 : ℝ)
+  let c : ℝ := (-(5 : ℝ) + Real.sqrt (21 : ℝ)) / 2
+  let u : ℝ := (-(8 : ℝ) - Real.sqrt (28 : ℝ)) / 6
+  let v : ℝ := (-(8 : ℝ) + Real.sqrt (28 : ℝ)) / 6
+  have hGform :
+      FiniteSkewBoard.auxiliaryG 3 =
+        C (3 : ℝ) * X ^ 2 + C (8 : ℝ) * X + C (3 : ℝ) := by
+    rw [FiniteSkewBoard.auxiliaryG_three]
+    have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+    have hC8 : (C (8 : ℝ) : ℝ[X]) = 8 := Polynomial.C_eq_natCast (R := ℝ) 8
+    rw [hC3, hC8]
+    ring_nf
+  have hGdeg : (FiniteSkewBoard.auxiliaryG 3).natDegree = 2 := by
+    rw [FiniteSkewBoard.auxiliaryG_three]
+    compute_degree!
+  have hG_ne : FiniteSkewBoard.auxiliaryG 3 ≠ 0 := by
+    intro hzero
+    rw [hzero] at hGdeg
+    norm_num at hGdeg
+  have hG_splits : (FiniteSkewBoard.auxiliaryG 3).Splits := by
+    rw [hGform]
+    exact quadraticPoly_splits_of_discrim_nonneg (by norm_num) (by norm_num [discrim])
+  have hG_roots : (FiniteSkewBoard.auxiliaryG 3).roots = (↑[u, v] : Multiset ℝ) := by
+    rw [hGform]
+    rw [roots_quadratic_posLead (a := (3 : ℝ)) (b := (8 : ℝ))
+      (c := (3 : ℝ)) (by norm_num) (by norm_num)]
+    dsimp [u, v]
+    norm_num
+    rfl
+  have hPfactor :
+      modifiedNarayanaPolynomial 3 =
+        (X - C (-(1 : ℝ))) *
+          (C (1 : ℝ) * X ^ 2 + C (5 : ℝ) * X + C (1 : ℝ)) := by
+    rw [modifiedNarayanaPolynomial_three]
+    have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+    have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+    have hCneg1 : (C (-(1 : ℝ)) : ℝ[X]) = -1 := by simp
+    rw [hC5, hC6, hCneg1]
+    norm_num
+    ring_nf
+  have hquad_deg :
+      (C (1 : ℝ) * X ^ 2 + C (5 : ℝ) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquad_ne :
+      (C (1 : ℝ) * X ^ 2 + C (5 : ℝ) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquad_deg
+    norm_num at hquad_deg
+  have hP_roots :
+      (modifiedNarayanaPolynomial 3).roots = (↑[a, b, c] : Multiset ℝ) := by
+    rw [hPfactor]
+    rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero (-(1 : ℝ))) hquad_ne)]
+    rw [roots_X_sub_C]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := (5 : ℝ))
+      (c := (1 : ℝ)) (by norm_num) (by norm_num)]
+    dsimp [a, b, c]
+    norm_num
+    rw [Multiset.cons_swap]
+    rfl
+  have hP_ne : modifiedNarayanaPolynomial 3 ≠ 0 := modifiedNarayanaPolynomial_ne_zero 3
+  have hP_splits : (modifiedNarayanaPolynomial 3).Splits :=
+    modifiedNarayanaPolynomial_splits 3
+  have hPdeg : (modifiedNarayanaPolynomial 3).natDegree = 3 := by
+    rw [modifiedNarayanaPolynomial_natDegree]
+  have h21 : Real.sqrt (21 : ℝ) ^ 2 = (21 : ℝ) := Real.sq_sqrt (by norm_num)
+  have h28 : Real.sqrt (28 : ℝ) ^ 2 = (28 : ℝ) := Real.sq_sqrt (by norm_num)
+  have h21nonneg : 0 ≤ Real.sqrt (21 : ℝ) := Real.sqrt_nonneg _
+  have h28nonneg : 0 ≤ Real.sqrt (28 : ℝ) := Real.sqrt_nonneg _
+  have h3le21 : (3 : ℝ) ≤ Real.sqrt (21 : ℝ) := by nlinarith
+  have h2le28 : (2 : ℝ) ≤ Real.sqrt (28 : ℝ) := by nlinarith
+  have hab : a ≤ b := by
+    dsimp [a, b]
+    nlinarith
+  have hbc : b ≤ c := by
+    dsimp [b, c]
+    nlinarith
+  have huv : u ≤ v := by
+    dsimp [u, v]
+    nlinarith
+  have hau : a ≤ u := by
+    dsimp [a, u]
+    nlinarith
+  have hub : u ≤ b := by
+    dsimp [u, b]
+    nlinarith
+  have hbv : b ≤ v := by
+    dsimp [b, v]
+    nlinarith
+  have hvc : v ≤ c := by
+    dsimp [v, c]
+    nlinarith [sq_nonneg (3 * Real.sqrt (21 : ℝ) - (7 + Real.sqrt (28 : ℝ)))]
+  refine ⟨⟨hP_ne, hP_splits⟩, ⟨hG_ne, hG_splits⟩, ?_, [a, b, c], [u, v],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hGdeg, hPdeg]
+  · simp [hab, hbc, hab.trans hbc]
+  · simp [huv]
+  · rw [hP_roots]
+  · rw [hG_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc]
+
+/-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
+Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_three :
+    Prec (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
+  exact lemma33AuxiliaryGInterlaces_modified_three_interlaces.toPrec
+
+/-- The checked initial cases `n = 1, 2, 3` of Braun--Jal Lemma 3.3, for the
+concrete modified Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_three
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₃ : n ≤ 3) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+  interval_cases n
+  · exact lemma33AuxiliaryGInterlaces_modified_base
+  · exact lemma33AuxiliaryGInterlaces_modified_two
+  · exact lemma33AuxiliaryGInterlaces_modified_three
+
 end GeneralizedSnakePosets
 end RealRooted

@@ -63,6 +63,23 @@ lemma quadraticPoly_splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     linear_combination hx
   exact Polynomial.Splits.of_natDegree_eq_two hdeg heval
 
+/-- Roots of a real quadratic with positive leading coefficient and
+nonnegative discriminant, ordered increasingly. -/
+lemma roots_quadratic_posLead {a b c : ℝ} (ha : 0 < a)
+    (hd : 0 ≤ b ^ 2 - 4 * a * c) :
+    (C a * X ^ 2 + C b * X + C c).roots =
+      {(-b - Real.sqrt (b ^ 2 - 4 * a * c)) / (2 * a),
+        (-b + Real.sqrt (b ^ 2 - 4 * a * c)) / (2 * a)} := by
+  have hs₂ : Real.sqrt (b ^ 2 - 4 * a * c) ^ 2 = b ^ 2 - 4 * a * c :=
+    Real.sq_sqrt hd
+  apply (Polynomial.roots_quadratic_eq_pair_iff_of_ne_zero'
+    (a := a) (b := b) (c := c) (ha := ne_of_gt ha)).2
+  constructor
+  · field_simp
+    ring
+  · field_simp
+    nlinarith [hs₂]
+
 /-- A real polynomial written in quadratic form splits when its discriminant
 is nonnegative; if the quadratic coefficient is zero, this is the linear case.
 -/
