@@ -403,6 +403,15 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_s
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
 
+/-- The `n = 6` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_six :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaCoeffPolynomial 6 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    FiniteSkewBoard.auxiliaryG_five
+
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
 theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
@@ -638,6 +647,15 @@ theorem narayanaAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_statem
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
 
+/-- The `n = 6` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_six :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaPolynomial 6 -
+        (1 + X) * modifiedNarayanaPolynomial 5 :=
+  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    FiniteSkewBoard.auxiliaryG_five
+
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
@@ -788,6 +806,16 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_bottom_row_expansion_
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
     hn₁ hn₆
+
+/-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
+the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_six
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
+    FiniteSkewBoard.auxiliaryG_five hn₁ hn₆
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/

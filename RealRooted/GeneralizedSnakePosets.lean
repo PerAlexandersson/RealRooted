@@ -712,6 +712,35 @@ def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where
     (i, c) ∈ (truncatedStaircase n (i + 1)).cells ↔ c < n - i := by
   simp
 
+/-- The cells in the bottom row of `mu_{n,i+1}`. -/
+def bottomRowCells (n i : ℕ) : Finset (ℕ × ℕ) :=
+  (Finset.range (n - i)).image fun c => (i, c)
+
+/-- Membership in the bottom-row cell set, in column coordinates. -/
+@[simp] theorem bottomRowCell_mem_bottomRowCells {n i c : ℕ} :
+    (i, c) ∈ bottomRowCells n i ↔ c < n - i := by
+  classical
+  rw [bottomRowCells, Finset.mem_image]
+  constructor
+  · rintro ⟨d, hd, hdc⟩
+    have hc : d = c := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hdc
+    simpa [hc] using hd
+  · intro hc
+    exact ⟨c, by simpa using hc, rfl⟩
+
+/-- Membership in the bottom-row cell set, for arbitrary cells. -/
+@[simp] theorem mem_bottomRowCells {n i : ℕ} {a : ℕ × ℕ} :
+    a ∈ bottomRowCells n i ↔ a.1 = i ∧ a.2 < n - i := by
+  classical
+  rw [bottomRowCells, Finset.mem_image]
+  constructor
+  · rintro ⟨c, hc, rfl⟩
+    exact ⟨rfl, by simpa using hc⟩
+  · rintro ⟨hrow, hcol⟩
+    refine ⟨a.2, by simpa using hcol, ?_⟩
+    ext <;> simp [hrow]
+
 /-- The non-nesting rook polynomial of the truncated staircase `mu_{n,i}`. -/
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   (truncatedStaircase n i).rookPolynomial
@@ -870,6 +899,158 @@ theorem truncatedStaircase_isNonNestingPlacement_of_succ_of_no_bottom
       ext <;> simp [hrow]
     exact hno_bottom a.2 (by simpa [hcell] using ha)
   exact lt_of_le_of_ne hrow_le hrow_ne
+
+/-- Valid placements in `mu_{n,i+1}` with no bottom-row rook. -/
+def nonNestingPlacementsWithoutBottomRow (n i : ℕ) :
+    Finset (Finset (ℕ × ℕ)) := by
+  classical
+  exact (truncatedStaircase n (i + 1)).nonNestingPlacements.filter fun P =>
+    ∀ c, (i, c) ∉ P
+
+/-- Membership in the no-bottom-row placement slice. -/
+@[simp] theorem mem_nonNestingPlacementsWithoutBottomRow
+    {n i : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ nonNestingPlacementsWithoutBottomRow n i ↔
+      (truncatedStaircase n (i + 1)).IsNonNestingPlacement P ∧
+        ∀ c, (i, c) ∉ P := by
+  classical
+  simp [nonNestingPlacementsWithoutBottomRow]
+
+/-- The no-bottom-row slice in `mu_{n,i+1}` is exactly the placement set for
+`mu_{n,i}`. -/
+theorem nonNestingPlacementsWithoutBottomRow_eq_nonNestingPlacements
+    (n i : ℕ) :
+    nonNestingPlacementsWithoutBottomRow n i =
+      (truncatedStaircase n i).nonNestingPlacements := by
+  classical
+  ext P
+  rw [mem_nonNestingPlacementsWithoutBottomRow, mem_nonNestingPlacements]
+  constructor
+  · intro h
+    exact truncatedStaircase_isNonNestingPlacement_of_succ_of_no_bottom h.1 h.2
+  · intro hP
+    refine ⟨truncatedStaircase_isNonNestingPlacement_succ hP, ?_⟩
+    intro c hc
+    have hcell := hP.1 hc
+    rw [mem_truncatedStaircase_cells] at hcell
+    exact (Nat.lt_irrefl i hcell.1).elim
+
+/-- The contribution of placements with no bottom-row rook is the rook
+polynomial of `mu_{n,i}`. -/
+theorem sum_nonNestingPlacementsWithoutBottomRow_eq_truncatedStaircaseRookPolynomial
+    (n i : ℕ) :
+    (nonNestingPlacementsWithoutBottomRow n i).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        truncatedStaircaseRookPolynomial n i := by
+  rw [nonNestingPlacementsWithoutBottomRow_eq_nonNestingPlacements,
+    truncatedStaircaseRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
+
+/-- Valid placements in `mu_{n,i+1}` with a bottom-row rook. -/
+def nonNestingPlacementsWithBottomRow (n i : ℕ) : Finset (Finset (ℕ × ℕ)) :=
+  (bottomRowCells n i).biUnion fun a =>
+    (truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a
+
+/-- Membership in the bottom-row placement slice. -/
+@[simp] theorem mem_nonNestingPlacementsWithBottomRow
+    {n i : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ nonNestingPlacementsWithBottomRow n i ↔
+      (truncatedStaircase n (i + 1)).IsNonNestingPlacement P ∧
+        ∃ a ∈ bottomRowCells n i, a ∈ P := by
+  classical
+  rw [nonNestingPlacementsWithBottomRow, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨a, ha, hP⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
+  · rintro ⟨hP, a, ha, haP⟩
+    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+
+/-- The fixed bottom-row placement slices are pairwise disjoint. -/
+theorem pairwiseDisjoint_nonNestingPlacementsWithCell_bottomRow (n i : ℕ) :
+    (↑(bottomRowCells n i) : Set (ℕ × ℕ)).PairwiseDisjoint
+      (fun a => (truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a) := by
+  classical
+  intro a ha b hb hne
+  change Disjoint ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a)
+    ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell b)
+  rw [Finset.disjoint_iff_ne]
+  intro P hPa Q hQ hPQ
+  rw [mem_nonNestingPlacementsWithCell] at hPa hQ
+  subst Q
+  have hrow_ne := hPa.1.2.1 a hPa.2 b hQ.2 hne
+  have ha_row : a.1 = i := (mem_bottomRowCells.mp ha).1
+  have hb_row : b.1 = i := (mem_bottomRowCells.mp hb).1
+  exact hrow_ne (by rw [ha_row, hb_row])
+
+/-- The no-bottom-row and with-bottom-row placement slices are disjoint. -/
+theorem disjoint_nonNestingPlacementsWithoutBottomRow_withBottomRow
+    (n i : ℕ) :
+    Disjoint (nonNestingPlacementsWithoutBottomRow n i)
+      (nonNestingPlacementsWithBottomRow n i) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro P hP hbottom
+  rw [mem_nonNestingPlacementsWithoutBottomRow] at hP
+  rw [mem_nonNestingPlacementsWithBottomRow] at hbottom
+  rcases hbottom.2 with ⟨a, ha, haP⟩
+  have hrow : a.1 = i := (mem_bottomRowCells.mp ha).1
+  have hcell : (i, a.2) = a := by
+    ext <;> simp [hrow]
+  exact hP.2 a.2 (by simpa [hcell] using haP)
+
+/-- Valid placements in `mu_{n,i+1}` split into no-bottom-row placements and
+placements with a bottom-row rook. -/
+theorem union_nonNestingPlacementsWithoutBottomRow_withBottomRow
+    (n i : ℕ) :
+    nonNestingPlacementsWithoutBottomRow n i ∪
+        nonNestingPlacementsWithBottomRow n i =
+      (truncatedStaircase n (i + 1)).nonNestingPlacements := by
+  classical
+  ext P
+  rw [Finset.mem_union, mem_nonNestingPlacementsWithoutBottomRow,
+    mem_nonNestingPlacementsWithBottomRow, mem_nonNestingPlacements]
+  constructor
+  · rintro (h | h) <;> exact h.1
+  · intro hP
+    by_cases hbottom : ∃ a ∈ bottomRowCells n i, a ∈ P
+    · exact Or.inr ⟨hP, hbottom⟩
+    · left
+      refine ⟨hP, ?_⟩
+      intro c hc
+      have hcell := hP.1 hc
+      rw [bottomRow_mem_truncatedStaircase_cells] at hcell
+      exact hbottom ⟨(i, c), by simpa using hcell, hc⟩
+
+/-- The sum over all placements with a bottom-row rook is the sum of the
+fixed-bottom-row slices. -/
+theorem sum_nonNestingPlacementsWithBottomRow
+    (n i : ℕ) :
+    (nonNestingPlacementsWithBottomRow n i).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        (bottomRowCells n i).sum (fun a =>
+          ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) := by
+  classical
+  rw [nonNestingPlacementsWithBottomRow]
+  exact Finset.sum_biUnion
+    (pairwiseDisjoint_nonNestingPlacementsWithCell_bottomRow n i)
+
+/-- The sum over all placements in `mu_{n,i+1}` splits into the no-bottom-row
+slice plus the bottom-row slices. -/
+theorem sum_nonNestingPlacements_succ_eq_withoutBottomRow_add_bottomRow
+    (n i : ℕ) :
+    ((truncatedStaircase n (i + 1)).nonNestingPlacements).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        (nonNestingPlacementsWithoutBottomRow n i).sum
+          (fun P => (X : ℝ[X]) ^ P.card) +
+        (bottomRowCells n i).sum (fun a =>
+          ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) := by
+  classical
+  rw [← union_nonNestingPlacementsWithoutBottomRow_withBottomRow n i]
+  rw [Finset.sum_union
+    (disjoint_nonNestingPlacementsWithoutBottomRow_withBottomRow n i)]
+  rw [sum_nonNestingPlacementsWithBottomRow]
 
 /-- Shifting columns right and then left by the same amount returns the
 original finite cell set. -/
@@ -1141,6 +1322,43 @@ theorem sum_nonNestingPlacementsWithCell_eq_mul_truncatedStaircaseRookPolynomial
         X * truncatedStaircaseRookPolynomial (n - c - 1) i :=
   sum_nonNestingPlacementsWithCell_eq_mul_truncatedStaircaseRookPolynomial
     (by simpa using hc)
+
+/-- Summing the fixed-bottom-row contributions over all bottom-row cells gives
+the bottom-row term in the truncated-staircase expansion. -/
+theorem sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum
+    (n i : ℕ) :
+    (bottomRowCells n i).sum (fun a =>
+      ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a).sum
+        (fun P => (X : ℝ[X]) ^ P.card)) =
+      X * ((List.range (n - i)).map fun c =>
+        truncatedStaircaseRookPolynomial (n - c - 1) i).sum := by
+  classical
+  have hinj : Set.InjOn (fun c : ℕ => (i, c)) ↑(Finset.range (n - i)) := by
+    intro a _ha b _hb h
+    simpa using congrArg (fun x : ℕ × ℕ => x.2) h
+  rw [bottomRowCells, Finset.sum_image hinj]
+  calc
+    (Finset.range (n - i)).sum (fun c =>
+        ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell (i, c)).sum
+          (fun P => (X : ℝ[X]) ^ P.card))
+        = (Finset.range (n - i)).sum (fun c =>
+            X * truncatedStaircaseRookPolynomial (n - c - 1) i) := by
+          apply Finset.sum_congr rfl
+          intro c hc
+          exact
+            sum_nonNestingPlacementsWithCell_eq_mul_truncatedStaircaseRookPolynomial_of_lt
+              (Finset.mem_range.mp hc)
+    _ = (List.map (fun c => X * truncatedStaircaseRookPolynomial (n - c - 1) i)
+          (List.range (n - i))).sum := by
+          rw [← List.sum_toFinset (fun c =>
+            X * truncatedStaircaseRookPolynomial (n - c - 1) i) List.nodup_range]
+          congr 1
+          ext c
+          simp
+    _ = X * ((List.range (n - i)).map fun c =>
+          truncatedStaircaseRookPolynomial (n - c - 1) i).sum := by
+          exact List.sum_map_mul_left (List.range (n - i))
+            (fun c => truncatedStaircaseRookPolynomial (n - c - 1) i) X
 
 /-- The truncated staircase with zero rows is the empty board. -/
 @[simp] theorem truncatedStaircase_zero_rows (n : ℕ) :
@@ -1729,6 +1947,15 @@ def truncatedStaircaseBottomRowExpansion (n i : ℕ) : Prop :=
       X * ((List.range (n - i)).map fun c =>
         truncatedStaircaseRookPolynomial (n - c - 1) i).sum
 
+/-- The bottom-row expansion holds for every truncated staircase. -/
+theorem truncatedStaircaseBottomRowExpansion_all (n i : ℕ) :
+    truncatedStaircaseBottomRowExpansion n i := by
+  dsimp [truncatedStaircaseBottomRowExpansion]
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
+  rw [sum_nonNestingPlacements_succ_eq_withoutBottomRow_add_bottomRow]
+  rw [sum_nonNestingPlacementsWithoutBottomRow_eq_truncatedStaircaseRookPolynomial]
+  rw [sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum]
+
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
 def auxiliaryG : ℕ → ℝ[X] :=
@@ -2010,6 +2237,32 @@ theorem auxiliaryG_five_of_bottom_row_expansion_statements
     simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
       add_zero] at hbottom54
     simpa [add_assoc] using hbottom54)
+
+/-- The three-row `n = 5` truncated-staircase rook polynomial. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_five_three :
+    truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3 :=
+  truncatedStaircaseRookPolynomial_five_three_of_bottom_row_expansion_statement
+    (truncatedStaircaseBottomRowExpansion_all 5 2)
+
+/-- The four-row `n = 5` truncated-staircase rook polynomial. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_five_four :
+    truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 :=
+  truncatedStaircaseRookPolynomial_five_four_of_bottom_row_expansion_statement
+    truncatedStaircaseRookPolynomial_five_three
+    (truncatedStaircaseBottomRowExpansion_all 5 3)
+
+/-- The finite-board auxiliary polynomial `G_5` is
+`5 + 40X + 75X^2 + 40X^3 + 5X^4`. -/
+@[simp] theorem auxiliaryG_five :
+    auxiliaryG 5 =
+      5 + C (40 : ℝ) * X + C (75 : ℝ) * X ^ 2 +
+        C (40 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 :=
+  auxiliaryG_five_of_bottom_row_expansion_statements
+    (truncatedStaircaseBottomRowExpansion_all 5 2)
+    (truncatedStaircaseBottomRowExpansion_all 5 3)
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
