@@ -1011,6 +1011,92 @@ polynomial `1 + 7X + 6X^2`. -/
   rw [hC6, hC7]
   ring_nf
 
+/-- The three-row truncated staircase with row lengths four, three, and two
+has rook polynomial `1 + 9X + 14X^2 + 4X^3`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_four_three :
+    truncatedStaircaseRookPolynomial 4 3 =
+      1 + C (9 : ℝ) * X + C (14 : ℝ) * X ^ 2 + C (4 : ℝ) * X ^ 3 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅,
+      {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)},
+      {(1, 0)}, {(1, 1)}, {(1, 2)}, {(2, 0)}, {(2, 1)},
+      {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+      {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
+      {(0, 1), (2, 0)}, {(0, 2), (2, 0)}, {(0, 2), (2, 1)},
+      {(0, 3), (2, 0)}, {(0, 3), (2, 1)},
+      {(1, 1), (2, 0)}, {(1, 2), (2, 0)}, {(1, 2), (2, 1)},
+      {(0, 2), (1, 1), (2, 0)}, {(0, 3), (1, 1), (2, 0)},
+      {(0, 3), (1, 2), (2, 0)}, {(0, 3), (1, 2), (2, 1)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  have hplacements_toFinset :
+      ({∅,
+        {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)},
+        {(1, 0)}, {(1, 1)}, {(1, 2)}, {(2, 0)}, {(2, 1)},
+        {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+        {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
+        {(0, 1), (2, 0)}, {(0, 2), (2, 0)}, {(0, 2), (2, 1)},
+        {(0, 3), (2, 0)}, {(0, 3), (2, 1)},
+        {(1, 1), (2, 0)}, {(1, 2), (2, 0)}, {(1, 2), (2, 1)},
+        {(0, 2), (1, 1), (2, 0)}, {(0, 3), (1, 1), (2, 0)},
+        {(0, 3), (1, 2), (2, 0)}, {(0, 3), (1, 2), (2, 1)}} :
+        Finset (Finset (ℕ × ℕ))) = placements.toFinset := by
+    decide
+  have hcells :
+      (truncatedStaircase 4 3).cells =
+        ({(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2),
+          (2, 0), (2, 1)} : Finset (ℕ × ℕ)) := by
+    decide
+  have hplacements_bool :
+      ({(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2),
+          (2, 0), (2, 1)} : Finset (ℕ × ℕ)).powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 4 3) P) =
+        ({∅,
+          {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)},
+          {(1, 0)}, {(1, 1)}, {(1, 2)}, {(2, 0)}, {(2, 1)},
+          {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+          {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
+          {(0, 1), (2, 0)}, {(0, 2), (2, 0)}, {(0, 2), (2, 1)},
+          {(0, 3), (2, 0)}, {(0, 3), (2, 1)},
+          {(1, 1), (2, 0)}, {(1, 2), (2, 0)}, {(1, 2), (2, 1)},
+          {(0, 2), (1, 1), (2, 0)}, {(0, 3), (1, 1), (2, 0)},
+          {(0, 3), (1, 2), (2, 0)}, {(0, 3), (1, 2), (2, 1)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    decide
+  have hplacements :
+      (truncatedStaircase 4 3).cells.powerset.filter
+        (fun P => (truncatedStaircase 4 3).IsNonNestingPlacement P) =
+        ({∅,
+          {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)},
+          {(1, 0)}, {(1, 1)}, {(1, 2)}, {(2, 0)}, {(2, 1)},
+          {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+          {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
+          {(0, 1), (2, 0)}, {(0, 2), (2, 0)}, {(0, 2), (2, 1)},
+          {(0, 3), (2, 0)}, {(0, 3), (2, 1)},
+          {(1, 1), (2, 0)}, {(1, 2), (2, 0)}, {(1, 2), (2, 1)},
+          {(0, 2), (1, 1), (2, 0)}, {(0, 3), (1, 1), (2, 0)},
+          {(0, 3), (1, 2), (2, 0)}, {(0, 3), (1, 2), (2, 1)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    rw [hcells]
+    rw [← hplacements_bool]
+    ext P
+    simp only [Finset.mem_filter]
+    constructor
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase 4 3) P).mpr h.2⟩
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase 4 3) P).mp h.2⟩
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements,
+    hplacements_toFinset]
+  rw [List.sum_toFinset _ hplacements_nodup]
+  norm_num [placements]
+  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 := Polynomial.C_eq_natCast (R := ℝ) 14
+  rw [hC4, hC9, hC14]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
@@ -1085,6 +1171,13 @@ theorem auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_three
       C (4 : ℝ) * X ^ 3 :=
   auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_two_three
     truncatedStaircaseRookPolynomial_four_two h43
+
+/-- The finite-board auxiliary polynomial `G_4` is `4 + 20X + 20X^2 + 4X^3`. -/
+@[simp] theorem auxiliaryG_four :
+    auxiliaryG 4 = 4 + C (20 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+      C (4 : ℝ) * X ^ 3 :=
+  auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_three
+    truncatedStaircaseRookPolynomial_four_three
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
