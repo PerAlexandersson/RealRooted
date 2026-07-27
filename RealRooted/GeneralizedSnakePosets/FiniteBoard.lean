@@ -59,6 +59,10 @@ def nonNestingPlacementsWithCell (B : FiniteSkewBoard) (a : ℕ × ℕ) :
 def rowCells (B : FiniteSkewBoard) (row : ℕ) : Finset (ℕ × ℕ) :=
   B.cells.filter fun a => a.1 = row
 
+/-- Cells of a finite board in a fixed column. -/
+def colCells (B : FiniteSkewBoard) (col : ℕ) : Finset (ℕ × ℕ) :=
+  B.cells.filter fun a => a.2 = col
+
 /-- Valid placements with no rook in a fixed row. -/
 def nonNestingPlacementsWithoutRow (B : FiniteSkewBoard) (row : ℕ) :
     Finset (Finset (ℕ × ℕ)) := by
@@ -70,11 +74,28 @@ def nonNestingPlacementsWithRow (B : FiniteSkewBoard) (row : ℕ) :
     Finset (Finset (ℕ × ℕ)) :=
   (B.rowCells row).biUnion fun a => B.nonNestingPlacementsWithCell a
 
+/-- Valid placements with no rook in a fixed column. -/
+def nonNestingPlacementsWithoutCol (B : FiniteSkewBoard) (col : ℕ) :
+    Finset (Finset (ℕ × ℕ)) := by
+  classical
+  exact B.nonNestingPlacements.filter fun P => ∀ r, (r, col) ∉ P
+
+/-- Valid placements containing a rook in a fixed column. -/
+def nonNestingPlacementsWithCol (B : FiniteSkewBoard) (col : ℕ) :
+    Finset (Finset (ℕ × ℕ)) :=
+  (B.colCells col).biUnion fun a => B.nonNestingPlacementsWithCell a
+
 /-- Membership in the cells of a fixed row. -/
 @[simp] theorem mem_rowCells {B : FiniteSkewBoard} {row : ℕ}
     {a : ℕ × ℕ} :
     a ∈ B.rowCells row ↔ a ∈ B.cells ∧ a.1 = row := by
   simp [rowCells]
+
+/-- Membership in the cells of a fixed column. -/
+@[simp] theorem mem_colCells {B : FiniteSkewBoard} {col : ℕ}
+    {a : ℕ × ℕ} :
+    a ∈ B.colCells col ↔ a ∈ B.cells ∧ a.2 = col := by
+  simp [colCells]
 
 /-- Membership in the finite set of non-nesting placements. -/
 @[simp] theorem mem_nonNestingPlacements {B : FiniteSkewBoard}
@@ -108,6 +129,28 @@ specified cell. -/
       B.IsNonNestingPlacement P ∧ ∃ a ∈ B.rowCells row, a ∈ P := by
   classical
   rw [nonNestingPlacementsWithRow, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨a, ha, hP⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
+  · rintro ⟨hP, a, ha, haP⟩
+    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+
+/-- Membership in the column-free placement slice. -/
+@[simp] theorem mem_nonNestingPlacementsWithoutCol {B : FiniteSkewBoard}
+    {col : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithoutCol col ↔
+      B.IsNonNestingPlacement P ∧ ∀ r, (r, col) ∉ P := by
+  classical
+  simp [nonNestingPlacementsWithoutCol]
+
+/-- Membership in the placement slice using a fixed column. -/
+@[simp] theorem mem_nonNestingPlacementsWithCol {B : FiniteSkewBoard}
+    {col : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithCol col ↔
+      B.IsNonNestingPlacement P ∧ ∃ a ∈ B.colCells col, a ∈ P := by
+  classical
+  rw [nonNestingPlacementsWithCol, Finset.mem_biUnion]
   constructor
   · rintro ⟨a, ha, hP⟩
     rw [mem_nonNestingPlacementsWithCell] at hP
@@ -193,6 +236,93 @@ theorem sum_nonNestingPlacements_eq_withoutRow_add_withRow
   rw [Finset.sum_union
     (disjoint_nonNestingPlacementsWithoutRow_withRow B row)]
   rw [sum_nonNestingPlacementsWithRow]
+
+/-- Placements avoiding a column and placements using that column are
+disjoint. -/
+theorem disjoint_nonNestingPlacementsWithoutCol_withCol
+    (B : FiniteSkewBoard) (col : ℕ) :
+    Disjoint (B.nonNestingPlacementsWithoutCol col)
+      (B.nonNestingPlacementsWithCol col) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro P hfree hcol
+  rw [mem_nonNestingPlacementsWithoutCol] at hfree
+  rw [mem_nonNestingPlacementsWithCol] at hcol
+  rcases hcol.2 with ⟨a, ha, haP⟩
+  have hcol_eq : a.2 = col := (mem_colCells.mp ha).2
+  have hcell : (a.1, col) = a := by
+    ext <;> simp [hcol_eq]
+  exact hfree.2 a.1 (by simpa [hcell] using haP)
+
+/-- Every placement either avoids a fixed column or uses a cell in that
+column. -/
+theorem union_nonNestingPlacementsWithoutCol_withCol
+    (B : FiniteSkewBoard) (col : ℕ) :
+    B.nonNestingPlacementsWithoutCol col ∪ B.nonNestingPlacementsWithCol col =
+      B.nonNestingPlacements := by
+  classical
+  ext P
+  rw [Finset.mem_union, mem_nonNestingPlacementsWithoutCol,
+    mem_nonNestingPlacementsWithCol, mem_nonNestingPlacements]
+  constructor
+  · rintro (h | h) <;> exact h.1
+  · intro hP
+    by_cases hcol : ∃ r, (r, col) ∈ P
+    · rcases hcol with ⟨r, hrP⟩
+      have hcell := hP.1 hrP
+      exact Or.inr ⟨hP, ⟨(r, col), by simp [hcell], hrP⟩⟩
+    · exact Or.inl ⟨hP, fun r hr => hcol ⟨r, hr⟩⟩
+
+/-- A valid placement can contain at most one cell in a fixed column. -/
+theorem pairwiseDisjoint_nonNestingPlacementsWithCell_colCells
+    (B : FiniteSkewBoard) (col : ℕ) :
+    (↑(B.colCells col) : Set (ℕ × ℕ)).PairwiseDisjoint
+      (fun a => B.nonNestingPlacementsWithCell a) := by
+  classical
+  intro a ha b hb hne
+  change Disjoint (B.nonNestingPlacementsWithCell a)
+    (B.nonNestingPlacementsWithCell b)
+  rw [Finset.disjoint_iff_ne]
+  intro P hPa Q hQ hPQ
+  rw [mem_nonNestingPlacementsWithCell] at hPa hQ
+  subst Q
+  have hrow_ne := hPa.1.2.1 a hPa.2 b hQ.2 hne
+  have ha_col : a.2 = col := (mem_colCells.mp ha).2
+  have hb_col : b.2 = col := (mem_colCells.mp hb).2
+  rcases lt_or_gt_of_ne hrow_ne with hlt | hgt
+  · have hcol_lt := hPa.1.2.2 a hPa.2 b hQ.2 hlt
+    rw [ha_col, hb_col] at hcol_lt
+    exact (Nat.lt_irrefl col hcol_lt).elim
+  · have hcol_lt := hPa.1.2.2 b hQ.2 a hPa.2 hgt
+    rw [ha_col, hb_col] at hcol_lt
+    exact (Nat.lt_irrefl col hcol_lt).elim
+
+/-- The sum over placements using a column is the sum over fixed cells in that
+column. -/
+theorem sum_nonNestingPlacementsWithCol
+    (B : FiniteSkewBoard) (col : ℕ) :
+    (B.nonNestingPlacementsWithCol col).sum (fun P => (X : ℝ[X]) ^ P.card) =
+      (B.colCells col).sum (fun a =>
+        (B.nonNestingPlacementsWithCell a).sum fun P => (X : ℝ[X]) ^ P.card) := by
+  classical
+  rw [nonNestingPlacementsWithCol]
+  exact Finset.sum_biUnion
+    (pairwiseDisjoint_nonNestingPlacementsWithCell_colCells B col)
+
+/-- The placement sum for a finite board splits according to occupancy of a
+fixed column. -/
+theorem sum_nonNestingPlacements_eq_withoutCol_add_withCol
+    (B : FiniteSkewBoard) (col : ℕ) :
+    B.nonNestingPlacements.sum (fun P => (X : ℝ[X]) ^ P.card) =
+      (B.nonNestingPlacementsWithoutCol col).sum
+        (fun P => (X : ℝ[X]) ^ P.card) +
+      (B.colCells col).sum (fun a =>
+        (B.nonNestingPlacementsWithCell a).sum fun P => (X : ℝ[X]) ^ P.card) := by
+  classical
+  rw [← union_nonNestingPlacementsWithoutCol_withCol B col]
+  rw [Finset.sum_union
+    (disjoint_nonNestingPlacementsWithoutCol_withCol B col)]
+  rw [sum_nonNestingPlacementsWithCol]
 
 /-- The rook polynomial as a sum over the named finite set of non-nesting
 placements. -/
