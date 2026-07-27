@@ -213,6 +213,54 @@ theorem RootCountCompatible.of_natDegree_le_one
   rw [abs_le]
   constructor <;> linarith
 
+/-- A two-root polynomial and a one-root polynomial have Liu-compatible root
+counts when the lower root of the two-root side lies weakly below the singleton
+root. -/
+theorem RootCountCompatible.of_roots_pair_singleton
+    {p q : ℝ[X]} {a b c : ℝ} (hac : a ≤ c)
+    (hproots : p.roots = {a, b}) (hqroots : q.roots = {c}) :
+    RootCountCompatible p q := by
+  intro x
+  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
+  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+    Multiset.filter_singleton]
+  by_cases hxa : x ≤ a
+  · have hxc : x ≤ c := hxa.trans hac
+    by_cases hxb : x ≤ b
+    · norm_num [hxa, hxb, hxc]
+    · norm_num [hxa, hxb, hxc]
+  · by_cases hxb : x ≤ b
+    · by_cases hxc : x ≤ c
+      · norm_num [hxa, hxb, hxc]
+      · norm_num [hxa, hxb, hxc]
+    · by_cases hxc : x ≤ c
+      · norm_num [hxa, hxb, hxc]
+      · norm_num [hxa, hxb, hxc]
+
+/-- A one-root polynomial and a two-root polynomial have Liu-compatible root
+counts when the lower root of the two-root side lies weakly below the singleton
+root. -/
+theorem RootCountCompatible.of_roots_singleton_pair
+    {p q : ℝ[X]} {a c d : ℝ} (hca : c ≤ a)
+    (hproots : p.roots = {a}) (hqroots : q.roots = {c, d}) :
+    RootCountCompatible p q := by
+  intro x
+  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
+  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+    Multiset.filter_singleton]
+  by_cases hxc : x ≤ c
+  · have hxa : x ≤ a := hxc.trans hca
+    by_cases hxd : x ≤ d
+    · norm_num [hxa, hxc, hxd]
+    · norm_num [hxa, hxc, hxd]
+  · by_cases hxa : x ≤ a
+    · by_cases hxd : x ≤ d
+      · norm_num [hxa, hxc, hxd]
+      · norm_num [hxa, hxc, hxd]
+    · by_cases hxd : x ≤ d
+      · norm_num [hxa, hxc, hxd]
+      · norm_num [hxa, hxc, hxd]
+
 /-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0
@@ -696,7 +744,51 @@ theorem rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt
     lt_of_le_of_lt
       (h.root_deleteRootFactor_le hp_ne ((Polynomial.mem_roots hdelete_ne).mp hs)) hx
 
+/-- For an ordered two-root multiset, the largest-root certificate selects the
+right entry. -/
+theorem eq_right_of_roots_pair {p : ℝ[X]} {r a b : ℝ}
+    (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b)
+    (hroots : p.roots = {a, b}) :
+    r = b := by
+  have hb_mem : b ∈ p.roots := by
+    rw [hroots]
+    simp only [Multiset.insert_eq_cons]
+    simp
+  have hb_le_r : b ≤ r := h.roots_le b hb_mem
+  have hr_mem : r ∈ p.roots := h.mem_roots hp_ne
+  have hr_le_b : r ≤ b := by
+    rw [hroots] at hr_mem
+    simp only [Multiset.insert_eq_cons] at hr_mem
+    simp only [Multiset.mem_cons, Multiset.mem_singleton] at hr_mem
+    rcases hr_mem with hr_eq_a | hr_eq_b
+    · rw [hr_eq_a]
+      exact hab
+    · rw [hr_eq_b]
+  exact le_antisymm hr_le_b hb_le_r
+
 end IsLargestRoot
+
+/-- If a split quadratic has roots `{a, b}` and is factored accordingly, then
+deleting the right root leaves the singleton root `{a}`. -/
+theorem roots_deleteRootFactor_eq_singleton_of_roots_pair_right
+    {p : ℝ[X]} {a b : ℝ} (hp_ne : p ≠ 0)
+    (hroots : p.roots = {a, b})
+    (hfac : p = C p.leadingCoeff * ((X - C a) * (X - C b))) :
+    (deleteRootFactor p b).roots = {a} := by
+  have hbroot : p.IsRoot b :=
+    (Polynomial.mem_roots hp_ne).mp (by
+      rw [hroots]
+      simp only [Multiset.insert_eq_cons]
+      simp)
+  have hlc : p.leadingCoeff ≠ 0 := mt leadingCoeff_eq_zero.mp hp_ne
+  have hdelete_eq : deleteRootFactor p b = C p.leadingCoeff * (X - C a) := by
+    apply mul_left_cancel₀ (X_sub_C_ne_zero b)
+    calc
+      (X - C b) * deleteRootFactor p b = p :=
+        factor_deleteRootFactor_of_isRoot hbroot
+      _ = C p.leadingCoeff * ((X - C a) * (X - C b)) := hfac
+      _ = (X - C b) * (C p.leadingCoeff * (X - C a)) := by ring
+  rw [hdelete_eq, Polynomial.roots_C_mul _ hlc, roots_X_sub_C]
 
 /-- The `r_1 >= s_1` branch of Liu Theorem 2.1: delete the largest root of
 `f`, then compare the closed-at-or-above root counts of `f / (X - r)` and
