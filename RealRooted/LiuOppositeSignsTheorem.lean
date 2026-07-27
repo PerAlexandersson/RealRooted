@@ -9020,16 +9020,14 @@ lemma exists_cubicSubLinear_not_splits_of_left_root_lt_lower
   exact (not_le.mpr hdisc)
     (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
 
-/-- The midpoint tangent coefficient is positive when both quadratic roots lie
-strictly above the cubic root interval. -/
-lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
+/-- The midpoint tangent coefficient is positive when the average of the
+quadratic roots lies strictly above the cubic root interval. -/
+lemma cubicSubQuadratic_average_above_mu_pos {a b c u v : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) (hcmean : c < (u + v) / 2) :
     0 < 3 * ((u + v) / 2) - (a + b + c) := by
   let m : ℝ := (u + v) / 2
-  have hcv : c < v := lt_of_lt_of_le hcu huv
   have hcm : c < m := by
-    dsimp [m]
-    nlinarith
+    simpa [m] using hcmean
   have hma : 0 < m - a := by linarith
   have hmb : 0 < m - b := by linarith
   have hmc : 0 < m - c := by linarith
@@ -9041,18 +9039,17 @@ lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
   nlinarith
 
 /-- With the midpoint tangent coefficient, the derivative discriminant of the
-cubic-minus-quadratic pencil is negative. -/
-lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
+cubic-minus-quadratic pencil is negative when the average of the quadratic
+roots lies strictly above the cubic root interval. -/
+lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) (hcmean : c < (u + v) / 2) :
     (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c)))) ^ 2 <
       3 * 1 *
         (a * b + a * c + b * c +
           (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
   let m : ℝ := (u + v) / 2
-  have hcv : c < v := lt_of_lt_of_le hcu huv
   have hcm : c < m := by
-    dsimp [m]
-    nlinarith
+    simpa [m] using hcmean
   have hma : 0 < m - a := by linarith
   have hmb : 0 < m - b := by linarith
   have hmc : 0 < m - c := by linarith
@@ -9074,11 +9071,12 @@ lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
     ring
   nlinarith
 
-/-- If both quadratic roots lie strictly above the cubic roots, then the
-midpoint tangent coefficient gives a negative cubic discriminant. -/
-lemma cubicDiscr_cubicSubQuadratic_right_roots_above_neg
-    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
-    (huv : u ≤ v) :
+/-- If the average of the quadratic roots lies strictly above the cubic root
+interval, then the midpoint tangent coefficient gives a negative cubic
+discriminant. -/
+lemma cubicDiscr_cubicSubQuadratic_average_above_neg
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
+    (hcmean : c < (u + v) / 2) :
     cubicDiscr
       (((X - C a) * (X - C b) * (X - C c)) -
         C (3 * ((u + v) / 2) - (a + b + c)) *
@@ -9093,21 +9091,21 @@ lemma cubicDiscr_cubicSubQuadratic_right_roots_above_neg
       (-(a * b * c) -
         (3 * ((u + v) / 2) - (a + b + c)) * (u * v))
       (by norm_num)
-      (cubicSubQuadratic_right_roots_above_deriv_disc_neg hab hbc hcu huv)
+      (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)
 
-/-- If both quadratic roots lie strictly above the cubic roots, then some
-positive subtraction coefficient makes the monic cubic-minus-quadratic pencil
-fail to split. -/
-lemma exists_cubicSubQuadratic_not_splits_of_right_roots_above
-    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
-    (huv : u ≤ v) :
+/-- If the average of the quadratic roots lies strictly above the cubic root
+interval, then some positive subtraction coefficient makes the monic
+cubic-minus-quadratic pencil fail to split. -/
+lemma exists_cubicSubQuadratic_not_splits_of_average_above
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
+    (hcmean : c < (u + v) / 2) :
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
   let μ : ℝ := 3 * ((u + v) / 2) - (a + b + c)
   have hμ : 0 < μ := by
     dsimp [μ]
-    exact cubicSubQuadratic_right_roots_above_mu_pos hab hbc hcu huv
+    exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
   refine ⟨μ, hμ, ?_⟩
   have hdeg :
       (((X - C a) * (X - C b) * (X - C c)) -
@@ -9118,11 +9116,53 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_roots_above
         (((X - C a) * (X - C b) * (X - C c)) -
           C μ * ((X - C u) * (X - C v))) < 0 := by
     dsimp [μ]
-    exact cubicDiscr_cubicSubQuadratic_right_roots_above_neg
-      hab hbc hcu huv
+    exact cubicDiscr_cubicSubQuadratic_average_above_neg hab hbc hcmean
   intro hsplit
   exact (not_le.mpr hdisc)
     (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+
+/-- The midpoint tangent coefficient is positive when both quadratic roots lie
+strictly above the cubic root interval. -/
+lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
+    0 < 3 * ((u + v) / 2) - (a + b + c) := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
+
+/-- With the midpoint tangent coefficient, the derivative discriminant of the
+cubic-minus-quadratic pencil is negative. -/
+lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
+    (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c)))) ^ 2 <
+      3 * 1 *
+        (a * b + a * c + b * c +
+          (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean
+
+/-- If both quadratic roots lie strictly above the cubic roots, then the
+midpoint tangent coefficient gives a negative cubic discriminant. -/
+lemma cubicDiscr_cubicSubQuadratic_right_roots_above_neg
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
+    (huv : u ≤ v) :
+    cubicDiscr
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C (3 * ((u + v) / 2) - (a + b + c)) *
+          ((X - C u) * (X - C v))) < 0 := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact cubicDiscr_cubicSubQuadratic_average_above_neg hab hbc hcmean
+
+/-- If both quadratic roots lie strictly above the cubic roots, then some
+positive subtraction coefficient makes the monic cubic-minus-quadratic pencil
+fail to split. -/
+lemma exists_cubicSubQuadratic_not_splits_of_right_roots_above
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
+    (huv : u ≤ v) :
+    ∃ μ : ℝ, 0 < μ ∧
+      ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).Splits := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact exists_cubicSubQuadratic_not_splits_of_average_above hab hbc hcmean
 
 /-- The cubic/linear factor endpoint is not compatible when the leading
 coefficients have opposite signs and the linear root lies strictly above the
@@ -9265,17 +9305,16 @@ lemma not_compatible_scaled_cubic_linear_of_opposite_of_left_root_lt_lower
     · exact hnot_splits hsplit
 
 /-- The cubic/quadratic endpoint is not compatible when the leading
-coefficients have opposite signs and both quadratic roots lie strictly above
-the cubic root interval. -/
-lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
+coefficients have opposite signs and the average of the quadratic roots lies
+strictly above the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
     {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
-    (hcu : c < u) (huv : u ≤ v) :
+    (hcmean : c < (u + v) / 2) :
     ¬ Compatible
       (C A * ((X - C a) * (X - C b) * (X - C c)))
       (C B * ((X - C u) * (X - C v))) := by
   obtain ⟨μ, hμ, hnot_splits⟩ :=
-    exists_cubicSubQuadratic_not_splits_of_right_roots_above
-      hab hbc hcu huv
+    exists_cubicSubQuadratic_not_splits_of_average_above hab hbc hcmean
   have hA_ne : A ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).1
   have hB_ne : B ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).2
   intro hcompat
@@ -9335,17 +9374,30 @@ lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
     · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
     · exact hnot_splits hsplit
 
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and both quadratic roots lie strictly above
+the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcu : c < u) (huv : u ≤ v) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
+      hAB hab hbc hcmean
+
 /-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
-rules out the case where both quadratic roots lie strictly above the cubic
-root interval. -/
-lemma not_right_roots_above_of_compatible_natDegree_three_two
+rules out the case where the average of the quadratic roots lies strictly above
+the cubic root interval. -/
+lemma not_average_above_of_compatible_natDegree_three_two
     {f g : ℝ[X]} {a b c u v : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
-    (huv : u ≤ v) (hfroots : f.roots = {a, b, c})
-    (hgroots : g.roots = {u, v}) :
-    ¬ c < u := by
-  intro hcu
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
+    ¬ c < (u + v) / 2 := by
+  intro hcmean
   have hffac :
       f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
     eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
@@ -9361,9 +9413,25 @@ lemma not_right_roots_above_of_compatible_natDegree_three_two
     rw [← hffac, ← hgfac]
     exact hcompat
   exact
-    not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
       (A := f.leadingCoeff) (B := g.leadingCoeff)
-      hsgn hab hbc hcu huv hcompat_fac
+      hsgn hab hbc hcmean hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
+rules out the case where both quadratic roots lie strictly above the cubic
+root interval. -/
+lemma not_right_roots_above_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u ≤ v) (hfroots : f.roots = {a, b, c})
+    (hgroots : g.roots = {u, v}) :
+    ¬ c < u := by
+  intro hcu
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact
+    not_average_above_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc hfroots hgroots hcmean
 
 /-- Compatible opposite-sign cubic/linear pairs have the linear root in the
 closed interval spanned by the cubic roots. -/
