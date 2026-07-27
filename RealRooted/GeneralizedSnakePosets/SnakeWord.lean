@@ -324,6 +324,26 @@ theorem IsLastChangeIndex.all_changes_le {w : SnakeWord} {k : ℕ}
     ∀ j ∈ w.changeIndices, j ≤ k :=
   h.2
 
+/-- Every index after the last-change index has the final letter. -/
+theorem IsLastChangeIndex.getElem?_eq_final_of_lt
+    {w : SnakeWord} {k j : ℕ} (h : w.IsLastChangeIndex k)
+    (hkj : k < j) (hj : j < w.length) :
+    w[j]? = w[w.length - 1]? := by
+  by_contra hne
+  have hjchange : j ∈ w.changeIndices :=
+    SnakeWord.mem_changeIndices.mpr ⟨hj, hne⟩
+  have hjle : j ≤ k := h.all_changes_le j hjchange
+  exact (not_lt_of_ge hjle) hkj
+
+/-- `getD` form of `IsLastChangeIndex.getElem?_eq_final_of_lt`. -/
+theorem IsLastChangeIndex.getD_eq_final_of_lt
+    {w : SnakeWord} {k j : ℕ} (h : w.IsLastChangeIndex k)
+    (hkj : k < j) (hj : j < w.length) (default : SnakeLetter) :
+    w.getD j default = w.getD (w.length - 1) default := by
+  simpa [List.getD_eq_getElem?_getD] using
+    congrArg (fun letter? => letter?.getD default)
+      (h.getElem?_eq_final_of_lt hkj hj)
+
 /-- The prefix ending at the last-change index has length `k + 1`. -/
 theorem IsLastChangeIndex.takePrefix_succ_length {w : SnakeWord} {k : ℕ}
     (h : w.IsLastChangeIndex k) :
