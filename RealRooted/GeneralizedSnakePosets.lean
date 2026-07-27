@@ -2047,6 +2047,118 @@ polynomial `1 + (2n - 1)X + binom(n,2)X^2`. -/
             C (Nat.choose n 2 : ℝ) * X ^ 2 := by
             rw [hXcoeff]
 
+/-- Tail sum of two-row truncated-staircase rook polynomials. -/
+private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : ℕ) :
+    ((List.range n).map fun c =>
+      truncatedStaircaseRookPolynomial (n + 2 - c - 1) 2).sum =
+      C (n : ℝ) + C ((n * (n + 2) : ℕ) : ℝ) * X +
+        C (Nat.choose (n + 2) 3 : ℝ) * X ^ 2 := by
+  induction n with
+  | zero =>
+      simp [truncatedStaircaseRookPolynomial_two_rows]
+  | succ n ih =>
+      rw [List.sum_range_succ']
+      simp only [Nat.succ_eq_add_one]
+      have hhead : n + 1 + 2 - 0 - 1 = n + 2 := by
+        lia
+      have htail :
+          ((List.range n).map fun c =>
+            truncatedStaircaseRookPolynomial (n + 1 + 2 - (c + 1) - 1) 2).sum =
+          ((List.range n).map fun c =>
+            truncatedStaircaseRookPolynomial (n + 2 - c - 1) 2).sum := by
+        congr 1
+        apply List.map_congr_left
+        intro c hc
+        have hc_lt : c < n := List.mem_range.mp hc
+        congr 1
+        lia
+      rw [hhead, htail, ih, truncatedStaircaseRookPolynomial_two_rows]
+      have hchoose :
+          Nat.choose (n + 1 + 2) 3 =
+            Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 := by
+        calc
+          Nat.choose (n + 1 + 2) 3 =
+              Nat.choose (Nat.succ (n + 2)) 3 := by
+                rfl
+          _ = Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 :=
+              by simpa using Nat.choose_succ_succ (n + 2) 2
+      have hchoose2 :
+          Nat.choose (n + 2) 2 = (n + 1) + Nat.choose (n + 1) 2 := by
+        simpa [Nat.choose_one_right] using Nat.choose_succ_succ (n + 1) 1
+      rw [hchoose, hchoose2]
+      have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
+      simp only [Order.lt_two_iff, zero_le, mul_pos_iff_of_pos_left, add_pos_iff,
+        or_true, Nat.cast_pred, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_add,
+        map_sub, map_mul, map_add, map_natCast, map_one, Nat.cast_one]
+      rw [hC2]
+      ring_nf
+
+/-- Tail sum of two-row truncated-staircase rook polynomials. -/
+private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum (n : ℕ)
+    (hn : 2 ≤ n) :
+    ((List.range (n - 2)).map fun c =>
+      truncatedStaircaseRookPolynomial (n - c - 1) 2).sum =
+      C ((n - 2 : ℕ) : ℝ) + C (((n - 2) * n : ℕ) : ℝ) * X +
+        C (Nat.choose n 3 : ℝ) * X ^ 2 := by
+  have hnsub : n - 2 + 2 = n := Nat.sub_add_cancel hn
+  simpa [hnsub] using
+    truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n - 2)
+
+/-- The three-row truncated staircase with row lengths `n`, `n - 1`, and
+`n - 2` has rook polynomial
+`1 + 3(n - 1)X + (binom(n,2) + n(n - 2))X^2 + binom(n,3)X^3`. -/
+theorem truncatedStaircaseRookPolynomial_three_rows (n : ℕ) (hn : 3 ≤ n) :
+    truncatedStaircaseRookPolynomial n 3 =
+      1 + C ((3 * n - 3 : ℕ) : ℝ) * X +
+        C ((Nat.choose n 2 + (n - 2) * n : ℕ) : ℝ) * X ^ 2 +
+          C (Nat.choose n 3 : ℝ) * X ^ 3 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all n 2
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [truncatedStaircaseRookPolynomial_two_rows,
+    truncatedStaircaseRookPolynomial_two_rows_tail_sum n (by lia : 2 ≤ n)] at hbottom
+  rw [hbottom]
+  have hn_pos : 0 < n := lt_of_lt_of_le (by norm_num : 0 < 3) hn
+  have hn_two : 2 ≤ n := by lia
+  have hcast_sub_two : ((n - 2 : ℕ) : ℝ) = (n : ℝ) - 2 := by
+    rw [Nat.cast_sub hn_two]
+    norm_num
+  rw [hcast_sub_two]
+  have hC2n :
+      (C ((2 * n - 1 : ℕ) : ℝ) : ℝ[X]) = C ((2 : ℝ) * n - 1) := by
+    rw [show ((2 * n - 1 : ℕ) : ℝ) = (2 : ℝ) * n - 1 by
+      rw [Nat.cast_sub (by lia : 1 ≤ 2 * n)]
+      norm_num]
+  have hCtail :
+      (C (((n - 2) * n : ℕ) : ℝ) : ℝ[X]) = C (((n : ℝ) - 2) * n) := by
+    rw [Nat.cast_mul, hcast_sub_two]
+  have hC3n :
+      (C ((3 * n - 3 : ℕ) : ℝ) : ℝ[X]) = C ((3 : ℝ) * n - 3) := by
+    rw [show ((3 * n - 3 : ℕ) : ℝ) = (3 : ℝ) * n - 3 by
+      rw [Nat.cast_sub (by lia : 3 ≤ 3 * n)]
+      norm_num]
+  have hCtwo :
+      (C ((Nat.choose n 2 + (n - 2) * n : ℕ) : ℝ) : ℝ[X]) =
+        C ((Nat.choose n 2 : ℝ) + ((n : ℝ) - 2) * n) := by
+    rw [Nat.cast_add, Nat.cast_mul, hcast_sub_two]
+  rw [hC2n, hCtail, hC3n, hCtwo]
+  have hXcoeff :
+      C ((2 : ℝ) * n - 1) + C ((n : ℝ) - 2) =
+        (C ((3 : ℝ) * n - 3) : ℝ[X]) := by
+    rw [← Polynomial.C_add]
+    ring_nf
+  calc
+    1 + C ((2 : ℝ) * n - 1) * X + C (Nat.choose n 2 : ℝ) * X ^ 2 +
+        X * (C ((n : ℝ) - 2) + C (((n : ℝ) - 2) * n) * X +
+          C (Nat.choose n 3 : ℝ) * X ^ 2)
+        = 1 + (C ((2 : ℝ) * n - 1) + C ((n : ℝ) - 2)) * X +
+          (C (Nat.choose n 2 : ℝ) + C (((n : ℝ) - 2) * n)) * X ^ 2 +
+            C (Nat.choose n 3 : ℝ) * X ^ 3 := by
+          ring_nf
+    _ = 1 + C ((3 : ℝ) * n - 3) * X +
+        C ((Nat.choose n 2 : ℝ) + ((n : ℝ) - 2) * n) * X ^ 2 +
+          C (Nat.choose n 3 : ℝ) * X ^ 3 := by
+        rw [hXcoeff, ← Polynomial.C_add]
+
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
 def auxiliaryG : ℕ → ℝ[X] :=
