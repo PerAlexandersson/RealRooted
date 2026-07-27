@@ -1728,6 +1728,112 @@ def ModifiedNarayanaSixAuxiliaryGCrossInequalities
         d ≤ auxiliaryG_six_root3 ∧ auxiliaryG_six_root3 ≤ e ∧
           e ≤ auxiliaryG_six_root4 ∧ auxiliaryG_six_root4 ≤ r
 
+/-- Six interval-isolated `P_6` roots determine the cross-root inequalities
+against any sorted `P_6` root list. -/
+theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
+    {a b c d e r : ℝ}
+    (hP_roots :
+      modifiedNarayanaPolynomialSix.roots =
+        (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (hintervals : ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate) :
+    ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r := by
+  rcases hintervals with
+    ⟨x0, x1, x2, x3, x4, x5, hx0_root, hx0_lt, hx1_root,
+      hx01, hx1_lt, hx2_root, hx12, hx2_lt, hx3_root, hx23,
+      hx3_lt, hx4_root, hx34, hx4_lt, hx5_root, hx45⟩
+  have hx0x1 : x0 < x1 := lt_trans hx0_lt hx01
+  have hx1x2 : x1 < x2 := lt_trans hx1_lt hx12
+  have hx2x3 : x2 < x3 := lt_trans hx2_lt hx23
+  have hx3x4 : x3 < x4 := lt_trans hx3_lt hx34
+  have hx4x5 : x4 < x5 := lt_trans hx4_lt hx45
+  have hxs_sorted_lt : ([x0, x1, x2, x3, x4, x5] : List ℝ).Pairwise (· < ·) := by
+    simp [List.pairwise_cons]
+    grind
+  have hxs_sorted : ([x0, x1, x2, x3, x4, x5] : List ℝ).Pairwise (· ≤ ·) :=
+    hxs_sorted_lt.imp (by intro _ _ h; exact le_of_lt h)
+  have hxs_nodup_list : ([x0, x1, x2, x3, x4, x5] : List ℝ).Nodup :=
+    hxs_sorted_lt.imp (by intro _ _ h; exact ne_of_lt h)
+  have hxs_nodup : (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ).Nodup := by
+    simpa using hxs_nodup_list
+  have hP_ne : modifiedNarayanaPolynomialSix ≠ 0 := by
+    simpa [modifiedNarayanaPolynomialSix] using modifiedNarayanaPolynomial_six_ne_zero
+  have hx0_mem : x0 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx0_root
+  have hx1_mem : x1 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx1_root
+  have hx2_mem : x2 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx2_root
+  have hx3_mem : x3 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx3_root
+  have hx4_mem : x4 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx4_root
+  have hx5_mem : x5 ∈ modifiedNarayanaPolynomialSix.roots :=
+    (Polynomial.mem_roots hP_ne).mpr hx5_root
+  have hxs_subset :
+      (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ) ⊆
+        modifiedNarayanaPolynomialSix.roots := by
+    intro y hy
+    have hy' : y = x0 ∨ y = x1 ∨ y = x2 ∨ y = x3 ∨ y = x4 ∨ y = x5 := by
+      simpa only [Multiset.mem_coe, List.mem_cons, List.not_mem_nil, or_false] using hy
+    rcases hy' with rfl | rfl | rfl | rfl | rfl | rfl
+    · exact hx0_mem
+    · exact hx1_mem
+    · exact hx2_mem
+    · exact hx3_mem
+    · exact hx4_mem
+    · exact hx5_mem
+  have hxs_le :
+      (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ) ≤
+        modifiedNarayanaPolynomialSix.roots :=
+    (Multiset.le_iff_subset hxs_nodup).2 hxs_subset
+  have hcard_le :
+      modifiedNarayanaPolynomialSix.roots.card ≤
+        (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ).card := by
+    rw [hP_roots]
+    norm_num
+  have hxs_roots :
+      (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ) =
+        modifiedNarayanaPolynomialSix.roots :=
+    Multiset.eq_of_le_of_card_le hxs_le hcard_le
+  have hperm : ([x0, x1, x2, x3, x4, x5] : List ℝ).Perm [a, b, c, d, e, r] := by
+    apply Multiset.coe_eq_coe.mp
+    calc
+      (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ) =
+          modifiedNarayanaPolynomialSix.roots := hxs_roots
+      _ = (↑[a, b, c, d, e, r] : Multiset ℝ) := hP_roots
+  have habs_sorted : ([a, b, c, d, e, r] : List ℝ).Pairwise (· ≤ ·) := by
+    simp [hab, hbc, hcd, hde, her, hab.trans hbc, hbc.trans hcd,
+      hcd.trans hde, hde.trans her, hab.trans (hbc.trans hcd),
+      hbc.trans (hcd.trans hde), hcd.trans (hde.trans her),
+      hab.trans (hbc.trans (hcd.trans hde)),
+      hbc.trans (hcd.trans (hde.trans her)),
+      hab.trans (hbc.trans (hcd.trans (hde.trans her)))]
+  have hlist_eq : [x0, x1, x2, x3, x4, x5] = [a, b, c, d, e, r] :=
+    List.Perm.eq_of_pairwise' hxs_sorted habs_sorted hperm
+  have hcoords : x0 = a ∧ x1 = b ∧ x2 = c ∧ x3 = d ∧ x4 = e ∧ x5 = r := by
+    simpa using hlist_eq
+  rcases hcoords with ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+  exact ⟨le_of_lt hx0_lt, le_of_lt hx01, le_of_lt hx1_lt, le_of_lt hx12,
+    le_of_lt hx2_lt, le_of_lt hx23, le_of_lt hx3_lt, le_of_lt hx34,
+    le_of_lt hx4_lt, le_of_lt hx45⟩
+
+/-- The `P_6`/`G_6` sign certificate gives the cross-root inequalities against
+any sorted `P_6` root list. -/
+theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
+    {a b c d e r : ℝ}
+    (hP_roots :
+      modifiedNarayanaPolynomialSix.roots =
+        (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
+    ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r :=
+  ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
+    hP_roots hab hbc hcd hde her
+    (modifiedNarayanaPolynomial_six_rootIntervals_of_eval_signs hsign)
+
 /-- Conditional `n = 6` Lemma 3.3 certificate, reducing the remaining work to
 the `P_6` root list and cross inequalities. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
@@ -1793,6 +1899,24 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
         ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
     Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
   exact (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toPrec
+
+/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from the
+`P_6`/`G_6` sign certificate. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
+    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
+    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  apply lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
+  intro a b c d e r hP_roots hab hbc hcd hde her
+  exact ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
+    (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
+    hab hbc hcd hde her hsign
+
+/-- The `n = 6` Braun--Jal Lemma 3.3 proper-position form follows from the
+`P_6`/`G_6` sign certificate. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_of_eval_signs
+    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
+    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs hsign).toPrec
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
@@ -2612,6 +2736,19 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
   · exact lemma33AuxiliaryGInterlaces_modified_four
   · exact lemma33AuxiliaryGInterlaces_modified_five
   · exact lemma33AuxiliaryGInterlaces_modified_six_of_crosses hcross
+
+/-- Conditional checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
+Lemma 3.3 from the single `P_6`/`G_6` sign certificate. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
+    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate)
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
+  lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
+    (fun {a b c d e r} hP_roots hab hbc hcd hde her =>
+      ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
+        (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
+        hab hbc hcd hde her hsign)
+    hn₁ hn₆
 
 end GeneralizedSnakePosets
 end RealRooted
