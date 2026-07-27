@@ -443,6 +443,68 @@ private lemma isNonNestingPlacement_pair {B : FiniteSkewBoard} (a b : ℕ × ℕ
       · exact hcol_ba hlt
       · exact (Nat.lt_irrefl _ hlt).elim
 
+private def finsetAllBool {α : Type*} (s : Finset α) (p : α → Bool) : Bool :=
+  s.fold (fun a b => a && b) true p
+
+private lemma finsetAllBool_iff {α : Type*} (s : Finset α) (p : α → Bool) :
+    finsetAllBool s p ↔ ∀ a ∈ s, p a := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp [finsetAllBool]
+  | insert a s ha ih =>
+      rw [finsetAllBool, Finset.fold_insert ha, Bool.and_eq_true_iff]
+      constructor
+      · rintro ⟨hpa, hall⟩ b hb
+        rw [Finset.mem_insert] at hb
+        rcases hb with rfl | hb
+        · exact hpa
+        · exact ih.mp hall b hb
+      · intro hall
+        exact ⟨hall a (Finset.mem_insert_self a s), ih.mpr fun b hb =>
+          hall b (Finset.mem_insert_of_mem hb)⟩
+
+private def isNonNestingPlacementBool (B : FiniteSkewBoard)
+    (P : Finset (ℕ × ℕ)) : Bool :=
+  finsetAllBool P (fun a => decide (a ∈ B.cells)) &&
+    finsetAllBool P (fun a =>
+      finsetAllBool P (fun b =>
+        decide ((a.1 = b.1 → a.2 ≠ b.2) → a.1 ≠ b.1))) &&
+    finsetAllBool P (fun a =>
+      finsetAllBool P (fun b => decide (a.1 < b.1 → b.2 < a.2)))
+
+private lemma isNonNestingPlacementBool_iff (B : FiniteSkewBoard)
+    (P : Finset (ℕ × ℕ)) :
+    isNonNestingPlacementBool B P ↔ B.IsNonNestingPlacement P := by
+  simp only [isNonNestingPlacementBool, ne_eq, decide_implies, decide_not,
+    dite_eq_ite, Bool.if_true_right, Bool.not_or, Bool.not_not,
+    Bool.and_eq_true, finsetAllBool_iff, decide_eq_true_eq, Prod.forall,
+    Bool.or_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true,
+    decide_eq_false_iff_not, not_lt, IsNonNestingPlacement,
+    Finset.subset_iff, Prod.mk.injEq, not_and]
+  constructor
+  · rintro ⟨⟨hsub, hrow⟩, hnest⟩
+    refine ⟨hsub, ?_, ?_⟩
+    · intro a b hab c d hcd hne
+      rcases hrow a b hab c d hcd with hEq | hrow_ne
+      · exact (hne hEq.1 hEq.2).elim
+      · exact hrow_ne
+    · intro a b hab c d hcd hlt
+      rcases hnest a b hab c d hcd with hle | hcol
+      · exact (False.elim ((not_lt_of_ge hle) hlt))
+      · exact hcol
+  · rintro ⟨hsub, hrow, hnest⟩
+    refine ⟨⟨hsub, ?_⟩, ?_⟩
+    · intro a b hab c d hcd
+      by_cases ha : a = c
+      · by_cases hb : b = d
+        · exact Or.inl ⟨ha, hb⟩
+        · exact Or.inr (hrow a b hab c d hcd (by intro _; exact hb))
+      · exact Or.inr ha
+    · intro a b hab c d hcd
+      by_cases hlt : a < c
+      · exact Or.inr (hnest a b hab c d hcd hlt)
+      · exact Or.inl (le_of_not_gt hlt)
+
 /-- Powers of `X` have nonnegative coefficients. -/
 private lemma xPow_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
@@ -892,6 +954,63 @@ polynomial `1 + 5X + 3X^2`. -/
   rw [hC3, hC5]
   ring_nf
 
+/-- The two-row truncated staircase with row lengths four and three has rook
+polynomial `1 + 7X + 6X^2`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_four_two :
+    truncatedStaircaseRookPolynomial 4 2 =
+      1 + C (7 : ℝ) * X + C (6 : ℝ) * X ^ 2 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
+      {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+      {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  have hplacements_toFinset :
+      ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
+        {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+        {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)}} :
+        Finset (Finset (ℕ × ℕ))) = placements.toFinset := by
+    decide
+  have hcells :
+      (truncatedStaircase 4 2).cells =
+        ({(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2)} :
+          Finset (ℕ × ℕ)) := by
+    decide
+  have hplacements_bool :
+      ({(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2)} :
+          Finset (ℕ × ℕ)).powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 4 2) P) =
+        ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
+          {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+          {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    decide
+  have hplacements :
+      (truncatedStaircase 4 2).cells.powerset.filter
+        (fun P => (truncatedStaircase 4 2).IsNonNestingPlacement P) =
+        ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
+          {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
+          {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    rw [hcells]
+    rw [← hplacements_bool]
+    ext P
+    simp only [Finset.mem_filter]
+    constructor
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase 4 2) P).mpr h.2⟩
+    · intro h
+      exact ⟨h.1, (isNonNestingPlacementBool_iff (truncatedStaircase 4 2) P).mp h.2⟩
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements,
+    hplacements_toFinset]
+  rw [List.sum_toFinset _ hplacements_nodup]
+  norm_num [placements]
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+  rw [hC6, hC7]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
@@ -956,6 +1075,16 @@ theorem auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_two_three
   have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 := Polynomial.C_eq_natCast (R := ℝ) 20
   rw [hC4, hC6, hC7, hC9, hC14, hC20]
   ring_nf
+
+/-- The expected `G_4` finite-board value now follows from the remaining
+three-row truncated-staircase computation. -/
+theorem auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_three
+    (h43 : truncatedStaircaseRookPolynomial 4 3 =
+      1 + C (9 : ℝ) * X + C (14 : ℝ) * X ^ 2 + C (4 : ℝ) * X ^ 3) :
+    auxiliaryG 4 = 4 + C (20 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+      C (4 : ℝ) * X ^ 3 :=
+  auxiliaryG_four_of_truncatedStaircaseRookPolynomial_four_two_three
+    truncatedStaircaseRookPolynomial_four_two h43
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
