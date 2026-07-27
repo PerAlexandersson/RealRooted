@@ -196,4 +196,144 @@ theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
   · exact (prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toPrec_of_ne hsub_ne hgf.2.1.1
 
+/-- Brändén--Saud minus-sign step after scaling by a common positive leading
+coefficient.
+
+This is the same conclusion as `prec_sub_X_mul_pair_of_posLeadingCoeff`, but it
+allows `f` and `g` to share any positive leading coefficient instead of being
+monic. -/
+theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
+    (hgf : Prec g f)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hlc : f.leadingCoeff = g.leadingCoeff)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
+    (hsub_pos : HasPosLeadingCoeff (f - X * g)) :
+    Prec g (f - X * g) ∧ Prec (f - X * g) f := by
+  let c : ℝ := f.leadingCoeff⁻¹
+  have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
+  have hc_ne : c ≠ 0 := inv_ne_zero hf_lc_ne
+  have hc_pos : 0 < c := inv_pos.mpr hf_pos
+  have hf_monic : (C c * f).Monic := by
+    unfold c
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    simp [hf_lc_ne]
+  have hg_monic : (C c * g).Monic := by
+    unfold c
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    rw [← hlc]
+    simp [hf_lc_ne]
+  have hscaled : Prec (C c * g) (C c * f) :=
+    prec_C_mul_right (prec_C_mul_left hgf hc_ne) hc_ne
+  have hdeg_scaled : (C c * g).natDegree + 1 = (C c * f).natDegree := by
+    rw [natDegree_C_mul hc_ne, natDegree_C_mul hc_ne, hdeg]
+  have hf_scaled_nonpos : ∀ r ∈ (C c * f).roots, r ≤ 0 := by
+    simpa [roots_C_mul _ hc_ne] using hf_nonpos
+  have hg_scaled_nonpos : ∀ r ∈ (C c * g).roots, r ≤ 0 := by
+    simpa [roots_C_mul _ hc_ne] using hg_nonpos
+  have hsub_scaled_pos : HasPosLeadingCoeff (C c * f - X * (C c * g)) := by
+    have hEq : C c * f - X * (C c * g) = C c * (f - X * g) := by
+      grind
+    rw [hEq]
+    exact hasPosLeadingCoeff_C_mul hc_pos hsub_pos
+  have hpair_scaled :=
+    prec_sub_X_mul_pair_of_posLeadingCoeff
+      hscaled hf_monic hg_monic hdeg_scaled hf_scaled_nonpos hg_scaled_nonpos
+      hsub_scaled_pos
+  have hright_scaled : Prec (C c * g) (C c * (f - X * g)) := by
+    have hEq : C c * f - X * (C c * g) = C c * (f - X * g) := by
+      grind
+    simpa [hEq] using hpair_scaled.1
+  have hleft_scaled : Prec (C c * (f - X * g)) (C c * f) := by
+    have hEq : C c * f - X * (C c * g) = C c * (f - X * g) := by
+      grind
+    simpa [hEq] using hpair_scaled.2
+  have hcancel_g : C c⁻¹ * (C c * g) = g := by
+    calc
+      C c⁻¹ * (C c * g) = C (c⁻¹ * c) * g := by grind
+      _ = g := by simp [c, hf_lc_ne]
+  have hcancel_f : C c⁻¹ * (C c * f) = f := by
+    calc
+      C c⁻¹ * (C c * f) = C (c⁻¹ * c) * f := by grind
+      _ = f := by simp [c, hf_lc_ne]
+  have hcancel_sub : C c⁻¹ * (C c * (f - X * g)) = f - X * g := by
+    calc
+      C c⁻¹ * (C c * (f - X * g)) = C (c⁻¹ * c) * (f - X * g) := by grind
+      _ = f - X * g := by simp [c, hf_lc_ne]
+  constructor
+  · have hback :=
+      prec_C_mul_right
+        (prec_C_mul_left hright_scaled (inv_ne_zero hc_ne))
+        (inv_ne_zero hc_ne)
+    simpa [hcancel_g, hcancel_sub] using hback
+  · have hback :=
+      prec_C_mul_right
+        (prec_C_mul_left hleft_scaled (inv_ne_zero hc_ne))
+        (inv_ne_zero hc_ne)
+    simpa [hcancel_f, hcancel_sub] using hback
+
+/-- Paper-shaped conversion step for Braun--Jal Claim `(7)`.
+
+If `U ≪ W` and `W = (1 + X) * U + X * V`, with the root and degree side
+conditions needed to orient the Obreschkoff alternative, then `V ≪ U`. -/
+theorem prec_component_of_prec_next_eq_add_X_mul
+    {U V W : ℝ[X]}
+    (hUW : Prec U W)
+    (hW_eq : W = (1 + X) * U + X * V)
+    (hW_pos : HasPosLeadingCoeff W)
+    (hWU_lc : W.leadingCoeff = U.leadingCoeff)
+    (hdeg_UW : U.natDegree + 1 = W.natDegree)
+    (hW_nonpos : ∀ r ∈ W.roots, r ≤ 0)
+    (hU_nonpos : ∀ r ∈ U.roots, r ≤ 0)
+    (hmid_pos : HasPosLeadingCoeff (U + X * V))
+    (hV_pos : HasPosLeadingCoeff V)
+    (hV_nonpos : ∀ r ∈ V.roots, r ≤ 0)
+    (hdeg_VU : V.natDegree + 1 = U.natDegree)
+    (hU_bound : ∃ c : ℝ, (∀ s ∈ U.roots, s ≤ c) ∧ c < 0) :
+    Prec V U := by
+  have hmid_eq : W - X * U = U + X * V := by
+    rw [hW_eq]
+    ring
+  have hU_mid : Prec U (U + X * V) := by
+    have hsub_pos : HasPosLeadingCoeff (W - X * U) := by
+      simpa [hmid_eq] using hmid_pos
+    have hpair :=
+      prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+        (f := W) (g := U) hUW hW_pos hWU_lc hdeg_UW
+        hW_nonpos hU_nonpos hsub_pos
+    simpa [hmid_eq] using hpair.1
+  have hall_U_mid : AllComboRealRooted U (U + X * V) :=
+    allComboRealRooted_of_prec hU_mid
+  have hall_U_XV : AllComboRealRooted U (X * V) := by
+    intro α β
+    have hrew :
+        C α * U + C β * (X * V) =
+          C (α - β) * U + C β * (U + X * V) := by
+      grind
+    simpa [hrew] using hall_U_mid (α - β) β
+  have hXV_ne : X * V ≠ 0 := mul_ne_zero X_ne_zero hV_pos.ne_zero
+  have hXV_splits : (X * V).Splits := by
+    simpa using hall_U_XV 0 1
+  have hsame : U.natDegree = (X * V).natDegree := by
+    rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
+    lia
+  have hprec_or : Prec U (X * V) ∨ Prec (X * V) U :=
+    prec_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
+      (Or.inr hsame)
+  obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
+  have hXV_root0 : (X * V).IsRoot 0 := by
+    simp
+  have hU_XV : Prec U (X * V) :=
+    PosComboRealRooted.revPrec_of_prec_or_revPrec_of_root_asymmetry
+      (f := U) (g := X * V) (c := c) (r := 0)
+      hprec_or hU_le hXV_root0 hc_lt
+  have hV_splits : V.Splits := (isRealRooted_of_X_mul hXV_ne hXV_splits).2
+  have hU_pos : HasPosLeadingCoeff U := by
+    simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
+  exact
+    (prec_iff_prec_mul_X_of_roots_nonpos
+      (f := V) (g := U) hV_splits hUW.1.2 hV_pos hU_pos
+      hV_nonpos hU_nonpos hdeg_VU).mpr hU_XV
+
 end RealRooted
