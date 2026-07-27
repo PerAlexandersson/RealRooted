@@ -90,6 +90,42 @@ theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
         simp [hfalse]
       · simp [snakeElementReachable_replicate_L_colCode_rowCode_eq_false]
 
+/-- In a final `R` suffix after a last-change index, every board cell whose row
+coordinate lies in the suffix has row weakly below column. -/
+theorem mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R)
+    (hcell : (r, c) ∈ (generalizedSnakeBoard w).cells) :
+    r ≤ c := by
+  by_contra hnot
+  have hcr : c < r := Nat.lt_of_not_ge hnot
+  rw [generalizedSnakeBoard, Finset.mem_filter] at hcell
+  rcases hcell with ⟨_hbound, hcell⟩
+  rw [Bool.and_eq_true] at hcell
+  rcases hcell with ⟨_hrow_col, hcol_row⟩
+  have hreach := snakeElementReachable_suffix_R_colCode_rowCode_of_lt
+    (w := w) (last := last) (c := c) (r := r) hlast hcr hr hfinal
+  simp [hreach] at hcol_row
+
+/-- In a final `L` suffix after a last-change index, every board cell whose
+column coordinate lies in the suffix has column weakly below row. -/
+theorem mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L)
+    (hcell : (r, c) ∈ (generalizedSnakeBoard w).cells) :
+    c ≤ r := by
+  by_contra hnot
+  have hrc : r < c := Nat.lt_of_not_ge hnot
+  rw [generalizedSnakeBoard, Finset.mem_filter] at hcell
+  rcases hcell with ⟨_hbound, hcell⟩
+  rw [Bool.and_eq_true] at hcell
+  rcases hcell with ⟨hrow_col, _hcol_row⟩
+  have hreach := snakeElementReachable_suffix_L_rowCode_colCode_of_lt
+    (w := w) (last := last) (r := r) (c := c) hlast hrc hc hfinal
+  simp [hreach] at hrow_col
+
 /-- The concrete finite-board squarecase model for generalized snake words. -/
 def generalizedSnakeRookModel : SquarecaseRookModel :=
   squarecaseRookModelOfFiniteSkewBoard generalizedSnakeBoard
