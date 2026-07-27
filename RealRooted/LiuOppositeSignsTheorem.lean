@@ -21858,6 +21858,43 @@ def theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement : Prop :=
       f.natDegree ≤ 2 → g.natDegree ≤ 2 →
         (Compatible f g ↔ theorem21RootCountBranches f g)
 
+/-- Nonconstant no-common-root low-degree Liu Theorem 2.1 package through
+endpoint degree two. -/
+def theorem21CompatibleRootCountNatDegreeLeTwoNoCommonNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+        (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- Nonconstant no-common-root low-degree forward direction through endpoint
+degree two. -/
+def theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+        Compatible f g → theorem21RootCountBranches f g
+
+/-- Corrected nonconstant low-degree Liu package through endpoint degree two,
+using an explicit common-root deletion branch in the conclusion. -/
+def theorem21CompatibleRootCountWithCommonNatDegreeLeTwoNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+        (Compatible f g ↔ theorem21RootCountBranchesWithCommon f g)
+
+/-- Corrected nonconstant low-degree forward direction through endpoint degree
+two, with an explicit common-root deletion branch. -/
+def
+    theorem21CompatibleToRootCountBranchesWithCommonNatDegreeLeTwoNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+        Compatible f g → theorem21RootCountBranchesWithCommon f g
+
 /-- Nonconstant linear-endpoint Liu Theorem 2.1 package.  This is a checked
 base case for the forward direction together with the existing low-degree
 reverse route. -/
@@ -21945,6 +21982,66 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_forward
   · intro hbranches
     exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
       hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
+
+/-- The nonconstant no-common-root low-degree forward direction through
+endpoint degree two is checked directly. -/
+theorem theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstant :
+    theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstantStatement :=
+  by
+  intro f g hf hg hsgn hno hfdeg_ne hgdeg_ne hfdeg hgdeg hcompat
+  exact theorem21RootCountBranches_of_compatible_natDegree_le_two_of_no_common
+    hf hg hsgn hcompat hno hfdeg_ne hgdeg_ne hfdeg hgdeg
+
+/-- The nonconstant no-common-root low-degree Liu equivalence through endpoint
+degree two is fully checked. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwoNoCommonNonconstant :
+    theorem21CompatibleRootCountNatDegreeLeTwoNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno hfdeg_ne hgdeg_ne hfdeg hgdeg
+  constructor
+  · exact
+      theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstant
+        f g hf hg hsgn hno hfdeg_ne hgdeg_ne hfdeg hgdeg
+  · intro hbranches
+    exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
+      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
+
+/-- The corrected nonconstant low-degree forward direction through endpoint
+degree two follows from the no-common forward theorem and the automatic
+common-root deletion branch. -/
+theorem
+    theorem21CompatibleToRootCountBranchesWithCommonNatDegreeLeTwoNonconstant :
+    theorem21CompatibleToRootCountBranchesWithCommonNatDegreeLeTwoNonconstantStatement :=
+  by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hcompat
+  by_cases hno : NoCommonRoots f g
+  · exact Or.inl
+      (theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstant
+        f g hf hg hsgn hno hfdeg_ne hgdeg_ne hfdeg hgdeg hcompat)
+  · have hcommon : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r := by
+      by_contra hmissing
+      exact hno (by
+        intro r hfr hgr
+        exact hmissing ⟨r, hfr, hgr⟩)
+    rcases hcommon with ⟨r, hfr, hgr⟩
+    exact Or.inr
+      ⟨r, hfr, hgr,
+        compatible_deleteRootFactor_of_common_root hcompat hfr hgr⟩
+
+/-- The corrected nonconstant low-degree Liu equivalence through endpoint
+degree two is fully checked, with common roots handled by an explicit deletion
+branch. -/
+theorem theorem21CompatibleRootCountWithCommonNatDegreeLeTwoNonconstant :
+    theorem21CompatibleRootCountWithCommonNatDegreeLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
+  constructor
+  · exact
+      theorem21CompatibleToRootCountBranchesWithCommonNatDegreeLeTwoNonconstant
+        f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
+  · intro hbranches
+    rcases hbranches with hbranches | hcommon
+    · exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
+        hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
+    · exact CommonRootDeletionCompatibleBranch.compatible hcommon
 
 /-- Reassemble the bounded endpoint-degree-two theorem package from the full
 forward direction and the bounded endpoint-degree-two reverse direction. -/
