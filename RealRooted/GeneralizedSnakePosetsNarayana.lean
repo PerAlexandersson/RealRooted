@@ -1172,6 +1172,48 @@ theorem modifiedNarayanaPolynomial_splits (n : ℕ) :
 theorem modifiedNarayanaPolynomial_six_splits : (modifiedNarayanaPolynomial 6).Splits :=
   modifiedNarayanaPolynomial_splits 6
 
+/-- The `P_6` modified Narayana polynomial has a sorted six-root list. -/
+theorem modifiedNarayanaPolynomial_six_exists_ordered_roots :
+    ∃ a b c d e r : ℝ,
+      (modifiedNarayanaPolynomial 6).roots =
+        (↑[a, b, c, d, e, r] : Multiset ℝ) ∧
+        a ≤ b ∧ b ≤ c ∧ c ≤ d ∧ d ≤ e ∧ e ≤ r := by
+  let rs := (modifiedNarayanaPolynomial 6).roots.sort (· ≤ ·)
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hrs_eq : (↑rs : Multiset ℝ) = (modifiedNarayanaPolynomial 6).roots :=
+    Multiset.sort_eq ..
+  have hlen : rs.length = 6 := by
+    rw [← Multiset.coe_card, hrs_eq,
+      card_roots_of_splits modifiedNarayanaPolynomial_six_splits]
+    exact modifiedNarayanaPolynomial_six_natDegree
+  have hlen0 : rs.length = 5 + 1 := by simpa using hlen
+  rcases List.length_eq_succ_iff.mp hlen0 with ⟨a, rs1, hcons0, hlen1⟩
+  rw [← hcons0] at hrs_sorted hrs_eq
+  have hlen1' : rs1.length = 4 + 1 := by simpa using hlen1
+  rcases List.length_eq_succ_iff.mp hlen1' with ⟨b, rs2, hcons1, hlen2⟩
+  rw [← hcons1] at hrs_sorted hrs_eq
+  have hlen2' : rs2.length = 3 + 1 := by simpa using hlen2
+  rcases List.length_eq_succ_iff.mp hlen2' with ⟨c, rs3, hcons2, hlen3⟩
+  rw [← hcons2] at hrs_sorted hrs_eq
+  have hlen3' : rs3.length = 2 + 1 := by simpa using hlen3
+  rcases List.length_eq_succ_iff.mp hlen3' with ⟨d, rs4, hcons3, hlen4⟩
+  rw [← hcons3] at hrs_sorted hrs_eq
+  have hlen4' : rs4.length = 1 + 1 := by simpa using hlen4
+  rcases List.length_eq_succ_iff.mp hlen4' with ⟨e, rs5, hcons4, hlen5⟩
+  rw [← hcons4] at hrs_sorted hrs_eq
+  have hlen5' : rs5.length = 0 + 1 := by simpa using hlen5
+  rcases List.length_eq_succ_iff.mp hlen5' with ⟨r, rs6, hcons5, hlen6⟩
+  rw [← hcons5] at hrs_sorted hrs_eq
+  have hrs6_nil : rs6 = [] := List.length_eq_zero_iff.mp hlen6
+  rw [hrs6_nil] at hrs_sorted hrs_eq
+  refine ⟨a, b, c, d, e, r, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa using hrs_eq.symm
+  · simp_all
+  · simp_all
+  · simp_all
+  · simp_all
+  · simp_all
+
 /-- Modified Narayana polynomials are nonzero and split over the reals. -/
 theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :
     modifiedNarayanaPolynomial n ≠ 0 ∧
@@ -1550,6 +1592,16 @@ theorem auxiliaryG_six_splits : (FiniteSkewBoard.auxiliaryG 6).Splits := by
   rw [auxiliaryG_six_natDegree]
   norm_num
 
+/-- Cross-root inequalities between an ordered `P_6` root list and the named
+`G_6` roots. -/
+def ModifiedNarayanaSixAuxiliaryGCrossInequalities
+    (a b c d e r : ℝ) : Prop :=
+  a ≤ auxiliaryG_six_root0 ∧ auxiliaryG_six_root0 ≤ b ∧
+    b ≤ auxiliaryG_six_root1 ∧ auxiliaryG_six_root1 ≤ c ∧
+      c ≤ auxiliaryG_six_root2 ∧ auxiliaryG_six_root2 ≤ d ∧
+        d ≤ auxiliaryG_six_root3 ∧ auxiliaryG_six_root3 ≤ e ∧
+          e ≤ auxiliaryG_six_root4 ∧ auxiliaryG_six_root4 ≤ r
+
 /-- Conditional `n = 6` Lemma 3.3 certificate, reducing the remaining work to
 the `P_6` root list and cross inequalities. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
@@ -1572,6 +1624,49 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
     modifiedNarayanaPolynomial_six_natDegree auxiliaryG_six_natDegree
     hP_roots auxiliaryG_six_roots_named hab hbc hcd hde her huv hvw hwz hzy hau
     hub hbv hvc hcw hwd hdz hze hey hyr
+
+/-- Conditional `n = 6` Lemma 3.3 certificate, with the cross inequalities
+bundled as a single predicate. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
+    {a b c d e r : ℝ}
+    (hP_roots :
+      (modifiedNarayanaPolynomial 6).roots =
+        (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (hcross :
+      ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
+    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  rcases hcross with ⟨hau, hub, hbv, hvc, hcw, hwd, hdz, hze, hey, hyr⟩
+  exact lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots hP_roots
+    hab hbc hcd hde her hau hub hbv hvc hcw hwd hdz hze hey hyr
+
+/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from proving the
+cross inequalities for any sorted `P_6` root list. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
+    (hcross :
+      ∀ {a b c d e r : ℝ},
+        (modifiedNarayanaPolynomial 6).roots =
+          (↑[a, b, c, d, e, r] : Multiset ℝ) →
+        a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
+        ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
+    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  obtain ⟨a, b, c, d, e, r, hP_roots, hab, hbc, hcd, hde, her⟩ :=
+    modifiedNarayanaPolynomial_six_exists_ordered_roots
+  exact lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
+    hP_roots hab hbc hcd hde her (hcross hP_roots hab hbc hcd hde her)
+
+/-- The `n = 6` Braun--Jal Lemma 3.3 proper-position form follows from proving
+the cross inequalities for any sorted `P_6` root list. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
+    (hcross :
+      ∀ {a b c d e r : ℝ},
+        (modifiedNarayanaPolynomial 6).roots =
+          (↑[a, b, c, d, e, r] : Multiset ℝ) →
+        a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
+        ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
+    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  exact (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toPrec
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
@@ -2371,6 +2466,26 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_five
   · exact lemma33AuxiliaryGInterlaces_modified_three
   · exact lemma33AuxiliaryGInterlaces_modified_four
   · exact lemma33AuxiliaryGInterlaces_modified_five
+
+/-- Conditional checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
+Lemma 3.3.  The only remaining input is the `P_6`/`G_6` cross-root
+inequality package. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
+    (hcross :
+      ∀ {a b c d e r : ℝ},
+        (modifiedNarayanaPolynomial 6).roots =
+          (↑[a, b, c, d, e, r] : Multiset ℝ) →
+        a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
+        ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r)
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+  interval_cases n
+  · exact lemma33AuxiliaryGInterlaces_modified_base
+  · exact lemma33AuxiliaryGInterlaces_modified_two
+  · exact lemma33AuxiliaryGInterlaces_modified_three
+  · exact lemma33AuxiliaryGInterlaces_modified_four
+  · exact lemma33AuxiliaryGInterlaces_modified_five
+  · exact lemma33AuxiliaryGInterlaces_modified_six_of_crosses hcross
 
 end GeneralizedSnakePosets
 end RealRooted
