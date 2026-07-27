@@ -81,11 +81,8 @@ theorem posCombo_deg1_all_splits :
     · exact mul_ne_zero (Polynomial.X_sub_C_ne_zero _) (Polynomial.X_sub_C_ne_zero _)
     · exact mul_ne_zero (Polynomial.C_ne_zero.mpr hμ.ne')
         (mul_ne_zero (Polynomial.X_sub_C_ne_zero _) (Polynomial.X_sub_C_ne_zero _))
-  · refine Polynomial.funext fun x => ?_
+  · refine Polynomial.funext fun x ↦ ?_
     norm_num
-    ring_nf
-    norm_num [hμ.ne', hlam.ne']
-    ring_nf
     grind
 
 private lemma roots_X_add_one_mul_X_add_two_le_neg_one :
@@ -93,9 +90,8 @@ private lemma roots_X_add_one_mul_X_add_two_le_neg_one :
   intro r hr
   rw [Polynomial.mem_roots] at hr
   · norm_num at hr ⊢
-    rcases hr with hr | hr <;> linarith
-  · exact mul_ne_zero (by simpa using Polynomial.X_add_C_ne_zero (1 : ℝ))
-      (by simpa using Polynomial.X_add_C_ne_zero (2 : ℝ))
+    grind
+  · simp_all
 
 private lemma neg_half_mem_roots_two_mul_X_add_one :
     (-1 / 2 : ℝ) ∈ ((C 2 * X + C 1 : ℝ[X]).roots) := by

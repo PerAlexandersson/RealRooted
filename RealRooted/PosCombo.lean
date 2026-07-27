@@ -439,27 +439,24 @@ lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N :
   have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
     intro hzero
     exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
-  constructor
-  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
-  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
+  simp_all
 
 /-- Reflecting both members at a common degree bound preserves and reflects
 positive-combination real-rootedness. -/
 lemma reflect_iff_natDegree_le {f g : ℝ[X]} {N : ℕ}
     (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
     PosComboRealRooted (reflect N f) (reflect N g) ↔ PosComboRealRooted f g := by
-  refine ⟨?_, fun hfg => hfg.reflect_of_natDegree_le hfN hgN⟩
+  refine ⟨?_, fun hfg ↦ hfg.reflect_of_natDegree_le hfN hgN⟩
   intro hfg
   have hf_ref_N : (reflect N f).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hfN]
+    Polynomial.natDegree_reflect_le.trans <| by simp_all
   have hg_ref_N : (reflect N g).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hgN]
+    Polynomial.natDegree_reflect_le.trans <| by simp_all
   have hback :
       PosComboRealRooted (reflect N (reflect N f)) (reflect N (reflect N g)) :=
     PosComboRealRooted.reflect_of_natDegree_le
       (f := reflect N f) (g := reflect N g) (N := N) hfg hf_ref_N hg_ref_N
-  intro lam μ hlam hμ
-  simpa [Polynomial.reflect_reflect] using hback (lam := lam) (μ := μ) hlam hμ
+  simp_all
 
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
@@ -477,15 +474,10 @@ lemma divX_of_coeff_zero {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hg_eq : X * g.divX = g := by
     simpa [hg0] using Polynomial.X_mul_divX_add g
   have hfactor :
-      X * (C lam * f.divX + C μ * g.divX) = C lam * f + C μ * g := by
-    calc
-      X * (C lam * f.divX + C μ * g.divX)
-          = C lam * (X * f.divX) + C μ * (X * g.divX) := by ring
-      _ = C lam * f + C μ * g := by rw [hf_eq, hg_eq]
+      X * (C lam * f.divX + C μ * g.divX) = C lam * f + C μ * g := by grind
   have hX :
       (X * (C lam * f.divX + C μ * g.divX) ≠ 0 ∧
-        (X * (C lam * f.divX + C μ * g.divX)).Splits) := by
-    simpa [hfactor] using hbase
+        (X * (C lam * f.divX + C μ * g.divX)).Splits) := by simp_all
   exact isRealRooted_of_X_mul hX.1 hX.2
 
 lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
@@ -748,7 +740,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
   rw [← hscale]
-  exact ⟨mul_ne_zero (by simpa using ha.ne') (hne hz), .mul (.C _) <| (hASW (hpf hz)).1⟩
+  exact ⟨mul_ne_zero (by grind) (hne hz), .mul (.C _) <| (hASW (hpf hz)).1⟩
 
 /--
 TNN-named version of `of_aissenSchoenbergWhitney_right_pencil`.
@@ -842,30 +834,14 @@ lemma family_no_common_segment {f g : ℝ[X]}
       ¬ (C (1 - β₂) * f + C β₂ * g).IsRoot r := by
   intro r hr₁ hr₂
   have h₁ : (1 - β₁) * f.eval r + β₁ * g.eval r = 0 := by
-    have := hr₁
-    simp only [IsRoot, eval_add, eval_mul, eval_C] at this
-    linarith
-  have h₂ : (1 - β₂) * f.eval r + β₂ * g.eval r = 0 := by
-    have := hr₂
-    simp only [IsRoot, eval_add, eval_mul, eval_C] at this
-    linarith
+    simp_all
+  have h₂ : (1 - β₂) * f.eval r + β₂ * g.eval r = 0 := by simp_all
   have hfg : f.eval r = g.eval r := by
-    have hd : (β₁ - β₂) * (g.eval r - f.eval r) = 0 := by
-      linear_combination h₁ - h₂
-    have hne : β₁ - β₂ ≠ 0 := sub_ne_zero.mpr hβ
-    rcases mul_eq_zero.mp hd with h | h
-    · exact absurd h hne
-    · linarith
-  have hf0 : f.eval r = 0 := by
-    have hexp : f.eval r = (1 - β₁) * f.eval r + β₁ * g.eval r := by
-      rw [hfg]
-      ring
-    rw [hexp]
-    exact h₁
+    grind
+  have : f.eval r = 0 := by grind
   have hg0 : g.eval r = 0 := by
-    rw [← hfg]
-    exact hf0
-  exact hno r hf0 hg0
+    simp_all
+  simp_all
 
 /-- Two interior closed-segment members again form a positive-combination
 pair.  The scalar coefficients of any strictly positive combination stay
@@ -881,14 +857,7 @@ lemma family_pair_segment {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hA : 0 < lam * (1 - β₁) + μ * (1 - β₂) := by positivity
   have hB : 0 < lam * β₁ + μ * β₂ := by positivity
   have hbase := h hA hB
-  have hEq :
-      C lam * (C (1 - β₁) * f + C β₁ * g) +
-          C μ * (C (1 - β₂) * f + C β₂ * g) =
-        C (lam * (1 - β₁) + μ * (1 - β₂)) * f +
-          C (lam * β₁ + μ * β₂) * g := by
-    simp only [map_add, map_mul]
-    ring
-  rwa [hEq]
+  grind
 
 /-- Any two distinct closed-segment members of a positive-combination,
 common-root-free pair are coprime when the first one is interior. -/

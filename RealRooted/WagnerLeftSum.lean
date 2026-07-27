@@ -377,7 +377,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           lia
         have hfgnd : (f + g).natDegree = 1 := by
           rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-            (by rw [hfnd, hgnd]; norm_num) hf_pos, hfnd]
+            (by simp_all) hf_pos, hfnd]
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
@@ -526,7 +526,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           lia
         have hfgnd : (f + g).natDegree = 1 := by
           rw [natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-            (by rw [hfnd, hgnd]; norm_num) hg_pos, hgnd]
+            (by simp_all) hg_pos, hgnd]
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)

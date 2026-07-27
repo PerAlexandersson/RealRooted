@@ -104,10 +104,7 @@ theorem cast_descFactorial_three {R : Type*} [CommRing R] (n : ℕ) :
           | zero => simp
           | succ n =>
               rw [Nat.cast_mul, Nat.cast_descFactorial_two]
-              have hsub : n + 1 + 1 + 1 - 2 = n + 1 := by lia
-              rw [hsub]
-              norm_num [Nat.cast_add]
-              ring
+              grind
 
 /-- Casted form of `Nat.choose n 3`. -/
 theorem cast_choose_three {R : Type*} [Field R] [CharZero R] (n : ℕ) :

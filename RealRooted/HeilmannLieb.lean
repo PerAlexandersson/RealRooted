@@ -56,10 +56,8 @@ def weightedIndepPolyOn {V : Type u} [DecidableEq V]
 equal to `1` is the unweighted support-restricted independence polynomial. -/
 theorem weightedIndepPolyOn_one {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
-    weightedIndepPolyOn G S (fun _ => 1) = indepPolyOn G S := by
+    weightedIndepPolyOn G S (fun _ ↦ 1) = indepPolyOn G S := by
   unfold weightedIndepPolyOn indepPolyOn
-  apply Finset.sum_congr rfl
-  intro s _hs
   simp
 
 /-- The empty independent set gives the constant coefficient of the weighted
@@ -71,10 +69,8 @@ theorem weightedIndepPolyOn_coeff_zero {V : Type u} [DecidableEq V]
   rw [weightedIndepPolyOn, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
   · simp
   · intro s hs hne
-    have hs_nonzero : s.card ≠ 0 := by
-      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
-    have hnot : ¬ s.card ≤ 0 := by
-      simpa [Nat.pos_iff_ne_zero] using Nat.pos_of_ne_zero hs_nonzero
+    have : s.card ≠ 0 := by simp_all
+    have hnot : ¬ s.card ≤ 0 := by simp_all
     rw [Polynomial.coeff_mul_X_pow', if_neg hnot]
   · intro hnot
     simp [indepSetsOn] at hnot
@@ -134,8 +130,8 @@ theorem indepPolyOn_hasNonnegCoeffs {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     HasNonnegCoeffs (indepPolyOn G S) := by
   simpa [weightedIndepPolyOn_one] using
-    (weightedIndepPolyOn_hasNonnegCoeffs (G := G) (S := S) (wt := fun _ => 1)
-      (by intro _ _; norm_num))
+    (weightedIndepPolyOn_hasNonnegCoeffs (G := G) (S := S) (wt := fun _ ↦ 1)
+      (by simp))
 
 /-- Support-restricted independence polynomials have positive leading coefficient. -/
 theorem indepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
@@ -153,7 +149,7 @@ theorem indepPolyOn_empty {V : Type u} [DecidableEq V]
   · intro s hs hne
     have hs' : s = ∅ ∧ G.IsIndepSet (s : Set V) := by
       simpa [indepSetsOn] using hs
-    exact False.elim (hne hs'.1)
+    simp_all
   · intro hnot
     simp [indepSetsOn] at hnot
 
@@ -162,7 +158,7 @@ theorem indepPolyOn_empty_splits {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
     (indepPolyOn G (∅ : Finset V)).Splits := by
   rw [indepPolyOn_empty]
-  exact Polynomial.Splits.one
+  simp
 
 private theorem compatible_self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
     Compatible p (X * p) := by
@@ -170,21 +166,13 @@ private theorem compatible_self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
   have hlin : (C α + C β * X : ℝ[X]).Splits := by
     by_cases hβ0 : β = 0
     · simp [hβ0]
-    · have hβα : β * (α / β) = α := by field_simp [hβ0]
-      have hfactor : (C α + C β * X : ℝ[X]) = C β * (X + C (α / β)) := by
-        rw [mul_add, ← C_mul, hβα]
-        ring
-      rw [hfactor]
-      exact (Polynomial.Splits.C β).mul <| by
-        simp
+    · have hβα : β * (α / β) = α := by grind
+      have : (C α + C β * X : ℝ[X]) = C β * (X + C (α / β)) := by grind
+      simp_all
   have hsum : C α * p + C β * (X * p) = (C α + C β * X) * p := by
     ring
-  have hsplit : (C α * p + C β * (X * p)).Splits := by
-    rw [hsum]
-    exact hlin.mul hp
-  by_cases hzero : C α * p + C β * (X * p) = 0
-  · exact Or.inl hzero
-  · exact Or.inr ⟨hzero, hsplit⟩
+  have : (C α * p + C β * (X * p)).Splits := by simp_all
+  grind
 
 /-- If a support-restricted independence polynomial is real-rooted, then it is
 compatible with its `X`-multiple. -/
@@ -197,12 +185,9 @@ theorem compatible_indepPolyOn_X_mul_self_of_splits {V : Type u} [DecidableEq V]
 private theorem compatible_self_of_splits {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits) :
     Compatible p p := by
   intro α β _hα _hβ
-  have hsum : C α * p + C β * p = C (α + β) * p := by
-    rw [← add_mul, ← C_add]
+  have hsum : C α * p + C β * p = C (α + β) * p := by grind
   by_cases hzero : α + β = 0
-  · left
-    rw [hsum, hzero]
-    simp
+  · simp_all
   · right
     rw [hsum]
     exact isRealRooted_C_mul hp_ne hp hzero
@@ -214,30 +199,20 @@ private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f 
       X * (C α * f + C β * g) := by
     ring
   rcases h α β hα hβ with hzero | hrr
-  · left
-    rw [hsum, hzero]
-    simp
-  · right
-    rw [hsum]
-    exact isRealRooted_X_mul hrr.1 hrr.2
+  · simp_all
+  · simp_all
 
 private theorem splits_add_of_compatible {p q : ℝ[X]} (h : Compatible p q)
     (hadd : p + q ≠ 0) : (p + q).Splits := by
   have hcombo := h 1 1 zero_le_one zero_le_one
-  rcases hcombo with hzero | hsplit
-  · exact False.elim (hadd (by simpa using hzero))
-  · simpa using hsplit.2
+  simp_all
 
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
     indepPoly G = indepPolyOn G Finset.univ := by
   unfold indepPoly indepPolyOn indepSetsOn
-  apply Finset.sum_congr
-  · ext s
-    simp
-  · intro s hs
-    rfl
+  grind
 
 /-- Claw-free graph: no vertex has three pairwise non-adjacent neighbors. -/
 def ClawFree {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
@@ -251,7 +226,7 @@ theorem ClawFree.induce {V : Type u} {G : _root_.SimpleGraph V}
   have ht'_neigh : ∀ w ∈ t', G.Adj v w := by
     intro w hw
     rcases Finset.mem_map.mp hw with ⟨x, hx, rfl⟩
-    exact hneigh x hx
+    simp_all
   have ht'_ind : G.IsNIndepSet 3 t' := by
     refine ⟨?_, ?_⟩
     · rw [SimpleGraph.isIndepSet_iff]
@@ -272,27 +247,22 @@ private theorem ClawFree.adj_of_forced_triangle {V : Type u}
   classical
   by_contra hbc
   have hneigh : ∀ w ∈ ({a, b, c} : Finset V), G.Adj z w := by
-    intro w hw
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hw
-    rcases hw with rfl | rfl | rfl
-    · exact hza
-    · exact hzb
-    · exact hzc
+    simp_all
   have hind : G.IsNIndepSet 3 ({a, b, c} : Finset V) := by
     refine ⟨?_, ?_⟩
     · rw [SimpleGraph.isIndepSet_iff]
       intro x hx y hy hne hadj
       simp only [Finset.mem_coe, Finset.mem_insert, Finset.mem_singleton] at hx hy
       rcases hx with rfl | rfl | rfl <;> rcases hy with rfl | rfl | rfl
-      · exact hne rfl
-      · exact hab hadj
-      · exact hac hadj
+      · simp_all
+      · simp_all
+      · simp_all
       · exact hab hadj.symm
-      · exact hne rfl
-      · exact hbc hadj
+      · simp_all
+      · simp_all
       · exact hac hadj.symm
       · exact hbc hadj.symm
-      · exact hne rfl
+      · simp_all
     · simp [hab_ne, hac_ne, hbc_ne]
   exact hG z {a, b, c} hneigh hind
 
@@ -364,7 +334,7 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
       exact Finset.mem_inter.mpr
         ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
           Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
-    exact huH'.2 huCommon
+    simp_all
   refine ⟨?_, ?_, ?_⟩
   · intro x hx
     exact (Finset.mem_filter.mp hx).1
@@ -410,11 +380,8 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
       intro huy
       exact hyOut.2 (Finset.mem_filter.mpr ⟨hyN.1, huy⟩)
     have hux_ne : u ≠ x := by
-      intro hux
-      exact hu_not_H (by simpa [hux] using hxN.1)
-    have huy_ne : u ≠ y := by
-      intro huy
-      exact hu_not_H (by simpa [huy] using hyN.1)
+      grind
+    have huy_ne : u ≠ y := by grind
     exact hG.adj_of_forced_triangle hnK.2.symm hxN.2 hyN.2 hux_not huy_not
       hux_ne huy_ne hxy
 
@@ -447,9 +414,7 @@ theorem IsSimplicialCliqueOn.sdiff_right {V : Type u} [DecidableEq V]
       have hx' := Finset.mem_sdiff.mp hx
       have hxN := Finset.mem_filter.mp hx'.1
       have hxSL := Finset.mem_sdiff.mp hxN.1
-      have hx_notK : x ∉ K := by
-        intro hxK
-        exact hx'.2 (Finset.mem_sdiff.mpr ⟨hxK, hxSL.2⟩)
+      have hx_notK : x ∉ K := by simp_all
       exact Finset.mem_sdiff.mpr
         ⟨Finset.mem_filter.mpr ⟨hxSL.1, hxN.2⟩, hx_notK⟩
 
@@ -470,10 +435,8 @@ theorem ClawFree.simplicialClique_neighborOutside {V : Type u} [DecidableEq V]
     have hnL := Finset.mem_sdiff.mp hn
     have hnN := Finset.mem_filter.mp hnL.1
     have hkn : G.Adj k n := hnN.2
-    have hx' : x ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
-      simpa using hx
-    have hy' : y ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
-      simpa using hy
+    have hx' : x ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by grind
+    have hy' : y ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by grind
     have hxL := Finset.mem_sdiff.mp hx'
     have hyL := Finset.mem_sdiff.mp hy'
     have hxN := Finset.mem_filter.mp hxL.1
@@ -493,25 +456,25 @@ theorem ClawFree.simplicialClique_neighborOutside {V : Type u} [DecidableEq V]
       simp only [Finset.mem_insert, Finset.mem_singleton] at hw
       rcases hw with rfl | rfl | rfl
       · exact hkn.symm
-      · exact hxN.2
-      · exact hyN.2
-    have hxk : x ≠ k := fun hxk => hxSdiff.2 (by simpa [hxk] using hk)
-    have hyk : y ≠ k := fun hyk => hySdiff.2 (by simpa [hyk] using hk)
+      · simp_all
+      · simp_all
+    have hxk : x ≠ k := fun hxk ↦ hxSdiff.2 (by simp_all)
+    have hyk : y ≠ k := fun hyk ↦ hySdiff.2 (by simp_all)
     have hind : G.IsNIndepSet 3 ({k, x, y} : Finset V) := by
       refine ⟨?_, ?_⟩
       · rw [SimpleGraph.isIndepSet_iff]
         intro a ha b hb hne hadj
         simp only [Finset.mem_coe, Finset.mem_insert, Finset.mem_singleton] at ha hb
         rcases ha with rfl | rfl | rfl <;> rcases hb with rfl | rfl | rfl
-        · exact hne rfl
-        · exact hkx_not hadj
-        · exact hky_not hadj
+        · simp_all
+        · simp_all
+        · simp_all
         · exact hkx_not hadj.symm
-        · exact hne rfl
-        · exact hnot hadj
+        · simp_all
+        · simp_all
         · exact hky_not hadj.symm
         · exact hnot hadj.symm
-        · exact hne rfl
+        · simp_all
       · simp [hxk.symm, hyk.symm, hxy]
     exact hG n {k, x, y} hneigh hind
 
@@ -527,13 +490,11 @@ theorem isIndepSet_insert_iff {V : Type u} [DecidableEq V]
     · intro a ha b hb hne hadj
       exact h (by simp [ha]) (by simp [hb]) hne hadj
     · intro w hw hadj
-      exact h (by simp) (by simp [hw]) (fun hvw => hv (by simpa [hvw] using hw)) hadj
+      exact h (by simp) (by simp [hw]) (fun hvw => hv (by simp_all)) hadj
   · rintro ⟨hind, hnonadj⟩ a ha b hb hne hadj
     simp only [Finset.mem_coe, Finset.mem_insert] at ha hb
     rcases ha with rfl | ha
-    · rcases hb with rfl | hb
-      · exact hne rfl
-      · exact hnonadj b hb hadj
+    · grind
     · rcases hb with rfl | hb
       · exact hnonadj a ha hadj.symm
       · exact hind ha hb hne hadj
@@ -555,44 +516,28 @@ theorem indepSetsOn_insert {V : Type u} [DecidableEq V]
     by_cases hvt : v ∈ t
     · refine Or.inr ?_
       refine ⟨t.erase v, ?_, ?_⟩
-      · have hsubS : t.erase v ⊆ S := by
-          intro w hw
-          have hwt : w ∈ t := Finset.mem_of_mem_erase hw
-          have hwins : w = v ∨ w ∈ S := Finset.mem_insert.mp (htsub hwt)
-          rcases hwins with hwv | hS
-          · have hv_mem_erase : v ∈ t.erase v := by
-              exact hwv ▸ hw
-            exact False.elim (Finset.notMem_erase v t hv_mem_erase)
-          · exact hS
+      · have hsubS : t.erase v ⊆ S := by grind
         have hnotadj : ∀ w ∈ t.erase v, ¬ G.Adj v w := by
           intro w hw
           have hne : v ∉ t.erase v := Finset.notMem_erase v t
           have ht_eq : insert v (t.erase v) = t := Finset.insert_erase hvt
           have htind' : G.IsIndepSet ((insert v (t.erase v) : Finset V) : Set V) := by
-            simpa [ht_eq] using htind
+            simp_all
           exact ((isIndepSet_insert_iff hne).mp htind').2 w hw
-        exact ⟨fun w hw => Finset.mem_filter.mpr ⟨hsubS hw, hnotadj w hw⟩,
+        exact ⟨fun w hw ↦ Finset.mem_filter.mpr ⟨hsubS hw, hnotadj w hw⟩,
           ((isIndepSet_insert_iff (Finset.notMem_erase v t)).mp
-            (by simpa [Finset.insert_erase hvt] using htind)).1⟩
-      · exact Finset.insert_erase hvt
-    · refine Or.inl ?_
-      exact ⟨fun w hw => by
-        rcases Finset.mem_insert.mp (htsub hw) with hwv | hS
-        · exact False.elim (hvt (by simpa [hwv] using hw))
-        · exact hS, htind⟩
+            (by simp_all)).1⟩
+      · simp_all
+    · grind
   · rintro (hleft | hright)
-    · exact ⟨fun w hw => Finset.mem_insert.mpr (Or.inr (hleft.1 hw)), hleft.2⟩
+    · grind
     · rcases hright with ⟨u, hu, htu⟩
       subst htu
-      have hvu : v ∉ u := fun h => hv (Finset.mem_filter.mp (hu.1 h)).1
+      have hvu : v ∉ u := fun h ↦ hv (Finset.mem_filter.mp (hu.1 h)).1
       refine ⟨?_, ?_⟩
-      · intro w hw
-        rcases Finset.mem_insert.mp hw with hwv | hwu
-        · rw [hwv]
-          exact Finset.mem_insert_self v S
-        · exact Finset.mem_insert.mpr (Or.inr (Finset.mem_filter.mp (hu.1 hwu)).1)
+      · grind
       · exact (isIndepSet_insert_iff hvu).mpr
-          ⟨hu.2, fun w hw => (Finset.mem_filter.mp (hu.1 hw)).2⟩
+          ⟨hu.2, fun w hw ↦ (Finset.mem_filter.mp (hu.1 hw)).2⟩
 
 /-- Vertex insertion recurrence for weighted support-restricted independence
 polynomials.  Varying the weight of the inserted vertex is the graph-side
@@ -612,21 +557,18 @@ theorem weightedIndepPolyOn_insert {V : Type u} [DecidableEq V]
     intro t ht htimg
     have hvt_not : v ∉ t :=
       Finset.notMem_of_mem_powerset_of_notMem (Finset.mem_filter.mp ht).1 hv
-    rcases Finset.mem_image.mp htimg with ⟨u, _hu, rfl⟩
-    exact hvt_not (Finset.mem_insert_self v u)
+    grind
   rw [Finset.sum_union hdisj]
   rw [Finset.sum_image]
   · rw [Finset.mul_sum]
     congr 1
     apply Finset.sum_congr rfl
     intro u hu
-    have hsub : u ⊆ S.filter fun w => ¬ G.Adj v w :=
+    have hsub : u ⊆ S.filter fun w ↦ ¬ G.Adj v w :=
       Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
-    have hvu : v ∉ u := fun h => hv (Finset.mem_filter.mp (hsub h)).1
-    rw [Finset.card_insert_of_notMem hvu, Finset.prod_insert hvu]
-    ring_nf
+    grind
   · intro u hu w hw h
-    have hsubu : u ⊆ S.filter fun x => ¬ G.Adj v x :=
+    have hsubu : u ⊆ S.filter fun x ↦ ¬ G.Adj v x :=
       Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
     have hsubw : w ⊆ S.filter fun x => ¬ G.Adj v x :=
       Finset.mem_powerset.mp (Finset.mem_filter.mp hw).1
@@ -647,9 +589,8 @@ theorem weightedIndepPolyOn_congr {V : Type u} [DecidableEq V]
   have hsub : t ⊆ S := Finset.mem_powerset.mp (Finset.mem_filter.mp ht).1
   have hprod : (∏ v ∈ t, C (wt v)) = (∏ v ∈ t, C (wt' v)) := by
     apply Finset.prod_congr rfl
-    intro v hv
-    simp [hwt v (hsub hv)]
-  rw [hprod]
+    grind
+  simp_all
 
 /-- In the weighted insertion recurrence, the inserted vertex weight can be
 chosen independently of the old weights on the two smaller supports. -/
@@ -663,17 +604,12 @@ theorem weightedIndepPolyOn_insert_update {V : Type u} [DecidableEq V]
   have hS : weightedIndepPolyOn G S (Function.update wt v a) =
       weightedIndepPolyOn G S wt := by
     apply weightedIndepPolyOn_congr
-    intro w hw
-    have hne : w ≠ v := fun h => hv (by simpa [h] using hw)
-    simp [Function.update_of_ne hne]
+    grind
   have hN : weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w)
       (Function.update wt v a) =
-        weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+        weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt := by
     apply weightedIndepPolyOn_congr
-    intro w hw
-    have hwS : w ∈ S := (Finset.mem_filter.mp hw).1
-    have hne : w ≠ v := fun h => hv (by simpa [h] using hwS)
-    simp [Function.update_of_ne hne]
+    grind
   simp [hS, hN]
 
 /-- Weighted insertion supplies the two-term compatibility input for the
@@ -692,50 +628,41 @@ theorem compatible_weightedIndepPolyOn_X_mul_of_insert_splits
   intro α β hα hβ
   by_cases hα0 : α = 0
   · by_cases hβ0 : β = 0
-    · left
-      simp [hα0, hβ0]
-    · right
-      have hβpos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
-      have hXN :
-          (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) ≠ 0 ∧
-            (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt).Splits :=
+    · simp_all
+    · have hβpos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
+      have :
+          (X * weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt) ≠ 0 ∧
+            (X * weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt).Splits :=
         isRealRooted_X_mul
-          (weightedIndepPolyOn_ne_zero G (S.filter fun w => ¬ G.Adj v w) wt) hN
-      simpa [hα0] using isRealRooted_C_mul hXN.1 hXN.2 hβpos.ne'
-  · right
-    have hαpos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
+          (weightedIndepPolyOn_ne_zero G (S.filter fun w ↦ ¬ G.Adj v w) wt) hN
+      simp_all
+  · have hαpos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
     have hbase_ne :
         weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α)) ≠ 0 :=
       weightedIndepPolyOn_ne_zero G (insert v S) (Function.update wt v (β / α))
     have hbase_split :
         (weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α))).Splits :=
       hinsert (β / α) (div_nonneg hβ hαpos.le)
-    have hscaled := isRealRooted_C_mul hbase_ne hbase_split hαpos.ne'
+    have := isRealRooted_C_mul hbase_ne hbase_split hαpos.ne'
     have hrec := weightedIndepPolyOn_insert_update G wt hv (β / α)
-    have htarget :
+    have :
         C α * weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α)) =
           C α * weightedIndepPolyOn G S wt +
-            C β * (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) := by
+            C β * (X * weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt) := by
       rw [hrec, mul_add]
       congr 1
       calc
         C α * (C (β / α) * X *
-            weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) =
+            weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt) =
             (C α * C (β / α)) * X *
-              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
-          noncomm_ring
+              weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt := by grind
         _ = C (α * (β / α)) * X *
-              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
-          rw [C_mul]
+              weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt := by simp
         _ = C β * X *
-              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
-          have hαβ : α * (β / α) = β := by
-            field_simp [hα0]
-          rw [hαβ]
+              weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt := by grind
         _ = C β *
-              (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) := by
-          rw [mul_assoc]
-    simpa [htarget] using hscaled
+              (X * weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt) := by grind
+    grind
 
 /-- Vertex insertion recurrence for the support-restricted independence
 polynomial. -/
@@ -846,7 +773,7 @@ theorem sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSu
         exact Finset.mem_inter.mpr
           ⟨Finset.mem_filter.mpr ⟨hwH'.1, Or.inl hwu⟩,
             Finset.mem_filter.mpr ⟨hwH'.1, Or.inr (hwu ▸ huv.symm)⟩⟩
-      exact hwH'.2 hwCommon
+      simp_all
     have hnotAdj : ¬ G.Adj u w := by
       intro huw
       exact hw'.2 (Finset.mem_filter.mpr ⟨hw'.1, huw⟩)
@@ -861,9 +788,7 @@ theorem sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSu
     have hwNotCommon : w ∉ commonClosedNeighborSetOn G S u v := by
       intro hwCommon
       have hwClosedU := (Finset.mem_inter.mp hwCommon).1
-      rcases (Finset.mem_filter.mp hwClosedU).2 with hwu' | huw
-      · exact hwu hwu'
-      · exact hnotAdj huw
+      rcases (Finset.mem_filter.mp hwClosedU).2 with hwu' | huw <;> simp_all
     refine Finset.mem_sdiff.mpr ⟨Finset.mem_sdiff.mpr ⟨hwS, hwNotCommon⟩, ?_⟩
     intro hwNeighbor
     exact hnotAdj (Finset.mem_filter.mp hwNeighbor).2
@@ -898,16 +823,16 @@ theorem deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
       · subst w
         simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hk]
       · have hkw : G.Adj k w :=
-          hK (by simpa using hk) (by simpa using hwK) (fun h => hwk h.symm)
+          hK (by grind) (by grind) (fun h ↦ hwk h.symm)
         simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
           hwS, hwK, hwk, hkw]
     · by_cases hAdj : G.Adj k w
       · simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
           hwS, hwK, hAdj]
-      · have hwk : w ≠ k := fun h => hwK (by simpa [h] using hk)
+      · have hwk : w ≠ k := fun h ↦ hwK (by simp_all)
         simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
           hwS, hwK, hAdj, hwk]
-  · have hwK : w ∉ K := fun h => hwS (hKS h)
+  · have hwK : w ∉ K := fun h ↦ hwS (hKS h)
     simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hwS, hwK]
 
 /-- If `v` is adjacent to a clique vertex `x`, then removing `v` from the
@@ -923,7 +848,7 @@ theorem deleteClosedNeighborSupport_erase_eq_of_clique {V : Type u} [DecidableEq
   ext w
   by_cases hwv : w = v
   · subst w
-    have hx_ne : x ≠ v := fun hxv => hvK (by simpa [hxv] using hx)
+    have hx_ne : x ≠ v := fun hxv ↦ hvK (by simp_all)
     have hxv_adj : G.Adj x v := hK (by simp [hx]) (by simp) hx_ne
     simp [deleteClosedNeighborSupport, hxv_adj]
   · simp [deleteClosedNeighborSupport, hwv]
@@ -941,16 +866,15 @@ theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
   classical
   revert S hK
   refine Finset.induction_on K ?_ ?_
-  · intro S _hK _hKS
-    simp
+  · simp
   · intro v K hvK ih S hK hKS
     have hvS : v ∈ S := hKS (Finset.mem_insert_self v K)
     have hK_old : G.IsClique (K : Set V) := by
-      exact hK.subset fun w hw => by simp [hw]
+      simp_all
     have hKS_old : K ⊆ S.erase v := by
       intro w hw
       refine Finset.mem_erase.mpr ⟨?_, hKS (Finset.mem_insert.mpr (Or.inr hw))⟩
-      exact fun hwv => hvK (by simpa [hwv] using hw)
+      exact fun hwv ↦ hvK (by simp_all)
     rw [indepPolyOn_erase G hvS, ih (S.erase v) hK_old hKS_old]
     have hsdiff : S.erase v \ K = S \ insert v K := by
       ext w
@@ -981,8 +905,7 @@ theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
       (K.toList.map fun v =>
           X * indepPolyOn G (deleteClosedNeighborSupport G S v)).sum =
         ∑ v ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
-    rw [Finset.sum_eq_multiset_sum]
-    simp [Finset.toList]
+    simp
   simp [cliqueDeletionFamily, hsum, indepPolyOn_sdiff_clique G S K hK hKS]
 
 private theorem weightedSum_map_const (a : ℝ) :
@@ -1001,34 +924,18 @@ private theorem sdiff_right_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
     (S K L : Finset V) : (S \ L) \ (K \ L) = S \ (K ∪ L) := by
   ext x
   simp only [Finset.mem_sdiff, Finset.mem_union]
-  constructor
-  · rintro ⟨⟨hxS, hxL⟩, hxKL⟩
-    exact ⟨hxS, fun hx => by
-      rcases hx with hxK | hxL'
-      · exact hxKL ⟨hxK, hxL⟩
-      · exact hxL hxL'⟩
-  · rintro ⟨hxS, hxKL⟩
-    exact ⟨⟨hxS, fun hxL => hxKL (Or.inr hxL)⟩,
-      fun hxK => hxKL (Or.inl hxK.1)⟩
+  constructor <;> simp_all
 
 private theorem sdiff_left_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
     (S K L : Finset V) : (S \ K) \ (L \ K) = S \ (K ∪ L) := by
   ext x
   simp only [Finset.mem_sdiff, Finset.mem_union]
-  constructor
-  · rintro ⟨⟨hxS, hxK⟩, hxLK⟩
-    exact ⟨hxS, fun hx => by
-      rcases hx with hxK' | hxL
-      · exact hxK hxK'
-      · exact hxLK ⟨hxL, hxK⟩⟩
-  · rintro ⟨hxS, hxKL⟩
-    exact ⟨⟨hxS, fun hxK => hxKL (Or.inl hxK)⟩,
-      fun hxL => hxKL (Or.inr hxL.1)⟩
+  constructor <;> simp_all
 
 private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
     (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
   intro i j _hij
-  exact h (fs.get i) (List.get_mem fs i) (fs.get j) (List.get_mem fs j)
+  simp_all
 
 private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
     (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
@@ -1041,10 +948,7 @@ private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
   have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
     intro f hf
     simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl | rfl
-    · exact ha
-    · exact hb
-    · exact hc
+    rcases hf with rfl | rfl | rfl <;> simp_all
   have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
     intro f hf
     simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
@@ -1112,7 +1016,7 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
   rcases hf with rfl | ⟨u, huList, rfl⟩
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
     · exact compatible_self_of_splits (indepPolyOn_ne_zero G (S \ K)) hbase
-    · exact hbase_del v (Finset.mem_toList.mp hvList)
+    · simp_all
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
     · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
     · exact compatible_X_mul_of_compatible
@@ -1136,13 +1040,13 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_neighborOutside_compatible
   · intro v hv
     have hsupport :=
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hv
-    simpa [hsupport] using hbase_neighbor v hv
+    simp_all
   · intro u hu v hv
     have huSupport :=
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hu
     have hvSupport :=
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hv
-    simpa [huSupport, hvSupport] using hneighbor_pair u hu v hv
+    simp_all
 
 /-- The finite family used to prove compatibility of `I(S)` with
 `X * I(S \ K)` in Chudnovsky--Seymour Lemma 2.5.2. -/
@@ -1199,7 +1103,7 @@ theorem cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hvK
-      simpa [hvSupport] using hbase_neighbor_x v hvK
+      simp_all
   · have huK : u ∈ K := Finset.mem_toList.mp huList
     have huSupport :=
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS huK
@@ -1253,19 +1157,15 @@ theorem indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
   have hfam : FamilyCompatible fs :=
     (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
       (fs := fs) hrr hpos hnn).1 hpair
-  have hweighted := hfam (fs.map fun p => ((1 : ℝ), p)) (by
-    intro ap hap
-    rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
-    exact hp) (by
-    intro ap hap
-    rcases List.mem_map.mp hap with ⟨p, _hp, rfl⟩
-    norm_num)
-  have hsum : weightedSum (fs.map fun p => ((1 : ℝ), p)) = indepPolyOn G S := by
+  have hweighted := hfam (fs.map fun p ↦ ((1 : ℝ), p)) (by
+    simp) (by
+    simp)
+  have hsum : weightedSum (fs.map fun p ↦ ((1 : ℝ), p)) = indepPolyOn G S := by
     rw [weightedSum_map_one]
     exact cliqueDeletionFamily_sum G S K hK hKS
   rw [hsum] at hweighted
   rcases hweighted with hzero | ⟨_, hsplits⟩
-  · exact False.elim (indepPolyOn_ne_zero G S hzero)
+  · simp_all
   · exact hsplits
 
 /-- The clique-deletion family also assembles the compatibility of `I(S)` with
@@ -1659,7 +1559,7 @@ theorem supportVertexDeletionCompatible_of_smaller
           deleteClosedNeighborSupport G (S.erase v) u =
             deleteClosedNeighborSupport G S u :=
         deleteClosedNeighborSupport_erase_eq_of_adj G huv
-      simpa [hsupport] using h
+      simp_all
     have hBaseDelV : Compatible (indepPolyOn G ((S.erase v).erase u))
         (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
       have h := hVertexSmall (S.erase u) hEraseUSmall hvS_erase_u
@@ -1671,7 +1571,7 @@ theorem supportVertexDeletionCompatible_of_smaller
           deleteClosedNeighborSupport G (S.erase u) v =
             deleteClosedNeighborSupport G S v :=
         deleteClosedNeighborSupport_erase_eq_of_adj G huv_vu
-      simpa [herase, hsupport] using h
+      simp_all
     have hCommonSub : commonClosedNeighborSetOn G S u v ⊆ S :=
       commonClosedNeighborSetOn_subset G S u v
     have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
@@ -1707,19 +1607,9 @@ theorem supportSimplicialPairCompatible_of_smaller
     · exact hL.1 hxL
   by_cases hUnion_empty : K ∪ L = ∅
   · have hK_empty : K = ∅ := by
-      ext x
-      constructor
-      · intro hx
-        have hxUnion : x ∈ K ∪ L := Finset.mem_union.mpr (Or.inl hx)
-        simp [hUnion_empty] at hxUnion
-      · simp
+      simp_all
     have hL_empty : L = ∅ := by
-      ext x
-      constructor
-      · intro hx
-        have hxUnion : x ∈ K ∪ L := Finset.mem_union.mpr (Or.inr hx)
-        simp [hUnion_empty] at hxUnion
-      · simp
+      simp_all
     have hS : (indepPolyOn G S).Splits := hSplit S Subset.rfl
     simpa [hK_empty, hL_empty] using
       compatible_self_of_splits (indepPolyOn_ne_zero G S) hS
@@ -1753,42 +1643,40 @@ theorem supportSimplicialPairCompatible_of_smaller
       intro v hv
       have h := deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
         G hK_simp.2.1 hK_simp.1 hv
-      simpa [hK_support] using h
+      simp_all
     have hL_delete_support : ∀ v ∈ L \ K,
         deleteClosedNeighborSupport G (S \ K) v =
           (S \ (K ∪ L)) \ neighborOutsideCliqueOn G (S \ K) (L \ K) v := by
       intro v hv
       have h := deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
         G hL_simp.2.1 hL_simp.1 hv
-      simpa [hL_support] using h
+      simp_all
     have hKdel : ∀ v ∈ K \ L,
         (indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)).Splits := by
       intro v hv
       have hsub : deleteClosedNeighborSupport G (S \ L) v ⊆ S := by
         intro w hw
-        exact (Finset.mem_sdiff.mp
-          (Finset.mem_of_mem_erase (Finset.mem_filter.mp hw).1)).1
+        simp_all
       exact hSplit (deleteClosedNeighborSupport G (S \ L) v) hsub
     have hLdel : ∀ v ∈ L \ K,
         (indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)).Splits := by
       intro v hv
       have hsub : deleteClosedNeighborSupport G (S \ K) v ⊆ S := by
         intro w hw
-        exact (Finset.mem_sdiff.mp
-          (Finset.mem_of_mem_erase (Finset.mem_filter.mp hw).1)).1
+        simp_all
       exact hSplit (deleteClosedNeighborSupport G (S \ K) v) hsub
     have hbase_k_x : ∀ v ∈ K \ L,
         Compatible (indepPolyOn G (S \ (K ∪ L)))
           (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)) := by
       intro v hv
       have hx := hXSmall (S \ (K ∪ L)) hsmall (hK_neighbor_simp v hv)
-      simpa [hK_delete_support v hv] using hx
+      simp_all
     have hbase_l_x : ∀ v ∈ L \ K,
         Compatible (indepPolyOn G (S \ (K ∪ L)))
           (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)) := by
       intro v hv
       have hx := hXSmall (S \ (K ∪ L)) hsmall (hL_neighbor_simp v hv)
-      simpa [hL_delete_support v hv] using hx
+      simp_all
     have hK_pair_x : ∀ u ∈ K \ L, ∀ v ∈ K \ L,
         Compatible
           (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) u))
@@ -1825,22 +1713,18 @@ theorem supportSimplicialPairCompatible_of_smaller
       · rcases hg with rfl | htailG
         · exact compatible_self_of_splits
             (indepPolyOn_ne_zero G (S \ (K ∪ L))) hbase
-        · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
-          · exact hbase_k_x v (Finset.mem_toList.mp hvList)
-          · exact hbase_l_x v (Finset.mem_toList.mp hvList)
+        · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;> simp_all
       · rcases htailF with ⟨u, huList, rfl⟩ | ⟨u, huList, rfl⟩
         · have hu : u ∈ K \ L := Finset.mem_toList.mp huList
           rcases hg with rfl | htailG
           · exact (hbase_k_x u hu).comm
-          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
-            · exact hK_pair_x u hu v (Finset.mem_toList.mp hvList)
-            · exact hKL_pair_x u hu v (Finset.mem_toList.mp hvList)
+          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;> simp_all
         · have hu : u ∈ L \ K := Finset.mem_toList.mp huList
           rcases hg with rfl | htailG
           · exact (hbase_l_x u hu).comm
           · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
             · exact (hKL_pair_x v (Finset.mem_toList.mp hvList) u hu).comm
-            · exact hL_pair_x u hu v (Finset.mem_toList.mp hvList)
+            · simp_all
     exact compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
       G S K L hK.2.1 hL.2.1 hK.1 hL.1 hbase hKdel hLdel hpair
 
@@ -1895,7 +1779,7 @@ theorem supportSimplicialXCompatible_of_smaller
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK.2.1 hK.1 hv
       have hsub : (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S := by
         intro w hw
-        exact (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hw).1).1
+        simp_all
       simpa [hsupport] using hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
     exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
       G S K hK.2.1 hK.1 hbase hdel hpair
@@ -1918,24 +1802,24 @@ theorem supportIndepPoly_splits_of_clawFree
     have hSplitSmall : ∀ T : Finset V, T.card < S.card →
         (indepPolyOn G T).Splits := by
       intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
+      have hTn : T.card < n := by simp_all
       exact (ih T.card hTn T rfl).1 T Subset.rfl
     have hPairSmall : ∀ T : Finset V, T.card < S.card →
         SupportSimplicialPairCompatible G T := by
       intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
+      have hTn : T.card < n := by simp_all
       intro K L hK hL
       exact (ih T.card hTn T rfl).2.1 hK hL
     have hXSmall : ∀ T : Finset V, T.card < S.card →
         SupportSimplicialXCompatible G T := by
       intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
+      have hTn : T.card < n := by simp_all
       intro K hK
       exact (ih T.card hTn T rfl).2.2.1 hK
     have hVertexSmall : ∀ T : Finset V, T.card < S.card →
         SupportVertexDeletionCompatible G T := by
       intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
+      have hTn : T.card < n := by simp_all
       intro v hv
       exact (ih T.card hTn T rfl).2.2.2 hv
     have hVertex : SupportVertexDeletionCompatible G S :=
@@ -1952,7 +1836,7 @@ theorem supportIndepPoly_splits_of_clawFree
           intro hzero
           exact indepPolyOn_ne_zero G S (by
             rw [indepPolyOn_erase G hvS]
-            exact hzero)
+            simp_all)
         have hsum_splits :=
           splits_add_of_compatible (hVertex hvS) hsum_ne
         rw [indepPolyOn_erase G hvS]
@@ -1960,8 +1844,7 @@ theorem supportIndepPoly_splits_of_clawFree
     have hSplit : SupportIndepPolySplits G S := by
       intro T hTS
       by_cases hTS_eq : T = S
-      · subst hTS_eq
-        exact hSplitSelf
+      · simp_all
       · have hproper : T ⊂ S :=
           Finset.ssubset_iff_subset_ne.mpr ⟨hTS, hTS_eq⟩
         exact hSplitSmall T (Finset.card_lt_card hproper)
@@ -1969,7 +1852,7 @@ theorem supportIndepPoly_splits_of_clawFree
       supportSimplicialPairCompatible_of_smaller hG hSplit hPairSmall hXSmall
     have hX : SupportSimplicialXCompatible G S :=
       supportSimplicialXCompatible_of_smaller hG hSplit hPairSmall hXSmall
-    exact ⟨hSplit, hPair, hX, hVertex⟩
+    simp_all
   intro S
   exact (hmain S.card S rfl).1 S Subset.rfl
 
@@ -2011,9 +1894,9 @@ theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
   · intro t ht
     have ht' := Finset.mem_filter.mp ht
     refine Finset.mem_filter.mpr ⟨?_, ?_⟩
-    · exact Finset.mem_powerset.mpr fun x hx => by
+    · exact Finset.mem_powerset.mpr fun x hx ↦ by
         rcases Finset.mem_image.mp hx with ⟨a, _ha, rfl⟩
-        exact a.property
+        simp
     · intro a ha b hb hne hadj
       rcases Finset.mem_image.mp ha with ⟨a', ha', rfl⟩
       rcases Finset.mem_image.mp hb with ⟨b', hb', hb_eq⟩
@@ -2026,10 +1909,10 @@ theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
     have hsub : t ⊆ S := Finset.mem_powerset.mp ht'.1
     refine ⟨lift t, ?_, hmap_lift hsub⟩
     exact Finset.mem_filter.mpr
-      ⟨Finset.mem_powerset.mpr (fun _x _hx => by simp), (hlift_indep hsub).mpr ht'.2⟩
+      ⟨Finset.mem_powerset.mpr (fun _x _hx ↦ by simp), (hlift_indep hsub).mpr ht'.2⟩
   · intro t _ht
     rw [Finset.card_image_of_injOn]
-    exact fun a _ b _ h => Subtype.ext h
+    simp
 
 /-- Ordinary independence polynomials of induced graphs recover the
 support-restricted independence polynomial. -/
@@ -2102,12 +1985,10 @@ theorem indepPoly_coeff_zero {V : Type u} [Fintype V] [DecidableEq V]
   rw [indepPoly, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
   · simp
   · intro s hs hne
-    have hs_nonzero : s.card ≠ 0 := by
-      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
-    have hzero : ¬ 0 = s.card := fun h => hs_nonzero h.symm
+    have hs_nonzero : s.card ≠ 0 := by simp_all
+    have hzero : ¬ 0 = s.card := fun h ↦ hs_nonzero h.symm
     simp [Polynomial.coeff_X_pow, hzero]
-  · intro hnot
-    simp at hnot
+  · simp
 
 /-- Independence polynomials are nonzero. -/
 theorem indepPoly_ne_zero {V : Type u} [Fintype V] [DecidableEq V]
@@ -2123,10 +2004,7 @@ theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
   classical
   intro n
   rw [indepPoly, Polynomial.finsetSum_coeff]
-  exact Finset.sum_nonneg fun s _ => by
-    by_cases hs : n = s.card
-    · simp [Polynomial.coeff_X_pow, hs]
-    · simp [Polynomial.coeff_X_pow, hs]
+  simp
 
 /-- Independence polynomials have positive leading coefficient. -/
 theorem indepPoly_hasPosLeadingCoeff {V : Type u} [Fintype V] [DecidableEq V]
@@ -2142,12 +2020,10 @@ theorem lineGraph_clawFree {V : Type u} (G : _root_.SimpleGraph V) :
     ClawFree G.lineGraph := by
   classical
   intro v s hneigh hind
-  have hs_card : Fintype.card {w // w ∈ s} = s.card := by
-    rw [← Finset.card_univ, Finset.univ_eq_attach, Finset.card_attach]
+  have hs_card : Fintype.card {w // w ∈ s} = s.card := by simp
   have hv_card :
       Fintype.card {x // x ∈ (v : Sym2 V).toFinset} =
-        (v : Sym2 V).toFinset.card := by
-    rw [← Finset.card_univ, Finset.univ_eq_attach, Finset.card_attach]
+        (v : Sym2 V).toFinset.card := by simp
   have hshared : ∀ w : {w // w ∈ s},
       ∃ x : V, x ∈ (v : Sym2 V) ∧ x ∈ ((w.val : G.edgeSet) : Sym2 V) := by
     intro w
@@ -2164,9 +2040,7 @@ theorem lineGraph_clawFree {V : Type u} (G : _root_.SimpleGraph V) :
     apply Subtype.ext
     by_contra hval_ne
     have hcommon : (φ a : V) ∈ ((b.val : G.edgeSet) : Sym2 V) := by
-      have hb := hφ_edge b
-      have hval : (φ a : V) = (φ b : V) := congrArg Subtype.val hab
-      rwa [hval]
+      simp_all
     have hadj : G.lineGraph.Adj a.val b.val := by
       rw [_root_.SimpleGraph.lineGraph_adj_iff_exists]
       exact ⟨hval_ne, ⟨(φ a : V), hφ_edge a, hcommon⟩⟩
@@ -2180,7 +2054,7 @@ theorem lineGraph_clawFree {V : Type u} (G : _root_.SimpleGraph V) :
     simpa [Sym2.card_toFinset_of_not_isDiag (v : Sym2 V) hv_not_diag] using
       hcard_le_endpoints
   rw [hind.card_eq] at hcard_le_two
-  norm_num at hcard_le_two
+  simp_all
 
 /-- Graph-form Chudnovsky--Seymour statement still needed for #52.
 

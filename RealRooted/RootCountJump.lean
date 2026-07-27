@@ -27,15 +27,8 @@ theorem card_filter_le_eq_of_no_mem_Ioc
     (s.filter (· ≤ a)).card = (s.filter (· ≤ b)).card := by
   have hset : s.filter (· ≤ a) = s.filter (· ≤ b) := by
     apply Multiset.filter_congr
-    intro r hr
-    constructor
-    · intro hra
-      exact le_trans hra hab
-    · intro hrb
-      rcases h r hr with h1 | h2
-      · exact h1
-      · exact absurd hrb (not_le.mpr h2)
-  rw [hset]
+    grind
+  simp_all
 
 /-- Local constancy of the "elements strictly above threshold" count.
 
@@ -47,15 +40,8 @@ theorem card_filter_lt_eq_of_no_mem_Ioc
     (s.filter (a < ·)).card = (s.filter (b < ·)).card := by
   have hset : s.filter (a < ·) = s.filter (b < ·) := by
     apply Multiset.filter_congr
-    intro r hr
-    constructor
-    · intro har
-      rcases h r hr with hra | hbr
-      · exact False.elim (not_lt_of_ge hra har)
-      · exact hbr
-    · intro hbr
-      exact lt_of_le_of_lt hab hbr
-  rw [hset]
+    grind
+  simp_all
 
 /-- The elements in `(a, b]` and the elements strictly above `b` partition the
 elements strictly above `a`. -/
@@ -311,18 +297,10 @@ theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
     (s.filter (fun r => a < r ∧ r < b)).card + (s.filter (b < ·)).card =
       (s.filter (a < ·)).card := by
   have hIoo :
-      s.filter (fun r => a < r ∧ r < b) =
-        s.filter (fun r => a < r ∧ r ≤ b) := by
+      s.filter (fun r ↦ a < r ∧ r < b) =
+        s.filter (fun r ↦ a < r ∧ r ≤ b) := by
     apply Multiset.filter_congr
-    intro r hr
-    constructor
-    · intro h
-      exact ⟨h.1, le_of_lt h.2⟩
-    · intro h
-      have hr_ne : r ≠ b := by
-        intro hrb
-        exact hb (by simpa [hrb] using hr)
-      exact ⟨h.1, lt_of_le_of_ne h.2 hr_ne⟩
+    grind
   rw [hIoo]
   exact card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
 
@@ -340,21 +318,7 @@ theorem card_filter_Ioo_eq_of_card_filter_gt_eq
     card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem s hab hsb
   have htpart :=
     card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem t hab htb
-  have hsum :
-      (s.filter (fun r => a < r ∧ r < b)).card +
-          (s.filter (b < ·)).card =
-        (t.filter (fun r => a < r ∧ r < b)).card +
-          (s.filter (b < ·)).card := by
-    calc
-      (s.filter (fun r => a < r ∧ r < b)).card +
-          (s.filter (b < ·)).card
-          = (s.filter (a < ·)).card := hspart
-      _ = (t.filter (a < ·)).card := ha
-      _ = (t.filter (fun r => a < r ∧ r < b)).card +
-          (t.filter (b < ·)).card := htpart.symm
-      _ = (t.filter (fun r => a < r ∧ r < b)).card +
-          (s.filter (b < ·)).card := by rw [← hb]
-  exact Nat.add_right_cancel hsum
+  grind
 
 /-- If two polynomials have the same number of roots above each endpoint of
 an interval, then they have the same number of roots inside the interval,
@@ -545,35 +509,32 @@ theorem closedSegment_eval_ne_zero_of_eval_mul_pos
   have hweight : 0 ≤ 1 - β := by linarith
   have hf_ne : f.eval x ≠ 0 := by
     intro hf0
-    rw [hf0, zero_mul] at hprod
-    linarith
+    simp_all
   by_cases hf_pos : 0 < f.eval x
   · have hg_pos : 0 < g.eval x := by nlinarith
     have hpos_eval : 0 < (1 - β) * f.eval x + β * g.eval x := by
       by_cases hβ : β = 0
-      · simpa [hβ] using hf_pos
+      · simp_all
       · have hβ_pos : 0 < β := lt_of_le_of_ne hβ0 (Ne.symm hβ)
         have hleft_nonneg : 0 ≤ (1 - β) * f.eval x :=
           mul_nonneg hweight (le_of_lt hf_pos)
         have hright_pos : 0 < β * g.eval x := mul_pos hβ_pos hg_pos
         linarith
-    have hpos : 0 < (C (1 - β) * f + C β * g).eval x := by
-      simpa [eval_add, eval_mul, eval_C] using hpos_eval
-    exact ne_of_gt hpos
+    have hpos : 0 < (C (1 - β) * f + C β * g).eval x := by simp_all
+    grind
   · have hf_neg : f.eval x < 0 :=
       lt_of_le_of_ne (le_of_not_gt hf_pos) hf_ne
     have hg_neg : g.eval x < 0 := by nlinarith
     have hneg_eval : (1 - β) * f.eval x + β * g.eval x < 0 := by
       by_cases hβ : β = 0
-      · simpa [hβ] using hf_neg
+      · simp_all
       · have hβ_pos : 0 < β := lt_of_le_of_ne hβ0 (Ne.symm hβ)
         have hleft_nonpos : (1 - β) * f.eval x ≤ 0 :=
           mul_nonpos_of_nonneg_of_nonpos hweight (le_of_lt hf_neg)
         have hright_neg : β * g.eval x < 0 := mul_neg_of_pos_of_neg hβ_pos hg_neg
         linarith
-    have hneg : (C (1 - β) * f + C β * g).eval x < 0 := by
-      simpa [eval_add, eval_mul, eval_C] using hneg_eval
-    exact ne_of_lt hneg
+    have hneg : (C (1 - β) * f + C β * g).eval x < 0 := by simp_all
+    grind
 
 /-- `IsRoot`-form of `closedSegment_eval_ne_zero_of_eval_mul_pos`. -/
 theorem closedSegment_not_isRoot_of_eval_mul_pos
@@ -634,16 +595,14 @@ theorem rightFamily_eval_ne_zero_of_eval_mul_pos
     (f + C μ * g).eval x ≠ 0 := by
   have hf_ne : f.eval x ≠ 0 := by
     intro hf0
-    rw [hf0, zero_mul] at hprod
-    linarith
+    simp_all
   by_cases hf_pos : 0 < f.eval x
   · have hg_pos : 0 < g.eval x := by nlinarith
     have hpos_eval : 0 < f.eval x + μ * g.eval x := by
       have hright_nonneg : 0 ≤ μ * g.eval x := mul_nonneg hμ (le_of_lt hg_pos)
       linarith
-    have hpos : 0 < (f + C μ * g).eval x := by
-      simpa [eval_add, eval_mul, eval_C] using hpos_eval
-    exact ne_of_gt hpos
+    have hpos : 0 < (f + C μ * g).eval x := by simp_all
+    grind
   · have hf_neg : f.eval x < 0 :=
       lt_of_le_of_ne (le_of_not_gt hf_pos) hf_ne
     have hg_neg : g.eval x < 0 := by nlinarith
@@ -651,9 +610,8 @@ theorem rightFamily_eval_ne_zero_of_eval_mul_pos
       have hright_nonpos : μ * g.eval x ≤ 0 :=
         mul_nonpos_of_nonneg_of_nonpos hμ (le_of_lt hg_neg)
       linarith
-    have hneg : (f + C μ * g).eval x < 0 := by
-      simpa [eval_add, eval_mul, eval_C] using hneg_eval
-    exact ne_of_lt hneg
+    have hneg : (f + C μ * g).eval x < 0 := by simp_all
+    grind
 
 /-- Move a real threshold strictly upward without crossing any element of a
 finite multiset. -/
@@ -665,31 +623,24 @@ theorem exists_threshold_no_mem_Ioc (s : Multiset ℝ) (x : ℝ) :
   · set m : ℝ := S.min' hSne with hm
     have hmS : m ∈ S := Finset.min'_mem S hSne
     have hxm : x < m := by
-      have := (Finset.mem_filter.mp hmS).2
-      simpa using this
+      simp_all
     refine ⟨(x + m) / 2, by linarith, ?_⟩
     intro r hr
     by_cases hxr : x < r
     · right
       have hrS : r ∈ S := by
-        rw [hS, Finset.mem_filter]
-        exact ⟨Multiset.mem_toFinset.mpr hr, by simpa using hxr⟩
+        simp_all
       have : m ≤ r := Finset.min'_le S _ hrS
       linarith
-    · left
-      exact not_lt.mp hxr
+    · simp_all
   · rw [Finset.not_nonempty_iff_eq_empty] at hSne
     have hall : ∀ r ∈ s, ¬ x < r := by
       intro r hr hxr
       have : r ∈ S := by
-        rw [hS, Finset.mem_filter]
-        exact ⟨Multiset.mem_toFinset.mpr hr, by simpa using hxr⟩
-      rw [hSne] at this
-      exact absurd this (Finset.notMem_empty r)
+        simp_all
+      grind
     refine ⟨x + 1, by linarith, ?_⟩
-    intro r hr
-    left
-    exact not_lt.mp (hall r hr)
+    simp_all
 
 /-- Least element of a finite multiset strictly above a threshold, provided one
 such element exists. -/
@@ -803,9 +754,7 @@ theorem rootCount_diff_le_one_of_nonRoot
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
   intro x
   obtain ⟨x', -, hfx', hgx', hfc, hgc⟩ := exists_nonRoot_threshold_count_eq hf hg x
-  have hbx := hbound x' hfx' hgx'
-  rw [← hfc, ← hgc]
-  exact hbx
+  grind
 
 /-- Absolute-value form of `rootCount_diff_le_one_of_nonRoot`. -/
 theorem rootCount_abs_diff_le_one_of_nonRoot
@@ -818,8 +767,7 @@ theorem rootCount_abs_diff_le_one_of_nonRoot
           (g.roots.filter (· ≤ x)).card| ≤ 1 := by
   intro x
   obtain ⟨h1, h2⟩ := rootCount_diff_le_one_of_nonRoot hf hg hbound x
-  rw [abs_le]
-  exact ⟨by linarith, by linarith⟩
+  grind
 
 /-- `IsRoot`-form wrapper for
 `rootCount_diff_le_one_of_nonRoot`. -/
@@ -833,8 +781,8 @@ theorem rootCount_diff_le_one_of_nonRoot_isRoot
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
   rootCount_diff_le_one_of_nonRoot hf hg fun x hfx hgx =>
     hbound x
-      (by simpa [Polynomial.IsRoot.def] using hfx)
-      (by simpa [Polynomial.IsRoot.def] using hgx)
+      (by simp_all)
+      (by simp_all)
 
 /-- Reduce a fixed-threshold upper root-count bound to thresholds that are
 roots of neither polynomial. -/
@@ -848,9 +796,7 @@ theorem rootCountAbove_diff_le_one_of_nonRoot
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   intro x
   obtain ⟨x', -, hfx', hgx', hfc, hgc⟩ := exists_nonRoot_threshold_count_gt_eq hf hg x
-  have hbx := hbound x' hfx' hgx'
-  rw [← hfc, ← hgc]
-  exact hbx
+  grind
 
 /-- `IsRoot`-form wrapper for
 `rootCountAbove_diff_le_one_of_nonRoot`. -/
@@ -864,8 +810,8 @@ theorem rootCountAbove_diff_le_one_of_nonRoot_isRoot
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
   rootCountAbove_diff_le_one_of_nonRoot hf hg fun x hfx hgx =>
     hbound x
-      (by simpa [Polynomial.IsRoot.def] using hfx)
-      (by simpa [Polynomial.IsRoot.def] using hgx)
+      (by simp_all)
+      (by simp_all)
 
 /-- Max-form projection from a bundled lower/upper root-count gap. -/
 theorem rootCount_max_abs_diff_le_one_of_bundled
@@ -879,8 +825,6 @@ theorem rootCount_max_abs_diff_le_one_of_bundled
       max
         |((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card|
         |((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card|
-          ≤ 1 := by
-  intro x
-  exact max_le (h x).1 (h x).2
+          ≤ 1 := by simp_all
 
 end RealRooted

@@ -54,8 +54,7 @@ private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hnot_pos : ¬ ∃ ap ∈ l, 0 < ap.1) :
     ∀ ap ∈ l, ap.1 = 0 := fun ap hap => by
-  exact le_antisymm (not_lt.mp fun hap_pos => hnot_pos ⟨ap, hap, hap_pos⟩)
-    (hnonneg ap hap)
+  grind
 
 lemma hasPosLeadingCoeff_weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
@@ -120,11 +119,11 @@ lemma nonneg {h : ℝ[X]} :
       grind
   | _, cons_zero ha _ _ hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact ha.symm.le
+      · simp_all
       · exact nonneg hl ap hap
   | _, cons_pos ha _ _ hl _ _ _ => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact ha.le
+      · grind
       · exact nonneg hl ap hap
 
 lemma pos {h : ℝ[X]} :
@@ -134,11 +133,11 @@ lemma pos {h : ℝ[X]} :
       simp_all
   | _, cons_zero _ _ hpos hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact hpos
+      · grind
       · exact pos hl ap hap
   | _, cons_pos _ _ hpos hl _ _ _ => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact hpos
+      · grind
       · exact pos hl ap hap
 
 lemma exists_pos {h : ℝ[X]} :

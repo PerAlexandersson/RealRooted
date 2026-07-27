@@ -144,8 +144,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
           · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
               have hm' : ((2 * m : Nat) : ℝ) ≤ ((n + 1 : Nat) : ℝ) :=
                 Nat.cast_le.mpr (by lia)
-              norm_num at hm' ⊢
-              nlinarith
+              simp_all
             exact add_nonneg
               (mul_nonneg hscale (hprev_nonneg m))
               (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))

@@ -78,18 +78,14 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
     mul_pos hk_pos_real hdk_pos_real
   have hfactor_le :
       (k : ℝ) * ((d - k : ℕ) : ℝ) ≤
-        (k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
-    have hdk_nonneg : (0 : ℝ) ≤ ((d - k : ℕ) : ℝ) :=
-      le_of_lt hdk_pos_real
-    norm_num at hdk_nonneg ⊢
-    nlinarith
+        (k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by grind
   have hmul_le := mul_le_mul_of_nonneg_left hfactor_le hprod_nonneg
   have hulc_k := hulc k hk0 hkd
   have hcombined :
       a (k - 1) * a (k + 1) * ((k : ℝ) * ((d - k : ℕ) : ℝ)) ≤
         a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ)) :=
     le_trans hmul_le hulc_k
-  nlinarith [hcombined, hfactor_pos]
+  simp_all
 
 /-- If a nonnegative log-concave sequence strictly decreases at `k`, then it
 strictly decreases at the next adjacent pair, provided the middle term is
@@ -148,7 +144,7 @@ lemma CoeffLogConcaveUpTo.no_strict_decrease_before_max {d : ℕ} {a : ℕ → �
   have hprop : ∀ t, i ≤ t → t < m → a (t + 1) < a t := by
     intro t hit htm
     induction t, hit using Nat.le_induction with
-    | base => exact hdrop
+    | base => grind
     | succ t hit ih =>
         have ht_lt_m : t < m := by lia
         have hcurr : a (t + 1) < a t :=
@@ -161,17 +157,15 @@ lemma CoeffLogConcaveUpTo.no_strict_decrease_before_max {d : ℕ} {a : ℕ → �
           hnozero t (t + 1) m (by lia) (by lia) hm_le ht_ne hm_ne
         exact hlc.strict_decrease_next hnonneg (by lia) hcurr hmid_ne
   have hlast : a m < a (m - 1) := by
-    simpa [show (m - 1) + 1 = m by lia] using hprop (m - 1) (by lia) (by lia)
-  have hmax_last : a (m - 1) ≤ a m :=
-    hmax (m - 1) (by lia)
-  linarith
+    grind
+  grind
 
 /-- No strict increase can occur after a maximal coefficient of a nonnegative
 log-concave sequence with no internal zeros. -/
 lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → ℝ}
     (hnonneg : CoeffNonnegUpTo d a) (hnozero : CoeffNoInternalZerosUpTo d a)
     (hlc : CoeffLogConcaveUpTo d a) {m : ℕ}
-    (hm_le : m ≤ d) (hmax : ∀ k, k ≤ d → a k ≤ a m) :
+    (hmax : ∀ k, k ≤ d → a k ≤ a m) :
     ∀ i, m ≤ i → i < d → ¬ a i < a (i + 1) := by
   intro i hmi hid hrise
   have hi_nonneg : 0 ≤ a i :=
@@ -185,11 +179,10 @@ lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → �
   have hprop : ∀ t, m < t → t ≤ i + 1 → a (t - 1) < a t := by
     intro t hmt hti
     refine Nat.decreasingInduction' (m := t) (n := i + 1)
-      (P := fun u => m < u → u ≤ i + 1 → a (u - 1) < a u) ?step hti
+      (P := fun u ↦ m < u → u ≤ i + 1 → a (u - 1) < a u) ?step hti
       ?base hmt hti
     · intro k hk_lt htk ih hmk hki
-      have hcurr : a k < a (k + 1) := by
-        simpa [show (k + 1) - 1 = k by lia] using ih (by lia) (by lia)
+      have hcurr : a k < a (k + 1) := by grind
       have hk_succ_pos : 0 < a (k + 1) :=
         lt_of_le_of_lt (hnonneg k (by lia)) hcurr
       have hk_succ_ne : a (k + 1) ≠ 0 :=
@@ -198,12 +191,9 @@ lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → �
         hnozero m k (k + 1) (by lia) (by lia) (by lia) hm_ne hk_succ_ne
       simpa [show k - 1 + 1 = k by lia] using
         hlc.strict_increase_prev hnonneg (by lia) (by lia) hcurr hk_ne
-    · intro _ _
-      simpa [Nat.add_sub_cancel] using hrise
-  have hfirst : a m < a (m + 1) := by simpa using hprop (m + 1) (by lia) (by lia)
-  have hmax_first : a (m + 1) ≤ a m :=
-    hmax (m + 1) (by lia)
-  linarith
+    · simp_all
+  have hfirst : a m < a (m + 1) := by grind
+  grind
 
 /-- Classical finite-sequence lemma: a nonnegative log-concave finite sequence
 with no internal zeros is unimodal. -/
@@ -224,22 +214,18 @@ theorem CoeffLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
       le_of_not_gt (hlc.no_strict_decrease_before_max hnonneg hnozero hm_le hmax k hk)
   have hright_adj : ∀ k, m ≤ k → k < d → a (k + 1) ≤ a k :=
     fun k hmk hkd =>
-      le_of_not_gt (hlc.no_strict_increase_after_max hnonneg hnozero hm_le hmax k hmk hkd)
+      le_of_not_gt (hlc.no_strict_increase_after_max hnonneg hnozero hmax k hmk hkd)
   refine ⟨m, hm_le, ?_, ?_⟩
   · intro i j hij hjm
     induction j, hij using Nat.le_induction with
-    | base => exact le_rfl
+    | base => simp
     | succ j hij ih =>
-        have hj_le_m : j ≤ m := by lia
-        exact le_trans (ih hj_le_m) (hleft_adj j (by lia))
+        grind
   · intro i j hmi hij hjd
     induction j, hij using Nat.le_induction with
-    | base => exact le_rfl
+    | base => simp
     | succ j hij ih =>
-        have hj_le_d : j ≤ d := by lia
-        have hstep : a (j + 1) ≤ a j :=
-          hright_adj j (by lia) (by lia)
-        exact le_trans hstep (ih hj_le_d)
+        grind
 
 theorem CoeffUltraLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
     (hnonneg : CoeffNonnegUpTo d a) (hnozero : CoeffNoInternalZerosUpTo d a)
@@ -256,7 +242,7 @@ theorem IsPolyaFreqSeq.logConcaveUpTo {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
     CoeffLogConcaveUpTo d a := by
   intro k hk0 hkd
   simpa [toeplitz, Matrix.det_fin_two, show 1 ≤ k from hk0, pow_two] using
-    (hpf (by simp [StrictMono]) (by decide) :
+    (hpf (by simp) (by simp) :
       0 ≤ ((toeplitz a).submatrix ![k, k + 1] ![0, 1]).det)
 
 /-! ## Polynomial coefficient wrappers -/
@@ -329,11 +315,9 @@ lemma esymm_pos_mono_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 �
       obtain ⟨P, hPmem, rfl⟩ := hy
       have hge : 0 ≤ P.prod := by
         rw [Multiset.mem_powersetCard] at hPmem
-        exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le hPmem.1 hx))
-      have hle := hcon P hPmem
-      linarith
-    rw [hzero] at ha
-    exact lt_irrefl 0 ha
+        exact Multiset.prod_nonneg (fun x hx ↦ hs x (Multiset.mem_of_le hPmem.1 hx))
+      grind
+    simp_all
   rw [Multiset.mem_powersetCard] at hP_mem
   obtain ⟨hPle, hPcard⟩ := hP_mem
   have hP_all_pos : ∀ x ∈ P, 0 < x := by
@@ -379,8 +363,7 @@ theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : �
     HasUltraLogConcaveCoeffs p := by
   rcases hrr with rfl | hsplits
   · intro k hk0 hkd
-    simp only [natDegree_zero] at hkd
-    lia
+    simp
   · intro k hk0 hkd
     set t := p.roots.map Neg.neg with ht_def
     have htcard : Multiset.card t = p.natDegree := by
@@ -402,16 +385,7 @@ theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : �
       p.coeff k ^ 2 * ((k : ℝ) * ((p.natDegree - k : ℕ) : ℝ))
     rw [hc1, hck, hc2]
     have hscaled := mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff)
-    have hcast1 :
-        ((p.natDegree - k + 1 : ℕ) : ℝ) = ((p.natDegree - k : ℕ) : ℝ) + 1 := by
-      push_cast
-      ring
-    have hcast2 : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by
-      push_cast
-      ring
-    rw [hcast1]
-    rw [hcast2] at hnewton hscaled
-    nlinarith [hscaled, sq_nonneg p.leadingCoeff]
+    grind
 
 /-- Nonnegative real-rooted polynomials have no internal coefficient zeros. -/
 theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
@@ -424,28 +398,18 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
     have hp0 : p ≠ 0 := by rintro rfl; simp at hai
     have hlc : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hp0
     have hroots_nonpos := roots_nonpos_of_nonneg_coeffs hsplits hpnn
-    have ht : ∀ x ∈ p.roots.map Neg.neg, 0 ≤ x := by
-      intro x hx
-      rw [Multiset.mem_map] at hx
-      obtain ⟨r, hr, rfl⟩ := hx
-      simpa using neg_nonneg.mpr (hroots_nonpos r hr)
-    have hid : i ≤ p.natDegree := by
-      by_contra h
-      exact hai (Polynomial.coeff_eq_zero_of_natDegree_lt (by lia))
+    have ht : ∀ x ∈ p.roots.map Neg.neg, 0 ≤ x := by simp_all
+    have hid : i ≤ p.natDegree := by grind
     have hjd : j ≤ p.natDegree := le_of_lt (lt_of_lt_of_le hjk hkd)
     have hcoeff_i := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hid
     have hei : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - i) := by
       rcases lt_or_eq_of_le
-          (esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h
-      · exact h
-      · exact absurd (show p.coeff i = 0 by rw [hcoeff_i, ← h]; ring) hai
+          (esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h <;> grind
     have hb : p.natDegree - j ≤ p.natDegree - i := by lia
     have hej : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - j) :=
       esymm_pos_mono_of_forall_nonneg ht hb hei
     have hcoeff_j := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hjd
-    change p.coeff j ≠ 0
-    rw [hcoeff_j]
-    exact ne_of_gt (mul_pos hlc hej)
+    grind
 
 theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :

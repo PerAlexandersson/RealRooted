@@ -428,7 +428,7 @@ private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
           HasSimpleRoots (C α * f + C β * g)) := by
   intro α β
   by_cases hcombo0 : C α * f + C β * g = 0
-  · exact Or.inl hcombo0
+  · simp_all
   · exact Or.inr ⟨⟨hcombo0, hall α β⟩,
       hasSimpleRoots_combo_of_wronskian_eval_ne_zero hcombo0 hW_ne⟩
 
@@ -706,8 +706,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
         Multiset.card_pos_iff_exists_mem.mpr ⟨r, hr_mem⟩
       rw [card_roots_of_splits hf'.2] at hcard
       lia
-    have hf_deg_pos : 0 < f.natDegree := by
-      simpa [natDegree_iterateTDeriv] using hdeg_iter_pos
+    have hf_deg_pos : 0 < f.natDegree := by simp_all
     exact no_nontrivial_linear_relation_of_no_common_root
       hf₀ hf hno hf_deg_pos hα_ne hβ_ne hlin
   · have hp_simple :=
@@ -892,16 +891,12 @@ private lemma wronskian_coeff_top_succ
     grind
   have hcoeff_gf' :
       (g * f.derivative).coeff (2 * f.natDegree) = g.leadingCoeff * f.derivative.leadingCoeff := by
-    have htop : g.natDegree + f.derivative.natDegree = 2 * f.natDegree := by
-      rw [hf'_deg, hdeg]
-      lia
+    have htop : g.natDegree + f.derivative.natDegree = 2 * f.natDegree := by grind
     rw [← htop]
     exact coeff_mul_degree_add_degree g f.derivative
   have hcoeff_fg' :
       (f * g.derivative).coeff (2 * f.natDegree) = f.leadingCoeff * g.derivative.leadingCoeff := by
-    have htop : f.natDegree + g.derivative.natDegree = 2 * f.natDegree := by
-      rw [hg'_deg, hdeg]
-      lia
+    have htop : f.natDegree + g.derivative.natDegree = 2 * f.natDegree := by grind
     rw [← htop]
     exact coeff_mul_degree_add_degree f g.derivative
   have hdegR : (g.natDegree : ℝ) = f.natDegree + 1 := by
@@ -1154,11 +1149,7 @@ private theorem prec_or_revPrec_iterateTDeriv_of_allComboRealRooted_of_no_common
     have hcombo :=
       allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeriv
         hall heps α β
-    by_cases hzero :
-        C α * iterateTDeriv eps (max f.natDegree g.natDegree) f +
-          C β * iterateTDeriv eps (max f.natDegree g.natDegree) g = 0
-    · exact Or.inl hzero
-    · exact Or.inr ⟨⟨hzero, hcombo.1⟩, hcombo.2 hzero⟩
+    grind
   have hno_simple :
       ∀ r,
         (iterateTDeriv eps (max f.natDegree g.natDegree) f).IsRoot r →
@@ -1192,8 +1183,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
       hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc) heps hno
   have hdeg_iter_succ :
       (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =
-        (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by
-    simpa [natDegree_iterateTDeriv, natDegree_iterateTDeriv] using hsucc
+        (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by simp_all
   dsimp
   exact prec_forward_of_orientation_of_succDegree hdeg_iter_succ.symm hprec_iter
 
@@ -1652,7 +1642,7 @@ lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
   obtain ⟨t, _, ht⟩ :=
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       hp_splits hp_pos hdeg
-  exact ⟨t, ht⟩
+  grind
 
 /-- A nonzero constant cannot form an `AllComboRealRooted` pair with a
 positive-leading degree-`≥ 2` polynomial: a suitable constant shift of the
@@ -1677,7 +1667,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
   by_cases hzero : C t + p = 0
   · have : p = -C t := by grind
     simp_all
-  · exact ht ⟨hzero, hcombo_t⟩
+  · simp_all
 
 /-- Sign-normalized version of the constant-vs-degree-`≥ 2` obstruction.
 
@@ -2578,7 +2568,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     root_lt_rightmost_of_prec_sameDegree_no_common hfg huR_root huR_max hno
   have hqg_pos : HasPosLeadingCoeff qg := by
     apply hasPosLeadingCoeff_of_X_sub_C_mul (r := uR)
-    simpa [hqg] using hg_pos
+    simp_all
   intro α β
   by_cases hβ0 : β = 0
   · simp_all
@@ -2618,8 +2608,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
       · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
         have hcomb_pos : C α * f + C β * ((X - C uR) * qg) ≠ 0 := by
           intro hlin_q
-          have hlin : C α * f + C β * g = 0 := by
-            simpa [hqg] using hlin_q
+          have hlin : C α * f + C β * g = 0 := by simp_all
           exact
             no_nontrivial_linear_relation_of_no_common_root
               hf.1 hf.2 hno (by lia) hαneg.ne hβpos.ne' hlin
@@ -2723,8 +2712,7 @@ theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
   · rw [hfzero]
     exact prec0_zero_left _
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
-  · rw [hgzero]
-    exact prec0_zero_right _
+  · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
     allComboRealRooted_derivative (allComboRealRooted_of_prec hfg)
   have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
@@ -2749,16 +2737,12 @@ theorem derivative_prec0_or_revPrec0_of_prec_sameDegree {f g : ℝ[X]}
     rw [hfzero]
     exact prec0_zero_left _
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
-  · left
-    rw [hgzero]
-    exact prec0_zero_right _
+  · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
     allComboRealRooted_derivative (allComboRealRooted_of_prec hfg)
   have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
   have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
-  have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by
-    rw [f.natDegree_derivative, g.natDegree_derivative]
-    lia
+  have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
     (Or.inr hdeg') with hprec | hrev
   · exact Or.inl hprec.toPrec0
@@ -2872,11 +2856,9 @@ theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic :
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  have hdeg_der : f.derivative.natDegree = g.derivative.natDegree := by
-    rw [f.natDegree_derivative, g.natDegree_derivative]
-    lia
+  have hdeg_der : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases derivative_prec0_or_revPrec0_of_prec_sameDegree hfg hdeg with hprec0 | hrev0
-  · exact hprec0
+  · grind
   · have hrev : Prec g.derivative f.derivative :=
       hrev0.toPrec_of_ne hgder_ne hfder_ne
     have hsum_der : f.derivative.roots.sum ≤ g.derivative.roots.sum :=
@@ -2895,9 +2877,9 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec
-  · exact False.elim (hfder_ne hfzero)
-  · exact False.elim (hgder_ne hgzero)
-  · exact hprec
+  · simp_all
+  · simp_all
+  · grind
 
 /-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec
@@ -2952,7 +2934,7 @@ theorem derivativePreservesPrecSameDegree_of_monic
         g.derivative := by
     rw [← mul_assoc, ← C_mul]
     simp [hg_lc_ne]
-  simpa [hf_inv, hg_inv] using hback
+  simp_all
 
 /-- The degree-at-least-two same-degree branch follows from its
 positive-leading-coefficient form by scaling both polynomials by signs. -/
@@ -3001,11 +2983,7 @@ theorem derivativePreservesPrecSameDegree_of_posLeading
       Prec0 (C sf⁻¹ * (C sf * f.derivative))
         (C sg⁻¹ * (C sg * g.derivative)) :=
     prec0_C_mul_left_right (inv_ne_zero hsf_ne) (inv_ne_zero hsg_ne) hscaled'
-  have hsf_inv : C sf⁻¹ * (C sf * f.derivative) = f.derivative := by
-    grind
-  have hsg_inv : C sg⁻¹ * (C sg * g.derivative) = g.derivative := by
-    grind
-  simpa [hsf_inv, hsg_inv] using hback
+  grind
 
 /-- The same-degree derivative-preservation statement follows from its
 degree-at-least-two branch.  Degrees zero and one are elementary because the
@@ -3034,9 +3012,8 @@ theorem derivativePreservesPrecSameDegree_of_two_le_natDegree
       have hgder_ne : g.derivative ≠ 0 :=
         Polynomial.derivative_ne_zero.mpr (by lia)
       have hfder_deg0 : f.derivative.natDegree = 0 := by
-        rw [f.natDegree_derivative, hfdeg1]
-      have hgder_deg0 : g.derivative.natDegree = 0 := by
-        rw [g.natDegree_derivative, hgdeg1]
+        simp_all
+      have hgder_deg0 : g.derivative.natDegree = 0 := by simp_all
       have hfder_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
         isRealRooted_of_deg_zero hfder_ne hfder_deg0
       have hgder_rr : (g.derivative ≠ 0 ∧ g.derivative.Splits) :=

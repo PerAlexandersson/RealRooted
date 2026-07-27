@@ -192,16 +192,16 @@ lemma IsInterlacingSeq.append {fs gs : List ℝ[X]}
 
 /-- Reversing an interlacing sequence preserves pairwise interlacing. -/
 lemma IsInterlacingSeq.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq fs) :
-    fs.reverse.Pairwise (fun f g => Prec g f) := by
+    fs.reverse.Pairwise (fun f g ↦ Prec g f) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs
-  exact hfs.reverse
+  grind
 
 /-- Reversing a weak zero-aware interlacing sequence preserves pairwise
 interlacing. -/
 lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) :
-    fs.reverse.Pairwise (fun f g => Prec0 g f) := by
+    fs.reverse.Pairwise (fun f g ↦ Prec0 g f) := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs
-  exact hfs.reverse
+  grind
 
 /-- Reversing an interlacing sequence with nonnegative coefficients preserves
 the same structure. -/
@@ -209,7 +209,7 @@ lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
       fs.reverse.Pairwise (fun f g => Prec g f) :=
-  ⟨fun f hf => hfs.1 f (by simpa using hf), hfs.2.reverse⟩
+  ⟨fun f hf => hfs.1 f (by grind), hfs.2.reverse⟩
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :

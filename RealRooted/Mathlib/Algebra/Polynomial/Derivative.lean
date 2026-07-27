@@ -23,9 +23,7 @@ lemma nextCoeff_derivative_of_two_le_natDegree (p : R[X])
       rw [Nat.cast_sub (by show 1 ≤ p.natDegree - 1; lia),
         Nat.cast_sub (by show 1 ≤ p.natDegree; lia)]
       ring
-    rw [hidx, hcast]
-    ring
-  · rw [hpder_deg]
-    lia
+    grind
+  · grind
 
 end Polynomial

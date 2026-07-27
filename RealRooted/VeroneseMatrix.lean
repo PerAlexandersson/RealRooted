@@ -89,9 +89,7 @@ def veroneseLinearFactorMatrixDesc (r : ℕ) (a : ℝ) : List (List ℝ[X]) :=
 @[simp] theorem length_veroneseLinearFactorRowDesc
     {r : ℕ} (a : ℝ) (i : Fin r) :
     (veroneseLinearFactorRowDesc r a i).length = r := by
-  by_cases hi : i.1 + 1 < r
-  · simp [veroneseLinearFactorRowDesc, hi]
-  · simp [veroneseLinearFactorRowDesc, hi]
+  by_cases hi : i.1 + 1 < r <;> simp [veroneseLinearFactorRowDesc, hi]
 
 @[simp] theorem get_veroneseLinearFactorMatrixDesc
     {r : ℕ} (a : ℝ) (i : Fin r) :
@@ -109,9 +107,7 @@ theorem get_veroneseLinearFactorRowDesc
           (if j = ⟨i.1 + 1, hi⟩ then (1 : ℝ[X]) else 0)
         else
           (if j = ⟨0, by lia⟩ then X else 0)) := by
-  by_cases hi : i.1 + 1 < r
-  · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
-  · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
+  by_cases hi : i.1 + 1 < r <;> simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
 
 /-! ## Small list-sum helpers -/
 

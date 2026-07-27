@@ -131,9 +131,7 @@ private theorem finsupp_totalDegree_add
     (d + e).sum (fun _ n ↦ n) =
       d.sum (fun _ n ↦ n) + e.sum (fun _ n ↦ n) := by
   classical
-  apply Finsupp.sum_add_index'
-  · simp
-  · simp
+  apply Finsupp.sum_add_index' <;> simp
 
 private theorem applyNegDifferential_monomial_mul_monomial
     {R sigma : Type*} [CommRing R] [Fintype sigma]

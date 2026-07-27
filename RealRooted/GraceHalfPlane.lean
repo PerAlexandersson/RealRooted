@@ -102,7 +102,7 @@ theorem multiset_avg_mem_lowerHalf {b : ℝ} (S : Multiset ℂ) (hS : S ≠ 0)
   have hquot_im : (S.sum / (S.card : ℂ)).im = S.sum.im / (S.card : ℝ) := by simp
   simp only [mem_lowerHalf, hquot_im]
   rw [div_le_iff₀ hcardℝ]
-  assumption
+  simp_all
 
 theorem polarDeriv_rootsIn_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
     {A : ℂ[X]} (hn : 1 ≤ n) (hA : A.natDegree = n)
@@ -116,7 +116,7 @@ theorem polarDeriv_rootsIn_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
   have : (n : ℂ) * eval w A + (ζ - w) * eval w (derivative A) = 0 := by
     have h := hw0
     simp only [IsRoot, polarDeriv, eval_add, eval_mul, eval_sub, eval_C, eval_X] at h
-    assumption
+    simp_all
   have hwζ : w - ζ ≠ 0 := by grind
   have hsplit : A.Splits := IsAlgClosed.splits A
   have hcard : A.roots.card = n := (splits_iff_card_roots.mp hsplit).trans hA
@@ -212,7 +212,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
     · have h_contra : f.coeff 0 = 0 := by
         unfold AreApolar at hap
         simp [apolarPairing] at hap
-        exact hap.resolve_right h
+        simp_all
       contrapose! hroots
       unfold RootsIn
       simp_all only [IsRoot.def, mem_lowerHalf, not_forall, not_le]

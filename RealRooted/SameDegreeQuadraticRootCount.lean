@@ -50,9 +50,7 @@ theorem exists_roots_pair_of_splits_natDegree_two {f : ℝ[X]}
     rw [Polynomial.Splits.eq_prod_roots hf, hpq]
     simp [Multiset.map_cons, Multiset.prod_cons]
   have hswap : f.roots = {v, u} := huv.trans (Multiset.cons_swap ..)
-  rcases le_total u v with h | h
-  · exact ⟨u, v, h, huv, hfac u v huv⟩
-  · exact ⟨v, u, h, hswap, hfac v u hswap⟩
+  grind
 
 /-- Root count of a two-element multiset below a threshold, as a sum of
 indicators. -/
@@ -76,11 +74,7 @@ theorem monic_pencil_splits_of_posCombo
   have hcombo := hpc (lam := 1) (μ := t * A / B) one_pos (by positivity)
   have key : C (1 : ℝ) * (C A * ((X - C a) * (X - C b)))
         + C (t * A / B) * (C B * ((X - C c) * (X - C d)))
-      = C A * ((X - C a) * (X - C b) + C t * ((X - C c) * (X - C d))) := by
-    apply Polynomial.funext
-    intro x
-    simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X, one_mul]
-    field_simp
+      = C A * ((X - C a) * (X - C b) + C t * ((X - C c) * (X - C d))) := by grind
   rw [key] at hcombo
   exact (splits_C_mul_iff hA.ne' _).1 hcombo
 
@@ -104,11 +98,8 @@ theorem not_separated_of_monic_pencil_splits
         apply Polynomial.funext
         intro x
         simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X]
-        field_simp
-        ring
-      rw [key]
-      exact (splits_C_mul_iff (show t ≠ 0 by linarith) _).2
-        (hsplit (1 / t) (one_div_pos.mpr ht))
+        grind
+      simp_all
     contrapose! h_contra
     convert exists_pos_combo_not_splits_of_quadratic_roots_separated hcd hab h_contra using 1
 
@@ -147,10 +138,10 @@ theorem posComboRealRooted_quadratic_roots_interleave
   have hpc' : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
       (C lam * (C f.leadingCoeff * ((X - C a) * (X - C b)))
         + C μ * (C g.leadingCoeff * ((X - C c) * (X - C d)))).Splits :=
-    fun {lam μ} hl hm => hffac ▸ hgfac ▸ (hpc hl hm).2
+    fun {lam μ} hl hm ↦ hffac ▸ hgfac ▸ (hpc hl hm).2
   have hpencil := monic_pencil_splits_of_posCombo hfl hgl hpc'
   obtain ⟨h1, h2⟩ := not_separated_of_monic_pencil_splits hab hcd hpencil
-  exact ⟨not_lt.mp h1, not_lt.mp h2⟩
+  grind
 
 /-- Degree-two same-degree root-count bound.
 
@@ -179,7 +170,6 @@ theorem sameDegree_quadratic_rootCount_le_one
   have hpencil := monic_pencil_splits_of_posCombo hfl hgl hpc'
   obtain ⟨h1, h2⟩ := not_separated_of_monic_pencil_splits hab hcd hpencil
   rw [hfroots, hgroots, card_filter_le_pair, card_filter_le_pair]
-  push_cast
-  exact count_pair_diff_le_one hab hcd h1 h2 x
+  grind
 
 end RealRooted

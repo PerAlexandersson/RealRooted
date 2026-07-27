@@ -68,8 +68,7 @@ lemma coeff_eulerianTilde_top_and_above :
       rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [coeff_eulerianTilde_succ n (n + 1)]
-        simp [htop, habove (n + 2) (by lia)]
-        ring
+        grind
       · intro m hm
         cases m with
         | zero =>
@@ -84,8 +83,8 @@ lemma natDegree_eulerianTilde (n : Nat) :
     (eulerianTilde n).natDegree = n + 1 := by
   rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
   exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    (by rw [htop]; norm_num)
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm ↦ habove m hm))
+    (by simp_all)
 
 lemma monic_eulerianTilde (n : Nat) :
     (eulerianTilde n).Monic := by
@@ -121,8 +120,7 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
           have hnm : 0 ≤ (n + 2 : ℝ) - m := by
             have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) :=
               Nat.cast_le.mpr (by lia)
-            norm_num at hm' ⊢
-            nlinarith
+            simp_all
           exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by positivity) hcoeff_succ)
         · have hm' : n + 1 < m := lt_of_not_ge hm
           rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
@@ -160,8 +158,7 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     have hnm : 0 ≤ (n + 2 : ℝ) - m := by
       have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) :=
         Nat.cast_le.mpr (by lia)
-      norm_num at hm' ⊢
-      nlinarith
+      simp_all
     nlinarith
   · have hm' : n + 1 < m := lt_of_not_ge hm
     rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩

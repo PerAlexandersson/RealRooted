@@ -100,7 +100,7 @@ lemma natDegree_affineDeriv {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegre
                   · calc (1 - X : ℝ[X]).natDegree
                         ≤ max (1 : ℝ[X]).natDegree X.natDegree := natDegree_sub_le _ _
                       _ = 1 := by simp [natDegree_one, natDegree_X]
-                  · exact natDegree_derivative_le f
+                  · simp
               _ = f.natDegree := by lia
       _ = f.natDegree := max_self _
   · -- Lower bound: the coefficient at degree d is (c - d) * lc(f) ≠ 0
@@ -191,15 +191,11 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
     exact hno_between x ((mem_roots hf_ne).mpr hfx) ⟨hx1, hx2⟩
   -- Midpoint m = (r₁ + r₂) / 2
   set m := (r₁ + r₂) / 2 with hm_def
-  have hm1 : r₁ < m := by
-    rw [hm_def]
-    linarith
-  have hm2 : m < r₂ := by
-    rw [hm_def]
-    linarith
+  have hm1 : r₁ < m := by grind
+  have hm2 : m < r₂ := by grind
   -- q₁ has same sign at r₁ and m (no roots in [r₁, m])
   have hq₁_same : 0 < q₁.eval r₁ * q₁.eval m :=
-    eval_same_sign_of_no_roots (le_of_lt hm1) (fun x hx1 hx2 => by
+    eval_same_sign_of_no_roots (le_of_lt hm1) (fun x hx1 hx2 ↦ by
       grind)
   -- q₂ has same sign at m and r₂ (no roots in [m, r₂])
   have hq₂_same : 0 < q₂.eval m * q₂.eval r₂ :=
@@ -332,9 +328,8 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
       ∀ x ∈ Set.Ioo r₁ r₂,
         HasDerivAt φ ((C c * f + (1 - X) * f.derivative).eval x * (1 - x) ^ (-c - 1)) x := by
     intro x hx
-    have hx_ne : 1 - x ≠ 0 := by
-      linarith [hx.2, hr₂_nonpos]
-    have hbase : HasDerivAt (fun y : ℝ => 1 - y) (-1) x := by
+    have hx_ne : 1 - x ≠ 0 := by grind
+    have hbase : HasDerivAt (fun y : ℝ ↦ 1 - y) (-1) x := by
       simpa [Pi.sub_def] using (hasDerivAt_const x (1 : ℝ)).sub (hasDerivAt_id x)
     have hpow :
         HasDerivAt (fun y : ℝ => (1 - y) ^ (-c)) (c * (1 - x) ^ (-c - 1)) x := by
@@ -347,7 +342,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have htarget :
         (C c * f + (1 - X) * f.derivative).eval x * (1 - x) ^ (-c - 1) =
           f.derivative.eval x * (1 - x) ^ (-c) + f.eval x * (c * (1 - x) ^ (-c - 1)) := by
-      have hx_nonneg : 0 ≤ 1 - x := by linarith [hx.2, hr₂_nonpos]
+      have hx_nonneg : 0 ≤ 1 - x := by grind
       have hpow_shift : (1 - x) ^ (-c) = (1 - x) * (1 - x) ^ (-1 - c) := by
         rw [show (-c : ℝ) = 1 + (-1 - c) by ring]
         exact Real.rpow_one_add' hx_nonneg (by linarith)
@@ -366,8 +361,8 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     lia
   obtain ⟨s, hs, hs0⟩ := exists_hasDerivAt_eq_zero' hlt hfa hfb hderiv
   have hs_factor_ne : (1 - s) ^ (-c - 1) ≠ 0 := by
-    have hs_nonneg : 0 ≤ 1 - s := by linarith [hs.2, hr₂_nonpos]
-    have hs_ne : 1 - s ≠ 0 := by linarith [hs.2, hr₂_nonpos]
+    have hs_nonneg : 0 ≤ 1 - s := by grind
+    have hs_ne : 1 - s ≠ 0 := by grind
     exact (Real.rpow_ne_zero hs_nonneg (by linarith)).2 hs_ne
   have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by
     simp_all
@@ -937,9 +932,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg₀.ne_zero r₁
     have hf_fact' : f = (X - C r₁) ^ m * q := by lia
     have hg_fact' : g = (X - C r₁) ^ (m - 1) * qg := by lia
-    have hq_ne : q ≠ 0 := by
-      intro hq
-      simpa [hf_fact', hq] using hf₀.ne_zero
+    have hq_ne : q ≠ 0 := by grind
     have hqg_ne : qg ≠ 0 := by
       intro hqg
       simpa [hg_fact', hqg] using hg₀.ne_zero
@@ -1136,7 +1129,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     rw [eval_affineDeriv_at_root hr_root c]
     apply mul_pos (by linarith)
     -- f has degree 1, so f' is a positive constant
-    have hdeg0 : f.derivative.natDegree = 0 := by have := natDegree_derivative_le f; lia
+    have hdeg0 : f.derivative.natDegree = 0 := by simp_all
     have hc0 : f.derivative.coeff 0 = f.leadingCoeff := by
       rw [coeff_derivative]; simp [Polynomial.leadingCoeff, hdeg]
     rw [eq_C_of_natDegree_eq_zero hdeg0, eval_C, hc0]
@@ -1178,12 +1171,7 @@ lemma eval_affineDeriv_pos_iff {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ
     0 < (C c * f + (1 - X) * f.derivative).eval r ↔ 0 < f.derivative.eval r := by
   rw [eval_affineDeriv_at_root hr c]
   have h1 : (0 : ℝ) < 1 - r := by linarith
-  constructor
-  · intro h
-    exact lt_of_not_ge fun hx =>
-      absurd h (not_lt.mpr (mul_nonpos_of_nonneg_of_nonpos h1.le hx))
-  · intro h
-    exact mul_pos h1 h
+  simp_all
 
 /-- At a nonpositive root `r` of `f`, the affine derivative is negative iff `f'`
 is negative there. -/

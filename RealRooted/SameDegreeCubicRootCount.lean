@@ -24,13 +24,9 @@ theorem exists_roots_triple_of_splits_natDegree_three {f : ℝ[X]}
   obtain ⟨a, b, c, hrs⟩ := List.length_eq_three.mp hrs_len
   have hrs_sorted : rs.Pairwise (· ≤ ·) := by
     simp [rs]
-  have hsorted : ([a, b, c] : List ℝ).Pairwise (· ≤ ·) := by
-    simpa [hrs] using hrs_sorted
-  have hab : a ≤ b := by
-    simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
-  have hbc : b ≤ c := by
-    have htail := (List.pairwise_cons.1 hsorted).2
-    simpa using (List.pairwise_cons.1 htail).1 c (by simp)
+  have hsorted : ([a, b, c] : List ℝ).Pairwise (· ≤ ·) := by simp_all
+  have hab : a ≤ b := by grind
+  have hbc : b ≤ c := by simp_all
   have hcoe : f.roots = {a, b, c} := by
     have hse : (↑rs : Multiset ℝ) = f.roots := by
       simp [rs]
@@ -110,8 +106,7 @@ theorem cubicDiscr_monicPencil_nonneg_of_posCombo
     change 0 < g.leadingCoeff
     exact hg
   have ht0 : 0 < s * lf / lg := by positivity
-  have ht0' : 0 < s * f.leadingCoeff / g.leadingCoeff := by
-    simpa [lf, lg] using ht0
+  have ht0' : 0 < s * f.leadingCoeff / g.leadingCoeff := by grind
   obtain ⟨_, hsplit⟩ := hpc.isRealRooted_add_right ht0'
   have hfeq : f = C lf * F := by
     simpa [lf, F] using eq_C_leadingCoeff_mul_prod_three hfs a b c hfr
@@ -123,7 +118,7 @@ theorem cubicDiscr_monicPencil_nonneg_of_posCombo
     calc
       C (s * lf / lg) * (C lg * G)
           = C ((s * lf / lg) * lg) * G := by rw [← mul_assoc, ← C_mul]
-      _ = C (lf * s) * G := by rw [hscalar]
+      _ = C (lf * s) * G := by simp_all
       _ = C lf * (C s * G) := by
         simp [G, C_mul, mul_assoc, mul_comm, mul_left_comm]
   have hcombo :
@@ -135,18 +130,18 @@ theorem cubicDiscr_monicPencil_nonneg_of_posCombo
     rw [hfeq, hgeq]
     calc
       C lf * F + C (s * lf / lg) * (C lg * G)
-          = C lf * F + C lf * (C s * G) := by rw [hscaled]
-      _ = C lf * (F + C s * G) := by rw [mul_add]
+          = C lf * F + C lf * (C s * G) := by simp_all
+      _ = C lf * (F + C s * G) := by grind
   have hdeg_le :
       (f + C (s * f.leadingCoeff / g.leadingCoeff) * g).natDegree ≤ 3 := by
     refine (natDegree_add_le _ _).trans ?_
-    exact max_le (by rw [hfd]) ((natDegree_C_mul_le _ _).trans (by rw [hgd]))
+    exact max_le (by simp_all) ((natDegree_C_mul_le _ _).trans (by simp_all))
   have hdisc_nonneg :
       0 ≤ cubicDiscr (f + C (s * f.leadingCoeff / g.leadingCoeff) * g) :=
     cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg_le hsplit
   rw [hcombo, cubicDiscr_C_mul] at hdisc_nonneg
   have h4 : 0 < f.leadingCoeff ^ 4 := by positivity
-  nlinarith [hdisc_nonneg, h4]
+  simp_all
 
 /-- Evaluation of the monic cubic root pencil `F + sG`. -/
 theorem eval_monicCubicPencil (a b c p q r s x : ℝ) :
@@ -162,9 +157,7 @@ theorem monicCubicPencil_eq (a b c p q r s : ℝ) :
       C (1 + s) * X ^ 3
         + C (-((a + b + c) + s * (p + q + r))) * X ^ 2
         + C ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) * X
-        + C (-(a * b * c + s * (p * q * r))) := by
-  simp only [C_add, C_mul, C_neg, C_1]
-  ring
+        + C (-(a * b * c + s * (p * q * r))) := by grind
 
 /-- Explicit coefficient formula for the cubic discriminant of the monic root
 pencil `F + sG`, reducing the negative-discriminant leaves to one-variable
@@ -240,9 +233,7 @@ theorem eval_monicCubicPencil_at_b_pos_twoAbove
   rw [hz, zero_add]
   have hpb : 0 < b - p := by linarith
   have hqb : 0 < b - q := by linarith
-  have hrb' : 0 < b - r := by linarith
-  have hg : 0 < (b - p) * (b - q) * (b - r) := by positivity
-  positivity
+  simp_all
 
 /-- No-real-critical-point criterion for a negative cubic discriminant.
 
@@ -303,7 +294,7 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_normalized
       ((p - q) / (a - q)) ((r - q) / (a - q))
       (by rw [le_div_iff₀ haqpos]; linarith)
       (by gcongr)
-      (by rw [div_nonpos_iff]; right; exact ⟨by linarith, by linarith⟩)
+      (by rw [div_nonpos_iff]; grind)
       (by rw [le_div_iff₀ haqpos]; linarith)
   refine ⟨s, hs, ?_⟩
   have key : cubicDiscr ((X - C a) * (X - C b) * (X - C c)
@@ -345,10 +336,10 @@ theorem cubicDiscrMonicPencilNegTwoAbove_of_normalized
   have hbrne : b - r ≠ 0 := ne_of_gt hbrpos
   obtain ⟨s, hs, hneg⟩ := H ((a - r) / (b - r)) ((c - r) / (b - r))
     ((p - r) / (b - r)) ((q - r) / (b - r))
-    (by rw [div_nonpos_iff]; right; exact ⟨by linarith, by linarith⟩)
+    (by rw [div_nonpos_iff]; grind)
     (by rw [le_div_iff₀ hbrpos]; linarith)
     (by gcongr)
-    (by rw [div_nonpos_iff]; right; exact ⟨by linarith, by linarith⟩)
+    (by rw [div_nonpos_iff]; grind)
   refine ⟨s, hs, ?_⟩
   have key : cubicDiscr ((X - C a) * (X - C b) * (X - C c)
         + C s * ((X - C p) * (X - C q) * (X - C r)))
@@ -373,9 +364,7 @@ theorem exists_pos_of_quadratic_neg (A B Cc : ℝ)
   have h2A : (0 : ℝ) < 2 * A := by positivity
   refine ⟨-B / (2 * A), div_pos (by linarith) h2A, ?_⟩
   have hval : A * (-B / (2 * A)) ^ 2 + B * (-B / (2 * A)) + Cc =
-      (4 * A * Cc - B ^ 2) / (4 * A) := by
-    field_simp
-    ring
+      (4 * A * Cc - B ^ 2) / (4 * A) := by grind
   rw [hval]
   exact div_neg_of_neg_of_pos (by linarith) (by positivity)
 
@@ -393,8 +382,7 @@ theorem exists_deriv_disc_neg_of_coeffs (a b c p q r : ℝ)
       (-((a + b + c) + s * (p + q + r))) ^ 2 <
         3 * (1 + s) * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) := by
   obtain ⟨s, hs, hlt⟩ := exists_pos_of_quadratic_neg _ _ _ hA hB hdisc
-  refine ⟨s, hs, ?_⟩
-  nlinarith [hlt]
+  grind
 
 /-- #41-only sufficient condition feeding
 `CubicDiscrMonicPencilNegTwoBelowStatement`: it is enough to find a positive
@@ -588,31 +576,23 @@ theorem not_posComboRealRooted_cubic_separated
     (hgle : ∀ r ∈ g.roots, r ≤ z1) (hfge : ∀ r ∈ f.roots, z2 ≤ r) :
     False := by
   have hderpc : PosComboRealRooted f.derivative g.derivative :=
-    posComboRealRooted_derivative hf hg (by rw [hgdeg, hfdeg])
-      (by rw [hfdeg]; norm_num) hfg
-  have hf'deg : f.derivative.natDegree = 2 := by
-    rw [f.natDegree_derivative, hfdeg]
-  have hg'deg : g.derivative.natDegree = 2 := by
-    rw [g.natDegree_derivative, hgdeg]
+    posComboRealRooted_derivative hf hg (by simp_all)
+      (by simp_all) hfg
+  have hf'deg : f.derivative.natDegree = 2 := by simp_all
+  have hg'deg : g.derivative.natDegree = 2 := by simp_all
   have hf'splits : f.derivative.Splits := by
-    rcases derivative_eq_zero_or_ne_zero_and_splits hfs with h | h
-    · rw [h] at hf'deg
-      simp at hf'deg
-    · exact h.2
+    rcases derivative_eq_zero_or_ne_zero_and_splits hfs with h | h <;> simp_all
   have hg'splits : g.derivative.Splits := by
-    rcases derivative_eq_zero_or_ne_zero_and_splits hgs with h | h
-    · rw [h] at hg'deg
-      simp at hg'deg
-    · exact h.2
+    rcases derivative_eq_zero_or_ne_zero_and_splits hgs with h | h <;> simp_all
   have hf'pos : HasPosLeadingCoeff f.derivative :=
-    hf.derivative (by rw [hfdeg]; norm_num)
+    hf.derivative (by simp_all)
   have hg'pos : HasPosLeadingCoeff g.derivative :=
-    hg.derivative (by rw [hgdeg]; norm_num)
+    hg.derivative (by simp_all)
   have hg'le : ∀ r ∈ g.derivative.roots, r ≤ z1 :=
     roots_le_of_prec_right
-      (derivative_interlaces hgs (by rw [hgdeg]; norm_num)).toPrec hgle
+      (derivative_interlaces hgs (by simp_all)).toPrec hgle
   have hf'ge : ∀ r ∈ f.derivative.roots, z2 ≤ r :=
-    le_roots_derivative_of_le_roots hfs (by rw [hfdeg]; norm_num) hfge
+    le_roots_derivative_of_le_roots hfs (by simp_all) hfge
   exact not_posComboRealRooted_quadratic_separated
     hf'pos hg'pos hf'deg hg'deg hf'splits hg'splits z1 z2 hz hg'le hf'ge hderpc
 
@@ -639,27 +619,26 @@ theorem sameDegree_cubic_rootCount_le_two
     intro s hs
     rw [hfroots] at hs
     simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-    tauto
+    grind
   have hgmem : ∀ s ∈ g.roots, s = p ∨ s = q ∨ s = r := by
     intro s hs
     rw [hgroots] at hs
     simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-    tauto
+    grind
   have hno1 : ¬ (c ≤ x ∧ x < p) := by
     rintro ⟨hcx, hxp⟩
     exact not_posComboRealRooted_cubic_separated (f := g) (g := f)
       hg_pos hf_pos hg hf hgdeg hfdeg hpc.comm x p hxp
-      (fun s hs => by rcases hfmem s hs with h | h | h <;> subst h <;> linarith)
-      (fun s hs => by rcases hgmem s hs with h | h | h <;> subst h <;> linarith)
+      (fun s hs ↦ by grind)
+      (fun s hs ↦ by grind)
   have hno2 : ¬ (r ≤ x ∧ x < a) := by
     rintro ⟨hrx, hxa⟩
     exact not_posComboRealRooted_cubic_separated (f := f) (g := g)
       hf_pos hg_pos hf hg hfdeg hgdeg hpc x a hxa
-      (fun s hs => by rcases hgmem s hs with h | h | h <;> subst h <;> linarith)
-      (fun s hs => by rcases hfmem s hs with h | h | h <;> subst h <;> linarith)
+      (fun s hs ↦ by grind)
+      (fun s hs ↦ by grind)
   rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
-  push_cast
-  constructor <;> grind
+  grind
 
 /-- Finite indicator-level core for the cubic same-degree root-count bound of
 `1`.  For ordered triples `a ≤ b ≤ c` and `p ≤ q ≤ r` satisfying the four
@@ -677,8 +656,7 @@ theorem card_filter_triple_diff_le_one
     (((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
           (if r ≤ x then 1 else 0) : ℤ) -
         ((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
-          (if c ≤ x then 1 else 0)) ≤ 1) := by
-  constructor <;> grind
+          (if c ≤ x then 1 else 0)) ≤ 1) := by grind
 
 /-- Partial-separation-free leaf for the cubic same-degree root count.
 
@@ -769,7 +747,7 @@ theorem cubicInteriorTwoBelow_of_discr_monicPencil_neg
     cubicDiscr_monicPencil_nonneg_of_posCombo
       hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
   obtain ⟨s, hs, hlt⟩ := hneg a b c p q r hab hbc hpq hqr hqa har
-  exact (not_lt_of_ge (hnonneg s hs)) hlt
+  grind
 
 /-- The negative-discriminant monic-pencil leaf implies the interior `2`-above
 obstruction. -/
@@ -781,7 +759,7 @@ theorem cubicInteriorTwoAbove_of_discr_monicPencil_neg
     cubicDiscr_monicPencil_nonneg_of_posCombo
       hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
   obtain ⟨s, hs, hlt⟩ := hneg a b c p q r hab hbc hpq hqr har hrb
-  exact (not_lt_of_ge (hnonneg s hs)) hlt
+  grind
 
 /-- Normalized two-above negative-discriminant data implies the interior
 two-above obstruction. -/
@@ -801,30 +779,23 @@ theorem cubicSecondRootBound_of_interior
     CubicSecondRootBoundStatement := by
   intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr
   have hfmem : ∀ x ∈ f.roots, x = a ∨ x = b ∨ x = c := by
-    intro x hx
-    rw [hfr] at hx
-    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx
-    tauto
-  have hgmem : ∀ x ∈ g.roots, x = p ∨ x = q ∨ x = r := by
-    intro x hx
-    rw [hgr] at hx
-    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx
-    tauto
+    simp_all
+  have hgmem : ∀ x ∈ g.roots, x = p ∨ x = q ∨ x = r := by simp_all
   refine ⟨?_, ?_⟩
   · by_contra hnot
     have hcon : q < a := not_le.mp hnot
     rcases lt_or_ge r a with hra | har
     · exact not_posComboRealRooted_cubic_separated hf hg hfs hgs hfd hgd hpc r a hra
-        (fun x hx => by rcases hgmem x hx with h | h | h <;> subst h <;> linarith)
-        (fun x hx => by rcases hfmem x hx with h | h | h <;> subst h <;> linarith)
+        (fun x hx ↦ by grind)
+        (fun x hx ↦ by grind)
     · exact hbelow hf hg hfs hgs hfd hgd hpc a b c p q r
         hab hbc hpq hqr hfr hgr hcon har
   · by_contra hnot
     have hcon : r < b := not_le.mp hnot
     rcases lt_or_ge r a with hra | har
     · exact not_posComboRealRooted_cubic_separated hf hg hfs hgs hfd hgd hpc r a hra
-        (fun x hx => by rcases hgmem x hx with h | h | h <;> subst h <;> linarith)
-        (fun x hx => by rcases hfmem x hx with h | h | h <;> subst h <;> linarith)
+        (fun x hx ↦ by grind)
+        (fun x hx ↦ by grind)
     · exact habove hf hg hfs hgs hfd hgd hpc a b c p q r
         hab hbc hpq hqr hfr hgr har hcon
 
@@ -901,9 +872,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
     hbound hg_pos hf_pos hg hf hgdeg hfdeg hpc.comm p q r a b c
       hpq hqr hab hbc hgroots hfroots
   rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
-  push_cast
-  exact card_filter_triple_diff_le_one a b c p q r x
-    hab hbc hpq hqr hpb hqc haq hbr
+  grind
 
 /-- End-to-end reduction of the cubic root-count bound to the interior leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_interior
@@ -991,7 +960,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
   have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  have hgdeg : g.natDegree = 3 := by rw [hdeg, hfdeg]
+  have hgdeg : g.natDegree = 3 := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_normalized
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc
 
@@ -1015,7 +984,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo_forall
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by rw [hdeg.1, hdeg.2]
+  have hsame : g.natDegree = f.natDegree := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
     hbelow habove hf_pos hg_pos hpc hsame hdeg.1
 
@@ -1032,7 +1001,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by rw [hdeg.1, hdeg.2]
+  have hsame : g.natDegree = f.natDegree := by simp_all
   have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hsame).2
   have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hsame).2
   exact
@@ -1091,7 +1060,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_via_notSplits
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by rw [hdeg.1, hdeg.2]
+  have hsame : g.natDegree = f.natDegree := by simp_all
   have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hsame).2
   have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hsame).2
   exact
@@ -1117,7 +1086,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
   have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  have hgdeg : g.natDegree = 3 := by rw [hdeg, hfdeg]
+  have hgdeg : g.natDegree = 3 := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_notSplits
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc
 
@@ -1135,7 +1104,7 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo_forall
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by rw [hdeg.1, hdeg.2]
+  have hsame : g.natDegree = f.natDegree := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
     hbelow habove hf_pos hg_pos hpc hsame hdeg.1
 

@@ -70,10 +70,10 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (C a * p) := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   · have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
     refine ⟨nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs, Or.inr ?_, ?_⟩
-    · exact (isRealRooted_C_mul hprr.1 hprr.2 ha.ne').2
+    · simp_all
     · intro r hr
       have hrp : r ∈ p.roots := by
         simpa [Polynomial.roots_C_mul _ ha.ne'] using hr
@@ -88,7 +88,7 @@ theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   have hprr := hp.ne_zero_and_splits hp0
   have hnn : HasNonnegCoeffs (X * p) := by
     rintro (_ | n)
@@ -101,9 +101,9 @@ theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (p * q) := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   by_cases hq0 : q = 0
-  · simpa [hq0] using IsPFPolynomial.zero
+  · simp_all
   have hprr := hp.ne_zero_and_splits hp0
   have hqrr := hq.ne_zero_and_splits hq0
   have hpq_rr := isRealRooted_mul hprr.1 hprr.2 hqrr.1 hqrr.2
@@ -173,7 +173,7 @@ theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   have hprr := hp.ne_zero_and_splits hp0
   exact ⟨hp.hasNonnegCoeffs.derivative,
     eq_zero_or_splits_derivative hp.eq_zero_or_splits,
@@ -318,7 +318,7 @@ theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
       ext n
       cases n with
       | zero =>
-          simp [Polynomial.coeff_reverse, Polynomial.coeff_one, Polynomial.coeff_X]
+          simp
       | succ n =>
           cases n with
           | zero =>
@@ -332,15 +332,14 @@ theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
       ext n
       cases n with
       | zero =>
-          simp [Polynomial.coeff_one, Polynomial.coeff_X]
-          field_simp [hr0]
+          simp_all
       | succ n =>
           cases n with
           | zero =>
               simp [Polynomial.coeff_one, Polynomial.coeff_X]
           | succ n =>
               simp [Polynomial.coeff_one, Polynomial.coeff_X]
-    simpa [hrev_linear, hscale_eq.symm] using hscale
+    simp_all
 
 theorem isPFPolynomial_reverse_prod_X_sub_C
     (s : Multiset ℝ) (hs : ∀ r ∈ s, r ≤ 0) :
@@ -358,9 +357,9 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
 theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial p.reverse := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
-  have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r => X - C r).prod :=
+  have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r ↦ X - C r).prod :=
     (C_leadingCoeff_mul_prod_multiset_X_sub_C
       (card_roots_of_splits hprr.2)).symm
   rw [hp_eq]
@@ -390,11 +389,9 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
   simpa using
     prec0_sum_left_of_common_left_of_nonneg [q, r] p
       (by
-        simp only [List.mem_cons, List.not_mem_nil, or_false]
-        rintro s (rfl | rfl) <;> assumption)
+        simp_all)
       (by
-        simp only [List.mem_cons, List.not_mem_nil, or_false]
-        rintro s (rfl | rfl) <;> assumption)
+        simp_all)
 
 /-- Fixed-left cone closure for two nonnegative scalar multiples. -/
 theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}

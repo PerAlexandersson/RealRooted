@@ -72,8 +72,7 @@ variation-diminishing theorem for a full-row-rank totally nonnegative Toeplitz
 window matrix. -/
 theorem aswKarlinKernelSignVariationClassicalInput :
     AswKarlinKernelSignVariationClassicalInputStatement := by
-  intro u degree order hdegree horder hconst hlead hsupport htn hsurj
-  intro v hker hvec_ne
+  intro u degree order hdegree horder hconst hlead hsupport htn hsurj v hker hvec_ne
   -- Remaining classical step: use `htn`, `hsurj`, the endpoint/support data,
   -- `hker`, and `hvec_ne` to prove the kernel sign-variation lower bound.
   sorry

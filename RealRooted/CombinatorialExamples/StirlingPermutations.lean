@@ -98,7 +98,7 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
           habove (n + 1) (by lia)
         have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by
           nlinarith
-        simpa [hzero] using mul_pos hscale htop
+        simp_all
       · intro k hk
         cases k with
         | zero =>

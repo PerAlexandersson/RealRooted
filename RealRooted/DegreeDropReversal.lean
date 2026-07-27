@@ -23,7 +23,7 @@ theorem splits_reverse_X_add_C (a : K) :
     (X + C a).reverse.Splits :=
   Polynomial.Splits.of_natDegree_le_one <|
     (Polynomial.reverse_natDegree_le (X + C a)).trans <| by
-      rw [Polynomial.natDegree_X_add_C]
+      simp
 
 /-- Reversal of a nonzero monic linear factor, normalized as a nonzero scalar
 times another monic linear factor. -/
@@ -38,8 +38,8 @@ theorem reverse_X_sub_C_eq (r : K) (hr : r ≠ 0) :
 theorem roots_reverse_X_sub_C (r : K) (hr : r ≠ 0) :
     (X - C r : K[X]).reverse.roots = {r⁻¹} := by
   rw [reverse_X_sub_C_eq r hr, Polynomial.roots_C_mul]
-  · exact Polynomial.roots_X_sub_C r⁻¹
-  · simpa using neg_ne_zero.mpr hr
+  · simp
+  · grind
 
 /-- A product of monic linear factors is nonzero. -/
 theorem prod_X_sub_C_ne_zero (s : Multiset K) :
@@ -70,22 +70,21 @@ theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) 
             (Polynomial.C_ne_zero.mpr (neg_ne_zero.mpr hr))
             (Polynomial.X_sub_C_ne_zero r⁻¹)
         have hright :
-            ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse ≠ 0 :=
-          fun hzero => by
-          exact prod_X_sub_C_ne_zero s (Polynomial.reverse_eq_zero.mp hzero)
-        exact mul_ne_zero hleft hright
+            ((Multiset.map (fun r ↦ (X - C r : K[X])) s).prod).reverse ≠ 0 :=
+          fun hzero ↦ by
+          simp_all
+        simp_all
 
 /-- If `p` splits and has nonzero constant coefficient, the roots of
 `p.reverse` are exactly the inverses of the roots of `p`, with multiplicity. -/
 theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
     (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
-    p.reverse.roots = p.roots.map (fun r => r⁻¹) := by
-  have hp_ne : p ≠ 0 := fun hp_zero => by
-    exact h0 (by simp [hp_zero])
+    p.reverse.roots = p.roots.map (fun r ↦ r⁻¹) := by
+  have hp_ne : p ≠ 0 := fun hp_zero ↦ by
+    simp_all
   have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hp_ne
-  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := fun r hr hr_zero => by
-    have hroot : p.IsRoot 0 := by
-      simpa [hr_zero] using Polynomial.isRoot_of_mem_roots hr
+  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := fun r hr hr_zero ↦ by
+    have hroot : p.IsRoot 0 := by simp_all
     exact h0 (by
       simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hroot)
   conv_lhs => rw [Polynomial.Splits.eq_prod_roots hp]
@@ -93,16 +92,16 @@ theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
   rw [Polynomial.reverse_C]
   rw [Polynomial.roots_C_mul]
   · exact roots_reverse_prod_X_sub_C p.roots hroots_ne
-  · exact hlc
+  · simp_all
 
 /-- Predicate root-count transport across `reverse`: filtering roots of the
 reverse by `q` counts exactly the original roots whose inverse satisfies `q`. -/
 theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     (q : K → Prop) [DecidablePred q] :
-    (p.reverse.roots.filter q).card = (p.roots.filter (fun r => q r⁻¹)).card := by
+    (p.reverse.roots.filter q).card = (p.roots.filter (fun r ↦ q r⁻¹)).card := by
   rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0]
   rw [Multiset.filter_map, Multiset.card_map]
-  rfl
+  simp
 
 /-- Total root count (with multiplicity) is preserved by reversal for a split
 polynomial with nonzero constant coefficient.  This is the no-gap accounting
@@ -128,9 +127,8 @@ what keeps closed-segment endpoint arguments away from the point at infinity. -/
 theorem ne_zero_of_mem_roots_reverse {p : K[X]} (hp : p.Splits)
     (h0 : p.coeff 0 ≠ 0) {x : K} (hx : x ∈ p.reverse.roots) : x ≠ 0 := by
   obtain ⟨r, hr, rfl⟩ := (mem_roots_reverse_iff hp h0).1 hx
-  refine inv_ne_zero (fun hr0 => h0 ?_)
-  have hroot : p.IsRoot 0 := by
-    simpa [hr0] using Polynomial.isRoot_of_mem_roots hr
+  refine inv_ne_zero (fun hr0 ↦ h0 ?_)
+  have hroot : p.IsRoot 0 := by simp_all
   simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hroot
 
 /-- Pointwise multiplicity transport across reversal: the multiplicity of `x` as
@@ -155,8 +153,7 @@ theorem splits_reverse {p : K[X]} (h : p.Splits) :
     exact Polynomial.Splits.of_natDegree_le_one <|
       (Polynomial.reverse_natDegree_le (1 : K[X])).trans <| by simp
   | mul x y _ _ ihx ihy =>
-    rw [Polynomial.reverse_mul_of_domain]
-    exact ihx.mul ihy
+    simp_all
 
 /-- Reflecting a polynomial at a degree `N` at least its own `natDegree` factors
 a power of `X` out of its reversal. -/
@@ -222,8 +219,7 @@ theorem card_roots_reflect {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
 
 /-- Reflection is linear on a polynomial family `f + C μ * g`. -/
 theorem reflect_add_C_mul {R : Type*} [Semiring R] (f g : R[X]) (μ : R) (N : ℕ) :
-    reflect N (f + C μ * g) = reflect N f + C μ * reflect N g := by
-  rw [Polynomial.reflect_add, Polynomial.reflect_C_mul]
+    reflect N (f + C μ * g) = reflect N f + C μ * reflect N g := by simp
 
 /-- If the constant coefficient is nonzero, reflecting at any degree bound
 puts a nonzero coefficient in the top reflected degree. -/
@@ -231,8 +227,8 @@ theorem natDegree_reflect_eq_of_coeff_zero_ne {R : Type*} [Semiring R]
     {p : R[X]} {N : ℕ} (hN : p.natDegree ≤ N) (h0 : p.coeff 0 ≠ 0) :
     (reflect N p).natDegree = N := by
   refine Polynomial.natDegree_eq_of_le_of_coeff_ne_zero ?_ ?_
-  · exact Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hN]
-  · simpa [Polynomial.revAt_le le_rfl] using h0
+  · exact Polynomial.natDegree_reflect_le.trans <| by simp_all
+  · simp_all
 
 /-- Under the same hypotheses, the leading coefficient of the reflected
 polynomial is the original constant coefficient. -/
@@ -294,10 +290,10 @@ theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
 splitting. -/
 theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
     (reflect N p).Splits ↔ p.Splits := by
-  refine ⟨?_, fun h => splits_reflect_of_splits h hN⟩
+  refine ⟨?_, fun h ↦ splits_reflect_of_splits h hN⟩
   intro h
   have hreflect_deg : (reflect N p).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hN]
+    Polynomial.natDegree_reflect_le.trans <| by simp_all
   simpa using splits_reflect_of_splits h hreflect_deg
 
 /-- Reversal preserves and reflects splitting over a field. -/
@@ -315,23 +311,20 @@ theorem splits_of_reverse {p : K[X]} (h : p.reverse.Splits) :
 theorem splits_X_pow_mul_iff {p : K[X]} (k : ℕ) :
     (X ^ k * p).Splits ↔ p.Splits := by
   rcases eq_or_ne p 0 with hp | hp
-  · subst hp; simp
+  · simp_all
   · rw [Polynomial.splits_mul (pow_ne_zero k Polynomial.X_ne_zero) hp,
       and_iff_right (Polynomial.Splits.X_pow k)]
 
 /-- Multiplying by one factor of `X` does not change whether a polynomial
 splits. -/
-theorem splits_X_mul_iff {p : K[X]} : (X * p).Splits ↔ p.Splits := by
-  rw [← pow_one (X : K[X])]
-  exact splits_X_pow_mul_iff (p := p) 1
+theorem splits_X_mul_iff {p : K[X]} : (X * p).Splits ↔ p.Splits := by simp
 
 /-- A polynomial with zero constant coefficient is `X` times its `divX`
 quotient. -/
 theorem eq_X_mul_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
     p = X * p.divX := by
   have h := Polynomial.X_mul_divX_add p
-  rw [h0, Polynomial.C_0, add_zero] at h
-  exact h.symm
+  simp_all
 
 /-- Reversal is blind to a vanishing constant term: if `p.coeff 0 = 0`, then
 `p` and its `divX` quotient have the same reversal.
@@ -351,7 +344,7 @@ after dividing by `X`. -/
 theorem splits_iff_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
     p.Splits ↔ p.divX.Splits := by
   conv_lhs => rw [eq_X_mul_divX_of_coeff_zero h0]
-  exact splits_X_mul_iff (p := p.divX)
+  simp
 
 /-- If the constant coefficient is zero, splitting of `p.divX` lifts back to
 splitting of `p`. -/
@@ -509,10 +502,10 @@ theorem mem_Ioo_inv_iff {a b r : K} (ha : 0 < a) (hb : 0 < b) :
 theorem mem_Ioi_inv_iff {a r : K} (ha : 0 < a) :
     a < r⁻¹ ↔ (0 < r ∧ r < a⁻¹) := by
   by_cases hr : 0 < r
-  · constructor <;> intro h <;> simp_all +decide [lt_inv_comm₀]
+  · constructor <;> intro h <;> simp_all [lt_inv_comm₀]
     simpa using inv_strictAnti₀ h.1 h.2
-  · refine iff_of_false (fun h => hr ?_) (by tauto)
-    nlinarith [inv_mul_cancel₀ (show r ≠ 0 by rintro rfl; norm_num at h; linarith),
+  · refine iff_of_false (fun h ↦ hr ?_) (by simp_all)
+    nlinarith [inv_mul_cancel₀ (show r ≠ 0 by grind),
       inv_pos.2 ha]
 
 /-- Interval root-count transport under reversal. -/
@@ -551,7 +544,7 @@ theorem card_roots_reflect_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     rw [Multiset.filter_eq_nil]
     intro x hx
     rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
-    exact fun h => absurd (hx.2 ▸ h.1) (lt_asymm ha)
+    grind
   rw [reflect_eq_X_pow_mul_reverse p hN,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)

@@ -54,10 +54,8 @@ lemma HasPosLeadingCoeff.divX_of_coeff_zero {p : ℝ[X]}
     HasPosLeadingCoeff p.divX := by
   have hX : X * p.divX = p := by
     simpa [h0] using Polynomial.X_mul_divX_add p
-  have hX_pos : HasPosLeadingCoeff (X * p.divX) := by
-    simpa [hX] using hp
-  have hXC_pos : HasPosLeadingCoeff ((X - C 0) * p.divX) := by
-    simpa using hX_pos
+  have hX_pos : HasPosLeadingCoeff (X * p.divX) := by simp_all
+  have hXC_pos : HasPosLeadingCoeff ((X - C 0) * p.divX) := by grind
   exact hasPosLeadingCoeff_of_X_sub_C_mul hXC_pos
 
 lemma hasPosLeadingCoeff_of_pow_X_sub_C_mul {q : ℝ[X]} {r : ℝ} {m : ℕ}
@@ -65,7 +63,7 @@ lemma hasPosLeadingCoeff_of_pow_X_sub_C_mul {q : ℝ[X]} {r : ℝ} {m : ℕ}
     HasPosLeadingCoeff q := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero r)
   unfold HasPosLeadingCoeff at h ⊢
-  simpa [leadingCoeff_mul, hpow_ne] using h
+  simp_all
 
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits)
@@ -75,16 +73,12 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
   · simp
   intro s hs
   rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf₀), roots_X_sub_C] at hs
-  rcases Multiset.mem_add.mp hs with hs | hs
-  · simp_all
-  · simp_all
+  rcases Multiset.mem_add.mp hs with hs | hs <;> simp_all
 
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     {a : ℝ} (ha : a ≠ 0) :
-    (C a * p ≠ 0 ∧ (C a * p).Splits) := by
-  simpa using
-    isRealRooted_mul (C_ne_zero.mpr ha) (Polynomial.Splits.C (R := ℝ) a) hp_ne hp_splits
+    (C a * p ≠ 0 ∧ (C a * p).Splits) := by simp_all
 
 /-- A nonzero scalar multiple preserves a bundled real-rootedness certificate. -/
 lemma isRealRooted_C_mul_of_isRealRooted {p : ℝ[X]}
@@ -111,7 +105,7 @@ lemma splits_of_divX_splits_of_coeff_zero {p : ℝ[X]}
     simpa [h0] using Polynomial.X_mul_divX_add p
   have hdiv_pos : HasPosLeadingCoeff p.divX := hp_pos.divX_of_coeff_zero h0
   have hX_rr := isRealRooted_X_mul hdiv_pos.ne_zero hdiv
-  simpa [hX] using hX_rr.2
+  simp_all
 
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
   simp
@@ -131,8 +125,8 @@ lemma prec_X_add_C_iff {a b : ℝ} :
     refine ⟨?_, ?_, [(-b)], [(-a)], ?_, ?_, ?_, ?_, ?_⟩
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-    · exact List.pairwise_singleton _ _
-    · exact List.pairwise_singleton _ _
+    · simp
+    · simp
     · simp
     · simp
     · refine Or.inr ⟨by simp, ?_⟩
@@ -160,19 +154,17 @@ lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits
 lemma isRealRooted_of_X_mul {f : ℝ[X]}
     (hXf_ne : (X * f) ≠ 0) (hXf_splits : (X * f).Splits) :
     f ≠ 0 ∧ f.Splits := by
-  have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf_ne
-  exact isRealRooted_of_dvd hXf_ne hXf_splits hf0 ⟨X, by ring⟩
+  simp_all
 
 /-- A root of a divisor is a root of the dividend. -/
 lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
     q.IsRoot x := by
   rcases hpq with ⟨r, rfl⟩
-  simpa [Polynomial.IsRoot.def] using congrArg (fun y => y * r.eval x) hx
+  simp_all
 
 /-- A common root of two polynomials is also a root of their sum. -/
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
-    (p + q).IsRoot x := by
-  simpa [Polynomial.IsRoot.def] using congrArg₂ (· + ·) hp hq
+    (p + q).IsRoot x := by simp_all
 
 /-- If `(X - C r)^m` divides both summands, then it divides their sum. -/
 lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}

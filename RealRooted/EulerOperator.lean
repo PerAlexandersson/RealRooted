@@ -49,8 +49,7 @@ def polarTheta (N : ℕ) (p : ℝ[X]) : ℝ[X] :=
       simp [theta]
   | succ n =>
       rw [theta, coeff_X_mul, coeff_derivative]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring
+      grind
 
 @[simp] theorem coeff_thetaPlusOne (p : ℝ[X]) (n : ℕ) :
     (thetaPlusOne p).coeff n = ((n : ℝ) + 1) * p.coeff n := by
@@ -246,7 +245,7 @@ theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
           have hNk' : N < k := by grind
           rw [show N + 1 - 1 = N by simp]
           rw [Polynomial.revAt_eq_self_of_lt hNk']
-          exact Nat.lt_succ_of_le hNk
+          simp_all
     have hrhs_coeff :
         p.coeff (Polynomial.revAt N (Polynomial.revAt (N - 1) k + 1)) = 0 := by
       rw [Polynomial.revAt_eq_self_of_lt hidx]
@@ -254,8 +253,7 @@ theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
     rw [hrhs_coeff]
     simp
     by_cases hkN : k = N
-    · subst k
-      simp
+    · simp_all
     · have hNklt : N < k := lt_of_le_of_ne hNk (Ne.symm hkN)
       have hpcoeff : p.coeff k = 0 :=
         coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNklt)

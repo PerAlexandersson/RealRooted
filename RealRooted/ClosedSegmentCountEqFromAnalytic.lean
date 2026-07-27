@@ -27,31 +27,28 @@ private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
     fun hx => hxf ((Polynomial.mem_roots hf_pos.ne_zero).mp hx)
   have hlt : f.natDegree < g.natDegree := by
     simp [hdeg]
-  have hfg_split_pos : ∀ μ : ℝ, 0 < μ → (f + C μ * g).Splits := fun μ hμ => by
+  have hfg_split_pos : ∀ μ : ℝ, 0 < μ → (f + C μ * g).Splits := fun μ hμ ↦ by
     rcases hcomp 1 μ zero_le_one hμ.le with hzero | hrr
-    · simp [show f + C μ * g = 0 by simpa using hzero]
-    · simpa using hrr.2
-  have hgf_split : ∀ ν ∈ Set.Icc (0 : ℝ) 1, (g + C ν * f).Splits := fun ν hν => by
+    · simp [show f + C μ * g = 0 by grind]
+    · grind
+  have hgf_split : ∀ ν ∈ Set.Icc (0 : ℝ) 1, (g + C ν * f).Splits := fun ν hν ↦ by
     rcases hcomp.comm 1 ν zero_le_one hν.1 with hzero | hrr
-    · simp [show g + C ν * f = 0 by simpa using hzero]
-    · simpa using hrr.2
+    · simp [show g + C ν * f = 0 by grind]
+    · grind
   refine card_filter_gt_endpoint_eq_of_local_lower_counts
     hf_pos hg_pos hdeg hf_split hx_roots
     ?_
     ?_ ?_ ?_ ?_
   · intro ρ hρ
     obtain ⟨δ, hδ_pos, hδ⟩ := degreeIncreasing_local_lower_count hf_split hlt ρ hρ
-    exact ⟨δ, hδ_pos, fun μ hμ hμδ =>
-      let hsplit := hfg_split_pos μ hμ
-      ⟨hsplit, hδ μ hμ hμδ hsplit⟩⟩
-  · exact fun μ hμ _ => hfg_split_pos μ hμ
-  · exact fun μ hμ _ => closedSegment_not_isRoot_add_right_of_nonneg hμ.le hseg
-  · exact hgf_split
+    grind
+  · simp_all
+  · exact fun μ hμ _ ↦ closedSegment_not_isRoot_add_right_of_nonneg hμ.le hseg
+  · simp_all
   · intro ν hν
     refine closedSegment_not_isRoot_add_right_of_nonneg
       (f := g) (g := f) (x := x) hν.1 ?_
-    exact (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxg hxf).mpr <|
-      by simpa [mul_comm] using (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxf hxg).mp hseg
+    grind
 
 /-- The proved closed-segment count equality closes the repaired succ-degree
 #42 pair-interleaver endpoint. -/

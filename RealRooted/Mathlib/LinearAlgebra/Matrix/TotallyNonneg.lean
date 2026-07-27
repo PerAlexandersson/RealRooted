@@ -75,9 +75,7 @@ theorem IsTotallyNonneg.one : (1 : Matrix ℕ ℕ R).IsTotallyNonneg := by
     simp
   · have hnot : ∃ i : Fin n, rows i ∉ Set.range cols := by
       by_contra! hcon
-      have : Set.range rows ⊆ Set.range cols := by
-        rintro _ ⟨i, rfl⟩
-        exact hcon i
+      have : Set.range rows ⊆ Set.range cols := by grind
       have hcard_rows : (Set.range rows).toFinset.card = n := by
         rw [Set.toFinset_card, Set.card_range_of_injective hrows.injective, Fintype.card_fin]
       have hcard_cols : (Set.range cols).toFinset.card = n := by
@@ -85,16 +83,13 @@ theorem IsTotallyNonneg.one : (1 : Matrix ℕ ℕ R).IsTotallyNonneg := by
       have heq_set : Set.range rows = Set.range cols := by
         rw [← Set.toFinset_inj]
         refine Finset.eq_of_subset_of_card_le ?_ (by simp_all)
-        intro x hx
-        exact Set.mem_toFinset.mpr (this (Set.mem_toFinset.mp hx))
+        grind
       simp_all
     rcases hnot with ⟨i, hi⟩
     have hrow : ∀ j : Fin n, ((1 : Matrix ℕ ℕ R).submatrix rows cols) i j = 0 := by
       intro j
       simp only [submatrix_apply, one_apply]
-      split
-      · exact (hi ⟨j, ‹rows i = cols j›.symm⟩).elim
-      · rfl
+      grind
     exact det_eq_zero_of_row_eq_zero i hrow |>.ge
 
 lemma IsTotallyNonneg.smul {M : Matrix ι ι R}
@@ -122,20 +117,7 @@ theorem IsTotallyNonneg.hadamard_det_fin_two {M N : Matrix ι ι R}
   have hN11 : 0 ≤ N (rows 1) (cols 1) := hN.nonneg _ _
   have h1 := mul_nonneg hMdet (mul_nonneg hN00 hN11)
   have h2 := mul_nonneg (mul_nonneg hM01 hM10) hNdet
-  have key :
-      M (rows 0) (cols 0) * N (rows 0) (cols 0) *
-            (M (rows 1) (cols 1) * N (rows 1) (cols 1)) -
-          M (rows 0) (cols 1) * N (rows 0) (cols 1) *
-            (M (rows 1) (cols 0) * N (rows 1) (cols 0)) =
-        (M (rows 0) (cols 0) * M (rows 1) (cols 1) -
-              M (rows 0) (cols 1) * M (rows 1) (cols 0)) *
-            (N (rows 0) (cols 0) * N (rows 1) (cols 1)) +
-          M (rows 0) (cols 1) * M (rows 1) (cols 0) *
-            (N (rows 0) (cols 0) * N (rows 1) (cols 1) -
-              N (rows 0) (cols 1) * N (rows 1) (cols 0)) := by
-    ring
-  rw [key]
-  exact add_nonneg h1 h2
+  grind
 
 /-- Every minor of size at most two of the entrywise product of two totally
 nonnegative matrices is nonnegative. -/
@@ -152,8 +134,6 @@ theorem IsTotallyNonneg.hadamard_det_of_card_le_two {M N : Matrix ι ι R}
     exact mul_nonneg (hM.nonneg (rows 0) (cols 0)) (hN.nonneg (rows 0) (cols 0))
   rcases n with _ | n
   · exact hM.hadamard_det_fin_two hN hrows hcols
-  · have hlt : 2 < Nat.succ (Nat.succ (Nat.succ n)) :=
-      Nat.succ_lt_succ (Nat.succ_lt_succ (Nat.zero_lt_succ n))
-    exact (not_lt_of_ge hn hlt).elim
+  · simp_all
 
 end Matrix

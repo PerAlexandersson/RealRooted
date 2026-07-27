@@ -703,7 +703,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr.1 hrr.2 hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
       have hq_pos : HasPosLeadingCoeff q :=
-        hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simpa [← hq'] using hγ_pos)
+        hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simp_all)
       have hq_nn : HasNonnegCoeffs q :=
         hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
           hrr.1 hrr.2 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
@@ -767,9 +767,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             gammaTransform (2 * n) δ = X * gammaTransform (2 * ζ.natDegree) ζ := by
           calc
             gammaTransform (2 * n) δ = gammaTransform (2 * n) (X * ζ) := by lia
-            _ = gammaTransform (2 * ζ.natDegree + 2) (X * ζ) := by
-                  congr 1
-                  lia
+            _ = gammaTransform (2 * ζ.natDegree + 2) (X * ζ) := by grind
             _ = X * gammaTransform (2 * ζ.natDegree) ζ :=
                   gammaTransform_X_mul_two (2 * ζ.natDegree) ζ
         have hq0 : gammaTransform (2 * ζ.natDegree) ζ ≠ 0 := by simp_all
@@ -830,9 +828,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           calc
             gammaTransform (2 * n) δ = gammaTransform (2 * n) ((X - C y) * ε) := by
               lia
-            _ = gammaTransform (2 * ε.natDegree + 2) ((X - C y) * ε) := by
-                  congr 1
-                  lia
+            _ = gammaTransform (2 * ε.natDegree + 2) ((X - C y) * ε) := by grind
             _ = (X - C y * (X + 1) ^ 2) * gammaTransform (2 * ε.natDegree) ε :=
                   gammaTransform_X_sub_C_mul_two (γ := ε) (by lia) y
         have hq0 : gammaTransform (2 * ε.natDegree) ε ≠ 0 := by simp_all
@@ -979,16 +975,9 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
         (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := by
     have hshift' :=
       gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by lia)
-    simpa [Nat.add_sub_of_le hm] using hshift'
+    simp_all
   rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
-  · have hd : d = 2 * n := by
-      have h := Nat.mod_add_div d 2
-      rw [hd_even, zero_add] at h
-      exact h.symm
-    have hpow : 2 * (n - m) = 2 * n - 2 * m :=
-      Nat.mul_sub_left_distrib 2 n m
-    rw [hd]
-    simpa [m, hpow] using hshift
+  · grind
   · have hd : d = 2 * n + 1 := by lia
     have hpow : d - 2 * m = 1 + 2 * (n - m) := by lia
     calc

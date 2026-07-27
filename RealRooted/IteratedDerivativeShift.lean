@@ -157,7 +157,6 @@ lemma rootMultiplicity_sub_one_le_rootMultiplicity_TDeriv
   · lia
   have hp_ne : p ≠ 0 := by
     intro hp0
-    change 0 < p.rootMultiplicity a at hm_pos
     simp_all
   have hdvd_p : (X - C a) ^ m ∣ p :=
     (le_rootMultiplicity_iff hp_ne).mp le_rfl
@@ -281,8 +280,7 @@ lemma TDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) :
   · simpa [tderiv_of_natDegree_eq_zero hp]
   intro h
   have := natDegree_TDeriv eps p
-  rw [h, natDegree_zero] at this
-  lia
+  simp_all
 
 /-- T_ε preserves real-rootedness when ε > 0.
     Proof: T_ε(p) = 1·p + (-C ε)·p'. Since p' interlaces p (derivative interlacing)
@@ -380,10 +378,10 @@ lemma iterate_derivative_iterateTDeriv (eps : ℝ) (n k : ℕ) (p : ℝ[X]) :
 theorem splits_tderiv {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) :
     (TDeriv eps p).Splits := by
   obtain rfl | hp₀ := eq_or_ne p 0
-  · simp [TDeriv]
+  · simp
   by_cases hdeg2 : 2 ≤ p.natDegree
   · -- degree ≥ 2: use Ma-Wang
-    rcases lt_or_gt_of_ne (fun h => hp₀ (leadingCoeff_eq_zero.mp h))
+    rcases lt_or_gt_of_ne (fun h ↦ hp₀ (leadingCoeff_eq_zero.mp h))
       with hneg | hpos
     · -- negative leading coefficient: T_ε(-p) = -T_ε(p)
       have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
@@ -403,7 +401,7 @@ theorem splits_tderiv {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) 
       have : TDeriv eps p = p := by unfold TDeriv; rw [hpc, derivative_C]; simp
       lia
     · -- degree 1: TDeriv preserves degree, so result has degree 1
-      exact .of_natDegree_eq_one (by rw [natDegree_TDeriv]; lia)
+      exact .of_natDegree_eq_one (by simp_all)
 
 theorem splits_tderiv_all {eps : ℝ} {p : ℝ[X]} (hp : p.Splits) :
     (TDeriv eps p).Splits := by
@@ -930,11 +928,9 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           rw [← hrewrite_neg]
           exact hneg_pos.TDeriv
         have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
-          rw [← hrewrite_neg, natDegree_TDeriv eps (-p)]
+          simp_all
         have hdeg_hi :
-            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by
-          rw [← hrewrite_neg, natDegree_TDeriv eps (-p)]
-          lia
+            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by simp_all
         have hb_nonpos : ∀ r, (-p).IsRoot r → (C (-eps)).eval r ≤ 0 := by
           intro r _
           simp [eval_C]
@@ -1088,7 +1084,6 @@ normalization package needed by the current Obreschkoff closure route. -/
 lemma monic_normalization_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ} (hp : p ≠ 0) :
     (C p.leadingCoeff⁻¹ * iterateTDeriv eps k p).Monic := by
   apply monic_C_mul_of_mul_leadingCoeff_eq_one
-  rw [leadingCoeff_iterateTDeriv]
   simp_all
 
 /-- For fixed `n`, `p`, and `i`, the `i`th coefficient of `iterateTDeriv eps n p`
@@ -1470,9 +1465,9 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
   apply exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
     (n := n) (k := k) (p := p) (a := a) (ε := ε)
   · exact isRoot_iterate_derivative_of_lt_rootMultiplicity ha
-  · exact hp_ne
-  · exact hp_splits
-  · exact hε
+  · simp_all
+  · grind
+  · grind
 
 /-- If `rootMultiplicity a p ≥ 1` and `rootMultiplicity a (T_ε p) ≥ 2`, then
     `rootMultiplicity a p ≥ 2` and the exact formula applies. In other words,
@@ -1505,7 +1500,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
   induction n using Nat.strongRecOn with
   | _ n ih =>
     intro q hq_deg hq_rr hq_deg_pos hq_eval
-    have hq₀ : q ≠ 0 := by rintro rfl; simp at hq_deg; lia
+    have hq₀ : q ≠ 0 := by rintro rfl; simp_all
   -- Get a root r of q (exists since degree ≥ 1 and real-rooted)
     have hroots_pos : 0 < q.roots.card := by
       rw [card_roots_of_splits hq_rr]

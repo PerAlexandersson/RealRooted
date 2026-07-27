@@ -47,39 +47,27 @@ theorem prec_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
     simp [polynomialWeightedSum]
     ring
   have htail_inter :
-      ∀ bg ∈ [(v, f.derivative)], Interlaces bg.2 f := by
-    intro bg hmem
-    rcases List.mem_singleton.mp hmem with rfl
-    simpa using hder
+      ∀ bg ∈ [(v, f.derivative)], Interlaces bg.2 f := by simp_all
   have htail_pos :
-      ∀ bg ∈ [(v, f.derivative)], HasPosLeadingCoeff bg.2 := by
-    intro bg hmem
-    rcases List.mem_singleton.mp hmem with rfl
-    simpa using hder_pos
+      ∀ bg ∈ [(v, f.derivative)], HasPosLeadingCoeff bg.2 := by simp_all
   have htail_nonpos :
-      ∀ bg ∈ [(v, f.derivative)], ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0 := by
-    intro bg hmem r hr
-    rcases List.mem_singleton.mp hmem with rfl
-    exact hv_nonpos r hr
+      ∀ bg ∈ [(v, f.derivative)], ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0 := by simp_all
   have hF_pos_weighted :
       HasPosLeadingCoeff
-        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) := by
-    rwa [hsum_eq]
+        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) := by simp_all
   have hdeg_lo_weighted :
       f.natDegree ≤
-        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree := by
-    rwa [hsum_eq]
+        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree := by simp_all
   have hdeg_hi_weighted :
       (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree ≤
-        f.natDegree + 1 := by
-    rwa [hsum_eq]
+        f.natDegree + 1 := by simp_all
   have hprec :
       Prec f (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) :=
     prec_generalizedLiuWang_of_no_common
       (f := f) (g := g) (a := u) (b := w) (l := [(v, f.derivative)])
       hgf hg_pos htail_inter htail_pos htail_nonpos
       hF_pos_weighted hdeg_lo_weighted hdeg_hi_weighted hno hw_nonpos
-  simpa [polynomialWeightedSum, add_assoc, add_comm, add_left_comm] using hprec
+  simp_all
 
 /-- Sequence-level Liu--Wang induction for derivative-lag recurrences where
 the sign checks may use the current row's already proved real-rootedness. -/
@@ -103,28 +91,22 @@ theorem prec_lw_derivative_lag_sequence_of_root_signs
   intro n
   induction n with
   | zero =>
-      exact hbase
+      simp_all
   | succ n ih =>
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hLag_inter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hF_pos :
           HasPosLeadingCoeff
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) := by grind
       have hdeg_next :
-          (P (n + 1)).natDegree + 1 = (P (n + 2)).natDegree := by
-        simpa [Nat.add_assoc] using hdeg_succ (n + 1)
+          (P (n + 1)).natDegree + 1 = (P (n + 2)).natDegree := by simp_all
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n).natDegree := by
-        rw [← hrec n]
-        lia
+            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n).natDegree := by grind
       have hdeg_hi :
           (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        lia
+            (P (n + 1)).natDegree + 1 := by simp_all
       have hstep :
           Prec (P (n + 1))
             (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) :=
@@ -132,7 +114,7 @@ theorem prec_lw_derivative_lag_sequence_of_root_signs
           hsource.2 (hdeg_two n) hLag_inter (hpos n) (hpos (n + 1))
           hF_pos hdeg_lo hdeg_hi (hno n)
           (hV_nonpos n hsource) (hW_nonpos n hsource)
-      simpa [← hrec n] using hstep
+      simp_all
 
 /-- Sequence-level Liu--Wang induction with direct root-sign side conditions. -/
 theorem prec_lw_derivative_lag_sequence

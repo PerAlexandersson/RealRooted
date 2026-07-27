@@ -78,8 +78,8 @@ theorem favardInterlacing :
         refine ⟨?_, hPos_n1, ?_⟩
         · simpa [f, g, aPoly, bPoly, sub_eq_add_neg, hstep n] using
             hPrec_step.toInterlaces (by lia)
-        · simpa [f, g, aPoly, bPoly, sub_eq_add_neg, hstep n] using hF_pos
-  exact fun n => (hQ n).1.toPrec
+        · grind
+  exact fun n ↦ (hQ n).1.toPrec
 
 theorem isRealRooted_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}

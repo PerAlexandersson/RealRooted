@@ -35,8 +35,7 @@ noncomputable abbrev PolynomialMatrix.entry {n : Nat} (G : PolynomialMatrix)
     (hG_rect : ∀ row ∈ G, row.length = n) (i : Fin G.length) (j : Fin n) :
     ℝ[X] :=
   (G.get i).get ⟨j, by
-    have hrow := hG_rect (G.get i) (List.get_mem G i)
-    simpa [← hrow] using j.2⟩
+    simp_all⟩
 
 /-- Challenge-facing name for the affine `2 × 2` condition in Brändén's
 matrix criterion. -/

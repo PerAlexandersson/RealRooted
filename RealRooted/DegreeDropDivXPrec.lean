@@ -25,9 +25,7 @@ theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
     (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
     f.roots = 0 ::ₘ f.divX.roots := by
   have hX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf0
-  have hne : X * f.divX ≠ 0 := by
-    rw [← hX]
-    exact hf
+  have hne : X * f.divX ≠ 0 := by grind
   conv_lhs => rw [hX]
   rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
 
@@ -57,8 +55,7 @@ lemma card_divX_roots_eq_natDegree_of_succDegree_of_coeff_zero {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree + 1) :
     Multiset.card g.divX.roots = f.natDegree := by
   have hcard := card_divX_roots_succ_eq_natDegree_of_coeff_zero hg hg0 hgs
-  rw [hdeg] at hcard
-  lia
+  simp_all
 
 /-- Root-list bookkeeping for the right-zero `divX` branch.
 
@@ -104,7 +101,7 @@ lemma divX_rootCount_succ_eq_length_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
     (hlast : rs.getLast hrs_ne = 0) :
     Multiset.card g.divX.roots + 1 = rs.length := by
   rw [divX_rootCount_eq_length_pred_of_coeff_zero hg hg0 hrs_eq hrs_ne hlast]
-  exact Nat.sub_add_cancel (Nat.succ_le_of_lt (List.length_pos_iff_ne_nil.mpr hrs_ne))
+  grind
 
 /-- List-level factorization behind the right-zero degree drop.
 
@@ -142,8 +139,7 @@ lemma listInterlaces_append_singleton_iff {m : ℝ} :
                   constructor
                   · rintro ⟨hts, hsm, _⟩
                     exact ⟨⟨hts, by simp [ListInterlaces]⟩, by
-                      rintro x rfl
-                      exact hsm⟩
+                      simp_all⟩
                   · rintro ⟨⟨hts, _⟩, hsm⟩
                     exact ⟨hts, hsm s rfl, by simp [ListInterlaces]⟩
               | cons _ _ => simp at hlen
@@ -151,8 +147,7 @@ lemma listInterlaces_append_singleton_iff {m : ℝ} :
               cases ss' with
               | nil => simp at hlen
               | cons s' ss'' =>
-                  have hlen' : (s' :: ss'').length = (t₂ :: ts'').length := by
-                    simpa using hlen
+                  have hlen' : (s' :: ss'').length = (t₂ :: ts'').length := by grind
                   have hstep := ih (ts := t₂ :: ts'') hlen'
                   rw [List.cons_append, List.cons_append] at *
                   constructor
@@ -164,7 +159,7 @@ lemma listInterlaces_append_singleton_iff {m : ℝ} :
                     · have ht₂s' : t₂ ≤ s' := halt_tail.1
                       exact le_trans hst₂
                         (le_trans ht₂s' (hbound_tail s' (by simp)))
-                    · exact hbound_tail x hx'
+                    · grind
                   · rintro ⟨⟨hts, hst₂, halt_tail⟩, hbound⟩
                     refine ⟨hts, hst₂, ?_⟩
                     exact hstep.mpr
@@ -222,18 +217,13 @@ lemma listAlternates_dropLast_of_listInterlaces {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length) (h : ListInterlaces ss rs) :
     ListAlternates rs.dropLast ss := by
   have hrs_ne : rs ≠ [] := by
-    intro hc
-    rw [hc] at hlen
-    simp at hlen
+    grind
   have hsplit : rs.dropLast ++ [rs.getLast hrs_ne] = rs :=
     List.dropLast_append_getLast hrs_ne
-  have hlen' : ss.length = rs.dropLast.length := by
-    have hd : rs.dropLast.length = rs.length - 1 := by
-      simp [List.length_dropLast]
-    lia
+  have hlen' : ss.length = rs.dropLast.length := by grind
   apply listAlternates_of_listInterlaces_append_singleton hlen'
   rw [hsplit]
-  exact h
+  grind
 
 /-- Right-zero degree-drop reduction at the `Prec` level.
 
@@ -253,18 +243,10 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hlen1 : ss.length + 1 = rs.length := by
-    rw [hss_len, hrs_len, hdeg]
+  have hlen1 : ss.length + 1 = rs.length := by simp_all
   have hInter : ListInterlaces ss rs := by
-    rcases hshape with ⟨_, hI⟩ | ⟨hbad, _⟩
-    · exact hI
-    · exfalso
-      rw [hss_len, hrs_len, hdeg] at hbad
-      lia
-  have hrs_ne : rs ≠ [] := by
-    intro hc
-    rw [hc] at hlen1
-    simp at hlen1
+    simp_all
+  have hrs_ne : rs ≠ [] := by grind
   set m := rs.getLast hrs_ne with hm
   have hm_mem : m ∈ rs := List.getLast_mem hrs_ne
   have hm_root : m ∈ g.roots := by
@@ -275,31 +257,26 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     rw [Polynomial.mem_roots']
     refine ⟨hg.1, ?_⟩
     rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
-    exact hg0
+    simp_all
   have h0_mem : (0 : ℝ) ∈ rs := by
-    have : (0 : ℝ) ∈ (↑rs : Multiset ℝ) := by
-      rw [hrs_eq]
-      exact h0_root
+    have : (0 : ℝ) ∈ (↑rs : Multiset ℝ) := by simp_all
     exact Multiset.mem_coe.mp this
   have h0_le_m : (0 : ℝ) ≤ m := by
     have := List.Pairwise.rel_getLast hrs_sorted h0_mem
-    simpa [hm] using this
+    simp_all
   have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
     divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne (hm.symm.trans hm0)
   have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
     List.Pairwise.sublist (List.dropLast_sublist rs) hrs_sorted
   have hlen_eq : (rs.dropLast).length = ss.length := by
-    have hd : rs.dropLast.length = rs.length - 1 := by
-      simp [List.length_dropLast]
-    lia
+    simp_all
   have hAlt : ListAlternates (rs.dropLast) ss :=
     listAlternates_dropLast_of_listInterlaces hlen1 hInter
   have hdivX_ne : g.divX ≠ 0 := by
     intro hz
     have hgX : g = X * g.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hg0
-    rw [hz, mul_zero] at hgX
-    exact hg.1 hgX
+    grind
   have hdivX_split : g.divX.Splits :=
     (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).1 hg.2
   exact ⟨⟨hdivX_ne, hdivX_split⟩, hf, rs.dropLast, ss, hdrop_sorted, hss_sorted,
@@ -332,12 +309,7 @@ theorem prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     rw [← Multiset.coe_card, hbb_eq, card_roots_of_splits hf.2]
   have hdivX_deg : g.divX.natDegree = f.natDegree :=
     natDegree_divX_eq_of_succDegree hdeg
-  have hAlt : ListAlternates aa bb := by
-    rcases hshape with ⟨hbad, _⟩ | ⟨_, halt⟩
-    · exfalso
-      rw [haa_len, hbb_len, hdivX_deg] at hbad
-      lia
-    · exact halt
+  have hAlt : ListAlternates aa bb := by simp_all
   have hgX : g = X * g.divX :=
     DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hg0
   have hg_ne : g ≠ 0 := by
@@ -357,25 +329,18 @@ theorem prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     have hmem : a ∈ g.divX.roots := by
       rw [← haa_eq]; exact Multiset.mem_coe.mpr ha
     have hmem' : a ∈ g.roots := by
-      rw [hg_roots]; exact Multiset.mem_cons_of_mem hmem
+      grind
     exact roots_nonpos_of_hasNonnegCoeffs hgnn a hmem'
-  have hrs_sorted : (aa ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    rw [List.pairwise_append]
-    refine ⟨haa_sorted, by simp, ?_⟩
-    intro x hx y hy
-    simp only [List.mem_singleton] at hy
-    subst hy
-    exact hdivX_nonpos x hx
+  have hrs_sorted : (aa ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hrs_eq : (↑(aa ++ [(0 : ℝ)]) : Multiset ℝ) = g.roots := by
     rw [hg_roots, ← haa_eq]
     simp
   refine ⟨hf, ⟨hg_ne, hg_split⟩, bb, aa ++ [(0 : ℝ)], hbb_sorted, hrs_sorted,
     hbb_eq, hrs_eq, Or.inl ⟨?_, ?_⟩⟩
-  · rw [List.length_append, haa_len, hbb_len, hdivX_deg]
-    simp
+  · grind
   · apply listInterlaces_append_singleton_of_listAlternates
       (m := (0 : ℝ)) (halt := hAlt) (hbound := hf_nonpos)
-    rw [hbb_len, haa_len, hdivX_deg]
+    grind
 
 /-- Right-zero degree-drop equivalence at the `Prec` level.
 
@@ -507,8 +472,7 @@ lemma divX_ne_zero_of_coeff_zero {g : ℝ[X]}
   intro hz
   have hgX : g = X * g.divX :=
     DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hg0
-  rw [hz, mul_zero] at hgX
-  exact hg hgX
+  grind
 
 /-- Removing the common zero root preserves splitting: if `g.coeff 0 = 0` and
 `g.Splits` then `g.divX.Splits`.  Directional wrapper for
@@ -539,7 +503,7 @@ lemma zero_mem_roots_of_coeff_zero {g : ℝ[X]}
   rw [Polynomial.mem_roots']
   refine ⟨hg, ?_⟩
   rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
-  exact hg0
+  simp_all
 
 /-- Proper-position fact for the closed-segment/common-interleaver route: with
 nonnegative coefficients every root of `g.divX` is `≤ 0`, since the roots of
@@ -550,7 +514,7 @@ lemma divX_roots_nonpos_of_hasNonnegCoeffs {g : ℝ[X]}
   intro a ha
   have hmem : a ∈ g.roots := by
     rw [roots_eq_zero_cons_divX_of_coeff_zero hg hg0]
-    exact Multiset.mem_cons_of_mem ha
+    simp_all
   exact roots_nonpos_of_hasNonnegCoeffs hgnn a hmem
 
 /-! ## `Prec0`-level right-zero degree drop -/

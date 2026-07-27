@@ -40,7 +40,7 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
     intro p q hpq
     let p' : Fin n := ⟨p, by simpa [length_sparseLinearPairSeq] using p.2⟩
     let q' : Fin n := ⟨q, by simpa [length_sparseLinearPairSeq] using q.2⟩
-    have hpq' : p' < q' := by simpa [p', q'] using hpq
+    have : p' < q' := by grind
     rw [show (sparseLinearPairSeq n i j a b).get p =
           (if p' = i then (1 : ℝ[X]) else if p' = j then C a * X + C b else 0) by
           simpa [p'] using get_sparseLinearPairSeq i j a b p']
@@ -94,7 +94,7 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
     intro p q hpq
     let p' : Fin n := ⟨p, by simpa [length_oneSupportSeq] using p.2⟩
     let q' : Fin n := ⟨q, by simpa [length_oneSupportSeq] using q.2⟩
-    have hpq' : p' < q' := by simpa [p', q'] using hpq
+    have : p' < q' := by grind
     rw [show (oneSupportSeq n i).get p =
           (if p' = i then (1 : ℝ[X]) else 0) by
           simpa [p'] using get_oneSupportSeq i p']
@@ -122,7 +122,7 @@ lemma zipWith_mul_oneSupportSeq_sum_eq_get
     ((row.zipWith (· * ·) (oneSupportSeq row.length i)).sum) = row.get i := by
   induction row with
   | nil =>
-      exact i.elim0
+      grind
   | cons a row ih =>
       cases i using Fin.cases with
       | zero =>
@@ -282,7 +282,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
   let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by simp_all⟩
   let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by simp_all⟩
   have hpair : Prec0 ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) :=
-    himage.1.prec0 (i := iG) (j := jG) (by simpa [iG, jG] using hi)
+    himage.1.prec0 (i := iG) (j := jG) (by grind)
   have hleft :
       (matPolyAction G fs).get iG
         = (G.get i₁).get iRowJ₁ + (C a * X + C b) * (G.get i₁).get iRowJ₂ := by
@@ -368,10 +368,10 @@ private lemma pairwise_reverse_rowPairAffineSeq
     ⟨j, by
       simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
         hrow₂_len] using j.2⟩
-  have hij' : i' < j' := by simpa [i', j'] using hij
+  have : i' < j' := by grind
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i',
     get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
-  exact hR i' j' hij'
+  simp_all
 
 lemma isInterlacingSeq0_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -525,9 +525,9 @@ lemma isInterlacingSeqAndNonneg_reverse_rowPairAffineSeq
     ⟨isInterlacingSeq_reverse_rowPairAffineSeq
       (n := n) (row₁ := row₁) (row₂ := row₂)
       hrow₁_len hrow₂_len h2x2 hs ht,
-    fun p hp => hasNonnegCoeffs_rowPairAffineSeq
+    fun p hp ↦ hasNonnegCoeffs_rowPairAffineSeq
       (row₁ := row₁) (row₂ := row₂)
-      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p (by simpa using hp)⟩
+      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p (by grind)⟩
 
 lemma isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -547,9 +547,9 @@ lemma isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
     ⟨isInterlacingSeq0_reverse_rowPairAffineSeq
       (n := n) (row₁ := row₁) (row₂ := row₂)
       hrow₁_len hrow₂_len h2x2 hs ht,
-    fun p hp => hasNonnegCoeffs_rowPairAffineSeq
+    fun p hp ↦ hasNonnegCoeffs_rowPairAffineSeq
       (row₁ := row₁) (row₂ := row₂)
-      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p (by simpa using hp)⟩
+      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p (by grind)⟩
 
 lemma isInterlacingSeqNonneg_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -1054,8 +1054,8 @@ theorem matrix_preserves_interlacing_seq
         (hrow₂_head_ne := hentry_head_ne jG)
         (hrow₁_nonneg := hG_nonneg _ (G.get_mem iG))
         (hrow₂_nonneg := hG_nonneg _ (G.get_mem jG))
-        (h2x2 := fun j₁ j₂ hj =>
-          hG_affine iG jG j₁ j₂ (by simpa [iG, jG] using hij.le) hj)
+        (h2x2 := fun j₁ j₂ hj ↦
+          hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
     simpa [matPolyAction, iG, jG] using hpair
@@ -1100,8 +1100,8 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
         (hrow₂_len := hG_rect _ (G.get_mem jG))
         (hrow₁_nonneg := hG_nonneg _ (G.get_mem iG))
         (hrow₂_nonneg := hG_nonneg _ (G.get_mem jG))
-        (h2x2 := fun j₁ j₂ hj =>
-          hG_affine iG jG j₁ j₂ (by simpa [iG, jG] using hij.le) hj)
+        (h2x2 := fun j₁ j₂ hj ↦
+          hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
     simpa [matPolyAction, iG, jG] using hpair
@@ -1150,8 +1150,8 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
           (hrow₂_len := hG_rect _ (G.get_mem jG))
           (hrow₁_nonneg := hG_nonneg _ (G.get_mem iG))
           (hrow₂_nonneg := hG_nonneg _ (G.get_mem jG))
-          (h2x2 := fun j₁ j₂ hj =>
-            hG_affine iG jG j₁ j₂ (by simpa [iG, jG] using hij.le) hj)
+          (h2x2 := fun j₁ j₂ hj ↦
+            hG_affine iG jG j₁ j₂ (by grind) hj)
           (hfs_len := hfs_len)
           (hfs := hfs)
           (hfs_real := hfs_real)

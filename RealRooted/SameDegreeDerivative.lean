@@ -25,22 +25,21 @@ theorem le_roots_derivative_of_le_roots {p : ℝ[X]} {c : ℝ}
   obtain ⟨_, _, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces hp hdeg
   intro s hs
-  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by rw [hss_eq]; exact hs)
+  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
     have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp
-    rw [hcard] at this
-    lia
+    simp_all
   obtain ⟨r0, rs', rfl⟩ : ∃ r0 rs', rs = r0 :: rs' := by
     cases rs with
-    | nil => exact absurd rfl hrs_ne
-    | cons r0 rs' => exact ⟨r0, rs', rfl⟩
+    | nil => simp_all
+    | cons r0 rs' => simp
   have hr0_mem : r0 ∈ p.roots := by
     rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (List.mem_cons_self ..)
+    simp
   have hc_r0 : c ≤ r0 := h r0 hr0_mem
   have hr0_le : r0 ≤ s := listInterlaces_all_ge ss rs' r0 hint s hs_ss
   linarith
@@ -80,22 +79,21 @@ theorem lt_roots_derivative_of_lt_roots {p : ℝ[X]} {u : ℝ}
   obtain ⟨_, _, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces hp hdeg
   intro s hs
-  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by rw [hss_eq]; exact hs)
+  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
     have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp
-    rw [hcard] at this
-    lia
+    simp_all
   obtain ⟨r0, rs', rfl⟩ : ∃ r0 rs', rs = r0 :: rs' := by
     cases rs with
-    | nil => exact absurd rfl hrs_ne
-    | cons r0 rs' => exact ⟨r0, rs', rfl⟩
+    | nil => simp_all
+    | cons r0 rs' => simp
   have hr0_mem : r0 ∈ p.roots := by
     rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (List.mem_cons_self ..)
+    simp
   have hu_r0 : u < r0 := h r0 hr0_mem
   have hr0_le : r0 ≤ s := listInterlaces_all_ge ss rs' r0 hint s hs_ss
   linarith
@@ -109,19 +107,18 @@ theorem roots_derivative_lt_of_roots_lt {p : ℝ[X]} {v : ℝ}
   obtain ⟨_, _, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces hp hdeg
   intro s hs
-  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by rw [hss_eq]; exact hs)
+  have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
     have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp
-    rw [hcard] at this
-    lia
+    simp_all
   have hlast_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
   have hlast_root : rs.getLast hrs_ne ∈ p.roots := by
     rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr hlast_mem
+    simp
   have hlt : rs.getLast hrs_ne < v := h _ hlast_root
   have hle : s ≤ rs.getLast hrs_ne :=
     listInterlaces_all_le_getLast hrs_ne hrs_sorted hint s hs_ss
@@ -188,8 +185,7 @@ degree-equality hypothesis needed to iterate the same-degree derivative route
 (e.g. `PosComboRealRooted.derivative`). -/
 theorem natDegree_derivative_eq_of_natDegree_eq {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree) :
-    g.derivative.natDegree = f.derivative.natDegree := by
-  rw [g.natDegree_derivative, f.natDegree_derivative, hdeg]
+    g.derivative.natDegree = f.derivative.natDegree := by simp_all
 
 /-- Explicit-binder variant of `roots_derivative_mem_Ici_of_roots_mem_Ici`,
 taking the polynomial and endpoint as explicit arguments so the endpoint-repair
@@ -243,8 +239,7 @@ theorem derivative
   have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
   have hgc : g.coeff f.natDegree = g.leadingCoeff := by
     have hn : f.natDegree = g.natDegree := hdeg.symm
-    rw [hn]
-    rfl
+    simp_all
   have hcoeff_pos : 0 < (C lam * f + C μ * g).coeff f.natDegree := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hfc, hgc]
     have hf_top : 0 < lam * f.leadingCoeff := mul_pos hlam hf
@@ -254,9 +249,7 @@ theorem derivative
     le_natDegree_of_ne_zero (ne_of_gt hcoeff_pos)
   have hder_ne : (C lam * f + C μ * g).derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases derivative_eq_zero_or_ne_zero_and_splits hp_splits with hzero | hsplit
-  · exact absurd hzero hder_ne
-  · exact ⟨by rw [key]; exact hder_ne, by rw [key]; exact hsplit.2⟩
+  rcases derivative_eq_zero_or_ne_zero_and_splits hp_splits with hzero | hsplit <;> simp_all
 
 /-- Call-site-order variant taking degree equality as `f.natDegree = g.natDegree`. -/
 theorem derivative_of_natDegree_eq
@@ -313,7 +306,7 @@ theorem PosComboRealRooted.derivative_bundle
       g.derivative.natDegree = f.derivative.natDegree :=
   ⟨hfg.derivative hf hg hdeg hpos,
    hf.derivative (by lia),
-   hg.derivative (by rw [hdeg]; lia),
+   hg.derivative (by grind),
    natDegree_derivative_eq_of_natDegree_eq hdeg⟩
 
 /-! ## Two-step derivative iteration support -/

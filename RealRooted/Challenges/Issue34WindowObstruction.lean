@@ -21,11 +21,9 @@ theorem strictMono_fin_three_le {n : ℕ} {f : Fin n → Fin 3} (hf : StrictMono
 /-- A `StrictMono` self-map of `Fin 3` is the identity, pointwise. -/
 theorem strictMono_fin_three_eq {rows : Fin 3 → Fin 3} (h : StrictMono rows) :
     rows 0 = 0 ∧ rows 1 = 1 ∧ rows 2 = 2 := by
-  have h01 := Fin.lt_def.mp (h (show (0 : Fin 3) < 1 by decide))
-  have h12 := Fin.lt_def.mp (h (show (1 : Fin 3) < 2 by decide))
-  have h2 := (rows 2).isLt
-  refine ⟨Fin.ext ?_, Fin.ext ?_, Fin.ext ?_⟩ <;>
-    simp only [Fin.val_zero, Fin.val_one, Fin.val_two] <;> lia
+  have := Fin.lt_def.mp (h (show (0 : Fin 3) < 1 by simp))
+  have := Fin.lt_def.mp (h (show (1 : Fin 3) < 2 by simp))
+  grind
 
 /-- First witness matrix. -/
 def aMat : Matrix (Fin 3) (Fin 3) ℝ :=

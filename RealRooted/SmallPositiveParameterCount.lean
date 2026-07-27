@@ -123,7 +123,7 @@ theorem card_filter_gt_endpoint_eq_of_local_lower_counts
   let μ₀ : ℝ := min (δ / 2) (1 / 2)
   have hμ₀_pos : 0 < μ₀ := lt_min (by positivity) (by norm_num)
   have hμ₀_le_one : μ₀ ≤ 1 := by linarith [min_le_right (δ / 2) (1 / 2)]
-  have hμ₀_ltδ : μ₀ < δ := by linarith [min_le_left (δ / 2) (1 / 2), hδ_pos]
+  have hμ₀_ltδ : μ₀ < δ := by grind
   have hsmall := hδ μ₀ hμ₀_pos hμ₀_ltδ
   have hlt : f.natDegree < g.natDegree := by
     simp [hdeg]
@@ -150,13 +150,7 @@ theorem card_filter_gt_endpoint_eq_of_local_lower_counts
     rightFamily_card_roots_gt_eq_of_local_lower_counts (f := g) (g := f)
       (μ₀ := 0) (μ₁ := 1) (x := x) zero_le_one hdeg_gf
       hgf_split hgf_no
-      (fun μ hμ ρ hρ => positiveParameter_local_lower_count hgf_split hdeg_gf hμ hρ)
-  calc
-    (f.roots.filter (x < ·)).card =
-        ((f + C μ₀ * g).roots.filter (x < ·)).card := hsmall.symm
-    _ = ((g + C (1 : ℝ) * f).roots.filter (x < ·)).card := by
-      simpa [add_comm] using hfg_eq
-    _ = (g.roots.filter (x < ·)).card := by
-      simpa using hgf_eq.symm
+      (fun μ hμ ρ hρ ↦ positiveParameter_local_lower_count hgf_split hdeg_gf hμ hρ)
+  grind
 
 end RealRooted

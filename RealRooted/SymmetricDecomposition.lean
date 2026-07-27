@@ -699,8 +699,7 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
           lia
         rw [hq', fPolynomial_X_sub_C_mul_succ d r hqdeg]
         have hlin := isRealRooted_transformed_linear hr_nonpos
-        have hih := ih hqdeg hq_rr.1 hq_rr.2 hq_nonneg
-        exact isRealRooted_mul hlin.1 hlin.2 hih.1 hih.2
+        simp_all
 
 theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) :

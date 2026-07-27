@@ -195,13 +195,13 @@ lemma coeff_sturmDerangementsExc_symm :
         simp [hq]
       have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 := by
         rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
-        exact habove (n + 3) (by lia)
+        simp_all
       lia
   | n + 3, m + 1, hm => by
       by_cases htop : m + 1 = n + 3
       · have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
-          exact habove (m + 1) (by lia)
+          simp_all
         have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
           rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
           simp [hq]
@@ -235,8 +235,8 @@ lemma natDegree_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (sturmDerangementsExc n).natDegree = n - 1 := by
   rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨htop, habove⟩
   exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    (by rw [htop]; norm_num)
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm ↦ habove m hm))
+    (by simp_all)
 
 lemma monic_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (sturmDerangementsExc n).Monic := by
@@ -339,8 +339,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
           have hm' : (m : ℝ) ≤ n + 3 := by
             have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
             have hmReal : (m : ℝ) ≤ ((n + 3 : Nat) : ℝ) := Nat.cast_le.mpr hmNat
-            norm_num at hmReal ⊢
-            exact hmReal
+            simp_all
           have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by
             linarith
           nlinarith

@@ -49,12 +49,10 @@ theorem positiveParameter_local_lower_count
     ∃ ε : ℝ, 0 < ε ∧ ∀ ν ∈ Set.Icc μ₀ μ₁, |ν - μ| < ε →
       ∀ a ∈ (f + C μ * g).roots.toFinset,
         (f + C μ * g).roots.count a ≤
-          ((f + C ν * g).roots.filter (fun q => |q - a| < ρ)).card := by
+          ((f + C ν * g).roots.filter (fun q ↦ |q - a| < ρ)).card := by
   obtain ⟨ε, hε, hεspec⟩ :=
     exists_eps_forall_root_count_le_card_filter_near (μ0 := μ) (hsplit μ hμ) ρ hρ
-  refine ⟨ε, hε, ?_⟩
-  intro ν hν hdist a ha
-  exact hεspec ν hdist (hsplit ν hν) (by rw [hdeg ν hν, hdeg μ hμ]) a ha
+  grind
 
 /-- On a positive right-family interval starting at `0`, constant degree,
 splitting, and no root at a fixed threshold force the strict-upper root count to

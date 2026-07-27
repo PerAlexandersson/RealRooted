@@ -702,13 +702,13 @@ private lemma orientCexF_roots : orientCexF.roots = {1, -1} := by
   unfold orientCexF
   rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
     roots_X_sub_C, roots_X_sub_C]
-  rfl
+  simp
 
 private lemma orientCexG_roots : orientCexG.roots = {2, -2} := by
   unfold orientCexG
   rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
     roots_X_sub_C, roots_X_sub_C]
-  rfl
+  simp
 
 private lemma orientCexF_hasPosLeadingCoeff : HasPosLeadingCoeff orientCexF := by
   unfold orientCexF
@@ -725,8 +725,7 @@ private lemma orientCex_noCommon :
   intro r hrF hrG
   simp only [orientCexF, orientCexG, IsRoot.def, eval_mul, eval_sub,
     eval_X, eval_C] at hrF hrG
-  rcases mul_eq_zero.mp hrF with h1 | h1 <;>
-    rcases mul_eq_zero.mp hrG with h2 | h2 <;> linarith
+  grind
 
 private lemma orientCex_posComboRealRooted :
     PosComboRealRooted orientCexF orientCexG := by
@@ -734,19 +733,15 @@ private lemma orientCex_posComboRealRooted :
   have hlammu : (0 : ℝ) < lam + mu := by linarith
   have hc : (0 : ℝ) ≤ (lam + 4 * mu) / (lam + mu) := by positivity
   set r : ℝ := Real.sqrt ((lam + 4 * mu) / (lam + mu)) with hr
-  have hr2 : r ^ 2 = (lam + 4 * mu) / (lam + mu) := by
-    rw [hr]
-    exact Real.sq_sqrt hc
-  have key : (lam + mu) * r ^ 2 = lam + 4 * mu := by
-    rw [hr2]
-    field_simp
+  have hr2 : r ^ 2 = (lam + 4 * mu) / (lam + mu) := by simp_all
+  have : (lam + mu) * r ^ 2 = lam + 4 * mu := by grind
   have hpoly :
       C lam * orientCexF + C mu * orientCexG =
         C (lam + mu) * (X - C r) * (X - C (-r)) := by
     apply Polynomial.funext
     intro x
     simp only [orientCexF, orientCexG, eval_add, eval_mul, eval_sub, eval_C, eval_X]
-    linear_combination key
+    grind
   refine ⟨?_, ?_⟩
   · rw [hpoly]
     exact mul_ne_zero (mul_ne_zero (Polynomial.C_ne_zero.mpr hlammu.ne')
@@ -768,18 +763,18 @@ private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
     have hx : x ∈ ({a, b} : Multiset ℝ) := by
       rw [← hcoe]
       simp
-    simpa [Multiset.mem_cons, Multiset.mem_singleton] using hx
+    simp_all
   have hyab : y = a ∨ y = b := by
     have hy : y ∈ ({a, b} : Multiset ℝ) := by
       rw [← hcoe]
       simp
-    simpa [Multiset.mem_cons, Multiset.mem_singleton] using hy
+    simp_all
   rcases hxab with rfl | rfl <;> rcases hyab with rfl | rfl
   · exfalso
     have hcount := congrArg (Multiset.count b) hcoe
     simp [Ne.symm hne] at hcount
-  · rfl
-  · exact absurd hxy (by linarith)
+  · simp
+  · grind
   · exfalso
     have hcount := congrArg (Multiset.count a) hcoe
     simp [hne] at hcount
@@ -797,10 +792,9 @@ private lemma orientCex_not_prec :
     subst hsseq
     subst hrseq
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp only [List.length_cons, List.length_nil] at hlen
-      lia
+    · simp_all
     · simp only [ListAlternates, ListInterlaces] at halt
-      norm_num at halt
+      simp_all
   · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
     rw [orientCexG_roots] at hss_eq
     rw [orientCexF_roots] at hrs_eq
@@ -811,10 +805,9 @@ private lemma orientCex_not_prec :
     subst hsseq
     subst hrseq
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp only [List.length_cons, List.length_nil] at hlen
-      lia
+    · simp_all
     · simp only [ListAlternates, ListInterlaces] at halt
-      norm_num at halt
+      simp_all
 
 /-- The general no-common orientation statement is false. -/
 lemma not_posComboNoCommonOrientationStatement :
@@ -875,10 +868,7 @@ private lemma xAddOne_xAddTwo_roots :
     xAddOne_roots, xAddTwo_roots, add_comm]
 
 private lemma xAddOne_xAddTwo_coeff_zero_ne :
-    (((X + 1) * (X + 2)) : ℝ[X]).coeff 0 ≠ 0 := by
-  rw [coeff_zero_eq_eval_zero]
-  simp only [eval_mul, eval_add, eval_X, eval_one, eval_ofNat]
-  norm_num
+    (((X + 1) * (X + 2)) : ℝ[X]).coeff 0 ≠ 0 := by simp
 
 private lemma xAddThreeHalves_isRealRooted :
     ((X + C (3 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 / 2 : ℝ) : ℝ[X]).Splits) := by
@@ -914,15 +904,7 @@ private lemma X_xAddOne_xAddTwo_posComboRealRooted :
     xAddOne_xAddTwo_hasPosLeadingCoeff
 
 private lemma X_xAddOne_xAddTwo_noCommon :
-    ∀ r, (X : ℝ[X]).IsRoot r → ¬ (((X + 1) * (X + 2)) : ℝ[X]).IsRoot r := by
-  intro r hr1 hr2
-  have hr0 : r = 0 := by
-    have h := hr1
-    simp only [IsRoot, eval_X] at h
-    exact h
-  subst hr0
-  simp only [IsRoot, eval_mul, eval_add, eval_X, eval_one, eval_ofNat] at hr2
-  norm_num at hr2
+    ∀ r, (X : ℝ[X]).IsRoot r → ¬ (((X + 1) * (X + 2)) : ℝ[X]).IsRoot r := by simp
 
 private lemma X_not_prec_xAddOne_xAddTwo :
     ¬ Prec (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
@@ -931,13 +913,10 @@ private lemma X_not_prec_xAddOne_xAddTwo :
     intro r hr
     rw [xAddOne_xAddTwo_roots] at hr
     simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
-    rcases hr with h | h <;> subst h <;> norm_num
+    grind
   have hf_le := roots_le_of_prec_right hprec hg_le
-  have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by
-    rw [X_roots]
-    simp
-  have := hf_le 0 h0
-  norm_num at this
+  have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by simp
+  grind
 
 /-- The residual succ-degree orientation target
 `PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.

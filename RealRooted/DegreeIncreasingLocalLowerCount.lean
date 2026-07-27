@@ -76,11 +76,10 @@ private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 <
       have hinv : (0 : ℝ) ≤ ρ⁻¹ := le_of_lt (inv_pos.mpr hρ)
       have hbase : (1 : ℝ) ≤ 1 + ρ⁻¹ := by linarith
       have ihP : ∀ i, |((t.map (fun w => X - C w)).prod).coeff i|
-          ≤ |((t.map (fun w => X - C w)).prod).coeff 0| * (1 + ρ⁻¹) ^ t.card :=
-        fun i => ih (fun v hv => hs v (Multiset.mem_cons_of_mem hv)) i
-      set P := (t.map (fun w => X - C w)).prod with hP
-      have hprod : ((w ::ₘ t).map (fun w => X - C w)).prod = (X - C w) * P := by
-        rw [Multiset.map_cons, Multiset.prod_cons]
+          ≤ |((t.map (fun w ↦ X - C w)).prod).coeff 0| * (1 + ρ⁻¹) ^ t.card :=
+        fun i ↦ ih (fun v hv ↦ hs v (Multiset.mem_cons_of_mem hv)) i
+      set P := (t.map (fun w ↦ X - C w)).prod with hP
+      have hprod : ((w ::ₘ t).map (fun w ↦ X - C w)).prod = (X - C w) * P := by simp_all
       have hcoeff : ∀ k, ((X - C w) * P).coeff k
           = (X * P).coeff k - w * P.coeff k := by
         intro k; rw [sub_mul, coeff_sub, coeff_C_mul]
@@ -88,8 +87,7 @@ private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 <
       have hB : (1 : ℝ) ≤ (1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹) := by
         nlinarith [one_le_pow₀ (n := t.card) hbase, hbase]
       rw [hprod, Multiset.card_cons, pow_succ]
-      have hP0 : |((X - C w) * P).coeff 0| = |w| * |P.coeff 0| := by
-        rw [hcoeff, coeff_X_mul_zero, zero_sub, abs_neg, abs_mul]
+      have hP0 : |((X - C w) * P).coeff 0| = |w| * |P.coeff 0| := by simp
       rw [hP0]
       cases j with
       | zero =>
@@ -101,18 +99,16 @@ private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 <
           have htri : |P.coeff k - w * P.coeff (k + 1)|
               ≤ |P.coeff k| + |w| * |P.coeff (k + 1)| := by
             have h := abs_sub (P.coeff k) (w * P.coeff (k + 1))
-            rwa [abs_mul] at h
+            simp_all
           have h1w : (1 : ℝ) ≤ |w| * ρ⁻¹ := by
             have := mul_le_mul_of_nonneg_right hw hinv
-            rwa [mul_inv_cancel₀ (ne_of_gt hρ)] at this
-          have hwρ : 1 + |w| ≤ |w| * (1 + ρ⁻¹) := by nlinarith [h1w, abs_nonneg w]
+            grind
+          have hwρ : 1 + |w| ≤ |w| * (1 + ρ⁻¹) := by grind
           have hkey : |P.coeff k| + |w| * |P.coeff (k + 1)|
               ≤ |w| * |P.coeff 0| * ((1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹)) := by
             nlinarith [ihP k, ihP (k + 1), mul_le_mul_of_nonneg_left hwρ hPnn,
               abs_nonneg w, mul_le_mul_of_nonneg_left (ihP (k + 1)) (abs_nonneg w)]
-          calc |P.coeff k - w * P.coeff (k + 1)|
-              ≤ |P.coeff k| + |w| * |P.coeff (k + 1)| := htri
-            _ ≤ |w| * |P.coeff 0| * ((1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹)) := hkey
+          grind
 
 /-- **Analytic core (escaping form).**  A monic split real polynomial `R` of
 degree `n` whose low coefficients (below `m ≤ n`) are all `≤ D`, and which has a
@@ -155,16 +151,15 @@ private lemma near_card_ge_of_low_coeff_le_of_large_root
   have hfar_ge : ∀ w ∈ far, ρ ≤ |w| := by
     intro w hw
     rw [hfar_def, Multiset.mem_filter] at hw
-    exact not_lt.mp hw.2
-  have hφ_prod : |F.coeff 0| = (far.map (fun w => |w|)).prod := by
+    grind
+  have hφ_prod : |F.coeff 0| = (far.map (fun w ↦ |w|)).prod := by
     rw [hF_def, abs_coeff_zero_prod_X_sub_C]
   have hφ_pos : 0 < |F.coeff 0| := by
     rw [hφ_prod]
     apply Multiset.prod_pos
     intro x hx
     rw [Multiset.mem_map] at hx
-    obtain ⟨w, hw, rfl⟩ := hx
-    exact lt_of_lt_of_le hρ (hfar_ge w hw)
+    grind
   have hinv : (0 : ℝ) ≤ ρ⁻¹ := le_of_lt (inv_pos.mpr hρ)
   have hfar_coeff_le : ∀ j, |F.coeff j| ≤ |F.coeff 0| * (1 + ρ⁻¹) ^ n := by
     intro j
@@ -176,12 +171,10 @@ private lemma near_card_ge_of_low_coeff_le_of_large_root
     have hbound := abs_coeff_le_of_mul (F := F) (N := N)
       (CF := |F.coeff 0| * (1 + ρ⁻¹) ^ n) (δ := D) (φ := |F.coeff 0|)
       hφ_pos le_rfl hfar_coeff_le
-      (fun j hj => by
-        rw [← hR_eq]
-        exact hlow j (lt_of_le_of_lt (hN_deg ▸ hj) hnear))
+      (fun j hj ↦ by
+        grind)
     have hk := hbound near.card (le_of_eq hN_deg.symm)
-    have hCFφ : |F.coeff 0| * (1 + ρ⁻¹) ^ n / |F.coeff 0| = (1 + ρ⁻¹) ^ n := by
-      rw [mul_comm, mul_div_assoc, div_self hφ_pos.ne', mul_one]
+    have hCFφ : |F.coeff 0| * (1 + ρ⁻¹) ^ n / |F.coeff 0| = (1 + ρ⁻¹) ^ n := by grind
     rw [hN_coeff, abs_one, hCFφ] at hk
     have hφ1 : |F.coeff 0| ≤ D * (1 + (1 + ρ⁻¹) ^ n) ^ near.card := by
       rw [div_mul_eq_mul_div, le_div_iff₀ hφ_pos] at hk
@@ -192,7 +185,8 @@ private lemma near_card_ge_of_low_coeff_le_of_large_root
       linarith
     exact le_trans hφ1 (mul_le_mul_of_nonneg_left hBpow hD)
   have hr0_far : r0 ∈ far := by
-    rw [hfar_def, Multiset.mem_filter]; exact ⟨hr0, not_lt.mpr hr0ρ⟩
+    rw [hfar_def, Multiset.mem_filter]
+    grind
   have hφ_ge : |r0| * (min ρ 1) ^ n ≤ |F.coeff 0| := by
     rw [hφ_prod]
     have hfe : far = r0 ::ₘ far.erase r0 := (Multiset.cons_erase hr0_far).symm
@@ -201,14 +195,13 @@ private lemma near_card_ge_of_low_coeff_le_of_large_root
     have herase_card : (far.erase r0).card ≤ n :=
       le_trans (Multiset.card_le_card (Multiset.erase_le r0 far)) hcard_le
     have hprod_ge : (min ρ 1) ^ (far.erase r0).card
-        ≤ ((far.erase r0).map (fun w => |w|)).prod := by
+        ≤ ((far.erase r0).map (fun w ↦ |w|)).prod := by
       refine pow_card_le_prod_abs (far.erase r0) (min ρ 1) (by positivity) ?_
-      intro w hw
-      exact le_trans (min_le_left _ _) (hfar_ge w (Multiset.mem_of_mem_erase hw))
+      grind
     have hmono : (min ρ 1) ^ n ≤ (min ρ 1) ^ (far.erase r0).card :=
       pow_le_pow_of_le_one (by positivity) (min_le_right _ _) herase_card
-    exact le_trans hmono hprod_ge
-  exact absurd (lt_of_lt_of_le hr0big (le_trans hφ_ge hφ_le)) (lt_irrefl _)
+    grind
+  grind
 
 /-
 **Escaping root (any degree gap).**  If `f.natDegree < g.natDegree` and
@@ -234,20 +227,17 @@ private lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.
   have hL0 : (0 : ℝ) ≤ L := le_trans zero_le_one (le_max_right _ _)
   -- Product of `|c - r|` over any bounded root set is bounded by `L ^ card`.
   have hpow_le : ∀ s : Multiset ℝ, (∀ r ∈ s, |c - r| ≤ L) →
-      (s.map (fun r => |c - r|)).prod ≤ L ^ Multiset.card s := by
+      (s.map (fun r ↦ |c - r|)).prod ≤ L ^ Multiset.card s := by
     intro s
     induction s using Multiset.induction with
-    | empty => intro _; simp
+    | empty => simp
     | cons a t ih =>
         intro hs
         rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ']
         refine mul_le_mul (hs a (Multiset.mem_cons_self a t))
-          (ih fun r hr => hs r (Multiset.mem_cons_of_mem hr)) ?_ hL0
+          (ih fun r hr ↦ hs r (Multiset.mem_cons_of_mem hr)) ?_ hL0
         refine Multiset.prod_nonneg ?_
-        intro x hx
-        rw [Multiset.mem_map] at hx
-        obtain ⟨r, _, rfl⟩ := hx
-        exact abs_nonneg _
+        simp
   set δ := min (|f.eval c| / (2 * (|g.eval c| + 1)))
     (|f.eval c| / (2 * (L ^ g.natDegree + 1) * |g.leadingCoeff|)) with hδdef
   have hδ0 : 0 < δ := lt_min (by positivity) (by positivity)
@@ -265,56 +255,40 @@ private lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.
     induction s using Multiset.induction with
     | empty => simp
     | cons a t ih =>
-        rw [Multiset.map_cons, Multiset.prod_cons, abs_mul, ih, Multiset.map_cons,
-          Multiset.prod_cons]
+        simp_all
   have heval : (f + C μ * g).eval c
       = (f + C μ * g).leadingCoeff *
-        ((f + C μ * g).roots.map (fun r => c - r)).prod := by
+        ((f + C μ * g).roots.map (fun r ↦ c - r)).prod := by
     conv_lhs => rw [hsplit.eq_prod_roots]
     rw [eval_mul, eval_C, eval_multiset_prod, Multiset.map_map]
-    congr 1
-    refine congrArg Multiset.prod (Multiset.map_congr rfl ?_)
-    intro r _
-    simp [Function.comp, eval_sub, eval_X, eval_C]
-  set P := ((f + C μ * g).roots.map (fun r => |c - r|)).prod with hPdef
-  have hP_eq : |(f + C μ * g).eval c| = μ * |g.leadingCoeff| * P := by
-    rw [heval, abs_mul, habs_prod, hplc, abs_mul, abs_of_pos hμ]
+    simp
+  set P := ((f + C μ * g).roots.map (fun r ↦ |c - r|)).prod with hPdef
+  have : |(f + C μ * g).eval c| = μ * |g.leadingCoeff| * P := by grind
   -- Numerator stays away from `0`.
   have hnum : |f.eval c| / 2 ≤ |(f + C μ * g).eval c| := by
-    have he : (f + C μ * g).eval c = f.eval c + μ * g.eval c := by
-      rw [eval_add, eval_C_mul]
+    have he : (f + C μ * g).eval c = f.eval c + μ * g.eval c := by simp
     have hμsmall : μ * |g.eval c| < |f.eval c| / 2 := by
       have hμlt1 : μ < |f.eval c| / (2 * (|g.eval c| + 1)) :=
         lt_of_lt_of_le hμδ (min_le_left _ _)
       rw [lt_div_iff₀ (by positivity)] at hμlt1
-      nlinarith [abs_nonneg (g.eval c)]
-    have hμabs : |μ * g.eval c| = μ * |g.eval c| := by rw [abs_mul, abs_of_pos hμ]
-    rw [he]
-    have h := abs_add_le (f.eval c + μ * g.eval c) (-(μ * g.eval c))
-    simp only [add_neg_cancel_right, abs_neg] at h
-    rw [hμabs] at h
-    linarith
+      grind
+    have hμabs : |μ * g.eval c| = μ * |g.eval c| := by grind
+    grind
   -- Hence the product exceeds `L ^ g.natDegree`.
   have hLng : L ^ g.natDegree < P := by
     have hμlt2 : μ < |f.eval c| / (2 * (L ^ g.natDegree + 1) * |g.leadingCoeff|) :=
       lt_of_lt_of_le hμδ (min_le_right _ _)
     rw [lt_div_iff₀ (by positivity)] at hμlt2
-    have h2 : |f.eval c| ≤ 2 * (μ * |g.leadingCoeff| * P) := by
-      rw [hP_eq] at hnum; linarith
+    have h2 : |f.eval c| ≤ 2 * (μ * |g.leadingCoeff| * P) := by grind
     have hmul : 0 < μ * |g.leadingCoeff| := by positivity
     nlinarith [hμlt2, h2, hmul]
   -- If every root were within `L` of `c`, the product would be `≤ L ^ card`.
   by_contra hcon
   push Not at hcon
   have hcard : Multiset.card (f + C μ * g).roots = g.natDegree := by
-    rw [← hsplit.natDegree_eq_card_roots]; exact hpdeg
-  have hall : ∀ r ∈ (f + C μ * g).roots, |c - r| ≤ L := by
-    intro r hr
-    rw [abs_sub_comm]
-    exact le_trans (hcon r hr) (le_max_left _ _)
-  have hle := hpow_le _ hall
-  rw [hcard] at hle
-  exact absurd (lt_of_lt_of_le hLng hle) (lt_irrefl _)
+    rw [← hsplit.natDegree_eq_card_roots]
+    simp_all
+  grind
 
 /-- **Degree-increasing per-root multiplicity lower counts.**
 
@@ -332,10 +306,9 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   classical
   rcases eq_or_ne f 0 with hf0 | hfne
   · refine ⟨1, one_pos, ?_⟩
-    intro μ _ _ _ a ha
-    simp [hf0] at ha
+    simp_all
   obtain ⟨c, hc0⟩ := Finset.exists_notMem f.roots.toFinset
-  have hc : f.eval c ≠ 0 := fun h =>
+  have hc : f.eval c ≠ 0 := fun h ↦
     hc0 (Multiset.mem_toFinset.mpr (mem_roots'.mpr ⟨hfne, h⟩))
   have hglc : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr (by
     rintro rfl; simp only [natDegree_zero, Nat.not_lt_zero] at hlt)
@@ -350,17 +323,9 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
     / |g.leadingCoeff| with hD
   have hAge : max ρ (T a) + |c - a| + 1 ≤ A := by
     rw [hA]
-    refine Finset.single_le_sum (f := fun a => max ρ (T a) + |c - a| + 1) ?_ ha
-    intro x _
-    have h1 : ρ ≤ max ρ (T x) := le_max_left _ _
-    linarith [abs_nonneg (c - x), hρ, h1]
-  have hqa : max ρ (T a) < |q - a| := by
-    have htri : |q - c| ≤ |q - a| + |c - a| := by
-      have h := abs_sub_le q a c
-      rwa [abs_sub_comm a c] at h
-    have hchain : max ρ (T a) + |c - a| + 1 < |q - a| + |c - a| :=
-      lt_of_le_of_lt hAge (lt_of_lt_of_le hq_gt htri)
-    linarith
+    refine Finset.single_le_sum (f := fun a ↦ max ρ (T a) + |c - a| + 1) ?_ ha
+    grind
+  have hqa : max ρ (T a) < |q - a| := by grind
   set pnu : ℝ[X] := f + C μ * g with hpnu
   have hμne : μ ≠ 0 := hμ.ne'
   have hpdeg : pnu.natDegree = g.natDegree := by
@@ -369,11 +334,10 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   have hplc : pnu.leadingCoeff = μ * g.leadingCoeff := by
     rw [hpnu]
     exact Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt hμne hlt
-  have hcne : pnu.leadingCoeff ≠ 0 := by rw [hplc]; exact mul_ne_zero hμne hglc
+  have hcne : pnu.leadingCoeff ≠ 0 := by simp_all
   set ptil : ℝ[X] := C pnu.leadingCoeff⁻¹ * pnu with hptil
   have hptil_monic : ptil.Monic := by
-    have hlc : ptil.leadingCoeff = pnu.leadingCoeff⁻¹ * pnu.leadingCoeff := by
-      rw [hptil, leadingCoeff_mul, leadingCoeff_C]
+    have hlc : ptil.leadingCoeff = pnu.leadingCoeff⁻¹ * pnu.leadingCoeff := by simp_all
     rw [Monic, hlc, inv_mul_cancel₀ hcne]
   have hptil_deg : ptil.natDegree = g.natDegree := by
     rw [hptil, natDegree_C_mul (inv_ne_zero hcne), hpdeg]
@@ -390,19 +354,16 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   have hR_splits : R.Splits := by
     rw [splits_iff_card_roots, hR_roots, Multiset.card_map, hpnu_card, hR_deg]
   set r0 : ℝ := q - a with hr0def
-  have hr0_mem : r0 ∈ R.roots := by
-    rw [hR_roots]; exact Multiset.mem_map.mpr ⟨q, hq_mem, rfl⟩
+  have hr0_mem : r0 ∈ R.roots := by simp_all
   have hcard_f : f.roots.card = f.natDegree := hf.natDegree_eq_card_roots.symm
   have hm : f.roots.count a ≤ g.natDegree := by
     have h1 := Multiset.count_le_card a f.roots
-    rw [hcard_f] at h1
-    exact le_of_lt (lt_of_le_of_lt h1 hlt)
+    grind
   have hDnn : 0 ≤ D := by rw [hD]; positivity
   have hlow : ∀ j, j < f.roots.count a → |R.coeff j| ≤ D := by
     intro j hj
     have hRj : R.coeff j = (taylor a g).coeff j / g.leadingCoeff := by
-      have hRe : R = C pnu.leadingCoeff⁻¹ * taylor a pnu := by
-        rw [hR, hptil, taylor_apply, taylor_apply, mul_comp, C_comp]
+      have hRe : R = C pnu.leadingCoeff⁻¹ * taylor a pnu := by simp_all
       have e2 : (taylor a pnu).coeff j = μ * (taylor a g).coeff j := by
         have et := coeff_taylor_add_C_mul a μ f g j
         rw [hpnu, et, coeff_taylor_eq_zero_of_lt_count hj, zero_add]
@@ -416,15 +377,13 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
     hR_monic hR_splits hR_deg (f.roots.count a) hm D hDnn hlow r0 hr0_mem
     (le_trans (le_max_left _ _) hqa.le)
     (by
-      have hTlt : T a < |r0| := by rw [hr0def]; exact lt_of_le_of_lt (le_max_right _ _) hqa
+      have hTlt : T a < |r0| := by simp_all
       have hTa : T a = D * (1 + (1 + ρ⁻¹) ^ g.natDegree) ^ g.natDegree
           / (min ρ 1) ^ g.natDegree := by simp only [hT, hD]
       rw [hTa, div_lt_iff₀ (by positivity)] at hTlt
       exact hTlt)
   have htrans := card_filter_roots_near_eq_taylor a ρ ptil
-  rw [hptil_roots] at htrans
-  rw [← htrans]
-  exact hres
+  simp_all
 
 end
 

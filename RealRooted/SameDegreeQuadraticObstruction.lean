@@ -67,17 +67,12 @@ theorem discrim_neg_of_quadratic_roots_separated
                   (((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c)))) +
               (c - c) ^ 2 *
                 (((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c)))) ^ 2 =
-            -(a - b) ^ 2 - 2 := by
-        field_simp
-        ring
+            -(a - b) ^ 2 - 2 := by grind
       rw [hval]
       nlinarith [sq_nonneg (a - b)]
   · have hcd' : c < d := lt_of_le_of_ne hcd hcd0
     have hq : 0 < (c - d) ^ 2 := by
-      have : c - d ≠ 0 := by
-        intro h
-        apply hcd0
-        linarith
+      have : c - d ≠ 0 := by grind
       positivity
     have hnonneg : 0 ≤ (b - a) * (d - c) :=
       mul_nonneg (by linarith) (by linarith)
@@ -97,25 +92,21 @@ theorem discrim_neg_of_quadratic_roots_separated
           (show
             (0 : ℝ) <
               ((b - c) * (a - d) + (b - d) * (a - c)) +
-                (b - a) * (d - c) by nlinarith [hS, hnonneg])]
+                (b - a) * (d - c) by grind)]
     refine
       ⟨((b - c) * (a - d) + (b - d) * (a - c)) / ((c - d) ^ 2), ?_, ?_⟩
     · positivity
     · rw [discrim_pencil_quadratics]
       set S := (b - c) * (a - d) + (b - d) * (a - c) with hSdef
       have hKeq :
-          2 * (a + b) * (c + d) - 4 * a * b - 4 * c * d = -(2 * S) := by
-        rw [hSdef]
-        ring
+          2 * (a + b) * (c + d) - 4 * a * b - 4 * c * d = -(2 * S) := by grind
       rw [hKeq]
       have hval :
           (a - b) ^ 2 + -(2 * S) * (S / (c - d) ^ 2) +
               (c - d) ^ 2 * (S / (c - d) ^ 2) ^ 2 =
-            (a - b) ^ 2 - S ^ 2 / (c - d) ^ 2 := by
-        field_simp
-        ring
+            (a - b) ^ 2 - S ^ 2 / (c - d) ^ 2 := by grind
       rw [hval, sub_neg, lt_div_iff₀ hq]
-      nlinarith [hSsq]
+      simp_all
 
 /-- Reusable quadratic obstruction: a real quadratic
 `C a * X ^ 2 + C b * X + C c` with nonzero leading coefficient and negative
@@ -131,30 +122,23 @@ theorem not_splits_quadratic_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
   have hne : ∀ s : ℝ, discrim a b c ≠ s ^ 2 := by
     intro s h
     have hs2 : (0 : ℝ) ≤ s ^ 2 := sq_nonneg s
-    rw [h] at hdisc
-    linarith
+    grind
   have hnoroot : ∀ x : ℝ, ¬ p.IsRoot x := by
     intro x hx
-    have hpx : p.eval x = 0 := by
-      simpa [Polynomial.IsRoot.def] using hx
+    have hpx : p.eval x = 0 := by simp_all
     have hxeval : a * (x * x) + b * x + c = 0 := by
       rw [hp] at hpx
       simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow] at hpx
-      nlinarith [hpx]
+      grind
     exact quadratic_ne_zero_of_discrim_ne_sq hne x hxeval
   intro hsplit
   have hcard : p.roots.card = p.natDegree :=
     Polynomial.splits_iff_card_roots.1 hsplit
   rw [hdeg] at hcard
   have hpos : 0 < p.roots.card := by
-    rw [hcard]
-    norm_num
+    simp_all
   obtain ⟨x, hxmem⟩ := Multiset.card_pos_iff_exists_mem.1 hpos
-  have hp0 : p ≠ 0 := by
-    intro h
-    rw [h] at hdeg
-    simp at hdeg
-  exact hnoroot x ((mem_roots hp0).1 hxmem)
+  simp_all
 
 /-- Polynomial form of the degree-two same-degree obstruction.
 
@@ -171,11 +155,7 @@ theorem exists_pos_combo_not_splits_of_quadratic_roots_separated
   have hpexp :
       ((X - C a) * (X - C b) + C t * ((X - C c) * (X - C d)) : ℝ[X]) =
         C (1 + t) * X ^ 2 + C (-((a + b) + t * (c + d))) * X +
-          C (a * b + t * (c * d)) := by
-    apply Polynomial.funext
-    intro x
-    simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X, eval_pow]
-    ring
+          C (a * b + t * (c * d)) := by grind
   rw [hpexp]
   exact not_splits_quadratic_of_discrim_neg h1t.ne' hdisc
 
@@ -211,8 +191,8 @@ theorem not_posComboRealRooted_pos_scaled_quadratic_roots_separated
       apply Polynomial.funext
       intro x
       simp only [eval_add, eval_mul, eval_C, eval_sub, eval_X]
-      field_simp [hA.ne', hB.ne']
-    simpa [hEq] using hbase
+      grind
+    simp_all
   exact not_posComboRealRooted_quadratic_roots_separated hab hcd hsep hmonic
 
 /-- Gap form of the separated-root obstruction. -/

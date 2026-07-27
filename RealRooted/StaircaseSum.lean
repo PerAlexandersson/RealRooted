@@ -69,9 +69,9 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by simp [f]
     have hf_mem_take_succ : f ∈ fs.take (m + 1) := by simp_all
     have hcommon_left : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, Prec f p :=
-      fun p hp => by
+      fun p hp ↦ by
       rcases List.mem_cons.mp hp with rfl | hp
-      · exact hXprefix_prec
+      · grind
       · rw [List.drop_eq_getElem_cons hm] at hp
         rcases List.mem_cons.mp hp with rfl | hp'
         · simpa [f] using prec_refl hf_rr.1 hf_rr.2

@@ -35,11 +35,10 @@ private theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_
   obtain ⟨η, hη_pos, hη⟩ := Multiset.exists_pos_le_abs_sub_of_not_mem p.roots hx
   obtain ⟨ρ, hρ_pos, hρη, hsep_centers⟩ :=
     Multiset.exists_pos_lt_and_two_mul_le_abs_sub_toFinset p.roots hη_pos
-  refine ⟨ρ, hρ_pos, fun q hp_split hq_split hdeg hcount => ?_⟩
+  refine ⟨ρ, hρ_pos, fun q hp_split hq_split hdeg hcount ↦ ?_⟩
   refine Multiset.card_filter_gt_eq_of_forall_le_count_and_card_eq
     hsep_centers ?_ hcount ?_
-  · intro r hr
-    exact le_trans (le_of_lt hρη) (hη r hr)
+  · grind
   · simpa [hq_split.natDegree_eq_card_roots.symm,
       hp_split.natDegree_eq_card_roots.symm] using hdeg
 
@@ -84,12 +83,10 @@ private theorem rightFamily_local_card_roots_gt_eq_of_local_lower_counts
       ((f + C ν * g).roots.filter (x < ·)).card =
         ((f + C μ * g).roots.filter (x < ·)).card := by
   have hx : x ∉ (f + C μ * g).roots :=
-    fun hx => hne μ hμ (Polynomial.isRoot_of_mem_roots hx)
+    fun hx ↦ hne μ hμ (Polynomial.isRoot_of_mem_roots hx)
   obtain ⟨ρ, hρ_pos, hρ⟩ :=
     exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts hx
-  obtain ⟨ε, hε_pos, hε⟩ := hlower ρ hρ_pos
-  exact ⟨ε, hε_pos, fun ν hν hνμ =>
-    hρ (f + C ν * g) (hrr μ hμ) (hrr ν hν) (hdeg ν hν) (hε ν hν hνμ)⟩
+  grind
 
 /--
 Per-root lower counts along a root-free compact parameter interval imply
@@ -112,9 +109,9 @@ theorem rightFamily_card_roots_gt_eq_of_local_lower_counts
     ((f + C μ₀ * g).roots.filter (x < ·)).card =
       ((f + C μ₁ * g).roots.filter (x < ·)).card := by
   refine eq_of_locally_constant_on_Icc
-    (N := fun μ => ((f + C μ * g).roots.filter (x < ·)).card) hμ₁ ?_
-  exact fun μ hμ => rightFamily_local_card_roots_gt_eq_of_local_lower_counts
+    (N := fun μ ↦ ((f + C μ * g).roots.filter (x < ·)).card) hμ₁ ?_
+  exact fun μ hμ ↦ rightFamily_local_card_roots_gt_eq_of_local_lower_counts
     (f := f) (g := g) (μ := μ) hμ
-    (fun ν hν => by simpa [hdeg μ hμ] using hdeg ν hν) hrr hne (hlower μ hμ)
+    (fun ν hν ↦ by simp_all) hrr hne (hlower μ hμ)
 
 end RealRooted

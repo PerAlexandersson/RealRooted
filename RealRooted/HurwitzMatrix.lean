@@ -33,9 +33,7 @@ parity. -/
 theorem hurwitz_even_row_apply (c : ℕ → ℝ) (i j : ℕ) :
     hurwitz c (2 * i) j = if j ≤ i then c (2 * (i - j) + 1) else 0 := by
   rw [hurwitz]
-  simp only [Matrix.of_apply]
-  rw [if_pos (by lia : (2 * i) % 2 = 0),
-    show (2 * i) / 2 = i by lia, toeplitz_apply]
+  simp
 
 /-- Odd-row entry of the Hurwitz matrix of an arbitrary coefficient sequence. -/
 theorem hurwitz_odd_row_apply (c : ℕ → ℝ) (i j : ℕ) :
@@ -184,11 +182,9 @@ multiplies each entry by the corresponding entry of the other matrix. -/
 coefficientwise product of sequences agrees, entrywise, with the product of
 the two Hurwitz matrices. -/
 theorem hurwitz_mul_entrywise (a b : ℕ → ℝ) (i j : ℕ) :
-    hurwitz (fun n => a n * b n) i j = hurwitz a i j * hurwitz b i j := by
+    hurwitz (fun n ↦ a n * b n) i j = hurwitz a i j * hurwitz b i j := by
   unfold hurwitz toeplitz
-  by_cases hi : i % 2 = 0 <;>
-    simp only [hi, Matrix.of_apply, if_true, if_false] <;>
-      split <;> simp
+  simp_all
 
 /-- Matrix form of `hurwitz_mul_entrywise`: the Hurwitz matrix of a
 coefficientwise product is the entrywise product of the two Hurwitz matrices. -/
@@ -247,13 +243,13 @@ large enough to make the determinant vanish. -/
 theorem hurwitz_schurProduct_det_fin_three_of_band_fail {a b : ℕ → ℝ}
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
     (l : Fin 3) (hl : rows l < 2 * cols l) :
-    ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det = 0 := by
-  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
-  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
-  have hr02 : rows 0 ≤ rows 2 := hrows.monotone (by decide)
-  have hc01 : cols 0 ≤ cols 1 := hcols.monotone (by decide)
-  have hc12 : cols 1 ≤ cols 2 := hcols.monotone (by decide)
-  have hc02 : cols 0 ≤ cols 2 := hcols.monotone (by decide)
+    ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix rows cols).det = 0 := by
+  have : rows 0 ≤ rows 1 := hrows.monotone (by simp)
+  have : rows 1 ≤ rows 2 := hrows.monotone (by simp)
+  have : rows 0 ≤ rows 2 := hrows.monotone (by simp)
+  have : cols 0 ≤ cols 1 := hcols.monotone (by simp)
+  have : cols 1 ≤ cols 2 := hcols.monotone (by simp)
+  have : cols 0 ≤ cols 2 := hcols.monotone (by simp)
   rw [Matrix.det_fin_three]
   simp only [Matrix.submatrix_apply, Matrix.of_apply]
   fin_cases l <;> simp only [Fin.isValue] at hl ⊢
@@ -348,19 +344,15 @@ theorem hurwitz_apply_of_band (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
   · subst hm
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply,
       if_pos (by lia : j ≤ m), if_pos (by lia : (2 * m) % 2 = 0)]
-    congr 1
-    lia
+    grind
   · subst hm
     rw [hurwitz_odd_row_apply, if_pos (by lia : j ≤ m),
       if_neg (by lia : ¬ (2 * m + 1) % 2 = 0)]
-    congr 1
-    lia
+    grind
 
 /-- `StrictMono` for a two-element index vector. -/
 private theorem strictMono_pair {x y : ℕ} (hxy : x < y) :
-    StrictMono ![x, y] := by
-  intro i j hij
-  fin_cases i <;> fin_cases j <;> simp_all
+    StrictMono ![x, y] := by simp_all
 
 /-- Triangular reduction along the top row.  If the top selected row lies below
 the staircase of the middle column, then the two entries to the right of the
@@ -369,10 +361,10 @@ theorem hurwitz_schurProduct_det_fin_three_of_row0_below {a b : ℕ → ℝ}
     (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
     (h : rows 0 < 2 * cols 1) :
-    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
-  have hc12 : cols 1 < cols 2 := hcols (by decide)
-  have hr12 : rows 1 < rows 2 := hrows (by decide)
-  have h2 : 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix
+    0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  have hc12 : cols 1 < cols 2 := hcols (by simp)
+  have hr12 : rows 1 < rows 2 := hrows (by simp)
+  have h2 : 0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix
       ![rows 1, rows 2] ![cols 1, cols 2]).det :=
     ha.hadamard_det_fin_two hb (strictMono_pair hr12) (strictMono_pair hc12)
   rw [Matrix.det_fin_two] at h2
@@ -394,10 +386,10 @@ theorem hurwitz_schurProduct_det_fin_three_of_row1_below {a b : ℕ → ℝ}
     (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
     (h : rows 1 < 2 * cols 2) :
-    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
-  have hc01 : cols 0 < cols 1 := hcols (by decide)
-  have hr01 : rows 0 < rows 1 := hrows (by decide)
-  have h2 : 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix
+    0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  have hc01 : cols 0 < cols 1 := hcols (by simp)
+  have hr01 : rows 0 < rows 1 := hrows (by simp)
+  have h2 : 0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix
       ![rows 0, rows 1] ![cols 0, cols 1]).det :=
     ha.hadamard_det_fin_two hb (strictMono_pair hr01) (strictMono_pair hc01)
   rw [Matrix.det_fin_two] at h2
@@ -521,11 +513,11 @@ theorem hurwitz_schurProduct_core_inband_entries
     (h01 : 2 * cols 1 ≤ rows 0) (h12 : 2 * cols 2 ≤ rows 1) :
     2 * cols 0 ≤ rows 0 ∧ 2 * cols 0 ≤ rows 1 ∧ 2 * cols 1 ≤ rows 1 ∧
       2 * cols 0 ≤ rows 2 ∧ 2 * cols 1 ≤ rows 2 ∧ 2 * cols 2 ≤ rows 2 := by
-  have hc01 : cols 0 ≤ cols 1 := hcols.monotone (by decide)
-  have hc12 : cols 1 ≤ cols 2 := hcols.monotone (by decide)
-  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
-  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> lia
+  have : cols 0 ≤ cols 1 := hcols.monotone (by simp)
+  have : cols 1 ≤ cols 2 := hcols.monotone (by simp)
+  have : rows 0 ≤ rows 1 := hrows.monotone (by simp)
+  have : rows 1 ≤ rows 2 := hrows.monotone (by simp)
+  grind
 
 /-- The Hadamard-product matrix of two Hurwitz matrices is itself the Hurwitz
 matrix of the coefficientwise product, so every one of its minors is the same
@@ -541,12 +533,7 @@ staircase, moving one column to the right is the same as moving two rows up. -/
 theorem hurwitz_col_shift (c : ℕ → ℝ) {i j : ℕ} (h : 2 * (j + 1) ≤ i) :
     hurwitz c i (j + 1) = hurwitz c (i - 2) j := by
   rw [hurwitz_apply_of_band c (by lia), hurwitz_apply_of_band c (by lia)]
-  congr 1
-  by_cases hp : i % 2 = 0
-  · rw [if_pos hp, if_pos (by lia : (i - 2) % 2 = 0)]
-    lia
-  · rw [if_neg hp, if_neg (by lia : ¬ (i - 2) % 2 = 0)]
-    lia
+  grind
 
 /-- Iterated column-shift structure of a Hurwitz matrix: in the nonzero
 staircase, moving `d` columns to the right is the same as moving `2 * d` rows
@@ -557,16 +544,13 @@ theorem hurwitz_col_shift_add (c : ℕ → ℝ) (j : ℕ) :
   intro d
   induction d with
   | zero =>
-      intro i _
       simp
   | succ d ih =>
       intro i h
       have h1 : hurwitz c i (j + (d + 1)) = hurwitz c (i - 2) (j + d) := by
         have hji : j + (d + 1) = (j + d) + 1 := by lia
         rw [hji, hurwitz_col_shift c (by lia)]
-      rw [h1, ih (i - 2) (by lia)]
-      congr 1
-      lia
+      grind
 
 /-- Fully in-band subcase of the triangular-free `3 × 3` core: the top-right
 corner `(0, 2)` also lies on the nonzero staircase. -/
@@ -751,14 +735,11 @@ theorem
     · exact le_of_lt hc12
     · rfl
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
-    intro i j
-    have hi := hrow0_le i
-    have hj := hcol_le j
-    lia
+    grind
   have hshift (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
     simpa using
-      hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
+      hurwitz_col_shift_add a 0 (cols j) (rows i) (by grind)
   have hcorner_nonneg : 0 ≤ hurwitz a (row0 - 2 * col2) 0 := by
     have h := ha.nonneg row0 col2
     change 0 ≤ hurwitz a (rows 0) (cols 2) at h
@@ -803,16 +784,13 @@ theorem
     rw [hs01, hs02, hs11, hs12, hs21, hs22] at hdet
     dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet,
       hurwitzFullBandCornerZeroedSingleFirstColLowerMinor]
-    nlinarith [hdet]
+    grind
   by_cases hcorner :
       hurwitz a (row0 - 2 * col2) 0 = 0
-  · dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet] at hdet_full ⊢
-    nlinarith
+  · simp_all
   · by_cases hminor :
         hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 = 0
-    · dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet,
-        hurwitzFullBandCornerZeroedSingleFirstColLowerMinor] at hdet_full hminor ⊢
-      nlinarith
+    · simp_all
     · exact hPos ha hr01 hr12 hc0 hc12 h02
         (lt_of_le_of_ne hcorner_nonneg (Ne.symm hcorner))
         (lt_of_le_of_ne hminor_nonneg (Ne.symm hminor))
@@ -835,34 +813,30 @@ theorem
       HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
   intro a ha rows cols hrows hcols _hband _h01 _h12 h02 hcol0
-  have hr01 : rows 0 < rows 1 := hrows (by decide)
-  have hr12 : rows 1 < rows 2 := hrows (by decide)
+  have hr01 : rows 0 < rows 1 := hrows (by simp)
+  have hr12 : rows 1 < rows 2 := hrows (by simp)
   have hr02le : rows 0 ≤ rows 2 := (le_of_lt hr01).trans (le_of_lt hr12)
-  have hc01 : cols 0 < cols 1 := hcols (by decide)
-  have hc12 : cols 1 < cols 2 := hcols (by decide)
-  have hc01pos : 0 < cols 1 := by
-    simpa [hcol0] using hc01
+  have hc01 : cols 0 < cols 1 := hcols (by simp)
+  have hc12 : cols 1 < cols 2 := hcols (by simp)
+  have hc01pos : 0 < cols 1 := by simp_all
   have hcol_le_two : ∀ j : Fin 3, cols j ≤ cols 2 := by
     intro j
     fin_cases j
     · simp [hcol0]
-    · exact le_of_lt hc12
-    · rfl
+    · grind
+    · simp
   have hrow_ge_zero : ∀ i : Fin 3, rows 0 ≤ rows i := by
     intro i
     fin_cases i
-    · rfl
-    · exact le_of_lt hr01
-    · exact hr02le
+    · simp
+    · grind
+    · grind
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
-    intro i j
-    have hc := hcol_le_two j
-    have hr := hrow_ge_zero i
-    lia
+    grind
   have hentry (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
     simpa using
-      hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
+      hurwitz_col_shift_add a 0 (cols j) (rows i) (by grind)
   have hfirst := hFirst ha hr01 hr12 hc01pos hc12 h02
   rw [hentry 0 0, hentry 1 1, hentry 2 2, hentry 1 2, hentry 2 1,
     hentry 0 1, hentry 1 0, hentry 2 0]
@@ -934,89 +908,56 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_co
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement := by
   intro a ha rows cols hrows hcols hband h01 h12 h02
   let d := cols 0
-  let rows' : Fin 3 → ℕ := fun i => rows i - 2 * d
-  let cols' : Fin 3 → ℕ := fun i => cols i - d
-  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
-  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
-  have hr02 : rows 0 ≤ rows 2 := hrows.monotone (by decide)
+  let rows' : Fin 3 → ℕ := fun i ↦ rows i - 2 * d
+  let cols' : Fin 3 → ℕ := fun i ↦ cols i - d
+  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by simp)
+  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by simp)
+  have hr02 : rows 0 ≤ rows 2 := hrows.monotone (by simp)
   have hc0 : ∀ i : Fin 3, d ≤ cols i := by
     intro i
-    have h0i : (0 : Fin 3) ≤ i := by
-      fin_cases i <;> decide
+    have h0i : (0 : Fin 3) ≤ i := by simp
     exact hcols.monotone h0i
   have hdrow : ∀ i : Fin 3, 2 * d ≤ rows i := by
-    intro i
-    have h0 : 2 * d ≤ rows 0 := by
-      simpa [d] using hband 0
-    fin_cases i
-    · exact h0
-    · exact le_trans h0 hr01
-    · exact le_trans h0 hr02
+    grind
   have hrows' : StrictMono rows' := by
     intro i j hij
     dsimp [rows']
     have hij' := hrows hij
-    have hi := hdrow i
-    have hj := hdrow j
-    lia
+    grind
   have hcols' : StrictMono cols' := by
     intro i j hij
     dsimp [cols']
     have hij' := hcols hij
-    have hi := hc0 i
-    have hj := hc0 j
-    lia
+    grind
   have hband' : ∀ l : Fin 3, 2 * cols' l ≤ rows' l := by
-    intro l
-    dsimp [rows', cols']
-    have hc := hc0 l
-    have hr := hdrow l
-    have hb := hband l
-    lia
-  have h01' : 2 * cols' 1 ≤ rows' 0 := by
-    dsimp [rows', cols']
-    have hc := hc0 1
-    have hr := hdrow 0
-    lia
+    grind
+  have h01' : 2 * cols' 1 ≤ rows' 0 := by grind
   have h12' : 2 * cols' 2 ≤ rows' 1 := by
-    dsimp [rows', cols']
-    have hc := hc0 2
-    have hr := hdrow 1
-    lia
-  have h02' : 2 * cols' 2 ≤ rows' 0 := by
-    dsimp [rows', cols']
-    have hc := hc0 2
-    have hr := hdrow 0
-    lia
+    grind
+  have h02' : 2 * cols' 2 ≤ rows' 0 := by grind
   have hcol0' : cols' 0 = 0 := by
-    dsimp [cols', d]
-    exact Nat.sub_self _
+    grind
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
     intro i j
     fin_cases i <;> fin_cases j
-    · simpa using hband 0
-    · simpa using h01
-    · simpa using h02
-    · exact le_trans (by simpa using hband 0) hr01
-    · simpa using hband 1
-    · simpa using h12
-    · exact le_trans (by simpa using hband 0) hr02
-    · exact le_trans (by simpa using hband 1) hr12
-    · simpa using hband 2
+    · grind
+    · grind
+    · grind
+    · grind
+    · grind
+    · grind
+    · grind
+    · grind
+    · grind
   have hentry (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows' i) (cols' j) := by
-    have hcadd : cols' j + d = cols j := by
-      dsimp [cols', d]
-      exact Nat.sub_add_cancel (hc0 j)
-    have hrow : rows i - 2 * d = rows' i := by
-      rfl
+    have : cols' j + d = cols j := by grind
+    have : rows i - 2 * d = rows' i := by grind
     have hs := hurwitz_col_shift_add a (cols' j) d (rows i) <|
-      by simpa [hcadd] using hall i j
-    simpa [hcadd, hrow] using hs
+      by simp_all
+    simp_all
   have hnorm := hZero ha hrows' hcols' hband' h01' h12' h02' hcol0'
-  rw [← hentry 0 0, ← hentry 1 1, ← hentry 2 2, ← hentry 1 2,
-    ← hentry 2 1, ← hentry 0 1, ← hentry 1 0, ← hentry 2 0] at hnorm
-  exact hnorm
+  simp_all
 
 /-- The full-band `3 × 3` core follows from the corner-zeroed full-band
 subtarget.  The missing top-right term factors as the `(0, 2)` entry times a
@@ -1026,8 +967,8 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
   intro a b ha hb rows cols hrows hcols hband h01 h12 h02
   have hcz := hCZ ha hb hrows hcols hband h01 h12 h02
-  have hr12 : rows 1 < rows 2 := hrows (by decide)
-  have hc01 : cols 0 < cols 1 := hcols (by decide)
+  have hr12 : rows 1 < rows 2 := hrows (by simp)
+  have hc01 : cols 0 < cols 1 := hcols (by simp)
   have hcorner := ha.hadamard_det_fin_two hb
     (strictMono_pair hr12) (strictMono_pair hc01)
   rw [Matrix.det_fin_two] at hcorner
@@ -1047,7 +988,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed
   rw [Matrix.det_fin_three]
   simp only [Matrix.submatrix_apply, Matrix.of_apply,
     hurwitzSchurProductFullBandCornerZeroedDet] at hcz ⊢
-  nlinarith [hcz, hcornerTerm]
+  grind
 
 /-- Corner-zero subcase of the triangular-free `3 × 3` core: the top-right
 corner `(0, 2)` lies above the staircase, so that entry vanishes. -/
@@ -1127,12 +1068,12 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single
       HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement) :
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement := by
   intro a b ha hb rows cols hrows hcols hband h01 h12 h02
-  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by decide))
-  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by decide))
-  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by decide))
-  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by decide))
-  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by decide))
-  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by decide))
+  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by simp))
+  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by simp))
+  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by simp))
+  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by simp))
+  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by simp))
+  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by simp))
   have mA02 := ha hr02 hc01
   rw [Matrix.det_fin_two] at mA02
   simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mA02
@@ -1161,7 +1102,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single
     (hb.nonneg (rows 1) (cols 1)) (hb.nonneg (rows 2) (cols 2))
     mA02 mAc02 mB01 mBc12 detA detB
   simp only [hurwitzSchurProductFullBandCornerZeroedDet]
-  nlinarith [hres]
+  grind
 
 /-- The single-matrix corner-zeroed determinant subtarget implies the
 full-band `3 × 3` Hurwitz Schur-product subcase. -/
@@ -1221,12 +1162,12 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreCornerZero :
     hurwitz_apply_eq_zero_of_lt a hcz
   have czb : hurwitz b (rows 0) (cols 2) = 0 :=
     hurwitz_apply_eq_zero_of_lt b hcz
-  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by decide))
-  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by decide))
-  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by decide))
-  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by decide))
-  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by decide))
-  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by decide))
+  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by simp))
+  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by simp))
+  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by simp))
+  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by simp))
+  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by simp))
+  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by simp))
   have mA02 := ha hr02 hc01
   rw [Matrix.det_fin_two] at mA02
   simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mA02
@@ -1254,15 +1195,14 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreCornerZero :
         hurwitz a (rows 0) (cols 1) *
           (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
             hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0)) := by
-    nlinarith [detAraw]
+    grind
   have detB :
       0 ≤ hurwitz b (rows 0) (cols 0) *
           (hurwitz b (rows 1) (cols 1) * hurwitz b (rows 2) (cols 2) -
             hurwitz b (rows 1) (cols 2) * hurwitz b (rows 2) (cols 1)) -
         hurwitz b (rows 0) (cols 1) *
           (hurwitz b (rows 1) (cols 0) * hurwitz b (rows 2) (cols 2) -
-            hurwitz b (rows 1) (cols 2) * hurwitz b (rows 2) (cols 0)) := by
-    nlinarith [detBraw]
+            hurwitz b (rows 1) (cols 2) * hurwitz b (rows 2) (cols 0)) := by grind
   have hres := hadamard_det_fin_three_cornerZero_nonneg
     (hurwitz a (rows 0) (cols 0)) (hurwitz a (rows 0) (cols 1))
     (hurwitz a (rows 1) (cols 0)) (hurwitz a (rows 1) (cols 1))
@@ -1277,9 +1217,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreCornerZero :
     (hb.nonneg (rows 1) (cols 1)) (hb.nonneg (rows 2) (cols 2))
     mA02 mAc02 mB01 mBc12 detA detB
   rw [Matrix.det_fin_three]
-  simp only [Matrix.submatrix_apply, Matrix.of_apply]
-  rw [cza, czb]
-  nlinarith [hres]
+  simp_all
 
 /-- Since the corner-zero subcase is proved, the triangular-free `3 × 3` core
 now reduces to the fully in-band top-right subcase alone. -/
@@ -1447,7 +1385,7 @@ theorem hurwitz_eq_toeplitz_firstColumn_submatrix (c : ℕ → ℝ) :
   simp only [Matrix.submatrix_apply, id_eq, toeplitz_apply]
   by_cases h : 2 * j ≤ i
   · rw [if_pos h]
-    simpa using hurwitz_col_shift_add c 0 j i (by simpa using h)
+    simpa using hurwitz_col_shift_add c 0 j i (by grind)
   · rw [if_neg h]
     exact hurwitz_apply_eq_zero_of_lt c (by lia)
 
@@ -1548,22 +1486,18 @@ noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : �
 theorem cexFirstColumn_isPolyaFreqSeq : IsPolyaFreqSeq cexFirstColumn := by
   have hpf := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 16 (-1 : ℝ))
     (by
-      intro r hr
-      rw [Multiset.eq_of_mem_replicate hr]
-      norm_num)
-  have heq : ((Multiset.replicate 16 (-1 : ℝ)).map fun r => X - C r).prod =
+      simp)
+  have heq : ((Multiset.replicate 16 (-1 : ℝ)).map fun r ↦ X - C r).prod =
       (X + 1) ^ 16 := by
     rw [Multiset.map_replicate, Multiset.prod_replicate]
-    congr 1
-    rw [map_neg, map_one]
-    ring
+    simp
   have hfun :
-      (fun n => (((Multiset.replicate 16 (-1 : ℝ)).map fun r => X - C r).prod).coeff n)
+      (fun n ↦ (((Multiset.replicate 16 (-1 : ℝ)).map fun r ↦ X - C r).prod).coeff n)
         = cexFirstColumn := by
     funext n
     rw [heq, Polynomial.coeff_X_add_one_pow]
     rfl
-  rwa [hfun] at hpf
+  simp_all
 
 /-- The counterexample coefficient sequence: the parity swap of
 `cexFirstColumn`, chosen so that the first column of `hurwitz cexA` is exactly
@@ -1633,10 +1567,9 @@ single Pólya-frequency statement about that product sequence. -/
 entry of the Toeplitz matrix built from its column-`0` sequence
 `n ↦ hurwitz c n 0`. -/
 theorem hurwitz_eq_toeplitz_colZero (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
-    hurwitz c i j = toeplitz (fun n => hurwitz c n 0) i (2 * j) := by
-  have hshift := hurwitz_col_shift_add c 0 j i (by simpa using h)
-  simp only [Nat.zero_add] at hshift
-  rw [hshift, toeplitz_apply, if_pos h]
+    hurwitz c i j = toeplitz (fun n ↦ hurwitz c n 0) i (2 * j) := by
+  have := hurwitz_col_shift_add c 0 j i (by grind)
+  simp_all
 
 /-- Toeplitz normal form for a fully in-band minor of the entrywise Hurwitz
 product.  When every selected `(rows i, cols j)` cell lies on the nonzero
@@ -1687,11 +1620,8 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq
     intro i j
     have hcj : cols j ≤ cols 2 := hcols.monotone (Fin.le_last j)
     have hri : rows 0 ≤ rows i := hrows.monotone (Fin.zero_le i)
-    calc
-      2 * cols j ≤ 2 * cols 2 := by lia
-      _ ≤ rows 0 := h02
-      _ ≤ rows i := hri
-  have hdbl : StrictMono (fun j : Fin 3 => 2 * cols j) := by
+    grind
+  have hdbl : StrictMono (fun j : Fin 3 ↦ 2 * cols j) := by
     intro x y hxy
     have := hcols hxy
     lia
@@ -1743,10 +1673,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz
     intro i j
     have hcj : cols j ≤ cols 2 := hcols.monotone (Fin.le_last j)
     have hri : rows 0 ≤ rows i := hrows.monotone (Fin.zero_le i)
-    calc
-      2 * cols j ≤ 2 * cols 2 := Nat.mul_le_mul_left 2 hcj
-      _ ≤ rows 0 := h02
-      _ ≤ rows i := hri
+    grind
   simpa [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall] using
     hEven ha hb hrows hcols
 
@@ -1776,10 +1703,10 @@ theorem hurwitzColumnZeroProductEvenColToeplitz_of_polyaFreq
       IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) :
     HurwitzColumnZeroProductEvenColToeplitzStatement := by
   intro a b ha hb n rows cols hrows hcols
-  have hdbl : StrictMono (fun j : Fin n => 2 * cols j) := by
+  have hdbl : StrictMono (fun j : Fin n ↦ 2 * cols j) := by
     intro x y hxy
     have h := hcols hxy
-    exact Nat.mul_lt_mul_of_pos_left h (by decide : 0 < 2)
+    simp_all
   exact hPF ha hb hrows hdbl
 
 /-! ### Hadamard normal form for the even-column Toeplitz leaf
@@ -1865,10 +1792,10 @@ theorem hurwitz_mul_apply (a b : ℕ → ℝ) (i j : ℕ) :
   · subst hm
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, hurwitz_even_row_apply,
       hurwitz_even_row_apply]
-    split <;> simp
+    simp_all
   · subst hm
     rw [hurwitz_odd_row_apply, hurwitz_odd_row_apply, hurwitz_odd_row_apply]
-    split <;> simp
+    simp_all
 
 /-- Pointwise even-column identity: the even-column entry of the Toeplitz matrix
 of the column-`0` product sequence equals the corresponding entry of the
@@ -1884,14 +1811,14 @@ theorem toeplitz_colZeroProduct_apply_eq_hurwitz_mul (a b : ℕ → ℝ) (i j : 
     · rw [if_pos (by lia), if_pos h, show 2 * m - 2 * j = 2 * (m - j) by lia,
         hurwitz_even_row_apply, hurwitz_even_row_apply]
       simp
-    · rw [if_neg (by lia), if_neg h]
+    · grind
   · subst hm
     rw [hurwitz_odd_row_apply]
     by_cases h : j ≤ m
     · rw [if_pos (by lia), if_pos h, show 2 * m + 1 - 2 * j = 2 * (m - j) + 1 by lia,
         hurwitz_odd_row_apply, hurwitz_odd_row_apply]
       simp
-    · rw [if_neg (by lia), if_neg h]
+    · grind
 
 /-- Hurwitz normal form for the column-`0` product minor.  For arbitrary rows
 and columns, the even-column Toeplitz submatrix of the pointwise product of the
@@ -1953,9 +1880,7 @@ theorem hurwitz_even_row_eq_zero_of_odd_zero {a : ℕ → ℝ}
     (hodd : ∀ n, a (2 * n + 1) = 0) (i j : ℕ) :
     hurwitz a (2 * i) j = 0 := by
   rw [hurwitz_even_row_apply]
-  split
-  · rw [hodd]
-  · rfl
+  simp_all
 
 /-- Total nonnegativity of a Hurwitz matrix whose odd-indexed coefficients all
 vanish and whose even coefficient subsequence is Pólya-frequency.  The even
@@ -1975,8 +1900,7 @@ theorem hurwitz_isTotallyNonneg_of_odd_zero {a : ℕ → ℝ}
       simp only [Matrix.submatrix_apply]
       have hr : rows k % 2 = 1 := hall k
       unfold hurwitz
-      simp only [Matrix.of_apply]
-      rw [if_neg (by lia)]
+      simp_all
     rw [hsub]
     refine heven ?_ hcols
     intro k1 k2 hk
@@ -1985,10 +1909,7 @@ theorem hurwitz_isTotallyNonneg_of_odd_zero {a : ℕ → ℝ}
     have hlt := hrows hk
     lia
   · obtain ⟨k, hk⟩ := not_forall.mp hall
-    have hke : rows k % 2 = 0 := by
-      rcases Nat.mod_two_eq_zero_or_one (rows k) with h | h
-      · exact h
-      · exact absurd h hk
+    have : rows k % 2 = 0 := by simp_all
     have hzero : ∀ l, ((hurwitz a).submatrix rows cols) k l = 0 := by
       intro l
       simp only [Matrix.submatrix_apply]
@@ -2048,20 +1969,18 @@ def cexOddZero : ℕ → ℝ :=
 /-- The odd-indexed coefficients of `cexOddZero` vanish. -/
 theorem cexOddZero_odd_zero (n : ℕ) : cexOddZero (2 * n + 1) = 0 := by
   simp only [cexOddZero]
-  rw [if_neg (by lia), if_neg (by lia)]
+  simp
 
 /-- The even coefficient subsequence of `cexOddZero` is `(1 + X)`, a
 Pólya-frequency sequence. -/
 theorem cexOddZero_even_isPolyaFreqSeq :
-    IsPolyaFreqSeq (fun n => cexOddZero (2 * n)) := by
+    IsPolyaFreqSeq (fun n ↦ cexOddZero (2 * n)) := by
   have h := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 1 (-1 : ℝ))
     (by
-      intro r hr
-      rw [Multiset.eq_of_mem_replicate hr]
-      norm_num)
+      simp)
   have heq :
-      (fun n =>
-          (((Multiset.replicate 1 (-1 : ℝ)).map fun r => X - C r).prod).coeff n)
+      (fun n ↦
+          (((Multiset.replicate 1 (-1 : ℝ)).map fun r ↦ X - C r).prod).coeff n)
         = fun n => cexOddZero (2 * n) := by
     funext n
     rw [Multiset.map_replicate, Multiset.prod_replicate, pow_one]
@@ -2079,9 +1998,9 @@ theorem cexOddZero_even_isPolyaFreqSeq :
             if_neg (by lia : ¬ m + 2 = 0), sub_zero]
         have hR : cexOddZero (2 * (m + 2)) = 0 := by
           simp only [cexOddZero]
-          rw [if_neg (by lia), if_neg (by lia)]
-        rw [hL, hR]
-  rwa [heq] at h
+          simp
+        simp_all
+  simp_all
 
 /-- The Hurwitz matrix of `cexOddZero` is totally nonnegative. -/
 theorem cexOddZero_hurwitz_isTotallyNonneg :
@@ -2128,7 +2047,6 @@ theorem not_hurwitzColumnZeroProductPF :
     simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
       toeplitz_apply]
     norm_num [cexOddZero_col0_one, cexOddZero_col0_two, cexOddZero_col0_three]
-  rw [hval] at hdet
-  norm_num at hdet
+  grind
 
 end RealRooted

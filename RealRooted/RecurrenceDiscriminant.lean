@@ -81,6 +81,6 @@ lemma four_mul_le_sq_of_recurrence_nonneg {b Q : ℝ} {D : ℕ → ℝ}
         show Real.sin ((N + 1) * θ) < 0 from by
           rw [← Real.cos_sub_pi_div_two]
           exact Real.cos_neg_of_pi_div_two_lt_of_lt (by linarith) (by linarith)]
-  linarith [hpos N]
+  grind
 
 end RealRooted

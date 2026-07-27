@@ -354,27 +354,17 @@ theorem exists_root_near_closedSegment
   have h1β : (0 : ℝ) < 1 - β := by linarith
   set μ : ℝ := β / (1 - β) with hμ_def
   have hμ : 0 < μ := div_pos hβ0 h1β
-  have hμ_eq : μ / (μ + 1) = β := by
-    rw [hμ_def]
-    field_simp
-    ring
-  have hbound' : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε := by
-    rw [hμ_eq]
-    exact hcoeff_bound
+  have hμ_eq : μ / (μ + 1) = β := by grind
+  have hbound' : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε := by simp_all
   obtain ⟨b, hb_root, hb_dist⟩ :=
     exists_root_near_right_family
       (hfg := hfg) (ha := ha) hf_monic hg_monic hdeg hμ hbound'
   refine ⟨b, ?_, hb_dist⟩
-  have hcβ : C β = C ((1 - β) * μ) := by
-    rw [hμ_def]
-    congr 1
-    field_simp
-  have hscale : C (1 - β) * f + C β * g = C (1 - β) * (f + C μ * g) := by
-    rw [hcβ, C_mul]
-    ring
+  have hcβ : C β = C ((1 - β) * μ) := by grind
+  have hscale : C (1 - β) * f + C β * g = C (1 - β) * (f + C μ * g) := by grind
   rw [hscale, IsRoot.def, eval_mul]
   rw [IsRoot.def] at hb_root
-  rw [hb_root, mul_zero]
+  grind
 
 /-- Complex-root-continuity bridge for the closed segment under
 positive-combination real-rootedness. -/
@@ -391,27 +381,17 @@ theorem exists_complex_aroot_near_closedSegment
   have h1β : (0 : ℝ) < 1 - β := by linarith
   set μ : ℝ := β / (1 - β) with hμ_def
   have hμ : 0 < μ := div_pos hβ0 h1β
-  have hμ_eq : μ / (μ + 1) = β := by
-    rw [hμ_def]
-    field_simp
-    ring
-  have hbound' : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε := by
-    rw [hμ_eq]
-    exact hcoeff_bound
+  have hμ_eq : μ / (μ + 1) = β := by grind
+  have hbound' : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε := by simp_all
   obtain ⟨w, hw_root, hw_dist⟩ :=
     exists_complex_aroot_near_right_family
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg hμ hbound'
   refine ⟨w, ?_, hw_dist⟩
-  have hcβ : C β = C ((1 - β) * μ) := by
-    rw [hμ_def]
-    congr 1
-    field_simp
-  have hscale : C (1 - β) * f + C β * g = C (1 - β) * (f + C μ * g) := by
-    rw [hcβ, C_mul]
-    ring
+  have hcβ : C β = C ((1 - β) * μ) := by grind
+  have hscale : C (1 - β) * f + C β * g = C (1 - β) * (f + C μ * g) := by grind
   have h1β_ne : (1 - β : ℝ) ≠ 0 := ne_of_gt h1β
   rw [hscale]
-  rwa [Polynomial.aroots_C_mul _ (by simpa using h1β_ne)]
+  rwa [Polynomial.aroots_C_mul _ (by grind)]
 
 /-- Closed-segment coefficient smallness can be achieved by choosing an
 interior parameter `0 < β < 1` small enough.
@@ -427,8 +407,7 @@ theorem exists_beta_pos_with_normalized_closedSegment_bound
     exists_t_pos_with_normalized_left_family_bound (f := f) (g := g) hε
   refine ⟨(t + 1)⁻¹, by positivity, ?_, hbound⟩
   rw [inv_lt_one_iff₀]
-  right
-  linarith
+  simp_all
 
 /-- Root continuity along the closed segment with an automatically chosen
 interior parameter.  Given `ε > 0`, this returns `0 < β < 1` and a root of
@@ -449,7 +428,7 @@ theorem exists_beta_and_root_near_closedSegment
   obtain ⟨b, hb_root, hb_dist⟩ :=
     exists_root_near_closedSegment
       (hfg := hfg) (ha := ha) hf_monic hg_monic hdeg hβ0 hβ1 hcoeff_bound
-  exact ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩
+  grind
 
 /-- Complex-root continuity along the closed segment with an automatically
 chosen interior parameter. -/
@@ -469,7 +448,7 @@ theorem exists_beta_and_complex_aroot_near_closedSegment
   obtain ⟨w, hw_root, hw_dist⟩ :=
     exists_complex_aroot_near_closedSegment
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg hβ0 hβ1 hcoeff_bound
-  exact ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩
+  grind
 
 /-- Right-endpoint symmetric version of
 `exists_beta_and_root_near_closedSegment`.
@@ -493,11 +472,7 @@ theorem exists_beta_and_root_near_closedSegment_right
   obtain ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩ :=
     exists_beta_and_root_near_closedSegment
       (hfg := hfg.comm) (ha := ha) hg_monic hf_monic hdeg.symm hε
-  refine ⟨1 - β, by linarith, by linarith, b, ?_, hb_dist⟩
-  have heq :
-      C (1 - (1 - β)) * f + C (1 - β) * g = C (1 - β) * g + C β * f := by
-    rw [sub_sub_cancel]; ring
-  rw [heq]; exact hb_root
+  grind
 
 /-- Right-endpoint symmetric version of
 `exists_beta_and_complex_aroot_near_closedSegment`.
@@ -521,11 +496,7 @@ theorem exists_beta_and_complex_aroot_near_closedSegment_right
   obtain ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩ :=
     exists_beta_and_complex_aroot_near_closedSegment
       (hfg := hfg.comm) (hz := hz) hg_monic hf_monic hdeg.symm hε
-  refine ⟨1 - β, by linarith, by linarith, w, ?_, hw_dist⟩
-  have heq :
-      C (1 - (1 - β)) * f + C (1 - β) * g = C (1 - β) * g + C β * f := by
-    rw [sub_sub_cancel]; ring
-  rw [heq]; exact hw_root
+  grind
 
 /-- Right-endpoint normalization of the closed-segment coefficient bound.
 
@@ -540,8 +511,7 @@ theorem exists_beta_pos_with_normalized_closedSegment_bound_right
       β * (coeffSumRange g + coeffSumRange f) < ε := by
   obtain ⟨β, hβ0, hβ1, hbound⟩ :=
     exists_beta_pos_with_normalized_closedSegment_bound f g hε
-  refine ⟨β, hβ0, hβ1, ?_⟩
-  rwa [add_comm (coeffSumRange g) (coeffSumRange f)]
+  grind
 
 /-- Bundled left-or-right real-root continuity along the closed segment.
 
@@ -565,7 +535,7 @@ theorem exists_beta_and_root_near_closedSegment_or
   · exact exists_beta_and_root_near_closedSegment hfg ha hf_monic hg_monic hdeg hε
   · have h :=
       exists_beta_and_root_near_closedSegment_right hfg ha hf_monic hg_monic hdeg hε
-    rwa [hdeg] at h
+    simp_all
 
 /-- Bundled left-or-right complex-root continuity along the closed segment.
 
@@ -591,18 +561,15 @@ theorem exists_beta_and_complex_aroot_near_closedSegment_or
   · have h :=
       exists_beta_and_complex_aroot_near_closedSegment_right hfg hz hf_monic hg_monic
         hdeg hε
-    rwa [hdeg] at h
+    simp_all
 
 /-- Real product-root disjunction packaging. -/
 theorem mul_isRoot_iff_or {f g : ℝ[X]} {a : ℝ} :
-    (f * g).IsRoot a ↔ f.IsRoot a ∨ g.IsRoot a := by
-  rw [IsRoot.def, eval_mul, mul_eq_zero]
-  rfl
+    (f * g).IsRoot a ↔ f.IsRoot a ∨ g.IsRoot a := by simp
 
 /-- Complex product-root disjunction packaging. -/
 theorem mul_aeval_eq_zero_iff_or {f g : ℝ[X]} {z : ℂ} :
-    (f * g).aeval z = 0 ↔ f.aeval z = 0 ∨ g.aeval z = 0 := by
-  rw [map_mul, mul_eq_zero]
+    (f * g).aeval z = 0 ↔ f.aeval z = 0 ∨ g.aeval z = 0 := by simp
 
 /-- Product-root form of closed-segment real-root continuity. -/
 theorem exists_beta_and_root_near_closedSegment_of_mul_isRoot
@@ -651,7 +618,7 @@ theorem exists_beta_and_mem_roots_closedSegment_or
   refine ⟨β, hβ0, hβ1, b, ?_, hb_dist⟩
   have hne : (C (1 - β) * f + C β * g) ≠ 0 :=
     (isRealRooted_closedSegment hfg hβ0 hβ1).1
-  exact (mem_roots hne).2 hb_root
+  simp_all
 
 /-- Product-root, multiset-`roots` form of closed-segment real-root continuity. -/
 theorem exists_beta_and_mem_roots_closedSegment_of_mul_isRoot
@@ -685,10 +652,10 @@ theorem exists_beta_and_root_near_closedSegment_left_of_bound_right
   obtain ⟨β, hβ0, hβ1, hbr⟩ :=
     exists_beta_pos_with_normalized_closedSegment_bound_right f g hε
   have hbound : β * (coeffSumRange f + coeffSumRange g) < ε := by
-    rwa [add_comm (coeffSumRange f) (coeffSumRange g)]
+    grind
   obtain ⟨b, hb_root, hb_dist⟩ :=
     exists_root_near_closedSegment hfg ha hf_monic hg_monic hdeg hβ0 hβ1 hbound
-  exact ⟨β, hβ0, hβ1, hbr, b, hb_root, hb_dist⟩
+  grind
 
 /-- Nonvanishing component of `isRealRooted_closedSegment`, exposed as a
 standalone lemma.
@@ -728,7 +695,7 @@ theorem exists_beta_closedSegment_ne_and_bound
       β * (coeffSumRange f + coeffSumRange g) < ε := by
   obtain ⟨β, hβ0, hβ1, hbound⟩ :=
     exists_beta_pos_with_normalized_closedSegment_bound f g hε
-  exact ⟨β, hβ0, hβ1, ne_zero_closedSegment hfg hβ0 hβ1, hbound⟩
+  grind
 
 /-- Right-endpoint, multiset-`roots` form of closed-segment real-root
 continuity.
@@ -803,8 +770,7 @@ theorem exists_beta_and_aroots_ne_splits_closedSegment_or
           ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   obtain ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩ :=
     exists_beta_and_complex_aroot_near_closedSegment_or hfg hz hf_monic hg_monic hdeg hε
-  exact ⟨β, hβ0, hβ1, ne_zero_closedSegment hfg hβ0 hβ1,
-    splits_closedSegment hfg hβ0 hβ1, w, hw_root, hw_dist⟩
+  grind
 
 end PosComboHyp
 end

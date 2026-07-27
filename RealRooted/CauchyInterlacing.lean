@@ -63,7 +63,7 @@ noncomputable def sortedEigenvalues {N : ℕ}
 theorem sortedEigenvalues_antitone {N : ℕ}
     (A : Matrix (Fin N) (Fin N) 𝕜) (hA : A.IsHermitian) :
     Antitone (sortedEigenvalues A hA) :=
-  fun _ _ hab => hA.eigenvalues₀_antitone (by simpa [finCongr] using hab)
+  fun _ _ hab => hA.eigenvalues₀_antitone (by simp_all)
 
 /-- The sorted eigenvalues of a Hermitian matrix are exactly the roots of its
 characteristic polynomial, counted with multiplicity. -/
@@ -87,10 +87,7 @@ noncomputable def embedCompl {n : ℕ} (i : Fin (n + 1)) (x : Fin n → 𝕜) :
 
 @[simp] theorem embedCompl_self {n : ℕ} (i : Fin (n + 1)) (x : Fin n → 𝕜) :
     embedCompl i x i = 0 := by
-  rw [embedCompl, Function.extend_apply']
-  · rfl
-  · rintro ⟨a, ha⟩
-    exact (Fin.succAbove_ne i a) ha
+  rw [embedCompl, Function.extend_apply'] <;> simp
 
 /-- **Rayleigh restriction identity.** The quadratic form of the principal
 submatrix `A.submatrix i.succAbove i.succAbove` at `x` coincides with the form of
@@ -180,8 +177,7 @@ theorem exists_submodule_le_finrank_eq {N : ℕ}
     · simp
     · exact this.linearIndependent.comp _ (Fin.castLE_injective _)
   refine h_contra ⟨Submodule.map (Submodule.subtype S) T, Submodule.map_subtype_le _ _, ?_⟩
-  convert hT using 1
-  convert Submodule.finrank_map_subtype_eq _ _
+  simp_all
 
 /-- Interlacing relation: a decreasing length-`n` family `μ` interlaces a
 decreasing length-`n+1` family `lam` when `lam_{k+1} ≤ μ_k ≤ lam_k` for every
@@ -245,7 +241,7 @@ theorem cauchyInterlacing_of_courantFischer
               (Submodule.map (embedComplₗ i) (Submodule.comap (embedComplₗ i) T)) =
                 Module.finrank 𝕜 T := by
             rw [Submodule.map_comap_eq_self]
-            aesop
+            simp_all
           generalize_proofs at *
           rw [← hT₂, ← hT₃, finrank_map_embedComplₗ])
     generalize_proofs at *
@@ -260,13 +256,12 @@ theorem cauchyInterlacing_of_courantFischer
       hCF A hA (Fin.castSucc k) |>.2 (Submodule.map (embedComplₗ (𝕜 := 𝕜) i) W)
         (by
           convert finrank_map_embedComplₗ i W using 1
-          aesop)
+          simp_all)
     generalize_proofs at *
     obtain ⟨y, hy₁, rfl⟩ := Submodule.mem_map.mp hx₁
     generalize_proofs at *
     refine (hW₂ y hy₁ ?_).trans ?_
-    · intro hy
-      exact hx₂ (by simpa [hy] using (map_zero (embedComplₗ (𝕜 := 𝕜) i)))
+    · grind
     · simpa only [embedComplₗ_apply, rayleigh_submatrix_embedCompl] using hx₃
 
 /-!
@@ -314,10 +309,9 @@ theorem num_eq_sum_sq {N : ℕ}
     have hx : WithLp.ofLp x
         = ∑ i, (inner 𝕜 (b i) x : 𝕜) • WithLp.ofLp (b i) := by
       conv_lhs => rw [← b.sum_repr' x]
-      rw [WithLp.ofLp_sum]
-      simp only [WithLp.ofLp_smul]
+      simp
     rw [hx, Matrix.mulVec_sum, WithLp.ofLp_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
     rw [Matrix.mulVec_smul, hb i, WithLp.ofLp_smul,
       RCLike.real_smul_eq_coe_smul (K := 𝕜), smul_smul, mul_comm]
   have hnum : star (WithLp.ofLp x) ⬝ᵥ A.mulVec (WithLp.ofLp x)
@@ -352,8 +346,8 @@ theorem inner_eq_zero_of_mem_span_range {N m : ℕ}
   induction hx using Submodule.span_induction with
   | mem y hy =>
       obtain ⟨j, rfl⟩ := hy
-      exact b.orthonormal.2 fun e => hi ⟨j, e.symm⟩
-  | zero => exact inner_zero_right _
+      exact b.orthonormal.2 fun e ↦ hi ⟨j, e.symm⟩
+  | zero => simp
   | add y z _ _ ihy ihz => rw [inner_add_right, ihy, ihz, add_zero]
   | smul a y _ ihy => rw [inner_smul_right, ihy, mul_zero]
 
@@ -365,9 +359,9 @@ theorem finrank_span_range_eigen {N m : ℕ}
     (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
     (g : Fin m → Fin N) (hg : Function.Injective g) :
     Module.finrank 𝕜 (Submodule.span 𝕜
-      (Set.range (fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N))))) = m := by
+      (Set.range (fun j ↦ (b (g j) : EuclideanSpace 𝕜 (Fin N))))) = m := by
   rw [finrank_span_eq_card]
-  · exact Fintype.card_fin m
+  · simp
   · exact b.toBasis.linearIndependent.comp g hg
 
 /--
@@ -384,10 +378,10 @@ theorem rayleigh_ge_of_support {N : ℕ}
     t ≤ rayleigh A (WithLp.ofLp x) := by
   rw [rayleigh, le_div_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
     denom_eq_sum_sq b x, Finset.mul_sum]
-  refine Finset.sum_le_sum fun i _ => ?_
+  refine Finset.sum_le_sum fun i _ ↦ ?_
   rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
   · simp [hi]
-  · exact mul_le_mul_of_nonneg_right (h i hi) (by positivity)
+  · simp_all
 
 /--
 Upper Rayleigh bound from the support of the Fourier coefficients: if every
@@ -403,10 +397,10 @@ theorem rayleigh_le_of_support {N : ℕ}
     rayleigh A (WithLp.ofLp x) ≤ t := by
   rw [rayleigh, div_le_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
     denom_eq_sum_sq b x, Finset.mul_sum]
-  refine Finset.sum_le_sum fun i _ => ?_
+  refine Finset.sum_le_sum fun i _ ↦ ?_
   rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
   · simp [hi]
-  · exact mul_le_mul_of_nonneg_right (h i hi) (by positivity)
+  · simp_all
 
 /--
 **Courant-Fischer min-max principle from an orthonormal eigenbasis.**
@@ -440,14 +434,14 @@ theorem courantFischer_of_eigenbasis {N : ℕ}
         exact hi (inner_eq_zero_of_mem_span_range b (Fin.castLE hk) x hx i hcon)
       obtain ⟨j, rfl⟩ := hmem
       refine hμ ?_
-      simpa [Fin.le_def, Fin.val_castLE] using Nat.lt_succ_iff.mp j.isLt
+      grind
   · intro W hW
     have hkN : (k : ℕ) < N := k.isLt
     set g : Fin (N - (k : ℕ)) → Fin N :=
-      fun j => ⟨(k : ℕ) + (j : ℕ), by have := j.isLt; lia⟩ with hg
-    have hgval : ∀ j, ((g j : Fin N) : ℕ) = (k : ℕ) + (j : ℕ) := fun _ => rfl
+      fun j ↦ ⟨(k : ℕ) + (j : ℕ), by grind⟩ with hg
+    have hgval : ∀ j, ((g j : Fin N) : ℕ) = (k : ℕ) + (j : ℕ) := fun _ ↦ rfl
     have hg_inj : Function.Injective g :=
-      fun _ _ hac => Fin.ext <| by
+      fun _ _ hac ↦ Fin.ext <| by
         simpa [hgval, Nat.add_left_cancel_iff] using congrArg Fin.val hac
     set U : Submodule 𝕜 (EuclideanSpace 𝕜 (Fin N)) :=
       Submodule.span 𝕜 (Set.range fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N)))
@@ -521,15 +515,13 @@ theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜] :
   set L := WithLp.linearEquiv 2 𝕜 (Fin N → 𝕜) with hL
   refine ⟨⟨W₀.map L.toLinearMap, ?_, ?_⟩, ?_⟩
   · simpa [LinearEquiv.finrank_map_eq] using hW₀card
-  · intro x hxmem hx0
-    obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.mp hxmem
-    exact hW₀ y hy fun h => hx0 (by simp [h])
+  · simp_all
   · intro W hW
     have hcard : Module.finrank 𝕜 (W.comap L.toLinearMap) = (k : ℕ) + 1 := by
       rw [Submodule.comap_equiv_eq_map_symm, LinearEquiv.finrank_map_eq]
-      exact hW
+      simp_all
     obtain ⟨y, hy, hy0, hyr⟩ := huniv _ hcard
-    exact ⟨L y, Submodule.mem_comap.mp hy, fun h => hy0 (by simpa using h), hyr⟩
+    exact ⟨L y, Submodule.mem_comap.mp hy, fun h ↦ hy0 (by simpa using h), hyr⟩
 
 /-- **Cauchy interlacing theorem.** The eigenvalues of a principal submatrix of
 a Hermitian matrix, obtained by deleting one row and the corresponding column,

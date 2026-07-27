@@ -103,7 +103,7 @@ lemma splits_of_mem_zipWith_mul {row fs : List ℝ[X]}
     (hfs : ∀ f ∈ fs, f.Splits) :
     ∀ p ∈ row.zipWith (· * ·) fs, p.Splits := fun p hp => by
   rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
-  exact (hrow a ha).mul (hfs b hb)
+  simp_all
 
 lemma posLeadingCoeff_of_mem_zipWith_mul {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasPosLeadingCoeff p)
@@ -115,12 +115,12 @@ lemma posLeadingCoeff_of_mem_zipWith_mul {row fs : List ℝ[X]}
 private lemma splits_reverse_of_interlacingSeqNonneg {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     ∀ p ∈ fs.reverse, p.Splits :=
-  fun p hp => hfs.splits (by simpa using hp)
+  fun p hp => hfs.splits (by grind)
 
 private lemma posLeadingCoeff_reverse_of_interlacingSeqNonneg {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     ∀ p ∈ fs.reverse, HasPosLeadingCoeff p :=
-  fun p hp => hfs.posLeadingCoeff p (by simpa using hp)
+  fun p hp => hfs.posLeadingCoeff p (by grind)
 
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
@@ -342,26 +342,26 @@ private lemma map_fst_zip_sublist_left
     ((as.zip bs).map Prod.fst).Sublist as := by
   induction as generalizing bs with
   | nil =>
-      cases bs <;> simp
+      simp
   | cons a as ih =>
       cases bs with
       | nil =>
           simp
       | cons b bs =>
-          simpa using (ih bs).cons_cons a
+          grind
 
 private lemma map_snd_zip_sublist_right
     {α β : Type*} (as : List α) (bs : List β) :
     ((as.zip bs).map Prod.snd).Sublist bs := by
   induction as generalizing bs with
   | nil =>
-      cases bs <;> simp
+      simp
   | cons a as ih =>
       cases bs with
       | nil =>
           simp
       | cons b bs =>
-          simpa using (ih bs).cons_cons b
+          grind
 
 private lemma map_fst_filter_zip_sublist_left
     {α β : Type*} (p : α × β → Prop) [DecidablePred p]
@@ -381,8 +381,7 @@ private lemma map_snd_filter_zip_sublist_right
 
 private lemma reverse_sublist_of_sublist_reverse {α : Type*} {xs ys : List α}
     (hxs : xs.Sublist ys.reverse) :
-    xs.reverse.Sublist ys := by
-  simpa using hxs.reverse
+    xs.reverse.Sublist ys := by grind
 
 private lemma interlacingSeqNonneg_reverse_of_sublist_reverse
     {xs gs : List ℝ[X]} (hgs : IsInterlacingSeqNonneg gs)
@@ -396,12 +395,7 @@ lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
 
 private lemma zipWith_mul_map_fst_snd_sum (ps : List (ℝ[X] × ℝ[X])) :
     ((ps.map Prod.fst).zipWith (· * ·) (ps.map Prod.snd)).sum =
-      (ps.map fun p => p.1 * p.2).sum := by
-  induction ps with
-  | nil =>
-      simp
-  | cons p ps ih =>
-      simp
+      (ps.map fun p ↦ p.1 * p.2).sum := by simp
 
 private lemma zipWith_mul_sum_filter_zip_eq
     (p : ℝ[X] × ℝ[X] → Prop) [DecidablePred p]
@@ -413,7 +407,7 @@ private lemma zipWith_mul_sum_filter_zip_eq
   rw [zipWith_mul_map_fst_snd_sum]
   induction fs generalizing gs with
   | nil =>
-      cases gs <;> simp
+      simp
   | cons f fs ih =>
       cases gs with
       | nil =>
@@ -421,8 +415,7 @@ private lemma zipWith_mul_sum_filter_zip_eq
       | cons g gs =>
           by_cases hp : p (f, g)
           · simp [hp, ih gs]
-          · have hprod : f * g = 0 := hzero (f, g) hp
-            simp [hp, hprod, ih gs]
+          · simp_all
 
 lemma zipWith_mul_sum_filterLeftNonzero_eq
     (fs gs : List ℝ[X]) :
@@ -495,7 +488,7 @@ private lemma interlacingSeqNonneg_reverse_filterProductRightNonzero
       (filterProductRightNonzero_sublist_right fs gs.reverse))
     hgs_real
     (fun _ hg => mem_filterProductRightNonzero_ne_zero
-      (fs := fs) (gs := gs.reverse) (by simpa using hg))
+      (fs := fs) (gs := gs.reverse) (by grind))
 
 lemma zipWith_mul_sum_filterProductNonzero_eq
     (fs gs : List ℝ[X]) :
@@ -505,12 +498,9 @@ lemma zipWith_mul_sum_filterProductNonzero_eq
   simpa [filterProductLeftNonzero, filterProductRightNonzero,
     filterProductNonzeroPairs] using
     zipWith_mul_sum_filter_zip_eq
-      (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0 ∧ p.2 ≠ 0)
-      (fun p hp => by
-        by_cases hp_left : p.1 = 0
-        · simp [hp_left]
-        · have hp_right : p.2 = 0 := by simp_all
-          simp [hp_right])
+      (fun p : ℝ[X] × ℝ[X] ↦ p.1 ≠ 0 ∧ p.2 ≠ 0)
+      (fun p hp ↦ by
+        grind)
       fs gs
 
 private lemma isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
@@ -523,18 +513,18 @@ private lemma isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
     (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
     (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
-  have hfs'_ne : fs' ≠ [] := fun hnil => by
-    exact hsum_ne (by simpa [hnil] using hsum_eq.symm)
+  have hfs'_ne : fs' ≠ [] := fun hnil ↦ by
+    simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
     isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
       (fs := fs') (gs := gs'.reverse)
       hfs'_ne
-      (by simpa [List.length_reverse] using hlen')
+      (by simp_all)
       hfs'
       hgs'_rev
-  simpa [List.reverse_reverse, hsum_eq] using hrr
+  simp_all
 
 /-- Weak zero-aware product-sum theorem. If the left family is weakly
 interlacing, its nonzero members are real-rooted, and the paired product sum is
@@ -553,7 +543,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   let gs' := filterRightByLeftNonzero fs gs.reverse
   have hfs' : IsInterlacingSeqNonneg fs' := by
     simpa [fs'] using interlacingSeqNonneg_filterLeftNonzero
-      (fs := fs) (gs := gs.reverse) (by simpa [List.length_reverse] using hlen)
+      (fs := fs) (gs := gs.reverse) (by simp_all)
       hfs hfs_real
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
     exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by

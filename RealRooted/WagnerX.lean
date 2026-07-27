@@ -82,7 +82,7 @@ lemma listInterlaces_prod_mul_prod_nonpos_at_heads
   obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
     cases ss with
     | nil => simp [ListInterlaces] at hint
-    | cons s ss => exact ⟨s, ss, rfl⟩
+    | cons s ss => simp
   obtain ⟨hr₁s, hsr₂, htail⟩ := hint
   have hr₁r₂ : r₁ ≤ r₂ := le_trans hr₁s hsr₂
   have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by

@@ -34,13 +34,7 @@ def diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
   rw [diagonalOperator, Polynomial.coeff_sum]
   simp only [Polynomial.coeff_monomial]
   rw [Polynomial.sum_def]
-  rw [Finset.sum_eq_single n]
-  · simp
-  · intro b _ hbn
-    simp [hbn]
-  · intro hn
-    rw [(Polynomial.notMem_support_iff).mp hn]
-    simp
+  simp_all
 
 @[simp] theorem diagonalOperator_zero (gamma : ℕ → ℝ) :
     diagonalOperator gamma 0 = 0 := by
@@ -58,9 +52,9 @@ def diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
   simp
 
 theorem diagonalOperator_const_sequence (a : ℝ) (p : ℝ[X]) :
-    diagonalOperator (fun _ => a) p = C a * p := by
+    diagonalOperator (fun _ ↦ a) p = C a * p := by
   ext n
-  simp [mul_comm]
+  simp
 
 theorem diagonalOperator_add (gamma : ℕ → ℝ) (p q : ℝ[X]) :
     diagonalOperator gamma (p + q) =
@@ -94,8 +88,7 @@ theorem diagonalOperator_monomial (gamma : ℕ → ℝ) (n : ℕ) (a : ℝ) :
     diagonalOperator gamma (monomial n a) = monomial n (gamma n * a) := by
   ext k
   by_cases hk : k = n
-  · subst k
-    simp
+  · simp_all
   · simp [Polynomial.coeff_monomial, Ne.symm hk]
 
 theorem support_diagonalOperator_eq_filter (gamma : ℕ → ℝ) (p : ℝ[X]) :
@@ -204,22 +197,19 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
       if k ≤ n then (Nat.choose n k : ℝ) * gamma k else 0 := by
   classical
   by_cases hk : k ≤ n
-  · have hmem : k ∈ Finset.range (n + 1) := by simpa [Nat.lt_succ_iff] using hk
+  · have hmem : k ∈ Finset.range (n + 1) := by simp_all
     rw [jensenPolynomial, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_single k]
     · simp [hk]
     · intro b hb hbk
       simp [Polynomial.coeff_monomial, hbk]
-    · exact fun hnot => (hnot hmem).elim
+    · simp_all
   · rw [jensenPolynomial, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_zero]
     · simp [hk]
     · intro b hb
       have hb_le : b ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
-      have hne : k ≠ b := by
-        intro hkb
-        subst k
-        exact hk hb_le
+      have hne : k ≠ b := by grind
       have hbk : b ≠ k := Ne.symm hne
       simp [Polynomial.coeff_monomial, hbk]
 
@@ -233,8 +223,7 @@ theorem jensenPolynomial_normalized_coeff_eq_of_natDegree_le
   by_cases hk : k ≤ n
   · have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
       Nat.cast_choose_ne_zero (R := ℝ) hk
-    simp only [hk, if_true]
-    field_simp [hchoose]
+    grind
   · have hklt : n < k := Nat.lt_of_not_le hk
     have hpcoeff : p.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hklt)
@@ -256,8 +245,7 @@ theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
   ext k
   rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_X_add_one_pow]
   by_cases hk : k ≤ n
-  · simp only [hk, if_true]
-    ring
+  · grind
   · have hlt : n < k := Nat.lt_of_not_le hk
     simp [hk, Nat.choose_eq_zero_of_lt hlt]
 
@@ -270,10 +258,7 @@ theorem jensenPolynomial_mul_sequence_eq_diagonalOperator
       diagonalOperator gamma (jensenPolynomial n delta) := by
   ext k
   rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_jensenPolynomial]
-  by_cases hk : k ≤ n
-  · simp only [hk, if_true]
-    ring
-  · simp [hk]
+  grind
 
 /-- The Jensen polynomial of a constant diagonal sequence. -/
 theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
@@ -486,8 +471,7 @@ theorem IsFiniteMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
   intro p hp hsplit
   rw [← diagonalOperator_comp]
   rcases hdelta hp hsplit with hzero | hsplit_delta
-  · left
-    simp [hzero]
+  · simp_all
   · exact hgamma ((natDegree_diagonalOperator_le delta p).trans hp) hsplit_delta
 
 theorem IsFinitePFMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
@@ -502,14 +486,11 @@ theorem isFiniteMultiplierSequence_const_sequence (n : ℕ) (a : ℝ) :
     IsFiniteMultiplierSequence n (fun _ => a) := by
   intro p _ hsplit
   by_cases ha : a = 0
-  · left
-    simp [ha]
+  · simp_all
   by_cases hp0 : p = 0
-  · left
-    simp [hp0]
-  · right
-    rw [diagonalOperator_const_sequence]
-    exact (isRealRooted_C_mul hp0 hsplit ha).2
+  · simp_all
+  · rw [diagonalOperator_const_sequence]
+    simp_all
 
 theorem isFinitePFMultiplierSequence_const_sequence
     {n : ℕ} {a : ℝ} (ha : 0 ≤ a) :
@@ -544,7 +525,7 @@ theorem isFiniteMultiplierSequence_of_natDegree_le_one
     IsFiniteMultiplierSequence n gamma := by
   intro p hp _
   by_cases hzero : diagonalOperator gamma p = 0
-  · exact Or.inl hzero
+  · simp_all
   · exact Or.inr <|
       (isRealRooted_of_natDegree_le_one hzero
         ((natDegree_diagonalOperator_le gamma p).trans (hp.trans hn))).2
@@ -578,8 +559,7 @@ private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → �
   rw [coeff_jensenPolynomial] at hcoeff
   have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) hk
-  simp only [hk, if_true, mul_eq_zero, hchoose, false_or] at hcoeff
-  exact hcoeff
+  simp_all
 
 /-- Left adjacent log-concavity inequality extracted from a degree-three PF
 Jensen polynomial. -/
@@ -601,7 +581,7 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → �
         hj.hasNonnegCoeffs hj.eq_zero_or_splits
     rcases Nat.eq_or_lt_of_le hdeg_ge with hdeg_two' | hdeg_gt
     · have hdeg_two : (jensenPolynomial 3 gamma).natDegree = 2 := hdeg_two'.symm
-      have h := hulc 1 (by norm_num) (by rw [hdeg_two]; norm_num)
+      have h := hulc 1 (by norm_num) (by grind)
       rw [hdeg_two] at h
       norm_num [coeff_jensenPolynomial] at h
       nlinarith
@@ -653,10 +633,10 @@ theorem jensenPolynomial_three_logConcave_of_eq_zero_or_splits
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   jensen_three_logConcave_of_natDegree_le_three
     (natDegree_jensenPolynomial_le 3 gamma) hs
-    (by norm_num [coeff_jensenPolynomial])
-    (by norm_num [coeff_jensenPolynomial])
-    (by norm_num [coeff_jensenPolynomial])
-    (by norm_num [coeff_jensenPolynomial])
+    (by simp)
+    (by simp)
+    (by simp)
+    (by simp)
 
 /-- Adjacent log-concavity inequalities for a splitting Jensen cubic of exact
 degree three.  This is the coefficient form of the two cubic Newton
@@ -711,7 +691,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
     lia
   subst n
   by_cases hzero : diagonalOperator gamma p = 0
-  · exact Or.inl hzero
+  · simp_all
   by_cases hq_le_one : (diagonalOperator gamma p).natDegree ≤ 1
   · exact Or.inr ((isRealRooted_of_natDegree_le_one hzero hq_le_one).2)
   have hpdeg : p.natDegree = 2 := by
@@ -740,7 +720,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
   have hroot : (diagonalOperator gamma p).IsRoot x := by
     rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
     simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    linear_combination hx
+    grind
   exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
 
 /-- Degree-two finite multiplier sequences are classified by the PF Jensen
@@ -913,7 +893,7 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
     IsFinitePFMultiplierSequence n gamma := by
   intro p hp hdeg
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
+  · simp_all
   have hsplit := hmult hdeg (hp.ne_zero_and_splits hp0).2
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplit

@@ -35,30 +35,10 @@ theorem exists_pos_lt_and_two_mul_le_abs_sub_toFinset
   | insert a S ha ih =>
       obtain ⟨ε₁, hε₁_pos, _, hsep₁⟩ := ih
       obtain ⟨η, hη_pos, hη⟩ :=
-        exists_pos_le_abs_sub_of_forall_mem_ne S.val a fun r hr hra =>
-          ha (by simpa [hra] using hr)
+        exists_pos_le_abs_sub_of_forall_mem_ne S.val a fun r hr hra ↦
+          ha (by simp_all)
       let ε : ℝ := min ε₁ (min (η / 2) (ρ / 2))
-      refine ⟨ε, ?_, ?_, ?_⟩
-      · exact lt_min hε₁_pos (lt_min (by positivity) (by positivity))
-      · have hερ₂ : ε ≤ ρ / 2 :=
-          le_trans (min_le_right ε₁ (min (η / 2) (ρ / 2)))
-            (min_le_right (η / 2) (ρ / 2))
-        linarith
-      · intro b hb c hc hbc
-        have hεη : 2 * ε ≤ η := by
-          have : ε ≤ η / 2 :=
-            le_trans (min_le_right ε₁ (min (η / 2) (ρ / 2)))
-              (min_le_left (η / 2) (ρ / 2))
-          linarith
-        have hεε₁ : 2 * ε ≤ 2 * ε₁ := by
-          have : ε ≤ ε₁ := min_le_left ε₁ (min (η / 2) (ρ / 2))
-          linarith
-        rw [Finset.mem_insert] at hb hc
-        rcases hb with rfl | hb <;> rcases hc with rfl | hc
-        · contradiction
-        · exact le_trans hεη (by simpa [abs_sub_comm] using hη c (by simpa using hc))
-        · exact le_trans hεη (hη b (by simpa using hb))
-        · exact le_trans hεε₁ (hsep₁ b hb c hc hbc)
+      refine ⟨ε, ?_, ?_, ?_⟩ <;> grind
 
 /-- `Multiset.Rel` is preserved under finite sums indexed by a `Finset`. -/
 private theorem rel_sum_of_forall {α β ι : Type*} {r : α → β → Prop} {s : Finset ι}
@@ -94,18 +74,15 @@ private theorem exists_rel_le_of_clusters
     refine rel_sum_of_forall fun r hr => ?_
     rw [Multiset.nsmul_singleton]
     refine rel_abs_sub_lt_of_repeated_left
-      (fun x hx => Multiset.eq_of_mem_replicate hx) (hball r hr) ?_
+      (fun x hx ↦ Multiset.eq_of_mem_replicate hx) (hball r hr) ?_
     simpa using (hcard r hr).symm
-  rwa [Multiset.toFinset_sum_count_nsmul_eq s] at hrel
+  simp_all
 
 /-- A point cannot lie in two `δ`-balls whose centers are `2δ`-separated. -/
 private theorem not_mem_ball_of_mem_ball_of_separated {a b q δ : ℝ}
     (hsep : 2 * δ ≤ |a - b|) (hqa : |q - a| < δ) :
     ¬ |q - b| < δ := by
-  cases abs_cases (a - b) <;>
-    cases abs_cases (q - a) <;>
-    cases abs_cases (q - b) <;>
-    linarith
+  grind
 
 /--
 Under `2δ`-separation of the centers, the `δ`-balls carved from `t` sum to a
@@ -127,14 +104,11 @@ private theorem sum_filter_ball_le {s t : Multiset ℝ} {δ : ℝ}
         simp [Multiset.count_filter]
   rw [hcount_sum, Finset.sum_ite, Finset.sum_const_zero, add_zero,
     Finset.sum_const, smul_eq_mul]
-  have hcard_le : (s.toFinset.filter (fun a => |q - a| < δ)).card ≤ 1 := by
-    refine Finset.card_le_one.mpr fun a ha b hb => ?_
-    rw [Finset.mem_filter] at ha hb
-    by_contra hab
-    exact not_mem_ball_of_mem_ball_of_separated
-      (hsep a ha.1 b hb.1 hab) ha.2 hb.2
+  have hcard_le : (s.toFinset.filter (fun a ↦ |q - a| < δ)).card ≤ 1 := by
+    refine Finset.card_le_one.mpr fun a ha b hb ↦ ?_
+    grind
   calc
-    (s.toFinset.filter (fun a => |q - a| < δ)).card * Multiset.count q t
+    (s.toFinset.filter (fun a ↦ |q - a| < δ)).card * Multiset.count q t
         ≤ 1 * Multiset.count q t :=
       Nat.mul_le_mul_right _ hcard_le
     _ = Multiset.count q t := one_mul _
@@ -159,15 +133,11 @@ theorem exists_rel_le_of_forall_le_count {s t : Multiset ℝ} {δ : ℝ}
           (hcount a h)
     else 0
   have hcluster : ∀ a (ha : a ∈ s.toFinset),
-      cluster a ≤ t.filter (fun q => |q - a| < δ) ∧
-        (cluster a).card = s.count a := fun a ha => by
-    have hchoose := Classical.choose_spec <|
-      exists_le_card_eq_of_le_card (t.filter (fun q => |q - a| < δ))
-        (hcount a ha)
-    have ha' : a ∈ s := by simpa using ha
-    simpa [cluster, ha, ha'] using hchoose
-  refine exists_rel_le_of_clusters cluster (fun a ha => (hcluster a ha).2) ?_ ?_
-  · exact fun a ha q hq =>
+      cluster a ≤ t.filter (fun q ↦ |q - a| < δ) ∧
+        (cluster a).card = s.count a := fun a ha ↦ by
+    grind
+  refine exists_rel_le_of_clusters cluster (fun a ha ↦ (hcluster a ha).2) ?_ ?_
+  · exact fun a ha q hq ↦
       (Multiset.mem_filter.mp (Multiset.mem_of_le (hcluster a ha).1 hq)).2
   · exact le_trans (Finset.sum_le_sum fun a ha => (hcluster a ha).1)
       (sum_filter_ball_le hsep)
@@ -203,9 +173,9 @@ theorem card_filter_gt_eq_of_forall_le_count_and_card_eq
   have hsum : (s.filter (fun r => r ≤ x)).card +
         (s.filter (fun r => x < r)).card =
       (t.filter (fun q => q ≤ x)).card +
-        (t.filter (fun q => x < q)).card := by
+        (t.filter (fun q ↦ x < q)).card := by
     rw [card_filter_le_add_card_filter_gt s x,
       card_filter_le_add_card_filter_gt t x, hcard]
-  exact Nat.le_antisymm (by lia) hgt
+  grind
 
 end Multiset

@@ -19,18 +19,16 @@ private lemma prod_map_sub_pos_iff_even {x : ℝ} :
   intro s
   induction s using Multiset.induction_on with
   | empty =>
-      intro _
       simp
   | cons a t ih =>
       intro hmem
       have ha : a ≠ x := hmem a (Multiset.mem_cons_self a t)
       have htmem : ∀ r ∈ t, r ≠ x := fun r hr => hmem r (Multiset.mem_cons_of_mem hr)
-      have hPne : (t.map (fun r => x - r)).prod ≠ 0 := by
+      have hPne : (t.map (fun r ↦ x - r)).prod ≠ 0 := by
         intro hz
         rw [Multiset.prod_eq_zero_iff, Multiset.mem_map] at hz
-        obtain ⟨r, hr, hrz⟩ := hz
-        exact htmem r hr (by linarith [sub_eq_zero.mp hrz])
-      set P := (t.map (fun r => x - r)).prod
+        grind
+      set P := (t.map (fun r ↦ x - r)).prod
       rw [Multiset.map_cons, Multiset.prod_cons]
       rcases lt_or_gt_of_ne ha with hlt | hgt
       · have hxa : 0 < x - a := by linarith
@@ -44,17 +42,7 @@ private lemma prod_map_sub_pos_iff_even {x : ℝ} :
             nlinarith
           · intro h
             nlinarith
-        rw [hprod]
-        have hPlt : P < 0 ↔ ¬ 0 < P := by
-          constructor
-          · intro h
-            linarith
-          · intro hnotpos
-            rcases lt_trichotomy P 0 with hneg | hzero | hpos
-            · exact hneg
-            · exact absurd hzero hPne
-            · exact absurd hpos hnotpos
-        rw [hPlt, ih htmem]
+        grind
 
 /-- Sign of `prod (x - r)` over a multiset of reals, normalized by
 `(-1) ^ #{r | x < r}`, provided none of the factors vanish. -/
@@ -75,9 +63,7 @@ private lemma prod_sub_mul_neg_one_pow_pos
         rw [Multiset.map_cons, Multiset.prod_cons, hfilt]
         have hpos : 0 < x - a := by linarith
         nlinarith [iht]
-      · have hfilt : ((a ::ₘ t).filter (x < ·)) = a ::ₘ t.filter (x < ·) := by
-          rw [Multiset.filter_cons]
-          simp [hgt]
+      · have hfilt : ((a ::ₘ t).filter (x < ·)) = a ::ₘ t.filter (x < ·) := by simp_all
         rw [Multiset.map_cons, Multiset.prod_cons, hfilt, Multiset.card_cons, pow_succ]
         have hneg : x - a < 0 := by linarith
         nlinarith [iht]
@@ -92,10 +78,10 @@ theorem Splits.eval_mul_leadingCoeff_neg_one_pow_pos
     Polynomial.leadingCoeff_ne_zero.mpr hp_ne
   have hroots : ∀ r ∈ p.roots, r ≠ x := by
     intro r hr hrx
-    exact hx (hrx ▸ Polynomial.isRoot_of_mem_roots hr)
+    simp_all
   have hkey : p.eval x * p.leadingCoeff * (-1) ^ (p.roots.filter (x < ·)).card =
       (p.leadingCoeff * p.leadingCoeff) *
-        ((p.roots.map (fun r => x - r)).prod *
+        ((p.roots.map (fun r ↦ x - r)).prod *
           (-1) ^ (p.roots.filter (x < ·)).card) := by
     rw [hp.eval_eq_prod_roots x]
     ring
@@ -113,7 +99,7 @@ theorem Splits.eval_pos_iff_even_card_roots_gt
     leadingCoeff_ne_zero.mp (ne_of_gt hlc)
   have hmem : ∀ r ∈ p.roots, r ≠ x := by
     intro r hr hrx
-    exact hx (hrx ▸ ((Polynomial.mem_roots hp_ne).mp hr))
+    simp_all
   rw [hp.eval_eq_prod_roots x, mul_pos_iff_of_pos_left hlc]
   exact prod_map_sub_pos_iff_even hmem
 
@@ -127,19 +113,8 @@ theorem Splits.eval_neg_iff_odd_card_roots_gt
   have hpos : 0 < p.eval x ↔ Even n :=
     hp.eval_pos_iff_even_card_roots_gt hlc hx
   have hne : p.eval x ≠ 0 :=
-    fun h => hx (by simpa [Polynomial.IsRoot.def] using h)
-  constructor
-  · intro hneg
-    rw [← Nat.not_even_iff_odd]
-    intro heven
-    have hpos_eval : 0 < p.eval x := hpos.mpr heven
-    linarith
-  · intro hodd
-    rw [← Nat.not_even_iff_odd] at hodd
-    have hnot_pos : ¬ 0 < p.eval x := by
-      intro hpos_eval
-      exact hodd (hpos.mp hpos_eval)
-    exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hne
+    fun h ↦ hx (by simp_all)
+  grind
 
 /-- For two splitting polynomials with positive leading coefficients, the
 parity of the combined count of roots strictly above `x` records whether their
@@ -158,10 +133,7 @@ multiplicity, partition the roots of a splitting polynomial. -/
 theorem Splits.card_filter_le_add_card_filter_lt_eq_natDegree
     {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
     (p.roots.filter (· ≤ x)).card + (p.roots.filter (x < ·)).card = p.natDegree := by
-  have hgt : p.roots.filter (x < ·) = p.roots.filter (fun r => ¬ r ≤ x) := by
-    apply Multiset.filter_congr
-    intro r _
-    simp [not_le]
+  have hgt : p.roots.filter (x < ·) = p.roots.filter (fun r ↦ ¬ r ≤ x) := by simp
   rw [hgt, ← Multiset.card_add, Multiset.filter_add_not, ← hp.natDegree_eq_card_roots]
 
 /-- For two equal-degree splitting polynomials with positive leading
@@ -178,14 +150,7 @@ theorem Splits.even_card_roots_le_add_iff_eval_pos_iff
   have hqp := hq.card_filter_le_add_card_filter_lt_eq_natDegree x
   have hep := hp.eval_pos_iff_even_card_roots_gt hp_pos hxp
   have heq := hq.eval_pos_iff_even_card_roots_gt hq_pos hxq
-  rw [hep, heq, ← Nat.even_add]
-  have key : Even (((p.roots.filter (· ≤ x)).card + (q.roots.filter (· ≤ x)).card) +
-      ((p.roots.filter (x < ·)).card + (q.roots.filter (x < ·)).card)) := by
-    refine ⟨p.natDegree, ?_⟩
-    have hd : q.natDegree = p.natDegree := hdeg
-    lia
-  rw [Nat.even_add] at key
-  exact key
+  grind
 
 /-- Difference form of `Splits.even_card_roots_le_add_iff_eval_pos_iff`.
 
@@ -203,7 +168,7 @@ theorem Splits.even_intCard_roots_le_sub_iff_eval_pos_iff
         (q.roots.filter (· ≤ x)).card) ↔
       (0 < p.eval x ↔ 0 < q.eval x)) := by
   have hsum := hp.even_card_roots_le_add_iff_eval_pos_iff hq hp_pos hq_pos hdeg hxp hxq
-  rw [← hsum, Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, Nat.even_add]
+  grind
 
 /-- Odd form of `Splits.even_intCard_roots_le_sub_iff_eval_pos_iff`.
 
@@ -235,6 +200,6 @@ theorem Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff
       (0 < p.eval x ↔ 0 < q.eval x)) := by
   have hep := hp.eval_pos_iff_even_card_roots_gt hp_pos hxp
   have heq := hq.eval_pos_iff_even_card_roots_gt hq_pos hxq
-  rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, ← hep, ← heq]
+  grind
 
 end Polynomial

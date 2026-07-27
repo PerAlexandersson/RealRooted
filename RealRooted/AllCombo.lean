@@ -97,15 +97,14 @@ lemma TDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
   constructor
   · intro hT
     by_cases hp0 : p = 0
-    · exact hp0
+    · simp_all
     · by_cases hdeg0 : p.natDegree = 0
       · have hconst : TDeriv eps p = p := by
           rw [eq_C_of_natDegree_eq_zero hdeg0, TDeriv, derivative_C]
           simp
-        exact hconst.symm.trans hT
+        simp_all
       · cases TDeriv_ne_zero hp0 hT
-  · intro hp0
-    simp [hp0, TDeriv]
+  · simp_all
 
 lemma TDeriv_injective (eps : ℝ) : Function.Injective (TDeriv eps) := by
   intro p q hpq
@@ -147,11 +146,10 @@ lemma hasSimpleRoots_tderiv
       have hcoeff0 : p.coeff 0 = 0 := by
         rw [hp_eq, Polynomial.IsRoot.def, eval_C] at hp_root
         lia
-      have := hsimple.ne_zero
       grind
     · lia
   have hp_not_root : ¬ p.IsRoot a :=
-    fun hp_root =>
+    fun hp_root ↦
       not_isRoot_TDeriv_of_simple_root
         (ne_of_gt heps) hsimple.ne_zero hp_root (hsimple a hp_root) ha
   have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a :=
@@ -290,20 +288,14 @@ lemma neg_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted (-f) g := by
   intro α β
   have h := hall (-α) β
-  have he : C α * (-f) + C β * g = C (-α) * f + C β * g := by
-    rw [C_neg, neg_mul, mul_neg]
-  rw [he]
-  exact h
+  simp_all
 
 /-- Negating the right member preserves `AllComboRealRooted`. -/
 lemma neg_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f (-g) := by
   intro α β
   have h := hall α (-β)
-  have he : C α * f + C β * (-g) = C α * f + C (-β) * g := by
-    rw [C_neg, neg_mul, mul_neg]
-  rw [he]
-  exact h
+  simp_all
 
 /-- Two positive-leading polynomials of the same degree whose real linear
 combinations all split give a `PosComboRealRooted` pair: any strictly positive
@@ -321,17 +313,12 @@ lemma toPosComboRealRooted_of_sameDegree {f g : ℝ[X]}
   intro hzero
   have hpos : 0 < lam * f.leadingCoeff + μ * g.leadingCoeff :=
     add_pos (mul_pos hlam hf') (mul_pos hμ hg')
-  have hg2 : g.coeff f.natDegree = g.leadingCoeff := by
-    rw [hdeg]
-    rfl
+  have hg2 : g.coeff f.natDegree = g.leadingCoeff := by simp_all
   have hcoeff : (C lam * f + C μ * g).coeff f.natDegree
       = lam * f.leadingCoeff + μ * g.leadingCoeff := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hg2]
-    rfl
-  have hzc : (C lam * f + C μ * g).coeff f.natDegree = 0 := by
-    rw [hzero, coeff_zero]
-  rw [hcoeff] at hzc
-  exact hpos.ne' hzc
+    simp
+  simp_all
 
 /-- If the right member has strictly larger degree and positive leading
 coefficient, all-combination real-rootedness upgrades to
@@ -351,11 +338,10 @@ lemma toPosComboRealRooted_of_natDegree_lt {f g : ℝ[X]}
   have hf0 : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt hdeg
   have hcoeff : (C lam * f + C μ * g).coeff g.natDegree = μ * g.leadingCoeff := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hf0, mul_zero, zero_add]
-    rfl
+    simp
   have hzc : (C lam * f + C μ * g).coeff g.natDegree = 0 := by
-    rw [hzero, coeff_zero]
-  rw [hcoeff] at hzc
-  exact hpos.ne' hzc
+    simp_all
+  grind
 
 /-- Symmetric to `toPosComboRealRooted_of_natDegree_lt`: if the left member has
 strictly larger degree and positive leading coefficient, all-combination
@@ -373,11 +359,10 @@ lemma toPosComboRealRooted_of_natDegree_gt {f g : ℝ[X]}
   have hg0 : g.coeff f.natDegree = 0 := coeff_eq_zero_of_natDegree_lt hdeg
   have hcoeff : (C lam * f + C μ * g).coeff f.natDegree = lam * f.leadingCoeff := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hg0, mul_zero, add_zero]
-    rfl
+    simp
   have hzc : (C lam * f + C μ * g).coeff f.natDegree = 0 := by
-    rw [hzero, coeff_zero]
-  rw [hcoeff] at hzc
-  exact hpos.ne' hzc
+    simp_all
+  grind
 
 end AllComboRealRooted
 

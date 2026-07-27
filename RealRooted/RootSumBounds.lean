@@ -44,8 +44,8 @@ private theorem Splits.roots_sum_eq_neg_nextCoeff_div_leadingCoeff {p : ℝ[X]}
     p.roots.sum = -p.nextCoeff / p.leadingCoeff := by
   have hnext : p.nextCoeff = -p.leadingCoeff * p.roots.sum :=
     hp.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
-  field_simp [hlc]
-  nlinarith
+  simp_all
+
 
 /-- In the degree-jump-by-one case, the next coefficient of `f + C μ * g` is
 the leading coefficient of `f` plus the scaled next-highest coefficient of
@@ -93,16 +93,9 @@ private theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
   have hmul₂ : μ * (4 * (|B| * b + 1)) < a := by
     dsimp [δ₂] at hμδ₂
     rwa [lt_div_iff₀ hden₂] at hμδ₂
-  have hc_small : |μ * c| < a / 2 := by
-    rw [abs_mul, abs_of_pos hμ]
-    have hc_nonneg : 0 ≤ |c| := abs_nonneg c
-    nlinarith
-  have hnum : - (a + μ * c) < -a / 2 := by
-    have hlow : -(a / 2) < μ * c := (abs_lt.mp hc_small).1
-    nlinarith
-  have hBsmall : |B| * (μ * b) < a / 4 := by
-    have hB_nonneg : 0 ≤ |B| := abs_nonneg B
-    nlinarith
+  have : |μ * c| < a / 2 := by grind
+  have : - (a + μ * c) < -a / 2 := by grind
+  have : |B| * (μ * b) < a / 4 := by grind
   have hB_lower : -a / 4 < B * (μ * b) := by
     have hBneg : -|B| ≤ B := neg_abs_le B
     have hprod_nonneg : 0 ≤ μ * b := by positivity
@@ -135,17 +128,9 @@ private theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
   have hnext : (f + C μ * g).nextCoeff =
       f.leadingCoeff + μ * g.coeff f.natDegree :=
     Polynomial.nextCoeff_add_C_mul_of_natDegree_succ hμ_ne hdeg
-  have hlc_ne : (f + C μ * g).leadingCoeff ≠ 0 := by
-    simpa [hlc] using ne_of_gt (mul_pos hμ hg_pos)
+  have hlc_ne : (f + C μ * g).leadingCoeff ≠ 0 := by grind
   have hsum := hp_split.roots_sum_eq_neg_nextCoeff_div_leadingCoeff hlc_ne
-  calc
-    (f + C μ * g).roots.sum =
-        -((f + C μ * g).nextCoeff) / (f + C μ * g).leadingCoeff := hsum
-    _ = - (f.leadingCoeff + μ * g.coeff f.natDegree) /
-        (μ * g.leadingCoeff) := by
-      rw [hnext, hlc]
-    _ < (g.natDegree : ℝ) * A := hδ μ hμ hμδ
-    _ = ((f + C μ * g).natDegree : ℝ) * A := by rw [hnat]
+  simp_all
 
 /-- Polynomial-root form: if the sum of the roots of `p` is strictly less than
 `(p.roots.card : ℝ) * A`, then `p` has a root strictly below `A`. -/
