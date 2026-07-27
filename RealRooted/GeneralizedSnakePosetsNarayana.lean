@@ -1315,6 +1315,21 @@ theorem modifiedNarayanaTuran_five (r : ℝ) :
   norm_num
   ring
 
+/-- Explicit `m = 6` Narayana Turan determinant. -/
+theorem modifiedNarayanaTuran_six (r : ℝ) :
+    modifiedNarayanaTuran 6 r =
+      -r * (r ^ 10 + 15 * r ^ 9 + 120 * r ^ 8 + 470 * r ^ 7 +
+        1065 * r ^ 6 + 1377 * r ^ 5 + 1065 * r ^ 4 + 470 * r ^ 3 +
+          120 * r ^ 2 + 15 * r + 1) := by
+  rw [modifiedNarayanaTuran, modifiedNarayanaPolynomial_eq_coeffPolynomial 5,
+    modifiedNarayanaCoeffPolynomial_five,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 6,
+    modifiedNarayanaCoeffPolynomial_six,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 7,
+    modifiedNarayanaCoeffPolynomial_seven]
+  norm_num
+  ring
+
 private theorem modifiedNarayanaTuran_two_factor_nonneg (r : ℝ) :
     0 ≤ r ^ 2 + r + 1 := by
   have hs : 0 ≤ (2 * r + 1) ^ 2 := sq_nonneg (2 * r + 1)
@@ -1396,6 +1411,40 @@ private theorem modifiedNarayanaTuran_five_factor_nonneg_of_nonpos
     ring
   rwa [hrewrite]
 
+private theorem modifiedNarayanaTuran_six_factor_nonneg_of_nonpos
+    {r : ℝ} (hr : r ≤ 0) :
+    0 ≤ r ^ 10 + 15 * r ^ 9 + 120 * r ^ 8 + 470 * r ^ 7 +
+      1065 * r ^ 6 + 1377 * r ^ 5 + 1065 * r ^ 4 + 470 * r ^ 3 +
+        120 * r ^ 2 + 15 * r + 1 := by
+  let y : ℝ := -r
+  have hy : 0 ≤ y := by
+    dsimp [y]
+    linarith
+  have hdecomp :
+      y ^ 10 - 15 * y ^ 9 + 120 * y ^ 8 - 470 * y ^ 7 +
+        1065 * y ^ 6 - 1377 * y ^ 5 + 1065 * y ^ 4 - 470 * y ^ 3 +
+          120 * y ^ 2 - 15 * y + 1 =
+        (y - 1) ^ 6 * (((y - 1) ^ 2 - (5 / 2) * y) ^ 2) +
+          (115 / 4) * y ^ 2 * (y - 1) ^ 6 +
+            50 * y ^ 4 * (y - 1) ^ 2 + 25 * y ^ 5 := by
+    ring
+  have hnonneg :
+      0 ≤ y ^ 10 - 15 * y ^ 9 + 120 * y ^ 8 - 470 * y ^ 7 +
+        1065 * y ^ 6 - 1377 * y ^ 5 + 1065 * y ^ 4 - 470 * y ^ 3 +
+          120 * y ^ 2 - 15 * y + 1 := by
+    rw [hdecomp]
+    positivity
+  have hrewrite :
+      r ^ 10 + 15 * r ^ 9 + 120 * r ^ 8 + 470 * r ^ 7 +
+        1065 * r ^ 6 + 1377 * r ^ 5 + 1065 * r ^ 4 + 470 * r ^ 3 +
+          120 * r ^ 2 + 15 * r + 1 =
+      y ^ 10 - 15 * y ^ 9 + 120 * y ^ 8 - 470 * y ^ 7 +
+        1065 * y ^ 6 - 1377 * y ^ 5 + 1065 * y ^ 4 - 470 * y ^ 3 +
+          120 * y ^ 2 - 15 * y + 1 := by
+    dsimp [y]
+    ring
+  rwa [hrewrite]
+
 /-- The first three Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_three
     {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₃ : m ≤ 3) (hr : r ≤ 0) :
@@ -1459,6 +1508,33 @@ theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_five :
     ModifiedNarayanaTuranNonnegOnNonposUpToStatement 5 := by
   intro m r hm₁ hm₅ hr
   exact modifiedNarayanaTuran_nonneg_of_le_five hm₁ hm₅ hr
+
+/-- The first six Narayana Turan inequalities on nonpositive inputs. -/
+theorem modifiedNarayanaTuran_nonneg_of_le_six
+    {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₆ : m ≤ 6) (hr : r ≤ 0) :
+    0 ≤ modifiedNarayanaTuran m r := by
+  interval_cases m
+  · rw [modifiedNarayanaTuran_one]
+    linarith
+  · rw [modifiedNarayanaTuran_two]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_two_factor_nonneg r)
+  · rw [modifiedNarayanaTuran_three]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_three_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_four]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_four_factor_nonneg r)
+  · rw [modifiedNarayanaTuran_five]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_five_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_six]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_six_factor_nonneg_of_nonpos hr)
+
+/-- Bounded Turan package through `m = 6`. -/
+theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_six :
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 6 := by
+  intro m r hm₁ hm₆ hr
+  exact modifiedNarayanaTuran_nonneg_of_le_six hm₁ hm₆ hr
 
 /-- At a root of the shifted Lemma 3.4 left-hand polynomial, the right-hand
 polynomial sign test is exactly the negative Narayana Turan determinant. -/
@@ -1569,6 +1645,18 @@ theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_five
   lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₅ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_five hr
 
+/-- Checked shifted Lemma 3.4 root-sign test through `m = 6`. -/
+theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_six
+    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₆ : m ≤ 6)
+    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
+    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₆ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_six hr
+
 /-- At a root of the paper-shaped Lemma 3.4 left-hand polynomial, the
 right-hand sign test is exactly the negative Narayana Turan determinant. -/
 theorem lemma34ModifiedNarayana_right_eval_mul_prev_eq_neg_turan
@@ -1673,6 +1761,18 @@ theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_five
       (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
   lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₅ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_five hr
+
+/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 6`. -/
+theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_six
+    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₆ : m ≤ 6)
+    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₆ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_six hr
 
 @[simp] theorem modifiedNarayanaPolynomial_two :
     modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
