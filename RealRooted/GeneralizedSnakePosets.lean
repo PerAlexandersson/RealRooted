@@ -1956,6 +1956,22 @@ theorem truncatedStaircaseBottomRowExpansion_all (n i : ℕ) :
   rw [sum_nonNestingPlacementsWithoutBottomRow_eq_truncatedStaircaseRookPolynomial]
   rw [sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum]
 
+/-- The one-row truncated staircase with `n` cells has rook polynomial
+`1 + nX`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_one_row (n : ℕ) :
+    truncatedStaircaseRookPolynomial n 1 = 1 + C (n : ℝ) * X := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all n 0
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
+  rw [hbottom]
+  induction n with
+  | zero =>
+      simp
+  | succ n _ =>
+      rw [List.range_succ, List.map_append, List.sum_append]
+      simp [Nat.cast_succ, add_comm, mul_add, add_mul]
+      ring_nf
+
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
 def auxiliaryG : ℕ → ℝ[X] :=
@@ -2268,25 +2284,14 @@ theorem auxiliaryG_five_of_bottom_row_expansion_statements
 `1 + X`. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_one_one :
     truncatedStaircaseRookPolynomial 1 1 = 1 + X := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 1 0
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
-  simpa using hbottom
+  rw [truncatedStaircaseRookPolynomial_one_row]
+  norm_num
 
 /-- The one-row truncated staircase with six cells has rook polynomial
 `1 + 6X`. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_six_one :
-    truncatedStaircaseRookPolynomial 6 1 = 1 + C (6 : ℝ) * X := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 0
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [show List.range (6 - 0) = [0, 1, 2, 3, 4, 5] by rfl] at hbottom
-  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
-    add_zero] at hbottom
-  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
-  rw [hbottom]
-  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  rw [hC6]
-  ring_nf
+    truncatedStaircaseRookPolynomial 6 1 = 1 + C (6 : ℝ) * X :=
+  truncatedStaircaseRookPolynomial_one_row 6
 
 /-- The two-row truncated staircase with row lengths six and five has rook
 polynomial `1 + 11X + 15X^2`. -/
@@ -2542,17 +2547,8 @@ and one has rook polynomial
 /-- The one-row truncated staircase with seven cells has rook polynomial
 `1 + 7X`. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_seven_one :
-    truncatedStaircaseRookPolynomial 7 1 = 1 + C (7 : ℝ) * X := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 7 0
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [show List.range (7 - 0) = [0, 1, 2, 3, 4, 5, 6] by rfl] at hbottom
-  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
-    add_zero] at hbottom
-  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
-  rw [hbottom]
-  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
-  rw [hC7]
-  ring_nf
+    truncatedStaircaseRookPolynomial 7 1 = 1 + C (7 : ℝ) * X :=
+  truncatedStaircaseRookPolynomial_one_row 7
 
 /-- The two-row truncated staircase with row lengths seven and six has rook
 polynomial `1 + 13X + 21X^2`. -/
