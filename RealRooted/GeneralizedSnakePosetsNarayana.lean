@@ -644,6 +644,27 @@ theorem modifiedNarayanaPolynomial_roots_nonpos (n : ℕ) :
     ∀ r ∈ (modifiedNarayanaPolynomial n).roots, r ≤ 0 :=
   (modifiedNarayanaPolynomial_isPFPolynomial n).roots_nonpos
 
+/-- Differ-by-one interlacing for a quadratic whose roots lie between the
+ordered roots of a cubic. -/
+theorem interlaces_of_quadratic_cubic_root_lists
+    {g f : ℝ[X]} {a b c u v : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 2)
+    (hf_roots : f.roots = (↑[a, b, c] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v) (hvc : v ≤ c) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c], [u, v],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hab.trans hbc]
+  · simp [huv]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc]
+
 /-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
 roots of a quartic. -/
 theorem interlaces_of_cubic_quartic_root_lists
@@ -764,14 +785,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
   have hvc : v ≤ c := by
     dsimp [v, c]
     nlinarith [sq_nonneg (3 * Real.sqrt (21 : ℝ) - (7 + Real.sqrt (28 : ℝ)))]
-  refine ⟨⟨hP_ne, hP_splits⟩, ⟨hG_ne, hG_splits⟩, ?_, [a, b, c], [u, v],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hGdeg, hPdeg]
-  · simp [hab, hbc, hab.trans hbc]
-  · simp [huv]
-  · rw [hP_roots]
-  · rw [hG_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc]
+  exact interlaces_of_quadratic_cubic_root_lists hP_ne hP_splits hG_ne hG_splits
+    hPdeg hGdeg hP_roots hG_roots hab hbc huv hau hub hbv hvc
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
