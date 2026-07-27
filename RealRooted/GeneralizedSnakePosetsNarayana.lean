@@ -765,5 +765,289 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_three
   · exact lemma33AuxiliaryGInterlaces_modified_two
   · exact lemma33AuxiliaryGInterlaces_modified_three
 
+/-- The `n = 4` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+interlacing form. -/
+theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
+    Interlaces (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
+  let s : ℝ := Real.sqrt (7 : ℝ)
+  let α : ℝ := Real.sqrt ((28 : ℝ) + 10 * s)
+  let β : ℝ := Real.sqrt ((28 : ℝ) - 10 * s)
+  let γ : ℝ := Real.sqrt (12 : ℝ)
+  let a : ℝ := (-(5 : ℝ) - s - α) / 2
+  let b : ℝ := (-(5 : ℝ) + s - β) / 2
+  let c : ℝ := (-(5 : ℝ) + s + β) / 2
+  let d : ℝ := (-(5 : ℝ) - s + α) / 2
+  let u : ℝ := (-(4 : ℝ) - γ) / 2
+  let v : ℝ := -(1 : ℝ)
+  let w : ℝ := (-(4 : ℝ) + γ) / 2
+  have hGfactor :
+      FiniteSkewBoard.auxiliaryG 4 =
+        C (4 : ℝ) * (X - C v) *
+          (C (1 : ℝ) * X ^ 2 + C (4 : ℝ) * X + C (1 : ℝ)) := by
+    rw [FiniteSkewBoard.auxiliaryG_four]
+    dsimp [v]
+    have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
+    have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+    have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+      Polynomial.C_eq_natCast (R := ℝ) 20
+    have hCneg1 : (C (-(1 : ℝ)) : ℝ[X]) = -1 := by simp
+    rw [hC1, hC4, hC20, hCneg1]
+    ring_nf
+  have hGdeg : (FiniteSkewBoard.auxiliaryG 4).natDegree = 3 := by
+    rw [FiniteSkewBoard.auxiliaryG_four]
+    compute_degree!
+  have hG_ne : FiniteSkewBoard.auxiliaryG 4 ≠ 0 := by
+    intro hzero
+    rw [hzero] at hGdeg
+    norm_num at hGdeg
+  have hquadG_deg :
+      (C (1 : ℝ) * X ^ 2 + C (4 : ℝ) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadG_ne :
+      (C (1 : ℝ) * X ^ 2 + C (4 : ℝ) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadG_deg
+    norm_num at hquadG_deg
+  have hXv_ne : X - C v ≠ 0 := X_sub_C_ne_zero v
+  have hG_splits : (FiniteSkewBoard.auxiliaryG 4).Splits := by
+    rw [hGfactor]
+    exact
+      ((Polynomial.Splits.C (4 : ℝ)).mul (Polynomial.Splits.X_sub_C v)).mul
+        (quadraticPoly_splits_of_discrim_nonneg (by norm_num)
+          (by norm_num [discrim]))
+  have hG_roots :
+      (FiniteSkewBoard.auxiliaryG 4).roots = (↑[u, v, w] : Multiset ℝ) := by
+    rw [hGfactor]
+    rw [roots_mul
+      (mul_ne_zero (mul_ne_zero (Polynomial.C_ne_zero.mpr (by norm_num)) hXv_ne)
+        hquadG_ne)]
+    rw [roots_mul (mul_ne_zero (Polynomial.C_ne_zero.mpr (by norm_num)) hXv_ne)]
+    rw [roots_C, roots_X_sub_C]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := (4 : ℝ))
+      (c := (1 : ℝ)) (by norm_num) (by norm_num)]
+    dsimp [u, v, w, γ]
+    norm_num
+    rfl
+  have hPfactor :
+      modifiedNarayanaPolynomial 4 =
+        (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) + s) * X + C (1 : ℝ)) *
+          (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) - s) * X + C (1 : ℝ)) := by
+    rw [modifiedNarayanaPolynomial_four]
+    dsimp [s]
+    have hs_sq' : Real.sqrt (7 : ℝ) ^ 2 = (7 : ℝ) :=
+      Real.sq_sqrt (by norm_num)
+    have hCsq : (C (Real.sqrt (7 : ℝ)) : ℝ[X]) ^ 2 = C (7 : ℝ) := by
+      rw [← map_pow, hs_sq']
+    have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
+    have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+    have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+    have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+      Polynomial.C_eq_natCast (R := ℝ) 10
+    have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+      Polynomial.C_eq_natCast (R := ℝ) 20
+    rw [hC1, hC10, hC20]
+    norm_num
+    ring_nf
+    rw [hCsq, hC5, hC7]
+    ring_nf
+  have hquadA_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) + s) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadA_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) + s) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadA_deg
+    norm_num at hquadA_deg
+  have hquadB_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) - s) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadB_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((5 : ℝ) - s) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadB_deg
+    norm_num at hquadB_deg
+  have hs_sq : s ^ 2 = (7 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have hdiscA :
+      ((5 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) = (28 : ℝ) + 10 * s := by
+    nlinarith [hs_sq]
+  have hdiscB :
+      ((5 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) = (28 : ℝ) - 10 * s := by
+    nlinarith [hs_sq]
+  have hdiscA_nonneg :
+      0 ≤ ((5 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+    rw [hdiscA]
+    positivity
+  have hdiscB_nonneg :
+      0 ≤ ((5 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+    rw [hdiscB]
+    apply sub_nonneg.mpr
+    nlinarith [sq_nonneg (s - 5)]
+  have hP_roots :
+      (modifiedNarayanaPolynomial 4).roots = (↑[a, b, c, d] : Multiset ℝ) := by
+    rw [hPfactor]
+    rw [roots_mul (mul_ne_zero hquadA_ne hquadB_ne)]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((5 : ℝ) + s))
+      (c := (1 : ℝ)) (by norm_num) hdiscA_nonneg]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((5 : ℝ) - s))
+      (c := (1 : ℝ)) (by norm_num) hdiscB_nonneg]
+    rw [hdiscA, hdiscB]
+    norm_num
+    dsimp [a, b, c, d, α, β]
+    ring_nf
+    change
+      (↑[-5 / 2 + s * (1 / 2) + Real.sqrt (28 - s * 10) * (-1 / 2),
+        -5 / 2 + s * (-1 / 2) + Real.sqrt (28 + s * 10) * (-1 / 2),
+        -5 / 2 + s * (-1 / 2) + Real.sqrt (28 + s * 10) * (1 / 2),
+        -5 / 2 + s * (1 / 2) + Real.sqrt (28 - s * 10) * (1 / 2)] :
+        Multiset ℝ) = _
+    rw [Multiset.coe_eq_coe]
+    exact
+      List.Perm.trans (List.Perm.swap _ _ _)
+        (List.Perm.cons _ (List.Perm.cons _ (List.Perm.swap _ _ _)))
+  have hP_ne : modifiedNarayanaPolynomial 4 ≠ 0 := modifiedNarayanaPolynomial_ne_zero 4
+  have hP_splits : (modifiedNarayanaPolynomial 4).Splits :=
+    modifiedNarayanaPolynomial_splits 4
+  have hPdeg : (modifiedNarayanaPolynomial 4).natDegree = 4 := by
+    rw [modifiedNarayanaPolynomial_natDegree]
+  have hα_sq : α ^ 2 = (28 : ℝ) + 10 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  have hβ_sq : β ^ 2 = (28 : ℝ) - 10 * s := by
+    dsimp [β]
+    apply Real.sq_sqrt
+    nlinarith [sq_nonneg (s - 5)]
+  have hγ_sq : γ ^ 2 = (12 : ℝ) := by
+    dsimp [γ]
+    exact Real.sq_sqrt (by norm_num)
+  have hα_nonneg : 0 ≤ α := by
+    dsimp [α]
+    exact Real.sqrt_nonneg _
+  have hβ_nonneg : 0 ≤ β := by
+    dsimp [β]
+    exact Real.sqrt_nonneg _
+  have hγ_nonneg : 0 ≤ γ := by
+    dsimp [γ]
+    exact Real.sqrt_nonneg _
+  have hs_ge2 : (2 : ℝ) ≤ s := by
+    dsimp [s]
+    exact Real.le_sqrt_of_sq_le (by norm_num)
+  have hs_ge5div2 : (5 / 2 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_le3 : s ≤ (3 : ℝ) := by
+    dsimp [s]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hs_le8div3 : s ≤ (8 / 3 : ℝ) := by
+    dsimp [s]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hβ_le2 : β ≤ (2 : ℝ) := by
+    dsimp [β]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith [hs_ge5div2]
+  have hβ_ge1 : (1 : ℝ) ≤ β := by
+    dsimp [β]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith [hs_le8div3]
+  have hγ_ge1 : (1 : ℝ) ≤ γ := by
+    dsimp [γ]
+    exact Real.le_sqrt_of_sq_le (by norm_num)
+  have hγ_ge2 : (2 : ℝ) ≤ γ := by
+    dsimp [γ]
+    exact Real.le_sqrt_of_sq_le (by norm_num)
+  have hγ_le4 : γ ≤ (4 : ℝ) := by
+    dsimp [γ]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hα_ge1 : (1 : ℝ) ≤ α := by
+    dsimp [α]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith [hs_nonneg]
+  have h2s2_leα : 2 * s + 2 ≤ α := by
+    dsimp [α]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith [hs_sq, hs_ge2]
+  have hsumβ_leα : 2 * s + β ≤ α := by
+    linarith
+  have hsumβγ_le : s + β - 1 ≤ γ := by
+    dsimp [γ]
+    apply Real.le_sqrt_of_sq_le
+    have hs1_nonneg : 0 ≤ s - 1 := by linarith
+    have hmul : β * (s - 1) ≤ 2 * (s - 1) :=
+      mul_le_mul_of_nonneg_right hβ_le2 hs1_nonneg
+    nlinarith [hs_sq, hβ_sq, hmul, hs_ge5div2]
+  have hsumγα_le : γ + s + 1 ≤ α := by
+    dsimp [α]
+    apply Real.le_sqrt_of_sq_le
+    have hsp1_nonneg : 0 ≤ s + 1 := by positivity
+    have hmul : γ * (s + 1) ≤ 4 * (s + 1) :=
+      mul_le_mul_of_nonneg_right hγ_le4 hsp1_nonneg
+    nlinarith [hs_sq, hγ_sq, hmul]
+  have hab : a ≤ b := by
+    dsimp [a, b]
+    linarith
+  have hbc : b ≤ c := by
+    dsimp [b, c]
+    linarith
+  have hcd : c ≤ d := by
+    dsimp [c, d]
+    linarith
+  have huv : u ≤ v := by
+    dsimp [u, v]
+    linarith
+  have hvw : v ≤ w := by
+    dsimp [v, w]
+    linarith
+  have hau : a ≤ u := by
+    dsimp [a, u]
+    linarith
+  have hub : u ≤ b := by
+    dsimp [u, b]
+    linarith
+  have hbv : b ≤ v := by
+    dsimp [b, v]
+    linarith
+  have hvc : v ≤ c := by
+    dsimp [v, c]
+    linarith
+  have hcw : c ≤ w := by
+    dsimp [c, w]
+    linarith
+  have hwd : w ≤ d := by
+    dsimp [w, d]
+    linarith
+  refine ⟨⟨hP_ne, hP_splits⟩, ⟨hG_ne, hG_splits⟩, ?_, [a, b, c, d], [u, v, w],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hGdeg, hPdeg]
+  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd, hab.trans (hbc.trans hcd)]
+  · simp [huv, hvw, huv.trans hvw]
+  · rw [hP_roots]
+  · rw [hG_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
+
+/-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
+Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_four :
+    Prec (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
+  exact lemma33AuxiliaryGInterlaces_modified_four_interlaces.toPrec
+
+/-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal Lemma 3.3, for the
+concrete modified Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_four
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+  interval_cases n
+  · exact lemma33AuxiliaryGInterlaces_modified_base
+  · exact lemma33AuxiliaryGInterlaces_modified_two
+  · exact lemma33AuxiliaryGInterlaces_modified_three
+  · exact lemma33AuxiliaryGInterlaces_modified_four
+
 end GeneralizedSnakePosets
 end RealRooted
