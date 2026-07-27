@@ -1244,6 +1244,24 @@ theorem interlaces_of_quintic_sextic_root_lists
     hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
     hab hbc hcd hde her huv hvw hwz hzy hau hub hbv hvc hcw hwd hdz hze hey hyr
 
+/-- Exact factorization of the `G_6` auxiliary polynomial. -/
+theorem auxiliaryG_six_factor :
+    FiniteSkewBoard.auxiliaryG 6 =
+      C (2 : ℝ) * (X + 1) *
+        (C (3 : ℝ) * X ^ 4 + C (32 : ℝ) * X ^ 3 +
+          C (73 : ℝ) * X ^ 2 + C (32 : ℝ) * X + C (3 : ℝ)) := by
+  rw [FiniteSkewBoard.auxiliaryG_six]
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC32 : (C (32 : ℝ) : ℝ[X]) = 32 := Polynomial.C_eq_natCast (R := ℝ) 32
+  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 := Polynomial.C_eq_natCast (R := ℝ) 70
+  have hC73 : (C (73 : ℝ) : ℝ[X]) = 73 := Polynomial.C_eq_natCast (R := ℝ) 73
+  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 :=
+    Polynomial.C_eq_natCast (R := ℝ) 210
+  rw [hC2, hC3, hC6, hC32, hC70, hC73, hC210]
+  ring
+
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
