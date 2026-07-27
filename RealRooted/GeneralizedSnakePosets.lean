@@ -1,5 +1,4 @@
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+import RealRooted.GeneralizedSnakePosets.SnakeStaircase
 
 /-!
 # Generalized snake poset statement interfaces
