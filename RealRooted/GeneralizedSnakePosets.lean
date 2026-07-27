@@ -1,4 +1,4 @@
-import RealRooted.Basic
+import RealRooted.FolkloreLemma
 
 /-!
 # Generalized snake poset statement interfaces
@@ -3576,6 +3576,77 @@ theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
           ((1 + X) * P m + X * G m) by ring]
   rw [hrec_m, hrec_succ]
   ring
+
+/-- Assembly theorem for Braun--Jal Claim `(7)` from equation `(2)`, Lemma
+3.4, and the local side conditions used by the univariate conversion step.
+
+Lemma 3.3 is not hidden in this theorem: the remaining `G`-side root and degree
+facts are passed explicitly so later concrete work can discharge them without
+changing the assembly proof. -/
+theorem theorem41Claim7_of_section3
+    {P G : ℕ → ℝ[X]}
+    (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (hW_pos :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        HasPosLeadingCoeff ((C lam * X + C nu) * P m + P (m + 1)))
+    (hWU_lc :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * P m + P (m + 1)).leadingCoeff =
+          ((C lam * X + C nu) * P (m - 1) + P m).leadingCoeff)
+    (hdeg_UW :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * P (m - 1) + P m).natDegree + 1 =
+          ((C lam * X + C nu) * P m + P (m + 1)).natDegree)
+    (hW_nonpos :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ∀ r ∈ (((C lam * X + C nu) * P m + P (m + 1)).roots), r ≤ 0)
+    (hmid_pos :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        HasPosLeadingCoeff
+          (((C lam * X + C nu) * P (m - 1) + P m) +
+            X * ((C lam * X + C nu) * G (m - 1) + G m)))
+    (hV_pos :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        HasPosLeadingCoeff ((C lam * X + C nu) * G (m - 1) + G m))
+    (hV_nonpos :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ∀ r ∈ (((C lam * X + C nu) * G (m - 1) + G m).roots), r ≤ 0)
+    (hdeg_VU :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * G (m - 1) + G m).natDegree + 1 =
+          ((C lam * X + C nu) * P (m - 1) + P m).natDegree)
+    (hU_bound :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ∃ c : ℝ,
+          (∀ s ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), s ≤ c) ∧
+            c < 0) :
+    Theorem41Claim7Statement P G := by
+  intro m lam nu hm hlam hnu
+  let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
+  let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
+  let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
+  have hUW : Prec U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hW_eq : W = (1 + X) * U + X * V := by
+    simpa [U, V, W] using
+      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
+  have hU_nonpos : ∀ r ∈ U.roots, r ≤ 0 := by
+    rcases hU_bound hm hlam hnu with ⟨c, hU_le, hc_lt⟩
+    intro r hr
+    exact le_trans (hU_le r (by simpa [U] using hr)) (le_of_lt hc_lt)
+  exact
+    prec_component_of_prec_next_eq_add_X_mul hUW hW_eq
+      (by simpa [W] using hW_pos hm hlam hnu)
+      (by simpa [U, W] using hWU_lc hm hlam hnu)
+      (by simpa [U, W] using hdeg_UW hm hlam hnu)
+      (by simpa [W] using hW_nonpos hm hlam hnu)
+      hU_nonpos
+      (by simpa [U, V] using hmid_pos hm hlam hnu)
+      (by simpa [V] using hV_pos hm hlam hnu)
+      (by simpa [V] using hV_nonpos hm hlam hnu)
+      (by simpa [U, V] using hdeg_VU hm hlam hnu)
+      (by simpa [U] using hU_bound hm hlam hnu)
 
 /-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
 proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
