@@ -9,7 +9,7 @@ This module connects the Braun--Jal generalized-snake-poset statement
 interfaces to the existing Narayana polynomial formalization.
 -/
 
-open Polynomial
+open Polynomial Filter
 
 noncomputable section
 
@@ -1591,6 +1591,132 @@ theorem auxiliaryG_six_splits : (FiniteSkewBoard.auxiliaryG 6).Splits := by
   rw [auxiliaryG_six_roots]
   rw [auxiliaryG_six_natDegree]
   norm_num
+
+/-- Shorthand for the modified Narayana polynomial `P_6`. -/
+abbrev modifiedNarayanaPolynomialSix : ℝ[X] :=
+  modifiedNarayanaPolynomial 6
+
+/-- The sign pattern of `P_6` at the named `G_6` roots. -/
+def ModifiedNarayanaSixAuxiliaryGSignCertificate : Prop :=
+  modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 ∧
+    0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 ∧
+      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 < 0 ∧
+        0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 ∧
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0
+
+/-- The roots of `P_6` are isolated across the five named `G_6` roots. -/
+def ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate : Prop :=
+  ∃ x0 x1 x2 x3 x4 x5 : ℝ,
+    modifiedNarayanaPolynomialSix.IsRoot x0 ∧
+      x0 < auxiliaryG_six_root0 ∧
+        modifiedNarayanaPolynomialSix.IsRoot x1 ∧
+          auxiliaryG_six_root0 < x1 ∧ x1 < auxiliaryG_six_root1 ∧
+            modifiedNarayanaPolynomialSix.IsRoot x2 ∧
+              auxiliaryG_six_root1 < x2 ∧ x2 < auxiliaryG_six_root2 ∧
+                modifiedNarayanaPolynomialSix.IsRoot x3 ∧
+                  auxiliaryG_six_root2 < x3 ∧ x3 < auxiliaryG_six_root3 ∧
+                    modifiedNarayanaPolynomialSix.IsRoot x4 ∧
+                      auxiliaryG_six_root3 < x4 ∧ x4 < auxiliaryG_six_root4 ∧
+                        modifiedNarayanaPolynomialSix.IsRoot x5 ∧
+                          auxiliaryG_six_root4 < x5
+
+/-- Sign alternation of `P_6` across the named `G_6` roots gives one `P_6`
+root in each complementary interval. -/
+theorem modifiedNarayanaPolynomial_six_rootIntervals_of_eval_signs
+    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
+    ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate := by
+  rcases hsign with ⟨h0, h1, h2, h3, h4⟩
+  rcases auxiliaryG_six_root_order_named with ⟨h01, h12, h23, h34⟩
+  have hP_pos : HasPosLeadingCoeff modifiedNarayanaPolynomialSix := by
+    simpa [modifiedNarayanaPolynomialSix] using modifiedNarayanaPolynomial_posLeadingCoeff 6
+  have hP_natdeg_pos : 0 < modifiedNarayanaPolynomialSix.natDegree := by
+    rw [modifiedNarayanaPolynomialSix, modifiedNarayanaPolynomial_six_natDegree]
+    norm_num
+  have hP_deg_pos : 0 < modifiedNarayanaPolynomialSix.degree :=
+    natDegree_pos_iff_degree_pos.mp hP_natdeg_pos
+  have hP_even : Even modifiedNarayanaPolynomialSix.natDegree := by
+    rw [modifiedNarayanaPolynomialSix, modifiedNarayanaPolynomial_six_natDegree]
+    norm_num
+  have ht_bot : Tendsto (fun x => modifiedNarayanaPolynomialSix.eval x) atBot atTop :=
+    tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hP_pos hP_deg_pos hP_even
+  have ht_top : Tendsto (fun x => modifiedNarayanaPolynomialSix.eval x) atTop atTop :=
+    modifiedNarayanaPolynomialSix.tendsto_atTop_of_leadingCoeff_nonneg
+      hP_deg_pos hP_pos.le
+  obtain ⟨x0, hx0_le, hx0_root⟩ :=
+    exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop h0 ht_bot
+  have hx0_lt : x0 < auxiliaryG_six_root0 := by
+    refine lt_of_le_of_ne hx0_le ?_
+    intro hx0_eq
+    have hx0_eval : modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 = 0 := by
+      simpa [Polynomial.IsRoot.def, hx0_eq] using hx0_root
+    linarith
+  have h01_strict : auxiliaryG_six_root0 < auxiliaryG_six_root1 := by
+    refine lt_of_le_of_ne h01 ?_
+    intro h_eq
+    have heq_eval :
+        modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 =
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 := by
+      rw [h_eq]
+    linarith
+  have h12_strict : auxiliaryG_six_root1 < auxiliaryG_six_root2 := by
+    refine lt_of_le_of_ne h12 ?_
+    intro h_eq
+    have heq_eval :
+        modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 =
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 := by
+      rw [h_eq]
+    linarith
+  have h23_strict : auxiliaryG_six_root2 < auxiliaryG_six_root3 := by
+    refine lt_of_le_of_ne h23 ?_
+    intro h_eq
+    have heq_eval :
+        modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 =
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 := by
+      rw [h_eq]
+    linarith
+  have h34_strict : auxiliaryG_six_root3 < auxiliaryG_six_root4 := by
+    refine lt_of_le_of_ne h34 ?_
+    intro h_eq
+    have heq_eval :
+        modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 =
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 := by
+      rw [h_eq]
+    linarith
+  have h01_sign :
+      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 *
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 < 0 := by
+    nlinarith
+  have h12_sign :
+      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 *
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 < 0 := by
+    nlinarith
+  have h23_sign :
+      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 *
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 < 0 := by
+    nlinarith
+  have h34_sign :
+      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 *
+          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0 := by
+    nlinarith
+  obtain ⟨x1, hx1_left, hx1_right, hx1_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg h01_strict h01_sign
+  obtain ⟨x2, hx2_left, hx2_right, hx2_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg h12_strict h12_sign
+  obtain ⟨x3, hx3_left, hx3_right, hx3_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg h23_strict h23_sign
+  obtain ⟨x4, hx4_left, hx4_right, hx4_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg h34_strict h34_sign
+  obtain ⟨x5, hx5_ge, hx5_root⟩ :=
+    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop (le_of_lt h4) ht_top
+  have hx5_lt : auxiliaryG_six_root4 < x5 := by
+    refine lt_of_le_of_ne hx5_ge ?_
+    intro hx5_eq
+    have hx5_eval : modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 = 0 := by
+      simpa [Polynomial.IsRoot.def, hx5_eq] using hx5_root
+    linarith
+  exact ⟨x0, x1, x2, x3, x4, x5, hx0_root, hx0_lt, hx1_root, hx1_left,
+    hx1_right, hx2_root, hx2_left, hx2_right, hx3_root, hx3_left, hx3_right,
+    hx4_root, hx4_left, hx4_right, hx5_root, hx5_lt⟩
 
 /-- Cross-root inequalities between an ordered `P_6` root list and the named
 `G_6` roots. -/

@@ -20996,6 +20996,97 @@ theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward
   theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_reverse
     hforward theorem21RootCountBranchesToCompatible_of_endpoint_le_two
 
+/-- Reassemble the bounded endpoint-degree-two theorem package from the
+branch-retaining common-interleaver forward direction and a
+predicate-restricted reverse direction. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_predicateReverse
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranches_of_commonForward hforward)
+    (fun hf hg hsgn hbranches => hreverse hf hg hsgn hbranches)
+
+/-- Reassemble the bounded endpoint-degree-two theorem package from the full
+forward direction and a predicate-restricted reverse direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_predicateReverse
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_predicateReverse
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hreverse
+
+/-- Current bounded endpoint-degree-two Liu package from endpoint
+factor-return case packages. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_endpointCases
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hcases :
+      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_predicateReverse
+    hforward
+    (theorem21RootCountBranchesToCompatiblePredicate_of_endpointDegreeCases
+      hcases)
+
+/-- Current bounded endpoint-degree-two Liu package from endpoint
+factor-return case packages and the full root-count forward direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_endpointCases
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hcases :
+      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_endpointCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hcases
+
+/-- Current bounded endpoint-degree-two Liu package from bundled
+predicate-restricted x-subtraction cases. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_predicateReverse
+    hforward
+    (theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
+      hcases)
+
+/-- Current bounded endpoint-degree-two Liu package from bundled
+predicate-restricted x-subtraction cases and the full root-count forward
+direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_forward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_xSubCasePackage
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hcases
+
+/-- Current bounded endpoint-degree-two Liu package, assuming the isolated
+branch-retaining common-interleaver forward direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwo_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
+    theorem21CompatibleRootCountEndpointLeTwoStatement :=
+  theorem21CompatibleRootCountEndpointLeTwo_of_commonForward_and_predicateReverse
+    hforward
+    theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two
+
 /-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
 from the nonconstant forward direction and the bounded endpoint-degree-two
 reverse direction. -/
@@ -21018,6 +21109,108 @@ theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward
     theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
   theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
     hforward theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_two
+
+/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
+from the branch-retaining common-interleaver forward direction and a
+predicate-restricted nonconstant reverse direction. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranchesNonconstant_of_commonForward
+      hforward)
+    (fun hf hg hsgn hfdeg_ne hgdeg_ne hbranches =>
+      hreverse hf hg hsgn hfdeg_ne hgdeg_ne hbranches)
+
+/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
+from the nonconstant forward direction and a predicate-restricted reverse
+direction. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_predicateReverse
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hreverse
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package from endpoint
+factor-return case packages. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_endpointCases
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hcases :
+      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
+    hforward
+    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
+      hcases)
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package from endpoint
+factor-return case packages and the nonconstant root-count forward direction.
+-/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_endpointCases
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hcases :
+      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_endpointCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hcases
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package from bundled
+predicate-restricted x-subtraction cases. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_xSubPackage
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
+    hforward
+    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCasePackage
+      hcases)
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package from bundled
+predicate-restricted x-subtraction cases and the nonconstant root-count forward
+direction. -/
+theorem
+    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
+        (fun n => n ≤ 2)) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_xSubPackage
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hcases
+
+/-- Current nonconstant bounded endpoint-degree-two Liu package, assuming the
+branch-retaining common-interleaver forward direction. -/
+theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
+    hforward
+    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_two
 
 /-- The bounded endpoint-degree-two package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
@@ -21070,6 +21263,25 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_endpointLeTwo
     theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement :=
   theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_natDegreeLeTwo
     (theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo h)
+
+/-- Current low-degree endpoint-two Liu theorem package from a
+branch-retaining common-interleaver forward direction. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoStatement :=
+  theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo
+    (theorem21CompatibleRootCountEndpointLeTwo_of_commonForward hforward)
+
+/-- Current nonconstant low-degree endpoint-two Liu theorem package from a
+branch-retaining common-interleaver forward direction. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement :=
+  theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_endpointLeTwoNonconstant
+    (theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward
+      hforward)
 
 /-- The bounded endpoint-degree-three package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
