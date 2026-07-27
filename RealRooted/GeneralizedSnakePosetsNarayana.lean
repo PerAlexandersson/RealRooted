@@ -1489,6 +1489,47 @@ theorem auxiliaryG_six_root_order :
   · nlinarith [hten_minus_s_leβ]
   · nlinarith [h2sβ_leα]
 
+/-- The first displayed root of the `G_6` auxiliary polynomial. -/
+def auxiliaryG_six_root0 : ℝ :=
+  (-Real.sqrt (55 : ℝ) + -16 -
+    Real.sqrt ((275 : ℝ) + 32 * Real.sqrt (55 : ℝ))) / 6
+
+/-- The second displayed root of the `G_6` auxiliary polynomial. -/
+def auxiliaryG_six_root1 : ℝ :=
+  (Real.sqrt (55 : ℝ) - 16 -
+    Real.sqrt ((275 : ℝ) - 32 * Real.sqrt (55 : ℝ))) / 6
+
+/-- The middle displayed root of the `G_6` auxiliary polynomial. -/
+def auxiliaryG_six_root2 : ℝ :=
+  -(1 : ℝ)
+
+/-- The fourth displayed root of the `G_6` auxiliary polynomial. -/
+def auxiliaryG_six_root3 : ℝ :=
+  (Real.sqrt (55 : ℝ) - 16 +
+    Real.sqrt ((275 : ℝ) - 32 * Real.sqrt (55 : ℝ))) / 6
+
+/-- The fifth displayed root of the `G_6` auxiliary polynomial. -/
+def auxiliaryG_six_root4 : ℝ :=
+  (-Real.sqrt (55 : ℝ) + -16 +
+    Real.sqrt ((275 : ℝ) + 32 * Real.sqrt (55 : ℝ))) / 6
+
+/-- Root multiset of `G_6`, stated using named roots. -/
+theorem auxiliaryG_six_roots_named :
+    (FiniteSkewBoard.auxiliaryG 6).roots =
+      (↑[auxiliaryG_six_root0, auxiliaryG_six_root1, auxiliaryG_six_root2,
+        auxiliaryG_six_root3, auxiliaryG_six_root4] : Multiset ℝ) := by
+  simpa [auxiliaryG_six_root0, auxiliaryG_six_root1, auxiliaryG_six_root2,
+    auxiliaryG_six_root3, auxiliaryG_six_root4] using auxiliaryG_six_roots
+
+/-- The named roots of `G_6` are ordered increasingly. -/
+theorem auxiliaryG_six_root_order_named :
+    auxiliaryG_six_root0 ≤ auxiliaryG_six_root1 ∧
+      auxiliaryG_six_root1 ≤ auxiliaryG_six_root2 ∧
+        auxiliaryG_six_root2 ≤ auxiliaryG_six_root3 ∧
+          auxiliaryG_six_root3 ≤ auxiliaryG_six_root4 := by
+  simpa [auxiliaryG_six_root0, auxiliaryG_six_root1, auxiliaryG_six_root2,
+    auxiliaryG_six_root3, auxiliaryG_six_root4] using auxiliaryG_six_root_order
+
 /-- Degree of the `G_6` auxiliary polynomial. -/
 theorem auxiliaryG_six_natDegree :
     (FiniteSkewBoard.auxiliaryG 6).natDegree = 5 := by
@@ -1508,6 +1549,29 @@ theorem auxiliaryG_six_splits : (FiniteSkewBoard.auxiliaryG 6).Splits := by
   rw [auxiliaryG_six_roots]
   rw [auxiliaryG_six_natDegree]
   norm_num
+
+/-- Conditional `n = 6` Lemma 3.3 certificate, reducing the remaining work to
+the `P_6` root list and cross inequalities. -/
+theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
+    {a b c d e r : ℝ}
+    (hP_roots :
+      (modifiedNarayanaPolynomial 6).roots =
+        (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (hau : a ≤ auxiliaryG_six_root0) (hub : auxiliaryG_six_root0 ≤ b)
+    (hbv : b ≤ auxiliaryG_six_root1) (hvc : auxiliaryG_six_root1 ≤ c)
+    (hcw : c ≤ auxiliaryG_six_root2) (hwd : auxiliaryG_six_root2 ≤ d)
+    (hdz : d ≤ auxiliaryG_six_root3) (hze : auxiliaryG_six_root3 ≤ e)
+    (hey : e ≤ auxiliaryG_six_root4) (hyr : auxiliaryG_six_root4 ≤ r) :
+    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  rcases auxiliaryG_six_root_order_named with ⟨huv, hvw, hwz, hzy⟩
+  exact interlaces_of_quintic_sextic_root_lists
+    modifiedNarayanaPolynomial_six_ne_zero modifiedNarayanaPolynomial_six_splits
+    auxiliaryG_six_ne_zero auxiliaryG_six_splits
+    modifiedNarayanaPolynomial_six_natDegree auxiliaryG_six_natDegree
+    hP_roots auxiliaryG_six_roots_named hab hbc hcd hde her huv hvw hwz hzy hau
+    hub hbv hvc hcw hwd hdz hze hey hyr
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
