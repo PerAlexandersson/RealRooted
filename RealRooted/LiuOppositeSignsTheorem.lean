@@ -17,7 +17,106 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- Liu Theorem 2.1, stated against the project's `Compatible` predicate:
+/-- The two polynomials have no common real root.  This is the reduction
+regime used explicitly in Liu's proof of Theorem 2.1 before the largest-root
+case split. -/
+def NoCommonRoots (f g : ℝ[X]) : Prop :=
+  ∀ r : ℝ, f.IsRoot r → ¬ g.IsRoot r
+
+theorem NoCommonRoots.symm {f g : ℝ[X]} (h : NoCommonRoots f g) :
+    NoCommonRoots g f := by
+  intro r hgr hfr
+  exact (h r hfr) hgr
+
+/-- Multiplying both entries by the same splitting factor preserves
+compatibility. -/
+theorem compatible_mul_common_factor {d f g : ℝ[X]}
+    (hd : d.Splits) (h : Compatible f g) :
+    Compatible (d * f) (d * g) := by
+  intro α β hα hβ
+  have hfactor :
+      C α * (d * f) + C β * (d * g) = d * (C α * f + C β * g) := by
+    ring
+  rcases h α β hα hβ with hzero | hrr
+  · exact Or.inl (by rw [hfactor, hzero, mul_zero])
+  · by_cases hprod_zero : C α * (d * f) + C β * (d * g) = 0
+    · exact Or.inl hprod_zero
+    · exact Or.inr ⟨hprod_zero, by rw [hfactor]; exact hd.mul hrr.2⟩
+
+/-- If two compatible polynomials have a common root, deleting that shared
+linear factor preserves compatibility. -/
+theorem compatible_deleteRootFactor_of_common_root {f g : ℝ[X]} {r : ℝ}
+    (h : Compatible f g) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
+    Compatible (deleteRootFactor f r) (deleteRootFactor g r) := by
+  intro α β hα hβ
+  let df : ℝ[X] := deleteRootFactor f r
+  let dg : ℝ[X] := deleteRootFactor g r
+  let combo : ℝ[X] :=
+    C α * df + C β * dg
+  change combo = 0 ∨ (combo ≠ 0 ∧ combo.Splits)
+  have hf_def : f = (X - C r) * df := by
+    simpa [df] using (factor_deleteRootFactor_of_isRoot hrf).symm
+  have hg_def : g = (X - C r) * dg := by
+    simpa [dg] using (factor_deleteRootFactor_of_isRoot hrg).symm
+  have hfactor :
+      C α * f + C β * g = (X - C r) * combo := by
+    dsimp [combo]
+    rw [hf_def, hg_def]
+    ring_nf
+  have hcase :
+      (X - C r) * combo = 0 ∨
+        ((X - C r) * combo ≠ 0 ∧ ((X - C r) * combo).Splits) := by
+    simpa [hfactor] using h α β hα hβ
+  rcases hcase with hzero | hrr
+  · rcases mul_eq_zero.mp hzero with hlinear_zero | hcombo_zero
+    · exact False.elim (X_sub_C_ne_zero r hlinear_zero)
+    · exact Or.inl hcombo_zero
+  · refine Or.inr ⟨?_, ?_⟩
+    · intro hcombo_zero
+      exact hrr.1 (by rw [hcombo_zero, mul_zero])
+    · exact
+        (splits_mul_iff_right (X_sub_C_ne_zero r)
+          (Polynomial.Splits.X_sub_C r)).mp hrr.2
+
+/-- Common-root branch for the unreduced Liu statement: peel one common
+linear factor and require compatibility of the cofactors. -/
+def CommonRootDeletionCompatibleBranch (f g : ℝ[X]) : Prop :=
+  ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r ∧
+    Compatible (deleteRootFactor f r) (deleteRootFactor g r)
+
+namespace CommonRootDeletionCompatibleBranch
+
+theorem compatible {f g : ℝ[X]}
+    (h : CommonRootDeletionCompatibleBranch f g) :
+    Compatible f g := by
+  rcases h with ⟨r, hfr, hgr, hcompat⟩
+  have hmul :=
+    compatible_mul_common_factor
+      (d := X - C r)
+      (Polynomial.Splits.X_sub_C r)
+      hcompat
+  have hf_def : (X - C r) * deleteRootFactor f r = f :=
+    factor_deleteRootFactor_of_isRoot hfr
+  have hg_def : (X - C r) * deleteRootFactor g r = g :=
+    factor_deleteRootFactor_of_isRoot hgr
+  simpa [hf_def, hg_def] using hmul
+
+end CommonRootDeletionCompatibleBranch
+
+/-- Corrected unreduced branch predicate: either Liu's no-common largest-root
+branch holds, or a common root can be peeled and the cofactors are compatible.
+-/
+def theorem21RootCountBranchesWithCommon (f g : ℝ[X]) : Prop :=
+  theorem21RootCountBranches f g ∨ CommonRootDeletionCompatibleBranch f g
+
+/-- Full unreduced target for Liu Theorem 2.1, stated against the project's
+`Compatible` predicate.  The two branch predicate below is the no-common
+largest-root case split, so proving this full statement also requires a
+common-root reduction outside the branch predicate.  For the theorem shape
+matching Liu's reduced proof stage, use
+`theorem21CompatibleRootCountNoCommonStatement`.  For an explicit tracker for
+the missing common-root interface, see GitHub issue #98.
+
 for two real-rooted polynomials with opposite leading signs, compatibility is
 equivalent to the appropriate largest-root deletion branch satisfying Liu's
 closed-at-or-above root-count condition. -/
@@ -61,11 +160,106 @@ def theorem21RootCountBranchesToCompatibleNonconstantStatement : Prop :=
       f.natDegree ≠ 0 → g.natDegree ≠ 0 →
         theorem21RootCountBranches f g → Compatible f g
 
+/-- No-common-root form of Liu Theorem 2.1, matching the reduced case in the
+paper's proof. -/
+def theorem21CompatibleRootCountNoCommonStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    NoCommonRoots f g → (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- Nonconstant no-common-root form of Liu Theorem 2.1. -/
+def theorem21CompatibleRootCountNoCommonNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- Forward half of the no-common-root form of Liu Theorem 2.1. -/
+def theorem21CompatibleToRootCountBranchesNoCommonStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      NoCommonRoots f g → Compatible f g → theorem21RootCountBranches f g
+
+/-- Nonconstant forward half of the no-common-root form of Liu Theorem 2.1. -/
+def theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement :
+    Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+        Compatible f g → theorem21RootCountBranches f g
+
+/-- Reverse half of the no-common-root form of Liu Theorem 2.1. -/
+def theorem21RootCountBranchesToCompatibleNoCommonStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      NoCommonRoots f g → theorem21RootCountBranches f g → Compatible f g
+
+/-- Nonconstant reverse half of the no-common-root form of Liu Theorem 2.1. -/
+def theorem21RootCountBranchesToCompatibleNoCommonNonconstantStatement :
+    Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+        theorem21RootCountBranches f g → Compatible f g
+
+/-- Unreduced theorem target with an explicit common-root branch.  This is the
+safe full-statement interface; the older `theorem21CompatibleRootCountStatement`
+remains the branch-only target used by existing conditional wrappers. -/
+def theorem21CompatibleRootCountWithCommonStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    (Compatible f g ↔ theorem21RootCountBranchesWithCommon f g)
+
+/-- Forward half of the corrected common-root-branch target. -/
+def theorem21CompatibleToRootCountBranchesWithCommonStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      Compatible f g → theorem21RootCountBranchesWithCommon f g
+
+/-- Reverse half of the corrected common-root-branch target. -/
+def theorem21RootCountBranchesWithCommonToCompatibleStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      theorem21RootCountBranchesWithCommon f g → Compatible f g
+
 /-- The paper-shaped statement implies its nonconstant restriction. -/
 theorem theorem21CompatibleRootCountNonconstant_of_theorem21CompatibleRootCount
     (h : theorem21CompatibleRootCountStatement) :
     theorem21CompatibleRootCountNonconstantStatement :=
   fun f g hf hg hsgn _ _ => h f g hf hg hsgn
+
+/-- The unreduced full statement implies the no-common-root restriction. -/
+theorem theorem21CompatibleRootCountNoCommon_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountStatement) :
+    theorem21CompatibleRootCountNoCommonStatement :=
+  fun f g hf hg hsgn _hno => h f g hf hg hsgn
+
+/-- The unreduced nonconstant statement implies the nonconstant no-common-root
+restriction. -/
+theorem
+    theorem21CompatibleRootCountNoCommonNonconstant_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNonconstantStatement) :
+    theorem21CompatibleRootCountNoCommonNonconstantStatement :=
+  fun f g hf hg hsgn _hno hf_deg hg_deg => h f g hf hg hsgn hf_deg hg_deg
+
+/-- The no-common-root statement implies its nonconstant restriction. -/
+theorem
+    theorem21CompatibleRootCountNoCommonNonconstant_of_theorem21CompatibleRootCountNoCommon
+    (h : theorem21CompatibleRootCountNoCommonStatement) :
+    theorem21CompatibleRootCountNoCommonNonconstantStatement :=
+  fun f g hf hg hsgn hno _ _ => h f g hf hg hsgn hno
+
+/-- The corrected common-root-branch statement implies its branch-only
+restriction in the no-common regime. -/
+theorem theorem21CompatibleRootCountNoCommon_of_theorem21CompatibleRootCountWithCommon
+    (h : theorem21CompatibleRootCountWithCommonStatement) :
+    theorem21CompatibleRootCountNoCommonStatement := by
+  intro f g hf hg hsgn hno
+  constructor
+  · intro hcompat
+    rcases (h f g hf hg hsgn).1 hcompat with hbranches | hcommon
+    · exact hbranches
+    · rcases hcommon with ⟨r, hfr, hgr, _hcompat⟩
+      exact False.elim ((hno r hfr) hgr)
+  · intro hbranches
+    exact (h f g hf hg hsgn).2 (Or.inl hbranches)
 
 /-- Projection form of `theorem21CompatibleRootCountStatement`. -/
 theorem compatible_iff_theorem21RootCountBranches
@@ -82,6 +276,23 @@ theorem compatible_iff_theorem21RootCountBranches_nonconstant
     Compatible f g ↔ theorem21RootCountBranches f g :=
   h f g hf hg hsgn hf_deg hg_deg
 
+/-- Projection form of the no-common-root Liu Theorem 2.1 statement. -/
+theorem compatible_iff_theorem21RootCountBranches_noCommon
+    (h : theorem21CompatibleRootCountNoCommonStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hno : NoCommonRoots f g) :
+    Compatible f g ↔ theorem21RootCountBranches f g :=
+  h f g hf hg hsgn hno
+
+/-- Projection form of the nonconstant no-common-root Liu statement. -/
+theorem compatible_iff_theorem21RootCountBranches_noCommon_nonconstant
+    (h : theorem21CompatibleRootCountNoCommonNonconstantStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
+    Compatible f g ↔ theorem21RootCountBranches f g :=
+  h f g hf hg hsgn hno hf_deg hg_deg
+
 /-- Forward half extracted from the paper-shaped Liu Theorem 2.1 statement. -/
 theorem theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount
     (h : theorem21CompatibleRootCountStatement) :
@@ -95,6 +306,22 @@ theorem theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21Compatible
     theorem21CompatibleToRootCountBranchesNonconstantStatement := by
   intro f g hf hg hsgn hf_deg hg_deg
   exact (h f g hf hg hsgn hf_deg hg_deg).1
+
+/-- Forward half extracted from the no-common-root Liu statement. -/
+theorem theorem21CompatibleToRootCountBranchesNoCommon_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNoCommonStatement) :
+    theorem21CompatibleToRootCountBranchesNoCommonStatement := by
+  intro f g hf hg hsgn hno
+  exact (h f g hf hg hsgn hno).1
+
+/-- Forward half extracted from the nonconstant no-common-root Liu statement.
+-/
+theorem
+    theorem21CompatibleToRootCountBranchesNoCommonNonconstant_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNoCommonNonconstantStatement) :
+    theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno hf_deg hg_deg
+  exact (h f g hf hg hsgn hno hf_deg hg_deg).1
 
 /-- Reverse half extracted from the paper-shaped Liu Theorem 2.1 statement. -/
 theorem theorem21RootCountBranchesToCompatible_of_theorem21CompatibleRootCount
@@ -110,6 +337,22 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_theorem21Compatible
   intro f g hf hg hsgn hf_deg hg_deg
   exact (h f g hf hg hsgn hf_deg hg_deg).2
 
+/-- Reverse half extracted from the no-common-root Liu statement. -/
+theorem theorem21RootCountBranchesToCompatibleNoCommon_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNoCommonStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonStatement := by
+  intro f g hf hg hsgn hno
+  exact (h f g hf hg hsgn hno).2
+
+/-- Reverse half extracted from the nonconstant no-common-root Liu statement.
+-/
+theorem
+    theorem21RootCountBranchesToCompatibleNoCommonNonconstant_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNoCommonNonconstantStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno hf_deg hg_deg
+  exact (h f g hf hg hsgn hno hf_deg hg_deg).2
+
 /-- The ordinary forward half restricts to the nonconstant forward half. -/
 theorem theorem21CompatibleToRootCountBranchesNonconstant_of_forward
     (hforward : theorem21CompatibleToRootCountBranchesStatement) :
@@ -123,6 +366,50 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_reverse
     theorem21RootCountBranchesToCompatibleNonconstantStatement := by
   intro f g hf hg hsgn _hf_deg _hg_deg hbranches
   exact hreverse hf hg hsgn hbranches
+
+/-- The no-common-root forward half restricts to its nonconstant form. -/
+theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant_of_noCommonForward
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
+    theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno _hf_deg _hg_deg hcompat
+  exact hforward hf hg hsgn hno hcompat
+
+/-- The ordinary forward half implies the no-common-root forward half. -/
+theorem theorem21CompatibleToRootCountBranchesNoCommon_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    theorem21CompatibleToRootCountBranchesNoCommonStatement := by
+  intro f g hf hg hsgn _hno hcompat
+  exact hforward hf hg hsgn hcompat
+
+/-- The ordinary nonconstant forward half implies the nonconstant
+no-common-root forward half. -/
+theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn _hno hf_deg hg_deg hcompat
+  exact hforward hf hg hsgn hf_deg hg_deg hcompat
+
+/-- The no-common-root reverse half restricts to its nonconstant form. -/
+theorem theorem21RootCountBranchesToCompatibleNoCommonNonconstant_of_noCommonReverse
+    (hreverse : theorem21RootCountBranchesToCompatibleNoCommonStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno _hf_deg _hg_deg hbranches
+  exact hreverse hf hg hsgn hno hbranches
+
+/-- The ordinary reverse half implies the no-common-root reverse half. -/
+theorem theorem21RootCountBranchesToCompatibleNoCommon_of_reverse
+    (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonStatement := by
+  intro f g hf hg hsgn _hno hbranches
+  exact hreverse hf hg hsgn hbranches
+
+/-- The ordinary nonconstant reverse half implies the nonconstant
+no-common-root reverse half. -/
+theorem theorem21RootCountBranchesToCompatibleNoCommonNonconstant_of_reverse
+    (hreverse : theorem21RootCountBranchesToCompatibleNonconstantStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn _hno hf_deg hg_deg hbranches
+  exact hreverse hf hg hsgn hf_deg hg_deg hbranches
 
 /-- Projection form of the isolated forward direction of Liu Theorem 2.1. -/
 theorem theorem21RootCountBranches_of_compatible_of_forward
@@ -142,6 +429,28 @@ theorem theorem21RootCountBranches_of_compatible_of_forward_nonconstant
     (hcompat : Compatible f g) :
     theorem21RootCountBranches f g :=
   hforward hf hg hsgn hf_deg hg_deg hcompat
+
+/-- Projection form of the isolated no-common-root forward direction of
+Liu Theorem 2.1. -/
+theorem theorem21RootCountBranches_of_compatible_of_forward_noCommon
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hcompat : Compatible f g) :
+    theorem21RootCountBranches f g :=
+  hforward hf hg hsgn hno hcompat
+
+/-- Projection form of the isolated nonconstant no-common-root forward
+direction of Liu Theorem 2.1. -/
+theorem theorem21RootCountBranches_of_compatible_of_forward_noCommon_nonconstant
+    (hforward :
+      theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    theorem21RootCountBranches f g :=
+  hforward hf hg hsgn hno hf_deg hg_deg hcompat
 
 /-- Forward direction of Liu Theorem 2.1 as a reusable projection. -/
 theorem theorem21RootCountBranches_of_compatible
@@ -164,6 +473,91 @@ theorem theorem21RootCountBranches_of_compatible_nonconstant
     (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
       h)
     hf hg hsgn hf_deg hg_deg hcompat
+
+/-- Forward direction of the no-common-root Liu statement. -/
+theorem theorem21RootCountBranches_of_compatible_noCommon
+    (h : theorem21CompatibleRootCountNoCommonStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hno : NoCommonRoots f g) (hcompat : Compatible f g) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_compatible_of_forward_noCommon
+    (theorem21CompatibleToRootCountBranchesNoCommon_of_theorem21CompatibleRootCount
+      h)
+    hf hg hsgn hno hcompat
+
+/-- Forward direction of the nonconstant no-common-root Liu statement. -/
+theorem theorem21RootCountBranches_of_compatible_noCommon_nonconstant
+    (h : theorem21CompatibleRootCountNoCommonNonconstantStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_compatible_of_forward_noCommon_nonconstant
+    (theorem21CompatibleToRootCountBranchesNoCommonNonconstant_of_theorem21CompatibleRootCount
+      h)
+    hf hg hsgn hno hf_deg hg_deg hcompat
+
+/-- The no-common-root forward direction plus common-root deletion gives the
+corrected full forward direction with an explicit common-root branch. -/
+theorem theorem21RootCountBranchesWithCommon_of_compatible_of_noCommonForward
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
+    theorem21RootCountBranchesWithCommon f g := by
+  by_cases hno : NoCommonRoots f g
+  · exact Or.inl (hforward hf hg hsgn hno hcompat)
+  · have hcommon : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r := by
+      by_contra hmissing
+      apply hno
+      intro r hfr hgr
+      exact hmissing ⟨r, hfr, hgr⟩
+    rcases hcommon with ⟨r, hfr, hgr⟩
+    exact Or.inr
+      ⟨r, hfr, hgr,
+        compatible_deleteRootFactor_of_common_root hcompat hfr hgr⟩
+
+/-- Projection form of the corrected full forward target. -/
+theorem theorem21RootCountBranchesWithCommon_of_compatible_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesWithCommonStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
+    theorem21RootCountBranchesWithCommon f g :=
+  hforward hf hg hsgn hcompat
+
+/-- The corrected full forward direction follows from the no-common forward
+direction and the automatic common-root deletion branch. -/
+theorem theorem21CompatibleToRootCountBranchesWithCommon_of_noCommonForward
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
+    theorem21CompatibleToRootCountBranchesWithCommonStatement := by
+  intro f g hf hg hsgn hcompat
+  exact theorem21RootCountBranchesWithCommon_of_compatible_of_noCommonForward
+    hforward hf hg hsgn hcompat
+
+/-- Branch-only reverse direction plus factor multiplication proves the
+corrected common-root-branch reverse direction. -/
+theorem theorem21RootCountBranchesWithCommonToCompatible_of_reverse
+    (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
+    theorem21RootCountBranchesWithCommonToCompatibleStatement := by
+  intro f g hf hg hsgn hbranches
+  rcases hbranches with hbranches | hcommon
+  · exact hreverse hf hg hsgn hbranches
+  · exact CommonRootDeletionCompatibleBranch.compatible hcommon
+
+/-- Reassemble the corrected common-root-branch Liu target from the
+no-common-root forward direction and the branch-only reverse direction. -/
+theorem theorem21CompatibleRootCountWithCommon_of_noCommonForward_and_reverse
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
+    theorem21CompatibleRootCountWithCommonStatement := by
+  intro f g hf hg hsgn
+  constructor
+  · exact
+      theorem21CompatibleToRootCountBranchesWithCommon_of_noCommonForward
+        hforward hf hg hsgn
+  · exact
+      theorem21RootCountBranchesWithCommonToCompatible_of_reverse
+        hreverse hf hg hsgn
 
 /-- Projection form of the isolated reverse direction of Liu Theorem 2.1. -/
 theorem compatible_of_theorem21RootCountBranches_of_reverse
@@ -1936,7 +2330,7 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
     (hfdeg : f.natDegree = 1) (hgdeg : g.natDegree = 2)
-    (hno : ∀ t : ℝ, f.IsRoot t → ¬ g.IsRoot t) :
+    (hno : NoCommonRoots f g) :
     theorem21RootCountBranches f g := by
   obtain ⟨r, s, hr, hs⟩ :=
     exists_largestRoots hf hg hsgn
@@ -1946,6 +2340,49 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
     exact (hno r hr.isRoot) (by simpa [hrs] using hs.isRoot)
   exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_largest_ne
     hf hg hsgn hcompat hfdeg hgdeg hr hs hrs_ne
+
+/-- Mixed endpoint degree-two no-common forward case.  This combines the
+checked `(2, 1)` obstruction with its `(1, 2)` no-common counterpart. -/
+theorem
+    theorem21RootCountBranches_of_compatible_natDegree_one_two_or_two_one_of_no_common
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hno : NoCommonRoots f g)
+    (hdeg :
+      (f.natDegree = 2 ∧ g.natDegree = 1) ∨
+        (f.natDegree = 1 ∧ g.natDegree = 2)) :
+    theorem21RootCountBranches f g := by
+  rcases hdeg with hdeg | hdeg
+  · exact theorem21RootCountBranches_of_compatible_natDegree_two_one
+      hf hg hsgn hcompat hdeg.1 hdeg.2
+  · exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
+      hf hg hsgn hcompat hdeg.1 hdeg.2 hno
+
+/-- Nonconstant degree-`≤ 2` no-common forward case, excluding only the
+remaining quadratic-quadratic corner. -/
+theorem
+    theorem21RootCountBranches_of_compatible_natDegree_le_two_nonquadratic_of_no_common
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hno : NoCommonRoots f g)
+    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
+    (hfdeg_le : f.natDegree ≤ 2) (hgdeg_le : g.natDegree ≤ 2)
+    (hnot_quad_quad : ¬ (f.natDegree = 2 ∧ g.natDegree = 2)) :
+    theorem21RootCountBranches f g := by
+  have hf_cases : f.natDegree = 1 ∨ f.natDegree = 2 := by
+    have hfdeg_pos : 0 < f.natDegree := Nat.pos_of_ne_zero hfdeg_ne
+    interval_cases f.natDegree <;> simp_all
+  have hg_cases : g.natDegree = 1 ∨ g.natDegree = 2 := by
+    have hgdeg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgdeg_ne
+    interval_cases g.natDegree <;> simp_all
+  rcases hf_cases with hfdeg | hfdeg <;> rcases hg_cases with hgdeg | hgdeg
+  · exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
+      hf hg hsgn hfdeg_ne hgdeg_ne (by rw [hfdeg]) (by rw [hgdeg]) hcompat
+  · exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
+      hf hg hsgn hcompat hfdeg hgdeg hno
+  · exact theorem21RootCountBranches_of_compatible_natDegree_two_one
+      hf hg hsgn hcompat hfdeg hgdeg
+  · exact False.elim (hnot_quad_quad ⟨hfdeg, hgdeg⟩)
 
 /-- A monic cubic minus a positive multiple of a monic quadratic is still a
 genuine cubic. -/
