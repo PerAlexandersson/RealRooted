@@ -261,6 +261,22 @@ theorem RootCountCompatible.of_roots_singleton_pair
       · norm_num [hxa, hxc, hxd]
       · norm_num [hxa, hxc, hxd]
 
+/-- Two two-root polynomials have Liu-compatible root counts when the two
+closed root intervals overlap. -/
+theorem RootCountCompatible.of_roots_pair_pair
+    {p q : ℝ[X]} {a b c d : ℝ} (had : a ≤ d) (hcb : c ≤ b)
+    (hproots : p.roots = {a, b}) (hqroots : q.roots = {c, d}) :
+    RootCountCompatible p q := by
+  intro x
+  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
+  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+    Multiset.filter_singleton]
+  by_cases hxa : x ≤ a <;>
+    by_cases hxb : x ≤ b <;>
+    by_cases hxc : x ≤ c <;>
+    by_cases hxd : x ≤ d <;>
+    norm_num [hxa, hxb, hxc, hxd] <;> linarith
+
 /-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0
@@ -766,6 +782,30 @@ theorem eq_right_of_roots_pair {p : ℝ[X]} {r a b : ℝ}
     · rw [hr_eq_b]
   exact le_antisymm hr_le_b hb_le_r
 
+/-- For an ordered three-root multiset, the largest-root certificate selects
+the right entry. -/
+theorem eq_right_of_roots_triple {p : ℝ[X]} {r a b c : ℝ}
+    (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b) (hbc : b ≤ c)
+    (hroots : p.roots = {a, b, c}) :
+    r = c := by
+  have hc_mem : c ∈ p.roots := by
+    rw [hroots]
+    simp only [Multiset.insert_eq_cons]
+    simp
+  have hc_le_r : c ≤ r := h.roots_le c hc_mem
+  have hr_mem : r ∈ p.roots := h.mem_roots hp_ne
+  have hr_le_c : r ≤ c := by
+    rw [hroots] at hr_mem
+    simp only [Multiset.insert_eq_cons] at hr_mem
+    simp only [Multiset.mem_cons, Multiset.mem_singleton] at hr_mem
+    rcases hr_mem with hr_eq_a | hr_eq_b | hr_eq_c
+    · rw [hr_eq_a]
+      exact hab.trans hbc
+    · rw [hr_eq_b]
+      exact hbc
+    · rw [hr_eq_c]
+  exact le_antisymm hr_le_c hc_le_r
+
 end IsLargestRoot
 
 /-- If a split quadratic has roots `{a, b}` and is factored accordingly, then
@@ -789,6 +829,33 @@ theorem roots_deleteRootFactor_eq_singleton_of_roots_pair_right
       _ = C p.leadingCoeff * ((X - C a) * (X - C b)) := hfac
       _ = (X - C b) * (C p.leadingCoeff * (X - C a)) := by ring
   rw [hdelete_eq, Polynomial.roots_C_mul _ hlc, roots_X_sub_C]
+
+/-- If a split cubic has roots `{a, b, c}` and is factored accordingly, then
+deleting the right root leaves the pair of remaining roots `{a, b}`. -/
+theorem roots_deleteRootFactor_eq_pair_of_roots_triple_right
+    {p : ℝ[X]} {a b c : ℝ} (hp_ne : p ≠ 0)
+    (hroots : p.roots = {a, b, c})
+    (hfac : p = C p.leadingCoeff * ((X - C a) * (X - C b) * (X - C c))) :
+    (deleteRootFactor p c).roots = {a, b} := by
+  have hcroot : p.IsRoot c :=
+    (Polynomial.mem_roots hp_ne).mp (by
+      rw [hroots]
+      simp only [Multiset.insert_eq_cons]
+      simp)
+  have hlc : p.leadingCoeff ≠ 0 := mt leadingCoeff_eq_zero.mp hp_ne
+  have hdelete_eq :
+      deleteRootFactor p c = C p.leadingCoeff * ((X - C a) * (X - C b)) := by
+    apply mul_left_cancel₀ (X_sub_C_ne_zero c)
+    calc
+      (X - C c) * deleteRootFactor p c = p :=
+        factor_deleteRootFactor_of_isRoot hcroot
+      _ = C p.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := hfac
+      _ = (X - C c) * (C p.leadingCoeff * ((X - C a) * (X - C b))) := by ring
+  rw [hdelete_eq, Polynomial.roots_C_mul _ hlc]
+  have hprod_ne : (X - C a) * (X - C b) ≠ (0 : ℝ[X]) :=
+    mul_ne_zero (X_sub_C_ne_zero a) (X_sub_C_ne_zero b)
+  rw [Polynomial.roots_mul hprod_ne, roots_X_sub_C, roots_X_sub_C]
+  rfl
 
 /-- The `r_1 >= s_1` branch of Liu Theorem 2.1: delete the largest root of
 `f`, then compare the closed-at-or-above root counts of `f / (X - r)` and
@@ -825,6 +892,25 @@ theorem of_largestRoots_left_le_one_right_le_two
   count :=
     rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
       hf_splits hg_splits hs.isRoot hfdeg hgdeg
+
+/-- If the right endpoint is cubic and deleting its displayed largest root
+leaves two roots whose interval overlaps the left two-root interval, then the
+right Liu branch has compatible root counts. -/
+theorem of_roots_pair_triple_right
+    {f g : ℝ[X]} {r s a b c d : ℝ}
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
+    (had : a ≤ d) (hcb : c ≤ b)
+    (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d, s})
+    (hgfac : g = C g.leadingCoeff * ((X - C c) * (X - C d) * (X - C s)))
+    (hg_ne : g ≠ 0) :
+    RightRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_lt := hlargest
+  count := by
+    have hdelete_roots : (deleteRootFactor g s).roots = {c, d} :=
+      roots_deleteRootFactor_eq_pair_of_roots_triple_right hg_ne hgroots hgfac
+    exact RootCountCompatible.of_roots_pair_pair had hcb hfroots hdelete_roots
 
 /-- Swap a right Liu branch into the corresponding left branch for the swapped
 polynomial pair. -/
@@ -902,6 +988,25 @@ theorem of_largestRoots_natDegree_le_two_right_le_one
   count :=
     rootCountCompatible_deleteRootFactor_left_of_natDegree_le_two_right_le_one
       hf_splits hg_splits hr.isRoot hfdeg hgdeg
+
+/-- If the left endpoint is cubic and deleting its displayed largest root
+leaves two roots whose interval overlaps the right two-root interval, then the
+left Liu branch has compatible root counts. -/
+theorem of_roots_triple_pair_right
+    {f g : ℝ[X]} {r s a b c d : ℝ}
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (had : a ≤ d) (hcb : c ≤ b)
+    (hfroots : f.roots = {a, b, r})
+    (hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C r)))
+    (hgroots : g.roots = {c, d}) (hf_ne : f ≠ 0) :
+    LeftRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_ge := hlargest
+  count := by
+    have hdelete_roots : (deleteRootFactor f r).roots = {a, b} :=
+      roots_deleteRootFactor_eq_pair_of_roots_triple_right hf_ne hfroots hffac
+    exact RootCountCompatible.of_roots_pair_pair had hcb hdelete_roots hgroots
 
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
