@@ -221,6 +221,23 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia]
 
+@[simp] theorem modifiedNarayanaCoeffPolynomial_seven :
+    modifiedNarayanaCoeffPolynomial 7 =
+      1 + C (28 : ℝ) * X + C (196 : ℝ) * X ^ 2 +
+        C (490 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
+          C (196 : ℝ) * X ^ 5 + C (28 : ℝ) * X ^ 6 + X ^ 7 := by
+  ext k
+  by_cases hk : k ≤ 7
+  · interval_cases k <;>
+      norm_num [modifiedNarayanaCoeffPolynomial, narayanaTransformCoeff, Nat.choose,
+        coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
+  · have hklt : 7 < k := Nat.lt_of_not_ge hk
+    simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
+      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
+      show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
+      show k ≠ 6 by lia, show k ≠ 7 by lia]
+
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
@@ -412,6 +429,47 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six :
   narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five
 
+/-- The `n = 7` Braun--Jal equation (2) reduces to the concrete `G_6`
+finite-board computation. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
+    (hG6 : FiniteSkewBoard.auxiliaryG 6 =
+      6 + C (70 : ℝ) * X + C (210 : ℝ) * X ^ 2 +
+        C (210 : ℝ) * X ^ 3 + C (70 : ℝ) * X ^ 4 +
+          C (6 : ℝ) * X ^ 5) :
+    X * FiniteSkewBoard.auxiliaryG 6 =
+      modifiedNarayanaCoeffPolynomial 7 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 6 := by
+  rw [hG6, modifiedNarayanaCoeffPolynomial_six,
+    modifiedNarayanaCoeffPolynomial_seven]
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
+    Polynomial.C_eq_natCast (R := ℝ) 21
+  have hC28 : (C (28 : ℝ) : ℝ[X]) = 28 :=
+    Polynomial.C_eq_natCast (R := ℝ) 28
+  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 :=
+    Polynomial.C_eq_natCast (R := ℝ) 70
+  have hC105 : (C (105 : ℝ) : ℝ[X]) = 105 :=
+    Polynomial.C_eq_natCast (R := ℝ) 105
+  have hC175 : (C (175 : ℝ) : ℝ[X]) = 175 :=
+    Polynomial.C_eq_natCast (R := ℝ) 175
+  have hC196 : (C (196 : ℝ) : ℝ[X]) = 196 :=
+    Polynomial.C_eq_natCast (R := ℝ) 196
+  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 :=
+    Polynomial.C_eq_natCast (R := ℝ) 210
+  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 :=
+    Polynomial.C_eq_natCast (R := ℝ) 490
+  rw [hC6, hC21, hC28, hC70, hC105, hC175, hC196, hC210, hC490]
+  ring_nf
+
+/-- The `n = 7` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_seven :
+    X * FiniteSkewBoard.auxiliaryG 6 =
+      modifiedNarayanaCoeffPolynomial 7 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 6 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
+    FiniteSkewBoard.auxiliaryG_six
+
 /-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
 the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
 theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_six
@@ -426,6 +484,22 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_six
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
+
+/-- The checked initial cases through `n = 7` of Braun--Jal equation (2), for
+the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_seven
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₇ : n ≤ 7) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaCoeffPolynomial n -
+        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_seven
 
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
@@ -537,6 +611,14 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
           C (21 : ℝ) * X ^ 5 + X ^ 6 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_six]
+
+@[simp] theorem modifiedNarayanaPolynomial_seven :
+    modifiedNarayanaPolynomial 7 =
+      1 + C (28 : ℝ) * X + C (196 : ℝ) * X ^ 2 +
+        C (490 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
+          C (196 : ℝ) * X ^ 5 + C (28 : ℝ) * X ^ 6 + X ^ 7 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_seven]
 
 /-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
@@ -670,6 +752,29 @@ theorem narayanaAuxiliaryGRecurrence_modified_six :
         (1 + X) * modifiedNarayanaPolynomial 5 :=
   narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five
+
+/-- The `n = 7` Braun--Jal equation (2), for the quotient-style modified
+Narayana family, reduces to the concrete `G_6` finite-board computation. -/
+theorem narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
+    (hG6 : FiniteSkewBoard.auxiliaryG 6 =
+      6 + C (70 : ℝ) * X + C (210 : ℝ) * X ^ 2 +
+        C (210 : ℝ) * X ^ 3 + C (70 : ℝ) * X ^ 4 +
+          C (6 : ℝ) * X ^ 5) :
+    X * FiniteSkewBoard.auxiliaryG 6 =
+      modifiedNarayanaPolynomial 7 -
+        (1 + X) * modifiedNarayanaPolynomial 6 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 6,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 7]
+  exact narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six hG6
+
+/-- The `n = 7` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_seven :
+    X * FiniteSkewBoard.auxiliaryG 6 =
+      modifiedNarayanaPolynomial 7 -
+        (1 + X) * modifiedNarayanaPolynomial 6 :=
+  narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
+    FiniteSkewBoard.auxiliaryG_six
 
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
@@ -831,6 +936,22 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six
         (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
   narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five hn₁ hn₆
+
+/-- The checked initial cases through `n = 7` of Braun--Jal equation (2), for
+the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_seven
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₇ : n ≤ 7) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaAuxiliaryGRecurrence_modified_base
+  · exact narayanaAuxiliaryGRecurrence_modified_two
+  · exact narayanaAuxiliaryGRecurrence_modified_three
+  · exact narayanaAuxiliaryGRecurrence_modified_four
+  · exact narayanaAuxiliaryGRecurrence_modified_five
+  · exact narayanaAuxiliaryGRecurrence_modified_six
+  · exact narayanaAuxiliaryGRecurrence_modified_seven
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/

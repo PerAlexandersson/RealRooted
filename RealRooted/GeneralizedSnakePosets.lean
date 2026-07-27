@@ -2264,6 +2264,251 @@ theorem auxiliaryG_five_of_bottom_row_expansion_statements
     (truncatedStaircaseBottomRowExpansion_all 5 2)
     (truncatedStaircaseBottomRowExpansion_all 5 3)
 
+/-- The one-row truncated staircase with one cell has rook polynomial
+`1 + X`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_one_one :
+    truncatedStaircaseRookPolynomial 1 1 = 1 + X := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 1 0
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
+  simpa using hbottom
+
+/-- The one-row truncated staircase with six cells has rook polynomial
+`1 + 6X`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_six_one :
+    truncatedStaircaseRookPolynomial 6 1 = 1 + C (6 : ℝ) * X := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 0
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [show List.range (6 - 0) = [0, 1, 2, 3, 4, 5] by rfl] at hbottom
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hbottom
+  simp only [truncatedStaircaseRookPolynomial_zero_rows] at hbottom
+  rw [hbottom]
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  rw [hC6]
+  ring_nf
+
+/-- The two-row truncated staircase with row lengths six and five has rook
+polynomial `1 + 11X + 15X^2`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_six_two :
+    truncatedStaircaseRookPolynomial 6 2 =
+      1 + C (11 : ℝ) * X + C (15 : ℝ) * X ^ 2 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 1
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [show List.range (6 - 1) = [0, 1, 2, 3, 4] by rfl] at hbottom
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hbottom
+  rw [truncatedStaircaseRookPolynomial_six_one,
+    truncatedStaircaseRookPolynomial_five_one,
+    truncatedStaircaseRookPolynomial_four_one,
+    truncatedStaircaseRookPolynomial_three_one,
+    truncatedStaircaseRookPolynomial_two_one,
+    truncatedStaircaseRookPolynomial_one_one] at hbottom
+  rw [hbottom]
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC11 : (C (11 : ℝ) : ℝ[X]) = 11 :=
+    Polynomial.C_eq_natCast (R := ℝ) 11
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+    Polynomial.C_eq_natCast (R := ℝ) 15
+  rw [hC2, hC3, hC4, hC5, hC6, hC11, hC15]
+  ring_nf
+
+/-- The three-row truncated staircase with row lengths six, five, and four has
+rook polynomial `1 + 15X + 39X^2 + 20X^3`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_six_three :
+    truncatedStaircaseRookPolynomial 6 3 =
+      1 + C (15 : ℝ) * X + C (39 : ℝ) * X ^ 2 +
+        C (20 : ℝ) * X ^ 3 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 2
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [show List.range (6 - 2) = [0, 1, 2, 3] by rfl] at hbottom
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hbottom
+  rw [truncatedStaircaseRookPolynomial_six_two,
+    truncatedStaircaseRookPolynomial_five_two,
+    truncatedStaircaseRookPolynomial_four_two,
+    truncatedStaircaseRookPolynomial_three_two,
+    truncatedStaircaseRookPolynomial_two_two] at hbottom
+  rw [hbottom]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC11 : (C (11 : ℝ) : ℝ[X]) = 11 :=
+    Polynomial.C_eq_natCast (R := ℝ) 11
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+    Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+    Polynomial.C_eq_natCast (R := ℝ) 20
+  have hC39 : (C (39 : ℝ) : ℝ[X]) = 39 :=
+    Polynomial.C_eq_natCast (R := ℝ) 39
+  rw [hC3, hC5, hC6, hC7, hC9, hC10, hC11, hC15, hC20, hC39]
+  ring_nf
+
+/-- The four-row truncated staircase with row lengths four, three, two, and one
+has rook polynomial `1 + 10X + 20X^2 + 10X^3 + X^4`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_four_four :
+    truncatedStaircaseRookPolynomial 4 4 =
+      1 + C (10 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+        C (10 : ℝ) * X ^ 3 + X ^ 4 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 4 3
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [truncatedStaircaseRookPolynomial_four_three,
+    truncatedStaircaseRookPolynomial_three_three] at hbottom
+  rw [hbottom]
+  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
+    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+    Polynomial.C_eq_natCast (R := ℝ) 20
+  rw [hC4, hC6, hC9, hC10, hC14, hC20]
+  ring_nf
+
+/-- The four-row truncated staircase with row lengths six, five, four, and
+three has rook polynomial `1 + 18X + 66X^2 + 65X^3 + 15X^4`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_six_four :
+    truncatedStaircaseRookPolynomial 6 4 =
+      1 + C (18 : ℝ) * X + C (66 : ℝ) * X ^ 2 +
+        C (65 : ℝ) * X ^ 3 + C (15 : ℝ) * X ^ 4 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 3
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [show List.range (6 - 3) = [0, 1, 2] by rfl] at hbottom
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hbottom
+  rw [truncatedStaircaseRookPolynomial_six_three,
+    truncatedStaircaseRookPolynomial_five_three,
+    truncatedStaircaseRookPolynomial_four_three,
+    truncatedStaircaseRookPolynomial_three_three] at hbottom
+  rw [hbottom]
+  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
+    Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
+    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+    Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
+    Polynomial.C_eq_natCast (R := ℝ) 18
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+    Polynomial.C_eq_natCast (R := ℝ) 20
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
+    Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC39 : (C (39 : ℝ) : ℝ[X]) = 39 :=
+    Polynomial.C_eq_natCast (R := ℝ) 39
+  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
+    Polynomial.C_eq_natCast (R := ℝ) 65
+  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
+    Polynomial.C_eq_natCast (R := ℝ) 66
+  rw [hC4, hC6, hC9, hC10, hC12, hC14, hC15, hC18, hC20, hC25,
+    hC39, hC65, hC66]
+  ring_nf
+
+/-- The five-row truncated staircase with row lengths six, five, four, three,
+and two has rook polynomial
+`1 + 20X + 90X^2 + 125X^3 + 55X^4 + 6X^5`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_six_five :
+    truncatedStaircaseRookPolynomial 6 5 =
+      1 + C (20 : ℝ) * X + C (90 : ℝ) * X ^ 2 +
+        C (125 : ℝ) * X ^ 3 + C (55 : ℝ) * X ^ 4 +
+          C (6 : ℝ) * X ^ 5 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 4
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [show List.range (6 - 4) = [0, 1] by rfl] at hbottom
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hbottom
+  rw [truncatedStaircaseRookPolynomial_six_four,
+    truncatedStaircaseRookPolynomial_five_four,
+    truncatedStaircaseRookPolynomial_four_four] at hbottom
+  rw [hbottom]
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
+    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+    Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
+    Polynomial.C_eq_natCast (R := ℝ) 18
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+    Polynomial.C_eq_natCast (R := ℝ) 20
+  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
+    Polynomial.C_eq_natCast (R := ℝ) 30
+  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
+    Polynomial.C_eq_natCast (R := ℝ) 40
+  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 :=
+    Polynomial.C_eq_natCast (R := ℝ) 55
+  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
+    Polynomial.C_eq_natCast (R := ℝ) 65
+  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
+    Polynomial.C_eq_natCast (R := ℝ) 66
+  have hC90 : (C (90 : ℝ) : ℝ[X]) = 90 :=
+    Polynomial.C_eq_natCast (R := ℝ) 90
+  have hC125 : (C (125 : ℝ) : ℝ[X]) = 125 :=
+    Polynomial.C_eq_natCast (R := ℝ) 125
+  rw [hC5, hC6, hC10, hC14, hC15, hC18, hC20, hC30, hC40, hC55,
+    hC65, hC66, hC90, hC125]
+  ring_nf
+
+/-- The finite-board auxiliary polynomial `G_6` is
+`6 + 70X + 210X^2 + 210X^3 + 70X^4 + 6X^5`. -/
+@[simp] theorem auxiliaryG_six :
+    auxiliaryG 6 =
+      6 + C (70 : ℝ) * X + C (210 : ℝ) * X ^ 2 +
+        C (210 : ℝ) * X ^ 3 + C (70 : ℝ) * X ^ 4 +
+          C (6 : ℝ) * X ^ 5 := by
+  rw [auxiliaryG, show List.range 6 = [0, 1, 2, 3, 4, 5] by rfl]
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
+  rw [truncatedStaircaseRookPolynomial_zero_rows,
+    truncatedStaircaseRookPolynomial_six_one,
+    truncatedStaircaseRookPolynomial_six_two,
+    truncatedStaircaseRookPolynomial_six_three,
+    truncatedStaircaseRookPolynomial_six_four,
+    truncatedStaircaseRookPolynomial_six_five]
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC11 : (C (11 : ℝ) : ℝ[X]) = 11 :=
+    Polynomial.C_eq_natCast (R := ℝ) 11
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+    Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
+    Polynomial.C_eq_natCast (R := ℝ) 18
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
+    Polynomial.C_eq_natCast (R := ℝ) 20
+  have hC39 : (C (39 : ℝ) : ℝ[X]) = 39 :=
+    Polynomial.C_eq_natCast (R := ℝ) 39
+  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 :=
+    Polynomial.C_eq_natCast (R := ℝ) 55
+  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
+    Polynomial.C_eq_natCast (R := ℝ) 65
+  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
+    Polynomial.C_eq_natCast (R := ℝ) 66
+  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 :=
+    Polynomial.C_eq_natCast (R := ℝ) 70
+  have hC90 : (C (90 : ℝ) : ℝ[X]) = 90 :=
+    Polynomial.C_eq_natCast (R := ℝ) 90
+  have hC125 : (C (125 : ℝ) : ℝ[X]) = 125 :=
+    Polynomial.C_eq_natCast (R := ℝ) 125
+  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 :=
+    Polynomial.C_eq_natCast (R := ℝ) 210
+  rw [hC6, hC11, hC15, hC18, hC20, hC39, hC55, hC65, hC66, hC70,
+    hC90, hC125, hC210]
+  ring_nf
+
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (auxiliaryG n) := by
