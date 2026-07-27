@@ -4261,6 +4261,22 @@ of Braun--Jal's cross-chain covers. -/
 def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
   (a + 2 == b && b < snakeCodeBound w) || snakeCrossCoverEdge w a b
 
+/-- Covers in an all-`R` snake word are same-chain successor covers or the
+constant-`R` cross-chain covers. -/
+theorem snakeCoverEdge_replicate_R {n a b : ℕ} :
+    snakeCoverEdge (List.replicate n SnakeLetter.R) a b = true ↔
+      (a + 2 = b ∧ b < 2 * (n + 1)) ∨
+        ∃ d, d < n ∧ a = snakeColCode d ∧ b = snakeRowCode (d + 1) := by
+  simp [snakeCoverEdge, snakeCodeBound, snakeCrossCoverEdge_replicate_R]
+
+/-- Covers in an all-`L` snake word are same-chain successor covers or the
+constant-`L` cross-chain covers. -/
+theorem snakeCoverEdge_replicate_L {n a b : ℕ} :
+    snakeCoverEdge (List.replicate n SnakeLetter.L) a b = true ↔
+      (a + 2 = b ∧ b < 2 * (n + 1)) ∨
+        ∃ d, d < n ∧ a = snakeRowCode d ∧ b = snakeColCode (d + 1) := by
+  simp [snakeCoverEdge, snakeCodeBound, snakeCrossCoverEdge_replicate_L]
+
 /-- Bounded reachability in the directed cover graph of the generalized snake
 poset.  The fuel `snakeCodeBound w` is enough for the finite acyclic graph and
 keeps the board assignment executable. -/
