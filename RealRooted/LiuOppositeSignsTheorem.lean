@@ -1900,6 +1900,53 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_two_one
       (not_compatible_of_natDegree_two_one_largest_lt
         hf hg hsgn hfdeg hgdeg hr hs (lt_of_not_ge hs_le_r) hcompat)
 
+/-- In the degree `(1, 2)` endpoint, compatibility rules out the orientation
+where the quadratic side has smaller largest root. -/
+lemma not_compatible_of_natDegree_one_two_largest_gt
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hfdeg : f.natDegree = 1) (hgdeg : g.natDegree = 2)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hs_lt_r : s < r) :
+    ¬ Compatible f g := by
+  intro hcompat
+  exact not_compatible_of_natDegree_two_one_largest_lt
+    hg hf hsgn.symm hgdeg hfdeg hs hr hs_lt_r hcompat.comm
+
+/-- Forward degree `(1, 2)` endpoint case with distinct largest roots.
+Compatibility forces the largest root to lie on the quadratic side, and the
+existing low-degree branch constructor then applies. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_largest_ne
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hfdeg : f.natDegree = 1)
+    (hgdeg : g.natDegree = 2) (hr : IsLargestRoot f r)
+    (hs : IsLargestRoot g s) (hrs_ne : r ≠ s) :
+    theorem21RootCountBranches f g := by
+  rcases lt_or_gt_of_ne hrs_ne with hr_lt_s | hs_lt_r
+  · exact theorem21RootCountBranches_of_right_largest_natDegree_le_one_two
+      hf hg hr hs hr_lt_s (by rw [hfdeg]) (by rw [hgdeg])
+  · exact False.elim
+      (not_compatible_of_natDegree_one_two_largest_gt
+        hf hg hsgn hfdeg hgdeg hr hs hs_lt_r hcompat)
+
+/-- Forward degree `(1, 2)` endpoint case in the no-common-root regime used by
+Liu's proof reduction.  The no-common hypothesis rules out the otherwise
+separate equal-largest-root corner. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hfdeg : f.natDegree = 1) (hgdeg : g.natDegree = 2)
+    (hno : ∀ t : ℝ, f.IsRoot t → ¬ g.IsRoot t) :
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ :=
+    exists_largestRoots hf hg hsgn
+      (by rw [hfdeg]; norm_num) (by rw [hgdeg]; norm_num)
+  have hrs_ne : r ≠ s := by
+    intro hrs
+    exact (hno r hr.isRoot) (by simpa [hrs] using hs.isRoot)
+  exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_largest_ne
+    hf hg hsgn hcompat hfdeg hgdeg hr hs hrs_ne
+
 /-- A monic cubic minus a positive multiple of a monic quadratic is still a
 genuine cubic. -/
 lemma natDegree_cubicSubQuadratic (a b c u v μ : ℝ) :
