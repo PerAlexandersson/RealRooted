@@ -3557,6 +3557,26 @@ def Theorem41Claim7Statement
     Prec ((C lam * X + C nu) * G (m - 1) + G m)
       ((C lam * X + C nu) * P (m - 1) + P m)
 
+/-- Equation `(2)` rewrites the next modified Narayana combination in the
+form used in Braun--Jal's proof of Claim `(7)`. -/
+theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
+    {P G : ℕ → ℝ[X]} (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
+    {m : ℕ} (hm : 2 ≤ m) (lam nu : ℝ) :
+    (C lam * X + C nu) * P m + P (m + 1) =
+      (1 + X) * ((C lam * X + C nu) * P (m - 1) + P m) +
+        X * ((C lam * X + C nu) * G (m - 1) + G m) := by
+  have hrec_m : X * G (m - 1) = P m - (1 + X) * P (m - 1) :=
+    hrec (n := m) (by linarith)
+  have hrec_succ : X * G m = P (m + 1) - (1 + X) * P m := by
+    simpa using hrec (n := m + 1) (by linarith)
+  rw [show
+      (1 + X) * ((C lam * X + C nu) * P (m - 1) + P m) +
+          X * ((C lam * X + C nu) * G (m - 1) + G m) =
+        (C lam * X + C nu) * ((1 + X) * P (m - 1) + X * G (m - 1)) +
+          ((1 + X) * P m + X * G m) by ring]
+  rw [hrec_m, hrec_succ]
+  ring
+
 /-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
 proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
 theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
