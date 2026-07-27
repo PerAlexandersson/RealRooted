@@ -3280,6 +3280,77 @@ theorem squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_ne_zero
     (squarecaseRookModelOfFiniteSkewBoard boardOfSnake).snakePolynomial w ≠ 0 :=
   FiniteSkewBoard.rookPolynomial_ne_zero _
 
+/-! ## Concrete squarecase board for generalized snake words -/
+
+/-- Code for the `r`-th element of the first chain in the generalized snake
+poset.  Rows are indexed from bottom to top. -/
+def snakeRowCode (r : ℕ) : ℕ :=
+  2 * r
+
+/-- Code for the `c`-th element of the second chain in the generalized snake
+poset.  Columns are indexed from left to right. -/
+def snakeColCode (c : ℕ) : ℕ :=
+  2 * c + 1
+
+/-- Number of coded chain elements in the generalized snake poset for `w`. -/
+def snakeCodeBound (w : SnakeWord) : ℕ :=
+  2 * (w.length + 1)
+
+/-- The cross-chain cover edges of Braun--Jal's generalized snake poset.
+
+If the letter at gap `g` is `L`, the cover is `row (g - 1) < col g`;
+if it is `R`, the cover is `col (g - 1) < row g`. -/
+def snakeCrossCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
+  (List.range w.length).any fun idx =>
+    let gap := w.length - (idx + 1)
+    match w.getD idx SnakeLetter.L with
+    | SnakeLetter.L => a == snakeRowCode gap && b == snakeColCode (gap + 1)
+    | SnakeLetter.R => a == snakeColCode gap && b == snakeRowCode (gap + 1)
+
+/-- One cover edge of the generalized snake poset: either a chain edge or one
+of Braun--Jal's cross-chain covers. -/
+def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
+  (a + 2 == b && b < snakeCodeBound w) || snakeCrossCoverEdge w a b
+
+/-- Bounded reachability in the directed cover graph of the generalized snake
+poset.  The fuel `snakeCodeBound w` is enough for the finite acyclic graph and
+keeps the board assignment executable. -/
+def snakeReachableFuel (w : SnakeWord) : ℕ → ℕ → ℕ → Bool
+  | 0, a, b => a == b
+  | fuel + 1, a, b =>
+      (a == b) ||
+        (List.range (snakeCodeBound w)).any fun c =>
+          snakeCoverEdge w a c && snakeReachableFuel w fuel c b
+
+/-- Reachability in the generalized snake poset cover graph. -/
+def snakeElementReachable (w : SnakeWord) (a b : ℕ) : Bool :=
+  snakeReachableFuel w (snakeCodeBound w) a b
+
+/-- The concrete finite squarecase board attached to a generalized snake word.
+
+The cells are the cross-chain pairs that are incomparable in the generalized
+snake poset `P(w)`, following the Alexandersson--Jal width-two-poset/skew-shape
+correspondence used by Braun--Jal. -/
+def generalizedSnakeBoard (w : SnakeWord) : FiniteSkewBoard where
+  cells :=
+    ((Finset.range (w.length + 1)).product (Finset.range (w.length + 1))).filter
+      fun cell =>
+        (!snakeElementReachable w (snakeRowCode cell.1) (snakeColCode cell.2) &&
+          !snakeElementReachable w (snakeColCode cell.2) (snakeRowCode cell.1)) = true
+
+/-- The concrete finite-board squarecase model for generalized snake words. -/
+def generalizedSnakeRookModel : SquarecaseRookModel :=
+  squarecaseRookModelOfFiniteSkewBoard generalizedSnakeBoard
+
+@[simp] theorem generalizedSnakeRookModel_boardOfSnake (w : SnakeWord) :
+    generalizedSnakeRookModel.boardOfSnake w = generalizedSnakeBoard w :=
+  rfl
+
+@[simp] theorem generalizedSnakeRookModel_snakePolynomial (w : SnakeWord) :
+    generalizedSnakeRookModel.snakePolynomial w =
+      (generalizedSnakeBoard w).rookPolynomial :=
+  rfl
+
 /-- Statement interface for Braun--Jal Theorem 4.1, with the non-nesting rook
 polynomial supplied as a parameter. -/
 def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
