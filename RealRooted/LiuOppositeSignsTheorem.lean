@@ -1730,6 +1730,63 @@ lemma quadraticSubLinear_splits_of_right_root_le_upper
       positivity
   simpa [hpoly] using quadraticPoly_splits_of_discrim_nonneg one_ne_zero hdisc
 
+/-- If the linear root lies strictly above the upper quadratic root, then some
+positive subtraction coefficient makes the monic quadratic-minus-linear pencil
+fail to split. -/
+lemma exists_quadraticSubLinear_not_splits_of_upper_lt_right_root
+    {a b c : ℝ} (hab : a ≤ b) (hbc : b < c) :
+    ∃ μ : ℝ, 0 < μ ∧
+      ¬ (((X - C a) * (X - C b)) - C μ * (X - C c)).Splits := by
+  let μ : ℝ := 2 * c - a - b
+  have hμ : 0 < μ := by
+    dsimp [μ]
+    linarith
+  refine ⟨μ, hμ, ?_⟩
+  have hpoly :
+      ((X - C a) * (X - C b)) - C μ * (X - C c) =
+        C 1 * X ^ 2 + C (-(a + b + μ)) * X + C (a * b + μ * c) := by
+    simp only [C_add, C_mul, C_neg, C_1]
+    ring
+  have hdisc : discrim 1 (-(a + b + μ)) (a * b + μ * c) < 0 := by
+    have hac : a < c := lt_of_le_of_lt hab hbc
+    have hprod_pos : 0 < (c - a) * (c - b) :=
+      mul_pos (sub_pos.mpr hac) (sub_pos.mpr hbc)
+    have hdisc_eq :
+        discrim 1 (-(a + b + μ)) (a * b + μ * c) =
+          -4 * ((c - a) * (c - b)) := by
+      dsimp [μ]
+      unfold discrim
+      ring_nf
+    rw [hdisc_eq]
+    nlinarith
+  intro hsplit
+  exact (quadraticPoly_not_splits_of_discrim_neg one_ne_zero hdisc) (by
+    simpa [hpoly] using hsplit)
+
+/-- The sign-normalized quadratic/linear endpoint is not compatible when the
+linear root lies strictly above the upper quadratic root. -/
+lemma not_compatible_quadratic_neg_linear_of_upper_lt_right_root
+    {a b c : ℝ} (hab : a ≤ b) (hbc : b < c) :
+    ¬ Compatible ((X - C a) * (X - C b)) (-(X - C c)) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_quadraticSubLinear_not_splits_of_upper_lt_right_root hab hbc
+  intro hcompat
+  have hcase := hcompat (1 : ℝ) μ zero_le_one (le_of_lt hμ)
+  have hcombo_eq :
+      C (1 : ℝ) * ((X - C a) * (X - C b)) + C μ * (-(X - C c)) =
+        (X - C a) * (X - C b) - C μ * (X - C c) := by
+    simp only [C_1, one_mul]
+    ring_nf
+  have hcase' :
+      ((X - C a) * (X - C b) - C μ * (X - C c) = 0) ∨
+        ((X - C a) * (X - C b) - C μ * (X - C c) ≠ 0 ∧
+          ((X - C a) * (X - C b) - C μ * (X - C c)).Splits) := by
+    rw [hcombo_eq] at hcase
+    exact hcase
+  rcases hcase' with hzero | ⟨_, hsplit⟩
+  · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
+  · exact hnot_splits hsplit
+
 /-- A monic cubic minus a positive multiple of a monic quadratic is still a
 genuine cubic. -/
 lemma natDegree_cubicSubQuadratic (a b c u v μ : ℝ) :
