@@ -238,6 +238,24 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia]
 
+@[simp] theorem modifiedNarayanaCoeffPolynomial_eight :
+    modifiedNarayanaCoeffPolynomial 8 =
+      1 + C (36 : ℝ) * X + C (336 : ℝ) * X ^ 2 +
+        C (1176 : ℝ) * X ^ 3 + C (1764 : ℝ) * X ^ 4 +
+          C (1176 : ℝ) * X ^ 5 + C (336 : ℝ) * X ^ 6 +
+            C (36 : ℝ) * X ^ 7 + X ^ 8 := by
+  ext k
+  by_cases hk : k ≤ 8
+  · interval_cases k <;>
+      norm_num [modifiedNarayanaCoeffPolynomial, narayanaTransformCoeff, Nat.choose,
+        coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
+  · have hklt : 8 < k := Nat.lt_of_not_ge hk
+    simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
+      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
+      show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
+      show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia]
+
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
@@ -470,6 +488,50 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_seven :
   narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
     FiniteSkewBoard.auxiliaryG_six
 
+/-- The `n = 8` Braun--Jal equation (2) reduces to the concrete `G_7`
+finite-board computation. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
+    (hG7 : FiniteSkewBoard.auxiliaryG 7 =
+      7 + C (112 : ℝ) * X + C (490 : ℝ) * X ^ 2 +
+        C (784 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
+          C (112 : ℝ) * X ^ 5 + C (7 : ℝ) * X ^ 6) :
+    X * FiniteSkewBoard.auxiliaryG 7 =
+      modifiedNarayanaCoeffPolynomial 8 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 7 := by
+  rw [hG7, modifiedNarayanaCoeffPolynomial_seven,
+    modifiedNarayanaCoeffPolynomial_eight]
+  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+  have hC28 : (C (28 : ℝ) : ℝ[X]) = 28 :=
+    Polynomial.C_eq_natCast (R := ℝ) 28
+  have hC36 : (C (36 : ℝ) : ℝ[X]) = 36 :=
+    Polynomial.C_eq_natCast (R := ℝ) 36
+  have hC112 : (C (112 : ℝ) : ℝ[X]) = 112 :=
+    Polynomial.C_eq_natCast (R := ℝ) 112
+  have hC196 : (C (196 : ℝ) : ℝ[X]) = 196 :=
+    Polynomial.C_eq_natCast (R := ℝ) 196
+  have hC336 : (C (336 : ℝ) : ℝ[X]) = 336 :=
+    Polynomial.C_eq_natCast (R := ℝ) 336
+  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 :=
+    Polynomial.C_eq_natCast (R := ℝ) 490
+  have hC784 : (C (784 : ℝ) : ℝ[X]) = 784 :=
+    Polynomial.C_eq_natCast (R := ℝ) 784
+  have hC1176 : (C (1176 : ℝ) : ℝ[X]) = 1176 :=
+    Polynomial.C_eq_natCast (R := ℝ) 1176
+  have hC1764 : (C (1764 : ℝ) : ℝ[X]) = 1764 :=
+    Polynomial.C_eq_natCast (R := ℝ) 1764
+  rw [hC7, hC28, hC36, hC112, hC196, hC336, hC490, hC784, hC1176,
+    hC1764]
+  ring_nf
+
+/-- The `n = 8` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_eight :
+    X * FiniteSkewBoard.auxiliaryG 7 =
+      modifiedNarayanaCoeffPolynomial 8 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 7 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
+    FiniteSkewBoard.auxiliaryG_seven
+
 /-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
 the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
 theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_six
@@ -500,6 +562,23 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_seven
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
   · exact narayanaCoeffAuxiliaryGRecurrence_modified_seven
+
+/-- The checked initial cases through `n = 8` of Braun--Jal equation (2), for
+the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_eight
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₈ : n ≤ 8) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaCoeffPolynomial n -
+        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_seven
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_eight
 
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
@@ -619,6 +698,15 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
           C (196 : ℝ) * X ^ 5 + C (28 : ℝ) * X ^ 6 + X ^ 7 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_seven]
+
+@[simp] theorem modifiedNarayanaPolynomial_eight :
+    modifiedNarayanaPolynomial 8 =
+      1 + C (36 : ℝ) * X + C (336 : ℝ) * X ^ 2 +
+        C (1176 : ℝ) * X ^ 3 + C (1764 : ℝ) * X ^ 4 +
+          C (1176 : ℝ) * X ^ 5 + C (336 : ℝ) * X ^ 6 +
+            C (36 : ℝ) * X ^ 7 + X ^ 8 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_eight]
 
 /-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
@@ -775,6 +863,29 @@ theorem narayanaAuxiliaryGRecurrence_modified_seven :
         (1 + X) * modifiedNarayanaPolynomial 6 :=
   narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
     FiniteSkewBoard.auxiliaryG_six
+
+/-- The `n = 8` Braun--Jal equation (2), for the quotient-style modified
+Narayana family, reduces to the concrete `G_7` finite-board computation. -/
+theorem narayanaAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
+    (hG7 : FiniteSkewBoard.auxiliaryG 7 =
+      7 + C (112 : ℝ) * X + C (490 : ℝ) * X ^ 2 +
+        C (784 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
+          C (112 : ℝ) * X ^ 5 + C (7 : ℝ) * X ^ 6) :
+    X * FiniteSkewBoard.auxiliaryG 7 =
+      modifiedNarayanaPolynomial 8 -
+        (1 + X) * modifiedNarayanaPolynomial 7 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 7,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 8]
+  exact narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven hG7
+
+/-- The `n = 8` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_eight :
+    X * FiniteSkewBoard.auxiliaryG 7 =
+      modifiedNarayanaPolynomial 8 -
+        (1 + X) * modifiedNarayanaPolynomial 7 :=
+  narayanaAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
+    FiniteSkewBoard.auxiliaryG_seven
 
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
@@ -952,6 +1063,23 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_seven
   · exact narayanaAuxiliaryGRecurrence_modified_five
   · exact narayanaAuxiliaryGRecurrence_modified_six
   · exact narayanaAuxiliaryGRecurrence_modified_seven
+
+/-- The checked initial cases through `n = 8` of Braun--Jal equation (2), for
+the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_eight
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₈ : n ≤ 8) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaAuxiliaryGRecurrence_modified_base
+  · exact narayanaAuxiliaryGRecurrence_modified_two
+  · exact narayanaAuxiliaryGRecurrence_modified_three
+  · exact narayanaAuxiliaryGRecurrence_modified_four
+  · exact narayanaAuxiliaryGRecurrence_modified_five
+  · exact narayanaAuxiliaryGRecurrence_modified_six
+  · exact narayanaAuxiliaryGRecurrence_modified_seven
+  · exact narayanaAuxiliaryGRecurrence_modified_eight
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
