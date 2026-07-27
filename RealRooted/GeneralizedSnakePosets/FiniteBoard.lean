@@ -55,6 +55,27 @@ def nonNestingPlacementsWithCell (B : FiniteSkewBoard) (a : ℕ × ℕ) :
   classical
   exact B.nonNestingPlacements.filter fun P => a ∈ P
 
+/-- Cells of a finite board in a fixed row. -/
+def rowCells (B : FiniteSkewBoard) (row : ℕ) : Finset (ℕ × ℕ) :=
+  B.cells.filter fun a => a.1 = row
+
+/-- Valid placements with no rook in a fixed row. -/
+def nonNestingPlacementsWithoutRow (B : FiniteSkewBoard) (row : ℕ) :
+    Finset (Finset (ℕ × ℕ)) := by
+  classical
+  exact B.nonNestingPlacements.filter fun P => ∀ c, (row, c) ∉ P
+
+/-- Valid placements containing a rook in a fixed row. -/
+def nonNestingPlacementsWithRow (B : FiniteSkewBoard) (row : ℕ) :
+    Finset (Finset (ℕ × ℕ)) :=
+  (B.rowCells row).biUnion fun a => B.nonNestingPlacementsWithCell a
+
+/-- Membership in the cells of a fixed row. -/
+@[simp] theorem mem_rowCells {B : FiniteSkewBoard} {row : ℕ}
+    {a : ℕ × ℕ} :
+    a ∈ B.rowCells row ↔ a ∈ B.cells ∧ a.1 = row := by
+  simp [rowCells]
+
 /-- Membership in the finite set of non-nesting placements. -/
 @[simp] theorem mem_nonNestingPlacements {B : FiniteSkewBoard}
     {P : Finset (ℕ × ℕ)} :
@@ -71,6 +92,107 @@ specified cell. -/
       B.IsNonNestingPlacement P ∧ a ∈ P := by
   classical
   simp [nonNestingPlacementsWithCell]
+
+/-- Membership in the row-free placement slice. -/
+@[simp] theorem mem_nonNestingPlacementsWithoutRow {B : FiniteSkewBoard}
+    {row : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithoutRow row ↔
+      B.IsNonNestingPlacement P ∧ ∀ c, (row, c) ∉ P := by
+  classical
+  simp [nonNestingPlacementsWithoutRow]
+
+/-- Membership in the placement slice using a fixed row. -/
+@[simp] theorem mem_nonNestingPlacementsWithRow {B : FiniteSkewBoard}
+    {row : ℕ} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithRow row ↔
+      B.IsNonNestingPlacement P ∧ ∃ a ∈ B.rowCells row, a ∈ P := by
+  classical
+  rw [nonNestingPlacementsWithRow, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨a, ha, hP⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
+  · rintro ⟨hP, a, ha, haP⟩
+    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+
+/-- Placements avoiding a row and placements using that row are disjoint. -/
+theorem disjoint_nonNestingPlacementsWithoutRow_withRow
+    (B : FiniteSkewBoard) (row : ℕ) :
+    Disjoint (B.nonNestingPlacementsWithoutRow row)
+      (B.nonNestingPlacementsWithRow row) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro P hfree hrow
+  rw [mem_nonNestingPlacementsWithoutRow] at hfree
+  rw [mem_nonNestingPlacementsWithRow] at hrow
+  rcases hrow.2 with ⟨a, ha, haP⟩
+  have hrow_eq : a.1 = row := (mem_rowCells.mp ha).2
+  have hcell : (row, a.2) = a := by
+    ext <;> simp [hrow_eq]
+  exact hfree.2 a.2 (by simpa [hcell] using haP)
+
+/-- Every placement either avoids a fixed row or uses a cell in that row. -/
+theorem union_nonNestingPlacementsWithoutRow_withRow
+    (B : FiniteSkewBoard) (row : ℕ) :
+    B.nonNestingPlacementsWithoutRow row ∪ B.nonNestingPlacementsWithRow row =
+      B.nonNestingPlacements := by
+  classical
+  ext P
+  rw [Finset.mem_union, mem_nonNestingPlacementsWithoutRow,
+    mem_nonNestingPlacementsWithRow, mem_nonNestingPlacements]
+  constructor
+  · rintro (h | h) <;> exact h.1
+  · intro hP
+    by_cases hrow : ∃ c, (row, c) ∈ P
+    · rcases hrow with ⟨c, hcP⟩
+      have hcell := hP.1 hcP
+      exact Or.inr ⟨hP, ⟨(row, c), by simp [hcell], hcP⟩⟩
+    · exact Or.inl ⟨hP, fun c hc => hrow ⟨c, hc⟩⟩
+
+/-- A valid placement can contain at most one cell in a fixed row. -/
+theorem pairwiseDisjoint_nonNestingPlacementsWithCell_rowCells
+    (B : FiniteSkewBoard) (row : ℕ) :
+    (↑(B.rowCells row) : Set (ℕ × ℕ)).PairwiseDisjoint
+      (fun a => B.nonNestingPlacementsWithCell a) := by
+  classical
+  intro a ha b hb hne
+  change Disjoint (B.nonNestingPlacementsWithCell a)
+    (B.nonNestingPlacementsWithCell b)
+  rw [Finset.disjoint_iff_ne]
+  intro P hPa Q hQ hPQ
+  rw [mem_nonNestingPlacementsWithCell] at hPa hQ
+  subst Q
+  have hrow_ne := hPa.1.2.1 a hPa.2 b hQ.2 hne
+  have ha_row : a.1 = row := (mem_rowCells.mp ha).2
+  have hb_row : b.1 = row := (mem_rowCells.mp hb).2
+  exact hrow_ne (by rw [ha_row, hb_row])
+
+/-- The sum over placements using a row is the sum over fixed cells in that
+row. -/
+theorem sum_nonNestingPlacementsWithRow
+    (B : FiniteSkewBoard) (row : ℕ) :
+    (B.nonNestingPlacementsWithRow row).sum (fun P => (X : ℝ[X]) ^ P.card) =
+      (B.rowCells row).sum (fun a =>
+        (B.nonNestingPlacementsWithCell a).sum fun P => (X : ℝ[X]) ^ P.card) := by
+  classical
+  rw [nonNestingPlacementsWithRow]
+  exact Finset.sum_biUnion
+    (pairwiseDisjoint_nonNestingPlacementsWithCell_rowCells B row)
+
+/-- The placement sum for a finite board splits according to occupancy of a
+fixed row. -/
+theorem sum_nonNestingPlacements_eq_withoutRow_add_withRow
+    (B : FiniteSkewBoard) (row : ℕ) :
+    B.nonNestingPlacements.sum (fun P => (X : ℝ[X]) ^ P.card) =
+      (B.nonNestingPlacementsWithoutRow row).sum
+        (fun P => (X : ℝ[X]) ^ P.card) +
+      (B.rowCells row).sum (fun a =>
+        (B.nonNestingPlacementsWithCell a).sum fun P => (X : ℝ[X]) ^ P.card) := by
+  classical
+  rw [← union_nonNestingPlacementsWithoutRow_withRow B row]
+  rw [Finset.sum_union
+    (disjoint_nonNestingPlacementsWithoutRow_withRow B row)]
+  rw [sum_nonNestingPlacementsWithRow]
 
 /-- The rook polynomial as a sum over the named finite set of non-nesting
 placements. -/
