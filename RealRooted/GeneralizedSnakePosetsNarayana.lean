@@ -698,6 +698,104 @@ theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
       rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
         ih', ih_succ']
 
+/-! ## Jacobi-polynomial transport for Braun--Jal Lemma 3.1 -/
+
+/-- The change of variables used in the Jacobi-polynomial proof of
+Braun--Jal Lemma 3.1. -/
+def jacobi11ChangeOfVariables (r : ℝ) : ℝ :=
+  (r + 1) / (r - 1)
+
+/-- For `r ≤ 0`, the Braun--Jal Jacobi change of variables lands in
+`[-1, 1]`, the interval where Gasper's Turan theorem applies. -/
+theorem jacobi11ChangeOfVariables_mem_Icc_of_nonpos {r : ℝ} (hr : r ≤ 0) :
+    jacobi11ChangeOfVariables r ∈ Set.Icc (-1 : ℝ) 1 := by
+  constructor
+  · have hden : r - 1 < 0 := by linarith
+    rw [jacobi11ChangeOfVariables, le_div_iff_of_neg hden]
+    nlinarith
+  · have hden : r - 1 < 0 := by linarith
+    rw [jacobi11ChangeOfVariables, div_le_iff_of_neg hden]
+    nlinarith
+
+/-- The even power scale factor in Braun--Jal Lemma 3.1 is nonnegative. -/
+theorem jacobi11TuranScale_nonneg (n : ℕ) (r : ℝ) :
+    0 ≤ (r - 1) ^ (2 * n) := by
+  simpa [pow_mul] using pow_nonneg (sq_nonneg (r - 1)) n
+
+/-- Coefficients obtained after substituting
+`x = (t + 1) / (t - 1)` into the normalized Jacobi polynomial
+`R_n^(1,1)(x)`, multiplying by `(t - 1)^n`, and canceling the powers of `2`.
+-/
+def jacobi11TransportCoeff (n k : ℕ) : ℝ :=
+  (Nat.choose (n + 1) k : ℝ) * (Nat.choose (n + 1) (n - k) : ℝ) /
+    (n + 1 : ℝ)
+
+/-- The polynomial left by the normalized Jacobi expression after the
+Braun--Jal change of variables. -/
+def jacobi11TransportPolynomial (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1), C (jacobi11TransportCoeff n k) * X ^ k
+
+@[simp] theorem coeff_jacobi11TransportPolynomial_of_le
+    {n k : ℕ} (hk : k ≤ n) :
+    (jacobi11TransportPolynomial n).coeff k = jacobi11TransportCoeff n k := by
+  simp [jacobi11TransportPolynomial, hk]
+
+@[simp] theorem coeff_jacobi11TransportPolynomial_of_lt
+    {n k : ℕ} (hk : n < k) :
+    (jacobi11TransportPolynomial n).coeff k = 0 := by
+  simp [jacobi11TransportPolynomial, hk.not_ge]
+
+/-- The normalized Jacobi transport coefficients are exactly the
+`m = 1` generalized Narayana coefficients. -/
+theorem jacobi11TransportCoeff_eq_narayanaTransformCoeff_one
+    {n k : ℕ} (hk : k ≤ n) :
+    jacobi11TransportCoeff n k = narayanaTransformCoeff 1 n k := by
+  unfold jacobi11TransportCoeff narayanaTransformCoeff
+  have hden_choose : (Nat.choose (1 + k) k : ℝ) = (k + 1 : ℝ) := by
+    have hnat : Nat.choose (1 + k) k = k + 1 := by
+      simp [Nat.add_comm]
+    exact_mod_cast hnat
+  rw [hden_choose]
+  have hsym : Nat.choose (n + 1) (n - k) = Nat.choose (n + 1) (k + 1) := by
+    have hle : n - k ≤ n + 1 := by lia
+    have hsub : n + 1 - (n - k) = k + 1 := by lia
+    rw [← Nat.choose_symm hle, hsub]
+  have hchoose_nat :
+      (n + 1) * Nat.choose n k =
+        Nat.choose (n + 1) (k + 1) * (k + 1) :=
+    Nat.add_one_mul_choose_eq n k
+  have hchoose :
+      (n + 1 : ℝ) * (Nat.choose n k : ℝ) =
+        (Nat.choose (n + 1) (k + 1) : ℝ) * (k + 1 : ℝ) := by
+    exact_mod_cast hchoose_nat
+  rw [hsym]
+  have hnz : (n + 1 : ℝ) ≠ 0 := by positivity
+  have hkz : (k + 1 : ℝ) ≠ 0 := by positivity
+  field_simp [hnz, hkz]
+  nlinarith
+
+/-- The polynomial obtained from the normalized Jacobi expression is the
+coefficient-side modified Narayana polynomial. -/
+theorem jacobi11TransportPolynomial_eq_coeffPolynomial (n : ℕ) :
+    jacobi11TransportPolynomial n = modifiedNarayanaCoeffPolynomial n := by
+  ext k
+  by_cases hk : k ≤ n
+  · rw [coeff_jacobi11TransportPolynomial_of_le hk,
+      modifiedNarayanaCoeffPolynomial,
+      coeff_narayanaPolynomial_of_le (m := 1) hk]
+    exact jacobi11TransportCoeff_eq_narayanaTransformCoeff_one hk
+  · have hklt : n < k := Nat.lt_of_not_ge hk
+    rw [coeff_jacobi11TransportPolynomial_of_lt hklt,
+      modifiedNarayanaCoeffPolynomial,
+      coeff_narayanaPolynomial_of_lt (m := 1) hklt]
+
+/-- Braun--Jal's normalized Jacobi transport polynomial is the concrete
+modified Narayana polynomial. -/
+theorem jacobi11TransportPolynomial_eq_modifiedNarayanaPolynomial (n : ℕ) :
+    jacobi11TransportPolynomial n = modifiedNarayanaPolynomial n := by
+  rw [jacobi11TransportPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial]
+
 /-- The quotient Narayana sequence has nonnegative coefficients, via the
 coefficient-side model. -/
 theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
@@ -1294,6 +1392,20 @@ def modifiedNarayanaTuran (m : ℕ) (r : ℝ) : ℝ :=
   ((modifiedNarayanaPolynomial m).eval r) ^ 2 -
     (modifiedNarayanaPolynomial (m + 1)).eval r *
       (modifiedNarayanaPolynomial (m - 1)).eval r
+
+/-- The Turan determinant built from the normalized Jacobi transport
+polynomials. -/
+def jacobi11TransportTuran (m : ℕ) (r : ℝ) : ℝ :=
+  ((jacobi11TransportPolynomial m).eval r) ^ 2 -
+    (jacobi11TransportPolynomial (m + 1)).eval r *
+      (jacobi11TransportPolynomial (m - 1)).eval r
+
+/-- The modified Narayana Turan determinant is the Turan determinant of the
+normalized Jacobi transport polynomials. -/
+theorem modifiedNarayanaTuran_eq_jacobi11TransportTuran (m : ℕ) (r : ℝ) :
+    modifiedNarayanaTuran m r = jacobi11TransportTuran m r := by
+  simp [modifiedNarayanaTuran, jacobi11TransportTuran,
+    jacobi11TransportPolynomial_eq_modifiedNarayanaPolynomial]
 
 /-- Statement form for the remaining Narayana Turan inequality needed by the
 shifted Lemma 3.4 route. -/
