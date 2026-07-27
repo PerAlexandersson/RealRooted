@@ -646,6 +646,17 @@ def partitionSubOne (lam : List ℕ) : List ℕ :=
 def partitionPrefix (lam : List ℕ) (i : ℕ) : List ℕ :=
   lam.take i
 
+@[simp] theorem partitionPrefix_length (lam : List ℕ) (i : ℕ) :
+    (partitionPrefix lam i).length = min i lam.length := by
+  simp [partitionPrefix, List.length_take]
+
+theorem partitionPrefix_getD_of_lt {lam : List ℕ} {row i : ℕ}
+    (hrow : row < i) :
+    (partitionPrefix lam i).getD row 0 = lam.getD row 0 := by
+  rw [partitionPrefix, List.getD_eq_getElem?_getD,
+    List.getD_eq_getElem?_getD, List.getElem?_take]
+  simp [hrow]
+
 /-- A list of row lengths is an integer partition in Braun--Jal's sense:
 positive parts in weakly decreasing order. -/
 def IsIntegerPartition (lam : List ℕ) : Prop :=
@@ -1121,6 +1132,434 @@ theorem sum_nonNestingPlacementsWithoutFirstColumn_eq_partitionSubOne
           rw [← hsum_image, himage]
     _ = ferrersRookPolynomial (partitionSubOne lam) := by
           rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
+
+/-- After erasing a first-column rook, every remaining rook lies in a row above
+it. -/
+theorem row_lt_of_mem_erase_firstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {i : ℕ}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfirst : (i, 1) ∈ P) {a : ℕ × ℕ}
+    (ha : a ∈ P.erase (i, 1)) :
+    a.1 < i := by
+  have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+  have hane : a ≠ (i, 1) := (Finset.mem_erase.mp ha).1
+  have ha_cell := hP.1 haP
+  rw [mem_ferrers_cells] at ha_cell
+  by_cases hlt : a.1 < i
+  · exact hlt
+  · have hi_le : i ≤ a.1 := le_of_not_gt hlt
+    by_cases hrow : a.1 = i
+    · have hrow_ne := hP.2.1 a haP (i, 1) hfirst hane
+      exact (hrow_ne hrow).elim
+    · have hi_lt : i < a.1 := lt_of_le_of_ne hi_le (fun h => hrow h.symm)
+      have hcol := hP.2.2 (i, 1) hfirst a haP hi_lt
+      exact (not_lt_of_ge (Nat.succ_le_of_lt ha_cell.2.1) hcol).elim
+
+/-- After erasing a first-column rook, every remaining rook is strictly to the
+right of the first column. -/
+theorem one_lt_col_of_mem_erase_firstColumn
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {i : ℕ}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfirst : (i, 1) ∈ P) :
+    ∀ a ∈ P.erase (i, 1), 1 < a.2 := by
+  intro a ha
+  have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+  have hrow := row_lt_of_mem_erase_firstColumn hP hfirst ha
+  exact hP.2.2 a haP (i, 1) hfirst hrow
+
+/-- If a valid Ferrers placement contains the first-column rook `(i,1)`, then
+erasing it and shifting columns left gives a placement on the first `i` rows of
+`partitionSubOne lam`. -/
+theorem firstColumnRemainder_isNonNestingPlacement
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {i : ℕ}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfirst : (i, 1) ∈ P) :
+    (ferrers (partitionPrefix (partitionSubOne lam) i)).IsNonNestingPlacement
+      (firstColumnRemainder i P) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [firstColumnRemainder] at hx
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases a with ⟨row, col⟩
+    have haP : (row, col) ∈ P := (Finset.mem_erase.mp ha).2
+    have ha_cell := hP.1 haP
+    rw [mem_ferrers_cells] at ha_cell ⊢
+    have hrow_lt := row_lt_of_mem_erase_firstColumn hP hfirst ha
+    have hcol_gt := one_lt_col_of_mem_erase_firstColumn hP hfirst (row, col) ha
+    refine ⟨?_, Nat.sub_pos_of_lt hcol_gt, ?_⟩
+    · rw [partitionPrefix_length]
+      exact lt_min hrow_lt (by simpa [partitionSubOne] using ha_cell.1)
+    · rw [partitionPrefix_getD_of_lt hrow_lt, partitionSubOne_getD]
+      exact Nat.sub_le_sub_right ha_cell.2.2 1
+  · intro x hx y hy hxy
+    rw [firstColumnRemainder] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+    have hbP : b ∈ P := (Finset.mem_erase.mp hb).2
+    have hab : a ≠ b := by
+      intro hab
+      subst b
+      exact hxy rfl
+    exact hP.2.1 a haP b hbP hab
+  · intro x hx y hy hxy
+    rw [firstColumnRemainder] at hx hy
+    rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+    rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+    have haP : a ∈ P := (Finset.mem_erase.mp ha).2
+    have hbP : b ∈ P := (Finset.mem_erase.mp hb).2
+    have hcol := hP.2.2 a haP b hbP hxy
+    have hb_cell := hP.1 hbP
+    rw [mem_ferrers_cells] at hb_cell
+    exact Nat.sub_lt_sub_right hb_cell.2.1 hcol
+
+/-- Reinsert a first-column rook and shift a valid remainder right by one
+column. -/
+theorem firstColumnExtension_isNonNestingPlacement
+    {lam : List ℕ} {Q : Finset (ℕ × ℕ)} {i : ℕ}
+    (hQ :
+      (ferrers (partitionPrefix (partitionSubOne lam) i)).IsNonNestingPlacement Q)
+    (hfirst_cell : (i, 1) ∈ (ferrers lam).cells) :
+    (ferrers lam).IsNonNestingPlacement (firstColumnExtension i Q) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [firstColumnExtension] at hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · exact hfirst_cell
+    · rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+      rcases a with ⟨row, col⟩
+      have ha_cell := hQ.1 ha
+      rw [mem_ferrers_cells] at ha_cell ⊢
+      have hrow_pair : row < i ∧ row < lam.length := by
+        have hlen := ha_cell.1
+        rw [partitionPrefix_length] at hlen
+        exact lt_min_iff.mp (by simpa [partitionSubOne] using hlen)
+      refine ⟨hrow_pair.2, by lia, ?_⟩
+      rw [partitionPrefix_getD_of_lt hrow_pair.1, partitionSubOne_getD] at ha_cell
+      lia
+  · intro x hx y hy hxy
+    rw [firstColumnExtension] at hx hy
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · exact (hxy rfl).elim
+      · rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hb_cell := hQ.1 hb
+        rw [mem_ferrers_cells] at hb_cell
+        have hrow_lt : b.1 < i := by
+          have hlen := hb_cell.1
+          rw [partitionPrefix_length] at hlen
+          exact (lt_min_iff.mp (by simpa [partitionSubOne] using hlen)).1
+        exact ne_of_gt hrow_lt
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        have ha_cell := hQ.1 ha
+        rw [mem_ferrers_cells] at ha_cell
+        have hrow_lt : a.1 < i := by
+          have hlen := ha_cell.1
+          rw [partitionPrefix_length] at hlen
+          exact (lt_min_iff.mp (by simpa [partitionSubOne] using hlen)).1
+        exact ne_of_lt hrow_lt
+      · rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hab : a ≠ b := by
+          intro hab
+          subst b
+          exact hxy rfl
+        exact hQ.2.1 a ha b hb hab
+  · intro x hx y hy hxy
+    rw [firstColumnExtension] at hx hy
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · exact (Nat.lt_irrefl i hxy).elim
+      · rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        have hb_cell := hQ.1 hb
+        rw [mem_ferrers_cells] at hb_cell
+        have hrow_lt : b.1 < i := by
+          have hlen := hb_cell.1
+          rw [partitionPrefix_length] at hlen
+          exact (lt_min_iff.mp (by simpa [partitionSubOne] using hlen)).1
+        exact (not_lt_of_ge (Nat.le_of_lt hrow_lt) hxy).elim
+    · rcases Finset.mem_insert.mp hy with rfl | hy
+      · rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        have ha_cell := hQ.1 ha
+        rw [mem_ferrers_cells] at ha_cell
+        exact Nat.succ_lt_succ ha_cell.2.1
+      · rcases Finset.mem_image.mp hx with ⟨a, ha, rfl⟩
+        rcases Finset.mem_image.mp hy with ⟨b, hb, rfl⟩
+        exact Nat.add_lt_add_right (hQ.2.2 a ha b hb hxy) 1
+
+/-- Removing a first-column rook and shifting columns preserves the cardinality
+of the remaining placement. -/
+theorem firstColumnRemainder_card_add_one
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {i : ℕ}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfirst : (i, 1) ∈ P) :
+    (firstColumnRemainder i P).card + 1 = P.card := by
+  classical
+  rw [firstColumnRemainder]
+  have hinj :
+      Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - 1)) ↑(P.erase (i, 1)) := by
+    intro a ha b hb hmap
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_sub : a.2 - 1 = b.2 - 1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have haone : 1 ≤ a.2 :=
+      Nat.le_of_lt (one_lt_col_of_mem_erase_firstColumn hP hfirst a ha)
+    have hbone : 1 ≤ b.2 :=
+      Nat.le_of_lt (one_lt_col_of_mem_erase_firstColumn hP hfirst b hb)
+    have hcol : a.2 = b.2 := by
+      calc
+        a.2 = (a.2 - 1) + 1 := (Nat.sub_add_cancel haone).symm
+        _ = (b.2 - 1) + 1 := by rw [hcol_sub]
+        _ = b.2 := Nat.sub_add_cancel hbone
+    exact Prod.ext hrow hcol
+  rw [Finset.card_image_of_injOn hinj]
+  exact Finset.card_erase_add_one hfirst
+
+/-- Shifting a valid fixed-row remainder right and inserting the first-column
+rook increases cardinality by one. -/
+theorem firstColumnExtension_card
+    {lam : List ℕ} {Q : Finset (ℕ × ℕ)} {i : ℕ}
+    (hQ :
+      (ferrers (partitionPrefix (partitionSubOne lam) i)).IsNonNestingPlacement Q) :
+    (firstColumnExtension i Q).card = Q.card + 1 := by
+  classical
+  rw [firstColumnExtension]
+  have hnot : (i, 1) ∉ Q.image fun a => (a.1, a.2 + 1) := by
+    intro hi
+    rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
+    have hrow : a.1 = i := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have ha_cell := hQ.1 ha
+    rw [mem_ferrers_cells] at ha_cell
+    have hrow_lt : a.1 < i := by
+      have hlen := ha_cell.1
+      rw [partitionPrefix_length] at hlen
+      exact (lt_min_iff.mp (by simpa [partitionSubOne] using hlen)).1
+    exact (ne_of_lt hrow_lt hrow).elim
+  have hinj :
+      Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 + 1)) ↑Q := by
+    intro a _ha b _hb hmap
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_add : a.2 + 1 = b.2 + 1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
+  rw [Finset.card_insert_eq_ite, if_neg hnot, Finset.card_image_of_injOn hinj]
+
+/-- The reinserted first-column rook is not already present in a shifted valid
+remainder. -/
+theorem firstColumnRook_not_mem_addFirstColumnPlacement
+    {lam : List ℕ} {Q : Finset (ℕ × ℕ)} {i : ℕ}
+    (hQ :
+      (ferrers (partitionPrefix (partitionSubOne lam) i)).IsNonNestingPlacement Q) :
+    (i, 1) ∉ addFirstColumnPlacement Q := by
+  intro hi
+  rw [addFirstColumnPlacement] at hi
+  rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
+  have hrow : a.1 = i := by
+    simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+  have ha_cell := hQ.1 ha
+  rw [mem_ferrers_cells] at ha_cell
+  have hrow_lt : a.1 < i := by
+    have hlen := ha_cell.1
+    rw [partitionPrefix_length] at hlen
+    exact (lt_min_iff.mp (by simpa [partitionSubOne] using hlen)).1
+  exact (ne_of_lt hrow_lt hrow).elim
+
+/-- Taking the remainder of an extended fixed-row placement recovers the
+original remainder. -/
+theorem firstColumnRemainder_firstColumnExtension
+    {lam : List ℕ} {Q : Finset (ℕ × ℕ)} {i : ℕ}
+    (hQ :
+      (ferrers (partitionPrefix (partitionSubOne lam) i)).IsNonNestingPlacement Q) :
+    firstColumnRemainder i (firstColumnExtension i Q) = Q := by
+  rw [firstColumnRemainder, firstColumnExtension]
+  rw [Finset.erase_insert (by
+    simpa [addFirstColumnPlacement]
+      using firstColumnRook_not_mem_addFirstColumnPlacement hQ)]
+  simpa [addFirstColumnPlacement, deleteFirstColumnPlacement]
+    using deleteFirstColumnPlacement_addFirstColumnPlacement Q
+
+/-- Extending the fixed-row remainder of a valid placement containing `(i,1)`
+recovers the original placement. -/
+theorem firstColumnExtension_firstColumnRemainder
+    {lam : List ℕ} {P : Finset (ℕ × ℕ)} {i : ℕ}
+    (hP : (ferrers lam).IsNonNestingPlacement P)
+    (hfirst : (i, 1) ∈ P) :
+    firstColumnExtension i (firstColumnRemainder i P) = P := by
+  rw [firstColumnExtension, firstColumnRemainder]
+  have hcol : ∀ a ∈ P.erase (i, 1), 1 < a.2 :=
+    one_lt_col_of_mem_erase_firstColumn hP hfirst
+  have hrecover :
+      ((P.erase (i, 1)).image fun a => (a.1, a.2 - 1)).image
+          (fun a => (a.1, a.2 + 1)) =
+        P.erase (i, 1) := by
+    simpa [addFirstColumnPlacement, deleteFirstColumnPlacement]
+      using addFirstColumnPlacement_deleteFirstColumnPlacement hcol
+  rw [hrecover]
+  exact Finset.insert_erase hfirst
+
+/-- On placements containing a fixed first-column rook, taking the shifted
+remainder is injective. -/
+theorem firstColumnRemainder_injOn_nonNestingPlacementsWithCell
+    {lam : List ℕ} {i : ℕ} :
+    Set.InjOn (firstColumnRemainder i)
+      ↑((ferrers lam).nonNestingPlacementsWithCell (i, 1)) := by
+  intro P hP Q hQ hrem
+  change P ∈ (ferrers lam).nonNestingPlacementsWithCell (i, 1) at hP
+  change Q ∈ (ferrers lam).nonNestingPlacementsWithCell (i, 1) at hQ
+  rw [mem_nonNestingPlacementsWithCell] at hP hQ
+  calc
+    P = firstColumnExtension i (firstColumnRemainder i P) :=
+      (firstColumnExtension_firstColumnRemainder hP.1 hP.2).symm
+    _ = firstColumnExtension i (firstColumnRemainder i Q) := by rw [hrem]
+    _ = Q := firstColumnExtension_firstColumnRemainder hQ.1 hQ.2
+
+/-- For a fixed first-column cell `(i,1)`, shifted remainders of valid
+placements containing that cell are exactly the valid placements on the first
+`i` rows of `partitionSubOne lam`. -/
+theorem firstColumnRemainder_image_nonNestingPlacementsWithCell
+    {lam : List ℕ} {i : ℕ}
+    (hfirst_cell : (i, 1) ∈ (ferrers lam).cells) :
+    ((ferrers lam).nonNestingPlacementsWithCell (i, 1)).image
+      (firstColumnRemainder i) =
+        (ferrers (partitionPrefix (partitionSubOne lam) i)).nonNestingPlacements := by
+  classical
+  ext Q
+  constructor
+  · intro hQ
+    rcases Finset.mem_image.mp hQ with ⟨P, hP, rfl⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact mem_nonNestingPlacements.mpr
+      (firstColumnRemainder_isNonNestingPlacement hP.1 hP.2)
+  · intro hQ
+    have hQvalid := mem_nonNestingPlacements.mp hQ
+    refine Finset.mem_image.mpr ⟨firstColumnExtension i Q, ?_, ?_⟩
+    · rw [mem_nonNestingPlacementsWithCell]
+      exact ⟨firstColumnExtension_isNonNestingPlacement hQvalid hfirst_cell,
+        by simp [firstColumnExtension]⟩
+    · exact firstColumnRemainder_firstColumnExtension hQvalid
+
+/-- The contribution of placements containing a fixed first-column rook is `X`
+times the rook polynomial of the shifted prefix board. -/
+theorem sum_nonNestingPlacementsWithFirstColumnCell_eq_mul_partitionPrefix
+    {lam : List ℕ} {i : ℕ}
+    (hfirst_cell : (i, 1) ∈ (ferrers lam).cells) :
+    ((ferrers lam).nonNestingPlacementsWithCell (i, 1)).sum
+      (fun P => (X : ℝ[X]) ^ P.card) =
+        X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i) := by
+  classical
+  let S := (ferrers lam).nonNestingPlacementsWithCell (i, 1)
+  let T := (ferrers (partitionPrefix (partitionSubOne lam) i)).nonNestingPlacements
+  have himage : S.image (firstColumnRemainder i) = T := by
+    simpa [S, T]
+      using firstColumnRemainder_image_nonNestingPlacementsWithCell hfirst_cell
+  have hinj : Set.InjOn (firstColumnRemainder i) ↑S := by
+    simpa [S] using
+      (firstColumnRemainder_injOn_nonNestingPlacementsWithCell (lam := lam)
+        (i := i))
+  have hsum_image :
+      (S.image (firstColumnRemainder i)).sum (fun Q => (X : ℝ[X]) ^ Q.card) =
+        S.sum (fun P => (X : ℝ[X]) ^ (firstColumnRemainder i P).card) := by
+    simpa using
+      (Finset.sum_image (s := S) (g := firstColumnRemainder i)
+        (f := fun Q => (X : ℝ[X]) ^ Q.card) hinj)
+  calc
+    S.sum (fun P => (X : ℝ[X]) ^ P.card)
+        = S.sum (fun P => X * X ^ (firstColumnRemainder i P).card) := by
+          apply Finset.sum_congr rfl
+          intro P hP
+          have hPvalid : (ferrers lam).IsNonNestingPlacement P ∧ (i, 1) ∈ P := by
+            simpa [S] using mem_nonNestingPlacementsWithCell.mp hP
+          have hcard := firstColumnRemainder_card_add_one hPvalid.1 hPvalid.2
+          rw [← hcard, pow_succ]
+          ring
+    _ = X * S.sum (fun P => X ^ (firstColumnRemainder i P).card) := by
+          rw [Finset.mul_sum]
+    _ = X * T.sum (fun Q => X ^ Q.card) := by
+          rw [← hsum_image, himage]
+    _ = X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i) := by
+          rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
+
+/-- In an integer partition, every row index in `firstColumnCells` is a genuine
+Ferrers-board first-column cell. -/
+theorem firstColumn_mem_ferrers_of_isIntegerPartition
+    {lam : List ℕ} (hpart : IsIntegerPartition lam) {i : ℕ}
+    (hi : i < lam.length) :
+    (i, 1) ∈ (ferrers lam).cells := by
+  rw [mem_ferrers_cells]
+  have hpos : 0 < lam[i] := hpart.2 lam[i] (List.get_mem lam ⟨i, hi⟩)
+  have hget : lam.getD i 0 = lam[i] := List.getD_eq_getElem lam 0 hi
+  exact ⟨hi, by norm_num, by rw [hget]; exact Nat.succ_le_of_lt hpos⟩
+
+/-- Summing the fixed first-column contributions over all first-column cells
+gives the first-column term in Braun--Jal's deletion recurrence. -/
+theorem sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum
+    (lam : List ℕ) (hpart : IsIntegerPartition lam) :
+    (firstColumnCells lam).sum (fun a =>
+      ((ferrers lam).nonNestingPlacementsWithCell a).sum
+        (fun P => (X : ℝ[X]) ^ P.card)) =
+      X * ((List.range lam.length).map fun i =>
+        ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum := by
+  classical
+  have hinj : Set.InjOn (fun i : ℕ => (i, 1)) ↑(Finset.range lam.length) := by
+    intro a _ha b _hb h
+    simpa using congrArg (fun x : ℕ × ℕ => x.1) h
+  rw [firstColumnCells, Finset.sum_image hinj]
+  calc
+    (Finset.range lam.length).sum (fun i =>
+        ((ferrers lam).nonNestingPlacementsWithCell (i, 1)).sum
+          (fun P => (X : ℝ[X]) ^ P.card))
+        = (Finset.range lam.length).sum (fun i =>
+            X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          exact sum_nonNestingPlacementsWithFirstColumnCell_eq_mul_partitionPrefix
+            (firstColumn_mem_ferrers_of_isIntegerPartition hpart
+              (Finset.mem_range.mp hi))
+    _ = (List.map (fun i =>
+          X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i))
+          (List.range lam.length)).sum := by
+          rw [← List.sum_toFinset (fun i =>
+            X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i))
+              List.nodup_range]
+          congr 1
+          ext i
+          simp
+    _ = X * ((List.range lam.length).map fun i =>
+          ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum := by
+          exact List.sum_map_mul_left (List.range lam.length)
+            (fun i => ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)) X
+
+/-- Braun--Jal Proposition 3.2 for the concrete finite Ferrers-board
+non-nesting rook-polynomial model. -/
+theorem ferrersFirstColumnDeletionStatement_holds :
+    ferrersFirstColumnDeletionStatement := by
+  intro lam hpart
+  calc
+    ferrersRookPolynomial lam
+        = ((ferrers lam).nonNestingPlacements).sum
+            (fun P => (X : ℝ[X]) ^ P.card) := by
+          rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
+    _ = (nonNestingPlacementsWithoutFirstColumn lam).sum
+          (fun P => (X : ℝ[X]) ^ P.card) +
+        (firstColumnCells lam).sum (fun a =>
+          ((ferrers lam).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) :=
+          sum_nonNestingPlacements_eq_withoutFirstColumn_add_withFirstColumn lam
+    _ = ferrersRookPolynomial (partitionSubOne lam) +
+        (firstColumnCells lam).sum (fun a =>
+          ((ferrers lam).nonNestingPlacementsWithCell a).sum
+            (fun P => (X : ℝ[X]) ^ P.card)) := by
+          rw [sum_nonNestingPlacementsWithoutFirstColumn_eq_partitionSubOne]
+    _ = ferrersRookPolynomial (partitionSubOne lam) +
+        X * ((List.range lam.length).map fun i =>
+          ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum := by
+          rw [sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum lam hpart]
 
 /-- A finite list sum of nonnegative-coefficient polynomials has nonnegative
 coefficients. -/
