@@ -1287,6 +1287,20 @@ theorem modifiedNarayanaTuran_three (r : ℝ) :
   norm_num
   ring
 
+/-- Explicit `m = 4` Narayana Turan determinant. -/
+theorem modifiedNarayanaTuran_four (r : ℝ) :
+    modifiedNarayanaTuran 4 r =
+      -r * (r ^ 6 + 6 * r ^ 5 + 21 * r ^ 4 + 28 * r ^ 3 +
+        21 * r ^ 2 + 6 * r + 1) := by
+  rw [modifiedNarayanaTuran, modifiedNarayanaPolynomial_eq_coeffPolynomial 3,
+    modifiedNarayanaCoeffPolynomial_three,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 4,
+    modifiedNarayanaCoeffPolynomial_four,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 5,
+    modifiedNarayanaCoeffPolynomial_five]
+  norm_num
+  ring
+
 private theorem modifiedNarayanaTuran_two_factor_nonneg (r : ℝ) :
     0 ≤ r ^ 2 + r + 1 := by
   have hs : 0 ≤ (2 * r + 1) ^ 2 := sq_nonneg (2 * r + 1)
@@ -1313,6 +1327,32 @@ private theorem modifiedNarayanaTuran_three_factor_nonneg_of_nonpos
     ring
   rwa [hrewrite]
 
+private theorem modifiedNarayanaTuran_four_factor_nonneg (r : ℝ) :
+    0 ≤ r ^ 6 + 6 * r ^ 5 + 21 * r ^ 4 + 28 * r ^ 3 +
+      21 * r ^ 2 + 6 * r + 1 := by
+  let y : ℝ := -r
+  have hquad : 0 ≤ 3 * y ^ 2 - 4 * y + 3 := by
+    have hs : 0 ≤ (3 * y - 2) ^ 2 := sq_nonneg (3 * y - 2)
+    nlinarith
+  have hdecomp :
+      y ^ 6 - 6 * y ^ 5 + 21 * y ^ 4 - 28 * y ^ 3 +
+        21 * y ^ 2 - 6 * y + 1 =
+          (y - 1) ^ 6 + 2 * y ^ 2 * (3 * y ^ 2 - 4 * y + 3) := by
+    ring
+  have hnonneg :
+      0 ≤ y ^ 6 - 6 * y ^ 5 + 21 * y ^ 4 - 28 * y ^ 3 +
+        21 * y ^ 2 - 6 * y + 1 := by
+    rw [hdecomp]
+    positivity
+  have hrewrite :
+      r ^ 6 + 6 * r ^ 5 + 21 * r ^ 4 + 28 * r ^ 3 +
+        21 * r ^ 2 + 6 * r + 1 =
+      y ^ 6 - 6 * y ^ 5 + 21 * y ^ 4 - 28 * y ^ 3 +
+        21 * y ^ 2 - 6 * y + 1 := by
+    dsimp [y]
+    ring
+  rwa [hrewrite]
+
 /-- The first three Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_three
     {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₃ : m ≤ 3) (hr : r ≤ 0) :
@@ -1331,6 +1371,27 @@ theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_three :
     ModifiedNarayanaTuranNonnegOnNonposUpToStatement 3 := by
   intro m r hm₁ hm₃ hr
   exact modifiedNarayanaTuran_nonneg_of_le_three hm₁ hm₃ hr
+
+/-- The first four Narayana Turan inequalities on nonpositive inputs. -/
+theorem modifiedNarayanaTuran_nonneg_of_le_four
+    {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₄ : m ≤ 4) (hr : r ≤ 0) :
+    0 ≤ modifiedNarayanaTuran m r := by
+  interval_cases m
+  · rw [modifiedNarayanaTuran_one]
+    linarith
+  · rw [modifiedNarayanaTuran_two]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_two_factor_nonneg r)
+  · rw [modifiedNarayanaTuran_three]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_three_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_four]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_four_factor_nonneg r)
+
+/-- Bounded Turan package through `m = 4`. -/
+theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_four :
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 4 := by
+  intro m r hm₁ hm₄ hr
+  exact modifiedNarayanaTuran_nonneg_of_le_four hm₁ hm₄ hr
 
 /-- At a root of the shifted Lemma 3.4 left-hand polynomial, the right-hand
 polynomial sign test is exactly the negative Narayana Turan determinant. -/
@@ -1417,6 +1478,18 @@ theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_three
   lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₃ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_three hr
 
+/-- Checked shifted Lemma 3.4 root-sign test through `m = 4`. -/
+theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_four
+    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₄ : m ≤ 4)
+    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
+    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₄ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_four hr
+
 /-- At a root of the paper-shaped Lemma 3.4 left-hand polynomial, the
 right-hand sign test is exactly the negative Narayana Turan determinant. -/
 theorem lemma34ModifiedNarayana_right_eval_mul_prev_eq_neg_turan
@@ -1497,6 +1570,18 @@ theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_three
       (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
   lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₃ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_three hr
+
+/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 4`. -/
+theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_four
+    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₄ : m ≤ 4)
+    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₄ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_four hr
 
 @[simp] theorem modifiedNarayanaPolynomial_two :
     modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
