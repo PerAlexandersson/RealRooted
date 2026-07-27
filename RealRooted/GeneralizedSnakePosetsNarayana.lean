@@ -691,6 +691,15 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_six]
 
+/-- Degree of the `P_6` modified Narayana polynomial. -/
+theorem modifiedNarayanaPolynomial_six_natDegree :
+    (modifiedNarayanaPolynomial 6).natDegree = 6 := by
+  rw [modifiedNarayanaPolynomial_natDegree]
+
+/-- The `P_6` modified Narayana polynomial is nonzero. -/
+theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 ≠ 0 :=
+  modifiedNarayanaPolynomial_ne_zero 6
+
 @[simp] theorem modifiedNarayanaPolynomial_seven :
     modifiedNarayanaPolynomial 7 =
       1 + C (28 : ℝ) * X + C (196 : ℝ) * X ^ 2 +
@@ -1159,6 +1168,10 @@ theorem modifiedNarayanaPolynomial_splits (n : ℕ) :
   (modifiedNarayanaPolynomial_isPFPolynomial n).ne_zero_and_splits
     (modifiedNarayanaPolynomial_ne_zero n) |>.2
 
+/-- The `P_6` modified Narayana polynomial splits over `ℝ`. -/
+theorem modifiedNarayanaPolynomial_six_splits : (modifiedNarayanaPolynomial 6).Splits :=
+  modifiedNarayanaPolynomial_splits 6
+
 /-- Modified Narayana polynomials are nonzero and split over the reals. -/
 theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :
     modifiedNarayanaPolynomial n ≠ 0 ∧
@@ -1475,6 +1488,26 @@ theorem auxiliaryG_six_root_order :
   constructor
   · nlinarith [hten_minus_s_leβ]
   · nlinarith [h2sβ_leα]
+
+/-- Degree of the `G_6` auxiliary polynomial. -/
+theorem auxiliaryG_six_natDegree :
+    (FiniteSkewBoard.auxiliaryG 6).natDegree = 5 := by
+  rw [FiniteSkewBoard.auxiliaryG_six]
+  compute_degree!
+
+/-- The `G_6` auxiliary polynomial is nonzero. -/
+theorem auxiliaryG_six_ne_zero : FiniteSkewBoard.auxiliaryG 6 ≠ 0 := by
+  intro hzero
+  have hdeg := auxiliaryG_six_natDegree
+  rw [hzero] at hdeg
+  norm_num at hdeg
+
+/-- The `G_6` auxiliary polynomial splits over `ℝ`. -/
+theorem auxiliaryG_six_splits : (FiniteSkewBoard.auxiliaryG 6).Splits := by
+  rw [Polynomial.splits_iff_card_roots]
+  rw [auxiliaryG_six_roots]
+  rw [auxiliaryG_six_natDegree]
+  norm_num
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
