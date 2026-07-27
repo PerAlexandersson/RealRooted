@@ -1126,6 +1126,63 @@ private lemma truncatedStaircaseRookPolynomial_eq_placementList_sum
   rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements]
   exact List.sum_toFinset (fun P => (X : ℝ[X]) ^ P.card) hplacements_nodup
 
+/-- The two-row truncated staircase with row lengths two and one has rook
+polynomial `1 + 3X + X^2`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_two_two :
+    truncatedStaircaseRookPolynomial 2 2 =
+      1 + C (3 : ℝ) * X + X ^ 2 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅, {(0, 0)}, {(0, 1)}, {(1, 0)}, {(0, 1), (1, 0)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  let cells : Finset (ℕ × ℕ) :=
+    ({(0, 0), (0, 1), (1, 0)} : Finset (ℕ × ℕ))
+  have hcells : (truncatedStaircase 2 2).cells = cells := by
+    decide
+  have hplacements_bool :
+      cells.powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 2 2) P) =
+        placements.toFinset := by
+    decide
+  rw [truncatedStaircaseRookPolynomial_eq_placementList_sum hcells
+    hplacements_bool hplacements_nodup]
+  norm_num [placements]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  rw [hC3]
+  ring_nf
+
+/-- The three-row truncated staircase with row lengths three, two, and one
+has rook polynomial `1 + 6X + 6X^2 + X^3`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_three_three :
+    truncatedStaircaseRookPolynomial 3 3 =
+      1 + C (6 : ℝ) * X + C (6 : ℝ) * X ^ 2 + X ^ 3 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅,
+      {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)}, {(2, 0)},
+      {(0, 1), (1, 0)}, {(0, 1), (2, 0)}, {(0, 2), (1, 0)},
+      {(0, 2), (1, 1)}, {(0, 2), (2, 0)}, {(1, 1), (2, 0)},
+      {(0, 2), (1, 1), (2, 0)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  let cells : Finset (ℕ × ℕ) :=
+    ({(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (2, 0)} :
+      Finset (ℕ × ℕ))
+  have hcells : (truncatedStaircase 3 3).cells = cells := by
+    decide
+  have hplacements_bool :
+      cells.powerset.filter
+        (fun P => isNonNestingPlacementBool (truncatedStaircase 3 3) P) =
+        placements.toFinset := by
+    decide
+  rw [truncatedStaircaseRookPolynomial_eq_placementList_sum hcells
+    hplacements_bool hplacements_nodup]
+  norm_num [placements]
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  rw [hC6]
+  ring_nf
+
 /-- The one-row truncated staircase with five cells has rook polynomial
 `1 + 5X`. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_five_one :
@@ -1302,6 +1359,90 @@ theorem auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
     Polynomial.C_eq_natCast (R := ℝ) 75
   rw [hC5, hC9, hC10, hC12, hC14, hC25, hC30, hC40, hC75]
   ring_nf
+
+/-- The expected three-row `n = 5` truncated-staircase computation follows
+from the bottom-row expansion into two-row truncated staircases. -/
+theorem truncatedStaircaseRookPolynomial_five_three_of_bottom_row_expansion
+    (hbottom : truncatedStaircaseRookPolynomial 5 3 =
+      truncatedStaircaseRookPolynomial 5 2 +
+        X * (truncatedStaircaseRookPolynomial 4 2 +
+          truncatedStaircaseRookPolynomial 3 2 +
+            truncatedStaircaseRookPolynomial 2 2)) :
+    truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3 := by
+  rw [hbottom, truncatedStaircaseRookPolynomial_five_two,
+    truncatedStaircaseRookPolynomial_four_two,
+    truncatedStaircaseRookPolynomial_three_two,
+    truncatedStaircaseRookPolynomial_two_two]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
+    Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
+    Polynomial.C_eq_natCast (R := ℝ) 25
+  rw [hC3, hC5, hC6, hC7, hC9, hC10, hC12, hC25]
+  ring_nf
+
+/-- The expected four-row `n = 5` truncated-staircase computation follows
+from the bottom-row expansion into three-row truncated staircases. -/
+theorem truncatedStaircaseRookPolynomial_five_four_of_bottom_row_expansion
+    (h53 : truncatedStaircaseRookPolynomial 5 3 =
+      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
+    (hbottom : truncatedStaircaseRookPolynomial 5 4 =
+      truncatedStaircaseRookPolynomial 5 3 +
+        X * (truncatedStaircaseRookPolynomial 4 3 +
+          truncatedStaircaseRookPolynomial 3 3)) :
+    truncatedStaircaseRookPolynomial 5 4 =
+      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
+        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 := by
+  rw [hbottom, h53, truncatedStaircaseRookPolynomial_four_three,
+    truncatedStaircaseRookPolynomial_three_three]
+  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
+    Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
+    Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
+    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
+    Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
+    Polynomial.C_eq_natCast (R := ℝ) 30
+  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
+    Polynomial.C_eq_natCast (R := ℝ) 40
+  rw [hC4, hC5, hC6, hC9, hC10, hC12, hC14, hC25, hC30, hC40]
+  ring_nf
+
+/-- The expected `G_5` finite-board value follows from the two bottom-row
+expansions needed for the remaining `n = 5` truncated-staircase rows. -/
+theorem auxiliaryG_five_of_bottom_row_expansions
+    (hbottom53 : truncatedStaircaseRookPolynomial 5 3 =
+      truncatedStaircaseRookPolynomial 5 2 +
+        X * (truncatedStaircaseRookPolynomial 4 2 +
+          truncatedStaircaseRookPolynomial 3 2 +
+            truncatedStaircaseRookPolynomial 2 2))
+    (hbottom54 : truncatedStaircaseRookPolynomial 5 4 =
+      truncatedStaircaseRookPolynomial 5 3 +
+        X * (truncatedStaircaseRookPolynomial 4 3 +
+          truncatedStaircaseRookPolynomial 3 3)) :
+    auxiliaryG 5 =
+      5 + C (40 : ℝ) * X + C (75 : ℝ) * X ^ 2 +
+        C (40 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 :=
+  auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
+    (truncatedStaircaseRookPolynomial_five_three_of_bottom_row_expansion
+      hbottom53)
+    (truncatedStaircaseRookPolynomial_five_four_of_bottom_row_expansion
+      (truncatedStaircaseRookPolynomial_five_three_of_bottom_row_expansion
+        hbottom53)
+      hbottom54)
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
