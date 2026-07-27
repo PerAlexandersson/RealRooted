@@ -176,4 +176,24 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       (prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
         (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toPrec0
 
+/-- Brändén--Saud minus-sign step in the strict `Prec` convention.
+
+If `g ≪ f`, the two polynomials are monic with `deg f = deg g + 1`, all roots
+are nonpositive, and `f - X * g` has positive leading coefficient, then
+`g ≪ f - X * g ≪ f`. -/
+theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
+    (hgf : Prec g f)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
+    (hsub_pos : HasPosLeadingCoeff (f - X * g)) :
+    Prec g (f - X * g) ∧ Prec (f - X * g) f := by
+  have hsub_ne : f - X * g ≠ 0 := hsub_pos.ne_zero
+  constructor
+  · exact (prec_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
+      |>.toPrec_of_ne hgf.1.1 hsub_ne
+  · exact (prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
+      |>.toPrec_of_ne hsub_ne hgf.2.1.1
+
 end RealRooted
