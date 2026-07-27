@@ -108,6 +108,35 @@ theorem mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
     (w := w) (last := last) (c := c) (r := r) hlast hcr hr hfinal
   simp [hreach] at hcol_row
 
+/-- In a final `R` suffix after a last-change index, the suffix-coordinate
+cells are exactly the all-`R` triangular block. -/
+theorem mem_generalizedSnakeBoard_suffix_R_cells_iff
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
+    (r, c) ∈ (generalizedSnakeBoard w).cells ↔ r ≤ c := by
+  constructor
+  · intro hcell
+    exact mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
+      hlast hr hfinal hcell
+  · intro hrc
+    rw [generalizedSnakeBoard, Finset.mem_filter]
+    constructor
+    · simpa [Finset.mem_product] using
+        ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · have hfalse := snakeElementReachable_suffix_R_rowCode_colCode_eq_false
+          hlast hr hc hfinal
+        simp [hfalse]
+      · have hdrop : snakeRowCode r < snakeColCode c := by
+          simp [snakeRowCode, snakeColCode]
+          lia
+        have hfalse := snakeElementReachable_eq_false_of_target_lt
+          (w := w) (a := snakeColCode c) (b := snakeRowCode r) hdrop
+        simp [hfalse]
+
 /-- In a final `L` suffix after a last-change index, every board cell whose
 column coordinate lies in the suffix has column weakly below row. -/
 theorem mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
@@ -125,6 +154,32 @@ theorem mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
   have hreach := snakeElementReachable_suffix_L_rowCode_colCode_of_lt
     (w := w) (last := last) (r := r) (c := c) hlast hrc hc hfinal
   simp [hreach] at hrow_col
+
+/-- In a final `L` suffix after a last-change index, the suffix-coordinate
+cells are exactly the all-`L` triangular block. -/
+theorem mem_generalizedSnakeBoard_suffix_L_cells_iff
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
+    (r, c) ∈ (generalizedSnakeBoard w).cells ↔ c ≤ r := by
+  constructor
+  · intro hcell
+    exact mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
+      hlast hc hfinal hcell
+  · intro hcr
+    rw [generalizedSnakeBoard, Finset.mem_filter]
+    constructor
+    · simpa [Finset.mem_product] using
+        ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · have hfalse := snakeElementReachable_rowCode_colCode_eq_false_of_le
+          (w := w) hcr
+        simp [hfalse]
+      · have hfalse := snakeElementReachable_suffix_L_colCode_rowCode_eq_false
+          hlast hc hr hfinal
+        simp [hfalse]
 
 /-- The concrete finite-board squarecase model for generalized snake words. -/
 def generalizedSnakeRookModel : SquarecaseRookModel :=
