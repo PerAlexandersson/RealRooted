@@ -20880,6 +20880,45 @@ def theorem21CompatibleRootCountNatDegreeLeOneNonconstantStatement : Prop :=
       f.natDegree ≤ 1 → g.natDegree ≤ 1 →
         (Compatible f g ↔ theorem21RootCountBranches f g)
 
+/-- Isolated nonconstant linear-endpoint forward direction of Liu Theorem 2.1.
+The compatibility hypothesis is retained for theorem-shape compatibility, but
+the branch condition follows from the endpoint degree bounds. -/
+def theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 1 → g.natDegree ≤ 1 →
+        Compatible f g → theorem21RootCountBranches f g
+
+/-- The nonconstant linear-endpoint forward direction is checked directly by
+deleting the unique largest root on the side selected by the largest-root
+comparison. -/
+theorem theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstant :
+    theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
+  exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
+    hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
+
+/-- Isolated nonconstant linear-endpoint forward direction, restated with
+branch-retaining deletion-pair common-interleaver witnesses. -/
+def theorem21CompatibleToDeletionPairCommonInterleaverBranchesNatDegreeLeOneNonconstantStatement :
+    Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 1 → g.natDegree ≤ 1 →
+        Compatible f g → theorem21DeletionPairCommonInterleaverBranches f g
+
+/-- The checked nonconstant linear-endpoint forward branch supplies the
+branch-retaining deletion-pair common-interleaver package. -/
+theorem theorem21CompatibleToDeletionPairCommonInterleaverBranchesNatDegreeLeOneNonconstant :
+    theorem21CompatibleToDeletionPairCommonInterleaverBranchesNatDegreeLeOneNonconstantStatement :=
+  by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
+  exact theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
+    hf hg hsgn
+    (theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstant
+      f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat)
+
 /-- The nonconstant linear-endpoint case of Liu Theorem 2.1 is fully checked:
 the forward branch condition follows by root counting after deleting the
 unique largest root, and the reverse implication is the existing degree-three
@@ -20888,8 +20927,8 @@ theorem theorem21CompatibleRootCountNatDegreeLeOneNonconstant :
     theorem21CompatibleRootCountNatDegreeLeOneNonconstantStatement := by
   intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
   constructor
-  · exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
-      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
+  · exact theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstant
+      f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
   · intro hbranches
     exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three
       hf hg hsgn hfdeg_ne hgdeg_ne
