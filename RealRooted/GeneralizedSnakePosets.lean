@@ -2009,6 +2009,26 @@ private theorem add_X_mul_cubic_coeffs (a b c d e f g : ℝ) :
   rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add]
   ring_nf
 
+/-- Add two quartic polynomials written by coefficients. -/
+private theorem add_quartic_coeffs (a b c d e f g h i : ℝ) :
+    (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 + C d * X ^ 4 : ℝ[X]) +
+      (C e + C f * X + C g * X ^ 2 + C h * X ^ 3 + C i * X ^ 4) =
+        C (1 + e) + C (a + f) * X + C (b + g) * X ^ 2 +
+          C (c + h) * X ^ 3 + C (d + i) * X ^ 4 := by
+  rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add,
+    Polynomial.C_add]
+  rw [Polynomial.C_1]
+  ring_nf
+
+/-- Add a quartic polynomial to `X` times another quartic polynomial. -/
+private theorem add_X_mul_quartic_coeffs (a b c d e f g h i : ℝ) :
+    (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 + C d * X ^ 4 : ℝ[X]) +
+      X * (C e + C f * X + C g * X ^ 2 + C h * X ^ 3 + C i * X ^ 4) =
+        1 + C (a + e) * X + C (b + f) * X ^ 2 +
+          C (c + g) * X ^ 3 + C (d + h) * X ^ 4 + C i * X ^ 5 := by
+  rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add]
+  ring_nf
+
 /-- The same tail sum with a direct row-count parameter. -/
 private theorem truncatedStaircaseRookPolynomial_one_row_tail_sum_direct (n : ℕ) :
     ((List.range n).map fun c =>
@@ -2359,6 +2379,132 @@ theorem truncatedStaircaseRookPolynomial_four_rows (n : ℕ) (hn : 4 ≤ n) :
     rw [hcast]
     ring_nf
   rw [add_X_mul_cubic_coeffs, hchoose2_n, hchoose2_tail]
+  congr 1
+  all_goals ring_nf
+
+/-- Tail sum of four-row truncated-staircase rook polynomials. -/
+private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
+    (n : ℕ) :
+    ((List.range n).map fun c =>
+      truncatedStaircaseRookPolynomial (n + 4 - c - 1) 4).sum =
+      C (n : ℝ) + C ((2 : ℝ) * n * ((n : ℝ) + 4)) * X +
+        C ((6 : ℝ) * (Nat.choose (n + 4) 3 : ℝ) -
+          (4 : ℝ) * (Nat.choose (n + 4) 2 : ℝ)) * X ^ 2 +
+        C ((4 : ℝ) * (Nat.choose (n + 4) 4 : ℝ) -
+          (Nat.choose (n + 4) 3 : ℝ)) * X ^ 3 +
+        C (Nat.choose (n + 4) 5 : ℝ) * X ^ 4 := by
+  induction n with
+  | zero =>
+      norm_num [Nat.choose]
+  | succ n ih =>
+      rw [List.sum_range_succ']
+      simp only [Nat.succ_eq_add_one]
+      have hhead : n + 1 + 4 - 0 - 1 = n + 4 := by
+        lia
+      have htail :
+          ((List.range n).map fun c =>
+            truncatedStaircaseRookPolynomial (n + 1 + 4 - (c + 1) - 1) 4).sum =
+          ((List.range n).map fun c =>
+            truncatedStaircaseRookPolynomial (n + 4 - c - 1) 4).sum := by
+        congr 1
+        apply List.map_congr_left
+        intro c hc
+        have hc_lt : c < n := List.mem_range.mp hc
+        congr 1
+        lia
+      rw [hhead, htail, ih,
+        truncatedStaircaseRookPolynomial_four_rows (n + 4) (by lia)]
+      have hchoose2_succ :
+          Nat.choose (n + 1 + 4) 2 =
+            Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 := by
+        calc
+          Nat.choose (n + 1 + 4) 2 =
+              Nat.choose (Nat.succ (n + 4)) 2 := by
+                rfl
+          _ = Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 :=
+              by simpa using Nat.choose_succ_succ (n + 4) 1
+      have hchoose3_succ :
+          Nat.choose (n + 1 + 4) 3 =
+            Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 := by
+        calc
+          Nat.choose (n + 1 + 4) 3 =
+              Nat.choose (Nat.succ (n + 4)) 3 := by
+                rfl
+          _ = Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 :=
+              by simpa using Nat.choose_succ_succ (n + 4) 2
+      have hchoose4_succ :
+          Nat.choose (n + 1 + 4) 4 =
+            Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 := by
+        calc
+          Nat.choose (n + 1 + 4) 4 =
+              Nat.choose (Nat.succ (n + 4)) 4 := by
+                rfl
+          _ = Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 :=
+              by simpa using Nat.choose_succ_succ (n + 4) 3
+      have hchoose5_succ :
+          Nat.choose (n + 1 + 4) 5 =
+            Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 := by
+        calc
+          Nat.choose (n + 1 + 4) 5 =
+              Nat.choose (Nat.succ (n + 4)) 5 := by
+                rfl
+          _ = Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 :=
+              by simpa using Nat.choose_succ_succ (n + 4) 4
+      have hchoose2_head :
+          ((Nat.choose (n + 4) 2 : ℕ) : ℝ) =
+            ((n : ℝ) + 4) * ((n : ℝ) + 3) / 2 := by
+        have h := nat_choose_two_cast_real (n + 4)
+        norm_num at h
+        linarith
+      rw [add_quartic_coeffs, hchoose2_succ, hchoose3_succ, hchoose4_succ,
+        hchoose5_succ]
+      simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
+      rw [hchoose2_head]
+      congr 1
+      all_goals ring_nf
+
+/-- Tail sum of four-row truncated-staircase rook polynomials. -/
+private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum (n : ℕ)
+    (hn : 4 ≤ n) :
+    ((List.range (n - 4)).map fun c =>
+      truncatedStaircaseRookPolynomial (n - c - 1) 4).sum =
+      C ((n - 4 : ℕ) : ℝ) +
+        C ((2 : ℝ) * ((n - 4 : ℕ) : ℝ) * (((n - 4 : ℕ) : ℝ) + 4)) * X +
+        C ((6 : ℝ) * (Nat.choose n 3 : ℝ) -
+          (4 : ℝ) * (Nat.choose n 2 : ℝ)) * X ^ 2 +
+        C ((4 : ℝ) * (Nat.choose n 4 : ℝ) -
+          (Nat.choose n 3 : ℝ)) * X ^ 3 +
+        C (Nat.choose n 5 : ℝ) * X ^ 4 := by
+  have hnsub_four : n - 4 + 4 = n := Nat.sub_add_cancel hn
+  simpa [hnsub_four] using
+    truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct (n - 4)
+
+/-- The five-row truncated staircase with row lengths `n`, `n - 1`, `n - 2`,
+`n - 3`, and `n - 4` has rook polynomial
+`1 + (5n - 10)X + 5n(n - 3)X^2
++ (10 binom(n,3) - 5 binom(n,2))X^3
++ (5 binom(n,4) - binom(n,3))X^4 + binom(n,5)X^5`. -/
+theorem truncatedStaircaseRookPolynomial_five_rows (n : ℕ) (hn : 5 ≤ n) :
+    truncatedStaircaseRookPolynomial n 5 =
+      1 + C ((5 : ℝ) * n - 10) * X +
+        C ((5 : ℝ) * n * ((n : ℝ) - 3)) * X ^ 2 +
+        C ((10 : ℝ) * (Nat.choose n 3 : ℝ) -
+          (5 : ℝ) * (Nat.choose n 2 : ℝ)) * X ^ 3 +
+        C ((5 : ℝ) * (Nat.choose n 4 : ℝ) -
+          (Nat.choose n 3 : ℝ)) * X ^ 4 +
+        C (Nat.choose n 5 : ℝ) * X ^ 5 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all n 4
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [truncatedStaircaseRookPolynomial_four_rows n (by lia),
+    truncatedStaircaseRookPolynomial_four_rows_tail_sum n (by lia)] at hbottom
+  rw [hbottom]
+  have hcast_sub_four : ((n - 4 : ℕ) : ℝ) = (n : ℝ) - 4 := by
+    rw [Nat.cast_sub (by lia : 4 ≤ n)]
+    norm_num
+  rw [hcast_sub_four]
+  have hchoose2_n : ((Nat.choose n 2 : ℕ) : ℝ) = (n : ℝ) * ((n : ℝ) - 1) / 2 :=
+    nat_choose_two_cast_real n
+  rw [add_X_mul_quartic_coeffs, hchoose2_n]
   congr 1
   all_goals ring_nf
 
@@ -2729,44 +2875,8 @@ and two has rook polynomial
       1 + C (20 : ℝ) * X + C (90 : ℝ) * X ^ 2 +
         C (125 : ℝ) * X ^ 3 + C (55 : ℝ) * X ^ 4 +
           C (6 : ℝ) * X ^ 5 := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 6 4
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [show List.range (6 - 4) = [0, 1] by rfl] at hbottom
-  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
-    add_zero] at hbottom
-  rw [truncatedStaircaseRookPolynomial_six_four,
-    truncatedStaircaseRookPolynomial_five_four,
-    truncatedStaircaseRookPolynomial_four_four] at hbottom
-  rw [hbottom]
-  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
-  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
-    Polynomial.C_eq_natCast (R := ℝ) 18
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
-    Polynomial.C_eq_natCast (R := ℝ) 20
-  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
-    Polynomial.C_eq_natCast (R := ℝ) 30
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
-  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 :=
-    Polynomial.C_eq_natCast (R := ℝ) 55
-  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
-    Polynomial.C_eq_natCast (R := ℝ) 65
-  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
-    Polynomial.C_eq_natCast (R := ℝ) 66
-  have hC90 : (C (90 : ℝ) : ℝ[X]) = 90 :=
-    Polynomial.C_eq_natCast (R := ℝ) 90
-  have hC125 : (C (125 : ℝ) : ℝ[X]) = 125 :=
-    Polynomial.C_eq_natCast (R := ℝ) 125
-  rw [hC5, hC6, hC10, hC14, hC15, hC18, hC20, hC30, hC40, hC55,
-    hC65, hC66, hC90, hC125]
-  ring_nf
+  rw [truncatedStaircaseRookPolynomial_five_rows 6 (by norm_num)]
+  norm_num [Nat.choose]
 
 /-- The five-row truncated staircase with row lengths five, four, three, two,
 and one has rook polynomial
@@ -2775,28 +2885,8 @@ and one has rook polynomial
     truncatedStaircaseRookPolynomial 5 5 =
       1 + C (15 : ℝ) * X + C (50 : ℝ) * X ^ 2 +
         C (50 : ℝ) * X ^ 3 + C (15 : ℝ) * X ^ 4 + X ^ 5 := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 5 4
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [truncatedStaircaseRookPolynomial_five_four,
-    truncatedStaircaseRookPolynomial_four_four] at hbottom
-  rw [hbottom]
-  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
-    Polynomial.C_eq_natCast (R := ℝ) 20
-  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
-    Polynomial.C_eq_natCast (R := ℝ) 30
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
-  have hC50 : (C (50 : ℝ) : ℝ[X]) = 50 :=
-    Polynomial.C_eq_natCast (R := ℝ) 50
-  rw [hC5, hC10, hC14, hC15, hC20, hC30, hC40, hC50]
-  ring_nf
+  rw [truncatedStaircaseRookPolynomial_five_rows 5 (by norm_num)]
+  norm_num [Nat.choose]
 
 /-- The finite-board auxiliary polynomial `G_6` is
 `6 + 70X + 210X^2 + 210X^3 + 70X^4 + 6X^5`. -/
@@ -2886,54 +2976,8 @@ and three has rook polynomial
       1 + C (25 : ℝ) * X + C (140 : ℝ) * X ^ 2 +
         C (245 : ℝ) * X ^ 3 + C (140 : ℝ) * X ^ 4 +
           C (21 : ℝ) * X ^ 5 := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all 7 4
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [show List.range (7 - 4) = [0, 1, 2] by rfl] at hbottom
-  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
-    add_zero] at hbottom
-  rw [truncatedStaircaseRookPolynomial_seven_four,
-    truncatedStaircaseRookPolynomial_six_four,
-    truncatedStaircaseRookPolynomial_five_four,
-    truncatedStaircaseRookPolynomial_four_four] at hbottom
-  rw [hbottom]
-  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
-    Polynomial.C_eq_natCast (R := ℝ) 18
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
-    Polynomial.C_eq_natCast (R := ℝ) 20
-  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
-    Polynomial.C_eq_natCast (R := ℝ) 21
-  have hC22 : (C (22 : ℝ) : ℝ[X]) = 22 :=
-    Polynomial.C_eq_natCast (R := ℝ) 22
-  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
-    Polynomial.C_eq_natCast (R := ℝ) 25
-  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
-    Polynomial.C_eq_natCast (R := ℝ) 30
-  have hC35 : (C (35 : ℝ) : ℝ[X]) = 35 :=
-    Polynomial.C_eq_natCast (R := ℝ) 35
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
-  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
-    Polynomial.C_eq_natCast (R := ℝ) 65
-  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
-    Polynomial.C_eq_natCast (R := ℝ) 66
-  have hC98 : (C (98 : ℝ) : ℝ[X]) = 98 :=
-    Polynomial.C_eq_natCast (R := ℝ) 98
-  have hC119 : (C (119 : ℝ) : ℝ[X]) = 119 :=
-    Polynomial.C_eq_natCast (R := ℝ) 119
-  have hC140 : (C (140 : ℝ) : ℝ[X]) = 140 :=
-    Polynomial.C_eq_natCast (R := ℝ) 140
-  have hC245 : (C (245 : ℝ) : ℝ[X]) = 245 :=
-    Polynomial.C_eq_natCast (R := ℝ) 245
-  rw [hC5, hC10, hC14, hC15, hC18, hC20, hC21, hC22, hC25, hC30,
-    hC35, hC40, hC65, hC66, hC98, hC119, hC140, hC245]
-  ring_nf
+  rw [truncatedStaircaseRookPolynomial_five_rows 7 (by norm_num)]
+  norm_num [Nat.choose]
 
 /-- The six-row truncated staircase with row lengths seven, six, five, four,
 three, and two has rook polynomial
