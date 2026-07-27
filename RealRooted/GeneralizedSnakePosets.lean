@@ -3506,6 +3506,39 @@ theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
     ring_nf
   rwa [hleft, hright] at hbase
 
+/-- A bounded paper-shaped Lemma 3.4 package implies the bounded shifted
+nonnegative-parameter package. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34
+    {P : ℕ → ℝ[X]} {N : ℕ}
+    (h : Lemma34ModifiedNarayanaInterlacingUpToStatement P N) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+  intro m lam mu hm hmN hlam hmu
+  have hnu : -1 ≤ mu - 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hmN hlam hnu
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
+    simp
+  have hleft :
+      ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
+        ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (mu - 1)) * P m + P (m + 1)) =
+        ((C lam * X + C mu) * P m + narayanaDifference P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- Bounded equivalence between the paper-shaped Lemma 3.4 statement and the
+shifted nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_iff_lemma34
+    (P : ℕ → ℝ[X]) (N : ℕ) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N ↔
+      Lemma34ModifiedNarayanaInterlacingUpToStatement P N :=
+  ⟨lemma34ModifiedNarayanaInterlacingUpTo_of_shifted,
+    lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34⟩
+
 /-- Difference `H_n = G_n - G_{n-1}` used in the Theorem 4.1 matrix step. -/
 def auxiliaryDifference (G : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
   G n - G (n - 1)
@@ -3627,11 +3660,56 @@ structure Theorem41Section3ComputableInputs
   lemma34 : Lemma34ModifiedNarayanaInterlacingStatement P
   recurrence : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G
 
+/-- Bundled Section 3 ingredients using the shifted nonnegative-parameter
+Lemma 3.4 form. -/
+structure Theorem41Section3ShiftedInputs
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
+  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
+  lemma34 : Lemma34ModifiedNarayanaShiftedInterlacingStatement P
+  recurrence : Theorem35GeneralizedSnakeRecurrenceStatement M P G
+
+/-- Bundled Section 3 ingredients using the shifted Lemma 3.4 form and the
+computable recurrence form. -/
+structure Theorem41Section3ComputableShiftedInputs
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
+  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
+  lemma34 : Lemma34ModifiedNarayanaShiftedInterlacingStatement P
+  recurrence : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G
+
 /-- Convert computable Section 3 inputs into the predicate-form bundle. -/
 theorem theorem41Section3Inputs_of_computable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hinputs : Theorem41Section3ComputableInputs M P G) :
     Theorem41Section3Inputs M P G where
+  lemma33 := hinputs.lemma33
+  lemma34 := hinputs.lemma34
+  recurrence := theorem35_of_theorem35Computable hinputs.recurrence
+
+/-- Convert shifted Section 3 inputs into the paper-shaped bundle. -/
+theorem theorem41Section3Inputs_of_shifted
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hinputs : Theorem41Section3ShiftedInputs M P G) :
+    Theorem41Section3Inputs M P G where
+  lemma33 := hinputs.lemma33
+  lemma34 := lemma34ModifiedNarayanaInterlacing_of_shifted hinputs.lemma34
+  recurrence := hinputs.recurrence
+
+/-- Convert computable shifted Section 3 inputs into the paper-shaped
+computable bundle. -/
+theorem theorem41Section3ComputableInputs_of_shifted
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
+    Theorem41Section3ComputableInputs M P G where
+  lemma33 := hinputs.lemma33
+  lemma34 := lemma34ModifiedNarayanaInterlacing_of_shifted hinputs.lemma34
+  recurrence := hinputs.recurrence
+
+/-- Convert computable shifted Section 3 inputs into the predicate-recurrence
+shifted bundle. -/
+theorem theorem41Section3ShiftedInputs_of_computable
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
+    Theorem41Section3ShiftedInputs M P G where
   lemma33 := hinputs.lemma33
   lemma34 := hinputs.lemma34
   recurrence := theorem35_of_theorem35Computable hinputs.recurrence
@@ -3654,6 +3732,26 @@ theorem theorem41_of_section3ComputableInputs
     Theorem41NonNestingRookStatement M :=
   theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_computable hinputs)
+
+/-- Feed shifted Section 3 ingredients into the abstract Theorem 4.1 induction
+route. -/
+theorem theorem41_of_section3ShiftedInputs
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
+    (hinputs : Theorem41Section3ShiftedInputs M P G) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_section3Inputs hroute
+    (theorem41Section3Inputs_of_shifted hinputs)
+
+/-- Feed computable shifted Section 3 ingredients into the abstract Theorem
+4.1 induction route. -/
+theorem theorem41_of_section3ComputableShiftedInputs
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
+    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_section3ComputableInputs hroute
+    (theorem41Section3ComputableInputs_of_shifted hinputs)
 
 /-! ## Squarecase recurrence packages -/
 
@@ -3706,6 +3804,13 @@ inputs needed by the current Theorem 4.1 induction route. -/
 def SquarecaseRookSection3Statement (model : SquarecaseRookModel) : Prop :=
   ∃ P G : ℕ → ℝ[X],
     Theorem41Section3ComputableInputs model.snakePolynomial P G
+
+/-- Existence statement for a squarecase model equipped with Section 3 inputs
+where Lemma 3.4 is supplied in shifted nonnegative-parameter form. -/
+def SquarecaseRookSection3ShiftedStatement
+    (model : SquarecaseRookModel) : Prop :=
+  ∃ P G : ℕ → ℝ[X],
+    Theorem41Section3ComputableShiftedInputs model.snakePolynomial P G
 
 /-- Data package for the squarecase/non-nesting rook model together with the
 Narayana and recurrence inputs from Braun--Jal Section 3. -/
@@ -3778,6 +3883,123 @@ theorem recurrenceStatement {model : SquarecaseRookModel}
 
 end SquarecaseRookSection3Package
 
+/-- Data package for the squarecase/non-nesting rook model when Lemma 3.4 is
+proved in shifted nonnegative-parameter form. -/
+structure SquarecaseRookSection3ShiftedPackage
+    (model : SquarecaseRookModel) where
+  P : ℕ → ℝ[X]
+  G : ℕ → ℝ[X]
+  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
+  lemma34 : Lemma34ModifiedNarayanaShiftedInterlacingStatement P
+  recurrence :
+    Theorem35GeneralizedSnakeRecurrenceComputableStatement
+      model.snakePolynomial P G
+
+namespace SquarecaseRookSection3ShiftedPackage
+
+/-- Convert a shifted Section 3 package to the existing paper-shaped Section 3
+package. -/
+def section3Package {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    SquarecaseRookSection3Package model where
+  P := h.P
+  G := h.G
+  lemma33 := h.lemma33
+  lemma34 := lemma34ModifiedNarayanaInterlacing_of_shifted h.lemma34
+  recurrence := h.recurrence
+
+/-- Forget a shifted Section 3 data package to the corresponding existence
+statement. -/
+theorem shiftedStatement {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    SquarecaseRookSection3ShiftedStatement model :=
+  ⟨h.P, h.G, ⟨h.lemma33, h.lemma34, h.recurrence⟩⟩
+
+/-- A shifted Section 3 package also gives the existing paper-shaped existence
+statement. -/
+theorem statement {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    SquarecaseRookSection3Statement model :=
+  h.section3Package.statement
+
+/-- A shifted Section 3 package provides the computable shifted input bundle.
+-/
+theorem computableShiftedInputs {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    Theorem41Section3ComputableShiftedInputs
+      model.snakePolynomial h.P h.G where
+  lemma33 := h.lemma33
+  lemma34 := h.lemma34
+  recurrence := h.recurrence
+
+/-- A shifted Section 3 package provides the paper-shaped computable input
+bundle. -/
+theorem computableInputs {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    Theorem41Section3ComputableInputs model.snakePolynomial h.P h.G :=
+  theorem41Section3ComputableInputs_of_shifted h.computableShiftedInputs
+
+/-- A shifted Section 3 package provides the predicate-form shifted input
+bundle. -/
+theorem shiftedInputs {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    Theorem41Section3ShiftedInputs model.snakePolynomial h.P h.G :=
+  theorem41Section3ShiftedInputs_of_computable h.computableShiftedInputs
+
+/-- A shifted Section 3 package provides the existing predicate-form input
+bundle. -/
+theorem inputs {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    Theorem41Section3Inputs model.snakePolynomial h.P h.G :=
+  theorem41Section3Inputs_of_shifted h.shiftedInputs
+
+/-- The recurrence component of a shifted Section 3 package as a standalone
+squarecase recurrence package. -/
+def recurrencePackage {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    SquarecaseRookRecurrencePackage model where
+  P := h.P
+  G := h.G
+  recurrence := h.recurrence
+
+/-- Feed a shifted squarecase Section 3 package into the abstract Theorem 4.1
+induction route. -/
+theorem theorem41 {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model)
+    (hroute : Theorem41InductionRouteStatement model.snakePolynomial h.P h.G) :
+    SquarecaseRookModelTheorem41Statement model :=
+  theorem41_of_section3ShiftedInputs hroute h.shiftedInputs
+
+/-- Feed a shifted squarecase Section 3 package into the computable form of
+the abstract Theorem 4.1 induction route. -/
+theorem theorem41Computable {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement model.snakePolynomial h.P h.G) :
+    SquarecaseRookModelTheorem41Statement model :=
+  hroute
+    h.lemma33
+    (lemma34ModifiedNarayanaInterlacing_of_shifted h.lemma34)
+    h.recurrence
+
+/-- A shifted squarecase Section 3 package also gives the standalone
+recurrence existence statement. -/
+theorem recurrenceStatement {model : SquarecaseRookModel}
+    (h : SquarecaseRookSection3ShiftedPackage model) :
+    SquarecaseRookRecurrenceStatement model :=
+  h.recurrencePackage.statement
+
+end SquarecaseRookSection3ShiftedPackage
+
+/-- Shifted squarecase Section 3 inputs imply the existing paper-shaped
+Section 3 statement. -/
+theorem squarecaseSection3Statement_of_shifted
+    {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3ShiftedStatement model) :
+    SquarecaseRookSection3Statement model := by
+  rcases hsection with ⟨P, G, hinputs⟩
+  exact ⟨P, G, theorem41Section3ComputableInputs_of_shifted hinputs⟩
+
 /-- Section 3 inputs for a squarecase model include the Theorem 3.5 recurrence
 input needed by the Braun--Jal induction. -/
 theorem squarecaseRookRecurrenceStatement_of_section3Statement
@@ -3810,6 +4032,32 @@ theorem theorem41_of_squarecaseSection3ComputableStatement
     SquarecaseRookModelTheorem41Statement model := by
   rcases hsection with ⟨P, G, hinputs⟩
   exact hroute P G hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
+
+/-- A shifted statement-level squarecase Section 3 witness plus the abstract
+induction route proves the non-nesting-rook form of Braun--Jal Theorem 4.1. -/
+theorem theorem41_of_squarecaseSection3ShiftedStatement
+    {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3ShiftedStatement model) :
+    SquarecaseRookModelTheorem41Statement model :=
+  theorem41_of_squarecaseSection3Statement hroute
+    (squarecaseSection3Statement_of_shifted hsection)
+
+/-- A shifted statement-level squarecase Section 3 witness plus a computable
+abstract induction route proves the non-nesting-rook Theorem 4.1 form. -/
+theorem theorem41_of_squarecaseSection3ComputableShiftedStatement
+    {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteComputableStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3ShiftedStatement model) :
+    SquarecaseRookModelTheorem41Statement model := by
+  rcases hsection with ⟨P, G, hinputs⟩
+  exact hroute P G hinputs.lemma33
+    (lemma34ModifiedNarayanaInterlacing_of_shifted hinputs.lemma34)
+    hinputs.recurrence
 
 /-- Statement that a chosen order-polytope `h^*` model agrees with the
 non-nesting rook polynomial model for generalized snake words. -/
@@ -4027,6 +4275,91 @@ theorem orderPolytopeHStarTheorem41_of_squarecaseSection3ComputableStatement
   orderPolytopeHStarTheorem41_of_theorem41
     (theorem41_of_squarecaseSection3ComputableStatement hroute hsection)
     hmatch
+
+/-- A shifted statement-level squarecase Section 3 witness plus the abstract
+induction route and order-polytope matching proves `h^*` real-rootedness. -/
+theorem orderPolytopeHStarRealRooted_of_squarecaseSection3ShiftedStatement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3ShiftedStatement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarRealRootedStatement hStar :=
+  orderPolytopeHStarRealRooted_of_squarecaseSection3Statement hroute
+    (squarecaseSection3Statement_of_shifted hsection) hmatch
+
+/-- A shifted statement-level squarecase Section 3 witness plus the abstract
+induction route and order-polytope matching proves `h^*` interlacing. -/
+theorem orderPolytopeHStarInterlaces_of_squarecaseSection3ShiftedStatement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3ShiftedStatement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarInterlacesStatement hStar :=
+  orderPolytopeHStarInterlaces_of_squarecaseSection3Statement hroute
+    (squarecaseSection3Statement_of_shifted hsection) hmatch
+
+/-- A shifted statement-level squarecase Section 3 witness plus the abstract
+induction route and order-polytope matching proves the full `h^*` Theorem 4.1.
+-/
+theorem orderPolytopeHStarTheorem41_of_squarecaseSection3ShiftedStatement
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
+    (hsection : SquarecaseRookSection3ShiftedStatement model)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarTheorem41Statement hStar :=
+  orderPolytopeHStarTheorem41_of_squarecaseSection3Statement hroute
+    (squarecaseSection3Statement_of_shifted hsection) hmatch
+
+/-- A shifted squarecase Section 3 package, a matching computable induction
+route, and the order-polytope matching prove `h^*` real-rootedness. -/
+theorem orderPolytopeHStarRealRooted_of_squarecaseSection3ShiftedPackage
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3ShiftedPackage model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement
+        model.snakePolynomial hsection.P hsection.G)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarRealRootedStatement hStar :=
+  orderPolytopeHStarRealRooted_of_theorem41
+    (hsection.theorem41Computable hroute) hmatch
+
+/-- A shifted squarecase Section 3 package, a matching computable induction
+route, and the order-polytope matching prove `h^*` interlacing. -/
+theorem orderPolytopeHStarInterlaces_of_squarecaseSection3ShiftedPackage
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3ShiftedPackage model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement
+        model.snakePolynomial hsection.P hsection.G)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarInterlacesStatement hStar :=
+  orderPolytopeHStarInterlaces_of_theorem41
+    (hsection.theorem41Computable hroute) hmatch
+
+/-- A shifted squarecase Section 3 package, a matching computable induction
+route, and the order-polytope matching prove the full `h^*` Theorem 4.1. -/
+theorem orderPolytopeHStarTheorem41_of_squarecaseSection3ShiftedPackage
+    {hStar : SnakeWord → ℝ[X]} {model : SquarecaseRookModel}
+    (hsection : SquarecaseRookSection3ShiftedPackage model)
+    (hroute :
+      Theorem41InductionRouteComputableStatement
+        model.snakePolynomial hsection.P hsection.G)
+    (hmatch :
+      OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
+    OrderPolytopeHStarTheorem41Statement hStar :=
+  orderPolytopeHStarTheorem41_of_theorem41
+    (hsection.theorem41Computable hroute) hmatch
 
 end GeneralizedSnakePosets
 end RealRooted
