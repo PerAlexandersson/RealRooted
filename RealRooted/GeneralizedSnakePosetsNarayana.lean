@@ -391,6 +391,18 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansions
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
       hbottom53 hbottom54)
 
+/-- The `n = 6` Braun--Jal equation (2) reduces to the named bottom-row
+expansion predicate for the two remaining `n = 5` truncated-staircase rows. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_statements
+    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
+    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3) :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaCoeffPolynomial 6 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
+      hbottom53 hbottom54)
+
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
 theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
@@ -613,6 +625,19 @@ theorem narayanaAuxiliaryGRecurrence_modified_six_of_bottom_row_expansions
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
       hbottom53 hbottom54)
 
+/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
+Narayana family, reduces to the named bottom-row expansion predicate for the
+two remaining `n = 5` truncated-staircase rows. -/
+theorem narayanaAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_statements
+    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
+    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3) :
+    X * FiniteSkewBoard.auxiliaryG 5 =
+      modifiedNarayanaPolynomial 6 -
+        (1 + X) * modifiedNarayanaPolynomial 5 :=
+  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
+      hbottom53 hbottom54)
+
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
@@ -746,6 +771,21 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_bottom_row_expansions
         (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
   narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
+      hbottom53 hbottom54)
+    hn₁ hn₆
+
+/-- The checked initial cases through `n = 6`, reducing the last case to the
+named bottom-row expansion predicate for the two remaining `n = 5`
+truncated-staircase rows. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_bottom_row_expansion_statements
+    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
+    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3)
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
+    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
     hn₁ hn₆
 
