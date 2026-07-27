@@ -644,6 +644,30 @@ theorem modifiedNarayanaPolynomial_roots_nonpos (n : ℕ) :
     ∀ r ∈ (modifiedNarayanaPolynomial n).roots, r ≤ 0 :=
   (modifiedNarayanaPolynomial_isPFPolynomial n).roots_nonpos
 
+/-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
+roots of a quartic. -/
+theorem interlaces_of_cubic_quartic_root_lists
+    {g f : ℝ[X]} {a b c d u v w : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3)
+    (hf_roots : f.roots = (↑[a, b, c, d] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
+    (huv : u ≤ v) (hvw : v ≤ w)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d], [u, v, w],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd,
+      hab.trans (hbc.trans hcd)]
+  · simp [huv, hvw, huv.trans hvw]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
+
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
@@ -1023,14 +1047,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hwd : w ≤ d := by
     dsimp [w, d]
     linarith
-  refine ⟨⟨hP_ne, hP_splits⟩, ⟨hG_ne, hG_splits⟩, ?_, [a, b, c, d], [u, v, w],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hGdeg, hPdeg]
-  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd, hab.trans (hbc.trans hcd)]
-  · simp [huv, hvw, huv.trans hvw]
-  · rw [hP_roots]
-  · rw [hG_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
+  exact interlaces_of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
+    hPdeg hGdeg hP_roots hG_roots hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
 /-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
