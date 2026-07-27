@@ -412,6 +412,21 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six :
   narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five
 
+/-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
+the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_six
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaCoeffPolynomial n -
+        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
+  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
+
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
 theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
