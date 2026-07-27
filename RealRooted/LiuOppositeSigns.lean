@@ -193,6 +193,26 @@ theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
     _ = (rootCountAtOrAbove q x : ℤ) := abs_of_nonneg hq_nonneg
     _ ≤ 1 := hq_le_int
 
+theorem RootCountCompatible.of_natDegree_le_one
+    {p q : ℝ[X]} (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hpdeg : p.natDegree ≤ 1) (hqdeg : q.natDegree ≤ 1) :
+    RootCountCompatible p q := by
+  intro x
+  have hp_le : rootCountAtOrAbove p x ≤ 1 :=
+    (rootCountAtOrAbove_le_natDegree_of_splits hp_splits x).trans hpdeg
+  have hq_le : rootCountAtOrAbove q x ≤ 1 :=
+    (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
+  have hp_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove p x : ℤ) := by
+    exact_mod_cast Nat.zero_le (rootCountAtOrAbove p x)
+  have hq_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove q x : ℤ) := by
+    exact_mod_cast Nat.zero_le (rootCountAtOrAbove q x)
+  have hp_le_int : (rootCountAtOrAbove p x : ℤ) ≤ 1 := by
+    exact_mod_cast hp_le
+  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by
+    exact_mod_cast hq_le
+  rw [abs_le]
+  constructor <;> linarith
+
 /-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0
@@ -489,6 +509,14 @@ theorem of_rootCountAbove_bounds_of_nonRoot {p q : ℝ[X]}
     RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
       hp_pos.ne_zero hq_pos.ne_zero hbound⟩
 
+theorem of_natDegree_le_one {p q : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hpdeg : p.natDegree ≤ 1) (hqdeg : q.natDegree ≤ 1) :
+    PositiveSplitRootCountPair p q :=
+  ⟨hp_pos, hq_pos, hp_splits, hq_splits,
+    RootCountCompatible.of_natDegree_le_one hp_splits hq_splits hpdeg hqdeg⟩
+
 theorem natDegree_abs_sub_le_one {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q) :
     |((p.natDegree : ℤ) - (q.natDegree : ℤ))| ≤ 1 :=
@@ -538,6 +566,33 @@ theorem deleteRootFactor_ne_zero_and_splits_of_isRoot {p : ℝ[X]} {r : ℝ}
     deleteRootFactor p r ≠ 0 ∧ (deleteRootFactor p r).Splits :=
   ⟨deleteRootFactor_ne_zero_of_isRoot hp_ne hr,
     deleteRootFactor_splits_of_isRoot hp_splits hr⟩
+
+theorem
+    rootCountCompatible_deleteRootFactor_left_of_natDegree_le_two_right_le_one
+    {f g : ℝ[X]} {r : ℝ}
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hr : f.IsRoot r) (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 1) :
+    RootCountCompatible (deleteRootFactor f r) g := by
+  have hdelete_deg : (deleteRootFactor f r).natDegree ≤ 1 := by
+    rw [natDegree_deleteRootFactor]
+    lia
+  exact RootCountCompatible.of_natDegree_le_one
+    (deleteRootFactor_splits_of_isRoot hf_splits hr) hg_splits
+    hdelete_deg hgdeg
+
+theorem
+    rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
+    {f g : ℝ[X]} {s : ℝ}
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hs : g.IsRoot s) (hfdeg : f.natDegree ≤ 1)
+    (hgdeg : g.natDegree ≤ 2) :
+    RootCountCompatible f (deleteRootFactor g s) := by
+  have hdelete_deg : (deleteRootFactor g s).natDegree ≤ 1 := by
+    rw [natDegree_deleteRootFactor]
+    lia
+  exact RootCountCompatible.of_natDegree_le_one hf_splits
+    (deleteRootFactor_splits_of_isRoot hg_splits hs) hfdeg hdelete_deg
 
 theorem leadingCoeff_deleteRootFactor_of_isRoot {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
@@ -663,6 +718,22 @@ structure RightRootCountBranch (f g : ℝ[X]) (r s : ℝ) : Prop where
 
 namespace RightRootCountBranch
 
+/-- If `f` is linear and `g` has degree at most two, the right deletion branch
+has Liu-compatible root counts by degree alone. -/
+theorem of_largestRoots_left_le_one_right_le_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hlargest : r < s) (hfdeg : f.natDegree ≤ 1)
+    (hgdeg : g.natDegree ≤ 2) :
+    RightRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_lt := hlargest
+  count :=
+    rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
+      hf_splits hg_splits hs.isRoot hfdeg hgdeg
+
 /-- Swap a right Liu branch into the corresponding left branch for the swapped
 polynomial pair. -/
 theorem toLeftBranch_symm {f g : ℝ[X]} {r s : ℝ}
@@ -723,6 +794,22 @@ private theorem nat_succ_eq_or_eq_succ_or_eq_succ_succ_of_abs_sub_le_one
     linarith
 
 namespace LeftRootCountBranch
+
+/-- If `f` has degree at most two and `g` is linear, the left deletion branch
+has Liu-compatible root counts by degree alone. -/
+theorem of_largestRoots_natDegree_le_two_right_le_one
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hlargest : s ≤ r) (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 1) :
+    LeftRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_ge := hlargest
+  count :=
+    rootCountCompatible_deleteRootFactor_left_of_natDegree_le_two_right_le_one
+      hf_splits hg_splits hr.isRoot hfdeg hgdeg
 
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :

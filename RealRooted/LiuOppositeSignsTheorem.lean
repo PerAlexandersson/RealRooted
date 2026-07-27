@@ -348,6 +348,34 @@ theorem theorem21RootCountBranches_of_natDegree_le_one_nonconstant
     exact (RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
       hdelete_splits hf hdelete_deg hf_le).symm
 
+/-- Degree `(2, 1)` forward subcase when the largest root lies on the
+degree-two side, so deleting that root leaves two linear-or-constant endpoints.
+-/
+theorem theorem21RootCountBranches_of_left_largest_natDegree_le_two_one
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hs_le_r : s ≤ r) (hf_le : f.natDegree ≤ 2)
+    (hg_le : g.natDegree ≤ 1) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_left
+    (LeftRootCountBranch.of_largestRoots_natDegree_le_two_right_le_one
+      hf hg hr hs hs_le_r hf_le hg_le)
+
+/-- Degree `(1, 2)` forward subcase when the largest root lies on the
+degree-two side, so deleting that root leaves two linear-or-constant endpoints.
+-/
+theorem theorem21RootCountBranches_of_right_largest_natDegree_le_one_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hr_lt_s : r < s) (hf_le : f.natDegree ≤ 1)
+    (hg_le : g.natDegree ≤ 2) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_right
+    (RightRootCountBranch.of_largestRoots_left_le_one_right_le_two
+      hf hg hr hs hr_lt_s hf_le hg_le)
+
 /-- Low-degree endpoint forward direction for the nonconstant degree-one case.
 The compatibility hypothesis is retained to match the Liu Theorem 2.1 forward
 shape, although the root-count branch condition follows from degree alone. -/
