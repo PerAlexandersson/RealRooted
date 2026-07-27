@@ -4277,6 +4277,38 @@ theorem snakeCoverEdge_replicate_L {n a b : ℕ} :
         ∃ d, d < n ∧ a = snakeRowCode d ∧ b = snakeColCode (d + 1) := by
   simp [snakeCoverEdge, snakeCodeBound, snakeCrossCoverEdge_replicate_L]
 
+/-- Consecutive row elements are connected by a chain cover. -/
+theorem snakeCoverEdge_rowCode_succ {w : SnakeWord} {r : ℕ}
+    (hr : r < w.length) :
+    snakeCoverEdge w (snakeRowCode r) (snakeRowCode (r + 1)) = true := by
+  simp [snakeCoverEdge, snakeRowCode, snakeCodeBound]
+  lia
+
+/-- Consecutive column elements are connected by a chain cover. -/
+theorem snakeCoverEdge_colCode_succ {w : SnakeWord} {c : ℕ}
+    (hc : c < w.length) :
+    snakeCoverEdge w (snakeColCode c) (snakeColCode (c + 1)) = true := by
+  simp [snakeCoverEdge, snakeColCode, snakeCodeBound]
+  lia
+
+/-- In an all-`R` snake word, each column `c < n` covers row `c + 1`. -/
+theorem snakeCoverEdge_replicate_R_colCode_rowCode_succ {n c : ℕ}
+    (hc : c < n) :
+    snakeCoverEdge (List.replicate n SnakeLetter.R) (snakeColCode c)
+      (snakeRowCode (c + 1)) = true := by
+  rw [snakeCoverEdge_replicate_R]
+  right
+  exact ⟨c, hc, rfl, rfl⟩
+
+/-- In an all-`L` snake word, each row `r < n` covers column `r + 1`. -/
+theorem snakeCoverEdge_replicate_L_rowCode_colCode_succ {n r : ℕ}
+    (hr : r < n) :
+    snakeCoverEdge (List.replicate n SnakeLetter.L) (snakeRowCode r)
+      (snakeColCode (r + 1)) = true := by
+  rw [snakeCoverEdge_replicate_L]
+  right
+  exact ⟨r, hr, rfl, rfl⟩
+
 /-- Bounded reachability in the directed cover graph of the generalized snake
 poset.  The fuel `snakeCodeBound w` is enough for the finite acyclic graph and
 keeps the board assignment executable. -/
