@@ -1224,6 +1224,26 @@ theorem interlaces_of_quartic_quintic_root_lists
     hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
     hab hbc hcd hde huv hvw hwz hau hub hbv hvc hcw hwd hdz hze
 
+/-- Differ-by-one interlacing for a quintic whose roots lie between the ordered
+roots of a sextic. -/
+theorem interlaces_of_quintic_sextic_root_lists
+    {g f : ℝ[X]} {a b c d e r u v w z y : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 6) (hgdeg : g.natDegree = 5)
+    (hf_roots : f.roots = (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w, z, y] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z) (hzy : z ≤ y)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
+    (hdz : d ≤ z) (hze : z ≤ e) (hey : e ≤ y) (hyr : y ≤ r) :
+    Interlaces g f :=
+  Interlaces.of_quintic_sextic_root_lists
+    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
+    hab hbc hcd hde her huv hvw hwz hzy hau hub hbv hvc hcw hwd hdz hze hey hyr
+
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :

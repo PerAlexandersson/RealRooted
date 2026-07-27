@@ -765,6 +765,38 @@ theorem of_quartic_quintic_root_lists
   · rw [hg_roots]
   · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze]
 
+/-- Differ-by-one interlacing for a quintic whose roots lie between the ordered
+roots of a sextic. -/
+theorem of_quintic_sextic_root_lists
+    {g f : ℝ[X]} {a b c d e r u v w z y : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 6) (hgdeg : g.natDegree = 5)
+    (hf_roots : f.roots = (↑[a, b, c, d, e, r] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w, z, y] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (her : e ≤ r)
+    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z) (hzy : z ≤ y)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
+    (hdz : d ≤ z) (hze : z ≤ e) (hey : e ≤ y) (hyr : y ≤ r) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_,
+    [a, b, c, d, e, r], [u, v, w, z, y], ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hcd, hde, her, hab.trans hbc, hbc.trans hcd,
+      hcd.trans hde, hde.trans her, hab.trans (hbc.trans hcd),
+      hbc.trans (hcd.trans hde), hcd.trans (hde.trans her),
+      hab.trans (hbc.trans (hcd.trans hde)),
+      hbc.trans (hcd.trans (hde.trans her)),
+      hab.trans (hbc.trans (hcd.trans (hde.trans her)))]
+  · simp [huv, hvw, hwz, hzy, huv.trans hvw, hvw.trans hwz,
+      hwz.trans hzy, huv.trans (hvw.trans hwz), hvw.trans (hwz.trans hzy),
+      huv.trans (hvw.trans (hwz.trans hzy))]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze, hey, hyr]
+
 end Interlaces
 
 /-- A **Sturm sequence** is a list of polynomials where each consecutive
