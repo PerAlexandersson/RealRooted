@@ -956,6 +956,25 @@ theorem interlaces_of_cubic_quartic_root_lists
     hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
     hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
+/-- Differ-by-one interlacing for a quartic whose roots lie between the
+ordered roots of a quintic. -/
+theorem interlaces_of_quartic_quintic_root_lists
+    {g f : ℝ[X]} {a b c d e u v w z : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 5) (hgdeg : g.natDegree = 4)
+    (hf_roots : f.roots = (↑[a, b, c, d, e] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w, z] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
+    (hdz : d ≤ z) (hze : z ≤ e) :
+    Interlaces g f :=
+  Interlaces.of_quartic_quintic_root_lists
+    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
+    hab hbc hcd hde huv hvw hwz hau hub hbv hvc hcw hwd hdz hze
+
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
@@ -1348,6 +1367,412 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_four
   · exact lemma33AuxiliaryGInterlaces_modified_two
   · exact lemma33AuxiliaryGInterlaces_modified_three
   · exact lemma33AuxiliaryGInterlaces_modified_four
+
+/-- The `n = 5` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+interlacing form. -/
+theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
+    Interlaces (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
+  let s : ℝ := Real.sqrt (3 : ℝ)
+  let t : ℝ := Real.sqrt (15 : ℝ)
+  let α : ℝ := Real.sqrt ((15 : ℝ) + 8 * s)
+  let β : ℝ := Real.sqrt ((15 : ℝ) - 8 * s)
+  let γ : ℝ := Real.sqrt ((60 : ℝ) + 14 * t)
+  let δ : ℝ := Real.sqrt ((60 : ℝ) - 14 * t)
+  let a : ℝ := (-(7 : ℝ) - t - γ) / 2
+  let b : ℝ := (-(7 : ℝ) + t - δ) / 2
+  let c : ℝ := -(1 : ℝ)
+  let d : ℝ := (-(7 : ℝ) + t + δ) / 2
+  let e : ℝ := (-(7 : ℝ) - t + γ) / 2
+  let u : ℝ := (-(4 : ℝ) - s - α) / 2
+  let v : ℝ := (-(4 : ℝ) + s - β) / 2
+  let w : ℝ := (-(4 : ℝ) + s + β) / 2
+  let z : ℝ := (-(4 : ℝ) - s + α) / 2
+  have hGfactor :
+      FiniteSkewBoard.auxiliaryG 5 =
+        C (5 : ℝ) *
+          ((C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) + s) * X + C (1 : ℝ)) *
+            (C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) - s) * X + C (1 : ℝ))) := by
+    rw [FiniteSkewBoard.auxiliaryG_five]
+    dsimp [s]
+    have hs_sq' : Real.sqrt (3 : ℝ) ^ 2 = (3 : ℝ) :=
+      Real.sq_sqrt (by norm_num)
+    have hCsq : (C (Real.sqrt (3 : ℝ)) : ℝ[X]) ^ 2 = C (3 : ℝ) := by
+      rw [← map_pow, hs_sq']
+    have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
+    have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+    have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
+    have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+    have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
+      Polynomial.C_eq_natCast (R := ℝ) 40
+    have hC75 : (C (75 : ℝ) : ℝ[X]) = 75 :=
+      Polynomial.C_eq_natCast (R := ℝ) 75
+    rw [hC1, hC5, hC40, hC75]
+    norm_num
+    ring_nf
+    rw [hCsq, hC3, hC4]
+    ring_nf
+  have hPfactor :
+      modifiedNarayanaPolynomial 5 =
+        (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) + t) * X + C (1 : ℝ)) *
+          (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) - t) * X + C (1 : ℝ)) *
+            (X - C c) := by
+    rw [modifiedNarayanaPolynomial_five]
+    dsimp [t, c]
+    have ht_sq' : Real.sqrt (15 : ℝ) ^ 2 = (15 : ℝ) :=
+      Real.sq_sqrt (by norm_num)
+    have hCsq : (C (Real.sqrt (15 : ℝ)) : ℝ[X]) ^ 2 = C (15 : ℝ) := by
+      rw [← map_pow, ht_sq']
+    have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
+    have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
+    have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
+      Polynomial.C_eq_natCast (R := ℝ) 15
+    have hC50 : (C (50 : ℝ) : ℝ[X]) = 50 :=
+      Polynomial.C_eq_natCast (R := ℝ) 50
+    have hCneg1 : (C (-(1 : ℝ)) : ℝ[X]) = -1 := by simp
+    rw [hC1, hC50, hCneg1]
+    norm_num
+    ring_nf
+    rw [hCsq, hC7, hC15]
+    ring_nf
+  have hGdeg : (FiniteSkewBoard.auxiliaryG 5).natDegree = 4 := by
+    rw [FiniteSkewBoard.auxiliaryG_five]
+    compute_degree!
+  have hG_ne : FiniteSkewBoard.auxiliaryG 5 ≠ 0 := by
+    intro hzero
+    rw [hzero] at hGdeg
+    norm_num at hGdeg
+  have hquadGA_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) + s) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadGA_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) + s) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadGA_deg
+    norm_num at hquadGA_deg
+  have hquadGB_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) - s) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadGB_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((4 : ℝ) - s) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadGB_deg
+    norm_num at hquadGB_deg
+  have hquadPA_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) + t) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadPA_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) + t) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadPA_deg
+    norm_num at hquadPA_deg
+  have hquadPB_deg :
+      (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) - t) * X + C (1 : ℝ)).natDegree = 2 := by
+    compute_degree!
+  have hquadPB_ne :
+      (C (1 : ℝ) * X ^ 2 + C ((7 : ℝ) - t) * X + C (1 : ℝ)) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hquadPB_deg
+    norm_num at hquadPB_deg
+  have hXc_ne : X - C c ≠ 0 := X_sub_C_ne_zero c
+  have hs_sq : s ^ 2 = (3 : ℝ) := by
+    dsimp [s]
+    exact Real.sq_sqrt (by norm_num)
+  have ht_sq : t ^ 2 = (15 : ℝ) := by
+    dsimp [t]
+    exact Real.sq_sqrt (by norm_num)
+  have hs_nonneg : 0 ≤ s := by
+    dsimp [s]
+    exact Real.sqrt_nonneg _
+  have ht_nonneg : 0 ≤ t := by
+    dsimp [t]
+    exact Real.sqrt_nonneg _
+  have hs_ge6div5 : (6 / 5 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_ge8div5 : (8 / 5 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_ge69div40 : (69 / 40 : ℝ) ≤ s := by
+    dsimp [s]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have hs_le7div4 : s ≤ (7 / 4 : ℝ) := by
+    dsimp [s]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hs_le2 : s ≤ (2 : ℝ) := by linarith
+  have ht_ge1 : (1 : ℝ) ≤ t := by
+    dsimp [t]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have ht_ge15div4 : (15 / 4 : ℝ) ≤ t := by
+    dsimp [t]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have ht_ge77div20 : (77 / 20 : ℝ) ≤ t := by
+    dsimp [t]
+    apply Real.le_sqrt_of_sq_le
+    norm_num
+  have ht_le31div8 : t ≤ (31 / 8 : ℝ) := by
+    dsimp [t]
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have ht_le4 : t ≤ (4 : ℝ) := by linarith
+  have h15_sub_8s_nonneg : 0 ≤ (15 : ℝ) - 8 * s := by
+    nlinarith only [hs_le7div4]
+  have h60_sub_14t_nonneg : 0 ≤ (60 : ℝ) - 14 * t := by
+    nlinarith only [ht_le4]
+  have hα_sq : α ^ 2 = (15 : ℝ) + 8 * s := by
+    dsimp [α]
+    exact Real.sq_sqrt (by positivity)
+  have hβ_sq : β ^ 2 = (15 : ℝ) - 8 * s := by
+    dsimp [β]
+    exact Real.sq_sqrt h15_sub_8s_nonneg
+  have hγ_sq : γ ^ 2 = (60 : ℝ) + 14 * t := by
+    dsimp [γ]
+    exact Real.sq_sqrt (by positivity)
+  have hδ_sq : δ ^ 2 = (60 : ℝ) - 14 * t := by
+    dsimp [δ]
+    exact Real.sq_sqrt h60_sub_14t_nonneg
+  have hα_nonneg : 0 ≤ α := by
+    dsimp [α]
+    exact Real.sqrt_nonneg _
+  have hβ_nonneg : 0 ≤ β := by
+    dsimp [β]
+    exact Real.sqrt_nonneg _
+  have hγ_nonneg : 0 ≤ γ := by
+    dsimp [γ]
+    exact Real.sqrt_nonneg _
+  have hδ_nonneg : 0 ≤ δ := by
+    dsimp [δ]
+    exact Real.sqrt_nonneg _
+  have hα_ge5 : (5 : ℝ) ≤ α := by
+    dsimp [α]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [hs_ge8div5]
+  have hα_ge21div4 : (21 / 4 : ℝ) ≤ α := by
+    dsimp [α]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [hs_ge8div5]
+  have hα_le6 : α ≤ (6 : ℝ) := by
+    dsimp [α]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [hs_le7div4]
+  have hα_le27div5 : α ≤ (27 / 5 : ℝ) := by
+    dsimp [α]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [hs_le7div4]
+  have hβ_le3div2 : β ≤ (3 / 2 : ℝ) := by
+    dsimp [β]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [hs_ge8div5]
+  have hβ_le11div10 : β ≤ (11 / 10 : ℝ) := by
+    dsimp [β]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [hs_ge69div40]
+  have hβ_ge1 : (1 : ℝ) ≤ β := by
+    dsimp [β]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [hs_le7div4]
+  have hγ_ge3 : (3 : ℝ) ≤ γ := by
+    dsimp [γ]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [ht_nonneg]
+  have hγ_ge6 : (6 : ℝ) ≤ γ := by
+    dsimp [γ]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [ht_nonneg]
+  have hγ_ge533div50 : (533 / 50 : ℝ) ≤ γ := by
+    dsimp [γ]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [ht_ge77div20]
+  have hδ_ge2 : (2 : ℝ) ≤ δ := by
+    dsimp [δ]
+    apply Real.le_sqrt_of_sq_le
+    nlinarith only [ht_le4]
+  have hδ_le5div2 : δ ≤ (5 / 2 : ℝ) := by
+    dsimp [δ]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [ht_ge77div20]
+  have hδ_le3 : δ ≤ (3 : ℝ) := by
+    dsimp [δ]
+    rw [Real.sqrt_le_left (by norm_num)]
+    nlinarith only [ht_ge15div4]
+  have h2sβ_leα : 2 * s + β ≤ α := by
+    linarith
+  have h2tδ_leγ : 2 * t + δ ≤ γ := by
+    linarith
+  have htwo_sub_s_leβ : 2 - s ≤ β := by
+    linarith only [hs_ge6div5, hβ_ge1]
+  have hG_splits : (FiniteSkewBoard.auxiliaryG 5).Splits := by
+    rw [hGfactor]
+    refine (Polynomial.Splits.C (5 : ℝ)).mul ?_
+    refine
+      (quadraticPoly_splits_of_discrim_nonneg (by norm_num) ?_).mul
+        (quadraticPoly_splits_of_discrim_nonneg (by norm_num) ?_)
+    · norm_num [discrim]
+      nlinarith only [hs_sq, hs_nonneg]
+    · norm_num [discrim]
+      nlinarith only [hs_sq, h15_sub_8s_nonneg]
+  have hG_roots :
+      (FiniteSkewBoard.auxiliaryG 5).roots = (↑[u, v, w, z] : Multiset ℝ) := by
+    rw [hGfactor]
+    rw [roots_mul
+      (mul_ne_zero (Polynomial.C_ne_zero.mpr (by norm_num))
+        (mul_ne_zero hquadGA_ne hquadGB_ne))]
+    rw [roots_C, roots_mul (mul_ne_zero hquadGA_ne hquadGB_ne)]
+    have hdiscA : ((4 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
+        (15 : ℝ) + 8 * s := by
+      nlinarith only [hs_sq]
+    have hdiscA_nonneg :
+        0 ≤ ((4 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+      rw [hdiscA]
+      positivity
+    have hdiscB : ((4 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
+        (15 : ℝ) - 8 * s := by
+      nlinarith only [hs_sq]
+    have hdiscB_nonneg :
+        0 ≤ ((4 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+      rw [hdiscB]
+      exact h15_sub_8s_nonneg
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((4 : ℝ) + s))
+      (c := (1 : ℝ)) (by norm_num) hdiscA_nonneg]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((4 : ℝ) - s))
+      (c := (1 : ℝ)) (by norm_num) hdiscB_nonneg]
+    rw [hdiscA, hdiscB]
+    dsimp [u, v, w, z, α, β]
+    norm_num
+    change
+      (↑[(s - 4 - Real.sqrt (15 - 8 * s)) / 2,
+          (-s + -4 - Real.sqrt (15 + 8 * s)) / 2,
+          (-s + -4 + Real.sqrt (15 + 8 * s)) / 2,
+          (s - 4 + Real.sqrt (15 - 8 * s)) / 2] : Multiset ℝ) =
+        ↑[(-4 - s - Real.sqrt (15 + 8 * s)) / 2,
+          (-4 + s - Real.sqrt (15 - 8 * s)) / 2,
+          (-4 + s + Real.sqrt (15 - 8 * s)) / 2,
+          (-4 - s + Real.sqrt (15 + 8 * s)) / 2]
+    rw [Multiset.coe_eq_coe]
+    simpa [add_comm, add_left_comm, add_assoc, sub_eq_add_neg] using
+      (List.Perm.trans (List.Perm.swap _ _ _)
+        (List.Perm.cons _ (List.Perm.cons _ (List.Perm.swap _ _ _))))
+  have hP_roots :
+      (modifiedNarayanaPolynomial 5).roots = (↑[a, b, c, d, e] : Multiset ℝ) := by
+    rw [hPfactor]
+    rw [roots_mul (mul_ne_zero (mul_ne_zero hquadPA_ne hquadPB_ne) hXc_ne)]
+    rw [roots_mul (mul_ne_zero hquadPA_ne hquadPB_ne)]
+    have hdiscA : ((7 : ℝ) + t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
+        (60 : ℝ) + 14 * t := by
+      nlinarith only [ht_sq]
+    have hdiscA_nonneg :
+        0 ≤ ((7 : ℝ) + t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+      rw [hdiscA]
+      positivity
+    have hdiscB : ((7 : ℝ) - t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
+        (60 : ℝ) - 14 * t := by
+      nlinarith only [ht_sq]
+    have hdiscB_nonneg :
+        0 ≤ ((7 : ℝ) - t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
+      rw [hdiscB]
+      exact h60_sub_14t_nonneg
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((7 : ℝ) + t))
+      (c := (1 : ℝ)) (by norm_num) hdiscA_nonneg]
+    rw [roots_quadratic_posLead (a := (1 : ℝ)) (b := ((7 : ℝ) - t))
+      (c := (1 : ℝ)) (by norm_num) hdiscB_nonneg]
+    rw [roots_X_sub_C]
+    rw [hdiscA, hdiscB]
+    dsimp [a, b, c, d, e, γ, δ]
+    norm_num
+    change
+      (↑[(t - 7 - Real.sqrt (60 - 14 * t)) / 2,
+          (-t + -7 - Real.sqrt (60 + 14 * t)) / 2,
+          (-t + -7 + Real.sqrt (60 + 14 * t)) / 2,
+          (t - 7 + Real.sqrt (60 - 14 * t)) / 2,
+          -1] : Multiset ℝ) =
+        ↑[(-7 - t - Real.sqrt (60 + 14 * t)) / 2,
+          (-7 + t - Real.sqrt (60 - 14 * t)) / 2,
+          -1,
+          (-7 + t + Real.sqrt (60 - 14 * t)) / 2,
+          (-7 - t + Real.sqrt (60 + 14 * t)) / 2]
+    rw [Multiset.coe_eq_coe]
+    simpa [add_comm, add_left_comm, add_assoc, sub_eq_add_neg] using
+      (List.Perm.trans (List.Perm.swap _ _ _)
+        (List.Perm.cons _ (List.Perm.cons _ <|
+          List.Perm.trans (List.Perm.swap _ _ _)
+            (List.Perm.trans (List.Perm.cons _ (List.Perm.swap _ _ _))
+              (List.Perm.swap _ _ _)))))
+  have hP_ne : modifiedNarayanaPolynomial 5 ≠ 0 := modifiedNarayanaPolynomial_ne_zero 5
+  have hP_splits : (modifiedNarayanaPolynomial 5).Splits :=
+    modifiedNarayanaPolynomial_splits 5
+  have hPdeg : (modifiedNarayanaPolynomial 5).natDegree = 5 := by
+    rw [modifiedNarayanaPolynomial_natDegree]
+  have hab : a ≤ b := by
+    dsimp [a, b]
+    linarith
+  have hbc : b ≤ c := by
+    dsimp [b, c]
+    linarith
+  have hcd : c ≤ d := by
+    dsimp [c, d]
+    linarith
+  have hde : d ≤ e := by
+    dsimp [d, e]
+    linarith
+  have huv : u ≤ v := by
+    dsimp [u, v]
+    linarith
+  have hvw : v ≤ w := by
+    dsimp [v, w]
+    linarith
+  have hwz : w ≤ z := by
+    dsimp [w, z]
+    linarith
+  have hau : a ≤ u := by
+    dsimp [a, u]
+    linarith
+  have hub : u ≤ b := by
+    dsimp [u, b]
+    linarith
+  have hbv : b ≤ v := by
+    dsimp [b, v]
+    linarith
+  have hvc : v ≤ c := by
+    dsimp [v, c]
+    linarith
+  have hcw : c ≤ w := by
+    dsimp [c, w]
+    linarith
+  have hwd : w ≤ d := by
+    dsimp [w, d]
+    linarith
+  have hdz : d ≤ z := by
+    dsimp [d, z]
+    linarith
+  have hze : z ≤ e := by
+    dsimp [z, e]
+    linarith
+  exact interlaces_of_quartic_quintic_root_lists hP_ne hP_splits hG_ne hG_splits
+    hPdeg hGdeg hP_roots hG_roots hab hbc hcd hde huv hvw hwz hau hub hbv hvc
+    hcw hwd hdz hze
+
+/-- The `n = 5` case of Braun--Jal Lemma 3.3, for the concrete modified
+Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_five :
+    Prec (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
+  exact lemma33AuxiliaryGInterlaces_modified_five_interlaces.toPrec
+
+/-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal Lemma 3.3, for
+the concrete modified Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_of_le_five
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₅ : n ≤ 5) :
+    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+  interval_cases n
+  · exact lemma33AuxiliaryGInterlaces_modified_base
+  · exact lemma33AuxiliaryGInterlaces_modified_two
+  · exact lemma33AuxiliaryGInterlaces_modified_three
+  · exact lemma33AuxiliaryGInterlaces_modified_four
+  · exact lemma33AuxiliaryGInterlaces_modified_five
 
 end GeneralizedSnakePosets
 end RealRooted

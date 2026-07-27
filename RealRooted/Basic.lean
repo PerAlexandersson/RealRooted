@@ -738,6 +738,33 @@ theorem of_cubic_quartic_root_lists
   · rw [hg_roots]
   · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
 
+/-- Differ-by-one interlacing for a quartic whose roots lie between the
+ordered roots of a quintic. -/
+theorem of_quartic_quintic_root_lists
+    {g f : ℝ[X]} {a b c d e u v w z : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 5) (hgdeg : g.natDegree = 4)
+    (hf_roots : f.roots = (↑[a, b, c, d, e] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w, z] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
+    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
+    (hdz : d ≤ z) (hze : z ≤ e) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d, e],
+    [u, v, w, z], ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hcd, hde, hab.trans hbc, hbc.trans hcd, hcd.trans hde,
+      hab.trans (hbc.trans hcd), hbc.trans (hcd.trans hde),
+      hab.trans (hbc.trans (hcd.trans hde))]
+  · simp [huv, hvw, hwz, huv.trans hvw, hvw.trans hwz,
+      huv.trans (hvw.trans hwz)]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze]
+
 end Interlaces
 
 /-- A **Sturm sequence** is a list of polynomials where each consecutive
