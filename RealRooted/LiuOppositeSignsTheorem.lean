@@ -9929,6 +9929,26 @@ lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_bel
       (Q := (X - C u) * (X - C u))
       hAB hμ hnot_splits
 
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and both quadratic roots lie weakly below the
+cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u ≤ v) (hva : v < a) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  by_cases huv_lt : u < v
+  · exact
+      not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below_strict
+        hAB hab hbc huv_lt hva
+  · have hvu : v ≤ u := le_of_not_gt huv_lt
+    have huv_eq : u = v := le_antisymm huv hvu
+    subst v
+    exact
+      not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_below
+        hAB hab hbc hva
+
 /-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
 rules out the case where the average of the quadratic roots lies strictly above
 the cubic root interval. -/
@@ -10032,6 +10052,51 @@ lemma not_left_double_roots_below_of_compatible_natDegree_three_two
     not_compatible_scaled_cubic_quadratic_of_opposite_of_left_double_roots_below
       (A := f.leadingCoeff) (B := g.leadingCoeff)
       hsgn hab hbc hua hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
+rules out the case where both quadratic roots lie weakly below the cubic root
+interval. -/
+lemma not_left_roots_below_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u ≤ v) (hfroots : f.roots = {a, b, c})
+    (hgroots : g.roots = {u, v}) :
+    ¬ v < a := by
+  intro hva
+  have hffac :
+      f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
+    eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
+  have hgfac :
+      g = C g.leadingCoeff * ((X - C u) * (X - C v)) := by
+    have hprod := hg.eq_prod_roots
+    rw [hgroots] at hprod
+    simpa using hprod
+  have hcompat_fac :
+      Compatible
+        (C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)))
+        (C g.leadingCoeff * ((X - C u) * (X - C v))) := by
+    rw [← hffac, ← hgfac]
+    exact hcompat
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below
+      (A := f.leadingCoeff) (B := g.leadingCoeff)
+      hsgn hab hbc huv hva hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, the lower cubic
+root is at most the upper quadratic root. -/
+lemma lower_cubic_root_le_upper_quadratic_root_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u ≤ v) (hfroots : f.roots = {a, b, c})
+    (hgroots : g.roots = {u, v}) :
+    a ≤ v := by
+  by_contra hnot
+  exact
+    not_left_roots_below_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc huv hfroots hgroots
+      (lt_of_not_ge hnot)
 
 /-- Compatible opposite-sign cubic/linear pairs have the linear root in the
 closed interval spanned by the cubic roots. -/
