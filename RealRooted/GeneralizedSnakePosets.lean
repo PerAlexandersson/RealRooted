@@ -4496,9 +4496,68 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
   rw [htarget]
   exact hreach
 
+/-- Adding one unit of fuel preserves reachability. -/
+theorem snakeReachableFuel_succ_of_reachable {w : SnakeWord} {fuel a b : ℕ}
+    (hreach : snakeReachableFuel w fuel a b = true) :
+    snakeReachableFuel w (fuel + 1) a b = true := by
+  induction fuel generalizing a with
+  | zero =>
+      simp only [snakeReachableFuel, beq_iff_eq] at hreach
+      subst b
+      simp
+  | succ fuel ih =>
+      change ((a == b) ||
+        (List.range (snakeCodeBound w)).any fun c =>
+          snakeCoverEdge w a c && snakeReachableFuel w (fuel + 1) c b) = true
+      change ((a == b) ||
+        (List.range (snakeCodeBound w)).any fun c =>
+          snakeCoverEdge w a c && snakeReachableFuel w fuel c b) = true at hreach
+      rw [Bool.or_eq_true] at hreach
+      rcases hreach with hab | hstep
+      · rw [beq_iff_eq] at hab
+        simp [hab]
+      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+        simp only [Bool.or_eq_true, beq_iff_eq, List.any_eq_true, List.mem_range,
+          Bool.and_eq_true]
+        rcases hstep with ⟨c, hc, hcover, htail⟩
+        exact Or.inr ⟨c, hc, hcover, ih htail⟩
+
+/-- Increasing the available fuel preserves reachability. -/
+theorem snakeReachableFuel_of_le {w : SnakeWord} {fuel fuel' a b : ℕ}
+    (hff : fuel ≤ fuel') (hreach : snakeReachableFuel w fuel a b = true) :
+    snakeReachableFuel w fuel' a b = true := by
+  obtain ⟨extra, rfl⟩ := Nat.exists_eq_add_of_le hff
+  clear hff
+  induction extra with
+  | zero =>
+      simpa using hreach
+  | succ extra ih =>
+      rw [Nat.add_succ]
+      exact snakeReachableFuel_succ_of_reachable ih
+
 /-- Reachability in the generalized snake poset cover graph. -/
 def snakeElementReachable (w : SnakeWord) (a b : ℕ) : Bool :=
   snakeReachableFuel w (snakeCodeBound w) a b
+
+/-- In an all-`R` snake word, a column is below any higher reachable row at the
+`snakeElementReachable` level. -/
+theorem snakeElementReachable_replicate_R_colCode_rowCode_of_lt {n c r : ℕ}
+    (hcr : c < r) (hr : r ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.R)
+      (snakeColCode c) (snakeRowCode r) = true := by
+  unfold snakeElementReachable
+  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia)
+    (snakeReachableFuel_replicate_R_colCode_rowCode_of_lt hcr hr)
+
+/-- In an all-`L` snake word, a row is below any higher reachable column at the
+`snakeElementReachable` level. -/
+theorem snakeElementReachable_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
+    (hrc : r < c) (hc : c ≤ n) :
+    snakeElementReachable (List.replicate n SnakeLetter.L)
+      (snakeRowCode r) (snakeColCode c) = true := by
+  unfold snakeElementReachable
+  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia)
+    (snakeReachableFuel_replicate_L_rowCode_colCode_of_lt hrc hc)
 
 /-- The concrete finite squarecase board attached to a generalized snake word.
 
