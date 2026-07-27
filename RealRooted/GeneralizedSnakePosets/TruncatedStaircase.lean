@@ -31,6 +31,15 @@ private lemma listSum_hasNonnegCoeffs {ps : List ℝ[X]}
         exact hps q (by simp [hq])
       simpa using add_nonneg (hp k) (ih htail k)
 
+/-- Coefficients commute with finite list sums of polynomials. -/
+private lemma listSum_coeff (ps : List ℝ[X]) (k : ℕ) :
+    ps.sum.coeff k = (ps.map fun p => p.coeff k).sum := by
+  induction ps with
+  | nil =>
+      simp
+  | cons p ps ih =>
+      simp [ih, Polynomial.coeff_add]
+
 /-- The truncated staircase shape `mu_{n,i}` used in Braun--Jal Section 3,
 modeled as the first `i` rows of the staircase with row lengths
 `n, n - 1, ...`. -/
@@ -81,6 +90,30 @@ def bottomRowCells (n i : ℕ) : Finset (ℕ × ℕ) :=
 /-- The non-nesting rook polynomial of the truncated staircase `mu_{n,i}`. -/
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   (truncatedStaircase n i).rookPolynomial
+
+/-- A non-nesting placement in `mu_{n,i}` has at most one rook in each of the
+`i` rows. -/
+theorem card_le_rows_of_truncatedStaircase_isNonNestingPlacement
+    {n i : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n i).IsNonNestingPlacement P) :
+    P.card ≤ i := by
+  classical
+  have hinj : Set.InjOn (fun a : ℕ × ℕ => a.1) ↑P := by
+    intro a ha b hb hrow
+    by_contra hne
+    exact hP.2.1 a ha b hb hne hrow
+  have hcard : (P.image fun a => a.1).card = P.card :=
+    Finset.card_image_of_injOn hinj
+  have hsub : (P.image fun a => a.1) ⊆ Finset.range i := by
+    intro row hrow
+    rcases Finset.mem_image.mp hrow with ⟨a, haP, hrow_eq⟩
+    have ha_cell := hP.1 haP
+    rw [mem_truncatedStaircase_cells] at ha_cell
+    rw [← hrow_eq]
+    exact Finset.mem_range.mpr ha_cell.1
+  have hle := Finset.card_le_card hsub
+  rw [hcard, Finset.card_range] at hle
+  exact hle
 
 /-- Shift every column of a finite cell set down by `c + 1`. -/
 def shiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)) :
@@ -707,6 +740,28 @@ theorem sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum
     (truncatedStaircaseRookPolynomial n i).coeff 0 = 1 :=
   rookPolynomial_coeff_zero _
 
+/-- A truncated-staircase rook polynomial has no coefficient above its number
+of rows. -/
+theorem coeff_truncatedStaircaseRookPolynomial_eq_zero_of_rows_lt
+    {n i k : ℕ} (hik : i < k) :
+    (truncatedStaircaseRookPolynomial n i).coeff k = 0 := by
+  classical
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial_coeff]
+  have hfilter_empty :
+      ((truncatedStaircase n i).nonNestingPlacements.filter fun P => P.card = k) =
+        ∅ := by
+    ext P
+    constructor
+    · intro hPmem
+      rw [Finset.mem_filter, mem_nonNestingPlacements] at hPmem
+      have hcard_le :=
+        card_le_rows_of_truncatedStaircase_isNonNestingPlacement hPmem.1
+      have hcard_eq : P.card = k := hPmem.2
+      exact False.elim ((not_le_of_gt hik) (hcard_eq ▸ hcard_le))
+    · intro hPempty
+      simp at hPempty
+  simp [hfilter_empty]
+
 /-- The zero-row truncated-staircase rook polynomial is one. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_zero_rows (n : ℕ) :
     truncatedStaircaseRookPolynomial n 0 = 1 := by
@@ -1292,6 +1347,26 @@ theorem truncatedStaircaseBottomRowExpansion_all (n i : ℕ) :
   rw [sum_nonNestingPlacements_succ_eq_withoutBottomRow_add_bottomRow]
   rw [sum_nonNestingPlacementsWithoutBottomRow_eq_truncatedStaircaseRookPolynomial]
   rw [sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum]
+
+/-- The constant coefficient is unchanged by adding the bottom row. -/
+theorem coeff_truncatedStaircaseRookPolynomial_succ_zero (n i : ℕ) :
+    (truncatedStaircaseRookPolynomial n (i + 1)).coeff 0 =
+      (truncatedStaircaseRookPolynomial n i).coeff 0 := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all n i
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [hbottom, Polynomial.coeff_add, Polynomial.coeff_X_mul_zero, add_zero]
+
+/-- Coefficient form of the bottom-row expansion for positive powers of `X`. -/
+theorem coeff_truncatedStaircaseRookPolynomial_succ_succ (n i k : ℕ) :
+    (truncatedStaircaseRookPolynomial n (i + 1)).coeff (k + 1) =
+      (truncatedStaircaseRookPolynomial n i).coeff (k + 1) +
+        ((List.range (n - i)).map fun c =>
+          (truncatedStaircaseRookPolynomial (n - c - 1) i).coeff k).sum := by
+  have hbottom := truncatedStaircaseBottomRowExpansion_all n i
+  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
+  rw [hbottom, Polynomial.coeff_add, Polynomial.coeff_X_mul]
+  rw [listSum_coeff, List.map_map]
+  simp [Function.comp_def]
 
 /-- The one-row truncated staircase with `n` cells has rook polynomial
 `1 + nX`. -/
