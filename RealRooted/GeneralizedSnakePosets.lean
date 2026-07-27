@@ -3557,6 +3557,44 @@ def Theorem41Claim7Statement
     Prec ((C lam * X + C nu) * G (m - 1) + G m)
       ((C lam * X + C nu) * P (m - 1) + P m)
 
+/-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
+proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
+theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
+    Theorem41MatrixClaimStatement P G ↔ Theorem41Claim7Statement P G := by
+  constructor
+  · intro hclaim m lam nu hm hlam hnu
+    have hmu : 0 ≤ nu + 1 := by linarith
+    have hbase := hclaim (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
+    have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
+      simp
+    have hleft :
+        ((C lam * X + C (nu + 1)) * G (m - 1) + auxiliaryDifference G m) =
+          ((C lam * X + C nu) * G (m - 1) + G m) := by
+      rw [auxiliaryDifference, hC]
+      ring_nf
+    have hright :
+        ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
+          ((C lam * X + C nu) * P (m - 1) + P m) := by
+      rw [narayanaDifference, hC]
+      ring_nf
+    rwa [hleft, hright] at hbase
+  · intro hclaim m lam mu hm hlam hmu
+    have hnu : -1 ≤ mu - 1 := by linarith
+    have hbase := hclaim (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
+    have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
+      simp
+    have hleft :
+        ((C lam * X + C (mu - 1)) * G (m - 1) + G m) =
+          ((C lam * X + C mu) * G (m - 1) + auxiliaryDifference G m) := by
+      rw [auxiliaryDifference, hC]
+      ring_nf
+    have hright :
+        ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
+          ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
+      rw [narayanaDifference, hC]
+      ring_nf
+    rwa [hleft, hright] at hbase
+
 /-- The generalized snake recurrence, Theorem 3.5, in zero-based list
 coordinates.  If `k` is the last position where `w` differs from its final
 letter, then paper notation `w[:k+1]` and `w[:k]` become `takePrefix (k+1)`
