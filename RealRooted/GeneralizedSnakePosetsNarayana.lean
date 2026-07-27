@@ -655,15 +655,10 @@ theorem interlaces_of_quadratic_cubic_root_lists
     (hg_roots : g.roots = (↑[u, v] : Multiset ℝ))
     (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
     (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v) (hvc : v ≤ c) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c], [u, v],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hab.trans hbc]
-  · simp [huv]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc]
+    Interlaces g f :=
+  Interlaces.of_quadratic_cubic_root_lists
+    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
+    hab hbc huv hau hub hbv hvc
 
 /-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
 roots of a quartic. -/
@@ -678,16 +673,10 @@ theorem interlaces_of_cubic_quartic_root_lists
     (huv : u ≤ v) (hvw : v ≤ w)
     (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
     (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d], [u, v, w],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd,
-      hab.trans (hbc.trans hcd)]
-  · simp [huv, hvw, huv.trans hvw]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
+    Interlaces g f :=
+  Interlaces.of_cubic_quartic_root_lists
+    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
+    hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
 interlacing form. -/

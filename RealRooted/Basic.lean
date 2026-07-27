@@ -691,6 +691,55 @@ def Interlaces (g f : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ 
     (↑ss : Multiset ℝ) = g.roots ∧
     ListInterlaces ss rs
 
+namespace Interlaces
+
+/-- Differ-by-one interlacing for a quadratic whose roots lie between the
+ordered roots of a cubic. -/
+theorem of_quadratic_cubic_root_lists
+    {g f : ℝ[X]} {a b c u v : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 2)
+    (hf_roots : f.roots = (↑[a, b, c] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v) (hvc : v ≤ c) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c], [u, v],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hab.trans hbc]
+  · simp [huv]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc]
+
+/-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
+roots of a quartic. -/
+theorem of_cubic_quartic_root_lists
+    {g f : ℝ[X]} {a b c d u v w : ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3)
+    (hf_roots : f.roots = (↑[a, b, c, d] : Multiset ℝ))
+    (hg_roots : g.roots = (↑[u, v, w] : Multiset ℝ))
+    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
+    (huv : u ≤ v) (hvw : v ≤ w)
+    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
+    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
+    Interlaces g f := by
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d], [u, v, w],
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hgdeg, hfdeg]
+  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd,
+      hab.trans (hbc.trans hcd)]
+  · simp [huv, hvw, huv.trans hvw]
+  · rw [hf_roots]
+  · rw [hg_roots]
+  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
+
+end Interlaces
+
 /-- A **Sturm sequence** is a list of polynomials where each consecutive
     pair interlaces (differ-by-1). -/
 def IsSturmSeq : List ℝ[X] → Prop

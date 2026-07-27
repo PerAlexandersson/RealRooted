@@ -4837,14 +4837,9 @@ lemma interlaces_cubic_quartic_of_roots_between {a b c u v w : ℝ}
       roots_X_sub_C, roots_X_sub_C, roots_X_sub_C]
     rfl
   change Interlaces g f
-  refine
-    ⟨⟨hf_ne, hf_split⟩, ⟨hg_ne, hg_split⟩, ?_, [a, b, c, 0], [u, v, w],
-      ?_, ?_, hf_roots, hg_roots, ?_⟩
-  · rw [hf_deg, hg_deg]
-  · simp [hab, hbc, hc0, hab.trans hbc, hbc.trans hc0,
-      (hab.trans hbc).trans hc0]
-  · simp [huv, hvw, huv.trans hvw]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hw0]
+  exact Interlaces.of_cubic_quartic_root_lists
+    hf_ne hf_split hg_ne hg_split hf_deg hg_deg hf_roots.symm hg_roots.symm
+    hab hbc hc0 huv hvw hau hub hbv hvc hcw hw0
 
 /-- In the ordinary interlacing subcase of the normalized cubic/cubic leaf, the
 desired splitting follows from the Ma--Wang weak-sign theorem. -/
@@ -7655,17 +7650,10 @@ lemma interlaces_quadratic_cubic_of_roots_between {a b c u v : ℝ}
     rw [roots_mul hg_ne, roots_X_sub_C, roots_X_sub_C]
     rfl
   change Interlaces g f
-  refine
-    ⟨⟨hf_ne, hf_split⟩, ⟨hg_ne, hg_split⟩, ?_, [a, b, c], [u, v],
-      ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hf_deg, hg_deg]
-  · simp [hab, hbc, hab.trans hbc]
-  · simp [huv]
-  · rw [hf_roots]
-    rfl
-  · rw [hg_roots]
-    rfl
-  · simp [ListInterlaces, hau, hub, hbv, hvc]
+  exact Interlaces.of_quadratic_cubic_root_lists
+    hf_ne hf_split hg_ne hg_split hf_deg hg_deg
+    (by rw [hf_roots]; rfl) (by rw [hg_roots]; rfl)
+    hab hbc huv hau hub hbv hvc
 
 /-- In the ordinary interlacing subcase of the normalized cubic/quadratic
 leaf, the desired splitting follows from the Ma--Wang coefficient criterion. -/
