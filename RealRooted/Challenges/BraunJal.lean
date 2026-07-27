@@ -168,6 +168,11 @@ theorem modifiedNarayana_turan_nonneg_on_nonpos_upTo_six :
     ModifiedNarayanaTuranNonnegOnNonposUpToStatement 6 :=
   modifiedNarayanaTuranNonnegOnNonpos_upTo_six
 
+/-- Narayana Turan sign input for Lemma 3.4, checked through `m = 7`. -/
+theorem modifiedNarayana_turan_nonneg_on_nonpos_upTo_seven :
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 7 :=
+  modifiedNarayanaTuranNonnegOnNonpos_upTo_seven
+
 /-- The `lambda = nu = 0` specialization of Braun--Jal Lemma 3.4. -/
 theorem modifiedNarayana_lemma34_zero_zero
     {m : ℕ} (hm : 2 ≤ m) :
