@@ -295,6 +295,26 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
       show k ≠ 9 by lia, show k ≠ 10 by lia]
 
+@[simp] theorem modifiedNarayanaCoeffPolynomial_eleven :
+    modifiedNarayanaCoeffPolynomial 11 =
+      1 + C (66 : ℝ) * X + C (1210 : ℝ) * X ^ 2 +
+        C (9075 : ℝ) * X ^ 3 + C (32670 : ℝ) * X ^ 4 +
+          C (60984 : ℝ) * X ^ 5 + C (60984 : ℝ) * X ^ 6 +
+            C (32670 : ℝ) * X ^ 7 + C (9075 : ℝ) * X ^ 8 +
+              C (1210 : ℝ) * X ^ 9 + C (66 : ℝ) * X ^ 10 + X ^ 11 := by
+  ext k
+  by_cases hk : k ≤ 11
+  · interval_cases k <;>
+      norm_num [modifiedNarayanaCoeffPolynomial, narayanaTransformCoeff, Nat.choose,
+        coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
+  · have hklt : 11 < k := Nat.lt_of_not_ge hk
+    simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
+      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
+      show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
+      show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
+      show k ≠ 9 by lia, show k ≠ 10 by lia, show k ≠ 11 by lia]
+
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
@@ -1417,6 +1437,24 @@ theorem modifiedNarayanaTuran_nine (r : ℝ) :
   norm_num
   ring
 
+/-- Explicit `m = 10` Narayana Turan determinant. -/
+theorem modifiedNarayanaTuran_ten (r : ℝ) :
+    modifiedNarayanaTuran 10 r =
+      -r * (r ^ 18 + 45 * r ^ 17 + 1035 * r ^ 16 + 13212 * r ^ 15 +
+        104490 * r ^ 14 + 537516 * r ^ 13 + 1866690 * r ^ 12 +
+          4475340 * r ^ 11 + 7522164 * r ^ 10 + 8934770 * r ^ 9 +
+            7522164 * r ^ 8 + 4475340 * r ^ 7 + 1866690 * r ^ 6 +
+              537516 * r ^ 5 + 104490 * r ^ 4 + 13212 * r ^ 3 +
+                1035 * r ^ 2 + 45 * r + 1) := by
+  rw [modifiedNarayanaTuran, modifiedNarayanaPolynomial_eq_coeffPolynomial 9,
+    modifiedNarayanaCoeffPolynomial_nine,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 10,
+    modifiedNarayanaCoeffPolynomial_ten,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 11,
+    modifiedNarayanaCoeffPolynomial_eleven]
+  norm_num
+  ring
+
 private theorem modifiedNarayanaTuran_two_factor_nonneg (r : ℝ) :
     0 ≤ r ^ 2 + r + 1 := by
   have hs : 0 ≤ (2 * r + 1) ^ 2 := sq_nonneg (2 * r + 1)
@@ -1690,6 +1728,86 @@ private theorem modifiedNarayanaTuran_nine_factor_nonneg_of_nonpos
       ring
     rwa [hrewrite_r]
 
+private theorem modifiedNarayanaTuran_ten_transformed_factor_nonneg
+    {v : ℝ} (hv : 0 ≤ v) :
+    0 ≤ v ^ 9 - 27 * v ^ 8 + 450 * v ^ 7 - 2856 * v ^ 6 +
+      11088 * v ^ 5 - 16632 * v ^ 4 + 19404 * v ^ 3 + 5292 * v + 1764 := by
+  have hdecomp :
+      v ^ 9 - 27 * v ^ 8 + 450 * v ^ 7 - 2856 * v ^ 6 +
+        11088 * v ^ 5 - 16632 * v ^ 4 + 19404 * v ^ 3 + 5292 * v + 1764 =
+        v * (-(6129 / 44) * v + (1358 / 19) * v ^ 2 -
+          (927 / 50) * v ^ 3 + (37 / 50) * v ^ 4) ^ 2 +
+        1764 + 5292 * v + (1503 / 1936) * v ^ 3 +
+          (685503 / 209) * v ^ 4 + (323412937 / 397100) * v ^ 5 +
+            (8391 / 20900) * v ^ 6 + (23149 / 47500) * v ^ 7 +
+              (549 / 1250) * v ^ 8 + (1131 / 2500) * v ^ 9 := by
+    ring
+  rw [hdecomp]
+  positivity
+
+private theorem modifiedNarayanaTuran_ten_factor_nonneg_of_nonpos
+    {r : ℝ} (hr : r ≤ 0) :
+    0 ≤ r ^ 18 + 45 * r ^ 17 + 1035 * r ^ 16 + 13212 * r ^ 15 +
+      104490 * r ^ 14 + 537516 * r ^ 13 + 1866690 * r ^ 12 +
+        4475340 * r ^ 11 + 7522164 * r ^ 10 + 8934770 * r ^ 9 +
+          7522164 * r ^ 8 + 4475340 * r ^ 7 + 1866690 * r ^ 6 +
+            537516 * r ^ 5 + 104490 * r ^ 4 + 13212 * r ^ 3 +
+              1035 * r ^ 2 + 45 * r + 1 := by
+  let y : ℝ := -r
+  have hy_nonneg : 0 ≤ y := by
+    dsimp [y]
+    linarith
+  by_cases hy_zero : y = 0
+  · have hr_zero : r = 0 := by
+      dsimp [y] at hy_zero
+      linarith
+    rw [hr_zero]
+    norm_num
+  · have hy_pos : 0 < y := lt_of_le_of_ne hy_nonneg (Ne.symm hy_zero)
+    let v : ℝ := (y - 1) ^ 2 / y
+    have hv_nonneg : 0 ≤ v := by
+      dsimp [v]
+      exact div_nonneg (sq_nonneg (y - 1)) hy_nonneg
+    have hrewrite_y :
+        y ^ 18 - 45 * y ^ 17 + 1035 * y ^ 16 - 13212 * y ^ 15 +
+          104490 * y ^ 14 - 537516 * y ^ 13 + 1866690 * y ^ 12 -
+            4475340 * y ^ 11 + 7522164 * y ^ 10 - 8934770 * y ^ 9 +
+              7522164 * y ^ 8 - 4475340 * y ^ 7 + 1866690 * y ^ 6 -
+                537516 * y ^ 5 + 104490 * y ^ 4 - 13212 * y ^ 3 +
+                  1035 * y ^ 2 - 45 * y + 1 =
+          y ^ 9 * (v ^ 9 - 27 * v ^ 8 + 450 * v ^ 7 - 2856 * v ^ 6 +
+            11088 * v ^ 5 - 16632 * v ^ 4 + 19404 * v ^ 3 + 5292 * v +
+              1764) := by
+      dsimp [v]
+      field_simp [hy_pos.ne']
+      ring
+    have hnonneg_y :
+        0 ≤ y ^ 18 - 45 * y ^ 17 + 1035 * y ^ 16 - 13212 * y ^ 15 +
+          104490 * y ^ 14 - 537516 * y ^ 13 + 1866690 * y ^ 12 -
+            4475340 * y ^ 11 + 7522164 * y ^ 10 - 8934770 * y ^ 9 +
+              7522164 * y ^ 8 - 4475340 * y ^ 7 + 1866690 * y ^ 6 -
+                537516 * y ^ 5 + 104490 * y ^ 4 - 13212 * y ^ 3 +
+                  1035 * y ^ 2 - 45 * y + 1 := by
+      rw [hrewrite_y]
+      exact mul_nonneg (by positivity)
+        (modifiedNarayanaTuran_ten_transformed_factor_nonneg hv_nonneg)
+    have hrewrite_r :
+        r ^ 18 + 45 * r ^ 17 + 1035 * r ^ 16 + 13212 * r ^ 15 +
+          104490 * r ^ 14 + 537516 * r ^ 13 + 1866690 * r ^ 12 +
+            4475340 * r ^ 11 + 7522164 * r ^ 10 + 8934770 * r ^ 9 +
+              7522164 * r ^ 8 + 4475340 * r ^ 7 + 1866690 * r ^ 6 +
+                537516 * r ^ 5 + 104490 * r ^ 4 + 13212 * r ^ 3 +
+                  1035 * r ^ 2 + 45 * r + 1 =
+          y ^ 18 - 45 * y ^ 17 + 1035 * y ^ 16 - 13212 * y ^ 15 +
+            104490 * y ^ 14 - 537516 * y ^ 13 + 1866690 * y ^ 12 -
+              4475340 * y ^ 11 + 7522164 * y ^ 10 - 8934770 * y ^ 9 +
+                7522164 * y ^ 8 - 4475340 * y ^ 7 + 1866690 * y ^ 6 -
+                  537516 * y ^ 5 + 104490 * y ^ 4 - 13212 * y ^ 3 +
+                    1035 * y ^ 2 - 45 * y + 1 := by
+      dsimp [y]
+      ring
+    rwa [hrewrite_r]
+
 /-- The first three Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_three
     {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₃ : m ≤ 3) (hr : r ≤ 0) :
@@ -1880,6 +1998,45 @@ theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_nine :
   intro m r hm₁ hm₉ hr
   exact modifiedNarayanaTuran_nonneg_of_le_nine hm₁ hm₉ hr
 
+/-- The first ten Narayana Turan inequalities on nonpositive inputs. -/
+theorem modifiedNarayanaTuran_nonneg_of_le_ten
+    {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₁₀ : m ≤ 10) (hr : r ≤ 0) :
+    0 ≤ modifiedNarayanaTuran m r := by
+  interval_cases m
+  · rw [modifiedNarayanaTuran_one]
+    linarith
+  · rw [modifiedNarayanaTuran_two]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_two_factor_nonneg r)
+  · rw [modifiedNarayanaTuran_three]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_three_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_four]
+    exact mul_nonneg (by linarith) (modifiedNarayanaTuran_four_factor_nonneg r)
+  · rw [modifiedNarayanaTuran_five]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_five_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_six]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_six_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_seven]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_seven_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_eight]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_eight_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_nine]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_nine_factor_nonneg_of_nonpos hr)
+  · rw [modifiedNarayanaTuran_ten]
+    exact mul_nonneg (by linarith)
+      (modifiedNarayanaTuran_ten_factor_nonneg_of_nonpos hr)
+
+/-- Bounded Turan package through `m = 10`. -/
+theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_ten :
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 := by
+  intro m r hm₁ hm₁₀ hr
+  exact modifiedNarayanaTuran_nonneg_of_le_ten hm₁ hm₁₀ hr
+
 /-- At a root of the shifted Lemma 3.4 left-hand polynomial, the right-hand
 polynomial sign test is exactly the negative Narayana Turan determinant. -/
 theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_eq_neg_turan
@@ -2037,6 +2194,18 @@ theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_nine
   lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₉ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_nine hr
 
+/-- Checked shifted Lemma 3.4 root-sign test through `m = 10`. -/
+theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_ten
+    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₁₀ : m ≤ 10)
+    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
+    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₁₀ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_ten hr
+
 /-- At a root of the paper-shaped Lemma 3.4 left-hand polynomial, the
 right-hand sign test is exactly the negative Narayana Turan determinant. -/
 theorem lemma34ModifiedNarayana_right_eval_mul_prev_eq_neg_turan
@@ -2190,6 +2359,18 @@ theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_nine
   lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
     hm hm₉ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_nine hr
 
+/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 10`. -/
+theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_ten
+    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₁₀ : m ≤ 10)
+    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).IsRoot r)) :
+    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)).eval r) *
+      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
+  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
+    hm hm₁₀ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_ten hr
+
 @[simp] theorem modifiedNarayanaPolynomial_two :
     modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
@@ -2267,6 +2448,16 @@ theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 �
               C (55 : ℝ) * X ^ 9 + X ^ 10 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_ten]
+
+@[simp] theorem modifiedNarayanaPolynomial_eleven :
+    modifiedNarayanaPolynomial 11 =
+      1 + C (66 : ℝ) * X + C (1210 : ℝ) * X ^ 2 +
+        C (9075 : ℝ) * X ^ 3 + C (32670 : ℝ) * X ^ 4 +
+          C (60984 : ℝ) * X ^ 5 + C (60984 : ℝ) * X ^ 6 +
+            C (32670 : ℝ) * X ^ 7 + C (9075 : ℝ) * X ^ 8 +
+              C (1210 : ℝ) * X ^ 9 + C (66 : ℝ) * X ^ 10 + X ^ 11 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_eleven]
 
 /-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
