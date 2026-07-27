@@ -3357,6 +3357,155 @@ def Lemma34ModifiedNarayanaInterlacingStatement
 def narayanaDifference (P : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
   P n - P (n - 1)
 
+/-- Shifted nonnegative-parameter form of Braun--Jal Lemma 3.4, obtained from
+the paper statement by writing `mu = nu + 1`.  This is the form that matches
+the nonnegative matrix parameters in the Theorem 4.1 induction step. -/
+def Lemma34ModifiedNarayanaShiftedInterlacingStatement
+    (P : ℕ → ℝ[X]) : Prop :=
+  ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → 0 ≤ lam → 0 ≤ mu →
+    Prec ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
+      ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
+
+/-- The shifted nonnegative-parameter Lemma 3.4 form implies the paper's
+`nu ≥ -1` form. -/
+theorem lemma34ModifiedNarayanaInterlacing_of_shifted
+    {P : ℕ → ℝ[X]}
+    (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) :
+    Lemma34ModifiedNarayanaInterlacingStatement P := by
+  intro m lam nu hm hlam hnu
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
+    simp
+  have hleft :
+      ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
+        ((C lam * X + C nu) * P (m - 1) + P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (nu + 1)) * P m + narayanaDifference P (m + 1)) =
+        ((C lam * X + C nu) * P m + P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- The paper's `nu ≥ -1` Lemma 3.4 form implies the shifted
+nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34
+    {P : ℕ → ℝ[X]}
+    (h : Lemma34ModifiedNarayanaInterlacingStatement P) :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement P := by
+  intro m lam mu hm hlam hmu
+  have hnu : -1 ≤ mu - 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
+    simp
+  have hleft :
+      ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
+        ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (mu - 1)) * P m + P (m + 1)) =
+        ((C lam * X + C mu) * P m + narayanaDifference P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- Equivalence between the paper's Lemma 3.4 statement and the shifted
+nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_iff_lemma34
+    (P : ℕ → ℝ[X]) :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement P ↔
+      Lemma34ModifiedNarayanaInterlacingStatement P :=
+  ⟨lemma34ModifiedNarayanaInterlacing_of_shifted,
+    lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34⟩
+
+/-- Bounded form of Braun--Jal equation (2), useful while finite initial
+cases are being formalized before the all-`n` recurrence is available. -/
+def NarayanaAuxiliaryGRecurrenceUpToStatement
+    (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {n : ℕ}, 1 ≤ n → n ≤ N →
+    X * G (n - 1) = P n - (1 + X) * P (n - 1)
+
+/-- Bounded form of Braun--Jal Lemma 3.3. -/
+def Lemma33AuxiliaryGInterlacesUpToStatement
+    (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {n : ℕ}, 1 ≤ n → n ≤ N → Prec (G n) (P n)
+
+/-- Bounded form of Braun--Jal Lemma 3.4. -/
+def Lemma34ModifiedNarayanaInterlacingUpToStatement
+    (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → -1 ≤ nu →
+    Prec ((C lam * X + C nu) * P (m - 1) + P m)
+      ((C lam * X + C nu) * P m + P (m + 1))
+
+/-- Bounded shifted nonnegative-parameter form of Braun--Jal Lemma 3.4. -/
+def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
+    (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → 0 ≤ mu →
+    Prec ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
+      ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
+
+/-- The all-`n` recurrence implies every bounded recurrence package. -/
+theorem narayanaAuxiliaryGRecurrenceUpTo_of_statement
+    {P G : ℕ → ℝ[X]} (h : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (N : ℕ) :
+    NarayanaAuxiliaryGRecurrenceUpToStatement P G N := by
+  intro n hn _hnN
+  exact h hn
+
+/-- The all-`n` Lemma 3.3 statement implies every bounded Lemma 3.3 package. -/
+theorem lemma33AuxiliaryGInterlacesUpTo_of_statement
+    {P G : ℕ → ℝ[X]} (h : Lemma33AuxiliaryGInterlacesStatement P G)
+    (N : ℕ) :
+    Lemma33AuxiliaryGInterlacesUpToStatement P G N := by
+  intro n hn _hnN
+  exact h hn
+
+/-- The all-`n` Lemma 3.4 statement implies every bounded Lemma 3.4 package. -/
+theorem lemma34ModifiedNarayanaInterlacingUpTo_of_statement
+    {P : ℕ → ℝ[X]} (h : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (N : ℕ) :
+    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+  intro m lam nu hm _hmN hlam hnu
+  exact h hm hlam hnu
+
+/-- The all-`n` shifted Lemma 3.4 statement implies every bounded shifted
+Lemma 3.4 package. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_statement
+    {P : ℕ → ℝ[X]}
+    (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) (N : ℕ) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+  intro m lam mu hm _hmN hlam hmu
+  exact h hm hlam hmu
+
+/-- A bounded shifted Lemma 3.4 package implies the bounded paper-shaped
+`nu ≥ -1` package. -/
+theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
+    {P : ℕ → ℝ[X]} {N : ℕ}
+    (h : Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N) :
+    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+  intro m lam nu hm hmN hlam hnu
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hmN hlam hmu
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
+    simp
+  have hleft :
+      ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
+        ((C lam * X + C nu) * P (m - 1) + P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (nu + 1)) * P m + narayanaDifference P (m + 1)) =
+        ((C lam * X + C nu) * P m + P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
 /-- Difference `H_n = G_n - G_{n-1}` used in the Theorem 4.1 matrix step. -/
 def auxiliaryDifference (G : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
   G n - G (n - 1)

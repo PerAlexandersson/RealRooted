@@ -1090,6 +1090,14 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_eight
   · exact narayanaAuxiliaryGRecurrence_modified_seven
   · exact narayanaAuxiliaryGRecurrence_modified_eight
 
+/-- The checked initial cases `n = 1, ..., 8` of Braun--Jal equation (2),
+packaged in the generic bounded recurrence interface. -/
+theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
+    NarayanaAuxiliaryGRecurrenceUpToStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG 8 := by
+  intro n hn₁ hn₈
+  exact narayanaAuxiliaryGRecurrence_modified_of_le_eight hn₁ hn₈
+
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
 theorem modifiedNarayanaPolynomial_prec_succ (n : ℕ) :
@@ -1139,6 +1147,49 @@ theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
       ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)) := by
   simpa using modifiedNarayanaPolynomial_prec_succ m
+
+/-- The shifted `λ = 0, μ = 1` specialization of Braun--Jal Lemma 3.4 for the
+concrete modified Narayana family. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one
+    {m : ℕ} (hm : 2 ≤ m) :
+    Prec ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m)
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
+  have hbase := lemma34ModifiedNarayanaInterlacing_modified_zero_zero hm
+  have hleft :
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) =
+        ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) := by
+    rw [narayanaDifference]
+    simp
+  have hright :
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
+        ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)) := by
+    rw [narayanaDifference]
+    simp only [Nat.add_sub_cancel]
+    simp
+  rwa [hleft, hright]
+
+/-- Concrete modified-Narayana wrapper: the shifted Lemma 3.4 target implies
+the paper-shaped Lemma 3.4 target. -/
+theorem lemma34ModifiedNarayanaInterlacing_modified_of_shifted
+    (h :
+      Lemma34ModifiedNarayanaShiftedInterlacingStatement
+        modifiedNarayanaPolynomial) :
+    Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
+  lemma34ModifiedNarayanaInterlacing_of_shifted h
+
+/-- Concrete modified-Narayana wrapper: the paper-shaped Lemma 3.4 target
+implies the shifted nonnegative-parameter target. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_of_lemma34
+    (h : Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial) :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement
+      modifiedNarayanaPolynomial :=
+  lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34 h
 
 /-- The coefficient-side modified Narayana family also satisfies the
 Braun--Jal modified-family interface. -/
@@ -3044,6 +3095,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six
     Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
   lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate hn₁ hn₆
+
+/-- The checked initial cases `n = 1, ..., 6` of Braun--Jal Lemma 3.3,
+packaged in the generic bounded interlacing interface. -/
+theorem lemma33AuxiliaryGInterlaces_modified_upTo_six :
+    Lemma33AuxiliaryGInterlacesUpToStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG 6 := by
+  intro n hn₁ hn₆
+  exact lemma33AuxiliaryGInterlaces_modified_of_le_six hn₁ hn₆
 
 end GeneralizedSnakePosets
 end RealRooted
