@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 
 /-!
 # Liu opposite-sign compatibility scaffolding
@@ -331,12 +332,10 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
   let d : ℤ :=
     ((p.roots.filter (x < ·)).card : ℤ) -
       (q.roots.filter (x < ·)).card
-  have hp_eval_ne : p.eval x ≠ 0 := by
-    intro hzero
-    exact hxp (by simpa [Polynomial.IsRoot.def] using hzero)
-  have hq_eval_ne : q.eval x ≠ 0 := by
-    intro hzero
-    exact hxq (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hp_eval_ne : p.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero p x).mp hxp
+  have hq_eval_ne : q.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero q x).mp hxq
   have hneg_pos_iff_not_pos {y : ℝ} (hy : y ≠ 0) : 0 < -y ↔ ¬ 0 < y := by
     rw [neg_pos]
     exact Iff.intro (fun h hy_pos => by linarith)

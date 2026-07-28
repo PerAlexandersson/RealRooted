@@ -36,12 +36,10 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_
     (Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card) ↔
       ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero f x).mp hxf
+  have hgx_eval : g.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero g x).mp hxg
   rw [hsgn.odd_intCard_roots_gt_sub_iff_eval_pos_iff hf hg hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
