@@ -426,6 +426,19 @@ theorem deleteRootFactor_ne_zero_of_isRoot {p : ℝ[X]} {r : ℝ}
   apply hp_ne
   rw [← factor_deleteRootFactor_of_isRoot hr, hzero, mul_zero]
 
+theorem not_isRoot_of_not_deleteRootFactor_isRoot_of_lt
+    {p : ℝ[X]} {r x : ℝ} (hr : p.IsRoot r) (hx : x < r)
+    (hdelete : ¬ (deleteRootFactor p r).IsRoot x) :
+    ¬ p.IsRoot x := by
+  intro hpx
+  have hx_factor : (X - C r : ℝ[X]).eval x ≠ 0 := by
+    simp [sub_ne_zero, ne_of_lt hx]
+  rw [← factor_deleteRootFactor_of_isRoot hr, Polynomial.IsRoot.def,
+    eval_mul] at hpx
+  exact hdelete (by
+    rw [Polynomial.IsRoot.def]
+    exact (mul_eq_zero.mp hpx).resolve_left hx_factor)
+
 theorem roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot
     {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
     p.roots = {r} + (deleteRootFactor p r).roots := by
@@ -1127,6 +1140,36 @@ theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
     RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
       (hr.deleteRootFactor_ne_zero hf_ne) hg_ne hbound
 
+theorem of_rootCountAbove_left_sub_right_bounds_of_nonRoot
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      0 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ∧
+        ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≤ 2) :
+    LeftRootCountBranch f g r s := by
+  refine LeftRootCountBranch.of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+    hf_ne hg_ne hr hs hlargest ?_
+  intro x hdeletex hgx
+  by_cases hx : x < r
+  · have hfx : ¬ f.IsRoot x :=
+      not_isRoot_of_not_deleteRootFactor_isRoot_of_lt hr.isRoot hx hdeletex
+    have hwin := hbound x hfx hgx
+    have hcount :
+        ((f.roots.filter (x < ·)).card : ℤ) =
+          ((deleteRootFactor f r).roots.filter (x < ·)).card + 1 := by
+      exact_mod_cast hr.rootCountAbove_deleteRootFactor_add_one hf_ne hx
+    rw [hcount] at hwin
+    rw [abs_le]
+    constructor <;> linarith
+  · have hx_ge : r ≤ x := le_of_not_gt hx
+    have hdelete_zero :=
+      hr.rootCountAbove_deleteRootFactor_eq_zero_of_le hf_ne hx_ge
+    have hg_zero := hs.rootCountAbove_eq_zero_of_le (hlargest.trans hx_ge)
+    rw [hdelete_zero, hg_zero]
+    norm_num
+
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
@@ -1458,6 +1501,37 @@ theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
   count :=
     RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
       hf_ne (hs.deleteRootFactor_ne_zero hg_ne) hbound
+
+theorem of_rootCountAbove_right_sub_left_bounds_of_nonRoot
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
+    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      0 ≤ ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ∧
+        ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≤ 2) :
+    RightRootCountBranch f g r s := by
+  refine RightRootCountBranch.of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+    hf_ne hg_ne hr hs hlargest ?_
+  intro x hfx hdeletex
+  by_cases hx : x < s
+  · have hgx : ¬ g.IsRoot x :=
+      not_isRoot_of_not_deleteRootFactor_isRoot_of_lt hs.isRoot hx hdeletex
+    have hwin := hbound x hfx hgx
+    have hcount :
+        ((g.roots.filter (x < ·)).card : ℤ) =
+          ((deleteRootFactor g s).roots.filter (x < ·)).card + 1 := by
+      exact_mod_cast hs.rootCountAbove_deleteRootFactor_add_one hg_ne hx
+    rw [hcount] at hwin
+    rw [abs_le]
+    constructor <;> linarith
+  · have hx_ge : s ≤ x := le_of_not_gt hx
+    have hf_zero :=
+      hr.rootCountAbove_eq_zero_of_le ((le_of_lt hlargest).trans hx_ge)
+    have hdelete_zero :=
+      hs.rootCountAbove_deleteRootFactor_eq_zero_of_le hg_ne hx_ge
+    rw [hf_zero, hdelete_zero]
+    norm_num
 
 theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) (hx : x ≤ s) :
