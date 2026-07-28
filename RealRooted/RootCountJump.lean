@@ -459,6 +459,53 @@ theorem exists_threshold_no_mem_Ioc (s : Multiset ℝ) (x : ℝ) :
     left
     exact not_lt.mp (hall r hr)
 
+/-- Least element of a finite multiset strictly above a threshold, provided one
+such element exists. -/
+theorem exists_least_mem_gt {α : Type*} [LinearOrder α]
+    (s : Multiset α) {x c₀ : α} (hc₀ : c₀ ∈ s)
+    (hx : x < c₀) :
+    ∃ c ∈ s, x < c ∧ ∀ z ∈ s, x < z → c ≤ z := by
+  classical
+  set S : Finset α := s.toFinset.filter (x < ·) with hS
+  have hSne : S.Nonempty := by
+    refine ⟨c₀, ?_⟩
+    rw [hS, Finset.mem_filter]
+    exact ⟨Multiset.mem_toFinset.mpr hc₀, hx⟩
+  refine ⟨S.min' hSne, ?_, ?_, ?_⟩
+  · have hmem : S.min' hSne ∈ S := Finset.min'_mem S hSne
+    exact Multiset.mem_toFinset.mp (Finset.mem_filter.mp hmem).1
+  · exact (Finset.mem_filter.mp (Finset.min'_mem S hSne)).2
+  · intro z hz hxz
+    have hzS : z ∈ S := by
+      rw [hS, Finset.mem_filter]
+      exact ⟨Multiset.mem_toFinset.mpr hz, hxz⟩
+    exact Finset.min'_le S z hzS
+
+/-- Least combined root of two nonzero polynomials strictly above a threshold,
+provided one such root exists. -/
+theorem exists_least_isRoot_or_isRoot_gt
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {x c₀ : ℝ}
+    (hc₀ : f.IsRoot c₀ ∨ g.IsRoot c₀) (hx : x < c₀) :
+    ∃ c : ℝ, (f.IsRoot c ∨ g.IsRoot c) ∧ x < c ∧
+      ∀ z : ℝ, x < z → (f.IsRoot z ∨ g.IsRoot z) → c ≤ z := by
+  have hc₀_mem : c₀ ∈ f.roots + g.roots := by
+    rcases hc₀ with hcf | hcg
+    · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf).mpr hcf))
+    · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg).mpr hcg))
+  obtain ⟨c, hc_mem, hxc, hleast⟩ :=
+    exists_least_mem_gt (f.roots + g.roots) hc₀_mem hx
+  refine ⟨c, ?_, hxc, ?_⟩
+  · rw [Multiset.mem_add] at hc_mem
+    rcases hc_mem with hcf | hcg
+    · exact Or.inl ((Polynomial.mem_roots hf).mp hcf)
+    · exact Or.inr ((Polynomial.mem_roots hg).mp hcg)
+  · intro z hxz hz
+    have hz_mem : z ∈ f.roots + g.roots := by
+      rcases hz with hzf | hzg
+      · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf).mpr hzf))
+      · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg).mpr hzg))
+    exact hleast z hz_mem hxz
+
 /-- Push a threshold strictly upward to a common non-root for two polynomials
 without crossing any root of either polynomial. -/
 theorem exists_common_nonRoot_threshold_no_mem_Ioc

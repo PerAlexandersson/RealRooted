@@ -1212,6 +1212,29 @@ theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
     rw [hf_zero, hg_zero]
     norm_num
 
+/-- If the original pair has Liu-compatible root counts, the left deletion
+branch only needs the one-sided strict-upper inequality `n_g(x) ≤ n_f(x)` at
+common non-root thresholds below the largest root of `f`. -/
+theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
+    LeftRootCountBranch f g r s := by
+  refine
+    LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
+      hf_ne hg_ne hr hs hlargest ?_
+  intro x hx hfx hgx
+  constructor
+  · have hxle :
+        ((g.roots.filter (x < ·)).card : ℤ) ≤
+          (f.roots.filter (x < ·)).card := by
+      exact_mod_cast hle x hx hfx hgx
+    linarith
+  · have hbounds := hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx
+    linarith
+
 /-- A window-difference criterion for the left branch.  It is enough to have
 Liu-compatible original root counts and, at each common non-root below the
 largest root of `f`, a nondegenerate `(x, b]` window where the multiset root
