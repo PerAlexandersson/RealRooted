@@ -1655,27 +1655,10 @@ theorem of_rootCountAbove_right_sub_left_bounds_of_nonRoot
         ((g.roots.filter (x < ·)).card : ℤ) -
           (f.roots.filter (x < ·)).card ≤ 2) :
     RightRootCountBranch f g r s := by
-  refine RightRootCountBranch.of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
-    hf_ne hg_ne hr hs hlargest ?_
-  intro x hfx hdeletex
-  by_cases hx : x < s
-  · have hgx : ¬ g.IsRoot x :=
-      not_isRoot_of_not_deleteRootFactor_isRoot_of_lt hs.isRoot hx hdeletex
-    have hwin := hbound x hfx hgx
-    have hcount :
-        ((g.roots.filter (x < ·)).card : ℤ) =
-          ((deleteRootFactor g s).roots.filter (x < ·)).card + 1 := by
-      exact_mod_cast hs.rootCountAbove_deleteRootFactor_add_one hg_ne hx
-    rw [hcount] at hwin
-    rw [abs_le]
-    constructor <;> linarith
-  · have hx_ge : s ≤ x := le_of_not_gt hx
-    have hf_zero :=
-      hr.rootCountAbove_eq_zero_of_le ((le_of_lt hlargest).trans hx_ge)
-    have hdelete_zero :=
-      hs.rootCountAbove_deleteRootFactor_eq_zero_of_le hg_ne hx_ge
-    rw [hf_zero, hdelete_zero]
-    norm_num
+  have hleft : LeftRootCountBranch g f s r :=
+    LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_of_nonRoot
+      hg_ne hf_ne hs hr hlargest.le fun x hgx hfx => hbound x hfx hgx
+  exact hleft.toRightBranch_symm_of_lt hlargest
 
 /-- A simple-window criterion for the right branch, obtained from the left
 criterion by swapping the polynomial pair.  It is enough to have
