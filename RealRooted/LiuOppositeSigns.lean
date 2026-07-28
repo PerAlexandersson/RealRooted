@@ -479,15 +479,6 @@ theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
     exact not_le.mpr (h r hr)
   simp [rootCountAtOrAbove, hfilter]
 
-theorem rootCountAbove_eq_zero_of_forall_roots_le {p : ℝ[X]} {x : ℝ}
-    (h : ∀ r ∈ p.roots, r ≤ x) :
-    (p.roots.filter (x < ·)).card = 0 := by
-  have hfilter : p.roots.filter (x < ·) = 0 := by
-    apply Multiset.filter_eq_nil.mpr
-    intro r hr
-    exact not_lt.mpr (h r hr)
-  simp [hfilter]
-
 theorem rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) {x : ℝ} (hx : ¬ p.IsRoot x) :
     rootCountAtOrAbove p x = (p.roots.filter (x < ·)).card := by
@@ -1215,6 +1206,159 @@ theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
 /-- If the original pair has Liu-compatible root counts, the left deletion
 branch only needs the one-sided strict-upper inequality `n_g(x) ≤ n_f(x)` at
 common non-root thresholds below the largest root of `f`. -/
+theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : ∀ a b : ℝ, a < b →
+      (f.IsRoot a ∨ g.IsRoot a) →
+      (f.IsRoot b ∨ g.IsRoot b) →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
+        (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z) ∧
+          ((f.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 1) ∨
+            (g.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 0)) := by
+  let μ : ℝ → ℕ := fun x => ((f.roots + g.roots).filter (x < ·)).card
+  let P : ℝ → Prop := fun x =>
+    x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
+        (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z) ∧
+          ((f.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 1) ∨
+            (g.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 0))
+  change ∀ x : ℝ, P x
+  refine WellFounded.fix (measure μ).wf ?_
+  intro x ih hx hfx hgx
+  obtain ⟨c, hcroot, hxc, hleast⟩ :=
+    exists_least_isRoot_or_isRoot_gt hf_ne hg_ne (Or.inl hr.isRoot) hx
+  have hc_mem : c ∈ f.roots + g.roots := by
+    rcases hcroot with hcf | hcg
+    · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf_ne).mpr hcf))
+    · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg_ne).mpr hcg))
+  obtain ⟨b, hcb, hfb, hgb, hgap_f, hgap_g⟩ :=
+    exists_common_nonRoot_threshold_no_mem_Ioc hf_ne hg_ne c
+  have hxb : x < b := hxc.trans hcb
+  have hmeasure : μ b < μ x := by
+    dsimp [μ]
+    exact card_filter_gt_lt_of_mem_Ioc (f.roots + g.roots)
+      (le_of_lt hxb) hc_mem hxc (le_of_lt hcb)
+  by_cases hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)
+  · obtain ⟨d₀, hbd₀, hd₀root⟩ := hnext
+    have hd₀_le_r : d₀ ≤ r := by
+      rcases hd₀root with hdf | hdg
+      · exact hr.roots_le d₀ ((Polynomial.mem_roots hf_ne).mpr hdf)
+      · exact (hs.roots_le d₀ ((Polynomial.mem_roots hg_ne).mpr hdg)).trans hlargest
+    have hbr : b < r := hbd₀.trans_le hd₀_le_r
+    obtain ⟨d, hbd, hdroot, hdleast, howner_d⟩ := ih b hmeasure hbr hfb hgb
+    have hcd : c < d := hcb.trans hbd
+    have hbetween :
+        ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
+      intro z hcz hzd
+      constructor
+      · intro hfz
+        have hz_mem : z ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hfz
+        rcases hgap_f z hz_mem with hzc | hbz
+        · exact (not_lt_of_ge hzc) hcz
+        · exact (not_lt_of_ge (hdleast z hbz (Or.inl hfz))) hzd
+      · intro hgz
+        have hz_mem : z ∈ g.roots := (Polynomial.mem_roots hg_ne).mpr hgz
+        rcases hgap_g z hz_mem with hzc | hbz
+        · exact (not_lt_of_ge hzc) hcz
+        · exact (not_lt_of_ge (hdleast z hbz (Or.inr hgz))) hzd
+    have hcross_cd := hcross c d hcd hcroot hdroot hbetween
+    rcases howner_d with ⟨hdf, hdiff_b⟩ | ⟨hdg, hdiff_b⟩
+    · have hgc : g.IsRoot c := by
+        rcases hcross_cd with ⟨_hfc, hgd⟩ | ⟨hgc, _hfd⟩
+        · exact False.elim (hdisj d hdf hgd)
+        · exact hgc
+      have hfc_not : ¬ f.IsRoot c := by
+        intro hfc
+        exact hdisj c hfc hgc
+      have hdiff :=
+        card_roots_filter_gt_sub_eq_zero_of_right_least_root_no_mem_Ioc_of_above_eq_one
+          hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
+          hleast hgap_f hgap_g hdiff_b
+      exact ⟨c, hxc, hcroot, hleast, Or.inr ⟨hgc, hdiff⟩⟩
+    · have hfc : f.IsRoot c := by
+        rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
+        · exact hfc
+        · exact False.elim (hdisj d hfd hdg)
+      have hgc_not : ¬ g.IsRoot c := hdisj c hfc
+      have hdiff :=
+        card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
+          hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
+          hleast hgap_f hgap_g hdiff_b
+      exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩
+  · have hno_above :
+        ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
+      intro z hbz
+      constructor
+      · intro hfz
+        exact hnext ⟨z, hbz, Or.inl hfz⟩
+      · intro hgz
+        exact hnext ⟨z, hbz, Or.inr hgz⟩
+    have hdiff_b :=
+      card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
+        hf_ne hg_ne hno_above
+    have hcr : c ≤ r := hleast r hx (Or.inl hr.isRoot)
+    have hrc : r ≤ c := by
+      by_contra hnot
+      have hcr_lt : c < r := lt_of_not_ge hnot
+      by_cases hrb : r ≤ b
+      · have hr_mem : r ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hr.isRoot
+        rcases hgap_f r hr_mem with hle | hlt <;> linarith
+      · exact False.elim (hnext ⟨r, lt_of_not_ge hrb, Or.inl hr.isRoot⟩)
+    have hcr_eq : c = r := le_antisymm hcr hrc
+    have hfc : f.IsRoot c := by
+      simpa [hcr_eq] using hr.isRoot
+    have hgc_not : ¬ g.IsRoot c := hdisj c hfc
+    have hdiff :=
+      card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
+        hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
+        hleast hgap_f hgap_g hdiff_b
+    exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩
+
+theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : ∀ a b : ℝ, a < b →
+      (f.IsRoot a ∨ g.IsRoot a) →
+      (f.IsRoot b ∨ g.IsRoot b) →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card := by
+  intro x hx hfx hgx
+  obtain ⟨_c, _hxc, _hcroot, _hleast, howner⟩ :=
+    rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
+      hf_ne hg_ne hr hs hlargest hsimple_f hsimple_g hdisj hcross
+      x hx hfx hgx
+  rcases howner with ⟨_hfc, hdiff⟩ | ⟨_hgc, hdiff⟩
+  · have hle_int :
+        ((g.roots.filter (x < ·)).card : ℤ) ≤
+          (f.roots.filter (x < ·)).card := by
+      linarith
+    exact_mod_cast hle_int
+  · have hle_int :
+        ((g.roots.filter (x < ·)).card : ℤ) ≤
+          (f.roots.filter (x < ·)).card := by
+      linarith
+    exact_mod_cast hle_int
+
 theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)

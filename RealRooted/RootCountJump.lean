@@ -99,6 +99,39 @@ theorem card_filter_gt_lt_of_mem_Ioc
   rw [← hpart]
   exact Nat.lt_add_of_pos_left hpos
 
+/-- If every root of a polynomial is at most `x`, then its strict-upper root
+count above `x` is zero. -/
+theorem rootCountAbove_eq_zero_of_forall_roots_le {p : ℝ[X]} {x : ℝ}
+    (h : ∀ r ∈ p.roots, r ≤ x) :
+    (p.roots.filter (x < ·)).card = 0 := by
+  have hfilter : p.roots.filter (x < ·) = 0 := by
+    apply Multiset.filter_eq_nil.mpr
+    intro r hr
+    exact not_lt.mpr (h r hr)
+  simp [hfilter]
+
+/-- If no root of a nonzero polynomial lies strictly above `x`, then the
+strict-upper root count above `x` is zero. -/
+theorem card_roots_filter_gt_eq_zero_of_no_isRoot_gt
+    {p : ℝ[X]} (hp : p ≠ 0) {x : ℝ}
+    (h : ∀ r : ℝ, x < r → ¬ p.IsRoot r) :
+    (p.roots.filter (x < ·)).card = 0 :=
+  rootCountAbove_eq_zero_of_forall_roots_le fun r hr =>
+    le_of_not_gt fun hxr => h r hxr ((Polynomial.mem_roots hp).mp hr)
+
+/-- If neither polynomial has a root strictly above `x`, then their strict-upper
+root-count difference above `x` is zero. -/
+theorem card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {x : ℝ}
+    (h : ∀ r : ℝ, x < r → ¬ f.IsRoot r ∧ ¬ g.IsRoot r) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 0 := by
+  have hf_zero :=
+    card_roots_filter_gt_eq_zero_of_no_isRoot_gt hf fun r hr => (h r hr).1
+  have hg_zero :=
+    card_roots_filter_gt_eq_zero_of_no_isRoot_gt hg fun r hr => (h r hr).2
+  simp [hf_zero, hg_zero]
+
 /-- Exact jump formula for strict-upper multiset-count differences across
 `(a, b]`. -/
 theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
