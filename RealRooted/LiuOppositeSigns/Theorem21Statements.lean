@@ -81,6 +81,26 @@ theorem OppositeLeadingSigns.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isR
     (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
       hf hg (hf_no y hay hyb) (hg_no y hay hyb)).mp hodd_y
 
+/-- If a finite open interval contains no roots of either endpoint polynomial,
+then oddness at one sample point forces same-sign endpoint evaluations at any
+other sample point in that interval. -/
+theorem OppositeLeadingSigns.eval_mul_pos_of_odd_roots_gt_sub_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    0 < f.eval y * g.eval y := by
+  have hno_pos :=
+    hsgn.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
+      hf hg hf_no hg_no hax hxb hay hyb hodd
+  exact eval_mul_pos_of_no_pos_rightFamily_isRoot
+    (hf_no y hay hyb) (hg_no y hay hyb) (by
+      intro μ hμ
+      exact hno_pos μ hμ)
+
 /-- On a positive parameter interval with constant degree and a fixed
 threshold root-free for every positive member, the right-family strict-upper
 count is constant between the interval endpoints. -/
