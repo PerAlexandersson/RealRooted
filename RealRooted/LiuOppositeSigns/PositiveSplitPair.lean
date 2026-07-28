@@ -324,6 +324,231 @@ lemma exists_roots_order_of_positiveSplitRootCountPair_three_two
     ⟨a, b, c, u, v, hab, hbc, huv, hfroots, hgroots, hffac, hgfac,
       hau, hbv, huc⟩
 
+/-- A split real quartic factors through an ordered quadruple of real roots. -/
+theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
+    (hf : f.Splits) (hdeg : f.natDegree = 4) :
+    ∃ a b c d : ℝ, a ≤ b ∧ b ≤ c ∧ c ≤ d ∧
+      f.roots = {a, b, c, d} ∧
+        f = C f.leadingCoeff *
+          ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
+  let rs := f.roots.sort (· ≤ ·)
+  have hrs_len : rs.length = 4 := by
+    simp [rs, card_roots_of_splits hf, hdeg]
+  obtain ⟨a, b, c, d, hrs⟩ := List.length_eq_four.mp hrs_len
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := by
+    simp [rs]
+  have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by
+    simpa [hrs] using hrs_sorted
+  have hab : a ≤ b := by
+    simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
+  have hbc : b ≤ c := by
+    have htail := (List.pairwise_cons.1 hsorted).2
+    simpa using (List.pairwise_cons.1 htail).1 c (by simp)
+  have hcd : c ≤ d := by
+    have htail := (List.pairwise_cons.1 hsorted).2
+    have htail2 := (List.pairwise_cons.1 htail).2
+    simpa using (List.pairwise_cons.1 htail2).1 d (by simp)
+  have hcoe : f.roots = {a, b, c, d} := by
+    have hse : (↑rs : Multiset ℝ) = f.roots := by
+      simp [rs]
+    rw [hrs] at hse
+    rw [← hse]
+    rfl
+  refine ⟨a, b, c, d, hab, hbc, hcd, hcoe, ?_⟩
+  rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
+  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
+
+/-- In the `(4, 3)` positive split root-count case, the roots obey the finite
+inequalities needed by the quartic/cubic x-subtraction endpoint. -/
+lemma roots_order_of_positiveSplitRootCountPair_four_three
+    {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g)
+    {a b c d u v w : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
+    (huv : u ≤ v) (hvw : v ≤ w)
+    (hfroots : f.roots = {a, b, c, d})
+    (hgroots : g.roots = {u, v, w}) :
+    a ≤ u ∧ b ≤ v ∧ c ≤ w ∧ u ≤ c ∧ v ≤ d := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · by_contra hau
+    have hua : u < a := lt_of_not_ge hau
+    let x : ℝ := (a + u) / 2
+    have hxa : x ≤ a := by
+      dsimp [x]
+      linarith
+    have hxb : x ≤ b := hxa.trans hab
+    have hxc : x ≤ c := hxb.trans hbc
+    have hxd : x ≤ d := hxc.trans hcd
+    have hux : u < x := by
+      dsimp [x]
+      linarith
+    have hf_count : rootCountAtOrAbove f x = 4 := by
+      rw [rootCountAtOrAbove, hfroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      simp [hxa, hxb, hxc, hxd]
+    have hg_count_le : rootCountAtOrAbove g x ≤ 2 := by
+      rw [rootCountAtOrAbove, hgroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      have hnot_xu : ¬ x ≤ u := not_le.mpr hux
+      by_cases hxv : x ≤ v <;> by_cases hxw : x ≤ w <;>
+        simp [hnot_xu, hxv, hxw]
+    have hcount := h.count.left_sub_le_one x
+    rw [hf_count] at hcount
+    norm_num at hcount
+    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 2) := by
+      exact_mod_cast hg_count_le
+    linarith
+  · by_contra hbv
+    have hvb : v < b := lt_of_not_ge hbv
+    let x : ℝ := (b + v) / 2
+    have hxb : x ≤ b := by
+      dsimp [x]
+      linarith
+    have hxc : x ≤ c := hxb.trans hbc
+    have hxd : x ≤ d := hxc.trans hcd
+    have hvx : v < x := by
+      dsimp [x]
+      linarith
+    have hux : u < x := lt_of_le_of_lt huv hvx
+    have hf_count_ge : 3 ≤ rootCountAtOrAbove f x := by
+      rw [rootCountAtOrAbove, hfroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      by_cases hxa : x ≤ a <;> simp [hxa, hxb, hxc, hxd]
+    have hg_count_le : rootCountAtOrAbove g x ≤ 1 := by
+      rw [rootCountAtOrAbove, hgroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      have hnot_xu : ¬ x ≤ u := not_le.mpr hux
+      have hnot_xv : ¬ x ≤ v := not_le.mpr hvx
+      by_cases hxw : x ≤ w <;> simp [hnot_xu, hnot_xv, hxw]
+    have hcount := h.count.left_sub_le_one x
+    have hf_count_int : (3 : ℤ) ≤ rootCountAtOrAbove f x := by
+      exact_mod_cast hf_count_ge
+    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by
+      exact_mod_cast hg_count_le
+    linarith
+  · by_contra hcw
+    have hwc : w < c := lt_of_not_ge hcw
+    let x : ℝ := (c + w) / 2
+    have hxc : x ≤ c := by
+      dsimp [x]
+      linarith
+    have hxd : x ≤ d := hxc.trans hcd
+    have hwx : w < x := by
+      dsimp [x]
+      linarith
+    have hux : u < x := lt_of_le_of_lt (huv.trans hvw) hwx
+    have hvx : v < x := lt_of_le_of_lt hvw hwx
+    have hf_count_ge : 2 ≤ rootCountAtOrAbove f x := by
+      rw [rootCountAtOrAbove, hfroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      by_cases hxa : x ≤ a <;> by_cases hxb : x ≤ b <;>
+        simp [hxa, hxb, hxc, hxd]
+    have hg_count : rootCountAtOrAbove g x = 0 := by
+      rw [rootCountAtOrAbove, hgroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      have hnot_xu : ¬ x ≤ u := not_le.mpr hux
+      have hnot_xv : ¬ x ≤ v := not_le.mpr hvx
+      have hnot_xw : ¬ x ≤ w := not_le.mpr hwx
+      simp [hnot_xu, hnot_xv, hnot_xw]
+    have hcount := h.count.left_sub_le_one x
+    rw [hg_count] at hcount
+    norm_num at hcount
+    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by
+      exact_mod_cast hf_count_ge
+    linarith
+  · by_contra huc
+    have hcu : c < u := lt_of_not_ge huc
+    let x : ℝ := (c + u) / 2
+    have hcx : c < x := by
+      dsimp [x]
+      linarith
+    have hxu : x ≤ u := by
+      dsimp [x]
+      linarith
+    have hax : a < x := lt_of_le_of_lt (hab.trans hbc) hcx
+    have hbx : b < x := lt_of_le_of_lt hbc hcx
+    have hxv : x ≤ v := hxu.trans huv
+    have hxw : x ≤ w := hxv.trans hvw
+    have hf_count_le : rootCountAtOrAbove f x ≤ 1 := by
+      rw [rootCountAtOrAbove, hfroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      have hnot_xa : ¬ x ≤ a := not_le.mpr hax
+      have hnot_xb : ¬ x ≤ b := not_le.mpr hbx
+      have hnot_xc : ¬ x ≤ c := not_le.mpr hcx
+      by_cases hxd : x ≤ d <;> simp [hnot_xa, hnot_xb, hnot_xc, hxd]
+    have hg_count : rootCountAtOrAbove g x = 3 := by
+      rw [rootCountAtOrAbove, hgroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      simp [hxu, hxv, hxw]
+    have hcount := h.count.right_sub_le_one x
+    rw [hg_count] at hcount
+    norm_num at hcount
+    have hf_count_int : ((rootCountAtOrAbove f x : ℤ) ≤ 1) := by
+      exact_mod_cast hf_count_le
+    linarith
+  · by_contra hvd
+    have hdv : d < v := lt_of_not_ge hvd
+    let x : ℝ := (d + v) / 2
+    have hdx : d < x := by
+      dsimp [x]
+      linarith
+    have hxv : x ≤ v := by
+      dsimp [x]
+      linarith
+    have hax : a < x := lt_of_le_of_lt (hab.trans (hbc.trans hcd)) hdx
+    have hbx : b < x := lt_of_le_of_lt (hbc.trans hcd) hdx
+    have hcx : c < x := lt_of_le_of_lt hcd hdx
+    have hxw : x ≤ w := hxv.trans hvw
+    have hf_count : rootCountAtOrAbove f x = 0 := by
+      rw [rootCountAtOrAbove, hfroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      have hnot_xa : ¬ x ≤ a := not_le.mpr hax
+      have hnot_xb : ¬ x ≤ b := not_le.mpr hbx
+      have hnot_xc : ¬ x ≤ c := not_le.mpr hcx
+      have hnot_xd : ¬ x ≤ d := not_le.mpr hdx
+      simp [hnot_xa, hnot_xb, hnot_xc, hnot_xd]
+    have hg_count_ge : 2 ≤ rootCountAtOrAbove g x := by
+      rw [rootCountAtOrAbove, hgroots]
+      simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
+        Multiset.filter_singleton]
+      by_cases hxu : x ≤ u <;> simp [hxu, hxv, hxw]
+    have hcount := h.count.right_sub_le_one x
+    rw [hf_count] at hcount
+    norm_num at hcount
+    have hg_count_int : (2 : ℤ) ≤ rootCountAtOrAbove g x := by
+      exact_mod_cast hg_count_ge
+    linarith
+
+/-- A `(4, 3)` positive split root-count pair admits ordered root data with
+the inequalities needed by the quartic/cubic x-subtraction terminal. -/
+lemma exists_roots_order_of_positiveSplitRootCountPair_four_three
+    {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g)
+    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3) :
+    ∃ a b c d u v w : ℝ,
+      a ≤ b ∧ b ≤ c ∧ c ≤ d ∧ u ≤ v ∧ v ≤ w ∧
+        f.roots = {a, b, c, d} ∧ g.roots = {u, v, w} ∧
+          f = C f.leadingCoeff *
+            ((X - C a) * (X - C b) * (X - C c) * (X - C d)) ∧
+            g = C g.leadingCoeff * ((X - C u) * (X - C v) * (X - C w)) ∧
+              a ≤ u ∧ b ≤ v ∧ c ≤ w ∧ u ≤ c ∧ v ≤ d := by
+  obtain ⟨a, b, c, d, hab, hbc, hcd, hfroots, hffac⟩ :=
+    exists_roots_quadruple_of_splits_natDegree_four h.left_splits hfdeg
+  obtain ⟨u, v, w, huv, hvw, hgroots, hgfac⟩ :=
+    exists_roots_triple_of_splits_natDegree_three h.right_splits hgdeg
+  obtain ⟨hau, hbv, hcw, huc, hvd⟩ :=
+    roots_order_of_positiveSplitRootCountPair_four_three
+      h hab hbc hcd huv hvw hfroots hgroots
+  exact
+    ⟨a, b, c, d, u, v, w, hab, hbc, hcd, huv, hvw, hfroots,
+      hgroots, hffac, hgfac, hau, hbv, hcw, huc, hvd⟩
+
 namespace PositiveSplitRootCountPair
 
 theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
