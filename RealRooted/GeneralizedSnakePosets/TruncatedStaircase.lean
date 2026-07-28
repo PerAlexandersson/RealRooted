@@ -158,6 +158,16 @@ def fullStaircaseReflectedPairs (n : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset (ℕ × ℕ) :=
   P.image fun a => (a.1, n - 1 - a.2)
 
+/-- Row projection of the reflected-pair encoding. -/
+def fullStaircaseReflectedPairRows (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset ℕ :=
+  (fullStaircaseReflectedPairs n P).image fun x => x.1
+
+/-- Reflected-column projection of the reflected-pair encoding. -/
+def fullStaircaseReflectedPairColumns (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset ℕ :=
+  (fullStaircaseReflectedPairs n P).image fun x => x.2
+
 /-- Membership in the reflected-pair encoding. -/
 @[simp] theorem mem_fullStaircaseReflectedPairs
     {n : ℕ} {P : Finset (ℕ × ℕ)} {x : ℕ × ℕ} :
@@ -165,6 +175,39 @@ def fullStaircaseReflectedPairs (n : ℕ) (P : Finset (ℕ × ℕ)) :
       ∃ a ∈ P, (a.1, n - 1 - a.2) = x := by
   classical
   simp [fullStaircaseReflectedPairs]
+
+/-- Membership in the row projection of the reflected-pair encoding. -/
+@[simp] theorem mem_fullStaircaseReflectedPairRows
+    {n row : ℕ} {P : Finset (ℕ × ℕ)} :
+    row ∈ fullStaircaseReflectedPairRows n P ↔
+      ∃ a ∈ P, a.1 = row := by
+  classical
+  simp [fullStaircaseReflectedPairRows, fullStaircaseReflectedPairs]
+
+/-- Membership in the reflected-column projection of the reflected-pair
+encoding. -/
+@[simp] theorem mem_fullStaircaseReflectedPairColumns
+    {n col : ℕ} {P : Finset (ℕ × ℕ)} :
+    col ∈ fullStaircaseReflectedPairColumns n P ↔
+      ∃ a ∈ P, n - 1 - a.2 = col := by
+  classical
+  simp [fullStaircaseReflectedPairColumns, fullStaircaseReflectedPairs]
+
+/-- The row projection of the reflected-pair encoding is the original row
+projection. -/
+theorem fullStaircaseReflectedPairRows_eq_image_fst
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    fullStaircaseReflectedPairRows n P = P.image fun a => a.1 := by
+  ext row
+  simp
+
+/-- The reflected-column projection of the reflected-pair encoding is the
+column-reflection image of the original placement. -/
+theorem fullStaircaseReflectedPairColumns_eq_image_reflectedColumn
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    fullStaircaseReflectedPairColumns n P = P.image fun a => n - 1 - a.2 := by
+  ext col
+  simp
 
 /-- The reflected-pair encoding of a full-staircase placement has the same
 cardinality as the original placement. -/
@@ -179,6 +222,49 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_card
       simpa using congrArg (fun x : ℕ × ℕ => x.1) hpair
     by_contra hne
     exact hP.row_ne ha hb hne hrow)
+
+/-- The reflected-pair row projection of a full-staircase placement has the
+same cardinality as the placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairRows_card
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairRows n P).card = P.card := by
+  rw [fullStaircaseReflectedPairRows_eq_image_fst, hP.card_image_fst]
+
+/-- The reflected-column projection of a full-staircase placement has the same
+cardinality as the placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairColumns_card
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairColumns n P).card = P.card := by
+  rw [fullStaircaseReflectedPairColumns_eq_image_reflectedColumn,
+    hP.full_card_image_reflectedColumn]
+
+/-- The reflected-pair row projection of a full-staircase placement lies in
+`range n`. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairRows_subset_range
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    fullStaircaseReflectedPairRows n P ⊆ Finset.range n := by
+  intro row hrow
+  rcases mem_fullStaircaseReflectedPairRows.mp hrow with ⟨a, ha, hrow_eq⟩
+  have ha_cell := hP.1 ha
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
+  rw [← hrow_eq]
+  exact Finset.mem_range.mpr (by lia)
+
+/-- The reflected-column projection of a full-staircase placement lies in
+`range n`. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairColumns_subset_range
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    fullStaircaseReflectedPairColumns n P ⊆ Finset.range n := by
+  intro col hcol
+  rcases mem_fullStaircaseReflectedPairColumns.mp hcol with ⟨a, ha, hcol_eq⟩
+  have ha_cell := hP.1 ha
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
+  rw [← hcol_eq]
+  exact Finset.mem_range.mpr (by lia)
 
 /-- Every reflected pair from a full-staircase placement lies in the upper
 triangle of the `n` by `n` square. -/
