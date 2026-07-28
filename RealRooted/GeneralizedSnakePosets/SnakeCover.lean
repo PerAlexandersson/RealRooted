@@ -22,6 +22,16 @@ poset.  Columns are indexed from left to right. -/
 def snakeColCode (c : ℕ) : ℕ :=
   2 * c + 1
 
+theorem snakeRowCode_add (r m : ℕ) :
+    snakeRowCode (r + m) = snakeRowCode r + 2 * m := by
+  simp [snakeRowCode]
+  lia
+
+theorem snakeColCode_add (c m : ℕ) :
+    snakeColCode (c + m) = snakeColCode c + 2 * m := by
+  simp [snakeColCode]
+  lia
+
 /-- Row and column codes have opposite parity. -/
 theorem snakeRowCode_ne_colCode (r c : ℕ) :
     snakeRowCode r ≠ snakeColCode c := by
@@ -173,10 +183,199 @@ theorem snakeCrossCoverEdge_suffix_L_of_isLastChangeIndex
   refine ⟨idx, hidx_lt, ?_⟩
   simp [hletter?, hgap]
 
+/-- Cross covers in the prefix ending at the last-change index are exactly the
+cross covers of the full word after shifting codes by the final-suffix length. -/
+theorem snakeCrossCoverEdge_takePrefix_succ_shift_iff
+    {w : SnakeWord} {last a b : ℕ} (hlast : w.IsLastChangeIndex last) :
+    snakeCrossCoverEdge w
+        (a + 2 * (w.length - (last + 1)))
+        (b + 2 * (w.length - (last + 1))) = true ↔
+      snakeCrossCoverEdge (w.takePrefix (last + 1)) a b = true := by
+  let m := w.length - (last + 1)
+  have hprefix_len : (w.takePrefix (last + 1)).length = last + 1 :=
+    hlast.takePrefix_succ_length
+  have hlast_lt : last < w.length := hlast.index_lt_length
+  change snakeCrossCoverEdge w (a + 2 * m) (b + 2 * m) = true ↔
+    snakeCrossCoverEdge (w.takePrefix (last + 1)) a b = true
+  constructor
+  · intro hcover
+    rw [snakeCrossCoverEdge] at hcover
+    simp only [List.any_eq_true, List.mem_range] at hcover
+    rcases hcover with ⟨idx, hidx, hbool⟩
+    cases hletter : w.getD idx SnakeLetter.L with
+    | L =>
+        simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+        rcases hbool with ⟨ha, hb⟩
+        have hidx_prefix : idx < last + 1 := by
+          dsimp [m] at ha
+          simp [snakeRowCode] at ha
+          lia
+        have hletter_prefixD :
+            (w.takePrefix (last + 1)).getD idx SnakeLetter.L = SnakeLetter.L := by
+          rw [SnakeWord.getD_takePrefix_of_lt hidx_prefix]
+          exact hletter
+        have hletter_prefix? :
+            (w.takePrefix (last + 1))[idx]?.getD SnakeLetter.L =
+              SnakeLetter.L := by
+          simpa [List.getD_eq_getElem?_getD] using hletter_prefixD
+        have ha' :
+            a = snakeRowCode ((w.takePrefix (last + 1)).length - (idx + 1)) := by
+          change a = 2 * ((w.takePrefix (last + 1)).length - (idx + 1))
+          rw [hprefix_len]
+          dsimp [m] at ha
+          simp [snakeRowCode] at ha
+          lia
+        have hb' :
+            b =
+              snakeColCode ((w.takePrefix (last + 1)).length - (idx + 1) + 1) := by
+          change b = 2 * (((w.takePrefix (last + 1)).length - (idx + 1)) + 1) + 1
+          rw [hprefix_len]
+          dsimp [m] at hb
+          simp [snakeColCode] at hb
+          lia
+        rw [snakeCrossCoverEdge]
+        simp only [List.any_eq_true, List.mem_range]
+        refine ⟨idx, ?_, ?_⟩
+        · simpa [hprefix_len] using hidx_prefix
+        · simp [List.getD_eq_getElem?_getD, hletter_prefix?, ha', hb']
+    | R =>
+        simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+        rcases hbool with ⟨ha, hb⟩
+        have hidx_prefix : idx < last + 1 := by
+          dsimp [m] at ha
+          simp [snakeColCode] at ha
+          lia
+        have hletter_prefixD :
+            (w.takePrefix (last + 1)).getD idx SnakeLetter.L = SnakeLetter.R := by
+          rw [SnakeWord.getD_takePrefix_of_lt hidx_prefix]
+          exact hletter
+        have hletter_prefix? :
+            (w.takePrefix (last + 1))[idx]?.getD SnakeLetter.L =
+              SnakeLetter.R := by
+          simpa [List.getD_eq_getElem?_getD] using hletter_prefixD
+        have ha' :
+            a = snakeColCode ((w.takePrefix (last + 1)).length - (idx + 1)) := by
+          change a = 2 * ((w.takePrefix (last + 1)).length - (idx + 1)) + 1
+          rw [hprefix_len]
+          dsimp [m] at ha
+          simp [snakeColCode] at ha
+          lia
+        have hb' :
+            b =
+              snakeRowCode ((w.takePrefix (last + 1)).length - (idx + 1) + 1) := by
+          change b = 2 * (((w.takePrefix (last + 1)).length - (idx + 1)) + 1)
+          rw [hprefix_len]
+          dsimp [m] at hb
+          simp [snakeRowCode] at hb
+          lia
+        rw [snakeCrossCoverEdge]
+        simp only [List.any_eq_true, List.mem_range]
+        refine ⟨idx, ?_, ?_⟩
+        · simpa [hprefix_len] using hidx_prefix
+        · simp [List.getD_eq_getElem?_getD, hletter_prefix?, ha', hb']
+  · intro hcover
+    rw [snakeCrossCoverEdge] at hcover
+    simp only [List.any_eq_true, List.mem_range] at hcover
+    rcases hcover with ⟨idx, hidx, hbool⟩
+    have hidx_prefix : idx < last + 1 := by
+      simpa [hprefix_len] using hidx
+    have hidx_full : idx < w.length := by
+      lia
+    cases hletter_prefixD :
+        (w.takePrefix (last + 1)).getD idx SnakeLetter.L with
+    | L =>
+        simp only [hletter_prefixD, Bool.and_eq_true, beq_iff_eq] at hbool
+        rcases hbool with ⟨ha, hb⟩
+        have hletterD : w.getD idx SnakeLetter.L = SnakeLetter.L := by
+          rwa [SnakeWord.getD_takePrefix_of_lt hidx_prefix] at hletter_prefixD
+        have hletter? : w[idx]?.getD SnakeLetter.L = SnakeLetter.L := by
+          simpa [List.getD_eq_getElem?_getD] using hletterD
+        have ha' : a + 2 * m = snakeRowCode (w.length - (idx + 1)) := by
+          have ha0 : a = 2 * ((last + 1) - (idx + 1)) := by
+            simpa [hprefix_len, snakeRowCode] using ha
+          change a + 2 * m = 2 * (w.length - (idx + 1))
+          dsimp [m]
+          lia
+        have hb' : b + 2 * m = snakeColCode (w.length - (idx + 1) + 1) := by
+          have hb0 : b = 2 * ((last + 1) - (idx + 1) + 1) + 1 := by
+            simpa [hprefix_len, snakeColCode] using hb
+          change b + 2 * m = 2 * (w.length - (idx + 1) + 1) + 1
+          dsimp [m]
+          lia
+        rw [snakeCrossCoverEdge]
+        simp only [List.any_eq_true, List.mem_range]
+        refine ⟨idx, hidx_full, ?_⟩
+        simp [List.getD_eq_getElem?_getD, hletter?, ha', hb']
+    | R =>
+        simp only [hletter_prefixD, Bool.and_eq_true, beq_iff_eq] at hbool
+        rcases hbool with ⟨ha, hb⟩
+        have hletterD : w.getD idx SnakeLetter.L = SnakeLetter.R := by
+          rwa [SnakeWord.getD_takePrefix_of_lt hidx_prefix] at hletter_prefixD
+        have hletter? : w[idx]?.getD SnakeLetter.L = SnakeLetter.R := by
+          simpa [List.getD_eq_getElem?_getD] using hletterD
+        have ha' : a + 2 * m = snakeColCode (w.length - (idx + 1)) := by
+          have ha0 : a = 2 * ((last + 1) - (idx + 1)) + 1 := by
+            simpa [hprefix_len, snakeColCode] using ha
+          change a + 2 * m = 2 * (w.length - (idx + 1)) + 1
+          dsimp [m]
+          lia
+        have hb' : b + 2 * m = snakeRowCode (w.length - (idx + 1) + 1) := by
+          have hb0 : b = 2 * ((last + 1) - (idx + 1) + 1) := by
+            simpa [hprefix_len, snakeRowCode] using hb
+          change b + 2 * m = 2 * (w.length - (idx + 1) + 1)
+          dsimp [m]
+          lia
+        rw [snakeCrossCoverEdge]
+        simp only [List.any_eq_true, List.mem_range]
+        refine ⟨idx, hidx_full, ?_⟩
+        simp [List.getD_eq_getElem?_getD, hletter?, ha', hb']
+
 /-- One cover edge of the generalized snake poset: either a chain edge or one
 of Braun--Jal's cross-chain covers. -/
 def snakeCoverEdge (w : SnakeWord) (a b : ℕ) : Bool :=
   (a + 2 == b && b < snakeCodeBound w) || snakeCrossCoverEdge w a b
+
+/-- Cover edges in the prefix ending at the last-change index are exactly the
+cover edges of the full word after shifting codes by the final-suffix length. -/
+theorem snakeCoverEdge_takePrefix_succ_shift_iff
+    {w : SnakeWord} {last a b : ℕ} (hlast : w.IsLastChangeIndex last) :
+    snakeCoverEdge w
+        (a + 2 * (w.length - (last + 1)))
+        (b + 2 * (w.length - (last + 1))) = true ↔
+      snakeCoverEdge (w.takePrefix (last + 1)) a b = true := by
+  let m := w.length - (last + 1)
+  have hprefix_len : (w.takePrefix (last + 1)).length = last + 1 :=
+    hlast.takePrefix_succ_length
+  have hlast_lt : last < w.length := hlast.index_lt_length
+  change snakeCoverEdge w (a + 2 * m) (b + 2 * m) = true ↔
+    snakeCoverEdge (w.takePrefix (last + 1)) a b = true
+  rw [snakeCoverEdge, snakeCoverEdge]
+  simp only [Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]
+  rw [show snakeCrossCoverEdge w (a + 2 * m) (b + 2 * m) = true ↔
+      snakeCrossCoverEdge (w.takePrefix (last + 1)) a b = true by
+    dsimp [m]
+    exact snakeCrossCoverEdge_takePrefix_succ_shift_iff hlast]
+  constructor
+  · rintro (⟨hstep, hbound⟩ | hcross)
+    · left
+      constructor
+      · lia
+      · have hbound0 : b + 2 * m < 2 * (w.length + 1) := by
+          simpa [snakeCodeBound] using hbound
+        rw [snakeCodeBound, hprefix_len]
+        dsimp [m] at hbound0
+        lia
+    · exact Or.inr hcross
+  · rintro (⟨hstep, hbound⟩ | hcross)
+    · left
+      constructor
+      · lia
+      · have hbound0 : b < 2 * (last + 1 + 1) := by
+          simpa [snakeCodeBound, hprefix_len] using hbound
+        rw [snakeCodeBound]
+        dsimp [m]
+        lia
+    · exact Or.inr hcross
 
 /-- Every cover edge strictly increases the numeric code. -/
 theorem snakeCoverEdge_lt {w : SnakeWord} {a b : ℕ}

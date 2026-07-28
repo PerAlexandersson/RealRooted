@@ -73,6 +73,15 @@ theorem length_takePrefix_le_length (w : SnakeWord) (k : ℕ) :
     (w.takePrefix k).length ≤ w.length := by
   simp [takePrefix]
 
+/-- Reading before the requested prefix length agrees with reading in the
+original word. -/
+@[simp] theorem getD_takePrefix_of_lt {w : SnakeWord} {k idx : ℕ}
+    {default : SnakeLetter} (hidx : idx < k) :
+    (w.takePrefix k).getD idx default = w.getD idx default := by
+  rw [takePrefix, List.getD_eq_getElem?_getD,
+    List.getD_eq_getElem?_getD, List.getElem?_take]
+  simp [hidx]
+
 /-- A prefix equals the whole word exactly when the requested length is large
 enough. -/
 theorem takePrefix_eq_self_iff (w : SnakeWord) {k : ℕ} :
