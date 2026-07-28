@@ -257,6 +257,31 @@ private theorem rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
       hfg hb_no hμ₀_pos hμ₀μ₁ hdeg
   simpa [← ha_eq, ← hb_eq] using hdrop
 
+private theorem rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_ge
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a b μ₀ μ₁ : ℝ}
+    (ha_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot a)
+    (hb_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot b)
+    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₁ * g).natDegree)
+    (hdrop :
+      ((f + C μ₁ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ₁ * g).roots.filter (a < ·)).card) :
+    ((f + C μ₀ * g).roots.filter (b < ·)).card + 2 ≤
+      ((f + C μ₀ * g).roots.filter (a < ·)).card := by
+  have hdeg₀ : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree := by
+    intro μ hμ
+    exact (hdeg μ hμ).trans (hdeg μ₀ ⟨le_rfl, hμ₀μ₁⟩).symm
+  have ha_eq :=
+    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+      hfg ha_no hμ₀_pos hμ₀μ₁ hdeg₀
+  have hb_eq :=
+    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+      hfg hb_no hμ₀_pos hμ₀μ₁ hdeg₀
+  simpa [ha_eq, hb_eq] using hdrop
+
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
 theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_add_right
@@ -659,6 +684,49 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
   exact hsgn.false_of_left_roots_add_right_count_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large ha_eq hb_eq
+
+/-- Endpoint-shaped `g`/`g` contradiction using a small positive right-family
+parameter.  If the transported count drop reaches a small parameter whose
+endpoint strict-upper counts agree with those of `f`, then same-owner
+`g`-endpoints contradict the fact that `f` has no roots in `(a, b]`. -/
+theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
+    (hga : g.IsRoot a) (hgb : g.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hν_pos : 0 < ν)
+    (hν_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → ν ≤ μ)
+    (hdeg_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+      ∀ τ ∈ Set.Icc ν μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
+      (f.roots.filter (a < ·)).card)
+    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
+      (f.roots.filter (b < ·)).card) :
+    False := by
+  obtain ⟨μ, hμ_pos, hμ_root, _hμ_eq, _hμ_der, _hμ_unique, hdrop⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two
+      hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
+  have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
+    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
+  have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
+    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hgb
+  have hdropν :
+      ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C ν * g).roots.filter (a < ·)).card :=
+    rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_ge hfg
+      ha_no hb_no hν_pos (hν_small μ hμ_pos hμ_root)
+      (hdeg_small μ hμ_pos hμ_root) hdrop
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hf_no_Icc : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z :=
+    hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no
+  exact false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
+    hab hf_no_Icc hdropν ha_eq hb_eq
 
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
