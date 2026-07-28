@@ -153,6 +153,57 @@ theorem IsNonNestingPlacement.full_reflectedColumn_lt_of_row_lt
   rw [mem_truncatedStaircase_full_cells_iff] at ha_cell hb_cell
   lia
 
+/-- Reflect the columns of a placement in the full `n` by `n` square. -/
+def fullStaircaseReflectedPairs (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset (ℕ × ℕ) :=
+  P.image fun a => (a.1, n - 1 - a.2)
+
+/-- Membership in the reflected-pair encoding. -/
+@[simp] theorem mem_fullStaircaseReflectedPairs
+    {n : ℕ} {P : Finset (ℕ × ℕ)} {x : ℕ × ℕ} :
+    x ∈ fullStaircaseReflectedPairs n P ↔
+      ∃ a ∈ P, (a.1, n - 1 - a.2) = x := by
+  classical
+  simp [fullStaircaseReflectedPairs]
+
+/-- The reflected-pair encoding of a full-staircase placement has the same
+cardinality as the original placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_card
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairs n P).card = P.card := by
+  rw [fullStaircaseReflectedPairs]
+  exact Finset.card_image_of_injOn (by
+    intro a ha b hb hpair
+    have hrow : a.1 = b.1 := by
+      simpa using congrArg (fun x : ℕ × ℕ => x.1) hpair
+    by_contra hne
+    exact hP.row_ne ha hb hne hrow)
+
+/-- Every reflected pair from a full-staircase placement lies in the upper
+triangle of the `n` by `n` square. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_mem_bounds
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P)
+    {x : ℕ × ℕ} (hx : x ∈ fullStaircaseReflectedPairs n P) :
+    x.1 < n ∧ x.2 < n ∧ x.1 ≤ x.2 := by
+  rcases mem_fullStaircaseReflectedPairs.mp hx with ⟨a, ha, rfl⟩
+  have ha_cell := hP.1 ha
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
+  exact ⟨by lia, by lia, hP.full_row_le_reflectedColumn ha⟩
+
+/-- Reflected columns increase with rows inside the reflected-pair encoding of
+a full-staircase placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_snd_lt_of_fst_lt
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P)
+    {x y : ℕ × ℕ} (hx : x ∈ fullStaircaseReflectedPairs n P)
+    (hy : y ∈ fullStaircaseReflectedPairs n P) (hrow : x.1 < y.1) :
+    x.2 < y.2 := by
+  rcases mem_fullStaircaseReflectedPairs.mp hx with ⟨a, ha, rfl⟩
+  rcases mem_fullStaircaseReflectedPairs.mp hy with ⟨b, hb, rfl⟩
+  exact hP.full_reflectedColumn_lt_of_row_lt ha hb hrow
+
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
     (i, c) ∈ (truncatedStaircase n (i + 1)).cells ↔ c < n - i := by
