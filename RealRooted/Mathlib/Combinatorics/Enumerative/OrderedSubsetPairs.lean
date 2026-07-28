@@ -576,6 +576,37 @@ theorem card_badPrefixSubsetPairs (n k : ℕ) (hk : 0 < k) :
       firstPrefixViolation_tailExchangeAt_firstPrefixViolation,
       tailExchangeAt_tailExchangeAt]
 
+/-- Ordered and bad prefix-dominance pairs partition the full product of two
+`k`-subsets of `range n`. -/
+theorem card_orderedKSubsetPairs_add_card_badPrefixSubsetPairs (n k : ℕ) :
+    (orderedKSubsetPairs n k).card + (badPrefixSubsetPairs n k).card =
+      Nat.choose n k * Nat.choose n k := by
+  classical
+  let s := ((range n).powersetCard k).product ((range n).powersetCard k)
+  let good := s.filter fun AB : Finset ℕ × Finset ℕ => prefixDominates AB.1 AB.2
+  have hgood : orderedKSubsetPairs n k = good := by
+    ext AB
+    rcases AB with ⟨A, B⟩
+    rw [mem_orderedKSubsetPairs_iff_prefixDominates]
+    simp [good, s, and_assoc]
+  have hbad : badPrefixSubsetPairs n k =
+      s.filter fun AB : Finset ℕ × Finset ℕ => ¬ prefixDominates AB.1 AB.2 := by
+    simp [badPrefixSubsetPairs, s]
+  have hpart := card_filter_add_card_filter_not (s := s)
+    (p := fun AB : Finset ℕ × Finset ℕ => prefixDominates AB.1 AB.2)
+  rw [hgood, hbad, hpart]
+  simp [s, card_product, card_powersetCard]
+
+/-- The ordered-pair count is the adjacent binomial determinant obtained by
+subtracting the reflected bad-pair count from the full product. -/
+theorem card_orderedKSubsetPairs_eq_choose_sq_sub {n k : ℕ} (hk : 0 < k) :
+    (orderedKSubsetPairs n k).card =
+      Nat.choose n k * Nat.choose n k -
+        Nat.choose n (k - 1) * Nat.choose n (k + 1) := by
+  have hsum := card_orderedKSubsetPairs_add_card_badPrefixSubsetPairs n k
+  rw [card_badPrefixSubsetPairs n k hk] at hsum
+  exact Nat.eq_sub_of_add_eq hsum
+
 /-- There is only the empty ordered pair when `k = 0`. -/
 @[simp] theorem orderedKSubsetPairs_zero (n : ℕ) :
     orderedKSubsetPairs n 0 = {((∅ : Finset ℕ), (∅ : Finset ℕ))} := by
