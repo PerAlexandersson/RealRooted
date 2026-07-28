@@ -1,5 +1,6 @@
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosetsNarayana
+import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 
 open Polynomial
 

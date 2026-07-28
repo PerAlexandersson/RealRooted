@@ -43,6 +43,7 @@ import RealRooted.CombinatorialExamples.StirlingPermutations
 import RealRooted.CombinatorialExamples.SturmDerangementsExc
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
+import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
