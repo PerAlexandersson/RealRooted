@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.Narayana
+import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.NarayanaTransformation
 
@@ -697,6 +698,42 @@ theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
           Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih_succ
       rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
         ih', ih_succ']
+
+/-! ## Full truncated-staircase Narayana coefficients -/
+
+/-- Size-`k` non-nesting placements in the full truncated staircase are counted
+by the `m = 1` Narayana coefficient. -/
+theorem FiniteSkewBoard.card_fullStaircasePlacements_eq_narayanaTransformCoeff_one
+    (n k : ℕ) :
+    (((FiniteSkewBoard.truncatedStaircase n n).nonNestingPlacements.filter
+        fun P => P.card = k).card : ℝ) =
+      narayanaTransformCoeff 1 n k := by
+  rw [FiniteSkewBoard.card_fullStaircasePlacements_eq_orderedKSubsetPairs]
+  exact Finset.card_orderedKSubsetPairs_eq_narayanaTransformCoeff_one n k
+
+/-- The full truncated-staircase rook-polynomial coefficients are the
+`m = 1` Narayana coefficients. -/
+theorem FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_narayanaTransformCoeff_one
+    (n k : ℕ) :
+    (FiniteSkewBoard.truncatedStaircaseRookPolynomial n n).coeff k =
+      narayanaTransformCoeff 1 n k := by
+  rw [FiniteSkewBoard.truncatedStaircaseRookPolynomial,
+    FiniteSkewBoard.rookPolynomial_coeff]
+  exact FiniteSkewBoard.card_fullStaircasePlacements_eq_narayanaTransformCoeff_one n k
+
+/-- The full truncated-staircase rook polynomial and the coefficient-side
+modified Narayana polynomial have the same coefficients. -/
+theorem FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaCoeff
+    (n k : ℕ) :
+    (FiniteSkewBoard.truncatedStaircaseRookPolynomial n n).coeff k =
+      (modifiedNarayanaCoeffPolynomial n).coeff k := by
+  rw [FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_narayanaTransformCoeff_one,
+    modifiedNarayanaCoeffPolynomial]
+  by_cases hk : k ≤ n
+  · rw [coeff_narayanaPolynomial_of_le (m := 1) hk]
+  · have hklt : n < k := Nat.lt_of_not_ge hk
+    rw [coeff_narayanaPolynomial_of_lt (m := 1) hklt,
+      narayanaTransformCoeff_eq_zero_of_lt (m := 1) hklt]
 
 /-! ## Jacobi-polynomial transport for Braun--Jal Lemma 3.1 -/
 
