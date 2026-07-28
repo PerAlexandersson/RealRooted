@@ -318,6 +318,67 @@ theorem OppositeLeadingSigns.pos_neg_or_neg_pos {p q : ℝ[X]}
       linarith
     exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
 
+/-- For two splitting polynomials with opposite leading signs, the signed
+difference of the numbers of roots strictly above a common non-root is odd
+exactly when the two values at the point have the same sign. -/
+theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
+    {p q : ℝ[X]} (h : OppositeLeadingSigns p q)
+    (hp : p.Splits) (hq : q.Splits)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Odd (((p.roots.filter (x < ·)).card : ℤ) -
+        (q.roots.filter (x < ·)).card) ↔
+      (0 < p.eval x ↔ 0 < q.eval x)) := by
+  let d : ℤ :=
+    ((p.roots.filter (x < ·)).card : ℤ) -
+      (q.roots.filter (x < ·)).card
+  have hp_eval_ne : p.eval x ≠ 0 := by
+    intro hzero
+    exact hxp (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hq_eval_ne : q.eval x ≠ 0 := by
+    intro hzero
+    exact hxq (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hneg_pos_iff_not_pos {y : ℝ} (hy : y ≠ 0) : 0 < -y ↔ ¬ 0 < y := by
+    constructor
+    · intro hneg hy_pos
+      linarith
+    · intro hy_not_pos
+      have hy_nonpos : y ≤ 0 := le_of_not_gt hy_not_pos
+      have hy_neg : y < 0 := lt_of_le_of_ne hy_nonpos hy
+      linarith
+  rcases h.pos_neg_or_neg_pos with ⟨hp_pos, hnegq_pos⟩ | ⟨hnegp_pos, hq_pos⟩
+  · have hxnegq : ¬ (-q).IsRoot x := by
+      simpa using hxq
+    have hparity :
+        Even d ↔ ¬ (0 < p.eval x ↔ 0 < q.eval x) := by
+      have hpos :=
+        hp.even_intCard_roots_gt_sub_iff_eval_pos_iff
+          (q := -q) hq.neg hp_pos hnegq_pos hxp hxnegq
+      rw [Polynomial.roots_neg] at hpos
+      change Even d ↔ (0 < p.eval x ↔ 0 < (-q).eval x) at hpos
+      rw [hpos]
+      have hnegq_eval : 0 < (-q).eval x ↔ ¬ 0 < q.eval x := by
+        simpa using hneg_pos_iff_not_pos hq_eval_ne
+      rw [hnegq_eval]
+      tauto
+    rw [Int.not_even_iff_odd.symm, hparity]
+    tauto
+  · have hxnegp : ¬ (-p).IsRoot x := by
+      simpa using hxp
+    have hparity :
+        Even d ↔ ¬ (0 < p.eval x ↔ 0 < q.eval x) := by
+      have hpos :=
+        hp.neg.even_intCard_roots_gt_sub_iff_eval_pos_iff
+          (q := q) hq hnegp_pos hq_pos hxnegp hxq
+      rw [Polynomial.roots_neg] at hpos
+      change Even d ↔ (0 < (-p).eval x ↔ 0 < q.eval x) at hpos
+      rw [hpos]
+      have hnegp_eval : 0 < (-p).eval x ↔ ¬ 0 < p.eval x := by
+        simpa using hneg_pos_iff_not_pos hp_eval_ne
+      rw [hnegp_eval]
+      tauto
+    rw [Int.not_even_iff_odd.symm, hparity]
+    tauto
+
 theorem natDegree_deleteRootFactor (p : ℝ[X]) (r : ℝ) :
     (deleteRootFactor p r).natDegree = p.natDegree - 1 := by
   rw [deleteRootFactor,
