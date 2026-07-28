@@ -2112,33 +2112,21 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
       (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
       (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
     theorem21RootCountBranches f g := by
-  by_cases hsr : s ≤ r
+  rcases le_or_gt s r with hsr | hrs
   · exact theorem21RootCountBranches_of_left <|
       LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
         hf_ne hg_ne hr hs hsr hcount
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
           hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
-  · have hrs : r < s := lt_of_not_ge hsr
-    have hdisj_symm : ∀ c : ℝ, g.IsRoot c → ¬ f.IsRoot c :=
-      fun c hgc hfc => hdisj c hfc hgc
-    have hcross_symm : ∀ a b : ℝ, a < b →
-        (g.IsRoot a ∨ f.IsRoot a) →
-        (g.IsRoot b ∨ f.IsRoot b) →
-        (∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z ∧ ¬ f.IsRoot z) →
-        (g.IsRoot a ∧ f.IsRoot b) ∨ (f.IsRoot a ∧ g.IsRoot b) := by
-      intro a b hab ha_root hb_root hno
-      simpa [or_comm] using
-        hcross a b hab
-          (by simpa [or_comm] using ha_root)
-          (by simpa [or_comm] using hb_root)
-          (by
-            intro z haz hzb
-            simpa [and_comm] using hno z haz hzb)
-    have hleft : LeftRootCountBranch g f s r :=
+  · have hleft : LeftRootCountBranch g f s r :=
       LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
         hg_ne hf_ne hs hr hrs.le hcount.symm
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
-          hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f hdisj_symm hcross_symm)
+          hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f
+          (fun c hgc hfc => hdisj c hfc hgc)
+          (fun a b hab ha_root hb_root hno =>
+            (hcross a b hab ha_root.symm hb_root.symm
+              (fun z haz hzb => (hno z haz hzb).symm)).symm))
     exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
 
 theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
