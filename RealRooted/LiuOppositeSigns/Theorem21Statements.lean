@@ -236,6 +236,27 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_roots_gt_sub_Io
   exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
     hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
 
+private theorem rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a b μ₀ μ₁ : ℝ}
+    (ha_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot a)
+    (hb_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot b)
+    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree)
+    (hdrop :
+      ((f + C μ₀ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ₀ * g).roots.filter (a < ·)).card) :
+    ((f + C μ₁ * g).roots.filter (b < ·)).card + 2 ≤
+      ((f + C μ₁ * g).roots.filter (a < ·)).card := by
+  have ha_eq :=
+    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+      hfg ha_no hμ₀_pos hμ₀μ₁ hdeg
+  have hb_eq :=
+    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+      hfg hb_no hμ₀_pos hμ₀μ₁ hdeg
+  simpa [← ha_eq, ← hb_eq] using hdrop
+
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
 theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_add_right
@@ -439,6 +460,43 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
   exact crossing_count_drop_of_endpoint_sign hfg hμ_pos hμ_root hμ_eq hμ_der
     hμ_unique hay hyb hab hendpoint hq_not_b
 
+/-- Same-owner `f`/`f` count-drop obstruction for Liu's odd-indexed interval
+argument.  A `not Odd` sample in such an interval gives a unique positive
+crossing parameter whose two-root strict-upper count drop persists to every
+larger positive parameter on which the right-family degree is constant. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_gt_drop_two_le
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ * g).roots.filter (a < ·)).card ∧
+      (∀ ν : ℝ, μ ≤ ν →
+        (∀ τ ∈ Set.Icc μ ν,
+          (f + C τ * g).natDegree = (f + C μ * g).natDegree) →
+        ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
+          ((f + C ν * g).roots.filter (a < ·)).card) := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_gt_drop_two
+      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+  refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop, ?_⟩
+  intro ν hμν hdeg
+  have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
+    fun τ hτ => hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hτ) hfa
+  have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
+    fun τ hτ => hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hτ) hfb
+  exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
+    hfg ha_no hb_no hμ_pos hμν hdeg hdrop
+
 /-- Same-owner `g`/`g` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
 right-family crossing polynomial has strict-upper root count drop at least two
@@ -478,6 +536,43 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
     hno.rightFamily_not_isRoot_of_right_root hgb
   exact crossing_count_drop_of_endpoint_sign hfg hμ_pos hμ_root hμ_eq hμ_der
     hμ_unique hay hyb hab hendpoint hq_not_b
+
+/-- Same-owner `g`/`g` count-drop obstruction for Liu's odd-indexed interval
+argument.  A `not Odd` sample in such an interval gives a unique positive
+crossing parameter whose two-root strict-upper count drop persists to every
+larger positive parameter on which the right-family degree is constant. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two_le
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hga : g.IsRoot a) (hgb : g.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ * g).roots.filter (a < ·)).card ∧
+      (∀ ν : ℝ, μ ≤ ν →
+        (∀ τ ∈ Set.Icc μ ν,
+          (f + C τ * g).natDegree = (f + C μ * g).natDegree) →
+        ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
+          ((f + C ν * g).roots.filter (a < ·)).card) := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two
+      hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
+  refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop, ?_⟩
+  intro ν hμν hdeg
+  have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
+    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
+  have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
+    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hgb
+  exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
+    hfg ha_no hb_no hμ_pos hμν hdeg hdrop
 
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
