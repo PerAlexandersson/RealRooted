@@ -236,51 +236,29 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_roots_gt_sub_Io
   exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
     hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
 
-private theorem rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
+private theorem rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
     {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a b μ₀ μ₁ : ℝ}
     (ha_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot a)
     (hb_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot b)
     (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
     (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
-      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree)
-    (hdrop :
-      ((f + C μ₀ * g).roots.filter (b < ·)).card + 2 ≤
-        ((f + C μ₀ * g).roots.filter (a < ·)).card) :
-    ((f + C μ₁ * g).roots.filter (b < ·)).card + 2 ≤
-      ((f + C μ₁ * g).roots.filter (a < ·)).card := by
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
+    (((f + C μ₀ * g).roots.filter (b < ·)).card + 2 ≤
+      ((f + C μ₀ * g).roots.filter (a < ·)).card) ↔
+    (((f + C μ₁ * g).roots.filter (b < ·)).card + 2 ≤
+      ((f + C μ₁ * g).roots.filter (a < ·)).card) := by
   have ha_eq :=
     rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
       hfg ha_no hμ₀_pos hμ₀μ₁ hdeg
   have hb_eq :=
     rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
       hfg hb_no hμ₀_pos hμ₀μ₁ hdeg
-  simpa [← ha_eq, ← hb_eq] using hdrop
-
-private theorem rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_ge
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {a b μ₀ μ₁ : ℝ}
-    (ha_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot a)
-    (hb_no : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot b)
-    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
-    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
-      (f + C μ * g).natDegree = (f + C μ₁ * g).natDegree)
-    (hdrop :
-      ((f + C μ₁ * g).roots.filter (b < ·)).card + 2 ≤
-        ((f + C μ₁ * g).roots.filter (a < ·)).card) :
-    ((f + C μ₀ * g).roots.filter (b < ·)).card + 2 ≤
-      ((f + C μ₀ * g).roots.filter (a < ·)).card := by
-  have hdeg₀ : ∀ μ ∈ Set.Icc μ₀ μ₁,
-      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree := by
-    intro μ hμ
-    exact (hdeg μ hμ).trans (hdeg μ₀ ⟨le_rfl, hμ₀μ₁⟩).symm
-  have ha_eq :=
-    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
-      hfg ha_no hμ₀_pos hμ₀μ₁ hdeg₀
-  have hb_eq :=
-    rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
-      hfg hb_no hμ₀_pos hμ₀μ₁ hdeg₀
-  simpa [ha_eq, hb_eq] using hdrop
+  constructor
+  · intro hdrop
+    simpa [← ha_eq, ← hb_eq] using hdrop
+  · intro hdrop
+    simpa [ha_eq, hb_eq] using hdrop
 
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
@@ -516,8 +494,8 @@ theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_left_roots_gt_dro
     fun τ hτ => hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hτ) hfa
   have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
     fun τ hτ => hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hτ) hfb
-  exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
-    hfg ha_no hb_no hμ_pos hμν hdeg hdrop
+  exact (rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
+    hfg ha_no hb_no hμ_pos hμν hdeg).mp hdrop
 
 private theorem false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
     {f g q : ℝ[X]} {a b ν : ℝ} (hab : a ≤ b)
@@ -608,8 +586,8 @@ theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_right_roots_gt_dr
     fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
   have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
     fun _ _ => hno.rightFamily_not_isRoot_of_right_root hgb
-  exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
-    hfg ha_no hb_no hμ_pos hμν hdeg hdrop
+  exact (rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
+    hfg ha_no hb_no hμ_pos hμν hdeg).mp hdrop
 
 /-- Endpoint-shaped `f`/`f` contradiction for Liu's odd-indexed interval
 argument.  If the transported right-family count drop reaches a parameter
@@ -716,12 +694,17 @@ theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left
     fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
   have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
     fun _ _ => hno.rightFamily_not_isRoot_of_right_root hgb
+  have hνμ : ν ≤ μ := hν_small μ hμ_pos hμ_root
+  have hdegν : ∀ τ ∈ Set.Icc ν μ,
+      (f + C τ * g).natDegree = (f + C ν * g).natDegree := by
+    intro τ hτ
+    exact (hdeg_small μ hμ_pos hμ_root τ hτ).trans
+      (hdeg_small μ hμ_pos hμ_root ν ⟨le_rfl, hνμ⟩).symm
   have hdropν :
       ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
         ((f + C ν * g).roots.filter (a < ·)).card :=
-    rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_ge hfg
-      ha_no hb_no hν_pos (hν_small μ hμ_pos hμ_root)
-      (hdeg_small μ hμ_pos hμ_root) hdrop
+    (rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
+      hfg ha_no hb_no hν_pos hνμ hdegν).mpr hdrop
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
   have hf_no_Icc : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z :=
     hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no
