@@ -817,7 +817,7 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
     (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
     CrossOwnedNotOddGaps f g := by
-  intro a b x _hab hax hxb ha_root hb_root hgap hnot_odd
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
   exact hsgn.cross_owner_roots_of_not_odd hfg hno hf hg hgap hax hxb
     ha_root hb_root hnot_odd (hνL_pos x) (hνL_large x) (hdegL x)
     (hdegL_inv x) (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)

@@ -986,7 +986,7 @@ theorem roots_deleteRootFactor_eq_pair_of_roots_triple_right
 polynomials whenever the strict-upper root-count difference is not odd at a
 sample point in the gap. -/
 def CrossOwnedNotOddGaps (f g : ℝ[X]) : Prop :=
-  ∀ a b x : ℝ, a < b → a < x → x < b →
+  ∀ a b x : ℝ, a < x → x < b →
     (f.IsRoot a ∨ g.IsRoot a) →
     (f.IsRoot b ∨ g.IsRoot b) →
     (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
@@ -996,8 +996,8 @@ def CrossOwnedNotOddGaps (f g : ℝ[X]) : Prop :=
 
 theorem CrossOwnedNotOddGaps.symm {f g : ℝ[X]} (h : CrossOwnedNotOddGaps f g) :
     CrossOwnedNotOddGaps g f := by
-  intro a b x hab hax hxb ha_root hb_root hgap hnot_odd
-  refine (h a b x hab hax hxb ha_root.symm hb_root.symm
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  refine (h a b x hax hxb ha_root.symm hb_root.symm
     (fun z haz hzb => (hgap z haz hzb).symm) ?_).symm
   intro hodd
   have hneg := hodd.neg
@@ -1271,6 +1271,14 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     dsimp [μ]
     exact card_filter_gt_lt_of_mem_Ioc (f.roots + g.roots)
       (le_of_lt hxb) hc_mem hxc (le_of_lt hcb)
+  have hstep_f : ∀ {k : ℤ}, f.IsRoot c →
+      ((f.roots.filter (b < ·)).card : ℤ) - (g.roots.filter (b < ·)).card = k →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card =
+        k + 1 := by
+    intro k hfc hk
+    exact card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+      hf_ne hg_ne hxc (le_of_lt hcb) (hdisj c hfc) (hsimple_f c hfc)
+      hleast hgap_f hgap_g hk
   refine ⟨c, hxc, hcroot, hleast, ?_⟩
   by_cases hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)
   · obtain ⟨d₀, hbd₀, hd₀root⟩ := hnext
@@ -1280,7 +1288,6 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
       · exact (hs.roots_le d₀ ((Polynomial.mem_roots hg_ne).mpr hdg)).trans hlargest
     have hbr : b < r := hbd₀.trans_le hd₀_le_r
     obtain ⟨d, hbd, hdroot, hdleast, howner_d⟩ := ih b hmeasure hbr hfb hgb
-    have hcd : c < d := hcb.trans hbd
     have hbetween :
         ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
       intro z hcz hzd
@@ -1297,11 +1304,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         · exact (not_lt_of_ge (hdleast z hbz (Or.inr hgz))) hzd
     rcases howner_d with ⟨hdf, hdiff_b⟩ | ⟨hdg, hdiff_b⟩
     · rcases hcroot with hfc | hgc
-      · have hgc_not : ¬ g.IsRoot c := hdisj c hfc
-        have hdiff :=
-          card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
-            hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
-            hleast hgap_f hgap_g hdiff_b
+      · have hdiff := hstep_f hfc hdiff_b
         have hle :
             ((f.roots.filter (x < ·)).card : ℤ) -
                 (g.roots.filter (x < ·)).card ≤ 1 :=
@@ -1318,16 +1321,12 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     · have hnot_odd_b : ¬ Odd (((f.roots.filter (b < ·)).card : ℤ) -
           (g.roots.filter (b < ·)).card) := by
         simp [hdiff_b]
-      have hcross_cd := hcross c d b hcd hcb hbd hcroot hdroot hbetween hnot_odd_b
+      have hcross_cd := hcross c d b hcb hbd hcroot hdroot hbetween hnot_odd_b
       have hfc : f.IsRoot c := by
         rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
         · exact hfc
         · exact False.elim (hdisj d hfd hdg)
-      have hgc_not : ¬ g.IsRoot c := hdisj c hfc
-      have hdiff :=
-        card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
-          hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
-          hleast hgap_f hgap_g hdiff_b
+      have hdiff := hstep_f hfc hdiff_b
       exact Or.inl ⟨hfc, by simpa using hdiff⟩
   · have hno_above :
         ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
@@ -1351,11 +1350,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     have hcr_eq : c = r := le_antisymm hcr hrc
     have hfc : f.IsRoot c := by
       simpa [hcr_eq] using hr.isRoot
-    have hgc_not : ¬ g.IsRoot c := hdisj c hfc
-    have hdiff :=
-      card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
-        hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
-        hleast hgap_f hgap_g hdiff_b
+    have hdiff := hstep_f hfc hdiff_b
     exact Or.inl ⟨hfc, hdiff⟩
 
 theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
@@ -1398,153 +1393,6 @@ theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     linarith
   · have hbounds := hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx
     linarith
-
-/-- A window-difference criterion for the left branch.  It is enough to have
-Liu-compatible original root counts and, at each common non-root below the
-largest root of `f`, a nondegenerate `(x, b]` window where the multiset root
-count of `f` exceeds the multiset root count of `g` by one. -/
-theorem of_rootCountCompatible_of_window_count_sub_eq_one
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ b : ℝ, x < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
-        ((f.roots.filter (fun z => x < z ∧ z ≤ b)).card : ℤ) -
-          (g.roots.filter (fun z => x < z ∧ z ≤ b)).card = 1) :
-    LeftRootCountBranch f g r s := by
-  refine LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_of_nonRoot
-    hf_ne hg_ne hr hs hlargest ?_
-  intro x hfx hgx
-  by_cases hx : x < r
-  · obtain ⟨b, hxb, hfb, hgb, hIoc⟩ := hwindow x hx hfx hgx
-    have hshift :=
-      hcount.rootCountAbove_shift_Ioc_abs_le_one
-        hf_ne hg_ne (le_of_lt hxb) hfb hgb
-    have hshift_one :
-        |(((f.roots.filter (x < ·)).card : ℤ) -
-            (g.roots.filter (x < ·)).card) - 1| ≤ 1 := by
-      simpa only [hIoc] using hshift
-    rw [abs_le] at hshift_one
-    constructor <;> linarith
-  · have hx_ge : r ≤ x := not_lt.mp hx
-    have hf_zero := hr.rootCountAbove_eq_zero_of_le hx_ge
-    have hg_zero := hs.rootCountAbove_eq_zero_of_le (hlargest.trans hx_ge)
-    rw [hf_zero, hg_zero]
-    norm_num
-
-/-- A simple-window criterion for the left branch.  It is enough to have
-Liu-compatible original root counts and, at each common non-root below the
-largest root of `f`, a multiset-counted window `(x, b]` containing exactly one
-root of `f` and no roots of `g`.  This is the `(1, 0)` specialization of
-`of_rootCountCompatible_of_window_count_sub_eq_one`. -/
-theorem of_rootCountCompatible_of_window_one_zero
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ b : ℝ, x < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
-        (f.roots.filter (fun z => x < z ∧ z ≤ b)).card = 1 ∧
-        (g.roots.filter (fun z => x < z ∧ z ≤ b)).card = 0) :
-    LeftRootCountBranch f g r s := by
-  refine LeftRootCountBranch.of_rootCountCompatible_of_window_count_sub_eq_one
-    hf_ne hg_ne hr hs hlargest hcount ?_
-  intro x hx hfx hgx
-  obtain ⟨b, hxb, hfb, hgb, hfIoc, hgIoc⟩ := hwindow x hx hfx hgx
-  refine ⟨b, hxb, hfb, hgb, ?_⟩
-  rw [hfIoc, hgIoc]
-  norm_num
-
-/-- A simple-root window criterion for the left branch.  This is the bridge
-from a root-ownership style certificate to
-`of_rootCountCompatible_of_window_one_zero`: each relevant window contains a
-simple root `c` of `f`, no other roots of `f`, and no roots of `g`, before
-ending at a common non-root threshold `b`. -/
-theorem of_rootCountCompatible_of_simple_window_one_zero
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ c b : ℝ, x < c ∧ c < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
-        f.roots.count c = 1 ∧
-        (∀ z : ℝ, x < z → z ≤ b → z ≠ c → ¬ f.IsRoot z) ∧
-        (∀ z : ℝ, x < z → z ≤ b → ¬ g.IsRoot z)) :
-    LeftRootCountBranch f g r s := by
-  refine LeftRootCountBranch.of_rootCountCompatible_of_window_one_zero
-    hf_ne hg_ne hr hs hlargest hcount ?_
-  intro x hx hfx hgx
-  obtain ⟨c, b, hxc, hcb, hfb, hgb, hc_count, hf_no, hg_no⟩ :=
-    hwindow x hx hfx hgx
-  refine ⟨b, hxc.trans hcb, hfb, hgb, ?_, ?_⟩
-  · exact card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
-      hf_ne hxc (le_of_lt hcb) hc_count hf_no
-  · exact card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt (hxc.trans hcb) hg_no
-
-/-- A unique combined-root window criterion for the left branch.  It is enough
-that each relevant window `(x, b]` has a unique combined root support point
-`c`, that `c` is a simple root of `f`, and that `c` is not a root of `g`.
-The upper endpoint `b` is proved to be a common non-root from uniqueness and
-`c < b`. -/
-theorem of_rootCountCompatible_of_unique_simple_root_window
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ c b : ℝ, x < c ∧ c < b ∧ ¬ g.IsRoot c ∧
-        f.roots.count c = 1 ∧
-        (∀ z : ℝ, x < z → z ≤ b → f.IsRoot z ∨ g.IsRoot z → z = c)) :
-    LeftRootCountBranch f g r s := by
-  refine LeftRootCountBranch.of_rootCountCompatible_of_simple_window_one_zero
-    hf_ne hg_ne hr hs hlargest hcount ?_
-  intro x hx hfx hgx
-  obtain ⟨c, b, hxc, hcb, hgc, hc_count, hunique⟩ := hwindow x hx hfx hgx
-  have hxb : x < b := hxc.trans hcb
-  have hfb : ¬ f.IsRoot b := by
-    intro hroot
-    have hbc : b = c := hunique b hxb le_rfl (Or.inl hroot)
-    exact hcb.ne' hbc
-  have hgb : ¬ g.IsRoot b := by
-    intro hroot
-    have hbc : b = c := hunique b hxb le_rfl (Or.inr hroot)
-    exact hcb.ne' hbc
-  refine ⟨c, b, hxc, hcb, hfb, hgb, hc_count, ?_, ?_⟩
-  · intro z hxz hzb hzc hfz
-    exact hzc (hunique z hxz hzb (Or.inl hfz))
-  · intro z hxz hzb hgz
-    have hzc : z = c := hunique z hxz hzb (Or.inr hgz)
-    exact hgc (hzc ▸ hgz)
-
-/-- A next-combined-root criterion for the left branch.  It is enough that,
-above each relevant threshold, there is a least combined root support point
-`c`, that `c` is a simple root of `f`, and that `c` is not a root of `g`.
-The finite-root gap lemma turns this next-root certificate into the unique
-window certificate used by
-`of_rootCountCompatible_of_unique_simple_root_window`. -/
-theorem of_rootCountCompatible_of_next_simple_root
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hnext : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ c : ℝ, x < c ∧ ¬ g.IsRoot c ∧ f.roots.count c = 1 ∧
-        (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)) :
-    LeftRootCountBranch f g r s := by
-  refine LeftRootCountBranch.of_rootCountCompatible_of_unique_simple_root_window
-    hf_ne hg_ne hr hs hlargest hcount ?_
-  intro x hx hfx hgx
-  obtain ⟨c, hxc, hgc, hc_count, hc_min⟩ := hnext x hx hfx hgx
-  obtain ⟨b, hcb, _hfb, _hgb, hgap_f, hgap_g⟩ :=
-    exists_common_nonRoot_threshold_no_mem_Ioc hf_ne hg_ne c
-  have hgap_root :
-      ∀ {z : ℝ}, f.IsRoot z ∨ g.IsRoot z → z ≤ c ∨ b < z := by
-    intro z hz
-    rcases hz with hfz | hgz
-    · exact hgap_f z ((Polynomial.mem_roots hf_ne).mpr hfz)
-    · exact hgap_g z ((Polynomial.mem_roots hg_ne).mpr hgz)
-  refine ⟨c, b, hxc, hcb, hgc, hc_count, ?_⟩
-  intro z hxz hzb hzroot
-  have hcz : c ≤ z := hc_min z hxz hzroot
-  rcases hgap_root hzroot with hzc | hbz
-  · exact le_antisymm hzc hcz
-  · exact False.elim (not_lt_of_ge hzb hbz)
 
 /-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
 for `(f, g)`.  The extra strict inequality supplies the strict largest-root
@@ -1902,27 +1750,6 @@ theorem of_rootCountAbove_right_sub_left_bounds_of_nonRoot
   have hleft : LeftRootCountBranch g f s r :=
     LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_of_nonRoot
       hg_ne hf_ne hs hr hlargest.le fun x hgx hfx => hbound x hfx hgx
-  exact hleft.toRightBranch_symm_of_lt hlargest
-
-/-- A simple-window criterion for the right branch, obtained from the left
-criterion by swapping the polynomial pair.  It is enough to have
-Liu-compatible original root counts and, at each common non-root below the
-largest root of `g`, a multiset-counted window `(x, b]` containing exactly one
-root of `g` and no roots of `f`. -/
-theorem of_rootCountCompatible_of_window_g_one_f_zero
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
-    (hcount : RootCountCompatible f g)
-    (hwindow : ∀ x : ℝ, x < s → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ∃ b : ℝ, x < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
-        (g.roots.filter (fun z => x < z ∧ z ≤ b)).card = 1 ∧
-        (f.roots.filter (fun z => x < z ∧ z ≤ b)).card = 0) :
-    RightRootCountBranch f g r s := by
-  have hleft : LeftRootCountBranch g f s r :=
-    LeftRootCountBranch.of_rootCountCompatible_of_window_one_zero
-      hg_ne hf_ne hs hr hlargest.le hcount.symm fun x hx hgx hfx => by
-        obtain ⟨b, hxb, hfb, hgb, hgIoc, hfIoc⟩ := hwindow x hx hfx hgx
-        exact ⟨b, hxb, hgb, hfb, hgIoc, hfIoc⟩
   exact hleft.toRightBranch_symm_of_lt hlargest
 
 theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
