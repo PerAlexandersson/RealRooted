@@ -1188,6 +1188,41 @@ theorem of_rootCountAbove_left_sub_right_bounds_of_nonRoot
     rw [hdelete_zero, hg_zero]
     norm_num
 
+/-- A simple-window criterion for the left branch.  It is enough to have
+Liu-compatible original root counts and, at each common non-root below the
+largest root of `f`, a multiset-counted window `(x, b]` containing exactly one
+root of `f` and no roots of `g`.  Repeated roots in the window are counted with
+multiplicity, so this criterion is intentionally the simple-window form. -/
+theorem of_rootCountCompatible_of_window_one_zero
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ b : ℝ, x < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
+        (f.roots.filter (fun z => x < z ∧ z ≤ b)).card = 1 ∧
+        (g.roots.filter (fun z => x < z ∧ z ≤ b)).card = 0) :
+    LeftRootCountBranch f g r s := by
+  refine LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_of_nonRoot
+    hf_ne hg_ne hr hs hlargest ?_
+  intro x hfx hgx
+  by_cases hx : x < r
+  · obtain ⟨b, hxb, hfb, hgb, hfIoc, hgIoc⟩ := hwindow x hx hfx hgx
+    have hshift :=
+      hcount.rootCountAbove_shift_Ioc_abs_le_one
+        hf_ne hg_ne (le_of_lt hxb) hfb hgb
+    have hshift_one :
+        |(((f.roots.filter (x < ·)).card : ℤ) -
+            (g.roots.filter (x < ·)).card) - 1| ≤ 1 := by
+      simpa only [hfIoc, hgIoc, Nat.cast_one, Nat.cast_zero, sub_zero]
+        using hshift
+    rw [abs_le] at hshift_one
+    constructor <;> linarith
+  · have hx_ge : r ≤ x := not_lt.mp hx
+    have hf_zero := hr.rootCountAbove_eq_zero_of_le hx_ge
+    have hg_zero := hs.rootCountAbove_eq_zero_of_le (hlargest.trans hx_ge)
+    rw [hf_zero, hg_zero]
+    norm_num
+
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
