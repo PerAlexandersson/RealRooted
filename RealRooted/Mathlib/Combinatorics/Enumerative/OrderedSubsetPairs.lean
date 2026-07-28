@@ -119,6 +119,98 @@ theorem not_prefixDominates_iff_exists_card_filter_lt {A B : Finset ℕ} :
   push Not
   rfl
 
+/-- Exchange the tails of two finite sets of natural numbers after the threshold `i`. -/
+def tailExchangeAt (i : ℕ) (A B : Finset ℕ) : Finset ℕ × Finset ℕ :=
+  (A.filter (fun x => x ≤ i) ∪ B.filter (fun x => i < x),
+    B.filter (fun x => x ≤ i) ∪ A.filter (fun x => i < x))
+
+@[simp] theorem mem_tailExchangeAt_fst {i x : ℕ} {A B : Finset ℕ} :
+    x ∈ (tailExchangeAt i A B).1 ↔ (x ∈ A ∧ x ≤ i) ∨ (x ∈ B ∧ i < x) := by
+  simp [tailExchangeAt]
+
+@[simp] theorem mem_tailExchangeAt_snd {i x : ℕ} {A B : Finset ℕ} :
+    x ∈ (tailExchangeAt i A B).2 ↔ (x ∈ B ∧ x ≤ i) ∨ (x ∈ A ∧ i < x) := by
+  simp [tailExchangeAt]
+
+theorem tailExchangeAt_fst_subset_range {n i : ℕ} {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hB : B ⊆ range n) :
+    (tailExchangeAt i A B).1 ⊆ range n := by
+  intro x hx
+  rw [mem_tailExchangeAt_fst] at hx
+  exact hx.elim (fun h => hA h.1) (fun h => hB h.1)
+
+theorem tailExchangeAt_snd_subset_range {n i : ℕ} {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hB : B ⊆ range n) :
+    (tailExchangeAt i A B).2 ⊆ range n := by
+  intro x hx
+  rw [mem_tailExchangeAt_snd] at hx
+  exact hx.elim (fun h => hB h.1) (fun h => hA h.1)
+
+private theorem disjoint_filter_le_filter_gt (i : ℕ) (A B : Finset ℕ) :
+    Disjoint (A.filter fun x => x ≤ i) (B.filter fun x => i < x) := by
+  rw [disjoint_left]
+  intro x hxA hxB
+  exact (not_lt_of_ge (mem_filter.mp hxA).2) (mem_filter.mp hxB).2
+
+theorem card_tailExchangeAt_fst (i : ℕ) (A B : Finset ℕ) :
+    (tailExchangeAt i A B).1.card =
+      (A.filter fun x => x ≤ i).card + (B.filter fun x => i < x).card := by
+  rw [tailExchangeAt, card_union_eq_card_add_card]
+  exact disjoint_filter_le_filter_gt i A B
+
+theorem card_tailExchangeAt_snd (i : ℕ) (A B : Finset ℕ) :
+    (tailExchangeAt i A B).2.card =
+      (B.filter fun x => x ≤ i).card + (A.filter fun x => i < x).card := by
+  rw [tailExchangeAt, card_union_eq_card_add_card]
+  exact disjoint_filter_le_filter_gt i B A
+
+private theorem card_filter_gt_eq_card_sub_card_filter_le (i : ℕ) (A : Finset ℕ) :
+    (A.filter fun x => i < x).card = A.card - (A.filter fun x => x ≤ i).card := by
+  have h := card_filter_add_card_filter_not (s := A) (p := fun x => x ≤ i)
+  have hnot : A.filter (fun x => ¬ x ≤ i) = A.filter fun x => i < x := by
+    ext x
+    simp
+  rw [hnot] at h
+  rw [Nat.add_comm] at h
+  exact Nat.eq_sub_of_add_eq h
+
+/-- If the `B` prefix at `i` exceeds the `A` prefix by one, the first exchanged
+set has one fewer element than `B`. -/
+theorem card_tailExchangeAt_fst_of_prefix_succ {i k : ℕ} {A B : Finset ℕ}
+    (hBcard : B.card = k)
+    (hprefix : (B.filter fun x => x ≤ i).card = (A.filter fun x => x ≤ i).card + 1) :
+    (tailExchangeAt i A B).1.card = k - 1 := by
+  rw [card_tailExchangeAt_fst, card_filter_gt_eq_card_sub_card_filter_le, hBcard, hprefix]
+  have hle : (A.filter fun x => x ≤ i).card + 1 ≤ k := by
+    rw [← hprefix, ← hBcard]
+    exact card_filter_le _ _
+  lia
+
+/-- If the `B` prefix at `i` exceeds the `A` prefix by one, the second exchanged
+set has one more element than `A`. -/
+theorem card_tailExchangeAt_snd_of_prefix_succ {i k : ℕ} {A B : Finset ℕ}
+    (hAcard : A.card = k)
+    (hprefix : (B.filter fun x => x ≤ i).card = (A.filter fun x => x ≤ i).card + 1) :
+    (tailExchangeAt i A B).2.card = k + 1 := by
+  rw [card_tailExchangeAt_snd, card_filter_gt_eq_card_sub_card_filter_le, hAcard, hprefix]
+  have hle : (A.filter fun x => x ≤ i).card ≤ k := by
+    rw [← hAcard]
+    exact card_filter_le _ _
+  lia
+
+/-- Exchanging tails at a fixed threshold is an involution. -/
+theorem tailExchangeAt_tailExchangeAt (i : ℕ) (A B : Finset ℕ) :
+    tailExchangeAt i (tailExchangeAt i A B).1 (tailExchangeAt i A B).2 = (A, B) := by
+  ext x <;> by_cases hx : x ≤ i
+  · have hxnot : ¬ i < x := not_lt_of_ge hx
+    simp [tailExchangeAt, hx, hxnot]
+  · have hxgt : i < x := Nat.lt_of_not_ge hx
+    simp [tailExchangeAt, hx, hxgt]
+  · have hxnot : ¬ i < x := not_lt_of_ge hx
+    simp [tailExchangeAt, hx, hxnot]
+  · have hxgt : i < x := Nat.lt_of_not_ge hx
+    simp [tailExchangeAt, hx, hxgt]
+
 /-- Counting entries of a sorted finset list below a threshold is the same as
 filtering the finset by that threshold. -/
 theorem countP_sort_eq_card_filter (A : Finset ℕ) (i : ℕ) :
