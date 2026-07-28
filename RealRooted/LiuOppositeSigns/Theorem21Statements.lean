@@ -351,6 +351,47 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
     hq_ne hμ_root hay hyb heven
   exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩
 
+/-- Same-owner `f`/`f` local count-drop package for Liu's odd-indexed
+interval argument.  Under the endpoint-shaped hypotheses, the unique positive
+right-family crossing polynomial has strict-upper root count drop at least two
+from `a` to `b`. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_gt_drop_two
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ * g).roots.filter (a < ·)).card := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_two_roots
+      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+  have hq_ne : (f + C μ * g) ≠ 0 :=
+    (hfg.isRealRooted_add_right hμ_pos).1
+  have hgb : ¬ g.IsRoot b := hno b hfb
+  have hfb_eval : f.eval b = 0 := by
+    simpa [Polynomial.IsRoot.def] using hfb
+  have hq_eval_b_ne : (f + C μ * g).eval b ≠ 0 := by
+    have hg_eval_ne : g.eval b ≠ 0 :=
+      (Polynomial.not_isRoot_iff_eval_ne_zero g b).mp hgb
+    have hμ_ne : μ ≠ 0 := ne_of_gt hμ_pos
+    simpa [eval_add, eval_mul, eval_C, hfb_eval] using
+      mul_ne_zero hμ_ne hg_eval_ne
+  have hq_not_b : ¬ (f + C μ * g).IsRoot b :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero (f + C μ * g) b).mpr hq_eval_b_ne
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hdrop := card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
+    hq_ne hab hq_not_b htwo
+  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}

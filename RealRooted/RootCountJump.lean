@@ -148,6 +148,35 @@ theorem card_roots_filter_Ioo_eq_of_card_filter_gt_eq
     (fun hb_mem => hfb ((mem_roots hf).mp hb_mem))
     (fun hb_mem => hgb ((mem_roots hg).mp hb_mem)) ha hb
 
+/-- If an open interval contains at least two elements of a multiset, then the
+strict-upper count drops by at least two across the interval, provided the
+right endpoint is absent. -/
+theorem card_filter_gt_add_two_le_of_two_le_card_filter_Ioo
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b)
+    (hb : b ∉ s)
+    (htwo : 2 ≤ (s.filter (fun r => a < r ∧ r < b)).card) :
+    (s.filter (b < ·)).card + 2 ≤ (s.filter (a < ·)).card := by
+  have hpart :=
+    card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem s hab hb
+  calc
+    (s.filter (b < ·)).card + 2
+        ≤ (s.filter (b < ·)).card +
+            (s.filter (fun r => a < r ∧ r < b)).card :=
+          Nat.add_le_add_left htwo _
+    _ = (s.filter (fun r => a < r ∧ r < b)).card +
+          (s.filter (b < ·)).card := Nat.add_comm _ _
+    _ = (s.filter (a < ·)).card := hpart
+
+/-- Polynomial root-count form of
+`card_filter_gt_add_two_le_of_two_le_card_filter_Ioo`. -/
+theorem card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
+    {p : ℝ[X]} (hp_ne : p ≠ 0) {a b : ℝ} (hab : a ≤ b)
+    (hb : ¬ p.IsRoot b)
+    (htwo : 2 ≤ (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    (p.roots.filter (b < ·)).card + 2 ≤ (p.roots.filter (a < ·)).card :=
+  card_filter_gt_add_two_le_of_two_le_card_filter_Ioo p.roots hab
+    (fun hb_mem => hb ((Polynomial.mem_roots hp_ne).mp hb_mem)) htwo
+
 /-- A nonzero splitting polynomial with same-sign endpoint values has an even
 number of roots in the open interval between those endpoints. -/
 theorem even_card_roots_filter_Ioo_of_eval_mul_pos
