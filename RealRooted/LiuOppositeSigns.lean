@@ -2119,29 +2119,21 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
           hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
   · have hrs : r < s := lt_of_not_ge hsr
-    have hdisj_symm : ∀ c : ℝ, g.IsRoot c → ¬ f.IsRoot c := by
-      intro c hgc hfc
-      exact hdisj c hfc hgc
+    have hdisj_symm : ∀ c : ℝ, g.IsRoot c → ¬ f.IsRoot c :=
+      fun c hgc hfc => hdisj c hfc hgc
     have hcross_symm : ∀ a b : ℝ, a < b →
         (g.IsRoot a ∨ f.IsRoot a) →
         (g.IsRoot b ∨ f.IsRoot b) →
         (∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z ∧ ¬ f.IsRoot z) →
         (g.IsRoot a ∧ f.IsRoot b) ∨ (f.IsRoot a ∧ g.IsRoot b) := by
       intro a b hab ha_root hb_root hno
-      have ha_root' : f.IsRoot a ∨ g.IsRoot a := by
-        rcases ha_root with hga | hfa
-        · exact Or.inr hga
-        · exact Or.inl hfa
-      have hb_root' : f.IsRoot b ∨ g.IsRoot b := by
-        rcases hb_root with hgb | hfb
-        · exact Or.inr hgb
-        · exact Or.inl hfb
-      have hno' : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
-        intro z haz hzb
-        exact ⟨(hno z haz hzb).2, (hno z haz hzb).1⟩
-      rcases hcross a b hab ha_root' hb_root' hno' with hfg | hgf
-      · exact Or.inr hfg
-      · exact Or.inl hgf
+      simpa [or_comm] using
+        hcross a b hab
+          (by simpa [or_comm] using ha_root)
+          (by simpa [or_comm] using hb_root)
+          (by
+            intro z haz hzb
+            simpa [and_comm] using hno z haz hzb)
     have hleft : LeftRootCountBranch g f s r :=
       LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
         hg_ne hf_ne hs hr hrs.le hcount.symm
