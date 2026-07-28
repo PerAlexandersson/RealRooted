@@ -663,30 +663,29 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large ha_eq hb_eq
 
-/-- Analytic count constancy on the reciprocal interval supplies the endpoint
-count equalities used by the `f`/`f` same-owner contradiction. -/
-theorem left_inv_endpoint_count_eq_of_left_roots
-    {f g : ℝ[X]} (hno : NoCommonRoots f g) {a b ν : ℝ}
-    (hν_pos : 0 < ν) (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hdeg : ∀ η ∈ Set.Icc (0 : ℝ) ν⁻¹,
-      (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
-    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) ν⁻¹, (g + C η * f).Splits) :
-    ((g + C ν⁻¹ * f).roots.filter (a < ·)).card =
-      (g.roots.filter (a < ·)).card ∧
-    ((g + C ν⁻¹ * f).roots.filter (b < ·)).card =
-      (g.roots.filter (b < ·)).card := by
-  have hν_inv_pos : 0 < ν⁻¹ := inv_pos.mpr hν_pos
-  have count_eq (z : ℝ) (hfz : f.IsRoot z) :
-      ((g + C ν⁻¹ * f).roots.filter (z < ·)).card =
-        (g.roots.filter (z < ·)).card := by
-    have hne : ∀ η ∈ Set.Icc (0 : ℝ) ν⁻¹, ¬ (g + C η * f).IsRoot z :=
-      fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfz
+/-- Analytic count constancy on a positive right-family interval supplies the
+endpoint count equalities at roots of the right polynomial. -/
+theorem rightFamily_endpoint_count_eq_of_right_roots
+    {f g : ℝ[X]} (hno : NoCommonRoots f g) {a b μ : ℝ}
+    (hμ_pos : 0 < μ) (hga : g.IsRoot a) (hgb : g.IsRoot b)
+    (hdeg : ∀ η ∈ Set.Icc (0 : ℝ) μ,
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
+    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits) :
+    ((f + C μ * g).roots.filter (a < ·)).card =
+      (f.roots.filter (a < ·)).card ∧
+    ((f + C μ * g).roots.filter (b < ·)).card =
+      (f.roots.filter (b < ·)).card := by
+  have count_eq (z : ℝ) (hgz : g.IsRoot z) :
+      ((f + C μ * g).roots.filter (z < ·)).card =
+        (f.roots.filter (z < ·)).card := by
+    have hne : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot z :=
+      fun η _ => hno.rightFamily_not_isRoot_of_right_root hgz
     have hcount := rightFamily_card_roots_gt_eq_of_local_lower_counts
-      (f := g) (g := f) (μ₀ := 0) (μ₁ := ν⁻¹) (x := z)
-      (le_of_lt hν_inv_pos) hdeg hsplit hne
+      (f := f) (g := g) (μ₀ := 0) (μ₁ := μ) (x := z)
+      (le_of_lt hμ_pos) hdeg hsplit hne
       (fun η hη ρ hρ => positiveParameter_local_lower_count hsplit hdeg hη hρ)
     simpa using hcount.symm
-  exact ⟨count_eq a hfa, count_eq b hfb⟩
+  exact ⟨count_eq a hga, count_eq b hgb⟩
 
 /-- Endpoint-shaped `g`/`g` contradiction using a small positive right-family
 parameter.  If the transported count drop reaches a small parameter whose
@@ -742,9 +741,8 @@ endpoints in the combined root set and the strict-upper root-count difference
 is not odd at a sample point, then the endpoints are cross-owned: one belongs
 to `f` and the other to `g`.
 
-The reciprocal-interval hypotheses discharge the `f`/`f` same-owner case; the
-`g`/`g` case still keeps the endpoint-count hypotheses explicit.  The
-same-owner cases are discharged by
+The analytic interval hypotheses discharge the endpoint count equalities needed
+by the same-owner cases, which are then handled by
 `OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right` and
 `OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left`. -/
 theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
@@ -771,16 +769,16 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
       ∀ τ ∈ Set.Icc νR μ,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (ha_eq : ((f + C νR * g).roots.filter (a < ·)).card =
-      (f.roots.filter (a < ·)).card)
-    (hb_eq : ((f + C νR * g).roots.filter (b < ·)).card =
-      (f.roots.filter (b < ·)).card) :
+    (hdegR_zero : ∀ η ∈ Set.Icc (0 : ℝ) νR,
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
+    (hsplitR : ∀ η ∈ Set.Icc (0 : ℝ) νR, (f + C η * g).Splits) :
     (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
   rcases ha_root with hfa | hga
   · rcases hb_root with hfb | hgb
     · have hleft_counts :=
-        left_inv_endpoint_count_eq_of_left_roots
-          hno hνL_pos hfa hfb hdegL_inv hsplitL_inv
+        rightFamily_endpoint_count_eq_of_right_roots
+          (f := g) (g := f) hno.symm (inv_pos.mpr hνL_pos)
+          hfa hfb hdegL_inv hsplitL_inv
       exact False.elim <|
         hsgn.false_of_left_roots_add_left_inv_count_eq_right
           hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
@@ -788,10 +786,13 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     · exact Or.inl ⟨hfa, hgb⟩
   · rcases hb_root with hfb | hgb
     · exact Or.inr ⟨hga, hfb⟩
-    · exact False.elim <|
+    · have hright_counts :=
+        rightFamily_endpoint_count_eq_of_right_roots
+          hno hνR_pos hga hgb hdegR_zero hsplitR
+      exact False.elim <|
         hsgn.false_of_right_roots_add_right_small_count_eq_left
           hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
-          hνR_pos hνR_small hdegR ha_eq hb_eq
+          hνR_pos hνR_small hdegR hright_counts.1 hright_counts.2
 
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
