@@ -1,6 +1,7 @@
 import Mathlib.Tactic
 import RealRooted.LiebSokal
 import RealRooted.LiuWangRecursion
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
 import RealRooted.RectangularConvolution
@@ -1132,6 +1133,10 @@ theorem narayanaTransformCoeff_nonneg (m n k : ℕ) :
   unfold narayanaTransformCoeff
   positivity
 
+theorem narayanaTransformCoeff_eq_zero_of_lt {m n k : ℕ} (h : n < k) :
+    narayanaTransformCoeff m n k = 0 := by
+  simp [narayanaTransformCoeff, Nat.choose_eq_zero_of_lt h]
+
 @[simp] theorem narayanaTransformCoeff_zero_right (m n : ℕ) :
     narayanaTransformCoeff m n 0 = 1 := by
   simp [narayanaTransformCoeff]
@@ -1145,6 +1150,30 @@ theorem narayanaTransformCoeff_nonneg (m n k : ℕ) :
       | zero => contradiction
       | succ k => simp
     simp [hk, narayanaTransformCoeff, hchoose]
+
+/-- The `m = 1` Narayana coefficient is the adjacent binomial determinant
+appearing in the reflection-principle count. -/
+theorem choose_sq_sub_choose_pred_mul_choose_succ_eq_narayanaTransformCoeff_one
+    {n k : ℕ} (hkpos : 0 < k) (hkn : k ≤ n) :
+    (Nat.choose n k : ℝ) ^ 2 -
+        (Nat.choose n (k - 1) : ℝ) * (Nat.choose n (k + 1) : ℝ) =
+      narayanaTransformCoeff 1 n k := by
+  rw [Nat.cast_choose_sq_sub_choose_pred_mul_choose_succ_eq hkpos hkn]
+  unfold narayanaTransformCoeff
+  rw [show Nat.choose (1 + k) k = k + 1 by
+    simp [add_comm, Nat.choose_succ_self_right]]
+  norm_num [Nat.cast_add]
+
+/-- The same adjacent determinant vanishes outside the subset range. -/
+theorem choose_sq_sub_choose_pred_mul_choose_succ_eq_narayanaTransformCoeff_one_of_lt
+    {n k : ℕ} (h : n < k) :
+    (Nat.choose n k : ℝ) ^ 2 -
+        (Nat.choose n (k - 1) : ℝ) * (Nat.choose n (k + 1) : ℝ) =
+      narayanaTransformCoeff 1 n k := by
+  have hchoose : Nat.choose n k = 0 := Nat.choose_eq_zero_of_lt h
+  have hchoose_succ : Nat.choose n (k + 1) = 0 :=
+    Nat.choose_eq_zero_of_lt (by lia)
+  simp [narayanaTransformCoeff, hchoose, hchoose_succ]
 
 /-- Generalized Narayana polynomial `N_{n,m}` from Mao--Wang, Eq. (1.2). -/
 def narayanaPolynomial (m n : ℕ) : ℝ[X] :=

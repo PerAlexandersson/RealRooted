@@ -31,6 +31,65 @@ theorem cast_add_one_mul_choose_eq {R : Type*} [CommSemiring R] (n k : ℕ) :
     mul_comm] using
     congrArg (fun m : ℕ => (m : R)) (Nat.add_one_mul_choose_eq n k)
 
+/-- Casted adjacent binomial determinant identity. -/
+theorem cast_choose_sq_sub_choose_pred_mul_choose_succ_eq
+    {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R] [CharZero R]
+    {n k : ℕ} (hkpos : 0 < k) (hkn : k ≤ n) :
+    (Nat.choose n k : R) ^ 2 -
+        (Nat.choose n (k - 1) : R) * (Nat.choose n (k + 1) : R) =
+      (Nat.choose n k : R) * (Nat.choose (n + 1) k : R) / (k + 1 : R) := by
+  have hk_pred_succ : k - 1 + 1 = k := Nat.sub_add_cancel (Nat.succ_le_of_lt hkpos)
+  have hk_pred_succ_cast : ((k - 1 : ℕ) : R) + 1 = (k : R) := by
+    exact_mod_cast hk_pred_succ
+  have hden_prev_nat : n - (k - 1) = n + 1 - k := by lia
+  have hden_prev_pos : 0 < n - (k - 1) := by lia
+  have hden_succ_pos : 0 < n + 1 - k := by lia
+  have hk_succ_ne : (k + 1 : R) ≠ 0 := by positivity
+  have hden_prev_ne : ((n - (k - 1) : ℕ) : R) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hden_prev_pos)
+  have hden_succ_ne : ((n + 1 - k : ℕ) : R) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hden_succ_pos)
+  have hD_pos : 0 < (n : R) + 1 - (k : R) := by
+    have hknR : (k : R) ≤ (n : R) := by exact_mod_cast hkn
+    linarith
+  have hD_ne : (n : R) + 1 - (k : R) ≠ 0 := by
+    intro h
+    linarith
+  have hprev_raw := Nat.cast_choose_succ_right_eq (R := R) n (k - 1)
+  rw [hk_pred_succ, hk_pred_succ_cast] at hprev_raw
+  have hnext_raw := Nat.cast_choose_succ_right_eq (R := R) n k
+  have hsucc_raw :
+      (Nat.choose n k : R) * ((n + 1 : ℕ) : R) =
+        (Nat.choose (n + 1) k : R) * ((n + 1 - k : ℕ) : R) := by
+    exact_mod_cast Nat.choose_mul_succ_eq n k
+  have hprev :
+      (Nat.choose n (k - 1) : R) =
+        (Nat.choose n k : R) * (k : R) / ((n + 1 - k : ℕ) : R) := by
+    rw [← hden_prev_nat]
+    field_simp [hden_prev_ne]
+    nlinarith [hprev_raw]
+  have hnext :
+      (Nat.choose n (k + 1) : R) =
+        (Nat.choose n k : R) * ((n - k : ℕ) : R) / (k + 1 : R) := by
+    field_simp [hk_succ_ne]
+    nlinarith [hnext_raw]
+  have hsucc :
+      (Nat.choose (n + 1) k : R) =
+        (Nat.choose n k : R) * ((n + 1 : ℕ) : R) /
+          ((n + 1 - k : ℕ) : R) := by
+    field_simp [hden_succ_ne]
+    nlinarith [hsucc_raw]
+  have hnk_cast : ((n - k : ℕ) : R) = (n : R) - (k : R) := by
+    rw [Nat.cast_sub hkn]
+  have hnkp1_cast : ((n + 1 - k : ℕ) : R) = (n : R) + 1 - (k : R) := by
+    rw [Nat.cast_sub (by lia : k ≤ n + 1)]
+    norm_num [Nat.cast_add]
+  rw [hprev, hnext, hsucc]
+  rw [hnk_cast, hnkp1_cast]
+  norm_num [Nat.cast_add]
+  field_simp [hk_succ_ne, hD_ne]
+  ring_nf
+
 /-- Casted descending factorial of length three. -/
 theorem cast_descFactorial_three {R : Type*} [CommRing R] (n : ℕ) :
     (n.descFactorial 3 : R) = n * (n - 1) * (n - 2) := by
