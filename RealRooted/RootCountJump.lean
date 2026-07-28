@@ -459,6 +459,26 @@ theorem exists_threshold_no_mem_Ioc (s : Multiset ℝ) (x : ℝ) :
     left
     exact not_lt.mp (hall r hr)
 
+/-- Push a threshold strictly upward to a common non-root for two polynomials
+without crossing any root of either polynomial. -/
+theorem exists_common_nonRoot_threshold_no_mem_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) (x : ℝ) :
+    ∃ x' : ℝ, x < x' ∧ ¬ f.IsRoot x' ∧ ¬ g.IsRoot x' ∧
+      (∀ r ∈ f.roots, r ≤ x ∨ x' < r) ∧
+      (∀ r ∈ g.roots, r ≤ x ∨ x' < r) := by
+  obtain ⟨x', hxx', hgap⟩ := exists_threshold_no_mem_Ioc (f.roots + g.roots) x
+  refine ⟨x', hxx', ?_, ?_, ?_, ?_⟩
+  · intro hval
+    have hr : x' ∈ f.roots := (mem_roots hf).mpr hval
+    rcases hgap x' (Multiset.mem_add.mpr (Or.inl hr)) with hx' | hx' <;> linarith
+  · intro hval
+    have hr : x' ∈ g.roots := (mem_roots hg).mpr hval
+    rcases hgap x' (Multiset.mem_add.mpr (Or.inr hr)) with hx' | hx' <;> linarith
+  · intro r hr
+    exact hgap r (Multiset.mem_add.mpr (Or.inl hr))
+  · intro r hr
+    exact hgap r (Multiset.mem_add.mpr (Or.inr hr))
+
 /-- Push a threshold up to a common non-root without changing lower root
 counts for either polynomial. -/
 theorem exists_nonRoot_threshold_count_eq
@@ -466,26 +486,17 @@ theorem exists_nonRoot_threshold_count_eq
     ∃ x' : ℝ, x ≤ x' ∧ f.eval x' ≠ 0 ∧ g.eval x' ≠ 0 ∧
       (f.roots.filter (· ≤ x')).card = (f.roots.filter (· ≤ x)).card ∧
       (g.roots.filter (· ≤ x')).card = (g.roots.filter (· ≤ x)).card := by
-  classical
-  set combined : Multiset ℝ := f.roots + g.roots with hcomb
-  have hmem_combined : ∀ {r : ℝ}, r ∈ f.roots ∨ r ∈ g.roots → r ∈ combined := by
-    intro r hr
-    rw [hcomb, Multiset.mem_add]
-    exact hr
-  obtain ⟨x', hxx', hgap⟩ := exists_threshold_no_mem_Ioc combined x
+  obtain ⟨x', hxx', hfx', hgx', hgap_f, hgap_g⟩ :=
+    exists_common_nonRoot_threshold_no_mem_Ioc hf hg x
   refine ⟨x', le_of_lt hxx', ?_, ?_, ?_, ?_⟩
-  · intro hval
-    have hr : x' ∈ f.roots := (mem_roots hf).mpr hval
-    rcases hgap x' (hmem_combined (Or.inl hr)) with hx' | hx' <;> linarith
-  · intro hval
-    have hr : x' ∈ g.roots := (mem_roots hg).mpr hval
-    rcases hgap x' (hmem_combined (Or.inr hr)) with hx' | hx' <;> linarith
+  · simpa [Polynomial.IsRoot.def] using hfx'
+  · simpa [Polynomial.IsRoot.def] using hgx'
   · refine (card_filter_le_eq_of_no_mem_Ioc f.roots (le_of_lt hxx') ?_).symm
     intro r hr
-    exact hgap r (hmem_combined (Or.inl hr))
+    exact hgap_f r hr
   · refine (card_filter_le_eq_of_no_mem_Ioc g.roots (le_of_lt hxx') ?_).symm
     intro r hr
-    exact hgap r (hmem_combined (Or.inr hr))
+    exact hgap_g r hr
 
 /-- Push a threshold up to a common non-root without changing upper root
 counts for either polynomial. -/
@@ -494,26 +505,17 @@ theorem exists_nonRoot_threshold_count_gt_eq
     ∃ x' : ℝ, x ≤ x' ∧ f.eval x' ≠ 0 ∧ g.eval x' ≠ 0 ∧
       (f.roots.filter (x' < ·)).card = (f.roots.filter (x < ·)).card ∧
       (g.roots.filter (x' < ·)).card = (g.roots.filter (x < ·)).card := by
-  classical
-  set combined : Multiset ℝ := f.roots + g.roots with hcomb
-  have hmem_combined : ∀ {r : ℝ}, r ∈ f.roots ∨ r ∈ g.roots → r ∈ combined := by
-    intro r hr
-    rw [hcomb, Multiset.mem_add]
-    exact hr
-  obtain ⟨x', hxx', hgap⟩ := exists_threshold_no_mem_Ioc combined x
+  obtain ⟨x', hxx', hfx', hgx', hgap_f, hgap_g⟩ :=
+    exists_common_nonRoot_threshold_no_mem_Ioc hf hg x
   refine ⟨x', le_of_lt hxx', ?_, ?_, ?_, ?_⟩
-  · intro hval
-    have hr : x' ∈ f.roots := (mem_roots hf).mpr hval
-    rcases hgap x' (hmem_combined (Or.inl hr)) with hx' | hx' <;> linarith
-  · intro hval
-    have hr : x' ∈ g.roots := (mem_roots hg).mpr hval
-    rcases hgap x' (hmem_combined (Or.inr hr)) with hx' | hx' <;> linarith
+  · simpa [Polynomial.IsRoot.def] using hfx'
+  · simpa [Polynomial.IsRoot.def] using hgx'
   · refine (card_filter_lt_eq_of_no_mem_Ioc f.roots (le_of_lt hxx') ?_).symm
     intro r hr
-    exact hgap r (hmem_combined (Or.inl hr))
+    exact hgap_f r hr
   · refine (card_filter_lt_eq_of_no_mem_Ioc g.roots (le_of_lt hxx') ?_).symm
     intro r hr
-    exact hgap r (hmem_combined (Or.inr hr))
+    exact hgap_g r hr
 
 /-- Reduce a fixed-threshold lower root-count bound to thresholds that are
 roots of neither polynomial. -/

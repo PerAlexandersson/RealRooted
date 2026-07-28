@@ -1320,18 +1320,18 @@ theorem of_rootCountCompatible_of_next_simple_root
     hf_ne hg_ne hr hs hlargest hcount ?_
   intro x hx hfx hgx
   obtain ⟨c, hxc, hgc, hc_count, hc_min⟩ := hnext x hx hfx hgx
-  set combined : Multiset ℝ := f.roots + g.roots with hcombined
-  have hmem_combined : ∀ {z : ℝ}, f.IsRoot z ∨ g.IsRoot z → z ∈ combined := by
+  obtain ⟨b, hcb, _hfb, _hgb, hgap_f, hgap_g⟩ :=
+    exists_common_nonRoot_threshold_no_mem_Ioc hf_ne hg_ne c
+  have hgap_root :
+      ∀ {z : ℝ}, f.IsRoot z ∨ g.IsRoot z → z ≤ c ∨ b < z := by
     intro z hz
-    rw [hcombined, Multiset.mem_add]
     rcases hz with hfz | hgz
-    · exact Or.inl ((Polynomial.mem_roots hf_ne).mpr hfz)
-    · exact Or.inr ((Polynomial.mem_roots hg_ne).mpr hgz)
-  obtain ⟨b, hcb, hgap⟩ := exists_threshold_no_mem_Ioc combined c
+    · exact hgap_f z ((Polynomial.mem_roots hf_ne).mpr hfz)
+    · exact hgap_g z ((Polynomial.mem_roots hg_ne).mpr hgz)
   refine ⟨c, b, hxc, hcb, hgc, hc_count, ?_⟩
   intro z hxz hzb hzroot
   have hcz : c ≤ z := hc_min z hxz hzroot
-  rcases hgap z (hmem_combined hzroot) with hzc | hbz
+  rcases hgap_root hzroot with hzc | hbz
   · exact le_antisymm hzc hcz
   · exact False.elim (not_lt_of_ge hzb hbz)
 
