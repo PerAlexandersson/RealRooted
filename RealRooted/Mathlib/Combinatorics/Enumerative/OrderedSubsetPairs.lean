@@ -119,6 +119,115 @@ theorem not_prefixDominates_iff_exists_card_filter_lt {A B : Finset ℕ} :
   push Not
   rfl
 
+/-- The first threshold where `B` has more elements below the threshold than `A`. -/
+noncomputable def firstPrefixViolation (A B : Finset ℕ) (h : ¬ prefixDominates A B) : ℕ :=
+  Nat.find ((not_prefixDominates_iff_exists_card_filter_lt).mp h)
+
+/-- The first prefix-violation threshold is violating. -/
+theorem firstPrefixViolation_spec {A B : Finset ℕ} (h : ¬ prefixDominates A B) :
+    (A.filter fun x => x ≤ firstPrefixViolation A B h).card <
+      (B.filter fun x => x ≤ firstPrefixViolation A B h).card := by
+  exact Nat.find_spec ((not_prefixDominates_iff_exists_card_filter_lt).mp h)
+
+/-- No smaller threshold violates prefix dominance. -/
+theorem firstPrefixViolation_min {A B : Finset ℕ} (h : ¬ prefixDominates A B)
+    {j : ℕ} (hj : j < firstPrefixViolation A B h) :
+    ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card := by
+  exact Nat.find_min ((not_prefixDominates_iff_exists_card_filter_lt).mp h) hj
+
+private theorem card_filter_lt_le_of_forall_not_prefix {i : ℕ} {A B : Finset ℕ}
+    (hmin : ∀ j < i,
+      ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card) :
+    (B.filter fun x => x < i).card ≤ (A.filter fun x => x < i).card := by
+  cases i with
+  | zero => simp
+  | succ j =>
+      have h := hmin j (Nat.lt_succ_self j)
+      rw [not_lt] at h
+      simpa [Nat.lt_succ_iff] using h
+
+private theorem card_filter_le_le_card_filter_lt_add_one (i : ℕ) (A : Finset ℕ) :
+    (A.filter fun x => x ≤ i).card ≤ (A.filter fun x => x < i).card + 1 := by
+  have hdecomp : A.filter (fun x => x ≤ i) =
+      (A.filter fun x => x < i) ∪ (A.filter fun x => x = i) := by
+    ext x
+    constructor
+    · intro hx
+      rw [mem_filter] at hx
+      rw [mem_union, mem_filter, mem_filter]
+      rcases lt_or_eq_of_le hx.2 with hlt | heq
+      · exact Or.inl ⟨hx.1, hlt⟩
+      · exact Or.inr ⟨hx.1, heq⟩
+    · intro hx
+      rw [mem_union, mem_filter, mem_filter] at hx
+      rw [mem_filter]
+      rcases hx with ⟨hxA, hlt⟩ | ⟨hxA, rfl⟩
+      · exact ⟨hxA, le_of_lt hlt⟩
+      · exact ⟨hxA, le_rfl⟩
+  calc
+    (A.filter fun x => x ≤ i).card
+        = ((A.filter fun x => x < i) ∪ (A.filter fun x => x = i)).card := by
+          rw [hdecomp]
+    _ ≤ (A.filter fun x => x < i).card + (A.filter fun x => x = i).card :=
+        card_union_le _ _
+    _ ≤ (A.filter fun x => x < i).card + 1 := by
+      gcongr
+      rw [filter_eq']
+      split <;> simp
+
+/-- At the first prefix-violation threshold, the excess is exactly one. -/
+theorem firstPrefixViolation_prefix_succ {A B : Finset ℕ} (h : ¬ prefixDominates A B) :
+    (B.filter fun x => x ≤ firstPrefixViolation A B h).card =
+      (A.filter fun x => x ≤ firstPrefixViolation A B h).card + 1 := by
+  let i := firstPrefixViolation A B h
+  have hviolate : (A.filter fun x => x ≤ i).card < (B.filter fun x => x ≤ i).card := by
+    simpa [i] using firstPrefixViolation_spec h
+  have hmin : ∀ j < i,
+      ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card := by
+    intro j hj
+    exact firstPrefixViolation_min h (by simpa [i] using hj)
+  have hlt : (B.filter fun x => x < i).card ≤ (A.filter fun x => x < i).card :=
+    card_filter_lt_le_of_forall_not_prefix hmin
+  have hBstep : (B.filter fun x => x ≤ i).card ≤
+      (B.filter fun x => x < i).card + 1 :=
+    card_filter_le_le_card_filter_lt_add_one i B
+  have hAlt : (A.filter fun x => x < i).card ≤ (A.filter fun x => x ≤ i).card := by
+    apply card_le_card
+    intro x hx
+    exact mem_filter.mpr ⟨(mem_filter.mp hx).1, le_of_lt (mem_filter.mp hx).2⟩
+  have hupper : (B.filter fun x => x ≤ i).card ≤
+      (A.filter fun x => x ≤ i).card + 1 := by
+    calc
+      (B.filter fun x => x ≤ i).card ≤ (B.filter fun x => x < i).card + 1 := hBstep
+      _ ≤ (A.filter fun x => x < i).card + 1 := Nat.succ_le_succ hlt
+      _ ≤ (A.filter fun x => x ≤ i).card + 1 := Nat.succ_le_succ hAlt
+  exact le_antisymm hupper (Nat.succ_le_of_lt hviolate)
+
+private theorem filter_le_range_card_eq_self {n : ℕ} {A : Finset ℕ} (hA : A ⊆ range n) :
+    A.filter (fun x => x ≤ n) = A := by
+  ext x
+  constructor
+  · intro hx
+    exact (mem_filter.mp hx).1
+  · intro hx
+    exact mem_filter.mpr ⟨hx, le_of_lt (mem_range.mp (hA hx))⟩
+
+/-- If two finite sets are contained in `range n` and `A` is smaller than `B`,
+then some prefix has more elements of `B` than of `A`. -/
+theorem exists_prefix_lt_of_card_lt_of_subset_range {n : ℕ} {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hB : B ⊆ range n) (hcard : A.card < B.card) :
+    ∃ i : ℕ, (A.filter fun x => x ≤ i).card < (B.filter fun x => x ≤ i).card := by
+  refine ⟨n, ?_⟩
+  rw [filter_le_range_card_eq_self hA, filter_le_range_card_eq_self hB]
+  exact hcard
+
+/-- Unequal cardinalities inside the same `range n` force failure of prefix dominance. -/
+theorem not_prefixDominates_of_card_lt_of_subset_range {n : ℕ} {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hB : B ⊆ range n) (hcard : A.card < B.card) :
+    ¬ prefixDominates A B := by
+  rw [not_prefixDominates_iff_exists_card_filter_lt]
+  exact exists_prefix_lt_of_card_lt_of_subset_range hA hB hcard
+
 /-- Exchange the tails of two finite sets of natural numbers after the threshold `i`. -/
 def tailExchangeAt (i : ℕ) (A B : Finset ℕ) : Finset ℕ × Finset ℕ :=
   (A.filter (fun x => x ≤ i) ∪ B.filter (fun x => i < x),
