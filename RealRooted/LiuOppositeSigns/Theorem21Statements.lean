@@ -795,6 +795,33 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
           hfg hno hf hg hga hgb hf_no hg_no hax hxb hax hxb hnot_odd
           hνR_pos hνR_small hdegR ha_eq hb_eq
 
+/-- Analytic supplier for the parity-guarded consecutive-root ownership input
+used by the finite Liu count descent.  The parameter bounds and degree
+constancy data are indexed by the interior sample point of the root-free gap. -/
+theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) (νL νR : ℝ → ℝ)
+    (hνL_pos : ∀ x : ℝ, 0 < νL x)
+    (hνL_large : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL x)
+    (hdegL : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc μ (νL x),
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegL_inv : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νL x)⁻¹ →
+      (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
+    (hνR_pos : ∀ x : ℝ, 0 < νR x)
+    (hνR_small : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR x ≤ μ)
+    (hdegR : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc (νR x) μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
+    CrossOwnedNotOddGaps f g := by
+  intro a b x _hab hax hxb ha_root hb_root hgap hnot_odd
+  exact hsgn.cross_owner_roots_of_not_odd hfg hno hf hg hgap hax hxb
+    ha_root hb_root hnot_odd (hνL_pos x) (hνL_large x) (hdegL x)
+    (hdegL_inv x) (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)
+
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
 right-family count drop reaches a parameter whose endpoint strict-upper counts
