@@ -107,6 +107,24 @@ theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
   rw [hs, ht]
   ring
 
+/-- Explicit `(a, b]` counts shift any two-sided strict-upper count bound at
+`b` to the corresponding bound at `a`. -/
+theorem card_filter_gt_sub_bounds_of_card_filter_Ioc_eq
+    {α : Type*} [LinearOrder α] (s t : Multiset α) {a b : α} (hab : a ≤ b)
+    {m n : ℕ} {lo hi : ℤ}
+    (hsIoc : (s.filter (fun r => a < r ∧ r ≤ b)).card = m)
+    (htIoc : (t.filter (fun r => a < r ∧ r ≤ b)).card = n)
+    (hbounds :
+      lo ≤ ((s.filter (b < ·)).card : ℤ) - (t.filter (b < ·)).card ∧
+        ((s.filter (b < ·)).card : ℤ) - (t.filter (b < ·)).card ≤ hi) :
+    lo + ((m : ℤ) - n) ≤
+        ((s.filter (a < ·)).card : ℤ) - (t.filter (a < ·)).card ∧
+      ((s.filter (a < ·)).card : ℤ) - (t.filter (a < ·)).card ≤
+        hi + ((m : ℤ) - n) := by
+  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add s t hab
+  rw [hsIoc, htIoc] at hjump
+  constructor <;> rw [hjump] <;> linarith
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
