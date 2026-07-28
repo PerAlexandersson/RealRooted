@@ -175,6 +175,26 @@ theorem IsNonNestingPlacement.col_ne {B : FiniteSkewBoard}
   · exact ne_of_gt (hP.2.2 a ha b hb hlt)
   · exact ne_of_lt (hP.2.2 b hb a ha hgt)
 
+/-- The row projection of a valid placement has the same cardinality as the
+placement. -/
+theorem IsNonNestingPlacement.card_image_fst {B : FiniteSkewBoard}
+    {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P) :
+    (P.image fun a => a.1).card = P.card := by
+  exact Finset.card_image_of_injOn (by
+    intro a ha b hb hrow
+    by_contra hne
+    exact hP.row_ne ha hb hne hrow)
+
+/-- The column projection of a valid placement has the same cardinality as the
+placement. -/
+theorem IsNonNestingPlacement.card_image_snd {B : FiniteSkewBoard}
+    {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P) :
+    (P.image fun a => a.2).card = P.card := by
+  exact Finset.card_image_of_injOn (by
+    intro a ha b hb hcol
+    by_contra hne
+    exact hP.col_ne ha hb hne hcol)
+
 /-- Placements avoiding a row and placements using that row are disjoint. -/
 theorem disjoint_nonNestingPlacementsWithoutRow_withRow
     (B : FiniteSkewBoard) (row : ℕ) :

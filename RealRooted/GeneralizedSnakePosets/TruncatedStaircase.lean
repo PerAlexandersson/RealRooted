@@ -104,6 +104,55 @@ theorem mem_truncatedStaircase_full_reflectColumn_iff
   rw [mem_truncatedStaircase_full_cells_iff]
   constructor <;> intro h <;> lia
 
+/-- Reflected columns remain distinct in a full-staircase placement. -/
+theorem IsNonNestingPlacement.full_reflectedColumn_ne
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P)
+    {a b : ℕ × ℕ} (ha : a ∈ P) (hb : b ∈ P) (hne : a ≠ b) :
+    n - 1 - a.2 ≠ n - 1 - b.2 := by
+  intro hreflect
+  have hcol_ne := hP.col_ne ha hb hne
+  have ha_cell := hP.1 ha
+  have hb_cell := hP.1 hb
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell hb_cell
+  have hcol : a.2 = b.2 := by
+    lia
+  exact hcol_ne hcol
+
+/-- The reflected-column projection of a full-staircase placement has the same
+cardinality as the placement. -/
+theorem IsNonNestingPlacement.full_card_image_reflectedColumn
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (P.image fun a => n - 1 - a.2).card = P.card := by
+  exact Finset.card_image_of_injOn (by
+    intro a ha b hb hreflect
+    by_contra hne
+    exact hP.full_reflectedColumn_ne ha hb hne hreflect)
+
+/-- A full-staircase cell lies weakly below its reflected column coordinate. -/
+theorem IsNonNestingPlacement.full_row_le_reflectedColumn
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P)
+    {a : ℕ × ℕ} (ha : a ∈ P) :
+    a.1 ≤ n - 1 - a.2 := by
+  have ha_cell := hP.1 ha
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
+  lia
+
+/-- Along increasing rows in a full-staircase placement, reflected columns
+strictly increase. -/
+theorem IsNonNestingPlacement.full_reflectedColumn_lt_of_row_lt
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P)
+    {a b : ℕ × ℕ} (ha : a ∈ P) (hb : b ∈ P) (hrow : a.1 < b.1) :
+    n - 1 - a.2 < n - 1 - b.2 := by
+  have hcol_lt := hP.2.2 a ha b hb hrow
+  have ha_cell := hP.1 ha
+  have hb_cell := hP.1 hb
+  rw [mem_truncatedStaircase_full_cells_iff] at ha_cell hb_cell
+  lia
+
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
     (i, c) ∈ (truncatedStaircase n (i + 1)).cells ↔ c < n - i := by
@@ -149,12 +198,7 @@ theorem card_le_rows_of_truncatedStaircase_isNonNestingPlacement
     (hP : (truncatedStaircase n i).IsNonNestingPlacement P) :
     P.card ≤ i := by
   classical
-  have hinj : Set.InjOn (fun a : ℕ × ℕ => a.1) ↑P := by
-    intro a ha b hb hrow
-    by_contra hne
-    exact hP.2.1 a ha b hb hne hrow
-  have hcard : (P.image fun a => a.1).card = P.card :=
-    Finset.card_image_of_injOn hinj
+  have hcard : (P.image fun a => a.1).card = P.card := hP.card_image_fst
   have hsub : (P.image fun a => a.1) ⊆ Finset.range i := by
     intro row hrow
     rcases Finset.mem_image.mp hrow with ⟨a, haP, hrow_eq⟩
