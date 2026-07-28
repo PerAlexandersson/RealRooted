@@ -85,6 +85,20 @@ theorem card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt
       (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card :=
   (card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab).symm
 
+/-- If `(a, b]` contains an element of a multiset, then the strict-upper count
+drops when the threshold moves from `a` to `b`. -/
+theorem card_filter_gt_lt_of_mem_Ioc
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b c : α} (hab : a ≤ b)
+    (hc : c ∈ s) (hac : a < c) (hcb : c ≤ b) :
+    (s.filter (b < ·)).card < (s.filter (a < ·)).card := by
+  have hpart := card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
+  have hcIoc : c ∈ s.filter (fun r => a < r ∧ r ≤ b) := by
+    simp [hc, hac, hcb]
+  have hpos : 0 < (s.filter (fun r => a < r ∧ r ≤ b)).card :=
+    Multiset.card_pos_iff_exists_mem.mpr ⟨c, hcIoc⟩
+  rw [← hpart]
+  exact Nat.lt_add_of_pos_left hpos
+
 /-- Exact jump formula for strict-upper multiset-count differences across
 `(a, b]`. -/
 theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
