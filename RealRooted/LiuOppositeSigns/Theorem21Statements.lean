@@ -29,6 +29,39 @@ theorem NoCommonRoots.symm {f g : ℝ[X]} (h : NoCommonRoots f g) :
   intro r hgr hfr
   exact (h r hfr) hgr
 
+/-- A nonzero right-family member has no root at a left endpoint root when the
+endpoint polynomials have no common root. -/
+theorem NoCommonRoots.rightFamily_not_isRoot_of_left_root
+    {f g : ℝ[X]} (h : NoCommonRoots f g) {μ x : ℝ}
+    (hμ : μ ≠ 0) (hf : f.IsRoot x) :
+    ¬ (f + C μ * g).IsRoot x := by
+  have hg : ¬ g.IsRoot x := h x hf
+  have hf_eval : f.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def] using hf
+  have hg_eval_ne : g.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero g x).mp hg
+  have hq_eval_ne : (f + C μ * g).eval x ≠ 0 := by
+    simpa [eval_add, eval_mul, eval_C, hf_eval] using
+      mul_ne_zero hμ hg_eval_ne
+  exact
+    (Polynomial.not_isRoot_iff_eval_ne_zero (f + C μ * g) x).mpr hq_eval_ne
+
+/-- A right-family member has no root at a right endpoint root when the
+endpoint polynomials have no common root. -/
+theorem NoCommonRoots.rightFamily_not_isRoot_of_right_root
+    {f g : ℝ[X]} (h : NoCommonRoots f g) {μ x : ℝ}
+    (hg : g.IsRoot x) :
+    ¬ (f + C μ * g).IsRoot x := by
+  have hf : ¬ f.IsRoot x := h.symm x hg
+  have hf_eval_ne : f.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero f x).mp hf
+  have hg_eval : g.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def] using hg
+  have hq_eval_ne : (f + C μ * g).eval x ≠ 0 := by
+    simpa [eval_add, eval_mul, eval_C, hg_eval] using hf_eval_ne
+  exact
+    (Polynomial.not_isRoot_iff_eval_ne_zero (f + C μ * g) x).mpr hq_eval_ne
+
 /-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
 common roots, and `g` has no roots in `(a, b)`, then `g` has no roots on the
 closed interval `[a, b]`. -/
@@ -376,17 +409,8 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
       hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
   have hq_ne : (f + C μ * g) ≠ 0 :=
     (hfg.isRealRooted_add_right hμ_pos).1
-  have hgb : ¬ g.IsRoot b := hno b hfb
-  have hfb_eval : f.eval b = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfb
-  have hq_eval_b_ne : (f + C μ * g).eval b ≠ 0 := by
-    have hg_eval_ne : g.eval b ≠ 0 :=
-      (Polynomial.not_isRoot_iff_eval_ne_zero g b).mp hgb
-    have hμ_ne : μ ≠ 0 := ne_of_gt hμ_pos
-    simpa [eval_add, eval_mul, eval_C, hfb_eval] using
-      mul_ne_zero hμ_ne hg_eval_ne
   have hq_not_b : ¬ (f + C μ * g).IsRoot b :=
-    (Polynomial.not_isRoot_iff_eval_ne_zero (f + C μ * g) b).mpr hq_eval_b_ne
+    hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hμ_pos) hfb
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
   have hdrop := card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
     hq_ne hab hq_not_b htwo
