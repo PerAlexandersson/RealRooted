@@ -99,6 +99,46 @@ theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
   push_cast
   ring
 
+/-- Crossing exactly one simple root of the left polynomial and no roots of the
+right polynomial increases the strict-upper count difference by one. -/
+theorem card_roots_filter_gt_sub_eq_one_add_of_left_simple_root_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hcount : f.roots.count c = 1)
+    (hf_no : ∀ z : ℝ, a < z → z ≤ b → z ≠ c → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z ≤ b → ¬ g.IsRoot z) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card =
+      1 + (((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card) := by
+  have hab : a ≤ b := (le_of_lt hac).trans hcb
+  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add f.roots g.roots hab
+  have hfIoc :=
+    card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
+      hf hac hcb hcount hf_no
+  have hgIoc := card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc hab hg_no
+  rw [hjump, hfIoc, hgIoc]
+  ring
+
+/-- Crossing exactly one simple root of the right polynomial and no roots of the
+left polynomial decreases the strict-upper count difference by one. -/
+theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_simple_root_Ioc
+    {f g : ℝ[X]} (hg : g ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hcount : g.roots.count c = 1)
+    (hf_no : ∀ z : ℝ, a < z → z ≤ b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z ≤ b → z ≠ c → ¬ g.IsRoot z) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card =
+      -1 + (((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card) := by
+  have hab : a ≤ b := (le_of_lt hac).trans hcb
+  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add f.roots g.roots hab
+  have hfIoc := card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc hab hf_no
+  have hgIoc :=
+    card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
+      hg hac hcb hcount hg_no
+  rw [hjump, hfIoc, hgIoc]
+  ring
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
