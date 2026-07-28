@@ -575,25 +575,6 @@ theorem exists_nonRoot_threshold_count_gt_eq_rootCountAtOrAbove
         exact lt_of_lt_of_le hx'_lt hxr
     simp [rootCountAtOrAbove, hfilter]
 
-theorem RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
-    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
-    (hbound : ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (q.roots.filter (x < ·)).card ≤ 1 ∧
-        ((q.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1) :
-    RootCountCompatible p q := by
-  intro x
-  obtain ⟨x', _, hpx', hqx', hpcount, hqcount⟩ :=
-    exists_nonRoot_threshold_count_gt_eq_rootCountAtOrAbove hp_ne hq_ne x
-  have hxbound := hbound x' hpx' hqx'
-  have hxabs :
-      |(((p.roots.filter (x' < ·)).card : ℤ) -
-          ((q.roots.filter (x' < ·)).card : ℤ))| ≤ 1 := by
-    rw [abs_le]
-    exact ⟨by linarith [hxbound.2], hxbound.1⟩
-  rwa [hpcount, hqcount] at hxabs
-
 /-- To prove Liu root-count compatibility, it is enough to prove the
 corresponding strict-upper count bound at common non-root thresholds. -/
 theorem RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
@@ -601,12 +582,26 @@ theorem RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
     (hbound : ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
       |(((p.roots.filter (x < ·)).card : ℤ) -
           ((q.roots.filter (x < ·)).card : ℤ))| ≤ 1) :
+    RootCountCompatible p q := by
+  intro x
+  obtain ⟨x', _, hpx', hqx', hpcount, hqcount⟩ :=
+    exists_nonRoot_threshold_count_gt_eq_rootCountAtOrAbove hp_ne hq_ne x
+  have hxabs := hbound x' hpx' hqx'
+  rwa [hpcount, hqcount] at hxabs
+
+theorem RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hbound : ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
+      ((p.roots.filter (x < ·)).card : ℤ) -
+          (q.roots.filter (x < ·)).card ≤ 1 ∧
+        ((q.roots.filter (x < ·)).card : ℤ) -
+          (p.roots.filter (x < ·)).card ≤ 1) :
     RootCountCompatible p q :=
-  RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot hp_ne hq_ne
+  RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne
     fun x hpx hqx => by
-      have hx := hbound x hpx hqx
-      rw [abs_le] at hx
-      exact ⟨hx.2, by linarith [hx.1]⟩
+      have hxbound := hbound x hpx hqx
+      rw [abs_le]
+      exact ⟨by linarith [hxbound.2], hxbound.1⟩
 
 /-- A normalized positive-leading, split pair equipped with Liu's root-count
 compatibility condition. -/
