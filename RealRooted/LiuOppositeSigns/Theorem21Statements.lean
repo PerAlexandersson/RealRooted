@@ -1,5 +1,7 @@
 import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns
+import RealRooted.PositiveParameterLocalLowerCount
+import RealRooted.RootCountLocalConstancy
 
 /-!
 # Liu opposite-sign compatibility theorem targets
@@ -57,6 +59,36 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
   rw [hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
     hf hg hxf hxg]
   simp [not_exists]
+
+/-- On a positive parameter interval with constant degree, odd opposite-leading
+strict-upper root-count difference at a common non-root makes the right-family
+strict-upper count locally constant between the interval endpoints. -/
+theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hf : f.Splits) (hg : g.Splits)
+    {x μ₀ μ₁ : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
+    ((f + C μ₀ * g).roots.filter (x < ·)).card =
+      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
+  have hno_pos : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x :=
+    (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
+      hf hg hxf hxg).mp hodd
+  refine rightFamily_card_roots_gt_eq_of_local_lower_counts
+    (f := f) (g := g) (μ₀ := μ₀) (μ₁ := μ₁) (x := x)
+    hμ₀μ₁ hdeg ?_ ?_ ?_
+  · intro μ hμ
+    exact (hfg.isRealRooted_add_right (lt_of_lt_of_le hμ₀_pos hμ.1)).2
+  · intro μ hμ
+    exact hno_pos μ (lt_of_lt_of_le hμ₀_pos hμ.1)
+  · intro μ hμ ρ hρ
+    exact positiveParameter_local_lower_count
+      (fun ν hν => (hfg.isRealRooted_add_right
+        (lt_of_lt_of_le hμ₀_pos hν.1)).2)
+      hdeg hμ hρ
 
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
