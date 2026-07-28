@@ -177,6 +177,42 @@ theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
   · intro z haz hzb hzc hgz
     exact hzc (hunique z haz hzb (Or.inr hgz))
 
+/-- One-step suffix-count invariant transport across a unique simple left root:
+if the strict-upper count difference above the window is zero, then it is one
+below the window. -/
+theorem card_roots_filter_gt_sub_eq_one_of_left_unique_simple_root_Ioc_of_above_eq_zero
+    {f g : ℝ[X]} (hf : f ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hg_not : ¬ g.IsRoot c)
+    (hcount : f.roots.count c = 1)
+    (hunique : ∀ z : ℝ, a < z → z ≤ b →
+      f.IsRoot z ∨ g.IsRoot z → z = c)
+    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card = 0) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card = 1 := by
+  have hshift :=
+    card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
+      hf hac hcb hg_not hcount hunique
+  simpa [hb] using hshift
+
+/-- One-step suffix-count invariant transport across a unique simple right root:
+if the strict-upper count difference above the window is one, then it is zero
+below the window. -/
+theorem card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_above_eq_one
+    {f g : ℝ[X]} (hg : g ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hf_not : ¬ f.IsRoot c)
+    (hcount : g.roots.count c = 1)
+    (hunique : ∀ z : ℝ, a < z → z ≤ b →
+      f.IsRoot z ∨ g.IsRoot z → z = c)
+    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card = 1) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card = 0 := by
+  have hshift :=
+    card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
+      hg hac hcb hf_not hcount hunique
+  simpa [hb] using hshift
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
