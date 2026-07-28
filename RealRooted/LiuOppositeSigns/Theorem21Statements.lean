@@ -223,6 +223,37 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_int
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval).mp hcross
   exact hfg.exists_unique_pos_parameter_crossing_add_right_of_sign hno hsign
 
+/-- Open-interval sample-point form of
+`OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_intCard_roots_gt_sub`.
+On a root-free interval, failure of odd strict-upper root-count difference at
+one sample point gives the unique positive right-family crossing at any other
+sample point in the interval. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_roots_gt_sub_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) := by
+  have hodd_iff :
+      (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card) ↔
+        Odd (((f.roots.filter (y < ·)).card : ℤ) -
+          (g.roots.filter (y < ·)).card)) :=
+    odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
+      hf_no hg_no hax hxb hay hyb
+  have hnot_odd_y : ¬ Odd (((f.roots.filter (y < ·)).card : ℤ) -
+      (g.roots.filter (y < ·)).card) :=
+    fun hodd_y => hnot_odd (hodd_iff.mpr hodd_y)
+  exact hsgn.exists_unique_pos_crossing_add_right_of_not_odd_intCard_roots_gt_sub
+    hfg hno hf hg (hf_no y hay hyb) (hg_no y hay hyb) hnot_odd_y
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}
