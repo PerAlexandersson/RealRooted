@@ -711,6 +711,59 @@ theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left
   exact false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
     hab hf_no_Icc hdropν ha_eq hb_eq
 
+/-- Endpoint-ownership form of the Liu odd-interval argument, with the
+parameter-count hypotheses kept explicit.  If a root-free interval has both
+endpoints in the combined root set and the strict-upper root-count difference
+is not odd at a sample point, then the endpoints are cross-owned: one belongs
+to `f` and the other to `g`.
+
+The same-owner cases are discharged by
+`OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right` and
+`OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left`. -/
+theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_count_eq
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y νL νR : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (ha_root : f.IsRoot a ∨ g.IsRoot a)
+    (hb_root : f.IsRoot b ∨ g.IsRoot b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hνL_pos : 0 < νL)
+    (hνL_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ νL)
+    (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+      ∀ τ ∈ Set.Icc μ νL,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (ha_inv_eq : ((g + C νL⁻¹ * f).roots.filter (a < ·)).card =
+      (g.roots.filter (a < ·)).card)
+    (hb_inv_eq : ((g + C νL⁻¹ * f).roots.filter (b < ·)).card =
+      (g.roots.filter (b < ·)).card)
+    (hνR_pos : 0 < νR)
+    (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → νR ≤ μ)
+    (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+      ∀ τ ∈ Set.Icc νR μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (ha_eq : ((f + C νR * g).roots.filter (a < ·)).card =
+      (f.roots.filter (a < ·)).card)
+    (hb_eq : ((f + C νR * g).roots.filter (b < ·)).card =
+      (f.roots.filter (b < ·)).card) :
+    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
+  rcases ha_root with hfa | hga
+  · rcases hb_root with hfb | hgb
+    · exact False.elim <|
+        hsgn.false_of_left_roots_add_left_inv_count_eq_right
+          hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+          hνL_pos hνL_large hdegL ha_inv_eq hb_inv_eq
+    · exact Or.inl ⟨hfa, hgb⟩
+  · rcases hb_root with hfb | hgb
+    · exact Or.inr ⟨hga, hfb⟩
+    · exact False.elim <|
+        hsgn.false_of_right_roots_add_right_small_count_eq_left
+          hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
+          hνR_pos hνR_small hdegR ha_eq hb_eq
+
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
 right-family count drop reaches a parameter whose endpoint strict-upper counts
