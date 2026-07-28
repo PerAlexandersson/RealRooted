@@ -241,16 +241,10 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_roo
       μ = -f.eval y / g.eval y ∧
       (f + C μ * g).derivative.eval y ≠ 0 ∧
       (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) := by
-  have hodd_iff :
-      (Odd (((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card) ↔
-        Odd (((f.roots.filter (y < ·)).card : ℤ) -
-          (g.roots.filter (y < ·)).card)) :=
-    odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
-      hf_no hg_no hax hxb hay hyb
   have hnot_odd_y : ¬ Odd (((f.roots.filter (y < ·)).card : ℤ) -
       (g.roots.filter (y < ·)).card) :=
-    fun hodd_y => hnot_odd (hodd_iff.mpr hodd_y)
+    mt ((odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
+      hf_no hg_no hax hxb hay hyb).mpr) hnot_odd
   exact hsgn.exists_unique_pos_crossing_add_right_of_not_odd_intCard_roots_gt_sub
     hfg hno hf hg (hf_no y hay hyb) (hg_no y hay hyb) hnot_odd_y
 
