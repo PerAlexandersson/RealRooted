@@ -94,17 +94,9 @@ theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
           (t.filter (fun r => a < r ∧ r ≤ b)).card) +
         (((s.filter (b < ·)).card : ℤ) -
           (t.filter (b < ·)).card) := by
-  have hs :
-      ((s.filter (a < ·)).card : ℤ) =
-        (s.filter (fun r => a < r ∧ r ≤ b)).card +
-          (s.filter (b < ·)).card := by
-    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s hab
-  have ht :
-      ((t.filter (a < ·)).card : ℤ) =
-        (t.filter (fun r => a < r ∧ r ≤ b)).card +
-          (t.filter (b < ·)).card := by
-    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt t hab
-  rw [hs, ht]
+  rw [card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s hab,
+    card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt t hab]
+  push_cast
   ring
 
 /-- Explicit `(a, b]` counts shift any two-sided strict-upper count bound at
