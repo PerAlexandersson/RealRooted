@@ -134,9 +134,10 @@ theorem rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
     (hrr : ∀ μ ∈ Set.Icc (0 : ℝ) 1, (f + C μ * g).Splits)
     (hne : ∀ μ ∈ Set.Icc (0 : ℝ) 1, ¬ (f + C μ * g).IsRoot x) :
     ((f + C (0 : ℝ) * g).roots.filter (x < ·)).card =
-      ((f + C (1 : ℝ) * g).roots.filter (x < ·)).card :=
-  rightFamily_card_roots_gt_eq_of_local_lower_counts zero_le_one hdeg hrr hne
-    (fun _ hμ _ hρ => positiveParameter_local_lower_count hrr hdeg hμ hρ)
+      ((f + C (1 : ℝ) * g).roots.filter (x < ·)).card := by
+  simpa using
+    (rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+      (f := f) (g := g) (x := x) (μ := 1) zero_lt_one hdeg hrr hne).symm
 
 /-- If an equal-degree positive-combination pair has no root at `x` anywhere in
 the nonnegative right pencil, then `f` and `g` have the same number of roots

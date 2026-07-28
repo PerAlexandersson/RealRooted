@@ -663,30 +663,6 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large ha_eq hb_eq
 
-/-- Analytic count constancy on a positive right-family interval supplies the
-endpoint count equalities at roots of the right polynomial. -/
-theorem rightFamily_endpoint_count_eq_of_right_roots
-    {f g : ℝ[X]} (hno : NoCommonRoots f g) {a b μ : ℝ}
-    (hμ_pos : 0 < μ) (hga : g.IsRoot a) (hgb : g.IsRoot b)
-    (hdeg : ∀ η ∈ Set.Icc (0 : ℝ) μ,
-      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
-    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits) :
-    ((f + C μ * g).roots.filter (a < ·)).card =
-      (f.roots.filter (a < ·)).card ∧
-    ((f + C μ * g).roots.filter (b < ·)).card =
-      (f.roots.filter (b < ·)).card := by
-  have count_eq (z : ℝ) (hgz : g.IsRoot z) :
-      ((f + C μ * g).roots.filter (z < ·)).card =
-        (f.roots.filter (z < ·)).card := by
-    have hne : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot z :=
-      fun η _ => hno.rightFamily_not_isRoot_of_right_root hgz
-    have hcount := rightFamily_card_roots_gt_eq_of_local_lower_counts
-      (f := f) (g := g) (μ₀ := 0) (μ₁ := μ) (x := z)
-      (le_of_lt hμ_pos) hdeg hsplit hne
-      (fun η hη ρ hρ => positiveParameter_local_lower_count hsplit hdeg hη hρ)
-    simpa using hcount.symm
-  exact ⟨count_eq a hga, count_eq b hgb⟩
-
 /-- Endpoint-shaped `g`/`g` contradiction using a small positive right-family
 parameter.  If the transported count drop reaches a small parameter whose
 endpoint strict-upper counts agree with those of `f`, then same-owner
@@ -778,24 +754,43 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     fun η hη => PosComboRealRooted.splits_add_right_of_nonneg hfg hf hη.1
   rcases ha_root with hfa | hga
   · rcases hb_root with hfb | hgb
-    · have hleft_counts :=
-        rightFamily_endpoint_count_eq_of_right_roots
-          (f := g) (g := f) hno.symm (inv_pos.mpr hνL_pos)
-          hfa hfb hdegL_inv hsplitL_inv
+    · have ha_inv_eq :
+          ((g + C νL⁻¹ * f).roots.filter (a < ·)).card =
+            (g.roots.filter (a < ·)).card :=
+        rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+          (f := g) (g := f) (μ := νL⁻¹) (x := a) (inv_pos.mpr hνL_pos)
+          hdegL_inv hsplitL_inv
+          (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfa)
+      have hb_inv_eq :
+          ((g + C νL⁻¹ * f).roots.filter (b < ·)).card =
+            (g.roots.filter (b < ·)).card :=
+        rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+          (f := g) (g := f) (μ := νL⁻¹) (x := b) (inv_pos.mpr hνL_pos)
+          hdegL_inv hsplitL_inv
+          (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfb)
       exact False.elim <|
         hsgn.false_of_left_roots_add_left_inv_count_eq_right
           hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-          hνL_pos hνL_large hdegL hleft_counts.1 hleft_counts.2
+          hνL_pos hνL_large hdegL ha_inv_eq hb_inv_eq
     · exact Or.inl ⟨hfa, hgb⟩
   · rcases hb_root with hfb | hgb
     · exact Or.inr ⟨hga, hfb⟩
-    · have hright_counts :=
-        rightFamily_endpoint_count_eq_of_right_roots
-          hno hνR_pos hga hgb hdegR_zero hsplitR
+    · have ha_eq :
+          ((f + C νR * g).roots.filter (a < ·)).card =
+            (f.roots.filter (a < ·)).card :=
+        rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+          (f := f) (g := g) (μ := νR) (x := a) hνR_pos hdegR_zero hsplitR
+          (fun η _ => hno.rightFamily_not_isRoot_of_right_root hga)
+      have hb_eq :
+          ((f + C νR * g).roots.filter (b < ·)).card =
+            (f.roots.filter (b < ·)).card :=
+        rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+          (f := f) (g := g) (μ := νR) (x := b) hνR_pos hdegR_zero hsplitR
+          (fun η _ => hno.rightFamily_not_isRoot_of_right_root hgb)
       exact False.elim <|
         hsgn.false_of_right_roots_add_right_small_count_eq_left
           hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
-          hνR_pos hνR_small hdegR hright_counts.1 hright_counts.2
+          hνR_pos hνR_small hdegR ha_eq hb_eq
 
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported

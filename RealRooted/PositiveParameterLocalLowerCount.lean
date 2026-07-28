@@ -1,3 +1,4 @@
+import RealRooted.RootCountLocalConstancy
 import RealRooted.SameDegreeMultiplicityLowerCount
 
 /-!
@@ -16,7 +17,9 @@ constant, unlike across the `μ = 0` endpoint handled separately by
 `RealRooted.DegreeIncreasingLocalLowerCount`.
 
 The local-constancy consumer lives in `RealRooted.RootCountLocalConstancy` as
-`RealRooted.rightFamily_card_roots_gt_eq_of_local_lower_counts`.
+`RealRooted.rightFamily_card_roots_gt_eq_of_local_lower_counts`.  This file also
+provides a direct positive-parameter count-equality wrapper for intervals
+starting at `0`.
 -/
 
 open Polynomial Set
@@ -52,6 +55,23 @@ theorem positiveParameter_local_lower_count
   refine ⟨ε, hε, ?_⟩
   intro ν hν hdist a ha
   exact hεspec ν hdist (hsplit ν hν) (by rw [hdeg ν hν, hdeg μ hμ]) a ha
+
+/-- On a positive right-family interval starting at `0`, constant degree,
+splitting, and no root at a fixed threshold force the strict-upper root count to
+agree with the `μ = 0` endpoint. -/
+theorem rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+    {f g : ℝ[X]} {x μ : ℝ} (hμ_pos : 0 < μ)
+    (hdeg : ∀ η ∈ Set.Icc (0 : ℝ) μ,
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
+    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits)
+    (hne : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot x) :
+    ((f + C μ * g).roots.filter (x < ·)).card =
+      (f.roots.filter (x < ·)).card := by
+  have hcount := rightFamily_card_roots_gt_eq_of_local_lower_counts
+    (f := f) (g := g) (μ₀ := 0) (μ₁ := μ) (x := x)
+    (le_of_lt hμ_pos) hdeg hsplit hne
+    (fun η hη ρ hρ => positiveParameter_local_lower_count hsplit hdeg hη hρ)
+  simpa using hcount.symm
 
 end RealRooted
 
