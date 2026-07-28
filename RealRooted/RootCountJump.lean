@@ -77,6 +77,36 @@ theorem card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt
     · simp [hbr, not_le]
   rw [hIoc, hgt, ← Multiset.card_add, Multiset.filter_add_not]
 
+/-- The strict-upper count at `a` is the strict-upper count at `b` plus the
+count in the half-open window `(a, b]`. -/
+theorem card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b) :
+    (s.filter (a < ·)).card =
+      (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card :=
+  (card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab).symm
+
+/-- Exact jump formula for strict-upper root-count differences across
+`(a, b]`. -/
+theorem card_roots_filter_gt_sub_eq_card_filter_Ioc_sub_add
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b) :
+    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card =
+      (((f.roots.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
+          (g.roots.filter (fun r => a < r ∧ r ≤ b)).card) +
+        (((f.roots.filter (b < ·)).card : ℤ) -
+          (g.roots.filter (b < ·)).card) := by
+  have hf :
+      ((f.roots.filter (a < ·)).card : ℤ) =
+        (f.roots.filter (fun r => a < r ∧ r ≤ b)).card +
+          (f.roots.filter (b < ·)).card := by
+    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt f.roots hab
+  have hg :
+      ((g.roots.filter (a < ·)).card : ℤ) =
+        (g.roots.filter (fun r => a < r ∧ r ≤ b)).card +
+          (g.roots.filter (b < ·)).card := by
+    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt g.roots hab
+  rw [hf, hg]
+  ring
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
