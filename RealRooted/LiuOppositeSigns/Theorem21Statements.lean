@@ -248,6 +248,43 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_roo
   exact hsgn.exists_unique_pos_crossing_add_right_of_not_odd_intCard_roots_gt_sub
     hfg hno hf hg (hf_no y hay hyb) (hg_no y hay hyb) hnot_odd_y
 
+/-- Endpoint-shaped `f`/`f` interval package for Liu's odd-indexed interval
+argument.  If both finite endpoints are roots of `f`, then a `not Odd`
+strict-upper count sample gives the unique positive right-family crossing in
+the interval together with same-sign endpoint values for that crossing
+polynomial. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_endpoint_sign
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      0 < (f + C μ * g).eval a * (f + C μ * g).eval b := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_of_not_odd_roots_gt_sub_Ioo
+      hfg hno hf hg hf_no hg_no hax hxb hay hyb hnot_odd
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z := by
+    intro z hz hgz
+    by_cases hza : z = a
+    · exact (hno a hfa) (by simpa [hza] using hgz)
+    have haz : a < z := lt_of_le_of_ne hz.1 (Ne.symm hza)
+    by_cases hzb : z = b
+    · exact (hno b hfb) (by simpa [hzb] using hgz)
+    have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
+    exact hg_no z haz hzb_lt hgz
+  refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, ?_⟩
+  exact rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
+    hab hfa hfb hg_no_Icc hμ_pos
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}

@@ -220,6 +220,24 @@ theorem closedSegment_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
   have hβ_sq : 0 < β * β := mul_pos hβ_pos hβ_pos
   nlinarith [mul_pos hβ_sq hgprod]
 
+/-- Right-family version of
+`closedSegment_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc`. -/
+theorem rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
+    {f g : ℝ[X]} {a b μ : ℝ} (hab : a ≤ b)
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hg_no : ∀ x ∈ Set.Icc a b, ¬ g.IsRoot x) (hμ_pos : 0 < μ) :
+    0 < (f + C μ * g).eval a * (f + C μ * g).eval b := by
+  have hgprod : 0 < g.eval a * g.eval b :=
+    eval_mul_pos_of_forall_not_isRoot_Icc hab hg_no
+  have hfa_eval : f.eval a = 0 := by
+    simpa [Polynomial.IsRoot.def] using hfa
+  have hfb_eval : f.eval b = 0 := by
+    simpa [Polynomial.IsRoot.def] using hfb
+  have hμ_sq : 0 < μ * μ := mul_pos hμ_pos hμ_pos
+  have htarget : 0 < (μ * g.eval a) * (μ * g.eval b) := by
+    nlinarith [mul_pos hμ_sq hgprod]
+  simpa [eval_add, eval_mul, eval_C, hfa_eval, hfb_eval] using htarget
+
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 nonnegative right-family member is nonzero at `x`. -/
 theorem rightFamily_eval_ne_zero_of_eval_mul_pos
