@@ -107,6 +107,18 @@ theorem card_roots_filter_gt_sub_eq_card_filter_Ioc_sub_add
   rw [hf, hg]
   ring
 
+/-- Exact strict-upper root-count jump after substituting explicit root counts
+in `(a, b]` for the two polynomials. -/
+theorem card_roots_filter_gt_sub_eq_of_card_filter_Ioc_eq
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b) {m n : ℕ}
+    (hfIoc : (f.roots.filter (fun r => a < r ∧ r ≤ b)).card = m)
+    (hgIoc : (g.roots.filter (fun r => a < r ∧ r ≤ b)).card = n) :
+    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card =
+      ((m : ℤ) - (n : ℤ)) +
+        (((f.roots.filter (b < ·)).card : ℤ) -
+          (g.roots.filter (b < ·)).card) := by
+  rw [card_roots_filter_gt_sub_eq_card_filter_Ioc_sub_add hab, hfIoc, hgIoc]
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
