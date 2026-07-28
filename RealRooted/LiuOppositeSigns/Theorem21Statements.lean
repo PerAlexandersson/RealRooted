@@ -29,6 +29,23 @@ theorem NoCommonRoots.symm {f g : ℝ[X]} (h : NoCommonRoots f g) :
   intro r hgr hfr
   exact (h r hfr) hgr
 
+/-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
+common roots, and `g` has no roots in `(a, b)`, then `g` has no roots on the
+closed interval `[a, b]`. -/
+theorem NoCommonRoots.right_not_isRoot_Icc_of_left_roots
+    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z) :
+    ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z := by
+  intro z hz hgz
+  by_cases hza : z = a
+  · exact (h a hfa) (by simpa [hza] using hgz)
+  have haz : a < z := lt_of_le_of_ne hz.1 (Ne.symm hza)
+  by_cases hzb : z = b
+  · exact (h b hfb) (by simpa [hzb] using hgz)
+  have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
+  exact hg_no z haz hzb_lt hgz
+
 /-- For splitting polynomials with opposite leading signs, odd upper
 root-count difference at a common non-root is equivalent to the absence of a
 positive right-pencil member through that threshold. -/
@@ -272,15 +289,8 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
     hsgn.exists_unique_pos_crossing_add_right_of_not_odd_roots_gt_sub_Ioo
       hfg hno hf hg hf_no hg_no hax hxb hay hyb hnot_odd
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
-  have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z := by
-    intro z hz hgz
-    by_cases hza : z = a
-    · exact (hno a hfa) (by simpa [hza] using hgz)
-    have haz : a < z := lt_of_le_of_ne hz.1 (Ne.symm hza)
-    by_cases hzb : z = b
-    · exact (hno b hfb) (by simpa [hzb] using hgz)
-    have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
-    exact hg_no z haz hzb_lt hgz
+  have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z :=
+    hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no
   refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, ?_⟩
   exact rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
     hab hfa hfb hg_no_Icc hμ_pos
