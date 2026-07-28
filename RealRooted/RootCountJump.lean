@@ -85,39 +85,27 @@ theorem card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt
       (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card :=
   (card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab).symm
 
-/-- Exact jump formula for strict-upper root-count differences across
+/-- Exact jump formula for strict-upper multiset-count differences across
 `(a, b]`. -/
-theorem card_roots_filter_gt_sub_eq_card_filter_Ioc_sub_add
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b) :
-    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card =
-      (((f.roots.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
-          (g.roots.filter (fun r => a < r ∧ r ≤ b)).card) +
-        (((f.roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card) := by
-  have hf :
-      ((f.roots.filter (a < ·)).card : ℤ) =
-        (f.roots.filter (fun r => a < r ∧ r ≤ b)).card +
-          (f.roots.filter (b < ·)).card := by
-    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt f.roots hab
-  have hg :
-      ((g.roots.filter (a < ·)).card : ℤ) =
-        (g.roots.filter (fun r => a < r ∧ r ≤ b)).card +
-          (g.roots.filter (b < ·)).card := by
-    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt g.roots hab
-  rw [hf, hg]
+theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
+    {α : Type*} [LinearOrder α] (s t : Multiset α) {a b : α} (hab : a ≤ b) :
+    ((s.filter (a < ·)).card : ℤ) - (t.filter (a < ·)).card =
+      (((s.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
+          (t.filter (fun r => a < r ∧ r ≤ b)).card) +
+        (((s.filter (b < ·)).card : ℤ) -
+          (t.filter (b < ·)).card) := by
+  have hs :
+      ((s.filter (a < ·)).card : ℤ) =
+        (s.filter (fun r => a < r ∧ r ≤ b)).card +
+          (s.filter (b < ·)).card := by
+    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s hab
+  have ht :
+      ((t.filter (a < ·)).card : ℤ) =
+        (t.filter (fun r => a < r ∧ r ≤ b)).card +
+          (t.filter (b < ·)).card := by
+    exact_mod_cast card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt t hab
+  rw [hs, ht]
   ring
-
-/-- Exact strict-upper root-count jump after substituting explicit root counts
-in `(a, b]` for the two polynomials. -/
-theorem card_roots_filter_gt_sub_eq_of_card_filter_Ioc_eq
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b) {m n : ℕ}
-    (hfIoc : (f.roots.filter (fun r => a < r ∧ r ≤ b)).card = m)
-    (hgIoc : (g.roots.filter (fun r => a < r ∧ r ≤ b)).card = n) :
-    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card =
-      ((m : ℤ) - (n : ℤ)) +
-        (((f.roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card) := by
-  rw [card_roots_filter_gt_sub_eq_card_filter_Ioc_sub_add hab, hfIoc, hgIoc]
 
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
