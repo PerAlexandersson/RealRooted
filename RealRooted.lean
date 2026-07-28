@@ -82,6 +82,7 @@ import RealRooted.MagnitudeDominated
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
