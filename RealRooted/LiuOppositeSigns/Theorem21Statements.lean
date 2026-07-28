@@ -717,10 +717,11 @@ endpoints in the combined root set and the strict-upper root-count difference
 is not odd at a sample point, then the endpoints are cross-owned: one belongs
 to `f` and the other to `g`.
 
-The same-owner cases are discharged by
+The count and degree hypotheses are the explicit same-owner contradiction
+inputs currently available.  The same-owner cases are discharged by
 `OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right` and
 `OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left`. -/
-theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_count_eq
+theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
     (hf : f.Splits) (hg : g.Splits) {a b x y νL νR : ℝ}
