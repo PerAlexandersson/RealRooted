@@ -463,6 +463,38 @@ theorem mem_orderedKSubsetPairs_iff_prefixDominates
     have hcard : A.card = B.card := by rw [hAcard, hBcard]
     exact ⟨hA, hAcard, hB, hBcard, (forall₂_sort_le_iff_prefixDominates hcard).mpr hAB⟩
 
+/-- Pairs of `k`-subsets of `range n` that fail prefix-count dominance. -/
+noncomputable def badPrefixSubsetPairs (n k : ℕ) : Finset (Finset ℕ × Finset ℕ) := by
+  classical
+  exact (((range n).powersetCard k).product ((range n).powersetCard k)).filter fun AB =>
+    ¬ prefixDominates AB.1 AB.2
+
+/-- Membership in the bad prefix-dominance finite set. -/
+@[simp] theorem mem_badPrefixSubsetPairs
+    {n k : ℕ} {A B : Finset ℕ} :
+    (A, B) ∈ badPrefixSubsetPairs n k ↔
+      A ⊆ range n ∧ A.card = k ∧ B ⊆ range n ∧ B.card = k ∧
+        ¬ prefixDominates A B := by
+  classical
+  simp [badPrefixSubsetPairs, and_assoc]
+
+/-- The reflected target product for the bad-pair reflection principle. -/
+def reflectedPrefixSubsetPairs (n k : ℕ) : Finset (Finset ℕ × Finset ℕ) :=
+  ((range n).powersetCard (k - 1)).product ((range n).powersetCard (k + 1))
+
+/-- Membership in the reflected target product. -/
+@[simp] theorem mem_reflectedPrefixSubsetPairs
+    {n k : ℕ} {A B : Finset ℕ} :
+    (A, B) ∈ reflectedPrefixSubsetPairs n k ↔
+      A ⊆ range n ∧ A.card = k - 1 ∧ B ⊆ range n ∧ B.card = k + 1 := by
+  simp [reflectedPrefixSubsetPairs, and_assoc]
+
+/-- The reflected target product has the expected binomial cardinality. -/
+theorem card_reflectedPrefixSubsetPairs (n k : ℕ) :
+    (reflectedPrefixSubsetPairs n k).card =
+      Nat.choose n (k - 1) * Nat.choose n (k + 1) := by
+  simp [reflectedPrefixSubsetPairs, card_product, card_powersetCard]
+
 /-- There is only the empty ordered pair when `k = 0`. -/
 @[simp] theorem orderedKSubsetPairs_zero (n : ℕ) :
     orderedKSubsetPairs n 0 = {((∅ : Finset ℕ), (∅ : Finset ℕ))} := by
