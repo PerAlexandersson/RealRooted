@@ -495,6 +495,87 @@ theorem card_reflectedPrefixSubsetPairs (n k : ℕ) :
       Nat.choose n (k - 1) * Nat.choose n (k + 1) := by
   simp [reflectedPrefixSubsetPairs, card_product, card_powersetCard]
 
+private theorem tailExchangeAt_firstPrefixViolation_mem_reflectedPrefixSubsetPairs
+    {n k : ℕ} {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hAcard : A.card = k)
+    (hB : B ⊆ range n) (hBcard : B.card = k)
+    (hbad : ¬ prefixDominates A B) :
+    tailExchangeAt (firstPrefixViolation A B hbad) A B ∈ reflectedPrefixSubsetPairs n k := by
+  rw [mem_reflectedPrefixSubsetPairs]
+  exact ⟨tailExchangeAt_fst_subset_range hA hB,
+    card_tailExchangeAt_fst_of_prefix_succ hBcard (firstPrefixViolation_prefix_succ hbad),
+    tailExchangeAt_snd_subset_range hA hB,
+    card_tailExchangeAt_snd_of_prefix_succ hAcard (firstPrefixViolation_prefix_succ hbad)⟩
+
+private theorem tailExchangeAt_firstPrefixViolation_mem_badPrefixSubsetPairs
+    {n k : ℕ} (hk : 0 < k) {A B : Finset ℕ}
+    (hA : A ⊆ range n) (hAcard : A.card = k - 1)
+    (hB : B ⊆ range n) (hBcard : B.card = k + 1)
+    (hbad : ¬ prefixDominates A B) :
+    tailExchangeAt (firstPrefixViolation A B hbad) A B ∈ badPrefixSubsetPairs n k := by
+  rw [mem_badPrefixSubsetPairs]
+  have hfst : (tailExchangeAt (firstPrefixViolation A B hbad) A B).1.card = k := by
+    have h := card_tailExchangeAt_fst_of_prefix_succ hBcard
+      (firstPrefixViolation_prefix_succ hbad)
+    lia
+  have hsnd : (tailExchangeAt (firstPrefixViolation A B hbad) A B).2.card = k := by
+    have h := card_tailExchangeAt_snd_of_prefix_succ hAcard
+      (firstPrefixViolation_prefix_succ hbad)
+    lia
+  exact ⟨tailExchangeAt_fst_subset_range hA hB, hfst,
+    tailExchangeAt_snd_subset_range hA hB, hsnd,
+    not_prefixDominates_tailExchangeAt_firstPrefixViolation hbad⟩
+
+private noncomputable def badToReflected (AB : Finset ℕ × Finset ℕ)
+    (hAB : AB ∈ badPrefixSubsetPairs n k) : Finset ℕ × Finset ℕ :=
+  tailExchangeAt
+    (firstPrefixViolation AB.1 AB.2 (mem_badPrefixSubsetPairs.mp hAB).2.2.2.2)
+    AB.1 AB.2
+
+private noncomputable def reflectedToBad (hk : 0 < k) (AB : Finset ℕ × Finset ℕ)
+    (hAB : AB ∈ reflectedPrefixSubsetPairs n k) : Finset ℕ × Finset ℕ :=
+  tailExchangeAt
+    (firstPrefixViolation AB.1 AB.2 <| by
+      have h := mem_reflectedPrefixSubsetPairs.mp hAB
+      apply not_prefixDominates_of_card_lt_of_subset_range h.1 h.2.2.1
+      rw [h.2.1, h.2.2.2]
+      lia)
+    AB.1 AB.2
+
+/-- The bad prefix-dominance pairs are counted by the reflected
+`(k - 1, k + 1)` product. -/
+theorem card_badPrefixSubsetPairs (n k : ℕ) (hk : 0 < k) :
+    (badPrefixSubsetPairs n k).card = Nat.choose n (k - 1) * Nat.choose n (k + 1) := by
+  rw [← card_reflectedPrefixSubsetPairs n k]
+  refine card_bij'
+    (fun AB hAB => badToReflected AB hAB)
+    (fun AB hAB => reflectedToBad hk AB hAB)
+    ?_ ?_ ?_ ?_
+  · intro AB hAB
+    rcases AB with ⟨A, B⟩
+    rcases mem_badPrefixSubsetPairs.mp hAB with ⟨hA, hAcard, hB, hBcard, hbad⟩
+    exact tailExchangeAt_firstPrefixViolation_mem_reflectedPrefixSubsetPairs hA hAcard hB
+      hBcard hbad
+  · intro AB hAB
+    rcases AB with ⟨A, B⟩
+    rcases mem_reflectedPrefixSubsetPairs.mp hAB with ⟨hA, hAcard, hB, hBcard⟩
+    have hbad : ¬ prefixDominates A B := by
+      apply not_prefixDominates_of_card_lt_of_subset_range hA hB
+      rw [hAcard, hBcard]
+      lia
+    exact tailExchangeAt_firstPrefixViolation_mem_badPrefixSubsetPairs hk hA hAcard hB
+      hBcard hbad
+  · intro AB hAB
+    rcases AB with ⟨A, B⟩
+    simp [badToReflected, reflectedToBad,
+      firstPrefixViolation_tailExchangeAt_firstPrefixViolation,
+      tailExchangeAt_tailExchangeAt]
+  · intro AB hAB
+    rcases AB with ⟨A, B⟩
+    simp [badToReflected, reflectedToBad,
+      firstPrefixViolation_tailExchangeAt_firstPrefixViolation,
+      tailExchangeAt_tailExchangeAt]
+
 /-- There is only the empty ordered pair when `k = 0`. -/
 @[simp] theorem orderedKSubsetPairs_zero (n : ℕ) :
     orderedKSubsetPairs n 0 = {((∅ : Finset ℕ), (∅ : Finset ℕ))} := by
