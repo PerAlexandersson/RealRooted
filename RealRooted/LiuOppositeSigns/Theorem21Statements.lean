@@ -724,29 +724,32 @@ by the same-owner cases, which are then handled by
 theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y νL νR : ℝ}
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hf : f.Splits) (hg : g.Splits) {a b x νL νR : ℝ}
+    (hgap : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b)
     (ha_root : f.IsRoot a ∨ g.IsRoot a)
     (hb_root : f.IsRoot b ∨ g.IsRoot b)
     (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card))
     (hνL_pos : 0 < νL)
-    (hνL_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ νL)
-    (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+    (hνL_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL)
+    (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
       ∀ τ ∈ Set.Icc μ νL,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹,
       (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
     (hνR_pos : 0 < νR)
-    (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → νR ≤ μ)
-    (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+    (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR ≤ μ)
+    (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
       ∀ τ ∈ Set.Icc νR μ,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegR_zero : ∀ η ∈ Set.Icc (0 : ℝ) νR,
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
     (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
+  have hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1
+  have hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2
   have hsplitL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹, (g + C η * f).Splits :=
     fun η hη =>
       PosComboRealRooted.splits_add_right_of_nonneg (PosComboRealRooted.comm hfg) hg hη.1
@@ -770,7 +773,7 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
           (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfb)
       exact False.elim <|
         hsgn.false_of_left_roots_add_left_inv_count_eq_right
-          hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+          hfg hno hf hg hfa hfb hf_no hg_no hax hxb hax hxb hnot_odd
           hνL_pos hνL_large hdegL ha_inv_eq hb_inv_eq
     · exact Or.inl ⟨hfa, hgb⟩
   · rcases hb_root with hfb | hgb
@@ -789,44 +792,8 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
           (fun η _ => hno.rightFamily_not_isRoot_of_right_root hgb)
       exact False.elim <|
         hsgn.false_of_right_roots_add_right_small_count_eq_left
-          hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
+          hfg hno hf hg hga hgb hf_no hg_no hax hxb hax hxb hnot_odd
           hνR_pos hνR_small hdegR ha_eq hb_eq
-
-/-- Consecutive-root form of
-`OppositeLeadingSigns.cross_owner_roots_of_not_odd`.  The root-free gap is
-given as a single conjunction, and one interior sample point serves as both the
-parity sample and the crossing point. -/
-theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_gap
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x νL νR : ℝ}
-    (hgap : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b)
-    (ha_root : f.IsRoot a ∨ g.IsRoot a)
-    (hb_root : f.IsRoot b ∨ g.IsRoot b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hνL_pos : 0 < νL)
-    (hνL_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL)
-    (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
-      ∀ τ ∈ Set.Icc μ νL,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hdegL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹,
-      (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
-    (hνR_pos : 0 < νR)
-    (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR ≤ μ)
-    (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
-      ∀ τ ∈ Set.Icc νR μ,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hdegR_zero : ∀ η ∈ Set.Icc (0 : ℝ) νR,
-      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
-    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) :=
-  hsgn.cross_owner_roots_of_not_odd hfg hno hf hg
-    (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1)
-    (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2)
-    hax hxb hax hxb ha_root hb_root hnot_odd
-    hνL_pos hνL_large hdegL hdegL_inv
-    hνR_pos hνR_small hdegR hdegR_zero
 
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
