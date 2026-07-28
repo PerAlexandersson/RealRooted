@@ -1156,161 +1156,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_left_double_roots_below
   exact (not_le.mpr hdisc)
     (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
 
-/-- The cubic/quadratic endpoint is not compatible when the leading
-coefficients have opposite signs and the average of the quadratic roots lies
-strictly above the cubic root interval. -/
-lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
-    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
-    (hcmean : c < (u + v) / 2) :
-    ¬ Compatible
-      (C A * ((X - C a) * (X - C b) * (X - C c)))
-      (C B * ((X - C u) * (X - C v))) := by
-  obtain ⟨μ, hμ, hnot_splits⟩ :=
-    exists_cubicSubQuadratic_not_splits_of_average_above hab hbc hcmean
-  have hA_ne : A ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).1
-  have hB_ne : B ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).2
-  intro hcompat
-  rcases lt_or_gt_of_ne hA_ne with hA_neg | hA_pos
-  · have hB_pos : 0 < B := by
-      by_contra hB_not
-      have hB_nonpos : B ≤ 0 := le_of_not_gt hB_not
-      have hprod_nonneg : 0 ≤ A * B :=
-        mul_nonneg_of_nonpos_of_nonpos (le_of_lt hA_neg) hB_nonpos
-      linarith
-    have hnegA_pos : 0 < -A := by linarith
-    have hα : 0 ≤ 1 / (-A) := by positivity
-    have hβ : 0 ≤ μ / B := by positivity
-    have hcase := hcompat (1 / (-A)) (μ / B) hα hβ
-    have hcombo_eq :
-        C (1 / (-A)) *
-              (C A * ((X - C a) * (X - C b) * (X - C c))) +
-            C (μ / B) * (C B * ((X - C u) * (X - C v))) =
-          -((((X - C a) * (X - C b) * (X - C c)) -
-            C μ * ((X - C u) * (X - C v)))) := by
-      apply Polynomial.funext
-      intro x
-      simp only [eval_add, eval_mul, eval_neg, eval_sub, eval_C, eval_X]
-      field_simp [hA_ne, hB_ne]
-      ring
-    rw [hcombo_eq] at hcase
-    rcases hcase with hzero | ⟨_, hsplit⟩
-    · have hzero' :
-          ((X - C a) * (X - C b) * (X - C c)) -
-              C μ * ((X - C u) * (X - C v)) = 0 := by
-        rw [← neg_eq_zero]
-        simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hzero
-      exact hnot_splits (hzero'.symm ▸ Polynomial.Splits.zero)
-    · exact hnot_splits (by simpa using hsplit.neg)
-  · have hB_neg : B < 0 := by
-      by_contra hB_not
-      have hB_nonneg : 0 ≤ B := le_of_not_gt hB_not
-      have hprod_nonneg : 0 ≤ A * B := mul_nonneg (le_of_lt hA_pos) hB_nonneg
-      linarith
-    have hnegB_pos : 0 < -B := by linarith
-    have hα : 0 ≤ 1 / A := by positivity
-    have hβ : 0 ≤ μ / (-B) := by positivity
-    have hcase := hcompat (1 / A) (μ / (-B)) hα hβ
-    have hcombo_eq :
-        C (1 / A) *
-              (C A * ((X - C a) * (X - C b) * (X - C c))) +
-            C (μ / (-B)) * (C B * ((X - C u) * (X - C v))) =
-          ((X - C a) * (X - C b) * (X - C c)) -
-            C μ * ((X - C u) * (X - C v)) := by
-      apply Polynomial.funext
-      intro x
-      simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X]
-      field_simp [hA_ne, hB_ne]
-      ring
-    rw [hcombo_eq] at hcase
-    rcases hcase with hzero | ⟨_, hsplit⟩
-    · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
-    · exact hnot_splits hsplit
-
-/-- The cubic/quadratic endpoint is not compatible when the leading
-coefficients have opposite signs and both quadratic roots lie strictly above
-the cubic root interval. -/
-lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
-    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
-    (hcu : c < u) (huv : u ≤ v) :
-    ¬ Compatible
-      (C A * ((X - C a) * (X - C b) * (X - C c)))
-      (C B * ((X - C u) * (X - C v))) := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
-  exact
-    not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
-      hAB hab hbc hcmean
-
-/-- The cubic/quadratic endpoint is not compatible when the leading
-coefficients have opposite signs and the two distinct quadratic roots lie
-strictly below the cubic root interval. -/
-lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below_strict
-    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
-    (huv : u < v) (hva : v < a) :
-    ¬ Compatible
-      (C A * ((X - C a) * (X - C b) * (X - C c)))
-      (C B * ((X - C u) * (X - C v))) := by
-  obtain ⟨μ, hμ, hnot_splits⟩ :=
-    exists_cubicSubQuadratic_not_splits_of_left_roots_below_strict
-      hab hbc huv hva
-  have hA_ne : A ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).1
-  have hB_ne : B ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hAB)).2
-  intro hcompat
-  rcases lt_or_gt_of_ne hA_ne with hA_neg | hA_pos
-  · have hB_pos : 0 < B := by
-      by_contra hB_not
-      have hB_nonpos : B ≤ 0 := le_of_not_gt hB_not
-      have hprod_nonneg : 0 ≤ A * B :=
-        mul_nonneg_of_nonpos_of_nonpos (le_of_lt hA_neg) hB_nonpos
-      linarith
-    have hnegA_pos : 0 < -A := by linarith
-    have hα : 0 ≤ 1 / (-A) := by positivity
-    have hβ : 0 ≤ μ / B := by positivity
-    have hcase := hcompat (1 / (-A)) (μ / B) hα hβ
-    have hcombo_eq :
-        C (1 / (-A)) *
-              (C A * ((X - C a) * (X - C b) * (X - C c))) +
-            C (μ / B) * (C B * ((X - C u) * (X - C v))) =
-          -((((X - C a) * (X - C b) * (X - C c)) -
-            C μ * ((X - C u) * (X - C v)))) := by
-      apply Polynomial.funext
-      intro x
-      simp only [eval_add, eval_mul, eval_neg, eval_sub, eval_C, eval_X]
-      field_simp [hA_ne, hB_ne]
-      ring
-    rw [hcombo_eq] at hcase
-    rcases hcase with hzero | ⟨_, hsplit⟩
-    · have hzero' :
-          ((X - C a) * (X - C b) * (X - C c)) -
-              C μ * ((X - C u) * (X - C v)) = 0 := by
-        rw [← neg_eq_zero]
-        simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hzero
-      exact hnot_splits (hzero'.symm ▸ Polynomial.Splits.zero)
-    · exact hnot_splits (by simpa using hsplit.neg)
-  · have hB_neg : B < 0 := by
-      by_contra hB_not
-      have hB_nonneg : 0 ≤ B := le_of_not_gt hB_not
-      have hprod_nonneg : 0 ≤ A * B := mul_nonneg (le_of_lt hA_pos) hB_nonneg
-      linarith
-    have hnegB_pos : 0 < -B := by linarith
-    have hα : 0 ≤ 1 / A := by positivity
-    have hβ : 0 ≤ μ / (-B) := by positivity
-    have hcase := hcompat (1 / A) (μ / (-B)) hα hβ
-    have hcombo_eq :
-        C (1 / A) *
-              (C A * ((X - C a) * (X - C b) * (X - C c))) +
-            C (μ / (-B)) * (C B * ((X - C u) * (X - C v))) =
-          ((X - C a) * (X - C b) * (X - C c)) -
-            C μ * ((X - C u) * (X - C v)) := by
-      apply Polynomial.funext
-      intro x
-      simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X]
-      field_simp [hA_ne, hB_ne]
-      ring
-    rw [hcombo_eq] at hcase
-    rcases hcase with hzero | ⟨_, hsplit⟩
-    · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
-    · exact hnot_splits hsplit
-
 private lemma not_compatible_scaled_pair_of_opposite_of_sub_not_splits
     {P Q : ℝ[X]} {A B μ : ℝ} (hAB : A * B < 0) (hμ : 0 < μ)
     (hnot_splits : ¬ (P - C μ * Q).Splits) :
@@ -1365,6 +1210,55 @@ private lemma not_compatible_scaled_pair_of_opposite_of_sub_not_splits
     rcases hcase with hzero | ⟨_, hsplit⟩
     · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
     · exact hnot_splits hsplit
+
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and the average of the quadratic roots lies
+strictly above the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcmean : c < (u + v) / 2) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_cubicSubQuadratic_not_splits_of_average_above hab hbc hcmean
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := (X - C a) * (X - C b) * (X - C c))
+      (Q := (X - C u) * (X - C v))
+      hAB hμ hnot_splits
+
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and both quadratic roots lie strictly above
+the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcu : c < u) (huv : u ≤ v) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  have hcmean : c < (u + v) / 2 := by nlinarith
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
+      hAB hab hbc hcmean
+
+/-- The cubic/quadratic endpoint is not compatible when the leading
+coefficients have opposite signs and the two distinct quadratic roots lie
+strictly below the cubic root interval. -/
+lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_left_roots_below_strict
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u < v) (hva : v < a) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_cubicSubQuadratic_not_splits_of_left_roots_below_strict
+      hab hbc huv hva
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := (X - C a) * (X - C b) * (X - C c))
+      (Q := (X - C u) * (X - C v))
+      hAB hμ hnot_splits
 
 private lemma not_compatible_scaled_common_factor_of_opposite_of_sub_not_splits
     {D P Q : ℝ[X]} {A B μ : ℝ} (hD_ne : D ≠ 0) (hD_splits : D.Splits)
