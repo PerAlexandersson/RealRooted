@@ -1294,7 +1294,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         · exact False.elim (hdisj d hfd hdg)
       have hgc_not : ¬ g.IsRoot c := hdisj c hfc
       have hdiff :=
-        card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
+        card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
           hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
           hleast hgap_f hgap_g hdiff_b
       exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩
@@ -1322,7 +1322,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
       simpa [hcr_eq] using hr.isRoot
     have hgc_not : ¬ g.IsRoot c := hdisj c hfc
     have hdiff :=
-      card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
+      card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
         hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
         hleast hgap_f hgap_g hdiff_b
     exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩

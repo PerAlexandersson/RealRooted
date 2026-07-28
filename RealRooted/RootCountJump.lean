@@ -285,24 +285,27 @@ theorem eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
     · linarith
 
 /-- One-step suffix-count transport across a least combined root owned by the
-left polynomial, with the upper endpoint chosen before the next combined root. -/
-theorem card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ}
+left polynomial, with the upper endpoint chosen before the next combined root.
+Crossing such a root raises the strict-upper `f`-minus-`g` count difference by
+one. -/
+theorem card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ} {k : ℤ}
     (hac : a < c) (hcb : c ≤ b) (hg_not : ¬ g.IsRoot c)
     (hcount : f.roots.count c = 1)
     (hleast : ∀ z : ℝ, a < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
     (hgap_f : ∀ r ∈ f.roots, r ≤ c ∨ b < r)
     (hgap_g : ∀ r ∈ g.roots, r ≤ c ∨ b < r)
     (hb : ((f.roots.filter (b < ·)).card : ℤ) -
-        (g.roots.filter (b < ·)).card = 0) :
+        (g.roots.filter (b < ·)).card = k) :
     ((f.roots.filter (a < ·)).card : ℤ) -
-        (g.roots.filter (a < ·)).card = 1 := by
+        (g.roots.filter (a < ·)).card = k + 1 := by
   have hunique :=
     eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
       hf hg hleast hgap_f hgap_g
-  exact
-    card_roots_filter_gt_sub_eq_one_of_left_unique_simple_root_Ioc_of_above_eq_zero
-      hf hac hcb hg_not hcount hunique hb
+  have hshift :=
+    card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
+      hf hac hcb hg_not hcount hunique
+  simpa [hb, add_comm, add_left_comm, add_assoc] using hshift
 
 /-- One-step suffix-count transport across a least combined root owned by the
 right polynomial, with the upper endpoint chosen before the next combined root. -/
