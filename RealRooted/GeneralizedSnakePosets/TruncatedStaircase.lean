@@ -168,6 +168,22 @@ def fullStaircaseReflectedPairColumns (n : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset ℕ :=
   (fullStaircaseReflectedPairs n P).image fun x => x.2
 
+/-- Reflected pairs sorted lexicographically by row, then by reflected
+column. -/
+def fullStaircaseReflectedPairLexList (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    List (ℕ × ℕ) :=
+  (fullStaircaseReflectedPairs n P).sort (Prod.Lex (· < ·) (· ≤ ·))
+
+/-- Row list of the lexicographically sorted reflected-pair encoding. -/
+def fullStaircaseReflectedRowList (n : ℕ) (P : Finset (ℕ × ℕ)) : List ℕ :=
+  (fullStaircaseReflectedPairLexList n P).map fun x => x.1
+
+/-- Reflected-column list of the lexicographically sorted reflected-pair
+encoding. -/
+def fullStaircaseReflectedColumnList (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    List ℕ :=
+  (fullStaircaseReflectedPairLexList n P).map fun x => x.2
+
 /-- Membership in the reflected-pair encoding. -/
 @[simp] theorem mem_fullStaircaseReflectedPairs
     {n : ℕ} {P : Finset (ℕ × ℕ)} {x : ℕ × ℕ} :
@@ -175,6 +191,27 @@ def fullStaircaseReflectedPairColumns (n : ℕ) (P : Finset (ℕ × ℕ)) :
       ∃ a ∈ P, (a.1, n - 1 - a.2) = x := by
   classical
   simp [fullStaircaseReflectedPairs]
+
+/-- Membership in the lexicographically sorted reflected-pair list. -/
+@[simp] theorem mem_fullStaircaseReflectedPairLexList
+    {n : ℕ} {P : Finset (ℕ × ℕ)} {x : ℕ × ℕ} :
+    x ∈ fullStaircaseReflectedPairLexList n P ↔
+      x ∈ fullStaircaseReflectedPairs n P := by
+  simp [fullStaircaseReflectedPairLexList]
+
+/-- The reflected-pair lexicographic list is pairwise lexicographically
+ordered. -/
+theorem fullStaircaseReflectedPairLexList_pairwise
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    (fullStaircaseReflectedPairLexList n P).Pairwise
+      (Prod.Lex (· < ·) (· ≤ ·)) := by
+  simp [fullStaircaseReflectedPairLexList]
+
+/-- The reflected-pair lexicographic list has no duplicate pairs. -/
+theorem fullStaircaseReflectedPairLexList_nodup
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    (fullStaircaseReflectedPairLexList n P).Nodup := by
+  simp [fullStaircaseReflectedPairLexList]
 
 /-- Membership in the row projection of the reflected-pair encoding. -/
 @[simp] theorem mem_fullStaircaseReflectedPairRows
@@ -209,6 +246,39 @@ theorem fullStaircaseReflectedPairColumns_eq_image_reflectedColumn
   ext col
   simp
 
+/-- The row list of the lexicographically sorted reflected pairs has the same
+underlying finite set as the row projection. -/
+theorem fullStaircaseReflectedRowList_toFinset
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    (fullStaircaseReflectedRowList n P).toFinset =
+      fullStaircaseReflectedPairRows n P := by
+  ext row
+  simp [fullStaircaseReflectedRowList, fullStaircaseReflectedPairLexList,
+    fullStaircaseReflectedPairRows]
+
+/-- The reflected-column list of the lexicographically sorted reflected pairs
+has the same underlying finite set as the reflected-column projection. -/
+theorem fullStaircaseReflectedColumnList_toFinset
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    (fullStaircaseReflectedColumnList n P).toFinset =
+      fullStaircaseReflectedPairColumns n P := by
+  ext col
+  simp [fullStaircaseReflectedColumnList, fullStaircaseReflectedPairLexList,
+    fullStaircaseReflectedPairColumns]
+
+/-- The row list of the lexicographically sorted reflected pairs is weakly
+increasing. -/
+theorem fullStaircaseReflectedRowList_sortedLE
+    (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    (fullStaircaseReflectedRowList n P).SortedLE := by
+  rw [List.sortedLE_iff_pairwise, fullStaircaseReflectedRowList,
+    List.pairwise_map]
+  exact (fullStaircaseReflectedPairLexList_pairwise n P).imp (by
+    intro a b h
+    cases h with
+    | left b1 b2 hrow => exact le_of_lt hrow
+    | right a hcol => exact le_rfl)
+
 /-- The reflected-pair encoding of a full-staircase placement has the same
 cardinality as the original placement. -/
 theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_card
@@ -239,6 +309,66 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairColumns_card
     (fullStaircaseReflectedPairColumns n P).card = P.card := by
   rw [fullStaircaseReflectedPairColumns_eq_image_reflectedColumn,
     hP.full_card_image_reflectedColumn]
+
+/-- The row list of the lexicographically sorted reflected pairs has length
+equal to the placement cardinality. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedRowList_length
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedRowList n P).length = P.card := by
+  rw [fullStaircaseReflectedRowList, List.length_map,
+    fullStaircaseReflectedPairLexList, Finset.length_sort,
+    hP.fullStaircaseReflectedPairs_card]
+
+/-- The reflected-column list of the lexicographically sorted reflected pairs
+has length equal to the placement cardinality. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_length
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedColumnList n P).length = P.card := by
+  rw [fullStaircaseReflectedColumnList, List.length_map,
+    fullStaircaseReflectedPairLexList, Finset.length_sort,
+    hP.fullStaircaseReflectedPairs_card]
+
+/-- The row list of the lexicographically sorted reflected pairs has no
+duplicates for a valid full-staircase placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedRowList_nodup
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedRowList n P).Nodup := by
+  rw [fullStaircaseReflectedRowList]
+  refine List.Nodup.map_on ?_ (fullStaircaseReflectedPairLexList_nodup n P)
+  intro x hx y hy hrow
+  have hxP : x ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp hx
+  have hyP : y ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp hy
+  rcases mem_fullStaircaseReflectedPairs.mp hxP with ⟨a, ha, rfl⟩
+  rcases mem_fullStaircaseReflectedPairs.mp hyP with ⟨b, hb, rfl⟩
+  by_cases hab : a = b
+  · subst b
+    rfl
+  · exact (hP.row_ne ha hb hab hrow).elim
+
+/-- The reflected-column list of the lexicographically sorted reflected pairs
+has no duplicates for a valid full-staircase placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_nodup
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedColumnList n P).Nodup := by
+  rw [fullStaircaseReflectedColumnList]
+  refine List.Nodup.map_on ?_ (fullStaircaseReflectedPairLexList_nodup n P)
+  intro x hx y hy hcol
+  have hxP : x ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp hx
+  have hyP : y ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp hy
+  rcases mem_fullStaircaseReflectedPairs.mp hxP with ⟨a, ha, rfl⟩
+  rcases mem_fullStaircaseReflectedPairs.mp hyP with ⟨b, hb, rfl⟩
+  by_cases hab : a = b
+  · subst b
+    rfl
+  · exact (hP.full_reflectedColumn_ne ha hb hab hcol).elim
 
 /-- The reflected-pair row projection of a full-staircase placement lies in
 `range n`. -/
@@ -278,6 +408,21 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_mem_bounds
   rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
   exact ⟨by lia, by lia, hP.full_row_le_reflectedColumn ha⟩
 
+/-- Row and reflected-column lists of the lexicographically sorted
+reflected-pair encoding are componentwise ordered. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedLists_forall₂_le
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    List.Forall₂ (· ≤ ·) (fullStaircaseReflectedRowList n P)
+      (fullStaircaseReflectedColumnList n P) := by
+  rw [fullStaircaseReflectedRowList, fullStaircaseReflectedColumnList]
+  rw [List.forall₂_map_left_iff, List.forall₂_map_right_iff,
+    List.forall₂_same]
+  intro x hx
+  have hx_pairs : x ∈ fullStaircaseReflectedPairs n P := by
+    simpa [fullStaircaseReflectedPairLexList] using hx
+  exact (hP.fullStaircaseReflectedPairs_mem_bounds hx_pairs).2.2
+
 /-- Reflected columns increase with rows inside the reflected-pair encoding of
 a full-staircase placement. -/
 theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_snd_lt_of_fst_lt
@@ -289,6 +434,44 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_snd_lt_of_fst_lt
   rcases mem_fullStaircaseReflectedPairs.mp hx with ⟨a, ha, rfl⟩
   rcases mem_fullStaircaseReflectedPairs.mp hy with ⟨b, hb, rfl⟩
   exact hP.full_reflectedColumn_lt_of_row_lt ha hb hrow
+
+/-- The reflected-column list of the lexicographically sorted reflected pairs
+is weakly increasing for a valid full-staircase placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_sortedLE
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedColumnList n P).SortedLE := by
+  rw [fullStaircaseReflectedColumnList]
+  rw [List.sortedLE_iff_getElem_le_getElem_of_le]
+  intro i j hi hj hij
+  by_cases heq : i = j
+  · subst j
+    rfl
+  have hlt : i < j := lt_of_le_of_ne hij heq
+  let L := fullStaircaseReflectedPairLexList n P
+  have hiL : i < L.length := by simpa [L] using hi
+  have hjL : j < L.length := by simpa [L] using hj
+  set x := L[i] with hx
+  set y := L[j] with hy
+  have hlex : Prod.Lex (· < ·) (· ≤ ·) x y := by
+    simpa [x, y] using
+      (List.pairwise_iff_getElem.mp
+        (fullStaircaseReflectedPairLexList_pairwise n P)) i j hiL hjL hlt
+  have hxi : x ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp (by
+      simp [x, L])
+  have hxj : y ∈ fullStaircaseReflectedPairs n P :=
+    mem_fullStaircaseReflectedPairLexList.mp (by
+      simp [y, L])
+  have hcol : x.2 ≤ y.2 := by
+    rcases x with ⟨xr, xc⟩
+    rcases y with ⟨yr, yc⟩
+    cases hlex with
+    | left b1 b2 hrow =>
+        exact le_of_lt
+          (hP.fullStaircaseReflectedPairs_snd_lt_of_fst_lt hxi hxj hrow)
+    | right a hcol => exact hcol
+  simpa [x, y, hx, hy, L] using hcol
 
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
