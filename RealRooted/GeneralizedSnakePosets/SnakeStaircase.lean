@@ -14,39 +14,6 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-namespace FiniteSkewBoard
-
-/-! ## Reflected triangular blocks -/
-
-/-- Reflecting columns sends the upper triangle `r <= c` in an `(m + 1)` by
-`(m + 1)` square to the truncated-staircase convention. -/
-theorem mem_truncatedStaircase_reflectUpperTriangle_iff
-    {m r c : ℕ} (hr : r ≤ m) :
-    (r, m - c) ∈ (truncatedStaircase (m + 1) (m + 1)).cells ↔
-      r ≤ c := by
-  rw [mem_truncatedStaircase_cells]
-  constructor
-  · rintro ⟨_hr, hcol⟩
-    lia
-  · intro hrc
-    exact ⟨Nat.lt_succ_of_le hr, by lia⟩
-
-/-- Reflecting rows after swapping coordinates sends the lower triangle
-`c <= r` in an `(m + 1)` by `(m + 1)` square to the truncated-staircase
-convention. -/
-theorem mem_truncatedStaircase_reflectLowerTriangle_iff
-    {m r c : ℕ} (hc : c ≤ m) :
-    (c, m - r) ∈ (truncatedStaircase (m + 1) (m + 1)).cells ↔
-      c ≤ r := by
-  rw [mem_truncatedStaircase_cells]
-  constructor
-  · rintro ⟨_hc, hrow⟩
-    lia
-  · intro hcr
-    exact ⟨Nat.lt_succ_of_le hc, by lia⟩
-
-end FiniteSkewBoard
-
 /-! ## Final suffix blocks -/
 
 /-- A final `R` suffix block of a concrete generalized snake board becomes the

@@ -53,6 +53,57 @@ def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where
     (row, col) ∈ (truncatedStaircase n i).cells ↔ row < i ∧ col < n - row := by
   simp [truncatedStaircase]
 
+/-! ## Reflected triangular blocks -/
+
+/-- The full truncated staircase consists exactly of cells below the
+antidiagonal. -/
+theorem mem_truncatedStaircase_full_cells_iff {n row col : ℕ} :
+    (row, col) ∈ (truncatedStaircase n n).cells ↔ row + col < n := by
+  rw [mem_truncatedStaircase_cells]
+  constructor
+  · intro h
+    simpa [Nat.add_comm] using Nat.add_lt_of_lt_sub h.2
+  · intro h
+    have hcolrow : col + row < n := by simpa [Nat.add_comm] using h
+    exact ⟨Nat.lt_of_le_of_lt (Nat.le_add_right row col) h,
+      Nat.lt_sub_iff_add_lt.mpr hcolrow⟩
+
+/-- Reflecting columns sends the upper triangle `r <= c` in an `(m + 1)` by
+`(m + 1)` square to the truncated-staircase convention. -/
+theorem mem_truncatedStaircase_reflectUpperTriangle_iff
+    {m r c : ℕ} (hr : r ≤ m) :
+    (r, m - c) ∈ (truncatedStaircase (m + 1) (m + 1)).cells ↔
+      r ≤ c := by
+  rw [mem_truncatedStaircase_cells]
+  constructor
+  · rintro ⟨_hr, hcol⟩
+    lia
+  · intro hrc
+    exact ⟨Nat.lt_succ_of_le hr, by lia⟩
+
+/-- Reflecting rows after swapping coordinates sends the lower triangle
+`c <= r` in an `(m + 1)` by `(m + 1)` square to the truncated-staircase
+convention. -/
+theorem mem_truncatedStaircase_reflectLowerTriangle_iff
+    {m r c : ℕ} (hc : c ≤ m) :
+    (c, m - r) ∈ (truncatedStaircase (m + 1) (m + 1)).cells ↔
+      c ≤ r := by
+  rw [mem_truncatedStaircase_cells]
+  constructor
+  · rintro ⟨_hc, hrow⟩
+    lia
+  · intro hcr
+    exact ⟨Nat.lt_succ_of_le hc, by lia⟩
+
+/-- Full-staircase version of the column-reflection convention used for
+encoding placements by componentwise ordered subset pairs. -/
+theorem mem_truncatedStaircase_full_reflectColumn_iff
+    {n row col : ℕ} (hrow : row < n) :
+    (row, n - 1 - col) ∈ (truncatedStaircase n n).cells ↔
+      row ≤ col := by
+  rw [mem_truncatedStaircase_full_cells_iff]
+  constructor <;> intro h <;> lia
+
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
     (i, c) ∈ (truncatedStaircase n (i + 1)).cells ↔ c < n - i := by
