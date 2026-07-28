@@ -1242,10 +1242,8 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
   intro x ih hx hfx hgx
   obtain ⟨c, hcroot, hxc, hleast⟩ :=
     exists_least_isRoot_or_isRoot_gt hf_ne hg_ne (Or.inl hr.isRoot) hx
-  have hc_mem : c ∈ f.roots + g.roots := by
-    rcases hcroot with hcf | hcg
-    · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf_ne).mpr hcf))
-    · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg_ne).mpr hcg))
+  have hc_mem : c ∈ f.roots + g.roots :=
+    (mem_roots_add_iff_isRoot_or_isRoot hf_ne hg_ne).mpr hcroot
   obtain ⟨b, hcb, hfb, hgb, hgap_f, hgap_g⟩ :=
     exists_common_nonRoot_threshold_no_mem_Ioc hf_ne hg_ne c
   have hxb : x < b := hxc.trans hcb

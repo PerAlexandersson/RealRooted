@@ -132,6 +132,13 @@ theorem card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
     card_roots_filter_gt_eq_zero_of_no_isRoot_gt hg fun r hr => (h r hr).2
   simp [hf_zero, hg_zero]
 
+/-- Membership in the combined roots multiset is the same as being a root of
+one of the two nonzero polynomials. -/
+theorem mem_roots_add_iff_isRoot_or_isRoot
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {x : ℝ} :
+    x ∈ f.roots + g.roots ↔ f.IsRoot x ∨ g.IsRoot x := by
+  rw [Multiset.mem_add, Polynomial.mem_roots hf, Polynomial.mem_roots hg]
+
 /-- Exact jump formula for strict-upper multiset-count differences across
 `(a, b]`. -/
 theorem card_filter_gt_sub_eq_card_filter_Ioc_sub_add
@@ -706,22 +713,15 @@ theorem exists_least_isRoot_or_isRoot_gt
     (hc₀ : f.IsRoot c₀ ∨ g.IsRoot c₀) (hx : x < c₀) :
     ∃ c : ℝ, (f.IsRoot c ∨ g.IsRoot c) ∧ x < c ∧
       ∀ z : ℝ, x < z → (f.IsRoot z ∨ g.IsRoot z) → c ≤ z := by
-  have hc₀_mem : c₀ ∈ f.roots + g.roots := by
-    rcases hc₀ with hcf | hcg
-    · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf).mpr hcf))
-    · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg).mpr hcg))
+  have hc₀_mem : c₀ ∈ f.roots + g.roots :=
+    (mem_roots_add_iff_isRoot_or_isRoot hf hg).mpr hc₀
   obtain ⟨c, hc_mem, hxc, hleast⟩ :=
     exists_least_mem_gt (f.roots + g.roots) hc₀_mem hx
   refine ⟨c, ?_, hxc, ?_⟩
-  · rw [Multiset.mem_add] at hc_mem
-    rcases hc_mem with hcf | hcg
-    · exact Or.inl ((Polynomial.mem_roots hf).mp hcf)
-    · exact Or.inr ((Polynomial.mem_roots hg).mp hcg)
+  · exact (mem_roots_add_iff_isRoot_or_isRoot hf hg).mp hc_mem
   · intro z hxz hz
-    have hz_mem : z ∈ f.roots + g.roots := by
-      rcases hz with hzf | hzg
-      · exact Multiset.mem_add.mpr (Or.inl ((Polynomial.mem_roots hf).mpr hzf))
-      · exact Multiset.mem_add.mpr (Or.inr ((Polynomial.mem_roots hg).mpr hzg))
+    have hz_mem : z ∈ f.roots + g.roots :=
+      (mem_roots_add_iff_isRoot_or_isRoot hf hg).mpr hz
     exact hleast z hz_mem hxz
 
 /-- Push a threshold strictly upward to a common non-root for two polynomials
@@ -734,11 +734,13 @@ theorem exists_common_nonRoot_threshold_no_mem_Ioc
   obtain ⟨x', hxx', hgap⟩ := exists_threshold_no_mem_Ioc (f.roots + g.roots) x
   refine ⟨x', hxx', ?_, ?_, ?_, ?_⟩
   · intro hval
-    have hr : x' ∈ f.roots := (mem_roots hf).mpr hval
-    rcases hgap x' (Multiset.mem_add.mpr (Or.inl hr)) with hx' | hx' <;> linarith
+    have hroot : f.IsRoot x' ∨ g.IsRoot x' := Or.inl hval
+    rcases hgap x' ((mem_roots_add_iff_isRoot_or_isRoot hf hg).mpr hroot) with hx' | hx' <;>
+      linarith
   · intro hval
-    have hr : x' ∈ g.roots := (mem_roots hg).mpr hval
-    rcases hgap x' (Multiset.mem_add.mpr (Or.inr hr)) with hx' | hx' <;> linarith
+    have hroot : f.IsRoot x' ∨ g.IsRoot x' := Or.inr hval
+    rcases hgap x' ((mem_roots_add_iff_isRoot_or_isRoot hf hg).mpr hroot) with hx' | hx' <;>
+      linarith
   · intro r hr
     exact hgap r (Multiset.mem_add.mpr (Or.inl hr))
   · intro r hr
