@@ -494,6 +494,46 @@ theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_left_roots_gt_dro
   exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
     hfg ha_no hb_no hμ_pos hμν hdeg hdrop
 
+/-- Endpoint-shaped `f`/`f` contradiction for Liu's odd-indexed interval
+argument.  If the transported right-family count drop reaches a parameter
+whose endpoint strict-upper counts agree with those of `g`, then same-owner
+`f`-endpoints contradict the fact that `g` has no roots in `(a, b]`. -/
+theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hν_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ ν)
+    (hdeg_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+      ∀ τ ∈ Set.Icc μ ν,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
+      (g.roots.filter (a < ·)).card)
+    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
+      (g.roots.filter (b < ·)).card) :
+    False := by
+  obtain ⟨μ, hμ_pos, hμ_root, _hdrop, hdrop_le⟩ :=
+    hsgn.exists_pos_crossing_add_right_Ioo_left_roots_gt_drop_two_le
+      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+  have hdropν :
+      ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C ν * g).roots.filter (a < ·)).card :=
+    hdrop_le ν (hν_large μ hμ_pos hμ_root) (hdeg_large μ hμ_pos hμ_root)
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z :=
+    hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no
+  have hg_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ g.IsRoot z := by
+    intro z haz hzb
+    exact hg_no_Icc z ⟨le_of_lt haz, hzb⟩
+  exact
+    (not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
+      (p := f + C ν * g) (q := g) hab hg_no_Ioc ha_eq hb_eq) hdropν
+
 /-- Same-owner `g`/`g` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
 right-family crossing polynomial has strict-upper root count drop at least two
