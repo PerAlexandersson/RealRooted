@@ -792,6 +792,42 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
           hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
           hνR_pos hνR_small hdegR ha_eq hb_eq
 
+/-- Consecutive-root form of
+`OppositeLeadingSigns.cross_owner_roots_of_not_odd`.  The root-free gap is
+given as a single conjunction, and one interior sample point serves as both the
+parity sample and the crossing point. -/
+theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_gap
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x νL νR : ℝ}
+    (hgap : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b)
+    (ha_root : f.IsRoot a ∨ g.IsRoot a)
+    (hb_root : f.IsRoot b ∨ g.IsRoot b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hνL_pos : 0 < νL)
+    (hνL_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL)
+    (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc μ νL,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹,
+      (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
+    (hνR_pos : 0 < νR)
+    (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR ≤ μ)
+    (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc νR μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegR_zero : ∀ η ∈ Set.Icc (0 : ℝ) νR,
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
+    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) :=
+  hsgn.cross_owner_roots_of_not_odd hfg hno hf hg
+    (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1)
+    (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2)
+    hax hxb hax hxb ha_root hb_root hnot_odd
+    hνL_pos hνL_large hdegL hdegL_inv
+    hνR_pos hνR_small hdegR hdegR_zero
+
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
 right-family count drop reaches a parameter whose endpoint strict-upper counts
