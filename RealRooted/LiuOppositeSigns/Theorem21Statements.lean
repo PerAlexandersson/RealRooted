@@ -494,6 +494,24 @@ theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_left_roots_gt_dro
   exact rightFamily_count_drop_two_of_forall_pos_not_isRoot_of_le
     hfg ha_no hb_no hμ_pos hμν hdeg hdrop
 
+private theorem false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
+    {f g q : ℝ[X]} {a b ν : ℝ} (hab : a ≤ b)
+    (hq_no : ∀ z ∈ Set.Icc a b, ¬ q.IsRoot z)
+    (hdrop :
+      ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C ν * g).roots.filter (a < ·)).card)
+    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
+      (q.roots.filter (a < ·)).card)
+    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
+      (q.roots.filter (b < ·)).card) :
+    False := by
+  have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
+    intro z haz hzb
+    exact hq_no z ⟨le_of_lt haz, hzb⟩
+  exact
+    (not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
+      (p := f + C ν * g) (q := q) hab hq_no_Ioc ha_eq hb_eq) hdrop
+
 /-- Endpoint-shaped `f`/`f` contradiction for Liu's odd-indexed interval
 argument.  If the transported right-family count drop reaches a parameter
 whose endpoint strict-upper counts agree with those of `g`, then same-owner
@@ -527,12 +545,8 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
   have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z :=
     hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no
-  have hg_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ g.IsRoot z := by
-    intro z haz hzb
-    exact hg_no_Icc z ⟨le_of_lt haz, hzb⟩
-  exact
-    (not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
-      (p := f + C ν * g) (q := g) hab hg_no_Ioc ha_eq hb_eq) hdropν
+  exact false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
+    hab hg_no_Icc hdropν ha_eq hb_eq
 
 /-- Same-owner `g`/`g` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
