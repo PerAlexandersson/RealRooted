@@ -17,7 +17,6 @@ import RealRooted.Challenges.Favard
 import RealRooted.Challenges.Hadamard
 import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePoulain
-import RealRooted.Challenges.HosterStump
 import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction
 import RealRooted.Challenges.Kurtz
