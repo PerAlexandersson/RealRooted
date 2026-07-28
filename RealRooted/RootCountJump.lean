@@ -218,18 +218,9 @@ theorem two_le_card_roots_filter_Ioo_of_even_of_isRoot
   have hmem : y ∈ s := by
     exact Multiset.mem_filter.mpr
       ⟨(Polynomial.mem_roots hp_ne).mpr hy, ⟨hay, hyb⟩⟩
-  have hone : 1 ≤ s.card := by
-    have hcount_pos : 0 < Multiset.count y s :=
-      Multiset.count_pos.mpr hmem
-    exact Nat.succ_le_of_lt
-      (lt_of_lt_of_le hcount_pos (Multiset.count_le_card y s))
-  have hne_zero : s.card ≠ 0 := by
-    linarith
-  have hne_one : s.card ≠ 1 := by
-    intro hcard
-    rw [hcard] at heven
-    norm_num at heven
-  exact (Nat.two_le_iff s.card).mpr ⟨hne_zero, hne_one⟩
+  have hcard_pos : 0 < s.card :=
+    Multiset.card_pos_iff_exists_mem.mpr ⟨y, hmem⟩
+  exact Nat.one_lt_of_ne_zero_of_even (Nat.ne_of_gt hcard_pos) heven
 
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 member of their closed segment is nonzero at `x`. -/
