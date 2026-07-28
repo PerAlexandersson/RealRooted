@@ -384,6 +384,32 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
     hq_ne hμ_root hay hyb heven
   exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩
 
+private theorem crossing_count_drop_of_endpoint_sign
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a b y μ : ℝ}
+    (hμ_pos : 0 < μ) (hμ_root : (f + C μ * g).IsRoot y)
+    (hμ_eq : μ = -f.eval y / g.eval y)
+    (hμ_der : (f + C μ * g).derivative.eval y ≠ 0)
+    (hμ_unique : ∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ)
+    (hay : a < y) (hyb : y < b) (hab : a ≤ b)
+    (hendpoint : 0 < (f + C μ * g).eval a * (f + C μ * g).eval b)
+    (hnot_b : ¬ (f + C μ * g).IsRoot b) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
+        ((f + C μ * g).roots.filter (a < ·)).card := by
+  have hq_rr : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits :=
+    hfg.isRealRooted_add_right hμ_pos
+  have heven := even_card_roots_filter_Ioo_of_eval_mul_pos
+    hq_rr.1 hq_rr.2 hab hendpoint
+  have htwo := two_le_card_roots_filter_Ioo_of_even_of_isRoot
+    hq_rr.1 hμ_root hay hyb heven
+  have hdrop := card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
+    hq_rr.1 hab hnot_b htwo
+  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩
+
 /-- Same-owner `f`/`f` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
 right-family crossing polynomial has strict-upper root count drop at least two
@@ -404,17 +430,14 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
       (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
       ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
         ((f + C μ * g).roots.filter (a < ·)).card := by
-  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩ :=
-    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_two_roots
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hendpoint⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_endpoint_sign
       hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-  have hq_ne : (f + C μ * g) ≠ 0 :=
-    (hfg.isRealRooted_add_right hμ_pos).1
   have hq_not_b : ¬ (f + C μ * g).IsRoot b :=
     hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hμ_pos) hfb
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
-  have hdrop := card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
-    hq_ne hab hq_not_b htwo
-  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩
+  exact crossing_count_drop_of_endpoint_sign hfg hμ_pos hμ_root hμ_eq hμ_der
+    hμ_unique hay hyb hab hendpoint hq_not_b
 
 /-- Same-owner `g`/`g` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
@@ -451,17 +474,10 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
   have hendpoint :
       0 < (f + C μ * g).eval a * (f + C μ * g).eval b := by
     simpa [eval_add, eval_mul, eval_C, hga_eval, hgb_eval] using hf_endpoint
-  have hq_rr : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits :=
-    hfg.isRealRooted_add_right hμ_pos
-  have heven := even_card_roots_filter_Ioo_of_eval_mul_pos
-    hq_rr.1 hq_rr.2 hab hendpoint
-  have htwo := two_le_card_roots_filter_Ioo_of_even_of_isRoot
-    hq_rr.1 hμ_root hay hyb heven
   have hq_not_b : ¬ (f + C μ * g).IsRoot b :=
     hno.rightFamily_not_isRoot_of_right_root hgb
-  have hdrop := card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
-    hq_rr.1 hab hq_not_b htwo
-  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩
+  exact crossing_count_drop_of_endpoint_sign hfg hμ_pos hμ_root hμ_eq hμ_der
+    hμ_unique hay hyb hab hendpoint hq_not_b
 
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
