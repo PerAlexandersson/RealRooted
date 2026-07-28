@@ -320,6 +320,88 @@ theorem tailExchangeAt_tailExchangeAt (i : ℕ) (A B : Finset ℕ) :
   · have hxgt : i < x := Nat.lt_of_not_ge hx
     simp [tailExchangeAt, hx, hxgt]
 
+/-- Prefixes at or before the exchange threshold are unchanged in the first component. -/
+theorem tailExchangeAt_fst_filter_le_of_le {j i : ℕ} (hji : j ≤ i) (A B : Finset ℕ) :
+    (tailExchangeAt i A B).1.filter (fun x => x ≤ j) = A.filter fun x => x ≤ j := by
+  ext x
+  constructor
+  · intro hx
+    rw [mem_filter] at hx
+    rw [mem_tailExchangeAt_fst] at hx
+    rw [mem_filter]
+    rcases hx.1 with ⟨hxA, _hxi⟩ | ⟨_hxB, hix⟩
+    · exact ⟨hxA, hx.2⟩
+    · exact False.elim ((not_lt_of_ge (le_trans hx.2 hji)) hix)
+  · intro hx
+    rw [mem_filter] at hx
+    rw [mem_filter, mem_tailExchangeAt_fst]
+    exact ⟨Or.inl ⟨hx.1, le_trans hx.2 hji⟩, hx.2⟩
+
+/-- Prefixes at or before the exchange threshold are unchanged in the second component. -/
+theorem tailExchangeAt_snd_filter_le_of_le {j i : ℕ} (hji : j ≤ i) (A B : Finset ℕ) :
+    (tailExchangeAt i A B).2.filter (fun x => x ≤ j) = B.filter fun x => x ≤ j := by
+  ext x
+  constructor
+  · intro hx
+    rw [mem_filter] at hx
+    rw [mem_tailExchangeAt_snd] at hx
+    rw [mem_filter]
+    rcases hx.1 with ⟨hxB, _hxi⟩ | ⟨_hxA, hix⟩
+    · exact ⟨hxB, hx.2⟩
+    · exact False.elim ((not_lt_of_ge (le_trans hx.2 hji)) hix)
+  · intro hx
+    rw [mem_filter] at hx
+    rw [mem_filter, mem_tailExchangeAt_snd]
+    exact ⟨Or.inl ⟨hx.1, le_trans hx.2 hji⟩, hx.2⟩
+
+/-- Tail exchange at the first violating threshold still leaves a prefix violation. -/
+theorem not_prefixDominates_tailExchangeAt_firstPrefixViolation {A B : Finset ℕ}
+    (h : ¬ prefixDominates A B) :
+    ¬ prefixDominates
+      (tailExchangeAt (firstPrefixViolation A B h) A B).1
+      (tailExchangeAt (firstPrefixViolation A B h) A B).2 := by
+  rw [not_prefixDominates_iff_exists_card_filter_lt]
+  refine ⟨firstPrefixViolation A B h, ?_⟩
+  rw [tailExchangeAt_fst_filter_le_of_le le_rfl,
+    tailExchangeAt_snd_filter_le_of_le le_rfl]
+  exact firstPrefixViolation_spec h
+
+/-- Tail exchange at the first violating threshold preserves that first
+violating threshold. -/
+theorem firstPrefixViolation_tailExchangeAt_firstPrefixViolation {A B : Finset ℕ}
+    (h : ¬ prefixDominates A B)
+    (htail : ¬ prefixDominates
+      (tailExchangeAt (firstPrefixViolation A B h) A B).1
+      (tailExchangeAt (firstPrefixViolation A B h) A B).2) :
+    firstPrefixViolation
+      (tailExchangeAt (firstPrefixViolation A B h) A B).1
+      (tailExchangeAt (firstPrefixViolation A B h) A B).2 htail =
+        firstPrefixViolation A B h := by
+  let i := firstPrefixViolation A B h
+  let C := tailExchangeAt i A B
+  have hviol_i : (C.1.filter fun x => x ≤ i).card < (C.2.filter fun x => x ≤ i).card := by
+    rw [show C.1 = (tailExchangeAt i A B).1 from rfl,
+      show C.2 = (tailExchangeAt i A B).2 from rfl]
+    rw [tailExchangeAt_fst_filter_le_of_le le_rfl,
+      tailExchangeAt_snd_filter_le_of_le le_rfl]
+    simpa [i] using firstPrefixViolation_spec h
+  have hle : firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) ≤ i := by
+    unfold firstPrefixViolation
+    exact Nat.find_min' _ hviol_i
+  have hnot_before : ∀ j < i,
+      ¬ (C.1.filter fun x => x ≤ j).card < (C.2.filter fun x => x ≤ j).card := by
+    intro j hj
+    rw [show C.1 = (tailExchangeAt i A B).1 from rfl,
+      show C.2 = (tailExchangeAt i A B).2 from rfl]
+    rw [tailExchangeAt_fst_filter_le_of_le (le_of_lt hj),
+      tailExchangeAt_snd_filter_le_of_le (le_of_lt hj)]
+    exact firstPrefixViolation_min h (by simpa [i] using hj)
+  have hge : i ≤ firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) := by
+    exact le_of_not_gt fun hlt => hnot_before _ hlt (firstPrefixViolation_spec _)
+  have h_eq : firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) = i :=
+    le_antisymm hle hge
+  simpa [C, i] using h_eq
+
 /-- Counting entries of a sorted finset list below a threshold is the same as
 filtering the finset by that threshold. -/
 theorem countP_sort_eq_card_filter (A : Finset ℕ) (i : ℕ) :
