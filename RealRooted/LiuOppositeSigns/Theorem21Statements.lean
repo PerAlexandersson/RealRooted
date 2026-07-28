@@ -622,6 +622,44 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right
   exact false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
     hab hg_no_Icc hdropν ha_eq hb_eq
 
+/-- Endpoint-shaped `f`/`f` contradiction using the reciprocal small
+right-family.  This is the large-parameter form of
+`OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right`: the
+endpoint count equalities are supplied for `g + C ν⁻¹ * f`, then transferred
+to `f + C ν * g` by reciprocal scaling. -/
+theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hν_pos : 0 < ν)
+    (hν_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ ν)
+    (hdeg_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
+      ∀ τ ∈ Set.Icc μ ν,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (ha_inv_eq : ((g + C ν⁻¹ * f).roots.filter (a < ·)).card =
+      (g.roots.filter (a < ·)).card)
+    (hb_inv_eq : ((g + C ν⁻¹ * f).roots.filter (b < ·)).card =
+      (g.roots.filter (b < ·)).card) :
+    False := by
+  have hν_ne : ν ≠ 0 := ne_of_gt hν_pos
+  have ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
+      (g.roots.filter (a < ·)).card :=
+    (add_right_roots_gt_card_eq_add_left_inv
+      (f := f) (g := g) (μ := ν) (x := a) hν_ne).trans ha_inv_eq
+  have hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
+      (g.roots.filter (b < ·)).card :=
+    (add_right_roots_gt_card_eq_add_left_inv
+      (f := f) (g := g) (μ := ν) (x := b) hν_ne).trans hb_inv_eq
+  exact hsgn.false_of_left_roots_add_right_count_eq_right
+    hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+    hν_large hdeg_large ha_eq hb_eq
+
 /-- Endpoint-shaped `g`/`g` contradiction for Liu's odd-indexed interval
 argument.  If the transported right-family count drop reaches a parameter
 whose endpoint strict-upper counts agree with those of `f`, then same-owner
