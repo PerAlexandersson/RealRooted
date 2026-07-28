@@ -1,6 +1,7 @@
 import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns
 import RealRooted.PositiveParameterLocalLowerCount
+import RealRooted.RootContinuity
 import RealRooted.RootCountLocalConstancy
 
 /-!
@@ -60,6 +61,26 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
     hf hg hxf hxg]
   simp [not_exists]
 
+/-- If a finite open interval contains no roots of either endpoint polynomial,
+then oddness at one sample point gives positive-parameter no-crossing at any
+other sample point in that interval. -/
+theorem OppositeLeadingSigns.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot y := by
+  have hodd_y : Odd (((f.roots.filter (y < ·)).card : ℤ) -
+      (g.roots.filter (y < ·)).card) :=
+    (odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
+      hf_no hg_no hax hxb hay hyb).mp hodd
+  exact
+    (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
+      hf hg (hf_no y hay hyb) (hg_no y hay hyb)).mp hodd_y
+
 /-- On a positive parameter interval with constant degree, odd opposite-leading
 strict-upper root-count difference at a common non-root makes the right-family
 strict-upper count locally constant between the interval endpoints. -/
@@ -90,6 +111,33 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_g
     exact hno_pos μ (hpos_interval μ hμ)
   · intro μ hμ ρ hρ
     exact positiveParameter_local_lower_count hsplit hdeg hμ hρ
+
+/-- Open-interval sample-point form of
+`OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub`.
+Oddness at one point in a root-free open interval gives right-family strict
+upper-count constancy at any other point in that interval. -/
+theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_roots_gt_sub_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hf : f.Splits) (hg : g.Splits)
+    {a b x y μ₀ μ₁ : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
+    ((f + C μ₀ * g).roots.filter (y < ·)).card =
+      ((f + C μ₁ * g).roots.filter (y < ·)).card := by
+  have hodd_y : Odd (((f.roots.filter (y < ·)).card : ℤ) -
+      (g.roots.filter (y < ·)).card) :=
+    (odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
+      hf_no hg_no hax hxb hay hyb).mp hodd
+  exact
+    hsgn.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub
+      hfg hf hg (hf_no y hay hyb) (hg_no y hay hyb)
+      hodd_y hμ₀_pos hμ₀μ₁ hdeg
 
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
