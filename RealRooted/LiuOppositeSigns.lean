@@ -982,6 +982,28 @@ theorem roots_deleteRootFactor_eq_pair_of_roots_triple_right
   rw [Polynomial.roots_mul hprod_ne, roots_X_sub_C, roots_X_sub_C]
   rfl
 
+/-- Consecutive combined roots in a root-free gap are owned by opposite
+polynomials whenever the strict-upper root-count difference is not odd at a
+sample point in the gap. -/
+def CrossOwnedNotOddGaps (f g : ℝ[X]) : Prop :=
+  ∀ a b x : ℝ, a < b → a < x → x < b →
+    (f.IsRoot a ∨ g.IsRoot a) →
+    (f.IsRoot b ∨ g.IsRoot b) →
+    (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+    ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+      (g.roots.filter (x < ·)).card) →
+    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)
+
+theorem CrossOwnedNotOddGaps.symm {f g : ℝ[X]} (h : CrossOwnedNotOddGaps f g) :
+    CrossOwnedNotOddGaps g f := by
+  intro a b x hab hax hxb ha_root hb_root hgap hnot_odd
+  refine (h a b x hab hax hxb ha_root.symm hb_root.symm
+    (fun z haz hzb => (hgap z haz hzb).symm) ?_).symm
+  intro hodd
+  have hneg := hodd.neg
+  rw [neg_sub] at hneg
+  exact hnot_odd hneg
+
 /-- The `r_1 >= s_1` branch of Liu Theorem 2.1: delete the largest root of
 `f`, then compare the closed-at-or-above root counts of `f / (X - r)` and
 `g`. -/
@@ -1203,9 +1225,10 @@ theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
     rw [hf_zero, hg_zero]
     norm_num
 
-/-- If the original pair has Liu-compatible root counts, the left deletion
-branch only needs the one-sided strict-upper inequality `n_g(x) ≤ n_f(x)` at
-common non-root thresholds below the largest root of `f`. -/
+/-- Finite descent for the left Liu branch.  Under compatible root counts and
+parity-guarded cross-ownership in root-free gaps, the least combined root above
+a common non-root threshold carries the exact owner/difference invariant needed
+for the left strict-upper count bound. -/
 theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
@@ -1213,13 +1236,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
-      (f.IsRoot a ∨ g.IsRoot a) →
-      (f.IsRoot b ∨ g.IsRoot b) →
-      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
-      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card) →
-      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    (hcross : CrossOwnedNotOddGaps f g) :
     ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
         (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z) ∧
@@ -1348,13 +1365,7 @@ theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
-      (f.IsRoot a ∨ g.IsRoot a) →
-      (f.IsRoot b ∨ g.IsRoot b) →
-      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
-      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card) →
-      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    (hcross : CrossOwnedNotOddGaps f g) :
     ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card := by
   intro x hx hfx hgx
@@ -2107,9 +2118,9 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
 end RightRootCountBranch
 
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
-Liu's largest-root deletion branch predicate.  The analytic input is kept in
-the explicit `hcross` hypothesis; this theorem only chooses the larger largest
-root and feeds the count descent in the corresponding orientation. -/
+Liu's largest-root deletion branch predicate.  The analytic input is bundled in
+`CrossOwnedNotOddGaps`; this theorem only chooses the larger largest root and
+feeds the count descent in the corresponding orientation. -/
 theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
@@ -2117,13 +2128,7 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
-      (f.IsRoot a ∨ g.IsRoot a) →
-      (f.IsRoot b ∨ g.IsRoot b) →
-      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
-      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card) →
-      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    (hcross : CrossOwnedNotOddGaps f g) :
     theorem21RootCountBranches f g := by
   rcases le_or_gt s r with hsr | hrs
   · exact theorem21RootCountBranches_of_left <|
@@ -2136,23 +2141,7 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
         hg_ne hf_ne hs hr hrs.le hcount.symm
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
           hg_ne hf_ne hs hr hrs.le hcount.symm hsimple_g hsimple_f
-          (fun c hgc hfc => hdisj c hfc hgc)
-          (fun a b x hab hax hxb ha_root hb_root hno hnot_odd => by
-            have hnot_odd' :
-                ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-                  (g.roots.filter (x < ·)).card) := by
-              intro hodd
-              apply hnot_odd
-              have hneg :
-                  ((g.roots.filter (x < ·)).card : ℤ) -
-                      (f.roots.filter (x < ·)).card =
-                    -(((f.roots.filter (x < ·)).card : ℤ) -
-                      (g.roots.filter (x < ·)).card) := by
-                ring
-              rw [hneg]
-              exact hodd.neg
-            exact (hcross a b x hab hax hxb ha_root.symm hb_root.symm
-              (fun z haz hzb => (hno z haz hzb).symm) hnot_odd').symm))
+          (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
     exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
 
 theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
