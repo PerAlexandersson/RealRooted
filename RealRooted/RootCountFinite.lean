@@ -211,19 +211,25 @@ private theorem card_filter_le_of_rel_with_right_mem
         · simpa [ha, hb] using le_trans (ih hpq_tail) (Nat.le_succ (filter q t).card)
         · simpa [ha, hb] using ih hpq_tail
 
-/-- The equality-filter cardinality is the multiplicity of the filtered
-element. -/
-theorem card_filter_eq_eq_count {α : Type*} [DecidableEq α] (s : Multiset α)
-    (x : α) :
-    (s.filter (fun a => a = x)).card = s.count x := by
-  induction s using Multiset.induction with
-  | empty =>
-      simp
-  | cons a s ih =>
-      by_cases hax : a = x
-      · subst hax
-        simp [ih, Multiset.count_cons_self]
-      · simp [hax, ih, Multiset.count_cons_of_ne (Ne.symm hax)]
+/-- If the only element of `s` in the interval `(a, b]` is a point `c` that
+appears exactly once in `s`, then that interval has cardinality one. -/
+theorem card_filter_interval_eq_one_of_count_eq_one_of_forall_mem_eq
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b c : α}
+    (hac : a < c) (hcb : c ≤ b) (hcount : s.count c = 1)
+    (hmem : ∀ z ∈ s, a < z → z ≤ b → z = c) :
+    (s.filter (fun z => a < z ∧ z ≤ b)).card = 1 := by
+  have hfilter :
+      s.filter (fun z => a < z ∧ z ≤ b) = s.filter (fun z => z = c) := by
+    apply Multiset.filter_congr
+    intro z hz
+    constructor
+    · intro hzI
+      exact hmem z hz hzI.1 hzI.2
+    · intro hzc
+      subst hzc
+      exact ⟨hac, hcb⟩
+  rw [hfilter]
+  simpa [hcount, eq_comm] using (Multiset.count_eq_card_filter_eq s c).symm
 
 /--
 A target cluster in a small ball around `r` matches a source cluster consisting
@@ -322,7 +328,9 @@ theorem card_filter_gt_le_add_one_of_rel_abs_sub_lt_of_count_eq_one
       (s.filter (fun r => x < r)).card + 1 := by
   have hle :=
     card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt hsep hmatch
-  rw [card_filter_eq_eq_count, hx] at hle
+  have hx_card : (s.filter (fun r => r = x)).card = 1 := by
+    simpa [hx, eq_comm] using (Multiset.count_eq_card_filter_eq s x).symm
+  rw [hx_card] at hle
   exact hle
 
 /-- The weak-lower and strict-upper filters partition a finite multiset over a

@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Linear
+import RealRooted.RootCountFinite
 import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Algebra.Polynomial
@@ -437,21 +438,11 @@ theorem card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
     (hac : a < c) (hcb : c ≤ b) (hcount : p.roots.count c = 1)
     (hno : ∀ z, a < z → z ≤ b → z ≠ c → ¬ p.IsRoot z) :
     (p.roots.filter (fun z => a < z ∧ z ≤ b)).card = 1 := by
-  have hfilter :
-      p.roots.filter (fun z => a < z ∧ z ≤ b) =
-        p.roots.filter (fun z => z = c) := by
-    apply Multiset.filter_congr
-    intro z hz
-    constructor
-    · intro hzI
-      by_contra hzc
-      have hzroot : p.IsRoot z := (Polynomial.mem_roots hp).mp hz
-      exact hno z hzI.1 hzI.2 hzc hzroot
-    · intro hzc
-      subst hzc
-      exact ⟨hac, hcb⟩
-  rw [hfilter]
-  simpa [hcount, eq_comm] using (Multiset.count_eq_card_filter_eq p.roots c).symm
+  refine Multiset.card_filter_interval_eq_one_of_count_eq_one_of_forall_mem_eq
+    p.roots hac hcb hcount ?_
+  intro z hz haz hzb
+  by_contra hzc
+  exact hno z haz hzb hzc ((Polynomial.mem_roots hp).mp hz)
 
 /-- Bundled strict-interval lower/upper root-count constancy. -/
 theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt
