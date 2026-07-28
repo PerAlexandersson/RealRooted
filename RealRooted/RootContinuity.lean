@@ -429,6 +429,30 @@ theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt
     (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 :=
   card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc (le_of_lt hab) h
 
+/-- If the only root of `p` in `(a, b]` is a simple root `c`, then that
+window has root count one.  The hypothesis `p.roots.count c = 1` records
+simple-root multiplicity in the multiset `p.roots`. -/
+theorem card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
+    {p : ℝ[X]} (hp : p ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hcount : p.roots.count c = 1)
+    (hno : ∀ z, a < z → z ≤ b → z ≠ c → ¬ p.IsRoot z) :
+    (p.roots.filter (fun z => a < z ∧ z ≤ b)).card = 1 := by
+  have hfilter :
+      p.roots.filter (fun z => a < z ∧ z ≤ b) =
+        p.roots.filter (fun z => z = c) := by
+    apply Multiset.filter_congr
+    intro z hz
+    constructor
+    · intro hzI
+      by_contra hzc
+      have hzroot : p.IsRoot z := (Polynomial.mem_roots hp).mp hz
+      exact hno z hzI.1 hzI.2 hzc hzroot
+    · intro hzc
+      subst hzc
+      exact ⟨hac, hcb⟩
+  rw [hfilter]
+  simpa [hcount, eq_comm] using (Multiset.count_eq_card_filter_eq p.roots c).symm
+
 /-- Bundled strict-interval lower/upper root-count constancy. -/
 theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt
     {p : ℝ[X]} {a b : ℝ} (hab : a < b)

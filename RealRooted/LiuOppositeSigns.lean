@@ -1223,6 +1223,31 @@ theorem of_rootCountCompatible_of_window_one_zero
     rw [hf_zero, hg_zero]
     norm_num
 
+/-- A simple-root window criterion for the left branch.  This is the bridge
+from a root-ownership style certificate to
+`of_rootCountCompatible_of_window_one_zero`: each relevant window contains a
+simple root `c` of `f`, no other roots of `f`, and no roots of `g`, before
+ending at a common non-root threshold `b`. -/
+theorem of_rootCountCompatible_of_simple_window_one_zero
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hwindow : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ c b : ℝ, x < c ∧ c < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
+        f.roots.count c = 1 ∧
+        (∀ z : ℝ, x < z → z ≤ b → z ≠ c → ¬ f.IsRoot z) ∧
+        (∀ z : ℝ, x < z → z ≤ b → ¬ g.IsRoot z)) :
+    LeftRootCountBranch f g r s := by
+  refine LeftRootCountBranch.of_rootCountCompatible_of_window_one_zero
+    hf_ne hg_ne hr hs hlargest hcount ?_
+  intro x hx hfx hgx
+  obtain ⟨c, b, hxc, hcb, hfb, hgb, hc_count, hf_no, hg_no⟩ :=
+    hwindow x hx hfx hgx
+  refine ⟨b, hxc.trans hcb, hfb, hgb, ?_, ?_⟩
+  · exact card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
+      hf_ne hxc (le_of_lt hcb) hc_count hf_no
+  · exact card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt (hxc.trans hcb) hg_no
+
 /-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
 for `(f, g)`.  The extra strict inequality supplies the strict largest-root
 condition required by the right branch, while the root-count field is obtained
