@@ -1302,6 +1302,39 @@ theorem of_rootCountCompatible_of_unique_simple_root_window
     have hzc : z = c := hunique z hxz hzb (Or.inr hgz)
     exact hgc (hzc ▸ hgz)
 
+/-- A next-combined-root criterion for the left branch.  It is enough that,
+above each relevant threshold, there is a least combined root support point
+`c`, that `c` is a simple root of `f`, and that `c` is not a root of `g`.
+The finite-root gap lemma turns this next-root certificate into the unique
+window certificate used by
+`of_rootCountCompatible_of_unique_simple_root_window`. -/
+theorem of_rootCountCompatible_of_next_simple_root
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hnext : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ c : ℝ, x < c ∧ ¬ g.IsRoot c ∧ f.roots.count c = 1 ∧
+        (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)) :
+    LeftRootCountBranch f g r s := by
+  refine LeftRootCountBranch.of_rootCountCompatible_of_unique_simple_root_window
+    hf_ne hg_ne hr hs hlargest hcount ?_
+  intro x hx hfx hgx
+  obtain ⟨c, hxc, hgc, hc_count, hc_min⟩ := hnext x hx hfx hgx
+  set combined : Multiset ℝ := f.roots + g.roots with hcombined
+  have hmem_combined : ∀ {z : ℝ}, f.IsRoot z ∨ g.IsRoot z → z ∈ combined := by
+    intro z hz
+    rw [hcombined, Multiset.mem_add]
+    rcases hz with hfz | hgz
+    · exact Or.inl ((Polynomial.mem_roots hf_ne).mpr hfz)
+    · exact Or.inr ((Polynomial.mem_roots hg_ne).mpr hgz)
+  obtain ⟨b, hcb, hgap⟩ := exists_threshold_no_mem_Ioc combined c
+  refine ⟨c, b, hxc, hcb, hgc, hc_count, ?_⟩
+  intro z hxz hzb hzroot
+  have hcz : c ≤ z := hc_min z hxz hzroot
+  rcases hgap z (hmem_combined hzroot) with hzc | hbz
+  · exact le_antisymm hzc hcz
+  · exact False.elim (not_lt_of_ge hzb hbz)
+
 /-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
 for `(f, g)`.  The extra strict inequality supplies the strict largest-root
 condition required by the right branch, while the root-count field is obtained
