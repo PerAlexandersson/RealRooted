@@ -462,9 +462,9 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
 
 /-- Same-owner `f`/`f` count-drop obstruction for Liu's odd-indexed interval
 argument.  A `not Odd` sample in such an interval gives a unique positive
-crossing parameter whose two-root strict-upper count drop persists to every
-larger positive parameter on which the right-family degree is constant. -/
-theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_gt_drop_two_le
+crossing parameter, but exposes only the positive crossing and the transported
+count-drop data needed by the endpoint-ownership argument. -/
+theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_left_roots_gt_drop_two_le
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
     (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
@@ -475,9 +475,6 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
     (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card)) :
     ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
-      μ = -f.eval y / g.eval y ∧
-      (f + C μ * g).derivative.eval y ≠ 0 ∧
-      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
       ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
         ((f + C μ * g).roots.filter (a < ·)).card ∧
       (∀ ν : ℝ, μ ≤ ν →
@@ -485,10 +482,10 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
           (f + C τ * g).natDegree = (f + C μ * g).natDegree) →
         ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
           ((f + C ν * g).roots.filter (a < ·)).card) := by
-  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩ :=
+  obtain ⟨μ, hμ_pos, hμ_root, _hμ_eq, _hμ_der, _hμ_unique, hdrop⟩ :=
     hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_gt_drop_two
       hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-  refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop, ?_⟩
+  refine ⟨μ, hμ_pos, hμ_root, hdrop, ?_⟩
   intro ν hμν hdeg
   have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
     fun τ hτ => hno.rightFamily_not_isRoot_of_left_root (ne_of_gt hτ) hfa
@@ -539,9 +536,9 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
 
 /-- Same-owner `g`/`g` count-drop obstruction for Liu's odd-indexed interval
 argument.  A `not Odd` sample in such an interval gives a unique positive
-crossing parameter whose two-root strict-upper count drop persists to every
-larger positive parameter on which the right-family degree is constant. -/
-theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two_le
+crossing parameter, but exposes only the positive crossing and the transported
+count-drop data needed by the endpoint-ownership argument. -/
+theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_right_roots_gt_drop_two_le
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
     (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
@@ -552,9 +549,6 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
     (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card)) :
     ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
-      μ = -f.eval y / g.eval y ∧
-      (f + C μ * g).derivative.eval y ≠ 0 ∧
-      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
       ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
         ((f + C μ * g).roots.filter (a < ·)).card ∧
       (∀ ν : ℝ, μ ≤ ν →
@@ -562,10 +556,10 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
           (f + C τ * g).natDegree = (f + C μ * g).natDegree) →
         ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
           ((f + C ν * g).roots.filter (a < ·)).card) := by
-  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop⟩ :=
+  obtain ⟨μ, hμ_pos, hμ_root, _hμ_eq, _hμ_der, _hμ_unique, hdrop⟩ :=
     hsgn.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two
       hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
-  refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hdrop, ?_⟩
+  refine ⟨μ, hμ_pos, hμ_root, hdrop, ?_⟩
   intro ν hμν hdeg
   have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
     fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
