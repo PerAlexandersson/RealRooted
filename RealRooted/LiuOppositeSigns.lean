@@ -1209,13 +1209,16 @@ common non-root thresholds below the largest root of `f`. -/
 theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b : ℝ, a < b →
+    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
       (f.IsRoot a ∨ g.IsRoot a) →
       (f.IsRoot b ∨ g.IsRoot b) →
       (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) →
       (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
     ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
@@ -1275,21 +1278,31 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         rcases hgap_g z hz_mem with hzc | hbz
         · exact (not_lt_of_ge hzc) hcz
         · exact (not_lt_of_ge (hdleast z hbz (Or.inr hgz))) hzd
-    have hcross_cd := hcross c d hcd hcroot hdroot hbetween
     rcases howner_d with ⟨hdf, hdiff_b⟩ | ⟨hdg, hdiff_b⟩
-    · have hgc : g.IsRoot c := by
-        rcases hcross_cd with ⟨_hfc, hgd⟩ | ⟨hgc, _hfd⟩
-        · exact False.elim (hdisj d hdf hgd)
-        · exact hgc
-      have hfc_not : ¬ f.IsRoot c := by
-        intro hfc
-        exact hdisj c hfc hgc
-      have hdiff :=
-        card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
-          hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
-          hleast hgap_f hgap_g hdiff_b
-      exact Or.inr ⟨hgc, by simpa using hdiff⟩
-    · have hfc : f.IsRoot c := by
+    · rcases hcroot with hfc | hgc
+      · have hgc_not : ¬ g.IsRoot c := hdisj c hfc
+        have hdiff :=
+          card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+            hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
+            hleast hgap_f hgap_g hdiff_b
+        have hle :
+            ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card ≤ 1 :=
+          (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1
+        exact False.elim (by linarith)
+      · have hfc_not : ¬ f.IsRoot c := by
+          intro hfc
+          exact hdisj c hfc hgc
+        have hdiff :=
+          card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
+            hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
+            hleast hgap_f hgap_g hdiff_b
+        exact Or.inr ⟨hgc, by simpa using hdiff⟩
+    · have hnot_odd_b : ¬ Odd (((f.roots.filter (b < ·)).card : ℤ) -
+          (g.roots.filter (b < ·)).card) := by
+        simp [hdiff_b]
+      have hcross_cd := hcross c d b hcd hcb hbd hcroot hdroot hbetween hnot_odd_b
+      have hfc : f.IsRoot c := by
         rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
         · exact hfc
         · exact False.elim (hdisj d hfd hdg)
@@ -1298,7 +1311,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
           hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
           hleast hgap_f hgap_g hdiff_b
-      exact Or.inl ⟨hfc, hdiff⟩
+      exact Or.inl ⟨hfc, by simpa using hdiff⟩
   · have hno_above :
         ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
       intro z hbz
@@ -1331,20 +1344,23 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
 theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b : ℝ, a < b →
+    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
       (f.IsRoot a ∨ g.IsRoot a) →
       (f.IsRoot b ∨ g.IsRoot b) →
       (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) →
       (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
     ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card := by
   intro x hx hfx hgx
   obtain ⟨_c, _hxc, _hcroot, _hleast, howner⟩ :=
     rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
-      hf_ne hg_ne hr hs hlargest hsimple_f hsimple_g hdisj hcross
+      hf_ne hg_ne hr hs hlargest hcount hsimple_f hsimple_g hdisj hcross
       x hx hfx hgx
   have hle_int :
       ((g.roots.filter (x < ·)).card : ℤ) ≤
@@ -2090,10 +2106,10 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
 
 end RightRootCountBranch
 
-/-- Branch-level bridge from cross-owned consecutive roots to Liu's largest-root
-deletion branch predicate.  The analytic input is kept in the explicit
-`hcross` hypothesis; this theorem only chooses the larger largest root and
-feeds the count descent in the corresponding orientation. -/
+/-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
+Liu's largest-root deletion branch predicate.  The analytic input is kept in
+the explicit `hcross` hypothesis; this theorem only chooses the larger largest
+root and feeds the count descent in the corresponding orientation. -/
 theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
@@ -2101,10 +2117,12 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : ∀ a b : ℝ, a < b →
+    (hcross : ∀ a b x : ℝ, a < b → a < x → x < b →
       (f.IsRoot a ∨ g.IsRoot a) →
       (f.IsRoot b ∨ g.IsRoot b) →
       (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) →
       (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
     theorem21RootCountBranches f g := by
   rcases le_or_gt s r with hsr | hrs
@@ -2112,16 +2130,29 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
       LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
         hf_ne hg_ne hr hs hsr hcount
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
-          hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
+          hf_ne hg_ne hr hs hsr hcount hsimple_f hsimple_g hdisj hcross)
   · have hleft : LeftRootCountBranch g f s r :=
       LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
         hg_ne hf_ne hs hr hrs.le hcount.symm
         (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
-          hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f
+          hg_ne hf_ne hs hr hrs.le hcount.symm hsimple_g hsimple_f
           (fun c hgc hfc => hdisj c hfc hgc)
-          (fun a b hab ha_root hb_root hno =>
-            (hcross a b hab ha_root.symm hb_root.symm
-              (fun z haz hzb => (hno z haz hzb).symm)).symm))
+          (fun a b x hab hax hxb ha_root hb_root hno hnot_odd => by
+            have hnot_odd' :
+                ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+                  (g.roots.filter (x < ·)).card) := by
+              intro hodd
+              apply hnot_odd
+              have hneg :
+                  ((g.roots.filter (x < ·)).card : ℤ) -
+                      (f.roots.filter (x < ·)).card =
+                    -(((f.roots.filter (x < ·)).card : ℤ) -
+                      (g.roots.filter (x < ·)).card) := by
+                ring
+              rw [hneg]
+              exact hodd.neg
+            exact (hcross a b x hab hax hxb ha_root.symm hb_root.symm
+              (fun z haz hzb => (hno z haz hzb).symm) hnot_odd').symm))
     exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
 
 theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
