@@ -1,19 +1,6 @@
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
-import RealRooted.LiuOppositeSigns.XSub.LeftSucc
-import RealRooted.LiuOppositeSigns.XSub.SameDegree
-import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
-import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
-import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 import RealRooted.LiuOppositeSigns.XSub.CubicQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubic
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicCommonRoot
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary
-import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeTwo
-import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeThree
-import RealRooted.MaWang
-import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Liu opposite-sign compatibility theorem
