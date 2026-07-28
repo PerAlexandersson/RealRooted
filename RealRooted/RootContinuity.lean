@@ -259,6 +259,33 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
   rcases hz_range with ⟨r, rfl⟩
   simp
 
+/-- A continuous real-valued function that never vanishes on a closed interval
+has endpoint values with the same nonzero sign. -/
+theorem mul_pos_of_forall_ne_zero_Icc
+    {F : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
+    (hcont : ContinuousOn F (Set.Icc a b))
+    (hne : ∀ x ∈ Set.Icc a b, F x ≠ 0) :
+    0 < F a * F b := by
+  have hmema : a ∈ Set.Icc a b := ⟨le_refl _, hab⟩
+  have hmemb : b ∈ Set.Icc a b := ⟨hab, le_refl _⟩
+  have ha : F a ≠ 0 := hne a hmema
+  have hb : F b ≠ 0 := hne b hmemb
+  rcases lt_or_gt_of_ne ha with hlt_a | hgt_a
+  · rcases lt_or_gt_of_ne hb with hlt_b | hgt_b
+    · exact mul_pos_of_neg_of_neg hlt_a hlt_b
+    · exfalso
+      have hzero : (0 : ℝ) ∈ Set.Icc (F a) (F b) :=
+        ⟨le_of_lt hlt_a, le_of_lt hgt_b⟩
+      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc hab hcont hzero
+      exact hne c hc_mem hc0
+  · rcases lt_or_gt_of_ne hb with hlt_b | hgt_b
+    · exfalso
+      have hzero : (0 : ℝ) ∈ Set.Icc (F b) (F a) :=
+        ⟨le_of_lt hlt_b, le_of_lt hgt_a⟩
+      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc' hab hcont hzero
+      exact hne c hc_mem hc0
+    · exact mul_pos hgt_a hgt_b
+
 /-- **Endpoint noncrossing / constant sign for a continuous polynomial family.**
 
 Let `p : ℝ → ℝ[X]` be a family of real polynomials whose evaluation at a fixed
@@ -272,24 +299,17 @@ theorem eval_endpoint_pos_of_forall_ne_zero
     (hcont : ContinuousOn (fun t => (p t).eval a) (Set.Icc t₀ t₁))
     (hne : ∀ t ∈ Set.Icc t₀ t₁, (p t).eval a ≠ 0) :
     0 < (p t₀).eval a * (p t₁).eval a := by
-  set G : ℝ → ℝ := fun t => (p t).eval a
-  have hmem0 : t₀ ∈ Set.Icc t₀ t₁ := ⟨le_refl _, hle⟩
-  have hmem1 : t₁ ∈ Set.Icc t₀ t₁ := ⟨hle, le_refl _⟩
-  have h0 : G t₀ ≠ 0 := hne t₀ hmem0
-  have h1 : G t₁ ≠ 0 := hne t₁ hmem1
-  rcases lt_or_gt_of_ne h0 with hlt0 | hgt0
-  · rcases lt_or_gt_of_ne h1 with hlt1 | hgt1
-    · exact mul_pos_of_neg_of_neg hlt0 hlt1
-    · exfalso
-      have hzero : (0 : ℝ) ∈ Set.Icc (G t₀) (G t₁) := ⟨le_of_lt hlt0, le_of_lt hgt1⟩
-      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc hle hcont hzero
-      exact hne c hc_mem hc0
-  · rcases lt_or_gt_of_ne h1 with hlt1 | hgt1
-    · exfalso
-      have hzero : (0 : ℝ) ∈ Set.Icc (G t₁) (G t₀) := ⟨le_of_lt hlt1, le_of_lt hgt0⟩
-      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc' hle hcont hzero
-      exact hne c hc_mem hc0
-    · exact mul_pos hgt0 hgt1
+  exact mul_pos_of_forall_ne_zero_Icc hle hcont hne
+
+/-- A polynomial with no roots on a closed real interval has endpoint
+evaluations with the same nonzero sign. -/
+theorem eval_mul_pos_of_forall_not_isRoot_Icc
+    {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hno : ∀ x ∈ Set.Icc a b, ¬ p.IsRoot x) :
+    0 < p.eval a * p.eval b := by
+  refine mul_pos_of_forall_ne_zero_Icc hab p.continuous.continuousOn ?_
+  intro x hx hx0
+  exact hno x hx (by simpa [Polynomial.IsRoot.def] using hx0)
 
 /-- Specialization of `eval_endpoint_pos_of_forall_ne_zero` to the affine
 left-family `C t * f + g` used throughout the Chudnovsky--Seymour route. -/

@@ -196,6 +196,32 @@ theorem closedSegment_not_isRoot_of_eval_mul_pos
     closedSegment_eval_ne_zero_of_eval_mul_pos (f := f) (g := g)
       (β := β) (x := x) hβ0 hβ1 hprod
 
+/-- If both endpoints of a closed interval are roots of the left endpoint
+polynomial and the right endpoint polynomial has no roots on that interval,
+then every nontrivial right-weighted closed-segment member has same-sign
+values at the interval endpoints. -/
+theorem closedSegment_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
+    {f g : ℝ[X]} {a b β : ℝ} (hab : a ≤ b)
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hg_no : ∀ x ∈ Set.Icc a b, ¬ g.IsRoot x) (hβ_pos : 0 < β) :
+    0 < (C (1 - β) * f + C β * g).eval a *
+        (C (1 - β) * f + C β * g).eval b := by
+  have hgprod : 0 < g.eval a * g.eval b :=
+    eval_mul_pos_of_forall_not_isRoot_Icc hab hg_no
+  have hfa_eval : f.eval a = 0 := by
+    simpa [Polynomial.IsRoot.def] using hfa
+  have hfb_eval : f.eval b = 0 := by
+    simpa [Polynomial.IsRoot.def] using hfb
+  have ha : (C (1 - β) * f + C β * g).eval a = β * g.eval a := by
+    simp [eval_add, eval_mul, eval_C, hfa_eval]
+  have hb : (C (1 - β) * f + C β * g).eval b = β * g.eval b := by
+    simp [eval_add, eval_mul, eval_C, hfb_eval]
+  rw [ha, hb]
+  have hβ_sq : 0 < β * β := mul_pos hβ_pos hβ_pos
+  calc
+    0 < (β * β) * (g.eval a * g.eval b) := mul_pos hβ_sq hgprod
+    _ = (β * g.eval a) * (β * g.eval b) := by ring
+
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 nonnegative right-family member is nonzero at `x`. -/
 theorem rightFamily_eval_ne_zero_of_eval_mul_pos
