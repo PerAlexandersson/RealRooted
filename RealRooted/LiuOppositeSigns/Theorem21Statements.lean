@@ -52,14 +52,10 @@ theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_
     (¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card) ↔
       ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  rw [hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
-    hf hg hxf hxg]
-  constructor
-  · intro hnotnot
-    by_contra hno
-    exact hnotnot hno
-  · intro hcross hno
-    exact hno hcross
+  simpa using
+    (not_congr
+      (hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
+        hf hg hxf hxg))
 
 /-- In a no-common positive-combination family with opposite leading signs,
 failure of odd upper root-count difference at a common non-root gives the
