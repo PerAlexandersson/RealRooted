@@ -38,8 +38,8 @@ theorem exists_eps_card_roots_gt_bounds_near_simple_root
   classical
   set p : ℝ[X] := f + C μ * g
   have hp_def : p = f + C μ * g := rfl
-  have hx_count : p.roots.count x = 1 := by
-    simpa [count_roots] using hsimple x (by simpa [hp_def] using hroot)
+  have hx_count : p.roots.count x = 1 :=
+    hsimple.roots_count_eq_one (by simpa [hp_def] using hroot)
   have hx_not_erase : x ∉ p.roots.erase x := by
     rw [← Multiset.count_eq_zero, Multiset.count_erase_self, hx_count]
   obtain ⟨η, hη_pos, hη⟩ :=

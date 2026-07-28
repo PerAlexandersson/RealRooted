@@ -79,6 +79,13 @@ lemma HasSimpleRoots.roots_nodup (hsimple : HasSimpleRoots p) :
       simp_all
     lia
 
+/-- At a simple real root the root multiset carries exactly one copy. -/
+lemma HasSimpleRoots.roots_count_eq_one (hsimple : HasSimpleRoots p)
+    {c : ℝ} (hc : p.IsRoot c) :
+    p.roots.count c = 1 := by
+  rw [count_roots (a := c) p]
+  exact hsimple c hc
+
 /-- The sorted root list of a polynomial with simple real roots is strictly
 sorted. -/
 lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
