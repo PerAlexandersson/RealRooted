@@ -190,10 +190,9 @@ theorem card_roots_filter_gt_sub_eq_one_of_left_unique_simple_root_Ioc_of_above_
         (g.roots.filter (b < ·)).card = 0) :
     ((f.roots.filter (a < ·)).card : ℤ) -
         (g.roots.filter (a < ·)).card = 1 := by
-  have hshift :=
+  simpa [hb] using
     card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
       hf hac hcb hg_not hcount hunique
-  simpa [hb] using hshift
 
 /-- One-step suffix-count invariant transport across a unique simple right root:
 if the strict-upper count difference above the window is one, then it is zero
@@ -208,10 +207,9 @@ theorem card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_abov
         (g.roots.filter (b < ·)).card = 1) :
     ((f.roots.filter (a < ·)).card : ℤ) -
         (g.roots.filter (a < ·)).card = 0 := by
-  have hshift :=
+  simpa [hb] using
     card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
       hg hac hcb hf_not hcount hunique
-  simpa [hb] using hshift
 
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
