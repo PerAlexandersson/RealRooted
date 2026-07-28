@@ -61,6 +61,29 @@ theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_
   · intro hcross hno
     exact hno hcross
 
+/-- In a no-common positive-combination family with opposite leading signs,
+failure of odd upper root-count difference at a common non-root gives the
+unique positive right-pencil crossing through that threshold. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_of_not_odd_intCard_roots_gt_sub
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x ∧
+      μ = -f.eval x / g.eval x ∧
+      (f + C μ * g).derivative.eval x ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot x → ν = μ) := by
+  have hcross :=
+    (hsgn.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_add_right
+      hf hg hxf hxg).mp hnot_odd
+  have hfx_eval : f.eval x ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero f x).mp hxf
+  have hsign : f.eval x * g.eval x < 0 :=
+    (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval).mp hcross
+  exact hfg.exists_unique_pos_parameter_crossing_add_right_of_sign hno hsign
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}
