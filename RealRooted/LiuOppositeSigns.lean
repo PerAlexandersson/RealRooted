@@ -338,13 +338,9 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
     intro hzero
     exact hxq (by simpa [Polynomial.IsRoot.def] using hzero)
   have hneg_pos_iff_not_pos {y : ℝ} (hy : y ≠ 0) : 0 < -y ↔ ¬ 0 < y := by
-    constructor
-    · intro hneg hy_pos
-      linarith
-    · intro hy_not_pos
-      have hy_nonpos : y ≤ 0 := le_of_not_gt hy_not_pos
-      have hy_neg : y < 0 := lt_of_le_of_ne hy_nonpos hy
-      linarith
+    rw [neg_pos]
+    exact Iff.intro (fun h hy_pos => by linarith)
+      (fun h => lt_of_le_of_ne (le_of_not_gt h) hy)
   rcases h.pos_neg_or_neg_pos with ⟨hp_pos, hnegq_pos⟩ | ⟨hnegp_pos, hq_pos⟩
   · have hxnegq : ¬ (-q).IsRoot x := by
       simpa using hxq
