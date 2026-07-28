@@ -43,6 +43,21 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_
   rw [hsgn.odd_intCard_roots_gt_sub_iff_eval_pos_iff hf hg hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
+/-- Positive-parameter no-crossing form of
+`OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`.
+This is the shape consumed by local root-count constancy on positive parameter
+intervals. -/
+theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x) := by
+  rw [hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
+    hf hg hxf hxg]
+  simp [not_exists]
+
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
 theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_add_right
