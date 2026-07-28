@@ -3,8 +3,9 @@ import RealRooted.LiuOppositeSigns.DeletionBranches
 /-!
 # Liu factor-return statement interface
 
-This module contains the statement-level factor-return packages and the
-left/right symmetry adapters used in the reverse direction of Liu Theorem 2.1.
+This module contains the statement-level factor-return packages, target
+aliases, and left/right symmetry adapters used in the reverse direction of Liu
+Theorem 2.1.
 The proof-heavy degree branches and final theorem assembly remain in
 `RealRooted.LiuOppositeSignsTheorem`.
 -/
@@ -391,5 +392,391 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_leftCases
   theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_degreeCases
     (theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCases_of_leftCases
       hcases)
+
+/-- Left-branch factor-return target for an arbitrary endpoint degree
+relation. -/
+def theorem21LeftFactorReturnRelationStatement
+    (R : ℕ → ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            Compatible f g
+
+/-- Predicate-restricted left-branch factor-return target for an arbitrary
+endpoint degree relation.  The predicate records endpoint side conditions on
+`g.natDegree`. -/
+def theorem21LeftFactorReturnPredicateRelationStatement
+    (R : ℕ → ℕ → Prop) (P : ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            P g.natDegree → Compatible f g
+
+/-- Predicate-restricted left factor-return relation targets transport along
+endpoint predicate implications. -/
+theorem theorem21LeftFactorReturnPredicateRelationStatement_of_imp
+    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ : theorem21LeftFactorReturnPredicateRelationStatement R Q) :
+    theorem21LeftFactorReturnPredicateRelationStatement R P := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
+  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
+
+/-- The unrestricted left factor-return relation target is the `P := True`
+case of the predicate-restricted relation target. -/
+theorem theorem21LeftFactorReturnPredicateRelation_true_of_relation
+    {R : ℕ → ℕ → Prop}
+    (hreturn : theorem21LeftFactorReturnRelationStatement R) :
+    theorem21LeftFactorReturnPredicateRelationStatement R
+      (fun _ => True) := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon _
+  exact hreturn hf hg hsgn hleft hdeg hcommon
+
+/-- A `P := True` left factor-return predicate relation target gives the
+unrestricted relation target. -/
+theorem theorem21LeftFactorReturnRelation_of_predicate_true
+    {R : ℕ → ℕ → Prop}
+    (hreturn :
+      theorem21LeftFactorReturnPredicateRelationStatement R
+        (fun _ => True)) :
+    theorem21LeftFactorReturnRelationStatement R := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon
+  exact hreturn hf hg hsgn hleft hdeg hcommon trivial
+
+/-- Same-degree left-branch factor-return target. -/
+def theorem21LeftFactorReturnSameDegreeStatement : Prop :=
+  theorem21LeftFactorReturnRelationStatement
+    (fun m n => m = n)
+
+/-- Succ-degree left-branch factor-return target. -/
+def theorem21LeftFactorReturnSuccDegreeStatement : Prop :=
+  theorem21LeftFactorReturnRelationStatement
+    (fun m n => m = n + 1)
+
+/-- Predicate-restricted same-degree left-branch factor-return target.
+The predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnSameDegreePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnPredicateRelationStatement
+    (fun m n => m = n) P
+
+/-- Predicate-restricted successor-degree left-branch factor-return target.
+The predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnSuccDegreePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnPredicateRelationStatement
+    (fun m n => m = n + 1) P
+
+/-- Two-degree-gap left-branch factor-return target. -/
+def theorem21LeftFactorReturnTwoDegreeStatement : Prop :=
+  theorem21LeftFactorReturnRelationStatement
+    (fun m n => m = n + 2)
+
+/-- Predicate-restricted two-degree-gap left-branch factor-return target.
+The predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnTwoDegreePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnPredicateRelationStatement
+    (fun m n => m = n + 2) P
+
+/-- Predicate-restricted original two-degree factor-return targets transport
+along endpoint predicate implications. -/
+theorem theorem21LeftFactorReturnTwoDegreePredicateStatement_of_imp
+    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ : theorem21LeftFactorReturnTwoDegreePredicateStatement Q) :
+    theorem21LeftFactorReturnTwoDegreePredicateStatement P :=
+  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
+    (R := fun m n => m = n + 2) hPQ hQ
+
+/-- Predicate-restricted same-degree factor-return targets transport along
+endpoint predicate implications. -/
+theorem theorem21LeftFactorReturnSameDegreePredicateStatement_of_imp
+    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ : theorem21LeftFactorReturnSameDegreePredicateStatement Q) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement P :=
+  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
+    (R := fun m n => m = n) hPQ hQ
+
+/-- Predicate-restricted successor-degree factor-return targets transport
+along endpoint predicate implications. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicateStatement_of_imp
+    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ : theorem21LeftFactorReturnSuccDegreePredicateStatement Q) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement P :=
+  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
+    (R := fun m n => m = n + 1) hPQ hQ
+
+/-- A left all-combinations factor-return leaf for any degree relation gives
+the corresponding compatibility factor-return leaf. -/
+theorem theorem21LeftFactorReturn_of_allComboRelation
+    {R : ℕ → ℕ → Prop}
+    (hleft : theorem21LeftFactorReturnAllComboRelationStatement R) :
+    theorem21LeftFactorReturnRelationStatement R := by
+  intro f g r s hf hg hsgn hbranch hdeg hcommon
+  exact Compatible.of_allComboRealRooted
+    (hleft hf hg hsgn hbranch hdeg hcommon)
+
+/-- A same-degree all-combinations left leaf gives the corresponding
+compatibility leaf. -/
+theorem theorem21LeftFactorReturnSameDegree_of_allCombo
+    (hleft : theorem21LeftFactorReturnSameDegreeAllComboStatement) :
+    theorem21LeftFactorReturnSameDegreeStatement :=
+  theorem21LeftFactorReturn_of_allComboRelation
+    (R := fun m n => m = n) hleft
+
+/-- A successor-degree all-combinations left leaf gives the corresponding
+compatibility leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_allCombo
+    (hleft : theorem21LeftFactorReturnSuccDegreeAllComboStatement) :
+    theorem21LeftFactorReturnSuccDegreeStatement :=
+  theorem21LeftFactorReturn_of_allComboRelation
+    (R := fun m n => m = n + 1) hleft
+
+/-- A two-degree-gap all-combinations left leaf gives the corresponding
+compatibility leaf. -/
+theorem theorem21LeftFactorReturnTwoDegree_of_allCombo
+    (hleft : theorem21LeftFactorReturnTwoDegreeAllComboStatement) :
+    theorem21LeftFactorReturnTwoDegreeStatement :=
+  theorem21LeftFactorReturn_of_allComboRelation
+    (R := fun m n => m = n + 2) hleft
+
+/-- Translated compatibility target for a Liu left-branch factor-return route
+with an arbitrary endpoint degree relation.  This isolates the common final
+step of restoring the deleted largest root after translating it to the origin. -/
+def theorem21LeftFactorReturnTranslatedCompatibleRelationStatement
+    (R : ℕ → ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            Compatible
+              (X * (deleteRootFactor f r).comp (X + C r))
+              (g.comp (X + C r))
+
+/-- Predicate-restricted translated compatibility target for an arbitrary
+endpoint degree relation.  The predicate records endpoint side conditions on
+`g.natDegree`. -/
+def theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+    (R : ℕ → ℕ → Prop) (P : ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            P g.natDegree →
+              Compatible
+                (X * (deleteRootFactor f r).comp (X + C r))
+                (g.comp (X + C r))
+
+/-- Predicate-restricted translated compatibility relation targets transport
+along endpoint predicate implications. -/
+theorem
+    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement_of_imp
+    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ :
+      theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+        R Q) :
+    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+      R P := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
+  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
+
+/-- The unrestricted translated compatibility relation target is the
+`P := True` case of the predicate-restricted relation target. -/
+theorem theorem21LeftFactorReturnTranslatedCompatiblePredicateRelation_true_of_relation
+    {R : ℕ → ℕ → Prop}
+    (htranslated :
+      theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R) :
+    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+      R (fun _ => True) := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon _
+  exact htranslated hf hg hsgn hleft hdeg hcommon
+
+/-- A `P := True` translated compatibility predicate relation target gives the
+unrestricted translated compatibility relation target. -/
+theorem theorem21LeftFactorReturnTranslatedCompatibleRelation_of_predicate_true
+    {R : ℕ → ℕ → Prop}
+    (htranslated :
+      theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+        R (fun _ => True)) :
+    theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon
+  exact htranslated hf hg hsgn hleft hdeg hcommon trivial
+
+/-- Translated same-degree left-branch factor-return target. -/
+def theorem21LeftFactorReturnSameDegreeTranslatedCompatibleStatement :
+    Prop :=
+  theorem21LeftFactorReturnTranslatedCompatibleRelationStatement
+    (fun m n => m = n)
+
+/-- Translated successor-degree left-branch factor-return target. -/
+def theorem21LeftFactorReturnSuccDegreeTranslatedCompatibleStatement :
+    Prop :=
+  theorem21LeftFactorReturnTranslatedCompatibleRelationStatement
+    (fun m n => m = n + 1)
+
+/-- Predicate-restricted translated same-degree left-branch factor-return
+target.  The predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnSameDegreeTranslatedCompatiblePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+    (fun m n => m = n) P
+
+/-- Predicate-restricted translated successor-degree left-branch factor-return
+target.  The predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnSuccDegreeTranslatedCompatiblePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+    (fun m n => m = n + 1) P
+
+/-- Translated two-degree left-branch factor-return target.  This keeps the
+original sign of `g` and asks only for compatibility, avoiding the false
+all-combinations strengthening. -/
+def theorem21LeftFactorReturnTwoDegreeTranslatedCompatibleStatement : Prop :=
+  theorem21LeftFactorReturnTranslatedCompatibleRelationStatement
+    (fun m n => m = n + 2)
+
+/-- Predicate-restricted translated two-degree compatibility target.  The
+predicate records endpoint side conditions on `g.natDegree`. -/
+def theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
+    (fun m n => m = n + 2) P
+
+/-- Predicate-restricted translated compatibility targets transport along
+endpoint predicate implications. -/
+theorem
+    theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement_of_imp
+    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ :
+      theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
+        Q) :
+    theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
+      P :=
+  theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement_of_imp
+    (R := fun m n => m = n + 2) hPQ hQ
+
+/-- One-parameter positive right-pencil version of a translated Liu
+left-branch target for an arbitrary endpoint degree relation. -/
+def theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
+    (R : ℕ → ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            ∀ μ : ℝ, 0 < μ →
+              (X * (deleteRootFactor f r).comp (X + C r) +
+                  C μ * g.comp (X + C r)).Splits
+
+/-- Predicate-restricted translated right-family target for an arbitrary
+endpoint degree relation.  The predicate records endpoint side conditions such
+as fixed right degree or a low-degree bound. -/
+def theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+    (R : ℕ → ℕ → Prop) (P : ℕ → Prop) : Prop :=
+  ∀ {f g : ℝ[X]} {r s : ℝ},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      LeftRootCountBranch f g r s →
+        R f.natDegree g.natDegree →
+          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            P g.natDegree →
+              ∀ μ : ℝ, 0 < μ →
+                (X * (deleteRootFactor f r).comp (X + C r) +
+                    C μ * g.comp (X + C r)).Splits
+
+/-- Predicate-restricted translated right-family relation targets transport
+along endpoint predicate implications. -/
+theorem
+    theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement_of_imp
+    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ :
+      theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+        R Q) :
+    theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+      R P := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg μ hμ
+  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg) μ hμ
+
+/-- The unrestricted translated right-family relation target is the `P := True`
+case of the predicate-restricted relation target. -/
+theorem theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelation_true_of_relation
+    {R : ℕ → ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement R) :
+    theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+      R (fun _ => True) := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon _ μ hμ
+  exact hright hf hg hsgn hleft hdeg hcommon μ hμ
+
+/-- A `P := True` translated right-family predicate relation target gives the
+unrestricted translated right-family relation target. -/
+theorem theorem21LeftFactorReturnTranslatedRightFamilyRelation_of_predicate_true
+    {R : ℕ → ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+        R (fun _ => True)) :
+    theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement R := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon μ hμ
+  exact hright hf hg hsgn hleft hdeg hcommon trivial μ hμ
+
+/-- One-parameter positive right-pencil version of the translated same-degree
+target.  After deleting the largest left root, the sign-normalized deletion
+pair has the right endpoint one degree higher. -/
+def theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyStatement :
+    Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
+    (fun m n => m = n)
+
+/-- One-parameter positive right-pencil version of the translated
+successor-degree target.  After deleting the largest left root, the
+sign-normalized deletion pair has equal endpoint degrees. -/
+def theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyStatement :
+    Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
+    (fun m n => m = n + 1)
+
+/-- Predicate-restricted translated same-degree right-family target. -/
+def theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+    (fun m n => m = n) P
+
+/-- Predicate-restricted translated successor-degree right-family target. -/
+def theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+    (fun m n => m = n + 1) P
+
+/-- One-parameter positive right-pencil version of the translated two-degree
+target.  This is the remaining genuinely mathematical leaf after endpoint
+splitting and coefficient scaling have been separated out. -/
+def theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyStatement : Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
+    (fun m n => m = n + 2)
+
+/-- Predicate-restricted form of the translated two-degree right-family
+target.  The predicate records endpoint side conditions such as `natDegree = 0`,
+`natDegree = 1`, or `natDegree ≤ 1`. -/
+def theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+    (P : ℕ → Prop) : Prop :=
+  theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
+    (fun m n => m = n + 2) P
+
+/-- Predicate-restricted translated right-family targets transport along
+endpoint predicate implications. -/
+theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement_of_imp
+    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
+    (hQ :
+      theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+        Q) :
+    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
+      P :=
+  theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement_of_imp
+    (R := fun m n => m = n + 2) hPQ hQ
+
 end LiuOppositeSigns
 end RealRooted
