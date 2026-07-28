@@ -1223,6 +1223,18 @@ theorem of_rootCountCompatible_of_window_one_zero
     rw [hf_zero, hg_zero]
     norm_num
 
+/-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
+for `(f, g)`.  The extra strict inequality supplies the strict largest-root
+condition required by the right branch, while the root-count field is obtained
+by `RootCountCompatible.symm`. -/
+theorem toRightBranch_symm_of_lt {f g : ℝ[X]} {r s : ℝ}
+    (h : LeftRootCountBranch g f s r) (hlargest : r < s) :
+    RightRootCountBranch f g r s where
+  f_largest := h.g_largest
+  g_largest := h.f_largest
+  largest_lt := hlargest
+  count := h.count.symm
+
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
@@ -1585,6 +1597,27 @@ theorem of_rootCountAbove_right_sub_left_bounds_of_nonRoot
       hs.rootCountAbove_deleteRootFactor_eq_zero_of_le hg_ne hx_ge
     rw [hf_zero, hdelete_zero]
     norm_num
+
+/-- A simple-window criterion for the right branch, obtained from the left
+criterion by swapping the polynomial pair.  It is enough to have
+Liu-compatible original root counts and, at each common non-root below the
+largest root of `g`, a multiset-counted window `(x, b]` containing exactly one
+root of `g` and no roots of `f`. -/
+theorem of_rootCountCompatible_of_window_g_one_f_zero
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
+    (hcount : RootCountCompatible f g)
+    (hwindow : ∀ x : ℝ, x < s → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ b : ℝ, x < b ∧ ¬ f.IsRoot b ∧ ¬ g.IsRoot b ∧
+        (g.roots.filter (fun z => x < z ∧ z ≤ b)).card = 1 ∧
+        (f.roots.filter (fun z => x < z ∧ z ≤ b)).card = 0) :
+    RightRootCountBranch f g r s := by
+  have hleft : LeftRootCountBranch g f s r :=
+    LeftRootCountBranch.of_rootCountCompatible_of_window_one_zero
+      hg_ne hf_ne hs hr hlargest.le hcount.symm fun x hx hgx hfx => by
+        obtain ⟨b, hxb, hfb, hgb, hgIoc, hfIoc⟩ := hwindow x hx hfx hgx
+        exact ⟨b, hxb, hgb, hfb, hgIoc, hfIoc⟩
+  exact hleft.toRightBranch_symm_of_lt hlargest
 
 theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) (hx : x ≤ s) :
