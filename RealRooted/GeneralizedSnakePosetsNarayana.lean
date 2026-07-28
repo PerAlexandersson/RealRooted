@@ -735,6 +735,18 @@ theorem FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedN
     rw [coeff_narayanaPolynomial_of_lt (m := 1) hklt,
       narayanaTransformCoeff_eq_zero_of_lt (m := 1) hklt]
 
+/-- The full truncated-staircase rook polynomial is the modified Narayana
+polynomial. -/
+theorem FiniteSkewBoard.truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial
+    (n : ℕ) :
+    FiniteSkewBoard.truncatedStaircaseRookPolynomial n n =
+      modifiedNarayanaPolynomial n := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial]
+  ext k
+  exact
+    FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaCoeff
+      n k
+
 /-! ## Jacobi-polynomial transport for Braun--Jal Lemma 3.1 -/
 
 /-- The change of variables used in the Jacobi-polynomial proof of
