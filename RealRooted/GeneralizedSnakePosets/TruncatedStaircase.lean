@@ -485,6 +485,31 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_sortedLE
     | right a hcol => exact hcol
   simpa [x, y, hx, hy, L] using hcol
 
+/-- Sorting the reflected row projection recovers the reflected row list. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairRows_sort
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairRows n P).sort (· ≤ ·) =
+      fullStaircaseReflectedRowList n P := by
+  have hnodup : (fullStaircaseReflectedRowList n P).Nodup :=
+    hP.fullStaircaseReflectedRowList_nodup
+  rw [← fullStaircaseReflectedRowList_toFinset n P]
+  exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
+    exact List.SortedLE.pairwise (fullStaircaseReflectedRowList_sortedLE n P))
+
+/-- Sorting the reflected-column projection recovers the reflected-column
+list. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairColumns_sort
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairColumns n P).sort (· ≤ ·) =
+      fullStaircaseReflectedColumnList n P := by
+  have hnodup : (fullStaircaseReflectedColumnList n P).Nodup :=
+    hP.fullStaircaseReflectedColumnList_nodup
+  rw [← fullStaircaseReflectedColumnList_toFinset n P]
+  exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
+    exact List.SortedLE.pairwise hP.fullStaircaseReflectedColumnList_sortedLE)
+
 /-- The ordered-subset-pair projection of a size-`k` full-staircase placement
 lies in `orderedKSubsetPairs n k`. -/
 theorem IsNonNestingPlacement.mem_orderedKSubsetPairs_fullStaircasePlacementOrderedPair
@@ -497,25 +522,8 @@ theorem IsNonNestingPlacement.mem_orderedKSubsetPairs_fullStaircasePlacementOrde
     hP.fullStaircaseReflectedPairColumns_subset_range, ?_, ?_⟩
   · rw [hP.fullStaircaseReflectedPairRows_card, hcard]
   · rw [hP.fullStaircaseReflectedPairColumns_card, hcard]
-  · let rows := fullStaircaseReflectedRowList n P
-    let cols := fullStaircaseReflectedColumnList n P
-    have hrows_sort :
-        (fullStaircaseReflectedPairRows n P).sort (· ≤ ·) = rows := by
-      have hnodup : rows.Nodup := by
-        simpa [rows] using hP.fullStaircaseReflectedRowList_nodup
-      rw [← fullStaircaseReflectedRowList_toFinset n P]
-      exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
-        exact List.SortedLE.pairwise (by
-          simpa [rows] using fullStaircaseReflectedRowList_sortedLE n P))
-    have hcols_sort :
-        (fullStaircaseReflectedPairColumns n P).sort (· ≤ ·) = cols := by
-      have hnodup : cols.Nodup := by
-        simpa [cols] using hP.fullStaircaseReflectedColumnList_nodup
-      rw [← fullStaircaseReflectedColumnList_toFinset n P]
-      exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
-        exact List.SortedLE.pairwise (by
-          simpa [cols] using hP.fullStaircaseReflectedColumnList_sortedLE))
-    rw [hrows_sort, hcols_sort]
+  · rw [hP.fullStaircaseReflectedPairRows_sort,
+      hP.fullStaircaseReflectedPairColumns_sort]
     exact hP.fullStaircaseReflectedLists_forall₂_le
 
 private theorem orderedSubsetPairFullStaircasePlacement_list_nodup
@@ -749,6 +757,82 @@ theorem fullStaircasePlacementOrderedPair_orderedSubsetPairFullStaircasePlacemen
   exact Prod.ext
     (fullStaircaseReflectedPairRows_orderedSubsetPairFullStaircasePlacement hAB)
     (fullStaircaseReflectedPairColumns_orderedSubsetPairFullStaircasePlacement hAB)
+
+/-- Reflecting the lexicographically sorted reflected-pair list back gives the
+original placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairLexList_reflectBack_toFinset
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    ((fullStaircaseReflectedPairLexList n P).map fun x => (x.1, n - 1 - x.2)).toFinset =
+      P := by
+  classical
+  ext a
+  rw [List.mem_toFinset]
+  constructor
+  · intro ha_map
+    rcases List.mem_map.mp ha_map with ⟨x, hx, hxa⟩
+    rw [← hxa]
+    have hx_pairs : x ∈ fullStaircaseReflectedPairs n P :=
+      mem_fullStaircaseReflectedPairLexList.mp hx
+    rcases mem_fullStaircaseReflectedPairs.mp hx_pairs with ⟨b, hb, rfl⟩
+    have hb_cell := hP.1 hb
+    rw [mem_truncatedStaircase_full_cells_iff] at hb_cell
+    have hback : (b.1, n - 1 - (n - 1 - b.2)) = b := by
+      ext
+      · simp
+      · simp
+        lia
+    simpa [hback] using hb
+  · intro ha
+    apply List.mem_map.mpr
+    refine ⟨(a.1, n - 1 - a.2), ?_, ?_⟩
+    · rw [mem_fullStaircaseReflectedPairLexList]
+      exact mem_fullStaircaseReflectedPairs.mpr ⟨a, ha, rfl⟩
+    · have ha_cell := hP.1 ha
+      rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
+      ext
+      · simp
+      · simp
+        lia
+
+/-- Constructing an ordered pair from a full-staircase placement and then
+constructing a placement recovers the original placement. -/
+theorem IsNonNestingPlacement.orderedSubsetPairFullStaircasePlacement_projection
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    orderedSubsetPairFullStaircasePlacement n
+      (fullStaircasePlacementOrderedPair n P) = P := by
+  rw [orderedSubsetPairFullStaircasePlacement, fullStaircasePlacementOrderedPair]
+  rw [hP.fullStaircaseReflectedPairRows_sort,
+    hP.fullStaircaseReflectedPairColumns_sort]
+  rw [fullStaircaseReflectedRowList, fullStaircaseReflectedColumnList]
+  simp only [List.map_map]
+  rw [List.zip_map']
+  exact hP.fullStaircaseReflectedPairLexList_reflectBack_toFinset
+
+/-- Size-`k` non-nesting placements in the full truncated staircase are counted
+by ordered `k`-subset pairs. -/
+theorem card_fullStaircasePlacements_eq_orderedKSubsetPairs (n k : ℕ) :
+    (((truncatedStaircase n n).nonNestingPlacements.filter fun P => P.card = k).card) =
+      (Finset.orderedKSubsetPairs n k).card := by
+  classical
+  refine Finset.card_bij'
+    (fun P _hP => fullStaircasePlacementOrderedPair n P)
+    (fun AB _hAB => orderedSubsetPairFullStaircasePlacement n AB)
+    ?_ ?_ ?_ ?_
+  · intro P hP
+    rw [Finset.mem_filter] at hP
+    have hvalid := mem_nonNestingPlacements.mp hP.1
+    exact hvalid.mem_orderedKSubsetPairs_fullStaircasePlacementOrderedPair hP.2
+  · intro AB hAB
+    rw [Finset.mem_filter, mem_nonNestingPlacements]
+    exact ⟨orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement hAB,
+      orderedSubsetPairFullStaircasePlacement_card hAB⟩
+  · intro P hP
+    rw [Finset.mem_filter] at hP
+    exact (mem_nonNestingPlacements.mp hP.1).orderedSubsetPairFullStaircasePlacement_projection
+  · intro AB hAB
+    exact fullStaircasePlacementOrderedPair_orderedSubsetPairFullStaircasePlacement hAB
 
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
