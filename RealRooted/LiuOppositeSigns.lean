@@ -2095,6 +2095,60 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
 
 end RightRootCountBranch
 
+/-- Branch-level bridge from cross-owned consecutive roots to Liu's largest-root
+deletion branch predicate.  The analytic input is kept in the explicit
+`hcross` hypothesis; this theorem only chooses the larger largest root and
+feeds the count descent in the corresponding orientation. -/
+theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hcount : RootCountCompatible f g)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : ∀ a b : ℝ, a < b →
+      (f.IsRoot a ∨ g.IsRoot a) →
+      (f.IsRoot b ∨ g.IsRoot b) →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b)) :
+    theorem21RootCountBranches f g := by
+  by_cases hsr : s ≤ r
+  · exact theorem21RootCountBranches_of_left <|
+      LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
+        hf_ne hg_ne hr hs hsr hcount
+        (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
+          hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
+  · have hrs : r < s := lt_of_not_ge hsr
+    have hdisj_symm : ∀ c : ℝ, g.IsRoot c → ¬ f.IsRoot c := by
+      intro c hgc hfc
+      exact hdisj c hfc hgc
+    have hcross_symm : ∀ a b : ℝ, a < b →
+        (g.IsRoot a ∨ f.IsRoot a) →
+        (g.IsRoot b ∨ f.IsRoot b) →
+        (∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z ∧ ¬ f.IsRoot z) →
+        (g.IsRoot a ∧ f.IsRoot b) ∨ (f.IsRoot a ∧ g.IsRoot b) := by
+      intro a b hab ha_root hb_root hno
+      have ha_root' : f.IsRoot a ∨ g.IsRoot a := by
+        rcases ha_root with hga | hfa
+        · exact Or.inr hga
+        · exact Or.inl hfa
+      have hb_root' : f.IsRoot b ∨ g.IsRoot b := by
+        rcases hb_root with hgb | hfb
+        · exact Or.inr hgb
+        · exact Or.inl hfb
+      have hno' : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
+        intro z haz hzb
+        exact ⟨(hno z haz hzb).2, (hno z haz hzb).1⟩
+      rcases hcross a b hab ha_root' hb_root' hno' with hfg | hgf
+      · exact Or.inr hfg
+      · exact Or.inl hgf
+    have hleft : LeftRootCountBranch g f s r :=
+      LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
+        hg_ne hf_ne hs hr hrs.le hcount.symm
+        (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
+          hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f hdisj_symm hcross_symm)
+    exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
+
 theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (h : theorem21RootCountBranches f g) :
