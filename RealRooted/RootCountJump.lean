@@ -218,9 +218,7 @@ theorem closedSegment_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
     simp [eval_add, eval_mul, eval_C, hfb_eval]
   rw [ha, hb]
   have hβ_sq : 0 < β * β := mul_pos hβ_pos hβ_pos
-  calc
-    0 < (β * β) * (g.eval a * g.eval b) := mul_pos hβ_sq hgprod
-    _ = (β * g.eval a) * (β * g.eval b) := by ring
+  nlinarith [mul_pos hβ_sq hgprod]
 
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 nonnegative right-family member is nonzero at `x`. -/
