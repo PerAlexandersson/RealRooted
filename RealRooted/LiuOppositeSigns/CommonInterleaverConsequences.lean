@@ -229,5 +229,84 @@ theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches_nonconstan
   (theorem21DeletionPairCommonInterleaverIffNonconstant_of_theorem21CompatibleRootCount
     h) f g hf hg hsgn hf_deg hg_deg
 
+/-- Same-degree common-interleaver endpoint from the Liu-side positive-split
+root-count leaf. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount
+    (hpack : positiveSplitSameDegreeRootCountAboveNonRootStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    |>.pairHasCommonInterleaver_of_sameDegree hdeg
+
+/-- Succ-degree common-interleaver endpoint from the Liu-side positive-split
+root-count leaf. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount
+    (hpack : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+      hf_pos hg_pos hfnn hgnn hfg hdeg
+  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+    |>.pairHasCommonInterleaver_of_succDegree hdeg
+
+/-- The two positive-split root-count leaves supply the existing
+positive-leading compatibility-to-common-interleaver bridge. -/
+theorem
+    compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
+    (hsame : positiveSplitSameDegreeRootCountAboveNonRootStatement)
+    (hsucc : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    (sameDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount hsame)
+    (succDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount hsucc)
+
+/-- The strict-upper non-root count leaves also route through the
+positive-split package before reaching the common-interleaver endpoint. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
+    (positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsame)
+    (positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsucc)
+
+/-- The checked same-degree analytic count spine and the succ-degree
+common-left-interleaver reduction supply the compatible-pair endpoint. -/
+theorem
+    compatiblePairHasCommonInterleaver_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
+    (hsucc : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
+    positiveSplitSameDegreeRootCountAboveNonRoot_from_analytic
+    (positiveSplitSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
+      hsucc)
+
+/-- Finite-family Chudnovsky--Seymour package from the Liu-side
+positive-split root-count leaves. -/
+theorem chudnovskySeymour_fourWay_of_positiveSplitRootCountAboveNonRoot
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : positiveSplitSameDegreeRootCountAboveNonRootStatement)
+    (hsucc : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairBridgePos (fs := fs) hrr hpos
+    (compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
+      hsame hsucc)
+
+/-- Finite-family Chudnovsky--Seymour package from the checked same-degree
+analytic spine and the succ-degree common-left-interleaver reduction. -/
+theorem
+    chudnovskySeymour_fourWay_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsucc : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairBridgePos (fs := fs) hrr hpos
+    (compatiblePairHasCommonInterleaver_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
+      hsucc)
+
 end LiuOppositeSigns
 end RealRooted

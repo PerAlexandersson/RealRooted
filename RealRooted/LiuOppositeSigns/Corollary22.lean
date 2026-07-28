@@ -2011,5 +2011,220 @@ theorem
       hforward)
     hreturn
 
+/-- Liu Corollary 2.2: compatible real-rooted polynomials with opposite leading
+signs have degree gap at most two. -/
+def corollary22DegreeDiffStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    Compatible f g → |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2
+
+/-- Nonconstant form of Liu Corollary 2.2. -/
+def corollary22DegreeDiffNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      Compatible f g → |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2
+
+/-- Low-degree form of Liu Corollary 2.2 through endpoint degree three. -/
+def corollary22DegreeDiffNatDegreeLeThreeStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≤ 3 → g.natDegree ≤ 3 →
+      Compatible f g → |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2
+
+/-- Nonconstant low-degree form of Liu Corollary 2.2 through endpoint degree
+three. -/
+def corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 3 → g.natDegree ≤ 3 →
+        Compatible f g → |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2
+
+/-- Projection form of `corollary22DegreeDiffStatement`. -/
+theorem corollary22DegreeDiff
+    (h : corollary22DegreeDiffStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  h f g hf hg hsgn hcompat
+
+/-- Projection form of `corollary22DegreeDiffNonconstantStatement`. -/
+theorem corollary22DegreeDiff_nonconstant
+    (h : corollary22DegreeDiffNonconstantStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  h f g hf hg hsgn hf_deg hg_deg hcompat
+
+/-- Projection form of `corollary22DegreeDiffNatDegreeLeThreeStatement`. -/
+theorem corollary22DegreeDiff_natDegree_le_three
+    (h : corollary22DegreeDiffNatDegreeLeThreeStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hfdeg : f.natDegree ≤ 3) (hgdeg : g.natDegree ≤ 3)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  h f g hf hg hsgn hfdeg hgdeg hcompat
+
+/-- Projection form of
+`corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement`. -/
+theorem corollary22DegreeDiff_natDegree_le_three_nonconstant
+    (h : corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hfdeg : f.natDegree ≤ 3) (hgdeg : g.natDegree ≤ 3)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  h f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg hcompat
+
+/-- Low-degree Liu Corollary 2.2 follows from the checked low-degree
+Theorem 2.1 package. -/
+theorem corollary22DegreeDiffNatDegreeLeThree_of_theorem21NatDegreeLeThree
+    (h : theorem21CompatibleRootCountNatDegreeLeThreeStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeStatement := by
+  intro f g hf hg hsgn hfdeg hgdeg hcompat
+  exact natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+    ((h f g hf hg hsgn hfdeg hgdeg).1 hcompat)
+
+/-- Nonconstant low-degree Liu Corollary 2.2 follows from the checked
+nonconstant low-degree Theorem 2.1 package. -/
+theorem
+    corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_theorem21NatDegreeLeThree
+    (h : theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement := by
+  intro f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg hcompat
+  exact natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+    ((h f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg).1 hcompat)
+
+/-- Low-degree Liu Corollary 2.2 follows from the isolated branch-retaining
+common-interleaver forward direction. -/
+theorem corollary22DegreeDiffNatDegreeLeThree_of_commonForward
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeStatement :=
+  corollary22DegreeDiffNatDegreeLeThree_of_theorem21NatDegreeLeThree
+    (theorem21CompatibleRootCountNatDegreeLeThree_of_commonForward hforward)
+
+/-- Nonconstant low-degree Liu Corollary 2.2 follows from the isolated
+nonconstant branch-retaining common-interleaver forward direction. -/
+theorem corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement :=
+  corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_theorem21NatDegreeLeThree
+    (theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_commonForward
+      hforward)
+
+/-- Low-degree Liu Corollary 2.2 follows from the isolated forward direction of
+Theorem 2.1. -/
+theorem corollary22DegreeDiffNatDegreeLeThree_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeStatement :=
+  corollary22DegreeDiffNatDegreeLeThree_of_theorem21NatDegreeLeThree
+    (theorem21CompatibleRootCountNatDegreeLeThree_of_forward hforward)
+
+/-- Nonconstant low-degree Liu Corollary 2.2 follows from the isolated
+nonconstant forward direction of Theorem 2.1. -/
+theorem corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement :=
+  corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_theorem21NatDegreeLeThree
+    (theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward
+      hforward)
+
+/-- Liu Corollary 2.2 follows from the isolated branch-retaining
+common-interleaver forward direction. -/
+theorem corollary22DegreeDiff_of_commonForward
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
+    corollary22DegreeDiffStatement :=
+  fun _ _ hf hg hsgn hcompat =>
+    natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+      (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
+        (hforward hf hg hsgn hcompat))
+
+/-- The nonconstant Liu Corollary 2.2 follows from the isolated nonconstant
+branch-retaining common-interleaver forward direction. -/
+theorem corollary22DegreeDiffNonconstant_of_commonForward
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
+    corollary22DegreeDiffNonconstantStatement :=
+  fun _ _ hf hg hsgn hf_deg hg_deg hcompat =>
+    natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+      (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
+        (hforward hf hg hsgn hf_deg hg_deg hcompat))
+
+/-- Liu Corollary 2.2 follows from the isolated forward direction of
+Theorem 2.1. -/
+theorem corollary22DegreeDiff_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    corollary22DegreeDiffStatement :=
+  corollary22DegreeDiff_of_commonForward
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+
+/-- The nonconstant Liu Corollary 2.2 follows from the isolated nonconstant
+forward direction of Theorem 2.1. -/
+theorem corollary22DegreeDiffNonconstant_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    corollary22DegreeDiffNonconstantStatement :=
+  corollary22DegreeDiffNonconstant_of_commonForward
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+
+/-- Liu Corollary 2.2 follows from the Theorem 2.1 compatibility criterion. -/
+theorem corollary22DegreeDiff_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountStatement) :
+    corollary22DegreeDiffStatement :=
+  corollary22DegreeDiff_of_forward
+    (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
+
+/-- Nonconstant Liu Corollary 2.2 follows from the nonconstant Theorem 2.1
+compatibility criterion. -/
+theorem corollary22DegreeDiffNonconstant_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountNonconstantStatement) :
+    corollary22DegreeDiffNonconstantStatement :=
+  corollary22DegreeDiffNonconstant_of_forward
+    (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
+      h)
+
+theorem natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount
+    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  corollary22DegreeDiff (corollary22DegreeDiff_of_theorem21CompatibleRootCount h)
+    hf hg hsgn hcompat
+
+theorem
+    natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_nonconstant
+    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  corollary22DegreeDiff_nonconstant
+    (corollary22DegreeDiffNonconstant_of_theorem21CompatibleRootCount h)
+    hf hg hsgn hf_deg hg_deg hcompat
+
+/-- Direct degree-gap consequence via the swapped branch projection of
+Liu Theorem 2.1. -/
+theorem natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_symm
+    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  natDegree_abs_sub_le_two_of_theorem21RootCountBranches_symm hf hg hsgn
+    (theorem21RootCountBranches_symm_of_compatible h hf hg hsgn hcompat)
+
+/-- Nonconstant direct degree-gap consequence via the swapped branch
+projection of Liu Theorem 2.1. -/
+theorem
+    natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_symm_nonconstant
+    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  natDegree_abs_sub_le_two_of_theorem21RootCountBranches_symm hf hg hsgn
+    (theorem21RootCountBranches_symm_of_compatible_nonconstant h hf hg hsgn
+      hf_deg hg_deg hcompat)
+
 end LiuOppositeSigns
 end RealRooted
