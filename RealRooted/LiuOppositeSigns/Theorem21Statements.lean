@@ -77,18 +77,19 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_g
   have hno_pos : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x :=
     (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
       hf hg hxf hxg).mp hodd
+  have hpos_interval : ∀ μ ∈ Set.Icc μ₀ μ₁, 0 < μ :=
+    fun _ hμ => lt_of_lt_of_le hμ₀_pos hμ.1
+  have hsplit : ∀ μ ∈ Set.Icc μ₀ μ₁, (f + C μ * g).Splits :=
+    fun μ hμ => (hfg.isRealRooted_add_right (hpos_interval μ hμ)).2
   refine rightFamily_card_roots_gt_eq_of_local_lower_counts
     (f := f) (g := g) (μ₀ := μ₀) (μ₁ := μ₁) (x := x)
     hμ₀μ₁ hdeg ?_ ?_ ?_
   · intro μ hμ
-    exact (hfg.isRealRooted_add_right (lt_of_lt_of_le hμ₀_pos hμ.1)).2
+    exact hsplit μ hμ
   · intro μ hμ
-    exact hno_pos μ (lt_of_lt_of_le hμ₀_pos hμ.1)
+    exact hno_pos μ (hpos_interval μ hμ)
   · intro μ hμ ρ hρ
-    exact positiveParameter_local_lower_count
-      (fun ν hν => (hfg.isRealRooted_add_right
-        (lt_of_lt_of_le hμ₀_pos hν.1)).2)
-      hdeg hμ hρ
+    exact positiveParameter_local_lower_count hsplit hdeg hμ hρ
 
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
