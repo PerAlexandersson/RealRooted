@@ -158,6 +158,23 @@ specified cell. -/
   · rintro ⟨hP, a, ha, haP⟩
     exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
 
+/-- Distinct cells in a valid placement have distinct rows. -/
+theorem IsNonNestingPlacement.row_ne {B : FiniteSkewBoard}
+    {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P)
+    {a b : ℕ × ℕ} (ha : a ∈ P) (hb : b ∈ P) (hne : a ≠ b) :
+    a.1 ≠ b.1 :=
+  hP.2.1 a ha b hb hne
+
+/-- Distinct cells in a valid placement have distinct columns. -/
+theorem IsNonNestingPlacement.col_ne {B : FiniteSkewBoard}
+    {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P)
+    {a b : ℕ × ℕ} (ha : a ∈ P) (hb : b ∈ P) (hne : a ≠ b) :
+    a.2 ≠ b.2 := by
+  have hrow_ne := hP.row_ne ha hb hne
+  rcases lt_or_gt_of_ne hrow_ne with hlt | hgt
+  · exact ne_of_gt (hP.2.2 a ha b hb hlt)
+  · exact ne_of_lt (hP.2.2 b hb a ha hgt)
+
 /-- Placements avoiding a row and placements using that row are disjoint. -/
 theorem disjoint_nonNestingPlacementsWithoutRow_withRow
     (B : FiniteSkewBoard) (row : ℕ) :
@@ -205,7 +222,7 @@ theorem pairwiseDisjoint_nonNestingPlacementsWithCell_rowCells
   intro P hPa Q hQ hPQ
   rw [mem_nonNestingPlacementsWithCell] at hPa hQ
   subst Q
-  have hrow_ne := hPa.1.2.1 a hPa.2 b hQ.2 hne
+  have hrow_ne := hPa.1.row_ne hPa.2 hQ.2 hne
   have ha_row : a.1 = row := (mem_rowCells.mp ha).2
   have hb_row : b.1 = row := (mem_rowCells.mp hb).2
   exact hrow_ne (by rw [ha_row, hb_row])
@@ -286,16 +303,10 @@ theorem pairwiseDisjoint_nonNestingPlacementsWithCell_colCells
   intro P hPa Q hQ hPQ
   rw [mem_nonNestingPlacementsWithCell] at hPa hQ
   subst Q
-  have hrow_ne := hPa.1.2.1 a hPa.2 b hQ.2 hne
+  have hcol_ne := hPa.1.col_ne hPa.2 hQ.2 hne
   have ha_col : a.2 = col := (mem_colCells.mp ha).2
   have hb_col : b.2 = col := (mem_colCells.mp hb).2
-  rcases lt_or_gt_of_ne hrow_ne with hlt | hgt
-  · have hcol_lt := hPa.1.2.2 a hPa.2 b hQ.2 hlt
-    rw [ha_col, hb_col] at hcol_lt
-    exact (Nat.lt_irrefl col hcol_lt).elim
-  · have hcol_lt := hPa.1.2.2 b hQ.2 a hPa.2 hgt
-    rw [ha_col, hb_col] at hcol_lt
-    exact (Nat.lt_irrefl col hcol_lt).elim
+  exact hcol_ne (by rw [ha_col, hb_col])
 
 /-- The sum over placements using a column is the sum over fixed cells in that
 column. -/
