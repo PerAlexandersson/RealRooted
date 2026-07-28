@@ -81,6 +81,32 @@ theorem OppositeLeadingSigns.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isR
     (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
       hf hg (hf_no y hay hyb) (hg_no y hay hyb)).mp hodd_y
 
+/-- On a positive parameter interval with constant degree and a fixed
+threshold root-free for every positive member, the right-family strict-upper
+count is constant between the interval endpoints. -/
+theorem rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {x μ₀ μ₁ : ℝ}
+    (hno_pos : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x)
+    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
+    ((f + C μ₀ * g).roots.filter (x < ·)).card =
+      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
+  have hpos_interval : ∀ μ ∈ Set.Icc μ₀ μ₁, 0 < μ :=
+    fun _ hμ => lt_of_lt_of_le hμ₀_pos hμ.1
+  have hsplit : ∀ μ ∈ Set.Icc μ₀ μ₁, (f + C μ * g).Splits :=
+    fun μ hμ => (hfg.isRealRooted_add_right (hpos_interval μ hμ)).2
+  refine rightFamily_card_roots_gt_eq_of_local_lower_counts
+    (f := f) (g := g) (μ₀ := μ₀) (μ₁ := μ₁) (x := x)
+    hμ₀μ₁ hdeg ?_ ?_ ?_
+  · intro μ hμ
+    exact hsplit μ hμ
+  · intro μ hμ
+    exact hno_pos μ (hpos_interval μ hμ)
+  · intro μ hμ ρ hρ
+    exact positiveParameter_local_lower_count hsplit hdeg hμ hρ
+
 /-- On a positive parameter interval with constant degree, odd opposite-leading
 strict-upper root-count difference at a common non-root makes the right-family
 strict-upper count locally constant between the interval endpoints. -/
@@ -98,19 +124,8 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_g
   have hno_pos : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x :=
     (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
       hf hg hxf hxg).mp hodd
-  have hpos_interval : ∀ μ ∈ Set.Icc μ₀ μ₁, 0 < μ :=
-    fun _ hμ => lt_of_lt_of_le hμ₀_pos hμ.1
-  have hsplit : ∀ μ ∈ Set.Icc μ₀ μ₁, (f + C μ * g).Splits :=
-    fun μ hμ => (hfg.isRealRooted_add_right (hpos_interval μ hμ)).2
-  refine rightFamily_card_roots_gt_eq_of_local_lower_counts
-    (f := f) (g := g) (μ₀ := μ₀) (μ₁ := μ₁) (x := x)
-    hμ₀μ₁ hdeg ?_ ?_ ?_
-  · intro μ hμ
-    exact hsplit μ hμ
-  · intro μ hμ
-    exact hno_pos μ (hpos_interval μ hμ)
-  · intro μ hμ ρ hρ
-    exact positiveParameter_local_lower_count hsplit hdeg hμ hρ
+  exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+    hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
 
 /-- Open-interval sample-point form of
 `OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub`.
@@ -130,14 +145,11 @@ theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_roots_gt_sub_Io
       (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
     ((f + C μ₀ * g).roots.filter (y < ·)).card =
       ((f + C μ₁ * g).roots.filter (y < ·)).card := by
-  have hodd_y : Odd (((f.roots.filter (y < ·)).card : ℤ) -
-      (g.roots.filter (y < ·)).card) :=
-    (odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
-      hf_no hg_no hax hxb hay hyb).mp hodd
-  exact
-    hsgn.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub
-      hfg hf hg (hf_no y hay hyb) (hg_no y hay hyb)
-      hodd_y hμ₀_pos hμ₀μ₁ hdeg
+  have hno_pos :=
+    hsgn.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
+      hf hg hf_no hg_no hax hxb hay hyb hodd
+  exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
+    hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
 
 /-- Contrapositive crossing form of
 `OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
