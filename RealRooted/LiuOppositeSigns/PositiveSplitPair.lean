@@ -160,6 +160,47 @@ theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
     (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
       hcount)
 
+/-- A positive-leading, splitting, degree-one polynomial has one real root and
+factors as its leading coefficient times the corresponding monic factor. -/
+lemma exists_linear_factor_of_splits_natDegree_one
+    {p : ℝ[X]} (hp_split : p.Splits) (hpdeg : p.natDegree = 1) :
+    ∃ a : ℝ, p.roots = {a} ∧ p = C p.leadingCoeff * (X - C a) := by
+  obtain ⟨a, ha⟩ : ∃ a : ℝ, p.roots = {a} :=
+    Multiset.card_eq_one.mp (by rw [card_roots_of_splits hp_split, hpdeg])
+  refine ⟨a, ha, ?_⟩
+  have hprod := hp_split.eq_prod_roots
+  rw [ha] at hprod
+  simpa using hprod
+
+/-- In the `(2, 1)` positive split root-count case, the linear root cannot lie
+strictly below both quadratic roots. -/
+lemma left_root_le_singleton_root_of_positiveSplitRootCountPair_two_one
+    {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g)
+    {a b c : ℝ} (hab : a ≤ b) (hfroots : f.roots = {a, b})
+    (hgroots : g.roots = {c}) :
+    a ≤ c := by
+  by_contra hac
+  have hca : c < a := lt_of_not_ge hac
+  let x : ℝ := (a + c) / 2
+  have hxa : x ≤ a := by
+    dsimp [x]
+    linarith
+  have hxb : x ≤ b := hxa.trans hab
+  have hcount := h.count.left_sub_le_one x
+  have hf_count : rootCountAtOrAbove f x = 2 := by
+    rw [rootCountAtOrAbove, hfroots]
+    simp only [Multiset.insert_eq_cons]
+    rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa]
+    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), if_pos hxb]
+    simp
+  have hg_count : rootCountAtOrAbove g x = 0 := by
+    rw [rootCountAtOrAbove, hgroots]
+    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r),
+      if_neg (by dsimp [x]; linarith)]
+    simp
+  rw [hf_count, hg_count] at hcount
+  norm_num at hcount
+
 namespace PositiveSplitRootCountPair
 
 theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
