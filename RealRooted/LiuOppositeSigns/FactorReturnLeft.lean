@@ -811,5 +811,603 @@ theorem theorem21LeftFactorReturnSuccDegreeTranslatedCompatible_of_right_natDegr
   theorem21LeftFactorReturnSuccDegreeTranslatedCompatible_of_right_natDegree_le_three_of_monic
     xSubCubicCubicSplits hf hg hsgn hleft hdeg hcommon hgdeg
 
+/-- Pointwise translated compatibility descent for the same-degree left
+factor-return route. -/
+theorem theorem21LeftFactorReturnSameDegree_of_pointwiseTranslatedCompatible
+    {f g : ℝ[X]} {r s : ℝ}
+    (hleft : LeftRootCountBranch f g r s)
+    (htranslated :
+      Compatible
+        (X * (deleteRootFactor f r).comp (X + C r))
+        (g.comp (X + C r))) :
+    Compatible f g :=
+  theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft htranslated
+
+/-- The translated same-degree target gives the original same-degree
+factor-return leaf by descending through the translation. -/
+theorem theorem21LeftFactorReturnSameDegree_of_translatedCompatible
+    (htranslated :
+      theorem21LeftFactorReturnSameDegreeTranslatedCompatibleStatement) :
+    theorem21LeftFactorReturnSameDegreeStatement :=
+  theorem21LeftFactorReturn_of_translatedCompatibleRelation
+    (R := fun m n => m = n) htranslated
+
+/-- Pointwise translated compatibility descent for the successor-degree left
+factor-return route. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_pointwiseTranslatedCompatible
+    {f g : ℝ[X]} {r s : ℝ}
+    (hleft : LeftRootCountBranch f g r s)
+    (htranslated :
+      Compatible
+        (X * (deleteRootFactor f r).comp (X + C r))
+        (g.comp (X + C r))) :
+    Compatible f g :=
+  theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft htranslated
+
+/-- The translated successor-degree target gives the original successor-degree
+factor-return leaf by descending through the translation. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_translatedCompatible
+    (htranslated :
+      theorem21LeftFactorReturnSuccDegreeTranslatedCompatibleStatement) :
+    theorem21LeftFactorReturnSuccDegreeStatement :=
+  theorem21LeftFactorReturn_of_translatedCompatibleRelation
+    (R := fun m n => m = n + 1) htranslated
+
+/-- Predicate-restricted translated same-degree compatibility targets give the
+corresponding predicate-restricted original factor-return targets. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_translatedCompatiblePredicate
+    {P : ℕ → Prop}
+    (htranslated :
+      theorem21LeftFactorReturnSameDegreeTranslatedCompatiblePredicateStatement
+        P) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement P :=
+  theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
+    (R := fun m n => m = n) htranslated
+
+/-- Predicate-restricted translated successor-degree compatibility targets
+give the corresponding predicate-restricted original factor-return targets. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_translatedCompatiblePredicate
+    {P : ℕ → Prop}
+    (htranslated :
+      theorem21LeftFactorReturnSuccDegreeTranslatedCompatiblePredicateStatement
+        P) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement P :=
+  theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
+    (R := fun m n => m = n + 1) htranslated
+
+/-- Predicate-restricted translated same-degree right-family targets give
+predicate-restricted original factor-return targets. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_rightPredicate
+    {P : ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicateStatement
+        P) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement P :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_translatedCompatiblePredicate
+    (theorem21LeftFactorReturnSameDegreeTranslatedCompatiblePredicate_of_rightPredicate
+      hright)
+
+/-- Predicate-restricted translated successor-degree right-family targets give
+predicate-restricted original factor-return targets. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_rightPredicate
+    {P : ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicateStatement
+        P) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement P :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_translatedCompatiblePredicate
+    (theorem21LeftFactorReturnSuccDegreeTranslatedCompatiblePredicate_of_rightPredicate
+      hright)
+
+/-- Predicate-restricted right-successor sign-normalized x-subtraction
+families give predicate-restricted original same-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    {P : ℕ → Prop}
+    (hsub :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
+        P) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement P :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_rightPredicate
+    (theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+      hsub)
+
+/-- Predicate-restricted same-degree sign-normalized x-subtraction families
+give predicate-restricted original successor-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    {P : ℕ → Prop}
+    (hsub :
+      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement P :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_rightPredicate
+    (theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+      hsub)
+
+/-- A translated positive right-family leaf gives the original same-degree
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSameDegree_of_rightFamily
+    (hright :
+      theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyStatement) :
+    theorem21LeftFactorReturnSameDegreeStatement :=
+  theorem21LeftFactorReturnSameDegree_of_translatedCompatible
+    (theorem21LeftFactorReturnSameDegreeTranslatedCompatible_of_rightFamily
+      hright)
+
+/-- A translated positive right-family leaf gives the original
+successor-degree factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_rightFamily
+    (hright :
+      theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyStatement) :
+    theorem21LeftFactorReturnSuccDegreeStatement :=
+  theorem21LeftFactorReturnSuccDegree_of_translatedCompatible
+    (theorem21LeftFactorReturnSuccDegreeTranslatedCompatible_of_rightFamily
+      hright)
+
+/-- Predicate-restricted translated right-family targets give pointwise
+original same-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSameDegree_of_rightPredicate
+    {P : ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicateStatement
+        P)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : P g.natDegree) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_rightPredicate hright
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Predicate-restricted translated right-family targets give pointwise
+original successor-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_rightPredicate
+    {P : ℕ → Prop}
+    (hright :
+      theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicateStatement
+        P)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : P g.natDegree) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_rightPredicate hright
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Predicate-restricted right-successor sign-normalized x-subtraction leaves
+give pointwise original same-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    {P : ℕ → Prop}
+    (hsub :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
+        P)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : P g.natDegree) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_rightPredicate
+    (theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+      hsub)
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Predicate-restricted same-degree sign-normalized x-subtraction leaves give
+pointwise original successor-degree factor-return targets. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    {P : ℕ → Prop}
+    (hsub :
+      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : P g.natDegree) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_rightPredicate
+    (theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicate_of_xSubPredicate
+      hsub)
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- A right-successor sign-normalized x-subtraction leaf gives the original
+same-degree factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_xSub
+    (hsub :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21LeftFactorReturnSameDegreeStatement := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon
+  exact theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    (P := fun _ => True)
+    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
+      hsub)
+    hf hg hsgn hleft hdeg hcommon trivial
+
+/-- A same-degree sign-normalized x-subtraction leaf gives the original
+successor-degree factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_xSub
+    (hsub : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21LeftFactorReturnSuccDegreeStatement := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon
+  exact theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    (P := fun _ => True)
+    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
+      hsub)
+    hf hg hsgn hleft hdeg hcommon trivial
+
+/-- Degree-one right endpoint case for the original same-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_right_natDegree_one
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 1) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-one-right endpoint package for the original same-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_one :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n = 1) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one
+
+/-- Degree-two right endpoint case for the original same-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_right_natDegree_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-two-right endpoint package for the original same-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_two :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n = 2) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two
+
+/-- Endpoint cases through right degree two for the original same-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_right_natDegree_le_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree two for the original same-degree left
+factor-return leaf, packaged as a predicate-restricted statement. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_le_two :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n ≤ 2) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
+
+/-- Degree-three right endpoint case for the original same-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_right_natDegree_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 3) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-three-right endpoint package for the original same-degree left
+factor-return leaf, modulo the normalized monic quadratic/cubic leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_three_of_monic
+    (hmono : xSubQuadraticCubicSplitsStatement) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    (positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_three_of_monic
+      hmono)
+
+/-- Degree-three-right endpoint package for the original same-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_three :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_three_of_monic
+    xSubQuadraticCubicSplits
+
+/-- Endpoint cases through right degree three for the original same-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSameDegree_of_right_natDegree_le_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 3) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree three for the original same-degree left
+factor-return leaf, modulo the normalized monic quadratic/cubic leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_le_three_of_monic
+    (hmono : xSubQuadraticCubicSplitsStatement) :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_xSubPredicate
+    (positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
+      hmono)
+
+/-- Endpoint cases through right degree three for the original same-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_le_three :
+    theorem21LeftFactorReturnSameDegreePredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnSameDegreePredicate_of_right_natDegree_le_three_of_monic
+    xSubQuadraticCubicSplits
+
+/-- Degree-zero right endpoint case for the original successor-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_zero
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 0) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_zero
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-one right endpoint case for the original successor-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_one
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 1) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Low-degree right endpoint cases for the original successor-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_one
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 1) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-zero-right endpoint package for the original successor-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_zero :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n = 0) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_zero
+
+/-- Degree-one-right endpoint package for the original successor-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_one :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n = 1) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one
+
+/-- Low-degree right endpoint package for the original successor-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_le_one :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n ≤ 1) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one
+
+/-- Degree-two right endpoint reduction for the original successor-degree Liu
+factor-return target, modulo the normalized monic quadratic/quadratic
+x-subtraction leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_two_of_monic
+    (hmono : xSubQuadraticQuadraticSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two_of_monic
+      hmono)
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-two right endpoint case for the original successor-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_right_natDegree_two_of_monic
+    xSubQuadraticQuadraticSplits hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-two-right endpoint package for the original successor-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_two :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n = 2) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two
+
+/-- Endpoint cases through right degree two for the original successor-degree
+Liu factor-return target, modulo the normalized monic quadratic/quadratic
+x-subtraction leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_two_of_monic
+    (hmono : xSubQuadraticQuadraticSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two_of_monic
+      hmono)
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree two for the original successor-degree
+Liu factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 2) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_two_of_monic
+    xSubQuadraticQuadraticSplits hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree two for the original successor-degree
+left factor-return leaf, packaged as a predicate-restricted statement. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_le_two :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n ≤ 2) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
+
+/-- Degree-three right endpoint reduction for the original successor-degree Liu
+factor-return target, modulo the normalized monic cubic/cubic x-subtraction
+leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_three_of_monic
+    (hmono : xSubCubicCubicSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 3) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
+      hmono)
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-three right endpoint reduction for the original successor-degree Liu
+factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree = 3) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_right_natDegree_three_of_monic
+    xSubCubicCubicSplits hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Degree-three-right endpoint package for the original successor-degree left
+factor-return leaf, modulo the normalized monic cubic/cubic x-subtraction
+leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_three_of_monic
+    (hmono : xSubCubicCubicSplitsStatement) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
+      hmono)
+
+/-- Degree-three-right endpoint package for the original successor-degree left
+factor-return leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_three :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n = 3) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_three_of_monic
+    xSubCubicCubicSplits
+
+/-- Endpoint cases through right degree three for the original successor-degree
+Liu factor-return target, modulo the normalized monic cubic/cubic x-subtraction
+leaf. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_three_of_monic
+    (hmono : xSubCubicCubicSplitsStatement)
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 3) :
+    Compatible f g := by
+  have hterminal :=
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three_of_monic
+      hmono
+  exact theorem21LeftFactorReturnSuccDegree_of_xSubPredicate hterminal
+    hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree three for the original successor-degree
+Liu factor-return target. -/
+theorem theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_three
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hleft : LeftRootCountBranch f g r s)
+    (hdeg : f.natDegree = g.natDegree + 1)
+    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k)
+    (hgdeg : g.natDegree ≤ 3) :
+    Compatible f g :=
+  theorem21LeftFactorReturnSuccDegree_of_right_natDegree_le_three_of_monic
+    xSubCubicCubicSplits hf hg hsgn hleft hdeg hcommon hgdeg
+
+/-- Endpoint cases through right degree three for the original successor-degree
+left factor-return leaf, packaged as a predicate-restricted statement modulo the
+normalized monic cubic/cubic x-subtraction leaf. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_le_three_of_monic
+    (hmono : xSubCubicCubicSplitsStatement) :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_xSubPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three_of_monic
+      hmono)
+
+/-- Endpoint cases through right degree three for the original successor-degree
+left factor-return leaf, packaged as a predicate-restricted statement. -/
+theorem theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_le_three :
+    theorem21LeftFactorReturnSuccDegreePredicateStatement
+      (fun n => n ≤ 3) :=
+  theorem21LeftFactorReturnSuccDegreePredicate_of_right_natDegree_le_three_of_monic
+    xSubCubicCubicSplits
+
 end LiuOppositeSigns
 end RealRooted

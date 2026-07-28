@@ -607,6 +607,66 @@ theorem theorem21LeftFactorReturnTranslatedCompatibleRelation_of_predicate_true
   intro f g r s hf hg hsgn hleft hdeg hcommon
   exact htranslated hf hg hsgn hleft hdeg hcommon trivial
 
+/-- Pointwise translated compatibility descent for a Liu left-branch
+factor-return route. -/
+theorem theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible
+    {f g : ℝ[X]} {r s : ℝ}
+    (hleft : LeftRootCountBranch f g r s)
+    (htranslated :
+      Compatible
+        (X * (deleteRootFactor f r).comp (X + C r))
+        (g.comp (X + C r))) :
+    Compatible f g :=
+  hleft.compatible_of_translated_restore htranslated
+
+/-- A translated compatibility proof for any degree relation gives the
+corresponding original left-branch factor-return proof.  This is the common
+descent step behind the same-, successor-, and two-degree wrappers. -/
+theorem theorem21LeftFactorReturn_of_translatedCompatibleRelation
+    {R : ℕ → ℕ → Prop}
+    (htranslated :
+      ∀ {f g : ℝ[X]} {r s : ℝ},
+        f.Splits → g.Splits → OppositeLeadingSigns f g →
+          LeftRootCountBranch f g r s →
+            R f.natDegree g.natDegree →
+              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+                Compatible
+                  (X * (deleteRootFactor f r).comp (X + C r))
+                  (g.comp (X + C r))) :
+    ∀ {f g : ℝ[X]} {r s : ℝ},
+      f.Splits → g.Splits → OppositeLeadingSigns f g →
+        LeftRootCountBranch f g r s →
+          R f.natDegree g.natDegree →
+            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              Compatible f g := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon
+  exact theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft
+    (htranslated hf hg hsgn hleft hdeg hcommon)
+
+/-- Predicate-restricted translated compatibility targets give the
+corresponding predicate-restricted original factor-return targets. -/
+theorem theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
+    {R : ℕ → ℕ → Prop} {P : ℕ → Prop}
+    (htranslated :
+      ∀ {f g : ℝ[X]} {r s : ℝ},
+        f.Splits → g.Splits → OppositeLeadingSigns f g →
+          LeftRootCountBranch f g r s →
+            R f.natDegree g.natDegree →
+              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+                P g.natDegree →
+                  Compatible
+                    (X * (deleteRootFactor f r).comp (X + C r))
+                    (g.comp (X + C r))) :
+    ∀ {f g : ℝ[X]} {r s : ℝ},
+      f.Splits → g.Splits → OppositeLeadingSigns f g →
+        LeftRootCountBranch f g r s →
+          R f.natDegree g.natDegree →
+            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              P g.natDegree → Compatible f g := by
+  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
+  exact theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft
+    (htranslated hf hg hsgn hleft hdeg hcommon hgdeg)
+
 /-- Translated same-degree left-branch factor-return target. -/
 def theorem21LeftFactorReturnSameDegreeTranslatedCompatibleStatement :
     Prop :=
