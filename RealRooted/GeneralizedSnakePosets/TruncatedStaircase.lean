@@ -1,4 +1,5 @@
 import RealRooted.GeneralizedSnakePosets.FiniteBoard
+import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 
 /-!
 # Truncated staircase finite boards
@@ -167,6 +168,11 @@ def fullStaircaseReflectedPairRows (n : ℕ) (P : Finset (ℕ × ℕ)) :
 def fullStaircaseReflectedPairColumns (n : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset ℕ :=
   (fullStaircaseReflectedPairs n P).image fun x => x.2
+
+/-- Ordered-subset-pair projection of a full-staircase placement. -/
+def fullStaircasePlacementOrderedPair (n : ℕ) (P : Finset (ℕ × ℕ)) :
+    Finset ℕ × Finset ℕ :=
+  (fullStaircaseReflectedPairRows n P, fullStaircaseReflectedPairColumns n P)
 
 /-- Reflected pairs sorted lexicographically by row, then by reflected
 column. -/
@@ -472,6 +478,39 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_sortedLE
           (hP.fullStaircaseReflectedPairs_snd_lt_of_fst_lt hxi hxj hrow)
     | right a hcol => exact hcol
   simpa [x, y, hx, hy, L] using hcol
+
+/-- The ordered-subset-pair projection of a size-`k` full-staircase placement
+lies in `orderedKSubsetPairs n k`. -/
+theorem IsNonNestingPlacement.mem_orderedKSubsetPairs_fullStaircasePlacementOrderedPair
+    {n k : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) (hcard : P.card = k) :
+    fullStaircasePlacementOrderedPair n P ∈ Finset.orderedKSubsetPairs n k := by
+  classical
+  rw [fullStaircasePlacementOrderedPair, Finset.mem_orderedKSubsetPairs]
+  refine ⟨hP.fullStaircaseReflectedPairRows_subset_range, ?_,
+    hP.fullStaircaseReflectedPairColumns_subset_range, ?_, ?_⟩
+  · rw [hP.fullStaircaseReflectedPairRows_card, hcard]
+  · rw [hP.fullStaircaseReflectedPairColumns_card, hcard]
+  · let rows := fullStaircaseReflectedRowList n P
+    let cols := fullStaircaseReflectedColumnList n P
+    have hrows_sort :
+        (fullStaircaseReflectedPairRows n P).sort (· ≤ ·) = rows := by
+      have hnodup : rows.Nodup := by
+        simpa [rows] using hP.fullStaircaseReflectedRowList_nodup
+      rw [← fullStaircaseReflectedRowList_toFinset n P]
+      exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
+        exact List.SortedLE.pairwise (by
+          simpa [rows] using fullStaircaseReflectedRowList_sortedLE n P))
+    have hcols_sort :
+        (fullStaircaseReflectedPairColumns n P).sort (· ≤ ·) = cols := by
+      have hnodup : cols.Nodup := by
+        simpa [cols] using hP.fullStaircaseReflectedColumnList_nodup
+      rw [← fullStaircaseReflectedColumnList_toFinset n P]
+      exact (List.toFinset_sort (r := (· ≤ ·)) hnodup).mpr (by
+        exact List.SortedLE.pairwise (by
+          simpa [cols] using hP.fullStaircaseReflectedColumnList_sortedLE))
+    rw [hrows_sort, hcols_sort]
+    exact hP.fullStaircaseReflectedLists_forall₂_le
 
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
