@@ -660,11 +660,16 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large ha_eq hb_eq
 
-/-- Endpoint-shaped `g`/`g` contradiction for Liu's odd-indexed interval
-argument.  If the transported right-family count drop reaches a parameter
-whose endpoint strict-upper counts agree with those of `f`, then same-owner
-`g`-endpoints contradict the fact that `f` has no roots in `(a, b]`. -/
-theorem OppositeLeadingSigns.false_of_right_roots_add_right_count_eq_left
+/-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
+contradiction in Liu's odd-indexed interval argument.  If the transported
+right-family count drop reaches a parameter whose endpoint strict-upper counts
+agree with those of `f`, then same-owner `g`-endpoints contradict the fact that
+`f` has no roots in `(a, b]`.
+
+The paper-route proof should normally use a small-parameter/downward-transport
+version of this statement instead; this theorem keeps the already-proved
+large-parameter form available under explicit hypotheses. -/
+theorem OppositeLeadingSigns.false_of_right_roots_add_right_large_count_eq_left
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
     (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
