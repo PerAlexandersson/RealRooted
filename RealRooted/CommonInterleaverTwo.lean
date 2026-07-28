@@ -5323,14 +5323,14 @@ theorem eval_mul_pos_of_no_rightFamily_isRoot
 then the endpoint evaluations have the same sign. -/
 theorem eval_mul_pos_of_no_pos_rightFamily_isRoot
     {f g : ℝ[X]} {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hno : ∀ {μ : ℝ}, 0 < μ → ¬ (f + C μ * g).IsRoot x) :
+    (hno : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x) :
     0 < f.eval x * g.eval x := by
   refine eval_mul_pos_of_no_rightFamily_isRoot hxf hxg ?_
   intro μ hμ
   by_cases hμ0 : μ = 0
   · subst μ
     simpa using hxf
-  · exact hno (lt_of_le_of_ne hμ (Ne.symm hμ0))
+  · exact hno μ (lt_of_le_of_ne hμ (Ne.symm hμ0))
 
 /-- At a common non-root threshold, nonvanishing of the nonnegative right
 family is equivalent to same-sign endpoint evaluations. -/

@@ -97,9 +97,7 @@ theorem OppositeLeadingSigns.eval_mul_pos_of_odd_roots_gt_sub_Ioo
     hsgn.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
       hf hg hf_no hg_no hax hxb hay hyb hodd
   exact eval_mul_pos_of_no_pos_rightFamily_isRoot
-    (hf_no y hay hyb) (hg_no y hay hyb) (by
-      intro μ hμ
-      exact hno_pos μ hμ)
+    (hf_no y hay hyb) (hg_no y hay hyb) hno_pos
 
 /-- On a positive parameter interval with constant degree and a fixed
 threshold root-free for every positive member, the right-family strict-upper
