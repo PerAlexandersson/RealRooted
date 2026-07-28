@@ -99,6 +99,23 @@ theorem OppositeLeadingSigns.eval_mul_pos_of_odd_roots_gt_sub_Ioo
   exact eval_mul_pos_of_no_pos_rightFamily_isRoot
     (hf_no y hay hyb) (hg_no y hay hyb) hno_pos
 
+/-- If a finite open interval contains no roots of either endpoint polynomial,
+then oddness at one sample point rules out closed-segment roots at any other
+sample point in that interval. -/
+theorem OppositeLeadingSigns.closedSegment_not_isRoot_of_odd_roots_gt_sub_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y β : ℝ}
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card))
+    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot y := by
+  exact closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1
+    (hsgn.eval_mul_pos_of_odd_roots_gt_sub_Ioo
+      hf hg hf_no hg_no hax hxb hay hyb hodd)
+
 /-- On a positive parameter interval with constant degree and a fixed
 threshold root-free for every positive member, the right-family strict-upper
 count is constant between the interval endpoints. -/
