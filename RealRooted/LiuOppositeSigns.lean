@@ -448,6 +448,14 @@ theorem rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot
     roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr]
   simp [hx, Nat.add_comm]
 
+theorem rootCountAbove_deleteRootFactor_add_one_of_isRoot
+    {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r)
+    (hx : x < r) :
+    (p.roots.filter (x < ·)).card =
+      ((deleteRootFactor p r).roots.filter (x < ·)).card + 1 := by
+  rw [roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr]
+  simp [hx, Nat.add_comm]
+
 theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
     (h : ∀ r ∈ p.roots, r < x) :
     rootCountAtOrAbove p x = 0 := by
@@ -456,6 +464,15 @@ theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
     intro r hr
     exact not_le.mpr (h r hr)
   simp [rootCountAtOrAbove, hfilter]
+
+theorem rootCountAbove_eq_zero_of_forall_roots_le {p : ℝ[X]} {x : ℝ}
+    (h : ∀ r ∈ p.roots, r ≤ x) :
+    (p.roots.filter (x < ·)).card = 0 := by
+  have hfilter : p.roots.filter (x < ·) = 0 := by
+    apply Multiset.filter_eq_nil.mpr
+    intro r hr
+    exact not_lt.mpr (h r hr)
+  simp [hfilter]
 
 theorem rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) {x : ℝ} (hx : ¬ p.IsRoot x) :
@@ -787,11 +804,24 @@ theorem rootCountAtOrAbove_deleteRootFactor_add_one
       rootCountAtOrAbove (deleteRootFactor p r) x + 1 :=
   rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hp_ne h.isRoot hx
 
+theorem rootCountAbove_deleteRootFactor_add_one
+    {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (h : IsLargestRoot p r)
+    (hx : x < r) :
+    (p.roots.filter (x < ·)).card =
+      ((deleteRootFactor p r).roots.filter (x < ·)).card + 1 :=
+  rootCountAbove_deleteRootFactor_add_one_of_isRoot hp_ne h.isRoot hx
+
 theorem rootCountAtOrAbove_eq_zero_of_lt
     {p : ℝ[X]} {r x : ℝ} (h : IsLargestRoot p r) (hx : r < x) :
     rootCountAtOrAbove p x = 0 :=
   rootCountAtOrAbove_eq_zero_of_forall_roots_lt fun s hs =>
     lt_of_le_of_lt (h.roots_le s hs) hx
+
+theorem rootCountAbove_eq_zero_of_le
+    {p : ℝ[X]} {r x : ℝ} (h : IsLargestRoot p r) (hx : r ≤ x) :
+    (p.roots.filter (x < ·)).card = 0 :=
+  rootCountAbove_eq_zero_of_forall_roots_le fun s hs =>
+    (h.roots_le s hs).trans hx
 
 theorem deleteRootFactor_splits {p : ℝ[X]} {r : ℝ} (hp_splits : p.Splits)
     (h : IsLargestRoot p r) :
@@ -824,6 +854,14 @@ theorem rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt
   exact rootCountAtOrAbove_eq_zero_of_forall_roots_lt fun s hs =>
     lt_of_le_of_lt
       (h.root_deleteRootFactor_le hp_ne ((Polynomial.mem_roots hdelete_ne).mp hs)) hx
+
+theorem rootCountAbove_deleteRootFactor_eq_zero_of_le
+    {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (h : IsLargestRoot p r)
+    (hx : r ≤ x) :
+    ((deleteRootFactor p r).roots.filter (x < ·)).card = 0 := by
+  have hdelete_ne := h.deleteRootFactor_ne_zero hp_ne
+  exact rootCountAbove_eq_zero_of_forall_roots_le fun s hs =>
+    (h.root_deleteRootFactor_le hp_ne ((Polynomial.mem_roots hdelete_ne).mp hs)).trans hx
 
 /-- For an ordered two-root multiset, the largest-root certificate selects the
 right entry. -/
