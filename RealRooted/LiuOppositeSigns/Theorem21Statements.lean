@@ -1,6 +1,5 @@
 import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns
-import RealRooted.LiuOppositeSigns.MergedIntervals
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.RootCountLocalConstancy
 
