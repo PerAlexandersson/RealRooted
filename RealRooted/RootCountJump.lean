@@ -177,6 +177,28 @@ theorem card_roots_filter_gt_add_two_le_of_two_le_card_filter_Ioo
   card_filter_gt_add_two_le_of_two_le_card_filter_Ioo p.roots hab
     (fun hb_mem => hb ((Polynomial.mem_roots hp_ne).mp hb_mem)) htwo
 
+/-- A strict-upper root-count drop by at least two is impossible if the two
+endpoint counts agree with those of a polynomial having no roots in `(a, b]`. -/
+theorem not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
+    {p q : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hq_no : ∀ x : ℝ, a < x → x ≤ b → ¬ q.IsRoot x)
+    (ha : (p.roots.filter (a < ·)).card = (q.roots.filter (a < ·)).card)
+    (hb : (p.roots.filter (b < ·)).card = (q.roots.filter (b < ·)).card) :
+    ¬ ((p.roots.filter (b < ·)).card + 2 ≤
+      (p.roots.filter (a < ·)).card) := by
+  intro hdrop
+  have hq_eq : (q.roots.filter (a < ·)).card =
+      (q.roots.filter (b < ·)).card :=
+    card_roots_filter_gt_eq_of_no_isRoot_Ioc (p := q) hab hq_no
+  have hp_eq : (p.roots.filter (a < ·)).card =
+      (p.roots.filter (b < ·)).card :=
+    ha.trans (hq_eq.trans hb.symm)
+  have : (p.roots.filter (b < ·)).card + 2 ≤
+      (p.roots.filter (b < ·)).card := by
+    rw [hp_eq] at hdrop
+    exact hdrop
+  lia
+
 /-- A nonzero splitting polynomial with same-sign endpoint values has an even
 number of roots in the open interval between those endpoints. -/
 theorem even_card_roots_filter_Ioo_of_eval_mul_pos
