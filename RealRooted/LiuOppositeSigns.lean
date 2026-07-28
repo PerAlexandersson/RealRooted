@@ -594,6 +594,20 @@ theorem RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     exact ⟨by linarith [hxbound.2], hxbound.1⟩
   rwa [hpcount, hqcount] at hxabs
 
+/-- To prove Liu root-count compatibility, it is enough to prove the
+corresponding strict-upper count bound at common non-root thresholds. -/
+theorem RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
+    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hbound : ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
+      |(((p.roots.filter (x < ·)).card : ℤ) -
+          ((q.roots.filter (x < ·)).card : ℤ))| ≤ 1) :
+    RootCountCompatible p q :=
+  RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot hp_ne hq_ne
+    fun x hpx hqx => by
+      have hx := hbound x hpx hqx
+      rw [abs_le] at hx
+      exact ⟨hx.2, by linarith [hx.1]⟩
+
 /-- A normalized positive-leading, split pair equipped with Liu's root-count
 compatibility condition. -/
 structure PositiveSplitRootCountPair (p q : ℝ[X]) : Prop where
@@ -1064,6 +1078,22 @@ theorem of_roots_triple_pair_right
       roots_deleteRootFactor_eq_pair_of_roots_triple_right hf_ne hfroots hffac
     exact RootCountCompatible.of_roots_pair_pair had hcb hdelete_roots hgroots
 
+/-- To prove the left Liu deletion branch, it is enough to control the
+strict-upper root counts of the deletion pair at common non-root thresholds. -/
+theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hbound : ∀ x : ℝ, ¬ (deleteRootFactor f r).IsRoot x → ¬ g.IsRoot x →
+      |((((deleteRootFactor f r).roots.filter (x < ·)).card : ℤ) -
+          ((g.roots.filter (x < ·)).card : ℤ))| ≤ 1) :
+    LeftRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_ge := hlargest
+  count :=
+    RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
+      (hr.deleteRootFactor_ne_zero hf_ne) hg_ne hbound
+
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
@@ -1379,6 +1409,22 @@ theorem rootCountAbove_delete_bounds_of_nonRoot
         (f.roots.filter (x < ·)).card ≤ 1 :=
   h.count.rootCountAbove_bounds_of_nonRoot
     hf_ne (h.delete_ne_zero hg_ne) hfx hgx
+
+/-- To prove the right Liu deletion branch, it is enough to control the
+strict-upper root counts of the deletion pair at common non-root thresholds. -/
+theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
+    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ (deleteRootFactor g s).IsRoot x →
+      |(((f.roots.filter (x < ·)).card : ℤ) -
+          (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ))| ≤ 1) :
+    RightRootCountBranch f g r s where
+  f_largest := hr
+  g_largest := hs
+  largest_lt := hlargest
+  count :=
+    RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
+      hf_ne (hs.deleteRootFactor_ne_zero hg_ne) hbound
 
 theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) (hx : x ≤ s) :
