@@ -323,6 +323,34 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
     hq_rr.1 hq_rr.2 hab hendpoint
   exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩
 
+/-- Same-owner `f`/`f` local lower-bound package for Liu's odd-indexed
+interval argument.  Under the endpoint-shaped hypotheses, the unique positive
+right-family crossing polynomial has at least two roots in `(a, b)`, counted
+with multiplicity. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_two_roots
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      2 ≤ ((f + C μ * g).roots.filter (fun r => a < r ∧ r < b)).card := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_even_roots
+      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+  have hq_ne : (f + C μ * g) ≠ 0 :=
+    (hfg.isRealRooted_add_right hμ_pos).1
+  have htwo := two_le_card_roots_filter_Ioo_of_even_of_isRoot
+    hq_ne hμ_root hay hyb heven
+  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}

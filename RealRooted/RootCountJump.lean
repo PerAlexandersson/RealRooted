@@ -207,6 +207,30 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
     exact ⟨B, by ring⟩
   exact hsum.mpr hBB
 
+/-- If an even root count over an open interval contains an interior root, then
+the interval contains at least two roots, counted with multiplicity. -/
+theorem two_le_card_roots_filter_Ioo_of_even_of_isRoot
+    {p : ℝ[X]} (hp_ne : p ≠ 0) {a b y : ℝ}
+    (hy : p.IsRoot y) (hay : a < y) (hyb : y < b)
+    (heven : Even (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    2 ≤ (p.roots.filter (fun r => a < r ∧ r < b)).card := by
+  let s := p.roots.filter (fun r => a < r ∧ r < b)
+  have hmem : y ∈ s := by
+    exact Multiset.mem_filter.mpr
+      ⟨(Polynomial.mem_roots hp_ne).mpr hy, ⟨hay, hyb⟩⟩
+  have hone : 1 ≤ s.card := by
+    have hcount_pos : 0 < Multiset.count y s :=
+      Multiset.count_pos.mpr hmem
+    exact Nat.succ_le_of_lt
+      (lt_of_lt_of_le hcount_pos (Multiset.count_le_card y s))
+  have hne_zero : s.card ≠ 0 := by
+    linarith
+  have hne_one : s.card ≠ 1 := by
+    intro hcard
+    rw [hcard] at heven
+    norm_num at heven
+  exact (Nat.two_le_iff s.card).mpr ⟨hne_zero, hne_one⟩
+
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 member of their closed segment is nonzero at `x`. -/
 theorem closedSegment_eval_ne_zero_of_eval_mul_pos
