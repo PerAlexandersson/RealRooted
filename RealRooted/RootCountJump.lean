@@ -148,6 +148,54 @@ theorem card_roots_filter_Ioo_eq_of_card_filter_gt_eq
     (fun hb_mem => hfb ((mem_roots hf).mp hb_mem))
     (fun hb_mem => hgb ((mem_roots hg).mp hb_mem)) ha hb
 
+/-- A nonzero splitting polynomial with same-sign endpoint values has an even
+number of roots in the open interval between those endpoints. -/
+theorem even_card_roots_filter_Ioo_of_eval_mul_pos
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
+    {a b : ℝ} (hab : a ≤ b) (hpa : ¬ p.IsRoot a) (hpb : ¬ p.IsRoot b)
+    (hprod : 0 < p.eval a * p.eval b) :
+    Even (p.roots.filter (fun r => a < r ∧ r < b)).card := by
+  let A := (p.roots.filter (a < ·)).card
+  let B := (p.roots.filter (b < ·)).card
+  let I := (p.roots.filter (fun r => a < r ∧ r < b)).card
+  have hnorm_a : 0 < p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A := by
+    simpa [A] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hpa
+  have hnorm_b : 0 < p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B := by
+    simpa [B] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hpb
+  have hlc_sq : 0 < p.leadingCoeff * p.leadingCoeff :=
+    mul_self_pos.mpr (Polynomial.leadingCoeff_ne_zero.mpr hp_ne)
+  have hAB_even : Even (A + B) := by
+    by_contra hnot
+    have hAB_odd : Odd (A + B) := Nat.not_even_iff_odd.mp hnot
+    have hpow : (-1 : ℝ) ^ (A + B) = -1 := Odd.neg_one_pow hAB_odd
+    have hnorm_prod :
+        0 < (p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A) *
+          (p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B) :=
+      mul_pos hnorm_a hnorm_b
+    have hcalc :
+        (p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A) *
+            (p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B) =
+          (p.eval a * p.eval b) * (p.leadingCoeff * p.leadingCoeff) *
+            ((-1 : ℝ) ^ (A + B)) := by
+      rw [pow_add]
+      ring
+    rw [hcalc, hpow] at hnorm_prod
+    nlinarith [hprod, hlc_sq]
+  have hb_not_mem : b ∉ p.roots := by
+    intro hb_mem
+    exact hpb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hsplit : I + B = A := by
+    simpa [I, B, A] using
+      card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
+        (s := p.roots) hab hb_not_mem
+  rw [← hsplit] at hAB_even
+  have hsum : Even (I + (B + B)) := by
+    simpa [Nat.add_assoc] using hAB_even
+  rw [Nat.even_add] at hsum
+  have hBB : Even (B + B) := by
+    exact ⟨B, by ring⟩
+  exact hsum.mpr hBB
+
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 member of their closed segment is nonzero at `x`. -/
 theorem closedSegment_eval_ne_zero_of_eval_mul_pos

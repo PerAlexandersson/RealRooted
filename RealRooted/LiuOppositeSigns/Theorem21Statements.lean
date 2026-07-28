@@ -295,6 +295,46 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
   exact rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
     hab hfa hfb hg_no_Icc hμ_pos
 
+/-- Same-owner `f`/`f` local parity package for Liu's odd-indexed interval
+argument.  Under the endpoint-shaped hypotheses, the unique positive
+right-family crossing polynomial has an even number of roots in `(a, b)`. -/
+theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_even_roots
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
+    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
+    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
+      μ = -f.eval y / g.eval y ∧
+      (f + C μ * g).derivative.eval y ≠ 0 ∧
+      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
+      Even ((f + C μ * g).roots.filter (fun r => a < r ∧ r < b)).card := by
+  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hendpoint⟩ :=
+    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_endpoint_sign
+      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
+  have hq_rr : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits :=
+    hfg.isRealRooted_add_right hμ_pos
+  have hqa : ¬ (f + C μ * g).IsRoot a := by
+    intro hroot
+    have hzero : (f + C μ * g).eval a = 0 := by
+      simpa [Polynomial.IsRoot.def] using hroot
+    rw [hzero, zero_mul] at hendpoint
+    linarith
+  have hqb : ¬ (f + C μ * g).IsRoot b := by
+    intro hroot
+    have hzero : (f + C μ * g).eval b = 0 := by
+      simpa [Polynomial.IsRoot.def] using hroot
+    rw [hzero, mul_zero] at hendpoint
+    linarith
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have heven := even_card_roots_filter_Ioo_of_eval_mul_pos
+    hq_rr.1 hq_rr.2 hab hqa hqb hendpoint
+  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}
