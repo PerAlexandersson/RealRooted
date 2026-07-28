@@ -1,6 +1,7 @@
 import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.RootCountJump
 
 /-!
 # Liu opposite-sign compatibility scaffolding
@@ -523,6 +524,23 @@ theorem RootCountCompatible.rootCountAbove_bounds_of_nonRoot
   have hx := h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx
   rw [abs_le] at hx
   exact ⟨hx.2, by linarith [hx.1]⟩
+
+/-- A root-count-compatible bound at the upper endpoint of `(a, b]` shifts to
+the lower endpoint after subtracting the explicit roots in the window. -/
+theorem RootCountCompatible.rootCountAbove_shift_Ioc_abs_le_one
+    {p q : ℝ[X]} (h : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {a b : ℝ} (hab : a ≤ b)
+    (hpb : ¬ p.IsRoot b) (hqb : ¬ q.IsRoot b) :
+    |(((p.roots.filter (a < ·)).card : ℤ) -
+          (q.roots.filter (a < ·)).card) -
+        (((p.roots.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
+          (q.roots.filter (fun r => a < r ∧ r ≤ b)).card)| ≤ 1 := by
+  have hbabs :=
+    h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpb hqb
+  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add
+    (s := p.roots) (t := q.roots) hab
+  rw [hjump]
+  simpa using hbabs
 
 /-- Move a real threshold strictly downward without crossing any element of a
 finite multiset. -/
