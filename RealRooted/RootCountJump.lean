@@ -211,6 +211,65 @@ theorem card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_abov
     card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
       hg hac hcb hf_not hcount hunique
 
+/-- A least combined root above `a`, together with a root-free half-open gap
+`(c, b]`, is the unique combined root in `(a, b]`. -/
+theorem eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ}
+    (hleast : ∀ z : ℝ, a < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
+    (hgap_f : ∀ r ∈ f.roots, r ≤ c ∨ b < r)
+    (hgap_g : ∀ r ∈ g.roots, r ≤ c ∨ b < r) :
+    ∀ z : ℝ, a < z → z ≤ b → f.IsRoot z ∨ g.IsRoot z → z = c := by
+  intro z haz hzb hz
+  rcases hz with hfz | hgz
+  · have hz_mem : z ∈ f.roots := (Polynomial.mem_roots hf).mpr hfz
+    rcases hgap_f z hz_mem with hle | hlt
+    · exact le_antisymm hle (hleast z haz (Or.inl hfz))
+    · linarith
+  · have hz_mem : z ∈ g.roots := (Polynomial.mem_roots hg).mpr hgz
+    rcases hgap_g z hz_mem with hle | hlt
+    · exact le_antisymm hle (hleast z haz (Or.inr hgz))
+    · linarith
+
+/-- One-step suffix-count transport across a least combined root owned by the
+left polynomial, with the upper endpoint chosen before the next combined root. -/
+theorem card_roots_filter_gt_sub_eq_one_of_left_least_root_no_mem_Ioc_of_above_eq_zero
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hg_not : ¬ g.IsRoot c)
+    (hcount : f.roots.count c = 1)
+    (hleast : ∀ z : ℝ, a < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
+    (hgap_f : ∀ r ∈ f.roots, r ≤ c ∨ b < r)
+    (hgap_g : ∀ r ∈ g.roots, r ≤ c ∨ b < r)
+    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card = 0) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card = 1 := by
+  have hunique :=
+    eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
+      hf hg hleast hgap_f hgap_g
+  exact
+    card_roots_filter_gt_sub_eq_one_of_left_unique_simple_root_Ioc_of_above_eq_zero
+      hf hac hcb hg_not hcount hunique hb
+
+/-- One-step suffix-count transport across a least combined root owned by the
+right polynomial, with the upper endpoint chosen before the next combined root. -/
+theorem card_roots_filter_gt_sub_eq_zero_of_right_least_root_no_mem_Ioc_of_above_eq_one
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hf_not : ¬ f.IsRoot c)
+    (hcount : g.roots.count c = 1)
+    (hleast : ∀ z : ℝ, a < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
+    (hgap_f : ∀ r ∈ f.roots, r ≤ c ∨ b < r)
+    (hgap_g : ∀ r ∈ g.roots, r ≤ c ∨ b < r)
+    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card = 1) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card = 0 := by
+  have hunique :=
+    eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
+      hf hg hleast hgap_f hgap_g
+  exact
+    card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_above_eq_one
+      hg hac hcb hf_not hcount hunique hb
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
