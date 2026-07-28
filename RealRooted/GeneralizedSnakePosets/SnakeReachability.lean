@@ -142,6 +142,98 @@ theorem snakeReachableFuel_succ_of_coverEdge {w : SnakeWord} {fuel a b : ℕ}
   snakeReachableFuel_succ_of_coverEdge_of_reachable hb hcover
     (snakeReachableFuel_self w fuel b)
 
+/-- Bounded reachability in the prefix ending at the last-change index is
+equivalent to bounded reachability in the full word after shifting endpoint
+codes by the final-suffix length.  The target bound ensures that any
+intermediate full-word node on a path to the shifted target is still in the
+shifted prefix range. -/
+theorem snakeReachableFuel_takePrefix_succ_shift_iff
+    {w : SnakeWord} {last fuel a b : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hb : b < snakeCodeBound (w.takePrefix (last + 1))) :
+    snakeReachableFuel w fuel
+        (a + 2 * (w.length - (last + 1)))
+        (b + 2 * (w.length - (last + 1))) = true ↔
+      snakeReachableFuel (w.takePrefix (last + 1)) fuel a b = true := by
+  let m := w.length - (last + 1)
+  let pref := w.takePrefix (last + 1)
+  have hprefix_len : pref.length = last + 1 := hlast.takePrefix_succ_length
+  have hlast_lt : last < w.length := hlast.index_lt_length
+  change snakeReachableFuel w fuel (a + 2 * m) (b + 2 * m) = true ↔
+    snakeReachableFuel pref fuel a b = true
+  induction fuel generalizing a with
+  | zero =>
+      simp only [snakeReachableFuel, beq_iff_eq]
+      constructor <;> intro h <;> lia
+  | succ fuel ih =>
+      constructor
+      · intro hreach
+        change (((a + 2 * m) == (b + 2 * m)) ||
+          (List.range (snakeCodeBound w)).any fun c =>
+            snakeCoverEdge w (a + 2 * m) c &&
+              snakeReachableFuel w fuel c (b + 2 * m)) = true at hreach
+        rw [Bool.or_eq_true] at hreach
+        rcases hreach with hab | hstep
+        · rw [beq_iff_eq] at hab
+          have hab' : a = b := by lia
+          simp [snakeReachableFuel, hab']
+        · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+          rcases hstep with ⟨c, _hc, hcover, htail⟩
+          have hcover_lt : a + 2 * m < c := snakeCoverEdge_lt hcover
+          have htail_le : c ≤ b + 2 * m := snakeReachableFuel_le htail
+          let d := c - 2 * m
+          have hc_eq : c = d + 2 * m := by
+            dsimp [d]
+            lia
+          have hd_bound : d < snakeCodeBound pref := by
+            dsimp [d]
+            have hb0 : b < 2 * (last + 1 + 1) := by
+              simpa [pref, snakeCodeBound, hprefix_len] using hb
+            rw [snakeCodeBound, hprefix_len]
+            lia
+          have hcover_prefix : snakeCoverEdge pref a d = true := by
+            have hcover_shift :
+                snakeCoverEdge w (a + 2 * m) (d + 2 * m) = true := by
+              simpa [hc_eq] using hcover
+            have hiff := snakeCoverEdge_takePrefix_succ_shift_iff
+              (w := w) (last := last) (a := a) (b := d) hlast
+            exact hiff.mp (by simpa [m, pref] using hcover_shift)
+          have htail_shift :
+              snakeReachableFuel w fuel (d + 2 * m) (b + 2 * m) = true := by
+            simpa [hc_eq] using htail
+          have htail_prefix : snakeReachableFuel pref fuel d b = true :=
+            (ih (a := d)).mp htail_shift
+          exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+            (w := pref) (fuel := fuel) (a := a) (b := b) (c := d)
+            hd_bound hcover_prefix htail_prefix
+      · intro hreach
+        change ((a == b) ||
+          (List.range (snakeCodeBound pref)).any fun c =>
+            snakeCoverEdge pref a c && snakeReachableFuel pref fuel c b) = true
+          at hreach
+        rw [Bool.or_eq_true] at hreach
+        rcases hreach with hab | hstep
+        · rw [beq_iff_eq] at hab
+          have hab' : a + 2 * m = b + 2 * m := by lia
+          simp [snakeReachableFuel, hab']
+        · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
+          rcases hstep with ⟨c, hc, hcover, htail⟩
+          have hc_full_bound : c + 2 * m < snakeCodeBound w := by
+            have hc0 : c < 2 * (last + 1 + 1) := by
+              simpa [pref, snakeCodeBound, hprefix_len] using hc
+            rw [snakeCodeBound]
+            dsimp [m]
+            lia
+          have hcover_full : snakeCoverEdge w (a + 2 * m) (c + 2 * m) = true := by
+            have hiff := snakeCoverEdge_takePrefix_succ_shift_iff
+              (w := w) (last := last) (a := a) (b := c) hlast
+            exact hiff.mpr (by simpa [pref] using hcover)
+          have htail_full :
+              snakeReachableFuel w fuel (c + 2 * m) (b + 2 * m) = true :=
+            (ih (a := c)).mpr htail
+          exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+            (w := w) (fuel := fuel) (a := a + 2 * m) (b := b + 2 * m)
+            (c := c + 2 * m) hc_full_bound hcover_full htail_full
+
 /-- Repeated column-chain successor covers give reachability with the exact
 number of steps as fuel. -/
 theorem snakeReachableFuel_colCode_add (w : SnakeWord) :
