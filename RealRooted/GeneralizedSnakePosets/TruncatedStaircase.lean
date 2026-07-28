@@ -174,6 +174,12 @@ def fullStaircasePlacementOrderedPair (n : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset ℕ × Finset ℕ :=
   (fullStaircaseReflectedPairRows n P, fullStaircaseReflectedPairColumns n P)
 
+/-- Full-staircase placement constructed from an ordered pair of row and
+reflected-column subsets. -/
+def orderedSubsetPairFullStaircasePlacement (n : ℕ)
+    (AB : Finset ℕ × Finset ℕ) : Finset (ℕ × ℕ) :=
+  ((AB.1.sort (· ≤ ·)).zip ((AB.2.sort (· ≤ ·)).map fun b => n - 1 - b)).toFinset
+
 /-- Reflected pairs sorted lexicographically by row, then by reflected
 column. -/
 def fullStaircaseReflectedPairLexList (n : ℕ) (P : Finset (ℕ × ℕ)) :
@@ -511,6 +517,127 @@ theorem IsNonNestingPlacement.mem_orderedKSubsetPairs_fullStaircasePlacementOrde
           simpa [cols] using hP.fullStaircaseReflectedColumnList_sortedLE))
     rw [hrows_sort, hcols_sort]
     exact hP.fullStaircaseReflectedLists_forall₂_le
+
+private theorem orderedSubsetPairFullStaircasePlacement_list_nodup
+    (n : ℕ) {A B : Finset ℕ} (hcard : A.card = B.card) :
+    ((A.sort (· ≤ ·)).zip ((B.sort (· ≤ ·)).map fun b => n - 1 - b)).Nodup := by
+  apply List.Nodup.of_map Prod.fst
+  have hlen :
+      (A.sort (· ≤ ·)).length ≤ ((B.sort (· ≤ ·)).map fun b => n - 1 - b).length := by
+    rw [List.length_map, Finset.length_sort, Finset.length_sort, hcard]
+  rw [List.map_fst_zip hlen]
+  exact A.sort_nodup (· ≤ ·)
+
+/-- The placement constructed from an ordered `k`-subset pair has cardinality
+`k`. -/
+theorem orderedSubsetPairFullStaircasePlacement_card
+    {n k : ℕ} {AB : Finset ℕ × Finset ℕ}
+    (hAB : AB ∈ Finset.orderedKSubsetPairs n k) :
+    (orderedSubsetPairFullStaircasePlacement n AB).card = k := by
+  classical
+  rcases AB with ⟨A, B⟩
+  rw [Finset.mem_orderedKSubsetPairs] at hAB
+  rcases hAB with ⟨_hA, hAcard, _hB, hBcard, _hle⟩
+  rw [orderedSubsetPairFullStaircasePlacement,
+    List.toFinset_card_of_nodup
+      (orderedSubsetPairFullStaircasePlacement_list_nodup n (by rw [hAcard, hBcard])),
+    List.length_zip, List.length_map, Finset.length_sort, Finset.length_sort,
+    hAcard, hBcard, min_self]
+
+/-- The placement constructed from an ordered subset pair is non-nesting in
+the full truncated staircase. -/
+theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
+    {n k : ℕ} {AB : Finset ℕ × Finset ℕ}
+    (hAB : AB ∈ Finset.orderedKSubsetPairs n k) :
+    (truncatedStaircase n n).IsNonNestingPlacement
+      (orderedSubsetPairFullStaircasePlacement n AB) := by
+  classical
+  rcases AB with ⟨A, B⟩
+  rw [Finset.mem_orderedKSubsetPairs] at hAB
+  rcases hAB with ⟨_hA, hAcard, hB, hBcard, hle⟩
+  let rows := A.sort (· ≤ ·)
+  let cols := B.sort (· ≤ ·)
+  let cols' := cols.map fun b => n - 1 - b
+  let L := rows.zip cols'
+  have hle_rows_cols : List.Forall₂ (· ≤ ·) rows cols := by
+    simpa [rows, cols] using hle
+  have hL_nodup : L.Nodup := by
+    simpa [L, rows, cols, cols'] using
+      orderedSubsetPairFullStaircasePlacement_list_nodup n (by rw [hAcard, hBcard])
+  change (truncatedStaircase n n).IsNonNestingPlacement L.toFinset
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    have hxL : x ∈ L := by simpa using hx
+    rcases List.getElem_of_mem hxL with ⟨i, hi, hix⟩
+    have hi_rows : i < rows.length := List.lt_length_left_of_zip hi
+    have hi_cols' : i < cols'.length := List.lt_length_right_of_zip hi
+    have hi_cols : i < cols.length := by simpa [cols'] using hi_cols'
+    have hx_eq : x = (rows[i], n - 1 - cols[i]) := by
+      rw [← hix, List.getElem_zip]
+      simp [cols']
+    rw [hx_eq]
+    rw [mem_truncatedStaircase_full_cells_iff]
+    have hcol_mem : cols[i] ∈ B := by
+      rw [← Finset.mem_sort (s := B) (r := (· ≤ ·))]
+      exact List.getElem_mem hi_cols
+    have hcol_lt : cols[i] < n := Finset.mem_range.mp (hB hcol_mem)
+    have hle_i : rows[i] ≤ cols[i] := by
+      simpa using hle_rows_cols.get hi_rows hi_cols
+    lia
+  · intro x hx y hy hne hrow_eq
+    have hxL : x ∈ L := by simpa using hx
+    have hyL : y ∈ L := by simpa using hy
+    rcases List.getElem_of_mem hxL with ⟨i, hi, hix⟩
+    rcases List.getElem_of_mem hyL with ⟨j, hj, hjy⟩
+    have hi_rows : i < rows.length := List.lt_length_left_of_zip hi
+    have hj_rows : j < rows.length := List.lt_length_left_of_zip hj
+    have hrow_L : (L[i]).1 = (L[j]).1 := by
+      rw [hix, hjy]
+      exact hrow_eq
+    have hrow_i_j : rows[i] = rows[j] := by
+      simpa [L, cols'] using hrow_L
+    have hij : i = j := (List.getElem_inj (A.sort_nodup (· ≤ ·))).mp (by
+      simpa [rows] using hrow_i_j)
+    subst j
+    exact hne (by rw [← hix, ← hjy])
+  · intro x hx y hy hrow_lt
+    have hxL : x ∈ L := by simpa using hx
+    have hyL : y ∈ L := by simpa using hy
+    rcases List.getElem_of_mem hxL with ⟨i, hi, hix⟩
+    rcases List.getElem_of_mem hyL with ⟨j, hj, hjy⟩
+    have hi_rows : i < rows.length := List.lt_length_left_of_zip hi
+    have hj_rows : j < rows.length := List.lt_length_left_of_zip hj
+    have hi_cols' : i < cols'.length := List.lt_length_right_of_zip hi
+    have hj_cols' : j < cols'.length := List.lt_length_right_of_zip hj
+    have hi_cols : i < cols.length := by simpa [cols'] using hi_cols'
+    have hj_cols : j < cols.length := by simpa [cols'] using hj_cols'
+    have hx_eq : x = (rows[i], n - 1 - cols[i]) := by
+      rw [← hix, List.getElem_zip]
+      simp [cols']
+    have hy_eq : y = (rows[j], n - 1 - cols[j]) := by
+      rw [← hjy, List.getElem_zip]
+      simp [cols']
+    have hij_lt : i < j := by
+      have hrows_sorted : rows.SortedLE := by
+        simpa [rows] using (Finset.sortedLT_sort A).sortedLE
+      have hrow_ij : rows[i] < rows[j] := by
+        simpa [hx_eq, hy_eq] using hrow_lt
+      by_contra hnot
+      have hji : j ≤ i := le_of_not_gt hnot
+      have hle_ji : rows[j] ≤ rows[i] :=
+        (List.sortedLE_iff_getElem_le_getElem_of_le.mp hrows_sorted) hji
+      exact not_lt_of_ge hle_ji hrow_ij
+    have hcols_pairwise : List.Pairwise (· < ·) cols := by
+      simpa [cols] using (Finset.sortedLT_sort B).pairwise
+    have hcol_lt : cols[i] < cols[j] := by
+      exact (List.pairwise_iff_getElem.mp hcols_pairwise) i j hi_cols hj_cols hij_lt
+    have hcolj_mem : cols[j] ∈ B := by
+      rw [← Finset.mem_sort (s := B) (r := (· ≤ ·))]
+      exact List.getElem_mem hj_cols
+    have hcolj_lt : cols[j] < n := Finset.mem_range.mp (hB hcolj_mem)
+    rw [hx_eq, hy_eq]
+    dsimp
+    lia
 
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
 @[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
