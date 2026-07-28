@@ -1188,6 +1188,30 @@ theorem of_rootCountAbove_left_sub_right_bounds_of_nonRoot
     rw [hdelete_zero, hg_zero]
     norm_num
 
+/-- A below-largest suffix-count criterion for the left branch.  It is enough
+to prove the original strict-upper `f`-minus-`g` root-count bounds at common
+non-root thresholds below the largest root of `f`; thresholds at or above that
+largest root have zero strict-upper counts for both polynomials. -/
+theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hbound : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      0 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ∧
+        ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≤ 2) :
+    LeftRootCountBranch f g r s := by
+  refine LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_of_nonRoot
+    hf_ne hg_ne hr hs hlargest ?_
+  intro x hfx hgx
+  by_cases hx : x < r
+  · exact hbound x hx hfx hgx
+  · have hx_ge : r ≤ x := not_lt.mp hx
+    have hf_zero := hr.rootCountAbove_eq_zero_of_le hx_ge
+    have hg_zero := hs.rootCountAbove_eq_zero_of_le (hlargest.trans hx_ge)
+    rw [hf_zero, hg_zero]
+    norm_num
+
 /-- A window-difference criterion for the left branch.  It is enough to have
 Liu-compatible original root counts and, at each common non-root below the
 largest root of `f`, a nondegenerate `(x, b]` window where the multiset root
