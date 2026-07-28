@@ -139,6 +139,46 @@ theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_simple_root_Ioc
   rw [hjump, hfIoc, hgIoc]
   ring
 
+/-- If the unique combined root in `(a, b]` is a simple root of the left
+polynomial, then the strict-upper count difference increases by one across the
+window. -/
+theorem card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hg_not : ¬ g.IsRoot c)
+    (hcount : f.roots.count c = 1)
+    (hunique : ∀ z : ℝ, a < z → z ≤ b →
+      f.IsRoot z ∨ g.IsRoot z → z = c) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card =
+      1 + (((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card) := by
+  refine card_roots_filter_gt_sub_eq_one_add_of_left_simple_root_Ioc
+    hf hac hcb hcount ?_ ?_
+  · intro z haz hzb hzc hfz
+    exact hzc (hunique z haz hzb (Or.inl hfz))
+  · intro z haz hzb hgz
+    exact hg_not ((hunique z haz hzb (Or.inr hgz)) ▸ hgz)
+
+/-- If the unique combined root in `(a, b]` is a simple root of the right
+polynomial, then the strict-upper count difference decreases by one across the
+window. -/
+theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
+    {f g : ℝ[X]} (hg : g ≠ 0) {a b c : ℝ}
+    (hac : a < c) (hcb : c ≤ b) (hf_not : ¬ f.IsRoot c)
+    (hcount : g.roots.count c = 1)
+    (hunique : ∀ z : ℝ, a < z → z ≤ b →
+      f.IsRoot z ∨ g.IsRoot z → z = c) :
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card =
+      -1 + (((f.roots.filter (b < ·)).card : ℤ) -
+        (g.roots.filter (b < ·)).card) := by
+  refine card_roots_filter_gt_sub_eq_neg_one_add_of_right_simple_root_Ioc
+    hg hac hcb hcount ?_ ?_
+  · intro z haz hzb hfz
+    exact hf_not ((hunique z haz hzb (Or.inl hfz)) ▸ hfz)
+  · intro z haz hzb hzc hgz
+    exact hzc (hunique z haz hzb (Or.inr hgz))
+
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
