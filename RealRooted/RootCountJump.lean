@@ -231,40 +231,6 @@ theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
   · intro z haz hzb hzc hgz
     exact hzc (hunique z haz hzb (Or.inr hgz))
 
-/-- One-step suffix-count invariant transport across a unique simple left root:
-if the strict-upper count difference above the window is zero, then it is one
-below the window. -/
-theorem card_roots_filter_gt_sub_eq_one_of_left_unique_simple_root_Ioc_of_above_eq_zero
-    {f g : ℝ[X]} (hf : f ≠ 0) {a b c : ℝ}
-    (hac : a < c) (hcb : c ≤ b) (hg_not : ¬ g.IsRoot c)
-    (hcount : f.roots.count c = 1)
-    (hunique : ∀ z : ℝ, a < z → z ≤ b →
-      f.IsRoot z ∨ g.IsRoot z → z = c)
-    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
-        (g.roots.filter (b < ·)).card = 0) :
-    ((f.roots.filter (a < ·)).card : ℤ) -
-        (g.roots.filter (a < ·)).card = 1 := by
-  simpa [hb] using
-    card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
-      hf hac hcb hg_not hcount hunique
-
-/-- One-step suffix-count invariant transport across a unique simple right root:
-if the strict-upper count difference above the window is one, then it is zero
-below the window. -/
-theorem card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_above_eq_one
-    {f g : ℝ[X]} (hg : g ≠ 0) {a b c : ℝ}
-    (hac : a < c) (hcb : c ≤ b) (hf_not : ¬ f.IsRoot c)
-    (hcount : g.roots.count c = 1)
-    (hunique : ∀ z : ℝ, a < z → z ≤ b →
-      f.IsRoot z ∨ g.IsRoot z → z = c)
-    (hb : ((f.roots.filter (b < ·)).card : ℤ) -
-        (g.roots.filter (b < ·)).card = 1) :
-    ((f.roots.filter (a < ·)).card : ℤ) -
-        (g.roots.filter (a < ·)).card = 0 := by
-  simpa [hb] using
-    card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
-      hg hac hcb hf_not hcount hunique
-
 /-- A least combined root above `a`, together with a root-free half-open gap
 `(c, b]`, is the unique combined root in `(a, b]`. -/
 theorem eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
@@ -305,27 +271,37 @@ theorem card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
   have hshift :=
     card_roots_filter_gt_sub_eq_one_add_of_left_unique_simple_root_Ioc
       hf hac hcb hg_not hcount hunique
-  simpa [hb, add_comm, add_left_comm, add_assoc] using hshift
+  simpa [hb, add_comm] using hshift
 
 /-- One-step suffix-count transport across a least combined root owned by the
-right polynomial, with the upper endpoint chosen before the next combined root. -/
-theorem card_roots_filter_gt_sub_eq_zero_of_right_least_root_no_mem_Ioc_of_above_eq_one
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ}
+right polynomial, with the upper endpoint chosen before the next combined root.
+Crossing such a root lowers the strict-upper `f`-minus-`g` count difference by
+one. -/
+theorem card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b c : ℝ} {k : ℤ}
     (hac : a < c) (hcb : c ≤ b) (hf_not : ¬ f.IsRoot c)
     (hcount : g.roots.count c = 1)
     (hleast : ∀ z : ℝ, a < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
     (hgap_f : ∀ r ∈ f.roots, r ≤ c ∨ b < r)
     (hgap_g : ∀ r ∈ g.roots, r ≤ c ∨ b < r)
     (hb : ((f.roots.filter (b < ·)).card : ℤ) -
-        (g.roots.filter (b < ·)).card = 1) :
+        (g.roots.filter (b < ·)).card = k) :
     ((f.roots.filter (a < ·)).card : ℤ) -
-        (g.roots.filter (a < ·)).card = 0 := by
+        (g.roots.filter (a < ·)).card = k - 1 := by
   have hunique :=
     eq_of_isRoot_or_isRoot_Ioc_of_least_of_roots_no_mem_Ioc
       hf hg hleast hgap_f hgap_g
-  exact
-    card_roots_filter_gt_sub_eq_zero_of_right_unique_simple_root_Ioc_of_above_eq_one
-      hg hac hcb hf_not hcount hunique hb
+  have hshift :=
+    card_roots_filter_gt_sub_eq_neg_one_add_of_right_unique_simple_root_Ioc
+      hg hac hcb hf_not hcount hunique
+  calc
+    ((f.roots.filter (a < ·)).card : ℤ) -
+        (g.roots.filter (a < ·)).card =
+        -1 + (((f.roots.filter (b < ·)).card : ℤ) -
+          (g.roots.filter (b < ·)).card) := hshift
+    _ = k - 1 := by
+      rw [hb]
+      ring
 
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/

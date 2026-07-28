@@ -1251,6 +1251,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     dsimp [μ]
     exact card_filter_gt_lt_of_mem_Ioc (f.roots + g.roots)
       (le_of_lt hxb) hc_mem hxc (le_of_lt hcb)
+  refine ⟨c, hxc, hcroot, hleast, ?_⟩
   by_cases hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)
   · obtain ⟨d₀, hbd₀, hd₀root⟩ := hnext
     have hd₀_le_r : d₀ ≤ r := by
@@ -1284,10 +1285,10 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         intro hfc
         exact hdisj c hfc hgc
       have hdiff :=
-        card_roots_filter_gt_sub_eq_zero_of_right_least_root_no_mem_Ioc_of_above_eq_one
+        card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
           hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
           hleast hgap_f hgap_g hdiff_b
-      exact ⟨c, hxc, hcroot, hleast, Or.inr ⟨hgc, hdiff⟩⟩
+      exact Or.inr ⟨hgc, by simpa using hdiff⟩
     · have hfc : f.IsRoot c := by
         rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
         · exact hfc
@@ -1297,7 +1298,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
           hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
           hleast hgap_f hgap_g hdiff_b
-      exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩
+      exact Or.inl ⟨hfc, hdiff⟩
   · have hno_above :
         ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
       intro z hbz
@@ -1325,7 +1326,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
       card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
         hf_ne hg_ne hxc (le_of_lt hcb) hgc_not (hsimple_f c hfc)
         hleast hgap_f hgap_g hdiff_b
-    exact ⟨c, hxc, hcroot, hleast, Or.inl ⟨hfc, hdiff⟩⟩
+    exact Or.inl ⟨hfc, hdiff⟩
 
 theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
@@ -1345,17 +1346,11 @@ theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
       hf_ne hg_ne hr hs hlargest hsimple_f hsimple_g hdisj hcross
       x hx hfx hgx
-  rcases howner with ⟨_hfc, hdiff⟩ | ⟨_hgc, hdiff⟩
-  · have hle_int :
-        ((g.roots.filter (x < ·)).card : ℤ) ≤
-          (f.roots.filter (x < ·)).card := by
-      linarith
-    exact_mod_cast hle_int
-  · have hle_int :
-        ((g.roots.filter (x < ·)).card : ℤ) ≤
-          (f.roots.filter (x < ·)).card := by
-      linarith
-    exact_mod_cast hle_int
+  have hle_int :
+      ((g.roots.filter (x < ·)).card : ℤ) ≤
+        (f.roots.filter (x < ·)).card := by
+    rcases howner with ⟨_hfc, hdiff⟩ | ⟨_hgc, hdiff⟩ <;> linarith
+  exact_mod_cast hle_int
 
 theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
