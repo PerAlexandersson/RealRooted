@@ -26,6 +26,43 @@ theorem NoCommonRoots.symm {f g : ℝ[X]} (h : NoCommonRoots f g) :
   intro r hgr hfr
   exact (h r hfr) hgr
 
+/-- For splitting polynomials with opposite leading signs, odd upper
+root-count difference at a common non-root is equivalent to the absence of a
+positive right-pencil member through that threshold. -/
+theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 := by
+    intro hgx
+    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  rw [hsgn.odd_intCard_roots_gt_sub_iff_eval_pos_iff hf hg hxf hxg]
+  exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
+
+/-- Contrapositive crossing form of
+`OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`. -/
+theorem OppositeLeadingSigns.not_odd_intCard_roots_gt_sub_iff_exists_pos_isRoot_add_right
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  rw [hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
+    hf hg hxf hxg]
+  constructor
+  · intro hnotnot
+    by_contra hno
+    exact hnotnot hno
+  · intro hcross hno
+    exact hno hcross
+
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}
