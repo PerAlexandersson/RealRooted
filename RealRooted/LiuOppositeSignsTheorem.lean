@@ -513,12 +513,7 @@ lemma cubicDiscr_cubicSubQuadratic_right_protruding_left_below_neg
       C μ * ((X - C u) * (X - C v))
   have hshift : cubicDiscr P = cubicDiscr (P.comp (X + C u)) := by
     dsimp [P]
-    rw [cubicSubQuadratic_eq_cubic_expansion]
-    exact
-      (cubicDiscr_cubic_comp_X_add_C
-        1 (-(a + b + c + μ))
-        (a * b + a * c + b * c + μ * (u + v))
-        (-(a * b * c) - μ * (u * v)) u).symm
+    exact (cubicDiscr_cubicSubQuadratic_comp_X_add_C a b c u v μ u).symm
   have hcomp_eq :
       P.comp (X + C u) =
         ((X - C sau) * (X - C (sau + dab)) *
@@ -734,12 +729,7 @@ lemma cubicDiscr_cubicSubQuadratic_left_roots_below_strict_neg
       C μ * ((X - C u) * (X - C v))
   have hshift : cubicDiscr P = cubicDiscr (P.comp (X + C u)) := by
     dsimp [P]
-    rw [cubicSubQuadratic_eq_cubic_expansion]
-    exact
-      (cubicDiscr_cubic_comp_X_add_C
-        1 (-(a + b + c + μ))
-        (a * b + a * c + b * c + μ * (u + v))
-        (-(a * b * c) - μ * (u * v)) u).symm
+    exact (cubicDiscr_cubicSubQuadratic_comp_X_add_C a b c u v μ u).symm
   have hcomp_eq :
       P.comp (X + C u) =
         ((X - C (duv + sav)) * (X - C (duv + sav + dab)) *
@@ -912,12 +902,7 @@ lemma cubicDiscr_cubicSubQuadratic_left_double_roots_below_neg
       C μ * ((X - C u) * (X - C u))
   have hshift : cubicDiscr P = cubicDiscr (P.comp (X + C u)) := by
     dsimp [P]
-    rw [cubicSubQuadratic_eq_cubic_expansion]
-    exact
-      (cubicDiscr_cubic_comp_X_add_C
-        1 (-(a + b + c + μ))
-        (a * b + a * c + b * c + μ * (u + u))
-        (-(a * b * c) - μ * (u * u)) u).symm
+    exact (cubicDiscr_cubicSubQuadratic_comp_X_add_C a b c u u μ u).symm
   have hcomp_eq :
       P.comp (X + C u) =
         ((X - C sav) * (X - C (sav + dab)) *

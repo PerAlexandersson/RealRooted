@@ -43,6 +43,23 @@ lemma cubicDiscr_cubic_comp_X_add_C (a3 a2 a1 a0 r : ℝ) :
   rw [hpoly, cubicDiscr_of_coeffs, cubicDiscr_of_coeffs]
   ring
 
+/-- Translating the variable preserves the cubic discriminant of a monic
+cubic-minus-quadratic pencil. -/
+lemma cubicDiscr_cubicSubQuadratic_comp_X_add_C
+    (a b c u v μ r : ℝ) :
+    cubicDiscr
+        ((((X - C a) * (X - C b) * (X - C c)) -
+            C μ * ((X - C u) * (X - C v))).comp (X + C r)) =
+      cubicDiscr
+        (((X - C a) * (X - C b) * (X - C c)) -
+          C μ * ((X - C u) * (X - C v))) := by
+  rw [cubicSubQuadratic_eq_cubic_expansion]
+  exact
+    cubicDiscr_cubic_comp_X_add_C
+      1 (-(a + b + c + μ))
+      (a * b + a * c + b * c + μ * (u + v))
+      (-(a * b * c) - μ * (u * v)) r
+
 /-- The midpoint tangent coefficient is positive when the average of the
 quadratic roots lies strictly above the cubic root interval. -/
 lemma cubicSubQuadratic_average_above_mu_pos {a b c u v : ℝ}
