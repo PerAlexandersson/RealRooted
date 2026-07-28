@@ -152,12 +152,23 @@ theorem card_roots_filter_Ioo_eq_of_card_filter_gt_eq
 number of roots in the open interval between those endpoints. -/
 theorem even_card_roots_filter_Ioo_of_eval_mul_pos
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
-    {a b : ℝ} (hab : a ≤ b) (hpa : ¬ p.IsRoot a) (hpb : ¬ p.IsRoot b)
-    (hprod : 0 < p.eval a * p.eval b) :
+    {a b : ℝ} (hab : a ≤ b) (hprod : 0 < p.eval a * p.eval b) :
     Even (p.roots.filter (fun r => a < r ∧ r < b)).card := by
   let A := (p.roots.filter (a < ·)).card
   let B := (p.roots.filter (b < ·)).card
   let I := (p.roots.filter (fun r => a < r ∧ r < b)).card
+  have hpa : ¬ p.IsRoot a := by
+    intro hroot
+    have hzero : p.eval a = 0 := by
+      simpa [Polynomial.IsRoot.def] using hroot
+    rw [hzero, zero_mul] at hprod
+    linarith
+  have hpb : ¬ p.IsRoot b := by
+    intro hroot
+    have hzero : p.eval b = 0 := by
+      simpa [Polynomial.IsRoot.def] using hroot
+    rw [hzero, mul_zero] at hprod
+    linarith
   have hnorm_a : 0 < p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A := by
     simpa [A] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hpa
   have hnorm_b : 0 < p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B := by

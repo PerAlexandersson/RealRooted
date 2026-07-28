@@ -318,21 +318,9 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
       hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
   have hq_rr : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits :=
     hfg.isRealRooted_add_right hμ_pos
-  have hqa : ¬ (f + C μ * g).IsRoot a := by
-    intro hroot
-    have hzero : (f + C μ * g).eval a = 0 := by
-      simpa [Polynomial.IsRoot.def] using hroot
-    rw [hzero, zero_mul] at hendpoint
-    linarith
-  have hqb : ¬ (f + C μ * g).IsRoot b := by
-    intro hroot
-    have hzero : (f + C μ * g).eval b = 0 := by
-      simpa [Polynomial.IsRoot.def] using hroot
-    rw [hzero, mul_zero] at hendpoint
-    linarith
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
   have heven := even_card_roots_filter_Ioo_of_eval_mul_pos
-    hq_rr.1 hq_rr.2 hab hqa hqb hendpoint
+    hq_rr.1 hq_rr.2 hab hendpoint
   exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩
 
 /-- Multiplying both entries by the same splitting factor preserves
