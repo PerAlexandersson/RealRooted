@@ -85,6 +85,17 @@ def nonNestingPlacementsWithCol (B : FiniteSkewBoard) (col : ℕ) :
     Finset (Finset (ℕ × ℕ)) :=
   (B.colCells col).biUnion fun a => B.nonNestingPlacementsWithCell a
 
+/-- Valid placements with no rook in any cell of a finite cell set. -/
+def nonNestingPlacementsWithoutCells (B : FiniteSkewBoard) (S : Finset (ℕ × ℕ)) :
+    Finset (Finset (ℕ × ℕ)) := by
+  classical
+  exact B.nonNestingPlacements.filter fun P => ∀ a ∈ S, a ∉ P
+
+/-- Valid placements containing at least one cell from a finite cell set. -/
+def nonNestingPlacementsWithCells (B : FiniteSkewBoard) (S : Finset (ℕ × ℕ)) :
+    Finset (Finset (ℕ × ℕ)) :=
+  S.biUnion fun a => B.nonNestingPlacementsWithCell a
+
 /-- Membership in the cells of a fixed row. -/
 @[simp] theorem mem_rowCells {B : FiniteSkewBoard} {row : ℕ}
     {a : ℕ × ℕ} :
@@ -151,6 +162,28 @@ specified cell. -/
       B.IsNonNestingPlacement P ∧ ∃ a ∈ B.colCells col, a ∈ P := by
   classical
   rw [nonNestingPlacementsWithCol, Finset.mem_biUnion]
+  constructor
+  · rintro ⟨a, ha, hP⟩
+    rw [mem_nonNestingPlacementsWithCell] at hP
+    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
+  · rintro ⟨hP, a, ha, haP⟩
+    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+
+/-- Membership in the cell-set-free placement slice. -/
+@[simp] theorem mem_nonNestingPlacementsWithoutCells {B : FiniteSkewBoard}
+    {S : Finset (ℕ × ℕ)} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithoutCells S ↔
+      B.IsNonNestingPlacement P ∧ ∀ a ∈ S, a ∉ P := by
+  classical
+  simp [nonNestingPlacementsWithoutCells]
+
+/-- Membership in the placement slice using a finite cell set. -/
+@[simp] theorem mem_nonNestingPlacementsWithCells {B : FiniteSkewBoard}
+    {S : Finset (ℕ × ℕ)} {P : Finset (ℕ × ℕ)} :
+    P ∈ B.nonNestingPlacementsWithCells S ↔
+      B.IsNonNestingPlacement P ∧ ∃ a ∈ S, a ∈ P := by
+  classical
+  rw [nonNestingPlacementsWithCells, Finset.mem_biUnion]
   constructor
   · rintro ⟨a, ha, hP⟩
     rw [mem_nonNestingPlacementsWithCell] at hP
@@ -354,6 +387,51 @@ theorem sum_nonNestingPlacements_eq_withoutCol_add_withCol
   rw [Finset.sum_union
     (disjoint_nonNestingPlacementsWithoutCol_withCol B col)]
   rw [sum_nonNestingPlacementsWithCol]
+
+/-- Placements avoiding a finite cell set and placements using it are
+disjoint. -/
+theorem disjoint_nonNestingPlacementsWithoutCells_withCells
+    (B : FiniteSkewBoard) (S : Finset (ℕ × ℕ)) :
+    Disjoint (B.nonNestingPlacementsWithoutCells S)
+      (B.nonNestingPlacementsWithCells S) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro P hfree hwith
+  rw [mem_nonNestingPlacementsWithoutCells] at hfree
+  rw [mem_nonNestingPlacementsWithCells] at hwith
+  rcases hwith.2 with ⟨a, haS, haP⟩
+  exact hfree.2 a haS haP
+
+/-- Every placement either avoids a finite cell set or uses at least one cell
+from it. -/
+theorem union_nonNestingPlacementsWithoutCells_withCells
+    (B : FiniteSkewBoard) (S : Finset (ℕ × ℕ)) :
+    B.nonNestingPlacementsWithoutCells S ∪ B.nonNestingPlacementsWithCells S =
+      B.nonNestingPlacements := by
+  classical
+  ext P
+  rw [Finset.mem_union, mem_nonNestingPlacementsWithoutCells,
+    mem_nonNestingPlacementsWithCells, mem_nonNestingPlacements]
+  constructor
+  · rintro (h | h) <;> exact h.1
+  · intro hP
+    by_cases hS : ∃ a ∈ S, a ∈ P
+    · exact Or.inr ⟨hP, hS⟩
+    · exact Or.inl ⟨hP, fun a haS haP => hS ⟨a, haS, haP⟩⟩
+
+/-- The placement sum for a finite board splits according to occupancy of a
+finite cell set. -/
+theorem sum_nonNestingPlacements_eq_withoutCells_add_withCells
+    (B : FiniteSkewBoard) (S : Finset (ℕ × ℕ)) :
+    B.nonNestingPlacements.sum (fun P => (X : ℝ[X]) ^ P.card) =
+      (B.nonNestingPlacementsWithoutCells S).sum
+        (fun P => (X : ℝ[X]) ^ P.card) +
+      (B.nonNestingPlacementsWithCells S).sum
+        (fun P => (X : ℝ[X]) ^ P.card) := by
+  classical
+  rw [← union_nonNestingPlacementsWithoutCells_withCells B S]
+  rw [Finset.sum_union
+    (disjoint_nonNestingPlacementsWithoutCells_withCells B S)]
 
 /-- The rook polynomial as a sum over the named finite set of non-nesting
 placements. -/
