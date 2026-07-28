@@ -763,16 +763,19 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹,
       (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
-    (hsplitL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹, (g + C η * f).Splits)
     (hνR_pos : 0 < νR)
     (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → νR ≤ μ)
     (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
       ∀ τ ∈ Set.Icc νR μ,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegR_zero : ∀ η ∈ Set.Icc (0 : ℝ) νR,
-      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
-    (hsplitR : ∀ η ∈ Set.Icc (0 : ℝ) νR, (f + C η * g).Splits) :
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
     (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
+  have hsplitL_inv : ∀ η ∈ Set.Icc (0 : ℝ) νL⁻¹, (g + C η * f).Splits :=
+    fun η hη =>
+      PosComboRealRooted.splits_add_right_of_nonneg (PosComboRealRooted.comm hfg) hg hη.1
+  have hsplitR : ∀ η ∈ Set.Icc (0 : ℝ) νR, (f + C η * g).Splits :=
+    fun η hη => PosComboRealRooted.splits_add_right_of_nonneg hfg hf hη.1
   rcases ha_root with hfa | hga
   · rcases hb_root with hfb | hgb
     · have hleft_counts :=

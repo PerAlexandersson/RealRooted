@@ -492,6 +492,16 @@ lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using h zero_lt_one hμ
 
+/-- Nonnegative right-family parameters split once the left endpoint is known to
+split.  The zero endpoint is supplied by `hf`; positive parameters are supplied
+by `PosComboRealRooted`. -/
+lemma splits_add_right_of_nonneg {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    (hf : f.Splits) {μ : ℝ} (hμ : 0 ≤ μ) :
+    (f + C μ * g).Splits := by
+  rcases lt_or_eq_of_le hμ with hμ_pos | hμ_zero
+  · exact (h.isRealRooted_add_right hμ_pos).2
+  · simpa [← hμ_zero] using hf
+
 lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using h hlam zero_lt_one
