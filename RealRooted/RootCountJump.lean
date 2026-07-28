@@ -116,8 +116,7 @@ theorem card_roots_filter_gt_sub_eq_one_add_of_left_simple_root_Ioc
     card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
       hf hac hcb hcount hf_no
   have hgIoc := card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc hab hg_no
-  rw [hjump, hfIoc, hgIoc]
-  ring
+  simpa [hfIoc, hgIoc] using hjump
 
 /-- Crossing exactly one simple root of the right polynomial and no roots of the
 left polynomial decreases the strict-upper count difference by one. -/
@@ -136,8 +135,7 @@ theorem card_roots_filter_gt_sub_eq_neg_one_add_of_right_simple_root_Ioc
   have hgIoc :=
     card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
       hg hac hcb hcount hg_no
-  rw [hjump, hfIoc, hgIoc]
-  ring
+  simpa [hfIoc, hgIoc] using hjump
 
 /-- If the unique combined root in `(a, b]` is a simple root of the left
 polynomial, then the strict-upper count difference increases by one across the
