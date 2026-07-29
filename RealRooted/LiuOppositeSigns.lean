@@ -1447,6 +1447,21 @@ theorem of_left_sub_right_upper_of_right_le_left
     linarith
   · exact hupper x hfx hgx
 
+private theorem of_left_sub_right_le_one_of_right_le_left
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1)
+    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
+    LeftRootCountBranch f g r s :=
+  of_left_sub_right_upper_of_right_le_left hf_ne hg_ne hr hs hlargest
+    (fun x hfx hgx => by
+      have hle_one := hupper x hfx hgx
+      linarith)
+    hle
+
 theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
@@ -1454,11 +1469,9 @@ theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
     LeftRootCountBranch f g r s :=
-  of_left_sub_right_upper_of_right_le_left hf_ne hg_ne hr hs hlargest
-    (fun x hfx hgx => by
-      have hleft := hcount.rootCountAbove_left_sub_le_one_of_nonRoot
-        hf_ne hg_ne hfx hgx
-      linarith)
+  of_left_sub_right_le_one_of_right_le_left hf_ne hg_ne hr hs hlargest
+    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
+      hf_ne hg_ne hfx hgx)
     hle
 
 /-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
@@ -2032,19 +2045,13 @@ theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_
     theorem21RootCountBranches f g := by
   rcases le_or_gt s r with hsr | hrs
   · exact theorem21RootCountBranches_of_left <|
-      LeftRootCountBranch.of_left_sub_right_upper_of_right_le_left
-        hf_ne hg_ne hr hs hsr
-        (fun x hfx hgx => by
-          have hupper := hupper_fg x hfx hgx
-          linarith)
+      LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
+        hf_ne hg_ne hr hs hsr hupper_fg
         (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
           hf_ne hg_ne hr hs hsr hupper_fg hsimple_f hsimple_g hdisj hcross)
   · have hleft : LeftRootCountBranch g f s r :=
-      LeftRootCountBranch.of_left_sub_right_upper_of_right_le_left
-        hg_ne hf_ne hs hr hrs.le
-        (fun x hgx hfx => by
-          have hupper := hupper_gf x hgx hfx
-          linarith)
+      LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
+        hg_ne hf_ne hs hr hrs.le hupper_gf
         (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
           hg_ne hf_ne hs hr hrs.le hupper_gf hsimple_g hsimple_f
           (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
