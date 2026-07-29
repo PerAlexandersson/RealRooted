@@ -39,6 +39,12 @@ theorem thetaPlusOne_sequence_nonneg
     ∀ i : Nat, HasNonnegCoeffs (thetaPlusOne (P i)) := fun i =>
   RealRooted.HasNonnegCoeffs.thetaPlusOne (hP i)
 
+theorem theta_sequence_pf
+    {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, IsPFPolynomial (theta (P i)) := fun i =>
+  RealRooted.theta_preserves_pf (hP i)
+
 theorem polarTheta_sequence_nonneg
     {N : Nat → Nat} {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
@@ -109,6 +115,14 @@ syntax (name := rr_polarTheta_sequence_nonneg_named)
   "rr_polarTheta_sequence_nonneg" " using "
     "nonneg" ":=" term ","
     "degree" ":=" term :
+  tactic
+
+syntax (name := rr_theta_pf_named)
+  "rr_theta_pf" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_theta_sequence_pf_named)
+  "rr_theta_sequence_pf" " using " "pf" ":=" term :
   tactic
 
 syntax (name := rr_thetaPlusOne_pf_named)
@@ -182,6 +196,10 @@ macro_rules
       `(tactic| exact RealRooted.HasNonnegCoeffs.thetaPlusOne $hp)
   | `(tactic| rr_thetaPlusOne_sequence_nonneg using nonneg := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_nonneg $hp)
+  | `(tactic| rr_theta_pf using pf := $hp:term) =>
+      `(tactic| exact RealRooted.theta_preserves_pf $hp)
+  | `(tactic| rr_theta_sequence_pf using pf := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.theta_sequence_pf $hp)
   | `(tactic|
       rr_polarTheta_nonneg using
         nonneg := $hp:term,

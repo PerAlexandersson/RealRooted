@@ -14,6 +14,15 @@ example {P : Nat → ℝ[X]}
     ∀ i : Nat, HasNonnegCoeffs (theta (P i)) := by
   rr_theta_sequence_nonneg using nonneg := hP
 
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (theta p) := by
+  rr_theta_pf using pf := hp
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, IsPFPolynomial (theta (P i)) := by
+  rr_theta_sequence_pf using pf := hP
+
 example {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (thetaPlusOne p) := by
   rr_thetaPlusOne_nonneg using nonneg := hp

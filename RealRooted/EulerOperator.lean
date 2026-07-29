@@ -18,10 +18,12 @@ Eulerian-row arguments:
 * `thetaPlusOne p = theta p + p = (X * p).derivative`;
 * `polarTheta N p = C N * p - theta p`.
 
-The coefficient and nonnegative-coefficient lemmas below are proved directly.
-The real-rootedness and proper-position preservation results are recorded as
-statement interfaces, since their proofs are the classical Rolle/polar
-derivative input for the later formalization.
+The coefficient, nonnegative-coefficient, PF-preservation, and some
+proper-position preservation lemmas below are proved directly when they reduce
+to the existing derivative/PF API.  The remaining bounded-degree
+proper-position preservation results are recorded as statement interfaces,
+since their proofs are the classical Rolle/polar derivative input for the later
+formalization.
 -/
 
 /-- Euler operator `theta = X d/dX`. -/
@@ -119,6 +121,16 @@ theorem thetaPreservesPF_of_realRootedOrZero
     thetaPreservesPFStatement :=
   fun {_} hp => ⟨hp.hasNonnegCoeffs.theta, (hθ hp).1, (hθ hp).2⟩
 
+theorem theta_preserves_pf : thetaPreservesPFStatement := by
+  intro p hp
+  dsimp [theta]
+  exact hp.derivative.X_mul
+
+theorem thetaPreservesRealRootedOrZero : thetaPreservesRealRootedOrZeroStatement := by
+  intro p hp
+  have htheta : IsPFPolynomial (theta p) := theta_preserves_pf hp
+  exact ⟨htheta.eq_zero_or_splits, htheta.roots_nonpos⟩
+
 /-- Classical Rolle input: `theta` preserves weak proper position on the
 polynomial PF cone. -/
 def thetaPreservesPrec0Statement : Prop :=
@@ -127,6 +139,17 @@ def thetaPreservesPrec0Statement : Prop :=
     IsPFPolynomial q →
     Prec0 p q →
     Prec0 (theta p) (theta q)
+
+theorem thetaPreservesPrec0_of_derivative
+    (hderiv : derivativePreservesPrec0Statement) : thetaPreservesPrec0Statement := by
+  intro p q hp hq hpq
+  simpa [theta] using
+    prec0_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
+
+/-- `theta` preserves weak proper position on the polynomial PF cone, obtained
+from the derivative preservation theorem and multiplication by `X`. -/
+theorem thetaPreservesPrec0 : thetaPreservesPrec0Statement :=
+  thetaPreservesPrec0_of_derivative derivativePreservesPrec0
 
 /-- Classical Rolle input: `theta + 1` preserves real-rootedness and
 nonpositive roots on the polynomial PF cone. -/
