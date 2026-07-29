@@ -7,7 +7,7 @@ This module contains the positive-deletion and branch-retaining
 common-interleaver consequences derived from Liu Theorem 2.1 packages.
 -/
 
-open Polynomial Filter
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

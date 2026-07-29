@@ -1,5 +1,4 @@
 import RealRooted.LiuOppositeSigns.Theorem21Statements
-import RealRooted.MaWang
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeCountFromAnalytic
 
@@ -10,7 +9,7 @@ This module contains the PositiveSplitRootCountPair bridge from Liu's
 root-count packages to common interleavers and compatibility.
 -/
 
-open Polynomial Filter
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns
@@ -41,20 +40,6 @@ def positiveSplitSuccDegreeRootCountAboveNonRootStatement : Prop :=
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     f.Splits →
     PositiveSplitRootCountPair f g
-
-theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_of_positiveSplit
-    (hpack : positiveSplitSameDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hfx hgx
-  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno).sameDegreeRootCountAboveNonRoot
-    hdeg x hfx hgx
-
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_positiveSplit
-    (hpack : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hfx hgx
-  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
-    |>.succDegreeRootCountAboveNonRoot hdeg x hfx hgx
 
 /-- A strict-upper non-root count proof supplies the positive-split
 same-degree Liu root-count package. -/
