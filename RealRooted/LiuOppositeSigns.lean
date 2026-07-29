@@ -1225,14 +1225,16 @@ theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
     rw [hf_zero, hg_zero]
     norm_num
 
-/-- Finite descent for the left Liu branch.  Under compatible root counts and
-parity-guarded cross-ownership in root-free gaps, the least combined root above
-a common non-root threshold carries the exact owner/difference invariant needed
-for the left strict-upper count bound. -/
-theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
+/-- Finite descent for the left Liu branch.  A one-sided root-count upper bound
+and parity-guarded cross-ownership in root-free gaps force the least combined
+root above a common non-root threshold to carry the exact owner/difference
+invariant needed for the left strict-upper count bound. -/
+theorem owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
+    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1)
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
@@ -1308,7 +1310,7 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
         have hle :
             ((f.roots.filter (x < ·)).card : ℤ) -
                 (g.roots.filter (x < ·)).card ≤ 1 :=
-          (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1
+          hupper x hfx hgx
         exact False.elim (by linarith)
       · have hfc_not : ¬ f.IsRoot c := by
           intro hfc
@@ -1353,6 +1355,53 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
     have hdiff := hstep_f hfc hdiff_b
     exact Or.inl ⟨hfc, hdiff⟩
 
+/-- Compatible root counts supply the one-sided upper bound used by the finite
+descent. -/
+theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : CrossOwnedNotOddGaps f g) :
+    ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
+        (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z) ∧
+          ((f.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 1) ∨
+            (g.IsRoot c ∧
+              ((f.roots.filter (x < ·)).card : ℤ) -
+                (g.roots.filter (x < ·)).card = 0)) :=
+  owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
+    hf_ne hg_ne hr hs hlargest
+    (fun _ hfx hgx => (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1)
+    hsimple_f hsimple_g hdisj hcross
+
+theorem right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : CrossOwnedNotOddGaps f g) :
+    ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card := by
+  intro x hx hfx hgx
+  obtain ⟨_c, _hxc, _hcroot, _hleast, howner⟩ :=
+    owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
+      hf_ne hg_ne hr hs hlargest hupper hsimple_f hsimple_g hdisj hcross
+      x hx hfx hgx
+  have hle_int :
+      ((g.roots.filter (x < ·)).card : ℤ) ≤
+        (f.roots.filter (x < ·)).card := by
+    rcases howner with ⟨_hfc, hdiff⟩ | ⟨_hgc, hdiff⟩ <;> linarith
+  exact_mod_cast hle_int
+
 theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
@@ -1362,22 +1411,18 @@ theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
     (hcross : CrossOwnedNotOddGaps f g) :
     ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card := by
-  intro x hx hfx hgx
-  obtain ⟨_c, _hxc, _hcroot, _hleast, howner⟩ :=
-    rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
-      hf_ne hg_ne hr hs hlargest hcount hsimple_f hsimple_g hdisj hcross
-      x hx hfx hgx
-  have hle_int :
-      ((g.roots.filter (x < ·)).card : ℤ) ≤
-        (f.roots.filter (x < ·)).card := by
-    rcases howner with ⟨_hfc, hdiff⟩ | ⟨_hgc, hdiff⟩ <;> linarith
-  exact_mod_cast hle_int
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card :=
+  right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
+    hf_ne hg_ne hr hs hlargest
+    (fun _ hfx hgx => (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1)
+    hsimple_f hsimple_g hdisj hcross
 
-theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
+theorem of_left_sub_right_upper_of_right_le_left
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
+    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 2)
     (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
     LeftRootCountBranch f g r s := by
@@ -1391,8 +1436,20 @@ theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
           (f.roots.filter (x < ·)).card := by
       exact_mod_cast hle x hx hfx hgx
     linarith
-  · have hbounds := hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx
-    linarith
+  · exact hupper x hfx hgx
+
+theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
+    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hcount : RootCountCompatible f g)
+    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
+    LeftRootCountBranch f g r s :=
+  of_left_sub_right_upper_of_right_le_left hf_ne hg_ne hr hs hlargest
+    (fun x hfx hgx => by
+      have hbounds := hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx
+      linarith)
+    hle
 
 /-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
 for `(f, g)`.  The extra strict inequality supplies the strict largest-root
