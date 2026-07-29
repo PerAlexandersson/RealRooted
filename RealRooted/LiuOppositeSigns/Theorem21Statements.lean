@@ -840,11 +840,11 @@ theorem theorem21RootCountBranches_of_crossOwned
     (fun _ hc => hsimple_g.roots_count_eq_one hc)
     hno hcross
 
-/-- Opposite-sign caller boundary for the finite Liu count descent from the
-one-sided strict-upper root-count bounds used by the branch proof.  The raw
-largest-root witnesses and multiplicity-one root-count assumptions are supplied
-from nonconstant splitting endpoints and `HasSimpleRoots`; the remaining
-analytic input is the bundled `CrossOwnedNotOddGaps` ownership predicate. -/
+/-- Caller boundary for the finite Liu count descent from stronger one-sided
+strict-upper `≤ 1` root-count bounds.  The raw largest-root witnesses and
+multiplicity-one root-count assumptions are supplied from nonconstant splitting
+endpoints and `HasSimpleRoots`.  Prefer `theorem21RootCountBranches_of_crossOwned`
+when the available input is the cross-owned finite-gap predicate. -/
 theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hf : f.Splits) (hg : g.Splits)

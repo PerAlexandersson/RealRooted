@@ -2226,6 +2226,19 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
 
 end RightRootCountBranch
 
+/-- Choose Liu's deletion branch from the two possible largest-root
+orientations.  If `s ≤ r`, use the supplied left branch for `(f, g)`; if
+`r < s`, use the supplied left branch for `(g, f)` and swap it to a right
+branch. -/
+theorem theorem21RootCountBranches_of_leftBranch_orientations
+    {f g : ℝ[X]} {r s : ℝ}
+    (hfg : s ≤ r → LeftRootCountBranch f g r s)
+    (hgf : r < s → LeftRootCountBranch g f s r) :
+    theorem21RootCountBranches f g := by
+  rcases le_or_gt s r with hsr | hrs
+  · exact theorem21RootCountBranches_of_left (hfg hsr)
+  · exact theorem21RootCountBranches_of_right ((hgf hrs).toRightBranch_symm_of_lt hrs)
+
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
 Liu's largest-root deletion branch predicate.  In the larger-largest-root
 orientation, the finite descent proves the `0..2` original strict-upper window
@@ -2237,22 +2250,21 @@ theorem theorem21RootCountBranches_of_crossOwned_consecutive_roots
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
     (hcross : CrossOwnedNotOddGaps f g) :
-    theorem21RootCountBranches f g := by
-  rcases le_or_gt s r with hsr | hrs
-  · exact theorem21RootCountBranches_of_left <|
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_leftBranch_orientations (r := r) (s := s)
+    (fun hsr =>
       LeftRootCountBranch.of_crossOwned_consecutive_roots
-        hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross
-  · have hleft : LeftRootCountBranch g f s r :=
+        hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
+    (fun hrs =>
       LeftRootCountBranch.of_crossOwned_consecutive_roots
         hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f
-        (fun c hgc hfc => hdisj c hfc hgc) hcross.symm
-    exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
+        (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
 
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots and
-one-sided strict-upper root-count bounds to Liu's largest-root deletion branch
-predicate.  The analytic input is bundled in `CrossOwnedNotOddGaps`; this
-theorem only chooses the larger largest root and feeds the count descent in the
-corresponding orientation. -/
+one-sided strict-upper root-count bounds to Liu's largest-root deletion branch.
+This route requires stronger one-sided `≤ 1` hypotheses than the general
+cross-owned count-window theorem
+`theorem21RootCountBranches_of_crossOwned_consecutive_roots`. -/
 theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
@@ -2267,19 +2279,20 @@ theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
     (hcross : CrossOwnedNotOddGaps f g) :
     theorem21RootCountBranches f g := by
-  rcases le_or_gt s r with hsr | hrs
-  · exact theorem21RootCountBranches_of_left <|
+  refine theorem21RootCountBranches_of_leftBranch_orientations (r := r) (s := s) ?_ ?_
+  · intro hsr
+    exact
       LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
         hf_ne hg_ne hr hs hsr hupper_fg
         (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
           hf_ne hg_ne hr hs hsr hupper_fg hsimple_f hsimple_g hdisj hcross)
-  · have hleft : LeftRootCountBranch g f s r :=
+  · intro hrs
+    exact
       LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
         hg_ne hf_ne hs hr hrs.le hupper_gf
         (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
           hg_ne hf_ne hs hr hrs.le hupper_gf hsimple_g hsimple_f
           (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
-    exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
 
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
 Liu's largest-root deletion branch predicate.  Compatible root counts supply the
