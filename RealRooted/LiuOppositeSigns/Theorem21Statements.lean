@@ -1076,51 +1076,6 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
         (hno.rightFamily_not_isRoot_of_right_root hgb))
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from
-strict gap-wide crossing-parameter separation.  In a same-`f` endpoint gap, all
-positive crossings through the gap are required to occur below `νL x`; in a
-same-`g` endpoint gap, all positive crossings are required to occur above
-`νR x`.  This is only the algebraic bridge from those strict inequalities to
-`OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo`; it does not prove
-the gap-wide separation itself. -/
-theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_strict_gap_parameter_bounds
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) (νL νR : ℝ → ℝ)
-    (hνL_pos : ∀ x : ℝ, 0 < νL x)
-    (hνL_large : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL x)
-    (hdegL : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
-      ∀ τ ∈ Set.Icc μ (νL x),
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hνL_gap_large : ∀ x a b z μ : ℝ,
-      a < x → x < b → a < z → z < b → f.IsRoot a → f.IsRoot b →
-      (∀ w : ℝ, a < w → w < b → ¬ f.IsRoot w ∧ ¬ g.IsRoot w) →
-      0 < μ → (f + C μ * g).IsRoot z → μ < νL x)
-    (hνR_pos : ∀ x : ℝ, 0 < νR x)
-    (hνR_small : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR x ≤ μ)
-    (hdegR : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
-      ∀ τ ∈ Set.Icc (νR x) μ,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hνR_gap_small : ∀ x a b z μ : ℝ,
-      a < x → x < b → a < z → z < b → g.IsRoot a → g.IsRoot b →
-      (∀ w : ℝ, a < w → w < b → ¬ f.IsRoot w ∧ ¬ g.IsRoot w) →
-      0 < μ → (f + C μ * g).IsRoot z → νR x < μ) :
-    CrossOwnedNotOddGaps f g := by
-  refine hsgn.crossOwnedNotOddGaps_of_no_isRoot_Ioo
-    hfg hno hf hg νL νR hνL_pos hνL_large hdegL ?_
-    hνR_pos hνR_small hdegR ?_
-  · intro x a b hax hxb hfa hfb hgap z haz hzb hroot
-    have hroot_right : (f + C (νL x) * g).IsRoot z :=
-      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
-        (μ := νL x) (x := z) (ne_of_gt (hνL_pos x))).2 hroot
-    exact (lt_irrefl (νL x))
-      (hνL_gap_large x a b z (νL x) hax hxb haz hzb hfa hfb hgap
-        (hνL_pos x) hroot_right)
-  · intro x a b hax hxb hga hgb hgap z haz hzb hroot
-    exact (lt_irrefl (νR x))
-      (hνR_gap_small x a b z (νR x) hax hxb haz hzb hga hgb hgap
-        (hνR_pos x) hroot)
-
-/-- Supplier for the parity-guarded consecutive-root ownership input from
 endpoint count equalities.  This is a convenient specialization of
 `OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs`; later
 analytic proofs should target the count-difference boundary directly unless
