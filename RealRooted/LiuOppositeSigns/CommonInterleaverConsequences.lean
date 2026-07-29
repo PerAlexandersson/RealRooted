@@ -229,37 +229,24 @@ theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches_nonconstan
   (theorem21DeletionPairCommonInterleaverIffNonconstant_of_theorem21CompatibleRootCount
     h) f g hf hg hsgn hf_deg hg_deg
 
-/-- Same-degree common-interleaver endpoint from the Liu-side positive-split
-root-count leaf. -/
-theorem sameDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount
-    (hpack : positiveSplitSameDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-    |>.pairHasCommonInterleaver_of_sameDegree hdeg
-
-/-- Succ-degree common-interleaver endpoint from the Liu-side positive-split
-root-count leaf. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount
-    (hpack : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_split : f.Splits :=
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
-      hf_pos hg_pos hfnn hgnn hfg hdeg
-  exact (hpack hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
-    |>.pairHasCommonInterleaver_of_succDegree hdeg
-
 /-- The two positive-split root-count leaves supply the existing
 positive-leading compatibility-to-common-interleaver bridge. -/
 theorem
     compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
     (hsame : positiveSplitSameDegreeRootCountAboveNonRootStatement)
     (hsucc : positiveSplitSuccDegreeRootCountAboveNonRootStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_positiveSplitRootCount hsucc)
+    CompatiblePairHasCommonInterleaverStatement := by
+  refine compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    ?hsame ?hsucc
+  · intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+    exact (hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+      |>.pairHasCommonInterleaver_of_sameDegree hdeg
+  · intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+    have hf_split : f.Splits :=
+      PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+        hf_pos hg_pos hfnn hgnn hfg hdeg
+    exact (hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+      |>.pairHasCommonInterleaver_of_succDegree hdeg
 
 /-- The strict-upper non-root count leaves also route through the
 positive-split package before reaching the common-interleaver endpoint. -/
