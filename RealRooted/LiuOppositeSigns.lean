@@ -504,6 +504,14 @@ theorem RootCountCompatible.rootCountAbove_abs_sub_le_one_of_nonRoot
     ← rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot hq_ne hqx]
   exact h x
 
+theorem RootCountCompatible.rootCountAbove_left_sub_le_one_of_nonRoot
+    {p q : ℝ[X]} (h : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {x : ℝ}
+    (hpx : ¬ p.IsRoot x) (hqx : ¬ q.IsRoot x) :
+    ((p.roots.filter (x < ·)).card : ℤ) -
+        (q.roots.filter (x < ·)).card ≤ 1 :=
+  (abs_le.mp (h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx)).2
+
 theorem RootCountCompatible.rootCountAbove_bounds_of_nonRoot
     {p q : ℝ[X]} (h : RootCountCompatible p q)
     (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {x : ℝ}
@@ -511,10 +519,9 @@ theorem RootCountCompatible.rootCountAbove_bounds_of_nonRoot
     ((p.roots.filter (x < ·)).card : ℤ) -
         (q.roots.filter (x < ·)).card ≤ 1 ∧
       ((q.roots.filter (x < ·)).card : ℤ) -
-        (p.roots.filter (x < ·)).card ≤ 1 := by
-  have hx := h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx
-  rw [abs_le] at hx
-  exact ⟨hx.2, by linarith [hx.1]⟩
+        (p.roots.filter (x < ·)).card ≤ 1 :=
+  ⟨h.rootCountAbove_left_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx,
+    h.symm.rootCountAbove_left_sub_le_one_of_nonRoot hq_ne hp_ne hqx hpx⟩
 
 /-- A root-count-compatible bound at the upper endpoint of `(a, b]` shifts to
 the lower endpoint after subtracting the explicit roots in the window. -/
@@ -1376,7 +1383,8 @@ theorem rootCountAbove_owner_diff_of_crossOwned_consecutive_roots
                 (g.roots.filter (x < ·)).card = 0)) :=
   owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
     hf_ne hg_ne hr hs hlargest
-    (fun _ hfx hgx => (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1)
+    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
+      hf_ne hg_ne hfx hgx)
     hsimple_f hsimple_g hdisj hcross
 
 theorem right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
@@ -1414,7 +1422,8 @@ theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
       (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card :=
   right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
     hf_ne hg_ne hr hs hlargest
-    (fun _ hfx hgx => (hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx).1)
+    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
+      hf_ne hg_ne hfx hgx)
     hsimple_f hsimple_g hdisj hcross
 
 theorem of_left_sub_right_upper_of_right_le_left
@@ -1447,7 +1456,8 @@ theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
     LeftRootCountBranch f g r s :=
   of_left_sub_right_upper_of_right_le_left hf_ne hg_ne hr hs hlargest
     (fun x hfx hgx => by
-      have hbounds := hcount.rootCountAbove_bounds_of_nonRoot hf_ne hg_ne hfx hgx
+      have hleft := hcount.rootCountAbove_left_sub_le_one_of_nonRoot
+        hf_ne hg_ne hfx hgx
       linarith)
     hle
 
