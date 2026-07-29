@@ -473,6 +473,25 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
     rw [hp_eq, abs_neg]
   exact (not_lt_of_ge (le_of_eq hp_abs_eq)) hμq_abs_lt
 
+/-- If `q` has degree at most that of a nonzero polynomial `p`, then on a
+sufficiently small nonnegative parameter interval the right-family perturbation
+has the same degree as the zero-parameter member. -/
+lemma exists_pos_forall_natDegree_add_C_mul_eq_at_zero_on_Icc_of_natDegree_le
+    {p q : ℝ[X]} (hp : p ≠ 0) (hdeg : q.natDegree ≤ p.natDegree) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ ν : ℝ, ν < ε →
+      ∀ η ∈ Set.Icc (0 : ℝ) ν,
+        (p + C η * q).natDegree = (p + C (0 : ℝ) * q).natDegree := by
+  rcases exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le hp hdeg with
+    ⟨ε, hε_pos, hε⟩
+  refine ⟨ε, hε_pos, ?_⟩
+  intro ν hνε η hη
+  have hηε : η < ε := lt_of_le_of_lt hη.2 hνε
+  have hηdeg : (p + C η * q).natDegree = p.natDegree :=
+    hε η hη.1 hηε
+  have hzero : (p + C (0 : ℝ) * q).natDegree = p.natDegree := by
+    simp
+  exact hηdeg.trans hzero.symm
+
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
