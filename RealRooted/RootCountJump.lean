@@ -420,6 +420,24 @@ theorem not_card_filter_gt_add_two_le_of_card_filter_gt_eq
     exact hdrop
   lia
 
+/-- A strict-upper count drop by at least two is impossible if the
+strict-upper count difference against a comparison multiset is stable across an
+interval where the comparison count is constant. -/
+theorem not_card_filter_gt_add_two_le_of_card_filter_gt_sub_eq
+    {α : Type*} [LinearOrder α] {s t : Multiset α} {a b : α}
+    (ht : (t.filter (a < ·)).card = (t.filter (b < ·)).card)
+    (hsub : ((s.filter (a < ·)).card : ℤ) - (t.filter (a < ·)).card =
+      ((s.filter (b < ·)).card : ℤ) - (t.filter (b < ·)).card) :
+    ¬ ((s.filter (b < ·)).card + 2 ≤ (s.filter (a < ·)).card) := by
+  intro hdrop
+  have ht_int : ((t.filter (a < ·)).card : ℤ) =
+      ((t.filter (b < ·)).card : ℤ) := by
+    exact_mod_cast ht
+  have hdrop_int : ((s.filter (b < ·)).card : ℤ) + 2 ≤
+      ((s.filter (a < ·)).card : ℤ) := by
+    exact_mod_cast hdrop
+  linarith
+
 /-- A strict-upper root-count drop by at least two is impossible if the two
 endpoint counts agree with those of a polynomial having no roots in `(a, b]`. -/
 theorem not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
@@ -433,6 +451,23 @@ theorem not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
       (q.roots.filter (b < ·)).card :=
     card_roots_filter_gt_eq_of_no_isRoot_Ioc (p := q) hab hq_no
   exact not_card_filter_gt_add_two_le_of_card_filter_gt_eq hq_eq ha hb
+
+/-- A strict-upper root-count drop by at least two is impossible if the
+strict-upper root-count difference against a polynomial with no roots in
+`(a, b]` is stable across the endpoints. -/
+theorem not_card_roots_filter_gt_add_two_le_of_sub_eq_no_isRoot_Ioc
+    {p q : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hq_no : ∀ x : ℝ, a < x → x ≤ b → ¬ q.IsRoot x)
+    (hsub : ((p.roots.filter (a < ·)).card : ℤ) -
+        (q.roots.filter (a < ·)).card =
+      ((p.roots.filter (b < ·)).card : ℤ) -
+        (q.roots.filter (b < ·)).card) :
+    ¬ ((p.roots.filter (b < ·)).card + 2 ≤
+      (p.roots.filter (a < ·)).card) := by
+  have hq_eq : (q.roots.filter (a < ·)).card =
+      (q.roots.filter (b < ·)).card :=
+    card_roots_filter_gt_eq_of_no_isRoot_Ioc (p := q) hab hq_no
+  exact not_card_filter_gt_add_two_le_of_card_filter_gt_sub_eq hq_eq hsub
 
 /-- A nonzero splitting polynomial with same-sign endpoint values has an even
 number of roots in the open interval between those endpoints. -/
