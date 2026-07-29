@@ -3414,7 +3414,7 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_named)
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_negative_quadratic_den_coeff_auto_split_scalar_named)
+syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_auto_split" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
@@ -3492,7 +3492,7 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_spli
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_negative_quadratic_den_coeff_realrooted_auto_scalar_named)
+syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
@@ -4170,7 +4170,7 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_neg_C_mul_one_add_X_den_coeff_nonneg_scalar_named)
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
@@ -4197,7 +4197,7 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_nam
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_neg_C_mul_one_add_X_den_coeff_nonneg_auto_scalar_named)
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
@@ -4224,7 +4224,7 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonn
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_neg_C_mul_one_add_X_den_coeff_realrooted_nonneg_scalar_named)
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
@@ -4251,7 +4251,8 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonn
     "no_common_roots" ":=" term :
   tactic
 
-syntax (name := rr_lw_neg_C_mul_one_add_X_realrooted_auto_scalar_named)
+syntax
+  (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
