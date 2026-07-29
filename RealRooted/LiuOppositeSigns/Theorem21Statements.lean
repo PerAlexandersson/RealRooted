@@ -111,6 +111,26 @@ theorem NoCommonRoots.exists_large_add_left_inv_not_isRoot_Icc_of_left_roots
   intro μ hμ_pos hμ_root
   exact le_of_lt (by simpa [abs_of_pos hμ_pos] using hν_bound μ x hx hμ_root)
 
+/-- Same-`g` gap parameter choice for the Liu odd-interval argument.  If the
+endpoints of `[a, b]` are roots of `g` and `f` is root-free in the open gap,
+then there is a small positive parameter `ν` which is below every positive
+crossing parameter at a sample point in the interval, while `f + C ν * g` is
+root-free on the whole closed gap. -/
+theorem NoCommonRoots.exists_small_add_right_not_isRoot_Icc_of_right_roots
+    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b x : ℝ}
+    (hab : a ≤ b) (hx : x ∈ Set.Icc a b)
+    (hga : g.IsRoot a) (hgb : g.IsRoot b)
+    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z) :
+    ∃ ν : ℝ, 0 < ν ∧
+      (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → ν ≤ μ) ∧
+      ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
+  obtain ⟨ν, hν_pos, hν_bound, hν_no⟩ :=
+    exists_small_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc (g := g) hab
+      (h.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no)
+  refine ⟨ν, hν_pos, ?_, hν_no⟩
+  intro μ hμ_pos hμ_root
+  exact le_of_lt (by simpa [abs_of_pos hμ_pos] using hν_bound μ x hx hμ_root)
+
 /-- For splitting polynomials with opposite leading signs, odd upper
 root-count difference at a common non-root is equivalent to the absence of a
 positive right-pencil member through that threshold. -/

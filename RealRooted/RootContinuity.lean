@@ -444,6 +444,27 @@ theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
   rw [div_le_iff₀ hden_pos]
   exact le_trans hmin_le (mul_le_mul_of_nonneg_left hgz_le (abs_nonneg μ))
 
+/-- If the left polynomial is root-free on a compact interval, then there is a
+small positive parameter whose right-family member is root-free on the interval,
+and which is strictly below the absolute value of every crossing parameter in
+the interval. -/
+theorem exists_small_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
+    ∃ ν : ℝ, 0 < ν ∧
+      (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → ν < |μ|) ∧
+      ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
+  obtain ⟨m, hm_pos, hm_bound⟩ :=
+    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
+  refine ⟨m / 2, by positivity, ?_, ?_⟩
+  · intro μ z hz hroot
+    have hm_le : m ≤ |μ| := hm_bound μ z hz hroot
+    linarith
+  · intro z hz hroot
+    have hm_le : m ≤ |m / 2| := hm_bound (m / 2) z hz hroot
+    rw [abs_of_pos (by positivity : 0 < m / 2)] at hm_le
+    linarith
+
 /-- If `f` is root-free on a compact interval, then every sufficiently small
 right-family perturbation `f + C μ * g` is root-free on that interval. -/
 theorem exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc
