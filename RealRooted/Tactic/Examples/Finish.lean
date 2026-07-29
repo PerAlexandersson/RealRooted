@@ -648,6 +648,36 @@ example {P : Nat → ℝ[X]} {n : Nat}
     P n ≠ 0 ∧ (P n).Splits := by
   rr_finish
 
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_nonzero using hprec
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    P n ≠ 0 := by
+  rr_nonzero using hprec
+
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_splits using hprec
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (P n).Splits := by
+  rr_splits using hprec
+
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_zero_or_splits using hprec
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    P n ≠ 0 ∧ (P n).Splits := by
+  rr_realrooted using hprec
+
 example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
