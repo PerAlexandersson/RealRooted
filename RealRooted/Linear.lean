@@ -516,6 +516,62 @@ lemma forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
   rw [Polynomial.natDegree_add_C_mul_of_natDegree_lt (hτ τ hτmem) hdeg,
     Polynomial.natDegree_add_C_mul_of_natDegree_lt hκ hdeg]
 
+/-- A real parameter avoids canceling `a + t * b` exactly when it is not the
+unique cancellation value `-a / b`. -/
+private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :
+    a + t * b ≠ 0 ↔ t ≠ -a / b := by
+  constructor
+  · intro hne ht
+    apply hne
+    rw [ht]
+    field_simp [hb]
+    ring
+  · intro ht hzero
+    apply ht
+    have ht_eq : t = -a / b := by
+      field_simp [hb]
+      linarith
+    exact ht_eq
+
+/-- If two summands have the same degree and the leading term never cancels on
+a parameter set, then every member of that set has the same degree as any
+chosen non-canceling parameter member. -/
+lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_add_ne_zero
+    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
+    (hdeg : p.natDegree = q.natDegree)
+    (hκ : p.leadingCoeff + κ * q.leadingCoeff ≠ 0)
+    (hτ : ∀ τ ∈ s, p.leadingCoeff + τ * q.leadingCoeff ≠ 0) :
+    ∀ τ ∈ s,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
+  intro τ hτmem
+  have hle : q.natDegree ≤ p.natDegree := by
+    rw [← hdeg]
+  have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
+    rw [hdeg]
+    rfl
+  rw [Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hle,
+    Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hle]
+  · simpa [hqcoeff] using hκ
+  · simpa [hqcoeff] using hτ τ hτmem
+
+/-- In the same-degree case, the only leading-term cancellation parameter is
+`-p.leadingCoeff / q.leadingCoeff`.  Away from that value, all right-family
+members have the same degree.  If `p = 0`, this says exactly that the
+nonzero polynomial `q` is scaled by nonzero parameters. -/
+lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
+    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
+    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
+    (hκ : κ ≠ -p.leadingCoeff / q.leadingCoeff)
+    (hτ : ∀ τ ∈ s, τ ≠ -p.leadingCoeff / q.leadingCoeff) :
+    ∀ τ ∈ s,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
+  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq
+  apply
+    forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_add_ne_zero hdeg
+  · exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr hκ
+  · intro τ hτmem
+    exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr (hτ τ hτmem)
+
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
