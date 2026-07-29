@@ -704,10 +704,8 @@ theorem isRealRooted_of_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence
-    (B := fun n => -(C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_C_nonpos_of_nonneg (hc n))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_const_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for normalized `C (-c_n)` lag. -/
 theorem prec_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
@@ -734,10 +732,8 @@ theorem isRealRooted_of_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence
-    (B := fun n => C (-(c n))) hbase hpos
-    (fun n _ _ => eval_C_neg_nonpos_of_nonneg (hc n))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_const_C_neg_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative-square
 lag. -/
@@ -767,10 +763,8 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence
-    (B := fun n => -(C (c n)) * (q n) ^ 2) hbase hpos
-    (fun n _ _ => eval_neg_C_mul_sq_nonpos_of_nonneg (hc n))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_square_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level negative-square lag with unit scalar coefficient.
 
@@ -799,9 +793,8 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_negative_square_lag_sequence
-    (A := A) (q := q) (c := fun _ => 1) hbase hpos oneNonnegSeq
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_square_lag_sequence_unit hbase hpos hrec hdeg_succ hno
 
 /-- Denominator-fused negative-square Liu--Wang induction for split raw
 coefficients.
@@ -886,10 +879,8 @@ theorem isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence
-    (B := fun n => -(X ^ 2 + C (b n) * X + C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_monic_quadratic_nonpos_of_discrim_nonpos (hdisc n))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_monic_quadratic_lag_sequence hbase hpos hdisc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for a globally nonpositive quadratic
 lag with a non-monic leading coefficient. -/
@@ -927,11 +918,9 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence
-    (B := fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_quadratic_nonpos_of_discrim_nonpos
-      (ha n) (hc n) (hdisc n))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_negative_quadratic_lag_sequence
+      hbase hpos ha hc hdisc hrec hdeg_succ hno
 
 /-- Denominator-fused Liu--Wang induction for a raw split non-monic
 quadratic lag.
@@ -1079,9 +1068,8 @@ theorem isRealRooted_of_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_t_lag_sequence
-    (A := A) (c := fun _ => 1) hbase hpos hnonneg oneNonnegSeq
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_positive_X_lag_sequence hbase hpos hnonneg hrec hdeg_succ hno
 
 /-- Sequence-level affine half-line lag induction.
 
@@ -1267,9 +1255,8 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_affine_lag_sequence
-    (c := fun _ => 1) hbase hpos oneNonnegSeq hroot_upper
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_add_X_lag_sequence hbase hpos hroot_upper hrec hdeg_succ hno
 
 /-- Sequence-level unit affine lag `a_n+t` with automated shifted root
 bound. -/
@@ -1299,9 +1286,9 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-    (c := fun _ => 1) hbase hpos oneNonnegSeq hshift_nonneg
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
+      hbase hpos hshift_nonneg hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for lags controlled on the inner
 window `[-1, 0]`.
@@ -1383,10 +1370,9 @@ theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1421,11 +1407,9 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1458,11 +1442,9 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X * (1 - X) * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi =>
-      eval_X_mul_one_sub_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1501,13 +1483,9 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_n
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * X * (1 - X) * (1 + X)) hbase hpos hnonneg
-    hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_mul_one_sub_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
-        (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X-X^3` lag controlled on the inner root window `[-1,0]`. -/
 theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -1538,10 +1516,9 @@ theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X - X ^ 3) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n (X-X^3)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1576,11 +1553,9 @@ theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * (X - X ^ 3)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_sub_X_pow_three_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for lags controlled on an explicit
 root interval.  This is for windows narrower than the half-line, where both
@@ -1613,9 +1588,9 @@ theorem isRealRooted_of_lw_interval_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_nonpos_lag_sequence hbase hpos
-    (fun n r hr => hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
-    hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_interval_lag_sequence
+      hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno
 
 /-- Sequence-level `(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
@@ -1651,12 +1626,9 @@ theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_interval_lag_sequence
-    (B := fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
-    hroot_lower hroot_upper
-    (fun _ _ _ hlo hhi =>
-      eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+      hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno
 
 /-- Sequence-level `c_n(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
@@ -1695,13 +1667,9 @@ theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_interval_lag_sequence
-    (B := fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
-    hroot_lower hroot_upper
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
-        (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+      hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno
 
 /-- Sequence-level `-c_n(a_n+b_n X)` lag controlled on the inner root window
 `[-1,0]`, in the common monotone-affine case `0 <= b_n <= a_n`. -/
@@ -1744,13 +1712,9 @@ theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (C (a n) + C (b n) * X))
-    hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo _ =>
-      eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
-        (hc n) (hb n) (hba n) hlo)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `-c_n(1+X)` lag controlled on `[-1,0]`. -/
 theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1784,11 +1748,9 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo _ => eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one
-      (hc n) hlo)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Denominator-fused `-c_n(1+X)` inner-window Liu--Wang induction.
 
@@ -1889,16 +1851,9 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_co
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (1 + C (2 : ℝ) * X))
-    hbase hpos hnonneg
-    (fun n r hr => by
-      have hhalf := hroot_lower n r hr
-      linarith)
-    (fun n r hr _ _ =>
-      eval_neg_C_mul_one_add_two_mul_X_nonpos_of_nonneg_of_ge_neg_half
-        (hc n) (hroot_lower n r hr))
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X^2-1` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1930,10 +1885,9 @@ theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X ^ 2 - 1) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n(X^2-1)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1968,11 +1922,9 @@ theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * (X ^ 2 - 1)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_sq_sub_one_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X Q_n` positive-lag Liu--Wang induction.
 
@@ -2101,8 +2053,8 @@ theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_X_mul_lag_sequence
-    hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_tR_lag_sequence hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
 
 /-- Scalar Family E sequence wrapper for strict-degree
 `c_n t R_n(t)` lag recurrences. -/
@@ -2135,8 +2087,8 @@ theorem isRealRooted_of_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
-    hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_c_tR_lag_sequence hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
 
 /-- Sequence wrapper for strict-degree Family E `t(1-t)` lag recurrences. -/
 theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
@@ -2317,8 +2269,9 @@ theorem isRealRooted_of_lw_current_CX_positive_t_lag_sequence {P : Nat → ℝ[X
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_t_lag_sequence
-    (A := fun n => C (a n) * X) hbase hpos hnonneg hc hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_current_CX_positive_t_lag_sequence
+      hbase hpos hnonneg hc hrec hdeg_succ hno
 
 /-- Sequence-level positive `t`-lag induction for the exact current factor
 `X`.  This avoids normalizing unit-current OEIS recurrences to
@@ -2350,8 +2303,8 @@ theorem isRealRooted_of_lw_current_X_positive_t_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_t_lag_sequence
-    (A := fun _ => X) hbase hpos hnonneg hc hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_current_X_positive_t_lag_sequence hbase hpos hnonneg hc hrec hdeg_succ hno
 
 /-- Sequence-level positive `t`-lag induction for current factor `1+X`. -/
 theorem prec_lw_current_one_add_X_positive_t_lag_sequence {P : Nat → ℝ[X]}
@@ -2381,8 +2334,9 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_positive_t_lag_sequence
-    (A := fun _ => (1 + X : ℝ[X])) hbase hpos hnonneg hc hrec hdeg_succ hno
+  isRealRooted_of_prec_chain_from_step <|
+    prec_lw_current_one_add_X_positive_t_lag_sequence
+      hbase hpos hnonneg hc hrec hdeg_succ hno
 
 namespace Tactic
 
