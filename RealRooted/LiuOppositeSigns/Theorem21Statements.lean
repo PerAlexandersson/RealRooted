@@ -914,10 +914,11 @@ interval has both endpoints in the combined root set and the strict-upper
 root-count difference is not odd at a sample point, then the endpoints are
 cross-owned: one belongs to `f` and the other to `g`.
 
-The analytic interval hypotheses discharge the endpoint count equalities needed
-by the same-owner cases, which are then handled by
-`OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right` and
-`OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left`. -/
+The analytic interval hypotheses discharge endpoint count equalities, then the
+same-owner cases are routed through
+`OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_counts` and the
+endpoint count-difference form
+`OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_count_diffs`. -/
 theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
@@ -1010,9 +1011,10 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs
     (hright_count_sub x a b)
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from
-endpoint count equalities.  This is the analytic boundary that later proofs
-should target: the same-owner cases only need strict-upper count equality at
-the two endpoint roots after transporting to a suitable parameter. -/
+endpoint count equalities.  This is a convenient specialization of
+`OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs`; later
+analytic proofs should target the count-difference boundary directly unless
+they naturally produce exact endpoint counts. -/
 theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_counts
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
