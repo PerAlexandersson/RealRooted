@@ -399,11 +399,21 @@ theorem sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
     exact_mod_cast hG_le_F_nat
   constructor <;> lia
 
-/-- The #41 common-non-root upper root-count target follows from the #42
-analytic count spine. -/
-theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement :=
-  fun f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno x hxf hxg => by
+/-- Same-degree strict-upper root-count bounds from positive-combination
+real-rootedness and no common roots.
+
+This is the nonnegative-coefficient-free analytic count spine used by the
+same-degree Liu bridge. -/
+theorem sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  intro x hxf hxg
   by_cases hcross : ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x
   · exact
       sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
@@ -411,6 +421,14 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
   · exact
       sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
         hf_pos hg_pos hfg hdeg hxf hxg hcross
+
+/-- The #41 common-non-root upper root-count target follows from the #42
+analytic count spine. -/
+theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
+    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement :=
+  fun _ _ hf_pos hg_pos _hfnn _hgnn hfg hdeg hno =>
+    sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos hfg hdeg hno
 
 /-- The repaired #41 same-degree pair-interleaver endpoint follows from the
 #42 analytic count spine. -/

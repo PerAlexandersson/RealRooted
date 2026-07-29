@@ -89,6 +89,21 @@ theorem positiveSplitSameDegreeRootCountAboveNonRoot_from_analytic :
   positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
     _root_.RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
 
+/-- A positive-leading same-degree compatible pair with no common roots
+satisfies Liu's root-count compatibility condition. -/
+theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
+    (hcompat : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    RootCountCompatible f g := by
+  have hfg : PosComboRealRooted f g :=
+    hcompat.toPosComboRealRooted hf_pos hg_pos
+  exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+    hf_pos.ne_zero hg_pos.ne_zero
+    (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos hfg hdeg hno)
+
 /-- The common-left-interleaver reduction supplies the positive-split
 successor-degree Liu root-count package. -/
 theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
