@@ -527,20 +527,6 @@ private theorem false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
     (not_card_roots_filter_gt_add_two_le_of_sub_eq_no_isRoot_Ioc
       (p := f + C ν * g) (q := q) hab hq_no_Ioc hsub) hdrop
 
-private theorem false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
-    {f g q : ℝ[X]} {a b ν : ℝ} (hab : a ≤ b)
-    (hq_no : ∀ z ∈ Set.Icc a b, ¬ q.IsRoot z)
-    (hdrop :
-      ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
-        ((f + C ν * g).roots.filter (a < ·)).card)
-    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
-      (q.roots.filter (a < ·)).card)
-    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
-      (q.roots.filter (b < ·)).card) :
-    False := by
-  exact false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
-    hab hq_no hdrop (by rw [ha_eq, hb_eq]; simp)
-
 /-- Same-owner `g`/`g` local count-drop package for Liu's odd-indexed
 interval argument.  Under the endpoint-shaped hypotheses, the unique positive
 right-family crossing polynomial has strict-upper root count drop at least two
@@ -1142,27 +1128,11 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
     (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
     CrossOwnedNotOddGaps f g := by
-  refine hsgn.crossOwnedNotOddGaps_of_endpoint_counts
-    hfg hno hf hg νL νR hνL_pos hνL_large hdegL ?_
-    hνR_pos hνR_small hdegR ?_
-  · intro x c hfc
-    have hsplitL_inv : ∀ η ∈ Set.Icc (0 : ℝ) (νL x)⁻¹,
-        (g + C η * f).Splits :=
-      fun η hη =>
-        PosComboRealRooted.splits_add_right_of_nonneg
-          (PosComboRealRooted.comm hfg) hg hη.1
-    exact rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
-      (f := g) (g := f) (μ := (νL x)⁻¹) (x := c)
-      (inv_pos.mpr (hνL_pos x)) (hdegL_inv x) hsplitL_inv
-      (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfc)
-  · intro x c hgc
-    have hsplitR : ∀ η ∈ Set.Icc (0 : ℝ) (νR x),
-        (f + C η * g).Splits :=
-      fun η hη => PosComboRealRooted.splits_add_right_of_nonneg hfg hf hη.1
-    exact rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
-      (f := f) (g := g) (μ := νR x) (x := c) (hνR_pos x)
-      (hdegR_zero x) hsplitR
-      (fun η _ => hno.rightFamily_not_isRoot_of_right_root hgc)
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  exact hsgn.cross_owner_roots_of_not_odd
+    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
+    (hνL_pos x) (hνL_large x) (hdegL x) (hdegL_inv x)
+    (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)
 
 /-- Opposite-sign caller boundary for the finite Liu count descent from the
 cross-owned finite-gap input.  This avoids asking for the stronger original
@@ -1264,8 +1234,8 @@ theorem OppositeLeadingSigns.false_of_right_roots_add_right_large_count_eq_left
   have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
   have hf_no_Icc : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z :=
     hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no
-  exact false_of_add_right_count_drop_of_count_eq_no_isRoot_Icc
-    hab hf_no_Icc hdropν ha_eq hb_eq
+  exact false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
+    hab hf_no_Icc hdropν (by rw [ha_eq, hb_eq]; simp)
 
 /-- Multiplying both entries by the same splitting factor preserves
 compatibility. -/
