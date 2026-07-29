@@ -7,6 +7,14 @@ public section
 
 namespace Polynomial
 
+/-- If `p` has strictly larger degree than `q`, then `p + C a * q` has the
+same degree as `p`. -/
+theorem natDegree_add_C_mul_eq_left_of_natDegree_lt
+    {R : Type*} [Semiring R] {p q : R[X]} {a : R}
+    (hdeg : q.natDegree < p.natDegree) :
+    (p + C a * q).natDegree = p.natDegree :=
+  natDegree_add_eq_left_of_natDegree_lt ((natDegree_C_mul_le a q).trans_lt hdeg)
+
 /-- If `g` has strictly larger degree than `f`, then `f + C a * g` has the
 same degree as `g`, provided `a ≠ 0`. -/
 theorem natDegree_add_C_mul_of_natDegree_lt {R : Type*} [Semiring R] [NoZeroDivisors R]

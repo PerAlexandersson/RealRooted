@@ -492,6 +492,30 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_at_zero_on_Icc_of_natDegree_le
     simp
   exact hηdeg.trans hzero.symm
 
+/-- If the left summand has strictly larger degree, then every member of a
+right-family perturbation set has the same degree as any chosen parameter
+member. -/
+lemma forall_mem_natDegree_add_C_mul_eq_left_of_natDegree_lt
+    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ} (hdeg : q.natDegree < p.natDegree) :
+    ∀ τ ∈ s,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
+  intro τ _
+  rw [Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg,
+    Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg]
+
+/-- If the right summand has strictly larger degree, then every nonzero member
+of a right-family perturbation set has the same degree as any chosen
+nonzero parameter member. -/
+lemma forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
+    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
+    (hdeg : p.natDegree < q.natDegree)
+    (hκ : κ ≠ 0) (hτ : ∀ τ ∈ s, τ ≠ 0) :
+    ∀ τ ∈ s,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
+  intro τ hτmem
+  rw [Polynomial.natDegree_add_C_mul_of_natDegree_lt (hτ τ hτmem) hdeg,
+    Polynomial.natDegree_add_C_mul_of_natDegree_lt hκ hdeg]
+
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
