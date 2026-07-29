@@ -679,6 +679,96 @@ example {P : Nat → ℝ[X]} {n : Nat}
   rr_realrooted using hprec
 
 example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, A n ≠ 0 := by
+  rr_nonzero using hprec
+
+example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, B n ≠ 0 := by
+  rr_nonzero using hprec
+
+example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, (A n).Splits := by
+  rr_splits using hprec
+
+example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, (B n).Splits := by
+  rr_splits using hprec
+
+example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits := by
+  rr_realrooted using hprec
+
+example {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
+  rr_finish using hprec
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_nonzero using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    P n ≠ 0 := by
+  rr_nonzero using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_splits using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    (P n).Splits := by
+  rr_splits using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_zero_or_splits using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    P n ≠ 0 ∧ (P n).Splits := by
+  rr_realrooted using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    P n ≠ 0 := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    (P n).Splits := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    P n ≠ 0 ∧ (P n).Splits := by
+  rr_finish using hinter
+
+example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits := by
@@ -927,6 +1017,26 @@ example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
 
 example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
   rr_prec using hfg
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_prec using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    Prec (P n) (P (n + 1)) := by
+  rr_prec using hinter
+
+example {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_finish using hinter
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    Prec (P n) (P (n + 1)) := by
+  rr_finish using hinter
 
 example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
   rr_finish using hfg
