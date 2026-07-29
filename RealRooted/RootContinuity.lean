@@ -312,6 +312,79 @@ theorem eval_mul_pos_of_forall_not_isRoot_Icc
   intro x hx hx0
   exact hno x hx (by simpa [Polynomial.IsRoot.def] using hx0)
 
+/-- If `g` is root-free on a compact interval, then the parameters for which
+`f + C μ * g` has a root in the interval are bounded in absolute value. -/
+theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| ≤ K := by
+  let ρ : ℝ → ℝ := fun z => - f.eval z / g.eval z
+  have hg_eval_ne : ∀ z ∈ Set.Icc a b, g.eval z ≠ 0 := by
+    intro z hz hzero
+    exact hg_no z hz (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hρ_cont : ContinuousOn ρ (Set.Icc a b) := by
+    have hf_cont : ContinuousOn (fun z : ℝ => - f.eval z) (Set.Icc a b) :=
+      f.continuous.neg.continuousOn
+    have hg_cont : ContinuousOn (fun z : ℝ => g.eval z) (Set.Icc a b) :=
+      g.continuous.continuousOn
+    exact hf_cont.div₀ hg_cont hg_eval_ne
+  obtain ⟨c, _hc, hcmax⟩ :=
+    isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hab) hρ_cont.abs
+  refine ⟨|ρ c| + 1, by positivity, ?_⟩
+  intro μ z hz hroot
+  have hμ_eq : μ = ρ z := by
+    have hzero : f.eval z + μ * g.eval z = 0 := by
+      simpa [Polynomial.IsRoot.def, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
+        using hroot
+    have hgz : g.eval z ≠ 0 := hg_eval_ne z hz
+    have hmul : μ * g.eval z = - f.eval z := by linarith
+    calc
+      μ = (μ * g.eval z) / g.eval z := by field_simp [hgz]
+      _ = - f.eval z / g.eval z := by rw [hmul]
+  calc
+    |μ| = |ρ z| := by rw [hμ_eq]
+    _ ≤ |ρ c| := hcmax hz
+    _ ≤ |ρ c| + 1 := by linarith
+
+/-- If `f` is root-free on a compact interval, then any parameter for which
+`f + C μ * g` has a root in the interval is bounded away from zero. -/
+theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
+    ∃ m : ℝ, 0 < m ∧
+      ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → m ≤ |μ| := by
+  have hF_cont : ContinuousOn (fun z : ℝ => |f.eval z|) (Set.Icc a b) :=
+    f.continuous.continuousOn.abs
+  obtain ⟨c, hc, hcmin⟩ :=
+    isCompact_Icc.exists_isMinOn (Set.nonempty_Icc.mpr hab) hF_cont
+  have hc_pos : 0 < |f.eval c| := by
+    have hne : f.eval c ≠ 0 := by
+      intro hzero
+      exact hf_no c hc (by simpa [Polynomial.IsRoot.def] using hzero)
+    exact abs_pos.mpr hne
+  have hG_cont : ContinuousOn (fun z : ℝ => |g.eval z|) (Set.Icc a b) :=
+    g.continuous.continuousOn.abs
+  obtain ⟨d, _hd, hdmax⟩ :=
+    isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hab) hG_cont
+  refine ⟨|f.eval c| / (|g.eval d| + 1), by positivity, ?_⟩
+  intro μ z hz hroot
+  have hzero : f.eval z + μ * g.eval z = 0 := by
+    simpa [Polynomial.IsRoot.def, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
+      using hroot
+  have hf_eq : f.eval z = - (μ * g.eval z) := by linarith
+  have h_abs_eq : |f.eval z| = |μ| * |g.eval z| := by
+    rw [hf_eq]
+    simp [abs_mul]
+  have hmin_le : |f.eval c| ≤ |μ| * |g.eval z| := by
+    simpa [h_abs_eq] using hcmin hz
+  have hgz_le : |g.eval z| ≤ |g.eval d| + 1 := by
+    have hmax : |g.eval z| ≤ |g.eval d| := hdmax hz
+    linarith
+  have hden_pos : 0 < |g.eval d| + 1 := by positivity
+  rw [div_le_iff₀ hden_pos]
+  exact le_trans hmin_le (mul_le_mul_of_nonneg_left hgz_le (abs_nonneg μ))
+
 /-- Specialization of `eval_endpoint_pos_of_forall_ne_zero` to the affine
 left-family `C t * f + g` used throughout the Chudnovsky--Seymour route. -/
 theorem eval_endpoint_pos_left_family
