@@ -5,8 +5,8 @@ import RealRooted.CubicDiscriminant
 /-!
 # Degree-three same-degree root-count helpers
 
-This module records elementary cubic root-list helpers for the degree-three
-same-degree Chudnovsky--Seymour route.
+This module records elementary cubic and quartic root-list helpers for
+low-degree root-count routes.
 -/
 
 open Polynomial
@@ -47,6 +47,40 @@ theorem eq_C_leadingCoeff_mul_prod_three
     {f : ℝ[X]} (hf : f.Splits) (a b c : ℝ) (hr : f.roots = {a, b, c}) :
     f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
   rw [Polynomial.Splits.eq_prod_roots hf, hr]
+  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
+
+/-- A split real quartic factors through an ordered quadruple of real roots. -/
+theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
+    (hf : f.Splits) (hdeg : f.natDegree = 4) :
+    ∃ a b c d : ℝ, a ≤ b ∧ b ≤ c ∧ c ≤ d ∧
+      f.roots = {a, b, c, d} ∧
+        f = C f.leadingCoeff *
+          ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
+  let rs := f.roots.sort (· ≤ ·)
+  have hrs_len : rs.length = 4 := by
+    simp [rs, card_roots_of_splits hf, hdeg]
+  obtain ⟨a, b, c, d, hrs⟩ := List.length_eq_four.mp hrs_len
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := by
+    simp [rs]
+  have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by
+    simpa [hrs] using hrs_sorted
+  have hab : a ≤ b := by
+    simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
+  have hbc : b ≤ c := by
+    have htail := (List.pairwise_cons.1 hsorted).2
+    simpa using (List.pairwise_cons.1 htail).1 c (by simp)
+  have hcd : c ≤ d := by
+    have htail := (List.pairwise_cons.1 hsorted).2
+    have htail2 := (List.pairwise_cons.1 htail).2
+    simpa using (List.pairwise_cons.1 htail2).1 d (by simp)
+  have hcoe : f.roots = {a, b, c, d} := by
+    have hse : (↑rs : Multiset ℝ) = f.roots := by
+      simp [rs]
+    rw [hrs] at hse
+    rw [← hse]
+    rfl
+  refine ⟨a, b, c, d, hab, hbc, hcd, hcoe, ?_⟩
+  rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
   simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
 
 /-- For a positive-combination real-rooted split cubic pair, the corresponding
