@@ -800,3 +800,70 @@ rr_ma_wang using
 ```
 
 That explicit syntax is likely better for generated OEIS files anyway.
+
+## 2026-07-29 OEIS/Sturm Refactor Checkpoint
+
+The companion `real-rooted-oeis` repo now has enough tactic ledger data to
+guide refactoring without adding another layer of ad hoc wrappers.  The useful
+source files there are:
+
+- `proof-targets/tactic-ledger.md`;
+- `proof-targets/tactic-golf-audit.md`;
+- `proof-targets/proof-testbed-tactic-alignment.md`;
+- `proof-targets/open-tactic-work-packages.md`.
+
+The Hoster--Stump tracker in the OEIS repo has already been migrated:
+`sqrt-of-2/real-rooted-oeis#2` is closed, and the matching RealRooted issue
+`#99` is closed with `RealRooted/Challenges/HosterStump.lean` present but not
+imported by the root module.  It should not drive new tactic work.
+
+The main repeated OEIS/Sturm lanes are:
+
+- `halfline-sturm-t-lag`: 68 rows, already represented by public Liu--Wang
+  tactic tokens and executable examples;
+- `quadratic-lag-sturm`: 39 rows, already represented by public Liu--Wang
+  tactic tokens and several exact testbed examples;
+- Ma--Wang derivative lanes: larger, but separate from the current Liu--Wang
+  degree/state problem.
+
+The next reusable abstraction should be a small Liu--Wang/Sturm state package,
+not another shape-specific sequence theorem.  It should carry exactly the data
+that the OEIS ledgers repeat:
+
+```text
+LwSturmState P n:
+  Prec (P n) (P (n+1))
+  HasPosLeadingCoeff (P n)
+  HasPosLeadingCoeff (P (n+1))
+  HasNonnegCoeffs (P n) or an explicit root interval for P (n+1)
+  natDegree data for P n and P (n+1)
+  no-common-root certificate for the adjacent pair
+```
+
+Then add a branch layer that consumes the stored degree data and chooses the
+same-degree or successor-degree Liu--Wang conclusion.  This is the right place
+to handle plateau examples such as degree pattern `0,0,1,1,2,2,...`; the tactic
+should not infer that pattern from coefficients.
+
+After that state layer exists, the safe golf targets are:
+
+- keep public tactic names such as `rr_lw_tR_lag_sequence_realrooted` as
+  facades, but route them through the state package;
+- compress repeated negative-square and denominator-normalized payloads into
+  typed certificate constructors;
+- prefer one generic positive `X * R` lag theorem over separate wrappers for
+  current factor `X`, `C c * X`, and `1 + X`, unless the specialized theorem is
+  materially clearer at generated call sites;
+- avoid public tactic renames until downstream OEIS wrappers have aliases and
+  coverage tests.
+
+Focused verification for this pass should include:
+
+```bash
+lake build RealRooted.Tactic.LiuWang
+lake build RealRooted.Tactic.Examples.LiuWang
+lake build RealRooted.Tactic.OEIS
+```
+
+Run a full `lake build` only after changing public theorem signatures, imports,
+or generated coverage.

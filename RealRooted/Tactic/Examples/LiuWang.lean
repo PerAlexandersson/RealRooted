@@ -343,6 +343,28 @@ example {f g a : ℝ[X]}
     degree_upper := hdeg_hi,
     no_common_roots := hno
 
+/-- Compatibility spelling for unit `X` lags that still supplies the trivial
+coefficient certificate. -/
+example {f g a : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
+    (hunit : 0 ≤ (1 : ℝ))
+    (hF_pos : HasPosLeadingCoeff (a * f + X * g))
+    (hdeg_lo : f.natDegree ≤ (a * f + X * g).natDegree)
+    (hdeg_hi : (a * f + X * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + X * g) := by
+  rr_lw_positive_X using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    roots_nonpos := hf_roots,
+    coeff_nonneg := hunit,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
 /-- Explicit unit-`X` one-step alias for positive lags. -/
 example {f g a : ℝ[X]}
     (hgf : Interlaces g f)

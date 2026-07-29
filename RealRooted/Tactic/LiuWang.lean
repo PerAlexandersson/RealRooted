@@ -5078,21 +5078,21 @@ macro_rules
         interlacer := $hgf:term,
         interlacer_pos_lc := $hg_pos:term,
         roots_nonpos := $hf_roots:term,
-        coeff_nonneg := $_hc:term,
+        coeff_nonneg := $hc:term,
         target_pos_lc := $hF_pos:term,
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        rr_first_exact_or_simpa
-          (RealRooted.prec_lw_positive_X_lag_of_roots_nonpos
-            $hgf $hg_pos $hf_roots $hF_pos $hdeg_lo $hdeg_hi $hno),
-          (RealRooted.prec_lw_positive_X_lag_of_roots_nonpos
-            $hgf $hg_pos $hf_roots
-            (rr_lw_simpa $hF_pos)
-            (rr_lw_simpa $hdeg_lo)
-            (rr_lw_simpa $hdeg_hi)
-            $hno))
+        have _rr_lw_unit_coeff_nonneg : 0 ≤ (1 : ℝ) := $hc
+        ; rr_lw_positive_X using
+          interlacer := $hgf,
+          interlacer_pos_lc := $hg_pos,
+          roots_nonpos := $hf_roots,
+          target_pos_lc := $hF_pos,
+          degree_lower := $hdeg_lo,
+          degree_upper := $hdeg_hi,
+          no_common_roots := $hno)
   | `(tactic|
       rr_lw_positive_X using
         interlacer := $hgf:term,
