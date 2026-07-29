@@ -67,6 +67,21 @@ theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
     hf_pos hg_pos hf_split hg_split
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
+/-- One oriented strict-upper non-root count bound for a positive-leading
+same-degree compatible pair with no common roots. -/
+theorem rootCountAbove_left_sub_le_one_of_compatible_sameDegree {f g : ℝ[X]}
+    (hcompat : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 := by
+  intro x hfx hgx
+  exact (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+    hf_pos hg_pos (hcompat.toPosComboRealRooted hf_pos hg_pos) hdeg hno
+    x hfx hgx).1
+
 /-- A positive-leading same-degree compatible pair with no common roots
 satisfies Liu's root-count compatibility condition. -/
 theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
@@ -75,12 +90,14 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     RootCountCompatible f g := by
-  have hfg : PosComboRealRooted f g :=
-    hcompat.toPosComboRealRooted hf_pos hg_pos
   exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hf_pos.ne_zero hg_pos.ne_zero
-    (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-      hf_pos hg_pos hfg hdeg hno)
+    (fun x hfx hgx =>
+      ⟨rootCountAbove_left_sub_le_one_of_compatible_sameDegree
+          hcompat hf_pos hg_pos hdeg hno x hfx hgx,
+        rootCountAbove_left_sub_le_one_of_compatible_sameDegree
+          hcompat.comm hg_pos hf_pos hdeg.symm (fun r hgr hfr => hno r hfr hgr)
+          x hgx hfx⟩)
 
 /-- One oriented strict-upper non-root count bound for a positive-leading
 compatible pair, assuming the successor-degree root-count leaf is available. -/
@@ -95,9 +112,8 @@ theorem rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAbove
   intro x hfx hgx
   have hclose := hcompat.natDegree_close hf_pos hg_pos
   by_cases hsame : g.natDegree = f.natDegree
-  · exact (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-      hf_pos hg_pos (hcompat.toPosComboRealRooted hf_pos hg_pos) hsame hno
-      x hfx hgx).1
+  · exact rootCountAbove_left_sub_le_one_of_compatible_sameDegree
+      hcompat hf_pos hg_pos hsame hno x hfx hgx
   · rcases Nat.lt_or_gt_of_ne hsame with hgf_lt | hfg_lt
     · have hdeg : f.natDegree = g.natDegree + 1 :=
         Nat.le_antisymm hclose.1 (Nat.succ_le_of_lt hgf_lt)
