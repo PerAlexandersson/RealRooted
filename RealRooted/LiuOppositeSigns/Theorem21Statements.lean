@@ -731,17 +731,23 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_counts
     (hdegL : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
       ∀ τ ∈ Set.Icc μ νL,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hleft_count : ∀ c : ℝ, f.IsRoot c →
-      ((g + C νL⁻¹ * f).roots.filter (c < ·)).card =
-        (g.roots.filter (c < ·)).card)
+    (hleft_count_a : f.IsRoot a →
+      ((g + C νL⁻¹ * f).roots.filter (a < ·)).card =
+        (g.roots.filter (a < ·)).card)
+    (hleft_count_b : f.IsRoot b →
+      ((g + C νL⁻¹ * f).roots.filter (b < ·)).card =
+        (g.roots.filter (b < ·)).card)
     (hνR_pos : 0 < νR)
     (hνR_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR ≤ μ)
     (hdegR : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
       ∀ τ ∈ Set.Icc νR μ,
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (hright_count : ∀ c : ℝ, g.IsRoot c →
-      ((f + C νR * g).roots.filter (c < ·)).card =
-        (f.roots.filter (c < ·)).card) :
+    (hright_count_a : g.IsRoot a →
+      ((f + C νR * g).roots.filter (a < ·)).card =
+        (f.roots.filter (a < ·)).card)
+    (hright_count_b : g.IsRoot b →
+      ((f + C νR * g).roots.filter (b < ·)).card =
+        (f.roots.filter (b < ·)).card) :
     (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
   have hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z :=
     fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1
@@ -752,14 +758,14 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_counts
     · exact False.elim <|
         hsgn.false_of_left_roots_add_left_inv_count_eq_right
           hfg hno hf hg hfa hfb hf_no hg_no hax hxb hax hxb hnot_odd
-          hνL_pos hνL_large hdegL (hleft_count a hfa) (hleft_count b hfb)
+          hνL_pos hνL_large hdegL (hleft_count_a hfa) (hleft_count_b hfb)
     · exact Or.inl ⟨hfa, hgb⟩
   · rcases hb_root with hfb | hgb
     · exact Or.inr ⟨hga, hfb⟩
     · exact False.elim <|
         hsgn.false_of_right_roots_add_right_small_count_eq_left
           hfg hno hf hg hga hgb hf_no hg_no hax hxb hax hxb hnot_odd
-          hνR_pos hνR_small hdegR (hright_count a hga) (hright_count b hgb)
+          hνR_pos hνR_small hdegR (hright_count_a hga) (hright_count_b hgb)
 
 /-- Endpoint-ownership form of the Liu odd-interval argument.  If a root-free
 interval has both endpoints in the combined root set and the strict-upper
@@ -800,19 +806,29 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd
       PosComboRealRooted.splits_add_right_of_nonneg (PosComboRealRooted.comm hfg) hg hη.1
   have hsplitR : ∀ η ∈ Set.Icc (0 : ℝ) νR, (f + C η * g).Splits :=
     fun η hη => PosComboRealRooted.splits_add_right_of_nonneg hfg hf hη.1
-  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_counts
-    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
-    hνL_pos hνL_large hdegL
-    (fun c hfc =>
+  have hleft_count : ∀ c : ℝ, f.IsRoot c →
+      ((g + C νL⁻¹ * f).roots.filter (c < ·)).card =
+        (g.roots.filter (c < ·)).card := by
+    intro c hfc
+    exact
       rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
         (f := g) (g := f) (μ := νL⁻¹) (x := c) (inv_pos.mpr hνL_pos)
         hdegL_inv hsplitL_inv
-        (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfc))
-    hνR_pos hνR_small hdegR
-    (fun c hgc =>
+        (fun η _ => hno.symm.rightFamily_not_isRoot_of_right_root hfc)
+  have hright_count : ∀ c : ℝ, g.IsRoot c →
+      ((f + C νR * g).roots.filter (c < ·)).card =
+        (f.roots.filter (c < ·)).card := by
+    intro c hgc
+    exact
       rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
         (f := f) (g := g) (μ := νR) (x := c) hνR_pos hdegR_zero hsplitR
-        (fun η _ => hno.rightFamily_not_isRoot_of_right_root hgc))
+        (fun η _ => hno.rightFamily_not_isRoot_of_right_root hgc)
+  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_counts
+    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
+    hνL_pos hνL_large hdegL
+    (hleft_count a) (hleft_count b)
+    hνR_pos hνR_small hdegR
+    (hright_count a) (hright_count b)
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from
 endpoint count equalities.  This is the analytic boundary that later proofs
@@ -842,8 +858,10 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_counts
   intro a b x hax hxb ha_root hb_root hgap hnot_odd
   exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_counts
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
-    (hνL_pos x) (hνL_large x) (hdegL x) (hleft_count x)
-    (hνR_pos x) (hνR_small x) (hdegR x) (hright_count x)
+    (hνL_pos x) (hνL_large x) (hdegL x)
+    (hleft_count x a) (hleft_count x b)
+    (hνR_pos x) (hνR_small x) (hdegR x)
+    (hright_count x a) (hright_count x b)
 
 /-- Analytic supplier for the parity-guarded consecutive-root ownership input
 used by the finite Liu count descent.  This corollary proves the endpoint count
