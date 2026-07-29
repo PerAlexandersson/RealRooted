@@ -97,15 +97,8 @@ theorem prec_sequence_of_base_and_step {P : Nat → ℝ[X]}
 theorem isRealRooted_of_prec_sequence {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hstep : ∀ n : Nat, Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-    prec_sequence_of_base_and_step hbase hstep
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  fun n => (prec_sequence_of_base_and_step hbase hstep n).1
 
 /-- A consecutive `Prec` chain gives rowwise nonzero real-rootedness. -/
 theorem isRealRooted_of_prec_chain {P : Nat → ℝ[X]}
