@@ -97,6 +97,35 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
     (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
       hf_pos hg_pos hfg hdeg hno)
 
+/-- A positive-leading compatible pair with no common roots satisfies Liu's
+root-count compatibility condition, assuming the successor-degree root-count
+leaf is available. -/
+theorem RootCountCompatible.of_compatible_of_succDegreeRootCountAboveNonRoot
+    (hsucc : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    {f g : ℝ[X]} (hcompat : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    RootCountCompatible f g := by
+  have hclose := hcompat.natDegree_close hf_pos hg_pos
+  by_cases hsame : g.natDegree = f.natDegree
+  · exact RootCountCompatible.of_compatible_sameDegree
+      hcompat hf_pos hg_pos hsame hno
+  · rcases Nat.lt_or_gt_of_ne hsame with hgf_lt | hfg_lt
+    · have hdeg : f.natDegree = g.natDegree + 1 :=
+        Nat.le_antisymm hclose.1 (Nat.succ_le_of_lt hgf_lt)
+      have hg_splits : g.Splits := (hcompat.isRealRooted_right hg_pos).2
+      have hcount_gf : RootCountCompatible g f :=
+        RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+          hg_pos.ne_zero hf_pos.ne_zero
+          (hsucc hcompat.comm hg_pos hf_pos hdeg hg_splits)
+      exact hcount_gf.symm
+    · have hdeg : g.natDegree = f.natDegree + 1 :=
+        Nat.le_antisymm hclose.2 (Nat.succ_le_of_lt hfg_lt)
+      have hf_splits : f.Splits := (hcompat.isRealRooted_left hf_pos).2
+      exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+        hf_pos.ne_zero hg_pos.ne_zero
+        (hsucc hcompat hf_pos hg_pos hdeg hf_splits)
+
 /-- A positive-leading, splitting, degree-one polynomial has one real root and
 factors as its leading coefficient times the corresponding monic factor. -/
 lemma exists_linear_factor_of_splits_natDegree_one
