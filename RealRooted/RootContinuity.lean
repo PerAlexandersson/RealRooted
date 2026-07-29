@@ -385,6 +385,19 @@ theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
   rw [div_le_iff₀ hden_pos]
   exact le_trans hmin_le (mul_le_mul_of_nonneg_left hgz_le (abs_nonneg μ))
 
+/-- If `f` is root-free on a compact interval, then every sufficiently small
+right-family perturbation `f + C μ * g` is root-free on that interval. -/
+theorem exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
+    ∃ ε : ℝ, 0 < ε ∧
+      ∀ μ : ℝ, |μ| < ε → ∀ z ∈ Set.Icc a b, ¬ (f + C μ * g).IsRoot z := by
+  obtain ⟨m, hm_pos, hm_bound⟩ :=
+    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
+  refine ⟨m, hm_pos, ?_⟩
+  intro μ hμ z hz hroot
+  exact (not_le_of_gt hμ) (hm_bound μ z hz hroot)
+
 /-- Specialization of `eval_endpoint_pos_of_forall_ne_zero` to the affine
 left-family `C t * f + g` used throughout the Chudnovsky--Seymour route. -/
 theorem eval_endpoint_pos_left_family

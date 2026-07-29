@@ -79,6 +79,18 @@ theorem NoCommonRoots.right_not_isRoot_Icc_of_left_roots
   have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
   exact hg_no z haz hzb_lt hgz
 
+/-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
+common roots, and `g` is root-free in `(a, b)`, then all sufficiently small
+right-family perturbations `g + C μ * f` are root-free on `[a, b]`. -/
+theorem NoCommonRoots.exists_forall_abs_lt_not_isRoot_add_right_Icc_of_left_roots
+    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b : ℝ}
+    (hab : a ≤ b) (hfa : f.IsRoot a) (hfb : f.IsRoot b)
+    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z) :
+    ∃ ε : ℝ, 0 < ε ∧
+      ∀ μ : ℝ, |μ| < ε → ∀ z ∈ Set.Icc a b, ¬ (g + C μ * f).IsRoot z :=
+  exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc hab
+    (h.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no)
+
 /-- For splitting polynomials with opposite leading signs, odd upper
 root-count difference at a common non-root is equivalent to the absence of a
 positive right-pencil member through that threshold. -/
