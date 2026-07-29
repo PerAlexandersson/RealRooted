@@ -19,6 +19,39 @@ noncomputable section
 
 namespace RealRooted
 
+/-! ## Reciprocal pencil scaling -/
+
+/-- A nonzero right-pencil parameter can be inverted by scaling: `f + μ g`
+is `μ` times `g + μ⁻¹ f`. -/
+theorem add_right_eq_C_mul_add_left_inv
+    {f g : ℝ[X]} {μ : ℝ} (hμ : μ ≠ 0) :
+    f + C μ * g = C μ * (g + C μ⁻¹ * f) := by
+  rw [mul_add, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hμ, C_1, one_mul,
+    add_comm]
+
+/-- The reciprocal right-pencil scaling preserves the root predicate. -/
+theorem add_right_isRoot_iff_add_left_inv
+    {f g : ℝ[X]} {μ x : ℝ} (hμ : μ ≠ 0) :
+    (f + C μ * g).IsRoot x ↔ (g + C μ⁻¹ * f).IsRoot x := by
+  rw [add_right_eq_C_mul_add_left_inv (f := f) (g := g) hμ]
+  simp [Polynomial.IsRoot.def, hμ]
+
+/-- The reciprocal right-pencil scaling preserves the root multiset. -/
+theorem add_right_roots_eq_add_left_inv
+    {f g : ℝ[X]} {μ : ℝ} (hμ : μ ≠ 0) :
+    (f + C μ * g).roots = (g + C μ⁻¹ * f).roots := by
+  rw [add_right_eq_C_mul_add_left_inv (f := f) (g := g) hμ,
+    Polynomial.roots_C_mul _ hμ]
+
+/-- The reciprocal right-pencil scaling preserves upper-threshold root counts. -/
+theorem add_right_roots_gt_card_eq_add_left_inv
+    {f g : ℝ[X]} {μ x : ℝ} (hμ : μ ≠ 0) :
+    ((f + C μ * g).roots.filter (x < ·)).card =
+      ((g + C μ⁻¹ * f).roots.filter (x < ·)).card := by
+  rw [add_right_roots_eq_add_left_inv (f := f) (g := g) hμ]
+
+/-! ## Root-continuity and interval count tools -/
+
 /-- A real-rooted polynomial over `ℝ` splits over `ℝ`. -/
 lemma IsRealRooted.splits {p : ℝ[X]} (hp_splits : p.Splits) : p.Splits :=
   hp_splits
@@ -347,6 +380,32 @@ theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
     |μ| = |ρ z| := by rw [hμ_eq]
     _ ≤ |ρ c| := hcmax hz
     _ ≤ |ρ c| + 1 := by linarith
+
+/-- If the right polynomial is root-free on a compact interval, then there is a
+large parameter which dominates all right-family crossings in the interval and
+whose reciprocal family is root-free there. -/
+theorem exists_large_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
+    ∃ ν : ℝ, 0 < ν ∧
+      (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| < ν) ∧
+      ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
+  obtain ⟨K, hK_pos, hK_bound⟩ :=
+    exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc hab hg_no
+  refine ⟨K + 1, by positivity, ?_, ?_⟩
+  · intro μ z hz hμ_root
+    have hμ_abs_le : |μ| ≤ K := hK_bound μ z hz hμ_root
+    linarith
+  · intro z hz hroot
+    have hK1_pos : 0 < K + 1 := by positivity
+    have hscaled : (f + C (K + 1) * g).IsRoot z :=
+      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
+        (μ := K + 1) (x := z) (ne_of_gt hK1_pos)).mpr hroot
+    have hK1_abs_lt : |K + 1| < K + 1 := by
+      have hK1_abs_le : |K + 1| ≤ K := hK_bound (K + 1) z hz hscaled
+      linarith
+    rw [abs_of_pos hK1_pos] at hK1_abs_lt
+    linarith
 
 /-- If `f` is root-free on a compact interval, then any parameter for which
 `f + C μ * g` has a root in the interval is bounded away from zero. -/

@@ -104,23 +104,12 @@ theorem NoCommonRoots.exists_large_add_left_inv_not_isRoot_Icc_of_left_roots
     ∃ ν : ℝ, 0 < ν ∧
       (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ ν) ∧
       ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
-  have hg_no_Icc : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z :=
-    h.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no
-  obtain ⟨K, hK_pos, hK_bound⟩ :=
-    exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc hab hg_no_Icc
-  refine ⟨K + 1, by positivity, ?_, ?_⟩
-  · intro μ hμ_pos hμ_root
-    have hμ_abs_le : |μ| ≤ K := hK_bound μ x hx hμ_root
-    rw [abs_of_pos hμ_pos] at hμ_abs_le
-    linarith
-  · intro z hz hroot
-    have hK1_pos : 0 < K + 1 := by positivity
-    have hscaled : (f + C (K + 1) * g).IsRoot z :=
-      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
-        (μ := K + 1) (x := z) (ne_of_gt hK1_pos)).mpr hroot
-    have hK1_abs_le : |K + 1| ≤ K := hK_bound (K + 1) z hz hscaled
-    rw [abs_of_pos hK1_pos] at hK1_abs_le
-    linarith
+  obtain ⟨ν, hν_pos, hν_bound, hν_no⟩ :=
+    exists_large_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc hab
+      (h.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no)
+  refine ⟨ν, hν_pos, ?_, hν_no⟩
+  intro μ hμ_pos hμ_root
+  exact le_of_lt (by simpa [abs_of_pos hμ_pos] using hν_bound μ x hx hμ_root)
 
 /-- For splitting polynomials with opposite leading signs, odd upper
 root-count difference at a common non-root is equivalent to the absence of a

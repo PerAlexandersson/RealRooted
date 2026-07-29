@@ -19,6 +19,7 @@ import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
 import RealRooted.RootOrderBridge
 import RealRooted.RootCountJump
+import RealRooted.RootContinuity
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SuccDegreeRootCrossing
@@ -5228,35 +5229,6 @@ theorem closedSegment_roots_gt_card_eq_add_right_of_nonneg
       (x < ·)).card =
       ((f + C μ * g).roots.filter (x < ·)).card := by
   rw [closedSegment_roots_eq_add_right_of_nonneg (f := f) (g := g) hμ]
-
-/-- A nonzero right-pencil parameter can be inverted by scaling: `f + μ g`
-has the same roots as `g + μ⁻¹ f`. -/
-theorem add_right_eq_C_mul_add_left_inv
-    {f g : ℝ[X]} {μ : ℝ} (hμ : μ ≠ 0) :
-    f + C μ * g = C μ * (g + C μ⁻¹ * f) := by
-  rw [mul_add, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hμ, C_1, one_mul,
-    add_comm]
-
-/-- The reciprocal right-pencil scaling preserves the root multiset. -/
-theorem add_right_roots_eq_add_left_inv
-    {f g : ℝ[X]} {μ : ℝ} (hμ : μ ≠ 0) :
-    (f + C μ * g).roots = (g + C μ⁻¹ * f).roots := by
-  rw [add_right_eq_C_mul_add_left_inv (f := f) (g := g) hμ,
-    Polynomial.roots_C_mul _ hμ]
-
-/-- The reciprocal right-pencil scaling preserves the root predicate. -/
-theorem add_right_isRoot_iff_add_left_inv
-    {f g : ℝ[X]} {μ x : ℝ} (hμ : μ ≠ 0) :
-    (f + C μ * g).IsRoot x ↔ (g + C μ⁻¹ * f).IsRoot x := by
-  rw [add_right_eq_C_mul_add_left_inv (f := f) (g := g) hμ]
-  simp [Polynomial.IsRoot.def, hμ]
-
-/-- The reciprocal right-pencil scaling preserves upper-threshold root counts. -/
-theorem add_right_roots_gt_card_eq_add_left_inv
-    {f g : ℝ[X]} {μ x : ℝ} (hμ : μ ≠ 0) :
-    ((f + C μ * g).roots.filter (x < ·)).card =
-      ((g + C μ⁻¹ * f).roots.filter (x < ·)).card := by
-  rw [add_right_roots_eq_add_left_inv (f := f) (g := g) hμ]
 
 /-- A no-root hypothesis on the nonnegative right family also controls the
 reciprocal family near the larger-degree endpoint. -/
