@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Splits
@@ -45,26 +46,6 @@ private theorem Splits.roots_sum_eq_neg_nextCoeff_div_leadingCoeff {p : ℝ[X]}
     hp.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   field_simp [hlc]
   nlinarith
-
-/-- If `g` has strictly larger degree than `f`, then `f + C μ * g` has the
-same degree as `g`, provided `μ ≠ 0`. -/
-theorem natDegree_add_C_mul_of_natDegree_lt {f g : ℝ[X]} {μ : ℝ}
-    (hμ : μ ≠ 0) (hdeg : f.natDegree < g.natDegree) :
-    (f + C μ * g).natDegree = g.natDegree := by
-  have hμg_deg : (C μ * g).natDegree = g.natDegree :=
-    natDegree_C_mul (p := g) hμ
-  rw [natDegree_add_eq_right_of_natDegree_lt (by simpa [hμg_deg] using hdeg),
-    hμg_deg]
-
-/-- If `g` has strictly larger degree than `f`, then the leading coefficient of
-`f + C μ * g` is the scaled leading coefficient of `g`. -/
-theorem leadingCoeff_add_C_mul_of_natDegree_lt {f g : ℝ[X]} {μ : ℝ}
-    (hμ : μ ≠ 0) (hdeg : f.natDegree < g.natDegree) :
-    (f + C μ * g).leadingCoeff = μ * g.leadingCoeff := by
-  have hsum_deg := natDegree_add_C_mul_of_natDegree_lt hμ hdeg
-  rw [leadingCoeff, hsum_deg, coeff_add, coeff_C_mul]
-  rw [coeff_eq_zero_of_natDegree_lt hdeg, zero_add]
-  rfl
 
 /-- In the degree-jump-by-one case, the next coefficient of `f + C μ * g` is
 the leading coefficient of `f` plus the scaled next-highest coefficient of

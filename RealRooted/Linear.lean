@@ -1,5 +1,5 @@
 import RealRooted.Basic
-import Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
@@ -408,21 +408,12 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : p.natDegree = q.natDegree)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q) :
     (p + q).natDegree = p.natDegree := by
-  unfold HasPosLeadingCoeff at hp_pos hq_pos
-  have hp0 : p ≠ 0 := by
-    intro hp
-    simp [hp] at hp_pos
-  have hq0 : q ≠ 0 := by
-    intro hq
-    simp [hq] at hq_pos
-  apply le_antisymm
-  · have h := natDegree_add_le p q
-    simp_all
-  · apply le_natDegree_of_ne_zero
-    have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by simp_all
-    rw [coeff_add]
-    rw [show p.coeff p.natDegree = p.leadingCoeff by simp]
-    grind
+  simpa using
+    Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero
+      (a := (1 : ℝ)) (by rw [hdeg]) <| by
+        unfold HasPosLeadingCoeff at hp_pos hq_pos
+        rw [show q.coeff p.natDegree = q.leadingCoeff by rw [hdeg]; rfl]
+        positivity
 
 /-- If the right summand has strictly larger degree and positive leading coefficient,
 then the sum keeps that degree. -/
@@ -462,31 +453,25 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
     positivity
   refine ⟨ε, hε_pos, ?_⟩
   intro μ hμ_nonneg hμε
-  apply le_antisymm
-  · exact (natDegree_add_le _ _).trans <|
-      max_le le_rfl ((Polynomial.natDegree_C_mul_le μ q).trans hdeg)
-  · apply le_natDegree_of_ne_zero
-    intro hcoeff_zero
-    have hsum_zero : p.coeff p.natDegree + μ * q.coeff p.natDegree = 0 := by
-      simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hcoeff_zero
-    change p.leadingCoeff + μ * q.coeff p.natDegree = 0 at hsum_zero
-    have hμq_abs_lt : |μ * q.coeff p.natDegree| < |p.leadingCoeff| := by
-      calc
-        |μ * q.coeff p.natDegree| = μ * |q.coeff p.natDegree| := by
-          rw [abs_mul, abs_of_nonneg hμ_nonneg]
-        _ ≤ μ * (|q.coeff p.natDegree| + 1) := by
-          exact
-            mul_le_mul_of_nonneg_left
-              (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
-        _ < ε * (|q.coeff p.natDegree| + 1) := by
-          exact mul_lt_mul_of_pos_right hμε (by positivity)
-        _ = |p.leadingCoeff| := by
-          have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
-          exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
-    have hp_abs_eq : |p.leadingCoeff| = |μ * q.coeff p.natDegree| := by
-      have hp_eq : p.leadingCoeff = -(μ * q.coeff p.natDegree) := by linarith
-      rw [hp_eq, abs_neg]
-    exact (not_lt_of_ge (le_of_eq hp_abs_eq)) hμq_abs_lt
+  apply Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hdeg
+  intro hsum_zero
+  have hμq_abs_lt : |μ * q.coeff p.natDegree| < |p.leadingCoeff| := by
+    calc
+      |μ * q.coeff p.natDegree| = μ * |q.coeff p.natDegree| := by
+        rw [abs_mul, abs_of_nonneg hμ_nonneg]
+      _ ≤ μ * (|q.coeff p.natDegree| + 1) := by
+        exact
+          mul_le_mul_of_nonneg_left
+            (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
+      _ < ε * (|q.coeff p.natDegree| + 1) := by
+        exact mul_lt_mul_of_pos_right hμε (by positivity)
+      _ = |p.leadingCoeff| := by
+        have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
+        exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
+  have hp_abs_eq : |p.leadingCoeff| = |μ * q.coeff p.natDegree| := by
+    have hp_eq : p.leadingCoeff = -(μ * q.coeff p.natDegree) := by linarith
+    rw [hp_eq, abs_neg]
+  exact (not_lt_of_ge (le_of_eq hp_abs_eq)) hμq_abs_lt
 
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
