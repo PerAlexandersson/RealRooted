@@ -22,20 +22,73 @@ attached to a pair. -/
 abbrev PreservesAllComboPairs (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ ⦃f g : ℝ[X]⦄, AllComboRealRooted f g → AllComboRealRooted (T f) (T g)
 
-/-- Any linear operator that preserves real-rootedness (up to the natural zero
-escape) preserves the full Obreschkoff plane of a pair. -/
-theorem preservesAllComboPairs_of_preservesRealRootedOrZero
-    {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
-    (hT : PreservesRealRootedOrZero T) :
-    PreservesAllComboPairs T := fun ⦃f g⦄ hall α β => by
+/-- Pencil-local version of all-combinations transport through a linear map.
+
+The hypothesis only asks for real-rootedness preservation on the specific
+pencil spanned by `f` and `g`, which is the form needed by normalized
+operator-factorization backends. -/
+theorem allComboRealRooted_map_of_pencil
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
+    (hall : AllComboRealRooted f g)
+    (hT : ∀ α β : ℝ,
+      (C α * f + C β * g ≠ 0 ∧ (C α * f + C β * g).Splits) →
+        T (C α * f + C β * g) = 0 ∨
+          (T (C α * f + C β * g)).Splits) :
+    AllComboRealRooted (T f) (T g) := by
+  intro α β
   have hmap : C α * T f + C β * T g = T (C α * f + C β * g) := by
     simp only [← Polynomial.smul_eq_C_mul]
     rw [T.map_add, T.map_smul, T.map_smul]
   by_cases hzero : C α * f + C β * g = 0
   · simp [hmap, hzero]
-  · rcases hT (C α * f + C β * g) ⟨hzero, hall α β⟩ with hTzero | hrr
+  · rcases hT α β ⟨hzero, hall α β⟩ with hTzero | hrr
     · simp [hmap, hTzero]
     · simpa [hmap] using hrr
+
+/-- Any linear operator that preserves real-rootedness (up to the natural zero
+escape) preserves the full Obreschkoff plane of a pair. -/
+theorem preservesAllComboPairs_of_preservesRealRootedOrZero
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
+    (hT : PreservesRealRootedOrZero T) :
+    PreservesAllComboPairs T := fun ⦃f g⦄ hall =>
+  allComboRealRooted_map_of_pencil hall fun α β hrr =>
+    hT (C α * f + C β * g) hrr
+
+/-- Order-insensitive Obreschkoff consequence, with zero polynomials absorbed
+by `Prec0`. -/
+theorem prec0_or_revPrec0_of_allComboRealRooted {f g : ℝ[X]}
+    (hall : AllComboRealRooted f g) :
+    Prec0 f g ∨ Prec0 g f := by
+  by_cases hf0 : f = 0
+  · exact Or.inl (hf0 ▸ prec0_zero_left g)
+  by_cases hg0 : g = 0
+  · exact Or.inl (hg0 ▸ prec0_zero_right f)
+  have hf : f ≠ 0 ∧ f.Splits := hall.isRealRooted_left hf0
+  have hg : g ≠ 0 ∧ g.Splits := hall.isRealRooted_right hg0
+  rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hall hf0 hg0 with
+    hsame | hsucc | hrevsucc
+  · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
+      (Or.inr hsame)).imp (·.toPrec0) (·.toPrec0)
+  · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
+      (Or.inl hsucc)).imp (·.toPrec0) (·.toPrec0)
+  · exact ((prec_of_allComboRealRooted hg.1 hg.2 hf.1 hf.2
+      (allComboRealRooted_comm hall) (Or.inl hrevsucc)).imp
+        (·.toPrec0) (·.toPrec0)).symm
+
+/-- Pencil-local version of the operator-preserver consequence.  If a linear
+map preserves real-rootedness on the pencil spanned by an all-combinations
+real-rooted pair, then the images interlace up to the orientation ambiguity
+encoded by `Prec0`. -/
+theorem prec0_or_revPrec0_map_of_pencil
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
+    (hall : AllComboRealRooted f g)
+    (hT : ∀ α β : ℝ,
+      (C α * f + C β * g ≠ 0 ∧ (C α * f + C β * g).Splits) →
+        T (C α * f + C β * g) = 0 ∨
+          (T (C α * f + C β * g)).Splits) :
+    Prec0 (T f) (T g) ∨ Prec0 (T g) (T f) :=
+  prec0_or_revPrec0_of_allComboRealRooted
+    (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
 order ambiguity built into the current oriented `Prec` predicate. Zero images
@@ -43,27 +96,9 @@ are absorbed by `Prec0`. -/
 theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     (hT : PreservesRealRootedOrZero T) :
-    PreservesInterlacingPairsUpToOrder0 T := fun ⦃f g⦄ hfg => by
-  have hallT : AllComboRealRooted (T f) (T g) :=
-    preservesAllComboPairs_of_preservesRealRootedOrZero hT
-      (allComboRealRooted_of_prec hfg)
-  by_cases hfT0 : T f = 0
-  · exact Or.inl (hfT0 ▸ prec0_zero_left (T g))
-  by_cases hgT0 : T g = 0
-  · exact Or.inl (hgT0 ▸ prec0_zero_right (T f))
-  have hfT : ((T f) ≠ 0 ∧ (T f).Splits) :=
-    ⟨hfT0, by simpa using hallT 1 0⟩
-  have hgT : ((T g) ≠ 0 ∧ (T g).Splits) :=
-    ⟨hgT0, by simpa using hallT 0 1⟩
-  rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hallT hfT0 hgT0 with
-    hsame | hsucc | hrevsucc
-  · exact (prec_of_allComboRealRooted hfT.1 hfT.2 hgT.1 hgT.2 hallT
-      (Or.inr hsame)).imp (·.toPrec0) (·.toPrec0)
-  · exact (prec_of_allComboRealRooted hfT.1 hfT.2 hgT.1 hgT.2 hallT
-      (Or.inl hsucc)).imp (·.toPrec0) (·.toPrec0)
-  · exact ((prec_of_allComboRealRooted hgT.1 hgT.2 hfT.1 hfT.2
-      (allComboRealRooted_comm hallT) (Or.inl hrevsucc)).imp
-        (·.toPrec0) (·.toPrec0)).symm
+    PreservesInterlacingPairsUpToOrder0 T := fun ⦃f g⦄ hfg =>
+  prec0_or_revPrec0_map_of_pencil (allComboRealRooted_of_prec hfg) fun α β hrr =>
+    hT (C α * f + C β * g) hrr
 
 /-- Planning stub for the operator theorem mentioned in `INTERLACING.md`.
 
