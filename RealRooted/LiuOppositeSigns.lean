@@ -2011,10 +2011,48 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
 
 end RightRootCountBranch
 
+/-- Branch-level bridge from parity-guarded cross-owned consecutive roots and
+one-sided strict-upper root-count bounds to Liu's largest-root deletion branch
+predicate.  The analytic input is bundled in `CrossOwnedNotOddGaps`; this
+theorem only chooses the larger largest root and feeds the count descent in the
+corresponding orientation. -/
+theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_roots
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hupper_fg : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1)
+    (hupper_gf : ∀ x : ℝ, ¬ g.IsRoot x → ¬ f.IsRoot x →
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : CrossOwnedNotOddGaps f g) :
+    theorem21RootCountBranches f g := by
+  rcases le_or_gt s r with hsr | hrs
+  · exact theorem21RootCountBranches_of_left <|
+      LeftRootCountBranch.of_left_sub_right_upper_of_right_le_left
+        hf_ne hg_ne hr hs hsr
+        (fun x hfx hgx => by
+          have hupper := hupper_fg x hfx hgx
+          linarith)
+        (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
+          hf_ne hg_ne hr hs hsr hupper_fg hsimple_f hsimple_g hdisj hcross)
+  · have hleft : LeftRootCountBranch g f s r :=
+      LeftRootCountBranch.of_left_sub_right_upper_of_right_le_left
+        hg_ne hf_ne hs hr hrs.le
+        (fun x hgx hfx => by
+          have hupper := hupper_gf x hgx hfx
+          linarith)
+        (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
+          hg_ne hf_ne hs hr hrs.le hupper_gf hsimple_g hsimple_f
+          (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
+    exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
+
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
-Liu's largest-root deletion branch predicate.  The analytic input is bundled in
-`CrossOwnedNotOddGaps`; this theorem only chooses the larger largest root and
-feeds the count descent in the corresponding orientation. -/
+Liu's largest-root deletion branch predicate.  Compatible root counts supply the
+two one-sided strict-upper bounds needed by the one-sided descent theorem. -/
 theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
@@ -2023,20 +2061,14 @@ theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecut
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
     (hcross : CrossOwnedNotOddGaps f g) :
-    theorem21RootCountBranches f g := by
-  rcases le_or_gt s r with hsr | hrs
-  · exact theorem21RootCountBranches_of_left <|
-      LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
-        hf_ne hg_ne hr hs hsr hcount
-        (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
-          hf_ne hg_ne hr hs hsr hcount hsimple_f hsimple_g hdisj hcross)
-  · have hleft : LeftRootCountBranch g f s r :=
-      LeftRootCountBranch.of_rootCountCompatible_of_rootCountAbove_right_le_left
-        hg_ne hf_ne hs hr hrs.le hcount.symm
-        (LeftRootCountBranch.rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
-          hg_ne hf_ne hs hr hrs.le hcount.symm hsimple_g hsimple_f
-          (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
-    exact theorem21RootCountBranches_of_right (hleft.toRightBranch_symm_of_lt hrs)
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_roots
+    hf_ne hg_ne hr hs
+    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
+      hf_ne hg_ne hfx hgx)
+    (fun _ hgx hfx => hcount.symm.rootCountAbove_left_sub_le_one_of_nonRoot
+      hg_ne hf_ne hgx hfx)
+    hsimple_f hsimple_g hdisj hcross
 
 theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
