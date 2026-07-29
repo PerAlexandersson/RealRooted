@@ -822,6 +822,25 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
     ha_root hb_root hnot_odd (hνL_pos x) (hνL_large x) (hdegL x)
     (hdegL_inv x) (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)
 
+/-- Opposite-sign caller boundary for the finite Liu count descent.  The raw
+largest-root witnesses and multiplicity-one root-count assumptions are supplied
+from nonconstant splitting endpoints and `HasSimpleRoots`; the remaining
+analytic input is the bundled `CrossOwnedNotOddGaps` ownership predicate. -/
+theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcount : RootCountCompatible f g)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hcross : CrossOwnedNotOddGaps f g) :
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ := exists_largestRoots hf hg hsgn hf_deg hg_deg
+  exact theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
+    hsgn.left_ne_zero hsgn.right_ne_zero hr hs hcount
+    (fun _ hc => hsimple_f.roots_count_eq_one hc)
+    (fun _ hc => hsimple_g.roots_count_eq_one hc)
+    hno hcross
+
 /-- Explicit large-parameter fallback for the endpoint-shaped `g`/`g`
 contradiction in Liu's odd-indexed interval argument.  If the transported
 right-family count drop reaches a parameter whose endpoint strict-upper counts
