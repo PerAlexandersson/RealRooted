@@ -448,6 +448,46 @@ lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     rw [coeff_add, coeff_eq_zero_of_natDegree_lt hdeg, add_zero]
     exact ne_of_gt hp_pos
 
+/-- If `q` has degree at most that of a nonzero polynomial `p`, then all
+sufficiently small nonnegative right-family perturbations of `p` keep the
+degree of `p`. -/
+lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
+    {p q : ℝ[X]} (hp : p ≠ 0) (hdeg : q.natDegree ≤ p.natDegree) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ μ : ℝ, 0 ≤ μ → μ < ε →
+      (p + C μ * q).natDegree = p.natDegree := by
+  let ε : ℝ := |p.leadingCoeff| / (|q.coeff p.natDegree| + 1)
+  have hp_lc_ne : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp
+  have hε_pos : 0 < ε := by
+    unfold ε
+    positivity
+  refine ⟨ε, hε_pos, ?_⟩
+  intro μ hμ_nonneg hμε
+  apply le_antisymm
+  · exact (natDegree_add_le _ _).trans <|
+      max_le le_rfl ((Polynomial.natDegree_C_mul_le μ q).trans hdeg)
+  · apply le_natDegree_of_ne_zero
+    intro hcoeff_zero
+    have hsum_zero : p.coeff p.natDegree + μ * q.coeff p.natDegree = 0 := by
+      simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hcoeff_zero
+    change p.leadingCoeff + μ * q.coeff p.natDegree = 0 at hsum_zero
+    have hμq_abs_lt : |μ * q.coeff p.natDegree| < |p.leadingCoeff| := by
+      calc
+        |μ * q.coeff p.natDegree| = μ * |q.coeff p.natDegree| := by
+          rw [abs_mul, abs_of_nonneg hμ_nonneg]
+        _ ≤ μ * (|q.coeff p.natDegree| + 1) := by
+          exact
+            mul_le_mul_of_nonneg_left
+              (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
+        _ < ε * (|q.coeff p.natDegree| + 1) := by
+          exact mul_lt_mul_of_pos_right hμε (by positivity)
+        _ = |p.leadingCoeff| := by
+          have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
+          exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
+    have hp_abs_eq : |p.leadingCoeff| = |μ * q.coeff p.natDegree| := by
+      have hp_eq : p.leadingCoeff = -(μ * q.coeff p.natDegree) := by linarith
+      rw [hp_eq, abs_neg]
+    exact (not_lt_of_ge (le_of_eq hp_abs_eq)) hμq_abs_lt
+
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
