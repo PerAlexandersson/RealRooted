@@ -381,6 +381,33 @@ theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
     _ ≤ |ρ c| := hcmax hz
     _ ≤ |ρ c| + 1 := by linarith
 
+/-- If the right polynomial is root-free on a compact interval, then all
+sufficiently large positive parameters dominate the right-family crossings in
+the interval and give a root-free reciprocal family. -/
+theorem exists_large_threshold_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ ν : ℝ, K < ν →
+        (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| < ν) ∧
+        ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
+  obtain ⟨K, hK_pos, hK_bound⟩ :=
+    exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc hab hg_no
+  refine ⟨K, hK_pos, ?_⟩
+  intro ν hKν
+  constructor
+  · intro μ z hz hμ_root
+    have hμ_abs_le : |μ| ≤ K := hK_bound μ z hz hμ_root
+    linarith
+  · intro z hz hroot
+    have hν_pos : 0 < ν := lt_trans hK_pos hKν
+    have hscaled : (f + C ν * g).IsRoot z :=
+      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
+        (μ := ν) (x := z) (ne_of_gt hν_pos)).mpr hroot
+    have hν_abs_le : |ν| ≤ K := hK_bound ν z hz hscaled
+    rw [abs_of_pos hν_pos] at hν_abs_le
+    linarith
+
 /-- If the right polynomial is root-free on a compact interval, then there is a
 large parameter which dominates all right-family crossings in the interval and
 whose reciprocal family is root-free there. -/
@@ -390,22 +417,10 @@ theorem exists_large_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc
     ∃ ν : ℝ, 0 < ν ∧
       (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| < ν) ∧
       ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
-  obtain ⟨K, hK_pos, hK_bound⟩ :=
-    exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc hab hg_no
-  refine ⟨K + 1, by positivity, ?_, ?_⟩
-  · intro μ z hz hμ_root
-    have hμ_abs_le : |μ| ≤ K := hK_bound μ z hz hμ_root
-    linarith
-  · intro z hz hroot
-    have hK1_pos : 0 < K + 1 := by positivity
-    have hscaled : (f + C (K + 1) * g).IsRoot z :=
-      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
-        (μ := K + 1) (x := z) (ne_of_gt hK1_pos)).mpr hroot
-    have hK1_abs_lt : |K + 1| < K + 1 := by
-      have hK1_abs_le : |K + 1| ≤ K := hK_bound (K + 1) z hz hscaled
-      linarith
-    rw [abs_of_pos hK1_pos] at hK1_abs_lt
-    linarith
+  obtain ⟨K, hK_pos, hK⟩ :=
+    exists_large_threshold_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc hab hg_no
+  refine ⟨K + 1, by positivity, ?_⟩
+  exact hK (K + 1) (by linarith)
 
 /-- If `f` is root-free on a compact interval, then any parameter for which
 `f + C μ * g` has a root in the interval is bounded away from zero. -/
@@ -444,6 +459,30 @@ theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
   rw [div_le_iff₀ hden_pos]
   exact le_trans hmin_le (mul_le_mul_of_nonneg_left hgz_le (abs_nonneg μ))
 
+/-- If the left polynomial is root-free on a compact interval, then all
+sufficiently small positive parameters give a root-free right-family member and
+are strictly below the absolute value of every crossing parameter in the
+interval. -/
+theorem exists_small_threshold_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc
+    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
+    ∃ m : ℝ, 0 < m ∧
+      ∀ ν : ℝ, 0 < ν → ν < m →
+        (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → ν < |μ|) ∧
+        ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
+  obtain ⟨m, hm_pos, hm_bound⟩ :=
+    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
+  refine ⟨m, hm_pos, ?_⟩
+  intro ν hν_pos hνm
+  constructor
+  · intro μ z hz hroot
+    have hm_le : m ≤ |μ| := hm_bound μ z hz hroot
+    linarith
+  · intro z hz hroot
+    have hm_le : m ≤ |ν| := hm_bound ν z hz hroot
+    rw [abs_of_pos hν_pos] at hm_le
+    linarith
+
 /-- If the left polynomial is root-free on a compact interval, then there is a
 small positive parameter whose right-family member is root-free on the interval,
 and which is strictly below the absolute value of every crossing parameter in
@@ -454,16 +493,12 @@ theorem exists_small_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc
     ∃ ν : ℝ, 0 < ν ∧
       (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → ν < |μ|) ∧
       ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
-  obtain ⟨m, hm_pos, hm_bound⟩ :=
-    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
-  refine ⟨m / 2, by positivity, ?_, ?_⟩
-  · intro μ z hz hroot
-    have hm_le : m ≤ |μ| := hm_bound μ z hz hroot
-    linarith
-  · intro z hz hroot
-    have hm_le : m ≤ |m / 2| := hm_bound (m / 2) z hz hroot
-    rw [abs_of_pos (by positivity : 0 < m / 2)] at hm_le
-    linarith
+  obtain ⟨m, hm_pos, hm⟩ :=
+    exists_small_threshold_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc hab hf_no
+  have hm_half_pos : 0 < m / 2 := by positivity
+  have hm_half_lt : m / 2 < m := by linarith
+  refine ⟨m / 2, hm_half_pos, ?_⟩
+  exact hm (m / 2) hm_half_pos hm_half_lt
 
 /-- If `f` is root-free on a compact interval, then every sufficiently small
 right-family perturbation `f + C μ * g` is root-free on that interval. -/
