@@ -823,6 +823,24 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
     (hdegL_inv x) (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)
 
 /-- Opposite-sign caller boundary for the finite Liu count descent from the
+cross-owned finite-gap input.  This avoids asking for the stronger original
+one-sided `≤ 1` strict-upper bounds, which do not hold in every deletion
+orientation. -/
+theorem theorem21RootCountBranches_of_crossOwned
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hcross : CrossOwnedNotOddGaps f g) :
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ := exists_largestRoots hf hg hsgn hf_deg hg_deg
+  exact theorem21RootCountBranches_of_crossOwned_consecutive_roots
+    hsgn.left_ne_zero hsgn.right_ne_zero hr hs
+    (fun _ hc => hsimple_f.roots_count_eq_one hc)
+    (fun _ hc => hsimple_g.roots_count_eq_one hc)
+    hno hcross
+
+/-- Opposite-sign caller boundary for the finite Liu count descent from the
 one-sided strict-upper root-count bounds used by the branch proof.  The raw
 largest-root witnesses and multiplicity-one root-count assumptions are supplied
 from nonconstant splitting endpoints and `HasSimpleRoots`; the remaining
