@@ -277,9 +277,9 @@ theorem
     compatiblePairHasCommonInterleaver_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
     (hsucc : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
-    positiveSplitSameDegreeRootCountAboveNonRoot_from_analytic
-    (positiveSplitSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
+  compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
+    _root_.RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
+    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
       hsucc)
 
 /-- Finite-family Chudnovsky--Seymour package from the Liu-side

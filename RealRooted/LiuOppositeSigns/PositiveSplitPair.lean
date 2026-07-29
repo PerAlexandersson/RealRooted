@@ -82,13 +82,6 @@ theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
     hf_pos hg_pos hf_split hg_split
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
-/-- The existing same-degree analytic count spine supplies the positive-split
-same-degree Liu root-count package. -/
-theorem positiveSplitSameDegreeRootCountAboveNonRoot_from_analytic :
-    positiveSplitSameDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    _root_.RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
-
 /-- A positive-leading same-degree compatible pair with no common roots
 satisfies Liu's root-count compatibility condition. -/
 theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
@@ -103,78 +96,6 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
     hf_pos.ne_zero hg_pos.ne_zero
     (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
       hf_pos hg_pos hfg hdeg hno)
-
-/-- The common-left-interleaver reduction supplies the positive-split
-successor-degree Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
-    (hleft : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
-      hleft)
-
-/-- A compatible succ-degree non-root count leaf supplies the positive-split
-successor-degree Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_compatibleRootCount
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-      hcount)
-
-/-- Closed-segment endpoint count equality supplies the positive-split
-successor-degree Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
-      hcount)
-
-/-- Closed-segment no-gap-two supplies the positive-split successor-degree
-Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo
-      hclosed)
-
-/-- Right-pencil no-gap-two supplies the positive-split successor-degree Liu
-root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo
-      hright)
-
-/-- Endpoint-sign no-gap-two supplies the positive-split successor-degree Liu
-root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo
-      hsign)
-
-/-- Lower endpoint-sign no-gap supplies the positive-split successor-degree
-Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-      hlower)
-
-/-- Exact lower-count endpoint comparison supplies the positive-split
-successor-degree Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement :=
-  positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (_root_.RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-      hcount)
 
 /-- A positive-leading, splitting, degree-one polynomial has one real root and
 factors as its leading coefficient times the corresponding monic factor. -/
