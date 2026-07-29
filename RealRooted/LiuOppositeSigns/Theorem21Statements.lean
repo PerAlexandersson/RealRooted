@@ -1013,7 +1013,9 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs
 /-- Supplier for the parity-guarded consecutive-root ownership input from an
 open-gap no-root hypothesis for the endpoint families.  This is the finite
 bridge from the analytic goal "the transported family has no roots in the
-finite open gap" to the count-difference boundary. -/
+finite open gap" to the count-difference boundary.  The right endpoint is
+discharged internally from `NoCommonRoots`, so the analytic input only needs
+open-gap root-freeness for the transported families. -/
 theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
@@ -1041,48 +1043,37 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
     fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1
   have hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z :=
     fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2
-  have hleft_count_sub : f.IsRoot a → f.IsRoot b →
-      (((g + C (νL x)⁻¹ * f).roots.filter (a < ·)).card : ℤ) -
-          (g.roots.filter (a < ·)).card =
-        (((g + C (νL x)⁻¹ * f).roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card := by
-    intro hfa hfb
-    have hg_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ g.IsRoot z := by
+  have count_sub_eq_of_same_owner {p q r : ℝ[X]}
+      (hpq : NoCommonRoots p q) (hpa : p.IsRoot a) (hpb : p.IsRoot b)
+      (hq_no : ∀ z : ℝ, a < z → z < b → ¬ q.IsRoot z)
+      (hr_no : ∀ z : ℝ, a < z → z < b → ¬ r.IsRoot z)
+      (hrb : ¬ r.IsRoot b) :
+      ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
+        ((r.roots.filter (b < ·)).card : ℤ) -
+          (q.roots.filter (b < ·)).card := by
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
       intro z haz hzb
-      exact hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no z
+      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
         ⟨le_of_lt haz, hzb⟩
-    have hleft_no_Ioc : ∀ z : ℝ, a < z → z ≤ b →
-        ¬ (g + C (νL x)⁻¹ * f).IsRoot z := by
+    have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
       intro z haz hzb
       by_cases hzb_eq : z = b
-      · simpa [hzb_eq] using hno.symm.rightFamily_not_isRoot_of_right_root hfb
-      · exact hleft_no x a b hax hxb hfa hfb hgap z haz
-          (lt_of_le_of_ne hzb hzb_eq)
+      · simpa [hzb_eq] using hrb
+      · exact hr_no z haz (lt_of_le_of_ne hzb hzb_eq)
     exact card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc hab
-      hleft_no_Ioc hg_no_Ioc
-  have hright_count_sub : g.IsRoot a → g.IsRoot b →
-      (((f + C (νR x) * g).roots.filter (a < ·)).card : ℤ) -
-          (f.roots.filter (a < ·)).card =
-        (((f + C (νR x) * g).roots.filter (b < ·)).card : ℤ) -
-          (f.roots.filter (b < ·)).card := by
-    intro hga hgb
-    have hf_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ f.IsRoot z := by
-      intro z haz hzb
-      exact hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no z
-        ⟨le_of_lt haz, hzb⟩
-    have hright_no_Ioc : ∀ z : ℝ, a < z → z ≤ b →
-        ¬ (f + C (νR x) * g).IsRoot z := by
-      intro z haz hzb
-      by_cases hzb_eq : z = b
-      · simpa [hzb_eq] using hno.rightFamily_not_isRoot_of_right_root hgb
-      · exact hright_no x a b hax hxb hga hgb hgap z haz
-          (lt_of_le_of_ne hzb hzb_eq)
-    exact card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc hab
-      hright_no_Ioc hf_no_Ioc
+      hr_no_Ioc hq_no_Ioc
   exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
-    (hνL_pos x) (hνL_large x) (hdegL x) hleft_count_sub
-    (hνR_pos x) (hνR_small x) (hdegR x) hright_count_sub
+    (hνL_pos x) (hνL_large x) (hdegL x)
+    (fun hfa hfb =>
+      count_sub_eq_of_same_owner hno hfa hfb hg_no
+        (hleft_no x a b hax hxb hfa hfb hgap)
+        (hno.symm.rightFamily_not_isRoot_of_right_root hfb))
+    (hνR_pos x) (hνR_small x) (hdegR x)
+    (fun hga hgb =>
+      count_sub_eq_of_same_owner hno.symm hga hgb hf_no
+        (hright_no x a b hax hxb hga hgb hgap)
+        (hno.rightFamily_not_isRoot_of_right_root hgb))
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from
 endpoint count equalities.  This is a convenient specialization of
