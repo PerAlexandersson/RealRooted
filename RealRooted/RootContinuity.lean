@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.RootCountFinite
 import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Topology.Order.IntermediateValue
@@ -309,8 +310,8 @@ theorem eval_mul_pos_of_forall_not_isRoot_Icc
     (hno : ∀ x ∈ Set.Icc a b, ¬ p.IsRoot x) :
     0 < p.eval a * p.eval b := by
   refine mul_pos_of_forall_ne_zero_Icc hab p.continuous.continuousOn ?_
-  intro x hx hx0
-  exact hno x hx (by simpa [Polynomial.IsRoot.def] using hx0)
+  intro x hx
+  exact (Polynomial.not_isRoot_iff_eval_ne_zero p x).mp (hno x hx)
 
 /-- If `g` is root-free on a compact interval, then the parameters for which
 `f + C μ * g` has a root in the interval are bounded in absolute value. -/
@@ -321,8 +322,8 @@ theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
       ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| ≤ K := by
   let ρ : ℝ → ℝ := fun z => - f.eval z / g.eval z
   have hg_eval_ne : ∀ z ∈ Set.Icc a b, g.eval z ≠ 0 := by
-    intro z hz hzero
-    exact hg_no z hz (by simpa [Polynomial.IsRoot.def] using hzero)
+    intro z hz
+    exact (Polynomial.not_isRoot_iff_eval_ne_zero g z).mp (hg_no z hz)
   have hρ_cont : ContinuousOn ρ (Set.Icc a b) := by
     have hf_cont : ContinuousOn (fun z : ℝ => - f.eval z) (Set.Icc a b) :=
       f.continuous.neg.continuousOn
@@ -359,9 +360,8 @@ theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
   obtain ⟨c, hc, hcmin⟩ :=
     isCompact_Icc.exists_isMinOn (Set.nonempty_Icc.mpr hab) hF_cont
   have hc_pos : 0 < |f.eval c| := by
-    have hne : f.eval c ≠ 0 := by
-      intro hzero
-      exact hf_no c hc (by simpa [Polynomial.IsRoot.def] using hzero)
+    have hne : f.eval c ≠ 0 :=
+      (Polynomial.not_isRoot_iff_eval_ne_zero f c).mp (hf_no c hc)
     exact abs_pos.mpr hne
   have hG_cont : ContinuousOn (fun z : ℝ => |g.eval z|) (Set.Icc a b) :=
     g.continuous.continuousOn.abs
