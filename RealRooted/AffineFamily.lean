@@ -2595,16 +2595,6 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
           (p := pη) (q := qNegη) (x := r) (βmax := 1)
           hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg_pos
 
-private lemma roots_nodup_of_hasSimpleRoots
-    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
-    p.roots.Nodup :=
-  hsimple.roots_nodup
-
-private lemma roots_sort_sortedLT_of_hasSimpleRoots
-    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
-    (p.roots.sort (· ≤ ·)).SortedLT :=
-  hsimple.roots_sort_sortedLT
-
 /-- Exact double roots are impossible in interior positive combinations of a
 positive-combination real-rooted family. This is the local obstruction that the
 affine-family frontier can use without leaving the positive cone. -/
@@ -3892,7 +3882,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
   have hrs_sorted : rs.Pairwise (· ≤ ·) := by
     simp [rs]
   have hrs_sortedLT : rs.Pairwise (· < ·) := by
-    simpa [rs] using (roots_sort_sortedLT_of_hasSimpleRoots hg0 hsimple_g).pairwise
+    simpa [rs] using hsimple_g.roots_sort_sortedLT.pairwise
   have hrs_eq : (↑rs : Multiset ℝ) = g.roots := by
     simp [rs]
   have hgap_rs : ConsecNoRoots g rs :=
