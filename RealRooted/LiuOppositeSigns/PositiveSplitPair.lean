@@ -82,6 +82,32 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
     (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
       hf_pos hg_pos hfg hdeg hno)
 
+/-- One oriented strict-upper non-root count bound for a positive-leading
+compatible pair, assuming the successor-degree root-count leaf is available. -/
+theorem rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
+    (hsucc : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    {f g : ℝ[X]} (hcompat : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 := by
+  intro x hfx hgx
+  have hclose := hcompat.natDegree_close hf_pos hg_pos
+  by_cases hsame : g.natDegree = f.natDegree
+  · exact (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos (hcompat.toPosComboRealRooted hf_pos hg_pos) hsame hno
+      x hfx hgx).1
+  · rcases Nat.lt_or_gt_of_ne hsame with hgf_lt | hfg_lt
+    · have hdeg : f.natDegree = g.natDegree + 1 :=
+        Nat.le_antisymm hclose.1 (Nat.succ_le_of_lt hgf_lt)
+      have hg_splits : g.Splits := (hcompat.isRealRooted_right hg_pos).2
+      exact (hsucc hcompat.comm hg_pos hf_pos hdeg hg_splits x hgx hfx).2
+    · have hdeg : g.natDegree = f.natDegree + 1 :=
+        Nat.le_antisymm hclose.2 (Nat.succ_le_of_lt hfg_lt)
+      have hf_splits : f.Splits := (hcompat.isRealRooted_left hf_pos).2
+      exact (hsucc hcompat hf_pos hg_pos hdeg hf_splits x hfx hgx).1
+
 /-- A positive-leading compatible pair with no common roots satisfies Liu's
 root-count compatibility condition, assuming the successor-degree root-count
 leaf is available. -/
@@ -91,25 +117,14 @@ theorem RootCountCompatible.of_compatible_of_succDegreeRootCountAboveNonRoot
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     RootCountCompatible f g := by
-  have hclose := hcompat.natDegree_close hf_pos hg_pos
-  by_cases hsame : g.natDegree = f.natDegree
-  · exact RootCountCompatible.of_compatible_sameDegree
-      hcompat hf_pos hg_pos hsame hno
-  · rcases Nat.lt_or_gt_of_ne hsame with hgf_lt | hfg_lt
-    · have hdeg : f.natDegree = g.natDegree + 1 :=
-        Nat.le_antisymm hclose.1 (Nat.succ_le_of_lt hgf_lt)
-      have hg_splits : g.Splits := (hcompat.isRealRooted_right hg_pos).2
-      have hcount_gf : RootCountCompatible g f :=
-        RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
-          hg_pos.ne_zero hf_pos.ne_zero
-          (hsucc hcompat.comm hg_pos hf_pos hdeg hg_splits)
-      exact hcount_gf.symm
-    · have hdeg : g.natDegree = f.natDegree + 1 :=
-        Nat.le_antisymm hclose.2 (Nat.succ_le_of_lt hfg_lt)
-      have hf_splits : f.Splits := (hcompat.isRealRooted_left hf_pos).2
-      exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
-        hf_pos.ne_zero hg_pos.ne_zero
-        (hsucc hcompat hf_pos hg_pos hdeg hf_splits)
+  exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+    hf_pos.ne_zero hg_pos.ne_zero
+    (fun x hfx hgx =>
+      ⟨rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
+          hsucc hcompat hf_pos hg_pos hno x hfx hgx,
+        rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
+          hsucc hcompat.comm hg_pos hf_pos (fun r hgr hfr => hno r hfr hgr)
+          x hgx hfx⟩)
 
 /-- A positive-leading, splitting, degree-one polynomial has one real root and
 factors as its leading coefficient times the corresponding monic factor. -/
