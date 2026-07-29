@@ -1010,6 +1010,80 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs
     (hνR_pos x) (hνR_small x) (hdegR x)
     (hright_count_sub x a b)
 
+/-- Supplier for the parity-guarded consecutive-root ownership input from an
+open-gap no-root hypothesis for the endpoint families.  This is the finite
+bridge from the analytic goal "the transported family has no roots in the
+finite open gap" to the count-difference boundary. -/
+theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits) (νL νR : ℝ → ℝ)
+    (hνL_pos : ∀ x : ℝ, 0 < νL x)
+    (hνL_large : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ νL x)
+    (hdegL : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc μ (νL x),
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hleft_no : ∀ x a b : ℝ, a < x → x < b → f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ z : ℝ, a < z → z < b → ¬ (g + C (νL x)⁻¹ * f).IsRoot z)
+    (hνR_pos : ∀ x : ℝ, 0 < νR x)
+    (hνR_small : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → νR x ≤ μ)
+    (hdegR : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc (νR x) μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hright_no : ∀ x a b : ℝ, a < x → x < b → g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ z : ℝ, a < z → z < b → ¬ (f + C (νR x) * g).IsRoot z) :
+    CrossOwnedNotOddGaps f g := by
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1
+  have hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2
+  have hleft_count_sub : f.IsRoot a → f.IsRoot b →
+      (((g + C (νL x)⁻¹ * f).roots.filter (a < ·)).card : ℤ) -
+          (g.roots.filter (a < ·)).card =
+        (((g + C (νL x)⁻¹ * f).roots.filter (b < ·)).card : ℤ) -
+          (g.roots.filter (b < ·)).card := by
+    intro hfa hfb
+    have hg_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ g.IsRoot z := by
+      intro z haz hzb
+      exact hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no z
+        ⟨le_of_lt haz, hzb⟩
+    have hleft_no_Ioc : ∀ z : ℝ, a < z → z ≤ b →
+        ¬ (g + C (νL x)⁻¹ * f).IsRoot z := by
+      intro z haz hzb
+      by_cases hzb_eq : z = b
+      · simpa [hzb_eq] using hno.symm.rightFamily_not_isRoot_of_right_root hfb
+      · exact hleft_no x a b hax hxb hfa hfb hgap z haz
+          (lt_of_le_of_ne hzb hzb_eq)
+    exact card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc hab
+      hleft_no_Ioc hg_no_Ioc
+  have hright_count_sub : g.IsRoot a → g.IsRoot b →
+      (((f + C (νR x) * g).roots.filter (a < ·)).card : ℤ) -
+          (f.roots.filter (a < ·)).card =
+        (((f + C (νR x) * g).roots.filter (b < ·)).card : ℤ) -
+          (f.roots.filter (b < ·)).card := by
+    intro hga hgb
+    have hf_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ f.IsRoot z := by
+      intro z haz hzb
+      exact hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no z
+        ⟨le_of_lt haz, hzb⟩
+    have hright_no_Ioc : ∀ z : ℝ, a < z → z ≤ b →
+        ¬ (f + C (νR x) * g).IsRoot z := by
+      intro z haz hzb
+      by_cases hzb_eq : z = b
+      · simpa [hzb_eq] using hno.rightFamily_not_isRoot_of_right_root hgb
+      · exact hright_no x a b hax hxb hga hgb hgap z haz
+          (lt_of_le_of_ne hzb hzb_eq)
+    exact card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc hab
+      hright_no_Ioc hf_no_Ioc
+  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
+    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
+    (hνL_pos x) (hνL_large x) (hdegL x) hleft_count_sub
+    (hνR_pos x) (hνR_small x) (hdegR x) hright_count_sub
+
 /-- Supplier for the parity-guarded consecutive-root ownership input from
 endpoint count equalities.  This is a convenient specialization of
 `OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs`; later
