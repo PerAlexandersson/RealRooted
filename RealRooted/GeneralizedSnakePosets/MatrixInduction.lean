@@ -159,6 +159,65 @@ theorem theorem41NonconstantStep_prec_of_claim7
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hrec_del, hrec_w]
 
+/-- Polynomial form of the exceptional `m = 1` Braun-Jal step.
+
+If `g ≪ f` and both polynomials have nonnegative coefficients, then
+`f ≪ (1 + X) f + X g`. -/
+theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
+    (hgf : Prec g f)
+    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
+    Prec f ((1 + X) * f + X * g) := by
+  have hf_Xg : Prec f (X * g) :=
+    prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg
+  have hsum_nonneg : HasNonnegCoeffs (f + X * g) :=
+    hf_nonneg.add hg_nonneg.X_mul
+  have haff :
+      ∀ {s t : ℝ}, 0 < s → 0 < t →
+        ((((C s * X + C t) * f) + (f + X * g)) ≠ 0 ∧
+          (((C s * X + C t) * f) + (f + X * g)).Splits) := by
+    intro s t hs ht
+    have ht_one : 0 < t + 1 := by linarith
+    have hbase :=
+      isRealRooted_affine_combo_of_prec_nonneg
+        hf_Xg hf_nonneg hg_nonneg.X_mul hs ht_one
+    have hrew :
+        ((C s * X + C t) * f + (f + X * g)) =
+          ((C s * X + C (t + 1)) * f + X * g) := by
+      simp only [map_add, map_one]
+      ring
+    rwa [hrew]
+  have hshift :=
+    prec_shifted_pair_of_affine_family_nonneg
+      (f := f) (g := f + X * g) hgf.2.1.1 hf_nonneg hsum_nonneg haff
+  simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm,
+    add_comm] using hshift
+
+/-- Word-level form of the exceptional `m = 1` Braun-Jal recurrence step.
+
+When the final constant suffix has length one, Theorem 3.5 rewrites `M w` as
+`(1 + X) f + X g`, while `w.deleteFinal` is the prefix carrying `f`. -/
+theorem theorem41StepOne_prec_of_recurrence
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hlast : w.IsLastChangeIndex k)
+    (hsuffix : w.length - (k + 1) = 1)
+    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
+    Prec (M w.deleteFinal) (M w) := by
+  let f : ℝ[X] := M (w.takePrefix (k + 1))
+  let g : ℝ[X] := M (w.takePrefix k)
+  have hdel : w.deleteFinal = w.takePrefix (k + 1) :=
+    SnakeWord.deleteFinal_eq_takePrefix_succ_of_length_sub_eq_one hsuffix
+  have hrec_w : M w = (1 + X) * f + X * g := by
+    dsimp [f, g]
+    rw [hrec hlast.not_isConstant hlast, hsuffix, hP_one, hG_one]
+    ring
+  have hstep := theorem41StepOne_prec_of_prec_nonneg
+    (f := f) (g := g) hprefix
+    (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
+  rwa [hdel, hrec_w]
+
 /-- Matrix Claim `(6)` gives the same recurrence-step proper-position result
 via the existing Claim `(6)`/Claim `(7)` reindexing. -/
 theorem theorem41Step_prec_of_matrixClaim
@@ -193,6 +252,56 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     (P := P) (G := G) hrec ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim)
     hlast hk hP hG hprefix hP_nonneg hG_nonneg hM_nonneg
 
+/-- Length-induction skeleton for Braun-Jal Theorem 4.1.
+
+If every nonconstant word step turns the prefix induction hypothesis into
+`Prec (M w.deleteFinal) (M w)`, then constant words and the degree bridge
+finish the full deletion-interlacing statement. -/
+theorem theorem41_of_prec_step
+    {M : SnakeWord → ℝ[X]}
+    (hstep :
+      ∀ {w : SnakeWord} {k : ℕ}, ¬ w.IsConstant → w.IsLastChangeIndex k →
+        Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) →
+          Prec (M w.deleteFinal) (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
+    Theorem41NonNestingRookStatement M := by
+  have hmain :
+      ∀ n, ∀ w : SnakeWord, w.length = n → 1 ≤ w.length →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+        intro w hlen hw
+        by_cases hconstw : w.IsConstant
+        · exact hconst hw hconstw
+        · rcases SnakeWord.exists_isLastChangeIndex_of_not_isConstant hconstw with ⟨k, hlast⟩
+          have hprefix_result :
+              (M (w.takePrefix (k + 1)) ≠ 0 ∧
+                  (M (w.takePrefix (k + 1))).Splits) ∧
+                Interlaces
+                  (M (w.takePrefix (k + 1)).deleteFinal)
+                  (M (w.takePrefix (k + 1))) := by
+            refine ih (w.takePrefix (k + 1)).length ?_ (w.takePrefix (k + 1)) rfl ?_
+            · rw [← hlen, hlast.takePrefix_succ_length]
+              exact hlast.succ_lt_length
+            · rw [hlast.takePrefix_succ_length]
+              lia
+          have hprefix_prec :
+              Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) := by
+            rw [← SnakeWord.deleteFinal_takePrefix_succ_of_lt hlast.index_lt_length]
+            exact hprefix_result.2.toPrec
+          have hprec := hstep hconstw hlast hprefix_prec
+          have hinter : Interlaces (M w.deleteFinal) (M w) :=
+            hprec.toInterlaces (hdeg hw)
+          exact ⟨hinter.1, hinter⟩
+  intro w hw
+  exact hmain w.length w rfl hw
+
 /-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1.
 
 The remaining hypotheses expose the parts not proved by the matrix step:
@@ -218,46 +327,57 @@ theorem theorem41_of_claim7_of_base_cases
         w.IsLastChangeIndex k → w.length - (k + 1) = 1 →
           (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
     Theorem41NonNestingRookStatement M := by
-  have hmain :
-      ∀ n, ∀ w : SnakeWord, w.length = n → 1 ≤ w.length →
-        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro w hlen hw
-        by_cases hconstw : w.IsConstant
-        · exact hconst hw hconstw
-        · rcases SnakeWord.exists_isLastChangeIndex_of_not_isConstant hconstw with ⟨k, hlast⟩
-          by_cases hk : k + 1 < w.deleteFinal.length
-          · have hprefix_result :
-                (M (w.takePrefix (k + 1)) ≠ 0 ∧
-                    (M (w.takePrefix (k + 1))).Splits) ∧
-                  Interlaces
-                    (M (w.takePrefix (k + 1)).deleteFinal)
-                    (M (w.takePrefix (k + 1))) := by
-              refine ih (w.takePrefix (k + 1)).length ?_ (w.takePrefix (k + 1)) rfl ?_
-              · rw [← hlen, hlast.takePrefix_succ_length]
-                exact hlast.succ_lt_length
-              · rw [hlast.takePrefix_succ_length]
-                lia
-            have hprefix_prec :
-                Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) := by
-              rw [← SnakeWord.deleteFinal_takePrefix_succ_of_lt hlast.index_lt_length]
-              exact hprefix_result.2.toPrec
-            have hprec := theorem41NonconstantStep_prec_of_claim7
-              (M := M) (P := P) (G := G) (w := w) (k := k)
-              hrec hclaim hlast hk hP hG hprefix_prec
-              hP_nonneg hG_nonneg hM_nonneg
-            have hinter : Interlaces (M w.deleteFinal) (M w) :=
-              hprec.toInterlaces (hdeg hw)
-            exact ⟨hinter.1, hinter⟩
-          · have hstep : w.length - (k + 1) = 1 := by
-              rw [SnakeWord.length_deleteFinal] at hk
-              have hsuffix := hlast.succ_lt_length
-              lia
-            exact hstepOne hw hconstw hlast hstep
-  intro w hw
-  exact hmain w.length w rfl hw
+  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
+  intro w k hconstw hlast hprefix_prec
+  by_cases hk : k + 1 < w.deleteFinal.length
+  · exact theorem41NonconstantStep_prec_of_claim7
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hclaim hlast hk hP hG hprefix_prec hP_nonneg hG_nonneg hM_nonneg
+  · have hw : 1 ≤ w.length :=
+      Nat.succ_le_of_lt (lt_of_le_of_lt (Nat.zero_le k) hlast.index_lt_length)
+    have hsuffix : w.length - (k + 1) = 1 := by
+      rw [SnakeWord.length_deleteFinal] at hk
+      have hlast_suffix := hlast.succ_lt_length
+      lia
+    exact (hstepOne hw hconstw hlast hsuffix).2.toPrec
+
+/-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
+`m = 1` recurrence branch discharged.
+
+The only remaining word-level base family is the positive-length constant-word
+case.  The short final suffix is handled by Theorem 3.5 together with
+`P_1 = 1 + X`, `G_1 = 1`, and the induction hypothesis on the prefix ending at
+the last-change index. -/
+theorem theorem41_of_claim7_of_constant_cases
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41Claim7Statement P G)
+    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
+    Theorem41NonNestingRookStatement M := by
+  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
+  intro w k _hconstw hlast hprefix_prec
+  by_cases hk : k + 1 < w.deleteFinal.length
+  · exact theorem41NonconstantStep_prec_of_claim7
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hclaim hlast hk hP hG hprefix_prec hP_nonneg hG_nonneg hM_nonneg
+  · have hsuffix : w.length - (k + 1) = 1 := by
+      rw [SnakeWord.length_deleteFinal] at hk
+      have hlast_suffix := hlast.succ_lt_length
+      lia
+    exact theorem41StepOne_prec_of_recurrence
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
 
 end GeneralizedSnakePosets
 end RealRooted

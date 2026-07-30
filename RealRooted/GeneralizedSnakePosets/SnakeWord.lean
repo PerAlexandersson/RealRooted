@@ -146,6 +146,15 @@ theorem length_deleteFinal_sub_eq
   rw [length_deleteFinal]
   lia
 
+/-- If `w.length - (k + 1) = 1`, final-letter deletion is exactly the prefix
+of length `k + 1`. -/
+theorem deleteFinal_eq_takePrefix_succ_of_length_sub_eq_one
+    {w : SnakeWord} {k : ℕ} (h : w.length - (k + 1) = 1) :
+    w.deleteFinal = w.takePrefix (k + 1) := by
+  rw [deleteFinal_eq_takePrefix]
+  congr 1
+  lia
+
 /-- Reading before the deleted final letter agrees with reading in the
 original word. -/
 @[simp] theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
