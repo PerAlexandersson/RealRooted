@@ -24,6 +24,13 @@ Section 3, reusing the existing Narayana quotient sequence. -/
 def modifiedNarayanaPolynomial (n : ℕ) : ℝ[X] :=
   narayanaQuot (n + 1)
 
+/-- The quotient Narayana recurrence in the modified Narayana indexing. -/
+theorem modifiedNarayanaPolynomial_succ_succ (n : ℕ) :
+    modifiedNarayanaPolynomial (n + 2) =
+      narayanaCoeffA (n + 1) * modifiedNarayanaPolynomial (n + 1) +
+        narayanaCoeffB (n + 1) * modifiedNarayanaPolynomial n := by
+  simp [modifiedNarayanaPolynomial, narayanaQuot_succ_succ]
+
 @[simp] theorem modifiedNarayanaPolynomial_zero :
     modifiedNarayanaPolynomial 0 = 1 := by
   simp [modifiedNarayanaPolynomial]
@@ -698,6 +705,17 @@ theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
           Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih_succ
       rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
         ih', ih_succ']
+
+/-- Consecutive modified Narayana polynomials have no common real root. -/
+theorem modifiedNarayanaPolynomial_no_common_root (n : ℕ) :
+    ∀ r : ℝ, (modifiedNarayanaPolynomial (n + 1)).IsRoot r →
+      ¬ (modifiedNarayanaPolynomial n).IsRoot r := by
+  intro r hr hprev
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial] at hr
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial] at hprev
+  exact narayanaPolynomial_no_common_root 1 n r hr hprev
 
 /-! ## Explicit low-degree normal forms -/
 

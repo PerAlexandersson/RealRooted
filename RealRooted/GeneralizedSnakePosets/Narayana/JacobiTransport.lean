@@ -525,6 +525,85 @@ theorem lemma34ModifiedNarayanaShifted_left_ne_zero
       narayanaDifference modifiedNarayanaPolynomial m ≠ 0 :=
   (lemma34ModifiedNarayanaShifted_left_posLeadingCoeff hm hlam hmu).ne_zero
 
+/-- In Braun--Jal's shifted Lemma 3.4, the previous modified Narayana
+polynomial interlaces the left-hand polynomial. -/
+theorem lemma34ModifiedNarayanaShifted_prev_interlaces_left
+    {m : ℕ} {lam mu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    Interlaces (modifiedNarayanaPolynomial (m - 1))
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m) := by
+  obtain ⟨k, rfl⟩ : ∃ k, m = k + 2 := ⟨m - 2, by lia⟩
+  let a : ℝ[X] := C lam * X + C mu + narayanaCoeffA (k + 1) - 1
+  let b : ℝ[X] := narayanaCoeffB (k + 1)
+  have hleft_eq :
+      a * modifiedNarayanaPolynomial (k + 1) +
+          b * modifiedNarayanaPolynomial k =
+        (C lam * X + C mu) * modifiedNarayanaPolynomial (k + 1) +
+          narayanaDifference modifiedNarayanaPolynomial (k + 2) := by
+    rw [narayanaDifference, modifiedNarayanaPolynomial_succ_succ k]
+    simp [a, b]
+    ring
+  have hleft_deg :
+      (((C lam * X + C mu) * modifiedNarayanaPolynomial (k + 1) +
+        narayanaDifference modifiedNarayanaPolynomial (k + 2)).natDegree =
+          k + 2) := by
+    simpa using lemma34ModifiedNarayanaShifted_left_natDegree
+      (m := k + 2) (by lia) hlam hmu
+  have hprec :
+      Prec (modifiedNarayanaPolynomial (k + 1))
+        (a * modifiedNarayanaPolynomial (k + 1) +
+          b * modifiedNarayanaPolynomial k) := by
+    have hF_pos :
+        HasPosLeadingCoeff
+          (a * modifiedNarayanaPolynomial (k + 1) +
+            b * modifiedNarayanaPolynomial k) := by
+      rw [hleft_eq]
+      exact lemma34ModifiedNarayanaShifted_left_posLeadingCoeff
+        (m := k + 2) (by lia) hlam hmu
+    have hdeg_lo :
+        (modifiedNarayanaPolynomial (k + 1)).natDegree ≤
+          (a * modifiedNarayanaPolynomial (k + 1) +
+            b * modifiedNarayanaPolynomial k).natDegree := by
+      rw [hleft_eq, modifiedNarayanaPolynomial_natDegree, hleft_deg]
+      lia
+    have hdeg_hi :
+        (a * modifiedNarayanaPolynomial (k + 1) +
+          b * modifiedNarayanaPolynomial k).natDegree ≤
+            (modifiedNarayanaPolynomial (k + 1)).natDegree + 1 := by
+      rw [hleft_eq, modifiedNarayanaPolynomial_natDegree, hleft_deg]
+    have hb_nonpos :
+        ∀ r, (modifiedNarayanaPolynomial (k + 1)).IsRoot r → b.eval r ≤ 0 := by
+      intro r _hr
+      simpa [b] using narayanaCoeffB_eval_nonpos (k + 1) r
+    exact
+      prec_of_interlaces_evalCoeff_nonpos
+        (modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs k
+          narayanaQuot_hasNonnegCoeffs)
+        (modifiedNarayanaPolynomial_posLeadingCoeff k)
+        hF_pos hdeg_lo hdeg_hi hb_nonpos
+  rw [hleft_eq] at hprec
+  exact hprec.toInterlaces (by
+    rw [modifiedNarayanaPolynomial_natDegree, hleft_deg])
+
+/-- The shifted Lemma 3.4 left-hand polynomial has no common root with the
+previous modified Narayana polynomial. -/
+theorem lemma34ModifiedNarayanaShifted_left_no_common_prev
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) :
+    ∀ r : ℝ,
+      (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r) →
+        ¬ (modifiedNarayanaPolynomial (m - 1)).IsRoot r := by
+  intro r hr hprev
+  have hprev_eval : (modifiedNarayanaPolynomial (m - 1)).eval r = 0 :=
+    Polynomial.IsRoot.def.mp hprev
+  have hm_root : (modifiedNarayanaPolynomial m).IsRoot r := by
+    rw [Polynomial.IsRoot.def]
+    have hr_eval := Polynomial.IsRoot.def.mp hr
+    simpa [narayanaDifference, eval_add, eval_sub, eval_mul, hprev_eval] using hr_eval
+  obtain ⟨n, rfl⟩ : ∃ n, m = n + 1 := ⟨m - 1, by lia⟩
+  exact modifiedNarayanaPolynomial_no_common_root n r (by simpa using hm_root)
+    (by simpa using hprev)
+
 /-- The right-hand polynomial in Braun--Jal's shifted Lemma 3.4 has
 nonnegative coefficients. -/
 theorem lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs

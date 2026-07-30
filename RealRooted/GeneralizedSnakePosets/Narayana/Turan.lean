@@ -336,5 +336,49 @@ theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
   lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turan hr
     (hT hm hmN (lemma34ModifiedNarayana_left_isRoot_nonpos hm hlam hnu hr))
 
+/-- Braun--Jal Lemma 3.4 in shifted nonnegative-parameter form for the
+modified Narayana family. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_modified :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement
+      modifiedNarayanaPolynomial := by
+  intro m lam mu hm hlam hmu
+  have hm1 : 1 ≤ m := by linarith
+  have hleft_interlaces :
+      Interlaces (modifiedNarayanaPolynomial (m - 1))
+        ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) :=
+    lemma34ModifiedNarayanaShifted_prev_interlaces_left hm hlam hmu
+  have hright_interlaces :
+      Interlaces (modifiedNarayanaPolynomial m)
+        ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) :=
+    lemma34ModifiedNarayanaShifted_prev_interlaces_left
+      (m := m + 1) (by lia) hlam hmu
+  refine
+    prec_of_interlaces_eval_mul_nonpos_of_no_common
+      hleft_interlaces
+      (modifiedNarayanaPolynomial_posLeadingCoeff (m - 1))
+      hright_interlaces.1.1 hright_interlaces.1.2
+      (lemma34ModifiedNarayanaShifted_right_posLeadingCoeff hlam hmu)
+      ?_ ?_
+      (lemma34ModifiedNarayanaShifted_left_no_common_prev hm1)
+      ?_
+  · rw [lemma34ModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
+      lemma34ModifiedNarayanaShifted_right_natDegree hlam hmu]
+    lia
+  · rw [lemma34ModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
+      lemma34ModifiedNarayanaShifted_right_natDegree hlam hmu]
+  · intro r hr
+    exact
+      lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonneg
+        hm1 hlam hmu modifiedNarayanaTuranNonnegOnNonpos hr
+
+/-- Braun--Jal Lemma 3.4 in the paper's `ν ≥ -1` form for the modified
+Narayana family. -/
+theorem lemma34ModifiedNarayanaInterlacing_modified :
+    Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
+  lemma34ModifiedNarayanaInterlacing_of_shifted
+    lemma34ModifiedNarayanaShiftedInterlacing_modified
+
 end GeneralizedSnakePosets
 end RealRooted

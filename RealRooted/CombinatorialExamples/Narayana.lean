@@ -25,6 +25,16 @@ def narayanaCoeffA (n : Nat) : ℝ[X] :=
 def narayanaCoeffB (n : Nat) : ℝ[X] :=
   C ((-(n : ℝ)) / (n + 3 : ℝ)) * (1 - X) ^ 2
 
+/-- The quadratic coefficient block in the Narayana recurrence is
+nonpositive on every real input. -/
+theorem narayanaCoeffB_eval_nonpos (n : Nat) (r : ℝ) :
+    (narayanaCoeffB n).eval r ≤ 0 := by
+  have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 :=
+    div_nonpos_of_nonpos_of_nonneg (by simp) (by positivity)
+  have hsquare_nonneg : 0 ≤ (1 - r) ^ 2 := sq_nonneg _
+  simpa [narayanaCoeffB, eval_mul, eval_sub, eval_one, eval_X] using
+    mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos hsquare_nonneg
+
 /-- The quotient Narayana sequence `Q_n = P_n / X`, defined recursively from
 
 `(n+3) Q_{n+2} = (2n+3) (1 + X) Q_{n+1} - n (1 - X)^2 Q_n`
@@ -249,7 +259,7 @@ lemma narayanaQuot_one_two_interlaces :
 
 private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
-    (hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
+    (_hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
     Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
   have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
     narayanaQuot_posLeadingCoeff n hn
@@ -271,15 +281,8 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     lia
   have hb_nonpos :
       ∀ r, (narayanaQuot (n + 1)).IsRoot r → (narayanaCoeffB n).eval r ≤ 0 := by
-    intro r hr
-    have hr_nonpos :
-        r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1.2 hnonneg r
-          ((mem_roots hInter.1.1).mpr hr)
-    have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 :=
-      div_nonpos_of_nonpos_of_nonneg (by simp) (by positivity)
-    have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=
-      mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos (sq_nonneg (1 - r))
-    simpa [narayanaCoeffB, eval_mul, eval_sub, eval_one, eval_X] using this
+    intro r _hr
+    exact narayanaCoeffB_eval_nonpos n r
   simpa [narayanaQuot_succ_succ] using
     (prec_of_interlaces_evalCoeff_nonpos
       (f := narayanaQuot (n + 1))
