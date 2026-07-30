@@ -304,6 +304,25 @@ theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
   rw [hIoo]
   exact card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
 
+/-- For an interval whose right endpoint is absent from a multiset, parity of
+the open-interval count is the same as parity of the sum of the two
+strict-upper endpoint counts. -/
+theorem odd_card_filter_gt_add_iff_odd_card_filter_Ioo_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b)
+    (hb : b ∉ s) :
+    Odd ((s.filter (a < ·)).card + (s.filter (b < ·)).card) ↔
+      Odd (s.filter (fun r => a < r ∧ r < b)).card := by
+  have hpart :=
+    card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem s hab hb
+  rw [← hpart]
+  constructor
+  · rintro ⟨k, hk⟩
+    refine ⟨k - (s.filter (b < ·)).card, ?_⟩
+    lia
+  · rintro ⟨k, hk⟩
+    refine ⟨k + (s.filter (b < ·)).card, ?_⟩
+    lia
+
 /-- If two multisets have the same number of elements above each endpoint of
 an interval, then they have the same number of elements inside the interval,
 provided the right endpoint belongs to neither multiset. -/
@@ -337,6 +356,16 @@ theorem card_roots_filter_Ioo_eq_of_card_filter_gt_eq
   card_filter_Ioo_eq_of_card_filter_gt_eq f.roots g.roots hab
     (fun hb_mem => hfb ((mem_roots hf).mp hb_mem))
     (fun hb_mem => hgb ((mem_roots hg).mp hb_mem)) ha hb
+
+/-- Polynomial-root form of
+`odd_card_filter_gt_add_iff_odd_card_filter_Ioo_of_not_mem`. -/
+theorem odd_card_roots_filter_gt_add_iff_odd_card_roots_filter_Ioo_of_not_isRoot
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab : a ≤ b)
+    (hb : ¬ p.IsRoot b) :
+    Odd ((p.roots.filter (a < ·)).card + (p.roots.filter (b < ·)).card) ↔
+      Odd (p.roots.filter (fun r => a < r ∧ r < b)).card :=
+  odd_card_filter_gt_add_iff_odd_card_filter_Ioo_of_not_mem p.roots hab
+    (fun hb_mem => hb ((mem_roots hp).mp hb_mem))
 
 /-- If an open interval contains at least two elements of a multiset, then the
 strict-upper count drops by at least two across the interval, provided the
