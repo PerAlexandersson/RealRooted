@@ -135,6 +135,35 @@ theorem theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
     (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
       hf hg hsgn hbranches)
 
+/-- The factor-return principle proves the no-common-root reverse root-count
+direction. -/
+theorem
+    theorem21RootCountBranchesToCompatibleNoCommon_of_deletionPairFactorReturn
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21RootCountBranchesToCompatibleNoCommonStatement :=
+  theorem21RootCountBranchesToCompatibleNoCommon_of_reverse
+    (theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
+      hreturn)
+
+/-- The factor-return principle proves the reduced common-root reverse
+direction. -/
+theorem theorem21RootCountBranchesReducedToCompatible_of_factorReturn
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21RootCountBranchesReducedToCompatibleStatement :=
+  theorem21RootCountBranchesReducedToCompatible_of_noCommonReverse
+    (theorem21RootCountBranchesToCompatibleNoCommon_of_deletionPairFactorReturn
+      hreturn)
+
+/-- The no-common forward direction and factor-return principle assemble the
+reduced common-root Liu target. -/
+theorem theorem21CompatibleRootCountReduced_of_noCommonForward_and_factorReturn
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21CompatibleRootCountReducedStatement :=
+  theorem21CompatibleRootCountReduced_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward hforward)
+    (theorem21RootCountBranchesReducedToCompatible_of_factorReturn hreturn)
+
 /-- All-combinations factor-return proves the reverse root-count direction. -/
 theorem theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturnAllCombo
     (hreturn :

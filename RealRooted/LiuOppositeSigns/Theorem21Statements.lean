@@ -1145,6 +1145,177 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_counts
     hνR_pos hνR_small hdegR
     (fun x a b hga hgb => by rw [hright_count x a hga, hright_count x b hgb]; simp)
 
+/-- Local-gap supplier for the parity-guarded consecutive-root ownership input
+from open-gap root-freeness of endpoint families.  Unlike
+`OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo`, this theorem lets
+the large or small parameter be chosen from the concrete root-free gap rather
+than from a global function of the sample point. -/
+theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_local_no_isRoot_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hleft_local : ∀ x a b : ℝ, a < x → x < b →
+      f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∃ ν : ℝ, 0 < ν ∧
+        (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ ν) ∧
+        (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+          ∀ τ ∈ Set.Icc μ ν,
+            (f + C τ * g).natDegree = (f + C μ * g).natDegree) ∧
+        ∀ z : ℝ, a < z → z < b → ¬ (g + C ν⁻¹ * f).IsRoot z)
+    (hright_local : ∀ x a b : ℝ, a < x → x < b →
+      g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∃ ν : ℝ, 0 < ν ∧
+        (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → ν ≤ μ) ∧
+        (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+          ∀ τ ∈ Set.Icc ν μ,
+            (f + C τ * g).natDegree = (f + C μ * g).natDegree) ∧
+        ∀ z : ℝ, a < z → z < b → ¬ (f + C ν * g).IsRoot z) :
+    CrossOwnedNotOddGaps f g := by
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+  have hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1
+  have hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z :=
+    fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2
+  have count_sub_eq_of_same_owner {p q r : ℝ[X]}
+      (hpq : NoCommonRoots p q) (hpa : p.IsRoot a) (hpb : p.IsRoot b)
+      (hq_no : ∀ z : ℝ, a < z → z < b → ¬ q.IsRoot z)
+      (hr_no : ∀ z : ℝ, a < z → z < b → ¬ r.IsRoot z)
+      (hrb : ¬ r.IsRoot b) :
+      ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
+        ((r.roots.filter (b < ·)).card : ℤ) -
+          (q.roots.filter (b < ·)).card := by
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
+      intro z haz hzb
+      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
+        ⟨le_of_lt haz, hzb⟩
+    have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
+      intro z haz hzb
+      by_cases hzb_eq : z = b
+      · simpa [hzb_eq] using hrb
+      · exact hr_no z haz (lt_of_le_of_ne hzb hzb_eq)
+    exact card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc hab
+      hr_no_Ioc hq_no_Ioc
+  rcases ha_root with hfa | hga
+  · rcases hb_root with hfb | hgb
+    · obtain ⟨ν, hν_pos, hν_large, hdeg_large, hν_no⟩ :=
+        hleft_local x a b hax hxb hfa hfb hgap
+      exact False.elim <|
+        hsgn.false_of_left_roots_add_left_inv_count_sub_eq_right
+          hfg hno hf hg hfa hfb hf_no hg_no hax hxb hax hxb hnot_odd
+          hν_pos hν_large hdeg_large
+          (count_sub_eq_of_same_owner hno hfa hfb hg_no hν_no
+            (hno.symm.rightFamily_not_isRoot_of_right_root hfb))
+    · exact Or.inl ⟨hfa, hgb⟩
+  · rcases hb_root with hfb | hgb
+    · exact Or.inr ⟨hga, hfb⟩
+    · obtain ⟨ν, hν_pos, hν_small, hdeg_small, hν_no⟩ :=
+        hright_local x a b hax hxb hga hgb hgap
+      exact False.elim <|
+        hsgn.false_of_right_roots_add_right_small_count_sub_eq_left
+          hfg hno hf hg hga hgb hf_no hg_no hax hxb hax hxb hnot_odd
+          hν_pos hν_small hdeg_small
+          (count_sub_eq_of_same_owner hno.symm hga hgb hf_no hν_no
+            (hno.rightFamily_not_isRoot_of_right_root hgb))
+
+/-- Distinct-degree local supplier for the parity-guarded consecutive-root
+ownership input.  The local compactness lemmas choose the large/small
+parameters, and inequality of endpoint degrees supplies the
+positive-parameter degree constancy needed by the local-gap theorem. -/
+theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_natDegree_ne
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hdeg : f.natDegree ≠ g.natDegree) :
+    CrossOwnedNotOddGaps f g := by
+  refine hsgn.crossOwnedNotOddGaps_of_local_no_isRoot_Ioo
+    hfg hno hf hg ?_ ?_
+  · intro x a b hax hxb hfa hfb hgap
+    have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+    have hxIcc : x ∈ Set.Icc a b := ⟨le_of_lt hax, le_of_lt hxb⟩
+    obtain ⟨ν, hν_pos, hν_large, hν_no⟩ :=
+      hno.exists_large_add_left_inv_not_isRoot_Icc_of_left_roots
+        hab hxIcc hfa hfb (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2)
+    refine ⟨ν, hν_pos, hν_large, ?_, ?_⟩
+    · intro μ hμ_pos _ τ hτ
+      exact forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_ne
+        hdeg hμ_pos τ hτ
+    · intro z hz₁ hz₂
+      exact hν_no z ⟨le_of_lt hz₁, le_of_lt hz₂⟩
+  · intro x a b hax hxb hga hgb hgap
+    have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+    have hxIcc : x ∈ Set.Icc a b := ⟨le_of_lt hax, le_of_lt hxb⟩
+    obtain ⟨ν, hν_pos, hν_small, hν_no⟩ :=
+      hno.exists_small_add_right_not_isRoot_Icc_of_right_roots
+        hab hxIcc hga hgb (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1)
+    refine ⟨ν, hν_pos, hν_small, ?_, ?_⟩
+    · intro μ hμ_pos _ τ hτ
+      exact forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero
+        (s := Set.Icc ν μ) (κ := μ) hdeg (ne_of_gt hμ_pos)
+        (fun σ hσ => ne_of_gt (lt_of_lt_of_le hν_pos hσ.1)) τ hτ
+    · intro z hz₁ hz₂
+      exact hν_no z ⟨le_of_lt hz₁, le_of_lt hz₂⟩
+
+/-- Equal-degree local supplier for the parity-guarded consecutive-root
+ownership input, under explicit crossing-side hypotheses.  The cancellation
+parameter `-f.leadingCoeff / g.leadingCoeff` is positive under
+`OppositeLeadingSigns f g`.  In an `f`/`f` gap the positive crossing parameters
+are assumed to lie above that value; in a `g`/`g` gap they are assumed to lie
+below it.  Later analytic work should discharge these directional hypotheses
+or replace them with a more natural condition. -/
+theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_natDegree_eq_of_crossing_cancel_sides
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hdeg : f.natDegree = g.natDegree)
+    (hleft_cancel_lt : ∀ x a b : ℝ, a < x → x < b →
+      f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        -f.leadingCoeff / g.leadingCoeff < μ)
+    (hright_lt_cancel : ∀ x a b : ℝ, a < x → x < b →
+      g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        μ < -f.leadingCoeff / g.leadingCoeff) :
+    CrossOwnedNotOddGaps f g := by
+  refine hsgn.crossOwnedNotOddGaps_of_local_no_isRoot_Ioo
+    hfg hno hf hg ?_ ?_
+  · intro x a b hax hxb hfa hfb hgap
+    have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+    have hxIcc : x ∈ Set.Icc a b := ⟨le_of_lt hax, le_of_lt hxb⟩
+    obtain ⟨ν, hν_pos, hν_large, hν_no⟩ :=
+      hno.exists_large_add_left_inv_not_isRoot_Icc_of_left_roots
+        hab hxIcc hfa hfb (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).2)
+    refine ⟨ν, hν_pos, hν_large, ?_, ?_⟩
+    · intro μ hμ_pos hμ_root τ hτ
+      have hcancel_lt : -f.leadingCoeff / g.leadingCoeff < μ :=
+        hleft_cancel_lt x a b hax hxb hfa hfb hgap μ hμ_pos hμ_root
+      exact
+        forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_cancel_lt_lower
+          (p := f) (q := g) (a := μ) (b := ν) (κ := μ)
+          hdeg hsgn.right_ne_zero hcancel_lt hcancel_lt τ hτ
+    · intro z hz₁ hz₂
+      exact hν_no z ⟨le_of_lt hz₁, le_of_lt hz₂⟩
+  · intro x a b hax hxb hga hgb hgap
+    have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
+    have hxIcc : x ∈ Set.Icc a b := ⟨le_of_lt hax, le_of_lt hxb⟩
+    obtain ⟨ν, hν_pos, hν_small, hν_no⟩ :=
+      hno.exists_small_add_right_not_isRoot_Icc_of_right_roots
+        hab hxIcc hga hgb (fun z hz₁ hz₂ => (hgap z hz₁ hz₂).1)
+    refine ⟨ν, hν_pos, hν_small, ?_, ?_⟩
+    · intro μ hμ_pos hμ_root τ hτ
+      have hlt_cancel : μ < -f.leadingCoeff / g.leadingCoeff :=
+        hright_lt_cancel x a b hax hxb hga hgb hgap μ hμ_pos hμ_root
+      exact
+        forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_upper_lt_cancel
+          (p := f) (q := g) (a := ν) (b := μ) (κ := μ)
+          hdeg hsgn.right_ne_zero hlt_cancel hlt_cancel τ hτ
+    · intro z hz₁ hz₂
+      exact hν_no z ⟨le_of_lt hz₁, le_of_lt hz₂⟩
+
 /-- Analytic supplier for the parity-guarded consecutive-root ownership input
 used by the finite Liu count descent.  This corollary proves the endpoint count
 equalities from constant-degree data; later proof work should target
@@ -1191,6 +1362,234 @@ theorem theorem21RootCountBranches_of_crossOwned
     (fun _ hc => hsimple_f.roots_count_eq_one hc)
     (fun _ hc => hsimple_g.roots_count_eq_one hc)
     hno hcross
+
+/-- Caller boundary for Liu's finite count descent from open-gap
+root-freeness data for the endpoint families.  This composes the analytic
+`CrossOwnedNotOddGaps` supplier with the existing finite root-count branch
+theorem, without introducing a new branch hierarchy. -/
+theorem theorem21RootCountBranches_of_no_isRoot_Ioo
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (νL νR : ℝ → ℝ)
+    (hνL_pos : ∀ x : ℝ, 0 < νL x)
+    (hνL_large : ∀ x μ : ℝ, 0 < μ →
+      (f + C μ * g).IsRoot x → μ ≤ νL x)
+    (hdegL : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc μ (νL x),
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hleft_no : ∀ x a b : ℝ, a < x → x < b →
+      f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ z : ℝ, a < z → z < b →
+        ¬ (g + C (νL x)⁻¹ * f).IsRoot z)
+    (hνR_pos : ∀ x : ℝ, 0 < νR x)
+    (hνR_small : ∀ x μ : ℝ, 0 < μ →
+      (f + C μ * g).IsRoot x → νR x ≤ μ)
+    (hdegR : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc (νR x) μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hright_no : ∀ x a b : ℝ, a < x → x < b →
+      g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ z : ℝ, a < z → z < b →
+        ¬ (f + C (νR x) * g).IsRoot z) :
+    theorem21RootCountBranches f g := by
+  exact theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    hf_deg hg_deg hsimple_f hsimple_g hno
+    (hsgn.crossOwnedNotOddGaps_of_no_isRoot_Ioo
+      hfg hno hf hg νL νR hνL_pos hνL_large hdegL hleft_no
+      hνR_pos hνR_small hdegR hright_no)
+
+/-- A distinct-degree compatible pair is strictly positive-combination
+real-rooted.  The usual positive-leading hypothesis is not needed here:
+distinct endpoint degrees rule out the zero-polynomial branch for positive
+weights by comparing the degrees of the two scaled summands. -/
+theorem posComboRealRooted_of_compatible_natDegree_ne
+    {f g : ℝ[X]} (hcompat : Compatible f g)
+    (hdeg : f.natDegree ≠ g.natDegree) :
+    PosComboRealRooted f g := by
+  intro α β hα hβ
+  rcases hcompat α β hα.le hβ.le with hzero | hrr
+  · exfalso
+    have hαdeg : (C α * f).natDegree = f.natDegree :=
+      Polynomial.natDegree_C_mul (ne_of_gt hα)
+    have hβdeg : (C β * g).natDegree = g.natDegree :=
+      Polynomial.natDegree_C_mul (ne_of_gt hβ)
+    rcases lt_or_gt_of_ne hdeg with hlt | hgt
+    · have hscaled : (C α * f).natDegree < (C β * g).natDegree := by
+        simpa [hαdeg, hβdeg] using hlt
+      have hsum_deg :
+          (C α * f + C β * g).natDegree = (C β * g).natDegree :=
+        Polynomial.natDegree_add_eq_right_of_natDegree_lt hscaled
+      have hg_deg_zero : g.natDegree = 0 := by
+        simpa [hzero, hβdeg, Polynomial.natDegree_zero] using hsum_deg.symm
+      have hg_deg_pos : 0 < g.natDegree :=
+        lt_of_le_of_lt (Nat.zero_le _) hlt
+      lia
+    · have hscaled : (C β * g).natDegree < (C α * f).natDegree := by
+        simpa [hαdeg, hβdeg] using hgt
+      have hsum_deg :
+          (C α * f + C β * g).natDegree = (C α * f).natDegree :=
+        Polynomial.natDegree_add_eq_left_of_natDegree_lt hscaled
+      have hf_deg_zero : f.natDegree = 0 := by
+        simpa [hzero, hαdeg, Polynomial.natDegree_zero] using hsum_deg.symm
+      have hf_deg_pos : 0 < f.natDegree :=
+        lt_of_le_of_lt (Nat.zero_le _) hgt
+      lia
+  · exact hrr
+
+/-- In the no-common, nonconstant splitting regime, compatibility supplies the
+strictly positive-combination real-rootedness hypothesis.  A zero positive
+combination would make every root of `g` a root of `f`, contradicting the
+no-common-root hypothesis. -/
+theorem posComboRealRooted_of_compatible_noCommon_nonconstant
+    {f g : ℝ[X]} (hcompat : Compatible f g) (hno : NoCommonRoots f g)
+    (hg : g.Splits) (hg_deg : g.natDegree ≠ 0) :
+    PosComboRealRooted f g := by
+  intro α β hα hβ
+  rcases hcompat α β hα.le hβ.le with hzero | hrr
+  · exfalso
+    have hg_ne : g ≠ 0 := by
+      intro hg_zero
+      exact hg_deg (by simp [hg_zero])
+    obtain ⟨r, hr_mem⟩ :=
+      Multiset.exists_mem_of_ne_zero (hg.roots_ne_zero hg_deg)
+    have hgr : g.IsRoot r := (Polynomial.mem_roots hg_ne).mp hr_mem
+    have hsum_eval : (C α * f + C β * g).eval r = 0 := by
+      simp [hzero]
+    have hgr_eval : g.eval r = 0 := by
+      simpa [Polynomial.IsRoot.def] using hgr
+    have hfr_eval : f.eval r = 0 := by
+      have hα_eval : α * f.eval r = 0 := by
+        simpa [eval_add, eval_mul, eval_C, hgr_eval] using hsum_eval
+      exact (mul_eq_zero.mp hα_eval).resolve_left (ne_of_gt hα)
+    have hfr : f.IsRoot r := by
+      simpa [Polynomial.IsRoot.def] using hfr_eval
+    exact (hno r hfr) hgr
+  · exact hrr
+
+/-- Caller boundary for Liu's finite count descent in the distinct-degree
+case.  This is the preferred entry point when the endpoint degrees differ:
+the local compactness and degree-constancy supplier proves the cross-owned
+finite-gap input internally. -/
+theorem theorem21RootCountBranches_of_natDegree_ne
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hdeg : f.natDegree ≠ g.natDegree) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    hf_deg hg_deg hsimple_f hsimple_g hno
+    (hsgn.crossOwnedNotOddGaps_of_natDegree_ne hfg hno hf hg hdeg)
+
+/-- Compatible caller boundary for Liu's finite count descent in the
+distinct-degree case.  Compatibility supplies the positive-combination
+real-rootedness hypothesis because unequal endpoint degrees prevent positive
+linear combinations from vanishing. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_ne
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hcompat : Compatible f g)
+    (hdeg : f.natDegree ≠ g.natDegree) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_natDegree_ne hsgn
+    (posComboRealRooted_of_compatible_noCommon_nonconstant hcompat hno hg hg_deg)
+    hf hg hf_deg hg_deg hsimple_f hsimple_g hno hdeg
+
+/-- Caller boundary for Liu's finite count descent in the equal-degree case,
+provided the positive crossing parameters stay on the appropriate side of the
+unique leading-term cancellation parameter in same-owner gaps. -/
+theorem theorem21RootCountBranches_of_natDegree_eq_of_crossing_cancel_sides
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hdeg : f.natDegree = g.natDegree)
+    (hleft_cancel_lt : ∀ x a b : ℝ, a < x → x < b →
+      f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        -f.leadingCoeff / g.leadingCoeff < μ)
+    (hright_lt_cancel : ∀ x a b : ℝ, a < x → x < b →
+      g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        μ < -f.leadingCoeff / g.leadingCoeff) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    hf_deg hg_deg hsimple_f hsimple_g hno
+    (hsgn.crossOwnedNotOddGaps_of_natDegree_eq_of_crossing_cancel_sides
+      hfg hno hf hg hdeg hleft_cancel_lt hright_lt_cancel)
+
+/-- Compatible caller boundary for the equal-degree crossing-side
+case.  Compatibility supplies positive-combination real-rootedness in the
+no-common nonconstant regime; the two local cancellation-side hypotheses remain
+explicit. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_eq_of_crossing_cancel_sides
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (hcompat : Compatible f g)
+    (hdeg : f.natDegree = g.natDegree)
+    (hleft_cancel_lt : ∀ x a b : ℝ, a < x → x < b →
+      f.IsRoot a → f.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        -f.leadingCoeff / g.leadingCoeff < μ)
+    (hright_lt_cancel : ∀ x a b : ℝ, a < x → x < b →
+      g.IsRoot a → g.IsRoot b →
+      (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
+      ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+        μ < -f.leadingCoeff / g.leadingCoeff) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_natDegree_eq_of_crossing_cancel_sides hsgn
+    (posComboRealRooted_of_compatible_noCommon_nonconstant hcompat hno hg hg_deg)
+    hf hg hf_deg hg_deg hsimple_f hsimple_g hno hdeg
+    hleft_cancel_lt hright_lt_cancel
+
+/-- Caller boundary for Liu's finite count descent from parameter-bound and
+zero-end degree-constancy data.  This is a convenience wrapper for callers
+already living at `OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds`;
+new analytic proofs should usually target the endpoint count-difference or
+open-gap no-root boundaries directly. -/
+theorem theorem21RootCountBranches_of_parameter_bounds
+    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
+    (hfg : PosComboRealRooted f g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
+    (hno : NoCommonRoots f g) (νL νR : ℝ → ℝ)
+    (hνL_pos : ∀ x : ℝ, 0 < νL x)
+    (hνL_large : ∀ x μ : ℝ, 0 < μ →
+      (f + C μ * g).IsRoot x → μ ≤ νL x)
+    (hdegL : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc μ (νL x),
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegL_inv : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νL x)⁻¹ →
+      (g + C η * f).natDegree = (g + C (0 : ℝ) * f).natDegree)
+    (hνR_pos : ∀ x : ℝ, 0 < νR x)
+    (hνR_small : ∀ x μ : ℝ, 0 < μ →
+      (f + C μ * g).IsRoot x → νR x ≤ μ)
+    (hdegR : ∀ x μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x →
+      ∀ τ ∈ Set.Icc (νR x) μ,
+        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
+    (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
+      (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
+    theorem21RootCountBranches f g := by
+  exact theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    hf_deg hg_deg hsimple_f hsimple_g hno
+    (hsgn.crossOwnedNotOddGaps_of_parameter_bounds
+      hfg hno hf hg νL νR hνL_pos hνL_large hdegL hdegL_inv
+      hνR_pos hνR_small hdegR hdegR_zero)
 
 /-- Caller boundary for the finite Liu count descent from stronger one-sided
 strict-upper `≤ 1` root-count bounds.  The raw largest-root witnesses and
@@ -1327,6 +1726,15 @@ theorem compatible_deleteRootFactor_of_common_root {f g : ℝ[X]} {r : ℝ}
         (splits_mul_iff_right (X_sub_C_ne_zero r)
           (Polynomial.Splits.X_sub_C r)).mp hrr.2
 
+/-- Failure of the no-common-root predicate produces an explicit common root. -/
+theorem exists_common_root_of_not_noCommonRoots {f g : ℝ[X]}
+    (hno : ¬ NoCommonRoots f g) :
+    ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r := by
+  by_contra hmissing
+  exact hno (by
+    intro r hfr hgr
+    exact hmissing ⟨r, hfr, hgr⟩)
+
 /-- Common-root branch for the unreduced Liu statement: peel one common
 linear factor and require compatibility of the cofactors. -/
 def CommonRootDeletionCompatibleBranch (f g : ℝ[X]) : Prop :=
@@ -1350,6 +1758,15 @@ theorem compatible {f g : ℝ[X]}
     factor_deleteRootFactor_of_isRoot hgr
   simpa [hf_def, hg_def] using hmul
 
+/-- Compatible polynomials with a common root satisfy the common-root deletion
+branch. -/
+theorem of_compatible_of_not_noCommonRoots {f g : ℝ[X]}
+    (hcompat : Compatible f g) (hno : ¬ NoCommonRoots f g) :
+    CommonRootDeletionCompatibleBranch f g := by
+  rcases exists_common_root_of_not_noCommonRoots hno with ⟨r, hfr, hgr⟩
+  exact ⟨r, hfr, hgr,
+    compatible_deleteRootFactor_of_common_root hcompat hfr hgr⟩
+
 end CommonRootDeletionCompatibleBranch
 
 /-- Corrected unreduced branch predicate: either Liu's no-common largest-root
@@ -1357,6 +1774,25 @@ branch holds, or a common root can be peeled and the cofactors are compatible.
 -/
 def theorem21RootCountBranchesWithCommon (f g : ℝ[X]) : Prop :=
   theorem21RootCountBranches f g ∨ CommonRootDeletionCompatibleBranch f g
+
+/-- Reduced common-root branch predicate.  In the ordinary root-count branch we
+remember the no-common-root hypothesis, so no-common reverse statements can be
+used after splitting off the common-root case. -/
+def theorem21RootCountBranchesReduced (f g : ℝ[X]) : Prop :=
+  (NoCommonRoots f g ∧ theorem21RootCountBranches f g) ∨
+    CommonRootDeletionCompatibleBranch f g
+
+namespace theorem21RootCountBranchesReduced
+
+/-- Forget the extra no-common-root witness in the reduced branch predicate. -/
+theorem withCommon {f g : ℝ[X]}
+    (h : theorem21RootCountBranchesReduced f g) :
+    theorem21RootCountBranchesWithCommon f g := by
+  rcases h with hbranches | hcommon
+  · exact Or.inl hbranches.2
+  · exact Or.inr hcommon
+
+end theorem21RootCountBranchesReduced
 
 /-- Full unreduced target for Liu Theorem 2.1, stated against the project's
 `Compatible` predicate.  The two branch predicate below is the no-common
@@ -1448,6 +1884,24 @@ def theorem21RootCountBranchesToCompatibleNoCommonNonconstantStatement :
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       NoCommonRoots f g → f.natDegree ≠ 0 → g.natDegree ≠ 0 →
         theorem21RootCountBranches f g → Compatible f g
+
+/-- Reduced common-root Liu target.  The ordinary branch keeps the
+no-common-root witness needed by no-common reverse theorems. -/
+def theorem21CompatibleRootCountReducedStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    (Compatible f g ↔ theorem21RootCountBranchesReduced f g)
+
+/-- Forward half of the reduced common-root target. -/
+def theorem21CompatibleToRootCountBranchesReducedStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      Compatible f g → theorem21RootCountBranchesReduced f g
+
+/-- Reverse half of the reduced common-root target. -/
+def theorem21RootCountBranchesReducedToCompatibleStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    f.Splits → g.Splits → OppositeLeadingSigns f g →
+      theorem21RootCountBranchesReduced f g → Compatible f g
 
 /-- Unreduced theorem target with an explicit common-root branch.  This is the
 safe full-statement interface; the older `theorem21CompatibleRootCountStatement`
@@ -1748,23 +2202,77 @@ theorem theorem21RootCountBranches_of_compatible_noCommon_nonconstant
     hf hg hsgn hno hf_deg hg_deg hcompat
 
 /-- The no-common-root forward direction plus common-root deletion gives the
+reduced common-root branch predicate. -/
+theorem theorem21RootCountBranchesReduced_of_compatible_of_noCommonForward
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
+    theorem21RootCountBranchesReduced f g := by
+  by_cases hno : NoCommonRoots f g
+  · exact Or.inl ⟨hno, hforward hf hg hsgn hno hcompat⟩
+  · exact Or.inr
+      (CommonRootDeletionCompatibleBranch.of_compatible_of_not_noCommonRoots
+        hcompat hno)
+
+/-- The no-common-root forward direction plus common-root deletion gives the
 corrected full forward direction with an explicit common-root branch. -/
 theorem theorem21RootCountBranchesWithCommon_of_compatible_of_noCommonForward
     (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
     theorem21RootCountBranchesWithCommon f g := by
-  by_cases hno : NoCommonRoots f g
-  · exact Or.inl (hforward hf hg hsgn hno hcompat)
-  · have hcommon : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r := by
-      by_contra hmissing
-      apply hno
-      intro r hfr hgr
-      exact hmissing ⟨r, hfr, hgr⟩
-    rcases hcommon with ⟨r, hfr, hgr⟩
-    exact Or.inr
-      ⟨r, hfr, hgr,
-        compatible_deleteRootFactor_of_common_root hcompat hfr hgr⟩
+  exact theorem21RootCountBranchesReduced.withCommon
+    (theorem21RootCountBranchesReduced_of_compatible_of_noCommonForward
+      hforward hf hg hsgn hcompat)
+
+/-- The corrected reduced forward direction follows from the no-common forward
+direction and the automatic common-root deletion branch. -/
+theorem theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
+    theorem21CompatibleToRootCountBranchesReducedStatement := by
+  intro f g hf hg hsgn hcompat
+  exact theorem21RootCountBranchesReduced_of_compatible_of_noCommonForward
+    hforward hf hg hsgn hcompat
+
+/-- The reduced common-root branch predicate forgets to the existing
+with-common branch predicate. -/
+theorem theorem21CompatibleToRootCountBranchesWithCommon_of_reduced
+    (hreduced : theorem21CompatibleToRootCountBranchesReducedStatement) :
+    theorem21CompatibleToRootCountBranchesWithCommonStatement := by
+  intro f g hf hg hsgn hcompat
+  exact theorem21RootCountBranchesReduced.withCommon
+    (hreduced hf hg hsgn hcompat)
+
+/-- No-common-root reverse direction plus factor multiplication proves the
+reduced common-root-branch reverse direction. -/
+theorem theorem21RootCountBranchesReducedToCompatible_of_noCommonReverse
+    (hreverse : theorem21RootCountBranchesToCompatibleNoCommonStatement) :
+    theorem21RootCountBranchesReducedToCompatibleStatement := by
+  intro f g hf hg hsgn hbranches
+  rcases hbranches with hbranches | hcommon
+  · exact hreverse hf hg hsgn hbranches.1 hbranches.2
+  · exact CommonRootDeletionCompatibleBranch.compatible hcommon
+
+/-- Reassemble the reduced common-root Liu target from separately proved
+reduced forward and reverse directions. -/
+theorem theorem21CompatibleRootCountReduced_of_forward_and_reverse
+    (hforward : theorem21CompatibleToRootCountBranchesReducedStatement)
+    (hreverse : theorem21RootCountBranchesReducedToCompatibleStatement) :
+    theorem21CompatibleRootCountReducedStatement := by
+  intro f g hf hg hsgn
+  exact ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
+
+/-- Reassemble the reduced common-root Liu target from the no-common forward
+and no-common reverse directions. -/
+theorem theorem21CompatibleRootCountReduced_of_noCommon_forward_and_reverse
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
+    (hreverse : theorem21RootCountBranchesToCompatibleNoCommonStatement) :
+    theorem21CompatibleRootCountReducedStatement :=
+  theorem21CompatibleRootCountReduced_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward
+      hforward)
+    (theorem21RootCountBranchesReducedToCompatible_of_noCommonReverse
+      hreverse)
 
 /-- Projection form of the corrected full forward target. -/
 theorem theorem21RootCountBranchesWithCommon_of_compatible_of_forward
@@ -1779,9 +2287,8 @@ direction and the automatic common-root deletion branch. -/
 theorem theorem21CompatibleToRootCountBranchesWithCommon_of_noCommonForward
     (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
     theorem21CompatibleToRootCountBranchesWithCommonStatement := by
-  intro f g hf hg hsgn hcompat
-  exact theorem21RootCountBranchesWithCommon_of_compatible_of_noCommonForward
-    hforward hf hg hsgn hcompat
+  exact theorem21CompatibleToRootCountBranchesWithCommon_of_reduced
+    (theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward hforward)
 
 /-- Branch-only reverse direction plus factor multiplication proves the
 corrected common-root-branch reverse direction. -/

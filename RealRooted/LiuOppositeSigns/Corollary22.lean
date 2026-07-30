@@ -237,15 +237,9 @@ theorem
   · exact Or.inl
       (theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstant
         f g hf hg hsgn hno hfdeg_ne hgdeg_ne hfdeg hgdeg hcompat)
-  · have hcommon : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r := by
-      by_contra hmissing
-      exact hno (by
-        intro r hfr hgr
-        exact hmissing ⟨r, hfr, hgr⟩)
-    rcases hcommon with ⟨r, hfr, hgr⟩
-    exact Or.inr
-      ⟨r, hfr, hgr,
-        compatible_deleteRootFactor_of_common_root hcompat hfr hgr⟩
+  · exact Or.inr
+      (CommonRootDeletionCompatibleBranch.of_compatible_of_not_noCommonRoots
+        hcompat hno)
 
 /-- The corrected nonconstant low-degree Liu equivalence through endpoint
 degree two is fully checked, with common roots handled by an explicit deletion
