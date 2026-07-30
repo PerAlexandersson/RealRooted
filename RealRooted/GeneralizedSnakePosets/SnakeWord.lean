@@ -99,6 +99,14 @@ theorem deleteFinal_eq_takePrefix (w : SnakeWord) :
     w.deleteFinal = w.takePrefix (w.length - 1) :=
   rfl
 
+/-- Deleting the final letter of a nontrivial prefix gives the preceding
+prefix. -/
+theorem deleteFinal_takePrefix_succ_of_lt
+    {w : SnakeWord} {k : ℕ} (hk : k < w.length) :
+    (w.takePrefix (k + 1)).deleteFinal = w.takePrefix k := by
+  have hk_succ : k + 1 ≤ w.length := Nat.succ_le_iff.mpr hk
+  simp [takePrefix, deleteFinal, List.take_take, min_eq_left hk_succ]
+
 /-- Deleting the final letter of the empty word gives the empty word. -/
 @[simp] theorem deleteFinal_nil :
     deleteFinal ([] : SnakeWord) = [] := by
