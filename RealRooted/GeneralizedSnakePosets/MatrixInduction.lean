@@ -367,6 +367,33 @@ theorem theorem41_constant_of_matches_length
     exact hinter
   exact ⟨hright, hinter_M⟩
 
+/-- Constant-word branch from a successor-length model identity.
+
+This is the indexing used by the concrete Braun--Jal snake boards: the empty
+word already gives the first modified Narayana polynomial, so a constant word
+of list length `n` evaluates to `P (n + 1)`. -/
+theorem theorem41_constant_of_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P : ℕ → ℝ[X]}
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1))
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1))) :
+    ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+      (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
+  intro w hw hconstw
+  have hdel_const : w.deleteFinal.IsConstant := hconstw.deleteFinal
+  have hlen_del : w.deleteFinal.length + 1 = w.length := by
+    rw [SnakeWord.length_deleteFinal]
+    exact Nat.sub_add_cancel hw
+  have hinter : Interlaces (P w.length) (P (w.length + 1)) :=
+    hP_interlaces w.length
+  have hright : M w ≠ 0 ∧ (M w).Splits := by
+    simpa [hM_const (w := w) hconstw] using hinter.1
+  have hinter_M : Interlaces (M w.deleteFinal) (M w) := by
+    rw [hM_const (w := w) hconstw]
+    rw [hM_const (w := w.deleteFinal) hdel_const]
+    rw [hlen_del]
+    exact hinter
+  exact ⟨hright, hinter_M⟩
+
 /-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
 `m = 1` recurrence branch discharged.
 
@@ -435,6 +462,45 @@ theorem theorem41_of_claim7_of_constant_matches_length
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
     theorem41_constant_of_matches_length
+      (M := M) (P := P) hM_const hP_interlaces
+  intro w hw
+  exact theorem41_of_claim7_of_constant_cases
+    (M := M) (P := P) (G := G)
+    (hrec := hrec) (hclaim := hclaim) (hP := hP) (hG := hG)
+    (hP_one := hP_one) (hG_one := hG_one)
+    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
+    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hconst := hconst)
+    (w := w) hw
+
+/-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
+constant-word branch reduced to a successor-length model identity.
+
+This is the concrete Braun--Jal indexing: a constant word of list length `n`
+matches `P (n + 1)`, while final-letter deletion gives the adjacent pair
+`P n`, `P (n + 1)`. -/
+theorem theorem41_of_claim7_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41Claim7Statement P G)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
+    Theorem41NonNestingRookStatement M := by
+  have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
+    intro m hm
+    have hm_pos : 1 ≤ m := Nat.le_trans (by decide : 1 ≤ 2) hm
+    simpa [Nat.sub_add_cancel hm_pos] using (hP_interlaces (m - 1)).toPrec
+  have hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
+    theorem41_constant_of_matches_succ_length
       (M := M) (P := P) hM_const hP_interlaces
   intro w hw
   exact theorem41_of_claim7_of_constant_cases
