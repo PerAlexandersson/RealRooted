@@ -239,6 +239,15 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     prec_add_of_prec_right_of_posLeadingCoeff htf hmid htf_pos hmid_pos
   simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm, add_comm] using hsum.1
 
+/-- The repeated-column `2 x 2` affine test follows from proper position and
+nonnegative coefficients. -/
+theorem has2x2InterlacingProperty_sameColumn_of_prec_nonneg {f g : ℝ[X]}
+    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Has2x2InterlacingProperty f f g g := by
+  intro s t hs ht
+  have hrr := isRealRooted_affine_combo_of_prec_nonneg h hfnn hgnn hs ht
+  exact prec_refl hrr.1 hrr.2
+
 theorem posComboRealRooted_of_affine_family {f g : ℝ[X]}
     (h :
       ∀ {s t : ℝ}, 0 < s → 0 < t →

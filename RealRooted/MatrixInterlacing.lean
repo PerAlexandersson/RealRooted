@@ -764,6 +764,63 @@ theorem prec_zipWith_sum_pair_of_2x2
       (f := F) (g := G) hF_ne hG_ne hF_nonneg hG_nonneg haff
   lia
 
+/-- Two-row, two-column form of the forward matrix theorem.
+
+If each column is interlacing from the first row to the second row, the input
+pair `u, v` is interlacing, and the cross affine `2 x 2` test holds, then the
+two row sums are in proper position.  The cross test is the convention
+`Has2x2InterlacingProperty p₁ q₁ p₂ q₂`, namely the affine combination of
+`q₁, q₂` is in proper position with the affine combination of `p₁, p₂`. -/
+theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
+    (hp : Prec p₁ p₂) (hq : Prec q₁ q₂)
+    (hoff : Has2x2InterlacingProperty p₁ q₁ p₂ q₂)
+    (huv : Prec u v)
+    (hp₁nn : HasNonnegCoeffs p₁) (hq₁nn : HasNonnegCoeffs q₁)
+    (hp₂nn : HasNonnegCoeffs p₂) (hq₂nn : HasNonnegCoeffs q₂)
+    (hunn : HasNonnegCoeffs u) (hvnn : HasNonnegCoeffs v) :
+    Prec (p₁ * u + q₁ * v) (p₂ * u + q₂ * v) := by
+  have hrows :
+      Prec (([p₁, q₁].zipWith (· * ·) [u, v]).sum)
+        (([p₂, q₂].zipWith (· * ·) [u, v]).sum) := by
+    refine prec_zipWith_sum_pair_of_2x2 (n := 2) (hn := by norm_num)
+      (row₁ := [p₁, q₁]) (row₂ := [p₂, q₂]) (fs := [u, v])
+      (hrow₁_len := by simp) (hrow₂_len := by simp)
+      (hrow₁_head_ne := by simpa using hp.1.1)
+      (hrow₂_head_ne := by simpa using hp.2.1.1)
+      (hrow₁_nonneg := by
+        intro p hp_mem
+        have hp_mem' : p = p₁ ∨ p = q₁ := by
+          simpa using hp_mem
+        rcases hp_mem' with rfl | rfl
+        · exact hp₁nn
+        · exact hq₁nn)
+      (hrow₂_nonneg := by
+        intro p hp_mem
+        have hp_mem' : p = p₂ ∨ p = q₂ := by
+          simpa using hp_mem
+        rcases hp_mem' with rfl | rfl
+        · exact hp₂nn
+        · exact hq₂nn)
+      (h2x2 := by
+        intro j₁ j₂ hj
+        fin_cases j₁ <;> fin_cases j₂
+        · simpa using has2x2InterlacingProperty_sameColumn_of_prec_nonneg hp hp₁nn hp₂nn
+        · simpa using hoff
+        · norm_num at hj
+        · simpa using has2x2InterlacingProperty_sameColumn_of_prec_nonneg hq hq₁nn hq₂nn)
+      (hfs_len := by simp)
+      (hfs := by
+        refine ⟨?_, ?_⟩
+        · intro p hp_mem
+          have hp_mem' : p = u ∨ p = v := by
+            simpa using hp_mem
+          rcases hp_mem' with rfl | rfl
+          · exact ⟨huv.1, hunn⟩
+          · exact ⟨huv.2.1, hvnn⟩
+        · rw [isInterlacingSeq_iff_pairwise]
+          simp [huv])
+  simpa [mul_comm, mul_left_comm] using hrows
+
 /-- Zero-aware fixed-row form of the forward matrix theorem. This weak variant
 uses `Has2x2InterlacingProperty0` and returns `Prec0`, so either output row sum
 may vanish. When both sums are nonzero, the proof filters zero auxiliary
