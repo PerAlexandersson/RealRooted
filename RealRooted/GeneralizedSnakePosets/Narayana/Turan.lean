@@ -36,6 +36,29 @@ theorem modifiedNarayanaTuran_eq_jacobi11TransportTuran (m : ℕ) (r : ℝ) :
   simp [modifiedNarayanaTuran, jacobi11TransportTuran,
     jacobi11TransportPolynomial_eq_modifiedNarayanaPolynomial]
 
+/-- For `r ≠ 1`, the modified Narayana Turan determinant is the
+`(r - 1) ^ (2 * m)` rescaling of the Turan determinant of the normalized
+Jacobi polynomials at the Braun--Jal change of variables.  This is the bridge
+to Gasper's Turan theorem on `[-1, 1]`. -/
+theorem modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran
+    {m : ℕ} (hm : 1 ≤ m) {r : ℝ} (hr : r ≠ 1) :
+    modifiedNarayanaTuran m r =
+      (r - 1) ^ (2 * m) *
+        (((jacobi11NormalizedPolynomial m).eval
+              (jacobi11ChangeOfVariables r)) ^ 2 -
+          (jacobi11NormalizedPolynomial (m + 1)).eval
+              (jacobi11ChangeOfVariables r) *
+            (jacobi11NormalizedPolynomial (m - 1)).eval
+              (jacobi11ChangeOfVariables r)) := by
+  obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
+  have e0 := jacobi11NormalizedPolynomial_transport_eval (n := k) hr
+  have e1 := jacobi11NormalizedPolynomial_transport_eval (n := k + 1) hr
+  have e2 := jacobi11NormalizedPolynomial_transport_eval (n := k + 1 + 1) hr
+  simp only [modifiedNarayanaTuran, Nat.add_sub_cancel,
+    ← jacobi11TransportPolynomial_eq_modifiedNarayanaPolynomial]
+  rw [← e0, ← e1, ← e2]
+  ring
+
 /-- Statement form for the remaining Narayana Turan inequality needed by the
 shifted Lemma 3.4 route. -/
 def ModifiedNarayanaTuranNonnegOnNonposStatement : Prop :=
