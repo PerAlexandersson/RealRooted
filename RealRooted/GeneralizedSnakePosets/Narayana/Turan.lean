@@ -22,6 +22,58 @@ def modifiedNarayanaTuran (m : ℕ) (r : ℝ) : ℝ :=
     (modifiedNarayanaPolynomial (m + 1)).eval r *
       (modifiedNarayanaPolynomial (m - 1)).eval r
 
+/-- Explicit `m = 1` Narayana Turan determinant. -/
+theorem modifiedNarayanaTuran_one (r : ℝ) :
+    modifiedNarayanaTuran 1 r = -r := by
+  rw [modifiedNarayanaTuran, modifiedNarayanaPolynomial_zero,
+    modifiedNarayanaPolynomial_one, modifiedNarayanaPolynomial_eq_coeffPolynomial 2,
+    modifiedNarayanaCoeffPolynomial_two]
+  norm_num
+  ring
+
+/-- Cleared eval form of the three-term recurrence for modified Narayana
+polynomials. -/
+theorem modifiedNarayanaPolynomial_eval_three_term_rec (j : ℕ) (r : ℝ) :
+    ((j : ℝ) + 4) * (modifiedNarayanaPolynomial (j + 2)).eval r =
+      ((2 * j : ℝ) + 5) *
+          ((1 + r) * (modifiedNarayanaPolynomial (j + 1)).eval r) -
+        ((j : ℝ) + 1) *
+          ((1 - r) ^ 2 * (modifiedNarayanaPolynomial j).eval r) := by
+  simp only [modifiedNarayanaPolynomial]
+  rw [narayanaQuot_succ_succ]
+  simp [narayanaCoeffA, narayanaCoeffB, Polynomial.eval_add,
+    Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_sub]
+  field_simp [show ((j : ℝ) + 4) ≠ 0 by positivity]
+  ring_nf
+
+/-- The modified Narayana Turan determinant satisfies a sum-of-squares
+recurrence on the nonpositive-input side. -/
+theorem modifiedNarayanaTuran_succ_identity (j : ℕ) (r : ℝ) :
+    ((j : ℝ) + 5) * modifiedNarayanaTuran (j + 2) r =
+      ((j : ℝ) + 1) * (r - 1) ^ 2 * modifiedNarayanaTuran (j + 1) r +
+        ((modifiedNarayanaPolynomial (j + 2)).eval r -
+          (1 + r) * (modifiedNarayanaPolynomial (j + 1)).eval r) ^ 2 +
+        (-4 * r) * ((modifiedNarayanaPolynomial (j + 1)).eval r) ^ 2 := by
+  let p0 := (modifiedNarayanaPolynomial j).eval r
+  let p1 := (modifiedNarayanaPolynomial (j + 1)).eval r
+  let p2 := (modifiedNarayanaPolynomial (j + 2)).eval r
+  let p3 := (modifiedNarayanaPolynomial (j + 2 + 1)).eval r
+  have h0 : ((j : ℝ) + 4) * p2 =
+      ((2 * j : ℝ) + 5) * ((1 + r) * p1) -
+        ((j : ℝ) + 1) * ((1 - r) ^ 2 * p0) := by
+    simpa [p0, p1, p2] using
+      modifiedNarayanaPolynomial_eval_three_term_rec j r
+  have h1 : ((j : ℝ) + 5) * p3 =
+      ((2 * j : ℝ) + 7) * ((1 + r) * p2) -
+        ((j : ℝ) + 2) * ((1 - r) ^ 2 * p1) := by
+    have hraw := modifiedNarayanaPolynomial_eval_three_term_rec (j + 1) r
+    dsimp [p1, p2, p3]
+    convert hraw using 1 <;> (push_cast; ring_nf)
+  change ((j : ℝ) + 5) * (p2 ^ 2 - p3 * p1) =
+    ((j : ℝ) + 1) * (r - 1) ^ 2 * (p1 ^ 2 - p2 * p0) +
+      (p2 - (1 + r) * p1) ^ 2 + (-4 * r) * p1 ^ 2
+  linear_combination (-p1) * h1 + p2 * h0
+
 /-- The Turan determinant built from the normalized Jacobi transport
 polynomials. -/
 def jacobi11TransportTuran (m : ℕ) (r : ℝ) : ℝ :=
@@ -63,6 +115,48 @@ theorem modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran
 shifted Lemma 3.4 route. -/
 def ModifiedNarayanaTuranNonnegOnNonposStatement : Prop :=
   ∀ {m : ℕ} {r : ℝ}, 1 ≤ m → r ≤ 0 → 0 ≤ modifiedNarayanaTuran m r
+
+/-- The normalized Jacobi Turan inequality on `[-1, 1]` gives the modified
+Narayana Turan inequality on nonpositive inputs through the Braun--Jal change
+of variables. -/
+theorem modifiedNarayanaTuranNonnegOnNonpos_of_jacobi11NormalizedTuran
+    (hjacobi : ∀ {m : ℕ} {x : ℝ}, 1 ≤ m → x ∈ Set.Icc (-1 : ℝ) 1 →
+      0 ≤ ((jacobi11NormalizedPolynomial m).eval x) ^ 2 -
+        (jacobi11NormalizedPolynomial (m + 1)).eval x *
+          (jacobi11NormalizedPolynomial (m - 1)).eval x) :
+    ModifiedNarayanaTuranNonnegOnNonposStatement := by
+  intro m r hm hr
+  have hr_ne : r ≠ 1 := by linarith
+  rw [modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran hm hr_ne]
+  exact mul_nonneg (jacobi11TuranScale_nonneg m r)
+    (hjacobi hm (jacobi11ChangeOfVariables_mem_Icc_of_nonpos hr))
+
+/-- Modified Narayana Turan determinants are nonnegative on nonpositive
+inputs. -/
+theorem modifiedNarayanaTuran_nonneg_of_nonpos
+    {m : ℕ} {r : ℝ} (hm : 1 ≤ m) (hr : r ≤ 0) :
+    0 ≤ modifiedNarayanaTuran m r := by
+  obtain ⟨j, rfl⟩ : ∃ j, m = j + 1 := ⟨m - 1, by lia⟩
+  clear hm
+  induction j with
+  | zero =>
+      rw [modifiedNarayanaTuran_one]
+      linarith
+  | succ j ih =>
+      apply nonneg_of_mul_nonneg_right (a := ((j : ℝ) + 5))
+      · rw [modifiedNarayanaTuran_succ_identity]
+        exact add_nonneg
+          (add_nonneg
+            (mul_nonneg (mul_nonneg (by positivity) (sq_nonneg (r - 1))) ih)
+            (sq_nonneg _))
+          (mul_nonneg (by nlinarith) (sq_nonneg _))
+      · positivity
+
+/-- The all-`m` Narayana Turan package needed by the shifted Lemma 3.4 route. -/
+theorem modifiedNarayanaTuranNonnegOnNonpos :
+    ModifiedNarayanaTuranNonnegOnNonposStatement := by
+  intro m r hm hr
+  exact modifiedNarayanaTuran_nonneg_of_nonpos hm hr
 
 /-- Bounded statement form for the Narayana Turan inequality.  This records
 finite checkpoints while the all-`m` nonpositive-input proof is being built. -/

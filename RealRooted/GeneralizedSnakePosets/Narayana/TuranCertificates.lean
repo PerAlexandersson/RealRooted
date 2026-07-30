@@ -14,15 +14,6 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- Explicit `m = 1` Narayana Turan determinant. -/
-theorem modifiedNarayanaTuran_one (r : ℝ) :
-    modifiedNarayanaTuran 1 r = -r := by
-  rw [modifiedNarayanaTuran, modifiedNarayanaPolynomial_zero,
-    modifiedNarayanaPolynomial_one, modifiedNarayanaPolynomial_eq_coeffPolynomial 2,
-    modifiedNarayanaCoeffPolynomial_two]
-  norm_num
-  ring
-
 /-- Explicit `m = 2` Narayana Turan determinant. -/
 theorem modifiedNarayanaTuran_two (r : ℝ) :
     modifiedNarayanaTuran 2 r = -r * (r ^ 2 + r + 1) := by
