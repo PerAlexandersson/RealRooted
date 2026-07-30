@@ -508,6 +508,31 @@ lemma forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
   rw [Polynomial.natDegree_add_C_mul_of_natDegree_lt (hτ τ hτmem) hdeg,
     Polynomial.natDegree_add_C_mul_of_natDegree_lt hκ hdeg]
 
+/-- If the endpoint degrees are unequal, then every nonzero member of a
+right-family perturbation set has the same degree as any chosen nonzero
+parameter member. -/
+lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero
+    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
+    (hdeg : p.natDegree ≠ q.natDegree)
+    (hκ : κ ≠ 0) (hτ : ∀ τ ∈ s, τ ≠ 0) :
+    ∀ τ ∈ s,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
+  rcases lt_or_gt_of_ne hdeg with hlt | hgt
+  · exact forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
+      hlt hκ hτ
+  · exact forall_mem_natDegree_add_C_mul_eq_left_of_natDegree_lt hgt
+
+/-- If the endpoint degrees are unequal, then the right-family perturbation has
+constant degree on any positive parameter interval. -/
+lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_ne
+    {p q : ℝ[X]} (hdeg : p.natDegree ≠ q.natDegree)
+    {μ ν : ℝ} (hμ_pos : 0 < μ) :
+    ∀ τ ∈ Set.Icc μ ν,
+      (p + C τ * q).natDegree = (p + C μ * q).natDegree :=
+  forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero hdeg
+    (ne_of_gt hμ_pos)
+    (fun _ hτ => ne_of_gt (lt_of_lt_of_le hμ_pos hτ.1))
+
 /-- A real parameter avoids canceling `a + t * b` exactly when it is not the
 unique cancellation value `-a / b`. -/
 private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :
@@ -563,6 +588,32 @@ lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
   · exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr hκ
   · intro τ hτmem
     exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr (hτ τ hτmem)
+
+/-- Same-degree right-family degree constancy on an interval strictly below
+the unique leading-term cancellation parameter. -/
+lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_upper_lt_cancel
+    {p q : ℝ[X]} {a b κ : ℝ}
+    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
+    (hκ : κ < -p.leadingCoeff / q.leadingCoeff)
+    (hb : b < -p.leadingCoeff / q.leadingCoeff) :
+    ∀ τ ∈ Set.Icc a b,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree :=
+  forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
+    hdeg hq (ne_of_lt hκ)
+    (fun _ hτ => ne_of_lt (lt_of_le_of_lt hτ.2 hb))
+
+/-- Same-degree right-family degree constancy on an interval strictly above
+the unique leading-term cancellation parameter. -/
+lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_cancel_lt_lower
+    {p q : ℝ[X]} {a b κ : ℝ}
+    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
+    (ha : -p.leadingCoeff / q.leadingCoeff < a)
+    (hκ : -p.leadingCoeff / q.leadingCoeff < κ) :
+    ∀ τ ∈ Set.Icc a b,
+      (p + C τ * q).natDegree = (p + C κ * q).natDegree :=
+  forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
+    hdeg hq (ne_of_gt hκ)
+    (fun _ hτ => ne_of_gt (lt_of_lt_of_le ha hτ.1))
 
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
