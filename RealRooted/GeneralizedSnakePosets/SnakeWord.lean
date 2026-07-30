@@ -356,6 +356,16 @@ theorem IsLastChangeIndex.index_lt_length {w : SnakeWord} {k : ℕ}
     k < w.length :=
   (SnakeWord.mem_changeIndices.mp h.1).1
 
+/-- A last-change index lies strictly before the final position. -/
+theorem IsLastChangeIndex.succ_lt_length {w : SnakeWord} {k : ℕ}
+    (h : w.IsLastChangeIndex k) :
+    k + 1 < w.length := by
+  have hklt : k < w.length := h.index_lt_length
+  by_contra hnot
+  have hk_last : k = w.length - 1 := by
+    lia
+  exact (SnakeWord.mem_changeIndices.mp h.1).2 (by rw [hk_last])
+
 /-- At a last-change index, the letter differs from the final letter. -/
 theorem IsLastChangeIndex.letter_ne_final {w : SnakeWord} {k : ℕ}
     (h : w.IsLastChangeIndex k) :
