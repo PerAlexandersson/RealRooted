@@ -341,6 +341,32 @@ theorem theorem41_of_claim7_of_base_cases
       lia
     exact (hstepOne hw hconstw hlast hsuffix).2.toPrec
 
+/-- Constant-word branch from a length-model identity.
+
+If constant words evaluate to the family `P` at their length, then consecutive
+interlacing for `P` proves the whole positive-length constant-word branch of
+Theorem 4.1. -/
+theorem theorem41_constant_of_matches_length
+    {M : SnakeWord → ℝ[X]} {P : ℕ → ℝ[X]}
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length)
+    (hP_interlaces : ∀ {n : ℕ}, 1 ≤ n → Interlaces (P (n - 1)) (P n)) :
+    ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+      (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
+  intro w hw hconstw
+  have hdel_const : w.deleteFinal.IsConstant := hconstw.deleteFinal
+  have hlen_del : w.deleteFinal.length = w.length - 1 :=
+    SnakeWord.length_deleteFinal w
+  have hinter : Interlaces (P (w.length - 1)) (P w.length) :=
+    hP_interlaces hw
+  have hright : M w ≠ 0 ∧ (M w).Splits := by
+    simpa [hM_const (w := w) hconstw] using hinter.1
+  have hinter_M : Interlaces (M w.deleteFinal) (M w) := by
+    rw [hM_const (w := w) hconstw]
+    rw [hM_const (w := w.deleteFinal) hdel_const]
+    rw [hlen_del]
+    exact hinter
+  exact ⟨hright, hinter_M⟩
+
 /-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
 `m = 1` recurrence branch discharged.
 
@@ -378,6 +404,46 @@ theorem theorem41_of_claim7_of_constant_cases
     exact theorem41StepOne_prec_of_recurrence
       (M := M) (P := P) (G := G) (w := w) (k := k)
       hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
+
+/-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
+constant-word branch reduced to a length-model identity.
+
+This leaves only standard family hypotheses: the Theorem 3.5 recurrence,
+Claim `(7)`, adjacent `P`/`G` proper-position statements, the `m = 1`
+normalizations, nonnegative coefficients, the degree bridge, consecutive
+interlacing of `P`, and the identity `M w = P w.length` on constant words. -/
+theorem theorem41_of_claim7_of_constant_matches_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41Claim7Statement P G)
+    (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
+    Theorem41NonNestingRookStatement M := by
+  have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
+    intro m hm
+    exact (hP_interlaces (m := m)
+      (Nat.le_trans (by decide : 1 ≤ 2) hm)).toPrec
+  have hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
+    theorem41_constant_of_matches_length
+      (M := M) (P := P) hM_const hP_interlaces
+  intro w hw
+  exact theorem41_of_claim7_of_constant_cases
+    (M := M) (P := P) (G := G)
+    (hrec := hrec) (hclaim := hclaim) (hP := hP) (hG := hG)
+    (hP_one := hP_one) (hG_one := hG_one)
+    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
+    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hconst := hconst)
+    (w := w) hw
 
 end GeneralizedSnakePosets
 end RealRooted

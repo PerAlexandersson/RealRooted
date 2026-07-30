@@ -117,6 +117,29 @@ theorem deleteFinal_takePrefix_succ_of_lt
     deleteFinal [a] = [] := by
   simp [deleteFinal]
 
+/-- Deleting the final letter of a replicate word drops the replicate length by
+one. -/
+@[simp] theorem deleteFinal_replicate (n : ℕ) (a : SnakeLetter) :
+    deleteFinal (List.replicate n a) = List.replicate (n - 1) a := by
+  simp [deleteFinal]
+
+/-- A subword of a constant snake word is constant. -/
+theorem IsConstant.of_subset {u w : SnakeWord} (h : w.IsConstant) (hsub : u ⊆ w) :
+    u.IsConstant := by
+  intro a ha b hb
+  exact h a (hsub ha) b (hsub hb)
+
+/-- Taking a prefix preserves constant snake words. -/
+theorem IsConstant.takePrefix {w : SnakeWord} (h : w.IsConstant) (k : ℕ) :
+    (w.takePrefix k).IsConstant :=
+  h.of_subset fun _ ha => List.mem_of_mem_take ha
+
+/-- Final-letter deletion preserves constant snake words. -/
+theorem IsConstant.deleteFinal {w : SnakeWord} (h : w.IsConstant) :
+    w.deleteFinal.IsConstant := by
+  rw [deleteFinal_eq_takePrefix]
+  exact h.takePrefix (w.length - 1)
+
 /-- The length after final-letter deletion is `w.length - 1`. -/
 theorem length_deleteFinal (w : SnakeWord) :
     w.deleteFinal.length = w.length - 1 := by
@@ -346,6 +369,26 @@ theorem exists_isLastChangeIndex_of_not_isConstant {w : SnakeWord}
     ∃ k, w.IsLastChangeIndex k := by
   rcases exists_lastChangeIndex?_eq_some_of_not_isConstant h with ⟨k, hk⟩
   exact ⟨k, isLastChangeIndex_of_lastChangeIndex?_eq_some hk⟩
+
+/-- A positive-length constant snake word is a replicate word. -/
+theorem exists_eq_replicate_of_isConstant
+    {w : SnakeWord} (hw : 1 ≤ w.length) (h : w.IsConstant) :
+    ∃ a, w = List.replicate w.length a := by
+  rcases List.exists_mem_of_length_pos (by linarith : 0 < w.length) with ⟨a, ha⟩
+  refine ⟨a, ?_⟩
+  rw [List.eq_replicate_length]
+  intro b hb
+  exact h b hb a ha
+
+/-- A positive-length constant snake word is all `L` or all `R`. -/
+theorem eq_replicate_L_or_R_of_isConstant
+    {w : SnakeWord} (hw : 1 ≤ w.length) (h : w.IsConstant) :
+    w = List.replicate w.length SnakeLetter.L ∨
+      w = List.replicate w.length SnakeLetter.R := by
+  rcases exists_eq_replicate_of_isConstant hw h with ⟨a, ha⟩
+  cases a
+  · exact Or.inl ha
+  · exact Or.inr ha
 
 /-- The last-change index is one of the change indices. -/
 theorem IsLastChangeIndex.mem_changeIndices {w : SnakeWord} {k : ℕ}
