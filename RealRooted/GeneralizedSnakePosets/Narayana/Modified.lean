@@ -10,7 +10,7 @@ Braun--Jal Section 3 interfaces and the coefficient-side model used to transport
 between the quotient-style Narayana formalization and explicit coefficients.
 -/
 
-open Polynomial Filter
+open Polynomial
 
 noncomputable section
 
@@ -698,6 +698,96 @@ theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
           Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih_succ
       rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
         ih', ih_succ']
+
+/-! ## Explicit low-degree normal forms -/
+
+@[simp] theorem modifiedNarayanaPolynomial_two :
+    modifiedNarayanaPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_two]
+
+@[simp] theorem modifiedNarayanaPolynomial_three :
+    modifiedNarayanaPolynomial 3 =
+      1 + C (6 : ℝ) * X + C (6 : ℝ) * X ^ 2 + X ^ 3 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_three]
+
+@[simp] theorem modifiedNarayanaPolynomial_four :
+    modifiedNarayanaPolynomial 4 =
+      1 + C (10 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+        C (10 : ℝ) * X ^ 3 + X ^ 4 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_four]
+
+@[simp] theorem modifiedNarayanaPolynomial_five :
+    modifiedNarayanaPolynomial 5 =
+      1 + C (15 : ℝ) * X + C (50 : ℝ) * X ^ 2 +
+        C (50 : ℝ) * X ^ 3 + C (15 : ℝ) * X ^ 4 + X ^ 5 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_five]
+
+@[simp] theorem modifiedNarayanaPolynomial_six :
+    modifiedNarayanaPolynomial 6 =
+      1 + C (21 : ℝ) * X + C (105 : ℝ) * X ^ 2 +
+        C (175 : ℝ) * X ^ 3 + C (105 : ℝ) * X ^ 4 +
+          C (21 : ℝ) * X ^ 5 + X ^ 6 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_six]
+
+/-- Degree of the `P_6` modified Narayana polynomial. -/
+theorem modifiedNarayanaPolynomial_six_natDegree :
+    (modifiedNarayanaPolynomial 6).natDegree = 6 :=
+  modifiedNarayanaPolynomial_natDegree 6
+
+/-- The `P_6` modified Narayana polynomial is nonzero. -/
+theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 ≠ 0 :=
+  modifiedNarayanaPolynomial_ne_zero 6
+
+@[simp] theorem modifiedNarayanaPolynomial_seven :
+    modifiedNarayanaPolynomial 7 =
+      1 + C (28 : ℝ) * X + C (196 : ℝ) * X ^ 2 +
+        C (490 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
+          C (196 : ℝ) * X ^ 5 + C (28 : ℝ) * X ^ 6 + X ^ 7 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_seven]
+
+@[simp] theorem modifiedNarayanaPolynomial_eight :
+    modifiedNarayanaPolynomial 8 =
+      1 + C (36 : ℝ) * X + C (336 : ℝ) * X ^ 2 +
+        C (1176 : ℝ) * X ^ 3 + C (1764 : ℝ) * X ^ 4 +
+          C (1176 : ℝ) * X ^ 5 + C (336 : ℝ) * X ^ 6 +
+            C (36 : ℝ) * X ^ 7 + X ^ 8 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_eight]
+
+@[simp] theorem modifiedNarayanaPolynomial_nine :
+    modifiedNarayanaPolynomial 9 =
+      1 + C (45 : ℝ) * X + C (540 : ℝ) * X ^ 2 +
+        C (2520 : ℝ) * X ^ 3 + C (5292 : ℝ) * X ^ 4 +
+          C (5292 : ℝ) * X ^ 5 + C (2520 : ℝ) * X ^ 6 +
+            C (540 : ℝ) * X ^ 7 + C (45 : ℝ) * X ^ 8 + X ^ 9 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_nine]
+
+@[simp] theorem modifiedNarayanaPolynomial_ten :
+    modifiedNarayanaPolynomial 10 =
+      1 + C (55 : ℝ) * X + C (825 : ℝ) * X ^ 2 +
+        C (4950 : ℝ) * X ^ 3 + C (13860 : ℝ) * X ^ 4 +
+          C (19404 : ℝ) * X ^ 5 + C (13860 : ℝ) * X ^ 6 +
+            C (4950 : ℝ) * X ^ 7 + C (825 : ℝ) * X ^ 8 +
+              C (55 : ℝ) * X ^ 9 + X ^ 10 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_ten]
+
+@[simp] theorem modifiedNarayanaPolynomial_eleven :
+    modifiedNarayanaPolynomial 11 =
+      1 + C (66 : ℝ) * X + C (1210 : ℝ) * X ^ 2 +
+        C (9075 : ℝ) * X ^ 3 + C (32670 : ℝ) * X ^ 4 +
+          C (60984 : ℝ) * X ^ 5 + C (60984 : ℝ) * X ^ 6 +
+            C (32670 : ℝ) * X ^ 7 + C (9075 : ℝ) * X ^ 8 +
+              C (1210 : ℝ) * X ^ 9 + C (66 : ℝ) * X ^ 10 + X ^ 11 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_eleven]
 
 end GeneralizedSnakePosets
 end RealRooted
