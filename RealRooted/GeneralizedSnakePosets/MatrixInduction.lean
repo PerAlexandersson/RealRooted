@@ -110,6 +110,55 @@ theorem theorem41Step_prec_of_claim7
     (hP_nonneg m) (hG_nonneg m) hf_nonneg hg_nonneg.X_mul
   simpa [mul_comm, mul_left_comm] using hpair
 
+/-- Nonconstant word-level recurrence step for Braun-Jal Theorem 4.1.
+
+If the last-change index survives deleting the final letter, Theorem 3.5
+expresses both `M w` and `M w.deleteFinal` with the same prefix polynomials
+and adjacent suffix parameter.  The matrix step then propagates the induction
+hypothesis on the prefix pair to `Prec (M w.deleteFinal) (M w)`. -/
+theorem theorem41NonconstantStep_prec_of_claim7
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41Claim7Statement P G)
+    (hlast : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length)
+    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
+    Prec (M w.deleteFinal) (M w) := by
+  let f : ℝ[X] := M (w.takePrefix (k + 1))
+  let g : ℝ[X] := M (w.takePrefix k)
+  let m : ℕ := w.length - (k + 1)
+  have hm : 2 ≤ m := by
+    dsimp [m]
+    rw [SnakeWord.length_deleteFinal] at hk
+    lia
+  have hkp1_le : k + 1 ≤ w.deleteFinal.length := le_of_lt hk
+  have hk_le : k ≤ w.deleteFinal.length := by
+    lia
+  have hrec_w :
+      M w = f * P m + X * g * G m := by
+    dsimp [f, g, m]
+    exact hrec hlast.not_isConstant hlast
+  have hlast_del : w.deleteFinal.IsLastChangeIndex k :=
+    hlast.deleteFinal hk
+  have hrec_del :
+      M w.deleteFinal = f * P (m - 1) + X * g * G (m - 1) := by
+    have hbase := hrec hlast_del.not_isConstant hlast_del
+    dsimp [f, g, m]
+    rw [hbase]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hkp1_le]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hk_le]
+    rw [SnakeWord.length_deleteFinal_sub_eq]
+  have hstep := theorem41Step_prec_of_claim7
+    (P := P) (G := G) (m := m) (f := f) (g := g)
+    hclaim hm (hP hm) (hG hm) hprefix hP_nonneg hG_nonneg
+    (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
+  rwa [hrec_del, hrec_w]
+
 /-- Matrix Claim `(6)` gives the same recurrence-step proper-position result
 via the existing Claim `(6)`/Claim `(7)` reindexing. -/
 theorem theorem41Step_prec_of_matrixClaim
@@ -125,6 +174,24 @@ theorem theorem41Step_prec_of_matrixClaim
   theorem41Step_prec_of_claim7
     ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim) hm
     hP hG hgf hP_nonneg hG_nonneg hf_nonneg hg_nonneg
+
+/-- Matrix Claim `(6)` version of the nonconstant word-level recurrence step. -/
+theorem theorem41NonconstantStep_prec_of_matrixClaim
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hlast : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length)
+    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
+    Prec (M w.deleteFinal) (M w) :=
+  theorem41NonconstantStep_prec_of_claim7
+    (P := P) (G := G) hrec ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim)
+    hlast hk hP hG hprefix hP_nonneg hG_nonneg hM_nonneg
 
 end GeneralizedSnakePosets
 end RealRooted
