@@ -485,6 +485,28 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
     exact ⟨B, by ring⟩
   exact hsum.mpr hBB
 
+/-- A nonzero splitting polynomial with an odd number of roots in an open
+interval has opposite-sign endpoint values, provided neither endpoint is a
+root. -/
+theorem eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
+    {a b : ℝ} (hab : a ≤ b)
+    (hodd : Odd (p.roots.filter (fun r => a < r ∧ r < b)).card)
+    (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
+    p.eval a * p.eval b < 0 := by
+  have hpa : p.eval a ≠ 0 := by
+    intro h
+    exact ha (by simpa [Polynomial.IsRoot.def] using h)
+  have hpb : p.eval b ≠ 0 := by
+    intro h
+    exact hb (by simpa [Polynomial.IsRoot.def] using h)
+  have hprod_ne : p.eval a * p.eval b ≠ 0 := mul_ne_zero hpa hpb
+  have hnot_pos : ¬ 0 < p.eval a * p.eval b := by
+    intro hpos
+    exact (Nat.not_even_iff_odd.mpr hodd)
+      (even_card_roots_filter_Ioo_of_eval_mul_pos hp_ne hp hab hpos)
+  exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hprod_ne
+
 /-- If an even root count over an open interval contains an interior root, then
 the interval contains at least two roots, counted with multiplicity. -/
 theorem two_le_card_roots_filter_Ioo_of_even_of_isRoot

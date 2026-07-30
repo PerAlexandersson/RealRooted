@@ -55,7 +55,7 @@ right endpoint, then the x-subtraction pencil has a root between them. -/
 lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
     {p q : ℝ[X]} {a b μ : ℝ}
     (hab : a < b) (ha : p.IsRoot a) (hb : p.IsRoot b)
-    (hμ : 0 < μ) (hqsign : q.eval a * q.eval b < 0) :
+    (hμ : μ ≠ 0) (hqsign : q.eval a * q.eval b < 0) :
     ∃ c, a < c ∧ c < b ∧ (X * p - C μ * q).IsRoot c := by
   refine exists_isRoot_between_of_eval_mul_neg (p := X * p - C μ * q) hab ?_
   have hpa : p.eval a = 0 := by simpa [Polynomial.IsRoot.def] using ha
@@ -65,7 +65,7 @@ lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
   have hb_eval : (X * p - C μ * q).eval b = -μ * q.eval b := by
     simp [Polynomial.eval_sub, Polynomial.eval_mul, hpb]
   rw [ha_eval, hb_eval]
-  nlinarith [sq_pos_of_pos hμ, hqsign]
+  nlinarith [mul_self_pos.mpr hμ, hqsign]
 
 /-- A nonzero polynomial of degree at most four splits when it has four ordered
 real roots. -/
