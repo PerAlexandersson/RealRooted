@@ -189,6 +189,11 @@ theorem modifiedNarayana_turan_nonneg_on_nonpos_upTo_ten :
     ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 :=
   modifiedNarayanaTuranNonnegOnNonpos_upTo_ten
 
+/-- Narayana Turan sign input for Lemma 3.4, for all `m`. -/
+theorem modifiedNarayana_turan_nonneg_on_nonpos :
+    ModifiedNarayanaTuranNonnegOnNonposStatement :=
+  modifiedNarayanaTuranNonnegOnNonpos
+
 /-- The `lambda = nu = 0` specialization of Braun--Jal Lemma 3.4. -/
 theorem modifiedNarayana_lemma34_zero_zero
     {m : ℕ} (hm : 2 ≤ m) :
@@ -206,6 +211,16 @@ theorem modifiedNarayana_lemma34_shifted_zero_one
       ((C (0 : ℝ) * X + C (1 : ℝ)) * ModifiedNarayanaPolynomial m +
         narayanaDifference ModifiedNarayanaPolynomial (m + 1)) :=
   lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one hm
+
+/-- Braun--Jal Lemma 3.4 in shifted nonnegative-parameter form. -/
+theorem modifiedNarayana_lemma34_shifted :
+    ModifiedNarayanaShiftedInterlacing ModifiedNarayanaPolynomial :=
+  lemma34ModifiedNarayanaShiftedInterlacing_modified
+
+/-- Braun--Jal Lemma 3.4 in the paper's `nu ≥ -1` form. -/
+theorem modifiedNarayana_lemma34 :
+    ModifiedNarayanaInterlacing ModifiedNarayanaPolynomial :=
+  lemma34ModifiedNarayanaInterlacing_modified
 
 end BraunJal
 end Challenges
