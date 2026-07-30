@@ -121,6 +121,23 @@ theorem length_deleteFinal_le (w : SnakeWord) :
   rw [length_deleteFinal]
   exact Nat.sub_le _ _
 
+/-- Prefixes short enough to fit after final-letter deletion agree with the
+same prefixes of the original word. -/
+theorem takePrefix_deleteFinal_eq_takePrefix_of_le
+    {w : SnakeWord} {k : ℕ} (hk : k ≤ w.deleteFinal.length) :
+    w.deleteFinal.takePrefix k = w.takePrefix k := by
+  have hk' : k ≤ w.length - 1 := by
+    simpa [length_deleteFinal] using hk
+  simp [takePrefix, deleteFinal, List.take_take, min_eq_left hk']
+
+/-- Subtracting a prefix length after final-letter deletion subtracts one from
+the corresponding suffix length in the original word. -/
+theorem length_deleteFinal_sub_eq
+    (w : SnakeWord) (k : ℕ) :
+    w.deleteFinal.length - k = w.length - k - 1 := by
+  rw [length_deleteFinal]
+  lia
+
 /-- Reading before the deleted final letter agrees with reading in the
 original word. -/
 @[simp] theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
