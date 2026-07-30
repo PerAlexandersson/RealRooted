@@ -33,6 +33,38 @@ theorem jacobi11ChangeOfVariables_mem_Icc_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     rw [jacobi11ChangeOfVariables, div_le_iff_of_neg hden]
     nlinarith
 
+/-- The Braun--Jal change of variables never maps a real number to `1`. -/
+theorem jacobi11ChangeOfVariables_ne_one (x : ℝ) :
+    jacobi11ChangeOfVariables x ≠ 1 := by
+  intro h
+  by_cases hx : x = 1
+  · subst x
+    norm_num [jacobi11ChangeOfVariables] at h
+  · have hden : x - 1 ≠ 0 := sub_ne_zero.mpr hx
+    have hmul := congrArg (fun y : ℝ => y * (x - 1)) h
+    rw [jacobi11ChangeOfVariables, div_mul_cancel₀ _ hden, one_mul] at hmul
+    linarith
+
+/-- Away from the endpoint `1`, the Braun--Jal change of variables maps
+`[-1, 1]` to nonpositive inputs. -/
+theorem jacobi11ChangeOfVariables_nonpos_of_mem_Icc
+    {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) (hx1 : x ≠ 1) :
+    jacobi11ChangeOfVariables x ≤ 0 := by
+  have hxleft : -1 ≤ x := hx.1
+  have hxright : x ≤ 1 := hx.2
+  have hlt : x < 1 := lt_of_le_of_ne hxright hx1
+  rw [jacobi11ChangeOfVariables]
+  exact div_nonpos_of_nonneg_of_nonpos (by linarith) (by linarith)
+
+/-- The Braun--Jal change of variables is an involution away from the point
+where its denominator vanishes. -/
+theorem jacobi11ChangeOfVariables_involutive {x : ℝ} (hx : x ≠ 1) :
+    jacobi11ChangeOfVariables (jacobi11ChangeOfVariables x) = x := by
+  rw [jacobi11ChangeOfVariables]
+  unfold jacobi11ChangeOfVariables
+  field_simp [sub_ne_zero.mpr hx]
+  ring
+
 /-- The even power scale factor in Braun--Jal Lemma 3.1 is nonnegative. -/
 theorem jacobi11TuranScale_nonneg (n : ℕ) (r : ℝ) :
     0 ≤ (r - 1) ^ (2 * n) := by

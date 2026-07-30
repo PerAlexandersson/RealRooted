@@ -158,6 +158,29 @@ theorem modifiedNarayanaTuranNonnegOnNonpos :
   intro m r hm hr
   exact modifiedNarayanaTuran_nonneg_of_nonpos hm hr
 
+/-- The normalized `R_n^(1,1)` Jacobi Turan inequality on `[-1, 1]`. -/
+theorem jacobi11NormalizedTuran_nonneg_of_mem_Icc
+    {m : ℕ} (hm : 1 ≤ m) {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) :
+    0 ≤ ((jacobi11NormalizedPolynomial m).eval x) ^ 2 -
+      (jacobi11NormalizedPolynomial (m + 1)).eval x *
+        (jacobi11NormalizedPolynomial (m - 1)).eval x := by
+  by_cases hx1 : x = 1
+  · subst x
+    simp [jacobi11NormalizedPolynomial_eval_one]
+  · let r := jacobi11ChangeOfVariables x
+    have hr : r ≤ 0 := jacobi11ChangeOfVariables_nonpos_of_mem_Icc hx hx1
+    have hr_ne : r ≠ 1 := jacobi11ChangeOfVariables_ne_one x
+    have hscale := modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran
+      (m := m) hm (r := r) hr_ne
+    rw [jacobi11ChangeOfVariables_involutive hx1] at hscale
+    have hmod : 0 ≤ modifiedNarayanaTuran m r :=
+      modifiedNarayanaTuran_nonneg_of_nonpos hm hr
+    rw [hscale] at hmod
+    have hscale_pos : 0 < (r - 1) ^ (2 * m) := by
+      have hsq : 0 < (r - 1) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hr_ne)
+      simpa [pow_mul] using pow_pos hsq m
+    exact nonneg_of_mul_nonneg_right hmod hscale_pos
+
 /-- Bounded statement form for the Narayana Turan inequality.  This records
 finite checkpoints while the all-`m` nonpositive-input proof is being built. -/
 def ModifiedNarayanaTuranNonnegOnNonposUpToStatement (N : ℕ) : Prop :=
