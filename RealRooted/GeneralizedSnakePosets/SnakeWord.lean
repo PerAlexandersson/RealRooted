@@ -121,6 +121,16 @@ theorem length_deleteFinal_le (w : SnakeWord) :
   rw [length_deleteFinal]
   exact Nat.sub_le _ _
 
+/-- Reading before the deleted final letter agrees with reading in the
+original word. -/
+@[simp] theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
+    (hidx : idx < w.deleteFinal.length) :
+    w.deleteFinal[idx]? = w[idx]? := by
+  have hidx' : idx < w.length - 1 := by
+    simpa [length_deleteFinal] using hidx
+  simpa [deleteFinal] using
+    (List.getElem?_take_of_lt (l := w) (i := idx) (j := w.length - 1) hidx')
+
 /-- Membership in `changeIndices` is exactly the bounded final-letter-change
 condition. -/
 theorem mem_changeIndices {w : SnakeWord} {k : ℕ} :
@@ -352,6 +362,42 @@ theorem IsLastChangeIndex.getD_eq_final_of_lt
   simpa [List.getD_eq_getElem?_getD] using
     congrArg (fun letter? => letter?.getD default)
       (h.getElem?_eq_final_of_lt hkj hj)
+
+/-- If the final constant suffix still has positive length after deleting the
+final letter, then the new final letter agrees with the old final letter. -/
+theorem IsLastChangeIndex.getElem?_deleteFinal_final_eq_final
+    {w : SnakeWord} {k : ℕ} (h : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length) :
+    w.deleteFinal[w.deleteFinal.length - 1]? = w[w.length - 1]? := by
+  have hidx : w.deleteFinal.length - 1 < w.deleteFinal.length := by
+    have hne : w.deleteFinal.length ≠ 0 :=
+      Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le (k + 1)) hk)
+    exact Nat.sub_one_lt hne
+  rw [getElem?_deleteFinal_of_lt hidx]
+  exact h.getElem?_eq_final_of_lt (by lia)
+    (lt_of_lt_of_le hidx (length_deleteFinal_le w))
+
+/-- A last-change index survives final-letter deletion when it still lies
+strictly before the new final letter. -/
+theorem IsLastChangeIndex.deleteFinal
+    {w : SnakeWord} {k : ℕ} (h : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length) :
+    w.deleteFinal.IsLastChangeIndex k := by
+  refine ⟨?_, ?_⟩
+  · rw [SnakeWord.mem_changeIndices]
+    refine ⟨by lia, ?_⟩
+    rw [getElem?_deleteFinal_of_lt (by lia),
+      h.getElem?_deleteFinal_final_eq_final hk]
+    exact h.letter_ne_final
+  · intro j hj
+    rw [SnakeWord.mem_changeIndices] at hj
+    have hj_old : j ∈ w.changeIndices := by
+      rw [SnakeWord.mem_changeIndices]
+      refine ⟨lt_of_lt_of_le hj.1 (length_deleteFinal_le w), ?_⟩
+      rw [← getElem?_deleteFinal_of_lt hj.1,
+        ← h.getElem?_deleteFinal_final_eq_final hk]
+      exact hj.2
+    exact h.all_changes_le j hj_old
 
 /-- The prefix ending at the last-change index has length `k + 1`. -/
 theorem IsLastChangeIndex.takePrefix_succ_length {w : SnakeWord} {k : ℕ}
