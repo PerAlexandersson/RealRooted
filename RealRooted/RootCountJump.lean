@@ -72,6 +72,27 @@ theorem card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt
       (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card :=
   (card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab).symm
 
+/-- The elements in `(a, b)` and the elements at or above `b` partition the
+elements strictly above `a`, when `a < b`. -/
+theorem card_filter_Ioo_add_card_filter_ge_eq_card_filter_gt
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a < b) :
+    (s.filter (fun r => a < r ∧ r < b)).card + (s.filter (b ≤ ·)).card =
+      (s.filter (a < ·)).card := by
+  have hIoo :
+      s.filter (fun r => a < r ∧ r < b) =
+        (s.filter (a < ·)).filter (fun r => ¬ b ≤ r) := by
+    ext r
+    by_cases har : a < r <;> by_cases hbr : b ≤ r <;>
+      simp [har, hbr, not_le, and_comm]
+  have hge :
+      s.filter (b ≤ ·) =
+        (s.filter (a < ·)).filter (fun r => b ≤ r) := by
+    ext r
+    by_cases hbr : b ≤ r
+    · simp [hbr, lt_of_lt_of_le hab hbr]
+    · simp [hbr]
+  rw [hIoo, hge, Nat.add_comm, ← Multiset.card_add, Multiset.filter_add_not]
+
 /-- The sum of open-interval counts over a strictly increasing chain of
 successive list entries is bounded by the strict-upper count above the first
 entry. -/
@@ -102,6 +123,51 @@ theorem sum_card_filter_Ioo_zip_tail_le_card_filter_gt
             ≤ (s.filter (fun r => a < r ∧ r ≤ b)).card +
                 (s.filter (b < ·)).card :=
           Nat.add_le_add hgap_le hih
+        _ = (s.filter (a < ·)).card := by
+          simpa using hpart.symm
+
+/-- The sum of open-interval counts over a strictly increasing chain, plus the
+closed upper-tail count at the last list entry, is bounded by the strict-upper
+count above the first list entry. -/
+theorem sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_gt
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} {xs : List α}
+    (hchain : (a :: b :: xs).IsChain (· < ·)) :
+    (((a :: b :: xs).zip (b :: xs)).map
+        (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+      (s.filter (fun r => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ r)).card ≤
+    (s.filter (a < ·)).card := by
+  induction xs generalizing a b with
+  | nil =>
+      have hab_lt : a < b := List.IsChain.rel hchain
+      simpa using
+        (card_filter_Ioo_add_card_filter_ge_eq_card_filter_gt s hab_lt).le
+  | cons c t ih =>
+      have hab_lt : a < b := List.IsChain.rel hchain
+      have htail : (b :: c :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
+      have hgap_le :
+          (s.filter (fun r => a < r ∧ r < b)).card ≤
+            (s.filter (fun r => a < r ∧ r ≤ b)).card := by
+        exact Multiset.card_le_card
+          (Multiset.monotone_filter_right s fun _ hr => ⟨hr.1, le_of_lt hr.2⟩)
+      have hpart :=
+        card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s (le_of_lt hab_lt)
+      have hih := ih (a := b) (b := c) htail
+      simp only [List.zip_cons_cons, List.map_cons, List.sum_cons]
+      calc
+        (s.filter (fun r => a < r ∧ r < b)).card +
+            (((b :: c :: t).zip (c :: t)).map
+                (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+              (s.filter (fun r =>
+                (c :: t).getLast (List.cons_ne_nil c t) ≤ r)).card
+            = (s.filter (fun r => a < r ∧ r < b)).card +
+              ((((b :: c :: t).zip (c :: t)).map
+                  (fun ab =>
+                    (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+                (s.filter (fun r =>
+                  (c :: t).getLast (List.cons_ne_nil c t) ≤ r)).card) := by
+          rw [Nat.add_assoc]
+        _ ≤ (s.filter (fun r => a < r ∧ r ≤ b)).card +
+            (s.filter (b < ·)).card := Nat.add_le_add hgap_le hih
         _ = (s.filter (a < ·)).card := by
           simpa using hpart.symm
 

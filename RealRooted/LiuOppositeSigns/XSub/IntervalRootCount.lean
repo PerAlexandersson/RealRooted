@@ -405,5 +405,94 @@ theorem PositiveSplitRootCountPair.sum_min_two_le_card_xSub_gt_of_roots_sort_con
       sum_card_filter_Ioo_zip_tail_le_card_filter_gt (s := P.roots) hchain
   exact le_trans hpoint htel
 
+/-- For at least two distinct left-root locations, the summed adjacent-gap
+`min 2` lower bounds and the closed upper tail at the last left root fit
+disjointly inside the strict-upper root count of the x-subtraction pencil above
+the first left root. -/
+theorem
+    PositiveSplitRootCountPair.sum_min_two_add_card_xSub_ge_last_le_card_xSub_gt_of_roots_sort
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ) :
+    (((a :: b :: xs).zip (b :: xs)).map
+        (fun ab => min 2
+          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+      ((X * p - C μ * q).roots.filter
+        (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card ≤
+    ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  let P := X * p - C μ * q
+  let gaps := (a :: b :: xs).zip (b :: xs)
+  have hpoint :
+      (gaps.map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+        (gaps.map
+          (fun ab => (P.roots.filter
+            (fun x => ab.1 < x ∧ x < ab.2)).card)).sum := by
+    simpa [gaps, P, hrs] using
+      hpair.sum_min_two_right_roots_le_sum_xSub_roots_Ioo hp_nonneg hno hμ
+  have hchain : (a :: b :: xs).IsChain (· < ·) := by
+    have hpair_rs :
+        (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
+      (Finset.sortedLT_sort p.roots.toFinset).pairwise
+    have hchain_rs : (p.roots.toFinset.sort (· ≤ ·)).IsChain (· < ·) :=
+      hpair_rs.isChain
+    simpa [hrs] using hchain_rs
+  have htail :
+      (gaps.map
+          (fun ab => (P.roots.filter
+            (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        (P.roots.filter
+          (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card ≤
+      (P.roots.filter (a < ·)).card := by
+    simpa [gaps, P] using
+      sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_gt
+        (s := P.roots) hchain
+  exact le_trans (Nat.add_le_add hpoint le_rfl) htail
+
+/-- If the x-subtraction pencil has the right upper-tail sign at the last
+left-root location, then the summed adjacent-gap `min 2` lower bounds plus one
+additional upper-tail root are bounded by the strict-upper root count above the
+first left root. -/
+theorem
+    PositiveSplitRootCountPair.sum_min_two_add_one_le_card_xSub_gt_of_roots_sort_of_last_q_nonneg
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
+    (hq_last : 0 ≤ q.eval ((b :: xs).getLast (List.cons_ne_nil b xs)))
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    (((a :: b :: xs).zip (b :: xs)).map
+        (fun ab => min 2
+          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum + 1 ≤
+    ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  let last := (b :: xs).getLast (List.cons_ne_nil b xs)
+  let tailCard := ((X * p - C μ * q).roots.filter (fun x => last ≤ x)).card
+  have ha_mem : a ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    simp [hrs]
+  have ha : p.IsRoot a := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at ha_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp ha_mem
+  have hlast_mem_tail : last ∈ b :: xs :=
+    List.getLast_mem (List.cons_ne_nil b xs)
+  have hlast_mem : last ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    rw [hrs]
+    exact List.mem_cons.mpr (Or.inr hlast_mem_tail)
+  have hlast : p.IsRoot last := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at hlast_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hlast_mem
+  have hP_ne : X * p - C μ * q ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have htail_one : 1 ≤ tailCard := by
+    simpa [tailCard, last] using
+      one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
+        hlast hq_last hμ hP_ne htop
+  have hsum_tail :=
+    hpair.sum_min_two_add_card_xSub_ge_last_le_card_xSub_gt_of_roots_sort
+      hp_nonneg hno hrs hμ
+  exact le_trans (Nat.add_le_add_left htail_one _)
+    (by simpa [tailCard, last] using hsum_tail)
+
 end LiuOppositeSigns
 end RealRooted
