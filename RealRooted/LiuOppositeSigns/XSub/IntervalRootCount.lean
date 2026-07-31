@@ -1480,6 +1480,16 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily :
     hpair_shift.xSub_splits_of_left_successor_nonneg
       hfnn hgnn hdeg_shift hμ
 
+/-- The proved left-successor x-subtraction family gives every predicate
+restriction. -/
+theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate
+    {P : ℕ → Prop} :
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement P :=
+  positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement_of_imp
+    (fun _ _ => trivial)
+    (positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_true_of_xSub
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamily)
+
 /-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
 the first left root and the nonnegative-sign upper-tail witness at the last
 left root, then the full root multiset contains one lower-tail root, the

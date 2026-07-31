@@ -1,5 +1,6 @@
 import RealRooted.LiuOppositeSigns.FactorReturnLeft
 import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 
 /-!
 # Liu left factor-return case packages
@@ -106,14 +107,38 @@ theorem positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_true_of_xSubC
   positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_true_of_cases
     ⟨hrightSucc, hsame, hleftSucc⟩
 
+/-- Since the left-successor x-subtraction case is now proved, the remaining
+unrestricted x-subtraction case package only needs the right-successor and
+same-degree leaves. -/
+theorem positiveSplitTranslatedXSubRightFamilyDegreeCases_of_rightSucc_same
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement :=
+  ⟨hrightSucc, hsame, positiveSplitLeftSuccDegreeTranslatedXSubRightFamily⟩
+
+/-- Since the left-successor x-subtraction case is now proved,
+predicate-restricted x-subtraction case packages only need the right-successor
+and same-degree leaves. -/
+theorem positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_rightSucc_same
+    {P : ℕ → Prop}
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
+        P)
+    (hsame :
+      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P) :
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement P :=
+  ⟨hrightSucc, hsame,
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate⟩
+
 /-- Endpoint cases through degree two as a bundled predicate-restricted
 x-subtraction case package. -/
 theorem positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_two :
     positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
       (fun n => n ≤ 2) :=
-  ⟨positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two,
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two,
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two⟩
+  positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_rightSucc_same
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
+    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two
 
 /-- Endpoint cases through degree three as a bundled predicate-restricted
 x-subtraction case package, modulo the normalized monic quartic/cubic leaf. -/
@@ -311,6 +336,17 @@ theorem theorem21LeftFactorReturnDegreeCases_of_xSubCases
   ⟨theorem21LeftFactorReturnSameDegree_of_xSub hrightSucc,
     theorem21LeftFactorReturnSuccDegree_of_xSub hsame,
     theorem21LeftFactorReturnTwoDegree_of_xSub hleftSucc⟩
+
+/-- Since the left-successor x-subtraction case is proved, the factor-return
+degree cases only need the remaining right-successor and same-degree
+x-subtraction leaves. -/
+theorem theorem21LeftFactorReturnDegreeCases_of_rightSucc_same_xSub
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21LeftFactorReturnDegreeCasesStatement :=
+  theorem21LeftFactorReturnDegreeCases_of_xSubCases
+    hrightSucc hsame positiveSplitLeftSuccDegreeTranslatedXSubRightFamily
 
 /-- A bundled sign-normalized positive-split x-subtraction case package gives
 the three original left-branch factor-return cases. -/
@@ -1603,6 +1639,20 @@ theorem theorem21FactorReturnPredicate_of_xSubCasesPredicate
     (theorem21LeftFactorReturnEndpointDegreeCasesPredicate_of_xSubCasesPredicate
       hrightSucc hsame hleftSucc)
 
+/-- Since the left-successor x-subtraction case is proved, the
+predicate-restricted factor-return principle only needs the remaining
+right-successor and same-degree x-subtraction leaves. -/
+theorem theorem21FactorReturnPredicate_of_rightSucc_same_xSubPredicate
+    {P : ℕ → Prop}
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
+        P)
+    (hsame :
+      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P) :
+    theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement P :=
+  theorem21FactorReturnPredicate_of_xSubCasesPredicate
+    hrightSucc hsame positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate
+
 /-- Bundled predicate-restricted positive-split x-subtraction cases imply the
 predicate-restricted factor-return principle. -/
 theorem theorem21FactorReturnPredicate_of_xSubCasePackage
@@ -1845,6 +1895,17 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCases
     theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
   theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
     ⟨hrightSucc, hsame, hleftSucc⟩
+
+/-- Since the left-successor x-subtraction case is proved, the reverse
+factor-return principle only needs the remaining right-successor and
+same-degree x-subtraction leaves. -/
+theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_rightSucc_same_xSub
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
+  theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCases
+    hrightSucc hsame positiveSplitLeftSuccDegreeTranslatedXSubRightFamily
 
 /-- The branch-retaining deletion-pair common-interleaver theorem package
 follows from the isolated forward direction and a bundled sign-normalized
