@@ -1312,6 +1312,23 @@ lemma exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop {p : ℝ[X]} {r : �
       intermediate_value_Icc (le_of_lt hx_gt_r) p.continuous.continuousOn h0
     exact ⟨u, hu.1, hu_root⟩
 
+/-- Right-hand wrapper for the `atTop → -∞` case with a nonnegative value at the
+basepoint. -/
+lemma exists_isRoot_ge_of_eval_nonneg_of_tendsto_atTop_atBot {p : ℝ[X]} {r : ℝ}
+    (hr : 0 ≤ p.eval r) (ht : Tendsto (fun x => p.eval x) atTop atBot) :
+    ∃ u ≥ r, p.IsRoot u := by
+  rcases eq_or_lt_of_le hr with hzero | hpos
+  · exact ⟨r, le_rfl, by simpa [Polynomial.IsRoot.def] using hzero.symm⟩
+  · have hneg : ∀ᶠ x in atTop, p.eval x < 0 :=
+      ht.eventually (Iio_mem_atBot 0)
+    have hgt : ∀ᶠ x : ℝ in atTop, r < x := eventually_gt_atTop r
+    obtain ⟨x, hx_gt_r, hx_neg⟩ := (hgt.and hneg).exists
+    have h0 : (0 : ℝ) ∈ Set.Icc (p.eval x) (p.eval r) :=
+      ⟨le_of_lt hx_neg, le_of_lt hpos⟩
+    obtain ⟨u, hu, hu_root⟩ :=
+      intermediate_value_Icc' (le_of_lt hx_gt_r) p.continuous.continuousOn h0
+    exact ⟨u, hu.1, hu_root⟩
+
 /-- Left-hand wrapper for the `atBot → +∞` case with a nonpositive value at the
 basepoint. -/
 lemma exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop {p : ℝ[X]} {r : ℝ}
