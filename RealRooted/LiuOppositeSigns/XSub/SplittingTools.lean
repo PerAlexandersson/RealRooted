@@ -14,6 +14,22 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
+/-- Evaluate the x-subtraction pencil at a root of the left endpoint. -/
+lemma eval_X_mul_sub_C_mul_of_left_isRoot
+    {p q : ℝ[X]} {x μ : ℝ} (hx : p.IsRoot x) :
+    (X * p - C μ * q).eval x = -μ * q.eval x := by
+  have hpx : p.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def] using hx
+  simp [Polynomial.eval_sub, Polynomial.eval_mul, hpx]
+
+/-- Evaluate the x-subtraction pencil at a root of the right endpoint. -/
+lemma eval_X_mul_sub_C_mul_of_right_isRoot
+    {p q : ℝ[X]} {x μ : ℝ} (hx : q.IsRoot x) :
+    (X * p - C μ * q).eval x = x * p.eval x := by
+  have hqx : q.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def] using hx
+  simp [Polynomial.eval_sub, Polynomial.eval_mul, hqx]
+
 /-- A nonzero polynomial splits once a nodup list of roots is at least as long
 as its natural degree.  This local helper packages the repeated
 root-count-to-splitting argument used in low-degree endpoint leaves. -/
@@ -59,13 +75,8 @@ lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
     (hμ : μ ≠ 0) (hqsign : q.eval a * q.eval b < 0) :
     ∃ c, a < c ∧ c < b ∧ (X * p - C μ * q).IsRoot c := by
   refine exists_isRoot_between_of_eval_mul_neg (p := X * p - C μ * q) hab ?_
-  have hpa : p.eval a = 0 := by simpa [Polynomial.IsRoot.def] using ha
-  have hpb : p.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hb
-  have ha_eval : (X * p - C μ * q).eval a = -μ * q.eval a := by
-    simp [Polynomial.eval_sub, Polynomial.eval_mul, hpa]
-  have hb_eval : (X * p - C μ * q).eval b = -μ * q.eval b := by
-    simp [Polynomial.eval_sub, Polynomial.eval_mul, hpb]
-  rw [ha_eval, hb_eval]
+  rw [eval_X_mul_sub_C_mul_of_left_isRoot ha,
+    eval_X_mul_sub_C_mul_of_left_isRoot hb]
   nlinarith [mul_self_pos.mpr hμ, hqsign]
 
 /-- If two roots of the left endpoint bracket an odd number of roots of a
