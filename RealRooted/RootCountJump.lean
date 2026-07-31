@@ -201,6 +201,82 @@ theorem card_filter_le_add_sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLa
     _ = s.card := by
       simpa using hpart
 
+/-- If `a` is absent from a multiset, the strict lower and strict upper filters
+at `a` partition the multiset. -/
+theorem card_filter_lt_add_card_filter_gt_eq_card_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a : α} (ha : a ∉ s) :
+    (s.filter (· < a)).card + (s.filter (a < ·)).card = s.card := by
+  have hpart := Multiset.card_filter_le_add_card_filter_gt s a
+  have hlt : s.filter (· ≤ a) = s.filter (· < a) := by
+    apply Multiset.filter_congr
+    intro r hr
+    constructor
+    · intro hra
+      exact lt_of_le_of_ne hra fun h_eq => ha (by simpa [h_eq] using hr)
+    · intro hra
+      exact le_of_lt hra
+  simpa [hlt] using hpart
+
+/-- If `a` is absent from a multiset, the strict lower tail at `a` and the open
+interval `(a, b)` partition the strict lower tail at `b`. -/
+theorem card_filter_lt_add_card_filter_Ioo_eq_card_filter_lt_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b)
+    (ha : a ∉ s) :
+    (s.filter (· < a)).card +
+        (s.filter (fun r => a < r ∧ r < b)).card =
+      (s.filter (· < b)).card := by
+  have hpart := Multiset.card_filter_le_add_card_filter_gt (s.filter (· < b)) a
+  have hle_lt :
+      (s.filter (· < b)).filter (· ≤ a) = s.filter (· < a) := by
+    rw [Multiset.filter_filter]
+    apply Multiset.filter_congr
+    intro r hr
+    constructor
+    · intro h
+      exact lt_of_le_of_ne h.1 fun h_eq => ha (by simpa [h_eq] using hr)
+    · intro h
+      exact ⟨le_of_lt h, lt_of_lt_of_le h hab⟩
+  have hgt_eq :
+      (s.filter (· < b)).filter (a < ·) =
+        s.filter (fun r => a < r ∧ r < b) := by
+    simp [Multiset.filter_filter]
+  rw [hle_lt, hgt_eq] at hpart
+  exact hpart
+
+/-- A multiset is exactly partitioned by the strict lower tail at the first
+node, the open gaps between adjacent nodes, and the strict upper tail at the
+last node, provided all nodes are absent from the multiset. -/
+theorem card_filter_lt_add_sum_card_filter_Ioo_zip_tail_add_card_filter_gt_getLast_eq_card
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a : α} {xs : List α}
+    (hchain : (a :: xs).IsChain (· < ·))
+    (hnode : ∀ x ∈ a :: xs, x ∉ s) :
+    (s.filter (· < a)).card +
+        (((a :: xs).zip xs).map
+          (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+      (s.filter (fun r => (a :: xs).getLast (List.cons_ne_nil a xs) < r)).card =
+    s.card := by
+  induction xs generalizing a with
+  | nil =>
+      have ha_not : a ∉ s := hnode a (by simp)
+      simpa using card_filter_lt_add_card_filter_gt_eq_card_of_not_mem s ha_not
+  | cons b t ih =>
+      have hab_lt : a < b := List.IsChain.rel hchain
+      have htail : (b :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
+      have ha_not : a ∉ s := hnode a (by simp)
+      have hnode_tail : ∀ x ∈ b :: t, x ∉ s := by
+        intro x hx
+        exact hnode x (by simp [hx])
+      have hlower :
+          (s.filter (· < a)).card +
+              (s.filter (fun r => a < r ∧ r < b)).card =
+            (s.filter (· < b)).card :=
+        card_filter_lt_add_card_filter_Ioo_eq_card_filter_lt_of_not_mem
+          s (le_of_lt hab_lt) ha_not
+      have hih := ih (a := b) htail hnode_tail
+      simp only [List.zip_cons_cons, List.map_cons, List.sum_cons]
+      rw [← Nat.add_assoc, hlower]
+      simpa [List.getLast_cons, Nat.add_assoc] using hih
+
 /-- If `(a, b]` contains an element of a multiset, then the strict-upper count
 drops when the threshold moves from `a` to `b`. -/
 theorem card_filter_gt_lt_of_mem_Ioc

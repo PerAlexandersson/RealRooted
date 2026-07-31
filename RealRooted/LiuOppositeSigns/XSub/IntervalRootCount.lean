@@ -382,6 +382,95 @@ theorem PositiveSplitRootCountPair.sum_min_two_right_roots_le_sum_xSub_roots_Ioo
   exact hpair.min_two_card_xSub_Ioo_of_adjacent_left_roots
     hp_nonneg hno hab hμ
 
+/-- In the left-successor degree case, the right endpoint roots are accounted
+for by the adjacent open gaps and the strict upper exterior tail.  The lower
+exterior tail is empty, and each adjacent gap has at most two right roots. -/
+theorem
+    PositiveSplitRootCountPair.right_natDegree_le_sum_min_two_add_card_right_roots_gt_getLast
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hno : NoCommonRoots p q) {a b : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs)
+    (hdeg : p.natDegree = q.natDegree + 1) :
+    q.natDegree ≤
+      (((a :: b :: xs).zip (b :: xs)).map
+        (fun ab => min 2
+          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        (q.roots.filter
+          (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) < x)).card := by
+  let gaps := (a :: b :: xs).zip (b :: xs)
+  let plainGapSum :=
+    (gaps.map
+      (fun ab => (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
+  let minGapSum :=
+    (gaps.map
+      (fun ab => min 2
+        (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
+  let upperTail :=
+    (q.roots.filter
+      (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) < x)).card
+  have hchain : (a :: b :: xs).IsChain (· < ·) := by
+    have hpair_rs :
+        (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
+      (Finset.sortedLT_sort p.roots.toFinset).pairwise
+    have hchain_rs : (p.roots.toFinset.sort (· ≤ ·)).IsChain (· < ·) :=
+      hpair_rs.isChain
+    simpa [hrs] using hchain_rs
+  have hroots_ge : ∀ r ∈ p.roots, a ≤ r := by
+    intro r hr
+    have hr_mem : r ∈ p.roots.toFinset.sort (· ≤ ·) := by
+      rw [Finset.mem_sort, Multiset.mem_toFinset]
+      exact hr
+    have hsorted_le : (p.roots.toFinset.sort (· ≤ ·)).SortedLE :=
+      (Finset.sortedLT_sort p.roots.toFinset).sortedLE
+    simpa [hrs] using hsorted_le.pairwise.head!_le hr_mem
+  have hlower_zero :
+      (q.roots.filter (fun r => r < a)).card = 0 :=
+    hpair.card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
+      hroots_ge hdeg
+  have hnode : ∀ x ∈ a :: b :: xs, x ∉ q.roots := by
+    intro x hx hxq
+    have hx_mem : x ∈ p.roots.toFinset.sort (· ≤ ·) := by
+      rw [hrs]
+      exact hx
+    have hpx : p.IsRoot x := by
+      rw [Finset.mem_sort, Multiset.mem_toFinset] at hx_mem
+      exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hx_mem
+    have hqx : q.IsRoot x :=
+      (Polynomial.mem_roots hpair.right_pos.ne_zero).mp hxq
+    exact (hno x hpx) hqx
+  have hpartition :=
+    card_filter_lt_add_sum_card_filter_Ioo_zip_tail_add_card_filter_gt_getLast_eq_card
+      (s := q.roots) hchain hnode
+  have hplain_le_min : plainGapSum ≤ minGapSum := by
+    apply List.sum_le_sum
+    intro ab hab
+    rcases ab with ⟨u, v⟩
+    have hab_sort : (u, v) ∈ (p.roots.toFinset.sort (· ≤ ·)).zip
+        (p.roots.toFinset.sort (· ≤ ·)).tail := by
+      simpa [gaps, hrs] using hab
+    have huv_lt : u < v :=
+      List.rel_of_mem_zip_tail_of_isChain hchain (by simpa [gaps] using hab)
+    have hv_mem : v ∈ p.roots.toFinset.sort (· ≤ ·) :=
+      List.mem_of_mem_tail (List.snd_mem_of_mem_zip hab_sort)
+    have hv : p.IsRoot v := by
+      rw [Finset.mem_sort, Multiset.mem_toFinset] at hv_mem
+      exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hv_mem
+    have hp_no : ∀ z : ℝ, u < z → z < v → ¬ p.IsRoot z := by
+      intro z huz hzv
+      exact Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
+        hpair.left_pos.ne_zero hab_sort huz hzv
+    have hgap_le_two :
+        (q.roots.filter (fun x => u < x ∧ x < v)).card ≤ 2 :=
+      hpair.count.card_right_roots_filter_Ioo_le_two_of_left_no_isRoot_Ioo
+        hpair.left_pos.ne_zero hpair.right_pos.ne_zero huv_lt hp_no (hno v hv)
+    rw [Nat.min_eq_right hgap_le_two]
+  have hq_part : plainGapSum + upperTail = q.natDegree := by
+    rw [← card_roots_of_splits hpair.right_splits]
+    simpa [plainGapSum, upperTail, gaps, hlower_zero, List.getLast_cons]
+      using hpartition
+  rw [← hq_part]
+  exact Nat.add_le_add hplain_le_min le_rfl
+
 /-- Summing over adjacent entries of the sorted distinct left-root list, the
 local `min 2` lower bounds for the right-root counts are bounded by the
 strict-upper root count of the x-subtraction pencil above the first left root.

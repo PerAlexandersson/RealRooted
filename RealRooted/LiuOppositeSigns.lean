@@ -807,6 +807,54 @@ theorem rootCountAbove_bounds_of_nonRoot {p q : ℝ[X]}
   h.count.rootCountAbove_bounds_of_nonRoot
     h.left_pos.ne_zero h.right_pos.ne_zero hpx hqx
 
+theorem card_right_roots_filter_gt_le_one_of_left_largest_root
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
+    (ha : IsLargestRoot p a) :
+    (q.roots.filter (a < ·)).card ≤ 1 := by
+  have hbound :=
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot
+      h.left_pos.ne_zero h.right_pos.ne_zero
+      (fun x hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx) a
+  have hp_zero : (p.roots.filter (a < ·)).card = 0 :=
+    rootCountAbove_eq_zero_of_forall_roots_le fun r hr => ha.roots_le r hr
+  have hq_le_int : ((q.roots.filter (a < ·)).card : ℤ) ≤ 1 := by
+    simpa [hp_zero] using hbound.2
+  exact_mod_cast hq_le_int
+
+theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
+    (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
+    (hdeg : p.natDegree = q.natDegree + 1) :
+    (q.roots.filter (fun r => r < a)).card = 0 := by
+  let lower := (q.roots.filter (fun r => r < a)).card
+  let upper := rootCountAtOrAbove q a
+  have hp_count : rootCountAtOrAbove p a = p.natDegree := by
+    have hfilter : p.roots.filter (fun r => a ≤ r) = p.roots :=
+      Multiset.filter_eq_self.mpr hroots_ge
+    simp [rootCountAtOrAbove, hfilter, card_roots_of_splits h.left_splits]
+  have hpart : lower + upper = q.natDegree := by
+    have hcard := congrArg Multiset.card
+      (Multiset.filter_add_not (p := fun r : ℝ => r < a) q.roots)
+    have hnot : q.roots.filter (fun r : ℝ => ¬ r < a) =
+        q.roots.filter (fun r : ℝ => a ≤ r) := by
+      apply Multiset.filter_congr
+      intro r _hr
+      simp [not_lt]
+    rw [Multiset.card_add] at hcard
+    simpa [lower, upper, rootCountAtOrAbove, hnot, card_roots_of_splits h.right_splits]
+      using hcard
+  by_contra hlower_ne
+  have hlower_pos : 0 < lower := Nat.pos_of_ne_zero hlower_ne
+  have hbound : ((p.natDegree : ℤ) - upper) ≤ 1 := by
+    simpa [hp_count, upper] using (h.count.bounds a).1
+  have hpart_int : (lower : ℤ) + upper = q.natDegree := by
+    exact_mod_cast hpart
+  have hlower_int : (1 : ℤ) ≤ lower := by
+    exact_mod_cast hlower_pos
+  have hdeg_int : (p.natDegree : ℤ) = q.natDegree + 1 := by
+    exact_mod_cast hdeg
+  linarith
+
 theorem sameDegreeRootCountAboveNonRoot {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q)
     (_hdeg : q.natDegree = p.natDegree) :
