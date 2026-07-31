@@ -44,6 +44,20 @@ theorem filter_le_eq_filter_lt_of_not_mem
   · intro hxa
     exact le_of_lt hxa
 
+/-- If a multiset contains two distinct elements, then it has cardinality at
+least two. -/
+theorem two_le_card_of_mem_of_ne
+    {α : Type*} {s : Multiset α} {a b : α}
+    (ha : a ∈ s) (hb : b ∈ s) (hab : a ≠ b) :
+    2 ≤ s.card := by
+  classical
+  have hb_erase : b ∈ s.erase a :=
+    (Multiset.mem_erase_of_ne hab.symm).mpr hb
+  have hpair_le : ({a, b} : Multiset α) ≤ s := by
+    rw [← Multiset.cons_erase ha]
+    exact Multiset.cons_le_cons a (Multiset.singleton_le.mpr hb_erase)
+  simpa using Multiset.card_le_card hpair_le
+
 end Multiset
 
 namespace RealRooted

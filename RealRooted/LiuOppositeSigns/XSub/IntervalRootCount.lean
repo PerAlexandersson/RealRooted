@@ -81,13 +81,7 @@ private lemma two_le_card_roots_filter_Ioo_of_two_isRoot_ordered
   have hc₂_mem : c₂ ∈ s :=
     Multiset.mem_filter.mpr
       ⟨(Polynomial.mem_roots hP_ne).mpr hc₂, ⟨hac₂, hc₂b⟩⟩
-  have hc₂_erase : c₂ ∈ s.erase c₁ :=
-    (Multiset.mem_erase_of_ne (ne_of_lt hc₁c₂).symm).mpr hc₂_mem
-  have hpair_le : ({c₁, c₂} : Multiset ℝ) ≤ s := by
-    rw [← Multiset.cons_erase hc₁_mem]
-    exact Multiset.cons_le_cons c₁ (Multiset.singleton_le.mpr hc₂_erase)
-  have hcard := Multiset.card_le_card hpair_le
-  simpa [s] using hcard
+  exact Multiset.two_le_card_of_mem_of_ne hc₁_mem hc₂_mem (ne_of_lt hc₁c₂)
 
 /-- If `c₁ < c₂` are roots of `P` above `a`, then the closed upper-tail root
 filter has cardinality at least two. -/
@@ -104,13 +98,7 @@ private lemma two_le_card_roots_filter_ge_of_two_isRoot_ordered
   have hc₂_mem : c₂ ∈ s :=
     Multiset.mem_filter.mpr
       ⟨(Polynomial.mem_roots hP_ne).mpr hc₂, le_of_lt hac₂⟩
-  have hc₂_erase : c₂ ∈ s.erase c₁ :=
-    (Multiset.mem_erase_of_ne (ne_of_lt hc₁c₂).symm).mpr hc₂_mem
-  have hpair_le : ({c₁, c₂} : Multiset ℝ) ≤ s := by
-    rw [← Multiset.cons_erase hc₁_mem]
-    exact Multiset.cons_le_cons c₁ (Multiset.singleton_le.mpr hc₂_erase)
-  have hcard := Multiset.card_le_card hpair_le
-  simpa [s] using hcard
+  exact Multiset.two_le_card_of_mem_of_ne hc₁_mem hc₂_mem (ne_of_lt hc₁c₂)
 
 /-- A nonpositive value at `0` and divergence to `+∞` give a root in the
 nonnegative upper tail, counted in the root multiset. -/
