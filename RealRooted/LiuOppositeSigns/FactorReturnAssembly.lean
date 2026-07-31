@@ -117,6 +117,12 @@ theorem positiveSplitTranslatedXSubRightFamilyDegreeCases_of_rightSucc
   ⟨hrightSucc, positiveSplitSameDegreeTranslatedXSubRightFamily,
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamily⟩
 
+/-- The three sign-normalized positive-split x-subtraction cases are proved. -/
+theorem positiveSplitTranslatedXSubRightFamilyDegreeCases :
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement :=
+  positiveSplitTranslatedXSubRightFamilyDegreeCases_of_rightSucc
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamily
+
 /-- Since the same-degree and left-successor x-subtraction cases are now proved,
 predicate-restricted x-subtraction case packages only need the right-successor
 leaf. -/
@@ -128,6 +134,14 @@ theorem positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_rightSucc
     positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement P :=
   ⟨hrightSucc, positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate P,
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate⟩
+
+/-- The three sign-normalized positive-split x-subtraction cases are proved for
+every endpoint predicate restriction. -/
+theorem positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate
+    {P : ℕ → Prop} :
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement P :=
+  positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_rightSucc
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate
 
 /-- Endpoint cases through degree two as a bundled predicate-restricted
 x-subtraction case package. -/
@@ -343,6 +357,15 @@ theorem theorem21LeftFactorReturnDegreeCases_of_rightSucc_xSub
     theorem21LeftFactorReturnDegreeCasesStatement :=
   theorem21LeftFactorReturnDegreeCases_of_xSubCases
     hrightSucc positiveSplitSameDegreeTranslatedXSubRightFamily
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamily
+
+/-- The proved sign-normalized positive-split x-subtraction cases give the three
+original left-branch factor-return cases. -/
+theorem theorem21LeftFactorReturnDegreeCases_of_xSub :
+    theorem21LeftFactorReturnDegreeCasesStatement :=
+  theorem21LeftFactorReturnDegreeCases_of_xSubCases
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamily
+    positiveSplitSameDegreeTranslatedXSubRightFamily
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamily
 
 /-- A bundled sign-normalized positive-split x-subtraction case package gives
@@ -1649,6 +1672,16 @@ theorem theorem21FactorReturnPredicate_of_rightSucc_xSubPredicate
     hrightSucc (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate P)
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate
 
+/-- The proved sign-normalized positive-split x-subtraction cases imply the
+predicate-restricted factor-return principle. -/
+theorem theorem21FactorReturnPredicate_of_xSub
+    {P : ℕ → Prop} :
+    theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement P :=
+  theorem21FactorReturnPredicate_of_xSubCasesPredicate
+    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate
+    (positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate P)
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate
+
 /-- Bundled predicate-restricted positive-split x-subtraction cases imply the
 predicate-restricted factor-return principle. -/
 theorem theorem21FactorReturnPredicate_of_xSubCasePackage
@@ -1902,6 +1935,13 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_rightSucc_xSub
   theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCases
     hrightSucc positiveSplitSameDegreeTranslatedXSubRightFamily
     positiveSplitLeftSuccDegreeTranslatedXSubRightFamily
+
+/-- The proved sign-normalized positive-split x-subtraction cases imply the
+factor-return principle used by the reverse direction. -/
+theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_xSub :
+    theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
+  theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
+    positiveSplitTranslatedXSubRightFamilyDegreeCases
 
 /-- The branch-retaining deletion-pair common-interleaver theorem package
 follows from the isolated forward direction and a bundled sign-normalized

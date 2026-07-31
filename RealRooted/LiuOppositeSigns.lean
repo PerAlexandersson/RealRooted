@@ -825,6 +825,115 @@ theorem natDegree_X_mul_sub_C_mul_le_left_natDegree_add_one {p q : ℝ[X]}
     (Polynomial.natDegree_C_mul_le μ q).trans hq_le
   simpa using Polynomial.natDegree_sub_le_of_le hleft hright
 
+/-- In the right-successor case, the x-subtraction pencil has degree at most
+the right endpoint degree. -/
+theorem natDegree_X_mul_sub_C_mul_le_right_natDegree_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) (μ : ℝ) :
+    (X * p - C μ * q).natDegree ≤ q.natDegree := by
+  have hleft : (X * p).natDegree ≤ q.natDegree := by
+    rw [Polynomial.natDegree_X_mul h.left_pos.ne_zero, hdeg]
+  have hright : (C μ * q).natDegree ≤ q.natDegree :=
+    Polynomial.natDegree_C_mul_le μ q
+  simpa using Polynomial.natDegree_sub_le_of_le hleft hright
+
+/-- Top coefficient of the x-subtraction pencil in the right-successor degree
+case. -/
+theorem coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (hdeg : q.natDegree = p.natDegree + 1) (μ : ℝ) :
+    (X * p - C μ * q).coeff q.natDegree =
+      p.leadingCoeff - μ * q.leadingCoeff := by
+  have hX : (X * p).coeff q.natDegree = p.leadingCoeff := by
+    rw [hdeg, coeff_X_mul]
+    rw [coeff_natDegree]
+  have hC : (C μ * q).coeff q.natDegree = μ * q.leadingCoeff := by
+    rw [coeff_C_mul, coeff_natDegree]
+  rw [coeff_sub, hX, hC]
+
+/-- In the right-successor case, non-cancellation of the top coefficient keeps
+the x-subtraction pencil at the right endpoint degree. -/
+theorem natDegree_X_mul_sub_C_mul_eq_right_natDegree_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
+    (hcoeff : p.leadingCoeff - μ * q.leadingCoeff ≠ 0) :
+    (X * p - C μ * q).natDegree = q.natDegree := by
+  refine le_antisymm
+    (h.natDegree_X_mul_sub_C_mul_le_right_natDegree_of_right_natDegree_eq_left_add_one
+      hdeg μ) ?_
+  apply le_natDegree_of_ne_zero
+  simpa [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
+    hdeg μ] using hcoeff
+
+/-- Leading coefficient of the x-subtraction pencil in the non-cancelling
+right-successor case. -/
+theorem leadingCoeff_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
+    (hcoeff : p.leadingCoeff - μ * q.leadingCoeff ≠ 0) :
+    (X * p - C μ * q).leadingCoeff =
+      p.leadingCoeff - μ * q.leadingCoeff := by
+  rw [leadingCoeff,
+    h.natDegree_X_mul_sub_C_mul_eq_right_natDegree_of_right_natDegree_eq_left_add_one
+      hdeg hcoeff,
+    coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
+      hdeg μ]
+
+/-- Positive top coefficient gives positive leading coefficient for the
+right-successor x-subtraction pencil. -/
+theorem hasPosLeadingCoeff_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
+    (hcoeff : 0 < p.leadingCoeff - μ * q.leadingCoeff) :
+    HasPosLeadingCoeff (X * p - C μ * q) := by
+  unfold HasPosLeadingCoeff
+  rw [h.leadingCoeff_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
+    hdeg (ne_of_gt hcoeff)]
+  exact hcoeff
+
+/-- Negative top coefficient gives positive leading coefficient after negating
+the right-successor x-subtraction pencil. -/
+theorem hasPosLeadingCoeff_neg_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
+    (hcoeff : p.leadingCoeff - μ * q.leadingCoeff < 0) :
+    HasPosLeadingCoeff (-(X * p - C μ * q)) := by
+  exact hasPosLeadingCoeff_neg <|
+    by
+      rw [h.leadingCoeff_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
+        hdeg (ne_of_lt hcoeff)]
+      exact hcoeff
+
+/-- In the right-successor case, cancellation of the top coefficient drops the
+x-subtraction pencil below the right endpoint degree. -/
+theorem natDegree_X_mul_sub_C_mul_lt_right_natDegree_of_right_natDegree_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
+    (hcoeff : p.leadingCoeff - μ * q.leadingCoeff = 0) :
+    (X * p - C μ * q).natDegree < q.natDegree := by
+  have hle :=
+    h.natDegree_X_mul_sub_C_mul_le_right_natDegree_of_right_natDegree_eq_left_add_one
+      hdeg μ
+  refine lt_of_le_of_ne hle ?_
+  intro hnat
+  have htop_zero :
+      (X * p - C μ * q).coeff q.natDegree = 0 := by
+    simpa [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
+      hdeg μ] using hcoeff
+  have hP_ne : X * p - C μ * q ≠ 0 := by
+    intro hzero
+    have hqdeg_zero : q.natDegree = 0 := by
+      rw [← hnat, hzero]
+      rfl
+    have hq_pos : 0 < q.natDegree := by
+      rw [hdeg]
+      exact Nat.succ_pos _
+    exact (Nat.ne_of_gt hq_pos) hqdeg_zero
+  have htop_ne :
+      (X * p - C μ * q).coeff q.natDegree ≠ 0 := by
+    rw [← hnat, coeff_natDegree]
+    exact leadingCoeff_ne_zero.mpr hP_ne
+  exact htop_ne htop_zero
+
 /-- If the right endpoint has degree at most the left endpoint, then the
 `X * p` term controls the leading term of the x-subtraction pencil. -/
 theorem posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
@@ -920,6 +1029,16 @@ theorem card_right_roots_filter_lt_le_one_of_left_roots_ge_of_natDegree_eq
     (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
     (hdeg : p.natDegree = q.natDegree) :
     (q.roots.filter (fun r => r < a)).card ≤ 1 := by
+  have hbound :=
+    h.left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
+      hroots_ge
+  lia
+
+theorem card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
+    (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
+    (hdeg : q.natDegree = p.natDegree + 1) :
+    (q.roots.filter (fun r => r < a)).card ≤ 2 := by
   have hbound :=
     h.left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
       hroots_ge
@@ -1066,6 +1185,28 @@ theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_left_eq_right_add_
     natDegree_pos_of_isRoot h.right_pos.ne_zero hq
   exact natDegree_deleteRootFactor_left_eq_right_add_one_of_natDegree_eq
     hdeg hq_pos
+
+/-- Deleting one degree from both endpoints preserves the right-successor degree
+relation when the left endpoint has positive degree. -/
+theorem natDegree_deleteRootFactor_right_eq_left_add_one_of_natDegree_eq
+    {p q : ℝ[X]} {r : ℝ}
+    (hdeg : q.natDegree = p.natDegree + 1) (hp_pos : 0 < p.natDegree) :
+    (deleteRootFactor q r).natDegree =
+      (deleteRootFactor p r).natDegree + 1 := by
+  rw [natDegree_deleteRootFactor, natDegree_deleteRootFactor, hdeg]
+  lia
+
+/-- Deleting a common root from both endpoints of a positive-split pair
+preserves the right-successor degree relation. -/
+theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_right_eq_left_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {r : ℝ}
+    (hp : p.IsRoot r) (hdeg : q.natDegree = p.natDegree + 1) :
+    (deleteRootFactor q r).natDegree =
+      (deleteRootFactor p r).natDegree + 1 := by
+  have hp_pos : 0 < p.natDegree :=
+    natDegree_pos_of_isRoot h.left_pos.ne_zero hp
+  exact natDegree_deleteRootFactor_right_eq_left_add_one_of_natDegree_eq
+    hdeg hp_pos
 
 /-- Deleting one root from both endpoints preserves the same-degree relation. -/
 theorem natDegree_deleteRootFactor_eq_of_natDegree_eq

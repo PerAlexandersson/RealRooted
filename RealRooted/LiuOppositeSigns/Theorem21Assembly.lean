@@ -213,6 +213,13 @@ theorem theorem21RootCountBranchesToCompatible_of_xSubCases
   theorem21RootCountBranchesToCompatible_of_xSubCasePackage
     ⟨hrightSucc, hsame, hleftSucc⟩
 
+/-- The proved sign-normalized positive-split x-subtraction cases prove the
+reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatible_of_xSub :
+    theorem21RootCountBranchesToCompatibleStatement :=
+  theorem21RootCountBranchesToCompatible_of_xSubCasePackage
+    positiveSplitTranslatedXSubRightFamilyDegreeCases
+
 /-- Any reverse root-count direction restricts to endpoint predicate
 subfamilies. -/
 theorem theorem21RootCountBranchesToCompatiblePredicate_of_reverse
@@ -310,6 +317,14 @@ theorem theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
     theorem21RootCountBranchesToCompatiblePredicateStatement P :=
   theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
     (theorem21FactorReturnPredicate_of_xSubCasePackage hcases)
+
+/-- The proved sign-normalized positive-split x-subtraction cases prove every
+predicate-restricted reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatiblePredicate_of_xSub
+    {P : ℕ → Prop} :
+    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
+  theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate
 
 /-- The unrestricted factor-return principle proves every predicate-restricted
 reverse root-count direction by forgetting the endpoint predicate. -/
@@ -488,6 +503,14 @@ theorem
     (theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
       hcases)
 
+/-- The proved sign-normalized positive-split x-subtraction cases prove every
+nonconstant predicate-restricted reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSub
+    {P : ℕ → Prop} :
+    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
+  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCasePackage
+    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate
+
 /-- The unrestricted factor-return principle proves every nonconstant
 predicate-restricted reverse root-count direction by forgetting the endpoint
 predicate. -/
@@ -558,6 +581,30 @@ theorem
   theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturnPredicate
       hreturn)
+
+/-- The proved sign-normalized positive-split x-subtraction cases prove the
+nonconstant reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_xSub :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
+    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSub
+
+/-- The isolated forward direction plus the proved x-subtraction reverse route
+give Liu Theorem 2.1 in root-count form. -/
+theorem theorem21CompatibleRootCount_of_forward_and_xSub
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_forward_and_reverse hforward
+    theorem21RootCountBranchesToCompatible_of_xSub
+
+/-- The isolated nonconstant forward direction plus the proved x-subtraction
+reverse route give the nonconstant Liu Theorem 2.1 statement in root-count
+form. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_xSub
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_forward_and_reverse hforward
+    theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
 
 /-- Current low-endpoint reverse route: same/succ left factor-return leaves
 prove the reverse Liu direction for branches whose lower-degree endpoint has
