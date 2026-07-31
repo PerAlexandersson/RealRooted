@@ -256,5 +256,52 @@ theorem PositiveSplitRootCountPair.min_two_card_xSub_Ioo_of_adjacent_left_roots
   exact hpair.min_two_card_right_roots_le_card_xSub_roots_Ioo
     hp_nonneg hno hab ha hb hμ hp_no
 
+/-- Summing over adjacent entries of the sorted distinct left-root list, the
+local `min 2` lower bounds for the right-root counts are bounded by the
+strict-upper root count of the x-subtraction pencil above the first left root.
+
+This is only the interior-gap count; exterior tail intervals are separate
+obligations for the final splitting count. -/
+theorem PositiveSplitRootCountPair.sum_min_two_le_card_xSub_gt_of_roots_sort_cons
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: xs) (hμ : 0 < μ) :
+    (((a :: xs).zip xs).map
+        (fun ab => min 2
+          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+      ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  let P := X * p - C μ * q
+  let gaps := (a :: xs).zip xs
+  have hpoint :
+      (gaps.map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+        (gaps.map
+          (fun ab => (P.roots.filter
+            (fun x => ab.1 < x ∧ x < ab.2)).card)).sum := by
+    apply List.sum_le_sum
+    intro ab hab
+    have hab_mem : ab ∈ (p.roots.toFinset.sort (· ≤ ·)).zip
+        (p.roots.toFinset.sort (· ≤ ·)).tail := by
+      simpa [gaps, hrs] using hab
+    exact hpair.min_two_card_xSub_Ioo_of_adjacent_left_roots
+      hp_nonneg hno hab_mem hμ
+  have hchain : (a :: xs).IsChain (· < ·) := by
+    have hpair_rs :
+        (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
+      (Finset.sortedLT_sort p.roots.toFinset).pairwise
+    have hchain_rs : (p.roots.toFinset.sort (· ≤ ·)).IsChain (· < ·) :=
+      hpair_rs.isChain
+    simpa [hrs] using hchain_rs
+  have htel :
+      (gaps.map
+          (fun ab => (P.roots.filter
+            (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+        (P.roots.filter (a < ·)).card := by
+    simpa [gaps, P] using
+      sum_card_filter_Ioo_zip_tail_le_card_filter_gt (s := P.roots) hchain
+  exact le_trans hpoint htel
+
 end LiuOppositeSigns
 end RealRooted
