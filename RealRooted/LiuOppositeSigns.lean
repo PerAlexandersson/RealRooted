@@ -825,6 +825,30 @@ theorem natDegree_X_mul_sub_C_mul_le_left_natDegree_add_one {p q : ℝ[X]}
     (Polynomial.natDegree_C_mul_le μ q).trans hq_le
   simpa using Polynomial.natDegree_sub_le_of_le hleft hright
 
+/-- If the right endpoint has degree at most the left endpoint, then the
+`X * p` term controls the leading term of the x-subtraction pencil. -/
+theorem posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
+    (hqdeg : q.natDegree ≤ p.natDegree) (μ : ℝ) :
+    HasPosLeadingCoeff (X * p - C μ * q) ∧
+      (X * p - C μ * q).natDegree = p.natDegree + 1 := by
+  have hXp_deg : (X * p).natDegree = p.natDegree + 1 :=
+    Polynomial.natDegree_X_mul h.left_pos.ne_zero
+  have hC_deg_lt : (C μ * q).natDegree < (X * p).natDegree := by
+    have hC_le : (C μ * q).natDegree ≤ q.natDegree :=
+      Polynomial.natDegree_C_mul_le μ q
+    rw [hXp_deg]
+    exact hC_le.trans_lt (hqdeg.trans_lt (Nat.lt_succ_self _))
+  have hnegC_deg_lt : (-(C μ * q)).natDegree < (X * p).natDegree := by
+    simpa using hC_deg_lt
+  constructor
+  · simpa [sub_eq_add_neg] using
+      hasPosLeadingCoeff_add_of_natDegree_lt_left
+        (p := X * p) (q := -(C μ * q)) hnegC_deg_lt h.left_pos.X_mul
+  · simpa [hXp_deg, sub_eq_add_neg] using
+      natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
+        (p := X * p) (q := -(C μ * q)) hnegC_deg_lt h.left_pos.X_mul
+
 theorem rootCountAbove_bounds_of_nonRoot {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q) {x : ℝ}
     (hpx : ¬ p.IsRoot x) (hqx : ¬ q.IsRoot x) :
@@ -849,11 +873,11 @@ theorem card_right_roots_filter_gt_le_one_of_left_largest_root
     simpa [hp_zero] using hbound.2
   exact_mod_cast hq_le_int
 
-theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
+theorem left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
     {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
-    (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
-    (hdeg : p.natDegree = q.natDegree + 1) :
-    (q.roots.filter (fun r => r < a)).card = 0 := by
+    (hroots_ge : ∀ r ∈ p.roots, a ≤ r) :
+    p.natDegree + (q.roots.filter (fun r => r < a)).card ≤
+      q.natDegree + 1 := by
   let lower := (q.roots.filter (fun r => r < a)).card
   let upper := rootCountAtOrAbove q a
   have hp_count : rootCountAtOrAbove p a = p.natDegree := by
@@ -871,17 +895,35 @@ theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq
     rw [Multiset.card_add] at hcard
     simpa [lower, upper, rootCountAtOrAbove, hnot, card_roots_of_splits h.right_splits]
       using hcard
-  by_contra hlower_ne
-  have hlower_pos : 0 < lower := Nat.pos_of_ne_zero hlower_ne
   have hbound : ((p.natDegree : ℤ) - upper) ≤ 1 := by
     simpa [hp_count, upper] using (h.count.bounds a).1
   have hpart_int : (lower : ℤ) + upper = q.natDegree := by
     exact_mod_cast hpart
-  have hlower_int : (1 : ℤ) ≤ lower := by
-    exact_mod_cast hlower_pos
-  have hdeg_int : (p.natDegree : ℤ) = q.natDegree + 1 := by
-    exact_mod_cast hdeg
-  linarith
+  have hmain : (p.natDegree : ℤ) + lower ≤ q.natDegree + 1 := by
+    linarith
+  exact_mod_cast hmain
+
+theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
+    (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
+    (hdeg : p.natDegree = q.natDegree + 1) :
+    (q.roots.filter (fun r => r < a)).card = 0 := by
+  have hbound :=
+    h.left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
+      hroots_ge
+  have hlower_le : (q.roots.filter (fun r => r < a)).card ≤ 0 := by
+    lia
+  exact Nat.eq_zero_of_le_zero hlower_le
+
+theorem card_right_roots_filter_lt_le_one_of_left_roots_ge_of_natDegree_eq
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {a : ℝ}
+    (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
+    (hdeg : p.natDegree = q.natDegree) :
+    (q.roots.filter (fun r => r < a)).card ≤ 1 := by
+  have hbound :=
+    h.left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
+      hroots_ge
+  lia
 
 theorem sameDegreeRootCountAboveNonRoot {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q)
@@ -1024,6 +1066,22 @@ theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_left_eq_right_add_
     natDegree_pos_of_isRoot h.right_pos.ne_zero hq
   exact natDegree_deleteRootFactor_left_eq_right_add_one_of_natDegree_eq
     hdeg hq_pos
+
+/-- Deleting one root from both endpoints preserves the same-degree relation. -/
+theorem natDegree_deleteRootFactor_eq_of_natDegree_eq
+    {p q : ℝ[X]} {r : ℝ} (hdeg : p.natDegree = q.natDegree) :
+    (deleteRootFactor p r).natDegree =
+      (deleteRootFactor q r).natDegree := by
+  rw [natDegree_deleteRootFactor, natDegree_deleteRootFactor, hdeg]
+
+/-- Deleting a common root from both endpoints of a positive-split pair
+preserves the same-degree relation. -/
+theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_eq
+    {p q : ℝ[X]} (_h : PositiveSplitRootCountPair p q) {r : ℝ}
+    (hdeg : p.natDegree = q.natDegree) :
+    (deleteRootFactor p r).natDegree =
+      (deleteRootFactor q r).natDegree :=
+  natDegree_deleteRootFactor_eq_of_natDegree_eq hdeg
 
 namespace OppositeLeadingSigns
 
