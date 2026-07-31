@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 
 /-!
@@ -9,6 +10,27 @@ consecutive left-endpoint roots.
 -/
 
 open Polynomial
+
+namespace Polynomial
+
+/-- Adjacent entries in the sorted distinct root list of a nonzero real
+polynomial have no root strictly between them. -/
+theorem not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
+    {p : ℝ[X]} (hp_ne : p ≠ 0) {a b z : ℝ}
+    (hab : (a, b) ∈ (p.roots.toFinset.sort (· ≤ ·)).zip
+      (p.roots.toFinset.sort (· ≤ ·)).tail)
+    (haz : a < z) (hzb : z < b) :
+    ¬ p.IsRoot z := by
+  intro hz
+  have hpair :
+      (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
+    (Finset.sortedLT_sort p.roots.toFinset).pairwise
+  have hz_mem : z ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset]
+    exact (Polynomial.mem_roots hp_ne).mpr hz
+  exact List.not_mem_of_mem_zip_tail_of_pairwise_lt hpair hab haz hzb hz_mem
+
+end Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns
@@ -198,6 +220,41 @@ theorem PositiveSplitRootCountPair.min_two_card_right_roots_le_card_xSub_roots_I
       hpair.two_le_card_xSub_roots_Ioo_of_even_right_roots
         hp_nonneg hno hab ha hb hμ hp_no hpos heven
     simpa [I, hI] using htwo
+
+/-- Adjacent distinct left roots in the sorted root set give the local
+`min 2` lower bound for the x-subtraction pencil. -/
+theorem PositiveSplitRootCountPair.min_two_card_xSub_Ioo_of_adjacent_left_roots
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ}
+    (hab_mem : (a, b) ∈ (p.roots.toFinset.sort (· ≤ ·)).zip
+      (p.roots.toFinset.sort (· ≤ ·)).tail)
+    (hμ : 0 < μ) :
+    min 2 (q.roots.filter (fun x => a < x ∧ x < b)).card ≤
+      ((X * p - C μ * q).roots.filter
+        (fun x => a < x ∧ x < b)).card := by
+  let rs := p.roots.toFinset.sort (· ≤ ·)
+  have hpair_rs : rs.Pairwise (· < ·) :=
+    (Finset.sortedLT_sort p.roots.toFinset).pairwise
+  have hchain : rs.IsChain (· < ·) := hpair_rs.isChain
+  have hab : a < b := by
+    simpa [rs] using List.rel_of_mem_zip_tail_of_isChain hchain hab_mem
+  have ha_mem : a ∈ p.roots.toFinset.sort (· ≤ ·) :=
+    List.fst_mem_of_mem_zip hab_mem
+  have hb_mem : b ∈ p.roots.toFinset.sort (· ≤ ·) :=
+    List.mem_of_mem_tail (List.snd_mem_of_mem_zip hab_mem)
+  have ha : p.IsRoot a := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at ha_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp ha_mem
+  have hb : p.IsRoot b := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at hb_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hb_mem
+  have hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z := by
+    intro z haz hzb
+    exact Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
+      hpair.left_pos.ne_zero hab_mem haz hzb
+  exact hpair.min_two_card_right_roots_le_card_xSub_roots_Ioo
+    hp_nonneg hno hab ha hb hμ hp_no
 
 end LiuOppositeSigns
 end RealRooted
