@@ -23,6 +23,39 @@ theorem allCombo_sequence_right_realrooted {F G : Nat → ℝ[X]}
     ∀ i : Nat, G i ≠ 0 ∧ (G i).Splits := fun i =>
   AllComboRealRooted.isRealRooted_right (hall i) (hG0 i)
 
+theorem allCombo_sequence_left_splits {F G : Nat → ℝ[X]}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (F i).Splits := fun i =>
+  AllComboRealRooted.left_splits (hall i)
+
+theorem allCombo_sequence_right_splits {F G : Nat → ℝ[X]}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (G i).Splits := fun i =>
+  AllComboRealRooted.right_splits (hall i)
+
+theorem allCombo_sequence_splits_of_eq_combo
+    {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i) :
+    ∀ i : Nat, (P i).Splits :=
+  AllComboRealRooted.splits_sequence_of_eq_combo hall hP
+
+theorem allCombo_sequence_ne_zero_and_splits_of_eq_combo
+    {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hP0 : ∀ i : Nat, P i ≠ 0) :
+    ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits :=
+  AllComboRealRooted.ne_zero_and_splits_sequence_of_eq_combo hall hP hP0
+
+theorem allCombo_sequence_linear_recombination
+    {F G P Q : Nat → ℝ[X]} {a b c d : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hQ : ∀ i : Nat, Q i = C (c i) * F i + C (d i) * G i) :
+    ∀ i : Nat, AllComboRealRooted (P i) (Q i) := fun i =>
+  AllComboRealRooted.linear_recombination (hall i) (hP i) (hQ i)
+
 theorem allCombo_sequence_comm {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, AllComboRealRooted (G i) (F i) := fun i =>
@@ -97,6 +130,46 @@ syntax (name := rr_all_combo_splits_named)
     "right_scalar" ":=" term :
   tactic
 
+syntax (name := rr_all_combo_splits_of_eq_combo_named)
+  "rr_all_combo_splits_of_eq_combo" " using "
+    "all_combo" ":=" term ","
+    "eq_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_ne_zero_and_splits_of_eq_combo_named)
+  "rr_all_combo_ne_zero_and_splits_of_eq_combo" " using "
+    "all_combo" ":=" term ","
+    "eq_combo" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_sequence_splits_of_eq_combo_named)
+  "rr_all_combo_sequence_splits_of_eq_combo" " using "
+    "all_combo" ":=" term ","
+    "eq_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo_named)
+  "rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo" " using "
+    "all_combo" ":=" term ","
+    "eq_combo" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_linear_recombination_named)
+  "rr_all_combo_linear_recombination" " using "
+    "all_combo" ":=" term ","
+    "left_eq_combo" ":=" term ","
+    "right_eq_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_sequence_linear_recombination_named)
+  "rr_all_combo_sequence_linear_recombination" " using "
+    "all_combo" ":=" term ","
+    "left_eq_combo" ":=" term ","
+    "right_eq_combo" ":=" term :
+  tactic
+
 syntax (name := rr_all_combo_left_realrooted_named)
   "rr_all_combo_left_realrooted" " using "
     "all_combo" ":=" term ","
@@ -119,6 +192,22 @@ syntax (name := rr_all_combo_sequence_right_realrooted_named)
   "rr_all_combo_sequence_right_realrooted" " using "
     "all_combo" ":=" term ","
     "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_left_splits_named)
+  "rr_all_combo_left_splits" " using " "all_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_sequence_left_splits_named)
+  "rr_all_combo_sequence_left_splits" " using " "all_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_right_splits_named)
+  "rr_all_combo_right_splits" " using " "all_combo" ":=" term :
+  tactic
+
+syntax (name := rr_all_combo_sequence_right_splits_named)
+  "rr_all_combo_sequence_right_splits" " using " "all_combo" ":=" term :
   tactic
 
 syntax (name := rr_all_combo_comm_named)
@@ -253,6 +342,48 @@ macro_rules
         right_scalar := $b:term) =>
       `(tactic| exact RealRooted.AllComboRealRooted.splits $hall $a $b)
   | `(tactic|
+      rr_all_combo_splits_of_eq_combo using
+        all_combo := $hall:term,
+        eq_combo := $hp:term) =>
+      `(tactic| exact RealRooted.AllComboRealRooted.splits_of_eq_combo $hall $hp)
+  | `(tactic|
+      rr_all_combo_ne_zero_and_splits_of_eq_combo using
+        all_combo := $hall:term,
+        eq_combo := $hp:term,
+        nonzero := $hp0:term) =>
+      `(tactic|
+        exact RealRooted.AllComboRealRooted.ne_zero_and_splits_of_eq_combo
+          $hall $hp $hp0)
+  | `(tactic|
+      rr_all_combo_sequence_splits_of_eq_combo using
+        all_combo := $hall:term,
+        eq_combo := $hP:term) =>
+      `(tactic| exact RealRooted.Tactic.allCombo_sequence_splits_of_eq_combo $hall $hP)
+  | `(tactic|
+      rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo using
+        all_combo := $hall:term,
+        eq_combo := $hP:term,
+        nonzero := $hP0:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.allCombo_sequence_ne_zero_and_splits_of_eq_combo
+          $hall $hP $hP0)
+  | `(tactic|
+      rr_all_combo_linear_recombination using
+        all_combo := $hall:term,
+        left_eq_combo := $hp:term,
+        right_eq_combo := $hq:term) =>
+      `(tactic|
+        exact RealRooted.AllComboRealRooted.linear_recombination
+          $hall $hp $hq)
+  | `(tactic|
+      rr_all_combo_sequence_linear_recombination using
+        all_combo := $hall:term,
+        left_eq_combo := $hP:term,
+        right_eq_combo := $hQ:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.allCombo_sequence_linear_recombination
+          $hall $hP $hQ)
+  | `(tactic|
       rr_all_combo_left_realrooted using
         all_combo := $hall:term,
         nonzero := $hf0:term) =>
@@ -272,6 +403,14 @@ macro_rules
         all_combo := $hall:term,
         nonzero := $hg0:term) =>
       `(tactic| exact RealRooted.Tactic.allCombo_sequence_right_realrooted $hall $hg0)
+  | `(tactic| rr_all_combo_left_splits using all_combo := $hall:term) =>
+      `(tactic| exact RealRooted.AllComboRealRooted.left_splits $hall)
+  | `(tactic| rr_all_combo_sequence_left_splits using all_combo := $hall:term) =>
+      `(tactic| exact RealRooted.Tactic.allCombo_sequence_left_splits $hall)
+  | `(tactic| rr_all_combo_right_splits using all_combo := $hall:term) =>
+      `(tactic| exact RealRooted.AllComboRealRooted.right_splits $hall)
+  | `(tactic| rr_all_combo_sequence_right_splits using all_combo := $hall:term) =>
+      `(tactic| exact RealRooted.Tactic.allCombo_sequence_right_splits $hall)
   | `(tactic| rr_all_combo_comm using all_combo := $hall:term) =>
       `(tactic| exact RealRooted.AllComboRealRooted.comm $hall)
   | `(tactic| rr_all_combo_sequence_comm using all_combo := $hall:term) =>

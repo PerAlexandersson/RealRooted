@@ -48,8 +48,6 @@ import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WeightedSum
-import RealRooted.Tactic.OEIS
-import RealRooted.Tactic.Targets
 
 /-!
 # RealRooted tactic entry point
@@ -60,6 +58,11 @@ real-rootedness proofs.
 The initial implementation goal is intentionally modest: automate the
 repeated proof shell in the combinatorial examples, while keeping recurrence,
 degree, root-bound, and sign certificates explicit.
+
+The historical generated-row compatibility facade is not re-exported here;
+files that need it should import `RealRooted.Tactic.OEIS` directly.
+The documentation-only target ledger is also kept out of this aggregate; import
+`RealRooted.Tactic.Targets` directly when using those notes.
 
 See `RealRooted/Tactic/PLAN.md` for the implementation plan.  The repository
 normally ignores new Markdown files, so `.gitignore` has a narrow exception

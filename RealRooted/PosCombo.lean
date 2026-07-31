@@ -600,6 +600,22 @@ lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
   RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
     (hfg := hfg.toPosComboHyp) hf_pos hg_pos hdeg
 
+/-- Equal-degree positive-combination real-rootedness forces the left summand
+to split. -/
+lemma left_splits_of_sameDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) : f.Splits :=
+  (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+
+/-- Equal-degree positive-combination real-rootedness forces the right summand
+to split. -/
+lemma right_splits_of_sameDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) : g.Splits :=
+  (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+
 /-- Root-continuity bridge for the left affine family, stated directly for
 `PosComboRealRooted`. -/
 theorem exists_root_near_left_family
@@ -712,9 +728,9 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
     ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits) :=
   hfg.isRealRooted_closed_segment
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).1
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.left_splits_of_sameDegree hf_pos hg_pos hdeg)
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).1
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.right_splits_of_sameDegree hf_pos hg_pos hdeg)
     hβ0 hβ1
 
 /--
@@ -1078,6 +1094,30 @@ lemma family_natDegree_left {f g : ℝ[X]}
     (C lam * f + g).natDegree = f.natDegree := by
   simpa [one_mul] using
     natDegree_pos_combo_eq_left_of_natDegree_le hdeg hf_pos hg_pos hlam zero_lt_one
+
+/-- The right one-parameter family has constant `natDegree` on a positive
+parameter interval when the two endpoint polynomials have positive leading
+coefficients. -/
+lemma family_natDegree_right_eq_of_pos_params {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    {μ ν : ℝ} (hμ_pos : 0 < μ) :
+    ∀ τ ∈ Set.Icc μ ν,
+      (f + C τ * g).natDegree = (f + C μ * g).natDegree := by
+  intro τ hτ
+  have hτ_pos : 0 < τ := lt_of_lt_of_le hμ_pos hτ.1
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · rw [family_natDegree_right hdeg hf_pos hg_pos hτ_pos,
+      family_natDegree_right hdeg hf_pos hg_pos hμ_pos]
+  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    have hτ_nat : (f + C τ * g).natDegree = f.natDegree := by
+      simpa [one_mul] using
+        natDegree_pos_combo_eq_left_of_natDegree_le hdeg' hf_pos hg_pos
+          zero_lt_one hτ_pos
+    have hμ_nat : (f + C μ * g).natDegree = f.natDegree := by
+      simpa [one_mul] using
+        natDegree_pos_combo_eq_left_of_natDegree_le hdeg' hf_pos hg_pos
+          zero_lt_one hμ_pos
+    rw [hτ_nat, hμ_nat]
 
 lemma family_hasPosLeadingCoeff_right {f g : ℝ[X]}
     (hdeg : f.natDegree ≤ g.natDegree)

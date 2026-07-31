@@ -526,7 +526,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     simp_all
   have hp_der_eval0 : p.derivative.eval x = 0 := by
     simp_all
-  have hp_rr : p.Splits := (hall.isRealRooted_left hp0).2
+  have hp_rr : p.Splits := hall.left_splits
   let pp : ℝ := p.derivative.derivative.eval x
   let qx : ℝ := q.eval x
   let qp : ℝ := q.derivative.eval x
@@ -1735,7 +1735,7 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
     dsimp [gN, n]
     exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by lia)
   have hgN_rr : (gN ≠ 0 ∧ gN.Splits) :=
-    ⟨hgN_ne, by simpa using hallN 0 1⟩
+    ⟨hgN_ne, hallN.right_splits⟩
   exact
     not_allComboRealRooted_const_left_of_natDegree_ge_two
       (c := cf) (p := gN) (by lia) hgN_rr.1 hgN_rr.2 hgN_deg_ge2
@@ -2079,7 +2079,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
                   lia
                 · simp_all
         have hp_rr : (p ≠ 0 ∧ p.Splits) :=
-          ⟨hp0, by simpa using hpq_all 1 0⟩
+          ⟨hp0, hpq_all.left_splits⟩
         have hq_not_root : ¬ q.IsRoot x := by
           simp_all
         have hp_mult_gt : 1 < p.rootMultiplicity x :=

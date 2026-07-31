@@ -145,6 +145,350 @@ The first certificate-driven layer is implemented.
   It also contains a small Touchard regression file under
   `Examples/Combinatorial.lean`.
 
+### 2026-07-30 Liu-Wang Global Nonpositive Projections Auto
+
+Add the missing global-nonpositive auto projections for nonzero and
+consecutive interlacing.  This is a catalog-agnostic tactic facade over
+`LwNonposLagSequenceState.of_nonpos` and `LwNonposLagSequenceState.of_den`.
+The caller still supplies the base `Prec` certificate, leading-coefficient
+certificate, lag term, recurrence certificate, strict degree increment, and
+no-common-root certificate.  The only automatic step is the existing
+`rr_sign` discharge for the supplied global lag.
+
+The first planning pass considered adding only interlacing, because the
+existing `rr_lw_global_nonpos_sequence_realrooted_auto` and denominator variant
+route through `rr_exact_realrooted_sequence_or_projection`.  The focused build
+found that a direct nonzero projection through that finisher can hit the
+heartbeat limit in `RealRooted/Tactic/Examples/LiuWang.lean`, so this slice
+adds direct nonzero endpoints.  A candidate direct splitting endpoint was also
+tested, but the abstract examples still hit heartbeat limits.  Splitting is
+therefore left to the existing real-rooted endpoints for now.  The accepted
+endpoints are still generic: they do not infer a proof route or depend on any
+sequence catalogue, and they simply project fields from the already-built
+Liu-Wang state.
+
+Planned tactic syntax in `RealRooted/Tactic/LiuWang.lean`:
+
+```lean
+rr_lw_global_nonpos_sequence_nonzero_auto using
+  base := hbase,
+  pos_lc := hpos,
+  lag := B,
+  recurrence := hrec,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_global_nonpos_sequence_interlaces_auto using
+  base := hbase,
+  pos_lc := hpos,
+  lag := B,
+  recurrence := hrec,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_global_nonpos_sequence_den_nonzero_auto using
+  base := hbase,
+  pos_lc := hpos,
+  lag := B,
+  raw_recurrence := hraw,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_global_nonpos_sequence_den_interlaces_auto using
+  base := hbase,
+  pos_lc := hpos,
+  lag := B,
+  raw_recurrence := hraw,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_global_nonpos_sequence_den_interlaces_auto using
+  base := hbase,
+  pos_lc := hpos,
+  lag := B,
+  den_nonzero := hden,
+  raw_recurrence := hraw,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+```
+
+Planned macro bodies:
+
+```lean
+exact
+  (RealRooted.LwNonposLagSequenceState.of_nonpos
+    (B := B) hbase hpos (by
+      intro n r hr
+      rr_sign) hrec hdeg_succ hno).ne_zero_sequence
+
+exact
+  (RealRooted.LwNonposLagSequenceState.of_nonpos
+    (B := B) hbase hpos (by
+      intro n r hr
+      rr_sign) hrec hdeg_succ hno).interlaces_sequence
+
+exact
+  (RealRooted.LwNonposLagSequenceState.of_den
+    (B := B) hbase hpos (by
+      intro n r hr
+      rr_sign) hden hraw hdeg_succ hno).ne_zero_sequence
+
+-- The denominator interlacing case is the same construction, followed by
+-- `.interlaces_sequence`.
+```
+
+Keep `(B := B)` explicit so the lag used by `rr_sign` is pinned by the surface
+syntax rather than inferred from the recurrence.  Put the macro cases in a
+small dedicated `macro_rules` block near the global-nonpositive syntax, not in
+the large Liu-Wang dispatcher, since previous projection slices hit macro
+recursion limits there.
+
+Examples should stay abstract and catalog-free in
+`RealRooted/Tactic/Examples/LiuWang.lean`:
+
+- direct nonzero endpoint for the non-denominator shell;
+- one non-denominator interlacing endpoint using a constant negative-square
+  lag;
+- one non-denominator endpoint using an `n`-dependent scaled negative
+  quadratic lag;
+- direct nonzero endpoint for the denominator shell;
+- one denominator endpoint without explicit `den_nonzero`, covering the
+  default denominator macro rule;
+- one denominator endpoint with an explicit `den_nonzero`, covering the base
+  macro rule;
+
+Claude-derived review notes kept: preserve the existing keyword order; pin the
+lag with `(B := B)`; keep the `_den` optional-denominator self-dispatch
+pattern; and close projection goals with plain `exact` rather than a
+projection-tolerant finisher.  The local heartbeat failure is the reason this
+slice intentionally adds nonzero endpoints despite the initial review
+suggestion to avoid aliases; splitting endpoints were not kept because the
+candidate macros remained heartbeat-heavy in the generic examples.
+
+### 2026-07-30 AllCombo Endpoint Splits Projections
+
+Status: completed.
+
+Add a small catalog-agnostic AllCombo golf slice for endpoint splitting.
+Currently `AllComboRealRooted f g` immediately proves `f.Splits` and
+`g.Splits` by specializing the pencil at `(1, 0)` or `(0, 1)`, but the public
+surface mostly exposes this through either explicit scalar syntax or
+`isRealRooted_left/right`, which unnecessarily carries a nonzero certificate
+when the goal is only splitting.
+
+Planned core lemmas in `RealRooted/AllCombo.lean`, inside the first
+`AllComboRealRooted` namespace block:
+
+```lean
+lemma left_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) : f.Splits
+lemma right_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) : g.Splits
+```
+
+Then redefine the existing bundled endpoint lemmas as:
+
+```lean
+lemma isRealRooted_left
+    (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
+    f ≠ 0 ∧ f.Splits :=
+  ⟨hf0, hall.left_splits⟩
+
+lemma isRealRooted_right
+    (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
+    g ≠ 0 ∧ g.Splits :=
+  ⟨hg0, hall.right_splits⟩
+```
+
+Planned sequence wrappers and tactics in `RealRooted/Tactic/AllCombo.lean`:
+
+```lean
+theorem allCombo_sequence_left_splits
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (F i).Splits
+
+theorem allCombo_sequence_right_splits
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (G i).Splits
+
+rr_all_combo_left_splits using all_combo := hall
+rr_all_combo_right_splits using all_combo := hall
+rr_all_combo_sequence_left_splits using all_combo := hall
+rr_all_combo_sequence_right_splits using all_combo := hall
+```
+
+Examples should be abstract smoke tests in
+`RealRooted/Tactic/Examples/AllCombo.lean`.  A small call-site golf pass may
+rewrite low-blast uses that currently discard the nonzero conjunct solely to
+recover `.Splits`.  Avoid touching `CommonInterleaverTwo.lean` in this slice
+because it is one of the known Erik conflict-plan files.  Do not tag the new
+lemmas as `[simp]`; use explicit calls so they do not fire on metavariable
+splitting goals.
+
+Claude-derived review notes: keep the `simpa using hall 1 0` and
+`simpa using hall 0 1` proofs centralized in the core lemmas, make tactic
+macros expand to `exact`, use one-argument `using all_combo := ...` syntax,
+and keep the slice free of sequence-specific/OEIS logic.
+
+### 2026-07-30 AllCombo Closed-Form Exits
+
+Status: completed.
+
+Add tactic wrappers for the new closed-form exit lemmas in
+`RealRooted/AllCombo.lean`.  This is a catalog-agnostic tactic slice:
+generated files must still supply the all-combo hypothesis, the closed-form
+identity, and any required nonzero certificate explicitly.
+
+Planned backend wrappers in `RealRooted/Tactic/AllCombo.lean`:
+
+```lean
+theorem allCombo_sequence_splits_of_eq_combo
+    {F G P : Nat -> ℝ[X]} {a b : Nat -> ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i) :
+    ∀ i : Nat, (P i).Splits
+```
+
+```lean
+theorem allCombo_sequence_ne_zero_and_splits_of_eq_combo
+    {F G P : Nat -> ℝ[X]} {a b : Nat -> ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hP0 : ∀ i : Nat, P i ≠ 0) :
+    ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits
+```
+
+Planned tactic syntax:
+
+```lean
+rr_all_combo_splits_of_eq_combo using
+  all_combo := hall,
+  eq_combo := hp
+
+rr_all_combo_ne_zero_and_splits_of_eq_combo using
+  all_combo := hall,
+  eq_combo := hp,
+  nonzero := hp0
+
+rr_all_combo_sequence_splits_of_eq_combo using
+  all_combo := hall,
+  eq_combo := hP
+
+rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo using
+  all_combo := hall,
+  eq_combo := hP,
+  nonzero := hP0
+```
+
+The examples should be abstract smoke tests in
+`RealRooted/Tactic/Examples/AllCombo.lean`, with no sequence names or
+catalog-specific comments.
+
+### 2026-07-30 AllCombo Linear Recombination Frontends
+
+Status: completed.
+
+Add tactic wrappers for the existing all-combination linear-recombination
+closure.  This is still a purely certificate-driven frontend: the caller
+supplies the all-combo hypothesis and both endpoint equality certificates.
+The tactic does not solve coefficient identities or guess a change of basis.
+
+Planned backend wrapper in `RealRooted/Tactic/AllCombo.lean`:
+
+```lean
+theorem allCombo_sequence_linear_recombination
+    {F G P Q : Nat -> ℝ[X]} {a b c d : Nat -> ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hQ : ∀ i : Nat, Q i = C (c i) * F i + C (d i) * G i) :
+    ∀ i : Nat, AllComboRealRooted (P i) (Q i)
+```
+
+Planned tactic syntax:
+
+```lean
+rr_all_combo_linear_recombination using
+  all_combo := hall,
+  left_eq_combo := hp,
+  right_eq_combo := hq
+
+rr_all_combo_sequence_linear_recombination using
+  all_combo := hall,
+  left_eq_combo := hP,
+  right_eq_combo := hQ
+```
+
+The examples should be abstract smoke tests only.  A later generated proof body
+may use these wrappers as the transport layer, but no generated-search tactic
+is introduced here.
+
+### 2026-07-30 Generated-Row Scalar Helper Cleanup
+
+Status: completed.
+
+The tactic layer should be catalog-agnostic.  The scalar-denominator helpers
+already live under generic names in `RealRooted/Tactic/ScalarDen.lean`:
+
+```lean
+rr_scalar_active_den_all
+rr_scalar_active_den_all_term
+rr_scalar_coeff_at n
+rr_scalar_coeff_all
+rr_scalar_coeff_all_term
+```
+
+The generated-row defaults now route through these `rr_scalar_*` names.  Older
+catalog-facing aliases remain as compatibility shims, but reusable tactic code
+should not depend on catalog-named helper syntax.
+
+The generic `RealRooted.Tactic` entry point no longer re-exports the historical
+catalog facade.  Existing generated or catalog-facing files can still import
+that compatibility facade directly, while ordinary tactic users get the
+reusable backend modules without catalog-specific syntax.
+
+Likewise, the generic `RealRooted.Tactic.Examples` umbrella does not import
+historical catalog-facing example batches by default.  Those modules remain
+explicitly buildable regression files, but direct imports are required so the
+ordinary example aggregate stays catalog-neutral.
+
+The documentation-only target ledger `RealRooted.Tactic.Targets` follows the
+same rule.  It remains directly importable, but is not re-exported from
+`RealRooted.Tactic`, since ordinary tactic users do not need sequence target
+notes in the generic tactic API.
+
+### 2026-07-30 Finish Named-Wrapper Fixture Cleanup
+
+Status: implemented in `RealRooted/Tactic/Examples/Finish.lean`.
+
+`RealRooted/Tactic/Examples/Finish.lean` should stay a generic tactic example
+module.  Its named-wrapper regression tests should not import a concrete
+catalog sequence.  Replace the sequence-backed fixture with local synthetic
+families:
+
+```lean
+def namedFinishSmoke (n : Nat) : ℝ[X] := 1
+def namedFinishSmokeRefined (n : Nat) : List ℝ[X] := []
+```
+
+and generated-style wrappers:
+
+```lean
+theorem namedFinishSmoke_generated_realRooted (n : Nat) :
+    namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits
+theorem namedFinishSmoke_generated_ne_zero (n : Nat) :
+    namedFinishSmoke n ≠ 0
+theorem namedFinishSmoke_generated_splits (n : Nat) :
+    (namedFinishSmoke n).Splits
+theorem namedFinishSmoke_generated_interlaces (n : Nat) :
+    IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n)
+```
+
+The examples should continue to exercise `rr_nonzero`, `rr_splits`,
+`rr_realrooted`, `rr_interlaces`, and `rr_finish`, but the file-level
+OEIS/A-number scan should become empty.
+
+Verification passed with focused builds for
+`RealRooted.Tactic.Examples.Finish` and `RealRooted.Tactic.Examples`, followed
+by full `lake build RealRooted`, using the external-cache Lake recipe.
+
 ## Attribute system
 
 Use custom attributes for certificate lemmas.  This is preferable to
@@ -867,3 +1211,305 @@ lake build RealRooted.Tactic.OEIS
 
 Run a full `lake build` only after changing public theorem signatures, imports,
 or generated coverage.
+
+### 2026-07-30 Liu-Wang State Projection Golf
+
+Status: completed.
+
+The strict-degree `LwNonposLagSequenceState` package already projects the
+`Prec` chain, rowwise bundled real-rootedness, and consecutive interlacing.
+Added explicit endpoint projections so users and generated proof bodies do not
+need to call a real-rootedness tactic when the target is only nonzero or only
+`Splits`:
+
+```lean
+theorem LwNonposLagSequenceState.ne_zero_sequence
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, P n ≠ 0
+
+theorem LwNonposLagSequenceState.splits_sequence
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, (P n).Splits
+```
+
+Add tactic facades:
+
+```lean
+rr_lw_nonpos_lag_state_nonzero using state := hstate
+rr_lw_nonpos_lag_state_splits using state := hstate
+```
+
+Both are smoke-tested on the existing unit-`X` state example block in
+`RealRooted/Tactic/Examples/LiuWang.lean`.  The tactic cases live in their own
+small `macro_rules` block rather than the large Liu-Wang dispatcher block, to
+avoid pushing that existing macro block over Lean's recursion limit.  This is
+a generic projection/golf slice only: no new recurrence shape, no
+sequence-specific tactic, no `rr_ore`, and no catalog references in reusable
+Lean.
+
+### 2026-07-30 Liu-Wang Strict Branch Sequence State
+
+Status: completed.
+
+The next plateau-safe abstraction should promote the existing active-range
+same-degree/successor-degree example skeleton into a reusable state.  The
+mathematics is already available through:
+
+- `prec_lw_two_strict_branch_of_neg` for a single adjacent step;
+- `prec_sequence_of_base_and_degree_branches` for the sequence induction.
+
+Added a sequence state that keeps the branch evidence explicit:
+
+```lean
+structure LwStrictBranchSequenceState (P A B : Nat → ℝ[X]) where
+  hbase : Prec (P 0) (P 1)
+  hpos : ∀ n : Nat, HasPosLeadingCoeff (P n)
+  hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n
+  hdegree : ∀ n : Nat,
+    (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1
+  hinter : ∀ n : Nat,
+    Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1))
+  hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r
+  hB_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0
+```
+
+Added projections:
+
+```lean
+theorem LwStrictBranchSequenceState.prec_sequence ...
+theorem LwStrictBranchSequenceState.isRealRooted ...
+theorem LwStrictBranchSequenceState.ne_zero_sequence ...
+theorem LwStrictBranchSequenceState.splits_sequence ...
+theorem LwStrictBranchSequenceState.interlaces_sequence ...
+```
+
+Added tactic endpoints:
+
+```lean
+rr_lw_strict_branch_sequence_state using
+  base := hbase,
+  pos_lc := hpos,
+  recurrence := hrec,
+  degree_branch := hdegree,
+  interlacer := hinter,
+  no_common_roots := hno,
+  head_neg := hB_neg
+
+rr_lw_strict_branch_state using state := hstate
+rr_lw_strict_branch_state_realrooted using state := hstate
+rr_lw_strict_branch_state_nonzero using state := hstate
+rr_lw_strict_branch_state_splits using state := hstate
+rr_lw_strict_branch_state_interlaces using state := hstate
+```
+
+This state should not infer plateau patterns, root intervals, or coefficient
+signs.  Generated and hand-written files must still supply those certificates.
+The reusable tactic layer remains catalog-agnostic and sequence-agnostic.
+The existing active-range plateau/successor skeleton example now packages the
+data through the state tactic, and a compact smoke example checks the
+real-rootedness, nonzero, splitting, and interlacing projection endpoints.
+
+### 2026-07-30 Liu-Wang Strict Branch Direct Endpoints
+
+Status: completed.
+
+Added direct tactic endpoints that construct `LwStrictBranchSequenceState`
+inline and immediately project the requested sequence property.  These are
+pure golf facades over the explicit state fields; they must not infer degree
+branches, root signs, root intervals, or sequence-specific facts.
+
+Added tactics:
+
+```lean
+rr_lw_strict_branch_sequence using
+  base := hbase,
+  pos_lc := hpos,
+  recurrence := hrec,
+  degree_branch := hdegree,
+  interlacer := hinter,
+  no_common_roots := hno,
+  head_neg := hB_neg
+
+rr_lw_strict_branch_sequence_realrooted using ...
+rr_lw_strict_branch_sequence_nonzero using ...
+rr_lw_strict_branch_sequence_splits using ...
+rr_lw_strict_branch_sequence_interlaces using ...
+```
+
+The implementation should keep these cases in a small dedicated `macro_rules`
+block, not in the large Liu-Wang dispatcher, to avoid repeating the recursion
+limit issue from the state projection slice.  Smoke examples should exercise
+the direct endpoints on the same plateau/successor skeleton data already used
+for the state package.
+The plateau/successor skeleton example now closes the `Prec` chain directly,
+while a separate smoke example checks the direct real-rootedness, nonzero,
+splitting, and interlacing endpoints.
+
+### 2026-07-30 Liu-Wang Nonpositive-Lag Direct Projections
+
+Status: completed.
+
+The nonpositive-lag strict-degree shell already has:
+
+- direct `Prec` and bundled real-rootedness tactics,
+  `rr_lw_nonpos_lag_sequence` and
+  `rr_lw_nonpos_lag_sequence_realrooted`;
+- state projections
+  `rr_lw_nonpos_lag_state_nonzero`,
+  `rr_lw_nonpos_lag_state_splits`, and
+  `rr_lw_nonpos_lag_state_interlaces`.
+
+Added direct projection endpoints that construct
+`LwNonposLagSequenceState.of_nonpos` inline and project the requested property:
+
+```lean
+rr_lw_nonpos_lag_sequence_nonzero using
+  base := hbase,
+  pos_lc := hpos,
+  lag_nonpos := hB,
+  recurrence := hrec,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_nonpos_lag_sequence_splits using ...
+rr_lw_nonpos_lag_sequence_interlaces using ...
+```
+
+This is a pure facade/golf slice.  It should not add any new recurrence
+shape, infer signs or degrees, touch generated sequence files, or introduce
+catalog-specific names.
+The generic examples now include a compact smoke test for the direct nonzero,
+splitting, and consecutive-interlacing projections.
+
+### 2026-07-30 Liu-Wang Inductive Nonpositive-Lag Endpoints
+
+Status: completed.
+
+The inductive nonpositive-lag shell lets the lag sign supplier depend on the
+current row's real-rootedness certificate.  The reusable constructor already
+exists:
+
+```lean
+LwNonposLagSequenceState.of_inductive_nonpos
+```
+
+Added direct tactic endpoints that construct this state inline and project the
+requested sequence property:
+
+```lean
+rr_lw_nonpos_lag_sequence_inductive_nonpos using
+  base := hbase,
+  pos_lc := hpos,
+  lag_inductive_nonpos := hB,
+  recurrence := hrec,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_nonpos_lag_sequence_inductive_nonpos_realrooted using ...
+rr_lw_nonpos_lag_sequence_inductive_nonpos_nonzero using ...
+rr_lw_nonpos_lag_sequence_inductive_nonpos_splits using ...
+rr_lw_nonpos_lag_sequence_inductive_nonpos_interlaces using ...
+```
+
+This is another pure facade/golf slice.  The lag-sign supplier remains an
+explicit certificate; the tactic must not infer row real-rootedness, signs,
+degrees, or sequence-specific facts.
+The generic examples now use the direct `Prec` endpoint for the inductive
+lag-sign skeleton and include a compact smoke test for bundled
+real-rootedness, nonzero, splitting, and consecutive interlacing.
+
+### 2026-07-30 Liu-Wang Denominator Nonpositive-Lag Projections
+
+Status: completed.
+
+The denominator-normalized nonpositive-lag shell already has direct `Prec`
+and bundled real-rootedness endpoints:
+
+```lean
+rr_lw_nonpos_lag_sequence_den using ...
+rr_lw_nonpos_lag_sequence_den_realrooted using ...
+```
+
+Added direct projection endpoints that construct
+`LwNonposLagSequenceState.of_den` inline and project the requested property:
+
+```lean
+rr_lw_nonpos_lag_sequence_den_nonzero using
+  base := hbase,
+  pos_lc := hpos,
+  lag_nonpos := hB,
+  den_nonzero := hden,
+  raw_recurrence := hraw,
+  degree_succ := hdeg_succ,
+  no_common_roots := hno
+
+rr_lw_nonpos_lag_sequence_den_splits using ...
+rr_lw_nonpos_lag_sequence_den_interlaces using ...
+```
+
+This is a pure facade/golf slice over explicit denominator-normalized
+certificates.  It should not infer denominators, signs, degrees, or sequence
+facts, and it should stay independent of catalog files.
+The cases live in a dedicated `macro_rules` block: placing them in the large
+Liu-Wang dispatcher hit the existing macro recursion-depth limit.  The generic
+examples include a compact smoke test for nonzero, splitting, and consecutive
+interlacing.
+
+### 2026-07-30 PosCombo Same-Degree Split Projections
+
+Status: completed.
+
+The positive-combination same-degree API already has bundled endpoint
+real-rootedness projections:
+
+```lean
+PosComboRealRooted.isRealRooted_left_of_sameDegree
+PosComboRealRooted.isRealRooted_right_of_sameDegree
+```
+
+Manual proof files still often peeled `.2` from these bundled facts when they
+only needed `Splits`.  Added split-only endpoint projections parallel to the
+existing succ-degree split API:
+
+```lean
+lemma PosComboRealRooted.left_splits_of_sameDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) : f.Splits
+
+lemma PosComboRealRooted.right_splits_of_sameDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) : g.Splits
+```
+
+Added sequence wrappers in `RealRooted/Tactic/PosCombo.lean`:
+
+```lean
+posCombo_sequence_left_same_degree_splits
+posCombo_sequence_right_same_degree_splits
+```
+
+Added tactic frontends, keeping keyword order parallel to the existing
+same-degree real-rootedness frontends:
+
+```lean
+rr_pos_combo_left_same_degree_splits using
+  pos_combo := hfg,
+  left_pos_lc := hf_pos,
+  right_pos_lc := hg_pos,
+  same_degree := hdeg
+
+rr_pos_combo_sequence_left_same_degree_splits using ...
+
+rr_pos_combo_right_same_degree_splits using ...
+
+rr_pos_combo_sequence_right_same_degree_splits using ...
+```
+
+Smoke examples stay abstract and catalog-free in
+`RealRooted/Tactic/Examples/PosCombo.lean`.  The new core projections are used
+for low-blast manual golf in `RealRooted/SameDegreeCubicRootCount.lean`, where
+the old code repeatedly derived `f.Splits` and `g.Splits` from the `.2` field
+of bundled same-degree real-rootedness.

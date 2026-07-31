@@ -42,8 +42,6 @@ import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
-import RealRooted.Tactic.Examples.OEIS
-import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
@@ -52,7 +50,6 @@ import RealRooted.Tactic.Examples.VeroneseSection
 import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
-import RealRooted.Tactic.Examples.OEISTestbed
 
 /-!
 # RealRooted tactic examples
@@ -60,4 +57,8 @@ import RealRooted.Tactic.Examples.OEISTestbed
 Small regression examples for tactic development.  These modules are kept
 outside the main `RealRooted.Tactic` import so tactic users do not import test
 examples by default.
+
+Historical generated-row and catalog-facing regression batches are also kept
+out of this aggregate; import those modules directly when checking that
+compatibility surface.
 -/

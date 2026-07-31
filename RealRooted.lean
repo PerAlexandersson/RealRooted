@@ -65,6 +65,8 @@ import RealRooted.GraceHalfPlane
 import RealRooted.Hadamard
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
+import RealRooted.HomogeneousOre
+import RealRooted.HomogeneousOreExamples
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic

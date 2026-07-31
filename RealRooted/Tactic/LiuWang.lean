@@ -619,12 +619,194 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   refine prec_sequence_of_base_and_step hbase ?_
   intro n hprev
-  have hInter : Interlaces (P n) (P (n + 1)) :=
-    hprev.toInterlaces (hdeg_succ n)
-  have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+  simpa [← hrec n] using
+    prec_lw_two_of_nonpos_of_recurrence (hprev.toInterlaces (hdeg_succ n))
+      (hpos n) (hrec n)
       (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
-  simpa [← hrec n] using hstep
+
+/-- Certificate package for strict-degree nonpositive-lag Liu--Wang
+sequence induction.
+
+This is the first generic state layer for high-volume generated recurrence
+shells: sequence-specific files provide the data once, and tactic endpoints can
+project either the `Prec` chain or rowwise real-rootedness from the package. -/
+structure LwNonposLagSequenceState (P A B : Nat → ℝ[X]) where
+  hbase : Prec (P 0) (P 1)
+  hpos : ∀ n : Nat, HasPosLeadingCoeff (P n)
+  hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0
+  hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n
+  hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree
+  hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r
+
+namespace LwNonposLagSequenceState
+
+/-- Build a nonpositive-lag state from a plain lag-sign certificate. -/
+theorem of_nonpos {P A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A B where
+  hbase := hbase
+  hpos := hpos
+  hB_nonpos := hB_nonpos
+  hrec := hrec
+  hdeg_succ := hdeg_succ
+  hno := hno
+
+/-- Project the consecutive `Prec` chain from a nonpositive-lag state. -/
+theorem prec_sequence {P A B : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_lw_nonpos_lag_sequence h.hbase h.hpos h.hB_nonpos
+    h.hrec h.hdeg_succ h.hno
+
+/-- Project rowwise real-rootedness from a nonpositive-lag state. -/
+theorem isRealRooted {P A B : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  fun n => (h.prec_sequence n).1
+
+/-- Project rowwise nonzero certificates from a nonpositive-lag state. -/
+theorem ne_zero_sequence {P A B : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, P n ≠ 0 :=
+  fun n => (h.isRealRooted n).1
+
+/-- Project rowwise splitting from a nonpositive-lag state. -/
+theorem splits_sequence {P A B : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, (P n).Splits :=
+  fun n => (h.isRealRooted n).2
+
+/-- Project consecutive interlacing from a nonpositive-lag state. -/
+theorem interlaces_sequence {P A B : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
+  interlaces_of_prec_chain h.prec_sequence h.hdeg_succ
+
+/-- Transport a nonpositive-lag state across pointwise equality of lag indices. -/
+theorem of_B_congr {P A B B' : Nat → ℝ[X]}
+    (h : LwNonposLagSequenceState P A B) (hB : ∀ n : Nat, B n = B' n) :
+    LwNonposLagSequenceState P A B' where
+  hbase := h.hbase
+  hpos := h.hpos
+  hB_nonpos := fun n r hr => by
+    simpa [hB n] using h.hB_nonpos n r hr
+  hrec := fun n => by
+    simpa [hB n] using h.hrec n
+  hdeg_succ := h.hdeg_succ
+  hno := h.hno
+
+end LwNonposLagSequenceState
+
+/-- Certificate package for strict negative-lag Liu--Wang sequence induction
+with an explicit same-degree/successor-degree branch.
+
+This is the plateau-safe analogue of `LwNonposLagSequenceState`: the state
+does not infer the degree pattern.  It carries the branch certificate and a
+converter from the previous `Prec` certificate to the interlacing input needed
+by the strict Liu--Wang step. -/
+structure LwStrictBranchSequenceState (P A B : Nat → ℝ[X]) where
+  hbase : Prec (P 0) (P 1)
+  hpos : ∀ n : Nat, HasPosLeadingCoeff (P n)
+  hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n
+  hdegree : ∀ n : Nat,
+    (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1
+  hinter : ∀ n : Nat,
+    Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1))
+  hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r
+  hB_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0
+
+namespace LwStrictBranchSequenceState
+
+/-- Build a strict branch state from its explicit certificate fields. -/
+theorem of_branch {P A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdegree : ∀ n : Nat,
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+        (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
+    (hinter : ∀ n : Nat,
+      Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1)))
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
+    (hB_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0) :
+    LwStrictBranchSequenceState P A B where
+  hbase := hbase
+  hpos := hpos
+  hrec := hrec
+  hdegree := hdegree
+  hinter := hinter
+  hno := hno
+  hB_neg := hB_neg
+
+/-- Project the consecutive `Prec` chain from a strict branch state. -/
+theorem prec_sequence {P A B : Nat → ℝ[X]}
+    (h : LwStrictBranchSequenceState P A B) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  refine prec_sequence_of_base_and_degree_branches h.hbase h.hdegree ?_ ?_
+  · intro n hdeg hprev
+    have htarget_pos :
+        HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
+      simpa [← h.hrec n] using h.hpos (n + 2)
+    have hbranch :
+        (A n * P (n + 1) + B n * P n).natDegree =
+            (P (n + 1)).natDegree ∨
+          (A n * P (n + 1) + B n * P n).natDegree =
+            (P (n + 1)).natDegree + 1 := by
+      left
+      simpa [← h.hrec n] using hdeg
+    have hstep :
+        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
+      prec_lw_two_strict_branch_of_neg (h.hinter n hprev) (h.hpos n)
+        htarget_pos hbranch (h.hno n) (h.hB_neg n)
+    simpa [← h.hrec n] using hstep
+  · intro n hdeg hprev
+    have htarget_pos :
+        HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
+      simpa [← h.hrec n] using h.hpos (n + 2)
+    have hbranch :
+        (A n * P (n + 1) + B n * P n).natDegree =
+            (P (n + 1)).natDegree ∨
+          (A n * P (n + 1) + B n * P n).natDegree =
+            (P (n + 1)).natDegree + 1 := by
+      right
+      simpa [← h.hrec n] using hdeg
+    have hstep :
+        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
+      prec_lw_two_strict_branch_of_neg (h.hinter n hprev) (h.hpos n)
+        htarget_pos hbranch (h.hno n) (h.hB_neg n)
+    simpa [← h.hrec n] using hstep
+
+/-- Project rowwise real-rootedness from a strict branch state. -/
+theorem isRealRooted {P A B : Nat → ℝ[X]}
+    (h : LwStrictBranchSequenceState P A B) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  fun n => (h.prec_sequence n).1
+
+/-- Project rowwise nonzero certificates from a strict branch state. -/
+theorem ne_zero_sequence {P A B : Nat → ℝ[X]}
+    (h : LwStrictBranchSequenceState P A B) :
+    ∀ n : Nat, P n ≠ 0 :=
+  fun n => (h.isRealRooted n).1
+
+/-- Project rowwise splitting from a strict branch state. -/
+theorem splits_sequence {P A B : Nat → ℝ[X]}
+    (h : LwStrictBranchSequenceState P A B) :
+    ∀ n : Nat, (P n).Splits :=
+  fun n => (h.isRealRooted n).2
+
+/-- Project consecutive interlacing from a strict branch state. -/
+theorem interlaces_sequence {P A B : Nat → ℝ[X]}
+    (h : LwStrictBranchSequenceState P A B) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
+  fun n => h.hinter n (h.prec_sequence n)
+
+end LwStrictBranchSequenceState
 
 /-- Sequence-level Liu--Wang induction where lag nonpositivity may use the
 current row's real-rootedness certificate from the induction state. -/
@@ -640,13 +822,39 @@ theorem prec_lw_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ[X]}
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   refine prec_sequence_of_base_and_step hbase ?_
   intro n hprev
-  have hInter : Interlaces (P n) (P (n + 1)) :=
-    hprev.toInterlaces (hdeg_succ n)
-  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
-  have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n hsource)
-  simpa [← hrec n] using hstep
+  simpa [← hrec n] using
+    prec_lw_two_of_nonpos_of_recurrence (hprev.toInterlaces (hdeg_succ n))
+      (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n hprev.2.1)
+
+namespace LwNonposLagSequenceState
+
+/-- Build a nonpositive-lag state from an inductive lag-sign supplier.
+
+This turns the rowwise real-rootedness-dependent sign certificate into the
+plain sign field carried by `LwNonposLagSequenceState`. -/
+theorem of_inductive_nonpos {P A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB_nonpos : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
+      ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A B := by
+  let hprec :=
+    prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+      hbase hpos hB_nonpos hrec hdeg_succ hno
+  exact
+    { hbase := hbase
+      hpos := hpos
+      hB_nonpos := fun n r hr =>
+        hB_nonpos n (hprec n).2.1 r hr
+      hrec := hrec
+      hdeg_succ := hdeg_succ
+      hno := hno }
+
+end LwNonposLagSequenceState
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag
 Liu--Wang induction. -/
@@ -659,8 +867,8 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_nonpos_lag_sequence hbase hpos hB_nonpos hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_nonpos
+    hbase hpos hB_nonpos hrec hdeg_succ hno).isRealRooted
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag Liu--Wang
 induction with an inductive lag-sign certificate. -/
@@ -674,13 +882,12 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_of_inductive_nonpos
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-      hbase hpos hB_nonpos hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_inductive_nonpos
+    hbase hpos hB_nonpos hrec hdeg_succ hno).isRealRooted
 
 /-- Denominator-fused Liu--Wang induction for a scalar left factor.
 
-This wrapper consumes the raw OEIS-style recurrence
+This wrapper consumes the raw generated recurrence
 `C d_n * P_{n+2} = C d_n * (A_n P_{n+1} + B_n P_n)` and cancels the
 nonzero scalar denominator internally before applying the usual nonpositive-lag
 sequence theorem. -/
@@ -699,6 +906,29 @@ theorem prec_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
   prec_lw_nonpos_lag_sequence (A := A) hbase hpos hB_nonpos
     (fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)) hdeg_succ hno
 
+namespace LwNonposLagSequenceState
+
+/-- Build a nonpositive-lag state from a scalar-denominator recurrence. -/
+theorem of_den {P A B : Nat → ℝ[X]} {d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1) + B n * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A B where
+  hbase := hbase
+  hpos := hpos
+  hB_nonpos := hB_nonpos
+  hrec := fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)
+  hdeg_succ := hdeg_succ
+  hno := hno
+
+end LwNonposLagSequenceState
+
 /-- Real-rootedness corollary for denominator-fused nonpositive-lag
 Liu--Wang induction. -/
 theorem isRealRooted_of_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
@@ -713,8 +943,44 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_nonpos_lag_sequence_den hbase hpos hB_nonpos hden hraw hdeg_succ hno
+  (LwNonposLagSequenceState.of_den
+    hbase hpos hB_nonpos hden hraw hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for globally nonpositive negative-constant lags. -/
+theorem of_negative_const_lag {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => -(C (c n))) where
+  hbase := hbase
+  hpos := hpos
+  hB_nonpos := fun n _ _ => eval_neg_C_nonpos_of_nonneg (hc n)
+  hrec := hrec
+  hdeg_succ := hdeg_succ
+  hno := hno
+
+/-- Build a state for globally nonpositive normalized `C (-c_n)` lags. -/
+theorem of_negative_const_C_neg_lag {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (-(c n))) where
+  hbase := hbase
+  hpos := hpos
+  hB_nonpos := fun n _ _ => eval_C_neg_nonpos_of_nonneg (hc n)
+  hrec := hrec
+  hdeg_succ := hdeg_succ
+  hno := hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative
 constant lag. -/
@@ -727,10 +993,8 @@ theorem prec_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
-    (B := fun n => -(C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_C_nonpos_of_nonneg (hc n))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_negative_const_lag
+    hbase hpos hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the negative-constant sequence wrapper. -/
 theorem isRealRooted_of_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
@@ -742,8 +1006,8 @@ theorem isRealRooted_of_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_const_lag_sequence hbase hpos hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_negative_const_lag
+    hbase hpos hc hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level Liu--Wang induction for normalized `C (-c_n)` lag. -/
 theorem prec_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
@@ -755,10 +1019,8 @@ theorem prec_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
-    (B := fun n => C (-(c n))) hbase hpos
-    (fun n _ _ => eval_C_neg_nonpos_of_nonneg (hc n))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_negative_const_C_neg_lag
+    hbase hpos hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the normalized `C (-c_n)` lag wrapper. -/
 theorem isRealRooted_of_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
@@ -770,13 +1032,13 @@ theorem isRealRooted_of_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_const_C_neg_lag_sequence hbase hpos hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_negative_const_C_neg_lag
+    hbase hpos hc hrec hdeg_succ hno).isRealRooted
 
-/-- Sequence-level Liu--Wang induction for globally nonpositive negative-square
-lag. -/
-theorem prec_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
-    {A q : Nat → ℝ[X]} {c : Nat → ℝ}
+namespace LwNonposLagSequenceState
+
+/-- Build a state for globally nonpositive negative-square lags. -/
+theorem of_negative_square_lag {P A q : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -784,66 +1046,15 @@ theorem prec_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
       P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+    LwNonposLagSequenceState P A (fun n => -(C (c n)) * (q n) ^ 2) :=
+  of_inductive_nonpos
     (B := fun n => -(C (c n)) * (q n) ^ 2) hbase hpos
-    (fun n _ _ => eval_neg_C_mul_sq_nonpos_of_nonneg (hc n))
+    (fun n _ _ _ => eval_neg_C_mul_sq_nonpos_of_nonneg (hc n))
     hrec hdeg_succ hno
 
-/-- Real-rootedness corollary for the negative-square sequence wrapper. -/
-theorem isRealRooted_of_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
-    {A q : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_square_lag_sequence hbase hpos hc hrec hdeg_succ hno
-
-/-- Sequence-level negative-square lag with unit scalar coefficient.
-
-This accepts the natural recurrence spelling `-q_n^2 P_n` without requiring a
-visible `-(C 1) * q_n^2` coefficient. -/
-theorem prec_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
-    {A q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_negative_square_lag_sequence
-    (A := A) (q := q) (c := fun _ => 1) hbase hpos oneNonnegSeq
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
-
-/-- Real-rootedness corollary for unit-coefficient negative-square lag. -/
-theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
-    {A q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_square_lag_sequence_unit hbase hpos hrec hdeg_succ hno
-
-/-- Denominator-fused negative-square Liu--Wang induction for split raw
-coefficients.
-
-This matches Narayana-style OEIS recurrences where the raw recurrence has
-`C d_n * P_{n+2}` on the left, the current-row summand already multiplied by
-`C d_n`, and the lag summand written as
-`C b_n * (-(q_n)^2 * P_n)`.  The side condition
-`d_n⁻¹ * b_n = c_n` gives the normalized negative-square coefficient. -/
-theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
-    {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+/-- Build a normalized negative-square state from a split scalar denominator. -/
+theorem of_negative_square_lag_den_coeff
+    {P A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -854,10 +1065,8 @@ theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
         C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_lw_negative_square_lag_sequence
-      (A := A) (q := q) (c := c) hbase hpos hc ?_ hdeg_succ hno
+    LwNonposLagSequenceState P A (fun n => -(C (c n)) * (q n) ^ 2) := by
+  refine of_negative_square_lag hbase hpos hc ?_ hdeg_succ hno
   intro n
   have hnorm :
       P (n + 2) =
@@ -867,29 +1076,24 @@ theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
     P (n + 2) = A n * P (n + 1) + C (c n) * (-(q n) ^ 2 * P n) := hnorm
     _ = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n := by ring
 
-/-- Real-rootedness corollary for split-coefficient denominator-fused
-negative-square Liu--Wang induction. -/
-theorem isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
-    {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+/-- Build a state for the literal unit negative-square lag `-q_n^2`. -/
+theorem of_negative_square_lag_unit {P A q : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hden : ∀ n : Nat, d n ≠ 0)
-    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
-    (hraw : ∀ n : Nat,
-      C (d n) * P (n + 2) =
-        C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_square_lag_sequence_den_coeff
-      hbase hpos hc hden hcoeff hraw hdeg_succ hno
+    LwNonposLagSequenceState P A (fun n => -((q n) ^ 2)) :=
+  of_B_congr
+    (of_negative_square_lag
+      (c := fun _ => 1) hbase hpos oneNonnegSeq
+      (fun n => by simpa using hrec n) hdeg_succ hno)
+    (fun n => by simp)
 
-/-- Sequence-level Liu--Wang induction for a negative-definite monic quadratic
-lag. -/
-theorem prec_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
-    {A : Nat → ℝ[X]} {b c : Nat → ℝ}
+/-- Build a state for globally nonpositive monic quadratic lags. -/
+theorem of_negative_monic_quadratic_lag
+    {P A : Nat → ℝ[X]} {b c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * c n)
@@ -898,32 +1102,17 @@ theorem prec_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
         A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+    LwNonposLagSequenceState P A
+      (fun n => -(X ^ 2 + C (b n) * X + C (c n))) :=
+  of_inductive_nonpos
     (B := fun n => -(X ^ 2 + C (b n) * X + C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_monic_quadratic_nonpos_of_discrim_nonpos (hdisc n))
+    (fun n _ _ _ => eval_neg_monic_quadratic_nonpos_of_discrim_nonpos
+      (hdisc n))
     hrec hdeg_succ hno
 
-/-- Real-rootedness corollary for the negative-definite monic quadratic
-sequence wrapper. -/
-theorem isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
-    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_monic_quadratic_lag_sequence hbase hpos hdisc hrec hdeg_succ hno
-
-/-- Sequence-level Liu--Wang induction for a globally nonpositive quadratic
-lag with a non-monic leading coefficient. -/
-theorem prec_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
-    {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
+/-- Build a state for globally nonpositive non-monic quadratic lags. -/
+theorem of_negative_quadratic_lag
+    {P A : Nat → ℝ[X]} {a b c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha : ∀ n : Nat, 0 ≤ a n)
@@ -934,41 +1123,18 @@ theorem prec_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
         A n * P (n + 1) + (-(C (a n) * X ^ 2 + C (b n) * X + C (c n))) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
-    (B := fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) hbase hpos
-    (fun n _ _ => eval_neg_quadratic_nonpos_of_discrim_nonpos
+    LwNonposLagSequenceState P A
+      (fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) :=
+  of_inductive_nonpos
+    (B := fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n)))
+    hbase hpos
+    (fun n _ _ _ => eval_neg_quadratic_nonpos_of_discrim_nonpos
       (ha n) (hc n) (hdisc n))
     hrec hdeg_succ hno
 
-/-- Real-rootedness corollary for the non-monic negative quadratic sequence
-wrapper. -/
-theorem isRealRooted_of_lw_negative_quadratic_lag_sequence
-    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (ha : ∀ n : Nat, 0 ≤ a n)
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(C (a n) * X ^ 2 + C (b n) * X + C (c n))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_quadratic_lag_sequence
-      hbase hpos ha hc hdisc hrec hdeg_succ hno
-
-/-- Denominator-fused Liu--Wang induction for a raw split non-monic
-quadratic lag.
-
-This matches OEIS-style recurrences where a scalar factor `d_n` multiplies
-`P_{n+2}`, while the lag summand is written with raw quadratic coefficients.
-The three coefficient identities state that division by `d_n` gives the
-normalized quadratic used for the sign certificate. -/
-theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
-    {Araw : Nat → ℝ[X]} {araw braw craw a b c d : Nat → ℝ}
+/-- Build a normalized non-monic quadratic state from a scalar denominator. -/
+theorem of_negative_quadratic_lag_den_coeff
+    {P Araw : Nat → ℝ[X]} {araw braw craw a b c d : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha : ∀ n : Nat, 0 ≤ a n)
@@ -984,11 +1150,11 @@ theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
           (-(C (araw n) * X ^ 2 + C (braw n) * X + C (craw n))) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    LwNonposLagSequenceState P (fun n => C ((d n)⁻¹) * Araw n)
+      (fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) := by
   refine
-    prec_lw_negative_quadratic_lag_sequence
+    of_negative_quadratic_lag
       (A := fun n => C ((d n)⁻¹) * Araw n)
-      (a := a) (b := b) (c := c)
       hbase hpos ha hc hdisc ?_ hdeg_succ hno
   intro n
   have hnorm :
@@ -1010,6 +1176,205 @@ theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
       simp only [C_mul]
       ring_nf
 
+end LwNonposLagSequenceState
+
+/-- Sequence-level Liu--Wang induction for globally nonpositive negative-square
+lag. -/
+theorem prec_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
+    {A q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_square_lag
+    hbase hpos hc hrec hdeg_succ hno).prec_sequence
+
+/-- Real-rootedness corollary for the negative-square sequence wrapper. -/
+theorem isRealRooted_of_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
+    {A q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  (LwNonposLagSequenceState.of_negative_square_lag
+    hbase hpos hc hrec hdeg_succ hno).isRealRooted
+
+/-- Sequence-level negative-square lag with unit scalar coefficient.
+
+This accepts the natural recurrence spelling `-q_n^2 P_n` without requiring a
+visible `-(C 1) * q_n^2` coefficient. -/
+theorem prec_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
+    {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_square_lag_unit
+    hbase hpos hrec hdeg_succ hno).prec_sequence
+
+/-- Real-rootedness corollary for unit-coefficient negative-square lag. -/
+theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
+    {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  (LwNonposLagSequenceState.of_negative_square_lag_unit
+    hbase hpos hrec hdeg_succ hno).isRealRooted
+
+/-- Denominator-fused negative-square Liu--Wang induction for split raw
+coefficients.
+
+This matches generated recurrences where the raw recurrence has
+`C d_n * P_{n+2}` on the left, the current-row summand already multiplied by
+`C d_n`, and the lag summand written as
+`C b_n * (-(q_n)^2 * P_n)`.  The side condition
+`d_n⁻¹ * b_n = c_n` gives the normalized negative-square coefficient. -/
+theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
+    {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+    hbase hpos hc hden hcoeff hraw hdeg_succ hno).prec_sequence
+
+/-- Real-rootedness corollary for split-coefficient denominator-fused
+negative-square Liu--Wang induction. -/
+theorem isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
+    {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  (LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+    hbase hpos hc hden hcoeff hraw hdeg_succ hno).isRealRooted
+
+/-- Sequence-level Liu--Wang induction for a negative-definite monic quadratic
+lag. -/
+theorem prec_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
+    {A : Nat → ℝ[X]} {b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+    hbase hpos hdisc hrec hdeg_succ hno).prec_sequence
+
+/-- Real-rootedness corollary for the negative-definite monic quadratic
+sequence wrapper. -/
+theorem isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
+    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  (LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+    hbase hpos hdisc hrec hdeg_succ hno).isRealRooted
+
+/-- Sequence-level Liu--Wang induction for a globally nonpositive quadratic
+lag with a non-monic leading coefficient. -/
+theorem prec_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
+    {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (a n) * X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_quadratic_lag
+    hbase hpos ha hc hdisc hrec hdeg_succ hno).prec_sequence
+
+/-- Real-rootedness corollary for the non-monic negative quadratic sequence
+wrapper. -/
+theorem isRealRooted_of_lw_negative_quadratic_lag_sequence
+    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (a n) * X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  (LwNonposLagSequenceState.of_negative_quadratic_lag
+    hbase hpos ha hc hdisc hrec hdeg_succ hno).isRealRooted
+
+/-- Denominator-fused Liu--Wang induction for a raw split non-monic
+quadratic lag.
+
+This matches generated recurrences where a scalar factor `d_n` multiplies
+`P_{n+2}`, while the lag summand is written with raw quadratic coefficients.
+The three coefficient identities state that division by `d_n` gives the
+normalized quadratic used for the sign certificate. -/
+theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
+    {Araw : Nat → ℝ[X]} {araw braw craw a b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (ha_coeff : ∀ n : Nat, (d n)⁻¹ * araw n = a n)
+    (hb_coeff : ∀ n : Nat, (d n)⁻¹ * braw n = b n)
+    (hc_coeff : ∀ n : Nat, (d n)⁻¹ * craw n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (araw n) * X ^ 2 + C (braw n) * X + C (craw n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
+    hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff
+    hraw hdeg_succ hno).prec_sequence
+
 /-- Real-rootedness corollary for denominator-fused raw split non-monic
 quadratic Liu--Wang induction. -/
 theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
@@ -1030,9 +1395,30 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_negative_quadratic_lag_sequence_den_coeff
-      hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff hraw hdeg_succ hno
+  (LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
+    hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff
+    hraw hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for a positive scalar multiple of the `X` lag. -/
+theorem of_positive_t_lag {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * X) :=
+  of_inductive_nonpos (B := fun n => C (c n) * X) hbase hpos
+    (fun n hsource r hr =>
+      eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level positive `t`-lag Liu--Wang induction.
 
@@ -1051,13 +1437,8 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => C (c n) * X) hbase hpos
-    (fun n hsource r hr =>
-      eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary of the sequence-level positive `t`-lag
 Liu--Wang induction. -/
@@ -1071,9 +1452,28 @@ theorem isRealRooted_of_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_t_lag_sequence
-      hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for the unit `X` lag. -/
+theorem of_positive_X_lag {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X) :=
+  of_inductive_nonpos (B := fun _ => X) hbase hpos
+    (fun n hsource r hr =>
+      eval_X_nonpos_of_nonpos
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level positive unit-`X` lag induction.
 
@@ -1089,9 +1489,8 @@ theorem prec_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_t_lag_sequence
-    (A := A) (c := fun _ => 1) hbase hpos hnonneg oneNonnegSeq
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_lag
+    hbase hpos hnonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for sequence-level positive unit-`X` lag. -/
 theorem isRealRooted_of_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
@@ -1103,8 +1502,32 @@ theorem isRealRooted_of_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_X_lag_sequence hbase hpos hnonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_lag
+    hbase hpos hnonneg hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for affine half-line lags `c_n X - a_n`. -/
+theorem of_C_mul_X_sub_C_lag {P A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * X - C (a n)) :=
+  of_inductive_nonpos (B := fun n => C (c n) * X - C (a n)) hbase hpos
+    (fun n hsource r hr =>
+      eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
+        (hc n) (ha n)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level affine half-line lag induction.
 
@@ -1123,14 +1546,8 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => C (c n) * X - C (a n)) hbase hpos
-    (fun n hsource r hr =>
-      eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
-        (hc n) (ha n)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+    hbase hpos hnonneg hc ha hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the affine half-line lag induction. -/
 theorem isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
@@ -1145,9 +1562,82 @@ theorem isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_sub_C_lag_sequence
-      hbase hpos hnonneg hc ha hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+    hbase hpos hnonneg hc ha hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for positive shifted-affine lags from explicit root bounds. -/
+theorem of_positive_affine_lag {P A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * (C (a n) + X)) :=
+  { hbase := hbase
+    hpos := hpos
+    hB_nonpos := fun n r hr =>
+      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg (hc n)
+        (hroot_upper n r hr)
+    hrec := hrec
+    hdeg_succ := hdeg_succ
+    hno := hno }
+
+/-- Build a shifted-affine state from nonnegative shifted-row coefficients. -/
+theorem of_positive_affine_lag_shift_nonneg
+    {P A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * (C (a n) + X)) :=
+  of_inductive_nonpos
+    (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
+    (fun n hsource _r hr =>
+      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg (hc n)
+        (root_le_neg_of_realrooted_of_shift_nonneg_coeffs
+          hsource (hshift_nonneg n) hr))
+    hrec hdeg_succ hno
+
+/-- Build a state for unit shifted-affine lags from explicit root bounds. -/
+theorem of_C_add_X_lag {P A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (a n) + X) :=
+  (of_positive_affine_lag (c := fun _ => 1) hbase hpos oneNonnegSeq
+    hroot_upper (rr_lw_recurrence_seq hrec) hdeg_succ hno).of_B_congr
+      (fun n => by simp)
+
+/-- Build a unit shifted-affine state from nonnegative shifted-row coefficients. -/
+theorem of_C_add_X_lag_shift_nonneg
+    {P A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (a n) + X) :=
+  (of_positive_affine_lag_shift_nonneg (c := fun _ => 1)
+    hbase hpos oneNonnegSeq hshift_nonneg
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno).of_B_congr
+      (fun n => by simp)
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level positive affine lag induction.
 
@@ -1165,12 +1655,8 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
-    (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
-    (fun n r hr =>
-      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg (hc n)
-        (hroot_upper n r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_affine_lag
+    hbase hpos hc hroot_upper hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the positive affine lag sequence wrapper. -/
 theorem isRealRooted_of_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
@@ -1184,9 +1670,8 @@ theorem isRealRooted_of_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_affine_lag_sequence
-      hbase hpos hc hroot_upper hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_affine_lag
+    hbase hpos hc hroot_upper hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level positive affine lag induction with automated shifted root
 bound.
@@ -1206,13 +1691,8 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
-    (fun n hsource _r hr =>
-      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg (hc n)
-        (root_le_neg_of_realrooted_of_shift_nonneg_coeffs
-          hsource (hshift_nonneg n) hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+    hbase hpos hc hshift_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the shifted-coefficient positive affine
 lag wrapper. -/
@@ -1228,9 +1708,8 @@ theorem isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-      hbase hpos hc hshift_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+    hbase hpos hc hshift_nonneg hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level unit affine lag `a_n+t`. -/
 theorem prec_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
@@ -1242,9 +1721,8 @@ theorem prec_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_affine_lag_sequence
-    (c := fun _ => 1) hbase hpos oneNonnegSeq hroot_upper
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_add_X_lag
+    hbase hpos hroot_upper hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for sequence-level unit affine lag `a_n+t`. -/
 theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
@@ -1256,8 +1734,8 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_add_X_lag_sequence hbase hpos hroot_upper hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_add_X_lag
+    hbase hpos hroot_upper hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level unit affine lag `a_n+t` with automated shifted root
 bound. -/
@@ -1271,9 +1749,8 @@ theorem prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-    (c := fun _ => 1) hbase hpos oneNonnegSeq hshift_nonneg
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_add_X_lag_shift_nonneg
+    hbase hpos hshift_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for sequence-level unit affine lag `a_n+t` with
 automated shifted root bound. -/
@@ -1287,9 +1764,142 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
-      hbase hpos hshift_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_add_X_lag_shift_nonneg
+    hbase hpos hshift_nonneg hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for lags controlled on the inner window `[-1,0]`. -/
+theorem of_inner_window_lag_nonneg {P A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r → r ≤ 0 →
+      (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A B :=
+  of_inductive_nonpos hbase hpos
+    (fun n hsource r hr =>
+      hB_nonpos n r hr (hroot_lower n r hr)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+/-- Build a state for the inner-window lag `X * (1+X)`. -/
+theorem of_X_mul_one_add_X_lag_nonneg {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X * (1 + X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun _ => X * (1 + X)) hbase hpos hnonneg hroot_lower
+    (fun _ _ _ hlo hhi => eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the inner-window lag `c_n X * (1+X)`. -/
+theorem of_C_mul_X_mul_one_add_X_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * X * (1 + X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg
+    hroot_lower
+    (fun n _ _ hlo hhi =>
+      eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the inner-window lag `X * (1-X) * (1+X)`. -/
+theorem of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (1 - X) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X * (1 - X) * (1 + X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun _ => X * (1 - X) * (1 + X)) hbase hpos hnonneg hroot_lower
+    (fun _ _ _ hlo hhi =>
+      eval_X_mul_one_sub_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the inner-window lag `c_n X * (1-X) * (1+X)`. -/
+theorem of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => C (c n) * X * (1 - X) * (1 + X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => C (c n) * X * (1 - X) * (1 + X)) hbase hpos
+    hnonneg hroot_lower
+    (fun n _ _ hlo hhi =>
+      eval_C_mul_X_mul_one_sub_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
+        (hc n) hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the expanded inner-window lag `X - X^3`. -/
+theorem of_X_sub_X_pow_three_lag_nonneg {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X - X ^ 3) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X - X ^ 3) :=
+  of_inner_window_lag_nonneg
+    (B := fun _ => X - X ^ 3) hbase hpos hnonneg hroot_lower
+    (fun _ _ _ hlo hhi => eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the expanded inner-window lag `c_n * (X - X^3)`. -/
+theorem of_C_mul_X_sub_X_pow_three_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * (X - X ^ 3)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => C (c n) * (X - X ^ 3)) hbase hpos hnonneg hroot_lower
+    (fun n _ _ hlo hhi =>
+      eval_C_mul_X_sub_X_pow_three_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level Liu--Wang induction for lags controlled on the inner
 window `[-1, 0]`.
@@ -1309,12 +1919,8 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos hbase hpos
-    (fun n hsource r hr =>
-      hB_nonpos n r hr (hroot_lower n r hr)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_inner_window_lag_nonneg
+    hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the inner-window Liu--Wang induction. -/
 theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
@@ -1329,9 +1935,8 @@ theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_inner_window_lag_nonneg
+    hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1346,10 +1951,8 @@ theorem prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1363,9 +1966,8 @@ theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `c_n X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1381,11 +1983,8 @@ theorem prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `c_n X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1400,9 +1999,8 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1417,11 +2015,8 @@ theorem prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X * (1 - X) * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi =>
-      eval_X_mul_one_sub_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1435,9 +2030,8 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `c_n X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1454,13 +2048,8 @@ theorem prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeff
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * X * (1 - X) * (1 + X)) hbase hpos hnonneg
-    hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_mul_one_sub_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
-        (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `c_n X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1476,9 +2065,8 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_n
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `X-X^3` lag controlled on the inner root window `[-1,0]`. -/
 theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -1492,10 +2080,8 @@ theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X - X ^ 3) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_sub_X_pow_three_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `X-X^3` inner-window lag. -/
 theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -1509,9 +2095,8 @@ theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_sub_X_pow_three_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `c_n (X-X^3)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1527,11 +2112,8 @@ theorem prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * (X - X ^ 3)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_sub_X_pow_three_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `c_n (X-X^3)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -1546,9 +2128,75 @@ theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for lags controlled on the explicit window `[-1,-1/2]`. -/
+theorem of_interval_lag {P A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r →
+      r ≤ -(1 / 2 : ℝ) → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A B :=
+  { hbase := hbase
+    hpos := hpos
+    hB_nonpos := fun n r hr =>
+      hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr)
+    hrec := hrec
+    hdeg_succ := hdeg_succ
+    hno := hno }
+
+/-- Build a state for the explicit-window lag `(1+X) * (1+2X)`. -/
+theorem of_one_add_X_mul_one_add_two_mul_X_lag {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + ((1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) :=
+  of_interval_lag
+    (B := fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
+    hroot_lower hroot_upper
+    (fun _ _ _ hlo hhi =>
+      eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the explicit-window lag `c_n(1+X) * (1+2X)`. -/
+theorem of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) :=
+  of_interval_lag
+    (B := fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X))
+    hbase hpos hroot_lower hroot_upper
+    (fun n _ _ hlo hhi =>
+      eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
+        (hc n) hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level Liu--Wang induction for lags controlled on an explicit
 root interval.  This is for windows narrower than the half-line, where both
@@ -1564,9 +2212,8 @@ theorem prec_lw_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence hbase hpos
-    (fun n r hr => hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_interval_lag
+    hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the explicit-interval Liu--Wang induction. -/
 theorem isRealRooted_of_lw_interval_lag_sequence
@@ -1581,9 +2228,8 @@ theorem isRealRooted_of_lw_interval_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_interval_lag_sequence
-      hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_interval_lag
+    hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
@@ -1599,12 +2245,8 @@ theorem prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_interval_lag_sequence
-    (B := fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
-    hroot_lower hroot_upper
-    (fun _ _ _ hlo hhi =>
-      eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_one_add_X_mul_one_add_two_mul_X_lag
+    hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
@@ -1619,9 +2261,8 @@ theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
-      hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_one_add_X_mul_one_add_two_mul_X_lag
+    hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `c_n(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
@@ -1638,13 +2279,8 @@ theorem prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_interval_lag_sequence
-    (B := fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
-    hroot_lower hroot_upper
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
-        (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+    hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `c_n(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
@@ -1660,9 +2296,116 @@ theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
-      hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+    hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for inner-window negative affine lags. -/
+theorem of_neg_C_mul_affine_inner_lag_nonneg
+    {P A : Nat → ℝ[X]} {c a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hba : ∀ n : Nat, b n ≤ a n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (C (a n) + C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (C (a n) + C (b n) * X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => -(C (c n)) * (C (a n) + C (b n) * X))
+    hbase hpos hnonneg hroot_lower
+    (fun n _ _ hlo _ =>
+      eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
+        (hc n) (hb n) (hba n) hlo)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the inner-window lag `-c_n(1+X)`. -/
+theorem of_neg_C_mul_one_add_X_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => -(C (c n)) * (1 + X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => -(C (c n)) * (1 + X)) hbase hpos hnonneg hroot_lower
+    (fun n _ _ hlo _ =>
+      eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one (hc n) hlo)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a normalized `-c_n(1+X)` state from a scalar-denominator recurrence. -/
+theorem of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+    {P A : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = -c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => -(C (c n)) * (1 + X)) := by
+  refine
+    of_neg_C_mul_one_add_X_lag_nonneg
+      hbase hpos hnonneg hc hroot_lower ?_ hdeg_succ hno
+  intro n
+  have hraw' :
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + C (b n) * ((1 + X) * P n) := by
+    simpa [mul_assoc] using hraw n
+  have hnorm :
+      P (n + 2) =
+        A n * P (n + 1) + C (-c n) * ((1 + X) * P n) :=
+    eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) hraw'
+  calc
+    P (n + 2) =
+        A n * P (n + 1) + C (-c n) * ((1 + X) * P n) := hnorm
+    _ = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n := by
+      simp [Polynomial.C_neg, mul_assoc, mul_comm]
+
+/-- Build a state for the tighter-window lag `-c_n(1+2X)`. -/
+theorem of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (1 + C (2 : ℝ) * X)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => -(C (c n)) * (1 + C (2 : ℝ) * X))
+    hbase hpos hnonneg
+    (fun n r hr => by
+      have hhalf := hroot_lower n r hr
+      linarith)
+    (fun n r hr _ _ =>
+      eval_neg_C_mul_one_add_two_mul_X_nonpos_of_nonneg_of_ge_neg_half
+        (hc n) (hroot_lower n r hr))
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level `-c_n(a_n+b_n X)` lag controlled on the inner root window
 `[-1,0]`, in the common monotone-affine case `0 <= b_n <= a_n`. -/
@@ -1681,13 +2424,8 @@ theorem prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (C (a n) + C (b n) * X))
-    hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo _ =>
-      eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
-        (hc n) (hb n) (hba n) hlo)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_affine_inner_lag_nonneg
+    hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for inner-window negative affine lags. -/
 theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
@@ -1705,9 +2443,8 @@ theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_affine_inner_lag_nonneg
+    hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `-c_n(1+X)` lag controlled on `[-1,0]`. -/
 theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1722,11 +2459,8 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (1 + X)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo _ => eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one
-      (hc n) hlo)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `-c_n(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -1741,9 +2475,8 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Denominator-fused `-c_n(1+X)` inner-window Liu--Wang induction.
 
@@ -1765,24 +2498,10 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
         C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-      (A := A) hbase hpos hnonneg hc hroot_lower ?_ hdeg_succ hno
-  intro n
-  have hraw' :
-      C (d n) * P (n + 2) =
-        C (d n) * (A n * P (n + 1)) + C (b n) * ((1 + X) * P n) := by
-    simpa [mul_assoc] using hraw n
-  have hnorm :
-      P (n + 2) =
-        A n * P (n + 1) + C (-c n) * ((1 + X) * P n) :=
-    eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) hraw'
-  calc
-    P (n + 2) =
-        A n * P (n + 1) + C (-c n) * ((1 + X) * P n) := hnorm
-    _ = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n := by
-      simp [Polynomial.C_neg, mul_assoc, mul_comm]
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+    (A := A) hbase hpos hnonneg hc hroot_lower hden hcoeff hraw
+    hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the denominator-fused `-c_n(1+X)` lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
@@ -1800,9 +2519,9 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
-      (A := A) hbase hpos hnonneg hc hroot_lower hden hcoeff hraw hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+    (A := A) hbase hpos hnonneg hc hroot_lower hden hcoeff hraw
+    hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `-c_n(1+2X)` lag controlled on the tighter inner window
 `[-1/2,0]`. -/
@@ -1819,16 +2538,8 @@ theorem prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => -(C (c n)) * (1 + C (2 : ℝ) * X))
-    hbase hpos hnonneg
-    (fun n r hr => by
-      have hhalf := hroot_lower n r hr
-      linarith)
-    (fun n r hr _ _ =>
-      eval_neg_C_mul_one_add_two_mul_X_nonpos_of_nonneg_of_ge_neg_half
-        (hc n) (hroot_lower n r hr))
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `-c_n(1+2X)` tighter-window lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
@@ -1844,9 +2555,48 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_co
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for the inner-window lag `X^2 - 1`. -/
+theorem of_X_sq_sub_one_lag_nonneg {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X ^ 2 - 1) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X ^ 2 - 1) :=
+  of_inner_window_lag_nonneg
+    (B := fun _ => X ^ 2 - 1) hbase hpos hnonneg hroot_lower
+    (fun _ _ _ hlo hhi => eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+/-- Build a state for the inner-window lag `c_n(X^2 - 1)`. -/
+theorem of_C_mul_X_sq_sub_one_lag_nonneg
+    {P A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (X ^ 2 - 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * (X ^ 2 - 1)) :=
+  of_inner_window_lag_nonneg
+    (B := fun n => C (c n) * (X ^ 2 - 1)) hbase hpos hnonneg
+    hroot_lower
+    (fun n _ _ hlo hhi =>
+      eval_C_mul_X_sq_sub_one_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
+    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level `X^2-1` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1861,10 +2611,8 @@ theorem prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X ^ 2 - 1) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_sq_sub_one_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `X^2-1` inner-window lag. -/
 theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
@@ -1878,9 +2626,8 @@ theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_sq_sub_one_lag_nonneg
+    hbase hpos hnonneg hroot_lower hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level `c_n(X^2-1)` lag controlled on the inner root window
 `[-1,0]`. -/
@@ -1896,11 +2643,8 @@ theorem prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun n => C (c n) * (X ^ 2 - 1)) hbase hpos hnonneg hroot_lower
-    (fun n _ _ hlo hhi =>
-      eval_C_mul_X_sq_sub_one_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (rr_lw_recurrence_seq hrec) hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `c_n(X^2-1)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
@@ -1915,9 +2659,30 @@ theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for positive lags of the form `X * Q_n`. -/
+theorem of_positive_X_mul_lag {P A Q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => X * Q n) :=
+  of_inductive_nonpos (B := fun n => X * Q n) hbase hpos
+    (fun n hsource r hr =>
+      eval_X_mul_nonpos_of_nonpos_of_nonneg
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr)
+        (hQ_nonneg n r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level `X Q_n` positive-lag Liu--Wang induction.
 
@@ -1934,14 +2699,8 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => X * Q n) hbase hpos
-    (fun n hsource r hr =>
-      eval_X_mul_nonpos_of_nonpos_of_nonneg
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr)
-        (hQ_nonneg n r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_mul_lag
+    hbase hpos hnonneg hQ_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for sequence-level `X Q_n` positive-lag
 Liu--Wang induction. -/
@@ -1955,9 +2714,33 @@ theorem isRealRooted_of_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_X_mul_lag_sequence
-      hbase hpos hnonneg hQ_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_mul_lag
+    hbase hpos hnonneg hQ_nonneg hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for positive lags of the form `c_n X Q_n`. -/
+theorem of_positive_C_mul_X_mul_lag {P A Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun n => C (c n) * X * Q n) :=
+  of_inductive_nonpos (B := fun n => C (c n) * X * Q n) hbase hpos
+    (fun n hsource r hr =>
+      eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
+        (hc n)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr)
+        (hQ_nonneg n r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level `c_n X Q_n` positive-lag Liu--Wang induction. -/
 theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
@@ -1972,15 +2755,8 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => C (c n) * X * Q n) hbase hpos
-    (fun n hsource r hr =>
-      eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
-        (hc n)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr)
-        (hQ_nonneg n r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+    hbase hpos hnonneg hc hQ_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for sequence-level `c_n X Q_n` positive-lag
 Liu--Wang induction. -/
@@ -1996,9 +2772,8 @@ theorem isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_positive_C_mul_X_mul_lag_sequence
-      hbase hpos hnonneg hc hQ_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+    hbase hpos hnonneg hc hQ_nonneg hrec hdeg_succ hno).isRealRooted
 
 /-- Family E sequence wrapper for strict-degree `t R_n(t)` lag recurrences.
 
@@ -2016,8 +2791,8 @@ theorem prec_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_X_mul_lag_sequence
-    hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_mul_lag
+    hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for strict-degree `t R_n(t)` lag recurrences. -/
 theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
@@ -2030,8 +2805,8 @@ theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_tR_lag_sequence hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_X_mul_lag
+    hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno).isRealRooted
 
 /-- Scalar Family E sequence wrapper for strict-degree
 `c_n t R_n(t)` lag recurrences. -/
@@ -2047,8 +2822,8 @@ theorem prec_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_C_mul_X_mul_lag_sequence
-    hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+    hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for strict-degree `c_n t R_n(t)` lag
 recurrences. -/
@@ -2064,8 +2839,76 @@ theorem isRealRooted_of_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_c_tR_lag_sequence hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+    hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for the literal `X * (1 - X)` lag. -/
+theorem of_X_mul_one_sub_X_lag {P A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (1 - X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A (fun _ => X * (1 - X)) :=
+  of_inductive_nonpos (B := fun _ => X * (1 - X)) hbase hpos
+    (fun n hsource r hr =>
+      eval_X_mul_one_sub_X_nonpos_of_nonpos
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+/-- Build a state for the parameterized `X * (a_n - b_n X)` lag. -/
+theorem of_X_mul_C_sub_C_mul_X_lag {P A : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => X * (C (a n) - C (b n) * X)) :=
+  of_inductive_nonpos
+    (B := fun n => X * (C (a n) - C (b n) * X)) hbase hpos
+    (fun n hsource r hr =>
+      eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
+        (ha n) (hb n)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+/-- Build a state for the parameterized `c_n X * (a_n - b_n X)` lag. -/
+theorem of_C_mul_X_mul_C_sub_C_mul_X_lag
+    {P A : Nat → ℝ[X]} {c a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P A
+      (fun n => C (c n) * X * (C (a n) - C (b n) * X)) :=
+  of_inductive_nonpos
+    (B := fun n => C (c n) * X * (C (a n) - C (b n) * X)) hbase hpos
+    (fun n hsource r hr =>
+      eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
+        (hc n) (ha n) (hb n)
+        (roots_nonpos_of_realrooted_of_nonneg_coeffs
+          hsource (hnonneg (n + 1)) r hr))
+    hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence wrapper for strict-degree Family E `t(1-t)` lag recurrences. -/
 theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
@@ -2078,13 +2921,8 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun _ => X * (1 - X)) hbase hpos
-    (fun n hsource r hr =>
-      eval_X_mul_one_sub_X_nonpos_of_nonpos
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_sub_X_lag
+    hbase hpos hnonneg hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for strict-degree Family E `t(1-t)` lag
 recurrences. -/
@@ -2098,8 +2936,8 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_mul_one_sub_X_lag_sequence hbase hpos hnonneg hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_one_sub_X_lag
+    hbase hpos hnonneg hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence wrapper for strict-degree Family E `t(a_n-b_n t)` lag
 recurrences with nonnegative parameters. -/
@@ -2115,14 +2953,8 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => X * (C (a n) - C (b n) * X)) hbase hpos
-    (fun n hsource r hr =>
-      eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
-        (ha n) (hb n)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+    hbase hpos hnonneg ha hb hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for strict-degree Family E `t(a_n-b_n t)` lag
 recurrences. -/
@@ -2138,9 +2970,8 @@ theorem isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
-      hbase hpos hnonneg ha hb hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+    hbase hpos hnonneg ha hb hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence wrapper for strict-degree Family E `c_n t(a_n-b_n t)` lag
 recurrences with nonnegative parameters. -/
@@ -2158,14 +2989,8 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
-    (B := fun n => C (c n) * X * (C (a n) - C (b n) * X)) hbase hpos
-    (fun n hsource r hr =>
-      eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
-        (hc n) (ha n) (hb n)
-        (roots_nonpos_of_realrooted_of_nonneg_coeffs
-          hsource (hnonneg (n + 1)) r hr))
-    hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+    hbase hpos hnonneg hc ha hb hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for strict-degree Family E
 `c_n t(a_n-b_n t)` lag recurrences. -/
@@ -2183,12 +3008,59 @@ theorem isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-      hbase hpos hnonneg hc ha hb hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+    hbase hpos hnonneg hc ha hb hrec hdeg_succ hno).isRealRooted
+
+namespace LwNonposLagSequenceState
+
+/-- Build a state for positive `t`-lag with current coefficient `a_n X`. -/
+theorem of_current_CX_positive_t_lag {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P (fun n => C (a n) * X)
+      (fun n => C (c n) * X) :=
+  of_positive_t_lag (A := fun n => C (a n) * X)
+    hbase hpos hnonneg hc hrec hdeg_succ hno
+
+/-- Build a state for positive `t`-lag with current coefficient `X`. -/
+theorem of_current_X_positive_t_lag {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P (fun _ => X) (fun n => C (c n) * X) :=
+  of_positive_t_lag (A := fun _ => X)
+    hbase hpos hnonneg hc hrec hdeg_succ hno
+
+/-- Build a state for positive `t`-lag with current coefficient `1 + X`. -/
+theorem of_current_one_add_X_positive_t_lag {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    LwNonposLagSequenceState P (fun _ => (1 + X : ℝ[X]))
+      (fun n => C (c n) * X) :=
+  of_positive_t_lag (A := fun _ => (1 + X : ℝ[X]))
+    hbase hpos hnonneg hc hrec hdeg_succ hno
+
+end LwNonposLagSequenceState
 
 /-- Sequence-level positive `t`-lag induction when the current-row coefficient
-is also a scalar multiple of `X`.  This packages the OEIS shapes
+is also a scalar multiple of `X`.  This packages the scalar-current shapes
 `t P_{n+1}+c_n t P_n` and `a_n t P_{n+1}+c_n t P_n`. -/
 theorem prec_lw_current_CX_positive_t_lag_sequence {P : Nat → ℝ[X]}
     {a c : Nat → ℝ}
@@ -2201,8 +3073,8 @@ theorem prec_lw_current_CX_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_t_lag_sequence
-    (A := fun n => C (a n) * X) hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_CX_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the scalar-`X` current positive `t`-lag
 sequence wrapper. -/
@@ -2217,12 +3089,11 @@ theorem isRealRooted_of_lw_current_CX_positive_t_lag_sequence {P : Nat → ℝ[X
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_current_CX_positive_t_lag_sequence
-      hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_CX_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level positive `t`-lag induction for the exact current factor
-`X`.  This avoids normalizing unit-current OEIS recurrences to
+`X`.  This avoids normalizing unit-current generated recurrences to
 `(C 1 * X) * P_{n+1}`. -/
 theorem prec_lw_current_X_positive_t_lag_sequence {P : Nat → ℝ[X]}
     {c : Nat → ℝ}
@@ -2235,8 +3106,8 @@ theorem prec_lw_current_X_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_t_lag_sequence
-    (A := fun _ => X) hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_X_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the exact-`X` current positive `t`-lag
 sequence wrapper. -/
@@ -2251,8 +3122,8 @@ theorem isRealRooted_of_lw_current_X_positive_t_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_current_X_positive_t_lag_sequence hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_X_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).isRealRooted
 
 /-- Sequence-level positive `t`-lag induction for current factor `1+X`. -/
 theorem prec_lw_current_one_add_X_positive_t_lag_sequence {P : Nat → ℝ[X]}
@@ -2266,8 +3137,8 @@ theorem prec_lw_current_one_add_X_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_positive_t_lag_sequence
-    (A := fun _ => (1 + X : ℝ[X])) hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).prec_sequence
 
 /-- Real-rootedness corollary for the `1+X` current positive `t`-lag sequence
 wrapper. -/
@@ -2282,9 +3153,8 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
-    prec_lw_current_one_add_X_positive_t_lag_sequence
-      hbase hpos hnonneg hc hrec hdeg_succ hno
+  (LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+    hbase hpos hnonneg hc hrec hdeg_succ hno).isRealRooted
 
 namespace Tactic
 
@@ -2816,6 +3686,444 @@ syntax (name := rr_lw_nonpos_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_nonpos_lag_sequence_nonzero_named)
+  "rr_lw_nonpos_lag_sequence_nonzero" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_splits_named)
+  "rr_lw_nonpos_lag_sequence_splits" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_interlaces_named)
+  "rr_lw_nonpos_lag_sequence_interlaces" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_inductive_nonpos_named)
+  "rr_lw_nonpos_lag_sequence_inductive_nonpos" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_inductive_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_inductive_nonpos_realrooted_named)
+  "rr_lw_nonpos_lag_sequence_inductive_nonpos_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_inductive_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_inductive_nonpos_nonzero_named)
+  "rr_lw_nonpos_lag_sequence_inductive_nonpos_nonzero" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_inductive_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_inductive_nonpos_splits_named)
+  "rr_lw_nonpos_lag_sequence_inductive_nonpos_splits" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_inductive_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_inductive_nonpos_interlaces_named)
+  "rr_lw_nonpos_lag_sequence_inductive_nonpos_interlaces" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_inductive_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_state_named)
+  "rr_lw_nonpos_lag_state" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_state_realrooted_named)
+  "rr_lw_nonpos_lag_state_realrooted" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_state_nonzero_named)
+  "rr_lw_nonpos_lag_state_nonzero" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_state_splits_named)
+  "rr_lw_nonpos_lag_state_splits" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_state_interlaces_named)
+  "rr_lw_nonpos_lag_state_interlaces" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_state_named)
+  "rr_lw_strict_branch_sequence_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_named)
+  "rr_lw_strict_branch_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_realrooted_named)
+  "rr_lw_strict_branch_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_nonzero_named)
+  "rr_lw_strict_branch_sequence_nonzero" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_splits_named)
+  "rr_lw_strict_branch_sequence_splits" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_sequence_interlaces_named)
+  "rr_lw_strict_branch_sequence_interlaces" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_branch" ":=" term ","
+    "interlacer" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "head_neg" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_state_named)
+  "rr_lw_strict_branch_state" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_state_realrooted_named)
+  "rr_lw_strict_branch_state_realrooted" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_state_nonzero_named)
+  "rr_lw_strict_branch_state_nonzero" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_state_splits_named)
+  "rr_lw_strict_branch_state_splits" " using "
+    "state" ":=" term :
+  tactic
+
+syntax (name := rr_lw_strict_branch_state_interlaces_named)
+  "rr_lw_strict_branch_state_interlaces" " using "
+    "state" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_lw_nonpos_lag_state_nonzero using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.ne_zero_sequence $hstate)
+  | `(tactic|
+      rr_lw_nonpos_lag_state_splits using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.splits_sequence $hstate)
+
+macro_rules
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_nonzero using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_splits using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).splits_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_interlaces using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).interlaces_sequence)
+
+macro_rules
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_inductive_nonpos using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_inductive_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_inductive_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).prec_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_inductive_nonpos_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_inductive_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          ((RealRooted.LwNonposLagSequenceState.of_inductive_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_inductive_nonpos_nonzero using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_inductive_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_inductive_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_inductive_nonpos_splits using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_inductive_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_inductive_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).splits_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_inductive_nonpos_interlaces using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_inductive_nonpos := $hB:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_inductive_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).interlaces_sequence)
+
+macro_rules
+  | `(tactic|
+      rr_lw_strict_branch_sequence_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        exact RealRooted.LwStrictBranchSequenceState.of_branch
+          $hbase $hpos $hrec $hdegree $hinter $hno $hb_neg)
+  | `(tactic|
+      rr_lw_strict_branch_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwStrictBranchSequenceState.of_branch
+            $hbase $hpos $hrec $hdegree $hinter $hno $hb_neg).prec_sequence)
+  | `(tactic|
+      rr_lw_strict_branch_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          ((RealRooted.LwStrictBranchSequenceState.of_branch
+            $hbase $hpos $hrec $hdegree $hinter $hno $hb_neg).isRealRooted))
+  | `(tactic|
+      rr_lw_strict_branch_sequence_nonzero using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwStrictBranchSequenceState.of_branch
+            $hbase $hpos $hrec $hdegree $hinter $hno
+            $hb_neg).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_strict_branch_sequence_splits using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwStrictBranchSequenceState.of_branch
+            $hbase $hpos $hrec $hdegree $hinter $hno
+            $hb_neg).splits_sequence)
+  | `(tactic|
+      rr_lw_strict_branch_sequence_interlaces using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_branch := $hdegree:term,
+        interlacer := $hinter:term,
+        no_common_roots := $hno:term,
+        head_neg := $hb_neg:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwStrictBranchSequenceState.of_branch
+            $hbase $hpos $hrec $hdegree $hinter $hno
+            $hb_neg).interlaces_sequence)
+  | `(tactic|
+      rr_lw_strict_branch_state using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwStrictBranchSequenceState.prec_sequence $hstate)
+  | `(tactic|
+      rr_lw_strict_branch_state_realrooted using
+        state := $hstate:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.LwStrictBranchSequenceState.isRealRooted $hstate))
+  | `(tactic|
+      rr_lw_strict_branch_state_nonzero using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwStrictBranchSequenceState.ne_zero_sequence $hstate)
+  | `(tactic|
+      rr_lw_strict_branch_state_splits using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwStrictBranchSequenceState.splits_sequence $hstate)
+  | `(tactic|
+      rr_lw_strict_branch_state_interlaces using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwStrictBranchSequenceState.interlaces_sequence
+          $hstate)
+
+syntax (name := rr_lw_global_nonpos_state_auto_named)
+  "rr_lw_global_nonpos_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_global_nonpos_state_den_auto_named)
+  "rr_lw_global_nonpos_state_den_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_global_nonpos_sequence_auto_named)
   "rr_lw_global_nonpos_sequence_auto" " using "
     "base" ":=" term ","
@@ -2828,6 +4136,26 @@ syntax (name := rr_lw_global_nonpos_sequence_auto_named)
 
 syntax (name := rr_lw_global_nonpos_sequence_realrooted_auto_named)
   "rr_lw_global_nonpos_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_global_nonpos_sequence_nonzero_auto_named)
+  "rr_lw_global_nonpos_sequence_nonzero_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_global_nonpos_sequence_interlaces_auto_named)
+  "rr_lw_global_nonpos_sequence_interlaces_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "lag" ":=" term ","
@@ -2858,6 +4186,122 @@ syntax (name := rr_lw_global_nonpos_sequence_den_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_global_nonpos_sequence_den_nonzero_auto_named)
+  "rr_lw_global_nonpos_sequence_den_nonzero_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_global_nonpos_sequence_den_interlaces_auto_named)
+  "rr_lw_global_nonpos_sequence_den_interlaces_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_nonzero_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            (B := $B) $hbase $hpos (by
+              intro n r hr
+              rr_sign) $hrec $hdeg_succ $hno).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_interlaces_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            (B := $B) $hbase $hpos (by
+              intro n r hr
+              rr_sign) $hrec $hdeg_succ $hno).interlaces_sequence)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_nonzero_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_den_nonzero_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          den_nonzero := rr_lw_active_den_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_nonzero_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            (B := $B) $hbase $hpos (by
+              intro n r hr
+              rr_sign) $hden $hraw $hdeg_succ $hno).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_interlaces_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_den_interlaces_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          den_nonzero := rr_lw_active_den_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_interlaces_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            (B := $B) $hbase $hpos (by
+              intro n r hr
+              rr_sign) $hden $hraw $hdeg_succ $hno).interlaces_sequence)
+
 syntax (name := rr_lw_nonpos_lag_sequence_den_named)
   "rr_lw_nonpos_lag_sequence_den" " using "
     "base" ":=" term ","
@@ -2876,6 +4320,118 @@ syntax (name := rr_lw_nonpos_lag_sequence_den_realrooted_named)
     "lag_nonpos" ":=" term ","
     "den_nonzero" ":=" term ","
     "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_den_nonzero_named)
+  "rr_lw_nonpos_lag_sequence_den_nonzero" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_den_splits_named)
+  "rr_lw_nonpos_lag_sequence_den_splits" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_den_interlaces_named)
+  "rr_lw_nonpos_lag_sequence_den_interlaces" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_den_nonzero using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno).ne_zero_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_den_splits using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno).splits_sequence)
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_den_interlaces using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag_nonpos := $hB:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno).interlaces_sequence)
+
+syntax (name := rr_lw_negative_const_state_named)
+  "rr_lw_negative_const_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_const_state_auto_named)
+  "rr_lw_negative_const_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_const_C_neg_state_named)
+  "rr_lw_negative_const_C_neg_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_const_C_neg_state_auto_named)
+  "rr_lw_negative_const_C_neg_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
   tactic
@@ -2949,6 +4505,34 @@ syntax (name := rr_lw_negative_const_C_neg_sequence_realrooted_named)
 
 syntax (name := rr_lw_negative_const_C_neg_sequence_realrooted_auto_named)
   "rr_lw_negative_const_C_neg_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_named)
+  "rr_lw_negative_square_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_auto_named)
+  "rr_lw_negative_square_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_unit_named)
+  "rr_lw_negative_square_state_unit" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "recurrence" ":=" term ","
@@ -3220,6 +4804,85 @@ syntax (name := rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_a
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_negative_square_state_den_coeff_named)
+  "rr_lw_negative_square_state_den_coeff" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_den_coeff_split_named)
+  "rr_lw_negative_square_state_den_coeff_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "square_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "den" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_den_coeff_auto_named)
+  "rr_lw_negative_square_state_den_coeff_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_den_coeff_auto_active_named)
+  "rr_lw_negative_square_state_den_coeff_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_den_coeff_auto_split_named)
+  "rr_lw_negative_square_state_den_coeff_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "square_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_square_state_den_coeff_auto_split_active_named)
+  "rr_lw_negative_square_state_den_coeff_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "square_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_monic_quadratic_sequence_named)
   "rr_lw_negative_monic_quadratic_sequence" " using "
     "base" ":=" term ","
@@ -3293,6 +4956,27 @@ syntax (name := rr_lw_negative_quadratic_sequence_auto_named)
 
 syntax (name := rr_lw_negative_quadratic_sequence_realrooted_auto_named)
   "rr_lw_negative_quadratic_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_quadratic_state_named)
+  "rr_lw_negative_quadratic_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading_nonneg" ":=" term ","
+    "constant_nonneg" ":=" term ","
+    "discriminant" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_quadratic_state_auto_named)
+  "rr_lw_negative_quadratic_state_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "recurrence" ":=" term ","
@@ -3378,6 +5062,29 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_na
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_negative_quadratic_state_den_coeff_split_named)
+  "rr_lw_negative_quadratic_state_den_coeff_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading" ":=" term ","
+    "linear" ":=" term ","
+    "constant" ":=" term ","
+    "raw_leading" ":=" term ","
+    "raw_linear" ":=" term ","
+    "raw_constant" ":=" term ","
+    "den" ":=" term ","
+    "leading_nonneg" ":=" term ","
+    "constant_nonneg" ":=" term ","
+    "discriminant" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "leading_coeff_eq" ":=" term ","
+    "linear_coeff_eq" ":=" term ","
+    "constant_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split" " using "
     "base" ":=" term ","
@@ -3415,6 +5122,42 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_sca
     "leading_nonneg" ":=" term ","
     "constant_nonneg" ":=" term ","
     "discriminant" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_quadratic_state_den_coeff_auto_split_named)
+  "rr_lw_negative_quadratic_state_den_coeff_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading" ":=" term ","
+    "linear" ":=" term ","
+    "constant" ":=" term ","
+    "raw_leading" ":=" term ","
+    "raw_linear" ":=" term ","
+    "raw_constant" ":=" term ","
+    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
+    "leading_coeff_eq" ":=" term ","
+    "linear_coeff_eq" ":=" term ","
+    "constant_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_quadratic_state_den_coeff_auto_split_scalar_named)
+  "rr_lw_negative_quadratic_state_den_coeff_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading" ":=" term ","
+    "linear" ":=" term ","
+    "constant" ":=" term ","
+    "raw_leading" ":=" term ","
+    "raw_linear" ":=" term ","
+    "raw_constant" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -3498,6 +5241,27 @@ syntax (name := rr_lw_positive_t_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_positive_t_state_named)
+  "rr_lw_positive_t_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_t_state_auto_named)
+  "rr_lw_positive_t_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_positive_t_lag_step_named)
   "rr_lw_positive_t_lag_step" " using "
     "interlaces" ":=" term ","
@@ -3522,6 +5286,16 @@ syntax (name := rr_lw_positive_X_lag_sequence_named)
 
 syntax (name := rr_lw_positive_X_lag_sequence_realrooted_named)
   "rr_lw_positive_X_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_X_lag_state_named)
+  "rr_lw_positive_X_lag_state" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -3566,6 +5340,28 @@ syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_named)
 
 syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto_named)
   "rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sub_C_lag_state_named)
+  "rr_lw_C_mul_X_sub_C_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "scalar_nonneg" ":=" term ","
+    "constant_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sub_C_lag_state_auto_named)
+  "rr_lw_C_mul_X_sub_C_lag_state_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -3658,6 +5454,48 @@ syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto_
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_positive_affine_lag_state_named)
+  "rr_lw_positive_affine_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_affine_lag_state_auto_named)
+  "rr_lw_positive_affine_lag_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_affine_lag_state_shift_nonneg_named)
+  "rr_lw_positive_affine_lag_state_shift_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "shift_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_affine_lag_state_shift_nonneg_auto_named)
+  "rr_lw_positive_affine_lag_state_shift_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "shift_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_C_add_X_lag_sequence_named)
   "rr_lw_C_add_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -3690,6 +5528,26 @@ syntax (name := rr_lw_C_add_X_lag_sequence_shift_nonneg_named)
 
 syntax (name := rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg_named)
   "rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "shift_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_add_X_lag_state_named)
+  "rr_lw_C_add_X_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_add_X_lag_state_shift_nonneg_named)
+  "rr_lw_C_add_X_lag_state_shift_nonneg" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "shift_nonneg" ":=" term ","
@@ -3756,6 +5614,39 @@ syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_nonneg_named)
 
 syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named)
   "rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_X_one_add_X_lag_state_nonneg_named)
+  "rr_lw_X_one_add_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_X_one_sub_X_one_add_X_lag_state_nonneg_named)
+  "rr_lw_X_one_sub_X_one_add_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_X_sub_X_pow_three_lag_state_nonneg_named)
+  "rr_lw_X_sub_X_pow_three_lag_state_nonneg" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -3906,6 +5797,75 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_C_mul_X_one_add_X_lag_state_nonneg_named)
+  "rr_lw_C_mul_X_one_add_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_one_add_X_lag_state_nonneg_auto_named)
+  "rr_lw_C_mul_X_one_add_X_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg_named)
+  "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg_auto_named)
+  "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg_named)
+  "rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg_auto_named)
+  "rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_inner_window_lag_sequence_named)
   "rr_lw_inner_window_lag_sequence" " using "
     "base" ":=" term ","
@@ -3983,6 +5943,17 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_one_add_X_one_add_two_X_lag_state_interval_named)
+  "rr_lw_one_add_X_one_add_two_X_lag_state_interval" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_named)
   "rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval" " using "
     "base" ":=" term ","
@@ -4029,6 +6000,30 @@ syntax (name := rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_inte
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval_named)
+  "rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax
+  (name := rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval_auto_named)
+  "rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg_named)
   "rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -4045,6 +6040,20 @@ syntax (name := rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg_named)
 
 syntax (name := rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg_named)
   "rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "slope_nonneg" ":=" term ","
+    "slope_le_const" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_affine_inner_lag_state_nonneg_named)
+  "rr_lw_neg_C_mul_affine_inner_lag_state_nonneg" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -4103,6 +6112,29 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_auto_na
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_state_nonneg_named)
+  "rr_lw_neg_C_mul_one_add_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_state_nonneg_auto_named)
+  "rr_lw_neg_C_mul_one_add_X_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg" " using "
     "base" ":=" term ","
@@ -4147,6 +6179,47 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_nam
 
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff" ":=" term ","
+    "root_lower" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_named)
+  "rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto_named)
+  "rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff" ":=" term ","
+    "root_lower" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto_scalar_named)
+  "rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -4258,6 +6331,29 @@ syntax (name := rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_aut
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg_named)
+  "rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower_half" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg_auto_named)
+  "rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower_half" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_inner_lag_sequence_named)
   "rr_lw_negative_inner_lag_sequence" " using "
     "base" ":=" term ","
@@ -4328,6 +6424,40 @@ syntax (name := rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_auto_nam
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_X_sq_sub_one_lag_state_nonneg_named)
+  "rr_lw_X_sq_sub_one_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg_named)
+  "rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg_auto_named)
+  "rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_positive_X_mul_sequence_named)
   "rr_lw_positive_X_mul_sequence" " using "
     "base" ":=" term ","
@@ -4387,6 +6517,40 @@ syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_named)
 
 syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto_named)
   "rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_X_mul_state_named)
+  "rr_lw_positive_X_mul_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_C_mul_X_mul_state_named)
+  "rr_lw_positive_C_mul_X_mul_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_C_mul_X_mul_state_auto_named)
+  "rr_lw_positive_C_mul_X_mul_state_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -4574,6 +6738,61 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_X_one_sub_X_lag_state_named)
+  "rr_lw_X_one_sub_X_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_X_C_sub_C_mul_X_lag_state_named)
+  "rr_lw_X_C_sub_C_mul_X_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "left_coeff_nonneg" ":=" term ","
+    "right_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_X_C_sub_C_mul_X_lag_state_auto_named)
+  "rr_lw_X_C_sub_C_mul_X_lag_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_state_named)
+  "rr_lw_C_mul_X_C_sub_C_mul_X_lag_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "scalar_nonneg" ":=" term ","
+    "left_coeff_nonneg" ":=" term ","
+    "right_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_state_auto_named)
+  "rr_lw_C_mul_X_C_sub_C_mul_X_lag_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_current_CX_sequence_named)
   "rr_lw_current_CX_sequence" " using "
     "base" ":=" term ","
@@ -4692,6 +6911,69 @@ syntax (name := rr_lw_current_one_add_X_sequence_realrooted_named)
 
 syntax (name := rr_lw_current_one_add_X_sequence_realrooted_auto_named)
   "rr_lw_current_one_add_X_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_CX_state_named)
+  "rr_lw_current_CX_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_CX_state_auto_named)
+  "rr_lw_current_CX_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_X_state_named)
+  "rr_lw_current_X_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_X_state_auto_named)
+  "rr_lw_current_X_state_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_one_add_X_state_named)
+  "rr_lw_current_one_add_X_state" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_current_one_add_X_state_auto_named)
+  "rr_lw_current_one_add_X_state_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -5375,8 +7657,16 @@ macro_rules
         no_common_roots := $hno:term,
         lag_nonpos := $hB:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_two_of_nonpos_of_recurrence
-          $hInter $hg_pos $hrec $hF_pos $hdeg_succ $hno $hB)
+        rr_first_exact_or_simpa
+          (RealRooted.prec_lw_two_of_nonpos_of_recurrence
+            $hInter $hg_pos $hrec $hF_pos $hdeg_succ $hno $hB),
+          (RealRooted.prec_lw_two_of_nonpos_of_recurrence
+            $hInter $hg_pos
+            (rr_lw_simpa $hrec)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_succ)
+            $hno
+            (rr_lw_simpa $hB)))
   | `(tactic|
       rr_lw_nonpos_lag_sequence using
         base := $hbase:term,
@@ -5386,8 +7676,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_nonpos_lag_sequence
-          $hbase $hpos $hB $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_nonpos_lag_sequence_realrooted using
         base := $hbase:term,
@@ -5398,8 +7689,68 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence
-            $hbase $hpos $hB $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_nonpos
+            $hbase $hpos $hB $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_nonpos_lag_state using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.prec_sequence $hstate)
+  | `(tactic|
+      rr_lw_nonpos_lag_state_realrooted using
+        state := $hstate:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.LwNonposLagSequenceState.isRealRooted $hstate))
+  | `(tactic|
+      rr_lw_nonpos_lag_state_interlaces using
+        state := $hstate:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.interlaces_sequence $hstate)
+  | `(tactic|
+      rr_lw_global_nonpos_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_nonpos
+          (B := $B) $hbase $hpos (by
+            intro n r hr
+            rr_sign) $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_global_nonpos_state_den_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_global_nonpos_state_den_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          den_nonzero := rr_lw_active_den_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_global_nonpos_state_den_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_den
+          (B := $B) $hbase $hpos (by
+            intro n r hr
+            rr_sign) $hden $hraw $hdeg_succ $hno)
   | `(tactic|
       rr_lw_global_nonpos_sequence_auto using
         base := $hbase:term,
@@ -5409,10 +7760,11 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_nonpos_lag_sequence
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_nonpos
           (B := $B) $hbase $hpos (by
             intro n r hr
-            rr_sign) $hrec $hdeg_succ $hno)
+            rr_sign) $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_global_nonpos_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5423,10 +7775,10 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence
+          ((RealRooted.LwNonposLagSequenceState.of_nonpos
             (B := $B) $hbase $hpos (by
               intro n r hr
-              rr_sign) $hrec $hdeg_succ $hno))
+              rr_sign) $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_global_nonpos_sequence_den_auto using
         base := $hbase:term,
@@ -5454,10 +7806,11 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_nonpos_lag_sequence_den
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
           (B := $B) $hbase $hpos (by
             intro n r hr
-            rr_sign) $hden $hraw $hdeg_succ $hno)
+            rr_sign) $hden $hraw $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_global_nonpos_sequence_den_realrooted_auto using
         base := $hbase:term,
@@ -5486,10 +7839,10 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         have hrr :=
-          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence_den
+          ((RealRooted.LwNonposLagSequenceState.of_den
             (B := $B) $hbase $hpos (by
               intro n r hr
-              rr_sign) $hden $hraw $hdeg_succ $hno);
+              rr_sign) $hden $hraw $hdeg_succ $hno).isRealRooted);
         rr_exact_realrooted_sequence_or_projection hrr)
   | `(tactic|
       rr_lw_nonpos_lag_sequence_den using
@@ -5501,8 +7854,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_nonpos_lag_sequence_den
-          $hbase $hpos $hB $hden $hraw $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_den
+            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_nonpos_lag_sequence_den_realrooted using
         base := $hbase:term,
@@ -5514,8 +7868,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence_den
-            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_den
+            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_const_sequence using
         base := $hbase:term,
@@ -5525,8 +7879,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_const_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_const_sequence_auto using
         base := $hbase:term,
@@ -5535,8 +7890,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_const_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_const_sequence_realrooted using
         base := $hbase:term,
@@ -5547,8 +7904,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_const_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_const_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5558,8 +7915,30 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_const_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_negative_const_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_const_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_const_lag
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence using
         base := $hbase:term,
@@ -5569,8 +7948,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_const_C_neg_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence_auto using
         base := $hbase:term,
@@ -5579,8 +7959,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_const_C_neg_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence_realrooted using
         base := $hbase:term,
@@ -5591,8 +7973,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_const_C_neg_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5602,8 +7984,30 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_const_C_neg_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_negative_const_C_neg_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_const_C_neg_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_const_C_neg_lag
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence using
         base := $hbase:term,
@@ -5613,8 +8017,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_square_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_auto using
         base := $hbase:term,
@@ -5623,8 +8028,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_square_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_realrooted using
         base := $hbase:term,
@@ -5635,8 +8042,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+            $hbase $hpos $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_square_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5646,8 +8053,30 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+            $hbase $hpos rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_negative_square_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+          $hbase $hpos $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_square_lag
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_unit using
         base := $hbase:term,
@@ -5656,8 +8085,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_square_lag_sequence_unit
-          $hbase $hpos $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag_unit
+            $hbase $hpos $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_realrooted_unit using
         base := $hbase:term,
@@ -5667,8 +8097,18 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_unit
-            $hbase $hpos $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag_unit
+            $hbase $hpos $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_negative_square_state_unit using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_square_lag_unit
+          $hbase $hpos $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff using
         base := $hbase:term,
@@ -5701,8 +8141,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
-          (c := $c) $hbase $hpos $hc $hden $hcoeff $hraw $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+            (c := $c) $hbase $hpos $hc $hden $hcoeff $hraw
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_split using
         base := $hbase:term,
@@ -5745,11 +8187,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hc $hden $hcoeff
             (rr_lw_raw_recurrence_seq $hraw)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_auto using
         base := $hbase:term,
@@ -5797,9 +8239,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
-          (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
-          $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+            (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_auto_split using
         base := $hbase:term,
@@ -5863,11 +8306,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
+          (RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
             (rr_lw_raw_recurrence_seq $hraw)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted using
         base := $hbase:term,
@@ -5901,8 +8344,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
-            (c := $c) $hbase $hpos $hc $hden $hcoeff $hraw $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+            (c := $c) $hbase $hpos $hc $hden $hcoeff $hraw
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted_split using
         base := $hbase:term,
@@ -5945,11 +8389,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hc $hden $hcoeff
             (rr_lw_raw_recurrence_seq $hraw)
-            $hdeg_succ $hno))
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted_auto using
         base := $hbase:term,
@@ -5998,9 +8442,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
             (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
-            $hdeg_succ $hno))
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
         base := $hbase:term,
@@ -6064,11 +8508,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
+          ((RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
             (rr_lw_raw_recurrence_seq $hraw)
-            $hdeg_succ $hno))
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence using
         base := $hbase:term,
@@ -6078,8 +8522,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_monic_quadratic_lag_sequence
-          $hbase $hpos $hdisc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+            $hbase $hpos $hdisc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence_realrooted using
         base := $hbase:term,
@@ -6090,8 +8535,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
-            $hbase $hpos $hdisc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+            $hbase $hpos $hdisc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence_auto using
         base := $hbase:term,
@@ -6100,8 +8545,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_monic_quadratic_lag_sequence
-          $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+            $hbase $hpos rr_lw_quadratic_discriminant
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6111,8 +8558,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
-            $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+            $hbase $hpos rr_lw_quadratic_discriminant
+            $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_quadratic_sequence using
         base := $hbase:term,
@@ -6124,8 +8572,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_quadratic_lag_sequence
-          $hbase $hpos $ha $hc $hdisc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+            $hbase $hpos $ha $hc $hdisc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted using
         base := $hbase:term,
@@ -6138,8 +8587,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
-            $hbase $hpos $ha $hc $hdisc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+            $hbase $hpos $ha $hc $hdisc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_auto using
         base := $hbase:term,
@@ -6148,9 +8597,11 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_negative_quadratic_lag_sequence
-          $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-          rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+            $hbase $hpos rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6160,9 +8611,10 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
-            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-            rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+            $hbase $hpos rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_split using
         base := $hbase:term,
@@ -6224,11 +8676,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_negative_quadratic_lag_sequence_den_coeff
+          (RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
             (araw := $araw) (braw := $braw) (craw := $craw)
             (a := $a) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $ha $hc $hdisc $hden $ha_coeff $hb_coeff $hc_coeff
-            $hraw $hdeg_succ $hno)
+            $hraw $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_auto_split using
         base := $hbase:term,
@@ -6316,12 +8768,13 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_negative_quadratic_lag_sequence_den_coeff
+          (RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
             (araw := $araw) (braw := $braw) (craw := $craw)
             (a := $a) (b := $b) (c := $c) (d := $d)
-            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-            rr_lw_negative_quadratic_side $hden $ha_coeff $hb_coeff $hc_coeff $hraw
-            $hdeg_succ $hno)
+            $hbase $hpos rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            $hden $ha_coeff $hb_coeff $hc_coeff $hraw
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split using
         base := $hbase:term,
@@ -6383,11 +8836,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
+          ((RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
             (araw := $araw) (braw := $braw) (craw := $craw)
             (a := $a) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $ha $hc $hdisc $hden $ha_coeff $hb_coeff $hc_coeff
-            $hraw $hdeg_succ $hno))
+            $hraw $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split using
         base := $hbase:term,
@@ -6475,12 +8928,13 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
+          ((RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
             (araw := $araw) (braw := $braw) (craw := $craw)
             (a := $a) (b := $b) (c := $c) (d := $d)
-            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-            rr_lw_negative_quadratic_side $hden $ha_coeff $hb_coeff $hc_coeff $hraw
-            $hdeg_succ $hno))
+            $hbase $hpos rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            $hden $ha_coeff $hb_coeff $hc_coeff $hraw
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_t_lag_step using
         interlaces := $hInter:term,
@@ -6492,8 +8946,17 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
-          $hInter $hg_pos $hf_nonneg $hc $hrec $hF_pos $hdeg_succ $hno)
+        rr_first_exact_or_simpa
+          (RealRooted.prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+            $hInter $hg_pos $hf_nonneg $hc $hrec $hF_pos $hdeg_succ $hno),
+          (RealRooted.prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+            $hInter $hg_pos
+            (rr_lw_simpa $hf_nonneg)
+            (rr_lw_simpa $hc)
+            (rr_lw_simpa $hrec)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_succ)
+            $hno))
   | `(tactic|
       rr_lw_positive_t_sequence using
         base := $hbase:term,
@@ -6504,8 +8967,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_t_lag_sequence
-          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_positive_t_sequence_auto using
         base := $hbase:term,
@@ -6515,9 +8979,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_t_lag_sequence
-          $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
-          $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_positive_t_sequence_realrooted using
         base := $hbase:term,
@@ -6529,8 +8994,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_t_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6541,9 +9006,33 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_t_lag_sequence
-            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec
-            $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg
+            $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_positive_t_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_t_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_t_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg
+          $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_positive_X_lag_sequence using
         base := $hbase:term,
@@ -6553,8 +9042,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_X_lag_sequence
-          $hbase $hpos $hnonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_positive_X_lag
+            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_positive_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -6565,8 +9055,19 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_X_lag_sequence
-            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_X_lag
+            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_positive_X_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_X_lag
+          $hbase $hpos $hnonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_C_mul_X_sub_C_lag_sequence using
         base := $hbase:term,
@@ -6578,8 +9079,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_X_sub_C_lag_sequence
-          $hbase $hpos $hnonneg $hc $ha $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+            $hbase $hpos $hnonneg $hc $ha $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_sub_C_lag_sequence_auto using
         base := $hbase:term,
@@ -6590,8 +9092,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_sub_C_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_sub_C_lag_sequence_realrooted using
         base := $hbase:term,
@@ -6604,8 +9106,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence
-            $hbase $hpos $hnonneg $hc $ha $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+            $hbase $hpos $hnonneg $hc $ha $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6616,8 +9118,33 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno).isRealRooted))
+  | `(tactic|
+      rr_lw_C_mul_X_sub_C_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        scalar_nonneg := $hc:term,
+        constant_nonneg := $ha:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+          $hbase $hpos $hnonneg $hc $ha $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_sub_C_lag_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg rr_lw_active_nonneg
+          $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_positive_affine_lag_sequence using
         base := $hbase:term,
@@ -6628,8 +9155,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_affine_lag_sequence
-          $hbase $hpos $hc $hroot_upper $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+            $hbase $hpos $hc $hroot_upper $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_auto using
         base := $hbase:term,
@@ -6640,8 +9168,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_positive_affine_lag_sequence
-            $hbase $hpos ?_ $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+            $hbase $hpos ?_ $hroot_upper $hrec $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_realrooted using
         base := $hbase:term,
@@ -6653,8 +9181,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_affine_lag_sequence
-            $hbase $hpos $hc $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+            $hbase $hpos $hc $hroot_upper $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6665,8 +9193,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_positive_affine_lag_sequence
-            $hbase $hpos ?_ $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+            $hbase $hpos ?_ $hroot_upper $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_shift_nonneg using
         base := $hbase:term,
@@ -6677,8 +9205,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-          $hbase $hpos $hc $hshift_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+            $hbase $hpos $hc $hshift_nonneg $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_shift_nonneg_auto using
         base := $hbase:term,
@@ -6689,8 +9219,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-            $hbase $hpos ?_ $hshift_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+            $hbase $hpos ?_ $hshift_nonneg $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg using
         base := $hbase:term,
@@ -6702,8 +9233,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-            $hbase $hpos $hc $hshift_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+            $hbase $hpos $hc $hshift_nonneg $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto using
         base := $hbase:term,
@@ -6714,8 +9246,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-            $hbase $hpos ?_ $hshift_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+            $hbase $hpos ?_ $hshift_nonneg $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_add_X_lag_sequence using
         base := $hbase:term,
@@ -6725,8 +9258,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_add_X_lag_sequence
-          $hbase $hpos $hroot_upper $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_add_X_lag
+            $hbase $hpos $hroot_upper $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_add_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -6737,8 +9271,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_add_X_lag_sequence
-            $hbase $hpos $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_add_X_lag
+            $hbase $hpos $hroot_upper $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_add_X_lag_sequence_shift_nonneg using
         base := $hbase:term,
@@ -6748,8 +9282,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
-          $hbase $hpos $hshift_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_add_X_lag_shift_nonneg
+            $hbase $hpos $hshift_nonneg $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg using
         base := $hbase:term,
@@ -6760,8 +9295,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
-            $hbase $hpos $hshift_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_add_X_lag_shift_nonneg
+            $hbase $hpos $hshift_nonneg $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_X_one_add_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6772,8 +9307,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6785,8 +9321,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6798,8 +9334,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6811,8 +9347,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_X_sub_X_pow_three_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6823,8 +9359,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6836,8 +9373,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6849,8 +9386,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -6862,8 +9401,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6876,8 +9416,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -6889,8 +9430,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6903,8 +9445,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -6916,8 +9459,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6930,8 +9474,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -6943,8 +9488,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg using
         base := $hbase:term,
@@ -6957,8 +9503,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -6970,8 +9517,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -6984,8 +9532,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -6997,8 +9546,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_inner_window_lag_sequence using
         base := $hbase:term,
@@ -7351,8 +9901,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
-          $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
         base := $hbase:term,
@@ -7364,8 +9916,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
-            $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval using
         base := $hbase:term,
@@ -7377,8 +9930,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
-          $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto using
         base := $hbase:term,
@@ -7390,8 +9945,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
-            $hbase $hpos ?_ $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos ?_ $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
         base := $hbase:term,
@@ -7404,8 +9960,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
-            $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_auto using
         base := $hbase:term,
@@ -7417,8 +9974,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
-            $hbase $hpos ?_ $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos ?_ $hroot_lower $hroot_upper $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg using
         base := $hbase:term,
@@ -7433,8 +9991,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_neg_C_mul_affine_inner_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -7449,8 +10008,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_affine_inner_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -7462,8 +10022,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec
+            $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -7475,8 +10037,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec
+            $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -7489,8 +10052,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -7502,8 +10066,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg using
         base := $hbase:term,
@@ -7543,9 +10108,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower $hden $hcoeff
-            $hraw $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto using
         base := $hbase:term,
@@ -7582,9 +10147,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg ?_ $hroot_lower $hden $hcoeff
-            $hraw $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg ?_ $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg using
         base := $hbase:term,
@@ -7624,9 +10189,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower $hden $hcoeff
-            $hraw $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -7663,9 +10228,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg ?_ $hroot_lower $hden $hcoeff
-            $hraw $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg ?_ $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg using
         base := $hbase:term,
@@ -7678,8 +10243,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+          (RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -7691,8 +10256,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -7705,8 +10270,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -7718,8 +10283,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_negative_inner_lag_sequence using
         base := $hbase:term,
@@ -7807,8 +10372,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_auto using
         base := $hbase:term,
@@ -7820,8 +10387,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -7834,8 +10402,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -7847,8 +10416,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+            $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_X_mul_sequence using
         base := $hbase:term,
@@ -7860,11 +10430,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_exact
-          (RealRooted.prec_lw_positive_X_mul_lag_sequence
-            $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno),
-          (RealRooted.prec_lw_positive_X_mul_lag_sequence
+          ((RealRooted.LwNonposLagSequenceState.of_positive_X_mul_lag
+            $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno).prec_sequence),
+          ((RealRooted.LwNonposLagSequenceState.of_positive_X_mul_lag
             $hbase $hpos $hnonneg $hQ
-            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_positive_X_mul_sequence_realrooted using
         base := $hbase:term,
@@ -7876,11 +10446,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_X_mul_lag_sequence
-            $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno),
-          (RealRooted.isRealRooted_of_lw_positive_X_mul_lag_sequence
+          ((RealRooted.LwNonposLagSequenceState.of_positive_X_mul_lag
+            $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno).isRealRooted),
+          ((RealRooted.LwNonposLagSequenceState.of_positive_X_mul_lag
             $hbase $hpos $hnonneg $hQ
-            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence using
         base := $hbase:term,
@@ -7893,11 +10463,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_exact
-          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-            $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno),
-          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+          ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+            $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno).prec_sequence),
+          ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
             $hbase $hpos $hnonneg $hc $hQ
-            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_auto using
         base := $hbase:term,
@@ -7910,14 +10480,15 @@ macro_rules
       `(tactic|
         first
           | rr_lw_refine_active_nonneg_seq
-              (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno)
+              ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ
+                $hno).prec_sequence)
           | rr_lw_refine_active_nonneg_seq
-              (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+              ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
                 (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
                 (hQ_nonneg := $hQ)
                 (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
-                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_)))
+                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_)).prec_sequence))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_realrooted using
         base := $hbase:term,
@@ -7930,11 +10501,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
-            $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno),
-          (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
+          ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+            $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno).isRealRooted),
+          ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
             $hbase $hpos $hnonneg $hc $hQ
-            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto using
         base := $hbase:term,
@@ -7948,15 +10519,16 @@ macro_rules
         rr_first_realrooted_sequence_or_projection
           (by
             rr_lw_refine_active_nonneg_seq
-              (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
-                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno)),
+              ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ
+                $hno).isRealRooted)),
           (by
             rr_lw_refine_active_nonneg_seq
-              (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
+              ((RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
                 (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
                 (hQ_nonneg := $hQ)
                 (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
-                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_))))
+                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_)).isRealRooted)))
   | `(tactic|
       rr_lw_tR_lag_sequence using
         base := $hbase:term,
@@ -8078,8 +10650,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_X_mul_one_sub_X_lag_sequence
-          $hbase $hpos $hnonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_lag
+            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_X_one_sub_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -8090,8 +10663,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_X_mul_one_sub_X_lag_sequence
-            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_lag
+            $hbase $hpos $hnonneg $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence using
         base := $hbase:term,
@@ -8103,8 +10676,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_auto using
         base := $hbase:term,
@@ -8115,8 +10689,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -8129,8 +10703,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -8141,8 +10715,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence using
         base := $hbase:term,
@@ -8155,8 +10729,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto using
         base := $hbase:term,
@@ -8167,8 +10743,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ
+            $hno).prec_sequence))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -8182,8 +10759,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -8194,8 +10772,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_exact_realrooted_active_nonneg_seq
-          (RealRooted.isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_current_CX_sequence using
         base := $hbase:term,
@@ -8206,8 +10785,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_current_CX_positive_t_lag_sequence
-          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_current_CX_sequence_auto using
         base := $hbase:term,
@@ -8217,9 +10797,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_current_CX_positive_t_lag_sequence
-          $hbase $hpos $hnonneg
-          rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_current_CX_sequence_realrooted using
         base := $hbase:term,
@@ -8231,8 +10812,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_CX_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_current_CX_sequence_realrooted_auto using
         base := $hbase:term,
@@ -8243,9 +10824,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_CX_positive_t_lag_sequence
-            $hbase $hpos $hnonneg
-            rr_lw_active_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
+            $hno).isRealRooted))
   | `(tactic|
       rr_lw_current_X_sequence using
         base := $hbase:term,
@@ -8257,11 +10838,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_exact
-          (RealRooted.prec_lw_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
-          (RealRooted.prec_lw_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc
-            (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).prec_sequence),
+          ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc (rr_lw_recurrence_seq $hrec)
+            $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_current_X_sequence_auto using
         base := $hbase:term,
@@ -8272,13 +10853,14 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         first
-          | exact RealRooted.prec_lw_current_X_positive_t_lag_sequence
-              $hbase $hpos $hnonneg
-              rr_lw_active_nonneg $hrec $hdeg_succ $hno
+          | exact
+              (RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+                $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec
+                $hdeg_succ $hno).prec_sequence
           | rr_lw_refine_active_nonneg_seq
-              (RealRooted.prec_lw_current_X_positive_t_lag_sequence
-                $hbase $hpos $hnonneg ?_
-                (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
+              ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+                $hbase $hpos $hnonneg ?_ (rr_lw_recurrence_seq $hrec)
+                $hdeg_succ $hno).prec_sequence))
   | `(tactic|
       rr_lw_current_X_sequence_realrooted using
         base := $hbase:term,
@@ -8290,11 +10872,11 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
-          (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc
-            (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).isRealRooted),
+          ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc (rr_lw_recurrence_seq $hrec)
+            $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_current_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -8305,14 +10887,14 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_first_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg
-            rr_lw_active_nonneg $hrec $hdeg_succ $hno),
+          ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
+            $hno).isRealRooted),
           (by
             rr_lw_refine_active_nonneg_seq
-              (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
-                $hbase $hpos $hnonneg ?_
-                (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno)))
+              ((RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+                $hbase $hpos $hnonneg ?_ (rr_lw_recurrence_seq $hrec)
+                $hdeg_succ $hno).isRealRooted)))
   | `(tactic|
       rr_lw_current_one_add_X_sequence using
         base := $hbase:term,
@@ -8323,8 +10905,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_current_one_add_X_positive_t_lag_sequence
-          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).prec_sequence)
   | `(tactic|
       rr_lw_current_one_add_X_sequence_auto using
         base := $hbase:term,
@@ -8334,9 +10917,10 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_current_one_add_X_positive_t_lag_sequence
-          $hbase $hpos $hnonneg
-          rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+        exact
+          (RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
+            $hno).prec_sequence)
   | `(tactic|
       rr_lw_current_one_add_X_sequence_realrooted using
         base := $hbase:term,
@@ -8348,8 +10932,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno).isRealRooted))
   | `(tactic|
       rr_lw_current_one_add_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -8360,9 +10944,898 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg
-            rr_lw_active_nonneg $hrec $hdeg_succ $hno))
+          ((RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
+            $hno).isRealRooted))
+
+macro_rules
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff := $c:term,
+        coeff_nonneg := $hc:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+          (c := $c) $hbase $hpos $hc $hden $hcoeff $hraw $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        coeff_nonneg := $hc:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+            (q := $q) (b := $b) (c := $c) (d := $d)
+            $hbase $hpos $hc $hden $hcoeff
+            (rr_lw_raw_recurrence_seq $hraw)
+            $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff := $c:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_square_state_den_coeff_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          coeff := $c,
+          coeff_eq := rr_lw_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff := $c:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_square_state_den_coeff_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          coeff := $c,
+          den_nonzero := rr_lw_active_den_all_term,
+          coeff_eq := $hcoeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff := $c:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+          (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
+          $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_square_state_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          square_factor := $q,
+          coeff := $c,
+          raw_coeff := $b,
+          den := $d,
+          coeff_eq := rr_lw_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_square_state_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          square_factor := $q,
+          coeff := $c,
+          raw_coeff := $b,
+          den := $d,
+          den_nonzero := rr_lw_active_den_all_term,
+          coeff_eq := $hcoeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_square_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_negative_square_lag_den_coeff
+            (q := $q) (b := $b) (c := $c) (d := $d)
+            $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
+            (rr_lw_raw_recurrence_seq $hraw)
+            $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_negative_quadratic_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading_nonneg := $ha:term,
+        constant_nonneg := $hc:term,
+        discriminant := $hdisc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+          $hbase $hpos $ha $hc $hdisc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_quadratic_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag
+          $hbase $hpos rr_lw_negative_quadratic_side
+          rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+          $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_quadratic_state_den_coeff_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        leading_nonneg := $ha:term,
+        constant_nonneg := $hc:term,
+        discriminant := $hdisc:term,
+        den_nonzero := $hden:term,
+        leading_coeff_eq := $ha_coeff:term,
+        linear_coeff_eq := $hb_coeff:term,
+        constant_coeff_eq := $hc_coeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            (a := $a) (b := $b) (c := $c) (d := $d)
+            $hbase $hpos $ha $hc $hdisc $hden $ha_coeff $hb_coeff $hc_coeff
+            $hraw $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_negative_quadratic_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_quadratic_state_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          leading := $a,
+          linear := $b,
+          constant := $c,
+          raw_leading := $araw,
+          raw_linear := $braw,
+          raw_constant := $craw,
+          den := $d,
+          den_nonzero := rr_lw_active_den_all_term,
+          leading_coeff_eq := rr_lw_coeff_all_term,
+          linear_coeff_eq := rr_lw_coeff_all_term,
+          constant_coeff_eq := rr_lw_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_quadratic_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        leading_coeff_eq := $ha_coeff:term,
+        linear_coeff_eq := $hb_coeff:term,
+        constant_coeff_eq := $hc_coeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_negative_quadratic_state_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          leading := $a,
+          linear := $b,
+          constant := $c,
+          raw_leading := $araw,
+          raw_linear := $braw,
+          raw_constant := $craw,
+          den := $d,
+          den_nonzero := rr_lw_active_den_all_term,
+          leading_coeff_eq := $ha_coeff,
+          linear_coeff_eq := $hb_coeff,
+          constant_coeff_eq := $hc_coeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_negative_quadratic_state_den_coeff_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        leading_coeff_eq := $ha_coeff:term,
+        linear_coeff_eq := $hb_coeff:term,
+        constant_coeff_eq := $hc_coeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_negative_quadratic_lag_den_coeff
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            (a := $a) (b := $b) (c := $c) (d := $d)
+            $hbase $hpos rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            $hden $ha_coeff $hb_coeff $hc_coeff $hraw $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_X_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_nonneg
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+          $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff := $c:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff := $c:term,
+        root_lower := $hroot_lower:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          coeff := $c,
+          root_lower := $hroot_lower,
+          den_nonzero := rr_lw_active_den_all_term,
+          coeff_eq := rr_lw_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff := $c:term,
+        root_lower := $hroot_lower:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_X_lag_den_coeff_nonneg
+            (c := $c) $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+            $hden $hcoeff $hraw $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower_half := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower_half := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_neg_C_mul_one_add_two_mul_X_lag_nonneg
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+            $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_one_add_X_one_add_two_X_lag_state_interval using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_one_add_X_mul_one_add_two_mul_X_lag
+            $hbase $hpos rr_lw_active_nonneg $hroot_lower $hroot_upper
+            $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_neg_C_mul_affine_inner_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        slope_nonneg := $hb:term,
+        slope_le_const := $hba:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_neg_C_mul_affine_inner_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec
+            $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_X_sq_sub_one_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_sq_sub_one_lag_nonneg
+          $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sq_sub_one_lag_nonneg
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+          $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_positive_affine_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+          $hbase $hpos $hc $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_affine_lag_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_affine_lag
+          $hbase $hpos rr_lw_active_nonneg $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_affine_lag_state_shift_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        coeff_nonneg := $hc:term,
+        shift_nonneg := $hshift_nonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+          $hbase $hpos $hc $hshift_nonneg $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_affine_lag_state_shift_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        shift_nonneg := $hshift_nonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_affine_lag_shift_nonneg
+          $hbase $hpos rr_lw_active_nonneg $hshift_nonneg
+          $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_add_X_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_add_X_lag
+          $hbase $hpos $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_add_X_lag_state_shift_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        shift_nonneg := $hshift_nonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_add_X_lag_shift_nonneg
+          $hbase $hpos $hshift_nonneg $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_X_one_add_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_mul_one_add_X_lag_nonneg
+          $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_X_one_sub_X_one_add_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_X_sub_X_pow_three_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_sub_X_pow_three_lag_nonneg
+          $hbase $hpos $hnonneg $hroot_lower $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_C_mul_X_one_add_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_one_add_X_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_add_X_lag_nonneg
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+          $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_nonneg
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+            $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+          $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_C_mul_X_sub_X_pow_three_lag_nonneg
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hroot_lower
+          $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_positive_X_mul_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hQ:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_X_mul_lag
+          $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_C_mul_X_mul_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        factor_nonneg := $hQ:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+          $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_positive_C_mul_X_mul_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hQ:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_positive_C_mul_X_mul_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hQ $hrec
+          $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_X_one_sub_X_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_mul_one_sub_X_lag
+          $hbase $hpos $hnonneg $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_X_C_sub_C_mul_X_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        left_coeff_nonneg := $ha:term,
+        right_coeff_nonneg := $hb:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+          $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_X_C_sub_C_mul_X_lag_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_X_mul_C_sub_C_mul_X_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg rr_lw_active_nonneg
+          $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_C_sub_C_mul_X_lag_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        scalar_nonneg := $hc:term,
+        left_coeff_nonneg := $ha:term,
+        right_coeff_nonneg := $hb:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_C_mul_X_C_sub_C_mul_X_lag_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.LwNonposLagSequenceState.of_C_mul_X_mul_C_sub_C_mul_X_lag
+            $hbase $hpos $hnonneg rr_lw_active_nonneg rr_lw_active_nonneg
+            rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+
+macro_rules
+  | `(tactic|
+      rr_lw_current_CX_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_current_CX_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_CX_positive_t_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_current_X_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_current_X_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_X_positive_t_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_current_one_add_X_state using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_current_one_add_X_state_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.LwNonposLagSequenceState.of_current_one_add_X_positive_t_lag
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ $hno)
 
 end Tactic
 end RealRooted

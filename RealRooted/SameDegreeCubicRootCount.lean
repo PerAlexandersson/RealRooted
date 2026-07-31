@@ -958,8 +958,8 @@ theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  have hf : f.Splits := hpc.left_splits_of_sameDegree hf_pos hg_pos hdeg
+  have hg : g.Splits := hpc.right_splits_of_sameDegree hf_pos hg_pos hdeg
   have hgdeg : g.natDegree = 3 := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_normalized
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc
@@ -1002,8 +1002,8 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hsame : g.natDegree = f.natDegree := by simp_all
-  have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hsame).2
-  have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hsame).2
+  have hf : f.Splits := hpc.left_splits_of_sameDegree hf_pos hg_pos hsame
+  have hg : g.Splits := hpc.right_splits_of_sameDegree hf_pos hg_pos hsame
   exact
     sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg
       hbelow habove hdeg.1 hdeg.2 hf hg hf_pos hg_pos hpc x
@@ -1061,8 +1061,8 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_via_notSplits
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hsame : g.natDegree = f.natDegree := by simp_all
-  have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hsame).2
-  have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hsame).2
+  have hf : f.Splits := hpc.left_splits_of_sameDegree hf_pos hg_pos hsame
+  have hg : g.Splits := hpc.right_splits_of_sameDegree hf_pos hg_pos hsame
   exact
     sameDegree_cubic_rootCount_le_one_of_notSplits
       (cubicDiscrMonicPencilNegTwoBelow_iff_notSplits.mp hbelow)
@@ -1084,8 +1084,8 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
           (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  have hf : f.Splits := hpc.left_splits_of_sameDegree hf_pos hg_pos hdeg
+  have hg : g.Splits := hpc.right_splits_of_sameDegree hf_pos hg_pos hdeg
   have hgdeg : g.natDegree = 3 := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_notSplits
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc

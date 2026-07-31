@@ -21,8 +21,8 @@ theorem isRealRooted_of_linear_tail_sequence
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u + C v * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits :=
-  isRealRooted_of_prec_chain_from_step <| fun n =>
-    (linear_tail_sequence_interlaces hc ha hb hu hv h0 h1 hstep n).toPrec
+  isRealRooted_of_interlaces_chain <|
+    linear_tail_sequence_interlaces hc ha hb hu hv h0 h1 hstep
 
 /-- Real-rootedness consequence of the fixed positive monomial-tail sequence
 interlacing wrapper. -/
@@ -32,8 +32,8 @@ theorem isRealRooted_of_monomial_tail_sequence
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits :=
-  isRealRooted_of_prec_chain_from_step <| fun n =>
-    (monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep n).toPrec
+  isRealRooted_of_interlaces_chain <|
+    monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep
 
 namespace Tactic
 
@@ -120,6 +120,144 @@ syntax (name := rr_interlaces_X_sub_C_pow_mul_linear_pow_named)
     "slope" ":=" term ","
     "slope_pos" ":=" term ","
     "index" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_sequence_interlaces_named)
+  "rr_linear_power_sequence_interlaces" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_sequence_realrooted_named)
+  "rr_linear_power_sequence_realrooted" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_scalar_sequence_interlaces_named)
+  "rr_linear_power_scalar_sequence_interlaces" " using "
+    "closed" ":=" term ","
+    "scalar_ne_zero" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_scalar_sequence_realrooted_named)
+  "rr_linear_power_scalar_sequence_realrooted" " using "
+    "closed" ":=" term ","
+    "scalar_ne_zero" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_exists_scalar_sequence_interlaces_named)
+  "rr_linear_power_exists_scalar_sequence_interlaces" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_power_exists_scalar_sequence_realrooted_named)
+  "rr_linear_power_exists_scalar_sequence_realrooted" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_fixed_linear_power_sequence_interlaces_named)
+  "rr_fixed_linear_power_sequence_interlaces" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_fixed_linear_power_sequence_realrooted_named)
+  "rr_fixed_linear_power_sequence_realrooted" " using "
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_common_factor_linear_power_sequence_interlaces_named)
+  "rr_common_factor_linear_power_sequence_interlaces" " using "
+    "fixed_realrooted" ":=" term ","
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_common_factor_linear_power_sequence_realrooted_named)
+  "rr_common_factor_linear_power_sequence_realrooted" " using "
+    "fixed_realrooted" ":=" term ","
+    "closed" ":=" term ","
+    "exponent_step" ":=" term ","
+    "slope_pos" ":=" term :
+  tactic
+
+syntax (name := rr_linear_tail_sequence_interlaces_compat_named)
+  "rr_linear_tail_sequence_interlaces" " using "
+    "constant" ":=" term ","
+    "linear_const" ":=" term ","
+    "linear_slope" ":=" term ","
+    "tail_const" ":=" term ","
+    "tail_slope" ":=" term ","
+    "constant_pos" ":=" term ","
+    "linear_const_nonneg" ":=" term ","
+    "linear_slope_pos" ":=" term ","
+    "tail_const_pos" ":=" term ","
+    "tail_slope_pos" ":=" term ","
+    "base0" ":=" term ","
+    "base1" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_linear_tail_sequence_realrooted_compat_named)
+  "rr_linear_tail_sequence_realrooted" " using "
+    "constant" ":=" term ","
+    "linear_const" ":=" term ","
+    "linear_slope" ":=" term ","
+    "tail_const" ":=" term ","
+    "tail_slope" ":=" term ","
+    "constant_pos" ":=" term ","
+    "linear_const_nonneg" ":=" term ","
+    "linear_slope_pos" ":=" term ","
+    "tail_const_pos" ":=" term ","
+    "tail_slope_pos" ":=" term ","
+    "base0" ":=" term ","
+    "base1" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_monomial_tail_sequence_interlaces_compat_named)
+  "rr_monomial_tail_sequence_interlaces" " using "
+    "constant" ":=" term ","
+    "linear_const" ":=" term ","
+    "linear_slope" ":=" term ","
+    "tail_slope" ":=" term ","
+    "constant_pos" ":=" term ","
+    "linear_const_nonneg" ":=" term ","
+    "linear_slope_pos" ":=" term ","
+    "tail_slope_pos" ":=" term ","
+    "base0" ":=" term ","
+    "base1" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_monomial_tail_sequence_realrooted_compat_named)
+  "rr_monomial_tail_sequence_realrooted" " using "
+    "constant" ":=" term ","
+    "linear_const" ":=" term ","
+    "linear_slope" ":=" term ","
+    "tail_slope" ":=" term ","
+    "constant_pos" ":=" term ","
+    "linear_const_nonneg" ":=" term ","
+    "linear_slope_pos" ":=" term ","
+    "tail_slope_pos" ":=" term ","
+    "base0" ":=" term ","
+    "base1" ":=" term ","
+    "step" ":=" term :
   tactic
 
 macro_rules
@@ -210,6 +348,158 @@ macro_rules
       `(tactic|
         exact RealRooted.interlaces_X_sub_C_pow_mul_linear_pow
           $r $m $a $b $hb $n)
+  | `(tactic|
+      rr_linear_power_sequence_interlaces using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerSequence_interlaces $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_linear_power_sequence_realrooted using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerSequence_realRooted $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_linear_power_scalar_sequence_interlaces using
+        closed := $hclosed:term,
+        scalar_ne_zero := $hscalar:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerScalarSequence_interlaces
+          $hclosed $hscalar $hexponent $hb)
+  | `(tactic|
+      rr_linear_power_scalar_sequence_realrooted using
+        closed := $hclosed:term,
+        scalar_ne_zero := $hscalar:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerScalarSequence_realRooted
+          $hclosed $hscalar $hexponent $hb)
+  | `(tactic|
+      rr_linear_power_exists_scalar_sequence_interlaces using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerExistsScalarSequence_interlaces
+          $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_linear_power_exists_scalar_sequence_realrooted using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.linearPowerExistsScalarSequence_realRooted
+          $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_fixed_linear_power_sequence_interlaces using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.fixedLinearPowerSequence_interlaces $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_fixed_linear_power_sequence_realrooted using
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.fixedLinearPowerSequence_realRooted $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_common_factor_linear_power_sequence_interlaces using
+        fixed_realrooted := $hfixed:term,
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.commonFactorLinearPowerSequence_interlaces
+          $hfixed $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_common_factor_linear_power_sequence_realrooted using
+        fixed_realrooted := $hfixed:term,
+        closed := $hclosed:term,
+        exponent_step := $hexponent:term,
+        slope_pos := $hb:term) =>
+      `(tactic|
+        apply RealRooted.commonFactorLinearPowerSequence_realRooted
+          $hfixed $hclosed $hexponent $hb)
+  | `(tactic|
+      rr_linear_tail_sequence_interlaces using
+        constant := $c:term,
+        linear_const := $a:term,
+        linear_slope := $b:term,
+        tail_const := $u:term,
+        tail_slope := $v:term,
+        constant_pos := $hc:term,
+        linear_const_nonneg := $ha:term,
+        linear_slope_pos := $hb:term,
+        tail_const_pos := $hu:term,
+        tail_slope_pos := $hv:term,
+        base0 := $h0:term,
+        base1 := $h1:term,
+        step := $hstep:term) =>
+      `(tactic|
+        apply RealRooted.linear_tail_sequence_interlaces
+          (c := $c) (a := $a) (b := $b) (u := $u) (v := $v)
+          $hc $ha $hb $hu $hv $h0 $h1 $hstep)
+  | `(tactic|
+      rr_linear_tail_sequence_realrooted using
+        constant := $c:term,
+        linear_const := $a:term,
+        linear_slope := $b:term,
+        tail_const := $u:term,
+        tail_slope := $v:term,
+        constant_pos := $hc:term,
+        linear_const_nonneg := $ha:term,
+        linear_slope_pos := $hb:term,
+        tail_const_pos := $hu:term,
+        tail_slope_pos := $hv:term,
+        base0 := $h0:term,
+        base1 := $h1:term,
+        step := $hstep:term) =>
+      `(tactic|
+        apply RealRooted.isRealRooted_of_linear_tail_sequence
+          (c := $c) (a := $a) (b := $b) (u := $u) (v := $v)
+          $hc $ha $hb $hu $hv $h0 $h1 $hstep)
+  | `(tactic|
+      rr_monomial_tail_sequence_interlaces using
+        constant := $c:term,
+        linear_const := $a:term,
+        linear_slope := $b:term,
+        tail_slope := $u:term,
+        constant_pos := $hc:term,
+        linear_const_nonneg := $ha:term,
+        linear_slope_pos := $hb:term,
+        tail_slope_pos := $hu:term,
+        base0 := $h0:term,
+        base1 := $h1:term,
+        step := $hstep:term) =>
+      `(tactic|
+        apply RealRooted.monomial_tail_sequence_interlaces
+          (c := $c) (a := $a) (b := $b) (u := $u)
+          $hc $ha $hb $hu $h0 $h1 $hstep)
+  | `(tactic|
+      rr_monomial_tail_sequence_realrooted using
+        constant := $c:term,
+        linear_const := $a:term,
+        linear_slope := $b:term,
+        tail_slope := $u:term,
+        constant_pos := $hc:term,
+        linear_const_nonneg := $ha:term,
+        linear_slope_pos := $hb:term,
+        tail_slope_pos := $hu:term,
+        base0 := $h0:term,
+        base1 := $h1:term,
+        step := $hstep:term) =>
+      `(tactic|
+        apply RealRooted.isRealRooted_of_monomial_tail_sequence
+          (c := $c) (a := $a) (b := $b) (u := $u)
+          $hc $ha $hb $hu $h0 $h1 $hstep)
 
 end Tactic
 end RealRooted

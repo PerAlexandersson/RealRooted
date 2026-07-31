@@ -1,6 +1,8 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.Real.Cardinality
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+import Mathlib.Data.Set.Countable
 
 /-!
 # Karlin root and sine vectors
@@ -26,6 +28,154 @@ def aswKarlinSineVector (θ : ℝ) (degree order blocks : ℕ) :
     Fin (blocks * (degree + order - 1) + 1) → ℝ :=
   fun j => Real.sin ((j : ℕ) * θ)
 
+/-- The imaginary parts of a phase-rotated power vector, truncated to the
+columns of Karlin's repeated matrix. -/
+def aswKarlinPhasedRootVector (z : ℂ) (phase : ℝ) (degree order blocks : ℕ) :
+    Fin (blocks * (degree + order - 1) + 1) → ℝ :=
+  fun j => (Complex.exp (phase * Complex.I) * z ^ (j : ℕ)).im
+
+/-- The sampled sine vector corresponding to a phase and an argument. -/
+def aswKarlinPhasedSineVector (phase θ : ℝ) (degree order blocks : ℕ) :
+    Fin (blocks * (degree + order - 1) + 1) → ℝ :=
+  fun j => Real.sin (phase + (j : ℕ) * θ)
+
+/-- A phase avoids all zero coordinates in Karlin's finite sampled sine
+vector. -/
+def AswKarlinPhaseAvoidsZeros
+    (phase θ : ℝ) (degree order blocks : ℕ) : Prop :=
+  ∀ j : Fin (blocks * (degree + order - 1) + 1),
+    aswKarlinPhasedSineVector phase θ degree order blocks j ≠ 0
+
+/-- For a fixed shift, the phases where the corresponding sampled sine
+coordinate vanishes form a countable set. -/
+private lemma aswKarlin_sine_zero_phase_set_countable (c : ℝ) :
+    Set.Countable {phase : ℝ | Real.sin (phase + c) = 0} := by
+  let f : ℤ → ℝ := fun n => (n : ℝ) * Real.pi - c
+  refine (Set.countable_range f).mono ?_
+  intro phase hphase
+  rcases Real.sin_eq_zero_iff.mp hphase with ⟨n, hn⟩
+  refine ⟨n, ?_⟩
+  dsimp [f]
+  linarith
+
+/-- There is always a phase avoiding all zero coordinates in Karlin's finite
+sampled sine vector. -/
+theorem exists_phase_avoidsZeros_aswKarlinPhasedSineVector
+    (θ : ℝ) (degree order blocks : ℕ) :
+    ∃ phase : ℝ, AswKarlinPhaseAvoidsZeros phase θ degree order blocks := by
+  classical
+  let bad : Set ℝ :=
+    ⋃ j : Fin (blocks * (degree + order - 1) + 1),
+      {phase : ℝ | Real.sin (phase + (j : ℕ) * θ) = 0}
+  have hbad_countable : bad.Countable := by
+    dsimp [bad]
+    exact Set.countable_iUnion fun j =>
+      aswKarlin_sine_zero_phase_set_countable ((j : ℕ) * θ)
+  by_contra hnone
+  have huniv_subset_bad : (Set.univ : Set ℝ) ⊆ bad := by
+    intro phase _
+    have hnot :
+        ¬ AswKarlinPhaseAvoidsZeros phase θ degree order blocks := by
+      intro havoid
+      exact hnone ⟨phase, havoid⟩
+    rw [AswKarlinPhaseAvoidsZeros] at hnot
+    push Not at hnot
+    rcases hnot with ⟨j, hj⟩
+    exact Set.mem_iUnion.2 ⟨j, by
+      simpa [aswKarlinPhasedSineVector] using hj⟩
+  have huniv_countable : (Set.univ : Set ℝ).Countable :=
+    hbad_countable.mono huniv_subset_bad
+  exact Set.not_countable_univ huniv_countable
+
+/-- There is always an arbitrarily small positive phase avoiding all zero
+coordinates in Karlin's finite sampled sine vector. -/
+theorem exists_phase_mem_Ioo_avoidsZeros_aswKarlinPhasedSineVector
+    {ε θ : ℝ} (hε : 0 < ε) (degree order blocks : ℕ) :
+    ∃ phase : ℝ,
+      phase ∈ Set.Ioo 0 ε ∧
+        AswKarlinPhaseAvoidsZeros phase θ degree order blocks := by
+  classical
+  let bad : Set ℝ :=
+    ⋃ j : Fin (blocks * (degree + order - 1) + 1),
+      {phase : ℝ | Real.sin (phase + (j : ℕ) * θ) = 0}
+  have hbad_countable : bad.Countable := by
+    dsimp [bad]
+    exact Set.countable_iUnion fun j =>
+      aswKarlin_sine_zero_phase_set_countable ((j : ℕ) * θ)
+  by_contra hnone
+  have hIoo_subset_bad : Set.Ioo (0 : ℝ) ε ⊆ bad := by
+    intro phase hphase_mem
+    have hnot :
+        ¬ AswKarlinPhaseAvoidsZeros phase θ degree order blocks := by
+      intro havoid
+      exact hnone ⟨phase, hphase_mem, havoid⟩
+    rw [AswKarlinPhaseAvoidsZeros] at hnot
+    push Not at hnot
+    rcases hnot with ⟨j, hj⟩
+    exact Set.mem_iUnion.2 ⟨j, by
+      simpa [aswKarlinPhasedSineVector] using hj⟩
+  have hIoo_countable : (Set.Ioo (0 : ℝ) ε).Countable :=
+    hbad_countable.mono hIoo_subset_bad
+  have hIoo_not_countable : ¬ (Set.Ioo (0 : ℝ) ε).Countable := by
+    rw [← Cardinal.le_aleph0_iff_set_countable,
+      Cardinal.mk_Ioo_real hε, not_le]
+    exact Cardinal.aleph0_lt_continuum
+  exact hIoo_not_countable hIoo_countable
+
+/-- If a last unphased sampled angle is strictly below an integral multiple
+of `π`, there is a positive zero-avoiding phase preserving that strict
+endpoint bound. -/
+theorem exists_phase_avoidsZeros_with_last_lt_nat_mul_pi
+    {θ : ℝ} {N orderBound : ℕ}
+    (hmargin : (N : ℝ) * θ < (orderBound : ℝ) * Real.pi)
+    (degree order blocks : ℕ) :
+    ∃ phase : ℝ,
+      AswKarlinPhaseAvoidsZeros phase θ degree order blocks ∧
+        0 < phase ∧
+          phase + (N : ℝ) * θ < (orderBound : ℝ) * Real.pi := by
+  let ε := (orderBound : ℝ) * Real.pi - (N : ℝ) * θ
+  have hε : 0 < ε := sub_pos.mpr hmargin
+  obtain ⟨phase, hphase_mem, havoid⟩ :=
+    exists_phase_mem_Ioo_avoidsZeros_aswKarlinPhasedSineVector
+      (ε := ε) (θ := θ) hε degree order blocks
+  refine ⟨phase, havoid, hphase_mem.1, ?_⟩
+  have hphase_lt : phase < ε := hphase_mem.2
+  dsimp [ε] at hphase_lt
+  linarith
+
+/-- ASW-indexed form of
+`exists_phase_avoidsZeros_with_last_lt_nat_mul_pi`, using the final sampled
+index and target variation count from Karlin's repeated matrix. -/
+theorem exists_phase_avoidsZeros_aswKarlin_with_last_lt_order_pi
+    {θ : ℝ} {degree order blocks : ℕ}
+    (hmargin :
+      ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ <
+        ((blocks * order : ℕ) : ℝ) * Real.pi) :
+    ∃ phase : ℝ,
+      AswKarlinPhaseAvoidsZeros phase θ degree order blocks ∧
+        0 < phase ∧
+          phase + ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ <
+            ((blocks * order : ℕ) : ℝ) * Real.pi := by
+  exact
+    exists_phase_avoidsZeros_with_last_lt_nat_mul_pi
+      (N := blocks * (degree + order - 1))
+      (orderBound := blocks * order) hmargin degree order blocks
+
+@[simp]
+lemma aswKarlinPhasedRootVector_zero_phase (z : ℂ) (degree order blocks : ℕ) :
+    aswKarlinPhasedRootVector z 0 degree order blocks =
+      aswKarlinRootVector z degree order blocks := by
+  funext j
+  simp [aswKarlinPhasedRootVector, aswKarlinRootVector]
+
+@[simp]
+lemma aswKarlinPhasedSineVector_zero_phase
+    (θ : ℝ) (degree order blocks : ℕ) :
+    aswKarlinPhasedSineVector 0 θ degree order blocks =
+      aswKarlinSineVector θ degree order blocks := by
+  funext j
+  simp [aswKarlinPhasedSineVector, aswKarlinSineVector]
+
 @[simp]
 lemma aswKarlinSineVector_zero_apply (degree order blocks : ℕ)
     (j : Fin (blocks * (degree + order - 1) + 1)) :
@@ -46,6 +196,24 @@ lemma im_pow_eq_norm_pow_mul_sin_arg (z : ℂ) (n : ℕ) :
     Complex.exp_im]
   simp
 
+lemma im_phase_mul_pow_eq_norm_pow_mul_sin_add_arg
+    (z : ℂ) (phase : ℝ) (n : ℕ) :
+    (Complex.exp (phase * Complex.I) * z ^ n).im =
+      ‖z‖ ^ n * Real.sin (phase + n * z.arg) := by
+  conv_lhs => rw [← Complex.norm_mul_exp_arg_mul_I z]
+  rw [mul_pow, ← Complex.exp_nat_mul, ← Complex.ofReal_pow]
+  rw [← mul_assoc]
+  rw [mul_comm (Complex.exp (↑phase * Complex.I)) (↑(‖z‖ ^ n) : ℂ)]
+  rw [mul_assoc, ← Complex.exp_add]
+  rw [show ↑phase * Complex.I + ↑n * (↑z.arg * Complex.I) =
+      ↑(phase + n * z.arg) * Complex.I by
+    norm_num
+    ring]
+  rw [Complex.mul_im]
+  simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
+    Complex.exp_im]
+  simp
+
 /-- A nonzero complex number's root vector and sampled sine vector have the
 same coordinate signs. -/
 lemma signVariations_aswKarlinRootVector_eq_sine {z : ℂ} (hz : z ≠ 0)
@@ -58,6 +226,39 @@ lemma signVariations_aswKarlinRootVector_eq_sine {z : ℂ} (hz : z ≠ 0)
     im_pow_eq_norm_pow_mul_sin_arg, sign_mul]
   have hnorm : 0 < ‖z‖ ^ (j : ℕ) := pow_pos (norm_pos_iff.mpr hz) _
   simp [hnorm]
+
+/-- A nonzero complex number's phase-rotated root vector and phased sampled
+sine vector have the same coordinate signs. -/
+lemma signVariations_aswKarlinPhasedRootVector_eq_phasedSine
+    {z : ℂ} (hz : z ≠ 0) (phase : ℝ) (degree order blocks : ℕ) :
+    Fin.signVariations
+        (aswKarlinPhasedRootVector z phase degree order blocks) =
+      Fin.signVariations
+        (aswKarlinPhasedSineVector phase z.arg degree order blocks) := by
+  apply Fin.signVariations_congr_sign
+  intro j
+  rw [aswKarlinPhasedRootVector, aswKarlinPhasedSineVector,
+    im_phase_mul_pow_eq_norm_pow_mul_sin_add_arg, sign_mul]
+  have hnorm : 0 < ‖z‖ ^ (j : ℕ) := pow_pos (norm_pos_iff.mpr hz) _
+  simp [hnorm]
+
+/-- If the sampled sine vector has no zero coordinates, then the corresponding
+phase-rotated root vector has no zero coordinates. -/
+theorem aswKarlinPhasedRootVector_zeroFree_of_phaseAvoids
+    {z : ℂ} {phase : ℝ} {degree order blocks : ℕ} (hz : z ≠ 0)
+    (hphase : AswKarlinPhaseAvoidsZeros phase z.arg degree order blocks) :
+    ∀ j : Fin (blocks * (degree + order - 1) + 1),
+      aswKarlinPhasedRootVector z phase degree order blocks j ≠ 0 := by
+  intro j hzero
+  have hcoord :
+      ‖z‖ ^ (j : ℕ) * Real.sin (phase + (j : ℕ) * z.arg) = 0 := by
+    simpa [aswKarlinPhasedRootVector,
+      im_phase_mul_pow_eq_norm_pow_mul_sin_add_arg z phase (j : ℕ)] using hzero
+  have hnorm : ‖z‖ ^ (j : ℕ) ≠ 0 :=
+    (pow_pos (norm_pos_iff.mpr hz) (j : ℕ)).ne'
+  have hsine : Real.sin (phase + (j : ℕ) * z.arg) = 0 :=
+    (mul_eq_zero.mp hcoord).resolve_left hnorm
+  exact hphase j (by simpa [aswKarlinPhasedSineVector] using hsine)
 
 lemma signVariations_aswKarlinSineVector_neg (θ : ℝ) (degree order blocks : ℕ) :
     Fin.signVariations (aswKarlinSineVector (-θ) degree order blocks) =

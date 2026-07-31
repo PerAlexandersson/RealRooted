@@ -302,8 +302,11 @@ theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : 
     (hpf : IsPolyaFreqSeq p.coeff)
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (order : ℕ) :
     aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hdegree hconst hpf hz order
+  by
+    by_cases horder : order = 0
+    · simp [aswSectorThreshold, horder]
+    · exact aswKarlinSectorThreshold_le_abs_arg hz hdegree hconst hpf
+        (horder := Nat.pos_of_ne_zero horder)
 
 /-! ### Reduction to positive constant coefficient -/
 
