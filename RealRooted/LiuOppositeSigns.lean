@@ -780,6 +780,23 @@ theorem natDegree_abs_sub_le_one {p q : ℝ[X]}
     |((p.natDegree : ℤ) - (q.natDegree : ℤ))| ≤ 1 :=
   h.count.natDegree_abs_sub_le_one h.left_splits h.right_splits
 
+/-- The x-subtraction pencil has degree at most one more than the left endpoint
+polynomial under Liu's root-count-compatible positive split hypotheses. -/
+theorem natDegree_X_mul_sub_C_mul_le_left_natDegree_add_one {p q : ℝ[X]}
+    (h : PositiveSplitRootCountPair p q) (μ : ℝ) :
+    (X * p - C μ * q).natDegree ≤ p.natDegree + 1 := by
+  have hleft : (X * p).natDegree ≤ p.natDegree + 1 := by
+    rw [Polynomial.natDegree_X_mul h.left_pos.ne_zero]
+  have hq_le : q.natDegree ≤ p.natDegree + 1 := by
+    have hgap := h.natDegree_abs_sub_le_one
+    rw [abs_le] at hgap
+    have hq_le_int : (q.natDegree : ℤ) ≤ (p.natDegree : ℤ) + 1 := by
+      linarith
+    exact_mod_cast hq_le_int
+  have hright : (C μ * q).natDegree ≤ p.natDegree + 1 :=
+    (Polynomial.natDegree_C_mul_le μ q).trans hq_le
+  simpa using Polynomial.natDegree_sub_le_of_le hleft hright
+
 theorem rootCountAbove_bounds_of_nonRoot {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q) {x : ℝ}
     (hpx : ¬ p.IsRoot x) (hqx : ¬ q.IsRoot x) :

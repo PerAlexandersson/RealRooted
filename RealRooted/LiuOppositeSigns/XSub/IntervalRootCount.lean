@@ -629,6 +629,30 @@ theorem
   exact Polynomial.splits_of_le_roots_of_natDegree_le_card
     (s := (X * p - C μ * q).roots) le_rfl (hdeg.trans hcount)
 
+/-- Count-to-splitting endpoint with the standard Liu x-subtraction degree bound.
+It remains to show that the tail-gap-tail count reaches `p.natDegree + 1`. -/
+theorem
+    PositiveSplitRootCountPair.xSub_splits_of_roots_sort_of_tail_counts_of_left_natDegree
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
+    (hlower_one : 1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card)
+    (hupper_one :
+      1 ≤ ((X * p - C μ * q).roots.filter
+        (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card)
+    (hcount_degree :
+      p.natDegree + 1 ≤
+        1 +
+          (((a :: b :: xs).zip (b :: xs)).map
+            (fun ab => min 2
+              (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        1) :
+    (X * p - C μ * q).Splits :=
+  hpair.xSub_splits_of_roots_sort_of_tail_counts_of_natDegree_le
+    hp_nonneg hno hrs hμ hlower_one hupper_one
+    ((hpair.natDegree_X_mul_sub_C_mul_le_left_natDegree_add_one μ).trans hcount_degree)
+
 /-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
 the first left root and the nonnegative-sign upper-tail witness at the last
 left root, then the full root multiset contains one lower-tail root, the
