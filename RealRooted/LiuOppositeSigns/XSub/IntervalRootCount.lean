@@ -601,6 +601,34 @@ theorem PositiveSplitRootCountPair.one_sum_one_le_card_xSub_roots_of_roots_sort_
       (by simpa [upperTail, last, P] using hupper_one)
   exact le_trans hmono (by simpa [lowerTail, upperTail, gapSum, last, P] using hpack)
 
+/-- The full tail-gap-tail count gives splitting once it reaches the natural
+degree of the x-subtraction pencil.  This is the count-to-splitting endpoint for
+the adjacent-gap route; the remaining arithmetic work is to supply `hdeg` from
+the appropriate Liu branch hypotheses. -/
+theorem
+    PositiveSplitRootCountPair.xSub_splits_of_roots_sort_of_tail_counts_of_natDegree_le
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
+    (hlower_one : 1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card)
+    (hupper_one :
+      1 ≤ ((X * p - C μ * q).roots.filter
+        (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card)
+    (hdeg :
+      (X * p - C μ * q).natDegree ≤
+        1 +
+          (((a :: b :: xs).zip (b :: xs)).map
+            (fun ab => min 2
+              (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        1) :
+    (X * p - C μ * q).Splits := by
+  have hcount :=
+    hpair.one_sum_one_le_card_xSub_roots_of_roots_sort_of_tail_counts
+      hp_nonneg hno hrs hμ hlower_one hupper_one
+  exact Polynomial.splits_of_le_roots_of_natDegree_le_card
+    (s := (X * p - C μ * q).roots) le_rfl (hdeg.trans hcount)
+
 /-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
 the first left root and the nonnegative-sign upper-tail witness at the last
 left root, then the full root multiset contains one lower-tail root, the
