@@ -551,6 +551,46 @@ theorem two_le_card_roots_filter_Ioo_of_even_of_isRoot
     Multiset.card_pos_iff_exists_mem.mpr ⟨y, hmem⟩
   exact Nat.one_lt_of_ne_zero_of_even (Nat.ne_of_gt hcard_pos) heven
 
+/-- If a nonzero polynomial has at least two roots in an open interval,
+counted with multiplicity, then a two-element multiset of roots lies in that
+filtered root multiset.  The two values are allowed to coincide, which covers
+repeated roots. -/
+theorem exists_roots_pair_le_roots_filter_Ioo_of_two_le_card_roots_filter_Ioo
+    {p : ℝ[X]} (hp_ne : p ≠ 0) {a b : ℝ}
+    (hcard : 2 ≤ (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    ∃ u v : ℝ,
+      a < u ∧ u < b ∧ a < v ∧ v < b ∧ p.IsRoot u ∧ p.IsRoot v ∧
+        ({u, v} : Multiset ℝ) ≤ p.roots.filter (fun r => a < r ∧ r < b) := by
+  let s := p.roots.filter (fun r => a < r ∧ r < b)
+  change 2 ≤ s.card at hcard
+  have hs_pos : 0 < s.card := by
+    linarith
+  obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp hs_pos
+  have herase_pos : 0 < (s.erase u).card := by
+    rw [Multiset.card_erase_of_mem hu]
+    exact Nat.sub_pos_of_lt (Nat.lt_of_succ_le hcard)
+  obtain ⟨v, hv⟩ := Multiset.card_pos_iff_exists_mem.mp herase_pos
+  have hv_mem : v ∈ s := Multiset.mem_of_mem_erase hv
+  have hpair_le : ({u, v} : Multiset ℝ) ≤ s := by
+    rw [← Multiset.cons_erase hu]
+    exact Multiset.cons_le_cons u (Multiset.singleton_le.mpr hv)
+  rw [Multiset.mem_filter] at hu hv_mem
+  exact ⟨u, v, hu.2.1, hu.2.2, hv_mem.2.1, hv_mem.2.2,
+    (Polynomial.mem_roots hp_ne).mp hu.1,
+    (Polynomial.mem_roots hp_ne).mp hv_mem.1, hpair_le⟩
+
+/-- Even nonzero root count in an open interval, plus one known interior root,
+produces a two-element multiset inside the interval root multiset. -/
+theorem exists_roots_pair_le_roots_filter_Ioo_of_even_card_roots_filter_Ioo_of_isRoot
+    {p : ℝ[X]} (hp_ne : p ≠ 0) {a b y : ℝ}
+    (hy : p.IsRoot y) (hay : a < y) (hyb : y < b)
+    (heven : Even (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    ∃ u v : ℝ,
+      a < u ∧ u < b ∧ a < v ∧ v < b ∧ p.IsRoot u ∧ p.IsRoot v ∧
+        ({u, v} : Multiset ℝ) ≤ p.roots.filter (fun r => a < r ∧ r < b) :=
+  exists_roots_pair_le_roots_filter_Ioo_of_two_le_card_roots_filter_Ioo hp_ne
+    (two_le_card_roots_filter_Ioo_of_even_of_isRoot hp_ne hy hay hyb heven)
+
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
 member of their closed segment is nonzero at `x`. -/
 theorem closedSegment_eval_ne_zero_of_eval_mul_pos

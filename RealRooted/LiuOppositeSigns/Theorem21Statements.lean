@@ -1,5 +1,6 @@
 import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.RootContinuity
 import RealRooted.RootCountLocalConstancy
@@ -78,6 +79,20 @@ theorem NoCommonRoots.right_not_isRoot_Icc_of_left_roots
   · exact (h b hfb) (by simpa [hzb] using hgz)
   have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
   exact hg_no z haz hzb_lt hgz
+
+/-- If two roots of `p` bracket an odd number of roots of a nonzero splitting
+polynomial `q`, and `p` and `q` have no common roots, then the x-subtraction
+pencil has an interior root in the bracket. -/
+theorem NoCommonRoots.exists_isRoot_between_X_mul_sub_C_mul_of_odd_right_roots
+    {p q : ℝ[X]} (h : NoCommonRoots p q) (hq_ne : q ≠ 0)
+    (hq : q.Splits) {a b μ : ℝ} (hab : a < b)
+    (ha : p.IsRoot a) (hb : p.IsRoot b) (hμ : μ ≠ 0)
+    (hodd : Odd (q.roots.filter (fun x => a < x ∧ x < b)).card) :
+    ∃ c, a < c ∧ c < b ∧ (X * p - C μ * q).IsRoot c :=
+  exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
+    hab ha hb hμ
+    (eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
+      hq_ne hq (le_of_lt hab) hodd (h a ha) (h b hb))
 
 /-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
 common roots, and `g` is root-free in `(a, b)`, then all sufficiently small
