@@ -462,6 +462,40 @@ theorem rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot
     roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr]
   simp [hx, Nat.add_comm]
 
+/-- Deleting a root strictly below the root-count threshold leaves the count
+above the threshold unchanged. -/
+theorem rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt
+    {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r)
+    (hx : r < x) :
+    rootCountAtOrAbove p x =
+      rootCountAtOrAbove (deleteRootFactor p r) x := by
+  rw [rootCountAtOrAbove, rootCountAtOrAbove,
+    roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr]
+  simp [not_le.mpr hx]
+
+/-- Deleting the same common root from two endpoints preserves Liu's
+root-count compatibility condition. -/
+theorem RootCountCompatible.deleteRootFactor_commonRoot
+    {p q : ℝ[X]} (h : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {r : ℝ}
+    (hp : p.IsRoot r) (hq : q.IsRoot r) :
+    RootCountCompatible (deleteRootFactor p r) (deleteRootFactor q r) := by
+  intro x
+  by_cases hx : x ≤ r
+  · have hp_count :=
+      rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hp_ne hp hx
+    have hq_count :=
+      rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hq_ne hq hx
+    have hbound := h x
+    rw [hp_count, hq_count] at hbound
+    simpa [Int.natCast_add] using hbound
+  · have hrx : r < x := lt_of_not_ge hx
+    have hp_count :=
+      rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hp_ne hp hrx
+    have hq_count :=
+      rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hq_ne hq hrx
+    simpa [hp_count, hq_count] using h x
+
 theorem rootCountAbove_deleteRootFactor_add_one_of_isRoot
     {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r)
     (hx : x < r) :
@@ -918,6 +952,28 @@ theorem leadingCoeff_deleteRootFactor_of_isRoot {p : ℝ[X]} {r : ℝ}
     ne_of_gt (Polynomial.degree_pos_of_root hp_ne hr)
   simpa [deleteRootFactor] using
     Polynomial.leadingCoeff_divByMonic_X_sub_C p hdeg_ne r
+
+/-- Deleting a common root from both endpoints preserves the positive-split
+root-count pair structure. -/
+theorem PositiveSplitRootCountPair.deleteRootFactor_commonRoot {p q : ℝ[X]}
+    (h : PositiveSplitRootCountPair p q) {r : ℝ}
+    (hp : p.IsRoot r) (hq : q.IsRoot r) :
+    PositiveSplitRootCountPair (deleteRootFactor p r)
+      (deleteRootFactor q r) := by
+  have hp_delete_pos : HasPosLeadingCoeff (deleteRootFactor p r) := by
+    simpa [HasPosLeadingCoeff,
+      leadingCoeff_deleteRootFactor_of_isRoot h.left_pos.ne_zero hp]
+      using h.left_pos
+  have hq_delete_pos : HasPosLeadingCoeff (deleteRootFactor q r) := by
+    simpa [HasPosLeadingCoeff,
+      leadingCoeff_deleteRootFactor_of_isRoot h.right_pos.ne_zero hq]
+      using h.right_pos
+  exact
+    ⟨hp_delete_pos, hq_delete_pos,
+      deleteRootFactor_splits_of_isRoot h.left_splits hp,
+      deleteRootFactor_splits_of_isRoot h.right_splits hq,
+      h.count.deleteRootFactor_commonRoot
+        h.left_pos.ne_zero h.right_pos.ne_zero hp hq⟩
 
 namespace OppositeLeadingSigns
 
