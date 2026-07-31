@@ -171,6 +171,36 @@ theorem sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_g
         _ = (s.filter (a < ·)).card := by
           simpa using hpart.symm
 
+/-- The closed lower tail at the first list entry, the adjacent open gaps, and
+the closed upper tail at the last list entry fit inside the whole multiset. -/
+theorem card_filter_le_add_sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} {xs : List α}
+    (hchain : (a :: b :: xs).IsChain (· < ·)) :
+    (s.filter (· ≤ a)).card +
+        (((a :: b :: xs).zip (b :: xs)).map
+          (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+      (s.filter (fun r => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ r)).card ≤
+    s.card := by
+  have hupper :=
+    sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_gt
+      (s := s) hchain
+  have hpart := Multiset.card_filter_le_add_card_filter_gt s a
+  calc
+    (s.filter (· ≤ a)).card +
+        (((a :: b :: xs).zip (b :: xs)).map
+          (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+      (s.filter (fun r => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ r)).card
+        = (s.filter (· ≤ a)).card +
+          ((((a :: b :: xs).zip (b :: xs)).map
+            (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum +
+          (s.filter (fun r =>
+            (b :: xs).getLast (List.cons_ne_nil b xs) ≤ r)).card) := by
+      rw [Nat.add_assoc]
+    _ ≤ (s.filter (· ≤ a)).card + (s.filter (a < ·)).card :=
+      Nat.add_le_add_left hupper _
+    _ = s.card := by
+      simpa using hpart
+
 /-- If `(a, b]` contains an element of a multiset, then the strict-upper count
 drops when the threshold moves from `a` to `b`. -/
 theorem card_filter_gt_lt_of_mem_Ioc
