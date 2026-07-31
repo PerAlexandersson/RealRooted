@@ -2,6 +2,7 @@ import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 
 /-!
 # Liu opposite-sign compatibility theorem
