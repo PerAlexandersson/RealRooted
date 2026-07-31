@@ -297,6 +297,49 @@ def Theorem41Claim7Statement
     Prec ((C lam * X + C nu) * G (m - 1) + G m)
       ((C lam * X + C nu) * P (m - 1) + P m)
 
+/-- Leading-coefficient, degree, and root-location side conditions used by
+the univariate conversion step in the proof of Braun--Jal Claim `(7)`.
+
+The bundle intentionally does not include equation `(2)` or Lemma 3.4: those
+are the structural Section 3 inputs, while these are the local facts about the
+three windows `U`, `V`, and `W` consumed by the conversion theorem. -/
+structure Theorem41Claim7SideConditions
+    (P G : ℕ → ℝ[X]) : Prop where
+  w_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff ((C lam * X + C nu) * P m + P (m + 1))
+  wu_lc :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * P m + P (m + 1)).leadingCoeff =
+        ((C lam * X + C nu) * P (m - 1) + P m).leadingCoeff
+  deg_uw :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * P (m - 1) + P m).natDegree + 1 =
+        ((C lam * X + C nu) * P m + P (m + 1)).natDegree
+  w_nonpos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∀ r ∈ (((C lam * X + C nu) * P m + P (m + 1)).roots), r ≤ 0
+  mid_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff
+        (((C lam * X + C nu) * P (m - 1) + P m) +
+          X * ((C lam * X + C nu) * G (m - 1) + G m))
+  v_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff ((C lam * X + C nu) * G (m - 1) + G m)
+  v_nonpos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∀ r ∈ (((C lam * X + C nu) * G (m - 1) + G m).roots), r ≤ 0
+  deg_vu :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * G (m - 1) + G m).natDegree + 1 =
+        ((C lam * X + C nu) * P (m - 1) + P m).natDegree
+  u_bound :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∃ c : ℝ,
+        (∀ s ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), s ≤ c) ∧
+          c < 0
+
 /-- Equation `(2)` rewrites the next modified Narayana combination in the
 form used in Braun--Jal's proof of Claim `(7)`. -/
 theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
@@ -387,6 +430,17 @@ theorem theorem41Claim7_of_section3
       (by simpa [V] using hV_nonpos hm hlam hnu)
       (by simpa [U, V] using hdeg_VU hm hlam hnu)
       (by simpa [U] using hU_bound hm hlam hnu)
+
+/-- Bundled-side-condition form of `theorem41Claim7_of_section3`. -/
+theorem theorem41Claim7_of_section3_sideConditions
+    {P G : ℕ → ℝ[X]}
+    (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (hside : Theorem41Claim7SideConditions P G) :
+    Theorem41Claim7Statement P G :=
+  theorem41Claim7_of_section3 hrec h34
+    hside.w_pos hside.wu_lc hside.deg_uw hside.w_nonpos hside.mid_pos
+    hside.v_pos hside.v_nonpos hside.deg_vu hside.u_bound
 
 /-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
 proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/

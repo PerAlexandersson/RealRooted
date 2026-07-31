@@ -615,5 +615,33 @@ theorem theorem41InductionRoute_of_matrixClaim_of_constant_matches_succ_length
     hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
     hM_const
 
+/-- Section 3 equation `(2)` plus the local Claim `(7)` side conditions give
+the abstract induction route, using the concrete successor-length indexing for
+constant words.
+
+Claim `(7)` itself uses equation `(2)`, Lemma 3.4, and the bundled side
+conditions; Lemma 3.3 remains part of the route interface but is not consumed by
+this Claim `(7)` assembly theorem. -/
+theorem theorem41InductionRoute_of_section3_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (hside : Theorem41Claim7SideConditions P G)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
+    Theorem41InductionRouteStatement M P G :=
+  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
+    (M := M) (P := P) (G := G)
+    (fun _h33 h34 => theorem41Claim7_of_section3_sideConditions hrec2 h34 hside)
+    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
+    hM_const
+
 end GeneralizedSnakePosets
 end RealRooted
