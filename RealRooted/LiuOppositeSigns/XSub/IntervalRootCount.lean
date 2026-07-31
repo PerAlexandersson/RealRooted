@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 
 /-!
 # Liu x-subtraction interval root counts
@@ -205,6 +206,17 @@ theorem one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
   obtain ⟨u, hu_le, hu_root⟩ :=
     exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot hP_a hbot
   exact one_le_card_roots_filter_le_of_isRoot hP_ne hu_le hu_root
+
+/-- A simultaneous translation preserves the no-common-root condition. -/
+theorem NoCommonRoots.comp_X_add_C
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) (r : ℝ) :
+    NoCommonRoots (p.comp (X + C r)) (q.comp (X + C r)) := by
+  intro x hpx hqx
+  have hp : p.IsRoot (x + r) := by
+    simpa [Polynomial.IsRoot.def, Polynomial.eval_comp] using hpx
+  have hq : q.IsRoot (x + r) := by
+    simpa [Polynomial.IsRoot.def, Polynomial.eval_comp] using hqx
+  exact (hno (x + r) hp) hq
 
 /-- The x-subtraction pencil does not vanish at a left root when the two
 endpoint polynomials have no common roots. -/
@@ -1293,6 +1305,103 @@ theorem
   exact hpair.xSub_splits_of_roots_sort_of_upper_nonpos_tail_transfer
     hp_nonneg hno hrs hμ hdeg (by simpa [P] using hlower_one)
     hupper_nonpos (by simpa [P] using htop)
+
+/-- No-common-root branch of the left-successor x-subtraction family, in the
+unshifted `p, q` form.  If `p` has at least two distinct roots, the sorted-root
+count endpoint applies directly.  If it has only one distinct root, the
+upper-tail cap forces `q.natDegree ≤ 1`, so the existing low-degree endpoint
+applies. -/
+theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hq_nonneg : HasNonnegCoeffs q)
+    (hno : NoCommonRoots p q)
+    (hdeg : p.natDegree = q.natDegree + 1) {μ : ℝ} (hμ : 0 < μ) :
+    (X * p - C μ * q).Splits := by
+  cases hrs : p.roots.toFinset.sort (· ≤ ·) with
+  | nil =>
+      have hp_nat_pos : 0 < p.natDegree := by
+        rw [hdeg]
+        exact Nat.succ_pos _
+      have hroots_pos : 0 < p.roots.card := by
+        simpa [card_roots_of_splits hpair.left_splits] using hp_nat_pos
+      obtain ⟨x, hx⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
+      have hx_sort : x ∈ p.roots.toFinset.sort (· ≤ ·) := by
+        rw [Finset.mem_sort, Multiset.mem_toFinset]
+        exact hx
+      rw [hrs] at hx_sort
+      simp at hx_sort
+  | cons a xs =>
+      cases hxs : xs with
+      | nil =>
+          have hrs_single : p.roots.toFinset.sort (· ≤ ·) = [a] := by
+            simpa [hxs] using hrs
+          have hhead :=
+            isRoot_head_and_roots_ge_of_roots_toFinset_sort_eq_cons
+              hpair.left_pos.ne_zero hrs_single
+          have ha_largest : IsLargestRoot p a := by
+            refine ⟨hhead.1, ?_⟩
+            intro s hs
+            have hs_sort : s ∈ p.roots.toFinset.sort (· ≤ ·) := by
+              rw [Finset.mem_sort, Multiset.mem_toFinset]
+              exact hs
+            rw [hrs_single] at hs_sort
+            have hs_eq : s = a := by
+              simpa using hs_sort
+            exact le_of_eq hs_eq
+          have htail_card : (q.roots.filter (a < ·)).card = q.natDegree :=
+            hpair.card_right_roots_filter_gt_eq_natDegree_of_left_roots_ge
+              hno hhead.1 hhead.2 hdeg
+          have htail_le : (q.roots.filter (a < ·)).card ≤ 1 :=
+            hpair.card_right_roots_filter_gt_le_one_of_left_largest_root
+              ha_largest
+          have hqdeg_le : q.natDegree ≤ 1 := by
+            simpa [htail_card] using htail_le
+          have hp_nonneg_zero : HasNonnegCoeffs (p.comp (X + C (0 : ℝ))) := by
+            simpa using hp_nonneg
+          have hq_nonneg_zero : HasNonnegCoeffs (q.comp (X + C (0 : ℝ))) := by
+            simpa using hq_nonneg
+          by_cases hqzero : q.natDegree = 0
+          · simpa using
+              positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
+                (f := p) (g := q) (r := 0)
+                hpair hp_nonneg_zero hq_nonneg_zero hdeg hqzero μ hμ
+          · have hqone : q.natDegree = 1 := by
+              lia
+            simpa using
+              positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
+                (f := p) (g := q) (r := 0)
+                hpair hp_nonneg_zero hq_nonneg_zero hdeg hqone μ hμ
+      | cons b ys =>
+          have hrs_two :
+              p.roots.toFinset.sort (· ≤ ·) = a :: b :: ys := by
+            simpa [hxs] using hrs
+          exact hpair.xSub_splits_of_roots_sort_of_left_successor_nonneg
+            hp_nonneg hq_nonneg hno hrs_two hdeg hμ
+
+/-- No-common-root branch of the translated left-successor x-subtraction
+family.  This is the shifted endpoint interface used by the factor-return
+assembly; the proof delegates to the core `p, q` form. -/
+theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_noCommonRoots
+    {f g : ℝ[X]} {r : ℝ}
+    (hno : NoCommonRoots f g)
+    (hpair : PositiveSplitRootCountPair f g)
+    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
+    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
+    (hdeg : f.natDegree = g.natDegree + 1) :
+    ∀ μ : ℝ, 0 < μ →
+      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
+  intro μ hμ
+  let p := f.comp (X + C r)
+  let q := g.comp (X + C r)
+  have hpair_shift : PositiveSplitRootCountPair p q := by
+    simpa [p, q] using hpair.comp_X_add_C r
+  have hno_shift : NoCommonRoots p q := by
+    simpa [p, q] using hno.comp_X_add_C r
+  have hdeg_shift : p.natDegree = q.natDegree + 1 := by
+    simpa [p, q, Polynomial.natDegree_comp] using hdeg
+  simpa [p, q] using
+    hpair_shift.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
+      hfnn hgnn hno_shift hdeg_shift hμ
 
 /-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
 the first left root and the nonnegative-sign upper-tail witness at the last
