@@ -514,6 +514,52 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
     exact ⟨B, by ring⟩
   exact hsum.mpr hBB
 
+/-- A nonzero splitting polynomial with an even number of roots in an open
+interval has same-sign endpoint values, provided neither endpoint is a root. -/
+theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
+    {a b : ℝ} (hab : a ≤ b)
+    (heven : Even (p.roots.filter (fun r => a < r ∧ r < b)).card)
+    (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
+    0 < p.eval a * p.eval b := by
+  let A := (p.roots.filter (a < ·)).card
+  let B := (p.roots.filter (b < ·)).card
+  let I := (p.roots.filter (fun r => a < r ∧ r < b)).card
+  have hnorm_a : 0 < p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A := by
+    simpa [A] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne ha
+  have hnorm_b : 0 < p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B := by
+    simpa [B] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hb
+  have hlc_sq : 0 < p.leadingCoeff * p.leadingCoeff :=
+    mul_self_pos.mpr (Polynomial.leadingCoeff_ne_zero.mpr hp_ne)
+  have hb_not_mem : b ∉ p.roots := by
+    intro hb_mem
+    exact hb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hsplit : I + B = A := by
+    simpa [I, B, A] using
+      card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
+        (s := p.roots) hab hb_not_mem
+  have hI_even : Even I := by
+    simpa [I] using heven
+  have hBB_even : Even (B + B) := by
+    exact ⟨B, by ring_nf⟩
+  have hAB_even : Even (A + B) := by
+    rw [← hsplit]
+    simpa [Nat.add_assoc] using Even.add hI_even hBB_even
+  have hpow : (-1 : ℝ) ^ (A + B) = 1 := Even.neg_one_pow hAB_even
+  have hnorm_prod :
+      0 < (p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A) *
+        (p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B) :=
+    mul_pos hnorm_a hnorm_b
+  have hcalc :
+      (p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A) *
+          (p.eval b * p.leadingCoeff * (-1 : ℝ) ^ B) =
+        (p.eval a * p.eval b) * (p.leadingCoeff * p.leadingCoeff) *
+          ((-1 : ℝ) ^ (A + B)) := by
+    rw [pow_add]
+    ring
+  rw [hcalc, hpow, mul_one] at hnorm_prod
+  exact (mul_pos_iff_of_pos_right hlc_sq).mp hnorm_prod
+
 /-- A nonzero splitting polynomial with an odd number of roots in an open
 interval has opposite-sign endpoint values, provided neither endpoint is a
 root. -/
@@ -575,9 +621,11 @@ theorem exists_roots_pair_le_roots_filter_Ioo_of_two_le_card_roots_filter_Ioo
     rw [← Multiset.cons_erase hu]
     exact Multiset.cons_le_cons u (Multiset.singleton_le.mpr hv)
   rw [Multiset.mem_filter] at hu hv_mem
-  exact ⟨u, v, hu.2.1, hu.2.2, hv_mem.2.1, hv_mem.2.2,
-    (Polynomial.mem_roots hp_ne).mp hu.1,
-    (Polynomial.mem_roots hp_ne).mp hv_mem.1, hpair_le⟩
+  obtain ⟨hu_root, ⟨hau, hub⟩⟩ := hu
+  obtain ⟨hv_root, ⟨hav, hvb⟩⟩ := hv_mem
+  exact ⟨u, v, hau, hub, hav, hvb,
+    (Polynomial.mem_roots hp_ne).mp hu_root,
+    (Polynomial.mem_roots hp_ne).mp hv_root, hpair_le⟩
 
 /-- Even nonzero root count in an open interval, plus one known interior root,
 produces a two-element multiset inside the interval root multiset. -/

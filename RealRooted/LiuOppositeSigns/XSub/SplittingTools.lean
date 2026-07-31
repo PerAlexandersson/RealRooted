@@ -14,6 +14,22 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
+/-- If `x` has opposite sign to `y` and the same sign as `z`, then `y` and
+`z` have opposite signs. -/
+lemma mul_neg_of_mul_neg_of_mul_pos_left {x y z : ℝ}
+    (hxy : x * y < 0) (hxz : 0 < x * z) : y * z < 0 := by
+  have hx_ne : x ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hxy)).1
+  have hxx_pos : 0 < x * x := mul_self_pos.mpr hx_ne
+  have hprod : (x * y) * (x * z) < 0 := mul_neg_of_neg_of_pos hxy hxz
+  have hcalc : (x * y) * (x * z) = (x * x) * (y * z) := by
+    ring
+  rw [hcalc] at hprod
+  have hneg_pos : 0 < (x * x) * (-(y * z)) := by
+    rw [mul_neg]
+    simpa [neg_pos] using hprod
+  have : 0 < -(y * z) := (mul_pos_iff_of_pos_left hxx_pos).mp hneg_pos
+  exact neg_pos.mp this
+
 /-- Evaluate the x-subtraction pencil at a root of the left endpoint. -/
 lemma eval_X_mul_sub_C_mul_of_left_isRoot
     {p q : ℝ[X]} {x μ : ℝ} (hx : p.IsRoot x) :
@@ -124,6 +140,36 @@ lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_root_signs
   obtain ⟨c₂, hyc₂, hc₂b, hc₂_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hyb hright_sign
   exact ⟨c₁, c₂, hac₁, hc₁y, hyc₂, hc₂b, hc₁_root, hc₂_root⟩
+
+/-- If the right endpoint has an even number of roots in `(a, b)`, then its
+values at `a` and `b` have the same sign.  Hence one sign comparison between
+`q.eval a` and `p.eval y` gives the two sign changes needed for one
+x-subtraction root on each side of the right root `y`. -/
+lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots_left_sign
+    {p q : ℝ[X]} (hq_ne : q ≠ 0) (hq : q.Splits) {a b y μ : ℝ}
+    (hay : a < y) (hyb : y < b)
+    (ha : p.IsRoot a) (hb : p.IsRoot b) (hy : q.IsRoot y)
+    (hμ : 0 < μ) (hy_neg : y < 0)
+    (heven : Even (q.roots.filter (fun x => a < x ∧ x < b)).card)
+    (hqb : ¬ q.IsRoot b) (hay_sign : q.eval a * p.eval y < 0) :
+    ∃ c₁ c₂ : ℝ,
+      a < c₁ ∧ c₁ < y ∧ y < c₂ ∧ c₂ < b ∧
+        (X * p - C μ * q).IsRoot c₁ ∧ (X * p - C μ * q).IsRoot c₂ := by
+  have hab : a ≤ b := le_of_lt (lt_trans hay hyb)
+  have hqa : ¬ q.IsRoot a := by
+    intro hroot
+    have hzero : q.eval a = 0 := by
+      simpa [Polynomial.IsRoot.def] using hroot
+    rw [hzero, zero_mul] at hay_sign
+    linarith
+  have hqab_pos : 0 < q.eval a * q.eval b :=
+    eval_mul_eval_pos_of_even_card_roots_filter_Ioo
+      hq_ne hq hab heven hqa hqb
+  have hright_sign : p.eval y * q.eval b < 0 :=
+    mul_neg_of_mul_neg_of_mul_pos_left hay_sign hqab_pos
+  exact
+    exists_two_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_root_signs
+      hay hyb ha hb hy hμ hy_neg hay_sign hright_sign
 
 /-- A nonzero polynomial of degree at most four splits when it has four ordered
 real roots. -/
