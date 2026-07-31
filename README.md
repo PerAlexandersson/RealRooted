@@ -314,8 +314,13 @@ is uninhabited.
 New Lean code should follow the Lean community style guidelines and Mathlib
 naming conventions where practical.  In particular, keep declarations explicit,
 prefer small reusable lemmas, keep top-level declarations flush-left, and make
-sure public modules are imported by `RealRooted.lean`. All committed code must
-build without warnings (with the exception of `sorry` warnings).
+sure public modules are imported by `RealRooted.lean`. To help with this, a CI check
+enforces that all library modules are imported in `RealRooted.lean`. You can run
+`python3 scripts/check_root_imports.py --fix` to automatically append and sort any
+missing imports.
+
+All committed code must build without warnings (with the exception of `sorry`
+warnings).
 
 To maintain clean and reliable build verification, the use of `set_option` is
 forbidden in the codebase. All warnings, lint errors, or resource limits should
@@ -334,6 +339,12 @@ Please keep repository configuration files (like `lakefile.toml` and
   `/lake-cache/projects/...`. Reusable relative repository paths
   (e.g. `.lake/packages` and `.lake/build`) ensure that the builds work
   out-of-the-box in local developer environments.
+
+### CI and PR Policy
+
+To keep the repository stable for all developers, please never merge a pull
+request or push any change that would cause the CI build to fail. If a change
+introduces a CI failure, it must be investigated and fixed immediately.
 
 ### Repository Cleanliness
 
