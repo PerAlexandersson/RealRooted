@@ -273,6 +273,83 @@ theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
         (inv_ne_zero hc_ne)
     simpa [hcancel_f, hcancel_sub] using hback
 
+/-- If the oriented same-degree relation `U ≪ X * V` is already known, then
+the nonpositive-root Wagner step removes the factor `X` and gives `V ≪ U`. -/
+theorem prec_component_of_prec_mul_X_of_roots_nonpos
+    {U V : ℝ[X]}
+    (hU_XV : Prec U (X * V))
+    (hU_pos : HasPosLeadingCoeff U)
+    (hV_pos : HasPosLeadingCoeff V)
+    (hU_nonpos : ∀ r ∈ U.roots, r ≤ 0)
+    (hV_nonpos : ∀ r ∈ V.roots, r ≤ 0)
+    (hdeg_VU : V.natDegree + 1 = U.natDegree) :
+    Prec V U := by
+  have hV_splits : V.Splits := (isRealRooted_of_X_mul hU_XV.2.1.1 hU_XV.2.1.2).2
+  exact
+    (prec_iff_prec_mul_X_of_roots_nonpos
+      (f := V) (g := U) hV_splits hU_XV.1.2 hV_pos hU_pos
+      hV_nonpos hU_nonpos hdeg_VU).mpr hU_XV
+
+/-- Root-sum-oriented conversion step for Braun--Jal Claim `(7)`.
+
+If `U ≪ W` and `W = (1 + X) * U + X * V`, the usual Obreschkoff alternative
+for `U` and `X * V` can be oriented by the same-degree root-sum order
+`U.roots.sum ≤ (X * V).roots.sum`.  This is useful at zero-root endpoints where
+the older strict rightmost-root asymmetry condition is too strong. -/
+theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
+    {U V W : ℝ[X]}
+    (hUW : Prec U W)
+    (hW_eq : W = (1 + X) * U + X * V)
+    (hW_pos : HasPosLeadingCoeff W)
+    (hWU_lc : W.leadingCoeff = U.leadingCoeff)
+    (hdeg_UW : U.natDegree + 1 = W.natDegree)
+    (hW_nonpos : ∀ r ∈ W.roots, r ≤ 0)
+    (hU_nonpos : ∀ r ∈ U.roots, r ≤ 0)
+    (hmid_pos : HasPosLeadingCoeff (U + X * V))
+    (hV_pos : HasPosLeadingCoeff V)
+    (hV_nonpos : ∀ r ∈ V.roots, r ≤ 0)
+    (hdeg_VU : V.natDegree + 1 = U.natDegree)
+    (hsum_U_XV : U.roots.sum ≤ (X * V).roots.sum) :
+    Prec V U := by
+  have hmid_eq : W - X * U = U + X * V := by
+    rw [hW_eq]
+    ring
+  have hU_mid : Prec U (U + X * V) := by
+    have hsub_pos : HasPosLeadingCoeff (W - X * U) := by
+      simpa [hmid_eq] using hmid_pos
+    have hpair :=
+      prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+        (f := W) (g := U) hUW hW_pos hWU_lc hdeg_UW
+        hW_nonpos hU_nonpos hsub_pos
+    simpa [hmid_eq] using hpair.1
+  have hall_U_mid : AllComboRealRooted U (U + X * V) :=
+    allComboRealRooted_of_prec hU_mid
+  have hall_U_XV : AllComboRealRooted U (X * V) := by
+    intro α β
+    have hrew :
+        C α * U + C β * (X * V) =
+          C (α - β) * U + C β * (U + X * V) := by
+      grind
+    simpa [hrew] using hall_U_mid (α - β) β
+  have hXV_ne : X * V ≠ 0 := mul_ne_zero X_ne_zero hV_pos.ne_zero
+  have hXV_splits : (X * V).Splits := by
+    simpa using hall_U_XV 0 1
+  have hsame : U.natDegree = (X * V).natDegree := by
+    rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
+    lia
+  have hprec_or : Prec U (X * V) ∨ Prec (X * V) U :=
+    prec_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
+      (Or.inr hsame)
+  have hU_XV : Prec U (X * V) := by
+    rcases hprec_or with hU_XV | hXV_U
+    · exact hU_XV
+    · exact prec_of_reverse_prec_of_roots_sum_le hXV_U hsame hsum_U_XV
+  have hU_pos : HasPosLeadingCoeff U := by
+    simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
+  exact
+    prec_component_of_prec_mul_X_of_roots_nonpos
+      hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
+
 /-- Paper-shaped conversion step for Braun--Jal Claim `(7)`.
 
 If `U ≪ W` and `W = (1 + X) * U + X * V`, with the root and degree side
@@ -332,8 +409,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   have hU_pos : HasPosLeadingCoeff U := by
     simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
   exact
-    (prec_iff_prec_mul_X_of_roots_nonpos
-      (f := V) (g := U) hV_splits hUW.1.2 hV_pos hU_pos
-      hV_nonpos hU_nonpos hdeg_VU).mpr hU_XV
+    prec_component_of_prec_mul_X_of_roots_nonpos
+      hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
 
 end RealRooted
