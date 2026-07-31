@@ -20,6 +20,19 @@ theorem splits_of_le_roots_of_natDegree_le_card
   · exact card_roots' p
   · exact hdeg.trans (Multiset.card_le_card hsub)
 
+/-- A polynomial splits if a finset of roots already has cardinality at least
+its natural degree. -/
+theorem splits_of_finset_roots_of_natDegree_le_card
+    {K : Type*} [Field K] {p : K[X]} {s : Finset K}
+    (hroot : ∀ x ∈ s, p.IsRoot x) (hdeg : p.natDegree ≤ s.card) : p.Splits := by
+  by_cases hp : p = 0
+  · simp [hp]
+  refine splits_of_le_roots_of_natDegree_le_card (s := s.val) ?_ ?_
+  · rw [Multiset.le_iff_subset s.nodup]
+    intro x hx
+    exact (mem_roots hp).mpr (hroot x (by simpa using hx))
+  · simpa using hdeg
+
 /-- Sign of a product `prod (x - r)` over a multiset of reals, provided none of
 the factors vanish.  The product is positive exactly when an even number of
 terms lie strictly above `x`. -/
