@@ -93,6 +93,38 @@ lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_odd_right_roots
     (eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
       hq_ne hq (le_of_lt hab) hodd hqa hqb)
 
+/-- If a right-endpoint root `y` lies between two left-endpoint roots and the
+two x-subtraction signs change across `y`, then the x-subtraction pencil has
+one root on each side of `y`.  The assumption `y < 0` is load-bearing for
+applications with nonnegative coefficients. -/
+lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_root_signs
+    {p q : ℝ[X]} {a b y μ : ℝ}
+    (hay : a < y) (hyb : y < b)
+    (ha : p.IsRoot a) (hb : p.IsRoot b) (hy : q.IsRoot y)
+    (hμ : 0 < μ) (hy_neg : y < 0)
+    (hay_sign : q.eval a * p.eval y < 0)
+    (hyb_sign : p.eval y * q.eval b < 0) :
+    ∃ c₁ c₂ : ℝ,
+      a < c₁ ∧ c₁ < y ∧ y < c₂ ∧ c₂ < b ∧
+        (X * p - C μ * q).IsRoot c₁ ∧ (X * p - C μ * q).IsRoot c₂ := by
+  have hμ_neg : -μ < 0 := by linarith
+  have hfactor : 0 < -μ * y := mul_pos_of_neg_of_neg hμ_neg hy_neg
+  have hleft_sign :
+      (X * p - C μ * q).eval a * (X * p - C μ * q).eval y < 0 := by
+    rw [eval_X_mul_sub_C_mul_of_left_isRoot ha,
+      eval_X_mul_sub_C_mul_of_right_isRoot hy]
+    nlinarith
+  have hright_sign :
+      (X * p - C μ * q).eval y * (X * p - C μ * q).eval b < 0 := by
+    rw [eval_X_mul_sub_C_mul_of_right_isRoot hy,
+      eval_X_mul_sub_C_mul_of_left_isRoot hb]
+    nlinarith
+  obtain ⟨c₁, hac₁, hc₁y, hc₁_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg hay hleft_sign
+  obtain ⟨c₂, hyc₂, hc₂b, hc₂_root⟩ :=
+    exists_isRoot_between_of_eval_mul_neg hyb hright_sign
+  exact ⟨c₁, c₂, hac₁, hc₁y, hyc₂, hc₂b, hc₁_root, hc₂_root⟩
+
 /-- A nonzero polynomial of degree at most four splits when it has four ordered
 real roots. -/
 lemma splits_of_four_ordered_roots_of_natDegree_le {p : ℝ[X]} {a b c d : ℝ}
