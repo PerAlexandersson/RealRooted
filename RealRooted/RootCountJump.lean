@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Algebra.Order.BigOperators.Group.List
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import Mathlib.Data.Real.Basic
 import RealRooted.RootContinuity
@@ -70,6 +71,39 @@ theorem card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt
     (s.filter (a < ·)).card =
       (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card :=
   (card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab).symm
+
+/-- The sum of open-interval counts over a strictly increasing chain of
+successive list entries is bounded by the strict-upper count above the first
+entry. -/
+theorem sum_card_filter_Ioo_zip_tail_le_card_filter_gt
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a : α} {xs : List α}
+    (hchain : (a :: xs).IsChain (· < ·)) :
+    (((a :: xs).zip xs).map
+        (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum ≤
+      (s.filter (a < ·)).card := by
+  induction xs generalizing a with
+  | nil => simp
+  | cons b t ih =>
+      have hab_lt : a < b := List.IsChain.rel hchain
+      have htail : (b :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
+      have hgap_le :
+          (s.filter (fun r => a < r ∧ r < b)).card ≤
+            (s.filter (fun r => a < r ∧ r ≤ b)).card := by
+        exact Multiset.card_le_card
+          (Multiset.monotone_filter_right s fun _ hr => ⟨hr.1, le_of_lt hr.2⟩)
+      have hpart :=
+        card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s (le_of_lt hab_lt)
+      have hih := ih (a := b) htail
+      simp only [List.zip_cons_cons, List.map_cons, List.sum_cons]
+      calc
+        (s.filter (fun r => a < r ∧ r < b)).card +
+            (((b :: t).zip t).map
+                (fun ab => (s.filter (fun r => ab.1 < r ∧ r < ab.2)).card)).sum
+            ≤ (s.filter (fun r => a < r ∧ r ≤ b)).card +
+                (s.filter (b < ·)).card :=
+          Nat.add_le_add hgap_le hih
+        _ = (s.filter (a < ·)).card := by
+          simpa using hpart.symm
 
 /-- If `(a, b]` contains an element of a multiset, then the strict-upper count
 drops when the threshold moves from `a` to `b`. -/
