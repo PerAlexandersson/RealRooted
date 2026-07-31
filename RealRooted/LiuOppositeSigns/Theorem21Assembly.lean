@@ -624,6 +624,483 @@ theorem theorem21CompatibleRootCountNonconstant_of_forward_and_xSub
   theorem21CompatibleRootCountNonconstant_of_forward_and_reverse hforward
     theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
 
+/-- Liu Theorem 2.1 follows from the isolated forward direction and a
+predicate-`True` reverse direction. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_predicate_true
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranches_of_commonForward hforward)
+    (theorem21RootCountBranchesToCompatible_of_predicate_true hreverse)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+a predicate-`True` reverse direction. -/
+theorem theorem21CompatibleRootCount_of_forward_and_predicate_true
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_predicate_true
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hreverse
+
+/-- Liu Theorem 2.1 follows from the isolated forward root-count direction and
+the deletion-pair factor-return principle. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_deletionPairCommonInterleaverIff
+    (theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_factorReturn
+      hforward hreturn)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+the deletion-pair factor-return principle. -/
+theorem theorem21CompatibleRootCount_of_forward_and_deletionPairFactorReturn
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hreturn
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and an
+all-combinations factor-return principle. -/
+theorem
+    theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturnAllCombo
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+an all-combinations factor-return principle. -/
+theorem
+    theorem21CompatibleRootCount_of_forward_and_deletionPairFactorReturnAllCombo
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturnAllCombo
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hreturn
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and
+all-combinations factor-return degree cases. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_allComboDegreeCases
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hcases :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
+      hcases)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+all-combinations factor-return degree cases. -/
+theorem theorem21CompatibleRootCount_of_forward_and_allComboDegreeCases
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hcases :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_allComboDegreeCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hcases
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and left
+all-combinations factor-return degree cases, with right cases supplied by
+symmetry. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_leftAllComboCases
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
+      hcases)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+left all-combinations factor-return degree cases, with right cases supplied by
+symmetry. -/
+theorem theorem21CompatibleRootCount_of_forward_and_leftAllComboCases
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_leftAllComboCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hcases
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and a bundled
+sign-normalized positive-split x-subtraction case package. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
+      hcases)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+a bundled sign-normalized positive-split x-subtraction case package. -/
+theorem theorem21CompatibleRootCount_of_forward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_xSubCasePackage
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hcases
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and
+sign-normalized positive-split x-subtraction cases. -/
+theorem theorem21CompatibleRootCount_of_commonForward_and_xSubCases
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
+    (hleftSucc :
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_xSubCasePackage
+    hforward ⟨hrightSucc, hsame, hleftSucc⟩
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+sign-normalized positive-split x-subtraction cases. -/
+theorem theorem21CompatibleRootCount_of_forward_and_xSubCases
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
+    (hleftSucc :
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_xSubCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hrightSucc hsame hleftSucc
+
+/-- Liu Theorem 2.1 follows from the isolated forward direction and a
+predicate-`True` factor-return principle. -/
+theorem
+    theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturnPredicate_true
+    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_predicate_true
+      hreturn)
+
+/-- Liu Theorem 2.1 follows from the isolated root-count forward direction and
+a predicate-`True` factor-return principle. -/
+theorem
+    theorem21CompatibleRootCount_of_forward_and_deletionPairFactorReturnPredicate_true
+    (hforward : theorem21CompatibleToRootCountBranchesStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountStatement :=
+  theorem21CompatibleRootCount_of_commonForward_and_deletionPairFactorReturnPredicate_true
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
+      hforward)
+    hreturn
+
+/-- The deletion-pair factor-return principle also reduces the nonconstant
+reverse direction of Liu Theorem 2.1. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
+    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturn
+      hreturn)
+
+/-- All-combinations factor-return proves the nonconstant reverse root-count
+direction. -/
+theorem
+    theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturnAllCombo
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
+
+/-- All-combinations factor-return degree cases prove the nonconstant reverse
+root-count direction. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_allComboDegreeCases
+    (hcases :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
+      hcases)
+
+/-- Left all-combinations factor-return degree cases prove the nonconstant
+reverse root-count direction, with right cases supplied by symmetry. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_leftAllComboCases
+    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
+      hcases)
+
+/-- A bundled sign-normalized positive-split x-subtraction case package proves
+the nonconstant reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCasePackage
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
+      hcases)
+
+/-- Sign-normalized positive-split x-subtraction cases prove the nonconstant
+reverse root-count direction. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCases
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
+    (hleftSucc :
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCasePackage
+    ⟨hrightSucc, hsame, hleftSucc⟩
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and a predicate-`True` nonconstant reverse direction. -/
+theorem theorem21CompatibleRootCountNonconstant_of_commonForward_and_predicate_true
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_forward_and_reverse
+    (theorem21CompatibleToRootCountBranchesNonconstant_of_commonForward
+      hforward)
+    (theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
+      hreverse)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and a predicate-`True` nonconstant
+reverse direction. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_predicate_true
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreverse :
+      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_predicate_true
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hreverse
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and the deletion-pair factor-return principle. -/
+theorem
+    theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_deletionPairCommonInterleaverIff
+    (theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
+      hforward hreturn)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and the deletion-pair factor-return
+principle. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_deletionPairFactorReturn
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hreturn
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and an all-combinations factor-return principle. -/
+theorem
+    theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturnAllCombo
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and an all-combinations factor-return
+principle. -/
+theorem
+    theorem21CompatibleRootCountNonconstant_of_forward_and_deletionPairFactorReturnAllCombo
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturnAllCombo
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hreturn
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and all-combinations factor-return degree cases. -/
+theorem theorem21CompatibleRootCountNonconstant_of_commonForward_and_allComboDegreeCases
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hcases :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
+      hcases)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and all-combinations factor-return
+degree cases. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_allComboDegreeCases
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hcases :
+      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_allComboDegreeCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hcases
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and left all-combinations factor-return degree cases, with
+right cases supplied by symmetry. -/
+theorem theorem21CompatibleRootCountNonconstant_of_commonForward_and_leftAllComboCases
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
+      hcases)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and left all-combinations
+factor-return degree cases, with right cases supplied by symmetry. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_leftAllComboCases
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_leftAllComboCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hcases
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated forward
+direction and a bundled sign-normalized positive-split x-subtraction case
+package. -/
+theorem theorem21CompatibleRootCountNonconstant_of_commonForward_and_xSubCasePackage
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
+      hcases)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and a bundled sign-normalized
+positive-split x-subtraction case package. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_xSubCasePackage
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hcases :
+      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_xSubCasePackage
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hcases
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and sign-normalized positive-split x-subtraction cases. -/
+theorem theorem21CompatibleRootCountNonconstant_of_commonForward_and_xSubCases
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
+    (hleftSucc :
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_xSubCasePackage
+    hforward ⟨hrightSucc, hsame, hleftSucc⟩
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and sign-normalized positive-split
+x-subtraction cases. -/
+theorem theorem21CompatibleRootCountNonconstant_of_forward_and_xSubCases
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hrightSucc :
+      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
+    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
+    (hleftSucc :
+      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_xSubCases
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hrightSucc hsame hleftSucc
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+forward direction and a predicate-`True` factor-return principle. -/
+theorem
+    theorem21CompatibleRootCountNonconstant_of_commonForward_and_factorReturnPredicate_true
+    (hforward :
+      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_deletionPairFactorReturn
+    hforward
+    (theorem21DeletionPairCommonInterleaverFactorReturn_of_predicate_true
+      hreturn)
+
+/-- The nonconstant Liu Theorem 2.1 statement follows from its isolated
+nonconstant root-count forward direction and a predicate-`True` factor-return
+principle. -/
+theorem
+    theorem21CompatibleRootCountNonconstant_of_forward_and_deletionPairFactorReturnPredicate_true
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
+    (hreturn :
+      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
+        (fun _ => True)) :
+    theorem21CompatibleRootCountNonconstantStatement :=
+  theorem21CompatibleRootCountNonconstant_of_commonForward_and_factorReturnPredicate_true
+    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
+      hforward)
+    hreturn
+
 /-- Current low-endpoint reverse route: same/succ left factor-return leaves
 prove the reverse Liu direction for branches whose lower-degree endpoint has
 degree at most two. -/
