@@ -615,6 +615,34 @@ lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_cancel_lt_lower
     hdeg hq (ne_of_gt hκ)
     (fun _ hτ => ne_of_gt (lt_of_lt_of_le ha hτ.1))
 
+/-- In the same-degree case, the unique leading-term cancellation parameter
+strictly lowers the natural degree, provided the common degree is positive. -/
+lemma natDegree_add_C_mul_cancel_lt_of_natDegree_eq
+    {p q : ℝ[X]} (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
+    (hpdeg : 0 < p.natDegree) :
+    (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree < p.natDegree := by
+  have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
+    rw [hdeg]
+    exact coeff_natDegree
+  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq
+  have hle_scaled :
+      (C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree := by
+    exact (Polynomial.natDegree_C_mul_le (-p.leadingCoeff / q.leadingCoeff) q).trans
+      (le_of_eq hdeg.symm)
+  have hle :
+      (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree :=
+    (Polynomial.natDegree_add_le_of_degree_le (le_rfl : p.natDegree ≤ p.natDegree)
+      hle_scaled)
+  have hcoeff :
+      (p + C (-p.leadingCoeff / q.leadingCoeff) * q).coeff p.natDegree = 0 := by
+    rw [coeff_add, coeff_C_mul, coeff_natDegree, hqcoeff]
+    rw [neg_div, neg_mul, div_mul_cancel₀ _ hq_lc]
+    ring
+  have hle_pred :
+      (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree - 1 :=
+    Polynomial.natDegree_le_pred hle hcoeff
+  exact lt_of_le_of_lt hle_pred (by lia)
+
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}

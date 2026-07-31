@@ -320,6 +320,15 @@ theorem OppositeLeadingSigns.pos_neg_or_neg_pos {p q : ℝ[X]}
       linarith
     exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
 
+/-- The same-degree leading-term cancellation parameter is positive for an
+opposite-leading-sign pair. -/
+theorem OppositeLeadingSigns.cancelParameter_pos {p q : ℝ[X]}
+    (h : OppositeLeadingSigns p q) :
+    0 < -p.leadingCoeff / q.leadingCoeff := by
+  rw [neg_div]
+  exact neg_pos.mpr
+    ((div_neg_iff.mpr (mul_neg_iff.mp h)) : p.leadingCoeff / q.leadingCoeff < 0)
+
 /-- For two splitting polynomials with opposite leading signs, the signed
 difference of the numbers of roots strictly above a common non-root is odd
 exactly when the two values at the point have the same sign. -/
