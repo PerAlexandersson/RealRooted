@@ -159,11 +159,8 @@ theorem
     ∃ c₁ c₂ : ℝ,
       a < c₁ ∧ c₁ < y ∧ y < c₂ ∧ c₂ < b ∧
         (X * p - C μ * q).IsRoot c₁ ∧ (X * p - C μ * q).IsRoot c₂ := by
-  have hb_mem : b ∈ p.roots :=
-    (Polynomial.mem_roots hpair.left_pos.ne_zero).mpr hb
-  have hb_nonpos : b ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hpair.left_splits hp_nonneg b hb_mem
-  have hy_neg : y < 0 := lt_of_lt_of_le hyb hb_nonpos
+  have hy_neg : y < 0 :=
+    lt_zero_of_lt_isRoot_of_hasNonnegCoeffs hp_nonneg hpair.left_pos.ne_zero hb hyb
   exact hpair.count.exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots
     hpair.left_pos.ne_zero hpair.right_pos.ne_zero
     hpair.left_splits hpair.right_splits hpair.left_pos hpair.right_pos
