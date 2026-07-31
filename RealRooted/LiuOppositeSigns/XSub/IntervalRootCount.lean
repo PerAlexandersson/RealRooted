@@ -45,6 +45,26 @@ private lemma one_le_card_roots_filter_Ioo_of_isRoot
     Multiset.mem_filter.mpr ⟨(Polynomial.mem_roots hP_ne).mpr hc, ⟨hac, hcb⟩⟩
   exact Multiset.card_pos_iff_exists_mem.mpr ⟨c, hmem⟩
 
+/-- If `c` is a root of `P` with `a ≤ c`, then the right-half-line root filter
+has cardinality at least one. -/
+private lemma one_le_card_roots_filter_ge_of_isRoot
+    {P : ℝ[X]} (hP_ne : P ≠ 0) {a c : ℝ}
+    (hac : a ≤ c) (hc : P.IsRoot c) :
+    1 ≤ (P.roots.filter (fun r => a ≤ r)).card := by
+  have hmem : c ∈ P.roots.filter (fun r => a ≤ r) :=
+    Multiset.mem_filter.mpr ⟨(Polynomial.mem_roots hP_ne).mpr hc, hac⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨c, hmem⟩
+
+/-- If `c` is a root of `P` with `c ≤ a`, then the left-half-line root filter
+has cardinality at least one. -/
+private lemma one_le_card_roots_filter_le_of_isRoot
+    {P : ℝ[X]} (hP_ne : P ≠ 0) {a c : ℝ}
+    (hca : c ≤ a) (hc : P.IsRoot c) :
+    1 ≤ (P.roots.filter (fun r => r ≤ a)).card := by
+  have hmem : c ∈ P.roots.filter (fun r => r ≤ a) :=
+    Multiset.mem_filter.mpr ⟨(Polynomial.mem_roots hP_ne).mpr hc, hca⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨c, hmem⟩
+
 /-- If `c₁ < c₂` are roots of `P` in `(a, b)`, then the filtered root multiset
 has cardinality at least two. -/
 private lemma two_le_card_roots_filter_Ioo_of_two_isRoot_ordered
@@ -85,9 +105,56 @@ theorem one_le_card_xSub_roots_filter_nonneg_of_right_nonnegCoeffs
     simpa [eval_sub, eval_mul] using hneg
   obtain ⟨u, hu_nonneg, hu_root⟩ :=
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hP0 htop
-  have hu_mem : u ∈ (X * p - C μ * q).roots.filter (fun x => 0 ≤ x) :=
-    Multiset.mem_filter.mpr ⟨(Polynomial.mem_roots hP_ne).mpr hu_root, hu_nonneg⟩
-  exact Multiset.card_pos_iff_exists_mem.mpr ⟨u, hu_mem⟩
+  exact one_le_card_roots_filter_ge_of_isRoot hP_ne hu_nonneg hu_root
+
+/-- A left-endpoint root with nonnegative right-endpoint value and divergence
+to `+∞` gives a root of the x-subtraction pencil in the upper tail. -/
+theorem one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
+    {p q : ℝ[X]} {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : 0 ≤ q.eval a) (hμ : 0 < μ)
+    (hP_ne : X * p - C μ * q ≠ 0)
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => a ≤ x)).card := by
+  have hP_a : (X * p - C μ * q).eval a ≤ 0 := by
+    have hmul : 0 ≤ μ * q.eval a := mul_nonneg hμ.le hq_a
+    have hneg : -(μ * q.eval a) ≤ 0 := neg_nonpos.mpr hmul
+    simpa [eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using hneg
+  obtain ⟨u, ha_le, hu_root⟩ :=
+    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hP_a htop
+  exact one_le_card_roots_filter_ge_of_isRoot hP_ne ha_le hu_root
+
+/-- A left-endpoint root with nonnegative right-endpoint value and divergence
+to `+∞` at `-∞` gives a root of the x-subtraction pencil in the lower tail. -/
+theorem one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
+    {p q : ℝ[X]} {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : 0 ≤ q.eval a) (hμ : 0 < μ)
+    (hP_ne : X * p - C μ * q ≠ 0)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atTop) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card := by
+  have hP_a : (X * p - C μ * q).eval a ≤ 0 := by
+    have hmul : 0 ≤ μ * q.eval a := mul_nonneg hμ.le hq_a
+    have hneg : -(μ * q.eval a) ≤ 0 := neg_nonpos.mpr hmul
+    simpa [eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using hneg
+  obtain ⟨u, hu_le, hu_root⟩ :=
+    exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop hP_a hbot
+  exact one_le_card_roots_filter_le_of_isRoot hP_ne hu_le hu_root
+
+/-- A left-endpoint root with nonpositive right-endpoint value and divergence
+to `-∞` at `-∞` gives a root of the x-subtraction pencil in the lower tail. -/
+theorem one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
+    {p q : ℝ[X]} {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : q.eval a ≤ 0) (hμ : 0 < μ)
+    (hP_ne : X * p - C μ * q ≠ 0)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atBot) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card := by
+  have hP_a : 0 ≤ (X * p - C μ * q).eval a := by
+    have hmul : μ * q.eval a ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos hμ.le hq_a
+    have hneg : 0 ≤ -(μ * q.eval a) := neg_nonneg.mpr hmul
+    simpa [eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using hneg
+  obtain ⟨u, hu_le, hu_root⟩ :=
+    exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot hP_a hbot
+  exact one_le_card_roots_filter_le_of_isRoot hP_ne hu_le hu_root
 
 /-- The x-subtraction pencil is nonzero when the left endpoint has a root and
 the two endpoint polynomials have no common roots. -/
