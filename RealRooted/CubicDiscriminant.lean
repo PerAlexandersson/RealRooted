@@ -114,6 +114,48 @@ theorem cubicDiscr_neg_of_critical_value
   have hy_sq_pos : 0 < y ^ 2 := sq_pos_of_ne_zero hy
   exact (cubicDiscr_neg_iff_critical_value hcrit hvalue).mpr (by nlinarith)
 
+/-- The discriminant of the Hessian quadratic covariant of a cubic is
+`-3` times the cubic discriminant.
+
+For `α X^3 + β X^2 + γ X + δ`, the Hessian quadratic coefficients used here
+are `β^2 - 3αγ`, `βγ - 9αδ`, and `γ^2 - 3βδ`. -/
+theorem cubicHessianDiscr_eq_neg_three_mul_cubicDiscr (α β γ δ : ℝ) :
+    (β * γ - 9 * α * δ) ^ 2 -
+        4 * (β ^ 2 - 3 * α * γ) * (γ ^ 2 - 3 * β * δ) =
+      -3 * cubicDiscr (C α * X ^ 3 + C β * X ^ 2 + C γ * X + C δ) := by
+  rw [cubicDiscr_of_coeffs]
+  ring
+
+/-- Coefficient-discriminant negativity is equivalent to positivity of the
+Hessian quadratic discriminant. -/
+theorem cubicDiscr_neg_iff_hessianDiscr_pos (α β γ δ : ℝ) :
+    cubicDiscr (C α * X ^ 3 + C β * X ^ 2 + C γ * X + C δ) < 0 ↔
+      0 <
+        (β * γ - 9 * α * δ) ^ 2 -
+          4 * (β ^ 2 - 3 * α * γ) * (γ ^ 2 - 3 * β * δ) := by
+  rw [cubicHessianDiscr_eq_neg_three_mul_cubicDiscr]
+  constructor <;> intro h <;> nlinarith
+
+/-- Negative-discriminant certificate from the quadratic Hessian covariant.
+
+For a cubic `α X^3 + β X^2 + γ X + δ`, the Hessian quadratic has coefficients
+`β^2 - 3αγ`, `βγ - 9αδ`, and `γ^2 - 3βδ`.  If this quadratic opens upward and
+is negative somewhere, then its discriminant is positive, hence the cubic
+discriminant is negative. -/
+theorem cubicDiscr_neg_of_hessian_neg_at (α β γ δ t : ℝ)
+    (hlead : 0 < β ^ 2 - 3 * α * γ)
+    (hval :
+      (β ^ 2 - 3 * α * γ) * t ^ 2 + (β * γ - 9 * α * δ) * t +
+          (γ ^ 2 - 3 * β * δ) < 0) :
+    cubicDiscr (C α * X ^ 3 + C β * X ^ 2 + C γ * X + C δ) < 0 := by
+  have hdisc :
+      0 < (β * γ - 9 * α * δ) ^ 2 -
+        4 * (β ^ 2 - 3 * α * γ) * (γ ^ 2 - 3 * β * δ) := by
+    nlinarith [sq_nonneg
+      (2 * (β ^ 2 - 3 * α * γ) * t + (β * γ - 9 * α * δ)),
+      mul_pos hlead (neg_pos.mpr hval)]
+  exact (cubicDiscr_neg_iff_hessianDiscr_pos α β γ δ).mpr hdisc
+
 /-- Expansion of a monic product of three linear factors. -/
 theorem prod_three_X_sub_C_expand (a b c : ℝ) :
     (X - C a) * (X - C b) * (X - C c)

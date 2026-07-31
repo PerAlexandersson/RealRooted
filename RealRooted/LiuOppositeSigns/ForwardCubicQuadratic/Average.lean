@@ -334,6 +334,31 @@ lemma not_compatible_scaled_pair_of_opposite_of_sub_not_splits
     · exact hnot_splits (hzero.symm ▸ Polynomial.Splits.zero)
     · exact hnot_splits hsplit
 
+/-- A split nonzero common factor cannot repair a non-splitting subtraction. -/
+lemma not_splits_common_factor_sub_of_not_splits
+    {D P Q : ℝ[X]} {μ : ℝ} (hD_ne : D ≠ 0) (hD_splits : D.Splits)
+    (hnot_splits : ¬ (P - C μ * Q).Splits) :
+    ¬ (D * P - C μ * (D * Q)).Splits := by
+  have hnot_product : ¬ (D * (P - C μ * Q)).Splits := by
+    intro hsplits
+    exact hnot_splits ((splits_mul_iff_right hD_ne hD_splits).mp hsplits)
+  have hsub_eq : D * P - C μ * (D * Q) = D * (P - C μ * Q) := by
+    ring
+  intro hsplits
+  exact hnot_product (by simpa [hsub_eq] using hsplits)
+
+/-- A non-splitting subtraction after cancelling a split common factor
+obstructs compatibility of opposite-sign scalar multiples. -/
+lemma not_compatible_scaled_common_factor_of_opposite_of_sub_not_splits
+    {D P Q : ℝ[X]} {A B μ : ℝ} (hD_ne : D ≠ 0) (hD_splits : D.Splits)
+    (hAB : A * B < 0) (hμ : 0 < μ)
+    (hnot_splits : ¬ (P - C μ * Q).Splits) :
+    ¬ Compatible (C A * (D * P)) (C B * (D * Q)) := by
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := D * P) (Q := D * Q) hAB hμ
+      (not_splits_common_factor_sub_of_not_splits hD_ne hD_splits hnot_splits)
+
 /-- The cubic/quadratic endpoint is not compatible when the leading
 coefficients have opposite signs and the average of the quadratic roots lies
 strictly above the cubic root interval. -/
