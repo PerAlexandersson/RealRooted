@@ -89,10 +89,8 @@ theorem NoCommonRoots.exists_isRoot_between_X_mul_sub_C_mul_of_odd_right_roots
     (ha : p.IsRoot a) (hb : p.IsRoot b) (hμ : μ ≠ 0)
     (hodd : Odd (q.roots.filter (fun x => a < x ∧ x < b)).card) :
     ∃ c, a < c ∧ c < b ∧ (X * p - C μ * q).IsRoot c :=
-  exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
-    hab ha hb hμ
-    (eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
-      hq_ne hq (le_of_lt hab) hodd (h a ha) (h b hb))
+  exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_odd_right_roots
+    hq_ne hq hab ha hb hμ hodd (h a ha) (h b hb)
 
 /-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
 common roots, and `g` is root-free in `(a, b)`, then all sufficiently small

@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.MaWang
+import RealRooted.RootCountJump
 
 /-!
 # Liu x-subtraction splitting tools
@@ -66,6 +67,20 @@ lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
     simp [Polynomial.eval_sub, Polynomial.eval_mul, hpb]
   rw [ha_eval, hb_eval]
   nlinarith [mul_self_pos.mpr hμ, hqsign]
+
+/-- If two roots of the left endpoint bracket an odd number of roots of a
+nonzero splitting right endpoint, and the right endpoint is nonzero at both
+bracket endpoints, then the x-subtraction pencil has a root between them. -/
+lemma exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_odd_right_roots
+    {p q : ℝ[X]} (hq_ne : q ≠ 0) (hq : q.Splits) {a b μ : ℝ}
+    (hab : a < b) (ha : p.IsRoot a) (hb : p.IsRoot b) (hμ : μ ≠ 0)
+    (hodd : Odd (q.roots.filter (fun x => a < x ∧ x < b)).card)
+    (hqa : ¬ q.IsRoot a) (hqb : ¬ q.IsRoot b) :
+    ∃ c, a < c ∧ c < b ∧ (X * p - C μ * q).IsRoot c :=
+  exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_eval_mul_neg
+    hab ha hb hμ
+    (eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
+      hq_ne hq (le_of_lt hab) hodd hqa hqb)
 
 /-- A nonzero polynomial of degree at most four splits when it has four ordered
 real roots. -/
