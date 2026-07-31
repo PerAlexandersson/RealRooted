@@ -1,6 +1,9 @@
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.ForwardCubicLinear
+import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
+import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderMiddle
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderStatement
+import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 
 /-!
 # Liu cubic/quadratic root-order assembly
@@ -14,6 +17,56 @@ open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
+
+/-- Root-order obstruction for compatible opposite-sign cubic/quadratic pairs. -/
+theorem compatibleCubicPairRootOrder : CompatibleCubicPairRootOrderStatement := by
+  intro f g a b c u v hf hg hsgn hcompat _hfdeg _hgdeg hab hbc huv
+    hfroots hgroots
+  have hvc :
+      v ≤ c :=
+    upper_quadratic_root_le_upper_cubic_root_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc huv hfroots hgroots
+  have hub :
+      u ≤ b :=
+    lower_quadratic_root_le_middle_cubic_root_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc huv hvc hfroots hgroots
+  have hav :
+      a ≤ v :=
+    lower_cubic_root_le_upper_quadratic_root_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc huv hfroots hgroots
+  exact ⟨hub, hav, hvc⟩
+
+/-- Degree `(3, 2)` forward endpoint case. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 2) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_compatible_natDegree_three_two_of_cubicPairRootOrder
+    compatibleCubicPairRootOrder hf hg hsgn hcompat hfdeg hgdeg
+
+/-- Degree `(2, 3)` no-common forward endpoint case.  The no-common-root
+hypothesis makes the largest-root comparison strict after swapping the pair. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_two_three
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hno : NoCommonRoots f g)
+    (hfdeg : f.natDegree = 2) (hgdeg : g.natDegree = 3) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_compatible_natDegree_two_three_of_cubicPairRootOrder
+    compatibleCubicPairRootOrder hf hg hsgn hcompat hno hfdeg hgdeg
+
+/-- Mixed degree-three/two no-common forward endpoint package. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_three_two_or_two_three
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hno : NoCommonRoots f g)
+    (hdeg :
+      (f.natDegree = 3 ∧ g.natDegree = 2) ∨
+        (f.natDegree = 2 ∧ g.natDegree = 3)) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_compatible_natDegree_three_two_or_two_three_of_cubicPairRootOrder
+    compatibleCubicPairRootOrder hf hg hsgn hcompat hno hdeg
 
 /-- Conditional nonconstant no-common forward direction through endpoint
 degree three, excluding the remaining cubic/cubic corner. -/
@@ -73,6 +126,20 @@ theorem
     theorem21RootCountBranches f g :=
   theorem21RootCountBranches_of_compatible_natDegree_le_three_excluding_three_three
     compatibleCubicLinearRootOrder hpair hf hg hsgn hcompat hno
+    hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hnot_three_three
+
+/-- Nonconstant no-common forward direction through endpoint degree three,
+excluding the cubic/cubic corner. -/
+theorem theorem21RootCountBranches_of_natDegree_le_three_excluding_three_three
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
+    (hno : NoCommonRoots f g)
+    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
+    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3)
+    (hnot_three_three : ¬ (f.natDegree = 3 ∧ g.natDegree = 3)) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_natDegree_le_three_excluding_three_three_of_cubicPairRootOrder
+    compatibleCubicPairRootOrder hf hg hsgn hcompat hno
     hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hnot_three_three
 
 end LiuOppositeSigns

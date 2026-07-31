@@ -143,6 +143,105 @@ lemma cubicDiscr_cubicSubQuadratic_right_protruding_tangent_neg
     mul_nonneg (le_of_lt hy_pos) (pow_nonneg hsecond_nonneg 3)
   exact cubicDiscr_cubicSubQuadratic_neg_of_critical_value hcrit hvalue hy_ne hsign
 
+/-! ## Midpoint negative-side branch -/
+
+/-- The midpoint subtraction coefficient is positive in the negative-side
+right-protruding branch. -/
+lemma cubicSubQuadratic_right_protruding_midpoint_mu_pos
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcv : c < v)
+    (hside : (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c) < 0) :
+    0 < 3 * ((u + v) / 2) - (a + b + c) := by
+  let e1 : ℝ := a + b + c
+  let e2 : ℝ := a * b + a * c + b * c
+  let G : ℝ := e1 ^ 2 - 3 * e2
+  have hG_nonneg : 0 ≤ G := by
+    dsimp [G, e1, e2]
+    nlinarith [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (c - a)]
+  have hv_pos : 0 < 3 * v - e1 := by
+    dsimp [e1]
+    nlinarith
+  have hprod_eq :
+      (3 * u - e1) * (3 * v - e1) =
+        G - 3 * ((a + b + c) * (u + v) - 3 * (u * v) -
+          (a * b + a * c + b * c)) := by
+    dsimp [G, e1, e2]
+    ring
+  have hprod_pos : 0 < (3 * u - e1) * (3 * v - e1) := by
+    rw [hprod_eq]
+    nlinarith
+  have hu_pos : 0 < 3 * u - e1 := by
+    nlinarith [hprod_pos, hv_pos]
+  dsimp [e1] at hu_pos hv_pos ⊢
+  nlinarith
+
+/-- In the negative-side right-protruding branch, the midpoint coefficient
+makes the derivative discriminant of the cubic-minus-quadratic pencil
+negative. -/
+lemma cubicSubQuadratic_right_protruding_midpoint_deriv_disc_neg
+    {a b c u v : ℝ}
+    (hside : (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c) < 0) :
+    (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 <
+      3 * (a * b + a * c + b * c +
+        (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
+  have hdelta :
+      4 *
+          (3 * (a * b + a * c + b * c +
+              (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) -
+            (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2) =
+        9 * (v - u) ^ 2 -
+          12 * ((a + b + c) * (u + v) - 3 * (u * v) -
+            (a * b + a * c + b * c)) := by
+    ring
+  have hdelta_pos :
+      0 <
+        3 * (a * b + a * c + b * c +
+            (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) -
+          (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 := by
+    nlinarith [sq_nonneg (v - u), hdelta]
+  nlinarith
+
+/-- In the negative-side right-protruding branch, some positive subtraction
+coefficient makes the monic cubic-minus-quadratic pencil fail to split. -/
+lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_side_neg
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcv : c < v)
+    (hside : (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c) < 0) :
+    ∃ μ : ℝ, 0 < μ ∧
+      ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).Splits := by
+  let μ : ℝ := 3 * ((u + v) / 2) - (a + b + c)
+  have hμ : 0 < μ := by
+    dsimp [μ]
+    exact cubicSubQuadratic_right_protruding_midpoint_mu_pos
+      hab hbc hcv hside
+  exact
+    exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg hμ
+      (by
+        dsimp [μ]
+        exact cubicSubQuadratic_right_protruding_midpoint_deriv_disc_neg hside)
+
+/-- The cubic/quadratic endpoint is not compatible in the negative-side
+right-protruding branch. -/
+lemma
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_right_protruding_side_neg
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcv : c < v)
+    (hside : (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c) < 0) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_cubicSubQuadratic_not_splits_of_right_protruding_side_neg
+      hab hbc hcv hside
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := (X - C a) * (X - C b) * (X - C c))
+      (Q := (X - C u) * (X - C v))
+      hAB hμ hnot_splits
+
 /-- If the upper quadratic root lies strictly above the cubic root interval and
 the lower quadratic root lies weakly below the lower cubic root, then
 tangent at the upper quadratic root gives a negative cubic discriminant. -/
