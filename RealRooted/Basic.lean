@@ -928,6 +928,20 @@ theorem roots_nonpos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
   rw [Polynomial.IsRoot.def] at hroot
   linarith
 
+/-- A real root of a nonzero polynomial with nonnegative coefficients is
+nonpositive. -/
+theorem isRoot_nonpos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp_ne : p ≠ 0) {r : ℝ} (hr : p.IsRoot r) :
+    r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs hp r ((Polynomial.mem_roots hp_ne).mpr hr)
+
+/-- A point strictly to the left of a real root of a nonzero polynomial with
+nonnegative coefficients is negative. -/
+theorem lt_zero_of_lt_isRoot_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp_ne : p ≠ 0) {x r : ℝ} (hr : p.IsRoot r) (hxr : x < r) :
+    x < 0 :=
+  lt_of_lt_of_le hxr (isRoot_nonpos_of_hasNonnegCoeffs hp hp_ne hr)
+
 lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
     HasPosLeadingCoeff p := by
   simp [HasPosLeadingCoeff, hp.leadingCoeff]
