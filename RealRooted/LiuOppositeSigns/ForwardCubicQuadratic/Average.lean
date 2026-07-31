@@ -134,6 +134,45 @@ lemma cubicDiscr_cubicSubQuadratic_neg_of_deriv_disc_neg
       (-(a * b * c) - μ * (u * v))
       (by norm_num) hderiv'
 
+/-- Critical-value certificate for a negative cubic discriminant of a monic
+cubic-minus-quadratic pencil. -/
+lemma cubicDiscr_cubicSubQuadratic_neg_of_critical_value
+    {a b c u v μ t y : ℝ}
+    (hcrit :
+      3 * t ^ 2 - 2 * (a + b + c + μ) * t +
+        (a * b + a * c + b * c + μ * (u + v)) = 0)
+    (hvalue :
+      y =
+        (t - a) * (t - b) * (t - c) -
+          μ * ((t - u) * (t - v)))
+    (hy : y ≠ 0)
+    (hsign :
+      0 ≤ y * (3 * t - (a + b + c + μ)) ^ 3) :
+    cubicDiscr
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))) < 0 := by
+  have hcrit' :
+      3 * t ^ 2 + 2 * (-(a + b + c + μ)) * t +
+        (a * b + a * c + b * c + μ * (u + v)) = 0 := by
+    nlinarith
+  have hvalue' :
+      y =
+      t ^ 3 + (-(a + b + c + μ)) * t ^ 2 +
+          (a * b + a * c + b * c + μ * (u + v)) * t +
+            (-(a * b * c) - μ * (u * v)) := by
+    rw [hvalue]
+    ring
+  have hsign' :
+      0 ≤ y * (3 * t + (-(a + b + c + μ))) ^ 3 := by
+    simpa [sub_eq_add_neg] using hsign
+  rw [cubicSubQuadratic_eq_cubic_expansion]
+  exact
+    cubicDiscr_neg_of_critical_value
+      (p := -(a + b + c + μ))
+      (q := a * b + a * c + b * c + μ * (u + v))
+      (r := -(a * b * c) - μ * (u * v))
+      (t := t) (y := y) hcrit' hvalue' hy hsign'
+
 /-- A negative cubic discriminant certifies that the cubic-minus-quadratic
 pencil does not split. -/
 lemma not_splits_cubicSubQuadratic_of_cubicDiscr_neg

@@ -85,6 +85,23 @@ theorem cubicDiscr_of_coeffs_of_deriv_eq_zero (p q r t : ℝ)
   rw [cubicDiscr_of_coeffs]
   ring
 
+/-- Negative-discriminant certificate from a nonzero critical value.
+
+At a critical point `t` of the monic cubic `X^3 + p X^2 + q X + r`, if the
+critical value `y` has weakly the same sign as `(3*t+p)^3`, then the cubic
+coefficient discriminant is negative. -/
+theorem cubicDiscr_neg_of_critical_value
+    {p q r t y : ℝ}
+    (hcrit : 3 * t ^ 2 + 2 * p * t + q = 0)
+    (hvalue : y = t ^ 3 + p * t ^ 2 + q * t + r)
+    (hy : y ≠ 0)
+    (hsign : 0 ≤ y * (3 * t + p) ^ 3) :
+    cubicDiscr (C (1 : ℝ) * X ^ 3 + C p * X ^ 2 + C q * X + C r) < 0 := by
+  rw [cubicDiscr_of_coeffs_of_deriv_eq_zero _ _ _ _ hcrit]
+  rw [← hvalue]
+  have hy_sq_pos : 0 < y ^ 2 := sq_pos_of_ne_zero hy
+  nlinarith
+
 /-- Expansion of a monic product of three linear factors. -/
 theorem prod_three_X_sub_C_expand (a b c : ℝ) :
     (X - C a) * (X - C b) * (X - C c)

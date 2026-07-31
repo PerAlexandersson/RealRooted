@@ -299,37 +299,40 @@ lemma cubicDiscr_cubicSubQuadratic_right_protruding_tangent_neg
   have hvu_pos : 0 < v - u := sub_pos.mpr huv
   have hvu_ne : v - u ≠ 0 := ne_of_gt hvu_pos
   have hcrit :
-      3 * v ^ 2 + 2 * (-(a + b + c + μ)) * v +
+      3 * v ^ 2 - 2 * (a + b + c + μ) * v +
         (a * b + a * c + b * c + μ * (u + v)) = 0 := by
     dsimp [μ]
     field_simp [hvu_ne]
     ring_nf
+  let y : ℝ := (v - a) * (v - b) * (v - c)
   have hvalue :
-      v ^ 3 + (-(a + b + c + μ)) * v ^ 2 +
-          (a * b + a * c + b * c + μ * (u + v)) * v +
-            (-(a * b * c) - μ * (u * v)) =
-        (v - a) * (v - b) * (v - c) := by
+      y =
+        (v - a) * (v - b) * (v - c) -
+          μ * ((v - u) * (v - v)) := by
+    dsimp [y]
     ring
   have hsecond :
-      3 * v + (-(a + b + c + μ)) =
+      3 * v - (a + b + c + μ) =
         ((a + b + c) * (u + v) - 3 * (u * v) -
           (a * b + a * c + b * c)) / (v - u) := by
     dsimp [μ]
     field_simp [hvu_ne]
     ring_nf
-  rw [cubicSubQuadratic_eq_cubic_expansion]
-  rw [cubicDiscr_of_coeffs_of_deriv_eq_zero _ _ _ _ hcrit]
-  rw [hvalue, hsecond]
   have hvb_pos : 0 < v - b := sub_pos.mpr (lt_of_le_of_lt hbc hcv)
   have hvc_pos : 0 < v - c := sub_pos.mpr hcv
   have hva_pos : 0 < v - a := sub_pos.mpr (lt_of_le_of_lt (hab.trans hbc) hcv)
-  have hprod_pos : 0 < (v - a) * (v - b) * (v - c) := by positivity
+  have hy_pos : 0 < y := by
+    dsimp [y]
+    positivity
+  have hy_ne : y ≠ 0 := ne_of_gt hy_pos
   have hsecond_pos :
-      0 < ((a + b + c) * (u + v) - 3 * (u * v) -
-          (a * b + a * c + b * c)) / (v - u) :=
-    div_pos hside hvu_pos
-  nlinarith [sq_pos_of_pos hprod_pos, pow_pos hsecond_pos 3,
-    mul_pos hprod_pos (pow_pos hsecond_pos 3)]
+      0 < 3 * v - (a + b + c + μ) := by
+    rw [hsecond]
+    exact div_pos hside hvu_pos
+  have hsign :
+      0 ≤ y * (3 * v - (a + b + c + μ)) ^ 3 :=
+    le_of_lt (mul_pos hy_pos (pow_pos hsecond_pos 3))
+  exact cubicDiscr_cubicSubQuadratic_neg_of_critical_value hcrit hvalue hy_ne hsign
 
 /-- In the tangent-at-`v` right-protruding branch, some positive subtraction
 coefficient makes the monic cubic-minus-quadratic pencil fail to split. -/
