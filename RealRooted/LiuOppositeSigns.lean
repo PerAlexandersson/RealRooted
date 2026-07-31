@@ -482,16 +482,10 @@ theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
 theorem rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) {x : ℝ} (hx : ¬ p.IsRoot x) :
     rootCountAtOrAbove p x = (p.roots.filter (x < ·)).card := by
-  have hfilter : p.roots.filter (fun r => x ≤ r) = p.roots.filter (x < ·) := by
-    apply Multiset.filter_congr
-    intro r hr
-    constructor
-    · intro hxr
-      exact lt_of_le_of_ne hxr fun hx_eq => hx (by
-        have hr_root : p.IsRoot r := (Polynomial.mem_roots hp_ne).mp hr
-        simpa [hx_eq] using hr_root)
-    · intro hxr
-      exact le_of_lt hxr
+  have hx_not_mem : x ∉ p.roots := by
+    intro hx_mem
+    exact hx ((Polynomial.mem_roots hp_ne).mp hx_mem)
+  have hfilter := Multiset.filter_ge_eq_filter_gt_of_not_mem p.roots hx_not_mem
   simp [rootCountAtOrAbove, hfilter]
 
 theorem RootCountCompatible.rootCountAbove_abs_sub_le_one_of_nonRoot

@@ -38,6 +38,19 @@ lemma eval_X_mul_sub_C_mul_of_left_isRoot
     simpa [Polynomial.IsRoot.def] using hx
   simp [Polynomial.eval_sub, Polynomial.eval_mul, hpx]
 
+/-- The x-subtraction pencil does not vanish at a left root if the right
+endpoint does not vanish there. -/
+lemma not_isRoot_X_mul_sub_C_mul_of_left_isRoot
+    {p q : ℝ[X]} {x μ : ℝ} (hx : p.IsRoot x) (hμ : μ ≠ 0)
+    (hq : ¬ q.IsRoot x) :
+    ¬ (X * p - C μ * q).IsRoot x := by
+  intro hP
+  have hprod : -μ * q.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def, eval_X_mul_sub_C_mul_of_left_isRoot hx] using hP
+  have hqeval : q.eval x = 0 := by
+    exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
+  exact hq (by simpa [Polynomial.IsRoot.def] using hqeval)
+
 /-- Evaluate the x-subtraction pencil at a root of the right endpoint. -/
 lemma eval_X_mul_sub_C_mul_of_right_isRoot
     {p q : ℝ[X]} {x μ : ℝ} (hx : q.IsRoot x) :

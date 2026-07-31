@@ -181,12 +181,7 @@ theorem NoCommonRoots.not_isRoot_xSub_of_left_root
     {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
     (ha : p.IsRoot a) (hμ : μ ≠ 0) :
     ¬ (X * p - C μ * q).IsRoot a := by
-  intro hP
-  have hprod : -μ * q.eval a = 0 := by
-    simpa [Polynomial.IsRoot.def, eval_X_mul_sub_C_mul_of_left_isRoot ha] using hP
-  have hqeval : q.eval a = 0 := by
-    exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
-  exact (hno a ha) (by simpa [Polynomial.IsRoot.def] using hqeval)
+  exact not_isRoot_X_mul_sub_C_mul_of_left_isRoot ha hμ (hno a ha)
 
 /-- The x-subtraction pencil is nonzero when the left endpoint has a root and
 the two endpoint polynomials have no common roots. -/
@@ -204,10 +199,16 @@ theorem NoCommonRoots.card_xSub_roots_filter_ge_eq_filter_gt_of_left_root
     (ha : p.IsRoot a) (hμ : μ ≠ 0) :
     ((X * p - C μ * q).roots.filter (fun x => a ≤ x)).card =
       ((X * p - C μ * q).roots.filter (a < ·)).card := by
-  simpa [rootCountAtOrAbove] using
-    rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
-      (hno.xSub_ne_zero_of_left_root ha hμ)
-      (hno.not_isRoot_xSub_of_left_root ha hμ)
+  let P := X * p - C μ * q
+  have hP_ne : P ≠ 0 := by
+    simpa [P] using hno.xSub_ne_zero_of_left_root ha hμ
+  have hnot : ¬ P.IsRoot a := by
+    simpa [P] using hno.not_isRoot_xSub_of_left_root ha hμ
+  have ha_not_mem : a ∉ P.roots := by
+    intro ha_mem
+    exact hnot ((Polynomial.mem_roots hP_ne).mp ha_mem)
+  simpa [P] using congrArg Multiset.card
+    (Multiset.filter_ge_eq_filter_gt_of_not_mem P.roots ha_not_mem)
 
 /-- At a left root, the closed lower tail of the x-subtraction root multiset
 equals the strict lower tail. -/
@@ -221,17 +222,11 @@ theorem NoCommonRoots.card_xSub_roots_filter_le_eq_filter_lt_of_left_root
     simpa [P] using hno.xSub_ne_zero_of_left_root ha hμ
   have hnot : ¬ P.IsRoot a := by
     simpa [P] using hno.not_isRoot_xSub_of_left_root ha hμ
-  have hfilter : P.roots.filter (fun x => x ≤ a) = P.roots.filter (· < a) := by
-    apply Multiset.filter_congr
-    intro x hx
-    constructor
-    · intro hxa
-      exact lt_of_le_of_ne hxa fun h_eq => hnot (by
-        rw [← h_eq]
-        exact (Polynomial.mem_roots hP_ne).mp hx)
-    · intro hxa
-      exact le_of_lt hxa
-  simpa [P] using congrArg Multiset.card hfilter
+  have ha_not_mem : a ∉ P.roots := by
+    intro ha_mem
+    exact hnot ((Polynomial.mem_roots hP_ne).mp ha_mem)
+  simpa [P] using congrArg Multiset.card
+    (Multiset.filter_le_eq_filter_lt_of_not_mem P.roots ha_not_mem)
 
 /-- In a left-root gap with no interior left roots, Liu-compatible root counts
 allow at most two right roots, counted with multiplicity. -/

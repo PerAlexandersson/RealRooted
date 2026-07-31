@@ -16,6 +16,36 @@ count bound to the regime of thresholds that are roots of neither polynomial.
 
 open Polynomial
 
+namespace Multiset
+
+/-- If `a` is absent from a multiset, filtering by `a ≤ x` is the same as
+filtering by `a < x`. -/
+theorem filter_ge_eq_filter_gt_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a : α} (ha : a ∉ s) :
+    s.filter (fun x => a ≤ x) = s.filter (a < ·) := by
+  apply Multiset.filter_congr
+  intro x hx
+  constructor
+  · intro hax
+    exact lt_of_le_of_ne hax fun h_eq => ha (by simpa [h_eq] using hx)
+  · intro hax
+    exact le_of_lt hax
+
+/-- If `a` is absent from a multiset, filtering by `x ≤ a` is the same as
+filtering by `x < a`. -/
+theorem filter_le_eq_filter_lt_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a : α} (ha : a ∉ s) :
+    s.filter (fun x => x ≤ a) = s.filter (· < a) := by
+  apply Multiset.filter_congr
+  intro x hx
+  constructor
+  · intro hxa
+    exact lt_of_le_of_ne hxa fun h_eq => ha (by simpa [h_eq] using hx)
+  · intro hxa
+    exact le_of_lt hxa
+
+end Multiset
+
 namespace RealRooted
 
 /-- Local constancy of the "elements `≤` threshold" count.
