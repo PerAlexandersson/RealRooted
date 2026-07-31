@@ -10,6 +10,16 @@ noncomputable section
 
 namespace Polynomial
 
+/-- A polynomial splits if a submultiset of its roots already has cardinality
+at least its natural degree. -/
+theorem splits_of_le_roots_of_natDegree_le_card
+    {K : Type*} [Field K] {p : K[X]} {s : Multiset K}
+    (hsub : s ≤ p.roots) (hdeg : p.natDegree ≤ s.card) : p.Splits := by
+  rw [splits_iff_card_roots]
+  apply le_antisymm
+  · exact card_roots' p
+  · exact hdeg.trans (Multiset.card_le_card hsub)
+
 /-- Sign of a product `prod (x - r)` over a multiset of reals, provided none of
 the factors vanish.  The product is positive exactly when an even number of
 terms lie strictly above `x`. -/

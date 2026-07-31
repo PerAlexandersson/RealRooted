@@ -57,13 +57,8 @@ lemma splits_of_roots_list_of_natDegree_le {p : ℝ[X]} {rs : List ℝ}
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnd)]
     intro r hr
     exact (mem_roots hp_ne).mpr (hroot r (Multiset.mem_coe.mp hr))
-  apply splits_of_card_roots
-  apply le_antisymm
-  · exact card_roots' p
-  · calc
-      p.natDegree ≤ rs.length := hdeg
-      _ = (↑rs : Multiset ℝ).card := (Multiset.coe_card rs).symm
-      _ ≤ p.roots.card := Multiset.card_le_card hsub
+  exact Polynomial.splits_of_le_roots_of_natDegree_le_card hsub
+    (by simpa using hdeg)
 
 /-- A nonzero polynomial of degree at most three splits when it has three
 ordered real roots. -/
