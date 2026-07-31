@@ -597,6 +597,24 @@ theorem theorem21CompatibleRootCount_of_forward_and_xSub
   theorem21CompatibleRootCount_of_forward_and_reverse hforward
     theorem21RootCountBranchesToCompatible_of_xSub
 
+/-- The no-common forward direction plus the proved x-subtraction reverse route
+give the reduced common-root Liu Theorem 2.1 statement in root-count form. -/
+theorem theorem21CompatibleRootCountReduced_of_noCommonForward_and_xSub
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
+    theorem21CompatibleRootCountReducedStatement :=
+  theorem21CompatibleRootCountReduced_of_noCommon_forward_and_reverse hforward
+    (theorem21RootCountBranchesToCompatibleNoCommon_of_reverse
+      theorem21RootCountBranchesToCompatible_of_xSub)
+
+/-- The no-common forward direction plus the proved x-subtraction reverse route
+give the corrected common-root-branch Liu Theorem 2.1 statement in root-count
+form. -/
+theorem theorem21CompatibleRootCountWithCommon_of_noCommonForward_and_xSub
+    (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
+    theorem21CompatibleRootCountWithCommonStatement :=
+  theorem21CompatibleRootCountWithCommon_of_noCommonForward_and_reverse hforward
+    theorem21RootCountBranchesToCompatible_of_xSub
+
 /-- The isolated nonconstant forward direction plus the proved x-subtraction
 reverse route give the nonconstant Liu Theorem 2.1 statement in root-count
 form. -/
