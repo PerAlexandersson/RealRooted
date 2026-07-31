@@ -511,5 +511,87 @@ theorem theorem41_of_claim7_of_constant_matches_succ_length
     (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hconst := hconst)
     (w := w) hw
 
+/-- Package the Claim `(7)` induction theorem as the abstract route predicate,
+with the constant-word branch reduced to a length-model identity. -/
+theorem theorem41InductionRoute_of_claim7_of_constant_matches_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hclaim_of_inputs :
+      Lemma33AuxiliaryGInterlacesStatement P G →
+        Lemma34ModifiedNarayanaInterlacingStatement P →
+          Theorem41Claim7Statement P G)
+    (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
+    Theorem41InductionRouteStatement M P G := by
+  intro h33 h34 hrec
+  exact theorem41_of_claim7_of_constant_matches_length
+    (M := M) (P := P) (G := G)
+    (hrec := hrec) (hclaim := hclaim_of_inputs h33 h34)
+    (hP_interlaces := hP_interlaces) (hG := hG)
+    (hP_one := hP_one) (hG_one := hG_one)
+    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
+    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
+
+/-- Package the Claim `(7)` induction theorem as the abstract route predicate,
+with the constant-word branch reduced to the concrete successor-length identity. -/
+theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hclaim_of_inputs :
+      Lemma33AuxiliaryGInterlacesStatement P G →
+        Lemma34ModifiedNarayanaInterlacingStatement P →
+          Theorem41Claim7Statement P G)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
+    Theorem41InductionRouteStatement M P G := by
+  intro h33 h34 hrec
+  exact theorem41_of_claim7_of_constant_matches_succ_length
+    (M := M) (P := P) (G := G)
+    (hrec := hrec) (hclaim := hclaim_of_inputs h33 h34)
+    (hP_interlaces := hP_interlaces) (hG := hG)
+    (hP_one := hP_one) (hG_one := hG_one)
+    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
+    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
+
+/-- Matrix Claim `(6)` version of the abstract route bridge, using the
+successor-length constant-word identity from the concrete indexing. -/
+theorem theorem41InductionRoute_of_matrixClaim_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hmatrix_of_inputs :
+      Lemma33AuxiliaryGInterlacesStatement P G →
+        Lemma34ModifiedNarayanaInterlacingStatement P →
+          Theorem41MatrixClaimStatement P G)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
+    Theorem41InductionRouteStatement M P G :=
+  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
+    (M := M) (P := P) (G := G)
+    (fun h33 h34 => (theorem41MatrixClaim_iff_claim7 P G).mp
+      (hmatrix_of_inputs h33 h34))
+    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
+    hM_const
+
 end GeneralizedSnakePosets
 end RealRooted
