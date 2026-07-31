@@ -197,6 +197,98 @@ theorem NoCommonRoots.xSub_ne_zero_of_left_root
   intro hzero
   exact hno.not_isRoot_xSub_of_left_root ha hμ (by rw [hzero]; simp)
 
+/-- At a left root, the closed upper tail of the x-subtraction root multiset
+equals the strict upper tail. -/
+theorem NoCommonRoots.card_xSub_roots_filter_ge_eq_filter_gt_of_left_root
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hμ : μ ≠ 0) :
+    ((X * p - C μ * q).roots.filter (fun x => a ≤ x)).card =
+      ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  simpa [rootCountAtOrAbove] using
+    rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
+      (hno.xSub_ne_zero_of_left_root ha hμ)
+      (hno.not_isRoot_xSub_of_left_root ha hμ)
+
+/-- At a left root, the closed lower tail of the x-subtraction root multiset
+equals the strict lower tail. -/
+theorem NoCommonRoots.card_xSub_roots_filter_le_eq_filter_lt_of_left_root
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hμ : μ ≠ 0) :
+    ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card =
+      ((X * p - C μ * q).roots.filter (· < a)).card := by
+  let P := X * p - C μ * q
+  have hP_ne : P ≠ 0 := by
+    simpa [P] using hno.xSub_ne_zero_of_left_root ha hμ
+  have hnot : ¬ P.IsRoot a := by
+    simpa [P] using hno.not_isRoot_xSub_of_left_root ha hμ
+  have hfilter : P.roots.filter (fun x => x ≤ a) = P.roots.filter (· < a) := by
+    apply Multiset.filter_congr
+    intro x hx
+    constructor
+    · intro hxa
+      exact lt_of_le_of_ne hxa fun h_eq => hnot (by
+        rw [← h_eq]
+        exact (Polynomial.mem_roots hP_ne).mp hx)
+    · intro hxa
+      exact le_of_lt hxa
+  simpa [P] using congrArg Multiset.card hfilter
+
+/-- A closed upper-tail x-subtraction witness at a left root is counted in the
+strict upper tail. -/
+theorem NoCommonRoots.one_le_card_xSub_roots_filter_gt_of_left_root_right_eval_nonneg
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : 0 ≤ q.eval a) (hμ : 0 < μ)
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    1 ≤ ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  have hP_ne : X * p - C μ * q ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hclosed :=
+    one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
+      ha hq_a hμ hP_ne htop
+  rwa [hno.card_xSub_roots_filter_ge_eq_filter_gt_of_left_root ha hμ.ne'] at hclosed
+
+/-- A closed upper-tail x-subtraction witness at a left root is counted in the
+strict upper tail, in the nonpositive endpoint-value/asymptotic branch. -/
+theorem NoCommonRoots.one_le_card_xSub_roots_filter_gt_of_left_root_right_eval_nonpos
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : q.eval a ≤ 0) (hμ : 0 < μ)
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atBot) :
+    1 ≤ ((X * p - C μ * q).roots.filter (a < ·)).card := by
+  have hP_ne : X * p - C μ * q ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hclosed :=
+    one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonpos
+      ha hq_a hμ hP_ne htop
+  rwa [hno.card_xSub_roots_filter_ge_eq_filter_gt_of_left_root ha hμ.ne'] at hclosed
+
+/-- A closed lower-tail x-subtraction witness at a left root is counted in the
+strict lower tail. -/
+theorem NoCommonRoots.one_le_card_xSub_roots_filter_lt_of_left_root_right_eval_nonneg
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : 0 ≤ q.eval a) (hμ : 0 < μ)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atTop) :
+    1 ≤ ((X * p - C μ * q).roots.filter (· < a)).card := by
+  have hP_ne : X * p - C μ * q ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hclosed :=
+    one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
+      ha hq_a hμ hP_ne hbot
+  rwa [hno.card_xSub_roots_filter_le_eq_filter_lt_of_left_root ha hμ.ne'] at hclosed
+
+/-- A closed lower-tail x-subtraction witness at a left root is counted in the
+strict lower tail, in the nonpositive endpoint-value/asymptotic branch. -/
+theorem NoCommonRoots.one_le_card_xSub_roots_filter_lt_of_left_root_right_eval_nonpos
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hq_a : q.eval a ≤ 0) (hμ : 0 < μ)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atBot) :
+    1 ≤ ((X * p - C μ * q).roots.filter (· < a)).card := by
+  have hP_ne : X * p - C μ * q ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hclosed :=
+    one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
+      ha hq_a hμ hP_ne hbot
+  rwa [hno.card_xSub_roots_filter_le_eq_filter_lt_of_left_root ha hμ.ne'] at hclosed
+
 /-- In a left-root gap with no interior left roots, Liu-compatible root counts
 allow at most two right roots, counted with multiplicity. -/
 theorem RootCountCompatible.card_right_roots_filter_Ioo_le_two_of_left_no_isRoot_Ioo
