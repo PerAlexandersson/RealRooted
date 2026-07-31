@@ -257,6 +257,26 @@ theorem PositiveSplitRootCountPair.min_two_card_xSub_Ioo_of_adjacent_left_roots
     hp_nonneg hno hab ha hb hμ hp_no
 
 /-- Summing over adjacent entries of the sorted distinct left-root list, the
+local `min 2` lower bounds for right-root counts transfer to the corresponding
+open-interval root counts of the x-subtraction pencil. -/
+theorem PositiveSplitRootCountPair.sum_min_two_right_roots_le_sum_xSub_roots_Ioo
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {μ : ℝ} (hμ : 0 < μ) :
+    (((p.roots.toFinset.sort (· ≤ ·)).zip
+        (p.roots.toFinset.sort (· ≤ ·)).tail).map
+        (fun ab => min 2
+          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+      (((p.roots.toFinset.sort (· ≤ ·)).zip
+        (p.roots.toFinset.sort (· ≤ ·)).tail).map
+        (fun ab => ((X * p - C μ * q).roots.filter
+          (fun x => ab.1 < x ∧ x < ab.2)).card)).sum := by
+  apply List.sum_le_sum
+  intro ab hab
+  exact hpair.min_two_card_xSub_Ioo_of_adjacent_left_roots
+    hp_nonneg hno hab hμ
+
+/-- Summing over adjacent entries of the sorted distinct left-root list, the
 local `min 2` lower bounds for the right-root counts are bounded by the
 strict-upper root count of the x-subtraction pencil above the first left root.
 
@@ -280,13 +300,8 @@ theorem PositiveSplitRootCountPair.sum_min_two_le_card_xSub_gt_of_roots_sort_con
         (gaps.map
           (fun ab => (P.roots.filter
             (fun x => ab.1 < x ∧ x < ab.2)).card)).sum := by
-    apply List.sum_le_sum
-    intro ab hab
-    have hab_mem : ab ∈ (p.roots.toFinset.sort (· ≤ ·)).zip
-        (p.roots.toFinset.sort (· ≤ ·)).tail := by
-      simpa [gaps, hrs] using hab
-    exact hpair.min_two_card_xSub_Ioo_of_adjacent_left_roots
-      hp_nonneg hno hab_mem hμ
+    simpa [gaps, P, hrs] using
+      hpair.sum_min_two_right_roots_le_sum_xSub_roots_Ioo hp_nonneg hno hμ
   have hchain : (a :: xs).IsChain (· < ·) := by
     have hpair_rs :
         (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
