@@ -494,5 +494,175 @@ theorem
   exact le_trans (Nat.add_le_add_left htail_one _)
     (by simpa [tailCard, last] using hsum_tail)
 
+/-- For at least two distinct left-root locations, the closed lower tail at the
+first left root, the summed adjacent-gap `min 2` lower bounds, and the closed
+upper tail at the last left root fit disjointly inside the full root multiset
+of the x-subtraction pencil. -/
+theorem
+    PositiveSplitRootCountPair.lower_sum_upper_le_card_xSub_roots_of_roots_sort
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ) :
+    ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card +
+        (((a :: b :: xs).zip (b :: xs)).map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+      ((X * p - C μ * q).roots.filter
+        (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card ≤
+    (X * p - C μ * q).roots.card := by
+  let P := X * p - C μ * q
+  let gaps := (a :: b :: xs).zip (b :: xs)
+  have hpoint :
+      (gaps.map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum ≤
+        (gaps.map
+          (fun ab => (P.roots.filter
+            (fun x => ab.1 < x ∧ x < ab.2)).card)).sum := by
+    simpa [gaps, P, hrs] using
+      hpair.sum_min_two_right_roots_le_sum_xSub_roots_Ioo hp_nonneg hno hμ
+  have hchain : (a :: b :: xs).IsChain (· < ·) := by
+    have hpair_rs :
+        (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
+      (Finset.sortedLT_sort p.roots.toFinset).pairwise
+    have hchain_rs : (p.roots.toFinset.sort (· ≤ ·)).IsChain (· < ·) :=
+      hpair_rs.isChain
+    simpa [hrs] using hchain_rs
+  have hpack :=
+    card_filter_le_add_sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card
+      (s := P.roots) hchain
+  have hmono :
+      (P.roots.filter (fun x => x ≤ a)).card +
+          (gaps.map
+            (fun ab => min 2
+              (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        (P.roots.filter
+          (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card ≤
+      (P.roots.filter (fun x => x ≤ a)).card +
+          (gaps.map
+            (fun ab => (P.roots.filter
+              (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+        (P.roots.filter
+          (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) ≤ x)).card :=
+    Nat.add_le_add (Nat.add_le_add_left hpoint _) le_rfl
+  exact le_trans hmono (by simpa [P, gaps] using hpack)
+
+/-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
+the first left root and the nonnegative-sign upper-tail witness at the last
+left root, then the full root multiset contains one lower-tail root, the
+summed adjacent-gap `min 2` roots, and one upper-tail root. -/
+theorem
+    PositiveSplitRootCountPair.one_sum_one_le_card_xSub_roots_of_roots_sort_of_q_nonneg_nonneg
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
+    (hq_first : 0 ≤ q.eval a)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atTop)
+    (hq_last : 0 ≤ q.eval ((b :: xs).getLast (List.cons_ne_nil b xs)))
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    1 +
+        (((a :: b :: xs).zip (b :: xs)).map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+      1 ≤
+    (X * p - C μ * q).roots.card := by
+  let last := (b :: xs).getLast (List.cons_ne_nil b xs)
+  let P := X * p - C μ * q
+  let gapSum :=
+    (((a :: b :: xs).zip (b :: xs)).map
+      (fun ab => min 2
+        (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
+  let lowerTail := (P.roots.filter (fun x => x ≤ a)).card
+  let upperTail := (P.roots.filter (fun x => last ≤ x)).card
+  have ha_mem : a ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    simp [hrs]
+  have ha : p.IsRoot a := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at ha_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp ha_mem
+  have hlast_mem_tail : last ∈ b :: xs :=
+    List.getLast_mem (List.cons_ne_nil b xs)
+  have hlast_mem : last ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    rw [hrs]
+    exact List.mem_cons.mpr (Or.inr hlast_mem_tail)
+  have hlast : p.IsRoot last := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at hlast_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hlast_mem
+  have hP_ne : P ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hlower_one : 1 ≤ lowerTail := by
+    simpa [lowerTail, P] using
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
+        ha hq_first hμ hP_ne hbot
+  have hupper_one : 1 ≤ upperTail := by
+    simpa [upperTail, last, P] using
+      one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
+        hlast hq_last hμ hP_ne htop
+  have hpack :=
+    hpair.lower_sum_upper_le_card_xSub_roots_of_roots_sort
+      hp_nonneg hno hrs hμ
+  have hmono : 1 + gapSum + 1 ≤ lowerTail + gapSum + upperTail :=
+    Nat.add_le_add (Nat.add_le_add hlower_one le_rfl) hupper_one
+  exact le_trans hmono (by simpa [lowerTail, upperTail, gapSum, last, P] using hpack)
+
+/-- If the x-subtraction pencil has the nonpositive-sign lower-tail witness at
+the first left root and the nonnegative-sign upper-tail witness at the last
+left root, then the full root multiset contains one lower-tail root, the
+summed adjacent-gap `min 2` roots, and one upper-tail root. -/
+theorem
+    PositiveSplitRootCountPair.one_sum_one_le_card_xSub_roots_of_roots_sort_of_q_nonpos_nonneg
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
+    {a b μ : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
+    (hq_first : q.eval a ≤ 0)
+    (hbot : Tendsto (fun x => (X * p - C μ * q).eval x) atBot atBot)
+    (hq_last : 0 ≤ q.eval ((b :: xs).getLast (List.cons_ne_nil b xs)))
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    1 +
+        (((a :: b :: xs).zip (b :: xs)).map
+          (fun ab => min 2
+            (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
+      1 ≤
+    (X * p - C μ * q).roots.card := by
+  let last := (b :: xs).getLast (List.cons_ne_nil b xs)
+  let P := X * p - C μ * q
+  let gapSum :=
+    (((a :: b :: xs).zip (b :: xs)).map
+      (fun ab => min 2
+        (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
+  let lowerTail := (P.roots.filter (fun x => x ≤ a)).card
+  let upperTail := (P.roots.filter (fun x => last ≤ x)).card
+  have ha_mem : a ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    simp [hrs]
+  have ha : p.IsRoot a := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at ha_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp ha_mem
+  have hlast_mem_tail : last ∈ b :: xs :=
+    List.getLast_mem (List.cons_ne_nil b xs)
+  have hlast_mem : last ∈ p.roots.toFinset.sort (· ≤ ·) := by
+    rw [hrs]
+    exact List.mem_cons.mpr (Or.inr hlast_mem_tail)
+  have hlast : p.IsRoot last := by
+    rw [Finset.mem_sort, Multiset.mem_toFinset] at hlast_mem
+    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hlast_mem
+  have hP_ne : P ≠ 0 :=
+    hno.xSub_ne_zero_of_left_root ha hμ.ne'
+  have hlower_one : 1 ≤ lowerTail := by
+    simpa [lowerTail, P] using
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
+        ha hq_first hμ hP_ne hbot
+  have hupper_one : 1 ≤ upperTail := by
+    simpa [upperTail, last, P] using
+      one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
+        hlast hq_last hμ hP_ne htop
+  have hpack :=
+    hpair.lower_sum_upper_le_card_xSub_roots_of_roots_sort
+      hp_nonneg hno hrs hμ
+  have hmono : 1 + gapSum + 1 ≤ lowerTail + gapSum + upperTail :=
+    Nat.add_le_add (Nat.add_le_add hlower_one le_rfl) hupper_one
+  exact le_trans hmono (by simpa [lowerTail, upperTail, gapSum, last, P] using hpack)
+
 end LiuOppositeSigns
 end RealRooted
