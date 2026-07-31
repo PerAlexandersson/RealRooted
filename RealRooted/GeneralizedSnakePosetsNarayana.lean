@@ -459,6 +459,39 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
   modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 
+/-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
+
+This discharges the standard modified-Narayana facts and the elementary
+auxiliary-`G` facts from the generic Section 3 route.  The remaining hypotheses
+are the all-`n` equation `(2)`, Claim `(7)` side conditions, adjacent
+interlacing of the auxiliary `G` column, and the word-family side conditions.
+-/
+theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]}
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hside :
+      Theorem41Claim7SideConditions
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hG : ∀ {m : ℕ}, 2 ≤ m →
+      Prec (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const :
+      ∀ {w : SnakeWord}, w.IsConstant →
+        M w = modifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41InductionRouteStatement
+      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
+  theorem41InductionRoute_of_section3_of_constant_matches_succ_length
+    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
+    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
+    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
+    modifiedNarayanaPolynomial_hasNonnegCoeffs
+    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
+
 /-- The concrete `G_2` auxiliary polynomial is twice `P_1`. -/
 theorem auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one :
     FiniteSkewBoard.auxiliaryG 2 =
