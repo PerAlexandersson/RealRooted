@@ -432,6 +432,28 @@ theorem theorem41_of_claim7_of_constant_cases
       (M := M) (P := P) (G := G) (w := w) (k := k)
       hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
 
+/-- The deletion degree bridge follows from the length-indexed degree formula
+for the whole snake-word family. -/
+theorem theorem41_degree_bridge_of_natDegree_length
+    {M : SnakeWord → ℝ[X]}
+    (hdegM : ∀ w : SnakeWord, (M w).natDegree = w.length) :
+    ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree := by
+  intro w hw
+  rw [hdegM w.deleteFinal, hdegM w, SnakeWord.length_deleteFinal]
+  lia
+
+/-- The deletion degree bridge follows from the successor-length degree formula
+for the whole snake-word family. -/
+theorem theorem41_degree_bridge_of_natDegree_succ_length
+    {M : SnakeWord → ℝ[X]}
+    (hdegM : ∀ w : SnakeWord, (M w).natDegree = w.length + 1) :
+    ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree := by
+  intro w hw
+  rw [hdegM w.deleteFinal, hdegM w, SnakeWord.length_deleteFinal]
+  lia
+
 /-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
 constant-word branch reduced to a length-model identity.
 
