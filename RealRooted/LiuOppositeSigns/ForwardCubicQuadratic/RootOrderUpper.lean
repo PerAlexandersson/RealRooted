@@ -135,7 +135,7 @@ lemma not_right_protruding_tangent_of_compatible_natDegree_three_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
     (huv : u < v)
-    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+    (hside : 0 ≤ (a + b + c) * (u + v) - 3 * (u * v) -
       (a * b + a * c + b * c))
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
     ¬ c < v := by
@@ -211,7 +211,7 @@ lemma upper_quadratic_root_le_upper_cubic_root_of_tangent_side
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
     (huv : u < v)
-    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+    (hside : 0 ≤ (a + b + c) * (u + v) - 3 * (u * v) -
       (a * b + a * c + b * c))
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
     v ≤ c := by
