@@ -514,8 +514,9 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
     exact ⟨B, by ring⟩
   exact hsum.mpr hBB
 
-/-- A nonzero splitting polynomial with an even number of roots in an open
-interval has same-sign endpoint values, provided neither endpoint is a root. -/
+/-- A nonzero splitting polynomial with an even number of roots, counted with
+multiplicity, in an open interval has same-sign endpoint values, provided
+neither endpoint is a root. -/
 theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
     {a b : ℝ} (hab : a ≤ b)
@@ -560,9 +561,9 @@ theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
   rw [hcalc, hpow, mul_one] at hnorm_prod
   exact (mul_pos_iff_of_pos_right hlc_sq).mp hnorm_prod
 
-/-- A nonzero splitting polynomial with an odd number of roots in an open
-interval has opposite-sign endpoint values, provided neither endpoint is a
-root. -/
+/-- A nonzero splitting polynomial with an odd number of roots, counted with
+multiplicity, in an open interval has opposite-sign endpoint values, provided
+neither endpoint is a root. -/
 theorem eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits)
     {a b : ℝ} (hab : a ≤ b)

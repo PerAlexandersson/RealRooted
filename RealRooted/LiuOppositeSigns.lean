@@ -540,6 +540,89 @@ theorem RootCountCompatible.rootCountAbove_shift_Ioc_abs_le_one
   rw [hjump]
   simpa using hbabs
 
+/-- If the left polynomial has no roots in `(a, b)` and the right polynomial
+has at least two roots in `(a, b)`, Liu-compatible root counts force the right
+strict-upper count at `a` to exceed the left strict-upper count by exactly one.
+-/
+theorem RootCountCompatible.card_right_roots_gt_eq_left_roots_gt_add_one_of_left_no_isRoot_Ioo
+    {p q : ℝ[X]} (h : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {a b : ℝ}
+    (hab : a < b)
+    (hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z)
+    (hqb : ¬ q.IsRoot b)
+    (htwo : 2 ≤ (q.roots.filter (fun r => a < r ∧ r < b)).card) :
+    (q.roots.filter (a < ·)).card = (p.roots.filter (a < ·)).card + 1 := by
+  let P := (p.roots.filter (a < ·)).card
+  let Qa := (q.roots.filter (a < ·)).card
+  let Qb := (q.roots.filter (b < ·)).card
+  let I := (q.roots.filter (fun r => a < r ∧ r < b)).card
+  have hP_at_b : rootCountAtOrAbove p b = P := by
+    have hfilter :
+        p.roots.filter (fun r => b ≤ r) = p.roots.filter (a < ·) := by
+      apply Multiset.filter_congr
+      intro r hr
+      constructor
+      · intro hbr
+        exact lt_of_lt_of_le hab hbr
+      · intro har
+        by_contra hbr
+        exact hp_no r har (lt_of_not_ge hbr)
+          ((Polynomial.mem_roots hp_ne).mp hr)
+    simp [rootCountAtOrAbove, P, hfilter]
+  have hQ_at_b : rootCountAtOrAbove q b = Qb := by
+    simpa [Qb] using rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
+      hq_ne hqb
+  have hP_Qb_le : ((P : ℤ) - Qb) ≤ 1 := by
+    simpa [hP_at_b, hQ_at_b] using (h.bounds b).1
+  have habove :=
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot hp_ne hq_ne
+      (fun x hpx hqx =>
+        h.rootCountAbove_bounds_of_nonRoot hp_ne hq_ne hpx hqx) a
+  have hQa_P_le : ((Qa : ℤ) - P) ≤ 1 := by
+    simpa [P, Qa] using habove.2
+  have hq_not_mem_b : b ∉ q.roots := by
+    intro hb_mem
+    exact hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
+  have hpart : I + Qb = Qa := by
+    simpa [I, Qb, Qa] using
+      card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
+        q.roots (le_of_lt hab) hq_not_mem_b
+  have htwo' : 2 ≤ I := by
+    simpa [I] using htwo
+  have hQa_eq_int : (Qa : ℤ) = (P : ℤ) + 1 := by
+    have hpart_int : (I : ℤ) + Qb = Qa := by
+      exact_mod_cast hpart
+    have htwo_int : (2 : ℤ) ≤ I := by
+      exact_mod_cast htwo'
+    linarith
+  have hQa_eq : Qa = P + 1 := by
+    exact_mod_cast hQa_eq_int
+  simpa [P, Qa] using hQa_eq
+
+/-- If the left polynomial has no roots in `(a, b)` and the right polynomial
+has at least two roots in `(a, b)`, Liu-compatible root counts force opposite
+parity between the left strict-upper count at `a` and the right strict-upper
+count at `a`. -/
+theorem RootCountCompatible.odd_card_roots_gt_add_of_left_no_isRoot_Ioo
+    {p q : ℝ[X]} (h : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {a b : ℝ}
+    (hab : a < b)
+    (hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z)
+    (hqb : ¬ q.IsRoot b)
+    (htwo : 2 ≤ (q.roots.filter (fun r => a < r ∧ r < b)).card) :
+    Odd ((p.roots.filter (a < ·)).card +
+      (q.roots.filter (a < ·)).card) := by
+  let P := (p.roots.filter (a < ·)).card
+  have hQa_eq :
+      (q.roots.filter (a < ·)).card = P + 1 := by
+    simpa [P] using
+      h.card_right_roots_gt_eq_left_roots_gt_add_one_of_left_no_isRoot_Ioo
+        hp_ne hq_ne hab hp_no hqb htwo
+  refine ⟨P, ?_⟩
+  change P + (q.roots.filter (a < ·)).card = 2 * P + 1
+  rw [hQa_eq]
+  ring
+
 /-- Move a real threshold strictly downward without crossing any element of a
 finite multiset. -/
 theorem exists_threshold_no_mem_Ico_left (s : Multiset ℝ) (x : ℝ) :

@@ -141,10 +141,11 @@ lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_left_roots_right_root_signs
     exists_isRoot_between_of_eval_mul_neg hyb hright_sign
   exact ⟨c₁, c₂, hac₁, hc₁y, hyc₂, hc₂b, hc₁_root, hc₂_root⟩
 
-/-- If the right endpoint has an even number of roots in `(a, b)`, then its
-values at `a` and `b` have the same sign.  Hence one sign comparison between
-`q.eval a` and `p.eval y` gives the two sign changes needed for one
-x-subtraction root on each side of the right root `y`. -/
+/-- If the right polynomial `q` has an even number of roots in `(a, b)`, counted
+with multiplicity, then its values at `a` and `b` have the same sign when `b` is
+not a root of `q`.  Hence one sign comparison between `q.eval a` and `p.eval y`
+gives the two sign changes needed for one x-subtraction root on each side of the
+right-polynomial root `y`. -/
 lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots_left_sign
     {p q : ℝ[X]} (hq_ne : q ≠ 0) (hq : q.Splits) {a b y μ : ℝ}
     (hay : a < y) (hyb : y < b)

@@ -92,6 +92,56 @@ theorem NoCommonRoots.exists_isRoot_between_X_mul_sub_C_mul_of_odd_right_roots
   exists_isRoot_between_X_mul_sub_C_mul_of_left_roots_odd_right_roots
     hq_ne hq hab ha hb hμ hodd (h a ha) (h b hb)
 
+/-- Root-count compatibility supplies the missing endpoint sign when the right
+polynomial has an even number of roots, counted with multiplicity, in the
+bracket.  If a right-polynomial root lies between two consecutive left roots,
+the x-subtraction pencil has one root on each side of that right-polynomial
+root. -/
+theorem RootCountCompatible.exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots
+    {p q : ℝ[X]} (hcount : RootCountCompatible p q)
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    {a b y μ : ℝ} (hay : a < y) (hyb : y < b)
+    (ha : p.IsRoot a) (hb : p.IsRoot b) (hy : q.IsRoot y)
+    (hμ : 0 < μ) (hy_neg : y < 0)
+    (hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z)
+    (hqa : ¬ q.IsRoot a) (hqb : ¬ q.IsRoot b)
+    (heven : Even (q.roots.filter (fun x => a < x ∧ x < b)).card) :
+    ∃ c₁ c₂ : ℝ,
+      a < c₁ ∧ c₁ < y ∧ y < c₂ ∧ c₂ < b ∧
+        (X * p - C μ * q).IsRoot c₁ ∧ (X * p - C μ * q).IsRoot c₂ := by
+  have hab : a < b := lt_trans hay hyb
+  have htwo := two_le_card_roots_filter_Ioo_of_even_of_isRoot
+    hq_ne hy hay hyb heven
+  have hodd_a :=
+    hcount.odd_card_roots_gt_add_of_left_no_isRoot_Ioo
+      hp_ne hq_ne hab hp_no hqb htwo
+  have hp_count_eq :
+      (p.roots.filter (a < ·)).card = (p.roots.filter (y < ·)).card := by
+    refine card_filter_lt_eq_of_no_mem_Ioc p.roots (le_of_lt hay) ?_
+    intro r hr
+    by_cases hra : r ≤ a
+    · exact Or.inl hra
+    · right
+      by_contra hyr
+      have har : a < r := lt_of_not_ge hra
+      have hry : r ≤ y := le_of_not_gt hyr
+      exact hp_no r har (lt_of_le_of_lt hry hyb)
+        ((Polynomial.mem_roots hp_ne).mp hr)
+  have hodd_y :
+      Odd ((p.roots.filter (y < ·)).card +
+        (q.roots.filter (a < ·)).card) := by
+    simpa [hp_count_eq] using hodd_a
+  have hp_not_y : ¬ p.IsRoot y := hp_no y hay hyb
+  have hp_y_q_a_neg : p.eval y * q.eval a < 0 :=
+    hp.eval_mul_eval_neg_of_odd_card_roots_gt_add
+      hq hp_pos hq_pos hp_not_y hqa hodd_y
+  have hq_a_p_y_neg : q.eval a * p.eval y < 0 := by
+    simpa [mul_comm] using hp_y_q_a_neg
+  exact exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots_left_sign
+    hq_ne hq hay hyb ha hb hy hμ hy_neg heven hqb hq_a_p_y_neg
+
 /-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
 common roots, and `g` is root-free in `(a, b)`, then all sufficiently small
 right-family perturbations `g + C μ * f` are root-free on `[a, b]`. -/

@@ -128,6 +128,45 @@ theorem Splits.even_card_roots_gt_add_iff_eval_pos_iff
   rw [hp.eval_pos_iff_even_card_roots_gt hp_pos hxp,
     hq.eval_pos_iff_even_card_roots_gt hq_pos hxq, ← Nat.even_add]
 
+/-- If the strict-upper root counts at possibly different non-root thresholds
+have odd combined parity, then the two endpoint values have opposite signs. -/
+theorem Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    {x y : ℝ} (hxp : ¬ p.IsRoot x) (hyq : ¬ q.IsRoot y)
+    (hodd :
+      Odd ((p.roots.filter (x < ·)).card +
+        (q.roots.filter (y < ·)).card)) :
+    p.eval x * q.eval y < 0 := by
+  let P := (p.roots.filter (x < ·)).card
+  let Q := (q.roots.filter (y < ·)).card
+  have hp_eval_ne : p.eval x ≠ 0 := by
+    intro hzero
+    exact hxp (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hq_eval_ne : q.eval y ≠ 0 := by
+    intro hzero
+    exact hyq (by simpa [Polynomial.IsRoot.def] using hzero)
+  have hodd' : Odd (P + Q) := by
+    simpa [P, Q] using hodd
+  by_cases hpx_pos : 0 < p.eval x
+  · have hP_even : Even P := by
+      simpa [P] using (hp.eval_pos_iff_even_card_roots_gt hp_pos hxp).mp hpx_pos
+    have hodd_iff : Odd P ↔ Even Q := Nat.odd_add.mp hodd'
+    have hP_not_odd : ¬ Odd P := Nat.not_odd_iff_even.mpr hP_even
+    have hQ_odd : Odd Q := Nat.not_even_iff_odd.mp fun hQ_even =>
+      hP_not_odd (hodd_iff.mpr hQ_even)
+    have hqy_neg : q.eval y < 0 := by
+      simpa [Q] using (hq.eval_neg_iff_odd_card_roots_gt hq_pos hyq).mpr hQ_odd
+    exact mul_neg_of_pos_of_neg hpx_pos hqy_neg
+  · have hpx_neg : p.eval x < 0 :=
+      lt_of_le_of_ne (le_of_not_gt hpx_pos) hp_eval_ne
+    have hP_odd : Odd P := by
+      simpa [P] using (hp.eval_neg_iff_odd_card_roots_gt hp_pos hxp).mp hpx_neg
+    have hQ_even : Even Q := (Nat.odd_add.mp hodd').mp hP_odd
+    have hqy_pos : 0 < q.eval y := by
+      simpa [Q] using (hq.eval_pos_iff_even_card_roots_gt hq_pos hyq).mpr hQ_even
+    exact mul_neg_of_neg_of_pos hpx_neg hqy_pos
+
 /-- The roots weakly below `x` and strictly above `x`, counted with
 multiplicity, partition the roots of a splitting polynomial. -/
 theorem Splits.card_filter_le_add_card_filter_lt_eq_natDegree
