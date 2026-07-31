@@ -31,6 +31,24 @@ lemma cubicSubQuadratic_right_protruding_left_below_mu_pos
     positivity
   exact div_pos hnum hvu_pos
 
+/-- The tangent-at-`v` coefficient is positive whenever `u < v` and `v` lies
+strictly above the cubic root interval. -/
+lemma cubicSubQuadratic_right_protruding_tangent_mu_pos
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (huv : u < v)
+    (hcv : c < v) :
+    0 <
+      ((v - b) * (v - c) + (v - a) * (v - c) +
+        (v - a) * (v - b)) / (v - u) := by
+  have hvb_pos : 0 < v - b := sub_pos.mpr (lt_of_le_of_lt hbc hcv)
+  have hvc_pos : 0 < v - c := sub_pos.mpr hcv
+  have hva_pos : 0 < v - a := sub_pos.mpr (lt_of_le_of_lt (hab.trans hbc) hcv)
+  have hvu_pos : 0 < v - u := sub_pos.mpr huv
+  have hnum :
+      0 < (v - b) * (v - c) + (v - a) * (v - c) +
+        (v - a) * (v - b) := by
+    positivity
+  exact div_pos hnum hvu_pos
+
 private def cubicSubQuadraticRightProtrudingLeftBelowBracket
     (sau dab dbc dcv : ℝ) : ℝ :=
   4 * dab ^ 6 + 24 * dab ^ 5 * dbc + 24 * dab ^ 5 * dcv +
@@ -255,6 +273,116 @@ lemma
   obtain ⟨μ, hμ, hnot_splits⟩ :=
     exists_cubicSubQuadratic_not_splits_of_right_protruding_left_below
       hab hbc hua hcv
+  exact
+    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
+      (P := (X - C a) * (X - C b) * (X - C c))
+      (Q := (X - C u) * (X - C v))
+      hAB hμ hnot_splits
+
+/-! ## Tangency-at-`v` branch
+
+The following certificate extends the right-protruding obstruction beyond the
+`u ≤ a` branch.  It uses the critical-value form of the cubic discriminant:
+the chosen coefficient makes `v` a critical point of the cubic-minus-quadratic
+pencil, while `P(v) > 0` and the side inequality below makes this critical
+point a positive local minimum.
+-/
+
+/-- Tangency-at-`v` negative-discriminant certificate for the right-protruding
+branch. -/
+lemma cubicDiscr_cubicSubQuadratic_right_protruding_tangent_neg
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (huv : u < v)
+    (hcv : c < v)
+    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c)) :
+    let μ : ℝ :=
+      ((v - b) * (v - c) + (v - a) * (v - c) +
+        (v - a) * (v - b)) / (v - u)
+    cubicDiscr
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))) < 0 := by
+  intro μ
+  have hvu_pos : 0 < v - u := sub_pos.mpr huv
+  have hvu_ne : v - u ≠ 0 := ne_of_gt hvu_pos
+  have hcrit :
+      3 * v ^ 2 + 2 * (-(a + b + c + μ)) * v +
+        (a * b + a * c + b * c + μ * (u + v)) = 0 := by
+    dsimp [μ]
+    field_simp [hvu_ne]
+    ring_nf
+  have hvalue :
+      v ^ 3 + (-(a + b + c + μ)) * v ^ 2 +
+          (a * b + a * c + b * c + μ * (u + v)) * v +
+            (-(a * b * c) - μ * (u * v)) =
+        (v - a) * (v - b) * (v - c) := by
+    ring
+  have hsecond :
+      3 * v + (-(a + b + c + μ)) =
+        ((a + b + c) * (u + v) - 3 * (u * v) -
+          (a * b + a * c + b * c)) / (v - u) := by
+    dsimp [μ]
+    field_simp [hvu_ne]
+    ring_nf
+  rw [cubicSubQuadratic_eq_cubic_expansion]
+  rw [cubicDiscr_of_coeffs_of_deriv_eq_zero _ _ _ _ hcrit]
+  rw [hvalue, hsecond]
+  have hvb_pos : 0 < v - b := sub_pos.mpr (lt_of_le_of_lt hbc hcv)
+  have hvc_pos : 0 < v - c := sub_pos.mpr hcv
+  have hva_pos : 0 < v - a := sub_pos.mpr (lt_of_le_of_lt (hab.trans hbc) hcv)
+  have hprod_pos : 0 < (v - a) * (v - b) * (v - c) := by positivity
+  have hsecond_pos :
+      0 < ((a + b + c) * (u + v) - 3 * (u * v) -
+          (a * b + a * c + b * c)) / (v - u) :=
+    div_pos hside hvu_pos
+  nlinarith [sq_pos_of_pos hprod_pos, pow_pos hsecond_pos 3,
+    mul_pos hprod_pos (pow_pos hsecond_pos 3)]
+
+/-- In the tangent-at-`v` right-protruding branch, some positive subtraction
+coefficient makes the monic cubic-minus-quadratic pencil fail to split. -/
+lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_tangent
+    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (huv : u < v)
+    (hcv : c < v)
+    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c)) :
+    ∃ μ : ℝ, 0 < μ ∧
+      ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).Splits := by
+  let μ : ℝ :=
+    ((v - b) * (v - c) + (v - a) * (v - c) +
+      (v - a) * (v - b)) / (v - u)
+  have hμ : 0 < μ := by
+    dsimp [μ]
+    exact cubicSubQuadratic_right_protruding_tangent_mu_pos hab hbc huv hcv
+  refine ⟨μ, hμ, ?_⟩
+  have hdeg :
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
+    rw [natDegree_cubicSubQuadratic]
+  have hdisc :
+      cubicDiscr
+        (((X - C a) * (X - C b) * (X - C c)) -
+          C μ * ((X - C u) * (X - C v))) < 0 := by
+    dsimp [μ]
+    exact cubicDiscr_cubicSubQuadratic_right_protruding_tangent_neg
+      hab hbc huv hcv hside
+  intro hsplit
+  exact (not_le.mpr hdisc)
+    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+
+/-- The cubic/quadratic endpoint is not compatible in the tangent-at-`v`
+right-protruding branch. -/
+lemma
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_right_protruding_tangent
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u < v) (hcv : c < v)
+    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c)) :
+    ¬ Compatible
+      (C A * ((X - C a) * (X - C b) * (X - C c)))
+      (C B * ((X - C u) * (X - C v))) := by
+  obtain ⟨μ, hμ, hnot_splits⟩ :=
+    exists_cubicSubQuadratic_not_splits_of_right_protruding_tangent
+      hab hbc huv hcv hside
   exact
     not_compatible_scaled_pair_of_opposite_of_sub_not_splits
       (P := (X - C a) * (X - C b) * (X - C c))

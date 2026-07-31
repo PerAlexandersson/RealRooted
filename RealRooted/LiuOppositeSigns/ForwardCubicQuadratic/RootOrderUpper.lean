@@ -129,6 +129,37 @@ lemma not_right_protruding_left_below_of_compatible_natDegree_three_two
       hsgn hab hbc hua hcv hcompat_fac
 
 /-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
+rules out the tangent-at-`v` right-protruding side-condition branch. -/
+lemma not_right_protruding_tangent_of_compatible_natDegree_three_two
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u < v)
+    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c))
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
+    ¬ c < v := by
+  intro hcv
+  have hffac :
+      f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
+    eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
+  have hgfac :
+      g = C g.leadingCoeff * ((X - C u) * (X - C v)) := by
+    have hprod := hg.eq_prod_roots
+    rw [hgroots] at hprod
+    simpa using hprod
+  have hcompat_fac :
+      Compatible
+        (C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)))
+        (C g.leadingCoeff * ((X - C u) * (X - C v))) := by
+    rw [← hffac, ← hgfac]
+    exact hcompat
+  exact
+    not_compatible_scaled_cubic_quadratic_of_opposite_of_right_protruding_tangent
+      (A := f.leadingCoeff) (B := g.leadingCoeff)
+      hsgn hab hbc huv hcv hside hcompat_fac
+
+/-- In an arbitrary split opposite-sign cubic/quadratic pair, compatibility
 rules out the right-protruding boundary case where the lower quadratic root is
 the middle cubic root. -/
 lemma not_right_protruding_middle_common_root_of_compatible_natDegree_three_two
@@ -171,6 +202,23 @@ lemma upper_quadratic_root_le_upper_cubic_root_of_compatible_natDegree_three_two
   exact
     not_right_protruding_left_below_of_compatible_natDegree_three_two
       hf hg hsgn hcompat hab hbc hua hfroots hgroots
+      (lt_of_not_ge hnot)
+
+/-- Tangency side-condition form of the upper root bound for a compatible
+opposite-sign cubic/quadratic pair. -/
+lemma upper_quadratic_root_le_upper_cubic_root_of_tangent_side
+    {f g : ℝ[X]} {a b c u v : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (huv : u < v)
+    (hside : 0 < (a + b + c) * (u + v) - 3 * (u * v) -
+      (a * b + a * c + b * c))
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
+    v ≤ c := by
+  by_contra hnot
+  exact
+    not_right_protruding_tangent_of_compatible_natDegree_three_two
+      hf hg hsgn hcompat hab hbc huv hside hfroots hgroots
       (lt_of_not_ge hnot)
 
 end LiuOppositeSigns

@@ -70,6 +70,21 @@ theorem cubicDiscr_of_coeffs (α β γ δ : ℝ) :
     coeff_X, mul_ite, mul_one, mul_zero]
   norm_num
 
+/-- Critical-value form of the discriminant of a monic cubic.
+
+If `t` is a critical point of `X^3 + p X^2 + q X + r`, the cubic discriminant
+can be expressed using the value at `t` and the second-derivative factor
+`3 * t + p`. -/
+theorem cubicDiscr_of_coeffs_of_deriv_eq_zero (p q r t : ℝ)
+    (hcrit : 3 * t ^ 2 + 2 * p * t + q = 0) :
+    cubicDiscr (C (1 : ℝ) * X ^ 3 + C p * X ^ 2 + C q * X + C r) =
+      -27 * (t ^ 3 + p * t ^ 2 + q * t + r) ^ 2 -
+        4 * (t ^ 3 + p * t ^ 2 + q * t + r) * (3 * t + p) ^ 3 := by
+  have hq : q = -(3 * t ^ 2 + 2 * p * t) := by linarith
+  subst q
+  rw [cubicDiscr_of_coeffs]
+  ring
+
 /-- Expansion of a monic product of three linear factors. -/
 theorem prod_three_X_sub_C_expand (a b c : ℝ) :
     (X - C a) * (X - C b) * (X - C c)
