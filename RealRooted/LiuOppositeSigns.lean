@@ -975,6 +975,56 @@ theorem PositiveSplitRootCountPair.deleteRootFactor_commonRoot {p q : ℝ[X]}
       h.count.deleteRootFactor_commonRoot
         h.left_pos.ne_zero h.right_pos.ne_zero hp hq⟩
 
+/-- If both endpoints have a common root, the x-subtraction pencil factors by
+the same linear root factor and the corresponding cofactor pencil. -/
+theorem X_mul_sub_C_mul_eq_X_sub_C_mul_deleteRootFactor_of_commonRoot
+    {p q : ℝ[X]} {r μ : ℝ} (hp : p.IsRoot r) (hq : q.IsRoot r) :
+    X * p - C μ * q =
+      (X - C r) * (X * deleteRootFactor p r -
+        C μ * deleteRootFactor q r) := by
+  calc
+    X * p - C μ * q =
+        X * ((X - C r) * deleteRootFactor p r) -
+          C μ * ((X - C r) * deleteRootFactor q r) := by
+        rw [factor_deleteRootFactor_of_isRoot hp,
+          factor_deleteRootFactor_of_isRoot hq]
+    _ = (X - C r) * (X * deleteRootFactor p r -
+          C μ * deleteRootFactor q r) := by
+        ring
+
+/-- Splitting of the cofactor x-subtraction pencil lifts across a common
+linear root factor, and conversely descends through that nonzero linear factor.
+-/
+theorem X_mul_sub_C_mul_splits_iff_deleteRootFactor_splits_of_commonRoot
+    {p q : ℝ[X]} {r μ : ℝ} (hp : p.IsRoot r) (hq : q.IsRoot r) :
+    (X * p - C μ * q).Splits ↔
+      (X * deleteRootFactor p r -
+        C μ * deleteRootFactor q r).Splits := by
+  rw [X_mul_sub_C_mul_eq_X_sub_C_mul_deleteRootFactor_of_commonRoot hp hq]
+  exact splits_mul_iff_right (X_sub_C_ne_zero r) (Polynomial.Splits.X_sub_C r)
+
+/-- Deleting one degree from both endpoints preserves the left-successor degree
+relation when the right endpoint has positive degree. -/
+theorem natDegree_deleteRootFactor_left_eq_right_add_one_of_natDegree_eq
+    {p q : ℝ[X]} {r : ℝ}
+    (hdeg : p.natDegree = q.natDegree + 1) (hq_pos : 0 < q.natDegree) :
+    (deleteRootFactor p r).natDegree =
+      (deleteRootFactor q r).natDegree + 1 := by
+  rw [natDegree_deleteRootFactor, natDegree_deleteRootFactor, hdeg]
+  lia
+
+/-- Deleting a common root from both endpoints of a positive-split pair
+preserves the left-successor degree relation. -/
+theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_left_eq_right_add_one
+    {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q) {r : ℝ}
+    (hq : q.IsRoot r) (hdeg : p.natDegree = q.natDegree + 1) :
+    (deleteRootFactor p r).natDegree =
+      (deleteRootFactor q r).natDegree + 1 := by
+  have hq_pos : 0 < q.natDegree :=
+    natDegree_pos_of_isRoot h.right_pos.ne_zero hq
+  exact natDegree_deleteRootFactor_left_eq_right_add_one_of_natDegree_eq
+    hdeg hq_pos
+
 namespace OppositeLeadingSigns
 
 theorem deleteRootFactor_left {p q : ℝ[X]} {r : ℝ}
