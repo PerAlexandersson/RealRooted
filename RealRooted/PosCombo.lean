@@ -770,6 +770,26 @@ lemma family_pair_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     h hsum_pos hcomb_pos
   grind
 
+/-- Any two nonzero-parameter members of the same right pencil again form an
+Obreschkoff-compatible pair, allowing one of the two parameters to be the
+endpoint `0`. -/
+lemma family_pair_right_of_nonneg_of_pos {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    {μ₁ μ₂ : ℝ} (hμ₁ : 0 ≤ μ₁) (hμ₂ : 0 ≤ μ₂)
+    (hμ_pos : 0 < μ₁ ∨ 0 < μ₂) :
+    PosComboRealRooted (f + C μ₁ * g) (f + C μ₂ * g) := by
+  intro lam μ hlam hμ
+  have hsum_pos : 0 < lam + μ := add_pos hlam hμ
+  have hcomb_pos : 0 < lam * μ₁ + μ * μ₂ := by
+    rcases hμ_pos with hμ₁_pos | hμ₂_pos
+    · exact add_pos_of_pos_of_nonneg
+        (mul_pos hlam hμ₁_pos) (mul_nonneg (le_of_lt hμ) hμ₂)
+    · exact add_pos_of_nonneg_of_pos
+        (mul_nonneg (le_of_lt hlam) hμ₁) (mul_pos hμ hμ₂_pos)
+  have hbase : ((C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) ≠ 0 ∧
+    (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).Splits) :=
+    h hsum_pos hcomb_pos
+  grind
+
 /-- Symmetric version of `family_pair_right`, normalized along the left
 coefficient. -/
 lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
@@ -777,6 +797,25 @@ lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     PosComboRealRooted (C lam₁ * f + g) (C lam₂ * f + g) := by
   intro lam μ hlam hμ
   have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by positivity
+  have hsum_pos : 0 < lam + μ := add_pos hlam hμ
+  have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
+    (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).Splits) :=
+    h hcomb_pos hsum_pos
+  grind
+
+/-- Symmetric version of `family_pair_right_of_nonneg_of_pos`, normalized along
+the left coefficient. -/
+lemma family_pair_left_of_nonneg_of_pos {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    {lam₁ lam₂ : ℝ} (hlam₁ : 0 ≤ lam₁) (hlam₂ : 0 ≤ lam₂)
+    (hlam_pos : 0 < lam₁ ∨ 0 < lam₂) :
+    PosComboRealRooted (C lam₁ * f + g) (C lam₂ * f + g) := by
+  intro lam μ hlam hμ
+  have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by
+    rcases hlam_pos with hlam₁_pos | hlam₂_pos
+    · exact add_pos_of_pos_of_nonneg
+        (mul_pos hlam hlam₁_pos) (mul_nonneg (le_of_lt hμ) hlam₂)
+    · exact add_pos_of_nonneg_of_pos
+        (mul_nonneg (le_of_lt hlam) hlam₁) (mul_pos hμ hlam₂_pos)
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
   have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
     (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).Splits) :=
