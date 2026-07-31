@@ -175,6 +175,19 @@ theorem one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
     exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot hP_a hbot
   exact one_le_card_roots_filter_le_of_isRoot hP_ne hu_le hu_root
 
+/-- The x-subtraction pencil does not vanish at a left root when the two
+endpoint polynomials have no common roots. -/
+theorem NoCommonRoots.not_isRoot_xSub_of_left_root
+    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
+    (ha : p.IsRoot a) (hμ : μ ≠ 0) :
+    ¬ (X * p - C μ * q).IsRoot a := by
+  intro hP
+  have hprod : -μ * q.eval a = 0 := by
+    simpa [Polynomial.IsRoot.def, eval_X_mul_sub_C_mul_of_left_isRoot ha] using hP
+  have hqeval : q.eval a = 0 := by
+    exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
+  exact (hno a ha) (by simpa [Polynomial.IsRoot.def] using hqeval)
+
 /-- The x-subtraction pencil is nonzero when the left endpoint has a root and
 the two endpoint polynomials have no common roots. -/
 theorem NoCommonRoots.xSub_ne_zero_of_left_root
@@ -182,14 +195,7 @@ theorem NoCommonRoots.xSub_ne_zero_of_left_root
     (ha : p.IsRoot a) (hμ : μ ≠ 0) :
     X * p - C μ * q ≠ 0 := by
   intro hzero
-  have hPeval : (X * p - C μ * q).eval a = 0 := by
-    rw [hzero]
-    simp
-  have hprod : -μ * q.eval a = 0 := by
-    simpa [eval_X_mul_sub_C_mul_of_left_isRoot ha] using hPeval
-  have hqeval : q.eval a = 0 := by
-    exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
-  exact (hno a ha) (by simpa [Polynomial.IsRoot.def] using hqeval)
+  exact hno.not_isRoot_xSub_of_left_root ha hμ (by rw [hzero]; simp)
 
 /-- In a left-root gap with no interior left roots, Liu-compatible root counts
 allow at most two right roots, counted with multiplicity. -/
@@ -388,16 +394,16 @@ exterior tail is empty, and each adjacent gap has at most two right roots. -/
 theorem
     PositiveSplitRootCountPair.right_natDegree_le_sum_min_two_add_card_right_roots_gt_getLast
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hno : NoCommonRoots p q) {a b : ℝ} {xs : List ℝ}
-    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs)
+    (hno : NoCommonRoots p q) {a : ℝ} {xs : List ℝ}
+    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: xs)
     (hdeg : p.natDegree = q.natDegree + 1) :
     q.natDegree ≤
-      (((a :: b :: xs).zip (b :: xs)).map
+      (((a :: xs).zip xs).map
         (fun ab => min 2
           (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum +
         (q.roots.filter
-          (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) < x)).card := by
-  let gaps := (a :: b :: xs).zip (b :: xs)
+          (fun x => (a :: xs).getLast (List.cons_ne_nil a xs) < x)).card := by
+  let gaps := (a :: xs).zip xs
   let plainGapSum :=
     (gaps.map
       (fun ab => (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
@@ -407,8 +413,8 @@ theorem
         (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum
   let upperTail :=
     (q.roots.filter
-      (fun x => (b :: xs).getLast (List.cons_ne_nil b xs) < x)).card
-  have hchain : (a :: b :: xs).IsChain (· < ·) := by
+      (fun x => (a :: xs).getLast (List.cons_ne_nil a xs) < x)).card
+  have hchain : (a :: xs).IsChain (· < ·) := by
     have hpair_rs :
         (p.roots.toFinset.sort (· ≤ ·)).Pairwise (· < ·) :=
       (Finset.sortedLT_sort p.roots.toFinset).pairwise
@@ -427,7 +433,7 @@ theorem
       (q.roots.filter (fun r => r < a)).card = 0 :=
     hpair.card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
       hroots_ge hdeg
-  have hnode : ∀ x ∈ a :: b :: xs, x ∉ q.roots := by
+  have hnode : ∀ x ∈ a :: xs, x ∉ q.roots := by
     intro x hx hxq
     have hx_mem : x ∈ p.roots.toFinset.sort (· ≤ ·) := by
       rw [hrs]
@@ -466,8 +472,7 @@ theorem
     rw [Nat.min_eq_right hgap_le_two]
   have hq_part : plainGapSum + upperTail = q.natDegree := by
     rw [← card_roots_of_splits hpair.right_splits]
-    simpa [plainGapSum, upperTail, gaps, hlower_zero, List.getLast_cons]
-      using hpartition
+    simpa [plainGapSum, upperTail, gaps, hlower_zero] using hpartition
   rw [← hq_part]
   exact Nat.add_le_add hplain_le_min le_rfl
 
