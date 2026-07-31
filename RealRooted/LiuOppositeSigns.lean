@@ -329,6 +329,16 @@ theorem OppositeLeadingSigns.cancelParameter_pos {p q : ℝ[X]}
   exact neg_pos.mpr
     ((div_neg_iff.mpr (mul_neg_iff.mp h)) : p.leadingCoeff / q.leadingCoeff < 0)
 
+/-- Swapping an opposite-leading-sign pair inverts the leading-term
+cancellation parameter. -/
+theorem OppositeLeadingSigns.cancelParameter_symm_eq_inv {p q : ℝ[X]}
+    (h : OppositeLeadingSigns p q) :
+    -q.leadingCoeff / p.leadingCoeff =
+      (-p.leadingCoeff / q.leadingCoeff)⁻¹ := by
+  have hp_lc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.left_ne_zero
+  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.right_ne_zero
+  field_simp [hp_lc, hq_lc]
+
 /-- For two splitting polynomials with opposite leading signs, the signed
 difference of the numbers of roots strictly above a common non-root is odd
 exactly when the two values at the point have the same sign. -/
