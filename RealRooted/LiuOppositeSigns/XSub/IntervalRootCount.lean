@@ -9,7 +9,7 @@ pencil into local lower bounds for the number of roots in a single gap between
 consecutive left-endpoint roots.
 -/
 
-open Polynomial
+open Polynomial Filter
 
 namespace Polynomial
 
@@ -68,6 +68,26 @@ private lemma two_le_card_roots_filter_Ioo_of_two_isRoot_ordered
     exact Multiset.cons_le_cons c₁ (Multiset.singleton_le.mpr hc₂_erase)
   have hcard := Multiset.card_le_card hpair_le
   simpa [s] using hcard
+
+/-- A nonpositive value at `0` and divergence to `+∞` give a root in the
+nonnegative upper tail, counted in the root multiset. -/
+theorem one_le_card_xSub_roots_filter_nonneg_of_right_nonnegCoeffs
+    {p q : ℝ[X]} (hq_nonneg : HasNonnegCoeffs q)
+    {μ : ℝ} (hμ : 0 < μ)
+    (hP_ne : X * p - C μ * q ≠ 0)
+    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => 0 ≤ x)).card := by
+  have hq0 : 0 ≤ q.eval 0 := by
+    simpa [Polynomial.coeff_zero_eq_eval_zero] using hq_nonneg 0
+  have hP0 : (X * p - C μ * q).eval 0 ≤ 0 := by
+    have hmul : 0 ≤ μ * q.eval 0 := mul_nonneg hμ.le hq0
+    have hneg : -(μ * q.eval 0) ≤ 0 := neg_nonpos.mpr hmul
+    simpa [eval_sub, eval_mul] using hneg
+  obtain ⟨u, hu_nonneg, hu_root⟩ :=
+    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hP0 htop
+  have hu_mem : u ∈ (X * p - C μ * q).roots.filter (fun x => 0 ≤ x) :=
+    Multiset.mem_filter.mpr ⟨(Polynomial.mem_roots hP_ne).mpr hu_root, hu_nonneg⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨u, hu_mem⟩
 
 /-- The x-subtraction pencil is nonzero when the left endpoint has a root and
 the two endpoint polynomials have no common roots. -/
