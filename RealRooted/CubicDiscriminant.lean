@@ -340,6 +340,15 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_le_three
   ring_nf
   norm_num
 
+/-- A real polynomial of degree at most three with negative cubic coefficient
+discriminant cannot split. -/
+theorem not_splits_of_cubicDiscr_neg_of_natDegree_le_three
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) (hdisc : cubicDiscr p < 0) :
+    ¬ p.Splits := by
+  intro hs
+  exact (not_le.mpr hdisc)
+    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hs)
+
 /-- Through degree three, nonnegativity of the cubic coefficient discriminant
 is equivalent to splitting over `ℝ`. -/
 theorem cubicDiscr_nonneg_iff_splits_of_natDegree_le_three

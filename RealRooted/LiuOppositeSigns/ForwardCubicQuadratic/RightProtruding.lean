@@ -245,10 +245,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_left_below
     exact cubicSubQuadratic_right_protruding_left_below_mu_pos
       hab hbc hua hcv
   refine ⟨μ, hμ, ?_⟩
-  have hdeg :
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
-    rw [natDegree_cubicSubQuadratic]
   have hdisc :
       cubicDiscr
         (((X - C a) * (X - C b) * (X - C c)) -
@@ -256,9 +252,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_left_below
     dsimp [μ]
     exact cubicDiscr_cubicSubQuadratic_right_protruding_left_below_neg
       hab hbc hua hcv
-  intro hsplit
-  exact (not_le.mpr hdisc)
-    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+  exact not_splits_cubicSubQuadratic_of_cubicDiscr_neg hdisc
 
 /-- The cubic/quadratic endpoint is not compatible when the leading
 coefficients have opposite signs, the lower quadratic root lies weakly below
@@ -354,10 +348,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_tangent
     dsimp [μ]
     exact cubicSubQuadratic_right_protruding_tangent_mu_pos hab hbc huv hcv
   refine ⟨μ, hμ, ?_⟩
-  have hdeg :
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
-    rw [natDegree_cubicSubQuadratic]
   have hdisc :
       cubicDiscr
         (((X - C a) * (X - C b) * (X - C c)) -
@@ -365,9 +355,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_protruding_tangent
     dsimp [μ]
     exact cubicDiscr_cubicSubQuadratic_right_protruding_tangent_neg
       hab hbc huv hcv hside
-  intro hsplit
-  exact (not_le.mpr hdisc)
-    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+  exact not_splits_cubicSubQuadratic_of_cubicDiscr_neg hdisc
 
 /-- The cubic/quadratic endpoint is not compatible in the tangent-at-`v`
 right-protruding branch. -/

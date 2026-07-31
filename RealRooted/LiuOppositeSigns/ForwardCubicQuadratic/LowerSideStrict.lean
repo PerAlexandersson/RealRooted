@@ -209,10 +209,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_left_roots_below_strict
     dsimp [μ]
     exact cubicSubQuadratic_left_roots_below_strict_mu_pos hab hbc huv hva
   refine ⟨μ, hμ, ?_⟩
-  have hdeg :
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
-    rw [natDegree_cubicSubQuadratic]
   have hdisc :
       cubicDiscr
         (((X - C a) * (X - C b) * (X - C c)) -
@@ -220,9 +216,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_left_roots_below_strict
     dsimp [μ]
     exact cubicDiscr_cubicSubQuadratic_left_roots_below_strict_neg
       hab hbc huv hva
-  intro hsplit
-  exact (not_le.mpr hdisc)
-    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+  exact not_splits_cubicSubQuadratic_of_cubicDiscr_neg hdisc
 
 /-- The cubic/quadratic endpoint is not compatible when the leading
 coefficients have opposite signs and the two distinct quadratic roots lie

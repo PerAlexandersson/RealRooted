@@ -83,8 +83,8 @@ cubic-minus-quadratic pencil is negative when the average of the quadratic
 roots lies strictly above the cubic root interval. -/
 lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
     (hab : a ≤ b) (hbc : b ≤ c) (hcmean : c < (u + v) / 2) :
-    (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c)))) ^ 2 <
-      3 * 1 *
+    (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 <
+      3 *
         (a * b + a * c + b * c +
           (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
   let m : ℝ := (u + v) / 2
@@ -101,15 +101,54 @@ lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
         (m - b) * (m - c) := by
     nlinarith
   have hdelta :
-      3 * 1 *
+      3 *
           (a * b + a * c + b * c +
             (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) -
-          (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c)))) ^ 2 =
+          (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 =
         3 * ((m - a) * (m - b) + (m - a) * (m - c) +
           (m - b) * (m - c)) := by
     dsimp [m]
     ring
   nlinarith
+
+/-- Derivative-discriminant certificate for a negative cubic discriminant of a
+monic cubic-minus-quadratic pencil. -/
+lemma cubicDiscr_cubicSubQuadratic_neg_of_deriv_disc_neg
+    {a b c u v μ : ℝ}
+    (hderiv :
+      (a + b + c + μ) ^ 2 <
+        3 * (a * b + a * c + b * c + μ * (u + v))) :
+    cubicDiscr
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))) < 0 := by
+  rw [cubicSubQuadratic_eq_cubic_expansion]
+  have hderiv' :
+      (-(a + b + c + μ)) ^ 2 <
+        3 * 1 * (a * b + a * c + b * c + μ * (u + v)) := by
+    nlinarith
+  exact
+    cubicDiscr_neg_of_deriv_disc_neg
+      1
+      (-(a + b + c + μ))
+      (a * b + a * c + b * c + μ * (u + v))
+      (-(a * b * c) - μ * (u * v))
+      (by norm_num) hderiv'
+
+/-- A negative cubic discriminant certifies that the cubic-minus-quadratic
+pencil does not split. -/
+lemma not_splits_cubicSubQuadratic_of_cubicDiscr_neg
+    {a b c u v μ : ℝ}
+    (hdisc :
+      cubicDiscr
+        (((X - C a) * (X - C b) * (X - C c)) -
+          C μ * ((X - C u) * (X - C v))) < 0) :
+    ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).Splits := by
+  have hdeg :
+      (((X - C a) * (X - C b) * (X - C c)) -
+        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
+    rw [natDegree_cubicSubQuadratic]
+  exact not_splits_of_cubicDiscr_neg_of_natDegree_le_three hdeg hdisc
 
 /-- If the average of the quadratic roots lies strictly above the cubic root
 interval, then the midpoint tangent coefficient gives a negative cubic
@@ -121,17 +160,25 @@ lemma cubicDiscr_cubicSubQuadratic_average_above_neg
       (((X - C a) * (X - C b) * (X - C c)) -
         C (3 * ((u + v) / 2) - (a + b + c)) *
           ((X - C u) * (X - C v))) < 0 := by
-  rw [cubicSubQuadratic_eq_cubic_expansion]
   exact
-    cubicDiscr_neg_of_deriv_disc_neg
-      1
-      (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c))))
-      (a * b + a * c + b * c +
-        (3 * ((u + v) / 2) - (a + b + c)) * (u + v))
-      (-(a * b * c) -
-        (3 * ((u + v) / 2) - (a + b + c)) * (u * v))
-      (by norm_num)
+    cubicDiscr_cubicSubQuadratic_neg_of_deriv_disc_neg
       (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)
+
+/-- Derivative-discriminant non-splitting certificate for the
+cubic-minus-quadratic pencil. -/
+lemma exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg
+    {a b c u v μ : ℝ}
+    (hμ : 0 < μ)
+    (hderiv :
+      (a + b + c + μ) ^ 2 <
+        3 * (a * b + a * c + b * c + μ * (u + v))) :
+    ∃ ν : ℝ, 0 < ν ∧
+      ¬ (((X - C a) * (X - C b) * (X - C c)) -
+        C ν * ((X - C u) * (X - C v))).Splits := by
+  refine ⟨μ, hμ, ?_⟩
+  exact
+    not_splits_cubicSubQuadratic_of_cubicDiscr_neg
+      (cubicDiscr_cubicSubQuadratic_neg_of_deriv_disc_neg hderiv)
 
 /-- If the average of the quadratic roots lies strictly above the cubic root
 interval, then some positive subtraction coefficient makes the monic
@@ -142,24 +189,11 @@ lemma exists_cubicSubQuadratic_not_splits_of_average_above
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
-  let μ : ℝ := 3 * ((u + v) / 2) - (a + b + c)
-  have hμ : 0 < μ := by
-    dsimp [μ]
+  have hμ : 0 < 3 * ((u + v) / 2) - (a + b + c) := by
     exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
-  refine ⟨μ, hμ, ?_⟩
-  have hdeg :
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C μ * ((X - C u) * (X - C v))).natDegree ≤ 3 := by
-    rw [natDegree_cubicSubQuadratic]
-  have hdisc :
-      cubicDiscr
-        (((X - C a) * (X - C b) * (X - C c)) -
-          C μ * ((X - C u) * (X - C v))) < 0 := by
-    dsimp [μ]
-    exact cubicDiscr_cubicSubQuadratic_average_above_neg hab hbc hcmean
-  intro hsplit
-  exact (not_le.mpr hdisc)
-    (cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit)
+  exact
+    exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg hμ
+      (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)
 
 /-- The midpoint tangent coefficient is positive when both quadratic roots lie
 strictly above the cubic root interval. -/
@@ -173,8 +207,8 @@ lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
 cubic-minus-quadratic pencil is negative. -/
 lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
     (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
-    (-(a + b + c + (3 * ((u + v) / 2) - (a + b + c)))) ^ 2 <
-      3 * 1 *
+    (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 <
+      3 *
         (a * b + a * c + b * c +
           (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
   have hcmean : c < (u + v) / 2 := by nlinarith
