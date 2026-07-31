@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Data.List.Zip
+import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 
@@ -1402,6 +1403,82 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_noCommonRoots
   simpa [p, q] using
     hpair_shift.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
       hfnn hgnn hno_shift hdeg_shift hμ
+
+/-- Left-successor x-subtraction family in unshifted positive-split form,
+allowing common roots.  The proof peels common roots by strong induction on the
+right endpoint degree and dispatches the reduced branch to the no-common-root
+theorem. -/
+theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hq_nonneg : HasNonnegCoeffs q)
+    (hdeg : p.natDegree = q.natDegree + 1) {μ : ℝ} (hμ : 0 < μ) :
+    (X * p - C μ * q).Splits := by
+  let P : ℕ → Prop := fun n =>
+    ∀ {p q : ℝ[X]},
+      q.natDegree = n →
+      PositiveSplitRootCountPair p q →
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      p.natDegree = q.natDegree + 1 →
+      ∀ μ : ℝ, 0 < μ → (X * p - C μ * q).Splits
+  have hmain : ∀ n, P n := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+        intro p q hqdeg hpair hp_nonneg hq_nonneg hdeg μ hμ
+        by_cases hno : NoCommonRoots p q
+        · exact hpair.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
+            hp_nonneg hq_nonneg hno hdeg hμ
+        · rcases exists_common_root_of_not_noCommonRoots hno with
+            ⟨r, hp_root, hq_root⟩
+          have hpair_delete :
+              PositiveSplitRootCountPair (deleteRootFactor p r)
+                (deleteRootFactor q r) :=
+            hpair.deleteRootFactor_commonRoot hp_root hq_root
+          have hp_delete_nonneg :
+              HasNonnegCoeffs (deleteRootFactor p r) :=
+            hpair.left_deleteRootFactor_nonneg hp_nonneg hp_root
+          have hq_delete_nonneg :
+              HasNonnegCoeffs (deleteRootFactor q r) :=
+            hpair.right_deleteRootFactor_nonneg hq_nonneg hq_root
+          have hdeg_delete :
+              (deleteRootFactor p r).natDegree =
+                (deleteRootFactor q r).natDegree + 1 :=
+            hpair.natDegree_deleteRootFactor_left_eq_right_add_one
+              hq_root hdeg
+          have hq_delete_lt :
+              (deleteRootFactor q r).natDegree < n := by
+            rw [natDegree_deleteRootFactor, hqdeg]
+            have hq_pos : 0 < n := by
+              simpa [← hqdeg] using
+                natDegree_pos_of_isRoot hpair.right_pos.ne_zero hq_root
+            lia
+          have hcofactor :
+              (X * deleteRootFactor p r -
+                C μ * deleteRootFactor q r).Splits :=
+            ih (deleteRootFactor q r).natDegree hq_delete_lt
+              (rfl : (deleteRootFactor q r).natDegree =
+                (deleteRootFactor q r).natDegree)
+              hpair_delete hp_delete_nonneg hq_delete_nonneg hdeg_delete μ hμ
+          exact
+            (X_mul_sub_C_mul_splits_iff_deleteRootFactor_splits_of_commonRoot
+              hp_root hq_root).mpr hcofactor
+  exact hmain q.natDegree rfl hpair hp_nonneg hq_nonneg hdeg μ hμ
+
+/-- Unrestricted positive-split left-successor translated x-subtraction
+family. -/
+theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily :
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement := by
+  intro f g r hpair hfnn hgnn hdeg μ hμ
+  let p := f.comp (X + C r)
+  let q := g.comp (X + C r)
+  have hpair_shift : PositiveSplitRootCountPair p q := by
+    simpa [p, q] using hpair.comp_X_add_C r
+  have hdeg_shift : p.natDegree = q.natDegree + 1 := by
+    simpa [p, q, Polynomial.natDegree_comp] using hdeg
+  simpa [p, q] using
+    hpair_shift.xSub_splits_of_left_successor_nonneg
+      hfnn hgnn hdeg_shift hμ
 
 /-- If the x-subtraction pencil has the nonnegative-sign lower-tail witness at
 the first left root and the nonnegative-sign upper-tail witness at the last
