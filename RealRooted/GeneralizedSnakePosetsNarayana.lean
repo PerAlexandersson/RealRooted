@@ -3211,5 +3211,28 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_u_degree
     (fun hm' hlam' _ => modifiedNarayanaPencil_natDegree (by lia) hlam') hdeg_VU
     hm hlam hnu
 
+theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
+    (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
+      2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m).Splits)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).roots.sum ≤
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+  apply theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_u_degree
+    hrec2 h34 hV_split
+  · intro m' lam' nu' hm' hlam' _
+    rw [auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm' hlam',
+      modifiedNarayanaPencil_natDegree (by lia) hlam']
+    lia
+  · exact hm
+  · exact hlam
+  · exact hnu
+
 end GeneralizedSnakePosets
 end RealRooted
