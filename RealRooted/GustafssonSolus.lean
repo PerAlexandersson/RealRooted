@@ -185,15 +185,6 @@ theorem gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 {m n : ℕ}
       (hG_affine := h2x2)
       fs hfs_len hfs
 
-/-- Named finite target: the monotone-threshold and no-switch hypotheses from
-Gustafsson--Solus Lemma 3.4 should imply the concrete `2 × 2` affine-minor
-condition for this matrix. -/
-def GustafssonSolus2x2FromNoSwitchStatement : Prop :=
-  ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
-    GustafssonSolusWeaklyIncreasing phi →
-    GustafssonSolusNoSwitchAfterDrop phi dropPivot →
-      GustafssonSolusHas2x2 phi dropPivot
-
 /-- A concrete Gustafsson--Solus entry is the generic threshold entry with
 marker `0` when the pivot is dropped and marker `1` otherwise. -/
 theorem gustafssonSolusEntry_eq_thresholdEntry {n : ℕ}
@@ -205,8 +196,11 @@ theorem gustafssonSolusEntry_eq_thresholdEntry {n : ℕ}
 
 /-- Monotone thresholds and the no-switch condition discharge every concrete
 Gustafsson--Solus `2 x 2` affine-minor check. -/
-theorem gustafssonSolus2x2_of_noSwitch :
-    GustafssonSolus2x2FromNoSwitchStatement := by
+theorem GustafssonSolus2x2FromNoSwitchStatement :
+    ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
+      GustafssonSolusWeaklyIncreasing phi →
+      GustafssonSolusNoSwitchAfterDrop phi dropPivot →
+        GustafssonSolusHas2x2 phi dropPivot := by
   intro m n phi dropPivot hphi hdrop i₁ i₂ j₁ j₂ hi hj
   let i₁' : Fin m := ⟨i₁.1, by simpa [gustafssonSolusMatrix] using i₁.2⟩
   let i₂' : Fin m := ⟨i₂.1, by simpa [gustafssonSolusMatrix] using i₂.2⟩
@@ -256,6 +250,6 @@ theorem gustafssonSolusLemma34_of_2x2 : GustafssonSolusLemma34Of2x2Statement := 
 theorem gustafssonSolusLemma34 : GustafssonSolusLemma34Statement := by
   intro m n phi dropPivot hphi hdrop fs hfs_len hfs
   exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi
-    (gustafssonSolus2x2_of_noSwitch phi dropPivot hphi hdrop) fs hfs_len hfs
+    (GustafssonSolus2x2FromNoSwitchStatement phi dropPivot hphi hdrop) fs hfs_len hfs
 
 end RealRooted
