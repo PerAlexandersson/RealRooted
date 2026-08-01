@@ -122,6 +122,31 @@ theorem theorem41_of_modifiedModelInputs
   theorem41NonNestingRook_modified_of_modelInputs hrec2 hH_nonneg hG_model
     hrec hM_nonneg hdeg hM_const
 
+/-- Order-polytope `h*` form of Braun--Jal Theorem 4.1 from the accepted
+combinatorial model inputs.  The matching hypothesis is the Stanley/
+Alexandersson--Jal combinatorial interpretation; the real-rootedness and
+interlacing conclusions are inherited from the checked recurrence proof. -/
+theorem orderPolytopeHStarTheorem41_of_modifiedModelInputs
+    {hStar M : NonNestingRookPolynomialFamily}
+    (hrec2 : AuxiliaryGRecurrence ModifiedNarayanaPolynomial AuxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs (AuxiliaryG n - AuxiliaryG (n - 1)))
+    (hG_model : ∀ n : ℕ, 1 ≤ n →
+      AuxiliaryG n = C (n : ℝ) * narayanaPolynomial 2 (n - 1))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
+      ModifiedNarayanaPolynomial AuxiliaryG)
+    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = ModifiedNarayanaPolynomial (w.length + 1))
+    (hmatch : OrderPolytopeHStarMatchesNonNestingRook hStar M) :
+    OrderPolytopeHStarTheorem41Target hStar :=
+  orderPolytopeHStarTheorem41_of_theorem41
+    (theorem41_of_modifiedModelInputs hrec2 hH_nonneg hG_model hrec
+      hM_nonneg hdeg hM_const)
+    hmatch
+
 /-- The real-rootedness projection of Braun--Jal Theorem 4.1. -/
 theorem theorem41_realRooted_part {M : NonNestingRookPolynomialFamily}
     (h : Theorem41Target M) {w : SnakeWord} (hw : 1 ≤ w.length) :
