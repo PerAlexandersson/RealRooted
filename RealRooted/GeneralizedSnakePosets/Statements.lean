@@ -340,6 +340,51 @@ structure Theorem41Claim7SideConditions
         (∀ s ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), s ≤ c) ∧
           c < 0
 
+/-- Root-sum replacement for `Theorem41Claim7SideConditions`.
+
+The strict negative upper bound in the older bundle fails at legitimate
+zero-root endpoints.  This bundle instead records nonpositivity of the roots
+of `U` explicitly and orients the same-degree Obreschkoff alternative by the
+root-sum comparison between `U` and `X * V`. -/
+structure Theorem41Claim7RootSumSideConditions
+    (P G : ℕ → ℝ[X]) : Prop where
+  w_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff ((C lam * X + C nu) * P m + P (m + 1))
+  wu_lc :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * P m + P (m + 1)).leadingCoeff =
+        ((C lam * X + C nu) * P (m - 1) + P m).leadingCoeff
+  deg_uw :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * P (m - 1) + P m).natDegree + 1 =
+        ((C lam * X + C nu) * P m + P (m + 1)).natDegree
+  w_nonpos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∀ r ∈ (((C lam * X + C nu) * P m + P (m + 1)).roots), r ≤ 0
+  u_nonpos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∀ r ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), r ≤ 0
+  mid_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff
+        (((C lam * X + C nu) * P (m - 1) + P m) +
+          X * ((C lam * X + C nu) * G (m - 1) + G m))
+  v_pos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      HasPosLeadingCoeff ((C lam * X + C nu) * G (m - 1) + G m)
+  v_nonpos :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ∀ r ∈ (((C lam * X + C nu) * G (m - 1) + G m).roots), r ≤ 0
+  deg_vu :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * G (m - 1) + G m).natDegree + 1 =
+        ((C lam * X + C nu) * P (m - 1) + P m).natDegree
+  u_xv_roots_sum :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * P (m - 1) + P m).roots.sum ≤
+        (X * ((C lam * X + C nu) * G (m - 1) + G m)).roots.sum
+
 /-- Equation `(2)` rewrites the next modified Narayana combination in the
 form used in Braun--Jal's proof of Claim `(7)`. -/
 theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
@@ -441,6 +486,38 @@ theorem theorem41Claim7_of_section3_sideConditions
   theorem41Claim7_of_section3 hrec h34
     hside.w_pos hside.wu_lc hside.deg_uw hside.w_nonpos hside.mid_pos
     hside.v_pos hside.v_nonpos hside.deg_vu hside.u_bound
+
+/-- Bundled root-sum assembly theorem for Braun--Jal Claim `(7)`.
+
+Unlike `theorem41Claim7_of_section3_sideConditions`, this route remains
+applicable when `U` has a root at zero. -/
+theorem theorem41Claim7_of_section3_rootSumSideConditions
+    {P G : ℕ → ℝ[X]}
+    (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (hside : Theorem41Claim7RootSumSideConditions P G) :
+    Theorem41Claim7Statement P G := by
+  intro m lam nu hm hlam hnu
+  let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
+  let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
+  let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
+  have hUW : Prec U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hW_eq : W = (1 + X) * U + X * V := by
+    simpa [U, V, W] using
+      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
+  exact
+    prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le hUW hW_eq
+      (by simpa [W] using hside.w_pos hm hlam hnu)
+      (by simpa [U, W] using hside.wu_lc hm hlam hnu)
+      (by simpa [U, W] using hside.deg_uw hm hlam hnu)
+      (by simpa [W] using hside.w_nonpos hm hlam hnu)
+      (by simpa [U] using hside.u_nonpos hm hlam hnu)
+      (by simpa [U, V] using hside.mid_pos hm hlam hnu)
+      (by simpa [V] using hside.v_pos hm hlam hnu)
+      (by simpa [V] using hside.v_nonpos hm hlam hnu)
+      (by simpa [U, V] using hside.deg_vu hm hlam hnu)
+      (by simpa [U, V] using hside.u_xv_roots_sum hm hlam hnu)
 
 /-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
 proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
