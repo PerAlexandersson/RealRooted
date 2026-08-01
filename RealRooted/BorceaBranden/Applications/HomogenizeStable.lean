@@ -43,4 +43,15 @@ theorem homogenizeBivariate_stable_of_splits_nonpos {p : Polynomial ℝ}
   apply (MvUpperHalfPlaneStable.nonposRootFactorProduct 0 1 p.roots hroots).C_mul
   exact_mod_cast Polynomial.leadingCoeff_ne_zero.mpr hp0
 
+/-- A split polynomial with nonpositive roots has stable-or-zero bivariate homogenization. -/
+theorem homogenizeBivariate_stableOrZero_of_splits_nonpos {p : Polynomial ℝ}
+    (hpSplits : p.Splits) (hroots : ∀ r ∈ p.roots, r ≤ 0) :
+    MvUpperHalfPlaneStableOrZero
+      (complexifyMv (homogenizeBivariate p.natDegree p)) := by
+  by_cases hp0 : p = 0
+  · subst p
+    simpa [homogenizeBivariate, complexifyMv] using
+      (MvUpperHalfPlaneStableOrZero.zero (sigma := Fin 2))
+  · exact (homogenizeBivariate_stable_of_splits_nonpos hp0 hpSplits hroots).orZero
+
 end RealRooted.BorceaBranden
