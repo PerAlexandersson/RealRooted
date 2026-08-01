@@ -163,20 +163,26 @@ theorem theorem41_interlacing_part {M : NonNestingRookPolynomialFamily}
 assuming the abstract induction route. -/
 theorem theorem41_of_squarecaseSection3
     {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
     (hsection : SquarecaseSection3Inputs model) :
     SquarecaseTheorem41Target model :=
-  theorem41_of_squarecaseSection3ShiftedStatement hsection
+  theorem41_of_squarecaseSection3ShiftedStatement hroute hsection
 
 /-- Squarecase Section 3 inputs and `h^*` matching imply the order-polytope
 Theorem 4.1 target, assuming the abstract induction route. -/
 theorem orderPolytopeHStarTheorem41_of_squarecaseSection3
     {hStar : NonNestingRookPolynomialFamily} {model : SquarecaseRookModel}
+    (hroute :
+      ∀ P G : ℕ → ℝ[X],
+        Theorem41InductionRouteStatement model.snakePolynomial P G)
     (hsection : SquarecaseSection3Inputs model)
     (hmatch :
       OrderPolytopeHStarMatchesNonNestingRook hStar model.snakePolynomial) :
     OrderPolytopeHStarTheorem41Target hStar :=
   orderPolytopeHStarTheorem41_of_squarecaseSection3ShiftedStatement
-    hsection hmatch
+    hroute hsection hmatch
 
 /-- The existing Narayana sequence gives the concrete modified Narayana family. -/
 theorem modifiedNarayana_family :

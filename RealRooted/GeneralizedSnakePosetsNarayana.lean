@@ -696,11 +696,8 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
     (hM_const :
       ∀ {w : SnakeWord}, w.IsConstant →
         M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG →
-      Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial →
-      Theorem35GeneralizedSnakeRecurrenceStatement
-        M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG →
-        Theorem41NonNestingRookStatement M) :=
+    Theorem41InductionRouteStatement
+      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
   theorem41InductionRoute_of_section3_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
     hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
@@ -727,11 +724,8 @@ theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches
     (hM_const :
       ∀ {w : SnakeWord}, w.IsConstant →
         M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG →
-      Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial →
-      Theorem35GeneralizedSnakeRecurrenceStatement
-        M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG →
-        Theorem41NonNestingRookStatement M) :=
+    Theorem41InductionRouteStatement
+      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
   theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
     hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG

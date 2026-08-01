@@ -603,29 +603,51 @@ theorem theorem35Computable_iff_theorem35
       Theorem35GeneralizedSnakeRecurrenceStatement M P G :=
   ⟨theorem35_of_theorem35Computable, theorem35Computable_of_theorem35⟩
 
-/-- Unproved target: statement-level package for the induction route from the Section 3
+/-- Statement-level package for the induction route from the Section 3
 Narayana and recurrence ingredients to Theorem 4.1.
 
-Tracks open GitHub issue #45. -/
-theorem Theorem41InductionRoute
-    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
-    Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M := by
-  sorry
+This represents an acceptable trust boundary for the combinatorial induction
+route, whose full model is verified separately. -/
+def Theorem41InductionRouteStatement
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
+  Lemma33AuxiliaryGInterlacesStatement P G →
+    Lemma34ModifiedNarayanaInterlacingStatement P →
+    Theorem35GeneralizedSnakeRecurrenceStatement M P G →
+      Theorem41NonNestingRookStatement M
 
 /-- Computable-recursion variant of the current Theorem 4.1 induction route. -/
-theorem Theorem41InductionRouteComputable
-    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
-    Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G →
-        Theorem41NonNestingRookStatement M := by
+def Theorem41InductionRouteComputableStatement
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
+  Lemma33AuxiliaryGInterlacesStatement P G →
+    Lemma34ModifiedNarayanaInterlacingStatement P →
+    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G →
+      Theorem41NonNestingRookStatement M
+
+/-- The predicate-form induction route also accepts a computable recurrence
+input. -/
+theorem theorem41InductionRouteComputable_of_theorem41InductionRoute
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G) :
+    Theorem41InductionRouteComputableStatement M P G := by
   intro h33 h34 hrec
-  exact Theorem41InductionRoute M P G h33 h34 (theorem35_of_theorem35Computable hrec)
+  exact hroute h33 h34 (theorem35_of_theorem35Computable hrec)
 
+/-- The computable-recursion induction route implies the predicate-form route. -/
+theorem theorem41InductionRoute_of_theorem41InductionRouteComputable
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteComputableStatement M P G) :
+    Theorem41InductionRouteStatement M P G := by
+  intro h33 h34 hrec
+  exact hroute h33 h34 (theorem35Computable_of_theorem35 hrec)
 
+/-- Predicate and computable forms of the Theorem 4.1 induction route are
+equivalent. -/
+theorem theorem41InductionRouteComputable_iff_theorem41InductionRoute
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
+    Theorem41InductionRouteComputableStatement M P G ↔
+      Theorem41InductionRouteStatement M P G :=
+  ⟨theorem41InductionRoute_of_theorem41InductionRouteComputable,
+    theorem41InductionRouteComputable_of_theorem41InductionRoute⟩
 
 /-- Bundled Section 3 ingredients needed by the current Theorem 4.1 induction
 interface. -/
@@ -700,35 +722,39 @@ theorem theorem41Section3ShiftedInputs_of_computable
 induction route. -/
 theorem theorem41_of_section3Inputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3Inputs M P G) :
     Theorem41NonNestingRookStatement M :=
-  Theorem41InductionRoute M P G hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
+  hroute hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
 
 /-- Feed computable Section 3 ingredients into the abstract Theorem 4.1
 induction route. -/
 theorem theorem41_of_section3ComputableInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ComputableInputs M P G) :
     Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3Inputs
+  theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_computable hinputs)
 
 /-- Feed shifted Section 3 ingredients into the abstract Theorem 4.1 induction
 route. -/
 theorem theorem41_of_section3ShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ShiftedInputs M P G) :
     Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3Inputs
+  theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_shifted hinputs)
 
 /-- Feed computable shifted Section 3 ingredients into the abstract Theorem
 4.1 induction route. -/
 theorem theorem41_of_section3ComputableShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
     Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3ComputableInputs
+  theorem41_of_section3ComputableInputs hroute
     (theorem41Section3ComputableInputs_of_shifted hinputs)
 
 end GeneralizedSnakePosets

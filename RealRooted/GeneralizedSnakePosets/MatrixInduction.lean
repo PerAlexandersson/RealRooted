@@ -551,10 +551,7 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
-    (Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M) := by
+    Theorem41InductionRouteStatement M P G := by
   intro h33 h34 hrec
   exact theorem41_of_claim7_of_constant_matches_length
     (M := M) (P := P) (G := G)
@@ -582,10 +579,7 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M) := by
+    Theorem41InductionRouteStatement M P G := by
   intro h33 h34 hrec
   exact theorem41_of_claim7_of_constant_matches_succ_length
     (M := M) (P := P) (G := G)
@@ -613,10 +607,7 @@ theorem theorem41InductionRoute_of_matrixClaim_of_constant_matches_succ_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M) :=
+    Theorem41InductionRouteStatement M P G :=
   theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (M := M) (P := P) (G := G)
     (fun h33 h34 => (theorem41MatrixClaim_iff_claim7 P G).mp
@@ -645,10 +636,7 @@ theorem theorem41InductionRoute_of_section3_of_constant_matches_succ_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M) :=
+    Theorem41InductionRouteStatement M P G :=
   theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (M := M) (P := P) (G := G)
     (fun _h33 h34 => theorem41Claim7_of_section3_sideConditions hrec2 h34 hside)
@@ -673,10 +661,7 @@ theorem theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_len
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    (Lemma33AuxiliaryGInterlacesStatement P G →
-      Lemma34ModifiedNarayanaInterlacingStatement P →
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-        Theorem41NonNestingRookStatement M) :=
+    Theorem41InductionRouteStatement M P G :=
   theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (M := M) (P := P) (G := G)
     (fun _h33 h34 =>
