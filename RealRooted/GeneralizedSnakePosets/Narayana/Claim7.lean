@@ -68,6 +68,27 @@ theorem theorem41Claim7_modified
   theorem41Claim7_modified_of_section3 hrec2
     lemma34ModifiedNarayanaInterlacing_modified hH_nonneg
 
+/-- Braun--Jal Lemma 3.3 follows from Claim 7 at `lam = nu = 0`, apart from
+the already proved `n = 1` base case.  The recurrence and difference
+nonnegativity hypotheses remain the accepted combinatorial inputs documented
+above; this deduction from them is entirely analytic. -/
+theorem lemma33AuxiliaryGInterlaces_modified
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n -
+          FiniteSkewBoard.auxiliaryG (n - 1))) :
+    Lemma33AuxiliaryGInterlacesStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
+  intro n hn
+  rcases eq_or_lt_of_le hn with h | hn
+  · subst n
+    exact lemma33AuxiliaryGInterlaces_modified_base
+  · simpa using
+      theorem41Claim7_modified hrec2 hH_nonneg
+        (m := n) (lam := 0) (nu := 0) (by lia) (by norm_num) (by norm_num)
+
 /-- Consecutive auxiliary `G` polynomials have real-rooted positive linear
 combinations. This is the part of adjacent `G` proper position supplied
 directly by equation `(2)` and Lemma 3.4; orienting the pencil remains a
