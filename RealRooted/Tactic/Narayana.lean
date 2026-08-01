@@ -4,7 +4,8 @@ import RealRooted.Tactic.PFPolynomial
 /-!
 # Narayana polynomial tactic frontends
 
-Thin wrappers around the generalized Narayana polynomial PF theorem.
+Thin wrappers around the generalized Narayana polynomial PF and consecutive
+proper-position theorems.
 -/
 
 namespace RealRooted
@@ -47,6 +48,12 @@ syntax (name := rr_narayana_polynomial_splits_named)
 
 syntax (name := rr_narayana_polynomial_nonpos_roots_named)
   "rr_narayana_polynomial_nonpos_roots" " using "
+    "parameter" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_narayana_polynomial_prec_succ_named)
+  "rr_narayana_polynomial_prec_succ" " using "
     "parameter" ":=" term ","
     "degree" ":=" term :
   tactic
@@ -99,6 +106,11 @@ macro_rules
         exact
           RealRooted.IsPFPolynomial.hasOnlyNonposRoots
             (RealRooted.narayanaPolynomialRootLocation $m $n))
+  | `(tactic|
+      rr_narayana_polynomial_prec_succ using
+        parameter := $m:term,
+        degree := $n:term) =>
+      `(tactic| exact RealRooted.prec_narayanaPolynomial_succ $m $n)
   | `(tactic|
       rr_narayana_polynomial_sequence_pf using
         parameter := $m:term,

@@ -27,6 +27,12 @@ example {m n : ℕ} :
     parameter := m,
     degree := n
 
+example {m n : ℕ} :
+    Prec (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
+  rr_narayana_polynomial_prec_succ using
+    parameter := m,
+    degree := n
+
 example {m d : Nat → ℕ} :
     ∀ n : Nat, IsPFPolynomial (narayanaPolynomial (m n) (d n)) := by
   rr_narayana_polynomial_sequence_pf using
