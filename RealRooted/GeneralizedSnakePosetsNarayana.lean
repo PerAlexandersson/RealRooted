@@ -3309,5 +3309,44 @@ theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
   rw [hXGprev_top, hGprev_above, hGm_top]
   ring
 
+/-- Convert the combinatorial nonnegativity of the auxiliary difference into
+nonnegativity of the Braun--Jal pencil.
+
+The hypothesis `hH_nonneg` is intentionally explicit. In Braun--Jal's
+Section 4, `H_n = G_n - G_(n-1)` comes from the non-nesting-rook
+interpretation used in the matrix recurrence, so its coefficient
+nonnegativity is a combinatorial input. The present theorem is scoped to the
+analytic consequence of that input and does not formalize the underlying rook
+model or claim that input has been proved in Lean. -/
+theorem auxiliaryGPencil_hasNonnegCoeffs_of_difference
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n - FiniteSkewBoard.auxiliaryG (n - 1)))
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    HasNonnegCoeffs
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m) := by
+  have hnu_one : 0 ≤ nu + 1 := by linarith
+  have hlam_term :
+      HasNonnegCoeffs
+        (C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1))) :=
+    nonnegCoeffs_C_mul hlam
+      (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1)).X_mul
+  have hnu_term :
+      HasNonnegCoeffs
+        (C (nu + 1) * FiniteSkewBoard.auxiliaryG (m - 1)) :=
+    nonnegCoeffs_C_mul hnu_one
+      (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1))
+  rw [show
+      (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m =
+        C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
+          C (nu + 1) * FiniteSkewBoard.auxiliaryG (m - 1) +
+            (FiniteSkewBoard.auxiliaryG m -
+              FiniteSkewBoard.auxiliaryG (m - 1)) by
+          simp only [map_add, map_one]
+          ring]
+  exact (hlam_term.add hnu_term).add (hH_nonneg m (by lia))
+
 end GeneralizedSnakePosets
 end RealRooted
