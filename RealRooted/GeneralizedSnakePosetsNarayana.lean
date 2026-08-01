@@ -459,6 +459,66 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
   modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 
+/-- Equation `(2)` determines the leading candidate coefficient of the
+auxiliary polynomial `G_n`. -/
+theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (n : ℕ) (hn : 1 ≤ n) :
+    (FiniteSkewBoard.auxiliaryG n).coeff (n - 1) = (n : ℝ) := by
+  have hrec := hrec2 (n := n + 1) (by lia)
+  simp only [Nat.add_sub_cancel] at hrec
+  rw [show
+      (1 + X) * modifiedNarayanaPolynomial n =
+        modifiedNarayanaPolynomial n + X * modifiedNarayanaPolynomial n by
+      ring] at hrec
+  have hcoeff := congr_arg (fun p : ℝ[X] => p.coeff ((n - 1) + 1)) hrec
+  simp only [coeff_X_mul, coeff_sub, coeff_add] at hcoeff
+  rw [Nat.sub_add_cancel hn] at hcoeff
+  have hPsucc :
+      (modifiedNarayanaPolynomial (n + 1)).coeff n =
+        ((n + 1 : ℕ) : ℝ) * ((n + 1 : ℕ) + 1) / 2 := by
+    simpa using modifiedNarayanaPolynomial_coeff_sub_one (n + 1) (by lia)
+  have hPlead : (modifiedNarayanaPolynomial n).coeff n = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial n).coeff
+          (modifiedNarayanaPolynomial n).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial n).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff n
+  have hPnext := modifiedNarayanaPolynomial_coeff_sub_one n hn
+  rw [hPsucc, hPlead, hPnext] at hcoeff
+  push_cast at hcoeff
+  linarith
+
+/-- Equation `(2)` also determines the coefficient immediately below the
+leading candidate coefficient of `G_n`. -/
+theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (n : ℕ) (hn : 2 ≤ n) :
+    (FiniteSkewBoard.auxiliaryG n).coeff (n - 2) =
+      (n + 1 : ℝ) * n * (n - 1) / 3 := by
+  have hrec := hrec2 (n := n + 1) (by lia)
+  simp only [Nat.add_sub_cancel] at hrec
+  rw [show
+      (1 + X) * modifiedNarayanaPolynomial n =
+        modifiedNarayanaPolynomial n + X * modifiedNarayanaPolynomial n by
+      ring] at hrec
+  have hcoeff := congr_arg (fun p : ℝ[X] => p.coeff ((n - 2) + 1)) hrec
+  simp only [coeff_X_mul, coeff_sub, coeff_add] at hcoeff
+  have hindex : n - 2 + 1 = n - 1 := by lia
+  rw [hindex] at hcoeff
+  have hPsucc := modifiedNarayanaPolynomial_coeff_sub_two (n + 1) (by lia)
+  have hPnext := modifiedNarayanaPolynomial_coeff_sub_one n (by lia)
+  have hPsecond := modifiedNarayanaPolynomial_coeff_sub_two n hn
+  rw [show n + 1 - 2 = n - 1 by lia] at hPsucc
+  rw [hPsucc, hPnext, hPsecond] at hcoeff
+  push_cast at hcoeff ⊢
+  nlinarith
+
 /-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
 
 This discharges the standard modified-Narayana facts and the elementary
