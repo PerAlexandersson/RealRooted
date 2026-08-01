@@ -458,7 +458,15 @@ example :
   rr_sameDegree_pair_common_interleaver_analytic
 
 example :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_local_lower
 
 example
@@ -572,67 +580,155 @@ example
 
 example
     (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rootCrossing using
     root_crossing := hcross
 
 example
     (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rootCount using
     root_count := hcount
 
 example
     (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rootCountAbove using
     root_count_above := hcount
 
 example
     (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rootCountNonRoot using
     root_count := hcount
 
 example
     (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot using
     root_count_above := hcount
 
 example
     (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_closedSegmentCountEq using
     count_eq := hcount
 
 example
     (hgap : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_closedSegmentNoGapTwo using
     no_gap_two := hgap
 
 example
     (hgap : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_rightFamilyNoGapTwo using
     no_gap_two := hgap
 
 example
     (hgap : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_endpointSignNoGapTwo using
     no_gap_two := hgap
 
 example
     (hgap : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_endpointSignLowerNoGap using
     no_gap := hgap
 
 example
     (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq using
     count_eq := hcount
 
@@ -709,7 +805,15 @@ example
 example
     (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_residual_and_lead using
     lead := hlead,
     residual := hres
@@ -718,7 +822,15 @@ example
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec using
     both_nonzero := hboth,
     divX_prec := hdivX,
@@ -728,19 +840,25 @@ example
     (hres : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
     residual_prec := hres,
     both_nonzero := hboth,
     divX_prec := hdivX
 
 example
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
   rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
     same_degree := hsame,
-    succ_degree := hsucc
 
 example
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
@@ -810,13 +928,11 @@ example {f g : ℝ[X]}
 
 example {fs : List ℝ[X]}
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs := by
   rr_pairwise_common_interleaver_degree_split_nonnegShift using
     same_degree := hsame,
-    succ_degree := hsucc,
     member_pos_lc := hpos,
     pairwise_compatible := hpair
 
@@ -943,14 +1059,12 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
@@ -1074,29 +1188,25 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
@@ -1179,14 +1289,12 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
@@ -1313,8 +1421,7 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs
     using
@@ -1322,21 +1429,18 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
@@ -1425,14 +1529,12 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
@@ -1559,8 +1661,7 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs
     using
@@ -1568,21 +1669,18 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     same_degree := hsame,
-    succ_degree := hsucc
 
 example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -1833,7 +1931,6 @@ example {f g : ℝ[X]}
 example {f g : ℝ[X]}
     (hbelow : CubicInteriorTwoBelowStatement)
     (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f)
@@ -1847,7 +1944,6 @@ example {f g : ℝ[X]}
   rr_noCommon_pair_common_interleaver_degree_le_three using
     below_certificate := hbelow,
     above_certificate := habove,
-    succ_degree_endpoint := hsucc,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_nonneg_coeffs := hfnn,

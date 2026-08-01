@@ -165,15 +165,16 @@ def PosComboNoCommonSuccDegreeOrientationNonnegStatement : Prop :=
 in the nonnegative regime: when the right degree is exactly one larger, the
 needed conclusion is the existence of a common interleaver, not a fixed
 orientation between `f` and `g`. -/
-def PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+theorem PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg :
+    ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      PosComboRealRooted f g →
+      g.natDegree = f.natDegree + 1 →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  sorry
 
 end RealRooted

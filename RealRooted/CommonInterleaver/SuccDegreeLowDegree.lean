@@ -328,7 +328,15 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
 used immediately as input for the corrected succ-degree pair bridge. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg hsucc hno =>
     pairHasCommonInterleaver_of_prec <|
       horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
@@ -416,7 +424,15 @@ common-right-interleaver branch.  The affine-family right-pair theorem gives
 `g ≪ X * f`, so `X * f` is a common right interleaver. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
@@ -1566,7 +1582,6 @@ endpoints. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
     (hbelow : CubicInteriorTwoBelowStatement)
     (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -1578,7 +1593,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicI
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
   · have hsucc_deg : g.natDegree = f.natDegree + 1 := by lia
-    exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
+    exact PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
   · have hsame : g.natDegree = f.natDegree := by lia
     have hfdeg : f.natDegree ≤ 3 := by lia
     exact
@@ -1590,7 +1605,6 @@ succ-degree branches. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succDegree
     (hbelow : CubicInteriorTwoBelowStatement)
     (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -1601,5 +1615,5 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succD
     (hgdeg : g.natDegree ≤ 3) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    hbelow habove hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
+    hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
 end RealRooted

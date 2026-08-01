@@ -61,7 +61,15 @@ via the constructive slot theorem.  This mirrors the same-degree slot boundary
 route for #41. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (hstmt : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   obtain ⟨hf_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hg_rr : g ≠ 0 ∧ g.Splits :=
@@ -82,11 +90,10 @@ intersection is witnessed by the corresponding root of `h` through
 Together with `succDegreePairHasCommonInterleaver_nonneg_of_slotData` this shows
 the slot-data hypothesis is equivalent to the actual common-interleaver goal,
 so the reduction to root slots loses nothing. -/
-theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver
-    (hstmt : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver :
     PosComboNoCommonSuccDegreeSlotDataNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  obtain ⟨h, hfh, hgh⟩ := PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg hf_pos hg_pos hfnn hgnn hfg hsucc hno
   refine ⟨hfh.1, ?_⟩
   intro j hj _ _
   have hjg' : j < g.natDegree + 1 := by lia
@@ -98,14 +105,30 @@ Combining `succDegreePairHasCommonInterleaver_nonneg_of_slotData` with its
 converse `posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver`, the
 root-slot statement `PosComboNoCommonSuccDegreeSlotDataNonnegStatement` holds if
 and only if the common-right-interleaver statement
-`PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement` does. This
+`(∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h)` does. This
 pins down the exact remaining content of milestone B2: proving the slot data is
 neither stronger nor weaker than proving the interleaver goal directly. -/
 theorem posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver :
     PosComboNoCommonSuccDegreeSlotDataNonnegStatement ↔
-      PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+      (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   ⟨succDegreePairHasCommonInterleaver_nonneg_of_slotData,
-    posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver⟩
+    fun _ => posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver⟩
 
 /-- **Combinatorial core of the succ-degree slot bound.**
 

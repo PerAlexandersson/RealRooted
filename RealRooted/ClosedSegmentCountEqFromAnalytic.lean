@@ -53,7 +53,15 @@ private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
 /-- The proved closed-segment count equality closes the repaired succ-degree
 #42 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
     compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts
 
