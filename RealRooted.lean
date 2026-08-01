@@ -21,6 +21,7 @@ import RealRooted.AllCombo
 import RealRooted.Apolarity
 import RealRooted.Basic
 import RealRooted.Bezoutian
+import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.CauchyInterlacing
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
@@ -170,6 +171,8 @@ import RealRooted.LowerTriangularMatrix
 import RealRooted.MaWang
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
