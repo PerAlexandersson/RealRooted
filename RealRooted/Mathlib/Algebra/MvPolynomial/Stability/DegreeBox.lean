@@ -26,7 +26,7 @@ of multivariate stability preservers.
 
 namespace MvPolynomial
 
-section DegreeOfLE
+public section DegreeOfLE
 
 variable {σ R : Type*} [CommSemiring R]
 
@@ -64,7 +64,9 @@ theorem degreeOfLE_mono {κ κ' : σ → ℕ} (h : κ ≤ κ') :
 @[simp]
 theorem degreeOfLE_const (n : ℕ) :
     degreeOfLE σ R (fun _ => n) = restrictDegree σ R n :=
-  rfl
+  by
+    ext p
+    rw [mem_degreeOfLE, mem_restrictDegree]
 
 /-- The canonical monomial basis of a coordinate-wise degree box. -/
 noncomputable def basisDegreeOfLE (κ : σ → ℕ) :
