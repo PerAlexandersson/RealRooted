@@ -108,6 +108,12 @@ theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
   rw [MvPolynomial.eval_mul]
   exact mul_ne_zero (hP z hz) (hQ z hz)
 
+/-- The constant polynomial one is stable. -/
+theorem MvUpperHalfPlaneStable.one {sigma : Type*} :
+    MvUpperHalfPlaneStable (1 : MvPolynomial sigma ℂ) := by
+  intro z hz
+  simp
+
 /-- Arbitrary scalar multiplication preserves weak stability. -/
 theorem MvUpperHalfPlaneStableOrZero.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
@@ -133,6 +139,22 @@ theorem MvUpperHalfPlaneStableOrZero.mul {sigma : Type*}
   · left
     simp
   exact (hP.mul hQ).orZero
+
+/-- A finite product of weakly stable polynomials is weakly stable. -/
+theorem MvUpperHalfPlaneStableOrZero.finset_prod {sigma ι : Type*}
+    (s : Finset ι) (P : ι → MvPolynomial sigma ℂ)
+    (hP : ∀ i ∈ s, MvUpperHalfPlaneStableOrZero (P i)) :
+    MvUpperHalfPlaneStableOrZero (∏ i ∈ s, P i) := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+      simpa using (MvUpperHalfPlaneStable.one (sigma := sigma)).orZero
+  | @insert a s ha ih =>
+      rw [Finset.prod_insert ha]
+      apply (hP a (by simp)).mul
+      apply ih
+      intro i hi
+      exact hP i (by simp [hi])
 
 /-- The sum of two variables is stable in the open upper half-plane. -/
 theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
@@ -254,6 +276,18 @@ theorem MvUpperHalfPlaneStable.specializeRight
     | inl i => exact hx i
     | inr i => exact hy i
 
+/-- Specializing the right block in the upper half-plane preserves weak
+stability. -/
+theorem MvUpperHalfPlaneStableOrZero.specializeRight
+    {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P) {y : tau → ℂ}
+    (hy : ∀ i, 0 < (y i).im) :
+    MvUpperHalfPlaneStableOrZero (specializeRight y P) := by
+  rcases hP with rfl | hP
+  · left
+    rfl
+  exact (hP.specializeRight hy).orZero
+
 /-- Specialize the left block of variables in a polynomial on a sum type. -/
 def specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
     (P : MvPolynomial (Sum sigma tau) ℂ) : MvPolynomial tau ℂ :=
@@ -284,6 +318,18 @@ theorem MvUpperHalfPlaneStable.specializeLeft
     cases i with
     | inl i => exact hx i
     | inr i => exact hy i
+
+/-- Specializing the left block in the upper half-plane preserves weak
+stability. -/
+theorem MvUpperHalfPlaneStableOrZero.specializeLeft
+    {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P) {x : sigma → ℂ}
+    (hx : ∀ i, 0 < (x i).im) :
+    MvUpperHalfPlaneStableOrZero (specializeLeft x P) := by
+  rcases hP with rfl | hP
+  · left
+    rfl
+  exact (hP.specializeLeft hx).orZero
 
 /-- The bivariate polynomial `p(x * y)`. -/
 def xyLift {R : Type*} [CommSemiring R] (p : R[X]) :
