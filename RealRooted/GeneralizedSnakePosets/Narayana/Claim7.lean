@@ -16,6 +16,38 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
+/-- The recurrence hypothesis is accepted combinatorial input from equation (2)
+of the paper.  Formalizing the generalized-snake-poset model that proves this
+identity is outside the present scope; from this point onward we derive the
+analytic root information in Lean. -/
+theorem auxiliaryG_roots_sum_of_narayanaRecurrence
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {n : ℕ} (hn : 2 ≤ n) :
+    (FiniteSkewBoard.auxiliaryG n).roots.sum =
+      -(((n : ℝ) + 1) * ((n : ℝ) - 1) / 3) := by
+  have hsplit : (FiniteSkewBoard.auxiliaryG n).Splits := by
+    simpa using auxiliaryGPencil_splits_of_section3 hrec2
+      lemma34ModifiedNarayanaInterlacing_modified (m := n) (lam := 0) (nu := 0)
+      hn (by norm_num) (by norm_num)
+  have hdeg := auxiliaryG_natDegree_of_narayanaRecurrence hrec2 n (by lia)
+  have hdegpos : 0 < (FiniteSkewBoard.auxiliaryG n).natDegree := by
+    rw [hdeg]
+    lia
+  have hlead : (FiniteSkewBoard.auxiliaryG n).leadingCoeff = (n : ℝ) := by
+    rw [← Polynomial.coeff_natDegree, hdeg]
+    exact auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 n (by lia)
+  have hnext :
+      (FiniteSkewBoard.auxiliaryG n).nextCoeff =
+        ((n : ℝ) + 1) * (n : ℝ) * ((n : ℝ) - 1) / 3 := by
+    rw [Polynomial.nextCoeff_of_natDegree_pos hdegpos, hdeg]
+    simpa [Nat.sub_sub] using
+      auxiliaryG_coeff_sub_two_of_narayanaRecurrence hrec2 n hn
+  have hvieta := hsplit.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
+  rw [hnext, hlead] at hvieta
+  apply mul_left_cancel₀ (show (n : ℝ) ≠ 0 by positivity)
+  nlinarith
+
 /-- Braun--Jal Claim `(7)` for the concrete modified Narayana family.
 
 The remaining hypotheses are intentionally explicit combinatorial inputs.
@@ -24,11 +56,6 @@ family, while coefficientwise nonnegativity of `G n - G (n - 1)` comes from
 the same board interpretation. We use these facts without formalizing the full
 rook model; all analytic real-rootedness and interlacing steps are proved in
 Lean. -/
-/-- The recurrence and coefficientwise nonnegativity hypotheses below are the
-combinatorial input extracted from the generalized-snake-poset model in the
-paper.  We intentionally assume them here: formalizing that entire model is
-outside this project's scope, while the goal of this development is to derive
-real-rootedness from these recurrence data. -/
 theorem theorem41Claim7_modified
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
