@@ -3380,7 +3380,6 @@ example
 
 /-- Family H second-derivative router, finite-symbol ordinary branch. -/
 example
-    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
     (hhom : FiniteSymbolPF.homogenizeStableStatement)
     (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 : Nat → ℝ} {degreeBound : Nat → Nat}
@@ -3407,7 +3406,6 @@ example
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_h_second_derivative_sequence using
     route := finite_symbol,
-    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     base := hbase,
@@ -3421,7 +3419,6 @@ example
 
 /-- Family H shifted second-derivative router, finite-symbol cutoff branch. -/
 example
-    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
     (hhom : FiniteSymbolPF.homogenizeStableStatement)
     (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c3 : Nat → ℝ} {degreeBound : Nat → Nat}
@@ -3450,7 +3447,6 @@ example
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_h_shifted_second_derivative_sequence using
     route := finite_symbol,
-    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     cutoff := N,

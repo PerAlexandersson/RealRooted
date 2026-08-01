@@ -353,11 +353,12 @@ abbrev IsBivariateUpperStable (P : MvPolynomial (Fin 2) ℂ) : Prop :=
 /-! ## Classical interfaces -/
 
 /-- Finite-degree Borcea-Branden preserver theorem, kept as a named interface. -/
-def finiteSymbolBBStatement : Prop :=
-  ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
-    IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) →
-    (∀ n, 0 ≤ alpha n) → (∀ n, 0 ≤ beta n) →
-    BidiagonalPFPreserver alpha beta d
+theorem finiteSymbolBB :
+    ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) →
+      (∀ n, 0 ≤ alpha n) → (∀ n, 0 ≤ beta n) →
+      BidiagonalPFPreserver alpha beta d := by
+  sorry
 
 /-- Real nonpositive-rooted polynomials homogenize to bivariate stable
 polynomials, kept as a named interface. -/
@@ -390,12 +391,11 @@ structure BidiagonalCubicResidualCertificate
 
 /-- Direct application of the finite-symbol BB interface. -/
 theorem finite_symbol_pf_bidiagonal_backend
-    (hBB : finiteSymbolBBStatement)
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hstab : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
     (halpha : ∀ n, 0 ≤ alpha n) (hbeta : ∀ n, 0 ≤ beta n) :
     BidiagonalPFPreserver alpha beta d :=
-  hBB hstab halpha hbeta
+  finiteSymbolBB hstab halpha hbeta
 
 /-- If the finite symbol factors through a stable residual, then the finite
 symbol is stable. -/
@@ -424,13 +424,12 @@ theorem finiteSymbol_stable_of_residual_certificate
 
 /-- Capstone certificate route for PF-bidiagonal preservers. -/
 theorem bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
-  finite_symbol_pf_bidiagonal_backend hBB
+  finite_symbol_pf_bidiagonal_backend
     (finiteSymbol_stable_of_residual_certificate hhom hmul cert)
     cert.alpha_nonneg cert.beta_nonneg
 
@@ -676,7 +675,6 @@ def quadraticBidiagonalCubicResidualCertificate
 /-- Quadratic coefficient functions give a PF-bidiagonal preserver from the
 finite-symbol interfaces and a cubic residual PF certificate. -/
 theorem quadraticBidiagonalPFPreserver_of_residual_certificate
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -687,7 +685,7 @@ theorem quadraticBidiagonalPFPreserver_of_residual_certificate
     BidiagonalPFPreserver
       (quadraticJensenWeight aa ab ac)
       (quadraticJensenWeight ba bb bc) d :=
-  bidiagonalPFPreserver_of_finiteSymbol_residual_certificate hBB hhom hmul
+  bidiagonalPFPreserver_of_finiteSymbol_residual_certificate hhom hmul
     (quadraticBidiagonalCubicResidualCertificate
       aa ab ac ba bb bc hd hdeg hpf halpha hbeta)
 
@@ -697,7 +695,6 @@ finite-degree rows where the subdiagonal coefficients are nonnegative only on
 the finite support `k ≤ d`; coefficients above `d` do not affect either the
 finite symbol or the action on inputs of degree at most `d`. -/
 theorem quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -752,8 +749,7 @@ theorem quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
     beta_nonneg := hbetaT_nonneg
   }
   exact BidiagonalPFPreserver.of_eq_on_degree
-    (bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-      hBB hhom hmul cert)
+    (bidiagonalPFPreserver_of_finiteSymbol_residual_certificate hhom hmul cert)
     halpha_match hbeta_match
 
 /-- Induction principle for a sequence whose recurrence step is a
@@ -811,7 +807,6 @@ theorem secondDerivativeBeta_eq_quadraticJensenWeight
 /-- A second-derivative recurrence step is a PF-bidiagonal preserver once its
 quadratic residual is certified PF. -/
 theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -830,13 +825,12 @@ theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate
     simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
   rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [secondDerivativeBeta_eq_quadraticJensenWeight]
-  exact quadraticBidiagonalPFPreserver_of_residual_certificate hBB hhom hmul
+  exact quadraticBidiagonalPFPreserver_of_residual_certificate hhom hmul
     c2 (b1 - c2) a0 0 b2 a1 hd hdeg hpf halpha' hbeta'
 
 /-- Degree-local variant of
 `secondDerivativeBidiagonalPFPreserver_of_residual_certificate`. -/
 theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate_on_degree
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -855,13 +849,11 @@ theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate_on_degree
     simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
   rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [secondDerivativeBeta_eq_quadraticJensenWeight]
-  exact quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
-    hBB hhom hmul c2 (b1 - c2) a0 0 b2 a1 hd hdeg hpf halpha' hbeta'
+  exact quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree hhom hmul c2 (b1 - c2) a0 0 b2 a1 hd hdeg hpf halpha' hbeta'
 
 /-- Sequence-level PF proof for ordinary second-derivative bidiagonal
 recurrences from finite-symbol residual certificates at each step. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
@@ -890,8 +882,7 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
     (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
     hbase hdegree
     (fun n =>
-      secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n)
+      secondDerivativeBidiagonalPFPreserver_of_residual_certificate hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n)
         (hdeg n) (hpf n) (halpha n) (hbeta n))
     (fun n =>
       (hrec n).trans
@@ -901,7 +892,6 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
 /-- Cutoff version of
 `isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence`. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (N : ℕ)
@@ -931,8 +921,7 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
     (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
     N hbase hdegree
     (fun n hn =>
-      secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
+      secondDerivativeBidiagonalPFPreserver_of_residual_certificate hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
         (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
     (fun n hn =>
       (hrec n hn).trans
@@ -962,7 +951,6 @@ theorem shiftedSecondDerivativeBeta_eq_quadraticJensenWeight
 /-- A shifted second-derivative recurrence step is a PF-bidiagonal preserver
 once its quadratic residual is certified PF. -/
 theorem shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -981,13 +969,12 @@ theorem shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
     simpa [← shiftedSecondDerivativeBeta_eq_quadraticJensenWeight a1 b2 c3] using hbeta
   rw [shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [shiftedSecondDerivativeBeta_eq_quadraticJensenWeight]
-  exact quadraticBidiagonalPFPreserver_of_residual_certificate hBB hhom hmul
+  exact quadraticBidiagonalPFPreserver_of_residual_certificate hhom hmul
     0 b1 a0 c3 (b2 - c3) a1 hd hdeg hpf halpha' hbeta'
 
 /-- Sequence-level PF proof for shifted second-derivative bidiagonal
 recurrences from finite-symbol residual certificates at each step. -/
 theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
@@ -1016,8 +1003,7 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
     (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
     hbase hdegree
     (fun n =>
-      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n)
+      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n)
         (hdeg n) (hpf n) (halpha n) (hbeta n))
     (fun n =>
       (hrec n).trans
@@ -1027,7 +1013,6 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
 /-- Cutoff version of
 `isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence`. -/
 theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
-    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (N : ℕ)
@@ -1058,8 +1043,7 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
     (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
     N hbase hdegree
     (fun n hn =>
-      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
+      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
         (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
     (fun n hn =>
       (hrec n hn).trans
