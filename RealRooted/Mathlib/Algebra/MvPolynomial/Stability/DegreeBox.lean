@@ -106,9 +106,10 @@ noncomputable instance degreeOfLEIndexFintype [Fintype σ] (κ : σ → ℕ) :
   classical
   exact Fintype.ofEquiv (∀ i, Fin (κ i + 1)) (degreeOfLEIndexEquiv κ).symm
 
-noncomputable instance degreeOfLE_moduleFinite [Fintype σ] (κ : σ → ℕ) :
-    Module.Finite R (degreeOfLE σ R κ) :=
-  Module.Finite.of_basis (basisDegreeOfLE (R := R) κ)
+noncomputable instance degreeOfLE_moduleFinite [Finite σ] (κ : σ → ℕ) :
+    Module.Finite R (degreeOfLE σ R κ) := by
+  letI := Fintype.ofFinite σ
+  exact Module.Finite.of_basis (basisDegreeOfLE (R := R) κ)
 
 end DegreeOfLE
 
