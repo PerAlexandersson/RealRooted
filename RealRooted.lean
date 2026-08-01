@@ -21,6 +21,7 @@ import RealRooted.AllCombo
 import RealRooted.Apolarity
 import RealRooted.Basic
 import RealRooted.Bezoutian
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.CauchyInterlacing
 import RealRooted.Challenges.AissenSchoenbergWhitney
