@@ -196,21 +196,31 @@ evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   MvUpperHalfPlaneStable (complexifyMv P)
 
+/-- A nonzero multivariate polynomial has a nonzero evaluation in any
+coordinate-wise family of infinite regions. -/
+theorem exists_stableIn_eval_ne_zero {sigma : Type*}
+    {Omega : sigma → Set ℂ} {P : MvPolynomial sigma ℂ}
+    (hP : P ≠ 0) (hOmega : ∀ i, (Omega i).Infinite) :
+    ∃ z : sigma → ℂ, (∀ i, z i ∈ Omega i) ∧
+      MvPolynomial.eval z P ≠ 0 := by
+  by_contra h
+  push Not at h
+  apply hP
+  apply MvPolynomial.funext_set Omega
+  · exact hOmega
+  · intro z hz
+    simpa using h z fun i => hz i (Set.mem_univ i)
+
 /-- A nonzero multivariate polynomial has a nonzero evaluation in a product
 of open upper half-planes. -/
 theorem exists_upperHalfPlane_eval_ne_zero {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : P ≠ 0) :
     ∃ z : sigma → ℂ, (∀ i, 0 < (z i).im) ∧ MvPolynomial.eval z P ≠ 0 := by
-  by_contra h
-  push Not at h
-  apply hP
-  let s : sigma → Set ℂ := fun _ => {z | 0 < z.im}
-  apply MvPolynomial.funext_set s
-  · intro i
-    exact Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
-      fun z => z.coe_im_pos
-  · intro z hz
-    simpa using h z fun i => hz i (Set.mem_univ i)
+  refine exists_stableIn_eval_ne_zero
+    (Omega := fun _ => {z | 0 < z.im}) hP ?_
+  intro i
+  exact Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
+    fun z => z.coe_im_pos
 
 /-- Restrict a multivariate complex polynomial to the affine line
 `z + t * v`. -/
