@@ -20,7 +20,6 @@ example {alpha beta : ℕ → ℝ} {d : ℕ}
     beta_nonneg := hbeta
 
 example {alpha beta : ℕ → ℝ} {d : ℕ} {residual : ℝ[X]}
-    (hmul : bivariateStableMulXAddYPowStatement)
     (hfac : complexifyMv (finiteSymbol alpha beta d) =
       ((MvPolynomial.X 0 + MvPolynomial.X 1) ^ (d - 2)) *
         complexifyMv (homogenizeBivariate residual.natDegree residual))
@@ -28,35 +27,29 @@ example {alpha beta : ℕ → ℝ} {d : ℕ} {residual : ℝ[X]}
       (complexifyMv (homogenizeBivariate residual.natDegree residual))) :
     IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) := by
   rr_fsp_stable_of_residual_factor using
-    mul_stable := hmul,
     factor := hfac,
     residual_stable := hres
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) := by
   rr_fsp_stable_of_residual_certificate using
     homogenize_stable := hhom,
-    mul_stable := hmul,
     certificate := cert
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   rr_fsp_preserver_of_residual_certificate using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     certificate := cert
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree = 3)
     (hpf : IsPFPolynomial (quadraticBidiagonalResidual aa ab ac ba bb bc d))
@@ -68,7 +61,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_quadratic_preserver using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -77,7 +69,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -91,7 +82,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_second_derivative_preserver using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -100,7 +90,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -114,7 +103,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_second_derivative_preserver_on_degree using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -123,7 +111,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       0 b1 a0 c3 (b2 - c3) a1 d).natDegree = 3)
@@ -137,7 +124,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_shifted_second_derivative_preserver using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -146,7 +132,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -171,7 +156,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -183,7 +167,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -209,7 +192,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -222,7 +204,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -248,7 +229,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     cutoff := N,
     base := hbase,
     degree := hdegree,
@@ -262,7 +242,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -287,7 +266,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -299,7 +277,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -325,7 +302,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -338,7 +314,6 @@ example (hBB : finiteSymbolBBStatement)
 
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
-    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -365,7 +340,6 @@ example (hBB : finiteSymbolBBStatement)
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     cutoff := N,
     base := hbase,
     degree := hdegree,
