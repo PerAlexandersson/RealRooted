@@ -3476,5 +3476,86 @@ theorem auxiliaryGPencil_roots_nonpos_of_difference
   roots_nonpos_of_hasNonnegCoeffs
     (auxiliaryGPencil_hasNonnegCoeffs_of_difference hH_nonneg hm hlam hnu)
 
+/-- Braun--Jal Claim `(7)` for the concrete modified Narayana family, using
+the endpoint-safe root-sum orientation.
+
+The analytic Lemma 3.4 input `h34` remains explicit and must eventually be
+proved. The coefficientwise hypothesis `hH_nonneg` is different: as explained
+at `auxiliaryGPencil_hasNonnegCoeffs_of_difference`, it is the permitted
+combinatorial input from the non-nesting-rook interpretation, whose full model
+is intentionally outside the scope of this formalization. -/
+theorem theorem41Claim7_modified_of_section3
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+      modifiedNarayanaPolynomial)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n -
+          FiniteSkewBoard.auxiliaryG (n - 1))) :
+    Theorem41Claim7Statement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
+  have hV_split :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m).Splits := by
+    intro m lam nu hm hlam hnu
+    exact auxiliaryGPencil_splits_of_section3 hrec2 h34 hm hlam hnu
+  apply theorem41Claim7_of_section3_rootSumSideConditions hrec2 h34
+  refine {
+    w_pos := ?_
+    wu_lc := ?_
+    deg_uw := ?_
+    w_nonpos := ?_
+    u_nonpos := ?_
+    mid_pos := ?_
+    v_pos := ?_
+    v_nonpos := ?_
+    deg_vu := ?_
+    u_v_roots_sum := ?_ }
+  · intro m lam nu hm hlam hnu
+    exact lemma34ModifiedNarayana_right_posLeadingCoeff hlam hnu
+  · intro m lam nu hm hlam hnu
+    calc
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)).leadingCoeff = lam + 1 := by
+        simpa using modifiedNarayanaPencil_leadingCoeff
+          (m := m + 1) (nu := nu) (by lia) hlam
+      _ = ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m).leadingCoeff := by
+        symm
+        exact modifiedNarayanaPencil_leadingCoeff
+          (m := m) (nu := nu) (by lia) hlam
+  · intro m lam nu hm hlam hnu
+    have hUdeg := modifiedNarayanaPencil_natDegree
+      (m := m) (nu := nu) (by lia) hlam
+    have hWdeg :
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)).natDegree = m + 1 := by
+      simpa using modifiedNarayanaPencil_natDegree
+        (m := m + 1) (nu := nu) (by lia) hlam
+    rw [hUdeg, hWdeg]
+  · intro m lam nu hm hlam hnu
+    exact lemma34ModifiedNarayana_right_roots_nonpos hlam hnu
+  · intro m lam nu hm hlam hnu
+    exact lemma34ModifiedNarayana_left_roots_nonpos (by lia) hlam hnu
+  · intro m lam nu hm hlam hnu
+    exact theorem41Claim7_modified_middle_hasPosLeadingCoeff
+      hrec2 hm hlam hnu
+  · intro m lam nu hm hlam hnu
+    exact auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
+      (nu := nu) hrec2 hm hlam
+  · intro m lam nu hm hlam hnu
+    exact auxiliaryGPencil_roots_nonpos_of_difference
+      hH_nonneg hm hlam hnu
+  · intro m lam nu hm hlam hnu
+    rw [auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam,
+      modifiedNarayanaPencil_natDegree
+        (m := m) (nu := nu) (by lia) hlam]
+    lia
+  · intro m lam nu hm hlam hnu
+    exact theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
+      hrec2 h34 hV_split hm hlam hnu
+
 end GeneralizedSnakePosets
 end RealRooted
