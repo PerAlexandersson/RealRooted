@@ -117,6 +117,25 @@ theorem MvUpperHalfPlaneStable.X_sub_nonpos_C_mul_X {sigma : Type*}
     Complex.ofReal_im, zero_mul, add_zero, Complex.zero_im] at him
   nlinarith [hz i, hz j]
 
+/-- A product of homogeneous linear factors with nonpositive real roots is stable. -/
+theorem MvUpperHalfPlaneStable.nonposRootFactorProduct {sigma : Type*}
+    (i j : sigma) (roots : Multiset ℝ)
+    (hroots : ∀ r ∈ roots, r ≤ 0) :
+    MvUpperHalfPlaneStable
+      (roots.map (fun r : ℝ =>
+        MvPolynomial.X i - MvPolynomial.C (r : ℂ) * MvPolynomial.X j)).prod := by
+  induction roots using Multiset.induction_on with
+  | empty =>
+      intro z hz
+      simp
+  | cons r roots ih =>
+      rw [Multiset.map_cons, Multiset.prod_cons]
+      apply (MvUpperHalfPlaneStable.X_sub_nonpos_C_mul_X i j
+        (hroots r (by simp))).mul
+      apply ih
+      intro s hs
+      exact hroots s (by simp [hs])
+
 /-- Multiplication by a power of the sum of two variables preserves stability. -/
 theorem MvUpperHalfPlaneStable.mul_X_add_X_pow {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
