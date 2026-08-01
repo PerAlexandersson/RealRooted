@@ -91,6 +91,30 @@ theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
   rw [MvPolynomial.eval_mul]
   exact mul_ne_zero (hP z hz) (hQ z hz)
 
+/-- The sum of two variables is stable in the open upper half-plane. -/
+theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.X i + MvPolynomial.X j : MvPolynomial sigma ℂ) := by
+  intro z hz
+  simp only [MvPolynomial.eval_add, MvPolynomial.eval_X]
+  intro hzero
+  have him : 0 < (z i + z j).im := by
+    simpa using add_pos (hz i) (hz j)
+  rw [hzero] at him
+  simp at him
+
+/-- Multiplication by a power of the sum of two variables preserves stability. -/
+theorem MvUpperHalfPlaneStable.mul_X_add_X_pow {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
+    (i j : sigma) (m : ℕ) :
+    MvUpperHalfPlaneStable
+      ((MvPolynomial.X i + MvPolynomial.X j) ^ m * P) := by
+  induction m with
+  | zero => simpa
+  | succ m ih =>
+      simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using
+        (MvUpperHalfPlaneStable.X_add_X i j).mul ih
+
 theorem MvUpperHalfPlaneStable.left_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
