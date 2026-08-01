@@ -269,7 +269,9 @@ theorem theorem41_of_prec_step
     (hconst :
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
-    Theorem41NonNestingRookStatement M := by
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) := by
   have hmain :
       ∀ n, ∀ w : SnakeWord, w.length = n → 1 ≤ w.length →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
@@ -326,7 +328,9 @@ theorem theorem41_of_claim7_of_base_cases
       ∀ {w : SnakeWord} {k : ℕ}, 1 ≤ w.length → ¬ w.IsConstant →
         w.IsLastChangeIndex k → w.length - (k + 1) = 1 →
           (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
-    Theorem41NonNestingRookStatement M := by
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) := by
   refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
   intro w k hconstw hlast hprefix_prec
   by_cases hk : k + 1 < w.deleteFinal.length
@@ -417,7 +421,9 @@ theorem theorem41_of_claim7_of_constant_cases
     (hconst :
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
-    Theorem41NonNestingRookStatement M := by
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) := by
   refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
   intro w k _hconstw hlast hprefix_prec
   by_cases hk : k + 1 < w.deleteFinal.length
@@ -475,7 +481,9 @@ theorem theorem41_of_claim7_of_constant_matches_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
-    Theorem41NonNestingRookStatement M := by
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) := by
   have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
     intro m hm
     exact (hP_interlaces (m := m)
@@ -514,7 +522,9 @@ theorem theorem41_of_claim7_of_constant_matches_succ_length
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    Theorem41NonNestingRookStatement M := by
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) := by
   have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
     intro m hm
     have hm_pos : 1 ≤ m := Nat.le_trans (by decide : 1 ≤ 2) hm

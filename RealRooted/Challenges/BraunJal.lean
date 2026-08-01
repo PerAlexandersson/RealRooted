@@ -47,7 +47,9 @@ abbrev NonNestingRookPolynomialFamily :=
 
 /-- Challenge-facing target for Braun--Jal Theorem 4.1 in rook-polynomial form. -/
 abbrev Theorem41Target (M : NonNestingRookPolynomialFamily) : Prop :=
-  Theorem41NonNestingRookStatement M
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    (M w ≠ 0 ∧ (M w).Splits) ∧
+      Interlaces (M w.deleteFinal) (M w)
 
 /-- Challenge-facing target for Braun--Jal Theorem 4.1 from a squarecase model. -/
 abbrev SquarecaseTheorem41Target (model : SquarecaseRookModel) : Prop :=
@@ -102,15 +104,15 @@ abbrev OrderPolytopeHStarTheorem41Target
 
 /-- The real-rootedness projection of Braun--Jal Theorem 4.1. -/
 theorem theorem41_realRooted_part {M : NonNestingRookPolynomialFamily}
-    (h : Theorem41Target M) {w : SnakeWord} (hw : 1 ≤ w.length) :
+    {w : SnakeWord} (hw : 1 ≤ w.length) :
     M w ≠ 0 ∧ (M w).Splits :=
-  nonNestingRook_ne_zero_and_splits_of_theorem41 h hw
+  nonNestingRook_ne_zero_and_splits_of_theorem41 hw
 
 /-- The final-letter-deletion interlacing projection of Braun--Jal Theorem 4.1. -/
 theorem theorem41_interlacing_part {M : NonNestingRookPolynomialFamily}
-    (h : Theorem41Target M) {w : SnakeWord} (hw : 1 ≤ w.length) :
+    {w : SnakeWord} (hw : 1 ≤ w.length) :
     Interlaces (M w.deleteFinal) (M w) :=
-  nonNestingRook_deleteFinal_interlaces_of_theorem41 h hw
+  nonNestingRook_deleteFinal_interlaces_of_theorem41 hw
 
 /-- Squarecase Section 3 inputs imply the rook-polynomial Theorem 4.1 target,
 assuming the abstract induction route. -/

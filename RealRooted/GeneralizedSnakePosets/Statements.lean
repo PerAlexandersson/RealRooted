@@ -23,43 +23,51 @@ namespace GeneralizedSnakePosets
 
 universe u
 
-/-- Statement interface for Braun--Jal Theorem 4.1, with the non-nesting rook
-polynomial supplied as a parameter. -/
-def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
-  ∀ {w : SnakeWord}, 1 ≤ w.length →
-    (M w ≠ 0 ∧ (M w).Splits) ∧
-      Interlaces (M w.deleteFinal) (M w)
+/-- Unproved target: statement interface for Braun--Jal Theorem 4.1, with the non-nesting rook
+polynomial supplied as a parameter.
+
+Tracks open GitHub issue #45. -/
+theorem Theorem41NonNestingRook
+    (M : SnakeWord → ℝ[X]) :
+    ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w) := by
+  sorry
 
 /-- Compatibility alias with a name that is easy to find from the paper title. -/
 abbrev BraunJalGeneralizedSnakeRealRootedStatement
     (M : SnakeWord → ℝ[X]) : Prop :=
-  Theorem41NonNestingRookStatement M
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    (M w ≠ 0 ∧ (M w).Splits) ∧
+      Interlaces (M w.deleteFinal) (M w)
 
 /-- Compatibility alias matching the first milestone note. -/
 abbrev GeneralizedSnakeNonNestingRookInterlacesStatement
     (M : SnakeWord → ℝ[X]) : Prop :=
-  Theorem41NonNestingRookStatement M
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    (M w ≠ 0 ∧ (M w).Splits) ∧
+      Interlaces (M w.deleteFinal) (M w)
 
 /-- Theorem 4.1 expressed for an abstract squarecase/non-nesting rook model. -/
 abbrev SquarecaseRookModelTheorem41Statement
     (model : SquarecaseRookModel) : Prop :=
-  Theorem41NonNestingRookStatement model.snakePolynomial
+  ∀ {w : SnakeWord}, 1 ≤ w.length →
+    (model.snakePolynomial w ≠ 0 ∧ (model.snakePolynomial w).Splits) ∧
+      Interlaces (model.snakePolynomial w.deleteFinal) (model.snakePolynomial w)
 
 /-- The real-rootedness part of Braun--Jal Theorem 4.1. -/
 theorem nonNestingRook_ne_zero_and_splits_of_theorem41
     {M : SnakeWord → ℝ[X]}
-    (hBJ : Theorem41NonNestingRookStatement M)
     {w : SnakeWord} (hw : 1 ≤ w.length) :
     M w ≠ 0 ∧ (M w).Splits :=
-  (hBJ (w := w) hw).1
+  (Theorem41NonNestingRook M hw).1
 
 /-- The final-letter-deletion interlacing part of Braun--Jal Theorem 4.1. -/
 theorem nonNestingRook_deleteFinal_interlaces_of_theorem41
     {M : SnakeWord → ℝ[X]}
-    (hBJ : Theorem41NonNestingRookStatement M)
     {w : SnakeWord} (hw : 1 ≤ w.length) :
     Interlaces (M w.deleteFinal) (M w) :=
-  (hBJ (w := w) hw).2
+  (Theorem41NonNestingRook M hw).2
 
 /-! ## Narayana and recurrence interfaces from Section 3 -/
 
@@ -610,7 +618,9 @@ def Theorem41InductionRouteStatement
   Lemma33AuxiliaryGInterlacesStatement P G →
     Lemma34ModifiedNarayanaInterlacingStatement P →
     Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-      Theorem41NonNestingRookStatement M
+      (∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w ≠ 0 ∧ (M w).Splits) ∧
+          Interlaces (M w.deleteFinal) (M w))
 
 /-- Computable-recursion variant of the current Theorem 4.1 induction route. -/
 def Theorem41InductionRouteComputableStatement
@@ -618,7 +628,9 @@ def Theorem41InductionRouteComputableStatement
   Lemma33AuxiliaryGInterlacesStatement P G →
     Lemma34ModifiedNarayanaInterlacingStatement P →
     Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G →
-      Theorem41NonNestingRookStatement M
+      (∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w ≠ 0 ∧ (M w).Splits) ∧
+          Interlaces (M w.deleteFinal) (M w))
 
 /-- The predicate-form induction route also accepts a computable recurrence
 input. -/
@@ -721,7 +733,9 @@ theorem theorem41_of_section3Inputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3Inputs M P G) :
-    Theorem41NonNestingRookStatement M :=
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) :=
   hroute hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
 
 /-- Feed computable Section 3 ingredients into the abstract Theorem 4.1
@@ -730,7 +744,9 @@ theorem theorem41_of_section3ComputableInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ComputableInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) :=
   theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_computable hinputs)
 
@@ -740,7 +756,9 @@ theorem theorem41_of_section3ShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ShiftedInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) :=
   theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_shifted hinputs)
 
@@ -750,7 +768,9 @@ theorem theorem41_of_section3ComputableShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteStatement M P G)
     (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
+    (∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w ≠ 0 ∧ (M w).Splits) ∧
+        Interlaces (M w.deleteFinal) (M w)) :=
   theorem41_of_section3ComputableInputs hroute
     (theorem41Section3ComputableInputs_of_shifted hinputs)
 
