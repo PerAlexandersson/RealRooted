@@ -64,6 +64,108 @@ coordinate-wise weak stability. -/
       MvStableInOrZero (fun _ => {z | 0 < z.im}) P :=
   Iff.rfl
 
+/-- The constant polynomial one is stable in every family of regions. -/
+theorem MvStableIn.one {sigma : Type*} {Omega : sigma → Set ℂ} :
+    MvStableIn Omega (1 : MvPolynomial sigma ℂ) := by
+  intro z hz
+  simp
+
+/-- Multiplication by a nonzero constant preserves stability in fixed
+coordinate-wise regions. -/
+theorem MvStableIn.C_mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P : MvPolynomial sigma ℂ} (hP : MvStableIn Omega P)
+    {c : ℂ} (hc : c ≠ 0) :
+    MvStableIn Omega (MvPolynomial.C c * P) := by
+  intro z hz
+  simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  exact mul_ne_zero hc (hP z hz)
+
+/-- Multiplication preserves stability in fixed coordinate-wise regions. -/
+theorem MvStableIn.mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P Q : MvPolynomial sigma ℂ} (hP : MvStableIn Omega P)
+    (hQ : MvStableIn Omega Q) :
+    MvStableIn Omega (P * Q) := by
+  intro z hz
+  rw [MvPolynomial.eval_mul]
+  exact mul_ne_zero (hP z hz) (hQ z hz)
+
+/-- Renaming variables preserves stability when the new coordinate regions
+map into the old ones. -/
+theorem MvStableIn.rename {sigma tau : Type*}
+    {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial sigma ℂ} (hP : MvStableIn Omega P)
+    {f : sigma → tau} (hregion : ∀ i, Psi (f i) ⊆ Omega i) :
+    MvStableIn Psi (MvPolynomial.rename f P) := by
+  intro z hz
+  rw [MvPolynomial.eval_rename]
+  exact hP (z ∘ f) fun i => hregion i (hz (f i))
+
+/-- A region-stable polynomial is weakly region-stable. -/
+theorem MvStableIn.orZero {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P : MvPolynomial sigma ℂ} (hP : MvStableIn Omega P) :
+    MvStableInOrZero Omega P :=
+  Or.inr hP
+
+/-- The zero polynomial is weakly stable in every family of regions. -/
+theorem MvStableInOrZero.zero {sigma : Type*} {Omega : sigma → Set ℂ} :
+    MvStableInOrZero Omega (0 : MvPolynomial sigma ℂ) :=
+  Or.inl rfl
+
+/-- Arbitrary scalar multiplication preserves weak region stability. -/
+theorem MvStableInOrZero.C_mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P : MvPolynomial sigma ℂ} (hP : MvStableInOrZero Omega P)
+    (c : ℂ) :
+    MvStableInOrZero Omega (MvPolynomial.C c * P) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  · by_cases hc : c = 0
+    · left
+      simp [hc]
+    · exact (hP.C_mul hc).orZero
+
+/-- Multiplication preserves weak region stability. -/
+theorem MvStableInOrZero.mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P Q : MvPolynomial sigma ℂ} (hP : MvStableInOrZero Omega P)
+    (hQ : MvStableInOrZero Omega Q) :
+    MvStableInOrZero Omega (P * Q) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  rcases hQ with rfl | hQ
+  · left
+    simp
+  exact (hP.mul hQ).orZero
+
+/-- Renaming variables preserves weak stability under compatible region
+inclusions. -/
+theorem MvStableInOrZero.rename {sigma tau : Type*}
+    {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial sigma ℂ} (hP : MvStableInOrZero Omega P)
+    {f : sigma → tau} (hregion : ∀ i, Psi (f i) ⊆ Omega i) :
+    MvStableInOrZero Psi (MvPolynomial.rename f P) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  exact (hP.rename hregion).orZero
+
+/-- A finite product of weakly region-stable polynomials is weakly stable. -/
+theorem MvStableInOrZero.finset_prod {sigma ι : Type*}
+    {Omega : sigma → Set ℂ} (s : Finset ι)
+    (P : ι → MvPolynomial sigma ℂ)
+    (hP : ∀ i ∈ s, MvStableInOrZero Omega (P i)) :
+    MvStableInOrZero Omega (∏ i ∈ s, P i) := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+      simpa using (MvStableIn.one (Omega := Omega)).orZero
+  | @insert a s ha ih =>
+      rw [Finset.prod_insert ha]
+      apply (hP a (by simp)).mul
+      apply ih
+      intro i hi
+      exact hP i (by simp [hi])
+
 /-- The zero polynomial is weakly stable. -/
 theorem MvUpperHalfPlaneStableOrZero.zero {sigma : Type*} :
     MvUpperHalfPlaneStableOrZero (0 : MvPolynomial sigma ℂ) :=
