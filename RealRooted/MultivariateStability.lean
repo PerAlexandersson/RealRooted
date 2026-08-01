@@ -89,6 +89,20 @@ theorem MvStableIn.mul {sigma : Type*} {Omega : sigma → Set ℂ}
   rw [MvPolynomial.eval_mul]
   exact mul_ne_zero (hP z hz) (hQ z hz)
 
+/-- Each left factor of a region-stable product is region-stable. -/
+theorem MvStableIn.left_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
+    MvStableIn Omega P := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
+
+/-- Each right factor of a region-stable product is region-stable. -/
+theorem MvStableIn.right_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
+    {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
+    MvStableIn Omega Q := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
+
 /-- Renaming variables preserves stability when the new coordinate regions
 map into the old ones. -/
 theorem MvStableIn.rename {sigma tau : Type*}
@@ -395,6 +409,33 @@ theorem eval_specializeRight {sigma tau : Type*} (x : sigma → ℂ)
   ext i
   cases i <;> simp
 
+/-- Specializing the right block inside its regions preserves stability in the
+left coordinate regions. -/
+theorem MvStableIn.specializeRight
+    {sigma tau : Type*} {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvStableIn (Sum.elim Omega Psi) P) {y : tau → ℂ}
+    (hy : ∀ i, y i ∈ Psi i) :
+    MvStableIn Omega (specializeRight y P) := by
+  intro x hx
+  rw [eval_specializeRight]
+  exact hP (Sum.elim x y) fun i => by
+    cases i with
+    | inl i => exact hx i
+    | inr i => exact hy i
+
+/-- Specializing the right block inside its regions preserves weak stability. -/
+theorem MvStableInOrZero.specializeRight
+    {sigma tau : Type*} {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvStableInOrZero (Sum.elim Omega Psi) P) {y : tau → ℂ}
+    (hy : ∀ i, y i ∈ Psi i) :
+    MvStableInOrZero Omega (specializeRight y P) := by
+  rcases hP with rfl | hP
+  · left
+    rfl
+  exact (hP.specializeRight hy).orZero
+
 theorem MvUpperHalfPlaneStable.specializeRight
     {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
     (hP : MvUpperHalfPlaneStable P) {y : tau → ℂ}
@@ -437,6 +478,33 @@ theorem eval_specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
   congr 1
   ext i
   cases i <;> simp
+
+/-- Specializing the left block inside its regions preserves stability in the
+right coordinate regions. -/
+theorem MvStableIn.specializeLeft
+    {sigma tau : Type*} {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvStableIn (Sum.elim Omega Psi) P) {x : sigma → ℂ}
+    (hx : ∀ i, x i ∈ Omega i) :
+    MvStableIn Psi (specializeLeft x P) := by
+  intro y hy
+  rw [eval_specializeLeft]
+  exact hP (Sum.elim x y) fun i => by
+    cases i with
+    | inl i => exact hx i
+    | inr i => exact hy i
+
+/-- Specializing the left block inside its regions preserves weak stability. -/
+theorem MvStableInOrZero.specializeLeft
+    {sigma tau : Type*} {Omega : sigma → Set ℂ} {Psi : tau → Set ℂ}
+    {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvStableInOrZero (Sum.elim Omega Psi) P) {x : sigma → ℂ}
+    (hx : ∀ i, x i ∈ Omega i) :
+    MvStableInOrZero Psi (specializeLeft x P) := by
+  rcases hP with rfl | hP
+  · left
+    rfl
+  exact (hP.specializeLeft hx).orZero
 
 theorem MvUpperHalfPlaneStable.specializeLeft
     {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
