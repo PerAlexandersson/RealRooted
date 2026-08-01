@@ -110,6 +110,25 @@ theorem-shape suggestions, or proof repairs:
 - All suggested results are advisory; every proof modification must be fully
   validated locally using Lake.
 
+## Proof Status and Assumption Boundaries
+
+- A declaration of the form `def fooStatement : Prop` states a proof target; it
+  does not prove that target.
+- A theorem containing `sorry`, or obtained from an added axiom with the same
+  content, is still unproved.  Do not present such a declaration as resolving a
+  proof issue.
+- Do not remove an explicit backend hypothesis from tactics or downstream
+  theorems until a checked, assumption-free witness has replaced it.
+- When an external mathematical fact is intentionally left as an explicit
+  hypothesis, add a nearby comment explaining why that boundary is acceptable.
+  Typical acceptable boundaries are a documented combinatorial model identity
+  whose full model is out of scope, or a clearly cited classical theorem whose
+  formalization is tracked separately.  The comment should also make clear that
+  the desired real-rootedness conclusion is derived from formalized recurrences
+  or stability lemmas rather than assumed directly.
+- In issues, pull requests, and handoffs, distinguish explicitly between a
+  statement scaffold, an admitted theorem, and a fully checked proof.
+
 ## Workflow
 
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
