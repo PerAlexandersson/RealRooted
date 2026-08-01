@@ -3382,7 +3382,6 @@ example
 example
     (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
     (hhom : FiniteSymbolPF.homogenizeStableStatement)
-    (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 : Nat → ℝ} {degreeBound : Nat → Nat}
     (hbase : IsPFPolynomial (P 0))
     (hdegree : ∀ n : Nat, (P n).natDegree ≤ degreeBound n)
@@ -3409,7 +3408,6 @@ example
     route := finite_symbol,
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -3423,7 +3421,6 @@ example
 example
     (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
     (hhom : FiniteSymbolPF.homogenizeStableStatement)
-    (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c3 : Nat → ℝ} {degreeBound : Nat → Nat}
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
@@ -3452,7 +3449,6 @@ example
     route := finite_symbol,
     bb_backend := hBB,
     homogenize_stable := hhom,
-    mul_stable := hmul,
     cutoff := N,
     base := hbase,
     degree := hdegree,
