@@ -1,4 +1,4 @@
-import RealRooted.RowThreshold
+import RealRooted.ThresholdMatrix
 
 /-!
 # Gustafsson--Solus interlacing recursion
@@ -194,6 +194,42 @@ def GustafssonSolus2x2FromNoSwitchStatement : Prop :=
     GustafssonSolusNoSwitchAfterDrop phi dropPivot →
       GustafssonSolusHas2x2 phi dropPivot
 
+/-- A concrete Gustafsson--Solus entry is the generic threshold entry with
+marker `0` when the pivot is dropped and marker `1` otherwise. -/
+theorem gustafssonSolusEntry_eq_thresholdEntry {n : ℕ}
+    (phi j : Fin n) (dropPivot : Bool) :
+    gustafssonSolusEntry phi dropPivot j =
+      thresholdEntry phi.1 (GustafssonSolus.gsChoiceMarker dropPivot) j.1 := by
+  unfold gustafssonSolusEntry thresholdEntry GustafssonSolus.gsChoiceMarker
+  split_ifs <;> grind
+
+/-- Monotone thresholds and the no-switch condition discharge every concrete
+Gustafsson--Solus `2 x 2` affine-minor check. -/
+theorem gustafssonSolus2x2_of_noSwitch :
+    GustafssonSolus2x2FromNoSwitchStatement := by
+  intro m n phi dropPivot hphi hdrop i₁ i₂ j₁ j₂ hi hj
+  let i₁' : Fin m := ⟨i₁.1, by simpa [gustafssonSolusMatrix] using i₁.2⟩
+  let i₂' : Fin m := ⟨i₂.1, by simpa [gustafssonSolusMatrix] using i₂.2⟩
+  have hi' : i₁' ≤ i₂' := by simpa [i₁', i₂'] using hi
+  let α₁ := GustafssonSolus.gsChoiceMarker (dropPivot i₁')
+  let α₂ := GustafssonSolus.gsChoiceMarker (dropPivot i₂')
+  have hα₁ : α₁ = 0 ∨ α₁ = 1 := by
+    cases h : dropPivot i₁' <;> simp [α₁, GustafssonSolus.gsChoiceMarker, h]
+  have hα₂ : α₂ = 0 ∨ α₂ = 1 := by
+    cases h : dropPivot i₂' <;> simp [α₂, GustafssonSolus.gsChoiceMarker, h]
+  have ht : (phi i₁').1 ≤ (phi i₂').1 := hphi hi'
+  have hcompat : (phi i₁').1 = (phi i₂').1 → α₁ = 0 → α₂ = 0 := by
+    intro hphiVal hα₁zero
+    have hphiEq : phi i₁' = phi i₂' := Fin.ext hphiVal
+    have hdrop₁ : dropPivot i₁' = true := by
+      cases h : dropPivot i₁' <;>
+        simp [α₁, GustafssonSolus.gsChoiceMarker, h] at hα₁zero ⊢
+    have hdrop₂ : dropPivot i₂' = true := hdrop hi' hphiEq hdrop₁
+    simp [α₂, GustafssonSolus.gsChoiceMarker, hdrop₂]
+  have hentry := GustafssonSolus.gsEntry_has2x2 hα₁ hα₂ ht hj hcompat
+  simpa [gustafssonSolusMatrix, gustafssonSolusRow, i₁', i₂', α₁, α₂,
+    gustafssonSolusEntry_eq_thresholdEntry] using hentry
+
 /-- Named Lean-facing target for Gustafsson--Solus Lemma 3.4 in the
 zero-aware output convention used by this library. -/
 def GustafssonSolusLemma34Statement : Prop :=
@@ -215,5 +251,11 @@ def GustafssonSolusLemma34Of2x2Statement : Prop :=
 theorem gustafssonSolusLemma34_of_2x2 : GustafssonSolusLemma34Of2x2Statement := by
   intro m n phi dropPivot hphi h2x2 fs hfs_len hfs
   exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi h2x2 fs hfs_len hfs
+
+/-- Gustafsson--Solus Lemma 3.4 for the concrete row-threshold matrix. -/
+theorem gustafssonSolusLemma34 : GustafssonSolusLemma34Statement := by
+  intro m n phi dropPivot hphi hdrop fs hfs_len hfs
+  exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi
+    (gustafssonSolus2x2_of_noSwitch phi dropPivot hphi hdrop) fs hfs_len hfs
 
 end RealRooted
