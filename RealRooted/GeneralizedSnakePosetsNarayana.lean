@@ -3234,5 +3234,80 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
   · exact hlam
   · exact hnu
 
+theorem modifiedNarayanaPencil_leadingCoeff {m : ℕ} {lam nu : ℝ}
+    (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m).leadingCoeff = lam + 1 := by
+  have hPprevLead : (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff
+          (modifiedNarayanaPolynomial (m - 1)).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial (m - 1)).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff (m - 1)
+  have hPprevAbove : (modifiedNarayanaPolynomial (m - 1)).coeff m = 0 := by
+    apply coeff_eq_zero_of_natDegree_lt
+    rw [modifiedNarayanaPolynomial_natDegree]
+    lia
+  have hPmLead : (modifiedNarayanaPolynomial m).coeff m = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial m).coeff
+          (modifiedNarayanaPolynomial m).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial m).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff m
+  have hXPprevLead : (X * modifiedNarayanaPolynomial (m - 1)).coeff m = 1 := by
+    have hindex : (m - 1) + 1 = m := Nat.sub_add_cancel hm
+    calc
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) := by
+        simpa only [hindex] using
+          (coeff_X_mul (p := modifiedNarayanaPolynomial (m - 1)) (n := m - 1))
+      _ = 1 := hPprevLead
+  rw [← coeff_natDegree, modifiedNarayanaPencil_natDegree hm hlam]
+  rw [show
+      (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) =
+        C lam * (X * modifiedNarayanaPolynomial (m - 1)) +
+          C nu * modifiedNarayanaPolynomial (m - 1) by ring]
+  simp only [coeff_add, coeff_C_mul]
+  rw [hXPprevLead, hPprevAbove, hPmLead]
+  ring
+
+theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
+    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m).leadingCoeff =
+        lam * ((m - 1 : ℕ) : ℝ) + (m : ℝ) := by
+  have hGprev_top :
+      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
+        ((m - 1 : ℕ) : ℝ) := by
+    simpa only [show m - 1 - 1 = m - 2 by lia] using
+      auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 (m - 1) (by lia)
+  have hXGprev_top :
+      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) =
+        ((m - 1 : ℕ) : ℝ) := by
+    have hindex : (m - 2) + 1 = m - 1 := by lia
+    calc
+      _ = (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) := by
+        simpa only [hindex] using
+          (coeff_X_mul (p := FiniteSkewBoard.auxiliaryG (m - 1)) (n := m - 2))
+      _ = ((m - 1 : ℕ) : ℝ) := hGprev_top
+  have hGprev_above :
+      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) = 0 :=
+    auxiliaryG_coeff_self_of_narayanaRecurrence hrec2 (m - 1)
+  have hGm_top :
+      (FiniteSkewBoard.auxiliaryG m).coeff (m - 1) = m :=
+    auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 m (by lia)
+  rw [← coeff_natDegree,
+    auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam]
+  rw [show
+      (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
+        C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
+          C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+  simp only [coeff_add, coeff_C_mul]
+  rw [hXGprev_top, hGprev_above, hGm_top]
+  ring
+
 end GeneralizedSnakePosets
 end RealRooted
