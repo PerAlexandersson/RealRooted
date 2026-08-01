@@ -376,7 +376,15 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
 /-- The repaired #41 same-degree pair-interleaver endpoint follows from the
 #42 analytic count spine. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
 

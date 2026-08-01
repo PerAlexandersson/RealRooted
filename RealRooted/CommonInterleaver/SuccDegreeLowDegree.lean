@@ -242,7 +242,15 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
 the repaired same-degree common-interleaver target. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : (f ≠ 0 ∧ f.Splits) :=
       hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg

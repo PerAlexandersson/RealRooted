@@ -52,7 +52,15 @@ matching slot-intersection condition via the constructive slot theorem in
 `CommonInterleaverSeq`. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     (hstmt : PosComboNoCommonSameDegreeSlotDataNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : f ≠ 0 ∧ f.Splits :=
     hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
@@ -68,11 +76,10 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
 A common right interleaver for the same-degree pair `(f, g)` recovers the
 matching root-slot intersections through
 `rootSlotInterval_inter_nonempty_of_commonInterleaver`. -/
-theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver
-    (hstmt : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
+theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver :
     PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  obtain ⟨h, hfh, hgh⟩ := PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg hf_pos hg_pos hfnn hgnn hfg hdeg hno
   intro j hj _ _
   have hjg' : j < g.natDegree + 1 := by lia
   exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
@@ -84,9 +91,17 @@ same-degree common-right-interleaver statement holds, so the #41 reduction to
 slot data loses no information. -/
 theorem posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver :
     PosComboNoCommonSameDegreeSlotDataNonnegStatement ↔
-      PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+      (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   ⟨sameDegreePairHasCommonInterleaver_nonneg_of_slotData,
-    posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
+    fun _ => posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
 
 /-- **Combinatorial core of the same-degree slot bound.**
 
@@ -1099,7 +1114,15 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
 the same-degree descending-root crossing inequalities. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross)
 
@@ -1115,7 +1138,15 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCount
 the analytic root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
 
@@ -1131,7 +1162,15 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCountAbove
 the upper-threshold analytic root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
 
@@ -1171,7 +1210,15 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCountAboveNonRoot
 common-non-root lower-threshold root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
@@ -1179,7 +1226,15 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
 common-non-root upper-threshold root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
 

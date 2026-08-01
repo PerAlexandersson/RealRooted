@@ -454,7 +454,15 @@ example :
   rr_sameDegree_rootCountAbove_nonRoot_analytic
 
 example :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   rr_sameDegree_pair_common_interleaver_analytic
 
 example :
@@ -735,11 +743,9 @@ example
     divX_prec := hdivX
 
 example
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
   rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
-    same_degree := hsame,
     succ_degree := hsucc
 
 example
@@ -809,13 +815,11 @@ example {f g : ℝ[X]}
     compatible := hcomp
 
 example {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs := by
   rr_pairwise_common_interleaver_degree_split_nonnegShift using
-    same_degree := hsame,
     succ_degree := hsucc,
     member_pos_lc := hpos,
     pairwise_compatible := hpair
@@ -943,13 +947,11 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
@@ -990,14 +992,12 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haff : PosComboNoCommonAffineFamilyStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_sameDegreePair_affineFamily_nonneg using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     affine_family := haff
 
 example {fs : List ℝ[X]}
@@ -1074,14 +1074,12 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     ChudnovskySeymourFourWayPackage fs := by
   rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs using
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
@@ -1179,13 +1177,11 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
@@ -1226,7 +1222,6 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haff : PosComboNoCommonAffineFamilyStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_sameDegreePair_affineFamily_nonneg
@@ -1234,7 +1229,6 @@ example {fs : List ℝ[X]}
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     affine_family := haff
 
 example {fs : List ℝ[X]}
@@ -1313,7 +1307,6 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
   rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs
@@ -1321,7 +1314,6 @@ example {fs : List ℝ[X]}
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
@@ -1425,13 +1417,11 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegShift using
     member_realrooted := hrr,
     member_pos_lc := hpos,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
@@ -1472,7 +1462,6 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haff : PosComboNoCommonAffineFamilyStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_sameDegreePair_affineFamily_nonneg
@@ -1480,7 +1469,6 @@ example {fs : List ℝ[X]}
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     affine_family := haff
 
 example {fs : List ℝ[X]}
@@ -1559,7 +1547,6 @@ example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs
@@ -1567,7 +1554,6 @@ example {fs : List ℝ[X]}
     member_realrooted := hrr,
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
-    same_degree := hsame,
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}

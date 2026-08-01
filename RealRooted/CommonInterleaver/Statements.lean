@@ -136,16 +136,17 @@ def PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement : Prop :=
 orientation alternative is too strong in degree `2`; for the
 Chudnovsky--Seymour bridge the needed conclusion is only a common right
 interleaver. -/
-def PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+theorem PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg :
+    ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      PosComboRealRooted f g →
+      g.natDegree = f.natDegree →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  sorry
 
 /-- Fixed-orientation succ-degree target in the nonnegative no-common regime.
 This is stronger than what the Chudnovsky--Seymour bridge needs; the repaired

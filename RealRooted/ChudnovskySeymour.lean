@@ -14,7 +14,6 @@ bridge assembled from the same-degree and successor-degree analytic endpoints.
 theorem chudnovskySeymour_compatiblePairHasCommonInterleaver :
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
     succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
 
 /-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-left
@@ -501,9 +500,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_non
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
-      hrr hpos hnn
-      (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
-      haffBridge
+      hrr hpos hnn haffBridge
 
 /-- The nonnegative common-interleaver target follows from the root-crossing
 formulations and splitting-only ASW. -/
@@ -612,29 +609,26 @@ theorem
 /-- The nonnegative four-way package target follows from the repaired
 same-degree and successor-degree no-common pair bridges. -/
 theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
-      hrr hpos hnn hsame hsucc
+      hrr hpos hnn hsucc
 
 /-- The nonnegative-coefficient roadmap target follows from the repaired
 same-degree and successor-degree no-common pair bridges. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
-    (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
+    (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsucc)
 
 /-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
 the nonnegative-coefficient four-way Chudnovsky--Seymour package. -/
 theorem chudnovskySeymour_fourWay_nonnegCoeffs :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
-    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
     succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
 
 /-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
@@ -675,24 +669,21 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
 same-degree bridge and the affine-family bridge for the successor-degree
 branch. -/
 theorem chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
-      hrr hpos hnn hsame haffBridge
+      hrr hpos hnn haffBridge
 
 /-- The nonnegative-coefficient common-interleaver target follows from the
 repaired same-degree bridge and the affine-family bridge for the
 successor-degree branch. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
-    (chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg
-      hsame haffBridge)
+    (chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg haffBridge)
 
 /-- The nonnegative four-way package target follows from the all-combinations
 bridge. -/
@@ -770,12 +761,10 @@ theorem
 from the repaired same-degree and successor-degree no-common pair bridges. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
-      hsame hsucc)
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg hsucc)
 
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the honest same-degree orientation alternative and successor-degree
@@ -793,12 +782,10 @@ from the repaired same-degree bridge and the affine-family bridge for the
 successor-degree branch. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreePair_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
-    (chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg
-      hsame haffBridge)
+    (chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg haffBridge)
 
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the all-combinations bridge. -/
@@ -918,60 +905,53 @@ reductions. -/
 endpoint and the #42 compatible succ-degree closed-segment endpoint count
 equality. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
 
 /-- Nonnegative-coefficient common-interleaver target from the repaired
 same-degree pair endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg hsame
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 repaired same-degree pair endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg hsame
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
 
 /-- Nonnegative four-way package target from the repaired same-degree pair
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    hsame (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
 
 /-- Nonnegative-coefficient common-interleaver target from the repaired
 same-degree pair endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsame
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 repaired same-degree pair endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsame
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
 
 /-! #### Same-degree slot-data endpoint with the direct #42 route
@@ -985,8 +965,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeSlotData_and_succClosedSegmentCou
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 slot-data endpoint and the #42 compatible succ-degree closed-segment endpoint
@@ -996,8 +975,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree slot-data endpoint and the #42 compatible succ-degree closed-segment
@@ -1007,8 +985,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree slot-data endpoint
 and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
@@ -1016,8 +993,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeSlotData_and_succEndpointSignLowe
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 slot-data endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1027,8 +1003,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree slot-data endpoint and the #42 exact lower-threshold endpoint-sign
@@ -1038,8 +1013,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-! #### Same-degree root-crossing endpoint with the direct #42 route
 
@@ -1053,8 +1027,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_succClosedSegmen
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 root-crossing endpoint and the #42 compatible succ-degree closed-segment
@@ -1064,8 +1037,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree root-crossing endpoint and the #42 compatible succ-degree
@@ -1075,8 +1047,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree root-crossing
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
@@ -1084,8 +1055,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_succEndpointSign
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 root-crossing endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1095,8 +1065,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree root-crossing endpoint and the #42 exact lower-threshold
@@ -1106,8 +1075,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-! #### Same-degree lower root-count endpoint with the direct #42 route
 
@@ -1122,8 +1090,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCount_and_succClosedSegmentCo
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree lower
 root-count endpoint and the #42 compatible succ-degree closed-segment endpoint
@@ -1133,8 +1100,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree lower root-count endpoint and the #42 compatible succ-degree
@@ -1144,8 +1110,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree lower root-count
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
@@ -1153,8 +1118,7 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCount_and_succEndpointSignLow
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree lower
 root-count endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1164,8 +1128,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree lower root-count endpoint and the #42 exact lower-threshold
@@ -1175,8 +1138,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-! #### Same-degree upper root-count endpoint with the direct #42 route
 
@@ -1192,8 +1154,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree upper
 root-count endpoint and the #42 compatible succ-degree closed-segment endpoint
@@ -1203,8 +1164,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree upper root-count endpoint and the #42 compatible succ-degree
@@ -1214,8 +1174,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree upper root-count
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
@@ -1224,8 +1183,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree upper
 root-count endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1235,8 +1193,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree upper root-count endpoint and the #42 exact lower-threshold
@@ -1246,8 +1203,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-! #### Same-degree common-non-root upper root-count endpoint with the direct
 #42 route
@@ -1264,8 +1220,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 common-non-root upper root-count endpoint and the #42 compatible succ-degree
@@ -1275,8 +1230,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree common-non-root upper root-count endpoint and the #42 compatible
@@ -1286,8 +1240,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree common-non-root
 upper root-count endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1297,8 +1250,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 common-non-root upper root-count endpoint and the #42 exact lower-threshold
@@ -1308,8 +1260,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree common-non-root upper root-count endpoint and the #42 exact
@@ -1319,8 +1270,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-! #### Same-degree common-non-root lower root-count endpoint with the direct
 #42 route
@@ -1337,8 +1287,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 common-non-root lower root-count endpoint and the #42 compatible succ-degree
@@ -1348,8 +1297,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree common-non-root lower root-count endpoint and the #42 compatible
@@ -1359,8 +1307,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsucc
 
 /-- Nonnegative four-way package target from the same-degree common-non-root
 lower root-count endpoint and the #42 exact lower-threshold endpoint-sign count
@@ -1370,8 +1317,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient common-interleaver target from the same-degree
 common-non-root lower root-count endpoint and the #42 exact lower-threshold
@@ -1381,8 +1327,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Nonnegative-coefficient finite-family compatibility target from the
 same-degree common-non-root lower root-count endpoint and the #42 exact
@@ -1392,8 +1337,7 @@ theorem
     (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
     (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg hsucc
 
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/

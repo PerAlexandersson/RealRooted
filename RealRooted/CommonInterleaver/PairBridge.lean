@@ -1464,7 +1464,6 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
 in the nonnegative regime: both same-degree and succ-degree branches are stated
 directly with the common-right-interleaver conclusion needed downstream. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -1478,7 +1477,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   rcases hdeg with hsame_deg | hsucc_deg
-  · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
+  · exact PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
 
 /-- Honest no-common degree-split reduction of the common-interleaver bridge
@@ -1498,15 +1497,12 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
+  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
 /-- Repaired no-common degree-split reduction with the succ-degree branch
 discharged by the affine-family bridge.  After this reduction, the only
 remaining local branch is the same-degree common-interleaver statement. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -1519,7 +1515,6 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFam
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
@@ -1758,7 +1753,6 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -1771,8 +1765,7 @@ private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
-      posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := f) (g := g)
+      posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc (f := f) (g := g)
         hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
@@ -2326,7 +2319,6 @@ the nonnegative-coefficient regime. This is the version to use after the
 same-degree orientation alternative is replaced by a common-interleaver target.
 -/
 theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -2336,7 +2328,7 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
   posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-        (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+        (f := f) (g := g) hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
     hf_pos hg_pos hfnn hgnn hfg
 
 /-- The honest degree-split package also yields the full positive-combo pair
@@ -2349,15 +2341,12 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc hf_pos hg_pos hfnn hgnn hfg
+  posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc hf_pos hg_pos hfnn hgnn hfg
 
 /-- Full positive-combo pair bridge in the nonnegative-coefficient regime,
 using the repaired same-degree branch and the affine-family bridge for the
 succ-degree branch. -/
 theorem posComboPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -2365,7 +2354,6 @@ theorem posComboPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonn
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hf_pos hg_pos hfnn hgnn hfg
 
@@ -2413,7 +2401,6 @@ private theorem nonnegPosComboPairBridge_of_affineFamilyBridge
       haffBridge hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
@@ -2423,8 +2410,7 @@ private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
       PosComboRealRooted f g →
       ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
-    posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-      hsame hsucc hf_pos hg_pos hfnn hgnn hfg
+    posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc hf_pos hg_pos hfnn hgnn hfg
 
 /-- Compatibility-to-common-interleaver bridge under no-common orientation and
 nonnegative coefficients. -/
@@ -2482,7 +2468,6 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_n
 repaired degree-split package with common-interleaver conclusions in both
 branches. -/
 theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -2490,7 +2475,7 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (nonnegPosComboPairBridge_of_pairDegreeSplit hsame hsucc)
+    (nonnegPosComboPairBridge_of_pairDegreeSplit hsucc)
     hf_pos hg_pos hfnn hgnn hfg
 
 /-- Compatibility bridge under nonnegative coefficients, reduced to the honest
@@ -2503,15 +2488,12 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc hf_pos hg_pos hfnn hgnn hfg
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc hf_pos hg_pos hfnn hgnn hfg
 
 /-- Compatibility bridge in the nonnegative-coefficient regime, using the
 repaired same-degree branch and the affine-family bridge for the succ-degree
 branch. -/
 theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -2519,7 +2501,6 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_no
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hf_pos hg_pos hfnn hgnn hfg
 
@@ -2684,7 +2665,6 @@ repaired nonnegative-coefficient degree-split package.  This is the shifted
 version whose same-degree input already has the common-right-interleaver
 conclusion, rather than the stronger orientation alternative. -/
 theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
@@ -2696,8 +2676,7 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
   posComboPairHasCommonInterleaver_via_nonnegShift
     _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
     (fun {F G} hF_pos hG_pos hFnn hGnn hFG =>
-      posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
+      posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
 
 /-- Translation reduces the full positive-leading compatibility bridge to the
 nonnegative-coefficient degree-split package: shift both polynomials far enough
@@ -2713,9 +2692,7 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
+  posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift hsucc _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
 
 private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
     (hbridge :
@@ -2738,13 +2715,11 @@ private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
 /-- Shifted compatibility bridge using the repaired same-degree
 common-interleaver branch directly. -/
 theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
     (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
-      posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-        hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
+      posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
 /-- Shifted compatibility bridge from the concrete slot-data endpoints for the
 same-degree and succ-degree nonnegative branches. -/
@@ -2752,9 +2727,7 @@ theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
 
 /-- Shifted compatibility bridge from the root-crossing formulations of the
 nonnegative same-degree and succ-degree branches.  The succ-degree branch also
@@ -2764,9 +2737,7 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift (succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
       hsplit hsucc)
 
 /-- Shifted compatibility bridge from root-crossing formulations alone.  The
@@ -2889,9 +2860,7 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift hsucc
 
 /-- Shifted positive-leading compatibility bridge with the succ-degree branch
 discharged by the affine-family bridge.  This leaves only the same-degree
@@ -2908,11 +2877,9 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFa
 discharged by the affine-family bridge and the same-degree branch stated in the
 repaired common-right-interleaver form. -/
 theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- The stronger boundary-right-pair orientation hypothesis already finishes

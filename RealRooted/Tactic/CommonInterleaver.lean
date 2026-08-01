@@ -747,7 +747,6 @@ syntax
 
 syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_named)
   "rr_compatible_pair_common_interleaver_degree_split_nonnegShift" " using "
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -807,7 +806,6 @@ syntax (name := rr_chudnovskySeymour_compatible_pair_common_left_interleaver_nam
 
 syntax (name := rr_pairwise_common_interleaver_degree_split_nonnegShift_named)
   "rr_pairwise_common_interleaver_degree_split_nonnegShift" " using "
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term ","
     "member_pos_lc" ":=" term ","
     "pairwise_compatible" ":=" term :
@@ -897,7 +895,6 @@ syntax (name := rr_chudnovskySeymour_fourWay_degreeSplit_nonnegShift_named)
   "rr_chudnovskySeymour_fourWay_degreeSplit_nonnegShift" " using "
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -929,7 +926,6 @@ syntax (name := rr_chudnovskySeymour_fourWay_sameDegreePair_affineFamily_nonneg_
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "affine_family" ":=" term :
   tactic
 
@@ -985,7 +981,6 @@ syntax (name := rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs_named)
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -1056,7 +1051,6 @@ syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegSh
   "rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegShift" " using "
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -1090,7 +1084,6 @@ syntax
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "affine_family" ":=" term :
   tactic
 
@@ -1152,7 +1145,6 @@ syntax
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -1228,7 +1220,6 @@ syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegShi
   "rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegShift" " using "
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -1262,7 +1253,6 @@ syntax
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "affine_family" ":=" term :
   tactic
 
@@ -1324,7 +1314,6 @@ syntax
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
     "succ_degree" ":=" term :
   tactic
 
@@ -2171,11 +2160,9 @@ macro_rules
             $hres $hboth $hdivX)
   | `(tactic|
       rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-          $hsame $hsucc)
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift $hsucc)
   | `(tactic|
       rr_compatible_pair_common_interleaver_rootCrossing using
         same_degree := $hsame:term,
@@ -2235,13 +2222,11 @@ macro_rules
           $hf $hg $hcomp)
   | `(tactic|
       rr_pairwise_common_interleaver_degree_split_nonnegShift using
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term,
         member_pos_lc := $hpos:term,
         pairwise_compatible := $hpair:term) =>
       `(tactic|
-        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
-          $hsame $hsucc $hpos $hpair)
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift $hsucc $hpos $hpair)
   | `(tactic|
       rr_pairwise_common_interleaver_rootCrossing using
         same_degree := $hsame:term,
@@ -2348,11 +2333,10 @@ macro_rules
       rr_chudnovskySeymour_fourWay_degreeSplit_nonnegShift using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
-          $hrr $hpos $hsame $hsucc)
+          $hrr $hpos $hsucc)
   | `(tactic|
       rr_chudnovskySeymour_fourWay_slotData_nonnegShift using
         member_realrooted := $hrr:term,
@@ -2386,11 +2370,10 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         affine_family := $haff:term) =>
       `(tactic|
         exact chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
-          $hrr $hpos $hnn $hsame $haff)
+          $hrr $hpos $hnn $haff)
   | `(tactic|
       rr_chudnovskySeymour_fourWay_allCombo_nonnegCoeffs using
         member_realrooted := $hrr:term,
@@ -2450,11 +2433,10 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
-          $hrr $hpos $hnn $hsame $hsucc)
+          $hrr $hpos $hnn $hsucc)
   | `(tactic|
       rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs using
         member_realrooted := $hrr:term,
@@ -2541,11 +2523,10 @@ macro_rules
       rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegShift using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-          $hrr $hpos $hsame $hsucc)
+          $hrr $hpos $hsucc)
   | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_slotData_nonnegShift using
         member_realrooted := $hrr:term,
@@ -2578,12 +2559,11 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         affine_family := $haff:term) =>
       `(tactic|
         exact
           pairwiseCompatible_iff_hasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-            $hrr $hpos $hnn $hsame $haff)
+            $hrr $hpos $hnn $haff)
   | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_allCombo_nonnegCoeffs using
         member_realrooted := $hrr:term,
@@ -2648,12 +2628,11 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact
           pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-            $hrr $hpos $hnn $hsame $hsucc)
+            $hrr $hpos $hnn $hsucc)
   | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs using
         member_realrooted := $hrr:term,
@@ -2749,11 +2728,10 @@ macro_rules
       rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegShift using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShift
-          $hrr $hpos $hsame $hsucc)
+          $hrr $hpos $hsucc)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_slotData_nonnegShift using
         member_realrooted := $hrr:term,
@@ -2787,12 +2765,11 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         affine_family := $haff:term) =>
       `(tactic|
         exact
           pairwiseCompatible_iff_familyCompatible_of_sameDegreePair_and_affineFamily_nonneg
-            $hrr $hpos $hnn $hsame $haff)
+            $hrr $hpos $hnn $haff)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_allCombo_nonnegCoeffs using
         member_realrooted := $hrr:term,
@@ -2858,12 +2835,11 @@ macro_rules
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
         member_nonneg_coeffs := $hnn:term,
-        same_degree := $hsame:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact
           pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_and_nonnegCoeffs
-            $hrr $hpos $hnn $hsame $hsucc)
+            $hrr $hpos $hnn $hsucc)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs using
         member_realrooted := $hrr:term,
