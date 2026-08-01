@@ -605,6 +605,73 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
     · exact (natDegree_le_iff_coeff_eq_zero.mp hG_le_n) N (by lia)
   exact natDegree_eq_of_le_of_coeff_ne_zero hG_le hcoeff_ne
 
+/-- Equation `(2)` determines the degree of the auxiliary Braun--Jal pencil. -/
+theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
+    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 := by
+  have hfac : (C lam * X + C nu : ℝ[X]).natDegree ≤ 1 := by
+    have hlin : (C lam * X : ℝ[X]).natDegree ≤ 1 := by
+      calc
+        _ ≤ (C lam : ℝ[X]).natDegree + (X : ℝ[X]).natDegree := natDegree_mul_le
+        _ ≤ 1 := by simp
+    exact (natDegree_add_le _ _).trans (max_le hlin (by simp))
+  have hGprev_deg :
+      (FiniteSkewBoard.auxiliaryG (m - 1)).natDegree = m - 2 := by
+    simpa only [show m - 1 - 1 = m - 2 by lia] using
+      auxiliaryG_natDegree_of_narayanaRecurrence hrec2 (m - 1) (by lia)
+  have hGm_deg : (FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 :=
+    auxiliaryG_natDegree_of_narayanaRecurrence hrec2 m (by lia)
+  have hprod :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1)).natDegree ≤
+        m - 1 := by
+    calc
+      _ ≤ (C lam * X + C nu : ℝ[X]).natDegree +
+          (FiniteSkewBoard.auxiliaryG (m - 1)).natDegree := natDegree_mul_le
+      _ ≤ 1 + (m - 2) := Nat.add_le_add hfac (by rw [hGprev_deg])
+      _ = m - 1 := by lia
+  have hle :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 := by
+    exact (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
+  have hGprev_top :
+      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
+        ((m - 1 : ℕ) : ℝ) := by
+    simpa only [show m - 1 - 1 = m - 2 by lia] using
+      auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 (m - 1) (by lia)
+  have hXGprev_top :
+      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) =
+        ((m - 1 : ℕ) : ℝ) := by
+    have hindex : (m - 2) + 1 = m - 1 := by lia
+    calc
+      _ = (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) := by
+        simpa only [hindex] using
+          (coeff_X_mul (p := FiniteSkewBoard.auxiliaryG (m - 1)) (n := m - 2))
+      _ = ((m - 1 : ℕ) : ℝ) := hGprev_top
+  have hGprev_above :
+      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) = 0 :=
+    auxiliaryG_coeff_self_of_narayanaRecurrence hrec2 (m - 1)
+  have hGm_top :
+      (FiniteSkewBoard.auxiliaryG m).coeff (m - 1) = m :=
+    auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 m (by lia)
+  have hcoeff :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).coeff (m - 1) =
+          lam * ((m - 1 : ℕ) : ℝ) + (m : ℝ) := by
+    rw [show
+      (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
+        C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
+          C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+    simp only [coeff_add, coeff_C_mul]
+    rw [hXGprev_top, hGprev_above, hGm_top]
+    ring
+  apply natDegree_eq_of_le_of_coeff_ne_zero hle
+  rw [hcoeff]
+  positivity
+
 /-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
 
 This discharges the standard modified-Narayana facts and the elementary
