@@ -519,6 +519,44 @@ theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
   push_cast at hcoeff ⊢
   nlinarith
 
+/-- Equation `(2)` forces the coefficient one place above the leading
+candidate coefficient of `G_n` to vanish. -/
+theorem auxiliaryG_coeff_self_of_narayanaRecurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (n : ℕ) :
+    (FiniteSkewBoard.auxiliaryG n).coeff n = 0 := by
+  have hrec := hrec2 (n := n + 1) (by lia)
+  simp only [Nat.add_sub_cancel] at hrec
+  rw [show
+      (1 + X) * modifiedNarayanaPolynomial n =
+        modifiedNarayanaPolynomial n + X * modifiedNarayanaPolynomial n by
+      ring] at hrec
+  have hcoeff := congr_arg (fun p : ℝ[X] => p.coeff (n + 1)) hrec
+  simp only [coeff_X_mul, coeff_sub, coeff_add] at hcoeff
+  have hPsucc :
+      (modifiedNarayanaPolynomial (n + 1)).coeff (n + 1) = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial (n + 1)).coeff
+          (modifiedNarayanaPolynomial (n + 1)).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial (n + 1)).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff (n + 1)
+  have hPabove : (modifiedNarayanaPolynomial n).coeff (n + 1) = 0 := by
+    apply coeff_eq_zero_of_natDegree_lt
+    rw [modifiedNarayanaPolynomial_natDegree]
+    lia
+  have hPlead : (modifiedNarayanaPolynomial n).coeff n = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial n).coeff
+          (modifiedNarayanaPolynomial n).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial n).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff n
+  rw [hPsucc, hPabove, hPlead] at hcoeff
+  linarith
+
 /-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
 
 This discharges the standard modified-Narayana facts and the elementary
