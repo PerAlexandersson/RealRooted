@@ -24,6 +24,11 @@ family, while coefficientwise nonnegativity of `G n - G (n - 1)` comes from
 the same board interpretation. We use these facts without formalizing the full
 rook model; all analytic real-rootedness and interlacing steps are proved in
 Lean. -/
+/-- The recurrence and coefficientwise nonnegativity hypotheses below are the
+combinatorial input extracted from the generalized-snake-poset model in the
+paper.  We intentionally assume them here: formalizing that entire model is
+outside this project's scope, while the goal of this development is to derive
+real-rootedness from these recurrence data. -/
 theorem theorem41Claim7_modified
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
