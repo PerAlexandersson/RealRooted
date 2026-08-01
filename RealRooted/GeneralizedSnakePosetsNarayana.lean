@@ -930,6 +930,62 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence
 /-- Section 3 provider for the root-sum field in the corrected Claim `(7)`
 bundle. Lemma 3.4 supplies splitting of `U`, while the existing degree-gap
 field determines the absolute degree of `V`. -/
+theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
+    (hlam : 0 ≤ lam) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m).natDegree = m := by
+  have hfac : (C lam * X + C nu : ℝ[X]).natDegree ≤ 1 := by
+    have hlin : (C lam * X : ℝ[X]).natDegree ≤ 1 := by
+      calc
+        _ ≤ (C lam : ℝ[X]).natDegree + (X : ℝ[X]).natDegree := natDegree_mul_le
+        _ ≤ 1 := by simp
+    calc
+      _ ≤ max (C lam * X : ℝ[X]).natDegree (C nu : ℝ[X]).natDegree :=
+        natDegree_add_le _ _
+      _ ≤ 1 := max_le hlin (by simp)
+  have hprod :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1)).natDegree ≤ m := by
+    calc
+      _ ≤ (C lam * X + C nu : ℝ[X]).natDegree +
+          (modifiedNarayanaPolynomial (m - 1)).natDegree := natDegree_mul_le
+      _ ≤ 1 + (m - 1) := by
+        exact Nat.add_le_add hfac (by
+          rw [modifiedNarayanaPolynomial_natDegree])
+      _ = m := by lia
+  have hle :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).natDegree ≤ m := by
+    apply (natDegree_add_le _ _).trans
+    rw [modifiedNarayanaPolynomial_natDegree]
+    exact max_le hprod le_rfl
+  apply natDegree_eq_of_le_of_coeff_ne_zero hle
+  have hPprevLead : (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff
+          (modifiedNarayanaPolynomial (m - 1)).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial (m - 1)).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff (m - 1)
+  have hPprevAbove : (modifiedNarayanaPolynomial (m - 1)).coeff m = 0 := by
+    apply coeff_eq_zero_of_natDegree_lt
+    rw [modifiedNarayanaPolynomial_natDegree]
+    lia
+  have hPmLead : (modifiedNarayanaPolynomial m).coeff m = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial m).coeff (modifiedNarayanaPolynomial m).natDegree := by
+        rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial m).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff m
+  have hXPprevLead : (X * modifiedNarayanaPolynomial (m - 1)).coeff m = 1 := by
+    rw [show m = (m - 1) + 1 by exact (Nat.sub_add_cancel hm).symm, coeff_X_mul]
+    exact hPprevLead
+  rw [show (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) =
+      C lam * (X * modifiedNarayanaPolynomial (m - 1)) +
+        C nu * modifiedNarayanaPolynomial (m - 1) by ring]
+  simp only [coeff_add, coeff_C_mul]
+  rw [hXPprevLead, hPprevAbove, hPmLead]
+  linarith
+
 theorem theorem41Claim7_modified_u_v_roots_sum_of_section3
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement
