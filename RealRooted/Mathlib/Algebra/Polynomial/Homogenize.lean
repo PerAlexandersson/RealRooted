@@ -34,12 +34,14 @@ theorem homogenize_rootFactorProduct {R : Type*} [CommRing R] [IsDomain R]
       (roots.map (fun r =>
         MvPolynomial.X 0 - MvPolynomial.C r * MvPolynomial.X 1)).prod := by
   induction roots using Multiset.induction_on with
-  | empty =>
-      simp [homogenize_one]
-  | cons r roots ih =>
-      simp only [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons]
-      rw [Nat.add_comm roots.card 1]
-      rw [homogenize_mul _ _ (by simp) (by rw [natDegree_rootFactorProduct])]
-      rw [homogenize_X_sub_C, ih]
+  | empty => simp
+  | @cons r roots ih =>
+      have hdeg :
+          (roots.map (fun r => X - C r)).prod.natDegree ≤ roots.card := by
+        simp
+      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons,
+        Nat.add_comm roots.card 1,
+        homogenize_mul _ _ (natDegree_X_sub_C_le r) hdeg, ih]
+      simp
 
 end Polynomial
