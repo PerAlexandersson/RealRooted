@@ -3348,5 +3348,17 @@ theorem auxiliaryGPencil_hasNonnegCoeffs_of_difference
           ring]
   exact (hlam_term.add hnu_term).add (hH_nonneg m (by lia))
 
+/-- The explicit combinatorial difference input rules out positive real roots
+of the auxiliary Braun--Jal pencil. -/
+theorem auxiliaryGPencil_roots_nonpos_of_difference
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n - FiniteSkewBoard.auxiliaryG (n - 1)))
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    ∀ r ∈ (((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (auxiliaryGPencil_hasNonnegCoeffs_of_difference hH_nonneg hm hlam hnu)
+
 end GeneralizedSnakePosets
 end RealRooted
