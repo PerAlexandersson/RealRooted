@@ -350,19 +350,16 @@ example {F G : Nat → ℝ[X]} {beta : Nat → ℝ}
     parameter_le_one := hbeta1
 
 example {f g : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (hpf : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g := by
-  rr_pos_combo_asw_right_pencil using asw := hASW, nonzero := hne, pf := hpf
+  rr_pos_combo_asw_right_pencil using nonzero := hne, pf := hpf
 
 example {f g : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (htnn : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g := by
   rr_pos_combo_asw_right_pencil_tnn using
-    asw := hASW,
     nonzero := hne,
     tnn := htnn
 

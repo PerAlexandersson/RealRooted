@@ -14,23 +14,21 @@ example {r k : ℕ} {p : ℝ[X]} (hp : IsPolyaFreqSeq p.coeff)
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff := by
   rr_veronese_section_pf_coeff using pf_coeff := hp, r_pos := hr, k_lt_r := hk
 
-example {r k : ℕ} {p : ℝ[X]} (hASW : aissenSchoenbergWhitneyForwardStatement)
+example {r k : ℕ} {p : ℝ[X]}
     (hp : IsPolyaFreqSeq p.coeff) (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   rr_veronese_section_splits_pf using
-    asw := hASW,
     pf_coeff := hp,
     r_pos := hr,
     k_lt_r := hk
 
-example {r k : ℕ} {p : ℝ[X]} (hASW : aissenSchoenbergWhitneyForwardStatement)
+example {r k : ℕ} {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hsplits : p.Splits)
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   rr_veronese_section_splits_nonneg using
-    asw := hASW,
     nonneg := hpnn,
     splits := hsplits,
     r_pos := hr,
@@ -138,7 +136,6 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
     k_lt_r := hk
 
 example {r k : Nat → Nat} {P : Nat → ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hpf : ∀ n : Nat, IsPolyaFreqSeq (P n).coeff)
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
@@ -146,13 +143,11 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
       veroneseSectionPolynomial (r n) (k n) (P n) = 0 ∨
         (veroneseSectionPolynomial (r n) (k n) (P n)).Splits := by
   rr_veronese_section_sequence_splits_pf using
-    asw := hASW,
     pf_coeff := hpf,
     r_pos := hr,
     k_lt_r := hk
 
 example {r k : Nat → Nat} {P : Nat → ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hr : ∀ n : Nat, 0 < r n)
@@ -161,7 +156,6 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
       veroneseSectionPolynomial (r n) (k n) (P n) = 0 ∨
         (veroneseSectionPolynomial (r n) (k n) (P n)).Splits := by
   rr_veronese_section_sequence_splits_nonneg using
-    asw := hASW,
     nonneg := hnn,
     splits := hsplits,
     r_pos := hr,

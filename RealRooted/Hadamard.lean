@@ -2990,7 +2990,7 @@ conditional reduction of the #34 target
   Hermite--Biehler bridge and conformal substitution;
 * `LegacyHurwitzStableToMatrixTotallyNonnegativeStatement` — the legacy row-oriented
   forward matrix Hurwitz criterion, now known false as a general theorem;
-* `aissenSchoenbergWhitneyForwardStatement` and
+* `aissenSchoenbergWhitneyForward` and
   `FullyInterlacingPairInterlaceStatement` — forward
   Aissen--Schoenberg--Whitney and the combinatorial interlacing-extraction
   core.
@@ -3003,7 +3003,6 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
@@ -3012,7 +3011,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
     (hadamardPreservesHurwitzStable_of_rightHalfPlane hRHP)
     (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
     (hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN hHurwitzToMatrix)
-    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hASW hInt)
+    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hInt)
 
 /-- Legacy bundle for the proposed Garloff--Wagner matrix route. It is
 uninhabited because its `HermiteBiehlerHurwitzRoute` field contains the refuted
@@ -3022,8 +3021,6 @@ structure GarloffWagnerClassicalInputs : Prop where
   hadamardPreservesRightHalfPlaneStable : hadamardPreservesRightHalfPlaneStableStatement
   /-- Shared sign-normalized Hermite--Biehler/Hurwitz-matrix route. -/
   route : HermiteBiehlerHurwitzRoute
-  /-- Forward Aissen--Schoenberg--Whitney. -/
-  aissenSchoenbergWhitneyForward : aissenSchoenbergWhitneyForwardStatement
   /-- Combinatorial interlacing-extraction core. -/
   fullyInterlacingPairInterlace : FullyInterlacingPairInterlaceStatement
 
@@ -3044,7 +3041,6 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
     h.route.hermiteBiehlerForwardPos
     h.route.hermiteBiehlerStableToHurwitzOddEven
     h.route.hurwitzStableToMatrixTotallyNonnegative
-    h.aissenSchoenbergWhitneyForward
     h.fullyInterlacingPairInterlace
 
 theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
@@ -3090,7 +3086,6 @@ forward Aissen--Schoenberg--Whitney/interlacing-extraction route. -/
 theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
     (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
@@ -3098,18 +3093,17 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
   garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
     hRoute.toNonnegPrecToFullyInterlacingPair
     hMatHad
-    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hASW hInt)
+    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hInt)
 
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
     (hSchur : HurwitzMatrixSchurProductTNStatement)
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs hRoute
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hASW hInt
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hInt
 
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
@@ -3146,7 +3140,6 @@ theorem garloffWagnerHadamardPFPrec_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrecStatement :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
@@ -3159,14 +3152,12 @@ theorem garloffWagnerHadamardPFPrec_of_classicalInputsBundle
 theorem garloffWagnerHadamardPFPrec_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrecStatement :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrecStatement :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
@@ -3219,7 +3210,6 @@ theorem garloffWagnerHadamardPFPrec0_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrec0Statement :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
@@ -3232,14 +3222,12 @@ theorem garloffWagnerHadamardPFPrec0_of_classicalInputsBundle
 theorem garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrec0Statement :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardPFPrec0Statement :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
@@ -3281,7 +3269,6 @@ theorem hadamardProduct_preserves_pf_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
@@ -3297,7 +3284,6 @@ theorem hadamardProduct_preserves_pf_of_classicalInputsBundle
 theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
@@ -3305,7 +3291,6 @@ theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
@@ -3340,7 +3325,6 @@ theorem schurPolyaWagnerHadamardPF_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
@@ -3353,14 +3337,12 @@ theorem schurPolyaWagnerHadamardPF_of_classicalInputsBundle
 theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
 
 theorem schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
@@ -3401,7 +3383,6 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
@@ -3414,7 +3395,6 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputsBundle
 theorem garloffWagnerHadamardNonnegRealRooted_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
@@ -3422,7 +3402,6 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_matrixClassicalInputs
 theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hSchur : HurwitzMatrixSchurProductTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
@@ -3508,7 +3487,6 @@ theorem hadamardReciprocalConeClosure_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     hadamardReciprocalConeClosureStatement :=
   hadamardReciprocalConeClosure_of_garloffWagner
@@ -3521,14 +3499,12 @@ theorem hadamardReciprocalConeClosure_of_classicalInputsBundle
 theorem hadamardReciprocalConeClosure_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     hadamardReciprocalConeClosureStatement :=
   hadamardReciprocalConeClosure_of_garloffWagner
 
 theorem hadamardReciprocalConeClosure_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     hadamardReciprocalConeClosureStatement :=
   hadamardReciprocalConeClosure_of_garloffWagner
@@ -3598,7 +3574,6 @@ theorem polyaFrequencyHadamardCoeff_of_classicalInputs
     (_hHB : hermiteBiehlerForwardPosStatement)
     (_hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (_hHurwitzToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     polyaFrequencyHadamardCoeffStatement :=
   polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW0
@@ -3613,7 +3588,6 @@ theorem polyaFrequencyHadamardCoeff_of_matrixClassicalInputs
     (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     polyaFrequencyHadamardCoeffStatement :=
   polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW0
@@ -3621,7 +3595,6 @@ theorem polyaFrequencyHadamardCoeff_of_matrixClassicalInputs
 theorem polyaFrequencyHadamardCoeff_of_hurwitzSchurClassicalInputs
     (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hASW : aissenSchoenbergWhitneyForwardStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     polyaFrequencyHadamardCoeffStatement :=
   polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW0

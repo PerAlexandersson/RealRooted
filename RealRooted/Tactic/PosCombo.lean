@@ -358,14 +358,12 @@ syntax (name := rr_pos_combo_sequence_closed_segment_same_degree_realrooted_name
 
 syntax (name := rr_pos_combo_asw_right_pencil_named)
   "rr_pos_combo_asw_right_pencil" " using "
-    "asw" ":=" term ","
     "nonzero" ":=" term ","
     "pf" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_asw_right_pencil_tnn_named)
   "rr_pos_combo_asw_right_pencil_tnn" " using "
-    "asw" ":=" term ","
     "nonzero" ":=" term ","
     "tnn" ":=" term :
   tactic
@@ -854,20 +852,16 @@ macro_rules
             $hfg $hfpos $hgpos $hdeg $hβ0 $hβ1)
   | `(tactic|
       rr_pos_combo_asw_right_pencil using
-        asw := $hASW:term,
         nonzero := $hne:term,
         pf := $hpf:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil
-          $hASW $hne $hpf)
+        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil $hne $hpf)
   | `(tactic|
       rr_pos_combo_asw_right_pencil_tnn using
-        asw := $hASW:term,
         nonzero := $hne:term,
         tnn := $htnn:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil_tnn
-          $hASW $hne $htnn)
+        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil_tnn $hne $htnn)
   | `(tactic|
       rr_pos_combo_family_pair_right using
         pos_combo := $hfg:term,

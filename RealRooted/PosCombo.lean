@@ -727,7 +727,6 @@ positive combination `a f + b g`.
 -/
 theorem of_aissenSchoenbergWhitney_right_pencil
     {f g : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (hpf : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g := by
@@ -740,7 +739,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
   rw [← hscale]
-  exact ⟨mul_ne_zero (by grind) (hne hz), .mul (.C _) <| (hASW (hpf hz)).1⟩
+  exact ⟨mul_ne_zero (by grind) (hne hz), .mul (.C _) <| (aissenSchoenbergWhitneyForward (hpf hz)).1⟩
 
 /--
 TNN-named version of `of_aissenSchoenbergWhitney_right_pencil`.
@@ -750,11 +749,10 @@ nonnegativity rather than the PF alias.
 -/
 theorem of_aissenSchoenbergWhitney_right_pencil_tnn
     {f g : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (htnn : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g :=
-  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hASW hne
+  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hne
     (fun {z} hz => htnn (z := z) hz)
 
 /-- Any two positive combinations from the same one-parameter family again form
