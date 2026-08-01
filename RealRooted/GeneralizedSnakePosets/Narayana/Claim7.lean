@@ -154,5 +154,37 @@ theorem theorem41InductionRoute_modified_of_modelInputs
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
+/-- Concrete Theorem 4.1 checkpoint with its proof boundary made explicit.
+The recurrence, coefficient nonnegativity, word recurrence, degree, and
+constant-word hypotheses are combinatorial model inputs, so accepting them is
+consistent with the scope documented above.  In contrast, `hG` is an analytic
+premise still to be proved (or removed by a sharper matrix argument); this
+theorem isolates that sole remaining analytic boundary rather than claiming
+the final result unconditionally. -/
+theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
+    {M : SnakeWord → ℝ[X]}
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n -
+          FiniteSkewBoard.auxiliaryG (n - 1)))
+    (hG : ∀ {m : ℕ}, 2 ≤ m →
+      Prec (FiniteSkewBoard.auxiliaryG (m - 1))
+        (FiniteSkewBoard.auxiliaryG m))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = modifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41NonNestingRookStatement M := by
+  exact
+    (theorem41InductionRoute_modified_of_modelInputs hrec2 hH_nonneg hG
+      hM_nonneg hdeg hM_const)
+      (lemma33AuxiliaryGInterlaces_modified hrec2 hH_nonneg)
+      lemma34ModifiedNarayanaInterlacing_modified hrec
+
 end GeneralizedSnakePosets
 end RealRooted
