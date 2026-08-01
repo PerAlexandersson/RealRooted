@@ -827,6 +827,106 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
   exact theorem41Claim7_modified_rootSum_ratio_le m lam nu
     (by exact_mod_cast (show 2 ≤ m by lia)) hlam hnu
 
+/-- The endpoint `m = 2` case of the modified-Narayana root-sum comparison. -/
+theorem theorem41Claim7_modified_roots_sum_le_two
+    {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hU_split :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
+        modifiedNarayanaPolynomial 2).Splits)
+    (hV_split :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
+        FiniteSkewBoard.auxiliaryG 2).Splits)
+    (hUdeg :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
+        modifiedNarayanaPolynomial 2).natDegree = 2)
+    (hVdeg :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
+        FiniteSkewBoard.auxiliaryG 2).natDegree = 1) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
+        modifiedNarayanaPolynomial 2).roots.sum ≤
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
+        FiniteSkewBoard.auxiliaryG 2).roots.sum := by
+  let U :=
+    (C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
+      modifiedNarayanaPolynomial 2
+  let V :=
+    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
+      FiniteSkewBoard.auxiliaryG 2
+  change U.Splits at hU_split
+  change V.Splits at hV_split
+  change U.natDegree = 2 at hUdeg
+  change V.natDegree = 1 at hVdeg
+  change U.roots.sum ≤ V.roots.sum
+  have hUeq :
+      U = C (nu + 1) + C (lam + nu + 3) * X + C (lam + 1) * X ^ 2 := by
+    dsimp [U]
+    rw [modifiedNarayanaPolynomial_one, modifiedNarayanaPolynomial_two]
+    simp only [map_add, map_ofNat, map_one]
+    ring
+  have hVeq : V = C (nu + 2) + C (lam + 2) * X := by
+    dsimp [V]
+    rw [FiniteSkewBoard.auxiliaryG_one, FiniteSkewBoard.auxiliaryG_two]
+    simp only [map_add, map_ofNat]
+    ring
+  have hUlc : U.leadingCoeff = lam + 1 := by
+    rw [leadingCoeff, hUdeg, hUeq]
+    simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_X_pow]
+    norm_num
+  have hUnext : U.nextCoeff = lam + nu + 3 := by
+    rw [nextCoeff_of_natDegree_pos (by rw [hUdeg]; norm_num), hUdeg, hUeq]
+    simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_X_pow]
+    norm_num
+  have hVlc : V.leadingCoeff = lam + 2 := by
+    rw [leadingCoeff, hVdeg, hVeq]
+    simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X]
+    norm_num
+  have hVnext : V.nextCoeff = nu + 2 := by
+    rw [nextCoeff_of_natDegree_pos (by rw [hVdeg]; norm_num), hVdeg, hVeq]
+    simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X]
+    norm_num
+  have hUlc_ne : U.leadingCoeff ≠ 0 := by
+    rw [hUlc]
+    linarith
+  have hVlc_ne : V.leadingCoeff ≠ 0 := by
+    rw [hVlc]
+    linarith
+  rw [hU_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hUlc_ne,
+    hV_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hVlc_ne,
+    hUnext, hUlc, hVnext, hVlc]
+  convert theorem41Claim7_modified_rootSum_ratio_le 2 lam nu (by norm_num) hlam hnu
+      using 1 <;>
+    ring
+
+/-- Uniform modified-Narayana root-sum comparison from equation `(2)`, the
+expected window degrees, and splitting. -/
+theorem theorem41Claim7_modified_roots_sum_le_of_recurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hU_split :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).Splits)
+    (hV_split :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).Splits)
+    (hUdeg :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).natDegree = m)
+    (hVdeg :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).roots.sum ≤
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+  by_cases hm2 : m = 2
+  · subst m
+    exact theorem41Claim7_modified_roots_sum_le_two hlam hnu
+      hU_split hV_split hUdeg hVdeg
+  · exact theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
+      hrec2 (by lia) hlam hnu hU_split hV_split hUdeg hVdeg
+
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
 current Claim `(7)` side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
