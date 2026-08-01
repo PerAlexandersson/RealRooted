@@ -2729,8 +2729,11 @@ lemma two_mul_sub_two_mul_sq_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   simp only [eval_mul, eval_C, eval_sub, eval_pow, eval_X]
   nlinarith
 
-theorem splits_narayanaPolynomial (m n : ℕ) :
-    (narayanaPolynomial m n).Splits := by
+/-- Consecutive positive-degree generalized Narayana polynomials are in proper
+position.  This exposes the full Liu--Wang conclusion already constructed by
+the recurrence proof below, rather than retaining only real-rootedness. -/
+theorem prec_narayanaPolynomial_succ (m n : ℕ) :
+    Prec (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
   set P : ℕ → ℝ[X] := fun k => narayanaPolynomial m (k + 1) with hP
   have hpos (k : ℕ) : HasPosLeadingCoeff (P k) :=
     hasPosLeadingCoeff_narayanaPolynomial m (k + 1)
@@ -2762,7 +2765,7 @@ theorem splits_narayanaPolynomial (m n : ℕ) :
   have hW_nonpos (k : ℕ) (r : ℝ) (_ : (P (k + 1)).IsRoot r) :
       (0 : ℝ[X]).eval r ≤ 0 := by
     simp
-  have hbuild := isRealRooted_of_lw_derivative_lag_sequence
+  have hbuild := prec_lw_derivative_lag_sequence
     (P := P)
     (U := fun k ↦ C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
       (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2) +
@@ -2771,10 +2774,14 @@ theorem splits_narayanaPolynomial (m n : ℕ) :
       (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2))
     (W := fun _ => 0)
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [*]
-  · rw [← Nat.sub_add_cancel hn]
-    exact (hbuild (n - 1)).2
+  simpa [P] using hbuild n
+
+/-- Generalized Narayana polynomials split over the reals. -/
+theorem splits_narayanaPolynomial (m n : ℕ) :
+    (narayanaPolynomial m n).Splits := by
+  rcases n with _ | n
+  · simp
+  · exact (prec_narayanaPolynomial_succ m n).1.2
 
 /-- The generalized Narayana polynomials are PF polynomials. -/
 theorem narayanaPolynomialRootLocation :

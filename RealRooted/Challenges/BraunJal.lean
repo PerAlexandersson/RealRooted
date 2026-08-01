@@ -1,5 +1,6 @@
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosetsNarayana
+import RealRooted.GeneralizedSnakePosets.Narayana.Claim7
 import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 
 open Polynomial
@@ -99,6 +100,27 @@ abbrev OrderPolytopeHStarMatchesNonNestingRook
 abbrev OrderPolytopeHStarTheorem41Target
     (hStar : NonNestingRookPolynomialFamily) : Prop :=
   OrderPolytopeHStarTheorem41Statement hStar
+
+/-- Concrete Braun--Jal Theorem 4.1 from the accepted combinatorial model
+inputs.  The parameter-two Narayana identity is the board-model fact; all
+proper-position and real-rootedness deductions are checked in Lean. -/
+theorem theorem41_of_modifiedModelInputs
+    {M : NonNestingRookPolynomialFamily}
+    (hrec2 : AuxiliaryGRecurrence ModifiedNarayanaPolynomial AuxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs (AuxiliaryG n - AuxiliaryG (n - 1)))
+    (hG_model : ∀ n : ℕ, 1 ≤ n →
+      AuxiliaryG n = C (n : ℝ) * narayanaPolynomial 2 (n - 1))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
+      ModifiedNarayanaPolynomial AuxiliaryG)
+    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = ModifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41Target M :=
+  theorem41NonNestingRook_modified_of_modelInputs hrec2 hH_nonneg hG_model
+    hrec hM_nonneg hdeg hM_const
 
 /-- The real-rootedness projection of Braun--Jal Theorem 4.1. -/
 theorem theorem41_realRooted_part {M : NonNestingRookPolynomialFamily}

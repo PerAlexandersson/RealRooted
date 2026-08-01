@@ -154,6 +154,41 @@ theorem theorem41InductionRoute_modified_of_modelInputs
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
+private theorem prec_narayanaPolynomial_two (n : ℕ) :
+    Prec (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
+  cases n with
+  | zero =>
+      rw [narayanaPolynomial_one]
+      simpa using
+        (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toPrec
+  | succ n =>
+      simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
+        prec_narayanaPolynomial_succ 2 n
+
+/-- Consecutive auxiliary polynomials are in proper position once the rook
+model identifies `G n` with `n` times the parameter-two generalized Narayana
+polynomial.  This identity is accepted as combinatorial input: formalizing its
+board bijection is outside scope, while the proper-position deduction is
+proved here from the generalized Narayana recurrence. -/
+theorem auxiliaryG_prec_succ_of_narayanaTwoModel
+    (hG_model : ∀ n : ℕ, 1 ≤ n →
+      FiniteSkewBoard.auxiliaryG n =
+        C (n : ℝ) * narayanaPolynomial 2 (n - 1)) :
+    ∀ {m : ℕ}, 2 ≤ m →
+      Prec (FiniteSkewBoard.auxiliaryG (m - 1))
+        (FiniteSkewBoard.auxiliaryG m) := by
+  intro m hm
+  rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
+  have hprec := prec_narayanaPolynomial_two (m - 2)
+  have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by
+    exact_mod_cast (show m - 1 ≠ 0 by lia)
+  have hscaled :=
+    (hprec.C_mul_left hm1_ne).C_mul_right
+      (show (m : ℝ) ≠ 0 by positivity)
+  have hleft : m - 1 - 1 = m - 2 := by lia
+  have hright : m - 2 + 1 = m - 1 := by lia
+  simpa [hleft, hright] using hscaled
+
 /-- Concrete Theorem 4.1 checkpoint with its proof boundary made explicit.
 The recurrence, coefficient nonnegativity, word recurrence, degree, and
 constant-word hypotheses are combinatorial model inputs, so accepting them is
@@ -185,6 +220,31 @@ theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
       hM_nonneg hdeg hM_const)
       (lemma33AuxiliaryGInterlaces_modified hrec2 hH_nonneg)
       lemma34ModifiedNarayanaInterlacing_modified hrec
+
+/-- Braun--Jal Theorem 4.1 from combinatorial model inputs.  In particular,
+`hG_model` is the accepted rook-model identification described above; all
+real-rootedness and proper-position consequences are proved from recurrences. -/
+theorem theorem41NonNestingRook_modified_of_modelInputs
+    {M : SnakeWord → ℝ[X]}
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n -
+          FiniteSkewBoard.auxiliaryG (n - 1)))
+    (hG_model : ∀ n : ℕ, 1 ≤ n →
+      FiniteSkewBoard.auxiliaryG n =
+        C (n : ℝ) * narayanaPolynomial 2 (n - 1))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = modifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG hrec2 hH_nonneg
+    (auxiliaryG_prec_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
 
 end GeneralizedSnakePosets
 end RealRooted
