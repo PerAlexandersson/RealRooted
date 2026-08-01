@@ -216,7 +216,7 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
   obtain ⟨i, hwi⟩ :=
     exists_eq_of_isRoot_polarizationRootPolynomial (hg ▸ hwroot)
   rw [hwi] at hwlower
-  exact (not_le_of_gt (hz i)) hwlower
+  exact (not_le_of_gt (hz i)) (by simpa [lowerHalf] using hwlower)
 
 /-- Exact-degree upper-half-plane stability is preserved by univariate
 polarization. -/
