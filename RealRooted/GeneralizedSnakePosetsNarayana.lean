@@ -520,6 +520,45 @@ theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
+/-- Arithmetic comparison between the Vieta expressions predicted by the
+leading and next coefficients of the modified-Narayana `U` window and the
+auxiliary-`G` `V` window. -/
+theorem theorem41Claim7_modified_rootSum_ratio_le
+    (d lam nu : ℝ) (hd : 2 ≤ d) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    -(d * (d + 1) / 2 + lam * (d - 1) * d / 2 + nu) / (lam + 1) ≤
+      -((d + 1) * d * (d - 1) / 3 +
+          lam * d * (d - 1) * (d - 2) / 3 + nu * (d - 1)) /
+        (d + lam * (d - 1)) := by
+  have hdm1 : 0 ≤ d - 1 := by linarith
+  have hdm2 : 0 ≤ d - 2 := by linarith
+  have hdp2 : 0 ≤ d + 2 := by linarith
+  have hdenU : 0 < lam + 1 := by linarith
+  have hdenV : 0 < d + lam * (d - 1) := by
+    nlinarith [mul_nonneg hlam hdm1]
+  rw [div_le_div_iff₀ hdenU hdenV]
+  have hsq : 0 ≤ d ^ 2 - 1 := by nlinarith
+  have ht1 : 0 ≤ lam ^ 2 * d * (d ^ 2 - 1) := by positivity
+  have hd_sq : 4 ≤ d ^ 2 := by
+    nlinarith [mul_nonneg hdm2 hdp2]
+  have hpoly : 0 ≤ 2 * d ^ 2 + 3 * d - 5 := by nlinarith
+  have ht2 : 0 ≤ lam * d * (2 * d ^ 2 + 3 * d - 5) := by positivity
+  have hquad : 0 ≤ d ^ 2 + 5 * d + 12 := by nlinarith [sq_nonneg d]
+  have hbaseprod : 0 ≤ (d - 2) * (d ^ 2 + 5 * d + 12) :=
+    mul_nonneg hdm2 hquad
+  have hbase : 0 ≤ d * (d + 1) * (d + 2) + 6 * nu := by
+    nlinarith [hbaseprod]
+  have hfactor :
+      (d * (d + 1) / 2 + lam * (d - 1) * d / 2 + nu) *
+          (d + lam * (d - 1)) -
+        ((d + 1) * d * (d - 1) / 3 +
+          lam * d * (d - 1) * (d - 2) / 3 + nu * (d - 1)) *
+          (lam + 1) =
+      (lam ^ 2 * d * (d ^ 2 - 1) +
+          lam * d * (2 * d ^ 2 + 3 * d - 5) +
+          d * (d + 1) * (d + 2) + 6 * nu) / 6 := by
+    ring
+  nlinarith
+
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
 current Claim `(7)` side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
