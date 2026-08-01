@@ -221,14 +221,12 @@ theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
       (lemma33AuxiliaryGInterlaces_modified hrec2 hH_nonneg)
       lemma34ModifiedNarayanaInterlacing_modified hrec
 
-/-- Braun--Jal Theorem 4.1 from combinatorial model inputs.  In particular,
-`hG_model` is the accepted rook-model identification described above; all
-real-rootedness and proper-position consequences are proved from recurrences. -/
 /--
-The model-input hypotheses below are an intentional trust boundary: they record only the
-combinatorial identifications from the paper, whose full rook and order-polytope models are
-outside the scope of this project.  They do not assume interlacing or real-rootedness; those
-conclusions are derived here from the formalized recurrence and generalized Narayana theory.
+Braun--Jal Theorem 4.1 from combinatorial model inputs. The hypotheses below are an intentional
+trust boundary: in particular, `hG_model` records only the rook-model identification from the
+paper, whose full rook and order-polytope models are outside the scope of this project. They do
+not assume interlacing or real-rootedness; those conclusions are derived here from the formalized
+recurrence and generalized Narayana theory.
 -/
 theorem theorem41NonNestingRook_modified_of_modelInputs
     {M : SnakeWord → ℝ[X]}
