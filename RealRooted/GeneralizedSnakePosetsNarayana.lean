@@ -3322,6 +3322,29 @@ theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
   rw [auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence hrec2 hm hlam]
   positivity
 
+/-- The two summands in the middle polynomial of Braun--Jal Claim `(7)` have
+the same degree and positive leading coefficient. -/
+theorem theorem41Claim7_modified_middle_hasPosLeadingCoeff
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
+    (hnu : -1 ≤ nu) :
+    HasPosLeadingCoeff
+      (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) +
+        X * ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m)) := by
+  have hV_pos :=
+    auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
+      (nu := nu) hrec2 hm hlam
+  apply hasPosLeadingCoeff_add_of_same_natDegree
+  · rw [lemma34ModifiedNarayana_left_natDegree (by lia) hlam hnu,
+      Polynomial.natDegree_X_mul hV_pos.ne_zero,
+      auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam]
+    lia
+  · exact lemma34ModifiedNarayana_left_posLeadingCoeff (by lia) hlam hnu
+  · exact hV_pos.X_mul
+
 /-- Convert the combinatorial nonnegativity of the auxiliary difference into
 nonnegativity of the Braun--Jal pencil.
 
