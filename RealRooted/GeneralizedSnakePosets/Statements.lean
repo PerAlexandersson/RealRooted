@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.GeneralizedSnakePosets.SquarecaseModel
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Braun--Jal generalized snake poset statement interfaces
@@ -345,7 +346,7 @@ structure Theorem41Claim7SideConditions
 The strict negative upper bound in the older bundle fails at legitimate
 zero-root endpoints.  This bundle instead records nonpositivity of the roots
 of `U` explicitly and orients the same-degree Obreschkoff alternative by the
-root-sum comparison between `U` and `X * V`. -/
+root-sum comparison between `U` and `V`. -/
 structure Theorem41Claim7RootSumSideConditions
     (P G : ℕ → ℝ[X]) : Prop where
   w_pos :
@@ -380,10 +381,10 @@ structure Theorem41Claim7RootSumSideConditions
     ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
       ((C lam * X + C nu) * G (m - 1) + G m).natDegree + 1 =
         ((C lam * X + C nu) * P (m - 1) + P m).natDegree
-  u_xv_roots_sum :
+  u_v_roots_sum :
     ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
       ((C lam * X + C nu) * P (m - 1) + P m).roots.sum ≤
-        (X * ((C lam * X + C nu) * G (m - 1) + G m)).roots.sum
+        ((C lam * X + C nu) * G (m - 1) + G m).roots.sum
 
 /-- Equation `(2)` rewrites the next modified Narayana combination in the
 form used in Braun--Jal's proof of Claim `(7)`. -/
@@ -517,7 +518,7 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
       (by simpa [V] using hside.v_pos hm hlam hnu)
       (by simpa [V] using hside.v_nonpos hm hlam hnu)
       (by simpa [U, V] using hside.deg_vu hm hlam hnu)
-      (by simpa [U, V] using hside.u_xv_roots_sum hm hlam hnu)
+      (by simpa [U, V] using hside.u_v_roots_sum hm hlam hnu)
 
 /-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
 proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
