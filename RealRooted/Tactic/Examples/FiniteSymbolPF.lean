@@ -11,18 +11,21 @@ namespace Tactic
 namespace FiniteSymbolPF
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hBB : finiteSymbolBBStatement)
     (hstable : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
     (halpha : ∀ n, 0 ≤ alpha n)
     (hbeta : ∀ n, 0 ≤ beta n) :
     BidiagonalPFPreserver alpha beta d :=
-  finite_symbol_pf_bidiagonal_backend hstable halpha hbeta
+  finite_symbol_pf_bidiagonal_backend hBB hstable halpha hbeta
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_finiteSymbol_residual_certificate hhom hmul cert
+  bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
+    hBB hhom hmul cert
 
 example {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
     {degreeBound : ℕ → ℕ}

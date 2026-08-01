@@ -95,6 +95,7 @@ import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.FiniteBoard
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
+import RealRooted.GeneralizedSnakePosets.Narayana.Claim7
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
@@ -173,6 +174,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic

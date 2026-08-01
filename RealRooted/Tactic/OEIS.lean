@@ -341,6 +341,7 @@ namespace Tactic
 syntax (name := rr_h_second_derivative_sequence_finite_symbol)
   "rr_h_second_derivative_sequence" " using "
     "route" ":=" "finite_symbol" ","
+    "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
     "mul_stable" ":=" term ","
     ("cutoff" ":=" term ",")?
@@ -358,6 +359,7 @@ syntax (name := rr_h_second_derivative_sequence_finite_symbol)
 syntax (name := rr_h_shifted_second_derivative_sequence_finite_symbol)
   "rr_h_shifted_second_derivative_sequence" " using "
     "route" ":=" "finite_symbol" ","
+    "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
     "mul_stable" ":=" term ","
     ("cutoff" ":=" term ",")?
@@ -1596,6 +1598,7 @@ macro_rules
   | `(tactic|
       rr_h_second_derivative_sequence using
         route := finite_symbol,
+        bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
         mul_stable := $hmul:term,
         base := $hbase:term,
@@ -1609,6 +1612,7 @@ macro_rules
         $[, nonzero := $hne:term]?) =>
       `(tactic|
         rr_fsp_second_derivative_sequence using
+          bb_backend := $hBB,
           homogenize_stable := $hhom,
           mul_stable := $hmul,
           base := $hbase,
@@ -1623,6 +1627,7 @@ macro_rules
   | `(tactic|
       rr_h_second_derivative_sequence using
         route := finite_symbol,
+        bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
         mul_stable := $hmul:term,
         cutoff := $N:term,
@@ -1637,6 +1642,7 @@ macro_rules
         $[, nonzero := $hne:term]?) =>
       `(tactic|
         rr_fsp_second_derivative_sequence using
+          bb_backend := $hBB,
           homogenize_stable := $hhom,
           mul_stable := $hmul,
           cutoff := $N,
@@ -1652,6 +1658,7 @@ macro_rules
   | `(tactic|
       rr_h_shifted_second_derivative_sequence using
         route := finite_symbol,
+        bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
         mul_stable := $hmul:term,
         base := $hbase:term,
@@ -1665,6 +1672,7 @@ macro_rules
         $[, nonzero := $hne:term]?) =>
       `(tactic|
         rr_fsp_shifted_second_derivative_sequence using
+          bb_backend := $hBB,
           homogenize_stable := $hhom,
           mul_stable := $hmul,
           base := $hbase,
@@ -1679,6 +1687,7 @@ macro_rules
   | `(tactic|
       rr_h_shifted_second_derivative_sequence using
         route := finite_symbol,
+        bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
         mul_stable := $hmul:term,
         cutoff := $N:term,
@@ -1693,6 +1702,7 @@ macro_rules
         $[, nonzero := $hne:term]?) =>
       `(tactic|
         rr_fsp_shifted_second_derivative_sequence using
+          bb_backend := $hBB,
           homogenize_stable := $hhom,
           mul_stable := $hmul,
           cutoff := $N,

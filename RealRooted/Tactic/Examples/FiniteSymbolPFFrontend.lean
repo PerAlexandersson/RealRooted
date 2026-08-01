@@ -8,11 +8,13 @@ namespace FiniteSymbolPF
 
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hBB : finiteSymbolBBStatement)
     (hstab : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
     (halpha : ∀ n, 0 ≤ alpha n)
     (hbeta : ∀ n, 0 ≤ beta n) :
     BidiagonalPFPreserver alpha beta d := by
   rr_fsp_finite_symbol_backend using
+    bb_backend := hBB,
     stable := hstab,
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
@@ -41,16 +43,18 @@ example {alpha beta : ℕ → ℝ} {d : ℕ}
     certificate := cert
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   rr_fsp_preserver_of_residual_certificate using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     certificate := cert
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -62,6 +66,7 @@ example
       (quadraticJensenWeight aa ab ac)
       (quadraticJensenWeight ba bb bc) d := by
   rr_fsp_quadratic_preserver using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     degree_ge_two := hd,
@@ -70,7 +75,7 @@ example
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -84,6 +89,7 @@ example
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
   rr_fsp_second_derivative_preserver using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     degree_ge_two := hd,
@@ -92,7 +98,7 @@ example
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -106,6 +112,7 @@ example
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
   rr_fsp_second_derivative_preserver_on_degree using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     degree_ge_two := hd,
@@ -114,7 +121,7 @@ example
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -128,6 +135,7 @@ example
       (shiftedSecondDerivativeAlpha a0 b1)
       (shiftedSecondDerivativeBeta a1 b2 c3) d := by
   rr_fsp_shifted_second_derivative_preserver using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     degree_ge_two := hd,
@@ -136,7 +144,7 @@ example
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
@@ -161,6 +169,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, IsPFPolynomial (P n) := by
   rr_fsp_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     base := hbase,
@@ -172,7 +181,7 @@ example
     beta_nonneg := hbeta,
     recurrence := hrec
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
@@ -198,6 +207,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     base := hbase,
@@ -210,7 +220,7 @@ example
     recurrence := hrec,
     nonzero := hne
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
@@ -236,6 +246,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     cutoff := N,
@@ -249,7 +260,7 @@ example
     recurrence := hrec,
     nonzero := hne
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
@@ -274,6 +285,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, IsPFPolynomial (P n) := by
   rr_fsp_shifted_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     base := hbase,
@@ -285,7 +297,7 @@ example
     beta_nonneg := hbeta,
     recurrence := hrec
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
@@ -311,6 +323,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_shifted_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     base := hbase,
@@ -323,7 +336,7 @@ example
     recurrence := hrec,
     nonzero := hne
 
-example
+example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
@@ -350,6 +363,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_shifted_second_derivative_sequence using
+    bb_backend := hBB,
     homogenize_stable := hhom,
     mul_stable := hmul,
     cutoff := N,
