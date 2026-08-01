@@ -927,6 +927,48 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence
   · exact theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
       hrec2 (by lia) hlam hnu hU_split hV_split hUdeg hVdeg
 
+/-- Section 3 provider for the root-sum field in the corrected Claim `(7)`
+bundle. Lemma 3.4 supplies splitting of `U`, while the existing degree-gap
+field determines the absolute degree of `V`. -/
+theorem theorem41Claim7_modified_u_v_roots_sum_of_section3
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+      modifiedNarayanaPolynomial)
+    (hV_split :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m).Splits)
+    (hUdeg :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m).natDegree = m)
+    (hdeg_VU :
+      ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m).natDegree + 1 =
+            ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+              modifiedNarayanaPolynomial m).natDegree) :
+    ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m).roots.sum ≤
+        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+          FiniteSkewBoard.auxiliaryG m).roots.sum := by
+  intro m lam nu hm hlam hnu
+  have hU_split :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).Splits :=
+    (h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu).1.2
+  have hUdeg' := hUdeg hm hlam hnu
+  have hVdeg' :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 := by
+    have hgap := hdeg_VU hm hlam hnu
+    lia
+  exact theorem41Claim7_modified_roots_sum_le_of_recurrence hrec2
+    hm hlam hnu hU_split (hV_split hm hlam hnu) hUdeg' hVdeg'
+
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
 current Claim `(7)` side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
