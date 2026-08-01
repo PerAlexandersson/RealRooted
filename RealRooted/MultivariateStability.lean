@@ -30,6 +30,23 @@ def complexifyMv {sigma : Type*} (P : MvPolynomial sigma ℝ) :
 def MvUpperHalfPlaneStable {sigma : Type*} (P : MvPolynomial sigma ℂ) : Prop :=
   ∀ z : sigma → ℂ, (∀ i, 0 < (z i).im) → MvPolynomial.eval z P ≠ 0
 
+/-- Weak upper-half-plane stability: the polynomial is either zero or stable.
+This is the natural conclusion convention for linear stability preservers. -/
+def MvUpperHalfPlaneStableOrZero {sigma : Type*}
+    (P : MvPolynomial sigma ℂ) : Prop :=
+  P = 0 ∨ MvUpperHalfPlaneStable P
+
+/-- The zero polynomial is weakly stable. -/
+theorem MvUpperHalfPlaneStableOrZero.zero {sigma : Type*} :
+    MvUpperHalfPlaneStableOrZero (0 : MvPolynomial sigma ℂ) :=
+  Or.inl rfl
+
+/-- A stable polynomial is weakly stable. -/
+theorem MvUpperHalfPlaneStable.orZero {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P) :
+    MvUpperHalfPlaneStableOrZero P :=
+  Or.inr hP
+
 /-- Real stability, expressed by complexifying the coefficients before
 evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
@@ -90,6 +107,32 @@ theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
   intro z hz
   rw [MvPolynomial.eval_mul]
   exact mul_ne_zero (hP z hz) (hQ z hz)
+
+/-- Arbitrary scalar multiplication preserves weak stability. -/
+theorem MvUpperHalfPlaneStableOrZero.C_mul {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
+    (c : ℂ) :
+    MvUpperHalfPlaneStableOrZero (MvPolynomial.C c * P) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  · by_cases hc : c = 0
+    · left
+      simp [hc]
+    · exact (hP.C_mul hc).orZero
+
+/-- Multiplication preserves weak stability. -/
+theorem MvUpperHalfPlaneStableOrZero.mul {sigma : Type*}
+    {P Q : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
+    (hQ : MvUpperHalfPlaneStableOrZero Q) :
+    MvUpperHalfPlaneStableOrZero (P * Q) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  rcases hQ with rfl | hQ
+  · left
+    simp
+  exact (hP.mul hQ).orZero
 
 /-- The sum of two variables is stable in the open upper half-plane. -/
 theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
@@ -169,6 +212,16 @@ theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
   intro z hz
   rw [MvPolynomial.eval_rename]
   exact hP (z ∘ f) fun i => hz (f i)
+
+/-- Renaming variables preserves weak stability. -/
+theorem MvUpperHalfPlaneStableOrZero.rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
+    (f : sigma → tau) :
+    MvUpperHalfPlaneStableOrZero (MvPolynomial.rename f P) := by
+  rcases hP with rfl | hP
+  · left
+    simp
+  exact hP.rename.orZero
 
 /-- Specialize the right block of variables in a polynomial on a sum type. -/
 def specializeRight {sigma tau : Type*} (y : tau → ℂ)
