@@ -36,6 +36,40 @@ theorem theorem41Claim7_modified
   theorem41Claim7_modified_of_section3 hrec2
     lemma34ModifiedNarayanaInterlacing_modified hH_nonneg
 
+/-- Consecutive auxiliary `G` polynomials have real-rooted positive linear
+combinations. This is the part of adjacent `G` proper position supplied
+directly by equation `(2)` and Lemma 3.4; orienting the pencil remains a
+separate analytic step. -/
+theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} (hm : 2 ≤ m) :
+    PosComboRealRooted (FiniteSkewBoard.auxiliaryG (m - 1))
+      (FiniteSkewBoard.auxiliaryG m) := by
+  intro lam mu hlam hmu
+  have hmu_ne : mu ≠ 0 := ne_of_gt hmu
+  have hratio : 0 < lam / mu := div_pos hlam hmu
+  let V : ℝ[X] :=
+    C (lam / mu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m
+  have hV_split : V.Splits := by
+    simpa [V] using auxiliaryGPencil_splits_of_section3 (lam := 0) hrec2
+      lemma34ModifiedNarayanaInterlacing_modified hm (by positivity)
+      (show -1 ≤ lam / mu by linarith)
+  have hV_pos : HasPosLeadingCoeff V := by
+    simpa [V] using auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
+      (lam := 0) (nu := lam / mu) hrec2 hm (by positivity)
+  have hscale :
+      C mu * V =
+        C lam * FiniteSkewBoard.auxiliaryG (m - 1) +
+          C mu * FiniteSkewBoard.auxiliaryG m := by
+    dsimp [V]
+    rw [mul_add, ← mul_assoc, ← map_mul]
+    field_simp
+  rw [← hscale]
+  exact ⟨mul_ne_zero (by simpa using hmu_ne) hV_pos.ne_zero,
+    hV_split.C_mul mu⟩
+
 /-- The Braun--Jal induction route for the concrete modified Narayana data.
 
 The recurrence `hrec2` and difference nonnegativity `hH_nonneg` are the
