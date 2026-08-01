@@ -343,7 +343,6 @@ syntax (name := rr_h_second_derivative_sequence_finite_symbol)
     "route" ":=" "finite_symbol" ","
     "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
-    "mul_stable" ":=" term ","
     ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
@@ -361,7 +360,6 @@ syntax (name := rr_h_shifted_second_derivative_sequence_finite_symbol)
     "route" ":=" "finite_symbol" ","
     "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
-    "mul_stable" ":=" term ","
     ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
@@ -1600,7 +1598,6 @@ macro_rules
         route := finite_symbol,
         bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
-        mul_stable := $hmul:term,
         base := $hbase:term,
         degree := $hdegree:term,
         degree_ge_two := $hd:term,
@@ -1614,7 +1611,6 @@ macro_rules
         rr_fsp_second_derivative_sequence using
           bb_backend := $hBB,
           homogenize_stable := $hhom,
-          mul_stable := $hmul,
           base := $hbase,
           degree := $hdegree,
           degree_ge_two := $hd,
@@ -1629,7 +1625,6 @@ macro_rules
         route := finite_symbol,
         bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
-        mul_stable := $hmul:term,
         cutoff := $N:term,
         base := $hbase:term,
         degree := $hdegree:term,
@@ -1644,7 +1639,6 @@ macro_rules
         rr_fsp_second_derivative_sequence using
           bb_backend := $hBB,
           homogenize_stable := $hhom,
-          mul_stable := $hmul,
           cutoff := $N,
           base := $hbase,
           degree := $hdegree,
@@ -1660,7 +1654,6 @@ macro_rules
         route := finite_symbol,
         bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
-        mul_stable := $hmul:term,
         base := $hbase:term,
         degree := $hdegree:term,
         degree_ge_two := $hd:term,
@@ -1674,7 +1667,6 @@ macro_rules
         rr_fsp_shifted_second_derivative_sequence using
           bb_backend := $hBB,
           homogenize_stable := $hhom,
-          mul_stable := $hmul,
           base := $hbase,
           degree := $hdegree,
           degree_ge_two := $hd,
@@ -1689,7 +1681,6 @@ macro_rules
         route := finite_symbol,
         bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
-        mul_stable := $hmul:term,
         cutoff := $N:term,
         base := $hbase:term,
         degree := $hdegree:term,
@@ -1704,7 +1695,6 @@ macro_rules
         rr_fsp_shifted_second_derivative_sequence using
           bb_backend := $hBB,
           homogenize_stable := $hhom,
-          mul_stable := $hmul,
           cutoff := $N,
           base := $hbase,
           degree := $hdegree,
