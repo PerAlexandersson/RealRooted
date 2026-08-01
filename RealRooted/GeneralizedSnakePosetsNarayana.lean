@@ -3345,6 +3345,86 @@ theorem theorem41Claim7_modified_middle_hasPosLeadingCoeff
   · exact lemma34ModifiedNarayana_left_posLeadingCoeff (by lia) hlam hnu
   · exact hV_pos.X_mul
 
+/-- Equation `(2)` and Lemma 3.4 imply that the auxiliary pencil splits,
+before the root-sum comparison used to orient Claim `(7)`.
+
+The parameter `h34` is intentionally explicit: the full parameterized Lemma
+3.4 is still an outstanding analytic theorem, and this result records only its
+consequence rather than presenting the `...Statement` proposition as proved. -/
+theorem auxiliaryGPencil_splits_of_section3
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+      modifiedNarayanaPolynomial)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
+    (hnu : -1 ≤ nu) :
+    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m).Splits := by
+  let U : ℝ[X] :=
+    (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m
+  let V : ℝ[X] :=
+    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m
+  let W : ℝ[X] :=
+    (C lam * X + C nu) * modifiedNarayanaPolynomial m +
+      modifiedNarayanaPolynomial (m + 1)
+  have hUW : Prec U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hW_eq : W = (1 + X) * U + X * V := by
+    simpa [U, V, W] using
+      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
+        hrec2 hm lam nu
+  have hW_pos : HasPosLeadingCoeff W := by
+    simpa [W] using
+      lemma34ModifiedNarayana_right_posLeadingCoeff (m := m) hlam hnu
+  have hWU_lc : W.leadingCoeff = U.leadingCoeff := by
+    calc
+      W.leadingCoeff = lam + 1 := by
+        simpa [W] using modifiedNarayanaPencil_leadingCoeff
+          (m := m + 1) (nu := nu) (by lia) hlam
+      _ = U.leadingCoeff := by
+        symm
+        simpa [U] using modifiedNarayanaPencil_leadingCoeff
+          (m := m) (nu := nu) (by lia) hlam
+  have hdeg_UW : U.natDegree + 1 = W.natDegree := by
+    rw [show U.natDegree = m by
+        simpa [U] using modifiedNarayanaPencil_natDegree
+          (m := m) (nu := nu) (by lia) hlam,
+      show W.natDegree = m + 1 by
+        simpa [W] using modifiedNarayanaPencil_natDegree
+          (m := m + 1) (nu := nu) (by lia) hlam]
+  have hW_nonpos : ∀ r ∈ W.roots, r ≤ 0 := by
+    simpa [W] using
+      lemma34ModifiedNarayana_right_roots_nonpos (m := m) hlam hnu
+  have hU_nonpos : ∀ r ∈ U.roots, r ≤ 0 := by
+    simpa [U] using
+      lemma34ModifiedNarayana_left_roots_nonpos (m := m) (by lia) hlam hnu
+  have hmid_pos : HasPosLeadingCoeff (U + X * V) := by
+    simpa [U, V] using
+      theorem41Claim7_modified_middle_hasPosLeadingCoeff hrec2 hm hlam hnu
+  have hmid_eq : W - X * U = U + X * V := by
+    rw [hW_eq]
+    ring
+  have hpair : Prec U (W - X * U) ∧ Prec (W - X * U) W :=
+    prec_sub_X_mul_pair_of_eq_posLeadingCoeff hUW hW_pos hWU_lc hdeg_UW
+      hW_nonpos hU_nonpos (by simpa [hmid_eq] using hmid_pos)
+  have hU_mid : Prec U (U + X * V) := by
+    simpa [hmid_eq] using hpair.left
+  have hall_U_mid := allComboRealRooted_of_prec hU_mid
+  have hall_U_XV : AllComboRealRooted U (X * V) := by
+    intro alpha beta
+    have hsplit := hall_U_mid (alpha - beta) beta
+    rw [show
+        C alpha * U + C beta * (X * V) =
+          C (alpha - beta) * U + C beta * (U + X * V) by
+      rw [map_sub]
+      ring]
+    exact hsplit
+  have hXV_split : (X * V).Splits := by
+    simpa using hall_U_XV 0 1
+  simpa [V] using Polynomial.splits_X_mul.mp hXV_split
+
 /-- Convert the combinatorial nonnegativity of the auxiliary difference into
 nonnegativity of the Braun--Jal pencil.
 
