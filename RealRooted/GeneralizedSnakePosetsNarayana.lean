@@ -557,6 +557,54 @@ theorem auxiliaryG_coeff_self_of_narayanaRecurrence
   rw [hPsucc, hPabove, hPlead] at hcoeff
   linarith
 
+/-- Equation `(2)` and its two leading coefficients determine the degree of
+the auxiliary polynomial `G_n`. -/
+theorem auxiliaryG_natDegree_of_narayanaRecurrence
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (n : ℕ) (hn : 1 ≤ n) :
+    (FiniteSkewBoard.auxiliaryG n).natDegree = n - 1 := by
+  have hcoeff :=
+    auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 n hn
+  have hcoeff_ne : (FiniteSkewBoard.auxiliaryG n).coeff (n - 1) ≠ 0 := by
+    rw [hcoeff]
+    positivity
+  have hG_ne : FiniteSkewBoard.auxiliaryG n ≠ 0 := by
+    intro hzero
+    apply hcoeff_ne
+    rw [hzero]
+    simp
+  have hrec := hrec2 (n := n + 1) (by lia)
+  simp only [Nat.add_sub_cancel] at hrec
+  have hlin : (1 + X : ℝ[X]).natDegree ≤ 1 := by
+    exact (natDegree_add_le (1 : ℝ[X]) X).trans (by simp)
+  have hprod_le :
+      ((1 + X) * modifiedNarayanaPolynomial n).natDegree ≤ n + 1 := by
+    calc
+      _ ≤ (1 + X : ℝ[X]).natDegree +
+          (modifiedNarayanaPolynomial n).natDegree := natDegree_mul_le
+      _ ≤ 1 + n := by
+        apply Nat.add_le_add
+        · exact hlin
+        · rw [modifiedNarayanaPolynomial_natDegree]
+      _ = n + 1 := by lia
+  have hXG_le : (X * FiniteSkewBoard.auxiliaryG n).natDegree ≤ n + 1 := by
+    rw [hrec]
+    exact (natDegree_sub_le _ _).trans
+      (max_le (by rw [modifiedNarayanaPolynomial_natDegree]) hprod_le)
+  have hG_le_n : (FiniteSkewBoard.auxiliaryG n).natDegree ≤ n := by
+    rw [natDegree_X_mul hG_ne] at hXG_le
+    lia
+  have hG_le : (FiniteSkewBoard.auxiliaryG n).natDegree ≤ n - 1 := by
+    rw [natDegree_le_iff_coeff_eq_zero]
+    intro N hN
+    by_cases hNn : N = n
+    · subst N
+      exact auxiliaryG_coeff_self_of_narayanaRecurrence hrec2 n
+    · exact (natDegree_le_iff_coeff_eq_zero.mp hG_le_n) N (by lia)
+  exact natDegree_eq_of_le_of_coeff_ne_zero hG_le hcoeff_ne
+
 /-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
 
 This discharges the standard modified-Narayana facts and the elementary
