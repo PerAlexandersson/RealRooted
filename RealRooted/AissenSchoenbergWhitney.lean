@@ -448,9 +448,7 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
   ⟨⟨hp0, aissenSchoenbergWhitneyForwardSplits hpf⟩,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
-/-- Legacy compatibility alias for ASW forward statement. -/
-abbrev aissenSchoenbergWhitneyForwardStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
+
 
 /-- Legacy compatibility alias for ASW forward splits statement. -/
 abbrev aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
