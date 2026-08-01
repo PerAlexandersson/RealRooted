@@ -657,6 +657,176 @@ theorem theorem41Claim7_modified_rootSum_ratio_le
     ring
   nlinarith
 
+/-- For `m ≥ 3`, equation `(2)`, the expected window degrees, and splitting
+identify the two root sums with the Vieta expressions compared by
+`theorem41Claim7_modified_rootSum_ratio_le`. -/
+theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 3 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hU_split :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).Splits)
+    (hV_split :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).Splits)
+    (hUdeg :
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).natDegree = m)
+    (hVdeg :
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1) :
+    ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).roots.sum ≤
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+  let U :=
+    (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m
+  let V :=
+    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+      FiniteSkewBoard.auxiliaryG m
+  change U.Splits at hU_split
+  change V.Splits at hV_split
+  change U.natDegree = m at hUdeg
+  change V.natDegree = m - 1 at hVdeg
+  change U.roots.sum ≤ V.roots.sum
+  have hm1 : 1 ≤ m - 1 := by lia
+  have hm1two : 2 ≤ m - 1 := by lia
+  have hcast1 : ((m - 1 : ℕ) : ℝ) = (m : ℝ) - 1 := by
+    rw [Nat.cast_sub (by lia)]
+    norm_num
+  have hPprevLead :
+      (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff
+          (modifiedNarayanaPolynomial (m - 1)).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial (m - 1)).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff (m - 1)
+  have hPprevNext :=
+    modifiedNarayanaPolynomial_coeff_sub_one (m - 1) hm1
+  have hPprevAbove :
+      (modifiedNarayanaPolynomial (m - 1)).coeff m = 0 := by
+    apply coeff_eq_zero_of_natDegree_lt
+    rw [modifiedNarayanaPolynomial_natDegree]
+    lia
+  have hPmLead : (modifiedNarayanaPolynomial m).coeff m = 1 := by
+    calc
+      _ = (modifiedNarayanaPolynomial m).coeff
+          (modifiedNarayanaPolynomial m).natDegree := by
+            rw [modifiedNarayanaPolynomial_natDegree]
+      _ = (modifiedNarayanaPolynomial m).leadingCoeff := coeff_natDegree
+      _ = 1 := modifiedNarayanaPolynomial_leadingCoeff m
+  have hPmNext := modifiedNarayanaPolynomial_coeff_sub_one m (by lia)
+  have hGmLead :=
+    auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 m (by lia)
+  have hGmNext :=
+    auxiliaryG_coeff_sub_two_of_narayanaRecurrence hrec2 m (by lia)
+  have hGprevLead :=
+    auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 (m - 1) hm1
+  have hGprevNext :=
+    auxiliaryG_coeff_sub_two_of_narayanaRecurrence hrec2 (m - 1) hm1two
+  have hGprevAbove :=
+    auxiliaryG_coeff_self_of_narayanaRecurrence hrec2 (m - 1)
+  rw [show m - 1 - 1 = m - 2 by lia] at hPprevNext hGprevLead
+  rw [show m - 1 - 2 = m - 3 by lia] at hGprevNext
+  have hXPprevLead :
+      (X * modifiedNarayanaPolynomial (m - 1)).coeff m = 1 := by
+    calc
+      _ = (X * modifiedNarayanaPolynomial (m - 1)).coeff ((m - 1) + 1) :=
+        congr_arg
+          (fun k => (X * modifiedNarayanaPolynomial (m - 1)).coeff k) (by lia)
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) := by
+        exact coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 1)
+      _ = 1 := hPprevLead
+  have hXPprevNext :
+      (X * modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) =
+        (modifiedNarayanaPolynomial (m - 1)).coeff (m - 2) := by
+    calc
+      _ = (X * modifiedNarayanaPolynomial (m - 1)).coeff ((m - 2) + 1) :=
+        congr_arg
+          (fun k => (X * modifiedNarayanaPolynomial (m - 1)).coeff k) (by lia)
+      _ = _ := coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 2)
+  have hXGprevLead :
+      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) =
+        (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) := by
+    calc
+      _ = (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff ((m - 2) + 1) :=
+        congr_arg
+          (fun k => (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff k) (by lia)
+      _ = _ := coeff_X_mul (FiniteSkewBoard.auxiliaryG (m - 1)) (m - 2)
+  have hXGprevNext :
+      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
+        (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 3) := by
+    calc
+      _ = (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff ((m - 3) + 1) :=
+        congr_arg
+          (fun k => (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff k) (by lia)
+      _ = _ := coeff_X_mul (FiniteSkewBoard.auxiliaryG (m - 1)) (m - 3)
+  have hUlc : U.leadingCoeff = lam + 1 := by
+    rw [leadingCoeff, hUdeg]
+    dsimp [U]
+    rw [show
+        (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) =
+          C lam * (X * modifiedNarayanaPolynomial (m - 1)) +
+            C nu * modifiedNarayanaPolynomial (m - 1) by ring]
+    simp only [coeff_add, coeff_C_mul]
+    rw [hXPprevLead, hPprevAbove, hPmLead]
+    ring
+  have hUnext :
+      U.nextCoeff =
+        (m : ℝ) * (m + 1) / 2 + lam * (m - 1) * m / 2 + nu := by
+    rw [nextCoeff_of_natDegree_pos (by rw [hUdeg]; lia), hUdeg]
+    dsimp [U]
+    rw [show
+        (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) =
+          C lam * (X * modifiedNarayanaPolynomial (m - 1)) +
+            C nu * modifiedNarayanaPolynomial (m - 1) by ring]
+    simp only [coeff_add, coeff_C_mul]
+    rw [hXPprevNext, hPprevNext, hPprevLead, hPmNext, hcast1]
+    ring
+  have hVlc : V.leadingCoeff = (m : ℝ) + lam * (m - 1) := by
+    rw [leadingCoeff, hVdeg]
+    dsimp [V]
+    rw [show
+        (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
+          C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
+            C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+    simp only [coeff_add, coeff_C_mul]
+    rw [hXGprevLead, hGprevLead, hGprevAbove, hGmLead, hcast1]
+    ring
+  have hVnext :
+      V.nextCoeff =
+        (m + 1 : ℝ) * m * (m - 1) / 3 +
+          lam * m * (m - 1) * (m - 2) / 3 + nu * (m - 1) := by
+    rw [nextCoeff_of_natDegree_pos (by rw [hVdeg]; lia), hVdeg]
+    rw [show m - 1 - 1 = m - 2 by lia]
+    dsimp [V]
+    rw [show
+        (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
+          C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
+            C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+    simp only [coeff_add, coeff_C_mul]
+    rw [hXGprevNext, hGprevNext, hGprevLead, hGmNext, hcast1]
+    ring
+  have hUlc_ne : U.leadingCoeff ≠ 0 := by
+    rw [hUlc]
+    linarith
+  have hVlc_ne : V.leadingCoeff ≠ 0 := by
+    rw [hVlc]
+    have hm_real : (2 : ℝ) ≤ m := by
+      exact_mod_cast (show 2 ≤ m by lia)
+    have hterm : 0 ≤ lam * ((m : ℝ) - 1) :=
+      mul_nonneg hlam (by linarith)
+    nlinarith
+  rw [hU_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hUlc_ne,
+    hV_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hVlc_ne,
+    hUnext, hUlc, hVnext, hVlc]
+  exact theorem41Claim7_modified_rootSum_ratio_le m lam nu
+    (by exact_mod_cast (show 2 ≤ m by lia)) hlam hnu
+
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
 current Claim `(7)` side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
