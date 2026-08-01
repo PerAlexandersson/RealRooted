@@ -659,6 +659,17 @@ theorem eval_map_ofReal_eq_prod {p : ℝ[X]} (hp : p.Splits) {z : ℂ} :
     Polynomial.map_X, Polynomial.eval_sub, Polynomial.eval_X,
     Complex.ofRealHom_eq_coe]
 
+/-- Homogenization of a univariate polynomial to total degree `d`. -/
+def homogenizeBivariate (d : ℕ) (p : ℝ[X]) : MvPolynomial (Fin 2) ℝ :=
+  ∑ k ∈ Finset.range (d + 1),
+    MvPolynomial.C (p.coeff k) *
+      (MvPolynomial.X 0) ^ k * (MvPolynomial.X 1) ^ (d - k)
+
+/-- Stability in the product of two open upper half-planes. -/
+abbrev IsBivariateUpperStable (P : MvPolynomial (Fin 2) ℂ) : Prop :=
+  MvUpperHalfPlaneStable P
+
 end
 
 end RealRooted
+
