@@ -10,6 +10,17 @@ noncomputable section
 
 namespace Polynomial
 
+/-- Vieta's root-sum formula in division form. -/
+theorem Splits.sum_roots_eq_neg_nextCoeff_div_leadingCoeff
+    {K : Type*} [Field K] {p : K[X]} (hp : p.Splits)
+    (hlc : p.leadingCoeff ≠ 0) :
+    p.roots.sum = -p.nextCoeff / p.leadingCoeff := by
+  have hnext : p.nextCoeff = -p.leadingCoeff * p.roots.sum :=
+    hp.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
+  apply (eq_div_iff hlc).2
+  rw [hnext]
+  ring
+
 /-- A polynomial splits if a submultiset of its roots already has cardinality
 at least its natural degree. -/
 theorem splits_of_le_roots_of_natDegree_le_card
