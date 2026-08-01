@@ -706,6 +706,41 @@ theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
       rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
         ih', ih_succ']
 
+/-- Reversed-index coefficient formula for the quotient-style modified
+Narayana polynomial. -/
+theorem modifiedNarayanaPolynomial_coeff_sub (n i : ℕ) (hi : i ≤ n) :
+    (modifiedNarayanaPolynomial n).coeff (n - i) =
+      narayanaTransformCoeff 1 n i := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial]
+  exact coeff_narayanaPolynomial_sub 1 n i hi
+
+/-- The coefficient immediately below the leading coefficient of `P_n`. -/
+theorem modifiedNarayanaPolynomial_coeff_sub_one (n : ℕ) (hn : 1 ≤ n) :
+    (modifiedNarayanaPolynomial n).coeff (n - 1) =
+      (n : ℝ) * (n + 1) / 2 := by
+  rw [modifiedNarayanaPolynomial_coeff_sub n 1 hn]
+  simp [narayanaTransformCoeff, Nat.choose_one_right, Nat.cast_add]
+
+/-- The coefficient two places below the leading coefficient of `P_n`. -/
+theorem modifiedNarayanaPolynomial_coeff_sub_two (n : ℕ) (hn : 2 ≤ n) :
+    (modifiedNarayanaPolynomial n).coeff (n - 2) =
+      (n : ℝ) ^ 2 * ((n : ℝ) ^ 2 - 1) / 12 := by
+  rw [modifiedNarayanaPolynomial_coeff_sub n 2 hn]
+  simp only [narayanaTransformCoeff, Nat.cast_choose_two]
+  push_cast
+  ring
+
+/-- The next coefficient of the positive-degree modified Narayana polynomial. -/
+theorem modifiedNarayanaPolynomial_nextCoeff (n : ℕ) (hn : 1 ≤ n) :
+    (modifiedNarayanaPolynomial n).nextCoeff =
+      (n : ℝ) * (n + 1) / 2 := by
+  rw [nextCoeff_of_natDegree_pos]
+  · rw [modifiedNarayanaPolynomial_natDegree,
+      modifiedNarayanaPolynomial_coeff_sub_one n hn]
+  · rw [modifiedNarayanaPolynomial_natDegree]
+    lia
+
 /-- Consecutive modified Narayana polynomials have no common real root. -/
 theorem modifiedNarayanaPolynomial_no_common_root (n : ℕ) :
     ∀ r : ℝ, (modifiedNarayanaPolynomial (n + 1)).IsRoot r →
