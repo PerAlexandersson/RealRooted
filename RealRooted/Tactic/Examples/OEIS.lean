@@ -3293,7 +3293,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 /-- Family H second-derivative router, PF-bidiagonal cubic-residual branch. -/
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -3308,6 +3308,7 @@ example
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal,
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -3316,7 +3317,7 @@ example
 /-- Family H second-derivative router, quadratic PF-bidiagonal residual branch. -/
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3336,6 +3337,7 @@ example
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal_quadratic,
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     active_degree := hd,
@@ -3349,7 +3351,7 @@ branch. -/
 example
     {P : Nat → ℝ[X]} {alphaSeq betaSeq : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -3367,6 +3369,7 @@ example
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal,
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,

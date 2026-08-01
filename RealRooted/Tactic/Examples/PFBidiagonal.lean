@@ -27,7 +27,7 @@ example {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
   hpres.of_eq_on_degree halpha hbeta
 
 example
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     {d : ℕ} (hd : 2 ≤ d)
     (hA : CubicPFDiscriminantCertificate (quadraticJensenResidual 1 2 1 d))
     (hB : CubicPFDiscriminantCertificate (X * quadraticJensenResidual 0 0 1 d))
@@ -36,7 +36,8 @@ example
         (quadraticBidiagonalPencilResidual 1 2 1 0 0 1 lam d)) :
     BidiagonalPFPreserver
       (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d :=
-  quadraticBidiagonalPFPreserver_of_cubicResidualCertificate 1 2 1 0 0 1 hd hA hB hS
+  quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
+    hbackend 1 2 1 0 0 1 hd hA hB hS
 
 example {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
     (hA : CubicPFDiscriminantCertificate
@@ -57,7 +58,7 @@ example {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
     pencil_cubic := hS
 
 example
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
     (hA : CubicPFDiscriminantCertificate
       (quadraticJensenResidual c2 (b1 - c2) a0 d))
@@ -70,7 +71,8 @@ example
     BidiagonalPFPreserver
       (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
       (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d :=
-  secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate hd hA hB hS
+  secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
+    hbackend hd hA hB hS
 
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
@@ -283,7 +285,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -293,6 +295,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -301,7 +304,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -311,6 +314,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -476,7 +480,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -490,6 +494,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -497,7 +502,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -512,6 +517,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -521,7 +527,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -536,6 +542,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -545,7 +552,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -561,6 +568,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -1962,7 +1970,7 @@ The first three rows are supplied as base cases; from `n >= 2`, a concrete
 cubic-residual certificate can handle the shifted-square Jensen pencil. -/
 example
     {P : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
     (hcert : ∀ n : Nat, 2 ≤ n →
@@ -1973,6 +1981,7 @@ example
           (((n : ℝ) + 2) ^ 2) 1 (5 + 2 * (n : ℝ)) 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := 2,
     base := hbase,
@@ -2019,7 +2028,7 @@ example
 /-- A371259-shaped tail shell with row degree `n`. -/
 example
     {P : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
     (hcert : ∀ n : Nat, 2 ≤ n →
@@ -2031,6 +2040,7 @@ example
           (((n : ℝ) + 4) ^ 2) 1 (9 + 2 * (n : ℝ)) 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := 2,
     base := hbase,
@@ -2076,7 +2086,7 @@ example
 /-- A390433-shaped tail shell with row degree `n`. -/
 example
     {P : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
     (hcert : ∀ n : Nat, 2 ≤ n →
@@ -2087,6 +2097,7 @@ example
           (((n : ℝ) - 2) ^ 2) 1 (-3 + 2 * (n : ℝ)) 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := 2,
     base := hbase,
@@ -2096,10 +2107,11 @@ example
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   rr_pf_bidiagonal_preserver using
+    jensen_backend := hbackend,
     certificate := hcert
 
 example {p : ℝ[X]}
@@ -2185,12 +2197,13 @@ example
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
     IsPFPolynomial (bidiagonalOperator alpha beta p) := by
   rr_pf_bidiagonal_operator using
+    jensen_backend := hbackend,
     certificate := hcert,
     input_pf := hp,
     degree := hdeg
@@ -2210,27 +2223,29 @@ example
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   rr_pf_bidiagonal_preserver_cubic using
+    jensen_backend := hbackend,
     cubic_certificate := hcert
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalCubicResidualCertificate alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
     IsPFPolynomial (bidiagonalOperator alpha beta p) := by
   rr_pf_bidiagonal_operator_cubic using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     input_pf := hp,
     degree := hdeg
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -2239,6 +2254,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -2246,7 +2262,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2256,6 +2272,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2264,7 +2281,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2275,6 +2292,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2284,7 +2302,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -2293,6 +2311,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -2334,7 +2353,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2344,6 +2363,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2352,7 +2372,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2363,6 +2383,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2373,7 +2394,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2392,6 +2413,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2405,7 +2427,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2425,6 +2447,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2439,7 +2462,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2455,6 +2478,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2467,7 +2491,7 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2494,6 +2518,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2507,7 +2532,7 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2535,6 +2560,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2549,7 +2575,7 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -2571,6 +2597,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
@@ -2584,7 +2611,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2604,6 +2631,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2618,7 +2646,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2635,6 +2663,7 @@ example
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2648,7 +2677,7 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2676,6 +2705,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2690,7 +2720,7 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2712,6 +2742,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2726,7 +2757,7 @@ example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2752,6 +2783,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2768,7 +2800,7 @@ example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2791,6 +2823,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     cutoff := N,
@@ -2804,7 +2837,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -2818,6 +2851,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -2825,7 +2859,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -2840,6 +2874,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -2848,7 +2883,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2863,6 +2898,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2871,7 +2907,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2887,6 +2923,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2897,7 +2934,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2913,6 +2950,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2923,7 +2961,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2940,6 +2978,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2950,7 +2989,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2965,6 +3004,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2973,7 +3013,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -2989,6 +3029,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -2998,7 +3039,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -3013,6 +3054,7 @@ example
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal,
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
@@ -3021,7 +3063,7 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -3039,6 +3081,7 @@ example
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal,
+    jensen_backend := hbackend,
     cubic_certificate := hcert,
     cutoff := N,
     base := hbase,
@@ -3051,7 +3094,7 @@ example
 functions.  This avoids separate endpoint Jensen factorization leaves. -/
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3070,6 +3113,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     active_degree := hd,
@@ -3080,7 +3124,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3100,6 +3144,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     active_degree := hd,
@@ -3111,7 +3156,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -3131,6 +3176,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
     cutoff := N,
     base := hbase,
     degree := hdeg,
@@ -3142,7 +3188,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
     (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
@@ -3164,6 +3210,7 @@ example
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_h_second_derivative_sequence using
     route := pf_bidiagonal_quadratic,
+    jensen_backend := hbackend,
     cutoff := N,
     base := hbase,
     degree := hdeg,
@@ -3198,7 +3245,7 @@ the remaining row-specific arithmetic input is the active degree lower bound
 `2 ≤ d n`. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3206,6 +3253,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     active_degree := hd,
@@ -3226,7 +3274,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3235,6 +3283,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
     active_degree := hd,
@@ -3257,7 +3306,7 @@ example
 /-- Same A036969 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3265,6 +3314,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a036969_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3273,7 +3323,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3282,6 +3332,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a036969_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3292,7 +3343,7 @@ example
 /-- A071951 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3300,6 +3351,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 2 1 4 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a071951_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3308,7 +3360,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3317,6 +3369,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 2 1 4 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a071951_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3327,7 +3380,7 @@ example
 /-- A080248 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3335,6 +3388,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 2 0 (1 / 2) 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a080248_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3343,7 +3397,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3352,6 +3406,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 2 0 (1 / 2) 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a080248_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3362,7 +3417,7 @@ example
 /-- A160562 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3370,6 +3425,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 8 0 4 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a160562_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3378,7 +3434,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3387,6 +3443,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 8 0 4 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a160562_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3397,7 +3454,7 @@ example
 /-- A269945 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3405,6 +3462,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 0 1 1 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a269945_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
@@ -3413,7 +3471,7 @@ example
 
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
@@ -3422,6 +3480,7 @@ example
       P (n + 1) = secondDerivativeBidiagonalForm 0 1 1 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
     cubic_certificate := (fun n => a269945_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
