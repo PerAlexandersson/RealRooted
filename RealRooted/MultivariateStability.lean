@@ -103,6 +103,20 @@ theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
   rw [hzero] at him
   simp at him
 
+/-- A homogeneous linear factor with a nonpositive real root is stable. -/
+theorem MvUpperHalfPlaneStable.X_sub_nonpos_C_mul_X {sigma : Type*}
+    (i j : sigma) {r : ℝ} (hr : r ≤ 0) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.X i - MvPolynomial.C (r : ℂ) * MvPolynomial.X j) := by
+  intro z hz
+  simp only [MvPolynomial.eval_sub, MvPolynomial.eval_X,
+    MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  intro hzero
+  have him := congrArg Complex.im hzero
+  simp only [Complex.sub_im, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, add_zero, Complex.zero_im] at him
+  nlinarith [hz i, hz j]
+
 /-- Multiplication by a power of the sum of two variables preserves stability. -/
 theorem MvUpperHalfPlaneStable.mul_X_add_X_pow {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
