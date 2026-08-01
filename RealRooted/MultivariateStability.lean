@@ -26,15 +26,43 @@ def complexifyMv {sigma : Type*} (P : MvPolynomial sigma ℝ) :
     MvPolynomial sigma ℂ :=
   P.map Complex.ofRealHom
 
+/-- Stability in a coordinate-wise family of subsets of the complex plane. -/
+def MvStableIn {sigma : Type*} (Omega : sigma → Set ℂ)
+    (P : MvPolynomial sigma ℂ) : Prop :=
+  ∀ z : sigma → ℂ, (∀ i, z i ∈ Omega i) → MvPolynomial.eval z P ≠ 0
+
 /-- Stability in a product of open upper half-planes. -/
-def MvUpperHalfPlaneStable {sigma : Type*} (P : MvPolynomial sigma ℂ) : Prop :=
-  ∀ z : sigma → ℂ, (∀ i, 0 < (z i).im) → MvPolynomial.eval z P ≠ 0
+def MvUpperHalfPlaneStable {sigma : Type*}
+    (P : MvPolynomial sigma ℂ) : Prop :=
+  MvStableIn (fun _ => {z | 0 < z.im}) P
+
+/-- Weak stability in coordinate-wise regions: the polynomial is either zero
+or stable in those regions. -/
+def MvStableInOrZero {sigma : Type*} (Omega : sigma → Set ℂ)
+    (P : MvPolynomial sigma ℂ) : Prop :=
+  P = 0 ∨ MvStableIn Omega P
 
 /-- Weak upper-half-plane stability: the polynomial is either zero or stable.
 This is the natural conclusion convention for linear stability preservers. -/
 def MvUpperHalfPlaneStableOrZero {sigma : Type*}
     (P : MvPolynomial sigma ℂ) : Prop :=
   P = 0 ∨ MvUpperHalfPlaneStable P
+
+/-- Upper-half-plane stability is the specialization of coordinate-wise
+stability to the open upper half-plane. -/
+@[simp] theorem mvUpperHalfPlaneStable_iff_stableIn {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} :
+    MvUpperHalfPlaneStable P ↔
+      MvStableIn (fun _ => {z | 0 < z.im}) P :=
+  Iff.rfl
+
+/-- Weak upper-half-plane stability is the corresponding specialization of
+coordinate-wise weak stability. -/
+@[simp] theorem mvUpperHalfPlaneStableOrZero_iff_stableInOrZero
+    {sigma : Type*} {P : MvPolynomial sigma ℂ} :
+    MvUpperHalfPlaneStableOrZero P ↔
+      MvStableInOrZero (fun _ => {z | 0 < z.im}) P :=
+  Iff.rfl
 
 /-- The zero polynomial is weakly stable. -/
 theorem MvUpperHalfPlaneStableOrZero.zero {sigma : Type*} :
@@ -180,6 +208,7 @@ theorem MvUpperHalfPlaneStable.X_sub_nonpos_C_mul_X {sigma : Type*}
   have him := congrArg Complex.im hzero
   simp only [Complex.sub_im, Complex.mul_im, Complex.ofReal_re,
     Complex.ofReal_im, zero_mul, add_zero, Complex.zero_im] at him
+  change ∀ k, 0 < (z k).im at hz
   nlinarith [hz i, hz j]
 
 /-- A product of homogeneous linear factors with nonpositive real roots is stable. -/
