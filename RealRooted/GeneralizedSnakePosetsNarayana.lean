@@ -3348,9 +3348,10 @@ theorem theorem41Claim7_modified_middle_hasPosLeadingCoeff
 /-- Equation `(2)` and Lemma 3.4 imply that the auxiliary pencil splits,
 before the root-sum comparison used to orient Claim `(7)`.
 
-The parameter `h34` is intentionally explicit: the full parameterized Lemma
-3.4 is still an outstanding analytic theorem, and this result records only its
-consequence rather than presenting the `...Statement` proposition as proved. -/
+The parameter `h34` is explicit because this lower-level module cannot import
+the later Turan module, where
+`lemma34ModifiedNarayanaInterlacing_modified` proves the full parameterized
+statement. -/
 theorem auxiliaryGPencil_splits_of_section3
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
@@ -3479,9 +3480,10 @@ theorem auxiliaryGPencil_roots_nonpos_of_difference
 /-- Braun--Jal Claim `(7)` for the concrete modified Narayana family, using
 the endpoint-safe root-sum orientation.
 
-The analytic Lemma 3.4 input `h34` remains explicit and must eventually be
-proved. The coefficientwise hypothesis `hH_nonneg` is different: as explained
-at `auxiliaryGPencil_hasNonnegCoeffs_of_difference`, it is the permitted
+The analytic Lemma 3.4 input `h34` is explicit only because this lower-level
+module cannot import the later Turan module, where it is proved. The
+coefficientwise hypothesis `hH_nonneg` is different: as explained at
+`auxiliaryGPencil_hasNonnegCoeffs_of_difference`, it is the permitted
 combinatorial input from the non-nesting-rook interpretation, whose full model
 is intentionally outside the scope of this formalization. -/
 theorem theorem41Claim7_modified_of_section3
