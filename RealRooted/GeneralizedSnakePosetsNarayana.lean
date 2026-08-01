@@ -3309,6 +3309,19 @@ theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
   rw [hXGprev_top, hGprev_above, hGm_top]
   ring
 
+/-- The section 3 recurrence gives the auxiliary Braun--Jal pencil a positive
+leading coefficient throughout the parameter range used in section 4. -/
+theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
+    HasPosLeadingCoeff
+      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
+        FiniteSkewBoard.auxiliaryG m) := by
+  unfold HasPosLeadingCoeff
+  rw [auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence hrec2 hm hlam]
+  positivity
+
 /-- Convert the combinatorial nonnegativity of the auxiliary difference into
 nonnegativity of the Braun--Jal pencil.
 
