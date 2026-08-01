@@ -46,23 +46,6 @@ This guide applies to the `RealRooted` Lean project.
 - Mark declaration `Foo.bar` as `protected` if it is more auxiliary than
   another declaration named `Baz.bar`.
 
-## Proof Status and Statement Scaffolds
-
-- A declaration `def FooStatement : Prop := ...` defines a proposition; it does
-  not prove that proposition.
-- Do not introduce a new `...Statement : Prop` as a substitute for proving a
-  theorem. If a temporary statement scaffold is genuinely needed, its docstring
-  must call it an unproved target and the same change must link an open GitHub
-  issue that tracks the missing proof.
-- Never report a statement scaffold as proved merely because it compiles or is
-  consumed by conditional theorems. A proof-status claim must name a checked
-  witness such as `theorem foo : FooStatement := by ...` that does not assume
-  `FooStatement` itself.
-- When a scaffold is discharged, document the witness theorem next to the
-  scaffold or replace the scaffold with a direct theorem API when practical.
-  Downstream interfaces should use the checked witness rather than continue to
-  require the proved statement as a caller-supplied hypothesis.
-
 ## Polynomial Derivatives
 
 Follow the `Polynomial.natDegree_derivative` extraction pattern.
