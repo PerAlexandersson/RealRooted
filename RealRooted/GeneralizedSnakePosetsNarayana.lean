@@ -492,6 +492,34 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
+/-- Endpoint-compatible modified-Narayana route for Braun--Jal Theorem 4.1,
+using root sums to orient Claim `(7)`. -/
+theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]}
+    (hrec2 :
+      NarayanaAuxiliaryGRecurrenceStatement
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hside :
+      Theorem41Claim7RootSumSideConditions
+        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hG : ∀ {m : ℕ}, 2 ≤ m →
+      Prec (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const :
+      ∀ {w : SnakeWord}, w.IsConstant →
+        M w = modifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41InductionRouteStatement
+      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
+  theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_length
+    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
+    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
+    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
+    modifiedNarayanaPolynomial_hasNonnegCoeffs
+    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
+
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
 current Claim `(7)` side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
