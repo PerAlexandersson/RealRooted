@@ -406,16 +406,16 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close
       g'.natDegree = g'.roots.card := (card_roots_of_splits hg'_split).symm
       _ = g.roots.card := (Multiset.card_eq_card_of_rel hgg').symm
       _ = g.natDegree := card_roots_of_splits hg
-  rcases hbranch'.natDegree_eq_or_eq_succ_or_eq_succ_succ
-      hf'_ne hf'_split hg'_split with hdeg | hdeg | hdeg
-  · rw [hf_degree, hg_degree] at hdeg
-    exact LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
+  have hdegrees :=
+    hbranch'.natDegree_eq_or_eq_succ_or_eq_succ_succ
+      hf'_ne hf'_split hg'_split
+  rw [hf_degree, hg_degree] at hdegrees
+  rcases hdegrees with hdeg | hdeg | hdeg
+  · exact LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
       hf_ne hg_ne hf hg hr hs hdeg hclose
-  · rw [hf_degree, hg_degree] at hdeg
-    exact LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ
+  · exact LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ
       hf_ne hg_ne hf hg hr hs hdeg hclose
-  · rw [hf_degree, hg_degree] at hdeg
-    exact
+  · exact
       LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ_succ
         hf_ne hg_ne hf hg hr hs hdeg hclose
 
