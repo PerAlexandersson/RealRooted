@@ -1,5 +1,6 @@
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.LiebSokalOperator
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # The contraction calculation for finite algebraic symbols
@@ -35,8 +36,8 @@ theorem contractMappedVariablePairs_sum
     {R sigma omega ι : Type*} [CommRing R]
     (left right : sigma → omega) (l : List sigma)
     (s : Finset ι) (P : ι → MvPolynomial omega R) :
-    contractMappedVariablePairs left right l (∑ i in s, P i) =
-      ∑ i in s, contractMappedVariablePairs left right l (P i) := by
+    contractMappedVariablePairs left right l (∑ i ∈ s, P i) =
+      ∑ i ∈ s, contractMappedVariablePairs left right l (P i) := by
   classical
   induction s using Finset.induction_on with
   | empty => simp
