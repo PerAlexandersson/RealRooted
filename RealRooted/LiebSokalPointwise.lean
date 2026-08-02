@@ -472,6 +472,35 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or
       MvUpperHalfPlaneStable (contractVariables i j P) := by
   exact hP.contractVariables_zero_or_of_degreeOf_le_one i j (hPma i) (hPma j)
 
+/-- A finite sequence of mapped contractions preserves stability, up to zero,
+provided only the listed contracted coordinates are affine. -/
+theorem MvUpperHalfPlaneStable.contractMappedVariablePairs_zero_or_of_degreeOf_le_one
+    {sigma omega : Type*} [Finite omega]
+    {P : MvPolynomial omega ℂ}
+    (hP : MvUpperHalfPlaneStable P)
+    (left right : sigma → omega) (l : List sigma)
+    (hPaffine : ∀ i ∈ l,
+      P.degreeOf (left i) ≤ 1 ∧ P.degreeOf (right i) ≤ 1) :
+    contractMappedVariablePairs left right l P = 0 ∨
+      MvUpperHalfPlaneStable (contractMappedVariablePairs left right l P) := by
+  induction l generalizing P with
+  | nil => exact Or.inr hP
+  | cons i l ih =>
+      rw [contractMappedVariablePairs_cons]
+      have hi := hPaffine i (List.mem_cons_self)
+      rcases hP.contractVariables_zero_or_of_degreeOf_le_one
+          (left i) (right i) hi.1 hi.2 with hQ | hQ
+      · left
+        simp [hQ]
+      · apply ih hQ
+        intro k hk
+        have hkP := hPaffine k (List.mem_cons_of_mem i hk)
+        exact ⟨
+          (degreeOf_contractVariables_le P
+            (left i) (right i) (left k)).trans hkP.1,
+          (degreeOf_contractVariables_le P
+            (left i) (right i) (right k)).trans hkP.2⟩
+
 /-- A product of stable polynomials in disjoint left and right variable blocks
 is stable. -/
 theorem MvUpperHalfPlaneStable.pairedProduct
