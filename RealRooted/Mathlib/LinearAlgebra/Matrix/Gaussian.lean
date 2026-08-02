@@ -1,6 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import Mathlib.Topology.Instances.Matrix
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 
 /-!
 # Karlin's finite Gaussian matrices
@@ -84,13 +86,13 @@ theorem tendsto_gaussianMatrix_atTop (n : ℕ) :
     · simp [hij]
 
 /-- The finite restriction of Karlin's exponential kernel `exp (x * y)`. -/
-noncomputable def exponentialKernelMatrix {q : ℕ}
-    (x y : Fin q → ℝ) : Matrix (Fin q) (Fin q) ℝ :=
+noncomputable def exponentialKernelMatrix {i j : Type*}
+    (x : i → ℝ) (y : j → ℝ) : Matrix i j ℝ :=
   fun i j => Real.exp (x i * y j)
 
-@[simp] lemma exponentialKernelMatrix_apply {q : ℕ}
-    (x y : Fin q → ℝ) (i j : Fin q) :
-    exponentialKernelMatrix x y i j = Real.exp (x i * y j) :=
+@[simp] lemma exponentialKernelMatrix_apply {i j : Type*}
+    (x : i → ℝ) (y : j → ℝ) (r : i) (c : j) :
+    exponentialKernelMatrix x y r c = Real.exp (x r * y c) :=
   rfl
 
 /-- A Gaussian minor is an exponential-kernel minor times positive row and
