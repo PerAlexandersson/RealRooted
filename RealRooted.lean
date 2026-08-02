@@ -23,6 +23,7 @@ import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+import RealRooted.BorceaBranden.FiniteSymbolLinearity
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
