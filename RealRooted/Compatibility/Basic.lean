@@ -113,17 +113,12 @@ lemma iterateTDeriv {f g : ℝ[X]} (h : Compatible f g)
     Compatible (RealRooted.iterateTDeriv eps n f)
       (RealRooted.iterateTDeriv eps n g) := by
   intro α β hα hβ
-  have hcomb :
-      C α * RealRooted.iterateTDeriv eps n f +
-          C β * RealRooted.iterateTDeriv eps n g =
-        RealRooted.iterateTDeriv eps n (C α * f + C β * g) := by
-    rw [RealRooted.iterateTDeriv_add, RealRooted.iterateTDeriv_C_mul,
-      RealRooted.iterateTDeriv_C_mul]
   rcases h α β hα hβ with hzero | hrr
   · left
-    simp [hcomb, hzero]
+    rw [← RealRooted.iterateTDeriv_linear_combo, hzero]
+    simp
   · right
-    rw [hcomb]
+    rw [← RealRooted.iterateTDeriv_linear_combo]
     exact ⟨RealRooted.iterateTDeriv_ne_zero hrr.1,
       RealRooted.splits_iterateTDeriv heps hrr.2⟩
 
