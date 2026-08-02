@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Algebra.Polynomial.RuleOfSigns
 public import Mathlib.Data.List.ChainOfFn
+public import Mathlib.Data.List.NodupEquivFin
 public import Mathlib.Tactic
 
 /-!
@@ -499,6 +500,120 @@ lemma signVariations_le_succ_of_natAdd_nonpos {m n : ℕ}
 /-- Every consecutive pair of entries has opposite strict signs. -/
 def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
   ∀ i : Fin n, x i.castSucc * x i.succ < 0
+
+lemma strictlyAlternates_iff {n : ℕ} {x : Fin (n + 1) → ℝ} :
+    StrictlyAlternates x ↔ ∀ i : Fin n, x i.castSucc * x i.succ < 0 :=
+  Iff.rfl
+
+private lemma mul_neg_of_sign_ne {a b : ℝ}
+    (ha0 : SignType.sign a ≠ 0) (hb0 : SignType.sign b ≠ 0)
+    (hab : SignType.sign a ≠ SignType.sign b) : a * b < 0 := by
+  have ha_ne : a ≠ 0 := sign_ne_zero.mp ha0
+  have hb_ne : b ≠ 0 := sign_ne_zero.mp hb0
+  rcases lt_or_gt_of_ne ha_ne with ha | ha <;>
+    rcases lt_or_gt_of_ne hb_ne with hb | hb
+  · exact (hab (by rw [sign_neg ha, sign_neg hb])).elim
+  · exact mul_neg_of_neg_of_pos ha hb
+  · exact mul_neg_of_pos_of_neg ha hb
+  · exact (hab (by rw [sign_pos ha, sign_pos hb])).elim
+
+/-- A positive lower bound on sign variations produces an ordered strictly
+alternating subsequence of the corresponding length. -/
+lemma exists_strictMono_strictlyAlternates_of_le_signVariations
+    {m q : ℕ} {y : Fin m → ℝ} (hq : 0 < q)
+    (h : q ≤ signVariations y) :
+    ∃ rows : Fin (q + 1) → Fin m,
+      StrictMono rows ∧ StrictlyAlternates (fun i => y (rows i)) := by
+  let raw : List SignType := List.ofFn (SignType.sign ∘ y)
+  let nz : List SignType := raw.filter (· ≠ 0)
+  let d : List SignType := nz.destutter (· ≠ ·)
+  have hh : q ≤ d.length - 1 := by
+    simpa [signVariations, List.signVariations, d, nz, raw,
+      List.map_ofFn] using h
+  have hlen : q + 1 ≤ d.length := by omega
+  have hsub : d.Sublist raw :=
+    (List.destutter_sublist (R := fun a b : SignType => a ≠ b) nz).trans
+      List.filter_sublist
+  obtain ⟨e, he⟩ :=
+    List.sublist_iff_exists_fin_orderEmbedding_get_eq.mp hsub
+  let rows : Fin (q + 1) → Fin m := fun i =>
+    ⟨e (Fin.castLE hlen i), by
+      simpa [raw] using (e (Fin.castLE hlen i)).isLt⟩
+  refine ⟨rows, ?_, ?_⟩
+  · intro i j hij
+    change (e (Fin.castLE hlen i) : ℕ) <
+      (e (Fin.castLE hlen j) : ℕ)
+    exact e.strictMono (Fin.strictMono_castLE hlen hij)
+  · intro i
+    let k0 : Fin d.length := Fin.castLE hlen i.castSucc
+    let k1 : Fin d.length := Fin.castLE hlen i.succ
+    have hklt : (i : ℕ) + 1 < d.length := by omega
+    have hchain : d.IsChain (· ≠ ·) :=
+      List.isChain_destutter (R := fun a b : SignType => a ≠ b) nz
+    have hkd : d.get k0 ≠ d.get k1 := by
+      simpa [k0, k1] using hchain.getElem (i : ℕ) hklt
+    have hk0 : d.get k0 ≠ 0 := by
+      have hm : d.get k0 ∈ nz :=
+        (List.destutter_sublist
+          (R := fun a b : SignType => a ≠ b) nz).mem
+            (List.get_mem d k0)
+      exact of_decide_eq_true (List.mem_filter.mp hm).2
+    have hk1 : d.get k1 ≠ 0 := by
+      have hm : d.get k1 ∈ nz :=
+        (List.destutter_sublist
+          (R := fun a b : SignType => a ≠ b) nz).mem
+            (List.get_mem d k1)
+      exact of_decide_eq_true (List.mem_filter.mp hm).2
+    have he0 :
+        d.get k0 = SignType.sign (y (rows i.castSucc)) := by
+      simpa [raw, rows, k0, Function.comp_apply] using he k0
+    have he1 :
+        d.get k1 = SignType.sign (y (rows i.succ)) := by
+      simpa [raw, rows, k1, Function.comp_apply] using he k1
+    apply mul_neg_of_sign_ne
+    · rw [← he0]
+      exact hk0
+    · rw [← he1]
+      exact hk1
+    · rw [← he0, ← he1]
+      exact hkd
+
+/-- Two nonzero strictly alternating vectors have pointwise products of one
+strict sign. -/
+lemma StrictlyAlternates.pointwise_mul_pos_or_neg {n : ℕ}
+    {x y : Fin (n + 1) → ℝ} (hx : StrictlyAlternates x)
+    (hy : StrictlyAlternates y) (hx0 : x 0 ≠ 0) (hy0 : y 0 ≠ 0) :
+    (∀ i, 0 < x i * y i) ∨ (∀ i, x i * y i < 0) := by
+  have hxy0 : x 0 * y 0 ≠ 0 := mul_ne_zero hx0 hy0
+  rcases lt_or_gt_of_ne hxy0 with hneg | hpos
+  · right
+    intro i
+    induction i using Fin.induction with
+    | zero => exact hneg
+    | succ i ih =>
+        have hstep :
+            0 < (x i.castSucc * y i.castSucc) *
+              (x i.succ * y i.succ) := by
+          rw [show
+            (x i.castSucc * y i.castSucc) * (x i.succ * y i.succ) =
+              (x i.castSucc * x i.succ) *
+                (y i.castSucc * y i.succ) by ring]
+          exact mul_pos_of_neg_of_neg (hx i) (hy i)
+        exact neg_of_mul_pos_right hstep ih.le
+  · left
+    intro i
+    induction i using Fin.induction with
+    | zero => exact hpos
+    | succ i ih =>
+        have hstep :
+            0 < (x i.castSucc * y i.castSucc) *
+              (x i.succ * y i.succ) := by
+          rw [show
+            (x i.castSucc * y i.castSucc) * (x i.succ * y i.succ) =
+              (x i.castSucc * x i.succ) *
+                (y i.castSucc * y i.succ) by ring]
+          exact mul_pos_of_neg_of_neg (hx i) (hy i)
+        exact pos_of_mul_pos_right hstep ih.le
 
 lemma signVariations_congr_sign {R : Type*} [Zero R] [LinearOrder R]
     {n : ℕ} {x y : Fin n → R}
