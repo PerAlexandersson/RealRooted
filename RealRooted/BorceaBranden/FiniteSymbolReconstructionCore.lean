@@ -66,8 +66,9 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     subst n
     rw [finsupp_eq_indicator_support_of_le_one m.1 m.2,
       applyMonomialDifferential_indicator_monomial]
-    rw [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial]
-    simp only [Finset.sdiff_self]
+    rw [MvPolynomial.eval_zero', if_pos Finset.Subset.rfl,
+      MvPolynomial.constantCoeff_monomial, MvPolynomial.coeff_monomial,
+      if_pos rfl, Finset.sdiff_self]
     have hempty :
         Finsupp.indicator (∅ : Finset sigma) (fun _ _ => 1) =
           (0 : sigma →₀ ℕ) := by
