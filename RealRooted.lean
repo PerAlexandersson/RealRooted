@@ -204,6 +204,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.List.Zip
+import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
