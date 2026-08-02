@@ -37,7 +37,7 @@ theorem det_updateRow_intervalIntegral
   exact (L.intervalIntegral_comp_comm hf).symm
 
 /-- A pointwise determinant is integrable under a product measure when every entry is. -/
-theorem integrable_det_pi
+theorem integrable_det_rows
     {n E : Type*} [DecidableEq n] [Fintype n] [MeasurableSpace E]
     (μ : n → MeasureTheory.Measure E) [∀ i, MeasureTheory.SigmaFinite (μ i)]
     (f : n → E → n → ℝ)
