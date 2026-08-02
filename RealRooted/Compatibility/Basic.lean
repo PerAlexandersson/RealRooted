@@ -106,6 +106,27 @@ lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
   · rw [hcomb]
     exact derivative_eq_zero_or_ne_zero_and_splits hrr.2
 
+/-- Compatibility is preserved by the degree-preserving root regularizer
+`iterateTDeriv` at every positive shift. -/
+lemma iterateTDeriv {f g : ℝ[X]} (h : Compatible f g)
+    {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
+    Compatible (RealRooted.iterateTDeriv eps n f)
+      (RealRooted.iterateTDeriv eps n g) := by
+  intro α β hα hβ
+  have hcomb :
+      C α * RealRooted.iterateTDeriv eps n f +
+          C β * RealRooted.iterateTDeriv eps n g =
+        RealRooted.iterateTDeriv eps n (C α * f + C β * g) := by
+    rw [RealRooted.iterateTDeriv_add, RealRooted.iterateTDeriv_C_mul,
+      RealRooted.iterateTDeriv_C_mul]
+  rcases h α β hα hβ with hzero | hrr
+  · left
+    simp [hcomb, hzero]
+  · right
+    rw [hcomb]
+    exact ⟨RealRooted.iterateTDeriv_ne_zero hrr.1,
+      RealRooted.splits_iterateTDeriv heps hrr.2⟩
+
 lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) : (f ≠ 0 ∧ f.Splits) := by
