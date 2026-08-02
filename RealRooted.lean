@@ -100,6 +100,7 @@ import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
 import RealRooted.DerivativeShiftRootMatching
+import RealRooted.DerivativeShiftSequence
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
