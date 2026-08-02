@@ -6,7 +6,6 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-public import RealRooted.Multiaffine
 
 /-!
 # Source-coordinate degrees of finite algebraic symbols
@@ -50,10 +49,17 @@ theorem degreeOf_algebraicSymbol_one_inr_le
         (rename (Sum.inl : tau → tau ⊕ sigma)
           (T (basisDegreeOfLE (fun _ : sigma => 1) m))).degreeOf
             (Sum.inr i) = 0 := by
-      apply not_ne_iff.mp
-      rw [← mem_vars_iff_degreeOf_ne_zero]
-      intro hmem
-      obtain ⟨j, hj, hji⟩ := mem_vars_rename Sum.inl _ hmem
+      apply Nat.le_zero.mp
+      rw [degreeOf_le_iff]
+      intro d hd
+      apply Nat.le_zero.mpr
+      by_contra hdi
+      have hmem : Sum.inr i ∈
+          (rename (Sum.inl : tau → tau ⊕ sigma)
+            (T (basisDegreeOfLE (fun _ : sigma => 1) m))).vars := by
+        rw [mem_vars]
+        exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdi⟩
+      obtain ⟨j, _hj, hji⟩ := mem_vars_rename Sum.inl _ hmem
       exact Sum.inl_ne_inr hji
     have hleft :
         (C (boxChoose (fun _ : sigma => 1) m.1 : R) *
