@@ -97,7 +97,7 @@ private theorem prod_X_eq_monomial_indicator_map
 
 private theorem rightComplementMonomial_one
     {R sigma tau : Type*} [CommSemiring R]
-    [Fintype sigma] [DecidableEq sigma] [DecidableEq tau]
+    [Fintype sigma] [DecidableEq sigma]
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
     (rightComplementMonomial (R := R) (τ := tau)
         (fun _ : sigma => 1) m.1) =
@@ -107,14 +107,43 @@ private theorem rightComplementMonomial_one
             (sumInrEmbedding tau sigma)) (fun _ _ => 1)) 1 := by
   classical
   unfold rightComplementMonomial
-  have hm := finsupp_eq_indicator_support_of_le_one m.1 m.2
-  rw [hm]
+  have hone (i : sigma) (hi : i ∈ m.1.support) : m.1 i = 1 := by
+    have hne : m.1 i ≠ 0 := Finsupp.mem_support_iff.mp hi
+    have hle := m.2 i
+    cases hdi : m.1 i with
+    | zero => exact (hne hdi).elim
+    | succ n =>
+        cases n with
+        | zero => rfl
+        | succ n =>
+            rw [hdi] at hle
+            exact (Nat.not_succ_le_zero n
+              (Nat.le_of_succ_le_succ hle)).elim
   calc
     ∏ i, X (Sum.inr i) ^
-          (1 - Finsupp.indicator m.1.support (fun _ _ => 1) i) =
+          (1 - m.1 i) =
         ∏ i ∈ Finset.univ \ m.1.support,
           (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) := by
-      simp [Finsupp.indicator_apply]
+      calc
+        (∏ i, (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) ^
+            (1 - m.1 i)) =
+            ∏ i ∈ Finset.univ \ m.1.support,
+              (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) ^
+                (1 - m.1 i) := by
+          symm
+          apply Finset.prod_subset Finset.sdiff_subset
+          intro i hi_univ hi_diff
+          have hi_support : i ∈ m.1.support := by
+            by_contra hi
+            exact hi_diff (Finset.mem_sdiff.mpr ⟨hi_univ, hi⟩)
+          simp [hone i hi_support]
+        _ = ∏ i ∈ Finset.univ \ m.1.support,
+              (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) := by
+          apply Finset.prod_congr rfl
+          intro i hi
+          have hzero : m.1 i = 0 :=
+            Finsupp.notMem_support_iff.mp (Finset.mem_sdiff.mp hi).2
+          simp [hzero]
     _ = monomial
           (Finsupp.indicator
             ((Finset.univ \ m.1.support).map
