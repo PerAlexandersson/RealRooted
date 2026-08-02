@@ -1823,6 +1823,61 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
     natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
       hf hsgn.symm hcompat.comm hgdeg
 
+/-- Liu's Corollary 2.2: compatible real-rooted polynomials with opposite
+leading signs have degrees differing by at most two. -/
+theorem corollary22DegreeDiff : corollary22DegreeDiffStatement := by
+  unfold corollary22DegreeDiffStatement
+  suffices h :
+      ∀ n : ℕ, ∀ f g : ℝ[X], f.natDegree + g.natDegree = n →
+        f.Splits → g.Splits → OppositeLeadingSigns f g → Compatible f g →
+          |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 by
+    intro f g hf hg hsgn hcompat
+    exact h _ f g rfl hf hg hsgn hcompat
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    intro f g hsum hf hg hsgn hcompat
+    by_cases hfdeg : f.natDegree = 0
+    · exact
+        natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
+          hg hsgn hcompat hfdeg
+    by_cases hgdeg : g.natDegree = 0
+    · exact
+        natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
+          hf hsgn hcompat hgdeg
+    by_cases hno : NoCommonRoots f g
+    · exact
+        natDegree_abs_sub_le_two_of_compatible_noCommon_nonconstant
+          hf hg hsgn hno hfdeg hgdeg hcompat
+    obtain ⟨r, hfr, hgr⟩ := exists_common_root_of_not_noCommonRoots hno
+    let f' : ℝ[X] := deleteRootFactor f r
+    let g' : ℝ[X] := deleteRootFactor g r
+    have hf'_splits : f'.Splits :=
+      deleteRootFactor_splits_of_isRoot hf hfr
+    have hg'_splits : g'.Splits :=
+      deleteRootFactor_splits_of_isRoot hg hgr
+    have hsgn' : OppositeLeadingSigns f' g' := by
+      simpa [f', g'] using
+        (hsgn.deleteRootFactor_left hfr).deleteRootFactor_right hgr
+    have hcompat' : Compatible f' g' :=
+      compatible_deleteRootFactor_of_common_root hcompat hfr hgr
+    have hf'_degree : f'.natDegree = f.natDegree - 1 :=
+      natDegree_deleteRootFactor f r
+    have hg'_degree : g'.natDegree = g.natDegree - 1 :=
+      natDegree_deleteRootFactor g r
+    have hf_pos : 0 < f.natDegree := Nat.pos_of_ne_zero hfdeg
+    have hg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgdeg
+    have hlt : f'.natDegree + g'.natDegree < n := by
+      rw [hf'_degree, hg'_degree, ← hsum]
+      lia
+    have hrec :=
+      ih (f'.natDegree + g'.natDegree) hlt f' g' rfl
+        hf'_splits hg'_splits hsgn' hcompat'
+    rw [hf'_degree, hg'_degree] at hrec
+    rw [Nat.cast_sub hf_pos, Nat.cast_sub hg_pos] at hrec
+    norm_num at hrec
+    simpa only [sub_sub_sub_cancel_right] using hrec
+
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
