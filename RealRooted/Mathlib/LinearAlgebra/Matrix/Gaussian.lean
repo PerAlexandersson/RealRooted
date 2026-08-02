@@ -387,13 +387,8 @@ theorem det_gaussianMatrix_submatrix_pos {n q : ℕ}
     0 < ((gaussianMatrix n a).submatrix rows cols).det := by
   apply det_gaussianMatrix_submatrix_pos_of_exponentialKernel a rows cols
   apply det_exponentialKernelMatrix_pos
-  · intro i j hij
-    have hrowsVal : (rows i).val < (rows j).val := hrows hij
-    exact mul_lt_mul_of_pos_left (by
-      exact_mod_cast hrowsVal) (by positivity)
-  · intro i j hij
-    have hcolsVal : (cols i).val < (cols j).val := hcols hij
-    change ((cols i).val : ℝ) < ((cols j).val : ℝ)
-    exact_mod_cast hcolsVal
+  · exact (Nat.strictMono_cast.comp
+      (Fin.val_strictMono.comp hrows)).const_mul (by positivity)
+  · exact Nat.strictMono_cast.comp (Fin.val_strictMono.comp hcols)
 
 end Matrix
