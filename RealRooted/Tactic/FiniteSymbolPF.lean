@@ -401,8 +401,8 @@ theorem finiteSymbol_stable_of_residual_factor
   rw [hfac]
   exact bivariateStableMulXAddYPow (d - 2) hres
 
-/-- Residual PF certificate implies finite-symbol stability, modulo the two
-classical stability interfaces. -/
+/-- A residual PF certificate gives finite-symbol stability after the checked
+homogenization and multiplication closures. -/
 theorem finiteSymbol_stable_of_residual_certificate
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
@@ -417,7 +417,8 @@ theorem finiteSymbol_stable_of_residual_certificate
     · contradiction
     · exact hsp
   exact finiteSymbol_stable_of_residual_factor cert.symbol_factor
-    (RealRooted.BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos h_ne h_splits cert.residual_pf.roots_nonpos)
+    (RealRooted.BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
+      h_ne h_splits cert.residual_pf.roots_nonpos)
 
 /-- Capstone certificate route for PF-bidiagonal preservers. -/
 theorem bidiagonalPFPreserver_of_finiteSymbol_residual_certificate

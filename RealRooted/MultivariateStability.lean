@@ -672,4 +672,3 @@ abbrev IsBivariateUpperStable (P : MvPolynomial (Fin 2) ℂ) : Prop :=
 end
 
 end RealRooted
-
