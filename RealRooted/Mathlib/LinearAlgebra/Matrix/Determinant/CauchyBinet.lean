@@ -28,4 +28,36 @@ theorem det_submatrix_mul_eq_sum_perm_fun
   simp only [Matrix.submatrix_apply, Matrix.mul_apply, Finset.prod_univ_sum]
   simp
 
+/-- Reassemble the permutation sum for each intermediate-index map. -/
+theorem det_submatrix_mul_eq_sum_fun_det
+    {R : Type*} [CommRing R] {l n m q : ℕ}
+    (L : Matrix (Fin l) (Fin n) R)
+    (A : Matrix (Fin n) (Fin m) R)
+    (rows : Fin q → Fin l) (cols : Fin q → Fin m) :
+    ((L * A).submatrix rows cols).det =
+      ∑ f : Fin q → Fin n,
+        (L.submatrix rows f).det * ∏ i, A (f i) (cols i) := by
+  rw [det_submatrix_mul_eq_sum_perm_fun]
+  simp_rw [Finset.smul_sum]
+  rw [Finset.sum_comm]
+  apply Fintype.sum_congr
+  intro f
+  rw [Matrix.det_apply]
+  simp only [Matrix.submatrix_apply, Finset.prod_mul_distrib]
+  rw [Finset.sum_mul]
+  simp_rw [smul_mul_assoc]
+
+/-- A submatrix with a noninjective column selector has zero determinant. -/
+theorem det_submatrix_eq_zero_of_not_injective_right
+    {R : Type*} [CommRing R] {l n q : ℕ}
+    (L : Matrix (Fin l) (Fin n) R)
+    (rows : Fin q → Fin l) (f : Fin q → Fin n)
+    (hf : ¬ Function.Injective f) :
+    (L.submatrix rows f).det = 0 := by
+  obtain ⟨i, j, hfij, hij⟩ := Function.not_injective_iff.mp hf
+  apply Matrix.det_zero_of_column_eq hij
+  intro k
+  simp only [Matrix.submatrix_apply]
+  rw [hfij]
+
 end Matrix
