@@ -66,7 +66,14 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     subst n
     rw [finsupp_eq_indicator_support_of_le_one m.1 m.2,
       applyMonomialDifferential_indicator_monomial]
-    simp [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial]
+    rw [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial]
+    simp only [Finset.sdiff_self]
+    have hempty :
+        Finsupp.indicator (∅ : Finset sigma) (fun _ _ => 1) =
+          (0 : sigma →₀ ℕ) := by
+      ext i
+      simp
+    rw [if_pos hempty]
   · have hmn : m.1 ≠ n.1 := by
       intro h
       exact hsupport (congrArg Finsupp.support h)
@@ -111,7 +118,14 @@ theorem specializeRight_zero_targetMul_input
   rw [map_mul]
   congr 1
   · rw [MvPolynomial.aeval_rename]
-    simp
+    have h (P : MvPolynomial tau ℂ) :
+        MvPolynomial.aeval MvPolynomial.X P = P := by
+      induction P using MvPolynomial.induction_on with
+      | C c => simp
+      | add P Q hP hQ => rw [map_add, hP, hQ]
+      | mul_X P i hP =>
+          rw [map_mul, MvPolynomial.aeval_X, hP]
+    exact h A
   · rw [MvPolynomial.aeval_rename]
     have h (P : MvPolynomial sigma ℂ) :
         MvPolynomial.aeval
