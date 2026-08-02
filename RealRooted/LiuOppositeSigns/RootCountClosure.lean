@@ -44,12 +44,9 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
       have hjf : j - 1 < (rootSeqDesc f).length := by
         rw [rootSeqDesc_length hf]
         lia
-      have hjrg : j < rg.length := by
-        rw [← hgg.length_eq]
-        exact hjg
+      have hjrg : j < rg.length := by simpa only [hgg.length_eq] using hjg
       have hjrf : j - 1 < rf.length := by
-        rw [← hff.length_eq]
-        exact hjf
+        simpa only [hff.length_eq] using hjf
       exact ⟨rg.getD j 0, rf.getD (j - 1) 0,
         by simpa using hgg.get hjg hjrg,
         by simpa using hff.get hjf hjrf, hfg.1 j hj1 hj⟩
@@ -62,12 +59,9 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
       have hjg : j - 1 < (rootSeqDesc g).length := by
         rw [rootSeqDesc_length hg, hdeg]
         lia
-      have hjrf : j < rf.length := by
-        rw [← hff.length_eq]
-        exact hjf
+      have hjrf : j < rf.length := by simpa only [hff.length_eq] using hjf
       have hjrg : j - 1 < rg.length := by
-        rw [← hgg.length_eq]
-        exact hjg
+        simpa only [hgg.length_eq] using hjg
       exact ⟨rf.getD j 0, rg.getD (j - 1) 0,
         by simpa using hff.get hjf hjrf,
         by simpa using hgg.get hjg hjrg, hfg.2 j hj1 hj⟩
