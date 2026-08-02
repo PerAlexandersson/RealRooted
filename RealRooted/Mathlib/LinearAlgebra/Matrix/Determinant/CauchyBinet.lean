@@ -82,3 +82,50 @@ theorem Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective
   have hfi : f i ∈ Set.range e := hRange ▸ ⟨i, rfl⟩
   change e (ee.symm ⟨f i, hfi⟩) = f i
   exact congrArg Subtype.val (ee.apply_symm_apply ⟨f i, hfi⟩)
+
+private theorem range_orderEmbOfPowersetCard {q : ℕ} {I : Type*}
+    [LinearOrder I] (s : Set.powersetCard I q) :
+    Set.range (Set.powersetCard.ofFinEmbEquiv.symm s) = (s : Set I) := by
+  let e : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm s
+  calc
+    Set.range e = (Set.powersetCard.ofFinEmb q I e.toEmbedding : Set I) :=
+      (coe_ofFinEmb_eq_range e.toEmbedding).symm
+    _ = (s : Set I) := congrArg
+      (fun t : Set.powersetCard I q => (t : Set I))
+      (Set.powersetCard.ofFinEmbEquiv.apply_symm_apply s)
+
+private theorem range_comp_perm {q : ℕ} {I : Type*}
+    (e : Fin q → I) (p : Equiv.Perm (Fin q)) :
+    Set.range (fun i => e (p i)) = Set.range e := by
+  ext x
+  constructor
+  · rintro ⟨i, rfl⟩
+    exact ⟨p i, rfl⟩
+  · rintro ⟨j, rfl⟩
+    exact ⟨p.symm j, by simp⟩
+
+/-- The ordered-image/permutation representation of an injective finite map is
+unique. -/
+theorem Set.powersetCard.orderEmb_comp_perm_injective
+    {q : ℕ} {I : Type*} [LinearOrder I] :
+    Function.Injective
+      (fun z : Set.powersetCard I q × Equiv.Perm (Fin q) =>
+        fun i => Set.powersetCard.ofFinEmbEquiv.symm z.1 (z.2 i)) := by
+  rintro ⟨s, p⟩ ⟨t, r⟩ h
+  let es : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm s
+  let et : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm t
+  have hst : s = t := by
+    apply Subtype.ext
+    apply Finset.coe_injective
+    calc
+      (s : Set I) = Set.range es := (range_orderEmbOfPowersetCard s).symm
+      _ = Set.range (fun i => es (p i)) := (range_comp_perm es p).symm
+      _ = Set.range (fun i => et (r i)) := congrArg Set.range h
+      _ = Set.range et := range_comp_perm et r
+      _ = (t : Set I) := range_orderEmbOfPowersetCard t
+  subst t
+  have hpr : p = r := by
+    apply Equiv.ext
+    intro i
+    exact es.injective (congrFun h i)
+  exact Prod.ext rfl hpr
