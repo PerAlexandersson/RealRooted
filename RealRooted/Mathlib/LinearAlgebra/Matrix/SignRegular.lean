@@ -36,6 +36,65 @@ at every order. -/
 def IsStrictlySignRegular (M : Matrix ι κ R) : Prop :=
   ∀ q, M.IsStrictlySignConsistentOrder q
 
+protected lemma IsSignConsistentOrder.submatrix
+    {ι' κ' : Type*} [Preorder ι'] [Preorder κ'] {M : Matrix ι κ R} {q : ℕ}
+    (hM : M.IsSignConsistentOrder q) {rows : ι' → ι} {cols : κ' → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).IsSignConsistentOrder q := by
+  intro rows₁ rows₂ cols₁ cols₂ hrows₁ hrows₂ hcols₁ hcols₂
+  simpa using hM (hrows.comp hrows₁) (hrows.comp hrows₂)
+    (hcols.comp hcols₁) (hcols.comp hcols₂)
+
+protected lemma IsStrictlySignConsistentOrder.submatrix
+    {ι' κ' : Type*} [Preorder ι'] [Preorder κ'] {M : Matrix ι κ R} {q : ℕ}
+    (hM : M.IsStrictlySignConsistentOrder q) {rows : ι' → ι} {cols : κ' → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).IsStrictlySignConsistentOrder q := by
+  intro rows₁ rows₂ cols₁ cols₂ hrows₁ hrows₂ hcols₁ hcols₂
+  simpa using hM (hrows.comp hrows₁) (hrows.comp hrows₂)
+    (hcols.comp hcols₁) (hcols.comp hcols₂)
+
+protected lemma IsSignConsistentOrder.transpose {M : Matrix ι κ R} {q : ℕ}
+    (hM : M.IsSignConsistentOrder q) : M.transpose.IsSignConsistentOrder q := by
+  intro rows rows' cols cols' hrows hrows' hcols hcols'
+  have hdet (r : Fin q → κ) (c : Fin q → ι) :
+      (M.transpose.submatrix r c).det = (M.submatrix c r).det := by
+    rw [← Matrix.det_transpose (M.submatrix c r), Matrix.transpose_submatrix]
+  rw [hdet rows cols, hdet rows' cols']
+  exact hM hcols hcols' hrows hrows'
+
+protected lemma IsStrictlySignConsistentOrder.transpose {M : Matrix ι κ R} {q : ℕ}
+    (hM : M.IsStrictlySignConsistentOrder q) :
+    M.transpose.IsStrictlySignConsistentOrder q := by
+  intro rows rows' cols cols' hrows hrows' hcols hcols'
+  have hdet (r : Fin q → κ) (c : Fin q → ι) :
+      (M.transpose.submatrix r c).det = (M.submatrix c r).det := by
+    rw [← Matrix.det_transpose (M.submatrix c r), Matrix.transpose_submatrix]
+  rw [hdet rows cols, hdet rows' cols']
+  exact hM hcols hcols' hrows hrows'
+
+protected lemma IsSignRegular.submatrix
+    {ι' κ' : Type*} [Preorder ι'] [Preorder κ'] {M : Matrix ι κ R}
+    (hM : M.IsSignRegular) {rows : ι' → ι} {cols : κ' → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).IsSignRegular :=
+  fun q ↦ (hM q).submatrix hrows hcols
+
+protected lemma IsStrictlySignRegular.submatrix
+    {ι' κ' : Type*} [Preorder ι'] [Preorder κ'] {M : Matrix ι κ R}
+    (hM : M.IsStrictlySignRegular) {rows : ι' → ι} {cols : κ' → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).IsStrictlySignRegular :=
+  fun q ↦ (hM q).submatrix hrows hcols
+
+protected lemma IsSignRegular.transpose {M : Matrix ι κ R}
+    (hM : M.IsSignRegular) : M.transpose.IsSignRegular :=
+  fun q ↦ (hM q).transpose
+
+protected lemma IsStrictlySignRegular.transpose {M : Matrix ι κ R}
+    (hM : M.IsStrictlySignRegular) : M.transpose.IsStrictlySignRegular :=
+  fun q ↦ (hM q).transpose
+
 protected lemma IsStrictlySignConsistentOrder.toSignConsistentOrder
     {M : Matrix ι κ R} {q : ℕ} (hM : M.IsStrictlySignConsistentOrder q) :
     M.IsSignConsistentOrder q := by
