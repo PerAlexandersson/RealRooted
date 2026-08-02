@@ -1923,16 +1923,12 @@ share their largest root. The minimal counterexample is `X` and `-(X ^ 2)`. -/
 theorem not_theorem21CompatibleToRootCountBranchesNonconstantStatement :
     ¬ theorem21CompatibleToRootCountBranchesNonconstantStatement := by
   intro hforward
-  have hbase : Compatible (1 : ℝ[X]) (-X) := by
-    intro α β _hα _hβ
-    by_cases hzero : C α * (1 : ℝ[X]) + C β * (-X) = 0
-    · exact Or.inl hzero
-    · refine Or.inr (RealRooted.isRealRooted_of_natDegree_le_one hzero ?_)
-      exact
-        (Polynomial.natDegree_add_le _ _).trans
-          (max_le
-            ((Polynomial.natDegree_C_mul_le α (1 : ℝ[X])).trans (by simp))
-            ((Polynomial.natDegree_C_mul_le β (-X : ℝ[X])).trans (by simp)))
+  have hbase : Compatible (1 : ℝ[X]) (-X) :=
+    Compatible.of_allComboRealRooted <|
+      (allComboRealRooted_of_natDegree_le_one
+        hasPosLeadingCoeff_one
+        (by unfold HasPosLeadingCoeff; simp)
+        (by simp) (by simp)).neg_right
   have hgsplits : (-(X ^ 2) : ℝ[X]).Splits := by
     simpa [pow_two] using
       (Polynomial.Splits.X.mul Polynomial.Splits.X).neg
