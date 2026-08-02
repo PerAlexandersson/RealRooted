@@ -172,6 +172,91 @@ theorem specializeRight_zero_monomial
       Sum.inl_injective c (a := Sum.inr j)
       (by simpa using hj) (by simp)
 
+/-- The paper-normalized coefficient calculation in Borcea--Branden,
+arXiv:0809.0401, Lemma 2.2. Differentiating the monomial supported on all
+left variables and on `n` in the right block by the monomial supported on the
+complement of `a` in the left block and on `m` in the right block, then setting
+the right block to zero, gives the left monomial on `a` exactly when `m = n`.
+-/
+theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
+    {sigma tau : Type*} [Fintype sigma] [Fintype tau]
+    [DecidableEq sigma] [DecidableEq tau]
+    (a : Finset sigma) (m n : Finset tau) (c : ℂ) :
+    let eLeft : sigma ↪ Sum sigma tau := ⟨Sum.inl, Sum.inl_injective⟩
+    let eRight : tau ↪ Sum sigma tau := ⟨Sum.inr, Sum.inr_injective⟩
+    specializeRight (fun _ : tau => 0)
+        (applyMonomialDifferential
+          (Finsupp.indicator
+            ((Finset.univ \ a).map eLeft ∪ m.map eRight) (fun _ _ => 1))
+          (MvPolynomial.monomial
+            (Finsupp.indicator
+              (Finset.univ.map eLeft ∪ n.map eRight) (fun _ _ => 1)) c)) =
+      if m = n then
+        MvPolynomial.monomial
+          (Finsupp.indicator a (fun _ _ => 1)) c
+      else 0 := by
+  classical
+  let eLeft : sigma ↪ Sum sigma tau := ⟨Sum.inl, Sum.inl_injective⟩
+  let eRight : tau ↪ Sum sigma tau := ⟨Sum.inr, Sum.inr_injective⟩
+  change specializeRight (fun _ : tau => 0)
+      (applyMonomialDifferential
+        (Finsupp.indicator
+          ((Finset.univ \ a).map eLeft ∪ m.map eRight) (fun _ _ => 1))
+        (MvPolynomial.monomial
+          (Finsupp.indicator
+            (Finset.univ.map eLeft ∪ n.map eRight) (fun _ _ => 1)) c)) = _
+  have hsubset :
+      (Finset.univ \ a).map eLeft ∪ m.map eRight ⊆
+          Finset.univ.map eLeft ∪ n.map eRight ↔
+        m ⊆ n := by
+    constructor
+    · intro h j hj
+      have hj' : eRight j ∈ Finset.univ.map eLeft ∪ n.map eRight :=
+        h (by simp [eLeft, eRight, hj])
+      simpa [eLeft, eRight] using hj'
+    · intro h x hx
+      cases x with
+      | inl i => simp [eLeft, eRight]
+      | inr j =>
+          have hj : j ∈ m := by simpa [eLeft, eRight] using hx
+          simpa [eLeft, eRight] using h hj
+  have hsdiff :
+      (Finset.univ.map eLeft ∪ n.map eRight) \
+          ((Finset.univ \ a).map eLeft ∪ m.map eRight) =
+        a.map eLeft ∪ (n \ m).map eRight := by
+    ext x
+    cases x <;> simp [eLeft, eRight]
+  have hindicator :
+      Finsupp.indicator (a.map eLeft ∪ (n \ m).map eRight)
+          (fun _ _ => 1) =
+        (Finsupp.indicator a (fun _ _ => 1)).mapDomain Sum.inl +
+          (Finsupp.indicator (n \ m) (fun _ _ => 1)).mapDomain Sum.inr := by
+    ext x
+    cases x <;> simp [eLeft, eRight]
+  rw [applyMonomialDifferential_indicator_monomial]
+  by_cases hmn : m = n
+  · subst n
+    rw [if_pos (hsubset.mpr (by simp)), hsdiff, hindicator,
+      specializeRight_zero_monomial]
+    simp
+  · rw [if_neg hmn]
+    by_cases hsub : m ⊆ n
+    · rw [if_pos (hsubset.mpr hsub), hsdiff, hindicator,
+        specializeRight_zero_monomial]
+      have hdiff : n \ m ≠ ∅ := by
+        intro hdiff
+        have hnsub : n ⊆ m := Finset.sdiff_eq_empty_iff_subset.mp hdiff
+        exact hmn (Finset.Subset.antisymm hsub hnsub)
+      obtain ⟨j, hj⟩ := Finset.nonempty_iff_ne_empty.mpr hdiff
+      have hindicator_ne :
+          Finsupp.indicator (n \ m) (fun _ _ => 1) ≠ 0 := by
+        intro hzero
+        have hvalue := congrArg (fun d : tau →₀ ℕ => d j) hzero
+        simpa [Finsupp.indicator_of_mem hj] using hvalue
+      rw [if_neg hindicator_ne]
+    · rw [if_neg (fun h => hsub (hsubset.mp h))]
+      simp
+
 end
 
 end RealRooted.BorceaBranden
