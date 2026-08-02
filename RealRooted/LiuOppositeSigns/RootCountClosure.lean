@@ -239,10 +239,6 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
       hs.abs_sub_lt_of_roots_rel hg_ne hg'_ne hbranch'.g_largest hgg',
       hr.abs_sub_lt_of_roots_rel hf_ne hf'_ne hbranch'.f_largest hff',
       hbranch'.largest_ge⟩
-  have hdelete_ne : deleteRootFactor f r ≠ 0 :=
-    hr.deleteRootFactor_ne_zero hf_ne
-  have hdelete_split : (deleteRootFactor f r).Splits :=
-    hr.deleteRootFactor_splits hf
   have hdelete_degree :
       g.natDegree = (deleteRootFactor f r).natDegree + 1 := by
     rw [natDegree_deleteRootFactor]
@@ -250,7 +246,8 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
     lia
   have hcount : RootCountCompatible (deleteRootFactor f r) g := by
     refine RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
-      hdelete_ne hg_ne hdelete_split hg hdelete_degree ?_
+      (hr.deleteRootFactor_ne_zero hf_ne) hg_ne
+      (hr.deleteRootFactor_splits hf) hg hdelete_degree ?_
     intro ρ hρ
     obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
         hff', hgg', hbranch'⟩ := hclose ρ hρ
@@ -296,10 +293,6 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ
       hs.abs_sub_lt_of_roots_rel hg_ne hg'_ne hbranch'.g_largest hgg',
       hr.abs_sub_lt_of_roots_rel hf_ne hf'_ne hbranch'.f_largest hff',
       hbranch'.largest_ge⟩
-  have hdelete_ne : deleteRootFactor f r ≠ 0 :=
-    hr.deleteRootFactor_ne_zero hf_ne
-  have hdelete_split : (deleteRootFactor f r).Splits :=
-    hr.deleteRootFactor_splits hf
   have hdelete_degree :
       g.natDegree = (deleteRootFactor f r).natDegree := by
     rw [natDegree_deleteRootFactor]
@@ -307,7 +300,8 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ
     lia
   have hcount : RootCountCompatible (deleteRootFactor f r) g := by
     refine RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
-      hdelete_ne hg_ne hdelete_split hg hdelete_degree ?_
+      (hr.deleteRootFactor_ne_zero hf_ne) hg_ne
+      (hr.deleteRootFactor_splits hf) hg hdelete_degree ?_
     intro ρ hρ
     obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
         hff', hgg', hbranch'⟩ := hclose ρ hρ
