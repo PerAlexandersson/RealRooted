@@ -50,10 +50,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
   apply LinearMap.congr_fun ?_ f
   apply (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : sigma => 1)).ext
   intro n
-  change MvPolynomial.eval (fun _ : sigma => 0)
-      (applyMonomialDifferential m.1
-        (MvPolynomial.monomial n.1 1)) =
-    MvPolynomial.coeff m.1 (MvPolynomial.monomial n.1 1)
+  simp only [lhs, rhs, MvPolynomial.coe_basisDegreeOfLE]
   by_cases hsupport : m.1.support = n.1.support
   · have hmn : m.1 = n.1 :=
       (finsupp_eq_iff_support_eq_of_le_one
@@ -105,10 +102,12 @@ theorem specializeRight_zero_targetMul_input
   unfold specializeRight
   rw [map_mul]
   congr 1
-  · simp [MvPolynomial.aeval_rename]
   · rw [MvPolynomial.aeval_rename]
-    change MvPolynomial.aeval (fun _ : sigma => (0 : MvPolynomial tau ℂ)) D =
-      MvPolynomial.C (MvPolynomial.eval (fun _ : sigma => 0) D)
+    induction A using MvPolynomial.induction_on with
+    | C c => simp
+    | add P Q hP hQ => simp [hP, hQ]
+    | mul_X P i hP => simp [hP]
+  · rw [MvPolynomial.aeval_rename]
     induction D using MvPolynomial.induction_on with
     | C c => simp
     | add P Q hP hQ => simp [hP, hQ]
