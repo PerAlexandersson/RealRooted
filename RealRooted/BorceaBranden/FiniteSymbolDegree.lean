@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 /-!
