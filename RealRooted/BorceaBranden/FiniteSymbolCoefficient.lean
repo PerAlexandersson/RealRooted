@@ -261,7 +261,7 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
         Finsupp.indicator (m \ m) (fun _ _ => 1) = 0 := by
       ext j
       simp
-    rw [if_pos hzero]
+    rw [if_pos hzero, if_pos rfl]
   · rw [if_neg hmn]
     by_cases hsub : m ⊆ n
     · rw [if_pos (hsubset.mpr hsub), hsdiff, hindicator,
@@ -275,7 +275,7 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
           Finsupp.indicator (n \ m) (fun _ _ => 1) ≠ 0 := by
         intro hzero
         have hvalue := congrArg (fun d : tau →₀ ℕ => d j) hzero
-        simpa [Finsupp.indicator_of_mem hj] using hvalue
+        simp [Finsupp.indicator_of_mem hj] at hvalue
       rw [if_neg hindicator_ne]
     · rw [if_neg (fun h => hsub (hsubset.mp h))]
       simp [specializeRight]
