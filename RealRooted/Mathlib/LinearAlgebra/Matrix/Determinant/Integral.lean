@@ -36,6 +36,28 @@ theorem det_updateRow_intervalIntegral
   let L := (detUpdateRowLinearMap M i).toContinuousLinearMap
   exact (L.intervalIntegral_comp_comm hf).symm
 
+/-- A pointwise determinant is integrable under a product measure when every entry is. -/
+theorem integrable_det_pi
+    {n E : Type*} [DecidableEq n] [Fintype n] [MeasurableSpace E]
+    (μ : n → MeasureTheory.Measure E) [∀ i, MeasureTheory.SigmaFinite (μ i)]
+    (f : n → E → n → ℝ)
+    (hf : ∀ i j, MeasureTheory.Integrable (fun x => f i x j) (μ i)) :
+    MeasureTheory.Integrable
+      (fun x : n → E => (Matrix.of fun i j => f i (x i) j).det)
+      (MeasureTheory.Measure.pi μ) := by
+  have hfun :
+      (fun x : n → E => (Matrix.of fun i j => f i (x i) j).det) =
+        fun x => ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∏ i, f i (x i) (σ i) := by
+    funext x
+    rw [Matrix.det_apply_row]
+    simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
+    rfl
+  rw [hfun]
+  apply MeasureTheory.integrable_finset_sum Finset.univ
+  intro σ _
+  exact (MeasureTheory.Integrable.fintype_prod fun i => hf i (σ i)).const_mul _
+
 /-- The determinant of rowwise integrals is the integral of the pointwise determinant. -/
 theorem det_integral_rows_eq_integral_det
     {n E : Type*} [DecidableEq n] [Fintype n] [MeasurableSpace E]
