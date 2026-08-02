@@ -1786,6 +1786,46 @@ lemma natDegree_le_two_of_compatible_C_left
     · exact hq_ne hzero
     · exact hshift hreal
 
+/-- The right polynomial has degree at most two when the left polynomial is constant. -/
+lemma natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
+    {f g : ℝ[X]} (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hfdeg : f.natDegree = 0) :
+    g.natDegree ≤ 2 := by
+  rw [eq_C_of_natDegree_eq_zero hfdeg] at hsgn hcompat
+  exact natDegree_le_two_of_compatible_C_left hg hsgn hcompat
+
+/-- The left polynomial has degree at most two when the right polynomial is constant. -/
+lemma natDegree_left_le_two_of_compatible_of_right_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hgdeg : g.natDegree = 0) :
+    f.natDegree ≤ 2 :=
+  natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
+    hf hsgn.symm hcompat.comm hgdeg
+
+/-- Corollary 2.2's degree bound when the left polynomial is constant. -/
+lemma natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
+    {f g : ℝ[X]} (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hfdeg : f.natDegree = 0) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
+  have hle :=
+    natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
+      hg hsgn hcompat hfdeg
+  rw [hfdeg]
+  norm_num
+  exact_mod_cast hle
+
+/-- Corollary 2.2's degree bound when the right polynomial is constant. -/
+lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hgdeg : g.natDegree = 0) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
+  have hle :=
+    natDegree_left_le_two_of_compatible_of_right_natDegree_eq_zero
+      hf hsgn hcompat hgdeg
+  rw [hgdeg]
+  norm_num
+  exact_mod_cast hle
+
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
