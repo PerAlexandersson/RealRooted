@@ -1,8 +1,10 @@
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
+import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
+import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 
 /-!
@@ -18,6 +20,66 @@ open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
+
+/-- The no-common, nonconstant forward implication in Liu Theorem 2.1.
+
+The derivative-shift regularization repairs the source's invalid inference
+from no common roots to simple roots. The simple-root argument is applied to
+arbitrarily close regularizations, and root matching closes the result. -/
+theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
+    theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno hf_deg hg_deg hcompat
+  apply theorem21RootCountBranches_of_forall_pos_exists_roots_rel
+    hsgn.left_ne_zero hsgn.right_ne_zero hf hg hno hf_deg hg_deg
+  intro ρ hρ
+  obtain ⟨epss, hlen, hbounds, hcompat', hno', hfrel, hgrel⟩ :=
+    hno.exists_applyTDerivList_roots_rel (κ := 1) (ρ := ρ)
+      hcompat hsgn.left_ne_zero hsgn.right_ne_zero hf hg
+      zero_lt_one hρ (max f.natDegree g.natDegree)
+  let f' : ℝ[X] := applyTDerivList epss f
+  let g' : ℝ[X] := applyTDerivList epss g
+  have hpos : ∀ eps ∈ epss, 0 < eps :=
+    fun eps heps => (hbounds eps heps).1
+  have hf'_ne : f' ≠ 0 := by
+    simpa [f'] using
+      applyTDerivList_ne_zero (epss := epss) hsgn.left_ne_zero
+  have hg'_ne : g' ≠ 0 := by
+    simpa [g'] using
+      applyTDerivList_ne_zero (epss := epss) hsgn.right_ne_zero
+  have hf'_split : f'.Splits := by
+    simpa [f'] using hf.applyTDerivList hpos
+  have hg'_split : g'.Splits := by
+    simpa [g'] using hg.applyTDerivList hpos
+  have hf'_deg : f'.natDegree ≠ 0 := by
+    simpa [f'] using hf_deg
+  have hg'_deg : g'.natDegree ≠ 0 := by
+    simpa [g'] using hg_deg
+  have hsgn' : OppositeLeadingSigns f' g' := by
+    simpa [f', g', OppositeLeadingSigns] using hsgn
+  have hf'_simple : HasSimpleRoots f' := by
+    change HasSimpleRoots (applyTDerivList epss f)
+    apply hasSimpleRoots_applyTDerivList_of_natDegree_le_length
+      hpos hsgn.left_ne_zero hf
+    rw [hlen]
+    exact Nat.le_max_left _ _
+  have hg'_simple : HasSimpleRoots g' := by
+    change HasSimpleRoots (applyTDerivList epss g)
+    apply hasSimpleRoots_applyTDerivList_of_natDegree_le_length
+      hpos hsgn.right_ne_zero hg
+    rw [hlen]
+    exact Nat.le_max_right _ _
+  have hcompat'' : Compatible f' g' := by
+    simpa [f', g'] using hcompat'
+  have hno'' : NoCommonRoots f' g' := by
+    simpa [f', g'] using hno'
+  have hbranches : theorem21RootCountBranches f' g' :=
+    theorem21RootCountBranches_of_compatible_noCommon_nonconstant_of_simple
+      hf'_split hg'_split hsgn' hno'' hf'_deg hg'_deg
+      hf'_simple hg'_simple hcompat''
+  refine
+    ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split, ?_, ?_, hbranches⟩
+  · simpa [f'] using hfrel
+  · simpa [g'] using hgrel
 
 /-- The isolated forward direction of Liu Theorem 2.1 gives the pointwise
 root-count gap bound. -/
