@@ -374,5 +374,50 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ_succ
     exact hcount_symm.symm
   exact ⟨hr, hs, hlargest, hcount⟩
 
+/-- A fixed left branch is closed under close approximations. -/
+theorem LeftRootCountBranch.of_forall_pos_exists_close
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hf : f.Splits) (hg : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ f' g' : ℝ[X], ∃ r' s' : ℝ,
+        f' ≠ 0 ∧
+        g' ≠ 0 ∧
+        f'.Splits ∧
+        g'.Splits ∧
+        Multiset.Rel
+          (fun x x' : ℝ => |x' - x| < ρ)
+          f.roots f'.roots ∧
+        Multiset.Rel
+          (fun y y' : ℝ => |y' - y| < ρ)
+          g.roots g'.roots ∧
+        LeftRootCountBranch f' g' r' s') :
+    LeftRootCountBranch f g r s := by
+  obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+      hff', hgg', hbranch'⟩ := hclose 1 zero_lt_one
+  have hf_degree : f'.natDegree = f.natDegree := by
+    calc
+      f'.natDegree = f'.roots.card := (card_roots_of_splits hf'_split).symm
+      _ = f.roots.card := (Multiset.card_eq_card_of_rel hff').symm
+      _ = f.natDegree := card_roots_of_splits hf
+  have hg_degree : g'.natDegree = g.natDegree := by
+    calc
+      g'.natDegree = g'.roots.card := (card_roots_of_splits hg'_split).symm
+      _ = g.roots.card := (Multiset.card_eq_card_of_rel hgg').symm
+      _ = g.natDegree := card_roots_of_splits hg
+  rcases hbranch'.natDegree_eq_or_eq_succ_or_eq_succ_succ
+      hf'_ne hf'_split hg'_split with hdeg | hdeg | hdeg
+  · rw [hf_degree, hg_degree] at hdeg
+    exact LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
+      hf_ne hg_ne hf hg hr hs hdeg hclose
+  · rw [hf_degree, hg_degree] at hdeg
+    exact LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ
+      hf_ne hg_ne hf hg hr hs hdeg hclose
+  · rw [hf_degree, hg_degree] at hdeg
+    exact
+      LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ_succ
+        hf_ne hg_ne hf hg hr hs hdeg hclose
+
 end LiuOppositeSigns
 end RealRooted
