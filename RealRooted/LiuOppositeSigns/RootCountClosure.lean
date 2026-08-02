@@ -473,6 +473,11 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
           g.roots g'.roots ∧
         theorem21RootCountBranches f' g') :
     theorem21RootCountBranches f g := by
+  have widenRootsRel {δ ρ : ℝ} (hδρ : δ ≤ ρ) {u v : Multiset ℝ}
+      (h : Multiset.Rel
+        (fun x x' : ℝ => |x' - x| < δ) u v) :
+      Multiset.Rel (fun x x' : ℝ => |x' - x| < ρ) u v :=
+    h.mono fun _ _ _ _ hxy => hxy.trans_le hδρ
   obtain ⟨r, hr⟩ :=
     exists_isLargestRoot hf_ne hf (Nat.pos_of_ne_zero hf_deg)
   obtain ⟨s, hs⟩ :=
@@ -504,8 +509,8 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
       linarith [hleft'.largest_ge, hδ_le_gap]
     · exact
         ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
-          hff'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
-          hgg'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          widenRootsRel hδ_le_ρ hff',
+          widenRootsRel hδ_le_ρ hgg',
           hright'⟩
   · apply theorem21RootCountBranches_of_left
     apply LeftRootCountBranch.of_forall_pos_exists_close
@@ -522,8 +527,8 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
     rcases hbranch' with hleft' | hright'
     · exact
         ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
-          hff'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
-          hgg'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          widenRootsRel hδ_le_ρ hff',
+          widenRootsRel hδ_le_ρ hgg',
           hleft'⟩
     · exfalso
       have hr_close :=
