@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
