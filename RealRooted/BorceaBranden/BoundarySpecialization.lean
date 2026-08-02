@@ -105,7 +105,8 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or
       MvPolynomial.eval (Sum.elim x y) (specializeZeroList l P) =
         MvPolynomial.eval (Sum.elim x (fun _ => 0)) P
     rw [eval_specializeZeroList]
-    congr 1
+    apply congrArg
+      (fun w : Sum sigma tau → ℂ => MvPolynomial.eval w P)
     funext j
     cases j <;> simp [l]
   have hQzero_or : Q = 0 ∨ MvUpperHalfPlaneStable Q := by

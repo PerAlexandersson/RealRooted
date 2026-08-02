@@ -1,4 +1,5 @@
 import RealRooted.LiebSokalOperator
+import RealRooted.MultivariateStability
 
 /-!
 # Coefficients in the multiaffine finite-symbol argument
@@ -14,6 +15,7 @@ namespace RealRooted.BorceaBranden
 noncomputable section
 
 open BigOperators
+open Complex
 
 private theorem applyMonomialDifferentialAlong_indicator_eq_foldl
     {R sigma : Type*} [CommSemiring R] [DecidableEq sigma]
@@ -155,7 +157,8 @@ theorem specializeRight_zero_eq_killCompl
 exactly when its right exponent is zero. This is the Kronecker-delta step in
 Borcea--Branden, arXiv:0809.0401, Lemma 2.2. -/
 theorem specializeRight_zero_monomial
-    {sigma tau : Type*} (s : sigma →₀ ℕ) (t : tau →₀ ℕ) (c : ℂ) :
+    {sigma tau : Type*} [DecidableEq tau]
+    (s : sigma →₀ ℕ) (t : tau →₀ ℕ) (c : ℂ) :
     specializeRight (fun _ : tau => 0)
         (MvPolynomial.monomial
           (s.mapDomain Sum.inl + t.mapDomain Sum.inr) c) =
@@ -232,7 +235,15 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
         (Finsupp.indicator a (fun _ _ => 1)).mapDomain Sum.inl +
           (Finsupp.indicator (n \ m) (fun _ _ => 1)).mapDomain Sum.inr := by
     ext x
-    cases x <;> simp [eLeft, eRight]
+    cases x with
+    | inl i =>
+        rw [Finsupp.mapDomain_apply Sum.inl_injective]
+        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        simp [eLeft, eRight]
+    | inr j =>
+        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply Sum.inr_injective]
+        simp [eLeft, eRight]
   rw [applyMonomialDifferential_indicator_monomial]
   by_cases hmn : m = n
   · subst n
