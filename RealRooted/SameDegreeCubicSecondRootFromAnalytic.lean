@@ -232,10 +232,10 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
         rcases hz_f_mem with hza | hzb | hzc
         · exact hza
         · exfalso
-          exact (not_le_of_gt hbr) (by simpa [hzb] using hz_le_r)
+          exact hbr (by simpa [hzb] using hz_le_r)
         · exfalso
           have hc_le_r : c ≤ r := by simpa [hzc] using hz_le_r
-          exact (not_le_of_gt hbr) (hbc.trans hc_le_r)
+          exact hbr (hbc.trans hc_le_r)
       have hfq_roots : (deleteRootFactor f z).roots = {b, c} := by
         rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz, hfroots, hz_eq_a]
         simp
