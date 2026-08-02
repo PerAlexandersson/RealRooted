@@ -124,3 +124,43 @@ theorem Set.powersetCard.orderEmb_comp_perm_injective
     intro i
     exact es.injective (congrFun h i)
   exact Prod.ext rfl hpr
+
+/-- Ordered image and a domain permutation parameterize all finite embeddings. -/
+noncomputable def Set.powersetCard.orderEmbPermEquivEmbedding
+    {q : ℕ} {I : Type*} [LinearOrder I] :
+    Set.powersetCard I q × Equiv.Perm (Fin q) ≃ (Fin q ↪ I) :=
+  Equiv.ofBijective
+    (fun z =>
+      ⟨fun i => Set.powersetCard.ofFinEmbEquiv.symm z.1 (z.2 i),
+        (Set.powersetCard.ofFinEmbEquiv.symm z.1).injective.comp
+          z.2.injective⟩)
+    ⟨by
+      intro z w h
+      apply Set.powersetCard.orderEmb_comp_perm_injective
+      funext i
+      exact congrArg (fun g : Fin q ↪ I => g i) h,
+    by
+      intro f
+      obtain ⟨s, p, h⟩ :=
+        Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective f f.injective
+      refine ⟨(s, p), ?_⟩
+      ext i
+      exact h i⟩
+
+/-- Reindex a sum over finite embeddings by ordered image and permutation. -/
+theorem Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm
+    {q : ℕ} {I M : Type*} [LinearOrder I] [Fintype I] [AddCommMonoid M]
+    (g : (Fin q ↪ I) → M) :
+    ∑ f : Fin q ↪ I, g f =
+      ∑ s : Set.powersetCard I q, ∑ p : Equiv.Perm (Fin q),
+        g ⟨fun i => Set.powersetCard.ofFinEmbEquiv.symm s (p i),
+          (Set.powersetCard.ofFinEmbEquiv.symm s).injective.comp p.injective⟩ := by
+  calc
+    ∑ f : Fin q ↪ I, g f =
+        ∑ z, g (Set.powersetCard.orderEmbPermEquivEmbedding z) :=
+      (Set.powersetCard.orderEmbPermEquivEmbedding.sum_comp g).symm
+    _ = ∑ s : Set.powersetCard I q, ∑ p : Equiv.Perm (Fin q),
+        g (Set.powersetCard.orderEmbPermEquivEmbedding (s, p)) :=
+      Fintype.sum_prod_type _
+    _ = _ := by
+      simp [Set.powersetCard.orderEmbPermEquivEmbedding]
