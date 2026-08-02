@@ -54,23 +54,23 @@ protected lemma IsStrictlySignConsistentOrder.submatrix
   simpa using hM (hrows.comp hrows₁) (hrows.comp hrows₂)
     (hcols.comp hcols₁) (hcols.comp hcols₂)
 
+omit [PartialOrder R] [Preorder ι] [Preorder κ] in
+private lemma det_transpose_submatrix
+    (M : Matrix ι κ R) {q : ℕ} (rows : Fin q → κ) (cols : Fin q → ι) :
+    (M.transpose.submatrix rows cols).det = (M.submatrix cols rows).det := by
+  rw [← Matrix.det_transpose (M.submatrix cols rows), Matrix.transpose_submatrix]
+
 protected lemma IsSignConsistentOrder.transpose {M : Matrix ι κ R} {q : ℕ}
     (hM : M.IsSignConsistentOrder q) : M.transpose.IsSignConsistentOrder q := by
   intro rows rows' cols cols' hrows hrows' hcols hcols'
-  have hdet (r : Fin q → κ) (c : Fin q → ι) :
-      (M.transpose.submatrix r c).det = (M.submatrix c r).det := by
-    rw [← Matrix.det_transpose (M.submatrix c r), Matrix.transpose_submatrix]
-  rw [hdet rows cols, hdet rows' cols']
+  rw [det_transpose_submatrix M rows cols, det_transpose_submatrix M rows' cols']
   exact hM hcols hcols' hrows hrows'
 
 protected lemma IsStrictlySignConsistentOrder.transpose {M : Matrix ι κ R} {q : ℕ}
     (hM : M.IsStrictlySignConsistentOrder q) :
     M.transpose.IsStrictlySignConsistentOrder q := by
   intro rows rows' cols cols' hrows hrows' hcols hcols'
-  have hdet (r : Fin q → κ) (c : Fin q → ι) :
-      (M.transpose.submatrix r c).det = (M.submatrix c r).det := by
-    rw [← Matrix.det_transpose (M.submatrix c r), Matrix.transpose_submatrix]
-  rw [hdet rows cols, hdet rows' cols']
+  rw [det_transpose_submatrix M rows cols, det_transpose_submatrix M rows' cols']
   exact hM hcols hcols' hrows hrows'
 
 protected lemma IsSignRegular.submatrix
