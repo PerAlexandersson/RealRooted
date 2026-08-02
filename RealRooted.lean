@@ -208,6 +208,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
