@@ -168,6 +168,7 @@ import RealRooted.LiuOppositeSigns.ForwardLowDegree
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 import RealRooted.LiuOppositeSigns.RootCountRelStability
+import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
