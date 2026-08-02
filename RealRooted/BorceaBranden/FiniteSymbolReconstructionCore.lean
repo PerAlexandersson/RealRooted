@@ -50,7 +50,8 @@ theorem eval_zero_applyMonomialDifferential_oneBox
   apply LinearMap.congr_fun ?_ f
   apply (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : sigma => 1)).ext
   intro n
-  simp only [lhs, rhs, MvPolynomial.coe_basisDegreeOfLE]
+  dsimp only [lhs, rhs]
+  rw [MvPolynomial.coe_basisDegreeOfLE]
   by_cases hsupport : m.1.support = n.1.support
   · have hmn : m.1 = n.1 :=
       (finsupp_eq_iff_support_eq_of_le_one
