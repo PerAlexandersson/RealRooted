@@ -51,7 +51,7 @@ theorem eval_specializeZeroList {sigma : Type*} [DecidableEq sigma]
   | nil => simp
   | cons i l ih =>
       rw [specializeZeroList_cons, ih, MvPolynomial.eval_specializeZero]
-      congr 1
+      apply congrArg (fun w : sigma → ℂ => MvPolynomial.eval w P)
       funext j
       by_cases hji : j = i
       · subst j
@@ -87,19 +87,24 @@ theorem MvUpperHalfPlaneStable.specializeZeroList_zero_or
 /-- Specializing an entire finite right block at the real boundary point zero
 preserves upper-half-plane stability up to the zero polynomial. -/
 theorem MvUpperHalfPlaneStable.specializeRight_zero_or
-    {sigma tau : Type*} [Fintype sigma] [Fintype tau]
+    {sigma tau : Type*} [Finite sigma] [Finite tau]
     {P : MvPolynomial (Sum sigma tau) ℂ}
     (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P) :
     MvUpperHalfPlaneStableOrZero
       (_root_.RealRooted.specializeRight (fun _ : tau => 0) P) := by
   classical
+  letI := Fintype.ofFinite sigma
+  letI := Fintype.ofFinite tau
   let l : List (Sum sigma tau) :=
     (Finset.univ.toList.map (Sum.inr : tau → Sum sigma tau))
   let Q : MvPolynomial (Sum sigma tau) ℂ := specializeZeroList l P
   have hQeval (x : sigma → ℂ) (y : tau → ℂ) :
       MvPolynomial.eval (Sum.elim x y) Q =
         MvPolynomial.eval (Sum.elim x (fun _ => 0)) P := by
-    rw [Q, eval_specializeZeroList]
+    change
+      MvPolynomial.eval (Sum.elim x y) (specializeZeroList l P) =
+        MvPolynomial.eval (Sum.elim x (fun _ => 0)) P
+    rw [eval_specializeZeroList]
     congr 1
     funext j
     cases j <;> simp [l]
