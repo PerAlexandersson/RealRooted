@@ -243,6 +243,7 @@ import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SymmetricDecomposition
 import RealRooted.Tactic
 import RealRooted.Tactic.AffineDerivative
+import RealRooted.Tactic.AissenSchoenbergWhitney
 import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.CoefficientShape
@@ -252,6 +253,7 @@ import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Examples
 import RealRooted.Tactic.Examples.AffineDerivative
+import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
 import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.CoefficientShape
