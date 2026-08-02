@@ -28,6 +28,7 @@ import RealRooted.BorceaBranden.FiniteSymbolContraction
 import RealRooted.BorceaBranden.FiniteSymbolLinearity
 import RealRooted.BorceaBranden.FiniteSymbolProduct
 import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
