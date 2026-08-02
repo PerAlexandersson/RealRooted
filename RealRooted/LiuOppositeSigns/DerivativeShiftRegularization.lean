@@ -15,19 +15,6 @@ noncomputable section
 namespace RealRooted
 namespace LiuOppositeSigns
 
-private theorem exists_left_mem_of_right_mem_of_rel
-    {α β : Type*} {r : α → β → Prop} {s : Multiset α} {t : Multiset β}
-    (hrel : Multiset.Rel r s t) {b : β} (hb : b ∈ t) :
-    ∃ a ∈ s, r a b := by
-  induction hrel with
-  | zero => simp at hb
-  | @cons a b s t hab _ ih =>
-      rw [Multiset.mem_cons] at hb
-      rcases hb with rfl | hb
-      · exact ⟨a, Multiset.mem_cons_self, hab⟩
-      · obtain ⟨a', ha', ha'b⟩ := ih hb
-        exact ⟨a', Multiset.mem_cons_of_mem ha', ha'b⟩
-
 /-- A common positive `TDeriv` shift of two nonzero splitting polynomials with
 no common roots still has no common roots when the shift is sufficiently
 small. -/
@@ -50,10 +37,10 @@ theorem NoCommonRoots.exists_delta_TDeriv
   have hgx_mem : x ∈ (TDeriv eps g).roots :=
     (Polynomial.mem_roots (TDeriv_ne_zero hg_ne)).mpr hgx
   obtain ⟨a, ha_mem, hax⟩ :=
-    exists_left_mem_of_right_mem_of_rel
+    Multiset.Rel.exists_left_of_mem_right
       (hfrel heps_pos (hepsδ.trans_le (min_le_left _ _))) hfx_mem
   obtain ⟨b, hb_mem, hbx⟩ :=
-    exists_left_mem_of_right_mem_of_rel
+    Multiset.Rel.exists_left_of_mem_right
       (hgrel heps_pos (hepsδ.trans_le (min_le_right _ _))) hgx_mem
   have hab_ne : a ≠ b := by
     rintro rfl

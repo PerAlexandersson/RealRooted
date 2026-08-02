@@ -45,16 +45,11 @@ theorem exists_delta_roots_rel_TDeriv
       p.roots.count a ≤
         ((TDeriv eps p).roots.filter (fun q ↦ |q - a| < η)).card := by
     simpa [TDeriv] using hcount
-  obtain ⟨u, hu, hrel⟩ :=
-    Multiset.exists_rel_le_of_forall_le_count hsep hcount'
   have hcard : (TDeriv eps p).roots.card = p.roots.card := by
     rw [card_roots_of_splits (splits_tderiv heps_pos hp), natDegree_TDeriv,
       card_roots_of_splits hp]
-  have hu_card : u.card = (TDeriv eps p).roots.card := by
-    simpa [hcard] using (Multiset.card_eq_card_of_rel hrel).symm
-  have hut : u = (TDeriv eps p).roots :=
-    Multiset.eq_of_le_of_card_le hu hu_card.ge
-  rw [hut] at hrel
+  have hrel :=
+    Multiset.rel_of_forall_le_count_of_card_eq hsep hcount' hcard
   exact hrel.mono fun _ _ hclose ↦ lt_trans hclose hηρ
 
 end RealRooted

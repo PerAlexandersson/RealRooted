@@ -57,17 +57,12 @@ theorem exists_eps_card_roots_gt_bounds_near_simple_root
         ((f + C ν * g).roots.filter (fun q ↦ |q - a| < ρ)).card :=
     fun a ha ↦ by
     simp_all
-  obtain ⟨u, hu, hrel⟩ :=
-    Multiset.exists_rel_le_of_forall_le_count (s := p.roots)
-      (t := (f + C ν * g).roots) hsep_centers hcount_local
   have hcard : (f + C ν * g).roots.card = p.roots.card := by
     simpa [hν_split.natDegree_eq_card_roots.symm,
       hp_split.natDegree_eq_card_roots.symm] using hν_deg
-  have hu_card : u.card = (f + C ν * g).roots.card := by
-    simpa [hcard] using (Multiset.card_eq_card_of_rel hrel).symm
-  have hu_eq : u = (f + C ν * g).roots :=
-    Multiset.eq_of_le_of_card_le hu hu_card.ge
-  rw [hu_eq] at hrel
+  have hrel :=
+    Multiset.rel_of_forall_le_count_of_card_eq
+      hsep_centers hcount_local hcard
   have hsep_gt : ∀ r ∈ p.roots, x < r → ρ ≤ |r - x| := fun r hr hxr => by
     have hr_ne : r ≠ x := ne_of_gt hxr
     exact le_trans (le_of_lt hρ_lt_η)
