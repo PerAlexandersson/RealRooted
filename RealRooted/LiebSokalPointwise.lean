@@ -16,6 +16,14 @@ namespace RealRooted
 open Filter Metric
 open scoped Topology
 
+private theorem eval_eq_of_eq_on_vars {alpha : Type*}
+    (P : MvPolynomial alpha ℂ) (x y : alpha → ℂ)
+    (hxy : ∀ i ∈ P.vars, x i = y i) :
+    MvPolynomial.eval x P = MvPolynomial.eval y P := by
+  change MvPolynomial.eval₂Hom (RingHom.id ℂ) x P =
+    MvPolynomial.eval₂Hom (RingHom.id ℂ) y P
+  exact MvPolynomial.eval₂Hom_congr' rfl (fun i hi _ => hxy i hi) rfl
+
 /-- A complex polynomial with no roots in the open upper half-plane has zero
 derivative or a derivative with the same property. -/
 theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomial ℂ)
@@ -47,10 +55,10 @@ theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomia
   simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
   linarith
 
-/-- A partial derivative of a finite-variable multiaffine stable polynomial is
-zero or stable. -/
+/-- A partial derivative of a coordinatewise affine stable polynomial is zero
+or stable. -/
 theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (i : sigma) (hi : P.degreeOf i ≤ 1) :
@@ -61,7 +69,15 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   · exact Or.inl hQ
   right
   intro z hz hQz
-  obtain ⟨z₁, _, hQz₁⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  obtain ⟨u, _, hQu⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  let z₁ : sigma → ℂ := fun j =>
+    if j ∈ (MvPolynomial.pderiv i P).vars then u j else z j
+  have hQz₁ : MvPolynomial.eval z₁ (MvPolynomial.pderiv i P) ≠ 0 := by
+    have heval := eval_eq_of_eq_on_vars (MvPolynomial.pderiv i P) z₁ u (by
+      intro j hj
+      simp [z₁, hj])
+    rw [heval]
+    exact hQu
   let v : sigma → ℂ := fun j => z₁ j - z j
   let A : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
   let B : Polynomial ℂ := affineLineRestriction
@@ -96,16 +112,18 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   have hB0 : B.eval 0 ≠ 0 := by
     rw [hB_eval]
     simpa [hconst] using hPz
-  let U : Set ℂ := {t | ∀ j, 0 < (z j + v j * t).im}
+  let U : Set ℂ :=
+    {t | ∀ j ∈ (MvPolynomial.pderiv i P).vars,
+      0 < (z j + v j * t).im}
   have hUopen : IsOpen U := by
-    rw [show U = ⋂ j, {t : ℂ | 0 < (z j + v j * t).im} by
+    rw [show U = ⋂ j ∈ (MvPolynomial.pderiv i P).vars,
+        {t : ℂ | 0 < (z j + v j * t).im} by
       ext t
       simp [U]]
-    apply isOpen_iInter_of_finite
-    intro j
-    exact isOpen_lt continuous_const (by fun_prop)
+    exact isOpen_biInter_finset fun _ _ =>
+      isOpen_lt continuous_const (by fun_prop)
   have hzeroU : (0 : ℂ) ∈ U := by
-    intro j
+    intro j _
     simpa using hz j
   have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
   obtain ⟨t, htU, hAt, _, hroot⟩ :=
@@ -119,7 +137,9 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
     · subst j
       simpa using hr
     · rw [Function.update_of_ne hji]
-      exact htU j
+      by_cases hjQ : j ∈ (MvPolynomial.pderiv i P).vars
+      · exact htU j hjQ
+      · simpa [zt, v, z₁, hjQ] using hz j
   apply hP (Function.update zt i r) hzroot
   rw [MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
   have hAeval : MvPolynomial.eval zt (MvPolynomial.pderiv i P) = A.eval t := by
@@ -131,10 +151,9 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   field_simp
   ring
 
-/-- A partial derivative of a finite-variable multiaffine stable polynomial is
-zero or stable. -/
+/-- A partial derivative of a multiaffine stable polynomial is zero or stable. -/
 theorem MvUpperHalfPlaneStable.pderiv_zero_or
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
@@ -142,10 +161,9 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or
       MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) := by
   exact hP.pderiv_zero_or_of_degreeOf_le_one i (hPma i)
 
-/-- Specializing a variable of a finite-variable multiaffine stable polynomial
-at zero gives zero or another stable polynomial. -/
+/-- Specializing one affine coordinate at zero preserves stability up to zero. -/
 theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (i : sigma) (hi : P.degreeOf i ≤ 1) :
@@ -157,7 +175,14 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
   · exact Or.inl hQ
   right
   intro z hz hQz
-  obtain ⟨z₁, _, hQz₁⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  obtain ⟨u, _, hQu⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  let z₁ : sigma → ℂ := fun j => if j ∈ Q.vars then u j else z j
+  have hQz₁ : MvPolynomial.eval z₁ Q ≠ 0 := by
+    have heval := eval_eq_of_eq_on_vars Q z₁ u (by
+      intro j hj
+      simp [z₁, hj])
+    rw [heval]
+    exact hQu
   let v : sigma → ℂ := fun j => z₁ j - z j
   let A : Polynomial ℂ := affineLineRestriction z v Q
   let B : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
@@ -182,16 +207,15 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
     rw [Function.update_eq_self] at hPaff
     rw [hzero, zero_mul, zero_add, ← hQeval, hQz] at hPaff
     exact hPz hPaff
-  let U : Set ℂ := {t | ∀ j, 0 < (z j + v j * t).im}
+  let U : Set ℂ := {t | ∀ j ∈ Q.vars, 0 < (z j + v j * t).im}
   have hUopen : IsOpen U := by
-    rw [show U = ⋂ j, {t : ℂ | 0 < (z j + v j * t).im} by
+    rw [show U = ⋂ j ∈ Q.vars, {t : ℂ | 0 < (z j + v j * t).im} by
       ext t
       simp [U]]
-    apply isOpen_iInter_of_finite
-    intro j
-    exact isOpen_lt continuous_const (by fun_prop)
+    exact isOpen_biInter_finset fun _ _ =>
+      isOpen_lt continuous_const (by fun_prop)
   have hzeroU : (0 : ℂ) ∈ U := by
-    intro j
+    intro j _
     simpa using hz j
   have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
   obtain ⟨t, htU, _, hBt, hroot⟩ :=
@@ -205,7 +229,9 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
     · subst j
       simpa using hr
     · rw [Function.update_of_ne hji]
-      exact htU j
+      by_cases hjQ : j ∈ Q.vars
+      · exact htU j hjQ
+      · simpa [zt, v, z₁, hjQ] using hz j
   apply hP (Function.update zt i r) hzroot
   rw [MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
   have hBeval :
@@ -219,10 +245,10 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
   field_simp
   ring
 
-/-- Specializing a variable of a finite-variable multiaffine stable polynomial
-at zero gives zero or another stable polynomial. -/
+/-- Specializing one coordinate of a multiaffine stable polynomial at zero
+preserves stability up to zero. -/
 theorem MvUpperHalfPlaneStable.specializeZero_zero_or
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
@@ -412,7 +438,7 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil
 /-- Eliminating one variable by replacing it with negative partial
 differentiation in another variable preserves stability, up to zero. -/
 theorem MvUpperHalfPlaneStable.contractVariables_zero_or_of_degreeOf_le_one
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (i j : sigma) (hi : P.degreeOf i ≤ 1) (hj : P.degreeOf j ≤ 1) :
@@ -464,7 +490,7 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or_of_degreeOf_le_one
 /-- Eliminating one variable by replacing it with negative partial
 differentiation in another variable preserves stability, up to zero. -/
 theorem MvUpperHalfPlaneStable.contractVariables_zero_or
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i j : sigma) :
@@ -475,7 +501,7 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or
 /-- A finite sequence of mapped contractions preserves stability, up to zero,
 provided only the listed contracted coordinates are affine. -/
 theorem MvUpperHalfPlaneStable.contractMappedVariablePairs_zero_or_of_degreeOf_le_one
-    {sigma omega : Type*} [Finite omega]
+    {sigma omega : Type*}
     {P : MvPolynomial omega ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (left right : sigma → omega) (l : List sigma)
