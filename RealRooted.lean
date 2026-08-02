@@ -231,6 +231,7 @@ import RealRooted.RectangularConvolutionIdentity
 import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
+import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
 import RealRooted.RootCountJump
