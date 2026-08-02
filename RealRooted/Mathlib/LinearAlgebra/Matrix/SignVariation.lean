@@ -501,6 +501,10 @@ lemma signVariations_le_succ_of_natAdd_nonpos {m n : ℕ}
 def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
   ∀ i : Fin n, x i.castSucc * x i.succ < 0
 
+lemma strictlyAlternates_iff {n : ℕ} {x : Fin (n + 1) → ℝ} :
+    StrictlyAlternates x ↔ ∀ i : Fin n, x i.castSucc * x i.succ < 0 :=
+  Iff.rfl
+
 private lemma mul_neg_of_sign_ne {a b : ℝ}
     (ha0 : SignType.sign a ≠ 0) (hb0 : SignType.sign b ≠ 0)
     (hab : SignType.sign a ≠ SignType.sign b) : a * b < 0 := by

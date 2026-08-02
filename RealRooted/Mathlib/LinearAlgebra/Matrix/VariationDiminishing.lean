@@ -129,7 +129,7 @@ private theorem not_exists_strictlyAlternating_rows_of_strictMaximalMinors
       hminor (hrows.comp (Fin.strictMono_succAbove i))
         (hrows.comp (Fin.strictMono_succAbove j))
   have hc : Fin.StrictlyAlternates c := by
-    change ∀ i : Fin q, c i.castSucc * c i.succ < 0
+    apply Fin.strictlyAlternates_iff.mpr
     intro i
     have hd := hdet i.castSucc i.succ
     have hp : ((-1 : ℝ) ^ (i : ℕ)) ^ 2 = 1 := by
@@ -155,7 +155,7 @@ private theorem not_exists_strictlyAlternating_rows_of_strictMaximalMinors
   let i0 : Fin q := ⟨0, hq⟩
   have hz0 : z 0 ≠ 0 := by
     intro hz0
-    have hzpair := hz i0
+    have hzpair := Fin.strictlyAlternates_iff.mp hz i0
     have hi0 : i0.castSucc = (0 : Fin (q + 1)) := by
       ext
       rfl
