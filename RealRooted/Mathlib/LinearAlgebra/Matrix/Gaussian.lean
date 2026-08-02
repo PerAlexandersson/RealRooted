@@ -24,7 +24,7 @@ public section
 
 open scoped Interval
 
-open Filter Topology
+open Filter MeasureTheory Topology
 
 namespace Matrix
 
@@ -106,6 +106,40 @@ lemma exponentialKernelMatrix_succ_sub_castSucc_eq_intervalIntegral {n : ℕ}
       ∫ t in x i.castSucc..x i.succ, y j * Real.exp (t * y j) := by
   rw [Real.intervalIntegral_mul_exp_mul]
   rfl
+
+/-- The adjacent-difference determinant is a restricted-volume product integral. -/
+theorem det_adjacentRowDiff_exponentialKernelMatrix_eq_integral {n : ℕ}
+    (x : Fin (n + 1) → ℝ) (y : Fin n → ℝ) (hx : StrictMono x) :
+    (Matrix.of fun i j =>
+      exponentialKernelMatrix x y i.succ j -
+        exponentialKernelMatrix x y i.castSucc j).det =
+      ∫ t : Fin n → ℝ,
+        (Matrix.of fun i j => y j * Real.exp (t i * y j)).det
+          ∂Measure.pi (fun i =>
+            volume.restrict (Set.Ioc (x i.castSucc) (x i.succ))) := by
+  let μ : Fin n → Measure ℝ := fun i =>
+    volume.restrict (Set.Ioc (x i.castSucc) (x i.succ))
+  let f : Fin n → ℝ → Fin n → ℝ := fun _ t j =>
+    y j * Real.exp (t * y j)
+  have hf : ∀ i j, Integrable (fun t => f i t j) (μ i) := by
+    intro i j
+    change IntegrableOn (fun t => f i t j)
+      (Set.Ioc (x i.castSucc) (x i.succ)) volume
+    rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le
+      (hx i.castSucc_lt_succ).le]
+    exact
+      (continuous_const.mul
+        (Real.continuous_exp.comp (continuous_id.mul continuous_const))).intervalIntegrable _ _
+  have hmatrix :
+      Matrix.of (fun i j =>
+        exponentialKernelMatrix x y i.succ j -
+          exponentialKernelMatrix x y i.castSucc j) =
+        Matrix.of fun i j => ∫ t, f i t j ∂μ i := by
+    ext i j
+    simp only [Matrix.of_apply]
+    rw [exponentialKernelMatrix_succ_sub_castSucc_eq_intervalIntegral]
+    rw [intervalIntegral.integral_of_le (hx i.castSucc_lt_succ).le]
+  rw [hmatrix, det_integral_rows_eq_integral_det μ f hf]
 
 /-- Translating all first coordinates multiplies the exponential-kernel
 determinant by an explicit positive column factor. -/
