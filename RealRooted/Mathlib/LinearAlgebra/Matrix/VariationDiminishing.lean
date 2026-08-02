@@ -116,7 +116,7 @@ private theorem not_exists_strictlyAlternating_rows_of_strictMaximalMinors
   rintro ⟨rows, hrows, hz⟩
   let B : Matrix (Fin (q + 1)) (Fin q) ℝ := A.submatrix rows id
   let z : Fin (q + 1) → ℝ := fun i => A.mulVec x (rows i)
-  change Fin.StrictlyAlternates z at hz
+  change (∀ i : Fin q, z i.castSucc * z i.succ < 0) at hz
   let c : Fin (q + 1) → ℝ := fun i =>
     (-1 : ℝ) ^ (i : ℕ) * (B.submatrix i.succAbove id).det
   have hBmul : B.mulVec x = z := by
@@ -129,6 +129,7 @@ private theorem not_exists_strictlyAlternating_rows_of_strictMaximalMinors
       hminor (hrows.comp (Fin.strictMono_succAbove i))
         (hrows.comp (Fin.strictMono_succAbove j))
   have hc : Fin.StrictlyAlternates c := by
+    change ∀ i : Fin q, c i.castSucc * c i.succ < 0
     intro i
     have hd := hdet i.castSucc i.succ
     have hp : ((-1 : ℝ) ^ (i : ℕ)) ^ 2 = 1 := by
