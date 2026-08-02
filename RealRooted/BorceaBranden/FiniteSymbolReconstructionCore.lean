@@ -66,13 +66,13 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     subst n
     rw [finsupp_eq_indicator_support_of_le_one m.1 m.2,
       applyMonomialDifferential_indicator_monomial]
-    simp
+    simp [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial]
   · have hmn : m.1 ≠ n.1 := by
       intro h
       exact hsupport (congrArg Finsupp.support h)
     have hrhs :
         MvPolynomial.coeff m.1 (MvPolynomial.monomial n.1 (1 : ℂ)) = 0 := by
-      simp [hmn]
+      simp [MvPolynomial.coeff_monomial, hmn, Ne.symm hmn]
     rw [hrhs, finsupp_eq_indicator_support_of_le_one m.1 m.2,
       finsupp_eq_indicator_support_of_le_one n.1 n.2,
       applyMonomialDifferential_indicator_monomial]
@@ -90,7 +90,8 @@ theorem eval_zero_applyMonomialDifferential_oneBox
         obtain ⟨i, hi⟩ := Finset.nonempty_iff_ne_empty.mpr hdiff
         have hvalue := congrArg (fun d : sigma →₀ ℕ => d i) hzero
         simp [Finsupp.indicator_of_mem hi] at hvalue
-      simp [MvPolynomial.eval_zero', hindicator]
+      rw [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial,
+        if_neg hindicator]
     · rw [if_neg hsubset]
       simp
 
@@ -110,15 +111,23 @@ theorem specializeRight_zero_targetMul_input
   rw [map_mul]
   congr 1
   · rw [MvPolynomial.aeval_rename]
-    induction A using MvPolynomial.induction_on with
-    | C c => simp
-    | add P Q hP hQ => simp [hP, hQ]
-    | mul_X P i hP => simp [hP]
+    simp
   · rw [MvPolynomial.aeval_rename]
-    induction D using MvPolynomial.induction_on with
-    | C c => simp
-    | add P Q hP hQ => simp [hP, hQ]
-    | mul_X P i hP => simp [hP]
+    have h (P : MvPolynomial sigma ℂ) :
+        MvPolynomial.aeval
+            (MvPolynomial.C ∘ (fun _ : sigma => 0)) P =
+          MvPolynomial.C (σ := tau)
+            (MvPolynomial.eval (fun _ : sigma => 0) P) := by
+      induction P using MvPolynomial.induction_on with
+      | C c => simp
+      | add P Q hP hQ =>
+          rw [map_add, hP, hQ, map_add]
+          exact (map_add MvPolynomial.C _ _).symm
+      | mul_X P i hP =>
+          rw [map_mul, MvPolynomial.aeval_X, hP, map_mul,
+            MvPolynomial.eval_X]
+          simp
+    simpa using h D
 
 end
 
