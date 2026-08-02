@@ -145,4 +145,32 @@ lemma IsStrictlySignConsistentOrder.minorProduct_pos
   intro rows rows' hrows hrows'
   exact hM hrows hrows' hcols hcols
 
+section LinearOrder
+
+variable {S : Type*} [CommRing S] [LinearOrder S] [IsStrictOrderedRing S]
+
+lemma IsSignConsistentOrder.minor_nonneg_of_pos
+    {M : Matrix ι κ S} {q : ℕ} (hM : M.IsSignConsistentOrder q)
+    {rows₀ : Fin q → ι} {cols₀ : Fin q → κ}
+    (hrows₀ : StrictMono rows₀) (hcols₀ : StrictMono cols₀)
+    (href : 0 < (M.submatrix rows₀ cols₀).det)
+    {rows : Fin q → ι} {cols : Fin q → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ (M.submatrix rows cols).det :=
+  nonneg_of_mul_nonneg_left
+    (hM hrows hrows₀ hcols hcols₀) href
+
+lemma IsSignConsistentOrder.minor_nonpos_of_neg
+    {M : Matrix ι κ S} {q : ℕ} (hM : M.IsSignConsistentOrder q)
+    {rows₀ : Fin q → ι} {cols₀ : Fin q → κ}
+    (hrows₀ : StrictMono rows₀) (hcols₀ : StrictMono cols₀)
+    (href : (M.submatrix rows₀ cols₀).det < 0)
+    {rows : Fin q → ι} {cols : Fin q → κ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    (M.submatrix rows cols).det ≤ 0 :=
+  nonpos_of_mul_nonneg_left
+    (hM hrows hrows₀ hcols hcols₀) href
+
+end LinearOrder
+
 end Matrix
