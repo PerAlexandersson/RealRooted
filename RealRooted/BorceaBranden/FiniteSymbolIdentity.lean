@@ -1,5 +1,6 @@
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.BorceaBranden.FiniteSymbolLinearity
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.MultiaffineReciprocal
 
 /-!
