@@ -1,5 +1,6 @@
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
+import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
@@ -87,6 +88,18 @@ theorem theorem21CompatibleRootCountNoCommonNonconstant :
         hf hg hsgn hno hf_deg hg_deg,
       theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
         hf hg hsgn hf_deg hg_deg⟩
+
+/-- Compatible no-common nonconstant opposite-sign pairs have degree gap at
+most two. -/
+theorem natDegree_abs_sub_le_two_of_compatible_noCommon_nonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
+  natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+    (theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+      hf hg hsgn hno hf_deg hg_deg hcompat)
 
 /-- Correct nonconstant Liu equivalence with common roots retained explicitly.
 The legacy branch-only equivalence is false when the endpoints share a largest
