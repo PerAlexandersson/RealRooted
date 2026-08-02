@@ -16,11 +16,8 @@ theorem Rel.diag {α : Type*} {R : α → α → Prop} {s : Multiset α}
   induction s using Multiset.induction_on with
   | empty => exact Rel.zero
   | cons a s ih =>
-      apply Rel.cons
-      · exact h a (by simp)
-      · apply ih
-        intro b hb
-        exact h b (by simp [hb])
+      exact Rel.cons (h a (by simp))
+        (ih fun b hb => h b (by simp [hb]))
 
 /-- Compose multiset relations whose element relations may differ. -/
 theorem Rel.comp {α β γ : Type*}
