@@ -365,6 +365,77 @@ theorem signVariations_mulVec_le_card_sub_one_of_strictMaximalMinors
         (Fin.exists_strictMono_strictlyAlternates_of_le_signVariations
           hq hlarge)
 
+/-- A totally nonnegative rectangular matrix with all square minors strictly
+positive is variation diminishing in the local `S^-` convention. This follows
+Karlin, Chapter 5, Section 1, Theorem 1.2: aggregate consecutive sign blocks,
+apply Theorem 1.1 to the aggregate, and use the block count. -/
+theorem IsTotallyNonnegRect.signVariations_mulVec_le_of_posMinors
+    {m n : ℕ} {M : Matrix (Fin m) (Fin n) ℝ}
+    (hM : M.IsTotallyNonnegRect)
+    (hminor :
+      ∀ ⦃q : ℕ⦄ ⦃rows : Fin q → Fin m⦄ ⦃cols : Fin q → Fin n⦄,
+        StrictMono rows → StrictMono cols →
+          0 < (M.submatrix rows cols).det)
+    (x : Fin n → ℝ) :
+    Fin.signVariations (M.mulVec x) ≤ Fin.signVariations x := by
+  classical
+  by_cases hx : x = 0
+  · subst x
+    simp [Matrix.mulVec, dotProduct]
+  obtain ⟨D⟩ := Fin.exists_signBlockDecomposition x hx
+  let weight : Fin n → ℝ := fun j ↦ |x j|
+  let blockSign : Fin D.blockCount → ℝ := fun s ↦ D.blockSign s
+  let A : Matrix (Fin m) (Fin D.blockCount) ℝ :=
+    fun i s ↦ ∑ j with D.block j = s, M i j * weight j
+  have hfactor (j : Fin n) :
+      weight j * blockSign (D.block j) = x j := by
+    change |x j| * (D.blockSign (D.block j) : ℝ) = x j
+    by_cases hj : x j = 0
+    · simp [hj]
+    · rw [← D.sign_eq_blockSign j hj]
+      exact abs_mul_sign (x j)
+  have hmul : A.mulVec blockSign = M.mulVec x := by
+    ext i
+    rw [Matrix.mulVec, Matrix.mulVec, dotProduct, dotProduct]
+    simp only [A, Finset.sum_mul]
+    calc
+      (∑ s, ∑ j with D.block j = s,
+          M i j * weight j * blockSign s) =
+          ∑ s, ∑ j with D.block j = s, M i j * x j := by
+        apply Finset.sum_congr rfl
+        intro s _
+        apply Finset.sum_congr rfl
+        intro j hj
+        have hjblock : D.block j = s := (Finset.mem_filter.mp hj).2
+        rw [← hjblock, mul_assoc, hfactor]
+      _ = ∑ j, M i j * x j := by
+        simpa using
+          (Finset.sum_fiberwise Finset.univ D.block
+            (fun j ↦ M i j * x j))
+  have hfiber : ∀ s, ∃ j, D.block j = s ∧ 0 < weight j := by
+    intro s
+    obtain ⟨j, hjblock, hj⟩ := D.block_has_nonzero s
+    exact ⟨j, hjblock, by simpa [weight] using abs_pos.mpr hj⟩
+  have hAminor :
+      ∀ ⦃rows rows' : Fin D.blockCount → Fin m⦄,
+        StrictMono rows → StrictMono rows' →
+          0 < (A.submatrix rows id).det * (A.submatrix rows' id).det := by
+    simpa only [A] using
+      strictMaximalMinors_aggregate_monotone hM
+        (fun ⦃rows cols⦄ hrows hcols ↦
+          hminor (rows := rows) (cols := cols) hrows hcols)
+        D.block D.monotone_block weight (fun j ↦ abs_nonneg (x j)) hfiber
+  by_cases hqm : D.blockCount ≤ m
+  · have hout :=
+      signVariations_mulVec_le_card_sub_one_of_strictMaximalMinors
+        hqm hAminor blockSign
+    rw [hmul] at hout
+    simpa [D.blockCount_eq] using hout
+  · have hcard := Fin.signVariations_le_card_sub_one (M.mulVec x)
+    have hlt : m < D.blockCount := Nat.lt_of_not_ge hqm
+    rw [D.blockCount_eq] at hlt
+    lia
+
 /-- A totally nonnegative rectangular matrix sends a nonnegative vector to a
 nonnegative vector.  This is the positive one-block sector of the forward
 variation-diminishing argument. -/
