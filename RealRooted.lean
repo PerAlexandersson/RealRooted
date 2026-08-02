@@ -141,6 +141,7 @@ import RealRooted.LiebSokalPointwise
 import RealRooted.Linear
 import RealRooted.LinearPowerFamily
 import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DeletionBranches
