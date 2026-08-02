@@ -2,6 +2,7 @@ import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.AffineDerivative
 import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
+import RealRooted.Tactic.Examples.Bezoutian
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.RootBounds
