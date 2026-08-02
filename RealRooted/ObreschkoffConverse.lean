@@ -1819,12 +1819,9 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
     {f g : ℝ[X]} (hf : f.Splits) (hsgn : OppositeLeadingSigns f g)
     (hcompat : Compatible f g) (hgdeg : g.natDegree = 0) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
-  have hle :=
-    natDegree_left_le_two_of_compatible_of_right_natDegree_eq_zero
-      hf hsgn hcompat hgdeg
-  rw [hgdeg]
-  norm_num
-  exact_mod_cast hle
+  simpa only [abs_sub_comm] using
+    natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
+      hf hsgn.symm hcompat.comm hgdeg
 
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
