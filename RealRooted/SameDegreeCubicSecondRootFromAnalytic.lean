@@ -31,8 +31,8 @@ theorem PosComboRealRooted.deleteRootFactor_commonRoot
       C lam * f + C mu * g =
         (X - C z) *
           (C lam * deleteRootFactor f z + C mu * deleteRootFactor g z) := by
-    rw [← factor_deleteRootFactor_of_isRoot hfz,
-      ← factor_deleteRootFactor_of_isRoot hgz]
+    rw [factor_deleteRootFactor_of_isRoot hfz,
+      factor_deleteRootFactor_of_isRoot hgz]
     ring
   constructor
   · intro hzero
@@ -185,7 +185,9 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
       rw [natDegree_deleteRootFactor, hfdeg]
     have hgq_deg : (deleteRootFactor g z).natDegree = 2 := by
       rw [natDegree_deleteRootFactor, hgdeg]
-    have hpcq := hpc.deleteRootFactor_commonRoot hfz hgz
+    have hpcq :
+        PosComboRealRooted (deleteRootFactor f z) (deleteRootFactor g z) :=
+      hpc.deleteRootFactor_commonRoot hfz hgz
     constructor
     · by_contra haq
       have hqa : q < a := lt_of_not_ge haq
