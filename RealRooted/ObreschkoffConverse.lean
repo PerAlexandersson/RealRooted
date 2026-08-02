@@ -1686,12 +1686,9 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_thr
     lia
   let t : ℝ :=
     p.derivative.roots.toFinset.sum (fun c => |p.eval c|) + 1
-  have hsum_nonneg :
-      0 ≤ p.derivative.roots.toFinset.sum (fun c => |p.eval c|) :=
-    Finset.sum_nonneg fun _ _ => abs_nonneg _
   have ht_pos : 0 < t := by
     dsimp [t]
-    linarith
+    positivity
   refine ⟨t, ht_pos, ?_⟩
   intro hshift
   have hC_deg : (C t : ℝ[X]).natDegree < p.natDegree := by
