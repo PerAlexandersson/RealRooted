@@ -384,7 +384,7 @@ private theorem exists_monotone_destutter_index {α β : Type*} [DecidableEq β]
             (((a :: b :: l).map key).destutter (· ≠ ·)) =
               (((b :: l).map key).destutter (· ≠ ·)) := by
           simp only [map_cons, destutter_cons_cons]
-          rw [if_neg (not_ne_of_eq hab), hab]
+          rw [if_neg (by simpa using hab), hab]
           rfl
         rw [hdest]
         let newBlock :
@@ -395,7 +395,8 @@ private theorem exists_monotone_destutter_index {α β : Type*} [DecidableEq β]
         · rw [Fin.monotone_iff_le_succ]
           intro i
           refine Fin.cases ?_ (fun j => ?_) i
-          · simp [newBlock]
+          · change block 0 ≤ block 0
+            exact le_rfl
           · simpa [newBlock] using (Fin.monotone_iff_le_succ.mp hmono j)
         · intro i
           obtain ⟨j, rfl⟩ := hsurj i
@@ -419,9 +420,11 @@ private theorem exists_monotone_destutter_index {α β : Type*} [DecidableEq β]
         · rw [Fin.monotone_iff_le_succ]
           intro i
           refine Fin.cases ?_ (fun j => ?_) i
-          · simp [newBlock]
-          · simpa [newBlock] using
-              Fin.succ_le_succ (Fin.monotone_iff_le_succ.mp hmono j)
+          · change (0 : Fin (key a :: ((b :: l).map key).destutter (· ≠ ·)).length) ≤
+              (block 0).succ
+            exact bot_le
+          · change (block j.castSucc).val + 1 ≤ (block j.succ).val + 1
+            exact Nat.succ_le_succ (Fin.monotone_iff_le_succ.mp hmono j)
         · intro i
           refine Fin.cases ?_ (fun j => ?_) i
           · exact ⟨0, by simp [newBlock]⟩
@@ -538,16 +541,20 @@ a nonzero coordinate, and zeros are assigned monotonically to neighboring sign
 blocks. This is the finite combinatorial decomposition used in Karlin, *Total
 Positivity*, Vol. I, Chapter V, Section 1, Theorem 1.2. -/
 structure SignBlockDecomposition {n : ℕ} (x : Fin n → ℝ) where
+  /-- The number of consecutive nonzero sign blocks. -/
   blockCount : ℕ
   blockCount_eq : blockCount = signVariations x + 1
+  /-- The weakly increasing block index assigned to each vector position. -/
   block : Fin n → Fin blockCount
   monotone_block : Monotone block
   block_has_nonzero : ∀ b, ∃ i, block i = b ∧ x i ≠ 0
+  /-- The nonzero sign carried by each block. -/
   blockSign : Fin blockCount → SignType
   blockSign_ne_zero : ∀ b, blockSign b ≠ 0
   sign_eq_blockSign : ∀ i, x i ≠ 0 → SignType.sign (x i) = blockSign (block i)
   adjacent_blockSign :
-    ∀ {i j}, (i : ℕ) + 1 = (j : ℕ) → blockSign i = -blockSign j
+    ∀ {i j : Fin blockCount},
+      (i : ℕ) + 1 = (j : ℕ) → blockSign i = -blockSign j
 
 namespace SignBlockDecomposition
 
@@ -602,13 +609,16 @@ theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 
     (List.finRange n).filter fun i => x i ≠ 0
   have hx_exists : ∃ i, x i ≠ 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     apply hx
     funext i
     exact h i
   have hsupport_ne : support ≠ [] := by
     obtain ⟨i, hi⟩ := hx_exists
-    exact List.ne_nil_of_mem (by simp [support, hi])
+    intro hs
+    have himem : i ∈ support := by simp [support, hi]
+    rw [hs] at himem
+    simp at himem
   have hsupport_sorted : support.SortedLT := by
     exact ((List.sortedLT_finRange n).pairwise.filter _).sortedLT
   let key : Fin n → SignType := fun i => SignType.sign (x i)
@@ -623,40 +633,44 @@ theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 
     congr 1
     apply List.filter_congr
     intro i hi
-    simp [SignType.sign_ne_zero]
+    simp
   have hd_ne : d ≠ [] := by
     dsimp only [d]
-    rw [List.destutter_eq_nil]
-    simpa using hsupport_ne
-  have hd_pos : 0 < d.length := List.length_pos.mpr hd_ne
+    intro hd
+    have hm : support.map key = [] :=
+      (List.destutter_eq_nil (R := fun s t : SignType => s ≠ t)).mp hd
+    exact hsupport_ne (by simpa using hm)
+  have hd_pos : 0 < d.length := by
+    exact Nat.pos_of_ne_zero (by simpa using hd_ne)
   have hvariation : signVariations x = d.length - 1 := by
     rw [signVariations, List.signVariations, ← hsigns]
-    rfl
   have hcount : d.length = signVariations x + 1 := by
     rw [hvariation]
     lia
   let supportIso : Fin support.length ≃o {i // i ∈ support} :=
     hsupport_sorted.getIso support
   let supportSet : Set (Fin n) := {i | x i ≠ 0}
-  let partial (i : Fin n) : Fin d.length :=
+  let supportBlock : Fin n → Fin d.length := fun i =>
     if hi : i ∈ support then
       run (supportIso.symm ⟨i, hi⟩)
     else
       ⟨0, hd_pos⟩
-  have hpartial_mono : MonotoneOn partial supportSet := by
+  have hpartial_mono : MonotoneOn supportBlock supportSet := by
     intro i hi j hj hij
-    have himem : i ∈ support := by simp [support, hi]
-    have hjmem : j ∈ support := by simp [support, hj]
-    simp only [partial, dif_pos himem, dif_pos hjmem]
+    have hi0 : x i ≠ 0 := by simpa [supportSet] using hi
+    have hj0 : x j ≠ 0 := by simpa [supportSet] using hj
+    have himem : i ∈ support := by simp [support, hi0]
+    have hjmem : j ∈ support := by simp [support, hj0]
+    simp only [supportBlock, dif_pos himem, dif_pos hjmem]
     apply hrun_mono
     apply supportIso.symm.monotone
     exact hij
   letI : NeZero d.length := ⟨Nat.ne_of_gt hd_pos⟩
-  have hbelow : BddBelow (partial '' supportSet) := by
+  have hbelow : BddBelow (supportBlock '' supportSet) := by
     refine ⟨⊥, ?_⟩
     rintro _ ⟨i, hi, rfl⟩
     exact bot_le
-  have habove : BddAbove (partial '' supportSet) := by
+  have habove : BddAbove (supportBlock '' supportSet) := by
     refine ⟨⊤, ?_⟩
     rintro _ ⟨i, hi, rfl⟩
     exact le_top
@@ -665,10 +679,18 @@ theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 
   have hsupport_get_mem (i : Fin support.length) : support.get i ∈ support :=
     List.get_mem support i
   have hsupport_get_ne (i : Fin support.length) : x (support.get i) ≠ 0 := by
-    simpa [support] using hsupport_get_mem i
+    exact of_decide_eq_true (List.mem_filter.mp (hsupport_get_mem i)).2
   have hsupportIso_symm_get (i : Fin support.length) :
       supportIso.symm ⟨support.get i, hsupport_get_mem i⟩ = i := by
-    simpa [supportIso] using supportIso.symm_apply_apply i
+    exact supportIso.symm_apply_apply i
+  have hd_get_ne (b : Fin d.length) : d.get b ≠ 0 := by
+    have hbmem : d.get b ∈ support.map key :=
+      (List.destutter_sublist
+        (R := fun s t : SignType => s ≠ t) (support.map key)).mem (List.get_mem d b)
+    obtain ⟨i, hi, hkey⟩ := List.mem_map.mp hbmem
+    rw [← hkey]
+    exact sign_ne_zero.mpr
+      (of_decide_eq_true (List.mem_filter.mp hi).2)
   refine ⟨{
     blockCount := d.length
     blockCount_eq := hcount
@@ -685,12 +707,11 @@ theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 
     have himem := hsupport_get_mem i
     refine ⟨support.get i, ?_, hne⟩
     rw [← hblock_eq (by simpa [supportSet] using hne)]
-    simp [partial, himem, hsupportIso_symm_get, hi]
+    rw [show supportBlock (support.get i) = run i by
+      simpa only [supportBlock, dif_pos himem] using
+        congrArg run (hsupportIso_symm_get i), hi]
   · intro b
-    have hbmem : d.get b ∈ support.map key :=
-      (List.destutter_sublist (support.map key) (· ≠ ·)).subset (List.get_mem d b)
-    obtain ⟨i, hi, rfl⟩ := List.mem_map.mp hbmem
-    exact SignType.sign_ne_zero.mpr (by simpa [support] using hi)
+    exact hd_get_ne b
   · intro i hi
     have himem : i ∈ support := by simp [support, hi]
     let k : Fin support.length := supportIso.symm ⟨i, himem⟩
@@ -699,27 +720,22 @@ theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 
       exact congrArg Subtype.val h
     have hblock : block i = run k := by
       rw [← hblock_eq (by simpa [supportSet] using hi)]
-      simp [partial, himem, k]
-    simpa [key, d, hget, hblock] using hrun_key k
+      simp [supportBlock, himem, k]
+    calc
+      SignType.sign (x i) = key (support.get k) := by
+        simpa only [key] using
+          (congrArg (fun j => SignType.sign (x j)) hget).symm
+      _ = d.get (run k) := hrun_key k
+      _ = d.get (block i) := by rw [hblock]
   · intro i j hij
     have hchain : d.IsChain (· ≠ ·) := by
-      exact List.isChain_destutter (support.map key) (· ≠ ·)
+      exact List.isChain_destutter
+        (R := fun s t : SignType => s ≠ t) (support.map key)
     have hne : d.get i ≠ d.get j := by
       have hrel := List.isChain_iff_getElem.mp hchain i.val (by lia)
       simpa [List.get_eq_getElem, hij] using hrel
     exact SignType.eq_neg_of_ne_of_ne_zero
-      (by
-        have hbmem : d.get i ∈ support.map key :=
-          (List.destutter_sublist (support.map key) (· ≠ ·)).subset
-            (List.get_mem d i)
-        obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hbmem
-        exact SignType.sign_ne_zero.mpr (by simpa [support] using hk))
-      (by
-        have hbmem : d.get j ∈ support.map key :=
-          (List.destutter_sublist (support.map key) (· ≠ ·)).subset
-            (List.get_mem d j)
-        obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hbmem
-        exact SignType.sign_ne_zero.mpr (by simpa [support] using hk))
+      (hd_get_ne i) (hd_get_ne j)
       hne
 
 /-- A finite vector split into a nonnegative initial block and a nonpositive
