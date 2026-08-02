@@ -419,5 +419,40 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close
       LeftRootCountBranch.of_forall_pos_exists_close_of_degree_eq_succ_succ
         hf_ne hg_ne hf hg hr hs hdeg hclose
 
+/-- A fixed right branch is closed under close approximations. -/
+theorem RightRootCountBranch.of_forall_pos_exists_close
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hf : f.Splits) (hg : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hrlt : r < s)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ f' g' : ℝ[X], ∃ r' s' : ℝ,
+        f' ≠ 0 ∧
+        g' ≠ 0 ∧
+        f'.Splits ∧
+        g'.Splits ∧
+        Multiset.Rel
+          (fun x x' : ℝ => |x' - x| < ρ)
+          f.roots f'.roots ∧
+        Multiset.Rel
+          (fun y y' : ℝ => |y' - y| < ρ)
+          g.roots g'.roots ∧
+        RightRootCountBranch f' g' r' s') :
+    RightRootCountBranch f g r s := by
+  have hleft : LeftRootCountBranch g f s r := by
+    apply LeftRootCountBranch.of_forall_pos_exists_close
+      hg_ne hf_ne hg hf hs hr
+    intro ρ hρ
+    obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        hff', hgg', hbranch'⟩ := hclose ρ hρ
+    exact
+      ⟨g', f', s', r',
+        hg'_ne, hf'_ne,
+        hg'_split, hf'_split,
+        hgg', hff',
+        hbranch'.toLeftBranch_symm⟩
+  exact hleft.toRightBranch_symm_of_lt hrlt
+
 end LiuOppositeSigns
 end RealRooted
