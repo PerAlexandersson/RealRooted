@@ -31,6 +31,7 @@ import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFPolynomial
+import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
 import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PFBidiagonalFrontend

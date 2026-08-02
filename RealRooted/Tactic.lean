@@ -31,6 +31,7 @@ import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PosCombo
+import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.PFBidiagonalFrontend

@@ -30,6 +30,7 @@ import RealRooted.BorceaBranden.FiniteSymbolLinearity
 import RealRooted.BorceaBranden.FiniteSymbolPreserver
 import RealRooted.BorceaBranden.FiniteSymbolProduct
 import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
@@ -274,6 +275,7 @@ import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
 import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.GammaRealRoots
@@ -321,6 +323,7 @@ import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.GammaRealRoots
