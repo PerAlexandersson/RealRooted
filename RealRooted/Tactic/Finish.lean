@@ -19,13 +19,8 @@ namespace RealRooted
 theorem sequence_of_base_and_step {Q : Nat → Prop}
     (hbase : Q 0)
     (hstep : ∀ n : Nat, Q n → Q (n + 1)) :
-    ∀ n : Nat, Q n := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      exact hstep n ih
+    ∀ n : Nat, Q n :=
+  Nat.rec hbase hstep
 
 /-- Generic sequence induction from a finite base interval and a successor
 step that starts at the cutoff row. -/
@@ -153,12 +148,8 @@ theorem isRealRooted_of_prec_sequence_degree_branches {P : Nat → ℝ[X]}
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  apply isRealRooted_of_prec_sequence hbase
-  intro n hprev
-  rcases hbranch n with hsame_degree | hsucc_degree
-  · exact hsame n hsame_degree hprev
-  · exact hsucc n hsucc_degree hprev
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
+  (prec_sequence_of_base_and_degree_branches hbase hbranch hsame hsucc n).1
 
 /-- Project the nonvanishing half of a real-rootedness certificate. -/
 theorem ne_zero_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
