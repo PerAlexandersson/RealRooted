@@ -5,6 +5,7 @@ import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 import RealRooted.LiuOppositeSigns.RootCountClosure
+import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 
 /-!
@@ -80,6 +81,16 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
     ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split, ?_, ?_, hbranches⟩
   · simpa [f'] using hfrel
   · simpa [g'] using hgrel
+
+/-- The nonconstant no-common-root form of Liu Theorem 2.1. -/
+theorem theorem21CompatibleRootCountNoCommonNonconstant :
+    theorem21CompatibleRootCountNoCommonNonconstantStatement := by
+  intro f g hf hg hsgn hno hf_deg hg_deg
+  exact
+    ⟨theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+        hf hg hsgn hno hf_deg hg_deg,
+      theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
+        hf hg hsgn hf_deg hg_deg⟩
 
 /-- The isolated forward direction of Liu Theorem 2.1 gives the pointwise
 root-count gap bound. -/
