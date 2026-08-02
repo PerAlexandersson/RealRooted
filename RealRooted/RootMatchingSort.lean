@@ -67,4 +67,39 @@ theorem forall₂_sort_ge_deleteRootFactor_of_roots_rel
     hs.roots_sort_ge_eq_cons hq_ne] at hsort
   exact (List.forall₂_cons.mp hsort).2
 
+/-- A weak scalar inequality is closed under arbitrarily close approximations. -/
+theorem le_of_forall_pos_exists_close_le {x y : ℝ}
+    (h : ∀ ρ : ℝ, 0 < ρ →
+      ∃ x' y' : ℝ, |x' - x| < ρ ∧ |y' - y| < ρ ∧ x' ≤ y') :
+    x ≤ y := by
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  obtain ⟨x', y', hx, hy, hxy⟩ := h (ε / 2) (half_pos hε)
+  rw [abs_lt] at hx hy
+  linarith
+
+/-- Pointwise list inequalities are closed under arbitrarily close approximations. -/
+theorem forall₂_le_of_forall_pos_exists_close
+    {xs ys : List ℝ}
+    (h : ∀ ρ : ℝ, 0 < ρ →
+      ∃ xs' ys' : List ℝ,
+        List.Forall₂ (fun x x' => |x' - x| < ρ) xs xs' ∧
+        List.Forall₂ (fun y y' => |y' - y| < ρ) ys ys' ∧
+        List.Forall₂ (· ≤ ·) xs' ys') :
+    List.Forall₂ (· ≤ ·) xs ys := by
+  have hlen : xs.length = ys.length := by
+    obtain ⟨xs', ys', hxs, hys, hxy⟩ := h 1 zero_lt_one
+    exact hxs.length_eq.trans (hxy.length_eq.trans hys.length_eq.symm)
+  apply List.forall₂_of_length_eq_of_get hlen
+  intro i hix hiy
+  apply le_of_forall_pos_exists_close_le
+  intro ρ hρ
+  obtain ⟨xs', ys', hxs, hys, hxy⟩ := h ρ hρ
+  have hix' : i < xs'.length := by
+    simpa only [hxs.length_eq] using hix
+  have hiy' : i < ys'.length := by
+    simpa only [hys.length_eq] using hiy
+  exact ⟨xs'.get ⟨i, hix'⟩, ys'.get ⟨i, hiy'⟩,
+    hxs.get hix hix', hys.get hiy hiy', hxy.get hix' hiy'⟩
+
 end RealRooted
