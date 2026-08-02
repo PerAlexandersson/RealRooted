@@ -159,6 +159,11 @@ private lemma neg_one_pow_succ (n : Nat) :
   rw [pow_succ]
   ring
 
+private theorem eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul {d b : ℝ} (hd : d ≠ 0)
+    {F A Q : ℝ[X]} (h : C d * F = C d * A - C (d * b) * Q) :
+    F = A - C b * Q :=
+  eq_of_C_mul_eq_C_mul hd <| by rw [h, C_mul]; ring
+
 private theorem satisfiesFavardRecurrence_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C α)
@@ -457,25 +462,8 @@ theorem favardInterlacing_affine_param_coeff_den_split
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  favardInterlacing_affine_param_coeff hs hβ hP0 hP1 <| by
-    intro n
-    let A : ℝ[X] := (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)
-    have hcoeff : (d n)⁻¹ * (-(d n * β (n + 1))) = -(β (n + 1)) := by
-      field_simp [hden n]
-    have hsplit :
-        C (d n) * P (n + 2) =
-          C (d n) * A + C (-(d n * β (n + 1))) * P n := by
-      simpa [A, sub_eq_add_neg, C_neg, add_comm, add_left_comm, add_assoc,
-        mul_assoc] using hraw n
-    have hnorm :
-        P (n + 2) = A + C (-(β (n + 1))) * P n :=
-      eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) hcoeff hsplit
-    calc
-      P (n + 2) = A + C (-(β (n + 1))) * P n := hnorm
-      _ =
-          (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
-            C (β (n + 1)) * P n := by
-        simp [A, sub_eq_add_neg]
+  favardInterlacing_affine_param_coeff hs hβ hP0 hP1 fun n =>
+    eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul (hden n) (hraw n)
 
 /-- Real-rootedness consequence of the distributed scalar-denominator affine
 Favard wrapper. -/
@@ -850,27 +838,8 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den_split
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 <| by
-    intro n
-    let A : ℝ[X] := -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)
-    have hcoeff : (d n)⁻¹ * (-(d n * β (n + 1))) = -(β (n + 1)) := by
-      field_simp [hden n]
-    have hsplit :
-        C (d n) * P (n + 2) =
-          C (d n) * A + C (-(d n * β (n + 1))) * P n := by
-      rw [hraw n]
-      simp [A, sub_eq_add_neg, C_neg, C_mul]
-      ring
-    have hnorm :
-        P (n + 2) = A + C (-(β (n + 1))) * P n :=
-      eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) hcoeff hsplit
-    calc
-      P (n + 2) = A + C (-(β (n + 1))) * P n := hnorm
-      _ =
-          -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
-            C (β (n + 1)) * P n := by
-        simp [A, sub_eq_add_neg]
-        ring
+  favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 fun n =>
+    eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul (hden n) (hraw n)
 
 /-- Real-rootedness consequence of distributed scalar-denominator row-sign
 Favard. -/
