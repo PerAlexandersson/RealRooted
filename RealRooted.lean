@@ -246,6 +246,7 @@ import RealRooted.Tactic.AffineDerivative
 import RealRooted.Tactic.AissenSchoenbergWhitney
 import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.Attr
+import RealRooted.Tactic.Bezoutian
 import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CommonInterleaver
 import RealRooted.Tactic.CubicDiscriminant
@@ -256,6 +257,7 @@ import RealRooted.Tactic.Examples.AffineDerivative
 import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
 import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.Attr
+import RealRooted.Tactic.Examples.Bezoutian
 import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.CommonInterleaver
