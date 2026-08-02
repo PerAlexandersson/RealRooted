@@ -41,4 +41,37 @@ theorem Rel.comp {α β γ : Type*}
       obtain ⟨c, zs, hbc, h₂, rfl⟩ := Multiset.rel_cons_left.mp h₂
       exact Rel.cons (hcomp a b c hab hbc) (ih h₁ h₂)
 
+/-- Every element on the left of a multiset relation has a related element on the right. -/
+theorem Rel.exists_right_of_mem_left {α β : Type*} {R : α → β → Prop}
+    {s : Multiset α} {t : Multiset β} (hrel : Multiset.Rel R s t)
+    {a : α} (ha : a ∈ s) : ∃ b ∈ t, R a b := by
+  induction s using Multiset.induction_on generalizing t with
+  | empty => simp at ha
+  | cons a' s ih =>
+      obtain ⟨b, t, hab, hrel, rfl⟩ := Multiset.rel_cons_left.mp hrel
+      rw [Multiset.mem_cons] at ha
+      rcases ha with rfl | ha
+      · exact ⟨b, by simp, hab⟩
+      · obtain ⟨c, hc, hac⟩ := ih hrel ha
+        exact ⟨c, by simp [hc], hac⟩
+
+/-- Related multisets have equally many elements satisfying corresponding predicates. -/
+theorem Rel.card_filter_eq {α β : Type*} {R : α → β → Prop}
+    {s : Multiset α} {t : Multiset β} (hrel : Multiset.Rel R s t)
+    (P : α → Prop) (Q : β → Prop) [DecidablePred P] [DecidablePred Q]
+    (hpred : ∀ a ∈ s, ∀ b ∈ t, R a b → (P a ↔ Q b)) :
+    (s.filter P).card = (t.filter Q).card := by
+  induction hrel with
+  | zero => simp
+  | @cons a b s t hab hrel ih =>
+      have hpq : P a ↔ Q b := hpred a (by simp) b (by simp) hab
+      have htail : ∀ c ∈ s, ∀ d ∈ t, R c d → (P c ↔ Q d) := by
+        intro c hc d hd hcd
+        exact hpred c (by simp [hc]) d (by simp [hd]) hcd
+      by_cases ha : P a
+      · have hb : Q b := hpq.mp ha
+        simp [ha, hb, ih htail]
+      · have hb : ¬Q b := fun hb => ha (hpq.mpr hb)
+        simp [ha, hb, ih htail]
+
 end Multiset
