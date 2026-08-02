@@ -188,11 +188,11 @@ private theorem algebraicSymbol_one_eq_doubleSum
   rw [algebraicSymbol]
   apply Finset.sum_congr rfl
   intro m hm
+  rw [boxChoose_one m, Nat.cast_one, map_one, one_mul]
   change rename Sum.inl
       (T (basisDegreeOfLE (fun _ : sigma => 1) m)).1 *
         rightComplementMonomial (fun _ : sigma => 1) m.1 = _
-  rw [boxChoose_one m, Nat.cast_one, map_one, one_mul,
-    coe_box_eq_sum_support_monomials
+  rw [coe_box_eq_sum_support_monomials
       (T (basisDegreeOfLE (fun _ : sigma => 1) m)), map_sum,
     Finset.sum_mul]
   apply Finset.sum_congr rfl
