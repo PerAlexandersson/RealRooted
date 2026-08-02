@@ -45,6 +45,12 @@ theorem det_integral_rows_eq_integral_det
     (Matrix.of fun i j => ∫ x, f i x j ∂μ i).det =
       ∫ x : n → E,
         (Matrix.of fun i j => f i (x i) j).det ∂MeasureTheory.Measure.pi μ := by
+  have hdet (M : Matrix n n ℝ) :
+      M.det = ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+        ∏ i, M i (σ i) := by
+    rw [Matrix.det_apply_row]
+    simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
+    rfl
   have hprod (σ : Equiv.Perm n) :
       MeasureTheory.Integrable
         (fun x : n → E => ∏ i, f i (x i) (σ i)) (MeasureTheory.Measure.pi μ) :=
@@ -52,10 +58,8 @@ theorem det_integral_rows_eq_integral_det
   calc
     (Matrix.of fun i j => ∫ x, f i x j ∂μ i).det =
         ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
-          ∏ i, ∫ x, f i x (σ i) ∂μ i := by
-      rw [← Matrix.det_transpose, Matrix.det_apply]
-      simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
-      rfl
+          ∏ i, ∫ x, f i x (σ i) ∂μ i :=
+      hdet _
     _ = ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
           ∫ x : n → E, ∏ i, f i (x i) (σ i) ∂MeasureTheory.Measure.pi μ := by
       apply Finset.sum_congr rfl
@@ -80,8 +84,6 @@ theorem det_integral_rows_eq_integral_det
           (Matrix.of fun i j => f i (x i) j).det ∂MeasureTheory.Measure.pi μ := by
       apply congrArg fun g : (n → E) → ℝ => ∫ x, g x ∂MeasureTheory.Measure.pi μ
       funext x
-      rw [← Matrix.det_transpose, Matrix.det_apply]
-      simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
-      rfl
+      exact (hdet _).symm
 
 end Matrix
