@@ -324,9 +324,8 @@ theorem det_adjacentRowDiff_exponentialKernelMatrix_pos {n : ℕ}
     filter_upwards [hbox] with t ht
     have htmono : StrictMono t := by
       intro i j hij
-      have hindex : i.succ ≤ j.castSucc :=
-        Fin.mk_le_mk.mpr (Nat.succ_le_of_lt hij)
-      exact (ht i).2.trans_lt ((hx.monotone hindex).trans_lt (ht j).1)
+      exact (ht i).2.trans_lt
+        ((hx.monotone (Fin.mk_le_mk.mpr (Nat.succ_le_of_lt hij))).trans_lt (ht j).1)
     rw [show Matrix.of (fun i j => f i (t i) j) =
         Matrix.of fun i j =>
           y j * exponentialKernelMatrix t y i j by
