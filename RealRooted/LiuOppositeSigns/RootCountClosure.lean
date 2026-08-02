@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.RootMatchingSort
 
 /-!
@@ -207,6 +208,63 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
   exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
     succDegreeRootCrossing_of_rootCountAbove
       hp'_split hq'_split hdeg' hcount'⟩
+
+/-- A fixed left branch is closed under close same-degree approximations. -/
+theorem LeftRootCountBranch.of_forall_pos_exists_close_of_sameDegree
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hf : f.Splits) (hg : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hdeg : f.natDegree = g.natDegree)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ f' g' : ℝ[X], ∃ r' s' : ℝ,
+        f' ≠ 0 ∧
+        g' ≠ 0 ∧
+        f'.Splits ∧
+        g'.Splits ∧
+        Multiset.Rel
+          (fun x x' : ℝ => |x' - x| < ρ)
+          f.roots f'.roots ∧
+        Multiset.Rel
+          (fun y y' : ℝ => |y' - y| < ρ)
+          g.roots g'.roots ∧
+        LeftRootCountBranch f' g' r' s') :
+    LeftRootCountBranch f g r s := by
+  have hlargest : s ≤ r := by
+    apply le_of_forall_pos_exists_close_le
+    intro ρ hρ
+    obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        hff', hgg', hbranch'⟩ := hclose ρ hρ
+    exact ⟨s', r',
+      hs.abs_sub_lt_of_roots_rel hg_ne hg'_ne hbranch'.g_largest hgg',
+      hr.abs_sub_lt_of_roots_rel hf_ne hf'_ne hbranch'.f_largest hff',
+      hbranch'.largest_ge⟩
+  have hdelete_ne : deleteRootFactor f r ≠ 0 :=
+    hr.deleteRootFactor_ne_zero hf_ne
+  have hdelete_split : (deleteRootFactor f r).Splits :=
+    hr.deleteRootFactor_splits hf
+  have hdelete_degree :
+      g.natDegree = (deleteRootFactor f r).natDegree + 1 := by
+    rw [natDegree_deleteRootFactor]
+    have hf_degree_pos := hr.natDegree_pos hf_ne
+    lia
+  have hcount : RootCountCompatible (deleteRootFactor f r) g := by
+    refine RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
+      hdelete_ne hg_ne hdelete_split hg hdelete_degree ?_
+    intro ρ hρ
+    obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        hff', hgg', hbranch'⟩ := hclose ρ hρ
+    refine ⟨deleteRootFactor f' r', g',
+      hbranch'.f_largest.deleteRootFactor_ne_zero hf'_ne,
+      hg'_ne,
+      hbranch'.f_largest.deleteRootFactor_splits hf'_split,
+      hg'_split, ?_, ?_, hbranch'.count⟩
+    · simpa only [rootSeqDesc_eq_sort_ge] using
+        (forall₂_sort_ge_deleteRootFactor_of_roots_rel
+          hf_ne hf'_ne hr hbranch'.f_largest hff')
+    · simpa only [rootSeqDesc_eq_sort_ge] using
+        (forall₂_sort_ge_of_rel_abs_sub_lt hgg')
+  exact ⟨hr, hs, hlargest, hcount⟩
 
 end LiuOppositeSigns
 end RealRooted
