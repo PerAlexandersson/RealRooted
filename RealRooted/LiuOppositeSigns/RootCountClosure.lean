@@ -128,5 +128,89 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCrossing
   exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hf_ne hg_ne (fun x _ _ => hupper x)
 
+/-- Same-degree root-count compatibility is closed under close compatible pairs. -/
+theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
+    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hp : p.Splits) (hq : q.Splits)
+    (hdeg : q.natDegree = p.natDegree)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ p' q' : ℝ[X],
+        p' ≠ 0 ∧
+        q' ≠ 0 ∧
+        p'.Splits ∧
+        q'.Splits ∧
+        List.Forall₂
+          (fun x x' : ℝ => |x' - x| < ρ)
+          (rootSeqDesc p) (rootSeqDesc p') ∧
+        List.Forall₂
+          (fun y y' : ℝ => |y' - y| < ρ)
+          (rootSeqDesc q) (rootSeqDesc q') ∧
+        RootCountCompatible p' q') :
+    RootCountCompatible p q := by
+  refine RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
+    hp_ne hq_ne hp hq hdeg ?_
+  intro ρ hρ
+  obtain ⟨p', q', hp'_ne, hq'_ne, hp'_split, hq'_split,
+      hpp', hqq', hcompat'⟩ :=
+    hclose ρ hρ
+  have hpdeg : p'.natDegree = p.natDegree := by
+    rw [← rootSeqDesc_length hp'_split, ← rootSeqDesc_length hp]
+    exact hpp'.length_eq.symm
+  have hqdeg : q'.natDegree = q.natDegree := by
+    rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
+    exact hqq'.length_eq.symm
+  have hdeg' : q'.natDegree = p'.natDegree := by
+    rw [hqdeg, hpdeg, hdeg]
+  have hcount' :=
+    sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
+      (fun _ hpx hqx =>
+        hcompat'.rootCountAbove_bounds_of_nonRoot
+          hp'_ne hq'_ne hpx hqx)
+  exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
+    rootCrossing_of_rootCountAbove_diff_le_one
+      hp'_split hq'_split hdeg' hcount'⟩
+
+/-- Successor-degree root-count compatibility is closed under close compatible pairs. -/
+theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
+    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hp : p.Splits) (hq : q.Splits)
+    (hdeg : q.natDegree = p.natDegree + 1)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ p' q' : ℝ[X],
+        p' ≠ 0 ∧
+        q' ≠ 0 ∧
+        p'.Splits ∧
+        q'.Splits ∧
+        List.Forall₂
+          (fun x x' : ℝ => |x' - x| < ρ)
+          (rootSeqDesc p) (rootSeqDesc p') ∧
+        List.Forall₂
+          (fun y y' : ℝ => |y' - y| < ρ)
+          (rootSeqDesc q) (rootSeqDesc q') ∧
+        RootCountCompatible p' q') :
+    RootCountCompatible p q := by
+  refine RootCountCompatible.of_forall_pos_exists_close_succDegreeCrossing
+    hp_ne hq_ne hp hq hdeg ?_
+  intro ρ hρ
+  obtain ⟨p', q', hp'_ne, hq'_ne, hp'_split, hq'_split,
+      hpp', hqq', hcompat'⟩ :=
+    hclose ρ hρ
+  have hpdeg : p'.natDegree = p.natDegree := by
+    rw [← rootSeqDesc_length hp'_split, ← rootSeqDesc_length hp]
+    exact hpp'.length_eq.symm
+  have hqdeg : q'.natDegree = q.natDegree := by
+    rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
+    exact hqq'.length_eq.symm
+  have hdeg' : q'.natDegree = p'.natDegree + 1 := by
+    rw [hqdeg, hpdeg, hdeg]
+  have hcount' :=
+    sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
+      (fun _ hpx hqx =>
+        hcompat'.rootCountAbove_bounds_of_nonRoot
+          hp'_ne hq'_ne hpx hqx)
+  exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
+    succDegreeRootCrossing_of_rootCountAbove
+      hp'_split hq'_split hdeg' hcount'⟩
+
 end LiuOppositeSigns
 end RealRooted
