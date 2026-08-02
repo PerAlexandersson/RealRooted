@@ -21,13 +21,8 @@ private theorem false_of_rightFamily_root_of_boundedIntervalContinuity
     (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (p + C η * q).Splits)
     (hb_no : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (p + C η * q).IsRoot b)
     (hxroot : (p + C μ * q).IsRoot x) : False := by
-  have hcount := rightFamily_card_roots_Ioo_eq_zero_param_of_degree_bound
-    (f := p) (g := q) (N := max p.natDegree q.natDegree)
-    (lt_trans hax hxb) hμ
-    (fun η _ ↦ (Polynomial.natDegree_add_le _ _).trans
-      (max_le (le_max_left _ _)
-        ((Polynomial.natDegree_C_mul_le η q).trans (le_max_right _ _))))
-    ha_no hsplit hb_no
+  have hcount := rightFamily_card_roots_Ioo_eq_zero_param
+    (f := p) (g := q) (lt_trans hax hxb) hμ ha_no hsplit hb_no
   have hp_card_zero : (p.roots.filter (fun r ↦ a < r ∧ r < b)).card = 0 := by
     rw [Multiset.card_eq_zero, Multiset.filter_eq_nil]
     intro z hz hzab

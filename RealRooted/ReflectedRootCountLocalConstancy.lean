@@ -129,4 +129,24 @@ theorem rightFamily_card_roots_Ioo_eq_zero_param_of_degree_bound
     _ = (f'.roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := hshifted
     _ = (f.roots.filter (fun r ↦ a < r ∧ r < b)).card := hbase
 
+/-- Root counts in a bounded open interval are constant along a split affine
+family whose endpoints stay root-free, with the common degree bound inferred
+from the two endpoint polynomials. -/
+theorem rightFamily_card_roots_Ioo_eq_zero_param
+    {f g : ℝ[X]} {a b μ : ℝ} (hab : a < b) (hμ : 0 < μ)
+    (haroot : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot a)
+    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits)
+    (hbroot : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot b) :
+    ((f + C μ * g).roots.filter (fun r ↦ a < r ∧ r < b)).card =
+      (f.roots.filter (fun r ↦ a < r ∧ r < b)).card := by
+  apply rightFamily_card_roots_Ioo_eq_zero_param_of_degree_bound
+    (N := max f.natDegree g.natDegree) hab hμ
+  · intro η _
+    exact (Polynomial.natDegree_add_le _ _).trans
+      (max_le (le_max_left _ _)
+        ((Polynomial.natDegree_C_mul_le η g).trans (le_max_right _ _)))
+  · exact haroot
+  · exact hsplit
+  · exact hbroot
+
 end RealRooted

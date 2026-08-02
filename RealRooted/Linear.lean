@@ -307,9 +307,7 @@ lemma card_roots_comp_X_add_C_Ioo (p : ℝ[X]) (a b : ℝ) :
   congr 1
   apply Multiset.filter_congr
   intro y _
-  constructor <;> intro h
-  · constructor <;> linarith [h.1, h.2]
-  · constructor <;> linarith [h.1, h.2]
+  constructor <;> intro h <;> constructor <;> linarith [h.1, h.2]
 
 /-- Translation by `r` preserves positive leading coefficient. -/
 lemma HasPosLeadingCoeff.comp_X_add_C {p : ℝ[X]}
