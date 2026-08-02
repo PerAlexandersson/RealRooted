@@ -90,10 +90,10 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
   induction n generalizing f g ρ with
   | zero =>
       refine ⟨[], rfl, by simp, by simpa using hcomp, by simpa using hno, ?_, ?_⟩
-      · apply Multiset.Rel.diag
+      · apply Multiset.rel_refl_of_refl_on
         intro r hr
         simpa using hρ
-      · apply Multiset.Rel.diag
+      · apply Multiset.rel_refl_of_refl_on
         intro r hr
         simpa using hρ
   | succ n ih =>

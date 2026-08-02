@@ -142,21 +142,6 @@ theorem exists_rel_le_of_forall_le_count {s t : Multiset ℝ} {δ : ℝ}
   · exact le_trans (Finset.sum_le_sum fun a ha => (hcluster a ha).1)
       (sum_filter_ball_le hsep)
 
-/-- Every target member in a lifted multiset relation has a related source
-member. -/
-theorem Rel.exists_left_of_mem_right
-    {α β : Type*} {r : α → β → Prop} {s : Multiset α} {t : Multiset β}
-    (hrel : Rel r s t) {b : β} (hb : b ∈ t) :
-    ∃ a ∈ s, r a b := by
-  induction hrel with
-  | zero => simp at hb
-  | @cons a b s t hab _ ih =>
-      rw [mem_cons] at hb
-      rcases hb with rfl | hb
-      · exact ⟨a, mem_cons_self, hab⟩
-      · obtain ⟨a', ha', ha'b⟩ := ih hb
-        exact ⟨a', mem_cons_of_mem ha', ha'b⟩
-
 /-- Local multiplicity lower bounds give a full proximity matching when the
 source and target multisets have the same cardinality. -/
 theorem rel_of_forall_le_count_of_card_eq {s t : Multiset ℝ} {δ : ℝ}

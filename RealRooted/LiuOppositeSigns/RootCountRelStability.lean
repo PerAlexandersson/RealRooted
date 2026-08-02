@@ -44,9 +44,11 @@ theorem IsLargestRoot.abs_sub_lt_of_roots_rel
     |s - r| < δ := by
   have hr_mem : r ∈ p.roots := (Polynomial.mem_roots hp_ne).mpr hr.isRoot
   have hs_mem : s ∈ q.roots := (Polynomial.mem_roots hq_ne).mpr hs.isRoot
-  obtain ⟨b, hb_mem, hrb⟩ := hmatch.exists_right_of_mem_left hr_mem
-  obtain ⟨a, ha_mem, has⟩ :=
-    Multiset.Rel.exists_left_of_mem_right hmatch hs_mem
+  obtain ⟨b, hb_mem, hrb⟩ :=
+    Multiset.exists_mem_of_rel_of_mem hmatch hr_mem
+  obtain ⟨a, ha_mem, has⟩ := by
+    simpa only [Function.flip_def] using
+      Multiset.exists_mem_of_rel_of_mem ((Multiset.rel_flip).2 hmatch) hs_mem
   have hb_le : b ≤ s := hs.roots_le b hb_mem
   have ha_le : a ≤ r := hr.roots_le a ha_mem
   rw [abs_lt]
