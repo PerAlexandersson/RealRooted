@@ -482,9 +482,7 @@ theorem succDegreeRootCount_of_rootCrossing
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
   have hNcard : g.roots.card = f.natDegree + 1 := by
     rw [card_roots_of_splits hg, hdeg]
-  simpa [rootSeqDesc] using
-    (count_le_two_of_succRootCrossing (M := f.roots) (N := g.roots)
-      hMcard hNcard hcross)
+  exact count_le_two_of_succRootCrossing hMcard hNcard hcross
 
 /-- Root-count bridge from the upper-threshold formulation to the succ-degree
 root-crossing target. -/
