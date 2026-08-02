@@ -298,6 +298,19 @@ lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
     (Multiset.count_map_eq_count' (fun y : ℝ => y - r) p.roots
       (fun a b hab => by simp_all) (x + r)).symm
 
+/-- Translating a polynomial by `a` identifies its roots in `(0, b - a)`
+with the original roots in `(a, b)`, including multiplicities. -/
+lemma card_roots_comp_X_add_C_Ioo (p : ℝ[X]) (a b : ℝ) :
+    ((p.comp (X + C a)).roots.filter (fun x => 0 < x ∧ x < b - a)).card =
+      (p.roots.filter (fun x => a < x ∧ x < b)).card := by
+  rw [roots_comp_X_add_C, Multiset.filter_map, Multiset.card_map]
+  congr 1
+  apply Multiset.filter_congr
+  intro y _
+  constructor <;> intro h
+  · constructor <;> linarith [h.1, h.2]
+  · constructor <;> linarith [h.1, h.2]
+
 /-- Translation by `r` preserves positive leading coefficient. -/
 lemma HasPosLeadingCoeff.comp_X_add_C {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) (r : ℝ) :

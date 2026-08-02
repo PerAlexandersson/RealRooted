@@ -1,4 +1,5 @@
 import RealRooted.DegreeDropReversal
+import RealRooted.Linear
 import RealRooted.PositiveParameterLocalLowerCount
 
 /-!
@@ -76,5 +77,56 @@ theorem rightFamily_card_roots_Ioo_zero_eq_zero_param_of_degree_bound
     _ = ((reflect N f).roots.filter (b⁻¹ < ·)).card := hcount
     _ = (f.roots.filter (fun r ↦ 0 < r ∧ r < b)).card := by
       simpa using hf_transport
+
+/-- Root counts in any bounded open interval are constant along a split affine
+family whose interval endpoints stay root-free, even if its degree drops. -/
+theorem rightFamily_card_roots_Ioo_eq_zero_param_of_degree_bound
+    {f g : ℝ[X]} {a b μ : ℝ} (hab : a < b) (hμ : 0 < μ) {N : ℕ}
+    (hN : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).natDegree ≤ N)
+    (haroot : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot a)
+    (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits)
+    (hbroot : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot b) :
+    ((f + C μ * g).roots.filter (fun r ↦ a < r ∧ r < b)).card =
+      (f.roots.filter (fun r ↦ a < r ∧ r < b)).card := by
+  let f' := f.comp (X + C a)
+  let g' := g.comp (X + C a)
+  have hfamily_comp (eta : ℝ) :
+      f' + C eta * g' = (f + C eta * g).comp (X + C a) := by
+    simp [f', g', Polynomial.add_comp, Polynomial.mul_comp]
+  have hN' : ∀ eta ∈ Set.Icc (0 : ℝ) μ, (f' + C eta * g').natDegree ≤ N := by
+    intro eta heta
+    rw [hfamily_comp, Polynomial.natDegree_comp]
+    simpa using hN eta heta
+  have hzero' : ∀ eta ∈ Set.Icc (0 : ℝ) μ, (f' + C eta * g').coeff 0 ≠ 0 := by
+    intro eta heta
+    rw [hfamily_comp]
+    simpa [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_comp] using
+      haroot eta heta
+  have hsplit' : ∀ eta ∈ Set.Icc (0 : ℝ) μ, (f' + C eta * g').Splits := by
+    intro eta heta
+    rw [hfamily_comp]
+    exact (hsplit eta heta).comp_X_add_C a
+  have hbroot' : ∀ eta ∈ Set.Icc (0 : ℝ) μ,
+      ¬ (f' + C eta * g').IsRoot (b - a) := by
+    intro eta heta
+    rw [hfamily_comp]
+    intro hroot
+    apply hbroot eta heta
+    change eval b (f + C eta * g) = 0
+    change eval (b - a) ((f + C eta * g).comp (X + C a)) = 0 at hroot
+    simpa [Polynomial.eval_comp] using hroot
+  have hshifted := rightFamily_card_roots_Ioo_zero_eq_zero_param_of_degree_bound
+    (f := f') (g := g') (b := b - a) (sub_pos.mpr hab) hμ
+    hN' hzero' hsplit' hbroot'
+  have htop := card_roots_comp_X_add_C_Ioo (f + C μ * g) a b
+  have hbase := card_roots_comp_X_add_C_Ioo f a b
+  calc
+    ((f + C μ * g).roots.filter (fun r ↦ a < r ∧ r < b)).card =
+        (((f + C μ * g).comp (X + C a)).roots.filter
+          (fun r ↦ 0 < r ∧ r < b - a)).card := htop.symm
+    _ = ((f' + C μ * g').roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := by
+      rw [hfamily_comp]
+    _ = (f'.roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := hshifted
+    _ = (f.roots.filter (fun r ↦ a < r ∧ r < b)).card := hbase
 
 end RealRooted
