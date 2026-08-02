@@ -74,6 +74,25 @@ example {P : Nat → ℝ[X]}
     pf := hP,
     nonzero := hP0
 
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPolyaFreqSeq p.coeff := by
+  rr_pf_to_coefficient_sequence using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPolyaFreqSeq p.coeff := by
+  rr_pf using pf := hp
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, IsPolyaFreqSeq (P i).coeff := by
+  rr_pf_sequence_to_coefficient_sequence using pf := hP
+
+example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
+    IsPolyaFreqSeq p.coeff := by
+  rr_pf_to_coefficient_sequence using
+    pf := by
+      rr_pf_of_nonneg_splits using nonneg := hnn, splits := hsplits
+
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     IsPFPolynomial p := by
   rr_pf_of_nonneg_splits using nonneg := hnn, splits := hsplits

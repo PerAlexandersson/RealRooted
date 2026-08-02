@@ -44,6 +44,13 @@ theorem pf_sequence_realrooted
     ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits := fun i =>
   RealRooted.IsPFPolynomial.ne_zero_and_splits (hP i) (hP0 i)
 
+/-- A family of PF polynomials has Pólya-frequency coefficient sequences. -/
+theorem pf_sequence_to_coefficient_sequence
+    {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, IsPolyaFreqSeq (fun n => (P i).coeff n) := fun i =>
+  RealRooted.IsPFPolynomial.to_sequence (hP i)
+
 theorem pf_sequence_of_nonneg_splits
     {P : Nat → ℝ[X]}
     (hPnn : ∀ i : Nat, HasNonnegCoeffs (P i))
@@ -184,6 +191,14 @@ syntax (name := rr_pf_sequence_realrooted_named)
   "rr_pf_sequence_realrooted" " using "
     "pf" ":=" term ","
     "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_pf_to_coefficient_sequence_named)
+  "rr_pf_to_coefficient_sequence" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_pf_sequence_to_coefficient_sequence_named)
+  "rr_pf_sequence_to_coefficient_sequence" " using " "pf" ":=" term :
   tactic
 
 syntax (name := rr_pf_of_nonneg_splits_named)
@@ -352,7 +367,8 @@ macro_rules
           | exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp
           | exact RealRooted.IsPFPolynomial.eq_zero_or_splits $hp
           | exact RealRooted.IsPFPolynomial.roots_nonpos $hp
-          | exact RealRooted.Tactic.pf_splits $hp)
+          | exact RealRooted.Tactic.pf_splits $hp
+          | exact RealRooted.IsPFPolynomial.to_sequence $hp)
   | `(tactic|
       rr_pf using
         pf := $hp:term,
@@ -379,6 +395,10 @@ macro_rules
         pf := $hp:term,
         nonzero := $hp0:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_realrooted $hp $hp0)
+  | `(tactic| rr_pf_to_coefficient_sequence using pf := $hp:term) =>
+      `(tactic| exact RealRooted.IsPFPolynomial.to_sequence $hp)
+  | `(tactic| rr_pf_sequence_to_coefficient_sequence using pf := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.pf_sequence_to_coefficient_sequence $hp)
   | `(tactic|
       rr_pf_of_nonneg_splits using
         nonneg := $hnn:term,
