@@ -88,26 +88,18 @@ private theorem indicator_disjoint_union
 
 private theorem prod_X_eq_monomial_indicator_map
     {R sigma tau : Type*} [CommSemiring R]
-    [DecidableEq sigma] [DecidableEq tau]
     (e : sigma ↪ tau) (s : Finset sigma) :
     ∏ i ∈ s, (X (e i) : MvPolynomial tau R) =
       monomial (Finsupp.indicator (s.map e) (fun _ _ => 1)) 1 := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-      rw [Finset.prod_insert hi, Finset.map_insert, ih, X, monomial_mul]
-      congr 1
-      ext x
-      by_cases hxi : x = e i
-      · subst x
-        simp [hi]
-      · simp [hxi]
+  classical
+  simpa [Finset.prod_map] using
+    (MvPolynomial.prod_X_pow (R := R) (fun _ : tau => 1) (s.map e))
 
 private theorem rightComplementMonomial_one
     {R sigma tau : Type*} [CommSemiring R]
     [Fintype sigma] [DecidableEq sigma] [DecidableEq tau]
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
-    (rightComplementMonomial (R := R) (tau := tau)
+    (rightComplementMonomial (R := R) (τ := tau)
         (fun _ : sigma => 1) m.1) =
       monomial
         (Finsupp.indicator
