@@ -56,6 +56,17 @@ noncomputable def algebraicSymbol (κ : σ → ℕ)
       rename (Sum.inl : τ → τ ⊕ σ) (T (basisDegreeOfLE κ m)) *
         rightComplementMonomial κ m.1
 
+/-- Expand the finite algebraic symbol in its bounded monomial basis. -/
+theorem algebraicSymbol_eq_sum (κ : σ → ℕ)
+    (T : degreeOfLE σ R κ →ₗ[R] MvPolynomial τ R) :
+    algebraicSymbol κ T =
+      ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+        C (boxChoose κ m.1 : R) *
+          rename (Sum.inl : τ → τ ⊕ σ)
+              (T (basisDegreeOfLE κ m)) *
+            rightComplementMonomial κ m.1 := by
+  rfl
+
 @[simp]
 theorem algebraicSymbol_zero (κ : σ → ℕ) :
     algebraicSymbol κ (0 : degreeOfLE σ R κ →ₗ[R] MvPolynomial τ R) = 0 := by
