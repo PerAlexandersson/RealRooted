@@ -454,5 +454,84 @@ theorem RightRootCountBranch.of_forall_pos_exists_close
         hbranch'.toLeftBranch_symm⟩
   exact hleft.toRightBranch_symm_of_lt hrlt
 
+/-- Liu's disjunctive root-count branch is closed under close splitting approximations. -/
+theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
+    (hf : f.Splits) (hg : g.Splits) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ f' g' : ℝ[X],
+        f' ≠ 0 ∧
+        g' ≠ 0 ∧
+        f'.Splits ∧
+        g'.Splits ∧
+        Multiset.Rel
+          (fun x x' : ℝ => |x' - x| < ρ)
+          f.roots f'.roots ∧
+        Multiset.Rel
+          (fun y y' : ℝ => |y' - y| < ρ)
+          g.roots g'.roots ∧
+        theorem21RootCountBranches f' g') :
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, hr⟩ :=
+    exists_isLargestRoot hf_ne hf (Nat.pos_of_ne_zero hf_deg)
+  obtain ⟨s, hs⟩ :=
+    exists_isLargestRoot hg_ne hg (Nat.pos_of_ne_zero hg_deg)
+  have hrs_ne : r ≠ s := by
+    intro hrs
+    subst s
+    exact (hno r hr.isRoot) hs.isRoot
+  rcases lt_or_gt_of_ne hrs_ne with hrs | hsr
+  · apply theorem21RootCountBranches_of_right
+    apply RightRootCountBranch.of_forall_pos_exists_close
+      hf_ne hg_ne hf hg hr hs hrs
+    intro ρ hρ
+    let δ : ℝ := min ρ ((s - r) / 2)
+    have hδ : 0 < δ :=
+      lt_min hρ (half_pos (sub_pos.mpr hrs))
+    have hδ_le_ρ : δ ≤ ρ := min_le_left _ _
+    have hδ_le_gap : δ ≤ (s - r) / 2 := min_le_right _ _
+    obtain ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        hff', hgg', hbranches⟩ := hclose δ hδ
+    obtain ⟨r', s', hbranch'⟩ := hbranches
+    rcases hbranch' with hleft' | hright'
+    · exfalso
+      have hr_close :=
+        hr.abs_sub_lt_of_roots_rel hf_ne hf'_ne hleft'.f_largest hff'
+      have hs_close :=
+        hs.abs_sub_lt_of_roots_rel hg_ne hg'_ne hleft'.g_largest hgg'
+      rw [abs_lt] at hr_close hs_close
+      linarith [hleft'.largest_ge, hδ_le_gap]
+    · exact
+        ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+          hff'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          hgg'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          hright'⟩
+  · apply theorem21RootCountBranches_of_left
+    apply LeftRootCountBranch.of_forall_pos_exists_close
+      hf_ne hg_ne hf hg hr hs
+    intro ρ hρ
+    let δ : ℝ := min ρ ((r - s) / 2)
+    have hδ : 0 < δ :=
+      lt_min hρ (half_pos (sub_pos.mpr hsr))
+    have hδ_le_ρ : δ ≤ ρ := min_le_left _ _
+    have hδ_le_gap : δ ≤ (r - s) / 2 := min_le_right _ _
+    obtain ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        hff', hgg', hbranches⟩ := hclose δ hδ
+    obtain ⟨r', s', hbranch'⟩ := hbranches
+    rcases hbranch' with hleft' | hright'
+    · exact
+        ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+          hff'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          hgg'.mono (fun _ _ _ _ h => h.trans_le hδ_le_ρ),
+          hleft'⟩
+    · exfalso
+      have hr_close :=
+        hr.abs_sub_lt_of_roots_rel hf_ne hf'_ne hright'.f_largest hff'
+      have hs_close :=
+        hs.abs_sub_lt_of_roots_rel hg_ne hg'_ne hright'.g_largest hgg'
+      rw [abs_lt] at hr_close hs_close
+      linarith [hright'.largest_lt, hδ_le_gap]
+
 end LiuOppositeSigns
 end RealRooted
