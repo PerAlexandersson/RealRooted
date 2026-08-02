@@ -244,6 +244,7 @@ import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SymmetricDecomposition
 import RealRooted.Tactic
 import RealRooted.Tactic.AffineDerivative
+import RealRooted.Tactic.AissenSchoenbergWhitney
 import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.CoefficientShape
@@ -253,6 +254,7 @@ import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Examples
 import RealRooted.Tactic.Examples.AffineDerivative
+import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
 import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.CoefficientShape
@@ -269,6 +271,7 @@ import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
+import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.InterlacingSequence
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
@@ -315,6 +318,7 @@ import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
+import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.IteratedDerivativeShift

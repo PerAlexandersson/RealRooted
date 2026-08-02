@@ -1,6 +1,7 @@
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.AffineDerivative
+import RealRooted.Tactic.AissenSchoenbergWhitney
 import RealRooted.Tactic.SideGoals
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
@@ -35,6 +36,7 @@ import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
+import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev

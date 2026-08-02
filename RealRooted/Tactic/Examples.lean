@@ -1,6 +1,7 @@
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.AffineDerivative
+import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.RootBounds
@@ -37,6 +38,7 @@ import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
+import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Chebyshev
