@@ -69,14 +69,10 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
       hpos hsgn.right_ne_zero hg
     rw [hlen]
     exact Nat.le_max_right _ _
-  have hcompat'' : Compatible f' g' := by
-    simpa [f', g'] using hcompat'
-  have hno'' : NoCommonRoots f' g' := by
-    simpa [f', g'] using hno'
   have hbranches : theorem21RootCountBranches f' g' :=
     theorem21RootCountBranches_of_compatible_noCommon_nonconstant_of_simple
-      hf'_split hg'_split hsgn' hno'' hf'_deg hg'_deg
-      hf'_simple hg'_simple hcompat''
+      hf'_split hg'_split hsgn' hno' hf'_deg hg'_deg
+      hf'_simple hg'_simple hcompat'
   refine
     ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split, ?_, ?_, hbranches⟩
   · simpa [f'] using hfrel
