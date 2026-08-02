@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 /-!
 # Cauchy-Binet determinant expansions
@@ -235,3 +236,60 @@ theorem Matrix.det_submatrix_mul_eq_sum_powersetCard
   · intro f hf
     rw [Matrix.det_submatrix_eq_zero_of_not_injective_right L rows f hf,
       zero_mul]
+
+private theorem selected_mulVec_injective
+    {R : Type*} [Field R] {n m q : ℕ}
+    (A : Matrix (Fin n) (Fin m) R)
+    (hA : Function.Injective A.mulVec)
+    (cols : Fin q → Fin m) (hcols : StrictMono cols) :
+    Function.Injective (A.submatrix id cols).mulVec := by
+  rw [Matrix.mulVec_injective_iff]
+  have h := (Matrix.mulVec_injective_iff.mp hA).comp cols hcols.injective
+  simpa [Matrix.col, Function.comp_def] using h
+
+private theorem exists_left_inverse_matrix
+    {R : Type*} [Field R] {n q : ℕ}
+    (B : Matrix (Fin n) (Fin q) R)
+    (hB : Function.Injective B.mulVec) :
+    ∃ C : Matrix (Fin q) (Fin n) R, C * B = 1 := by
+  let f := Matrix.toLin' B
+  have hf : LinearMap.ker f = ⊥ := by
+    rw [LinearMap.ker_eq_bot]
+    intro x y hxy
+    apply hB
+    simpa only [f, Matrix.toLin'_apply] using hxy
+  obtain ⟨g, hg⟩ := f.exists_leftInverse_of_injective hf
+  refine ⟨LinearMap.toMatrix' g, ?_⟩
+  rw [← LinearMap.toMatrix'_toLin' B, ← LinearMap.toMatrix'_comp, hg,
+    ← Matrix.toLin'_one, LinearMap.toMatrix'_toLin']
+
+/-- Full column rank gives a nonzero maximal minor on strictly increasing rows.
+
+The proof restricts the independent columns, takes a linear left inverse, and
+applies rectangular Cauchy--Binet to the resulting identity matrix. -/
+theorem Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective
+    {R : Type*} [Field R] {n m q : ℕ}
+    (A : Matrix (Fin n) (Fin m) R)
+    (hA : Function.Injective A.mulVec)
+    (cols : Fin q → Fin m) (hcols : StrictMono cols) :
+    ∃ rows : Fin q → Fin n, StrictMono rows ∧
+      (A.submatrix rows cols).det ≠ 0 := by
+  classical
+  let B := A.submatrix id cols
+  have hB : Function.Injective B.mulVec := by
+    exact selected_mulVec_injective A hA cols hcols
+  obtain ⟨C, hCB⟩ := exists_left_inverse_matrix B hB
+  have hsum :
+      (∑ s : Set.powersetCard (Fin n) q,
+        (C.submatrix id
+          (Set.powersetCard.ofFinEmbEquiv.symm s)).det *
+        (B.submatrix
+          (Set.powersetCard.ofFinEmbEquiv.symm s) id).det) ≠ 0 := by
+    rw [← Matrix.det_submatrix_mul_eq_sum_powersetCard C B id id, hCB]
+    simp
+  obtain ⟨s, _, hs⟩ := Finset.exists_ne_zero_of_sum_ne_zero
+    (s := Finset.univ) (by simpa using hsum)
+  refine ⟨Set.powersetCard.ofFinEmbEquiv.symm s,
+    (Set.powersetCard.ofFinEmbEquiv.symm s).strictMono, ?_⟩
+  have hminor := (mul_ne_zero_iff.mp hs).2
+  simpa [B] using hminor
