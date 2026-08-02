@@ -1662,8 +1662,7 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_odd_natDegree
   intro hdown
   apply ht_bad
   have hcomp_ne : (p - C t).comp (-X) ≠ 0 := by
-    intro hzero
-    exact hdown.1 (Polynomial.comp_neg_X_eq_zero_iff.mp hzero)
+    simpa using hdown.1
   have hshift :
       C t + q = -((p - C t).comp (-X)) := by
     dsimp [q]
