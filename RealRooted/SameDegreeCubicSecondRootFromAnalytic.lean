@@ -17,6 +17,8 @@ open Polynomial
 
 namespace RealRooted
 
+open LiuOppositeSigns
+
 /-- Cancelling a common linear factor preserves positive-combination
 real-rootedness. -/
 theorem PosComboRealRooted.deleteRootFactor_commonRoot
