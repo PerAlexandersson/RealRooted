@@ -17,6 +17,23 @@ namespace MvPolynomial
 def IsMultiaffine {R σ : Type*} [CommSemiring R] (p : MvPolynomial σ R) : Prop :=
   ∀ i, p.degreeOf i ≤ 1
 
+/-- Partial differentiation does not increase the degree in any coordinate. -/
+theorem degreeOf_pderiv_le {R σ : Type*} [CommSemiring R]
+    (p : MvPolynomial σ R) (i j : σ) :
+    (MvPolynomial.pderiv i p).degreeOf j ≤ p.degreeOf j := by
+  conv_lhs => rw [MvPolynomial.as_sum p]
+  simp only [map_sum]
+  refine (MvPolynomial.degreeOf_sum_le j p.support fun d =>
+    MvPolynomial.pderiv i (MvPolynomial.monomial d (p.coeff d))).trans ?_
+  apply Finset.sup_le
+  intro d hd
+  rw [MvPolynomial.pderiv_monomial]
+  by_cases hc : p.coeff d * d i = 0
+  · simp [hc]
+  · rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
+    exact (Nat.sub_le _ _).trans
+      (MvPolynomial.degreeOf_le_iff.mp le_rfl d hd)
+
 namespace IsMultiaffine
 
 variable {R σ τ : Type*} [CommSemiring R]
@@ -68,18 +85,7 @@ theorem C_mul {p : MvPolynomial σ R} (hp : IsMultiaffine p) (r : R) :
 theorem pderiv {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
     IsMultiaffine (MvPolynomial.pderiv i p) := by
   intro j
-  rw [MvPolynomial.as_sum p]
-  simp only [map_sum]
-  refine (MvPolynomial.degreeOf_sum_le j p.support fun d =>
-    MvPolynomial.pderiv i (MvPolynomial.monomial d (p.coeff d))).trans ?_
-  apply Finset.sup_le
-  intro d hd
-  rw [MvPolynomial.pderiv_monomial]
-  by_cases hc : p.coeff d * d i = 0
-  · simp [hc]
-  · rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
-    exact (Nat.sub_le _ _).trans
-      (MvPolynomial.degreeOf_le_iff.mp (hp j) d hd)
+  exact (MvPolynomial.degreeOf_pderiv_le p i j).trans (hp j)
 
 /-- Differentiating a multiaffine polynomial twice in the same variable gives
 zero. -/
@@ -146,6 +152,22 @@ private theorem eval_update_monomial_affine
     simp [h, hzprod]
     ring
 
+/-- Evaluation is affine in a coordinate whose degree is at most one, with
+linear coefficient given by the corresponding partial derivative. -/
+theorem _root_.MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+    {S : Type*} [CommRing S] [DecidableEq σ]
+    {p : MvPolynomial σ S} {i : σ} (hi : p.degreeOf i ≤ 1)
+    (z : σ → S) (t : S) :
+    MvPolynomial.eval (Function.update z i t) p =
+      MvPolynomial.eval z (MvPolynomial.pderiv i p) * t +
+        MvPolynomial.eval (Function.update z i 0) p := by
+  rw [MvPolynomial.as_sum p]
+  simp only [map_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro d hd
+  exact eval_update_monomial_affine i z t d (p.coeff d)
+    (MvPolynomial.degreeOf_le_iff.mp hi d hd)
+
 /-- Evaluation of a multiaffine polynomial is affine in each coordinate, with
 linear coefficient given by the corresponding partial derivative. -/
 theorem eval_update_eq_eval_pderiv_mul_add
@@ -155,12 +177,8 @@ theorem eval_update_eq_eval_pderiv_mul_add
     MvPolynomial.eval (Function.update z i t) p =
       MvPolynomial.eval z (MvPolynomial.pderiv i p) * t +
         MvPolynomial.eval (Function.update z i 0) p := by
-  rw [MvPolynomial.as_sum p]
-  simp only [map_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
-  apply Finset.sum_congr rfl
-  intro d hd
-  exact eval_update_monomial_affine i z t d (p.coeff d)
-    (MvPolynomial.degreeOf_le_iff.mp (hp i) d hd)
+  exact MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+    (hp i) z t
 
 /-- The partial derivative of a multiaffine polynomial is independent of the
 differentiated coordinate. -/
@@ -356,17 +374,13 @@ theorem specializeZero_eq_self_of_notMem_vars
       · exact notMem_support_iff.mp hd
     simp [hdi, hcoeff]
 
-namespace IsMultiaffine
-
-variable {R σ τ : Type*} [CommSemiring R]
-
-/-- Specializing one variable of a multiaffine polynomial at zero preserves
-multiaffineness. -/
-theorem specializeZero_preserves {S : Type*} [CommRing S]
-    {p : MvPolynomial σ S} (hp : IsMultiaffine p) (i : σ) :
-    IsMultiaffine (MvPolynomial.specializeZero i p) := by
+/-- Specializing a coordinate to zero does not increase the degree in any
+coordinate. -/
+theorem degreeOf_specializeZero_le
+    {S σ : Type*} [CommRing S]
+    (p : MvPolynomial σ S) (i j : σ) :
+    (MvPolynomial.specializeZero i p).degreeOf j ≤ p.degreeOf j := by
   classical
-  intro j
   refine (MvPolynomial.degreeOf_sum_le j
     (p.support.filter fun d => d i = 0)
     fun d => MvPolynomial.monomial d (p.coeff d)).trans ?_
@@ -376,7 +390,19 @@ theorem specializeZero_preserves {S : Type*} [CommRing S]
   have hc : p.coeff d ≠ 0 := by
     simpa [Finsupp.mem_support_iff] using hd.1
   rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
-  exact MvPolynomial.degreeOf_le_iff.mp (hp j) d hd.1
+  exact MvPolynomial.degreeOf_le_iff.mp le_rfl d hd.1
+
+namespace IsMultiaffine
+
+variable {R σ τ : Type*} [CommSemiring R]
+
+/-- Specializing one variable of a multiaffine polynomial at zero preserves
+multiaffineness. -/
+theorem specializeZero_preserves {S : Type*} [CommRing S]
+    {p : MvPolynomial σ S} (hp : IsMultiaffine p) (i : σ) :
+    IsMultiaffine (MvPolynomial.specializeZero i p) := by
+  intro j
+  exact (MvPolynomial.degreeOf_specializeZero_le p i j).trans (hp j)
 
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :
