@@ -17,11 +17,10 @@ theorem forall₂_sort_of_rel_abs_sub_lt
     (hrel : Multiset.Rel (fun x y : ℝ => |y - x| < ρ) s t) :
     List.Forall₂ (fun x y : ℝ => |y - x| < ρ)
       (s.sort (· ≤ ·)) (t.sort (· ≤ ·)) := by
-  apply Multiset.Rel.forall₂_sort
-  · intro a c b d hac hbd had hcb
-    rw [abs_lt] at had hcb ⊢
-    constructor <;> constructor <;> linarith
-  · exact hrel
+  refine Multiset.Rel.forall₂_sort ?_ hrel
+  intro a c b d hac hbd had hcb
+  rw [abs_lt] at had hcb ⊢
+  constructor <;> constructor <;> linarith
 
 /-- A close multiset matching pairs corresponding descending order statistics. -/
 theorem forall₂_sort_ge_of_rel_abs_sub_lt
