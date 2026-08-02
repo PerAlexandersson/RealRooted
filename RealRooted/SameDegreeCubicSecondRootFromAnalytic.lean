@@ -1,5 +1,6 @@
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.LiuOppositeSigns
 
 /-!
 # The cubic second-root bound from analytic root counts
@@ -46,6 +47,14 @@ private lemma roots_deleteRootFactor_eq_erase
   rw [roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hf_ne hz]
   simp
 
+/-- Root count of a three-element multiset strictly above a threshold. -/
+private theorem card_filter_lt_triple (a b c x : ℝ) :
+    (({a, b, c} : Multiset ℝ).filter (x < ·)).card =
+      (if x < a then 1 else 0) + (if x < b then 1 else 0) +
+        (if x < c then 1 else 0) := by
+  simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
+  split_ifs <;> simp_all [Multiset.card_cons]
+
 /-- The cubic second-root inequalities follow from the analytic
 Chudnovsky--Seymour root-count theorem. -/
 theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
@@ -65,11 +74,11 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
           hf_pos hg_pos hf hg hfdeg hgdeg hpc r a hra
           (fun z hz ↦ by
             rw [hgroots] at hz
-            simp only [Multiset.mem_insert, Multiset.mem_singleton] at hz
+            simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hz
             grind)
           (fun z hz ↦ by
             rw [hfroots] at hz
-            simp only [Multiset.mem_insert, Multiset.mem_singleton] at hz
+            simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hz
             grind)
       let x : ℝ := (q + a) / 2
       have hqx : q < x := by grind
@@ -83,19 +92,19 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
         intro hx
         have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
         rw [hfroots] at hxmem
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
         grind
       have hxg : ¬ g.IsRoot x := by
         intro hx
         have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
         rw [hgroots] at hxmem
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
         grind
       have hcount :=
         sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
           hf_pos hg_pos hpc hdeg hno x hxf hxg
-      rw [hfroots, hgroots] at hcount
-      simp [hqa, hqx, hxa, hxr, hxp, hxq, hxb, hxc] at hcount
+      rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+      grind
     · by_contra hbr
       have hrb : r < b := lt_of_not_ge hbr
       by_cases hra : r < a
@@ -111,19 +120,19 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
           intro hx
           have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
           rw [hfroots] at hxmem
-          simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
           grind
         have hxg : ¬ g.IsRoot x := by
           intro hx
           have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
           rw [hgroots] at hxmem
-          simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
           grind
         have hcount :=
           sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
             hf_pos hg_pos hpc hdeg hno x hxf hxg
-        rw [hfroots, hgroots] at hcount
-        simp [hra, hrx, hxa, hxp, hxq, hxr, hxb, hxc] at hcount
+        rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+        grind
       · have har : a ≤ r := le_of_not_gt hra
         let x : ℝ := (r + b) / 2
         have hrx : r < x := by grind
@@ -137,29 +146,29 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
           intro hx
           have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
           rw [hfroots] at hxmem
-          simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
           grind
         have hxg : ¬ g.IsRoot x := by
           intro hx
           have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
           rw [hgroots] at hxmem
-          simp only [Multiset.mem_insert, Multiset.mem_singleton] at hxmem
+          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
           grind
         have hcount :=
           sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
             hf_pos hg_pos hpc hdeg hno x hxf hxg
-        rw [hfroots, hgroots] at hcount
-        simp [hrb, hrx, hxb, hxa, hxp, hxq, hxr, hxc] at hcount
-  · push_neg at hno
+        rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+        grind
+  · push Not at hno
     obtain ⟨z, hfz, hgz⟩ := hno
     have hz_f_mem : z = a ∨ z = b ∨ z = c := by
       have hzmem : z ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hfz
       rw [hfroots] at hzmem
-      simpa only [Multiset.mem_insert, Multiset.mem_singleton] using hzmem
+      simpa only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] using hzmem
     have hz_g_mem : z = p ∨ z = q ∨ z = r := by
       have hzmem : z ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hgz
       rw [hgroots] at hzmem
-      simpa only [Multiset.mem_insert, Multiset.mem_singleton] using hzmem
+      simpa only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] using hzmem
     have hfq_pos : HasPosLeadingCoeff (deleteRootFactor f z) := by
       simpa [HasPosLeadingCoeff,
         leadingCoeff_deleteRootFactor_of_isRoot hf_pos.ne_zero hfz] using hf_pos
@@ -187,12 +196,12 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
         rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz] at hs
         have hs_mem := Multiset.mem_of_mem_erase hs
         rw [hfroots] at hs_mem
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hs_mem
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
         grind
       have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ q := by
         intro s hs
         rw [hgq_roots] at hs
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hs
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
         grind
       exact not_posComboRealRooted_quadratic_separated
         hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split q a hqa
@@ -206,14 +215,14 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
       have hfq_ge : ∀ s ∈ (deleteRootFactor f z).roots, b ≤ s := by
         intro s hs
         rw [hfq_roots] at hs
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hs
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
         grind
       have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ r := by
         intro s hs
         rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz] at hs
         have hs_mem := Multiset.mem_of_mem_erase hs
         rw [hgroots] at hs_mem
-        simp only [Multiset.mem_insert, Multiset.mem_singleton] at hs_mem
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
         grind
       exact not_posComboRealRooted_quadratic_separated
         hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split r b hrb
