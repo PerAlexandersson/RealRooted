@@ -241,6 +241,7 @@ import RealRooted.RootSumBounds
 import RealRooted.RowThreshold
 import RealRooted.SameDegreeCountFromAnalytic
 import RealRooted.SameDegreeCubicRootCount
+import RealRooted.SameDegreeCubicSecondRootFromAnalytic
 import RealRooted.SameDegreeDerivative
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.SameDegreeQuadraticObstruction
