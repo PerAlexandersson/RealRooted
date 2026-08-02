@@ -37,7 +37,7 @@ theorem degreeOf_algebraicSymbol_one_inr_le
     rw [Subsingleton.elim (algebraicSymbol (fun _ : sigma => 1) T) 0]
     simp
   · letI := hR
-    unfold algebraicSymbol
+    rw [algebraicSymbol]
     refine (degreeOf_sum_le (Sum.inr i) Finset.univ fun m =>
       C (boxChoose (fun _ : sigma => 1) m.1 : R) *
         rename (Sum.inl : tau → tau ⊕ sigma)
