@@ -203,6 +203,7 @@ import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
