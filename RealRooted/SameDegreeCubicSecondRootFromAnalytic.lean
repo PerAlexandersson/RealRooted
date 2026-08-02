@@ -31,9 +31,15 @@ theorem PosComboRealRooted.deleteRootFactor_commonRoot
       C lam * f + C mu * g =
         (X - C z) *
           (C lam * deleteRootFactor f z + C mu * deleteRootFactor g z) := by
-    rw [factor_deleteRootFactor_of_isRoot hfz,
-      factor_deleteRootFactor_of_isRoot hgz]
-    ring
+    calc
+      C lam * f + C mu * g =
+          C lam * ((X - C z) * deleteRootFactor f z) +
+            C mu * ((X - C z) * deleteRootFactor g z) := by
+        rw [factor_deleteRootFactor_of_isRoot hfz,
+          factor_deleteRootFactor_of_isRoot hgz]
+      _ = (X - C z) *
+          (C lam * deleteRootFactor f z + C mu * deleteRootFactor g z) := by
+        ring
   constructor
   · intro hzero
     apply hcombo.1
@@ -201,18 +207,35 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
         have hs_mem := Multiset.mem_of_mem_erase hs
         rw [hfroots] at hs_mem
         simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
-        grind
+        rcases hs_mem with rfl | rfl | rfl
+        · exact le_rfl
+        · exact hab
+        · exact hab.trans hbc
       have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ q := by
         intro s hs
         rw [hgq_roots] at hs
         simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-        grind
+        rcases hs with rfl | rfl
+        · exact hpq
+        · exact le_rfl
       exact not_posComboRealRooted_quadratic_separated
         hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split q a hqa
         hgq_le hfq_ge hpcq
     · by_contra hbr
       have hrb : r < b := lt_of_not_ge hbr
-      have hz_eq_a : z = a := by grind
+      have hz_le_r : z ≤ r := by
+        rcases hz_g_mem with rfl | rfl | rfl
+        · exact hpq.trans hqr
+        · exact hqr
+        · exact le_rfl
+      have hz_eq_a : z = a := by
+        rcases hz_f_mem with hza | hzb | hzc
+        · exact hza
+        · exfalso
+          exact (not_le_of_gt hbr) (by simpa [hzb] using hz_le_r)
+        · exfalso
+          have hc_le_r : c ≤ r := by simpa [hzc] using hz_le_r
+          exact (not_le_of_gt hbr) (hbc.trans hc_le_r)
       have hfq_roots : (deleteRootFactor f z).roots = {b, c} := by
         rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz, hfroots, hz_eq_a]
         simp
@@ -220,14 +243,19 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
         intro s hs
         rw [hfq_roots] at hs
         simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-        grind
+        rcases hs with rfl | rfl
+        · exact le_rfl
+        · exact hbc
       have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ r := by
         intro s hs
         rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz] at hs
         have hs_mem := Multiset.mem_of_mem_erase hs
         rw [hgroots] at hs_mem
         simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
-        grind
+        rcases hs_mem with rfl | rfl | rfl
+        · exact hpq.trans hqr
+        · exact hqr
+        · exact le_rfl
       exact not_posComboRealRooted_quadratic_separated
         hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split r b hrb
         hgq_le hfq_ge hpcq
