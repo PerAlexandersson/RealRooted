@@ -71,7 +71,7 @@ theorem finiteSymbol_preserves_stability
       (specializeRight (fun _ : sigma ⊕ sigma => 0) Q) := by
     rcases hQStableOrZero with hzero | hstable
     · left
-      simp [hzero]
+      simp [hzero, specializeRight]
     · exact hstable.specializeRight_zero_or_of_degreeOf_le_one hQDegree
   have hQeq :
       Q = MvPolynomial.rename paperTargetInputEmbedding
