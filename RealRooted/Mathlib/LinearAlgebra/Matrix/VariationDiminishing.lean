@@ -160,6 +160,72 @@ lemma IsTotallyNonnegRect.aggregate_monotone
     Finset.prod_nonneg fun s _ ↦ hweight (r s)
   exact mul_nonneg hprod hminor
 
+/-- If every source minor of the target size is positive and every aggregation
+fiber has a positive-weight representative, then the aggregated maximal
+minors have a common strict sign. This is the strict-summand step in Karlin,
+Chapter 5, Section 1, Theorem 1.2. -/
+lemma strictMaximalMinors_aggregate_monotone
+    {m n q : ℕ} {M : Matrix (Fin m) (Fin n) ℝ}
+    (hM : M.IsTotallyNonnegRect)
+    (hminor :
+      ∀ ⦃rows : Fin q → Fin m⦄ ⦃cols : Fin q → Fin n⦄,
+        StrictMono rows → StrictMono cols →
+          0 < (M.submatrix rows cols).det)
+    (block : Fin n → Fin q) (hblock : Monotone block)
+    (weight : Fin n → ℝ) (hweight : ∀ j, 0 ≤ weight j)
+    (hfiber : ∀ s, ∃ j, block j = s ∧ 0 < weight j) :
+    ∀ ⦃rows rows' : Fin q → Fin m⦄,
+      StrictMono rows → StrictMono rows' →
+        0 <
+          (Matrix.submatrix
+              ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+                Matrix (Fin m) (Fin q) ℝ) rows id).det *
+            (Matrix.submatrix
+              ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+                Matrix (Fin m) (Fin q) ℝ) rows' id).det := by
+  classical
+  choose selector hselector_block hselector_weight using hfiber
+  have hselector_mono : StrictMono selector := by
+    intro a b hab
+    apply lt_of_not_ge
+    intro hba
+    have hle := hblock hba
+    rw [hselector_block a, hselector_block b] at hle
+    exact (not_le_of_gt hab) hle
+  have hselector_mem :
+      selector ∈ Fintype.piFinset
+        (fun s : Fin q ↦ Finset.univ.filter fun j ↦ block j = id s) := by
+    apply Fintype.mem_piFinset.mpr
+    intro s
+    simpa using hselector_block s
+  have hdet_pos (rows : Fin q → Fin m) (hrows : StrictMono rows) :
+      0 <
+        (Matrix.submatrix
+          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+            Matrix (Fin m) (Fin q) ℝ) rows id).det := by
+    rw [det_submatrix_fiberwise_sum]
+    apply Finset.sum_pos'
+    · intro r hr
+      have hrblock : ∀ s, block (r s) = s := by
+        intro s
+        simpa using (Fintype.mem_piFinset.mp hr s)
+      have hrmono : StrictMono r := by
+        intro a b hab
+        apply lt_of_not_ge
+        intro hba
+        have hle := hblock hba
+        rw [hrblock a, hrblock b] at hle
+        exact (not_le_of_gt hab) hle
+      exact mul_nonneg
+        (Finset.prod_nonneg fun s _ ↦ hweight (r s))
+        (hM hrows hrmono)
+    · refine ⟨selector, hselector_mem, ?_⟩
+      exact mul_pos
+        (Finset.prod_pos fun s _ ↦ hselector_weight s)
+        (hminor hrows hselector_mono)
+  intro rows rows' hrows hrows'
+  exact mul_pos (hdet_pos rows hrows) (hdet_pos rows' hrows')
+
 /-- A common nonzero sign for all maximal minors makes multiplication by the
 rectangular matrix injective. This is the rank step in Karlin, Chapter 5,
 Section 1, Theorem 1.1. -/
