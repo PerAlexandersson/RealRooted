@@ -198,6 +198,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.MatrixInterlacing
+import RealRooted.MultiaffineReciprocalRight
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiplierSequence
