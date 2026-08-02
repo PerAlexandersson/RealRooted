@@ -153,14 +153,15 @@ private theorem rightComplementMonomial_one
 
 private theorem coe_box_eq_sum_support_monomials
     {R sigma : Type*} [CommSemiring R]
-    [Fintype sigma] [DecidableEq sigma]
+    [Fintype sigma]
     (p : degreeOfLE sigma R (fun _ => 1)) :
     p.1 = ∑ m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1},
       monomial
         (Finsupp.indicator m.1.support (fun _ _ => 1))
         ((basisDegreeOfLE (fun _ : sigma => 1)).repr p m) := by
   classical
-  rw [← (basisDegreeOfLE (R := R) (fun _ : sigma => 1)).sum_repr p]
+  conv_lhs =>
+    rw [← (basisDegreeOfLE (R := R) (fun _ : sigma => 1)).sum_repr p]
   simp only [Submodule.coe_sum, Submodule.coe_smul, coe_basisDegreeOfLE,
     smul_eq_C_mul, C_mul_monomial, mul_one]
   apply Finset.sum_congr rfl
