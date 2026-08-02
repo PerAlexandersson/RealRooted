@@ -165,38 +165,25 @@ theorem Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm
     _ = _ := by
       simp [Set.powersetCard.orderEmbPermEquivEmbedding]
 
-private noncomputable def injectiveFunctionEquivEmbedding
-    {q : ℕ} {I : Type*} :
-    {f : Fin q → I // Function.Injective f} ≃ (Fin q ↪ I) :=
-  Equiv.ofBijective
-    (fun f : {f : Fin q → I // Function.Injective f} =>
-      ⟨f.1, f.2⟩)
-    ⟨by
-      intro f g h
-      exact Subtype.ext (congrArg Function.Embedding.toFun h),
-    by
-      intro f
-      exact ⟨⟨f, f.injective⟩, rfl⟩⟩
-
 private theorem sum_function_eq_sum_embedding_of_zero_noninjective
     {q : ℕ} {I M : Type*} [Fintype I] [AddCommMonoid M]
     (g : (Fin q → I) → M)
     (hzero : ∀ f, ¬ Function.Injective f → g f = 0) :
     ∑ f : Fin q → I, g f = ∑ e : Fin q ↪ I, g e := by
   classical
-  let s : Finset (Fin q → I) := Finset.univ.filter Function.Injective
   calc
-    ∑ f : Fin q → I, g f = ∑ f ∈ s, g f := by
-      symm
-      apply Finset.sum_subset (Finset.filter_subset _ _)
-      intro f _ hf
-      apply hzero f
-      intro hfinj
-      exact hf (Finset.mem_filter.mpr ⟨Finset.mem_univ f, hfinj⟩)
-    _ = ∑ f : {f : Fin q → I // Function.Injective f}, g f :=
-      Finset.sum_subtype s (by simp [s]) g
+    ∑ f : Fin q → I, g f =
+        (∑ f : {f : Fin q → I // Function.Injective f}, g f) +
+          ∑ f : {f : Fin q → I // ¬ Function.Injective f}, g f :=
+      (Fintype.sum_subtype_add_sum_subtype Function.Injective g).symm
+    _ = ∑ f : {f : Fin q → I // Function.Injective f}, g f := by
+      rw [show (∑ f : {f : Fin q → I // ¬ Function.Injective f}, g f) = 0 by
+        apply Finset.sum_eq_zero
+        intro f _
+        exact hzero f f.property, add_zero]
     _ = ∑ f : Fin q ↪ I, g f := by
-      exact Fintype.sum_equiv injectiveFunctionEquivEmbedding _ _ fun _ => rfl
+      exact Fintype.sum_equiv
+        (Equiv.subtypeInjectiveEquivEmbedding (Fin q) I) _ _ fun _ => rfl
 
 private theorem sum_perm_det_submatrix_comp_mul_prod_eq
     {R : Type*} [CommRing R] {l n m q : ℕ}
@@ -209,10 +196,7 @@ private theorem sum_perm_det_submatrix_comp_mul_prod_eq
           ∏ i, A (e (p i)) (cols i)) =
       (L.submatrix rows e).det * (A.submatrix e cols).det := by
   calc
-    (∑ p : Equiv.Perm (Fin q),
-        (L.submatrix rows (fun i => e (p i))).det *
-          ∏ i, A (e (p i)) (cols i)) =
-        (L.submatrix rows e).det *
+    _ = (L.submatrix rows e).det *
           ∑ p : Equiv.Perm (Fin q),
             Equiv.Perm.sign p • ∏ i, A (e (p i)) (cols i) := by
       rw [Finset.mul_sum]
