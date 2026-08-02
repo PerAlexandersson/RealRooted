@@ -88,6 +88,54 @@ theorem theorem21CompatibleRootCountNoCommonNonconstant :
       theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
         hf hg hsgn hf_deg hg_deg⟩
 
+/-- Correct nonconstant Liu equivalence with common roots retained explicitly.
+The legacy branch-only equivalence is false when the endpoints share a largest
+root: the right branch requires a strict largest-root inequality, while deleting
+the largest root from only the left endpoint can leave a root-count gap of two.
+The common-root deletion alternative is therefore necessary.
+
+The reduced predicate is the strongest form because its ordinary root-count
+branch retains the accompanying `NoCommonRoots` witness. -/
+theorem compatible_iff_theorem21RootCountBranchesReduced_nonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
+    Compatible f g ↔ theorem21RootCountBranchesReduced f g := by
+  constructor
+  · intro hcompat
+    by_cases hno : NoCommonRoots f g
+    · exact Or.inl
+        ⟨hno,
+          theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+            hf hg hsgn hno hf_deg hg_deg hcompat⟩
+    · exact Or.inr
+        (CommonRootDeletionCompatibleBranch.of_compatible_of_not_noCommonRoots
+          hcompat hno)
+  · intro hbranches
+    rcases hbranches with hbranches | hcommon
+    · exact theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
+        hf hg hsgn hf_deg hg_deg hbranches.2
+    · exact hcommon.compatible
+
+/-- Public-facing correct nonconstant Liu equivalence. Compared with the
+legacy branch-only predicate, this conclusion includes the necessary explicit
+common-root deletion alternative. -/
+theorem compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
+    Compatible f g ↔ theorem21RootCountBranchesWithCommon f g := by
+  constructor
+  · intro hcompat
+    exact theorem21RootCountBranchesReduced.withCommon
+      ((compatible_iff_theorem21RootCountBranchesReduced_nonconstant
+        hf hg hsgn hf_deg hg_deg).mp hcompat)
+  · intro hbranches
+    rcases hbranches with hbranches | hcommon
+    · exact theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
+        hf hg hsgn hf_deg hg_deg hbranches
+    · exact hcommon.compatible
+
 /-- The isolated forward direction of Liu Theorem 2.1 gives the pointwise
 root-count gap bound. -/
 theorem rootCountAtOrAbove_abs_sub_le_two_of_compatible_of_forward
