@@ -50,7 +50,13 @@ theorem eval_zero_applyMonomialDifferential_oneBox
   apply LinearMap.congr_fun ?_ f
   apply (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : sigma => 1)).ext
   intro n
-  dsimp only [lhs, rhs]
+  change MvPolynomial.eval (fun _ : sigma => 0)
+      (applyMonomialDifferential m.1
+        (MvPolynomial.basisDegreeOfLE
+          (R := ℂ) (fun _ : sigma => 1) n).1) =
+    MvPolynomial.coeff m.1
+      (MvPolynomial.basisDegreeOfLE
+        (R := ℂ) (fun _ : sigma => 1) n).1
   rw [MvPolynomial.coe_basisDegreeOfLE]
   by_cases hsupport : m.1.support = n.1.support
   · have hmn : m.1 = n.1 :=
