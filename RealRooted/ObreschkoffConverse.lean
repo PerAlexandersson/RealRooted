@@ -1721,6 +1721,71 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_thr
     linarith [le_abs_self (p.eval c)]
   exact (not_lt_of_ge hc_nonneg) hc_neg
 
+/-- The constant endpoint omitted by the source formulation of Corollary 2.2:
+compatibility with an oppositely signed nonzero constant forces degree at most two. -/
+lemma natDegree_le_two_of_compatible_C_left
+    {c : ℝ} {p : ℝ[X]} (hp : p.Splits)
+    (hsgn : OppositeLeadingSigns (C c) p) (hcompat : Compatible (C c) p) :
+    p.natDegree ≤ 2 := by
+  by_contra hnot
+  have hthree : 3 ≤ p.natDegree := by
+    lia
+  have shift_ne {q : ℝ[X]} (t : ℝ) (hqdeg : 3 ≤ q.natDegree) :
+      q - C t ≠ 0 := by
+    have hdegree : (q - C t).natDegree = q.natDegree := by
+      apply natDegree_sub_eq_left_of_natDegree_lt
+      simp only [natDegree_C]
+      lia
+    intro hzero
+    have : q.natDegree = 0 := by
+      rw [← hdegree, hzero, natDegree_zero]
+    lia
+  rcases hsgn.pos_neg_or_neg_pos with hpos | hneg
+  · have hc_pos : 0 < c := by
+      simpa [HasPosLeadingCoeff] using hpos.1
+    have hneg_three : 3 ≤ (-p).natDegree := by
+      simpa only [natDegree_neg] using hthree
+    obtain ⟨t, ht, hshift⟩ :=
+      exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_three
+        hp.neg hpos.2 hneg_three
+    have hc_ne : c ≠ 0 := ne_of_gt hc_pos
+    have hq_ne : (-p) - C t ≠ 0 := shift_ne t hneg_three
+    have hcomb :=
+      hcompat (t / c) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
+    have hpoly :
+        C (t / c) * C c + C 1 * p = -((-p) - C t) := by
+      calc
+        C (t / c) * C c + C 1 * p = C ((t / c) * c) + p := by
+          rw [C_mul, C_1, one_mul]
+        _ = C t + p := by rw [div_mul_cancel₀ t hc_ne]
+        _ = -((-p) - C t) := by ring
+    rw [hpoly] at hcomb
+    rcases hcomb with hzero | hreal
+    · exact hq_ne (neg_eq_zero.mp hzero)
+    · exact hshift ⟨hq_ne, by simpa using hreal.2.neg⟩
+  · have hc_pos : 0 < -c := by
+      simpa [HasPosLeadingCoeff] using hneg.1
+    obtain ⟨t, ht, hshift⟩ :=
+      exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_three
+        hp hneg.2 hthree
+    have hc_ne : -c ≠ 0 := ne_of_gt hc_pos
+    have hq_ne : p - C t ≠ 0 := shift_ne t hthree
+    have hcomb :=
+      hcompat (t / (-c)) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
+    have hpoly : C (t / (-c)) * C c + C 1 * p = p - C t := by
+      have hc' : c ≠ 0 := neg_ne_zero.mp hc_ne
+      calc
+        C (t / (-c)) * C c + C 1 * p = C ((t / (-c)) * c) + p := by
+          rw [C_mul, C_1, one_mul]
+        _ = C (-t) + p := by
+          congr 2
+          field_simp
+        _ = p - C t := by simp only [map_neg]; ring
+    rw [hpoly] at hcomb
+    rcases hcomb with hzero | hreal
+    · exact hq_ne hzero
+    · exact hshift hreal
+
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
