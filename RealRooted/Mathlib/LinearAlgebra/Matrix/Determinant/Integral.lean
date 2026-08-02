@@ -2,6 +2,7 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 /-!
@@ -34,5 +35,53 @@ theorem det_updateRow_intervalIntegral
       ∫ t in a..b, (M.updateRow i (f t)).det := by
   let L := (detUpdateRowLinearMap M i).toContinuousLinearMap
   exact (L.intervalIntegral_comp_comm hf).symm
+
+/-- The determinant of rowwise integrals is the integral of the pointwise determinant. -/
+theorem det_integral_rows_eq_integral_det
+    {n E : Type*} [DecidableEq n] [Fintype n] [MeasurableSpace E]
+    (μ : n → MeasureTheory.Measure E) [∀ i, MeasureTheory.SigmaFinite (μ i)]
+    (f : n → E → n → ℝ)
+    (hf : ∀ i j, MeasureTheory.Integrable (fun x => f i x j) (μ i)) :
+    (Matrix.of fun i j => ∫ x, f i x j ∂μ i).det =
+      ∫ x : n → E,
+        (Matrix.of fun i j => f i (x i) j).det ∂MeasureTheory.Measure.pi μ := by
+  have hprod (σ : Equiv.Perm n) :
+      MeasureTheory.Integrable
+        (fun x : n → E => ∏ i, f i (x i) (σ i)) (MeasureTheory.Measure.pi μ) :=
+    MeasureTheory.Integrable.fintype_prod fun i => hf i (σ i)
+  calc
+    (Matrix.of fun i j => ∫ x, f i x j ∂μ i).det =
+        ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∏ i, ∫ x, f i x (σ i) ∂μ i := by
+      rw [← Matrix.det_transpose, Matrix.det_apply]
+      simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
+      rfl
+    _ = ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∫ x : n → E, ∏ i, f i (x i) (σ i) ∂MeasureTheory.Measure.pi μ := by
+      apply Finset.sum_congr rfl
+      intro σ _
+      apply congrArg (((Equiv.Perm.sign σ : ℤ) : ℝ) * ·)
+      exact (MeasureTheory.integral_fintype_prod_eq_prod
+        (fun i x => f i x (σ i))).symm
+    _ = ∑ σ : Equiv.Perm n,
+          ∫ x : n → E, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+            ∏ i, f i (x i) (σ i) ∂MeasureTheory.Measure.pi μ := by
+      apply Finset.sum_congr rfl
+      intro σ _
+      rw [MeasureTheory.integral_const_mul]
+    _ = ∫ x : n → E, ∑ σ : Equiv.Perm n,
+          ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+            ∏ i, f i (x i) (σ i) ∂MeasureTheory.Measure.pi μ := by
+      symm
+      apply MeasureTheory.integral_finset_sum
+      intro σ _
+      exact (hprod σ).const_mul _
+    _ = ∫ x : n → E,
+          (Matrix.of fun i j => f i (x i) j).det ∂MeasureTheory.Measure.pi μ := by
+      apply congrArg fun g : (n → E) → ℝ => ∫ x, g x ∂MeasureTheory.Measure.pi μ
+      funext x
+      rw [← Matrix.det_transpose, Matrix.det_apply]
+      simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
+      rfl
 
 end Matrix
