@@ -195,6 +195,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.List.Interleave
@@ -202,6 +203,7 @@ import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular

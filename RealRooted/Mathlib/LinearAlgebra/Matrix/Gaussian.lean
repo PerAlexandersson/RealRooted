@@ -352,4 +352,34 @@ theorem det_adjacentRowDiff_exponentialKernelMatrix_pos {n : ℕ}
   simp [μ, Real.volume_Ioc]
   exact hx i.castSucc_lt_succ
 
+/-- Strictly ordered exponential-kernel minors are positive. -/
+theorem det_exponentialKernelMatrix_pos {q : ℕ}
+    {x y : Fin q → ℝ} (hx : StrictMono x) (hy : StrictMono y) :
+    0 < (exponentialKernelMatrix x y).det := by
+  induction q with
+  | zero => simp
+  | succ n ih =>
+      let y0 : Fin (n + 1) → ℝ := fun j => y j - y 0
+      have hy0 : StrictMono y0 := fun _ _ hij =>
+        sub_lt_sub_right (hy hij) _
+      have hy00 : y0 0 = 0 := by simp [y0]
+      rw [show y = fun j => y0 j + y 0 by
+        funext j
+        simp [y0]]
+      apply (det_exponentialKernelMatrix_add_const_right_pos_iff
+        x y0 (y 0)).2
+      have hfirst : ∀ i, exponentialKernelMatrix x y0 i 0 = 1 := by
+        intro i
+        change Real.exp (x i * y0 0) = 1
+        rw [hy00]
+        simp
+      rw [det_eq_det_adjacentRowDiff_of_firstColumn_eq_one _ hfirst]
+      let yTail : Fin n → ℝ := fun j => y0 j.succ
+      have hyTail : StrictMono yTail := hy0.comp Fin.strictMono_succ
+      have hyTail_pos : ∀ j, 0 < yTail j := by
+        intro j
+        exact hy00 ▸ hy0 (by simp)
+      exact det_adjacentRowDiff_exponentialKernelMatrix_pos
+        x yTail hx hyTail_pos (fun t ht => ih ht hyTail)
+
 end Matrix
