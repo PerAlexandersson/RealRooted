@@ -33,4 +33,26 @@ theorem transpose_mulVec_alternating_det_submatrix_succAbove {q : ℕ}
   simp_rw [hminor] at hdet
   simpa [mulVec, dotProduct, A, mul_comm, mul_left_comm, mul_assoc] using hdet
 
+/-- Expanding a matrix with constant first column after adjacent row subtraction. -/
+theorem det_eq_det_adjacentRowDiff_of_firstColumn_eq_one {n : ℕ}
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R)
+    (hA : ∀ i, A i 0 = 1) :
+    A.det =
+      (Matrix.of fun (i j : Fin n) =>
+        A i.succ j.succ - A i.castSucc j.succ).det := by
+  let B : Matrix (Fin (n + 1)) (Fin (n + 1)) R :=
+    fun i j => Fin.cases (A 0 j)
+      (fun k => A k.succ j - A k.castSucc j) i
+  have hdet : A.det = B.det := by
+    apply det_eq_of_forall_row_eq_smul_add_pred (fun _ => 1)
+    · intro j
+      simp [B]
+    · intro i j
+      simp [B]
+  rw [hdet, det_succ_column_zero, Fin.sum_univ_succ]
+  simp [B, hA]
+  apply congrArg det
+  ext i j
+  rfl
+
 end Matrix
