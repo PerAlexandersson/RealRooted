@@ -27,6 +27,7 @@ import RealRooted.BorceaBranden.FiniteSymbolCoefficient
 import RealRooted.BorceaBranden.FiniteSymbolContraction
 import RealRooted.BorceaBranden.FiniteSymbolDegree
 import RealRooted.BorceaBranden.FiniteSymbolLinearity
+import RealRooted.BorceaBranden.FiniteSymbolPreserver
 import RealRooted.BorceaBranden.FiniteSymbolProduct
 import RealRooted.BorceaBranden.FiniteSymbolReciprocal
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
