@@ -1,4 +1,5 @@
 import RealRooted.LiebSokalOperator
+import RealRooted.MultivariateStability
 
 /-!
 # Coefficients in the multiaffine finite-symbol argument
@@ -14,6 +15,7 @@ namespace RealRooted.BorceaBranden
 noncomputable section
 
 open BigOperators
+open Complex
 
 private theorem applyMonomialDifferentialAlong_indicator_eq_foldl
     {R sigma : Type*} [CommSemiring R] [DecidableEq sigma]
@@ -155,7 +157,8 @@ theorem specializeRight_zero_eq_killCompl
 exactly when its right exponent is zero. This is the Kronecker-delta step in
 Borcea--Branden, arXiv:0809.0401, Lemma 2.2. -/
 theorem specializeRight_zero_monomial
-    {sigma tau : Type*} (s : sigma →₀ ℕ) (t : tau →₀ ℕ) (c : ℂ) :
+    {sigma tau : Type*} [DecidableEq tau]
+    (s : sigma →₀ ℕ) (t : tau →₀ ℕ) (c : ℂ) :
     specializeRight (fun _ : tau => 0)
         (MvPolynomial.monomial
           (s.mapDomain Sum.inl + t.mapDomain Sum.inr) c) =
@@ -170,7 +173,13 @@ theorem specializeRight_zero_monomial
     obtain ⟨j, hj⟩ := Finset.nonempty_iff_ne_empty.mpr hsupport
     exact MvPolynomial.killCompl_monomial_eq_zero_of_notMem_range
       Sum.inl_injective c (a := Sum.inr j)
-      (by simpa using hj) (by simp)
+      (by
+        rw [Finsupp.mem_support_iff]
+        simp only [Finsupp.add_apply]
+        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply Sum.inr_injective]
+        simpa using Finsupp.mem_support_iff.mp hj)
+      (by simp)
 
 /-- The paper-normalized coefficient calculation in Borcea--Branden,
 arXiv:0809.0401, Lemma 2.2. Differentiating the monomial supported on all
@@ -232,13 +241,27 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
         (Finsupp.indicator a (fun _ _ => 1)).mapDomain Sum.inl +
           (Finsupp.indicator (n \ m) (fun _ _ => 1)).mapDomain Sum.inr := by
     ext x
-    cases x <;> simp [eLeft, eRight]
+    cases x with
+    | inl i =>
+        simp only [Finsupp.add_apply]
+        rw [Finsupp.mapDomain_apply Sum.inl_injective]
+        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        simp [eLeft, eRight]
+    | inr j =>
+        simp only [Finsupp.add_apply]
+        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply Sum.inr_injective]
+        simp [eLeft, eRight]
   rw [applyMonomialDifferential_indicator_monomial]
   by_cases hmn : m = n
   · subst n
     rw [if_pos (hsubset.mpr (by simp)), hsdiff, hindicator,
       specializeRight_zero_monomial]
-    simp
+    have hzero :
+        Finsupp.indicator (m \ m) (fun _ _ => 1) = 0 := by
+      ext j
+      simp
+    rw [if_pos hzero, if_pos rfl]
   · rw [if_neg hmn]
     by_cases hsub : m ⊆ n
     · rw [if_pos (hsubset.mpr hsub), hsdiff, hindicator,
@@ -252,10 +275,10 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
           Finsupp.indicator (n \ m) (fun _ _ => 1) ≠ 0 := by
         intro hzero
         have hvalue := congrArg (fun d : tau →₀ ℕ => d j) hzero
-        simpa [Finsupp.indicator_of_mem hj] using hvalue
+        simp [Finsupp.indicator_of_mem hj] at hvalue
       rw [if_neg hindicator_ne]
     · rw [if_neg (fun h => hsub (hsubset.mp h))]
-      simp
+      simp [specializeRight]
 
 end
 
