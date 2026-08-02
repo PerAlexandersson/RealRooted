@@ -41,7 +41,8 @@ theorem specializeZeroList_zero {sigma : Type*} (l : List sigma) :
   | cons i l ih => simp [specializeZeroList_cons, ih]
 
 /-- Evaluation after a list of zero specializations. -/
-theorem eval_specializeZeroList {sigma : Type*} (l : List sigma)
+theorem eval_specializeZeroList {sigma : Type*} [DecidableEq sigma]
+    (l : List sigma)
     (P : MvPolynomial sigma ℂ) (z : sigma → ℂ) :
     MvPolynomial.eval z (specializeZeroList l P) =
       MvPolynomial.eval (fun i => if i ∈ l then 0 else z i) P := by
@@ -90,7 +91,7 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or
     {P : MvPolynomial (Sum sigma tau) ℂ}
     (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P) :
     MvUpperHalfPlaneStableOrZero
-      (specializeRight (fun _ : tau => 0) P) := by
+      (_root_.RealRooted.specializeRight (fun _ : tau => 0) P) := by
   classical
   let l : List (Sum sigma tau) :=
     (Finset.univ.toList.map (Sum.inr : tau → Sum sigma tau))
@@ -104,7 +105,8 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or
     cases j <;> simp [l]
   have hQzero_or : Q = 0 ∨ MvUpperHalfPlaneStable Q := by
     simpa [Q] using hP.specializeZeroList_zero_or hPma l
-  by_cases hzero : specializeRight (fun _ : tau => 0) P = 0
+  by_cases hzero :
+      _root_.RealRooted.specializeRight (fun _ : tau => 0) P = 0
   · exact Or.inl hzero
   have hQne : Q ≠ 0 := by
     intro hQzero
