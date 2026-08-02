@@ -1,5 +1,5 @@
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
-import RealRooted.Tactic.FiniteSymbolPF
+import RealRooted.MultivariateStability
 
 /-!
 # Stable homogenization of real-rooted polynomials
@@ -12,8 +12,6 @@ evaluation in the region to be nonzero.
 open Polynomial
 
 namespace RealRooted.BorceaBranden
-
-open Tactic.FiniteSymbolPF
 
 /-- A nonzero split polynomial with nonpositive roots has stable bivariate homogenization. -/
 theorem homogenizeBivariate_stable_of_splits_nonpos {p : Polynomial ℝ}

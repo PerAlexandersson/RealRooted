@@ -31,25 +31,20 @@ example {alpha beta : ℕ → ℝ} {d : ℕ} {residual : ℝ[X]}
     residual_stable := hres
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hhom : homogenizeStableStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) := by
   rr_fsp_stable_of_residual_certificate using
-    homogenize_stable := hhom,
     certificate := cert
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   rr_fsp_preserver_of_residual_certificate using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     certificate := cert
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree = 3)
     (hpf : IsPFPolynomial (quadraticBidiagonalResidual aa ab ac ba bb bc d))
@@ -60,7 +55,6 @@ example (hBB : finiteSymbolBBStatement)
       (quadraticJensenWeight ba bb bc) d := by
   rr_fsp_quadratic_preserver using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -68,7 +62,6 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -81,7 +74,6 @@ example (hBB : finiteSymbolBBStatement)
       (secondDerivativeBeta a1 b2) d := by
   rr_fsp_second_derivative_preserver using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -89,7 +81,6 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -102,7 +93,6 @@ example (hBB : finiteSymbolBBStatement)
       (secondDerivativeBeta a1 b2) d := by
   rr_fsp_second_derivative_preserver_on_degree using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -110,7 +100,6 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       0 b1 a0 c3 (b2 - c3) a1 d).natDegree = 3)
@@ -123,7 +112,6 @@ example (hBB : finiteSymbolBBStatement)
       (shiftedSecondDerivativeBeta a1 b2 c3) d := by
   rr_fsp_shifted_second_derivative_preserver using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     degree_ge_two := hd,
     cubic_degree := hdeg,
     residual_pf := hpf,
@@ -131,7 +119,6 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -155,7 +142,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, IsPFPolynomial (P n) := by
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -166,7 +152,6 @@ example (hBB : finiteSymbolBBStatement)
     recurrence := hrec
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -191,7 +176,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -203,7 +187,6 @@ example (hBB : finiteSymbolBBStatement)
     nonzero := hne
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -228,7 +211,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     cutoff := N,
     base := hbase,
     degree := hdegree,
@@ -241,7 +223,6 @@ example (hBB : finiteSymbolBBStatement)
     nonzero := hne
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -265,7 +246,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, IsPFPolynomial (P n) := by
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -276,7 +256,6 @@ example (hBB : finiteSymbolBBStatement)
     recurrence := hrec
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -301,7 +280,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     base := hbase,
     degree := hdegree,
     degree_ge_two := hd,
@@ -313,7 +291,6 @@ example (hBB : finiteSymbolBBStatement)
     nonzero := hne
 
 example (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -339,7 +316,6 @@ example (hBB : finiteSymbolBBStatement)
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
   rr_fsp_shifted_second_derivative_sequence using
     bb_backend := hBB,
-    homogenize_stable := hhom,
     cutoff := N,
     base := hbase,
     degree := hdegree,

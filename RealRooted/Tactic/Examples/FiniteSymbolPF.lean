@@ -20,11 +20,10 @@ example {alpha beta : ℕ → ℝ} {d : ℕ}
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hBB : finiteSymbolBBStatement)
-    (hhom : homogenizeStableStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
   bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-    hBB hhom cert
+    hBB cert
 
 example {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
