@@ -50,6 +50,24 @@ theorem Splits.applyTDerivList {epss : List ℝ} {p : ℝ[X]}
         exact hpos eta (by simp [heta])
       exact ih (splits_tderiv heps hp) htail
 
+/-- A finite sequence of derivative shifts preserves natural degree. -/
+@[simp]
+theorem natDegree_applyTDerivList (epss : List ℝ) (p : ℝ[X]) :
+    (applyTDerivList epss p).natDegree = p.natDegree := by
+  induction epss generalizing p with
+  | nil => simp
+  | cons eps epss ih =>
+      rw [applyTDerivList_cons, ih, natDegree_TDeriv]
+
+/-- A finite sequence of derivative shifts preserves the leading coefficient. -/
+@[simp]
+theorem leadingCoeff_applyTDerivList (epss : List ℝ) (p : ℝ[X]) :
+    (applyTDerivList epss p).leadingCoeff = p.leadingCoeff := by
+  induction epss generalizing p with
+  | nil => simp
+  | cons eps epss ih =>
+      rw [applyTDerivList_cons, ih, leadingCoeff_TDeriv]
+
 /-- A multiple final root gains one unit of multiplicity at every backward step. -/
 theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
     {epss : List ℝ} {p : ℝ[X]} {a : ℝ}
