@@ -22,6 +22,8 @@ it is intentionally not assumed here.
 
 public section
 
+open scoped Interval
+
 open Filter Topology
 
 namespace Matrix
@@ -94,6 +96,15 @@ noncomputable def exponentialKernelMatrix {i j : Type*}
 @[simp] lemma exponentialKernelMatrix_apply {i j : Type*}
     (x : i → ℝ) (y : j → ℝ) (r : i) (c : j) :
     exponentialKernelMatrix x y r c = Real.exp (x r * y c) :=
+  rfl
+
+/-- Adjacent exponential-kernel row differences are interval integrals. -/
+lemma exponentialKernelMatrix_succ_sub_castSucc_eq_intervalIntegral {n : ℕ}
+    (x : Fin (n + 1) → ℝ) (y : Fin n → ℝ) (i j : Fin n) :
+    exponentialKernelMatrix x y i.succ j -
+        exponentialKernelMatrix x y i.castSucc j =
+      ∫ t in x i.castSucc..x i.succ, y j * Real.exp (t * y j) := by
+  rw [Real.intervalIntegral_mul_exp_mul]
   rfl
 
 /-- Translating all first coordinates multiplies the exponential-kernel
