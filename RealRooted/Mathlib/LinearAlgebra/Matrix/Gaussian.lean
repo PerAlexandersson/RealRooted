@@ -15,9 +15,8 @@ Chapter V, Section 1, Proposition 1.1.  Karlin uses the Gaussian matrix
 
 The proposition has two parts: `F(a)` tends to the identity as `a` tends to
 positive infinity, and `F(a)` is strictly totally positive when `a > 0`.
-This file proves the first part.  The second part requires the source's
-strict-total-positivity theorem for the exponential kernel `exp (x * y)`;
-it is intentionally not assumed here.
+This file proves Gaussian convergence and strict positivity of all strictly
+ordered finite minors using Karlin.s exponential-kernel argument.
 -/
 
 public section
@@ -380,5 +379,21 @@ theorem det_exponentialKernelMatrix_pos {q : ℕ}
         exact hy00 ▸ hy0 (by simp)
       exact det_adjacentRowDiff_exponentialKernelMatrix_pos
         x yTail hx hyTail_pos (fun t ht => ih ht hyTail)
+
+/-- Strictly ordered minors of Karlin's Gaussian matrix are positive. -/
+theorem det_gaussianMatrix_submatrix_pos {n q : ℕ}
+    (a : ℝ) (rows cols : Fin q → Fin n) (ha : 0 < a)
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 < ((gaussianMatrix n a).submatrix rows cols).det := by
+  apply det_gaussianMatrix_submatrix_pos_of_exponentialKernel a rows cols
+  apply det_exponentialKernelMatrix_pos
+  · intro i j hij
+    have hrowsVal : (rows i).val < (rows j).val := hrows hij
+    exact mul_lt_mul_of_pos_left (by
+      exact_mod_cast hrowsVal) (by positivity)
+  · intro i j hij
+    have hcolsVal : (cols i).val < (cols j).val := hcols hij
+    change ((cols i).val : ℝ) < ((cols j).val : ℝ)
+    exact_mod_cast hcolsVal
 
 end Matrix
