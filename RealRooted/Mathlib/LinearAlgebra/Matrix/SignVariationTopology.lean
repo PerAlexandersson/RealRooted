@@ -72,9 +72,7 @@ theorem signVariations_le_of_tendsto
       simp only [rawA, List.get_ofFn, Function.comp_apply]
       congr 2
     have hdsub_nz : d.Sublist (rawA.filter (· ≠ 0)) := by
-      have h := hdsub.filter (· ≠ 0)
-      rw [hd_filter] at h
-      exact h
+      simpa only [hd_filter] using hdsub.filter (· ≠ 0)
     have hlen :=
       (List.isChain_destutter (· ≠ ·) nz).length_le_length_destutter_ne hdsub_nz
     simpa only [signVariations, List.signVariations, List.map_ofFn, d, nz, raw,

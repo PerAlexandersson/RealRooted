@@ -11,7 +11,7 @@ strictification reduces the result to the strict maximal-minor theorem, and
 lower semicontinuity of sign variations passes the bound to the limit.
 -/
 
-open Filter Topology
+open Filter
 
 /-- A full-column-rank sign-consistent matrix has at most `q - 1` sign
 variations in every vector in its range. -/
