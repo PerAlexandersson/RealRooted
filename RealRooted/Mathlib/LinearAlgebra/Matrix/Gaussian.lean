@@ -1,8 +1,9 @@
-import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 import Mathlib.Topology.Instances.Matrix
+import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 
 /-!
 # Karlin's finite Gaussian matrices
@@ -94,6 +95,93 @@ noncomputable def exponentialKernelMatrix {i j : Type*}
     (x : i → ℝ) (y : j → ℝ) (r : i) (c : j) :
     exponentialKernelMatrix x y r c = Real.exp (x r * y c) :=
   rfl
+
+/-- Translating all first coordinates multiplies the exponential-kernel
+determinant by an explicit positive column factor. -/
+theorem det_exponentialKernelMatrix_add_const_left {q : ℕ}
+    (x y : Fin q → ℝ) (c : ℝ) :
+    (exponentialKernelMatrix (fun i => x i + c) y).det =
+      (∏ j, Real.exp (c * y j)) *
+        (exponentialKernelMatrix x y).det := by
+  have hmatrix :
+      exponentialKernelMatrix (fun i => x i + c) y =
+        of fun i j =>
+          Real.exp (c * y j) * exponentialKernelMatrix x y i j := by
+    ext i j
+    simp only [exponentialKernelMatrix_apply, of_apply]
+    rw [show (x i + c) * y j = c * y j + x i * y j by ring,
+      Real.exp_add]
+  rw [hmatrix, det_mul_row]
+
+/-- Translating all second coordinates multiplies the exponential-kernel
+determinant by an explicit positive row factor. -/
+theorem det_exponentialKernelMatrix_add_const_right {q : ℕ}
+    (x y : Fin q → ℝ) (c : ℝ) :
+    (exponentialKernelMatrix x (fun j => y j + c)).det =
+      (∏ i, Real.exp (x i * c)) *
+        (exponentialKernelMatrix x y).det := by
+  have hmatrix :
+      exponentialKernelMatrix x (fun j => y j + c) =
+        of fun i j =>
+          Real.exp (x i * c) * exponentialKernelMatrix x y i j := by
+    ext i j
+    simp only [exponentialKernelMatrix_apply, of_apply]
+    rw [show x i * (y j + c) = x i * c + x i * y j by ring,
+      Real.exp_add]
+  rw [hmatrix, det_mul_column]
+
+theorem det_exponentialKernelMatrix_add_const_left_pos_iff {q : ℕ}
+    (x y : Fin q → ℝ) (c : ℝ) :
+    0 < (exponentialKernelMatrix (fun i => x i + c) y).det ↔
+      0 < (exponentialKernelMatrix x y).det := by
+  rw [det_exponentialKernelMatrix_add_const_left]
+  exact mul_pos_iff_of_pos_left (by positivity)
+
+theorem det_exponentialKernelMatrix_add_const_right_pos_iff {q : ℕ}
+    (x y : Fin q → ℝ) (c : ℝ) :
+    0 < (exponentialKernelMatrix x (fun j => y j + c)).det ↔
+      0 < (exponentialKernelMatrix x y).det := by
+  rw [det_exponentialKernelMatrix_add_const_right]
+  exact mul_pos_iff_of_pos_left (by positivity)
+
+/-- The transpose of the Wronskian matrix of the functions
+`t ↦ exp (y i * t)`. -/
+noncomputable def exponentialWronskianMatrix {q : ℕ}
+    (y : Fin q → ℝ) (t : ℝ) : Matrix (Fin q) (Fin q) ℝ :=
+  fun i j => iteratedDeriv (j : ℕ) (fun s => Real.exp (y i * s)) t
+
+@[simp] lemma exponentialWronskianMatrix_apply {q : ℕ}
+    (y : Fin q → ℝ) (t : ℝ) (i j : Fin q) :
+    exponentialWronskianMatrix y t i j =
+      y i ^ (j : ℕ) * Real.exp (t * y i) := by
+  rw [exponentialWronskianMatrix,
+    congrFun (iteratedDeriv_exp_const_mul (j : ℕ) (y i)) t]
+  congr 2
+  exact mul_comm _ _
+
+/-- Karlin's exponential Wronskian is a positive exponential factor times a
+Vandermonde determinant. -/
+theorem det_exponentialWronskianMatrix_eq {q : ℕ}
+    (y : Fin q → ℝ) (t : ℝ) :
+    (exponentialWronskianMatrix y t).det =
+      (∏ i, Real.exp (t * y i)) * (vandermonde y).det := by
+  have hmatrix :
+      exponentialWronskianMatrix y t =
+        of fun i j =>
+          Real.exp (t * y i) * vandermonde y i j := by
+    ext i j
+    simp only [exponentialWronskianMatrix_apply, of_apply,
+      vandermonde_apply]
+    ring
+  rw [hmatrix, det_mul_column]
+
+/-- The exponential Wronskian has the positive orientation required in
+Karlin's extended-determinant argument. -/
+theorem det_exponentialWronskianMatrix_pos {q : ℕ}
+    {y : Fin q → ℝ} (hy : StrictMono y) (t : ℝ) :
+    0 < (exponentialWronskianMatrix y t).det := by
+  rw [det_exponentialWronskianMatrix_eq]
+  exact mul_pos (by positivity) (det_vandermonde_pos_of_strictMono hy)
 
 /-- A Gaussian minor is an exponential-kernel minor times positive row and
 column factors. This is the algebraic reduction in Karlin's proof of

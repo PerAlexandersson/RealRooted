@@ -208,6 +208,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.MatrixInterlacing
 import RealRooted.MultiaffineReciprocalRight
 import RealRooted.Multiaffine
