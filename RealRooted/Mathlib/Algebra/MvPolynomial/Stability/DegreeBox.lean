@@ -83,6 +83,13 @@ theorem coe_basisDegreeOfLE (κ : σ → ℕ) :
     rw [← Module.Basis.repr_symm_single_one]
     exact Finsupp.supportedEquivFinsupp_symm_single _ _ _
 
+@[simp]
+theorem basisDegreeOfLE_repr_apply (κ : σ → ℕ)
+    (p : degreeOfLE σ R κ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    (basisDegreeOfLE κ).repr p m = coeff m.1 p.1 :=
+  rfl
+
 /-- A bounded exponent vector on finitely many variables is the same data as
 choosing an exponent in `Fin (κ i + 1)` for every coordinate. -/
 noncomputable def degreeOfLEIndexEquiv [Fintype σ] (κ : σ → ℕ) :
