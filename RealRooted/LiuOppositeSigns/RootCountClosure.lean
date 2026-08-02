@@ -163,9 +163,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
     rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
-      (fun _ hpx hqx =>
-        hcompat'.rootCountAbove_bounds_of_nonRoot
-          hp'_ne hq'_ne hpx hqx)
+      (hcompat'.rootCountAbove_bounds_of_nonRoot hp'_ne hq'_ne)
   exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
     rootCrossing_of_rootCountAbove_diff_le_one
       hp'_split hq'_split hdeg' hcount'⟩
@@ -205,9 +203,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
     rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
-      (fun _ hpx hqx =>
-        hcompat'.rootCountAbove_bounds_of_nonRoot
-          hp'_ne hq'_ne hpx hqx)
+      (hcompat'.rootCountAbove_bounds_of_nonRoot hp'_ne hq'_ne)
   exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
     succDegreeRootCrossing_of_rootCountAbove
       hp'_split hq'_split hdeg' hcount'⟩
