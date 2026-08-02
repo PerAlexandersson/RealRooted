@@ -53,6 +53,18 @@ private theorem coe_ofFinEmb_eq_range {q : ℕ} {I : Type*} (f : Fin q ↪ I) :
   ext x
   simp [Set.powersetCard.ofFinEmb, Set.powersetCard.map]
 
+
+private theorem range_orderEmbOfPowersetCard {q : ℕ} {I : Type*}
+    [LinearOrder I] (s : Set.powersetCard I q) :
+    Set.range (Set.powersetCard.ofFinEmbEquiv.symm s) = (s : Set I) := by
+  let e : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm s
+  calc
+    Set.range e = (Set.powersetCard.ofFinEmb q I e.toEmbedding : Set I) :=
+      (coe_ofFinEmb_eq_range e.toEmbedding).symm
+    _ = (s : Set I) := congrArg
+      (fun t : Set.powersetCard I q => (t : Set I))
+      (Set.powersetCard.ofFinEmbEquiv.apply_symm_apply s)
+
 /-- An injective finite map into a linear order factors through the increasing
 enumeration of its image and a permutation of its domain. -/
 theorem Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective
@@ -65,14 +77,8 @@ theorem Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective
   let e : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm s
   have hfRange : Set.range f = (s : Set I) :=
     (coe_ofFinEmb_eq_range emb).symm
-  have heRange : Set.range e = (s : Set I) := by
-    calc
-      Set.range e = (Set.powersetCard.ofFinEmb q I e.toEmbedding : Set I) :=
-        (coe_ofFinEmb_eq_range e.toEmbedding).symm
-      _ = (s : Set I) := congrArg
-        (fun t : Set.powersetCard I q => (t : Set I))
-        (Set.powersetCard.ofFinEmbEquiv.apply_symm_apply s)
-  have hRange : Set.range f = Set.range e := hfRange.trans heRange.symm
+  have hRange : Set.range f = Set.range e :=
+    hfRange.trans (range_orderEmbOfPowersetCard s).symm
   let ee : Fin q ≃ Set.range e := Equiv.ofInjective e e.injective
   let p : Equiv.Perm (Fin q) :=
     (Equiv.ofInjective f hf).trans
@@ -82,17 +88,6 @@ theorem Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective
   have hfi : f i ∈ Set.range e := hRange ▸ ⟨i, rfl⟩
   change e (ee.symm ⟨f i, hfi⟩) = f i
   exact congrArg Subtype.val (ee.apply_symm_apply ⟨f i, hfi⟩)
-
-private theorem range_orderEmbOfPowersetCard {q : ℕ} {I : Type*}
-    [LinearOrder I] (s : Set.powersetCard I q) :
-    Set.range (Set.powersetCard.ofFinEmbEquiv.symm s) = (s : Set I) := by
-  let e : Fin q ↪o I := Set.powersetCard.ofFinEmbEquiv.symm s
-  calc
-    Set.range e = (Set.powersetCard.ofFinEmb q I e.toEmbedding : Set I) :=
-      (coe_ofFinEmb_eq_range e.toEmbedding).symm
-    _ = (s : Set I) := congrArg
-      (fun t : Set.powersetCard I q => (t : Set I))
-      (Set.powersetCard.ofFinEmbEquiv.apply_symm_apply s)
 
 private theorem range_comp_perm {q : ℕ} {I : Type*}
     (e : Fin q → I) (p : Equiv.Perm (Fin q)) :
