@@ -2,6 +2,7 @@ import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.RootContinuity
 import RealRooted.RootCountJump
 import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.SameDegreeCubicSecondRootFromAnalytic
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SuccDegreeLeftEndpoint
 
@@ -742,6 +743,140 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
   rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
     (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
     (hFdeg i) (x i)
+
+/-- The proved analytic cubic second-root bound closes the degree-`≤ 3`
+same-degree root-count route. -/
+theorem posCombo_sameDegree_rootCount_degree_le_three
+    {f g : ℝ[X]} (x : ℝ)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  by_cases hle : f.natDegree ≤ 2
+  · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+  · have hfdeg3 : f.natDegree = 3 := by lia
+    have hgdeg3 : g.natDegree = 3 := by rw [hdeg, hfdeg3]
+    exact sameDegree_cubic_rootCount_le_one_of_secondRootBound
+      cubicSecondRootBound_from_analytic hfdeg3 hgdeg3
+      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+      hf_pos hg_pos hfg x
+
+/-- Sequence form of `posCombo_sameDegree_rootCount_degree_le_three`. -/
+theorem posCombo_sameDegree_rootCount_degree_le_three_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x i)).card ≤ 1 := fun i =>
+  posCombo_sameDegree_rootCount_degree_le_three (x i)
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i)
+
+/-- Upper-threshold form of the analytic degree-`≤ 3` root-count route. -/
+theorem posCombo_sameDegree_rootCountAbove_degree_le_three
+    {f g : ℝ[X]} (x : ℝ)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 :=
+  sameDegreeRootCountAbove_of_rootCount
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun y => posCombo_sameDegree_rootCount_degree_le_three y
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg)
+    x
+
+/-- Sequence form of `posCombo_sameDegree_rootCountAbove_degree_le_three`. -/
+theorem posCombo_sameDegree_rootCountAbove_degree_le_three_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := fun i =>
+  posCombo_sameDegree_rootCountAbove_degree_le_three (x i)
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i)
+
+/-- Root-crossing form of the analytic degree-`≤ 3` route. -/
+theorem posCombo_sameDegree_rootCrossing_degree_le_three
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  rootCrossing_of_rootCountAbove_diff_le_one
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun x => posCombo_sameDegree_rootCountAbove_degree_le_three x
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg)
+
+/-- Sequence form of `posCombo_sameDegree_rootCrossing_degree_le_three`. -/
+theorem posCombo_sameDegree_rootCrossing_degree_le_three_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
+  posCombo_sameDegree_rootCrossing_degree_le_three
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i)
 
 theorem sameDegree_rootCrossing_degree_le_one_sequence
     {F G : Nat → ℝ[X]}
@@ -1679,6 +1814,80 @@ syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence_named
     "same_degree" ":=" term ","
     "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_three_named)
+  "rr_posCombo_sameDegree_rootCount_degree_le_three" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_three_sequence_named)
+  "rr_posCombo_sameDegree_rootCount_degree_le_three_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_three_named)
+  "rr_posCombo_sameDegree_rootCountAbove_degree_le_three" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence_named)
+  "rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_three_named)
+  "rr_posCombo_sameDegree_rootCrossing_degree_le_three" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence_named)
+  "rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
   tactic
 
 syntax (name := rr_compatible_succDegree_rootCountAbove_le_two_named)
@@ -2718,6 +2927,89 @@ macro_rules
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_two_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCount_degree_le_three using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_three
+          $x $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCount_degree_le_three_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_three_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_degree_le_three using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_three
+          $x $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_three_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_degree_le_three using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_three
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_three_sequence
             $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
   | `(tactic|
       rr_compatible_succDegree_rootCountAbove_le_two using
