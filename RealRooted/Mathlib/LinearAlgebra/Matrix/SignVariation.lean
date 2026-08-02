@@ -3,6 +3,8 @@ module
 public import Mathlib.Algebra.Polynomial.RuleOfSigns
 public import Mathlib.Data.List.ChainOfFn
 public import Mathlib.Data.List.NodupEquivFin
+public import Mathlib.Data.List.SplitBy
+public import Mathlib.Order.Monotone.Extension
 public import Mathlib.Tactic
 
 /-!
@@ -28,6 +30,10 @@ lemma sign_neg_real (x : ℝ) : SignType.sign (-x) = -SignType.sign x := by
     simp
   · have hneg : -x < 0 := by linarith
     rw [sign_neg hneg, sign_pos hx]
+
+lemma eq_neg_of_ne_of_ne_zero {s t : SignType} (hs : s ≠ 0) (ht : t ≠ 0)
+    (hst : s ≠ t) : s = -t := by
+  cases s <;> cases t <;> simp_all
 
 end SignType
 
@@ -356,6 +362,78 @@ lemma signVariations_append_nonpos_le_succ (l₁ l₂ : List ℝ)
 
 end List
 
+namespace List
+
+private theorem exists_monotone_destutter_index {α β : Type*} [DecidableEq β]
+    (key : α → β) :
+    ∀ (l : List α), l ≠ [] →
+      ∃ block : Fin l.length → Fin ((l.map key).destutter (· ≠ ·)).length,
+        Monotone block ∧ Function.Surjective block ∧
+          ∀ i, key (l.get i) = ((l.map key).destutter (· ≠ ·)).get (block i)
+  | [], h => (h rfl).elim
+  | [a], _ => by
+      refine ⟨id, monotone_id, Function.surjective_id, ?_⟩
+      intro i
+      fin_cases i
+      rfl
+  | a :: b :: l, _ => by
+      obtain ⟨block, hmono, hsurj, hkey⟩ :=
+        exists_monotone_destutter_index key (b :: l) (by simp)
+      by_cases hab : key a = key b
+      · have hdest :
+            (((a :: b :: l).map key).destutter (· ≠ ·)) =
+              (((b :: l).map key).destutter (· ≠ ·)) := by
+          simp only [map_cons, destutter_cons_cons]
+          rw [if_neg (not_ne_of_eq hab), hab]
+          rfl
+        rw [hdest]
+        let newBlock :
+            Fin (a :: b :: l).length →
+              Fin (((b :: l).map key).destutter (· ≠ ·)).length :=
+          Fin.cases (block 0) block
+        refine ⟨newBlock, ?_, ?_, ?_⟩
+        · rw [Fin.monotone_iff_le_succ]
+          intro i
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simp [newBlock]
+          · simpa [newBlock] using (Fin.monotone_iff_le_succ.mp hmono j)
+        · intro i
+          obtain ⟨j, rfl⟩ := hsurj i
+          exact ⟨j.succ, by simp [newBlock]⟩
+        · intro i
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simpa [newBlock, hab] using hkey (0 : Fin (b :: l).length)
+          · simpa [newBlock] using hkey j
+      · have hdest :
+            (((a :: b :: l).map key).destutter (· ≠ ·)) =
+              key a :: ((b :: l).map key).destutter (· ≠ ·) := by
+          simp only [map_cons, destutter_cons_cons]
+          rw [if_pos hab]
+          rfl
+        rw [hdest]
+        let newBlock :
+            Fin (a :: b :: l).length →
+              Fin (key a :: ((b :: l).map key).destutter (· ≠ ·)).length :=
+          Fin.cases 0 fun i => (block i).succ
+        refine ⟨newBlock, ?_, ?_, ?_⟩
+        · rw [Fin.monotone_iff_le_succ]
+          intro i
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simp [newBlock]
+          · simpa [newBlock] using
+              Fin.succ_le_succ (Fin.monotone_iff_le_succ.mp hmono j)
+        · intro i
+          refine Fin.cases ?_ (fun j => ?_) i
+          · exact ⟨0, by simp [newBlock]⟩
+          · obtain ⟨k, rfl⟩ := hsurj j
+            exact ⟨k.succ, by simp [newBlock]⟩
+        · intro i
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simp [newBlock]
+          · simpa [newBlock] using hkey j
+
+end List
+
 namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
@@ -452,6 +530,197 @@ lemma signVariations_append_nonpos_le_succ {m n : ℕ} (x : Fin m → ℝ)
     simp only [List.mem_ofFn] at ha
     obtain ⟨i, rfl⟩ := ha
     exact hy i)
+
+/-- A decomposition of a nonzero finite real vector into consecutive sign blocks.
+
+The block count is one more than the number of sign variations. Every block has
+a nonzero coordinate, and zeros are assigned monotonically to neighboring sign
+blocks. This is the finite combinatorial decomposition used in Karlin, *Total
+Positivity*, Vol. I, Chapter V, Section 1, Theorem 1.2. -/
+structure SignBlockDecomposition {n : ℕ} (x : Fin n → ℝ) where
+  blockCount : ℕ
+  blockCount_eq : blockCount = signVariations x + 1
+  block : Fin n → Fin blockCount
+  monotone_block : Monotone block
+  block_has_nonzero : ∀ b, ∃ i, block i = b ∧ x i ≠ 0
+  blockSign : Fin blockCount → SignType
+  blockSign_ne_zero : ∀ b, blockSign b ≠ 0
+  sign_eq_blockSign : ∀ i, x i ≠ 0 → SignType.sign (x i) = blockSign (block i)
+  adjacent_blockSign :
+    ∀ {i j}, (i : ℕ) + 1 = (j : ℕ) → blockSign i = -blockSign j
+
+namespace SignBlockDecomposition
+
+/-- The consecutive list blocks induced by a sign-block index map. -/
+def blocks {n : ℕ} {x : Fin n → ℝ} (D : SignBlockDecomposition x) :
+    List (List (Fin n)) :=
+  (List.finRange n).splitBy fun i j => decide (D.block i = D.block j)
+
+@[simp]
+theorem flatten_blocks {n : ℕ} {x : Fin n → ℝ} (D : SignBlockDecomposition x) :
+    D.blocks.flatten = List.finRange n := by
+  simp [blocks]
+
+theorem nil_notMem_blocks {n : ℕ} {x : Fin n → ℝ}
+    (D : SignBlockDecomposition x) : [] ∉ D.blocks := by
+  exact List.nil_notMem_splitBy _ _
+
+theorem isChain_block_eq_of_mem_blocks {n : ℕ} {x : Fin n → ℝ}
+    (D : SignBlockDecomposition x) {B : List (Fin n)} (hB : B ∈ D.blocks) :
+    B.IsChain fun i j => D.block i = D.block j := by
+  simpa [blocks] using List.isChain_of_mem_splitBy hB
+
+theorem isChain_block_ne_blocks {n : ℕ} {x : Fin n → ℝ}
+    (D : SignBlockDecomposition x) :
+    D.blocks.IsChain fun A B =>
+      ∃ hA hB, D.block (A.getLast hA) ≠ D.block (B.head hB) := by
+  simpa [blocks] using
+    List.isChain_getLast_head_splitBy
+      (fun i j : Fin n => decide (D.block i = D.block j)) (List.finRange n)
+
+theorem same_block_of_between {n : ℕ} {x : Fin n → ℝ}
+    (D : SignBlockDecomposition x) {i j k : Fin n} (hik : i ≤ k) (hkj : k ≤ j)
+    (hij : D.block i = D.block j) : D.block k = D.block i := by
+  apply le_antisymm
+  · simpa [hij] using D.monotone_block hkj
+  · exact D.monotone_block hik
+
+theorem sign_eq_sign_of_block_eq {n : ℕ} {x : Fin n → ℝ}
+    (D : SignBlockDecomposition x) {i j : Fin n} (hi : x i ≠ 0) (hj : x j ≠ 0)
+    (hij : D.block i = D.block j) : SignType.sign (x i) = SignType.sign (x j) := by
+  rw [D.sign_eq_blockSign i hi, D.sign_eq_blockSign j hj, hij]
+
+end SignBlockDecomposition
+
+/-- Every nonzero finite real vector admits its canonical consecutive sign-block
+decomposition. Leading zeros are put in block zero, while an extension across
+internal zeros may put them in either adjacent block. -/
+theorem exists_signBlockDecomposition {n : ℕ} (x : Fin n → ℝ) (hx : x ≠ 0) :
+    Nonempty (SignBlockDecomposition x) := by
+  classical
+  let support : List (Fin n) :=
+    (List.finRange n).filter fun i => x i ≠ 0
+  have hx_exists : ∃ i, x i ≠ 0 := by
+    by_contra h
+    push_neg at h
+    apply hx
+    funext i
+    exact h i
+  have hsupport_ne : support ≠ [] := by
+    obtain ⟨i, hi⟩ := hx_exists
+    exact List.ne_nil_of_mem (by simp [support, hi])
+  have hsupport_sorted : support.SortedLT := by
+    exact ((List.sortedLT_finRange n).pairwise.filter _).sortedLT
+  let key : Fin n → SignType := fun i => SignType.sign (x i)
+  let d : List SignType := (support.map key).destutter (· ≠ ·)
+  obtain ⟨run, hrun_mono, hrun_surj, hrun_key⟩ :=
+    List.exists_monotone_destutter_index key support hsupport_ne
+  have hsigns :
+      support.map key =
+        ((List.ofFn x).map SignType.sign).filter (· ≠ 0) := by
+    simp only [support, key, List.ofFn_eq_map, List.map_map]
+    rw [List.filter_map]
+    congr 1
+    apply List.filter_congr
+    intro i hi
+    simp [SignType.sign_ne_zero]
+  have hd_ne : d ≠ [] := by
+    dsimp only [d]
+    rw [List.destutter_eq_nil]
+    simpa using hsupport_ne
+  have hd_pos : 0 < d.length := List.length_pos.mpr hd_ne
+  have hvariation : signVariations x = d.length - 1 := by
+    rw [signVariations, List.signVariations, ← hsigns]
+    rfl
+  have hcount : d.length = signVariations x + 1 := by
+    rw [hvariation]
+    lia
+  let supportIso : Fin support.length ≃o {i // i ∈ support} :=
+    hsupport_sorted.getIso support
+  let supportSet : Set (Fin n) := {i | x i ≠ 0}
+  let partial (i : Fin n) : Fin d.length :=
+    if hi : i ∈ support then
+      run (supportIso.symm ⟨i, hi⟩)
+    else
+      ⟨0, hd_pos⟩
+  have hpartial_mono : MonotoneOn partial supportSet := by
+    intro i hi j hj hij
+    have himem : i ∈ support := by simp [support, hi]
+    have hjmem : j ∈ support := by simp [support, hj]
+    simp only [partial, dif_pos himem, dif_pos hjmem]
+    apply hrun_mono
+    apply supportIso.symm.monotone
+    exact hij
+  letI : NeZero d.length := ⟨Nat.ne_of_gt hd_pos⟩
+  have hbelow : BddBelow (partial '' supportSet) := by
+    refine ⟨⊥, ?_⟩
+    rintro _ ⟨i, hi, rfl⟩
+    exact bot_le
+  have habove : BddAbove (partial '' supportSet) := by
+    refine ⟨⊤, ?_⟩
+    rintro _ ⟨i, hi, rfl⟩
+    exact le_top
+  obtain ⟨block, hblock_mono, hblock_eq⟩ :=
+    hpartial_mono.exists_monotone_extension hbelow habove
+  have hsupport_get_mem (i : Fin support.length) : support.get i ∈ support :=
+    List.get_mem support i
+  have hsupport_get_ne (i : Fin support.length) : x (support.get i) ≠ 0 := by
+    simpa [support] using hsupport_get_mem i
+  have hsupportIso_symm_get (i : Fin support.length) :
+      supportIso.symm ⟨support.get i, hsupport_get_mem i⟩ = i := by
+    simpa [supportIso] using supportIso.symm_apply_apply i
+  refine ⟨{
+    blockCount := d.length
+    blockCount_eq := hcount
+    block := block
+    monotone_block := hblock_mono
+    block_has_nonzero := ?_
+    blockSign := fun b => d.get b
+    blockSign_ne_zero := ?_
+    sign_eq_blockSign := ?_
+    adjacent_blockSign := ?_ }⟩
+  · intro b
+    obtain ⟨i, hi⟩ := hrun_surj b
+    have hne := hsupport_get_ne i
+    have himem := hsupport_get_mem i
+    refine ⟨support.get i, ?_, hne⟩
+    rw [← hblock_eq (by simpa [supportSet] using hne)]
+    simp [partial, himem, hsupportIso_symm_get, hi]
+  · intro b
+    have hbmem : d.get b ∈ support.map key :=
+      (List.destutter_sublist (support.map key) (· ≠ ·)).subset (List.get_mem d b)
+    obtain ⟨i, hi, rfl⟩ := List.mem_map.mp hbmem
+    exact SignType.sign_ne_zero.mpr (by simpa [support] using hi)
+  · intro i hi
+    have himem : i ∈ support := by simp [support, hi]
+    let k : Fin support.length := supportIso.symm ⟨i, himem⟩
+    have hget : support.get k = i := by
+      have h := supportIso.apply_symm_apply ⟨i, himem⟩
+      exact congrArg Subtype.val h
+    have hblock : block i = run k := by
+      rw [← hblock_eq (by simpa [supportSet] using hi)]
+      simp [partial, himem, k]
+    simpa [key, d, hget, hblock] using hrun_key k
+  · intro i j hij
+    have hchain : d.IsChain (· ≠ ·) := by
+      exact List.isChain_destutter (support.map key) (· ≠ ·)
+    have hne : d.get i ≠ d.get j := by
+      have hrel := List.isChain_iff_getElem.mp hchain i.val (by lia)
+      simpa [List.get_eq_getElem, hij] using hrel
+    exact SignType.eq_neg_of_ne_of_ne_zero
+      (by
+        have hbmem : d.get i ∈ support.map key :=
+          (List.destutter_sublist (support.map key) (· ≠ ·)).subset
+            (List.get_mem d i)
+        obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hbmem
+        exact SignType.sign_ne_zero.mpr (by simpa [support] using hk))
+      (by
+        have hbmem : d.get j ∈ support.map key :=
+          (List.destutter_sublist (support.map key) (· ≠ ·)).subset
+            (List.get_mem d j)
+        obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hbmem
+        exact SignType.sign_ne_zero.mpr (by simpa [support] using hk))
+      hne
 
 /-- A finite vector split into a nonnegative initial block and a nonpositive
 final block has at most one sign variation. -/

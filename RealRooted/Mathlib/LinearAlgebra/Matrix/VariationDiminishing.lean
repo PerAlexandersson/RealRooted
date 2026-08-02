@@ -47,10 +47,9 @@ lemma Matrix.IsTotallyNonnegRect.aggregate_monotone
 ```
 
 This is the consecutive-block determinant expansion used in Chapter 5,
-Section 1.  It requires a finite Cauchy--Binet/multilinearity development not
-yet present in the local rectangular-TN API.  Until that lemma and the strict
-sector and limit lemmas in Steps 4--5 are proved, this file deliberately does
-not declare the full theorem with an unproved backend.
+Section 1.  The lemma is proved below by determinant multilinearity.  Until
+the strict sector and limit lemmas in Steps 4--5 are proved, this file
+deliberately does not declare the full theorem with an unproved backend.
 -/
 
 public section
@@ -68,6 +67,83 @@ lemma signVariations_zero (n : ℕ) :
 end Fin
 
 namespace Matrix
+
+/-- Aggregating columns along a monotone block map with nonnegative weights
+preserves rectangular total nonnegativity. -/
+lemma IsTotallyNonnegRect.aggregate_monotone
+    {m n q : ℕ} {M : Matrix (Fin m) (Fin n) ℝ}
+    (hM : M.IsTotallyNonnegRect) (block : Fin n → Fin q)
+    (hblock : Monotone block) (weight : Fin n → ℝ)
+    (hweight : ∀ j, 0 ≤ weight j) :
+    Matrix.IsTotallyNonnegRect
+      ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+        Matrix (Fin m) (Fin q) ℝ) := by
+  classical
+  intro k rows cols hrows hcols
+  let fibers : Fin k → Finset (Fin n) := fun s ↦
+    Finset.univ.filter fun j ↦ block j = cols s
+  let sourceCol : Fin k → Fin n → (Fin k → ℝ) := fun _ j i ↦
+    M (rows i) j * weight j
+  have hexpand :
+      (Matrix.submatrix
+          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+            Matrix (Fin m) (Fin q) ℝ) rows cols).det =
+        ∑ r ∈ Fintype.piFinset fibers,
+          Matrix.det (fun s i ↦ sourceCol s (r s) i) := by
+    rw [← Matrix.det_transpose]
+    have hmatrix :
+        (Matrix.submatrix
+          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
+            Matrix (Fin m) (Fin q) ℝ) rows cols)ᵀ =
+          fun s ↦ ∑ j ∈ fibers s, sourceCol s j := by
+      ext s i
+      simp [fibers, sourceCol]
+    rw [hmatrix]
+    change
+      (Matrix.detRowAlternating : (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
+          (fun s ↦ ∑ j ∈ fibers s, sourceCol s j) =
+        ∑ r ∈ Fintype.piFinset fibers,
+          (Matrix.detRowAlternating :
+            (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
+              (fun s ↦ sourceCol s (r s))
+    exact MultilinearMap.map_sum_finset
+      (Matrix.detRowAlternating :
+        (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
+      sourceCol fibers
+  rw [hexpand]
+  refine Finset.sum_nonneg fun r hr ↦ ?_
+  have hrmem : ∀ s, r s ∈ fibers s := Fintype.mem_piFinset.mp hr
+  have hrblock : ∀ s, block (r s) = cols s := by
+    intro s
+    simpa [fibers] using hrmem s
+  have hrmono : StrictMono r := by
+    intro a b hab
+    by_contra hnlt
+    have hrle : r b ≤ r a := le_of_not_gt hnlt
+    have hblockle : block (r b) ≤ block (r a) := hblock hrle
+    rw [hrblock b, hrblock a] at hblockle
+    exact (not_le_of_gt (hcols hab)) hblockle
+  have hminor : 0 ≤ (M.submatrix rows r).det := hM hrows hrmono
+  have hprod : 0 ≤ ∏ s, weight (r s) :=
+    Finset.prod_nonneg fun s _ ↦ hweight (r s)
+  have hdet :
+      Matrix.det (fun s i ↦ sourceCol s (r s) i) =
+        (∏ s, weight (r s)) * (M.submatrix rows r).det := by
+    rw [← Matrix.det_transpose (M.submatrix rows r)]
+    simp only [sourceCol]
+    change Matrix.detRowAlternating
+        (fun s i ↦ M (rows i) (r s) * weight (r s)) =
+      (∏ s, weight (r s)) *
+        Matrix.detRowAlternating (fun s i ↦ M (rows i) (r s))
+    rw [show (fun s i ↦ M (rows i) (r s) * weight (r s)) =
+        (fun s ↦ weight (r s) • fun i ↦ M (rows i) (r s)) by
+      funext s i
+      simp [mul_comm]]
+    simpa only [smul_eq_mul] using
+      (MultilinearMap.map_smul_univ Matrix.detRowAlternating.toMultilinearMap
+        (fun s ↦ weight (r s)) (fun s i ↦ M (rows i) (r s)))
+  rw [hdet]
+  exact mul_nonneg hprod hminor
 
 /-- A common nonzero sign for all maximal minors makes multiplication by the
 rectangular matrix injective. This is the rank step in Karlin, Chapter 5,
