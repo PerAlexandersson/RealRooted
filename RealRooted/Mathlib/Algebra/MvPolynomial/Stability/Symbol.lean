@@ -45,6 +45,12 @@ noncomputable def rightComplementMonomial (κ : σ → ℕ) (m : σ →₀ ℕ) 
     MvPolynomial (τ ⊕ σ) R :=
   ∏ i, X (Sum.inr i) ^ (κ i - m i)
 
+/-- Expand the right complementary monomial coordinate by coordinate. -/
+theorem rightComplementMonomial_eq_prod (κ : σ → ℕ) (m : σ →₀ ℕ) :
+    rightComplementMonomial (R := R) (τ := τ) κ m =
+      ∏ i, X (Sum.inr i) ^ (κ i - m i) := by
+  rfl
+
 /-- The finite algebraic symbol of a linear map on a coordinate-wise degree
 box. Its monomial-basis expansion is
 `Σ m, choose(κ, m) * T(X^m) * w^(κ-m)`. -/
@@ -55,6 +61,17 @@ noncomputable def algebraicSymbol (κ : σ → ℕ)
     C (boxChoose κ m.1 : R) *
       rename (Sum.inl : τ → τ ⊕ σ) (T (basisDegreeOfLE κ m)) *
         rightComplementMonomial κ m.1
+
+/-- Expand the finite algebraic symbol in its bounded monomial basis. -/
+theorem algebraicSymbol_eq_sum (κ : σ → ℕ)
+    (T : degreeOfLE σ R κ →ₗ[R] MvPolynomial τ R) :
+    algebraicSymbol κ T =
+      ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+        C (boxChoose κ m.1 : R) *
+          rename (Sum.inl : τ → τ ⊕ σ)
+              (T (basisDegreeOfLE κ m)) *
+            rightComplementMonomial κ m.1 := by
+  rfl
 
 @[simp]
 theorem algebraicSymbol_zero (κ : σ → ℕ) :
