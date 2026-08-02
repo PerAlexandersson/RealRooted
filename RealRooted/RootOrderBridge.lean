@@ -157,6 +157,78 @@ theorem count_diff_le_one_of_rootCrossing
     grind
   grind
 
+/-- Converse of `succRootCrossing_of_count_le_two`.
+
+If `N` has one more element than `M` and their descending sorted lists satisfy
+the successor-degree crossing inequalities, then the lower count for `M` is at
+most the lower count for `N`, while the latter is at most two larger. -/
+theorem count_le_two_of_succRootCrossing
+    {M N : Multiset ℝ} {d : ℕ}
+    (hM : M.card = d) (hN : N.card = d + 1)
+    (hcross :
+      (∀ j, 1 ≤ j → j ≤ d →
+          ((N.sort (· ≤ ·)).reverse).getD j 0 ≤
+            ((M.sort (· ≤ ·)).reverse).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < d →
+          ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
+            ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0)) :
+    ∀ x : ℝ,
+      ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 0 ∧
+      ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 2 := by
+  set sM := M.sort (· ≤ ·)
+  set sN := N.sort (· ≤ ·)
+  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
+  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
+  have hsM : sM.length = d := by
+    subst hM
+    simp_all only [
+      tsub_le_iff_right, zero_add, Nat.cast_le,
+      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
+  have hsN : sN.length = d + 1 := by
+    subst hM
+    simp_all only [
+      tsub_le_iff_right, zero_add, Nat.cast_le,
+      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
+  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
+  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
+  have h_helper := sorted_getElem_le_iff_lt_card_filter
+  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
+      l.reverse.getD i 0 = l[d - 1 - i]! := by
+    grind
+  have h_reverse_getD_succ (l : List ℝ) (hl : l.length = d + 1)
+      (i : ℕ) (hi : i < d + 1) :
+      l.reverse.getD i 0 = l[d - i]! := by
+    simp_all
+  have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by
+    grind
+  have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 2]! := by
+    grind
+  intro x
+  have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
+    hM ▸ Multiset.card_le_card (Multiset.filter_le _ _)
+  have hb_le_succ : (N.filter (· ≤ x)).card ≤ d + 1 :=
+    hN ▸ Multiset.card_le_card (Multiset.filter_le _ _)
+  have hab0 : (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card := by
+    by_contra hcon
+    push Not at hcon
+    have hb_lt_d : (N.filter (· ≤ x)).card < d := by lia
+    have hMx : sM[(N.filter (· ≤ x)).card]! ≤ x := by
+      grind
+    have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
+      le_trans (hint1 _ hb_lt_d) hMx
+    grind
+  have hba2 :
+      (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 2 := by
+    by_contra hcon
+    push Not at hcon
+    have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
+    have hNx : sN[(M.filter (· ≤ x)).card + 2]! ≤ x := by
+      grind
+    have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
+      le_trans (hint2 _ ha1_lt_d) hNx
+    grind
+  grind
+
 /-- Succ-degree version of `rootCrossing_of_count_diff_le_one`.
 
 If `N` has one more element than `M`, and at every lower threshold the count

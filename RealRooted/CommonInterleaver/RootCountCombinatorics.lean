@@ -462,6 +462,30 @@ theorem succDegreeRootCrossing_of_rootCount
     rw [card_roots_of_splits hg, hdeg]
   exact succRootCrossing_of_count_le_two hMcard hNcard hcount
 
+/-- Converse root-count bridge from successor-degree descending-root crossing
+to the asymmetric lower-threshold formulation. -/
+theorem succDegreeRootCount_of_rootCrossing
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hcross :
+      (∀ j, 1 ≤ j → j ≤ f.natDegree →
+          (rootSeqDesc g).getD j 0 ≤
+            (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+          (rootSeqDesc f).getD j 0 ≤
+            (rootSeqDesc g).getD (j - 1) 0)) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree + 1 := by
+    rw [card_roots_of_splits hg, hdeg]
+  simpa [rootSeqDesc] using
+    (count_le_two_of_succRootCrossing (M := f.roots) (N := g.roots)
+      hMcard hNcard hcross)
+
 /-- Root-count bridge from the upper-threshold formulation to the succ-degree
 root-crossing target. -/
 theorem succDegreeRootCrossing_of_rootCountAbove
