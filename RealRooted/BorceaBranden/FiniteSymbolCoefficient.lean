@@ -136,6 +136,42 @@ theorem applyMonomialDifferential_indicator_monomial
   rw [hfinset] at h
   simpa [l] using h
 
+/-- Specializing the right variable block to zero is Mathlib's operation that
+kills every monomial involving a variable outside the left block. -/
+theorem specializeRight_zero_eq_killCompl
+    {sigma tau : Type*} (P : MvPolynomial (Sum sigma tau) ℂ) :
+    specializeRight (fun _ : tau => 0) P =
+      MvPolynomial.killCompl Sum.inl_injective P := by
+  classical
+  unfold specializeRight MvPolynomial.killCompl
+  apply congrArg
+    (fun f : Sum sigma tau → MvPolynomial sigma ℂ => MvPolynomial.aeval f P)
+  funext i
+  cases i with
+  | inl i => simp [Equiv.ofInjective_symm_apply]
+  | inr i => simp
+
+/-- At the zero boundary, a monomial in disjoint left and right blocks survives
+exactly when its right exponent is zero. This is the Kronecker-delta step in
+Borcea--Branden, arXiv:0809.0401, Lemma 2.2. -/
+theorem specializeRight_zero_monomial
+    {sigma tau : Type*} (s : sigma →₀ ℕ) (t : tau →₀ ℕ) (c : ℂ) :
+    specializeRight (fun _ : tau => 0)
+        (MvPolynomial.monomial
+          (s.mapDomain Sum.inl + t.mapDomain Sum.inr) c) =
+      if t = 0 then MvPolynomial.monomial s c else 0 := by
+  classical
+  by_cases ht : t = 0
+  · subst t
+    simp [specializeRight_zero_eq_killCompl]
+  · rw [if_neg ht, specializeRight_zero_eq_killCompl]
+    have hsupport : t.support ≠ ∅ := by
+      simpa using ht
+    obtain ⟨j, hj⟩ := Finset.nonempty_iff_ne_empty.mpr hsupport
+    exact MvPolynomial.killCompl_monomial_eq_zero_of_notMem_range
+      Sum.inl_injective c (a := Sum.inr j)
+      (by simpa using hj) (by simp)
+
 end
 
 end RealRooted.BorceaBranden
