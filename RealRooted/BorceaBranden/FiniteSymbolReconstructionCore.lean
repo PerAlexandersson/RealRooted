@@ -80,7 +80,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
       exact hsupport (congrArg Finsupp.support h)
     have hrhs :
         MvPolynomial.coeff m.1 (MvPolynomial.monomial n.1 (1 : ℂ)) = 0 := by
-      simp [MvPolynomial.coeff_monomial, hmn, Ne.symm hmn]
+      simp [MvPolynomial.coeff_monomial, Ne.symm hmn]
     rw [hrhs, finsupp_eq_indicator_support_of_le_one m.1 m.2,
       finsupp_eq_indicator_support_of_le_one n.1 n.2,
       applyMonomialDifferential_indicator_monomial]
