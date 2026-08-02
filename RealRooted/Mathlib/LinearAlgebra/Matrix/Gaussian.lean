@@ -83,4 +83,76 @@ theorem tendsto_gaussianMatrix_atTop (n : ℕ) :
       ring_nf
     · simp [hij]
 
+/-- The finite restriction of Karlin's exponential kernel `exp (x * y)`. -/
+noncomputable def exponentialKernelMatrix {q : ℕ}
+    (x y : Fin q → ℝ) : Matrix (Fin q) (Fin q) ℝ :=
+  fun i j => Real.exp (x i * y j)
+
+@[simp] lemma exponentialKernelMatrix_apply {q : ℕ}
+    (x y : Fin q → ℝ) (i j : Fin q) :
+    exponentialKernelMatrix x y i j = Real.exp (x i * y j) :=
+  rfl
+
+/-- A Gaussian minor is an exponential-kernel minor times positive row and
+column factors. This is the algebraic reduction in Karlin's proof of
+Proposition V.1.1. -/
+theorem det_gaussianMatrix_submatrix_eq {n q : ℕ} (a : ℝ)
+    (rows cols : Fin q → Fin n) :
+    ((gaussianMatrix n a).submatrix rows cols).det =
+      (∏ i, Real.exp (-a * (((rows i : Fin n) : ℕ) : ℝ) ^ 2)) *
+      (∏ j, Real.exp (-a * (((cols j : Fin n) : ℕ) : ℝ) ^ 2)) *
+      (exponentialKernelMatrix
+        (fun i => 2 * a * (((rows i : Fin n) : ℕ) : ℝ))
+        (fun j => (((cols j : Fin n) : ℕ) : ℝ))).det := by
+  let rowFactor : Fin q → ℝ :=
+    fun i => Real.exp (-a * (((rows i : Fin n) : ℕ) : ℝ) ^ 2)
+  let colFactor : Fin q → ℝ :=
+    fun j => Real.exp (-a * (((cols j : Fin n) : ℕ) : ℝ) ^ 2)
+  let E : Matrix (Fin q) (Fin q) ℝ :=
+    exponentialKernelMatrix
+      (fun i => 2 * a * (((rows i : Fin n) : ℕ) : ℝ))
+      (fun j => (((cols j : Fin n) : ℕ) : ℝ))
+  have hmatrix :
+      (gaussianMatrix n a).submatrix rows cols =
+        of fun i j => rowFactor i * (colFactor j * E i j) := by
+    ext i j
+    simp only [submatrix_apply, gaussianMatrix_apply, of_apply, rowFactor,
+      colFactor, E, exponentialKernelMatrix_apply]
+    rw [show
+      -a * ((((rows i : Fin n) : ℕ) : ℝ) -
+          (((cols j : Fin n) : ℕ) : ℝ)) ^ 2 =
+        -a * (((rows i : Fin n) : ℕ) : ℝ) ^ 2 +
+          (-a * (((cols j : Fin n) : ℕ) : ℝ) ^ 2 +
+            (2 * a * (((rows i : Fin n) : ℕ) : ℝ)) *
+              (((cols j : Fin n) : ℕ) : ℝ)) by ring]
+    rw [Real.exp_add, Real.exp_add]
+  have hcol :
+      (of fun i j => colFactor j * E i j).det =
+        (∏ j, colFactor j) * E.det :=
+    det_mul_row colFactor E
+  rw [hmatrix, det_mul_column]
+  change
+    (∏ i, rowFactor i) *
+        (of fun i j => colFactor j * E i j).det =
+      _
+  rw [hcol]
+  dsimp only [rowFactor, colFactor, E]
+  ring
+
+/-- Transfer positivity from the exponential-kernel minor to the corresponding
+Gaussian minor.
+
+The hypothesis is intentionally explicit: it is exactly Karlin III.1's
+strict-total-positivity input. Keeping that analytic boundary visible lets us
+formalize the Gaussian factorization without assuming Proposition V.1.1. -/
+theorem det_gaussianMatrix_submatrix_pos_of_exponentialKernel {n q : ℕ}
+    (a : ℝ) (rows cols : Fin q → Fin n)
+    (hkernel :
+      0 < (exponentialKernelMatrix
+        (fun i => 2 * a * (((rows i : Fin n) : ℕ) : ℝ))
+        (fun j => (((cols j : Fin n) : ℕ) : ℝ))).det) :
+    0 < ((gaussianMatrix n a).submatrix rows cols).det := by
+  rw [det_gaussianMatrix_submatrix_eq]
+  positivity
+
 end Matrix
