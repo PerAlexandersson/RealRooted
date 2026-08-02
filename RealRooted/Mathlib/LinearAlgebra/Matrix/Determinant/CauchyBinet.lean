@@ -164,3 +164,90 @@ theorem Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm
       Fintype.sum_prod_type _
     _ = _ := by
       simp [Set.powersetCard.orderEmbPermEquivEmbedding]
+
+private noncomputable def injectiveFunctionEquivEmbedding
+    {q : ℕ} {I : Type*} :
+    {f : Fin q → I // Function.Injective f} ≃ (Fin q ↪ I) :=
+  Equiv.ofBijective
+    (fun f : {f : Fin q → I // Function.Injective f} =>
+      ⟨f.1, f.2⟩)
+    ⟨by
+      intro f g h
+      exact Subtype.ext (congrArg Function.Embedding.toFun h),
+    by
+      intro f
+      exact ⟨⟨f, f.injective⟩, rfl⟩⟩
+
+private theorem sum_function_eq_sum_embedding_of_zero_noninjective
+    {q : ℕ} {I M : Type*} [Fintype I] [AddCommMonoid M]
+    (g : (Fin q → I) → M)
+    (hzero : ∀ f, ¬ Function.Injective f → g f = 0) :
+    ∑ f : Fin q → I, g f = ∑ e : Fin q ↪ I, g e := by
+  classical
+  let s : Finset (Fin q → I) := Finset.univ.filter Function.Injective
+  calc
+    ∑ f : Fin q → I, g f = ∑ f ∈ s, g f := by
+      symm
+      apply Finset.sum_subset (Finset.filter_subset _ _)
+      intro f _ hf
+      apply hzero f
+      intro hfinj
+      exact hf (Finset.mem_filter.mpr ⟨Finset.mem_univ f, hfinj⟩)
+    _ = ∑ f : {f : Fin q → I // Function.Injective f}, g f :=
+      Finset.sum_subtype s (by simp [s]) g
+    _ = ∑ f : Fin q ↪ I, g f := by
+      exact Fintype.sum_equiv injectiveFunctionEquivEmbedding _ _ fun _ => rfl
+
+private theorem sum_perm_det_submatrix_comp_mul_prod_eq
+    {R : Type*} [CommRing R] {l n m q : ℕ}
+    (L : Matrix (Fin l) (Fin n) R)
+    (A : Matrix (Fin n) (Fin m) R)
+    (rows : Fin q → Fin l) (cols : Fin q → Fin m)
+    (e : Fin q → Fin n) :
+    (∑ p : Equiv.Perm (Fin q),
+        (L.submatrix rows (fun i => e (p i))).det *
+          ∏ i, A (e (p i)) (cols i)) =
+      (L.submatrix rows e).det * (A.submatrix e cols).det := by
+  calc
+    (∑ p : Equiv.Perm (Fin q),
+        (L.submatrix rows (fun i => e (p i))).det *
+          ∏ i, A (e (p i)) (cols i)) =
+        (L.submatrix rows e).det *
+          ∑ p : Equiv.Perm (Fin q),
+            Equiv.Perm.sign p • ∏ i, A (e (p i)) (cols i) := by
+      rw [Finset.mul_sum]
+      apply Fintype.sum_congr
+      intro p
+      rw [show L.submatrix rows (fun i => e (p i)) =
+          (L.submatrix rows e).submatrix id p by rfl]
+      rw [Matrix.det_permute', Units.smul_def,
+        ← Int.cast_smul_eq_zsmul R]
+      simp [mul_comm, mul_assoc]
+    _ = (L.submatrix rows e).det * (A.submatrix e cols).det := by
+      congr 1
+      rw [Matrix.det_apply]
+      rfl
+
+/-- Rectangular Cauchy--Binet for selected square minors. -/
+theorem Matrix.det_submatrix_mul_eq_sum_powersetCard
+    {R : Type*} [CommRing R] {l n m q : ℕ}
+    (L : Matrix (Fin l) (Fin n) R)
+    (A : Matrix (Fin n) (Fin m) R)
+    (rows : Fin q → Fin l) (cols : Fin q → Fin m) :
+    ((L * A).submatrix rows cols).det =
+      ∑ s : Set.powersetCard (Fin n) q,
+        (L.submatrix rows
+          (Set.powersetCard.ofFinEmbEquiv.symm s)).det *
+        (A.submatrix
+          (Set.powersetCard.ofFinEmbEquiv.symm s) cols).det := by
+  classical
+  rw [Matrix.det_submatrix_mul_eq_sum_fun_det]
+  rw [sum_function_eq_sum_embedding_of_zero_noninjective]
+  · rw [Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm]
+    apply Fintype.sum_congr
+    intro s
+    simpa using sum_perm_det_submatrix_comp_mul_prod_eq L A rows cols
+      (Set.powersetCard.ofFinEmbEquiv.symm s)
+  · intro f hf
+    rw [Matrix.det_submatrix_eq_zero_of_not_injective_right L rows f hf,
+      zero_mul]
