@@ -290,4 +290,66 @@ theorem det_gaussianMatrix_submatrix_pos_of_exponentialKernel {n q : ℕ}
   rw [det_gaussianMatrix_submatrix_eq]
   positivity
 
+/-- The adjacent-difference determinant is positive under the smaller-minor hypothesis. -/
+theorem det_adjacentRowDiff_exponentialKernelMatrix_pos {n : ℕ}
+    (x : Fin (n + 1) → ℝ) (y : Fin n → ℝ) (hx : StrictMono x)
+    (hy : ∀ j, 0 < y j)
+    (hdet : ∀ t : Fin n → ℝ, StrictMono t →
+      0 < (exponentialKernelMatrix t y).det) :
+    0 < (Matrix.of fun i j =>
+      exponentialKernelMatrix x y i.succ j -
+        exponentialKernelMatrix x y i.castSucc j).det := by
+  rw [det_adjacentRowDiff_exponentialKernelMatrix_eq_integral x y hx]
+  let μ : Fin n → Measure ℝ := fun i =>
+    volume.restrict (Set.Ioc (x i.castSucc) (x i.succ))
+  let f : Fin n → ℝ → Fin n → ℝ := fun _ t j =>
+    y j * Real.exp (t * y j)
+  have hf : ∀ i j, Integrable (fun t => f i t j) (μ i) := by
+    intro i j
+    change IntegrableOn (fun t => f i t j)
+      (Set.Ioc (x i.castSucc) (x i.succ)) volume
+    rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le
+      (hx i.castSucc_lt_succ).le]
+    exact
+      (continuous_const.mul
+        (Real.continuous_exp.comp (continuous_id.mul continuous_const))).intervalIntegrable _ _
+  have hbox : ∀ᵐ t ∂Measure.pi μ,
+      ∀ i, t i ∈ Set.Ioc (x i.castSucc) (x i.succ) := by
+    rw [Filter.eventually_all]
+    intro i
+    exact Measure.tendsto_eval_ae_ae.eventually
+      (ae_restrict_mem measurableSet_Ioc)
+  have hpoint_pos : ∀ᵐ t ∂Measure.pi μ,
+      0 < (Matrix.of fun i j => f i (t i) j).det := by
+    filter_upwards [hbox] with t ht
+    have htmono : StrictMono t := by
+      intro i j hij
+      have hindex : i.succ ≤ j.castSucc :=
+        Fin.mk_le_mk.mpr (Nat.succ_le_of_lt hij)
+      exact (ht i).2.trans_lt ((hx.monotone hindex).trans_lt (ht j).1)
+    rw [show Matrix.of (fun i j => f i (t i) j) =
+        Matrix.of fun i j =>
+          y j * exponentialKernelMatrix t y i j by
+      ext i j
+      rfl,
+      Matrix.det_mul_row]
+    exact mul_pos (Finset.prod_pos fun j _ => hy j) (hdet t htmono)
+  have hdetInt : Integrable
+      (fun t : Fin n → ℝ => (Matrix.of fun i j => f i (t i) j).det)
+      (Measure.pi μ) :=
+    integrable_det_rows μ f hf
+  have hsupp : Function.support
+      (fun t : Fin n → ℝ => (Matrix.of fun i j => f i (t i) j).det) =ᵐ[Measure.pi μ]
+      Set.univ := hpoint_pos.mono fun t ht => by
+    apply propext
+    change ((Matrix.of fun i j => f i (t i) j).det ≠ 0) ↔ True
+    exact iff_true_intro ht.ne'
+  rw [integral_pos_iff_support_of_nonneg_ae
+    (hpoint_pos.mono fun _ h => h.le) hdetInt,
+    measure_congr hsupp, Measure.pi_univ]
+  rw [pos_iff_ne_zero, Finset.prod_ne_zero_iff]
+  intro i _
+  simp [μ, Real.volume_Ioc]
+  exact hx i.castSucc_lt_succ
+
 end Matrix
