@@ -526,6 +526,26 @@ theorem card_roots_reverse_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     congrArg Multiset.card
     (Multiset.filter_congr (fun r _ => mem_Ioi_inv_iff ha))
 
+/-- Half-line root-count transport under reflection at a degree bound. -/
+theorem card_roots_reflect_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {N : ℕ} (hN : p.natDegree ≤ N) {a : K} (ha : 0 < a) :
+    ((reflect N p).roots.filter (fun x => a < x)).card =
+      (p.roots.filter (fun r => 0 < r ∧ r < a⁻¹)).card := by
+  have hpad :
+      Multiset.filter (fun x => a < x)
+        ((N - p.natDegree) • ({0} : Multiset K)) = 0 := by
+    rw [Multiset.filter_eq_nil]
+    intro x hx
+    rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
+    grind
+  rw [reflect_eq_X_pow_mul_reverse p hN,
+    Polynomial.roots_mul
+      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
+        (reverse_ne_zero_of_coeff_zero_ne h0)),
+    Multiset.filter_add, Multiset.card_add, Polynomial.roots_pow,
+    Polynomial.roots_X, card_roots_reverse_Ioi hp h0 ha, hpad,
+    Multiset.card_zero, zero_add]
+
 /-- No-gap emptiness on a positive interval under reversal. -/
 theorem card_roots_reverse_Ioo_eq_zero_iff {p : K[X]} (hp : p.Splits)
     (h0 : p.coeff 0 ≠ 0) {a b : K} (ha : 0 < a) (hb : 0 < b) :
