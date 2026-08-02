@@ -203,6 +203,7 @@ import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
