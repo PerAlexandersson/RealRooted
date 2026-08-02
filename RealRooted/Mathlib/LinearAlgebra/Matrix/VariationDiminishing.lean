@@ -68,6 +68,69 @@ end Fin
 
 namespace Matrix
 
+/-- Expanding a minor after fiberwise weighted column aggregation gives the
+sum of the corresponding source minors times their weight products. -/
+theorem det_submatrix_fiberwise_sum
+    {R ι ρ κ σ : Type*} [CommRing R]
+    [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq σ]
+    (M : Matrix ρ κ R) (rows : ι → ρ) (cols : ι → σ)
+    (block : κ → σ) (weight : κ → R) :
+    (Matrix.submatrix
+        ((fun i s ↦ ∑ j with block j = s, M i j * weight j) : Matrix ρ σ R)
+        rows cols).det =
+      ∑ r ∈ Fintype.piFinset
+          (fun s : ι ↦ Finset.univ.filter fun j ↦ block j = cols s),
+        (∏ s, weight (r s)) * (M.submatrix rows r).det := by
+  classical
+  let fibers : ι → Finset κ := fun s ↦
+    Finset.univ.filter fun j ↦ block j = cols s
+  let sourceCol : ι → κ → (ι → R) := fun _ j i ↦
+    M (rows i) j * weight j
+  have hexpand :
+      (Matrix.submatrix
+          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) : Matrix ρ σ R)
+          rows cols).det =
+        ∑ r ∈ Fintype.piFinset fibers,
+          Matrix.det (fun s i ↦ sourceCol s (r s) i) := by
+    rw [← Matrix.det_transpose]
+    have hmatrix :
+        (Matrix.submatrix
+          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) : Matrix ρ σ R)
+          rows cols)ᵀ =
+          fun s ↦ ∑ j ∈ fibers s, sourceCol s j := by
+      ext s i
+      simp [fibers, sourceCol]
+    rw [hmatrix]
+    change
+      (Matrix.detRowAlternating : (ι → R) [⋀^ι]→ₗ[R] R).toMultilinearMap
+          (fun s ↦ ∑ j ∈ fibers s, sourceCol s j) =
+        ∑ r ∈ Fintype.piFinset fibers,
+          (Matrix.detRowAlternating :
+            (ι → R) [⋀^ι]→ₗ[R] R).toMultilinearMap
+              (fun s ↦ sourceCol s (r s))
+    exact MultilinearMap.map_sum_finset
+      (Matrix.detRowAlternating :
+        (ι → R) [⋀^ι]→ₗ[R] R).toMultilinearMap
+      sourceCol fibers
+  rw [hexpand]
+  apply Finset.sum_congr rfl
+  intro r _
+  rw [← Matrix.det_transpose (M.submatrix rows r)]
+  simp only [sourceCol]
+  change
+    (Matrix.detRowAlternating : (ι → R) [⋀^ι]→ₗ[R] R).toMultilinearMap
+      (fun s i ↦ M (rows i) (r s) * weight (r s)) =
+    (∏ s, weight (r s)) *
+      (Matrix.detRowAlternating : (ι → R) [⋀^ι]→ₗ[R] R).toMultilinearMap
+        (fun s i ↦ M (rows i) (r s))
+  rw [show (fun s i ↦ M (rows i) (r s) * weight (r s)) =
+      (fun s ↦ weight (r s) • fun i ↦ M (rows i) (r s)) by
+    funext s i
+    simp [mul_comm]]
+  simpa only [smul_eq_mul] using
+    (MultilinearMap.map_smul_univ Matrix.detRowAlternating.toMultilinearMap
+      (fun s ↦ weight (r s)) (fun s i ↦ M (rows i) (r s)))
+
 /-- Aggregating columns along a monotone block map with nonnegative weights
 preserves rectangular total nonnegativity. -/
 lemma IsTotallyNonnegRect.aggregate_monotone
@@ -80,42 +143,11 @@ lemma IsTotallyNonnegRect.aggregate_monotone
         Matrix (Fin m) (Fin q) ℝ) := by
   classical
   intro k rows cols hrows hcols
-  let fibers : Fin k → Finset (Fin n) := fun s ↦
-    Finset.univ.filter fun j ↦ block j = cols s
-  let sourceCol : Fin k → Fin n → (Fin k → ℝ) := fun _ j i ↦
-    M (rows i) j * weight j
-  have hexpand :
-      (Matrix.submatrix
-          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
-            Matrix (Fin m) (Fin q) ℝ) rows cols).det =
-        ∑ r ∈ Fintype.piFinset fibers,
-          Matrix.det (fun s i ↦ sourceCol s (r s) i) := by
-    rw [← Matrix.det_transpose]
-    have hmatrix :
-        (Matrix.submatrix
-          ((fun i s ↦ ∑ j with block j = s, M i j * weight j) :
-            Matrix (Fin m) (Fin q) ℝ) rows cols)ᵀ =
-          fun s ↦ ∑ j ∈ fibers s, sourceCol s j := by
-      ext s i
-      simp [fibers, sourceCol]
-    rw [hmatrix]
-    change
-      (Matrix.detRowAlternating : (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
-          (fun s ↦ ∑ j ∈ fibers s, sourceCol s j) =
-        ∑ r ∈ Fintype.piFinset fibers,
-          (Matrix.detRowAlternating :
-            (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
-              (fun s ↦ sourceCol s (r s))
-    exact MultilinearMap.map_sum_finset
-      (Matrix.detRowAlternating :
-        (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ).toMultilinearMap
-      sourceCol fibers
-  rw [hexpand]
+  rw [det_submatrix_fiberwise_sum]
   refine Finset.sum_nonneg fun r hr ↦ ?_
-  have hrmem : ∀ s, r s ∈ fibers s := Fintype.mem_piFinset.mp hr
   have hrblock : ∀ s, block (r s) = cols s := by
     intro s
-    simpa [fibers] using hrmem s
+    simpa using (Fintype.mem_piFinset.mp hr s)
   have hrmono : StrictMono r := by
     intro a b hab
     by_contra hnlt
@@ -126,23 +158,6 @@ lemma IsTotallyNonnegRect.aggregate_monotone
   have hminor : 0 ≤ (M.submatrix rows r).det := hM hrows hrmono
   have hprod : 0 ≤ ∏ s, weight (r s) :=
     Finset.prod_nonneg fun s _ ↦ hweight (r s)
-  have hdet :
-      Matrix.det (fun s i ↦ sourceCol s (r s) i) =
-        (∏ s, weight (r s)) * (M.submatrix rows r).det := by
-    rw [← Matrix.det_transpose (M.submatrix rows r)]
-    simp only [sourceCol]
-    change Matrix.detRowAlternating
-        (fun s i ↦ M (rows i) (r s) * weight (r s)) =
-      (∏ s, weight (r s)) *
-        Matrix.detRowAlternating (fun s i ↦ M (rows i) (r s))
-    rw [show (fun s i ↦ M (rows i) (r s) * weight (r s)) =
-        (fun s ↦ weight (r s) • fun i ↦ M (rows i) (r s)) by
-      funext s i
-      simp [mul_comm]]
-    simpa only [smul_eq_mul] using
-      (MultilinearMap.map_smul_univ Matrix.detRowAlternating.toMultilinearMap
-        (fun s ↦ weight (r s)) (fun s i ↦ M (rows i) (r s)))
-  rw [hdet]
   exact mul_nonneg hprod hminor
 
 /-- A common nonzero sign for all maximal minors makes multiplication by the
