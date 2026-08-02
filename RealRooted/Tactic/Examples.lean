@@ -37,6 +37,7 @@ import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
+import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Chebyshev

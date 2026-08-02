@@ -35,6 +35,7 @@ import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
+import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev
