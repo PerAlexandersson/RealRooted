@@ -57,4 +57,10 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts :
   succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
     compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts
 
+/-- Positive combinations of a successor-degree nonnegative pair without
+common roots have a common interleaver. -/
+theorem PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
+
 end RealRooted

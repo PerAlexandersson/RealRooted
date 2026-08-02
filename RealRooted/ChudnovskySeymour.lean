@@ -14,8 +14,8 @@ bridge assembled from the same-degree and successor-degree analytic endpoints.
 theorem chudnovskySeymour_compatiblePairHasCommonInterleaver :
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
-    succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
 
 /-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-left
 bridge, derived from the common-right bridge by the existing left/right
@@ -634,8 +634,8 @@ the nonnegative-coefficient four-way Chudnovsky--Seymour package. -/
 theorem chudnovskySeymour_fourWay_nonnegCoeffs :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
-    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
-    succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
 
 /-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
 the nonnegative-coefficient pairwise/common-interleaver form of

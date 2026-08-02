@@ -380,4 +380,10 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic :
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
 
+/-- Positive combinations of a same-degree nonnegative pair without common
+roots have a common interleaver. -/
+theorem PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
+
 end RealRooted

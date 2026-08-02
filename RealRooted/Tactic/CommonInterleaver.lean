@@ -1913,11 +1913,11 @@ macro_rules
   | `(tactic| rr_sameDegree_pair_common_interleaver_analytic) =>
       `(tactic|
         exact
-          RealRooted.posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic)
+          RealRooted.PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg)
   | `(tactic| rr_succDegree_pair_common_interleaver_local_lower) =>
       `(tactic|
         exact
-          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts)
+          RealRooted.PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg)
   | `(tactic|
       rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_leTwo_noGapTwo using
         le_two := $hle2:term,
