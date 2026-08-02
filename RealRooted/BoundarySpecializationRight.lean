@@ -81,7 +81,7 @@ private theorem specializeZero_zero_or_of_degreeOf_le_one_unrestricted
   have hzeroU : (0 : ℂ) ∈ U := by
     intro j _
     simpa using hz j
-  have hUnhds : U ∈ 𝒩 0 := hUopen.mem_nhds hzeroU
+  have hUnhds : U ∈ nhds 0 := hUopen.mem_nhds hzeroU
   obtain ⟨t, htU, _, hBt, hroot⟩ :=
     Polynomial.exists_neg_self_div_im_pos_of_mem_nhds A B hA hA0 hB0 U hUnhds
   let zt : alpha → ℂ := fun j => z j + v j * t
