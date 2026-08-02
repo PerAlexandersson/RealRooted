@@ -1,4 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
