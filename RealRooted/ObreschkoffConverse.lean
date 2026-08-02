@@ -1635,6 +1635,43 @@ lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
 
 /-- Constant shifts eventually destroy real-rootedness once the polynomial has
 positive leading coefficient and degree at least `2`. -/
+/-- For an odd-degree positive-leading real-rooted polynomial, a sufficiently
+large positive downward constant shift is not real-rooted. Reflecting across
+the vertical axis and negating preserves the positive leading coefficient in
+odd degree and converts the downward shift into a positive upward shift. -/
+lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_odd_natDegree
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : 2 ≤ p.natDegree) (hodd : Odd p.natDegree) :
+    ∃ t : ℝ, 0 < t ∧ ¬ ((p - C t) ≠ 0 ∧ (p - C t).Splits) := by
+  let q : ℝ[X] := -(p.comp (-X))
+  have hpow : (-1 : ℝ) ^ p.natDegree = -1 := hodd.neg_one_pow
+  have hq_splits : q.Splits := by
+    dsimp [q]
+    exact hp_splits.comp_neg_X.neg
+  have hq_pos : HasPosLeadingCoeff q := by
+    simpa [q, HasPosLeadingCoeff, hpow] using hp_pos
+  have hq_natDegree : q.natDegree = p.natDegree := by
+    dsimp [q]
+    rw [Polynomial.natDegree_neg,
+      Polynomial.natDegree_comp_eq_of_mul_ne_zero (by simp [hp_pos.ne_zero])]
+    simp
+  obtain ⟨t, ht_pos, ht_bad⟩ :=
+    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+      hq_splits hq_pos (by rw [hq_natDegree]; exact hdeg)
+  refine ⟨t, ht_pos, ?_⟩
+  intro hdown
+  apply ht_bad
+  have hcomp_ne : (p - C t).comp (-X) ≠ 0 := by
+    intro hzero
+    exact hdown.1 (Polynomial.comp_neg_X_eq_zero_iff.mp hzero)
+  have hshift :
+      C t + q = -((p - C t).comp (-X)) := by
+    dsimp [q]
+    rw [Polynomial.sub_comp, Polynomial.C_comp]
+    ring
+  rw [hshift]
+  exact ⟨neg_ne_zero.mpr hcomp_ne, hdown.2.comp_neg_X.neg⟩
+
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
