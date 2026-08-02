@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.Multiaffine
 
 /-!
 # Source-coordinate degrees of finite algebraic symbols
@@ -63,7 +64,7 @@ theorem degreeOf_algebraicSymbol_one_inr_le
     have hright :
         (rightComplementMonomial (R := R) (τ := tau)
           (fun _ : sigma => 1) m.1).degreeOf (Sum.inr i) ≤ 1 := by
-      unfold rightComplementMonomial
+      rw [rightComplementMonomial_eq_prod]
       refine (degreeOf_prod_le (Sum.inr i) Finset.univ fun j =>
         X (Sum.inr j) ^ (1 - m.1 j)).trans ?_
       calc
