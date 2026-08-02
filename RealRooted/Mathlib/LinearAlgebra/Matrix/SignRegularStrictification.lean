@@ -14,7 +14,7 @@ lets the Gaussian parameter tend to infinity.
 public section
 
 open Filter
-open scoped BigOperators Topology
+open scoped Topology
 
 namespace Matrix
 
@@ -91,21 +91,9 @@ theorem IsSignConsistentOrder.isStrictlySignConsistentOrder_gaussianMatrix_mul
 theorem tendsto_gaussianMatrix_mul_atTop {n m : ℕ}
     (A : Matrix (Fin n) (Fin m) ℝ) :
     Tendsto (fun a => gaussianMatrix n a * A) atTop (𝓝 A) := by
-  rw [tendsto_pi_nhds]
-  intro i
-  rw [tendsto_pi_nhds]
-  intro j
-  have hG : ∀ k, Tendsto (fun a => gaussianMatrix n a i k) atTop
-      (𝓝 ((1 : Matrix (Fin n) (Fin n) ℝ) i k)) := by
-    intro k
-    exact tendsto_pi_nhds.mp
-      (tendsto_pi_nhds.mp (tendsto_gaussianMatrix_atTop n) i) k
-  have hsum :
-      Tendsto (fun a => ∑ k, gaussianMatrix n a i k * A k j) atTop
-        (𝓝 (∑ k, (1 : Matrix (Fin n) (Fin n) ℝ) i k * A k j)) :=
-    tendsto_finset_sum Finset.univ (fun k _ => (hG k).mul_const (A k j))
-  rw [show (∑ k, (1 : Matrix (Fin n) (Fin n) ℝ) i k * A k j) = A i j by
-    rw [← Matrix.mul_apply, Matrix.one_mul]] at hsum
-  simpa only [Matrix.mul_apply] using hsum
+  have hmul : Continuous (fun M : Matrix (Fin n) (Fin n) ℝ => M * A) :=
+    continuous_id.matrix_mul continuous_const
+  simpa only [Matrix.one_mul] using
+    hmul.continuousAt.tendsto.comp (tendsto_gaussianMatrix_atTop n)
 
 end Matrix
