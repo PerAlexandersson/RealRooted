@@ -88,7 +88,25 @@ theorem basisDegreeOfLE_repr_apply (κ : σ → ℕ)
     (p : degreeOfLE σ R κ)
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
     (basisDegreeOfLE κ).repr p m = coeff m.1 p.1 :=
-  rfl
+  by
+    classical
+    let coeffLinear : degreeOfLE σ R κ →ₗ[R] R :=
+      { toFun := fun q : degreeOfLE σ R κ => coeff m.1 q.1
+        map_add' := fun _ _ => coeff_add _ _ _
+        map_smul' := fun _ _ => coeff_smul _ _ _ }
+    have h :
+        coeffLinear =
+          (Finsupp.lapply m :
+            ({m : σ →₀ ℕ // ∀ i, m i ≤ κ i} →₀ R) →ₗ[R] R).comp
+            (basisDegreeOfLE κ).repr.toLinearMap := by
+      apply (basisDegreeOfLE κ).ext
+      intro n
+      by_cases hmn : m = n
+      · subst n
+        simp [coeffLinear]
+      · have hnm' : n.1 ≠ m.1 := fun h => hmn (Subtype.ext h.symm)
+        simp [coeffLinear, hmn, hnm']
+    exact (LinearMap.congr_fun h p).symm
 
 /-- A bounded exponent vector on finitely many variables is the same data as
 choosing an exponent in `Fin (κ i + 1)` for every coordinate. -/

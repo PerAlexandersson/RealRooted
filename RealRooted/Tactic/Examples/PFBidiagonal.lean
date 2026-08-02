@@ -3488,5 +3488,43 @@ example
     recurrence := hrec,
     nonzero := hne
 
+-- A156289: coefficient-bidiagonal normalizer for the second-derivative route.
+example (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 3 3 2 1 0 p =
+      bidiagonalOperator a156289Alpha a156289Beta p := by
+  rr_second_derivative_bidiagonal_normalizer [a156289Alpha, a156289Beta]
+
+-- A166960: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (1 + (n : ℝ)) 3 (-1) 1 0 p =
+      bidiagonalOperator a166960Alpha (a166960Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166960Alpha, a166960Beta]
+
+-- A166961: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (1 + 2 * (n : ℝ)) 5 (-2) 2 0 p =
+      bidiagonalOperator a166961Alpha (a166961Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166961Alpha, a166961Beta]
+
+-- A166962: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (-5 + 3 * (n : ℝ)) 7 (-3) 3 0 p =
+      bidiagonalOperator a166962Alpha (a166962Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166962Alpha, a166962Beta]
+
+-- A166972: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (-1 + (n : ℝ)) 7 (-1) 3 0 p =
+      bidiagonalOperator a166972Alpha (a166972Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166972Alpha, a166972Beta]
+
+-- A191935: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm
+        1 (2 + 3 * (n : ℝ) + (n : ℝ) ^ 2)
+        0 (-2 - 2 * (n : ℝ)) 0 1 p =
+      bidiagonalOperator a191935Alpha (a191935Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a191935Alpha, a191935Beta]
+
 end TacticExamples
 end RealRooted
