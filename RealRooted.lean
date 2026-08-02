@@ -146,6 +146,7 @@ import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DeletionBranches
+import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
 import RealRooted.LiuOppositeSigns.FactorReturnAssembly
 import RealRooted.LiuOppositeSigns.FactorReturnLeft
 import RealRooted.LiuOppositeSigns.FactorReturnStatements
