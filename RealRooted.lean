@@ -210,6 +210,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
