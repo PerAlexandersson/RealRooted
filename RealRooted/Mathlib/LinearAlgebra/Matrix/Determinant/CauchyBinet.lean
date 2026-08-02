@@ -47,17 +47,4 @@ theorem det_submatrix_mul_eq_sum_fun_det
   rw [Finset.sum_mul]
   simp_rw [smul_mul_assoc]
 
-/-- A submatrix with a noninjective column selector has zero determinant. -/
-theorem det_submatrix_eq_zero_of_not_injective_right
-    {R : Type*} [CommRing R] {l n q : ℕ}
-    (L : Matrix (Fin l) (Fin n) R)
-    (rows : Fin q → Fin l) (f : Fin q → Fin n)
-    (hf : ¬ Function.Injective f) :
-    (L.submatrix rows f).det = 0 := by
-  obtain ⟨i, j, hfij, hij⟩ := Function.not_injective_iff.mp hf
-  apply Matrix.det_zero_of_column_eq hij
-  intro k
-  simp only [Matrix.submatrix_apply]
-  rw [hfij]
-
 end Matrix

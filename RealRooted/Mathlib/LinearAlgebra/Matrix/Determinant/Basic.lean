@@ -61,4 +61,16 @@ theorem det_eq_det_adjacentRowDiff_of_firstColumn_eq_one {n : ℕ}
   ext i j
   rfl
 
+/-- A submatrix with a noninjective column selector has zero determinant. -/
+theorem det_submatrix_eq_zero_of_not_injective_right
+    {R m κ q : Type*} [CommRing R] [DecidableEq q] [Fintype q]
+    (L : Matrix m κ R) (rows : q → m) (f : q → κ)
+    (hf : ¬ Function.Injective f) :
+    (L.submatrix rows f).det = 0 := by
+  obtain ⟨i, j, hfij, hij⟩ := Function.not_injective_iff.mp hf
+  apply Matrix.det_zero_of_column_eq hij
+  intro k
+  simp only [Matrix.submatrix_apply]
+  rw [hfij]
+
 end Matrix
