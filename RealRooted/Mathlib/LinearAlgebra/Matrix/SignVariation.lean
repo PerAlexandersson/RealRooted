@@ -862,3 +862,24 @@ theorem Fin.monotone_prefixSignVariations
   unfold Fin.prefixSignVariations
   apply List.signVariations_mono_of_prefix
   exact List.take_prefix_take_left (Nat.add_le_add_right hij 1)
+
+/-- Prefix sign variation is bounded by full-vector sign variation. -/
+theorem Fin.prefixSignVariations_le_signVariations
+    {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
+    Fin.prefixSignVariations c j ≤ Fin.signVariations c := by
+  unfold Fin.prefixSignVariations Fin.signVariations
+  exact List.signVariations_take_le _ _
+
+/-- The sign-block index of an entry, counted by prefix sign variation. -/
+def Fin.signBlockIndex
+    {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
+    Fin (Fin.signVariations c + 1) :=
+  ⟨Fin.prefixSignVariations c j,
+    Nat.lt_succ_of_le (Fin.prefixSignVariations_le_signVariations c j)⟩
+
+/-- Sign-block indices are monotone in the original index. -/
+theorem Fin.monotone_signBlockIndex
+    {n : ℕ} (c : Fin n → ℝ) :
+    Monotone (Fin.signBlockIndex c) := by
+  intro i j hij
+  exact Fin.monotone_prefixSignVariations c hij
