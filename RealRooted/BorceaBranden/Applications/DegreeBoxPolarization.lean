@@ -229,6 +229,61 @@ theorem specializeLeft_sourceBlockPolarization
   simp only [div_eq_mul_inv, map_mul]
   ring
 
+/- Borcea--Branden, arXiv:0809.0401, Proposition 2.4. Apply upper-half-plane
+polarization stability fiberwise after specializing the output block. The
+ambient source-degree cap remains `n` after specialization. -/
+theorem mvUpperHalfPlaneStable_sourceBlockPolarization
+    {τ : Type*} {n : ℕ}
+    {P : MvPolynomial (τ ⊕ Fin 1) ℂ}
+    (hdeg : P.degreeOf (Sum.inr default) ≤ n)
+    (hstable : _root_.RealRooted.MvUpperHalfPlaneStable P) :
+    _root_.RealRooted.MvUpperHalfPlaneStable
+      (sourceBlockPolarization n P) := by
+  intro z hz
+  let x : τ → ℂ := fun i => z (Sum.inl i)
+  let y : Fin n → ℂ := fun i => z (Sum.inr i)
+  let p : ℂ[X] :=
+    MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+      (_root_.RealRooted.specializeLeft x P)
+  have hx : ∀ i, 0 < (x i).im :=
+    fun i => hz (Sum.inl i)
+  have hy : ∀ i, 0 < (y i).im :=
+    fun i => hz (Sum.inr i)
+  have hpdeg : p.natDegree ≤ n := by
+    exact
+      (_root_.RealRooted.natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
+        x P).trans hdeg
+  have hspecial :
+      _root_.RealRooted.MvUpperHalfPlaneStable
+        (_root_.RealRooted.specializeLeft x P) :=
+    hstable.specializeLeft hx
+  have hpstable :
+      ∀ w : ℂ, 0 < w.im → p.eval w ≠ 0 := by
+    intro w hw
+    change
+      Polynomial.eval₂ (RingHom.id ℂ) w
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+          (_root_.RealRooted.specializeLeft x P)) ≠ 0
+    rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+    exact hspecial (fun _ => w) (fun _ => hw)
+  have hpolar :
+      _root_.RealRooted.MvUpperHalfPlaneStable
+        (_root_.RealRooted.polarization n p) :=
+    _root_.RealRooted.mvUpperHalfPlaneStable_polarization
+      hpdeg hpstable
+  have hfiber :
+      _root_.RealRooted.MvUpperHalfPlaneStable
+        (_root_.RealRooted.specializeLeft x
+          (sourceBlockPolarization n P)) := by
+    rw [specializeLeft_sourceBlockPolarization]
+    exact hpolar
+  have hnonzero := hfiber y hy
+  rw [_root_.RealRooted.eval_specializeLeft] at hnonzero
+  have hxy : Sum.elim x y = z := by
+    funext i
+    cases i <;> rfl
+  simpa only [hxy] using hnonzero
+
 /-- Extracting a source coefficient commutes with a finite sum. -/
 theorem sourceCoefficient_sum {τ ι : Type*} (s : Finset ι)
     (f : ι → MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
