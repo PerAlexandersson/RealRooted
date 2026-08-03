@@ -114,8 +114,8 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
               _ = 0 := by simp [ht]
           subst t
           have hs0 : s = 0 := Multiset.rel_zero_right.mp hrel
-          have : False := by simpa [hsrepr] using hs0
-          exact this.elim
+          rw [hsrepr] at hs0
+          simp at hs0
       | cons b bs =>
           have htrepr : t = b ::ₘ (bs : Multiset α) := by
             calc
@@ -136,11 +136,13 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
           have ih_tail := ih (as : Multiset α) hsmall (bs : Multiset α) htail
           have hasort : (as : Multiset α).sort (· ≤ ·) = as := by
             have h := hs
-            rw [hsrepr, Multiset.sort_cons ha] at h
+            rw [hsrepr,
+              Multiset.sort_cons a (as : Multiset α) (· ≤ ·) ha] at h
             exact List.cons.inj h |>.2
           have hbsort : (bs : Multiset α).sort (· ≤ ·) = bs := by
             have h := ht
-            rw [htrepr, Multiset.sort_cons hb] at h
+            rw [htrepr,
+              Multiset.sort_cons b (bs : Multiset α) (· ≤ ·) hb] at h
             exact List.cons.inj h |>.2
           exact List.Forall₂.cons hab (by simpa [hasort, hbsort] using ih_tail)
 
