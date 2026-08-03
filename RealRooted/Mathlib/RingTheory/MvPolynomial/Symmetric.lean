@@ -20,7 +20,7 @@ noncomputable def symmetrizationSum
   exact ∑ e : Equiv.Perm σ, rename e p
 
 /-- The permutation sum is symmetric. -/
-theorem isSymmetric_symmetrizationSum
+theorem symmetrizationSum_isSymmetric
     {σ R : Type*} [Fintype σ] [CommSemiring R]
     (p : MvPolynomial σ R) :
     IsSymmetric (symmetrizationSum p) := by
@@ -33,28 +33,30 @@ theorem isSymmetric_symmetrizationSum
 
 /-- Average all variable permutations of a complex multivariate polynomial. -/
 noncomputable def fullSymmetrization
-    {σ : Type*} [Fintype σ] (p : MvPolynomial σ ℂ) :
-    MvPolynomial σ ℂ := by
+    {σ R : Type*} [Fintype σ] [Field R] [CharZero R]
+    (p : MvPolynomial σ R) : MvPolynomial σ R := by
   classical
-  exact C (Fintype.card (Equiv.Perm σ) : ℂ)⁻¹ *
+  exact C (Fintype.card (Equiv.Perm σ) : R)⁻¹ *
     symmetrizationSum p
 
 /-- Full symmetrization is symmetric. -/
-theorem isSymmetric_fullSymmetrization
-    {σ : Type*} [Fintype σ] (p : MvPolynomial σ ℂ) :
+theorem fullSymmetrization_isSymmetric
+    {σ R : Type*} [Fintype σ] [Field R] [CharZero R]
+    (p : MvPolynomial σ R) :
     IsSymmetric (fullSymmetrization p) := by
   classical
   intro e
   simp only [fullSymmetrization, map_mul, rename_C]
-  rw [isSymmetric_symmetrizationSum p e]
+  rw [symmetrizationSum_isSymmetric p e]
 
 /-- Full symmetrization preserves evaluation at a constant assignment. -/
-theorem eval_const_fullSymmetrization
-    {σ : Type*} [Fintype σ] (p : MvPolynomial σ ℂ) (w : ℂ) :
+theorem eval_fullSymmetrization_const
+    {σ R : Type*} [Fintype σ] [Field R] [CharZero R]
+    (p : MvPolynomial σ R) (w : R) :
     eval (fun _ : σ => w) (fullSymmetrization p) =
       eval (fun _ : σ => w) p := by
   classical
-  have hcard : (Fintype.card (Equiv.Perm σ) : ℂ) ≠ 0 := by
+  have hcard : (Fintype.card (Equiv.Perm σ) : R) ≠ 0 := by
     exact_mod_cast Fintype.card_ne_zero
   have hconst (e : Equiv.Perm σ) :
       (fun _ : σ => w) ∘ e = fun _ : σ => w := by
