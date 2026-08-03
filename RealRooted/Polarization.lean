@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
 import RealRooted.Multiaffine
@@ -136,6 +137,18 @@ theorem rename_polarization_const {n : ℕ} {p : ℂ[X]}
   rw [MvPolynomial.eval₂_rename]
   change MvPolynomial.eval (fun _ : Fin n ↦ w) (polarization n p) = p.eval w
   exact eval_polarization_const hp w
+
+/-- Package polarization as the multiaffine source polynomial
+`Π↑ₙ p` in the all-ones degree box. -/
+noncomputable def polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) :=
+  ⟨polarization n p,
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf (polarization n p)).2
+      (isMultiaffine_polarization n p)⟩
+
+@[simp]
+theorem coe_polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
+    (polarizationDegreeBox n p : MvPolynomial (Fin n) ℂ) = polarization n p := rfl
 
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
