@@ -135,6 +135,71 @@ theorem Matrix.rank_deleteColumn_eq_of_minor_ne_zero
         simpa using (Matrix.rank_of_isUnit _ hunit).symm
       _ ≤ A'.rank := Matrix.rank_submatrix_le A' rows cols
 
+/-- Karlin's nonzero-cofactor branch for a selected singular square submatrix.
+The displayed signed cofactor vector witnesses the selected-row kernel, while
+the same cofactor proves both the ambient rank and rank-preserving deletion. -/
+theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
+    {R : Type*} [Field R] {n k : ℕ}
+    (A : Matrix (Fin n) (Fin (k + 1)) R)
+    (rows : Fin (k + 1) → Fin n) (i0 j0 : Fin (k + 1))
+    (hrank_lt : A.rank < k + 1)
+    (hminor :
+      ((A.submatrix rows id).submatrix
+        i0.succAbove j0.succAbove).det ≠ 0) :
+    let B := A.submatrix rows id
+    let z : Fin (k + 1) → R := fun j =>
+      (-1 : R) ^ (i0 + j : ℕ) *
+        (B.submatrix i0.succAbove j.succAbove).det
+    A.rank = k ∧ B.mulVec z = 0 ∧ z j0 ≠ 0 ∧
+      (A.submatrix id j0.succAbove).rank = k := by
+  let B : Matrix (Fin (k + 1)) (Fin (k + 1)) R :=
+    A.submatrix rows id
+  let z : Fin (k + 1) → R := fun j =>
+    (-1 : R) ^ (i0 + j : ℕ) *
+      (B.submatrix i0.succAbove j.succAbove).det
+  change A.rank = k ∧ B.mulVec z = 0 ∧ z j0 ≠ 0 ∧
+    (A.submatrix id j0.succAbove).rank = k
+  have hunit : IsUnit (B.submatrix i0.succAbove j0.succAbove) := by
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    simpa only [B] using hminor
+  have hcofactor_rank :
+      (B.submatrix i0.succAbove j0.succAbove).rank = k := by
+    simpa using Matrix.rank_of_isUnit _ hunit
+  have hrank_ge : k ≤ A.rank := by
+    calc
+      k = (B.submatrix i0.succAbove j0.succAbove).rank :=
+        hcofactor_rank.symm
+      _ ≤ B.rank :=
+        Matrix.rank_submatrix_le B i0.succAbove j0.succAbove
+      _ ≤ A.rank := Matrix.rank_submatrix_le A rows id
+  have hrank : A.rank = k := by
+    lia
+  have hdet : B.det = 0 := by
+    by_contra hdet
+    have hBunit : IsUnit B := by
+      rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+      exact hdet
+    have hBrank : B.rank = k + 1 := by
+      simpa using Matrix.rank_of_isUnit B hBunit
+    have hle : B.rank ≤ A.rank := Matrix.rank_submatrix_le A rows id
+    rw [hBrank, hrank] at hle
+    lia
+  have hkernel : B.mulVec z = 0 := by
+    exact B.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero i0 hdet
+  have hzj0 : z j0 ≠ 0 := by
+    exact mul_ne_zero (pow_ne_zero _ (by simp)) (by
+      simpa only [B] using hminor)
+  have hminorA :
+      (A.submatrix (rows ∘ i0.succAbove)
+        (j0.succAbove ∘ (id : Fin k → Fin k))).det ≠ 0 := by
+    simpa only [B, Matrix.submatrix_submatrix, Function.id_comp,
+      Function.comp_id] using hminor
+  have hdelete :
+      (A.submatrix id j0.succAbove).rank = k :=
+    A.rank_deleteColumn_eq_of_minor_ne_zero hrank j0
+      (rows ∘ i0.succAbove) id hminorA
+  exact ⟨hrank, hkernel, hzj0, hdelete⟩
+
 /-- Perturbing coefficients along a vector annihilated by a selected-row
 submatrix does not change the selected coordinates of the matrix-vector
 product. -/
