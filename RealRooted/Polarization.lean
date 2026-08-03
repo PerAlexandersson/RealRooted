@@ -455,4 +455,46 @@ theorem diagonalProjection_basisDegreeOfLE {n : ℕ}
       rw [Finsupp.degree_apply]
       rfl
 
+private theorem degree_le_fin_card_of_le_one {n : ℕ}
+    (m : Fin n →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    m.degree ≤ n := by
+  rw [Finsupp.degree_apply]
+  calc
+    ∑ i ∈ m.support, m i ≤ ∑ i ∈ m.support, 1 :=
+      Finset.sum_le_sum fun i hi => hm i
+    _ = m.support.card := by simp
+    _ ≤ Fintype.card (Fin n) := Finset.card_le_univ m.support
+    _ = n := Fintype.card_fin n
+
+/-- The one-variable degree-box index obtained by diagonalizing a bounded
+multiaffine exponent vector. -/
+noncomputable def diagonalDegreeBoxIndex {n : ℕ}
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    {d : Fin 1 →₀ ℕ // ∀ i, d i ≤ n} :=
+  ⟨Finsupp.single default m.1.degree, fun i => by
+    rw [Subsingleton.elim i default, Finsupp.single_eq_same]
+    exact degree_le_fin_card_of_le_one m.1 m.2⟩
+
+/-- Diagonal projection on degree boxes sends a multiaffine basis monomial to
+the one-variable basis monomial indexed by its total degree. -/
+theorem diagonalProjectionDegreeBox_basisDegreeOfLE {n : ℕ}
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    diagonalProjectionDegreeBox n
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m) =
+      MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+        (diagonalDegreeBoxIndex m) := by
+  apply Subtype.ext
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+      (diagonalProjection n
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m)) =
+    ((MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+      (diagonalDegreeBoxIndex m) :
+        MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n)) :
+      MvPolynomial (Fin 1) ℂ)
+  apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).injective
+  rw [AlgEquiv.apply_symm_apply, diagonalProjection_basisDegreeOfLE,
+    MvPolynomial.coe_basisDegreeOfLE,
+    MvPolynomial.uniqueAlgEquiv_monomial]
+  simp [diagonalDegreeBoxIndex, Polynomial.X_pow_eq_monomial]
+
 end RealRooted

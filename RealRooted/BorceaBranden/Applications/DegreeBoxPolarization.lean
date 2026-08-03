@@ -34,6 +34,22 @@ theorem sourcePolarizedOperator_comp_polarizationDegreeBoxLinearMap
     (polarizationDegreeBoxLinearMap n q)) = T q
   rw [diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap q]
 
+/-- The source-polarized operator sends a multiaffine basis monomial to the
+original operator applied to the one-variable basis monomial of the same total
+degree. This is the basis-level content of Borcea--Branden Lemma 2.5. -/
+theorem sourcePolarizedOperator_basisDegreeOfLE
+    {τ : Type*} {n : ℕ}
+    (T : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ)
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    sourcePolarizedOperator n T
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m) =
+      T (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+        (diagonalDegreeBoxIndex m)) := by
+  change T (diagonalProjectionDegreeBox n
+    (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m)) = _
+  rw [diagonalProjectionDegreeBox_basisDegreeOfLE]
+
 end
 
 end RealRooted.BorceaBranden
