@@ -164,16 +164,9 @@ theorem length_destutter_cons_ne_le_succ
     ((a :: l).destutter (· ≠ ·)).length ≤
       (l.destutter (· ≠ ·)).length + 1 := by
   cases l with
-  | nil =>
-      simp
+  | nil => simp
   | cons b l =>
       simp only [List.destutter_cons', List.destutter'_cons]
-      by_cases hab : a ≠ b
-      · rw [if_pos hab]
-        simp
-      · have hab_eq : a = b := not_ne_iff.mp hab
-        subst b
-        rw [if_neg (by simp)]
-        lia
+      split_ifs <;> simp_all
 
 end List

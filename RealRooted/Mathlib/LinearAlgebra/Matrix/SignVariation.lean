@@ -360,15 +360,11 @@ end List
 /-- Prepending one sign increases the number of sign variations by at most one. -/
 theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
     (a :: l).signVariations ≤ l.signVariations + 1 := by
-  fin_cases a
-  · simp [List.signVariations]
-  · have h := List.length_destutter_cons_ne_le_succ (-1)
-      ((l.map SignType.sign).filter (· ≠ 0))
-    simp [List.signVariations]
-    lia
-  · have h := List.length_destutter_cons_ne_le_succ 1
-      ((l.map SignType.sign).filter (· ≠ 0))
-    simp [List.signVariations]
+  have h := List.length_destutter_cons_ne_le_succ (SignType.sign a)
+    ((l.map SignType.sign).filter (· ≠ 0))
+  by_cases ha : SignType.sign a = 0
+  · simp [List.signVariations, ha]
+  · simp [List.signVariations, ha]
     lia
 
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
