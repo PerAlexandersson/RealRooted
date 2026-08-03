@@ -1,5 +1,6 @@
 import Mathlib
 import RealRooted.Multiaffine
+import RealRooted.MultivariateStability
 
 /-!
 # Partial symmetrization
