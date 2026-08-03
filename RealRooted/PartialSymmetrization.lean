@@ -19,6 +19,26 @@ def bivariateV2 (a b c d : ℂ) (x : ℝ) : ℝ :=
   (a * star b).im + (a * star d + c * star b).im * x +
     (c * star d).im * x ^ 2
 
+/-- The real-boundary quotient identity for `bivariateV1` from
+Borcea--Brändén, Part II, Lemma 1.4. -/
+theorem im_bivariateQuotient_eq_bivariateV1_div_normSq
+    (a b c d : ℂ) (x : ℝ) :
+    ((a + b * (x : ℂ)) / (c + d * (x : ℂ))).im =
+      bivariateV1 a b c d x /
+        Complex.normSq (c + d * (x : ℂ)) := by
+  simp [Complex.div_im, Complex.normSq, bivariateV1]
+  ring
+
+/-- The symmetric real-boundary quotient identity for `bivariateV2` from
+Borcea--Brändén, Part II, Lemma 1.4. -/
+theorem im_bivariateQuotient_eq_bivariateV2_div_normSq
+    (a b c d : ℂ) (x : ℝ) :
+    ((a + c * (x : ℂ)) / (b + d * (x : ℂ))).im =
+      bivariateV2 a b c d x /
+        Complex.normSq (b + d * (x : ℂ)) := by
+  simp [Complex.div_im, Complex.normSq, bivariateV2]
+  ring
+
 /-- Under partial transposition averaging, V1 is the corresponding convex
 combination of the original V1 and V2. -/
 theorem bivariateV1_partialSymmetrization
