@@ -20,13 +20,12 @@ theorem succAbove_triple_eq_castSucc_of_right_lt
     p.succAbove i.castSucc.castSucc = i.castSucc.castSucc.castSucc ∧
       p.succAbove i.succ.castSucc = i.succ.castSucc.castSucc ∧
       p.succAbove i.succ.succ = i.succ.succ.castSucc := by
+  change (i : ℕ) + 2 < (p : ℕ) at h
   have hleft : i.castSucc.castSucc.castSucc < p := by
-    apply lt_of_le_of_lt _ h
-    change (i : ℕ) ≤ (i : ℕ) + 2
+    change (i : ℕ) < (p : ℕ)
     lia
   have hcenter : i.succ.castSucc.castSucc < p := by
-    apply lt_of_le_of_lt _ h
-    change (i : ℕ) + 1 ≤ (i : ℕ) + 2
+    change (i : ℕ) + 1 < (p : ℕ)
     lia
   exact ⟨Fin.succAbove_of_castSucc_lt p _ hleft,
     Fin.succAbove_of_castSucc_lt p _ hcenter,
@@ -39,13 +38,12 @@ theorem succAbove_triple_eq_succ_of_le_left
     p.succAbove i.castSucc.castSucc = i.castSucc.castSucc.succ ∧
       p.succAbove i.succ.castSucc = i.succ.castSucc.succ ∧
       p.succAbove i.succ.succ = i.succ.succ.succ := by
+  change (p : ℕ) ≤ (i : ℕ) at h
   have hcenter : p ≤ i.succ.castSucc.castSucc := by
-    apply le_trans h
-    change (i : ℕ) ≤ (i : ℕ) + 1
+    change (p : ℕ) ≤ (i : ℕ) + 1
     lia
   have hright : p ≤ i.succ.succ.castSucc := by
-    apply le_trans h
-    change (i : ℕ) ≤ (i : ℕ) + 2
+    change (p : ℕ) ≤ (i : ℕ) + 2
     lia
   exact ⟨Fin.succAbove_of_le_castSucc p _ h,
     Fin.succAbove_of_le_castSucc p _ hcenter,
