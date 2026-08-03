@@ -33,4 +33,15 @@ theorem ofFn_succAbove_eq_eraseIdx
         exact Nat.le_of_not_gt ‹¬i < (p : ℕ)›)]
       congr
 
+/-- A finite-function list splits into its two endpoints and interior coordinates. -/
+theorem ofFn_two_endpoints
+    {α : Type*} {n : ℕ} (f : Fin (n + 2) → α) :
+    List.ofFn f =
+      f 0 ::
+        (List.ofFn (fun i : Fin n => f i.succ.castSucc) ++
+          [f (Fin.last (n + 1))]) := by
+  rw [List.ofFn_succ, List.ofFn_succ']
+  simp only [List.concat_eq_append]
+  congr
+
 end List
