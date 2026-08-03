@@ -489,6 +489,54 @@ theorem succAbove_center_ne_zero_of_omit_right_mul_neg
   rw [Fin.succAbove_center_eq_left]
   exact left_ne_zero_of_mul (ne_of_lt h)
 
+/-- Deleting an interior nodal zero preserves strict interior nodality. -/
+theorem interiorNodal_succAbove
+    {n : ℕ} (x : Fin (n + 3) → ℝ) (k : Fin (n + 1))
+    (hk : x k.succ.castSucc = 0)
+    (hnodal : ∀ j : Fin (n + 1), x j.succ.castSucc = 0 →
+      x j.castSucc.castSucc * x j.succ.succ < 0) :
+    ∀ i : Fin n,
+      x (k.succ.castSucc.succAbove i.succ.castSucc) = 0 →
+        x (k.succ.castSucc.succAbove i.castSucc.castSucc) *
+          x (k.succ.castSucc.succAbove i.succ.succ) < 0 := by
+  intro i hi
+  by_cases hki : (k : ℕ) < (i : ℕ)
+  · have hp : k.succ.castSucc ≤ i.castSucc.castSucc.castSucc := by
+      change (k : ℕ) + 1 ≤ (i : ℕ)
+      lia
+    rcases Fin.succAbove_triple_eq_succ_of_le_left k.succ.castSucc i hp with
+      ⟨hleft, hcenter, hright⟩
+    rw [hcenter] at hi
+    rw [hleft, hright]
+    simpa using hnodal i.succ (by simpa using hi)
+  · by_cases hik : (i : ℕ) < (k : ℕ)
+    · by_cases hnext : (k : ℕ) = (i : ℕ) + 1
+      · have hkeq : k = i.succ := by
+          apply Fin.ext
+          exact hnext
+        subst k
+        have hn := hnodal i.succ (by simpa using hk)
+        have hne := Fin.succAbove_center_ne_zero_of_omit_right_mul_neg x i
+          (by simpa using hn)
+        exact (hne (by simpa using hi)).elim
+      · have hp : i.succ.succ.castSucc < k.succ.castSucc := by
+          change (i : ℕ) + 2 < (k : ℕ) + 1
+          lia
+        rcases Fin.succAbove_triple_eq_castSucc_of_right_lt k.succ.castSucc i hp with
+          ⟨hleft, hcenter, hright⟩
+        rw [hcenter] at hi
+        rw [hleft, hright]
+        simpa using hnodal i.castSucc (by simpa using hi)
+    · have hkeq : k = i.castSucc := by
+        apply Fin.ext
+        change (k : ℕ) = (i : ℕ)
+        lia
+      subst k
+      have hn := hnodal i.castSucc (by simpa using hk)
+      have hne := Fin.succAbove_center_ne_zero_of_mul_neg x i
+        (by simpa using hn)
+      exact (hne (by simpa using hi)).elim
+
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
 def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
