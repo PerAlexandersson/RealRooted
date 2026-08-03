@@ -1,4 +1,5 @@
 import RealRooted.BorceaBranden.FiniteSymbolBasis
+import RealRooted.BorceaBranden.FiniteSymbolDegree
 import RealRooted.Polarization
 
 /-!
@@ -176,7 +177,7 @@ theorem specializeLeft_sourceBlockPolarization
       _root_.RealRooted.polarization n
         (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
           (_root_.RealRooted.specializeLeft x P)) := by
-  let p : ℂ[X] :=
+  let p : Polynomial ℂ :=
     (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
       (_root_.RealRooted.specializeLeft x P)
   have hpcoeff (k : ℕ) :
@@ -193,8 +194,10 @@ theorem specializeLeft_sourceBlockPolarization
         C (MvPolynomial.eval x q)
     induction q using MvPolynomial.induction_on with
     | C c => simp
-    | add q r hq hr => simp [hq, hr]
-    | mul_X q i hq => simp [hq]
+    | add q r hq hr => rw [map_add, hq, hr, map_add]
+    | mul_X q i hq =>
+        rw [map_mul, MvPolynomial.aeval_X, hq, map_mul,
+          MvPolynomial.eval_X]
   have hsource (q : MvPolynomial (Fin n) ℂ) :
       MvPolynomial.aeval
           (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
@@ -242,7 +245,7 @@ theorem mvUpperHalfPlaneStable_sourceBlockPolarization
   intro z hz
   let x : τ → ℂ := fun i => z (Sum.inl i)
   let y : Fin n → ℂ := fun i => z (Sum.inr i)
-  let p : ℂ[X] :=
+  let p : Polynomial ℂ :=
     MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
       (_root_.RealRooted.specializeLeft x P)
   have hx : ∀ i, 0 < (x i).im :=
