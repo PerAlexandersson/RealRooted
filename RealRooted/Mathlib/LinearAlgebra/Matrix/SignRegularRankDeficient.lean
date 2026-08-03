@@ -904,3 +904,21 @@ theorem Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_sur
         halt.le_signVariations_of_strictMono strictMono_id
       simpa using
         hlower.trans ((hA.signVariations_mulVec_le (f t)).trans htbound)
+
+/-- Cardinality-equality wrapper for the surjective totally nonnegative nodal
+kernel bound. -/
+theorem Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_surjective_of_card_eq
+    {rows cols n : ℕ} {A : Matrix (Fin rows) (Fin cols) ℝ}
+    (hA : A.IsTotallyNonnegRect)
+    (hcols : cols = n + 2)
+    (hsurj : Function.Surjective A.mulVec)
+    {x : Fin cols → ℝ}
+    (hker : A.mulVec x = 0)
+    (hnodal : ∀ i : Fin n,
+      x (Fin.cast hcols.symm i.succ.castSucc) = 0 →
+        x (Fin.cast hcols.symm i.castSucc.castSucc) *
+          x (Fin.cast hcols.symm i.succ.succ) < 0) :
+    rows - 1 ≤ Fin.signVariations x + 2 := by
+  subst cols
+  exact hA.card_sub_one_le_signVariations_add_two_of_surjective_of_nodal
+    hsurj hker (by simpa using hnodal)

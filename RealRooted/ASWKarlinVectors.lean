@@ -46,6 +46,72 @@ lemma im_pow_eq_norm_pow_mul_sin_arg (z : ℂ) (n : ℕ) :
     Complex.exp_im]
   simp
 
+/-- If a nonreal complex geometric progression has an interior zero imaginary
+part, the adjacent imaginary parts have opposite strict signs. -/
+lemma im_pow_mul_im_pow_add_two_neg_of_im_pow_add_one_eq_zero
+    {z : ℂ} (him : z.im ≠ 0) (i : ℕ)
+    (hzero : (z ^ (i + 1)).im = 0) :
+    (z ^ i).im * (z ^ (i + 2)).im < 0 := by
+  let θ := z.arg
+  have hz : z ≠ 0 := by
+    intro hz
+    apply him
+    simp [hz]
+  have hnorm : 0 < ‖z‖ := norm_pos_iff.mpr hz
+  have hsin : Real.sin θ ≠ 0 := by
+    have hpolar := im_pow_eq_norm_pow_mul_sin_arg z 1
+    simp only [pow_one, Nat.cast_one, one_mul] at hpolar
+    intro hs
+    apply him
+    rw [hpolar, hs, mul_zero]
+  have hzeroSin : Real.sin ((i + 1 : ℕ) * θ) = 0 := by
+    rw [im_pow_eq_norm_pow_mul_sin_arg] at hzero
+    exact (mul_eq_zero.mp hzero).resolve_left (pow_ne_zero _ hnorm.ne')
+  have hcos : Real.cos ((i + 1 : ℕ) * θ) ≠ 0 := by
+    intro hc
+    have hsq := Real.sin_sq_add_cos_sq ((i + 1 : ℕ) * θ)
+    rw [hzeroSin, hc] at hsq
+    norm_num at hsq
+  have hprev :
+      Real.sin (i * θ) =
+        -Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ := by
+    have harg :
+        (i : ℝ) * θ = ((i + 1 : ℕ) : ℝ) * θ - θ := by
+      push_cast
+      ring
+    rw [harg, Real.sin_sub, hzeroSin]
+    ring
+  have hnext :
+      Real.sin ((i + 2 : ℕ) * θ) =
+        Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ := by
+    have harg :
+        ((i + 2 : ℕ) : ℝ) * θ =
+          ((i + 1 : ℕ) : ℝ) * θ + θ := by
+      push_cast
+      ring
+    rw [harg, Real.sin_add, hzeroSin]
+    ring
+  have htrig :
+      Real.sin (i * θ) * Real.sin ((i + 2 : ℕ) * θ) < 0 := by
+    rw [hprev, hnext]
+    calc
+      (-Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ) *
+          (Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ) =
+          -(Real.cos ((i + 1 : ℕ) * θ) ^ 2 * Real.sin θ ^ 2) := by
+            ring
+      _ < 0 := neg_lt_zero.mpr
+        (mul_pos (sq_pos_of_ne_zero hcos) (sq_pos_of_ne_zero hsin))
+  rw [im_pow_eq_norm_pow_mul_sin_arg,
+    im_pow_eq_norm_pow_mul_sin_arg]
+  calc
+    (‖z‖ ^ i * Real.sin (i * θ)) *
+        (‖z‖ ^ (i + 2) * Real.sin ((i + 2 : ℕ) * θ)) =
+        (‖z‖ ^ i * ‖z‖ ^ (i + 2)) *
+          (Real.sin (i * θ) * Real.sin ((i + 2 : ℕ) * θ)) := by
+            ring
+    _ < 0 := mul_neg_of_pos_of_neg
+      (mul_pos (pow_pos hnorm _) (pow_pos hnorm _)) htrig
+
 /-- A nonzero complex number's root vector and sampled sine vector have the
 same coordinate signs. -/
 lemma signVariations_aswKarlinRootVector_eq_sine {z : ℂ} (hz : z ≠ 0)

@@ -2,6 +2,7 @@ import RealRooted.ASWKarlinMatrix
 import RealRooted.ASWKarlinThreshold
 import RealRooted.ASWKarlinVariation
 import RealRooted.ASWKarlinVectors
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 
@@ -122,6 +123,51 @@ lemma complex_root_ne_zero_of_coeff_zero_pos {p : ℝ[X]} {z : ℂ}
 
 /-- A real complex root of a positive-constant PF polynomial lies on the
 negative real ray. -/
+/-- Karlin's repeated matrices force a linear lower bound on the sampled sine
+vector's sign variations, up to the fixed two-endpoint perturbation loss. -/
+theorem aswKarlinRepeatedSineVariationLowerBound
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order blocks : ℕ}
+    (horder : 0 < order) (hblocks : 0 < blocks) (him : z.im ≠ 0) :
+    blocks * order - 1 ≤
+      Fin.signVariations
+        (aswKarlinSineVector z.arg p.natDegree order blocks) + 2 := by
+  have hspan : 0 < p.natDegree + order - 1 := by
+    lia
+  have hwidth : 0 < blocks * (p.natDegree + order - 1) :=
+    Nat.mul_pos hblocks hspan
+  have hcols :
+      blocks * (p.natDegree + order - 1) + 1 =
+        (blocks * (p.natDegree + order - 1) - 1) + 2 := by
+    lia
+  have hnodal :
+      ∀ i : Fin (blocks * (p.natDegree + order - 1) - 1),
+        aswKarlinRootVector z p.natDegree order blocks
+            (Fin.cast hcols.symm i.succ.castSucc) = 0 →
+          aswKarlinRootVector z p.natDegree order blocks
+              (Fin.cast hcols.symm i.castSucc.castSucc) *
+            aswKarlinRootVector z p.natDegree order blocks
+              (Fin.cast hcols.symm i.succ.succ) < 0 := by
+    intro i hi
+    change (z ^ ((i : ℕ) + 1)).im = 0 at hi
+    change (z ^ (i : ℕ)).im * (z ^ ((i : ℕ) + 2)).im < 0
+    exact
+      im_pow_mul_im_pow_add_two_neg_of_im_pow_add_one_eq_zero him i hi
+  have hbound :=
+    Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_surjective_of_card_eq
+      (hpf.aswKarlinMatrix_isTotallyNonnegRect
+        p.natDegree order blocks)
+      hcols
+      (aswKarlinMatrix_mulVec_surjective p.natDegree order blocks
+        hdegree horder hconst)
+      (aswKarlinMatrix_mulVec_rootVector hz order blocks hdegree horder)
+      hnodal
+  rw [signVariations_aswKarlinRootVector_eq_sine
+    (complex_root_ne_zero_of_coeff_zero_pos hz hconst)
+    p.natDegree order blocks] at hbound
+  exact hbound
+
 lemma arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hconst : 0 < p.coeff 0) (hpf : IsPolyaFreqSeq p.coeff)
