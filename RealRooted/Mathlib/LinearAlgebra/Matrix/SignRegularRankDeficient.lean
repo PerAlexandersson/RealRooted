@@ -497,3 +497,56 @@ theorem Matrix.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
     hkernel, ?_, hdelete⟩
   rw [hzj0]
   exact neg_ne_zero.mpr one_ne_zero
+
+/-- Karlin's positive-rank, one-column induction step for the deficient-rank
+case. The induction hypothesis handles the rank-preserving matrix obtained by
+deleting the column selected by
+`exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt`. -/
+theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_induction
+    {n k r : ℕ}
+    {A : Matrix (Fin n) (Fin (k + 1)) ℝ}
+    (hA : A.IsSignConsistentOrder r)
+    (hrank : A.rank = r)
+    (hrank_lt : r < k + 1)
+    (hr : 0 < r)
+    (hind :
+      ∀ {B : Matrix (Fin n) (Fin k) ℝ},
+        B.IsSignConsistentOrder r →
+        B.rank = r →
+        ∀ d : Fin k → ℝ,
+          Fin.signVariations (B.mulVec d) ≤ r - 1)
+    (c : Fin (k + 1) → ℝ) :
+    Fin.signVariations (A.mulVec c) ≤ r - 1 := by
+  by_contra hle
+  have hbad : r ≤ Fin.signVariations (A.mulVec c) := by
+    lia
+  obtain ⟨rows, hrows, halt⟩ :=
+    Fin.exists_strictMono_strictlyAlternates_of_le_signVariations hr hbad
+  obtain ⟨j0, z, hkernel, hzj0, hdelete⟩ :=
+    A.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
+      hrank hrank_lt
+  have hzrows : (A.submatrix rows id).mulVec z = 0 := by
+    funext i
+    simpa only [Matrix.mulVec, Matrix.submatrix_apply, id_eq,
+      Pi.zero_apply] using congrFun hkernel (rows i)
+  let t : ℝ := -c j0 / z j0
+  let d : Fin (k + 1) → ℝ := c + t • z
+  let B : Matrix (Fin n) (Fin k) ℝ :=
+    A.submatrix id j0.succAbove
+  let d' : Fin k → ℝ := Fin.removeNth j0 d
+  have halt_d :
+      Fin.StrictlyAlternates (fun i => A.mulVec d (rows i)) := by
+    simpa only [d, t] using halt.matrix_mulVec_add_smul hzrows t
+  have hcancel : A.mulVec d = B.mulVec d' := by
+    simpa only [d, t, B, d'] using
+      A.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec c z j0 hzj0
+  have halt_delete :
+      Fin.StrictlyAlternates (fun i => B.mulVec d' (rows i)) := by
+    rw [← hcancel]
+    exact halt_d
+  have hB : B.IsSignConsistentOrder r := by
+    dsimp only [B]
+    exact hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
+  have hupper := hind hB hdelete d'
+  have hlower := halt_delete.le_signVariations_of_strictMono hrows
+  lia
