@@ -3,7 +3,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
-import RealRooted.Multiaffine
+import RealRooted.PartialSymmetrization
 import RealRooted.MultivariateStability
 
 /-!
