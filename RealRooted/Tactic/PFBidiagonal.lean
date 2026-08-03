@@ -370,8 +370,9 @@ def BidiagonalJensenPencilCertificate
 
 /-- Backend theorem statement: a valid finite Jensen-pencil certificate implies
 that the corresponding coefficient-bidiagonal operator preserves PF
-polynomials up to degree `d`. -/
-/- This is deliberately an explicit backend assumption, not a proved theorem.
+polynomials up to degree `d`.
+
+This is deliberately an explicit backend assumption, not a proved theorem.
 The certificate above tests only the real pencil parameter `lam ≥ 0`; it does
 not imply upper-half-plane stability of the genuine bivariate affine symbol
 required by Borcea--Branden, arXiv:0809.0401, Theorem 1.1. Issue #240 records
