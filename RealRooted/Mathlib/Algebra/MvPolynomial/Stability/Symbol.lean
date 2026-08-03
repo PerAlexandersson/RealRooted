@@ -40,6 +40,17 @@ variable {σ τ R : Type*} [CommSemiring R] [Fintype σ]
 def boxChoose (κ : σ → ℕ) (m : σ →₀ ℕ) : ℕ :=
   ∏ i, Nat.choose (κ i) (m i)
 
+/-- Every binomial coefficient in a multiaffine source box is one. -/
+@[simp]
+theorem boxChoose_one_of_le_one (m : σ →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    boxChoose (fun _ : σ => 1) m = 1 := by
+  classical
+  simp only [boxChoose]
+  apply Finset.prod_eq_one
+  intro i hi
+  have hle := hm i
+  interval_cases h : m i <;> simp
+
 /-- The right-block monomial with exponent vector `κ - m`. -/
 noncomputable def rightComplementMonomial (κ : σ → ℕ) (m : σ →₀ ℕ) :
     MvPolynomial (τ ⊕ σ) R :=
