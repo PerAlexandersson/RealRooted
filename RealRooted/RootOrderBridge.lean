@@ -200,7 +200,25 @@ theorem count_le_two_of_succRootCrossing
   have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by
     grind
   have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 2]! := by
-    grind
+    intro i hi
+    let j := d - 1 - i
+    have hj_pos : 1 ≤ j := by
+      dsimp [j]
+      lia
+    have hj_lt : j < d := by
+      dsimp [j]
+      lia
+    have hjN : j - 1 < d + 1 := by lia
+    have h := hcross.2 j hj_pos hj_lt
+    rw [h_reverse_getD sM hsM j hj_lt,
+      h_reverse_getD_succ sN hsN (j - 1) hjN] at h
+    have hleft : d - 1 - j = i := by
+      dsimp [j]
+      lia
+    have hright : d - (j - 1) = i + 2 := by
+      dsimp [j]
+      lia
+    simpa only [hleft, hright] using h
   intro x
   have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
     hM ▸ Multiset.card_le_card (Multiset.filter_le _ _)

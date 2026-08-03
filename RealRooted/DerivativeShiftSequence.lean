@@ -84,8 +84,12 @@ theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
         fun eta heta ↦ hpos eta (List.mem_cons_of_mem eps heta)
       have hTsplit : (TDeriv eps p).Splits := splits_tderiv heps hp
       have htail_eq := ih htail hTsplit hm
+      have hm' :
+          2 ≤ (applyTDerivList epss (TDeriv eps p)).rootMultiplicity a := by
+        simpa only [applyTDerivList_cons] using hm
       have hTmult : 2 ≤ (TDeriv eps p).rootMultiplicity a := by
-        lia
+        rw [htail_eq]
+        exact le_trans hm' (Nat.le_add_right _ _)
       have hstep := rootMultiplicity_eq_succ_of_TDeriv_ge_two heps hp hTmult
       simp only [applyTDerivList_cons, List.length_cons]
       lia
