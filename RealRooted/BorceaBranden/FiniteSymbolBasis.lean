@@ -171,7 +171,11 @@ theorem algebraicSymbol_finOne_eq_sum_fin
   rw [algebraicSymbol]
   apply Fintype.sum_equiv (degreeOfLEFinOneEquiv n)
   intro m
-  simp [finOneDegreeIndex_equiv_apply, boxChoose,
+  have hindex : finOneDegreeIndex n (m 0) = m := by
+    apply (degreeOfLEFinOneEquiv n).injective
+    apply Fin.ext
+    simp [finOneDegreeIndex, degreeOfLEFinOneEquiv_val, m.2 0]
+  simp [hindex, boxChoose,
     rightComplementMonomial, degreeOfLEFinOneEquiv_val]
 
 /-- Expand a one-variable algebraic symbol over the natural-number range
