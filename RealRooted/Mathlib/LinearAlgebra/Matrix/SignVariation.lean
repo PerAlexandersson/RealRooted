@@ -590,6 +590,12 @@ theorem SignType.sign_ne_zero_and_ne_of_mul_neg
 
 namespace Fin
 
+/-- The number of sign changes in a finite vector, in index order and ignoring
+zero entries. -/
+def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
+    (x : Fin n → R) : ℕ :=
+  (List.ofFn x).signVariations
+
 /-- A finite real vector has the same variation count as its explicit sign list. -/
 theorem signVariations_eq_signList {n : ℕ} (x : Fin n → ℝ) :
     Fin.signVariations x =
@@ -1055,12 +1061,6 @@ theorem nodalInsertions_coreSigns
           exact hzero ⟨i, hi⟩
         rw [Fin.nodalPerturbationCoreSigns_eq_of_no_interior_zero
           hsign hinterior]
-
-/-- The number of sign changes in a finite vector, in index order and ignoring
-zero entries. -/
-def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
-    (x : Fin n → R) : ℕ :=
-  (List.ofFn x).signVariations
 
 /-- A sign-preserving perturbation increases variations by at most two when
 all interior zeros are nodal.
