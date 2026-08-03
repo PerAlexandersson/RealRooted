@@ -125,6 +125,42 @@ noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
       rename Sum.inl (sourceCoefficient P k) *
         rename Sum.inr (esymm (Fin n) ℂ k)
 
+/-- Extracting a source coefficient commutes with a finite sum. -/
+theorem sourceCoefficient_sum {τ ι : Type*} (s : Finset ι)
+    (f : ι → MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
+    sourceCoefficient (∑ i ∈ s, f i) k =
+      ∑ i ∈ s, sourceCoefficient (f i) k := by
+  simp [sourceCoefficient, map_sum, coeff_sum]
+
+/-- Extract the source coefficient of an output polynomial times one source
+monomial. -/
+theorem sourceCoefficient_rename_mul_X_pow {τ : Type*}
+    (q : MvPolynomial τ ℂ) (r k : ℕ) :
+    sourceCoefficient
+        (rename (Sum.inl : τ → τ ⊕ Fin 1) q *
+          X (Sum.inr default) ^ r) k =
+      if k = r then q else 0 := by
+  have hpoly :
+      (sumAlgEquiv ℂ (Fin 1) τ)
+          (rename (Equiv.sumComm τ (Fin 1))
+            (rename (Sum.inl : τ → τ ⊕ Fin 1) q *
+              X (Sum.inr default) ^ r)) =
+        C q * X default ^ r := by
+    simp only [map_mul, map_pow, rename_X, rename_rename,
+      Equiv.sumComm_apply]
+    change (sumAlgEquiv ℂ (Fin 1) τ)
+          (rename (Sum.inr : τ → Fin 1 ⊕ τ) q) *
+        (sumAlgEquiv ℂ (Fin 1) τ) (X (Sum.inl default)) ^ r =
+      C q * X default ^ r
+    rw [show (sumAlgEquiv ℂ (Fin 1) τ)
+        (rename (Sum.inr : τ → Fin 1 ⊕ τ) q) = C q by
+      simpa using DFunLike.congr_fun
+        (sumAlgEquiv_comp_rename_inr ℂ (Fin 1) τ) q]
+    simp
+  unfold sourceCoefficient
+  rw [hpoly, coeff_C_mul, coeff_X_pow]
+  simp [eq_comm]
+
 /-- Identify all polarized source variables while leaving output variables
 unchanged. -/
 def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
