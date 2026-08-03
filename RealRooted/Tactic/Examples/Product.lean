@@ -496,6 +496,47 @@ example {P Q F : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_lift_sequence using hquot, hfactor, hrow
 
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * (X ^ (m n) * Q n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_scalar_monomial_lift_sequence using
+    model_realrooted := hmodel,
+    scalar_ne := hc,
+    factorization := hrow
+
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P (n + 1) = C (c n) * (X ^ (m n) * Q n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_scalar_monomial_tail_sequence using
+    base := hbase,
+    model_realrooted := hmodel,
+    scalar_ne := hc,
+    factorization := hrow
+
+example {P Qeven Qodd : Nat → ℝ[X]}
+    {ceven codd : Nat → ℝ} {meven modd : Nat → Nat}
+    (heven_model : ∀ n : Nat, Qeven n ≠ 0 ∧ (Qeven n).Splits)
+    (hodd_model : ∀ n : Nat, Qodd n ≠ 0 ∧ (Qodd n).Splits)
+    (hceven : ∀ n : Nat, ceven n ≠ 0)
+    (hcodd : ∀ n : Nat, codd n ≠ 0)
+    (heven : ∀ n : Nat,
+      P (2 * n) = C (ceven n) * (X ^ (meven n) * Qeven n))
+    (hodd : ∀ n : Nat,
+      P (2 * n + 1) = C (codd n) * (X ^ (modd n) * Qodd n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_even_odd_scalar_monomial_lift_sequence using
+    even_model_realrooted := heven_model,
+    odd_model_realrooted := hodd_model,
+    even_scalar_ne := hceven,
+    odd_scalar_ne := hcodd,
+    even_factorization := heven,
+    odd_factorization := hodd
+
 /-- The product lift also accepts the quotient factor on the left. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
