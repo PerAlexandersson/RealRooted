@@ -794,3 +794,60 @@ theorem Matrix.IsSignConsistentOrder.mul_weightedIncidence
   hL.mul_of_right_isTotallyNonnegRect
     (Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
       block hblock weight hweight)
+
+/-- Data expressing a finite vector as nonnegative weights pulled back from an
+ordered collection of sign blocks.
+
+This is an interface for the elementary finite-list decomposition in Karlin's
+proof, not an assertion that the decomposition already exists. Separating the
+data keeps the matrix argument independent of how maximal same-sign blocks are
+constructed and avoids formalizing an unrelated combinatorial model. -/
+structure Fin.SignBlockDecomposition {n : ℕ} (c : Fin n → ℝ) where
+  numBlocks : ℕ
+  numBlocks_pos : 0 < numBlocks
+  block : Fin n → Fin numBlocks
+  block_mono : Monotone block
+  weight : Fin n → ℝ
+  weight_nonneg : ∀ j, 0 ≤ weight j
+  coeff : Fin numBlocks → ℝ
+  reconstruct : ∀ j, weight j * coeff (block j) = c j
+  numBlocks_sub_one : numBlocks - 1 = Fin.signVariations c
+
+/-- Karlin's V.1.4 inequality from explicit sign-block decomposition data.
+
+The only remaining finite combinatorial step for the general theorem is to
+construct `Fin.SignBlockDecomposition c`; all matrix and rank arguments are
+discharged here. -/
+theorem Matrix.IsSignRegular.signVariations_mulVec_le_of_signBlockDecomposition
+    {l n : ℕ}
+    {A : Matrix (Fin l) (Fin n) ℝ}
+    (hA : A.IsSignRegular)
+    (c : Fin n → ℝ)
+    (d : Fin.SignBlockDecomposition c) :
+    Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c := by
+  let B :=
+    A * Matrix.weightedIncidence d.block d.weight
+  have hBsign : B.IsSignConsistentOrder B.rank := by
+    simpa only [B] using
+      (hA B.rank).mul_weightedIncidence
+        d.block d.block_mono d.weight d.weight_nonneg
+  have hbound :
+      Fin.signVariations (B.mulVec d.coeff) ≤ B.rank - 1 :=
+    hBsign.signVariations_mulVec_le_rank_sub_one rfl d.coeff
+  have hmul : B.mulVec d.coeff = A.mulVec c := by
+    calc
+      B.mulVec d.coeff =
+          A.mulVec (fun j => d.weight j * d.coeff (d.block j)) := by
+        simpa only [B] using
+          Matrix.mul_weightedIncidence_mulVec
+            A d.block d.weight d.coeff
+      _ = A.mulVec c :=
+        congrArg A.mulVec (funext fun j => d.reconstruct j)
+  calc
+    Fin.signVariations (A.mulVec c) =
+        Fin.signVariations (B.mulVec d.coeff) :=
+      congrArg Fin.signVariations hmul.symm
+    _ ≤ B.rank - 1 := hbound
+    _ ≤ d.numBlocks - 1 :=
+      (Nat.sub_le_sub_right B.rank_le_width) 1
+    _ = Fin.signVariations c := d.numBlocks_sub_one
