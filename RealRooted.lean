@@ -21,6 +21,7 @@ import RealRooted.AllCombo
 import RealRooted.Apolarity
 import RealRooted.Basic
 import RealRooted.Bezoutian
+import RealRooted.BivariateOpenMapping
 import RealRooted.BoundarySpecializationRight
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
