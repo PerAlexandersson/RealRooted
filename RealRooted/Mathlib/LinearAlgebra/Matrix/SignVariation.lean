@@ -358,6 +358,11 @@ lemma signVariations_append_nonpos_le_succ (l₁ l₂ : List ℝ)
 
 end List
 
+/-- Taking the sign of a sign is the identity. -/
+@[simp]
+theorem SignType.sign_sign (s : SignType) : SignType.sign s = s := by
+  fin_cases s <;> rfl
+
 /-- Prepending one sign increases the number of sign variations by at most one. -/
 theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
     (a :: l).signVariations ≤ l.signVariations + 1 := by
@@ -394,6 +399,19 @@ theorem List.signVariations_insert_between_opposite
       List.destutter_append_cons_cons_self_ne]
 
 namespace List
+
+private theorem filter_map_sign_filter_ne_zero (l : List SignType) :
+    ((l.filter (· ≠ 0)).map SignType.sign).filter (· ≠ 0) =
+      (l.map SignType.sign).filter (· ≠ 0) := by
+  induction l with
+  | nil => rfl
+  | cons a l ih =>
+      fin_cases a <;> simp_all
+
+/-- Filtering zero signs does not change sign variations. -/
+theorem signVariations_filter_ne_zero (l : List SignType) :
+    (l.filter (· ≠ 0)).signVariations = l.signVariations := by
+  simp only [List.signVariations, filter_map_sign_filter_ne_zero]
 
 /-- One insertion at an interior nodal position.
 
@@ -472,6 +490,19 @@ theorem SignType.sign_ne_zero_and_ne_of_mul_neg
   · simp [SignType.sign, ha, hb, not_lt_of_ge ha.le]
 
 namespace Fin
+
+/-- A finite real vector has the same variation count as its explicit sign list. -/
+theorem signVariations_eq_signList {n : ℕ} (x : Fin n → ℝ) :
+    Fin.signVariations x =
+      (List.ofFn (SignType.sign ∘ x)).signVariations := by
+  simp [Fin.signVariations, List.signVariations, Function.comp_def]
+
+/-- Filtering the explicit sign list computes finite-vector sign variations. -/
+theorem filtered_signList_signVariations {n : ℕ} (x : Fin n → ℝ) :
+    ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)).signVariations =
+      Fin.signVariations x := by
+  rw [List.signVariations_filter_ne_zero]
+  exact (Fin.signVariations_eq_signList x).symm
 
 /-- At the splice created by deleting a nodal zero, the new center is nonzero. -/
 theorem succAbove_center_ne_zero_of_mul_neg
