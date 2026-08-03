@@ -381,6 +381,35 @@ theorem List.signVariations_insert_between_opposite
     simp_all [List.signVariations, List.destutter_append_cons_self_ne,
       List.destutter_append_cons_cons_self_ne]
 
+namespace List
+
+/-- One insertion at an interior nodal position.
+
+This inductive relation is structural data recording an explicit list operation,
+not an unproved mathematical assertion packaged as a proposition. -/
+inductive NodalInsertion : List SignType → List SignType → Prop
+  | insert (l₁ l₂ : List SignType) (a b z : SignType)
+      (ha : a ≠ 0) (hb : b ≠ 0) (hab : a ≠ b) :
+      NodalInsertion (l₁ ++ [a, b] ++ l₂) (l₁ ++ [a, z, b] ++ l₂)
+
+/-- Repeated insertions at interior nodal positions preserve sign variations. -/
+theorem signVariations_eq_of_nodalInsertions
+    {l l' : List SignType}
+    (h : Relation.ReflTransGen NodalInsertion l l') :
+    l'.signVariations = l.signVariations := by
+  induction h with
+  | refl => rfl
+  | tail h huv ih =>
+      cases huv with
+      | insert l₁ l₂ a b z ha hb hab =>
+          calc
+            (l₁ ++ [a, z, b] ++ l₂).signVariations =
+                (l₁ ++ [a, b] ++ l₂).signVariations :=
+              signVariations_insert_between_opposite l₁ l₂ a b z ha hb hab
+            _ = l.signVariations := ih
+
+end List
+
 namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
