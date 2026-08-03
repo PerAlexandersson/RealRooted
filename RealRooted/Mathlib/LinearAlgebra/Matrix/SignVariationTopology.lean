@@ -109,10 +109,8 @@ theorem eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
     (hnodal : ∀ i : Fin n, x i.succ.castSucc = 0 →
       x i.castSucc.castSucc * x i.succ.succ < 0) :
     ∀ᶠ a in l,
-      Fin.signVariations (f a) ≤ Fin.signVariations x + 2 := by
-  filter_upwards [Fin.eventually_sign_eq_of_tendsto hf] with a ha
-  exact
-    Fin.signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal
-      ha hnodal
+      signVariations (f a) ≤ signVariations x + 2 := by
+  filter_upwards [eventually_sign_eq_of_tendsto hf] with a ha
+  exact signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal ha hnodal
 
 end Fin
