@@ -84,6 +84,105 @@ theorem mem_lowerHalf_of_recip_avg {b : ℝ} {w ζ : ℂ}
     simp_all
   grind
 
+/-- The reciprocal-average conclusion remains valid when the numerator is an
+ambient cardinality at least as large as the multiset cardinality. This is the
+half-plane form of adjoining roots at infinity in Grace's theorem. -/
+theorem mem_lowerHalf_of_recip_sum_of_card_le
+    {b : ℝ} {w ζ : ℂ} {n : ℕ}
+    (S : Multiset ℂ) (hS : S ≠ 0) (hcard : S.card ≤ n)
+    (hw : w ∉ lowerHalf b)
+    (hz : ∀ z ∈ S, z ∈ lowerHalf b)
+    (hζ : (n : ℂ) / (w - ζ) =
+      (S.map (fun z ↦ 1 / (w - z))).sum) :
+    ζ ∈ lowerHalf b := by
+  let d : ℕ := S.card
+  have hd : 0 < d := by
+    simpa [d] using Multiset.card_pos.mpr hS
+  have hn : 0 < n := lt_of_lt_of_le hd (by simpa [d] using hcard)
+  let t : ℝ := (d : ℝ) / (n : ℝ)
+  have ht_pos : 0 < t := by
+    dsimp [t]
+    positivity
+  have ht_le : t ≤ 1 := by
+    dsimp [t]
+    rw [div_le_one]
+    · exact_mod_cast hcard
+    · exact_mod_cast hn
+  let ζ' : ℂ := w - (t : ℂ) * (w - ζ)
+  have hscaled :
+      (S.card : ℂ) / (w - ζ') =
+        (S.map (fun z ↦ 1 / (w - z))).sum := by
+    rw [← hζ]
+    dsimp [ζ', t, d]
+    have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+    have hd0 : (S.card : ℂ) ≠ 0 := by
+      exact_mod_cast (Multiset.card_pos.mpr hS).ne'
+    by_cases hwζ : w - ζ = 0
+    · simp [hwζ]
+    · push_cast
+      field_simp [hn0, hd0, hwζ]
+      ring
+  have hζ' : ζ' ∈ lowerHalf b :=
+    mem_lowerHalf_of_recip_avg S hS hw hz hscaled
+  have hw_im : b < w.im := by
+    simpa [lowerHalf] using hw
+  simp only [mem_lowerHalf] at hζ' ⊢
+  dsimp [ζ'] at hζ'
+  simp only [Complex.sub_im, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero] at hζ'
+  nlinarith
+
+/-- A polar derivative preserves a closed lower half-plane when its ambient
+degree only bounds, rather than equals, the polynomial degree. -/
+theorem polarDeriv_rootsIn_lowerHalf_of_natDegree_le
+    {n : Nat} {b : ℝ} {ζ : ℂ} {A : ℂ[X]}
+    (hn : 1 ≤ n) (hA : A.natDegree ≤ n)
+    (hAroots : A.RootsIn (lowerHalf b))
+    (hζ : ζ ∉ lowerHalf b) :
+    (polarDeriv n ζ A).RootsIn (lowerHalf b) := by
+  intro w hw0
+  have hn0 : (n : ℂ) ≠ 0 := by
+    exact_mod_cast (show n ≠ 0 by lia)
+  by_cases hA0 : A.natDegree = 0
+  · have hder : derivative A = 0 :=
+      Polynomial.derivative_eq_zero.mpr hA0
+    apply hAroots w
+    have h : (n : ℂ) * eval w A = 0 := by
+      simpa only [IsRoot, polarDeriv, hder, mul_zero, add_zero,
+        eval_mul, eval_C] using hw0
+    exact (mul_eq_zero.mp h).resolve_left hn0
+  · by_contra hwmem
+    have hAw : eval w A ≠ 0 :=
+      fun h ↦ hwmem (hAroots w h)
+    have heq : (n : ℂ) * eval w A +
+        (ζ - w) * eval w (derivative A) = 0 := by
+      have h := hw0
+      simp only [IsRoot, polarDeriv, eval_add, eval_mul,
+        eval_sub, eval_C, eval_X] at h
+      simp_all
+    have hwζ : w - ζ ≠ 0 := by grind
+    have hsplit : A.Splits := IsAlgClosed.splits A
+    have hcard : A.roots.card = A.natDegree :=
+      splits_iff_card_roots.mp hsplit
+    have hroots_ne : A.roots ≠ 0 := by
+      rw [← Multiset.card_pos, hcard]
+      exact Nat.pos_of_ne_zero hA0
+    have hcard_le : A.roots.card ≤ n := hcard.trans_le hA
+    have hlog : eval w (derivative A) / eval w A =
+        (A.roots.map (fun z ↦ 1 / (w - z))).sum :=
+      hsplit.eval_derivative_div_eval_of_ne_zero hAw
+    have hratio : eval w (derivative A) / eval w A =
+        (n : ℂ) / (w - ζ) := by
+      grind
+    have hscaled : (n : ℂ) / (w - ζ) =
+        (A.roots.map (fun z ↦ 1 / (w - z))).sum :=
+      hratio.symm.trans hlog
+    have : ζ ∈ lowerHalf b := by
+      exact mem_lowerHalf_of_recip_sum_of_card_le
+        A.roots hroots_ne hcard_le hwmem
+        (fun z hz ↦ hAroots z (isRoot_of_mem_roots hz)) hscaled
+    exact hζ this
+
 theorem multiset_avg_mem_lowerHalf {b : ℝ} (S : Multiset ℂ) (hS : S ≠ 0)
     (hz : ∀ z ∈ S, z ∈ lowerHalf b) :
     S.sum / (S.card : ℂ) ∈ lowerHalf b := by
