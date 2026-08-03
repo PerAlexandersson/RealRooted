@@ -142,16 +142,16 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
       have hf_final := Multiset.Rel.comp
         (fun a b c hab hbc => by
           calc
-            |c - a| = |(c - b) + (b - a)| := by ring
-            _ ≤ |c - b| + |b - a| := abs_add _ _
+            |c - a| = |(c - b) + (b - a)| := by ring_nf
+            _ ≤ |c - b| + |b - a| := abs_add_le _ _
             _ < ρ / 2 + ρ / 2 := add_lt_add hbc hab
             _ = ρ := by ring)
         hf_step hf_tail
       have hg_final := Multiset.Rel.comp
         (fun a b c hab hbc => by
           calc
-            |c - a| = |(c - b) + (b - a)| := by ring
-            _ ≤ |c - b| + |b - a| := abs_add _ _
+            |c - a| = |(c - b) + (b - a)| := by ring_nf
+            _ ≤ |c - b| + |b - a| := abs_add_le _ _
             _ < ρ / 2 + ρ / 2 := add_lt_add hbc hab
             _ = ρ := by ring)
         hg_step hg_tail

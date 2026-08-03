@@ -11,6 +11,8 @@ ordered-root input for limiting interlacing and root-count inequalities.
 
 namespace RealRooted
 
+open LiuOppositeSigns Polynomial
+
 /-- A close multiset matching pairs corresponding ascending order statistics. -/
 theorem forall₂_sort_of_rel_abs_sub_lt
     {s t : Multiset ℝ} {ρ : ℝ}
@@ -19,7 +21,7 @@ theorem forall₂_sort_of_rel_abs_sub_lt
       (s.sort (· ≤ ·)) (t.sort (· ≤ ·)) := by
   refine Multiset.Rel.forall₂_sort ?_ hrel
   intro a c b d hac hbd had hcb
-  rw [abs_lt] at had hcb ⊢
+  simp only [abs_lt] at had hcb ⊢
   constructor <;> constructor <;> linarith
 
 /-- A close multiset matching pairs corresponding descending order statistics. -/
@@ -37,7 +39,7 @@ theorem forall₂_sort_ge_of_rel_abs_sub_lt
   · intro a c b d hac hbd had hcb
     change OrderDual.ofDual c ≤ OrderDual.ofDual a at hac
     change OrderDual.ofDual d ≤ OrderDual.ofDual b at hbd
-    rw [abs_lt] at had hcb ⊢
+    simp only [abs_lt] at had hcb ⊢
     constructor <;> constructor <;> linarith
   · exact hrel
 

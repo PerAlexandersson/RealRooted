@@ -12,7 +12,7 @@ separated from the original roots and compare the selected largest roots.
 
 namespace RealRooted
 
-open Polynomial
+open LiuOppositeSigns Polynomial
 
 /-- A close root matching preserves the root count at a separated threshold. -/
 theorem rootCountAtOrAbove_eq_of_roots_rel_abs_sub_lt
