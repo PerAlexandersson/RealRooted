@@ -121,8 +121,6 @@ lemma complex_root_ne_zero_of_coeff_zero_pos {p : ℝ[X]} {z : ℂ}
     exact heval
   linarith
 
-/-- A real complex root of a positive-constant PF polynomial lies on the
-negative real ray. -/
 /-- Karlin's repeated matrices force a linear lower bound on the sampled sine
 vector's sign variations, up to the fixed two-endpoint perturbation loss. -/
 theorem aswKarlinRepeatedSineVariationLowerBound
@@ -133,10 +131,8 @@ theorem aswKarlinRepeatedSineVariationLowerBound
     blocks * order - 1 ≤
       Fin.signVariations
         (aswKarlinSineVector z.arg p.natDegree order blocks) + 2 := by
-  have hspan : 0 < p.natDegree + order - 1 := by
-    lia
   have hwidth : 0 < blocks * (p.natDegree + order - 1) :=
-    Nat.mul_pos hblocks hspan
+    Nat.mul_pos hblocks (by lia)
   have hcols :
       blocks * (p.natDegree + order - 1) + 1 =
         (blocks * (p.natDegree + order - 1) - 1) + 2 := by
@@ -168,6 +164,8 @@ theorem aswKarlinRepeatedSineVariationLowerBound
     p.natDegree order blocks] at hbound
   exact hbound
 
+/-- A real complex root of a positive-constant PF polynomial lies on the
+negative real ray. -/
 lemma arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hconst : 0 < p.coeff 0) (hpf : IsPolyaFreqSeq p.coeff)
