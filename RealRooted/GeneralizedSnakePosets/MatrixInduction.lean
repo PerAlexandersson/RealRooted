@@ -238,40 +238,6 @@ theorem theorem41StepOne_prec_of_recurrence
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hdel, hrec_w]
 
-/-- Matrix Claim `(6)` gives the same recurrence-step proper-position result
-via the existing Claim `(6)`/Claim `(7)` reindexing. -/
-theorem theorem41Step_prec_of_matrixClaim
-    {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
-    (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
-    (hP : Prec (P (m - 1)) (P m)) (hG : Prec (G (m - 1)) (G m))
-    (hgf : Prec g f)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
-    Prec (f * P (m - 1) + X * g * G (m - 1))
-      (f * P m + X * g * G m) :=
-  theorem41Step_prec_of_claim7
-    ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim) hm
-    hP hG hgf hP_nonneg hG_nonneg hf_nonneg hg_nonneg
-
-/-- Matrix Claim `(6)` version of the nonconstant word-level recurrence step. -/
-theorem theorem41NonconstantStep_prec_of_matrixClaim
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
-    (hclaim : Theorem41MatrixClaimStatement P G)
-    (hlast : w.IsLastChangeIndex k)
-    (hk : k + 1 < w.deleteFinal.length)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
-    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
-    Prec (M w.deleteFinal) (M w) :=
-  theorem41NonconstantStep_prec_of_claim7
-    (P := P) (G := G) hrec ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim)
-    hlast hk hP hG hprefix hP_nonneg hG_nonneg hM_nonneg
-
 /-- Length-induction skeleton for Braun-Jal Theorem 4.1.
 
 If every nonconstant word step turns the prefix induction hypothesis into
@@ -608,32 +574,6 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (hP_one := hP_one) (hG_one := hG_one)
     (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
     (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
-
-/-- Matrix Claim `(6)` version of the abstract route bridge, using the
-successor-length constant-word identity from the concrete indexing. -/
-theorem theorem41InductionRoute_of_matrixClaim_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hmatrix_of_inputs :
-      Lemma33AuxiliaryGInterlacesStatement P G →
-        Lemma34ModifiedNarayanaInterlacingStatement P →
-          Theorem41MatrixClaimStatement P G)
-    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    Theorem41InductionRouteStatement M P G :=
-  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
-    (M := M) (P := P) (G := G)
-    (fun h33 h34 => (theorem41MatrixClaim_iff_claim7 P G).mp
-      (hmatrix_of_inputs h33 h34))
-    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
-    hM_const
 
 /-- Section 3 equation `(2)` plus the local Claim `(7)` side conditions give
 the abstract induction route, using the concrete successor-length indexing for
