@@ -1,5 +1,7 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Basis.VectorSpace
+import Mathlib.LinearAlgebra.Matrix.ToLin
+import Mathlib.Order.Hom.PowersetCard
 
 /-!
 # Cauchy-Binet determinant expansions
@@ -207,7 +209,7 @@ private theorem sum_perm_det_submatrix_comp_mul_prod_eq
           (L.submatrix rows e).submatrix id p by rfl]
       rw [Matrix.det_permute', Units.smul_def,
         ← Int.cast_smul_eq_zsmul R]
-      simp [mul_comm, mul_assoc]
+      ac_rfl
     _ = (L.submatrix rows e).det * (A.submatrix e cols).det := by
       congr 1
       rw [Matrix.det_apply]

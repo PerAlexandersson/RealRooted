@@ -800,6 +800,17 @@ theorem List.signVariations_take_le
     (l.take k).signVariations ≤ l.signVariations :=
   List.signVariations_mono_of_prefix (List.take_prefix k l)
 
+/-- A nonzero endpoint survives sign filtering as the final sign of its prefix. -/
+theorem List.getLast?_filter_sign_take_succ
+    {R : Type*} [Zero R] [LinearOrder R]
+    (l : List R) {i : ℕ} (hi : i < l.length)
+    (hne : l[i] ≠ 0) :
+    (((l.take (i + 1)).map SignType.sign).filter
+      (· ≠ 0)).getLast? = some (SignType.sign l[i]) := by
+  rw [List.take_succ_eq_append_getElem hi, List.map_append,
+    List.filter_append]
+  simp [sign_ne_zero.mpr hne]
+
 /-- Appending one real entry increases sign variation by at most one. -/
 theorem List.signVariations_append_singleton_le_succ
     (l : List ℝ) (x : ℝ) :
@@ -912,3 +923,76 @@ theorem Fin.prefixSignVariations_succ_le
   rw [show (i.succ : ℕ) + 1 = ((i : ℕ) + 1) + 1 by simp,
     List.take_succ_eq_append_getElem hindex]
   exact List.signVariations_append_singleton_le_succ _ _
+
+/-- Nonzero entries with equal block index and ordered indices have equal signs. -/
+theorem Fin.sign_eq_of_le_of_signBlockIndex_eq
+    {n : ℕ} (c : Fin n → ℝ) {i j : Fin n}
+    (hij : i ≤ j) (hi : c i ≠ 0) (hj : c j ≠ 0)
+    (hblock : Fin.signBlockIndex c i = Fin.signBlockIndex c j) :
+    SignType.sign (c i) = SignType.sign (c j) := by
+  let l := List.ofFn c
+  let sᵢ :=
+    ((l.take (i + 1)).map SignType.sign).filter (· ≠ 0)
+  let sⱼ :=
+    ((l.take (j + 1)).map SignType.sign).filter (· ≠ 0)
+  have hprefix : sᵢ <+: sⱼ :=
+    ((List.take_prefix_take_left
+      (Nat.add_le_add_right hij 1)).map SignType.sign).filter (· ≠ 0)
+  have hprefEq :
+      Fin.prefixSignVariations c i =
+        Fin.prefixSignVariations c j := by
+    have hval := congrArg Fin.val hblock
+    simpa using hval
+  have hvariationEq :
+      (sᵢ.destutter (· ≠ ·)).length - 1 =
+        (sⱼ.destutter (· ≠ ·)).length - 1 := by
+    change (l.take (i + 1)).signVariations =
+      (l.take (j + 1)).signVariations at hprefEq
+    change (sᵢ.destutter (· ≠ ·)).length - 1 =
+      (sⱼ.destutter (· ≠ ·)).length - 1 at hprefEq
+    exact hprefEq
+  have hiIndex : (i : ℕ) < l.length := by simp [l]
+  have hjIndex : (j : ℕ) < l.length := by simp [l]
+  have hiValue : l[i] ≠ 0 := by simpa [l] using hi
+  have hjValue : l[j] ≠ 0 := by simpa [l] using hj
+  have hlastI :
+      sᵢ.getLast? = some (SignType.sign (c i)) := by
+    simpa [sᵢ, l] using
+      List.getLast?_filter_sign_take_succ l hiIndex hiValue
+  have hlastJ :
+      sⱼ.getLast? = some (SignType.sign (c j)) := by
+    simpa [sⱼ, l] using
+      List.getLast?_filter_sign_take_succ l hjIndex hjValue
+  have hdestIne : sᵢ.destutter (· ≠ ·) ≠ [] := by
+    intro hd
+    have hlastDest := List.getLast?_destutter_ne sᵢ
+    rw [hd, hlastI] at hlastDest
+    simp at hlastDest
+  have hdestJne : sⱼ.destutter (· ≠ ·) ≠ [] := by
+    intro hd
+    have hlastDest := List.getLast?_destutter_ne sⱼ
+    rw [hd, hlastJ] at hlastDest
+    simp at hlastDest
+  have hdestIPos : 0 < (sᵢ.destutter (· ≠ ·)).length :=
+    List.length_pos_iff.mpr hdestIne
+  have hdestJPos : 0 < (sⱼ.destutter (· ≠ ·)).length :=
+    List.length_pos_iff.mpr hdestJne
+  have hlengthEq :
+      (sᵢ.destutter (· ≠ ·)).length =
+        (sⱼ.destutter (· ≠ ·)).length := by
+    lia
+  have hlastEq : sᵢ.getLast? = sⱼ.getLast? :=
+    hprefix.getLast?_eq_of_destutter_length_le hlengthEq.ge
+  rw [hlastI, hlastJ] at hlastEq
+  exact Option.some.inj hlastEq
+
+/-- Nonzero entries in the same sign block have equal signs. -/
+theorem Fin.sign_eq_of_signBlockIndex_eq
+    {n : ℕ} (c : Fin n → ℝ) {i j : Fin n}
+    (hi : c i ≠ 0) (hj : c j ≠ 0)
+    (hblock : Fin.signBlockIndex c i = Fin.signBlockIndex c j) :
+    SignType.sign (c i) = SignType.sign (c j) := by
+  rcases le_total i j with hij | hji
+  · exact Fin.sign_eq_of_le_of_signBlockIndex_eq c hij hi hj hblock
+  · exact (Fin.sign_eq_of_le_of_signBlockIndex_eq
+      c hji hj hi hblock.symm).symm

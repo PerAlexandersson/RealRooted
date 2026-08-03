@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
@@ -24,7 +24,7 @@ private noncomputable def detUpdateRowLinearMap
   { toFun := fun row => (M.updateRow i row).det
     map_add' := fun u v => det_updateRow_add M i u v
     map_smul' := fun c u => by
-      simpa only [smul_eq_mul] using det_updateRow_smul M i c u }
+      simpa only [RingHom.id_apply, smul_eq_mul] using det_updateRow_smul M i c u }
 
 /-- A determinant commutes with an interval integral in one fixed row. -/
 theorem det_updateRow_intervalIntegral

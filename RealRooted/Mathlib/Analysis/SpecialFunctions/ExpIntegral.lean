@@ -21,7 +21,7 @@ theorem intervalIntegral_mul_exp_mul (a b z : ℝ) :
     (∫ t in a..b, z * exp (t * z)) = exp (b * z) - exp (a * z) := by
   apply intervalIntegral.integral_eq_sub_of_hasDerivAt
   · intro t _
-    simpa [mul_comm] using
+    simpa [Function.comp_def, mul_comm] using
       (Real.hasDerivAt_exp (t * z)).comp t ((hasDerivAt_id t).mul_const z)
   · exact
       (continuous_const.mul

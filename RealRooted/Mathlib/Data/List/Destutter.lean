@@ -63,7 +63,7 @@ theorem IsPrefix.destutter
   rcases h with ⟨t, rfl⟩
   exact destutter_prefix_append R l₁ t
 
-private theorem getLast?_cons_of_ne_nil
+private theorem getLast?_cons_eq_tail_of_ne_nil
     {α : Type*} {a : α} {l : List α} (hl : l ≠ []) :
     (a :: l).getLast? = l.getLast? := by
   rw [List.getLast?_cons, List.getLast?_eq_some_getLast hl]
@@ -83,10 +83,10 @@ private theorem getLast?_destutter'_ne
         calc
           (a :: l.destutter' (· ≠ ·) b).getLast? =
               (l.destutter' (· ≠ ·) b).getLast? :=
-            getLast?_cons_of_ne_nil (List.destutter'_ne_nil _ _)
+            getLast?_cons_eq_tail_of_ne_nil (List.destutter'_ne_nil _ _)
           _ = (b :: l).getLast? := ih b
           _ = (a :: b :: l).getLast? :=
-            (getLast?_cons_of_ne_nil (by simp)).symm
+            (getLast?_cons_eq_tail_of_ne_nil (by simp)).symm
       · have hab_eq : a = b := not_ne_iff.mp hab
         subst b
         rw [if_neg (by simp)]
@@ -94,7 +94,7 @@ private theorem getLast?_destutter'_ne
           (l.destutter' (· ≠ ·) a).getLast? =
               (a :: l).getLast? := ih a
           _ = (a :: a :: l).getLast? :=
-            (getLast?_cons_of_ne_nil (by simp)).symm
+            (getLast?_cons_eq_tail_of_ne_nil (by simp)).symm
 
 /-- Destuttering by disequality preserves the final element. -/
 theorem getLast?_destutter_ne
@@ -105,5 +105,24 @@ theorem getLast?_destutter_ne
       simp
   | cons a l =>
       exact getLast?_destutter'_ne a l
+
+/-- Equal-length destuttered prefixes have the same final element. -/
+theorem IsPrefix.getLast?_eq_of_destutter_length_le
+    {α : Type*} [DecidableEq α]
+    {l₁ l₂ : List α} (h : l₁ <+: l₂)
+    (hlen :
+      (l₂.destutter (· ≠ ·)).length ≤
+        (l₁.destutter (· ≠ ·)).length) :
+    l₁.getLast? = l₂.getLast? := by
+  have heq :
+      l₁.destutter (· ≠ ·) =
+        l₂.destutter (· ≠ ·) :=
+    (h.destutter (R := fun x y : α => x ≠ y)).eq_of_length_le hlen
+  calc
+    l₁.getLast? = (l₁.destutter (· ≠ ·)).getLast? :=
+      (List.getLast?_destutter_ne l₁).symm
+    _ = (l₂.destutter (· ≠ ·)).getLast? :=
+      congrArg List.getLast? heq
+    _ = l₂.getLast? := List.getLast?_destutter_ne l₂
 
 end List
