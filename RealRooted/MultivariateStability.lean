@@ -554,7 +554,7 @@ theorem natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
       _ = Polynomial.eval y
           (Polynomial.map (MvPolynomial.eval x)
             (MvPolynomial.optionEquivLeft ℂ τ Q)) :=
-        MvPolynomial.optionEquivLeft_elim_eval x y Q
+        MvPolynomial.optionEquivLeft_elim_eval ℂ τ x y Q
   calc
     (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
         (specializeLeft x P)).natDegree =
