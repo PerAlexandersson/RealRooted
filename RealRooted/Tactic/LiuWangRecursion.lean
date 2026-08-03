@@ -16,6 +16,42 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+syntax (name := rr_lw_derivative_lag_sequence_named)
+  "rr_lw_derivative_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "derivative_nonpos" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_derivative_lag_sequence_realrooted_named)
+  "rr_lw_derivative_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "derivative_nonpos" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_derivative_lag_sequence_interlaces_named)
+  "rr_lw_derivative_lag_sequence_interlaces" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "derivative_nonpos" ":=" term ","
+    "lag_nonpos" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_derivative_lag_sequence_sign_auto_named)
   "rr_lw_derivative_lag_sequence_sign_auto" " using "
     "base" ":=" term ","
@@ -350,6 +386,51 @@ macro_rules
       `(by rr_lw_derivative_lag_coeff_at $n)
   | `(rr_lw_derivative_lag_coeff_all_term) =>
       `(by rr_lw_derivative_lag_coeff_all)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        derivative_nonpos := $hderivative_nonpos:term,
+        lag_nonpos := $hlag_nonpos:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.prec_lw_derivative_lag_sequence
+          $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+          $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        derivative_nonpos := $hderivative_nonpos:term,
+        lag_nonpos := $hlag_nonpos:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_lw_derivative_lag_sequence
+            $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+            $hdeg_succ $hno))
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_interlaces using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        derivative_nonpos := $hderivative_nonpos:term,
+        lag_nonpos := $hlag_nonpos:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.interlaces_of_prec_chain
+          (RealRooted.prec_lw_derivative_lag_sequence
+            $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+            $hdeg_succ $hno)
+          $hdeg_succ)
   | `(tactic|
       rr_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
