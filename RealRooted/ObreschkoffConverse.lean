@@ -1633,8 +1633,6 @@ lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       simp_all
     linarith
 
-/-- Constant shifts eventually destroy real-rootedness once the polynomial has
-positive leading coefficient and degree at least `2`. -/
 /-- For an odd-degree positive-leading real-rooted polynomial, a sufficiently
 large positive downward constant shift is not real-rooted. Reflecting across
 the vertical axis and negating preserves the positive leading coefficient in
@@ -1662,7 +1660,8 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_odd_natDegree
   intro hdown
   apply ht_bad
   have hcomp_ne : (p - C t).comp (-X) ≠ 0 := by
-    simpa using hdown.1
+    rw [ne_eq, Polynomial.comp_eq_zero_iff]
+    simp [hdown.1]
   have hshift :
       C t + q = -((p - C t).comp (-X)) := by
     dsimp [q]
