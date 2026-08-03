@@ -3526,6 +3526,15 @@ theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
+/-- Polynomial-coefficient Pólya-frequency closure from Schur--Pólya--Wagner,
+using the proved forward ASW theorem rather than a caller-supplied backend. -/
+theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner_asw
+    (hSPW : schurPolyaWagnerHadamardPFStatement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  fun hp hq =>
+    (hSPW (IsPFPolynomial.of_polyaFreqSeq hp)
+      (IsPFPolynomial.of_polyaFreqSeq hq)).to_sequence
+
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_prec0
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
