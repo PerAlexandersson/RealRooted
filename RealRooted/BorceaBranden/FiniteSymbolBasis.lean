@@ -132,3 +132,68 @@ lemma degreeOfLEFinOneEquiv_val (d : ℕ)
   rfl
 
 end RealRooted.BorceaBranden
+
+namespace RealRooted.BorceaBranden
+
+noncomputable section
+
+open MvPolynomial
+
+/-- The canonical one-variable degree-box index associated with a natural
+number. The truncation is inactive on `Fin (n + 1)`. -/
+noncomputable def finOneDegreeIndex (n k : ℕ) :
+    {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ n} :=
+  (degreeOfLEFinOneEquiv n).symm
+    ⟨min k n, Nat.lt_succ_iff.mpr (Nat.min_le_right k n)⟩
+
+@[simp] lemma finOneDegreeIndex_equiv_apply (n : ℕ)
+    (m : {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ n}) :
+    finOneDegreeIndex n (degreeOfLEFinOneEquiv n m) = m := by
+  apply (degreeOfLEFinOneEquiv n).injective
+  apply Fin.ext
+  simp [finOneDegreeIndex, degreeOfLEFinOneEquiv_val, m.2 0]
+
+/-- Expand a one-variable algebraic symbol over its canonical `Fin (n + 1)`
+indexing. -/
+theorem algebraicSymbol_finOne_eq_sum_fin
+    {τ R : Type*} [CommSemiring R] (n : ℕ)
+    (T : degreeOfLE (Fin 1) R (fun _ => n) →ₗ[R] MvPolynomial τ R) :
+    algebraicSymbol (fun _ : Fin 1 => n) T =
+      ∑ k : Fin (n + 1),
+        C (n.choose k : R) *
+          rename (Sum.inl : τ → τ ⊕ Fin 1)
+            (T (basisDegreeOfLE (R := R) (fun _ : Fin 1 => n)
+              (finOneDegreeIndex n k))) *
+          X (Sum.inr default) ^ (n - k) := by
+  classical
+  rw [algebraicSymbol]
+  apply Fintype.sum_equiv (degreeOfLEFinOneEquiv n)
+  intro m
+  simp [finOneDegreeIndex_equiv_apply, boxChoose,
+    rightComplementMonomial, degreeOfLEFinOneEquiv_val]
+
+/-- Expand a one-variable algebraic symbol over the natural-number range
+`0, ..., n`. -/
+theorem algebraicSymbol_finOne_eq_sum_range
+    {τ R : Type*} [CommSemiring R] (n : ℕ)
+    (T : degreeOfLE (Fin 1) R (fun _ => n) →ₗ[R] MvPolynomial τ R) :
+    algebraicSymbol (fun _ : Fin 1 => n) T =
+      ∑ k ∈ Finset.range (n + 1),
+        C (n.choose k : R) *
+          rename (Sum.inl : τ → τ ⊕ Fin 1)
+            (T (basisDegreeOfLE (R := R) (fun _ : Fin 1 => n)
+              (finOneDegreeIndex n k))) *
+          X (Sum.inr default) ^ (n - k) := by
+  classical
+  let g : ℕ → MvPolynomial (τ ⊕ Fin 1) R := fun k =>
+    C (n.choose k : R) *
+      rename (Sum.inl : τ → τ ⊕ Fin 1)
+        (T (basisDegreeOfLE (R := R) (fun _ : Fin 1 => n)
+          (finOneDegreeIndex n k))) *
+      X (Sum.inr default) ^ (n - k)
+  rw [algebraicSymbol_finOne_eq_sum_fin (n := n) (T := T)]
+  simpa [g] using Fin.sum_univ_eq_sum_range g (n + 1)
+
+end
+
+end RealRooted.BorceaBranden

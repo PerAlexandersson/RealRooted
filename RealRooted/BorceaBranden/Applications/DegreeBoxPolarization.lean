@@ -134,3 +134,84 @@ theorem rename_rightComplementMonomial_one
   simpa using Finsupp.sum_one_sub_eq_card_sub_degree m hm
 
 end MvPolynomial
+
+namespace RealRooted.BorceaBranden
+
+noncomputable section
+
+open MvPolynomial
+
+lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
+    {n : ℕ} (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    finOneDegreeIndex n m.1.degree = diagonalDegreeBoxIndex m := by
+  apply (degreeOfLEFinOneEquiv n).injective
+  apply Fin.ext
+  simp [finOneDegreeIndex, degreeOfLEFinOneEquiv_val,
+    diagonalDegreeBoxIndex,
+    Nat.min_eq_left (degree_le_fin_card_of_le_one m.1 m.2)]
+
+/-- Termwise form of the source-polarized algebraic symbol after identifying
+all polarized source variables. -/
+theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ) :
+    MvPolynomial.rename
+        (MvPolynomial.sourceDiagonalVariableMap (τ := τ) (n := n))
+        (algebraicSymbol (fun _ : Fin n => 1)
+          (sourcePolarizedOperator n T)) =
+      ∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
+        rename (Sum.inl : τ → τ ⊕ Fin 1)
+            (T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+              (diagonalDegreeBoxIndex m))) *
+          X (Sum.inr default) ^ (n - m.1.degree) := by
+  classical
+  rw [algebraicSymbol, map_sum]
+  apply Finset.sum_congr rfl
+  intro m _
+  simp only [map_mul, rename_C]
+  rw [boxChoose_one_of_le_one m.1 m.2, Nat.cast_one, map_one,
+    one_mul, MvPolynomial.rename_sourceDiagonalVariableMap_rename_inl,
+    sourcePolarizedOperator_basisDegreeOfLE,
+    MvPolynomial.rename_rightComplementMonomial_one m.1 m.2]
+
+/-- Source-side specialization of Borcea--Brändén Lemma 2.5: diagonalizing the
+multiaffine source symbol recovers the original degree-box symbol. -/
+theorem rename_algebraicSymbol_sourcePolarizedOperator
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ) :
+    MvPolynomial.rename
+        (MvPolynomial.sourceDiagonalVariableMap (τ := τ) (n := n))
+        (algebraicSymbol (fun _ : Fin n => 1)
+          (sourcePolarizedOperator n T)) =
+      algebraicSymbol (fun _ : Fin 1 => n) T := by
+  classical
+  let g : ℕ → MvPolynomial (τ ⊕ Fin 1) ℂ := fun k =>
+    rename (Sum.inl : τ → τ ⊕ Fin 1)
+        (T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+          (finOneDegreeIndex n k))) *
+      X (Sum.inr default) ^ (n - k)
+  calc
+    MvPolynomial.rename
+          (MvPolynomial.sourceDiagonalVariableMap (τ := τ) (n := n))
+          (algebraicSymbol (fun _ : Fin n => 1)
+            (sourcePolarizedOperator n T)) =
+        ∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
+          g m.1.degree := by
+      rw [rename_algebraicSymbol_sourcePolarizedOperator_eq_sum]
+      apply Finset.sum_congr rfl
+      intro m _
+      simp only [g]
+      rw [finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex]
+    _ = ∑ k ∈ Finset.range (n + 1), n.choose k • g k :=
+      sum_degreeOneExponent_degreeFunction n g
+    _ = algebraicSymbol (fun _ : Fin 1 => n) T := by
+      rw [algebraicSymbol_finOne_eq_sum_range]
+      apply Finset.sum_congr rfl
+      intro k _
+      simp [g, mul_assoc]
+
+end
+
+end RealRooted.BorceaBranden
