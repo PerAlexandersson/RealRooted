@@ -20,20 +20,8 @@ theorem finsupp_eq_indicator_support_of_le_one
     d = Finsupp.indicator d.support (fun _ _ => 1) := by
   classical
   ext i
-  by_cases hi : i ∈ d.support
-  · rw [Finsupp.indicator_of_mem hi]
-    have hne : d i ≠ 0 := Finsupp.mem_support_iff.mp hi
-    have hle := hd i
-    cases hdi : d i with
-    | zero => exact (hne hdi).elim
-    | succ n =>
-        cases n with
-        | zero => rfl
-        | succ n =>
-            rw [hdi] at hle
-            exact (Nat.not_succ_le_zero n (Nat.le_of_succ_le_succ hle)).elim
-  · rw [Finsupp.indicator_of_notMem hi]
-    simpa [Finsupp.mem_support_iff] using hi
+  have hle := hd i
+  interval_cases h : d i <;> simp [Finsupp.indicator, h]
 
 /-- Coordinate-wise degree-one exponent vectors are equal exactly when their
 supports are equal. -/
