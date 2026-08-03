@@ -403,6 +403,28 @@ inductive NodalInsertion : List SignType → List SignType → Prop
       (ha : a ≠ 0) (hb : b ≠ 0) (hab : a ≠ b) :
       NodalInsertion (l₁ ++ [a, b] ++ l₂) (l₁ ++ [a, z, b] ++ l₂)
 
+/-- Adding unchanged list context preserves one nodal insertion. -/
+theorem NodalInsertion.append_context
+    {l l' : List SignType} (h : NodalInsertion l l')
+    (pre post : List SignType) :
+    NodalInsertion (pre ++ l ++ post) (pre ++ l' ++ post) := by
+  cases h with
+  | insert l₁ l₂ a b z ha hb hab =>
+      simpa only [append_assoc] using
+        NodalInsertion.insert (pre ++ l₁) (l₂ ++ post) a b z ha hb hab
+
+/-- Adding unchanged list context preserves repeated nodal insertions. -/
+theorem NodalInsertion.reflTransGen_append_context
+    {l l' : List SignType}
+    (h : Relation.ReflTransGen NodalInsertion l l')
+    (pre post : List SignType) :
+    Relation.ReflTransGen NodalInsertion
+      (pre ++ l ++ post) (pre ++ l' ++ post) := by
+  induction h with
+  | refl => exact .refl
+  | tail h huv ih =>
+      exact ih.tail (huv.append_context pre post)
+
 /-- Repeated insertions at interior nodal positions preserve sign variations. -/
 theorem signVariations_eq_of_nodalInsertions
     {l l' : List SignType}
