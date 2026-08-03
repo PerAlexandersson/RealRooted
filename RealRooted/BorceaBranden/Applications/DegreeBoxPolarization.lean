@@ -30,7 +30,8 @@ theorem sourcePolarizedOperator_comp_polarizationDegreeBoxLinearMap
       MvPolynomial τ ℂ) :
     (sourcePolarizedOperator n T).comp
       (polarizationDegreeBoxLinearMap n) = T := by
-  ext q
+  apply LinearMap.ext
+  intro q
   change T (diagonalProjectionDegreeBox n
     (polarizationDegreeBoxLinearMap n q)) = T q
   rw [diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap q]
@@ -105,7 +106,7 @@ namespace MvPolynomial
 `tau ⊕ Fin 1` as a polynomial in the single source variable with coefficients
 in the output-variable ring `MvPolynomial tau ℂ`. -/
 /- Source audit: Borcea--Branden, "The Lee--Yang and Polya--Schur Programs. I",
-Proposition 2.4, equation (2.2), and Lemma 2.5.  This extracts the coefficient
+Proposition 2.4, equation (2.2), and Lemma 2.5. This extracts the coefficient
 of the source monomial `z^k` while retaining the output-variable polynomial. -/
 noncomputable def sourceCoefficient {τ : Type*}
     (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) : MvPolynomial τ ℂ :=
@@ -269,11 +270,14 @@ theorem sourceCoefficient_algebraicSymbol_finOne
 lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
     {n : ℕ} (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
     finOneDegreeIndex n m.1.degree = diagonalDegreeBoxIndex m := by
+  have hm_degree : m.1.degree ≤ n := by
+    rw [← card_support_eq_degree_of_le_one m.1 m.2]
+    simpa using Finset.card_le_univ m.1.support
   apply (degreeOfLEFinOneEquiv n).injective
   apply Fin.ext
   simp [finOneDegreeIndex, degreeOfLEFinOneEquiv_val,
     diagonalDegreeBoxIndex,
-    Nat.min_eq_left (degree_le_fin_card_of_le_one m.1 m.2)]
+    Nat.min_eq_left hm_degree]
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
