@@ -867,3 +867,25 @@ lake build RealRooted.Tactic.OEIS
 
 Run a full `lake build` only after changing public theorem signatures, imports,
 or generated coverage.
+
+## 2026-08-03 Recurrence-defined model identification
+
+The merged `rr_model_sequence` frontend transfers real-rootedness once a
+pointwise equality with a checked model is available. The remaining generic
+plumbing is recurrence uniqueness, not another sequence-specific
+real-rootedness theorem.
+
+`RealRooted.Tactic.RecurrenceIdentification` supplies pointwise uniqueness and
+direct model-transfer frontends for common fixed-lag shapes:
+
+- `rr_identify_lag_one_sequence` and `rr_model_lag_one_sequence`;
+- `rr_identify_lag_two_sequence` and `rr_model_lag_two_sequence`;
+- `rr_identify_lag_three_sequence` and `rr_model_lag_three_sequence`.
+
+The recurrence step is an arbitrary function of the index and preceding rows,
+so the same API covers polynomial multiplication, affine Favard steps, and
+derivative recurrences without naming any OEIS sequence. The companion OEIS
+agreement audit currently has 4 local lag-one rows, 31 local lag-two rows, and
+3 local lag-three rows. Each still needs a formal OEIS row definition plus
+initial-value and recurrence proofs; finite cached-row checks do not discharge
+those obligations.

@@ -28,6 +28,7 @@ import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial

@@ -30,6 +30,7 @@ import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFPolynomial
