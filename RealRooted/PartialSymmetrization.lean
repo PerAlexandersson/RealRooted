@@ -149,13 +149,10 @@ theorem quotient_im_nonneg_of_mvUpperHalfPlaneStable_bivariate
     linarith
   have hstable := hP ![z, w] (by
     intro i
-    fin_cases i
-    · simpa using hz
-    · simpa using hw)
+    fin_cases i <;> simp_all)
   rw [eval_bivariateMultiaffinePolynomial] at hstable
-  apply hstable
-  exact (bivariate_eq_zero_iff a b c d z w
-    (add_mul_ne_zero_of_im_div_pos c d z hcd (le_of_lt hz))).2 rfl
+  exact hstable ((bivariate_eq_zero_iff a b c d z w
+    (add_mul_ne_zero_of_im_div_pos c d z hcd (le_of_lt hz))).2 rfl)
 
 /-- On the real boundary, positivity of the first quotient imaginary part is
 equivalent to positivity of `bivariateV1` when its denominator stays off zero. -/
