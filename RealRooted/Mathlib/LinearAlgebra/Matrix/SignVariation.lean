@@ -461,6 +461,22 @@ protected theorem NodalInsertion.eraseIdx_succ
             (by simpa [Nat.succ_eq_add_one] using hab)
           simpa [Nat.succ_eq_add_one] using h.append_context [x] []
 
+/-- Erasing an entry between opposite nonzero neighbors inside a middle block
+is one nodal insertion in reverse, with unchanged surrounding context. -/
+protected theorem NodalInsertion.eraseIdx_append_middle
+    (pre middle post : List SignType) (i : ℕ)
+    (hi : i + 2 < middle.length)
+    (ha : middle[i] ≠ 0) (hb : middle[i + 2] ≠ 0)
+    (hab : middle[i] ≠ middle[i + 2]) :
+    NodalInsertion
+      ((pre ++ middle ++ post).eraseIdx (pre.length + (i + 1)))
+      (pre ++ middle ++ post) := by
+  have hi' : i + 1 < middle.length := by lia
+  rw [List.eraseIdx_append_middle pre middle post (i + 1) hi']
+  exact
+    (NodalInsertion.eraseIdx_succ middle i hi ha hb hab).append_context
+      pre post
+
 /-- Adding unchanged list context preserves repeated nodal insertions. -/
 protected theorem NodalInsertion.reflTransGen_append_context
     {l l' : List SignType}
