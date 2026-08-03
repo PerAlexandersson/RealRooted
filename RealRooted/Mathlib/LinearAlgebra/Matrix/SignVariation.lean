@@ -430,6 +430,36 @@ protected theorem NodalInsertion.append_context
       simpa only [append_assoc] using
         NodalInsertion.insert (pre ++ l₁) (l₂ ++ post) a b z ha hb hab
 
+/-- Erasing an entry between opposite nonzero neighbors is one nodal insertion in reverse. -/
+protected theorem NodalInsertion.eraseIdx_succ
+    (l : List SignType) (i : ℕ) (hi : i + 2 < l.length)
+    (ha : l[i] ≠ 0) (hb : l[i + 2] ≠ 0)
+    (hab : l[i] ≠ l[i + 2]) :
+    NodalInsertion (l.eraseIdx (i + 1)) l := by
+  induction l generalizing i with
+  | nil => simp at hi
+  | cons x l ih =>
+      cases i with
+      | zero =>
+          cases l with
+          | nil => simp at hi
+          | cons z l =>
+              cases l with
+              | nil => simp at hi
+              | cons b l =>
+                  exact NodalInsertion.insert [] l x b z
+                    (by simpa using ha) (by simpa using hb)
+                    (by simpa using hab)
+      | succ i =>
+          have h := ih i
+            (by
+              simp only [length_cons] at hi
+              lia)
+            (by simpa [Nat.succ_eq_add_one] using ha)
+            (by simpa [Nat.succ_eq_add_one] using hb)
+            (by simpa [Nat.succ_eq_add_one] using hab)
+          simpa [Nat.succ_eq_add_one] using h.append_context [x] []
+
 /-- Adding unchanged list context preserves repeated nodal insertions. -/
 protected theorem NodalInsertion.reflTransGen_append_context
     {l l' : List SignType}
