@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Data.List.OfFn
+public import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
 # Additional lemmas about lists of finite functions
