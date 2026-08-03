@@ -63,6 +63,38 @@ theorem sum_degreeOneExponent_eq_sum_finset
   intro m
   simp
 
+/-- Partition a sum over subsets of `Fin n` by subset cardinality. -/
+theorem sum_finset_eq_sum_powersetCard
+    {M : Type*} [AddCommMonoid M] (n : ℕ)
+    (f : Finset (Fin n) → M) :
+    ∑ s, f s =
+      ∑ k ∈ Finset.range (n + 1),
+        ∑ s ∈ (Finset.univ : Finset (Fin n)).powersetCard k, f s := by
+  simpa using
+    Finset.sum_powerset (Finset.univ : Finset (Fin n)) f
+
+/-- Summing a cardinality-dependent contribution over subsets of `Fin n`
+produces the corresponding binomial coefficients. -/
+theorem sum_finset_cardFunction
+    {M : Type*} [AddCommMonoid M] (n : ℕ) (g : ℕ → M) :
+    ∑ s : Finset (Fin n), g s.card =
+      ∑ k ∈ Finset.range (n + 1), n.choose k • g k := by
+  rw [sum_finset_eq_sum_powersetCard]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simpa using
+    Finset.sum_powersetCard k (Finset.univ : Finset (Fin n)) g
+
+/-- The coefficient grouping for multiaffine source exponents: one term for
+each zero-one exponent vector becomes `choose n k` copies of the contribution
+of total degree `k`. -/
+theorem sum_degreeOneExponent_degreeFunction
+    {M : Type*} [AddCommMonoid M] (n : ℕ) (g : ℕ → M) :
+    ∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}, g m.1.degree =
+      ∑ k ∈ Finset.range (n + 1), n.choose k • g k := by
+  rw [sum_degreeOneExponent_eq_sum_finset]
+  simpa using sum_finset_cardFunction n g
+
 end
 
 end RealRooted.BorceaBranden

@@ -39,16 +39,18 @@ theorem finsupp_eq_iff_support_eq_of_le_one
 /-- Natural-valued exponent vectors bounded by one are equivalent to finite
 subsets, via their supports. -/
 noncomputable def degreeOneExponentEquivFinset (sigma : Type*) :
-    {d : sigma →₀ ℕ // ∀ i, d i ≤ 1} ≃ Finset sigma where
-  toFun d := d.1.support
-  invFun s :=
-    ⟨Finsupp.indicator s (fun _ _ => 1), fun i => by
-      by_cases hi : i ∈ s <;> simp [Finsupp.indicator, hi]⟩
-  left_inv d :=
-    Subtype.ext (finsupp_eq_indicator_support_of_le_one d.1 d.2).symm
-  right_inv s := by
-    ext i
-    simp [Finsupp.indicator]
+    {d : sigma →₀ ℕ // ∀ i, d i ≤ 1} ≃ Finset sigma := by
+  classical
+  exact
+    { toFun := fun d => d.1.support
+      invFun := fun s =>
+        ⟨Finsupp.indicator s (fun _ _ => 1), fun i => by
+          by_cases hi : i ∈ s <;> simp [Finsupp.indicator, hi]⟩
+      left_inv := fun d =>
+        Subtype.ext (finsupp_eq_indicator_support_of_le_one d.1 d.2).symm
+      right_inv := fun s => by
+        ext i
+        simp [Finsupp.indicator] }
 
 /-- The total degree of a zero-one exponent vector is the cardinality of its
 support. -/
@@ -65,6 +67,18 @@ theorem card_support_eq_degree_of_le_one
       have hpos : 0 < d i := Finsupp.mem_support_iff.mp hi |>.bot_lt
       have hone : d i = 1 := Nat.le_antisymm (hd i) hpos
       simp [hone]
+
+@[simp]
+theorem degree_degreeOneExponentEquivFinset_symm
+    {sigma : Type*} (s : Finset sigma) :
+    ((degreeOneExponentEquivFinset sigma).symm s).1.degree = s.card := by
+  let d := (degreeOneExponentEquivFinset sigma).symm s
+  have hsupp : d.1.support = s :=
+    (degreeOneExponentEquivFinset sigma).apply_symm_apply s
+  calc
+    d.1.degree = d.1.support.card :=
+      (card_support_eq_degree_of_le_one d.1 d.2).symm
+    _ = s.card := congrArg Finset.card hsupp
 
 end
 
