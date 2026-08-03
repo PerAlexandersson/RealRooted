@@ -287,10 +287,11 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     exact (hf_nonneg.mul (hQ_nonneg hm)).add
       (hg_nonneg.X_mul.mul (hH_nonneg hm))
   have hstep : Prec (M w.deleteFinal) (M w - M w.deleteFinal) := by
-    rw [hrec_del, hrec_diff]
-    exact theorem41Step_difference_prec_of_matrixClaim
+    have hstep_raw := theorem41Step_difference_prec_of_matrixClaim
       hclaim hm (hP_ne (m - 1)) hP_nonneg hG_nonneg
       (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
+    rw [← hrec_del, ← hrec_diff] at hstep_raw
+    exact hstep_raw
   have hsum0 : Prec0 (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
     prec0_add_right_of_common_left_of_nonneg
