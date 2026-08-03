@@ -371,23 +371,21 @@ private lemma add_one_le_pred_add_two (n : ℕ) :
 /-- Prepending one sign increases the number of sign variations by at most one. -/
 theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
     (a :: l).signVariations ≤ l.signVariations + 1 := by
-  have h := List.length_destutter_cons_ne_le_succ (SignType.sign a)
+  have h := List.length_destutter_cons_ne_le_succ a
     ((l.map SignType.sign).filter (· ≠ 0))
-  by_cases ha : SignType.sign a = 0
+  by_cases ha : a = 0
   · simp [List.signVariations, ha]
-  · simp [List.signVariations, ha]
-    exact h.trans (add_one_le_pred_add_two _)
+  · simpa [List.signVariations, ha] using h.trans (add_one_le_pred_add_two _)
 
 /-- Appending one sign increases the number of sign variations by at most one. -/
 theorem List.signVariations_append_singleton_signType_le_succ
     (l : List SignType) (a : SignType) :
     (l ++ [a]).signVariations ≤ l.signVariations + 1 := by
   have h := List.length_destutter_append_singleton_ne_le_succ
-    ((l.map SignType.sign).filter (· ≠ 0)) (SignType.sign a)
-  by_cases ha : SignType.sign a = 0
+    ((l.map SignType.sign).filter (· ≠ 0)) a
+  by_cases ha : a = 0
   · simp [List.signVariations, ha]
-  · simp [List.signVariations, ha]
-    exact h.trans (add_one_le_pred_add_two _)
+  · simpa [List.signVariations, ha] using h.trans (add_one_le_pred_add_two _)
 
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
 
