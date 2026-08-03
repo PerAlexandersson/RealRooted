@@ -380,9 +380,13 @@ the degree-two obstruction `alpha = (3, 2, 1)`, `beta = (4, 1 / 2, 0)`: every
 nonnegative Jensen pencil is PF, while the associated operator sends
 `(1 - 2 * X)^2` to `3 - 4 * X + 2 * X^2`, whose discriminant is negative.
 Garloff--Wagner, Theorem 12(b), preserves an already supplied proper-position
-orientation and does not infer it from this one-sided pencil. Downstream
-wrappers remain sound because they require a proof of this proposition as an
-explicit argument; they must not manufacture it from affine-symbol stability.
+orientation and does not infer it from this one-sided pencil. Brändén,
+arXiv:math/0403364, Theorem 3.6, is PF-specific but requires fiberwise
+real-rootedness of a differential symbol, strict interlacing of `phi(1)` and
+`phi(X)`, and exact degree growth; the current certificate does not imply these
+hypotheses. Downstream wrappers remain sound because they require a proof of
+this proposition as an explicit argument; they must not manufacture it from
+either source theorem.
 -/
 def jensenPencilBidiagonalPreserverStatement : Prop :=
   ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
