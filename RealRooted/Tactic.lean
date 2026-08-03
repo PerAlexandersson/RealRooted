@@ -26,6 +26,7 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.MagnitudeDominated
+import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing

@@ -310,6 +310,7 @@ import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PFBidiagonalFrontend
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PosCombo
+import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RootBounds
@@ -358,6 +359,7 @@ import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
+import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.RootBounds
