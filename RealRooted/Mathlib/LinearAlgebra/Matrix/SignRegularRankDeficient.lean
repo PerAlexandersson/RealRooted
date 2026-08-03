@@ -704,3 +704,20 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
         simp only [Matrix.submatrix_apply, W]
         rw [if_neg hi]
       rw [hprod, mul_zero]
+
+/-- A monotone weighted incidence matrix is totally nonnegative when its weights are
+nonnegative. -/
+theorem Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (hblock : Monotone block)
+    (weight : Fin n → ℝ)
+    (hweight : ∀ j, 0 ≤ weight j) :
+    Matrix.IsTotallyNonnegRect
+      (fun j s => if block j = s then weight j else 0) := by
+  intro r rows cols hrows hcols
+  rw [Matrix.det_submatrix_monotoneWeightedIncidence
+    block hblock weight hrows hcols]
+  split_ifs
+  · exact Finset.prod_nonneg fun i _ => hweight (rows i)
+  · exact le_rfl
