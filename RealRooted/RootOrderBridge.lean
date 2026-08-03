@@ -180,15 +180,9 @@ theorem count_le_two_of_succRootCrossing
   have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hsM : sM.length = d := by
-    subst hM
-    simp_all only [
-      tsub_le_iff_right, zero_add, Nat.cast_le,
-      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
+    simpa [sM] using hM
   have hsN : sN.length = d + 1 := by
-    subst hM
-    simp_all only [
-      tsub_le_iff_right, zero_add, Nat.cast_le,
-      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
+    simpa [sN] using hN
   have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
   have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
   have h_helper := sorted_getElem_le_iff_lt_card_filter
