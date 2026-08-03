@@ -591,3 +591,43 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
           exact hA.signVariations_mulVec_le_rank_sub_one_of_induction
             hrank hrlt hrpos
             (fun {B} hB hBrank d => ih hB hBrank d) c
+
+/-- Right multiplication by a totally nonnegative rectangular matrix preserves
+the common weak sign of ordered minors of a fixed size. Cauchy--Binet expands
+the product of two output minors as a double sum; sign consistency controls the
+left-minor products and total nonnegativity controls the right-minor products. -/
+theorem Matrix.IsSignConsistentOrder.mul_of_right_isTotallyNonnegRect
+    {l n m r : ℕ}
+    {L : Matrix (Fin l) (Fin n) ℝ}
+    {A : Matrix (Fin n) (Fin m) ℝ}
+    (hL : L.IsSignConsistentOrder r)
+    (hA : A.IsTotallyNonnegRect) :
+    (L * A).IsSignConsistentOrder r := by
+  classical
+  intro rows rows' cols cols' hrows hrows' hcols hcols'
+  rw [Matrix.det_submatrix_mul_eq_sum_powersetCard L A rows cols,
+    Matrix.det_submatrix_mul_eq_sum_powersetCard L A rows' cols']
+  rw [Finset.sum_mul]
+  apply Finset.sum_nonneg
+  intro s hs
+  rw [Finset.mul_sum]
+  apply Finset.sum_nonneg
+  intro t ht
+  let es : Fin r ↪o Fin n :=
+    Set.powersetCard.ofFinEmbEquiv.symm s
+  let et : Fin r ↪o Fin n :=
+    Set.powersetCard.ofFinEmbEquiv.symm t
+  have hsign :
+      0 ≤
+        (L.submatrix rows es).det *
+          (L.submatrix rows' et).det :=
+    hL hrows hrows' es.strictMono et.strictMono
+  have hright :
+      0 ≤
+        (A.submatrix es cols).det *
+          (A.submatrix et cols').det :=
+    mul_nonneg
+      (hA es.strictMono hcols)
+      (hA et.strictMono hcols')
+  simpa only [es, et, mul_assoc, mul_left_comm, mul_comm] using
+    mul_nonneg hsign hright
