@@ -39,7 +39,7 @@ theorem exists_delta_roots_rel_TDeriv
   have hdeg :
       (p + C eps * (-p.derivative)).natDegree =
         (p + C (0 : ℝ) * (-p.derivative)).natDegree := by
-    simp [TDeriv]
+    simp
   have hcount := hlocal eps heps_abs hsplit hdeg
   have hcount' : ∀ a ∈ p.roots.toFinset,
       p.roots.count a ≤
