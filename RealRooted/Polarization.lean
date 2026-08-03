@@ -1,4 +1,5 @@
-import Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
@@ -160,6 +161,23 @@ noncomputable def diagonalProjection (n : ℕ) :
   map_add' q r := by simp
   map_smul' c q := by
     simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
+
+/-- Diagonal projection of an all-ones degree-box polynomial has degree at
+most the size of its polarization block. -/
+theorem natDegree_diagonalProjection_le {n : ℕ}
+    (q : MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1)) :
+    (diagonalProjection n q).natDegree ≤ n := by
+  have hdeg : ∀ i, q.1.degreeOf i ≤ 1 :=
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf q.1).mp q.2
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q.1)).natDegree ≤ n
+  calc
+    _ ≤ (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q.1).totalDegree :=
+      MvPolynomial.natDegree_uniqueAlgEquiv_le_totalDegree _
+    _ ≤ q.1.totalDegree := MvPolynomial.totalDegree_rename_le _ _
+    _ ≤ ∑ i, q.1.degreeOf i := MvPolynomial.totalDegree_le_sum_degreeOf q.1
+    _ ≤ ∑ _ : Fin n, 1 := Finset.sum_le_sum fun i _ => hdeg i
+    _ = n := by simp
 
 /-- Equation (2.2) on the source side: diagonal projection is a left inverse
 to polarization on polynomials of degree at most `n`. -/
