@@ -34,6 +34,23 @@ theorem hermiteBiehlerConverse_sequence {F G : Nat → ℝ[X]}
     ∀ n : Nat, Prec (G n) (F n) ∨ Prec (F n) (G n) :=
   fun n => RealRooted.hermiteBiehlerConverse (hF n) (hG n) (hstable n)
 
+theorem hermiteBiehlerSplits_sequence {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n))) :
+    ∀ n : Nat, (F n).Splits ∧ (G n).Splits :=
+  fun n => RealRooted.splits_of_stable (hF n) (hG n) (hstable n)
+
+theorem hermiteBiehlerPrec_sequence {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
+    (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
+    ∀ n : Nat, Prec (G n) (F n) :=
+  fun n => RealRooted.prec_of_stable_general (hF n) (hG n) (hstable n) (hdegree n)
+
 theorem hermiteBiehlerOddEven_rightHalfPlaneStable_sequence {P Q : Nat → ℝ[X]}
     (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hQ : ∀ n : Nat, HasNonnegCoeffs (Q n))
@@ -74,6 +91,21 @@ syntax (name := rr_hermite_biehler_converse_named)
     "stable" ":=" term :
   tactic
 
+syntax (name := rr_hermite_biehler_splits_named)
+  "rr_hermite_biehler_splits" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_prec_named)
+  "rr_hermite_biehler_prec" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term ","
+    "real_degree_pos" ":=" term :
+  tactic
+
 syntax (name := rr_hermite_biehler_odd_even_hurwitz_named)
   "rr_hermite_biehler_odd_even_hurwitz" " using "
     "odd_nonneg" ":=" term ","
@@ -100,6 +132,21 @@ syntax (name := rr_hermite_biehler_converse_sequence_named)
     "real_pos_lc" ":=" term ","
     "imag_pos_lc" ":=" term ","
     "stable" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_splits_sequence_named)
+  "rr_hermite_biehler_splits_sequence" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_prec_sequence_named)
+  "rr_hermite_biehler_prec_sequence" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term ","
+    "real_degree_pos" ":=" term :
   tactic
 
 syntax (name := rr_hermite_biehler_odd_even_hurwitz_sequence_named)
@@ -145,6 +192,21 @@ macro_rules
       `(tactic|
         exact RealRooted.hermiteBiehlerConverse $hf $hg $hstable)
   | `(tactic|
+      rr_hermite_biehler_splits using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term) =>
+      `(tactic|
+        exact RealRooted.splits_of_stable $hf $hg $hstable)
+  | `(tactic|
+      rr_hermite_biehler_prec using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term,
+        real_degree_pos := $hdegree:term) =>
+      `(tactic|
+        exact RealRooted.prec_of_stable_general $hf $hg $hstable $hdegree)
+  | `(tactic|
       rr_hermite_biehler_odd_even_hurwitz using
         odd_nonneg := $hp:term,
         even_nonneg := $hq:term,
@@ -175,6 +237,23 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.hermiteBiehlerConverse_sequence
           $hf $hg $hstable)
+  | `(tactic|
+      rr_hermite_biehler_splits_sequence using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hermiteBiehlerSplits_sequence
+          $hf $hg $hstable)
+  | `(tactic|
+      rr_hermite_biehler_prec_sequence using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term,
+        real_degree_pos := $hdegree:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hermiteBiehlerPrec_sequence
+          $hf $hg $hstable $hdegree)
   | `(tactic|
       rr_hermite_biehler_odd_even_hurwitz_sequence using
         odd_nonneg := $hp:term,
