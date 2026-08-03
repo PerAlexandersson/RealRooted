@@ -59,6 +59,59 @@ elementary symmetric polynomial is `p.coeff k / choose n k`. -/
 def polarization (n : ℕ) (p : ℂ[X]) : MvPolynomial (Fin n) ℂ :=
   reducedPolarization n (binomialUnlift n p)
 
+theorem binomialUnlift_add (n : ℕ) (p q : ℂ[X]) :
+    binomialUnlift n (p + q) =
+      binomialUnlift n p + binomialUnlift n q := by
+  unfold binomialUnlift
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [Polynomial.coeff_add, add_div, map_add]
+
+theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+    binomialUnlift n (c • p) = c • binomialUnlift n p := by
+  unfold binomialUnlift
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp only [Polynomial.coeff_smul]
+  simp only [div_eq_mul_inv]
+  change (Polynomial.monomial k)
+    (c * p.coeff k * (n.choose k : ℂ)⁻¹) =
+      c • (Polynomial.monomial k)
+        (p.coeff k * (n.choose k : ℂ)⁻¹)
+  rw [mul_assoc]
+  exact (Polynomial.smul_monomial c k
+    (p.coeff k * (n.choose k : ℂ)⁻¹)).symm
+
+theorem reducedPolarization_add (n : ℕ) (p q : ℂ[X]) :
+    reducedPolarization n (p + q) =
+      reducedPolarization n p + reducedPolarization n q := by
+  unfold reducedPolarization
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp [add_mul]
+
+theorem reducedPolarization_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+    reducedPolarization n (c • p) = c • reducedPolarization n p := by
+  unfold reducedPolarization
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp [MvPolynomial.smul_eq_C_mul, mul_assoc]
+
+/-- Polarization as a complex-linear map on univariate polynomials. -/
+noncomputable def polarizationLinearMap (n : ℕ) :
+    ℂ[X] →ₗ[ℂ] MvPolynomial (Fin n) ℂ where
+  toFun := polarization n
+  map_add' p q := by
+    change polarization n (p + q) = polarization n p + polarization n q
+    simp only [polarization, binomialUnlift_add, reducedPolarization_add]
+  map_smul' c p := by
+    change polarization n (c • p) = c • polarization n p
+    simp only [polarization, binomialUnlift_smul, reducedPolarization_smul]
+
 theorem isMultiaffine_reducedPolarization (n : ℕ) (p : ℂ[X]) :
     MvPolynomial.IsMultiaffine (reducedPolarization n p) := by
   unfold reducedPolarization
@@ -151,6 +204,20 @@ noncomputable def polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
 theorem coe_polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
     (polarizationDegreeBox n p : MvPolynomial (Fin n) ℂ) = polarization n p := rfl
 
+/-- Source polarization `Π↑ₙ` as a linear map from the one-variable degree-`n`
+box to the multiaffine all-ones box. -/
+noncomputable def polarizationDegreeBoxLinearMap (n : ℕ) :
+    MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) :=
+  LinearMap.codRestrict (MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1))
+    ((polarizationLinearMap n).comp
+      ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).toLinearMap.domRestrict
+        (MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n))))
+    (fun q =>
+      (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+        (isMultiaffine_polarization n
+          (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)))
+
 /-- The diagonal projection `Π↓ₙ`, obtained by identifying every polarization
 variable with the unique univariate variable. -/
 noncomputable def diagonalProjection (n : ℕ) :
@@ -219,6 +286,33 @@ theorem coe_diagonalProjectionDegreeBox_polarizationDegreeBox
     (diagonalProjection n (polarizationDegreeBox n p)) =
       (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p
   rw [diagonalProjection_polarizationDegreeBox hp]
+
+/-- Source-side equation (2.2): diagonal projection is a left inverse to the
+linear polarization map on the one-variable degree box. -/
+theorem diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap
+    {n : ℕ}
+    (q : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n)) :
+    diagonalProjectionDegreeBox n (polarizationDegreeBoxLinearMap n q) = q := by
+  have hdeg : ∀ i, q.1.degreeOf i ≤ n :=
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf q.1).mp q.2
+  have hp : (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1).natDegree ≤ n := by
+    calc
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1).natDegree =
+          q.1.degreeOf default := by
+        rw [← MvPolynomial.degreeOf_uniqueAlgEquiv_symm]
+        simp
+      _ ≤ n := hdeg default
+  have hdiag :
+      diagonalProjection n
+        (polarization n (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)) =
+          MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1 :=
+    diagonalProjection_polarizationDegreeBox hp
+  apply Subtype.ext
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+    (diagonalProjection n
+      (polarization n (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1))) = q.1
+  rw [hdiag]
+  exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm_apply_apply q.1
 
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
