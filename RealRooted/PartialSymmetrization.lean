@@ -76,6 +76,30 @@ theorem add_mul_real_ne_zero_of_im_div_pos
     c + d * (x : ℂ) ≠ 0 := by
   exact add_mul_ne_zero_of_im_div_pos c d x h (by simp)
 
+/-- When the cross determinant vanishes, the solved quotient is the constant
+`b / d`. This is the constant branch in Part II, Lemma 1.4. -/
+theorem bivariateQuotient_eq_b_div
+    (a b c d z : ℂ) (hcross : a * d = b * c)
+    (hd : d ≠ 0) (hden : c + d * z ≠ 0) :
+    (a + b * z) / (c + d * z) = b / d := by
+  apply (div_eq_iff hden).2
+  field_simp [hd]
+  linear_combination hcross
+
+/-- In the constant branch, positivity at infinity gives strict quotient
+positivity throughout the closed upper half-plane. -/
+theorem bivariateQuotient_im_pos_of_cross_eq
+    (a b c d z : ℂ) (hcross : a * d = b * c)
+    (hbd : 0 < (b / d).im) (hcd : 0 < (c / d).im)
+    (hz : 0 ≤ z.im) :
+    0 < ((a + b * z) / (c + d * z)).im := by
+  have hd : d ≠ 0 := by
+    intro hd
+    simp [hd] at hbd
+  rw [bivariateQuotient_eq_b_div a b c d z hcross hd
+    (add_mul_ne_zero_of_im_div_pos c d z hcd hz)]
+  exact hbd
+
 /-- Solving a bivariate multiaffine expression for its second variable, as in
 the proof of Borcea--Brändén, Part II, Lemma 1.4. -/
 theorem bivariate_eq_factor_quotient
