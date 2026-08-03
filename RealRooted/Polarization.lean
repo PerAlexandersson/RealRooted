@@ -1,3 +1,4 @@
+import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
 import RealRooted.Multiaffine
@@ -115,6 +116,26 @@ theorem eval_polarization_const {n : ℕ} {p : ℂ[X]} (hp : p.natDegree ≤ n)
     MvPolynomial.eval (fun _ : Fin n => w) (polarization n p) = p.eval w := by
   unfold polarization
   rw [eval_reducedPolarization_const, binomialLift_binomialUnlift hp]
+
+/-- Renaming every polarization variable to the unique variable reconstructs
+the original univariate polynomial. This is the diagonal identity for
+polarization. -/
+theorem rename_polarization_const {n : ℕ} {p : ℂ[X]}
+    (hp : p.natDegree ≤ n) :
+    MvPolynomial.rename (fun _ : Fin n ↦ (0 : Fin 1)) (polarization n p) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p := by
+  apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).injective
+  rw [AlgEquiv.apply_symm_apply]
+  apply Polynomial.funext
+  intro w
+  change Polynomial.eval₂ (RingHom.id ℂ) w
+    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
+      (MvPolynomial.rename (fun _ : Fin n ↦ (0 : Fin 1))
+        (polarization n p))) = p.eval w
+  rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+  rw [MvPolynomial.eval₂_rename]
+  change MvPolynomial.eval (fun _ : Fin n ↦ w) (polarization n p) = p.eval w
+  exact eval_polarization_const hp w
 
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
