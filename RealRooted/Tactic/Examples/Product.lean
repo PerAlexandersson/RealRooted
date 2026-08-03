@@ -207,6 +207,41 @@ example {P F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     recurrence := hrec
 
+/-- A separate base row can precede an independently factorized tail. -/
+example {P Q F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, P (n + 1) = F n * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_tail_sequence using hbase, hquot, hfactor, hrow
+
+example {P Q F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, P (n + 1) = Q n * F n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_tail_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    factor_realrooted := hfactor,
+    factorization := hrow
+
+/-- Scalar multiples of linear-factor tails reduce to their supplied core family. -/
+example {P Q : Nat → ℝ[X]} {c t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hbase : P 0 = C (c 0))
+    (hrow :
+      ∀ n : Nat, P (n + 1) = C (c (n + 1)) * ((X + C (t n)) * Q n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_tail_sequence using
+    base := by simpa [hbase] using isRealRooted_C (hc 0),
+    quotient_realrooted := fun n => isRealRooted_X_add_C_mul (hquot n),
+    factor_realrooted := fun n => isRealRooted_C (hc (n + 1)),
+    factorization := hrow
+
 /-- The supplied-factor sequence macro also accepts the factor on the right. -/
 example {P F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
