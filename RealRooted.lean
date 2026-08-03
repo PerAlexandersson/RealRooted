@@ -293,6 +293,7 @@ import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.InterlacingSequence
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
+import RealRooted.Tactic.Examples.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
@@ -341,6 +342,7 @@ import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.IteratedDerivativeShift
+import RealRooted.Tactic.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Kurtz
