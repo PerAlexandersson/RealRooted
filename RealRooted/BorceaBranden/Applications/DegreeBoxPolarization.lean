@@ -277,6 +277,52 @@ lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
+/-- The multiaffine symbol of the lifted operator before source diagonalization.
+This is the left-hand expansion in Borcea--Branden, Lemma 2.5. -/
+theorem algebraicSymbol_sourcePolarizedOperator_eq_sum
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ) :
+    algebraicSymbol (fun _ : Fin n => 1)
+        (sourcePolarizedOperator n T) =
+      ∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
+        rename (Sum.inl : τ → τ ⊕ Fin n)
+            (T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+              (diagonalDegreeBoxIndex m))) *
+          rightComplementMonomial (R := ℂ) (τ := τ)
+            (fun _ : Fin n => 1) m.1 := by
+  rw [algebraicSymbol_eq_sum]
+  apply Finset.sum_congr rfl
+  intro m _
+  rw [boxChoose_one_of_le_one m.1 m.2,
+    sourcePolarizedOperator_basisDegreeOfLE]
+  simp
+
+/-- Expanding the paper's `Pi^up` on the one-variable symbol cancels the
+binomial coefficient and replaces each source monomial by `e_r`. -/
+theorem sourceBlockPolarization_algebraicSymbol_finOne_eq_sum
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ) :
+    sourceBlockPolarization n
+        (algebraicSymbol (fun _ : Fin 1 => n) T) =
+      ∑ r ∈ Finset.range (n + 1),
+        rename (Sum.inl : τ → τ ⊕ Fin n)
+            (T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+              (finOneDegreeIndex n (n - r)))) *
+          rename Sum.inr (esymm (Fin n) ℂ r) := by
+  unfold sourceBlockPolarization
+  apply Finset.sum_congr rfl
+  intro r hr
+  have hr_le : r ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hr)
+  rw [sourceCoefficient_algebraicSymbol_finOne n r T hr_le]
+  rw [Nat.choose_symm hr_le]
+  have hchoose : n.choose r ≠ 0 := (Nat.choose_pos hr_le).ne'
+  rw [map_mul]
+  simp only [rename_C]
+  rw [← mul_assoc, ← C_mul]
+  simp [hchoose]
+
 theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
     {τ : Type*} (n : ℕ)
     (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
