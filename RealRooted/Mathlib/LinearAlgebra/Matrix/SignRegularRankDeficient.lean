@@ -752,3 +752,21 @@ theorem Matrix.mul_weightedIncidence_apply
       ∑ j with block j = s, L i j * weight j := by
   rw [Matrix.mul_apply, Finset.sum_filter]
   simp only [Matrix.weightedIncidence_apply, mul_ite, mul_zero]
+
+/-- Multiplying an aggregated matrix by block coefficients reconstructs the
+corresponding coefficient vector before multiplication by the original matrix. -/
+theorem Matrix.mul_weightedIncidence_mulVec
+    {l n q : ℕ}
+    (L : Matrix (Fin l) (Fin n) ℝ)
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ)
+    (sign : Fin q → ℝ) :
+    (L * Matrix.weightedIncidence block weight).mulVec sign =
+      L.mulVec (fun j => weight j * sign (block j)) := by
+  have hincidence :
+      (Matrix.weightedIncidence block weight).mulVec sign =
+        fun j => weight j * sign (block j) := by
+    ext j
+    simp [Matrix.mulVec, dotProduct]
+  rw [← Matrix.mulVec_mulVec sign L
+    (Matrix.weightedIncidence block weight), hincidence]
