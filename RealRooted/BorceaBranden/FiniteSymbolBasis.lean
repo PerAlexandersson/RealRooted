@@ -1,5 +1,6 @@
+import Mathlib.Data.Finsupp.Weight
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 /-!
 # Degree-one exponent coordinates for finite symbols
@@ -21,8 +22,8 @@ theorem finsupp_eq_indicator_support_of_le_one
     d = Finsupp.indicator d.support (fun _ _ => 1) := by
   classical
   ext i
-  have hle := hd i
-  interval_cases h : d i <;> simp [Finsupp.indicator, h]
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (hd i) with h | h <;>
+    simp [Finsupp.indicator, h]
 
 /-- Coordinate-wise degree-one exponent vectors are equal exactly when their
 supports are equal. -/
@@ -97,7 +98,8 @@ namespace Finsupp
     simpa [mem_support_iff] using hi
   apply Finsupp.ext
   intro i
-  fin_cases i
+  have hi : i = 0 := Fin.eq_zero i
+  subst i
   rw [hdegree]
   simp
 
