@@ -21,7 +21,7 @@ theorem ofFn_succAbove_eq_eraseIdx
       (List.ofFn f).eraseIdx p := by
   apply List.ext_getElem
   · simp [List.length_eraseIdx, p.isLt]
-  · intro i hi₁ hi₂
+  · intro i hi₁ _
     simp only [List.getElem_ofFn, List.getElem_eraseIdx]
     split
     · rw [Fin.succAbove_of_castSucc_lt p _ (by
