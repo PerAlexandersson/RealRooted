@@ -345,7 +345,14 @@ theorem finiteSymbol_congr_of_eq_on_degree
 
 /-! ## Classical interfaces -/
 
-/-- Finite-degree Borcea-Branden preserver theorem, kept as a named interface. -/
+/-- Legacy homogeneous finite-symbol interface.
+
+This is not the affine algebraic-symbol theorem of Borcea--Branden, Theorem 1.1,
+whose symbol is `T((z + w)^d)`.  In fact, this proposition is false: for
+`d = 1`, `alpha = [1, 0]`, and `beta = [2, 1]`, the homogeneous symbol is
+`(X + Y)^2`, but the operator sends `1 + 2 * X` to
+`1 + 2 * X + 2 * X^2`, which is not real-rooted.  See issue #239.  New proofs
+must use the genuine affine symbol and must not assume this interface. -/
 def finiteSymbolBBStatement : Prop :=
   ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
     IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) →

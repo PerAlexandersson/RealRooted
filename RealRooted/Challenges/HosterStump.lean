@@ -128,12 +128,19 @@ def lowerPartialSums : List ℝ[X] → List ℝ[X]
 def upperPartialSums (fs : List ℝ[X]) : List ℝ[X] :=
   (lowerPartialSums fs.reverse).reverse
 
-/-- The Section 2 lower-partial-sum closure lemma needed by the route. -/
+/-- Hoster--Stump Lemma 2.3(2), translated to finite lists.
+
+The paper assumes a nonzero interlacing sequence in `R_{>=0}[x]`.  This Lean
+interface deliberately asks for the corresponding zero-aware extension via
+`IsInterlacingSeq0Nonneg`, so a proof must also cover zero entries. -/
 def LowerPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (lowerPartialSums fs)
 
-/-- The Section 2 upper-partial-sum closure lemma needed by the route. -/
+/-- Hoster--Stump Lemma 2.3(3), translated to finite lists.
+
+As for lower partial sums, `Prec0` makes this a zero-aware extension of the
+paper's nonzero interlacing-sequence statement. -/
 def UpperPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (upperPartialSums fs)
@@ -142,7 +149,11 @@ def UpperPartialSumsPreserveInterlacingStatement : Prop :=
 def movingWindowSums (width : ℕ) (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length - width)).map fun k => (fs.drop k |>.take (width + 1)).sum
 
-/-- The Section 2 moving-window-sum closure lemma needed by the route. -/
+/-- Hoster--Stump Lemma 2.3(4), with `width` equal to the paper's `ell`.
+
+Each output is the sum of `width + 1` consecutive entries.  The inequality
+`width < fs.length` is the paper's `0 <= ell < n`; `Prec0` additionally covers
+zero polynomials. -/
 def MovingWindowSumsPreserveInterlacingStatement : Prop :=
   ∀ {width : ℕ} {fs : List ℝ[X]}, width < fs.length →
     IsInterlacingSeq0Nonneg fs →
@@ -153,13 +164,22 @@ def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length + 1)).map fun k =>
     X * (fs.take k).sum + (fs.drop k).sum
 
-/-- The Section 2 `X`-shifted split-sum closure lemma needed by the route. -/
+/-- Hoster--Stump Lemma 2.3(5), translated to zero-based list splits.
+
+The paper's `t_k` is `X` times the entries before the split plus the entries
+from the split onward.  This interface again includes zero polynomials through
+`Prec0`. -/
 def XShiftedSplitSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (xShiftedSplitSums fs)
 
-/-- Adjacent-degree gamma interlacing transfer from Hoster--Stump
-Proposition 2.5, expressed through the project gamma-transform API. -/
+/-- Hoster--Stump Proposition 2.5 in the project gamma-transform API.
+
+The source assumes `f, g` are nonnegative palindromic polynomials with
+`deg g = deg f + 1` and proves `f << g` iff `gamma(f) << gamma(g)`.  Here the
+degree equalities, fixed-point equations for `IdTransform`, and explicit
+`IsGammaExpansion` witnesses encode those hypotheses; `Prec` fixes the local
+orientation of `<<`. -/
 def GammaAdjacentInterlacingTransferStatement : Prop :=
   ∀ {d : ℕ} {f g γ δ : ℝ[X]},
     γ.natDegree ≤ d / 2 →

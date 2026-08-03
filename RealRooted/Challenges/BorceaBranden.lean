@@ -45,8 +45,15 @@ def PreservesRealRootedUpTo
     (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ {p : ℝ[X]}, p.natDegree ≤ d → p.Splits → T p = 0 ∨ (T p).Splits
 
-/-- Finite-degree Borcea--Branden algebraic-symbol theorem, as a named
-classical interface. -/
+/-- The positive-symbol sufficiency direction of Borcea--Branden, Theorem 1.1,
+specialized to one real source variable of degree at most `d`.
+
+The paper's symbol is `T((z + w)^d)`, which is `finiteAlgebraicSymbol d T`
+after expanding in the monomial basis.  The source theorem is a complex
+stability-preserver classification; the statement below records only the
+application-facing implication to real-rooted inputs and zero-aware outputs.
+It does not record the converse or the low-rank alternatives of Theorems 1.1
+and 1.2. -/
 def finiteSymbolTheoremStatement : Prop :=
   ∀ {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]},
     MvUpperHalfPlaneStable (complexifyMv (finiteAlgebraicSymbol d T)) →
