@@ -357,6 +357,20 @@ lemma signVariations_append_nonpos_le_succ (l₁ l₂ : List ℝ)
 
 end List
 
+/-- Prepending one sign increases the number of sign variations by at most one. -/
+theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
+    (a :: l).signVariations ≤ l.signVariations + 1 := by
+  fin_cases a
+  · simp [List.signVariations]
+  · have h := List.length_destutter_cons_ne_le_succ (-1)
+      ((l.map SignType.sign).filter (· ≠ 0))
+    simp [List.signVariations]
+    lia
+  · have h := List.length_destutter_cons_ne_le_succ 1
+      ((l.map SignType.sign).filter (· ≠ 0))
+    simp [List.signVariations]
+    lia
+
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
 
 This is the finite local step used for nodal interior zeros in Karlin's perturbation

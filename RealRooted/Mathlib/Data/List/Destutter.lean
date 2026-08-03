@@ -158,4 +158,22 @@ theorem destutter_append_cons_cons_self_ne
   simpa only [append_assoc, singleton_append] using
     destutter_append_cons_self_ne (l₁ ++ [a]) l₂ b
 
+/-- Prepending an entry increases the length after disequality destuttering by at most one. -/
+theorem length_destutter_cons_ne_le_succ
+    {α : Type*} [DecidableEq α] (a : α) (l : List α) :
+    ((a :: l).destutter (· ≠ ·)).length ≤
+      (l.destutter (· ≠ ·)).length + 1 := by
+  cases l with
+  | nil =>
+      simp
+  | cons b l =>
+      simp only [List.destutter_cons', List.destutter'_cons]
+      by_cases hab : a ≠ b
+      · rw [if_pos hab]
+        simp
+      · have hab_eq : a = b := not_ne_iff.mp hab
+        subst b
+        rw [if_neg (by simp)]
+        lia
+
 end List
