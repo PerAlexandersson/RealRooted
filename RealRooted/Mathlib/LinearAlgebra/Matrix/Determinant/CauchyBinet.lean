@@ -208,7 +208,7 @@ private theorem sum_perm_det_submatrix_comp_mul_prod_eq
       rw [show L.submatrix rows (fun i => e (p i)) =
           (L.submatrix rows e).submatrix id p by rfl]
       rw [Matrix.det_permute', Units.smul_def,
-        ← Int.cast_smul_eq_zsmul R]
+        ← Int.cast_smul_eq_zsmul R, smul_eq_mul]
       ac_rfl
     _ = (L.submatrix rows e).det * (A.submatrix e cols).det := by
       congr 1
@@ -247,7 +247,8 @@ private theorem selected_mulVec_injective
     Function.Injective (A.submatrix id cols).mulVec := by
   rw [Matrix.mulVec_injective_iff]
   have h := (Matrix.mulVec_injective_iff.mp hA).comp cols hcols.injective
-  simpa [Matrix.col, Function.comp_def] using h
+  simpa only [Matrix.col_apply, Matrix.submatrix_apply, id_eq,
+    Function.comp_apply] using h
 
 private theorem exists_left_inverse_matrix
     {R : Type*} [Field R] {n q : ℕ}

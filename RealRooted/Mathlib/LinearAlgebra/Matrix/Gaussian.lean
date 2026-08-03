@@ -361,9 +361,10 @@ theorem det_exponentialKernelMatrix_pos {q : ℕ}
       have hy0 : StrictMono y0 := fun _ _ hij =>
         sub_lt_sub_right (hy hij) _
       have hy00 : y0 0 = 0 := by simp [y0]
-      rw [show y = fun j => y0 j + y 0 by
+      have hy_eq : y = fun j => y0 j + y 0 := by
         funext j
-        simp [y0]]
+        simp [y0]
+      rw [hy_eq]
       apply (det_exponentialKernelMatrix_add_const_right_pos_iff
         x y0 (y 0)).2
       have hfirst : ∀ i, exponentialKernelMatrix x y0 i 0 = 1 := by

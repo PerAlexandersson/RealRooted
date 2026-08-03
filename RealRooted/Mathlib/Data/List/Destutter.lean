@@ -118,11 +118,7 @@ theorem IsPrefix.getLast?_eq_of_destutter_length_le
       l₁.destutter (· ≠ ·) =
         l₂.destutter (· ≠ ·) :=
     (h.destutter (R := fun x y : α => x ≠ y)).eq_of_length_le hlen
-  calc
-    l₁.getLast? = (l₁.destutter (· ≠ ·)).getLast? :=
-      (List.getLast?_destutter_ne l₁).symm
-    _ = (l₂.destutter (· ≠ ·)).getLast? :=
-      congrArg List.getLast? heq
-    _ = l₂.getLast? := List.getLast?_destutter_ne l₂
+  simpa only [List.getLast?_destutter_ne] using
+    congrArg List.getLast? heq
 
 end List

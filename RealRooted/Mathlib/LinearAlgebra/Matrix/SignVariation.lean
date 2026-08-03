@@ -883,6 +883,7 @@ theorem Fin.prefixSignVariations_le_signVariations
   exact List.signVariations_take_le _ _
 
 /-- The sign-block index of an entry, counted by prefix sign variation. -/
+@[expose]
 def Fin.signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
     Fin (Fin.signVariations c + 1) :=
@@ -941,8 +942,7 @@ theorem Fin.sign_eq_of_le_of_signBlockIndex_eq
   have hprefEq :
       Fin.prefixSignVariations c i =
         Fin.prefixSignVariations c j := by
-    have hval := congrArg Fin.val hblock
-    simpa using hval
+    simpa only [Fin.val_signBlockIndex] using congrArg Fin.val hblock
   have hvariationEq :
       (sᵢ.destutter (· ≠ ·)).length - 1 =
         (sⱼ.destutter (· ≠ ·)).length - 1 := by
@@ -963,20 +963,17 @@ theorem Fin.sign_eq_of_le_of_signBlockIndex_eq
       sⱼ.getLast? = some (SignType.sign (c j)) := by
     simpa [sⱼ, l] using
       List.getLast?_filter_sign_take_succ l hjIndex hjValue
-  have hdestIne : sᵢ.destutter (· ≠ ·) ≠ [] := by
+  have hdestIPos : 0 < (sᵢ.destutter (· ≠ ·)).length := by
+    rw [List.length_pos_iff]
     intro hd
     have hlastDest := List.getLast?_destutter_ne sᵢ
     rw [hd, hlastI] at hlastDest
     simp at hlastDest
-  have hdestJne : sⱼ.destutter (· ≠ ·) ≠ [] := by
-    intro hd
-    have hlastDest := List.getLast?_destutter_ne sⱼ
-    rw [hd, hlastJ] at hlastDest
-    simp at hlastDest
-  have hdestIPos : 0 < (sᵢ.destutter (· ≠ ·)).length :=
-    List.length_pos_iff.mpr hdestIne
-  have hdestJPos : 0 < (sⱼ.destutter (· ≠ ·)).length :=
-    List.length_pos_iff.mpr hdestJne
+  have hdestLengthLe :
+      (sᵢ.destutter (· ≠ ·)).length ≤
+        (sⱼ.destutter (· ≠ ·)).length :=
+    (hprefix.destutter
+      (R := fun x y : SignType => x ≠ y)).length_le
   have hlengthEq :
       (sᵢ.destutter (· ≠ ·)).length =
         (sⱼ.destutter (· ≠ ·)).length := by
