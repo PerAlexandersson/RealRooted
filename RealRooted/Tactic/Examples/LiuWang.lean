@@ -3383,7 +3383,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Family G sequence shell: Narayana/Jacobi-style negative-square lag. -/
+/-- `A008459`: scaled negative-square lag after recurrence normalization. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ} {α : ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -3474,7 +3474,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Unit shifted-square lag, real-rootedness endpoint. -/
+/-- `A091042`/`A122076`: unit shifted-square lag, with centers `1` and `-1`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))

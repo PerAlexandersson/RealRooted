@@ -2128,6 +2128,28 @@ syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_global_nonpos_sequence_auto_named)
+  "rr_mw_derivative_global_nonpos_sequence_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
+syntax (name := rr_mw_derivative_global_nonpos_sequence_realrooted_auto_named)
+  "rr_mw_derivative_global_nonpos_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_neg_const_sequence_named)
   "rr_mw_derivative_neg_const_sequence" " using "
     "base" ":=" term ","
@@ -3904,6 +3926,35 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             $hbase $hpos $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_global_nonpos_sequence_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        recurrence := $hrec:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        exact RealRooted.prec_mw_derivative_nonpos_sequence
+          (V := $V) $hbase $hpos $hdeg_two (by
+            intro n r hr
+            rr_sign) $hrec $hdeg_lo $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_global_nonpos_sequence_realrooted_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        recurrence := $hrec:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
+            (V := $V) $hbase $hpos $hdeg_two (by
+              intro n r hr
+              rr_sign) $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_neg_const_sequence using
         base := $hbase:term,
