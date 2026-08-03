@@ -2643,6 +2643,12 @@ syntax (name := rr_affine_product_sequence_named)
   "rr_affine_product_sequence" " using " "formula" ":=" term :
   tactic
 
+syntax (name := rr_finite_linear_product_scalar_sequence_named)
+  "rr_finite_linear_product_scalar_sequence" " using "
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_j1_factorable_lag3_sequence_realrooted_named)
   "rr_j1_factorable_lag3_sequence_realrooted" " using "
     "scalar_ne_zero" ":=" term ","
@@ -4059,11 +4065,20 @@ macro_rules
       `(tactic|
         exact RealRooted.finiteLinearProductSequence_realRooted $hroot)
   | `(tactic|
+      rr_finite_linear_product_scalar_sequence using
+        scalar_ne := $hc:term,
+        factorization := $hroot:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
+  | `(tactic|
       rr_j1_factorable_lag3_sequence_realrooted using
         scalar_ne_zero := $hc:term,
         root_grid := $hroot:term) =>
       `(tactic|
-        exact RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot)
+        rr_finite_linear_product_scalar_sequence using
+          scalar_ne := $hc,
+          factorization := $hroot)
   | `(tactic|
       rr_product_identity_sequence using
         base := $hbase:term,

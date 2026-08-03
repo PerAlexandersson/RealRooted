@@ -321,7 +321,31 @@ example {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_affine_product_sequence using formula := hroot
 
-/-- Scalar finite-product formula route, used by factorable J1 shells. -/
+/-- Scalar finite-product formula route. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_finite_linear_product_scalar_sequence using
+    scalar_ne := hc,
+    factorization := hroot
+
+/-- The scalar finite-product route supports projected endpoints. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_finite_linear_product_scalar_sequence using
+    scalar_ne := hc,
+    factorization := hroot
+
+/-- The older J1 spelling remains available for compatibility. -/
 example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
     {roots : Nat → Nat → ℝ}
     (hc : ∀ n : Nat, c n ≠ 0)
