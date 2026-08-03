@@ -1126,6 +1126,14 @@ theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
     (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW) hcross
 
+/-- Succ-degree slot data from the proved ASW left endpoint and the
+descending-root crossing inequalities. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_asw_and_rootCrossing
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
+    PosComboSuccDegreeLeftSplitsNonnegStatement_of_asw hcross
+
 /-- Succ-degree slot data from the splitting-only ASW target and the
 root-crossing target. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_rootCrossing
@@ -1144,6 +1152,14 @@ theorem
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
     (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW) hcross
+
+/-- Succ-degree pair interleavers from the proved ASW left endpoint and the
+descending-root crossing inequalities. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_asw_and_rootCrossing
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
+    PosComboSuccDegreeLeftSplitsNonnegStatement_of_asw hcross
 
 /-- Succ-degree pair interleavers from the splitting-only ASW target and the
 root-crossing target. -/

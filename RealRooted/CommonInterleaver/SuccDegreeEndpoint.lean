@@ -263,6 +263,13 @@ theorem PosComboRealRooted.left_splits_of_asw
     hf_pos.ne_zero hfnn hgnn
     fun {_} hμ => (hfg.isRealRooted_add_right hμ).2
 
+/-- Unconditional package form of `PosComboRealRooted.left_splits_of_asw` for
+the milestone-B2 endpoint statement. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_asw :
+    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+  intro f g hf_pos _ hfnn hgnn hfg _
+  exact hfg.left_splits_of_asw hf_pos hfnn hgnn
+
 /-- Conditional package form of `PosComboRealRooted.left_splits_of_forward_asw`
 for the milestone-B2 endpoint statement. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
