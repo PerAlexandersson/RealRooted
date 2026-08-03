@@ -5,6 +5,7 @@ public import Mathlib.Data.List.ChainOfFn
 public import Mathlib.Data.List.NodupEquivFin
 public import Mathlib.Tactic
 public import RealRooted.Mathlib.Data.List.Destutter
+public import RealRooted.Mathlib.Data.List.OfFn
 
 /-!
 # Sign variations of finite vectors
