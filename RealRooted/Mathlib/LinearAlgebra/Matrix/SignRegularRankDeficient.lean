@@ -34,13 +34,11 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
   let e : Fin r ≃ κ := (Fintype.equivFinOfCardEq hcard).symm
   let f : Fin r → Fin m := a ∘ e
   have hf : Function.Injective f := ha.comp e.injective
-  have hli_f : LinearIndependent R (A.col ∘ f) := by
-    simpa only [f, Function.comp_assoc] using hli.comp e e.injective
   let B : Matrix (Fin n) (Fin r) R := A.submatrix id f
   have hB : Function.Injective B.mulVec := by
     rw [Matrix.mulVec_injective_iff]
     change LinearIndependent R (A.col ∘ f)
-    exact hli_f
+    simpa only [f, Function.comp_assoc] using hli.comp e e.injective
   obtain ⟨rows, hrows, hdet⟩ :=
     Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective
       B hB id strictMono_id
