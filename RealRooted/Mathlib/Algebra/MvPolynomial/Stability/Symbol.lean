@@ -61,6 +61,27 @@ theorem rightComplementMonomial_eq_prod (κ : σ → ℕ) (m : σ →₀ ℕ) :
       ∏ i, X (Sum.inr i) ^ (κ i - m i) := by
   rfl
 
+/-- In a multiaffine box, the complementary monomial is the product over the
+complement of the exponent support. -/
+theorem rightComplementMonomial_one_eq_support_compl [DecidableEq σ]
+    (m : σ →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    rightComplementMonomial (R := R) (τ := τ) (fun _ : σ => 1) m =
+      rename (Sum.inr : σ → τ ⊕ σ) (∏ i ∈ m.supportᶜ, X i) := by
+  rw [rightComplementMonomial_eq_prod]
+  simp only [map_prod, rename_X]
+  rw [Finset.compl_eq_univ_sdiff, Finset.sdiff_eq_filter,
+    Finset.prod_filter]
+  apply Finset.prod_congr rfl
+  intro i _
+  by_cases hi : i ∈ m.support
+  · have hmi : m i = 1 := by
+      rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (hm i) with hzero | hone
+      · exact (Finsupp.mem_support_iff.mp hi hzero).elim
+      · exact hone
+    simp [hi, hmi]
+  · have hmi : m i = 0 := Finsupp.notMem_support_iff.mp hi
+    simp [hi, hmi]
+
 /-- The finite algebraic symbol of a linear map on a coordinate-wise degree
 box. Its monomial-basis expansion is
 `Σ m, choose(κ, m) * T(X^m) * w^(κ-m)`. -/

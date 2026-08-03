@@ -277,6 +277,22 @@ lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
+/-- A degree-one exponent's complementary monomial is indexed by the complement
+of the corresponding finite support. -/
+@[simp]
+theorem rightComplementMonomial_one_degreeOneExponentEquivFinset_symm
+    {τ R : Type*} [CommSemiring R] (n : ℕ) (s : Finset (Fin n)) :
+    rightComplementMonomial (R := R) (τ := τ) (fun _ : Fin n => 1)
+        ((degreeOneExponentEquivFinset (Fin n)).symm s).1 =
+      rename (Sum.inr : Fin n → τ ⊕ Fin n) (∏ i ∈ sᶜ, X i) := by
+  rw [rightComplementMonomial_one_eq_support_compl
+    ((degreeOneExponentEquivFinset (Fin n)).symm s).1
+    ((degreeOneExponentEquivFinset (Fin n)).symm s).2]
+  have hsupp :
+      ((degreeOneExponentEquivFinset (Fin n)).symm s).1.support = s :=
+    (degreeOneExponentEquivFinset (Fin n)).apply_symm_apply s
+  rw [hsupp]
+
 /-- The multiaffine symbol of the lifted operator before source diagonalization.
 This is the left-hand expansion in Borcea--Branden, Lemma 2.5. -/
 theorem algebraicSymbol_sourcePolarizedOperator_eq_sum
