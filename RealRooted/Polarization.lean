@@ -429,23 +429,6 @@ theorem mvUpperHalfPlaneStable_polarization {n : ℕ} {p : ℂ[X]}
 
 end
 
-private theorem uniqueAlgEquiv_rename_const_monomial
-    {R : Type*} [CommSemiring R] {n : ℕ} (m : Fin n →₀ ℕ) :
-    MvPolynomial.uniqueAlgEquiv R (Fin 1)
-        (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1))
-          (MvPolynomial.monomial m 1)) =
-      Polynomial.X ^ m.degree := by
-  rw [MvPolynomial.rename_monomial, MvPolynomial.uniqueAlgEquiv_monomial]
-  rw [Polynomial.X_pow_eq_monomial]
-  apply congrArg (fun k : ℕ => Polynomial.monomial k (1 : R))
-  calc
-    (Finsupp.mapDomain (fun _ : Fin n => (0 : Fin 1)) m) default =
-        m.sum (fun _ e => e) := by
-      simp [Finsupp.mapDomain, Finsupp.sum_apply]
-    _ = m.degree := by
-      rw [Finsupp.degree_apply]
-      rfl
-
 /-- Diagonal projection sends a bounded multiaffine basis monomial to the
 univariate monomial whose exponent is its total degree. -/
 theorem diagonalProjection_basisDegreeOfLE {n : ℕ}
@@ -461,6 +444,15 @@ theorem diagonalProjection_basisDegreeOfLE {n : ℕ}
           MvPolynomial (Fin n) ℂ)) =
     Polynomial.X ^ m.1.degree
   rw [MvPolynomial.coe_basisDegreeOfLE]
-  exact uniqueAlgEquiv_rename_const_monomial m.1
+  rw [MvPolynomial.rename_monomial, MvPolynomial.uniqueAlgEquiv_monomial]
+  rw [Polynomial.X_pow_eq_monomial]
+  apply congrArg (fun k : ℕ => Polynomial.monomial k (1 : ℂ))
+  calc
+    (Finsupp.mapDomain (fun _ : Fin n => (0 : Fin 1)) m.1) default =
+        m.1.sum (fun _ e => e) := by
+      simp [Finsupp.mapDomain, Finsupp.sum_apply]
+    _ = m.1.degree := by
+      rw [Finsupp.degree_apply]
+      rfl
 
 end RealRooted
