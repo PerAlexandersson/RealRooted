@@ -150,6 +150,27 @@ noncomputable def polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
 theorem coe_polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
     (polarizationDegreeBox n p : MvPolynomial (Fin n) ℂ) = polarization n p := rfl
 
+/-- The diagonal projection `Π↓ₙ`, obtained by identifying every polarization
+variable with the unique univariate variable. -/
+noncomputable def diagonalProjection (n : ℕ) :
+    MvPolynomial (Fin n) ℂ →ₗ[ℂ] ℂ[X] where
+  toFun q :=
+    MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+      (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q)
+  map_add' q r := by simp
+  map_smul' c q := by
+    simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
+
+/-- Equation (2.2) on the source side: diagonal projection is a left inverse
+to polarization on polynomials of degree at most `n`. -/
+theorem diagonalProjection_polarizationDegreeBox {n : ℕ} {p : ℂ[X]}
+    (hp : p.natDegree ≤ n) :
+    diagonalProjection n (polarizationDegreeBox n p) = p := by
+  change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) (polarization n p)) = p
+  rw [rename_polarization_const hp]
+  exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply p
+
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
     MvPolynomial.eval z (polarization n p) =
