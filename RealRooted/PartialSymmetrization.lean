@@ -9,6 +9,8 @@ Borcea--Brändén proof that transposition averages preserve stability.
 
 namespace RealRooted
 
+open MvPolynomial
+
 /-- The first real quadratic form from Borcea--Brändén, Part II, Lemma 1.4. -/
 def bivariateV1 (a b c d : ℂ) (x : ℝ) : ℝ :=
   (a * star c).im + (a * star d + b * star c).im * x +
@@ -17,6 +19,19 @@ def bivariateV1 (a b c d : ℂ) (x : ℝ) : ℝ :=
 /-- The second real quadratic form from Borcea--Brändén, Part II, Lemma 1.4. -/
 def bivariateV2 (a b c d : ℂ) (x : ℝ) : ℝ :=
   bivariateV1 a c b d x
+
+/-- The four-coefficient bivariate multiaffine polynomial used in Part II,
+Lemma 1.4. -/
+noncomputable def bivariateMultiaffinePolynomial (a b c d : ℂ) :
+    MvPolynomial (Fin 2) ℂ :=
+  C a + C b * X 0 + C c * X 1 + C d * X 0 * X 1
+
+/-- Evaluation of the four-coefficient bivariate multiaffine polynomial. -/
+theorem eval_bivariateMultiaffinePolynomial
+    (a b c d : ℂ) (z : Fin 2 → ℂ) :
+    MvPolynomial.eval z (bivariateMultiaffinePolynomial a b c d) =
+      a + b * z 0 + c * z 1 + d * z 0 * z 1 := by
+  simp [bivariateMultiaffinePolynomial]
 
 /-- The real-boundary quotient identity for `bivariateV1` from
 Borcea--Brändén, Part II, Lemma 1.4. -/
@@ -105,6 +120,18 @@ theorem bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos
     a + b * z + c * w + d * z * w ≠ 0 := by
   exact bivariate_ne_zero_of_quotient_im_pos a b c d z w
     (add_mul_ne_zero_of_im_div_pos c d z hcd hz) hq hw
+
+/-- The quotient-positivity condition in (1.2) implies upper-half-plane
+stability of the corresponding bivariate multiaffine polynomial. -/
+theorem mvUpperHalfPlaneStable_bivariate_of_quotient_im_pos
+    (a b c d : ℂ) (hcd : 0 < (c / d).im)
+    (hq : ∀ z : ℂ, 0 < z.im →
+      0 < ((a + b * z) / (c + d * z)).im) :
+    MvUpperHalfPlaneStable (bivariateMultiaffinePolynomial a b c d) := by
+  intro z hz
+  rw [eval_bivariateMultiaffinePolynomial]
+  exact bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos
+    a b c d (z 0) (z 1) hcd (le_of_lt (hz 0)) (hq (z 0) (hz 0)) (hz 1)
 
 /-- On the real boundary, positivity of the first quotient imaginary part is
 equivalent to positivity of `bivariateV1` when its denominator stays off zero. -/
