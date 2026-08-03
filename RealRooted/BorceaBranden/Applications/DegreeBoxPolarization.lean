@@ -98,3 +98,29 @@ theorem sum_degreeOneExponent_degreeFunction
 end
 
 end RealRooted.BorceaBranden
+
+namespace MvPolynomial
+
+/-- Identify all polarized source variables while leaving output variables
+unchanged. -/
+def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
+    τ ⊕ Fin n → τ ⊕ Fin 1
+  | Sum.inl i => Sum.inl i
+  | Sum.inr _ => Sum.inr default
+
+/-- Diagonalizing a complementary zero-one source monomial records only its
+complementary total degree. -/
+theorem rename_rightComplementMonomial_one
+    {τ : Type*} {n : ℕ} (m : Fin n →₀ ℕ)
+    (hm : ∀ i, m i ≤ 1) :
+    rename (sourceDiagonalVariableMap (τ := τ) (n := n))
+        (rightComplementMonomial (R := ℂ) (τ := τ)
+          (fun _ : Fin n => 1) m) =
+      X (Sum.inr default) ^ (n - m.degree) := by
+  rw [rightComplementMonomial_eq_prod]
+  simp only [map_prod, map_pow, rename_X, sourceDiagonalVariableMap]
+  rw [Finset.prod_pow_eq_pow_sum]
+  congr 1
+  simpa using sum_one_sub_eq_card_sub_degree m hm
+
+end MvPolynomial
