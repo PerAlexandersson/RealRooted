@@ -408,6 +408,23 @@ theorem signVariations_eq_of_nodalInsertions
               signVariations_insert_between_opposite l₁ l₂ a b z ha hb hab
             _ = l.signVariations := ih
 
+/-- Repeated interior nodal insertions and two arbitrary endpoint insertions increase sign
+variations by at most two. -/
+theorem signVariations_endpoints_le_add_two_of_nodalInsertions
+    {l l' : List SignType}
+    (h : Relation.ReflTransGen NodalInsertion l l')
+    (a b : SignType) :
+    (((a :: l') ++ [b]).signVariations) ≤ l.signVariations + 2 := by
+  calc
+    ((a :: l') ++ [b]).signVariations =
+        (a :: (l' ++ [b])).signVariations := by simp
+    _ ≤ (l' ++ [b]).signVariations + 1 :=
+      signVariations_cons_le_succ a (l' ++ [b])
+    _ ≤ (l'.signVariations + 1) + 1 :=
+      Nat.add_le_add_right (signVariations_append_singleton_le_succ l' b) 1
+    _ = l.signVariations + 2 := by
+      rw [signVariations_eq_of_nodalInsertions h]
+
 end List
 
 namespace Fin
