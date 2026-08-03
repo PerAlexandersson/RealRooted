@@ -339,8 +339,12 @@ theorem aswKarlinSectorThreshold_le_abs_arg {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswKarlinSectorThreshold_le_abs_arg_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_cases him : z.im = 0
+  · rw [arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff hz hconst hpf him,
+      abs_of_pos Real.pi_pos]
+    exact aswSectorThreshold_le_pi p.natDegree order hdegree horder
+  · exact aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero
+      hz hdegree hconst hpf horder him
 
 end RealRooted
