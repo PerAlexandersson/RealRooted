@@ -55,13 +55,19 @@ theorem im_bivariateQuotient_eq_bivariateV2_div_normSq
 /-- A positive imaginary part of `c / d` keeps `c + d * z` nonzero on the
 closed upper half-plane. This is the denominator observation in Part II,
 Lemma 1.4. -/
+theorem right_ne_zero_of_im_div_pos
+    (c d : ℂ) (h : 0 < (c / d).im) : d ≠ 0 := by
+  intro hd
+  simp [hd] at h
+
+/-- A positive imaginary part of `c / d` keeps `c + d * z` nonzero on the
+closed upper half-plane. This is the denominator observation in Part II,
+Lemma 1.4. -/
 theorem add_mul_ne_zero_of_im_div_pos
     (c d z : ℂ) (h : 0 < (c / d).im) (hz : 0 ≤ z.im) :
     c + d * z ≠ 0 := by
   intro hzero
-  have hd : d ≠ 0 := by
-    intro hd
-    simp [hd] at h
+  have hd := right_ne_zero_of_im_div_pos c d h
   have hratio : c / d = -z := by
     apply (div_eq_iff hd).2
     linear_combination hzero
@@ -93,10 +99,8 @@ theorem bivariateQuotient_im_pos_of_cross_eq
     (hbd : 0 < (b / d).im) (hcd : 0 < (c / d).im)
     (hz : 0 ≤ z.im) :
     0 < ((a + b * z) / (c + d * z)).im := by
-  have hd : d ≠ 0 := by
-    intro hd
-    simp [hd] at hbd
-  rw [bivariateQuotient_eq_b_div a b c d z hcross hd
+  rw [bivariateQuotient_eq_b_div a b c d z hcross
+    (right_ne_zero_of_im_div_pos b d hbd)
     (add_mul_ne_zero_of_im_div_pos c d z hcd hz)]
   exact hbd
 
