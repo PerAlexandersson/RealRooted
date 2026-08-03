@@ -95,11 +95,9 @@ theorem mem_lowerHalf_of_recip_sum_of_card_le
     (hζ : (n : ℂ) / (w - ζ) =
       (S.map (fun z ↦ 1 / (w - z))).sum) :
     ζ ∈ lowerHalf b := by
-  let d : ℕ := S.card
-  have hd : 0 < d := by
-    simpa [d] using Multiset.card_pos.mpr hS
-  have hn : 0 < n := lt_of_lt_of_le hd (by simpa [d] using hcard)
-  let t : ℝ := (d : ℝ) / (n : ℝ)
+  have hd : 0 < S.card := Multiset.card_pos.mpr hS
+  have hn : 0 < n := lt_of_lt_of_le hd hcard
+  let t : ℝ := (S.card : ℝ) / (n : ℝ)
   have ht_pos : 0 < t := by
     dsimp [t]
     positivity
@@ -113,7 +111,7 @@ theorem mem_lowerHalf_of_recip_sum_of_card_le
       (S.card : ℂ) / (w - ζ') =
         (S.map (fun z ↦ 1 / (w - z))).sum := by
     rw [← hζ]
-    dsimp [ζ', t, d]
+    dsimp [ζ', t]
     have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
     have hd0 : (S.card : ℂ) ≠ 0 := by
       exact_mod_cast (Multiset.card_pos.mpr hS).ne'
@@ -168,15 +166,10 @@ theorem polarDeriv_rootsIn_lowerHalf_of_natDegree_le
       rw [← Multiset.card_pos, hcard]
       exact Nat.pos_of_ne_zero hA0
     have hcard_le : A.roots.card ≤ n := hcard.trans_le hA
-    have hlog : eval w (derivative A) / eval w A =
-        (A.roots.map (fun z ↦ 1 / (w - z))).sum :=
-      hsplit.eval_derivative_div_eval_of_ne_zero hAw
-    have hratio : eval w (derivative A) / eval w A =
-        (n : ℂ) / (w - ζ) := by
-      grind
     have hscaled : (n : ℂ) / (w - ζ) =
-        (A.roots.map (fun z ↦ 1 / (w - z))).sum :=
-      hratio.symm.trans hlog
+        (A.roots.map (fun z ↦ 1 / (w - z))).sum := by
+      rw [← hsplit.eval_derivative_div_eval_of_ne_zero hAw]
+      grind
     have : ζ ∈ lowerHalf b := by
       exact mem_lowerHalf_of_recip_sum_of_card_le
         A.roots hroots_ne hcard_le hwmem
