@@ -1,4 +1,5 @@
 import Mathlib.Data.List.Forall2
+import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.Sort
 import Mathlib.Data.Multiset.ZeroCons
 
