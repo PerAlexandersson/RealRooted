@@ -176,13 +176,15 @@ def XShiftedSplitSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (xShiftedSplitSums fs)
 
-/-- Legacy interface for Hoster--Stump Proposition 2.5 in the project
-gamma-transform API.
+/-- Hoster--Stump Proposition 2.5 in the project gamma-transform API.
 
 The source assumes nonnegative coefficients for both polynomials and both
-gamma polynomials, together with nonzero exact degrees. Those conditions must
-be explicit because local `Prec` is defined on arbitrary real polynomials and
-Lean has `natDegree 0 = 0`; issue #315 tracks the corrected statement. -/
+gamma polynomials, together with nonzero exact degrees. These conditions must
+be explicit because local `Prec` is defined for arbitrary real polynomials and
+Lean has `natDegree 0 = 0`. Without the gamma coefficient hypotheses the
+statement is false: for `d = 2` and `γ = δ = 1 - X`, the gamma transforms have
+nonnegative coefficients and the required symmetry and degrees, and `Prec γ δ`
+holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`. -/
 def GammaAdjacentInterlacingTransferStatement : Prop :=
   ∀ {d : ℕ} {f g γ δ : ℝ[X]},
     γ.natDegree ≤ d / 2 →
@@ -195,6 +197,8 @@ def GammaAdjacentInterlacingTransferStatement : Prop :=
     IsGammaExpansion (d + 1) g δ →
     HasNonnegCoeffs f →
     HasNonnegCoeffs g →
+    HasNonnegCoeffs γ →
+    HasNonnegCoeffs δ →
       (Prec f g ↔ Prec γ δ)
 
 /-- Abstract Chow-polynomial data attached to a finite graded simplicial poset. -/
