@@ -47,9 +47,8 @@ theorem Splits.applyTDerivList {epss : List ℝ} {p : ℝ[X]}
   | nil => simpa
   | cons eps epss ih =>
       have heps : 0 < eps := hpos eps (by simp)
-      have htail : ∀ eta ∈ epss, 0 < eta := by
-        intro eta heta
-        exact hpos eta (by simp [heta])
+      have htail : ∀ eta ∈ epss, 0 < eta :=
+        fun eta heta ↦ hpos eta (List.mem_cons_of_mem eps heta)
       exact ih (splits_tderiv heps hp) htail
 
 /-- A finite sequence of derivative shifts preserves natural degree. -/
@@ -81,9 +80,8 @@ theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
   | nil => simp
   | cons eps epss ih =>
       have heps : 0 < eps := hpos eps (by simp)
-      have htail : ∀ eta ∈ epss, 0 < eta := by
-        intro eta heta
-        exact hpos eta (by simp [heta])
+      have htail : ∀ eta ∈ epss, 0 < eta :=
+        fun eta heta ↦ hpos eta (List.mem_cons_of_mem eps heta)
       have hTsplit : (TDeriv eps p).Splits := splits_tderiv heps hp
       have htail_eq := ih htail hTsplit hm
       have hTmult : 2 ≤ (TDeriv eps p).rootMultiplicity a := by
