@@ -556,24 +556,28 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
     (hrank : A.rank = r)
     (c : Fin m → ℝ) :
     Fin.signVariations (A.mulVec c) ≤ r - 1 := by
+  have hzero :
+      ∀ {p : ℕ} {B : Matrix (Fin n) (Fin p) ℝ},
+        B.rank = 0 →
+        ∀ d : Fin p → ℝ,
+          Fin.signVariations (B.mulVec d) ≤ 0 := by
+    intro p B hBrank d
+    have hlin : B.mulVecLin = 0 :=
+      LinearMap.range_eq_bot.mp
+        (Submodule.finrank_eq_zero.mp hBrank)
+    rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
+      Fin.signVariations_zero]
   induction m generalizing r with
   | zero =>
       have hrzero : r = 0 := by
         have hrle : r ≤ 0 := hrank ▸ A.rank_le_width
         exact Nat.eq_zero_of_le_zero hrle
       rw [hrzero] at hrank ⊢
-      have hlin : A.mulVecLin = 0 :=
-        LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hrank)
-      rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
-        Fin.signVariations_zero]
+      exact hzero hrank c
   | succ k ih =>
       by_cases hrzero : r = 0
       · rw [hrzero] at hrank ⊢
-        have hlin : A.mulVecLin = 0 :=
-          LinearMap.range_eq_bot.mp
-            (Submodule.finrank_eq_zero.mp hrank)
-        rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
-          Fin.signVariations_zero]
+        exact hzero hrank c
       · have hrpos : 0 < r := Nat.pos_of_ne_zero hrzero
         have hrle : r ≤ k + 1 := by
           rw [← hrank]
@@ -589,8 +593,7 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
           exact hA.signVariations_mulVec_le_card_sub_one hkn hAinj c
         · have hrlt : r < k + 1 := lt_of_le_of_ne hrle hrfull
           exact hA.signVariations_mulVec_le_rank_sub_one_of_induction
-            hrank hrlt hrpos
-            (fun {B} hB hBrank d => ih hB hBrank d) c
+            hrank hrlt hrpos ih c
 
 /-- Right multiplication by a totally nonnegative rectangular matrix preserves
 the common weak sign of ordered minors of a fixed size. Cauchy--Binet expands
