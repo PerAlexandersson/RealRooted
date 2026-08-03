@@ -223,6 +223,46 @@ theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
       (lemma33AuxiliaryGInterlaces_modified hrec2 hH_nonneg)
       lemma34ModifiedNarayanaInterlacing_modified hrec
 
+/-- Braun--Jal Theorem 4.1 through the source `[P, G; Q, H]` matrix.
+
+The hypotheses are the intended combinatorial trust boundary.  Equation `(2)`,
+nonnegativity of the board difference `H`, Theorem 3.5, the degree identity,
+and the constant-word staircase identity come from the non-nesting-rook model;
+formalizing that complete model is outside the present scope.  No hypothesis
+assumes real-rootedness, interlacing, proper position, or splitting. -/
+theorem theorem41NonNestingRook_modified_of_sourceInputs
+    {M : SnakeWord → ℝ[X]}
+    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs
+        (FiniteSkewBoard.auxiliaryG n -
+          FiniteSkewBoard.auxiliaryG (n - 1)))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
+      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = modifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41NonNestingRookStatement M := by
+  exact theorem41_of_matrixClaim_of_constant_matches_succ_length
+    (M := M) (P := modifiedNarayanaPolynomial)
+    (G := FiniteSkewBoard.auxiliaryG)
+    hrec
+    ((theorem41MatrixClaim_iff_claim7 _ _).mpr
+      (theorem41Claim7_modified hrec2 hH_nonneg))
+    modifiedNarayanaPolynomial_ne_zero
+    (fun {_m} hm => narayanaDifference_modified_ne_zero (by lia))
+    modifiedNarayanaPolynomial_interlaces_succ
+    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
+    modifiedNarayanaPolynomial_hasNonnegCoeffs
+    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs
+    (fun {_m} hm => narayanaDifference_modified_hasNonnegCoeffs (by lia))
+    (fun {_m} hm => by
+      simpa [auxiliaryDifference] using hH_nonneg _ (by lia))
+    hM_nonneg hdeg hM_const
+
 /-- An alternative Theorem 4.1 endpoint using the additional generalized
 Narayana identity `hG_model`.
 

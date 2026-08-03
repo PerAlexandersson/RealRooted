@@ -540,6 +540,79 @@ theorem theorem41_of_claim7_of_constant_cases
       (M := M) (P := P) (G := G) (w := w) (k := k)
       hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
 
+/-- Source-matrix length induction from Claim `(6)` to Braun--Jal Theorem 4.1.
+
+The long-suffix branch uses the displayed `[P, G; Q, H]` matrix, while the
+suffix-one branch uses `P_1 = 1 + X` and `G_1 = 1`.  In particular, no
+adjacent-`G` proper-position hypothesis occurs. -/
+theorem theorem41_of_matrixClaim_of_constant_cases
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
+    Theorem41NonNestingRookStatement M := by
+  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
+  intro w k _hconstw hlast hprefix_prec
+  by_cases hk : k + 1 < w.deleteFinal.length
+  · exact theorem41NonconstantStep_prec_of_matrixClaim
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hclaim hlast hk hP_ne hQ_ne hP_nonneg hG_nonneg
+      hQ_nonneg hH_nonneg hprefix_prec hM_nonneg
+  · have hsuffix : w.length - (k + 1) = 1 := by
+      rw [SnakeWord.length_deleteFinal] at hk
+      have hlast_suffix := hlast.succ_lt_length
+      lia
+    exact theorem41StepOne_prec_of_recurrence
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
+
+/-- Source-matrix induction with the constant branch reduced to the concrete
+successor-length identity `M w = P (w.length + 1)`. -/
+theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = P (w.length + 1)) :
+    Theorem41NonNestingRookStatement M := by
+  have hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
+    theorem41_constant_of_matches_succ_length
+      (M := M) (P := P) hM_const hP_interlaces
+  exact theorem41_of_matrixClaim_of_constant_cases
+    (M := M) (P := P) (G := G) hrec hclaim hP_ne hQ_ne hP_one hG_one
+    hP_nonneg hG_nonneg hQ_nonneg hH_nonneg hM_nonneg hdeg hconst
+
 /-- The deletion degree bridge follows from the length-indexed degree formula
 for the whole snake-word family. -/
 theorem theorem41_degree_bridge_of_natDegree_length
