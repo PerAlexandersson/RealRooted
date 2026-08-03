@@ -198,7 +198,11 @@ theorem count_le_two_of_succRootCrossing
   have h_reverse_getD_succ (l : List ℝ) (hl : l.length = d + 1)
       (i : ℕ) (hi : i < d + 1) :
       l.reverse.getD i 0 = l[d - i]! := by
-    simp_all
+    simp only [List.getD_eq_getElem?_getD, List.length_reverse, hl,
+      getElem?_pos, hi, List.getElem_reverse, Option.getD_some]
+    have hidx : d + 1 - 1 - i = d - i := by lia
+    have hdi : d - i < l.length := by lia
+    simp only [hidx, getElem!_pos, hdi]
   have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by
     grind
   have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 2]! := by
