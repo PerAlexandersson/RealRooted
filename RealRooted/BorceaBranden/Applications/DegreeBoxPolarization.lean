@@ -104,6 +104,9 @@ namespace MvPolynomial
 /-- The coefficient of source degree `k`, after viewing a polynomial in
 `tau ⊕ Fin 1` as a polynomial in the single source variable with coefficients
 in the output-variable ring `MvPolynomial tau ℂ`. -/
+/- Source audit: Borcea--Branden, "The Lee--Yang and Polya--Schur Programs. I",
+Proposition 2.4, equation (2.2), and Lemma 2.5.  This extracts the coefficient
+of the source monomial `z^k` while retaining the output-variable polynomial. -/
 noncomputable def sourceCoefficient {τ : Type*}
     (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) : MvPolynomial τ ℂ :=
   (sumAlgEquiv ℂ (Fin 1) τ
@@ -117,6 +120,9 @@ This is the one-source-coordinate instance of Borcea--Brändén's operator
 `Π↑` from Proposition 2.4 and Lemma 2.5: the source coefficient of degree `k`
 is divided by `choose n k`, and the source monomial is replaced by the
 elementary symmetric polynomial `e_k` in the `Fin n` source block. -/
+/- This is exactly the paper's source polarization `Pi^up`: the coefficient of
+`z^k` is divided by `choose n k` and `z^k` is replaced by the elementary
+symmetric polynomial `e_k` in the new source block. -/
 noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 1) ℂ) :
     MvPolynomial (τ ⊕ Fin n) ℂ :=
