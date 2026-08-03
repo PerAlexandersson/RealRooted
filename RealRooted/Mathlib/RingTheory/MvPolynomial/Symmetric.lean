@@ -12,6 +12,11 @@ open BigOperators
 
 namespace MvPolynomial
 
+/-- The finite indexing type of permutations induced by a finite type. -/
+noncomputable local instance {σ : Type*} [Fintype σ] :
+    Fintype (Equiv.Perm σ) :=
+  Fintype.ofFinite _
+
 /-- Sum all variable permutations of a multivariate polynomial. -/
 noncomputable def symmetrizationSum
     {σ R : Type*} [Fintype σ] [CommSemiring R]

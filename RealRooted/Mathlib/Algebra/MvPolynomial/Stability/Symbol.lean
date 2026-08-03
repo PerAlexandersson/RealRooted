@@ -48,8 +48,7 @@ theorem boxChoose_one_of_le_one (m : σ →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
   simp only [boxChoose]
   apply Finset.prod_eq_one
   intro i hi
-  have hle := hm i
-  interval_cases h : m i <;> simp
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (hm i) with h | h <;> simp [h]
 
 /-- The right-block monomial with exponent vector `κ - m`. -/
 noncomputable def rightComplementMonomial (κ : σ → ℕ) (m : σ →₀ ℕ) :

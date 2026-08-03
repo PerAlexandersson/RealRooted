@@ -47,13 +47,13 @@ theorem bivariateQuotient_not_eventually_constant
     have hre := congrArg Complex.re heq'
     simp [t] at hre
     linarith
-  apply bivariateQuotient_ne_of_ne a b c d z t hcross
-  · exact add_mul_ne_zero_of_im_div_pos c d z hcd (le_of_lt hz)
-  · apply add_mul_ne_zero_of_im_div_pos c d t hcd
-    simpa only [t, Complex.add_im, Complex.ofReal_im, add_zero] using le_of_lt hz
-  · exact htne
-  · change (a + b * t) / (c + d * t) =
-      (a + b * z) / (c + d * z) at heq
-    exact heq.symm
+  change (a + b * t) / (c + d * t) =
+    (a + b * z) / (c + d * z) at heq
+  have hdent : c + d * t ≠ 0 :=
+    add_mul_ne_zero_of_im_div_pos c d t hcd (by
+      simpa only [t, Complex.add_im, Complex.ofReal_im, add_zero] using le_of_lt hz)
+  exact bivariateQuotient_ne_of_ne a b c d z t hcross
+    (add_mul_ne_zero_of_im_div_pos c d z hcd (le_of_lt hz))
+    hdent htne heq.symm
 
 end RealRooted
