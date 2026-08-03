@@ -367,6 +367,17 @@ theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
   · simp [List.signVariations, ha]
     lia
 
+/-- Appending one sign increases the number of sign variations by at most one. -/
+theorem List.signVariations_append_singleton_signType_le_succ
+    (l : List SignType) (a : SignType) :
+    (l ++ [a]).signVariations ≤ l.signVariations + 1 := by
+  have h := List.length_destutter_append_singleton_ne_le_succ
+    ((l.map SignType.sign).filter (· ≠ 0)) (SignType.sign a)
+  by_cases ha : SignType.sign a = 0
+  · simp [List.signVariations, ha]
+  · simp [List.signVariations, ha]
+    lia
+
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
 
 This is the finite local step used for nodal interior zeros in Karlin's perturbation
@@ -414,14 +425,15 @@ theorem signVariations_endpoints_le_add_two_of_nodalInsertions
     {l l' : List SignType}
     (h : Relation.ReflTransGen NodalInsertion l l')
     (a b : SignType) :
-    (((a :: l') ++ [b]).signVariations) ≤ l.signVariations + 2 := by
+    ((a :: l') ++ [b]).signVariations ≤ l.signVariations + 2 := by
   calc
-    ((a :: l') ++ [b]).signVariations =
-        (a :: (l' ++ [b])).signVariations := by simp
-    _ ≤ (l' ++ [b]).signVariations + 1 :=
-      signVariations_cons_le_succ a (l' ++ [b])
+    ((a :: l') ++ [b]).signVariations ≤
+        (l' ++ [b]).signVariations + 1 := by
+      simpa only [List.cons_append] using
+        signVariations_cons_le_succ a (l' ++ [b])
     _ ≤ (l'.signVariations + 1) + 1 :=
-      Nat.add_le_add_right (signVariations_append_singleton_le_succ l' b) 1
+      Nat.add_le_add_right
+        (signVariations_append_singleton_signType_le_succ l' b) 1
     _ = l.signVariations + 2 := by
       rw [signVariations_eq_of_nodalInsertions h]
 

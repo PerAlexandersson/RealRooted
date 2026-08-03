@@ -169,4 +169,27 @@ theorem length_destutter_cons_ne_le_succ
       simp only [List.destutter_cons', List.destutter'_cons]
       split_ifs <;> simp_all
 
+private theorem length_destutter'_append_singleton_ne_le_succ
+    {α : Type*} [DecidableEq α] (b a : α) (l : List α) :
+    ((l ++ [a]).destutter' (· ≠ ·) b).length ≤
+      (l.destutter' (· ≠ ·) b).length + 1 := by
+  induction l generalizing b with
+  | nil =>
+      simp [List.destutter'_cons]
+      split_ifs <;> simp
+  | cons c l ih =>
+      simp only [cons_append, List.destutter'_cons]
+      split_ifs <;> simp_all
+
+/-- Appending an entry increases the length after disequality destuttering by at most one. -/
+theorem length_destutter_append_singleton_ne_le_succ
+    {α : Type*} [DecidableEq α] (l : List α) (a : α) :
+    ((l ++ [a]).destutter (· ≠ ·)).length ≤
+      (l.destutter (· ≠ ·)).length + 1 := by
+  cases l with
+  | nil => simp
+  | cons b l =>
+      simp only [cons_append, List.destutter_cons']
+      exact length_destutter'_append_singleton_ne_le_succ b a l
+
 end List
