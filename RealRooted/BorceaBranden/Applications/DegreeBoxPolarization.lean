@@ -180,11 +180,8 @@ theorem specializeLeft_sourceBlockPolarization
     (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
       (_root_.RealRooted.specializeLeft x P)
   have hpcoeff (k : ℕ) :
-      p.coeff k = MvPolynomial.eval x (sourceCoefficient P k) := by
-    dsimp only [p]
-    exact
-      coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient
-        P x k
+      p.coeff k = MvPolynomial.eval x (sourceCoefficient P k) :=
+    coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient P x k
   have houtput (q : MvPolynomial τ ℂ) :
       MvPolynomial.aeval
           (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
@@ -210,11 +207,10 @@ theorem specializeLeft_sourceBlockPolarization
     _root_.RealRooted.specializeLeft x
         (sourceBlockPolarization n P) =
       _root_.RealRooted.polarization n p
-  unfold sourceBlockPolarization
-  unfold _root_.RealRooted.specializeLeft
+  unfold sourceBlockPolarization _root_.RealRooted.specializeLeft
   rw [map_sum]
   unfold _root_.RealRooted.polarization
-  unfold _root_.RealRooted.reducedPolarization
+    _root_.RealRooted.reducedPolarization
   apply Finset.sum_congr rfl
   intro k hk
   rw [map_mul, map_mul, MvPolynomial.aeval_C,
