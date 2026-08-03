@@ -77,15 +77,13 @@ theorem succAbove_succ_castSucc
       exact Nat.succ_lt_succ h
     rw [Fin.succAbove_of_castSucc_lt _ _ h',
       Fin.succAbove_of_castSucc_lt _ _ h]
-    apply Fin.ext
-    rfl
+    exact Fin.ext rfl
   · have hki : k ≤ i.castSucc := le_of_not_gt h
     have h' : k.succ.castSucc ≤ i.succ.castSucc.castSucc := by
       change (k : ℕ) + 1 ≤ (i : ℕ) + 1
       exact Nat.succ_le_succ hki
     rw [Fin.succAbove_of_le_castSucc _ _ h',
       Fin.succAbove_of_le_castSucc _ _ hki]
-    apply Fin.ext
-    rfl
+    exact Fin.ext rfl
 
 end Fin
