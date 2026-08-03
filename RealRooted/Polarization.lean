@@ -498,3 +498,21 @@ theorem diagonalProjectionDegreeBox_basisDegreeOfLE {n : ℕ}
   simp [diagonalDegreeBoxIndex, Polynomial.X_pow_eq_monomial]
 
 end RealRooted
+
+namespace RealRooted
+
+/-- Reduced polarization is symmetric in its polarized variables. -/
+theorem isSymmetric_reducedPolarization (n : ℕ) (f : ℂ[X]) :
+    MvPolynomial.IsSymmetric (reducedPolarization n f) := by
+  classical
+  intro e
+  simp only [reducedPolarization, map_sum, map_mul,
+    MvPolynomial.rename_C, MvPolynomial.rename_esymm]
+
+/-- Polarization is symmetric in its polarized variables. -/
+theorem isSymmetric_polarization (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.IsSymmetric (polarization n p) := by
+  unfold polarization
+  exact isSymmetric_reducedPolarization n (binomialUnlift n p)
+
+end RealRooted
