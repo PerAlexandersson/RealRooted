@@ -36,8 +36,7 @@ theorem im_bivariateQuotient_eq_bivariateV2_div_normSq
     ((a + c * (x : ℂ)) / (b + d * (x : ℂ))).im =
       bivariateV2 a b c d x /
         Complex.normSq (b + d * (x : ℂ)) := by
-  simp [Complex.div_im, Complex.normSq, bivariateV2]
-  ring
+  exact im_bivariateQuotient_eq_bivariateV1_div_normSq a c b d x
 
 /-- A positive imaginary part of `c / d` keeps `c + d * x` nonzero on the
 real boundary. This is the denominator observation in Part II, Lemma 1.4. -/
@@ -71,11 +70,7 @@ theorem im_bivariateQuotient_pos_iff_bivariateV2_pos
     (a b c d : ℂ) (x : ℝ) (h : 0 < (b / d).im) :
     0 < ((a + c * (x : ℂ)) / (b + d * (x : ℂ))).im ↔
       0 < bivariateV2 a b c d x := by
-  have hden := add_mul_real_ne_zero_of_im_div_pos b d x h
-  have hnorm : 0 < Complex.normSq (b + d * (x : ℂ)) :=
-    Complex.normSq_pos.mpr hden
-  rw [im_bivariateQuotient_eq_bivariateV2_div_normSq]
-  exact div_pos_iff_of_pos_right hnorm
+  exact im_bivariateQuotient_pos_iff_bivariateV1_pos a c b d x h
 
 /-- Under partial transposition averaging, V1 is the corresponding convex
 combination of the original V1 and V2. -/
@@ -98,7 +93,6 @@ theorem bivariateV2_partialSymmetrization
         ((t : ℂ) * c + (1 - t : ℝ) * b) d x =
       t * bivariateV2 a b c d x +
         (1 - t) * bivariateV1 a b c d x := by
-  simp [bivariateV1, bivariateV2, Complex.mul_im]
-  ring
+  exact bivariateV1_partialSymmetrization a c b d t x
 
 end RealRooted
