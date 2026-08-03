@@ -59,23 +59,22 @@ elementary symmetric polynomial is `p.coeff k / choose n k`. -/
 def polarization (n : ℕ) (p : ℂ[X]) : MvPolynomial (Fin n) ℂ :=
   reducedPolarization n (binomialUnlift n p)
 
-theorem binomialUnlift_add (n : ℕ) (p q : ℂ[X]) :
+private theorem binomialUnlift_add (n : ℕ) (p q : ℂ[X]) :
     binomialUnlift n (p + q) =
       binomialUnlift n p + binomialUnlift n q := by
   unfold binomialUnlift
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
-  intro k hk
+  intro k _
   rw [Polynomial.coeff_add, add_div, map_add]
 
-theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+private theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
     binomialUnlift n (c • p) = c • binomialUnlift n p := by
   unfold binomialUnlift
   rw [Finset.smul_sum]
   apply Finset.sum_congr rfl
-  intro k hk
-  simp only [Polynomial.coeff_smul]
-  simp only [div_eq_mul_inv]
+  intro k _
+  simp only [Polynomial.coeff_smul, div_eq_mul_inv]
   change (Polynomial.monomial k)
     (c * p.coeff k * (n.choose k : ℂ)⁻¹) =
       c • (Polynomial.monomial k)
@@ -84,21 +83,21 @@ theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
   exact (Polynomial.smul_monomial c k
     (p.coeff k * (n.choose k : ℂ)⁻¹)).symm
 
-theorem reducedPolarization_add (n : ℕ) (p q : ℂ[X]) :
+private theorem reducedPolarization_add (n : ℕ) (p q : ℂ[X]) :
     reducedPolarization n (p + q) =
       reducedPolarization n p + reducedPolarization n q := by
   unfold reducedPolarization
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
-  intro k hk
+  intro k _
   simp [add_mul]
 
-theorem reducedPolarization_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+private theorem reducedPolarization_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
     reducedPolarization n (c • p) = c • reducedPolarization n p := by
   unfold reducedPolarization
   rw [Finset.smul_sum]
   apply Finset.sum_congr rfl
-  intro k hk
+  intro k _
   simp [MvPolynomial.smul_eq_C_mul, mul_assoc]
 
 /-- Polarization as a complex-linear map on univariate polynomials. -/
