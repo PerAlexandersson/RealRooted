@@ -634,3 +634,73 @@ theorem Matrix.IsSignConsistentOrder.mul_of_right_isTotallyNonnegRect
       (hA et.strictMono hcols')
   simpa only [es, et, mul_assoc, mul_left_comm, mul_comm] using
     mul_nonneg hsign hright
+
+/-- The minor of a monotone weighted incidence matrix is diagonal or singular.
+
+This is the elementary incidence-matrix step in Karlin's proof of Theorem V.1.4:
+monotonicity forces every nonzero Leibniz term to use the identity permutation.
+Thus no separate combinatorial model is needed for this bridge. -/
+theorem Matrix.det_submatrix_monotoneWeightedIncidence
+    {n q r : ℕ}
+    (block : Fin n → Fin q)
+    (hblock : Monotone block)
+    (weight : Fin n → ℝ)
+    {rows : Fin r → Fin n}
+    {cols : Fin r → Fin q}
+    (hrows : StrictMono rows)
+    (hcols : StrictMono cols) :
+    (Matrix.submatrix
+      (fun j s => if block j = s then weight j else 0)
+      rows cols).det =
+      if ∀ i, block (rows i) = cols i then
+        ∏ i, weight (rows i)
+      else 0 := by
+  classical
+  let W : Matrix (Fin n) (Fin q) ℝ :=
+    fun j s => if block j = s then weight j else 0
+  change (W.submatrix rows cols).det =
+    if ∀ i, block (rows i) = cols i then
+      ∏ i, weight (rows i)
+    else 0
+  by_cases hdiag : ∀ i, block (rows i) = cols i
+  · rw [if_pos hdiag]
+    have hmatrix :
+        W.submatrix rows cols =
+          Matrix.diagonal (fun i => weight (rows i)) := by
+      ext i j
+      simp only [Matrix.submatrix_apply, W]
+      rw [hdiag i]
+      by_cases hij : i = j
+      · subst j
+        simp
+      · have hc : cols i ≠ cols j := fun h =>
+          hij (hcols.injective h)
+        simp [hc, hij]
+    rw [hmatrix, Matrix.det_diagonal]
+  · rw [if_neg hdiag, Matrix.det_apply']
+    apply Finset.sum_eq_zero
+    intro sigma hsigma
+    by_cases hterm : ∀ i, block (rows (sigma i)) = cols i
+    · have hsigma_mono : StrictMono sigma := by
+        intro i j hij
+        by_contra hnot
+        have hle : sigma j ≤ sigma i := le_of_not_gt hnot
+        have hf :
+            block (rows (sigma j)) ≤ block (rows (sigma i)) :=
+          (hblock.comp hrows.monotone) hle
+        rw [hterm j, hterm i] at hf
+        exact (not_le_of_gt (hcols hij)) hf
+      have hsigma_eq : ∀ i, sigma i = i := fun i =>
+        le_antisymm (hsigma_mono.le_id i) (hsigma_mono.id_le i)
+      exfalso
+      apply hdiag
+      intro i
+      simpa only [hsigma_eq i] using hterm i
+    · simp only [not_forall] at hterm
+      obtain ⟨i, hi⟩ := hterm
+      have hprod :
+          (∏ j, (W.submatrix rows cols) (sigma j) j) = 0 := by
+        apply Finset.prod_eq_zero (Finset.mem_univ i)
+        simp only [Matrix.submatrix_apply, W]
+        rw [if_neg hi]
+      rw [hprod, mul_zero]
