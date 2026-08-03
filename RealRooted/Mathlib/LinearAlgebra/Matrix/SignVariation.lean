@@ -1015,10 +1015,10 @@ noncomputable def Fin.signBlockDecomposition
       weight_nonneg := fun j => abs_nonneg (c j)
       coeff := coeff
       reconstruct := ?_
-      numBlocks_sub_one := by simp }
+      numBlocks_sub_one := Nat.add_sub_cancel _ _ }
   intro j
   by_cases hj : c j = 0
-  · simp [hj]
+  · simp only [hj, abs_zero, zero_mul]
   · have hex :
         ∃ k, c k ≠ 0 ∧
           Fin.signBlockIndex c k = Fin.signBlockIndex c j :=
@@ -1026,8 +1026,7 @@ noncomputable def Fin.signBlockDecomposition
     change |c j| * coeff (Fin.signBlockIndex c j) = c j
     rw [show coeff (Fin.signBlockIndex c j) =
         (SignType.sign (c hex.choose) : ℝ) by
-      simp only [coeff, dif_pos hex]]
-    have hspec := hex.choose_spec
-    have hsign :=
-      Fin.sign_eq_of_signBlockIndex_eq c hj hspec.1 hspec.2.symm
-    rw [← hsign, abs_mul_sign]
+      simp only [coeff, dif_pos hex],
+      ← Fin.sign_eq_of_signBlockIndex_eq c hj
+        hex.choose_spec.1 hex.choose_spec.2.symm,
+      abs_mul_sign]
