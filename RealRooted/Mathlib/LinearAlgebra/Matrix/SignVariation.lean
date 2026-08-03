@@ -479,9 +479,7 @@ theorem succAbove_center_ne_zero_of_mul_neg
     (h : x i.castSucc.castSucc.castSucc * x i.succ.succ.castSucc < 0) :
     x ((i.succ.castSucc.castSucc).succAbove i.succ.castSucc) ≠ 0 := by
   rw [Fin.succAbove_center_eq_right]
-  intro hz
-  rw [hz, mul_zero] at h
-  exact lt_irrefl 0 h
+  exact right_ne_zero_of_mul (ne_of_lt h)
 
 /-- If the omitted nodal zero was the old right neighbor, the new center is nonzero. -/
 theorem succAbove_center_ne_zero_of_omit_right_mul_neg
@@ -489,9 +487,7 @@ theorem succAbove_center_ne_zero_of_omit_right_mul_neg
     (h : x i.succ.castSucc.castSucc * x i.succ.succ.succ < 0) :
     x ((i.succ.succ.castSucc).succAbove i.succ.castSucc) ≠ 0 := by
   rw [Fin.succAbove_center_eq_left]
-  intro hz
-  rw [hz, zero_mul] at h
-  exact lt_irrefl 0 h
+  exact left_ne_zero_of_mul (ne_of_lt h)
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
