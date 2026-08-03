@@ -28,6 +28,68 @@ example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
 example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_lw_derivative_lag_coeff_all_term
 
+section ExplicitRootSigns
+
+variable {P U V W : Nat → ℝ[X]}
+variable (hbase : Prec (P 0) (P 1))
+variable (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+variable (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+variable (hrec : ∀ n : Nat,
+  P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
+variable (hderivative_nonpos : ∀ n : Nat, ∀ r : ℝ,
+  (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
+variable (hlag_nonpos : ∀ n : Nat, ∀ r : ℝ,
+  (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
+variable (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+variable (hno : ∀ n : Nat, ∀ r : ℝ,
+  (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
+
+example : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_derivative_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    derivative_nonpos := hderivative_nonpos,
+    lag_nonpos := hlag_nonpos,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+example : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_derivative_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    derivative_nonpos := hderivative_nonpos,
+    lag_nonpos := hlag_nonpos,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+example : (P 3).Splits := by
+  rr_lw_derivative_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    derivative_nonpos := hderivative_nonpos,
+    lag_nonpos := hlag_nonpos,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+example : ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_derivative_lag_sequence_interlaces using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    derivative_nonpos := hderivative_nonpos,
+    lag_nonpos := hlag_nonpos,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+end ExplicitRootSigns
+
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
