@@ -842,3 +842,12 @@ theorem Matrix.IsSignRegular.signVariations_mulVec_le
     Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c :=
   hA.signVariations_mulVec_le_of_signBlockDecomposition
     c (Fin.signBlockDecomposition c)
+
+/-- Karlin's forward variation-diminishing theorem for finite rectangular
+totally nonnegative matrices. -/
+theorem Matrix.IsTotallyNonnegRect.signVariations_mulVec_le
+    {l n : ℕ}
+    {A : Matrix (Fin l) (Fin n) ℝ}
+    (hA : A.IsTotallyNonnegRect) (c : Fin n → ℝ) :
+    Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c :=
+  hA.isSignRegular.signVariations_mulVec_le c
