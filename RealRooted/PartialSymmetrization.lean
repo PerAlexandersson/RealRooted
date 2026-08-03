@@ -16,8 +16,7 @@ def bivariateV1 (a b c d : ℂ) (x : ℝ) : ℝ :=
 
 /-- The second real quadratic form from Borcea--Brändén, Part II, Lemma 1.4. -/
 def bivariateV2 (a b c d : ℂ) (x : ℝ) : ℝ :=
-  (a * star b).im + (a * star d + c * star b).im * x +
-    (c * star d).im * x ^ 2
+  bivariateV1 a c b d x
 
 /-- The real-boundary quotient identity for `bivariateV1` from
 Borcea--Brändén, Part II, Lemma 1.4. -/
