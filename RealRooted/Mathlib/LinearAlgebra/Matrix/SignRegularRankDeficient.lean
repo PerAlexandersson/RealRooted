@@ -68,31 +68,27 @@ theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
     (i0 : Fin (k + 1)) (hdet : B.det = 0) :
     B.mulVec (fun j => (-1 : R) ^ (i0 + j : ℕ) *
       (B.submatrix i0.succAbove j.succAbove).det) = 0 := by
-  let C : Matrix (Fin (k + 1)) (Fin k) R :=
-    (B.submatrix i0.succAbove id).transpose
+  let C : Matrix (Fin k) (Fin (k + 1)) R :=
+    B.submatrix i0.succAbove id
   have hminor (j : Fin (k + 1)) :
-      (C.submatrix j.succAbove id).det =
+      ((C.transpose).submatrix j.succAbove id).det =
         (B.submatrix i0.succAbove j.succAbove).det := by
-    have hmatrix :
-        C.submatrix j.succAbove id =
-          (B.submatrix i0.succAbove j.succAbove).transpose := by
-      ext a b
-      rfl
-    rw [hmatrix, Matrix.det_transpose]
+    rw [← Matrix.det_transpose]
+    rfl
   let z0 : Fin (k + 1) → R := fun j =>
     (-1 : R) ^ (j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
   let z : Fin (k + 1) → R := fun j =>
     (-1 : R) ^ (i0 + j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
-  have hremoved0 : (B.submatrix i0.succAbove id).mulVec z0 = 0 := by
+  have hremoved0 : C.mulVec z0 = 0 := by
     have hkernel :=
-      Matrix.transpose_mulVec_alternating_det_submatrix_succAbove C
+      Matrix.transpose_mulVec_alternating_det_submatrix_succAbove C.transpose
+    rw [Matrix.transpose_transpose] at hkernel
     simp_rw [hminor] at hkernel
-    simpa only [C, Matrix.transpose_transpose, z0] using hkernel
+    simpa only [z0] using hkernel
   have hz : z = (-1 : R) ^ (i0 : ℕ) • z0 := by
     funext j
-    simp only [z, z0, Pi.smul_apply, smul_eq_mul, pow_add]
-    ring
-  have hremoved : (B.submatrix i0.succAbove id).mulVec z = 0 := by
+    simp only [z, z0, Pi.smul_apply, smul_eq_mul, pow_add, mul_assoc]
+  have hremoved : C.mulVec z = 0 := by
     rw [hz, Matrix.mulVec_smul, hremoved0, smul_zero]
   change B.mulVec z = 0
   apply funext
@@ -110,7 +106,7 @@ theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
       _ = B.det := (Matrix.det_succ_row B i0).symm
       _ = 0 := hdet
   · have hi := congrFun hremoved i
-    simpa only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
+    simpa only [C, Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
       Pi.zero_apply] using hi
 
 /-- Deleting a column preserves the rank when a maximal nonzero minor avoids
