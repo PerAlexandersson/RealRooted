@@ -296,8 +296,8 @@ lemma splits {fs : List ℝ[X]}
 lemma sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0NonnegRealRooted fs) (hgs : gs.Sublist fs) :
     IsInterlacingSeq0NonnegRealRooted gs :=
-  ⟨⟨hfs.1.1.sublist hgs, fun f hf ⇒ hfs.1.2 f (hgs.subset hf)⟩,
-    fun f hf ⇒ hfs.2 f (hgs.subset hf)⟩
+  ⟨⟨hfs.1.1.sublist hgs, fun f hf => hfs.1.2 f (hgs.subset hf)⟩,
+    fun f hf => hfs.2 f (hgs.subset hf)⟩
 
 lemma sublist_of_ne {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0NonnegRealRooted fs) (hgs : gs.Sublist fs)
@@ -315,6 +315,6 @@ end IsInterlacingSeq0NonnegRealRooted
 lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0NonnegRealRooted
     {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0NonnegRealRooted fs :=
-  ⟨hfs.toIsInterlacingSeq0Nonneg, fun f hf _ ⇒ hfs.realRooted f hf⟩
+  ⟨hfs.toIsInterlacingSeq0Nonneg, fun f hf _ => hfs.realRooted f hf⟩
 
 end RealRooted
