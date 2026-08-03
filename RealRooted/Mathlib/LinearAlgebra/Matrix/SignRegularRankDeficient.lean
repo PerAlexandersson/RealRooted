@@ -770,3 +770,18 @@ theorem Matrix.mul_weightedIncidence_mulVec
     simp [Matrix.mulVec, dotProduct]
   rw [← Matrix.mulVec_mulVec sign L
     (Matrix.weightedIncidence block weight), hincidence]
+
+/-- Aggregating consecutive columns with nonnegative weights preserves sign
+consistency of every fixed order. -/
+theorem Matrix.IsSignConsistentOrder.mul_weightedIncidence
+    {l n q r : ℕ}
+    {L : Matrix (Fin l) (Fin n) ℝ}
+    (hL : L.IsSignConsistentOrder r)
+    (block : Fin n → Fin q)
+    (hblock : Monotone block)
+    (weight : Fin n → ℝ)
+    (hweight : ∀ j, 0 ≤ weight j) :
+    (L * Matrix.weightedIncidence block weight).IsSignConsistentOrder r :=
+  hL.mul_of_right_isTotallyNonnegRect
+    (Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
+      block hblock weight hweight)
