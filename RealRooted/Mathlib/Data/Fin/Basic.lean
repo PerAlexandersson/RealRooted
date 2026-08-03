@@ -57,4 +57,12 @@ theorem succAbove_center_eq_right (i : Fin n) :
   rw [Fin.succAbove_of_le_castSucc _ _ le_rfl]
   congr
 
+/-- Omitting the old right neighbor sends the corresponding new center to its old value. -/
+theorem succAbove_center_eq_left (i : Fin n) :
+    (i.succ.succ.castSucc).succAbove i.succ.castSucc =
+      i.succ.castSucc.castSucc := by
+  rw [Fin.succAbove_of_castSucc_lt _ _ (by
+    change (i : ℕ) + 1 < (i : ℕ) + 2
+    lia)]
+
 end Fin
