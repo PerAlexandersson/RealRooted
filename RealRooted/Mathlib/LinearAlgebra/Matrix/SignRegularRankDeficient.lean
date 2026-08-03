@@ -59,6 +59,60 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
     rw [hp j]
   rw [hmatrix, Matrix.det_permute', hzero, mul_zero]
 
+/-- Karlin's signed row-cofactor vector of a singular square matrix lies in
+its kernel. The retained-row equations come from the rectangular alternating
+minor identity; Laplace expansion supplies the omitted-row equation. -/
+theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
+    {R : Type*} [CommRing R] {k : ℕ}
+    (B : Matrix (Fin (k + 1)) (Fin (k + 1)) R)
+    (i0 : Fin (k + 1)) (hdet : B.det = 0) :
+    B.mulVec (fun j => (-1 : R) ^ (i0 + j : ℕ) *
+      (B.submatrix i0.succAbove j.succAbove).det) = 0 := by
+  let C : Matrix (Fin (k + 1)) (Fin k) R :=
+    (B.submatrix i0.succAbove id).transpose
+  have hminor (j : Fin (k + 1)) :
+      (C.submatrix j.succAbove id).det =
+        (B.submatrix i0.succAbove j.succAbove).det := by
+    have hmatrix :
+        C.submatrix j.succAbove id =
+          (B.submatrix i0.succAbove j.succAbove).transpose := by
+      ext a b
+      rfl
+    rw [hmatrix, Matrix.det_transpose]
+  let z0 : Fin (k + 1) → R := fun j =>
+    (-1 : R) ^ (j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
+  let z : Fin (k + 1) → R := fun j =>
+    (-1 : R) ^ (i0 + j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
+  have hremoved0 : (B.submatrix i0.succAbove id).mulVec z0 = 0 := by
+    have hkernel :=
+      Matrix.transpose_mulVec_alternating_det_submatrix_succAbove C
+    simp_rw [hminor] at hkernel
+    simpa only [C, Matrix.transpose_transpose, z0] using hkernel
+  have hz : z = (-1 : R) ^ (i0 : ℕ) • z0 := by
+    funext j
+    simp only [z, z0, Pi.smul_apply, smul_eq_mul, pow_add]
+    ring
+  have hremoved : (B.submatrix i0.succAbove id).mulVec z = 0 := by
+    rw [hz, Matrix.mulVec_smul, hremoved0, smul_zero]
+  change B.mulVec z = 0
+  apply funext
+  refine Fin.succAboveCases i0 ?_ (fun i => ?_)
+  · simp only [Matrix.mulVec, dotProduct, z, Pi.zero_apply]
+    calc
+      ∑ j : Fin (k + 1), B i0 j * ((-1 : R) ^
+          ((i0 : ℕ) + (j : ℕ)) *
+          (B.submatrix i0.succAbove j.succAbove).det) =
+          ∑ j : Fin (k + 1), (-1 : R) ^ ((i0 : ℕ) + (j : ℕ)) *
+            B i0 j * (B.submatrix i0.succAbove j.succAbove).det := by
+        apply Finset.sum_congr rfl
+        intro j _
+        ring
+      _ = B.det := (Matrix.det_succ_row B i0).symm
+      _ = 0 := hdet
+  · have hi := congrFun hremoved i
+    simpa only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
+      Pi.zero_apply] using hi
+
 /-- Deleting a column preserves the rank when a maximal nonzero minor avoids
 that column. This is the common rank step in Karlin's two deficient-rank
 branches; the cofactor and rank-basis kernel constructions remain separate. -/
