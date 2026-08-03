@@ -281,6 +281,33 @@ lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
+/-- Summation over finite subsets is invariant under taking complements. -/
+theorem sum_finset_compl
+    {M α : Type*} [AddCommMonoid M] [Fintype α] [DecidableEq α]
+    (f : Finset α → M) :
+    ∑ s : Finset α, f sᶜ = ∑ s, f s := by
+  let e : Finset α ≃ Finset α :=
+    { toFun := fun s => sᶜ
+      invFun := fun s => sᶜ
+      left_inv := compl_compl
+      right_inv := compl_compl }
+  exact e.sum_comp f
+
+/-- Complement reindexing exchanges a support cardinality with its codimension. -/
+theorem sum_finset_card_compl
+    {M : Type*} [AddCommMonoid M] (n : ℕ)
+    (f : ℕ → Finset (Fin n) → M) :
+    ∑ s : Finset (Fin n), f s.card sᶜ =
+      ∑ s, f (n - s.card) s := by
+  rw [← sum_finset_compl (fun s : Finset (Fin n) =>
+    f (n - s.card) s)]
+  apply Finset.sum_congr rfl
+  intro s _
+  rw [Finset.card_compl]
+  simp only [Fintype.card_fin]
+  have hs : s.card ≤ n := by simpa using Finset.card_le_univ s
+  rw [Nat.sub_sub_self hs]
+
 /-- A degree-one exponent's complementary monomial is indexed by the complement
 of the corresponding finite support. -/
 @[simp]
@@ -296,6 +323,43 @@ theorem rightComplementMonomial_one_degreeOneExponentEquivFinset_symm
       ((degreeOneExponentEquivFinset (Fin n)).symm s).1.support = s :=
     (degreeOneExponentEquivFinset (Fin n)).apply_symm_apply s
   rw [hsupp]
+
+/-- Grouping squarefree monomials by support cardinality gives `esymm`. -/
+theorem sum_finset_card_prod_eq_sum_esymm
+    {τ : Type*} (n : ℕ) (q : ℕ → MvPolynomial τ ℂ) :
+    (∑ s : Finset (Fin n),
+      rename (Sum.inl : τ → τ ⊕ Fin n) (q (n - s.card)) *
+        rename Sum.inr (∏ i ∈ s, X i)) =
+      ∑ r ∈ Finset.range (n + 1),
+        rename (Sum.inl : τ → τ ⊕ Fin n) (q (n - r)) *
+          rename Sum.inr (esymm (Fin n) ℂ r) := by
+  rw [sum_finset_eq_sum_powersetCard]
+  apply Finset.sum_congr rfl
+  intro r _
+  rw [esymm, map_sum, Finset.mul_sum]
+  simp only [map_prod, rename_X]
+  apply Finset.sum_congr rfl
+  intro s hs
+  rw [(Finset.mem_powersetCard.mp hs).2]
+
+/-- Complementing zero-one exponent supports and grouping by cardinality gives
+the elementary-symmetric expansion used in Borcea--Branden, Lemma 2.5. -/
+theorem sum_degreeOneExponent_rightComplementMonomial_eq_sum_esymm
+    {τ : Type*} (n : ℕ) (q : ℕ → MvPolynomial τ ℂ) :
+    (∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
+      rename (Sum.inl : τ → τ ⊕ Fin n) (q m.1.degree) *
+        rightComplementMonomial (R := ℂ) (τ := τ)
+          (fun _ : Fin n => 1) m.1) =
+      ∑ r ∈ Finset.range (n + 1),
+        rename (Sum.inl : τ → τ ⊕ Fin n) (q (n - r)) *
+          rename Sum.inr (esymm (Fin n) ℂ r) := by
+  rw [sum_degreeOneExponent_eq_sum_finset]
+  simp only [degree_degreeOneExponentEquivFinset_symm,
+    rightComplementMonomial_one_degreeOneExponentEquivFinset_symm]
+  rw [sum_finset_card_compl n (fun k s =>
+    rename (Sum.inl : τ → τ ⊕ Fin n) (q k) *
+      rename Sum.inr (∏ i ∈ s, X i))]
+  exact sum_finset_card_prod_eq_sum_esymm n q
 
 /-- The multiaffine symbol of the lifted operator before source diagonalization.
 This is the left-hand expansion in Borcea--Branden, Lemma 2.5. -/
@@ -342,6 +406,23 @@ theorem sourceBlockPolarization_algebraicSymbol_finOne_eq_sum
   simp only [rename_C]
   rw [← mul_assoc, ← C_mul]
   simp [hchoose]
+
+/-- Borcea--Branden, Lemma 2.5: source polarization of an operator polarizes
+its finite algebraic symbol in the source-variable block. -/
+theorem algebraicSymbol_sourcePolarizedOperator
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ) :
+    algebraicSymbol (fun _ : Fin n => 1)
+        (sourcePolarizedOperator n T) =
+      sourceBlockPolarization n
+        (algebraicSymbol (fun _ : Fin 1 => n) T) := by
+  rw [algebraicSymbol_sourcePolarizedOperator_eq_sum,
+    sourceBlockPolarization_algebraicSymbol_finOne_eq_sum]
+  simpa only [← finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex] using
+    sum_degreeOneExponent_rightComplementMonomial_eq_sum_esymm n
+      (fun k => T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+        (finOneDegreeIndex n k)))
 
 theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
     {τ : Type*} (n : ℕ)
