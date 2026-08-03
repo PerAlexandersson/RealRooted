@@ -545,12 +545,12 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
   have hlower := halt_delete.le_signVariations_of_strictMono hrows
   lia
 
+open Filter Topology
+
 /-- Karlin's rank-sensitive variation bound, proved by induction on the number
 of columns. Rank zero gives the zero linear map, full column rank uses the
 injective variation bound, and positive deficient rank uses the
 rank-preserving deletion step. -/
-
-open Filter Topology
 theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
     {n m r : ℕ}
     {A : Matrix (Fin n) (Fin m) ℝ}
