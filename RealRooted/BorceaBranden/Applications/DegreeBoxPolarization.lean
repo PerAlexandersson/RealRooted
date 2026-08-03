@@ -1,3 +1,4 @@
+import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.Polarization
 
 /-!
@@ -49,6 +50,18 @@ theorem sourcePolarizedOperator_basisDegreeOfLE
   change T (diagonalProjectionDegreeBox n
     (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m)) = _
   rw [diagonalProjectionDegreeBox_basisDegreeOfLE]
+
+/-- Reindex a sum over multiaffine exponent vectors by their finite supports.
+This is the subset reindexing in the source-side proof of Lemma 2.5. -/
+theorem sum_degreeOneExponent_eq_sum_finset
+    {M : Type*} [AddCommMonoid M] {n : ℕ}
+    (f : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1} → M) :
+    ∑ m, f m =
+      ∑ s : Finset (Fin n),
+        f ((degreeOneExponentEquivFinset (Fin n)).symm s) := by
+  apply Fintype.sum_equiv (degreeOneExponentEquivFinset (Fin n))
+  intro m
+  simp
 
 end
 

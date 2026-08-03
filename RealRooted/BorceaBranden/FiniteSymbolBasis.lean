@@ -48,6 +48,36 @@ theorem finsupp_eq_iff_support_eq_of_le_one
     rw [finsupp_eq_indicator_support_of_le_one d hd,
       finsupp_eq_indicator_support_of_le_one e he, hsupport]
 
+/-- Natural-valued exponent vectors bounded by one are equivalent to finite
+subsets, via their supports. -/
+noncomputable def degreeOneExponentEquivFinset (sigma : Type*) :
+    {d : sigma →₀ ℕ // ∀ i, d i ≤ 1} ≃ Finset sigma where
+  toFun d := d.1.support
+  invFun s :=
+    ⟨Finsupp.indicator s (fun _ _ => 1), fun i => by
+      by_cases hi : i ∈ s <;> simp [Finsupp.indicator, hi]⟩
+  left_inv d :=
+    Subtype.ext (finsupp_eq_indicator_support_of_le_one d.1 d.2).symm
+  right_inv s := by
+    ext i
+    simp [Finsupp.indicator]
+
+/-- The total degree of a zero-one exponent vector is the cardinality of its
+support. -/
+theorem card_support_eq_degree_of_le_one
+    {sigma : Type*} (d : sigma →₀ ℕ) (hd : ∀ i, d i ≤ 1) :
+    d.support.card = d.degree := by
+  classical
+  rw [Finsupp.degree_apply]
+  calc
+    d.support.card = ∑ i ∈ d.support, 1 := by simp
+    _ = ∑ i ∈ d.support, d i := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      have hpos : 0 < d i := Finsupp.mem_support_iff.mp hi |>.bot_lt
+      have hone : d i = 1 := Nat.le_antisymm (hd i) hpos
+      simp [hone]
+
 end
 
 end RealRooted.BorceaBranden
