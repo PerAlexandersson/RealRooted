@@ -132,6 +132,107 @@ noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
       rename Sum.inl (sourceCoefficient P k) *
         rename Sum.inr (esymm (Fin n) ℂ k)
 
+private theorem
+    coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient
+    {τ : Type*} (P : MvPolynomial (τ ⊕ Fin 1) ℂ)
+    (x : τ → ℂ) (k : ℕ) :
+    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
+      (_root_.RealRooted.specializeLeft x P)).coeff k =
+      MvPolynomial.eval x (sourceCoefficient P k) := by
+  have hspecial :
+      _root_.RealRooted.specializeLeft x P =
+        MvPolynomial.map (MvPolynomial.eval x)
+          (sumAlgEquiv ℂ (Fin 1) τ
+            (rename (Equiv.sumComm τ (Fin 1)) P)) := by
+    unfold _root_.RealRooted.specializeLeft
+    change
+      (MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)) P =
+        ((MvPolynomial.mapAlgHom (MvPolynomial.aeval x)).comp
+          ((sumAlgEquiv ℂ (Fin 1) τ).toAlgHom.comp
+            (rename (Equiv.sumComm τ (Fin 1))))) P
+    congr 1
+    apply MvPolynomial.algHom_ext
+    rintro (i | i) <;>
+      simp [Function.comp_def, Equiv.sumComm_apply]
+  rw [MvPolynomial.coeff_uniqueAlgEquiv, hspecial,
+    MvPolynomial.coeff_map]
+  change
+    MvPolynomial.eval x
+        ((sumAlgEquiv ℂ (Fin 1) τ
+          (rename (Equiv.sumComm τ (Fin 1)) P)).coeff
+            (Finsupp.single default k)) =
+      MvPolynomial.eval x (sourceCoefficient P k)
+  rfl
+
+/- Borcea--Branden, arXiv:0809.0401, Proposition 2.4 and equation (2.2).
+Specializing the output block commutes with source polarization. The ambient
+degree cap remains `n`, even when specialization lowers the source degree. -/
+theorem specializeLeft_sourceBlockPolarization
+    {τ : Type*} (n : ℕ) (P : MvPolynomial (τ ⊕ Fin 1) ℂ)
+    (x : τ → ℂ) :
+    _root_.RealRooted.specializeLeft x
+        (sourceBlockPolarization n P) =
+      _root_.RealRooted.polarization n
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+          (_root_.RealRooted.specializeLeft x P)) := by
+  let p : ℂ[X] :=
+    (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
+      (_root_.RealRooted.specializeLeft x P)
+  have hpcoeff (k : ℕ) :
+      p.coeff k = MvPolynomial.eval x (sourceCoefficient P k) := by
+    dsimp only [p]
+    exact
+      coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient
+        P x k
+  have houtput (q : MvPolynomial τ ℂ) :
+      MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
+          (rename (Sum.inl : τ → τ ⊕ Fin n) q) =
+        C (MvPolynomial.eval x q) := by
+    rw [MvPolynomial.aeval_rename]
+    change
+      MvPolynomial.aeval (MvPolynomial.C ∘ x) q =
+        C (MvPolynomial.eval x q)
+    induction q using MvPolynomial.induction_on with
+    | C c => simp
+    | add q r hq hr => simp [hq, hr]
+    | mul_X q i hq => simp [hq]
+  have hsource (q : MvPolynomial (Fin n) ℂ) :
+      MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
+          (rename (Sum.inr : Fin n → τ ⊕ Fin n) q) =
+        q := by
+    rw [MvPolynomial.aeval_rename]
+    change MvPolynomial.aeval MvPolynomial.X q = q
+    exact MvPolynomial.aeval_X_left_apply q
+  change
+    _root_.RealRooted.specializeLeft x
+        (sourceBlockPolarization n P) =
+      _root_.RealRooted.polarization n p
+  unfold sourceBlockPolarization
+  unfold _root_.RealRooted.specializeLeft
+  rw [map_sum]
+  unfold _root_.RealRooted.polarization
+  unfold _root_.RealRooted.reducedPolarization
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [map_mul, map_mul, MvPolynomial.aeval_C,
+    MvPolynomial.algebraMap_eq, houtput, hsource]
+  have hbinom :
+      (_root_.RealRooted.binomialUnlift n p).coeff k =
+        p.coeff k / (n.choose k : ℂ) := by
+    unfold _root_.RealRooted.binomialUnlift
+    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
+    · simp only [Polynomial.coeff_monomial_same]
+    · intro j hj hjk
+      simp [Polynomial.coeff_monomial, hjk]
+    · intro hknot
+      exact (hknot hk).elim
+  rw [hbinom, hpcoeff]
+  simp only [div_eq_mul_inv, map_mul]
+  ring
+
 /-- Extracting a source coefficient commutes with a finite sum. -/
 theorem sourceCoefficient_sum {τ ι : Type*} (s : Finset ι)
     (f : ι → MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
