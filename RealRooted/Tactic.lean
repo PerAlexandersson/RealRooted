@@ -27,6 +27,7 @@ import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal

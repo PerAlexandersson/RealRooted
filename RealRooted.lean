@@ -288,6 +288,7 @@ import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.InterlacingSequence
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
+import RealRooted.Tactic.Examples.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
@@ -310,6 +311,7 @@ import RealRooted.Tactic.Examples.PFBidiagonalFrontend
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.ScalarDen
@@ -336,6 +338,7 @@ import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.IteratedDerivativeShift
+import RealRooted.Tactic.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Kurtz
@@ -356,6 +359,7 @@ import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.ScalarDen

@@ -1,12 +1,9 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.ReciprocalShift
 
 /-!
 # J1 gap-3 reciprocal frontend
 
-This module transfers real-rootedness from a reciprocal model row family to the
-degree-padded reciprocal family expected by gap-3 J1 proof shells.
+Compatibility wrappers for the original J1-specific reciprocal-shift API.
 -/
 
 open Polynomial
@@ -19,14 +16,8 @@ theorem isRealRooted_of_j1_gap3_reciprocal_sequence
     (hmodel : ∀ n : Nat, R n ≠ 0 ∧ (R n).Splits)
     (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
     (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  have hshift :
-      reciprocalShift (D n) (R n) =
-        X ^ (D n - (R n).natDegree) * (R n).reverse :=
-    reciprocalShift_eq_X_pow_mul_reverse (hdegree n)
-  simpa [hreciprocal n, hshift] using
-    X_pow_mul_reverse_isRealRooted (hmodel n) (D n)
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_reciprocalShift_sequence hmodel hdegree hreciprocal
 
 /-- PF-polynomial model variant of the J1 gap-3 reciprocal route. -/
 theorem isRealRooted_of_j1_gap3_reciprocal_pf_sequence
@@ -36,9 +27,8 @@ theorem isRealRooted_of_j1_gap3_reciprocal_pf_sequence
     (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
     (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_j1_gap3_reciprocal_sequence
-    (Tactic.pf_sequence_realrooted hmodel hmodel_ne)
-    hdegree hreciprocal
+  isRealRooted_of_reciprocalShift_pf_sequence
+    hmodel hmodel_ne hdegree hreciprocal
 
 namespace Tactic
 
@@ -56,8 +46,10 @@ macro_rules
         degree := $hdegree:term,
         reciprocal := $hreciprocal:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_j1_gap3_reciprocal_sequence
-          $hmodel $hdegree $hreciprocal)
+        rr_reciprocal_shift_sequence using
+          model_realrooted := $hmodel,
+          degree := $hdegree,
+          reciprocal := $hreciprocal)
 
 syntax (name := rr_j1_gap3_reciprocal_pf_sequence_realrooted)
   "rr_j1_gap3_reciprocal_pf_sequence_realrooted" " using "
@@ -75,8 +67,11 @@ macro_rules
         degree := $hdegree:term,
         reciprocal := $hreciprocal:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_j1_gap3_reciprocal_pf_sequence
-          $hmodel $hmodel_ne $hdegree $hreciprocal)
+        rr_reciprocal_shift_pf_sequence using
+          model_pf := $hmodel,
+          model_ne := $hmodel_ne,
+          degree := $hdegree,
+          reciprocal := $hreciprocal)
 
 end Tactic
 end RealRooted
