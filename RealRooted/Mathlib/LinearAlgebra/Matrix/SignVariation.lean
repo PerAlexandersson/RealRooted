@@ -779,6 +779,36 @@ lemma strictlyAlternates_alternating (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
 
 end Fin
 
+/-- Sign variation is monotone under taking a list prefix. -/
+theorem List.signVariations_mono_of_prefix
+    {R : Type*} [Zero R] [LinearOrder R]
+    {l₁ l₂ : List R} (h : l₁ <+: l₂) :
+    l₁.signVariations ≤ l₂.signVariations := by
+  rw [List.signVariations, List.signVariations]
+  let s₁ : List SignType :=
+    (l₁.map SignType.sign).filter (· ≠ 0)
+  let s₂ : List SignType :=
+    (l₂.map SignType.sign).filter (· ≠ 0)
+  change (s₁.destutter (· ≠ ·)).length - 1 ≤
+    (s₂.destutter (· ≠ ·)).length - 1
+  have hsign : s₁ <+: s₂ :=
+    (h.map SignType.sign).filter (· ≠ 0)
+  have hsub : s₁.destutter (· ≠ ·) <+ s₂ :=
+    (List.destutter_sublist
+      (fun x y : SignType => x ≠ y) s₁).trans hsign.sublist
+  have hchain :
+      (s₁.destutter (· ≠ ·)).IsChain (· ≠ ·) :=
+    List.isChain_destutter (fun x y : SignType => x ≠ y) s₁
+  exact (Nat.sub_le_sub_right
+    (List.IsChain.length_le_length_destutter_ne hsub hchain)) 1
+
+/-- Taking a list prefix cannot increase sign variation. -/
+theorem List.signVariations_take_le
+    {R : Type*} [Zero R] [LinearOrder R]
+    (l : List R) (k : ℕ) :
+    (l.take k).signVariations ≤ l.signVariations :=
+  List.signVariations_mono_of_prefix (List.take_prefix k l)
+
 /-- Data expressing a finite vector as nonnegative weights pulled back from an
 ordered collection of sign blocks.
 
@@ -823,3 +853,12 @@ theorem Fin.prefixSignVariations_last
       (Fin.last n : ℕ) + 1 = (List.ofFn c).length := by
     simp
   rw [hlength, List.take_length]
+
+/-- Prefix sign variation is monotone in the prefix endpoint. -/
+theorem Fin.monotone_prefixSignVariations
+    {n : ℕ} (c : Fin n → ℝ) :
+    Monotone (Fin.prefixSignVariations c) := by
+  intro i j hij
+  unfold Fin.prefixSignVariations
+  apply List.signVariations_mono_of_prefix
+  exact List.take_prefix_take_left (Nat.add_le_add_right hij 1)
