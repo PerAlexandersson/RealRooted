@@ -12,6 +12,29 @@ open Filter Topology
 
 namespace Fin
 
+/-- Nonzero coordinates eventually retain their signs under convergence. -/
+theorem eventually_sign_eq_of_tendsto
+    {α : Type*} {l : Filter α} [l.NeBot] {n : ℕ}
+    {f : α → Fin n → ℝ} {x : Fin n → ℝ}
+    (hf : Tendsto f l (𝓝 x)) :
+    ∀ᶠ a in l, ∀ i, x i ≠ 0 →
+      SignType.sign (f a i) = SignType.sign (x i) := by
+  have hsign :
+      ∀ i : Fin n, ∀ᶠ a in l, x i ≠ 0 →
+        SignType.sign (f a i) = SignType.sign (x i) := by
+    intro i
+    by_cases hi : x i = 0
+    · exact Filter.Eventually.of_forall fun _ hne => (hne hi).elim
+    · have hiLimit := tendsto_pi_nhds.mp hf i
+      rcases lt_or_gt_of_ne hi with hneg | hpos
+      · filter_upwards [hiLimit.eventually_lt_const hneg] with a ha
+        intro
+        rw [sign_neg ha, sign_neg hneg]
+      · filter_upwards [hiLimit.eventually_const_lt hpos] with a ha
+        intro
+        rw [sign_pos ha, sign_pos hpos]
+  exact Filter.eventually_all.mpr hsign
+
 /-- Sign variations cannot increase when a convergent net reaches its limit. -/
 theorem signVariations_le_of_tendsto
     {α : Type*} {l : Filter α} [l.NeBot] {n r : ℕ}
