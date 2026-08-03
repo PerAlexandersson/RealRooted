@@ -321,3 +321,141 @@ theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_n
   have hupper : Fin.signVariations (A'.mulVec d') ≤ k - 1 :=
     hA'.signVariations_mulVec_le_card_sub_one hkn hA'inj d'
   lia
+
+/-- Extending a coefficient vector by zero along an injective column selector
+turns the ambient matrix-vector product into the selected-column product. -/
+theorem Matrix.mulVec_extend_eq_submatrix_mulVec
+    {R : Type*} [NonUnitalNonAssocSemiring R]
+    {ι κ κ' : Type*} [Fintype κ] [Fintype κ']
+    (A : Matrix ι κ R) (cols : κ' → κ)
+    (hcols : Function.Injective cols) (d : κ' → R) :
+    A.mulVec (Function.extend cols d 0) =
+      (A.submatrix id cols).mulVec d := by
+  classical
+  funext i
+  simp only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq]
+  symm
+  apply Fintype.sum_of_injective cols hcols
+  · intro j hj
+    rw [Function.extend_apply' d (0 : κ → R) j hj, Pi.zero_apply,
+      mul_zero]
+  · intro j
+    rw [hcols.extend_apply d (0 : κ → R) j]
+
+/-- Karlin's repaired Case B relation after coordinates of the omitted column
+in the retained column basis have been chosen. The relation is explicitly
+supported on those basis columns and `j0`; no arbitrary kernel coordinate is
+prescribed. -/
+theorem Matrix.supportedColumnRelation_spec
+    {R : Type*} [Field R] {n m r : ℕ}
+    (A : Matrix (Fin n) (Fin (m + 1)) R)
+    (j0 : Fin (m + 1))
+    (rows : Fin r → Fin n) (cols : Fin r → Fin m)
+    (hcols : Function.Injective cols)
+    (hrank : A.rank = r)
+    (hminor :
+      (A.submatrix rows (j0.succAbove ∘ cols)).det ≠ 0)
+    (d : Fin r → R)
+    (hcombo :
+      (A.submatrix id (j0.succAbove ∘ cols)).mulVec d = A.col j0) :
+    let selected := j0.succAbove ∘ cols
+    let z : Fin (m + 1) → R :=
+      Function.extend selected d 0 - Pi.single j0 1
+    A.mulVec z = 0 ∧ z j0 = -1 ∧
+      (A.submatrix id j0.succAbove).rank = r := by
+  let selected : Fin r → Fin (m + 1) := j0.succAbove ∘ cols
+  let z : Fin (m + 1) → R :=
+    Function.extend selected d 0 - Pi.single j0 1
+  change A.mulVec z = 0 ∧ z j0 = -1 ∧
+    (A.submatrix id j0.succAbove).rank = r
+  have hselected : Function.Injective selected :=
+    (Fin.strictMono_succAbove j0).injective.comp hcols
+  have hj0 : j0 ∉ Set.range selected := by
+    rintro ⟨i, hi⟩
+    exact (Fin.succAbove_ne j0 (cols i)) (by
+      simpa only [selected, Function.comp_apply] using hi)
+  have hkernel : A.mulVec z = 0 := by
+    calc
+      A.mulVec z =
+          A.mulVec (Function.extend selected d 0) -
+            A.mulVec (Pi.single j0 1) := by
+        change
+          A.mulVec
+              (Function.extend selected d 0 - Pi.single j0 1) =
+            A.mulVec (Function.extend selected d 0) -
+              A.mulVec (Pi.single j0 1)
+        rw [Matrix.mulVec_sub]
+      _ = (A.submatrix id selected).mulVec d - A.col j0 := by
+        rw [A.mulVec_extend_eq_submatrix_mulVec selected hselected d,
+          Matrix.mulVec_single_one]
+      _ = 0 := by
+        simpa only [selected] using sub_eq_zero.mpr hcombo
+  have hzj0 : z j0 = -1 := by
+    simp only [z, Pi.sub_apply]
+    rw [Function.extend_apply' d (0 : Fin (m + 1) → R) j0 hj0,
+      Pi.zero_apply, Pi.single_eq_same, zero_sub]
+  have hdelete :
+      (A.submatrix id j0.succAbove).rank = r :=
+    A.rank_deleteColumn_eq_of_minor_ne_zero hrank j0 rows cols hminor
+  exact ⟨hkernel, hzj0, hdelete⟩
+
+/-- A rank-sized minor avoiding `j0` produces Karlin's supported Case B
+relation and proves that deleting `j0` preserves rank. The printed source's
+arbitrary-coordinate assertion is not used: equality of the retained and
+ambient column-space dimensions supplies the omitted column's coordinates. -/
+theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
+    {R : Type*} [Field R] {n m r : ℕ}
+    (A : Matrix (Fin n) (Fin (m + 1)) R)
+    (j0 : Fin (m + 1))
+    (rows : Fin r → Fin n) (cols : Fin r → Fin m)
+    (hcols : Function.Injective cols)
+    (hrank : A.rank = r)
+    (hminor :
+      (A.submatrix rows (j0.succAbove ∘ cols)).det ≠ 0) :
+    ∃ d : Fin r → R,
+      let selected := j0.succAbove ∘ cols
+      let z : Fin (m + 1) → R :=
+        Function.extend selected d 0 - Pi.single j0 1
+      A.mulVec z = 0 ∧ z j0 = -1 ∧
+        (A.submatrix id j0.succAbove).rank = r := by
+  let selected : Fin r → Fin (m + 1) := j0.succAbove ∘ cols
+  let B : Matrix (Fin n) (Fin r) R := A.submatrix id selected
+  have hunit : IsUnit (B.submatrix rows id) := by
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    simpa only [B, selected, Matrix.submatrix_submatrix,
+      Function.id_comp, Function.comp_id] using hminor
+  have hminor_rank : (B.submatrix rows id).rank = r := by
+    simpa using Matrix.rank_of_isUnit _ hunit
+  have hBge : r ≤ B.rank := by
+    calc
+      r = (B.submatrix rows id).rank := hminor_rank.symm
+      _ ≤ B.rank := Matrix.rank_submatrix_le B rows id
+  have hBle : B.rank ≤ r := by
+    calc
+      B.rank ≤ A.rank := Matrix.rank_submatrix_le A id selected
+      _ = r := hrank
+  have hBrank : B.rank = r := le_antisymm hBle hBge
+  have hrange_le :
+      LinearMap.range B.mulVecLin ≤ LinearMap.range A.mulVecLin := by
+    rw [Matrix.range_mulVecLin, Matrix.range_mulVecLin]
+    apply Submodule.span_mono
+    rintro _ ⟨j, rfl⟩
+    refine ⟨selected j, ?_⟩
+    rfl
+  have hrange :
+      LinearMap.range B.mulVecLin = LinearMap.range A.mulVecLin :=
+    Submodule.eq_of_le_of_finrank_le hrange_le (by
+      change A.rank ≤ B.rank
+      rw [hrank, hBrank])
+  have hcol : A.col j0 ∈ LinearMap.range B.mulVecLin := by
+    rw [hrange]
+    refine ⟨Pi.single j0 1, ?_⟩
+    simpa only [Matrix.mulVecLin_apply] using A.mulVec_single_one j0
+  obtain ⟨d, hd⟩ := hcol
+  refine ⟨d, ?_⟩
+  have hcombo :
+      (A.submatrix id (j0.succAbove ∘ cols)).mulVec d =
+        A.col j0 := by
+    simpa only [B, selected, Matrix.mulVecLin_apply] using hd
+  exact A.supportedColumnRelation_spec j0 rows cols hcols hrank
+    hminor d hcombo
