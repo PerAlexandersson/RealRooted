@@ -84,7 +84,7 @@ end
 
 end RealRooted.BorceaBranden
 
-namespace MvPolynomial
+namespace Finsupp
 
 /-- The complement of a zero-one exponent has total degree equal to the
 cardinality of the variable set minus the original total degree. -/
@@ -93,12 +93,12 @@ theorem sum_one_sub_eq_card_sub_degree
     (hm : ∀ i, m i ≤ 1) :
     ∑ i, (1 - m i) = Fintype.card σ - m.degree := by
   rw [Finset.sum_tsub_distrib Finset.univ (by
-    intro i hi
+    intro i _
     exact hm i)]
   simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
     Nat.mul_one]
   congr 1
-  rw [Finsupp.degree_apply]
-  exact (Finsupp.sum_fintype m (fun _ e => e) (fun _ => rfl)).symm
+  rw [degree_apply]
+  exact (sum_fintype m (fun _ e => e) (fun _ => rfl)).symm
 
-end MvPolynomial
+end Finsupp

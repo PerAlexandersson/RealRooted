@@ -121,6 +121,6 @@ theorem rename_rightComplementMonomial_one
   simp only [map_prod, map_pow, rename_X, sourceDiagonalVariableMap]
   rw [Finset.prod_pow_eq_pow_sum]
   congr 1
-  simpa using sum_one_sub_eq_card_sub_degree m hm
+  simpa using Finsupp.sum_one_sub_eq_card_sub_degree m hm
 
 end MvPolynomial
