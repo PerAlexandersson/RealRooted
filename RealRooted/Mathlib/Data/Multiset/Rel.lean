@@ -28,9 +28,11 @@ theorem Rel.comp {α β γ : Type*}
       subst zs
       exact Rel.zero
   | cons b ys ih =>
-      obtain ⟨a, xs, hab, h₁, rfl⟩ := Multiset.rel_cons_right.mp h₁
-      obtain ⟨c, zs, hbc, h₂, rfl⟩ := Multiset.rel_cons_left.mp h₂
-      exact Rel.cons (hcomp a b c hab hbc) (ih h₁ h₂)
+      obtain ⟨a, xs', hab, htail₁, hxs⟩ := Multiset.rel_cons_right.mp h₁
+      obtain ⟨c, zs', hbc, htail₂, hzs⟩ := Multiset.rel_cons_left.mp h₂
+      subst xs
+      subst zs
+      exact Rel.cons (hcomp a b c hab hbc) (ih htail₁ htail₂)
 
 /-- Related multisets have equally many elements satisfying corresponding predicates. -/
 theorem Rel.card_filter_eq {α β : Type*} {R : α → β → Prop}
@@ -59,10 +61,13 @@ private theorem rel_uncross_min_cons {α : Type*} [LinearOrder α]
     (hrel : Multiset.Rel R (a ::ₘ as) (b ::ₘ bs)) :
     R a b ∧ Multiset.Rel R as bs := by
   obtain ⟨d, ds, hdb, hds, heq⟩ := Multiset.rel_cons_right.mp hrel
-  rcases Multiset.cons_eq_cons.mp heq with
-    (⟨rfl, rfl⟩ | ⟨_, cs, rfl, rfl⟩)
-  · exact ⟨hdb, hds⟩
-  · obtain ⟨c, ts, hac, hct, rfl⟩ := Multiset.rel_cons_left.mp hds
+  rcases Multiset.cons_eq_cons.mp heq with hsame | hswap
+  · rcases hsame with ⟨rfl, rfl⟩
+    exact ⟨hdb, hds⟩
+  · rcases hswap with ⟨_, cs, has, hds'⟩
+    subst as
+    subst ds
+    obtain ⟨c, ts, hac, hct, rfl⟩ := Multiset.rel_cons_left.mp hds
     have had : a ≤ d := ha d (by simp)
     have hbc : b ≤ c := hb c (by simp)
     obtain ⟨hab, hdc⟩ := huncross had hbc hac hdb
