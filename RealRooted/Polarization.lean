@@ -4,6 +4,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
 import RealRooted.Multiaffine
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.MultivariateStability
 
 /-!
