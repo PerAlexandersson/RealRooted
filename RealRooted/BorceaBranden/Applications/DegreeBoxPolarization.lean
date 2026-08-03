@@ -101,6 +101,30 @@ end RealRooted.BorceaBranden
 
 namespace MvPolynomial
 
+/-- The coefficient of source degree `k`, after viewing a polynomial in
+`tau ⊕ Fin 1` as a polynomial in the single source variable with coefficients
+in the output-variable ring `MvPolynomial tau ℂ`. -/
+noncomputable def sourceCoefficient {τ : Type*}
+    (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) : MvPolynomial τ ℂ :=
+  (sumAlgEquiv ℂ (Fin 1) τ
+    (rename (Equiv.sumComm τ (Fin 1)) P)).coeff
+      (Finsupp.single default k)
+
+/-- Polarize only the single source variable of a polynomial whose output
+variables are indexed by `τ`.
+
+This is the one-source-coordinate instance of Borcea--Brändén's operator
+`Π↑` from Proposition 2.4 and Lemma 2.5: the source coefficient of degree `k`
+is divided by `choose n k`, and the source monomial is replaced by the
+elementary symmetric polynomial `e_k` in the `Fin n` source block. -/
+noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
+    (P : MvPolynomial (τ ⊕ Fin 1) ℂ) :
+    MvPolynomial (τ ⊕ Fin n) ℂ :=
+  ∑ k ∈ Finset.range (n + 1),
+    C ((n.choose k : ℂ)⁻¹) *
+      rename Sum.inl (sourceCoefficient P k) *
+        rename Sum.inr (esymm (Fin n) ℂ k)
+
 /-- Identify all polarized source variables while leaving output variables
 unchanged. -/
 def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
@@ -175,8 +199,10 @@ theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
     sourcePolarizedOperator_basisDegreeOfLE,
     MvPolynomial.rename_rightComplementMonomial_one m.1 m.2]
 
-/-- Source-side specialization of Borcea--Brändén Lemma 2.5: diagonalizing the
-multiaffine source symbol recovers the original degree-box symbol. -/
+/-- Diagonal consequence of the source-side Borcea--Brändén Lemma 2.5 route:
+identifying the multiaffine source variables recovers the original degree-box
+symbol.  The full Lemma 2.5 identity before diagonalization is strictly
+stronger and uses `MvPolynomial.sourceBlockPolarization`. -/
 theorem rename_algebraicSymbol_sourcePolarizedOperator
     {τ : Type*} (n : ℕ)
     (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
