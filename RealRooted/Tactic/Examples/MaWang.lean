@@ -608,6 +608,26 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
+/-- A globally nonpositive derivative factor needs no root-window certificate. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_mw_derivative_global_nonpos_sequence_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    deriv_factor := fun _ => -(X ^ 2 : ℝ[X]),
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
 /-- Projection endpoint for the generic weak Ma--Wang sequence shell. -/
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -2661,7 +2681,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
-/-- Automatic real-rootedness endpoint for the streamlined `X(1-X)` shell. -/
+/-- `A008517`: real-rootedness endpoint for the `c_n X(1-X)P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -2679,6 +2699,27 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
+/-- `A059340`: a globally nonpositive shifted-square derivative factor. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          (-((1 + X : ℝ[X]) ^ 2)) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_global_nonpos_sequence_realrooted_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    deriv_factor := fun _ => -((1 + X : ℝ[X]) ^ 2),
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
