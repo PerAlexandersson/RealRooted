@@ -1,4 +1,5 @@
 import RealRooted.Hadamard
+import RealRooted.Tactic.Finish
 
 /-!
 # Hadamard and Schur--Szego tactic frontends
@@ -172,6 +173,23 @@ theorem hadamardProduct_sequence_pf {P Q : Nat → ℝ[X]}
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
     ∀ i : Nat, IsPFPolynomial (hadamardProduct (P i) (Q i)) := fun i =>
   hadamardProduct_preserves_pf_of_nonnegPrec (hP i) (hQ i)
+
+/-- A nonzero scalar multiple of each rowwise Hadamard product of PF
+polynomials is nonzero and real-rooted. -/
+theorem isRealRooted_of_hadamardProduct_scalar_sequence
+    {P L R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hleft : ∀ n : Nat, IsPFPolynomial (L n))
+    (hright : ∀ n : Nat, IsPFPolynomial (R n))
+    (hproduct_ne : ∀ n : Nat, hadamardProduct (L n) (R n) ≠ 0)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * hadamardProduct (L n) (R n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hproduct_pf :
+      ∀ n : Nat, IsPFPolynomial (hadamardProduct (L n) (R n)) :=
+    hadamardProduct_sequence_pf hleft hright
+  intro n
+  have hproduct := (hproduct_pf n).ne_zero_and_splits (hproduct_ne n)
+  simpa [hrow n] using isRealRooted_C_mul hproduct.1 hproduct.2 (hc n)
 
 theorem hadamardProduct_sequence_nonneg_realrooted {P Q : Nat → ℝ[X]}
     (hPnonneg : ∀ i : Nat, HasNonnegCoeffs (P i))
@@ -468,6 +486,15 @@ syntax (name := rr_hadamard_sequence_pf_named)
   "rr_hadamard_sequence_pf" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_product_scalar_sequence_named)
+  "rr_hadamard_product_scalar_sequence" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "product_ne" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
   tactic
 
 syntax (name := rr_hadamard_sequence_nonneg_realrooted_named)
@@ -781,6 +808,17 @@ macro_rules
         right_pf := $hq:term) =>
       `(tactic|
         exact RealRooted.Tactic.hadamardProduct_sequence_pf $hp $hq)
+  | `(tactic|
+      rr_hadamard_product_scalar_sequence using
+        left_pf := $hleft:term,
+        right_pf := $hright:term,
+        product_ne := $hproduct_ne:term,
+        scalar_ne := $hc:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.Tactic.isRealRooted_of_hadamardProduct_scalar_sequence
+            $hleft $hright $hproduct_ne $hc $hrow))
   | `(tactic|
       rr_hadamard_sequence_nonneg_realrooted using
         left_nonneg := $hpnn:term,

@@ -394,6 +394,34 @@ example {P Q : Nat → ℝ[X]}
     left_pf := hP,
     right_pf := hQ
 
+example {P L R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hL : ∀ n : Nat, IsPFPolynomial (L n))
+    (hR : ∀ n : Nat, IsPFPolynomial (R n))
+    (hproduct_ne : ∀ n : Nat, hadamardProduct (L n) (R n) ≠ 0)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * hadamardProduct (L n) (R n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_hadamard_product_scalar_sequence using
+    left_pf := hL,
+    right_pf := hR,
+    product_ne := hproduct_ne,
+    scalar_ne := hc,
+    factorization := hrow
+
+example {P L R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hL : ∀ n : Nat, IsPFPolynomial (L n))
+    (hR : ∀ n : Nat, IsPFPolynomial (R n))
+    (hproduct_ne : ∀ n : Nat, hadamardProduct (L n) (R n) ≠ 0)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * hadamardProduct (L n) (R n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_hadamard_product_scalar_sequence using
+    left_pf := hL,
+    right_pf := hR,
+    product_ne := hproduct_ne,
+    scalar_ne := hc,
+    factorization := hrow
+
 example {P Q : Nat → ℝ[X]}
     (hPnn : ∀ i : Nat, HasNonnegCoeffs (P i))
     (hQnn : ∀ i : Nat, HasNonnegCoeffs (Q i))
