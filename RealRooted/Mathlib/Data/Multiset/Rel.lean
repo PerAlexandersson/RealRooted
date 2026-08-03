@@ -98,7 +98,7 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
         calc
           s = ↑(s.sort (· ≤ ·)) :=
             (Multiset.sort_eq (s := s) (r := (· ≤ ·))).symm
-          _ = a ::ₘ (as : Multiset α) := by rw [hs]
+          _ = a ::ₘ (as : Multiset α) := by simp [hs]
       have hsord : (a :: as).Pairwise (· ≤ ·) := by
         simpa [hs] using
           (Multiset.pairwise_sort (s := s) (r := (· ≤ ·)))
@@ -121,7 +121,7 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
             calc
               t = ↑(t.sort (· ≤ ·)) :=
                 (Multiset.sort_eq (s := t) (r := (· ≤ ·))).symm
-              _ = b ::ₘ (bs : Multiset α) := by rw [ht]
+              _ = b ::ₘ (bs : Multiset α) := by simp [ht]
           have htord : (b :: bs).Pairwise (· ≤ ·) := by
             simpa [ht] using
               (Multiset.pairwise_sort (s := t) (r := (· ≤ ·)))
@@ -134,7 +134,14 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
             rw [hsrepr]
             exact Multiset.lt_cons_self _ _
           have ih_tail := ih (as : Multiset α) hsmall (bs : Multiset α) htail
-          rw [hsrepr, htrepr, Multiset.sort_cons ha, Multiset.sort_cons hb]
-          exact List.Forall₂.cons hab ih_tail
+          have hasort : (as : Multiset α).sort (· ≤ ·) = as := by
+            have h := hs
+            rw [hsrepr, Multiset.sort_cons ha] at h
+            exact List.cons.inj h |>.2
+          have hbsort : (bs : Multiset α).sort (· ≤ ·) = bs := by
+            have h := ht
+            rw [htrepr, Multiset.sort_cons hb] at h
+            exact List.cons.inj h |>.2
+          exact List.Forall₂.cons hab (by simpa [hasort, hbsort] using ih_tail)
 
 end Multiset
