@@ -67,21 +67,17 @@ theorem signVariations_le_of_tendsto
     intro z hz
     simp [hd_ne z hz]
   have hsign :
-      ∀ k : Fin d.length,
-        ∀ᶠ a in l, d.get k = SignType.sign (f a (eN k)) := by
+      ∀ᶠ a in l, ∀ k : Fin d.length,
+        d.get k = SignType.sign (f a (eN k)) := by
+    filter_upwards [eventually_sign_eq_of_tendsto hf] with a ha
     intro k
-    have hk := tendsto_pi_nhds.mp hf (eN k)
     have hxne : x (eN k) ≠ 0 := by
       rw [← sign_ne_zero, ← he' k]
       exact hd_ne _ (List.get_mem d k)
-    rcases lt_or_gt_of_ne hxne with hxneg | hxpos
-    · filter_upwards [hk.eventually_lt_const hxneg] with a ha
-      rw [he' k, sign_neg hxneg, sign_neg ha]
-    · filter_upwards [hk.eventually_const_lt hxpos] with a ha
-      rw [he' k, sign_pos hxpos, sign_pos ha]
+    rw [he' k, ha (eN k) hxne]
   have hmono :
       ∀ᶠ a in l, signVariations x ≤ signVariations (f a) := by
-    filter_upwards [Filter.eventually_all.mpr hsign] with a ha
+    filter_upwards [hsign] with a ha
     let rawA : List SignType := List.ofFn (SignType.sign ∘ f a)
     have hrawAlen : rawA.length = n := by
       simp [rawA]
