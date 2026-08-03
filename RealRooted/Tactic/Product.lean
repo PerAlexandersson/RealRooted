@@ -230,6 +230,30 @@ theorem isRealRooted_of_product_factor_right_sequence
   isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
 
+/-- Sequence shell for lag-two product recurrences with supplied factor certificates. -/
+theorem isRealRooted_of_lag_product_factor_sequence
+    {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, P (n + 2) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_pair_and_step_two hbase_zero hbase_one fun n hP => by
+    have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
+      isRealRooted_mul_of_isRealRooted (hfactor n) hP
+    simpa [hstep n] using hnext
+
+/-- Right-factor variant of `isRealRooted_of_lag_product_factor_sequence`. -/
+theorem isRealRooted_of_lag_product_factor_right_sequence
+    {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, P (n + 2) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_lag_product_factor_sequence hbase_zero hbase_one hfactor
+    (fun n => by rw [hstep n, mul_comm])
+
 /-- Right-factor variant of
 `isRealRooted_of_product_factor_sequence_from`. -/
 theorem isRealRooted_of_product_factor_right_sequence_from
@@ -386,6 +410,33 @@ theorem isRealRooted_of_product_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * F n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_sequence hquot hfactor
+    (fun n => by rw [hrow n, mul_comm])
+
+/-- A real-rooted base row followed by an independently factorized real-rooted tail. -/
+theorem isRealRooted_of_product_tail_sequence
+    {P Q F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, P (n + 1) = F n * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  cases n with
+  | zero => exact hbase
+  | succ n =>
+      have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
+        isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
+      simpa [hrow n] using hnext
+
+/-- Right-factor variant of `isRealRooted_of_product_tail_sequence`. -/
+theorem isRealRooted_of_product_tail_right_sequence
+    {P Q F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, P (n + 1) = Q n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_tail_sequence hbase hquot hfactor
     (fun n => by rw [hrow n, mul_comm])
 
 /-- Tail-start lift from a quotient sequence through row-wise real-rooted
@@ -2575,6 +2626,19 @@ syntax (name := rr_product_factor_sequence)
   "rr_product_factor_sequence" " using " term ", " term ", " term :
   tactic
 
+syntax (name := rr_lag_product_factor_sequence_named)
+  "rr_lag_product_factor_sequence" " using "
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_lag_product_factor_sequence)
+  "rr_lag_product_factor_sequence" " using "
+    term ", " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_affine_product_sequence_named)
   "rr_affine_product_sequence" " using " "formula" ":=" term :
   tactic
@@ -2643,6 +2707,18 @@ syntax (name := rr_product_lift_sequence_cutoff_named)
 
 syntax (name := rr_product_lift_sequence)
   "rr_product_lift_sequence" " using " term ", " term ", " term :
+  tactic
+
+syntax (name := rr_product_tail_sequence_named)
+  "rr_product_tail_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_product_tail_sequence)
+  "rr_product_tail_sequence" " using " term ", " term ", " term ", " term :
   tactic
 
 syntax (name := rr_product_lift_sequence_auto_named)
@@ -3958,6 +4034,27 @@ macro_rules
           base := $hbase,
           factor_realrooted := $hfactor,
           recurrence := $hstep)
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        factor_realrooted := $hfactor:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_lag_product_factor_sequence
+            $hbase_zero $hbase_one $hfactor $hstep),
+          (RealRooted.isRealRooted_of_lag_product_factor_right_sequence
+            $hbase_zero $hbase_one $hfactor $hstep))
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        $hbase_zero:term, $hbase_one:term, $hfactor:term, $hstep:term) =>
+      `(tactic|
+        rr_lag_product_factor_sequence using
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          factor_realrooted := $hfactor,
+          recurrence := $hstep)
   | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
       `(tactic|
         exact RealRooted.finiteLinearProductSequence_realRooted $hroot)
@@ -4072,6 +4169,27 @@ macro_rules
         $hquot:term, $hfactor:term, $hrow:term) =>
       `(tactic|
         rr_product_lift_sequence using
+          quotient_realrooted := $hquot,
+          factor_realrooted := $hfactor,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_tail_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        factor_realrooted := $hfactor:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_tail_sequence
+            $hbase $hquot $hfactor $hrow),
+          (RealRooted.isRealRooted_of_product_tail_right_sequence
+            $hbase $hquot $hfactor $hrow))
+  | `(tactic|
+      rr_product_tail_sequence using
+        $hbase:term, $hquot:term, $hfactor:term, $hrow:term) =>
+      `(tactic|
+        rr_product_tail_sequence using
+          base := $hbase,
           quotient_realrooted := $hquot,
           factor_realrooted := $hfactor,
           factorization := $hrow)
