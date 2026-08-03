@@ -93,7 +93,10 @@ theorem tendsto_gaussianMatrix_mul_atTop {n m : ℕ}
     Tendsto (fun a => gaussianMatrix n a * A) atTop (𝓝 A) := by
   have hmul : Continuous (fun M : Matrix (Fin n) (Fin n) ℝ => M * A) :=
     continuous_id.matrix_mul continuous_const
-  simpa only [Matrix.one_mul] using
-    hmul.continuousAt.tendsto.comp (tendsto_gaussianMatrix_atTop n)
+  convert hmul.continuousAt.tendsto.comp
+    (tendsto_gaussianMatrix_atTop n) using 1
+  · funext a
+    rfl
+  · simp
 
 end Matrix

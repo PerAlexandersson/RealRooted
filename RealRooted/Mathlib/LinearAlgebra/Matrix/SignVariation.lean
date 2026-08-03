@@ -984,13 +984,6 @@ theorem nodalPerturbationCoreSigns_eq_of_no_interior_zero
     (hinterior : ∀ i : Fin n, x i.succ.castSucc ≠ 0) :
     (List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0) =
       Fin.nodalPerturbationCoreSigns x y := by
-  have sign_ne_zero_of_ne_zero :
-      ∀ a : ℝ, a ≠ 0 → SignType.sign a ≠ 0 := by
-    intro a ha
-    rcases lt_trichotomy a 0 with hneg | hzero | hpos
-    · simp [SignType.sign, hneg, not_lt_of_ge hneg.le]
-    · exact (ha hzero).elim
-    · simp [SignType.sign, hpos]
   let sourceMiddle : List SignType :=
     List.ofFn (fun i : Fin n =>
       SignType.sign (x i.succ.castSucc))
@@ -999,12 +992,11 @@ theorem nodalPerturbationCoreSigns_eq_of_no_interior_zero
       SignType.sign (y i.succ.castSucc))
   have hsourceMiddle :
       sourceMiddle.filter (· ≠ 0) = sourceMiddle := by
-    apply List.filter_eq_self.mpr
+    apply List.filter_eq_self.2
     intro s hs
     simp only [sourceMiddle, List.mem_ofFn] at hs
     obtain ⟨i, rfl⟩ := hs
-    exact decide_eq_true
-      (sign_ne_zero_of_ne_zero _ (hinterior i))
+    exact decide_eq_true (sign_ne_zero.mpr (hinterior i))
   have hmiddle : sourceMiddle = targetMiddle := by
     simp only [sourceMiddle, targetMiddle]
     congr 1
@@ -1016,7 +1008,7 @@ theorem nodalPerturbationCoreSigns_eq_of_no_interior_zero
     by_cases hi : x i = 0
     · simp [hi, SignType.sign]
     · rw [if_neg hi, List.filter_singleton]
-      have hs := sign_ne_zero_of_ne_zero _ hi
+      have hs := sign_ne_zero.mpr hi
       have hp : decide (SignType.sign (x i) ≠ 0) = true :=
         decide_eq_true hs
       rw [hp]
@@ -1056,8 +1048,7 @@ theorem nodalInsertions_coreSigns
         ∃ k : Fin (n + 1), x k.succ.castSucc = 0
       · obtain ⟨k, hk⟩ := hzero
         exact Fin.nodalInsertions_coreSigns_remove
-          (fun hsign' hnodal' => ih hsign' hnodal')
-          hsign hnodal k hk
+          ih hsign hnodal k hk
       · have hinterior :
             ∀ i : Fin (n + 1), x i.succ.castSucc ≠ 0 := by
           intro i hi

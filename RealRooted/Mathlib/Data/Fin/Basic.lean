@@ -54,7 +54,7 @@ neighbor. -/
 theorem succAbove_center_eq_right (i : Fin n) :
     (i.succ.castSucc.castSucc).succAbove i.succ.castSucc =
       i.succ.succ.castSucc := by
-  rw [Fin.succAbove_of_le_castSucc _ _ le_rfl]
+  rw [Fin.succAbove_of_le_castSucc _ _ (by rfl)]
   congr
 
 /-- Omitting the old right neighbor sends the corresponding new center to its old value. -/
@@ -78,7 +78,10 @@ theorem succAbove_succ_castSucc
     rw [Fin.succAbove_of_castSucc_lt _ _ h',
       Fin.succAbove_of_castSucc_lt _ _ h]
     exact Fin.ext rfl
-  · have hki : k ≤ i.castSucc := le_of_not_gt h
+  · have hki : k ≤ i.castSucc := by
+      change (k : ℕ) ≤ (i : ℕ)
+      change ¬(i : ℕ) < (k : ℕ) at h
+      exact Nat.le_of_not_gt h
     have h' : k.succ.castSucc ≤ i.succ.castSucc.castSucc := by
       change (k : ℕ) + 1 ≤ (i : ℕ) + 1
       exact Nat.succ_le_succ hki
