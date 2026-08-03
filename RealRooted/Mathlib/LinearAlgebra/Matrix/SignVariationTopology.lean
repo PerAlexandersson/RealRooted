@@ -99,4 +99,20 @@ theorem signVariations_le_of_tendsto
   obtain ⟨a, hxa, har⟩ := (hmono.and hr).exists
   exact hxa.trans har
 
+/-- A convergent perturbation of a vector with nodal interior zeros eventually
+has at most two additional sign variations. -/
+theorem eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
+    {α : Type*} {l : Filter α} [l.NeBot]
+    {n : ℕ} {f : α → Fin (n + 2) → ℝ}
+    {x : Fin (n + 2) → ℝ}
+    (hf : Tendsto f l (𝓝 x))
+    (hnodal : ∀ i : Fin n, x i.succ.castSucc = 0 →
+      x i.castSucc.castSucc * x i.succ.succ < 0) :
+    ∀ᶠ a in l,
+      Fin.signVariations (f a) ≤ Fin.signVariations x + 2 := by
+  filter_upwards [Fin.eventually_sign_eq_of_tendsto hf] with a ha
+  exact
+    Fin.signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal
+      ha hnodal
+
 end Fin
