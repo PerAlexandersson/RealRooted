@@ -461,6 +461,15 @@ theorem signVariations_endpoints_le_add_two_of_nodalInsertions
 
 end List
 
+/-- A negative product of real numbers has nonzero, opposite signs. -/
+theorem SignType.sign_ne_zero_and_ne_of_mul_neg
+    {a b : ℝ} (h : a * b < 0) :
+    SignType.sign a ≠ 0 ∧ SignType.sign b ≠ 0 ∧
+      SignType.sign a ≠ SignType.sign b := by
+  rcases (mul_neg_iff.mp h) with ⟨ha, hb⟩ | ⟨ha, hb⟩
+  · simp [SignType.sign, ha, hb, not_lt_of_ge hb.le]
+  · simp [SignType.sign, ha, hb, not_lt_of_ge ha.le]
+
 namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
