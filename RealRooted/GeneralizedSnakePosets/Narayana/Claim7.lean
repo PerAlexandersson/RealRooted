@@ -165,11 +165,13 @@ private theorem prec_narayanaPolynomial_two (n : ℕ) :
       simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
         prec_narayanaPolynomial_succ 2 n
 
-/-- Consecutive auxiliary polynomials are in proper position once the rook
-model identifies `G n` with `n` times the parameter-two generalized Narayana
-polynomial.  This identity is accepted as combinatorial input: formalizing its
-board bijection is outside scope, while the proper-position deduction is
-proved here from the generalized Narayana recurrence. -/
+/-- Consecutive auxiliary polynomials are in proper position under an additional
+identification with parameter-two generalized Narayana polynomials.
+
+This identity is not an input used in Braun--Jal's proof of Theorem 4.1; their
+proof instead uses the `[P, G; Q, H]` matrix and Claim `(6)`.  This theorem is
+therefore an optional stronger route and `hG_model` requires an independent
+justification. -/
 theorem auxiliaryG_prec_succ_of_narayanaTwoModel
     (hG_model : ∀ n : ℕ, 1 ≤ n →
       FiniteSkewBoard.auxiliaryG n =
@@ -221,13 +223,13 @@ theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
       (lemma33AuxiliaryGInterlaces_modified hrec2 hH_nonneg)
       lemma34ModifiedNarayanaInterlacing_modified hrec
 
-/--
-Braun--Jal Theorem 4.1 from combinatorial model inputs. The hypotheses below are an intentional
-trust boundary: in particular, `hG_model` records only the rook-model identification from the
-paper, whose full rook and order-polytope models are outside the scope of this project. They do
-not assume interlacing or real-rootedness; those conclusions are derived here from the formalized
-recurrence and generalized Narayana theory.
--/
+/-- An alternative Theorem 4.1 endpoint using the additional generalized
+Narayana identity `hG_model`.
+
+Braun--Jal do not use or state this identity in their proof.  The source-faithful
+route goes through the `[P, G; Q, H]` matrix and Claim `(6)`, so this result must
+not be presented as depending only on the paper's combinatorial boundary facts.
+It remains useful when `hG_model` is independently established. -/
 theorem theorem41NonNestingRook_modified_of_modelInputs
     {M : SnakeWord → ℝ[X]}
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
