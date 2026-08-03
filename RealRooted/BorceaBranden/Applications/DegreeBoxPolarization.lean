@@ -279,10 +279,8 @@ lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
     diagonalDegreeBoxIndex,
     Nat.min_eq_left hm_degree]
 
-/-- Termwise form of the source-polarized algebraic symbol after identifying
-all polarized source variables. -/
 /-- Summation over finite subsets is invariant under taking complements. -/
-theorem sum_finset_compl
+private theorem sum_finset_compl
     {M α : Type*} [AddCommMonoid M] [Fintype α] [DecidableEq α]
     (f : Finset α → M) :
     ∑ s : Finset α, f sᶜ = ∑ s, f s := by
@@ -294,7 +292,7 @@ theorem sum_finset_compl
   exact e.sum_comp f
 
 /-- Complement reindexing exchanges a support cardinality with its codimension. -/
-theorem sum_finset_card_compl
+private theorem sum_finset_card_compl
     {M : Type*} [AddCommMonoid M] (n : ℕ)
     (f : ℕ → Finset (Fin n) → M) :
     ∑ s : Finset (Fin n), f s.card sᶜ =
@@ -311,7 +309,7 @@ theorem sum_finset_card_compl
 /-- A degree-one exponent's complementary monomial is indexed by the complement
 of the corresponding finite support. -/
 @[simp]
-theorem rightComplementMonomial_one_degreeOneExponentEquivFinset_symm
+private theorem rightComplementMonomial_one_degreeOneExponentEquivFinset_symm
     {τ R : Type*} [CommSemiring R] (n : ℕ) (s : Finset (Fin n)) :
     rightComplementMonomial (R := R) (τ := τ) (fun _ : Fin n => 1)
         ((degreeOneExponentEquivFinset (Fin n)).symm s).1 =
@@ -325,7 +323,7 @@ theorem rightComplementMonomial_one_degreeOneExponentEquivFinset_symm
   rw [hsupp]
 
 /-- Grouping squarefree monomials by support cardinality gives `esymm`. -/
-theorem sum_finset_card_prod_eq_sum_esymm
+private theorem sum_finset_card_prod_eq_sum_esymm
     {τ : Type*} (n : ℕ) (q : ℕ → MvPolynomial τ ℂ) :
     (∑ s : Finset (Fin n),
       rename (Sum.inl : τ → τ ⊕ Fin n) (q (n - s.card)) *
@@ -344,7 +342,7 @@ theorem sum_finset_card_prod_eq_sum_esymm
 
 /-- Complementing zero-one exponent supports and grouping by cardinality gives
 the elementary-symmetric expansion used in Borcea--Branden, Lemma 2.5. -/
-theorem sum_degreeOneExponent_rightComplementMonomial_eq_sum_esymm
+private theorem sum_degreeOneExponent_rightComplementMonomial_eq_sum_esymm
     {τ : Type*} (n : ℕ) (q : ℕ → MvPolynomial τ ℂ) :
     (∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
       rename (Sum.inl : τ → τ ⊕ Fin n) (q m.1.degree) *
@@ -424,6 +422,8 @@ theorem algebraicSymbol_sourcePolarizedOperator
       (fun k => T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
         (finOneDegreeIndex n k)))
 
+/-- Termwise form of the source-polarized algebraic symbol after identifying
+all polarized source variables. -/
 theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
     {τ : Type*} (n : ℕ)
     (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
