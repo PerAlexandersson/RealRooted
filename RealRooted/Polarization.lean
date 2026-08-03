@@ -179,6 +179,25 @@ theorem natDegree_diagonalProjection_le {n : ℕ}
     _ ≤ ∑ _ : Fin n, 1 := Finset.sum_le_sum fun i _ => hdeg i
     _ = n := by simp
 
+/-- Diagonal projection as a linear map from the multiaffine source box to the
+original one-variable degree box. This is the source-side map `Π↓ₙ`. -/
+noncomputable def diagonalProjectionDegreeBox (n : ℕ) :
+    MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) →ₗ[ℂ]
+      MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) :=
+  LinearMap.codRestrict (MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n))
+    (((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm.toLinearMap.comp
+      (diagonalProjection n)).domRestrict
+        (MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1)))
+    (fun q => by
+      apply (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+      intro i
+      change MvPolynomial.degreeOf i
+        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+          (diagonalProjection n q)) ≤ n
+      rw [Unique.eq_default i,
+        MvPolynomial.degreeOf_uniqueAlgEquiv_symm]
+      exact natDegree_diagonalProjection_le q)
+
 /-- Equation (2.2) on the source side: diagonal projection is a left inverse
 to polarization on polynomials of degree at most `n`. -/
 theorem diagonalProjection_polarizationDegreeBox {n : ℕ} {p : ℂ[X]}
@@ -188,6 +207,18 @@ theorem diagonalProjection_polarizationDegreeBox {n : ℕ} {p : ℂ[X]}
     (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) (polarization n p)) = p
   rw [rename_polarization_const hp]
   exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply p
+
+/-- Degree-box form of the source reconstruction identity
+`Π↓ₙ (Π↑ₙ p) = p`. -/
+theorem coe_diagonalProjectionDegreeBox_polarizationDegreeBox
+    {n : ℕ} {p : ℂ[X]} (hp : p.natDegree ≤ n) :
+    (diagonalProjectionDegreeBox n (polarizationDegreeBox n p) :
+      MvPolynomial (Fin 1) ℂ) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p := by
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+    (diagonalProjection n (polarizationDegreeBox n p)) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p
+  rw [diagonalProjection_polarizationDegreeBox hp]
 
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
