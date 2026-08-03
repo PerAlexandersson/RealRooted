@@ -521,8 +521,7 @@ theorem natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
       (MvPolynomial.optionEquivLeft ℂ τ Q).natDegree =
         P.degreeOf (Sum.inr default) := by
     rw [MvPolynomial.natDegree_optionEquivLeft]
-    dsimp [Q]
-    simpa [e] using
+    simpa [Q, e] using
       (MvPolynomial.degreeOf_rename_of_injective
         (p := P) e.injective (Sum.inr default))
   have hpoly :
@@ -555,15 +554,8 @@ theorem natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
           (Polynomial.map (MvPolynomial.eval x)
             (MvPolynomial.optionEquivLeft ℂ τ Q)) :=
         MvPolynomial.optionEquivLeft_elim_eval ℂ τ x y Q
-  calc
-    (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
-        (specializeLeft x P)).natDegree =
-        (Polynomial.map (MvPolynomial.eval x)
-          (MvPolynomial.optionEquivLeft ℂ τ Q)).natDegree :=
-      congrArg (fun p : ℂ[X] => p.natDegree) hpoly
-    _ ≤ (MvPolynomial.optionEquivLeft ℂ τ Q).natDegree :=
-      Polynomial.natDegree_map_le
-    _ = P.degreeOf (Sum.inr default) := hQdeg
+  rw [hpoly, ← hQdeg]
+  exact Polynomial.natDegree_map_le
 
 /-- Specializing the left block inside its regions preserves stability in the
 right coordinate regions. -/
