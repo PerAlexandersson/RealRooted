@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Challenges.BorceaBranden
+import RealRooted.BorceaBranden.FiniteSymbolBasis
 
 /-!
 # Univariate compatibility for finite algebraic symbols
@@ -33,11 +34,6 @@ noncomputable def univariateDegreeBoxOperator (d : ℕ) (T : ℝ[X] →ₗ[ℝ] 
   map_add' p q := by simp
   map_smul' r p := by simp
 
-/-- Bounded exponent vectors in one variable are indexed by `Fin (d + 1)`. -/
-noncomputable def degreeOfLEFinOneEquiv (d : ℕ) :
-    {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d} ≃ Fin (d + 1) :=
-  (degreeOfLEIndexEquiv (fun _ : Fin 1 => d)).trans (Equiv.piUnique _)
-
 lemma rename_uniqueAlgEquiv_symm_eq_polynomialInFirstMv (p : ℝ[X]) :
     rename finOneSumToFinTwo
         (rename (Sum.inl : Fin 1 → Fin 1 ⊕ Fin 1)
@@ -60,10 +56,6 @@ lemma rename_rightComplementMonomial_finOne (d : ℕ) (m : Fin 1 →₀ ℕ) :
         (rightComplementMonomial (R := ℝ) (τ := Fin 1) (fun _ : Fin 1 => d) m) =
       X (1 : Fin 2) ^ (d - m 0) := by
   simp [rightComplementMonomial, finOneSumToFinTwo]
-
-lemma degreeOfLEFinOneEquiv_val (d : ℕ) (m : {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d}) :
-    (degreeOfLEFinOneEquiv d m : ℕ) = m.1 0 := by
-  rfl
 
 lemma univariateDegreeBoxOperator_basis (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X])
     (m : {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d}) :

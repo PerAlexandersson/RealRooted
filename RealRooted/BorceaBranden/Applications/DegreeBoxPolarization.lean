@@ -108,6 +108,16 @@ def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
   | Sum.inl i => Sum.inl i
   | Sum.inr _ => Sum.inr default
 
+/-- Diagonalizing source variables leaves the output-variable block
+unchanged. -/
+@[simp] theorem rename_sourceDiagonalVariableMap_rename_inl
+    {τ : Type*} {n : ℕ} (p : MvPolynomial τ ℂ) :
+    rename (sourceDiagonalVariableMap (τ := τ) (n := n))
+        (rename (Sum.inl : τ → τ ⊕ Fin n) p) =
+      rename (Sum.inl : τ → τ ⊕ Fin 1) p := by
+  rw [rename_rename]
+  rfl
+
 /-- Diagonalizing a complementary zero-one source monomial records only its
 complementary total degree. -/
 theorem rename_rightComplementMonomial_one

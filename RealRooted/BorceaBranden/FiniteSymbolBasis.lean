@@ -1,4 +1,5 @@
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # Degree-one exponent coordinates for finite symbols
@@ -86,6 +87,20 @@ end RealRooted.BorceaBranden
 
 namespace Finsupp
 
+/-- A one-variable exponent vector is the singleton at its total degree. -/
+@[simp] theorem single_default_degree_fin_one (m : Fin 1 →₀ ℕ) :
+    single default m.degree = m := by
+  have hdegree : m.degree = ∑ i, m i := by
+    rw [degree_apply]
+    apply Finset.sum_subset (Finset.subset_univ m.support)
+    intro i _ hi
+    simpa [mem_support_iff] using hi
+  apply Finsupp.ext
+  intro i
+  fin_cases i
+  rw [hdegree]
+  simp
+
 /-- The complement of a zero-one exponent has total degree equal to the
 cardinality of the variable set minus the original total degree. -/
 theorem sum_one_sub_eq_card_sub_degree
@@ -102,3 +117,18 @@ theorem sum_one_sub_eq_card_sub_degree
   exact (sum_fintype m (fun _ e => e) (fun _ => rfl)).symm
 
 end Finsupp
+
+namespace RealRooted.BorceaBranden
+
+/-- Bounded exponent vectors in one variable are indexed by `Fin (d + 1)`. -/
+noncomputable def degreeOfLEFinOneEquiv (d : ℕ) :
+    {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d} ≃ Fin (d + 1) :=
+  (MvPolynomial.degreeOfLEIndexEquiv (fun _ : Fin 1 => d)).trans
+    (Equiv.piUnique _)
+
+lemma degreeOfLEFinOneEquiv_val (d : ℕ)
+    (m : {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d}) :
+    (degreeOfLEFinOneEquiv d m : ℕ) = m.1 0 := by
+  rfl
+
+end RealRooted.BorceaBranden
