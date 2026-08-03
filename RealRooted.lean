@@ -186,6 +186,8 @@ import RealRooted.LowerTriangularMatrix
 import RealRooted.MaWang
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
@@ -207,6 +209,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.MatrixInterlacing
 import RealRooted.MultiaffineReciprocalRight
 import RealRooted.Multiaffine
@@ -220,6 +223,7 @@ import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.PFPolynomial
+import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PosCombo
