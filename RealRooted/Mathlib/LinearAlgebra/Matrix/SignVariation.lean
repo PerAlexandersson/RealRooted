@@ -1062,6 +1062,91 @@ def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
     (x : Fin n → R) : ℕ :=
   (List.ofFn x).signVariations
 
+/-- A sign-preserving perturbation increases variations by at most two when
+all interior zeros are nodal.
+
+This is Karlin's finite endpoint-loss estimate: interior nodal insertions cost
+nothing, while the two endpoints cost at most one variation each.
+-/
+theorem signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal
+    {n : ℕ} {x y : Fin (n + 2) → ℝ}
+    (hsign : ∀ i, x i ≠ 0 →
+      SignType.sign (y i) = SignType.sign (x i))
+    (hnodal : ∀ i : Fin n, x i.succ.castSucc = 0 →
+      x i.castSucc.castSucc * x i.succ.succ < 0) :
+    Fin.signVariations y ≤ Fin.signVariations x + 2 := by
+  let middle : List SignType :=
+    List.ofFn (fun i : Fin n =>
+      SignType.sign (y i.succ.castSucc))
+  let core := Fin.nodalPerturbationCoreSigns x y
+  have hchain :
+      Relation.ReflTransGen List.NodalInsertion
+        ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)) core := by
+    exact Fin.nodalInsertions_coreSigns hsign hnodal
+  have hcore : core.signVariations = Fin.signVariations x := by
+    rw [List.signVariations_eq_of_nodalInsertions hchain]
+    exact Fin.filtered_signList_signVariations x
+  have hsplit :
+      List.ofFn (SignType.sign ∘ y) =
+        SignType.sign (y 0) ::
+          (middle ++ [SignType.sign (y (Fin.last (n + 1)))]) := by
+    simpa only [middle, Function.comp_apply] using
+      List.ofFn_two_endpoints (SignType.sign ∘ y)
+  rw [Fin.signVariations_eq_signList, hsplit]
+  by_cases hzero : x 0 = 0
+  · by_cases hlast : x (Fin.last (n + 1)) = 0
+    · have hfull :
+          SignType.sign (y 0) ::
+              (middle ++ [SignType.sign (y (Fin.last (n + 1)))]) =
+            (SignType.sign (y 0) :: core) ++
+              [SignType.sign (y (Fin.last (n + 1)))] := by
+        simp [core, middle, Fin.nodalPerturbationCoreSigns,
+          hzero, hlast]
+      rw [hfull]
+      calc
+        ((SignType.sign (y 0) :: core) ++
+            [SignType.sign (y (Fin.last (n + 1)))]).signVariations ≤
+            (SignType.sign (y 0) :: core).signVariations + 1 :=
+          List.signVariations_append_singleton_signType_le_succ _ _
+        _ ≤ (core.signVariations + 1) + 1 :=
+          Nat.add_le_add_right
+            (List.signVariations_cons_le_succ (SignType.sign (y 0)) core) 1
+        _ = Fin.signVariations x + 2 := by rw [hcore]
+    · have hfull :
+          SignType.sign (y 0) ::
+              (middle ++ [SignType.sign (y (Fin.last (n + 1)))]) =
+            SignType.sign (y 0) :: core := by
+        simp [core, middle, Fin.nodalPerturbationCoreSigns,
+          hzero, hlast]
+      rw [hfull]
+      calc
+        (SignType.sign (y 0) :: core).signVariations ≤
+            core.signVariations + 1 :=
+          List.signVariations_cons_le_succ _ _
+        _ ≤ Fin.signVariations x + 2 := by rw [hcore]; lia
+  · by_cases hlast : x (Fin.last (n + 1)) = 0
+    · have hfull :
+          SignType.sign (y 0) ::
+              (middle ++ [SignType.sign (y (Fin.last (n + 1)))]) =
+            core ++ [SignType.sign (y (Fin.last (n + 1)))] := by
+        simp [core, middle, Fin.nodalPerturbationCoreSigns,
+          hzero, hlast]
+      rw [hfull]
+      calc
+        (core ++
+            [SignType.sign (y (Fin.last (n + 1)))]).signVariations ≤
+            core.signVariations + 1 :=
+          List.signVariations_append_singleton_signType_le_succ _ _
+        _ ≤ Fin.signVariations x + 2 := by rw [hcore]; lia
+    · have hfull :
+          SignType.sign (y 0) ::
+              (middle ++ [SignType.sign (y (Fin.last (n + 1)))]) =
+            core := by
+        simp [core, middle, Fin.nodalPerturbationCoreSigns,
+          hzero, hlast]
+      rw [hfull, hcore]
+      lia
+
 /-- A finite vector has at most one fewer sign variation than its length. -/
 lemma signVariations_le_card_sub_one {R : Type*} [Zero R] [LinearOrder R]
     {n : ℕ} (x : Fin n → R) : signVariations x ≤ n - 1 := by
