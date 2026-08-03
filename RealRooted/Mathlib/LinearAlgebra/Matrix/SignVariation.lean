@@ -371,8 +371,7 @@ theorem List.signVariations_cons_le_succ (a : SignType) (l : List SignType) :
     ((l.map SignType.sign).filter (· ≠ 0))
   by_cases ha : SignType.sign a = 0
   · simp [List.signVariations, ha]
-  · simp [List.signVariations, ha]
-    lia
+  · simpa [List.signVariations, ha] using h
 
 /-- Appending one sign increases the number of sign variations by at most one. -/
 theorem List.signVariations_append_singleton_signType_le_succ
@@ -382,8 +381,7 @@ theorem List.signVariations_append_singleton_signType_le_succ
     ((l.map SignType.sign).filter (· ≠ 0)) (SignType.sign a)
   by_cases ha : SignType.sign a = 0
   · simp [List.signVariations, ha]
-  · simp [List.signVariations]
-    lia
+  · simpa [List.signVariations, ha] using h
 
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
 
