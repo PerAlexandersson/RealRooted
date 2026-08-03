@@ -439,6 +439,16 @@ theorem isRealRooted_of_product_tail_right_sequence
   isRealRooted_of_product_tail_sequence hbase hquot hfactor
     (fun n => by rw [hrow n, mul_comm])
 
+/-- Transfer real-rootedness from a rowwise equal model sequence. -/
+theorem isRealRooted_of_model_sequence
+    {P Q : Nat → ℝ[X]}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hidentify : ∀ n : Nat, P n = Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  rw [hidentify n]
+  exact hmodel n
+
 /-- Lift a real-rooted model sequence through rowwise nonzero scalars and
 monomial factors. -/
 theorem isRealRooted_of_scalar_monomial_lift_sequence
@@ -2783,6 +2793,12 @@ syntax (name := rr_product_tail_sequence)
   "rr_product_tail_sequence" " using " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_model_sequence_named)
+  "rr_model_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "identification" ":=" term :
+  tactic
+
 syntax (name := rr_scalar_monomial_lift_sequence_named)
   "rr_scalar_monomial_lift_sequence" " using "
     "model_realrooted" ":=" term ","
@@ -4289,6 +4305,13 @@ macro_rules
           quotient_realrooted := $hquot,
           factor_realrooted := $hfactor,
           factorization := $hrow)
+  | `(tactic|
+      rr_model_sequence using
+        model_realrooted := $hmodel:term,
+        identification := $hidentify:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_model_sequence $hmodel $hidentify))
   | `(tactic|
       rr_scalar_monomial_lift_sequence using
         model_realrooted := $hmodel:term,
