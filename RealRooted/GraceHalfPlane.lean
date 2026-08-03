@@ -298,7 +298,7 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
 
 private theorem grace_aux_lowerHalf {b : ℝ} :
     ∀ (n : Nat) (f g : ℂ[X]),
-      (binomialLift n f).natDegree = n → (binomialLift n g).natDegree = n →
+      (binomialLift n f).natDegree ≤ n → (binomialLift n g).natDegree = n →
       AreApolar n f g → (binomialLift n f).RootsIn (lowerHalf b) →
       (binomialLift n g).HasRootIn (lowerHalf b) := by
   intro n
@@ -324,18 +324,17 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
     by_cases hζ' : ζ ∈ lowerHalf b
     · exact ⟨ζ, hζ, hζ'⟩
     · set f' := polarShift ζ f
-      have hf' : (binomialLift (n - 1) f').natDegree = n - 1 := by
-        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 := by
-          apply polarDeriv_natDegree_lowerHalf
+      have hf' : (binomialLift (n - 1) f').natDegree ≤ n - 1 := by
+        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree ≤ n - 1 := by
+          apply polarDeriv_natDegree_le
           · grind
-          · simp [*]
-          · exact hroots
-          · simp [*]
+          · exact hf
         rw [polarDeriv_binomialLift (Nat.pos_of_ne_zero hn) ζ f] at hf'
         rwa [Polynomial.natDegree_C_mul] at hf'
         simp_all
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (lowerHalf b) := by
-        have := polarDeriv_rootsIn_lowerHalf (Nat.pos_of_ne_zero hn) hf hroots hζ'
+        have := polarDeriv_rootsIn_lowerHalf_of_natDegree_le
+          (Nat.pos_of_ne_zero hn) hf hroots hζ'
         have := polarDeriv_binomialLift (Nat.pos_of_ne_zero hn) ζ f
         simp_all [RootsIn]
         grind
@@ -363,7 +362,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
       exact ⟨w, by replace hg' := congr_arg (Polynomial.eval w) hg'; simp_all⟩
 
 theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
-    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
+    (hf : (binomialLift n f).natDegree ≤ n) (hg : (binomialLift n g).natDegree = n)
     (hap : AreApolar n f g)
     (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
     (binomialLift n g).HasRootIn (lowerHalf b) :=
@@ -440,7 +439,7 @@ theorem grace_apolarity_upperHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
     simp only [mem_lowerHalf]
     linarith
   obtain ⟨w, hwroot, hwmem⟩ :=
-    grace_apolarity_lowerHalf hfhat hghat haphat hroothat
+    grace_apolarity_lowerHalf hfhat.le hghat haphat hroothat
   refine ⟨-w, ?_, ?_⟩
   · rw [negComp_binomialLift] at hwroot
     simp only [Polynomial.IsRoot, negComp, Polynomial.eval_comp, Polynomial.eval_neg,

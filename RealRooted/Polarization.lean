@@ -410,7 +410,7 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
     intro w hw
     exact not_lt.mp (fun hwpos => hstable w hwpos hw)
   obtain ⟨w, hwroot, hwlower⟩ :=
-    grace_apolarity_lowerHalf hdeg hgdeg hap hroots
+    grace_apolarity_lowerHalf hdeg.le hgdeg hap hroots
   obtain ⟨i, hwi⟩ :=
     exists_eq_of_isRoot_polarizationRootPolynomial (hg ▸ hwroot)
   rw [hwi] at hwlower
