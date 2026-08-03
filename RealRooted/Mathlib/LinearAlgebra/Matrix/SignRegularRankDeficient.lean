@@ -59,6 +59,32 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
     rw [hp j]
   rw [hmatrix, Matrix.det_permute', hzero, mul_zero]
 
+/-- Deleting a column preserves the rank when a maximal nonzero minor avoids
+that column. This is the common rank step in Karlin's two deficient-rank
+branches; the cofactor and rank-basis kernel constructions remain separate. -/
+theorem Matrix.rank_deleteColumn_eq_of_minor_ne_zero
+    {R : Type*} [Field R] {n k r : ℕ}
+    (A : Matrix (Fin n) (Fin (k + 1)) R)
+    (hrank : A.rank = r) (j0 : Fin (k + 1))
+    (rows : Fin r → Fin n) (cols : Fin r → Fin k)
+    (hminor :
+      (A.submatrix rows (j0.succAbove ∘ cols)).det ≠ 0) :
+    (A.submatrix id j0.succAbove).rank = r := by
+  let A' : Matrix (Fin n) (Fin k) R := A.submatrix id j0.succAbove
+  have hdet : (A'.submatrix rows cols).det ≠ 0 := by
+    simpa only [A', Matrix.submatrix_submatrix, Function.id_comp] using hminor
+  have hunit : IsUnit (A'.submatrix rows cols) := by
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    exact hdet
+  apply le_antisymm
+  · calc
+      A'.rank ≤ A.rank := Matrix.rank_submatrix_le A id j0.succAbove
+      _ = r := hrank
+  · calc
+      r = (A'.submatrix rows cols).rank := by
+        simpa using (Matrix.rank_of_isUnit _ hunit).symm
+      _ ≤ A'.rank := Matrix.rank_submatrix_le A' rows cols
+
 /-- Perturbing coefficients along a vector annihilated by a selected-row
 submatrix does not change the selected coordinates of the matrix-vector
 product. -/
