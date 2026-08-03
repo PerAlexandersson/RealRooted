@@ -576,6 +576,25 @@ theorem algebraicSymbol_sourcePolarizedOperator
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
+/-- Borcea--Brändén, Lemma 2.5 and Proposition 2.4: stability of a finite
+algebraic symbol is preserved when its single source variable is polarized
+into a multiaffine source block. -/
+theorem mvUpperHalfPlaneStable_algebraicSymbol_sourcePolarizedOperator
+    {τ : Type*} (n : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ)
+    (hstable :
+      MvUpperHalfPlaneStable
+        (algebraicSymbol (fun _ : Fin 1 => n) T)) :
+    MvUpperHalfPlaneStable
+      (algebraicSymbol (fun _ : Fin n => 1)
+        (sourcePolarizedOperator n T)) := by
+  rw [algebraicSymbol_sourcePolarizedOperator]
+  exact MvPolynomial.mvUpperHalfPlaneStable_sourceBlockPolarization
+    (MvPolynomial.degreeOf_algebraicSymbol_inr_le
+      (fun _ : Fin 1 => n) T default)
+    hstable
+
 theorem rename_algebraicSymbol_sourcePolarizedOperator_eq_sum
     {τ : Type*} (n : ℕ)
     (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
