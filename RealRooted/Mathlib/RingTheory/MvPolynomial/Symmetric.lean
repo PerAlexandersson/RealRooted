@@ -67,3 +67,40 @@ theorem eval_fullSymmetrization_const
     ← mul_assoc, inv_mul_cancel₀ hcard, one_mul]
 
 end MvPolynomial
+
+namespace MvPolynomial
+
+/-- Convex-form partial symmetrization associated with a permutation. -/
+noncomputable def partialSymmetrization
+    {σ R : Type*} [CommRing R]
+    (t : R) (e : Equiv.Perm σ) (p : MvPolynomial σ R) :
+    MvPolynomial σ R :=
+  C t * p + C (1 - t) * rename e p
+
+/-- At weight zero, partial symmetrization is variable permutation. -/
+@[simp] theorem partialSymmetrization_zero
+    {σ R : Type*} [CommRing R]
+    (e : Equiv.Perm σ) (p : MvPolynomial σ R) :
+    partialSymmetrization 0 e p = rename e p := by
+  simp [partialSymmetrization]
+
+/-- At weight one, partial symmetrization is the original polynomial. -/
+@[simp] theorem partialSymmetrization_one
+    {σ R : Type*} [CommRing R]
+    (e : Equiv.Perm σ) (p : MvPolynomial σ R) :
+    partialSymmetrization 1 e p = p := by
+  simp [partialSymmetrization]
+
+/-- Partial symmetrization preserves evaluation at a constant assignment. -/
+theorem eval_partialSymmetrization_const
+    {σ R : Type*} [CommRing R]
+    (t w : R) (e : Equiv.Perm σ) (p : MvPolynomial σ R) :
+    eval (fun _ : σ => w) (partialSymmetrization t e p) =
+      eval (fun _ : σ => w) p := by
+  have hconst : (fun _ : σ => w) ∘ e = fun _ : σ => w := by
+    rfl
+  simp only [partialSymmetrization, map_add, map_mul, eval_C,
+    eval_rename, hconst]
+  ring
+
+end MvPolynomial
