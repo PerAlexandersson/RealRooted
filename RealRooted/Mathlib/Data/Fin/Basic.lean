@@ -49,4 +49,12 @@ theorem succAbove_triple_eq_succ_of_le_left
     Fin.succAbove_of_le_castSucc p _ hcenter,
     Fin.succAbove_of_le_castSucc p _ hright⟩
 
+/-- Omitting an interior center sends the corresponding new center to its old right
+neighbor. -/
+theorem succAbove_center_eq_right (i : Fin n) :
+    (i.succ.castSucc.castSucc).succAbove i.succ.castSucc =
+      i.succ.succ.castSucc := by
+  rw [Fin.succAbove_of_le_castSucc _ _ le_rfl]
+  congr
+
 end Fin

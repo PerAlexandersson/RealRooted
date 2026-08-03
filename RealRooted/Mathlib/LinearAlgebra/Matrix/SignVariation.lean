@@ -473,6 +473,16 @@ theorem SignType.sign_ne_zero_and_ne_of_mul_neg
 
 namespace Fin
 
+/-- At the splice created by deleting a nodal zero, the new center is nonzero. -/
+theorem succAbove_center_ne_zero_of_mul_neg
+    {n : ℕ} (x : Fin (n + 3) → ℝ) (i : Fin n)
+    (h : x i.castSucc.castSucc.castSucc * x i.succ.succ.castSucc < 0) :
+    x ((i.succ.castSucc.castSucc).succAbove i.succ.castSucc) ≠ 0 := by
+  rw [Fin.succAbove_center_eq_right]
+  intro hz
+  rw [hz, mul_zero] at h
+  exact lt_irrefl 0 h
+
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
 def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
