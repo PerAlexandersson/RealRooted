@@ -184,11 +184,16 @@ be explicit because local `Prec` is defined for arbitrary real polynomials and
 Lean has `natDegree 0 = 0`. Without the gamma coefficient hypotheses the
 statement is false: for `d = 2` and `γ = δ = 1 - X`, the gamma transforms have
 nonnegative coefficients and the required symmetry and degrees, and `Prec γ δ`
-holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`. -/
+holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`.
+
+The separate nonzero hypotheses exclude the spurious `d = 0`, `f = 0` case
+allowed by Lean's `natDegree 0 = 0`. -/
 def GammaAdjacentInterlacingTransferStatement : Prop :=
   ∀ {d : ℕ} {f g γ δ : ℝ[X]},
     γ.natDegree ≤ d / 2 →
     δ.natDegree ≤ (d + 1) / 2 →
+    f ≠ 0 →
+    g ≠ 0 →
     f.natDegree = d →
     g.natDegree = d + 1 →
     IdTransform d f = f →
