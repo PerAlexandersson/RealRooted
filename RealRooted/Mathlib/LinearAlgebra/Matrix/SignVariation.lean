@@ -477,6 +477,73 @@ protected theorem NodalInsertion.eraseIdx_append_middle
     (NodalInsertion.eraseIdx_succ middle i hi ha hb hab).append_context
       pre post
 
+/-- Deleting the first element of a middle block is a nodal insertion when
+its left neighbor is a retained singleton and its right neighbor is the
+second middle entry. -/
+protected theorem NodalInsertion.eraseIdx_first_middle
+    (a : SignType) (middle post : List SignType)
+    (hmiddle : 1 < middle.length)
+    (ha : a ≠ 0)
+    (hb : middle[1] ≠ 0)
+    (hab : a ≠ middle[1]) :
+    NodalInsertion
+      ([a] ++ middle.eraseIdx 0 ++ post)
+      ([a] ++ middle ++ post) := by
+  have h :
+      NodalInsertion
+        (([a] ++ middle ++ post).eraseIdx 1)
+        ([a] ++ middle ++ post) := by
+    simpa only [List.nil_append, List.length_nil, zero_add,
+      List.append_assoc] using
+      NodalInsertion.eraseIdx_append_middle
+        [] ([a] ++ middle) post 0
+        (by
+          simp only [List.length_append, List.length_singleton]
+          lia)
+        (by simpa using ha)
+        (by simpa using hb)
+        (by simpa using hab)
+  have herase :
+      ([a] ++ middle ++ post).eraseIdx 1 =
+        [a] ++ middle.eraseIdx 0 ++ post := by
+    simpa using
+      List.eraseIdx_append_middle [a] middle post 0 (by lia)
+  rw [← herase]
+  exact h
+
+/-- Deleting the final entry of a middle block is one nodal insertion in
+reverse when its preceding entry and a retained singleton endpoint have
+opposite nonzero signs. -/
+protected theorem NodalInsertion.eraseIdx_last_append_singleton
+    (pre middle : List SignType) (b : SignType) (i : ℕ)
+    (hlen : middle.length = i + 2)
+    (ha : middle[i] ≠ 0) (hb : b ≠ 0)
+    (hab : middle[i] ≠ b) :
+    NodalInsertion
+      (pre ++ middle.eraseIdx (i + 1) ++ [b])
+      (pre ++ middle ++ [b]) := by
+  have hi : i < middle.length := by simp [hlen]
+  have hiErase : i + 1 < middle.length := by simp [hlen]
+  have hiLocal : i + 2 < (middle ++ [b]).length := by simp [hlen]
+  have hleft : (middle ++ [b])[i] = middle[i] :=
+    List.getElem_append_left hi
+  have hright : (middle ++ [b])[i + 2] = b := by
+    simp [List.getElem_append_right, hlen]
+  have hfull :
+      NodalInsertion
+        ((pre ++ middle ++ [b]).eraseIdx
+          (pre.length + (i + 1)))
+        (pre ++ middle ++ [b]) := by
+    simpa only [List.append_nil, List.append_assoc] using
+      NodalInsertion.eraseIdx_append_middle
+        pre (middle ++ [b]) [] i hiLocal
+        (by rw [hleft]; exact ha)
+        (by rw [hright]; exact hb)
+        (by rw [hleft, hright]; exact hab)
+  rw [List.eraseIdx_append_middle
+    pre middle [b] (i + 1) hiErase] at hfull
+  exact hfull
+
 /-- Adding unchanged list context preserves repeated nodal insertions. -/
 protected theorem NodalInsertion.reflTransGen_append_context
     {l l' : List SignType}
