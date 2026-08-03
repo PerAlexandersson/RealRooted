@@ -238,10 +238,10 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
 /-- Karlin's finite-order sector estimate for a nonreal complex root of a
 positive constant-coefficient PF polynomial.
 
-The checked algebraic inputs above provide the repeated totally nonnegative
-coefficient-window matrix, its full row rank from the positive constant
-coefficient, and the root-supplied kernel vector.  The remaining hard ingredient
-is the classical variation-diminishing/sign-regular kernel theorem. -/
+The proof uses the repeated totally nonnegative coefficient-window matrices,
+their full row rank, the root-supplied kernel vectors, and the sampled-sine
+floor bound. Taking sufficiently many blocks absorbs the fixed two-endpoint
+perturbation loss. -/
 theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
@@ -297,15 +297,12 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
   let x : ℝ :=
     (((blocks * (p.natDegree + order - 1) : ℕ) : ℝ) * |z.arg|) /
       Real.pi
-  have hx : 0 ≤ x := by
-    dsimp [x]
-    positivity
   have hnat : blocks * order ≤ ⌊x⌋₊ + 3 := by
     dsimp [x]
     lia
   have hcast : ((blocks * order : ℕ) : ℝ) ≤ (⌊x⌋₊ : ℝ) + 3 := by
     exact_mod_cast hnat
-  have hfloor : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le hx
+  have hfloor : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le (by dsimp [x]; positivity)
   have hx_eq :
       x =
         (blocks : ℝ) *
