@@ -247,8 +247,10 @@ private theorem selected_mulVec_injective
     Function.Injective (A.submatrix id cols).mulVec := by
   rw [Matrix.mulVec_injective_iff]
   have h := (Matrix.mulVec_injective_iff.mp hA).comp cols hcols.injective
-  simpa only [Matrix.col_apply, Matrix.submatrix_apply, id_eq,
-    Function.comp_apply] using h
+  rw [show (A.submatrix id cols).col = A.col ∘ cols by
+    ext j i
+    rfl]
+  exact h
 
 private theorem exists_left_inverse_matrix
     {R : Type*} [Field R] {n q : ℕ}

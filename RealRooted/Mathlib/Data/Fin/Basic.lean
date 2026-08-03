@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Data.Fin.Basic
+public import Mathlib.Data.Fin.SuccPred
 
 /-!
 # Additional lemmas about finite indices
@@ -64,5 +64,28 @@ theorem succAbove_center_eq_left (i : Fin n) :
   rw [Fin.succAbove_of_castSucc_lt _ _ (by
     change (i : ℕ) + 1 < (i : ℕ) + 2
     lia)]
+
+/-- Deleting an interior full-vector coordinate agrees with deleting its
+corresponding interior coordinate. -/
+theorem succAbove_succ_castSucc
+    {n : ℕ} (k : Fin (n + 1)) (i : Fin n) :
+    k.succ.castSucc.succAbove i.succ.castSucc =
+      (k.succAbove i).succ.castSucc := by
+  by_cases h : i.castSucc < k
+  · have h' : i.succ.castSucc.castSucc < k.succ.castSucc := by
+      change (i : ℕ) + 1 < (k : ℕ) + 1
+      exact Nat.succ_lt_succ h
+    rw [Fin.succAbove_of_castSucc_lt _ _ h',
+      Fin.succAbove_of_castSucc_lt _ _ h]
+    apply Fin.ext
+    rfl
+  · have hki : k ≤ i.castSucc := le_of_not_gt h
+    have h' : k.succ.castSucc ≤ i.succ.castSucc.castSucc := by
+      change (k : ℕ) + 1 ≤ (i : ℕ) + 1
+      exact Nat.succ_le_succ hki
+    rw [Fin.succAbove_of_le_castSucc _ _ h',
+      Fin.succAbove_of_le_castSucc _ _ hki]
+    apply Fin.ext
+    rfl
 
 end Fin
