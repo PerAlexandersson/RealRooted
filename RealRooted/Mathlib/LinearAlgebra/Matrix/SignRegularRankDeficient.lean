@@ -200,6 +200,36 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
       (rows ∘ i0.succAbove) id hminorA
   exact ⟨hrank, hkernel, hzj0, hdelete⟩
 
+/-- A zero coefficient can be removed together with its matrix column when
+forming a matrix-vector product. -/
+theorem Matrix.mulVec_eq_deleteColumn_mulVec_removeNth_of_apply_eq_zero
+    {R : Type*} [NonUnitalNonAssocSemiring R] {n k : ℕ}
+    (A : Matrix (Fin n) (Fin (k + 1)) R)
+    (d : Fin (k + 1) → R) (j0 : Fin (k + 1))
+    (hd : d j0 = 0) :
+    A.mulVec d =
+      (A.submatrix id j0.succAbove).mulVec (Fin.removeNth j0 d) := by
+  funext i
+  simp only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
+    Fin.removeNth]
+  rw [Fin.sum_univ_succAbove (fun j => A i j * d j) j0, hd]
+  simp
+
+/-- Karlin's coefficient cancellation: perturb by the unique scalar that
+zeros coordinate `j0`, then remove that coordinate and its matrix column. -/
+theorem Matrix.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec
+    {R : Type*} [Field R] {n k : ℕ}
+    (A : Matrix (Fin n) (Fin (k + 1)) R)
+    (c z : Fin (k + 1) → R) (j0 : Fin (k + 1))
+    (hz : z j0 ≠ 0) :
+    A.mulVec (c + (-c j0 / z j0) • z) =
+      (A.submatrix id j0.succAbove).mulVec
+        (Fin.removeNth j0 (c + (-c j0 / z j0) • z)) := by
+  apply A.mulVec_eq_deleteColumn_mulVec_removeNth_of_apply_eq_zero
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  field_simp
+  ring
+
 /-- Perturbing coefficients along a vector annihilated by a selected-row
 submatrix does not change the selected coordinates of the matrix-vector
 product. -/
