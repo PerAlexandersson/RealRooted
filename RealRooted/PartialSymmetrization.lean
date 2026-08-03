@@ -86,6 +86,27 @@ theorem bivariate_eq_zero_iff
   simp only [mul_eq_zero, hden, false_or]
   constructor <;> intro h <;> linear_combination h
 
+/-- Positive imaginary part of the solved quotient excludes a zero with the
+second variable in the upper half-plane. -/
+theorem bivariate_ne_zero_of_quotient_im_pos
+    (a b c d z w : ℂ) (hden : c + d * z ≠ 0)
+    (hq : 0 < ((a + b * z) / (c + d * z)).im) (hw : 0 < w.im) :
+    a + b * z + c * w + d * z * w ≠ 0 := by
+  intro hzero
+  have hroot := (bivariate_eq_zero_iff a b c d z w hden).mp hzero
+  rw [hroot] at hw
+  simp at hw
+  linarith
+
+/-- The source's quotient-positivity condition implies bivariate nonvanishing
+on the upper half-plane. This is the algebraic direction preceding (1.2). -/
+theorem bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos
+    (a b c d z w : ℂ) (hcd : 0 < (c / d).im) (hz : 0 ≤ z.im)
+    (hq : 0 < ((a + b * z) / (c + d * z)).im) (hw : 0 < w.im) :
+    a + b * z + c * w + d * z * w ≠ 0 := by
+  exact bivariate_ne_zero_of_quotient_im_pos a b c d z w
+    (add_mul_ne_zero_of_im_div_pos c d z hcd hz) hq hw
+
 /-- On the real boundary, positivity of the first quotient imaginary part is
 equivalent to positivity of `bivariateV1` when its denominator stays off zero. -/
 theorem im_bivariateQuotient_pos_iff_bivariateV1_pos
