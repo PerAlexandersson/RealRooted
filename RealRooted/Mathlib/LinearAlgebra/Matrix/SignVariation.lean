@@ -403,10 +403,8 @@ namespace List
 private theorem filter_map_sign_filter_ne_zero (l : List SignType) :
     ((l.filter (· ≠ 0)).map SignType.sign).filter (· ≠ 0) =
       (l.map SignType.sign).filter (· ≠ 0) := by
-  induction l with
-  | nil => rfl
-  | cons a l ih =>
-      fin_cases a <;> simp_all
+  have hsign : (SignType.sign : SignType → SignType) = id := funext SignType.sign_sign
+  simp [hsign]
 
 /-- Filtering zero signs does not change sign variations. -/
 theorem signVariations_filter_ne_zero (l : List SignType) :
