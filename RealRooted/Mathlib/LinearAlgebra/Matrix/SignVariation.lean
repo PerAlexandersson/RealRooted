@@ -357,6 +357,20 @@ lemma signVariations_append_nonpos_le_succ (l₁ l₂ : List ℝ)
 
 end List
 
+/-- Inserting any sign between opposite nonzero signs does not change sign variations.
+
+This is the finite local step used for nodal interior zeros in Karlin's perturbation
+argument: after zero signs are removed, the inserted sign either disappears or duplicates
+one of its two neighbors. -/
+theorem List.signVariations_insert_between_opposite
+    (l₁ l₂ : List SignType) (a b z : SignType)
+    (ha : a ≠ 0) (hb : b ≠ 0) (hab : a ≠ b) :
+    (l₁ ++ [a, z, b] ++ l₂).signVariations =
+      (l₁ ++ [a, b] ++ l₂).signVariations := by
+  fin_cases a <;> fin_cases b <;> fin_cases z <;>
+    simp_all [List.signVariations, List.destutter_append_cons_self_ne,
+      List.destutter_append_cons_cons_self_ne]
+
 namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring

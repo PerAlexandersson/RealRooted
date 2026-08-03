@@ -121,4 +121,41 @@ theorem IsPrefix.getLast?_eq_of_destutter_length_le
   simpa only [List.getLast?_destutter_ne] using
     congrArg List.getLast? heq
 
+private theorem destutter'_append_cons_self_ne
+    {α : Type*} [DecidableEq α] (b a : α) (l₁ l₂ : List α) :
+    (l₁ ++ a :: a :: l₂).destutter' (· ≠ ·) b =
+      (l₁ ++ a :: l₂).destutter' (· ≠ ·) b := by
+  induction l₁ generalizing b with
+  | nil =>
+      by_cases hba : b = a
+      · subst b
+        simp
+      · simp [hba]
+  | cons c l ih =>
+      simp only [cons_append, List.destutter'_cons]
+      by_cases hbc : b ≠ c
+      · rw [if_pos hbc, if_pos hbc, ih c]
+      · rw [if_neg hbc, if_neg hbc, ih b]
+
+/-- Deleting one of two adjacent equal entries does not change disequality destuttering. -/
+theorem destutter_append_cons_self_ne
+    {α : Type*} [DecidableEq α] (l₁ l₂ : List α) (a : α) :
+    (l₁ ++ a :: a :: l₂).destutter (· ≠ ·) =
+      (l₁ ++ a :: l₂).destutter (· ≠ ·) := by
+  cases l₁ with
+  | nil =>
+      simp [List.destutter_cons']
+  | cons b l =>
+      simp only [cons_append, List.destutter_cons']
+      exact destutter'_append_cons_self_ne b a l l₂
+
+/-- Deleting the second of two adjacent equal entries after a fixed entry does not change
+disequality destuttering. -/
+theorem destutter_append_cons_cons_self_ne
+    {α : Type*} [DecidableEq α] (l₁ l₂ : List α) (a b : α) :
+    (l₁ ++ a :: b :: b :: l₂).destutter (· ≠ ·) =
+      (l₁ ++ a :: b :: l₂).destutter (· ≠ ·) := by
+  simpa only [append_assoc, singleton_append] using
+    destutter_append_cons_self_ne (l₁ ++ [a]) l₂ b
+
 end List
