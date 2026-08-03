@@ -298,8 +298,9 @@ theorem diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap
     calc
       (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1).natDegree =
           q.1.degreeOf default := by
-        rw [← MvPolynomial.degreeOf_uniqueAlgEquiv_symm]
-        simp
+        simpa only [AlgEquiv.symm_apply_apply] using
+          (MvPolynomial.degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
+            (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)).symm
       _ ≤ n := hdeg default
   have hdiag :
       diagonalProjection n
