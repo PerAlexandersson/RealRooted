@@ -78,9 +78,9 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
     {s t : Multiset α} (hrel : Multiset.Rel R s t) :
     List.Forall₂ R (s.sort (· ≤ ·)) (t.sort (· ≤ ·)) := by
   revert t
-  refine Multiset.strongInductionOn s
+  apply Multiset.strongInductionOn s
     (p := fun s => ∀ t, Multiset.Rel R s t →
-      List.Forall₂ R (s.sort (· ≤ ·)) (t.sort (· ≤ ·))) ?_
+      List.Forall₂ R (s.sort (· ≤ ·)) (t.sort (· ≤ ·)))
   intro s ih t hrel
   cases hs : s.sort (· ≤ ·) with
   | nil =>

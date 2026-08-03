@@ -56,8 +56,9 @@ theorem NoCommonRoots.exists_delta_TDeriv
     hsep a ha_sum b hb_sum hab_ne
   have hab_lt : |a - b| < 2 * η := by
     calc
-      |a - b| ≤ |a - x| + |x - b| :=
-        abs_sub_le_abs_sub_add_abs_sub a x b
+      |a - b| ≤ |a - x| + |x - b| := by
+        simpa only [sub_add_sub_cancel] using
+          abs_add_le (a - x) (x - b)
       _ = |x - a| + |x - b| := by rw [abs_sub_comm a x]
       _ < 2 * η := by linarith
   exact (not_lt_of_ge hab_sep) hab_lt

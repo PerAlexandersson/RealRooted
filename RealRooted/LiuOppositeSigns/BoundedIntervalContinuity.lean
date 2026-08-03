@@ -47,7 +47,7 @@ private theorem false_of_rightFamily_root_of_boundedIntervalContinuity
 
 /-- Liu's bounded-interval continuity argument forces every parity-relevant
 finite combined-root gap to have endpoints owned by opposite polynomials. -/
-theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_boundedIntervalContinuity
+theorem LiuOppositeSigns.OppositeLeadingSigns.crossOwnedNotOddGaps_of_boundedIntervalContinuity
     {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
     (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
     (hf : f.Splits) (hg : g.Splits) :
