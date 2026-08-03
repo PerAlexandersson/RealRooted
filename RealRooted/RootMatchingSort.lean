@@ -44,7 +44,7 @@ theorem forall₂_sort_ge_of_rel_abs_sub_lt
   · exact hrel
 
 /-- A largest root is the head of the descending root list. -/
-theorem IsLargestRoot.roots_sort_ge_eq_cons
+theorem LiuOppositeSigns.IsLargestRoot.roots_sort_ge_eq_cons
     {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0) (h : IsLargestRoot p r) :
     p.roots.sort (· ≥ ·) =
       r :: (deleteRootFactor p r).roots.sort (· ≥ ·) := by
