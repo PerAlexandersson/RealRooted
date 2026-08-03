@@ -34,6 +34,7 @@ import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.CauchyInterlacing
