@@ -549,6 +549,8 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
 of columns. Rank zero gives the zero linear map, full column rank uses the
 injective variation bound, and positive deficient rank uses the
 rank-preserving deletion step. -/
+
+open Filter Topology
 theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
     {n m r : ℕ}
     {A : Matrix (Fin n) (Fin m) ℝ}
@@ -851,3 +853,54 @@ theorem Matrix.IsTotallyNonnegRect.signVariations_mulVec_le
     (hA : A.IsTotallyNonnegRect) (c : Fin n → ℝ) :
     Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c :=
   hA.isSignRegular.signVariations_mulVec_le c
+
+/-- A surjective totally nonnegative matrix forces a nodal kernel vector to
+have at least the row count minus one sign variations, up to the two endpoint
+variations lost under perturbation. -/
+theorem Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_surjective_of_nodal
+    {rows n : ℕ} {A : Matrix (Fin rows) (Fin (n + 2)) ℝ}
+    (hA : A.IsTotallyNonnegRect)
+    (hsurj : Function.Surjective A.mulVec)
+    {x : Fin (n + 2) → ℝ}
+    (hker : A.mulVec x = 0)
+    (hnodal : ∀ i : Fin n, x i.succ.castSucc = 0 →
+      x i.castSucc.castSucc * x i.succ.succ < 0) :
+    rows - 1 ≤ Fin.signVariations x + 2 := by
+  cases rows with
+  | zero => simp
+  | succ k =>
+      let alt : Fin (k + 1) → ℝ := fun i => (-1 : ℝ) ^ (i : ℕ)
+      obtain ⟨z, hz⟩ := hsurj alt
+      let f : ℝ → Fin (n + 2) → ℝ := fun t => x + t • z
+      have hf :
+          Tendsto f (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 x) := by
+        have hfull :
+            Tendsto f (𝓝 (0 : ℝ)) (𝓝 (x + (0 : ℝ) • z)) :=
+          tendsto_const_nhds.add (tendsto_id.smul_const z)
+        have hle :
+            nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ 𝓝 (0 : ℝ) := by
+          simp only [nhdsWithin]
+          exact inf_le_left
+        have hrestricted := hfull.mono_left hle
+        simpa only [zero_smul, add_zero] using hrestricted
+      have hbound :=
+        Fin.eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
+          hf hnodal
+      have hpos :
+          ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < t :=
+        self_mem_nhdsWithin
+      obtain ⟨t, htbound, ht⟩ := (hbound.and hpos).exists
+      have himage :
+          A.mulVec (f t) =
+            fun i : Fin (k + 1) => (-1 : ℝ) ^ (i : ℕ) * t := by
+        rw [show f t = x + t • z by rfl, Matrix.mulVec_add,
+          Matrix.mulVec_smul, hker, hz]
+        funext i
+        simp only [Pi.smul_apply, zero_add, alt, smul_eq_mul, mul_comm]
+      have halt : Fin.StrictlyAlternates (A.mulVec (f t)) := by
+        rw [himage]
+        exact Fin.strictlyAlternates_alternating k ht
+      have hlower : k ≤ Fin.signVariations (A.mulVec (f t)) :=
+        halt.le_signVariations_of_strictMono strictMono_id
+      simpa using
+        hlower.trans ((hA.signVariations_mulVec_le (f t)).trans htbound)
