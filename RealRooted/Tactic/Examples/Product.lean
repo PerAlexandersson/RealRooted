@@ -496,6 +496,22 @@ example {P Q F : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_lift_sequence using hquot, hfactor, hrow
 
+example {P Q : Nat → ℝ[X]}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hidentify : ∀ n : Nat, P n = Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_model_sequence using
+    model_realrooted := hmodel,
+    identification := hidentify
+
+example {P Q : Nat → ℝ[X]}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hidentify : ∀ n : Nat, P n = Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_model_sequence using
+    model_realrooted := hmodel,
+    identification := hidentify
+
 example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
     (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hc : ∀ n : Nat, c n ≠ 0)
