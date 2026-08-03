@@ -321,6 +321,7 @@ import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
+import RealRooted.Tactic.Examples.SignAssembly
 import RealRooted.Tactic.Examples.StaircaseSum
 import RealRooted.Tactic.Examples.SymmetricDecomposition
 import RealRooted.Tactic.Examples.VeroneseSection
@@ -370,6 +371,7 @@ import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.SideGoals
 import RealRooted.Tactic.Sign
+import RealRooted.Tactic.SignAssembly
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.Targets
