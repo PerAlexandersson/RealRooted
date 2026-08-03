@@ -212,13 +212,13 @@ theorem Matrix.mulVec_eq_deleteColumn_mulVec_removeNth_of_apply_eq_zero
   funext i
   simp only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
     Fin.removeNth]
-  rw [Fin.sum_univ_succAbove (fun j => A i j * d j) j0, hd]
-  simp
+  rw [Fin.sum_univ_succAbove (fun j => A i j * d j) j0, hd, mul_zero,
+    zero_add]
 
 /-- Karlin's coefficient cancellation: perturb by the unique scalar that
 zeros coordinate `j0`, then remove that coordinate and its matrix column. -/
 theorem Matrix.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec
-    {R : Type*} [Field R] {n k : ℕ}
+    {R : Type*} [DivisionRing R] {n k : ℕ}
     (A : Matrix (Fin n) (Fin (k + 1)) R)
     (c z : Fin (k + 1) → R) (j0 : Fin (k + 1))
     (hz : z j0 ≠ 0) :
@@ -227,8 +227,7 @@ theorem Matrix.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec
         (Fin.removeNth j0 (c + (-c j0 / z j0) • z)) := by
   apply A.mulVec_eq_deleteColumn_mulVec_removeNth_of_apply_eq_zero
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-  field_simp
-  ring
+  rw [div_mul_cancel₀ _ hz, add_neg_cancel]
 
 /-- Perturbing coefficients along a vector annihilated by a selected-row
 submatrix does not change the selected coordinates of the matrix-vector
