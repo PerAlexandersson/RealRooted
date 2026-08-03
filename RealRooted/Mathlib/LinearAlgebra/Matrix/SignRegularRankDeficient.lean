@@ -795,24 +795,6 @@ theorem Matrix.IsSignConsistentOrder.mul_weightedIncidence
     (Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
       block hblock weight hweight)
 
-/-- Data expressing a finite vector as nonnegative weights pulled back from an
-ordered collection of sign blocks.
-
-This is an interface for the elementary finite-list decomposition in Karlin's
-proof, not an assertion that the decomposition already exists. Separating the
-data keeps the matrix argument independent of how maximal same-sign blocks are
-constructed and avoids formalizing an unrelated combinatorial model. -/
-structure Fin.SignBlockDecomposition {n : ℕ} (c : Fin n → ℝ) where
-  numBlocks : ℕ
-  numBlocks_pos : 0 < numBlocks
-  block : Fin n → Fin numBlocks
-  block_mono : Monotone block
-  weight : Fin n → ℝ
-  weight_nonneg : ∀ j, 0 ≤ weight j
-  coeff : Fin numBlocks → ℝ
-  reconstruct : ∀ j, weight j * coeff (block j) = c j
-  numBlocks_sub_one : numBlocks - 1 = Fin.signVariations c
-
 /-- Karlin's V.1.4 inequality from explicit sign-block decomposition data.
 
 The only remaining finite combinatorial step for the general theorem is to
@@ -851,30 +833,3 @@ theorem Matrix.IsSignRegular.signVariations_mulVec_le_of_signBlockDecomposition
     _ ≤ d.numBlocks - 1 :=
       (Nat.sub_le_sub_right B.rank_le_width) 1
     _ = Fin.signVariations c := d.numBlocks_sub_one
-
-/-- The sign variation of the prefix ending at `j`. -/
-def Fin.prefixSignVariations
-    {n : ℕ} (c : Fin n → ℝ) (j : Fin n) : ℕ :=
-  ((List.ofFn c).take (j + 1)).signVariations
-
-/-- Prefix sign variation is at most the index of the prefix endpoint. -/
-theorem Fin.prefixSignVariations_le_val
-    {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
-    Fin.prefixSignVariations c j ≤ j := by
-  unfold Fin.prefixSignVariations
-  calc
-    ((List.ofFn c).take (j + 1)).signVariations ≤
-        ((List.ofFn c).take (j + 1)).length - 1 :=
-      List.signVariations_le_length_sub_one _
-    _ = j := by simp
-
-/-- At the final index, prefix sign variation is full-vector sign variation. -/
-theorem Fin.prefixSignVariations_last
-    {n : ℕ} (c : Fin (n + 1) → ℝ) :
-    Fin.prefixSignVariations c (Fin.last n) =
-      Fin.signVariations c := by
-  rw [Fin.prefixSignVariations, Fin.signVariations]
-  have hlength :
-      (Fin.last n : ℕ) + 1 = (List.ofFn c).length := by
-    simp
-  rw [hlength, List.take_length]
