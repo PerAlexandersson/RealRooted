@@ -887,6 +887,21 @@ def Fin.signBlockIndex
   ⟨Fin.prefixSignVariations c j,
     Nat.lt_succ_of_le (Fin.prefixSignVariations_le_signVariations c j)⟩
 
+@[simp]
+theorem Fin.val_signBlockIndex
+    {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
+    (Fin.signBlockIndex c j : ℕ) =
+      Fin.prefixSignVariations c j :=
+  rfl
+
+@[simp]
+theorem Fin.signBlockIndex_last
+    {n : ℕ} (c : Fin (n + 1) → ℝ) :
+    Fin.signBlockIndex c (Fin.last n) =
+      Fin.last (Fin.signVariations c) := by
+  apply Fin.ext
+  exact Fin.prefixSignVariations_last c
+
 /-- Sign-block indices are monotone in the original index. -/
 theorem Fin.monotone_signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) :
