@@ -809,6 +809,16 @@ theorem List.signVariations_take_le
     (l.take k).signVariations ≤ l.signVariations :=
   List.signVariations_mono_of_prefix (List.take_prefix k l)
 
+/-- Appending one real entry increases sign variation by at most one. -/
+theorem List.signVariations_append_singleton_le_succ
+    (l : List ℝ) (x : ℝ) :
+    (l ++ [x]).signVariations ≤ l.signVariations + 1 := by
+  rcases le_total 0 x with hx | hx
+  · apply List.signVariations_append_nonneg_le_succ
+    simpa using hx
+  · apply List.signVariations_append_nonpos_le_succ
+    simpa using hx
+
 /-- Data expressing a finite vector as nonnegative weights pulled back from an
 ordered collection of sign blocks.
 
@@ -883,3 +893,16 @@ theorem Fin.monotone_signBlockIndex
     Monotone (Fin.signBlockIndex c) := by
   intro i j hij
   exact Fin.monotone_prefixSignVariations c hij
+
+/-- Adjacent prefix sign-variation values differ by at most one. -/
+theorem Fin.prefixSignVariations_succ_le
+    {n : ℕ} (c : Fin (n + 1) → ℝ) (i : Fin n) :
+    Fin.prefixSignVariations c i.succ ≤
+      Fin.prefixSignVariations c i.castSucc + 1 := by
+  unfold Fin.prefixSignVariations
+  have hindex :
+      (i : ℕ) + 1 < (List.ofFn c).length := by
+    simp [i.isLt]
+  rw [show (i.succ : ℕ) + 1 = ((i : ℕ) + 1) + 1 by simp,
+    List.take_succ_eq_append_getElem hindex]
+  exact List.signVariations_append_singleton_le_succ _ _
