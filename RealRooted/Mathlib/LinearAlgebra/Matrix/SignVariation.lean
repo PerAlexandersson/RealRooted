@@ -578,6 +578,84 @@ lemma exists_strictMono_strictlyAlternates_of_le_signVariations
     · rw [← he0, ← he1]
       exact hkd
 
+/-- A strictly alternating subsequence gives a lower bound on the sign
+variations of the ambient vector. -/
+lemma StrictlyAlternates.le_signVariations_of_strictMono
+    {m q : ℕ} {y : Fin m → ℝ}
+    {rows : Fin (q + 1) → Fin m}
+    (h : StrictlyAlternates (fun i => y (rows i)))
+    (hrows : StrictMono rows) : q ≤ signVariations y := by
+  by_cases hq : q = 0
+  · simp [hq]
+  have hnonzero : ∀ i, y (rows i) ≠ 0 := by
+    intro i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · intro hy
+      let i0 : Fin q := ⟨0, Nat.pos_of_ne_zero hq⟩
+      have hneg := h i0
+      change y (rows 0) * y (rows i0.succ) < 0 at hneg
+      rw [hy, zero_mul] at hneg
+      exact (lt_irrefl 0) hneg
+    · intro hy
+      have hneg := h j
+      change y (rows j.castSucc) * y (rows j.succ) < 0 at hneg
+      rw [hy, mul_zero] at hneg
+      exact (lt_irrefl 0) hneg
+  have hsub :
+      (List.ofFn (SignType.sign ∘ fun i => y (rows i))).Sublist
+        (List.ofFn (SignType.sign ∘ y)) := by
+    rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+    let e0 :
+        Fin (List.ofFn (SignType.sign ∘ fun i => y (rows i))).length ≃o
+          Fin (q + 1) :=
+      Fin.castOrderIso List.length_ofFn
+    let e1 : Fin (q + 1) ↪o Fin m :=
+      OrderEmbedding.ofStrictMono rows hrows
+    let e2 :
+        Fin m ≃o Fin (List.ofFn (SignType.sign ∘ y)).length :=
+      (Fin.castOrderIso List.length_ofFn).symm
+    refine ⟨e0.toOrderEmbedding.trans (e1.trans e2.toOrderEmbedding), ?_⟩
+    intro i
+    simp only [List.get_ofFn, e0, e1, e2, RelEmbedding.trans_apply,
+      Function.comp_apply]
+    apply congrArg SignType.sign
+    apply congrArg y
+    apply Fin.ext
+    rfl
+  have hfilter :
+      (List.ofFn (SignType.sign ∘ fun i => y (rows i))).filter
+          (· ≠ 0) =
+        List.ofFn (SignType.sign ∘ fun i => y (rows i)) := by
+    rw [List.filter_eq_self]
+    intro s hs
+    simp only [List.mem_ofFn] at hs
+    obtain ⟨i, rfl⟩ := hs
+    simp [Function.comp_apply, hnonzero i]
+  have hsub_nonzero :
+      (List.ofFn (SignType.sign ∘ fun i => y (rows i))).Sublist
+        ((List.ofFn (SignType.sign ∘ y)).filter (· ≠ 0)) := by
+    rw [← hfilter]
+    exact List.Sublist.filter (· ≠ 0) hsub
+  have hchain :
+      (List.ofFn (SignType.sign ∘ fun i => y (rows i))).IsChain
+        (· ≠ ·) := by
+    rw [List.isChain_ofFn]
+    intro i hi
+    change SignType.sign (y (rows ⟨i, by lia⟩)) ≠
+      SignType.sign (y (rows ⟨i + 1, hi⟩))
+    have hneg := h (⟨i, by lia⟩ : Fin q)
+    change y (rows ⟨i, by lia⟩) * y (rows ⟨i + 1, hi⟩) < 0 at hneg
+    rcases mul_neg_iff.mp hneg with ⟨hleft, hright⟩ | ⟨hleft, hright⟩
+    · rw [sign_pos hleft, sign_neg hright]
+      simp
+    · rw [sign_neg hleft, sign_pos hright]
+      simp
+  have hlen :=
+    List.IsChain.length_le_length_destutter_ne hsub_nonzero hchain
+  rw [signVariations, List.signVariations, List.map_ofFn]
+  simp only [List.length_ofFn] at hlen
+  lia
+
 /-- Two nonzero strictly alternating vectors have pointwise products of one
 strict sign. -/
 lemma StrictlyAlternates.pointwise_mul_pos_or_neg {n : ℕ}

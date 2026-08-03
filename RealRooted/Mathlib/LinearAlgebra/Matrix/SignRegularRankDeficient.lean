@@ -262,3 +262,62 @@ theorem Fin.StrictlyAlternates.matrix_mulVec_add_smul
     A.mulVec_add_smul_apply_eq_of_submatrix_mulVec_eq_zero rows c z hz t j
   rw [heq i.castSucc, heq i.succ]
   exact h i
+
+/-- Karlin's nonzero-cofactor branch contradicts the full-rank variation
+bound after the source-prescribed coefficient cancellation and column
+deletion. -/
+theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_ne_zero
+    {n k : ℕ} {A : Matrix (Fin n) (Fin (k + 1)) ℝ}
+    (hA : A.IsSignConsistentOrder k)
+    (hk : 0 < k)
+    (rows : Fin (k + 1) → Fin n) (hrows : StrictMono rows)
+    (i0 j0 : Fin (k + 1))
+    (hrank_lt : A.rank < k + 1)
+    (hminor :
+      ((A.submatrix rows id).submatrix
+        i0.succAbove j0.succAbove).det ≠ 0)
+    (c : Fin (k + 1) → ℝ)
+    (hAlt : Fin.StrictlyAlternates (fun i => A.mulVec c (rows i))) :
+    False := by
+  let B : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ :=
+    A.submatrix rows id
+  let z : Fin (k + 1) → ℝ := fun j =>
+    (-1 : ℝ) ^ (i0 + j : ℕ) *
+      (B.submatrix i0.succAbove j.succAbove).det
+  let A' : Matrix (Fin n) (Fin k) ℝ :=
+    A.submatrix id j0.succAbove
+  have hcase :
+      A.rank = k ∧ B.mulVec z = 0 ∧ z j0 ≠ 0 ∧ A'.rank = k := by
+    simpa only [B, z, A'] using
+      A.signedRowCofactor_spec_of_minor_ne_zero
+        rows i0 j0 hrank_lt hminor
+  obtain ⟨_hrank, hkernel, hzj0, hdelete⟩ := hcase
+  let t0 : ℝ := -c j0 / z j0
+  let d : Fin (k + 1) → ℝ := c + t0 • z
+  let d' : Fin k → ℝ := Fin.removeNth j0 d
+  have hAltPert :
+      Fin.StrictlyAlternates (fun i => A.mulVec d (rows i)) := by
+    simpa only [d, t0] using
+      hAlt.matrix_mulVec_add_smul hkernel t0
+  have hreassemble : A.mulVec d = A'.mulVec d' := by
+    simpa only [A', d', d, t0] using
+      A.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec c z j0 hzj0
+  have hAltDeleted :
+      Fin.StrictlyAlternates (fun i => A'.mulVec d' (rows i)) := by
+    rw [hreassemble] at hAltPert
+    exact hAltPert
+  have hA' : A'.IsSignConsistentOrder k := by
+    exact hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
+  have hk1n : k + 1 ≤ n := by
+    simpa using Fintype.card_le_of_injective rows hrows.injective
+  have hkn : k ≤ n := (Nat.le_succ k).trans hk1n
+  have hA'inj : Function.Injective A'.mulVec := by
+    rw [Matrix.mulVec_injective_iff,
+      linearIndependent_iff_card_eq_finrank_span]
+    simpa only [Fintype.card_fin, Set.finrank] using
+      hdelete.symm.trans (Matrix.rank_eq_finrank_span_cols A')
+  have hlower : k ≤ Fin.signVariations (A'.mulVec d') :=
+    hAltDeleted.le_signVariations_of_strictMono hrows
+  have hupper : Fin.signVariations (A'.mulVec d') ≤ k - 1 :=
+    hA'.signVariations_mulVec_le_card_sub_one hkn hA'inj d'
+  lia
