@@ -635,6 +635,25 @@ theorem Matrix.IsSignConsistentOrder.mul_of_right_isTotallyNonnegRect
   simpa only [es, et, mul_assoc, mul_left_comm, mul_comm] using
     mul_nonneg hsign hright
 
+/-- The weighted incidence matrix associated with a block map. -/
+def Matrix.weightedIncidence
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ) :
+    Matrix (Fin n) (Fin q) ℝ :=
+  fun j s => if block j = s then weight j else 0
+
+@[simp]
+theorem Matrix.weightedIncidence_apply
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ)
+    (j : Fin n)
+    (s : Fin q) :
+    Matrix.weightedIncidence block weight j s =
+      if block j = s then weight j else 0 :=
+  rfl
+
 /-- The minor of a monotone weighted incidence matrix is diagonal or singular.
 
 This is the elementary incidence-matrix step in Karlin's proof of Theorem V.1.4:
@@ -649,15 +668,12 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
     {cols : Fin r → Fin q}
     (hrows : StrictMono rows)
     (hcols : StrictMono cols) :
-    (Matrix.submatrix
-      (fun j s => if block j = s then weight j else 0)
-      rows cols).det =
+    ((Matrix.weightedIncidence block weight).submatrix rows cols).det =
       if ∀ i, block (rows i) = cols i then
         ∏ i, weight (rows i)
       else 0 := by
   classical
-  let W : Matrix (Fin n) (Fin q) ℝ :=
-    fun j s => if block j = s then weight j else 0
+  let W := Matrix.weightedIncidence block weight
   change (W.submatrix rows cols).det =
     if ∀ i, block (rows i) = cols i then
       ∏ i, weight (rows i)
@@ -668,7 +684,8 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
         W.submatrix rows cols =
           Matrix.diagonal (fun i => weight (rows i)) := by
       ext i j
-      simp only [Matrix.submatrix_apply, W]
+      simp only [Matrix.submatrix_apply, W,
+        Matrix.weightedIncidence_apply]
       rw [hdiag i]
       by_cases hij : i = j
       · subst j
@@ -701,7 +718,8 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
       have hprod :
           (∏ j, (W.submatrix rows cols) (sigma j) j) = 0 := by
         apply Finset.prod_eq_zero (Finset.mem_univ i)
-        simp only [Matrix.submatrix_apply, W]
+        simp only [Matrix.submatrix_apply, W,
+          Matrix.weightedIncidence_apply]
         rw [if_neg hi]
       rw [hprod, mul_zero]
 
@@ -714,32 +732,13 @@ theorem Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
     (weight : Fin n → ℝ)
     (hweight : ∀ j, 0 ≤ weight j) :
     Matrix.IsTotallyNonnegRect
-      (fun j s => if block j = s then weight j else 0) := by
+      (Matrix.weightedIncidence block weight) := by
   intro r rows cols hrows hcols
   rw [Matrix.det_submatrix_monotoneWeightedIncidence
     block hblock weight hrows hcols]
   split_ifs
   · exact Finset.prod_nonneg fun i _ => hweight (rows i)
   · exact le_rfl
-
-/-- The weighted incidence matrix associated with a block map. -/
-def Matrix.weightedIncidence
-    {n q : ℕ}
-    (block : Fin n → Fin q)
-    (weight : Fin n → ℝ) :
-    Matrix (Fin n) (Fin q) ℝ :=
-  fun j s => if block j = s then weight j else 0
-
-@[simp]
-theorem Matrix.weightedIncidence_apply
-    {n q : ℕ}
-    (block : Fin n → Fin q)
-    (weight : Fin n → ℝ)
-    (j : Fin n)
-    (s : Fin q) :
-    Matrix.weightedIncidence block weight j s =
-      if block j = s then weight j else 0 :=
-  rfl
 
 /-- Right multiplication by a weighted incidence matrix forms weighted block sums. -/
 theorem Matrix.mul_weightedIncidence_apply
