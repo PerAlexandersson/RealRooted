@@ -34,6 +34,19 @@ theorem ofFn_succAbove_eq_eraseIdx
         exact Nat.le_of_not_gt ‹¬i < (p : ℕ)›)]
       congr
 
+/-- Removing an interior coordinate agrees with erasing its interior-list index. -/
+theorem ofFn_interior_succAbove_eq_eraseIdx
+    {α : Type*} {n : ℕ}
+    (f : Fin (n + 3) → α) (k : Fin (n + 1)) :
+    List.ofFn
+        (fun i : Fin n =>
+          f (k.succ.castSucc.succAbove i.succ.castSucc)) =
+      (List.ofFn
+        (fun i : Fin (n + 1) => f i.succ.castSucc)).eraseIdx k := by
+  simpa only [Fin.succAbove_succ_castSucc] using
+    List.ofFn_succAbove_eq_eraseIdx
+      (fun i : Fin (n + 1) => f i.succ.castSucc) k
+
 /-- A finite-function list splits into its two endpoints and interior coordinates. -/
 theorem ofFn_two_endpoints
     {α : Type*} {n : ℕ} (f : Fin (n + 2) → α) :
