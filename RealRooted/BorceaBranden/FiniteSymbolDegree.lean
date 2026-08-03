@@ -58,7 +58,7 @@ theorem degreeOf_algebraicSymbol_one_inr_le
       have hmem : Sum.inr i ∈
           (rename (Sum.inl : tau → tau ⊕ sigma)
             (T (basisDegreeOfLE (fun _ : sigma => 1) m))).vars := by
-        rw [mem_vars]
+        rw [mem_vars_iff_mem_support]
         exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdi⟩
       obtain ⟨j, _hj, hji⟩ := mem_vars_rename Sum.inl _ hmem
       exact Sum.inl_ne_inr hji
