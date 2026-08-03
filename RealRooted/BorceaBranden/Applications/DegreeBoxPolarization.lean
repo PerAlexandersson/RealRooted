@@ -161,6 +161,46 @@ theorem sourceCoefficient_rename_mul_X_pow {τ : Type*}
   rw [hpoly, coeff_C_mul, coeff_X_pow]
   simp [eq_comm]
 
+/-- Extract the source coefficient when the output coefficient has an
+additional scalar factor. -/
+theorem sourceCoefficient_C_mul_rename_mul_X_pow {τ : Type*}
+    (a : ℂ) (q : MvPolynomial τ ℂ) (r k : ℕ) :
+    sourceCoefficient
+        (C a * rename (Sum.inl : τ → τ ⊕ Fin 1) q *
+          X (Sum.inr default) ^ r) k =
+      if k = r then C a * q else 0 := by
+  have hterm :
+      C a * rename (Sum.inl : τ → τ ⊕ Fin 1) q *
+          X (Sum.inr default) ^ r =
+        rename Sum.inl (C a * q) * X (Sum.inr default) ^ r := by
+    simp
+  rw [hterm, sourceCoefficient_rename_mul_X_pow]
+
+/-- In a degree-`n` algebraic-symbol-shaped sum, source degree `r` selects the
+unique operator term indexed by `n - r`. -/
+theorem sourceCoefficient_symbol_sum {τ : Type*} (n r : ℕ)
+    (hr : r ≤ n) (q : ℕ → MvPolynomial τ ℂ) :
+    sourceCoefficient
+        (∑ k ∈ Finset.range (n + 1),
+          C (n.choose k : ℂ) * rename Sum.inl (q k) *
+            X (Sum.inr default) ^ (n - k)) r =
+      C (n.choose (n - r) : ℂ) * q (n - r) := by
+  rw [sourceCoefficient_sum]
+  rw [Finset.sum_eq_single (n - r)]
+  · rw [sourceCoefficient_C_mul_rename_mul_X_pow]
+    simp [Nat.sub_sub_self hr]
+  · intro k hk hne
+    rw [sourceCoefficient_C_mul_rename_mul_X_pow]
+    have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+    have hnr : r ≠ n - k := by
+      intro heq
+      apply hne
+      lia
+    rw [if_neg hnr]
+  · intro hnot
+    exact (hnot (Finset.mem_range.mpr
+      (Nat.lt_succ_of_le (Nat.sub_le n r)))).elim
+
 /-- Identify all polarized source variables while leaving output variables
 unchanged. -/
 def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
