@@ -975,6 +975,96 @@ theorem nodalInsertions_coreSigns_remove
   rw [hsourceComp] at hrec
   exact hrec.tail hstepCore
 
+/-- If there is no interior zero, filtering the original signs already gives
+the perturbed core signs. -/
+theorem nodalPerturbationCoreSigns_eq_of_no_interior_zero
+    {n : ℕ} {x y : Fin (n + 2) → ℝ}
+    (hsign : ∀ i, x i ≠ 0 →
+      SignType.sign (y i) = SignType.sign (x i))
+    (hinterior : ∀ i : Fin n, x i.succ.castSucc ≠ 0) :
+    (List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0) =
+      Fin.nodalPerturbationCoreSigns x y := by
+  have sign_ne_zero_of_ne_zero :
+      ∀ a : ℝ, a ≠ 0 → SignType.sign a ≠ 0 := by
+    intro a ha
+    rcases lt_trichotomy a 0 with hneg | hzero | hpos
+    · simp [SignType.sign, hneg, not_lt_of_ge hneg.le]
+    · exact (ha hzero).elim
+    · simp [SignType.sign, hpos]
+  let sourceMiddle : List SignType :=
+    List.ofFn (fun i : Fin n =>
+      SignType.sign (x i.succ.castSucc))
+  let targetMiddle : List SignType :=
+    List.ofFn (fun i : Fin n =>
+      SignType.sign (y i.succ.castSucc))
+  have hsourceMiddle :
+      sourceMiddle.filter (· ≠ 0) = sourceMiddle := by
+    apply List.filter_eq_self.mpr
+    intro s hs
+    simp only [sourceMiddle, List.mem_ofFn] at hs
+    obtain ⟨i, rfl⟩ := hs
+    exact decide_eq_true
+      (sign_ne_zero_of_ne_zero _ (hinterior i))
+  have hmiddle : sourceMiddle = targetMiddle := by
+    simp only [sourceMiddle, targetMiddle]
+    congr 1
+    funext i
+    exact (hsign i.succ.castSucc (hinterior i)).symm
+  have hfilterEndpoint (i : Fin (n + 2)) :
+      [SignType.sign (x i)].filter (· ≠ 0) =
+        if x i = 0 then [] else [SignType.sign (y i)] := by
+    by_cases hi : x i = 0
+    · simp [hi, SignType.sign]
+    · rw [if_neg hi, List.filter_singleton]
+      have hs := sign_ne_zero_of_ne_zero _ hi
+      have hp : decide (SignType.sign (x i) ≠ 0) = true :=
+        decide_eq_true hs
+      rw [hp]
+      change [SignType.sign (x i)] = [SignType.sign (y i)]
+      rw [hsign i hi]
+  rw [List.ofFn_two_endpoints]
+  change
+    (([SignType.sign (x 0)] ++ sourceMiddle ++
+      [SignType.sign (x (Fin.last (n + 1)))]).filter (· ≠ 0)) =
+      (if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+        targetMiddle ++
+        (if x (Fin.last (n + 1)) = 0 then []
+          else [SignType.sign (y (Fin.last (n + 1)))])
+  rw [List.filter_append, List.filter_append, hfilterEndpoint,
+    hsourceMiddle, hmiddle, hfilterEndpoint]
+
+/-- Nodal insertions transform the filtered original sign list into the
+perturbed core sign list. -/
+theorem nodalInsertions_coreSigns
+    {n : ℕ} {x y : Fin (n + 2) → ℝ}
+    (hsign : ∀ i, x i ≠ 0 →
+      SignType.sign (y i) = SignType.sign (x i))
+    (hnodal : ∀ i : Fin n, x i.succ.castSucc = 0 →
+      x i.castSucc.castSucc * x i.succ.succ < 0) :
+    Relation.ReflTransGen List.NodalInsertion
+      ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0))
+      (Fin.nodalPerturbationCoreSigns x y) := by
+  induction n with
+  | zero =>
+      have hinterior :
+          ∀ i : Fin 0, x i.succ.castSucc ≠ 0 := by
+        exact fun i => Fin.elim0 i
+      rw [Fin.nodalPerturbationCoreSigns_eq_of_no_interior_zero
+        hsign hinterior]
+  | succ n ih =>
+      by_cases hzero :
+        ∃ k : Fin (n + 1), x k.succ.castSucc = 0
+      · obtain ⟨k, hk⟩ := hzero
+        exact Fin.nodalInsertions_coreSigns_remove
+          (fun hsign' hnodal' => ih hsign' hnodal')
+          hsign hnodal k hk
+      · have hinterior :
+            ∀ i : Fin (n + 1), x i.succ.castSucc ≠ 0 := by
+          intro i hi
+          exact hzero ⟨i, hi⟩
+        rw [Fin.nodalPerturbationCoreSigns_eq_of_no_interior_zero
+          hsign hinterior]
+
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
 def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
