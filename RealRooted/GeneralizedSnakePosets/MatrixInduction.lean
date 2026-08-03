@@ -1,5 +1,6 @@
 import RealRooted.GeneralizedSnakePosets.Statements
 import RealRooted.MatrixInterlacing
+import RealRooted.PFPolynomial
 
 /-!
 # Braun-Jal matrix-induction step
@@ -96,6 +97,58 @@ theorem theorem41StepMatrix_cross_has2x2_of_matrixClaim
   intro s t hs ht
   exact hclaim hm hs.le ht.le
 
+/-- Claim `(6)` and the source matrix send the induction pair to a proper-position
+pair.  Repeated column indices use the real-rootedness already contained in the
+same Claim `(6)` instance. -/
+theorem theorem41Step_difference_prec_of_matrixClaim
+    {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
+    (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
+    (hP_ne : P (m - 1) ≠ 0)
+    (hQ_ne : narayanaDifference P m ≠ 0)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : HasNonnegCoeffs (auxiliaryDifference G m))
+    (hgf : Prec g f)
+    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
+    Prec (f * P (m - 1) + X * g * G (m - 1))
+      (f * narayanaDifference P m + X * g * auxiliaryDifference G m) := by
+  have hpair := prec_zipWith_sum_pair_of_2x2
+    (n := 2) (row₁ := [P (m - 1), G (m - 1)])
+    (row₂ := [narayanaDifference P m, auxiliaryDifference G m])
+    (fs := [f, X * g])
+    (hn := by decide)
+    (hrow₁_len := by simp)
+    (hrow₂_len := by simp)
+    (hrow₁_head_ne := by simpa using hP_ne)
+    (hrow₂_head_ne := by simpa using hQ_ne)
+    (hrow₁_nonneg := by
+      intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hP_nonneg (m - 1)
+      · exact hG_nonneg (m - 1))
+    (hrow₂_nonneg := by
+      intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hQ_nonneg
+      · exact hH_nonneg)
+    (h2x2 := by
+      intro j₁ j₂ hj
+      fin_cases j₁ <;> fin_cases j₂
+      · intro s t hs ht
+        have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
+        simpa using prec_refl hcross.2.1.1 hcross.2.1.2
+      · simpa using theorem41StepMatrix_cross_has2x2_of_matrixClaim hclaim hm
+      · simp at hj
+      · intro s t hs ht
+        have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
+        simpa using prec_refl hcross.1.1 hcross.1.2)
+    (hfs_len := by simp)
+    (hfs := theorem41InputPair_interlacingSeqNonneg hgf hf_nonneg hg_nonneg)
+  simpa [mul_comm, mul_left_comm] using hpair
+
 /-- Claim `(7)` supplies the cross affine test for the stronger consecutive-row
 matrix with rows `[P_{m-1}, G_{m-1}]` and `[P_m, G_m]`.  This is an auxiliary
 route, not the matrix displayed in Braun--Jal's proof. -/
@@ -178,6 +231,75 @@ theorem theorem41NonconstantStep_prec_of_claim7
     hclaim hm (hP hm) (hG hm) hprefix hP_nonneg hG_nonneg
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hrec_del, hrec_w]
+
+/-- The nonconstant Braun--Jal induction step through the source
+`[P, G; Q, H]` matrix.  Unlike the consecutive-row shortcut above, this is the
+argument on p. 10 of the paper and requires no adjacent-`G` proper position. -/
+theorem theorem41NonconstantStep_prec_of_matrixClaim
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hlast : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
+    Prec (M w.deleteFinal) (M w) := by
+  let f : ℝ[X] := M (w.takePrefix (k + 1))
+  let g : ℝ[X] := M (w.takePrefix k)
+  let m : ℕ := w.length - (k + 1)
+  have hm : 2 ≤ m := by
+    dsimp [m]
+    rw [SnakeWord.length_deleteFinal] at hk
+    lia
+  have hkp1_le : k + 1 ≤ w.deleteFinal.length := le_of_lt hk
+  have hk_le : k ≤ w.deleteFinal.length := by lia
+  have hrec_w : M w = f * P m + X * g * G m := by
+    dsimp [f, g, m]
+    exact hrec hlast.not_isConstant hlast
+  have hlast_del : w.deleteFinal.IsLastChangeIndex k := hlast.deleteFinal hk
+  have hrec_del :
+      M w.deleteFinal = f * P (m - 1) + X * g * G (m - 1) := by
+    have hbase := hrec hlast_del.not_isConstant hlast_del
+    dsimp [f, g, m]
+    rw [hbase]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hkp1_le]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hk_le]
+    rw [SnakeWord.length_deleteFinal_sub_eq]
+  have hrec_diff :
+      M w - M w.deleteFinal =
+        f * narayanaDifference P m + X * g * auxiliaryDifference G m := by
+    rw [hrec_w, hrec_del]
+    unfold narayanaDifference auxiliaryDifference
+    ring
+  have hf_nonneg : HasNonnegCoeffs f := hM_nonneg _
+  have hg_nonneg : HasNonnegCoeffs g := hM_nonneg _
+  have hdiff_nonneg : HasNonnegCoeffs (M w - M w.deleteFinal) := by
+    rw [hrec_diff]
+    exact (hf_nonneg.mul (hQ_nonneg hm)).add
+      (hg_nonneg.X_mul.mul (hH_nonneg hm))
+  have hstep : Prec (M w.deleteFinal) (M w - M w.deleteFinal) := by
+    rw [hrec_del, hrec_diff]
+    exact theorem41Step_difference_prec_of_matrixClaim
+      hclaim hm (hP_ne (m - 1)) (hQ_ne hm) hP_nonneg hG_nonneg
+      (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
+  have hsum0 : Prec0 (M w.deleteFinal)
+      (M w.deleteFinal + (M w - M w.deleteFinal)) :=
+    prec0_add_right_of_common_left_of_nonneg
+      (prec_refl hstep.1.1 hstep.1.2).toPrec0 hstep.toPrec0
+      (hM_nonneg w.deleteFinal) hdiff_nonneg
+  have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
+    add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+      (hM_nonneg w.deleteFinal) hdiff_nonneg hstep.2.1.1
+  have hfinal := hsum0.toPrec_of_ne hstep.1.1 hsum_ne
+  convert hfinal using 1 <;> ring
 
 /-- Polynomial form of the exceptional `m = 1` Braun-Jal step.
 
