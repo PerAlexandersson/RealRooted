@@ -533,6 +533,20 @@ theorem filtered_signList_signVariations {n : ℕ} (x : Fin n → ℝ) :
   rw [List.signVariations_filter_ne_zero]
   exact (Fin.signVariations_eq_signList x).symm
 
+/-- Perturbed signs at all interior coordinates and at the original nonzero
+endpoints.
+
+Interior zeros are retained because the coordinate-removal induction constructs
+them by nodal insertions. A zero original endpoint is omitted and handled by the
+final two-endpoint variation bound. -/
+def nodalPerturbationCoreSigns
+    {n : ℕ} (x y : Fin (n + 2) → ℝ) : List SignType :=
+  (if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+    List.ofFn
+      (fun i : Fin n => SignType.sign (y i.succ.castSucc)) ++
+    (if x (Fin.last (n + 1)) = 0 then []
+      else [SignType.sign (y (Fin.last (n + 1)))])
+
 /-- At the splice created by deleting a nodal zero, the new center is nonzero. -/
 theorem succAbove_center_ne_zero_of_mul_neg
     {n : ℕ} (x : Fin (n + 3) → ℝ) (i : Fin n)

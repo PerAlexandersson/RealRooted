@@ -86,4 +86,23 @@ theorem succAbove_succ_castSucc
       Fin.succAbove_of_le_castSucc _ _ hki]
     exact Fin.ext rfl
 
+/-- Deleting an interior coordinate preserves the first coordinate. -/
+theorem succAbove_zero_of_interior
+    {n : ℕ} (k : Fin (n + 1)) :
+    k.succ.castSucc.succAbove (0 : Fin (n + 2)) = 0 := by
+  rw [Fin.succAbove_of_castSucc_lt _ _ (by
+    change 0 < (k : ℕ) + 1
+    lia)]
+  exact Fin.ext rfl
+
+/-- Deleting an interior coordinate preserves the final coordinate. -/
+theorem succAbove_last_of_interior
+    {n : ℕ} (k : Fin (n + 1)) :
+    k.succ.castSucc.succAbove (Fin.last (n + 1)) =
+      Fin.last (n + 2) := by
+  rw [Fin.succAbove_of_le_castSucc _ _ (by
+    change (k : ℕ) + 1 ≤ n + 1
+    lia)]
+  exact Fin.ext rfl
+
 end Fin
