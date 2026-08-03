@@ -753,6 +753,19 @@ theorem Matrix.mul_weightedIncidence_apply
   rw [Matrix.mul_apply, Finset.sum_filter]
   simp only [Matrix.weightedIncidence_apply, mul_ite, mul_zero]
 
+/-- A weighted incidence matrix sends block coefficients to their weighted
+pullback along the block map. -/
+@[simp]
+theorem Matrix.weightedIncidence_mulVec
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ)
+    (sign : Fin q → ℝ) :
+    (Matrix.weightedIncidence block weight).mulVec sign =
+      fun j => weight j * sign (block j) := by
+  ext j
+  simp [Matrix.mulVec, dotProduct]
+
 /-- Multiplying an aggregated matrix by block coefficients reconstructs the
 corresponding coefficient vector before multiplication by the original matrix. -/
 theorem Matrix.mul_weightedIncidence_mulVec
@@ -763,13 +776,9 @@ theorem Matrix.mul_weightedIncidence_mulVec
     (sign : Fin q → ℝ) :
     (L * Matrix.weightedIncidence block weight).mulVec sign =
       L.mulVec (fun j => weight j * sign (block j)) := by
-  have hincidence :
-      (Matrix.weightedIncidence block weight).mulVec sign =
-        fun j => weight j * sign (block j) := by
-    ext j
-    simp [Matrix.mulVec, dotProduct]
   rw [← Matrix.mulVec_mulVec sign L
-    (Matrix.weightedIncidence block weight), hincidence]
+    (Matrix.weightedIncidence block weight),
+    Matrix.weightedIncidence_mulVec]
 
 /-- Aggregating consecutive columns with nonnegative weights preserves sign
 consistency of every fixed order. -/
