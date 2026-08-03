@@ -262,7 +262,7 @@ theorem upperHalfPlaneStable_rectangularLeftSlice
   exact mvUpperHalfPlaneStable_polarization
     (natDegree_rectangularRightSlice_eq hpdeg hplead (fun hzero => by
       rw [hzero] at hx
-      simp at hx))
+      simp at hx)).le
     (upperHalfPlaneStable_rectangularRightSlice hpdeg.le hstable hx) y hy
 
 /-- Rectangular polarization preserves upper-half-plane stability. This is the
@@ -279,8 +279,8 @@ theorem mvUpperHalfPlaneStable_rectangularPolarization
     cases i <;> rfl
   rw [hz_elim, eval_rectangularPolarization_eq_eval_polarization_leftSlice]
   apply mvUpperHalfPlaneStable_polarization
-  · exact natDegree_rectangularLeftSlice_eq hpdeg hplead
-      (fun i => hz (Sum.inr i))
+  · exact (natDegree_rectangularLeftSlice_eq hpdeg hplead
+      (fun i => hz (Sum.inr i))).le
   · exact upperHalfPlaneStable_rectangularLeftSlice hpdeg hplead hstable
       (fun i => hz (Sum.inr i))
   · exact fun i => hz (Sum.inl i)

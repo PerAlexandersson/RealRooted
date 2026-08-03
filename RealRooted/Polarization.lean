@@ -393,8 +393,12 @@ theorem eval_reducedPolarization_eq_apolarPairing_of_binomialLift_eq_rootPolynom
 
 /-- Grace--Walsh--Szego for reduced coefficients: exact-degree
 upper-half-plane stability is preserved by polarization. -/
+/- Borcea--Branden, arXiv:0809.0401, Proposition 2.4. The source polynomial
+has degree at most `n`; exact degree is unnecessary because the upper half-plane
+is a convex circular domain in the Grace--Walsh--Szego theorem. The auxiliary
+root polynomial used below still has exact degree `n`. -/
 theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
-    (hdeg : (binomialLift n f).natDegree = n)
+    (hdeg : (binomialLift n f).natDegree ≤ n)
     (hstable : ∀ w : ℂ, 0 < w.im → (binomialLift n f).eval w ≠ 0) :
     MvUpperHalfPlaneStable (reducedPolarization n f) := by
   intro z hz hzero
@@ -410,7 +414,7 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
     intro w hw
     exact not_lt.mp (fun hwpos => hstable w hwpos hw)
   obtain ⟨w, hwroot, hwlower⟩ :=
-    grace_apolarity_lowerHalf hdeg.le hgdeg hap hroots
+    grace_apolarity_lowerHalf hdeg hgdeg hap hroots
   obtain ⟨i, hwi⟩ :=
     exists_eq_of_isRoot_polarizationRootPolynomial (hg ▸ hwroot)
   rw [hwi] at hwlower
@@ -419,13 +423,13 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
 /-- Exact-degree upper-half-plane stability is preserved by univariate
 polarization. -/
 theorem mvUpperHalfPlaneStable_polarization {n : ℕ} {p : ℂ[X]}
-    (hdeg : p.natDegree = n)
+    (hdeg : p.natDegree ≤ n)
     (hstable : ∀ w : ℂ, 0 < w.im → p.eval w ≠ 0) :
     MvUpperHalfPlaneStable (polarization n p) := by
   unfold polarization
   apply mvUpperHalfPlaneStable_reducedPolarization
-  · rw [binomialLift_binomialUnlift hdeg.le, hdeg]
-  · simpa [binomialLift_binomialUnlift hdeg.le] using hstable
+  · simpa only [binomialLift_binomialUnlift hdeg] using hdeg
+  · simpa only [binomialLift_binomialUnlift hdeg] using hstable
 
 end
 
