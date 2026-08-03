@@ -993,3 +993,41 @@ theorem Fin.sign_eq_of_signBlockIndex_eq
   · exact Fin.sign_eq_of_le_of_signBlockIndex_eq c hij hi hj hblock
   · exact (Fin.sign_eq_of_le_of_signBlockIndex_eq
       c hji hj hi hblock.symm).symm
+
+/-- The same-sign block decomposition used in Karlin's variation theorem.
+
+Zero entries receive weight zero. Each block containing a nonzero entry uses
+the sign of one such entry as its coefficient; the same-block sign theorem
+makes this choice independent of the representative for reconstruction. -/
+noncomputable def Fin.signBlockDecomposition
+    {n : ℕ} (c : Fin n → ℝ) : Fin.SignBlockDecomposition c := by
+  classical
+  let coeff : Fin (Fin.signVariations c + 1) → ℝ := fun b =>
+    if h : ∃ j, c j ≠ 0 ∧ Fin.signBlockIndex c j = b then
+      (SignType.sign (c h.choose) : ℝ)
+    else 0
+  refine
+    { numBlocks := Fin.signVariations c + 1
+      numBlocks_pos := Nat.succ_pos _
+      block := Fin.signBlockIndex c
+      block_mono := Fin.monotone_signBlockIndex c
+      weight := fun j => |c j|
+      weight_nonneg := fun j => abs_nonneg (c j)
+      coeff := coeff
+      reconstruct := ?_
+      numBlocks_sub_one := by simp }
+  intro j
+  by_cases hj : c j = 0
+  · simp [hj]
+  · have hex :
+        ∃ k, c k ≠ 0 ∧
+          Fin.signBlockIndex c k = Fin.signBlockIndex c j :=
+      ⟨j, hj, rfl⟩
+    change |c j| * coeff (Fin.signBlockIndex c j) = c j
+    rw [show coeff (Fin.signBlockIndex c j) =
+        (SignType.sign (c hex.choose) : ℝ) by
+      simp only [coeff, dif_pos hex]]
+    have hspec := hex.choose_spec
+    have hsign :=
+      Fin.sign_eq_of_signBlockIndex_eq c hj hspec.1 hspec.2.symm
+    rw [← hsign, abs_mul_sign]
