@@ -194,9 +194,9 @@ theorem hurwitz_mul_entrywise_matrix (a b : ℕ → ℝ) :
   ext i j
   simpa using hurwitz_mul_entrywise a b i j
 
-/-- False proposed extension of a finite nonsingular result discussed by
+/-- False proposed extension of a finite nonsingular result proved by
 Garloff--Wagner, *Hadamard products of stable polynomials are stable*, J. Math.
-Anal. Appl. 202 (1996), 797--809, Theorem 1.
+Anal. Appl. 202 (1996), 797--809, Theorem 13.
 
 The cited source proves Hadamard stability and discusses closure for finite
 nonsingular Hurwitz matrices.  It does not justify closure for arbitrary

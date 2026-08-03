@@ -27,11 +27,9 @@ universe u
 
 The source theorem concerns the concrete non-nesting rook polynomial `M_w`: it
 asserts real-rootedness and that deleting the final letter gives
-`M_{w'} << M_w`.  This interface makes nonzeroness explicit, represents
-real-rootedness by `Splits`, and uses the local `Interlaces` orientation.  It
-cannot be proved for arbitrary `M`; a witness must instantiate the concrete
-rook model and discharge the model identities from Theorem 3.5 and equation
-(2). -/
+`M_{w'} << M_w`. This interface is only an abstract package for arbitrary `M`.
+A source-facing theorem must instantiate `generalizedSnakeRookModel` and prove
+the degree and model-identification bridges needed to use local `Interlaces`. -/
 def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord}, 1 ≤ w.length →
     (M w ≠ 0 ∧ (M w).Splits) ∧

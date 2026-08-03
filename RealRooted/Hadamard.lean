@@ -2751,9 +2751,9 @@ input is only that entrywise products of totally nonnegative Hurwitz matrices
 are totally nonnegative.
 
 This implication is logically valid but unusable: `HurwitzMatrix.lean` proves
-`not_hurwitzMatrixSchurProductTNStatement`.  Garloff--Wagner, *Hadamard
+`not_hurwitzMatrixSchurProductTNStatement`. Garloff--Wagner, *Hadamard
 products of stable polynomials are stable*, J. Math. Anal. Appl. 202 (1996),
-797--809, Theorem 1, does not supply this unrestricted infinite-matrix
+797--809, Theorem 13, does not supply this unrestricted infinite-matrix
 hypothesis. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_schur
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
