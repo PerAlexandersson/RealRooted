@@ -375,29 +375,18 @@ theorem Matrix.supportedColumnRelation_spec
     exact (Fin.succAbove_ne j0 (cols i)) (by
       simpa only [selected, Function.comp_apply] using hi)
   have hkernel : A.mulVec z = 0 := by
-    calc
-      A.mulVec z =
-          A.mulVec (Function.extend selected d 0) -
-            A.mulVec (Pi.single j0 1) := by
-        change
-          A.mulVec
-              (Function.extend selected d 0 - Pi.single j0 1) =
-            A.mulVec (Function.extend selected d 0) -
-              A.mulVec (Pi.single j0 1)
-        rw [Matrix.mulVec_sub]
-      _ = (A.submatrix id selected).mulVec d - A.col j0 := by
-        rw [A.mulVec_extend_eq_submatrix_mulVec selected hselected d,
-          Matrix.mulVec_single_one]
-      _ = 0 := by
-        simpa only [selected] using sub_eq_zero.mpr hcombo
+    change A.mulVec
+      (Function.extend selected d 0 - Pi.single j0 1) = 0
+    rw [Matrix.mulVec_sub,
+      A.mulVec_extend_eq_submatrix_mulVec selected hselected d,
+      Matrix.mulVec_single_one]
+    simpa only [selected] using sub_eq_zero.mpr hcombo
   have hzj0 : z j0 = -1 := by
     simp only [z, Pi.sub_apply]
     rw [Function.extend_apply' d (0 : Fin (m + 1) → R) j0 hj0,
       Pi.zero_apply, Pi.single_eq_same, zero_sub]
-  have hdelete :
-      (A.submatrix id j0.succAbove).rank = r :=
-    A.rank_deleteColumn_eq_of_minor_ne_zero hrank j0 rows cols hminor
-  exact ⟨hkernel, hzj0, hdelete⟩
+  exact ⟨hkernel, hzj0,
+    A.rank_deleteColumn_eq_of_minor_ne_zero hrank j0 rows cols hminor⟩
 
 /-- A rank-sized minor avoiding `j0` produces Karlin's supported Case B
 relation and proves that deleting `j0` preserves rank. The printed source's
@@ -440,8 +429,7 @@ theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
     rw [Matrix.range_mulVecLin, Matrix.range_mulVecLin]
     apply Submodule.span_mono
     rintro _ ⟨j, rfl⟩
-    refine ⟨selected j, ?_⟩
-    rfl
+    exact ⟨selected j, rfl⟩
   have hrange :
       LinearMap.range B.mulVecLin = LinearMap.range A.mulVecLin :=
     Submodule.eq_of_le_of_finrank_le hrange_le (by
