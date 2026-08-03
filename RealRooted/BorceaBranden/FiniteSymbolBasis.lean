@@ -172,11 +172,10 @@ theorem algebraicSymbol_finOne_eq_sum_fin
   apply Fintype.sum_equiv (degreeOfLEFinOneEquiv n)
   intro m
   have hindex : finOneDegreeIndex n (m.1 0) = m := by
-    apply Subtype.ext
-    apply Finsupp.ext
-    intro i
-    rw [Fin.eq_zero i]
-    simp [finOneDegreeIndex, Nat.min_eq_left (m.2 0)]
+    apply (degreeOfLEFinOneEquiv n).injective
+    apply Fin.ext
+    simp [finOneDegreeIndex, degreeOfLEFinOneEquiv_val,
+      Nat.min_eq_left (m.2 0)]
   simp [hindex, boxChoose,
     rightComplementMonomial, degreeOfLEFinOneEquiv_val]
 
