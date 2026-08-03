@@ -218,6 +218,41 @@ example {P F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     recurrence := hrec
 
+/-- Lag-two product recurrences advance the even and odd subsequences together. -/
+example {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lag_product_factor_sequence using hbase_zero, hbase_one, hfactor, hrec
+
+/-- Splitting projection endpoint for lag-two product recurrences. -/
+example {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = F n * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_lag_product_factor_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    factor_realrooted := hfactor,
+    recurrence := hrec
+
+/-- Lag-two product recurrences also accept the supplied factor on the right. -/
+example {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lag_product_factor_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    factor_realrooted := hfactor,
+    recurrence := hrec
+
 /-- Supplied-factor product recurrences can start after finitely many base rows. -/
 example {P F : Nat → ℝ[X]}
     (N : Nat)

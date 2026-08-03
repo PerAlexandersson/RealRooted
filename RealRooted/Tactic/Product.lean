@@ -230,6 +230,30 @@ theorem isRealRooted_of_product_factor_right_sequence
   isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
 
+/-- Sequence shell for lag-two product recurrences with supplied factor certificates. -/
+theorem isRealRooted_of_lag_product_factor_sequence
+    {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, P (n + 2) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_pair_and_step_two hbase_zero hbase_one fun n hP => by
+    have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
+      isRealRooted_mul_of_isRealRooted (hfactor n) hP
+    simpa [hstep n] using hnext
+
+/-- Right-factor variant of `isRealRooted_of_lag_product_factor_sequence`. -/
+theorem isRealRooted_of_lag_product_factor_right_sequence
+    {P F : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, P (n + 2) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_lag_product_factor_sequence hbase_zero hbase_one hfactor
+    (fun n => by rw [hstep n, mul_comm])
+
 /-- Right-factor variant of
 `isRealRooted_of_product_factor_sequence_from`. -/
 theorem isRealRooted_of_product_factor_right_sequence_from
@@ -2575,6 +2599,19 @@ syntax (name := rr_product_factor_sequence)
   "rr_product_factor_sequence" " using " term ", " term ", " term :
   tactic
 
+syntax (name := rr_lag_product_factor_sequence_named)
+  "rr_lag_product_factor_sequence" " using "
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_lag_product_factor_sequence)
+  "rr_lag_product_factor_sequence" " using "
+    term ", " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_affine_product_sequence_named)
   "rr_affine_product_sequence" " using " "formula" ":=" term :
   tactic
@@ -3956,6 +3993,27 @@ macro_rules
       `(tactic|
         rr_product_factor_sequence using
           base := $hbase,
+          factor_realrooted := $hfactor,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        factor_realrooted := $hfactor:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_lag_product_factor_sequence
+            $hbase_zero $hbase_one $hfactor $hstep),
+          (RealRooted.isRealRooted_of_lag_product_factor_right_sequence
+            $hbase_zero $hbase_one $hfactor $hstep))
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        $hbase_zero:term, $hbase_one:term, $hfactor:term, $hstep:term) =>
+      `(tactic|
+        rr_lag_product_factor_sequence using
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
           factor_realrooted := $hfactor,
           recurrence := $hstep)
   | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
