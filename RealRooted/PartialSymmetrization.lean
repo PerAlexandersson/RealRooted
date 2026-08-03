@@ -38,20 +38,53 @@ theorem im_bivariateQuotient_eq_bivariateV2_div_normSq
         Complex.normSq (b + d * (x : ℂ)) := by
   exact im_bivariateQuotient_eq_bivariateV1_div_normSq a c b d x
 
-/-- A positive imaginary part of `c / d` keeps `c + d * x` nonzero on the
-real boundary. This is the denominator observation in Part II, Lemma 1.4. -/
-theorem add_mul_real_ne_zero_of_im_div_pos
-    (c d : ℂ) (x : ℝ) (h : 0 < (c / d).im) :
-    c + d * (x : ℂ) ≠ 0 := by
+/-- A positive imaginary part of `c / d` keeps `c + d * z` nonzero on the
+closed upper half-plane. This is the denominator observation in Part II,
+Lemma 1.4. -/
+theorem add_mul_ne_zero_of_im_div_pos
+    (c d z : ℂ) (h : 0 < (c / d).im) (hz : 0 ≤ z.im) :
+    c + d * z ≠ 0 := by
   intro hzero
   have hd : d ≠ 0 := by
     intro hd
     simp [hd] at h
-  have hratio : c / d = -(x : ℂ) := by
+  have hratio : c / d = -z := by
     apply (div_eq_iff hd).2
     linear_combination hzero
   rw [hratio] at h
   simp at h
+  linarith
+
+/-- The real-boundary specialization of
+`add_mul_ne_zero_of_im_div_pos`. -/
+theorem add_mul_real_ne_zero_of_im_div_pos
+    (c d : ℂ) (x : ℝ) (h : 0 < (c / d).im) :
+    c + d * (x : ℂ) ≠ 0 := by
+  exact add_mul_ne_zero_of_im_div_pos c d x h (by simp)
+
+/-- Solving a bivariate multiaffine expression for its second variable, as in
+the proof of Borcea--Brändén, Part II, Lemma 1.4. -/
+theorem bivariate_eq_factor_quotient
+    (a b c d z w : ℂ) (hden : c + d * z ≠ 0) :
+    a + b * z + c * w + d * z * w =
+      (c + d * z) * (w + (a + b * z) / (c + d * z)) := by
+  calc
+    a + b * z + c * w + d * z * w =
+        (c + d * z) * w + (a + b * z) := by ring
+    _ = (c + d * z) * w +
+        (c + d * z) * ((a + b * z) / (c + d * z)) := by
+      rw [mul_div_cancel₀ (a + b * z) hden]
+    _ = (c + d * z) * (w + (a + b * z) / (c + d * z)) := by ring
+
+/-- With a nonzero denominator, the bivariate expression has the unique
+second-variable zero used in equation (1.2) of Part II. -/
+theorem bivariate_eq_zero_iff
+    (a b c d z w : ℂ) (hden : c + d * z ≠ 0) :
+    a + b * z + c * w + d * z * w = 0 ↔
+      w = -((a + b * z) / (c + d * z)) := by
+  rw [bivariate_eq_factor_quotient a b c d z w hden]
+  simp only [mul_eq_zero, hden, false_or]
+  constructor <;> intro h <;> linear_combination h
 
 /-- On the real boundary, positivity of the first quotient imaginary part is
 equivalent to positivity of `bivariateV1` when its denominator stays off zero. -/
