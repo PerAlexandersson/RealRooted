@@ -4,6 +4,7 @@ public import Mathlib.Algebra.Polynomial.RuleOfSigns
 public import Mathlib.Data.List.ChainOfFn
 public import Mathlib.Data.List.NodupEquivFin
 public import Mathlib.Tactic
+public import RealRooted.Mathlib.Data.List.Destutter
 
 /-!
 # Sign variations of finite vectors
@@ -785,22 +786,12 @@ theorem List.signVariations_mono_of_prefix
     {l₁ l₂ : List R} (h : l₁ <+: l₂) :
     l₁.signVariations ≤ l₂.signVariations := by
   rw [List.signVariations, List.signVariations]
-  let s₁ : List SignType :=
-    (l₁.map SignType.sign).filter (· ≠ 0)
-  let s₂ : List SignType :=
-    (l₂.map SignType.sign).filter (· ≠ 0)
-  change (s₁.destutter (· ≠ ·)).length - 1 ≤
-    (s₂.destutter (· ≠ ·)).length - 1
-  have hsign : s₁ <+: s₂ :=
+  have hsign :
+      (l₁.map SignType.sign).filter (· ≠ 0) <+:
+        (l₂.map SignType.sign).filter (· ≠ 0) :=
     (h.map SignType.sign).filter (· ≠ 0)
-  have hsub : s₁.destutter (· ≠ ·) <+ s₂ :=
-    (List.destutter_sublist
-      (fun x y : SignType => x ≠ y) s₁).trans hsign.sublist
-  have hchain :
-      (s₁.destutter (· ≠ ·)).IsChain (· ≠ ·) :=
-    List.isChain_destutter (fun x y : SignType => x ≠ y) s₁
   exact (Nat.sub_le_sub_right
-    (List.IsChain.length_le_length_destutter_ne hsub hchain)) 1
+    (hsign.destutter (R := fun x y : SignType => x ≠ y)).length_le) 1
 
 /-- Taking a list prefix cannot increase sign variation. -/
 theorem List.signVariations_take_le
