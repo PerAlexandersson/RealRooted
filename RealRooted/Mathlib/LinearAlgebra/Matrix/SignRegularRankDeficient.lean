@@ -544,3 +544,50 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
   have hupper := hind hB hdelete d'
   have hlower := halt_delete.le_signVariations_of_strictMono hrows
   lia
+
+/-- Karlin's rank-sensitive variation bound, proved by induction on the number
+of columns. Rank zero gives the zero linear map, full column rank uses the
+injective variation bound, and positive deficient rank uses the
+rank-preserving deletion step. -/
+theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
+    {n m r : ℕ}
+    {A : Matrix (Fin n) (Fin m) ℝ}
+    (hA : A.IsSignConsistentOrder r)
+    (hrank : A.rank = r)
+    (c : Fin m → ℝ) :
+    Fin.signVariations (A.mulVec c) ≤ r - 1 := by
+  induction m generalizing r with
+  | zero =>
+      have hrzero : r = 0 := by
+        have hrle : r ≤ 0 := hrank ▸ A.rank_le_width
+        exact Nat.eq_zero_of_le_zero hrle
+      rw [hrzero] at hrank ⊢
+      have hlin : A.mulVecLin = 0 :=
+        LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hrank)
+      rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
+        Fin.signVariations_zero]
+  | succ k ih =>
+      by_cases hrzero : r = 0
+      · rw [hrzero] at hrank ⊢
+        have hlin : A.mulVecLin = 0 :=
+          LinearMap.range_eq_bot.mp
+            (Submodule.finrank_eq_zero.mp hrank)
+        rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
+          Fin.signVariations_zero]
+      · have hrpos : 0 < r := Nat.pos_of_ne_zero hrzero
+        have hrle : r ≤ k + 1 := by
+          rw [← hrank]
+          exact A.rank_le_width
+        by_cases hrfull : r = k + 1
+        · rw [hrfull] at hA hrank ⊢
+          have hkn : k + 1 ≤ n := hrank ▸ A.rank_le_height
+          have hAinj : Function.Injective A.mulVec := by
+            rw [Matrix.mulVec_injective_iff,
+              linearIndependent_iff_card_eq_finrank_span]
+            simpa only [Fintype.card_fin, Set.finrank] using
+              hrank.symm.trans (Matrix.rank_eq_finrank_span_cols A)
+          exact hA.signVariations_mulVec_le_card_sub_one hkn hAinj c
+        · have hrlt : r < k + 1 := lt_of_le_of_ne hrle hrfull
+          exact hA.signVariations_mulVec_le_rank_sub_one_of_induction
+            hrank hrlt hrpos
+            (fun {B} hB hBrank d => ih hB hBrank d) c
