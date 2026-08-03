@@ -28,10 +28,8 @@ theorem Rel.comp {α β γ : Type*}
       subst zs
       exact Rel.zero
   | cons b ys ih =>
-      obtain ⟨a, xs', hab, htail₁, hxs⟩ := Multiset.rel_cons_right.mp h₁
-      obtain ⟨c, zs', hbc, htail₂, hzs⟩ := Multiset.rel_cons_left.mp h₂
-      subst xs
-      subst zs
+      obtain ⟨a, xs', hab, htail₁, rfl⟩ := Multiset.rel_cons_right.mp h₁
+      obtain ⟨c, zs', hbc, htail₂, rfl⟩ := Multiset.rel_cons_left.mp h₂
       exact Rel.cons (hcomp a b c hab hbc) (ih htail₁ htail₂)
 
 /-- Related multisets have equally many elements satisfying corresponding predicates. -/
