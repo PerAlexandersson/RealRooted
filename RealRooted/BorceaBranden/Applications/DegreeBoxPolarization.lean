@@ -194,10 +194,14 @@ theorem specializeLeft_sourceBlockPolarization
         C (MvPolynomial.eval x q)
     induction q using MvPolynomial.induction_on with
     | C c => simp
-    | add q r hq hr => rw [map_add, hq, hr, map_add]
+    | add q r hq hr =>
+        rw [map_add, hq, hr, map_add]
+        exact (map_add MvPolynomial.C _ _).symm
     | mul_X q i hq =>
         rw [map_mul, MvPolynomial.aeval_X, hq, map_mul,
           MvPolynomial.eval_X]
+        simpa only [Function.comp_apply] using
+          (map_mul MvPolynomial.C (MvPolynomial.eval x q) (x i)).symm
   have hsource (q : MvPolynomial (Fin n) ℂ) :
       MvPolynomial.aeval
           (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
