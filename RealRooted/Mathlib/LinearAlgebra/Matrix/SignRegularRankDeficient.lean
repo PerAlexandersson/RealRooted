@@ -465,10 +465,9 @@ theorem Matrix.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
     A.exists_ordered_minor_ne_zero_of_rank_eq hrank
   have hcols_not_surj : ¬ Function.Surjective cols := by
     intro hsurj
-    have hcard := Fintype.card_le_of_surjective cols hsurj
-    have : k + 1 ≤ r := by
-      simpa only [Fintype.card_fin] using hcard
-    exact (not_le_of_gt hrank_lt) this
+    apply not_le_of_gt hrank_lt
+    simpa only [Fintype.card_fin] using
+      Fintype.card_le_of_surjective cols hsurj
   obtain ⟨j0, hj0⟩ : ∃ j0, ∀ i, cols i ≠ j0 := by
     simpa only [Function.Surjective, not_forall, not_exists] using
       hcols_not_surj
@@ -480,15 +479,11 @@ theorem Matrix.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
   have hcols'_inj : Function.Injective cols' := by
     intro i j hij
     apply hcols.injective
-    calc
-      cols i = j0.succAbove (cols' i) :=
-        (congrFun hcols_factor i).symm
-      _ = j0.succAbove (cols' j) := congrArg j0.succAbove hij
-      _ = cols j := congrFun hcols_factor j
+    rw [← hcols_factor]
+    exact congrArg j0.succAbove hij
   have hminor' :
       (A.submatrix rows (j0.succAbove ∘ cols')).det ≠ 0 := by
-    rw [hcols_factor]
-    exact hminor
+    simpa only [hcols_factor] using hminor
   obtain ⟨d, hkernel, hzj0, hdelete⟩ :=
     A.exists_supportedColumnRelation_of_minor_ne_zero
       j0 rows cols' hcols'_inj hrank hminor'
@@ -536,7 +531,7 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
   let d' : Fin k → ℝ := Fin.removeNth j0 d
   have halt_d :
       Fin.StrictlyAlternates (fun i => A.mulVec d (rows i)) := by
-    simpa only [d, t] using halt.matrix_mulVec_add_smul hzrows t
+    simpa only [d] using halt.matrix_mulVec_add_smul hzrows t
   have hcancel : A.mulVec d = B.mulVec d' := by
     simpa only [d, t, B, d'] using
       A.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec c z j0 hzj0
@@ -544,9 +539,8 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
       Fin.StrictlyAlternates (fun i => B.mulVec d' (rows i)) := by
     rw [← hcancel]
     exact halt_d
-  have hB : B.IsSignConsistentOrder r := by
-    dsimp only [B]
-    exact hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
+  have hB : B.IsSignConsistentOrder r :=
+    hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
   have hupper := hind hB hdelete d'
   have hlower := halt_delete.le_signVariations_of_strictMono hrows
   lia
