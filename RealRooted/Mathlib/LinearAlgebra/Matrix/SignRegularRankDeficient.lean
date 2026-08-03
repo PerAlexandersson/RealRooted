@@ -721,3 +721,35 @@ theorem Matrix.isTotallyNonnegRect_monotoneWeightedIncidence
   split_ifs
   · exact Finset.prod_nonneg fun i _ => hweight (rows i)
   · exact le_rfl
+
+/-- The weighted incidence matrix associated with a block map. -/
+def Matrix.weightedIncidence
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ) :
+    Matrix (Fin n) (Fin q) ℝ :=
+  fun j s => if block j = s then weight j else 0
+
+@[simp]
+theorem Matrix.weightedIncidence_apply
+    {n q : ℕ}
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ)
+    (j : Fin n)
+    (s : Fin q) :
+    Matrix.weightedIncidence block weight j s =
+      if block j = s then weight j else 0 :=
+  rfl
+
+/-- Right multiplication by a weighted incidence matrix forms weighted block sums. -/
+theorem Matrix.mul_weightedIncidence_apply
+    {l n q : ℕ}
+    (L : Matrix (Fin l) (Fin n) ℝ)
+    (block : Fin n → Fin q)
+    (weight : Fin n → ℝ)
+    (i : Fin l)
+    (s : Fin q) :
+    (L * Matrix.weightedIncidence block weight) i s =
+      ∑ j with block j = s, L i j * weight j := by
+  rw [Matrix.mul_apply, Finset.sum_filter]
+  simp only [Matrix.weightedIncidence_apply, mul_ite, mul_zero]
