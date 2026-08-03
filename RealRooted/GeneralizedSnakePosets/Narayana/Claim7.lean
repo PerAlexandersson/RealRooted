@@ -253,7 +253,6 @@ theorem theorem41NonNestingRook_modified_of_sourceInputs
     ((theorem41MatrixClaim_iff_claim7 _ _).mpr
       (theorem41Claim7_modified hrec2 hH_nonneg))
     modifiedNarayanaPolynomial_ne_zero
-    (fun {_m} hm => narayanaDifference_modified_ne_zero (by lia))
     modifiedNarayanaPolynomial_interlaces_succ
     modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
     modifiedNarayanaPolynomial_hasNonnegCoeffs

@@ -104,7 +104,6 @@ theorem theorem41Step_difference_prec_of_matrixClaim
     {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
     (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
     (hP_ne : P (m - 1) ≠ 0)
-    (hQ_ne : narayanaDifference P m ≠ 0)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
@@ -113,6 +112,9 @@ theorem theorem41Step_difference_prec_of_matrixClaim
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
     Prec (f * P (m - 1) + X * g * G (m - 1))
       (f * narayanaDifference P m + X * g * auxiliaryDifference G m) := by
+  have hQ_ne : narayanaDifference P m ≠ 0 := by
+    have hzero := hclaim (m := m) (lam := 0) (mu := 0) hm (by norm_num) (by norm_num)
+    simpa using hzero.2.1.1
   have hpair := prec_zipWith_sum_pair_of_2x2
     (n := 2) (row₁ := [P (m - 1), G (m - 1)])
     (row₂ := [narayanaDifference P m, auxiliaryDifference G m])
@@ -242,7 +244,6 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     (hlast : w.IsLastChangeIndex k)
     (hk : k + 1 < w.deleteFinal.length)
     (hP_ne : ∀ n, P n ≠ 0)
-    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
@@ -288,7 +289,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
   have hstep : Prec (M w.deleteFinal) (M w - M w.deleteFinal) := by
     rw [hrec_del, hrec_diff]
     exact theorem41Step_difference_prec_of_matrixClaim
-      hclaim hm (hP_ne (m - 1)) (hQ_ne hm) hP_nonneg hG_nonneg
+      hclaim hm (hP_ne (m - 1)) hP_nonneg hG_nonneg
       (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
   have hsum0 : Prec0 (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
@@ -550,7 +551,6 @@ theorem theorem41_of_matrixClaim_of_constant_cases
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41MatrixClaimStatement P G)
     (hP_ne : ∀ n, P n ≠ 0)
-    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -571,7 +571,7 @@ theorem theorem41_of_matrixClaim_of_constant_cases
   by_cases hk : k + 1 < w.deleteFinal.length
   · exact theorem41NonconstantStep_prec_of_matrixClaim
       (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hclaim hlast hk hP_ne hQ_ne hP_nonneg hG_nonneg
+      hrec hclaim hlast hk hP_ne hP_nonneg hG_nonneg
       hQ_nonneg hH_nonneg hprefix_prec hM_nonneg
   · have hsuffix : w.length - (k + 1) = 1 := by
       rw [SnakeWord.length_deleteFinal] at hk
@@ -588,7 +588,6 @@ theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41MatrixClaimStatement P G)
     (hP_ne : ∀ n, P n ≠ 0)
-    (hQ_ne : ∀ {m : ℕ}, 2 ≤ m → narayanaDifference P m ≠ 0)
     (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
@@ -610,7 +609,7 @@ theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
     theorem41_constant_of_matches_succ_length
       (M := M) (P := P) hM_const hP_interlaces
   exact theorem41_of_matrixClaim_of_constant_cases
-    (M := M) (P := P) (G := G) hrec hclaim hP_ne hQ_ne hP_one hG_one
+    (M := M) (P := P) (G := G) hrec hclaim hP_ne hP_one hG_one
     hP_nonneg hG_nonneg hQ_nonneg hH_nonneg hM_nonneg hdeg hconst
 
 /-- The deletion degree bridge follows from the length-indexed degree formula
