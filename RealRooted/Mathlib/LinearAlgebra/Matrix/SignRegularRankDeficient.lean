@@ -833,3 +833,12 @@ theorem Matrix.IsSignRegular.signVariations_mulVec_le_of_signBlockDecomposition
     _ ≤ d.numBlocks - 1 :=
       (Nat.sub_le_sub_right B.rank_le_width) 1
     _ = Fin.signVariations c := d.numBlocks_sub_one
+
+/-- Karlin's variation-diminishing theorem for sign-regular matrices. -/
+theorem Matrix.IsSignRegular.signVariations_mulVec_le
+    {l n : ℕ}
+    {A : Matrix (Fin l) (Fin n) ℝ}
+    (hA : A.IsSignRegular) (c : Fin n → ℝ) :
+    Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c :=
+  hA.signVariations_mulVec_le_of_signBlockDecomposition
+    c (Fin.signBlockDecomposition c)
