@@ -606,8 +606,8 @@ theorem signVariations_eq_signList {n : ℕ} (x : Fin n → ℝ) :
 theorem filtered_signList_signVariations {n : ℕ} (x : Fin n → ℝ) :
     ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)).signVariations =
       Fin.signVariations x := by
-  rw [List.signVariations_filter_ne_zero]
-  exact (Fin.signVariations_eq_signList x).symm
+  simpa only [List.signVariations_filter_ne_zero] using
+    (Fin.signVariations_eq_signList x).symm
 
 /-- Perturbed signs at all interior coordinates and at the original nonzero
 endpoints.
