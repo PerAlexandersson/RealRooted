@@ -133,6 +133,30 @@ theorem mvUpperHalfPlaneStable_bivariate_of_quotient_im_pos
   exact bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos
     a b c d (z 0) (z 1) hcd (le_of_lt (hz 0)) (hq (z 0) (hz 0)) (hz 1)
 
+/-- Stability forces the solved quotient into the closed upper half-plane.
+Upgrading this weak inequality to strict positivity is the separate
+open-mapping step in the proof of Part II, Lemma 1.4. -/
+theorem quotient_im_nonneg_of_mvUpperHalfPlaneStable_bivariate
+    (a b c d : ℂ)
+    (hP : MvUpperHalfPlaneStable (bivariateMultiaffinePolynomial a b c d))
+    (hcd : 0 < (c / d).im) (z : ℂ) (hz : 0 < z.im) :
+    0 ≤ ((a + b * z) / (c + d * z)).im := by
+  by_contra hq
+  let w := -((a + b * z) / (c + d * z))
+  have hw : 0 < w.im := by
+    dsimp [w]
+    simp
+    linarith
+  have hstable := hP ![z, w] (by
+    intro i
+    fin_cases i
+    · simpa using hz
+    · simpa using hw)
+  rw [eval_bivariateMultiaffinePolynomial] at hstable
+  apply hstable
+  exact (bivariate_eq_zero_iff a b c d z w
+    (add_mul_ne_zero_of_im_div_pos c d z hcd (le_of_lt hz))).2 rfl
+
 /-- On the real boundary, positivity of the first quotient imaginary part is
 equivalent to positivity of `bivariateV1` when its denominator stays off zero. -/
 theorem im_bivariateQuotient_pos_iff_bivariateV1_pos
