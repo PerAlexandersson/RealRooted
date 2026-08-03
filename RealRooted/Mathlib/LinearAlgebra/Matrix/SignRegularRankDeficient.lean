@@ -447,3 +447,53 @@ theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
     simpa only [B, selected, Matrix.mulVecLin_apply] using hd
   exact A.supportedColumnRelation_spec j0 rows cols hcols hrank
     hminor d hcombo
+
+/-- Karlin's deficient-rank induction adapter. The printed proof's claim that
+an arbitrary kernel coordinate can be prescribed is false in general. Instead,
+we choose `j0` outside the columns of a nonzero rank-sized minor. That minor
+survives deletion of `j0`, while the selected columns express column `j0`
+and produce a kernel relation whose `j0` coordinate is nonzero. -/
+theorem Matrix.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
+    {R : Type*} [Field R] {n k r : ℕ}
+    (A : Matrix (Fin n) (Fin (k + 1)) R)
+    (hrank : A.rank = r) (hrank_lt : r < k + 1) :
+    ∃ j0 : Fin (k + 1), ∃ z : Fin (k + 1) → R,
+      A.mulVec z = 0 ∧ z j0 ≠ 0 ∧
+        (A.submatrix id j0.succAbove).rank = r := by
+  classical
+  obtain ⟨rows, cols, _, hcols, hminor⟩ :=
+    A.exists_ordered_minor_ne_zero_of_rank_eq hrank
+  have hcols_not_surj : ¬ Function.Surjective cols := by
+    intro hsurj
+    have hcard := Fintype.card_le_of_surjective cols hsurj
+    have : k + 1 ≤ r := by
+      simpa only [Fintype.card_fin] using hcard
+    exact (not_le_of_gt hrank_lt) this
+  obtain ⟨j0, hj0⟩ : ∃ j0, ∀ i, cols i ≠ j0 := by
+    simpa only [Function.Surjective, not_forall, not_exists] using
+      hcols_not_surj
+  choose cols' hcols' using fun i =>
+    Fin.exists_succAbove_eq (hj0 i)
+  have hcols_factor : j0.succAbove ∘ cols' = cols := by
+    funext i
+    exact hcols' i
+  have hcols'_inj : Function.Injective cols' := by
+    intro i j hij
+    apply hcols.injective
+    calc
+      cols i = j0.succAbove (cols' i) :=
+        (congrFun hcols_factor i).symm
+      _ = j0.succAbove (cols' j) := congrArg j0.succAbove hij
+      _ = cols j := congrFun hcols_factor j
+  have hminor' :
+      (A.submatrix rows (j0.succAbove ∘ cols')).det ≠ 0 := by
+    rw [hcols_factor]
+    exact hminor
+  obtain ⟨d, hkernel, hzj0, hdelete⟩ :=
+    A.exists_supportedColumnRelation_of_minor_ne_zero
+      j0 rows cols' hcols'_inj hrank hminor'
+  refine ⟨j0,
+    Function.extend (j0.succAbove ∘ cols') d 0 - Pi.single j0 1,
+    hkernel, ?_, hdelete⟩
+  rw [hzj0]
+  exact neg_ne_zero.mpr one_ne_zero
