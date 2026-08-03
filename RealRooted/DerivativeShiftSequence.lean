@@ -13,6 +13,8 @@ simple roots.  Its proof follows the multiplicity descent used for fixed
 iterations, tracing a hypothetical multiple root backward through the list.
 -/
 
+open RealRooted
+
 namespace Polynomial
 
 noncomputable section
