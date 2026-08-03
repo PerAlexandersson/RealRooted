@@ -241,6 +241,25 @@ noncomputable section
 
 open MvPolynomial
 
+/-- The source-degree coefficient of a one-variable finite algebraic symbol.
+
+This is the coefficient calculation on the right-hand side of
+Borcea--Brändén Lemma 2.5: source degree `r` corresponds to operator degree
+`n - r`, with coefficient `choose n (n - r)`. -/
+theorem sourceCoefficient_algebraicSymbol_finOne
+    {τ : Type*} (n r : ℕ)
+    (T : degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial τ ℂ)
+    (hr : r ≤ n) :
+    sourceCoefficient (algebraicSymbol (fun _ : Fin 1 => n) T) r =
+      C (n.choose (n - r) : ℂ) *
+        T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+          (finOneDegreeIndex n (n - r))) := by
+  rw [algebraicSymbol_finOne_eq_sum_range]
+  exact sourceCoefficient_symbol_sum n r hr fun k =>
+    T (basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+      (finOneDegreeIndex n k))
+
 lemma finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex
     {n : ℕ} (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
     finOneDegreeIndex n m.1.degree = diagonalDegreeBoxIndex m := by
