@@ -489,27 +489,20 @@ protected theorem NodalInsertion.eraseIdx_first_middle
     NodalInsertion
       ([a] ++ middle.eraseIdx 0 ++ post)
       ([a] ++ middle ++ post) := by
-  have h :
-      NodalInsertion
-        (([a] ++ middle ++ post).eraseIdx 1)
-        ([a] ++ middle ++ post) := by
-    simpa only [List.nil_append, List.length_nil, zero_add,
-      List.append_assoc] using
-      NodalInsertion.eraseIdx_append_middle
-        [] ([a] ++ middle) post 0
-        (by
-          simp only [List.length_append, List.length_singleton]
-          lia)
-        (by simpa using ha)
-        (by simpa using hb)
-        (by simpa using hab)
-  have herase :
-      ([a] ++ middle ++ post).eraseIdx 1 =
-        [a] ++ middle.eraseIdx 0 ++ post := by
-    simpa using
-      List.eraseIdx_append_middle [a] middle post 0 (by lia)
-  rw [← herase]
-  exact h
+  rw [← List.eraseIdx_append_middle [a] middle post 0 (by lia)]
+  change NodalInsertion
+    (([a] ++ middle ++ post).eraseIdx 1)
+    ([a] ++ middle ++ post)
+  simpa only [List.nil_append, List.length_nil, zero_add,
+    List.append_assoc] using
+    NodalInsertion.eraseIdx_append_middle
+      [] ([a] ++ middle) post 0
+      (by
+        simp only [List.length_append, List.length_singleton]
+        lia)
+      (by simpa using ha)
+      (by simpa using hb)
+      (by simpa using hab)
 
 /-- Deleting the final entry of a middle block is one nodal insertion in
 reverse when its preceding entry and a retained singleton endpoint have
@@ -529,20 +522,14 @@ protected theorem NodalInsertion.eraseIdx_last_append_singleton
     List.getElem_append_left hi
   have hright : (middle ++ [b])[i + 2] = b := by
     simp [List.getElem_append_right, hlen]
-  have hfull :
-      NodalInsertion
-        ((pre ++ middle ++ [b]).eraseIdx
-          (pre.length + (i + 1)))
-        (pre ++ middle ++ [b]) := by
-    simpa only [List.append_nil, List.append_assoc] using
-      NodalInsertion.eraseIdx_append_middle
-        pre (middle ++ [b]) [] i hiLocal
-        (by rw [hleft]; exact ha)
-        (by rw [hright]; exact hb)
-        (by rw [hleft, hright]; exact hab)
-  rw [List.eraseIdx_append_middle
-    pre middle [b] (i + 1) hiErase] at hfull
-  exact hfull
+  rw [← List.eraseIdx_append_middle
+    pre middle [b] (i + 1) hiErase]
+  simpa only [List.append_nil, List.append_assoc] using
+    NodalInsertion.eraseIdx_append_middle
+      pre (middle ++ [b]) [] i hiLocal
+      (by rw [hleft]; exact ha)
+      (by rw [hright]; exact hb)
+      (by rw [hleft, hright]; exact hab)
 
 /-- Adding unchanged list context preserves repeated nodal insertions. -/
 protected theorem NodalInsertion.reflTransGen_append_context
