@@ -597,6 +597,13 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
           exact hA.signVariations_mulVec_le_rank_sub_one_of_induction
             hrank hrlt hrpos ih c
 
+private lemma mul_mul_nonneg_of_cross_mul_nonneg
+    {a b c d : ℝ} (hac : 0 ≤ a * c) (hbd : 0 ≤ b * d) :
+    0 ≤ (a * b) * (c * d) := by
+  calc
+    0 ≤ (a * c) * (b * d) := mul_nonneg hac hbd
+    _ = (a * b) * (c * d) := by ring
+
 /-- Right multiplication by a totally nonnegative rectangular matrix preserves
 the common weak sign of ordered minors of a fixed size. Cauchy--Binet expands
 the product of two output minors as a double sum; sign consistency controls the
@@ -634,8 +641,7 @@ theorem Matrix.IsSignConsistentOrder.mul_of_right_isTotallyNonnegRect
     mul_nonneg
       (hA es.strictMono hcols)
       (hA et.strictMono hcols')
-  simpa only [es, et, mul_assoc, mul_left_comm, mul_comm] using
-    mul_nonneg hsign hright
+  exact mul_mul_nonneg_of_cross_mul_nonneg hsign hright
 
 /-- The weighted incidence matrix associated with a block map. -/
 def Matrix.weightedIncidence
