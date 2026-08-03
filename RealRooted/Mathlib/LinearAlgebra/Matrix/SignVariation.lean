@@ -382,7 +382,7 @@ theorem List.signVariations_append_singleton_signType_le_succ
     ((l.map SignType.sign).filter (· ≠ 0)) (SignType.sign a)
   by_cases ha : SignType.sign a = 0
   · simp [List.signVariations, ha]
-  · simp [List.signVariations, ha]
+  · simp [List.signVariations]
     lia
 
 /-- Inserting any sign between opposite nonzero signs does not change sign variations.
