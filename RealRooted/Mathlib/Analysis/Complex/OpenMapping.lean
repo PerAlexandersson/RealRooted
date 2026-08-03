@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Complex.OpenMapping
 
 /-!
-# Complex polynomial consequences of the open mapping theorem
+# Complex consequences of the open mapping theorem
 
 This file contains general-purpose compatibility lemmas intended for eventual
 upstreaming to Mathlib.
@@ -11,6 +11,39 @@ open Filter Metric Set
 open scoped Topology
 
 noncomputable section
+
+namespace AnalyticAt
+
+/-- A locally nonconstant analytic map that is eventually confined to the
+closed upper half-plane takes its base point into the open upper half-plane. -/
+theorem im_pos_of_eventually_im_nonneg
+    {f : ℂ → ℂ} {z₀ : ℂ} (hf : AnalyticAt ℂ f z₀)
+    (hnotconst : ¬∀ᶠ z in 𝓝 z₀, f z = f z₀)
+    (hzero : 0 ≤ (f z₀).im)
+    (hnonneg : ∀ᶠ z in 𝓝 z₀, 0 ≤ (f z).im) :
+    0 < (f z₀).im := by
+  by_contra hpos
+  have himzero : (f z₀).im = 0 :=
+    le_antisymm (le_of_not_gt hpos) hzero
+  have hmap : 𝓝 (f z₀) ≤ Filter.map f (𝓝 z₀) :=
+    hf.eventually_constant_or_nhds_le_map_nhds_aux.resolve_left hnotconst
+  have himage : f '' {z | 0 ≤ (f z).im} ∈ 𝓝 (f z₀) :=
+    hmap (image_mem_map hnonneg)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himage
+  let w : ℂ := f z₀ - (ε / 2 : ℝ) * Complex.I
+  have hwball : w ∈ ball (f z₀) ε := by
+    rw [mem_ball]
+    simp [w, Real.norm_eq_abs, abs_of_pos hε]
+    linarith
+  have hwim : w.im < 0 := by
+    simp [w, himzero]
+    linarith
+  obtain ⟨z, hz, hzw⟩ := hball hwball
+  change 0 ≤ (f z).im at hz
+  rw [hzw] at hz
+  linarith
+
+end AnalyticAt
 
 namespace Polynomial
 
