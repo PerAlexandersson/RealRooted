@@ -37,9 +37,9 @@ The tactics apply `matrix_preserves_interlacing_seq`,
 the user supplies the matrix action, rectangularity, entry nonnegativity, and
 `2 x 2` Branden conditions.
 
-The bare `rr_matrix0`, `rr_matrix0_weak`, `rr_row_threshold_matrix0`, and
-`rr_row_threshold_matrix0_weak` forms infer the matrix and input from the goal.
-They use exact local length and input certificates, then the registered matrix
+Every `matrix0` form has a bare variant inferring the matrix and input from the
+goal; `rr_matrix` and `rr_row_threshold_matrix` require `using`. The bare forms
+use exact local length and input certificates, then the registered matrix
 certificate attributes. The bare `rr_row_threshold_entry_nonneg` form infers
 its matrix from the target.
 
@@ -143,6 +143,9 @@ syntax (name := rr_matrix0_realrooted_named)
     "input_interlacing" ":=" term :
   tactic
 
+syntax (name := rr_matrix0_realrooted_inferred)
+  "rr_matrix0_realrooted" : tactic
+
 syntax (name := rr_matrix0_filter_ne_zero)
   "rr_matrix0_filter_ne_zero" " using " term ", "
     term ", "
@@ -163,6 +166,9 @@ syntax (name := rr_matrix0_filter_ne_zero_named)
     "input_length" ":=" term ","
     "input_interlacing" ":=" term :
   tactic
+
+syntax (name := rr_matrix0_filter_ne_zero_inferred)
+  "rr_matrix0_filter_ne_zero" : tactic
 
 syntax (name := rr_matrix0_filter_ne_zero_weak)
   "rr_matrix0_filter_ne_zero_weak" " using " term ", "
@@ -186,6 +192,9 @@ syntax (name := rr_matrix0_filter_ne_zero_weak_named)
     "input_interlacing" ":=" term ","
     "input_real_rooted" ":=" term :
   tactic
+
+syntax (name := rr_matrix0_filter_ne_zero_weak_inferred)
+  "rr_matrix0_filter_ne_zero_weak" : tactic
 
 syntax (name := rr_row_threshold_matrix_named)
   "rr_row_threshold_matrix" " using "
@@ -283,6 +292,9 @@ syntax (name := rr_row_threshold_matrix0_filter_ne_zero_weak)
     term :
   tactic
 
+syntax (name := rr_row_threshold_matrix0_filter_ne_zero_weak_inferred)
+  "rr_row_threshold_matrix0_filter_ne_zero_weak" : tactic
+
 syntax (name := rr_row_threshold_matrix0_realrooted_named)
   "rr_row_threshold_matrix0_realrooted" " using "
     "matrix" ":=" term ","
@@ -304,6 +316,9 @@ syntax (name := rr_row_threshold_matrix0_realrooted)
     term :
   tactic
 
+syntax (name := rr_row_threshold_matrix0_realrooted_inferred)
+  "rr_row_threshold_matrix0_realrooted" : tactic
+
 syntax (name := rr_row_threshold_matrix0_filter_ne_zero_named)
   "rr_row_threshold_matrix0_filter_ne_zero" " using "
     "matrix" ":=" term ","
@@ -324,6 +339,9 @@ syntax (name := rr_row_threshold_matrix0_filter_ne_zero)
     term ", "
     term :
   tactic
+
+syntax (name := rr_row_threshold_matrix0_filter_ne_zero_inferred)
+  "rr_row_threshold_matrix0_filter_ne_zero" : tactic
 
 syntax (name := rr_row_threshold_entry_nonneg_named)
   "rr_row_threshold_entry_nonneg" " using "
@@ -358,6 +376,35 @@ macro_rules
           case hG_affine => rr_lookup [rr_matrix_2x2]
           case hfs => assumption
           case hfs_real => assumption))
+  | `(tactic| rr_matrix0_realrooted) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.matrix_preserves_interlacing_seq0_of_2x2_realRooted
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_matrix0_filter_ne_zero) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_matrix0_filter_ne_zero_weak) =>
+      `(tactic|
+        exact (by
+          apply
+            RealRooted.matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2_weak
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption
+          case hfs_real => assumption))
   | `(tactic| rr_row_threshold_matrix0) =>
       `(tactic|
         exact (by
@@ -371,6 +418,37 @@ macro_rules
       `(tactic|
         exact (by
           apply RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_weak
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption
+          case hfs_real => assumption))
+  | `(tactic| rr_row_threshold_matrix0_realrooted) =>
+      `(tactic|
+        exact (by
+          apply
+            RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_realRooted
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_row_threshold_matrix0_filter_ne_zero) =>
+      `(tactic|
+        exact (by
+          apply
+            RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_row_threshold_matrix0_filter_ne_zero_weak) =>
+      `(tactic|
+        exact (by
+          apply
+            RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2_weak
           case hfs_len => assumption
           case hG_rect => rr_lookup [rr_matrix_rect]
           case hG_threshold => rr_lookup [rr_matrix_threshold]

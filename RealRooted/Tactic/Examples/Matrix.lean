@@ -99,8 +99,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
-  rr_matrix0_filter_ne_zero using
-    G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs
+  rr_matrix0_filter_ne_zero
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -138,7 +137,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) ∧
       ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  rr_matrix0_realrooted using G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs
+  rr_matrix0_realrooted
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -219,8 +218,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
-  rr_matrix0_filter_ne_zero_weak using
-    G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs, hfs_real
+  rr_matrix0_filter_ne_zero_weak
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -402,8 +400,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
-  rr_row_threshold_matrix0_filter_ne_zero_weak using
-    G, hG_rect, hG_threshold, hG_affine, fs, hfs_len, hfs, hfs_real
+  rr_row_threshold_matrix0_filter_ne_zero_weak
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -442,8 +439,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) ∧
       ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  rr_row_threshold_matrix0_realrooted using
-    G, hG_rect, hG_threshold, hG_affine, fs, hfs_len, hfs
+  rr_row_threshold_matrix0_realrooted
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -480,8 +476,7 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
-  rr_row_threshold_matrix0_filter_ne_zero using
-    G, hG_rect, hG_threshold, hG_affine, fs, hfs_len, hfs
+  rr_row_threshold_matrix0_filter_ne_zero
 
 example {G : List (List ℝ[X])}
     (hG_threshold : HasRowThresholdLinearStructure G) :
@@ -565,6 +560,11 @@ example (hfs_len : ([] : List ℝ[X]).length = 0)
     (hfs : IsInterlacingSeqNonneg ([] : List ℝ[X])) :
     IsInterlacingSeq0Nonneg (matPolyAction decoyMatrix []) := by
   rr_matrix0
+
+example (hfs_len : ([] : List ℝ[X]).length = 0)
+    (hfs : IsInterlacingSeqNonneg ([] : List ℝ[X])) :
+    IsInterlacingSeqNonneg ((matPolyAction decoyMatrix []).filter (· ≠ 0)) := by
+  rr_matrix0_filter_ne_zero
 
 example (hfs_len : ([] : List ℝ[X]).length = 0)
     (hfs : IsInterlacingSeqNonneg ([] : List ℝ[X])) :
