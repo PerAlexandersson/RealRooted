@@ -41,6 +41,23 @@ the hidden polynomial before exact-local, local-family, or tagged certificate
 lookup. Use the explicit form when the displayed target or a certificate does
 not determine its prefix.
 
+When the goal itself displays either
+
+```text
+Prec f (u * f + v * f.derivative)
+Prec f (a * f + b * g)
+```
+
+use bare `rr_mw_derivative_nonpos` for the first shape and bare
+`rr_prec_evalCoeff_nonpos` for the second. Each tactic infers the displayed
+polynomials and uses certificate lookup. Their `using degree :=` forms run `lia`
+independently for the lower and upper degree goals, so both bounds must follow
+from the supplied arithmetic hint. Keep the displayed product association
+literal; use an explicit form after reassociation. The generic tactic also
+accepts derivative goals, but the derivative-specific form usually has the more
+natural certificates. In the generic tactic, `source_pos_lc` refers to the
+interlacer `g`.
+
 First intended regression examples:
 
 - `touchard`;
@@ -1870,6 +1887,12 @@ syntax (name := rr_prec_evalCoeff_nonpos_degree_named)
     "coeff_nonpos" ":=" term :
   tactic
 
+syntax (name := rr_prec_evalCoeff_nonpos_inferred)
+  "rr_prec_evalCoeff_nonpos" : tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_degree_inferred)
+  "rr_prec_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos)
   "rr_mw_derivative_nonpos" " using " term ", " term ", " term ", " term ", "
     term ", " term ", " term :
@@ -1910,6 +1933,12 @@ syntax (name := rr_mw_derivative_nonpos_degree_named)
     "source_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term :
   tactic
+
+syntax (name := rr_mw_derivative_nonpos_inferred)
+  "rr_mw_derivative_nonpos" : tactic
+
+syntax (name := rr_mw_derivative_nonpos_degree_inferred)
+  "rr_mw_derivative_nonpos" " using " "degree" ":=" term : tactic
 
 syntax (name := rr_mw_derivative_sign_roots_nonpos_named)
   "rr_mw_derivative_sign_roots_nonpos" " using "
@@ -3622,6 +3651,23 @@ macro_rules
           degree_lower := (by rr_mw_degree_from $hdeg),
           degree_upper := (by rr_mw_degree_from $hdeg),
           coeff_nonpos := $hb_nonpos)
+  | `(tactic| rr_prec_evalCoeff_nonpos) =>
+      `(tactic|
+        rr_prec_evalCoeff_nonpos using
+          interlaces := (by rr_lookup),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          coeff_nonpos := (by rr_lookup))
+  | `(tactic| rr_prec_evalCoeff_nonpos using degree := $hdeg:term) =>
+      `(tactic|
+        rr_prec_evalCoeff_nonpos using
+          interlaces := (by rr_lookup),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          degree := $hdeg,
+          coeff_nonpos := (by rr_lookup))
   | `(tactic|
       rr_mw_derivative_nonpos_step using
         splits := $hf:term,
@@ -3677,6 +3723,25 @@ macro_rules
           target_pos_lc := $hF_pos,
           source_pos_lc := $hf_pos,
           coeff_nonpos := $hv_nonpos)
+  | `(tactic| rr_mw_derivative_nonpos) =>
+      `(tactic|
+        rr_mw_derivative_nonpos using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          coeff_nonpos := (by rr_lookup))
+  | `(tactic| rr_mw_derivative_nonpos using degree := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := $hdeg,
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          coeff_nonpos := (by rr_lookup))
   | `(tactic|
       rr_mw_derivative_sign_roots_nonpos using
         splits := $hf:term,

@@ -283,6 +283,59 @@ example {f u v : ℝ[X]}
     source_pos_lc := hf_pos,
     coeff_nonpos := hv_nonpos
 
+/-- The bare derivative form selects indexed certificates for the displayed
+target despite unrelated local families. -/
+example {P Q U V : Nat → ℝ[X]} {n : Nat}
+    (_hQ_splits : ∀ k, (Q k).Splits)
+    (hP_splits : ∀ k, (P k).Splits)
+    (hP_degree : ∀ k, 2 ≤ (P k).natDegree)
+    (hdeg_lo : ∀ k,
+      (P k).natDegree ≤ (U k * P k + V k * (P k).derivative).natDegree)
+    (hdeg_hi : ∀ k,
+      (U k * P k + V k * (P k).derivative).natDegree ≤ (P k).natDegree + 1)
+    (htarget_pos : ∀ k,
+      HasPosLeadingCoeff (U k * P k + V k * (P k).derivative))
+    (hsource_pos : ∀ k, HasPosLeadingCoeff (P k))
+    (hcoeff : ∀ k r, (P k).IsRoot r → (V k).eval r ≤ 0) :
+    Prec (P n) (U n * P n + V n * (P n).derivative) := by
+  rr_mw_derivative_nonpos
+
+/-- A successor-degree equality supplies both derivative-step degree bounds. -/
+example {f u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_mw_derivative_nonpos using degree := hdeg
+
+/-- The generic bare form selects the displayed indexed interlacer despite an
+unrelated local family. -/
+example {P G H A B : Nat → ℝ[X]} {n : Nat}
+    (_hdecoy : ∀ k, Interlaces (H k) (P k))
+    (hinterlaces : ∀ k, Interlaces (G k) (P k))
+    (hsource_pos : ∀ k, HasPosLeadingCoeff (G k))
+    (hdeg_lo : ∀ k,
+      (P k).natDegree ≤ (A k * P k + B k * G k).natDegree)
+    (hdeg_hi : ∀ k,
+      (A k * P k + B k * G k).natDegree ≤ (P k).natDegree + 1)
+    (htarget_pos : ∀ k, HasPosLeadingCoeff (A k * P k + B k * G k))
+    (hcoeff : ∀ k r, (P k).IsRoot r → (B k).eval r ≤ 0) :
+    Prec (P n) (A n * P n + B n * G n) := by
+  rr_prec_evalCoeff_nonpos
+
+/-- A same-degree equality supplies both generic evaluation-step bounds. -/
+example {f g a b : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : (a * f + b * g).natDegree = f.natDegree)
+    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
+    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
+    Prec f (a * f + b * g) := by
+  rr_prec_evalCoeff_nonpos using degree := hdeg
+
 /-- Scalar left denominators are normalized before the Ma--Wang wrapper. -/
 example {d : ℝ} (hd : d ≠ 0) {F RHS : ℝ[X]}
     (hraw : C d * F = RHS) :
