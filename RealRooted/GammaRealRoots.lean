@@ -666,67 +666,6 @@ lemma gammaQuadraticFactor_eq_mul_reciprocal {x : ℝ}
   field_simp [hx0, h1x]
   ring
 
-/-- Iterated form of the quadratic factor in Hoster--Stump, Proposition 2.5,
-equation (2.1). -/
-lemma gammaTransform_X_sub_C_pow_mul_two
-    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
-    ∀ m : ℕ,
-      gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) =
-        (X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ
-  | 0 => by simp
-  | m + 1 => by
-      have hdeg :
-          ((X - C r) ^ m * γ).natDegree ≤ (d + 2 * m) / 2 := by
-        calc
-          ((X - C r) ^ m * γ).natDegree
-              ≤ ((X - C r) ^ m).natDegree + γ.natDegree :=
-            natDegree_mul_le
-          _ ≤ m * (X - C r).natDegree + γ.natDegree :=
-            Nat.add_le_add_right natDegree_pow_le _
-          _ ≤ m * 1 + d / 2 :=
-            Nat.add_le_add (Nat.mul_le_mul_left m (natDegree_X_sub_C_le r)) hγ
-          _ ≤ (d + 2 * m) / 2 := by lia
-      calc
-        gammaTransform (d + 2 * (m + 1)) ((X - C r) ^ (m + 1) * γ) =
-            gammaTransform ((d + 2 * m) + 2)
-              ((X - C r) * ((X - C r) ^ m * γ)) := by
-                rw [show d + 2 * (m + 1) = (d + 2 * m) + 2 by lia]
-                congr 1
-                rw [pow_succ]
-                ring
-        _ = (X - C r * (X + 1) ^ 2) *
-              gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) :=
-          gammaTransform_X_sub_C_mul_two hdeg r
-        _ = (X - C r * (X + 1) ^ 2) *
-              ((X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ) := by
-          rw [gammaTransform_X_sub_C_pow_mul_two hγ r m]
-        _ = (X - C r * (X + 1) ^ 2) ^ (m + 1) *
-              gammaTransform d γ := by
-          rw [pow_succ]
-          ring
-
-/-- A gamma root of multiplicity `m` yields reciprocal transform roots, each
-with the same extracted multiplicity, in Hoster--Stump equation (2.1). -/
-lemma gammaTransform_X_sub_C_pow_gammaRootMap
-    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
-    (hx : x ∈ Set.Ioo (-1) 0) :
-    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
-      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
-        gammaTransform d γ := by
-  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
-    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
-
-/-- Extracting one gamma root produces the reciprocal transform-root pair in
-Hoster--Stump, Proposition 2.5, equation (2.1). -/
-lemma gammaTransform_X_sub_C_gammaRootMap
-    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
-    (hx : x ∈ Set.Ioo (-1) 0) :
-    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
-      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
-        gammaTransform d γ := by
-  simpa using
-    (gammaTransform_X_sub_C_pow_gammaRootMap (m := 1) hγ hx)
-
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
     (gammaTransform d γ).eval x = (1 + x) ^ d * γ.eval (x / (1 + x) ^ 2) := by
@@ -824,6 +763,150 @@ lemma gammaTransform_X_sub_C_mul_two {d : ℕ} {γ : ℝ[X]}
           simp [sub_eq_add_neg, mul_assoc]
     _ = (X - C r * (X + 1) ^ 2) * gammaTransform d γ := by
           grind
+
+/-- Iterated form of the quadratic factor in Hoster--Stump, Proposition 2.5,
+equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_mul_two
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
+    ∀ m : ℕ,
+      gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) =
+        (X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ
+  | 0 => by simp
+  | m + 1 => by
+      have hdeg :
+          ((X - C r) ^ m * γ).natDegree ≤ (d + 2 * m) / 2 := by
+        calc
+          ((X - C r) ^ m * γ).natDegree
+              ≤ ((X - C r) ^ m).natDegree + γ.natDegree :=
+            natDegree_mul_le
+          _ ≤ m * (X - C r).natDegree + γ.natDegree :=
+            Nat.add_le_add_right natDegree_pow_le _
+          _ ≤ m * 1 + d / 2 :=
+            Nat.add_le_add (Nat.mul_le_mul_left m (natDegree_X_sub_C_le r)) hγ
+          _ ≤ (d + 2 * m) / 2 := by lia
+      calc
+        gammaTransform (d + 2 * (m + 1)) ((X - C r) ^ (m + 1) * γ) =
+            gammaTransform ((d + 2 * m) + 2)
+              ((X - C r) * ((X - C r) ^ m * γ)) := by
+                rw [show d + 2 * (m + 1) = (d + 2 * m) + 2 by lia]
+                congr 1
+                rw [pow_succ]
+                ring
+        _ = (X - C r * (X + 1) ^ 2) *
+              gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) :=
+          gammaTransform_X_sub_C_mul_two hdeg r
+        _ = (X - C r * (X + 1) ^ 2) *
+              ((X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ) := by
+          rw [gammaTransform_X_sub_C_pow_mul_two hγ r m]
+        _ = (X - C r * (X + 1) ^ 2) ^ (m + 1) *
+              gammaTransform d γ := by
+          rw [pow_succ]
+          ring
+
+/-- A gamma root of multiplicity `m` yields reciprocal transform roots, each
+with the same extracted multiplicity, in Hoster--Stump equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_gammaRootMap
+    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
+        gammaTransform d γ := by
+  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
+    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
+
+/-- Extracting one gamma root produces the reciprocal transform-root pair in
+Hoster--Stump, Proposition 2.5, equation (2.1). -/
+lemma gammaTransform_X_sub_C_gammaRootMap
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
+        gammaTransform d γ := by
+  simpa using
+    (gammaTransform_X_sub_C_pow_gammaRootMap (m := 1) hγ hx)
+
+/-- Multiplicity form of Hoster--Stump, Proposition 2.5, equation (2.1):
+each transform root in `(-1, 0)` has the multiplicity of its gamma image.
+See https://arxiv.org/abs/2508.15538. -/
+theorem rootMultiplicity_gammaTransform_of_mem_Ioo
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) {x : ℝ} (hx : x ∈ Set.Ioo (-1) 0) :
+    (gammaTransform d γ).rootMultiplicity x =
+      γ.rootMultiplicity (gammaRootMap x) := by
+  let r := gammaRootMap x
+  let m := γ.rootMultiplicity r
+  obtain ⟨q, hγq, hq_not_dvd⟩ :=
+    γ.exists_eq_pow_rootMultiplicity_mul_and_not_dvd hγ r
+  change γ = (X - C r) ^ m * q at hγq
+  have hq : q ≠ 0 := by
+    intro hzero
+    apply hγ
+    rw [hγq, hzero, mul_zero]
+  have hdeg_eq : γ.natDegree = m + q.natDegree := by
+    rw [hγq, natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) hq,
+      natDegree_pow, natDegree_X_sub_C, mul_one]
+  have hm : 2 * m ≤ d := by
+    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
+    lia
+  have hqdeg : q.natDegree ≤ (d - 2 * m) / 2 := by
+    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
+    lia
+  have htransform :=
+    gammaTransform_X_sub_C_pow_gammaRootMap
+      (d := d - 2 * m) (m := m) hqdeg hx
+  have hambient : d - 2 * m + 2 * m = d := by lia
+  have hfull := htransform
+  rw [hambient, ← hγq] at hfull
+  have hx0 : x ≠ 0 := ne_of_lt hx.2
+  have hx1 : x ≠ -1 := ne_of_gt hx.1
+  have h1x : 1 + x ≠ 0 := by
+    intro h
+    apply hx1
+    linarith
+  have hr0 : r ≠ 0 := by
+    dsimp [r, gammaRootMap]
+    exact div_ne_zero hx0 (pow_ne_zero _ h1x)
+  have hxxinv : x ≠ x⁻¹ := by
+    intro heq
+    have hmul : x * x⁻¹ = 1 := mul_inv_cancel₀ hx0
+    rw [← heq] at hmul
+    have hpos : 0 < (1 + x) * (1 - x) :=
+      mul_pos (by linarith [hx.1]) (by linarith [hx.2])
+    nlinarith
+  have hcore_not_root :
+      ¬(gammaTransform (d - 2 * m) q).IsRoot x := by
+    intro hroot
+    apply hq_not_dvd
+    rw [dvd_iff_isRoot]
+    simpa [r, gammaRootMap] using
+      isRoot_gamma_of_isRoot_gammaTransform hqdeg hx1 hroot
+  have hcore_eval : (gammaTransform (d - 2 * m) q).eval x ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hcore_not_root
+  let p :=
+    (C (-r) * (X - C x⁻¹)) ^ m * gammaTransform (d - 2 * m) q
+  have hp_eval : p.eval x ≠ 0 := by
+    dsimp [p]
+    simp only [eval_mul, eval_pow, eval_C, eval_sub, eval_X]
+    exact mul_ne_zero
+      (pow_ne_zero _ (mul_ne_zero (neg_ne_zero.mpr hr0)
+        (sub_ne_zero.mpr hxxinv)))
+      hcore_eval
+  have hp : p ≠ 0 := by
+    intro hzero
+    apply hp_eval
+    simp [hzero]
+  have hp_not_root : ¬p.IsRoot x := by
+    rw [Polynomial.IsRoot.def]
+    exact hp_eval
+  have hfactor :
+      gammaTransform d γ = p * (X - C x) ^ m := by
+    rw [hfull]
+    dsimp [p, r]
+    simp only [mul_pow]
+    ring
+  change (gammaTransform d γ).rootMultiplicity x = m
+  rw [hfactor, rootMultiplicity_mul_X_sub_C_pow hp,
+    rootMultiplicity_eq_zero hp_not_root, zero_add]
 
 lemma hasNonnegCoeffs_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     HasNonnegCoeffs (X - C r * (X + 1) ^ 2) := by
