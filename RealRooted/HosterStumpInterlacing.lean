@@ -21,6 +21,15 @@ def SourcePrec (f g : ℝ[X]) : Prop :=
     (f = 0 ∨ g = 0 ∨
       (f.natDegree ≤ 1 ∧ g.natDegree ≤ 1) ∨ Prec f g)
 
+lemma SourcePrec.of_prec {f g : ℝ[X]} (h : Prec f g) : SourcePrec f g :=
+  ⟨Or.inr h.1, Or.inr h.2.1, Or.inr (Or.inr (Or.inr h))⟩
+
+lemma SourcePrec.of_lowDegree {f g : ℝ[X]}
+    (hf : IsSourceRealRooted f) (hg : IsSourceRealRooted g)
+    (hfdeg : f.natDegree ≤ 1) (hgdeg : g.natDegree ≤ 1) :
+    SourcePrec f g :=
+  ⟨hf, hg, Or.inr (Or.inr (Or.inl ⟨hfdeg, hgdeg⟩))⟩
+
 /-- Source-faithful interlacing sequences from Hoster--Stump, Section 2 and
 Lemma 2.3. Empty lists are admitted as a harmless Lean extension; unlike the
 weak `IsInterlacingSeq0Nonneg`, singleton lists still record real-rootedness. -/
@@ -107,19 +116,19 @@ theorem source_lowerPartialSums_counterexample :
   have hmrr : IsSourceRealRooted lowDegreeCounterexampleMiddle := Or.inr hmr.1
   have hrrr : IsSourceRealRooted lowDegreeCounterexampleRight := Or.inr hlr.2.1
   have hlm : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle :=
-    ⟨hlrr, hmrr, Or.inr (Or.inr (Or.inl (by
-      constructor
-      · simpa [lowDegreeCounterexampleLeft] using
-          (Polynomial.natDegree_X_add_C (1 : ℝ)).le
-      · rw [lowDegreeCounterexampleMiddle,
+    SourcePrec.of_lowDegree hlrr hmrr
+      (by simpa [lowDegreeCounterexampleLeft] using
+        (Polynomial.natDegree_X_add_C (1 : ℝ)).le)
+      (by
+        rw [lowDegreeCounterexampleMiddle,
           natDegree_mul (by norm_num)
             (isRealRooted_of_degree_one
               (Polynomial.natDegree_X_add_C (3 : ℝ))).1]
-        simp)))⟩
+        simp)
   have hlr' : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight :=
-    ⟨hlrr, hrrr, Or.inr (Or.inr (Or.inr hlr))⟩
+    SourcePrec.of_prec hlr
   have hmr' : SourcePrec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight :=
-    ⟨hmrr, hrrr, Or.inr (Or.inr (Or.inr hmr))⟩
+    SourcePrec.of_prec hmr
   constructor
   · refine ⟨?_, ?_, ?_⟩
     · intro f hf
@@ -170,28 +179,20 @@ theorem source_lowerPartialSums_counterexample :
             (lowDegreeCounterexampleMiddle + lowDegreeCounterexampleRight)) :=
       (List.pairwise_cons.mp hpairs).1 _ (by simp)
     rw [hfactor] at hfirstLast
+    have htwo := isRealRooted_of_degree_one
+      (Polynomial.natDegree_X_add_C (2 : ℝ))
+    have hfive := isRealRooted_of_degree_one
+      (Polynomial.natDegree_X_add_C (5 : ℝ))
     rcases hfirstLast.2.2 with hzero | hzero | hlow | hprec
     · exact hlr.1.1 hzero
-    · have hleft := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (2 : ℝ))
-      have hright := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (5 : ℝ))
-      exact (mul_ne_zero hleft.1 hright.1) hzero
-    · have hleft := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (2 : ℝ))
-      have hright := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (5 : ℝ))
-      have hdeg : ((X + C 2) * (X + C 5) : ℝ[X]).natDegree = 2 := by
-        rw [natDegree_mul hleft.1 hright.1]
+    · exact (mul_ne_zero htwo.1 hfive.1) hzero
+    · have hdeg : ((X + C 2) * (X + C 5) : ℝ[X]).natDegree = 2 := by
+        rw [natDegree_mul htwo.1 hfive.1]
         simp
       lia
-    · have hleft := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (2 : ℝ))
-      have hright := isRealRooted_of_degree_one
-        (Polynomial.natDegree_X_add_C (5 : ℝ))
-      have hbound : ∀ r ∈ ((X + C 2) * (X + C 5) : ℝ[X]).roots, r ≤ -2 := by
+    · have hbound : ∀ r ∈ ((X + C 2) * (X + C 5) : ℝ[X]).roots, r ≤ -2 := by
         intro r hr
-        rw [roots_mul (mul_ne_zero hleft.1 hright.1), roots_X_add_C,
+        rw [roots_mul (mul_ne_zero htwo.1 hfive.1), roots_X_add_C,
           roots_X_add_C] at hr
         simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
         rcases hr with rfl | rfl
