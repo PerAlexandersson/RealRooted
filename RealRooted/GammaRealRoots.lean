@@ -677,6 +677,56 @@ lemma gammaTransform_X_sub_C_gammaRootMap
   rw [gammaTransform_X_sub_C_mul_two hγ,
     gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
 
+/-- Iterated form of the quadratic factor in Hoster--Stump, Proposition 2.5,
+equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_mul_two
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
+    ∀ m : ℕ,
+      gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) =
+        (X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ
+  | 0 => by simp
+  | m + 1 => by
+      have hdeg :
+          ((X - C r) ^ m * γ).natDegree ≤ (d + 2 * m) / 2 := by
+        calc
+          ((X - C r) ^ m * γ).natDegree
+              ≤ ((X - C r) ^ m).natDegree + γ.natDegree :=
+            natDegree_mul_le
+          _ ≤ m * (X - C r).natDegree + γ.natDegree :=
+            Nat.add_le_add_right natDegree_pow_le _
+          _ ≤ m * 1 + d / 2 :=
+            Nat.add_le_add (Nat.mul_le_mul_left m (natDegree_X_sub_C_le r)) hγ
+          _ ≤ (d + 2 * m) / 2 := by lia
+      calc
+        gammaTransform (d + 2 * (m + 1)) ((X - C r) ^ (m + 1) * γ) =
+            gammaTransform ((d + 2 * m) + 2)
+              ((X - C r) * ((X - C r) ^ m * γ)) := by
+                rw [show d + 2 * (m + 1) = (d + 2 * m) + 2 by lia]
+                congr 1
+                rw [pow_succ]
+                ring
+        _ = (X - C r * (X + 1) ^ 2) *
+              gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) :=
+          gammaTransform_X_sub_C_mul_two hdeg r
+        _ = (X - C r * (X + 1) ^ 2) *
+              ((X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ) := by
+          rw [gammaTransform_X_sub_C_pow_mul_two hγ r m]
+        _ = (X - C r * (X + 1) ^ 2) ^ (m + 1) *
+              gammaTransform d γ := by
+          rw [pow_succ]
+          ring
+
+/-- A gamma root of multiplicity `m` yields reciprocal transform roots, each
+with the same extracted multiplicity, in Hoster--Stump equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_gammaRootMap
+    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
+        gammaTransform d γ := by
+  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
+    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
+
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
     (gammaTransform d γ).eval x = (1 + x) ^ d * γ.eval (x / (1 + x) ^ 2) := by
