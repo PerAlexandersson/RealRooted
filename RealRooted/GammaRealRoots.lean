@@ -666,17 +666,6 @@ lemma gammaQuadraticFactor_eq_mul_reciprocal {x : ℝ}
   field_simp [hx0, h1x]
   ring
 
-/-- Extracting one gamma root produces the reciprocal transform-root pair in
-Hoster--Stump, Proposition 2.5, equation (2.1). -/
-lemma gammaTransform_X_sub_C_gammaRootMap
-    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
-    (hx : x ∈ Set.Ioo (-1) 0) :
-    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
-      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
-        gammaTransform d γ := by
-  rw [gammaTransform_X_sub_C_mul_two hγ,
-    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
-
 /-- Iterated form of the quadratic factor in Hoster--Stump, Proposition 2.5,
 equation (2.1). -/
 lemma gammaTransform_X_sub_C_pow_mul_two
@@ -726,6 +715,17 @@ lemma gammaTransform_X_sub_C_pow_gammaRootMap
         gammaTransform d γ := by
   rw [gammaTransform_X_sub_C_pow_mul_two hγ,
     gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
+
+/-- Extracting one gamma root produces the reciprocal transform-root pair in
+Hoster--Stump, Proposition 2.5, equation (2.1). -/
+lemma gammaTransform_X_sub_C_gammaRootMap
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
+        gammaTransform d γ := by
+  simpa using
+    (gammaTransform_X_sub_C_pow_gammaRootMap (m := 1) hγ hx)
 
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
