@@ -962,6 +962,225 @@ theorem rootMultiplicity_gammaTransform_of_mem_Ioo
       γ.rootMultiplicity (gammaRootMap x) :=
   rootMultiplicity_gammaTransform_of_neg hγdeg hγ hx.2 (ne_of_gt hx.1)
 
+/-! ## Ordered root completion for Hoster--Stump Proposition 2.5
+
+The following private helpers formalize the two cases after equation (2.2).
+Preferred roots lie in `(-1, 0)`; their reciprocal roots lie below `-1`, and
+the replicated center block records the multiplicity of `-1`.
+-/
+
+private noncomputable def reciprocalCenterRoots (m : ℕ) (s : List ℝ) : List ℝ :=
+  (s.map fun x => x⁻¹).reverse ++ (List.replicate m (-1) ++ s)
+
+private lemma map_interleave (f : α → β) : ∀ l₁ l₂ : List α,
+    (l₁.interleave l₂).map f = (l₁.map f).interleave (l₂.map f)
+  | _, [] => by simp
+  | l₁, b :: l₂ => by
+      simp only [List.interleave_cons, List.map_cons]
+      rw [map_interleave f l₂ l₁]
+termination_by l₁ l₂ => l₁.length + l₂.length
+
+private lemma mem_interleave_of_lengths {x : α} : ∀ l₁ l₂ : List α,
+    (l₁.length = l₂.length ∨ l₁.length + 1 = l₂.length) →
+      x ∈ l₁.interleave l₂ → x ∈ l₁ ∨ x ∈ l₂
+  | _, [], _, hx => by simp at hx
+  | l₁, b :: l₂, hlen, hx => by
+      rw [List.interleave_cons, List.mem_cons] at hx
+      rcases hx with rfl | hx
+      · exact Or.inr (by simp)
+      · have htail : l₂.length = l₁.length ∨ l₂.length + 1 = l₁.length := by
+          simp only [List.length_cons] at hlen
+          lia
+        rcases mem_interleave_of_lengths l₂ l₁ htail hx with hx | hx
+        · exact Or.inr (by simp [hx])
+        · exact Or.inl hx
+termination_by l₁ l₂ => l₁.length + l₂.length
+
+private lemma interleave_replicate_succ (m : ℕ) (a : α) :
+    (List.replicate m a).interleave (List.replicate (m + 1) a) =
+      List.replicate (2 * m + 1) a := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+      rw [List.replicate_succ (n := m)]
+      rw [List.replicate_succ (n := m + 1)]
+      rw [List.interleave_cons, List.interleave_cons]
+      rw [ih]
+      rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by lia]
+      rfl
+
+private lemma isChain_reverse_inv_center_iff
+    {l : List ℝ} (m : ℕ)
+    (hlmem : ∀ x ∈ l, x ∈ Set.Ioo (-1 : ℝ) 0) :
+    ((l.reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ l)).IsChain (· ≤ ·) ↔
+      l.IsChain (· ≤ ·) := by
+  let a := l.reverse.map fun x => x⁻¹
+  let c := List.replicate (2 * m + 1) (-1 : ℝ)
+  constructor
+  · intro h
+    have hp := h.pairwise
+    rw [List.pairwise_append, List.pairwise_append] at hp
+    exact hp.2.1.2.1.isChain
+  · intro hl
+    have ha : a.Pairwise (· ≤ ·) := by
+      dsimp [a]
+      rw [List.pairwise_map, List.pairwise_reverse]
+      exact hl.pairwise.imp_of_mem fun hx hy hxy =>
+        inv_antitoneOn_Iio (hlmem _ hx).2 (hlmem _ hy).2 hxy
+    have hc : c.Pairwise (· ≤ ·) := by
+      simp [c]
+    have hac : (a ++ c).Pairwise (· ≤ ·) := by
+      rw [List.pairwise_append]
+      refine ⟨ha, hc, ?_⟩
+      intro x hx y hy
+      dsimp [a] at hx
+      rw [List.mem_map] at hx
+      rcases hx with ⟨z, hz, rfl⟩
+      have hzmem : z ∈ l := List.mem_reverse.mp hz
+      have hzlt : z⁻¹ < -1 := by
+        rw [inv_eq_one_div]
+        exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
+          (by nlinarith [(hlmem z hzmem).1])
+      have hy' : y = -1 := by
+        simpa [c] using hy
+      linarith
+    have hacl : ((a ++ c) ++ l).Pairwise (· ≤ ·) := by
+      rw [List.pairwise_append]
+      refine ⟨hac, hl.pairwise, ?_⟩
+      intro x hx y hy
+      rw [List.mem_append] at hx
+      rcases hx with hx | hx
+      · dsimp [a] at hx
+        rw [List.mem_map] at hx
+        rcases hx with ⟨z, hz, rfl⟩
+        have hzmem : z ∈ l := List.mem_reverse.mp hz
+        have hzlt : z⁻¹ < -1 := by
+          rw [inv_eq_one_div]
+          exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
+            (by nlinarith [(hlmem z hzmem).1])
+        linarith [(hlmem y hy).1]
+      · have hx' : x = -1 := by
+          simpa [c] using hx
+        linarith [(hlmem y hy).1]
+    simpa [a, c, List.append_assoc] using hacl.isChain
+
+private lemma interleave_reciprocalCenterRoots_same
+    {ss rs : List ℝ} (m : ℕ) (hlen : ss.length = rs.length) :
+    (reciprocalCenterRoots m ss).interleave
+        (reciprocalCenterRoots (m + 1) rs) =
+      ((rs.interleave ss).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ rs.interleave ss) := by
+  unfold reciprocalCenterRoots
+  rw [List.interleave_append_append_of_length_eq_length]
+  · rw [List.interleave_append_append_of_length_add_one_eq_length]
+    · rw [interleave_replicate_succ]
+      congr 1
+      simpa only [map_interleave, List.map_reverse] using
+        (List.reverse_interleave_of_length_eq_length
+          (l₁ := rs.map fun x => x⁻¹) (l₂ := ss.map fun x => x⁻¹)
+          (by simpa only [List.length_map] using hlen.symm)).symm
+    · simp
+  · simp [hlen]
+
+private lemma interleave_reciprocalCenterRoots_succ
+    {ss rs : List ℝ} (m : ℕ) (hlen : ss.length + 1 = rs.length) :
+    (reciprocalCenterRoots (m + 1) ss).interleave
+        (reciprocalCenterRoots m rs) =
+      ((ss.interleave rs).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ ss.interleave rs) := by
+  unfold reciprocalCenterRoots
+  rw [List.interleave_append_append_of_length_add_one_eq_length]
+  · rw [List.interleave_append_append_of_length_add_one_eq_length]
+    · rw [interleave_replicate_succ]
+      congr 1
+      simpa only [map_interleave, List.map_reverse] using
+        (List.reverse_interleave_of_length_add_one_eq_length
+          (l₁ := ss.map fun x => x⁻¹) (l₂ := rs.map fun x => x⁻¹)
+          (by simpa only [List.length_map] using hlen)).symm
+    · simp
+  · simp [hlen]
+
+/-- Equal gamma degrees give one additional central root on the right transform.
+This is the first backward case in Hoster--Stump, Proposition 2.5. -/
+private lemma listInterlaces_reciprocalCenterRoots_same_iff
+    {ss rs : List ℝ} (m : ℕ)
+    (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hlen : ss.length = rs.length) :
+    ListInterlaces (reciprocalCenterRoots m ss)
+        (reciprocalCenterRoots (m + 1) rs) ↔
+      ListAlternates ss rs := by
+  have hfull_len :
+      (reciprocalCenterRoots m ss).length + 1 =
+        (reciprocalCenterRoots (m + 1) rs).length := by
+    simp [reciprocalCenterRoots, hlen]
+    lia
+  rw [listInterlaces_iff_interleaves_of_length hfull_len]
+  constructor
+  · intro h
+    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
+    rw [interleave_reciprocalCenterRoots_same m hlen,
+      isChain_reverse_inv_center_iff m] at hc
+    · apply (listAlternates_iff_interleaves_of_length hlen).2
+      apply (List.interleaves_iff_length_isChain_interleave).2
+      exact ⟨Or.inl hlen.symm, hc⟩
+    · intro x hx
+      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      · exact hrs x hx
+      · exact hss x hx
+  · intro h
+    have hi := (listAlternates_iff_interleaves_of_length hlen).1 h
+    apply (List.interleaves_iff_length_isChain_interleave).2
+    refine ⟨Or.inr hfull_len, ?_⟩
+    rw [interleave_reciprocalCenterRoots_same m hlen,
+      isChain_reverse_inv_center_iff m]
+    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · intro x hx
+      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      · exact hrs x hx
+      · exact hss x hx
+
+/-- Successive gamma degrees remove one central root from the right transform.
+This is the second backward case in Hoster--Stump, Proposition 2.5. -/
+private lemma listInterlaces_reciprocalCenterRoots_succ_iff
+    {ss rs : List ℝ} (m : ℕ)
+    (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hlen : ss.length + 1 = rs.length) :
+    ListInterlaces (reciprocalCenterRoots (m + 1) ss)
+        (reciprocalCenterRoots m rs) ↔
+      ListInterlaces ss rs := by
+  have hfull_len :
+      (reciprocalCenterRoots (m + 1) ss).length + 1 =
+        (reciprocalCenterRoots m rs).length := by
+    simp [reciprocalCenterRoots]
+    lia
+  rw [listInterlaces_iff_interleaves_of_length hfull_len]
+  constructor
+  · intro h
+    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
+    rw [interleave_reciprocalCenterRoots_succ m hlen,
+      isChain_reverse_inv_center_iff m] at hc
+    · apply (listInterlaces_iff_interleaves_of_length hlen).2
+      apply (List.interleaves_iff_length_isChain_interleave).2
+      exact ⟨Or.inr hlen, hc⟩
+    · intro x hx
+      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      · exact hss x hx
+      · exact hrs x hx
+  · intro h
+    have hi := (listInterlaces_iff_interleaves_of_length hlen).1 h
+    apply (List.interleaves_iff_length_isChain_interleave).2
+    refine ⟨Or.inr hfull_len, ?_⟩
+    rw [interleave_reciprocalCenterRoots_succ m hlen,
+      isChain_reverse_inv_center_iff m]
+    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · intro x hx
+      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      · exact hss x hx
+      · exact hrs x hx
+
 /-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equations
 (2.1) and (2.2): the roots of the gamma transform consist of reciprocal
 pairs, together with the exceptional roots at `-1` prescribed by the degree.
