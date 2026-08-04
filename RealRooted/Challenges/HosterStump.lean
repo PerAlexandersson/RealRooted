@@ -29,8 +29,8 @@ Section 2 backend map:
 * the `f << g -> g << X * f` shift: `prec_mul_X_of_prec_of_nonneg` and
   `prec0_mul_X_of_prec0`;
 * gamma real-rootedness transfer: `gammaRealRootedIffPolynomialRealRootedNonpos`;
-* missing backend lemma for this route: adjacent-degree gamma interlacing
-  transfer, recorded below as `GammaAdjacentInterlacingTransferStatement`;
+* adjacent-degree gamma interlacing transfer:
+  `GammaAdjacentInterlacingTransferStatement`;
 * missing convenience lemmas for this route: lower, upper, moving-window, and
   `X`-shifted split partial sums of an interlacing sequence, recorded below as
   statement interfaces.
@@ -188,23 +188,33 @@ holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`.
 
 The separate nonzero hypotheses exclude the spurious `d = 0`, `f = 0` case
 allowed by Lean's `natDegree 0 = 0`. -/
-def GammaAdjacentInterlacingTransferStatement : Prop :=
-  ∀ {d : ℕ} {f g γ δ : ℝ[X]},
-    γ.natDegree ≤ d / 2 →
-    δ.natDegree ≤ (d + 1) / 2 →
-    f ≠ 0 →
-    g ≠ 0 →
-    f.natDegree = d →
-    g.natDegree = d + 1 →
-    IdTransform d f = f →
-    IdTransform (d + 1) g = g →
-    IsGammaExpansion d f γ →
-    IsGammaExpansion (d + 1) g δ →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    HasNonnegCoeffs γ →
-    HasNonnegCoeffs δ →
-      (Prec f g ↔ Prec γ δ)
+theorem GammaAdjacentInterlacingTransferStatement
+    {d : ℕ} {f g γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2)
+    (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hf0 : f ≠ 0)
+    (hg0 : g ≠ 0)
+    (hfdeg : f.natDegree = d)
+    (hgdeg : g.natDegree = d + 1)
+    (_hfFix : IdTransform d f = f)
+    (_hgFix : IdTransform (d + 1) g = g)
+    (hfGamma : IsGammaExpansion d f γ)
+    (hgGamma : IsGammaExpansion (d + 1) g δ)
+    (_hfnn : HasNonnegCoeffs f)
+    (_hgnn : HasNonnegCoeffs g)
+    (hγnn : HasNonnegCoeffs γ)
+    (hδnn : HasNonnegCoeffs δ) :
+    Prec f g ↔ Prec γ δ := by
+  change f = gammaTransform d γ at hfGamma
+  change g = gammaTransform (d + 1) δ at hgGamma
+  have hγ0 : γ.coeff 0 ≠ 0 := by
+    rw [← coeff_ambient_gammaTransform d γ, ← hfGamma, ← hfdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hf0
+  have hδ0 : δ.coeff 0 ≠ 0 := by
+    rw [← coeff_ambient_gammaTransform (d + 1) δ, ← hgGamma, ← hgdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hg0
+  rw [hfGamma, hgGamma]
+  exact prec_gammaTransform_succ_iff hγdeg hδdeg hγnn hδnn hγ0 hδ0
 
 /-- Abstract Chow-polynomial data attached to a finite graded simplicial poset. -/
 structure ChowPolynomialModel where
@@ -269,7 +279,6 @@ structure StrategyInputs
   upperPartialSums : UpperPartialSumsPreserveInterlacingStatement
   movingWindowSums : MovingWindowSumsPreserveInterlacingStatement
   xShiftedSplitSums : XShiftedSplitSumsPreserveInterlacingStatement
-  gammaAdjacentInterlacing : GammaAdjacentInterlacingTransferStatement
 
 /-- Proof-template-facing statement: once the Section 2/3 route ingredients are
 available for a model, the Hoster--Stump final theorem follows. -/
