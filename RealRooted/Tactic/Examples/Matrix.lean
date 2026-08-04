@@ -24,7 +24,7 @@ example {n : ℕ} (hn : 0 < n) (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg (matPolyAction G fs) := by
-  rr_matrix using hn, G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs
+  rr_matrix
 
 example {n : ℕ} (hn : 0 < n) (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -280,8 +280,7 @@ example {n : ℕ} (hn : 0 < n) (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg (matPolyAction G fs) := by
-  rr_row_threshold_matrix using
-    hn, G, hG_rect, hG_threshold, hG_affine, fs, hfs_len, hfs
+  rr_row_threshold_matrix
 
 example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hG_rect : ∀ row ∈ G, row.length = n)
