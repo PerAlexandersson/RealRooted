@@ -407,12 +407,9 @@ theorem interleaves_map_gammaRootMap_iff :
       List.Interleaves (fun x y : ℝ => x ≤ y)
           (ss.map gammaRootMap) (rs.map gammaRootMap) ↔
         List.Interleaves (fun x y : ℝ => x ≤ y) ss rs
-  | [], [], _, _ => by simp
-  | [], [_], _, _ => by simp
-  | [], _ :: _ :: _, _, _ => by
-      constructor <;> intro h <;> cases h
-  | _ :: _, [], _, _ => by
-      constructor <;> intro h <;> cases h
+  | [], rs, _, _ => by
+      cases rs <;> simp
+  | _ :: _, [], _, _ => by simp
   | s :: ss, r :: rs, hss, hrs => by
       rw [List.map_cons, List.map_cons, List.interleaves_cons_cons,
         List.interleaves_cons_cons,
