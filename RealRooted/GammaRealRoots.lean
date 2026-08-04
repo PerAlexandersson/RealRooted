@@ -397,32 +397,6 @@ theorem rootMultiplicity_neg_one_gammaTransform
     rootMultiplicity_mul_X_sub_C_pow hcore_ne,
     rootMultiplicity_eq_zero hcore_not_root, zero_add]
 
-/-- The monotone root-map step in Hoster--Stump, Proposition 2.5:
-mapping roots in `(-1, 0)` by equation (2.1) preserves and reflects their
-weak interleaving order. See https://arxiv.org/abs/2508.15538. -/
-theorem interleaves_map_gammaRootMap_iff :
-    ∀ {ss rs : List ℝ}
-      (_ : ∀ x ∈ ss, x ∈ Set.Ioo (-1) 0)
-      (_ : ∀ x ∈ rs, x ∈ Set.Ioo (-1) 0),
-      List.Interleaves (fun x y : ℝ => x ≤ y)
-          (ss.map gammaRootMap) (rs.map gammaRootMap) ↔
-        List.Interleaves (fun x y : ℝ => x ≤ y) ss rs
-  | [], rs, _, _ => by
-      cases rs <;> simp
-  | _ :: _, [], _, _ => by simp
-  | s :: ss, r :: rs, hss, hrs => by
-      rw [List.map_cons, List.map_cons, List.interleaves_cons_cons,
-        List.interleaves_cons_cons,
-        strictMonoOn_gammaRootMap.le_iff_le
-          (hrs r (by simp)) (hss s (by simp))]
-      apply and_congr_right
-      intro _
-      simpa only [List.map_cons] using
-        interleaves_map_gammaRootMap_iff
-          (ss := rs) (rs := s :: ss)
-          (fun x hx => hrs x (List.mem_cons_of_mem r hx)) hss
-termination_by ss rs => ss.length + rs.length
-
 lemma gammaTransform_even_isRoot_neg_one_iff (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).IsRoot (-1) ↔ γ.coeff m = 0 := by
   rw [Polynomial.IsRoot.def, gammaTransform_even_eval_neg_one]
@@ -648,6 +622,60 @@ theorem strictMonoOn_gammaRootMap :
   simp only [gammaRootMap]
   rw [div_lt_div_iff₀ (sq_pos_of_pos ha1) (sq_pos_of_pos hb1)]
   nlinarith
+
+/-- The monotone root-map step in Hoster--Stump, Proposition 2.5:
+mapping roots in `(-1, 0)` by equation (2.1) preserves and reflects their
+weak interleaving order. See https://arxiv.org/abs/2508.15538. -/
+theorem interleaves_map_gammaRootMap_iff :
+    ∀ {ss rs : List ℝ}
+      (_ : ∀ x ∈ ss, x ∈ Set.Ioo (-1) 0)
+      (_ : ∀ x ∈ rs, x ∈ Set.Ioo (-1) 0),
+      List.Interleaves (fun x y : ℝ => x ≤ y)
+          (ss.map gammaRootMap) (rs.map gammaRootMap) ↔
+        List.Interleaves (fun x y : ℝ => x ≤ y) ss rs
+  | [], rs, _, _ => by
+      cases rs <;> simp
+  | _ :: _, [], _, _ => by simp
+  | s :: ss, r :: rs, hss, hrs => by
+      rw [List.map_cons, List.map_cons, List.interleaves_cons_cons,
+        List.interleaves_cons_cons,
+        strictMonoOn_gammaRootMap.le_iff_le
+          (hrs r (by simp)) (hss s (by simp))]
+      apply and_congr_right
+      intro _
+      simpa only [List.map_cons] using
+        interleaves_map_gammaRootMap_iff
+          (ss := rs) (rs := s :: ss)
+          (fun x hx => hrs x (List.mem_cons_of_mem r hx)) hss
+termination_by ss rs => ss.length + rs.length
+
+/-- The quadratic reciprocal-pair factor in Hoster--Stump, Proposition 2.5,
+equation (2.1). See https://arxiv.org/abs/2508.15538. -/
+lemma gammaQuadraticFactor_eq_mul_reciprocal {x : ℝ}
+    (hx0 : x ≠ 0) (hx1 : x ≠ -1) :
+    X - C (gammaRootMap x) * (X + 1) ^ 2 =
+      C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹) := by
+  have h1x : 1 + x ≠ 0 := by
+    intro h
+    apply hx1
+    linarith
+  apply Polynomial.funext
+  intro y
+  simp only [eval_sub, eval_X, eval_mul, eval_C, eval_pow, eval_add, eval_one]
+  unfold gammaRootMap
+  field_simp [hx0, h1x]
+  ring
+
+/-- Extracting one gamma root produces the reciprocal transform-root pair in
+Hoster--Stump, Proposition 2.5, equation (2.1). -/
+lemma gammaTransform_X_sub_C_gammaRootMap
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
+        gammaTransform d γ := by
+  rw [gammaTransform_X_sub_C_mul_two hγ,
+    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
 
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
