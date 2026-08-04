@@ -603,13 +603,11 @@ required representative in `(-1, 0)`. -/
 theorem exists_mem_Ioo_gammaRootMap_eq {y : ℝ} (hy : y < 0) :
     ∃ x ∈ Set.Ioo (-1 : ℝ) 0, gammaRootMap x = y := by
   let q : ℝ[X] := X - C y * (X + 1) ^ 2
-  have hcont : ContinuousOn (fun x => q.eval x) (Set.Icc (-1) 0) :=
-    q.continuous.continuousOn
   have hzero : (0 : ℝ) ∈ Set.Icc (q.eval (-1)) (q.eval 0) := by
-    dsimp [q]
-    simpa using le_of_lt hy
+    simpa [q] using le_of_lt hy
   obtain ⟨x, hx, hxzero⟩ :=
-    intermediate_value_Icc (by norm_num : (-1 : ℝ) ≤ 0) hcont hzero
+    intermediate_value_Icc (by norm_num : (-1 : ℝ) ≤ 0)
+      q.continuous.continuousOn hzero
   have hx_ne_left : x ≠ -1 := by
     intro h
     subst x
@@ -621,8 +619,8 @@ theorem exists_mem_Ioo_gammaRootMap_eq {y : ℝ} (hy : y < 0) :
     dsimp [q] at hxzero
     simp at hxzero
     linarith
-  have hxmem : x ∈ Set.Ioo (-1 : ℝ) 0 := by
-    exact ⟨lt_of_le_of_ne hx.1 (Ne.symm hx_ne_left),
+  have hxmem : x ∈ Set.Ioo (-1 : ℝ) 0 :=
+    ⟨lt_of_le_of_ne hx.1 (Ne.symm hx_ne_left),
       lt_of_le_of_ne hx.2 hx_ne_right⟩
   refine ⟨x, hxmem, ?_⟩
   have hone : 1 + x ≠ 0 := by linarith [hxmem.1]
