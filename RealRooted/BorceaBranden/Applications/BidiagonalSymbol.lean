@@ -49,18 +49,53 @@ theorem finiteAlgebraicSymbol_bidiagonalLinearMap (alpha beta : ℕ → ℝ) (d 
 
 /-! ## Complex degree-box application -/
 
+/-- Coefficientwise complex diagonal operator. -/
+def complexDiagonalOperator (gamma : ℕ → ℂ) (p : ℂ[X]) : ℂ[X] :=
+  p.sum fun n a => Polynomial.monomial n (gamma n * a)
+
+@[simp] theorem coeff_complexDiagonalOperator
+    (gamma : ℕ → ℂ) (p : ℂ[X]) (n : ℕ) :
+    (complexDiagonalOperator gamma p).coeff n = gamma n * p.coeff n := by
+  classical
+  rw [complexDiagonalOperator, Polynomial.coeff_sum]
+  simp only [Polynomial.coeff_monomial]
+  rw [Polynomial.sum_def]
+  simp_all
+
+theorem complexDiagonalOperator_add (gamma : ℕ → ℂ) (p q : ℂ[X]) :
+    complexDiagonalOperator gamma (p + q) =
+      complexDiagonalOperator gamma p + complexDiagonalOperator gamma q := by
+  ext n
+  simp [mul_add]
+
+theorem complexDiagonalOperator_C_mul
+    (gamma : ℕ → ℂ) (a : ℂ) (p : ℂ[X]) :
+    complexDiagonalOperator gamma (C a * p) =
+      C a * complexDiagonalOperator gamma p := by
+  ext n
+  simp [mul_comm, mul_left_comm]
+
+theorem complexDiagonalOperator_monomial
+    (gamma : ℕ → ℂ) (n : ℕ) (a : ℂ) :
+    complexDiagonalOperator gamma (Polynomial.monomial n a) =
+      Polynomial.monomial n (gamma n * a) := by
+  ext k
+  by_cases hk : k = n
+  · simp_all
+  · simp [Polynomial.coeff_monomial, Ne.symm hk]
+
 /-- Complex-linear extension of the real bidiagonal operator. -/
 def complexBidiagonalLinearMap (alpha beta : ℕ → ℝ) :
     Polynomial ℂ →ₗ[ℂ] Polynomial ℂ where
   toFun := fun p =>
-    diagonalOperator (fun k => (alpha k : ℂ)) p +
-      Polynomial.X * diagonalOperator (fun k => (beta k : ℂ)) p
+    complexDiagonalOperator (fun k => (alpha k : ℂ)) p +
+      Polynomial.X * complexDiagonalOperator (fun k => (beta k : ℂ)) p
   map_add' p q := by
-    simp only [diagonalOperator_add, mul_add]
+    simp only [complexDiagonalOperator_add, mul_add]
     abel
   map_smul' c p := by
-    simp only [smul_eq_C_mul, diagonalOperator_C_mul]
-    simp [mul_comm]
+    simp only [smul_eq_C_mul, complexDiagonalOperator_C_mul]
+    simp only [RingHom.id_apply]
     ring
 
 /-- Regard a complex univariate polynomial as a bivariate polynomial in the
@@ -163,12 +198,11 @@ theorem rename_algebraicSymbol_complexUnivariateDegreeBoxOperator
         rw [complexUnivariateDegreeBoxOperator_basis,
           rename_uniqueAlgEquiv_symm_eq_complexPolynomialInFirstMv,
           rename_rightComplementMonomial_finOne_complex]
-        simp [g, MvPolynomial.boxChoose,
-          MvPolynomial.degreeOfLEFinOneEquiv_val]
+        simp [g, MvPolynomial.boxChoose]
     _ = ∑ k : Fin (d + 1), g k := by
-      apply Fintype.sum_equiv (MvPolynomial.degreeOfLEFinOneEquiv d)
+      apply Fintype.sum_equiv (degreeOfLEFinOneEquiv d)
       intro m
-      simp [g, MvPolynomial.degreeOfLEFinOneEquiv_val]
+      simp [g, degreeOfLEFinOneEquiv_val]
     _ = complexFiniteAlgebraicSymbol d T := by
       simpa [g, complexFiniteAlgebraicSymbol] using
         Fin.sum_univ_eq_sum_range g (d + 1)
@@ -186,11 +220,9 @@ theorem complexFiniteAlgebraicSymbol_complexBidiagonalLinearMap
   simp only [complexFiniteAlgebraicSymbol, affineBidiagonalSymbol,
     complexifyMv, map_sum]
   apply Finset.sum_congr rfl
-  intro k hk
-  congr 1
+  intro k _
   simp [complexPolynomialInFirstMv, complexBidiagonalLinearMap,
-    Polynomial.X_pow_eq_monomial, diagonalOperator_monomial, pow_succ]
-  ring
+    Polynomial.X_pow_eq_monomial, complexDiagonalOperator_monomial, pow_succ]
 
 /-- Identify the left and right singleton blocks with variables `0` and `1`. -/
 def finOneSumEquivFinTwo : Fin 1 ⊕ Fin 1 ≃ Fin 2 where
@@ -203,11 +235,7 @@ def finOneSumEquivFinTwo : Fin 1 ⊕ Fin 1 ≃ Fin 2 where
     · rw [Subsingleton.elim i 0]
       rfl
   right_inv i := by
-    apply Fin.cases
-    · rfl
-    · intro j
-      rw [Subsingleton.elim j 0]
-      rfl
+    fin_cases i <;> rfl
 
 /-- Borcea--Branden, Theorem 1.1, symbol identification for the complexified
 bidiagonal operator. The equality uses the affine, not homogeneous, finite
@@ -225,7 +253,11 @@ theorem algebraicSymbol_complexBidiagonalDegreeBoxOperator
     (rename_algebraicSymbol_complexUnivariateDegreeBoxOperator d
       (complexBidiagonalLinearMap alpha beta))
   rw [complexFiniteAlgebraicSymbol_complexBidiagonalLinearMap] at h
-  simpa [MvPolynomial.rename_rename, finOneSumEquivFinTwo] using h
+  have hcomp : finOneSumEquivFinTwo.symm ∘ finOneSumToFinTwo = id := by
+    funext i
+    exact finOneSumEquivFinTwo.symm_apply_apply i
+  rw [MvPolynomial.rename_rename, hcomp, MvPolynomial.rename_id] at h
+  exact h
 
 /-- Explicit bidiagonal application of finite degree-box symbol sufficiency.
 
