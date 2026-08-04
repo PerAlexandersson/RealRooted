@@ -24,5 +24,18 @@ example : True := by
 example : True := by
   rr_lookup [rr_pos_lc]
 
+local syntax (name := rr_lookup_attr_macro_smoke) "rr_lookup_attr_macro_smoke" : tactic
+
+local macro_rules
+  | `(tactic| rr_lookup_attr_macro_smoke) =>
+      `(tactic| rr_lookup [rr_pos_lc])
+
+example : True := by
+  rr_lookup_attr_macro_smoke
+
+example (h : True) : True := by
+  fail_if_success rr_lookup [rr_missing_attr]
+  exact h
+
 end Tactic
 end RealRooted

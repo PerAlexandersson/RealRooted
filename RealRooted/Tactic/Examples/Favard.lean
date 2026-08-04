@@ -35,6 +35,23 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   rr_favard using hrec, hbeta
 
+/-- Exact local inference ignores an unrelated Favard certificate packet. -/
+example {P Q : Nat → ℝ[X]} {α β γ δ : Nat → ℝ}
+    (_hrecDecoy : SatisfiesFavardRecurrence Q γ δ)
+    -- This guards against the positivity proof fixing the wrong coefficient sequence.
+    (_hbetaDecoy : ∀ n : Nat, 0 < δ (n + 1))
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard
+
+/-- The inferred auto form retains positivity automation. -/
+example {P Q : Nat → ℝ[X]} {γ δ : Nat → ℝ}
+    (_hrecDecoy : SatisfiesFavardRecurrence Q γ δ)
+    (hrec : SatisfiesFavardRecurrence P (fun _ => 0) (fun _ => 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_auto
+
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :

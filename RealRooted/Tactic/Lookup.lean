@@ -93,12 +93,13 @@ elab_rules : tactic
         closeWithTaggedMatches found
   | `(tactic| rr_lookup [ $attrName:ident ]) =>
       withMainContext do
+        let attrName := attrName.getId.eraseMacroScopes
+        let some attr := certificateAttrByName? attrName
+          | throwError "rr_lookup failed: unknown certificate attribute [{attrName}]"
         let target ← getMainTarget
         if let some proof ← findLocalProofByType? target then
           closeMainGoal `rr_lookup proof
           return
-        let some attr := certificateAttrByName? attrName.getId
-          | throwError "rr_lookup failed: unknown certificate attribute [{attrName.getId}]"
         closeWithTaggedMatches (← findTaggedProofsByType attr target)
 
 end Tactic
