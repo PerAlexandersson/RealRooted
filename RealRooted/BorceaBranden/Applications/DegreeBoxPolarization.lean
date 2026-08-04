@@ -1,5 +1,6 @@
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.BorceaBranden.FiniteSymbolDegree
+import RealRooted.BorceaBranden.FiniteSymbolPreserver
 import RealRooted.Polarization
 
 /-!
@@ -98,6 +99,53 @@ theorem sum_degreeOneExponent_degreeFunction
   simpa using sum_finset_cardFunction n g
 
 end
+
+/-- Finite-symbol sufficiency for a one-variable source degree box.
+
+This is the source-side specialization of Borcea--Branden, proof of Theorem 1.1,
+using equations (2.1)--(2.2), Proposition 2.4, and Lemma 2.5 (Section 2.2,
+pp. 10--12). The conclusion is zero-aware because Lemma 2.2 permits the
+operator value to vanish. -/
+theorem finiteSymbol_finOne_preserves_stability
+    {tau : Type*} (n : ℕ)
+    (T : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial tau ℂ)
+    (hSymbol : MvUpperHalfPlaneStable
+      (MvPolynomial.algebraicSymbol (fun _ : Fin 1 => n) T))
+    (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n))
+    (hf : MvUpperHalfPlaneStable f.1) :
+    MvUpperHalfPlaneStableOrZero (T f) := by
+  have hdegree :
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1).natDegree ≤ n := by
+    calc
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1).natDegree =
+          f.1.degreeOf default := by
+        simpa only [AlgEquiv.symm_apply_apply] using
+          (MvPolynomial.degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
+            (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1)).symm
+      _ ≤ n :=
+        (MvPolynomial.mem_degreeOfLE_iff_degreeOf f.1).mp f.2 default
+  have hunivariate :
+      ∀ w : ℂ, 0 < w.im →
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1).eval w ≠ 0 := by
+    intro w hw
+    change Polynomial.eval₂ (RingHom.id ℂ) w
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1) ≠ 0
+    rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+    exact hf (fun _ => w) (fun _ => hw)
+  have hpolarized : MvUpperHalfPlaneStable
+      (polarizationDegreeBoxLinearMap n f).1 := by
+    change MvUpperHalfPlaneStable
+      (polarization n (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1))
+    exact mvUpperHalfPlaneStable_polarization hdegree hunivariate
+  have hlifted := finiteSymbol_preserves_stability
+    (sourcePolarizedOperator n T)
+    (mvUpperHalfPlaneStable_algebraicSymbol_sourcePolarizedOperator
+      n T hSymbol)
+    (polarizationDegreeBoxLinearMap n f) hpolarized
+  simpa only [sourcePolarizedOperator, LinearMap.comp_apply,
+    diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap] using
+    hlifted
 
 end RealRooted.BorceaBranden
 
