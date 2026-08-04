@@ -297,6 +297,8 @@ theorem gammaTransform_eq_X_add_one_pow_mul_minimal
         gammaTransform (2 * γ.natDegree) γ := by
   let n := γ.natDegree
   let m := d / 2
+  change gammaTransform d γ =
+    (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ
   have hnm : n ≤ m := hγ
   have hbase : n ≤ (2 * n) / 2 := by simp
   have hiter := gammaTransform_add_two_mul (2 * n) (m - n) hbase
@@ -306,11 +308,8 @@ theorem gammaTransform_eq_X_add_one_pow_mul_minimal
       gammaTransform d γ =
           gammaTransform (2 * n + 2 * (m - n)) γ := by congr 1 <;> lia
       _ = (X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ := hiter
-      _ = (X + 1) ^ (d - 2 * γ.natDegree) *
-          gammaTransform (2 * γ.natDegree) γ := by
-            dsimp [n]
-            rw [show 2 * (m - γ.natDegree) =
-              d - 2 * γ.natDegree by lia]
+      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
+        rw [show 2 * (m - n) = d - 2 * n by lia]
   · have hd : d = 2 * m + 1 := by dsimp [m]; lia
     calc
       gammaTransform d γ = gammaTransform (2 * m + 1) γ := by congr 1
@@ -318,12 +317,9 @@ theorem gammaTransform_eq_X_add_one_pow_mul_minimal
       _ = (X + 1) *
           ((X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ) := by
             rw [show 2 * m = 2 * n + 2 * (m - n) by lia, hiter]
-      _ = (X + 1) ^ (d - 2 * γ.natDegree) *
-          gammaTransform (2 * γ.natDegree) γ := by
-            dsimp [n]
-            rw [show d - 2 * γ.natDegree =
-              2 * (m - γ.natDegree) + 1 by lia, pow_succ']
-            ring
+      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
+        rw [show d - 2 * n = 2 * (m - n) + 1 by lia, pow_succ']
+        ring
 
 lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
     gammaTransform (2 * (m + 1)) γ =
