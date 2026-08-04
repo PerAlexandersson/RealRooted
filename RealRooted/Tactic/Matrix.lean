@@ -37,11 +37,11 @@ The tactics apply `matrix_preserves_interlacing_seq`,
 the user supplies the matrix action, rectangularity, entry nonnegativity, and
 `2 x 2` Branden conditions.
 
-Every `matrix0` form has a bare variant inferring the matrix and input from the
-goal; `rr_matrix` and `rr_row_threshold_matrix` require `using`. The bare forms
-use exact local length and input certificates, then the registered matrix
-certificate attributes. The bare `rr_row_threshold_entry_nonneg` form infers
-its matrix from the target.
+Every matrix form has a bare variant inferring the matrix and input from the
+goal. The positive-width forms also use an exact local width-positivity proof.
+Bare forms use exact local length and input certificates, then the registered
+matrix certificate attributes. The bare `rr_row_threshold_entry_nonneg` form
+infers its matrix from the target.
 
 Family J warning:
 do not attack raw scalar long-lag recurrences.  First derive a refined vector
@@ -73,6 +73,8 @@ syntax (name := rr_matrix_named)
     "input_length" ":=" term ","
     "input_interlacing" ":=" term :
   tactic
+
+syntax (name := rr_matrix_inferred) "rr_matrix" : tactic
 
 syntax (name := rr_matrix0)
   "rr_matrix0" " using " term ", "
@@ -219,6 +221,9 @@ syntax (name := rr_row_threshold_matrix)
     term :
   tactic
 
+syntax (name := rr_row_threshold_matrix_inferred)
+  "rr_row_threshold_matrix" : tactic
+
 syntax (name := rr_row_threshold_matrix0_named)
   "rr_row_threshold_matrix0" " using "
     "matrix" ":=" term ","
@@ -355,8 +360,18 @@ syntax (name := rr_row_threshold_entry_nonneg)
 syntax (name := rr_row_threshold_entry_nonneg_inferred)
   "rr_row_threshold_entry_nonneg" : tactic
 
--- The local length proof fixes the hidden width before frozen attribute lookup.
+-- The local length proof fixes the hidden width before positivity and frozen lookup.
 macro_rules
+  | `(tactic| rr_matrix) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.matrix_preserves_interlacing_seq
+          case hfs_len => assumption
+          case hn => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
   | `(tactic| rr_matrix0) =>
       `(tactic|
         exact (by
@@ -405,6 +420,16 @@ macro_rules
           case hG_affine => rr_lookup [rr_matrix_2x2]
           case hfs => assumption
           case hfs_real => assumption))
+  | `(tactic| rr_row_threshold_matrix) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.rowThreshold_matrix_preserves_interlacing_seq_of_2x2
+          case hfs_len => assumption
+          case hn => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
   | `(tactic| rr_row_threshold_matrix0) =>
       `(tactic|
         exact (by
