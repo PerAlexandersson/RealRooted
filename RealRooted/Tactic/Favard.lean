@@ -11,13 +11,17 @@ open Polynomial
 The tactic
 
 ```lean
+rr_favard
 rr_favard using hrec, hbeta
+rr_favard_auto
 ```
 
 applies the already-formalized Favard interface to goals that match
 `favardInterlacing`,
 `isRealRooted_of_favard`, or
 `isGeneralizedSturmSeq_reverse_range_map_of_favard`.
+The bare forms infer exact local recurrence and positivity hypotheses. Use an
+explicit `using` form when more than one Favard certificate packet is in scope.
 
 First intended regression examples:
 
@@ -1111,6 +1115,8 @@ macro_rules
               | simp))
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
+syntax (name := rr_favard_inferred) "rr_favard" : tactic
+
 syntax (name := rr_favard_named)
   "rr_favard" " using "
     "recurrence" ":=" term ","
@@ -1121,6 +1127,8 @@ syntax (name := rr_favard_auto_named)
   "rr_favard_auto" " using "
     "recurrence" ":=" term :
   tactic
+
+syntax (name := rr_favard_auto_inferred) "rr_favard_auto" : tactic
 
 syntax (name := rr_favard_const)
   "rr_favard_const" " using " term ", " term ", " term ", " term ", " term ", " term :
@@ -2167,6 +2175,15 @@ syntax (name := rr_favard_exact_realrooted_positivity_seq)
   tactic
 
 macro_rules
+  | `(tactic| rr_favard) =>
+      `(tactic|
+        rr_favard using
+          recurrence := (by assumption),
+          beta_pos := (by assumption))
+  | `(tactic| rr_favard_auto) =>
+      `(tactic|
+        rr_favard_auto using
+          recurrence := (by assumption))
   | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
       `(tactic| rr_refine_then $h with rr_positivity_seq)
   | `(tactic| rr_favard_exact_realrooted_positivity_seq $h:term) =>
