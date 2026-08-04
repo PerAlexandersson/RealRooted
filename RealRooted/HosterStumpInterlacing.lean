@@ -51,6 +51,159 @@ def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length + 1)).map fun k =>
     X * (fs.take k).sum + (fs.drop k).sum
 
+/-!
+## The source low-degree convention
+
+Hoster--Stump, arXiv:2508.15538, p. 4, declares every pair of polynomials of
+degree zero or one to interlace. With that convention, Lemma 2.3(2) is false
+for mixed linear/quadratic sequences. The following exact example records the
+obstruction; in particular, the source-exact predicate must not be used as the
+hypothesis of an unconditional lower-partial-sum preservation theorem.
+-/
+
+def lowDegreeCounterexampleLeft : ℝ[X] := X + C 1
+
+def lowDegreeCounterexampleMiddle : ℝ[X] := C 2 * (X + C 3)
+
+def lowDegreeCounterexampleRight : ℝ[X] := (X + C 1) * (X + C 3)
+
+private lemma lowDegreeCounterexample_left_prec_right :
+    Prec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight := by
+  have hbase : Prec (1 : ℝ[X]) (X + C 3) :=
+    (interlaces_one_linear (Polynomial.natDegree_X_add_C (3 : ℝ))).toPrec
+  have hlinear := isRealRooted_of_degree_one
+    (Polynomial.natDegree_X_add_C (1 : ℝ))
+  have hcommon := prec_mul_common_factor
+    (d := X + C 1) (f := 1) (g := X + C 3) hlinear.1 hlinear.2 hbase
+  simpa [lowDegreeCounterexampleLeft, lowDegreeCounterexampleRight] using hcommon
+
+private lemma lowDegreeCounterexample_middle_prec_right :
+    Prec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight := by
+  have hbase : Prec (1 : ℝ[X]) (X + C 1) :=
+    (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toPrec
+  have hlinear := isRealRooted_of_degree_one
+    (Polynomial.natDegree_X_add_C (3 : ℝ))
+  have hcommon := prec_mul_common_factor
+    (d := X + C 3) (f := 1) (g := X + C 1) hlinear.1 hlinear.2 hbase
+  have hscaled := prec_C_mul_left hcommon (by norm_num : (2 : ℝ) ≠ 0)
+  simpa [lowDegreeCounterexampleMiddle, lowDegreeCounterexampleRight, mul_comm]
+    using hscaled
+
+/-- The degree-at-most-one convention makes the source version of
+Hoster--Stump Lemma 2.3(2) false. The input is source-interlacing, but its first
+and third lower partial sums are `X + 1` and `(X + 2) * (X + 5)`, respectively.
+-/
+theorem source_lowerPartialSums_counterexample :
+    IsInterlacingSeq
+        [lowDegreeCounterexampleLeft, lowDegreeCounterexampleMiddle,
+          lowDegreeCounterexampleRight] ∧
+      ¬IsInterlacingSeq
+        (lowerPartialSums
+          [lowDegreeCounterexampleLeft, lowDegreeCounterexampleMiddle,
+            lowDegreeCounterexampleRight]) := by
+  have hlr := lowDegreeCounterexample_left_prec_right
+  have hmr := lowDegreeCounterexample_middle_prec_right
+  have hlrr : IsSourceRealRooted lowDegreeCounterexampleLeft := Or.inr hlr.1
+  have hmrr : IsSourceRealRooted lowDegreeCounterexampleMiddle := Or.inr hmr.1
+  have hrrr : IsSourceRealRooted lowDegreeCounterexampleRight := Or.inr hlr.2.1
+  have hlm : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle :=
+    ⟨hlrr, hmrr, Or.inr (Or.inr (Or.inl (by
+      constructor
+      · simpa [lowDegreeCounterexampleLeft] using
+          (Polynomial.natDegree_X_add_C (1 : ℝ)).le
+      · rw [lowDegreeCounterexampleMiddle,
+          natDegree_mul (by norm_num)
+            (isRealRooted_of_degree_one
+              (Polynomial.natDegree_X_add_C (3 : ℝ))).1]
+        simp)))⟩
+  have hlr' : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight :=
+    ⟨hlrr, hrrr, Or.inr (Or.inr (Or.inr hlr))⟩
+  have hmr' : SourcePrec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight :=
+    ⟨hmrr, hrrr, Or.inr (Or.inr (Or.inr hmr))⟩
+  constructor
+  · refine ⟨?_, ?_, ?_⟩
+    · intro f hf
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
+      rcases hf with rfl | rfl | rfl
+      · exact hasNonnegCoeffs_X_add_C (by norm_num)
+      · exact (hasNonnegCoeffs_C (by norm_num)).mul
+          (hasNonnegCoeffs_X_add_C (by norm_num))
+      · exact (hasNonnegCoeffs_X_add_C (by norm_num)).mul
+          (hasNonnegCoeffs_X_add_C (by norm_num))
+    · intro f hf
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
+      rcases hf with rfl | rfl | rfl
+      · exact hlrr
+      · exact hmrr
+      · exact hrrr
+    · simpa using (show
+        (SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle ∧
+          SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight) ∧
+          SourcePrec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight from
+        ⟨⟨hlm, hlr'⟩, hmr'⟩)
+  · intro hout
+    have hsum :
+        lowerPartialSums
+            [lowDegreeCounterexampleLeft, lowDegreeCounterexampleMiddle,
+              lowDegreeCounterexampleRight] =
+          [lowDegreeCounterexampleLeft,
+            lowDegreeCounterexampleLeft + lowDegreeCounterexampleMiddle,
+            lowDegreeCounterexampleLeft +
+              (lowDegreeCounterexampleMiddle + lowDegreeCounterexampleRight)] := by
+      simp [lowerPartialSums]
+    have hfactor :
+        lowDegreeCounterexampleLeft +
+            (lowDegreeCounterexampleMiddle + lowDegreeCounterexampleRight) =
+          (X + C 2) * (X + C 5) := by
+      simp only [lowDegreeCounterexampleLeft, lowDegreeCounterexampleMiddle,
+        lowDegreeCounterexampleRight]
+      rw [show C (1 : ℝ) = (1 : ℝ[X]) by exact map_one C,
+        show C (2 : ℝ) = (2 : ℝ[X]) by exact map_ofNat C 2,
+        show C (3 : ℝ) = (3 : ℝ[X]) by exact map_ofNat C 3,
+        show C (5 : ℝ) = (5 : ℝ[X]) by exact map_ofNat C 5]
+      ring
+    have hpairs := hout.pairwise
+    rw [hsum] at hpairs
+    have hfirstLast :
+        SourcePrec lowDegreeCounterexampleLeft
+          (lowDegreeCounterexampleLeft +
+            (lowDegreeCounterexampleMiddle + lowDegreeCounterexampleRight)) :=
+      (List.pairwise_cons.mp hpairs).1 _ (by simp)
+    rw [hfactor] at hfirstLast
+    rcases hfirstLast.2.2 with hzero | hzero | hlow | hprec
+    · exact hlr.1.1 hzero
+    · have hleft := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (2 : ℝ))
+      have hright := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (5 : ℝ))
+      exact (mul_ne_zero hleft.1 hright.1) hzero
+    · have hleft := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (2 : ℝ))
+      have hright := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (5 : ℝ))
+      have hdeg : ((X + C 2) * (X + C 5) : ℝ[X]).natDegree = 2 := by
+        rw [natDegree_mul hleft.1 hright.1]
+        simp
+      lia
+    · have hleft := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (2 : ℝ))
+      have hright := isRealRooted_of_degree_one
+        (Polynomial.natDegree_X_add_C (5 : ℝ))
+      have hbound : ∀ r ∈ ((X + C 2) * (X + C 5) : ℝ[X]).roots, r ≤ -2 := by
+        intro r hr
+        rw [roots_mul (mul_ne_zero hleft.1 hright.1), roots_X_add_C,
+          roots_X_add_C] at hr
+        simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
+        rcases hr with rfl | rfl
+        · norm_num
+        · norm_num
+      have hleftRoot : (-1 : ℝ) ∈ lowDegreeCounterexampleLeft.roots := by
+        change (-1 : ℝ) ∈ (X + C 1 : ℝ[X]).roots
+        rw [roots_X_add_C]
+        simp
+      have := roots_le_of_prec_right hprec hbound (-1) hleftRoot
+      norm_num at this
+
 /-- The non-real-rooted polynomial used to check that the old weak sequence
 predicate is insufficient when a zero masks a neighboring entry. -/
 def weakQuadratic : ℝ[X] := C 1 * X ^ 2 + C 1 * X + C 1
