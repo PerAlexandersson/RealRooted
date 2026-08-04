@@ -1,6 +1,7 @@
 import RealRooted.MatrixInterlacing
 import RealRooted.RowThreshold
 import RealRooted.StaircaseSum
+import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.SideGoals
 
 /-!
@@ -15,10 +16,13 @@ rr_matrix0_weak
 rr_matrix0_realrooted
 rr_matrix0_filter_ne_zero
 rr_matrix0_filter_ne_zero_weak
+rr_row_threshold_matrix
+rr_row_threshold_matrix0
 rr_row_threshold_matrix0_weak
 rr_row_threshold_matrix0_realrooted
 rr_row_threshold_matrix0_filter_ne_zero
 rr_row_threshold_matrix0_filter_ne_zero_weak
+rr_row_threshold_entry_nonneg
 ```
 
 Primary target:
@@ -32,6 +36,12 @@ The tactics apply `matrix_preserves_interlacing_seq`,
 `matrix_preserves_interlacing_seq0_of_2x2`, or row-threshold wrappers after
 the user supplies the matrix action, rectangularity, entry nonnegativity, and
 `2 x 2` Branden conditions.
+
+The bare `rr_matrix0`, `rr_matrix0_weak`, `rr_row_threshold_matrix0`, and
+`rr_row_threshold_matrix0_weak` forms infer the matrix and input from the goal.
+They use exact local length and input certificates, then the registered matrix
+certificate attributes. The bare `rr_row_threshold_entry_nonneg` form infers
+its matrix from the target.
 
 Family J warning:
 do not attack raw scalar long-lag recurrences.  First derive a refined vector
@@ -85,6 +95,8 @@ syntax (name := rr_matrix0_named)
     "input_interlacing" ":=" term :
   tactic
 
+syntax (name := rr_matrix0_inferred) "rr_matrix0" : tactic
+
 syntax (name := rr_matrix0_weak)
   "rr_matrix0_weak" " using " term ", "
     term ", "
@@ -107,6 +119,8 @@ syntax (name := rr_matrix0_weak_named)
     "input_interlacing" ":=" term ","
     "input_real_rooted" ":=" term :
   tactic
+
+syntax (name := rr_matrix0_weak_inferred) "rr_matrix0_weak" : tactic
 
 syntax (name := rr_matrix0_realrooted)
   "rr_matrix0_realrooted" " using " term ", "
@@ -217,6 +231,9 @@ syntax (name := rr_row_threshold_matrix0)
     term :
   tactic
 
+syntax (name := rr_row_threshold_matrix0_inferred)
+  "rr_row_threshold_matrix0" : tactic
+
 syntax (name := rr_row_threshold_matrix0_weak_named)
   "rr_row_threshold_matrix0_weak" " using "
     "matrix" ":=" term ","
@@ -239,6 +256,9 @@ syntax (name := rr_row_threshold_matrix0_weak)
     term ", "
     term :
   tactic
+
+syntax (name := rr_row_threshold_matrix0_weak_inferred)
+  "rr_row_threshold_matrix0_weak" : tactic
 
 syntax (name := rr_row_threshold_matrix0_filter_ne_zero_weak_named)
   "rr_row_threshold_matrix0_filter_ne_zero_weak" " using "
@@ -314,7 +334,53 @@ syntax (name := rr_row_threshold_entry_nonneg)
   "rr_row_threshold_entry_nonneg" " using " term :
   tactic
 
+syntax (name := rr_row_threshold_entry_nonneg_inferred)
+  "rr_row_threshold_entry_nonneg" : tactic
+
+-- The local length proof fixes the hidden width before frozen attribute lookup.
 macro_rules
+  | `(tactic| rr_matrix0) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.matrix_preserves_interlacing_seq0_of_2x2
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_matrix0_weak) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.matrix_preserves_interlacing_seq0_of_2x2_weak
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_nonneg => rr_lookup [rr_matrix_nonneg]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption
+          case hfs_real => assumption))
+  | `(tactic| rr_row_threshold_matrix0) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption))
+  | `(tactic| rr_row_threshold_matrix0_weak) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_weak
+          case hfs_len => assumption
+          case hG_rect => rr_lookup [rr_matrix_rect]
+          case hG_threshold => rr_lookup [rr_matrix_threshold]
+          case hG_affine => rr_lookup [rr_matrix_2x2]
+          case hfs => assumption
+          case hfs_real => assumption))
+  | `(tactic| rr_row_threshold_entry_nonneg) =>
+      `(tactic|
+        rr_row_threshold_entry_nonneg using
+          row_threshold := (by rr_lookup [rr_matrix_threshold]))
   | `(tactic|
       rr_matrix using
         $hn:term, $G:term, $hG_rect:term, $hG_nonneg:term, $hG_affine:term,

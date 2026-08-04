@@ -38,15 +38,32 @@ def findLocalProofByType? (target : Expr) : TacticM (Option Expr) :=
           return some (mkFVar ldecl.fvarId)
     return none
 
+private def instantiateCertificateProof? (proof : Expr) : TacticM (Option Expr) := do
+  let proof ← instantiateMVars proof
+  return if proof.hasMVar then none else some proof
+
+private partial def mkProofFromPrefixFor? (proof proofType target : Expr)
+    (args : Array Expr) (binderInfos : Array BinderInfo) :
+    TacticM (Option Expr) := do
+  if ← isDefEq proofType target then
+    synthAppInstances `rr_lookup (← getMainGoal) args binderInfos
+      (synthAssignedInstances := false) (allowSynthFailures := true)
+    if let some proof ← instantiateCertificateProof? (mkAppN proof args) then
+      return some proof
+  let (newArgs, newBinderInfos, conclusion) ←
+    forallMetaBoundedTelescope proofType 1
+  if newArgs.isEmpty then
+    return none
+  mkProofFromPrefixFor? proof conclusion target (args ++ newArgs)
+    (binderInfos ++ newBinderInfos)
+
 def mkProofFromDeclFor? (decl : Name) (target : Expr) : TacticM (Option Expr) :=
   withMainContext do
-    withNewMCtxDepth do
-      let proof ← mkConstWithFreshMVarLevels decl
-      let (args, _, conclusion) ← forallMetaTelescopeReducing (← inferType proof)
-      if ← isDefEq conclusion target then
-        return some (← instantiateMVars (mkAppN proof args))
-      else
-        return none
+    withoutModifyingState do
+      withNewMCtxDepth do
+        let proof ← mkConstWithFreshMVarLevels decl
+        let proofType ← inferType proof
+        mkProofFromPrefixFor? proof proofType target #[] #[]
 
 def findTaggedProofsByType (attr : Lean.TagAttribute) (target : Expr) :
     TacticM (Array (Name × Expr)) := do
