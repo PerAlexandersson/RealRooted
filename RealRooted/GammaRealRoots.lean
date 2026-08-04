@@ -267,6 +267,64 @@ lemma gammaTransform_odd (m : ℕ) (γ : ℝ[X]) :
     _ = (X + 1) * gammaTransform (2 * m) γ := by
           simp [gammaTransform, hhalf_even]
 
+/-- Repeated source-degree padding factors off two copies of `X + 1` at each
+step. -/
+lemma gammaTransform_add_two_mul (d k : ℕ) {γ : ℝ[X]}
+    (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform (d + 2 * k) γ =
+      (X + 1) ^ (2 * k) * gammaTransform d γ := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      have hkdeg : γ.natDegree ≤ (d + 2 * k) / 2 := by lia
+      calc
+        gammaTransform (d + 2 * (k + 1)) γ =
+            gammaTransform ((d + 2 * k) + 2) γ := by congr 1 <;> lia
+        _ = (X + 1) ^ 2 * gammaTransform (d + 2 * k) γ :=
+          gammaTransform_pad_two hkdeg
+        _ = (X + 1) ^ 2 *
+            ((X + 1) ^ (2 * k) * gammaTransform d γ) := by rw [ih]
+        _ = (X + 1) ^ (2 * (k + 1)) * gammaTransform d γ := by
+          rw [show 2 * (k + 1) = 2 + 2 * k by lia, pow_add]
+          ring
+
+/-- Hoster--Stump, Proposition 2.5, equation (2.2), factorization input:
+the excess ambient degree is exactly a power of `X + 1`. -/
+theorem gammaTransform_eq_X_add_one_pow_mul_minimal
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform d γ =
+      (X + 1) ^ (d - 2 * γ.natDegree) *
+        gammaTransform (2 * γ.natDegree) γ := by
+  let n := γ.natDegree
+  let m := d / 2
+  have hnm : n ≤ m := hγ
+  have hbase : n ≤ (2 * n) / 2 := by simp
+  have hiter := gammaTransform_add_two_mul (2 * n) (m - n) hbase
+  rcases Nat.mod_two_eq_zero_or_one d with heven | hodd
+  · have hd : d = 2 * m := by dsimp [m]; lia
+    calc
+      gammaTransform d γ =
+          gammaTransform (2 * n + 2 * (m - n)) γ := by congr 1 <;> lia
+      _ = (X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ := hiter
+      _ = (X + 1) ^ (d - 2 * γ.natDegree) *
+          gammaTransform (2 * γ.natDegree) γ := by
+            dsimp [n]
+            rw [show 2 * (m - γ.natDegree) =
+              d - 2 * γ.natDegree by lia]
+  · have hd : d = 2 * m + 1 := by dsimp [m]; lia
+    calc
+      gammaTransform d γ = gammaTransform (2 * m + 1) γ := by congr 1
+      _ = (X + 1) * gammaTransform (2 * m) γ := gammaTransform_odd m γ
+      _ = (X + 1) *
+          ((X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ) := by
+            rw [show 2 * m = 2 * n + 2 * (m - n) by lia, hiter]
+      _ = (X + 1) ^ (d - 2 * γ.natDegree) *
+          gammaTransform (2 * γ.natDegree) γ := by
+            dsimp [n]
+            rw [show d - 2 * γ.natDegree =
+              2 * (m - γ.natDegree) + 1 by lia, pow_succ']
+            ring
+
 lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
     gammaTransform (2 * (m + 1)) γ =
       (X + 1) * gammaTransform (2 * m + 1) γ + C (γ.coeff (m + 1)) * X ^ (m + 1) := by
@@ -317,6 +375,13 @@ lemma gammaTransform_even_eval_neg_one (m : ℕ) (γ : ℝ[X]) :
     have hpow_pos : 0 < 2 * m - 2 * i := by lia
     simp [gammaBasisTerm, hpow_pos.ne']
   · simp
+
+/-- The minimal even gamma transform does not vanish at `-1`. -/
+lemma gammaTransform_minimal_eval_neg_one_ne_zero {γ : ℝ[X]} (hγ : γ ≠ 0) :
+    (gammaTransform (2 * γ.natDegree) γ).eval (-1) ≠ 0 := by
+  rw [gammaTransform_even_eval_neg_one, Polynomial.coeff_natDegree]
+  exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hγ)
+    (pow_ne_zero _ (by norm_num))
 
 lemma gammaTransform_even_isRoot_neg_one_iff (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).IsRoot (-1) ↔ γ.coeff m = 0 := by
