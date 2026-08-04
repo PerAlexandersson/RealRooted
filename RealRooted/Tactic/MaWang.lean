@@ -58,6 +58,21 @@ accepts derivative goals, but the derivative-specific form usually has the more
 natural certificates. In the generic tactic, `source_pos_lc` refers to the
 interlacer `g`.
 
+For a whole sequence whose coefficient families are hidden from the goal, use
+
+```lean
+rr_mw_derivative_nonpos_sequence using recurrence := hrec
+rr_mw_derivative_nonpos_sequence_realrooted using recurrence := hrec
+```
+
+The goal fixes `P`; the recurrence then fixes `U` and `V` before lookup obtains
+the remaining certificates. A normalized recurrence supplied by a nested tactic
+block needs an explicit expected type. Lookup expects the shifted degree-two
+and coefficient-sign families and both degree inequalities in the theorem's
+literal shapes; use the named form when those facts first need reshaping. The
+real-rooted form closes the full conjunction as well as splitting, nonzero, and
+indexed projections.
+
 First intended regression examples:
 
 - `touchard`;
@@ -2168,6 +2183,9 @@ syntax (name := rr_mw_derivative_nonpos_sequence_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_sequence_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_sequence" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_named)
   "rr_mw_derivative_nonpos_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -2178,6 +2196,10 @@ syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_named)
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
   tactic
+
+syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_sequence_realrooted" " using "
+    "recurrence" ":=" term : tactic
 
 syntax (name := rr_mw_derivative_global_nonpos_sequence_auto_named)
   "rr_mw_derivative_global_nonpos_sequence_auto" " using "
@@ -4035,6 +4057,13 @@ macro_rules
         exact RealRooted.prec_mw_derivative_nonpos_sequence
           $hbase $hpos $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
+      rr_mw_derivative_nonpos_sequence using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_nonpos_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
+  | `(tactic|
       rr_mw_derivative_nonpos_sequence_realrooted using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -4047,6 +4076,14 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             $hbase $hpos $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_realrooted using
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_realrooted_refine_then
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_mw_derivative_global_nonpos_sequence_auto using
         base := $hbase:term,
