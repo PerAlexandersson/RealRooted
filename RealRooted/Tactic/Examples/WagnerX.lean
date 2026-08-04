@@ -383,6 +383,53 @@ example {f g : ℝ[X]} {a c : ℝ}
     lag_coeff_pos := ha,
     derivative_coeff_pos := hc
 
+/-- The same step can infer all certificates once the displayed target fixes
+the two polynomials and both scalar coefficients. -/
+example {f g : ℝ[X]} {a c : ℝ}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hdeg : 2 ≤ g.natDegree)
+    (ha : 0 < a)
+    (hc : 0 < c) :
+    Prec g (X * (C c * g.derivative + C a * f)) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- Indexed local families supply the active step without pointwise aliases. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (ha : ∀ k : Nat, 0 < a k)
+    (hc : ∀ k : Nat, 0 < c k) :
+    Prec (P (n + 1))
+      (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- Shifted families may instantiate offset certificate families and mix
+indexed with arithmetic scalar bounds. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ} {n : Nat}
+    (hchain : ∀ k : Nat, Prec (P k) (P (k + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (ha : ∀ k : Nat, 0 < a k) :
+    Prec (P (n + 4))
+      (X * (C ((n : ℝ) + 4) * (P (n + 4)).derivative +
+        C (a (n + 3)) * P (n + 3))) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- A recurrence rewrite exposes the rigid target consumed by the bare step. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (hrec : ∀ k : Nat,
+      P (k + 2) = X * (C (1 : ℝ) * (P (k + 1)).derivative +
+        C ((k : ℝ) + 1) * P k)) :
+    Prec (P (n + 1)) (P (n + 2)) := by
+  rw [hrec n]
+  rr_prec_wagner_derivative_gap_lag
+
 /-- Scalar-left single-step wrapper for unnormalized recurrence certificates. -/
 example {f g p : ℝ[X]} {a c d : ℝ}
     (hfg : Prec f g)

@@ -13,7 +13,8 @@ Bare one-step forms consume exact local hypotheses, local hypotheses with a
 fully determined `forall` prefix, or tagged certificates. They preserve the
 displayed product association rather than searching through reassociated
 targets. Use the explicit forms when a local prefix is not determined by the
-goal.
+goal. The derivative-gap form may also close its two strict scalar bounds with
+`rr_wagner_pos` arithmetic.
 -/
 
 open Polynomial
@@ -486,6 +487,9 @@ syntax (name := rr_prec_wagner_derivative_gap_lag)
     "derivative_coeff_pos" ":=" term :
   tactic
 
+syntax (name := rr_prec_wagner_derivative_gap_lag_inferred)
+  "rr_prec_wagner_derivative_gap_lag" : tactic
+
 syntax (name := rr_prec_wagner_derivative_gap_lag_den)
   "rr_prec_wagner_derivative_gap_lag_den" " using "
     "proper" ":=" term ","
@@ -641,7 +645,7 @@ macro_rules
       `(fun n => by simpa using $hrec n)
 
 macro_rules
-  -- Each conclusion fixes all hidden polynomials before conservative lookup.
+  -- Each conclusion fixes its hidden polynomial and scalar parameters first.
   | `(tactic|
       rr_prec_mul_X using
         proper := $hprec:term,
@@ -733,6 +737,16 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_wagner_derivative_gap_lag_step
           $hprec $hfnn $hgnn $hdeg $ha $hc)
+  | `(tactic| rr_prec_wagner_derivative_gap_lag) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_wagner_derivative_gap_lag_step
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]
+          case hdeg => rr_lookup [rr_degree]
+          case ha => first | rr_lookup | rr_wagner_pos
+          case hc => first | rr_lookup | rr_wagner_pos))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_den using
         proper := $hprec:term,
