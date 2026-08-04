@@ -512,6 +512,38 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) : (gammaTransform d γ
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff d) hfix
   simpa [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using hcoeff.symm
 
+/-- The root map `ρ ↦ ρ / (1 + ρ)²` in Hoster--Stump, Proposition 2.5,
+equation (2.1). Reciprocal roots of a palindromic polynomial have the same
+image under this map. -/
+def gammaRootMap (x : ℝ) : ℝ := x / (1 + x) ^ 2
+
+/-- The gamma root map identifies a nonzero real number with its reciprocal. -/
+lemma gammaRootMap_inv {x : ℝ} (hx : x ≠ 0) :
+    gammaRootMap x⁻¹ = gammaRootMap x := by
+  by_cases h1x : 1 + x = 0
+  · have hxneg : x = -1 := by linarith
+    simp [gammaRootMap, hxneg]
+  · unfold gammaRootMap
+    field_simp [hx, h1x]
+    ring
+
+/-- Hoster--Stump, Proposition 2.5: the gamma root map is strictly increasing
+on the interval `(-1, 0)`. -/
+theorem strictMonoOn_gammaRootMap :
+    StrictMonoOn gammaRootMap (Set.Ioo (-1) 0) := by
+  intro a ha b hb hab
+  have ha1 : 0 < 1 + a := by linarith [ha.1]
+  have hb1 : 0 < 1 + b := by linarith [hb.1]
+  have hab_pos : 0 < b - a := sub_pos.mpr hab
+  have hone : 0 < 1 - a * b := by
+    have hproduct : 0 < (1 + a) * (1 - b) :=
+      mul_pos ha1 (by linarith [hb.2])
+    nlinarith
+  have hfactor := mul_pos hab_pos hone
+  simp only [gammaRootMap]
+  rw [div_lt_div_iff₀ (sq_pos_of_pos ha1) (sq_pos_of_pos hb1)]
+  nlinarith
+
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
     (gammaTransform d γ).eval x = (1 + x) ^ d * γ.eval (x / (1 + x) ^ 2) := by
