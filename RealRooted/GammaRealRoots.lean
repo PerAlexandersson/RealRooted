@@ -979,6 +979,9 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
   classical
   let s := (gammaTransform d γ).roots.filter
     (fun x => x ∈ Set.Ioo (-1 : Real) 0)
+  change (gammaTransform d γ).roots =
+    s.map (fun x => x⁻¹) +
+      Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s
   have hs_Ioo {x : Real} (hx : x ∈ s) : x ∈ Set.Ioo (-1 : Real) 0 := by
     change x ∈ (gammaTransform d γ).roots.filter
       (fun z => z ∈ Set.Ioo (-1 : Real) 0) at hx
@@ -1036,12 +1039,6 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
       _ = (s.map (fun z => z⁻¹) +
           Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
         simp [Multiset.count_add, hs_zero, hrep_zero]
-      _ = (((gammaTransform d γ).roots.filter
-            (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
-          Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
-            (gammaTransform d γ).roots.filter
-              (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
-        rfl
   · by_cases hxeq : x = -1
     · subst x
       have hs_zero : s.count (-1) = 0 := by
@@ -1063,12 +1060,6 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
         _ = (s.map (fun z => z⁻¹) +
             Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count (-1) := by
           simp [Multiset.count_add, hs_zero, hinv_zero]
-        _ = (((gammaTransform d γ).roots.filter
-              (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
-            Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
-              (gammaTransform d γ).roots.filter
-                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count (-1) := by
-          rfl
     · by_cases hxneg : x < 0
       · have hxmem : x ∈ Set.Ioo (-1 : Real) 0 :=
           ⟨lt_of_le_of_ne (le_of_not_gt hxlt) (Ne.symm hxeq), hxneg⟩
@@ -1094,12 +1085,6 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
           _ = (s.map (fun z => z⁻¹) +
               Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
             simp [Multiset.count_add, hinv_zero, hrep_zero]
-          _ = (((gammaTransform d γ).roots.filter
-                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
-              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
-                (gammaTransform d γ).roots.filter
-                  (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
-            rfl
       · have hx_not_mem : x ∉ (gammaTransform d γ).roots := by
           intro hxroot
           exact hxneg (hneg x hxroot)
@@ -1124,12 +1109,6 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
           _ = (s.map (fun z => z⁻¹) +
               Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
             simp [Multiset.count_add, hs_zero, hinv_zero, hrep_zero]
-          _ = (((gammaTransform d γ).roots.filter
-                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
-              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
-                (gammaTransform d γ).roots.filter
-                  (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
-            rfl
 
 /-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equation
 (2.1): the negative gamma roots are the images of the transform roots on the
