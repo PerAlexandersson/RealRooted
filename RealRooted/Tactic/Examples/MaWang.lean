@@ -26,6 +26,7 @@ example {n : Nat} : 1 - ((n : ℝ) + 3) ≠ 0 := by
 example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by
   rr_scalar_active_den_all
 
+/-- A supplied recurrence fixes the hidden target before atomic lookup. -/
 example {f F u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -45,6 +46,46 @@ example {f F u v : ℝ[X]}
     degree_upper := hdeg_hi,
     source_pos_lc := hf_pos,
     coeff_nonpos := hv_nonpos
+
+/-- Recurrence normalization completes before certificate lookup starts. -/
+example {f F u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hrec : F = u * f + v * f.derivative)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_mw_derivative_nonpos_step using recurrence := hrec
+
+example {f F u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hraw : F = v * f.derivative + u * f)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_mw_derivative_nonpos_step using recurrence :=
+    (by simpa [add_comm] using hraw : F = u * f + v * f.derivative)
+
+/-- The inferred step instantiates indexed local certificate families. -/
+example {P U V : Nat → ℝ[X]} {n : Nat}
+    (hsplits : ∀ k, (P (k + 1)).Splits)
+    (hdeg_two : ∀ k, 2 ≤ (P (k + 1)).natDegree)
+    (hrec : ∀ k,
+      P (k + 2) = U k * P (k + 1) + V k * (P (k + 1)).derivative)
+    (hpos : ∀ k, HasPosLeadingCoeff (P k))
+    (hdeg_lo : ∀ k, (P (k + 1)).natDegree ≤ (P (k + 2)).natDegree)
+    (hdeg_hi : ∀ k, (P (k + 2)).natDegree ≤ (P (k + 1)).natDegree + 1)
+    (hcoeff : ∀ k r, (P (k + 1)).IsRoot r → (V k).eval r ≤ 0) :
+    Prec (P (n + 1))
+      (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
+  rr_mw_derivative_nonpos_step using recurrence := hrec n
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)

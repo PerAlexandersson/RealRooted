@@ -29,6 +29,18 @@ P (n + 1) = u n * P n + v n * (P n).derivative.
 The tactic should apply existing theorems such as `prec_ma_wang` and
 `prec_of_interlaces_evalCoeff_nonpos`, then discharge certificate side goals.
 
+For weak derivative steps whose auxiliary target polynomial is hidden from the
+goal, use
+
+```lean
+rr_mw_derivative_nonpos_step using recurrence := hrec
+```
+
+The goal must display the normalized derivative sum. The recurrence then fixes
+the hidden polynomial before exact-local, local-family, or tagged certificate
+lookup. Use the explicit form when the displayed target or a certificate does
+not determine its prefix.
+
 First intended regression examples:
 
 - `touchard`;
@@ -1886,6 +1898,9 @@ syntax (name := rr_mw_derivative_nonpos_step_named)
     "coeff_nonpos" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_step_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_step" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos_degree_named)
   "rr_mw_derivative_nonpos" " using "
     "splits" ":=" term ","
@@ -3620,6 +3635,12 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_mw_derivative_of_nonpos_of_recurrence
           $hf $hdegf $hrec $hF_pos $hdeg_lo $hdeg_hi $hf_pos $hv_nonpos)
+  | `(tactic| rr_mw_derivative_nonpos_step using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_of_nonpos_of_recurrence
+            ?_ ?_ $hrec ?_ ?_ ?_ ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_mw_derivative_nonpos using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
