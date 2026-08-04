@@ -379,6 +379,24 @@ lemma gammaTransform_minimal_eval_neg_one_ne_zero {γ : ℝ[X]} (hγ : γ ≠ 0)
   exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hγ)
     (pow_ne_zero _ (by norm_num))
 
+/-- Equation (2.2) in Hoster--Stump, Proposition 2.5:
+https://arxiv.org/abs/2508.15538. -/
+theorem rootMultiplicity_neg_one_gammaTransform
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2) (hγ : γ ≠ 0) :
+    (gammaTransform d γ).rootMultiplicity (-1) = d - 2 * γ.natDegree := by
+  have hcore_eval := gammaTransform_minimal_eval_neg_one_ne_zero hγ
+  have hcore_ne : gammaTransform (2 * γ.natDegree) γ ≠ 0 := by
+    intro hzero
+    simp [hzero] at hcore_eval
+  have hcore_not_root :
+      ¬(gammaTransform (2 * γ.natDegree) γ).IsRoot (-1) := by
+    rw [Polynomial.IsRoot.def]
+    exact hcore_eval
+  have hlinear : (X + 1 : ℝ[X]) = X - C (-1) := by ring
+  rw [gammaTransform_eq_X_add_one_pow_mul_minimal hγdeg, mul_comm, hlinear,
+    rootMultiplicity_mul_X_sub_C_pow hcore_ne,
+    rootMultiplicity_eq_zero hcore_not_root, zero_add]
+
 lemma gammaTransform_even_isRoot_neg_one_iff (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).IsRoot (-1) ↔ γ.coeff m = 0 := by
   rw [Polynomial.IsRoot.def, gammaTransform_even_eval_neg_one]
