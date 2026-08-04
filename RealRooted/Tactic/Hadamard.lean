@@ -482,6 +482,9 @@ syntax (name := rr_hadamard_prec0_named)
     "second_prec" ":=" term :
   tactic
 
+syntax (name := rr_hadamard_pf_prec0_named)
+  "rr_hadamard_pf_prec0" : tactic
+
 syntax (name := rr_hadamard_sequence_pf_named)
   "rr_hadamard_sequence_pf" " using "
     "left_pf" ":=" term ","
@@ -802,6 +805,18 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.hadamardProduct_prec0_of_nonneg_prec
           $hf $hg $hp $hq $hfg $hpq)
+  | `(tactic| rr_hadamard_pf_prec0) =>
+      `(tactic|
+        first
+          | exact RealRooted.hadamardProduct_preserves_prec0_right
+              RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+          | exact RealRooted.hadamardProduct_preserves_prec0_left
+              RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+          | exact RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+              rr_lookup_term rr_lookup_term)
   | `(tactic|
       rr_hadamard_sequence_pf using
         left_pf := $hp:term,

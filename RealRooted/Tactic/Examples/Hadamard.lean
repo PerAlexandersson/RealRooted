@@ -386,6 +386,37 @@ example {f g p q : ℝ[X]}
     first_prec := hfg,
     second_prec := hpq
 
+example {f g p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hfg : Prec0 f g) (hpq : Prec0 p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+  rr_hadamard_pf_prec0
+
+example {f g p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
+    (hfg : Prec0 f g) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g p) := by
+  rr_hadamard_pf_prec0
+
+example {f p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hpq : Prec0 p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct f q) := by
+  rr_hadamard_pf_prec0
+
+example {F G P Q : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hG : ∀ i : Nat, IsPFPolynomial (G i))
+    (hP : ∀ i : Nat, IsPFPolynomial (P i))
+    (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
+    (hFG : ∀ i : Nat, Prec0 (F i) (G i))
+    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
+    ∀ n : Nat,
+      Prec0 (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
+  intro n
+  rr_hadamard_pf_prec0
+
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
