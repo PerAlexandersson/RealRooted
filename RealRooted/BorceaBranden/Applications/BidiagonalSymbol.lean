@@ -192,27 +192,22 @@ theorem complexFiniteAlgebraicSymbol_complexBidiagonalLinearMap
     Polynomial.X_pow_eq_monomial, diagonalOperator_monomial, pow_succ]
   ring
 
-/-- Identify variables `0` and `1` with the left and right singleton blocks. -/
-def finTwoToFinOneSum : Fin 2 → Fin 1 ⊕ Fin 1 :=
-  Fin.cases (Sum.inl 0) (fun _ => Sum.inr 0)
-
-theorem finTwoToFinOneSum_comp_finOneSumToFinTwo :
-    finTwoToFinOneSum ∘ finOneSumToFinTwo = id := by
-  funext i
-  rcases i with i | i
-  · rw [Subsingleton.elim i 0]
-    rfl
-  · rw [Subsingleton.elim i 0]
-    rfl
-
-theorem finOneSumToFinTwo_comp_finTwoToFinOneSum :
-    finOneSumToFinTwo ∘ finTwoToFinOneSum = id := by
-  funext i
-  apply Fin.cases
-  · rfl
-  · intro j
-    rw [Subsingleton.elim j 0]
-    rfl
+/-- Identify the left and right singleton blocks with variables `0` and `1`. -/
+def finOneSumEquivFinTwo : Fin 1 ⊕ Fin 1 ≃ Fin 2 where
+  toFun := finOneSumToFinTwo
+  invFun := Fin.cases (Sum.inl 0) (fun _ => Sum.inr 0)
+  left_inv i := by
+    rcases i with i | i
+    · rw [Subsingleton.elim i 0]
+      rfl
+    · rw [Subsingleton.elim i 0]
+      rfl
+  right_inv i := by
+    apply Fin.cases
+    · rfl
+    · intro j
+      rw [Subsingleton.elim j 0]
+      rfl
 
 /-- Borcea--Branden, Theorem 1.1, symbol identification for the complexified
 bidiagonal operator. The equality uses the affine, not homogeneous, finite
@@ -222,16 +217,15 @@ theorem algebraicSymbol_complexBidiagonalDegreeBoxOperator
     MvPolynomial.algebraicSymbol (fun _ : Fin 1 => d)
         (complexUnivariateDegreeBoxOperator d
           (complexBidiagonalLinearMap alpha beta)) =
-      MvPolynomial.rename finTwoToFinOneSum
+      MvPolynomial.rename finOneSumEquivFinTwo.symm
         (complexifyMv
           (Challenges.BorceaBranden.finiteAlgebraicSymbol d
             (bidiagonalLinearMap alpha beta))) := by
-  have h := congrArg (MvPolynomial.rename finTwoToFinOneSum)
+  have h := congrArg (MvPolynomial.rename finOneSumEquivFinTwo.symm)
     (rename_algebraicSymbol_complexUnivariateDegreeBoxOperator d
       (complexBidiagonalLinearMap alpha beta))
   rw [complexFiniteAlgebraicSymbol_complexBidiagonalLinearMap] at h
-  simpa [MvPolynomial.rename_rename,
-    finTwoToFinOneSum_comp_finOneSumToFinTwo] using h
+  simpa [MvPolynomial.rename_rename, finOneSumEquivFinTwo] using h
 
 /-- Explicit bidiagonal application of finite degree-box symbol sufficiency.
 
