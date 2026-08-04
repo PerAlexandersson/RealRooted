@@ -842,6 +842,16 @@ lemma gammaTransform_X_sub_C_pow_mul_two
           rw [pow_succ]
           ring
 
+/-- Algebraic reciprocal-pair factorization away from `0` and `-1`. -/
+lemma gammaTransform_X_sub_C_pow_gammaRootMap_of_ne
+    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx0 : x ≠ 0) (hx1 : x ≠ -1) :
+    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
+        gammaTransform d γ := by
+  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
+    gammaQuadraticFactor_eq_mul_reciprocal hx0 hx1]
+
 /-- A gamma root of multiplicity `m` yields reciprocal transform roots, each
 with the same extracted multiplicity, in Hoster--Stump equation (2.1). -/
 lemma gammaTransform_X_sub_C_pow_gammaRootMap
@@ -849,9 +859,9 @@ lemma gammaTransform_X_sub_C_pow_gammaRootMap
     (hx : x ∈ Set.Ioo (-1) 0) :
     gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
       (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
-        gammaTransform d γ := by
-  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
-    gammaQuadraticFactor_eq_mul_reciprocal (ne_of_lt hx.2) (ne_of_gt hx.1)]
+        gammaTransform d γ :=
+  gammaTransform_X_sub_C_pow_gammaRootMap_of_ne hγ
+    (ne_of_lt hx.2) (ne_of_gt hx.1)
 
 /-- Extracting one gamma root produces the reciprocal transform-root pair in
 Hoster--Stump, Proposition 2.5, equation (2.1). -/
@@ -864,12 +874,11 @@ lemma gammaTransform_X_sub_C_gammaRootMap
   simpa using
     (gammaTransform_X_sub_C_pow_gammaRootMap (m := 1) hγ hx)
 
-/-- Multiplicity form of Hoster--Stump, Proposition 2.5, equation (2.1):
-each transform root in `(-1, 0)` has the multiplicity of its gamma image.
-See https://arxiv.org/abs/2508.15538. -/
-theorem rootMultiplicity_gammaTransform_of_mem_Ioo
+/-- Multiplicity form of Hoster--Stump, Proposition 2.5, equation (2.1), on
+both reciprocal halves of the negative real axis. -/
+theorem rootMultiplicity_gammaTransform_of_neg
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : γ ≠ 0) {x : ℝ} (hx : x ∈ Set.Ioo (-1) 0) :
+    (hγ : γ ≠ 0) {x : ℝ} (hx : x < 0) (hx1 : x ≠ -1) :
     (gammaTransform d γ).rootMultiplicity x =
       γ.rootMultiplicity (gammaRootMap x) := by
   let r := gammaRootMap x
@@ -890,14 +899,13 @@ theorem rootMultiplicity_gammaTransform_of_mem_Ioo
   have hqdeg : q.natDegree ≤ (d - 2 * m) / 2 := by
     have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
     lia
+  have hx0 : x ≠ 0 := ne_of_lt hx
   have htransform :=
-    gammaTransform_X_sub_C_pow_gammaRootMap
-      (d := d - 2 * m) (m := m) hqdeg hx
+    gammaTransform_X_sub_C_pow_gammaRootMap_of_ne
+      (d := d - 2 * m) (m := m) hqdeg hx0 hx1
   have hambient : d - 2 * m + 2 * m = d := by lia
   have hfull := htransform
   rw [hambient, ← hγq] at hfull
-  have hx0 : x ≠ 0 := ne_of_lt hx.2
-  have hx1 : x ≠ -1 := ne_of_gt hx.1
   have h1x : 1 + x ≠ 0 := by
     intro h
     apply hx1
@@ -909,9 +917,7 @@ theorem rootMultiplicity_gammaTransform_of_mem_Ioo
     intro heq
     have hmul : x * x⁻¹ = 1 := mul_inv_cancel₀ hx0
     rw [← heq] at hmul
-    have hpos : 0 < (1 + x) * (1 - x) :=
-      mul_pos (by linarith [hx.1]) (by linarith [hx.2])
-    nlinarith
+    rcases lt_or_gt_of_ne hx1 with hlt | hgt <;> nlinarith
   have hcore_not_root :
       ¬(gammaTransform (d - 2 * m) q).IsRoot x := by
     intro hroot
@@ -946,6 +952,184 @@ theorem rootMultiplicity_gammaTransform_of_mem_Ioo
   change (gammaTransform d γ).rootMultiplicity x = m
   rw [hfactor, rootMultiplicity_mul_X_sub_C_pow hp,
     rootMultiplicity_eq_zero hp_not_root, zero_add]
+
+/-- Multiplicity form of Hoster--Stump equation (2.1) on the preferred branch
+`(-1, 0)`. -/
+theorem rootMultiplicity_gammaTransform_of_mem_Ioo
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) {x : ℝ} (hx : x ∈ Set.Ioo (-1) 0) :
+    (gammaTransform d γ).rootMultiplicity x =
+      γ.rootMultiplicity (gammaRootMap x) :=
+  rootMultiplicity_gammaTransform_of_neg hγdeg hγ hx.2 (ne_of_gt hx.1)
+
+/-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equations
+(2.1) and (2.2): the roots of the gamma transform consist of reciprocal
+pairs, together with the exceptional roots at `-1` prescribed by the degree.
+-/
+theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
+    {d : Nat} {γ : Real[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0)
+    (hneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0) :
+    (gammaTransform d γ).roots =
+      ((gammaTransform d γ).roots.filter
+          (fun x => x ∈ Set.Ioo (-1 : Real) 0)).map (fun x => x⁻¹) +
+        Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+          (gammaTransform d γ).roots.filter
+            (fun x => x ∈ Set.Ioo (-1 : Real) 0) := by
+  classical
+  let s := (gammaTransform d γ).roots.filter
+    (fun x => x ∈ Set.Ioo (-1 : Real) 0)
+  have hs_Ioo {x : Real} (hx : x ∈ s) : x ∈ Set.Ioo (-1 : Real) 0 := by
+    change x ∈ (gammaTransform d γ).roots.filter
+      (fun z => z ∈ Set.Ioo (-1 : Real) 0) at hx
+    exact (Multiset.mem_filter.mp hx).2
+  have hinv_Ioo {x : Real} (hx : x < -1) : x⁻¹ ∈ Set.Ioo (-1 : Real) 0 := by
+    constructor
+    · rw [inv_eq_one_div]
+      exact (lt_div_iff_of_neg (by linarith)).2 (by nlinarith)
+    · exact inv_lt_zero.mpr (by linarith)
+  have hinv_lt_neg_one {x : Real} (hx : x ∈ Set.Ioo (-1 : Real) 0) :
+      x⁻¹ < -1 := by
+    rw [inv_eq_one_div]
+    exact (div_lt_iff_of_neg hx.2).2 (by nlinarith [hx.1])
+  refine Multiset.ext.mpr fun x => ?_
+  by_cases hxlt : x < -1
+  · have hx0 : x ≠ 0 := by linarith
+    have hxi := hinv_Ioo hxlt
+    have hcount_inv :
+        (gammaTransform d γ).roots.count x =
+          (s.map (fun z => z⁻¹)).count x := by
+      calc
+        (gammaTransform d γ).roots.count x =
+            (gammaTransform d γ).rootMultiplicity x :=
+          Polynomial.count_roots (gammaTransform d γ)
+        _ = γ.rootMultiplicity (gammaRootMap x) :=
+          rootMultiplicity_gammaTransform_of_neg hγdeg hγ
+            (by linarith) (by linarith)
+        _ = γ.rootMultiplicity (gammaRootMap x⁻¹) := by
+          rw [gammaRootMap_inv hx0]
+        _ = (gammaTransform d γ).rootMultiplicity x⁻¹ :=
+          (rootMultiplicity_gammaTransform_of_neg hγdeg hγ hxi.2
+            (ne_of_gt hxi.1)).symm
+        _ = (gammaTransform d γ).roots.count x⁻¹ :=
+          (Polynomial.count_roots (gammaTransform d γ)).symm
+        _ = s.count x⁻¹ := by
+          simpa [s] using
+            (Multiset.count_filter_of_pos
+              (s := (gammaTransform d γ).roots) (a := x⁻¹)
+              (p := fun z : Real => z ∈ Set.Ioo (-1) 0) hxi).symm
+        _ = (s.map (fun z => z⁻¹)).count x := by
+          simpa using
+            (Multiset.count_map_eq_count' (fun z : Real => z⁻¹) s
+              inv_injective x⁻¹).symm
+    have hs_zero : s.count x = 0 := by
+      apply Multiset.count_filter_of_neg
+      intro hxmem
+      linarith [hxmem.1]
+    have hrep_zero :
+        (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+      rw [Multiset.count_replicate]
+      simp [Ne.symm (ne_of_lt hxlt)]
+    calc
+      (gammaTransform d γ).roots.count x =
+          (s.map (fun z => z⁻¹)).count x := hcount_inv
+      _ = (s.map (fun z => z⁻¹) +
+          Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+        simp [Multiset.count_add, hs_zero, hrep_zero]
+      _ = (((gammaTransform d γ).roots.filter
+            (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
+          Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+            (gammaTransform d γ).roots.filter
+              (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
+        rfl
+  · by_cases hxeq : x = -1
+    · subst x
+      have hs_zero : s.count (-1) = 0 := by
+        apply Multiset.count_filter_of_neg
+        simp
+      have hinv_zero : (s.map (fun z => z⁻¹)).count (-1) = 0 := by
+        apply Multiset.count_eq_zero_of_notMem
+        rw [Multiset.mem_map]
+        rintro ⟨z, hzs, hz⟩
+        have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+        rw [hz] at hzlt
+        linarith
+      calc
+        (gammaTransform d γ).roots.count (-1) =
+            (gammaTransform d γ).rootMultiplicity (-1) :=
+          Polynomial.count_roots (gammaTransform d γ)
+        _ = d - 2 * γ.natDegree :=
+          rootMultiplicity_neg_one_gammaTransform hγdeg hγ
+        _ = (s.map (fun z => z⁻¹) +
+            Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count (-1) := by
+          simp [Multiset.count_add, hs_zero, hinv_zero]
+        _ = (((gammaTransform d γ).roots.filter
+              (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
+            Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+              (gammaTransform d γ).roots.filter
+                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count (-1) := by
+          rfl
+    · by_cases hxneg : x < 0
+      · have hxmem : x ∈ Set.Ioo (-1 : Real) 0 :=
+          ⟨lt_of_le_of_ne (le_of_not_gt hxlt) (Ne.symm hxeq), hxneg⟩
+        have hinv_zero : (s.map (fun z => z⁻¹)).count x = 0 := by
+          apply Multiset.count_eq_zero_of_notMem
+          rw [Multiset.mem_map]
+          rintro ⟨z, hzs, hz⟩
+          have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+          rw [hz] at hzlt
+          linarith [hxmem.1]
+        have hs_count :
+            (gammaTransform d γ).roots.count x = s.count x := by
+          simpa [s] using
+            (Multiset.count_filter_of_pos
+              (s := (gammaTransform d γ).roots) (a := x)
+              (p := fun z : Real => z ∈ Set.Ioo (-1) 0) hxmem).symm
+        have hrep_zero :
+            (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+          rw [Multiset.count_replicate]
+          simp [Ne.symm hxeq]
+        calc
+          (gammaTransform d γ).roots.count x = s.count x := hs_count
+          _ = (s.map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+            simp [Multiset.count_add, hinv_zero, hrep_zero]
+          _ = (((gammaTransform d γ).roots.filter
+                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+                (gammaTransform d γ).roots.filter
+                  (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
+            rfl
+      · have hx_not_mem : x ∉ (gammaTransform d γ).roots := by
+          intro hxroot
+          exact hxneg (hneg x hxroot)
+        have hs_zero : s.count x = 0 := by
+          apply Multiset.count_filter_of_neg
+          intro hxmem
+          exact hxneg hxmem.2
+        have hinv_zero : (s.map (fun z => z⁻¹)).count x = 0 := by
+          apply Multiset.count_eq_zero_of_notMem
+          rw [Multiset.mem_map]
+          rintro ⟨z, hzs, hz⟩
+          have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+          rw [hz] at hzlt
+          linarith
+        have hrep_zero :
+            (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+          rw [Multiset.count_replicate]
+          simp [Ne.symm hxeq]
+        calc
+          (gammaTransform d γ).roots.count x = 0 :=
+            Multiset.count_eq_zero_of_notMem hx_not_mem
+          _ = (s.map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+            simp [Multiset.count_add, hs_zero, hinv_zero, hrep_zero]
+          _ = (((gammaTransform d γ).roots.filter
+                (fun z => z ∈ Set.Ioo (-1 : Real) 0)).map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+                (gammaTransform d γ).roots.filter
+                  (fun z => z ∈ Set.Ioo (-1 : Real) 0)).count x := by
+            rfl
 
 /-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equation
 (2.1): the negative gamma roots are the images of the transform roots on the
