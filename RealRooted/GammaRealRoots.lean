@@ -596,6 +596,42 @@ equation (2.1). Reciprocal roots of a palindromic polynomial have the same
 image under this map. -/
 def gammaRootMap (x : ℝ) : ℝ := x / (1 + x) ^ 2
 
+/-- The surjectivity part of Hoster--Stump equation (2.1) on the preferred
+reciprocal branch. For `y < 0`, the polynomial `x - y * (1 + x)^2` has
+opposite signs at `-1` and `0`, so the intermediate value theorem supplies the
+required representative in `(-1, 0)`. -/
+theorem exists_mem_Ioo_gammaRootMap_eq {y : ℝ} (hy : y < 0) :
+    ∃ x ∈ Set.Ioo (-1 : ℝ) 0, gammaRootMap x = y := by
+  let q : ℝ[X] := X - C y * (X + 1) ^ 2
+  have hcont : ContinuousOn (fun x => q.eval x) (Set.Icc (-1) 0) :=
+    q.continuous.continuousOn
+  have hzero : (0 : ℝ) ∈ Set.Icc (q.eval (-1)) (q.eval 0) := by
+    dsimp [q]
+    simpa using le_of_lt hy
+  obtain ⟨x, hx, hxzero⟩ :=
+    intermediate_value_Icc (by norm_num : (-1 : ℝ) ≤ 0) hcont hzero
+  have hx_ne_left : x ≠ -1 := by
+    intro h
+    subst x
+    dsimp [q] at hxzero
+    norm_num at hxzero
+  have hx_ne_right : x ≠ 0 := by
+    intro h
+    subst x
+    dsimp [q] at hxzero
+    simp at hxzero
+    linarith
+  have hxmem : x ∈ Set.Ioo (-1 : ℝ) 0 := by
+    exact ⟨lt_of_le_of_ne hx.1 (Ne.symm hx_ne_left),
+      lt_of_le_of_ne hx.2 hx_ne_right⟩
+  refine ⟨x, hxmem, ?_⟩
+  have hone : 1 + x ≠ 0 := by linarith [hxmem.1]
+  dsimp [q] at hxzero
+  simp only [eval_sub, eval_X, eval_mul, eval_C, eval_pow, eval_add, eval_one] at hxzero
+  unfold gammaRootMap
+  field_simp [hone]
+  nlinarith
+
 /-- The gamma root map identifies a nonzero real number with its reciprocal. -/
 lemma gammaRootMap_inv {x : ℝ} (hx : x ≠ 0) :
     gammaRootMap x⁻¹ = gammaRootMap x := by
