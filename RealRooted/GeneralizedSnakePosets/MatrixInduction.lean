@@ -609,9 +609,11 @@ theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
     theorem41_constant_of_matches_succ_length
       (M := M) (P := P) hM_const hP_interlaces
+  intro w hw
   exact theorem41_of_matrixClaim_of_constant_cases
     (M := M) (P := P) (G := G) hrec hclaim hP_ne hP_one hG_one
     hP_nonneg hG_nonneg hQ_nonneg hH_nonneg hM_nonneg hdeg hconst
+    (w := w) hw
 
 /-- The deletion degree bridge follows from the length-indexed degree formula
 for the whole snake-word family. -/
