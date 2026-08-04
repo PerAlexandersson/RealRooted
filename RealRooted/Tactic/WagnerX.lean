@@ -9,11 +9,11 @@ import RealRooted.Tactic.Lookup
 Small wrappers for the Wagner `X`-multiplication bridge used in plateau
 positive-`t` lag recurrences.
 
-Bare one-step forms consume exact atomic local hypotheses or tagged
-certificates. They intentionally do not instantiate universally quantified
-local sequence certificates; use the explicit sequence forms for those. They
-also preserve the displayed product association rather than searching through
-reassociated targets.
+Bare one-step forms consume exact local hypotheses, local hypotheses with a
+fully determined `forall` prefix, or tagged certificates. They preserve the
+displayed product association rather than searching through reassociated
+targets. Use the explicit forms when a local prefix is not determined by the
+goal.
 -/
 
 open Polynomial

@@ -9,8 +9,13 @@ Minimal exact lookup for RealRooted certificate tactics.
 The lookup order is intentionally conservative:
 
 1. exact local hypotheses;
-2. uniquely matching declarations tagged with one of the `rr_*` certificate
+2. local hypotheses with a fully determined `forall` prefix;
+3. uniquely matching declarations tagged with one of the `rr_*` certificate
    attributes.
+
+Both `rr_lookup` and `rr_lookup [attr]` run the first two steps over the whole
+local context; `[attr]` restricts only the third step. A local match therefore
+takes precedence over tagged-certificate ambiguity.
 
 If no certificate is found, or if several tagged declarations match, the tactic
 fails with a short diagnostic.
@@ -28,15 +33,6 @@ private def namesString (names : Array Name) : String :=
     "(none)"
   else
     String.intercalate ", " (names.toList.map toString)
-
-def findLocalProofByType? (target : Expr) : TacticM (Option Expr) :=
-  withMainContext do
-    for ldecl in ← getLCtx do
-      unless ldecl.isImplementationDetail do
-        let type ← instantiateMVars ldecl.type
-        if ← withNewMCtxDepth <| isDefEq type target then
-          return some (mkFVar ldecl.fvarId)
-    return none
 
 private def instantiateCertificateProof? (proof : Expr) : TacticM (Option Expr) := do
   let proof ← instantiateMVars proof
@@ -56,6 +52,30 @@ private partial def mkProofFromPrefixFor? (proof proofType target : Expr)
     return none
   mkProofFromPrefixFor? proof conclusion target (args ++ newArgs)
     (binderInfos ++ newBinderInfos)
+
+/-- Find an exact local proof of `target`, then one whose syntactic `forall`
+prefix is fully determined by `target`. Returned proofs contain no metavariables
+and remain valid after the search state is restored. -/
+def findLocalProofByType? (target : Expr) : TacticM (Option Expr) :=
+  withMainContext do
+    let lctx ← getLCtx
+    for ldecl in lctx do
+      unless ldecl.isImplementationDetail do
+        let type ← instantiateMVars ldecl.type
+        if ← withNewMCtxDepth <| isDefEq type target then
+          return some (mkFVar ldecl.fvarId)
+    for ldecl in lctx do
+      unless ldecl.isImplementationDetail do
+        let type ← instantiateMVars ldecl.type
+        if type.isForall then
+          let proof? ← withoutModifyingState <| withNewMCtxDepth do
+            let (args, binderInfos, conclusion) ←
+              forallMetaBoundedTelescope type 1
+            mkProofFromPrefixFor? (mkFVar ldecl.fvarId) conclusion target
+              args binderInfos
+          if let some proof := proof? then
+            return some proof
+    return none
 
 def mkProofFromDeclFor? (decl : Name) (target : Expr) : TacticM (Option Expr) :=
   withMainContext do

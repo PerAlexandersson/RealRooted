@@ -26,6 +26,32 @@ example : True := by
 
 def RRLookupSmokeRel {α : Type} (x : α) : Prop := x = x
 
+/-- This relation remains untagged so these examples can only use locals. -/
+def RRLookupFreshRel (n : Nat) : Prop := n = n
+
+def RRLookupFreshPolyRel {α : Type} (x : α) : Prop := x = x
+
+example (_h : ∀ n : Nat, RRLookupFreshRel n) : RRLookupFreshRel 5 := by
+  rr_lookup
+
+example (_h : ∀ n : Nat, RRLookupFreshRel n) : RRLookupFreshRel 5 := by
+  rr_lookup [rr_nonneg]
+
+example (_hbad : False → RRLookupFreshRel 5) : RRLookupFreshRel 5 := by
+  fail_if_success rr_lookup
+  rfl
+
+example (_hloose : ∀ _n : Nat, RRLookupFreshRel 5) : RRLookupFreshRel 5 := by
+  fail_if_success rr_lookup
+  rfl
+
+theorem rr_lookup_mvar_goal_smoke {n : Nat} (_h : RRLookupFreshRel n) : True :=
+  trivial
+
+example (_h : ∀ n : Nat, RRLookupFreshRel n) : True := by
+  fail_if_success (apply rr_lookup_mvar_goal_smoke; rr_lookup)
+  trivial
+
 @[rr_matrix_rect] theorem rr_lookup_forall_smoke (m : ℕ) :
     ∀ n : ℕ, RRLookupSmokeRel (n + m) := by
   intro n
@@ -58,6 +84,12 @@ class RRLookupMissingClass (α : Type) : Prop where
   witness : True
 
 instance : RRLookupSmokeClass ℕ := ⟨trivial⟩
+
+example
+    (_h : ∀ {α : Type} [RRLookupSmokeClass α] (x : α),
+      RRLookupFreshPolyRel x) :
+    RRLookupFreshPolyRel (37 : Nat) := by
+  rr_lookup
 
 @[rr_nonneg] theorem rr_lookup_missing_typeclass_decoy {α : Type}
     [RRLookupMissingClass α] (x : α) : RRLookupSmokeRel x := rfl

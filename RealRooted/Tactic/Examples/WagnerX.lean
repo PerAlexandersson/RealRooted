@@ -149,6 +149,12 @@ example {P : Nat → ℝ[X]} {n : Nat}
     left_nonneg := hnonneg n,
     right_nonneg := hnonneg (n + 1)
 
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
+    Prec (P (n + 1)) (X * P n) := by
+  rr_prec_mul_X
+
 /-- OEIS-style scalar positive-lag bridge for recurrences with
 `c_n t P_{n-2}`. -/
 example {P : Nat → ℝ[X]} {c : Nat → ℝ} {n : Nat}
