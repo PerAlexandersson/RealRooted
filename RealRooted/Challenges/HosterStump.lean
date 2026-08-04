@@ -128,12 +128,20 @@ def lowerPartialSums : List ℝ[X] → List ℝ[X]
 def upperPartialSums (fs : List ℝ[X]) : List ℝ[X] :=
   (lowerPartialSums fs.reverse).reverse
 
-/-- The Section 2 lower-partial-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(2) to finite lists.
+
+The source requires every sequence member to be real-rooted and uses a special
+degree-at-most-one convention. `IsInterlacingSeq0Nonneg` records neither
+condition, so this interface is false as stated; issue #326 tracks the
+source-faithful predicate. -/
 def LowerPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (lowerPartialSums fs)
 
-/-- The Section 2 upper-partial-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(3) to finite lists.
+
+It has the same missing source hypotheses as the lower-partial-sum interface
+and must not be used as a theorem backend. -/
 def UpperPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (upperPartialSums fs)
@@ -142,7 +150,12 @@ def UpperPartialSumsPreserveInterlacingStatement : Prop :=
 def movingWindowSums (width : ℕ) (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length - width)).map fun k => (fs.drop k |>.take (width + 1)).sum
 
-/-- The Section 2 moving-window-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(4), with `width` equal to
+the paper's `ell`.
+
+Each output is the sum of `width + 1` consecutive entries, and the Lean length
+matches the displayed source range. The source tuple has an inconsistent final
+subscript. The input predicate remains too weak for the source theorem. -/
 def MovingWindowSumsPreserveInterlacingStatement : Prop :=
   ∀ {width : ℕ} {fs : List ℝ[X]}, width < fs.length →
     IsInterlacingSeq0Nonneg fs →
@@ -153,13 +166,23 @@ def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length + 1)).map fun k =>
     X * (fs.take k).sum + (fs.drop k).sum
 
-/-- The Section 2 `X`-shifted split-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(5) to zero-based list
+splits.
+
+The formula and endpoint indexing match the paper, but the input predicate
+omits source-required elementwise real-rootedness and the low-degree
+interlacing convention. -/
 def XShiftedSplitSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (xShiftedSplitSums fs)
 
-/-- Adjacent-degree gamma interlacing transfer from Hoster--Stump
-Proposition 2.5, expressed through the project gamma-transform API. -/
+/-- Legacy interface for Hoster--Stump Proposition 2.5 in the project
+gamma-transform API.
+
+The source assumes nonnegative coefficients for both polynomials and both
+gamma polynomials, together with nonzero exact degrees. Those conditions must
+be explicit because local `Prec` is defined on arbitrary real polynomials and
+Lean has `natDegree 0 = 0`; issue #315 tracks the corrected statement. -/
 def GammaAdjacentInterlacingTransferStatement : Prop :=
   ∀ {d : ℕ} {f g γ δ : ℝ[X]},
     γ.natDegree ≤ d / 2 →
