@@ -1,6 +1,7 @@
 import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
@@ -1793,6 +1794,8 @@ syntax (name := rr_ma_wang)
   "rr_ma_wang" " using " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_ma_wang_inferred) "rr_ma_wang" : tactic
+
 syntax (name := rr_ma_wang_named)
   "rr_ma_wang" " using "
     "splits" ":=" term ","
@@ -1808,6 +1811,8 @@ syntax (name := rr_ma_wang_same)
   "rr_ma_wang_same" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_ma_wang_same_inferred) "rr_ma_wang_same" : tactic
+
 syntax (name := rr_ma_wang_same_named)
   "rr_ma_wang_same" " using "
     "splits" ":=" term ","
@@ -1821,6 +1826,8 @@ syntax (name := rr_ma_wang_same_named)
 syntax (name := rr_ma_wang_succ)
   "rr_ma_wang_succ" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
+
+syntax (name := rr_ma_wang_succ_inferred) "rr_ma_wang_succ" : tactic
 
 syntax (name := rr_ma_wang_succ_named)
   "rr_ma_wang_succ" " using "
@@ -3493,6 +3500,34 @@ macro_rules
       rr_mw_three_variants $hleft:term, $hmiddle:term, $hright:term) =>
       `(tactic|
         rr_first_exact_then_realrooted_sequence_or_projection $hleft, $hmiddle, $hright)
+  | `(tactic| rr_ma_wang) =>
+      `(tactic|
+        rr_ma_wang using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
+  | `(tactic| rr_ma_wang_same) =>
+      `(tactic|
+        rr_ma_wang_same using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
+  | `(tactic| rr_ma_wang_succ) =>
+      `(tactic|
+        rr_ma_wang_succ using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
   | `(tactic|
       rr_ma_wang using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,

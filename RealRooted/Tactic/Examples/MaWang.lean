@@ -136,6 +136,48 @@ example {f u v : ℝ[X]}
     source_pos_lc := hf_pos,
     root_sign := hroot_sign
 
+example {f u v g a b : ℝ[X]}
+    (_hg : g.Splits)
+    (_hdegg : 2 ≤ g.natDegree)
+    (_hdeg_g_lo : g.natDegree ≤ (a * g + b * g.derivative).natDegree)
+    (_hdeg_g_hi : (a * g + b * g.derivative).natDegree ≤ g.natDegree + 1)
+    (_hG_pos : HasPosLeadingCoeff (a * g + b * g.derivative))
+    (_hg_pos : HasPosLeadingCoeff g)
+    (_hroot_sign_g :
+      ∀ r, g.IsRoot r → b.eval r * (g.derivative.eval r) ^ 2 < 0)
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
+    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hroot_sign :
+      ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_ma_wang
+
+example {f u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hroot_sign :
+      ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_ma_wang_same
+
+example {f u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hroot_sign :
+      ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_ma_wang_succ
+
 example {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
