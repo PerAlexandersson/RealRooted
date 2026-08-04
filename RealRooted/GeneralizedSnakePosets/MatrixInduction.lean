@@ -301,7 +301,10 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
       (hM_nonneg w.deleteFinal) hdiff_nonneg hstep.2.1.1
   have hfinal := hsum0.toPrec_of_ne hstep.1.1 hsum_ne
-  convert hfinal using 1 <;> ring
+  have hsum_eq : M w.deleteFinal + (M w - M w.deleteFinal) = M w := by
+    ring
+  rw [hsum_eq] at hfinal
+  exact hfinal
 
 /-- Polynomial form of the exceptional `m = 1` Braun-Jal step.
 
