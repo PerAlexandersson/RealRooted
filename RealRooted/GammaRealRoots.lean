@@ -397,6 +397,35 @@ theorem rootMultiplicity_neg_one_gammaTransform
     rootMultiplicity_mul_X_sub_C_pow hcore_ne,
     rootMultiplicity_eq_zero hcore_not_root, zero_add]
 
+/-- The monotone root-map step in Hoster--Stump, Proposition 2.5:
+mapping roots in `(-1, 0)` by equation (2.1) preserves and reflects their
+weak interleaving order. See https://arxiv.org/abs/2508.15538. -/
+theorem interleaves_map_gammaRootMap_iff :
+    ∀ {ss rs : List ℝ}
+      (_ : ∀ x ∈ ss, x ∈ Set.Ioo (-1) 0)
+      (_ : ∀ x ∈ rs, x ∈ Set.Ioo (-1) 0),
+      List.Interleaves (fun x y : ℝ => x ≤ y)
+          (ss.map gammaRootMap) (rs.map gammaRootMap) ↔
+        List.Interleaves (fun x y : ℝ => x ≤ y) ss rs
+  | [], [], _, _ => by simp
+  | [], [_], _, _ => by simp
+  | [], _ :: _ :: _, _, _ => by
+      constructor <;> intro h <;> cases h
+  | _ :: _, [], _, _ => by
+      constructor <;> intro h <;> cases h
+  | s :: ss, r :: rs, hss, hrs => by
+      rw [List.map_cons, List.map_cons, List.interleaves_cons_cons,
+        List.interleaves_cons_cons,
+        strictMonoOn_gammaRootMap.le_iff_le
+          (hrs r (by simp)) (hss s (by simp))]
+      apply and_congr_right
+      intro _
+      simpa only [List.map_cons] using
+        interleaves_map_gammaRootMap_iff
+          (ss := rs) (rs := s :: ss)
+          (fun x hx => hrs x (List.mem_cons_of_mem r hx)) hss
+termination_by ss rs => ss.length + rs.length
+
 lemma gammaTransform_even_isRoot_neg_one_iff (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).IsRoot (-1) ↔ γ.coeff m = 0 := by
   rw [Polynomial.IsRoot.def, gammaTransform_even_eval_neg_one]
