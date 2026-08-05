@@ -35,6 +35,26 @@ example {f g : ℝ[X]}
     imag_pos_lc := hg,
     stable := hstable
 
+example {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    f.Splits ∧ g.Splits := by
+  rr_hermite_biehler_splits using
+    real_pos_lc := hf,
+    imag_pos_lc := hg,
+    stable := hstable
+
+example {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
+    (hdegree : 1 ≤ f.natDegree) :
+    Prec g f := by
+  rr_hermite_biehler_prec using
+    real_pos_lc := hf,
+    imag_pos_lc := hg,
+    stable := hstable,
+    real_degree_pos := hdegree
+
 example {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)) :
@@ -73,6 +93,30 @@ example {F G : Nat → ℝ[X]}
     real_pos_lc := hF,
     imag_pos_lc := hG,
     stable := hstable
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n))) :
+    ∀ n : Nat, (F n).Splits ∧ (G n).Splits := by
+  rr_hermite_biehler_splits_sequence using
+    real_pos_lc := hF,
+    imag_pos_lc := hG,
+    stable := hstable
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
+    (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
+    ∀ n : Nat, Prec (G n) (F n) := by
+  rr_hermite_biehler_prec_sequence using
+    real_pos_lc := hF,
+    imag_pos_lc := hG,
+    stable := hstable,
+    real_degree_pos := hdegree
 
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ n : Nat, HasNonnegCoeffs (P n))

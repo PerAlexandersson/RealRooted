@@ -7,6 +7,7 @@ import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
+import RealRooted.Tactic.Examples.SignAssembly
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
@@ -28,7 +29,10 @@ import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
+import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.RecurrenceIdentification
+import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.FiniteSymbol

@@ -1633,8 +1633,94 @@ lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       simp_all
     linarith
 
-/-- Constant shifts eventually destroy real-rootedness once the polynomial has
-positive leading coefficient and degree at least `2`. -/
+/-- For an odd-degree positive-leading real-rooted polynomial, a sufficiently
+large positive downward constant shift is not real-rooted. Reflecting across
+the vertical axis and negating preserves the positive leading coefficient in
+odd degree and converts the downward shift into a positive upward shift. -/
+lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_odd_natDegree
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : 2 ≤ p.natDegree) (hodd : Odd p.natDegree) :
+    ∃ t : ℝ, 0 < t ∧ ¬ ((p - C t) ≠ 0 ∧ (p - C t).Splits) := by
+  let q : ℝ[X] := -(p.comp (-X))
+  have hpow : (-1 : ℝ) ^ p.natDegree = -1 := hodd.neg_one_pow
+  have hq_splits : q.Splits := by
+    dsimp [q]
+    exact hp_splits.comp_neg_X.neg
+  have hq_pos : HasPosLeadingCoeff q := by
+    simpa [q, HasPosLeadingCoeff, hpow] using hp_pos
+  have hq_natDegree : q.natDegree = p.natDegree := by
+    dsimp [q]
+    rw [Polynomial.natDegree_neg,
+      Polynomial.natDegree_comp_eq_of_mul_ne_zero (by simp [hp_pos.ne_zero])]
+    simp
+  obtain ⟨t, ht_pos, ht_bad⟩ :=
+    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+      hq_splits hq_pos (by rw [hq_natDegree]; exact hdeg)
+  refine ⟨t, ht_pos, ?_⟩
+  intro hdown
+  apply ht_bad
+  have hcomp_ne : (p - C t).comp (-X) ≠ 0 := by
+    rw [ne_eq, Polynomial.comp_eq_zero_iff]
+    simp [hdown.1]
+  have hshift :
+      C t + q = -((p - C t).comp (-X)) := by
+    dsimp [q]
+    rw [Polynomial.sub_comp, Polynomial.C_comp]
+    ring
+  rw [hshift]
+  exact ⟨neg_ne_zero.mpr hcomp_ne, hdown.2.comp_neg_X.neg⟩
+
+/-- A positive downward constant shift destroys real-rootedness for every
+positive-leading real-rooted polynomial of degree at least three. -/
+lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_three
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : 3 ≤ p.natDegree) :
+    ∃ t : ℝ, 0 < t ∧ ¬ ((p - C t) ≠ 0 ∧ (p - C t).Splits) := by
+  classical
+  by_cases hthree : p.natDegree = 3
+  · exact
+      exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_odd_natDegree
+        hp_splits hp_pos (by lia) (by norm_num [hthree])
+  have hfour : 4 ≤ p.natDegree := by
+    lia
+  let t : ℝ :=
+    p.derivative.roots.toFinset.sum (fun c => |p.eval c|) + 1
+  have ht_pos : 0 < t := by
+    dsimp [t]
+    positivity
+  refine ⟨t, ht_pos, ?_⟩
+  intro hshift
+  have hC_deg : (C t : ℝ[X]).natDegree < p.natDegree := by
+    simp only [natDegree_C]
+    lia
+  have hshift_deg : (p - C t).natDegree = p.natDegree :=
+    natDegree_sub_eq_left_of_natDegree_lt hC_deg
+  have hshift_pos : HasPosLeadingCoeff (p - C t) := by
+    unfold HasPosLeadingCoeff at hp_pos ⊢
+    rw [leadingCoeff_sub_of_degree_lt (degree_lt_degree hC_deg)]
+    exact hp_pos
+  have hshift_four : 4 ≤ (p - C t).natDegree := by
+    rw [hshift_deg]
+    exact hfour
+  obtain ⟨c, hc_derivative, hc_nonneg⟩ :=
+    exists_derivative_root_eval_nonneg_of_four_le_natDegree
+      hshift.2 hshift_pos hshift_four
+  have hc_derivative_p : c ∈ p.derivative.roots := by
+    simpa only [derivative_sub, derivative_C, sub_zero] using hc_derivative
+  have hc_finset : c ∈ p.derivative.roots.toFinset :=
+    Multiset.mem_toFinset.mpr hc_derivative_p
+  have hc_bound :
+      |p.eval c| ≤
+        p.derivative.roots.toFinset.sum (fun x => |p.eval x|) :=
+    Finset.single_le_sum
+      (f := fun x => |p.eval x|) (fun x _ => abs_nonneg _) hc_finset
+  have hc_neg : (p - C t).eval c < 0 := by
+    rw [eval_sub, eval_C]
+    dsimp [t]
+    linarith [le_abs_self (p.eval c)]
+  exact (not_lt_of_ge hc_nonneg) hc_neg
+
+
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :

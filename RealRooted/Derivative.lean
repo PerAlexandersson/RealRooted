@@ -638,6 +638,69 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       · -- a ≠ s, a ≠ r₁
         grind
 
+/-- The recursively selected witness is the penultimate entry of `ss`.
+The product statement permits repeated entries and endpoint equality. -/
+private lemma exists_penultimate_listInterlaces_prod_nonneg :
+    ∀ {ss rs : List ℝ},
+      ss.Pairwise (· ≤ ·) →
+      ListInterlaces ss rs →
+      2 ≤ ss.length →
+      ∃ c ∈ ss, 0 ≤ (rs.map (c - ·)).prod := by
+  intro ss
+  induction ss with
+  | nil =>
+      intro rs _ _ hlen
+      simp at hlen
+  | cons s ss ih =>
+      cases ss with
+      | nil =>
+          intro rs _ _ hlen
+          simp at hlen
+      | cons t ts =>
+          intro rs hss hint _
+          cases rs with
+          | nil =>
+              simp [ListInterlaces] at hint
+          | cons r₁ rs =>
+              cases rs with
+              | nil =>
+                  simp [ListInterlaces] at hint
+              | cons r₂ rest =>
+                  obtain ⟨hr₁s, hsr₂, htail⟩ := hint
+                  by_cases hts : ts = []
+                  · subst ts
+                    have hrest_len : rest.length = 1 := by
+                      simpa using
+                        (listInterlaces_cons_length_eq htail).symm
+                    obtain ⟨r₃, rfl⟩ :=
+                      List.length_eq_one_iff.mp hrest_len
+                    change r₂ ≤ t ∧ t ≤ r₃ ∧ True at htail
+                    obtain ⟨hr₂t, htr₃, _⟩ := htail
+                    refine ⟨s, by simp, ?_⟩
+                    have h₁ : 0 ≤ s - r₁ :=
+                      sub_nonneg.mpr hr₁s
+                    have h₂ : s - r₂ ≤ 0 :=
+                      sub_nonpos.mpr hsr₂
+                    have h₃ : s - r₃ ≤ 0 :=
+                      sub_nonpos.mpr
+                        (hsr₂.trans (hr₂t.trans htr₃))
+                    simpa [mul_assoc] using
+                      mul_nonneg h₁
+                        (mul_nonneg_of_nonpos_of_nonpos h₂ h₃)
+                  · have htail_len : 2 ≤ (t :: ts).length := by
+                      grind
+                    have hss_cons := List.pairwise_cons.mp hss
+                    obtain ⟨c, hc, hcprod⟩ :=
+                      ih hss_cons.2 htail htail_len
+                    have hsc : s ≤ c :=
+                      hss_cons.1 c hc
+                    have hr₁c : r₁ ≤ c :=
+                      hr₁s.trans hsc
+                    refine
+                      ⟨c, List.mem_cons_of_mem s hc, ?_⟩
+                    simpa [List.map, List.prod_cons] using
+                      mul_nonneg (sub_nonneg.mpr hr₁c) hcprod
+
 /-! ## Main theorem -/
 
 /-- **Derivative interlacing**: if `f` is real-rooted of degree ≥ 2,
@@ -686,6 +749,40 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   -- Assemble
   exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
+
+/-- A positive-leading splitting polynomial of degree at least four is
+nonnegative at the penultimate derivative-root occurrence.
+
+Repeated roots are retained: if the selected derivative root is also a root
+of `p`, the conclusion is equality. -/
+theorem exists_derivative_root_eval_nonneg_of_four_le_natDegree
+    {p : ℝ[X]} (hp : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : 4 ≤ p.natDegree) :
+    ∃ c ∈ p.derivative.roots, 0 ≤ p.eval c := by
+  obtain
+      ⟨_, hpd, _, rs, ss, _, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
+    derivative_interlaces hp (by lia)
+  have hss_length : ss.length = p.derivative.natDegree := by
+    calc
+      ss.length = (↑ss : Multiset ℝ).card := by simp
+      _ = p.derivative.roots.card := congrArg Multiset.card hss_eq
+      _ = p.derivative.natDegree := card_roots_of_splits hpd.2
+  have hss_two : 2 ≤ ss.length := by
+    rw [hss_length, p.natDegree_derivative]
+    lia
+  obtain ⟨c, hc, hcprod⟩ :=
+    exists_penultimate_listInterlaces_prod_nonneg
+      hss_sorted hint hss_two
+  have hc_roots : c ∈ p.derivative.roots := by
+    rw [← hss_eq]
+    exact Multiset.mem_coe.mpr hc
+  refine ⟨c, hc_roots, ?_⟩
+  have heval :
+      p.eval c = p.leadingCoeff * (rs.map (c - ·)).prod := by
+    rw [hp.eval_eq_prod_roots c, ← hrs_eq]
+    rfl
+  rw [heval]
+  exact mul_nonneg hp_pos.le hcprod
 
 /-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
 degree-one real-rooted polynomial. -/

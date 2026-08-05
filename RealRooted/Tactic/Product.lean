@@ -439,6 +439,72 @@ theorem isRealRooted_of_product_tail_right_sequence
   isRealRooted_of_product_tail_sequence hbase hquot hfactor
     (fun n => by rw [hrow n, mul_comm])
 
+/-- Transfer real-rootedness from a rowwise equal model sequence. -/
+theorem isRealRooted_of_model_sequence
+    {P Q : Nat → ℝ[X]}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hidentify : ∀ n : Nat, P n = Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  rw [hidentify n]
+  exact hmodel n
+
+/-- Lift a real-rooted model sequence through rowwise nonzero scalars and
+monomial factors. -/
+theorem isRealRooted_of_scalar_monomial_lift_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * (X ^ (m n) * Q n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  have hproduct : X ^ (m n) * Q n ≠ 0 ∧ (X ^ (m n) * Q n).Splits :=
+    isRealRooted_mul_of_isRealRooted
+      (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)
+  simpa [hrow n] using isRealRooted_C_mul_of_isRealRooted hproduct (hc n)
+
+/-- A real-rooted base row followed by scalar-monomial lifts of a model
+sequence. -/
+theorem isRealRooted_of_scalar_monomial_tail_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P (n + 1) = C (c n) * (X ^ (m n) * Q n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  cases n with
+  | zero =>
+      exact hbase
+  | succ n =>
+      have hproduct : X ^ (m n) * Q n ≠ 0 ∧ (X ^ (m n) * Q n).Splits :=
+        isRealRooted_mul_of_isRealRooted
+          (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)
+      simpa [Nat.succ_eq_add_one, hrow n] using
+        isRealRooted_C_mul_of_isRealRooted hproduct (hc n)
+
+/-- Lift separate even and odd real-rooted model sequences through rowwise
+nonzero scalars and monomial factors. -/
+theorem isRealRooted_of_even_odd_scalar_monomial_lift_sequence
+    {P Qeven Qodd : Nat → ℝ[X]}
+    {ceven codd : Nat → ℝ} {meven modd : Nat → Nat}
+    (heven_model : ∀ n : Nat, Qeven n ≠ 0 ∧ (Qeven n).Splits)
+    (hodd_model : ∀ n : Nat, Qodd n ≠ 0 ∧ (Qodd n).Splits)
+    (hceven : ∀ n : Nat, ceven n ≠ 0)
+    (hcodd : ∀ n : Nat, codd n ≠ 0)
+    (heven : ∀ n : Nat,
+      P (2 * n) = C (ceven n) * (X ^ (meven n) * Qeven n))
+    (hodd : ∀ n : Nat,
+      P (2 * n + 1) = C (codd n) * (X ^ (modd n) * Qodd n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have heven_realrooted :
+      ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    isRealRooted_of_scalar_monomial_lift_sequence heven_model hceven heven
+  have hodd_realrooted :
+      ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_scalar_monomial_lift_sequence hodd_model hcodd hodd
+  exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
+
 /-- Tail-start lift from a quotient sequence through row-wise real-rooted
 left factors. -/
 theorem isRealRooted_of_product_lift_sequence_from
@@ -2626,6 +2692,17 @@ syntax (name := rr_product_factor_sequence)
   "rr_product_factor_sequence" " using " term ", " term ", " term :
   tactic
 
+syntax (name := rr_product_factor_sequence_inferred_of_recurrence)
+  "rr_product_factor_sequence" " using "
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_factor_sequence_from_inferred_of_recurrence)
+  "rr_product_factor_sequence" " using "
+    "cutoff" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_lag_product_factor_sequence_named)
   "rr_lag_product_factor_sequence" " using "
     "base_zero" ":=" term ","
@@ -2639,8 +2716,19 @@ syntax (name := rr_lag_product_factor_sequence)
     term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_lag_product_factor_sequence_inferred_of_recurrence)
+  "rr_lag_product_factor_sequence" " using "
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_affine_product_sequence_named)
   "rr_affine_product_sequence" " using " "formula" ":=" term :
+  tactic
+
+syntax (name := rr_finite_linear_product_scalar_sequence_named)
+  "rr_finite_linear_product_scalar_sequence" " using "
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
   tactic
 
 syntax (name := rr_j1_factorable_lag3_sequence_realrooted_named)
@@ -2719,6 +2807,37 @@ syntax (name := rr_product_tail_sequence_named)
 
 syntax (name := rr_product_tail_sequence)
   "rr_product_tail_sequence" " using " term ", " term ", " term ", " term :
+  tactic
+
+syntax (name := rr_model_sequence_named)
+  "rr_model_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "identification" ":=" term :
+  tactic
+
+syntax (name := rr_scalar_monomial_lift_sequence_named)
+  "rr_scalar_monomial_lift_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_scalar_monomial_tail_sequence_named)
+  "rr_scalar_monomial_tail_sequence" " using "
+    "base" ":=" term ","
+    "model_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_even_odd_scalar_monomial_lift_sequence_named)
+  "rr_even_odd_scalar_monomial_lift_sequence" " using "
+    "even_model_realrooted" ":=" term ","
+    "odd_model_realrooted" ":=" term ","
+    "even_scalar_ne" ":=" term ","
+    "odd_scalar_ne" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term :
   tactic
 
 syntax (name := rr_product_lift_sequence_auto_named)
@@ -4035,6 +4154,39 @@ macro_rules
           factor_realrooted := $hfactor,
           recurrence := $hstep)
   | `(tactic|
+      rr_product_factor_sequence using
+        recurrence := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_product_factor_sequence using cutoff := _, recurrence := $hstep
+          | rr_first_realrooted_sequence_or_projection
+              (by
+                rr_refine_then
+                  (RealRooted.isRealRooted_of_product_factor_sequence
+                    ?_ ?_ $hstep)
+                  with rr_lookup),
+              (by
+                rr_refine_then
+                  (RealRooted.isRealRooted_of_product_factor_right_sequence
+                    ?_ ?_ $hstep)
+                  with rr_lookup))
+  | `(tactic|
+      rr_product_factor_sequence using
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_product_factor_sequence_from
+                $N ?_ ?_ $hstep)
+              with rr_lookup),
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_product_factor_right_sequence_from
+                $N ?_ ?_ $hstep)
+              with rr_lookup))
+  | `(tactic|
       rr_lag_product_factor_sequence using
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
@@ -4055,15 +4207,39 @@ macro_rules
           base_one := $hbase_one,
           factor_realrooted := $hfactor,
           recurrence := $hstep)
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_lag_product_factor_sequence
+                ?_ ?_ ?_ $hstep)
+              with rr_lookup),
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_lag_product_factor_right_sequence
+                ?_ ?_ ?_ $hstep)
+              with rr_lookup))
   | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
       `(tactic|
         exact RealRooted.finiteLinearProductSequence_realRooted $hroot)
+  | `(tactic|
+      rr_finite_linear_product_scalar_sequence using
+        scalar_ne := $hc:term,
+        factorization := $hroot:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
   | `(tactic|
       rr_j1_factorable_lag3_sequence_realrooted using
         scalar_ne_zero := $hc:term,
         root_grid := $hroot:term) =>
       `(tactic|
-        exact RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot)
+        rr_finite_linear_product_scalar_sequence using
+          scalar_ne := $hc,
+          factorization := $hroot)
   | `(tactic|
       rr_product_identity_sequence using
         base := $hbase:term,
@@ -4193,6 +4369,44 @@ macro_rules
           quotient_realrooted := $hquot,
           factor_realrooted := $hfactor,
           factorization := $hrow)
+  | `(tactic|
+      rr_model_sequence using
+        model_realrooted := $hmodel:term,
+        identification := $hidentify:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_model_sequence $hmodel $hidentify))
+  | `(tactic|
+      rr_scalar_monomial_lift_sequence using
+        model_realrooted := $hmodel:term,
+        scalar_ne := $hc:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_scalar_monomial_lift_sequence
+            $hmodel $hc $hrow))
+  | `(tactic|
+      rr_scalar_monomial_tail_sequence using
+        base := $hbase:term,
+        model_realrooted := $hmodel:term,
+        scalar_ne := $hc:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_scalar_monomial_tail_sequence
+            $hbase $hmodel $hc $hrow))
+  | `(tactic|
+      rr_even_odd_scalar_monomial_lift_sequence using
+        even_model_realrooted := $heven_model:term,
+        odd_model_realrooted := $hodd_model:term,
+        even_scalar_ne := $hceven:term,
+        odd_scalar_ne := $hcodd:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_even_odd_scalar_monomial_lift_sequence
+            $heven_model $hodd_model $hceven $hcodd $heven $hodd))
   | `(tactic|
       rr_product_lift_sequence_auto using
         quotient_realrooted := $hquot:term,

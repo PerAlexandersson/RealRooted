@@ -368,26 +368,14 @@ def BidiagonalJensenPencilCertificate
   ∀ lam : ℝ, 0 ≤ lam →
     IsPFPolynomial (bidiagonalJensenPencil alpha beta d lam)
 
-/-- Backend theorem statement: a valid finite Jensen-pencil certificate implies
-that the corresponding coefficient-bidiagonal operator preserves PF
-polynomials up to degree `d`.
+/-- Open Jensen-pencil backend for coefficient-bidiagonal PF preservers.
 
-This is deliberately an explicit backend assumption, not a proved theorem.
-The certificate above tests only the real pencil parameter `lam ≥ 0`; it does
-not imply upper-half-plane stability of the genuine bivariate affine symbol
-required by Borcea--Branden, arXiv:0809.0401, Theorem 1.1. Issue #240 records
-the degree-two obstruction `alpha = (3, 2, 1)`, `beta = (4, 1 / 2, 0)`: every
-nonnegative Jensen pencil is PF, while the associated operator sends
-`(1 - 2 * X)^2` to `3 - 4 * X + 2 * X^2`, whose discriminant is negative.
-Garloff--Wagner, Theorem 12(b), preserves an already supplied proper-position
-orientation and does not infer it from this one-sided pencil. Brändén,
-arXiv:math/0403364, Theorem 3.6, is PF-specific but requires fiberwise
-real-rootedness of a differential symbol, strict interlacing of `phi(1)` and
-`phi(X)`, and exact degree growth; the current certificate does not imply these
-hypotheses. Downstream wrappers remain sound because they require a proof of
-this proposition as an explicit argument; they must not manufacture it from
-either source theorem.
--/
+This implication is not stated in Borcea--Branden or Garloff--Wagner. The
+certificate controls a one-sided real pencil, not upper-half-plane stability
+of the genuine affine symbol `T((z + w)^d)`. Garloff--Wagner Theorem 12 assumes
+an oriented proper-position relation rather than deriving it from this pencil.
+Keep this as an explicit project conjecture; issue #240 tracks it, while issue
+#297 tracks the separate affine-symbol route. -/
 def jensenPencilBidiagonalPreserverStatement : Prop :=
   ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
     BidiagonalJensenPencilCertificate alpha beta d →

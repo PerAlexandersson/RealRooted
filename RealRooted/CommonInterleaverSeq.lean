@@ -80,6 +80,20 @@ lemma rootSeqDesc_eq_reverse_of_pairwise
   · grind
   · exact Multiset.coe_eq_coe.mp (by simp [rootSeqDesc, hrs_eq, Multiset.sort_eq])
 
+/-- The canonical descending root sequence is the roots sorted in decreasing order. -/
+lemma rootSeqDesc_eq_sort_ge (f : ℝ[X]) :
+    rootSeqDesc f = f.roots.sort (· ≥ ·) := by
+  have hpair :
+      ((f.roots.sort (· ≥ ·)).reverse).Pairwise (· ≤ ·) := by
+    simpa using
+      (Multiset.pairwise_sort (s := f.roots) (r := (· ≥ ·))).reverse
+  have hroots :
+      (↑((f.roots.sort (· ≥ ·)).reverse) : Multiset ℝ) = f.roots := by
+    simp [Multiset.sort_eq]
+  simpa using
+    (rootSeqDesc_eq_reverse_of_pairwise (f := f)
+      (rs := (f.roots.sort (· ≥ ·)).reverse) hpair hroots)
+
 /-- The `j`th Chudnovsky--Seymour interval attached to a descending root
 sequence `rs = [r₁, ..., r_d]`.
 

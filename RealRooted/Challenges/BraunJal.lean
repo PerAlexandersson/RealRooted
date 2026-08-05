@@ -101,16 +101,14 @@ abbrev OrderPolytopeHStarTheorem41Target
     (hStar : NonNestingRookPolynomialFamily) : Prop :=
   OrderPolytopeHStarTheorem41Statement hStar
 
-/-- Concrete Braun--Jal Theorem 4.1 from the accepted combinatorial model
-inputs.  The parameter-two Narayana identity is the board-model fact; all
-proper-position and real-rootedness deductions are checked in Lean. -/
+/-- Braun--Jal Theorem 4.1 from the accepted combinatorial model inputs.
+The recurrence and coefficient hypotheses are the source board-model facts;
+all proper-position and real-rootedness deductions are checked in Lean. -/
 theorem theorem41_of_modifiedModelInputs
     {M : NonNestingRookPolynomialFamily}
     (hrec2 : AuxiliaryGRecurrence ModifiedNarayanaPolynomial AuxiliaryG)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs (AuxiliaryG n - AuxiliaryG (n - 1)))
-    (hG_model : ∀ n : ℕ, 1 ≤ n →
-      AuxiliaryG n = C (n : ℝ) * narayanaPolynomial 2 (n - 1))
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
       ModifiedNarayanaPolynomial AuxiliaryG)
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
@@ -119,8 +117,37 @@ theorem theorem41_of_modifiedModelInputs
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
       M w = ModifiedNarayanaPolynomial (w.length + 1)) :
     Theorem41Target M :=
-  theorem41NonNestingRook_modified_of_modelInputs hrec2 hH_nonneg hG_model
-    hrec hM_nonneg hdeg hM_const
+  theorem41NonNestingRook_modified_of_sourceInputs hrec2 hH_nonneg hrec
+    hM_nonneg hdeg hM_const
+
+/-- Braun--Jal Theorem 4.1 for the concrete generalized-snake rook model.
+
+The five hypotheses are intentionally the combinatorial trust boundary from
+Braun--Jal, arXiv:2607.00922v1.  Equation `(2)` defines the auxiliary family,
+`hH_nonneg` comes from its board-difference interpretation, `hrec` is Theorem
+3.5, `hdeg` is the maximum-rook/degree identity, and `hM_const` identifies
+constant snake boards with staircases.  Formalizing the entire rook-placement
+model is outside the present scope.  All analytic conclusions are derived in
+Lean. -/
+theorem generalizedSnakeRookModel_theorem41
+    (hrec2 : AuxiliaryGRecurrence ModifiedNarayanaPolynomial AuxiliaryG)
+    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
+      HasNonnegCoeffs (AuxiliaryG n - AuxiliaryG (n - 1)))
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement
+      generalizedSnakeRookModel.snakePolynomial
+      ModifiedNarayanaPolynomial AuxiliaryG)
+    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
+      (generalizedSnakeRookModel.snakePolynomial w.deleteFinal).natDegree + 1 =
+        (generalizedSnakeRookModel.snakePolynomial w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      generalizedSnakeRookModel.snakePolynomial w =
+        ModifiedNarayanaPolynomial (w.length + 1)) :
+    Theorem41Target generalizedSnakeRookModel.snakePolynomial := by
+  exact theorem41_of_modifiedModelInputs hrec2 hH_nonneg hrec
+    (fun w => by
+      rw [generalizedSnakeRookModel_snakePolynomial]
+      exact FiniteSkewBoard.rookPolynomial_hasNonnegCoeffs _)
+    hdeg hM_const
 
 /-- Order-polytope `h*` form of Braun--Jal Theorem 4.1 from the accepted
 combinatorial model inputs.  The matching hypothesis is the Stanley/
@@ -131,8 +158,6 @@ theorem orderPolytopeHStarTheorem41_of_modifiedModelInputs
     (hrec2 : AuxiliaryGRecurrence ModifiedNarayanaPolynomial AuxiliaryG)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs (AuxiliaryG n - AuxiliaryG (n - 1)))
-    (hG_model : ∀ n : ℕ, 1 ≤ n →
-      AuxiliaryG n = C (n : ℝ) * narayanaPolynomial 2 (n - 1))
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
       ModifiedNarayanaPolynomial AuxiliaryG)
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
@@ -143,8 +168,8 @@ theorem orderPolytopeHStarTheorem41_of_modifiedModelInputs
     (hmatch : OrderPolytopeHStarMatchesNonNestingRook hStar M) :
     OrderPolytopeHStarTheorem41Target hStar :=
   orderPolytopeHStarTheorem41_of_theorem41
-    (theorem41_of_modifiedModelInputs hrec2 hH_nonneg hG_model hrec
-      hM_nonneg hdeg hM_const)
+    (theorem41_of_modifiedModelInputs hrec2 hH_nonneg hrec hM_nonneg hdeg
+      hM_const)
     hmatch
 
 /-- The real-rootedness projection of Braun--Jal Theorem 4.1. -/
