@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.MultivariateStability
 
 /-!
@@ -11,9 +12,11 @@ Original reference: J. Borcea and P. Branden, "The Lee-Yang and Polya-Schur
 programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),
 541--569.
 
-This file records a Lean-facing interface for the finite-degree algebraic
-symbol theorem.  It is a statement interface: proving the theorem itself
-requires a substantial multivariate stability development.  Tactic-specific
+This file records Lean-facing interfaces for the finite-degree algebraic
+symbol theorem. The complex classification includes the rank-at-most-one
+alternative from Theorem 1.1; outside that alternative, preservation is
+equivalent to stability of the algebraic symbol. These are statement
+interfaces, not proofs of the classification. Tactic-specific
 coefficient-bidiagonal specializations live in `RealRooted.Tactic.FiniteSymbolPF`.
 -/
 
@@ -24,6 +27,65 @@ namespace Challenges
 namespace BorceaBranden
 
 noncomputable section
+
+/-! ## Complex finite-symbol classification -/
+
+/-- A complex linear operator on a coordinate-wise degree box preserves
+upper-half-plane stability, allowing the zero output. -/
+def PreservesComplexStabilityOnDegreeBox
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ) : Prop :=
+  ∀ f, MvUpperHalfPlaneStable f.1 →
+    MvUpperHalfPlaneStableOrZero (T f)
+
+/-- The exceptional branch in Borcea--Brändén Theorem 1.1: the operator has a
+one-dimensional representation with a stable spanning polynomial. This also
+includes the zero operator by taking the functional to be zero. -/
+def HasStableRankOneRepresentation
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ) : Prop :=
+  ∃ (α : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] ℂ)
+      (P : MvPolynomial σ ℂ),
+    MvUpperHalfPlaneStable P ∧ ∀ f, T f = (α f) • P
+
+/-- Borcea--Brändén, Theorem 1.1: a complex linear operator on a finite degree
+box preserves upper-half-plane stability if and only if it has a stable
+rank-at-most-one representation or its finite algebraic symbol is stable.
+
+This is the main classification challenge. It is an explicit proposition, not
+a proved theorem. -/
+def finiteComplexSymbolClassificationStatement : Prop :=
+  ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
+      (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
+    PreservesComplexStabilityOnDegreeBox κ T ↔
+      HasStableRankOneRepresentation κ T ∨
+        MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)
+
+/-- Outside the rank-at-most-one alternative, the main classification has the
+familiar form: an operator preserves stability if and only if its algebraic
+symbol is stable. This remains an explicit challenge proposition. -/
+def finiteComplexSymbolIffStatement : Prop :=
+  ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
+      (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
+    ¬HasStableRankOneRepresentation κ T →
+      (PreservesComplexStabilityOnDegreeBox κ T ↔
+        MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T))
+
+/-- Compatibility alias for challenge lists and theorem-search notes. -/
+abbrev borceaBrandenComplexFiniteSymbolStatement : Prop :=
+  finiteComplexSymbolClassificationStatement
+
+/-- The non-rank-one `iff` formulation follows formally from the full
+classification statement. This proves only the relation between the two
+challenge interfaces, not the Borcea--Brändén classification itself. -/
+theorem finiteComplexSymbolIff_of_classification
+    (hBB : finiteComplexSymbolClassificationStatement) :
+    finiteComplexSymbolIffStatement := by
+  intro σ _ κ T hrank
+  rw [hBB σ κ T]
+  simp only [hrank, false_or]
+
+/-! ## Real univariate application interface -/
 
 /-- Regard a univariate polynomial as a bivariate polynomial in the first
 variable. -/
