@@ -700,11 +700,7 @@ private lemma listInterlaces_count_left_le_right_add_one (u : ℝ) :
               List.count_eq_zero.mpr htail_no_mem
             have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
             simp [hs, hr₁, htail_count, hss_count]
-      · by_cases hr₁ : r₁ = u
-        · simp [hs, hr₁] at ih ⊢
-          lia
-        · simp [hs, hr₁] at ih ⊢
-          lia
+      · by_cases hr₁ : r₁ = u <;> simp [hs, hr₁] at ih ⊢ <;> lia
 
 private lemma listAlternates_count_bounds (u : ℝ) :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs →

@@ -616,6 +616,24 @@ example {P Q : Nat → ℝ[X]} {s α β u v w : Nat → ℝ}
     beta := β,
     step := hstep
 
+/-- The inferred affine router also dispatches the combined nonzero and
+real-rootedness endpoint. -/
+example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_param_infer using
+    slope := s,
+    alpha := α,
+    beta := β,
+    step := hstep
+
 /-- The inferred form proves elementary positivity but still requires the two
 base certificates from the local context or tagged declarations. -/
 example {P : Nat → ℝ[X]}

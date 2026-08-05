@@ -3,6 +3,8 @@ import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.CommonInterleaverTwo
 import RealRooted.MaWang
+import RealRooted.MultivariateStability
+import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
@@ -60,6 +62,48 @@ def complexify (p : ℝ[X]) : ℂ[X] :=
 with strictly positive imaginary part. -/
 def IsUpperHalfPlaneStable (p : ℂ[X]) : Prop :=
   ∀ z : ℂ, 0 < z.im → p.eval z ≠ 0
+
+/-- Evaluation commutes with Mathlib's canonical identification of a
+univariate polynomial with a multivariate polynomial in one variable. -/
+@[simp] theorem eval_uniqueAlgEquiv_symm_finOne (p : ℂ[X]) (z : Fin 1 → ℂ) :
+    MvPolynomial.eval z ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p) =
+      p.eval (z 0) := by
+  change
+    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p).eval₂
+        (RingHom.id ℂ) z = p.eval (z 0)
+  rw [MvPolynomial.eval₂_uniqueAlgEquiv_symm]
+  rfl
+
+/-- Univariate upper-half-plane stability agrees with multivariate stability
+after Mathlib's canonical `Fin 1` identification. Both predicates exclude the
+zero polynomial. -/
+theorem isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (p : ℂ[X]) :
+    IsUpperHalfPlaneStable p ↔
+      MvUpperHalfPlaneStable
+        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p) := by
+  change (∀ z : ℂ, 0 < z.im → p.eval z ≠ 0) ↔
+    ∀ z : Fin 1 → ℂ, (∀ i, 0 < (z i).im) →
+      MvPolynomial.eval z ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p) ≠ 0
+  constructor
+  · intro hp z hz
+    rw [eval_uniqueAlgEquiv_symm_finOne]
+    exact hp (z 0) (hz 0)
+  · intro hp z hz
+    simpa only [eval_uniqueAlgEquiv_symm_finOne] using
+      hp (fun _ => z) (fun _ => hz)
+
+namespace IsUpperHalfPlaneStable
+
+/-- Multiplication transported from the general multivariate stability API. -/
+theorem mul {p q : ℂ[X]} (hp : IsUpperHalfPlaneStable p)
+    (hq : IsUpperHalfPlaneStable q) :
+    IsUpperHalfPlaneStable (p * q) := by
+  rw [isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable]
+  simpa using
+    ((isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable p).mp hp).mul
+      ((isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable q).mp hq)
+
+end IsUpperHalfPlaneStable
 
 /-- A univariate complex polynomial is right-half-plane stable if it has no
 root with strictly positive real part. -/
@@ -955,12 +999,12 @@ theorem isUpperHalfPlaneStable_of_cofactor {f g : ℝ[X]} {r : ℝ}
     (hcof : IsUpperHalfPlaneStable
       (hermiteBiehlerPolynomial (f /ₘ (X - C r)) (g /ₘ (X - C r)))) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
-  intro z hz hroot
-  rw [hermiteBiehlerPolynomial_factor_common_root hrf hrg, eval_mul] at hroot
-  rcases mul_eq_zero.mp hroot with h | h
-  · rw [eval_sub, eval_X, eval_C, sub_eq_zero] at h
-    simp_all
-  · exact hcof z hz h
+  rw [hermiteBiehlerPolynomial_factor_common_root hrf hrg]
+  apply IsUpperHalfPlaneStable.mul ?_ hcof
+  intro z hz
+  simp only [eval_sub, eval_X, eval_C, sub_ne_zero]
+  intro h
+  exact hz.ne' (by simpa using congrArg Complex.im h)
 
 theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
     (hpq : Prec g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
