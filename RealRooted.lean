@@ -99,6 +99,8 @@ import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
+import RealRooted.DerivativeShiftRootMatching
+import RealRooted.DerivativeShiftSequence
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
@@ -142,9 +144,12 @@ import RealRooted.LiebSokalPointwise
 import RealRooted.Linear
 import RealRooted.LinearPowerFamily
 import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DeletionBranches
+import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
+import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
 import RealRooted.LiuOppositeSigns.FactorReturnAssembly
 import RealRooted.LiuOppositeSigns.FactorReturnLeft
 import RealRooted.LiuOppositeSigns.FactorReturnStatements
@@ -163,6 +168,8 @@ import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 import RealRooted.LiuOppositeSigns.ForwardLowDegree
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
+import RealRooted.LiuOppositeSigns.RootCountRelStability
+import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
@@ -205,6 +212,8 @@ import RealRooted.Mathlib.Data.List.Destutter
 import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.List.OfFn
 import RealRooted.Mathlib.Data.List.Zip
+import RealRooted.Mathlib.Data.Multiset.Rel
+import RealRooted.RootMatchingSort
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
@@ -246,6 +255,7 @@ import RealRooted.RectangularConvolutionIdentity
 import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
+import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
 import RealRooted.RootCountJump

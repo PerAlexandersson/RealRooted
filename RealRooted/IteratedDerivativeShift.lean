@@ -343,6 +343,11 @@ lemma iterateTDeriv_C_mul (eps c : ℝ) :
       rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_C_mul]
       exact TDeriv_C_mul eps c _
 
+lemma iterateTDeriv_linear_combo (eps α β : ℝ) (n : ℕ) (f g : ℝ[X]) :
+    iterateTDeriv eps n (C α * f + C β * g) =
+      C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g := by
+  rw [iterateTDeriv_add, iterateTDeriv_C_mul, iterateTDeriv_C_mul]
+
 private lemma TDeriv_X_sub_C (eps r : ℝ) :
     TDeriv eps (X - C r) = X - C (r + eps) := by
   simp [TDeriv]

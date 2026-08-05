@@ -142,6 +142,22 @@ theorem exists_rel_le_of_forall_le_count {s t : Multiset ℝ} {δ : ℝ}
   · exact le_trans (Finset.sum_le_sum fun a ha => (hcluster a ha).1)
       (sum_filter_ball_le hsep)
 
+/-- Local multiplicity lower bounds give a full proximity matching when the
+source and target multisets have the same cardinality. -/
+theorem rel_of_forall_le_count_of_card_eq {s t : Multiset ℝ} {δ : ℝ}
+    (hsep : ∀ a ∈ s.toFinset, ∀ b ∈ s.toFinset,
+      a ≠ b → 2 * δ ≤ |a - b|)
+    (hcount : ∀ a ∈ s.toFinset,
+      s.count a ≤ (t.filter (fun q => |q - a| < δ)).card)
+    (hcard : t.card = s.card) :
+    Rel (fun r q => |q - r| < δ) s t := by
+  obtain ⟨u, hu, hrel⟩ :=
+    exists_rel_le_of_forall_le_count hsep hcount
+  have hu_card : u.card = t.card := by
+    simpa [hcard] using (card_eq_card_of_rel hrel).symm
+  have hut : u = t := eq_of_le_of_card_le hu hu_card.ge
+  rwa [hut] at hrel
+
 /--
 Finite local-count bridge for same-cardinality perturbations.
 
@@ -158,12 +174,8 @@ theorem card_filter_gt_eq_of_forall_le_count_and_card_eq
       s.count a ≤ (t.filter (fun q => |q - a| < δ)).card)
     (hcard : t.card = s.card) :
     (t.filter (fun q => x < q)).card = (s.filter (fun r => x < r)).card := by
-  obtain ⟨u, hu, hRel⟩ :=
-    exists_rel_le_of_forall_le_count hsep_centers hcount
-  have hu_card : u.card = t.card := by
-    simpa [hcard] using (Multiset.card_eq_card_of_rel hRel).symm
-  have hut : u = t := Multiset.eq_of_le_of_card_le hu hu_card.ge
-  rw [hut] at hRel
+  have hRel :=
+    rel_of_forall_le_count_of_card_eq hsep_centers hcount hcard
   have hgt : (s.filter (fun r => x < r)).card ≤
       (t.filter (fun q => x < q)).card :=
     card_filter_gt_le_of_rel_abs_sub_lt hsep_x hRel
