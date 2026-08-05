@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(time lake build)",
+      "Bash(python3 /tmp/claude-1000/-workspace-lean-RealRooted/01b471d8-3520-4596-971c-040f66048312/scratchpad/dupscan.py)",
+      "Bash(grep -rn -A1 ':= by$' --include='*.lean' RealRooted)",
+      "Bash(python3 /tmp/claude-1000/-workspace-lean-RealRooted/01b471d8-3520-4596-971c-040f66048312/scratchpad/dupbody.py)",
+      "Skill(update-config)",
+      "Bash(git check-ignore *)",
+      "Bash(time lake build RealRooted.WagnerX RealRooted.PosCombo RealRooted.Tactic.FiniteSymbolPF)",
+      "Bash(rm -f .claude/skills/lean-golf/scripts/try_grind.py .claude/skills/lean-golf/scripts/keep_successes.py)",
+      "Bash(mv /workspace/lean/.golf_driver.sh .claude/skills/lean-golf/scripts/golf_driver.sh)",
+      "Bash(sed -i 's#^cd /workspace/lean/RealRooted$#cd \"$\\(git rev-parse --show-toplevel\\)\"#; s#^SCRATCH=.*#SCRATCH=${GOLF_SCRATCH:-$\\(mktemp -d\\)}#' .claude/skills/lean-golf/scripts/golf_driver.sh)",
+      "Bash(chmod +x .claude/skills/lean-golf/scripts/golf_driver.sh)"
+    ]
+  }
+}
