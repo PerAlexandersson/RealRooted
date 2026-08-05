@@ -251,6 +251,25 @@ theorem PosComboRealRooted.left_splits_of_forward_asw
     hASW hf_pos.ne_zero hfnn hgnn
     fun {_} hμ => (hfg.isRealRooted_add_right hμ).2
 
+/-- The succ-degree left endpoint from the proved forward ASW theorem, with no
+backend argument required from the caller. -/
+theorem PosComboRealRooted.left_splits_of_asw
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    f.Splits :=
+  IsPFPolynomial.splits_of_forall_pos_add_C_mul
+    hf_pos.ne_zero hfnn hgnn
+    fun {_} hμ => (hfg.isRealRooted_add_right hμ).2
+
+/-- Unconditional package form of `PosComboRealRooted.left_splits_of_asw` for
+the milestone-B2 endpoint statement. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_asw :
+    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+  intro f g hf_pos _ hfnn hgnn hfg _
+  exact hfg.left_splits_of_asw hf_pos hfnn hgnn
+
 /-- Conditional package form of `PosComboRealRooted.left_splits_of_forward_asw`
 for the milestone-B2 endpoint statement. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw

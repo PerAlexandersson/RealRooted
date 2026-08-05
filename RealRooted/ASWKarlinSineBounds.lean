@@ -226,6 +226,50 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
               simp [k]
             exact lt_trans hlt hk_lt
 
+/-- The sampled sine vector has at most the number of completed half-turns in
+its final angle. -/
+lemma signVariations_sin_mul_le_floor_div_pi
+    {N : ℕ} {θ : ℝ} (hθ0 : 0 ≤ θ) :
+    Fin.signVariations
+        (fun j : Fin (N + 1) => Real.sin ((j : ℕ) * θ)) ≤
+      ⌊((N : ℝ) * θ) / Real.pi⌋₊ := by
+  let r : ℕ := ⌊((N : ℝ) * θ) / Real.pi⌋₊
+  have hquot :
+      ((N : ℝ) * θ) / Real.pi < ((r + 1 : ℕ) : ℝ) := by
+    simpa only [r, Nat.cast_add, Nat.cast_one] using
+      Nat.lt_floor_add_one (((N : ℝ) * θ) / Real.pi)
+  have hlast :
+      (N : ℝ) * θ ≤ ((r + 1 : ℕ) : ℝ) * Real.pi := by
+    have hmul := mul_lt_mul_of_pos_right hquot Real.pi_pos
+    rw [div_mul_cancel₀ _ Real.pi_ne_zero] at hmul
+    exact hmul.le
+  have hlt :=
+    signVariations_sin_mul_lt_of_last_le_nat_mul_pi
+      (N := N) (order := r + 1) (by positivity) hθ0 hlast
+  exact Nat.lt_succ_iff.mp
+    (by simpa only [Nat.succ_eq_add_one] using hlt)
+
+/-- Absolute-angle form of the sampled-sine floor bound for Karlin's repeated
+vector. -/
+lemma signVariations_aswKarlinSineVector_le_floor_div_pi_abs
+    (θ : ℝ) (degree order blocks : ℕ) :
+    Fin.signVariations (aswKarlinSineVector θ degree order blocks) ≤
+      ⌊(((blocks * (degree + order - 1) : ℕ) : ℝ) * |θ|) /
+        Real.pi⌋₊ := by
+  by_cases hθ : 0 ≤ θ
+  · rw [abs_of_nonneg hθ]
+    change Fin.signVariations
+        (fun j : Fin (blocks * (degree + order - 1) + 1) =>
+          Real.sin ((j : ℕ) * θ)) ≤ _
+    exact signVariations_sin_mul_le_floor_div_pi hθ
+  · have hθneg : θ < 0 := lt_of_not_ge hθ
+    rw [← signVariations_aswKarlinSineVector_neg θ degree order blocks,
+      abs_of_neg hθneg]
+    change Fin.signVariations
+        (fun j : Fin (blocks * (degree + order - 1) + 1) =>
+          Real.sin ((j : ℕ) * -θ)) ≤ _
+    exact signVariations_sin_mul_le_floor_div_pi (neg_nonneg.mpr hθneg.le)
+
 /-- One-block Karlin sine vectors inherit the general sampled-sine
 sign-variation bound from a last-angle estimate. -/
 lemma signVariations_aswKarlinSineVector_lt_of_last_le_order_pi
