@@ -1950,5 +1950,70 @@ example {F G : Nat → ℝ[X]}
     no_common_roots := hno,
     left_degree_le_three := hFdeg
 
+section ZeroParameterEndpoint
+
+section Scalar
+
+variable {f g : ℝ[X]} {x μ : ℝ}
+variable (hμ_pos : 0 < μ)
+variable (hdeg : ∀ η ∈ Set.Icc (0 : ℝ) μ,
+  (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
+variable (_hsplit_prefix : ∀ _ν : ℝ, ∀ η ∈ Set.Icc (0 : ℝ) μ,
+  (f + C η * g).Splits)
+variable (hsplit : ∀ η ∈ Set.Icc (0 : ℝ) μ, (f + C η * g).Splits)
+variable (hne : ∀ η ∈ Set.Icc (0 : ℝ) μ, ¬ (f + C η * g).IsRoot x)
+
+/-- The named form exposes all four zero-endpoint transport certificates. -/
+example :
+    ((f + C μ * g).roots.filter (x < ·)).card =
+      (f.roots.filter (x < ·)).card := by
+  rr_rightFamily_card_roots_gt_eq_zero_param using
+    parameter_pos := hμ_pos,
+    degree_on_interval := hdeg,
+    splits_on_interval := hsplit,
+    threshold_not_root := hne
+
+/-- Lookup rejects a split certificate whose extra prefix remains unresolved. -/
+example :
+    ((f + C μ * g).roots.filter (x < ·)).card =
+      (f.roots.filter (x < ·)).card := by
+  rr_rightFamily_card_roots_gt_eq_zero_param
+
+end Scalar
+
+section Sequence
+
+variable {F G : Nat → ℝ[X]} {x μ : Nat → ℝ}
+variable (hμ_pos : ∀ i : Nat, 0 < μ i)
+variable (hdeg : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+  (F i + C η * G i).natDegree =
+    (F i + C (0 : ℝ) * G i).natDegree)
+variable (_hsplit_prefix : ∀ _ν : ℝ, ∀ i : Nat,
+  ∀ η ∈ Set.Icc (0 : ℝ) (μ i), (F i + C η * G i).Splits)
+variable (hsplit : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+  (F i + C η * G i).Splits)
+variable (hne : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+  ¬ (F i + C η * G i).IsRoot (x i))
+
+/-- The sequence form applies the proved zero-endpoint equality pointwise. -/
+example : ∀ i : Nat,
+    ((F i + C (μ i) * G i).roots.filter (x i < ·)).card =
+      ((F i).roots.filter (x i < ·)).card := by
+  rr_rightFamily_card_roots_gt_eq_zero_param_sequence using
+    parameter_pos := hμ_pos,
+    degree_on_interval := hdeg,
+    splits_on_interval := hsplit,
+    threshold_not_root := hne
+
+/-- Sequence inference resolves complete pointwise certificate families. -/
+example : ∀ i : Nat,
+    ((F i + C (μ i) * G i).roots.filter (x i < ·)).card =
+      ((F i).roots.filter (x i < ·)).card := by
+  rr_rightFamily_card_roots_gt_eq_zero_param_sequence
+
+end Sequence
+
+end ZeroParameterEndpoint
+
 end Tactic
 end RealRooted
