@@ -594,6 +594,77 @@ example {P : Nat → ℝ[X]}
     base_one := hP1',
     step := hstep'
 
+/-- The inferred affine router finds the standard certificate packet while the
+coefficient families and recurrence remain explicit. -/
+example {P Q : Nat → ℝ[X]} {s α β u v w : Nat → ℝ}
+    (_hsDecoy : ∀ n : Nat, 0 < u n)
+    (_hβDecoy : ∀ n : Nat, 0 < w (n + 1))
+    (_hQ0 : Q 0 = 1)
+    (_hQ1 : Q 1 = C (u 0) * X - C (v 0))
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_param_infer using
+    slope := s,
+    alpha := α,
+    beta := β,
+    step := hstep
+
+/-- The inferred form proves elementary positivity but still requires the two
+base certificates from the local context or tagged declarations. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C ((((n + 1 : Nat) : ℝ) + 1)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_infer using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    step := hstep
+
+/-- Mixed packets can combine automatic slope positivity with a looked-up lag
+certificate. -/
+example {P : Nat → ℝ[X]} {β : Nat → ℝ}
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_param_infer using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := β,
+    step := hstep
+
+/-- Base certificates are intentionally not synthesized by the inferred form. -/
+example {P : Nat → ℝ[X]}
+    (_hP0 : P 0 = 1)
+    (_hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n)
+    (hgoal : ∀ n : Nat, (P n).Splits) :
+    ∀ n : Nat, (P n).Splits := by
+  fail_if_success
+    rr_favard_affine_param_infer using
+      slope := fun _ : Nat => (2 : ℝ),
+      alpha := fun m : Nat => (m : ℝ),
+      beta := fun _ : Nat => (1 : ℝ),
+      step := _hstep
+  exact hgoal
+
 /-- Positive-slope parameterized affine Favard smoke test with a scalar
 denominator on the displayed recurrence. -/
 example {P : Nat → ℝ[X]} {d : Nat → ℝ}
@@ -1400,6 +1471,24 @@ example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
     beta_pos := hβ,
     base_zero := hP0,
     base_one := hP1,
+    step := hstep
+
+/-- The inferred router rolls back from the standard orientation and finds the
+row-sign certificate packet. -/
+example {P : Nat → ℝ[X]} {s α β : Nat → ℝ} {n : Nat}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (s 0) * X - C (α 0)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    P n ≠ 0 := by
+  rr_favard_affine_param_infer using
+    slope := s,
+    alpha := α,
+    beta := β,
     step := hstep
 
 /-- Automatic positivity for parameterized affine row-sign wrappers. -/
