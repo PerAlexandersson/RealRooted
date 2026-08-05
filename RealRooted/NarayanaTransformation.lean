@@ -325,8 +325,7 @@ theorem coeff_basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) (j : ℕ) :
 
 @[simp] theorem basisTransform_monomial (P : ℕ → ℝ[X]) (n : ℕ) (a : ℝ) :
     basisTransform P (Polynomial.monomial n a) = C a * P n := by
-  rw [basisTransform, Polynomial.sum_monomial_index]
-  simp
+  simp [basisTransform, Polynomial.sum_monomial_index]
 
 @[simp] theorem basisTransform_C (P : ℕ → ℝ[X]) (a : ℝ) :
     basisTransform P (C a) = C a * P 0 := by
@@ -593,8 +592,7 @@ theorem basisTransform_risingFactorial_mul_X_add_C (μ r : ℝ) (p : ℝ[X]) :
     basisTransform (risingFactorialPolynomial μ) ((X + C r) * p) =
       X * (basisTransform (risingFactorialPolynomial μ) p).comp (X + C μ) +
         C r * basisTransform (risingFactorialPolynomial μ) p := by
-  rw [add_mul, basisTransform_add, basisTransform_risingFactorial_X_mul]
-  rw [Polynomial.C_mul', basisTransform_smul]
+  simp [add_mul, basisTransform_add, basisTransform_risingFactorial_X_mul, Polynomial.C_mul', basisTransform_smul]
 
 private theorem listInterlaces_map_sub_tail_of_pairwise_add_le
     (μ : ℝ) (hμ : 0 ≤ μ) :

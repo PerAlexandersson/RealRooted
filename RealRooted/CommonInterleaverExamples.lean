@@ -193,8 +193,7 @@ private lemma xSq_add_fiveX_add_six_hasPosLeadingCoeff :
 
 private lemma xSq_add_fiveX_add_six_natDegree :
     (((X + 2) * (X + 3)) : ℝ[X]).natDegree = 2 := by
-  rw [natDegree_mul xAddTwo_isRealRooted.1 xAddThree_isRealRooted.1]
-  simp [xAddTwo_natDegree, xAddThree_natDegree]
+  simp [natDegree_mul xAddTwo_isRealRooted.1 xAddThree_isRealRooted.1, xAddTwo_natDegree, xAddThree_natDegree]
 
 private lemma xSq_add_fiveX_add_six_roots :
     (((X + 2) * (X + 3)) : ℝ[X]).roots = {(-3 : ℝ)} + {(-2 : ℝ)} := by
@@ -859,8 +858,7 @@ private lemma xAddOne_xAddTwo_hasPosLeadingCoeff :
 
 private lemma xAddOne_xAddTwo_natDegree :
     (((X + 1) * (X + 2)) : ℝ[X]).natDegree = 2 := by
-  rw [natDegree_mul xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1]
-  simp [xAddOne_natDegree, xAddTwo_natDegree]
+  simp [natDegree_mul xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1, xAddOne_natDegree, xAddTwo_natDegree]
 
 private lemma xAddOne_xAddTwo_roots :
     (((X + 1) * (X + 2)) : ℝ[X]).roots = {(-2 : ℝ)} + {(-1 : ℝ)} := by

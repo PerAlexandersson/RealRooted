@@ -704,8 +704,6 @@ factor. -/
 theorem a036969Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d a036969Beta =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
-  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
-    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
   exact oneSequence_jensen_factor d hd
 
 /-- The residual pencil for the A036969 PF-bidiagonal certificate. -/
@@ -1002,8 +1000,6 @@ factor. -/
 theorem a071951Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d a071951Beta =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
-  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
-    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
   exact oneSequence_jensen_factor d hd
 
 /-- The A071951 alpha residual has nonnegative coefficients. -/
@@ -1230,8 +1226,6 @@ factor. -/
 theorem a080248Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d a080248Beta =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
-  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
-    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
   exact oneSequence_jensen_factor d hd
 
 /-- Cubic-discriminant certificate for the A080248 alpha residual. -/
@@ -1246,8 +1240,7 @@ theorem a080248ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
 
 private theorem a080248ResidualAlpha_coeff_three (d : ℕ) :
     (a080248ResidualAlpha d).coeff 3 = 0 := by
-  rw [a080248ResidualAlpha, Polynomial.coeff_C_mul, a071951ResidualAlpha_coeff_three]
-  ring
+  simp [a080248ResidualAlpha, Polynomial.coeff_C_mul, a071951ResidualAlpha_coeff_three]
 
 private theorem a080248ResidualAlpha_coeff_two (d : ℕ) :
     (a080248ResidualAlpha d).coeff 2 =
@@ -1398,6 +1391,12 @@ theorem secondDerivativeBidiagonalForm_a156289 (p : ℝ[X]) :
       bidiagonalOperator a156289Alpha a156289Beta p := by
   rr_second_derivative_bidiagonal_normalizer [a156289Alpha, a156289Beta]
 
+-- A156289: coefficient-bidiagonal normalizer for the second-derivative route.
+example (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 3 3 2 1 0 p =
+      bidiagonalOperator a156289Alpha a156289Beta p := by
+  rr_second_derivative_bidiagonal_normalizer [a156289Alpha, a156289Beta]
+
 /-- The coefficient multiplier for the A160562 recurrence. -/
 def a160562Alpha (k : ℕ) : ℝ :=
   (2 * (k : ℝ) + 1) ^ 2
@@ -1458,8 +1457,6 @@ factor. -/
 theorem a160562Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d a160562Beta =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
-  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
-    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
   exact oneSequence_jensen_factor d hd
 
 /-- The A160562 alpha residual has nonnegative coefficients. -/
@@ -1688,8 +1685,6 @@ factor. -/
 theorem a269945Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d a269945Beta =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
-  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
-    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
   exact oneSequence_jensen_factor d hd
 
 /-- The A269945 alpha residual has nonnegative coefficients. -/
@@ -1868,6 +1863,12 @@ theorem secondDerivativeBidiagonalForm_a166960 (n : ℕ) (p : ℝ[X]) :
       bidiagonalOperator a166960Alpha (a166960Beta n) p := by
   rr_second_derivative_bidiagonal_normalizer [a166960Alpha, a166960Beta]
 
+-- A166960: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (1 + (n : ℝ)) 3 (-1) 1 0 p =
+      bidiagonalOperator a166960Alpha (a166960Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166960Alpha, a166960Beta]
+
 /-- The coefficient multiplier for the A166961 recurrence. -/
 def a166961Alpha (k : ℕ) : ℝ :=
   ((k : ℝ) + 1) * (2 * (k : ℝ) + 1)
@@ -1879,6 +1880,12 @@ def a166961Beta (n k : ℕ) : ℝ :=
 /-- The A166961 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)(2k+1)` and `beta(k)=2n+1-2k`. -/
 theorem secondDerivativeBidiagonalForm_a166961 (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (1 + 2 * (n : ℝ)) 5 (-2) 2 0 p =
+      bidiagonalOperator a166961Alpha (a166961Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166961Alpha, a166961Beta]
+
+-- A166961: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 (1 + 2 * (n : ℝ)) 5 (-2) 2 0 p =
       bidiagonalOperator a166961Alpha (a166961Beta n) p := by
   rr_second_derivative_bidiagonal_normalizer [a166961Alpha, a166961Beta]
@@ -1898,6 +1905,12 @@ theorem secondDerivativeBidiagonalForm_a166962 (n : ℕ) (p : ℝ[X]) :
       bidiagonalOperator a166962Alpha (a166962Beta n) p := by
   rr_second_derivative_bidiagonal_normalizer [a166962Alpha, a166962Beta]
 
+-- A166962: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (-5 + 3 * (n : ℝ)) 7 (-3) 3 0 p =
+      bidiagonalOperator a166962Alpha (a166962Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166962Alpha, a166962Beta]
+
 /-- The coefficient multiplier for the A166972 recurrence. -/
 def a166972Alpha (k : ℕ) : ℝ :=
   ((k : ℝ) + 1) * (3 * (k : ℝ) + 1)
@@ -1913,6 +1926,12 @@ theorem secondDerivativeBidiagonalForm_a166972 (n : ℕ) (p : ℝ[X]) :
       bidiagonalOperator a166972Alpha (a166972Beta n) p := by
   rr_second_derivative_bidiagonal_normalizer [a166972Alpha, a166972Beta]
 
+-- A166972: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm 1 (-1 + (n : ℝ)) 7 (-1) 3 0 p =
+      bidiagonalOperator a166972Alpha (a166972Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a166972Alpha, a166972Beta]
+
 /-- The coefficient multiplier for the A191935 recurrence. -/
 def a191935Alpha (_k : ℕ) : ℝ :=
   1
@@ -1924,6 +1943,14 @@ def a191935Beta (n k : ℕ) : ℝ :=
 /-- The A191935 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=1` and `beta(k)=(n+1-k)(n+2-k)`. -/
 theorem secondDerivativeBidiagonalForm_a191935 (n : ℕ) (p : ℝ[X]) :
+    secondDerivativeBidiagonalForm
+        1 (2 + 3 * (n : ℝ) + (n : ℝ) ^ 2)
+        0 (-2 - 2 * (n : ℝ)) 0 1 p =
+      bidiagonalOperator a191935Alpha (a191935Beta n) p := by
+  rr_second_derivative_bidiagonal_normalizer [a191935Alpha, a191935Beta]
+
+-- A191935: coefficient-bidiagonal normalizer for the second-derivative route.
+example (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm
         1 (2 + 3 * (n : ℝ) + (n : ℝ) ^ 2)
         0 (-2 - 2 * (n : ℝ)) 0 1 p =

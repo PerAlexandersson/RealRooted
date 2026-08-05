@@ -772,43 +772,6 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     · intro r hr
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
-theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
-    (h : Prec g (X * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    Prec f g := by
-  rcases h with
-    ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
-  have hf : f ≠ 0 ∧ f.Splits := by simp_all
-  set rs_f := f.roots.sort (· ≤ ·)
-  have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
-    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
-  have hXf_roots : (X * f).roots = {0} + f.roots := by
-    rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
-  have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
-    have hmultiset_eq : (↑rs_Xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
-      rw [hrs_Xf_eq, hXf_roots, ← hrs_f_eq, ← Multiset.coe_add]
-      simp [add_comm]
-    exact List.Perm.eq_of_pairwise' hrs_Xf hrs_f0 (Multiset.coe_eq_coe.mp hmultiset_eq)
-  have hlen_fg : rs_f.length = ss_g.length := by
-    rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2,
-      ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
-  rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
-  · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
-    have halt0 :
-        ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
-      listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
-    have halt : ListAlternates rs_f ss_g :=
-      listAlternates_of_append_zero_both rs_f ss_g hlen_fg halt0
-    exact ⟨hf, hg, rs_f, ss_g, hrs_f, hss_g, hrs_f_eq, hss_g_eq,
-      Or.inr ⟨hlen_fg, halt⟩⟩
-  · simp_all
-
 theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)

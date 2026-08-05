@@ -435,8 +435,12 @@ theorem ClawFree.simplicialClique_neighborOutside {V : Type u} [DecidableEq V]
     have hnL := Finset.mem_sdiff.mp hn
     have hnN := Finset.mem_filter.mp hnL.1
     have hkn : G.Adj k n := hnN.2
-    have hx' : x ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by grind
-    have hy' : y ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by grind
+    have hx' :
+        x ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
+      grind
+    have hy' :
+        y ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
+      grind
     have hxL := Finset.mem_sdiff.mp hx'
     have hyL := Finset.mem_sdiff.mp hy'
     have hxN := Finset.mem_filter.mp hxL.1

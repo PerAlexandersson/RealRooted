@@ -112,6 +112,26 @@ theorem posCombo_sequence_right_same_degree_realrooted
   PosComboRealRooted.isRealRooted_right_of_sameDegree
     (hfg i) (hF i) (hG i) (hdeg i)
 
+theorem posCombo_sequence_left_same_degree_splits
+    {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, (F i).Splits := fun i =>
+  PosComboRealRooted.left_splits_of_sameDegree
+    (hfg i) (hF i) (hG i) (hdeg i)
+
+theorem posCombo_sequence_right_same_degree_splits
+    {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, (G i).Splits := fun i =>
+  PosComboRealRooted.right_splits_of_sameDegree
+    (hfg i) (hF i) (hG i) (hdeg i)
+
 theorem posCombo_sequence_closed_segment_same_degree_realrooted
     {F G : Nat → ℝ[X]} {beta : Nat → ℝ}
     (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
@@ -319,6 +339,38 @@ syntax (name := rr_pos_combo_right_same_degree_realrooted_named)
 
 syntax (name := rr_pos_combo_sequence_right_same_degree_realrooted_named)
   "rr_pos_combo_sequence_right_same_degree_realrooted" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pos_combo_left_same_degree_splits_named)
+  "rr_pos_combo_left_same_degree_splits" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pos_combo_sequence_left_same_degree_splits_named)
+  "rr_pos_combo_sequence_left_same_degree_splits" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pos_combo_right_same_degree_splits_named)
+  "rr_pos_combo_right_same_degree_splits" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pos_combo_sequence_right_same_degree_splits_named)
+  "rr_pos_combo_sequence_right_same_degree_splits" " using "
     "pos_combo" ":=" term ","
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
@@ -815,6 +867,42 @@ macro_rules
         same_degree := $hdeg:term) =>
       `(tactic|
         exact RealRooted.Tactic.posCombo_sequence_right_same_degree_realrooted
+          $hfg $hfpos $hgpos $hdeg)
+  | `(tactic|
+      rr_pos_combo_left_same_degree_splits using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        same_degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.PosComboRealRooted.left_splits_of_sameDegree
+          $hfg $hfpos $hgpos $hdeg)
+  | `(tactic|
+      rr_pos_combo_sequence_left_same_degree_splits using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        same_degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.posCombo_sequence_left_same_degree_splits
+          $hfg $hfpos $hgpos $hdeg)
+  | `(tactic|
+      rr_pos_combo_right_same_degree_splits using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        same_degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.PosComboRealRooted.right_splits_of_sameDegree
+          $hfg $hfpos $hgpos $hdeg)
+  | `(tactic|
+      rr_pos_combo_sequence_right_same_degree_splits using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        same_degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.posCombo_sequence_right_same_degree_splits
           $hfg $hfpos $hgpos $hdeg)
   | `(tactic|
       rr_pos_combo_closed_segment_realrooted using

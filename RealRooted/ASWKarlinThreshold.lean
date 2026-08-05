@@ -97,6 +97,40 @@ lemma aswSectorThreshold_lt_pi (degree order : ℕ) (hdegree : 1 < degree)
     nlinarith [Real.pi_pos, hratio, hratio_nonneg]
   simpa [aswSectorThreshold] using hmain
 
+/-- Below Karlin's sector threshold, every repeated sampled final angle is
+strictly below the corresponding integral multiple of `π`. -/
+lemma aswSectorThreshold_repeated_last_angle_lt_order_pi
+    {θ : ℝ} {degree order blocks : ℕ}
+    (hdegree : 0 < degree) (horder : 0 < order) (hblocks : 0 < blocks)
+    (hθ : θ < aswSectorThreshold degree order) :
+    ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ <
+      ((blocks * order : ℕ) : ℝ) * Real.pi := by
+  have hden_pos := aswSectorThreshold_denom_pos degree order hdegree horder
+  have hblocks_pos : (0 : ℝ) < blocks := by exact_mod_cast hblocks
+  have hθ_lt :
+      θ < (order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi := by
+    simpa [aswSectorThreshold] using hθ
+  have hsum : 1 ≤ degree + order := by lia
+  have hlast_cast :
+      ((blocks * (degree + order - 1) : ℕ) : ℝ) =
+        (blocks : ℝ) * ((order : ℝ) + degree - 1) := by
+    rw [Nat.cast_mul, Nat.cast_sub hsum, Nat.cast_add]
+    ring
+  have htarget_cast :
+      ((blocks * order : ℕ) : ℝ) * Real.pi =
+        (blocks : ℝ) * (order : ℝ) * Real.pi := by
+    rw [Nat.cast_mul]
+  rw [hlast_cast, htarget_cast]
+  have hmul_pos : 0 < (blocks : ℝ) * ((order : ℝ) + degree - 1) :=
+    mul_pos hblocks_pos hden_pos
+  calc
+    (blocks : ℝ) * ((order : ℝ) + degree - 1) * θ <
+        (blocks : ℝ) * ((order : ℝ) + degree - 1) *
+          ((order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi) :=
+      mul_lt_mul_of_pos_left hθ_lt hmul_pos
+    _ = (blocks : ℝ) * (order : ℝ) * Real.pi := by
+      field_simp [hden_pos.ne']
+
 /-- For fixed degree, Karlin's finite-order sector threshold tends to `π` as
 the PF order tends to infinity. -/
 lemma tendsto_aswSectorThreshold (degree : ℕ) :

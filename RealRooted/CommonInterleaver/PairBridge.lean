@@ -811,13 +811,6 @@ theorem succDegreeRootCrossing_of_natDegree_eq_zero
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   refine ⟨?_, ?_⟩ <;> intro j hj1 hjlt <;> exfalso <;> lia
 
-private lemma succCross_getD_reverse (l : List ℝ) (j : ℕ) (hj : j < l.length) :
-    l.reverse.getD j 0 = l.getD (l.length - 1 - j) 0 := by
-  have hj' : j < l.reverse.length := by simpa using hj
-  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
-    List.getElem?_eq_getElem hj', List.getElem?_eq_getElem (by lia)]
-  simp [List.getElem_reverse]
-
 private lemma succCross_getD_mono
     {rs : List ℝ} (hrs : rs.Pairwise (· ≤ ·))
     {i j : ℕ} (hij : i ≤ j) (hj : j < rs.length) :
@@ -846,7 +839,7 @@ theorem rootCrossing_of_listInterlaces {ss rs : List ℝ}
   · intro j hj1 hj2
     have hjr : j < rs.length := by lia
     have hjs : j - 1 < ss.length := by lia
-    rw [succCross_getD_reverse rs j hjr, succCross_getD_reverse ss (j - 1) hjs]
+    rw [List.getD_reverse (l := rs) j hjr, List.getD_reverse (l := ss) (j - 1) hjs]
     have e1 : rs.length - 1 - j = ss.length - j := by lia
     have e2 : ss.length - 1 - (j - 1) = ss.length - j := by lia
     rw [e1, e2]
@@ -854,7 +847,7 @@ theorem rootCrossing_of_listInterlaces {ss rs : List ℝ}
   · intro j hj1 hj2
     have hjs : j < ss.length := by lia
     have hjr : j - 1 < rs.length := by lia
-    rw [succCross_getD_reverse ss j hjs, succCross_getD_reverse rs (j - 1) hjr]
+    rw [List.getD_reverse (l := ss) j hjs, List.getD_reverse (l := rs) (j - 1) hjr]
     set i := ss.length - 1 - j with hi
     have e2 : rs.length - 1 - (j - 1) = i + 2 := by lia
     rw [e2]

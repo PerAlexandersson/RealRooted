@@ -271,6 +271,30 @@ private lemma prec0_add_left_of_common_right_of_nonneg {p q r : ℝ[X]}
   have hq_pos : HasPosLeadingCoeff q := hqnn.pos_leadingCoeff hq0
   exact (prec_add_of_prec_right_of_posLeadingCoeff hpstr hqstr hp_pos hq_pos).toPrec0
 
+/-! ### Affine threshold-entry shapes shared by the two backends -/
+
+private lemma prec0_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
+    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  exact prec0_refl_of_isRealRooted
+    (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
+
+private lemma prec0_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
+    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact prec0_refl_of_isRealRooted
+    (isRealRooted_affine_factor (s := s + 1) (t := t) (by positivity))
+
+private lemma prec0_affine_add_one_affine_add_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact
+    prec0_affine_linear_affine_linear_of_cross
+      (u := s) (v := t + 1) (U := s + 1) (V := t)
+      hs (by positivity) (by nlinarith [hs, ht])
+
 /-! ## Haglund--Zhang / A046802 backend -/
 
 namespace OEIS
@@ -408,8 +432,7 @@ private lemma hzMiddleQuadratic_eq (s t : ℝ) :
 private lemma eval_hzMiddleQuadratic (s t r : ℝ) :
     (((C s * X + C t) * (1 + X) + X : ℝ[X]).eval r) =
       s * r ^ 2 + (s + t + 1) * r + t := by
-  rw [hzMiddleQuadratic_eq]
-  simp [eval_add, eval_mul, eval_C, eval_X, pow_two]
+  simp [hzMiddleQuadratic_eq, eval_add, eval_mul, eval_C, eval_X, pow_two]
 
 private lemma hzMiddleQuadratic_natDegree {s t : ℝ} (hs : 0 < s) :
     (((C s * X + C t) * (1 + X) + X : ℝ[X]).natDegree) = 2 := by
@@ -436,8 +459,7 @@ private lemma hzXAffineAddOne_eq (s t : ℝ) :
 private lemma eval_hzXAffineAddOne (s t r : ℝ) :
     ((X * (C s * X + C t + 1) : ℝ[X]).eval r) =
       s * r ^ 2 + (t + 1) * r := by
-  rw [hzXAffineAddOne_eq]
-  simp [eval_add, eval_mul, eval_C, eval_X, pow_two]
+  simp [hzXAffineAddOne_eq, eval_add, eval_mul, eval_C, eval_X, pow_two]
 
 private lemma hzXAffineAddOne_natDegree {s t : ℝ} (hs : 0 < s) :
     ((X * (C s * X + C t + 1) : ℝ[X]).natDegree) = 2 := by
@@ -481,12 +503,6 @@ private lemma prec0_hz_linear_to_quadratic_of_eval_nonpos
       hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
       (by lia) (by lia) hno hroot).toPrec0
 
-private lemma prec0_hz_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact prec0_refl_of_isRealRooted
-    (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
-
 private lemma prec0_hz_affine_add_one_affine_add_one_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Prec0 (C s * X + C t + 1) (C s * X + C t + (1 + X)) := by
@@ -505,16 +521,6 @@ private lemma prec0_hz_affine_add_one_add_X_self {s t : ℝ} (hs : 0 < s) :
   exact prec0_refl_of_isRealRooted
     (isRealRooted_affine_factor (s := s + 1) (t := t + 1) (by positivity))
 
-private lemma prec0_hz_affine_add_one_affine_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    prec0_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
-
 private lemma prec0_hz_affine_add_one_add_X_affine_add_X
     {s t : ℝ} (hs : 0 < s) :
     Prec0 (C s * X + C t + (1 + X)) (C s * X + C t + X) := by
@@ -525,12 +531,6 @@ private lemma prec0_hz_affine_add_one_add_X_affine_add_X
     prec0_affine_linear_affine_linear_of_cross
       (u := s + 1) (v := t + 1) (U := s + 1) (V := t)
       (by positivity) (by positivity) (by nlinarith)
-
-private lemma prec0_hz_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact prec0_refl_of_isRealRooted
-    (isRealRooted_affine_factor (s := s + 1) (t := t) (by positivity))
 
 private lemma prec0_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -789,12 +789,12 @@ private lemma HZ2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h
   all_goals
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
-  · simpa using prec0_hz_affine_add_one_self hs
+  · simpa using prec0_affine_add_one_self hs
   · simpa using prec0_hz_affine_add_one_affine_add_one_add_X hs ht
   · simpa using prec0_hz_affine_add_one_add_X_self hs
-  · simpa using prec0_hz_affine_add_one_affine_add_X hs ht
+  · simpa using prec0_affine_add_one_affine_add_X hs ht
   · simpa using prec0_hz_affine_add_one_add_X_affine_add_X hs
-  · simpa using prec0_hz_affine_add_X_self hs
+  · simpa using prec0_affine_add_X_self hs
   · simpa [mul_add, add_mul, add_assoc, add_comm, add_left_comm] using
       prec0_hz_affine_add_one_mul_one_add_X hs
   · simpa using prec0_hz_affine_add_one_middleQuadratic hs ht
@@ -1449,23 +1449,9 @@ private lemma prec0_gs_affine_add_one_X
       (u := s) (v := t + 1) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith [ht])
 
-private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    prec0_refl_of_isRealRooted
-      (isRealRooted_affine_factor (s := s + 1) (t := t) (by positivity))
-
 private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
     Prec0 (C s * X + C t) (C s * X + C t) :=
   prec0_refl_of_isRealRooted (isRealRooted_affine_factor (s := s) (t := t) hs)
-
-private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact
-    prec0_refl_of_isRealRooted
-      (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
 
 private lemma prec0_gs_X_X : Prec0 (X : ℝ[X]) X :=
   prec0_refl_of_isRealRooted isRealRooted_X
@@ -1481,16 +1467,6 @@ private lemma prec0_gs_affine_affine_add_X
     prec0_affine_linear_affine_linear_of_cross
       (u := s) (v := t) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [ht])
-
-private lemma prec0_gs_affine_add_one_affine_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    prec0_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
 
 private lemma prec0_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
     Prec0 (C s * X + C t + 1) (C s * X + C t) := by
@@ -1536,10 +1512,10 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   · simpa using prec0_gs_affine_add_X_X hs ht
   · simpa using prec0_gs_affine_self hs
   · simpa using prec0_gs_affine_add_one_affine hs
-  · simpa using prec0_gs_affine_add_one_self hs
+  · simpa using prec0_affine_add_one_self hs
   · simpa using prec0_gs_affine_affine_add_X hs ht
-  · simpa using prec0_gs_affine_add_one_affine_add_X hs ht
-  · simpa using prec0_gs_affine_add_X_self hs
+  · simpa using prec0_affine_add_one_affine_add_X hs ht
+  · simpa using prec0_affine_add_X_self hs
   · simpa using (prec0_zero_left (((C s * X + C t) * X + X : ℝ[X])))
   · simpa using prec0_gs_X_quadratic hs ht
   · simpa using prec0_gs_affine_quadratic hs ht

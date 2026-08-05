@@ -71,69 +71,12 @@ theorem quadraticJensen_eq_factor_residual
   simpa [quadraticJensenResidual, RealRooted.quadraticJensenResidual] using
     RealRooted.quadraticJensen_eq_factor_residual a b c hd
 
-/-! ## Bidiagonal operator and finite symbol -/
+/-! ## Bidiagonal operator and finite symbol
 
-/-- Coefficient-bidiagonal operator
-`T(X^k) = alpha k * X^k + beta k * X^(k+1)`. -/
-def bidiagonalOperator (alpha beta : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
-  diagonalOperator alpha p + X * diagonalOperator beta p
-
-/-- Degree-`d` PF-preserver statement for a coefficient-bidiagonal operator. -/
-def BidiagonalPFPreserver (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
-  ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p.natDegree ≤ d →
-    IsPFPolynomial (bidiagonalOperator alpha beta p)
-
-/-- Replace a coefficient sequence by zero above degree `d`. -/
-def degreeTruncate (d : ℕ) (gamma : ℕ → ℝ) : ℕ → ℝ :=
-  fun k => if k ≤ d then gamma k else 0
-
-theorem degreeTruncate_eq_of_le (d : ℕ) (gamma : ℕ → ℝ) {k : ℕ}
-    (hk : k ≤ d) :
-    degreeTruncate d gamma k = gamma k := by
-  simp [degreeTruncate, hk]
-
-theorem degreeTruncate_nonneg {d : ℕ} {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, k ≤ d → 0 ≤ gamma k) :
-    ∀ k, 0 ≤ degreeTruncate d gamma k := by
-  intro k
-  by_cases hk : k ≤ d
-  · rw [degreeTruncate_eq_of_le d gamma hk]
-    exact hgamma k hk
-  · simp [degreeTruncate, hk]
-
-theorem diagonalOperator_congr_of_eq_on_degree
-    {gamma delta : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
-    (hgamma : ∀ k, k ≤ d → gamma k = delta k)
-    (hp : p.natDegree ≤ d) :
-    diagonalOperator gamma p = diagonalOperator delta p := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_diagonalOperator]
-  by_cases hk : k ≤ d
-  · rw [hgamma k hk]
-  · have hdk : d < k := Nat.lt_of_not_ge hk
-    have hklt : p.natDegree < k := lt_of_le_of_lt hp hdk
-    rw [Polynomial.coeff_eq_zero_of_natDegree_lt hklt]
-    ring
-
-theorem bidiagonalOperator_congr_of_eq_on_degree
-    {alpha beta alpha' beta' : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
-    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
-    (hbeta : ∀ k, k ≤ d → beta k = beta' k)
-    (hp : p.natDegree ≤ d) :
-    bidiagonalOperator alpha beta p = bidiagonalOperator alpha' beta' p := by
-  unfold bidiagonalOperator
-  rw [diagonalOperator_congr_of_eq_on_degree halpha hp]
-  rw [diagonalOperator_congr_of_eq_on_degree hbeta hp]
-
-theorem BidiagonalPFPreserver.of_eq_on_degree
-    {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
-    (hpres : BidiagonalPFPreserver alpha' beta' d)
-    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
-    (hbeta : ∀ k, k ≤ d → beta k = beta' k) :
-    BidiagonalPFPreserver alpha beta d := by
-  intro p hp hdeg
-  rw [bidiagonalOperator_congr_of_eq_on_degree halpha hbeta hdeg]
-  exact hpres hp hdeg
+The bidiagonal operator itself, its degree-`d` PF-preserver statement,
+`degreeTruncate`, and the congruence lemmas live in
+`RealRooted.Tactic.PFBidiagonal` (namespace `RealRooted`) and are reused here.
+-/
 
 /-- Jensen pencil obtained by dehomogenizing the finite symbol at `Y = 1`. -/
 def bidiagonalJensenPencil

@@ -58,7 +58,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
         grind
       simpa [hrew] using hall_fXg (α + β) (-α)
     have hq : (q ≠ 0 ∧ q.Splits) :=
-      ⟨hq0, by simpa using hall_qf 1 0⟩
+      ⟨hq0, hall_qf.left_splits⟩
     have hf0 : f ≠ 0 := hf.1
     have hclose := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hq_lt : q.natDegree < f.natDegree := by
@@ -313,8 +313,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
       grind
     simpa [hrew] using hall_U_mid (α - β) β
   have hXV_ne : X * V ≠ 0 := mul_ne_zero X_ne_zero hV_pos.ne_zero
-  have hXV_splits : (X * V).Splits := by
-    simpa using hall_U_XV 0 1
+  have hXV_splits : (X * V).Splits := hall_U_XV.right_splits
   have hsame : U.natDegree = (X * V).natDegree := by
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia

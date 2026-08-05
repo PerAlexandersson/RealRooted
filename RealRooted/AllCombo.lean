@@ -22,13 +22,23 @@ def AllComboRealRooted (f g : ℝ[X]) : Prop :=
 
 namespace AllComboRealRooted
 
+/-- The left endpoint of an all-real-combination pair splits. -/
+lemma left_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+    f.Splits := by
+  simpa using hall 1 0
+
+/-- The right endpoint of an all-real-combination pair splits. -/
+lemma right_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+    g.Splits := by
+  simpa using hall 0 1
+
 lemma isRealRooted_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
     f ≠ 0 ∧ f.Splits :=
-  ⟨hf0, by simpa using hall 1 0⟩
+  ⟨hf0, hall.left_splits⟩
 
 lemma isRealRooted_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
     g ≠ 0 ∧ g.Splits :=
-  ⟨hg0, by simpa using hall 0 1⟩
+  ⟨hg0, hall.right_splits⟩
 
 end AllComboRealRooted
 
@@ -57,6 +67,56 @@ lemma allComboRealRooted_C_mul_right
     AllComboRealRooted f (C c * g) := by
   intro α β
   simpa [C_mul, mul_assoc, mul_left_comm, mul_comm] using hall α (β * c)
+
+/-- `AllComboRealRooted` is preserved by any linear change of coordinates in
+the `(f, g)`-plane.
+
+No invertibility is needed for this forward direction: every linear combination
+of the new pair is visibly a linear combination of the old pair. -/
+lemma allComboRealRooted_linear_recombination
+    {f g p q : ℝ[X]} {a b c d : ℝ}
+    (hp : p = C a * f + C b * g)
+    (hq : q = C c * f + C d * g)
+    (hall : AllComboRealRooted f g) :
+    AllComboRealRooted p q := by
+  intro α β
+  have hrewrite :
+      C α * p + C β * q =
+        C (α * a + β * c) * f + C (α * b + β * d) * g := by
+    grind
+  rw [hrewrite]
+  exact hall (α * a + β * c) (α * b + β * d)
+
+lemma allComboRealRooted_splits_of_eq_combo
+    {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g) :
+    p.Splits := by
+  rw [hp]
+  exact hall a b
+
+lemma allComboRealRooted_ne_zero_and_splits_of_eq_combo
+    {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g)
+    (hp0 : p ≠ 0) :
+    p ≠ 0 ∧ p.Splits :=
+  ⟨hp0, allComboRealRooted_splits_of_eq_combo hall hp⟩
+
+theorem allComboRealRooted_splits_sequence_of_eq_combo
+    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
+    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
+    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n) :
+    ∀ n : ℕ, (P n).Splits := fun n =>
+  allComboRealRooted_splits_of_eq_combo (hall n) (hP n)
+
+theorem allComboRealRooted_ne_zero_and_splits_sequence_of_eq_combo
+    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
+    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
+    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n)
+    (hP0 : ∀ n : ℕ, P n ≠ 0) :
+    ∀ n : ℕ, P n ≠ 0 ∧ (P n).Splits := fun n =>
+  allComboRealRooted_ne_zero_and_splits_of_eq_combo (hall n) (hP n) (hP0 n)
 
 /-- Multiplying both polynomials by the same real-rooted factor preserves
 `AllComboRealRooted`. This is the multiplication-back step for common-root
@@ -255,6 +315,41 @@ lemma C_mul_left {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
 lemma C_mul_right {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f (C c * g) :=
   allComboRealRooted_C_mul_right hall
+
+lemma linear_recombination {f g p q : ℝ[X]} {a b c d : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g)
+    (hq : q = C c * f + C d * g) :
+    AllComboRealRooted p q :=
+  allComboRealRooted_linear_recombination hp hq hall
+
+lemma splits_of_eq_combo {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g) :
+    p.Splits :=
+  allComboRealRooted_splits_of_eq_combo hall hp
+
+lemma ne_zero_and_splits_of_eq_combo {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g)
+    (hp0 : p ≠ 0) :
+    p ≠ 0 ∧ p.Splits :=
+  allComboRealRooted_ne_zero_and_splits_of_eq_combo hall hp hp0
+
+theorem splits_sequence_of_eq_combo
+    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
+    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
+    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n) :
+    ∀ n : ℕ, (P n).Splits :=
+  allComboRealRooted_splits_sequence_of_eq_combo hall hP
+
+theorem ne_zero_and_splits_sequence_of_eq_combo
+    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
+    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
+    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n)
+    (hP0 : ∀ n : ℕ, P n ≠ 0) :
+    ∀ n : ℕ, P n ≠ 0 ∧ (P n).Splits :=
+  allComboRealRooted_ne_zero_and_splits_sequence_of_eq_combo hall hP hP0
 
 lemma mul_common_factor {d f g : ℝ[X]} (hall : AllComboRealRooted f g)
     (hd : d.Splits) :

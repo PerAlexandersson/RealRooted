@@ -296,6 +296,54 @@ example {F G : Nat → ℝ[X]}
     right_pos_lc := hG,
     same_degree := hdeg
 
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) :
+    f.Splits := by
+  rr_pos_combo_left_same_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    same_degree := hdeg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, (F i).Splits := by
+  rr_pos_combo_sequence_left_same_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    same_degree := hdeg
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree) :
+    g.Splits := by
+  rr_pos_combo_right_same_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    same_degree := hdeg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, (G i).Splits := by
+  rr_pos_combo_sequence_right_same_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    same_degree := hdeg
+
 example {f g : ℝ[X]} {β : ℝ}
     (hfg : PosComboRealRooted f g)
     (hf_ne : f ≠ 0)

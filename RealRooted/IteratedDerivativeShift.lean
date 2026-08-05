@@ -930,7 +930,8 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
           simp_all
         have hdeg_hi :
-            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by simp_all
+            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by
+          simp_all
         have hb_nonpos : ∀ r, (-p).IsRoot r → (C (-eps)).eval r ≤ 0 := by
           intro r _
           simp [eval_C]

@@ -18,6 +18,7 @@ OUTPUT = ROOT / "RealRooted" / "Tactic" / "OEIS_COVERAGE.md"
 OEIS_RE = re.compile(r"A\d{6}")
 ROUTE_RE = re.compile(r"\b(rr_[A-Za-z0-9_]+)")
 ARG_RE = re.compile(r"\b([a-z][A-Za-z0-9_]*)\s*:=")
+IGNORE_MARKER = "oeis-coverage-ignore"
 SIGN_ONLY = {
     "rr_sign",
     "rr_sign_at_roots",
@@ -45,6 +46,8 @@ def comment_text(lines: list[str], index: int) -> str:
         stop += 1
     parts = []
     for line in lines[start:stop]:
+        if not line.lstrip().startswith("--"):
+            continue
         text = line.strip().removeprefix("/--").removeprefix("--").strip()
         text = text.removesuffix("-/").strip()
         text = OEIS_RE.sub("", text)
@@ -66,13 +69,50 @@ def example_block(lines: list[str], index: int) -> str:
         return ""
     stop = start + 1
     while stop < len(lines):
+        line = lines[stop]
         stripped = lines[stop].lstrip()
-        if stripped.startswith("example") or stripped.startswith("end "):
+        is_top_level = line == stripped
+        starts_top_decl = stripped.startswith((
+            "/--",
+            "--",
+            "def ",
+            "theorem ",
+            "lemma ",
+            "example",
+            "namespace ",
+            "section ",
+            "end ",
+        ))
+        if is_top_level and starts_top_decl:
             break
         if OEIS_RE.search(lines[stop]) and stripped.startswith("--"):
             break
         stop += 1
     return "\n".join(lines[start:stop])
+
+
+def previous_comment_block_has_oeis(lines: list[str], index: int) -> bool:
+    """Return whether the immediately preceding line-comment block has an OEIS ID."""
+    current = index - 1
+    while current >= 0 and lines[current].lstrip().startswith("--"):
+        if OEIS_RE.search(lines[current]):
+            return True
+        current -= 1
+    return False
+
+
+def ignored_coverage_lines(lines: list[str]) -> set[int]:
+    """Return lines ignored by an explicit marker on the preceding comment."""
+    ignored: set[int] = set()
+    for index, line in enumerate(lines):
+        if IGNORE_MARKER not in line:
+            continue
+        ignored.add(index)
+        current = index + 1
+        while current < len(lines) and lines[current].strip():
+            ignored.add(current)
+            current += 1
+    return ignored
 
 
 def clean_shape(text: str) -> str:
@@ -85,8 +125,16 @@ def collect() -> tuple[dict[str, Coverage], set[str]]:
     rows: dict[str, Coverage] = {}
     for path in sorted(EXAMPLES.rglob("*.lean")):
         lines = path.read_text(encoding="utf-8").splitlines()
+        ignored = ignored_coverage_lines(lines)
         source = path.relative_to(ROOT).as_posix()
         for index, line in enumerate(lines):
+            stripped = line.lstrip()
+            if index in ignored:
+                continue
+            if stripped.startswith("import "):
+                continue
+            if not stripped.startswith("--") and previous_comment_block_has_oeis(lines, index):
+                continue
             ids = OEIS_RE.findall(line)
             if not ids:
                 continue
@@ -177,7 +225,8 @@ def render() -> str:
         f"**{counts['shell']} shells**, **{counts['fragment']} fragments**, and "
         f"**{counts['documented']} documented-only**.",
         "",
-        "| OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |",
+        "| OEIS ID | Status | Recurrence shape / test intent | Tactic route | "
+        "Required certificates | Missing blocker |",
         "|---|---|---|---|---|---|",
     ]
     for oeis_id in sorted(rows):

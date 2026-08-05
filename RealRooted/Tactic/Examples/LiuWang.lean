@@ -961,6 +961,66 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Unit-`X` state tactics package the strict positive lag shell. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X) := by
+    rr_lw_positive_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Unit-`X` state tactics project rowwise nonzero certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X) := by
+    rr_lw_positive_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_nonzero using
+    state := hstate
+
+/-- Unit-`X` state tactics project rowwise splitting certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X) := by
+    rr_lw_positive_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_splits using
+    state := hstate
+
 /-- Projection endpoint: the unit-`X` real-rootedness tactic also closes row
 splitting goals. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
@@ -1016,6 +1076,28 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Positive `t` state tactics package explicit coefficient certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (c n) * X) := by
+    rr_lw_positive_t_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
 /-- Real-rootedness endpoint for strict scalar `c_n t` lag sequences. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -1034,6 +1116,28 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
+
+/-- Automatic positive `t` state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C ((n : ℝ) + 1) * X) := by
+    rr_lw_positive_t_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
 
 /-- Automatic real-rootedness endpoint for strict scalar `c_n t` lag
 sequences. -/
@@ -1159,6 +1263,56 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
+
+/-- Affine half-line state tactics package explicit scalar certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C (c n) * X - C (a n)) := by
+    rr_lw_C_mul_X_sub_C_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      scalar_nonneg := hc,
+      constant_nonneg := ha,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic affine half-line state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * X - C (1 : ℝ)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => C ((n : ℝ) + 1) * X - C (1 : ℝ)) := by
+    rr_lw_C_mul_X_sub_C_lag_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
 
 /-- Family G7 shifted-root positive affine lag:
 `P_{n+2}=A_nP_{n+1}+c_n(a_n+t)P_n`.
@@ -3091,6 +3245,137 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Plain nonpositive-lag data has direct nonzero, splitting, and interlacing
+projection endpoints. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    (∀ n : Nat, P n ≠ 0) ∧
+      (∀ n : Nat, (P n).Splits) ∧
+      (∀ n : Nat, Interlaces (P n) (P (n + 1))) := by
+  refine ⟨?_, ?_, ?_⟩
+  · rr_lw_nonpos_lag_sequence_nonzero using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_splits using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_interlaces using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+
+/-- Plain nonpositive-lag data can be bundled as a reusable state certificate. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A B :=
+    LwNonposLagSequenceState.of_nonpos hbase hpos hB hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- The same generic data can be bundled as a reusable state certificate. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hstate : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- A state certificate also supports rowwise real-rootedness projections. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {n : Nat}
+    (hstate : LwNonposLagSequenceState P A B) :
+    (P n).Splits := by
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- The same state certificate projects the consecutive interlacing chain. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hstate : LwNonposLagSequenceState P A B) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Inductive lag-sign data can be bundled as a reusable state certificate. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
+      ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_nonpos_lag_sequence_inductive_nonpos using
+    base := hbase,
+    pos_lc := hpos,
+    lag_inductive_nonpos := hB,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Inductive lag-sign data has direct sequence projection endpoints. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
+      ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    (∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) ∧
+      (∀ n : Nat, P n ≠ 0) ∧
+      (∀ n : Nat, (P n).Splits) ∧
+      (∀ n : Nat, Interlaces (P n) (P (n + 1))) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rr_lw_nonpos_lag_sequence_inductive_nonpos_realrooted using
+      base := hbase,
+      pos_lc := hpos,
+      lag_inductive_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_inductive_nonpos_nonzero using
+      base := hbase,
+      pos_lc := hpos,
+      lag_inductive_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_inductive_nonpos_splits using
+      base := hbase,
+      pos_lc := hpos,
+      lag_inductive_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_inductive_nonpos_interlaces using
+      base := hbase,
+      pos_lc := hpos,
+      lag_inductive_nonpos := hB,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+
 /-- Denominator-normalized generic nonpositive-lag shell. -/
 example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -3134,6 +3419,1425 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Denominator-normalized nonpositive-lag data has direct projection
+endpoints. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hD : ∀ n : Nat, d n ≠ 0)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1) + B n * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    (∀ n : Nat, P n ≠ 0) ∧
+      (∀ n : Nat, (P n).Splits) ∧
+      (∀ n : Nat, Interlaces (P n) (P (n + 1))) := by
+  refine ⟨?_, ?_, ?_⟩
+  · rr_lw_nonpos_lag_sequence_den_nonzero using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      den_nonzero := hD,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_den_splits using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      den_nonzero := hD,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  · rr_lw_nonpos_lag_sequence_den_interlaces using
+      base := hbase,
+      pos_lc := hpos,
+      lag_nonpos := hB,
+      den_nonzero := hD,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+
+/-- Denominator-normalized data can also be projected through a state. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hD : ∀ n : Nat, d n ≠ 0)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1) + B n * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A B :=
+    LwNonposLagSequenceState.of_den
+      hbase hpos hB hD hraw hdeg_succ hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Negative-constant sequence data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun n => -(C (c n))) :=
+    LwNonposLagSequenceState.of_negative_const_lag
+      hbase hpos hc hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Normalized `C (-c_n)` negative-constant data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (-(c n))) :=
+    LwNonposLagSequenceState.of_negative_const_C_neg_lag
+      hbase hpos hc hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Positive `t`-lag data can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (c n) * X) :=
+    LwNonposLagSequenceState.of_positive_t_lag
+      hbase hpos hnonneg hc hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Positive unit-`X` lag data can be bundled with the literal `X` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X) :=
+    LwNonposLagSequenceState.of_positive_X_lag
+      hbase hpos hnonneg hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Affine half-line lag data can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C (c n) * X - C (a n)) :=
+    LwNonposLagSequenceState.of_C_mul_X_sub_C_lag
+      hbase hpos hnonneg hc ha hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Shifted-affine lag data can be bundled from explicit root bounds. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C (c n) * (C (a n) + X)) := by
+    rr_lw_positive_affine_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      coeff_nonneg := hc,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Automatic shifted-affine state tactics package active scalar certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * (C (1 : ℝ) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C ((n : ℝ) + 1) * (C (1 : ℝ) + X)) := by
+    rr_lw_positive_affine_lag_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Shifted-affine lag data can derive root bounds from shifted coefficients. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C (c n) * (C (a n) + X)) := by
+    rr_lw_positive_affine_lag_state_shift_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      coeff_nonneg := hc,
+      shift_nonneg := hshift_nonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic shifted-coefficient state tactics package active scalars. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (1 : ℝ))))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * (C (1 : ℝ) + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C ((n : ℝ) + 1) * (C (1 : ℝ) + X)) := by
+    rr_lw_positive_affine_lag_state_shift_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      shift_nonneg := hshift_nonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Unit shifted-affine lag data uses the normalized literal `a_n+X` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (a n) + X) := by
+    rr_lw_C_add_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Unit shifted-affine lag data also has a shifted-coefficient state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (a n) + X) := by
+    rr_lw_C_add_X_lag_state_shift_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      shift_nonneg := hshift_nonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Generic inner-window lag data can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r →
+      r ≤ 0 → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A B :=
+    LwNonposLagSequenceState.of_inner_window_lag_nonneg
+      hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The unit `X * (1+X)` inner-window lag has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X * (1 + X)) := by
+    rr_lw_X_one_add_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Scalar `c_n X * (1+X)` inner-window lag data also has a state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C (c n) * X * (1 + X)) := by
+    rr_lw_C_mul_X_one_add_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic scalar `c_n X * (1+X)` state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * X * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C ((n : ℝ) + 1) * X * (1 + X)) := by
+    rr_lw_C_mul_X_one_add_X_lag_state_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- The factored cubic inner-window lag has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (X * (1 - X) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun _ => X * (1 - X) * (1 + X)) := by
+    rr_lw_X_one_sub_X_one_add_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Scalar factored cubic inner-window lag data has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => C (c n) * X * (1 - X) * (1 + X)) := by
+    rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic scalar factored cubic state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * X * (1 - X) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => C ((n : ℝ) + 1) * X * (1 - X) * (1 + X)) := by
+    rr_lw_C_mul_X_one_sub_X_one_add_X_lag_state_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- The expanded cubic inner-window lag has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X - X ^ 3) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X - X ^ 3) := by
+    rr_lw_X_sub_X_pow_three_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Scalar expanded cubic inner-window lag data has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C (c n) * (X - X ^ 3)) := by
+    rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Automatic scalar expanded cubic state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * (X - X ^ 3)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C ((n : ℝ) + 1) * (X - X ^ 3)) := by
+    rr_lw_C_mul_X_sub_X_pow_three_lag_state_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Explicit-window lag data can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r →
+      r ≤ -(1 / 2 : ℝ) → (B n).eval r ≤ 0)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A B :=
+    LwNonposLagSequenceState.of_interval_lag
+      hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The unit `(1+X)(1+2X)` interval lag has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + ((1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) := by
+    rr_lw_one_add_X_one_add_two_X_lag_state_interval using
+      base := hbase,
+      pos_lc := hpos,
+      root_lower := hroot_lower,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Scalar `(1+X)(1+2X)` interval lag data has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) := by
+    rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval using
+      base := hbase,
+      pos_lc := hpos,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic scalar interval-window state tactics package active coefficients. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C ((n : ℝ) + 1) * (1 + X) * (1 + C (2 : ℝ) * X)) := by
+    rr_lw_C_mul_one_add_X_one_add_two_X_lag_state_interval_auto using
+      base := hbase,
+      pos_lc := hpos,
+      root_lower := hroot_lower,
+      root_upper := hroot_upper,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Negative affine inner-window lag data has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hba : ∀ n : Nat, b n ≤ a n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (C (a n) + C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (C (a n) + C (b n) * X)) := by
+    rr_lw_neg_C_mul_affine_inner_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      slope_nonneg := hb,
+      slope_le_const := hba,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The inner-window lag `-c_n(1+X)` has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (1 + X)) := by
+    rr_lw_neg_C_mul_one_add_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Scalar-denominator `-c_n(1+X)` data has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = -c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (1 + X)) := by
+    rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff := c,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      den_nonzero := hden,
+      coeff_eq := hcoeff,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic denominator state tactics package scalar-normalized
+`-c_n(1+X)` data. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hraw : ∀ n : Nat,
+      C (-((n : ℝ) + 1)) * P (n + 2) =
+        C (-((n : ℝ) + 1)) * (A n * P (n + 1)) +
+          (C ((n : ℝ) + 1) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun _ => -(C (1 : ℝ)) * (1 + X)) := by
+    rr_lw_neg_C_mul_one_add_X_lag_state_den_coeff_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff := fun _ => (1 : ℝ),
+      root_lower := hroot_lower,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The tighter-window lag `-c_n(1+2X)` has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (1 + C (2 : ℝ) * X)) := by
+    rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower_half := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic tighter-window state tactics package `-c_n(1+2X)` data. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C ((n : ℝ) + 1)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C ((n : ℝ) + 1)) * (1 + C (2 : ℝ) * X)) := by
+    rr_lw_neg_C_mul_one_add_two_X_lag_state_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower_half := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The inner-window lag `X^2 - 1` has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X ^ 2 - 1) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X ^ 2 - 1) := by
+    rr_lw_X_sq_sub_one_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- The scalar inner-window lag `c_n(X^2 - 1)` has a bundled state path. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * (X ^ 2 - 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => C (c n) * (X ^ 2 - 1)) := by
+    rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic scalar `c_n(X^2 - 1)` state tactics package active coefficients. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C ((n : ℝ) + 1) * (X ^ 2 - 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C ((n : ℝ) + 1) * (X ^ 2 - 1)) := by
+    rr_lw_C_mul_X_sq_sub_one_lag_state_nonneg_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      root_lower := hroot_lower,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Positive `X * Q_n` lag data can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun n => X * Q n) := by
+    rr_lw_positive_X_mul_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      factor_nonneg := hQ,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Scaled `c_n X Q_n` lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun n => C (c n) * X * Q n) := by
+    rr_lw_positive_C_mul_X_mul_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      factor_nonneg := hQ,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic scaled positive-factor state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C ((n : ℝ) + 1) * X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C ((n : ℝ) + 1) * X * Q n) := by
+    rr_lw_positive_C_mul_X_mul_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      factor_nonneg := hQ,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- The literal `X(1-X)` lag can be bundled and projected through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (1 - X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun _ => X * (1 - X)) := by
+    rr_lw_X_one_sub_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Parameterized `X(a_n-b_n X)` lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => X * (C (a n) - C (b n) * X)) := by
+    rr_lw_X_C_sub_C_mul_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      left_coeff_nonneg := ha,
+      right_coeff_nonneg := hb,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic parameterized `X(a_n-b_n X)` state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (X * (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => X * (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) := by
+    rr_lw_X_C_sub_C_mul_X_lag_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Parameterized `c_n X(a_n-b_n X)` lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => C (c n) * X * (C (a n) - C (b n) * X)) := by
+    rr_lw_C_mul_X_C_sub_C_mul_X_lag_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      scalar_nonneg := hc,
+      left_coeff_nonneg := ha,
+      right_coeff_nonneg := hb,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic scalar `c_n X(a_n-b_n X)` state tactics project interlacing. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * X * (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => C ((n : ℝ) + 1) * X *
+          (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) := by
+    rr_lw_C_mul_X_C_sub_C_mul_X_lag_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Negative-square lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (q n) ^ 2) :=
+    LwNonposLagSequenceState.of_negative_square_lag
+      hbase hpos hc hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Unit negative-square lag data can be bundled through a literal state. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A (fun n => -((q n) ^ 2)) :=
+    LwNonposLagSequenceState.of_negative_square_lag_unit
+      hbase hpos hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Denominator-normalized negative-square data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (c n)) * (q n) ^ 2) := by
+    rr_lw_negative_square_state_den_coeff using
+      base := hbase,
+      pos_lc := hpos,
+      coeff := c,
+      coeff_nonneg := hc,
+      den_nonzero := hden,
+      coeff_eq := hcoeff,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic split denominator-normalized negative-square state tactics
+project `Prec`. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => -(C (1 : ℝ)) * (q n) ^ 2) := by
+    rr_lw_negative_square_state_den_coeff_auto_split using
+      base := hbase,
+      pos_lc := hpos,
+      square_factor := q,
+      coeff := fun _ => (1 : ℝ),
+      raw_coeff := fun n => (n : ℝ) + 1,
+      den := fun n => (n : ℝ) + 1,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Monic negative quadratic lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(X ^ 2 + C (b n) * X + C (c n))) :=
+    LwNonposLagSequenceState.of_negative_monic_quadratic_lag
+      hbase hpos hdisc hrec hdeg_succ hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Non-monic negative quadratic lag data can be bundled through a state. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C (a n) * X ^ 2 + C (b n) * X + C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) := by
+    rr_lw_negative_quadratic_state using
+      base := hbase,
+      pos_lc := hpos,
+      leading_nonneg := ha,
+      constant_nonneg := hc,
+      discriminant := hdisc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Denominator-normalized non-monic quadratic data can be bundled as a state. -/
+example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
+    {araw braw craw a b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, 0 ≤ a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hdisc : ∀ n : Nat, (b n) ^ 2 ≤ 4 * a n * c n)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (ha_coeff : ∀ n : Nat, (d n)⁻¹ * araw n = a n)
+    (hb_coeff : ∀ n : Nat, (d n)⁻¹ * braw n = b n)
+    (hc_coeff : ∀ n : Nat, (d n)⁻¹ * craw n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (araw n) * X ^ 2 + C (braw n) * X + C (craw n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P (fun n => C ((d n)⁻¹) * Araw n)
+        (fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) := by
+    rr_lw_negative_quadratic_state_den_coeff_split using
+      base := hbase,
+      pos_lc := hpos,
+      leading := a,
+      linear := b,
+      constant := c,
+      raw_leading := araw,
+      raw_linear := braw,
+      raw_constant := craw,
+      den := d,
+      leading_nonneg := ha,
+      constant_nonneg := hc,
+      discriminant := hdisc,
+      den_nonzero := hden,
+      leading_coeff_eq := ha_coeff,
+      linear_coeff_eq := hb_coeff,
+      constant_coeff_eq := hc_coeff,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic denominator-normalized non-monic quadratic state tactics project
+`Prec`. -/
+example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (2 * ((n : ℝ) + 1)) * X ^ 2 +
+            C (-((n : ℝ) + 1)) * X + C ((n : ℝ) + 1))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P
+        (fun n => C (((n : ℝ) + 1)⁻¹) * Araw n)
+        (fun _ => -(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) := by
+    rr_lw_negative_quadratic_state_den_coeff_auto_split using
+      base := hbase,
+      pos_lc := hpos,
+      leading := fun _ => (2 : ℝ),
+      linear := fun _ => (-1 : ℝ),
+      constant := fun _ => (1 : ℝ),
+      raw_leading := fun n => 2 * ((n : ℝ) + 1),
+      raw_linear := fun n => -((n : ℝ) + 1),
+      raw_constant := fun n => (n : ℝ) + 1,
+      den := fun n => (n : ℝ) + 1,
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Current coefficient `a_n X` can be bundled with positive `t` lag. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P (fun n => C (a n) * X)
+        (fun n => C (c n) * X) := by
+    rr_lw_current_CX_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Automatic current `a_n X` state tactics project interlacing. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        (C ((n : ℝ) + 1) * X) * P (n + 1) +
+          (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P
+        (fun n => C ((n : ℝ) + 1) * X)
+        (fun n => C ((n : ℝ) + 1) * X) := by
+    rr_lw_current_CX_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Current coefficient `X` can be bundled with positive `t` lag. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P (fun _ => X)
+      (fun n => C (c n) * X) := by
+    rr_lw_current_X_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
+/-- Automatic current `X` state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = X * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P (fun _ => X)
+        (fun n => C ((n : ℝ) + 1) * X) := by
+    rr_lw_current_X_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
+/-- Current coefficient `1+X` can be bundled with positive `t` lag. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P (fun _ => (1 + X : ℝ[X]))
+      (fun n => C (c n) * X) := by
+    rr_lw_current_one_add_X_state using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
+/-- Automatic current `1+X` state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        (1 + X : ℝ[X]) * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P (fun _ => (1 + X : ℝ[X]))
+        (fun n => C ((n : ℝ) + 1) * X) := by
+    rr_lw_current_one_add_X_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
 /-- Family E2-style global lag: `P_{n+2}=A_n P_{n+1}-t^2P_n`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -3144,6 +4848,23 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   rr_lw_global_nonpos_sequence_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Global nonpositive lags have a direct interlacing endpoint by `rr_sign`. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_global_nonpos_sequence_interlaces_auto using
     base := hbase,
     pos_lc := hpos,
     lag := fun _ => -(X ^ 2 : ℝ[X]),
@@ -3169,6 +4890,29 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Global nonpositive state construction also supports real-rootedness
+projection. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(X ^ 2 + C (1 : ℝ) * X + C (1 : ℝ))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate : LwNonposLagSequenceState P A
+      (fun _ => -(X ^ 2 + C (1 : ℝ) * X + C (1 : ℝ))) := by
+    rr_lw_global_nonpos_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      lag := fun _ => -(X ^ 2 + C (1 : ℝ) * X + C (1 : ℝ)),
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
 /-- Scaled negative-definite quadratic lag, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -3189,6 +4933,69 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Scaled negative-definite quadratic lag, interlacing endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C ((n : ℝ) + 1)) *
+              (X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) *
+            P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_global_nonpos_sequence_interlaces_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun n =>
+      -(C ((n : ℝ) + 1)) *
+        (X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ)),
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Global nonpositive lags have a direct nonzero endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_lw_global_nonpos_sequence_nonzero_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized global lags can be bundled as state certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun _ => -(X ^ 2 : ℝ[X])) := by
+    rr_lw_global_nonpos_state_den_auto using
+      base := hbase,
+      pos_lc := hpos,
+      lag := fun _ => -(X ^ 2 : ℝ[X]),
+      raw_recurrence := hraw,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
+
 /-- Denominator-normalized global nonpositive lag with automatic sign
 discharge. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
@@ -3205,6 +5012,69 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     lag := fun _ => -(X ^ 2 : ℝ[X]),
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized global nonpositive lags have a direct nonzero
+endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_lw_global_nonpos_sequence_den_nonzero_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized global nonpositive lags have an interlacing
+endpoint with automatic denominator selection. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_global_nonpos_sequence_den_interlaces_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized global nonpositive lags also accept an explicit
+denominator nonzero certificate. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_lw_global_nonpos_sequence_den_interlaces_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    den_nonzero := by
+      intro n
+      positivity,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3283,6 +5153,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Negative-constant state tactics package explicit coefficient certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate : LwNonposLagSequenceState P A (fun n => -(C (c n))) := by
+    rr_lw_negative_const_state using
+      base := hbase,
+      pos_lc := hpos,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
 /-- Favard-like negative-constant shell, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -3315,6 +5205,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
+
+/-- Automatic negative-constant state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C ((n : ℝ) + 1))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => -(C ((n : ℝ) + 1))) := by
+    rr_lw_negative_const_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
 
 /-- Normalized `C (-c_n)` negative-constant lag, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
@@ -3349,6 +5259,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
+
+/-- Automatic normalized `C (-c_n)` state tactics project the `Prec` chain. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + C (-((n : ℝ) + 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => C (-((n : ℝ) + 1))) := by
+    rr_lw_negative_const_C_neg_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
 
 /-- Normalized `C (-c_n)` lag with an explicit coefficient certificate. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
@@ -3421,6 +5351,29 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Negative-square state tactics package explicit coefficient certificates. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ} {α : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (X - C α) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun n => -(C (c n)) * (X - C α) ^ 2) := by
+    rr_lw_negative_square_state using
+      base := hbase,
+      pos_lc := hpos,
+      coeff_nonneg := hc,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_interlaces using
+    state := hstate
+
 /-- Family G sequence shell: shifted-square lag, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -3458,6 +5411,29 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Automatic negative-square state tactics project real-rootedness. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C ((n : ℝ) + 1)) * (X - C (2 : ℝ)) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hstate :
+      LwNonposLagSequenceState P A
+        (fun n => -(C ((n : ℝ) + 1)) * (X - C (2 : ℝ)) ^ 2) := by
+    rr_lw_negative_square_state_auto using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state_realrooted using
+    state := hstate
+
 /-- Family G shifted-square lag with unit scalar coefficient. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -3473,6 +5449,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
+
+/-- Unit negative-square state tactics project the `Prec` chain. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-((X - C α : ℝ[X]) ^ 2)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hstate :
+      LwNonposLagSequenceState P A (fun _ => -((X - C α : ℝ[X]) ^ 2)) := by
+    rr_lw_negative_square_state_unit using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_succ := hdeg_succ,
+      no_common_roots := hno
+  rr_lw_nonpos_lag_state using
+    state := hstate
 
 /-- Unit shifted-square lag, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
@@ -4113,59 +6109,99 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
     (hb_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let hsame : ∀ n : Nat,
-      (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)) := by
-    intro n hdeg hprev
-    have htarget_pos :
-        HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-      simpa [← hrec n] using hpos (n + 2)
-    have hbranch :
-        (A n * P (n + 1) + B n * P n).natDegree =
-            (P (n + 1)).natDegree ∨
-          (A n * P (n + 1) + B n * P n).natDegree =
-            (P (n + 1)).natDegree + 1 := by
-      left
-      simpa [← hrec n] using hdeg
-    have hstep :
-        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
-      rr_liu_wang_two_strict_branch using
-        interlacer := hinter n hprev,
-        interlacer_pos_lc := hpos n,
-        target_pos_lc := htarget_pos,
-        degree_branch := hbranch,
-        no_common_roots := hno n,
-        head_neg := hb_neg n
-    simpa [← hrec n] using hstep
-  let hsucc : ∀ n : Nat,
-      (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)) := by
-    intro n hdeg hprev
-    have htarget_pos :
-        HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-      simpa [← hrec n] using hpos (n + 2)
-    have hbranch :
-        (A n * P (n + 1) + B n * P n).natDegree =
-            (P (n + 1)).natDegree ∨
-          (A n * P (n + 1) + B n * P n).natDegree =
-            (P (n + 1)).natDegree + 1 := by
-      right
-      simpa [← hrec n] using hdeg
-    have hstep :
-        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
-      rr_liu_wang_two_strict_branch using
-        interlacer := hinter n hprev,
-        interlacer_pos_lc := hpos n,
-        target_pos_lc := htarget_pos,
-        degree_branch := hbranch,
-        no_common_roots := hno n,
-        head_neg := hb_neg n
-    simpa [← hrec n] using hstep
-  rr_prec_sequence_branches using
+  rr_lw_strict_branch_sequence using
     base := hbase,
+    pos_lc := hpos,
+    recurrence := hrec,
     degree_branch := hdegree,
-    same := hsame,
-    successor := hsucc
+    interlacer := hinter,
+    no_common_roots := hno,
+    head_neg := hb_neg
+
+/-- Strict branch states project real-rootedness and interlacing endpoints. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdegree : ∀ n : Nat,
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+        (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
+    (hinter : ∀ n : Nat,
+      Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1)))
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
+    (hb_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0) :
+    (∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) ∧
+      (∀ n : Nat, P n ≠ 0) ∧
+      (∀ n : Nat, (P n).Splits) ∧
+      (∀ n : Nat, Interlaces (P n) (P (n + 1))) := by
+  have hstate : LwStrictBranchSequenceState P A B := by
+    rr_lw_strict_branch_sequence_state using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_branch := hdegree,
+      interlacer := hinter,
+      no_common_roots := hno,
+      head_neg := hb_neg
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rr_lw_strict_branch_state_realrooted using
+      state := hstate
+  · rr_lw_strict_branch_state_nonzero using
+      state := hstate
+  · rr_lw_strict_branch_state_splits using
+      state := hstate
+  · rr_lw_strict_branch_state_interlaces using
+      state := hstate
+
+/-- Strict branch direct endpoints project real-rootedness and interlacing. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdegree : ∀ n : Nat,
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+        (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
+    (hinter : ∀ n : Nat,
+      Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1)))
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
+    (hb_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0) :
+    (∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) ∧
+      (∀ n : Nat, P n ≠ 0) ∧
+      (∀ n : Nat, (P n).Splits) ∧
+      (∀ n : Nat, Interlaces (P n) (P (n + 1))) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rr_lw_strict_branch_sequence_realrooted using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_branch := hdegree,
+      interlacer := hinter,
+      no_common_roots := hno,
+      head_neg := hb_neg
+  · rr_lw_strict_branch_sequence_nonzero using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_branch := hdegree,
+      interlacer := hinter,
+      no_common_roots := hno,
+      head_neg := hb_neg
+  · rr_lw_strict_branch_sequence_splits using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_branch := hdegree,
+      interlacer := hinter,
+      no_common_roots := hno,
+      head_neg := hb_neg
+  · rr_lw_strict_branch_sequence_interlaces using
+      base := hbase,
+      pos_lc := hpos,
+      recurrence := hrec,
+      degree_branch := hdegree,
+      interlacer := hinter,
+      no_common_roots := hno,
+      head_neg := hb_neg
 
 /-- OEIS shapes `A154227`/`A154228`/`A249248`, using nonnegative coefficients
 to infer the half-line root certificate for a positive `t` lag. -/

@@ -467,8 +467,7 @@ theorem rootCountAbove_deleteRootFactor_add_one_of_isRoot
     (hx : x < r) :
     (p.roots.filter (x < ·)).card =
       ((deleteRootFactor p r).roots.filter (x < ·)).card + 1 := by
-  rw [roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr]
-  simp [hx, Nat.add_comm]
+  simp [roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot hp_ne hr, hx, Nat.add_comm]
 
 theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
     (h : ∀ r ∈ p.roots, r < x) :
@@ -1243,14 +1242,12 @@ theorem theorem21RootCountBranches_of_right {f g : ℝ[X]} {r s : ℝ}
 private theorem int_abs_sub_le_two_of_add_one_left {a b c : ℤ}
     (hab : a + 1 = b) (h : |a - c| ≤ 1) :
     |b - c| ≤ 2 := by
-  rw [abs_le] at h ⊢
-  constructor <;> linarith
+  grind
 
 private theorem int_abs_sub_le_two_of_add_one_right {a b c : ℤ}
     (hbc : b + 1 = c) (h : |a - b| ≤ 1) :
     |a - c| ≤ 2 := by
-  rw [abs_le] at h ⊢
-  constructor <;> linarith
+  grind
 
 private theorem nat_succ_eq_or_eq_succ_or_eq_succ_succ_of_abs_sub_le_one
     {m n k : ℕ} (hk : m + 1 = k)

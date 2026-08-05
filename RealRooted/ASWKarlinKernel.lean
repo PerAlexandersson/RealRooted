@@ -83,6 +83,46 @@ lemma sum_coeff_mul_im_pow_add_eq_zero {p : ℝ[X]} {z : ℂ}
   have him := congrArg Complex.im hshift
   simpa using him
 
+lemma sum_coeff_mul_phase_im_pow_add_eq_zero {p : ℝ[X]} {z : ℂ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (phase : ℝ) (s : ℕ) :
+    ∑ k ∈ Finset.range (p.natDegree + 1),
+      p.coeff k * (Complex.exp (phase * Complex.I) * z ^ (s + k)).im = 0 := by
+  have hroot :
+      ∑ k ∈ Finset.range (p.natDegree + 1),
+        (p.coeff k : ℂ) * z ^ k = 0 := by
+    have hzroot : (p.map (algebraMap ℝ ℂ)).IsRoot z :=
+      isRoot_of_mem_roots hz
+    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range] at hzroot
+    simpa [Polynomial.natDegree_map_eq_of_injective
+      (algebraMap ℝ ℂ).injective, mul_comm] using hzroot
+  have hshift :
+      ∑ k ∈ Finset.range (p.natDegree + 1),
+          (p.coeff k : ℂ) * z ^ (s + k) = 0 := by
+    calc
+      _ = z ^ s * ∑ k ∈ Finset.range (p.natDegree + 1),
+          (p.coeff k : ℂ) * z ^ k := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro k hk
+        rw [pow_add]
+        ring
+      _ = 0 := by rw [hroot, mul_zero]
+  have hphase :
+      ∑ k ∈ Finset.range (p.natDegree + 1),
+          (p.coeff k : ℂ) *
+            (Complex.exp (phase * Complex.I) * z ^ (s + k)) = 0 := by
+    calc
+      _ = Complex.exp (phase * Complex.I) *
+            ∑ k ∈ Finset.range (p.natDegree + 1),
+              (p.coeff k : ℂ) * z ^ (s + k) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro k hk
+        ring
+      _ = 0 := by rw [hshift, mul_zero]
+  have him := congrArg Complex.im hphase
+  simpa [Complex.mul_im] using him
+
 /-- Every complex root supplies a kernel vector for every repeated Karlin
 coefficient-window matrix. -/
 theorem aswKarlinMatrix_mulVec_rootVector {p : ℝ[X]} {z : ℂ}
@@ -100,6 +140,26 @@ theorem aswKarlinMatrix_mulVec_rootVector {p : ℝ[X]} {z : ℂ}
     (aswKarlinRowPos_add_degree_le p.natDegree order blocks hdegree horder i)
     (fun k hk => Polynomial.coeff_eq_zero_of_natDegree_lt hk)]
   exact sum_coeff_mul_im_pow_add_eq_zero hz _
+
+/-- Every complex root supplies a phase-rotated kernel vector for every
+repeated Karlin coefficient-window matrix. -/
+theorem aswKarlinMatrix_mulVec_phasedRootVector {p : ℝ[X]} {z : ℂ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (phase : ℝ) (order blocks : ℕ)
+    (hdegree : 0 < p.natDegree) (horder : 0 < order) :
+    aswKarlinMatrix p.coeff p.natDegree order blocks *ᵥ
+      aswKarlinPhasedRootVector z phase p.natDegree order blocks = 0 := by
+  funext i
+  rw [Matrix.mulVec, dotProduct]
+  simp only [aswKarlinMatrix_apply, aswKarlinPhasedRootVector, Pi.zero_apply,
+    ite_mul, zero_mul]
+  rw [sum_fin_shifted_window p.coeff
+    (fun j => (Complex.exp (phase * Complex.I) * z ^ j).im)
+    (blocks * (p.natDegree + order - 1))
+    (aswKarlinRowPos p.natDegree order i) p.natDegree
+    (aswKarlinRowPos_add_degree_le p.natDegree order blocks hdegree horder i)
+    (fun k hk => Polynomial.coeff_eq_zero_of_natDegree_lt hk)]
+  exact sum_coeff_mul_phase_im_pow_add_eq_zero hz phase _
 
 /-- A complex root of a real polynomial with positive constant coefficient is
 nonzero. -/
@@ -119,6 +179,153 @@ lemma complex_root_ne_zero_of_coeff_zero_pos {p : ℝ[X]} {z : ℂ}
     rw [Polynomial.coeff_zero_eq_eval_zero]
     exact heval
   linarith
+
+/-- Choose a phase for a complex root so the phase-rotated root vector is both
+in Karlin's repeated matrix kernel and coordinatewise nonzero. -/
+theorem exists_phase_phasedRootVector_kernel_zeroFree
+    {p : ℝ[X]} {z : ℂ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (order blocks : ℕ) (hdegree : 0 < p.natDegree)
+    (horder : 0 < order) (hconst : 0 < p.coeff 0) :
+    ∃ phase : ℝ,
+      AswKarlinPhaseAvoidsZeros phase z.arg p.natDegree order blocks ∧
+        aswKarlinMatrix p.coeff p.natDegree order blocks *ᵥ
+          aswKarlinPhasedRootVector z phase p.natDegree order blocks = 0 ∧
+        ∀ j : Fin (blocks * (p.natDegree + order - 1) + 1),
+          aswKarlinPhasedRootVector z phase p.natDegree order blocks j ≠ 0 := by
+  obtain ⟨phase, hphase⟩ :=
+    exists_phase_avoidsZeros_aswKarlinPhasedSineVector
+      z.arg p.natDegree order blocks
+  refine ⟨phase, hphase, ?_, ?_⟩
+  · exact aswKarlinMatrix_mulVec_phasedRootVector hz phase order blocks
+      hdegree horder
+  · exact aswKarlinPhasedRootVector_zeroFree_of_phaseAvoids
+      (complex_root_ne_zero_of_coeff_zero_pos hz hconst) hphase
+
+/-- The zero-free repeated-matrix classical input gives the sign-variation
+lower bound for a phased complex-root vector. -/
+theorem aswKarlinRepeated_phasedRootVector_signVariation_lower
+    (hclassical :
+      AswKarlinRepeatedZeroFreeKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} {phase : ℝ} {order blocks : ℕ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hphase : AswKarlinPhaseAvoidsZeros phase z.arg p.natDegree order blocks)
+    (hdegree : 0 < p.natDegree) (horder : 0 < order)
+    (hblocks : 0 < blocks) (hconst : 0 < p.coeff 0)
+    (hlead : 0 < p.coeff p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
+    blocks * order ≤
+      Fin.signVariations
+        (aswKarlinPhasedRootVector z phase p.natDegree order blocks) := by
+  have hsupport : ∀ k, p.natDegree < k → p.coeff k = 0 :=
+    fun k hk => Polynomial.coeff_eq_zero_of_natDegree_lt hk
+  exact hclassical hdegree horder hblocks hconst hlead hsupport hpf
+    (aswKarlinMatrix_mulVec_phasedRootVector hz phase order blocks
+      hdegree horder)
+    (aswKarlinPhasedRootVector_zeroFree_of_phaseAvoids
+      (complex_root_ne_zero_of_coeff_zero_pos hz hconst) hphase)
+
+/-- The zero-free repeated-matrix classical input gives the same lower bound
+for the corresponding phased sampled-sine vector. -/
+theorem aswKarlinRepeated_phasedSine_signVariation_lower
+    (hclassical :
+      AswKarlinRepeatedZeroFreeKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} {phase : ℝ} {order blocks : ℕ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hphase : AswKarlinPhaseAvoidsZeros phase z.arg p.natDegree order blocks)
+    (hdegree : 0 < p.natDegree) (horder : 0 < order)
+    (hblocks : 0 < blocks) (hconst : 0 < p.coeff 0)
+    (hlead : 0 < p.coeff p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
+    blocks * order ≤
+      Fin.signVariations
+        (aswKarlinPhasedSineVector phase z.arg p.natDegree order blocks) := by
+  rw [← signVariations_aswKarlinPhasedRootVector_eq_phasedSine
+    (complex_root_ne_zero_of_coeff_zero_pos hz hconst)]
+  exact aswKarlinRepeated_phasedRootVector_signVariation_lower hclassical hz
+    hphase hdegree horder hblocks hconst hlead hpf
+
+/-- Evaluation of a real-coefficient polynomial at a conjugate complex point. -/
+lemma eval_map_algebraMap_conj (p : ℝ[X]) (z : ℂ) :
+    (p.map (algebraMap ℝ ℂ)).eval (starRingEnd ℂ z) =
+      starRingEnd ℂ ((p.map (algebraMap ℝ ℂ)).eval z) := by
+  have hcomp : (starRingEnd ℂ).comp (algebraMap ℝ ℂ) = algebraMap ℝ ℂ := by
+    ext x
+    simp
+  simp [Polynomial.eval_map, Polynomial.hom_eval₂, hcomp]
+
+/-- A complex root of a real-coefficient polynomial has conjugate root. -/
+lemma complex_root_conj_of_real_coeff {p : ℝ[X]} {z : ℂ} (hp : p ≠ 0)
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) :
+    starRingEnd ℂ z ∈ (p.map (algebraMap ℝ ℂ)).roots := by
+  have hpmap : p.map (algebraMap ℝ ℂ) ≠ 0 :=
+    Polynomial.map_ne_zero hp
+  have hzroot : (p.map (algebraMap ℝ ℂ)).IsRoot z :=
+    isRoot_of_mem_roots hz
+  have hconjroot :
+      (p.map (algebraMap ℝ ℂ)).IsRoot (starRingEnd ℂ z) := by
+    rw [Polynomial.IsRoot.def, eval_map_algebraMap_conj p z]
+    rw [Polynomial.IsRoot.def] at hzroot
+    simp [hzroot]
+  exact (Polynomial.mem_roots hpmap).mpr hconjroot
+
+/-- Repeated zero-free classical input gives Karlin's sector bound for roots
+whose argument is nonnegative. -/
+theorem aswKarlinSectorThreshold_le_arg_of_repeatedZeroFreeClassicalInput
+    (hclassical :
+      AswKarlinRepeatedZeroFreeKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order blocks : ℕ}
+    (horder : 0 < order) (hblocks : 0 < blocks) (harg0 : 0 ≤ z.arg) :
+    aswSectorThreshold p.natDegree order ≤ z.arg := by
+  have hp_ne : p ≠ 0 := by
+    intro hp
+    simp [hp] at hdegree
+  have hlead_ne : p.coeff p.natDegree ≠ 0 := by
+    change p.leadingCoeff ≠ 0
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp_ne
+  have hlead : 0 < p.coeff p.natDegree :=
+    (hpf.nonneg p.natDegree).lt_of_ne (Ne.symm hlead_ne)
+  apply aswSectorThreshold_le_of_repeated_phasedSine_bounds_of_nonneg
+    hdegree horder hblocks harg0
+  intro phase hphase
+  exact aswKarlinRepeated_phasedSine_signVariation_lower hclassical hz hphase
+    hdegree horder hblocks hconst hlead hpf
+
+/-- Repeated zero-free classical input gives Karlin's absolute sector bound
+for complex roots. -/
+theorem aswKarlinSectorThreshold_le_abs_arg_of_repeatedZeroFreeClassicalInput
+    (hclassical :
+      AswKarlinRepeatedZeroFreeKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order blocks : ℕ}
+    (horder : 0 < order) (hblocks : 0 < blocks) :
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  have hp_ne : p ≠ 0 := by
+    intro hp
+    simp [hp] at hdegree
+  by_cases harg0 : 0 ≤ z.arg
+  · have hbound :=
+      aswKarlinSectorThreshold_le_arg_of_repeatedZeroFreeClassicalInput
+        hclassical hz hdegree hconst hpf horder hblocks harg0
+    simpa [abs_of_nonneg harg0] using hbound
+  · have harg_neg : z.arg < 0 := lt_of_not_ge harg0
+    have hconj_root :
+        starRingEnd ℂ z ∈ (p.map (algebraMap ℝ ℂ)).roots :=
+      complex_root_conj_of_real_coeff hp_ne hz
+    have harg_pi : z.arg ≠ Real.pi := by
+      linarith [Real.pi_pos]
+    have hconj_arg : (starRingEnd ℂ z).arg = -z.arg := by
+      simpa [harg_pi] using Complex.arg_conj z
+    have hconj_arg_nonneg : 0 ≤ (starRingEnd ℂ z).arg := by
+      rw [hconj_arg]
+      linarith
+    have hbound :=
+      aswKarlinSectorThreshold_le_arg_of_repeatedZeroFreeClassicalInput
+        hclassical hconj_root hdegree hconst hpf horder hblocks
+        hconj_arg_nonneg
+    rw [hconj_arg] at hbound
+    simpa [abs_of_neg harg_neg] using hbound
 
 /-- A real complex root of a positive-constant PF polynomial lies on the
 negative real ray. -/
@@ -202,11 +409,11 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order)
-    (him : z.im ≠ 0) :
+    (_him : z.im ≠ 0) :
     aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
-    him
+  aswKarlinSectorThreshold_le_abs_arg_of_repeatedZeroFreeClassicalInput
+    aswKarlinRepeatedZeroFreeKernelSignVariationClassicalInput hz hdegree
+    hconst hpf horder (by norm_num : 0 < 1)
 
 /-- Conditional Karlin finite-order sector estimate for one complex root, with
 the classical sign-variation input supplied explicitly. -/
@@ -232,7 +439,8 @@ theorem aswKarlinSectorThreshold_le_abs_arg {p : ℝ[X]} {z : ℂ}
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order) :
     aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswKarlinSectorThreshold_le_abs_arg_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
+  aswKarlinSectorThreshold_le_abs_arg_of_repeatedZeroFreeClassicalInput
+    aswKarlinRepeatedZeroFreeKernelSignVariationClassicalInput hz hdegree
+    hconst hpf horder (by norm_num : 0 < 1)
 
 end RealRooted

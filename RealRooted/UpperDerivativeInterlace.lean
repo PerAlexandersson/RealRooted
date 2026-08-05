@@ -75,8 +75,8 @@ theorem interlaces_of_allComboRealRooted_succDegree
     (hall : AllComboRealRooted f g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
-  have hf_splits : f.Splits := (hall.isRealRooted_left hf_ne).2
-  have hg_splits : g.Splits := (hall.isRealRooted_right hg_ne).2
+  have hf_splits : f.Splits := hall.left_splits
+  have hg_splits : g.Splits := hall.right_splits
   have hor : Prec f g ∨ Prec g f :=
     prec_of_allComboRealRooted hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc.symm)
   exact (prec_forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
