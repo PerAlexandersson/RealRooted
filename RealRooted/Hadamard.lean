@@ -2743,12 +2743,18 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   fun {_a _b} ha hb {_n} {_rows} {_cols} hrows hcols _hn => h ha hb hrows hcols
 
-/-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
+/-- Legacy reduction to the false unrestricted Hurwitz Schur interface.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
 bookkeeping from `hadamardPreservesHurwitzMatrixTNStatement`; the remaining
 input is only that entrywise products of totally nonnegative Hurwitz matrices
-are totally nonnegative. -/
+are totally nonnegative.
+
+This implication is logically valid but unusable: `HurwitzMatrix.lean` proves
+`not_hurwitzMatrixSchurProductTNStatement`. Garloff--Wagner, *Hadamard
+products of stable polynomials are stable*, J. Math. Anal. Appl. 202 (1996),
+797--809, Theorem 13, does not supply this unrestricted infinite-matrix
+hypothesis. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_schur
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=

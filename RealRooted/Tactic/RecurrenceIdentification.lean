@@ -6,6 +6,9 @@ import RealRooted.Tactic.Product
 Generic uniqueness lemmas identify two sequences from equal initial rows and
 the same fixed-lag recurrence. The tactic frontends either prove the pointwise
 identification or transfer real-rootedness from the identified model sequence.
+Explicit forms accept every certificate. The inferred forms keep the update
+function explicit and reuse matching certificates from the local context.
+Context inference does not discover a model family or prove its recurrence.
 -/
 
 open Polynomial
@@ -88,6 +91,21 @@ syntax (name := rr_identify_lag_three_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_identify_lag_one_sequence_update_inferred)
+  "rr_identify_lag_one_sequence" " using "
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_identify_lag_two_sequence_update_inferred)
+  "rr_identify_lag_two_sequence" " using "
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_identify_lag_three_sequence_update_inferred)
+  "rr_identify_lag_three_sequence" " using "
+    "update" ":=" term :
+  tactic
+
 syntax (name := rr_model_lag_one_sequence_named)
   "rr_model_lag_one_sequence" " using "
     "model_realrooted" ":=" term ","
@@ -118,7 +136,37 @@ syntax (name := rr_model_lag_three_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_model_lag_one_sequence_update_inferred)
+  "rr_model_lag_one_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_two_sequence_update_inferred)
+  "rr_model_lag_two_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_three_sequence_update_inferred)
+  "rr_model_lag_three_sequence" " using "
+    "model_realrooted" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_recurrence_identification_fact_term)
+  "rr_recurrence_identification_fact_term" : term
+
 macro_rules
+  | `(rr_recurrence_identification_fact_term) =>
+      `(by
+        first
+          | assumption
+          | rr_lookup
+          | rfl
+          | (simp only [Nat.add_assoc, Nat.reduceAdd];
+             first | assumption | rr_lookup | rfl)
+          | fail "recurrence identification could not infer this certificate; pass it explicitly")
   | `(tactic|
       rr_identify_lag_one_sequence using
         update := $upd:term,
@@ -188,5 +236,71 @@ macro_rules
           (RealRooted.isRealRooted_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_three_recurrence
               $upd $hzero $hone $htwo $hP $hQ)))
+  | `(tactic|
+      rr_identify_lag_one_sequence using
+        update := $upd:term) =>
+      `(tactic|
+        rr_identify_lag_one_sequence using
+          update := $upd,
+          initial := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_identify_lag_two_sequence using
+        update := $upd:term) =>
+      `(tactic|
+        rr_identify_lag_two_sequence using
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_identify_lag_three_sequence using
+        update := $upd:term) =>
+      `(tactic|
+        rr_identify_lag_three_sequence using
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          initial_two := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_model_lag_one_sequence using
+        model_realrooted := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_one_sequence using
+          model_realrooted := $hmodel,
+          update := $upd,
+          initial := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_model_lag_two_sequence using
+        model_realrooted := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_two_sequence using
+          model_realrooted := $hmodel,
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_model_lag_three_sequence using
+        model_realrooted := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_three_sequence using
+          model_realrooted := $hmodel,
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          initial_two := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
 
 end RealRooted

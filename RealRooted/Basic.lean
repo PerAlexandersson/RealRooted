@@ -557,6 +557,207 @@ def Prec (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Spli
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs))
 
+private lemma listInterlaces_right_tail_ge :
+    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ rs, r ≤ x
+  | [], [], _, _ => by simp
+  | [], _ :: _, _, h => by simp [ListInterlaces] at h
+  | _ :: _, [], _, _ => by simp
+  | s :: ss, r₂ :: rs, r, h => by
+      rcases h with ⟨hr_s, hs_r₂, htail⟩
+      intro x hx
+      rcases List.mem_cons.mp hx with rfl | hx
+      · exact le_trans hr_s hs_r₂
+      · exact le_trans (le_trans hr_s hs_r₂)
+          (listInterlaces_right_tail_ge htail x hx)
+
+private lemma listInterlaces_left_ge_head :
+    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
+  | [], _, _, _ => by simp
+  | _ :: _, [], _, h => by simp [ListInterlaces] at h
+  | s :: ss, r₂ :: rs, r, h => by
+      rcases h with ⟨hr_s, hs_r₂, htail⟩
+      intro x hx
+      rcases List.mem_cons.mp hx with rfl | hx
+      · exact hr_s
+      · exact le_trans (le_trans hr_s hs_r₂)
+          (listInterlaces_left_ge_head htail x hx)
+
+private lemma listInterlaces_count_left_le_right_of_head (u : ℝ) :
+    ∀ {ss rs : List ℝ}, ListInterlaces ss (u :: rs) →
+      ss.count u ≤ (u :: rs).count u
+  | [], _, _ => by simp
+  | _ :: _, [], h => by simp [ListInterlaces] at h
+  | s :: ss, r₂ :: rs, h => by
+      rcases h with ⟨hus, hs_r₂, htail⟩
+      by_cases hs : s = u
+      · subst s
+        by_cases hr₂ : r₂ = u
+        · subst r₂
+          have ih := listInterlaces_count_left_le_right_of_head u htail
+          simp at ih ⊢
+          lia
+        · have hu_lt_r₂ : u < r₂ := lt_of_le_of_ne hs_r₂ (Ne.symm hr₂)
+          have htail_no_mem : u ∉ r₂ :: rs := by
+            intro hu_mem
+            rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
+            · exact hr₂ hu_eq.symm
+            · have hge := listInterlaces_right_tail_ge htail u hu_rs
+              linarith
+          have hss_no_mem : u ∉ ss := by
+            intro hu_mem
+            have hge := listInterlaces_left_ge_head htail u hu_mem
+            linarith
+          simp [List.count_eq_zero.mpr htail_no_mem,
+            List.count_eq_zero.mpr hss_no_mem]
+      · have hu_lt_s : u < s := lt_of_le_of_ne hus (Ne.symm hs)
+        have hu_lt_r₂ : u < r₂ := lt_of_lt_of_le hu_lt_s hs_r₂
+        have htail_no_mem : u ∉ r₂ :: rs := by
+          intro hu_mem
+          rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
+          · exact ne_of_gt hu_lt_r₂ hu_eq.symm
+          · have hge := listInterlaces_right_tail_ge htail u hu_rs
+            linarith
+        have hss_no_mem : u ∉ ss := by
+          intro hu_mem
+          have hge := listInterlaces_left_ge_head htail u hu_mem
+          linarith
+        simp [hs, List.count_eq_zero.mpr htail_no_mem,
+          List.count_eq_zero.mpr hss_no_mem]
+
+private lemma listInterlaces_count_right_le_left_add_one (u : ℝ) :
+    ∀ {ss rs : List ℝ}, ListInterlaces ss rs → rs.count u ≤ ss.count u + 1
+  | [], [], _ => by simp
+  | [], [r], _ => by
+      by_cases hr : r = u <;> simp [hr]
+  | [], _ :: _ :: _, h => by simp [ListInterlaces] at h
+  | _ :: _, [], h => by simp [ListInterlaces] at h
+  | _ :: _, [_], h => by simp [ListInterlaces] at h
+  | s :: ss, r₁ :: r₂ :: rs, h => by
+      rcases h with ⟨hr₁s, hs_r₂, htail⟩
+      by_cases hr₁ : r₁ = u
+      · by_cases hs : s = u
+        · subst r₁
+          subst s
+          have ih := listInterlaces_count_right_le_left_add_one u htail
+          simp [List.count_cons] at ih ⊢
+          lia
+        · subst r₁
+          have hu_lt_s : u < s := lt_of_le_of_ne hr₁s (by simpa [eq_comm] using hs)
+          have hu_lt_r₂ : u < r₂ := lt_of_lt_of_le hu_lt_s hs_r₂
+          have htail_no_mem : u ∉ r₂ :: rs := by
+            intro hu_mem
+            rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
+            · exact ne_of_gt hu_lt_r₂ hu_eq.symm
+            · have hge := listInterlaces_right_tail_ge htail u hu_rs
+              linarith
+          have htail_count : (r₂ :: rs).count u = 0 :=
+            List.count_eq_zero.mpr htail_no_mem
+          have hss_no_mem : u ∉ ss := by
+            intro hu_mem
+            have hge := listInterlaces_left_ge_head htail u hu_mem
+            linarith
+          have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
+          simp [htail_count, hss_count, hs]
+      · have ih := listInterlaces_count_right_le_left_add_one u htail
+        by_cases hs : s = u
+        · simp [hr₁, hs] at ih ⊢
+          lia
+        · simpa [hr₁, hs] using ih
+
+private lemma listInterlaces_count_left_le_right_add_one (u : ℝ) :
+    ∀ {ss rs : List ℝ}, ListInterlaces ss rs → ss.count u ≤ rs.count u + 1
+  | [], [], _ => by simp
+  | [], [_], _ => by simp
+  | [], _ :: _ :: _, h => by simp [ListInterlaces] at h
+  | _ :: _, [], h => by simp [ListInterlaces] at h
+  | _ :: _, [_], h => by simp [ListInterlaces] at h
+  | s :: ss, r₁ :: r₂ :: rs, h => by
+      rcases h with ⟨hr₁s, hs_r₂, htail⟩
+      have ih := listInterlaces_count_left_le_right_add_one u htail
+      by_cases hs : s = u
+      · by_cases hr₁ : r₁ = u
+        · simp [hs, hr₁] at ih ⊢
+          lia
+        · by_cases hr₂ : r₂ = u
+          · subst r₂
+            have hstrong := listInterlaces_count_left_le_right_of_head u htail
+            simp [hs, hr₁] at hstrong ⊢
+            lia
+          · have hu_lt_r₂ : u < r₂ := by
+              rw [hs] at hs_r₂
+              exact lt_of_le_of_ne hs_r₂ (Ne.symm hr₂)
+            have htail_no_mem : u ∉ r₂ :: rs := by
+              intro hu_mem
+              rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
+              · exact hr₂ hu_eq.symm
+              · have hge := listInterlaces_right_tail_ge htail u hu_rs
+                linarith
+            have hss_no_mem : u ∉ ss := by
+              intro hu_mem
+              have hge := listInterlaces_left_ge_head htail u hu_mem
+              linarith
+            have htail_count : (r₂ :: rs).count u = 0 :=
+              List.count_eq_zero.mpr htail_no_mem
+            have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
+            simp [hs, hr₁, htail_count, hss_count]
+      · by_cases hr₁ : r₁ = u
+        · simp [hs, hr₁] at ih ⊢
+          lia
+        · simp [hs, hr₁] at ih ⊢
+          lia
+
+private lemma listAlternates_count_bounds (u : ℝ) :
+    ∀ {ss rs : List ℝ}, ListAlternates ss rs →
+      ss.count u ≤ rs.count u + 1 ∧ rs.count u ≤ ss.count u + 1
+  | [], [], _ => by simp
+  | [], _ :: _, h => by simp [ListAlternates] at h
+  | _ :: _, [], h => by simp [ListAlternates] at h
+  | s :: ss, r :: rs, h => by
+      rcases h with ⟨hsr, htail⟩
+      constructor
+      · have ih := listInterlaces_count_left_le_right_add_one u htail
+        by_cases hs : s = u
+        · by_cases hr : r = u
+          · subst r
+            have hstrong := listInterlaces_count_left_le_right_of_head u htail
+            simp [hs] at hstrong ⊢
+            lia
+          · have hu_lt_r : u < r := by
+              rw [hs] at hsr
+              exact lt_of_le_of_ne hsr (Ne.symm hr)
+            have hss_no_mem : u ∉ ss := by
+              intro hu_mem
+              have hge := listInterlaces_left_ge_head htail u hu_mem
+              linarith
+            have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
+            simp [hs, hr, hss_count]
+        · simpa [hs] using ih
+      · have ih := listInterlaces_count_right_le_left_add_one u htail
+        by_cases hs : s = u
+        · simp [hs] at ih ⊢
+          lia
+        · simpa [hs] using ih
+
+/-- In proper position, the multiplicities of every real root differ by at
+most one. -/
+theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : Prec f g) (u : ℝ) :
+    f.rootMultiplicity u - 1 ≤ g.rootMultiplicity u ∧
+      g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
+  rcases h with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
+  have hcount : ss.count u ≤ rs.count u + 1 ∧ rs.count u ≤ ss.count u + 1 := by
+    rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
+    · exact ⟨listInterlaces_count_left_le_right_add_one u hint,
+        listInterlaces_count_right_le_left_add_one u hint⟩
+    · exact listAlternates_count_bounds u halt
+  have hrs_count : rs.count u = g.rootMultiplicity u := by
+    rw [← count_roots g, ← hrs_eq]
+    exact (Multiset.coe_count u rs).symm
+  have hss_count : ss.count u = f.rootMultiplicity u := by
+    rw [← count_roots f, ← hss_eq]
+    exact (Multiset.coe_count u ss).symm
+  rw [hss_count, hrs_count] at hcount
+  lia
+
 lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
   rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩

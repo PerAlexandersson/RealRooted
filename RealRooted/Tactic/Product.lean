@@ -2692,6 +2692,17 @@ syntax (name := rr_product_factor_sequence)
   "rr_product_factor_sequence" " using " term ", " term ", " term :
   tactic
 
+syntax (name := rr_product_factor_sequence_inferred_of_recurrence)
+  "rr_product_factor_sequence" " using "
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_factor_sequence_from_inferred_of_recurrence)
+  "rr_product_factor_sequence" " using "
+    "cutoff" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_lag_product_factor_sequence_named)
   "rr_lag_product_factor_sequence" " using "
     "base_zero" ":=" term ","
@@ -2703,6 +2714,11 @@ syntax (name := rr_lag_product_factor_sequence_named)
 syntax (name := rr_lag_product_factor_sequence)
   "rr_lag_product_factor_sequence" " using "
     term ", " term ", " term ", " term :
+  tactic
+
+syntax (name := rr_lag_product_factor_sequence_inferred_of_recurrence)
+  "rr_lag_product_factor_sequence" " using "
+    "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_affine_product_sequence_named)
@@ -4138,6 +4154,39 @@ macro_rules
           factor_realrooted := $hfactor,
           recurrence := $hstep)
   | `(tactic|
+      rr_product_factor_sequence using
+        recurrence := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_product_factor_sequence using cutoff := _, recurrence := $hstep
+          | rr_first_realrooted_sequence_or_projection
+              (by
+                rr_refine_then
+                  (RealRooted.isRealRooted_of_product_factor_sequence
+                    ?_ ?_ $hstep)
+                  with rr_lookup),
+              (by
+                rr_refine_then
+                  (RealRooted.isRealRooted_of_product_factor_right_sequence
+                    ?_ ?_ $hstep)
+                  with rr_lookup))
+  | `(tactic|
+      rr_product_factor_sequence using
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_product_factor_sequence_from
+                $N ?_ ?_ $hstep)
+              with rr_lookup),
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_product_factor_right_sequence_from
+                $N ?_ ?_ $hstep)
+              with rr_lookup))
+  | `(tactic|
       rr_lag_product_factor_sequence using
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
@@ -4158,6 +4207,21 @@ macro_rules
           base_one := $hbase_one,
           factor_realrooted := $hfactor,
           recurrence := $hstep)
+  | `(tactic|
+      rr_lag_product_factor_sequence using
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_lag_product_factor_sequence
+                ?_ ?_ ?_ $hstep)
+              with rr_lookup),
+          (by
+            rr_refine_then
+              (RealRooted.isRealRooted_of_lag_product_factor_right_sequence
+                ?_ ?_ ?_ $hstep)
+              with rr_lookup))
   | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
       `(tactic|
         exact RealRooted.finiteLinearProductSequence_realRooted $hroot)

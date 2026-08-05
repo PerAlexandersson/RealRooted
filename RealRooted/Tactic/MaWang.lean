@@ -1,6 +1,7 @@
 import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
@@ -27,6 +28,50 @@ P (n + 1) = u n * P n + v n * (P n).derivative.
 
 The tactic should apply existing theorems such as `prec_ma_wang` and
 `prec_of_interlaces_evalCoeff_nonpos`, then discharge certificate side goals.
+
+For weak derivative steps whose auxiliary target polynomial is hidden from the
+goal, use
+
+```lean
+rr_mw_derivative_nonpos_step using recurrence := hrec
+```
+
+The goal must display the normalized derivative sum. The recurrence then fixes
+the hidden polynomial before exact-local, local-family, or tagged certificate
+lookup. Use the explicit form when the displayed target or a certificate does
+not determine its prefix.
+
+When the goal itself displays either
+
+```text
+Prec f (u * f + v * f.derivative)
+Prec f (a * f + b * g)
+```
+
+use bare `rr_mw_derivative_nonpos` for the first shape and bare
+`rr_prec_evalCoeff_nonpos` for the second. Each tactic infers the displayed
+polynomials and uses certificate lookup. Their `using degree :=` forms run `lia`
+independently for the lower and upper degree goals, so both bounds must follow
+from the supplied arithmetic hint. Keep the displayed product association
+literal; use an explicit form after reassociation. The generic tactic also
+accepts derivative goals, but the derivative-specific form usually has the more
+natural certificates. In the generic tactic, `source_pos_lc` refers to the
+interlacer `g`.
+
+For a whole sequence whose coefficient families are hidden from the goal, use
+
+```lean
+rr_mw_derivative_nonpos_sequence using recurrence := hrec
+rr_mw_derivative_nonpos_sequence_realrooted using recurrence := hrec
+```
+
+The goal fixes `P`; the recurrence then fixes `U` and `V` before lookup obtains
+the remaining certificates. A normalized recurrence supplied by a nested tactic
+block needs an explicit expected type. Lookup expects the shifted degree-two
+and coefficient-sign families and both degree inequalities in the theorem's
+literal shapes; use the named form when those facts first need reshaping. The
+real-rooted form closes the full conjunction as well as splitting, nonzero, and
+indexed projections.
 
 First intended regression examples:
 
@@ -1793,6 +1838,8 @@ syntax (name := rr_ma_wang)
   "rr_ma_wang" " using " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_ma_wang_inferred) "rr_ma_wang" : tactic
+
 syntax (name := rr_ma_wang_named)
   "rr_ma_wang" " using "
     "splits" ":=" term ","
@@ -1808,6 +1855,8 @@ syntax (name := rr_ma_wang_same)
   "rr_ma_wang_same" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_ma_wang_same_inferred) "rr_ma_wang_same" : tactic
+
 syntax (name := rr_ma_wang_same_named)
   "rr_ma_wang_same" " using "
     "splits" ":=" term ","
@@ -1821,6 +1870,8 @@ syntax (name := rr_ma_wang_same_named)
 syntax (name := rr_ma_wang_succ)
   "rr_ma_wang_succ" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
+
+syntax (name := rr_ma_wang_succ_inferred) "rr_ma_wang_succ" : tactic
 
 syntax (name := rr_ma_wang_succ_named)
   "rr_ma_wang_succ" " using "
@@ -1851,6 +1902,12 @@ syntax (name := rr_prec_evalCoeff_nonpos_degree_named)
     "coeff_nonpos" ":=" term :
   tactic
 
+syntax (name := rr_prec_evalCoeff_nonpos_inferred)
+  "rr_prec_evalCoeff_nonpos" : tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_degree_inferred)
+  "rr_prec_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos)
   "rr_mw_derivative_nonpos" " using " term ", " term ", " term ", " term ", "
     term ", " term ", " term :
@@ -1879,6 +1936,9 @@ syntax (name := rr_mw_derivative_nonpos_step_named)
     "coeff_nonpos" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_step_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_step" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos_degree_named)
   "rr_mw_derivative_nonpos" " using "
     "splits" ":=" term ","
@@ -1888,6 +1948,12 @@ syntax (name := rr_mw_derivative_nonpos_degree_named)
     "source_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term :
   tactic
+
+syntax (name := rr_mw_derivative_nonpos_inferred)
+  "rr_mw_derivative_nonpos" : tactic
+
+syntax (name := rr_mw_derivative_nonpos_degree_inferred)
+  "rr_mw_derivative_nonpos" " using " "degree" ":=" term : tactic
 
 syntax (name := rr_mw_derivative_sign_roots_nonpos_named)
   "rr_mw_derivative_sign_roots_nonpos" " using "
@@ -2117,6 +2183,9 @@ syntax (name := rr_mw_derivative_nonpos_sequence_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_sequence_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_sequence" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_named)
   "rr_mw_derivative_nonpos_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -2127,6 +2196,10 @@ syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_named)
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
   tactic
+
+syntax (name := rr_mw_derivative_nonpos_sequence_realrooted_inferred_of_recurrence)
+  "rr_mw_derivative_nonpos_sequence_realrooted" " using "
+    "recurrence" ":=" term : tactic
 
 syntax (name := rr_mw_derivative_global_nonpos_sequence_auto_named)
   "rr_mw_derivative_global_nonpos_sequence_auto" " using "
@@ -3493,6 +3566,34 @@ macro_rules
       rr_mw_three_variants $hleft:term, $hmiddle:term, $hright:term) =>
       `(tactic|
         rr_first_exact_then_realrooted_sequence_or_projection $hleft, $hmiddle, $hright)
+  | `(tactic| rr_ma_wang) =>
+      `(tactic|
+        rr_ma_wang using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
+  | `(tactic| rr_ma_wang_same) =>
+      `(tactic|
+        rr_ma_wang_same using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
+  | `(tactic| rr_ma_wang_succ) =>
+      `(tactic|
+        rr_ma_wang_succ using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          root_sign := (by rr_lookup))
   | `(tactic|
       rr_ma_wang using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
@@ -3572,6 +3673,23 @@ macro_rules
           degree_lower := (by rr_mw_degree_from $hdeg),
           degree_upper := (by rr_mw_degree_from $hdeg),
           coeff_nonpos := $hb_nonpos)
+  | `(tactic| rr_prec_evalCoeff_nonpos) =>
+      `(tactic|
+        rr_prec_evalCoeff_nonpos using
+          interlaces := (by rr_lookup),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          coeff_nonpos := (by rr_lookup))
+  | `(tactic| rr_prec_evalCoeff_nonpos using degree := $hdeg:term) =>
+      `(tactic|
+        rr_prec_evalCoeff_nonpos using
+          interlaces := (by rr_lookup),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          degree := $hdeg,
+          coeff_nonpos := (by rr_lookup))
   | `(tactic|
       rr_mw_derivative_nonpos_step using
         splits := $hf:term,
@@ -3585,6 +3703,12 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_mw_derivative_of_nonpos_of_recurrence
           $hf $hdegf $hrec $hF_pos $hdeg_lo $hdeg_hi $hf_pos $hv_nonpos)
+  | `(tactic| rr_mw_derivative_nonpos_step using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_of_nonpos_of_recurrence
+            ?_ ?_ $hrec ?_ ?_ ?_ ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_mw_derivative_nonpos using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
@@ -3621,6 +3745,25 @@ macro_rules
           target_pos_lc := $hF_pos,
           source_pos_lc := $hf_pos,
           coeff_nonpos := $hv_nonpos)
+  | `(tactic| rr_mw_derivative_nonpos) =>
+      `(tactic|
+        rr_mw_derivative_nonpos using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree_lower := (by rr_lookup [rr_degree]),
+          degree_upper := (by rr_lookup [rr_degree]),
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          coeff_nonpos := (by rr_lookup))
+  | `(tactic| rr_mw_derivative_nonpos using degree := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos using
+          splits := (by rr_lookup),
+          degree_two := (by rr_lookup [rr_degree]),
+          degree := $hdeg,
+          target_pos_lc := (by rr_lookup [rr_pos_lc]),
+          source_pos_lc := (by rr_lookup [rr_pos_lc]),
+          coeff_nonpos := (by rr_lookup))
   | `(tactic|
       rr_mw_derivative_sign_roots_nonpos using
         splits := $hf:term,
@@ -3914,6 +4057,13 @@ macro_rules
         exact RealRooted.prec_mw_derivative_nonpos_sequence
           $hbase $hpos $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
+      rr_mw_derivative_nonpos_sequence using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_nonpos_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
+  | `(tactic|
       rr_mw_derivative_nonpos_sequence_realrooted using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -3926,6 +4076,14 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             $hbase $hpos $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_realrooted using
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_realrooted_refine_then
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_mw_derivative_global_nonpos_sequence_auto using
         base := $hbase:term,

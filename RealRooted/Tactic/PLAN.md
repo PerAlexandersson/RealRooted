@@ -882,6 +882,16 @@ direct model-transfer frontends for common fixed-lag shapes:
 - `rr_identify_lag_two_sequence` and `rr_model_lag_two_sequence`;
 - `rr_identify_lag_three_sequence` and `rr_model_lag_three_sequence`.
 
+Each tactic also has a certificate-inferred form. The caller supplies the
+common update function; the tactic reuses exact local initial equalities and
+target and model recurrence facts, with only definitional and natural-number
+offset normalization. The model-transfer forms additionally require
+`model_realrooted := ...`. This makes active tails such as `fun n => P (n + k)`
+first-class targets while keeping concrete recurrence expressions explicit.
+The fully explicit forms remain the deterministic fallback when several
+recurrences are in scope. Context inference does not discover a model family
+or prove its recurrence; those facts remain explicit mathematical obligations.
+
 The recurrence step is an arbitrary function of the index and preceding rows,
 so the same API covers polynomial multiplication, affine Favard steps, and
 derivative recurrences without naming any OEIS sequence. The companion OEIS
