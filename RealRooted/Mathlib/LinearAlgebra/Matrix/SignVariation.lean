@@ -1315,7 +1315,7 @@ lemma exists_strictMono_strictlyAlternates_of_le_signVariations
   have hh : q ≤ d.length - 1 := by
     simpa [signVariations, List.signVariations, d, nz, raw,
       List.map_ofFn] using h
-  have hlen : q + 1 ≤ d.length := by omega
+  have hlen : q + 1 ≤ d.length := by lia
   have hsub : d.Sublist raw :=
     (List.destutter_sublist (R := fun a b : SignType => a ≠ b) nz).trans
       List.filter_sublist
@@ -1332,7 +1332,7 @@ lemma exists_strictMono_strictlyAlternates_of_le_signVariations
   · intro i
     let k0 : Fin d.length := Fin.castLE hlen i.castSucc
     let k1 : Fin d.length := Fin.castLE hlen i.succ
-    have hklt : (i : ℕ) + 1 < d.length := by omega
+    have hklt : (i : ℕ) + 1 < d.length := by lia
     have hchain : d.IsChain (· ≠ ·) :=
       List.isChain_destutter (R := fun a b : SignType => a ≠ b) nz
     have hkd : d.get k0 ≠ d.get k1 := by
