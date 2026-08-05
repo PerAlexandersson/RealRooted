@@ -11,13 +11,20 @@ open Polynomial
 The tactic
 
 ```lean
+rr_favard
 rr_favard using hrec, hbeta
+rr_favard_auto
 ```
 
 applies the already-formalized Favard interface to goals that match
 `favardInterlacing`,
 `isRealRooted_of_favard`, or
 `isGeneralizedSturmSeq_reverse_range_map_of_favard`.
+The bare forms infer exact local recurrence and positivity hypotheses. Use an
+explicit `using` form when more than one Favard certificate packet is in scope.
+`rr_favard_affine_param_infer` keeps the coefficient families and recurrence
+explicit while inferring positivity, base certificates, and the standard or
+row-sign orientation.
 
 First intended regression examples:
 
@@ -1081,6 +1088,10 @@ syntax (name := rr_favard_base_one) "rr_favard_base_one " term : term
 
 syntax (name := rr_favard_base_one_dsimp) "rr_favard_base_one_dsimp " term : term
 
+syntax (name := rr_favard_base_lookup_term) "rr_favard_base_lookup_term" : term
+
+syntax (name := rr_favard_positive_lookup_term) "rr_favard_positive_lookup_term" : term
+
 macro_rules
   | `(rr_favard_step_seq $hstep:term) =>
       `(fun n => by simpa using $hstep n)
@@ -1109,7 +1120,19 @@ macro_rules
               | (dsimp; simp)
               | (simp; ring_nf)
               | simp))
+  | `(rr_favard_base_lookup_term) =>
+      `(by
+        first
+          | rr_lookup
+          | ((first | dsimp | skip); (first | simp | skip); rr_lookup))
+  | `(rr_favard_positive_lookup_term) =>
+      `(by
+        first
+          | rr_lookup
+          | rr_positivity_seq)
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
+
+syntax (name := rr_favard_inferred) "rr_favard" : tactic
 
 syntax (name := rr_favard_named)
   "rr_favard" " using "
@@ -1121,6 +1144,8 @@ syntax (name := rr_favard_auto_named)
   "rr_favard_auto" " using "
     "recurrence" ":=" term :
   tactic
+
+syntax (name := rr_favard_auto_inferred) "rr_favard_auto" : tactic
 
 syntax (name := rr_favard_const)
   "rr_favard_const" " using " term ", " term ", " term ", " term ", " term ", " term :
@@ -1291,6 +1316,14 @@ syntax (name := rr_favard_affine_param_auto_named)
     "beta" ":=" term ","
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_favard_affine_param_infer_named)
+  "rr_favard_affine_param_infer" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
     "step" ":=" term :
   tactic
 
@@ -2167,6 +2200,15 @@ syntax (name := rr_favard_exact_realrooted_positivity_seq)
   tactic
 
 macro_rules
+  | `(tactic| rr_favard) =>
+      `(tactic|
+        rr_favard using
+          recurrence := (by assumption),
+          beta_pos := (by assumption))
+  | `(tactic| rr_favard_auto) =>
+      `(tactic|
+        rr_favard_auto using
+          recurrence := (by assumption))
   | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
       `(tactic| rr_refine_then $h with rr_positivity_seq)
   | `(tactic| rr_favard_exact_realrooted_positivity_seq $h:term) =>
@@ -2510,6 +2552,32 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
+  | `(tactic|
+      rr_favard_affine_param_infer using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        step := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_favard_affine_param using
+              slope := $s,
+              alpha := $α,
+              beta := $β,
+              slope_pos := rr_favard_positive_lookup_term,
+              beta_pos := rr_favard_positive_lookup_term,
+              base_zero := rr_favard_base_lookup_term,
+              base_one := rr_favard_base_lookup_term,
+              step := rr_favard_step_dsimp_seq $hstep
+          | rr_favard_affine_param_row_sign using
+              slope := $s,
+              alpha := $α,
+              beta := $β,
+              slope_pos := rr_favard_positive_lookup_term,
+              beta_pos := rr_favard_positive_lookup_term,
+              base_zero := rr_favard_base_lookup_term,
+              base_one := rr_favard_base_lookup_term,
+              step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,

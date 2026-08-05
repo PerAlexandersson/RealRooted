@@ -36,6 +36,13 @@ example {f g : ℝ[X]}
     left_nonneg := hfnn,
     right_nonneg := hgnn
 
+example {f g : ℝ[X]}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) :
+    Prec g (X * f) := by
+  rr_prec_mul_X
+
 /-- Narayana/singleton-free-set-partition style common `X` factor:
 nonnegative coefficients discharge the root-nonpositive side conditions. -/
 example {f g : ℝ[X]}
@@ -47,6 +54,13 @@ example {f g : ℝ[X]}
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn
+
+example {f g : ℝ[X]}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) :
+    Prec (X * f) (X * g) := by
+  rr_prec_mul_X_both
 
 example {f g : ℝ[X]} {c : ℝ}
     (hfg : Prec f g)
@@ -64,6 +78,14 @@ example {f g : ℝ[X]} {c : ℝ}
     (hfg : Prec f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
+    (hc : c ≠ 0) :
+    Prec g ((C c * X) * f) := by
+  rr_prec_C_mul_X using coeff_ne := hc
+
+example {f g : ℝ[X]} {c : ℝ}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
     (hc : 0 < c) :
     Prec g ((C c * X) * f) := by
   rr_prec_C_mul_X using
@@ -71,6 +93,14 @@ example {f g : ℝ[X]} {c : ℝ}
     left_nonneg := hfnn,
     right_nonneg := hgnn,
     coeff_pos := hc
+
+example {f g : ℝ[X]} {c : ℝ}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hc : 0 < c) :
+    Prec g ((C c * X) * f) := by
+  rr_prec_C_mul_X using coeff_pos := hc
 
 /-- Derivative-lag bridge: a nonnegative real-rooted row gives
 `X * P'_n ≪ X * P_n`. -/
@@ -84,6 +114,29 @@ example {f : ℝ[X]}
     degree_two := hdeg,
     nonneg_coeffs := hfnn
 
+example {f : ℝ[X]}
+    (hf : f.Splits)
+    (hdeg : 2 ≤ f.natDegree)
+    (hfnn : HasNonnegCoeffs f) :
+    Prec (X * f.derivative) (X * f) := by
+  rr_prec_X_derivative_X_self
+
+namespace WagnerXInferenceSmoke
+
+@[rr_base_prec] theorem one_prec_one : Prec (1 : ℝ[X]) 1 :=
+  prec_refl (by simp) (by simp)
+
+@[rr_nonneg] theorem one_nonneg : HasNonnegCoeffs (1 : ℝ[X]) :=
+  hasNonnegCoeffs_one
+
+@[rr_nonneg] theorem zero_nonneg : HasNonnegCoeffs (0 : ℝ[X]) :=
+  hasNonnegCoeffs_zero
+
+example : Prec (1 : ℝ[X]) (X * 1) := by
+  rr_prec_mul_X
+
+end WagnerXInferenceSmoke
+
 /-- Plateau sequence bridge: from the adjacent `Prec` invariant on
 `P_n,P_{n+1}`, the Wagner `X`-shift gives the positive-lag target
 `P_{n+1} ≪ X P_n` without requiring a differ-by-one `Interlaces` certificate. -/
@@ -95,6 +148,12 @@ example {P : Nat → ℝ[X]} {n : Nat}
     proper := hprev,
     left_nonneg := hnonneg n,
     right_nonneg := hnonneg (n + 1)
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
+    Prec (P (n + 1)) (X * P n) := by
+  rr_prec_mul_X
 
 /-- OEIS-style scalar positive-lag bridge for recurrences with
 `c_n t P_{n-2}`. -/
@@ -323,6 +382,53 @@ example {f g : ℝ[X]} {a c : ℝ}
     degree_two := hdeg,
     lag_coeff_pos := ha,
     derivative_coeff_pos := hc
+
+/-- The same step can infer all certificates once the displayed target fixes
+the two polynomials and both scalar coefficients. -/
+example {f g : ℝ[X]} {a c : ℝ}
+    (hfg : Prec f g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hdeg : 2 ≤ g.natDegree)
+    (ha : 0 < a)
+    (hc : 0 < c) :
+    Prec g (X * (C c * g.derivative + C a * f)) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- Indexed local families supply the active step without pointwise aliases. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (ha : ∀ k : Nat, 0 < a k)
+    (hc : ∀ k : Nat, 0 < c k) :
+    Prec (P (n + 1))
+      (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- Shifted families may instantiate offset certificate families and mix
+indexed with arithmetic scalar bounds. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ} {n : Nat}
+    (hchain : ∀ k : Nat, Prec (P k) (P (k + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (ha : ∀ k : Nat, 0 < a k) :
+    Prec (P (n + 4))
+      (X * (C ((n : ℝ) + 4) * (P (n + 4)).derivative +
+        C (a (n + 3)) * P (n + 3))) := by
+  rr_prec_wagner_derivative_gap_lag
+
+/-- A recurrence rewrite exposes the rigid target consumed by the bare step. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprev : Prec (P n) (P (n + 1)))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
+    (hrec : ∀ k : Nat,
+      P (k + 2) = X * (C (1 : ℝ) * (P (k + 1)).derivative +
+        C ((k : ℝ) + 1) * P k)) :
+    Prec (P (n + 1)) (P (n + 2)) := by
+  rw [hrec n]
+  rr_prec_wagner_derivative_gap_lag
 
 /-- Scalar-left single-step wrapper for unnormalized recurrence certificates. -/
 example {f g p : ℝ[X]} {a c d : ℝ}

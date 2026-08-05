@@ -1,0 +1,61 @@
+module
+
+public import Mathlib.Data.List.OfFn
+public import RealRooted.Mathlib.Data.Fin.Basic
+
+/-!
+# Additional lemmas about lists of finite functions
+
+This file contains compatibility lemmas intended for upstreaming to
+`Mathlib.Data.List.OfFn`.
+-/
+
+public section
+
+namespace List
+
+/-- Removing a finite-function coordinate agrees with erasing that list index. -/
+theorem ofFn_succAbove_eq_eraseIdx
+    {α : Type*} {n : ℕ}
+    (f : Fin (n + 1) → α) (p : Fin (n + 1)) :
+    List.ofFn (fun i : Fin n => f (p.succAbove i)) =
+      (List.ofFn f).eraseIdx p := by
+  apply List.ext_getElem
+  · simp [List.length_eraseIdx, p.isLt]
+  · intro i hi₁ _
+    simp only [List.getElem_ofFn, List.getElem_eraseIdx]
+    split
+    · rw [Fin.succAbove_of_castSucc_lt p _ (by
+        change i < (p : ℕ)
+        exact ‹i < (p : ℕ)›)]
+      congr
+    · rw [Fin.succAbove_of_le_castSucc p _ (by
+        change (p : ℕ) ≤ i
+        exact Nat.le_of_not_gt ‹¬i < (p : ℕ)›)]
+      congr
+
+/-- Removing an interior coordinate agrees with erasing its interior-list index. -/
+theorem ofFn_interior_succAbove_eq_eraseIdx
+    {α : Type*} {n : ℕ}
+    (f : Fin (n + 3) → α) (k : Fin (n + 1)) :
+    List.ofFn
+        (fun i : Fin n =>
+          f (k.succ.castSucc.succAbove i.succ.castSucc)) =
+      (List.ofFn
+        (fun i : Fin (n + 1) => f i.succ.castSucc)).eraseIdx k := by
+  simpa only [Fin.succAbove_succ_castSucc] using
+    List.ofFn_succAbove_eq_eraseIdx
+      (fun i : Fin (n + 1) => f i.succ.castSucc) k
+
+/-- A finite-function list splits into its two endpoints and interior coordinates. -/
+theorem ofFn_two_endpoints
+    {α : Type*} {n : ℕ} (f : Fin (n + 2) → α) :
+    List.ofFn f =
+      f 0 ::
+        (List.ofFn (fun i : Fin n => f i.succ.castSucc) ++
+          [f (Fin.last (n + 1))]) := by
+  rw [List.ofFn_succ, List.ofFn_succ']
+  simp only [List.concat_eq_append]
+  congr
+
+end List

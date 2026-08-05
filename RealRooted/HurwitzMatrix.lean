@@ -194,13 +194,16 @@ theorem hurwitz_mul_entrywise_matrix (a b : ℕ → ℝ) :
   ext i j
   simpa using hurwitz_mul_entrywise a b i j
 
-/-- Proposed infinite-matrix extension of the finite nonsingular Hurwitz-matrix
-form of Garloff--Wagner Theorem 1.
+/-- False proposed extension of a finite nonsingular result proved by
+Garloff--Wagner, *Hadamard products of stable polynomials are stable*, J. Math.
+Anal. Appl. 202 (1996), 797--809, Theorem 13.
 
-The cited theorem proves closure for finite nonsingular Hurwitz matrices. The
-statement below is kept as an explicit interface because neither that theorem
-nor the current development justifies the unrestricted infinite, possibly
-singular version. -/
+The cited source proves Hadamard stability and discusses closure for finite
+nonsingular Hurwitz matrices.  It does not justify closure for arbitrary
+infinite, possibly singular matrices in the row-oriented convention below.
+The unrestricted statement is refuted by
+`not_hurwitzMatrixSchurProductTNStatement`, whose `3 x 3` minor is `-4`.
+It must not be used as an available theorem backend. -/
 abbrev HurwitzMatrixSchurProductTNStatement : Prop :=
   ∀ {a b : ℕ → ℝ},
     (hurwitz a).IsTotallyNonneg →

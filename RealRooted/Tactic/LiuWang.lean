@@ -14,6 +14,23 @@ rr_liu_wang
 rr_liu_wang_strict
 ```
 
+For whole sequences whose coefficient families are hidden from the goal, use
+
+```lean
+rr_lw_nonpos_lag_sequence using recurrence := hrec
+rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrec
+rr_lw_tR_lag_sequence using recurrence := hrec
+rr_lw_tR_lag_sequence_realrooted using recurrence := hrec
+```
+
+The goal fixes the polynomial family and the recurrence then fixes the hidden
+coefficient families before lookup obtains the remaining certificates. Lookup
+expects those families in the theorem's literal shapes; use an explicit form
+when a certificate first needs reshaping. In particular, keep the displayed
+`(X * R n) * P n` association literal for the `tR` forms, or give a nested
+normalizer an explicit expected type. The real-rooted forms close the full
+conjunction as well as splitting, nonzero, and indexed projections.
+
 Primary target:
 finite weighted sums where one or more previous polynomials interlace a common
 base polynomial, and the coefficient polynomials have the required sign at
@@ -2806,6 +2823,9 @@ syntax (name := rr_lw_nonpos_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_nonpos_lag_sequence_inferred_of_recurrence)
+  "rr_lw_nonpos_lag_sequence" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_lw_nonpos_lag_sequence_realrooted_named)
   "rr_lw_nonpos_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -2815,6 +2835,9 @@ syntax (name := rr_lw_nonpos_lag_sequence_realrooted_named)
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
   tactic
+
+syntax (name := rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence)
+  "rr_lw_nonpos_lag_sequence_realrooted" " using " "recurrence" ":=" term : tactic
 
 syntax (name := rr_lw_global_nonpos_sequence_auto_named)
   "rr_lw_global_nonpos_sequence_auto" " using "
@@ -4407,6 +4430,9 @@ syntax (name := rr_lw_tR_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_tR_lag_sequence_inferred_of_recurrence)
+  "rr_lw_tR_lag_sequence" " using " "recurrence" ":=" term : tactic
+
 syntax (name := rr_lw_tR_lag_sequence_realrooted_named)
   "rr_lw_tR_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -4417,6 +4443,9 @@ syntax (name := rr_lw_tR_lag_sequence_realrooted_named)
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
   tactic
+
+syntax (name := rr_lw_tR_lag_sequence_realrooted_inferred_of_recurrence)
+  "rr_lw_tR_lag_sequence_realrooted" " using " "recurrence" ":=" term : tactic
 
 syntax (name := rr_lw_c_tR_lag_sequence_named)
   "rr_lw_c_tR_lag_sequence" " using "
@@ -5388,6 +5417,12 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_lw_nonpos_lag_sequence
           $hbase $hpos $hB $hrec $hdeg_succ $hno)
+  | `(tactic| rr_lw_nonpos_lag_sequence using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_lw_nonpos_lag_sequence
+            ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_lw_nonpos_lag_sequence_realrooted using
         base := $hbase:term,
@@ -5400,6 +5435,13 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence
             $hbase $hpos $hB $hrec $hdeg_succ $hno))
+  | `(tactic|
+      rr_lw_nonpos_lag_sequence_realrooted using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_realrooted_refine_then
+          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence
+            ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_lw_global_nonpos_sequence_auto using
         base := $hbase:term,
@@ -7975,6 +8017,12 @@ macro_rules
           recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
+  | `(tactic| rr_lw_tR_lag_sequence using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.prec_lw_tR_lag_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_lw_tR_lag_sequence_realrooted using
         base := $hbase:term,
@@ -7993,6 +8041,13 @@ macro_rules
           recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_tR_lag_sequence_realrooted using recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_realrooted_refine_then
+          (RealRooted.isRealRooted_of_lw_tR_lag_sequence
+            ?_ ?_ ?_ ?_ $hrec ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_lw_c_tR_lag_sequence using
         base := $hbase:term,

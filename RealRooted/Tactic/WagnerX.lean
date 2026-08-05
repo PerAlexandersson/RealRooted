@@ -1,12 +1,20 @@
 import RealRooted.PosCombo
 import RealRooted.AffineFamily
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.Lookup
 
 /-!
 # Wagner `X`-shift tactics
 
 Small wrappers for the Wagner `X`-multiplication bridge used in plateau
 positive-`t` lag recurrences.
+
+Bare one-step forms consume exact local hypotheses, local hypotheses with a
+fully determined `forall` prefix, or tagged certificates. They preserve the
+displayed product association rather than searching through reassociated
+targets. Use the explicit forms when a local prefix is not determined by the
+goal. The derivative-gap form may also close its two strict scalar bounds with
+`rr_wagner_pos` arithmetic.
 -/
 
 open Polynomial
@@ -420,12 +428,18 @@ syntax (name := rr_prec_mul_X)
     "right_nonneg" ":=" term :
   tactic
 
+syntax (name := rr_prec_mul_X_inferred)
+  "rr_prec_mul_X" : tactic
+
 syntax (name := rr_prec_mul_X_both)
   "rr_prec_mul_X_both" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
+
+syntax (name := rr_prec_mul_X_both_inferred)
+  "rr_prec_mul_X_both" : tactic
 
 syntax (name := rr_prec_C_mul_X)
   "rr_prec_C_mul_X" " using "
@@ -443,12 +457,25 @@ syntax (name := rr_prec_C_mul_X_pos)
     "coeff_pos" ":=" term :
   tactic
 
+syntax (name := rr_prec_C_mul_X_inferred)
+  "rr_prec_C_mul_X" " using "
+    "coeff_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_X_pos_inferred)
+  "rr_prec_C_mul_X" " using "
+    "coeff_pos" ":=" term :
+  tactic
+
 syntax (name := rr_prec_X_derivative_X_self)
   "rr_prec_X_derivative_X_self" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term ","
     "nonneg_coeffs" ":=" term :
   tactic
+
+syntax (name := rr_prec_X_derivative_X_self_inferred)
+  "rr_prec_X_derivative_X_self" : tactic
 
 syntax (name := rr_prec_wagner_derivative_gap_lag)
   "rr_prec_wagner_derivative_gap_lag" " using "
@@ -459,6 +486,9 @@ syntax (name := rr_prec_wagner_derivative_gap_lag)
     "lag_coeff_pos" ":=" term ","
     "derivative_coeff_pos" ":=" term :
   tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_inferred)
+  "rr_prec_wagner_derivative_gap_lag" : tactic
 
 syntax (name := rr_prec_wagner_derivative_gap_lag_den)
   "rr_prec_wagner_derivative_gap_lag_den" " using "
@@ -615,6 +645,7 @@ macro_rules
       `(fun n => by simpa using $hrec n)
 
 macro_rules
+  -- Each conclusion fixes its hidden polynomial and scalar parameters first.
   | `(tactic|
       rr_prec_mul_X using
         proper := $hprec:term,
@@ -622,6 +653,13 @@ macro_rules
         right_nonneg := $hgnn:term) =>
       `(tactic|
         exact RealRooted.prec_mul_X_of_prec_of_nonneg $hprec $hfnn $hgnn)
+  | `(tactic| rr_prec_mul_X) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_mul_X_of_prec_of_nonneg
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]))
   | `(tactic|
       rr_prec_mul_X_both using
         proper := $hprec:term,
@@ -629,6 +667,13 @@ macro_rules
         right_nonneg := $hgnn:term) =>
       `(tactic|
         exact RealRooted.prec_mul_X_both_of_prec_of_nonneg $hprec $hfnn $hgnn)
+  | `(tactic| rr_prec_mul_X_both) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_mul_X_both_of_prec_of_nonneg
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]))
   | `(tactic|
       rr_prec_C_mul_X using
         proper := $hprec:term,
@@ -647,6 +692,26 @@ macro_rules
         exact RealRooted.prec_C_mul_X_of_prec_of_nonneg
           $hprec $hfnn $hgnn ($hc).ne')
   | `(tactic|
+      rr_prec_C_mul_X using
+        coeff_ne := $hc:term) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_C_mul_X_of_prec_of_nonneg
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]
+          case hc => exact $hc))
+  | `(tactic|
+      rr_prec_C_mul_X using
+        coeff_pos := $hc:term) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_C_mul_X_of_prec_of_nonneg
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]
+          case hc => exact ($hc).ne'))
+  | `(tactic|
       rr_prec_X_derivative_X_self using
         splits := $hf:term,
         degree_two := $hdeg:term,
@@ -654,6 +719,13 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_X_mul_derivative_X_mul_self_of_splits_nonneg
           $hf $hdeg $hfnn)
+  | `(tactic| rr_prec_X_derivative_X_self) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_X_mul_derivative_X_mul_self_of_splits_nonneg
+          case hf => rr_lookup
+          case hdeg => rr_lookup [rr_degree]
+          case hfnn => rr_lookup [rr_nonneg]))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag using
         proper := $hprec:term,
@@ -665,6 +737,16 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_wagner_derivative_gap_lag_step
           $hprec $hfnn $hgnn $hdeg $ha $hc)
+  | `(tactic| rr_prec_wagner_derivative_gap_lag) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_wagner_derivative_gap_lag_step
+          case h => rr_lookup [rr_base_prec]
+          case hfnn => rr_lookup [rr_nonneg]
+          case hgnn => rr_lookup [rr_nonneg]
+          case hdeg => rr_lookup [rr_degree]
+          case ha => first | rr_lookup | rr_wagner_pos
+          case hc => first | rr_lookup | rr_wagner_pos))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_den using
         proper := $hprec:term,

@@ -1213,103 +1213,13 @@ theorem gwTheorem11Prec_of_rightWeightedExpansion
   rcases h hfg k with ⟨l, hf, hnonneg, hprec, hpos, hex⟩
   exact gwJL_prec_of_rightWeightedExpansion hf hnonneg hprec hpos hex
 
-private lemma listInterlaces_right_tail_ge :
-    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ rs, r ≤ x
-  | [], [], _, _ => by simp
-  | [], _ :: _, _, h => by simp [ListInterlaces] at h
-  | _ :: _, [], _, _ => by simp
-  | s :: ss, r₂ :: rs, r, h => by
-      rcases h with ⟨hr_s, hs_r₂, htail⟩
-      intro x hx
-      rcases List.mem_cons.mp hx with rfl | hx
-      · exact le_trans hr_s hs_r₂
-      · exact le_trans (le_trans hr_s hs_r₂)
-          (listInterlaces_right_tail_ge htail x hx)
-
-private lemma listInterlaces_left_ge_head :
-    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
-  | [], _, _, _ => by simp
-  | _ :: _, [], _, h => by simp [ListInterlaces] at h
-  | s :: ss, r₂ :: rs, r, h => by
-      rcases h with ⟨hr_s, hs_r₂, htail⟩
-      intro x hx
-      rcases List.mem_cons.mp hx with rfl | hx
-      · exact hr_s
-      · exact le_trans (le_trans hr_s hs_r₂)
-          (listInterlaces_left_ge_head htail x hx)
-
-private lemma listInterlaces_count_right_le_left_add_one (u : ℝ) :
-    ∀ {ss rs : List ℝ}, ListInterlaces ss rs → rs.count u ≤ ss.count u + 1
-  | [], [], _ => by simp
-  | [], [r], _ => by
-      by_cases hr : r = u <;> simp [hr]
-  | [], _ :: _ :: _, h => by simp [ListInterlaces] at h
-  | _ :: _, [], h => by simp [ListInterlaces] at h
-  | _ :: _, [_], h => by simp [ListInterlaces] at h
-  | s :: ss, r₁ :: r₂ :: rs, h => by
-      rcases h with ⟨hr₁s, hs_r₂, htail⟩
-      by_cases hr₁ : r₁ = u
-      · by_cases hs : s = u
-        · subst r₁
-          subst s
-          have ih := listInterlaces_count_right_le_left_add_one u htail
-          simp [List.count_cons] at ih ⊢
-          lia
-        · subst r₁
-          have hu_lt_s : u < s := lt_of_le_of_ne hr₁s (by simpa [eq_comm] using hs)
-          have hu_lt_r₂ : u < r₂ := lt_of_lt_of_le hu_lt_s hs_r₂
-          have htail_no_mem : u ∉ r₂ :: rs := by
-            intro hu_mem
-            rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
-            · exact ne_of_gt hu_lt_r₂ hu_eq.symm
-            · have hge := listInterlaces_right_tail_ge htail u hu_rs
-              linarith
-          have htail_count : (r₂ :: rs).count u = 0 :=
-            List.count_eq_zero.mpr htail_no_mem
-          have hss_no_mem : u ∉ ss := by
-            intro hu_mem
-            have hge := listInterlaces_left_ge_head htail u hu_mem
-            linarith
-          have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
-          simp [htail_count, hss_count, hs]
-      · have ih := listInterlaces_count_right_le_left_add_one u htail
-        by_cases hs : s = u
-        · simp [hr₁, hs] at ih ⊢
-          lia
-        · simpa [hr₁, hs] using ih
-
-private lemma listAlternates_count_right_le_left_add_one (u : ℝ) :
-    ∀ {ss rs : List ℝ}, ListAlternates ss rs → rs.count u ≤ ss.count u + 1
-  | [], [], _ => by simp
-  | [], _ :: _, h => by simp [ListAlternates] at h
-  | _ :: _, [], h => by simp [ListAlternates] at h
-  | s :: ss, _ :: rs, h => by
-      rcases h with ⟨_, htail⟩
-      have ih := listInterlaces_count_right_le_left_add_one u htail
-      by_cases hs : s = u
-      · simp [hs] at ih ⊢
-        lia
-      · simpa [hs] using ih
-
 /-- Proper position forces every root of the right polynomial to occur on the
 left with multiplicity at least one less.  This is the first multiplicity input
 for the Garloff--Wagner Lemma 7/Krein expansion. -/
 theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : Prec f g)
     (u : ℝ) :
     g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
-  rcases h with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  have hcount : rs.count u ≤ ss.count u + 1 := by
-    rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
-    · exact listInterlaces_count_right_le_left_add_one u hint
-    · exact listAlternates_count_right_le_left_add_one u halt
-  have hrs_count : rs.count u = g.rootMultiplicity u := by
-    rw [← count_roots g, ← hrs_eq]
-    exact (Multiset.coe_count u rs).symm
-  have hss_count : ss.count u = f.rootMultiplicity u := by
-    rw [← count_roots f, ← hss_eq]
-    exact (Multiset.coe_count u ss).symm
-  rw [hrs_count, hss_count] at hcount
-  lia
+  exact (rootMultiplicity_bounds_of_prec h u).2
 
 /-- If `f ≪ g` and `u` is a root of `g`, then `f` is divisible by all but
 one copy of the `u`-factor of `g`.  This is the quotient of the left input
