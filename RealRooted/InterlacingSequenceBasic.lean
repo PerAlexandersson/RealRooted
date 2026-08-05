@@ -255,4 +255,66 @@ lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
       of_decide_eq_true (List.mem_filter.mp hgj_mem).2
     exact hfg0.toPrec_of_ne hfi_ne hgj_ne
 
+/-! ## Zero-aware sequences with elementwise real-rootedness -/
+
+/-- A weak zero-aware nonnegative interlacing sequence together with the
+real-rootedness of every nonzero member. This bundles a side condition used
+throughout the matrix and product-family APIs without strengthening
+`IsInterlacingSeq0Nonneg`. -/
+def IsInterlacingSeq0NonnegRealRooted (fs : List ℝ[X]) : Prop :=
+  IsInterlacingSeq0Nonneg fs ∧
+    ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)
+
+namespace IsInterlacingSeq0NonnegRealRooted
+
+lemma interlacingSeq0Nonneg {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    IsInterlacingSeq0Nonneg fs :=
+  hfs.1
+
+lemma interlacingSeq0 {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    IsInterlacingSeq0 fs :=
+  hfs.1.1
+
+lemma nonnegCoeffs {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    ∀ f ∈ fs, HasNonnegCoeffs f :=
+  hfs.1.2
+
+lemma realRooted {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
+  hfs.2
+
+lemma splits {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) {f : ℝ[X]}
+    (hf : f ∈ fs) (hf_ne : f ≠ 0) :
+    f.Splits :=
+  (hfs.2 f hf hf_ne).2
+
+lemma sublist {fs gs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) (hgs : gs.Sublist fs) :
+    IsInterlacingSeq0NonnegRealRooted gs :=
+  ⟨⟨hfs.1.1.sublist hgs, fun f hf => hfs.1.2 f (hgs.subset hf)⟩,
+    fun f hf => hfs.2 f (hgs.subset hf)⟩
+
+lemma sublist_of_ne {fs gs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) (hgs : gs.Sublist fs)
+    (hne : ∀ f ∈ gs, f ≠ 0) :
+    IsInterlacingSeqNonneg gs :=
+  hfs.1.sublist_of_realRooted_of_ne hgs hfs.2 hne
+
+lemma filter_ne_zero {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    IsInterlacingSeqNonneg (fs.filter (· ≠ 0)) :=
+  hfs.1.filter_ne_zero_of_realRooted hfs.2
+
+end IsInterlacingSeq0NonnegRealRooted
+
+lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0NonnegRealRooted
+    {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeq0NonnegRealRooted fs :=
+  ⟨hfs.toIsInterlacingSeq0Nonneg, fun f hf _ => hfs.realRooted f hf⟩
+
 end RealRooted
