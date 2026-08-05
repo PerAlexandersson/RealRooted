@@ -2,6 +2,7 @@ import RealRooted.ASWKarlinMatrix
 import RealRooted.ASWKarlinThreshold
 import RealRooted.ASWKarlinVariation
 import RealRooted.ASWKarlinVectors
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 
@@ -120,6 +121,49 @@ lemma complex_root_ne_zero_of_coeff_zero_pos {p : ℝ[X]} {z : ℂ}
     exact heval
   linarith
 
+/-- Karlin's repeated matrices force a linear lower bound on the sampled sine
+vector's sign variations, up to the fixed two-endpoint perturbation loss. -/
+theorem aswKarlinRepeatedSineVariationLowerBound
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order blocks : ℕ}
+    (horder : 0 < order) (hblocks : 0 < blocks) (him : z.im ≠ 0) :
+    blocks * order - 1 ≤
+      Fin.signVariations
+        (aswKarlinSineVector z.arg p.natDegree order blocks) + 2 := by
+  have hwidth : 0 < blocks * (p.natDegree + order - 1) :=
+    Nat.mul_pos hblocks (by lia)
+  have hcols :
+      blocks * (p.natDegree + order - 1) + 1 =
+        (blocks * (p.natDegree + order - 1) - 1) + 2 := by
+    lia
+  have hnodal :
+      ∀ i : Fin (blocks * (p.natDegree + order - 1) - 1),
+        aswKarlinRootVector z p.natDegree order blocks
+            (Fin.cast hcols.symm i.succ.castSucc) = 0 →
+          aswKarlinRootVector z p.natDegree order blocks
+              (Fin.cast hcols.symm i.castSucc.castSucc) *
+            aswKarlinRootVector z p.natDegree order blocks
+              (Fin.cast hcols.symm i.succ.succ) < 0 := by
+    intro i hi
+    change (z ^ ((i : ℕ) + 1)).im = 0 at hi
+    change (z ^ (i : ℕ)).im * (z ^ ((i : ℕ) + 2)).im < 0
+    exact
+      im_pow_mul_im_pow_add_two_neg_of_im_pow_add_one_eq_zero him i hi
+  have hbound :=
+    Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_surjective_of_card_eq
+      (hpf.aswKarlinMatrix_isTotallyNonnegRect
+        p.natDegree order blocks)
+      hcols
+      (aswKarlinMatrix_mulVec_surjective p.natDegree order blocks
+        hdegree horder hconst)
+      (aswKarlinMatrix_mulVec_rootVector hz order blocks hdegree horder)
+      hnodal
+  rw [signVariations_aswKarlinRootVector_eq_sine
+    (complex_root_ne_zero_of_coeff_zero_pos hz hconst)
+    p.natDegree order blocks] at hbound
+  exact hbound
+
 /-- A real complex root of a positive-constant PF polynomial lies on the
 negative real ray. -/
 lemma arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
@@ -194,19 +238,83 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
 /-- Karlin's finite-order sector estimate for a nonreal complex root of a
 positive constant-coefficient PF polynomial.
 
-The checked algebraic inputs above provide the repeated totally nonnegative
-coefficient-window matrix, its full row rank from the positive constant
-coefficient, and the root-supplied kernel vector.  The remaining hard ingredient
-is the classical variation-diminishing/sign-regular kernel theorem. -/
+The proof uses the repeated totally nonnegative coefficient-window matrices,
+their full row rank, the root-supplied kernel vectors, and the sampled-sine
+floor bound. Taking sufficiently many blocks absorbs the fixed two-endpoint
+perturbation loss. -/
 theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order)
     (him : z.im ≠ 0) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
-    him
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_contra hnot
+  have hθlt :
+      |z.arg| < aswSectorThreshold p.natDegree order :=
+    lt_of_not_ge hnot
+  have hden_pos :=
+    aswSectorThreshold_denom_pos p.natDegree order hdegree horder
+  have hspan_cast :
+      ((p.natDegree + order - 1 : ℕ) : ℝ) =
+        (order : ℝ) + p.natDegree - 1 := by
+    rw [Nat.cast_sub (by lia)]
+    push_cast
+    ring
+  have hmul := mul_lt_mul_of_pos_left hθlt hden_pos
+  have hnormalize :
+      ((order : ℝ) + p.natDegree - 1) *
+          aswSectorThreshold p.natDegree order =
+        (order : ℝ) * Real.pi := by
+    rw [aswSectorThreshold]
+    field_simp [hden_pos.ne']
+  rw [hnormalize] at hmul
+  have hslope_lt :
+      (((p.natDegree + order - 1 : ℕ) : ℝ) * |z.arg|) /
+          Real.pi < (order : ℝ) := by
+    apply (div_lt_iff₀ Real.pi_pos).2
+    rw [hspan_cast]
+    exact hmul
+  let gap : ℝ :=
+    (order : ℝ) -
+      (((p.natDegree + order - 1 : ℕ) : ℝ) * |z.arg|) / Real.pi
+  have hgap : 0 < gap := by
+    dsimp [gap]
+    linarith
+  obtain ⟨blocks, hblocks⟩ := exists_nat_gt (3 / gap)
+  have hblocks_pos : 0 < blocks := by
+    have hfrac : (0 : ℝ) < 3 / gap := by positivity
+    exact_mod_cast hfrac.trans hblocks
+  have hlarge : (3 : ℝ) < (blocks : ℝ) * gap := by
+    have hmulGap := mul_lt_mul_of_pos_right hblocks hgap
+    rw [div_mul_cancel₀ _ hgap.ne'] at hmulGap
+    exact hmulGap
+  have hlower :=
+    aswKarlinRepeatedSineVariationLowerBound
+      hz hdegree hconst hpf horder hblocks_pos him
+  have hupper :=
+    signVariations_aswKarlinSineVector_le_floor_div_pi_abs
+      z.arg p.natDegree order blocks
+  let x : ℝ :=
+    (((blocks * (p.natDegree + order - 1) : ℕ) : ℝ) * |z.arg|) /
+      Real.pi
+  have hnat : blocks * order ≤ ⌊x⌋₊ + 3 := by
+    dsimp [x]
+    lia
+  have hcast : ((blocks * order : ℕ) : ℝ) ≤ (⌊x⌋₊ : ℝ) + 3 := by
+    exact_mod_cast hnat
+  have hfloor : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le (by dsimp [x]; positivity)
+  have hx_eq :
+      x =
+        (blocks : ℝ) *
+          ((((p.natDegree + order - 1 : ℕ) : ℝ) * |z.arg|) /
+            Real.pi) := by
+    dsimp [x]
+    push_cast
+    ring
+  rw [hx_eq] at hcast hfloor
+  dsimp [gap] at hlarge
+  push_cast at hcast
+  linarith
 
 /-- Conditional Karlin finite-order sector estimate for one complex root, with
 the classical sign-variation input supplied explicitly. -/
@@ -231,8 +339,12 @@ theorem aswKarlinSectorThreshold_le_abs_arg {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
-  aswKarlinSectorThreshold_le_abs_arg_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_cases him : z.im = 0
+  · rw [arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff hz hconst hpf him,
+      abs_of_pos Real.pi_pos]
+    exact aswSectorThreshold_le_pi p.natDegree order hdegree horder
+  · exact aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero
+      hz hdegree hconst hpf horder him
 
 end RealRooted
