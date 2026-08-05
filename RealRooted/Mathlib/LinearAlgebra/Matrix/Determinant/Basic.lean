@@ -56,10 +56,13 @@ theorem det_eq_det_adjacentRowDiff_of_firstColumn_eq_one {n : ℕ}
     · intro i j
       simp [B]
   rw [hdet, det_succ_column_zero, Fin.sum_univ_succ]
-  simp [B, hA]
-  apply congrArg det
-  ext i j
-  rfl
+  have hminor :
+      B.submatrix Fin.succ Fin.succ =
+        Matrix.of fun (i j : Fin n) =>
+          A i.succ j.succ - A i.castSucc j.succ := by
+    ext i j
+    rfl
+  simpa [B, hA] using congrArg Matrix.det hminor
 
 /-- A submatrix with a noninjective column selector has zero determinant. -/
 theorem det_submatrix_eq_zero_of_not_injective_right

@@ -54,7 +54,7 @@ theorem integrable_det_rows
     simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul ℝ]
     rfl
   rw [hfun]
-  apply MeasureTheory.integrable_finset_sum Finset.univ
+  apply MeasureTheory.integrable_finsetSum Finset.univ
   intro σ _
   exact (MeasureTheory.Integrable.fintype_prod fun i => hf i (σ i)).const_mul _
 
@@ -99,7 +99,7 @@ theorem det_integral_rows_eq_integral_det
           ((Equiv.Perm.sign σ : ℤ) : ℝ) *
             ∏ i, f i (x i) (σ i) ∂MeasureTheory.Measure.pi μ := by
       symm
-      apply MeasureTheory.integral_finset_sum
+      apply MeasureTheory.integral_finsetSum
       intro σ _
       exact (hprod σ).const_mul _
     _ = ∫ x : n → E,

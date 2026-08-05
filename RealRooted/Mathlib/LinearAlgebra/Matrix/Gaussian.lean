@@ -347,8 +347,7 @@ theorem det_adjacentRowDiff_exponentialKernelMatrix_pos {n : ℕ}
     measure_congr hsupp, Measure.pi_univ]
   rw [pos_iff_ne_zero, Finset.prod_ne_zero_iff]
   intro i _
-  simp [μ, Real.volume_Ioc]
-  exact hx i.castSucc_lt_succ
+  simpa [μ, Real.volume_Ioc] using hx i.castSucc_lt_succ
 
 /-- Strictly ordered exponential-kernel minors are positive. -/
 theorem det_exponentialKernelMatrix_pos {q : ℕ}
