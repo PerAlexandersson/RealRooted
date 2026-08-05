@@ -131,6 +131,7 @@ import RealRooted.Hadamard
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
+import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
