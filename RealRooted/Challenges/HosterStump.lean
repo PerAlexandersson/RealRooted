@@ -29,8 +29,8 @@ Section 2 backend map:
 * the `f << g -> g << X * f` shift: `prec_mul_X_of_prec_of_nonneg` and
   `prec0_mul_X_of_prec0`;
 * gamma real-rootedness transfer: `gammaRealRootedIffPolynomialRealRootedNonpos`;
-* missing backend lemma for this route: adjacent-degree gamma interlacing
-  transfer, recorded below as `GammaAdjacentInterlacingTransferStatement`;
+* adjacent-degree gamma interlacing transfer:
+  `GammaAdjacentInterlacingTransferStatement`;
 * missing convenience lemmas for this route: lower, upper, moving-window, and
   `X`-shifted split partial sums of an interlacing sequence, recorded below as
   statement interfaces.
@@ -128,12 +128,20 @@ def lowerPartialSums : List ℝ[X] → List ℝ[X]
 def upperPartialSums (fs : List ℝ[X]) : List ℝ[X] :=
   (lowerPartialSums fs.reverse).reverse
 
-/-- The Section 2 lower-partial-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(2) to finite lists.
+
+The source requires every sequence member to be real-rooted and uses a special
+degree-at-most-one convention. `IsInterlacingSeq0Nonneg` records neither
+condition, so this interface is false as stated; issue #326 tracks the
+source-faithful predicate. -/
 def LowerPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (lowerPartialSums fs)
 
-/-- The Section 2 upper-partial-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(3) to finite lists.
+
+It has the same missing source hypotheses as the lower-partial-sum interface
+and must not be used as a theorem backend. -/
 def UpperPartialSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (upperPartialSums fs)
@@ -142,7 +150,12 @@ def UpperPartialSumsPreserveInterlacingStatement : Prop :=
 def movingWindowSums (width : ℕ) (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length - width)).map fun k => (fs.drop k |>.take (width + 1)).sum
 
-/-- The Section 2 moving-window-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(4), with `width` equal to
+the paper's `ell`.
+
+Each output is the sum of `width + 1` consecutive entries, and the Lean length
+matches the displayed source range. The source tuple has an inconsistent final
+subscript. The input predicate remains too weak for the source theorem. -/
 def MovingWindowSumsPreserveInterlacingStatement : Prop :=
   ∀ {width : ℕ} {fs : List ℝ[X]}, width < fs.length →
     IsInterlacingSeq0Nonneg fs →
@@ -153,26 +166,55 @@ def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length + 1)).map fun k =>
     X * (fs.take k).sum + (fs.drop k).sum
 
-/-- The Section 2 `X`-shifted split-sum closure lemma needed by the route. -/
+/-- Legacy translation of Hoster--Stump Lemma 2.3(5) to zero-based list
+splits.
+
+The formula and endpoint indexing match the paper, but the input predicate
+omits source-required elementwise real-rootedness and the low-degree
+interlacing convention. -/
 def XShiftedSplitSumsPreserveInterlacingStatement : Prop :=
   ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
     IsInterlacingSeq0Nonneg (xShiftedSplitSums fs)
 
-/-- Adjacent-degree gamma interlacing transfer from Hoster--Stump
-Proposition 2.5, expressed through the project gamma-transform API. -/
-def GammaAdjacentInterlacingTransferStatement : Prop :=
-  ∀ {d : ℕ} {f g γ δ : ℝ[X]},
-    γ.natDegree ≤ d / 2 →
-    δ.natDegree ≤ (d + 1) / 2 →
-    f.natDegree = d →
-    g.natDegree = d + 1 →
-    IdTransform d f = f →
-    IdTransform (d + 1) g = g →
-    IsGammaExpansion d f γ →
-    IsGammaExpansion (d + 1) g δ →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-      (Prec f g ↔ Prec γ δ)
+/-- Hoster--Stump Proposition 2.5 in the project gamma-transform API.
+
+The source assumes nonnegative coefficients for both polynomials and both
+gamma polynomials, together with nonzero exact degrees. These conditions must
+be explicit because local `Prec` is defined for arbitrary real polynomials and
+Lean has `natDegree 0 = 0`. Without the gamma coefficient hypotheses the
+statement is false: for `d = 2` and `γ = δ = 1 - X`, the gamma transforms have
+nonnegative coefficients and the required symmetry and degrees, and `Prec γ δ`
+holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`.
+
+The separate nonzero hypotheses exclude the spurious `d = 0`, `f = 0` case
+allowed by Lean's `natDegree 0 = 0`. -/
+theorem GammaAdjacentInterlacingTransferStatement
+    {d : ℕ} {f g γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2)
+    (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hf0 : f ≠ 0)
+    (hg0 : g ≠ 0)
+    (hfdeg : f.natDegree = d)
+    (hgdeg : g.natDegree = d + 1)
+    (_hfFix : IdTransform d f = f)
+    (_hgFix : IdTransform (d + 1) g = g)
+    (hfGamma : IsGammaExpansion d f γ)
+    (hgGamma : IsGammaExpansion (d + 1) g δ)
+    (_hfnn : HasNonnegCoeffs f)
+    (_hgnn : HasNonnegCoeffs g)
+    (hγnn : HasNonnegCoeffs γ)
+    (hδnn : HasNonnegCoeffs δ) :
+    Prec f g ↔ Prec γ δ := by
+  change f = gammaTransform d γ at hfGamma
+  change g = gammaTransform (d + 1) δ at hgGamma
+  have hγ0 : γ.coeff 0 ≠ 0 := by
+    rw [← coeff_ambient_gammaTransform d γ, ← hfGamma, ← hfdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hf0
+  have hδ0 : δ.coeff 0 ≠ 0 := by
+    rw [← coeff_ambient_gammaTransform (d + 1) δ, ← hgGamma, ← hgdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hg0
+  rw [hfGamma, hgGamma]
+  exact prec_gammaTransform_succ_iff hγdeg hδdeg hγnn hδnn hγ0 hδ0
 
 /-- Abstract Chow-polynomial data attached to a finite graded simplicial poset. -/
 structure ChowPolynomialModel where
@@ -237,7 +279,6 @@ structure StrategyInputs
   upperPartialSums : UpperPartialSumsPreserveInterlacingStatement
   movingWindowSums : MovingWindowSumsPreserveInterlacingStatement
   xShiftedSplitSums : XShiftedSplitSumsPreserveInterlacingStatement
-  gammaAdjacentInterlacing : GammaAdjacentInterlacingTransferStatement
 
 /-- Proof-template-facing statement: once the Section 2/3 route ingredients are
 available for a model, the Hoster--Stump final theorem follows. -/

@@ -1,9 +1,14 @@
 import RealRooted.Challenges.Wagner
+import RealRooted.Tactic.Lookup
 
 /-!
 # Wagner challenge tactic frontends
 
 Thin wrappers around the challenge-facing Wagner lemma forms.
+
+Production-facing adapters also expose hypothesis-light common-right addition,
+common-factor transport, and linear-factor cancellation without
+sequence-specific names.
 -/
 
 open Polynomial
@@ -88,6 +93,38 @@ syntax (name := rr_wagner_mulX_iff_sequence_named)
     "degree" ":=" term :
   tactic
 
+syntax (name := rr_wagner_common_right_add_pos_lc_named)
+  "rr_wagner_common_right_add_pos_lc" " using "
+    "left_interlaces_common" ":=" term ","
+    "right_interlaces_common" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_wagner_common_right_add_pos_lc_inferred)
+  "rr_wagner_common_right_add_pos_lc" : tactic
+
+syntax (name := rr_prec_cancel_common_linear_factor_named)
+  "rr_prec_cancel_common_linear_factor" " using "
+    "root" ":=" term ","
+    "multiplied_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_prec_cancel_common_linear_factor_inferred)
+  "rr_prec_cancel_common_linear_factor" " using "
+    "root" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_common_factor_named)
+  "rr_prec_mul_common_factor" " using "
+    "factor_nonzero" ":=" term ","
+    "factor_splits" ":=" term ","
+    "base_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_common_factor_inferred)
+  "rr_prec_mul_common_factor" : tactic
+
 macro_rules
   | `(tactic|
       rr_wagner_common_right_add using
@@ -143,6 +180,49 @@ macro_rules
         degree := $hdeg:term) =>
       `(tactic|
         exact RealRooted.Tactic.wagner_mulX_iff_sequence $hf $hg $hdeg)
+  | `(tactic|
+      rr_wagner_common_right_add_pos_lc using
+        left_interlaces_common := $hfh:term,
+        right_interlaces_common := $hgh:term,
+        left_pos_lc := $hf_pos:term,
+        right_pos_lc := $hg_pos:term) =>
+      `(tactic|
+        exact RealRooted.prec_add_of_prec_right_of_posLeadingCoeff
+          $hfh $hgh $hf_pos $hg_pos)
+  | `(tactic| rr_wagner_common_right_add_pos_lc) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_add_of_prec_right_of_posLeadingCoeff
+          case hfh => rr_lookup [rr_base_prec]
+          case hgh => rr_lookup [rr_base_prec]
+          case hf_pos => rr_lookup [rr_pos_lc]
+          case hg_pos => rr_lookup [rr_pos_lc]))
+  | `(tactic|
+      rr_prec_cancel_common_linear_factor using
+        root := $r:term,
+        multiplied_interlacing := $h:term) =>
+      `(tactic| exact RealRooted.prec_of_prec_mul_X_sub_C_both $r $h)
+  | `(tactic|
+      rr_prec_cancel_common_linear_factor using
+        root := $r:term) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_of_prec_mul_X_sub_C_both $r
+          rr_lookup [rr_base_prec]))
+  | `(tactic|
+      rr_prec_mul_common_factor using
+        factor_nonzero := $hd_ne:term,
+        factor_splits := $hd_splits:term,
+        base_interlacing := $h:term) =>
+      `(tactic|
+        exact RealRooted.prec_mul_common_factor $hd_ne $hd_splits $h)
+  | `(tactic| rr_prec_mul_common_factor) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.prec_mul_common_factor
+          case hd_ne => rr_lookup [rr_nonzero]
+          case hd_splits => assumption
+          case h => rr_lookup [rr_base_prec]))
 
 end Tactic
 end RealRooted

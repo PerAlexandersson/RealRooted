@@ -79,5 +79,40 @@ example {F G : Nat → ℝ[X]}
     longer := hG,
     degree := hdeg
 
+example {f g h : ℝ[X]} (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
+    Prec (f + g) h := by
+  rr_wagner_common_right_add_pos_lc using
+    left_interlaces_common := hfh,
+    right_interlaces_common := hgh,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {f g h : ℝ[X]} (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
+    Prec (f + g) h := by
+  rr_wagner_common_right_add_pos_lc
+
+example {f g : ℝ[X]} (r : ℝ)
+    (h : Prec ((X - C r) * f) ((X - C r) * g)) : Prec f g := by
+  rr_prec_cancel_common_linear_factor using
+    root := r,
+    multiplied_interlacing := h
+
+example {f g : ℝ[X]} (r : ℝ)
+    (h : Prec ((X - C r) * f) ((X - C r) * g)) : Prec f g := by
+  rr_prec_cancel_common_linear_factor using root := r
+
+example {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
+    (h : Prec f g) : Prec (d * f) (d * g) := by
+  rr_prec_mul_common_factor using
+    factor_nonzero := hd_ne,
+    factor_splits := hd_splits,
+    base_interlacing := h
+
+example {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
+    (h : Prec f g) : Prec (d * f) (d * g) := by
+  rr_prec_mul_common_factor
+
 end Tactic
 end RealRooted

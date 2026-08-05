@@ -267,6 +267,62 @@ lemma gammaTransform_odd (m : ℕ) (γ : ℝ[X]) :
     _ = (X + 1) * gammaTransform (2 * m) γ := by
           simp [gammaTransform, hhalf_even]
 
+/-- Repeated source-degree padding factors off two copies of `X + 1` at each
+step. -/
+lemma gammaTransform_add_two_mul (d k : ℕ) {γ : ℝ[X]}
+    (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform (d + 2 * k) γ =
+      (X + 1) ^ (2 * k) * gammaTransform d γ := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+      have hkdeg : γ.natDegree ≤ (d + 2 * k) / 2 := by lia
+      calc
+        gammaTransform (d + 2 * (k + 1)) γ =
+            gammaTransform ((d + 2 * k) + 2) γ := by congr 1
+        _ = (X + 1) ^ 2 * gammaTransform (d + 2 * k) γ :=
+          gammaTransform_pad_two hkdeg
+        _ = (X + 1) ^ 2 *
+            ((X + 1) ^ (2 * k) * gammaTransform d γ) := by rw [ih]
+        _ = (X + 1) ^ (2 * (k + 1)) * gammaTransform d γ := by
+          rw [show 2 * (k + 1) = 2 + 2 * k by lia, pow_add]
+          ring
+
+/-- Hoster--Stump, Proposition 2.5, equation (2.2), factorization input:
+the excess ambient degree is exactly a power of `X + 1`. -/
+theorem gammaTransform_eq_X_add_one_pow_mul_minimal
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform d γ =
+      (X + 1) ^ (d - 2 * γ.natDegree) *
+        gammaTransform (2 * γ.natDegree) γ := by
+  let n := γ.natDegree
+  let m := d / 2
+  change gammaTransform d γ =
+    (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ
+  have hnm : n ≤ m := hγ
+  have hbase : n ≤ (2 * n) / 2 := by simp
+  have hiter := gammaTransform_add_two_mul (2 * n) (m - n) hbase
+  rcases Nat.mod_two_eq_zero_or_one d with heven | hodd
+  · have hd : d = 2 * m := by dsimp [m]; lia
+    calc
+      gammaTransform d γ =
+          gammaTransform (2 * n + 2 * (m - n)) γ := by
+            congr 1
+            lia
+      _ = (X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ := hiter
+      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
+        rw [show 2 * (m - n) = d - 2 * n by lia]
+  · have hd : d = 2 * m + 1 := by dsimp [m]; lia
+    calc
+      gammaTransform d γ = gammaTransform (2 * m + 1) γ := by congr 1
+      _ = (X + 1) * gammaTransform (2 * m) γ := gammaTransform_odd m γ
+      _ = (X + 1) *
+          ((X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ) := by
+            rw [show 2 * m = 2 * n + 2 * (m - n) by lia, hiter]
+      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
+        rw [show d - 2 * n = 2 * (m - n) + 1 by lia, pow_succ']
+        ring
+
 lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
     gammaTransform (2 * (m + 1)) γ =
       (X + 1) * gammaTransform (2 * m + 1) γ + C (γ.coeff (m + 1)) * X ^ (m + 1) := by
@@ -317,6 +373,31 @@ lemma gammaTransform_even_eval_neg_one (m : ℕ) (γ : ℝ[X]) :
     have hpow_pos : 0 < 2 * m - 2 * i := by lia
     simp [gammaBasisTerm, hpow_pos.ne']
   · simp
+
+/-- The minimal even gamma transform does not vanish at `-1`. -/
+lemma gammaTransform_minimal_eval_neg_one_ne_zero {γ : ℝ[X]} (hγ : γ ≠ 0) :
+    (gammaTransform (2 * γ.natDegree) γ).eval (-1) ≠ 0 := by
+  rw [gammaTransform_even_eval_neg_one, Polynomial.coeff_natDegree]
+  exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hγ)
+    (pow_ne_zero _ (by norm_num))
+
+/-- Equation (2.2) in Hoster--Stump, Proposition 2.5:
+https://arxiv.org/abs/2508.15538. -/
+theorem rootMultiplicity_neg_one_gammaTransform
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2) (hγ : γ ≠ 0) :
+    (gammaTransform d γ).rootMultiplicity (-1) = d - 2 * γ.natDegree := by
+  have hcore_eval := gammaTransform_minimal_eval_neg_one_ne_zero hγ
+  have hcore_ne : gammaTransform (2 * γ.natDegree) γ ≠ 0 := by
+    intro hzero
+    simp [hzero] at hcore_eval
+  have hcore_not_root :
+      ¬(gammaTransform (2 * γ.natDegree) γ).IsRoot (-1) := by
+    rw [Polynomial.IsRoot.def]
+    exact hcore_eval
+  have hlinear : (X + 1 : ℝ[X]) = X - C (-1) := by norm_num
+  rw [gammaTransform_eq_X_add_one_pow_mul_minimal hγdeg, mul_comm, hlinear,
+    rootMultiplicity_mul_X_sub_C_pow hcore_ne,
+    rootMultiplicity_eq_zero hcore_not_root, zero_add]
 
 lemma gammaTransform_even_isRoot_neg_one_iff (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).IsRoot (-1) ↔ γ.coeff m = 0 := by
@@ -512,6 +593,118 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) : (gammaTransform d γ
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff d) hfix
   simpa [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using hcoeff.symm
 
+/-- The root map `ρ ↦ ρ / (1 + ρ)²` in Hoster--Stump, Proposition 2.5,
+equation (2.1). Reciprocal roots of a palindromic polynomial have the same
+image under this map. -/
+def gammaRootMap (x : ℝ) : ℝ := x / (1 + x) ^ 2
+
+/-- The surjectivity part of Hoster--Stump equation (2.1) on the preferred
+reciprocal branch. For `y < 0`, the polynomial `x - y * (1 + x)^2` has
+opposite signs at `-1` and `0`, so the intermediate value theorem supplies the
+required representative in `(-1, 0)`. -/
+theorem exists_mem_Ioo_gammaRootMap_eq {y : ℝ} (hy : y < 0) :
+    ∃ x ∈ Set.Ioo (-1 : ℝ) 0, gammaRootMap x = y := by
+  let q : ℝ[X] := X - C y * (X + 1) ^ 2
+  have hzero : (0 : ℝ) ∈ Set.Icc (q.eval (-1)) (q.eval 0) := by
+    simpa [q] using le_of_lt hy
+  obtain ⟨x, hx, hxzero⟩ :=
+    intermediate_value_Icc (by norm_num : (-1 : ℝ) ≤ 0)
+      q.continuous.continuousOn hzero
+  have hx_ne_left : x ≠ -1 := by
+    intro h
+    subst x
+    dsimp [q] at hxzero
+    norm_num at hxzero
+  have hx_ne_right : x ≠ 0 := by
+    intro h
+    subst x
+    dsimp [q] at hxzero
+    simp at hxzero
+    linarith
+  have hxmem : x ∈ Set.Ioo (-1 : ℝ) 0 :=
+    ⟨lt_of_le_of_ne hx.1 (Ne.symm hx_ne_left),
+      lt_of_le_of_ne hx.2 hx_ne_right⟩
+  refine ⟨x, hxmem, ?_⟩
+  have hone : 1 + x ≠ 0 := by linarith [hxmem.1]
+  dsimp [q] at hxzero
+  simp only [eval_sub, eval_X, eval_mul, eval_C, eval_pow, eval_add, eval_one] at hxzero
+  unfold gammaRootMap
+  field_simp [hone]
+  nlinarith
+
+/-- The gamma root map identifies a nonzero real number with its reciprocal. -/
+lemma gammaRootMap_inv {x : ℝ} (hx : x ≠ 0) :
+    gammaRootMap x⁻¹ = gammaRootMap x := by
+  by_cases h1x : 1 + x = 0
+  · have hxneg : x = -1 := by linarith
+    simp [gammaRootMap, hxneg]
+  · unfold gammaRootMap
+    have hone : 1 + x⁻¹ = (1 + x) / x := by
+      field_simp [hx]
+      ring
+    rw [hone, div_pow]
+    field_simp [hx, h1x]
+
+/-- Hoster--Stump, Proposition 2.5: the gamma root map is strictly increasing
+on the interval `(-1, 0)`. -/
+theorem strictMonoOn_gammaRootMap :
+    StrictMonoOn gammaRootMap (Set.Ioo (-1) 0) := by
+  intro a ha b hb hab
+  have ha1 : 0 < 1 + a := by linarith [ha.1]
+  have hb1 : 0 < 1 + b := by linarith [hb.1]
+  have hab_pos : 0 < b - a := sub_pos.mpr hab
+  have hone : 0 < 1 - a * b := by
+    have hproduct : 0 < (1 + a) * (1 - b) :=
+      mul_pos ha1 (by linarith [hb.2])
+    nlinarith
+  have hfactor := mul_pos hab_pos hone
+  simp only [gammaRootMap]
+  rw [div_lt_div_iff₀ (sq_pos_of_pos ha1) (sq_pos_of_pos hb1)]
+  nlinarith
+
+/-- The monotone root-map step in Hoster--Stump, Proposition 2.5:
+mapping roots in `(-1, 0)` by equation (2.1) preserves and reflects their
+weak interleaving order. See https://arxiv.org/abs/2508.15538. -/
+theorem interleaves_map_gammaRootMap_iff :
+    ∀ {ss rs : List ℝ}
+      (_ : ∀ x ∈ ss, x ∈ Set.Ioo (-1) 0)
+      (_ : ∀ x ∈ rs, x ∈ Set.Ioo (-1) 0),
+      List.Interleaves (fun x y : ℝ => x ≤ y)
+          (ss.map gammaRootMap) (rs.map gammaRootMap) ↔
+        List.Interleaves (fun x y : ℝ => x ≤ y) ss rs
+  | [], rs, _, _ => by
+      cases rs <;> simp
+  | _ :: _, [], _, _ => by simp
+  | s :: ss, r :: rs, hss, hrs => by
+      rw [List.map_cons, List.map_cons, List.interleaves_cons_cons,
+        List.interleaves_cons_cons,
+        strictMonoOn_gammaRootMap.le_iff_le
+          (hrs r (by simp)) (hss s (by simp))]
+      apply and_congr_right
+      intro _
+      simpa only [List.map_cons] using
+        interleaves_map_gammaRootMap_iff
+          (ss := rs) (rs := s :: ss)
+          (fun x hx => hrs x (List.mem_cons_of_mem r hx)) hss
+termination_by ss rs => ss.length + rs.length
+
+/-- The quadratic reciprocal-pair factor in Hoster--Stump, Proposition 2.5,
+equation (2.1). See https://arxiv.org/abs/2508.15538. -/
+lemma gammaQuadraticFactor_eq_mul_reciprocal {x : ℝ}
+    (hx0 : x ≠ 0) (hx1 : x ≠ -1) :
+    X - C (gammaRootMap x) * (X + 1) ^ 2 =
+      C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹) := by
+  have h1x : 1 + x ≠ 0 := by
+    intro h
+    apply hx1
+    linarith
+  apply Polynomial.funext
+  intro y
+  simp only [eval_sub, eval_X, eval_mul, eval_C, eval_pow, eval_add, eval_one]
+  unfold gammaRootMap
+  field_simp [hx0, h1x]
+  ring
+
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
     (gammaTransform d γ).eval x = (1 + x) ^ d * γ.eval (x / (1 + x) ^ 2) := by
@@ -609,6 +802,601 @@ lemma gammaTransform_X_sub_C_mul_two {d : ℕ} {γ : ℝ[X]}
           simp [sub_eq_add_neg, mul_assoc]
     _ = (X - C r * (X + 1) ^ 2) * gammaTransform d γ := by
           grind
+
+/-- Iterated form of the quadratic factor in Hoster--Stump, Proposition 2.5,
+equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_mul_two
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
+    ∀ m : ℕ,
+      gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) =
+        (X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ
+  | 0 => by simp
+  | m + 1 => by
+      have hdeg :
+          ((X - C r) ^ m * γ).natDegree ≤ (d + 2 * m) / 2 := by
+        calc
+          ((X - C r) ^ m * γ).natDegree
+              ≤ ((X - C r) ^ m).natDegree + γ.natDegree :=
+            natDegree_mul_le
+          _ ≤ m * (X - C r).natDegree + γ.natDegree :=
+            Nat.add_le_add_right natDegree_pow_le _
+          _ ≤ m * 1 + d / 2 :=
+            Nat.add_le_add (Nat.mul_le_mul_left m (natDegree_X_sub_C_le r)) hγ
+          _ ≤ (d + 2 * m) / 2 := by lia
+      calc
+        gammaTransform (d + 2 * (m + 1)) ((X - C r) ^ (m + 1) * γ) =
+            gammaTransform ((d + 2 * m) + 2)
+              ((X - C r) * ((X - C r) ^ m * γ)) := by
+                rw [show d + 2 * (m + 1) = (d + 2 * m) + 2 by lia]
+                congr 1
+                rw [pow_succ]
+                ring
+        _ = (X - C r * (X + 1) ^ 2) *
+              gammaTransform (d + 2 * m) ((X - C r) ^ m * γ) :=
+          gammaTransform_X_sub_C_mul_two hdeg r
+        _ = (X - C r * (X + 1) ^ 2) *
+              ((X - C r * (X + 1) ^ 2) ^ m * gammaTransform d γ) := by
+          rw [gammaTransform_X_sub_C_pow_mul_two hγ r m]
+        _ = (X - C r * (X + 1) ^ 2) ^ (m + 1) *
+              gammaTransform d γ := by
+          rw [pow_succ]
+          ring
+
+/-- Algebraic reciprocal-pair factorization away from `0` and `-1`. -/
+lemma gammaTransform_X_sub_C_pow_gammaRootMap_of_ne
+    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx0 : x ≠ 0) (hx1 : x ≠ -1) :
+    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
+        gammaTransform d γ := by
+  rw [gammaTransform_X_sub_C_pow_mul_two hγ,
+    gammaQuadraticFactor_eq_mul_reciprocal hx0 hx1]
+
+/-- A gamma root of multiplicity `m` yields reciprocal transform roots, each
+with the same extracted multiplicity, in Hoster--Stump equation (2.1). -/
+lemma gammaTransform_X_sub_C_pow_gammaRootMap
+    {d m : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2 * m) ((X - C (gammaRootMap x)) ^ m * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) ^ m *
+        gammaTransform d γ :=
+  gammaTransform_X_sub_C_pow_gammaRootMap_of_ne hγ
+    (ne_of_lt hx.2) (ne_of_gt hx.1)
+
+/-- Extracting one gamma root produces the reciprocal transform-root pair in
+Hoster--Stump, Proposition 2.5, equation (2.1). -/
+lemma gammaTransform_X_sub_C_gammaRootMap
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) {x : ℝ}
+    (hx : x ∈ Set.Ioo (-1) 0) :
+    gammaTransform (d + 2) ((X - C (gammaRootMap x)) * γ) =
+      (C (-gammaRootMap x) * (X - C x) * (X - C x⁻¹)) *
+        gammaTransform d γ := by
+  simpa using
+    (gammaTransform_X_sub_C_pow_gammaRootMap (m := 1) hγ hx)
+
+/-- Multiplicity form of Hoster--Stump, Proposition 2.5, equation (2.1), on
+both reciprocal halves of the negative real axis. -/
+theorem rootMultiplicity_gammaTransform_of_neg
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) {x : ℝ} (hx : x < 0) (hx1 : x ≠ -1) :
+    (gammaTransform d γ).rootMultiplicity x =
+      γ.rootMultiplicity (gammaRootMap x) := by
+  let r := gammaRootMap x
+  let m := γ.rootMultiplicity r
+  obtain ⟨q, hγq, hq_not_dvd⟩ :=
+    γ.exists_eq_pow_rootMultiplicity_mul_and_not_dvd hγ r
+  change γ = (X - C r) ^ m * q at hγq
+  have hq : q ≠ 0 := by
+    intro hzero
+    apply hγ
+    rw [hγq, hzero, mul_zero]
+  have hdeg_eq : γ.natDegree = m + q.natDegree := by
+    rw [hγq, natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) hq,
+      natDegree_pow, natDegree_X_sub_C, mul_one]
+  have hm : 2 * m ≤ d := by
+    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
+    lia
+  have hqdeg : q.natDegree ≤ (d - 2 * m) / 2 := by
+    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
+    lia
+  have hx0 : x ≠ 0 := ne_of_lt hx
+  have htransform :=
+    gammaTransform_X_sub_C_pow_gammaRootMap_of_ne
+      (d := d - 2 * m) (m := m) hqdeg hx0 hx1
+  have hambient : d - 2 * m + 2 * m = d := by lia
+  have hfull := htransform
+  rw [hambient, ← hγq] at hfull
+  have h1x : 1 + x ≠ 0 := by
+    intro h
+    apply hx1
+    linarith
+  have hr0 : r ≠ 0 := by
+    dsimp [r, gammaRootMap]
+    exact div_ne_zero hx0 (pow_ne_zero _ h1x)
+  have hxxinv : x ≠ x⁻¹ := by
+    intro heq
+    have hmul : x * x⁻¹ = 1 := mul_inv_cancel₀ hx0
+    rw [← heq] at hmul
+    rcases lt_or_gt_of_ne hx1 with hlt | hgt <;> nlinarith
+  have hcore_not_root :
+      ¬(gammaTransform (d - 2 * m) q).IsRoot x := by
+    intro hroot
+    apply hq_not_dvd
+    rw [dvd_iff_isRoot]
+    simpa [r, gammaRootMap] using
+      isRoot_gamma_of_isRoot_gammaTransform hqdeg hx1 hroot
+  have hcore_eval : (gammaTransform (d - 2 * m) q).eval x ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hcore_not_root
+  let p :=
+    (C (-r) * (X - C x⁻¹)) ^ m * gammaTransform (d - 2 * m) q
+  have hp_eval : p.eval x ≠ 0 := by
+    dsimp [p]
+    simp only [eval_mul, eval_pow, eval_C, eval_sub, eval_X]
+    exact mul_ne_zero
+      (pow_ne_zero _ (mul_ne_zero (neg_ne_zero.mpr hr0)
+        (sub_ne_zero.mpr hxxinv)))
+      hcore_eval
+  have hp : p ≠ 0 := by
+    intro hzero
+    apply hp_eval
+    simp [hzero]
+  have hp_not_root : ¬p.IsRoot x := by
+    rw [Polynomial.IsRoot.def]
+    exact hp_eval
+  have hfactor :
+      gammaTransform d γ = p * (X - C x) ^ m := by
+    rw [hfull]
+    dsimp [p, r]
+    simp only [mul_pow]
+    ring
+  change (gammaTransform d γ).rootMultiplicity x = m
+  rw [hfactor, rootMultiplicity_mul_X_sub_C_pow hp,
+    rootMultiplicity_eq_zero hp_not_root, zero_add]
+
+/-- Multiplicity form of Hoster--Stump equation (2.1) on the preferred branch
+`(-1, 0)`. -/
+theorem rootMultiplicity_gammaTransform_of_mem_Ioo
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) {x : ℝ} (hx : x ∈ Set.Ioo (-1) 0) :
+    (gammaTransform d γ).rootMultiplicity x =
+      γ.rootMultiplicity (gammaRootMap x) :=
+  rootMultiplicity_gammaTransform_of_neg hγdeg hγ hx.2 (ne_of_gt hx.1)
+
+/-! ## Ordered root completion for Hoster--Stump Proposition 2.5
+
+The following private helpers formalize the two cases after equation (2.2).
+Preferred roots lie in `(-1, 0)`; their reciprocal roots lie below `-1`, and
+the replicated center block records the multiplicity of `-1`.
+-/
+
+private noncomputable def reciprocalCenterRoots (m : ℕ) (s : List ℝ) : List ℝ :=
+  (s.map fun x => x⁻¹).reverse ++ (List.replicate m (-1) ++ s)
+
+private lemma map_interleave (f : α → β) : ∀ l₁ l₂ : List α,
+    (l₁.interleave l₂).map f = (l₁.map f).interleave (l₂.map f)
+  | _, [] => by simp
+  | l₁, b :: l₂ => by
+      simp only [List.interleave_cons, List.map_cons]
+      rw [map_interleave f l₂ l₁]
+termination_by l₁ l₂ => l₁.length + l₂.length
+
+private lemma mem_interleave_of_lengths {x : α} : ∀ l₁ l₂ : List α,
+    (l₁.length = l₂.length ∨ l₁.length + 1 = l₂.length) →
+      x ∈ l₁.interleave l₂ → x ∈ l₁ ∨ x ∈ l₂
+  | _, [], _, hx => by simp at hx
+  | l₁, b :: l₂, hlen, hx => by
+      rw [List.interleave_cons, List.mem_cons] at hx
+      rcases hx with rfl | hx
+      · exact Or.inr (by simp)
+      · have htail : l₂.length = l₁.length ∨ l₂.length + 1 = l₁.length := by
+          simp only [List.length_cons] at hlen
+          lia
+        rcases mem_interleave_of_lengths l₂ l₁ htail hx with hx | hx
+        · exact Or.inr (by simp [hx])
+        · exact Or.inl hx
+termination_by l₁ l₂ => l₁.length + l₂.length
+
+private lemma interleave_replicate_succ (m : ℕ) (a : α) :
+    (List.replicate m a).interleave (List.replicate (m + 1) a) =
+      List.replicate (2 * m + 1) a := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+      rw [List.replicate_succ (n := m)]
+      rw [List.replicate_succ (n := m + 1)]
+      rw [List.interleave_cons, List.interleave_cons]
+      rw [ih]
+      rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by lia]
+      rfl
+
+private lemma isChain_reverse_inv_center_iff
+    {l : List ℝ} (m : ℕ)
+    (hlmem : ∀ x ∈ l, x ∈ Set.Ioo (-1 : ℝ) 0) :
+    ((l.reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ l)).IsChain (· ≤ ·) ↔
+      l.IsChain (· ≤ ·) := by
+  let a := l.reverse.map fun x => x⁻¹
+  let c := List.replicate (2 * m + 1) (-1 : ℝ)
+  constructor
+  · intro h
+    have hp := h.pairwise
+    rw [List.pairwise_append, List.pairwise_append] at hp
+    exact hp.2.1.2.1.isChain
+  · intro hl
+    have ha : a.Pairwise (· ≤ ·) := by
+      dsimp [a]
+      rw [List.pairwise_map, List.pairwise_reverse]
+      exact hl.pairwise.imp_of_mem fun hx hy hxy =>
+        inv_antitoneOn_Iio (hlmem _ hx).2 (hlmem _ hy).2 hxy
+    have hc : c.Pairwise (· ≤ ·) := by
+      simp [c]
+    have hac : (a ++ c).Pairwise (· ≤ ·) := by
+      rw [List.pairwise_append]
+      refine ⟨ha, hc, ?_⟩
+      intro x hx y hy
+      dsimp [a] at hx
+      rw [List.mem_map] at hx
+      rcases hx with ⟨z, hz, rfl⟩
+      have hzmem : z ∈ l := List.mem_reverse.mp hz
+      have hzlt : z⁻¹ < -1 := by
+        rw [inv_eq_one_div]
+        exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
+          (by nlinarith [(hlmem z hzmem).1])
+      have hy' : y = -1 := by
+        simpa [c] using hy
+      linarith
+    have hacl : ((a ++ c) ++ l).Pairwise (· ≤ ·) := by
+      rw [List.pairwise_append]
+      refine ⟨hac, hl.pairwise, ?_⟩
+      intro x hx y hy
+      rw [List.mem_append] at hx
+      rcases hx with hx | hx
+      · dsimp [a] at hx
+        rw [List.mem_map] at hx
+        rcases hx with ⟨z, hz, rfl⟩
+        have hzmem : z ∈ l := List.mem_reverse.mp hz
+        have hzlt : z⁻¹ < -1 := by
+          rw [inv_eq_one_div]
+          exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
+            (by nlinarith [(hlmem z hzmem).1])
+        linarith [(hlmem y hy).1]
+      · have hx' : x = -1 := by
+          simpa [c] using hx
+        linarith [(hlmem y hy).1]
+    simpa [a, c, List.append_assoc] using hacl.isChain
+
+private lemma interleave_reciprocalCenterRoots_same
+    {ss rs : List ℝ} (m : ℕ) (hlen : ss.length = rs.length) :
+    (reciprocalCenterRoots m ss).interleave
+        (reciprocalCenterRoots (m + 1) rs) =
+      ((rs.interleave ss).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ rs.interleave ss) := by
+  unfold reciprocalCenterRoots
+  rw [List.interleave_append_append_of_length_eq_length]
+  · rw [List.interleave_append_append_of_length_add_one_eq_length]
+    · rw [interleave_replicate_succ]
+      congr 1
+      simpa only [map_interleave, List.map_reverse] using
+        (List.reverse_interleave_of_length_eq_length
+          (l₁ := rs.map fun x => x⁻¹) (l₂ := ss.map fun x => x⁻¹)
+          (by simpa only [List.length_map] using hlen.symm)).symm
+    · simp
+  · simp [hlen]
+
+private lemma interleave_reciprocalCenterRoots_succ
+    {ss rs : List ℝ} (m : ℕ) (hlen : ss.length + 1 = rs.length) :
+    (reciprocalCenterRoots (m + 1) ss).interleave
+        (reciprocalCenterRoots m rs) =
+      ((ss.interleave rs).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ ss.interleave rs) := by
+  unfold reciprocalCenterRoots
+  rw [List.interleave_append_append_of_length_add_one_eq_length]
+  · rw [List.interleave_append_append_of_length_add_one_eq_length]
+    · rw [interleave_replicate_succ]
+      congr 1
+      simpa only [map_interleave, List.map_reverse] using
+        (List.reverse_interleave_of_length_add_one_eq_length
+          (l₁ := ss.map fun x => x⁻¹) (l₂ := rs.map fun x => x⁻¹)
+          (by simpa only [List.length_map] using hlen)).symm
+    · simp
+  · simp [hlen]
+
+/-- Equal gamma degrees give one additional central root on the right transform.
+This is the first backward case in Hoster--Stump, Proposition 2.5. -/
+private lemma listInterlaces_reciprocalCenterRoots_same_iff
+    {ss rs : List ℝ} (m : ℕ)
+    (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hlen : ss.length = rs.length) :
+    ListInterlaces (reciprocalCenterRoots m ss)
+        (reciprocalCenterRoots (m + 1) rs) ↔
+      ListAlternates ss rs := by
+  have hfull_len :
+      (reciprocalCenterRoots m ss).length + 1 =
+        (reciprocalCenterRoots (m + 1) rs).length := by
+    simp [reciprocalCenterRoots, hlen]
+    lia
+  rw [listInterlaces_iff_interleaves_of_length hfull_len]
+  constructor
+  · intro h
+    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
+    rw [interleave_reciprocalCenterRoots_same m hlen,
+      isChain_reverse_inv_center_iff m] at hc
+    · apply (listAlternates_iff_interleaves_of_length hlen).2
+      apply (List.interleaves_iff_length_isChain_interleave).2
+      exact ⟨Or.inl hlen.symm, hc⟩
+    · intro x hx
+      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      · exact hrs x hx
+      · exact hss x hx
+  · intro h
+    have hi := (listAlternates_iff_interleaves_of_length hlen).1 h
+    apply (List.interleaves_iff_length_isChain_interleave).2
+    refine ⟨Or.inr hfull_len, ?_⟩
+    rw [interleave_reciprocalCenterRoots_same m hlen,
+      isChain_reverse_inv_center_iff m]
+    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · intro x hx
+      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      · exact hrs x hx
+      · exact hss x hx
+
+/-- Successive gamma degrees remove one central root from the right transform.
+This is the second backward case in Hoster--Stump, Proposition 2.5. -/
+private lemma listInterlaces_reciprocalCenterRoots_succ_iff
+    {ss rs : List ℝ} (m : ℕ)
+    (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)
+    (hlen : ss.length + 1 = rs.length) :
+    ListInterlaces (reciprocalCenterRoots (m + 1) ss)
+        (reciprocalCenterRoots m rs) ↔
+      ListInterlaces ss rs := by
+  have hfull_len :
+      (reciprocalCenterRoots (m + 1) ss).length + 1 =
+        (reciprocalCenterRoots m rs).length := by
+    simp [reciprocalCenterRoots]
+    lia
+  rw [listInterlaces_iff_interleaves_of_length hfull_len]
+  constructor
+  · intro h
+    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
+    rw [interleave_reciprocalCenterRoots_succ m hlen,
+      isChain_reverse_inv_center_iff m] at hc
+    · apply (listInterlaces_iff_interleaves_of_length hlen).2
+      apply (List.interleaves_iff_length_isChain_interleave).2
+      exact ⟨Or.inr hlen, hc⟩
+    · intro x hx
+      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      · exact hss x hx
+      · exact hrs x hx
+  · intro h
+    have hi := (listInterlaces_iff_interleaves_of_length hlen).1 h
+    apply (List.interleaves_iff_length_isChain_interleave).2
+    refine ⟨Or.inr hfull_len, ?_⟩
+    rw [interleave_reciprocalCenterRoots_succ m hlen,
+      isChain_reverse_inv_center_iff m]
+    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · intro x hx
+      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      · exact hss x hx
+      · exact hrs x hx
+
+/-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equations
+(2.1) and (2.2): the roots of the gamma transform consist of reciprocal
+pairs, together with the exceptional roots at `-1` prescribed by the degree.
+-/
+theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
+    {d : Nat} {γ : Real[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0)
+    (hneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0) :
+    (gammaTransform d γ).roots =
+      ((gammaTransform d γ).roots.filter
+          (fun x => x ∈ Set.Ioo (-1 : Real) 0)).map (fun x => x⁻¹) +
+        Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) +
+          (gammaTransform d γ).roots.filter
+            (fun x => x ∈ Set.Ioo (-1 : Real) 0) := by
+  classical
+  let s := (gammaTransform d γ).roots.filter
+    (fun x => x ∈ Set.Ioo (-1 : Real) 0)
+  change (gammaTransform d γ).roots =
+    s.map (fun x => x⁻¹) +
+      Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s
+  have hs_Ioo {x : Real} (hx : x ∈ s) : x ∈ Set.Ioo (-1 : Real) 0 := by
+    change x ∈ (gammaTransform d γ).roots.filter
+      (fun z => z ∈ Set.Ioo (-1 : Real) 0) at hx
+    exact (Multiset.mem_filter.mp hx).2
+  have hinv_Ioo {x : Real} (hx : x < -1) : x⁻¹ ∈ Set.Ioo (-1 : Real) 0 := by
+    constructor
+    · rw [inv_eq_one_div]
+      exact (lt_div_iff_of_neg (by linarith)).2 (by nlinarith)
+    · exact inv_lt_zero.mpr (by linarith)
+  have hinv_lt_neg_one {x : Real} (hx : x ∈ Set.Ioo (-1 : Real) 0) :
+      x⁻¹ < -1 := by
+    rw [inv_eq_one_div]
+    exact (div_lt_iff_of_neg hx.2).2 (by nlinarith [hx.1])
+  refine Multiset.ext.mpr fun x => ?_
+  by_cases hxlt : x < -1
+  · have hx0 : x ≠ 0 := by linarith
+    have hxi := hinv_Ioo hxlt
+    have hcount_inv :
+        (gammaTransform d γ).roots.count x =
+          (s.map (fun z => z⁻¹)).count x := by
+      calc
+        (gammaTransform d γ).roots.count x =
+            (gammaTransform d γ).rootMultiplicity x :=
+          Polynomial.count_roots (gammaTransform d γ)
+        _ = γ.rootMultiplicity (gammaRootMap x) :=
+          rootMultiplicity_gammaTransform_of_neg hγdeg hγ
+            (by linarith) (by linarith)
+        _ = γ.rootMultiplicity (gammaRootMap x⁻¹) := by
+          rw [gammaRootMap_inv hx0]
+        _ = (gammaTransform d γ).rootMultiplicity x⁻¹ :=
+          (rootMultiplicity_gammaTransform_of_neg hγdeg hγ hxi.2
+            (ne_of_gt hxi.1)).symm
+        _ = (gammaTransform d γ).roots.count x⁻¹ :=
+          (Polynomial.count_roots (gammaTransform d γ)).symm
+        _ = s.count x⁻¹ := by
+          simpa [s] using
+            (Multiset.count_filter_of_pos
+              (s := (gammaTransform d γ).roots) (a := x⁻¹)
+              (p := fun z : Real => z ∈ Set.Ioo (-1) 0) hxi).symm
+        _ = (s.map (fun z => z⁻¹)).count x := by
+          simpa using
+            (Multiset.count_map_eq_count' (fun z : Real => z⁻¹) s
+              inv_injective x⁻¹).symm
+    have hs_zero : s.count x = 0 := by
+      apply Multiset.count_filter_of_neg
+      intro hxmem
+      linarith [hxmem.1]
+    have hrep_zero :
+        (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+      rw [Multiset.count_replicate]
+      simp [Ne.symm (ne_of_lt hxlt)]
+    calc
+      (gammaTransform d γ).roots.count x =
+          (s.map (fun z => z⁻¹)).count x := hcount_inv
+      _ = (s.map (fun z => z⁻¹) +
+          Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+        simp [Multiset.count_add, hs_zero, hrep_zero]
+  · by_cases hxeq : x = -1
+    · subst x
+      have hs_zero : s.count (-1) = 0 := by
+        apply Multiset.count_filter_of_neg
+        simp
+      have hinv_zero : (s.map (fun z => z⁻¹)).count (-1) = 0 := by
+        apply Multiset.count_eq_zero_of_notMem
+        rw [Multiset.mem_map]
+        rintro ⟨z, hzs, hz⟩
+        have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+        rw [hz] at hzlt
+        linarith
+      calc
+        (gammaTransform d γ).roots.count (-1) =
+            (gammaTransform d γ).rootMultiplicity (-1) :=
+          Polynomial.count_roots (gammaTransform d γ)
+        _ = d - 2 * γ.natDegree :=
+          rootMultiplicity_neg_one_gammaTransform hγdeg hγ
+        _ = (s.map (fun z => z⁻¹) +
+            Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count (-1) := by
+          simp [Multiset.count_add, hs_zero, hinv_zero]
+    · by_cases hxneg : x < 0
+      · have hxmem : x ∈ Set.Ioo (-1 : Real) 0 :=
+          ⟨lt_of_le_of_ne (le_of_not_gt hxlt) (Ne.symm hxeq), hxneg⟩
+        have hinv_zero : (s.map (fun z => z⁻¹)).count x = 0 := by
+          apply Multiset.count_eq_zero_of_notMem
+          rw [Multiset.mem_map]
+          rintro ⟨z, hzs, hz⟩
+          have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+          rw [hz] at hzlt
+          linarith [hxmem.1]
+        have hs_count :
+            (gammaTransform d γ).roots.count x = s.count x := by
+          simpa [s] using
+            (Multiset.count_filter_of_pos
+              (s := (gammaTransform d γ).roots) (a := x)
+              (p := fun z : Real => z ∈ Set.Ioo (-1) 0) hxmem).symm
+        have hrep_zero :
+            (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+          rw [Multiset.count_replicate]
+          simp [Ne.symm hxeq]
+        calc
+          (gammaTransform d γ).roots.count x = s.count x := hs_count
+          _ = (s.map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+            simp [Multiset.count_add, hinv_zero, hrep_zero]
+      · have hx_not_mem : x ∉ (gammaTransform d γ).roots := by
+          intro hxroot
+          exact hxneg (hneg x hxroot)
+        have hs_zero : s.count x = 0 := by
+          apply Multiset.count_filter_of_neg
+          intro hxmem
+          exact hxneg hxmem.2
+        have hinv_zero : (s.map (fun z => z⁻¹)).count x = 0 := by
+          apply Multiset.count_eq_zero_of_notMem
+          rw [Multiset.mem_map]
+          rintro ⟨z, hzs, hz⟩
+          have hzlt := hinv_lt_neg_one (hs_Ioo hzs)
+          rw [hz] at hzlt
+          linarith
+        have hrep_zero :
+            (Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real)).count x = 0 := by
+          rw [Multiset.count_replicate]
+          simp [Ne.symm hxeq]
+        calc
+          (gammaTransform d γ).roots.count x = 0 :=
+            Multiset.count_eq_zero_of_notMem hx_not_mem
+          _ = (s.map (fun z => z⁻¹) +
+              Multiset.replicate (d - 2 * γ.natDegree) (-1 : Real) + s).count x := by
+            simp [Multiset.count_add, hs_zero, hinv_zero, hrep_zero]
+
+/-- Exact root-multiset form of Hoster--Stump, Proposition 2.5, equation
+(2.1): the negative gamma roots are the images of the transform roots on the
+preferred reciprocal branch `(-1, 0)`, with multiplicity. -/
+theorem roots_eq_map_filter_roots_gammaTransform
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2) (hγ : γ ≠ 0)
+    (hγneg : ∀ y ∈ γ.roots, y < 0) :
+    γ.roots =
+      ((gammaTransform d γ).roots.filter
+        (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).map gammaRootMap := by
+  classical
+  let s := (gammaTransform d γ).roots.filter
+    (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)
+  have hs_Ioo {x : ℝ} (hx : x ∈ s) : x ∈ Set.Ioo (-1 : ℝ) 0 := by
+    change x ∈ (gammaTransform d γ).roots.filter
+      (fun z => z ∈ Set.Ioo (-1 : ℝ) 0) at hx
+    exact (Multiset.mem_filter.mp hx).2
+  refine Multiset.ext.mpr fun y => ?_
+  by_cases hy : y < 0
+  · obtain ⟨x, hx, hxy⟩ := exists_mem_Ioo_gammaRootMap_eq hy
+    have hcount_map : (s.map gammaRootMap).count y = s.count x := by
+      rw [← hxy]
+      calc
+        (s.map gammaRootMap).count (gammaRootMap x) =
+            (s.filter
+              (fun z => gammaRootMap x = gammaRootMap z)).card :=
+          Multiset.count_map gammaRootMap s (gammaRootMap x)
+        _ = (s.filter (fun z => x = z)).card := by
+          exact congrArg Multiset.card <|
+            Multiset.filter_congr fun z hz =>
+              strictMonoOn_gammaRootMap.injOn.eq_iff hx (hs_Ioo hz)
+        _ = s.count x :=
+          (Multiset.count_eq_card_filter_eq s x).symm
+    calc
+      γ.roots.count y = γ.rootMultiplicity y :=
+        Polynomial.count_roots γ
+      _ = γ.rootMultiplicity (gammaRootMap x) := by rw [hxy]
+      _ = (gammaTransform d γ).rootMultiplicity x :=
+        (rootMultiplicity_gammaTransform_of_mem_Ioo hγdeg hγ hx).symm
+      _ = (gammaTransform d γ).roots.count x :=
+        (Polynomial.count_roots (gammaTransform d γ)).symm
+      _ = s.count x := by
+        simpa [s] using
+          (Multiset.count_filter_of_pos
+            (s := (gammaTransform d γ).roots) (a := x)
+            (p := fun z : ℝ => z ∈ Set.Ioo (-1) 0) hx).symm
+      _ = (s.map gammaRootMap).count y := hcount_map.symm
+      _ = (((gammaTransform d γ).roots.filter
+          (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).map gammaRootMap).count y := by
+        rfl
+  · have hy_not_mem : y ∉ γ.roots := by
+      intro hyroot
+      exact hy (hγneg y hyroot)
+    have hy_not_map : y ∉ s.map gammaRootMap := by
+      rw [Multiset.mem_map]
+      rintro ⟨x, hxs, hxy⟩
+      apply hy
+      rw [← hxy]
+      unfold gammaRootMap
+      exact div_neg_of_neg_of_pos (hs_Ioo hxs).2
+        (sq_pos_of_pos (by linarith [(hs_Ioo hxs).1]))
+    calc
+      γ.roots.count y = 0 :=
+        Multiset.count_eq_zero_of_notMem hy_not_mem
+      _ = (s.map gammaRootMap).count y :=
+        (Multiset.count_eq_zero_of_notMem hy_not_map).symm
+      _ = (((gammaTransform d γ).roots.filter
+          (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).map gammaRootMap).count y := by
+        rfl
 
 lemma hasNonnegCoeffs_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     HasNonnegCoeffs (X - C r * (X + 1) ^ 2) := by
@@ -1051,4 +1839,362 @@ theorem gammaRealRootedIffPolynomialRealRootedNonpos :
       (d := d) (γ := γ) hγdeg hp.1.1 hp.1.2 hp.2
 
 end
+private lemma roots_neg_of_nonnegCoeffs_of_coeff_zero_ne
+    {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hzero : p.coeff 0 ≠ 0) :
+    ∀ x ∈ p.roots, x < 0 := by
+  intro x hx
+  have hxle := roots_nonpos_of_hasNonnegCoeffs hnn x hx
+  have hxne : x ≠ 0 := by
+    intro hxeq
+    subst x
+    have hroot : p.eval 0 = 0 := isRoot_of_mem_roots hx
+    apply hzero
+    rw [Polynomial.coeff_zero_eq_eval_zero]
+    exact hroot
+  exact lt_of_le_of_ne hxle hxne
+
+private noncomputable def preferredRoots (d : ℕ) (γ : ℝ[X]) : List ℝ :=
+  ((gammaTransform d γ).roots.filter
+    (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).sort (· ≤ ·)
+
+private lemma preferredRoots_pairwise (d : ℕ) (γ : ℝ[X]) :
+    (preferredRoots d γ).Pairwise (· ≤ ·) := by
+  exact Multiset.pairwise_sort _ _
+
+private lemma mem_preferredRoots {d : ℕ} {γ : ℝ[X]} {x : ℝ}
+    (hx : x ∈ preferredRoots d γ) : x ∈ Set.Ioo (-1 : ℝ) 0 := by
+  rw [preferredRoots, Multiset.mem_sort] at hx
+  exact (Multiset.mem_filter.mp hx).2
+
+private lemma coe_map_gammaRootMap_preferredRoots
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) (hγneg : ∀ x ∈ γ.roots, x < 0) :
+    (↑((preferredRoots d γ).map gammaRootMap) : Multiset ℝ) = γ.roots := by
+  change Multiset.map gammaRootMap (↑(preferredRoots d γ) : Multiset ℝ) = γ.roots
+  rw [show (↑(preferredRoots d γ) : Multiset ℝ) =
+    (gammaTransform d γ).roots.filter
+      (fun x => x ∈ Set.Ioo (-1 : ℝ) 0) by simp [preferredRoots]]
+  exact (roots_eq_map_filter_roots_gammaTransform hγdeg hγ hγneg).symm
+
+private lemma length_preferredRoots
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) (hγsplits : γ.Splits)
+    (hγneg : ∀ x ∈ γ.roots, x < 0) :
+    (preferredRoots d γ).length = γ.natDegree := by
+  have hcoe := coe_map_gammaRootMap_preferredRoots hγdeg hγ hγneg
+  have hcard := congrArg Multiset.card hcoe
+  simpa [card_roots_of_splits hγsplits] using hcard
+
+private lemma map_gammaRootMap_preferredRoots_pairwise (d : ℕ) (γ : ℝ[X]) :
+    ((preferredRoots d γ).map gammaRootMap).Pairwise (· ≤ ·) := by
+  rw [List.pairwise_map]
+  exact (preferredRoots_pairwise d γ).imp_of_mem fun hx hy hxy =>
+    strictMonoOn_gammaRootMap.monotoneOn
+      (mem_preferredRoots hx) (mem_preferredRoots hy) hxy
+
+private lemma Prec.sorted_roots_shape {f g : ℝ[X]} (h : Prec f g) :
+    let ss := f.roots.sort (· ≤ ·)
+    let rs := g.roots.sort (· ≤ ·)
+    ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)) := by
+  rcases h with ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_sort : ss = f.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hss (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hss_eq.trans (Multiset.sort_eq _ _).symm)
+  have hrs_sort : rs = g.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hrs (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hrs_eq.trans (Multiset.sort_eq _ _).symm)
+  simpa [hss_sort, hrs_sort] using hshape
+
+private lemma sort_roots_eq_map_gammaRootMap_preferredRoots
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) (hγneg : ∀ x ∈ γ.roots, x < 0) :
+    γ.roots.sort (· ≤ ·) = (preferredRoots d γ).map gammaRootMap := by
+  apply List.Perm.eq_of_pairwise' (Multiset.pairwise_sort _ _)
+    (map_gammaRootMap_preferredRoots_pairwise d γ)
+  exact Multiset.coe_eq_coe.mp
+    ((Multiset.sort_eq _ _).trans
+      (coe_map_gammaRootMap_preferredRoots hγdeg hγ hγneg).symm)
+
+private lemma reciprocalCenterRoots_pairwise
+    {s : List ℝ} (m : ℕ) (hs : s.Pairwise (· ≤ ·))
+    (hsmem : ∀ x ∈ s, x ∈ Set.Ioo (-1 : ℝ) 0) :
+    (reciprocalCenterRoots m s).Pairwise (· ≤ ·) := by
+  let a := s.reverse.map fun x => x⁻¹
+  let c := List.replicate m (-1 : ℝ)
+  have ha : a.Pairwise (· ≤ ·) := by
+    dsimp [a]
+    rw [List.pairwise_map, List.pairwise_reverse]
+    exact hs.imp_of_mem fun hx hy hxy =>
+      inv_antitoneOn_Iio (hsmem _ hx).2 (hsmem _ hy).2 hxy
+  have hc : c.Pairwise (· ≤ ·) := by simp [c]
+  have hac : (a ++ c).Pairwise (· ≤ ·) := by
+    rw [List.pairwise_append]
+    refine ⟨ha, hc, ?_⟩
+    intro x hx y hy
+    dsimp [a] at hx
+    rw [List.mem_map] at hx
+    rcases hx with ⟨z, hz, rfl⟩
+    have hzmem : z ∈ s := List.mem_reverse.mp hz
+    have hzlt : z⁻¹ < -1 := by
+      rw [inv_eq_one_div]
+      exact (div_lt_iff_of_neg (hsmem z hzmem).2).2
+        (by nlinarith [(hsmem z hzmem).1])
+    have hy' : y = -1 := by
+      dsimp [c] at hy
+      exact (List.mem_replicate.mp hy).2
+    linarith
+  have hacs : ((a ++ c) ++ s).Pairwise (· ≤ ·) := by
+    rw [List.pairwise_append]
+    refine ⟨hac, hs, ?_⟩
+    intro x hx y hy
+    rw [List.mem_append] at hx
+    rcases hx with hx | hx
+    · dsimp [a] at hx
+      rw [List.mem_map] at hx
+      rcases hx with ⟨z, hz, rfl⟩
+      have hzmem : z ∈ s := List.mem_reverse.mp hz
+      have hzlt : z⁻¹ < -1 := by
+        rw [inv_eq_one_div]
+        exact (div_lt_iff_of_neg (hsmem z hzmem).2).2
+          (by nlinarith [(hsmem z hzmem).1])
+      linarith [(hsmem y hy).1]
+    · have hx' : x = -1 := by
+        dsimp [c] at hx
+        exact (List.mem_replicate.mp hx).2
+      linarith [(hsmem y hy).1]
+  simpa [reciprocalCenterRoots, a, c, List.append_assoc] using hacs
+
+private lemma coe_reciprocalCenterRoots_eq_roots
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) (hneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0) :
+    (↑(reciprocalCenterRoots (d - 2 * γ.natDegree)
+      (preferredRoots d γ)) : Multiset ℝ) = (gammaTransform d γ).roots := by
+  let s := preferredRoots d γ
+  unfold reciprocalCenterRoots
+  calc
+    (↑((s.map fun x => x⁻¹).reverse ++
+        (List.replicate (d - 2 * γ.natDegree) (-1 : ℝ) ++ s)) : Multiset ℝ) =
+        (↑((s.map fun x => x⁻¹).reverse) : Multiset ℝ) +
+          ((↑(List.replicate (d - 2 * γ.natDegree) (-1 : ℝ)) : Multiset ℝ) +
+            (↑s : Multiset ℝ)) := by
+      rfl
+    _ = Multiset.map (fun x : ℝ => x⁻¹) (↑s : Multiset ℝ) +
+          (Multiset.replicate (d - 2 * γ.natDegree) (-1) +
+            (↑s : Multiset ℝ)) := by
+      rw [Multiset.coe_reverse, Multiset.coe_replicate]
+      rfl
+    _ = (gammaTransform d γ).roots := by
+      rw [show (↑s : Multiset ℝ) =
+        (gammaTransform d γ).roots.filter
+          (fun x => x ∈ Set.Ioo (-1 : ℝ) 0) by simp [s, preferredRoots]]
+      simpa only [add_assoc] using
+        (roots_gammaTransform_eq_reciprocal_add_neg_one_add hγdeg hγ hneg).symm
+
+private lemma sort_roots_gammaTransform_eq_reciprocalCenterRoots
+    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
+    (hγ : γ ≠ 0) (hneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0) :
+    (gammaTransform d γ).roots.sort (· ≤ ·) =
+      reciprocalCenterRoots (d - 2 * γ.natDegree) (preferredRoots d γ) := by
+  apply List.Perm.eq_of_pairwise' (Multiset.pairwise_sort _ _)
+    (reciprocalCenterRoots_pairwise _ (preferredRoots_pairwise d γ)
+      (fun _ hx => mem_preferredRoots hx))
+  exact Multiset.coe_eq_coe.mp
+    ((Multiset.sort_eq _ _).trans
+      (coe_reciprocalCenterRoots_eq_roots hγdeg hγ hneg).symm)
+
+/-- Hoster--Stump, Proposition 2.5: proper position is equivalent before and
+after applying adjacent-degree gamma transforms. -/
+theorem prec_gammaTransform_succ_iff
+    {d : ℕ} {γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2)
+    (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hγnn : HasNonnegCoeffs γ)
+    (hδnn : HasNonnegCoeffs δ)
+    (hγ0 : γ.coeff 0 ≠ 0)
+    (hδ0 : δ.coeff 0 ≠ 0) :
+    Prec (gammaTransform d γ) (gammaTransform (d + 1) δ) ↔
+      Prec γ δ := by
+  have hγ : γ ≠ 0 := by
+    intro hzero
+    apply hγ0
+    simp [hzero]
+  have hδ : δ ≠ 0 := by
+    intro hzero
+    apply hδ0
+    simp [hzero]
+  have hγmul : γ.natDegree * 2 ≤ d := Nat.mul_le_of_le_div 2 _ _ hγdeg
+  have hδmul : δ.natDegree * 2 ≤ d + 1 := Nat.mul_le_of_le_div 2 _ _ hδdeg
+  have hTγnn : HasNonnegCoeffs (gammaTransform d γ) :=
+    hasNonnegCoeffs_gammaTransform hγnn
+  have hTδnn : HasNonnegCoeffs (gammaTransform (d + 1) δ) :=
+    hasNonnegCoeffs_gammaTransform hδnn
+  have hTγ0 : (gammaTransform d γ).coeff 0 ≠ 0 := by
+    simpa [coeff_zero_gammaTransform] using hγ0
+  have hTδ0 : (gammaTransform (d + 1) δ).coeff 0 ≠ 0 := by
+    simpa [coeff_zero_gammaTransform] using hδ0
+  have hTγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTγnn hTγ0
+  have hTδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTδnn hTδ0
+  let ss := preferredRoots d γ
+  let rs := preferredRoots (d + 1) δ
+  have hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0 := by
+    exact fun _ hx => mem_preferredRoots hx
+  have hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0 := by
+    exact fun _ hx => mem_preferredRoots hx
+  constructor
+  · intro hTprec
+    have hγrr :=
+      isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+        hγdeg hTprec.1.1 hTprec.1.2
+        (roots_nonpos_of_hasNonnegCoeffs hTγnn)
+    have hδrr :=
+      isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+        hδdeg hTprec.2.1.1 hTprec.2.1.2
+        (roots_nonpos_of_hasNonnegCoeffs hTδnn)
+    have hsslen : ss.length = γ.natDegree := by
+      exact length_preferredRoots hγdeg hγ hγrr.1.2
+        (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0)
+    have hrslen : rs.length = δ.natDegree := by
+      exact length_preferredRoots hδdeg hδ hδrr.1.2
+        (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0)
+    have hmult := rootMultiplicity_bounds_of_prec hTprec (-1)
+    rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
+      rootMultiplicity_neg_one_gammaTransform hδdeg hδ] at hmult
+    have hdegcases : γ.natDegree = δ.natDegree ∨
+        γ.natDegree + 1 = δ.natDegree := by
+      lia
+    have hsorted := hTprec.sorted_roots_shape
+    rw [sort_roots_gammaTransform_eq_reciprocalCenterRoots hγdeg hγ hTγneg,
+      sort_roots_gammaTransform_eq_reciprocalCenterRoots hδdeg hδ hTδneg] at hsorted
+    have hfull :
+        ListInterlaces
+          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
+          (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
+      rcases hsorted with hsorted | hsorted
+      · exact hsorted.2
+      · exfalso
+        simp [reciprocalCenterRoots] at hsorted
+        lia
+    have hpreferred :
+        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+          (ss.length = rs.length ∧ ListAlternates ss rs)) := by
+      rcases hdegcases with hsame | hsucc
+      · right
+        have hlen : ss.length = rs.length := by lia
+        refine ⟨hlen, ?_⟩
+        have hcenter : d + 1 - 2 * δ.natDegree =
+            (d - 2 * γ.natDegree) + 1 := by
+          lia
+        rw [hcenter] at hfull
+        exact (listInterlaces_reciprocalCenterRoots_same_iff
+          (d - 2 * γ.natDegree) hss hrs hlen).1 hfull
+      · left
+        have hlen : ss.length + 1 = rs.length := by lia
+        refine ⟨hlen, ?_⟩
+        have hcenter : d - 2 * γ.natDegree =
+            (d + 1 - 2 * δ.natDegree) + 1 := by
+          lia
+        rw [hcenter] at hfull
+        exact (listInterlaces_reciprocalCenterRoots_succ_iff
+          (d + 1 - 2 * δ.natDegree) hss hrs hlen).1 hfull
+    have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
+    have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
+    refine ⟨hγrr.1, hδrr.1, ss.map gammaRootMap, rs.map gammaRootMap,
+      ?_, ?_, coe_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
+      coe_map_gammaRootMap_preferredRoots hδdeg hδ hδneg, ?_⟩
+    · exact map_gammaRootMap_preferredRoots_pairwise d γ
+    · exact map_gammaRootMap_preferredRoots_pairwise (d + 1) δ
+    · rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+      · left
+        refine ⟨by simpa using hlen, ?_⟩
+        apply (listInterlaces_iff_interleaves_of_length (by simpa using hlen)).2
+        apply (interleaves_map_gammaRootMap_iff hss hrs).2
+        exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
+      · right
+        refine ⟨by simpa using hlen, ?_⟩
+        apply (listAlternates_iff_interleaves_of_length (by simpa using hlen)).2
+        apply (interleaves_map_gammaRootMap_iff hrs hss).2
+        exact (listAlternates_iff_interleaves_of_length hlen).1 halt
+  · intro hprec
+    have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
+    have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
+    have hsslen : ss.length = γ.natDegree :=
+      length_preferredRoots hγdeg hγ hprec.1.2 hγneg
+    have hrslen : rs.length = δ.natDegree :=
+      length_preferredRoots hδdeg hδ hprec.2.1.2 hδneg
+    have hsorted := hprec.sorted_roots_shape
+    rw [sort_roots_eq_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
+      sort_roots_eq_map_gammaRootMap_preferredRoots hδdeg hδ hδneg] at hsorted
+    have hpreferred :
+        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+          (ss.length = rs.length ∧ ListAlternates ss rs)) := by
+      rcases hsorted with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+      · left
+        have hlen' : ss.length + 1 = rs.length := by simpa using hlen
+        refine ⟨hlen', ?_⟩
+        apply (listInterlaces_iff_interleaves_of_length hlen').2
+        apply (interleaves_map_gammaRootMap_iff hss hrs).1
+        exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
+      · right
+        have hlen' : ss.length = rs.length := by simpa using hlen
+        refine ⟨hlen', ?_⟩
+        apply (listAlternates_iff_interleaves_of_length hlen').2
+        apply (interleaves_map_gammaRootMap_iff hrs hss).1
+        exact (listAlternates_iff_interleaves_of_length hlen).1 halt
+    have hTγrr :=
+      isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
+        hγdeg hγ hprec.1.2 hγnn
+    have hTδrr :=
+      isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
+        hδdeg hδ hprec.2.1.2 hδnn
+    rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+    · have hcenter : d - 2 * γ.natDegree =
+          (d + 1 - 2 * δ.natDegree) + 1 := by
+        rw [hsslen, hrslen] at hlen
+        lia
+      have hfull :
+          ListInterlaces
+            (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
+            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
+        rw [hcenter]
+        exact (listInterlaces_reciprocalCenterRoots_succ_iff
+          (d + 1 - 2 * δ.natDegree) hss hrs hlen).2 hint
+      have hfull_len :
+          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
+            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
+        simp [reciprocalCenterRoots, hsslen, hrslen]
+        lia
+      have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
+      refine ⟨hTγrr, hTδrr,
+        reciprocalCenterRoots (d - 2 * γ.natDegree) ss,
+        reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs,
+        hi.pairwise_left, hi.pairwise_right,
+        coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
+        coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
+        Or.inl ⟨hfull_len, hfull⟩⟩
+    · have hcenter : d + 1 - 2 * δ.natDegree =
+          (d - 2 * γ.natDegree) + 1 := by
+        rw [hsslen, hrslen] at hlen
+        lia
+      have hfull :
+          ListInterlaces
+            (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
+            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
+        rw [hcenter]
+        exact (listInterlaces_reciprocalCenterRoots_same_iff
+          (d - 2 * γ.natDegree) hss hrs hlen).2 halt
+      have hfull_len :
+          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
+            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
+        simp [reciprocalCenterRoots, hsslen, hrslen]
+        lia
+      have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
+      refine ⟨hTγrr, hTδrr,
+        reciprocalCenterRoots (d - 2 * γ.natDegree) ss,
+        reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs,
+        hi.pairwise_left, hi.pairwise_right,
+        coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
+        coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
+        Or.inl ⟨hfull_len, hfull⟩⟩
+
 end RealRooted

@@ -1,16 +1,27 @@
 import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.RootContinuity
 import RealRooted.RootCountJump
 import RealRooted.SameDegreeCountFromAnalytic
 import RealRooted.SameDegreeCubicSecondRootFromAnalytic
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.Tactic.Lookup
+import RealRooted.Tactic.SideGoals
 
 /-!
 # Root-count and continuity tactic frontends
 
 Thin wrappers for public root-count and local-continuity endpoints used in
 succ-degree positive-parameter arguments.
+
+For a constant-degree split pencil on `[0, μ]` that avoids a fixed threshold,
+use `rr_rightFamily_card_roots_gt_eq_zero_param`. The sequence sibling applies
+the same proved endpoint pointwise. Their bare forms infer the four complete
+certificate families from the local context; neither tactic proves an
+interlacing or proper-position conclusion. The target orientation is the
+upper-endpoint count equal to the normalized zero-endpoint count:
+`card (roots (f + C μ * g) above x) = card (roots f above x)`.
 -/
 
 open Polynomial
@@ -78,6 +89,22 @@ theorem positiveParameter_local_lower_count_sequence
                 (fun q => |q - a| < ρ i)).card := fun i =>
   RealRooted.positiveParameter_local_lower_count
     (hsplit i) (hdeg i) (hμ i) (hρ i)
+
+theorem rightFamily_card_roots_gt_eq_zero_param_sequence
+    {F G : Nat → ℝ[X]} {x μ : Nat → ℝ}
+    (hμ_pos : ∀ i : Nat, 0 < μ i)
+    (hdeg : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+      (F i + C η * G i).natDegree =
+        (F i + C (0 : ℝ) * G i).natDegree)
+    (hsplit : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+      (F i + C η * G i).Splits)
+    (hne : ∀ i : Nat, ∀ η ∈ Set.Icc (0 : ℝ) (μ i),
+      ¬ (F i + C η * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i + C (μ i) * G i).roots.filter (x i < ·)).card =
+        ((F i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+    (hμ_pos i) (hdeg i) (hsplit i) (hne i)
 
 theorem rightFamily_card_roots_gt_eq_local_lower_sequence
     {F G : Nat → ℝ[X]} {μ₀ μ₁ x : Nat → ℝ}
@@ -1063,6 +1090,28 @@ syntax (name := rr_positiveParameter_local_lower_count_sequence_named)
     "parameter_mem" ":=" term ","
     "radius_pos" ":=" term :
   tactic
+
+syntax (name := rr_rightFamily_card_roots_gt_eq_zero_param_named)
+  "rr_rightFamily_card_roots_gt_eq_zero_param" " using "
+    "parameter_pos" ":=" term ","
+    "degree_on_interval" ":=" term ","
+    "splits_on_interval" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_rightFamily_card_roots_gt_eq_zero_param_inferred)
+  "rr_rightFamily_card_roots_gt_eq_zero_param" : tactic
+
+syntax (name := rr_rightFamily_card_roots_gt_eq_zero_param_sequence_named)
+  "rr_rightFamily_card_roots_gt_eq_zero_param_sequence" " using "
+    "parameter_pos" ":=" term ","
+    "degree_on_interval" ":=" term ","
+    "splits_on_interval" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_rightFamily_card_roots_gt_eq_zero_param_sequence_inferred)
+  "rr_rightFamily_card_roots_gt_eq_zero_param_sequence" : tactic
 
 syntax (name := rr_rightFamily_card_roots_gt_eq_local_lower_named)
   "rr_rightFamily_card_roots_gt_eq_local_lower" " using "
@@ -2077,6 +2126,38 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.positiveParameter_local_lower_count_sequence
           $hsplit $hdeg $hμ $hρ)
+  | `(tactic|
+      rr_rightFamily_card_roots_gt_eq_zero_param using
+        parameter_pos := $hμ:term,
+        degree_on_interval := $hdeg:term,
+        splits_on_interval := $hsplit:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact
+          RealRooted.rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+            $hμ $hdeg $hsplit $hne)
+  | `(tactic| rr_rightFamily_card_roots_gt_eq_zero_param) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
+            ?_ ?_ ?_ ?_)
+          with rr_lookup)
+  | `(tactic|
+      rr_rightFamily_card_roots_gt_eq_zero_param_sequence using
+        parameter_pos := $hμ:term,
+        degree_on_interval := $hdeg:term,
+        splits_on_interval := $hsplit:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.rightFamily_card_roots_gt_eq_zero_param_sequence
+            $hμ $hdeg $hsplit $hne)
+  | `(tactic| rr_rightFamily_card_roots_gt_eq_zero_param_sequence) =>
+      `(tactic|
+        rr_refine_then
+          (RealRooted.Tactic.rightFamily_card_roots_gt_eq_zero_param_sequence
+            ?_ ?_ ?_ ?_)
+          with rr_lookup)
   | `(tactic|
       rr_rightFamily_card_roots_gt_eq_local_lower using
         interval_order := $hμ₁:term,

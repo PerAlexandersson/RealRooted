@@ -1,13 +1,14 @@
 import RealRooted.GeneralizedSnakePosets.Statements
 import RealRooted.MatrixInterlacing
+import RealRooted.PFPolynomial
 
 /-!
 # Braun-Jal matrix-induction step
 
-This module isolates the local two-row matrix step used in Braun-Jal's proof
-of Theorem 4.1.  The theorem statements stay close to the paper recurrence:
-the matrix with rows `[P_{m-1}, G_{m-1}]` and `[P_m, G_m]` acts on the
-induction pair `[f, X * g]`.
+This module isolates the local two-row matrix step used in Braun--Jal's proof
+of Theorem 4.1 (arXiv:2607.00922v1, p. 10).  The source matrix has rows
+`[P_{m-1}, G_{m-1}]` and `[Q_m, H_m]`, where `Q_m = P_m - P_{m-1}` and
+`H_m = G_m - G_{m-1}`, and acts on the induction pair `[f, X * g]`.
 -/
 
 open Polynomial
@@ -19,7 +20,8 @@ namespace GeneralizedSnakePosets
 
 /-- The two-row matrix for one Braun-Jal Theorem 4.1 induction step. -/
 def theorem41StepMatrix (P G : ℕ → ℝ[X]) (m : ℕ) : List (List ℝ[X]) :=
-  [[P (m - 1), G (m - 1)], [P m, G m]]
+  [[P (m - 1), G (m - 1)],
+    [narayanaDifference P m, auxiliaryDifference G m]]
 
 @[simp] theorem theorem41StepMatrix_length (P G : ℕ → ℝ[X]) (m : ℕ) :
     (theorem41StepMatrix P G m).length = 2 := by
@@ -30,18 +32,22 @@ theorem theorem41StepMatrix_rect (P G : ℕ → ℝ[X]) (m : ℕ) :
     ∀ row ∈ theorem41StepMatrix P G m, row.length = 2 := by
   intro row hrow
   have hrow' :
-      row = [P (m - 1), G (m - 1)] ∨ row = [P m, G m] := by
+      row = [P (m - 1), G (m - 1)] ∨
+        row = [narayanaDifference P m, auxiliaryDifference G m] := by
     simpa [theorem41StepMatrix] using hrow
   rcases hrow' with rfl | rfl <;> simp
 
 /-- Entrywise nonnegativity for the Braun-Jal step matrix. -/
 theorem theorem41StepMatrix_entry_nonneg {P G : ℕ → ℝ[X]} {m : ℕ}
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n)) :
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : HasNonnegCoeffs (auxiliaryDifference G m)) :
     ∀ row ∈ theorem41StepMatrix P G m, ∀ p ∈ row, HasNonnegCoeffs p := by
   intro row hrow p hp
   have hrow' :
-      row = [P (m - 1), G (m - 1)] ∨ row = [P m, G m] := by
+      row = [P (m - 1), G (m - 1)] ∨
+        row = [narayanaDifference P m, auxiliaryDifference G m] := by
     simpa [theorem41StepMatrix] using hrow
   rcases hrow' with rfl | rfl
   · have hp' : p = P (m - 1) ∨ p = G (m - 1) := by
@@ -49,18 +55,20 @@ theorem theorem41StepMatrix_entry_nonneg {P G : ℕ → ℝ[X]} {m : ℕ}
     rcases hp' with rfl | rfl
     · exact hP_nonneg (m - 1)
     · exact hG_nonneg (m - 1)
-  · have hp' : p = P m ∨ p = G m := by
+  · have hp' :
+        p = narayanaDifference P m ∨ p = auxiliaryDifference G m := by
       simpa using hp
     rcases hp' with rfl | rfl
-    · exact hP_nonneg m
-    · exact hG_nonneg m
+    · exact hQ_nonneg
+    · exact hH_nonneg
 
 /-- The step matrix action gives the two recurrence sums appearing in the
 nonconstant induction step. -/
 theorem theorem41StepMatrix_action_pair
     (P G : ℕ → ℝ[X]) (m : ℕ) (f g : ℝ[X]) :
     matPolyAction (theorem41StepMatrix P G m) [f, X * g] =
-      [f * P (m - 1) + X * g * G (m - 1), f * P m + X * g * G m] := by
+      [f * P (m - 1) + X * g * G (m - 1),
+        f * narayanaDifference P m + X * g * auxiliaryDifference G m] := by
   simp [theorem41StepMatrix, matPolyAction, mul_comm, mul_left_comm]
 
 /-- The induction hypothesis `g << f` makes `[f, X * g]` a nonnegative
@@ -79,17 +87,84 @@ theorem theorem41InputPair_interlacingSeqNonneg {f g : ℝ[X]}
   · rw [isInterlacingSeq_iff_pairwise]
     simp [prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg]
 
-/-- Claim `(7)` supplies the nontrivial cross `2 x 2` affine test for the
-Braun-Jal step matrix. -/
-theorem theorem41StepMatrix_cross_has2x2_of_claim7
+/-- Claim `(6)` is exactly the cross `2 x 2` affine test for the source matrix
+in Braun--Jal's proof of Theorem 4.1. -/
+theorem theorem41StepMatrix_cross_has2x2_of_matrixClaim
+    {P G : ℕ → ℝ[X]} (hclaim : Theorem41MatrixClaimStatement P G)
+    {m : ℕ} (hm : 2 ≤ m) :
+    Has2x2InterlacingProperty (P (m - 1)) (G (m - 1))
+      (narayanaDifference P m) (auxiliaryDifference G m) := by
+  intro s t hs ht
+  exact hclaim hm hs.le ht.le
+
+/-- Claim `(6)` and the source matrix send the induction pair to a proper-position
+pair.  Repeated column indices use the real-rootedness already contained in the
+same Claim `(6)` instance. -/
+theorem theorem41Step_difference_prec_of_matrixClaim
+    {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
+    (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
+    (hP_ne : P (m - 1) ≠ 0)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : HasNonnegCoeffs (auxiliaryDifference G m))
+    (hgf : Prec g f)
+    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
+    Prec (f * P (m - 1) + X * g * G (m - 1))
+      (f * narayanaDifference P m + X * g * auxiliaryDifference G m) := by
+  have hQ_ne : narayanaDifference P m ≠ 0 := by
+    have hzero := hclaim (m := m) (lam := 0) (mu := 0) hm (by norm_num) (by norm_num)
+    simpa using hzero.2.1.1
+  have hpair := prec_zipWith_sum_pair_of_2x2
+    (n := 2) (row₁ := [P (m - 1), G (m - 1)])
+    (row₂ := [narayanaDifference P m, auxiliaryDifference G m])
+    (fs := [f, X * g])
+    (hn := by decide)
+    (hrow₁_len := by simp)
+    (hrow₂_len := by simp)
+    (hrow₁_head_ne := by simpa using hP_ne)
+    (hrow₂_head_ne := by simpa using hQ_ne)
+    (hrow₁_nonneg := by
+      intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hP_nonneg (m - 1)
+      · exact hG_nonneg (m - 1))
+    (hrow₂_nonneg := by
+      intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hQ_nonneg
+      · exact hH_nonneg)
+    (h2x2 := by
+      intro j₁ j₂ hj
+      fin_cases j₁ <;> fin_cases j₂
+      · intro s t hs ht
+        have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
+        simpa using prec_refl hcross.2.1.1 hcross.2.1.2
+      · simpa using theorem41StepMatrix_cross_has2x2_of_matrixClaim hclaim hm
+      · simp at hj
+      · intro s t hs ht
+        have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
+        simpa using prec_refl hcross.1.1 hcross.1.2)
+    (hfs_len := by simp)
+    (hfs := theorem41InputPair_interlacingSeqNonneg hgf hf_nonneg hg_nonneg)
+  simpa [mul_comm, mul_left_comm] using hpair
+
+/-- Claim `(7)` supplies the cross affine test for the stronger consecutive-row
+matrix with rows `[P_{m-1}, G_{m-1}]` and `[P_m, G_m]`.  This is an auxiliary
+route, not the matrix displayed in Braun--Jal's proof. -/
+theorem theorem41ConsecutiveMatrix_cross_has2x2_of_claim7
     {P G : ℕ → ℝ[X]} (hclaim : Theorem41Claim7Statement P G)
     {m : ℕ} (hm : 2 ≤ m) :
     Has2x2InterlacingProperty (P (m - 1)) (G (m - 1)) (P m) (G m) := by
   intro s t hs ht
   exact hclaim (m := m) (lam := s) (nu := t) hm hs.le (by linarith)
 
-/-- Claim `(7)`, the column interlacings, and the induction pair propagate
-proper position through one nonconstant recurrence step. -/
+/-- A stronger alternative to the source matrix step: Claim `(7)` plus proper
+position in both consecutive columns propagates the induction pair directly.
+The paper instead applies Claim `(6)` to `theorem41StepMatrix` and then uses
+Lemma 2.6. -/
 theorem theorem41Step_prec_of_claim7
     {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
     (hclaim : Theorem41Claim7Statement P G) (hm : 2 ≤ m)
@@ -105,7 +180,7 @@ theorem theorem41Step_prec_of_claim7
   have hpair := prec_add_mul_pair_of_2x2
     (p₁ := P (m - 1)) (q₁ := G (m - 1)) (p₂ := P m) (q₂ := G m)
     (u := f) (v := X * g)
-    hP hG (theorem41StepMatrix_cross_has2x2_of_claim7 hclaim hm) hinput
+    hP hG (theorem41ConsecutiveMatrix_cross_has2x2_of_claim7 hclaim hm) hinput
     (hP_nonneg (m - 1)) (hG_nonneg (m - 1))
     (hP_nonneg m) (hG_nonneg m) hf_nonneg hg_nonneg.X_mul
   simpa [mul_comm, mul_left_comm] using hpair
@@ -158,6 +233,78 @@ theorem theorem41NonconstantStep_prec_of_claim7
     hclaim hm (hP hm) (hG hm) hprefix hP_nonneg hG_nonneg
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hrec_del, hrec_w]
+
+/-- The nonconstant Braun--Jal induction step through the source
+`[P, G; Q, H]` matrix.  Unlike the consecutive-row shortcut above, this is the
+argument on p. 10 of the paper and requires no adjacent-`G` proper position. -/
+theorem theorem41NonconstantStep_prec_of_matrixClaim
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hlast : w.IsLastChangeIndex k)
+    (hk : k + 1 < w.deleteFinal.length)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
+    Prec (M w.deleteFinal) (M w) := by
+  let f : ℝ[X] := M (w.takePrefix (k + 1))
+  let g : ℝ[X] := M (w.takePrefix k)
+  let m : ℕ := w.length - (k + 1)
+  have hm : 2 ≤ m := by
+    dsimp [m]
+    rw [SnakeWord.length_deleteFinal] at hk
+    lia
+  have hkp1_le : k + 1 ≤ w.deleteFinal.length := le_of_lt hk
+  have hk_le : k ≤ w.deleteFinal.length := by lia
+  have hrec_w : M w = f * P m + X * g * G m := by
+    dsimp [f, g, m]
+    exact hrec hlast.not_isConstant hlast
+  have hlast_del : w.deleteFinal.IsLastChangeIndex k := hlast.deleteFinal hk
+  have hrec_del :
+      M w.deleteFinal = f * P (m - 1) + X * g * G (m - 1) := by
+    have hbase := hrec hlast_del.not_isConstant hlast_del
+    dsimp [f, g, m]
+    rw [hbase]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hkp1_le]
+    rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hk_le]
+    rw [SnakeWord.length_deleteFinal_sub_eq]
+  have hrec_diff :
+      M w - M w.deleteFinal =
+        f * narayanaDifference P m + X * g * auxiliaryDifference G m := by
+    rw [hrec_w, hrec_del]
+    unfold narayanaDifference auxiliaryDifference
+    ring
+  have hf_nonneg : HasNonnegCoeffs f := hM_nonneg _
+  have hg_nonneg : HasNonnegCoeffs g := hM_nonneg _
+  have hdiff_nonneg : HasNonnegCoeffs (M w - M w.deleteFinal) := by
+    rw [hrec_diff]
+    exact (hf_nonneg.mul (hQ_nonneg hm)).add
+      (hg_nonneg.X_mul.mul (hH_nonneg hm))
+  have hstep : Prec (M w.deleteFinal) (M w - M w.deleteFinal) := by
+    have hstep_raw := theorem41Step_difference_prec_of_matrixClaim
+      hclaim hm (hP_ne (m - 1)) hP_nonneg hG_nonneg
+      (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
+    rw [← hrec_del, ← hrec_diff] at hstep_raw
+    exact hstep_raw
+  have hsum0 : Prec0 (M w.deleteFinal)
+      (M w.deleteFinal + (M w - M w.deleteFinal)) :=
+    prec0_add_right_of_common_left_of_nonneg
+      (prec_refl hstep.1.1 hstep.1.2).toPrec0 hstep.toPrec0
+      (hM_nonneg w.deleteFinal) hdiff_nonneg
+  have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
+    add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+      (hM_nonneg w.deleteFinal) hdiff_nonneg hstep.2.1.1
+  have hfinal := hsum0.toPrec_of_ne hstep.1.1 hsum_ne
+  have hsum_eq : M w.deleteFinal + (M w - M w.deleteFinal) = M w := by
+    ring
+  rw [hsum_eq] at hfinal
+  exact hfinal
 
 /-- Polynomial form of the exceptional `m = 1` Braun-Jal step.
 
@@ -217,40 +364,6 @@ theorem theorem41StepOne_prec_of_recurrence
     (f := f) (g := g) hprefix
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hdel, hrec_w]
-
-/-- Matrix Claim `(6)` gives the same recurrence-step proper-position result
-via the existing Claim `(6)`/Claim `(7)` reindexing. -/
-theorem theorem41Step_prec_of_matrixClaim
-    {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
-    (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
-    (hP : Prec (P (m - 1)) (P m)) (hG : Prec (G (m - 1)) (G m))
-    (hgf : Prec g f)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
-    Prec (f * P (m - 1) + X * g * G (m - 1))
-      (f * P m + X * g * G m) :=
-  theorem41Step_prec_of_claim7
-    ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim) hm
-    hP hG hgf hP_nonneg hG_nonneg hf_nonneg hg_nonneg
-
-/-- Matrix Claim `(6)` version of the nonconstant word-level recurrence step. -/
-theorem theorem41NonconstantStep_prec_of_matrixClaim
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
-    (hclaim : Theorem41MatrixClaimStatement P G)
-    (hlast : w.IsLastChangeIndex k)
-    (hk : k + 1 < w.deleteFinal.length)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
-    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
-    Prec (M w.deleteFinal) (M w) :=
-  theorem41NonconstantStep_prec_of_claim7
-    (P := P) (G := G) hrec ((theorem41MatrixClaim_iff_claim7 P G).mp hclaim)
-    hlast hk hP hG hprefix hP_nonneg hG_nonneg hM_nonneg
 
 /-- Length-induction skeleton for Braun-Jal Theorem 4.1.
 
@@ -432,6 +545,79 @@ theorem theorem41_of_claim7_of_constant_cases
       (M := M) (P := P) (G := G) (w := w) (k := k)
       hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
 
+/-- Source-matrix length induction from Claim `(6)` to Braun--Jal Theorem 4.1.
+
+The long-suffix branch uses the displayed `[P, G; Q, H]` matrix, while the
+suffix-one branch uses `P_1 = 1 + X` and `G_1 = 1`.  In particular, no
+adjacent-`G` proper-position hypothesis occurs. -/
+theorem theorem41_of_matrixClaim_of_constant_cases
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
+    Theorem41NonNestingRookStatement M := by
+  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
+  intro w k _hconstw hlast hprefix_prec
+  by_cases hk : k + 1 < w.deleteFinal.length
+  · exact theorem41NonconstantStep_prec_of_matrixClaim
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hclaim hlast hk hP_ne hP_nonneg hG_nonneg
+      hQ_nonneg hH_nonneg hprefix_prec hM_nonneg
+  · have hsuffix : w.length - (k + 1) = 1 := by
+      rw [SnakeWord.length_deleteFinal] at hk
+      have hlast_suffix := hlast.succ_lt_length
+      lia
+    exact theorem41StepOne_prec_of_recurrence
+      (M := M) (P := P) (G := G) (w := w) (k := k)
+      hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
+
+/-- Source-matrix induction with the constant branch reduced to the concrete
+successor-length identity `M w = P (w.length + 1)`. -/
+theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
+    (hclaim : Theorem41MatrixClaimStatement P G)
+    (hP_ne : ∀ n, P n ≠ 0)
+    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
+    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
+    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
+    (hQ_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (narayanaDifference P m))
+    (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
+      HasNonnegCoeffs (auxiliaryDifference G m))
+    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
+    (hdeg :
+      ∀ {w : SnakeWord}, 1 ≤ w.length →
+        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
+    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
+      M w = P (w.length + 1)) :
+    Theorem41NonNestingRookStatement M := by
+  have hconst :
+      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
+        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
+    theorem41_constant_of_matches_succ_length
+      (M := M) (P := P) hM_const hP_interlaces
+  intro w hw
+  exact theorem41_of_matrixClaim_of_constant_cases
+    (M := M) (P := P) (G := G) hrec hclaim hP_ne hP_one hG_one
+    hP_nonneg hG_nonneg hQ_nonneg hH_nonneg hM_nonneg hdeg hconst
+    (w := w) hw
+
 /-- The deletion degree bridge follows from the length-indexed degree formula
 for the whole snake-word family. -/
 theorem theorem41_degree_bridge_of_natDegree_length
@@ -588,32 +774,6 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (hP_one := hP_one) (hG_one := hG_one)
     (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
     (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
-
-/-- Matrix Claim `(6)` version of the abstract route bridge, using the
-successor-length constant-word identity from the concrete indexing. -/
-theorem theorem41InductionRoute_of_matrixClaim_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hmatrix_of_inputs :
-      Lemma33AuxiliaryGInterlacesStatement P G →
-        Lemma34ModifiedNarayanaInterlacingStatement P →
-          Theorem41MatrixClaimStatement P G)
-    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    Theorem41InductionRouteStatement M P G :=
-  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
-    (M := M) (P := P) (G := G)
-    (fun h33 h34 => (theorem41MatrixClaim_iff_claim7 P G).mp
-      (hmatrix_of_inputs h33 h34))
-    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
-    hM_const
 
 /-- Section 3 equation `(2)` plus the local Claim `(7)` side conditions give
 the abstract induction route, using the concrete successor-length indexing for

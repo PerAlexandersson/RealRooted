@@ -368,9 +368,14 @@ def BidiagonalJensenPencilCertificate
   ∀ lam : ℝ, 0 ≤ lam →
     IsPFPolynomial (bidiagonalJensenPencil alpha beta d lam)
 
-/-- Backend theorem statement: a valid finite Jensen-pencil certificate implies
-that the corresponding coefficient-bidiagonal operator preserves PF
-polynomials up to degree `d`. -/
+/-- Open Jensen-pencil backend for coefficient-bidiagonal PF preservers.
+
+This implication is not stated in Borcea--Branden or Garloff--Wagner. The
+certificate controls a one-sided real pencil, not upper-half-plane stability
+of the genuine affine symbol `T((z + w)^d)`. Garloff--Wagner Theorem 12 assumes
+an oriented proper-position relation rather than deriving it from this pencil.
+Keep this as an explicit project conjecture; issue #240 tracks it, while issue
+#297 tracks the separate affine-symbol route. -/
 def jensenPencilBidiagonalPreserverStatement : Prop :=
   ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
     BidiagonalJensenPencilCertificate alpha beta d →

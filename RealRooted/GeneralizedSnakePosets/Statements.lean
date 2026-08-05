@@ -23,8 +23,13 @@ namespace GeneralizedSnakePosets
 
 universe u
 
-/-- Statement interface for Braun--Jal Theorem 4.1, with the non-nesting rook
-polynomial supplied as a parameter. -/
+/-- Braun--Jal Theorem 4.1, abstracted over the polynomial model.
+
+The source theorem concerns the concrete non-nesting rook polynomial `M_w`: it
+asserts real-rootedness and that deleting the final letter gives
+`M_{w'} << M_w`. This interface is only an abstract package for arbitrary `M`.
+A source-facing theorem must instantiate `generalizedSnakeRookModel` and prove
+the degree and model-identification bridges needed to use local `Interlaces`. -/
 def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord}, 1 ≤ w.length →
     (M w ≠ 0 ∧ (M w).Splits) ∧
