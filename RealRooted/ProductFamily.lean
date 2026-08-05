@@ -464,11 +464,10 @@ lemma mem_filterProductRightNonzero_ne_zero {fs gs : List ℝ[X]} {g : ℝ[X]}
 
 private lemma interlacingSeqNonneg_filterLeftNonzero
     {fs gs : List ℝ[X]} (hlen : fs.length = gs.length)
-    (hfs : IsInterlacingSeq0Nonneg fs)
-    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
     IsInterlacingSeqNonneg (filterLeftNonzero fs gs) := by
   rw [filterLeftNonzero_eq_filter_ne_zero hlen]
-  exact IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted hfs hfs_real
+  exact hfs.filter_ne_zero
 
 private lemma interlacingSeqNonneg_filterProductLeftNonzero
     {fs gs : List ℝ[X]} (hfs : IsInterlacingSeq0Nonneg fs)
@@ -544,7 +543,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hfs' : IsInterlacingSeqNonneg fs' := by
     simpa [fs'] using interlacingSeqNonneg_filterLeftNonzero
       (fs := fs) (gs := gs.reverse) (by simp_all)
-      hfs hfs_real
+      ⟨hfs, hfs_real⟩
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
     exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
