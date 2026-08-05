@@ -386,6 +386,37 @@ example {f g p q : ℝ[X]}
     first_prec := hfg,
     second_prec := hpq
 
+example {f g p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hfg : Prec0 f g) (hpq : Prec0 p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+  rr_hadamard_pf_prec0
+
+example {f g p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
+    (hfg : Prec0 f g) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g p) := by
+  rr_hadamard_pf_prec0
+
+example {f p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hpq : Prec0 p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct f q) := by
+  rr_hadamard_pf_prec0
+
+example {F G P Q : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hG : ∀ i : Nat, IsPFPolynomial (G i))
+    (hP : ∀ i : Nat, IsPFPolynomial (P i))
+    (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
+    (hFG : ∀ i : Nat, Prec0 (F i) (G i))
+    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
+    ∀ n : Nat,
+      Prec0 (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
+  intro n
+  rr_hadamard_pf_prec0
+
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
@@ -393,6 +424,34 @@ example {P Q : Nat → ℝ[X]}
   rr_hadamard_sequence_pf using
     left_pf := hP,
     right_pf := hQ
+
+example {P L R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hL : ∀ n : Nat, IsPFPolynomial (L n))
+    (hR : ∀ n : Nat, IsPFPolynomial (R n))
+    (hproduct_ne : ∀ n : Nat, hadamardProduct (L n) (R n) ≠ 0)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * hadamardProduct (L n) (R n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_hadamard_product_scalar_sequence using
+    left_pf := hL,
+    right_pf := hR,
+    product_ne := hproduct_ne,
+    scalar_ne := hc,
+    factorization := hrow
+
+example {P L R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hL : ∀ n : Nat, IsPFPolynomial (L n))
+    (hR : ∀ n : Nat, IsPFPolynomial (R n))
+    (hproduct_ne : ∀ n : Nat, hadamardProduct (L n) (R n) ≠ 0)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * hadamardProduct (L n) (R n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_hadamard_product_scalar_sequence using
+    left_pf := hL,
+    right_pf := hR,
+    product_ne := hproduct_ne,
+    scalar_ne := hc,
+    factorization := hrow
 
 example {P Q : Nat → ℝ[X]}
     (hPnn : ∀ i : Nat, HasNonnegCoeffs (P i))

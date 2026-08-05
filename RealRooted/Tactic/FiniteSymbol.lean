@@ -3,8 +3,8 @@ import RealRooted.BorceaBranden.FiniteSymbolPreserver
 /-!
 # Finite-symbol stable-or-zero tactic frontend
 
-Thin certificate-driven wrappers around the proved multiaffine finite-symbol
-stability theorem.
+Thin explicit and automatic wrappers around the proved multiaffine
+finite-symbol stability theorem.
 -/
 
 namespace RealRooted
@@ -24,6 +24,9 @@ syntax (name := rr_finite_symbol_stable_or_zero_inferred)
     "input_stable" ":=" term :
   tactic
 
+syntax (name := rr_finite_symbol_stable_or_zero_auto)
+  "rr_finite_symbol_stable_or_zero_auto" : tactic
+
 macro_rules
   | `(tactic|
       rr_finite_symbol_stable_or_zero using
@@ -41,6 +44,11 @@ macro_rules
       `(tactic|
         exact RealRooted.BorceaBranden.finiteSymbol_preserves_stability
           _ $hSymbol _ $hf)
+  | `(tactic| rr_finite_symbol_stable_or_zero_auto) =>
+      `(tactic|
+        rr_finite_symbol_stable_or_zero using
+          symbol_stable := (by assumption),
+          input_stable := (by assumption))
 
 end Tactic
 end RealRooted
