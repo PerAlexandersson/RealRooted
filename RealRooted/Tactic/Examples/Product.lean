@@ -253,6 +253,26 @@ example {P F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     recurrence := hrec
 
+/-- The recurrence fixes the family and factor; local certificates are inferred. -/
+example {P F Q G : Nat → ℝ[X]}
+    (_hdecoyBase : Q 0 ≠ 0 ∧ (Q 0).Splits)
+    (_hdecoyFactor : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using recurrence := hrec
+
+/-- Recurrence inference also detects right-factor orientation and projections. -/
+example {P F Q G : Nat → ℝ[X]}
+    (_hdecoyBase : Q 0 ≠ 0 ∧ (Q 0).Splits)
+    (_hdecoyFactor : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * F n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using recurrence := hrec
+
 /-- Lag-two product recurrences advance the even and odd subsequences together. -/
 example {P F : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -313,6 +333,26 @@ example {P F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     cutoff := N,
     recurrence := hrec
+
+/-- Tail recurrence inference keeps the cutoff explicit and finds interval certificates. -/
+example {P F Q G : Nat → ℝ[X]}
+    (N : Nat)
+    (_hdecoyBase : ∀ n : Nat, n ≤ N → Q n ≠ 0 ∧ (Q n).Splits)
+    (_hdecoyFactor : ∀ n : Nat, N ≤ n → G n ≠ 0 ∧ (G n).Splits)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using cutoff := N, recurrence := hrec
+
+/-- Tail recurrence inference also accepts right factors. -/
+example {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
+    (P 3).Splits := by
+  rr_product_factor_sequence using cutoff := N, recurrence := hrec
 
 /-- Direct finite-product formula route. -/
 example {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}
