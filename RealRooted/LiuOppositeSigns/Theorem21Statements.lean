@@ -1930,7 +1930,7 @@ theorem not_theorem21CompatibleToRootCountBranchesNonconstantStatement :
         (by unfold HasPosLeadingCoeff; simp)
         (by simp) (by simp)).neg_right
   have hgsplits : (-(X ^ 2) : ℝ[X]).Splits := by
-    simpa [pow_two] using
+    simpa only [pow_two] using
       (Polynomial.Splits.X.mul Polynomial.Splits.X).neg
   have hcompat : Compatible (X : ℝ[X]) (-(X ^ 2)) := by
     simpa [pow_two] using

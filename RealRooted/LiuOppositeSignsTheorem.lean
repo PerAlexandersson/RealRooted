@@ -483,7 +483,7 @@ lemma natDegree_le_two_of_compatible_C_left
     rw [hpoly] at hcomb
     rcases hcomb with hzero | hreal
     · exact hq_ne (neg_eq_zero.mp hzero)
-    · exact hshift ⟨hq_ne, by simpa using hreal.2.neg⟩
+    · exact hshift ⟨hq_ne, by simpa only [neg_neg] using hreal.2.neg⟩
   · have hc_pos : 0 < -c := by
       simpa [HasPosLeadingCoeff] using hneg.1
     obtain ⟨t, ht, hshift⟩ :=
@@ -546,7 +546,7 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
 
 /-- Liu's Corollary 2.2: compatible real-rooted polynomials with opposite
 leading signs have degrees differing by at most two. -/
-theorem corollary22DegreeDiff : corollary22DegreeDiffStatement := by
+theorem corollary22DegreeDiff_proof : corollary22DegreeDiffStatement := by
   unfold corollary22DegreeDiffStatement
   suffices h :
       ∀ n : ℕ, ∀ f g : ℝ[X], f.natDegree + g.natDegree = n →
