@@ -589,6 +589,43 @@ theorem grace_apolarity_closedBall {n : Nat} {c : ℂ} {r : ℝ} {f g : ℂ[X]}
 def polarDeriv (n : Nat) (ζ : ℂ) (A : ℂ[X]) : ℂ[X] :=
   C (n : ℂ) * A + (C ζ - X) * derivative A
 
+/-- The polar derivative lowers the ambient degree bound by one. This is the
+bounded-degree invariant needed in the Grace apolarity induction. -/
+theorem polarDeriv_natDegree_le
+    {n : Nat} {ζ : ℂ} {A : ℂ[X]}
+    (hn : 1 ≤ n) (hA : A.natDegree ≤ n) :
+    (polarDeriv n ζ A).natDegree ≤ n - 1 := by
+  rw [Polynomial.natDegree_le_iff_degree_le,
+    Polynomial.degree_le_iff_coeff_zero]
+  intro m hm
+  have hm' : n - 1 < m := by exact_mod_cast hm
+  have hnm : n ≤ m := by lia
+  rcases hnm.eq_or_lt with rfl | hlt
+  · have hnext : A.coeff (n + 1) = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt
+        (lt_of_le_of_lt hA (Nat.lt_succ_self n))
+    unfold polarDeriv
+    rw [sub_mul]
+    simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
+      Polynomial.coeff_C_mul, Polynomial.coeff_derivative, hnext]
+    rw [show n = (n - 1) + 1 by lia, Polynomial.coeff_X_mul,
+      Polynomial.coeff_derivative]
+    norm_num
+    ring
+  · have hm0 : A.coeff m = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hA hlt)
+    have hm1 : A.coeff (m + 1) = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt
+        (lt_of_le_of_lt hA (hlt.trans (Nat.lt_succ_self m)))
+    unfold polarDeriv
+    rw [sub_mul]
+    simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
+      Polynomial.coeff_C_mul, Polynomial.coeff_derivative, hm0, hm1]
+    rw [show m = (m - 1) + 1 by lia, Polynomial.coeff_X_mul,
+      Polynomial.coeff_derivative]
+    rw [show m - 1 + 1 = m by lia, hm0]
+    simp
+
 /-- The coefficient shift dual to the polar derivative:
 `(polarShift ζ f).coeff k = f.coeff k + ζ * f.coeff (k + 1)`. -/
 def polarShift (ζ : ℂ) (f : ℂ[X]) : ℂ[X] := f + C ζ * divX f

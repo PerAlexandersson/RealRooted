@@ -84,6 +84,98 @@ theorem mem_lowerHalf_of_recip_avg {b : ℝ} {w ζ : ℂ}
     simp_all
   grind
 
+/-- The reciprocal-average conclusion remains valid when the numerator is an
+ambient cardinality at least as large as the multiset cardinality. This is the
+half-plane form of adjoining roots at infinity in Grace's theorem. -/
+theorem mem_lowerHalf_of_recip_sum_of_card_le
+    {b : ℝ} {w ζ : ℂ} {n : ℕ}
+    (S : Multiset ℂ) (hS : S ≠ 0) (hcard : S.card ≤ n)
+    (hw : w ∉ lowerHalf b)
+    (hz : ∀ z ∈ S, z ∈ lowerHalf b)
+    (hζ : (n : ℂ) / (w - ζ) =
+      (S.map (fun z ↦ 1 / (w - z))).sum) :
+    ζ ∈ lowerHalf b := by
+  have hd : 0 < S.card := Multiset.card_pos.mpr hS
+  have hn : 0 < n := lt_of_lt_of_le hd hcard
+  let t : ℝ := (S.card : ℝ) / (n : ℝ)
+  have ht_pos : 0 < t := by
+    dsimp [t]
+    positivity
+  have ht_le : t ≤ 1 := by
+    dsimp [t]
+    rw [div_le_one]
+    · exact_mod_cast hcard
+    · exact_mod_cast hn
+  let ζ' : ℂ := w - (t : ℂ) * (w - ζ)
+  have hscaled :
+      (S.card : ℂ) / (w - ζ') =
+        (S.map (fun z ↦ 1 / (w - z))).sum := by
+    rw [← hζ]
+    dsimp [ζ', t]
+    have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+    have hd0 : (S.card : ℂ) ≠ 0 := by
+      exact_mod_cast (Multiset.card_pos.mpr hS).ne'
+    by_cases hwζ : w - ζ = 0
+    · simp [hwζ]
+    · push_cast
+      field_simp [hn0, hd0, hwζ]
+      ring
+  have hζ' : ζ' ∈ lowerHalf b :=
+    mem_lowerHalf_of_recip_avg S hS hw hz hscaled
+  have hw_im : b < w.im := by
+    simpa [lowerHalf] using hw
+  simp only [mem_lowerHalf] at hζ' ⊢
+  dsimp [ζ'] at hζ'
+  simp only [Complex.sub_im, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero] at hζ'
+  nlinarith
+
+/-- A polar derivative preserves a closed lower half-plane when its ambient
+degree only bounds, rather than equals, the polynomial degree. -/
+theorem polarDeriv_rootsIn_lowerHalf_of_natDegree_le
+    {n : Nat} {b : ℝ} {ζ : ℂ} {A : ℂ[X]}
+    (hn : 1 ≤ n) (hA : A.natDegree ≤ n)
+    (hAroots : A.RootsIn (lowerHalf b))
+    (hζ : ζ ∉ lowerHalf b) :
+    (polarDeriv n ζ A).RootsIn (lowerHalf b) := by
+  intro w hw0
+  have hn0 : (n : ℂ) ≠ 0 := by
+    exact_mod_cast (show n ≠ 0 by lia)
+  by_cases hA0 : A.natDegree = 0
+  · have hder : derivative A = 0 :=
+      Polynomial.derivative_eq_zero.mpr hA0
+    apply hAroots w
+    have h : (n : ℂ) * eval w A = 0 := by
+      simpa only [IsRoot, polarDeriv, hder, mul_zero, add_zero,
+        eval_mul, eval_C] using hw0
+    exact (mul_eq_zero.mp h).resolve_left hn0
+  · by_contra hwmem
+    have hAw : eval w A ≠ 0 :=
+      fun h ↦ hwmem (hAroots w h)
+    have heq : (n : ℂ) * eval w A +
+        (ζ - w) * eval w (derivative A) = 0 := by
+      have h := hw0
+      simp only [IsRoot, polarDeriv, eval_add, eval_mul,
+        eval_sub, eval_C, eval_X] at h
+      simp_all
+    have hwζ : w - ζ ≠ 0 := by grind
+    have hsplit : A.Splits := IsAlgClosed.splits A
+    have hcard : A.roots.card = A.natDegree :=
+      splits_iff_card_roots.mp hsplit
+    have hroots_ne : A.roots ≠ 0 := by
+      rw [← Multiset.card_pos, hcard]
+      exact Nat.pos_of_ne_zero hA0
+    have hcard_le : A.roots.card ≤ n := hcard.trans_le hA
+    have hscaled : (n : ℂ) / (w - ζ) =
+        (A.roots.map (fun z ↦ 1 / (w - z))).sum := by
+      rw [← hsplit.eval_derivative_div_eval_of_ne_zero hAw]
+      grind
+    have : ζ ∈ lowerHalf b := by
+      exact mem_lowerHalf_of_recip_sum_of_card_le
+        A.roots hroots_ne hcard_le hwmem
+        (fun z hz ↦ hAroots z (isRoot_of_mem_roots hz)) hscaled
+    exact hζ this
+
 theorem multiset_avg_mem_lowerHalf {b : ℝ} (S : Multiset ℂ) (hS : S ≠ 0)
     (hz : ∀ z ∈ S, z ∈ lowerHalf b) :
     S.sum / (S.card : ℂ) ∈ lowerHalf b := by
@@ -199,7 +291,7 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
 
 private theorem grace_aux_lowerHalf {b : ℝ} :
     ∀ (n : Nat) (f g : ℂ[X]),
-      (binomialLift n f).natDegree = n → (binomialLift n g).natDegree = n →
+      (binomialLift n f).natDegree ≤ n → (binomialLift n g).natDegree = n →
       AreApolar n f g → (binomialLift n f).RootsIn (lowerHalf b) →
       (binomialLift n g).HasRootIn (lowerHalf b) := by
   intro n
@@ -225,18 +317,17 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
     by_cases hζ' : ζ ∈ lowerHalf b
     · exact ⟨ζ, hζ, hζ'⟩
     · set f' := polarShift ζ f
-      have hf' : (binomialLift (n - 1) f').natDegree = n - 1 := by
-        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 := by
-          apply polarDeriv_natDegree_lowerHalf
+      have hf' : (binomialLift (n - 1) f').natDegree ≤ n - 1 := by
+        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree ≤ n - 1 := by
+          apply polarDeriv_natDegree_le
           · grind
-          · simp [*]
-          · exact hroots
-          · simp [*]
+          · exact hf
         rw [polarDeriv_binomialLift (Nat.pos_of_ne_zero hn) ζ f] at hf'
         rwa [Polynomial.natDegree_C_mul] at hf'
         simp_all
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (lowerHalf b) := by
-        have := polarDeriv_rootsIn_lowerHalf (Nat.pos_of_ne_zero hn) hf hroots hζ'
+        have := polarDeriv_rootsIn_lowerHalf_of_natDegree_le
+          (Nat.pos_of_ne_zero hn) hf hroots hζ'
         have := polarDeriv_binomialLift (Nat.pos_of_ne_zero hn) ζ f
         simp_all [RootsIn]
         grind
@@ -264,7 +355,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
       exact ⟨w, by replace hg' := congr_arg (Polynomial.eval w) hg'; simp_all⟩
 
 theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
-    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
+    (hf : (binomialLift n f).natDegree ≤ n) (hg : (binomialLift n g).natDegree = n)
     (hap : AreApolar n f g)
     (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
     (binomialLift n g).HasRootIn (lowerHalf b) :=
@@ -341,7 +432,7 @@ theorem grace_apolarity_upperHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
     simp only [mem_lowerHalf]
     linarith
   obtain ⟨w, hwroot, hwmem⟩ :=
-    grace_apolarity_lowerHalf hfhat hghat haphat hroothat
+    grace_apolarity_lowerHalf hfhat.le hghat haphat hroothat
   refine ⟨-w, ?_, ?_⟩
   · rw [negComp_binomialLift] at hwroot
     simp only [Polynomial.IsRoot, negComp, Polynomial.eval_comp, Polynomial.eval_neg,

@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
@@ -457,5 +458,18 @@ theorem esymm [Fintype σ] [Nontrivial R] (n : ℕ) :
   exact sum fun s hs => prod_X s
 
 end IsMultiaffine
+
+end MvPolynomial
+
+namespace MvPolynomial
+
+/-- Partial symmetrization by a permutation preserves multiaffineness. -/
+theorem IsMultiaffine.partialSymmetrization
+    {σ R : Type*} [CommRing R]
+    {p : MvPolynomial σ R} (hp : IsMultiaffine p)
+    (t : R) (e : Equiv.Perm σ) :
+    IsMultiaffine (MvPolynomial.partialSymmetrization t e p) := by
+  exact (hp.C_mul t).add
+    ((hp.rename e.injective).C_mul (1 - t))
 
 end MvPolynomial

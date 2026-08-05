@@ -1933,7 +1933,7 @@ theorem exists_apolarTwist_root_of_grace_lowerHalf {n : Nat} {b : ℝ}
     (binomialLift n (apolarTwist n z g)).HasRootIn (lowerHalf b) := by
   have hap : AreApolar n f (apolarTwist n z g) :=
     (areApolar_apolarTwist_iff n f g z).2 hcomp
-  exact grace_apolarity_lowerHalf hf htw hap hroots
+  exact grace_apolarity_lowerHalf hf.le htw hap hroots
 
 theorem exists_apolarTwist_root_of_grace_upperHalf {n : Nat} {b : ℝ}
     {f g : ℂ[X]} {z : ℂ}

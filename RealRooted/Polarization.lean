@@ -1,6 +1,9 @@
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
-import RealRooted.Multiaffine
+import RealRooted.PartialSymmetrization
 import RealRooted.MultivariateStability
 
 /-!
@@ -55,6 +58,58 @@ theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
 elementary symmetric polynomial is `p.coeff k / choose n k`. -/
 def polarization (n : ℕ) (p : ℂ[X]) : MvPolynomial (Fin n) ℂ :=
   reducedPolarization n (binomialUnlift n p)
+
+private theorem binomialUnlift_add (n : ℕ) (p q : ℂ[X]) :
+    binomialUnlift n (p + q) =
+      binomialUnlift n p + binomialUnlift n q := by
+  unfold binomialUnlift
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [Polynomial.coeff_add, add_div, map_add]
+
+private theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+    binomialUnlift n (c • p) = c • binomialUnlift n p := by
+  unfold binomialUnlift
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl
+  intro k _
+  simp only [Polynomial.coeff_smul, div_eq_mul_inv]
+  change (Polynomial.monomial k)
+    (c * p.coeff k * (n.choose k : ℂ)⁻¹) =
+      c • (Polynomial.monomial k)
+        (p.coeff k * (n.choose k : ℂ)⁻¹)
+  rw [mul_assoc]
+  exact (Polynomial.smul_monomial c k
+    (p.coeff k * (n.choose k : ℂ)⁻¹)).symm
+
+private theorem reducedPolarization_add (n : ℕ) (p q : ℂ[X]) :
+    reducedPolarization n (p + q) =
+      reducedPolarization n p + reducedPolarization n q := by
+  unfold reducedPolarization
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k _
+  simp [add_mul]
+
+private theorem reducedPolarization_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
+    reducedPolarization n (c • p) = c • reducedPolarization n p := by
+  unfold reducedPolarization
+  rw [Finset.smul_sum]
+  apply Finset.sum_congr rfl
+  intro k _
+  simp [MvPolynomial.smul_eq_C_mul, mul_assoc]
+
+/-- Polarization as a complex-linear map on univariate polynomials. -/
+noncomputable def polarizationLinearMap (n : ℕ) :
+    ℂ[X] →ₗ[ℂ] MvPolynomial (Fin n) ℂ where
+  toFun := polarization n
+  map_add' p q := by
+    change polarization n (p + q) = polarization n p + polarization n q
+    simp only [polarization, binomialUnlift_add, reducedPolarization_add]
+  map_smul' c p := by
+    change polarization n (c • p) = c • polarization n p
+    simp only [polarization, binomialUnlift_smul, reducedPolarization_smul]
 
 theorem isMultiaffine_reducedPolarization (n : ℕ) (p : ℂ[X]) :
     MvPolynomial.IsMultiaffine (reducedPolarization n p) := by
@@ -115,6 +170,149 @@ theorem eval_polarization_const {n : ℕ} {p : ℂ[X]} (hp : p.natDegree ≤ n)
     MvPolynomial.eval (fun _ : Fin n => w) (polarization n p) = p.eval w := by
   unfold polarization
   rw [eval_reducedPolarization_const, binomialLift_binomialUnlift hp]
+
+/-- Renaming every polarization variable to the unique variable reconstructs
+the original univariate polynomial. This is the diagonal identity for
+polarization. -/
+theorem rename_polarization_const {n : ℕ} {p : ℂ[X]}
+    (hp : p.natDegree ≤ n) :
+    MvPolynomial.rename (fun _ : Fin n ↦ (0 : Fin 1)) (polarization n p) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p := by
+  apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).injective
+  rw [AlgEquiv.apply_symm_apply]
+  apply Polynomial.funext
+  intro w
+  change Polynomial.eval₂ (RingHom.id ℂ) w
+    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1))
+      (MvPolynomial.rename (fun _ : Fin n ↦ (0 : Fin 1))
+        (polarization n p))) = p.eval w
+  rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+  rw [MvPolynomial.eval₂_rename]
+  change MvPolynomial.eval (fun _ : Fin n ↦ w) (polarization n p) = p.eval w
+  exact eval_polarization_const hp w
+
+/-- Package polarization as the multiaffine source polynomial
+`Π↑ₙ p` in the all-ones degree box. -/
+noncomputable def polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) :=
+  ⟨polarization n p,
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf (polarization n p)).2
+      (isMultiaffine_polarization n p)⟩
+
+@[simp]
+theorem coe_polarizationDegreeBox (n : ℕ) (p : ℂ[X]) :
+    (polarizationDegreeBox n p : MvPolynomial (Fin n) ℂ) = polarization n p := rfl
+
+/-- Source polarization `Π↑ₙ` as a linear map from the one-variable degree-`n`
+box to the multiaffine all-ones box. -/
+noncomputable def polarizationDegreeBoxLinearMap (n : ℕ) :
+    MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) →ₗ[ℂ]
+      MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) :=
+  LinearMap.codRestrict (MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1))
+    ((polarizationLinearMap n).comp
+      ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).toLinearMap.domRestrict
+        (MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n))))
+    (fun q =>
+      (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+        (isMultiaffine_polarization n
+          (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)))
+
+/-- The diagonal projection `Π↓ₙ`, obtained by identifying every polarization
+variable with the unique univariate variable. -/
+noncomputable def diagonalProjection (n : ℕ) :
+    MvPolynomial (Fin n) ℂ →ₗ[ℂ] ℂ[X] where
+  toFun q :=
+    MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+      (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q)
+  map_add' q r := by simp
+  map_smul' c q := by
+    simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
+
+/-- Diagonal projection of an all-ones degree-box polynomial has degree at
+most the size of its polarization block. -/
+theorem natDegree_diagonalProjection_le {n : ℕ}
+    (q : MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1)) :
+    (diagonalProjection n q).natDegree ≤ n := by
+  have hdeg : ∀ i, q.1.degreeOf i ≤ 1 :=
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf q.1).mp q.2
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q.1)).natDegree ≤ n
+  calc
+    _ ≤ (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q.1).totalDegree :=
+      MvPolynomial.natDegree_uniqueAlgEquiv_le_totalDegree _
+    _ ≤ q.1.totalDegree := MvPolynomial.totalDegree_rename_le _ _
+    _ ≤ ∑ i, q.1.degreeOf i := MvPolynomial.totalDegree_le_sum_degreeOf q.1
+    _ ≤ ∑ _ : Fin n, 1 := Finset.sum_le_sum fun i _ => hdeg i
+    _ = n := by simp
+
+/-- Diagonal projection as a linear map from the multiaffine source box to the
+original one-variable degree box. This is the source-side map `Π↓ₙ`. -/
+noncomputable def diagonalProjectionDegreeBox (n : ℕ) :
+    MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1) →ₗ[ℂ]
+      MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n) :=
+  LinearMap.codRestrict (MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n))
+    (((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm.toLinearMap.comp
+      (diagonalProjection n)).domRestrict
+        (MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1)))
+    (fun q => by
+      apply (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+      intro i
+      change MvPolynomial.degreeOf i
+        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+          (diagonalProjection n q)) ≤ n
+      rw [Unique.eq_default i,
+        MvPolynomial.degreeOf_uniqueAlgEquiv_symm]
+      exact natDegree_diagonalProjection_le q)
+
+/-- Equation (2.2) on the source side: diagonal projection is a left inverse
+to polarization on polynomials of degree at most `n`. -/
+theorem diagonalProjection_polarizationDegreeBox {n : ℕ} {p : ℂ[X]}
+    (hp : p.natDegree ≤ n) :
+    diagonalProjection n (polarizationDegreeBox n p) = p := by
+  change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) (polarization n p)) = p
+  rw [rename_polarization_const hp]
+  exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply p
+
+/-- Degree-box form of the source reconstruction identity
+`Π↓ₙ (Π↑ₙ p) = p`. -/
+theorem coe_diagonalProjectionDegreeBox_polarizationDegreeBox
+    {n : ℕ} {p : ℂ[X]} (hp : p.natDegree ≤ n) :
+    (diagonalProjectionDegreeBox n (polarizationDegreeBox n p) :
+      MvPolynomial (Fin 1) ℂ) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p := by
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+    (diagonalProjection n (polarizationDegreeBox n p)) =
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p
+  rw [diagonalProjection_polarizationDegreeBox hp]
+
+/-- Source-side equation (2.2): diagonal projection is a left inverse to the
+linear polarization map on the one-variable degree box. -/
+theorem diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap
+    {n : ℕ}
+    (q : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n)) :
+    diagonalProjectionDegreeBox n (polarizationDegreeBoxLinearMap n q) = q := by
+  have hdeg : ∀ i, q.1.degreeOf i ≤ n :=
+    (MvPolynomial.mem_degreeOfLE_iff_degreeOf q.1).mp q.2
+  have hp : (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1).natDegree ≤ n := by
+    calc
+      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1).natDegree =
+          q.1.degreeOf default := by
+        simpa only [AlgEquiv.symm_apply_apply] using
+          (MvPolynomial.degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
+            (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)).symm
+      _ ≤ n := hdeg default
+  have hdiag :
+      diagonalProjection n
+        (polarization n (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1)) =
+          MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1 :=
+    diagonalProjection_polarizationDegreeBox hp
+  apply Subtype.ext
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+    (diagonalProjection n
+      (polarization n (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) q.1))) = q.1
+  rw [hdiag]
+  exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm_apply_apply q.1
 
 /-- Evaluation of a polarization in elementary symmetric functions. -/
 theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
@@ -195,8 +393,12 @@ theorem eval_reducedPolarization_eq_apolarPairing_of_binomialLift_eq_rootPolynom
 
 /-- Grace--Walsh--Szego for reduced coefficients: exact-degree
 upper-half-plane stability is preserved by polarization. -/
+/- Borcea--Branden, arXiv:0809.0401, Proposition 2.4. The source polynomial
+has degree at most `n`; exact degree is unnecessary because the upper half-plane
+is a convex circular domain in the Grace--Walsh--Szego theorem. The auxiliary
+root polynomial used below still has exact degree `n`. -/
 theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
-    (hdeg : (binomialLift n f).natDegree = n)
+    (hdeg : (binomialLift n f).natDegree ≤ n)
     (hstable : ∀ w : ℂ, 0 < w.im → (binomialLift n f).eval w ≠ 0) :
     MvUpperHalfPlaneStable (reducedPolarization n f) := by
   intro z hz hzero
@@ -221,14 +423,100 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
 /-- Exact-degree upper-half-plane stability is preserved by univariate
 polarization. -/
 theorem mvUpperHalfPlaneStable_polarization {n : ℕ} {p : ℂ[X]}
-    (hdeg : p.natDegree = n)
+    (hdeg : p.natDegree ≤ n)
     (hstable : ∀ w : ℂ, 0 < w.im → p.eval w ≠ 0) :
     MvUpperHalfPlaneStable (polarization n p) := by
   unfold polarization
   apply mvUpperHalfPlaneStable_reducedPolarization
-  · rw [binomialLift_binomialUnlift hdeg.le, hdeg]
-  · simpa [binomialLift_binomialUnlift hdeg.le] using hstable
+  · simpa only [binomialLift_binomialUnlift hdeg] using hdeg
+  · simpa only [binomialLift_binomialUnlift hdeg] using hstable
 
 end
+
+/-- Diagonal projection sends a bounded multiaffine basis monomial to the
+univariate monomial whose exponent is its total degree. -/
+theorem diagonalProjection_basisDegreeOfLE {n : ℕ}
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    diagonalProjection n
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m) =
+      Polynomial.X ^ m.1.degree := by
+  change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+      (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1))
+        ((MvPolynomial.basisDegreeOfLE (R := ℂ)
+          (fun _ : Fin n => 1) m :
+            MvPolynomial.degreeOfLE (Fin n) ℂ (fun _ => 1)) :
+          MvPolynomial (Fin n) ℂ)) =
+    Polynomial.X ^ m.1.degree
+  rw [MvPolynomial.coe_basisDegreeOfLE]
+  rw [MvPolynomial.rename_monomial, MvPolynomial.uniqueAlgEquiv_monomial]
+  rw [Polynomial.X_pow_eq_monomial]
+  apply congrArg (fun k : ℕ => Polynomial.monomial k (1 : ℂ))
+  calc
+    (Finsupp.mapDomain (fun _ : Fin n => (0 : Fin 1)) m.1) default =
+        m.1.sum (fun _ e => e) := by
+      simp [Finsupp.mapDomain, Finsupp.sum_apply]
+    _ = m.1.degree := by
+      rw [Finsupp.degree_apply]
+      rfl
+
+private theorem degree_le_fin_card_of_le_one {n : ℕ}
+    (m : Fin n →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    m.degree ≤ n := by
+  rw [Finsupp.degree_apply]
+  calc
+    ∑ i ∈ m.support, m i ≤ ∑ i ∈ m.support, 1 :=
+      Finset.sum_le_sum fun i hi => hm i
+    _ = m.support.card := by simp
+    _ ≤ Fintype.card (Fin n) := Finset.card_le_univ m.support
+    _ = n := Fintype.card_fin n
+
+/-- The one-variable degree-box index obtained by diagonalizing a bounded
+multiaffine exponent vector. -/
+noncomputable def diagonalDegreeBoxIndex {n : ℕ}
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    {d : Fin 1 →₀ ℕ // ∀ i, d i ≤ n} :=
+  ⟨Finsupp.single default m.1.degree, fun i => by
+    rw [Subsingleton.elim i default, Finsupp.single_eq_same]
+    exact degree_le_fin_card_of_le_one m.1 m.2⟩
+
+/-- Diagonal projection on degree boxes sends a multiaffine basis monomial to
+the one-variable basis monomial indexed by its total degree. -/
+theorem diagonalProjectionDegreeBox_basisDegreeOfLE {n : ℕ}
+    (m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1}) :
+    diagonalProjectionDegreeBox n
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m) =
+      MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+        (diagonalDegreeBoxIndex m) := by
+  apply Subtype.ext
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+      (diagonalProjection n
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m)) =
+    ((MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
+      (diagonalDegreeBoxIndex m) :
+        MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => n)) :
+      MvPolynomial (Fin 1) ℂ)
+  apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).injective
+  rw [AlgEquiv.apply_symm_apply, diagonalProjection_basisDegreeOfLE,
+    MvPolynomial.coe_basisDegreeOfLE,
+    MvPolynomial.uniqueAlgEquiv_monomial]
+  simp [diagonalDegreeBoxIndex, Polynomial.X_pow_eq_monomial]
+
+end RealRooted
+
+namespace RealRooted
+
+/-- Reduced polarization is symmetric in its polarized variables. -/
+theorem isSymmetric_reducedPolarization (n : ℕ) (f : ℂ[X]) :
+    MvPolynomial.IsSymmetric (reducedPolarization n f) := by
+  classical
+  intro e
+  simp only [reducedPolarization, map_sum, map_mul,
+    MvPolynomial.rename_C, MvPolynomial.rename_esymm]
+
+/-- Polarization is symmetric in its polarized variables. -/
+theorem isSymmetric_polarization (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.IsSymmetric (polarization n p) := by
+  unfold polarization
+  exact isSymmetric_reducedPolarization n (binomialUnlift n p)
 
 end RealRooted

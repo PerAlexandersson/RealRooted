@@ -40,6 +40,16 @@ variable {σ τ R : Type*} [CommSemiring R] [Fintype σ]
 def boxChoose (κ : σ → ℕ) (m : σ →₀ ℕ) : ℕ :=
   ∏ i, Nat.choose (κ i) (m i)
 
+/-- Every binomial coefficient in a multiaffine source box is one. -/
+@[simp]
+theorem boxChoose_one_of_le_one (m : σ →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    boxChoose (fun _ : σ => 1) m = 1 := by
+  classical
+  simp only [boxChoose]
+  apply Finset.prod_eq_one
+  intro i hi
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (hm i) with h | h <;> simp [h]
+
 /-- The right-block monomial with exponent vector `κ - m`. -/
 noncomputable def rightComplementMonomial (κ : σ → ℕ) (m : σ →₀ ℕ) :
     MvPolynomial (τ ⊕ σ) R :=
@@ -50,6 +60,27 @@ theorem rightComplementMonomial_eq_prod (κ : σ → ℕ) (m : σ →₀ ℕ) :
     rightComplementMonomial (R := R) (τ := τ) κ m =
       ∏ i, X (Sum.inr i) ^ (κ i - m i) := by
   rfl
+
+/-- In a multiaffine box, the complementary monomial is the product over the
+complement of the exponent support. -/
+theorem rightComplementMonomial_one_eq_support_compl [DecidableEq σ]
+    (m : σ →₀ ℕ) (hm : ∀ i, m i ≤ 1) :
+    rightComplementMonomial (R := R) (τ := τ) (fun _ : σ => 1) m =
+      rename (Sum.inr : σ → τ ⊕ σ) (∏ i ∈ m.supportᶜ, X i) := by
+  rw [rightComplementMonomial_eq_prod]
+  simp only [map_prod, rename_X]
+  rw [Finset.compl_eq_univ_sdiff, Finset.sdiff_eq_filter,
+    Finset.prod_filter]
+  apply Finset.prod_congr rfl
+  intro i _
+  by_cases hi : i ∈ m.support
+  · have hmi : m i = 1 := by
+      rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (hm i) with hzero | hone
+      · exact (Finsupp.mem_support_iff.mp hi hzero).elim
+      · exact hone
+    simp [hi, hmi]
+  · have hmi : m i = 0 := Finsupp.notMem_support_iff.mp hi
+    simp [hi, hmi]
 
 /-- The finite algebraic symbol of a linear map on a coordinate-wise degree
 box. Its monomial-basis expansion is

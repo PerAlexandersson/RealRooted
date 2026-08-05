@@ -1,7 +1,9 @@
 import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.Algebra.MvPolynomial.Funext
 import Mathlib.Algebra.MvPolynomial.Rename
 import Mathlib.Algebra.Polynomial.Eval.Coeff
+import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
@@ -488,6 +490,72 @@ theorem eval_specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
   congr 1
   ext i
   cases i <;> simp
+
+/-- Specializing one variable block cannot increase the degree in the
+remaining singleton block. -/
+theorem natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
+    {τ : Type*} (x : τ → ℂ)
+    (P : MvPolynomial (τ ⊕ Fin 1) ℂ) :
+    (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+      (specializeLeft x P)).natDegree ≤
+        P.degreeOf (Sum.inr default) := by
+  let e : τ ⊕ Fin 1 ≃ Option τ :=
+    { toFun := fun s =>
+        match s with
+        | Sum.inl i => some i
+        | Sum.inr _ => none
+      invFun := fun o =>
+        match o with
+        | some i => Sum.inl i
+        | none => Sum.inr default
+      left_inv := by
+        rintro (i | i)
+        · rfl
+        · exact congrArg Sum.inr (Subsingleton.elim default i)
+      right_inv := by
+        intro o
+        cases o <;> rfl }
+  let Q : MvPolynomial (Option τ) ℂ :=
+    MvPolynomial.rename e P
+  have hQdeg :
+      (MvPolynomial.optionEquivLeft ℂ τ Q).natDegree =
+        P.degreeOf (Sum.inr default) := by
+    rw [MvPolynomial.natDegree_optionEquivLeft]
+    simpa [Q, e] using
+      (MvPolynomial.degreeOf_rename_of_injective
+        (p := P) e.injective (Sum.inr default))
+  have hpoly :
+      MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+          (specializeLeft x P) =
+        Polynomial.map (MvPolynomial.eval x)
+          (MvPolynomial.optionEquivLeft ℂ τ Q) := by
+    apply Polynomial.funext
+    intro y
+    change Polynomial.eval₂ (RingHom.id ℂ) y
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+          (specializeLeft x P)) =
+      Polynomial.eval y
+        (Polynomial.map (MvPolynomial.eval x)
+          (MvPolynomial.optionEquivLeft ℂ τ Q))
+    rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+    change MvPolynomial.eval (fun _ : Fin 1 => y)
+        (specializeLeft x P) = _
+    rw [eval_specializeLeft]
+    calc
+      MvPolynomial.eval (Sum.elim x fun _ => y) P =
+          MvPolynomial.eval
+            (fun o => Option.elim o y x) Q := by
+        dsimp [Q]
+        rw [MvPolynomial.eval_rename]
+        apply congrArg (fun z => MvPolynomial.eval z P)
+        funext i
+        cases i <;> rfl
+      _ = Polynomial.eval y
+          (Polynomial.map (MvPolynomial.eval x)
+            (MvPolynomial.optionEquivLeft ℂ τ Q)) :=
+        MvPolynomial.optionEquivLeft_elim_eval ℂ τ x y Q
+  rw [hpoly, ← hQdeg]
+  exact Polynomial.natDegree_map_le
 
 /-- Specializing the left block inside its regions preserves stability in the
 right coordinate regions. -/
