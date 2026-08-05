@@ -63,31 +63,6 @@ theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound_of_classicalInput
   exact hclassical hdegree horder hconst hlead hsupport htn hsurj
     hker hvec_ne
 
-/-- Remaining classical sign-regular kernel lower bound for a full-row-rank
-totally nonnegative one-block Karlin coefficient-window matrix.
-
-This is the only remaining non-elementary input in the current Karlin sector
-proof.  It should eventually be proved from the specialized sign-regular
-variation-diminishing theorem for a full-row-rank totally nonnegative Toeplitz
-window matrix. -/
-theorem aswKarlinKernelSignVariationClassicalInput :
-    AswKarlinKernelSignVariationClassicalInputStatement := by
-  intro u degree order hdegree horder hconst hlead hsupport htn hsurj v hker hvec_ne
-  -- Remaining classical step: use `htn`, `hsurj`, the endpoint/support data,
-  -- `hker`, and `hvec_ne` to prove the kernel sign-variation lower bound.
-  sorry
-
-/-- Classical sign-regular kernel lower bound for a PF one-block Karlin
-coefficient-window matrix. -/
-theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound
-    {u : ℕ → ℝ} (hpf : IsPolyaFreqSeq u) (degree order : ℕ)
-    (hdegree : 0 < degree) (horder : 0 < order) (hconst : 0 < u 0)
-    (hlead : 0 < u degree) (hsupport : ∀ k, degree < k → u k = 0) :
-    AswKarlinKernelSignVariationLowerBound degree order u := by
-  exact hpf.aswKarlinKernelSignVariationLowerBound_of_classicalInput
-    aswKarlinKernelSignVariationClassicalInput degree order hdegree horder
-    hconst hlead hsupport
-
 /-- The final sector inequality follows once the two sign-variation bounds are
 available: a lower bound from the full-row-rank TN kernel theorem and an upper
 bound for the sampled sine vector inside the forbidden sector. -/
