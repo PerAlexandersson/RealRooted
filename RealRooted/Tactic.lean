@@ -21,6 +21,7 @@ import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.Wagner
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.EndpointDerivative
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard

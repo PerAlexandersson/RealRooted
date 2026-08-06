@@ -899,3 +899,35 @@ agreement audit currently has 4 local lag-one rows, 31 local lag-two rows, and
 3 local lag-three rows. Each still needs a formal OEIS row definition plus
 initial-value and recurrence proofs; finite cached-row checks do not discharge
 those obligations.
+
+## 2026-08-06 Endpoint-derivative interval frontends
+
+`RealRooted.Tactic.EndpointDerivative` packages the interval invariant for
+the quadratic
+
+```text
+q = (X - C a) * (X - C b).
+```
+
+If a positive-degree split polynomial has positive leading coefficient and all
+roots in `[a,b]`, then both `q * f.derivative` and `(q * f).derivative` are in
+proper position to the right of `f`, and their roots remain in `[a,b]`.  The
+first claim is the weak Ma--Wang sign criterion, since `q(r) ≤ 0` on the
+interval.  The interval conclusion follows by adjoining the endpoint roots and
+using the derivative root-bound theorem.  This also covers degree one, so the
+weak Ma--Wang core now has a separately named positive-degree theorem while its
+existing degree-two API remains compatible.
+
+The sequence frontends are:
+
+- `rr_endpoint_derivative_sequence` and its `interlaces` and `realrooted`
+  variants for `q * f.derivative`;
+- `rr_endpoint_product_derivative_sequence` and its corresponding variants
+  for `(q * f).derivative`.
+
+The caller supplies explicit base splitting and root-window certificates,
+positive leading coefficients, positive degrees, and the normalized
+recurrence.  The tactic carries the root interval through the induction.  The
+interlacing forms additionally request the exact successor-degree identity.
+The initial downstream targets are OEIS A142071 for the first operator and
+A172106--A172108 for the second.

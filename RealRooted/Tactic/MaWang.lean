@@ -87,6 +87,24 @@ namespace RealRooted
 /-- Weak Ma--Wang derivative step using the Liu--Wang sign criterion.  This is
 useful when the derivative coefficient can vanish at endpoint roots, so the
 strict Ma--Wang sign condition is too strong. -/
+theorem prec_mw_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 1 ≤ f.natDegree)
+    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
+    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) := by
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
+  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
+  exact
+    prec_of_interlaces_evalCoeff_nonpos
+      (f := f) (g := f.derivative) (a := u) (b := v)
+      hder hf'_pos hF_pos hdeg_lo hdeg_hi hv_nonpos
+
+/-- Compatibility wrapper for the original degree-two weak Ma--Wang API. -/
 theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -95,13 +113,9 @@ theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
-  have hder : Interlaces f.derivative f := derivative_interlaces hf hdegf
-  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-  exact
-    prec_of_interlaces_evalCoeff_nonpos
-      (f := f) (g := f.derivative) (a := u) (b := v)
-      hder hf'_pos hF_pos hdeg_lo hdeg_hi hv_nonpos
+    Prec f (u * f + v * f.derivative) :=
+  prec_mw_derivative_of_nonpos_of_pos_natDegree hf (by lia)
+    hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
 
 /-- Ma--Wang derivative step where the target leading-coefficient and degree
 side goals are supplied through a normalized recurrence identity. -/
