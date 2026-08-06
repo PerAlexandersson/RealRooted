@@ -352,6 +352,21 @@ theorem nonzero_of_favard_affine_const_coeff_rowSign
   ne_zero_of_isRealRooted_sequence <|
     isRealRooted_of_favard_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep
 
+/-- Consecutive interlacing for the positive-slope parameterized affine Favard
+wrapper. -/
+theorem interlaces_of_favard_affine_param_coeff
+    {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := fun n =>
+  (affineFavardChainPackage_of_param_coeff hs hβ hP0 hP1 hstep n).1
+
 /-- Positive-slope parameterized affine Favard wrapper.  This packages
 `P_{n+2} = (s_{n+1} X - α_{n+1}) P_{n+1} - β_{n+1} P_n`, with positive
 slopes and positive lags. -/
@@ -365,9 +380,8 @@ theorem favardInterlacing_affine_param_coeff
       P (n + 2) =
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_sequence_of_affineFavardChainPackage <|
-    affineFavardChainPackage_of_param_coeff hs hβ hP0 hP1 hstep
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := fun n =>
+  (interlaces_of_favard_affine_param_coeff hs hβ hP0 hP1 hstep n).toPrec
 
 /-- Real-rootedness consequence of the positive-slope parameterized affine
 Favard wrapper. -/
@@ -560,6 +574,41 @@ theorem nonzero_of_favard_affine_param_coeff_den_split_rev
     isRealRooted_of_favard_affine_param_coeff_den_split_rev
       hs hβ hP0 hP1 hden hraw
 
+/-- Consecutive interlacing for the raw-affine scalar-denominator Favard
+wrapper. -/
+theorem interlaces_of_favard_affine_param_coeff_den_raw
+    {P : Nat → ℝ[X]} {s α β d araw braw craw : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hs_coeff : ∀ n : Nat, (d n)⁻¹ * araw n = s (n + 1))
+    (hα_coeff : ∀ n : Nat, -((d n)⁻¹ * braw n) = α (n + 1))
+    (hβ_coeff : ∀ n : Nat, -((d n)⁻¹ * craw n) = β (n + 1))
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
+  interlaces_of_favard_affine_param_coeff hs hβ hP0 hP1 <| by
+    intro n
+    have hnorm :
+        P (n + 2) =
+          C (d n)⁻¹ *
+            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
+      eq_C_inv_mul_of_C_mul_eq (hden n) (hraw n)
+    calc
+      P (n + 2) =
+          C (d n)⁻¹ *
+            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
+        hnorm
+      _ =
+          (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+            C (β (n + 1)) * P n := by
+        rw [← hs_coeff n, ← hα_coeff n, ← hβ_coeff n]
+        simp [C_mul, C_neg, sub_eq_add_neg]
+        ring_nf
+
 /-- Positive-slope parameterized affine Favard wrapper with a scalar left
 denominator and raw affine numerator coefficients.
 
@@ -579,25 +628,9 @@ theorem favardInterlacing_affine_param_coeff_den_raw
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  favardInterlacing_affine_param_coeff hs hβ hP0 hP1 <| by
-    intro n
-    have hnorm :
-        P (n + 2) =
-          C (d n)⁻¹ *
-            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
-      eq_C_inv_mul_of_C_mul_eq (hden n) (hraw n)
-    calc
-      P (n + 2) =
-          C (d n)⁻¹ *
-            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
-        hnorm
-      _ =
-          (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
-            C (β (n + 1)) * P n := by
-        rw [← hs_coeff n, ← hα_coeff n, ← hβ_coeff n]
-        simp [C_mul, C_neg, sub_eq_add_neg]
-        ring_nf
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := fun n =>
+  (interlaces_of_favard_affine_param_coeff_den_raw
+    hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).toPrec
 
 /-- Real-rootedness consequence of raw-affine scalar-denominator Favard. -/
 theorem isRealRooted_of_favard_affine_param_coeff_den_raw
@@ -2180,6 +2213,11 @@ syntax (name := rr_favard_goal_variants)
     term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_favard_goal_variants_interlaces)
+  "rr_favard_goal_variants"
+    term ", " term ", " term ", " term ", " term ", " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_favard_goal_variants_seq)
   "rr_favard_goal_variants" term ", " term ", " term :
   tactic
@@ -2223,6 +2261,21 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection $hrealrooted
           | exact $hnonzero
           | exact $hinterlace_proj
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
+          | exact $hnonzero_proj)
+  | `(tactic|
+      rr_favard_goal_variants
+        $hinterlaces:term, $hprec:term, $hrealrooted:term, $hnonzero:term,
+        $hinterlaces_proj:term, $hprec_proj:term, $hrealrooted_proj:term,
+        $hnonzero_proj:term) =>
+      `(tactic|
+        first
+          | exact $hinterlaces
+          | exact $hprec
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted
+          | exact $hnonzero
+          | exact $hinterlaces_proj
+          | exact $hprec_proj
           | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
           | exact $hnonzero_proj)
   | `(tactic|
@@ -2584,12 +2637,22 @@ macro_rules
         $hstep:term) =>
       `(tactic|
         rr_favard_goal_variants
+          (RealRooted.interlaces_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
           (RealRooted.favardInterlacing_affine_param_coeff
             (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
           (RealRooted.isRealRooted_of_favard_affine_param_coeff
             (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
           (RealRooted.nonzero_of_favard_affine_param_coeff
-            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep))
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.interlaces_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.favardInterlacing_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_affine_param using
         slope := $s:term,
@@ -2754,6 +2817,10 @@ macro_rules
         raw_recurrence := $hraw:term) =>
       `(tactic|
         rr_favard_goal_variants
+          (RealRooted.interlaces_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
           (RealRooted.favardInterlacing_affine_param_coeff_den_raw
             (s := $s) (α := $α) (β := $β) (d := $d)
             (araw := $araw) (braw := $braw) (craw := $craw)
@@ -2765,7 +2832,23 @@ macro_rules
           (RealRooted.nonzero_of_favard_affine_param_coeff_den_raw
             (s := $s) (α := $α) (β := $β) (d := $d)
             (araw := $araw) (braw := $braw) (craw := $craw)
-            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw))
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.interlaces_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _),
+          (RealRooted.favardInterlacing_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _))
   | `(tactic|
       rr_favard_affine_param_den_raw_auto using
         slope := $s:term,

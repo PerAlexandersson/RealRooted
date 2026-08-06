@@ -634,6 +634,23 @@ example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
     beta := β,
     step := hstep
 
+/-- The inferred affine router exposes the consecutive interlacing packet. -/
+example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_favard_affine_param_infer using
+    slope := s,
+    alpha := α,
+    beta := β,
+    step := hstep
+
 /-- The inferred form proves elementary positivity but still requires the two
 base certificates from the local context or tagged declarations. -/
 example {P : Nat → ℝ[X]}
@@ -1368,6 +1385,27 @@ example {P : Nat → ℝ[X]}
         (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
           C (-((n : ℝ) + 2)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_param_den_raw_auto using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    raw_slope := fun _ : Nat => (2 : ℝ),
+    raw_const := fun n : Nat => -(n.succ : ℝ),
+    raw_lag := fun n : Nat => -((n : ℝ) + 2),
+    base_zero := hP0,
+    base_one := rr_favard_base_one hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- The raw scalar-denominator router also exposes consecutive interlacing. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
+          C (-((n : ℝ) + 2)) * P n) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_raw_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
