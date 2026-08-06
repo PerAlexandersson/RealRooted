@@ -55,23 +55,31 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
     rw [natDegree_C_mul (by positivity), natDegree_pow, natDegree_X_add_C, mul_one]
   exact hprec.toInterlaces (by rw [hd₁, hd₂])
 
-/-- Scalar multiple of `interlaces_linear_pow`; scaling by `C c` preserves roots. -/
-theorem interlaces_C_mul_linear_pow (c a b : ℝ) (hc : c ≠ 0) (hb : 0 < b)
-    (n : ℕ) :
+/-- Independent nonzero scalar multiples of consecutive powers of a positive linear factor
+interlace. -/
+theorem interlaces_C_mul_linear_pow_succ (c d a b : ℝ) (hc : c ≠ 0) (hd : d ≠ 0)
+    (hb : 0 < b) (n : ℕ) :
     Interlaces (C c * (C a + C b * X) ^ n)
-      (C c * (C a + C b * X) ^ (n + 1)) := by
+      (C d * (C a + C b * X) ^ (n + 1)) := by
   have hbase := interlaces_linear_pow a b hb n
   have hprec : Prec (C c * (C a + C b * X) ^ n)
-      (C c * (C a + C b * X) ^ (n + 1)) :=
-    prec_C_mul_right (prec_C_mul_left hbase.toPrec hc) hc
+      (C d * (C a + C b * X) ^ (n + 1)) :=
+    prec_C_mul_right (prec_C_mul_left hbase.toPrec hc) hd
   have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
     compute_degree!
     exact hb.ne'
   have hd₁ : (C c * (C a + C b * X) ^ n).natDegree = n := by
     rw [natDegree_C_mul hc, natDegree_pow, hlin_deg, mul_one]
-  have hd₂ : (C c * (C a + C b * X) ^ (n + 1)).natDegree = n + 1 := by
-    rw [natDegree_C_mul hc, natDegree_pow, hlin_deg, mul_one]
+  have hd₂ : (C d * (C a + C b * X) ^ (n + 1)).natDegree = n + 1 := by
+    rw [natDegree_C_mul hd, natDegree_pow, hlin_deg, mul_one]
   exact hprec.toInterlaces (by rw [hd₁, hd₂])
+
+/-- Scalar multiple of `interlaces_linear_pow`; scaling by `C c` preserves roots. -/
+theorem interlaces_C_mul_linear_pow (c a b : ℝ) (hc : c ≠ 0) (hb : 0 < b)
+    (n : ℕ) :
+    Interlaces (C c * (C a + C b * X) ^ n)
+      (C c * (C a + C b * X) ^ (n + 1)) :=
+  interlaces_C_mul_linear_pow_succ c c a b hc hc hb n
 
 /-- Nonnegative coefficients of `(C a + C b * X)^n` when `a, b ≥ 0`. -/
 theorem hasNonnegCoeffs_linear_pow {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
