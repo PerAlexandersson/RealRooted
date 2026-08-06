@@ -931,3 +931,8 @@ recurrence.  The tactic carries the root interval through the induction.  The
 interlacing forms additionally request the exact successor-degree identity.
 The initial downstream targets are OEIS A142071 for the first operator and
 A172106--A172108 for the second.
+
+The module also exposes one-step degree and positive-leading-coefficient
+lemmas for both operators.  Downstream sequence files should derive their
+global certificates from these facts instead of repeating polynomial degree
+and leading-term calculations.

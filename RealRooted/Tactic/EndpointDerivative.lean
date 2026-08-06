@@ -50,6 +50,49 @@ private lemma roots_endpointQuadratic_mem_Icc {a b : ℝ} (hab : a ≤ b) :
     subst r
     exact ⟨hab, le_rfl⟩
 
+/-- Multiplying the derivative by the endpoint quadratic raises the degree by
+one. -/
+theorem natDegree_endpointDerivative {f : ℝ[X]} {a b : ℝ}
+    (hdeg : 1 ≤ f.natDegree) :
+    (((X - C a) * (X - C b)) * f.derivative).natDegree =
+      f.natDegree + 1 := by
+  rw [natDegree_mul (endpointQuadratic_ne_zero a b)
+    (Polynomial.derivative_ne_zero.mpr (by lia))]
+  rw [f.natDegree_derivative, natDegree_endpointQuadratic]
+  lia
+
+/-- Multiplying the derivative by the endpoint quadratic preserves positivity
+of the leading coefficient. -/
+theorem hasPosLeadingCoeff_endpointDerivative {f : ℝ[X]} {a b : ℝ}
+    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
+    HasPosLeadingCoeff (((X - C a) * (X - C b)) * f.derivative) :=
+  (hasPosLeadingCoeff_endpointQuadratic a b).mul
+    (hf_pos.derivative (by lia))
+
+/-- Differentiating the product with the endpoint quadratic raises the degree
+by one. -/
+theorem natDegree_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
+    (hf_pos : HasPosLeadingCoeff f) :
+    (((X - C a) * (X - C b) * f).derivative).natDegree =
+      f.natDegree + 1 := by
+  have hq_ne := endpointQuadratic_ne_zero a b
+  have hqf_deg : (((X - C a) * (X - C b)) * f).natDegree =
+      f.natDegree + 2 := by
+    rw [natDegree_mul hq_ne hf_pos.ne_zero, natDegree_endpointQuadratic]
+    lia
+  rw [Polynomial.natDegree_derivative, hqf_deg]
+  lia
+
+/-- Differentiating the product with the endpoint quadratic preserves
+positivity of the leading coefficient. -/
+theorem hasPosLeadingCoeff_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
+    (hf_pos : HasPosLeadingCoeff f) :
+    HasPosLeadingCoeff (((X - C a) * (X - C b) * f).derivative) := by
+  apply ((hasPosLeadingCoeff_endpointQuadratic a b).mul hf_pos).derivative
+  rw [natDegree_mul (endpointQuadratic_ne_zero a b) hf_pos.ne_zero]
+  rw [natDegree_endpointQuadratic]
+  lia
+
 /-- If the roots of a positive-degree split polynomial lie in `[a,b]`, then
 `(X-a)(X-b)f'` is in proper position to its right. -/
 theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
@@ -58,16 +101,10 @@ theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
     Prec f (((X - C a) * (X - C b)) * f.derivative) := by
   let q : ℝ[X] := (X - C a) * (X - C b)
-  have hq_ne : q ≠ 0 := endpointQuadratic_ne_zero a b
-  have hder_ne : f.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
   have htarget_deg : (q * f.derivative).natDegree = f.natDegree + 1 := by
-    rw [natDegree_mul hq_ne hder_ne, f.natDegree_derivative]
-    rw [show q.natDegree = 2 by exact natDegree_endpointQuadratic a b]
-    lia
+    exact natDegree_endpointDerivative hdeg
   have htarget_pos : HasPosLeadingCoeff (q * f.derivative) :=
-    (hasPosLeadingCoeff_endpointQuadratic a b).mul
-      (hf_pos.derivative (by lia))
+    hasPosLeadingCoeff_endpointDerivative hf_pos hdeg
   have hprec : Prec f (0 * f + q * f.derivative) :=
     prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by simp only [zero_mul, zero_add]; rw [htarget_deg]; lia)
@@ -109,23 +146,17 @@ theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
     Prec f (((X - C a) * (X - C b) * f).derivative) := by
   let q : ℝ[X] := (X - C a) * (X - C b)
-  have hq_ne : q ≠ 0 := endpointQuadratic_ne_zero a b
-  have hqf_deg : (q * f).natDegree = f.natDegree + 2 := by
-    rw [natDegree_mul hq_ne hf_pos.ne_zero]
-    rw [show q.natDegree = 2 by exact natDegree_endpointQuadratic a b]
-    lia
   have htarget_eq :
       (q * f).derivative = q.derivative * f + q * f.derivative := by
     rw [derivative_mul]
   have htarget_deg :
       (q.derivative * f + q * f.derivative).natDegree = f.natDegree + 1 := by
-    rw [← htarget_eq, (q * f).natDegree_derivative, hqf_deg]
-    lia
+    rw [← htarget_eq]
+    exact natDegree_derivative_endpointProduct hf_pos
   have htarget_pos :
       HasPosLeadingCoeff (q.derivative * f + q * f.derivative) := by
     rw [← htarget_eq]
-    exact ((hasPosLeadingCoeff_endpointQuadratic a b).mul hf_pos).derivative
-      (by rw [hqf_deg]; lia)
+    exact hasPosLeadingCoeff_derivative_endpointProduct hf_pos
   have hprec : Prec f (q.derivative * f + q * f.derivative) :=
     prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by rw [htarget_deg]; lia) (by rw [htarget_deg]) htarget_pos hf_pos (by
