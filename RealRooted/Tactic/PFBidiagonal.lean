@@ -487,6 +487,16 @@ def jensenPencilBidiagonalPreserverStatement : Prop :=
     BidiagonalJensenPencilCertificate alpha beta d →
     BidiagonalPFPreserver alpha beta d
 
+/-- Admitted Jensen-pencil implication for coefficient-bidiagonal PF
+preservers.
+
+This is the single explicit admission for the conjecture tracked in issue
+#355. It is not a checked proof; checked applications should prefer
+`bidiagonalPFPreserver_of_affineSymbol`. -/
+theorem jensenPencilBidiagonalPreserver :
+    jensenPencilBidiagonalPreserverStatement := by
+  sorry
+
 /-- Apply the named Jensen-pencil backend theorem. -/
 theorem bidiagonalPFPreserver_of_jensenPencil
     (hbackend : jensenPencilBidiagonalPreserverStatement)

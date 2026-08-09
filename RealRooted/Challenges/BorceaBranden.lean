@@ -61,6 +61,14 @@ def finiteComplexSymbolClassificationStatement : Prop :=
       HasStableRankOneRepresentation κ T ∨
         MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)
 
+/-- Admitted Borcea--Brändén finite complex-symbol classification.
+
+This is the single explicit admission for the classification challenge tracked
+in issue #356. It is not a checked proof. -/
+theorem finiteComplexSymbolClassification :
+    finiteComplexSymbolClassificationStatement := by
+  sorry
+
 /-- Outside the rank-at-most-one alternative, the main classification has the
 familiar form: an operator preserves stability if and only if its algebraic
 symbol is stable. This remains an explicit challenge proposition. -/
