@@ -250,8 +250,8 @@ rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
 rr_h_second_derivative_sequence using route := pf_bidiagonal_quadratic, ...
-rr_h_second_derivative_sequence using route := finite_symbol, ...
-rr_h_shifted_second_derivative_sequence using route := finite_symbol, ...
+rr_h_second_derivative_sequence using route := legacy_false_homogeneous_symbol, ...
+rr_h_shifted_second_derivative_sequence using route := legacy_false_homogeneous_symbol, ...
 rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduct
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
@@ -344,9 +344,9 @@ open Lean.Elab.Tactic
 namespace RealRooted
 namespace Tactic
 
-syntax (name := rr_h_second_derivative_sequence_finite_symbol)
+syntax (name := rr_h_second_derivative_sequence_legacy_false_homogeneous_symbol)
   "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "finite_symbol" ","
+    "route" ":=" "legacy_false_homogeneous_symbol" ","
     "bb_backend" ":=" term ","
     ("cutoff" ":=" term ",")?
     "base" ":=" term ","
@@ -360,9 +360,9 @@ syntax (name := rr_h_second_derivative_sequence_finite_symbol)
     ("," "nonzero" ":=" term)? :
   tactic
 
-syntax (name := rr_h_shifted_second_derivative_sequence_finite_symbol)
+syntax (name := rr_h_shifted_second_derivative_sequence_legacy_false_homogeneous_symbol)
   "rr_h_shifted_second_derivative_sequence" " using "
-    "route" ":=" "finite_symbol" ","
+    "route" ":=" "legacy_false_homogeneous_symbol" ","
     "bb_backend" ":=" term ","
     ("cutoff" ":=" term ",")?
     "base" ":=" term ","
@@ -1599,7 +1599,7 @@ macro_rules
       `(by rr_oeis_coeff_all)
   | `(tactic|
       rr_h_second_derivative_sequence using
-        route := finite_symbol,
+        route := legacy_false_homogeneous_symbol,
         bb_backend := $hBB:term,
         base := $hbase:term,
         degree := $hdegree:term,
@@ -1611,7 +1611,7 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_fsp_second_derivative_sequence using
+        rr_fsp_legacy_second_derivative_sequence using
           bb_backend := $hBB,
           base := $hbase,
           degree := $hdegree,
@@ -1624,7 +1624,7 @@ macro_rules
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_second_derivative_sequence using
-        route := finite_symbol,
+        route := legacy_false_homogeneous_symbol,
         bb_backend := $hBB:term,
         cutoff := $N:term,
         base := $hbase:term,
@@ -1637,7 +1637,7 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_fsp_second_derivative_sequence using
+        rr_fsp_legacy_second_derivative_sequence using
           bb_backend := $hBB,
           cutoff := $N,
           base := $hbase,
@@ -1651,7 +1651,7 @@ macro_rules
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_shifted_second_derivative_sequence using
-        route := finite_symbol,
+        route := legacy_false_homogeneous_symbol,
         bb_backend := $hBB:term,
         base := $hbase:term,
         degree := $hdegree:term,
@@ -1663,7 +1663,7 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_fsp_shifted_second_derivative_sequence using
+        rr_fsp_legacy_shifted_second_derivative_sequence using
           bb_backend := $hBB,
           base := $hbase,
           degree := $hdegree,
@@ -1676,7 +1676,7 @@ macro_rules
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_shifted_second_derivative_sequence using
-        route := finite_symbol,
+        route := legacy_false_homogeneous_symbol,
         bb_backend := $hBB:term,
         cutoff := $N:term,
         base := $hbase:term,
@@ -1689,7 +1689,7 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_fsp_shifted_second_derivative_sequence using
+        rr_fsp_legacy_shifted_second_derivative_sequence using
           bb_backend := $hBB,
           cutoff := $N,
           base := $hbase,

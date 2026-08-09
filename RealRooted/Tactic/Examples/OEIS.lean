@@ -3378,9 +3378,9 @@ example
     recurrence := hrec,
     nonzero := hne
 
-/-- Family H second-derivative router, finite-symbol ordinary branch. -/
+/-- Family H legacy false-homogeneous-symbol ordinary branch. -/
 example
-    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
+    (hBB : FiniteSymbolPF.falseHomogeneousFiniteSymbolStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 : Nat → ℝ} {degreeBound : Nat → Nat}
     (hbase : IsPFPolynomial (P 0))
     (hdegree : ∀ n : Nat, (P n).natDegree ≤ degreeBound n)
@@ -3404,7 +3404,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_h_second_derivative_sequence using
-    route := finite_symbol,
+    route := legacy_false_homogeneous_symbol,
     bb_backend := hBB,
     base := hbase,
     degree := hdegree,
@@ -3415,9 +3415,9 @@ example
     beta_nonneg := hbeta,
     recurrence := hrec
 
-/-- Family H shifted second-derivative router, finite-symbol cutoff branch. -/
+/-- Family H legacy false-homogeneous-symbol cutoff branch. -/
 example
-    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
+    (hBB : FiniteSymbolPF.falseHomogeneousFiniteSymbolStatement)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c3 : Nat → ℝ} {degreeBound : Nat → Nat}
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
@@ -3443,7 +3443,7 @@ example
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_h_shifted_second_derivative_sequence using
-    route := finite_symbol,
+    route := legacy_false_homogeneous_symbol,
     bb_backend := hBB,
     cutoff := N,
     base := hbase,

@@ -8,12 +8,12 @@ namespace FiniteSymbolPF
 
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hBB : finiteSymbolBBStatement)
+    (hBB : falseHomogeneousFiniteSymbolStatement)
     (hstab : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
     (halpha : ∀ n, 0 ≤ alpha n)
     (hbeta : ∀ n, 0 ≤ beta n) :
     BidiagonalPFPreserver alpha beta d := by
-  rr_fsp_finite_symbol_backend using
+  rr_fsp_legacy_finite_symbol_backend using
     bb_backend := hBB,
     stable := hstab,
     alpha_nonneg := halpha,
@@ -37,14 +37,14 @@ example {alpha beta : ℕ → ℝ} {d : ℕ}
     certificate := cert
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hBB : finiteSymbolBBStatement)
+    (hBB : falseHomogeneousFiniteSymbolStatement)
     (cert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
-  rr_fsp_preserver_of_residual_certificate using
+  rr_fsp_legacy_preserver_of_residual_certificate using
     bb_backend := hBB,
     certificate := cert
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree = 3)
     (hpf : IsPFPolynomial (quadraticBidiagonalResidual aa ab ac ba bb bc d))
@@ -53,7 +53,7 @@ example (hBB : finiteSymbolBBStatement)
     BidiagonalPFPreserver
       (quadraticJensenWeight aa ab ac)
       (quadraticJensenWeight ba bb bc) d := by
-  rr_fsp_quadratic_preserver using
+  rr_fsp_legacy_quadratic_preserver using
     bb_backend := hBB,
     degree_ge_two := hd,
     cubic_degree := hdeg,
@@ -61,7 +61,7 @@ example (hBB : finiteSymbolBBStatement)
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -72,7 +72,7 @@ example (hBB : finiteSymbolBBStatement)
     BidiagonalPFPreserver
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
-  rr_fsp_second_derivative_preserver using
+  rr_fsp_legacy_second_derivative_preserver using
     bb_backend := hBB,
     degree_ge_two := hd,
     cubic_degree := hdeg,
@@ -80,7 +80,7 @@ example (hBB : finiteSymbolBBStatement)
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
@@ -91,7 +91,7 @@ example (hBB : finiteSymbolBBStatement)
     BidiagonalPFPreserver
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
-  rr_fsp_second_derivative_preserver_on_degree using
+  rr_fsp_legacy_second_derivative_preserver_on_degree using
     bb_backend := hBB,
     degree_ge_two := hd,
     cubic_degree := hdeg,
@@ -99,7 +99,7 @@ example (hBB : finiteSymbolBBStatement)
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
     (hdeg : (quadraticBidiagonalResidual
       0 b1 a0 c3 (b2 - c3) a1 d).natDegree = 3)
@@ -110,7 +110,7 @@ example (hBB : finiteSymbolBBStatement)
     BidiagonalPFPreserver
       (shiftedSecondDerivativeAlpha a0 b1)
       (shiftedSecondDerivativeBeta a1 b2 c3) d := by
-  rr_fsp_shifted_second_derivative_preserver using
+  rr_fsp_legacy_shifted_second_derivative_preserver using
     bb_backend := hBB,
     degree_ge_two := hd,
     cubic_degree := hdeg,
@@ -118,7 +118,7 @@ example (hBB : finiteSymbolBBStatement)
     alpha_nonneg := halpha,
     beta_nonneg := hbeta
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -140,7 +140,7 @@ example (hBB : finiteSymbolBBStatement)
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, IsPFPolynomial (P n) := by
-  rr_fsp_second_derivative_sequence using
+  rr_fsp_legacy_second_derivative_sequence using
     bb_backend := hBB,
     base := hbase,
     degree := hdegree,
@@ -151,7 +151,7 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta,
     recurrence := hrec
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -174,7 +174,7 @@ example (hBB : finiteSymbolBBStatement)
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
-  rr_fsp_second_derivative_sequence using
+  rr_fsp_legacy_second_derivative_sequence using
     bb_backend := hBB,
     base := hbase,
     degree := hdegree,
@@ -186,7 +186,7 @@ example (hBB : finiteSymbolBBStatement)
     recurrence := hrec,
     nonzero := hne
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -209,7 +209,7 @@ example (hBB : finiteSymbolBBStatement)
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
-  rr_fsp_second_derivative_sequence using
+  rr_fsp_legacy_second_derivative_sequence using
     bb_backend := hBB,
     cutoff := N,
     base := hbase,
@@ -222,7 +222,7 @@ example (hBB : finiteSymbolBBStatement)
     recurrence := hrec,
     nonzero := hne
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -244,7 +244,7 @@ example (hBB : finiteSymbolBBStatement)
         shiftedSecondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, IsPFPolynomial (P n) := by
-  rr_fsp_shifted_second_derivative_sequence using
+  rr_fsp_legacy_shifted_second_derivative_sequence using
     bb_backend := hBB,
     base := hbase,
     degree := hdegree,
@@ -255,7 +255,7 @@ example (hBB : finiteSymbolBBStatement)
     beta_nonneg := hbeta,
     recurrence := hrec
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -278,7 +278,7 @@ example (hBB : finiteSymbolBBStatement)
         shiftedSecondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
-  rr_fsp_shifted_second_derivative_sequence using
+  rr_fsp_legacy_shifted_second_derivative_sequence using
     bb_backend := hBB,
     base := hbase,
     degree := hdegree,
@@ -290,7 +290,7 @@ example (hBB : finiteSymbolBBStatement)
     recurrence := hrec,
     nonzero := hne
 
-example (hBB : finiteSymbolBBStatement)
+example (hBB : falseHomogeneousFiniteSymbolStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ} (N : ℕ)
     (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
@@ -314,7 +314,7 @@ example (hBB : finiteSymbolBBStatement)
         shiftedSecondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := by
-  rr_fsp_shifted_second_derivative_sequence using
+  rr_fsp_legacy_shifted_second_derivative_sequence using
     bb_backend := hBB,
     cutoff := N,
     base := hbase,
