@@ -2729,32 +2729,6 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   fun {_a _b} ha hb {_n} {_rows} {_cols} hrows hcols _hn => h ha hb hrows hcols
 
-/-! ### Vacuous legacy reductions from the false unrestricted Schur premise
-
-The declarations with a `legacy_` prefix below preserve the old implication
-graph for historical reference only.  Their shared
-`HurwitzMatrixSchurProductTNStatement` hypothesis is refuted by
-`not_hurwitzMatrixSchurProductTNStatement`, so none is an active route to a
-Hadamard theorem. -/
-
-/-- Legacy reduction to the false unrestricted Hurwitz Schur interface.
-
-Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
-bookkeeping from `hadamardPreservesHurwitzMatrixTNStatement`; the remaining
-input is only that entrywise products of totally nonnegative Hurwitz matrices
-are totally nonnegative.
-
-This implication is logically valid but unusable: `HurwitzMatrix.lean` proves
-`not_hurwitzMatrixSchurProductTNStatement`. Garloff--Wagner, *Hadamard
-products of stable polynomials are stable*, J. Math. Anal. Appl. 202 (1996),
-797--809, Theorem 13, does not supply this unrestricted infinite-matrix
-hypothesis. -/
-theorem legacy_hadamardPreservesHurwitzMatrixTN_of_schur
-    (hSchur : HurwitzMatrixSchurProductTNStatement) :
-    hadamardPreservesHurwitzMatrixTNStatement :=
-  fun ha hb => by
-    simpa [hurwitz_hadamardProduct_matrix] using hSchur ha hb
-
 /-- Odd/even coefficient-subsequence PF consequence of the Hurwitz-matrix
 Hadamard leaf. -/
 def hadamardPreservesHurwitzMatrixOddEvenPFStatement : Prop :=
@@ -2789,22 +2763,6 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
   fun ha hb =>
     ⟨hurwitz_isPolyaFreqSeq_odd (h ha hb),
       hurwitz_isPolyaFreqSeq_even (h ha hb)⟩
-
-/-- Vacuous legacy reduction from the false unrestricted Schur premise to the
-odd/even PF consequence. -/
-theorem legacy_hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
-    (hSchur : HurwitzMatrixSchurProductTNStatement) :
-    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
-  hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
-
-/-- Vacuous legacy reduction from the false unrestricted Schur premise to the
-named low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
-theorem legacy_hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
-    (hSchur : HurwitzMatrixSchurProductTNStatement) :
-    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
-  hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
-    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to legacy odd/even inputs**
 (TODO T9).

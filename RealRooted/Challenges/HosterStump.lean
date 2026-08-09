@@ -31,9 +31,12 @@ Section 2 backend map:
 * gamma real-rootedness transfer: `gammaRealRootedIffPolynomialRealRootedNonpos`;
 * adjacent-degree gamma interlacing transfer:
   `GammaAdjacentInterlacingTransferStatement`;
-* missing convenience lemmas for this route: lower, upper, moving-window, and
-  `X`-shifted split partial sums of an interlacing sequence, recorded below as
-  statement interfaces.
+* the lower, upper, moving-window, and `X`-shifted split formulas below.
+
+The formerly proposed preservation interfaces for those four formulas are
+false for `IsInterlacingSeq0Nonneg`.  Checked counterexamples and the separate
+source-faithful relation live in `RealRooted.HosterStumpInterlacing`; this
+challenge module does not expose the false propositions as theorem backends.
 
 The finite checker `scripts/check_hoster_stump_chow.py` verifies the
 permutation definition against the Section 3 recurrence and checks the
@@ -128,53 +131,14 @@ def lowerPartialSums : List ℝ[X] → List ℝ[X]
 def upperPartialSums (fs : List ℝ[X]) : List ℝ[X] :=
   (lowerPartialSums fs.reverse).reverse
 
-/-- Legacy translation of Hoster--Stump Lemma 2.3(2) to finite lists.
-
-The source requires every sequence member to be real-rooted and uses a special
-degree-at-most-one convention. `IsInterlacingSeq0Nonneg` records neither
-condition, so this interface is false as stated; issue #326 tracks the
-source-faithful predicate. -/
-def LowerPartialSumsPreserveInterlacingStatement : Prop :=
-  ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
-    IsInterlacingSeq0Nonneg (lowerPartialSums fs)
-
-/-- Legacy translation of Hoster--Stump Lemma 2.3(3) to finite lists.
-
-It has the same missing source hypotheses as the lower-partial-sum interface
-and must not be used as a theorem backend. -/
-def UpperPartialSumsPreserveInterlacingStatement : Prop :=
-  ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
-    IsInterlacingSeq0Nonneg (upperPartialSums fs)
-
 /-- Sliding sums of width `width + 1`, as in Hoster--Stump Lemma 2.3(4). -/
 def movingWindowSums (width : ℕ) (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length - width)).map fun k => (fs.drop k |>.take (width + 1)).sum
-
-/-- Legacy translation of Hoster--Stump Lemma 2.3(4), with `width` equal to
-the paper's `ell`.
-
-Each output is the sum of `width + 1` consecutive entries, and the Lean length
-matches the displayed source range. The source tuple has an inconsistent final
-subscript. The input predicate remains too weak for the source theorem. -/
-def MovingWindowSumsPreserveInterlacingStatement : Prop :=
-  ∀ {width : ℕ} {fs : List ℝ[X]}, width < fs.length →
-    IsInterlacingSeq0Nonneg fs →
-      IsInterlacingSeq0Nonneg (movingWindowSums width fs)
 
 /-- The split sums `X * (f_0 + ... + f_{k-1}) + (f_k + ... + f_m)`. -/
 def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
   (List.range (fs.length + 1)).map fun k =>
     X * (fs.take k).sum + (fs.drop k).sum
-
-/-- Legacy translation of Hoster--Stump Lemma 2.3(5) to zero-based list
-splits.
-
-The formula and endpoint indexing match the paper, but the input predicate
-omits source-required elementwise real-rootedness and the low-degree
-interlacing convention. -/
-def XShiftedSplitSumsPreserveInterlacingStatement : Prop :=
-  ∀ {fs : List ℝ[X]}, IsInterlacingSeq0Nonneg fs →
-    IsInterlacingSeq0Nonneg (xShiftedSplitSums fs)
 
 /-- Hoster--Stump Proposition 2.5 in the project gamma-transform API.
 
@@ -265,26 +229,6 @@ def Theorem12Statement (M : ChowPolynomialModel) : Prop :=
 /-- Combined final challenge target for Hoster--Stump Theorems 1.1 and 1.2. -/
 def MainTheoremStatement (M : ChowPolynomialModel) : Prop :=
   Theorem11Statement M ∧ Theorem12Statement M
-
-/-- Bundle of the route ingredients which should imply the final abstract
-Chow-polynomial target. -/
-structure StrategyInputs
-    (p : RefinedChowFamily) (M : ChowPolynomialModel) : Prop where
-  baseRow : RefinedBaseRowStatement p
-  recurrence : RefinedRecurrenceStatement p
-  deletionRelaxation : RefinedDeletionRelaxationStatement p
-  theorem33 : Theorem33DiagramStatement p
-  gammaExpansions : Lemma31GammaExpansionStatement p M
-  lowerPartialSums : LowerPartialSumsPreserveInterlacingStatement
-  upperPartialSums : UpperPartialSumsPreserveInterlacingStatement
-  movingWindowSums : MovingWindowSumsPreserveInterlacingStatement
-  xShiftedSplitSums : XShiftedSplitSumsPreserveInterlacingStatement
-
-/-- Proof-template-facing statement: once the Section 2/3 route ingredients are
-available for a model, the Hoster--Stump final theorem follows. -/
-def StrategyImpliesMainTheoremStatement
-    (p : RefinedChowFamily) (M : ChowPolynomialModel) : Prop :=
-  StrategyInputs p M → MainTheoremStatement M
 
 end HosterStump
 end Challenges
