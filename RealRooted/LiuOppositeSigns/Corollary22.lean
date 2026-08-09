@@ -191,18 +191,6 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_forward
     exact theorem21RootCountBranchesToCompatible_of_natDegree_le_two
       hf hg hsgn hfdeg hgdeg hbranches
 
-/-- Nonconstant low-degree bounded Liu equivalence through endpoint degree
-two, assuming the isolated nonconstant forward direction. -/
-theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement := by
-  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
-  constructor
-  · exact hforward hf hg hsgn hfdeg_ne hgdeg_ne
-  · intro hbranches
-    exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
-      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
-
 /-- The nonconstant no-common-root low-degree forward direction through
 endpoint degree two is checked directly. -/
 theorem theorem21CompatibleToRootCountBranchesNatDegreeLeTwoNoCommonNonconstant :
@@ -368,131 +356,6 @@ theorem theorem21CompatibleRootCountEndpointLeTwo_of_commonForward
     hforward
     theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two
 
-/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
-from the nonconstant forward direction and the bounded endpoint-degree-two
-reverse direction. -/
-theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      ∀ {f g : ℝ[X]},
-        f.Splits → g.Splits → OppositeLeadingSigns f g →
-          f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-            theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement := by
-  intro f g hf hg hsgn hfdeg_ne hgdeg_ne
-  exact ⟨hforward hf hg hsgn hfdeg_ne hgdeg_ne,
-    hreverse hf hg hsgn hfdeg_ne hgdeg_ne⟩
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package, assuming the
-isolated nonconstant forward direction. -/
-theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
-    hforward theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_two
-
-/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
-from the branch-retaining common-interleaver forward direction and a
-predicate-restricted nonconstant reverse direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_reverse
-    (theorem21CompatibleToRootCountBranchesNonconstant_of_commonForward
-      hforward)
-    (fun hf hg hsgn hfdeg_ne hgdeg_ne hbranches =>
-      hreverse hf hg hsgn hfdeg_ne hgdeg_ne hbranches)
-
-/-- Reassemble the nonconstant bounded endpoint-degree-two theorem package
-from the nonconstant forward direction and a predicate-restricted reverse
-direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_predicateReverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hreverse
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package from endpoint
-factor-return case packages. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_endpointCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
-      hcases)
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package from endpoint
-factor-return case packages and the nonconstant root-count forward direction.
--/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_endpointCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_endpointCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package from bundled
-predicate-restricted x-subtraction cases. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_xSubPackage
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCasePackage
-      hcases)
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package from bundled
-predicate-restricted x-subtraction cases and the nonconstant root-count forward
-direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_forward_and_xSubCasePackage
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 2)) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_xSubPackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
-/-- Current nonconstant bounded endpoint-degree-two Liu package, assuming the
-branch-retaining common-interleaver forward direction. -/
-theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_two
-
 /-- The bounded endpoint-degree-two package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
 theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo
@@ -553,16 +416,6 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_commonForward
     theorem21CompatibleRootCountNatDegreeLeTwoStatement :=
   theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo
     (theorem21CompatibleRootCountEndpointLeTwo_of_commonForward hforward)
-
-/-- Current nonconstant low-degree endpoint-two Liu theorem package from a
-branch-retaining common-interleaver forward direction. -/
-theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_commonForward
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement :=
-  theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_endpointLeTwoNonconstant
-    (theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_commonForward
-      hforward)
 
 /-- The bounded endpoint-degree-three package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
@@ -1045,203 +898,6 @@ theorem theorem21CompatibleRootCountNatDegreeLeThree_of_forward_and_xSubCasePack
       hforward)
     hcases
 
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant forward direction and bounded nonconstant reverse
-direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_reverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      ∀ {f g : ℝ[X]},
-        f.Splits → g.Splits → OppositeLeadingSigns f g →
-          f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-            theorem21RootCountBranchesEndpointLeThree f g → Compatible f g) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg
-  exact ⟨hforward hf hg hsgn hf_deg hg_deg,
-    hreverse hf hg hsgn hf_deg hg_deg⟩
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant branch-retaining common-interleaver forward direction and
-a predicate-restricted nonconstant reverse direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_reverse
-    (theorem21CompatibleToRootCountBranchesNonconstant_of_commonForward
-      hforward)
-    (fun hf hg hsgn hf_deg hg_deg hbranches =>
-      hreverse hf hg hsgn hf_deg hg_deg hbranches)
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant forward direction and a predicate-restricted nonconstant
-reverse direction. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_predicateReverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hreverse
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant forward direction and endpoint factor-return case
-packages. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_endpointCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
-      hcases)
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant root-count forward direction and endpoint factor-return
-case packages. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_endpointDegreeCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_endpointCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant forward direction and left endpoint factor-return case
-packages. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_leftCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftEndpointCases
-      hcases)
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant root-count forward direction and left endpoint
-factor-return case packages. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_leftEndpointCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_leftCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant forward direction and bundled predicate-restricted
-x-subtraction cases. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_xSubPackage
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCasePackage
-      hcases)
-
-/-- Reassemble the nonconstant bounded endpoint-degree-three theorem package
-from the nonconstant root-count forward direction and bundled
-predicate-restricted x-subtraction cases. -/
-theorem
-    theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward_and_xSubCasePackage
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_xSubPackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
-/-- Current nonconstant bounded endpoint-degree-three Liu package, assuming the
-isolated nonconstant forward direction. -/
-theorem theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_xSubPackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_three
-
-/-- Current nonconstant bounded endpoint-degree-three Liu package, assuming
-the isolated nonconstant branch-retaining common-interleaver forward direction.
--/
-theorem theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_commonForward_and_predicateReverse
-    hforward
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_three
-
-/-- Low-degree nonconstant bounded Liu equivalence with the ordinary branch
-statement. -/
-theorem
-    theorem21CompatibleRootCountNonconstant_of_forward_and_natDegree_le_three
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3) :
-    Compatible f g ↔ theorem21RootCountBranches f g :=
-  ⟨hforward hf hg hsgn hfdeg_ne hgdeg_ne,
-    theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three
-      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le⟩
-
-/-- Low-degree nonconstant bounded Liu equivalence from a
-predicate-restricted nonconstant reverse direction, with the ordinary branch
-statement. -/
-theorem
-    theorem21CompatibleRootCountNonconstant_of_forward_and_natDegree_le_three_predicateReverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3) :
-    Compatible f g ↔ theorem21RootCountBranches f g := by
-  constructor
-  · exact hforward hf hg hsgn hfdeg_ne hgdeg_ne
-  · intro hbranches
-    exact hreverse hf hg hsgn hfdeg_ne hgdeg_ne
-      (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-        hfdeg_le hgdeg_le hbranches)
-
 /-- Low-degree nonconstant bounded Liu equivalence from the nonconstant
 branch-retaining common-interleaver forward direction and a
 predicate-restricted nonconstant reverse direction. -/
@@ -1286,25 +942,6 @@ theorem
       hcases)
     hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
 
-/-- Low-degree nonconstant bounded Liu equivalence from endpoint factor-return
-case packages and the nonconstant root-count forward direction, with the
-ordinary branch statement. -/
-theorem
-    theorem21CompatibleRootCountNonconstant_of_forward_and_natDegree_le_three_endpointDegreeCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3) :
-    Compatible f g ↔ theorem21RootCountBranches f g :=
-  theorem21CompatibleRootCountNonconstant_of_commonForward_natDegreeLeThreeEndpointCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-
 /-- Low-degree nonconstant bounded Liu equivalence from left endpoint
 factor-return case packages, with right cases supplied by symmetry. -/
 theorem theorem21CompatibleRootCountNonconstant_of_commonForward_natDegreeLeThreeLeftCases
@@ -1323,25 +960,6 @@ theorem theorem21CompatibleRootCountNonconstant_of_commonForward_natDegreeLeThre
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftEndpointCases
       hcases)
     hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-
-/-- Low-degree nonconstant bounded Liu equivalence from left endpoint
-factor-return case packages and the nonconstant root-count forward direction,
-with right cases supplied by symmetry. -/
-theorem
-    theorem21CompatibleRootCountNonconstant_of_forward_and_natDegree_le_three_leftEndpointCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3) :
-    Compatible f g ↔ theorem21RootCountBranches f g :=
-  theorem21CompatibleRootCountNonconstant_of_commonForward_natDegreeLeThreeLeftCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
 
 /-- Low-degree nonconstant bounded Liu equivalence from bundled
 predicate-restricted x-subtraction cases, with the ordinary branch statement.
@@ -1364,42 +982,6 @@ theorem
       hcases)
     hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
 
-/-- Low-degree nonconstant bounded Liu equivalence from bundled
-predicate-restricted x-subtraction cases and the nonconstant root-count forward
-direction, with the ordinary branch statement. -/
-theorem
-    theorem21CompatibleRootCountNonconstant_of_forward_and_natDegree_le_three_xSubCasePackage
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3) :
-    Compatible f g ↔ theorem21RootCountBranches f g :=
-  theorem21CompatibleRootCountNonconstant_of_commonForward_natDegreeLeThreeXSubPackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-
-/-- Reassemble the nonconstant low-degree Liu theorem package from the
-nonconstant forward direction and a predicate-restricted nonconstant reverse
-direction. -/
-theorem
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward_and_predicateReverse
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreverse :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement := by
-  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-  exact
-    theorem21CompatibleRootCountNonconstant_of_commonForward_and_natDegree_le_three_predicateReverse
-      (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-        hforward)
-      hreverse hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-
 /-- Reassemble the nonconstant low-degree Liu theorem package from the
 nonconstant branch-retaining common-interleaver forward direction and a
 predicate-restricted nonconstant reverse direction. -/
@@ -1415,16 +997,6 @@ theorem
   exact
     theorem21CompatibleRootCountNonconstant_of_commonForward_and_natDegree_le_three_predicateReverse
       hforward hreverse hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
-
-/-- Current nonconstant low-degree Liu theorem package with the ordinary branch
-statement, assuming the isolated nonconstant forward direction. -/
-theorem theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_commonForward_and_predicateReverse
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_three
 
 /-- Current nonconstant low-degree Liu theorem package with the ordinary branch
 statement, assuming the isolated nonconstant branch-retaining common-interleaver
@@ -1452,21 +1024,6 @@ theorem
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
       hcases)
 
-/-- Current nonconstant low-degree Liu theorem package from endpoint
-factor-return case packages and the nonconstant root-count forward direction,
-with the ordinary branch statement. -/
-theorem
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward_and_endpointDegreeCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_commonForward_and_endpointCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
-
 /-- Current nonconstant low-degree Liu theorem package from left endpoint
 factor-return case packages, with right cases supplied by symmetry. -/
 theorem
@@ -1481,21 +1038,6 @@ theorem
     hforward
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftEndpointCases
       hcases)
-
-/-- Current nonconstant low-degree Liu theorem package from left endpoint
-factor-return case packages and the nonconstant root-count forward direction,
-with right cases supplied by symmetry. -/
-theorem
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward_and_leftEndpointCases
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_commonForward_and_leftCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
 
 /-- Current nonconstant low-degree Liu theorem package from bundled
 predicate-restricted x-subtraction cases, with the ordinary branch statement.
@@ -1512,21 +1054,6 @@ theorem
     hforward
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCasePackage
       hcases)
-
-/-- Current nonconstant low-degree Liu theorem package from bundled
-predicate-restricted x-subtraction cases and the nonconstant root-count forward
-direction, with the ordinary branch statement. -/
-theorem
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward_and_xSubCasePackage
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
-  theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_commonForward_and_xSubPackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hcases
 
 /-- Liu Corollary 2.2: compatible real-rooted polynomials with opposite leading
 signs have degree gap at most two. -/
@@ -1637,15 +1164,6 @@ theorem corollary22DegreeDiffNatDegreeLeThree_of_forward
   corollary22DegreeDiffNatDegreeLeThree_of_theorem21NatDegreeLeThree
     (theorem21CompatibleRootCountNatDegreeLeThree_of_forward hforward)
 
-/-- Nonconstant low-degree Liu Corollary 2.2 follows from the isolated
-nonconstant forward direction of Theorem 2.1. -/
-theorem corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement :=
-  corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_theorem21NatDegreeLeThree
-    (theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_forward
-      hforward)
-
 /-- Liu Corollary 2.2 follows from the isolated branch-retaining
 common-interleaver forward direction. -/
 theorem corollary22DegreeDiff_of_commonForward
@@ -1676,49 +1194,12 @@ theorem corollary22DegreeDiff_of_forward
     (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
       hforward)
 
-/-- The nonconstant Liu Corollary 2.2 follows from the isolated nonconstant
-forward direction of Theorem 2.1. -/
-theorem corollary22DegreeDiffNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    corollary22DegreeDiffNonconstantStatement :=
-  corollary22DegreeDiffNonconstant_of_commonForward
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-
 /-- Liu Corollary 2.2 follows from the Theorem 2.1 compatibility criterion. -/
 theorem corollary22DegreeDiff_of_theorem21CompatibleRootCount
     (h : theorem21CompatibleRootCountStatement) :
     corollary22DegreeDiffStatement :=
   corollary22DegreeDiff_of_forward
     (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
-
-/-- Nonconstant Liu Corollary 2.2 follows from the nonconstant Theorem 2.1
-compatibility criterion. -/
-theorem corollary22DegreeDiffNonconstant_of_theorem21CompatibleRootCount
-    (h : theorem21CompatibleRootCountNonconstantStatement) :
-    corollary22DegreeDiffNonconstantStatement :=
-  corollary22DegreeDiffNonconstant_of_forward
-    (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
-      h)
-
-theorem natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount
-    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) :
-    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  corollary22DegreeDiff (corollary22DegreeDiff_of_theorem21CompatibleRootCount h)
-    hf hg hsgn hcompat
-
-theorem
-    natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_nonconstant
-    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  corollary22DegreeDiff_nonconstant
-    (corollary22DegreeDiffNonconstant_of_theorem21CompatibleRootCount h)
-    hf hg hsgn hf_deg hg_deg hcompat
 
 /-- Direct degree-gap consequence via the swapped branch projection of
 Liu Theorem 2.1. -/
@@ -1729,19 +1210,6 @@ theorem natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_s
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
   natDegree_abs_sub_le_two_of_theorem21RootCountBranches_symm hf hg hsgn
     (theorem21RootCountBranches_symm_of_compatible h hf hg hsgn hcompat)
-
-/-- Nonconstant direct degree-gap consequence via the swapped branch
-projection of Liu Theorem 2.1. -/
-theorem
-    natDegree_abs_sub_le_two_of_compatible_of_theorem21CompatibleRootCount_symm_nonconstant
-    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  natDegree_abs_sub_le_two_of_theorem21RootCountBranches_symm hf hg hsgn
-    (theorem21RootCountBranches_symm_of_compatible_nonconstant h hf hg hsgn
-      hf_deg hg_deg hcompat)
 
 end LiuOppositeSigns
 end RealRooted

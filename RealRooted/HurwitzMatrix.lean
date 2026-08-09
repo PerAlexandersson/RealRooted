@@ -100,19 +100,6 @@ theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
 explicit `Legacy` scaffolding. Counterexamples below show that these are not
 valid theorem targets for the current coefficient convention. -/
 
-/-- Unfolded finite-minor form of
-`LegacyHurwitzStableToMatrixTotallyNonnegativeStatement`.
-
-This candidate statement is false for the current row orientation; see
-`not_hurwitzStableToMatrixTotallyNonnegativeStatement`. -/
-def HurwitzStableToHurwitzMatrixMinorsStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
-
-theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
-    LegacyHurwitzStableToMatrixTotallyNonnegativeStatement ↔
-      HurwitzStableToHurwitzMatrixMinorsStatement :=
-  Iff.rfl
-
 /-- Legacy row-oriented converse Hurwitz-matrix criterion.  The nonzero
 hypothesis rules out the zero-polynomial typo, but the statement remains false
 for the current row convention; see
@@ -130,53 +117,6 @@ theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
       (oddEvenPolynomial_ne_zero_iff.mpr hpq0)
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
-
-/-- Full legacy row-oriented Hurwitz-matrix criterion in the coefficient
-convention used in this project.  The bundled statement is false for the
-current orientation; see `not_hurwitzMatrixCriterionStatement`. -/
-abbrev LegacyHurwitzMatrixCriterionStatement : Prop :=
-  LegacyHurwitzStableToMatrixTotallyNonnegativeStatement ∧
-    LegacyHurwitzMatrixTotallyNonnegativeToStableStatement
-
-theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
-    (h : LegacyHurwitzMatrixCriterionStatement) :
-    LegacyHurwitzStableToMatrixTotallyNonnegativeStatement :=
-  h.1
-
-theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
-    (h : LegacyHurwitzMatrixCriterionStatement) :
-    HurwitzStableToHurwitzMatrixMinorsStatement :=
-  fun hstab => h.1 hstab
-
-theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
-    (h : LegacyHurwitzMatrixCriterionStatement) :
-    LegacyHurwitzMatrixTotallyNonnegativeToStableStatement :=
-  h.2
-
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
-    (h : LegacyHurwitzMatrixCriterionStatement) :
-    LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement :=
-  fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN h.2
-
-theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement) :
-    LegacyHurwitzOddEvenToFullyInterlacingPairStatement :=
-  fun {p q} hstab =>
-    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
-      (hStableToMatrix hstab)
-
-theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
-    (h : LegacyHurwitzMatrixCriterionStatement) :
-    LegacyHurwitzOddEvenToFullyInterlacingPairStatement :=
-  hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors h.1
-
-/-! ### Entrywise Hadamard structure of Hurwitz matrices
-
-The coefficientwise Hadamard product of two polynomials corresponds, at the
-level of Hurwitz matrices, to the entrywise product of the two Hurwitz
-matrices.  Every entry of `hurwitz c` is either `0` or a single coefficient
-`c k`, so replacing `c` by the pointwise product `fun n => a n * b n`
-multiplies each entry by the corresponding entry of the other matrix. -/
 
 /-- Entrywise product identity for Hurwitz matrices.  The Hurwitz matrix of a
 coefficientwise product of sequences agrees, entrywise, with the product of
@@ -1477,10 +1417,6 @@ theorem not_hurwitzMatrixTotallyNonnegativeToStableStatement :
       norm_num [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
         Polynomial.coeff_X_pow, Polynomial.coeff_one] at hc)
       hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg)
-
-/-- The two-sided row-oriented Hurwitz criterion is false. -/
-theorem not_hurwitzMatrixCriterionStatement : ¬ LegacyHurwitzMatrixCriterionStatement :=
-  fun h => not_hurwitzStableToMatrixTotallyNonnegativeStatement h.1
 
 /-- Counterexample first column: the binomial sequence `k ↦ C(16, k)`. -/
 noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : ℝ)

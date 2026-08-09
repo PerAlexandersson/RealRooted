@@ -120,21 +120,6 @@ theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward
       hforward)
     hf hg hsgn hcompat
 
-/-- The isolated nonconstant forward direction of Liu Theorem 2.1 supplies
-normalized deletion compatibility branches. -/
-theorem
-    theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward_nonconstant
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward_nonconstant
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hf hg hsgn hf_deg hg_deg hcompat
-
 /-- The forward direction of Liu Theorem 2.1 supplies normalized deletion
 compatibility branches. -/
 theorem theorem21PositiveDeletionCompatibleBranches_of_compatible
@@ -145,19 +130,6 @@ theorem theorem21PositiveDeletionCompatibleBranches_of_compatible
   theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward
     (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
     hf hg hsgn hcompat
-
-/-- The nonconstant forward direction of Liu Theorem 2.1 supplies normalized
-deletion compatibility branches. -/
-theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_nonconstant
-    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward_nonconstant
-    (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
-      h)
-    hf hg hsgn hf_deg hg_deg hcompat
 
 /-- The isolated forward direction of Liu Theorem 2.1 supplies
 branch-retaining common interleaver witnesses for the actual deletion pair. -/
@@ -171,21 +143,6 @@ theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_forward
       hforward)
     hf hg hsgn hcompat
 
-/-- The isolated nonconstant forward direction of Liu Theorem 2.1 supplies
-branch-retaining common interleaver witnesses for the actual deletion pair. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_forward_nonconstant
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward_nonconstant
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hf hg hsgn hf_deg hg_deg hcompat
-
 /-- The forward direction of Liu Theorem 2.1 supplies branch-retaining common
 interleaver witnesses for the actual deletion pair. -/
 theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible
@@ -197,19 +154,6 @@ theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible
     (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
     hf hg hsgn hcompat
 
-/-- The nonconstant forward direction of Liu Theorem 2.1 supplies
-branch-retaining common interleaver witnesses for the actual deletion pair. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_nonconstant
-    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_forward_nonconstant
-    (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
-      h)
-    hf hg hsgn hf_deg hg_deg hcompat
-
 /-- Liu Theorem 2.1, restated with branch-retaining deletion-pair
 common-interleaver witnesses. -/
 theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches
@@ -218,16 +162,6 @@ theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches
     Compatible f g ↔ theorem21DeletionPairCommonInterleaverBranches f g :=
   (theorem21DeletionPairCommonInterleaverIff_of_theorem21CompatibleRootCount
     h) f g hf hg hsgn
-
-/-- The nonconstant Liu Theorem 2.1 statement, restated with branch-retaining
-deletion-pair common-interleaver witnesses. -/
-theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches_nonconstant
-    (h : theorem21CompatibleRootCountNonconstantStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔ theorem21DeletionPairCommonInterleaverBranches f g :=
-  (theorem21DeletionPairCommonInterleaverIffNonconstant_of_theorem21CompatibleRootCount
-    h) f g hf hg hsgn hf_deg hg_deg
 
 /-- The two positive-split root-count leaves supply the existing
 positive-leading compatibility-to-common-interleaver bridge. -/

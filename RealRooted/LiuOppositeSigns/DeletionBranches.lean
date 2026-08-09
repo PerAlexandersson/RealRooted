@@ -300,16 +300,6 @@ theorem theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
   exact theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
     hf hg hsgn (hforward hf hg hsgn hcompat)
 
-/-- The isolated nonconstant forward root-count direction supplies the
-branch-retaining common-interleaver forward direction. -/
-theorem
-    theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
-    theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg hcompat
-  exact theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-    hf hg hsgn (hforward hf hg hsgn hf_deg hg_deg hcompat)
-
 /-- The branch-retaining common-interleaver forward direction forgets back to
 the root-count forward direction. -/
 theorem theorem21CompatibleToRootCountBranches_of_commonForward
@@ -319,16 +309,6 @@ theorem theorem21CompatibleToRootCountBranches_of_commonForward
   intro f g hf hg hsgn hcompat
   exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
     (hforward hf hg hsgn hcompat)
-
-/-- The nonconstant branch-retaining common-interleaver forward direction
-forgets back to the nonconstant root-count forward direction. -/
-theorem theorem21CompatibleToRootCountBranchesNonconstant_of_commonForward
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement) :
-    theorem21CompatibleToRootCountBranchesNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg hcompat
-  exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-    (hforward hf hg hsgn hf_deg hg_deg hcompat)
 
 /-- The branch-retaining common-interleaver reverse direction restricts to the
 nonconstant setting. -/
@@ -415,20 +395,6 @@ theorem theorem21DeletionPairCommonInterleaverIff_of_theorem21CompatibleRootCoun
       (theorem21RootCountBranchesToCompatible_of_theorem21CompatibleRootCount
         h))
 
-/-- The nonconstant Liu root-count theorem package gives the nonconstant
-branch-retaining deletion-pair common-interleaver iff package. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_theorem21CompatibleRootCount
-    (h : theorem21CompatibleRootCountNonconstantStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstant_of_forward_and_reverse
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      (theorem21CompatibleToRootCountBranchesNonconstant_of_theorem21CompatibleRootCount
-        h))
-    (theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_rootCountReverse
-      (theorem21RootCountBranchesToCompatibleNonconstant_of_theorem21CompatibleRootCount
-        h))
-
 /-- The branch-retaining deletion-pair common-interleaver iff implies Liu's
 root-count theorem package. -/
 theorem theorem21CompatibleRootCount_of_deletionPairCommonInterleaverIff
@@ -442,22 +408,6 @@ theorem theorem21CompatibleRootCount_of_deletionPairCommonInterleaverIff
       ((h f g hf hg hsgn).1 hcompat)
   · intro hbranches
     exact (h f g hf hg hsgn).2
-      (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-        hf hg hsgn hbranches)
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver iff
-implies the nonconstant Liu root-count theorem package. -/
-theorem theorem21CompatibleRootCountNonconstant_of_deletionPairCommonInterleaverIff
-    (h :
-      theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement) :
-    theorem21CompatibleRootCountNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg
-  constructor
-  · intro hcompat
-    exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-      ((h f g hf hg hsgn hf_deg hg_deg).1 hcompat)
-  · intro hbranches
-    exact (h f g hf hg hsgn hf_deg hg_deg).2
       (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
         hf hg hsgn hbranches)
 

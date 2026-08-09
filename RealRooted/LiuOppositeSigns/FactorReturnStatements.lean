@@ -88,19 +88,6 @@ theorem
     (theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_factorReturn
       hreturn)
 
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant root-count forward direction and
-factor-return principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_forward_and_factorReturn
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hreturn
-
 /-- Stronger all-real-combination version of the factor-return principle. -/
 def theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement :
     Prop :=
@@ -168,20 +155,6 @@ theorem
   theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
     hforward
     (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant root-count forward direction and
-all-combinations factor-return principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_forward_and_allCombo
-    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement)
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_allCombo
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstant_of_forward
-      hforward)
-    hreturn
 
 /-- Swap the common-right-interleaver witness in a right deletion pair. -/
 theorem rightDeletionPairCommonInterleaver_symm {f g : ℝ[X]} {s : ℝ}
