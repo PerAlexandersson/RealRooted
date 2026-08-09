@@ -1,4 +1,5 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
+import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.HermiteBiehler
 
 /-!
