@@ -936,3 +936,26 @@ The module also exposes one-step degree and positive-leading-coefficient
 lemmas for both operators.  Downstream sequence files should derive their
 global certificates from these facts instead of repeating polynomial degree
 and leading-term calculations.
+
+## 2026-08-09 PF-bidiagonal frontend audit
+
+The PF-bidiagonal tactic layer had grown into a second API over the theorem
+layer: many syntax variants only forwarded certificates to declarations in
+`PFBidiagonal.lean`, while the large smoke file mostly repeated the same
+application shape.  The frontend macros were removed.  Generated proofs should
+now call the typed theorem API directly, in particular:
+
+- use `bidiagonalPFPreserver_of_affineSymbol` for the checked affine-symbol
+  route;
+- use `BidiagonalJensenPencilCertificate.toPFPreserver` only when accepting
+  the explicitly admitted Jensen-pencil implication;
+- use the generic recurrence theorem after constructing the corresponding
+  preserver certificate.
+
+The audit deliberately leaves one `sorry` at
+`jensenPencilBidiagonalPreserver`.  This exposes the mathematical gap at its
+single source instead of passing a theorem-shaped `Prop` backend through every
+wrapper.  Do not reintroduce tactic syntax whose only function is to hide that
+admission.  A future frontend is justified only if it performs recurring
+certificate construction or side-goal normalization that cannot be expressed
+clearly by a short theorem application.

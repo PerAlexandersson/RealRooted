@@ -33,10 +33,10 @@ abbrev HermiteBiehlerForwardTarget : Prop :=
 abbrev HermiteBiehlerConverseTarget : Prop :=
   RealRooted.hermiteBiehlerConverseStatement
 
-/-- Challenge-facing name for the proposed row-oriented Hurwitz-matrix
-total-nonnegativity criterion. -/
+/-- Challenge-facing name for the refuted converse row-oriented
+Hurwitz-matrix criterion. -/
 abbrev HurwitzMatrixCriterionTarget : Prop :=
-  RealRooted.LegacyHurwitzMatrixCriterionStatement
+  RealRooted.LegacyHurwitzMatrixTotallyNonnegativeToStableStatement
 
 /-- Sign-normalized forward Hermite--Biehler target. -/
 theorem hermiteBiehler_forward :
@@ -48,11 +48,11 @@ theorem hermiteBiehler_converse :
     HermiteBiehlerConverseTarget :=
   @RealRooted.hermiteBiehlerConverse
 
-/-- The proposed criterion is false for the row orientation used by
+/-- The converse criterion is false for the row orientation used by
 `RealRooted.hurwitz`. -/
 theorem not_hurwitzMatrixCriterion :
     ¬ HurwitzMatrixCriterionTarget :=
-  RealRooted.not_hurwitzMatrixCriterionStatement
+  RealRooted.not_hurwitzMatrixTotallyNonnegativeToStableStatement
 
 end HermiteBiehlerHurwitz
 end Challenges

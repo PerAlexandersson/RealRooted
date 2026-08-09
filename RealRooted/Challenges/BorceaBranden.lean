@@ -79,18 +79,14 @@ def finiteComplexSymbolIffStatement : Prop :=
       (PreservesComplexStabilityOnDegreeBox κ T ↔
         MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T))
 
-/-- Compatibility alias for challenge lists and theorem-search notes. -/
-abbrev borceaBrandenComplexFiniteSymbolStatement : Prop :=
-  finiteComplexSymbolClassificationStatement
+/-- Admitted non-rank-one form of the complex finite-symbol classification.
 
-/-- The non-rank-one `iff` formulation follows formally from the full
-classification statement. This proves only the relation between the two
-challenge interfaces, not the Borcea--Brändén classification itself. -/
-theorem finiteComplexSymbolIff_of_classification
-    (hBB : finiteComplexSymbolClassificationStatement) :
+This is a formal consequence of the single admitted classification theorem,
+not an additional admission. -/
+theorem finiteComplexSymbolIff :
     finiteComplexSymbolIffStatement := by
   intro σ _ κ T hrank
-  rw [hBB σ κ T]
+  rw [finiteComplexSymbolClassification σ κ T]
   simp only [hrank, false_or]
 
 /-! ## Real univariate application interface -/

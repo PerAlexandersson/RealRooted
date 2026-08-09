@@ -23,6 +23,7 @@ import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
@@ -311,7 +312,6 @@ import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
-import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
@@ -340,7 +340,6 @@ import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal
-import RealRooted.Tactic.Examples.PFBidiagonalFrontend
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
@@ -365,7 +364,6 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
-import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
@@ -392,7 +390,6 @@ import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
-import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.PreservingOperatorSequence

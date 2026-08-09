@@ -1,5 +1,8 @@
 # RealRooted
 
+Proof assumptions and refuted legacy interfaces are summarized in
+[`PROOF_STATUS.md`](PROOF_STATUS.md).
+
 `RealRooted` is an experimental Lean 4 library for real-rooted univariate
 polynomials, interlacing, compatibility, Polya-frequency sequences, and related
 combinatorial applications.

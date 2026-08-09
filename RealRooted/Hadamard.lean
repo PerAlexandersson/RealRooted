@@ -2943,6 +2943,17 @@ theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec :
     schurPolyaWagnerHadamardPFStatement :=
   hadamardProduct_preserves_pf_of_nonnegPrec
 
+/-- The checked PF Hadamard theorem gives the one-polynomial
+real-rootedness statement directly. -/
+theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :
+    garloffWagnerHadamardNonnegRealRootedStatement := by
+  intro p q hpnn hqnn hprr hqrr
+  have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
+  have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
+  have hpf : IsPFPolynomial (hadamardProduct p q) :=
+    hadamardProduct_preserves_pf_of_nonnegPrec hp hq
+  exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
+
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
 theorem hadamardProduct_preserves_prec0_right
