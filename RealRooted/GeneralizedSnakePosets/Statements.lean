@@ -35,16 +35,6 @@ def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
     (M w ≠ 0 ∧ (M w).Splits) ∧
       Interlaces (M w.deleteFinal) (M w)
 
-/-- Compatibility alias with a name that is easy to find from the paper title. -/
-abbrev BraunJalGeneralizedSnakeRealRootedStatement
-    (M : SnakeWord → ℝ[X]) : Prop :=
-  Theorem41NonNestingRookStatement M
-
-/-- Compatibility alias matching the first milestone note. -/
-abbrev GeneralizedSnakeNonNestingRookInterlacesStatement
-    (M : SnakeWord → ℝ[X]) : Prop :=
-  Theorem41NonNestingRookStatement M
-
 /-- Theorem 4.1 expressed for an abstract squarecase/non-nesting rook model. -/
 abbrev SquarecaseRookModelTheorem41Statement
     (model : SquarecaseRookModel) : Prop :=

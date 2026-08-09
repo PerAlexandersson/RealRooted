@@ -347,27 +347,6 @@ theorem aissenSchoenbergWhitneyForwardSplits_of_positiveConstant
           hc0zero' hdivsplits
       · exact hpositive hc0pos hpf
 
-/-- Degree-at-least-three leaf for the forward
-Aissen--Schoenberg--Whitney splitting theorem, after removing all zero roots. -/
-abbrev aissenSchoenbergWhitneyForwardSplitsPositiveConstantDegreeAtLeastThreeStatement :
-    Prop :=
-  ∀ {p : ℝ[X]},
-    3 ≤ p.natDegree →
-    0 < p.coeff 0 →
-    IsPolyaFreqSeq p.coeff →
-      p.Splits
-
-/-- Degree-at-least-four leaf for the forward
-Aissen--Schoenberg--Whitney splitting theorem, after removing all zero roots
-and proving the cubic case separately. -/
-abbrev aissenSchoenbergWhitneyForwardSplitsPositiveConstantDegreeAtLeastFourStatement :
-    Prop :=
-  ∀ {p : ℝ[X]},
-    4 ≤ p.natDegree →
-    0 < p.coeff 0 →
-    IsPolyaFreqSeq p.coeff →
-      p.Splits
-
 /-- Degree-at-least-four, positive-constant-coefficient leaf of the forward
 Aissen--Schoenberg--Whitney splitting theorem. -/
 theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
@@ -390,14 +369,6 @@ theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
   · exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_three hthree hconst hpf
   · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
       (by lia) hconst hpf
-
-/-- Degree-at-least-three leaf for the forward
-Aissen--Schoenberg--Whitney theorem. -/
-abbrev aissenSchoenbergWhitneyForwardDegreeAtLeastThreeStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    3 ≤ p.natDegree →
-    IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Degree-at-least-three case of the forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward_degreeAtLeastThree {p : ℝ[X]}
@@ -461,11 +432,6 @@ abbrev aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
 abbrev aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
   ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
-
-/-- Legacy compatibility alias for ASW forward no nonneg statement. -/
-abbrev aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
-  ∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-    (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- The current forward ASW statement implies the no-extra-nonnegativity
 formulation, since PF coefficients are already nonnegative. -/

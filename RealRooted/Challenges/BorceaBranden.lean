@@ -124,10 +124,6 @@ def finiteSymbolTheoremStatement : Prop :=
     MvUpperHalfPlaneStable (complexifyMv (finiteAlgebraicSymbol d T)) →
       PreservesRealRootedUpTo d T
 
-/-- Compatibility alias for issue notes and search. -/
-abbrev borceaBrandenFiniteSymbolStatement : Prop :=
-  finiteSymbolTheoremStatement
-
 /- The checked witness lives in
 `RealRooted.BorceaBranden.Applications.RealUnivariateSymbol`; importing it here
 would create an application/core cycle. -/
@@ -140,16 +136,6 @@ theorem preservesRealRootedUpTo_of_finiteSymbol
       MvUpperHalfPlaneStable (complexifyMv (finiteAlgebraicSymbol d T))) :
     PreservesRealRootedUpTo d T :=
   hBB hstable
-
-/-- Marker for the remaining classification infrastructure. Positive-symbol
-sufficiency is checked separately; the converse and low-rank alternatives are
-still theorem-shaped challenges. -/
-abbrev NeedsMultivariateStabilityAPI : Prop := True
-
-/-- Compatibility scaffold for the still-open full classification. -/
-theorem finiteSymbolClassification_scaffold :
-    NeedsMultivariateStabilityAPI :=
-  trivial
 
 end
 

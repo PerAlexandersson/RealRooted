@@ -82,11 +82,6 @@ abbrev ModifiedNarayanaInterlacing (P : ℕ → ℝ[X]) : Prop :=
 abbrev ModifiedNarayanaShiftedInterlacing (P : ℕ → ℝ[X]) : Prop :=
   Lemma34ModifiedNarayanaShiftedInterlacingStatement P
 
-/-- Challenge-facing Section 3 input bundle using the shifted Lemma 3.4 form. -/
-abbrev Section3Inputs (M : NonNestingRookPolynomialFamily)
-    (P G : ℕ → ℝ[X]) : Prop :=
-  Theorem41Section3ComputableShiftedInputs M P G
-
 /-- Challenge-facing squarecase Section 3 input statement. -/
 abbrev SquarecaseSection3Inputs (model : SquarecaseRookModel) : Prop :=
   SquarecaseRookSection3ShiftedStatement model
