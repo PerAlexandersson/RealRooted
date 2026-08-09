@@ -26,6 +26,16 @@ example {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
     BidiagonalPFPreserver alpha beta d :=
   hpres.of_eq_on_degree halpha hbeta
 
+example {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv
+        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+          (BorceaBranden.bidiagonalLinearMap alpha beta))))
+    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
+    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
+    BidiagonalPFPreserver alpha beta d :=
+  bidiagonalPFPreserver_of_affineSymbol hSymbol halpha hbeta
+
 example
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     {d : ℕ} (hd : 2 ≤ d)

@@ -1,3 +1,5 @@
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.HermiteBiehler
 import RealRooted.MultiplierSequence
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.PFPolynomial
@@ -7,10 +9,9 @@ import RealRooted.Tactic.Lookup
 # PF bidiagonal operator shells
 
 This file packages the coefficient-bidiagonal operator that appears in the
-remaining one-step second-derivative OEIS recurrences.  The total-nonnegative
-or PF-preserver theorem is not currently available in this repository, so this
-file exposes a Lean-facing preserver certificate that concrete backends can
-later discharge.
+remaining one-step second-derivative OEIS recurrences. Genuine affine-symbol
+stability gives a checked PF-preserver route. The weaker one-sided Jensen
+pencil remains an explicit conjectural backend.
 -/
 
 open Polynomial
@@ -145,6 +146,35 @@ theorem HasNonnegCoeffs.bidiagonalOperator
         (mul_nonneg (halpha (n + 1)) (hp (n + 1)))
         (mul_nonneg (hbeta n) (hp n))
 
+/-- Degree-local nonnegative bidiagonal entries preserve coefficient
+nonnegativity on inputs of degree at most `d`. -/
+theorem HasNonnegCoeffs.bidiagonalOperator_of_degree_le
+    {alpha beta : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
+    (hp : HasNonnegCoeffs p) (hdeg : p.natDegree ≤ d)
+    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
+    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
+    HasNonnegCoeffs (RealRooted.bidiagonalOperator alpha beta p) := by
+  intro k
+  cases k with
+  | zero =>
+      simpa using mul_nonneg (halpha 0 (Nat.zero_le d)) (hp 0)
+  | succ k =>
+      rw [coeff_bidiagonalOperator_succ]
+      by_cases hk : k ≤ d
+      · by_cases hks : k + 1 ≤ d
+        · exact add_nonneg
+            (mul_nonneg (halpha (k + 1) hks) (hp (k + 1)))
+            (mul_nonneg (hbeta k hk) (hp k))
+        · have hcoeff : p.coeff (k + 1) = 0 :=
+            coeff_eq_zero_of_natDegree_lt (by lia)
+          rw [hcoeff, mul_zero, zero_add]
+          exact mul_nonneg (hbeta k hk) (hp k)
+      · have hcoeff : p.coeff k = 0 :=
+          coeff_eq_zero_of_natDegree_lt (by lia)
+        have hcoeff_succ : p.coeff (k + 1) = 0 :=
+          coeff_eq_zero_of_natDegree_lt (by lia)
+        simp [hcoeff, hcoeff_succ]
+
 /-- Backend certificate for one coefficient-bidiagonal PF preserver.
 
 Entrywise nonnegativity of `alpha` and `beta` is useful for coefficient
@@ -208,6 +238,93 @@ theorem BidiagonalPFPreserver.of_eq_on_degree
   intro p hp hdeg
   rw [bidiagonalOperator_congr_of_eq_on_degree halpha hbeta hdeg]
   exact hpres hp hdeg
+
+private theorem splits_of_upperHalfPlaneStable_complexify {p : ℝ[X]}
+    (hp : IsUpperHalfPlaneStable (complexify p)) :
+    p.Splits := by
+  apply Polynomial.splits_of_all_roots_real
+  intro z hz
+  by_contra him
+  rcases lt_or_gt_of_ne him with hneg | hpos
+  · exact hp (starRingEnd ℂ z) (by simpa using neg_pos.mpr hneg)
+      (complexify_conj_root hz)
+  · exact hp z hpos hz
+
+private theorem complexBidiagonalLinearMap_complexify
+    (alpha beta : ℕ → ℝ) (p : ℝ[X]) :
+    BorceaBranden.complexBidiagonalLinearMap alpha beta (complexify p) =
+      complexify (bidiagonalOperator alpha beta p) := by
+  ext n
+  cases n with
+  | zero =>
+      simp [BorceaBranden.complexBidiagonalLinearMap, bidiagonalOperator,
+        complexify]
+  | succ n =>
+      simp [BorceaBranden.complexBidiagonalLinearMap, bidiagonalOperator,
+        complexify, coeff_X_mul]
+
+/-- A genuinely stable affine Borcea--Branden symbol gives a degree-bounded
+PF-bidiagonal preserver when the relevant coefficient weights are nonnegative.
+
+This is the sound replacement for the insufficient one-sided Jensen-pencil
+criterion tracked by issue #240. It invokes the checked degree-box sufficiency
+theorem from issue #297 and does not assume a PF-preserver conclusion. -/
+theorem bidiagonalPFPreserver_of_affineSymbol
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv
+        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+          (BorceaBranden.bidiagonalLinearMap alpha beta))))
+    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
+    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
+    BidiagonalPFPreserver alpha beta d := by
+  intro p hp hdeg
+  have hout_nonneg : HasNonnegCoeffs (bidiagonalOperator alpha beta p) :=
+    hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta
+  by_cases hp0 : p = 0
+  · simpa [hp0] using IsPFPolynomial.zero
+  let fmv : MvPolynomial (Fin 1) ℂ :=
+    (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm (complexify p)
+  have hfmem : fmv ∈ MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) := by
+    rw [MvPolynomial.mem_degreeOfLE_iff_degreeOf]
+    intro i
+    rw [Subsingleton.elim i default]
+    simpa [fmv] using
+      (MvPolynomial.degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
+        (complexify p)).trans_le (Polynomial.natDegree_map_le.trans hdeg)
+  let f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) := ⟨fmv, hfmem⟩
+  have hinput_stable : MvUpperHalfPlaneStable f.1 := by
+    simpa [f, fmv] using
+      (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (complexify p)).mp
+        (fun z hz =>
+          eval_complexify_ne_zero_of_splits_of_im_pos
+            (hp.eq_zero_or_splits.resolve_left hp0) hp0 hz)
+  have hout := BorceaBranden.complexBidiagonalDegreeBox_preserves_stability
+    alpha beta d hSymbol f hinput_stable
+  change MvUpperHalfPlaneStableOrZero
+    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+      (BorceaBranden.complexBidiagonalLinearMap alpha beta
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1))) at hout
+  have hfpoly :
+      MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1 = complexify p := by
+    change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm (complexify p)) =
+      complexify p
+    exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply (complexify p)
+  rw [hfpoly] at hout
+  rcases hout with hzero | hstable
+  · have hcomplex_zero :
+        BorceaBranden.complexBidiagonalLinearMap alpha beta (complexify p) = 0 := by
+      apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm.injective
+      simpa using hzero
+    rw [complexBidiagonalLinearMap_complexify] at hcomplex_zero
+    have hout_zero : bidiagonalOperator alpha beta p = 0 :=
+      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hcomplex_zero
+    simpa [hout_zero] using IsPFPolynomial.zero
+  · apply IsPFPolynomial.of_realRooted_nonneg hout_nonneg
+    apply splits_of_upperHalfPlaneStable_complexify
+    rw [isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable]
+    simpa [complexBidiagonalLinearMap_complexify] using hstable
 
 /-- Jensen-pencil attached to a coefficient-bidiagonal operator.
 
