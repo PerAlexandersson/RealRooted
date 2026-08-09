@@ -163,10 +163,10 @@ the checked or challenge-facing highlights are:
   reference: Mao--Wang (2026).
 
 The challenge surface also records theorem-shaped targets as they mature.
-Kurtz's coefficient inequality criterion and the finite Hermite--Poulain
-differential-operator preserver are checked, while Borcea--Branden's
-finite-symbol classification is currently a scaffold because a faithful
-statement needs a multivariate real-stability API.
+Kurtz's coefficient inequality criterion, the finite Hermite--Poulain
+differential-operator preserver, and Borcea--Branden positive-symbol
+sufficiency are checked. The converse and low-rank branches of the full
+Borcea--Branden classification remain explicit theorem-shaped challenges.
 
 ### Interlacing And Preservers
 

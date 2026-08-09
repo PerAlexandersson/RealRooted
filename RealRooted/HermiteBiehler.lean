@@ -1239,6 +1239,25 @@ theorem complexify_conj_root {f : ℝ[X]} {z : ℂ} (hz : (complexify f).eval z 
     (complexify f).eval (starRingEnd ℂ z) = 0 := by
   rw [eval_complexify_conj, hz, map_zero]
 
+/-- A nonzero split real polynomial has stable complexification. -/
+theorem Polynomial.Splits.isUpperHalfPlaneStable_complexify
+    {p : ℝ[X]} (hp : p.Splits) (hp0 : p ≠ 0) :
+    IsUpperHalfPlaneStable (complexify p) :=
+  fun _ hz => eval_complexify_ne_zero_of_splits_of_im_pos hp hp0 hz
+
+/-- Upper-half-plane stability of a real polynomial's complexification forces
+all its roots to be real. -/
+theorem IsUpperHalfPlaneStable.splits_complexify {p : ℝ[X]}
+    (hp : IsUpperHalfPlaneStable (complexify p)) :
+    p.Splits := by
+  apply Polynomial.splits_of_all_roots_real
+  intro z hz
+  by_contra him
+  rcases lt_or_gt_of_ne him with hneg | hpos
+  · exact hp (starRingEnd ℂ z) (by simpa using neg_pos.mpr hneg)
+      (complexify_conj_root hz)
+  · exact hp z hpos hz
+
 theorem eval_hermiteBiehler_neg_conj (f g : ℝ[X]) (z : ℂ) :
     (hermiteBiehlerPolynomial f (-g)).eval (starRingEnd ℂ z)
       = starRingEnd ℂ ((hermiteBiehlerPolynomial f g).eval z) := by

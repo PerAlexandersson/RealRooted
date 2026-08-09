@@ -25,6 +25,7 @@ import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.BorceaBranden.FiniteSymbolBasis

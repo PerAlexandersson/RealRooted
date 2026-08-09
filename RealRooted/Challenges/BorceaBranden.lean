@@ -124,6 +124,10 @@ def finiteSymbolTheoremStatement : Prop :=
 abbrev borceaBrandenFiniteSymbolStatement : Prop :=
   finiteSymbolTheoremStatement
 
+/- The checked witness lives in
+`RealRooted.BorceaBranden.Applications.RealUnivariateSymbol`; importing it here
+would create an application/core cycle. -/
+
 /-- Direct use of the finite-symbol theorem interface. -/
 theorem preservesRealRootedUpTo_of_finiteSymbol
     (hBB : finiteSymbolTheoremStatement)
@@ -133,11 +137,12 @@ theorem preservesRealRootedUpTo_of_finiteSymbol
     PreservesRealRootedUpTo d T :=
   hBB hstable
 
-/-- Marker for the missing multivariate-stability infrastructure needed before
-the full finite-symbol classification can be proved. -/
+/-- Marker for the remaining classification infrastructure. Positive-symbol
+sufficiency is checked separately; the converse and low-rank alternatives are
+still theorem-shaped challenges. -/
 abbrev NeedsMultivariateStabilityAPI : Prop := True
 
-/-- Current scaffold for the Borcea--Branden finite-symbol theorem. -/
+/-- Compatibility scaffold for the still-open full classification. -/
 theorem finiteSymbolClassification_scaffold :
     NeedsMultivariateStabilityAPI :=
   trivial

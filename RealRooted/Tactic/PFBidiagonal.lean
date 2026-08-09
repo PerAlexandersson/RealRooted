@@ -239,17 +239,6 @@ theorem BidiagonalPFPreserver.of_eq_on_degree
   rw [bidiagonalOperator_congr_of_eq_on_degree halpha hbeta hdeg]
   exact hpres hp hdeg
 
-private theorem splits_of_upperHalfPlaneStable_complexify {p : ℝ[X]}
-    (hp : IsUpperHalfPlaneStable (complexify p)) :
-    p.Splits := by
-  apply Polynomial.splits_of_all_roots_real
-  intro z hz
-  by_contra him
-  rcases lt_or_gt_of_ne him with hneg | hpos
-  · exact hp (starRingEnd ℂ z) (by simpa using neg_pos.mpr hneg)
-      (complexify_conj_root hz)
-  · exact hp z hpos hz
-
 private theorem complexBidiagonalLinearMap_complexify
     (alpha beta : ℕ → ℝ) (p : ℝ[X]) :
     BorceaBranden.complexBidiagonalLinearMap alpha beta (complexify p) =
@@ -322,7 +311,7 @@ theorem bidiagonalPFPreserver_of_affineSymbol
       (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hcomplex_zero
     simpa [hout_zero] using IsPFPolynomial.zero
   · apply IsPFPolynomial.of_realRooted_nonneg hout_nonneg
-    apply splits_of_upperHalfPlaneStable_complexify
+    apply IsUpperHalfPlaneStable.splits_complexify
     rw [isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable]
     simpa [complexBidiagonalLinearMap_complexify] using hstable
 
