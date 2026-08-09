@@ -12,7 +12,6 @@ import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
 import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Kurtz
@@ -27,7 +26,6 @@ import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
-import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Narayana
@@ -250,8 +248,6 @@ rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
 rr_h_second_derivative_sequence using route := pf_bidiagonal_quadratic, ...
-rr_h_second_derivative_sequence using route := legacy_false_homogeneous_symbol, ...
-rr_h_shifted_second_derivative_sequence using route := legacy_false_homogeneous_symbol, ...
 rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduct
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
@@ -343,38 +339,6 @@ open Lean.Elab.Tactic
 
 namespace RealRooted
 namespace Tactic
-
-syntax (name := rr_h_second_derivative_sequence_legacy_false_homogeneous_symbol)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "legacy_false_homogeneous_symbol" ","
-    "bb_backend" ":=" term ","
-    ("cutoff" ":=" term ",")?
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "degree_ge_two" ":=" term ","
-    "cubic_degree" ":=" term ","
-    "residual_pf" ":=" term ","
-    "alpha_nonneg" ":=" term ","
-    "beta_nonneg" ":=" term ","
-    "recurrence" ":=" term
-    ("," "nonzero" ":=" term)? :
-  tactic
-
-syntax (name := rr_h_shifted_second_derivative_sequence_legacy_false_homogeneous_symbol)
-  "rr_h_shifted_second_derivative_sequence" " using "
-    "route" ":=" "legacy_false_homogeneous_symbol" ","
-    "bb_backend" ":=" term ","
-    ("cutoff" ":=" term ",")?
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "degree_ge_two" ":=" term ","
-    "cubic_degree" ":=" term ","
-    "residual_pf" ":=" term ","
-    "alpha_nonneg" ":=" term ","
-    "beta_nonneg" ":=" term ","
-    "recurrence" ":=" term
-    ("," "nonzero" ":=" term)? :
-  tactic
 
 syntax (name := rr_i2_derivative_lag_sequence_direct_halfline)
   "rr_i2_derivative_lag_sequence" " using "
@@ -1597,110 +1561,6 @@ macro_rules
       `(by rr_oeis_coeff_at $n)
   | `(rr_oeis_coeff_all_term) =>
       `(by rr_oeis_coeff_all)
-  | `(tactic|
-      rr_h_second_derivative_sequence using
-        route := legacy_false_homogeneous_symbol,
-        bb_backend := $hBB:term,
-        base := $hbase:term,
-        degree := $hdegree:term,
-        degree_ge_two := $hd:term,
-        cubic_degree := $hdeg:term,
-        residual_pf := $hpf:term,
-        alpha_nonneg := $halpha:term,
-        beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term
-        $[, nonzero := $hne:term]?) =>
-      `(tactic|
-        rr_fsp_legacy_second_derivative_sequence using
-          bb_backend := $hBB,
-          base := $hbase,
-          degree := $hdegree,
-          degree_ge_two := $hd,
-          cubic_degree := $hdeg,
-          residual_pf := $hpf,
-          alpha_nonneg := $halpha,
-          beta_nonneg := $hbeta,
-          recurrence := $hrec
-          $[, nonzero := $hne]?)
-  | `(tactic|
-      rr_h_second_derivative_sequence using
-        route := legacy_false_homogeneous_symbol,
-        bb_backend := $hBB:term,
-        cutoff := $N:term,
-        base := $hbase:term,
-        degree := $hdegree:term,
-        degree_ge_two := $hd:term,
-        cubic_degree := $hdeg:term,
-        residual_pf := $hpf:term,
-        alpha_nonneg := $halpha:term,
-        beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term
-        $[, nonzero := $hne:term]?) =>
-      `(tactic|
-        rr_fsp_legacy_second_derivative_sequence using
-          bb_backend := $hBB,
-          cutoff := $N,
-          base := $hbase,
-          degree := $hdegree,
-          degree_ge_two := $hd,
-          cubic_degree := $hdeg,
-          residual_pf := $hpf,
-          alpha_nonneg := $halpha,
-          beta_nonneg := $hbeta,
-          recurrence := $hrec
-          $[, nonzero := $hne]?)
-  | `(tactic|
-      rr_h_shifted_second_derivative_sequence using
-        route := legacy_false_homogeneous_symbol,
-        bb_backend := $hBB:term,
-        base := $hbase:term,
-        degree := $hdegree:term,
-        degree_ge_two := $hd:term,
-        cubic_degree := $hdeg:term,
-        residual_pf := $hpf:term,
-        alpha_nonneg := $halpha:term,
-        beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term
-        $[, nonzero := $hne:term]?) =>
-      `(tactic|
-        rr_fsp_legacy_shifted_second_derivative_sequence using
-          bb_backend := $hBB,
-          base := $hbase,
-          degree := $hdegree,
-          degree_ge_two := $hd,
-          cubic_degree := $hdeg,
-          residual_pf := $hpf,
-          alpha_nonneg := $halpha,
-          beta_nonneg := $hbeta,
-          recurrence := $hrec
-          $[, nonzero := $hne]?)
-  | `(tactic|
-      rr_h_shifted_second_derivative_sequence using
-        route := legacy_false_homogeneous_symbol,
-        bb_backend := $hBB:term,
-        cutoff := $N:term,
-        base := $hbase:term,
-        degree := $hdegree:term,
-        degree_ge_two := $hd:term,
-        cubic_degree := $hdeg:term,
-        residual_pf := $hpf:term,
-        alpha_nonneg := $halpha:term,
-        beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term
-        $[, nonzero := $hne:term]?) =>
-      `(tactic|
-        rr_fsp_legacy_shifted_second_derivative_sequence using
-          bb_backend := $hBB,
-          cutoff := $N,
-          base := $hbase,
-          degree := $hdegree,
-          degree_ge_two := $hd,
-          cubic_degree := $hdeg,
-          residual_pf := $hpf,
-          alpha_nonneg := $halpha,
-          beta_nonneg := $hbeta,
-          recurrence := $hrec
-          $[, nonzero := $hne]?)
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,

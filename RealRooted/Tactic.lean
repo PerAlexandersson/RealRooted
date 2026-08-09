@@ -38,8 +38,6 @@ import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
-import RealRooted.Tactic.FiniteSymbolPFFrontend
-import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain

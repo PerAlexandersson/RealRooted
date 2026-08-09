@@ -345,25 +345,6 @@ theorem finiteSymbol_congr_of_eq_on_degree
 
 /-! ## Classical interfaces -/
 
-/-- Legacy homogeneous finite-symbol interface.
-
-This is not the affine algebraic-symbol theorem of Borcea--Branden,
-Theorem 1.2(b), whose symbol is `T((z + w)^d)`; the complex counterpart is
-Theorem 1.1(b). In fact, this proposition is false: for
-`d = 1`, `alpha = [1, 0]`, and `beta = [2, 1]`, the homogeneous symbol is
-`(X + Y)^2`, but the operator sends `1 + 2 * X` to
-`1 + 2 * X + 2 * X^2`, which is not real-rooted. See issue #314. New proofs
-must use the genuine affine symbol and must not assume this interface. The
-conditional declarations retained below are marked `legacy_` so they cannot
-be mistaken for active proof routes. -/
-def falseHomogeneousFiniteSymbolStatement : Prop :=
-  ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
-    IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)) →
-    (∀ n, 0 ≤ alpha n) → (∀ n, 0 ≤ beta n) →
-    BidiagonalPFPreserver alpha beta d
-
-
-
 /-- Bivariate stability is closed under multiplication by `(X+Y)^m`, kept as
 a named interface. -/
 theorem bivariateStableMulXAddYPow :
@@ -388,15 +369,6 @@ structure BidiagonalCubicResidualCertificate
   residual_pf : IsPFPolynomial residual
   alpha_nonneg : ∀ n, 0 ≤ alpha n
   beta_nonneg : ∀ n, 0 ≤ beta n
-
-/-- Legacy conditional application of the false homogeneous interface. -/
-theorem legacy_finite_symbol_pf_bidiagonal_backend
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hstab : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
-    (halpha : ∀ n, 0 ≤ alpha n) (hbeta : ∀ n, 0 ≤ beta n) :
-    BidiagonalPFPreserver alpha beta d :=
-  hBB hstab halpha hbeta
 
 /-- If the finite symbol factors through a stable residual, then the finite
 symbol is stable. -/
@@ -429,16 +401,6 @@ theorem finiteSymbol_stable_of_residual_certificate
   exact finiteSymbol_stable_of_residual_factor cert.symbol_factor
     (RealRooted.BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
       h_ne h_splits cert.residual_pf.roots_nonpos)
-
-/-- Legacy conditional certificate route through the false homogeneous interface. -/
-theorem legacy_bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (cert : BidiagonalCubicResidualCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  legacy_finite_symbol_pf_bidiagonal_backend hBB
-    (finiteSymbol_stable_of_residual_certificate cert)
-    cert.alpha_nonneg cert.beta_nonneg
 
 /-- Algebraic dehomogenization identity connecting the finite symbol to the
 existing Jensen pencil. -/
@@ -679,84 +641,6 @@ def quadraticBidiagonalCubicResidualCertificate
   alpha_nonneg := halpha
   beta_nonneg := hbeta
 
-/-- Legacy conditional quadratic route through the false homogeneous interface. -/
-theorem legacy_quadraticBidiagonalPFPreserver_of_residual_certificate
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
-    (hdeg : (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree = 3)
-    (hpf : IsPFPolynomial (quadraticBidiagonalResidual aa ab ac ba bb bc d))
-    (halpha : ∀ n, 0 ≤ quadraticJensenWeight aa ab ac n)
-    (hbeta : ∀ n, 0 ≤ quadraticJensenWeight ba bb bc n) :
-    BidiagonalPFPreserver
-      (quadraticJensenWeight aa ab ac)
-      (quadraticJensenWeight ba bb bc) d :=
-  legacy_bidiagonalPFPreserver_of_finiteSymbol_residual_certificate hBB
-    (quadraticBidiagonalCubicResidualCertificate
-      aa ab ac ba bb bc hd hdeg hpf halpha hbeta)
-
-/-- Legacy degree-local variant of
-`legacy_quadraticBidiagonalPFPreserver_of_residual_certificate`. This is useful
-for finite-degree rows where the subdiagonal coefficients are nonnegative only
-on the finite support `k ≤ d`; coefficients above `d` do not affect either the
-finite symbol or the action on inputs of degree at most `d`. -/
-theorem legacy_quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
-    (hdeg : (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree = 3)
-    (hpf : IsPFPolynomial (quadraticBidiagonalResidual aa ab ac ba bb bc d))
-    (halpha : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight aa ab ac n)
-    (hbeta : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight ba bb bc n) :
-    BidiagonalPFPreserver
-      (quadraticJensenWeight aa ab ac)
-      (quadraticJensenWeight ba bb bc) d := by
-  let alpha := quadraticJensenWeight aa ab ac
-  let beta := quadraticJensenWeight ba bb bc
-  let alphaT := degreeTruncate d alpha
-  let betaT := degreeTruncate d beta
-  have halpha_match : ∀ k, k ≤ d → alpha k = alphaT k := by
-    intro k hk
-    simp [alphaT, degreeTruncate, hk]
-  have hbeta_match : ∀ k, k ≤ d → beta k = betaT k := by
-    intro k hk
-    simp [betaT, degreeTruncate, hk]
-  have halphaT_nonneg : ∀ k, 0 ≤ alphaT k :=
-    degreeTruncate_nonneg (d := d) (gamma := alpha) (fun k hk => halpha k hk)
-  have hbetaT_nonneg : ∀ k, 0 ≤ betaT k :=
-    degreeTruncate_nonneg (d := d) (gamma := beta) (fun k hk => hbeta k hk)
-  have hsymbol :
-      complexifyMv (finiteSymbol alphaT betaT d) =
-        ((MvPolynomial.X 0 + MvPolynomial.X 1) ^ (d - 2)) *
-          complexifyMv
-            (homogenizeBivariate
-              (quadraticBidiagonalResidual aa ab ac ba bb bc d).natDegree
-              (quadraticBidiagonalResidual aa ab ac ba bb bc d)) := by
-    have hsym := congrArg complexifyMv
-      (finiteSymbol_congr_of_eq_on_degree
-        (d := d)
-        (alpha := alphaT) (beta := betaT)
-        (alpha' := alpha) (beta' := beta)
-        (by
-          intro k hk
-          simp [alphaT, degreeTruncate, hk])
-        (by
-          intro k hk
-          simp [betaT, degreeTruncate, hk]))
-    rw [hsym]
-    exact finiteSymbol_quadratic_complex_eq_factor_homogenize
-      aa ab ac ba bb bc hd hdeg
-  let cert : BidiagonalCubicResidualCertificate alphaT betaT d := {
-    residual := quadraticBidiagonalResidual aa ab ac ba bb bc d
-    residual_cubic := hdeg
-    symbol_factor := hsymbol
-    residual_pf := hpf
-    alpha_nonneg := halphaT_nonneg
-    beta_nonneg := hbetaT_nonneg
-  }
-  exact BidiagonalPFPreserver.of_eq_on_degree
-    (legacy_bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-      hBB cert)
-    halpha_match hbeta_match
-
 /-- Induction principle for a sequence whose recurrence step is a
 degree-bounded PF-bidiagonal preserver. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence
@@ -809,127 +693,6 @@ theorem secondDerivativeBeta_eq_quadraticJensenWeight
   simp [secondDerivativeBeta, quadraticJensenWeight]
   ring
 
-/-- Legacy conditional second-derivative route through the false interface. -/
-theorem legacy_secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
-    (hdeg :
-      (quadraticBidiagonalResidual c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
-    (hpf :
-      IsPFPolynomial (quadraticBidiagonalResidual c2 (b1 - c2) a0 0 b2 a1 d))
-    (halpha : ∀ n, 0 ≤ secondDerivativeAlpha a0 b1 c2 n)
-    (hbeta : ∀ n, 0 ≤ secondDerivativeBeta a1 b2 n) :
-    BidiagonalPFPreserver
-      (secondDerivativeAlpha a0 b1 c2)
-      (secondDerivativeBeta a1 b2) d := by
-  have halpha' : ∀ n, 0 ≤ quadraticJensenWeight c2 (b1 - c2) a0 n := by
-    simpa [← secondDerivativeAlpha_eq_quadraticJensenWeight a0 b1 c2] using halpha
-  have hbeta' : ∀ n, 0 ≤ quadraticJensenWeight 0 b2 a1 n := by
-    simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
-  rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
-  rw [secondDerivativeBeta_eq_quadraticJensenWeight]
-  exact legacy_quadraticBidiagonalPFPreserver_of_residual_certificate hBB
-    c2 (b1 - c2) a0 0 b2 a1 hd hdeg hpf halpha' hbeta'
-
-/-- Legacy degree-local variant of
-`legacy_secondDerivativeBidiagonalPFPreserver_of_residual_certificate`. -/
-theorem legacy_secondDerivativeBidiagonalPFPreserver_of_residual_certificate_on_degree
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (a0 a1 b1 b2 c2 : ℝ) {d : ℕ} (hd : 2 ≤ d)
-    (hdeg :
-      (quadraticBidiagonalResidual c2 (b1 - c2) a0 0 b2 a1 d).natDegree = 3)
-    (hpf :
-      IsPFPolynomial (quadraticBidiagonalResidual c2 (b1 - c2) a0 0 b2 a1 d))
-    (halpha : ∀ n, n ≤ d → 0 ≤ secondDerivativeAlpha a0 b1 c2 n)
-    (hbeta : ∀ n, n ≤ d → 0 ≤ secondDerivativeBeta a1 b2 n) :
-    BidiagonalPFPreserver
-      (secondDerivativeAlpha a0 b1 c2)
-      (secondDerivativeBeta a1 b2) d := by
-  have halpha' : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight c2 (b1 - c2) a0 n := by
-    simpa [← secondDerivativeAlpha_eq_quadraticJensenWeight a0 b1 c2] using halpha
-  have hbeta' : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight 0 b2 a1 n := by
-    simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
-  rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
-  rw [secondDerivativeBeta_eq_quadraticJensenWeight]
-  exact legacy_quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
-    hBB c2 (b1 - c2) a0 0 b2 a1 hd hdeg hpf halpha' hbeta'
-
-/-- Legacy sequence route through the false homogeneous interface. -/
-theorem legacy_isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (hbase : IsPFPolynomial (P 0))
-    (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
-    (hd : ∀ n, 2 ≤ degreeBound n)
-    (hdeg : ∀ n,
-      (quadraticBidiagonalResidual
-        (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
-        (degreeBound n)).natDegree = 3)
-    (hpf : ∀ n,
-      IsPFPolynomial
-        (quadraticBidiagonalResidual
-          (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
-          (degreeBound n)))
-    (halpha : ∀ n k, 0 ≤ secondDerivativeAlpha (a0 n) (b1 n) (c2 n) k)
-    (hbeta : ∀ n k, 0 ≤ secondDerivativeBeta (a1 n) (b2 n) k)
-    (hrec : ∀ n,
-      P (n + 1) =
-        secondDerivativeBidiagonalForm
-          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence
-    (alpha := fun n => secondDerivativeAlpha (a0 n) (b1 n) (c2 n))
-    (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
-    hbase hdegree
-    (fun n =>
-      legacy_secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n)
-        (hdeg n) (hpf n) (halpha n) (hbeta n))
-    (fun n =>
-      (hrec n).trans
-        (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)))
-
-/-- Legacy cutoff version of
-`legacy_isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence`. -/
-theorem legacy_isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (N : ℕ)
-    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
-    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
-    (hd : ∀ n, N ≤ n → 2 ≤ degreeBound n)
-    (hdeg : ∀ n, N ≤ n →
-      (quadraticBidiagonalResidual
-        (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
-        (degreeBound n)).natDegree = 3)
-    (hpf : ∀ n, N ≤ n →
-      IsPFPolynomial
-        (quadraticBidiagonalResidual
-          (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
-          (degreeBound n)))
-    (halpha : ∀ n k, N ≤ n → 0 ≤ secondDerivativeAlpha (a0 n) (b1 n) (c2 n) k)
-    (hbeta : ∀ n k, N ≤ n → 0 ≤ secondDerivativeBeta (a1 n) (b2 n) k)
-    (hrec : ∀ n, N ≤ n →
-      P (n + 1) =
-        secondDerivativeBidiagonalForm
-          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_from
-    (alpha := fun n => secondDerivativeAlpha (a0 n) (b1 n) (c2 n))
-    (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
-    N hbase hdegree
-    (fun n hn =>
-      legacy_secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
-        (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
-    (fun n hn =>
-      (hrec n hn).trans
-        (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)))
-
 /-- Diagonal coefficient of the shifted second-derivative form as a quadratic
 Jensen weight. -/
 theorem shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight
@@ -949,105 +712,6 @@ theorem shiftedSecondDerivativeBeta_eq_quadraticJensenWeight
   funext k
   simp [shiftedSecondDerivativeBeta, quadraticJensenWeight]
   ring
-
-/-- Legacy conditional shifted second-derivative route through the false interface. -/
-theorem legacy_shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (a0 a1 b1 b2 c3 : ℝ) {d : ℕ} (hd : 2 ≤ d)
-    (hdeg :
-      (quadraticBidiagonalResidual 0 b1 a0 c3 (b2 - c3) a1 d).natDegree = 3)
-    (hpf :
-      IsPFPolynomial (quadraticBidiagonalResidual 0 b1 a0 c3 (b2 - c3) a1 d))
-    (halpha : ∀ n, 0 ≤ shiftedSecondDerivativeAlpha a0 b1 n)
-    (hbeta : ∀ n, 0 ≤ shiftedSecondDerivativeBeta a1 b2 c3 n) :
-    BidiagonalPFPreserver
-      (shiftedSecondDerivativeAlpha a0 b1)
-      (shiftedSecondDerivativeBeta a1 b2 c3) d := by
-  have halpha' : ∀ n, 0 ≤ quadraticJensenWeight 0 b1 a0 n := by
-    simpa [← shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight a0 b1] using halpha
-  have hbeta' : ∀ n, 0 ≤ quadraticJensenWeight c3 (b2 - c3) a1 n := by
-    simpa [← shiftedSecondDerivativeBeta_eq_quadraticJensenWeight a1 b2 c3] using hbeta
-  rw [shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight]
-  rw [shiftedSecondDerivativeBeta_eq_quadraticJensenWeight]
-  exact legacy_quadraticBidiagonalPFPreserver_of_residual_certificate hBB
-    0 b1 a0 c3 (b2 - c3) a1 hd hdeg hpf halpha' hbeta'
-
-/-- Legacy sequence route through the false homogeneous interface. -/
-theorem legacy_isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (hbase : IsPFPolynomial (P 0))
-    (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
-    (hd : ∀ n, 2 ≤ degreeBound n)
-    (hdeg : ∀ n,
-      (quadraticBidiagonalResidual
-        0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
-        (degreeBound n)).natDegree = 3)
-    (hpf : ∀ n,
-      IsPFPolynomial
-        (quadraticBidiagonalResidual
-          0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
-          (degreeBound n)))
-    (halpha : ∀ n k, 0 ≤ shiftedSecondDerivativeAlpha (a0 n) (b1 n) k)
-    (hbeta : ∀ n k, 0 ≤ shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n) k)
-    (hrec : ∀ n,
-      P (n + 1) =
-        shiftedSecondDerivativeBidiagonalForm
-          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence
-    (alpha := fun n => shiftedSecondDerivativeAlpha (a0 n) (b1 n))
-    (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
-    hbase hdegree
-    (fun n =>
-      legacy_shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n)
-        (hdeg n) (hpf n) (halpha n) (hbeta n))
-    (fun n =>
-      (hrec n).trans
-        (shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
-          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)))
-
-/-- Legacy cutoff version of
-`legacy_isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence`. -/
-theorem legacy_isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (N : ℕ)
-    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
-    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
-    (hd : ∀ n, N ≤ n → 2 ≤ degreeBound n)
-    (hdeg : ∀ n, N ≤ n →
-      (quadraticBidiagonalResidual
-        0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
-        (degreeBound n)).natDegree = 3)
-    (hpf : ∀ n, N ≤ n →
-      IsPFPolynomial
-        (quadraticBidiagonalResidual
-          0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
-          (degreeBound n)))
-    (halpha : ∀ n k, N ≤ n → 0 ≤ shiftedSecondDerivativeAlpha (a0 n) (b1 n) k)
-    (hbeta : ∀ n k, N ≤ n →
-      0 ≤ shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n) k)
-    (hrec : ∀ n, N ≤ n →
-      P (n + 1) =
-        shiftedSecondDerivativeBidiagonalForm
-          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_from
-    (alpha := fun n => shiftedSecondDerivativeAlpha (a0 n) (b1 n))
-    (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
-    N hbase hdegree
-    (fun n hn =>
-      legacy_shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-        hBB (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
-        (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
-    (fun n hn =>
-      (hrec n hn).trans
-        (shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
-          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)))
 
 /-- Algebraic dehomogenization statement connecting the finite symbol to the
 existing Jensen pencil. -/

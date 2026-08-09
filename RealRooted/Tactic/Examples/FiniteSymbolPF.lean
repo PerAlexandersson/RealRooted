@@ -10,21 +10,6 @@ namespace RealRooted
 namespace Tactic
 namespace FiniteSymbolPF
 
-example {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (hstable : IsBivariateUpperStable (complexifyMv (finiteSymbol alpha beta d)))
-    (halpha : ∀ n, 0 ≤ alpha n)
-    (hbeta : ∀ n, 0 ≤ beta n) :
-    BidiagonalPFPreserver alpha beta d :=
-  legacy_finite_symbol_pf_bidiagonal_backend hBB hstable halpha hbeta
-
-example {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hBB : falseHomogeneousFiniteSymbolStatement)
-    (cert : BidiagonalCubicResidualCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  legacy_bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
-    hBB cert
-
 example {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
