@@ -15,6 +15,25 @@ target and is not itself evidence.
 The second theorem is not used by the checked affine-symbol endpoint
 `bidiagonalPFPreserver_of_affineSymbol`.
 
+## Open statement targets
+
+These declarations record possible mathematical targets but currently have no
+theorem, refutation, or production caller. They contain no admission.
+
+| Declaration | Status |
+| --- | --- |
+| `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
+| `iterateThetaPlusOneSelfPrec0Statement` | Unused open proper-position target for iterates of `theta + 1` |
+| `polarThetaPreservesPrec0Statement` | Unused open proper-position target for the bounded-degree polar-theta operator |
+
+The Hoster--Stump challenge module also retains the abstract, unproved targets
+`RefinedBaseRowStatement`, `RefinedRecurrenceStatement`,
+`RefinedDeletionRelaxationStatement`, `Theorem33DiagramStatement`,
+`Lemma31GammaExpansionStatement`, and `MainTheoremStatement`.  Their former
+assembly route was removed because it required four separately refuted weak
+preservation propositions.  None of these targets contains an admission or has
+a production caller.
+
 ## Checked replacements
 
 | Topic | Checked declaration |
@@ -43,3 +62,7 @@ frontend unnecessary.
 New public theorem-shaped propositions must be entered here when they are
 admitted, open, or refuted. Remove an admitted row only after replacing its
 `sorry` with a checked proof and confirming the declaration's axioms locally.
+
+Run `python3 scripts/check_proof_status.py` to enforce the admission whitelist
+and report unclassified low-use statement declarations. Run it with
+`--self-test` to exercise the failure cases without changing repository files.

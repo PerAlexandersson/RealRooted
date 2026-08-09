@@ -322,6 +322,17 @@ enforces that all library modules are imported in `RealRooted.lean`. You can run
 `python3 scripts/check_root_imports.py --fix` to automatically append and sort any
 missing imports.
 
+Proof-surface CI is checked separately with:
+
+```bash
+python3 scripts/check_proof_status.py --self-test
+python3 scripts/check_proof_status.py
+```
+
+The guard permits only the two exact admissions documented in
+`PROOF_STATUS.md`, rejects `admit` and source `axiom` commands, and reports
+low-use theorem-shaped propositions that still need an explicit status.
+
 All committed code must build without warnings (with the exception of `sorry`
 warnings).
 

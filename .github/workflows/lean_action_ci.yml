@@ -28,6 +28,10 @@ jobs:
         run: python3 scripts/check_root_imports.py
       - name: Check generated OEIS tactic coverage
         run: python3 scripts/generate-oeis-tactic-coverage.py --check
+      - name: Check proof status
+        run: |
+          python3 scripts/check_proof_status.py --self-test
+          python3 scripts/check_proof_status.py
       - name: Free up disk space
         run: |
           df -h /
