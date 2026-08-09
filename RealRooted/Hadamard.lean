@@ -2743,6 +2743,14 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   fun {_a _b} ha hb {_n} {_rows} {_cols} hrows hcols _hn => h ha hb hrows hcols
 
+/-! ### Vacuous legacy reductions from the false unrestricted Schur premise
+
+The declarations with a `legacy_` prefix below preserve the old implication
+graph for historical reference only.  Their shared
+`HurwitzMatrixSchurProductTNStatement` hypothesis is refuted by
+`not_hurwitzMatrixSchurProductTNStatement`, so none is an active route to a
+Hadamard theorem. -/
+
 /-- Legacy reduction to the false unrestricted Hurwitz Schur interface.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
@@ -2755,7 +2763,7 @@ This implication is logically valid but unusable: `HurwitzMatrix.lean` proves
 products of stable polynomials are stable*, J. Math. Anal. Appl. 202 (1996),
 797--809, Theorem 13, does not supply this unrestricted infinite-matrix
 hypothesis. -/
-theorem hadamardPreservesHurwitzMatrixTN_of_schur
+theorem legacy_hadamardPreservesHurwitzMatrixTN_of_schur
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
   fun ha hb => by
@@ -2796,32 +2804,32 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
     ⟨hurwitz_isPolyaFreqSeq_odd (h ha hb),
       hurwitz_isPolyaFreqSeq_even (h ha hb)⟩
 
-/-- The pure Hurwitz Schur-product core gives the odd/even PF consequence for
-Hadamard products. -/
-theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
+/-- Vacuous legacy reduction from the false unrestricted Schur premise to the
+odd/even PF consequence. -/
+theorem legacy_hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
-/-- The pure Hurwitz Schur-product core implies the named low-order,
-size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
-theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
+/-- Vacuous legacy reduction from the false unrestricted Schur premise to the
+named low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
+theorem legacy_hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
-/-- Conditional reduction of Garloff--Wagner Theorem 1 to the pure Hurwitz
-Schur-product core. The two criterion assumptions are refuted for the current
-matrix orientation. -/
-theorem hadamardPreservesHurwitzStable_of_hurwitzSchur
+/-- Vacuous legacy reduction of Garloff--Wagner Theorem 1 to the false
+unrestricted Schur premise. The two criterion assumptions are also refuted for
+the current matrix orientation. -/
+theorem legacy_hadamardPreservesHurwitzStable_of_hurwitzSchur
     (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
   hadamardPreservesHurwitzStable_of_matrixRoute hStableToMatrix hMatrixToStable
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- The Hurwitz-matrix Hadamard leaf also follows from Garloff--Wagner
 Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
@@ -2917,15 +2925,15 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
     (hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute
       hStableToMatrix hMatrixToStable hRHP)
 
-/-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
-core, modulo the two directions of the Hurwitz-matrix criterion. -/
-theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
+/-- Vacuous legacy reduction from the false unrestricted Schur premise to the
+right-half-plane analytic core, modulo two false Hurwitz-matrix criteria. -/
+theorem legacy_hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
     (hStableToMatrix : LegacyHurwitzStableToMatrixTotallyNonnegativeStatement)
     (hMatrixToStable : LegacyHurwitzMatrixTotallyNonnegativeToStableStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
   hadamardPreservesRightHalfPlaneStable_of_matrixRoute hStableToMatrix hMatrixToStable
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to legacy odd/even inputs**
 (TODO T9).
@@ -3075,8 +3083,9 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
         simpa [hadamardProduct_oddEvenPolynomial] using hMatHad hM1 hM2)
   exact hFullToPrec0 hFull
 
-/-- Garloff--Wagner two-pair theorem via the pure Hurwitz Schur-product core. -/
-theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
+/-- Vacuous legacy reduction of the Garloff--Wagner two-pair theorem from the
+false unrestricted Schur premise. -/
+theorem legacy_garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
     (hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
@@ -3084,7 +3093,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges hToFull
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hFullToPrec0
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hFullToPrec0
 
 /-- Matrix-core version of the Garloff--Wagner two-pair reduction, with the
 non-Hadamard leaves discharged by the shared Hermite--Biehler route and the
@@ -3101,7 +3110,9 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
     hMatHad
     (fullyInterlacingPairToPrec0_of_forwardASW_interlace hInt)
 
-theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
+/-- Vacuous legacy reduction combining the false unrestricted Schur premise
+with the uninhabited classical-input route. -/
+theorem legacy_garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
     (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
@@ -3109,7 +3120,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs hRoute
-    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hInt
+    (legacy_hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hInt
 
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
@@ -3377,13 +3388,6 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_matrixHadamardBridges
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
-theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchur
-    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
-    (_hSchur : HurwitzMatrixSchurProductTNStatement)
-    (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
-    garloffWagnerHadamardNonnegRealRootedStatement :=
-  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
-
 theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputs
     (_hRHP : hadamardPreservesRightHalfPlaneStableStatement)
     (_hHB : hermiteBiehlerForwardPosStatement)
@@ -3401,13 +3405,6 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputsBundle
 theorem garloffWagnerHadamardNonnegRealRooted_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hInt : FullyInterlacingPairInterlaceStatement) :
-    garloffWagnerHadamardNonnegRealRootedStatement :=
-  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
-
-theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchurClassicalInputs
-    (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hSchur : HurwitzMatrixSchurProductTNStatement)
     (_hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
