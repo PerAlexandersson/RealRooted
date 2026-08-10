@@ -37,6 +37,14 @@ theorem isRealRooted_of_monomial_tail_sequence
 
 namespace Tactic
 
+syntax (name := rr_prec_X_pow_mul_X_pow_succ_named)
+  "rr_prec_X_pow_mul_X_pow_succ" " using "
+    "reverse_prec" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "index" ":=" term :
+  tactic
+
 syntax (name := rr_interlaces_linear_pow_named)
   "rr_interlaces_linear_pow" " using "
     "const" ":=" term ","
@@ -135,6 +143,15 @@ syntax (name := rr_interlaces_X_sub_C_pow_mul_linear_pow_named)
   tactic
 
 macro_rules
+  | `(tactic|
+      rr_prec_X_pow_mul_X_pow_succ using
+        reverse_prec := $hgf:term,
+        left_nonneg := $hfnn:term,
+        right_nonneg := $hgnn:term,
+        index := $n:term) =>
+      `(tactic|
+        exact RealRooted.prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg
+          $hgf $hfnn $hgnn $n)
   | `(tactic|
       rr_interlaces_linear_pow using
         const := $a:term,
