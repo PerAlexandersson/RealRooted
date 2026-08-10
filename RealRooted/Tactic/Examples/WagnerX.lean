@@ -328,6 +328,86 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {d : Nat}
     lag_coeff_pos := hc,
     recurrence := hrec
 
+/-! The fixed affine-lag frontends perform the translation internally, while
+retaining the plateau-safe Wagner-X degree and `Prec` backends. -/
+
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ} {d : Nat}
+    (hzero : (P 0).natDegree = d ∧ HasPosLeadingCoeff (P 0))
+    (hone : (P 1).natDegree = d ∧ HasPosLeadingCoeff (P 1))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
+    ∀ n : Nat, (P n).natDegree = d + n / 2 ∧ HasPosLeadingCoeff (P n) := by
+  rr_natDegree_pos_X_sub_C_lag_sequence using
+    shift := r,
+    base_zero := hzero,
+    base_one := hone,
+    current_coeff_pos := ha,
+    lag_coeff_pos := hc,
+    recurrence := hrec
+
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ} {d : Nat}
+    (hzero : (P 0).natDegree = d ∧ HasPosLeadingCoeff (P 0))
+    (hone : (P 1).natDegree = d + 1 ∧ HasPosLeadingCoeff (P 1))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
+    ∀ n : Nat, (P n).natDegree = d + (n + 1) / 2 ∧
+      HasPosLeadingCoeff (P n) := by
+  rr_natDegree_pos_X_sub_C_lag_sequence_shifted using
+    shift := r,
+    base_zero := hzero,
+    base_one := hone,
+    current_coeff_pos := ha,
+    lag_coeff_pos := hc,
+    recurrence := hrec
+
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_prec_pos_X_sub_C_lag_sequence using
+    shift := r,
+    base := hbase,
+    shift_nonneg_coeffs := hnonneg,
+    current_coeff_pos := ha,
+    lag_coeff_nonneg := hc,
+    recurrence := hrec
+
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_sub_C_lag_sequence_realrooted using
+    shift := r,
+    base := hbase,
+    shift_nonneg_coeffs := hnonneg,
+    current_coeff_pos := ha,
+    lag_coeff_nonneg := hc,
+    recurrence := hrec
+
+example {P : Nat → ℝ[X]} {r : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (2 : ℝ) * P (n + 1) + (C (1 : ℝ) * (X - C r)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto using
+    shift := r,
+    base := hbase,
+    shift_nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
 /-- Projection endpoint for the same positive-`X` lag shell. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
