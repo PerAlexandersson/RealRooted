@@ -405,6 +405,78 @@ theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
       hprev (hnonneg n) (hnonneg (n + 1)) (ha n) (hc n)
   simpa [← hrec n] using hstep
 
+/-- Degree profile for a positive scalar-current, positive `X`-lag plateau
+sequence whose first two rows have the same degree.
+
+The current and lag summands have respective degrees
+`d + (n+1)/2` and `d + n/2 + 1`. They alternate between strict inequality and
+equality, while positivity of both leading coefficients prevents cancellation.
+-/
+theorem natDegree_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
+    {a c : Nat → ℝ} {d : Nat}
+    (hzero : (P 0).natDegree = d ∧ HasPosLeadingCoeff (P 0))
+    (hone : (P 1).natDegree = d ∧ HasPosLeadingCoeff (P 1))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
+    ∀ n : Nat, (P n).natDegree = d + n / 2 ∧ HasPosLeadingCoeff (P n) := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+      match n with
+      | 0 => simpa using hzero
+      | 1 => simpa using hone
+      | m + 2 =>
+          obtain ⟨hdeg1, hpos1⟩ := ih (m + 1) (by lia)
+          obtain ⟨hdeg0, hpos0⟩ := ih m (by lia)
+          have hhead_deg :
+              (C (a m) * P (m + 1)).natDegree = d + (m + 1) / 2 := by
+            rw [natDegree_C_mul (ne_of_gt (ha m)), hdeg1]
+          have hhead_pos : HasPosLeadingCoeff (C (a m) * P (m + 1)) :=
+            hasPosLeadingCoeff_C_mul (ha m) hpos1
+          have hCX_ne : C (c m) * X ≠ 0 :=
+            mul_ne_zero (by simpa using ne_of_gt (hc m)) X_ne_zero
+          have hCX_deg : (C (c m) * X).natDegree = 1 := by
+            rw [natDegree_C_mul (ne_of_gt (hc m)), natDegree_X]
+          have hlag_deg :
+              ((C (c m) * X) * P m).natDegree = d + m / 2 + 1 := by
+            rw [natDegree_mul hCX_ne hpos0.ne_zero, hCX_deg, hdeg0]
+            lia
+          have hlag_pos : HasPosLeadingCoeff ((C (c m) * X) * P m) := by
+            rw [mul_assoc]
+            exact hasPosLeadingCoeff_C_mul (hc m) hpos0.X_mul
+          rcases (by lia :
+              d + (m + 1) / 2 < d + m / 2 + 1 ∨
+                d + (m + 1) / 2 = d + m / 2 + 1) with hlt | heq
+          · have hdlt :
+                (C (a m) * P (m + 1)).natDegree <
+                  ((C (c m) * X) * P m).natDegree := by
+              rw [hhead_deg, hlag_deg]
+              exact hlt
+            refine ⟨?_, ?_⟩
+            · rw [hrec m,
+                natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+                  hdlt hlag_pos,
+                hlag_deg]
+              lia
+            · rw [hrec m]
+              exact hasPosLeadingCoeff_add_of_natDegree_lt_right hdlt hlag_pos
+          · have hdeq :
+                (C (a m) * P (m + 1)).natDegree =
+                  ((C (c m) * X) * P m).natDegree := by
+              rw [hhead_deg, hlag_deg]
+              exact heq
+            refine ⟨?_, ?_⟩
+            · rw [hrec m,
+                natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
+                  hdeq hhead_pos hlag_pos,
+                hhead_deg]
+              lia
+            · rw [hrec m]
+              exact hasPosLeadingCoeff_add_of_same_natDegree
+                hdeq hhead_pos hlag_pos
+
 /-- Real-rootedness corollary of scalar positive-current plus nonnegative
 `X`-lag sequence induction. -/
 theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
@@ -568,6 +640,15 @@ syntax (name := rr_prec_pos_X_lag_sequence)
     "nonneg_coeffs" ":=" term ","
     "current_coeff_pos" ":=" term ","
     "lag_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_natDegree_pos_X_lag_sequence)
+  "rr_natDegree_pos_X_lag_sequence" " using "
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
@@ -808,6 +889,17 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
             $hbase $hnonneg $hdeg $ha $hc $hd $hrec))
+  | `(tactic|
+      rr_natDegree_pos_X_lag_sequence using
+        base_zero := $hzero:term,
+        base_one := $hone:term,
+        current_coeff_pos := $ha:term,
+        lag_coeff_pos := $hc:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        simpa using
+          (RealRooted.natDegree_pos_X_lag_combo_sequence
+            $hzero $hone $ha $hc $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
         proper := $hprec:term,

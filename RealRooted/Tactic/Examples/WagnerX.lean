@@ -294,6 +294,23 @@ example {P : Nat → ℝ[X]}
     lag_coeff_nonneg := rr_side_nonneg_seq_term,
     recurrence := hrec
 
+/-- Equal-base-degree positive-`X` lag sequences have the plateau profile
+`d, d, d+1, d+1, ...`. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {d : Nat}
+    (hzero : (P 0).natDegree = d ∧ HasPosLeadingCoeff (P 0))
+    (hone : (P 1).natDegree = d ∧ HasPosLeadingCoeff (P 1))
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
+    ∀ n : Nat, (P n).natDegree = d + n / 2 ∧ HasPosLeadingCoeff (P n) := by
+  rr_natDegree_pos_X_lag_sequence using
+    base_zero := hzero,
+    base_one := hone,
+    current_coeff_pos := ha,
+    lag_coeff_pos := hc,
+    recurrence := hrec
+
 /-- Projection endpoint for the same positive-`X` lag shell. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
