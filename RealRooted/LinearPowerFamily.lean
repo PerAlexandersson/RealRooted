@@ -28,6 +28,36 @@ theorem prec_X_pow_succ (n : ℕ) : Prec ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
   have hprec := prec_self_mul_X_of_nonneg hne hsplits hnn
   rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hprec
 
+/-- Multiplying both members of a nonnegative proper-position pair by the same
+power of `X` preserves proper position. -/
+theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
+    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (n : ℕ) :
+    Prec (X ^ n * f) (X ^ n * g) := by
+  induction n with
+  | zero => simpa using h
+  | succ n ih =>
+      have hleft_nonneg : HasNonnegCoeffs (X ^ n * f) :=
+        (hasNonnegCoeffs_X.pow n).mul hfnn
+      have hright_nonneg : HasNonnegCoeffs (X ^ n * g) :=
+        (hasNonnegCoeffs_X.pow n).mul hgnn
+      have hnext := prec_mul_X_both_of_roots_nonpos ih
+        (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec ih) hleft_nonneg)
+        (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec ih) hright_nonneg)
+      simpa [pow_succ', mul_assoc] using hnext
+
+/-- A reverse proper-position pair with nonnegative coefficients remains in
+proper position after adjoining the consecutive powers `X^n` and `X^(n+1)`. -/
+theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
+    (hgf : Prec g f) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (n : ℕ) :
+    Prec (X ^ n * f) (X ^ (n + 1) * g) := by
+  have hbase : Prec f (X * g) :=
+    prec_to_prec_mul_X_of_nonneg hgf hgnn hfnn
+  have hbase_nonneg : HasNonnegCoeffs (X * g) := hasNonnegCoeffs_X.mul hgnn
+  simpa [pow_succ, mul_assoc] using
+    prec_X_pow_mul_both_of_prec_nonneg hbase hfnn hbase_nonneg n
+
 /-- `Prec ((X + C r)^n) ((X + C r)^(n+1))` by translating the repeated root. -/
 theorem prec_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
     Prec ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
