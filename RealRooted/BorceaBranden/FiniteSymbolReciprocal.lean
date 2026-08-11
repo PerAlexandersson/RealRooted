@@ -96,7 +96,7 @@ private theorem rightComplementMonomial_one
         (sumInrEmbedding tau sigma) (Finset.univ \ m.1.support)
 
 private theorem degreeOf_rightComplementMonomial_one_le
-    {sigma tau : Type*} [Fintype sigma] [DecidableEq sigma]
+    {sigma tau : Type*} [Fintype sigma]
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
     ∀ i : sigma,
       (rightComplementMonomial (R := ℂ) (τ := tau)
@@ -123,7 +123,7 @@ private theorem degreeOf_rename_inl_le_zero
   by_contra hdi
   have hmem : Sum.inr i ∈
       (rename (Sum.inl : tau → Sum tau sigma) A).vars := by
-    rw [mem_vars]
+    rw [mem_vars_iff_mem_support]
     exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdi⟩
   obtain ⟨j, hj, hji⟩ := mem_vars_rename Sum.inl A hmem
   exact Sum.inl_ne_inr hji
@@ -174,7 +174,7 @@ private theorem signedMultiaffineReciprocalRight_target_mul
     ring
 
 private theorem normalized_reciprocal_rightComplementMonomial_one
-    {sigma tau : Type*} [Fintype sigma] [DecidableEq sigma]
+    {sigma tau : Type*} [Fintype sigma]
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
     C ((-1 : ℂ) ^ Fintype.card sigma) *
         signedMultiaffineReciprocalRight

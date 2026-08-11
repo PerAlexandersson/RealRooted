@@ -67,8 +67,7 @@ private theorem card_filter_lt_triple (a b c x : ℝ) :
 Chudnovsky--Seymour root-count theorem. -/
 theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
   classical
-  intro f g hf_pos hg_pos hf hg hfdeg hgdeg hpc
-  intro a b c p q r hab hbc hpq hqr hfroots hgroots
+  intro f g hf_pos hg_pos hf hg hfdeg hgdeg hpc a b c p q r hab hbc hpq hqr hfroots hgroots
   have hdeg : g.natDegree = f.natDegree := by
     simp [hfdeg, hgdeg]
   by_cases hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z
