@@ -5,6 +5,21 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hpos : ∀ n, HasPosLeadingCoeff (P n))
+    (hc : ∀ n, 0 < c n)
+    (hrec : ∀ n,
+      P (n + 2) = (X * P (n + 1)).derivative + C (c n) * (X * P n)) :
+    ∀ n, Prec (P n) (P (n + 1)) := by
+  rr_prec_positive_euler_lag_sequence using
+    base := hbase,
+    nonneg := hnonneg,
+    positive_lc := hpos,
+    lag_positive := hc,
+    recurrence := hrec
+
 example {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (theta p) := by
   rr_theta_nonneg using nonneg := hp

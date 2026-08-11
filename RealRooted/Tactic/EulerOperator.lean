@@ -1,4 +1,6 @@
+import RealRooted.AffineFamily
 import RealRooted.EulerOperator
+import RealRooted.WagnerRightSum
 
 /-!
 # Euler-operator tactic frontends
@@ -10,6 +12,51 @@ Thin wrappers for the proved `theta + 1`, polar-theta, and iterate APIs in
 open Polynomial
 
 namespace RealRooted
+
+/-- Positive Euler-lag induction for a polynomial sequence.
+
+If consecutive terms begin in proper position and
+`P (n + 2) = (X * P (n + 1))' + c n * X * P n` with `c n > 0`, then
+nonnegative coefficients and positive leading coefficients propagate proper
+position through the whole sequence. -/
+theorem prec_positive_euler_lag_sequence
+    {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ n, HasNonnegCoeffs (P n))
+    (hpos : ∀ n, HasPosLeadingCoeff (P n))
+    (hc : ∀ n, 0 < c n)
+    (hrec : ∀ n,
+      P (n + 2) = (X * P (n + 1)).derivative + C (c n) * (X * P n)) :
+    ∀ n, Prec (P n) (P (n + 1)) := by
+  intro n
+  induction n with
+  | zero => exact hbase
+  | succ n ih =>
+      have hnext_ne : P (n + 1) ≠ 0 := (hpos (n + 1)).ne_zero
+      have hXnext : (X * P (n + 1) ≠ 0) ∧ (X * P (n + 1)).Splits :=
+        isRealRooted_X_mul hnext_ne ih.2.1.2
+      have hXnext_pos : HasPosLeadingCoeff (X * P (n + 1)) :=
+        (hpos (n + 1)).X_mul
+      have hXnext_degree :
+          (X * P (n + 1)).natDegree = 1 + (P (n + 1)).natDegree := by
+        rw [natDegree_mul X_ne_zero hnext_ne, natDegree_X]
+      have hderivative : Prec (X * P (n + 1)).derivative (X * P (n + 1)) :=
+        (interlaces_derivative_of_pos_natDegree
+          hXnext.1 hXnext.2 hXnext_pos (by lia)).toPrec
+      have hderivative_pos : HasPosLeadingCoeff (X * P (n + 1)).derivative :=
+        hXnext_pos.derivative (by lia)
+      have hlag : Prec (C (c n) * (X * P n)) (X * P (n + 1)) :=
+        (prec_mul_common_factor isRealRooted_X.1 isRealRooted_X.2 ih).C_mul_left
+          (hc n).ne'
+      have hlag_pos : HasPosLeadingCoeff (C (c n) * (X * P n)) :=
+        hasPosLeadingCoeff_C_mul (hc n) (hpos n).X_mul
+      have hsum : Prec (P (n + 2)) (X * P (n + 1)) := by
+        rw [hrec n]
+        exact
+          prec_add_of_prec_right_of_posLeadingCoeff
+            hderivative hlag hderivative_pos hlag_pos
+      exact
+        prec_of_prec_mul_X_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
 
 /-- Default proved PF preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem isPFPolynomial_iterateThetaPlusOne
@@ -187,7 +234,26 @@ syntax (name := rr_iterateThetaPlusOne_sequence_prec0_named)
     "prec0" ":=" term :
   tactic
 
+syntax (name := rr_prec_positive_euler_lag_sequence_named)
+  "rr_prec_positive_euler_lag_sequence" " using "
+    "base" ":=" term ","
+    "nonneg" ":=" term ","
+    "positive_lc" ":=" term ","
+    "lag_positive" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 macro_rules
+  | `(tactic|
+      rr_prec_positive_euler_lag_sequence using
+        base := $hbase:term,
+        nonneg := $hnonneg:term,
+        positive_lc := $hpos:term,
+        lag_positive := $hc:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        exact RealRooted.prec_positive_euler_lag_sequence
+          $hbase $hnonneg $hpos $hc $hrec)
   | `(tactic| rr_theta_nonneg using nonneg := $hp:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.theta $hp)
   | `(tactic| rr_theta_sequence_nonneg using nonneg := $hp:term) =>
