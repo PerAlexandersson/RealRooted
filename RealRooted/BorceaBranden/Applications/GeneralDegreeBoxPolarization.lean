@@ -377,6 +377,172 @@ theorem sourceCoefficientGeneral_monomial_sumElim
       c • sourceCoefficientGeneral P r := by
   simp [sourceCoefficientGeneral]
 
+/-- Coordinatewise complementation in a finite degree box. -/
+def boxComplementIndex {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    {m : σ →₀ ℕ // ∀ i, m i ≤ κ i} :=
+  (MvPolynomial.degreeOfLEIndexEquiv κ).symm fun i =>
+    ⟨κ i - r.1 i, Nat.lt_succ_of_le (Nat.sub_le _ _)⟩
+
+@[simp] theorem boxComplementIndex_apply {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) (i : σ) :
+    (boxComplementIndex κ r).1 i = κ i - r.1 i := by
+  simp [boxComplementIndex, MvPolynomial.degreeOfLEIndexEquiv]
+
+/-- Coordinatewise complementation is an involution on bounded exponents. -/
+def boxComplementEquiv {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
+    {r : σ →₀ ℕ // ∀ i, r i ≤ κ i} ≃
+      {m : σ →₀ ℕ // ∀ i, m i ≤ κ i} where
+  toFun := boxComplementIndex κ
+  invFun := boxComplementIndex κ
+  left_inv r := by
+    apply Subtype.ext
+    ext i
+    simp [Nat.sub_sub_self (r.2 i)]
+  right_inv r := by
+    apply Subtype.ext
+    ext i
+    simp [Nat.sub_sub_self (r.2 i)]
+
+@[simp] theorem boxComplementIndex_involution {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    boxComplementIndex κ (boxComplementIndex κ r) = r := by
+  exact (boxComplementEquiv κ).left_inv r
+
+/-- Complementing a bounded exponent preserves its degree-box binomial
+coefficient. -/
+theorem boxChoose_boxComplementIndex {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    MvPolynomial.boxChoose κ (boxComplementIndex κ r).1 =
+      MvPolynomial.boxChoose κ r.1 := by
+  classical
+  unfold MvPolynomial.boxChoose
+  apply Finset.prod_congr rfl
+  intro i _hi
+  rw [boxComplementIndex_apply, Nat.choose_symm (r.2 i)]
+
+private theorem rightComplementMonomial_eq_rename_boxComplement
+    {σ τ R : Type*} [CommSemiring R] [Fintype σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial.rightComplementMonomial (R := R) (τ := τ) κ m.1 =
+      MvPolynomial.rename Sum.inr
+        (MvPolynomial.monomial (boxComplementIndex κ m).1 1) := by
+  rw [MvPolynomial.rightComplementMonomial_eq_prod]
+  calc
+    (∏ i, MvPolynomial.X (R := R) (Sum.inr i) ^ (κ i - m.1 i)) =
+        MvPolynomial.rename Sum.inr
+          (∏ i, MvPolynomial.X (R := R) i ^ (κ i - m.1 i)) := by simp
+    _ = MvPolynomial.rename Sum.inr
+          (MvPolynomial.monomial (boxComplementIndex κ m).1 1) := by
+      congr 1
+      calc
+        (∏ i, MvPolynomial.X (R := R) i ^ (κ i - m.1 i)) =
+            MvPolynomial.monomial
+              (Finsupp.indicator Finset.univ
+                (fun i _ => κ i - m.1 i)) 1 := by
+          simpa using MvPolynomial.prod_X_pow (R := R)
+            (fun i => κ i - m.1 i) Finset.univ
+        _ = MvPolynomial.monomial (boxComplementIndex κ m).1 1 := by
+          apply congrArg (fun d => MvPolynomial.monomial d (1 : R))
+          ext i
+          simp [Finsupp.indicator]
+
+private theorem rename_inl_monomial_mul_rename_inr_monomial
+    {σ τ R : Type*} [CommSemiring R]
+    (u : τ →₀ ℕ) (a : σ →₀ ℕ) (c : R) :
+    MvPolynomial.rename Sum.inl (MvPolynomial.monomial u c) *
+        MvPolynomial.rename Sum.inr (MvPolynomial.monomial a 1) =
+      MvPolynomial.monomial (u.sumElim a) c := by
+  classical
+  rw [MvPolynomial.rename_monomial, MvPolynomial.rename_monomial,
+    MvPolynomial.monomial_mul]
+  have hsum :
+      Finsupp.mapDomain (Sum.inl : τ → τ ⊕ σ) u +
+          Finsupp.mapDomain (Sum.inr : σ → τ ⊕ σ) a =
+        u.sumElim a :=
+    (Finsupp.sumElim_eq_add u a).symm
+  rw [hsum, mul_one]
+
+private theorem sourceCoefficientGeneral_rename_mul_monomial
+    {σ τ : Type*} [DecidableEq σ]
+    (q : MvPolynomial τ ℂ) (a r : σ →₀ ℕ) :
+    sourceCoefficientGeneral
+        (MvPolynomial.rename Sum.inl q *
+          MvPolynomial.rename Sum.inr (MvPolynomial.monomial a 1)) r =
+      if r = a then q else 0 := by
+  induction q using MvPolynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [map_add, add_mul, sourceCoefficientGeneral_add, hp, hq]
+      split <;> simp_all
+  | monomial u c =>
+      rw [rename_inl_monomial_mul_rename_inr_monomial,
+        sourceCoefficientGeneral_monomial_sumElim]
+
+private theorem sourceCoefficientGeneral_symbolTerm
+    {σ τ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i})
+    (q : MvPolynomial τ ℂ) (c : ℂ) (r : σ →₀ ℕ) :
+    sourceCoefficientGeneral
+        (MvPolynomial.C c * MvPolynomial.rename Sum.inl q *
+          MvPolynomial.rightComplementMonomial κ m.1) r =
+      if r = (boxComplementIndex κ m).1 then MvPolynomial.C c * q else 0 := by
+  classical
+  rw [rightComplementMonomial_eq_rename_boxComplement]
+  have hleft :
+      (MvPolynomial.C c : MvPolynomial (τ ⊕ σ) ℂ) *
+          MvPolynomial.rename (Sum.inl : τ → τ ⊕ σ) q =
+        MvPolynomial.rename (Sum.inl : τ → τ ⊕ σ)
+          ((MvPolynomial.C c : MvPolynomial τ ℂ) * q) := by
+    rw [map_mul, MvPolynomial.rename_C]
+  rw [hleft, sourceCoefficientGeneral_rename_mul_monomial]
+  by_cases h : r = (boxComplementIndex κ m).1 <;> simp [h]
+
+/-- Extracting a source coefficient commutes with a finite sum. -/
+theorem sourceCoefficientGeneral_sum {σ τ ι : Type*} (s : Finset ι)
+    (f : ι → MvPolynomial (τ ⊕ σ) ℂ) (r : σ →₀ ℕ) :
+    sourceCoefficientGeneral (∑ i ∈ s, f i) r =
+      ∑ i ∈ s, sourceCoefficientGeneral (f i) r := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [sourceCoefficientGeneral]
+  | @insert a s ha ih => simp [ha, ih]
+
+/-- The unpolarized source coefficient of a finite algebraic symbol is the operator
+image at the complementary exponent, with the expected binomial factor. -/
+theorem sourceCoefficientGeneral_algebraicSymbol
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ)
+    (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    sourceCoefficientGeneral (MvPolynomial.algebraicSymbol κ T) r.1 =
+      MvPolynomial.C (MvPolynomial.boxChoose κ r.1 : ℂ) *
+        T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r)) := by
+  classical
+  rw [MvPolynomial.algebraicSymbol_eq_sum,
+    show (∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+        MvPolynomial.C (MvPolynomial.boxChoose κ m.1 : ℂ) *
+          MvPolynomial.rename Sum.inl
+              (T (MvPolynomial.basisDegreeOfLE κ m)) *
+            MvPolynomial.rightComplementMonomial κ m.1) =
+      ∑ m ∈ Finset.univ,
+        MvPolynomial.C (MvPolynomial.boxChoose κ m.1 : ℂ) *
+          MvPolynomial.rename Sum.inl
+              (T (MvPolynomial.basisDegreeOfLE κ m)) *
+            MvPolynomial.rightComplementMonomial κ m.1 by rfl,
+    sourceCoefficientGeneral_sum]
+  rw [Finset.sum_eq_single (boxComplementIndex κ r)]
+  · rw [sourceCoefficientGeneral_symbolTerm]
+    simp only [boxComplementIndex_involution, if_pos]
+    rw [boxChoose_boxComplementIndex]
+  · intro m _hm hm
+    rw [sourceCoefficientGeneral_symbolTerm]
+    have hne : r.1 ≠ (boxComplementIndex κ m).1 := by
+      intro h
+      apply hm
+      have hr : r = boxComplementIndex κ m := Subtype.ext h
+      simpa using (congrArg (boxComplementIndex κ) hr).symm
+    simp [hne]
+  · simp
+
 /-- The product of elementary symmetric polynomials in all polarized source
 blocks. -/
 noncomputable def blockElementarySymmetric
@@ -395,6 +561,60 @@ noncomputable def sourceBlockwisePolarizationGeneral
     MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
       MvPolynomial.rename Sum.inl (sourceCoefficientGeneral P r.1) *
         MvPolynomial.rename Sum.inr (blockElementarySymmetric κ r.1)
+
+/-- Source polarization of a finite algebraic symbol cancels its binomial
+factor and replaces each complementary source monomial by the corresponding
+block elementary-symmetric polynomial. -/
+theorem sourceBlockwisePolarizationGeneral_algebraicSymbol_eq_sum
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
+    sourceBlockwisePolarizationGeneral κ
+        (MvPolynomial.algebraicSymbol κ T) =
+      ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+        MvPolynomial.rename Sum.inl
+            (T (MvPolynomial.basisDegreeOfLE κ
+              (boxComplementIndex κ r))) *
+          MvPolynomial.rename Sum.inr
+            (blockElementarySymmetric κ r.1) := by
+  classical
+  unfold sourceBlockwisePolarizationGeneral
+  apply Fintype.sum_congr
+  intro r
+  rw [sourceCoefficientGeneral_algebraicSymbol]
+  have hchoose : MvPolynomial.boxChoose κ r.1 ≠ 0 := by
+    unfold MvPolynomial.boxChoose
+    exact Finset.prod_ne_zero_iff.mpr fun i _hi =>
+      (Nat.choose_pos (r.2 i)).ne'
+  rw [map_mul]
+  simp only [MvPolynomial.rename_C]
+  rw [← mul_assoc, ← MvPolynomial.C_mul]
+  simp [hchoose]
+
+/-- The source-polarized unpolarized symbol in the common normal form indexed
+by the original source exponent. -/
+theorem sourceBlockwisePolarizationGeneral_algebraicSymbol_normalForm
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
+    sourceBlockwisePolarizationGeneral κ
+        (MvPolynomial.algebraicSymbol κ T) =
+      ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+        MvPolynomial.rename Sum.inl
+            (T (MvPolynomial.basisDegreeOfLE κ m)) *
+          MvPolynomial.rename Sum.inr
+            (blockElementarySymmetric κ (boxComplementIndex κ m).1) := by
+  rw [sourceBlockwisePolarizationGeneral_algebraicSymbol_eq_sum]
+  apply Fintype.sum_equiv (boxComplementEquiv κ)
+  intro r
+  change
+    MvPolynomial.rename Sum.inl
+          (T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r))) *
+        MvPolynomial.rename Sum.inr (blockElementarySymmetric κ r.1) =
+      MvPolynomial.rename Sum.inl
+          (T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r))) *
+        MvPolynomial.rename Sum.inr
+          (blockElementarySymmetric κ
+            (boxComplementIndex κ (boxComplementIndex κ r)).1)
+  rw [boxComplementIndex_involution]
 
 /-- General source-block polarization on a separated output/source
 monomial. -/
@@ -995,6 +1215,27 @@ theorem sourcePolarizedOperatorGeneral_basis
   unfold sourcePolarizedOperatorGeneral
   simp only [LinearMap.comp_apply]
   rw [diagonalProjectionDegreeBoxGeneral_basis_eq_basis]
+
+/-- Expand the multiaffine symbol of the general source-polarized operator.
+All degree-box binomial factors are one. -/
+theorem algebraicSymbol_sourcePolarizedOperatorGeneral_eq_sum
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
+    MvPolynomial.algebraicSymbol
+        (fun _ : PolarizedSource κ => 1)
+        (sourcePolarizedOperatorGeneral κ T) =
+      ∑ m : {m : PolarizedSource κ →₀ ℕ // ∀ i, m i ≤ 1},
+        MvPolynomial.rename Sum.inl
+            (T (MvPolynomial.basisDegreeOfLE κ
+              (diagonalDegreeBoxIndexGeneral κ m))) *
+          MvPolynomial.rightComplementMonomial
+            (fun _ : PolarizedSource κ => 1) m.1 := by
+  rw [MvPolynomial.algebraicSymbol_eq_sum]
+  apply Fintype.sum_congr
+  intro m
+  rw [MvPolynomial.boxChoose_one_of_le_one m.1 m.2,
+    sourcePolarizedOperatorGeneral_basis]
+  simp
 
 /-- The source-polarized operator agrees with the original operator after
 blockwise polarization. -/
