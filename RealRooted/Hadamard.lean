@@ -2391,6 +2391,24 @@ theorem schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoComposition hf hfdeg hpdeg hp
 
+/-- Fixed-degree Schur--Szegő composition of two PF polynomials is again PF.
+
+This is the zero-aware wrapper around
+`schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial`; coefficient
+nonnegativity is preserved directly by the composition. -/
+theorem IsPFPolynomial.schurSzegoComp
+    {n : ℕ} {f p : ℝ[X]} (hf : IsPFPolynomial f)
+    (hp : IsPFPolynomial p) (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n) :
+    IsPFPolynomial (schurSzegoComp n f p) := by
+  apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hf.hasNonnegCoeffs.schurSzegoComp hp.hasNonnegCoeffs)
+  by_cases hp0 : p = 0
+  · subst p
+    simp
+  · exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+      hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
+
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
 finite Schur--Szegő composition theorem. -/
 theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement :=

@@ -10,7 +10,7 @@ target and is not itself evidence.
 | Declaration | Status | Tracking |
 | --- | --- | --- |
 | `finiteComplexSymbolClassification` | Borcea--Brändén finite complex-symbol classification; admitted with one `sorry` | #372 |
-| `jensenPencilBidiagonalPreserver` | Project conjecture: one-sided Jensen-pencil PF implication; admitted with one `sorry` | — |
+| `jensenPencilBidiagonalPreserver` | One-sided Jensen-pencil PF implication; a human proof is available, while the Lean theorem remains admitted with one `sorry` | — |
 
 The second theorem is not used by the checked affine-symbol endpoint
 `bidiagonalPFPreserver_of_affineSymbol`. Its degree-at-most-one case is checked
@@ -25,6 +25,7 @@ theorem, refutation, or production caller. They contain no admission.
 
 | Declaration | Status |
 | --- | --- |
+| `schurSzegoPreservesJensenPencilCompatibilityStatement` | Zero-aware Schur--Szegő compatibility form of the remaining root-count contraction theorem in the Jensen-pencil proof |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
 | `iterateThetaPlusOneSelfPrec0Statement` | Unused open proper-position target for iterates of `theta + 1` |
 | `polarThetaPreservesPrec0Statement` | Unused open proper-position target for the bounded-degree polar-theta operator |
@@ -46,6 +47,9 @@ a production caller.
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
 | Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |
 | Jensen-pencil degree-two boundary with `beta 2 = 0` | `jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero` |
+| Jensen certificate gives endpoint compatibility | `BidiagonalJensenPencilCertificate.compatible` |
+| Jensen output as two Schur--Szegő compositions | `bidiagonalOperator_eq_schurSzegoComp` |
+| General Jensen theorem reduced to root-count contraction | `jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
 
