@@ -115,6 +115,49 @@ def sourcePolarizationStageInstallEquiv
     · dsimp
       simp
 
+@[simp] theorem sourcePolarizationStageIsolateEquiv_processed
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) (j : σ) (hj : j ∈ S) (k : Fin (κ j)) :
+    sourcePolarizationStageIsolateEquiv κ S i hi
+        (Sum.inl ⟨⟨j, hj⟩, k⟩) =
+      Sum.inl (Sum.inl ⟨⟨j, hj⟩, k⟩) := rfl
+
+@[simp] theorem sourcePolarizationStageIsolateEquiv_selected
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) :
+    sourcePolarizationStageIsolateEquiv κ S i hi (Sum.inr ⟨i, hi⟩) =
+      Sum.inr default := by
+  simp [sourcePolarizationStageIsolateEquiv]
+
+@[simp] theorem sourcePolarizationStageIsolateEquiv_raw
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i j : σ) (hi : i ∉ S) (hj : j ∉ S) (hji : j ≠ i) :
+    sourcePolarizationStageIsolateEquiv κ S i hi (Sum.inr ⟨j, hj⟩) =
+      Sum.inl (Sum.inr ⟨j, hj, hji⟩) := by
+  simp only [sourcePolarizationStageIsolateEquiv, Equiv.coe_fn_mk,
+    dif_neg hji]
+  congr 3
+
+@[simp] theorem sourcePolarizationStageInstallEquiv_symm_processed
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) (j : σ) (hj : j ∈ S) (k : Fin (κ j)) :
+    (sourcePolarizationStageInstallEquiv κ S i hi).symm
+        (Sum.inl (Sum.inl ⟨⟨j, hj⟩, k⟩)) =
+      Sum.inl ⟨⟨j, Finset.mem_insert_of_mem hj⟩, k⟩ := rfl
+
+@[simp] theorem sourcePolarizationStageInstallEquiv_symm_raw
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i j : σ) (hi : i ∉ S) (hj : j ∉ S) (hji : j ≠ i) :
+    (sourcePolarizationStageInstallEquiv κ S i hi).symm
+        (Sum.inl (Sum.inr ⟨j, hj, hji⟩)) =
+      Sum.inr ⟨j, by simp [Finset.mem_insert, hj, hji]⟩ := rfl
+
+@[simp] theorem sourcePolarizationStageInstallEquiv_symm_new
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) (k : Fin (κ i)) :
+    (sourcePolarizationStageInstallEquiv κ S i hi).symm (Sum.inr k) =
+      Sum.inl ⟨⟨i, Finset.mem_insert_self i S⟩, k⟩ := rfl
+
 /-- At the empty stage, the variables are the original source variables. -/
 def sourcePolarizationStageEmptyEquiv
     {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) :
@@ -158,6 +201,25 @@ noncomputable def sourcePolarizationStageStep
   MvPolynomial.rename (sourcePolarizationStageInstallEquiv κ S i hi).symm
     (MvPolynomial.sourceBlockPolarization (κ i)
       (MvPolynomial.rename (sourcePolarizationStageIsolateEquiv κ S i hi) P))
+
+/-- One source-polarization stage step as a complex-linear map. -/
+noncomputable def sourcePolarizationStageStepLinearMap
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) :
+    MvPolynomial (SourcePolarizationStageVars κ S) ℂ →ₗ[ℂ]
+      MvPolynomial (SourcePolarizationStageVars κ (insert i S)) ℂ :=
+  (MvPolynomial.renameEquiv ℂ
+      (sourcePolarizationStageInstallEquiv κ S i hi).symm).toLinearMap.comp
+    ((MvPolynomial.sourceBlockPolarizationLinearMap (κ i)).comp
+      (MvPolynomial.renameEquiv ℂ
+        (sourcePolarizationStageIsolateEquiv κ S i hi)).toLinearMap)
+
+@[simp] theorem sourcePolarizationStageStepLinearMap_apply
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S)
+    (P : MvPolynomial (SourcePolarizationStageVars κ S) ℂ) :
+    sourcePolarizationStageStepLinearMap κ S i hi P =
+      sourcePolarizationStageStep κ S i hi P := rfl
 
 private theorem degreeOf_rename_stageIsolate_selected
     {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
@@ -504,6 +566,105 @@ noncomputable def partialBlockwisePolarizationBasis
         (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
     else MvPolynomial.X (stageRawEmbedding κ S ⟨i, hi⟩) ^ m.1 i
 
+private def stageRestBlockEmbedding
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (j : {j // j ∈ S}) :
+    Fin (κ j) → SourcePolarizationStageRest κ S i :=
+  fun k => Sum.inl ⟨j, k⟩
+
+private def stageRestRawEmbedding
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) : {j : σ // j ∉ S ∧ j ≠ i} →
+      SourcePolarizationStageRest κ S i := Sum.inr
+
+/-- The factors of a partial basis other than one selected raw coordinate,
+expressed on the isolated stage-rest variables. -/
+private noncomputable def sourcePolarizationStageRestBasis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ)
+    (m : {m : σ →₀ ℕ // ∀ j, m j ≤ κ j}) :
+    MvPolynomial (SourcePolarizationStageRest κ S i) ℂ :=
+  ∏ j, if hji : j = i then 1 else if hj : j ∈ S then
+      MvPolynomial.rename (stageRestBlockEmbedding κ S i ⟨j, hj⟩)
+        (_root_.RealRooted.polarization (κ j) (Polynomial.X ^ m.1 j))
+    else MvPolynomial.X (stageRestRawEmbedding κ S i ⟨j, hj, hji⟩) ^ m.1 j
+
+private theorem rename_stageIsolate_partialBlockwisePolarizationBasis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ) (hi : i ∉ S)
+    (m : {m : σ →₀ ℕ // ∀ j, m j ≤ κ j}) :
+    MvPolynomial.rename (sourcePolarizationStageIsolateEquiv κ S i hi)
+        (partialBlockwisePolarizationBasis κ S m) =
+      MvPolynomial.rename Sum.inl
+          (sourcePolarizationStageRestBasis κ S i m) *
+        MvPolynomial.X (Sum.inr default) ^ m.1 i := by
+  classical
+  unfold partialBlockwisePolarizationBasis sourcePolarizationStageRestBasis
+  simp only [map_prod]
+  rw [Fintype.prod_eq_prod_compl_mul i]
+  congr 1
+  · rw [Fintype.prod_eq_prod_compl_mul i]
+    simp only [ne_eq, ↓reduceDIte, map_one, mul_one]
+    apply Finset.prod_congr rfl
+    intro j hj
+    have hji : j ≠ i := by simpa using hj
+    simp only [hji, ↓reduceDIte]
+    by_cases hjS : j ∈ S
+    · simp only [hjS, ↓reduceDIte, MvPolynomial.rename_rename]
+      congr 1
+    · simp only [hjS, ↓reduceDIte, map_pow, MvPolynomial.rename_X]
+      simp [stageRawEmbedding, stageRestRawEmbedding,
+        sourcePolarizationStageIsolateEquiv, hji]
+  · simp only [hi, ↓reduceDIte, map_pow, MvPolynomial.rename_X]
+    simp [stageRawEmbedding, sourcePolarizationStageIsolateEquiv]
+
+private theorem rename_stageInstall_sourcePolarizationStageRestBasis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ) (hi : i ∉ S)
+    (m : {m : σ →₀ ℕ // ∀ j, m j ≤ κ j}) :
+    MvPolynomial.rename (sourcePolarizationStageInstallEquiv κ S i hi).symm
+        (MvPolynomial.rename Sum.inl
+            (sourcePolarizationStageRestBasis κ S i m) *
+          MvPolynomial.rename Sum.inr
+            (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))) =
+      partialBlockwisePolarizationBasis κ (insert i S) m := by
+  classical
+  unfold sourcePolarizationStageRestBasis partialBlockwisePolarizationBasis
+  simp only [map_mul, MvPolynomial.rename_rename, map_prod]
+  rw [Fintype.prod_eq_prod_compl_mul i]
+  simp only [↓reduceDIte, map_one, mul_one]
+  rw [Fintype.prod_eq_prod_compl_mul i]
+  apply congrArg₂ (· * ·)
+  · apply Finset.prod_congr rfl
+    intro j hj
+    have hji : j ≠ i := by simpa using hj
+    simp only [hji, ↓reduceDIte]
+    by_cases hjS : j ∈ S
+    · simp only [hjS, Finset.mem_insert, or_true, ↓reduceDIte,
+        MvPolynomial.rename_rename]
+      congr 1
+    · have hjInsert : j ∉ insert i S := by simp [Finset.mem_insert, hji, hjS]
+      simp only [hjS, hjInsert, ↓reduceDIte, map_pow, MvPolynomial.rename_X]
+      simp [stageRestRawEmbedding, stageRawEmbedding,
+        sourcePolarizationStageInstallEquiv]
+  · simp only [Finset.mem_insert_self, ↓reduceDIte]
+    congr 1
+
+/-- One staged step sends the direct partial basis at `S` to the direct
+partial basis at `insert i S`. -/
+theorem sourcePolarizationStageStep_partialBlockwisePolarizationBasis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ) (hi : i ∉ S)
+    (m : {m : σ →₀ ℕ // ∀ j, m j ≤ κ j}) :
+    sourcePolarizationStageStep κ S i hi
+        (partialBlockwisePolarizationBasis κ S m) =
+      partialBlockwisePolarizationBasis κ (insert i S) m := by
+  unfold sourcePolarizationStageStep
+  rw [rename_stageIsolate_partialBlockwisePolarizationBasis]
+  rw [MvPolynomial.sourceBlockPolarization_rename_mul_X_pow
+    (κ i) (m.1 i) (sourcePolarizationStageRestBasis κ S i m) (m.2 i)]
+  exact rename_stageInstall_sourcePolarizationStageRestBasis κ S i hi m
+
 /-- Direct partial source polarization as a linear map into the ambient
 polynomial ring on the stage variables. -/
 noncomputable def partialBlockwisePolarizationDegreeBox
@@ -522,6 +683,22 @@ noncomputable def partialBlockwisePolarizationDegreeBox
         (MvPolynomial.basisDegreeOfLE (R := ℂ) κ m) =
       partialBlockwisePolarizationBasis κ S m := by
   simp [partialBlockwisePolarizationDegreeBox]
+
+/-- The direct partial polarization maps satisfy the same insert recurrence
+as the staged one-coordinate construction. -/
+theorem sourcePolarizationStageStep_partialBlockwisePolarizationDegreeBox
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ) (hi : i ∉ S) :
+    (sourcePolarizationStageStepLinearMap κ S i hi).comp
+        (partialBlockwisePolarizationDegreeBox κ S) =
+      partialBlockwisePolarizationDegreeBox κ (insert i S) := by
+  apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+  intro m
+  simp only [LinearMap.comp_apply,
+    partialBlockwisePolarizationDegreeBox_basis,
+    sourcePolarizationStageStepLinearMap_apply]
+  exact sourcePolarizationStageStep_partialBlockwisePolarizationBasis
+    κ S i hi m
 
 /-- The empty partial stage is the original basis monomial, up to its
 canonical variable equivalence. -/
@@ -543,6 +720,82 @@ theorem rename_partialBlockwisePolarizationBasis_empty
   apply Finset.prod_subset (Finset.subset_univ m.1.support)
   intro i _hi hiSupport
   simp [Finsupp.notMem_support_iff.mp hiSupport]
+
+/-- The empty partial stage reconstructs the original degree-box
+polynomial. -/
+theorem rename_partialBlockwisePolarizationDegreeBox_empty
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    MvPolynomial.rename (sourcePolarizationStageEmptyEquiv κ)
+        (partialBlockwisePolarizationDegreeBox κ ∅ p) = p.1 := by
+  have hmaps :
+      (MvPolynomial.renameEquiv ℂ
+          (sourcePolarizationStageEmptyEquiv κ)).toLinearMap.comp
+          (partialBlockwisePolarizationDegreeBox κ ∅) =
+        Submodule.subtype (MvPolynomial.degreeOfLE σ ℂ κ) := by
+    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+    intro m
+    simp only [LinearMap.comp_apply,
+      partialBlockwisePolarizationDegreeBox_basis]
+    simpa using rename_partialBlockwisePolarizationBasis_empty κ m
+  exact LinearMap.congr_fun hmaps p
+
+/-- Every unprocessed coordinate of a direct partial polarization retains its
+original degree cap. -/
+theorem degreeOf_partialBlockwisePolarizationDegreeBox_raw_le
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ)
+    (S : Finset σ) (j : σ) (hj : j ∉ S) :
+    (partialBlockwisePolarizationDegreeBox κ S p).degreeOf
+        (Sum.inr ⟨j, hj⟩) ≤ κ j := by
+  induction S using Finset.induction_on with
+  | empty =>
+      have hrename := MvPolynomial.degreeOf_rename_of_injective
+        (sourcePolarizationStageEmptyEquiv κ).injective
+        (Sum.inr ⟨j, hj⟩)
+        (p := partialBlockwisePolarizationDegreeBox κ ∅ p)
+      have hmap : sourcePolarizationStageEmptyEquiv κ (Sum.inr ⟨j, hj⟩) = j := rfl
+      rw [hmap, rename_partialBlockwisePolarizationDegreeBox_empty] at hrename
+      exact hrename.symm.trans_le
+        ((MvPolynomial.mem_degreeOfLE_iff_degreeOf p.1).mp p.2 j)
+  | @insert i S hi ih =>
+      have hjS : j ∉ S := fun h => hj (Finset.mem_insert_of_mem h)
+      have hstep := LinearMap.congr_fun
+        (sourcePolarizationStageStep_partialBlockwisePolarizationDegreeBox
+          κ S i hi) p
+      rw [LinearMap.comp_apply] at hstep
+      rw [← hstep]
+      exact (degreeOf_sourcePolarizationStageStep_raw_le κ S i hi
+        (partialBlockwisePolarizationDegreeBox κ S p) j hj).trans
+          (ih hjS)
+
+/-- Every direct partial source polarization of a stable degree-box
+polynomial is stable. -/
+theorem mvUpperHalfPlaneStable_partialBlockwisePolarizationDegreeBox
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ)
+    (hp : MvUpperHalfPlaneStable p.1) (S : Finset σ) :
+    MvUpperHalfPlaneStable (partialBlockwisePolarizationDegreeBox κ S p) := by
+  induction S using Finset.induction_on with
+  | empty =>
+      have hrename := rename_partialBlockwisePolarizationDegreeBox_empty κ p
+      have heq :
+          MvPolynomial.rename (sourcePolarizationStageEmptyEquiv κ).symm p.1 =
+            partialBlockwisePolarizationDegreeBox κ ∅ p := by
+        rw [← hrename, MvPolynomial.rename_rename,
+          (sourcePolarizationStageEmptyEquiv κ).symm_comp_self,
+          MvPolynomial.rename_id_apply]
+      rw [← heq]
+      exact hp.rename
+  | @insert i S hi ih =>
+      have hstep := LinearMap.congr_fun
+        (sourcePolarizationStageStep_partialBlockwisePolarizationDegreeBox
+          κ S i hi) p
+      rw [LinearMap.comp_apply] at hstep
+      rw [← hstep]
+      exact mvUpperHalfPlaneStable_sourcePolarizationStageStep κ S i hi
+        (partialBlockwisePolarizationDegreeBox κ S p)
+        (degreeOf_partialBlockwisePolarizationDegreeBox_raw_le κ p S i hi) ih
 
 /-- The final partial stage is the direct full blockwise polarization, up to
 its canonical variable equivalence. -/
@@ -619,6 +872,43 @@ noncomputable def blockwisePolarizationDegreeBoxGeneral
         (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
           (isMultiaffine_blockwisePolarizationBasis κ m)⟩ := by
   simp [blockwisePolarizationDegreeBoxGeneral]
+
+/-- The final partial stage is the direct full blockwise polarization. -/
+theorem rename_partialBlockwisePolarizationDegreeBox_univ
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    MvPolynomial.rename (sourcePolarizationStageUnivEquiv κ)
+        (partialBlockwisePolarizationDegreeBox κ Finset.univ p) =
+      (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
+  have hmaps :
+      (MvPolynomial.renameEquiv ℂ
+          (sourcePolarizationStageUnivEquiv κ)).toLinearMap.comp
+          (partialBlockwisePolarizationDegreeBox κ Finset.univ) =
+        (Submodule.subtype
+          (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
+            (blockwisePolarizationDegreeBoxGeneral κ) := by
+    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+    intro m
+    simp only [LinearMap.comp_apply,
+      partialBlockwisePolarizationDegreeBox_basis,
+      blockwisePolarizationDegreeBoxGeneral_basis]
+    exact rename_partialBlockwisePolarizationBasis_univ κ m
+  exact LinearMap.congr_fun hmaps p
+
+/-- General blockwise polarization preserves upper-half-plane stability. -/
+theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ)
+    (hp : MvUpperHalfPlaneStable p.1) :
+    MvUpperHalfPlaneStable (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
+  classical
+  have hpartial :=
+    mvUpperHalfPlaneStable_partialBlockwisePolarizationDegreeBox
+      κ p hp Finset.univ
+  have hrename := hpartial.rename
+    (f := sourcePolarizationStageUnivEquiv κ)
+  rw [rename_partialBlockwisePolarizationDegreeBox_univ] at hrename
+  exact hrename
 
 private theorem rename_blockwisePolarizationFactor
     {σ : Type*} (κ : σ → ℕ)
