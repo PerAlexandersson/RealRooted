@@ -9,7 +9,7 @@ target and is not itself evidence.
 
 | Declaration | Status | Tracking |
 | --- | --- | --- |
-| `finiteComplexSymbolClassification` | Borcea--Brändén finite complex-symbol classification; admitted with one `sorry` | #356 |
+| `finiteComplexSymbolClassification` | Borcea--Brändén finite complex-symbol classification; admitted with one `sorry` | #372 |
 | `jensenPencilBidiagonalPreserver` | Project conjecture: one-sided Jensen-pencil PF implication; admitted with one `sorry` | #355 |
 
 The second theorem is not used by the checked affine-symbol endpoint
