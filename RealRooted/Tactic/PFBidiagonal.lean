@@ -768,8 +768,8 @@ theorem jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero
     (Polynomial.degree_le_of_natDegree_le hout_deg)]
   exact quadraticPoly_splits_of_discrim_nonneg_or_linear hout_discrim
 
-/-- Admitted Jensen-pencil implication for coefficient-bidiagonal PF
-preservers.
+/-- Conjectural Jensen-pencil implication for coefficient-bidiagonal PF
+preservers, retained as an explicit admission.
 
 This is the single explicit admission for the conjecture tracked in issue
 #355. It is not a checked proof; checked applications should prefer
