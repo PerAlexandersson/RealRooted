@@ -636,6 +636,54 @@ theorem sourceBlockwisePolarizationGeneral_monomial_sumElim
     rw [sourceCoefficientGeneral_monomial_sumElim]
     simp [hr_ne]
 
+private theorem coeff_specializeLeft_eq_eval_sourceCoefficientGeneral
+    {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (x : τ → ℂ) (r : σ →₀ ℕ) :
+    MvPolynomial.coeff r (_root_.RealRooted.specializeLeft x P) =
+      MvPolynomial.eval x (sourceCoefficientGeneral P r) := by
+  have hspecial :
+      _root_.RealRooted.specializeLeft x P =
+        MvPolynomial.map (MvPolynomial.eval x)
+          (MvPolynomial.sumAlgEquiv ℂ σ τ
+            (MvPolynomial.rename (Equiv.sumComm τ σ) P)) := by
+    unfold _root_.RealRooted.specializeLeft
+    change
+      (MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)) P =
+        ((MvPolynomial.mapAlgHom (MvPolynomial.aeval x)).comp
+          ((MvPolynomial.sumAlgEquiv ℂ σ τ).toAlgHom.comp
+            (MvPolynomial.rename (Equiv.sumComm τ σ)))) P
+    congr 1
+    apply MvPolynomial.algHom_ext
+    rintro (i | i) <;>
+      simp [Function.comp_def, Equiv.sumComm_apply]
+  rw [hspecial, MvPolynomial.coeff_map]
+  rfl
+
+private theorem specializeLeft_mem_sourceDegreeBox
+    {σ τ : Type*} (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (hdeg : ∀ i, P.degreeOf (Sum.inr i) ≤ κ i)
+    (x : τ → ℂ) :
+    _root_.RealRooted.specializeLeft x P ∈
+      MvPolynomial.degreeOfLE σ ℂ κ := by
+  rw [MvPolynomial.mem_degreeOfLE]
+  intro r hr i
+  have hcoeff : MvPolynomial.eval x (sourceCoefficientGeneral P r) ≠ 0 := by
+    rw [← coeff_specializeLeft_eq_eval_sourceCoefficientGeneral]
+    exact MvPolynomial.mem_support_iff.mp hr
+  have hsource : sourceCoefficientGeneral P r ≠ 0 := by
+    intro hzero
+    simp [hzero] at hcoeff
+  obtain ⟨u, hu⟩ := MvPolynomial.exists_coeff_ne_zero hsource
+  have horig : MvPolynomial.coeff (u.sumElim r) P ≠ 0 := by
+    rw [← coeff_sourceCoefficientGeneral]
+    exact hu
+  have hmonomial : (u.sumElim r) (Sum.inr i) ≤ P.degreeOf (Sum.inr i) :=
+    MvPolynomial.monomial_le_degreeOf (Sum.inr i)
+      (MvPolynomial.mem_support_iff.mpr horig)
+  exact hmonomial.trans (hdeg i)
+
 /-- General source-block polarization as a complex-linear map. -/
 noncomputable def sourceBlockwisePolarizationGeneralLinearMap
     {σ τ : Type*} [Fintype σ] (κ : σ → ℕ) :
@@ -1129,6 +1177,145 @@ theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral
     (f := sourcePolarizationStageUnivEquiv κ)
   rw [rename_partialBlockwisePolarizationDegreeBox_univ] at hrename
   exact hrename
+
+private theorem blockwisePolarizationBasis_eq_normalized
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    blockwisePolarizationBasis κ r =
+      MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
+        blockElementarySymmetric κ r.1 := by
+  classical
+  unfold blockwisePolarizationBasis blockElementarySymmetric
+  simp_rw [_root_.RealRooted.polarization_X_pow (r.2 _), map_mul,
+    MvPolynomial.rename_C]
+  rw [Finset.prod_mul_distrib]
+  congr 1
+  rw [← map_prod]
+  simp [MvPolynomial.boxChoose]
+
+private theorem coe_blockwisePolarizationDegreeBoxGeneral_eq_sum
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    (blockwisePolarizationDegreeBoxGeneral κ p).1 =
+      ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+        MvPolynomial.C (MvPolynomial.coeff r.1 p.1) *
+          blockwisePolarizationBasis κ r := by
+  classical
+  unfold blockwisePolarizationDegreeBoxGeneral
+  rw [Module.Basis.constr_apply_fintype]
+  simp only [Module.Basis.equivFun_apply,
+    MvPolynomial.basisDegreeOfLE_repr_apply,
+    MvPolynomial.smul_eq_C_mul, Submodule.coe_sum,
+    Submodule.coe_smul]
+
+private theorem coe_blockwisePolarizationDegreeBoxGeneral_eq_normalized_sum
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    (blockwisePolarizationDegreeBoxGeneral κ p).1 =
+      ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+        MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
+          MvPolynomial.C (MvPolynomial.coeff r.1 p.1) *
+            blockElementarySymmetric κ r.1 := by
+  rw [coe_blockwisePolarizationDegreeBoxGeneral_eq_sum]
+  apply Fintype.sum_congr
+  intro r
+  rw [blockwisePolarizationBasis_eq_normalized]
+  ring
+
+/-- Specializing the untouched output variables commutes with blockwise
+polarization of the source variables. -/
+theorem specializeLeft_sourceBlockwisePolarizationGeneral
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (hdeg : ∀ i, P.degreeOf (Sum.inr i) ≤ κ i)
+    (x : τ → ℂ) :
+    let q : MvPolynomial.degreeOfLE σ ℂ κ :=
+      ⟨_root_.RealRooted.specializeLeft x P,
+        specializeLeft_mem_sourceDegreeBox κ P hdeg x⟩
+    _root_.RealRooted.specializeLeft x
+        (sourceBlockwisePolarizationGeneral κ P) =
+      (blockwisePolarizationDegreeBoxGeneral κ q).1 := by
+  classical
+  dsimp only
+  rw [coe_blockwisePolarizationDegreeBoxGeneral_eq_normalized_sum]
+  unfold sourceBlockwisePolarizationGeneral
+  change
+    MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
+        (∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+          MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
+            MvPolynomial.rename Sum.inl (sourceCoefficientGeneral P r.1) *
+              MvPolynomial.rename Sum.inr
+                (blockElementarySymmetric κ r.1)) = _
+  rw [map_sum]
+  apply Fintype.sum_congr
+  intro r
+  rw [map_mul, map_mul, MvPolynomial.aeval_C,
+    MvPolynomial.algebraMap_eq]
+  have houtput (Q : MvPolynomial τ ℂ) :
+      MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
+          (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ) Q) =
+        MvPolynomial.C (MvPolynomial.eval x Q) := by
+    rw [MvPolynomial.aeval_rename]
+    change MvPolynomial.aeval (MvPolynomial.C ∘ x) Q =
+      MvPolynomial.C (MvPolynomial.eval x Q)
+    induction Q using MvPolynomial.induction_on with
+    | C c => simp
+    | add Q R hQ hR =>
+        rw [map_add, hQ, hR, map_add]
+        exact (map_add MvPolynomial.C _ _).symm
+    | mul_X Q i hQ =>
+        rw [map_mul, MvPolynomial.aeval_X, hQ, map_mul,
+          MvPolynomial.eval_X]
+        simpa only [Function.comp_apply] using
+          (map_mul MvPolynomial.C (MvPolynomial.eval x Q) (x i)).symm
+  have hsource (Q : MvPolynomial (PolarizedSource κ) ℂ) :
+      MvPolynomial.aeval
+          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
+          (MvPolynomial.rename
+            (Sum.inr : PolarizedSource κ → τ ⊕ PolarizedSource κ) Q) = Q := by
+    rw [MvPolynomial.aeval_rename]
+    change MvPolynomial.aeval MvPolynomial.X Q = Q
+    exact MvPolynomial.aeval_X_left_apply Q
+  rw [houtput, hsource,
+    coeff_specializeLeft_eq_eval_sourceCoefficientGeneral]
+
+/-- Blockwise polarization of the source variables preserves stability while
+leaving an arbitrary output-variable block untouched. -/
+theorem mvUpperHalfPlaneStable_sourceBlockwisePolarizationGeneral
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (hdeg : ∀ i, P.degreeOf (Sum.inr i) ≤ κ i)
+    (hstable : _root_.RealRooted.MvUpperHalfPlaneStable P) :
+    _root_.RealRooted.MvUpperHalfPlaneStable
+      (sourceBlockwisePolarizationGeneral κ P) := by
+  intro z hz
+  let x : τ → ℂ := fun i => z (Sum.inl i)
+  let y : PolarizedSource κ → ℂ := fun i => z (Sum.inr i)
+  let q : MvPolynomial.degreeOfLE σ ℂ κ :=
+    ⟨_root_.RealRooted.specializeLeft x P,
+      specializeLeft_mem_sourceDegreeBox κ P hdeg x⟩
+  have hx : ∀ i, 0 < (x i).im := fun i => hz (Sum.inl i)
+  have hy : ∀ i, 0 < (y i).im := fun i => hz (Sum.inr i)
+  have hqstable : _root_.RealRooted.MvUpperHalfPlaneStable q.1 :=
+    hstable.specializeLeft hx
+  have hpolar :
+      _root_.RealRooted.MvUpperHalfPlaneStable
+        (blockwisePolarizationDegreeBoxGeneral κ q).1 :=
+    mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ q hqstable
+  have hfiber :
+      _root_.RealRooted.MvUpperHalfPlaneStable
+        (_root_.RealRooted.specializeLeft x
+          (sourceBlockwisePolarizationGeneral κ P)) := by
+    rw [specializeLeft_sourceBlockwisePolarizationGeneral κ P hdeg x]
+    exact hpolar
+  have hnonzero := hfiber y hy
+  rw [_root_.RealRooted.eval_specializeLeft] at hnonzero
+  have hxy : Sum.elim x y = z := by
+    funext i
+    cases i <;> rfl
+  simpa only [hxy] using hnonzero
 
 private theorem rename_blockwisePolarizationFactor
     {σ : Type*} (κ : σ → ℕ)
