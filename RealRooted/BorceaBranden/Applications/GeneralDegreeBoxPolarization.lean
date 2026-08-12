@@ -104,6 +104,147 @@ theorem diagonalProjectionDegreeBoxGeneral_basis_eq_basis
     MvPolynomial.coe_basisDegreeOfLE]
   congr 1
 
+private def blockEmbedding {σ : Type*} (κ : σ → ℕ) (i : σ) :
+    Fin (κ i) → PolarizedSource κ := fun j => ⟨i, j⟩
+
+private theorem blockEmbedding_injective {σ : Type*} (κ : σ → ℕ) (i : σ) :
+    Function.Injective (blockEmbedding κ i) := by
+  intro j k h
+  exact eq_of_heq (Sigma.mk.inj_iff.mp h).2
+
+/-- The blockwise polarization of a degree-box basis monomial. -/
+noncomputable def blockwisePolarizationBasis
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial (PolarizedSource κ) ℂ :=
+  ∏ i, MvPolynomial.rename (blockEmbedding κ i)
+    (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
+
+private theorem fst_eq_of_mem_vars_blockwisePolarizationFactor
+    {σ : Type*} (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) (i : σ)
+    {a : PolarizedSource κ}
+    (ha : a ∈ (MvPolynomial.rename (blockEmbedding κ i)
+      (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))).vars) :
+    a.1 = i := by
+  obtain ⟨j, _hj, hja⟩ := MvPolynomial.mem_vars_rename (blockEmbedding κ i)
+    (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i)) ha
+  rw [← hja]
+  rfl
+
+private theorem isMultiaffine_blockwisePolarizationBasis
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial.IsMultiaffine (blockwisePolarizationBasis κ m) := by
+  classical
+  unfold blockwisePolarizationBasis
+  induction (Finset.univ : Finset σ) using Finset.induction_on with
+  | empty =>
+      intro a
+      simp [MvPolynomial.degreeOf_one]
+  | @insert i s hi ih =>
+      rw [Finset.prod_insert hi]
+      apply MvPolynomial.IsMultiaffine.mul_of_disjoint_vars
+      · exact (_root_.RealRooted.isMultiaffine_polarization
+          (κ i) (Polynomial.X ^ m.1 i)).rename (blockEmbedding_injective κ i)
+      · exact ih
+      · rw [Finset.disjoint_left]
+        intro a ha_i ha_s
+        have hai := fst_eq_of_mem_vars_blockwisePolarizationFactor κ m i ha_i
+        have ha_union := MvPolynomial.vars_prod
+          (fun j => MvPolynomial.rename (blockEmbedding κ j)
+            (_root_.RealRooted.polarization (κ j) (Polynomial.X ^ m.1 j))) ha_s
+        simp only [Finset.mem_biUnion] at ha_union
+        obtain ⟨j, hjs, haj⟩ := ha_union
+        have haj' := fst_eq_of_mem_vars_blockwisePolarizationFactor κ m j haj
+        have hji : j = i := haj'.symm.trans hai
+        exact hi (hji ▸ hjs)
+
+/-- General source polarization from degree box `κ` to the all-ones box on
+the blocks `Σ i, Fin (κ i)`. -/
+noncomputable def blockwisePolarizationDegreeBoxGeneral
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
+    MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ]
+      MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1) :=
+  (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).constr ℂ fun m =>
+    ⟨blockwisePolarizationBasis κ m,
+      (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+        (isMultiaffine_blockwisePolarizationBasis κ m)⟩
+
+@[simp] theorem blockwisePolarizationDegreeBoxGeneral_basis
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    blockwisePolarizationDegreeBoxGeneral κ
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) κ m) =
+      ⟨blockwisePolarizationBasis κ m,
+        (MvPolynomial.mem_degreeOfLE_iff_degreeOf _).2
+          (isMultiaffine_blockwisePolarizationBasis κ m)⟩ := by
+  simp [blockwisePolarizationDegreeBoxGeneral]
+
+private theorem rename_blockwisePolarizationFactor
+    {σ : Type*} (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) (i : σ) :
+    MvPolynomial.rename Sigma.fst
+        (MvPolynomial.rename (blockEmbedding κ i)
+          (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))) =
+      MvPolynomial.X i ^ m.1 i := by
+  rw [MvPolynomial.rename_rename]
+  have hcomp : Sigma.fst ∘ blockEmbedding κ i = fun _ : Fin (κ i) => i := by
+    funext j
+    rfl
+  rw [hcomp]
+  have hdegree :
+      (Polynomial.X ^ m.1 i : Polynomial ℂ).natDegree ≤ κ i := by
+    simpa using m.2 i
+  calc
+    MvPolynomial.rename (fun _ : Fin (κ i) => i)
+        (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i)) =
+        MvPolynomial.rename (fun _ : Fin 1 => i)
+          (MvPolynomial.rename (fun _ : Fin (κ i) => (0 : Fin 1))
+            (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))) := by
+      rw [MvPolynomial.rename_rename]
+      rfl
+    _ = MvPolynomial.rename (fun _ : Fin 1 => i)
+        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
+          (Polynomial.X ^ m.1 i)) := by
+      rw [_root_.RealRooted.rename_polarization_const hdegree]
+    _ = MvPolynomial.X i ^ m.1 i := by simp
+
+theorem diagonalProjectionDegreeBoxGeneral_blockwisePolarization_basis
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    diagonalProjectionDegreeBoxGeneral κ
+        (blockwisePolarizationDegreeBoxGeneral κ
+          (MvPolynomial.basisDegreeOfLE (R := ℂ) κ m)) =
+      MvPolynomial.basisDegreeOfLE κ m := by
+  classical
+  apply Subtype.ext
+  rw [blockwisePolarizationDegreeBoxGeneral_basis,
+    coe_diagonalProjectionDegreeBoxGeneral,
+    MvPolynomial.coe_basisDegreeOfLE]
+  simp only [blockwisePolarizationBasis, map_prod,
+    rename_blockwisePolarizationFactor]
+  rw [← MvPolynomial.prod_X_pow_eq_monomial]
+  symm
+  apply Finset.prod_subset (Finset.subset_univ m.1.support)
+  intro i _hi hiSupport
+  simp [Finsupp.notMem_support_iff.mp hiSupport]
+
+/-- Blockwise polarization is a section of diagonal projection. -/
+theorem diagonalProjectionDegreeBoxGeneral_blockwisePolarization
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    diagonalProjectionDegreeBoxGeneral κ
+        (blockwisePolarizationDegreeBoxGeneral κ p) = p := by
+  have hmaps :
+      (diagonalProjectionDegreeBoxGeneral κ).comp
+          (blockwisePolarizationDegreeBoxGeneral κ) = LinearMap.id := by
+    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+    intro m
+    rw [LinearMap.comp_apply, LinearMap.id_apply]
+    exact diagonalProjectionDegreeBoxGeneral_blockwisePolarization_basis κ m
+  exact LinearMap.congr_fun hmaps p
+
 /-- Lift an operator on degree box `κ` to its multiaffine polarized source by
 precomposing with diagonal projection. -/
 noncomputable def sourcePolarizedOperatorGeneral
@@ -125,6 +266,18 @@ theorem sourcePolarizedOperatorGeneral_basis
   unfold sourcePolarizedOperatorGeneral
   simp only [LinearMap.comp_apply]
   rw [diagonalProjectionDegreeBoxGeneral_basis_eq_basis]
+
+/-- The source-polarized operator agrees with the original operator after
+blockwise polarization. -/
+theorem sourcePolarizedOperatorGeneral_blockwisePolarization
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    sourcePolarizedOperatorGeneral κ T
+        (blockwisePolarizationDegreeBoxGeneral κ p) = T p := by
+  unfold sourcePolarizedOperatorGeneral
+  rw [LinearMap.comp_apply,
+    diagonalProjectionDegreeBoxGeneral_blockwisePolarization]
 
 end
 

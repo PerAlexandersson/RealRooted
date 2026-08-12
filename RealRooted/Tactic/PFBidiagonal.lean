@@ -771,8 +771,8 @@ theorem jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero
 /-- Conjectural Jensen-pencil implication for coefficient-bidiagonal PF
 preservers, retained as an explicit admission.
 
-This is the single explicit admission for the conjecture tracked in issue
-#355. It is not a checked proof; checked applications should prefer
+This is the single explicit admission for this project conjecture. It is not a
+checked proof; checked applications should prefer
 `bidiagonalPFPreserver_of_affineSymbol`. -/
 theorem jensenPencilBidiagonalPreserver :
     ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
