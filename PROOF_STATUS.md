@@ -13,7 +13,8 @@ target and is not itself evidence.
 | `jensenPencilBidiagonalPreserver` | One-sided Jensen-pencil PF implication; admitted with one `sorry` | #355 |
 
 The second theorem is not used by the checked affine-symbol endpoint
-`bidiagonalPFPreserver_of_affineSymbol`.
+`bidiagonalPFPreserver_of_affineSymbol`. Its degree-at-most-one case is checked
+by `jensenPencilBidiagonalPreserver_of_degree_le_one`.
 
 ## Open statement targets
 
@@ -40,6 +41,7 @@ a production caller.
 | --- | --- |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
+| Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
 

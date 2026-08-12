@@ -457,22 +457,142 @@ theorem isPFPolynomial_X_add_one_pow_mul
 
 /-- Finite Jensen-pencil certificate for a coefficient-bidiagonal PF backend.
 
-The intended paper proof is:
-
-1. certify that the whole nonnegative pencil
-   `J_alpha,d + lambda * X * J_beta,d` is PF for `lambda >= 0`;
-2. use the Schur--Szego/Garloff--Wagner proper-position theorem to transfer
-   that finite pencil certificate to the operator
-   `diagonal alpha + X * diagonal beta`.
-
-This predicate records the concrete finite certificate, while the theorem
-connecting it to `BidiagonalPFPreserver` remains a named backend statement. -/
+This predicate records the concrete one-sided finite pencil condition.  The
+condition does not by itself supply the orientation required by the
+Garloff--Wagner proper-position theorem, so the general implication to
+`BidiagonalPFPreserver` remains conjectural. -/
 def BidiagonalJensenPencilCertificate
     (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
   IsPFPolynomial (jensenPolynomial d alpha) ∧
   IsPFPolynomial (X * jensenPolynomial d beta) ∧
   ∀ lam : ℝ, 0 ≤ lam →
     IsPFPolynomial (bidiagonalJensenPencil alpha beta d lam)
+
+/-- A Jensen-pencil certificate makes the diagonal coefficients nonnegative
+through the certified degree bound. -/
+theorem BidiagonalJensenPencilCertificate.alpha_nonneg_of_le
+    {alpha beta : ℕ → ℝ} {d k : ℕ}
+    (hcert : BidiagonalJensenPencilCertificate alpha beta d) (hk : k ≤ d) :
+    0 ≤ alpha k := by
+  have hcoeff := hcert.1.hasNonnegCoeffs k
+  rw [coeff_jensenPolynomial, if_pos hk] at hcoeff
+  have hchoose : (0 : ℝ) < Nat.choose d k := by
+    exact_mod_cast Nat.choose_pos hk
+  nlinarith
+
+/-- A Jensen-pencil certificate makes the subdiagonal coefficients
+nonnegative through the certified degree bound. -/
+theorem BidiagonalJensenPencilCertificate.beta_nonneg_of_le
+    {alpha beta : ℕ → ℝ} {d k : ℕ}
+    (hcert : BidiagonalJensenPencilCertificate alpha beta d) (hk : k ≤ d) :
+    0 ≤ beta k := by
+  have hcoeff := hcert.2.1.hasNonnegCoeffs (k + 1)
+  simp [coeff_jensenPolynomial, hk] at hcoeff
+  have hchoose : (0 : ℝ) < Nat.choose d k := by
+    exact_mod_cast Nat.choose_pos hk
+  nlinarith
+
+/-- In degree one, the output discriminant is the Jensen-pencil discriminant
+at `lambda = p.coeff 0 / p.coeff 1`, scaled by `p.coeff 1 ^ 2`. -/
+private theorem bidiagonalOperator_discrim_eq_sq_mul_jensenPencil_one
+    {alpha beta : ℕ → ℝ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ 1)
+    (hp1 : p.coeff 1 ≠ 0) :
+    discrim
+        ((bidiagonalOperator alpha beta p).coeff 2)
+        ((bidiagonalOperator alpha beta p).coeff 1)
+        ((bidiagonalOperator alpha beta p).coeff 0) =
+      p.coeff 1 ^ 2 * discrim
+        ((bidiagonalJensenPencil alpha beta 1
+          (p.coeff 0 / p.coeff 1)).coeff 2)
+        ((bidiagonalJensenPencil alpha beta 1
+          (p.coeff 0 / p.coeff 1)).coeff 1)
+        ((bidiagonalJensenPencil alpha beta 1
+          (p.coeff 0 / p.coeff 1)).coeff 0) := by
+  have hp2 : p.coeff 2 = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (by norm_num))
+  have hpencil0 :
+      (bidiagonalJensenPencil alpha beta 1
+        (p.coeff 0 / p.coeff 1)).coeff 0 = alpha 0 := by
+    simp [bidiagonalJensenPencil, mul_assoc, coeff_jensenPolynomial]
+  have hpencil1 :
+      (bidiagonalJensenPencil alpha beta 1
+        (p.coeff 0 / p.coeff 1)).coeff 1 =
+          alpha 1 + (p.coeff 0 / p.coeff 1) * beta 0 := by
+    simp [bidiagonalJensenPencil, mul_assoc, coeff_jensenPolynomial]
+  have hpencil2 :
+      (bidiagonalJensenPencil alpha beta 1
+        (p.coeff 0 / p.coeff 1)).coeff 2 =
+          (p.coeff 0 / p.coeff 1) * beta 1 := by
+    simp [bidiagonalJensenPencil, mul_assoc, coeff_jensenPolynomial]
+  rw [hpencil0, hpencil1, hpencil2]
+  simp only [coeff_bidiagonalOperator_succ, Nat.reduceAdd, hp2, mul_zero,
+    zero_add, coeff_bidiagonalOperator_zero]
+  unfold discrim
+  field_simp [hp1]
+
+/-- The one-sided Jensen-pencil certificate is sufficient in degrees at most
+one. -/
+theorem jensenPencilBidiagonalPreserver_of_degree_le_one
+    {alpha beta : ℕ → ℝ} {d : ℕ} (hd : d ≤ 1)
+    (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
+    BidiagonalPFPreserver alpha beta d := by
+  intro p hp hdeg
+  have halpha : ∀ k, k ≤ d → 0 ≤ alpha k :=
+    fun k hk ↦ hcert.alpha_nonneg_of_le hk
+  have hbeta : ∀ k, k ≤ d → 0 ≤ beta k :=
+    fun k hk ↦ hcert.beta_nonneg_of_le hk
+  have hout_nonneg : HasNonnegCoeffs (bidiagonalOperator alpha beta p) :=
+    hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta
+  apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hout_nonneg
+  by_cases hout_zero : bidiagonalOperator alpha beta p = 0
+  · exact Or.inl hout_zero
+  right
+  by_cases hd0 : d = 0
+  · have hpdeg0 : p.natDegree = 0 := by lia
+    exact (isRealRooted_of_natDegree_le_one hout_zero
+      ((natDegree_bidiagonalOperator_le alpha beta p).trans (by lia))).2
+  have hd1 : d = 1 := by lia
+  subst d
+  have hpdeg : p.natDegree ≤ 1 := hdeg
+  by_cases hp1 : p.coeff 1 = 0
+  · have hpdeg0 : p.natDegree ≤ 0 := by
+      rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+      intro n hn
+      by_cases hn1 : n = 1
+      · simpa [hn1] using hp1
+      · exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (by lia))
+    exact (isRealRooted_of_natDegree_le_one hout_zero
+      ((natDegree_bidiagonalOperator_le alpha beta p).trans (by lia))).2
+  · have hp1_pos : 0 < p.coeff 1 :=
+      lt_of_le_of_ne (hp.hasNonnegCoeffs 1) (Ne.symm hp1)
+    let lam : ℝ := p.coeff 0 / p.coeff 1
+    have hlam : 0 ≤ lam := div_nonneg (hp.hasNonnegCoeffs 0) hp1_pos.le
+    have hpencil := hcert.2.2 lam hlam
+    have hpencil_disc :
+        4 * ((bidiagonalJensenPencil alpha beta 1 lam).coeff 0 *
+          (bidiagonalJensenPencil alpha beta 1 lam).coeff 2) ≤
+            (bidiagonalJensenPencil alpha beta 1 lam).coeff 1 ^ 2 := by
+      rcases hpencil.eq_zero_or_splits with hpencil_zero | hpencil_splits
+      · simp [hpencil_zero]
+      · exact quadratic_disc_coeff_le_of_splits_natDegree_le_two
+          (natDegree_bidiagonalJensenPencil_le alpha beta 1 lam) hpencil_splits
+    have hpencil_discrim : 0 ≤ discrim
+        ((bidiagonalJensenPencil alpha beta 1 lam).coeff 2)
+        ((bidiagonalJensenPencil alpha beta 1 lam).coeff 1)
+        ((bidiagonalJensenPencil alpha beta 1 lam).coeff 0) := by
+      unfold discrim
+      linarith
+    have hout_discrim : 0 ≤ discrim
+        ((bidiagonalOperator alpha beta p).coeff 2)
+        ((bidiagonalOperator alpha beta p).coeff 1)
+        ((bidiagonalOperator alpha beta p).coeff 0) := by
+      rw [bidiagonalOperator_discrim_eq_sq_mul_jensenPencil_one hpdeg hp1]
+      exact mul_nonneg (sq_nonneg _) hpencil_discrim
+    have hout_deg : (bidiagonalOperator alpha beta p).natDegree ≤ 2 :=
+      (natDegree_bidiagonalOperator_le alpha beta p).trans (by lia)
+    rw [Polynomial.eq_quadratic_of_degree_le_two
+      (Polynomial.degree_le_of_natDegree_le hout_deg)]
+    exact quadraticPoly_splits_of_discrim_nonneg_or_linear hout_discrim
 
 /-- Admitted Jensen-pencil implication for coefficient-bidiagonal PF
 preservers.
