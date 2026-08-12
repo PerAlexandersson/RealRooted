@@ -1,3 +1,4 @@
+import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.FiniteSymbolPreserver
 import RealRooted.Polarization
 
@@ -19,6 +20,154 @@ noncomputable section
 /-- The multiaffine source obtained by replacing coordinate `i` with
 `κ i` copies. -/
 abbrev PolarizedSource {σ : Type*} (κ : σ → ℕ) := Σ i, Fin (κ i)
+
+/-- The coefficient of a general source monomial, retaining all output
+variables. -/
+noncomputable def sourceCoefficientGeneral
+    {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ) (r : σ →₀ ℕ) :
+    MvPolynomial τ ℂ :=
+  (MvPolynomial.sumAlgEquiv ℂ σ τ
+    (MvPolynomial.rename (Equiv.sumComm τ σ) P)).coeff r
+
+/-- Coefficients of `sourceCoefficientGeneral` are the corresponding combined
+output/source coefficients of the original polynomial. -/
+theorem coeff_sourceCoefficientGeneral
+    {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (u : τ →₀ ℕ) (r : σ →₀ ℕ) :
+    MvPolynomial.coeff u (sourceCoefficientGeneral P r) =
+      MvPolynomial.coeff (u.sumElim r) P := by
+  classical
+  unfold sourceCoefficientGeneral
+  rw [MvPolynomial.coeff_coeff_sumAlgEquiv]
+  have hmap :
+      (u.sumElim r).mapDomain (Equiv.sumComm τ σ) = r.sumElim u := by
+    ext x
+    rcases x with i | i
+    · simp
+    · simp
+  rw [← hmap, MvPolynomial.coeff_rename_mapDomain
+    (Equiv.sumComm τ σ) (Equiv.sumComm τ σ).injective]
+
+/-- Extracting a source coefficient does not increase the degree in any
+output coordinate. -/
+theorem degreeOf_sourceCoefficientGeneral_le
+    {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (r : σ →₀ ℕ) (j : τ) :
+    (sourceCoefficientGeneral P r).degreeOf j ≤
+      P.degreeOf (Sum.inl j) := by
+  rw [MvPolynomial.degreeOf_eq_sup, Finset.sup_le_iff]
+  intro u hu
+  change (u.sumElim r) (Sum.inl j) ≤ P.degreeOf (Sum.inl j)
+  apply MvPolynomial.monomial_le_degreeOf
+  rw [MvPolynomial.mem_support_iff, ← coeff_sourceCoefficientGeneral]
+  exact MvPolynomial.mem_support_iff.mp hu
+
+/-- Source-coefficient extraction on a separated output/source monomial. -/
+theorem sourceCoefficientGeneral_monomial_sumElim
+    {σ τ : Type*} [DecidableEq σ]
+    (u : τ →₀ ℕ) (a r : σ →₀ ℕ) (c : ℂ) :
+    sourceCoefficientGeneral (MvPolynomial.monomial (u.sumElim a) c) r =
+      if r = a then MvPolynomial.monomial u c else 0 := by
+  classical
+  ext d
+  rw [coeff_sourceCoefficientGeneral]
+  by_cases hra : r = a
+  · subst r
+    have hleft : u.sumElim a = d.sumElim a ↔ u = d := by
+      constructor
+      · intro h
+        ext i
+        exact DFunLike.congr_fun h (Sum.inl i)
+      · rintro rfl
+        rfl
+    simp [MvPolynomial.coeff_monomial, hleft]
+  · have hne : d.sumElim r ≠ u.sumElim a := by
+      intro h
+      apply hra
+      ext i
+      exact DFunLike.congr_fun h (Sum.inr i)
+    have hne' : u.sumElim a ≠ d.sumElim r := Ne.symm hne
+    simp [MvPolynomial.coeff_monomial, hra, hne']
+
+@[simp] theorem sourceCoefficientGeneral_add
+    {σ τ : Type*} (P Q : MvPolynomial (τ ⊕ σ) ℂ) (r : σ →₀ ℕ) :
+    sourceCoefficientGeneral (P + Q) r =
+      sourceCoefficientGeneral P r + sourceCoefficientGeneral Q r := by
+  simp [sourceCoefficientGeneral]
+
+@[simp] theorem sourceCoefficientGeneral_smul
+    {σ τ : Type*} (c : ℂ) (P : MvPolynomial (τ ⊕ σ) ℂ)
+    (r : σ →₀ ℕ) :
+    sourceCoefficientGeneral (c • P) r =
+      c • sourceCoefficientGeneral P r := by
+  simp [sourceCoefficientGeneral]
+
+/-- The product of elementary symmetric polynomials in all polarized source
+blocks. -/
+noncomputable def blockElementarySymmetric
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) (r : σ →₀ ℕ) :
+    MvPolynomial (PolarizedSource κ) ℂ :=
+  ∏ i, MvPolynomial.rename (fun j : Fin (κ i) => ⟨i, j⟩)
+    (MvPolynomial.esymm (Fin (κ i)) ℂ (r i))
+
+/-- Polarize every variable in the source block of a polynomial while leaving
+the output block unchanged. Terms outside the degree box are discarded. -/
+noncomputable def sourceBlockwisePolarizationGeneral
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ) :
+    MvPolynomial (τ ⊕ PolarizedSource κ) ℂ :=
+  ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+    MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
+      MvPolynomial.rename Sum.inl (sourceCoefficientGeneral P r.1) *
+        MvPolynomial.rename Sum.inr (blockElementarySymmetric κ r.1)
+
+/-- General source-block polarization on a separated output/source
+monomial. -/
+theorem sourceBlockwisePolarizationGeneral_monomial_sumElim
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (u : τ →₀ ℕ) (a : σ →₀ ℕ) (ha : ∀ i, a i ≤ κ i) (c : ℂ) :
+    sourceBlockwisePolarizationGeneral κ
+        (MvPolynomial.monomial (u.sumElim a) c) =
+      MvPolynomial.C ((MvPolynomial.boxChoose κ a : ℂ)⁻¹) *
+        MvPolynomial.rename Sum.inl (MvPolynomial.monomial u c) *
+          MvPolynomial.rename Sum.inr (blockElementarySymmetric κ a) := by
+  classical
+  unfold sourceBlockwisePolarizationGeneral
+  rw [Fintype.sum_eq_single ⟨a, ha⟩]
+  · rw [sourceCoefficientGeneral_monomial_sumElim]
+    simp
+  · intro r hra
+    have hr_ne : r.1 ≠ a := fun h => hra (Subtype.ext h)
+    rw [sourceCoefficientGeneral_monomial_sumElim]
+    simp [hr_ne]
+
+/-- General source-block polarization as a complex-linear map. -/
+noncomputable def sourceBlockwisePolarizationGeneralLinearMap
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ) :
+    MvPolynomial (τ ⊕ σ) ℂ →ₗ[ℂ]
+      MvPolynomial (τ ⊕ PolarizedSource κ) ℂ where
+  toFun := sourceBlockwisePolarizationGeneral κ
+  map_add' P Q := by
+    unfold sourceBlockwisePolarizationGeneral
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro r _hr
+    rw [sourceCoefficientGeneral_add, map_add]
+    ring
+  map_smul' c P := by
+    unfold sourceBlockwisePolarizationGeneral
+    rw [Finset.smul_sum]
+    apply Finset.sum_congr rfl
+    intro r _hr
+    rw [sourceCoefficientGeneral_smul, map_smul]
+    simp only [MvPolynomial.smul_eq_C_mul, RingHom.id_apply]
+    ring
+
+@[simp] theorem sourceBlockwisePolarizationGeneralLinearMap_apply
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ) :
+    sourceBlockwisePolarizationGeneralLinearMap κ P =
+      sourceBlockwisePolarizationGeneral κ P := rfl
 
 private theorem mapDomain_sigma_fst_le {σ : Type*} [Finite σ]
     (κ : σ → ℕ) (m : PolarizedSource κ →₀ ℕ)

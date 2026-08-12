@@ -120,7 +120,9 @@ private theorem sumAlgEquiv_monomial
   simp only [MvPolynomial.prod_X_pow_eq_monomial]
   ring
 
-private theorem coeff_coeff_sumAlgEquiv
+/-- Extracting an outer and then an inner coefficient through `sumAlgEquiv`
+is the same as extracting the combined exponent from the original polynomial. -/
+theorem coeff_coeff_sumAlgEquiv
     {S₁ S₂ R : Type*} [CommSemiring R]
     (P : MvPolynomial (S₁ ⊕ S₂) R)
     (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) :
@@ -239,6 +241,42 @@ noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
     C ((n.choose k : ℂ)⁻¹) *
       rename Sum.inl (sourceCoefficient P k) *
         rename Sum.inr (esymm (Fin n) ℂ k)
+
+@[simp] theorem sourceCoefficient_add {τ : Type*}
+    (P Q : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
+    sourceCoefficient (P + Q) k =
+      sourceCoefficient P k + sourceCoefficient Q k := by
+  simp [sourceCoefficient]
+
+@[simp] theorem sourceCoefficient_smul {τ : Type*}
+    (c : ℂ) (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
+    sourceCoefficient (c • P) k = c • sourceCoefficient P k := by
+  simp [sourceCoefficient]
+
+/-- Single-source polarization as a complex-linear map. -/
+noncomputable def sourceBlockPolarizationLinearMap {τ : Type*} (n : ℕ) :
+    MvPolynomial (τ ⊕ Fin 1) ℂ →ₗ[ℂ]
+      MvPolynomial (τ ⊕ Fin n) ℂ where
+  toFun := sourceBlockPolarization n
+  map_add' P Q := by
+    unfold sourceBlockPolarization
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro k _hk
+    rw [sourceCoefficient_add, map_add]
+    ring
+  map_smul' c P := by
+    unfold sourceBlockPolarization
+    rw [Finset.smul_sum]
+    apply Finset.sum_congr rfl
+    intro k _hk
+    rw [sourceCoefficient_smul, map_smul]
+    simp only [MvPolynomial.smul_eq_C_mul, RingHom.id_apply]
+    ring
+
+@[simp] theorem sourceBlockPolarizationLinearMap_apply
+    {τ : Type*} (n : ℕ) (P : MvPolynomial (τ ⊕ Fin 1) ℂ) :
+    sourceBlockPolarizationLinearMap n P = sourceBlockPolarization n P := rfl
 
 /-- Polarizing the final source coordinate does not increase the degree in
 any untouched coordinate. -/
