@@ -42,6 +42,7 @@ a production caller.
 | Topic | Checked declaration |
 | --- | --- |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
+| Complex finite-symbol necessity | `Challenges.BorceaBranden.rankOne_or_algebraicSymbol_stable_of_preserves` |
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
 | Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |
 | Jensen-pencil degree-two boundary with `beta 2 = 0` | `jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero` |

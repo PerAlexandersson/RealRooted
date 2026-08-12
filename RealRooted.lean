@@ -26,6 +26,7 @@ import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.ComplexClassification
 import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
