@@ -14,7 +14,9 @@ target and is not itself evidence.
 
 The second theorem is not used by the checked affine-symbol endpoint
 `bidiagonalPFPreserver_of_affineSymbol`. Its degree-at-most-one case is checked
-by `jensenPencilBidiagonalPreserver_of_degree_le_one`.
+by `jensenPencilBidiagonalPreserver_of_degree_le_one`; the degree-two boundary
+case `beta 2 = 0` is checked by
+`jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero`.
 
 ## Open statement targets
 
@@ -42,6 +44,7 @@ a production caller.
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
 | Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |
+| Jensen-pencil degree-two boundary with `beta 2 = 0` | `jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
 
