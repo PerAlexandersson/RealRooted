@@ -506,6 +506,26 @@ theorem sourceCoefficient_rename_mul_X_pow {τ : Type*}
   rw [hpoly, coeff_C_mul, coeff_X_pow]
   simp [eq_comm]
 
+/-- Polarizing a separated source monomial replaces only its source factor
+by the corresponding univariate polarization. -/
+theorem sourceBlockPolarization_rename_mul_X_pow
+    {τ : Type*} (n r : ℕ) (q : MvPolynomial τ ℂ) (hr : r ≤ n) :
+    sourceBlockPolarization n
+        (rename Sum.inl q * X (Sum.inr default) ^ r) =
+      rename Sum.inl q *
+        rename Sum.inr (_root_.RealRooted.polarization n (Polynomial.X ^ r)) := by
+  unfold sourceBlockPolarization
+  rw [Finset.sum_eq_single r]
+  · rw [sourceCoefficient_rename_mul_X_pow, if_pos rfl,
+      _root_.RealRooted.polarization_X_pow hr]
+    simp only [map_mul, rename_C]
+    ring
+  · intro k hk hkr
+    rw [sourceCoefficient_rename_mul_X_pow, if_neg hkr]
+    simp
+  · intro hrange
+    exact (hrange (by simpa [Finset.mem_range] using hr)).elim
+
 /-- Extract the source coefficient when the output coefficient has an
 additional scalar factor. -/
 theorem sourceCoefficient_C_mul_rename_mul_X_pow {τ : Type*}
