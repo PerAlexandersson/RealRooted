@@ -482,6 +482,83 @@ noncomputable def blockwisePolarizationBasis
   ∏ i, MvPolynomial.rename (blockEmbedding κ i)
     (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
 
+private def stageBlockEmbedding
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : {i // i ∈ S}) :
+    Fin (κ i) → SourcePolarizationStageVars κ S :=
+  fun j => Sum.inl ⟨i, j⟩
+
+private def stageRawEmbedding
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ) :
+    {i : σ // i ∉ S} → SourcePolarizationStageVars κ S := Sum.inr
+
+/-- Direct partial polarization of a degree-box basis monomial after exactly
+the coordinates in `S` have been processed. -/
+noncomputable def partialBlockwisePolarizationBasis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial (SourcePolarizationStageVars κ S) ℂ :=
+  ∏ i, if hi : i ∈ S then
+      MvPolynomial.rename (stageBlockEmbedding κ S ⟨i, hi⟩)
+        (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
+    else MvPolynomial.X (stageRawEmbedding κ S ⟨i, hi⟩) ^ m.1 i
+
+/-- Direct partial source polarization as a linear map into the ambient
+polynomial ring on the stage variables. -/
+noncomputable def partialBlockwisePolarizationDegreeBox
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) :
+    MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ]
+      MvPolynomial (SourcePolarizationStageVars κ S) ℂ :=
+  (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).constr ℂ fun m =>
+    partialBlockwisePolarizationBasis κ S m
+
+@[simp] theorem partialBlockwisePolarizationDegreeBox_basis
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    partialBlockwisePolarizationDegreeBox κ S
+        (MvPolynomial.basisDegreeOfLE (R := ℂ) κ m) =
+      partialBlockwisePolarizationBasis κ S m := by
+  simp [partialBlockwisePolarizationDegreeBox]
+
+/-- The empty partial stage is the original basis monomial, up to its
+canonical variable equivalence. -/
+theorem rename_partialBlockwisePolarizationBasis_empty
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial.rename (sourcePolarizationStageEmptyEquiv κ)
+        (partialBlockwisePolarizationBasis κ ∅ m) =
+      MvPolynomial.monomial m.1 1 := by
+  classical
+  simp only [partialBlockwisePolarizationBasis, Finset.notMem_empty,
+    ↓reduceDIte, map_prod]
+  simp only [map_pow, MvPolynomial.rename_X]
+  simp only [stageRawEmbedding, sourcePolarizationStageEmptyEquiv,
+    Equiv.coe_fn_mk]
+  change (∏ i, MvPolynomial.X i ^ m.1 i) = MvPolynomial.monomial m.1 1
+  rw [← MvPolynomial.prod_X_pow_eq_monomial]
+  symm
+  apply Finset.prod_subset (Finset.subset_univ m.1.support)
+  intro i _hi hiSupport
+  simp [Finsupp.notMem_support_iff.mp hiSupport]
+
+/-- The final partial stage is the direct full blockwise polarization, up to
+its canonical variable equivalence. -/
+theorem rename_partialBlockwisePolarizationBasis_univ
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    MvPolynomial.rename (sourcePolarizationStageUnivEquiv κ)
+        (partialBlockwisePolarizationBasis κ Finset.univ m) =
+      blockwisePolarizationBasis κ m := by
+  classical
+  unfold partialBlockwisePolarizationBasis blockwisePolarizationBasis
+  simp only [Finset.mem_univ, ↓reduceDIte, map_prod, MvPolynomial.rename_rename]
+  apply Finset.prod_congr rfl
+  intro i _hi
+  congr 1
+
 private theorem fst_eq_of_mem_vars_blockwisePolarizationFactor
     {σ : Type*} (κ : σ → ℕ)
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) (i : σ)
