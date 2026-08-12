@@ -104,6 +104,71 @@ end RealRooted.BorceaBranden
 
 namespace MvPolynomial
 
+private theorem sumAlgEquiv_monomial
+    {S₁ S₂ R : Type*} [CommSemiring R]
+    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) (r : R) :
+    MvPolynomial.sumAlgEquiv R S₁ S₂
+        (MvPolynomial.monomial (a.sumElim b) r) =
+      MvPolynomial.monomial a (MvPolynomial.monomial b r) := by
+  classical
+  rw [MvPolynomial.monomial_eq, MvPolynomial.monomial_eq,
+    MvPolynomial.monomial_eq, Finsupp.prod_sumElim]
+  simp only [map_mul, MvPolynomial.sumAlgEquiv_apply,
+    MvPolynomial.sumToIter_C]
+  simp [Finsupp.prod]
+  simp only [← map_pow, ← map_prod]
+  simp only [MvPolynomial.prod_X_pow_eq_monomial]
+  ring
+
+private theorem coeff_coeff_sumAlgEquiv
+    {S₁ S₂ R : Type*} [CommSemiring R]
+    (P : MvPolynomial (S₁ ⊕ S₂) R)
+    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) :
+    MvPolynomial.coeff b
+        (MvPolynomial.coeff a (MvPolynomial.sumAlgEquiv R S₁ S₂ P)) =
+      MvPolynomial.coeff (a.sumElim b) P := by
+  classical
+  induction P using MvPolynomial.induction_on' with
+  | add p q hp hq =>
+      change
+        MvPolynomial.coeff b
+            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ (p + q))) = _
+      change
+        MvPolynomial.coeff b
+            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ p)) = _ at hp
+      change
+        MvPolynomial.coeff b
+            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ q)) = _ at hq
+      simp [hp, hq]
+  | monomial d r =>
+      let d₁ : S₁ →₀ ℕ :=
+        Finsupp.comapDomain Sum.inl d Sum.inl_injective.injOn
+      let d₂ : S₂ →₀ ℕ :=
+        Finsupp.comapDomain Sum.inr d Sum.inr_injective.injOn
+      have hd : d₁.sumElim d₂ = d :=
+        Finsupp.comapDomain_sumElim_comapDomain d
+      rw [← hd, sumAlgEquiv_monomial]
+      have hsum : d₁.sumElim d₂ = a.sumElim b ↔ d₁ = a ∧ d₂ = b := by
+        constructor
+        · intro h
+          constructor
+          · ext i
+            exact DFunLike.congr_fun h (Sum.inl i)
+          · ext i
+            exact DFunLike.congr_fun h (Sum.inr i)
+        · rintro ⟨rfl, rfl⟩
+          rfl
+      by_cases hda : d₁ = a
+      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b := by
+          constructor
+          · intro h
+            ext i
+            exact DFunLike.congr_fun h (Sum.inr i)
+          · rintro rfl
+            rfl
+        simp [MvPolynomial.coeff_monomial, hda, hright]
+      · simp [MvPolynomial.coeff_monomial, hsum, hda]
+
 /-- The coefficient of source degree `k`, after viewing a polynomial in
 `tau ⊕ Fin 1` as a polynomial in the single source variable with coefficients
 in the output-variable ring `MvPolynomial tau ℂ`. -/
@@ -115,6 +180,47 @@ noncomputable def sourceCoefficient {τ : Type*}
   (sumAlgEquiv ℂ (Fin 1) τ
     (rename (Equiv.sumComm τ (Fin 1)) P)).coeff
       (Finsupp.single default k)
+
+theorem coeff_sourceCoefficient {τ : Type*}
+    (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (d : τ →₀ ℕ) (k : ℕ) :
+    coeff d (sourceCoefficient P k) =
+      coeff (d.sumElim (Finsupp.single default k)) P := by
+  classical
+  unfold sourceCoefficient
+  rw [coeff_coeff_sumAlgEquiv]
+  have hmap :
+      (d.sumElim (Finsupp.single default k)).mapDomain
+          (Equiv.sumComm τ (Fin 1)) =
+        (Finsupp.single default k).sumElim d := by
+    ext x
+    rcases x with i | i
+    · simp
+    · simp
+  rw [← hmap, coeff_rename_mapDomain
+    (Equiv.sumComm τ (Fin 1)) (Equiv.sumComm τ (Fin 1)).injective]
+
+theorem degreeOf_sourceCoefficient_le {τ : Type*}
+    (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) (j : τ) :
+    (sourceCoefficient P k).degreeOf j ≤ P.degreeOf (Sum.inl j) := by
+  rw [degreeOf_eq_sup, Finset.sup_le_iff]
+  intro d hd
+  change (d.sumElim (Finsupp.single (default : Fin 1) k)) (Sum.inl j) ≤
+    P.degreeOf (Sum.inl j)
+  apply monomial_le_degreeOf
+  rw [mem_support_iff, ← coeff_sourceCoefficient]
+  exact mem_support_iff.mp hd
+
+private theorem degreeOf_rename_eq_zero_of_not_mem_range
+    {σ τ R : Type*} [CommSemiring R]
+    (f : σ → τ) (P : MvPolynomial σ R) (j : τ)
+    (hj : j ∉ Set.range f) :
+    (rename f P).degreeOf j = 0 := by
+  apply Nat.eq_zero_of_le_zero
+  rw [degreeOf_le_iff]
+  intro d hd
+  obtain ⟨u, hu, _hcoeff⟩ := coeff_rename_ne_zero
+    f P d (mem_support_iff.mp hd)
+  rw [← hu, Finsupp.mapDomain_notin_range u j hj]
 
 /-- Polarize only the single source variable of a polynomial whose output
 variables are indexed by `τ`.
@@ -133,6 +239,40 @@ noncomputable def sourceBlockPolarization {τ : Type*} (n : ℕ)
     C ((n.choose k : ℂ)⁻¹) *
       rename Sum.inl (sourceCoefficient P k) *
         rename Sum.inr (esymm (Fin n) ℂ k)
+
+/-- Polarizing the final source coordinate does not increase the degree in
+any untouched coordinate. -/
+theorem degreeOf_sourceBlockPolarization_inl_le
+    {τ : Type*} (n : ℕ) (P : MvPolynomial (τ ⊕ Fin 1) ℂ)
+    (j : τ) :
+    (sourceBlockPolarization n P).degreeOf (Sum.inl j) ≤
+      P.degreeOf (Sum.inl j) := by
+  unfold sourceBlockPolarization
+  refine (degreeOf_sum_le (Sum.inl j) (Finset.range (n + 1))
+    (fun k =>
+      C ((n.choose k : ℂ)⁻¹) *
+        rename Sum.inl (sourceCoefficient P k) *
+          rename Sum.inr (esymm (Fin n) ℂ k))).trans ?_
+  apply Finset.sup_le
+  intro k _hk
+  have hsourceZero :
+      (rename (Sum.inr : Fin n → τ ⊕ Fin n)
+        (esymm (Fin n) ℂ k)).degreeOf (Sum.inl j) = 0 := by
+    apply degreeOf_rename_eq_zero_of_not_mem_range
+    rintro ⟨i, hi⟩
+    exact Sum.inr_ne_inl hi
+  calc
+    _ ≤ (C ((n.choose k : ℂ)⁻¹) *
+          rename Sum.inl (sourceCoefficient P k)).degreeOf (Sum.inl j) +
+        (rename Sum.inr (esymm (Fin n) ℂ k)).degreeOf (Sum.inl j) :=
+      degreeOf_mul_le _ _ _
+    _ ≤ (rename Sum.inl
+          (sourceCoefficient P k)).degreeOf (Sum.inl j) + 0 :=
+      Nat.add_le_add (degreeOf_C_mul_le _ _ _) (le_of_eq hsourceZero)
+    _ = (sourceCoefficient P k).degreeOf j := by
+      rw [degreeOf_rename_of_injective Sum.inl_injective]
+      simp
+    _ ≤ P.degreeOf (Sum.inl j) := degreeOf_sourceCoefficient_le P k j
 
 private theorem
     coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient
