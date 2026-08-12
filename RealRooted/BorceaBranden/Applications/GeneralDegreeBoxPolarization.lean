@@ -21,6 +21,134 @@ noncomputable section
 `κ i` copies. -/
 abbrev PolarizedSource {σ : Type*} (κ : σ → ℕ) := Σ i, Fin (κ i)
 
+/-- Variables after polarizing exactly the coordinates in `S`. -/
+def SourcePolarizationStageVars {σ : Type*} [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) :=
+  (Σ i : {i // i ∈ S}, Fin (κ i)) ⊕ {i : σ // i ∉ S}
+
+/-- Stage variables other than a selected unpolarized coordinate. -/
+def SourcePolarizationStageRest {σ : Type*} [DecidableEq σ]
+    (κ : σ → ℕ) (S : Finset σ) (i : σ) :=
+  (Σ j : {j // j ∈ S}, Fin (κ j)) ⊕
+    {j : σ // j ∉ S ∧ j ≠ i}
+
+/-- Isolate one unpolarized stage coordinate as a `Fin 1` block. -/
+def sourcePolarizationStageIsolateEquiv
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) :
+    SourcePolarizationStageVars κ S ≃
+      SourcePolarizationStageRest κ S i ⊕ Fin 1 where
+  toFun x := by
+    rcases x with x | j
+    · exact Sum.inl (Sum.inl x)
+    · by_cases hji : j.1 = i
+      · exact Sum.inr 0
+      · exact Sum.inl (Sum.inr ⟨j.1, j.2, hji⟩)
+  invFun x := by
+    rcases x with x | _k
+    · rcases x with x | j
+      · exact Sum.inl x
+      · exact Sum.inr ⟨j.1, j.2.1⟩
+    · exact Sum.inr ⟨i, hi⟩
+  left_inv x := by
+    rcases x with x | j
+    · rfl
+    · dsimp
+      by_cases hji : j.1 = i
+      · simp only [dif_pos hji]
+        change (Sum.inr ⟨i, hi⟩ :
+          SourcePolarizationStageVars κ S) = Sum.inr j
+        congr 1
+        exact Subtype.ext hji.symm
+      · simp [hji]
+  right_inv x := by
+    rcases x with x | k
+    · rcases x with x | j
+      · rfl
+      · dsimp
+        simp [j.2.2]
+    · fin_cases k
+      dsimp
+      simp
+
+/-- Replace the isolated singleton by its polarized block. -/
+def sourcePolarizationStageInstallEquiv
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S) :
+    SourcePolarizationStageVars κ (insert i S) ≃
+      SourcePolarizationStageRest κ S i ⊕ Fin (κ i) where
+  toFun x := by
+    rcases x with x | j
+    · rcases x with ⟨j, k⟩
+      by_cases hji : j.1 = i
+      · exact Sum.inr (Fin.cast (congrArg κ hji) k)
+      · exact Sum.inl (Sum.inl
+          ⟨⟨j.1, (Finset.mem_insert.mp j.2).resolve_left hji⟩, k⟩)
+    · have hj : j.1 ≠ i ∧ j.1 ∉ S := by
+        simpa [Finset.mem_insert] using j.2
+      exact Sum.inl (Sum.inr ⟨j.1, hj.2, hj.1⟩)
+  invFun x := by
+    rcases x with x | k
+    · rcases x with x | j
+      · exact Sum.inl ⟨⟨x.1.1, Finset.mem_insert_of_mem x.1.2⟩, x.2⟩
+      · exact Sum.inr
+          ⟨j.1, by simp [Finset.mem_insert, j.2.1, j.2.2]⟩
+    · exact Sum.inl ⟨⟨i, Finset.mem_insert_self i S⟩, k⟩
+  left_inv x := by
+    rcases x with x | j
+    · rcases x with ⟨j, k⟩
+      dsimp
+      by_cases hji : j.1 = i
+      · rcases j with ⟨j, hj⟩
+        dsimp at hji ⊢
+        subst i
+        simp
+      · simp [hji]
+    · rfl
+  right_inv x := by
+    rcases x with x | k
+    · rcases x with x | j
+      · have hne : x.1.1 ≠ i := fun h => hi (h ▸ x.1.2)
+        dsimp
+        simp [hne]
+      · rfl
+    · dsimp
+      simp
+
+/-- At the empty stage, the variables are the original source variables. -/
+def sourcePolarizationStageEmptyEquiv
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) :
+    SourcePolarizationStageVars κ ∅ ≃ σ where
+  toFun x := by
+    rcases x with x | i
+    · have hx : x.1.1 ∈ (∅ : Finset σ) := x.1.2
+      exact False.elim (Finset.notMem_empty _ hx)
+    · exact i.1
+  invFun i := Sum.inr ⟨i, by simp⟩
+  left_inv x := by
+    rcases x with x | i
+    · have hx : x.1.1 ∈ (∅ : Finset σ) := x.1.2
+      exact False.elim (Finset.notMem_empty _ hx)
+    · rfl
+  right_inv i := rfl
+
+/-- At the final stage, all variables belong to their polarized blocks. -/
+def sourcePolarizationStageUnivEquiv
+    {σ : Type*} [Fintype σ] [DecidableEq σ] (κ : σ → ℕ) :
+    SourcePolarizationStageVars κ Finset.univ ≃ PolarizedSource κ where
+  toFun x := by
+    rcases x with x | i
+    · exact ⟨x.1.1, x.2⟩
+    · exact False.elim (i.2 (Finset.mem_univ i.1))
+  invFun x := Sum.inl ⟨⟨x.1, Finset.mem_univ x.1⟩, x.2⟩
+  left_inv x := by
+    rcases x with x | i
+    · rfl
+    · exact False.elim (i.2 (Finset.mem_univ i.1))
+  right_inv x := by
+    rcases x with ⟨i, k⟩
+    rfl
+
 /-- The coefficient of a general source monomial, retaining all output
 variables. -/
 noncomputable def sourceCoefficientGeneral
