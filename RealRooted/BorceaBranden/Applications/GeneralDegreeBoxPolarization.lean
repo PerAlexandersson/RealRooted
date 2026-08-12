@@ -149,6 +149,91 @@ def sourcePolarizationStageUnivEquiv
     rcases x with ⟨i, k⟩
     rfl
 
+/-- Polarize one raw coordinate of a source-polarization stage. -/
+noncomputable def sourcePolarizationStageStep
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S)
+    (P : MvPolynomial (SourcePolarizationStageVars κ S) ℂ) :
+    MvPolynomial (SourcePolarizationStageVars κ (insert i S)) ℂ :=
+  MvPolynomial.rename (sourcePolarizationStageInstallEquiv κ S i hi).symm
+    (MvPolynomial.sourceBlockPolarization (κ i)
+      (MvPolynomial.rename (sourcePolarizationStageIsolateEquiv κ S i hi) P))
+
+private theorem degreeOf_rename_stageIsolate_selected
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S)
+    (P : MvPolynomial (SourcePolarizationStageVars κ S) ℂ) :
+    (MvPolynomial.rename (sourcePolarizationStageIsolateEquiv κ S i hi) P).degreeOf
+        (Sum.inr default) = P.degreeOf (Sum.inr ⟨i, hi⟩) := by
+  have h := MvPolynomial.degreeOf_rename_of_injective
+    (sourcePolarizationStageIsolateEquiv κ S i hi).injective
+    (Sum.inr ⟨i, hi⟩) (p := P)
+  convert h using 1
+  · simp [sourcePolarizationStageIsolateEquiv]
+  · rfl
+
+/-- One staged source-polarization step preserves upper-half-plane
+stability. -/
+theorem mvUpperHalfPlaneStable_sourcePolarizationStageStep
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S)
+    (P : MvPolynomial (SourcePolarizationStageVars κ S) ℂ)
+    (hdeg : P.degreeOf (Sum.inr ⟨i, hi⟩) ≤ κ i)
+    (hstable : MvUpperHalfPlaneStable P) :
+    MvUpperHalfPlaneStable (sourcePolarizationStageStep κ S i hi P) := by
+  unfold sourcePolarizationStageStep
+  apply MvUpperHalfPlaneStable.rename
+  apply MvPolynomial.mvUpperHalfPlaneStable_sourceBlockPolarization
+  · rwa [degreeOf_rename_stageIsolate_selected]
+  · exact hstable.rename
+
+/-- A staged polarization step does not increase the degree of any raw
+coordinate that remains unprocessed. -/
+theorem degreeOf_sourcePolarizationStageStep_raw_le
+    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    (i : σ) (hi : i ∉ S)
+    (P : MvPolynomial (SourcePolarizationStageVars κ S) ℂ)
+    (j : σ) (hj : j ∉ insert i S) :
+    (sourcePolarizationStageStep κ S i hi P).degreeOf
+        (Sum.inr ⟨j, hj⟩) ≤
+      P.degreeOf (Sum.inr ⟨j, fun hjS => hj (Finset.mem_insert_of_mem hjS)⟩) := by
+  have hji : j ≠ i := by
+    intro h
+    apply hj
+    subst j
+    exact Finset.mem_insert_self i S
+  have hjS : j ∉ S := fun h => hj (Finset.mem_insert_of_mem h)
+  let rj : {j : σ // j ∉ S ∧ j ≠ i} := ⟨j, hjS, hji⟩
+  let oldj : {j : σ // j ∉ S} := ⟨j, hjS⟩
+  let newj : {j : σ // j ∉ insert i S} := ⟨j, hj⟩
+  let isolate := sourcePolarizationStageIsolateEquiv κ S i hi
+  let install := sourcePolarizationStageInstallEquiv κ S i hi
+  let Q := MvPolynomial.rename isolate P
+  let R := MvPolynomial.sourceBlockPolarization (κ i) Q
+  have hinstallMap : install.symm (Sum.inl (Sum.inr rj)) = Sum.inr newj := by
+    dsimp [install, sourcePolarizationStageInstallEquiv]
+  have hinstall :
+      (MvPolynomial.rename install.symm R).degreeOf (Sum.inr newj) =
+        R.degreeOf (Sum.inl (Sum.inr rj)) := by
+    rw [← hinstallMap]
+    exact MvPolynomial.degreeOf_rename_of_injective install.symm.injective
+      (Sum.inl (Sum.inr rj))
+  have hisolateMap : isolate (Sum.inr oldj) = Sum.inl (Sum.inr rj) := by
+    dsimp [isolate, sourcePolarizationStageIsolateEquiv]
+    rw [dif_neg hji]
+    apply congrArg (fun x => Sum.inl (Sum.inr x))
+    exact Subtype.ext rfl
+  have hisolate :
+      Q.degreeOf (Sum.inl (Sum.inr rj)) = P.degreeOf (Sum.inr oldj) := by
+    rw [← hisolateMap]
+    exact MvPolynomial.degreeOf_rename_of_injective isolate.injective
+      (Sum.inr oldj)
+  change (MvPolynomial.rename install.symm R).degreeOf (Sum.inr newj) ≤
+    P.degreeOf (Sum.inr oldj)
+  rw [hinstall]
+  exact (MvPolynomial.degreeOf_sourceBlockPolarization_inl_le
+    (κ i) Q (Sum.inr rj)).trans_eq hisolate
+
 /-- The coefficient of a general source monomial, retaining all output
 variables. -/
 noncomputable def sourceCoefficientGeneral
