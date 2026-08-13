@@ -17,20 +17,24 @@ noncomputable section
 
 namespace RealRooted
 
+/-! ## Orienting the Schur--Szegő operator -/
+
 /-- Fixed-right-factor Schur--Szegő composition as a real linear map. -/
-def schurSzegoRightLinearMap (d : ℕ) (p : ℝ[X]) : ℝ[X] →ₗ[ℝ] ℝ[X] where
+private def schurSzegoRightLinearMap (d : ℕ) (p : ℝ[X]) :
+    ℝ[X] →ₗ[ℝ] ℝ[X] where
   toFun := fun q ↦ schurSzegoComp d q p
   map_add' f g := schurSzegoComp_add_left d f g p
   map_smul' c f := by
     simp only [smul_eq_C_mul]
     exact schurSzegoComp_C_mul_left d c f p
 
-@[simp] theorem schurSzegoRightLinearMap_apply (d : ℕ) (p f : ℝ[X]) :
+@[simp] private theorem schurSzegoRightLinearMap_apply
+    (d : ℕ) (p f : ℝ[X]) :
     schurSzegoRightLinearMap d p f = schurSzegoComp d f p :=
   rfl
 
 /-- A fixed PF right factor preserves real-rootedness up to a zero output. -/
-theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
+private theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
     {d : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d) :
     ∀ q : ℝ[X], q.natDegree ≤ d →
       (q ≠ 0 ∧ q.Splits) →
@@ -43,7 +47,7 @@ theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
 
 /-- Fixed Schur--Szegő composition preserves a proper-position pair, up to
 the orientation ambiguity in the generic operator theorem. -/
-theorem schurSzegoComp_prec0_or_revPrec0
+private theorem schurSzegoComp_prec0_or_revPrec0
     {d : ℕ} {f g p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hfdeg : f.natDegree ≤ d) (hgdeg : g.natDegree ≤ d)
@@ -60,17 +64,19 @@ theorem schurSzegoComp_prec0_or_revPrec0
         ((Polynomial.natDegree_C_mul_le b g).trans hgdeg)
   · exact hab
 
-@[simp] theorem coeff_schurSzegoComp_top (d : ℕ) (f p : ℝ[X]) :
+@[simp] private theorem coeff_schurSzegoComp_top
+    (d : ℕ) (f p : ℝ[X]) :
     (schurSzegoComp d f p).coeff d = f.coeff d * p.coeff d := by
   simp [coeff_schurSzegoComp_of_le]
 
-theorem coeff_schurSzegoComp_pred {d : ℕ} (hd : d ≠ 0) (f p : ℝ[X]) :
+private theorem coeff_schurSzegoComp_pred
+    {d : ℕ} (hd : d ≠ 0) (f p : ℝ[X]) :
     (schurSzegoComp d f p).coeff (d - 1) =
       f.coeff (d - 1) * p.coeff (d - 1) / (d : ℝ) := by
   obtain ⟨d, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hd
   simp [coeff_schurSzegoComp_of_le]
 
-theorem natDegree_schurSzegoComp_eq_of_coeff_top_ne
+private theorem natDegree_schurSzegoComp_eq_of_coeff_top_ne
     {d : ℕ} {f p : ℝ[X]} (hf : f.coeff d ≠ 0) (hp : p.coeff d ≠ 0) :
     (schurSzegoComp d f p).natDegree = d := by
   apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
@@ -79,7 +85,7 @@ theorem natDegree_schurSzegoComp_eq_of_coeff_top_ne
 
 /-- Vieta turns the next-to-leading coefficient formula into the exact
 root-sum scaling needed to resolve the operator orientation. -/
-theorem roots_sum_schurSzegoComp_scaled
+private theorem roots_sum_schurSzegoComp_scaled
     {d : ℕ} {f p : ℝ[X]} (hd : d ≠ 0)
     (hfdeg : f.natDegree = d) (hpdeg : p.natDegree = d)
     (hfs : f.Splits) (houts : (schurSzegoComp d f p).Splits) :
@@ -123,7 +129,7 @@ theorem roots_sum_schurSzegoComp_scaled
 
 /-- A positive next-to-leading coefficient fixes the orientation left
 ambiguous by the generic operator theorem. -/
-theorem schurSzegoComp_prec_of_pred_coeff_pos
+private theorem schurSzegoComp_prec_of_pred_coeff_pos
     {d : ℕ} {f g p : ℝ[X]} (hd : d ≠ 0)
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = d)
     (hp_pred : 0 < p.coeff (d - 1))
@@ -194,7 +200,7 @@ theorem schurSzegoComp_prec_of_pred_coeff_pos
 
 /-- Positive constant and linear coefficients of the original PF factor
 orient Schur--Szegő composition with its ordinary reflection. -/
-theorem schurSzegoComp_prec_of_reflect_pf_factor
+private theorem schurSzegoComp_prec_of_reflect_pf_factor
     {d : ℕ} {f g p : ℝ[X]} (hd : d ≠ 0)
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hp0 : p.coeff 0 ≠ 0) (hp1 : 0 < p.coeff 1)
@@ -210,31 +216,37 @@ theorem schurSzegoComp_prec_of_reflect_pf_factor
   exact schurSzegoComp_prec_of_pred_coeff_pos hd
     (isPFPolynomial_reflect hp hpdeg) hrefdeg hrefpred hfdeg hgdeg hfg
 
+/-! ## Ordered root lists -/
+
 /-- The monic polynomial with root multiset `s`. -/
 def rootPolynomial (s : Multiset ℝ) : ℝ[X] :=
   (s.map fun r => X - C r).prod
 
+/-- The roots of `rootPolynomial s`, with multiplicity, are exactly `s`. -/
 @[simp] theorem roots_rootPolynomial (s : Multiset ℝ) :
     (rootPolynomial s).roots = s :=
   Polynomial.roots_multiset_prod_X_sub_C s
 
+/-- `rootPolynomial s` is monic. -/
 theorem rootPolynomial_monic (s : Multiset ℝ) : (rootPolynomial s).Monic :=
   Polynomial.monic_multiset_prod_of_monic _ _ fun r _ => monic_X_sub_C r
 
+/-- `rootPolynomial s` splits over the reals. -/
 theorem rootPolynomial_splits (s : Multiset ℝ) : (rootPolynomial s).Splits := by
   apply splits_of_card_roots
   simp [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
 
+/-- The degree of `rootPolynomial s` is the cardinality of `s`. -/
 @[simp] theorem natDegree_rootPolynomial (s : Multiset ℝ) :
     (rootPolynomial s).natDegree = s.card := by
   rw [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
 
-theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
+private theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
     Prec (X - C u) (X - C v) := by
   simpa [sub_eq_add_neg] using
     (prec_X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
 
-theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
+private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :
     Prec (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
   have h := prec_mul_common_factor (rootPolynomial_monic s).ne_zero
@@ -259,13 +271,17 @@ private theorem forall₂_le_trans :
       List.Forall₂.cons hbc htail₂ =>
     List.Forall₂.cons (hab.trans hbc) (forall₂_le_trans htail htail₂)
 
+/-- Coordinatewise root order is reflexive. -/
 theorem RootwiseLE.refl (p : ℝ[X]) : RootwiseLE p p :=
   List.forall₂_refl _
 
+/-- Coordinatewise root order is transitive. -/
 theorem RootwiseLE.trans {p q r : ℝ[X]}
     (hpq : RootwiseLE p q) (hqr : RootwiseLE q r) : RootwiseLE p r :=
   forall₂_le_trans hpq hqr
 
+/-- Proper position between equal-degree polynomials induces coordinatewise
+order on their increasingly sorted roots. -/
 theorem RootwiseLE.of_prec_sameDegree {p q : ℝ[X]} (hpq : Prec p q)
     (hdeg : p.natDegree = q.natDegree) : RootwiseLE p q := by
   rcases hpq with ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -354,7 +370,7 @@ private theorem sorted_card_filter_ge_le_of_index_lt
 
 /-- An upper-count offset gives coordinatewise order after raising the
 smallest roots on the comparison side. -/
-theorem forall₂_drop_append_replicate_of_upper_count_offset
+private theorem forall₂_drop_append_replicate_of_upper_count_offset
     {ps qs : List ℝ} {ell : ℕ} {M : ℝ}
     (hps : ps.Pairwise (· ≤ ·)) (hqs : qs.Pairwise (· ≤ ·))
     (hlen : ps.length = qs.length) (hell : ell ≤ ps.length)
@@ -397,6 +413,8 @@ theorem forall₂_drop_append_replicate_of_upper_count_offset
     rw [htarget]
     exact hqiM
 
+/-- Coordinatewise root order implies monotonicity of strict upper root
+counts. -/
 theorem RootwiseLE.rootCountAbove_le {p q : ℝ[X]} (hpq : RootwiseLE p q)
     (t : ℝ) :
     (p.roots.filter (t < ·)).card ≤ (q.roots.filter (t < ·)).card := by
@@ -410,7 +428,7 @@ theorem RootwiseLE.rootCountAbove_le {p q : ℝ[X]} (hpq : RootwiseLE p q)
 
 /-- Coordinatewise root order is preserved by an operator satisfying the
 full-degree one-root-move hypothesis. -/
-theorem rootwiseLE_map_rootPolynomial_of_forall₂
+private theorem rootwiseLE_map_rootPolynomial_of_forall₂
     {d : ℕ} {T : ℝ[X] → ℝ[X]} (hT : PreservesFullDegreeRootMoves d T)
     {xs ys : List ℝ} (hxy : List.Forall₂ (· ≤ ·) xs ys)
     (fixed : Multiset ℝ) (htotal : xs.length + fixed.card = d) :
@@ -457,12 +475,12 @@ theorem rootwiseLE_map_rootPolynomial_of_forall₂
       simpa [s, add_comm, add_left_comm, add_assoc] using hrec
 
 /-- Replace the first `ell` roots by a common upper guard. -/
-def raiseSmallest : List ℝ → ℕ → ℝ → Multiset ℝ
+private def raiseSmallest : List ℝ → ℕ → ℝ → Multiset ℝ
   | xs, 0, _ => xs
   | [], _ + 1, _ => 0
   | _ :: xs, n + 1, M => M ::ₘ raiseSmallest xs n M
 
-theorem raiseSmallest_eq {xs : List ℝ} {ell : ℕ}
+private theorem raiseSmallest_eq {xs : List ℝ} {ell : ℕ}
     (hell : ell ≤ xs.length) (M : ℝ) :
     raiseSmallest xs ell M =
       (↑(xs.drop ell ++ List.replicate ell M) : Multiset ℝ) := by
@@ -482,7 +500,7 @@ theorem raiseSmallest_eq {xs : List ℝ} {ell : ℕ}
 
 /-- Raising `ell` roots produces at most `ell` extra output roots above any
 threshold. -/
-theorem rootCountAbove_map_raiseSmallest_le
+private theorem rootCountAbove_map_raiseSmallest_le
     {d ell : ℕ} {T : ℝ[X] → ℝ[X]} (hT : PreservesFullDegreeRootMoves d T)
     {xs : List ℝ} {fixed : Multiset ℝ} {M : ℝ}
     (hell : ell ≤ xs.length) (hM : ∀ x ∈ xs, x ≤ M)
@@ -548,6 +566,8 @@ theorem rootCountAbove_map_raiseSmallest_le
                     exact_mod_cast hstep)
           lia
 
+/-! ## Root-count contraction -/
+
 /-- Finite root-replacement contraction: an input upper-count offset survives
 every operator preserving oriented full-degree root moves. -/
 theorem rootCountAbove_map_le_add_of_input_offset
@@ -589,7 +609,7 @@ theorem rootCountAbove_map_le_add_of_input_offset
 
 /-- The reflected-PF Schur operator satisfies the root-move hypotheses used by
 the abstract contraction theorem. -/
-theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
+private theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
     {d : ℕ} {p : ℝ[X]} (hd : d ≠ 0)
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hp0 : p.coeff 0 ≠ 0) (hp1 : 0 < p.coeff 1) :
@@ -611,18 +631,18 @@ theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
     exact schurSzegoComp_prec_of_reflect_pf_factor
       hd hp hpdeg hp0 hp1 hfdeg hgdeg hfg
 
-private def listUpperBound : List ℝ → ℝ
+private def listMax : List ℝ → ℝ
   | [] => 0
-  | x :: xs => max x (listUpperBound xs)
+  | x :: xs => max x (listMax xs)
 
-private theorem le_listUpperBound {x : ℝ} :
-    ∀ {xs : List ℝ}, x ∈ xs → x ≤ listUpperBound xs
+private theorem le_listMax {x : ℝ} :
+    ∀ {xs : List ℝ}, x ∈ xs → x ≤ listMax xs
   | [], hx => by simp at hx
   | y :: ys, hx => by
       rw [List.mem_cons] at hx
       rcases hx with rfl | hx
       · exact le_max_left _ _
-      · exact (le_listUpperBound hx).trans (le_max_right _ _)
+      · exact (le_listMax hx).trans (le_max_right _ _)
 
 /-- Strict-upper root-count contraction for Schur--Szegő composition with a
 reflected PF factor.  The hypothesis uses closed upper counts so repeated roots
@@ -644,7 +664,7 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
           (t < ·)).card + ell := by
   let ps := P.roots.sort (· ≤ ·)
   let qs := Q.roots.sort (· ≤ ·)
-  let M := max (listUpperBound ps) (listUpperBound qs)
+  let M := max (listMax ps) (listMax qs)
   have hps_pair : ps.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hqs_pair : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hps_len : ps.length = d := by
@@ -654,10 +674,10 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
   have hlen : ps.length = qs.length := hps_len.trans hqs_len.symm
   have hMps : ∀ r ∈ ps, r ≤ M := by
     intro r hr
-    exact (le_listUpperBound hr).trans (le_max_left _ _)
+    exact (le_listMax hr).trans (le_max_left _ _)
   have hMqs : ∀ r ∈ qs, r ≤ M := by
     intro r hr
-    exact (le_listUpperBound hr).trans (le_max_right _ _)
+    exact (le_listMax hr).trans (le_max_right _ _)
   have hcount_lists : ∀ x : ℝ,
       (qs.filter (x ≤ ·)).length ≤ (ps.filter (x ≤ ·)).length + ell := by
     intro x
@@ -688,6 +708,60 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
       (hQsplit.eq_prod_roots_of_monic hQmonic).symm
   simpa [hPpoly, hQpoly] using hcontract
 
+/-! ## Signed reciprocal root counts -/
+
+/-- A filter not containing zero sees exactly the inverse-negated original
+roots after signed reciprocal reversal. The zero-padding introduced by
+degree-`d` reflection contributes nothing. -/
+theorem card_filter_roots_signedReciprocal
+    {d : ℕ} {F : ℝ[X]} (hFsplit : F.Splits)
+    (hFdeg : F.natDegree ≤ d) (hF0 : F.coeff 0 ≠ 0)
+    (P : ℝ → Prop) [DecidablePred P] (hP0 : ¬ P 0) :
+    ((signedReciprocal d F).roots.filter P).card =
+      (F.roots.filter (fun x ↦ P (-x)⁻¹)).card := by
+  let g := F.comp (-X)
+  have hgsplit : g.Splits := hFsplit.comp_neg_X
+  have hg0 : g.coeff 0 ≠ 0 := by
+    simpa [g, Polynomial.coeff_zero_eq_eval_zero] using hF0
+  have hgdeg : g.natDegree ≤ d := by
+    dsimp [g]
+    rw [Polynomial.natDegree_comp]
+    simpa using hFdeg
+  have hrev0 : g.reverse ≠ 0 :=
+    DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hg0
+  have hpad :
+      Multiset.filter P
+        ((d - g.natDegree) • ({0} : Multiset ℝ)) = 0 := by
+    rw [Multiset.filter_eq_nil]
+    intro x hx
+    rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
+    rcases hx with ⟨_, rfl⟩
+    exact hP0
+  rw [signedReciprocal,
+    DegreeDropReversal.reflect_eq_X_pow_mul_reverse g hgdeg,
+    Polynomial.roots_mul
+      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev0),
+    Polynomial.roots_pow, Polynomial.roots_X, Multiset.filter_add,
+    Multiset.card_add, hpad, Multiset.card_zero, zero_add,
+    DegreeDropReversal.card_filter_reverse_roots hgsplit hg0]
+  dsimp [g]
+  rw [Polynomial.roots_comp_neg_X, Multiset.filter_map, Multiset.card_map]
+  rfl
+
+/-- A PF polynomial with nonzero constant coefficient has only strictly
+negative roots. -/
+theorem IsPFPolynomial.roots_neg_of_coeff_zero_ne
+    {F : ℝ[X]} (hF : IsPFPolynomial F) (hF0 : F.coeff 0 ≠ 0) :
+    ∀ x ∈ F.roots, x < 0 := by
+  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
+  intro x hx
+  apply lt_of_le_of_ne (hF.roots_nonpos x hx)
+  intro hxzero
+  subst x
+  exact hF0 (by
+    simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
+      (Polynomial.mem_roots hFne).mp hx)
+
 /-- Signed reciprocal reversal transports a closed upper count on negative PF
 roots to the corresponding closed upper count on positive reciprocal roots. -/
 theorem card_roots_signedReciprocal_filter_ge
@@ -696,53 +770,38 @@ theorem card_roots_signedReciprocal_filter_ge
     {s : ℝ} (hs : 0 < s) :
     ((signedReciprocal d F).roots.filter (s ≤ ·)).card =
       (F.roots.filter (-s⁻¹ ≤ ·)).card := by
-  have hFne : F ≠ 0 := by
-    intro hzero
-    subst F
-    simp at hF0
-  have hFsplit : F.Splits := hF.2.1.resolve_left hFne
-  let q := F.comp (-X)
-  have hqsplit : q.Splits := hFsplit.comp_neg_X
-  have hq0 : q.coeff 0 ≠ 0 := by
-    simpa [q, Polynomial.coeff_zero_eq_eval_zero] using hF0
-  have hqdeg : q.natDegree ≤ d := by
-    dsimp [q]
-    rw [Polynomial.natDegree_comp]
-    simpa using hFdeg
-  have hrev0 : q.reverse ≠ 0 :=
-    DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hq0
-  have hpad :
-      Multiset.filter (s ≤ ·)
-        ((d - q.natDegree) • ({0} : Multiset ℝ)) = 0 := by
-    rw [Multiset.filter_eq_nil]
-    intro x hx
-    rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
-    rcases hx with ⟨_, rfl⟩
-    exact not_le_of_gt hs
-  rw [signedReciprocal,
-    DegreeDropReversal.reflect_eq_X_pow_mul_reverse q hqdeg,
-    Polynomial.roots_mul
-      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev0),
-    Polynomial.roots_pow, Polynomial.roots_X, Multiset.filter_add,
-    Multiset.card_add, hpad, Multiset.card_zero, zero_add,
-    DegreeDropReversal.card_filter_reverse_roots hqsplit hq0]
-  dsimp [q]
-  rw [Polynomial.roots_comp_neg_X, Multiset.filter_map, Multiset.card_map]
+  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
+  rw [card_filter_roots_signedReciprocal
+    (hF.eq_zero_or_splits.resolve_left hFne)
+    hFdeg hF0 (s ≤ ·) (not_le_of_gt hs)]
   apply congrArg Multiset.card
   apply Multiset.filter_congr
   intro x hx
-  have hxle : x ≤ 0 := hF.2.2 x hx
-  have hxne : x ≠ 0 := by
-    intro hxzero
-    subst x
-    have hroot : F.IsRoot 0 := (Polynomial.mem_roots hFne).mp hx
-    exact hF0 (by
-      simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero]
-        using hroot)
-  have hxneg : x < 0 := lt_of_le_of_ne hxle hxne
+  have hxneg : x < 0 := hF.roots_neg_of_coeff_zero_ne hF0 x hx
   have hnegpos : 0 < -x := neg_pos.mpr hxneg
   change (s ≤ (-x)⁻¹) ↔ -s⁻¹ ≤ x
   rw [le_inv_comm₀ hs hnegpos]
+  constructor <;> intro h <;> linarith
+
+/-- Signed reciprocal reversal transports a strict upper count on negative PF
+roots to the corresponding strict upper count on positive reciprocal roots. -/
+theorem card_roots_signedReciprocal_filter_gt
+    {d : ℕ} {F : ℝ[X]} (hF : IsPFPolynomial F)
+    (hFdeg : F.natDegree ≤ d) (hF0 : F.coeff 0 ≠ 0)
+    {s : ℝ} (hs : 0 < s) :
+    ((signedReciprocal d F).roots.filter (s < ·)).card =
+      (F.roots.filter (-s⁻¹ < ·)).card := by
+  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
+  rw [card_filter_roots_signedReciprocal
+    (hF.eq_zero_or_splits.resolve_left hFne) hFdeg hF0 (s < ·)
+    (not_lt_of_ge hs.le)]
+  apply congrArg Multiset.card
+  apply Multiset.filter_congr
+  intro x hx
+  have hxneg : x < 0 := hF.roots_neg_of_coeff_zero_ne hF0 x hx
+  have hnegpos : 0 < -x := neg_pos.mpr hxneg
+  change (s < (-x)⁻¹) ↔ -s⁻¹ < x
+  rw [lt_inv_comm₀ hs hnegpos]
   constructor <;> intro h <;> linarith
 
 end RealRooted

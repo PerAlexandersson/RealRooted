@@ -15,7 +15,11 @@ noncomputable section
 
 namespace RealRooted
 
-theorem isPFPolynomial_translate_pos_and_coeff_zero_pos
+/-! ## Positive translation and PF closure -/
+
+/-- Positive translation preserves a nonzero PF polynomial and makes its
+constant coefficient positive. -/
+theorem IsPFPolynomial.comp_X_add_C_and_coeff_zero_pos
     {p : ℝ[X]} (hp : IsPFPolynomial p) (hp0 : p ≠ 0)
     {eps : ℝ} (heps : 0 < eps) :
     IsPFPolynomial (p.comp (X + C eps)) ∧
@@ -25,6 +29,8 @@ theorem isPFPolynomial_translate_pos_and_coeff_zero_pos
   · simpa [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_comp] using
       eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hp0 heps
 
+/-- Every coefficient of a translated polynomial varies continuously with the
+translation parameter. -/
 theorem continuous_coeff_comp_X_add_C (p : ℝ[X]) (i : ℕ) :
     Continuous fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i := by
   rw [show (fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i) =
@@ -38,6 +44,8 @@ theorem continuous_coeff_comp_X_add_C (p : ℝ[X]) (i : ℕ) :
   simp only [Polynomial.coeff_C_mul, Polynomial.coeff_X_add_C_pow]
   fun_prop
 
+/-- A coefficientwise continuous curve of PF sequences for positive parameters
+has a PF value at zero. -/
 theorem IsPolyaFreqSeq.of_continuous_curve
     {a : ℕ → ℝ} {u : ℝ → ℕ → ℝ}
     (hu : ∀ k : ℕ, Continuous (fun eps : ℝ ↦ u eps k))
@@ -74,20 +82,22 @@ theorem IsPolyaFreqSeq.of_continuous_curve
       exact hD_nonneg eps heps)
   simpa [D, toeplitz, hu0] using hD0
 
-def jensenTranslateCombination (d : ℕ) (A B p : ℝ[X])
+/-! ## Translated Jensen pencils -/
+
+private def jensenTranslateCombination (d : ℕ) (A B p : ℝ[X])
     (a b eps : ℝ) : ℝ[X] :=
   C a * schurSzegoComp d (A.comp (X + C eps)) (p.comp (X + C eps)) +
     C b * (X * schurSzegoComp d (B.comp (X + C eps))
       (p.comp (X + C eps)))
 
-@[simp] theorem jensenTranslateCombination_zero
+@[simp] private theorem jensenTranslateCombination_zero
     (d : ℕ) (A B p : ℝ[X]) (a b : ℝ) :
     jensenTranslateCombination d A B p a b 0 =
       C a * schurSzegoComp d A p +
         C b * (X * schurSzegoComp d B p) := by
   simp [jensenTranslateCombination]
 
-theorem continuous_coeff_jensenTranslateCombination
+private theorem continuous_coeff_jensenTranslateCombination
     (d : ℕ) (A B p : ℝ[X]) (a b : ℝ) (i : ℕ) :
     Continuous
       (fun eps : ℝ ↦ (jensenTranslateCombination d A B p a b eps).coeff i) := by
@@ -109,12 +119,16 @@ theorem continuous_coeff_jensenTranslateCombination
   | succ i =>
       simpa [coeff_X_mul] using Continuous.const_mul (hschur B i) b
 
+/-- A positive threshold lies strictly above every root of a PF polynomial. -/
 theorem IsPFPolynomial.rootCountAtOrAbove_eq_zero_of_pos
     {p : ℝ[X]} (hp : IsPFPolynomial p) {x : ℝ} (hx : 0 < x) :
     LiuOppositeSigns.rootCountAtOrAbove p x = 0 := by
   exact LiuOppositeSigns.rootCountAtOrAbove_eq_zero_of_forall_roots_lt
     (fun r hr ↦ lt_of_le_of_lt (hp.roots_nonpos r hr) hx)
 
+/-- Translating both PF endpoints left by the same positive amount, while
+retaining the explicit `X` on the second endpoint, preserves the Jensen
+root-count certificate. -/
 theorem rootCountCompatible_jensen_translate
     {A B : ℝ[X]} (hA : IsPFPolynomial A) (hB : IsPFPolynomial B)
     (hB0 : B ≠ 0)
@@ -123,7 +137,7 @@ theorem rootCountCompatible_jensen_translate
     LiuOppositeSigns.RootCountCompatible
       (A.comp (X + C eps)) (X * B.comp (X + C eps)) := by
   have hTB_const : 0 < (B.comp (X + C eps)).coeff 0 :=
-    (isPFPolynomial_translate_pos_and_coeff_zero_pos hB hB0 heps).2
+    (hB.comp_X_add_C_and_coeff_zero_pos hB0 heps).2
   have hTB0 : B.comp (X + C eps) ≠ 0 := by
     intro hzero
     exact hTB_const.ne' (by rw [hzero]; simp)
@@ -147,6 +161,7 @@ theorem rootCountCompatible_jensen_translate
       hB.rootCountAtOrAbove_eq_zero_of_pos hs_pos]
     simp [hx]
 
+/-- Positive translation preserves Jensen-pencil compatibility. -/
 theorem compatible_jensen_translate
     {A B : ℝ[X]} (hA : IsPFPolynomial A) (hB : IsPFPolynomial B)
     (hA0 : A ≠ 0) (hB0 : B ≠ 0)
@@ -158,8 +173,8 @@ theorem compatible_jensen_translate
       (hA.hasNonnegCoeffs.pos_leadingCoeff hA0)
       (hB.X_mul.hasNonnegCoeffs.pos_leadingCoeff
         (mul_ne_zero X_ne_zero hB0))
-  have hTA := isPFPolynomial_translate_pos_and_coeff_zero_pos hA hA0 heps
-  have hTB := isPFPolynomial_translate_pos_and_coeff_zero_pos hB hB0 heps
+  have hTA := hA.comp_X_add_C_and_coeff_zero_pos hA0 heps
+  have hTB := hB.comp_X_add_C_and_coeff_zero_pos hB0 heps
   have hTA_ne : A.comp (X + C eps) ≠ 0 := by
     intro hzero
     exact hTA.2.ne' (by rw [hzero]; simp)
@@ -171,7 +186,9 @@ theorem compatible_jensen_translate
     _ hTA.1 hTB.1.X_mul hTA_ne (mul_ne_zero X_ne_zero hTB_ne)
   exact rootCountCompatible_jensen_translate hA hB hB0 hcount heps
 
-theorem compatible_jensen_output_of_translate_core
+/-- Coefficientwise PF closure transfers compatibility of all positive
+translations back to the unshifted Jensen pencil. -/
+private theorem compatible_jensen_output_of_translate_core
     {d : ℕ} {A B p : ℝ[X]}
     (hA : IsPFPolynomial A) (hB : IsPFPolynomial B)
     (hp : IsPFPolynomial p)
@@ -231,6 +248,8 @@ theorem compatible_jensen_output_of_translate_core
     refine ⟨?_, hout_pf.eq_zero_or_splits.resolve_left hzero⟩
     simpa [out] using hzero
 
+/-- Simultaneous Schur--Szegő composition by a PF polynomial preserves
+Jensen-pencil compatibility. -/
 theorem schurSzegoPreservesJensenPencilCompatibility
     {d : ℕ} {A B p : ℝ[X]}
     (hA : IsPFPolynomial A) (hXB : IsPFPolynomial (X * B))
@@ -258,10 +277,10 @@ theorem schurSzegoPreservesJensenPencilCompatibility
   apply compatible_jensen_output_of_translate_core hA hB hp
     hAdeg hBdeg hpdeg
   intro eps heps
-  have hTA := isPFPolynomial_translate_pos_and_coeff_zero_pos hA hA0 heps
-  have hTB := isPFPolynomial_translate_pos_and_coeff_zero_pos hB hB0 heps
-  have hTp := isPFPolynomial_translate_pos_and_coeff_zero_pos hp hp0 heps
-  apply compatible_schurSzego_jensen_of_positive_constants hTA.1 hTB.1 hTp.1
+  have hTA := hA.comp_X_add_C_and_coeff_zero_pos hA0 heps
+  have hTB := hB.comp_X_add_C_and_coeff_zero_pos hB0 heps
+  have hTp := hp.comp_X_add_C_and_coeff_zero_pos hp0 heps
+  apply compatible_schurSzego_jensen_of_pos_coeff_zero hTA.1 hTB.1 hTp.1
   · simpa [Polynomial.natDegree_comp, Polynomial.natDegree_X_add_C] using hAdeg
   · simpa [Polynomial.natDegree_comp, Polynomial.natDegree_X_add_C] using hBdeg
   · simpa [Polynomial.natDegree_comp, Polynomial.natDegree_X_add_C] using hpdeg

@@ -29,7 +29,7 @@ The global sign is essential in odd degree. -/
 def finiteFreeMultiplicativeConvolution (d : ℕ) (p q : ℝ[X]) : ℝ[X] :=
   C ((-1 : ℝ) ^ d) * (schurSzegoComp d p q).comp (-X)
 
-private theorem coeff_comp_neg_X_ff (p : ℝ[X]) (j : ℕ) :
+private theorem coeff_comp_neg_X (p : ℝ[X]) (j : ℕ) :
     (p.comp (-X)).coeff j = p.coeff j * (-1 : ℝ) ^ j := by
   simpa using
     Polynomial.comp_C_mul_X_coeff (p := p) (r := (-1 : ℝ)) (n := j)
@@ -40,12 +40,17 @@ private theorem neg_one_pow_add_eq_sub {d j : ℕ} (hj : j ≤ d) :
   rw [pow_add, mul_assoc, ← mul_pow]
   norm_num
 
+private theorem neg_one_pow_sq (k : ℕ) :
+    ((-1 : ℝ) ^ k) ^ 2 = 1 := by
+  rw [← pow_mul]
+  norm_num
+
 /-- Coefficients of signed reciprocal reversal, using Mathlib's involutive
 `revAt` index. -/
 theorem coeff_signedReciprocal (d j : ℕ) (p : ℝ[X]) :
     (signedReciprocal d p).coeff j =
       p.coeff (revAt d j) * (-1 : ℝ) ^ (revAt d j) := by
-  rw [signedReciprocal, coeff_reflect, coeff_comp_neg_X_ff]
+  rw [signedReciprocal, coeff_reflect, coeff_comp_neg_X]
 
 /-- Coefficients of signed reciprocal reversal inside the degree box. -/
 theorem coeff_signedReciprocal_of_le {d j : ℕ} (hj : j ≤ d) (p : ℝ[X]) :
@@ -63,7 +68,7 @@ theorem coeff_finiteFreeMultiplicativeConvolution
           (p.coeff j * q.coeff j / (Nat.choose d j : ℝ))
       else 0 := by
   rw [finiteFreeMultiplicativeConvolution, coeff_C_mul,
-    coeff_comp_neg_X_ff, coeff_schurSzegoComp]
+    coeff_comp_neg_X, coeff_schurSzegoComp]
   by_cases hj : j ≤ d
   · simp only [if_pos hj]
     calc
@@ -159,7 +164,7 @@ private theorem natDegree_comp_neg_X_le {d : ℕ} {p : ℝ[X]}
     (p.comp (-X)).natDegree ≤ d := by
   rw [natDegree_le_iff_coeff_eq_zero]
   intro j hj
-  rw [coeff_comp_neg_X_ff]
+  rw [coeff_comp_neg_X]
   have hpj : p.coeff j = 0 :=
     coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hj)
   simp [hpj]
@@ -171,7 +176,7 @@ theorem natDegree_signedReciprocal_eq_of_coeff_zero_ne
     (signedReciprocal d p).natDegree = d := by
   apply DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne
     (natDegree_comp_neg_X_le hp)
-  simpa [coeff_comp_neg_X_ff] using hp0
+  simpa [coeff_comp_neg_X] using hp0
 
 /-- The leading coefficient of a full-degree signed reciprocal is the
 original constant coefficient. -/
@@ -179,11 +184,11 @@ theorem leadingCoeff_signedReciprocal_eq_coeff_zero
     {d : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ d) (hp0 : p.coeff 0 ≠ 0) :
     (signedReciprocal d p).leadingCoeff = p.coeff 0 := by
   have hcomp0 : (p.comp (-X)).coeff 0 ≠ 0 := by
-    simpa [coeff_comp_neg_X_ff] using hp0
+    simpa [coeff_comp_neg_X] using hp0
   unfold signedReciprocal
   rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le
     (natDegree_comp_neg_X_le hp) hcomp0]
-  simp [coeff_comp_neg_X_ff]
+  simp [coeff_comp_neg_X]
 
 /-- Signed reciprocal reversal preserves splitting inside its degree box. -/
 theorem signedReciprocal_splits_of_splits
@@ -237,10 +242,7 @@ theorem finiteElementaryCoeff_finiteFreeMultiplicativeConvolution
   rw [coeff_finiteFreeMultiplicativeConvolution,
     if_pos (Nat.sub_le d k), Nat.sub_sub_self hk, Nat.choose_symm hk]
   let s : ℝ := (-1 : ℝ) ^ k
-  have hs : s * s = 1 := by
-    dsimp [s]
-    rw [← mul_pow]
-    norm_num
+  have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq k
   have hchoose : (Nat.choose d k : ℝ) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) hk
   change
@@ -291,9 +293,7 @@ theorem signedReciprocal_schurSzegoComp
       coeff_signedReciprocal_of_le hj, Nat.choose_symm hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
     have hs : s * s = 1 := by
-      dsimp [s]
-      rw [← mul_pow]
-      norm_num
+      simpa [pow_two] using neg_one_pow_sq (d - j)
     have hprod :
         (s * f.coeff (d - j)) * (s * g.coeff (d - j)) =
           f.coeff (d - j) * g.coeff (d - j) := by
@@ -328,9 +328,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       coeff_schurSzegoComp_of_le hj, coeff_reflect, revAt_le hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
     have hs : s * s = 1 := by
-      dsimp [s]
-      rw [← mul_pow]
-      norm_num
+      simpa [pow_two] using neg_one_pow_sq (d - j)
     change
       s * (P.coeff j * (s * p.coeff (d - j)) /
         (Nat.choose d j : ℝ)) =
