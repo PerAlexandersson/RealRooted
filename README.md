@@ -287,19 +287,18 @@ preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,
 Veronese sections, Favard, Kurtz, Hermite-Poulain, Borcea-Branden, and Eulerian
 polynomials.
 
-Longer term, a Borcea-Branden direction would be a substantial expansion toward
-stability theory. A realistic path would first define the correctly oriented
-classical Hurwitz matrix and restate its stability criterion; both directions
-of the criterion proposed for the current row-oriented matrix are formally
-refuted. The next stage would add the multivariate stability infrastructure
-needed for algebraic-symbol preserver theorems.
+The finite complex Borcea--Branden classification is now checked using the
+multivariate stability and polarization infrastructure in this repository.
+Further stability work may revisit the correctly oriented classical Hurwitz
+matrix and its stability criterion; both directions proposed for the current
+row-oriented matrix are formally refuted.
 
 GitHub issues track individual proof tasks rather than being duplicated here.
 Current open themes include Liu's compatible-sequences theorem and the
 Braun-Jal generalized snake poset target.  Recent checked issue surfaces
 include the Gustafsson-Solus interlacing recursion, the Haglund-Zhang
 `s`-inversion/A046802 backend, characteristic-polynomial packaging for Cauchy
-interlacing, and finite Borcea-Branden symbol interfaces.
+interlacing, and the finite Borcea--Branden symbol classification.
 
 ## Development Notes
 

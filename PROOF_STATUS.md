@@ -9,7 +9,7 @@ target and is not itself evidence.
 
 | Declaration | Status | Tracking |
 | --- | --- | --- |
-| `jensenPencilBidiagonalPreserver` | One-sided Jensen-pencil PF implication; a human proof is available, while the Lean theorem remains admitted with one `sorry` | — |
+| `jensenPencilBidiagonalPreserver` | One-sided Jensen-pencil PF implication; a human proof is available, while the Lean theorem remains admitted with one `sorry` | #374 |
 
 This theorem is not used by the checked affine-symbol endpoint
 `bidiagonalPFPreserver_of_affineSymbol`. Its degree-at-most-one case is checked

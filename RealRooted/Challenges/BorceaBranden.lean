@@ -4,7 +4,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.MultivariateStability
 
 /-!
-# Borcea--Branden finite-symbol challenge entry point
+# Borcea--Branden finite-symbol classification entry point
 
 Human statement:
 https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol
