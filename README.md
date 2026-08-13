@@ -167,9 +167,8 @@ the checked or challenge-facing highlights are:
 
 The challenge surface also records theorem-shaped targets as they mature.
 Kurtz's coefficient inequality criterion, the finite Hermite--Poulain
-differential-operator preserver, and Borcea--Branden positive-symbol
-sufficiency are checked. The converse and low-rank branches of the full
-Borcea--Branden classification remain explicit theorem-shaped challenges.
+differential-operator preserver, and the full finite complex Borcea--Branden
+classification, including its stable rank-at-most-one branch, are checked.
 
 ### Interlacing And Preservers
 
@@ -329,7 +328,7 @@ python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py
 ```
 
-The guard permits only the two exact admissions documented in
+The guard permits only the single exact admission documented in
 `PROOF_STATUS.md`, rejects `admit` and source `axiom` commands, and reports
 low-use theorem-shaped propositions that still need an explicit status.
 

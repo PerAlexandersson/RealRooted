@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Audit Lean proof placeholders and low-use theorem-shaped declarations.
 
-The hard-fail policy is intentionally small: exactly two named declarations
-may contain one `sorry` each, while `admit` and source `axiom` commands are
+The hard-fail policy is intentionally small: exactly one named declaration
+may contain one `sorry`, while `admit` and source `axiom` commands are
 always rejected.  Statement-like declarations referenced only by their own
 definition are reported for review unless `PROOF_STATUS.md` classifies them.
 """
@@ -19,10 +19,6 @@ from dataclasses import dataclass
 
 ALLOWED_ADMISSIONS = frozenset(
     {
-        (
-            "RealRooted/Challenges/BorceaBranden.lean",
-            "finiteComplexSymbolClassification",
-        ),
         (
             "RealRooted/Tactic/PFBidiagonal.lean",
             "jensenPencilBidiagonalPreserver",
@@ -275,7 +271,7 @@ def main() -> int:
         )
 
     print(
-        "ok: exactly two documented sorry declarations; no admit or source "
+        "ok: exactly one documented sorry declaration; no admit or source "
         f"axiom commands; {len(unclassified)} unclassified low-use statement(s)"
     )
     return 0

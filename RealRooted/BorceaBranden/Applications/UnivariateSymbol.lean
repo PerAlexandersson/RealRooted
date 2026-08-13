@@ -16,7 +16,7 @@ namespace RealRooted.BorceaBranden
 
 noncomputable section
 
-open MvPolynomial
+open _root_.MvPolynomial
 open Challenges.BorceaBranden
 
 /-- Identify the left and right singleton blocks with variables `0` and `1`. -/

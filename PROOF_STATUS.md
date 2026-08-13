@@ -9,10 +9,9 @@ target and is not itself evidence.
 
 | Declaration | Status | Tracking |
 | --- | --- | --- |
-| `finiteComplexSymbolClassification` | Borcea--Brändén finite complex-symbol classification; admitted with one `sorry` | #372 |
 | `jensenPencilBidiagonalPreserver` | One-sided Jensen-pencil PF implication; a human proof is available, while the Lean theorem remains admitted with one `sorry` | — |
 
-The second theorem is not used by the checked affine-symbol endpoint
+This theorem is not used by the checked affine-symbol endpoint
 `bidiagonalPFPreserver_of_affineSymbol`. Its degree-at-most-one case is checked
 by `jensenPencilBidiagonalPreserver_of_degree_le_one`; the degree-two boundary
 case `beta 2 = 0` is checked by
@@ -43,6 +42,7 @@ a production caller.
 | Topic | Checked declaration |
 | --- | --- |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
+| Complex finite-symbol classification | `Challenges.BorceaBranden.finiteComplexSymbolClassification` |
 | Complex finite-symbol necessity | `Challenges.BorceaBranden.rankOne_or_algebraicSymbol_stable_of_preserves` |
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
 | Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |

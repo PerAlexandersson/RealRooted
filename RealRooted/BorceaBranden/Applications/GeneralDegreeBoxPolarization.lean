@@ -741,6 +741,234 @@ noncomputable def diagonalDegreeBoxIndexGeneral
     {m : σ →₀ ℕ // ∀ i, m i ≤ κ i} :=
   ⟨m.1.mapDomain Sigma.fst, mapDomain_sigma_fst_le κ m.1 m.2⟩
 
+/-- Multiaffine exponent vectors on the fully polarized source. -/
+abbrev ZeroOneExponent {σ : Type*} [Fintype σ] (κ : σ → ℕ) :=
+  {b : PolarizedSource κ →₀ ℕ // ∀ x, b x ≤ 1}
+
+/-- A choice of one finite support inside each polarized source block. -/
+abbrev BlockSupports {σ : Type*} [Fintype σ] (κ : σ → ℕ) :=
+  ∀ i, Finset (Fin (κ i))
+
+/-- Read a zero-one exponent as its support in each source block. -/
+def exponentBlockSupports {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (b : ZeroOneExponent κ) : BlockSupports κ :=
+  fun i => Finset.univ.filter fun j => b.1 ⟨i, j⟩ = 1
+
+/-- Install a family of block supports as a zero-one exponent. -/
+noncomputable def exponentOfBlockSupports {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (s : BlockSupports κ) : ZeroOneExponent κ :=
+  ⟨Finsupp.equivFunOnFinite.symm fun x => if x.2 ∈ s x.1 then 1 else 0,
+    fun x => by
+      change (if x.2 ∈ s x.1 then 1 else 0) ≤ 1
+      split_ifs <;> simp⟩
+
+@[simp] theorem exponentBlockSupports_exponentOfBlockSupports
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) (s : BlockSupports κ) :
+    exponentBlockSupports κ (exponentOfBlockSupports κ s) = s := by
+  funext i
+  ext j
+  simp [exponentBlockSupports, exponentOfBlockSupports]
+
+@[simp] theorem exponentOfBlockSupports_exponentBlockSupports
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) (b : ZeroOneExponent κ) :
+    exponentOfBlockSupports κ (exponentBlockSupports κ b) = b := by
+  apply Subtype.ext
+  apply Finsupp.ext
+  intro x
+  simp only [exponentOfBlockSupports, exponentBlockSupports,
+    Finset.mem_filter, Finset.mem_univ, true_and]
+  by_cases hx : b.1 x = 1
+  · simp [hx]
+  · have hle := b.2 x
+    have hx0 : b.1 x = 0 := by lia
+    simp [hx0]
+
+/-- Zero-one exponents are equivalently independent choices of a support in
+each source block. -/
+noncomputable def zeroOneExponentEquivBlockSupports
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
+    ZeroOneExponent κ ≃ BlockSupports κ where
+  toFun := exponentBlockSupports κ
+  invFun := exponentOfBlockSupports κ
+  left_inv := exponentOfBlockSupports_exponentBlockSupports κ
+  right_inv := exponentBlockSupports_exponentOfBlockSupports κ
+
+/-- Aggregating a zero-one exponent across a block counts its block support. -/
+theorem diagonalDegreeBoxIndexGeneral_apply_eq_card_blockSupport
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (b : ZeroOneExponent κ) (i : σ) :
+    (diagonalDegreeBoxIndexGeneral κ b).1 i =
+      (exponentBlockSupports κ b i).card := by
+  change (b.1.mapDomain Sigma.fst) i = _
+  rw [Finsupp.mapDomain, Finsupp.sum_apply]
+  rw [Finsupp.sum_fintype _ _ (by intro x; simp)]
+  rw [Fintype.sum_sigma, Finset.sum_eq_single i]
+  · simp only [Finsupp.single_eq_same]
+    change (∑ j : Fin (κ i), b.1 ⟨i, j⟩) =
+      (Finset.univ.filter fun j => b.1 ⟨i, j⟩ = 1).card
+    rw [Finset.card_filter]
+    apply Finset.sum_congr rfl
+    intro j _hj
+    by_cases hbj : b.1 ⟨i, j⟩ = 1
+    · simp [hbj]
+    · have hle := b.2 ⟨i, j⟩
+      have hb0 : b.1 ⟨i, j⟩ = 0 := by lia
+      simp [hb0]
+  · intro j _hj hji
+    simp [hji]
+  · simp
+
+/-- The fiber of diagonal aggregation over a bounded source exponent. -/
+abbrev DiagonalAggregateFiber {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :=
+  {b : ZeroOneExponent κ // diagonalDegreeBoxIndexGeneral κ b = m}
+
+/-- Independent block supports whose cardinalities are prescribed by `m`. -/
+abbrev BlockSupportsOfCard {σ : Type*} [Fintype σ]
+    (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :=
+  ∀ i, {s : Finset (Fin (κ i)) // s.card = m.1 i}
+
+noncomputable instance instFintypeBlockSupportsOfCard
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    Fintype (BlockSupportsOfCard κ m) :=
+  @Pi.instFintype σ
+    (fun i => {s : Finset (Fin (κ i)) // s.card = m.1 i})
+    (Classical.decEq σ) _ (fun _ => inferInstance)
+
+/-- A multiaffine aggregation fiber is the dependent product of the
+fixed-cardinality support choices in each block. -/
+noncomputable def diagonalAggregateFiberEquivBlockSupportsOfCard
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    DiagonalAggregateFiber κ m ≃ BlockSupportsOfCard κ m where
+  toFun b i :=
+    ⟨exponentBlockSupports κ b.1 i, by
+      rw [← diagonalDegreeBoxIndexGeneral_apply_eq_card_blockSupport]
+      exact congrArg (fun r => r.1 i) b.2⟩
+  invFun s :=
+    ⟨exponentOfBlockSupports κ fun i => (s i).1, by
+      apply Subtype.ext
+      ext i
+      rw [diagonalDegreeBoxIndexGeneral_apply_eq_card_blockSupport,
+        exponentBlockSupports_exponentOfBlockSupports]
+      exact (s i).2⟩
+  left_inv b := by
+    apply Subtype.ext
+    exact exponentOfBlockSupports_exponentBlockSupports κ b.1
+  right_inv s := by
+    funext i
+    apply Subtype.ext
+    exact congrFun
+      (exponentBlockSupports_exponentOfBlockSupports κ fun i => (s i).1) i
+
+noncomputable instance instFintypeDiagonalAggregateFiber
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    Fintype (DiagonalAggregateFiber κ m) :=
+  Fintype.ofEquiv (BlockSupportsOfCard κ m)
+    (diagonalAggregateFiberEquivBlockSupportsOfCard κ m).symm
+
+/-- Complement each fixed-cardinality support inside its polarized block. -/
+noncomputable def blockSupportsOfCardComplementEquiv
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    BlockSupportsOfCard κ m ≃
+      BlockSupportsOfCard κ (boxComplementIndex κ m) where
+  toFun s i :=
+    ⟨(s i).1ᶜ, by
+      rw [Finset.card_compl, (s i).2, boxComplementIndex_apply]
+      simp⟩
+  invFun s i :=
+    ⟨(s i).1ᶜ, by
+      rw [Finset.card_compl, (s i).2, boxComplementIndex_apply,
+        Fintype.card_fin, Nat.sub_sub_self (m.2 i)]⟩
+  left_inv s := by
+    funext i
+    apply Subtype.ext
+    simp
+  right_inv s := by
+    funext i
+    apply Subtype.ext
+    simp
+
+/-- Aggregation fibers can equivalently be indexed by complementary supports,
+whose block cardinalities are `κ - m`. -/
+noncomputable def diagonalAggregateFiberEquivComplementBlockSupports
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    DiagonalAggregateFiber κ m ≃
+      BlockSupportsOfCard κ (boxComplementIndex κ m) :=
+  (diagonalAggregateFiberEquivBlockSupportsOfCard κ m).trans
+    (blockSupportsOfCardComplementEquiv κ m)
+
+/-- The monomial supported on the complement of a multiaffine exponent. -/
+noncomputable def complementSupportMonomial
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (b : ZeroOneExponent κ) : MvPolynomial (PolarizedSource κ) ℂ :=
+  ∏ i, ∏ j ∈ (exponentBlockSupports κ b i)ᶜ, MvPolynomial.X ⟨i, j⟩
+
+private theorem prod_blockSupport_compl_eq
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (b : ZeroOneExponent κ) (i : σ) :
+    (∏ j ∈ (exponentBlockSupports κ b i)ᶜ,
+        MvPolynomial.X (R := ℂ) (⟨i, j⟩ : PolarizedSource κ)) =
+      ∏ j : Fin (κ i),
+        if b.1 ⟨i, j⟩ = 0 then
+          MvPolynomial.X (R := ℂ) (⟨i, j⟩ : PolarizedSource κ) else 1 := by
+  classical
+  rw [Finset.compl_eq_univ_sdiff, Finset.sdiff_eq_filter,
+    Finset.prod_filter]
+  apply Finset.prod_congr rfl
+  intro j _hj
+  by_cases hbj : b.1 ⟨i, j⟩ = 1
+  · simp [exponentBlockSupports, hbj]
+  · have hle := b.2 ⟨i, j⟩
+    have hb0 : b.1 ⟨i, j⟩ = 0 := by lia
+    simp only [exponentBlockSupports, Finset.mem_filter, Finset.mem_univ,
+      true_and, hb0, zero_ne_one, not_false_eq_true, if_true]
+
+/-- The blockwise complement monomial is the product of a variable exactly at
+the zero entries of the exponent. -/
+theorem complementSupportMonomial_eq_fintype_prod_ite
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) (b : ZeroOneExponent κ) :
+    complementSupportMonomial κ b =
+      ∏ x : PolarizedSource κ,
+        if b.1 x = 0 then MvPolynomial.X x else 1 := by
+  classical
+  unfold complementSupportMonomial
+  simp_rw [prod_blockSupport_compl_eq]
+  exact (Fintype.prod_sigma fun x : PolarizedSource κ =>
+    if b.1 x = 0 then MvPolynomial.X x else 1).symm
+
+/-- Expand the product of block elementary-symmetric polynomials as the sum
+over independent fixed-cardinality supports. -/
+theorem blockElementarySymmetric_eq_sum_blockSupportsOfCard
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
+    blockElementarySymmetric κ r.1 =
+      ∑ s : BlockSupportsOfCard κ r,
+        ∏ i, ∏ j ∈ (s i).1, MvPolynomial.X ⟨i, j⟩ := by
+  classical
+  unfold blockElementarySymmetric
+  simp_rw [MvPolynomial.esymm_eq_sum_subtype, map_sum, map_prod,
+    MvPolynomial.rename_X]
+  rw [Fintype.prod_sum]
+
+/-- The complement-support fiber sum is the product of the corresponding
+block elementary-symmetric polynomials. -/
+theorem sum_complementSupportMonomial_diagonalAggregateFiber
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
+    (∑ b : DiagonalAggregateFiber κ m,
+        complementSupportMonomial κ b.1) =
+      blockElementarySymmetric κ (boxComplementIndex κ m).1 := by
+  rw [blockElementarySymmetric_eq_sum_blockSupportsOfCard]
+  apply Fintype.sum_equiv
+    (diagonalAggregateFiberEquivComplementBlockSupports κ m)
+  intro b
+  rfl
+
 /-- Diagonal projection from the multiaffine polarized source back to the
 original coordinate-wise degree box. -/
 noncomputable def diagonalProjectionDegreeBoxGeneral
@@ -1424,6 +1652,90 @@ theorem algebraicSymbol_sourcePolarizedOperatorGeneral_eq_sum
     sourcePolarizedOperatorGeneral_basis]
   simp
 
+private theorem
+    rightComplementMonomial_one_eq_rename_complementSupportMonomial
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (b : ZeroOneExponent κ) :
+    MvPolynomial.rightComplementMonomial (R := ℂ) (τ := τ)
+        (fun _ : PolarizedSource κ => 1) b.1 =
+      MvPolynomial.rename Sum.inr (complementSupportMonomial κ b) := by
+  classical
+  rw [MvPolynomial.rightComplementMonomial_eq_prod,
+    complementSupportMonomial_eq_fintype_prod_ite]
+  simp only [map_prod]
+  apply Finset.prod_congr rfl
+  intro x _hx
+  by_cases hbx : b.1 x = 1
+  · simp [hbx]
+  · have hle := b.2 x
+    have hb0 : b.1 x = 0 := by lia
+    simp [hb0]
+
+/-- The lifted multiaffine symbol in the common normal form indexed by the
+aggregated original source exponent. -/
+theorem algebraicSymbol_sourcePolarizedOperatorGeneral_normalForm
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
+    MvPolynomial.algebraicSymbol
+        (fun _ : PolarizedSource κ => 1)
+        (sourcePolarizedOperatorGeneral κ T) =
+      ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+        MvPolynomial.rename Sum.inl
+            (T (MvPolynomial.basisDegreeOfLE κ m)) *
+          MvPolynomial.rename Sum.inr
+            (blockElementarySymmetric κ (boxComplementIndex κ m).1) := by
+  rw [algebraicSymbol_sourcePolarizedOperatorGeneral_eq_sum]
+  simp_rw [rightComplementMonomial_one_eq_rename_complementSupportMonomial]
+  calc
+    (∑ b : ZeroOneExponent κ,
+        MvPolynomial.rename Sum.inl
+            (T (MvPolynomial.basisDegreeOfLE κ
+              (diagonalDegreeBoxIndexGeneral κ b))) *
+          MvPolynomial.rename Sum.inr (complementSupportMonomial κ b)) =
+        ∑ bm : Σ m, DiagonalAggregateFiber κ m,
+          MvPolynomial.rename Sum.inl
+              (T (MvPolynomial.basisDegreeOfLE κ bm.1)) *
+            MvPolynomial.rename Sum.inr
+              (complementSupportMonomial κ bm.2.1) := by
+      apply Fintype.sum_equiv
+        (Equiv.sigmaFiberEquiv (diagonalDegreeBoxIndexGeneral κ)).symm
+      intro b
+      rfl
+    _ = ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+          ∑ b : DiagonalAggregateFiber κ m,
+            MvPolynomial.rename Sum.inl
+                (T (MvPolynomial.basisDegreeOfLE κ m)) *
+              MvPolynomial.rename Sum.inr
+                (complementSupportMonomial κ b.1) := by
+      rw [Fintype.sum_sigma]
+    _ = ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+          MvPolynomial.rename Sum.inl
+              (T (MvPolynomial.basisDegreeOfLE κ m)) *
+            MvPolynomial.rename Sum.inr
+              (∑ b : DiagonalAggregateFiber κ m,
+                complementSupportMonomial κ b.1) := by
+      apply Fintype.sum_congr
+      intro m
+      rw [map_sum, Finset.mul_sum]
+    _ = _ := by
+      apply Fintype.sum_congr
+      intro m
+      rw [sum_complementSupportMonomial_diagonalAggregateFiber]
+
+/-- Borcea--Brändén Lemma 2.5 for an arbitrary finite degree box: the
+multiaffine symbol of the source-polarized operator is the source-block
+polarization of the original finite algebraic symbol. -/
+theorem algebraicSymbol_sourcePolarizedOperatorGeneral
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
+    MvPolynomial.algebraicSymbol
+        (fun _ : PolarizedSource κ => 1)
+        (sourcePolarizedOperatorGeneral κ T) =
+      sourceBlockwisePolarizationGeneral κ
+        (MvPolynomial.algebraicSymbol κ T) := by
+  rw [algebraicSymbol_sourcePolarizedOperatorGeneral_normalForm,
+    sourceBlockwisePolarizationGeneral_algebraicSymbol_normalForm]
+
 /-- The source-polarized operator agrees with the original operator after
 blockwise polarization. -/
 theorem sourcePolarizedOperatorGeneral_blockwisePolarization
@@ -1435,6 +1747,34 @@ theorem sourcePolarizedOperatorGeneral_blockwisePolarization
   unfold sourcePolarizedOperatorGeneral
   rw [LinearMap.comp_apply,
     diagonalProjectionDegreeBoxGeneral_blockwisePolarization]
+
+/-- Stable-symbol sufficiency for an arbitrary finite source degree box and
+an unrestricted target-variable type. -/
+theorem finiteSymbol_preserves_stability_general
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ)
+    (hSymbol : MvUpperHalfPlaneStable
+      (MvPolynomial.algebraicSymbol κ T))
+    (p : MvPolynomial.degreeOfLE σ ℂ κ)
+    (hp : MvUpperHalfPlaneStable p.1) :
+    MvUpperHalfPlaneStableOrZero (T p) := by
+  let Tpolar := sourcePolarizedOperatorGeneral κ T
+  have hSymbolDegree (i : σ) :
+      (MvPolynomial.algebraicSymbol κ T).degreeOf (Sum.inr i) ≤ κ i :=
+    MvPolynomial.degreeOf_algebraicSymbol_inr_le κ T i
+  have hPolarSymbol : MvUpperHalfPlaneStable
+      (MvPolynomial.algebraicSymbol
+        (fun _ : PolarizedSource κ => 1) Tpolar) := by
+    rw [algebraicSymbol_sourcePolarizedOperatorGeneral]
+    exact mvUpperHalfPlaneStable_sourceBlockwisePolarizationGeneral
+      κ (MvPolynomial.algebraicSymbol κ T) hSymbolDegree hSymbol
+  have hPolarInput : MvUpperHalfPlaneStable
+      (blockwisePolarizationDegreeBoxGeneral κ p).1 :=
+    mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ p hp
+  have hresult := finiteSymbol_preserves_stability Tpolar hPolarSymbol
+    (blockwisePolarizationDegreeBoxGeneral κ p) hPolarInput
+  rw [sourcePolarizedOperatorGeneral_blockwisePolarization] at hresult
+  exact hresult
 
 end
 

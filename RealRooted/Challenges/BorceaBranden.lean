@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.MultivariateStability
 
@@ -15,8 +16,8 @@ programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),
 This file records Lean-facing interfaces for the finite-degree algebraic
 symbol theorem. The complex classification includes the rank-at-most-one
 alternative from Theorem 1.1; outside that alternative, preservation is
-equivalent to stability of the algebraic symbol. These are statement
-interfaces, not proofs of the classification. Tactic-specific
+equivalent to stability of the algebraic symbol. The classification and its
+non-rank-one corollary are checked below. Tactic-specific
 coefficient-bidiagonal specializations live in `RealRooted.Tactic.FiniteSymbolPF`.
 -/
 
@@ -574,8 +575,7 @@ theorem HasStableRankOneRepresentation.preservesComplexStabilityOnDegreeBox
 box preserves upper-half-plane stability if and only if it has a stable
 rank-at-most-one representation or its finite algebraic symbol is stable.
 
-This is the main classification challenge. It is an explicit proposition, not
-a proved theorem. -/
+This proposition packages the checked classification theorem below. -/
 def finiteComplexSymbolClassificationStatement : Prop :=
   ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
       (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
@@ -583,17 +583,21 @@ def finiteComplexSymbolClassificationStatement : Prop :=
       HasStableRankOneRepresentation κ T ∨
         MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)
 
-/-- Admitted Borcea--Brändén finite complex-symbol classification.
-
-This is the single explicit admission for the classification challenge tracked
-in issue #372. It is not a checked proof. -/
+/-- Borcea--Brändén finite complex-symbol classification. -/
 theorem finiteComplexSymbolClassification :
     finiteComplexSymbolClassificationStatement := by
-  sorry
+  intro σ _ κ T
+  constructor
+  · exact rankOne_or_algebraicSymbol_stable_of_preserves
+  · rintro (hrank | hSymbol)
+    · exact hrank.preservesComplexStabilityOnDegreeBox
+    · intro p hp
+      exact RealRooted.BorceaBranden.finiteSymbol_preserves_stability_general
+        κ T hSymbol p hp
 
 /-- Outside the rank-at-most-one alternative, the main classification has the
 familiar form: an operator preserves stability if and only if its algebraic
-symbol is stable. This remains an explicit challenge proposition. -/
+symbol is stable. -/
 def finiteComplexSymbolIffStatement : Prop :=
   ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
       (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
@@ -601,10 +605,7 @@ def finiteComplexSymbolIffStatement : Prop :=
       (PreservesComplexStabilityOnDegreeBox κ T ↔
         MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T))
 
-/-- Admitted non-rank-one form of the complex finite-symbol classification.
-
-This is a formal consequence of the single admitted classification theorem,
-not an additional admission. -/
+/-- Non-rank-one form of the complex finite-symbol classification. -/
 theorem finiteComplexSymbolIff :
     finiteComplexSymbolIffStatement := by
   intro σ _ κ T hrank
