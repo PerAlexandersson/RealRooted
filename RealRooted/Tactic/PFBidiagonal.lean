@@ -1,6 +1,7 @@
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.Hadamard
 import RealRooted.HermiteBiehler
+import RealRooted.JensenPencilContraction
 import RealRooted.MultiplierSequence
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.PFPolynomial
@@ -12,7 +13,7 @@ import RealRooted.Tactic.Lookup
 This file packages the coefficient-bidiagonal operator that appears in the
 remaining one-step second-derivative OEIS recurrences. Genuine affine-symbol
 stability gives a checked PF-preserver route. The weaker one-sided Jensen
-pencil has a human proof, while its general Lean backend remains admitted.
+pencil is proved by finite-free root-count contraction and PF closure.
 -/
 
 open Polynomial
@@ -885,17 +886,13 @@ theorem jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
   · simpa using Or.inl hzero
   · exact Or.inr (by simpa using hsplits.2)
 
-/-- Jensen-pencil implication for coefficient-bidiagonal PF preservers,
-retained as an explicit admission while the human proof is formalized.
-
-This is the single explicit admission for this project theorem. It is not yet
-a checked proof; checked applications should prefer
-`bidiagonalPFPreserver_of_affineSymbol`. -/
+/-- Jensen-pencil implication for coefficient-bidiagonal PF preservers. -/
 theorem jensenPencilBidiagonalPreserver :
     ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
       BidiagonalJensenPencilCertificate alpha beta d →
       BidiagonalPFPreserver alpha beta d := by
-  sorry
+  exact jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
+    schurSzegoPreservesJensenPencilCompatibility
 
 /-- Apply the named Jensen-pencil backend theorem. -/
 theorem bidiagonalPFPreserver_of_jensenPencil

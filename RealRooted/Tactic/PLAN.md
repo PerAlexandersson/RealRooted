@@ -947,15 +947,14 @@ now call the typed theorem API directly, in particular:
 
 - use `bidiagonalPFPreserver_of_affineSymbol` for the checked affine-symbol
   route;
-- use `BidiagonalJensenPencilCertificate.toPFPreserver` only when accepting
-  the explicitly admitted Jensen-pencil implication;
+- use `BidiagonalJensenPencilCertificate.toPFPreserver` for the checked
+  Jensen-pencil implication;
 - use the generic recurrence theorem after constructing the corresponding
   preserver certificate.
 
-The audit deliberately leaves one `sorry` at
-`jensenPencilBidiagonalPreserver`.  This exposes the mathematical gap at its
-single source instead of passing a theorem-shaped `Prop` backend through every
-wrapper.  Do not reintroduce tactic syntax whose only function is to hide that
-admission.  A future frontend is justified only if it performs recurring
-certificate construction or side-goal normalization that cannot be expressed
-clearly by a short theorem application.
+The mathematical gap formerly isolated at
+`jensenPencilBidiagonalPreserver` is now closed by the finite-free root-count
+contraction. Do not reintroduce tactic syntax whose only function is to hide a
+short theorem application. A future frontend is justified only if it performs
+recurring certificate construction or side-goal normalization that cannot be
+expressed clearly by a short theorem application.

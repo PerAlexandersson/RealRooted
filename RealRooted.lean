@@ -111,6 +111,8 @@ import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
 import RealRooted.Favard
+import RealRooted.FiniteFreeMultiplicative
+import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
 import RealRooted.GammaRealRoots
 import RealRooted.GarloffWagner
@@ -144,6 +146,8 @@ import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
+import RealRooted.JensenPencilContraction
+import RealRooted.JensenPencilPositiveContraction
 import RealRooted.LiebSokal
 import RealRooted.LiebSokalOperator
 import RealRooted.LiebSokalPointwise
@@ -172,10 +176,11 @@ import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderMiddle
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderStatement
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 import RealRooted.LiuOppositeSigns.ForwardLowDegree
+import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.LiuOppositeSigns.RootCountClosure
+import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
@@ -221,7 +226,6 @@ import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.List.OfFn
 import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.Mathlib.Data.Multiset.Rel
-import RealRooted.RootMatchingSort
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
@@ -270,6 +274,7 @@ import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
 import RealRooted.RootCountJump
 import RealRooted.RootCountLocalConstancy
+import RealRooted.RootMatchingSort
 import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge
 import RealRooted.RootSumBounds
@@ -297,6 +302,7 @@ import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CommonInterleaver
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
+import RealRooted.Tactic.EndpointDerivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Examples
 import RealRooted.Tactic.Examples.AffineDerivative
@@ -309,6 +315,7 @@ import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
+import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
@@ -332,7 +339,6 @@ import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang
-import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
@@ -346,8 +352,8 @@ import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
-import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.ReciprocalShift
+import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.ScalarDen
@@ -384,7 +390,6 @@ import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.EndpointDerivative
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
@@ -396,8 +401,8 @@ import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
-import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.ReciprocalShift
+import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.ScalarDen

@@ -327,12 +327,11 @@ python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py
 ```
 
-The guard permits only the single exact admission documented in
-`PROOF_STATUS.md`, rejects `admit` and source `axiom` commands, and reports
-low-use theorem-shaped propositions that still need an explicit status.
+The guard rejects `sorry`, `admit`, and source `axiom` commands, and reports
+low-use theorem-shaped propositions that still need an explicit status in
+`PROOF_STATUS.md`.
 
-All committed code must build without warnings (with the exception of `sorry`
-warnings).
+All committed code must build without warnings.
 
 To maintain clean and reliable build verification, the use of `set_option` is
 forbidden in the codebase. All warnings, lint errors, or resource limits should

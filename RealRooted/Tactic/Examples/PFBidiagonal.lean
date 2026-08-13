@@ -3,8 +3,8 @@ import RealRooted.Tactic.PFBidiagonal
 /-!
 # PF-bidiagonal API smoke tests
 
-These examples cover the checked affine-symbol route, the single admitted
-Jensen boundary, and the generic recurrence induction wrapper.
+These examples cover the checked affine-symbol route, the Jensen-pencil
+preserver, and the generic recurrence induction wrapper.
 -/
 
 open Polynomial

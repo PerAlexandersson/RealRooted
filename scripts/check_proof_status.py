@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Audit Lean proof placeholders and low-use theorem-shaped declarations.
 
-The hard-fail policy is intentionally small: exactly one named declaration
-may contain one `sorry`, while `admit` and source `axiom` commands are
-always rejected.  Statement-like declarations referenced only by their own
+The hard-fail policy permits no `sorry`, `admit`, or source `axiom` commands.
+Statement-like declarations referenced only by their own
 definition are reported for review unless `PROOF_STATUS.md` classifies them.
 """
 
@@ -17,14 +16,7 @@ from collections import Counter
 from dataclasses import dataclass
 
 
-ALLOWED_ADMISSIONS = frozenset(
-    {
-        (
-            "RealRooted/Tactic/PFBidiagonal.lean",
-            "jensenPencilBidiagonalPreserver",
-        ),
-    }
-)
+ALLOWED_ADMISSIONS: frozenset[tuple[str, str]] = frozenset()
 
 DECLARATION_RE = re.compile(
     r"^\s*(?:(?:private|protected|noncomputable)\s+)*"
@@ -193,13 +185,11 @@ def unclassified_low_use_statements(
 
 
 def run_self_test() -> int:
-    allowed_path, allowed_name = sorted(ALLOWED_ADMISSIONS)[0]
-    allowed_source = f"theorem {allowed_name} : True := by\n  sorry\n"
-    findings, _, _ = scan_text(allowed_path, allowed_source)
-    synthetic_findings = list(findings)
+    synthetic_findings: list[Finding] = []
     for path, name in ALLOWED_ADMISSIONS:
-        if (path, name) != (allowed_path, allowed_name):
-            synthetic_findings.append(Finding(path, name, 1, "sorry"))
+        source = f"theorem {name} : True := by\n  sorry\n"
+        findings, _, _ = scan_text(path, source)
+        synthetic_findings.extend(findings)
     assert not admission_errors(synthetic_findings)
 
     unexpected, statements, clean = scan_text(
@@ -271,8 +261,8 @@ def main() -> int:
         )
 
     print(
-        "ok: exactly one documented sorry declaration; no admit or source "
-        f"axiom commands; {len(unclassified)} unclassified low-use statement(s)"
+        "ok: no sorry, admit, or source axiom commands; "
+        f"{len(unclassified)} unclassified low-use statement(s)"
     )
     return 0
 
