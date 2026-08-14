@@ -696,6 +696,20 @@ theorem deleteClosedNeighborSupport_subset_erase {V : Type u} [DecidableEq V]
   intro w hw
   exact (Finset.mem_filter.mp hw).1
 
+/-- Vertex-deletion recurrence for the weighted support-restricted
+independence polynomial. -/
+theorem weightedIndepPolyOn_erase {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    {S : Finset V} {v : V} (hv : v ∈ S) :
+    weightedIndepPolyOn G S wt =
+      weightedIndepPolyOn G (S.erase v) wt +
+        C (wt v) * X *
+          weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt := by
+  have h := weightedIndepPolyOn_insert
+    (G := G) (wt := wt) (S := S.erase v) (v := v)
+    (Finset.notMem_erase v S)
+  simpa [deleteClosedNeighborSupport, Finset.insert_erase hv] using h
+
 /-- Vertex-deletion recurrence for the support-restricted independence
 polynomial. -/
 theorem indepPolyOn_erase {V : Type u} [DecidableEq V]
@@ -888,6 +902,54 @@ theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
       rw [deleteClosedNeighborSupport_erase_eq_of_clique G hK hvK hx]
     rw [hsum]
     ring_nf
+
+/-- Weighted clique-deletion expansion.  The weight of a chosen clique vertex
+appears as the scalar on its closed-neighborhood deletion term. -/
+theorem weightedIndepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S) :
+    weightedIndepPolyOn G S wt =
+      weightedIndepPolyOn G (S \ K) wt +
+        ∑ v ∈ K, C (wt v) * X *
+          weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt := by
+  classical
+  revert S hK
+  refine Finset.induction_on K ?_ ?_
+  · simp
+  · intro v K hvK ih S hK hKS
+    have hvS : v ∈ S := hKS (Finset.mem_insert_self v K)
+    have hK_old : G.IsClique (K : Set V) := by
+      simp_all
+    have hKS_old : K ⊆ S.erase v := by
+      intro w hw
+      refine Finset.mem_erase.mpr ⟨?_, hKS (Finset.mem_insert.mpr (Or.inr hw))⟩
+      exact fun hwv ↦ hvK (by simp_all)
+    rw [weightedIndepPolyOn_erase G wt hvS,
+      ih (S.erase v) hK_old hKS_old]
+    have hsdiff : S.erase v \ K = S \ insert v K := by
+      ext w
+      by_cases hwv : w = v <;> simp [Finset.mem_sdiff, hwv]
+    rw [hsdiff, Finset.sum_insert hvK]
+    have hsum :
+        (∑ x ∈ K, C (wt x) * X *
+            weightedIndepPolyOn G
+              (deleteClosedNeighborSupport G (S.erase v) x) wt) =
+          ∑ x ∈ K, C (wt x) * X *
+            weightedIndepPolyOn G (deleteClosedNeighborSupport G S x) wt := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      rw [deleteClosedNeighborSupport_erase_eq_of_clique G hK hvK hx]
+    rw [hsum]
+    have hsum_swap :
+        (∑ x ∈ K, C (wt x) * X *
+            weightedIndepPolyOn G (deleteClosedNeighborSupport G S x) wt) =
+          ∑ x ∈ K, X * C (wt x) *
+            weightedIndepPolyOn G (deleteClosedNeighborSupport G S x) wt := by
+      apply Finset.sum_congr rfl
+      intro x _hx
+      rw [mul_comm (C (wt x)) X]
+    rw [hsum_swap]
+    ring
 
 /-- The finite family in the clique-deletion expansion of `indepPolyOn G S`. -/
 def cliqueDeletionFamily {V : Type u} [DecidableEq V]
