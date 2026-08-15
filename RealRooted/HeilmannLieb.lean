@@ -951,6 +951,65 @@ theorem weightedIndepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
     rw [hsum_swap]
     ring
 
+/-- The weighted clique-deletion family, before the vertex weights are applied
+as coefficients in a `weightedSum`. -/
+def weightedCliqueDeletionFamily {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V) : List ℝ[X] :=
+  weightedIndepPolyOn G (S \ K) wt ::
+    K.toList.map fun v =>
+      X * weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt
+
+/-- The actual weighted combination associated with clique deletion. -/
+def weightedCliqueDeletionExpansion {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V) : List (ℝ × ℝ[X]) :=
+  (1, weightedIndepPolyOn G (S \ K) wt) ::
+    K.toList.map fun v =>
+      (wt v, X * weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt)
+
+/-- Forgetting the scalar coefficients in the clique-deletion combination
+recovers its polynomial family. -/
+theorem weightedCliqueDeletionExpansion_map_snd
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V) :
+    (weightedCliqueDeletionExpansion G wt S K).map Prod.snd =
+      weightedCliqueDeletionFamily G wt S K := by
+  simp [weightedCliqueDeletionExpansion, weightedCliqueDeletionFamily]
+
+/-- The weighted sum of the clique-deletion combination is the original
+weighted independence polynomial. -/
+theorem weightedCliqueDeletionExpansion_weightedSum
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S) :
+    weightedSum (weightedCliqueDeletionExpansion G wt S K) =
+      weightedIndepPolyOn G S wt := by
+  classical
+  have htail :
+      weightedSum (K.toList.map fun v =>
+          (wt v, X * weightedIndepPolyOn G
+            (deleteClosedNeighborSupport G S v) wt)) =
+        ∑ v ∈ K, C (wt v) * X *
+          weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt := by
+    have hlist : ∀ l : List V,
+        weightedSum (l.map fun v =>
+            (wt v, X * weightedIndepPolyOn G
+              (deleteClosedNeighborSupport G S v) wt)) =
+          (l.map fun v => C (wt v) * X *
+            weightedIndepPolyOn G
+              (deleteClosedNeighborSupport G S v) wt).sum := by
+      intro l
+      induction l with
+      | nil => simp
+      | cons v l ih => simp [ih, mul_assoc]
+    rw [hlist]
+    simp
+  unfold weightedCliqueDeletionExpansion
+  rw [weightedSum_cons, htail]
+  simpa using (weightedIndepPolyOn_sdiff_clique G wt S K hK hKS).symm
+
 /-- The finite family in the clique-deletion expansion of `indepPolyOn G S`. -/
 def cliqueDeletionFamily {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
@@ -1083,6 +1142,37 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
     · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
     · exact compatible_X_mul_of_compatible
         (hdel_pair u (Finset.mem_toList.mp huList) v (Finset.mem_toList.mp hvList))
+
+/-- Pairwise compatibility of the weighted clique-deletion family follows
+from the same two recursive compatibility obligations as in the unweighted
+case. -/
+theorem weightedCliqueDeletionFamily_pairwiseCompatible_of_compatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K : Finset V)
+    (hbase : (weightedIndepPolyOn G (S \ K) wt).Splits)
+    (hbase_del : ∀ v ∈ K,
+      Compatible (weightedIndepPolyOn G (S \ K) wt)
+        (X * weightedIndepPolyOn G
+          (deleteClosedNeighborSupport G S v) wt))
+    (hdel_pair : ∀ u ∈ K, ∀ v ∈ K,
+      Compatible
+        (weightedIndepPolyOn G (deleteClosedNeighborSupport G S u) wt)
+        (weightedIndepPolyOn G (deleteClosedNeighborSupport G S v) wt)) :
+    PairwiseCompatible (weightedCliqueDeletionFamily G wt S K) := by
+  apply pairwiseCompatible_of_forall_mem
+  intro f hf g hg
+  simp only [weightedCliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
+  rcases hf with rfl | ⟨u, huList, rfl⟩
+  · rcases hg with rfl | ⟨v, hvList, rfl⟩
+    · exact compatible_self_of_splits
+        (weightedIndepPolyOn_ne_zero G (S \ K) wt) hbase
+    · exact hbase_del v (Finset.mem_toList.mp hvList)
+  · rcases hg with rfl | ⟨v, hvList, rfl⟩
+    · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
+    · exact compatible_X_mul_of_compatible
+        (hdel_pair u (Finset.mem_toList.mp huList)
+          v (Finset.mem_toList.mp hvList))
 
 /-- Pairwise compatibility of the clique-deletion family can be proved on the
 recursive supports produced by the outside-neighbor cliques. -/
