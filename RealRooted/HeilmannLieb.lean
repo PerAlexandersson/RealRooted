@@ -118,6 +118,27 @@ theorem weightedIndepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
   (weightedIndepPolyOn_hasNonnegCoeffs G hwt).pos_leadingCoeff
     (weightedIndepPolyOn_ne_zero G S wt)
 
+/-- The weighted independence polynomial on the empty support is `1`. -/
+theorem weightedIndepPolyOn_empty {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ) :
+    weightedIndepPolyOn G (∅ : Finset V) wt = 1 := by
+  rw [weightedIndepPolyOn]
+  rw [Finset.sum_eq_single ∅]
+  · simp
+  · intro s hs hne
+    have hs' : s = ∅ ∧ G.IsIndepSet (s : Set V) := by
+      simpa [indepSetsOn] using hs
+    simp_all
+  · intro hnot
+    simp [indepSetsOn] at hnot
+
+/-- The weighted independence polynomial on the empty support splits. -/
+theorem weightedIndepPolyOn_empty_splits {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ) :
+    (weightedIndepPolyOn G (∅ : Finset V) wt).Splits := by
+  rw [weightedIndepPolyOn_empty]
+  simp
+
 /-- Support-restricted independence polynomials are nonzero. -/
 theorem indepPolyOn_ne_zero {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
@@ -205,6 +226,12 @@ private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f 
 private theorem splits_add_of_compatible {p q : ℝ[X]} (h : Compatible p q)
     (hadd : p + q ≠ 0) : (p + q).Splits := by
   have hcombo := h 1 1 zero_le_one zero_le_one
+  simp_all
+
+private theorem splits_add_C_mul_of_compatible {p q : ℝ[X]} (h : Compatible p q)
+    {r : ℝ} (hr : 0 ≤ r) (hadd : p + C r * q ≠ 0) :
+    (p + C r * q).Splits := by
+  have hcombo := h 1 r zero_le_one hr
   simp_all
 
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
@@ -1058,13 +1085,14 @@ private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
   intro i j _hij
   simp_all
 
-private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
+private theorem compatible_add_C_mul_left_of_pairwiseCompatible_three
+    {a b c : ℝ[X]} {r : ℝ} (hr : 0 ≤ r)
     (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
     (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
     (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
     (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
     (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
-    Compatible (a + b) c := by
+    Compatible (a + C r * b) c := by
   let fs : List ℝ[X] := [a, b, c]
   have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
     intro f hf
@@ -1102,7 +1130,7 @@ private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
     (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
       (fs := fs) hrr hpos hnn).1 hpair
   intro α β hα hβ
-  let ws : List (ℝ × ℝ[X]) := [(α, a), (α, b), (β, c)]
+  let ws : List (ℝ × ℝ[X]) := [(α, a), (α * r, b), (β, c)]
   have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
     intro ap hap
     simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
@@ -1112,11 +1140,23 @@ private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
     simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
     rcases hap with rfl | rfl | rfl
     · exact hα
-    · exact hα
+    · exact mul_nonneg hα hr
     · exact hβ
-  have hsum : weightedSum ws = C α * (a + b) + C β * c := by
-    simp [ws, weightedSum_cons, mul_add, add_assoc]
+  have hsum : weightedSum ws = C α * (a + C r * b) + C β * c := by
+    simp only [ws, weightedSum_cons, weightedSum_nil]
+    rw [map_mul]
+    ring
   simpa [hsum] using hfam ws hmem hnonneg
+
+private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
+    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
+    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
+    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
+    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
+    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
+    Compatible (a + b) c := by
+  simpa using compatible_add_C_mul_left_of_pairwiseCompatible_three
+    (r := 1) zero_le_one ha hb hc hapos hbpos hcpos hann hbnn hcnn hab hac hbc
 
 /-- Pairwise compatibility of the clique-deletion family follows from the two
 compatibility obligations appearing in Chudnovsky--Seymour Lemma 2.5. -/
