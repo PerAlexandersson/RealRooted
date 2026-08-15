@@ -403,6 +403,52 @@ theorem exists_factors_of_isPFPolynomial
   rw [← multiset_prod_map_eq_fintype_prod s] at hab
   simpa [Multiset.card_coe] using hab
 
+/-- A constant-one PF polynomial of degree at most `M` supplies nonnegative
+rank-two weights whose disjoint-pair partition function is its binomial
+coefficient transform. -/
+theorem exists_nonneg_disjointSubsetWeight_eq_coeff_sum
+    {p : ℝ[X]} (hp : IsPFPolynomial p) (hconst : p.coeff 0 = 1)
+    {M : ℕ} (hdegree : p.natDegree ≤ M) :
+    ∃ a b : Fin M → ℝ,
+      (∀ i, 0 ≤ a i) ∧
+        (∀ i, 0 ≤ b i) ∧
+          ∀ k,
+            p.eval 1 * disjointSubsetWeight a b k =
+              ∑ j ∈ Finset.range (p.natDegree + 1),
+                p.coeff j * (Nat.choose j k : ℝ) *
+                  (Nat.choose (M - j) k : ℝ) := by
+  classical
+  obtain ⟨s, a, b, hs, hscard, hp_factor, ha, hb, hab⟩ :=
+    exists_factors_of_isPFPolynomial hp hconst hdegree
+  refine ⟨a, b, ha, hb, ?_⟩
+  intro k
+  rw [disjointSubsetWeight_eq_diagonal_coeff]
+  have hcard : Fintype.card s ≤ M := by
+    simpa [Multiset.card_coe, hscard] using hdegree
+  have hp_factor' :
+      p = ∏ i : s, (1 + Polynomial.C (i : ℝ) * Polynomial.X) := by
+    rw [hp_factor]
+    exact multiset_prod_map_eq_fintype_prod s _
+  have hcoeff :=
+    diagonal_coeff_rawFactor_prod_eq_coeff_sum
+      (p := p) (M := M) (fun i : s ↦ (i : ℝ))
+      hcard hp_factor' k
+  have hraw :
+      (s.map rawFactor).prod = ∏ i : s, rawFactor (i : ℝ) :=
+    multiset_prod_map_eq_fintype_prod s _
+  rw [hraw] at hab
+  have hdiag :=
+    congrArg (fun q : Bivariate ↦ (q.coeff k).coeff k) hab
+  have hleft :
+      ((embedReal (p.eval 1) *
+            (∏ j, normalizedFactor (a j) (b j))).coeff k).coeff k =
+        p.eval 1 *
+          ((∏ j, normalizedFactor (a j) (b j)).coeff k).coeff k := by
+    simp [embedReal, embedRealHom, Polynomial.coeff_C_mul]
+  rw [hleft] at hdiag
+  rw [hdiag]
+  simpa [Multiset.card_coe, hscard] using hcoeff
+
 end
 
 end RankTwoMatchingModel
