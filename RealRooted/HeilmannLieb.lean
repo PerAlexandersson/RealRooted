@@ -3140,6 +3140,32 @@ def weightedMatchingPolynomialByEdges
       IsMatchingEdgeFinset G M),
     (∏ e ∈ M, C (wt e)) * (X : ℝ[X]) ^ M.card
 
+/-- Total weight of the size-`k` edge matchings of a graph. -/
+def weightedMatchingNumber
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) (k : ℕ) : ℝ := by
+  classical
+  exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet ↦
+      IsMatchingEdgeFinset G M),
+    if M.card = k then ∏ e ∈ M, wt e else 0
+
+/-- Coefficients of the intrinsic weighted matching polynomial are weighted
+matching numbers. -/
+theorem coeff_weightedMatchingPolynomialByEdges
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) (k : ℕ) :
+    (weightedMatchingPolynomialByEdges G wt).coeff k =
+      weightedMatchingNumber G wt k := by
+  classical
+  rw [weightedMatchingPolynomialByEdges, weightedMatchingNumber]
+  rw [finsetSum_coeff]
+  apply Finset.sum_congr rfl
+  intro M hM
+  have hprod : (∏ e ∈ M, C (wt e)) = C (∏ e ∈ M, wt e) := by
+    simp only [map_prod]
+  rw [hprod, coeff_C_mul]
+  simp [coeff_X_pow, eq_comm]
+
 /-- The intrinsic edge-matching polynomial agrees with the line-graph
 independence-polynomial definition. -/
 theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
@@ -3304,6 +3330,25 @@ theorem weightedMatchingPolynomialByEdges_splits
     (weightedMatchingPolynomialByEdges G wt).Splits := by
   rw [weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial]
   exact weightedMatchingGeneratingPolynomial_splits G wt hwt
+
+/-- The intrinsic weighted matching polynomial is PF for nonnegative edge
+weights. -/
+theorem weightedMatchingPolynomialByEdges_isPFPolynomial
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
+    (hwt : ∀ e, 0 ≤ wt e) :
+    IsPFPolynomial (weightedMatchingPolynomialByEdges G wt) := by
+  apply IsPFPolynomial.of_realRooted_nonneg
+  · intro k
+    rw [coeff_weightedMatchingPolynomialByEdges, weightedMatchingNumber]
+    apply Finset.sum_nonneg
+    intro M hM
+    split_ifs
+    · apply Finset.prod_nonneg
+      intro e he
+      exact hwt e
+    · positivity
+  · exact weightedMatchingPolynomialByEdges_splits G wt hwt
 
 end Graph
 end RealRooted
