@@ -139,6 +139,118 @@ theorem disjointSubsetWeight_eq_diagonal_coeff
   rw [Finset.powersetCard_eq_filter, Finset.sum_filter, hpowerset_univ]
   simp only [Finset.compl_eq_univ_sdiff, eq_comm]
 
+private theorem diagonal_coeff_rawFactor_prod_eq_subset_sum
+    {I : Type*} [Fintype I] {M : ℕ}
+    (g : I → ℝ) (hcard : Fintype.card I ≤ M) (k : ℕ) :
+    ((((∏ i, rawFactor (g i)) *
+          (1 + rightVariable) ^ (M - Fintype.card I)).coeff k).coeff k) =
+      ∑ S : Finset I,
+        (∏ i ∈ S, g i) * (Nat.choose S.card k : ℝ) *
+          (Nat.choose (M - S.card) k : ℝ) := by
+  classical
+  let A : Bivariate := 1 + rightVariable
+  let B : Bivariate := 1 + leftVariable
+  have hfactor (i : I) : rawFactor (g i) = embedReal (g i) * B + A := by
+    simp [rawFactor, A, B]
+    ring
+  rw [show (∏ i, rawFactor (g i)) =
+      ∏ i, (embedReal (g i) * B + A) by
+      apply Finset.prod_congr rfl
+      intro i _hi
+      exact hfactor i]
+  rw [Fintype.prod_add]
+  simp only [Finset.sum_mul, Polynomial.finsetSum_coeff]
+  apply Finset.sum_congr rfl
+  intro S _hS
+  have hselected :
+      (∏ i ∈ S, embedReal (g i) * B) =
+        embedReal (∏ i ∈ S, g i) * B ^ S.card := by
+    rw [Finset.prod_mul_distrib]
+    change
+      (∏ i ∈ S, embedRealHom (g i)) * (∏ _i ∈ S, B) =
+        embedRealHom (∏ i ∈ S, g i) * B ^ S.card
+    rw [← map_prod]
+    simp
+  have hunselected : (∏ _i ∈ Sᶜ, A) = A ^ (Fintype.card I - S.card) := by
+    rw [Finset.prod_const, Finset.card_compl]
+  have hS_card : S.card ≤ Fintype.card I := Finset.card_le_univ S
+  have hexponent :
+      (Fintype.card I - S.card) + (M - Fintype.card I) = M - S.card := by
+    omega
+  rw [hselected, hunselected]
+  change
+    ((embedReal (∏ i ∈ S, g i) * B ^ S.card * A ^ (Fintype.card I - S.card) *
+      A ^ (M - Fintype.card I)).coeff k).coeff k = _
+  rw [show
+      embedReal (∏ i ∈ S, g i) * B ^ S.card * A ^ (Fintype.card I - S.card) *
+          A ^ (M - Fintype.card I) =
+        (embedReal (∏ i ∈ S, g i) * B ^ S.card) *
+          (A ^ (Fintype.card I - S.card) * A ^ (M - Fintype.card I)) by ring,
+    ← pow_add, hexponent]
+  change
+    ((Polynomial.C (Polynomial.C (∏ i ∈ S, g i)) *
+          (1 + Polynomial.C Polynomial.X) ^ S.card *
+          (1 + Polynomial.X) ^ (M - S.card)).coeff k).coeff k = _
+  rw [show
+      Polynomial.C (Polynomial.C (∏ i ∈ S, g i)) *
+          (1 + Polynomial.C Polynomial.X) ^ S.card *
+          (1 + Polynomial.X) ^ (M - S.card) =
+        Polynomial.C
+            (Polynomial.C (∏ i ∈ S, g i) *
+              (1 + Polynomial.X) ^ S.card) *
+          (1 + Polynomial.X) ^ (M - S.card) by
+      rw [show (1 + Polynomial.C Polynomial.X : Bivariate) =
+          Polynomial.C (1 + Polynomial.X) by simp,
+        ← map_pow, ← Polynomial.C_mul]]
+  rw [Polynomial.coeff_C_mul, Polynomial.coeff_one_add_X_pow]
+  change
+    (Polynomial.C (∏ i ∈ S, g i) * (1 + Polynomial.X) ^ S.card *
+      Polynomial.C (Nat.choose (M - S.card) k : ℝ)).coeff k = _
+  rw [Polynomial.coeff_mul_C, Polynomial.coeff_C_mul,
+    Polynomial.coeff_one_add_X_pow]
+
+/-- The diagonal coefficient of a padded product of raw factors depends only
+on the coefficients of its corresponding univariate factor product. -/
+theorem diagonal_coeff_rawFactor_prod_eq_coeff_sum
+    {p : ℝ[X]} {I : Type*} [Fintype I] {M : ℕ}
+    (g : I → ℝ) (hcard : Fintype.card I ≤ M)
+    (hp : p = ∏ i, (1 + Polynomial.C (g i) * Polynomial.X)) (k : ℕ) :
+    ((((∏ i, rawFactor (g i)) *
+          (1 + rightVariable) ^ (M - Fintype.card I)).coeff k).coeff k) =
+      ∑ j ∈ Finset.range (Fintype.card I + 1),
+        p.coeff j * (Nat.choose j k : ℝ) * (Nat.choose (M - j) k : ℝ) := by
+  classical
+  rw [diagonal_coeff_rawFactor_prod_eq_subset_sum g hcard k]
+  have hpowerset_univ :
+      (Finset.univ : Finset I).powerset =
+        (Finset.univ : Finset (Finset I)) := by
+    ext S
+    simp
+  change
+    (∑ S ∈ (Finset.univ : Finset (Finset I)),
+        (∏ i ∈ S, g i) * (Nat.choose S.card k : ℝ) *
+          (Nat.choose (M - S.card) k : ℝ)) = _
+  rw [← hpowerset_univ, Finset.sum_powerset]
+  apply Finset.sum_congr rfl
+  intro j hj
+  have hp_coeff :
+      p.coeff j =
+        ∑ S ∈ (Finset.univ : Finset I).powersetCard j, ∏ i ∈ S, g i := by
+    rw [hp]
+    simpa using coeff_prod_one_add_C_mul_X (Finset.univ : Finset I) g j
+  calc
+    (∑ S ∈ (Finset.univ : Finset I).powersetCard j,
+        (∏ i ∈ S, g i) * (Nat.choose S.card k : ℝ) *
+          (Nat.choose (M - S.card) k : ℝ)) =
+        ∑ S ∈ (Finset.univ : Finset I).powersetCard j,
+          (∏ i ∈ S, g i) * (Nat.choose j k : ℝ) *
+            (Nat.choose (M - j) k : ℝ) := by
+      apply Finset.sum_congr rfl
+      intro S hS
+      rw [(Finset.mem_powersetCard.mp hS).2]
+    _ = p.coeff j * (Nat.choose j k : ℝ) * (Nat.choose (M - j) k : ℝ) := by
+      rw [← Finset.sum_mul, ← Finset.sum_mul, ← hp_coeff]
+
 theorem scalar_mul_normalizedFactor (g : ℝ) (hg : 0 < g) :
     embedReal (1 + g) * normalizedFactor (g / (1 + g)) (1 / (1 + g)) =
       rawFactor g := by
