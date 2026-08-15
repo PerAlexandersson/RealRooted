@@ -256,6 +256,7 @@ import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.PFPolynomial
+import RealRooted.RankTwoMatchingModel
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
