@@ -2760,6 +2760,80 @@ theorem supportSimplicialXCompatible_of_smaller
     exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
       G S K hK.2.1 hK.1 hbase hdel hpair
 
+/-- Weighted support-level simplicial self/shift compatibility induction
+step. -/
+theorem weightedSupportSimplicialXCompatible_of_smaller
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (wt : V → ℝ) {S : Finset V} (hwt : ∀ v ∈ S, 0 ≤ wt v)
+    (hSplit : WeightedSupportIndepPolySplits G wt S)
+    (hPairSmall : ∀ T : Finset V, T.card < S.card →
+      WeightedSupportSimplicialPairCompatible G wt T)
+    (hXSmall : ∀ T : Finset V, T.card < S.card →
+      WeightedSupportSimplicialXCompatible G wt T) :
+    WeightedSupportSimplicialXCompatible G wt S := by
+  intro K hK
+  by_cases hK_empty : K = ∅
+  · subst hK_empty
+    have hS : (weightedIndepPolyOn G S wt).Splits :=
+      hSplit S Subset.rfl
+    simpa using
+      compatible_weightedIndepPolyOn_X_mul_self_of_splits G S wt hS
+  · have hK_nonempty : K.Nonempty :=
+      Finset.nonempty_iff_ne_empty.mpr hK_empty
+    have hsmall : (S \ K).card < S.card :=
+      Finset.card_lt_card (Finset.sdiff_ssubset hK.1 hK_nonempty)
+    have hbase : (weightedIndepPolyOn G (S \ K) wt).Splits :=
+      hSplit (S \ K) sdiff_subset
+    have hneighbor_simp : ∀ v ∈ K,
+        IsSimplicialCliqueOn G (S \ K)
+          (neighborOutsideCliqueOn G S K v) := by
+      intro v hv
+      exact hG.simplicialClique_neighborOutside hK hv
+    have hbase_neighbor_x : ∀ v ∈ K,
+        Compatible (weightedIndepPolyOn G (S \ K) wt)
+          (X * weightedIndepPolyOn G
+            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) := by
+      intro v hv
+      exact hXSmall (S \ K) hsmall (hneighbor_simp v hv)
+    have hbase_neighbor : ∀ v ∈ K,
+        Compatible (weightedIndepPolyOn G (S \ K) wt)
+          (weightedIndepPolyOn G
+            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) := by
+      intro v hv
+      simpa using (hPairSmall (S \ K) hsmall)
+        (isSimplicialCliqueOn_empty G (S \ K)) (hneighbor_simp v hv)
+    have hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
+        Compatible
+          (weightedIndepPolyOn G
+            ((S \ K) \ neighborOutsideCliqueOn G S K u) wt)
+          (weightedIndepPolyOn G
+            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) := by
+      intro u hu v hv
+      exact (hPairSmall (S \ K) hsmall)
+        (hneighbor_simp u hu) (hneighbor_simp v hv)
+    have hpair : PairwiseCompatible
+        (weightedCliqueDeletionCompatibilityFamily G wt S K) :=
+      weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
+        G wt hK.2.1 hK.1 hbase hbase_neighbor_x hbase_neighbor
+          hneighbor_pair
+    have hdel : ∀ v ∈ K,
+        (weightedIndepPolyOn G
+          (deleteClosedNeighborSupport G S v) wt).Splits := by
+      intro v hv
+      have hsupport :=
+        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+          G hK.2.1 hK.1 hv
+      have hsub :
+          (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S := by
+        intro w hw
+        simp_all
+      simpa [hsupport] using
+        hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
+    exact
+      compatible_weightedIndepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
+        G wt S K hK.2.1 hK.1 hwt hbase hdel hpair
+
 /-- Support-level Chudnovsky--Seymour theorem for claw-free graphs: every
 support-restricted independence polynomial is real-rooted. -/
 theorem supportIndepPoly_splits_of_clawFree
