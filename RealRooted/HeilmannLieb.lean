@@ -2301,6 +2301,104 @@ theorem supportVertexDeletionCompatible_of_smaller
       huS_erase_v huv hBaseSplit hDelUSplit hDelVSplit hBaseDelU hBaseDelV
       (hPairSmall (S \ commonClosedNeighborSetOn G S u v) hCommonSmall)
 
+/-- Weighted support-level vertex-deletion compatibility induction step. -/
+theorem weightedSupportVertexDeletionCompatible_of_smaller
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (wt : V → ℝ) {S : Finset V} (hwt : ∀ v ∈ S, 0 ≤ wt v)
+    (hSplitSmall : ∀ T : Finset V, T.card < S.card →
+      (weightedIndepPolyOn G T wt).Splits)
+    (hPairSmall : ∀ T : Finset V, T.card < S.card →
+      WeightedSupportSimplicialPairCompatible G wt T)
+    (hVertexSmall : ∀ T : Finset V, T.card < S.card →
+      WeightedSupportVertexDeletionCompatible G wt T) :
+    WeightedSupportVertexDeletionCompatible G wt S := by
+  intro v hvS
+  let N := neighborSetOn G (S.erase v) v
+  by_cases hN_empty : N = ∅
+  · exact
+      compatible_weightedIndepPolyOn_erase_X_mul_deleteClosedNeighborSupport_of_no_neighbors
+        G wt hN_empty
+        (hSplitSmall (S.erase v) (Finset.card_erase_lt_of_mem hvS))
+  · have hN_nonempty : N.Nonempty := Finset.nonempty_iff_ne_empty.mpr hN_empty
+    rcases hN_nonempty with ⟨u, huN⟩
+    have huN' := Finset.mem_filter.mp huN
+    have huS_erase_v : u ∈ S.erase v := huN'.1
+    have huv_vu : G.Adj v u := huN'.2
+    have huv : G.Adj u v := huv_vu.symm
+    have huS : u ∈ S := Finset.mem_of_mem_erase huS_erase_v
+    have hv_ne_u : v ≠ u := fun h =>
+      (Finset.mem_erase.mp huS_erase_v).1 h.symm
+    have hvS_erase_u : v ∈ S.erase u :=
+      Finset.mem_erase.mpr ⟨hv_ne_u, hvS⟩
+    have hEraseVSmall : (S.erase v).card < S.card :=
+      Finset.card_erase_lt_of_mem hvS
+    have hEraseUSmall : (S.erase u).card < S.card :=
+      Finset.card_erase_lt_of_mem huS
+    have hBaseSplit :
+        (weightedIndepPolyOn G ((S.erase v).erase u) wt).Splits := by
+      exact hSplitSmall ((S.erase v).erase u) <|
+        lt_of_le_of_lt
+          (Finset.card_le_card (Finset.erase_subset u (S.erase v)))
+          hEraseVSmall
+    have hDelUSplit :
+        (weightedIndepPolyOn G
+          (deleteClosedNeighborSupport G S u) wt).Splits :=
+      hSplitSmall (deleteClosedNeighborSupport G S u) <|
+        lt_of_le_of_lt
+          (Finset.card_le_card
+            (deleteClosedNeighborSupport_subset_erase G S u))
+          hEraseUSmall
+    have hDelVSplit :
+        (weightedIndepPolyOn G
+          (deleteClosedNeighborSupport G S v) wt).Splits :=
+      hSplitSmall (deleteClosedNeighborSupport G S v) <|
+        lt_of_le_of_lt
+          (Finset.card_le_card
+            (deleteClosedNeighborSupport_subset_erase G S v))
+          hEraseVSmall
+    have hBaseDelU :
+        Compatible (weightedIndepPolyOn G ((S.erase v).erase u) wt)
+          (X * weightedIndepPolyOn G
+            (deleteClosedNeighborSupport G S u) wt) := by
+      have h := hVertexSmall (S.erase v) hEraseVSmall huS_erase_v
+      have hsupport :
+          deleteClosedNeighborSupport G (S.erase v) u =
+            deleteClosedNeighborSupport G S u :=
+        deleteClosedNeighborSupport_erase_eq_of_adj G huv
+      simp_all
+    have hBaseDelV :
+        Compatible (weightedIndepPolyOn G ((S.erase v).erase u) wt)
+          (X * weightedIndepPolyOn G
+            (deleteClosedNeighborSupport G S v) wt) := by
+      have h := hVertexSmall (S.erase u) hEraseUSmall hvS_erase_u
+      have herase : (S.erase u).erase v = (S.erase v).erase u := by
+        ext w
+        by_cases hwv : w = v <;> by_cases hwu : w = u <;>
+          simp [Finset.mem_erase, hwv, hwu]
+      have hsupport :
+          deleteClosedNeighborSupport G (S.erase u) v =
+            deleteClosedNeighborSupport G S v :=
+        deleteClosedNeighborSupport_erase_eq_of_adj G huv_vu
+      simp_all
+    have hCommonSub : commonClosedNeighborSetOn G S u v ⊆ S :=
+      commonClosedNeighborSetOn_subset G S u v
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
+      exact Finset.mem_inter.mpr
+        ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
+          Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
+    have hCommonNonempty :
+        (commonClosedNeighborSetOn G S u v).Nonempty :=
+      ⟨u, huCommon⟩
+    have hCommonSmall :
+        (S \ commonClosedNeighborSetOn G S u v).card < S.card :=
+      Finset.card_lt_card (Finset.sdiff_ssubset hCommonSub hCommonNonempty)
+    exact
+      compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
+        hG wt hwt huS_erase_v huv hBaseSplit hDelUSplit hDelVSplit
+        hBaseDelU hBaseDelV
+        (hPairSmall (S \ commonClosedNeighborSetOn G S u v) hCommonSmall)
+
 /-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
 new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
 the two smaller-support compatibility invariants on `S \ (K ∪ L)`. -/
