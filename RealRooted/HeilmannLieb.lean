@@ -52,6 +52,20 @@ def weightedIndepPolyOn {V : Type u} [DecidableEq V]
     (S : Finset V) (wt : V → ℝ) : ℝ[X] :=
   ∑ s ∈ indepSetsOn G S, (∏ v ∈ s, C (wt v)) * (X : ℝ[X]) ^ s.card
 
+/-- Weighted independence polynomial of a finite graph. -/
+def weightedIndepPoly {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (wt : V → ℝ) : ℝ[X] :=
+  weightedIndepPolyOn G Finset.univ wt
+
+/-- The weighted support-restricted definition recovers the global weighted
+independence polynomial on the full vertex set. -/
+theorem weightedIndepPoly_eq_weightedIndepPolyOn_univ
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ) :
+    weightedIndepPoly G wt = weightedIndepPolyOn G Finset.univ wt := by
+  rfl
+
 /-- The weighted support-restricted independence polynomial with all weights
 equal to `1` is the unweighted support-restricted independence polynomial. -/
 theorem weightedIndepPolyOn_one {V : Type u} [DecidableEq V]
@@ -2987,6 +3001,15 @@ theorem weightedSupportIndepPoly_splits_of_clawFree
   intro S
   exact (hmain S.card S rfl).1 S Subset.rfl
 
+/-- Weighted Chudnovsky--Seymour theorem for finite claw-free graphs. -/
+theorem clawFree_weightedIndepPoly_splits
+    {V : Type u} [Fintype V] [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj]
+    (hG : ClawFree G) (wt : V → ℝ) (hwt : ∀ v, 0 ≤ wt v) :
+    (weightedIndepPoly G wt).Splits := by
+  rw [weightedIndepPoly_eq_weightedIndepPolyOn_univ]
+  exact weightedSupportIndepPoly_splits_of_clawFree hG wt hwt Finset.univ
+
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
 theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
@@ -3090,6 +3113,14 @@ def matchingGeneratingPolynomial {V : Type u} [Fintype V] [DecidableEq V]
   classical
   exact indepPoly G.lineGraph
 
+/-- Weighted matching-generating polynomial, represented as the weighted
+independence polynomial of the line graph. -/
+def weightedMatchingGeneratingPolynomial
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) : ℝ[X] := by
+  classical
+  exact weightedIndepPoly G.lineGraph wt
+
 /-- Intrinsic matching-generating polynomial as a sum over finite matchings of
 edge sets. -/
 def matchingPolynomialByEdges {V : Type u} [Fintype V] [DecidableEq V]
@@ -3099,6 +3130,16 @@ def matchingPolynomialByEdges {V : Type u} [Fintype V] [DecidableEq V]
       IsMatchingEdgeFinset G M),
     (X : ℝ[X]) ^ M.card
 
+/-- Intrinsic weighted matching-generating polynomial as a sum over finite
+matchings of edge sets. -/
+def weightedMatchingPolynomialByEdges
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) : ℝ[X] := by
+  classical
+  exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet =>
+      IsMatchingEdgeFinset G M),
+    (∏ e ∈ M, C (wt e)) * (X : ℝ[X]) ^ M.card
+
 /-- The intrinsic edge-matching polynomial agrees with the line-graph
 independence-polynomial definition. -/
 theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
@@ -3106,6 +3147,19 @@ theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
     matchingPolynomialByEdges G = matchingGeneratingPolynomial G := by
   classical
   simp [matchingPolynomialByEdges, matchingGeneratingPolynomial, indepPoly,
+    isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
+
+/-- The intrinsic weighted edge-matching polynomial agrees with the weighted
+line-graph independence-polynomial definition. -/
+theorem weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) :
+    weightedMatchingPolynomialByEdges G wt =
+      weightedMatchingGeneratingPolynomial G wt := by
+  classical
+  simp [weightedMatchingPolynomialByEdges,
+    weightedMatchingGeneratingPolynomial, weightedIndepPoly,
+    weightedIndepPolyOn, indepSetsOn,
     isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
 
 /-- The empty independent set gives the constant coefficient of the
@@ -3230,6 +3284,26 @@ theorem matchingPolynomialByEdges_splits
     (matchingPolynomialByEdges G).Splits := by
   rw [matchingPolynomialByEdges_eq_matchingGeneratingPolynomial]
   exact matchingGeneratingPolynomial_splits G
+
+/-- Weighted Heilmann--Lieb theorem for the line-graph matching polynomial. -/
+theorem weightedMatchingGeneratingPolynomial_splits
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
+    (hwt : ∀ e, 0 ≤ wt e) :
+    (weightedMatchingGeneratingPolynomial G wt).Splits := by
+  classical
+  exact clawFree_weightedIndepPoly_splits
+    (G := G.lineGraph) (lineGraph_clawFree G) wt hwt
+
+/-- Weighted Heilmann--Lieb theorem for the intrinsic edge-matching
+polynomial. -/
+theorem weightedMatchingPolynomialByEdges_splits
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
+    (hwt : ∀ e, 0 ≤ wt e) :
+    (weightedMatchingPolynomialByEdges G wt).Splits := by
+  rw [weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial]
+  exact weightedMatchingGeneratingPolynomial_splits G wt hwt
 
 end Graph
 end RealRooted
