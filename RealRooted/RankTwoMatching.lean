@@ -26,6 +26,19 @@ theorem completeGraphRankTwoWeight_mk (a b : V → ℝ) (i j : V) (hij : i ≠ j
       a i * b j + a j * b i := by
   rfl
 
+omit [Fintype V] [DecidableEq V] in
+/-- Nonnegative rank-two vertex factors give nonnegative complete-graph edge
+weights. -/
+theorem completeGraphRankTwoWeight_nonneg (a b : V → ℝ)
+    (ha : ∀ i, 0 ≤ a i) (hb : ∀ i, 0 ≤ b i) :
+    ∀ e, 0 ≤ completeGraphRankTwoWeight a b e := by
+  intro e
+  rcases e with ⟨e, he⟩
+  induction e using Sym2.inductionOn with
+  | _ i j =>
+      exact add_nonneg (mul_nonneg (ha i) (hb j))
+        (mul_nonneg (ha j) (hb i))
+
 private def edgeOrientationWeight (a b : V → ℝ)
     (e : (_root_.SimpleGraph.completeGraph V).edgeSet) (i : V) : ℝ :=
   if hi : i ∈ e.1 then a i * b (Sym2.Mem.other' hi) else 0
