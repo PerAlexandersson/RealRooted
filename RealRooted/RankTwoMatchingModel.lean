@@ -38,6 +38,107 @@ def normalizedFactor (a b : ℝ) : Bivariate :=
 def rawFactor (g : ℝ) : Bivariate :=
   (1 + rightVariable) + embedReal g * (1 + leftVariable)
 
+/-- The total weight of ordered disjoint pairs of `k`-subsets. -/
+def disjointSubsetWeight {I : Type*} [Fintype I]
+    (a b : I → ℝ) (k : ℕ) : ℝ := by
+  classical
+  exact
+    ∑ B ∈ (Finset.univ : Finset I).powersetCard k,
+      (∏ i ∈ B, b i) *
+        ∑ A ∈ ((Finset.univ : Finset I) \ B).powersetCard k,
+          ∏ i ∈ A, a i
+
+private theorem prod_C_mul_X_eq {I R : Type*} [CommSemiring R]
+    (s : Finset I) (c : I → R) :
+    ∏ i ∈ s, (Polynomial.C (c i) * Polynomial.X) =
+      Polynomial.C (∏ i ∈ s, c i) * Polynomial.X ^ s.card := by
+  rw [Finset.prod_mul_distrib, ← map_prod]
+  simp
+
+private theorem coeff_prod_one_add_C_mul_X {I : Type*}
+    (s : Finset I) (c : I → ℝ) (k : ℕ) :
+    (∏ i ∈ s, (1 + Polynomial.C (c i) * Polynomial.X)).coeff k =
+      ∑ A ∈ s.powersetCard k, ∏ i ∈ A, c i := by
+  classical
+  rw [Finset.prod_one_add, Polynomial.finsetSum_coeff]
+  have hterm (A : Finset I) :
+      (∏ i ∈ A, (Polynomial.C (c i) * Polynomial.X)).coeff k =
+        if k = A.card then ∏ i ∈ A, c i else 0 := by
+    rw [prod_C_mul_X_eq, Polynomial.coeff_C_mul_X_pow]
+  simp_rw [hterm]
+  rw [Finset.powersetCard_eq_filter]
+  rw [Finset.sum_filter]
+  simp only [eq_comm]
+
+/-- The double disjoint-subset weight is the diagonal bivariate coefficient of
+the normalized rank-two product. -/
+theorem disjointSubsetWeight_eq_diagonal_coeff
+    {I : Type*} [Fintype I] (a b : I → ℝ) (k : ℕ) :
+    disjointSubsetWeight a b k =
+      ((∏ i, normalizedFactor (a i) (b i)).coeff k).coeff k := by
+  classical
+  have hfactor (i : I) :
+      normalizedFactor (a i) (b i) =
+        Polynomial.C (Polynomial.C (b i)) * Polynomial.X +
+          Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X) := by
+    simp [normalizedFactor, embedReal, embedRealHom, leftVariable, rightVariable]
+    ring
+  rw [show (∏ i, normalizedFactor (a i) (b i)) =
+      ∏ i, (Polynomial.C (Polynomial.C (b i)) * Polynomial.X +
+        Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X)) by
+      apply Finset.prod_congr rfl
+      intro i _hi
+      exact hfactor i]
+  rw [Fintype.prod_add]
+  simp only [Polynomial.finsetSum_coeff]
+  have houter (B : Finset I) :
+      (((∏ i ∈ B, Polynomial.C (Polynomial.C (b i)) * Polynomial.X) *
+            ∏ i ∈ Bᶜ,
+              Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X)).coeff k).coeff k =
+        if k = B.card then
+          (∏ i ∈ B, b i) *
+            ((∏ i ∈ Bᶜ,
+              (1 + Polynomial.C (a i) * Polynomial.X)).coeff k)
+        else 0 := by
+    have hleft :
+        (∏ i ∈ B, Polynomial.C (Polynomial.C (b i)) * Polynomial.X) =
+          Polynomial.C (Polynomial.C (∏ i ∈ B, b i)) *
+            Polynomial.X ^ B.card := by
+      simpa only [map_prod] using
+        (prod_C_mul_X_eq B (fun i ↦ Polynomial.C (b i)))
+    have hright :
+        (∏ i ∈ Bᶜ,
+            Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X)) =
+          Polynomial.C
+            (∏ i ∈ Bᶜ, (1 + Polynomial.C (a i) * Polynomial.X)) := by
+      rw [map_prod]
+    rw [hleft, hright]
+    have hcombine :
+        (Polynomial.C (Polynomial.C (∏ i ∈ B, b i)) *
+            Polynomial.X ^ B.card) *
+            Polynomial.C
+              (∏ i ∈ Bᶜ, (1 + Polynomial.C (a i) * Polynomial.X)) =
+          Polynomial.C
+              (Polynomial.C (∏ i ∈ B, b i) *
+                ∏ i ∈ Bᶜ, (1 + Polynomial.C (a i) * Polynomial.X)) *
+            Polynomial.X ^ B.card := by
+      rw [Polynomial.C_mul]
+      ring
+    rw [hcombine, Polynomial.coeff_C_mul_X_pow]
+    split_ifs with hk
+    · rw [Polynomial.coeff_C_mul]
+    · simp
+  simp_rw [houter]
+  simp_rw [coeff_prod_one_add_C_mul_X]
+  have hpowerset_univ :
+      (Finset.univ : Finset I).powerset =
+        (Finset.univ : Finset (Finset I)) := by
+    ext B
+    simp
+  simp only [disjointSubsetWeight]
+  rw [Finset.powersetCard_eq_filter, Finset.sum_filter, hpowerset_univ]
+  simp only [Finset.compl_eq_univ_sdiff, eq_comm]
+
 theorem scalar_mul_normalizedFactor (g : ℝ) (hg : 0 < g) :
     embedReal (1 + g) * normalizedFactor (g / (1 + g)) (1 / (1 + g)) =
       rawFactor g := by
