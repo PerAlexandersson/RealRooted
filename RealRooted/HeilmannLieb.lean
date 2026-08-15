@@ -2906,6 +2906,87 @@ theorem supportIndepPoly_splits_of_clawFree
   intro S
   exact (hmain S.card S rfl).1 S Subset.rfl
 
+/-- Weighted support-level Chudnovsky--Seymour theorem: nonnegative vertex
+weights preserve real-rootedness of independence polynomials of claw-free
+graphs. -/
+theorem weightedSupportIndepPoly_splits_of_clawFree
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (wt : V → ℝ) (hwt : ∀ v, 0 ≤ wt v) :
+    ∀ S : Finset V, (weightedIndepPolyOn G S wt).Splits := by
+  classical
+  have hmain : ∀ n : ℕ, ∀ S : Finset V, S.card = n →
+      WeightedSupportIndepPolySplits G wt S ∧
+        WeightedSupportSimplicialPairCompatible G wt S ∧
+          WeightedSupportSimplicialXCompatible G wt S ∧
+            WeightedSupportVertexDeletionCompatible G wt S := by
+    intro n
+    refine Nat.strongRecOn n ?_
+    intro n ih S hcard
+    have hSplitSmall : ∀ T : Finset V, T.card < S.card →
+        (weightedIndepPolyOn G T wt).Splits := by
+      intro T hT
+      have hTn : T.card < n := by simp_all
+      exact (ih T.card hTn T rfl).1 T Subset.rfl
+    have hPairSmall : ∀ T : Finset V, T.card < S.card →
+        WeightedSupportSimplicialPairCompatible G wt T := by
+      intro T hT
+      have hTn : T.card < n := by simp_all
+      intro K L hK hL
+      exact (ih T.card hTn T rfl).2.1 hK hL
+    have hXSmall : ∀ T : Finset V, T.card < S.card →
+        WeightedSupportSimplicialXCompatible G wt T := by
+      intro T hT
+      have hTn : T.card < n := by simp_all
+      intro K hK
+      exact (ih T.card hTn T rfl).2.2.1 hK
+    have hVertexSmall : ∀ T : Finset V, T.card < S.card →
+        WeightedSupportVertexDeletionCompatible G wt T := by
+      intro T hT
+      have hTn : T.card < n := by simp_all
+      intro v hv
+      exact (ih T.card hTn T rfl).2.2.2 hv
+    have hVertex : WeightedSupportVertexDeletionCompatible G wt S :=
+      weightedSupportVertexDeletionCompatible_of_smaller
+        hG wt (fun v _hv => hwt v) hSplitSmall hPairSmall hVertexSmall
+    have hSplitSelf : (weightedIndepPolyOn G S wt).Splits := by
+      by_cases hS_empty : S = ∅
+      · subst hS_empty
+        exact weightedIndepPolyOn_empty_splits G wt
+      · have hS_nonempty : S.Nonempty :=
+          Finset.nonempty_iff_ne_empty.mpr hS_empty
+        rcases hS_nonempty with ⟨v, hvS⟩
+        have hsum_ne :
+            weightedIndepPolyOn G (S.erase v) wt +
+              C (wt v) *
+                (X * weightedIndepPolyOn G
+                  (deleteClosedNeighborSupport G S v) wt) ≠ 0 := by
+          intro hzero
+          exact weightedIndepPolyOn_ne_zero G S wt (by
+            rw [weightedIndepPolyOn_erase G wt hvS]
+            simpa [mul_assoc] using hzero)
+        have hsum_splits :=
+          splits_add_C_mul_of_compatible
+            (hVertex hvS) (r := wt v) (hwt v) hsum_ne
+        rw [weightedIndepPolyOn_erase G wt hvS]
+        simpa [mul_assoc] using hsum_splits
+    have hSplit : WeightedSupportIndepPolySplits G wt S := by
+      intro T hTS
+      by_cases hTS_eq : T = S
+      · simp_all
+      · have hproper : T ⊂ S :=
+          Finset.ssubset_iff_subset_ne.mpr ⟨hTS, hTS_eq⟩
+        exact hSplitSmall T (Finset.card_lt_card hproper)
+    have hPair : WeightedSupportSimplicialPairCompatible G wt S :=
+      weightedSupportSimplicialPairCompatible_of_smaller
+        hG wt (fun v _hv => hwt v) hSplit hPairSmall hXSmall
+    have hX : WeightedSupportSimplicialXCompatible G wt S :=
+      weightedSupportSimplicialXCompatible_of_smaller
+        hG wt (fun v _hv => hwt v) hSplit hPairSmall hXSmall
+    simp_all
+  intro S
+  exact (hmain S.card S rfl).1 S Subset.rfl
+
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
 theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
