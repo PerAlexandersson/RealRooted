@@ -2975,6 +2975,78 @@ theorem prec_narayanaPolynomial_succ (m n : ℕ) :
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   simpa [P] using hbuild n
 
+private lemma gammaTransform_succ_of_natDegree_le
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
+  rcases Nat.mod_two_eq_zero_or_one d with hd | hd
+  · have hd' : d = 2 * (d / 2) := by omega
+    rw [hd']
+    exact gammaTransform_odd (d / 2) γ
+  · have hd' : d = 2 * (d / 2) + 1 := by omega
+    have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by omega))
+    rw [hd']
+    change gammaTransform (2 * (d / 2 + 1)) γ =
+      (X + 1) * gammaTransform (2 * (d / 2) + 1) γ
+    rw [gammaTransform_even_succ, hcoeff]
+    simp
+
+/-- The binomial-square Narayana gamma rows satisfy the transported pure
+three-term recurrence. -/
+theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
+    C ((n : ℝ) + 2) * narayanaZeroGammaPolynomial (n + 2) =
+      C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) -
+        C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n := by
+  let γ₂ := C ((n : ℝ) + 2) * narayanaZeroGammaPolynomial (n + 2)
+  let γ₁ := C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1)
+  let γ₀ := C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n
+  have hγ₂ : γ₂.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₂]
+    rw [natDegree_C_mul (by positivity)]
+    exact natDegree_narayanaZeroGammaPolynomial_le (n + 2)
+  have hγ₁ : γ₁.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₁]
+    rw [natDegree_C_mul (by positivity)]
+    exact (natDegree_narayanaZeroGammaPolynomial_le (n + 1)).trans (by omega)
+  have hγ₀ : γ₀.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₀]
+    calc
+      (C ((n : ℝ) + 1) * (1 - C 4 * X) *
+          narayanaZeroGammaPolynomial n).natDegree ≤
+          (C ((n : ℝ) + 1) * (1 - C 4 * X)).natDegree +
+            (narayanaZeroGammaPolynomial n).natDegree := natDegree_mul_le
+      _ ≤ 1 + n / 2 := by
+        gcongr
+        · compute_degree!
+        · exact natDegree_narayanaZeroGammaPolynomial_le n
+      _ ≤ (n + 2) / 2 := by omega
+  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
+    exact (natDegree_sub_le γ₁ γ₀).trans
+      (max_le hγ₁ hγ₀)
+  apply gammaTransform_injective_of_natDegree_le hγ₂ hγsub
+  dsimp [γ₂, γ₁, γ₀]
+  rw [gammaTransform_C_mul, gammaTransform_narayanaZeroGammaPolynomial]
+  rw [show C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) -
+      C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n =
+      C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) +
+        C (-((n : ℝ) + 1)) *
+          (narayanaZeroGammaPolynomial n + C (-4) *
+            (X * narayanaZeroGammaPolynomial n)) by
+              rw [map_neg, map_neg]
+              ring]
+  rw [gammaTransform_add, gammaTransform_C_mul, gammaTransform_C_mul,
+    gammaTransform_add, gammaTransform_C_mul,
+    gammaTransform_succ_of_natDegree_le
+      (natDegree_narayanaZeroGammaPolynomial_le (n + 1)),
+    gammaTransform_pad_two (natDegree_narayanaZeroGammaPolynomial_le n),
+    gammaTransform_X_mul_two]
+  simp only [gammaTransform_narayanaZeroGammaPolynomial]
+  have hrec := narayanaPolynomial_pure_rec 0 n
+  simp only [Nat.cast_zero, mul_zero] at hrec
+  rw [map_neg, map_neg]
+  rw [C_ofNat 4]
+  convert hrec using 1 <;> ring_nf
+
 /-- Generalized Narayana polynomials split over the reals. -/
 theorem splits_narayanaPolynomial (m n : ℕ) :
     (narayanaPolynomial m n).Splits := by
