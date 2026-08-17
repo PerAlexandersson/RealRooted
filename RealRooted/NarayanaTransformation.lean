@@ -3002,6 +3002,37 @@ theorem splits_narayanaZeroGammaPolynomial (n : ℕ) :
     (narayanaZeroGammaPolynomial n).Splits :=
   (narayanaZeroGammaPolynomial_realRooted n).1.2
 
+/-- Consecutive gamma polynomials of the binomial-square Narayana family are
+in proper position. -/
+theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
+    Prec (narayanaZeroGammaPolynomial n)
+      (narayanaZeroGammaPolynomial (n + 1)) := by
+  cases n with
+  | zero =>
+      simpa [narayanaZeroGammaPolynomial] using
+        (prec_refl (by simp) (by simp) : Prec (1 : ℝ[X]) 1)
+  | succ n =>
+      rw [← prec_gammaTransform_succ_iff
+        (natDegree_narayanaZeroGammaPolynomial_le (n + 1))
+        (natDegree_narayanaZeroGammaPolynomial_le (n + 2))]
+      · rw [gammaTransform_narayanaZeroGammaPolynomial,
+          gammaTransform_narayanaZeroGammaPolynomial]
+        exact prec_narayanaPolynomial_succ 0 n
+      · intro k
+        by_cases hk : k ≤ (n + 1) / 2
+        · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
+          positivity
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
+      · intro k
+        by_cases hk : k ≤ (n + 2) / 2
+        · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
+          positivity
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+        norm_num
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+        norm_num
+
 /-- The generalized Narayana polynomials are PF polynomials. -/
 theorem narayanaPolynomialRootLocation :
     narayanaPolynomialRootLocationStatement :=
