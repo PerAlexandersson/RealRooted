@@ -40,6 +40,53 @@ theorem applyAsDifferentialOperator_eq_sum_range {f : ℝ[X]} {N : ℕ}
   have : f.natDegree < k := by simpa using hk
   simp [coeff_eq_zero_of_natDegree_lt this]
 
+/-- The top-degree coefficient of `f(D)g` comes only from the constant term
+of the symbol `f`. -/
+theorem coeff_applyAsDifferentialOperator_natDegree (f g : ℝ[X]) :
+    (applyAsDifferentialOperator f g).coeff g.natDegree =
+      f.coeff 0 * g.coeff g.natDegree := by
+  rw [applyAsDifferentialOperator, Polynomial.finsetSum_coeff,
+    Finset.sum_eq_single 0]
+  · simp
+  · intro k _ hk
+    have hkpos : 0 < k := Nat.pos_of_ne_zero hk
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_iterate_derivative,
+      Polynomial.coeff_eq_zero_of_natDegree_lt (Nat.lt_add_of_pos_right hkpos)]
+    simp
+  · simp
+
+/-- A constant-term-one differential symbol sends a monic polynomial to a
+monic polynomial. -/
+theorem applyAsDifferentialOperator_monic {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    (applyAsDifferentialOperator f g).Monic := by
+  apply Polynomial.monic_of_natDegree_le_of_coeff_eq_one g.natDegree
+  · apply Polynomial.natDegree_sum_le_of_forall_le
+    intro k _
+    exact (Polynomial.natDegree_C_mul_le _ _).trans
+      ((Polynomial.natDegree_iterate_derivative g k).trans (Nat.sub_le _ _))
+  · rw [coeff_applyAsDifferentialOperator_natDegree, hf0, hg.coeff_natDegree]
+    norm_num
+
+/-- A constant-term-one differential symbol preserves the degree of a monic
+input. -/
+theorem natDegree_applyAsDifferentialOperator {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    (applyAsDifferentialOperator f g).natDegree = g.natDegree := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+  · apply Polynomial.natDegree_sum_le_of_forall_le
+    intro k _
+    exact (Polynomial.natDegree_C_mul_le _ _).trans
+      ((Polynomial.natDegree_iterate_derivative g k).trans (Nat.sub_le _ _))
+  · rw [coeff_applyAsDifferentialOperator_natDegree, hf0, hg.coeff_natDegree]
+    norm_num
+
+/-- A constant-term-one differential symbol cannot annihilate a monic input. -/
+theorem applyAsDifferentialOperator_ne_zero {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    applyAsDifferentialOperator f g ≠ 0 :=
+  (applyAsDifferentialOperator_monic hf0 hg).ne_zero
+
 @[simp] theorem applyAsDifferentialOperator_zero_right (f : ℝ[X]) :
     applyAsDifferentialOperator f 0 = 0 := by
   simp [applyAsDifferentialOperator]
