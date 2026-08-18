@@ -295,6 +295,93 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
   rcases hz_range with ⟨r, rfl⟩
   simp
 
+/-- A real polynomial splits if all of its complex roots have zero imaginary
+part. -/
+theorem splits_of_forall_aeval_im_eq_zero {p : ℝ[X]}
+    (h : ∀ z : ℂ, p.aeval z = 0 → z.im = 0) :
+    p.Splits := by
+  rcases eq_or_ne p 0 with rfl | hp
+  · exact Polynomial.Splits.zero
+  obtain ⟨m, hm⟩ := Polynomial.splits_iff_exists_multiset.mp
+    (IsAlgClosed.splits (p.map (algebraMap ℝ ℂ)))
+  have hmem : ∀ a ∈ m, ((a.re : ℝ) : ℂ) = a := by
+    intro a ha
+    have hdvd : (X - C a) ∣ p.map (algebraMap ℝ ℂ) := by
+      rw [hm]
+      exact Dvd.dvd.mul_left (Multiset.dvd_prod (Multiset.mem_map_of_mem _ ha)) _
+    have hroot : (p.map (algebraMap ℝ ℂ)).IsRoot a := by
+      rwa [← Polynomial.dvd_iff_isRoot]
+    have hz : p.aeval a = 0 := by
+      rw [Polynomial.aeval_def, ← Polynomial.eval_map]
+      exact hroot
+    exact Complex.ext rfl (by simp [h a hz])
+  have hlc : (p.map (algebraMap ℝ ℂ)).leadingCoeff = ((p.leadingCoeff : ℝ) : ℂ) := by
+    apply Polynomial.leadingCoeff_map_of_leadingCoeff_ne_zero
+    simpa using Polynomial.leadingCoeff_ne_zero.mpr hp
+  refine Polynomial.splits_iff_exists_multiset.mpr ⟨m.map Complex.re, ?_⟩
+  apply Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
+  rw [hm, hlc, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_multiset_prod,
+    Multiset.map_map, Multiset.map_map]
+  refine congrArg _ (congrArg Multiset.prod (Multiset.map_congr rfl ?_))
+  intro a ha
+  simp [hmem a ha]
+
+/-- A complex root of a nonzero split real polynomial is real. -/
+theorem im_eq_zero_of_aeval_eq_zero {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
+    {z : ℂ} (hz : p.aeval z = 0) :
+    z.im = 0 := by
+  have hzroot : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
+    simpa [Polynomial.aeval_def, Polynomial.eval_map] using hz
+  rcases hs.mem_range_of_isRoot hp hzroot with ⟨r, rfl⟩
+  simp
+
+/-- If `(1 - u²) / u` is real for nonzero `u`, then `-u²` is real. -/
+theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
+    (hreal : ((1 - u ^ 2) / u).im = 0) :
+    (-(u ^ 2)).im = 0 := by
+  have heq : (1 - u ^ 2) / u = u⁻¹ - u := by
+    field_simp
+  have him : u⁻¹.im - u.im = 0 := by
+    rw [heq, Complex.sub_im] at hreal
+    exact hreal
+  rw [Complex.inv_im] at him
+  have hnorm : 0 < Complex.normSq u := Complex.normSq_pos.mpr hu
+  have huim : u.im = 0 := by
+    field_simp at him
+    nlinarith
+  rw [Complex.neg_im, pow_two, Complex.mul_im, huim]
+  ring
+
+/-- A symmetric substitution transfers splitness from `h` to `f`.
+
+If `h` is a nonzero split real polynomial and
+`f(-u²) = uⁿ h((1-u²)/u)` for every nonzero complex `u`, then `f` splits. -/
+theorem splits_of_symmetric_substitution {f h : ℝ[X]} (n : ℕ)
+    (hh : h ≠ 0) (hhs : h.Splits)
+    (hrel : ∀ {u : ℂ}, u ≠ 0 →
+      f.aeval (-(u ^ 2)) = u ^ n * h.aeval ((1 - u ^ 2) / u)) :
+    f.Splits := by
+  apply splits_of_forall_aeval_im_eq_zero
+  intro z hz
+  by_cases hz0 : z = 0
+  · simp [hz0]
+  obtain ⟨u, hu2⟩ := IsAlgClosed.exists_pow_nat_eq (-z) (n := 2) (by norm_num)
+  have hu : u ≠ 0 := by
+    intro hu0
+    have hneg : -z = 0 := hu2.symm.trans (by simp [hu0])
+    exact hz0 (neg_eq_zero.mp hneg)
+  have hneg : -(u ^ 2) = z := by
+    rw [hu2]
+    simp
+  have heval : h.aeval ((1 - u ^ 2) / u) = 0 := by
+    have h := hrel hu
+    rw [hneg, hz] at h
+    exact (mul_eq_zero.mp h.symm).resolve_left (pow_ne_zero n hu)
+  have hreal : ((1 - u ^ 2) / u).im = 0 :=
+    im_eq_zero_of_aeval_eq_zero hh hhs heval
+  rw [← hneg]
+  exact neg_sq_im_eq_zero_of_substitution_real hu hreal
+
 /-- A monic polynomial is real-rooted if it has arbitrarily close monic,
 same-degree, real-rooted approximants. -/
 theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
