@@ -460,6 +460,32 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
     exact (not_lt_of_ge hlower) (hwdist.trans hbound')
   exact ⟨z.re, Complex.ext (by simp) (by simpa using himzero.symm)⟩
 
+/-- A pointwise coefficient limit of monic, same-degree split polynomials is
+split when the limit is monic. -/
+theorem splits_of_monic_of_coeff_tendsto {f : ℝ[X]} (hf : f.Monic)
+    {g : ℕ → ℝ[X]} (hg_monic : ∀ M, (g M).Monic)
+    (hg_degree : ∀ M, (g M).natDegree = f.natDegree)
+    (hg_splits : ∀ M, (g M).Splits)
+    (hcoeff : ∀ i, Filter.Tendsto (fun M => (g M).coeff i) Filter.atTop
+      (nhds (f.coeff i))) :
+    f.Splits := by
+  apply splits_of_monic_of_coeff_approx hf
+  intro ε hε
+  have hclose : ∀ᶠ M in Filter.atTop,
+      ∀ i ∈ Finset.range (f.natDegree + 1), ‖(g M).coeff i - f.coeff i‖ < ε := by
+    rw [Finset.eventually_all]
+    intro i _
+    simpa [dist_eq_norm] using Metric.tendsto_nhds.mp (hcoeff i) ε hε
+  obtain ⟨M, hM⟩ := hclose.exists
+  refine ⟨g M, hg_monic M, hg_degree M, hg_splits M, ?_⟩
+  intro i
+  by_cases hi : i ≤ f.natDegree
+  · exact hM i (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hi))
+  · have hlt : f.natDegree < i := Nat.lt_of_not_ge hi
+    rw [Polynomial.coeff_eq_zero_of_natDegree_lt hlt,
+      Polynomial.coeff_eq_zero_of_natDegree_lt (by simpa [hg_degree M] using hlt)]
+    simpa using hε
+
 /-- A continuous real-valued function that never vanishes on a closed interval
 has endpoint values with the same nonzero sign. -/
 theorem mul_pos_of_forall_ne_zero_Icc
