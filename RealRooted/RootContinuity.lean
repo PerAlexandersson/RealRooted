@@ -2,6 +2,7 @@ import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.RootCountFinite
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Algebra.Polynomial
@@ -293,6 +294,84 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
     (IsRealRooted.splits hp_splits).mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
   simp
+
+/-- A monic polynomial is real-rooted if it has arbitrarily close monic,
+same-degree, real-rooted approximants. -/
+theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
+    (happrox : ∀ ε : ℝ, 0 < ε → ∃ g : ℝ[X],
+      g.Monic ∧ g.natDegree = f.natDegree ∧ g.Splits ∧
+        ∀ i : ℕ, ‖g.coeff i - f.coeff i‖ < ε) :
+    f.Splits := by
+  by_cases hd0 : f.natDegree = 0
+  · rw [hf.natDegree_eq_zero.mp hd0]
+    exact Polynomial.Splits.one
+  refine Polynomial.Splits.of_splits_map (algebraMap ℝ ℂ)
+    (IsAlgClosed.splits _) ?_
+  intro z hz
+  have hfmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by
+    intro hf0
+    rw [hf0] at hz
+    simp at hz
+  have hzroot : (f.map (algebraMap ℝ ℂ)).IsRoot z :=
+    (Polynomial.mem_roots hfmap_ne).mp hz
+  have hzeval : f.aeval z = 0 := by
+    change Polynomial.eval₂ (algebraMap ℝ ℂ) z f = 0
+    rw [Polynomial.eval₂_eq_eval_map]
+    exact hzroot
+  have hdpos : 0 < f.natDegree := Nat.pos_of_ne_zero hd0
+  have himzero : z.im = 0 := by
+    by_contra him
+    have himpos : 0 < |z.im| := abs_pos.mpr him
+    let M : ℝ := max ‖z‖ 1
+    have hM : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+    let q : ℝ := |z.im| / M
+    have hq : 0 < q := div_pos himpos hM
+    let ε : ℝ := q ^ f.natDegree / (2 * ((f.natDegree + 1 : ℕ) : ℝ))
+    have hε : 0 < ε := by
+      dsimp [ε]
+      positivity
+    obtain ⟨g, hgmonic, hgdeg, hgsplits, hgcoeff⟩ := happrox ε hε
+    obtain ⟨w, hwmem, hwdist⟩ :=
+      Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
+        (f := f) (g := g) hε hzeval hf hgmonic hgdeg hgcoeff
+        (hgsplits.map (algebraMap ℝ ℂ))
+    have hg_ne : g ≠ 0 := hgmonic.ne_zero
+    have hgmap_ne : g.map (algebraMap ℝ ℂ) ≠ 0 :=
+      (Polynomial.map_ne_zero_iff (algebraMap ℝ ℂ).injective).2 hg_ne
+    have hwroot : (g.map (algebraMap ℝ ℂ)).IsRoot w :=
+      (Polynomial.mem_roots hgmap_ne).mp hwmem
+    have hwim : w.im = 0 := by
+      have hwrange : w ∈ (algebraMap ℝ ℂ).range :=
+        hgsplits.mem_range_of_isRoot hg_ne hwroot
+      rcases hwrange with ⟨r, rfl⟩
+      simp
+    have hrootbound :
+        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) < q := by
+      rw [Real.rpow_inv_lt_iff_of_pos (by positivity) hq.le (by exact_mod_cast hdpos)]
+      rw [Real.rpow_natCast]
+      dsimp [ε]
+      have hpow : 0 < q ^ f.natDegree := pow_pos hq _
+      field_simp
+      nlinarith
+    have hbound :
+        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
+            max ‖z‖ 1 < |z.im| := by
+      change _ * M < |z.im|
+      calc
+        _ < q * M := mul_lt_mul_of_pos_right hrootbound hM
+        _ = |z.im| := by
+          dsimp [q]
+          field_simp
+    have hbound' :
+        (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
+            max ‖z‖ 1 < |z.im| := by
+      simpa [Nat.cast_add, Nat.cast_one] using hbound
+    have hlower : |z.im| ≤ ‖z - w‖ := by
+      calc
+        |z.im| = |(z - w).im| := by rw [Complex.sub_im, hwim, sub_zero]
+        _ ≤ ‖z - w‖ := Complex.abs_im_le_norm _
+    exact (not_lt_of_ge hlower) (hwdist.trans hbound')
+  exact ⟨z.re, Complex.ext (by simp) (by simpa using himzero.symm)⟩
 
 /-- A continuous real-valued function that never vanishes on a closed interval
 has endpoint values with the same nonzero sign. -/
