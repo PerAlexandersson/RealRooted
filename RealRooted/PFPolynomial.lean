@@ -161,6 +161,81 @@ theorem exists_X_sub_C_factor_of_pos_natDegree {p : ℝ[X]}
   exact ⟨u, q, hp.roots_nonpos u hu_mem, hq,
     hp.of_X_sub_C_mul_factor hq, hqdeg⟩
 
+/-- A PF polynomial with constant coefficient one is a product of normalized
+linear factors with positive coefficients. -/
+theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hconst : p.coeff 0 = 1) :
+    ∃ s : Multiset ℝ,
+      (∀ a ∈ s, 0 < a) ∧
+        s.card = p.natDegree ∧
+          p = (s.map fun a ↦ 1 + C a * X).prod := by
+  induction hdegree : p.natDegree using Nat.strong_induction_on generalizing p with
+  | h degree ih =>
+      by_cases hzero : degree = 0
+      · have hpC : p = C (p.coeff 0) :=
+          Polynomial.eq_C_of_natDegree_eq_zero (by simpa [hdegree] using hzero)
+        refine ⟨∅, by simp, by simp [hzero], ?_⟩
+        calc
+          p = C (p.coeff 0) := hpC
+          _ = 1 := by rw [hconst]; simp
+      · have hpos : 0 < p.natDegree := by
+          rw [hdegree]
+          exact Nat.pos_of_ne_zero hzero
+        obtain ⟨u, q, hu, hfactor, hq, hqdegree⟩ :=
+          hp.exists_X_sub_C_factor_of_pos_natDegree hpos
+        have hcoeff : (-u) * q.coeff 0 = 1 := by
+          rw [hfactor] at hconst
+          simpa [coeff_mul] using hconst
+        have hu_neg : u < 0 := by
+          by_contra hu_not
+          have hu_zero : u = 0 := le_antisymm hu (le_of_not_gt hu_not)
+          simp [hu_zero] at hcoeff
+        let q' : ℝ[X] := C (-u) * q
+        have hq_ne : q ≠ 0 := by
+          intro hq_zero
+          simp [hq_zero] at hcoeff
+        have hq' : IsPFPolynomial q' :=
+          hq.const_mul (by simpa using neg_pos.mpr hu_neg)
+        have hq'const : q'.coeff 0 = 1 := by
+          simpa [q'] using hcoeff
+        have hq'degree : q'.natDegree < degree := by
+          have hu_ne : -u ≠ 0 := ne_of_gt (neg_pos.mpr hu_neg)
+          dsimp [q']
+          rw [natDegree_C_mul hu_ne]
+          simpa [hdegree] using hqdegree
+        have hq'degree_succ : q'.natDegree + 1 = p.natDegree := by
+          dsimp [q']
+          rw [natDegree_C_mul (ne_of_gt (neg_pos.mpr hu_neg))]
+          rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq_ne, natDegree_X_sub_C]
+          omega
+        obtain ⟨s, hs, hscard, hprod⟩ :=
+          ih q'.natDegree hq'degree hq' hq'const rfl
+        refine ⟨(-u)⁻¹ ::ₘ s, ?_, ?_, ?_⟩
+        · intro a ha
+          simp only [Multiset.mem_cons] at ha
+          rcases ha with rfl | ha
+          · exact inv_pos.mpr (neg_pos.mpr hu_neg)
+          · exact hs a ha
+        · simp only [Multiset.card_cons, hscard]
+          omega
+        · rw [Multiset.map_cons, Multiset.prod_cons, ← hprod]
+          dsimp [q']
+          have hu_ne : -u ≠ 0 := ne_of_gt (neg_pos.mpr hu_neg)
+          have hC : C (-u)⁻¹ * C (-u) = (1 : ℝ[X]) := by
+            rw [← map_mul, inv_mul_cancel₀ hu_ne]
+            simp
+          have hlinear :
+              (1 + C (-u)⁻¹ * X) * C (-u) = X - C u := by
+            calc
+              (1 + C (-u)⁻¹ * X) * C (-u) =
+                  C (-u) + (C (-u)⁻¹ * C (-u)) * X := by ring
+              _ = C (-u) + X := by rw [hC]; ring
+              _ = X - C u := by rw [map_neg]; ring
+          calc
+            p = (X - C u) * q := hfactor
+            _ = ((1 + C (-u)⁻¹ * X) * C (-u)) * q := by rw [hlinear]
+            _ = (1 + C (-u)⁻¹ * X) * (C (-u) * q) := by ring
+
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) := by
   induction n with
