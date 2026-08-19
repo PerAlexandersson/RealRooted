@@ -79,9 +79,7 @@ private lemma alternating_sum_bounds {c : ℕ → ℝ}
         ∑ j ∈ Finset.range n, (-1 : ℝ) ^ j * c (j + 1) ≤ c 1 :=
       ih (fun j ↦ hnonneg (j + 1)) (fun a b hab ↦ hanti (Nat.succ_le_succ hab))
     have : c 1 ≤ c 0 := hanti (Nat.zero_le 1)
-    refine ⟨?_, ?_⟩
-    · linarith
-    · linarith
+    refine ⟨?_, ?_⟩ <;> linarith
 
 private lemma alternating_sum_ge {c : ℕ → ℝ}
     (hnonneg : ∀ j, 0 ≤ c j) (hanti : Antitone c) (n : ℕ) :
@@ -167,9 +165,7 @@ lemma antitone_rev_of_monotone {m : ℕ → ℝ} {j : ℕ}
     (hincr : ∀ s t, s ≤ t → t ≤ j → m s ≤ m t) :
     Antitone (fun i ↦ m (j - 1 - i)) := by
   intro a b hab
-  apply hincr
-  · lia
-  · lia
+  apply hincr <;> lia
 
 lemma alternating_sum_reflect (m : ℕ → ℝ) (j : ℕ) :
     (-1 : ℝ) ^ j * ∑ i ∈ Finset.range j, (-1 : ℝ) ^ i * m i =

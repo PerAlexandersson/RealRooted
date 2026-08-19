@@ -213,9 +213,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_two
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
       have hnot_xu : ¬ x ≤ u := not_le.mpr hux
-      by_cases hxv : x ≤ v
-      · simp [hnot_xu, hxv]
-      · simp [hnot_xu, hxv]
+      by_cases hxv : x ≤ v <;> simp [hnot_xu, hxv]
     have hcount := h.count.left_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
@@ -237,9 +235,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_two
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxa : x ≤ a
-      · simp [hxa, hxb, hxc]
-      · simp [hxa, hxb, hxc]
+      by_cases hxa : x ≤ a <;> simp [hxa, hxb, hxc]
     have hq_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,

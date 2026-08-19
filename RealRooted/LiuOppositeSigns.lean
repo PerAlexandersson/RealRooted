@@ -228,16 +228,8 @@ theorem RootCountCompatible.of_roots_pair_singleton
     Multiset.filter_singleton]
   by_cases hxa : x ≤ a
   · have hxc : x ≤ c := hxa.trans hac
-    by_cases hxb : x ≤ b
-    · norm_num [hxa, hxb, hxc]
-    · norm_num [hxa, hxb, hxc]
-  · by_cases hxb : x ≤ b
-    · by_cases hxc : x ≤ c
-      · norm_num [hxa, hxb, hxc]
-      · norm_num [hxa, hxb, hxc]
-    · by_cases hxc : x ≤ c
-      · norm_num [hxa, hxb, hxc]
-      · norm_num [hxa, hxb, hxc]
+    by_cases hxb : x ≤ b <;> norm_num [hxa, hxb, hxc]
+  · by_cases hxb : x ≤ b <;> by_cases hxc : x ≤ c <;> norm_num [hxa, hxb, hxc]
 
 /-- A one-root polynomial and a two-root polynomial have Liu-compatible root
 counts when the lower root of the two-root side lies weakly below the singleton
@@ -252,16 +244,8 @@ theorem RootCountCompatible.of_roots_singleton_pair
     Multiset.filter_singleton]
   by_cases hxc : x ≤ c
   · have hxa : x ≤ a := hxc.trans hca
-    by_cases hxd : x ≤ d
-    · norm_num [hxa, hxc, hxd]
-    · norm_num [hxa, hxc, hxd]
-  · by_cases hxa : x ≤ a
-    · by_cases hxd : x ≤ d
-      · norm_num [hxa, hxc, hxd]
-      · norm_num [hxa, hxc, hxd]
-    · by_cases hxd : x ≤ d
-      · norm_num [hxa, hxc, hxd]
-      · norm_num [hxa, hxc, hxd]
+    by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
+  · by_cases hxa : x ≤ a <;> by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
 
 /-- Two two-root polynomials have Liu-compatible root counts when the two
 closed root intervals overlap. -/
