@@ -141,6 +141,8 @@ import RealRooted.Hadamard
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
+import RealRooted.HomogeneousOre
+import RealRooted.HomogeneousOreExamples
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingSequence
@@ -395,6 +397,7 @@ import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
+import RealRooted.Tactic.Named
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.OperatorPreservesInterlacing
@@ -404,6 +407,7 @@ import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.ReciprocalShift
+import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.RootCount
