@@ -2,6 +2,7 @@ import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.RootCountFinite
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Algebra.Polynomial
@@ -293,6 +294,197 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
     (IsRealRooted.splits hp_splits).mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
   simp
+
+/-- A real polynomial splits if all of its complex roots have zero imaginary
+part. -/
+theorem splits_of_forall_aeval_im_eq_zero {p : ℝ[X]}
+    (h : ∀ z : ℂ, p.aeval z = 0 → z.im = 0) :
+    p.Splits := by
+  rcases eq_or_ne p 0 with rfl | hp
+  · exact Polynomial.Splits.zero
+  obtain ⟨m, hm⟩ := Polynomial.splits_iff_exists_multiset.mp
+    (IsAlgClosed.splits (p.map (algebraMap ℝ ℂ)))
+  have hmem : ∀ a ∈ m, ((a.re : ℝ) : ℂ) = a := by
+    intro a ha
+    have hdvd : (X - C a) ∣ p.map (algebraMap ℝ ℂ) := by
+      rw [hm]
+      exact Dvd.dvd.mul_left (Multiset.dvd_prod (Multiset.mem_map_of_mem _ ha)) _
+    have hroot : (p.map (algebraMap ℝ ℂ)).IsRoot a := by
+      rwa [← Polynomial.dvd_iff_isRoot]
+    have hz : p.aeval a = 0 := by
+      rw [Polynomial.aeval_def, ← Polynomial.eval_map]
+      exact hroot
+    exact Complex.ext rfl (by simp [h a hz])
+  have hlc : (p.map (algebraMap ℝ ℂ)).leadingCoeff = ((p.leadingCoeff : ℝ) : ℂ) := by
+    apply Polynomial.leadingCoeff_map_of_leadingCoeff_ne_zero
+    simpa using Polynomial.leadingCoeff_ne_zero.mpr hp
+  refine Polynomial.splits_iff_exists_multiset.mpr ⟨m.map Complex.re, ?_⟩
+  apply Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
+  rw [hm, hlc, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_multiset_prod,
+    Multiset.map_map, Multiset.map_map]
+  refine congrArg _ (congrArg Multiset.prod (Multiset.map_congr rfl ?_))
+  intro a ha
+  simp [hmem a ha]
+
+/-- A complex root of a nonzero split real polynomial is real. -/
+theorem im_eq_zero_of_aeval_eq_zero {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
+    {z : ℂ} (hz : p.aeval z = 0) :
+    z.im = 0 := by
+  have hzroot : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
+    simpa [Polynomial.aeval_def, Polynomial.eval_map] using hz
+  rcases hs.mem_range_of_isRoot hp hzroot with ⟨r, rfl⟩
+  simp
+
+/-- If `(1 - u²) / u` is real for nonzero `u`, then `-u²` is real. -/
+theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
+    (hreal : ((1 - u ^ 2) / u).im = 0) :
+    (-(u ^ 2)).im = 0 := by
+  have heq : (1 - u ^ 2) / u = u⁻¹ - u := by
+    field_simp
+  have him : u⁻¹.im - u.im = 0 := by
+    rw [heq, Complex.sub_im] at hreal
+    exact hreal
+  rw [Complex.inv_im] at him
+  have hnorm : 0 < Complex.normSq u := Complex.normSq_pos.mpr hu
+  have huim : u.im = 0 := by
+    field_simp at him
+    nlinarith
+  rw [Complex.neg_im, pow_two, Complex.mul_im, huim]
+  ring
+
+/-- A symmetric substitution transfers splitness from `h` to `f`.
+
+If `h` is a nonzero split real polynomial and
+`f(-u²) = uⁿ h((1-u²)/u)` for every nonzero complex `u`, then `f` splits. -/
+theorem splits_of_symmetric_substitution {f h : ℝ[X]} (n : ℕ)
+    (hh : h ≠ 0) (hhs : h.Splits)
+    (hrel : ∀ {u : ℂ}, u ≠ 0 →
+      f.aeval (-(u ^ 2)) = u ^ n * h.aeval ((1 - u ^ 2) / u)) :
+    f.Splits := by
+  apply splits_of_forall_aeval_im_eq_zero
+  intro z hz
+  by_cases hz0 : z = 0
+  · simp [hz0]
+  obtain ⟨u, hu2⟩ := IsAlgClosed.exists_pow_nat_eq (-z) (n := 2) (by norm_num)
+  have hu : u ≠ 0 := by
+    intro hu0
+    have hneg : -z = 0 := hu2.symm.trans (by simp [hu0])
+    exact hz0 (neg_eq_zero.mp hneg)
+  have hneg : -(u ^ 2) = z := by
+    rw [hu2]
+    simp
+  have heval : h.aeval ((1 - u ^ 2) / u) = 0 := by
+    have h := hrel hu
+    rw [hneg, hz] at h
+    exact (mul_eq_zero.mp h.symm).resolve_left (pow_ne_zero n hu)
+  have hreal : ((1 - u ^ 2) / u).im = 0 :=
+    im_eq_zero_of_aeval_eq_zero hh hhs heval
+  rw [← hneg]
+  exact neg_sq_im_eq_zero_of_substitution_real hu hreal
+
+/-- A monic polynomial is real-rooted if it has arbitrarily close monic,
+same-degree, real-rooted approximants. -/
+theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
+    (happrox : ∀ ε : ℝ, 0 < ε → ∃ g : ℝ[X],
+      g.Monic ∧ g.natDegree = f.natDegree ∧ g.Splits ∧
+        ∀ i : ℕ, ‖g.coeff i - f.coeff i‖ < ε) :
+    f.Splits := by
+  by_cases hd0 : f.natDegree = 0
+  · rw [hf.natDegree_eq_zero.mp hd0]
+    exact Polynomial.Splits.one
+  refine Polynomial.Splits.of_splits_map (algebraMap ℝ ℂ)
+    (IsAlgClosed.splits _) ?_
+  intro z hz
+  have hfmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by
+    intro hf0
+    rw [hf0] at hz
+    simp at hz
+  have hzroot : (f.map (algebraMap ℝ ℂ)).IsRoot z :=
+    (Polynomial.mem_roots hfmap_ne).mp hz
+  have hzeval : f.aeval z = 0 := by
+    change Polynomial.eval₂ (algebraMap ℝ ℂ) z f = 0
+    rw [Polynomial.eval₂_eq_eval_map]
+    exact hzroot
+  have hdpos : 0 < f.natDegree := Nat.pos_of_ne_zero hd0
+  have himzero : z.im = 0 := by
+    by_contra him
+    have himpos : 0 < |z.im| := abs_pos.mpr him
+    let M : ℝ := max ‖z‖ 1
+    have hM : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+    let q : ℝ := |z.im| / M
+    have hq : 0 < q := div_pos himpos hM
+    let ε : ℝ := q ^ f.natDegree / (2 * ((f.natDegree + 1 : ℕ) : ℝ))
+    have hε : 0 < ε := by
+      dsimp [ε]
+      positivity
+    obtain ⟨g, hgmonic, hgdeg, hgsplits, hgcoeff⟩ := happrox ε hε
+    obtain ⟨w, hwmem, hwdist⟩ :=
+      Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
+        (f := f) (g := g) hε hzeval hf hgmonic hgdeg hgcoeff
+        (hgsplits.map (algebraMap ℝ ℂ))
+    have hg_ne : g ≠ 0 := hgmonic.ne_zero
+    have hgmap_ne : g.map (algebraMap ℝ ℂ) ≠ 0 :=
+      (Polynomial.map_ne_zero_iff (algebraMap ℝ ℂ).injective).2 hg_ne
+    have hwroot : (g.map (algebraMap ℝ ℂ)).IsRoot w :=
+      (Polynomial.mem_roots hgmap_ne).mp hwmem
+    have hwim : w.im = 0 := by
+      have hwrange : w ∈ (algebraMap ℝ ℂ).range :=
+        hgsplits.mem_range_of_isRoot hg_ne hwroot
+      rcases hwrange with ⟨r, rfl⟩
+      simp
+    have hrootbound :
+        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) < q := by
+      rw [Real.rpow_inv_lt_iff_of_pos (by positivity) hq.le (by exact_mod_cast hdpos)]
+      rw [Real.rpow_natCast]
+      dsimp [ε]
+      have hpow : 0 < q ^ f.natDegree := pow_pos hq _
+      field_simp
+      nlinarith
+    have hbound :
+        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
+            max ‖z‖ 1 < |z.im| := by
+      change _ * M < |z.im|
+      calc
+        _ < q * M := mul_lt_mul_of_pos_right hrootbound hM
+        _ = |z.im| := by
+          dsimp [q]
+          field_simp
+    have hbound' :
+        (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
+            max ‖z‖ 1 < |z.im| := by
+      simpa [Nat.cast_add, Nat.cast_one] using hbound
+    have hlower : |z.im| ≤ ‖z - w‖ := by
+      calc
+        |z.im| = |(z - w).im| := by rw [Complex.sub_im, hwim, sub_zero]
+        _ ≤ ‖z - w‖ := Complex.abs_im_le_norm _
+    exact (not_lt_of_ge hlower) (hwdist.trans hbound')
+  exact ⟨z.re, Complex.ext (by simp) (by simpa using himzero.symm)⟩
+
+/-- A pointwise coefficient limit of monic, same-degree split polynomials is
+split when the limit is monic. -/
+theorem splits_of_monic_of_coeff_tendsto {f : ℝ[X]} (hf : f.Monic)
+    {g : ℕ → ℝ[X]} (hg_monic : ∀ M, (g M).Monic)
+    (hg_degree : ∀ M, (g M).natDegree = f.natDegree)
+    (hg_splits : ∀ M, (g M).Splits)
+    (hcoeff : ∀ i, Filter.Tendsto (fun M => (g M).coeff i) Filter.atTop
+      (nhds (f.coeff i))) :
+    f.Splits := by
+  apply splits_of_monic_of_coeff_approx hf
+  intro ε hε
+  have hclose : ∀ᶠ M in Filter.atTop,
+      ∀ i ∈ Finset.range (f.natDegree + 1), ‖(g M).coeff i - f.coeff i‖ < ε := by
+    rw [Finset.eventually_all]
+    intro i _
+    simpa [dist_eq_norm] using Metric.tendsto_nhds.mp (hcoeff i) ε hε
+  obtain ⟨M, hM⟩ := hclose.exists
+  refine ⟨g M, hg_monic M, hg_degree M, hg_splits M, ?_⟩
+  intro i
+  by_cases hi : i ≤ f.natDegree
+  · exact hM i (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hi))
+  · have hlt : f.natDegree < i := Nat.lt_of_not_ge hi
+    rw [Polynomial.coeff_eq_zero_of_natDegree_lt hlt,
+      Polynomial.coeff_eq_zero_of_natDegree_lt (by simpa [hg_degree M] using hlt)]
+    simpa using hε
 
 /-- A continuous real-valued function that never vanishes on a closed interval
 has endpoint values with the same nonzero sign. -/
