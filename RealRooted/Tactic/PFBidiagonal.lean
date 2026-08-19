@@ -521,8 +521,7 @@ theorem BidiagonalJensenPencilCertificate.compatible
       calc
         C a * (C (b / a) * X * jensenPolynomial d beta) =
             (C a * C (b / a)) * (X * jensenPolynomial d beta) := by ring
-        _ = C (a * (b / a)) * (X * jensenPolynomial d beta) := by
-          rw [Polynomial.C_mul]
+        _ = C (a * (b / a)) * (X * jensenPolynomial d beta) := by rw [Polynomial.C_mul]
         _ = C b * (X * jensenPolynomial d beta) := by rw [hab]
     rw [← hpoly]
     by_cases hzero : C a * bidiagonalJensenPencil alpha beta d lam = 0
@@ -537,8 +536,7 @@ theorem BidiagonalJensenPencilCertificate.alpha_nonneg_of_le
     0 ≤ alpha k := by
   have hcoeff := hcert.1.hasNonnegCoeffs k
   rw [coeff_jensenPolynomial, if_pos hk] at hcoeff
-  have hchoose : (0 : ℝ) < Nat.choose d k := by
-    exact_mod_cast Nat.choose_pos hk
+  have hchoose : (0 : ℝ) < Nat.choose d k := by exact_mod_cast Nat.choose_pos hk
   nlinarith
 
 /-- A Jensen-pencil certificate makes the subdiagonal coefficients
@@ -549,8 +547,7 @@ theorem BidiagonalJensenPencilCertificate.beta_nonneg_of_le
     0 ≤ beta k := by
   have hcoeff := hcert.2.1.hasNonnegCoeffs (k + 1)
   simp [coeff_jensenPolynomial, hk] at hcoeff
-  have hchoose : (0 : ℝ) < Nat.choose d k := by
-    exact_mod_cast Nat.choose_pos hk
+  have hchoose : (0 : ℝ) < Nat.choose d k := by exact_mod_cast Nat.choose_pos hk
   nlinarith
 
 /-- In degree one, the output discriminant is the Jensen-pencil discriminant
@@ -978,8 +975,7 @@ theorem bidiagonalJensenPencil_factor_of_endpoint_factors
     _ = ((X + 1 : ℝ[X]) ^ m) * A + C lam *
         (((X + 1 : ℝ[X]) ^ m) * B) := by
       rw [hbeta]
-    _ = ((X + 1 : ℝ[X]) ^ m) * (A + C lam * B) := by
-      ring
+    _ = ((X + 1 : ℝ[X]) ^ m) * (A + C lam * B) := by ring
 
 /-- Build a Jensen-pencil certificate from endpoint factorizations and the
 derived residual pencil `A + C lam * B`. -/

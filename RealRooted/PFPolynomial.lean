@@ -75,8 +75,7 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     refine ⟨nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs, Or.inr ?_, ?_⟩
     · simp_all
     · intro r hr
-      have hrp : r ∈ p.roots := by
-        simpa [Polynomial.roots_C_mul _ ha.ne'] using hr
+      have hrp : r ∈ p.roots := by simpa [Polynomial.roots_C_mul _ ha.ne'] using hr
       exact hp.roots_nonpos r hrp
 
 theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) := by
@@ -196,8 +195,7 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
           simp [hq_zero] at hcoeff
         have hq' : IsPFPolynomial q' :=
           hq.const_mul (by simpa using neg_pos.mpr hu_neg)
-        have hq'const : q'.coeff 0 = 1 := by
-          simpa [q'] using hcoeff
+        have hq'const : q'.coeff 0 = 1 := by simpa [q'] using hcoeff
         have hq'degree : q'.natDegree < degree := by
           have hu_ne : -u ≠ 0 := ne_of_gt (neg_pos.mpr hu_neg)
           dsimp [q']

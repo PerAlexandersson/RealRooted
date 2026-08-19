@@ -83,8 +83,7 @@ lemma eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos
 lemma eval_C_mul_two_X_sub_two_X_sq_nonpos_of_nonneg_of_nonpos {c r : ℝ}
     (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
-  have htail : 2 * r - 2 * r ^ 2 ≤ 0 := by
-    nlinarith [sq_nonneg r, hr]
+  have htail : 2 * r - 2 * r ^ 2 ≤ 0 := by nlinarith [sq_nonneg r, hr]
   simpa [
     Polynomial.eval_mul,
     Polynomial.eval_sub,
@@ -158,8 +157,7 @@ lemma eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_on
   have hbr : -b ≤ b * r := by
     have hmul := mul_le_mul_of_nonneg_left hlo hb
     grind
-  have hfactor : 0 ≤ a + b * r := by
-    linarith
+  have hfactor : 0 ≤ a + b * r := by linarith
   have hneg : -c ≤ 0 := neg_nonpos.mpr hc
   simpa [Polynomial.eval_mul, add_comm, add_left_comm, add_assoc, mul_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hneg hfactor
@@ -257,16 +255,14 @@ lemma eval_C_mul_X_mul_one_add_C_mul_X_nonpos
 lemma eval_X_mul_one_add_four_mul_X_nonpos_of_mem_Icc {r : ℝ}
     (hlo : -(1 / 4 : ℝ) ≤ r) (hhi : r ≤ 0) :
     (X * (1 + C (4 : ℝ) * X) : ℝ[X]).eval r ≤ 0 := by
-  have hlin : 0 ≤ 1 + 4 * r := by
-    linarith
+  have hlin : 0 ≤ 1 + 4 * r := by linarith
   simpa [Polynomial.eval_mul, mul_assoc, add_comm, add_left_comm, add_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hhi hlin
 
 lemma eval_C_mul_X_mul_one_add_four_mul_X_nonpos_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -(1 / 4 : ℝ) ≤ r) (hhi : r ≤ 0) :
     (C c * X * (1 + C (4 : ℝ) * X) : ℝ[X]).eval r ≤ 0 := by
-  have hlin : 0 ≤ 1 + 4 * r := by
-    linarith
+  have hlin : 0 ≤ 1 + 4 * r := by linarith
   have hleft : c * r ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hc hhi
   simpa [Polynomial.eval_mul, mul_assoc, add_comm, add_left_comm, add_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hleft hlin
@@ -314,8 +310,7 @@ lemma eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interva
   exact
     calc
       (C c * (1 + X) * (1 + C (2 : ℝ) * X) : ℝ[X]).eval r =
-          c * ((1 + r) * (1 + 2 * r)) := by
-            simp [Polynomial.eval_mul, mul_assoc, add_comm]
+          c * ((1 + r) * (1 + 2 * r)) := by simp [Polynomial.eval_mul, mul_assoc, add_comm]
       _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hc htail
 
 lemma eval_X_mul_one_sub_X_sq_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
@@ -472,8 +467,7 @@ lemma eval_neg_monic_quadratic_nonpos_of_discrim_nonpos {b c r : ℝ}
   have hsum_eq : (2 * r + b) ^ 2 + (4 * c - b ^ 2) =
       4 * (r ^ 2 + b * r + c) := by
     ring
-  have hpoly : 0 ≤ r ^ 2 + b * r + c := by
-    nlinarith
+  have hpoly : 0 ≤ r ^ 2 + b * r + c := by nlinarith
   simpa [
     Polynomial.eval_add,
     Polynomial.eval_mul,
@@ -492,8 +486,7 @@ lemma eval_neg_C_mul_monic_quadratic_nonpos_of_nonneg_of_discrim_nonpos
   have hsum_eq : (2 * r + b) ^ 2 + (4 * c - b ^ 2) =
       4 * (r ^ 2 + b * r + c) := by
     ring
-  have hpoly : 0 ≤ r ^ 2 + b * r + c := by
-    nlinarith
+  have hpoly : 0 ≤ r ^ 2 + b * r + c := by nlinarith
   have hneg : -a ≤ 0 := neg_nonpos.mpr ha
   simpa [
     Polynomial.eval_add,
@@ -529,8 +522,7 @@ lemma eval_neg_quadratic_nonpos_of_discrim_nonpos
 lemma eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos
     {a b c r : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c) (hdisc : b ^ 2 ≤ 4 * c * a) :
     (C (-a) + C b * X + C (-c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hdisc' : (-b) ^ 2 ≤ 4 * c * a := by
-    nlinarith
+  have hdisc' : (-b) ^ 2 ≤ 4 * c * a := by nlinarith
   have htail : (-(C c * X ^ 2 + C (-b) * X + C a) : ℝ[X]).eval r ≤ 0 :=
     eval_neg_quadratic_nonpos_of_discrim_nonpos hc ha hdisc'
   simpa [
@@ -544,8 +536,7 @@ lemma eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos
 lemma eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     {a b c r : ℝ} (ha : a ≤ 0) (hc : c ≤ 0) (hdisc : b ^ 2 ≤ 4 * a * c) :
     (C a + C b * X + C c * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hdisc' : b ^ 2 ≤ 4 * (-c) * (-a) := by
-    nlinarith
+  have hdisc' : b ^ 2 ≤ 4 * (-c) * (-a) := by nlinarith
   have htail :
       (C (-(-a)) + C b * X + C (-(-c)) * X ^ 2 : ℝ[X]).eval r ≤ 0 :=
     eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos

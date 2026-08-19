@@ -43,8 +43,7 @@ protected theorem Matrix.IsTotallyNonneg.addPreviousRow {N : ℕ}
           exact hxi (hrows.injective (hx.trans hi.symm))
         simp [addPreviousRow, S, prev, hxi, hrow_ne]
     rw [hsub, det_updateRow_add]
-    have hfirst : (S.updateRow i (S i)).det = S.det := by
-      rw [updateRow_eq_self]
+    have hfirst : (S.updateRow i (S i)).det = S.det := by rw [updateRow_eq_self]
     rw [hfirst]
     have hS : 0 ≤ S.det := hM hrows hcols
     by_cases hprev : ∃ l, rows l = prev

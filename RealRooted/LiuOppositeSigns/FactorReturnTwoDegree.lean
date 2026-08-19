@@ -140,8 +140,7 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_xSub_rightPre
     have hdeg_pos :
         (deleteRootFactor f r).natDegree = (-g).natDegree + 1 := by
       simpa [Polynomial.natDegree_neg] using hdelete_deg
-    have hGdeg : P (-g).natDegree := by
-      simpa [Polynomial.natDegree_neg] using hgdeg
+    have hGdeg : P (-g).natDegree := by simpa [Polynomial.natDegree_neg] using hgdeg
     have hsplit :=
       hterminal hpair hqnn hGnn hdeg_pos hGdeg μ hμ
     simpa [sub_eq_add_neg, mul_neg] using hsplit

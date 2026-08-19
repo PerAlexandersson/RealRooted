@@ -152,16 +152,14 @@ theorem linear_tail_sequence_ne_zero {A : ℕ → ℝ[X]} {c a b u v : ℝ}
   | 1 => by
       rw [h1]
       intro hzero
-      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
-        compute_degree!
+      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by compute_degree!
       rw [hzero] at hdeg
       simp at hdeg
   | n + 2 => by
       rw [hstep n]
       have htail : (C u + C v * X : ℝ[X]) ≠ 0 := by
         intro hzero
-        have hdeg : (C u + C v * X : ℝ[X]).natDegree = 1 := by
-          compute_degree!
+        have hdeg : (C u + C v * X : ℝ[X]).natDegree = 1 := by compute_degree!
         rw [hzero] at hdeg
         simp at hdeg
       exact mul_ne_zero htail
@@ -225,12 +223,10 @@ theorem linear_tail_sequence_natDegree {A : ℕ → ℝ[X]} {c a b u v : ℝ}
       rw [hstep n]
       have htail_ne : (C u + C v * X : ℝ[X]) ≠ 0 := by
         intro hzero
-        have hdeg : (C u + C v * X : ℝ[X]).natDegree = 1 := by
-          compute_degree!
+        have hdeg : (C u + C v * X : ℝ[X]).natDegree = 1 := by compute_degree!
         rw [hzero] at hdeg
         simp at hdeg
-      have htail_deg : (C u + C v * X : ℝ[X]).natDegree = 1 := by
-        compute_degree!
+      have htail_deg : (C u + C v * X : ℝ[X]).natDegree = 1 := by compute_degree!
       rw [natDegree_mul htail_ne
         (linear_tail_sequence_ne_zero (A := A) hc hb hv h0 h1 hstep (n + 1)),
         htail_deg,
@@ -265,8 +261,7 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
       hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
       hsum_ne hsum_splits hcop
   rw [mul_one] at hprec
-  have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by
-    ring
+  have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by ring
   rw [heq] at hprec
   have hlin_ne : (C a + C b * X : ℝ[X]) ≠ 0 := by
     intro hzero
@@ -328,8 +323,7 @@ theorem monomial_tail_sequence_ne_zero {A : ℕ → ℝ[X]} {c a b u : ℝ}
   | 1 => by
       rw [h1]
       intro hzero
-      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
-        compute_degree!
+      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by compute_degree!
       rw [hzero] at hdeg
       simp at hdeg
   | n + 2 => by

@@ -319,8 +319,7 @@ theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
   intro z hz
   simp only [MvPolynomial.eval_add, MvPolynomial.eval_X]
   intro hzero
-  have him : 0 < (z i + z j).im := by
-    simpa using add_pos (hz i) (hz j)
+  have him : 0 < (z i + z j).im := by simpa using add_pos (hz i) (hz j)
   rw [hzero] at him
   simp at him
 
@@ -669,8 +668,7 @@ theorem mul_ne_ofReal_of_im_pos {z w : ℂ} (hz : 0 < z.im) (hw : 0 < w.im)
   have hre : z.re * w.re - z.im * w.im = r := by
     have := congrArg Complex.re hmul
     simpa using this
-  have hnorm : 0 < z.re ^ 2 + z.im ^ 2 := by
-    nlinarith [sq_nonneg z.re]
+  have hnorm : 0 < z.re ^ 2 + z.im ^ 2 := by nlinarith [sq_nonneg z.re]
   have hprod : 0 < w.im * (z.re ^ 2 + z.im ^ 2) :=
     mul_pos hw hnorm
   have hrim : 0 ≤ r * z.im := mul_nonneg hr hz.le

@@ -62,8 +62,7 @@ theorem posCombo_deg1_all_splits :
     ∀ lam μ : ℝ, 0 < lam → 0 < μ →
       (C lam * (C 2 * X + C 1) + C μ * ((X + C 1) * (X + C 2))).Splits := by
   intro lam μ hlam hμ
-  have h_discriminant : (2 * lam + 3 * μ)^2 - 4 * μ * (lam + 2 * μ) > 0 := by
-    nlinarith
+  have h_discriminant : (2 * lam + 3 * μ)^2 - 4 * μ * (lam + 2 * μ) > 0 := by nlinarith
   rw [Polynomial.splits_iff_card_roots]
   rw [show
       C lam * (C 2 * X + C 1) + C μ * ((X + C 1) * (X + C 2)) =

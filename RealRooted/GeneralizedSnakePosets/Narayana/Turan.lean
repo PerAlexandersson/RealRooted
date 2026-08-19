@@ -221,8 +221,7 @@ theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_eq_neg_turan
               Polynomial.eval_sub, Polynomial.eval_mul]
     _ = p₂ * p₀ + ((A - 1) * p₀) * p₁ := by ring
     _ = p₂ * p₀ - p₁ ^ 2 := by rw [hrel']; ring
-    _ = -modifiedNarayanaTuran m r := by
-        simp [modifiedNarayanaTuran, p₀, p₁, p₂]
+    _ = -modifiedNarayanaTuran m r := by simp [modifiedNarayanaTuran, p₀, p₁, p₂]
 
 /-- A pointwise nonnegative Turan determinant gives the shifted Lemma 3.4
 right-hand sign test at a root of the left-hand polynomial. -/
@@ -289,12 +288,10 @@ theorem lemma34ModifiedNarayana_right_eval_mul_prev_eq_neg_turan
     (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)).eval r) *
       (modifiedNarayanaPolynomial (m - 1)).eval r
-        = (A * p₁ + p₂) * p₀ := by
-            simp [A, p₀, p₁, p₂, Polynomial.eval_add, Polynomial.eval_mul]
+        = (A * p₁ + p₂) * p₀ := by simp [A, p₀, p₁, p₂, Polynomial.eval_add, Polynomial.eval_mul]
     _ = p₂ * p₀ + (A * p₀) * p₁ := by ring
     _ = p₂ * p₀ - p₁ ^ 2 := by rw [hrel']; ring
-    _ = -modifiedNarayanaTuran m r := by
-        simp [modifiedNarayanaTuran, p₀, p₁, p₂]
+    _ = -modifiedNarayanaTuran m r := by simp [modifiedNarayanaTuran, p₀, p₁, p₂]
 
 /-- A pointwise nonnegative Turan determinant gives the paper-shaped Lemma 3.4
 right-hand sign test at a root of the left-hand polynomial. -/

@@ -59,8 +59,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_four_three_of_monic
   have hpfacA :
       p = C A * ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
     simpa [A, mul_assoc] using hpfac
-  have hqfacB : q = C B * ((X - C u) * (X - C v) * (X - C w)) := by
-    simpa [B] using hqfac
+  have hqfacB : q = C B * ((X - C u) * (X - C v) * (X - C w)) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
     rw [hpfacA, hqfacB]
     dsimp [inner, ν]
@@ -97,8 +96,7 @@ theorem
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
   have hfdeg_shift : (f.comp (X + C r)).natDegree = 4 := by
-    have hfdeg : f.natDegree = 4 := by
-      lia
+    have hfdeg : f.natDegree = 4 := by lia
     simpa [Polynomial.natDegree_comp] using hfdeg
   have hgdeg_shift : (g.comp (X + C r)).natDegree = 3 := by
     simpa [Polynomial.natDegree_comp] using hgdeg
@@ -136,8 +134,7 @@ theorem
   by_cases hle_two : g.natDegree ≤ 2
   · exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two
       hpair hfnn hgnn hdeg hle_two
-  · have hthree : g.natDegree = 3 := by
-      lia
+  · have hthree : g.natDegree = 3 := by lia
     exact
       positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
         hmono hpair hfnn hgnn hdeg hthree

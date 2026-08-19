@@ -347,10 +347,8 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   have hR_monic : R.Monic := by
     rw [hR, taylor_apply]; exact hptil_monic.comp (monic_X_add_C a) (by simp)
   have hR_deg : R.natDegree = g.natDegree := by rw [hR, natDegree_taylor, hptil_deg]
-  have hpnu_card : pnu.roots.card = g.natDegree := by
-    rw [← hsplit.natDegree_eq_card_roots, hpdeg]
-  have hR_roots : R.roots = pnu.roots.map (fun r => r - a) := by
-    rw [hR, roots_taylor, hptil_roots]
+  have hpnu_card : pnu.roots.card = g.natDegree := by rw [← hsplit.natDegree_eq_card_roots, hpdeg]
+  have hR_roots : R.roots = pnu.roots.map (fun r => r - a) := by rw [hR, roots_taylor, hptil_roots]
   have hR_splits : R.Splits := by
     rw [splits_iff_card_roots, hR_roots, Multiset.card_map, hpnu_card, hR_deg]
   set r0 : ℝ := q - a with hr0def

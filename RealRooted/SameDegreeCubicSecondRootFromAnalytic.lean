@@ -68,8 +68,7 @@ Chudnovsky--Seymour root-count theorem. -/
 theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
   classical
   intro f g hf_pos hg_pos hf hg hfdeg hgdeg hpc a b c p q r hab hbc hpq hqr hfroots hgroots
-  have hdeg : g.natDegree = f.natDegree := by
-    simp [hfdeg, hgdeg]
+  have hdeg : g.natDegree = f.natDegree := by simp [hfdeg, hgdeg]
   by_cases hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z
   · constructor
     · by_contra haq
@@ -186,10 +185,8 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
       deleteRootFactor_splits_of_isRoot hf hfz
     have hgq_split : (deleteRootFactor g z).Splits :=
       deleteRootFactor_splits_of_isRoot hg hgz
-    have hfq_deg : (deleteRootFactor f z).natDegree = 2 := by
-      rw [natDegree_deleteRootFactor, hfdeg]
-    have hgq_deg : (deleteRootFactor g z).natDegree = 2 := by
-      rw [natDegree_deleteRootFactor, hgdeg]
+    have hfq_deg : (deleteRootFactor f z).natDegree = 2 := by rw [natDegree_deleteRootFactor, hfdeg]
+    have hgq_deg : (deleteRootFactor g z).natDegree = 2 := by rw [natDegree_deleteRootFactor, hgdeg]
     have hpcq :
         PosComboRealRooted (deleteRootFactor f z) (deleteRootFactor g z) :=
       hpc.deleteRootFactor_commonRoot hfz hgz

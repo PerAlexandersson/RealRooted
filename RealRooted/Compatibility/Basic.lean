@@ -153,8 +153,7 @@ private lemma natDegree_le_one_of_const_left
       C (t / c) * C c + g = C t + g := by
     calc
       C (t / c) * C c + g = C ((t / c) * c) + g := by simp
-      _ = C t + g := by
-        grind
+      _ = C t + g := by grind
   rcases hcombo with hzero | hrr
   · have hzero' : C t + g = 0 := by lia
     have hg_const : g = -C t := by grind
@@ -187,8 +186,7 @@ theorem natDegree_right_le_succ
       dsimp [c]
       rw [hcoeff0]
       exact hf_pos
-    have hf_const : f = C c := by
-      simpa [c] using eq_C_of_natDegree_eq_zero hf_deg0
+    have hf_const : f = C c := by simpa [c] using eq_C_of_natDegree_eq_zero hf_deg0
     have hfg_const : Compatible (C c) g := by lia
     have hbound : g.natDegree ≤ 1 :=
       natDegree_le_one_of_const_left hc hg_pos hfg_const

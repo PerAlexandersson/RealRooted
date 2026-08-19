@@ -61,8 +61,7 @@ theorem eval_fullSymmetrization_const
     eval (fun _ : σ => w) (fullSymmetrization p) =
       eval (fun _ : σ => w) p := by
   classical
-  have hcard : (Fintype.card (Equiv.Perm σ) : R) ≠ 0 := by
-    exact_mod_cast Fintype.card_ne_zero
+  have hcard : (Fintype.card (Equiv.Perm σ) : R) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
   have hconst (e : Equiv.Perm σ) :
       (fun _ : σ => w) ∘ e = fun _ : σ => w := by
     rfl
@@ -102,8 +101,7 @@ theorem eval_partialSymmetrization_const
     (t w : R) (e : Equiv.Perm σ) (p : MvPolynomial σ R) :
     eval (fun _ : σ => w) (partialSymmetrization t e p) =
       eval (fun _ : σ => w) p := by
-  have hconst : (fun _ : σ => w) ∘ e = fun _ : σ => w := by
-    rfl
+  have hconst : (fun _ : σ => w) ∘ e = fun _ : σ => w := by rfl
   simp only [partialSymmetrization, map_add, map_mul, eval_C,
     eval_rename, hconst]
   ring

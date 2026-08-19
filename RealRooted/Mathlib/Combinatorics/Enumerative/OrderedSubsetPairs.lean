@@ -63,8 +63,7 @@ private theorem forall2_le_of_countP_le
       cases ys with
       | nil => simp at hlen
       | cons y ys =>
-          have htail_len : xs.length = ys.length := by
-            simpa using Nat.succ.inj hlen
+          have htail_len : xs.length = ys.length := by simpa using Nat.succ.inj hlen
           have hxle_y : x ≤ y := by
             by_contra hnot
             have hyltx : y < x := Nat.lt_of_not_ge hnot
@@ -80,8 +79,7 @@ private theorem forall2_le_of_countP_le
             · have hygt : t < y := Nat.lt_of_not_ge (of_decide_eq_false hyt)
               have hzero : (y :: ys).countP (· ≤ t) = 0 :=
                 countP_eq_zero_of_sortedLT_head_gt hys hygt
-              have hy_tail_zero : ys.countP (· ≤ t) = 0 := by
-                simpa [countP_cons, hyt] using hzero
+              have hy_tail_zero : ys.countP (· ≤ t) = 0 := by simpa [countP_cons, hyt] using hzero
               rw [hy_tail_zero]
               exact Nat.zero_le _
             · have hyle : y ≤ t := of_decide_eq_true hyt
@@ -166,8 +164,7 @@ private theorem card_filter_le_le_card_filter_lt_add_one (i : ℕ) (A : Finset �
       · exact ⟨hxA, le_rfl⟩
   calc
     (A.filter fun x => x ≤ i).card
-        = ((A.filter fun x => x < i) ∪ (A.filter fun x => x = i)).card := by
-          rw [hdecomp]
+        = ((A.filter fun x => x < i) ∪ (A.filter fun x => x = i)).card := by rw [hdecomp]
     _ ≤ (A.filter fun x => x < i).card + (A.filter fun x => x = i).card :=
         card_union_le _ _
     _ ≤ (A.filter fun x => x < i).card + 1 := by
@@ -632,8 +629,7 @@ theorem orderedKSubsetPairs_eq_empty_of_lt {n k : ℕ} (h : n < k) :
   apply eq_empty_iff_forall_notMem.mpr
   rintro ⟨A, B⟩ hAB
   rw [mem_orderedKSubsetPairs] at hAB
-  have hle : A.card ≤ n := by
-    simpa using card_le_card hAB.1
+  have hle : A.card ≤ n := by simpa using card_le_card hAB.1
   rw [hAB.2.1] at hle
   exact (not_le_of_gt h) hle
 
@@ -652,7 +648,6 @@ theorem card_orderedKSubsetPairs_le_choose_mul_choose (n k : ℕ) :
             (AB.2.sort (· ≤ ·)))).card
         ≤ (((range n).powersetCard k).product ((range n).powersetCard k)).card :=
           card_filter_le _ _
-    _ = Nat.choose n k * Nat.choose n k := by
-      simp [card_product, card_powersetCard]
+    _ = Nat.choose n k * Nat.choose n k := by simp [card_product, card_powersetCard]
 
 end Finset

@@ -73,8 +73,7 @@ example : cubicTarget ≠ 0 ∧ cubicTarget.Splits := by
       rw [cubicTarget_natDegree]
       norm_num,
     roots_sorted := (by norm_num : [(-1 : ℝ)].Pairwise (· ≤ ·)),
-    roots_eq := by
-      simpa [linearSource] using (roots_X_sub_C (-1 : ℝ)).symm,
+    roots_eq := by simpa [linearSource] using (roots_X_sub_C (-1 : ℝ)).symm,
     degree_gap := by
       change cubicTarget.natDegree = linearSource.natDegree + 2
       rw [cubicTarget_natDegree, linearSource_natDegree],

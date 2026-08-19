@@ -13,14 +13,11 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 := by
-  rr_product_nonzero
+example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 := by rr_product_nonzero
 
-example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by
-  rr_product_nonzero
+example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by rr_product_nonzero
 
-example {n : Nat} : 2 * (n : ℝ) + 1 ≠ 0 := by
-  rr_product_nonzero
+example {n : Nat} : 2 * (n : ℝ) + 1 ≠ 0 := by rr_product_nonzero
 
 example : ∀ n : Nat, 2 ≤ n → (n : ℝ) + 1 ≠ 0 :=
   rr_product_nonzero_seq_from

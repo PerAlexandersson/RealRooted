@@ -116,8 +116,7 @@ theorem IsNonNestingPlacement.full_reflectedColumn_ne
   have ha_cell := hP.1 ha
   have hb_cell := hP.1 hb
   rw [mem_truncatedStaircase_full_cells_iff] at ha_cell hb_cell
-  have hcol : a.2 = b.2 := by
-    lia
+  have hcol : a.2 = b.2 := by lia
   exact hcol_ne hcol
 
 /-- The reflected-column projection of a full-staircase placement has the same
@@ -300,8 +299,7 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_card
   rw [fullStaircaseReflectedPairs]
   exact Finset.card_image_of_injOn (by
     intro a ha b hb hpair
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hpair
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hpair
     by_contra hne
     exact hP.row_ne ha hb hne hrow)
 
@@ -567,8 +565,7 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
   let cols := B.sort (· ≤ ·)
   let cols' := cols.map fun b => n - 1 - b
   let L := rows.zip cols'
-  have hle_rows_cols : List.Forall₂ (· ≤ ·) rows cols := by
-    simpa [rows, cols] using hle
+  have hle_rows_cols : List.Forall₂ (· ≤ ·) rows cols := by simpa [rows, cols] using hle
   have hL_nodup : L.Nodup := by
     simpa [L, rows, cols, cols'] using
       orderedSubsetPairFullStaircasePlacement_list_nodup n (by rw [hAcard, hBcard])
@@ -589,8 +586,7 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
       rw [← Finset.mem_sort (s := B) (r := (· ≤ ·))]
       exact List.getElem_mem hi_cols
     have hcol_lt : cols[i] < n := Finset.mem_range.mp (hB hcol_mem)
-    have hle_i : rows[i] ≤ cols[i] := by
-      simpa using hle_rows_cols.get hi_rows hi_cols
+    have hle_i : rows[i] ≤ cols[i] := by simpa using hle_rows_cols.get hi_rows hi_cols
     lia
   · intro x hx y hy hne hrow_eq
     have hxL : x ∈ L := by simpa using hx
@@ -602,8 +598,7 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
     have hrow_L : (L[i]).1 = (L[j]).1 := by
       rw [hix, hjy]
       exact hrow_eq
-    have hrow_i_j : rows[i] = rows[j] := by
-      simpa [L, cols'] using hrow_L
+    have hrow_i_j : rows[i] = rows[j] := by simpa [L, cols'] using hrow_L
     have hij : i = j := (List.getElem_inj (A.sort_nodup (· ≤ ·))).mp (by
       simpa [rows] using hrow_i_j)
     subst j
@@ -626,10 +621,8 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
       rw [← hjy, List.getElem_zip]
       simp [cols']
     have hij_lt : i < j := by
-      have hrows_sorted : rows.SortedLE := by
-        simpa [rows] using (Finset.sortedLT_sort A).sortedLE
-      have hrow_ij : rows[i] < rows[j] := by
-        simpa [hx_eq, hy_eq] using hrow_lt
+      have hrows_sorted : rows.SortedLE := by simpa [rows] using (Finset.sortedLT_sort A).sortedLE
+      have hrow_ij : rows[i] < rows[j] := by simpa [hx_eq, hy_eq] using hrow_lt
       by_contra hnot
       have hji : j ≤ i := le_of_not_gt hnot
       have hle_ji : rows[j] ≤ rows[i] :=
@@ -677,8 +670,7 @@ theorem fullStaircaseReflectedPairRows_orderedSubsetPairFullStaircasePlacement
     exact hxmap
   · intro ha
     rw [Finset.mem_image]
-    have hasort : a ∈ A.sort (· ≤ ·) := by
-      rwa [Finset.mem_sort]
+    have hasort : a ∈ A.sort (· ≤ ·) := by rwa [Finset.mem_sort]
     rw [← hmap] at hasort
     rcases List.mem_map.mp hasort with ⟨x, hx, hx_fst⟩
     refine ⟨x, ?_, hx_fst⟩
@@ -701,8 +693,7 @@ theorem fullStaircaseReflectedPairColumns_orderedSubsetPairFullStaircasePlacemen
   let cols := B.sort (· ≤ ·)
   let cols' := cols.map fun b => n - 1 - b
   let L := rows.zip cols'
-  have hlen : rows.length = cols.length := by
-    simp [rows, cols, Finset.length_sort, hAcard, hBcard]
+  have hlen : rows.length = cols.length := by simp [rows, cols, Finset.length_sort, hAcard, hBcard]
   constructor
   · rw [Finset.mem_image]
     rintro ⟨x, hx, hx_reflect⟩
@@ -733,13 +724,11 @@ theorem fullStaircaseReflectedPairColumns_orderedSubsetPairFullStaircasePlacemen
       rw [hlen]
       exact hi_cols
     have hi_cols' : i < cols'.length := by simpa [cols'] using hi_cols
-    have hiL : i < L.length := by
-      simp [L, cols', List.length_zip, hlen, hi_cols]
+    have hiL : i < L.length := by simp [L, cols', List.length_zip, hlen, hi_cols]
     refine ⟨(rows[i], n - 1 - b), ?_, ?_⟩
     · rw [orderedSubsetPairFullStaircasePlacement, List.mem_toFinset]
       have hmemL : L[i] ∈ L := List.getElem_mem hiL
-      have hmem : (rows[i], cols'[i]) ∈ L := by
-        simpa [L, List.getElem_zip (h := hiL)] using hmemL
+      have hmem : (rows[i], cols'[i]) ∈ L := by simpa [L, List.getElem_zip (h := hiL)] using hmemL
       simpa [L, rows, cols, cols', hib] using hmem
     · have hb_lt : b < n := Finset.mem_range.mp (hB hb)
       dsimp
@@ -777,8 +766,7 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairLexList_reflectBack_toFi
     rcases mem_fullStaircaseReflectedPairs.mp hx_pairs with ⟨b, hb, rfl⟩
     have hb_cell := hP.1 hb
     rw [mem_truncatedStaircase_full_cells_iff] at hb_cell
-    have hback : (b.1, n - 1 - (n - 1 - b.2)) = b := by
-      ext <;> simp; lia
+    have hback : (b.1, n - 1 - (n - 1 - b.2)) = b := by ext <;> simp; lia
     simpa [hback] using hb
   · intro ha
     apply List.mem_map.mpr
@@ -844,8 +832,7 @@ def bottomRowCells (n i : ℕ) : Finset (ℕ × ℕ) :=
   rw [bottomRowCells, Finset.mem_image]
   constructor
   · rintro ⟨d, hd, hdc⟩
-    have hc : d = c := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.2) hdc
+    have hc : d = c := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hdc
     simpa [hc] using hd
   · intro hc
     exact ⟨c, by simpa using hc, rfl⟩
@@ -919,8 +906,7 @@ theorem row_lt_of_mem_erase_bottomRook
   have ha_cell := hP.1 haP
   rw [mem_truncatedStaircase_cells] at ha_cell
   have hrow_le : a.1 ≤ i := Nat.lt_succ_iff.mp ha_cell.1
-  have hrow_ne : a.1 ≠ i := by
-    exact hP.2.1 a haP (i, c) hbottom (Finset.mem_erase.mp ha).1
+  have hrow_ne : a.1 ≠ i := by exact hP.2.1 a haP (i, c) hbottom (Finset.mem_erase.mp ha).1
   exact lt_of_le_of_ne hrow_le hrow_ne
 
 /-- Any rook left after removing a bottom-row rook from a valid placement lies
@@ -992,8 +978,7 @@ theorem bottomRookRemainder_card_add_one
       Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - (c + 1)))
         ↑(P.erase (i, c)) := by
     intro a ha b hb hmap
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
     have hcol_sub : a.2 - (c + 1) = b.2 - (c + 1) := by
       simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     have hac : c < a.2 := bottom_col_lt_of_mem_erase_bottomRook hP hbottom ha
@@ -1035,8 +1020,7 @@ theorem truncatedStaircase_isNonNestingPlacement_of_succ_of_no_bottom
   have hrow_le : a.1 ≤ i := Nat.lt_succ_iff.mp ha_cell.1
   have hrow_ne : a.1 ≠ i := by
     intro hrow
-    have hcell : (i, a.2) = a := by
-      ext <;> simp [hrow]
+    have hcell : (i, a.2) = a := by ext <;> simp [hrow]
     exact hno_bottom a.2 (by simpa [hcell] using ha)
   exact lt_of_le_of_ne hrow_le hrow_ne
 
@@ -1134,8 +1118,7 @@ theorem disjoint_nonNestingPlacementsWithoutBottomRow_withBottomRow
   rw [mem_nonNestingPlacementsWithBottomRow] at hbottom
   rcases hbottom.2 with ⟨a, ha, haP⟩
   have hrow : a.1 = i := (mem_bottomRowCells.mp ha).1
-  have hcell : (i, a.2) = a := by
-    ext <;> simp [hrow]
+  have hcell : (i, a.2) = a := by ext <;> simp [hrow]
   exact hP.2 a.2 (by simpa [hcell] using haP)
 
 /-- Valid placements in `mu_{n,i+1}` split into no-bottom-row placements and
@@ -1204,8 +1187,7 @@ theorem shiftColumnsAfter_unshiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)
     rcases Finset.mem_image.mp hx with ⟨y, hy, hxy⟩
     rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
     subst y
-    have hxa : x = a := by
-      simpa using hxy.symm
+    have hxa : x = a := by simpa using hxy.symm
     simpa [hxa] using ha
   · intro hx
     rw [shiftColumnsAfter, unshiftColumnsAfter]
@@ -1228,8 +1210,7 @@ theorem unshiftColumnsAfter_shiftColumnsAfter_of_forall_col_gt
     rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
     subst y
     have hc_le : c + 1 ≤ a.2 := Nat.succ_le_of_lt (hcol a ha)
-    have hxa : x = a := by
-      simpa [Nat.sub_add_cancel hc_le] using hxy.symm
+    have hxa : x = a := by simpa [Nat.sub_add_cancel hc_le] using hxy.symm
     simpa [hxa] using ha
   · intro hx
     rw [unshiftColumnsAfter, shiftColumnsAfter]
@@ -1315,16 +1296,14 @@ theorem bottomRookExtension_card
   have hnot : (i, c) ∉ Q.image (fun a => (a.1, a.2 + (c + 1))) := by
     intro hi
     rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
-    have hrow : a.1 = i := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hrow : a.1 = i := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
     have ha_cell := hQ.1 ha
     rw [mem_truncatedStaircase_cells] at ha_cell
     exact (ne_of_lt ha_cell.1 hrow).elim
   have hinj :
       Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 + (c + 1))) ↑Q := by
     intro a _ha b _hb hmap
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
     have hcol_add : a.2 + (c + 1) = b.2 + (c + 1) := by
       simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
@@ -1338,8 +1317,7 @@ theorem bottomRook_not_mem_unshiftColumnsAfter
   intro hi
   rw [unshiftColumnsAfter] at hi
   rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
-  have hrow : a.1 = i := by
-    simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+  have hrow : a.1 = i := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
   have ha_cell := hQ.1 ha
   rw [mem_truncatedStaircase_cells] at ha_cell
   exact (ne_of_lt ha_cell.1 hrow).elim
@@ -1446,10 +1424,8 @@ theorem sum_nonNestingPlacementsWithCell_eq_mul_truncatedStaircaseRookPolynomial
           have hcard := bottomRookRemainder_card_add_one hPvalid.1 hPvalid.2
           rw [← hcard, pow_succ]
           ring
-    _ = X * S.sum (fun P => X ^ (bottomRookRemainder i c P).card) := by
-          rw [Finset.mul_sum]
-    _ = X * T.sum (fun Q => X ^ Q.card) := by
-          rw [← hsum_image, himage]
+    _ = X * S.sum (fun P => X ^ (bottomRookRemainder i c P).card) := by rw [Finset.mul_sum]
+    _ = X * T.sum (fun Q => X ^ Q.card) := by rw [← hsum_image, himage]
     _ = X * truncatedStaircaseRookPolynomial (n - c - 1) i := by
           rw [truncatedStaircaseRookPolynomial,
             rookPolynomial_eq_nonNestingPlacements_sum]
@@ -1575,8 +1551,7 @@ theorem coeff_truncatedStaircaseRookPolynomial_eq_zero_of_rows_lt
       by_cases h00 : (0, 0) ∈ P
       · by_cases h01 : (0, 1) ∈ P
         · exfalso
-          have hne : (0, 0) ≠ (0, 1) := by
-            norm_num
+          have hne : (0, 0) ≠ (0, 1) := by norm_num
           have hrow := h.2.2.1 (0, 0) h00 (0, 1) h01 hne
           exact hrow rfl
         · right
@@ -1666,8 +1641,7 @@ theorem coeff_truncatedStaircaseRookPolynomial_eq_zero_of_rows_lt
   classical
   let placements : List (Finset (ℕ × ℕ)) :=
     [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   have hplacements_toFinset :
       ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}} :
         Finset (Finset (ℕ × ℕ))) = placements.toFinset := by
@@ -1709,8 +1683,7 @@ polynomial `1 + 5X + 3X^2`. -/
   let placements : List (Finset (ℕ × ℕ)) :=
     [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)},
       {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   have hplacements_toFinset :
       ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)},
         {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)}} :
@@ -1816,8 +1789,7 @@ polynomial `1 + 7X + 6X^2`. -/
     [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
       {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
       {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   have hplacements_toFinset :
       ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(1, 0)}, {(1, 1)}, {(1, 2)},
         {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)},
@@ -1880,8 +1852,7 @@ has rook polynomial `1 + 9X + 14X^2 + 4X^3`. -/
       {(1, 1), (2, 0)}, {(1, 2), (2, 0)}, {(1, 2), (2, 1)},
       {(0, 2), (1, 1), (2, 0)}, {(0, 3), (1, 1), (2, 0)},
       {(0, 3), (1, 2), (2, 0)}, {(0, 3), (1, 2), (2, 1)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   have hplacements_toFinset :
       ({∅,
         {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)},
@@ -1986,12 +1957,10 @@ polynomial `1 + 3X + X^2`. -/
   classical
   let placements : List (Finset (ℕ × ℕ)) :=
     [∅, {(0, 0)}, {(0, 1)}, {(1, 0)}, {(0, 1), (1, 0)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   let cells : Finset (ℕ × ℕ) :=
     ({(0, 0), (0, 1), (1, 0)} : Finset (ℕ × ℕ))
-  have hcells : (truncatedStaircase 2 2).cells = cells := by
-    decide
+  have hcells : (truncatedStaircase 2 2).cells = cells := by decide
   have hplacements_bool :
       cells.powerset.filter
         (fun P => isNonNestingPlacementBool (truncatedStaircase 2 2) P) =
@@ -2016,13 +1985,11 @@ has rook polynomial `1 + 6X + 6X^2 + X^3`. -/
       {(0, 1), (1, 0)}, {(0, 1), (2, 0)}, {(0, 2), (1, 0)},
       {(0, 2), (1, 1)}, {(0, 2), (2, 0)}, {(1, 1), (2, 0)},
       {(0, 2), (1, 1), (2, 0)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   let cells : Finset (ℕ × ℕ) :=
     ({(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (2, 0)} :
       Finset (ℕ × ℕ))
-  have hcells : (truncatedStaircase 3 3).cells = cells := by
-    decide
+  have hcells : (truncatedStaircase 3 3).cells = cells := by decide
   have hplacements_bool :
       cells.powerset.filter
         (fun P => isNonNestingPlacementBool (truncatedStaircase 3 3) P) =
@@ -2042,12 +2009,10 @@ has rook polynomial `1 + 6X + 6X^2 + X^3`. -/
   classical
   let placements : List (Finset (ℕ × ℕ)) :=
     [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(0, 3)}, {(0, 4)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   let cells : Finset (ℕ × ℕ) :=
     ({(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)} : Finset (ℕ × ℕ))
-  have hcells : (truncatedStaircase 5 1).cells = cells := by
-    decide
+  have hcells : (truncatedStaircase 5 1).cells = cells := by decide
   have hplacements_bool :
       cells.powerset.filter
         (fun P => isNonNestingPlacementBool (truncatedStaircase 5 1) P) =
@@ -2074,13 +2039,11 @@ polynomial `1 + 9X + 10X^2`. -/
       {(0, 3), (1, 0)}, {(0, 3), (1, 1)}, {(0, 3), (1, 2)},
       {(0, 4), (1, 0)}, {(0, 4), (1, 1)}, {(0, 4), (1, 2)},
       {(0, 4), (1, 3)}]
-  have hplacements_nodup : placements.Nodup := by
-    decide
+  have hplacements_nodup : placements.Nodup := by decide
   let cells : Finset (ℕ × ℕ) :=
     ({(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (1, 1), (1, 2),
       (1, 3)} : Finset (ℕ × ℕ))
-  have hcells : (truncatedStaircase 5 2).cells = cells := by
-    decide
+  have hcells : (truncatedStaircase 5 2).cells = cells := by decide
   have hplacements_bool :
       cells.powerset.filter
         (fun P => isNonNestingPlacementBool (truncatedStaircase 5 2) P) =
@@ -2309,8 +2272,7 @@ polynomial `1 + (2n - 1)X + binom(n,2)X^2`. -/
               C (Nat.choose n 2 : ℝ) * X ^ 2 := by
             ring_nf
       _ = 1 + C ((2 : ℝ) * n - 1) * X +
-            C (Nat.choose n 2 : ℝ) * X ^ 2 := by
-            rw [hXcoeff]
+            C (Nat.choose n 2 : ℝ) * X ^ 2 := by rw [hXcoeff]
 
 /-- Tail sum of two-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : ℕ) :
@@ -2324,8 +2286,7 @@ private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : �
   | succ n ih =>
       rw [List.sum_range_succ']
       simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 2 - 0 - 1 = n + 2 := by
-        lia
+      have hhead : n + 1 + 2 - 0 - 1 = n + 2 := by lia
       have htail :
           ((List.range n).map fun c =>
             truncatedStaircaseRookPolynomial (n + 1 + 2 - (c + 1) - 1) 2).sum =
@@ -2343,8 +2304,7 @@ private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : �
             Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 := by
         calc
           Nat.choose (n + 1 + 2) 3 =
-              Nat.choose (Nat.succ (n + 2)) 3 := by
-                rfl
+              Nat.choose (Nat.succ (n + 2)) 3 := by rfl
           _ = Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 :=
               by simpa using Nat.choose_succ_succ (n + 2) 2
       have hchoose2 :
@@ -2440,8 +2400,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
   | succ n ih =>
       rw [List.sum_range_succ']
       simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 3 - 0 - 1 = n + 3 := by
-        lia
+      have hhead : n + 1 + 3 - 0 - 1 = n + 3 := by lia
       have htail :
           ((List.range n).map fun c =>
             truncatedStaircaseRookPolynomial (n + 1 + 3 - (c + 1) - 1) 3).sum =
@@ -2481,8 +2440,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
             Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 := by
         calc
           Nat.choose (n + 1 + 3) 3 =
-              Nat.choose (Nat.succ (n + 3)) 3 := by
-                rfl
+              Nat.choose (Nat.succ (n + 3)) 3 := by rfl
           _ = Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 :=
               by simpa using Nat.choose_succ_succ (n + 3) 2
       have hchoose2 :
@@ -2490,8 +2448,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
             Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 := by
         calc
           Nat.choose (n + 1 + 3) 2 =
-              Nat.choose (Nat.succ (n + 3)) 2 := by
-                rfl
+              Nat.choose (Nat.succ (n + 3)) 2 := by rfl
           _ = Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 :=
               by simpa using Nat.choose_succ_succ (n + 3) 1
       have hchoose4 :
@@ -2499,8 +2456,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
             Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 := by
         calc
           Nat.choose (n + 1 + 3) 4 =
-              Nat.choose (Nat.succ (n + 3)) 4 := by
-                rfl
+              Nat.choose (Nat.succ (n + 3)) 4 := by rfl
           _ = Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 :=
               by simpa using Nat.choose_succ_succ (n + 3) 3
       have hchoose2_prev :
@@ -2533,8 +2489,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum (n : ℕ)
             (Nat.choose n 2 : ℝ)) * X ^ 2 +
             C (Nat.choose n 4 : ℝ) * X ^ 3 := by
   have hnsub_three : n - 3 + 3 = n := Nat.sub_add_cancel hn
-  have hnsub_two : n - 3 + 2 = n - 1 := by
-    lia
+  have hnsub_two : n - 3 + 2 = n - 1 := by lia
   simpa [hnsub_three, hnsub_two] using
     truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct (n - 3)
 
@@ -2554,10 +2509,8 @@ theorem truncatedStaircaseRookPolynomial_four_rows (n : ℕ) (hn : 4 ≤ n) :
   rw [truncatedStaircaseRookPolynomial_three_rows n (by lia),
     truncatedStaircaseRookPolynomial_three_rows_tail_sum n (by lia)] at hbottom
   rw [hbottom]
-  have hn_three : 3 ≤ n := by
-    lia
-  have hn_two : 2 ≤ n := by
-    lia
+  have hn_three : 3 ≤ n := by lia
+  have hn_two : 2 ≤ n := by lia
   have hcast_sub_three : ((n - 3 : ℕ) : ℝ) = (n : ℝ) - 3 := by
     rw [Nat.cast_sub hn_three]
     norm_num
@@ -2607,8 +2560,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
   | succ n ih =>
       rw [List.sum_range_succ']
       simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 4 - 0 - 1 = n + 4 := by
-        lia
+      have hhead : n + 1 + 4 - 0 - 1 = n + 4 := by lia
       have htail :
           ((List.range n).map fun c =>
             truncatedStaircaseRookPolynomial (n + 1 + 4 - (c + 1) - 1) 4).sum =
@@ -2627,8 +2579,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
             Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 := by
         calc
           Nat.choose (n + 1 + 4) 2 =
-              Nat.choose (Nat.succ (n + 4)) 2 := by
-                rfl
+              Nat.choose (Nat.succ (n + 4)) 2 := by rfl
           _ = Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 :=
               by simpa using Nat.choose_succ_succ (n + 4) 1
       have hchoose3_succ :
@@ -2636,8 +2587,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
             Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 := by
         calc
           Nat.choose (n + 1 + 4) 3 =
-              Nat.choose (Nat.succ (n + 4)) 3 := by
-                rfl
+              Nat.choose (Nat.succ (n + 4)) 3 := by rfl
           _ = Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 :=
               by simpa using Nat.choose_succ_succ (n + 4) 2
       have hchoose4_succ :
@@ -2645,8 +2595,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
             Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 := by
         calc
           Nat.choose (n + 1 + 4) 4 =
-              Nat.choose (Nat.succ (n + 4)) 4 := by
-                rfl
+              Nat.choose (Nat.succ (n + 4)) 4 := by rfl
           _ = Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 :=
               by simpa using Nat.choose_succ_succ (n + 4) 3
       have hchoose5_succ :
@@ -2654,8 +2603,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
             Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 := by
         calc
           Nat.choose (n + 1 + 4) 5 =
-              Nat.choose (Nat.succ (n + 4)) 5 := by
-                rfl
+              Nat.choose (Nat.succ (n + 4)) 5 := by rfl
           _ = Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 :=
               by simpa using Nat.choose_succ_succ (n + 4) 4
       have hchoose2_head :
@@ -2735,8 +2683,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
   | succ n ih =>
       rw [List.sum_range_succ']
       simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 5 - 0 - 1 = n + 5 := by
-        lia
+      have hhead : n + 1 + 5 - 0 - 1 = n + 5 := by lia
       have htail :
           ((List.range n).map fun c =>
             truncatedStaircaseRookPolynomial (n + 1 + 5 - (c + 1) - 1) 5).sum =
@@ -2755,8 +2702,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
             Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 := by
         calc
           Nat.choose (n + 1 + 5) 2 =
-              Nat.choose (Nat.succ (n + 5)) 2 := by
-                rfl
+              Nat.choose (Nat.succ (n + 5)) 2 := by rfl
           _ = Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 :=
               by simpa using Nat.choose_succ_succ (n + 5) 1
       have hchoose3_succ :
@@ -2764,8 +2710,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
             Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 := by
         calc
           Nat.choose (n + 1 + 5) 3 =
-              Nat.choose (Nat.succ (n + 5)) 3 := by
-                rfl
+              Nat.choose (Nat.succ (n + 5)) 3 := by rfl
           _ = Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 :=
               by simpa using Nat.choose_succ_succ (n + 5) 2
       have hchoose4_succ :
@@ -2773,8 +2718,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
             Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 := by
         calc
           Nat.choose (n + 1 + 5) 4 =
-              Nat.choose (Nat.succ (n + 5)) 4 := by
-                rfl
+              Nat.choose (Nat.succ (n + 5)) 4 := by rfl
           _ = Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 :=
               by simpa using Nat.choose_succ_succ (n + 5) 3
       have hchoose5_succ :
@@ -2782,8 +2726,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
             Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 := by
         calc
           Nat.choose (n + 1 + 5) 5 =
-              Nat.choose (Nat.succ (n + 5)) 5 := by
-                rfl
+              Nat.choose (Nat.succ (n + 5)) 5 := by rfl
           _ = Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 :=
               by simpa using Nat.choose_succ_succ (n + 5) 4
       have hchoose6_succ :
@@ -2791,8 +2734,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
             Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 := by
         calc
           Nat.choose (n + 1 + 5) 6 =
-              Nat.choose (Nat.succ (n + 5)) 6 := by
-                rfl
+              Nat.choose (Nat.succ (n + 5)) 6 := by rfl
           _ = Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 :=
               by simpa using Nat.choose_succ_succ (n + 5) 5
       have hchoose2_head :

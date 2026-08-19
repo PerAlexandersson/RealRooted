@@ -21,8 +21,7 @@ lemma mul_neg_of_mul_neg_of_mul_pos_left {x y z : ℝ}
   have hx_ne : x ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hxy)).1
   have hxx_pos : 0 < x * x := mul_self_pos.mpr hx_ne
   have hprod : (x * y) * (x * z) < 0 := mul_neg_of_neg_of_pos hxy hxz
-  have hcalc : (x * y) * (x * z) = (x * x) * (y * z) := by
-    ring
+  have hcalc : (x * y) * (x * z) = (x * x) * (y * z) := by ring
   rw [hcalc] at hprod
   have hneg_pos : 0 < (x * x) * (-(y * z)) := by
     rw [mul_neg]
@@ -34,8 +33,7 @@ lemma mul_neg_of_mul_neg_of_mul_pos_left {x y z : ℝ}
 lemma eval_X_mul_sub_C_mul_of_left_isRoot
     {p q : ℝ[X]} {x μ : ℝ} (hx : p.IsRoot x) :
     (X * p - C μ * q).eval x = -μ * q.eval x := by
-  have hpx : p.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hx
+  have hpx : p.eval x = 0 := by simpa [Polynomial.IsRoot.def] using hx
   simp [Polynomial.eval_sub, Polynomial.eval_mul, hpx]
 
 /-- The x-subtraction pencil does not vanish at a left root if the right
@@ -47,16 +45,14 @@ lemma not_isRoot_X_mul_sub_C_mul_of_left_isRoot
   intro hP
   have hprod : -μ * q.eval x = 0 := by
     simpa [Polynomial.IsRoot.def, eval_X_mul_sub_C_mul_of_left_isRoot hx] using hP
-  have hqeval : q.eval x = 0 := by
-    exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
+  have hqeval : q.eval x = 0 := by exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
   exact hq (by simpa [Polynomial.IsRoot.def] using hqeval)
 
 /-- Evaluate the x-subtraction pencil at a root of the right endpoint. -/
 lemma eval_X_mul_sub_C_mul_of_right_isRoot
     {p q : ℝ[X]} {x μ : ℝ} (hx : q.IsRoot x) :
     (X * p - C μ * q).eval x = x * p.eval x := by
-  have hqx : q.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hx
+  have hqx : q.eval x = 0 := by simpa [Polynomial.IsRoot.def] using hx
   simp [Polynomial.eval_sub, Polynomial.eval_mul, hqx]
 
 /-- A nonzero polynomial splits once a nodup list of roots is at least as long
@@ -167,8 +163,7 @@ lemma exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots_left_sign
   have hab : a ≤ b := le_of_lt (lt_trans hay hyb)
   have hqa : ¬ q.IsRoot a := by
     intro hroot
-    have hzero : q.eval a = 0 := by
-      simpa [Polynomial.IsRoot.def] using hroot
+    have hzero : q.eval a = 0 := by simpa [Polynomial.IsRoot.def] using hroot
     rw [hzero, zero_mul] at hay_sign
     linarith
   have hqab_pos : 0 < q.eval a * q.eval b :=

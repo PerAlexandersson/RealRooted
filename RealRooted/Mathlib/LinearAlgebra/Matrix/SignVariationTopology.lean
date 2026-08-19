@@ -49,8 +49,7 @@ theorem signVariations_le_of_tendsto
     (List.destutter_sublist (· ≠ ·) nz).trans List.filter_sublist
   obtain ⟨e, he⟩ :=
     List.sublist_iff_exists_fin_orderEmbedding_get_eq.mp hsub
-  have hrawlen : raw.length = n := by
-    simp [raw]
+  have hrawlen : raw.length = n := by simp [raw]
   let eN : Fin d.length ↪o Fin n :=
     e.trans (Fin.castOrderIso hrawlen).toOrderEmbedding
   have he' (k : Fin d.length) :
@@ -79,8 +78,7 @@ theorem signVariations_le_of_tendsto
       ∀ᶠ a in l, signVariations x ≤ signVariations (f a) := by
     filter_upwards [hsign] with a ha
     let rawA : List SignType := List.ofFn (SignType.sign ∘ f a)
-    have hrawAlen : rawA.length = n := by
-      simp [rawA]
+    have hrawAlen : rawA.length = n := by simp [rawA]
     let eA : Fin d.length ↪o Fin rawA.length :=
       eN.trans (Fin.castOrderIso hrawAlen.symm).toOrderEmbedding
     have hdsub : d.Sublist rawA := by

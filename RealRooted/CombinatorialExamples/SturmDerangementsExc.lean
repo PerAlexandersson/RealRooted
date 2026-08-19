@@ -340,8 +340,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
             have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
             have hmReal : (m : ℝ) ≤ ((n + 3 : Nat) : ℝ) := Nat.cast_le.mpr hmNat
             simp_all
-          have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by
-            linarith
+          have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by linarith
           nlinarith
         · have hm' : n + 2 < m := lt_of_not_ge hm
           rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩

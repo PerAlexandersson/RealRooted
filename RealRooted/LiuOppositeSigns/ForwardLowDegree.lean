@@ -215,8 +215,7 @@ lemma discrim_quadraticSubQuadratic_inner_vertex {u v w : ℝ}
         -4 * u * w * (u + v) * (v + w) / v ^ 2 := by
   intro μ
   dsimp [μ]
-  have hv2_ne : v ^ 2 ≠ 0 := by
-    exact pow_ne_zero 2 hv
+  have hv2_ne : v ^ 2 ≠ 0 := by exact pow_ne_zero 2 hv
   unfold discrim
   field_simp [hv2_ne]
   ring
@@ -315,8 +314,7 @@ lemma exists_quadraticSubQuadratic_not_splits_of_inner_roots
             -(4 * u * w * (u + v) * (v + w) / v ^ 2) := by
         ring
       rw [hrewrite]
-      have hpos : 0 < 4 * u * w * (u + v) * (v + w) / v ^ 2 := by
-        positivity
+      have hpos : 0 < 4 * u * w * (u + v) * (v + w) / v ^ 2 := by positivity
       linarith
     intro hsplit
     have hpoly :
@@ -553,8 +551,7 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_two_two_of_no_common
   · have hca : c ≤ a := by
       by_contra hnot
       have hac : a < c := lt_of_not_ge hnot
-      have hd_le_b : d ≤ b := by
-        simpa [hr_eq_b, hs_eq_d] using hs_le_r
+      have hd_le_b : d ≤ b := by simpa [hr_eq_b, hs_eq_d] using hs_le_r
       have hb_root : f.IsRoot b :=
         (Polynomial.mem_roots hsgn.left_ne_zero).mp (by
           rw [hfroots]
@@ -581,8 +578,7 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_two_two_of_no_common
     have hac : a ≤ c := by
       by_contra hnot
       have hca : c < a := lt_of_not_ge hnot
-      have hb_lt_d : b < d := by
-        simpa [hr_eq_b, hs_eq_d] using hr_lt_s
+      have hb_lt_d : b < d := by simpa [hr_eq_b, hs_eq_d] using hr_lt_s
       exact
         not_compatible_scaled_quadratic_quadratic_of_opposite_of_inner_roots
           (a := c) (b := d) (c := a) (d := b)

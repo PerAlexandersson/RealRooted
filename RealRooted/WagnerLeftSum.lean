@@ -55,10 +55,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
       fun r hr => le_min (hcons_f r hr) (hcons_f2 r hr)
     have hcons_g_min : ∀ r ∈ consumed_g, r ≤ min rf rg :=
       fun r hr => le_min (hcons_g2 r hr) (hcons_g r hr)
-    have hf_dich : ∀ r ∈ f.roots.erase rf, r ≤ min rf rg ∨ max rf rg + 1 ≤ r := by
-      simp_all
-    have hg_dich : ∀ r ∈ g.roots.erase rg, r ≤ min rf rg ∨ max rf rg + 1 ≤ r := by
-      simp_all
+    have hf_dich : ∀ r ∈ f.roots.erase rf, r ≤ min rf rg ∨ max rf rg + 1 ≤ r := by simp_all
+    have hg_dich : ∀ r ∈ g.roots.erase rg, r ≤ min rf rg ∨ max rf rg + 1 ≤ r := by simp_all
     have hcount_eq : (g.roots.erase rg).countP (max rf rg + 1 ≤ ·) =
         (f.roots.erase rf).countP (max rf rg + 1 ≤ ·) := by
       rw [hf_erase, hg_erase]
@@ -96,10 +94,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
       rw [← hrs_f_eq, ← Multiset.cons_coe, Multiset.cons_add]
     have hg_roots : g.roots = rg ::ₘ (↑(rg2 :: rest_g) + consumed_g) := by
       rw [← hrs_g_eq, ← Multiset.cons_coe, Multiset.cons_add]
-    have hf_erase : f.roots.erase rf = ↑(rf2 :: rest_f) + consumed_f := by
-      simp_all
-    have hg_erase : g.roots.erase rg = ↑(rg2 :: rest_g) + consumed_g := by
-      simp_all
+    have hf_erase : f.roots.erase rf = ↑(rf2 :: rest_f) + consumed_f := by simp_all
+    have hg_erase : g.roots.erase rg = ↑(rg2 :: rest_g) + consumed_g := by simp_all
     -- All tail elements are ≥ s
     have hrf_tail_ge : ∀ r ∈ (rf2 :: rest_f), s ≤ r := by
       intro r hr; rcases List.mem_cons.mp hr with rfl | hr'
@@ -173,16 +169,13 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
         · exfalso
           have hrg_s : rg = s := le_antisymm hrgs (h ▸ hug)
           have hgs : Polynomial.eval s g = 0 := by simp_all
-          have hfs : Polynomial.eval s f = 0 := by
-            simp_all
+          have hfs : Polynomial.eval s f = 0 := by simp_all
           obtain ⟨p, q, hpq⟩ := hcop
           have := congr_arg (Polynomial.eval s) hpq
           simp [eval_add, eval_mul, eval_one, hfs, hgs] at this
       -- Recursive call
-      have hlen_f' : rest_f.length = rest_ss.length := by
-        simp_all
-      have hlen_g' : rest_g.length = rest_ss.length := by
-        simp_all
+      have hlen_f' : rest_f.length = rest_ss.length := by simp_all
+      have hlen_g' : rest_g.length = rest_ss.length := by simp_all
       have hrs_f_eq' : (↑(rf2 :: rest_f) : Multiset ℝ) + (rf ::ₘ consumed_f) = f.roots :=
         calc (↑(rf2 :: rest_f) : Multiset ℝ) + (rf ::ₘ consumed_f)
             = rf ::ₘ consumed_f + ↑(rf2 :: rest_f) := add_comm _ _
@@ -195,14 +188,10 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
           _ = rg ::ₘ (consumed_g + ↑(rg2 :: rest_g)) := Multiset.cons_add ..
           _ = rg ::ₘ (↑(rg2 :: rest_g) + consumed_g) := by grind
           _ = g.roots := by lia
-      have hcons_f' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rf2 := by
-        grind
-      have hcons_g' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rg2 := by
-        grind
-      have hcons_f2' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rg2 := by
-        grind
-      have hcons_g2' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rf2 := by
-        grind
+      have hcons_f' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rf2 := by grind
+      have hcons_g' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rg2 := by grind
+      have hcons_f2' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rg2 := by grind
+      have hcons_g2' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rf2 := by grind
       obtain ⟨us, hus_len, hus_int, hus_root, hus_pw, hus_lb⟩ :=
         wagner2_roots_exist f g hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hcop
           (rf ::ₘ consumed_f) (rg ::ₘ consumed_g)
@@ -210,8 +199,7 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
           hint_f_tail hint_g_tail hrs_f_eq' hrs_g_eq'
           hcons_f' hcons_g' hcons_f2' hcons_g2'
       -- us elements ≥ min rf2 rg2 ≥ s
-      have hus_ge_s : ∀ w ∈ us, s ≤ w := by
-        grind
+      have hus_ge_s : ∀ w ∈ us, s ≤ w := by grind
       -- Construct interlacing: need u ≤ s ≤ us.head
       obtain ⟨u1, us_tail, rfl⟩ : ∃ a l, us = a :: l := by
         cases us with | nil => simp at hus_len | cons a l => lia
@@ -235,15 +223,12 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
         · exfalso
           have hrf_s : rf = s := le_antisymm hrfs (h ▸ huf)
           have hfs : Polynomial.eval s f = 0 := by simp_all
-          have hgs : Polynomial.eval s g = 0 := by
-            simp_all
+          have hgs : Polynomial.eval s g = 0 := by simp_all
           obtain ⟨p, q, hpq⟩ := hcop
           have := congr_arg (Polynomial.eval s) hpq
           simp [eval_add, eval_mul, eval_one, hfs, hgs] at this
-      have hlen_f' : rest_f.length = rest_ss.length := by
-        simp_all
-      have hlen_g' : rest_g.length = rest_ss.length := by
-        simp_all
+      have hlen_f' : rest_f.length = rest_ss.length := by simp_all
+      have hlen_g' : rest_g.length = rest_ss.length := by simp_all
       have hrs_f_eq' : (↑(rf2 :: rest_f) : Multiset ℝ) + (rf ::ₘ consumed_f) = f.roots :=
         calc (↑(rf2 :: rest_f) : Multiset ℝ) + (rf ::ₘ consumed_f)
             = rf ::ₘ consumed_f + ↑(rf2 :: rest_f) := add_comm _ _
@@ -256,22 +241,17 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
           _ = rg ::ₘ (consumed_g + ↑(rg2 :: rest_g)) := Multiset.cons_add ..
           _ = rg ::ₘ (↑(rg2 :: rest_g) + consumed_g) := by grind
           _ = g.roots := by lia
-      have hcons_f' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rf2 := by
-        grind
-      have hcons_g' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rg2 := by
-        grind
-      have hcons_f2' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rg2 := by
-        grind
-      have hcons_g2' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rf2 := by
-        grind
+      have hcons_f' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rf2 := by grind
+      have hcons_g' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rg2 := by grind
+      have hcons_f2' : ∀ r ∈ rf ::ₘ consumed_f, r ≤ rg2 := by grind
+      have hcons_g2' : ∀ r ∈ rg ::ₘ consumed_g, r ≤ rf2 := by grind
       obtain ⟨us, hus_len, hus_int, hus_root, hus_pw, hus_lb⟩ :=
         wagner2_roots_exist f g hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hcop
           (rf ::ₘ consumed_f) (rg ::ₘ consumed_g)
           rf2 rg2 rest_f rest_g rest_ss hlen_f' hlen_g'
           hint_f_tail hint_g_tail hrs_f_eq' hrs_g_eq'
           hcons_f' hcons_g' hcons_f2' hcons_g2'
-      have hus_ge_s : ∀ w ∈ us, s ≤ w := by
-        grind
+      have hus_ge_s : ∀ w ∈ us, s ≤ w := by grind
       obtain ⟨u1, us_tail, rfl⟩ : ∃ a l, us = a :: l := by
         cases us with | nil => simp at hus_len | cons a l => lia
       have hu_le_s : u ≤ s := le_trans huf hrfs
@@ -318,10 +298,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         cases rs_f with | nil => simp at hlen_f | cons r rs => lia
       obtain ⟨rg, rest_g, rfl⟩ : ∃ a l, rs_g = a :: l := by
         cases rs_g with | nil => simp at hlen_g | cons r rs => lia
-      have hlen_f' : rest_f.length = ss_h.length := by
-        simp_all
-      have hlen_g' : rest_g.length = ss_h.length := by
-        simp_all
+      have hlen_f' : rest_f.length = ss_h.length := by simp_all
+      have hlen_g' : rest_g.length = ss_h.length := by simp_all
       obtain ⟨us, hus_len, hus_int, hus_root, hus_pw, _⟩ :=
         wagner2_roots_exist f g hf.1 hf.2 hg.1 hg.2 hf_pos hg_pos hcop 0 0
           rf rg rest_f rest_g ss_h hlen_f' hlen_g'
@@ -338,8 +316,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (rg :: rest_g).length = g.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
-        have hdeg_eq : f.natDegree = g.natDegree := by
-          lia
+        have hdeg_eq : f.natDegree = g.natDegree := by lia
         exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
       have hfg_natDeg : (f + g).natDegree = us.length := by
         rw [hus_len, hfg_deg]
@@ -378,8 +355,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hfgnd : (f + g).natDegree = 1 := by
           rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
             (by simp_all) hf_pos, hfnd]
-        have hcard1 : (f + g).roots.card = 1 := by
-          rw [card_roots_of_splits hfg_rr.2, hfgnd]
+        have hcard1 : (f + g).roots.card = 1 := by rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
@@ -408,8 +384,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (r₁_g :: rest_g).length = g.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
-        have hdeg : g.natDegree + 1 = f.natDegree := by
-          lia
+        have hdeg : g.natDegree + 1 = f.natDegree := by lia
         have hdeg_lt : g.natDegree < f.natDegree := by lia
         have hfg_deg : (f + g).natDegree = f.natDegree :=
           natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hf_pos
@@ -442,10 +417,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
               rw [show g + f = f + g from add_comm g f, hfg_deg, hdeg])
         have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
         -- Use wagner2_roots_exist on rf2 :: rest_f' and r₁_g :: rest_g with rest_ss
-        have hlen_f' : rest_f'.length = rest_ss.length := by
-          grind
-        have hlen_g' : rest_g.length = rest_ss.length := by
-          grind
+        have hlen_f' : rest_f'.length = rest_ss.length := by grind
+        have hlen_g' : rest_g.length = rest_ss.length := by grind
         have hrs_f_eq' : (↑(rf2 :: rest_f') : Multiset ℝ) + ↑[rf] = f.roots := by
           rw [← hrs_f_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -468,14 +441,12 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           · exfalso
             have hrf_s₁ : rf = s₁ := le_antisymm hrfs₁ (h ▸ hu₀_le)
             have hfs₁ : Polynomial.eval s₁ f = 0 := by simp_all
-            have hgs₁ : Polynomial.eval s₁ g = 0 := by
-              simp_all
+            have hgs₁ : Polynomial.eval s₁ g = 0 := by simp_all
             obtain ⟨p, q, hpq⟩ := hcop
             have := congr_arg (Polynomial.eval s₁) hpq
             simp [eval_add, eval_mul, eval_one, hfs₁, hgs₁] at this
         -- us elements ≥ min(rf2, r₁_g) ≥ s₁
-        have hus_ge_s₁ : ∀ w ∈ us, s₁ ≤ w := by
-          grind
+        have hus_ge_s₁ : ∀ w ∈ us, s₁ ≤ w := by grind
         obtain ⟨u1, us_tail, rfl⟩ : ∃ a l, us = a :: l := by
           cases us with | nil => simp at hus_len | cons a l => lia
         -- Build interlacing: u₀ ≤ s₁ ≤ u1, then ListInterlaces rest_ss (u1 :: us_tail)
@@ -527,8 +498,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hfgnd : (f + g).natDegree = 1 := by
           rw [natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
             (by simp_all) hg_pos, hgnd]
-        have hcard1 : (f + g).roots.card = 1 := by
-          rw [card_roots_of_splits hfg_rr.2, hfgnd]
+        have hcard1 : (f + g).roots.card = 1 := by rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
@@ -558,8 +528,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (rg :: rg2 :: rest_g').length = g.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
-        have hdeg : f.natDegree + 1 = g.natDegree := by
-          lia
+        have hdeg : f.natDegree + 1 = g.natDegree := by lia
         have hdeg_lt : f.natDegree < g.natDegree := by lia
         have hfg_deg : (f + g).natDegree = g.natDegree :=
           natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
@@ -589,10 +558,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           exists_root_le_of_mixed hf.1 hf_pos hfg_pos hrg_root hf_gt_rg (by
             lia)
         -- Use wagner2_roots_exist on r₁_f :: rest_f and rg2 :: rest_g' with rest_ss
-        have hlen_f' : rest_f.length = rest_ss.length := by
-          grind
-        have hlen_g' : rest_g'.length = rest_ss.length := by
-          grind
+        have hlen_f' : rest_f.length = rest_ss.length := by grind
+        have hlen_g' : rest_g'.length = rest_ss.length := by grind
         have hrs_g_eq' : (↑(rg2 :: rest_g') : Multiset ℝ) + ↑[rg] = g.roots := by
           rw [← hrs_g_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -615,14 +582,12 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           · exfalso
             have hrg_s₁ : rg = s₁ := le_antisymm hrgs₁ (h ▸ hu₀_le)
             have hgs₁ : Polynomial.eval s₁ g = 0 := by simp_all
-            have hfs₁ : Polynomial.eval s₁ f = 0 := by
-              simp_all
+            have hfs₁ : Polynomial.eval s₁ f = 0 := by simp_all
             obtain ⟨p, q, hpq⟩ := hcop
             have := congr_arg (Polynomial.eval s₁) hpq
             simp [eval_add, eval_mul, eval_one, hfs₁, hgs₁] at this
         -- us elements ≥ min(r₁_f, rg2) ≥ s₁
-        have hus_ge_s₁ : ∀ w ∈ us, s₁ ≤ w := by
-          grind
+        have hus_ge_s₁ : ∀ w ∈ us, s₁ ≤ w := by grind
         obtain ⟨u1, us_tail, rfl⟩ : ∃ a l, us = a :: l := by
           cases us with | nil => simp at hus_len | cons a l => lia
         -- Build interlacing
@@ -652,10 +617,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
       | nil =>
         -- Degenerate: all degree 0
         simp only [List.length_nil] at hlen_f_alt hlen_g_alt
-        have hrf_nil : rs_f = [] := by
-          grind
-        have hrg_nil : rs_g = [] := by
-          grind
+        have hrf_nil : rs_f = [] := by grind
+        have hrg_nil : rs_g = [] := by grind
         subst hrf_nil; subst hrg_nil
         have hfnd : f.natDegree = 0 := by
           have := card_roots_of_splits hf.2
@@ -684,17 +647,14 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           | cons a l => lia
         obtain ⟨hs₁_r₁f, hint_f_tail⟩ := halt_f
         obtain ⟨hs₁_r₁g, hint_g_tail⟩ := halt_g
-        have hlen_f' : rest_f.length = rest_ss.length := by
-          simp_all
-        have hlen_g' : rest_g.length = rest_ss.length := by
-          simp_all
+        have hlen_f' : rest_f.length = rest_ss.length := by simp_all
+        have hlen_g' : rest_g.length = rest_ss.length := by simp_all
         -- Degrees
         have hf_deg : (r₁_f :: rest_f).length = f.natDegree := by
           rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (r₁_g :: rest_g).length = g.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
-        have hdeg_eq : f.natDegree = g.natDegree := by
-          lia
+        have hdeg_eq : f.natDegree = g.natDegree := by lia
         have hfg_deg : (f + g).natDegree = f.natDegree :=
           natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         -- Call wagner2_roots_exist with empty consumed sets

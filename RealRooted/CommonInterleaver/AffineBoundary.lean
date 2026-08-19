@@ -25,10 +25,8 @@ private lemma no_common_boundary_right_pair_of_no_common_nonneg
   intro r hsum hX
   by_cases hr0 : r = 0
   · have hsum_eval : (C t * f + g).eval 0 = 0 := by simp_all
-    have hf_eval_nonneg : 0 ≤ f.eval 0 := by
-      simpa [Polynomial.coeff_zero_eq_eval_zero] using hfnn 0
-    have hg_eval_nonneg : 0 ≤ g.eval 0 := by
-      simpa [Polynomial.coeff_zero_eq_eval_zero] using hgnn 0
+    have hf_eval_nonneg : 0 ≤ f.eval 0 := by simpa [Polynomial.coeff_zero_eq_eval_zero] using hfnn 0
+    have hg_eval_nonneg : 0 ≤ g.eval 0 := by simpa [Polynomial.coeff_zero_eq_eval_zero] using hgnn 0
     have htf_eval_nonneg : 0 ≤ t * f.eval 0 := mul_nonneg ht.le hf_eval_nonneg
     have hf_eval0 : f.eval 0 = 0 := by
       rw [eval_add, eval_mul, eval_C] at hsum_eval

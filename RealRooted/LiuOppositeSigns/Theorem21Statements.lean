@@ -37,8 +37,7 @@ theorem NoCommonRoots.rightFamily_not_isRoot_of_left_root
     (hμ : μ ≠ 0) (hf : f.IsRoot x) :
     ¬ (f + C μ * g).IsRoot x := by
   have hg : ¬ g.IsRoot x := h x hf
-  have hf_eval : f.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hf
+  have hf_eval : f.eval x = 0 := by simpa [Polynomial.IsRoot.def] using hf
   have hg_eval_ne : g.eval x ≠ 0 :=
     (Polynomial.not_isRoot_iff_eval_ne_zero g x).mp hg
   have hq_eval_ne : (f + C μ * g).eval x ≠ 0 := by
@@ -56,8 +55,7 @@ theorem NoCommonRoots.rightFamily_not_isRoot_of_right_root
   have hf : ¬ f.IsRoot x := h.symm x hg
   have hf_eval_ne : f.eval x ≠ 0 :=
     (Polynomial.not_isRoot_iff_eval_ne_zero f x).mp hf
-  have hg_eval : g.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hg
+  have hg_eval : g.eval x = 0 := by simpa [Polynomial.IsRoot.def] using hg
   have hq_eval_ne : (f + C μ * g).eval x ≠ 0 := by
     simpa [eval_add, eval_mul, eval_C, hg_eval] using hf_eval_ne
   exact
@@ -137,8 +135,7 @@ theorem RootCountCompatible.exists_two_isRoot_between_X_mul_sub_C_mul_of_even_ri
   have hp_y_q_a_neg : p.eval y * q.eval a < 0 :=
     hp.eval_mul_eval_neg_of_odd_card_roots_gt_add
       hq hp_pos hq_pos hp_not_y hqa hodd_y
-  have hq_a_p_y_neg : q.eval a * p.eval y < 0 := by
-    simpa [mul_comm] using hp_y_q_a_neg
+  have hq_a_p_y_neg : q.eval a * p.eval y < 0 := by simpa [mul_comm] using hp_y_q_a_neg
   exact exists_two_isRoot_between_X_mul_sub_C_mul_of_even_right_roots_left_sign
     hq_ne hq hay hyb ha hb hy hμ hy_neg heven hqb hq_a_p_y_neg
 
@@ -682,10 +679,8 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
     hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no
   have hf_endpoint : 0 < f.eval a * f.eval b :=
     eval_mul_pos_of_forall_not_isRoot_Icc hab hf_no_Icc
-  have hga_eval : g.eval a = 0 := by
-    simpa [Polynomial.IsRoot.def] using hga
-  have hgb_eval : g.eval b = 0 := by
-    simpa [Polynomial.IsRoot.def] using hgb
+  have hga_eval : g.eval a = 0 := by simpa [Polynomial.IsRoot.def] using hga
+  have hgb_eval : g.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hgb
   have hendpoint :
       0 < (f + C μ * g).eval a * (f + C μ * g).eval b := by
     simpa [eval_add, eval_mul, eval_C, hga_eval, hgb_eval] using hf_endpoint
@@ -1506,8 +1501,7 @@ theorem posComboRealRooted_of_compatible_natDegree_ne
     have hβdeg : (C β * g).natDegree = g.natDegree :=
       Polynomial.natDegree_C_mul (ne_of_gt hβ)
     rcases lt_or_gt_of_ne hdeg with hlt | hgt
-    · have hscaled : (C α * f).natDegree < (C β * g).natDegree := by
-        simpa [hαdeg, hβdeg] using hlt
+    · have hscaled : (C α * f).natDegree < (C β * g).natDegree := by simpa [hαdeg, hβdeg] using hlt
       have hsum_deg :
           (C α * f + C β * g).natDegree = (C β * g).natDegree :=
         Polynomial.natDegree_add_eq_right_of_natDegree_lt hscaled
@@ -1516,8 +1510,7 @@ theorem posComboRealRooted_of_compatible_natDegree_ne
       have hg_deg_pos : 0 < g.natDegree :=
         lt_of_le_of_lt (Nat.zero_le _) hlt
       lia
-    · have hscaled : (C β * g).natDegree < (C α * f).natDegree := by
-        simpa [hαdeg, hβdeg] using hgt
+    · have hscaled : (C β * g).natDegree < (C α * f).natDegree := by simpa [hαdeg, hβdeg] using hgt
       have hsum_deg :
           (C α * f + C β * g).natDegree = (C α * f).natDegree :=
         Polynomial.natDegree_add_eq_left_of_natDegree_lt hscaled
@@ -1545,16 +1538,13 @@ theorem posComboRealRooted_of_compatible_noCommon_nonconstant
     obtain ⟨r, hr_mem⟩ :=
       Multiset.exists_mem_of_ne_zero (hg.roots_ne_zero hg_deg)
     have hgr : g.IsRoot r := (Polynomial.mem_roots hg_ne).mp hr_mem
-    have hsum_eval : (C α * f + C β * g).eval r = 0 := by
-      simp [hzero]
-    have hgr_eval : g.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hgr
+    have hsum_eval : (C α * f + C β * g).eval r = 0 := by simp [hzero]
+    have hgr_eval : g.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hgr
     have hfr_eval : f.eval r = 0 := by
       have hα_eval : α * f.eval r = 0 := by
         simpa [eval_add, eval_mul, eval_C, hgr_eval] using hsum_eval
       exact (mul_eq_zero.mp hα_eval).resolve_left (ne_of_gt hα)
-    have hfr : f.IsRoot r := by
-      simpa [Polynomial.IsRoot.def] using hfr_eval
+    have hfr : f.IsRoot r := by simpa [Polynomial.IsRoot.def] using hfr_eval
     exact (hno r hfr) hgr
   · exact hrr
 
@@ -1936,10 +1926,8 @@ theorem not_theorem21CompatibleToRootCountBranchesNonconstantStatement :
     simpa [pow_two] using
       compatible_mul_common_factor
         (d := (X : ℝ[X])) Polynomial.Splits.X hbase
-  have hsgn : OppositeLeadingSigns (X : ℝ[X]) (-(X ^ 2)) := by
-    norm_num [OppositeLeadingSigns]
-  have hfdeg : (X : ℝ[X]).natDegree ≠ 0 := by
-    simp
+  have hsgn : OppositeLeadingSigns (X : ℝ[X]) (-(X ^ 2)) := by norm_num [OppositeLeadingSigns]
+  have hfdeg : (X : ℝ[X]).natDegree ≠ 0 := by simp
   have hgdeg : (-(X ^ 2) : ℝ[X]).natDegree ≠ 0 := by
     norm_num [Polynomial.natDegree_neg, Polynomial.natDegree_pow]
   obtain ⟨r, s, hleft | hright⟩ :=
@@ -1953,12 +1941,9 @@ theorem not_theorem21CompatibleToRootCountBranchesNonconstantStatement :
         hgsplits
     norm_num [natDegree_deleteRootFactor, Polynomial.natDegree_neg,
       Polynomial.natDegree_pow] at hgap
-  · have hr : r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hright.f_largest.isRoot
-    have hs : s = 0 := by
-      simpa [Polynomial.IsRoot.def] using hright.g_largest.isRoot
-    have hfalse : (0 : ℝ) < 0 := by
-      simpa [hr, hs] using hright.largest_lt
+  · have hr : r = 0 := by simpa [Polynomial.IsRoot.def] using hright.f_largest.isRoot
+    have hs : s = 0 := by simpa [Polynomial.IsRoot.def] using hright.g_largest.isRoot
+    have hfalse : (0 : ℝ) < 0 := by simpa [hr, hs] using hright.largest_lt
     exact (lt_irrefl 0) hfalse
 
 /-- Reverse half of Liu Theorem 2.1, isolated as a statement target. -/

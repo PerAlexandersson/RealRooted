@@ -75,10 +75,8 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 < c) :
     Prec g (X * (C c * g.derivative + C a * f)) := by
-  have hg_pos : HasPosLeadingCoeff g := by
-    rr_pos_lc using nonzero := right_ne_zero_of_prec h
-  have hf_pos : HasPosLeadingCoeff f := by
-    rr_pos_lc using nonzero := left_ne_zero_of_prec h
+  have hg_pos : HasPosLeadingCoeff g := by rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
   have hder : Prec g.derivative g := (derivative_interlaces (right_splits_of_prec h) hdeg).toPrec
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
@@ -133,8 +131,7 @@ theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
     Prec g p := by
   have hstep : Prec g (X * (C c * g.derivative + C a * f)) :=
     prec_wagner_derivative_gap_lag_step h hfnn hgnn hdeg ha hc
-  have hscaled : Prec g (C d * p) := by
-    simpa [hrec] using hstep
+  have hscaled : Prec g (C d * p) := by simpa [hrec] using hstep
   have hscaled' : Prec g (C d⁻¹ * (C d * p)) :=
     prec_C_mul_right hscaled (inv_ne_zero hd.ne')
   have hnormalize : C d⁻¹ * (C d * p) = p := by
@@ -242,8 +239,7 @@ theorem exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne {g : ℝ[X]}
   have hr0_ne : r0 ≠ 0 := by
     intro h0
     apply hgc0
-    have : g.eval 0 = 0 := by
-      simpa [h0, IsRoot] using hr0_root
+    have : g.eval 0 = 0 := by simpa [h0, IsRoot] using hr0_root
     rwa [coeff_zero_eq_eval_zero]
   exact ⟨r0, lt_of_le_of_ne hr0_le hr0_ne, hr0_max⟩
 
@@ -256,20 +252,17 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
   have hg0 : g ≠ 0 := right_ne_zero_of_prec h
   have hgs : g.Splits := right_splits_of_prec h
   have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_prec h
-  have hfd : f.derivative ≠ 0 := by
-    rr_nonzero
+  have hfd : f.derivative ≠ 0 := by rr_nonzero
   have hXdeg : 2 ≤ (X ^ 2 * f.derivative).natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X]
     lia
   have hb1 := h.natDegree_le
-  have hgdeg : 1 ≤ g.natDegree := by
-    lia
+  have hgdeg : 1 ≤ g.natDegree := by lia
   obtain ⟨c, hc_neg, hc_max⟩ :=
     exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne hg0 hgs hgnn hgdeg hgc0
   have hall : ∀ r ∈ (X ^ 2 * f.derivative).roots, r ≤ c :=
     roots_le_of_prec_right h hc_max
-  have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by
-    simp [IsRoot]
+  have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by simp [IsRoot]
   have hzero_mem : (0 : ℝ) ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr hzero_root
   have hzc : (0 : ℝ) ≤ c := hall 0 hzero_mem
@@ -288,8 +281,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   have hg0 : g ≠ 0 := left_ne_zero_of_prec h
   have hgs : g.Splits := left_splits_of_prec h
   have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_prec h
-  have hfd : f.derivative ≠ 0 := by
-    rr_nonzero
+  have hfd : f.derivative ≠ 0 := by rr_nonzero
   have hXf_deg : (X ^ 2 * f.derivative).natDegree = g.natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X,
       f.natDegree_derivative]
@@ -301,8 +293,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   obtain ⟨uR, q, hq_eq, huR_root, huR_max, hint⟩ :=
     exists_rightmost_factor_interlaces_of_prec_sameDegree h hdeg_eq hdeg_pos
   have hXf_nn : HasNonnegCoeffs (X ^ 2 * f.derivative) := by
-    have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by
-      ring
+    have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by ring
     rw [hrw]
     rr_nonneg_coeffs using hfnn.derivative
   have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_prec h
@@ -310,8 +301,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (mem_roots hXf_ne).mpr huR_root
   have huR_le : uR ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hXf_splits hXf_nn uR huR_mem
-  have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by
-    simp [IsRoot]
+  have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by simp [IsRoot]
   have hzero_mem : (0 : ℝ) ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr hzero_root
   have hzero_le : (0 : ℝ) ≤ uR := huR_max 0 hzero_mem
@@ -331,8 +321,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     rw [hq]
     simp [IsRoot]
   have hq_zero_mem : (0 : ℝ) ∈ q.roots := (mem_roots hq_ne).mpr hq_zero_root
-  have hgdeg : 1 ≤ g.natDegree := by
-    lia
+  have hgdeg : 1 ≤ g.natDegree := by lia
   obtain ⟨c, hc_neg, hc_max⟩ :=
     exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne hg0 hgs hgnn hgdeg hgc0
   have hall : ∀ r ∈ q.roots, r ≤ c := roots_le_of_prec_right hint.toPrec hc_max
@@ -350,11 +339,9 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 ≤ c) :
     Prec g (C a * g + (C c * X) * f) := by
-  have hg_pos : HasPosLeadingCoeff g := by
-    rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hg_pos : HasPosLeadingCoeff g := by rr_pos_lc using nonzero := right_ne_zero_of_prec h
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
-    have hf_pos : HasPosLeadingCoeff f := by
-      rr_pos_lc using nonzero := left_ne_zero_of_prec h
+    have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
     rr_pos_lc
   have hX : Prec g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
   have hself : Prec g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)

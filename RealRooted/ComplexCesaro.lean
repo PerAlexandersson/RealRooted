@@ -91,12 +91,9 @@ theorem norm_le_of_nonneg_conjugate_geometric
       div_pow, div_pow, map_div₀, Complex.conj_ofReal, div_pow]
     field_simp
   have hnorm_pos : 0 < ‖z‖ := norm_pos_iff.mpr hz0
-  have hq_nonneg : 0 ≤ q := by
-    exact div_nonneg hr (norm_nonneg z)
-  have hq_lt : q < 1 := by
-    exact (div_lt_one hnorm_pos).mpr hzr
-  have hw_norm : ‖w‖ = 1 := by
-    simp [w, hnorm]
+  have hq_nonneg : 0 ≤ q := by exact div_nonneg hr (norm_nonneg z)
+  have hq_lt : q < 1 := by exact (div_lt_one hnorm_pos).mpr hzr
+  have hw_norm : ‖w‖ = 1 := by simp [w, hnorm]
   have hw_im : w.im ≠ 0 := by
     simp only [w, Complex.div_im, Complex.ofReal_re, Complex.ofReal_im,
       mul_zero, zero_div, sub_zero]
@@ -110,10 +107,8 @@ theorem norm_le_of_nonneg_conjugate_geometric
     apply hw_im
     rw [h]
     simp
-  have hcw_norm : ‖starRingEnd ℂ w‖ = 1 := by
-    rw [Complex.norm_conj, hw_norm]
-  have hcw_im : (starRingEnd ℂ w).im ≠ 0 := by
-    simpa using neg_ne_zero.mpr hw_im
+  have hcw_norm : ‖starRingEnd ℂ w‖ = 1 := by rw [Complex.norm_conj, hw_norm]
+  have hcw_im : (starRingEnd ℂ w).im ≠ 0 := by simpa using neg_ne_zero.mpr hw_im
   have hcw_ne_one : starRingEnd ℂ w ≠ 1 := by
     intro h
     apply hcw_im
@@ -129,8 +124,7 @@ theorem norm_le_of_nonneg_conjugate_geometric
   have hq_norm : ‖(q : ℂ)‖ ≤ 1 := by
     rw [Complex.norm_real, Real.norm_of_nonneg hq_nonneg]
     exact hq_lt.le
-  have hq_ne_one : (q : ℂ) ≠ 1 := by
-    exact_mod_cast ne_of_lt hq_lt
+  have hq_ne_one : (q : ℂ) ≠ 1 := by exact_mod_cast ne_of_lt hq_lt
   let avg : (ℕ → ℂ) → ℕ → ℂ := fun f N =>
     ((N + 1 : ℕ) : ℝ)⁻¹ • ∑ n ∈ range (N + 1), f n
   have havg_q : Tendsto (avg fun n => (q : ℂ) ^ n) atTop (nhds 0) := by
@@ -210,8 +204,7 @@ theorem norm_le_of_nonneg_conjugate_geometric
     have hnorm_eq := congrArg norm h
     rw [norm_one] at hnorm_eq
     exact (ne_of_lt hqcw_norm_lt) hnorm_eq
-  have hcw_sq_norm : ‖(starRingEnd ℂ w) ^ 2‖ = 1 := by
-    rw [norm_pow, hcw_norm, one_pow]
+  have hcw_sq_norm : ‖(starRingEnd ℂ w) ^ 2‖ = 1 := by rw [norm_pow, hcw_norm, one_pow]
   have havg_qcw : Tendsto
       (avg fun n => ((q : ℂ) * starRingEnd ℂ w) ^ n) atTop (nhds 0) := by
     simpa [avg, Function.comp_def] using
@@ -243,8 +236,7 @@ theorem norm_le_of_nonneg_conjugate_geometric
     simp only [Complex.real_smul, Finset.sum_const, card_range, nsmul_eq_mul]
     have hcast : ((((N + 1 : ℕ) : ℝ) : ℂ)) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (by positivity)
-    have hnatcast : ((N + 1 : ℕ) : ℂ) = ((((N + 1 : ℕ) : ℝ) : ℂ)) := by
-      norm_num
+    have hnatcast : ((N + 1 : ℕ) : ℂ) = ((((N + 1 : ℕ) : ℝ) : ℂ)) := by norm_num
     rw [Complex.ofReal_inv]
     field_simp [hcast]
     rw [hnatcast]

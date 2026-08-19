@@ -235,8 +235,7 @@ private theorem norm_le_shift_majorant
       1 ≤ W.im⁻¹ * ‖z + W‖ := hinv
       _ ≤ (1 + ‖W‖ / W.im + 1 / W.im) * ‖z + W‖ := by
         rw [add_mul, add_mul, one_mul, one_div]
-        have hnormterm : 0 ≤ (‖W‖ / W.im) * ‖z + W‖ := by
-          positivity
+        have hnormterm : 0 ≤ (‖W‖ / W.im) * ‖z + W‖ := by positivity
         linarith
 
 /-- Coordinatewise majorization, raised to the ambient degree-box exponent. -/
@@ -464,8 +463,7 @@ theorem hasStableRankOneRepresentation_of_range_stableOrZero
     refine ⟨α, P, hP, ?_⟩
     intro f
     let q := T (f - (α f) • f₀)
-    have hq : q = T f - (α f) • P := by
-      simp [q, P]
+    have hq : q = T f - (α f) • P := by simp [q, P]
     have hqeval : MvPolynomial.eval z q = 0 := by
       rw [hq]
       simp [α]

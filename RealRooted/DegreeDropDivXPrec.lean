@@ -216,8 +216,7 @@ rightmost element of `rs` leaves an equal-length pair that alternates. -/
 lemma listAlternates_dropLast_of_listInterlaces {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length) (h : ListInterlaces ss rs) :
     ListAlternates rs.dropLast ss := by
-  have hrs_ne : rs ≠ [] := by
-    grind
+  have hrs_ne : rs ≠ [] := by grind
   have hsplit : rs.dropLast ++ [rs.getLast hrs_ne] = rs :=
     List.dropLast_append_getLast hrs_ne
   have hlen' : ss.length = rs.dropLast.length := by grind
@@ -244,8 +243,7 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   have hlen1 : ss.length + 1 = rs.length := by simp_all
-  have hInter : ListInterlaces ss rs := by
-    simp_all
+  have hInter : ListInterlaces ss rs := by simp_all
   have hrs_ne : rs ≠ [] := by grind
   set m := rs.getLast hrs_ne with hm
   have hm_mem : m ∈ rs := List.getLast_mem hrs_ne
@@ -269,8 +267,7 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne (hm.symm.trans hm0)
   have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
     List.Pairwise.sublist (List.dropLast_sublist rs) hrs_sorted
-  have hlen_eq : (rs.dropLast).length = ss.length := by
-    simp_all
+  have hlen_eq : (rs.dropLast).length = ss.length := by simp_all
   have hAlt : ListAlternates (rs.dropLast) ss :=
     listAlternates_dropLast_of_listInterlaces hlen1 hInter
   have hdivX_ne : g.divX ≠ 0 := by
@@ -319,17 +316,14 @@ theorem prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).2 hdivX.2
   have hf_nonpos : ∀ u ∈ bb, u ≤ 0 := by
     intro u hu
-    have hmem : u ∈ f.roots := by
-      rw [← hbb_eq]; exact Multiset.mem_coe.mpr hu
+    have hmem : u ∈ f.roots := by rw [← hbb_eq]; exact Multiset.mem_coe.mpr hu
     exact roots_nonpos_of_hasNonnegCoeffs hfnn u hmem
   have hg_roots : g.roots = (0 : ℝ) ::ₘ g.divX.roots :=
     roots_eq_zero_cons_divX_of_coeff_zero hg_ne hg0
   have hdivX_nonpos : ∀ a ∈ aa, a ≤ 0 := by
     intro a ha
-    have hmem : a ∈ g.divX.roots := by
-      rw [← haa_eq]; exact Multiset.mem_coe.mpr ha
-    have hmem' : a ∈ g.roots := by
-      grind
+    have hmem : a ∈ g.divX.roots := by rw [← haa_eq]; exact Multiset.mem_coe.mpr ha
+    have hmem' : a ∈ g.roots := by grind
     exact roots_nonpos_of_hasNonnegCoeffs hgnn a hmem'
   have hrs_sorted : (aa ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hrs_eq : (↑(aa ++ [(0 : ℝ)]) : Multiset ℝ) = g.roots := by

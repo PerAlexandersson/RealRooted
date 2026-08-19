@@ -38,11 +38,9 @@ lemma simsun_succ (n : Nat) :
       simsunCoeffA n * simsun n +
         simsunCoeffB * (simsun n).derivative := rfl
 
-@[simp] lemma simsun_one : simsun 1 = 1 := by
-  simp [simsun, simsunCoeffA, simsunCoeffB]
+@[simp] lemma simsun_one : simsun 1 = 1 := by simp [simsun, simsunCoeffA, simsunCoeffB]
 
-lemma simsun_two : simsun 2 = 1 + X := by
-  simp [simsun, simsunCoeffA, simsunCoeffB]
+lemma simsun_two : simsun 2 = 1 + X := by simp [simsun, simsunCoeffA, simsunCoeffB]
 
 lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
   rw [simsun_succ, simsun_two]
@@ -50,16 +48,13 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
     simsunCoeffA 2 * (1 + X) + simsunCoeffB * (1 + X).derivative
         = (1 + C (2 : ℝ) * X) * (1 + X) + X * (1 - C (2 : ℝ) * X) := by
             simp [simsunCoeffA, simsunCoeffB]
-    _ = 1 + X + C (2 : ℝ) * X + C (2 : ℝ) * X * X + (X - C (2 : ℝ) * X * X) := by
-          ring
-    _ = 1 + X + C (2 : ℝ) * X + X := by
-          ring
+    _ = 1 + X + C (2 : ℝ) * X + C (2 : ℝ) * X * X + (X - C (2 : ℝ) * X * X) := by ring
+    _ = 1 + X + C (2 : ℝ) * X + X := by ring
     _ = 1 + X * C (4 : ℝ) := by
           have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := (ofNat_def 2).symm
           have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := (ofNat_def 4).symm
           grind
-    _ = 1 + C (4 : ℝ) * X := by
-          simp
+    _ = 1 + C (4 : ℝ) * X := by simp
 
 lemma coeff_simsunCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffA n * p) (m + 1) =
@@ -176,8 +171,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
           have hcast :
               (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
             lia
-          have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 2 := by
-            nlinarith
+          have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 2 := by nlinarith
           have hlead_pos :
               0 < ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
             have hscale : 0 < (k : ℝ) + 2 := by positivity

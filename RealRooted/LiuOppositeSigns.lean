@@ -185,8 +185,7 @@ theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
     (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
   have hq_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove q x : ℤ) := by
     exact_mod_cast Nat.zero_le (rootCountAtOrAbove q x)
-  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by
-    exact_mod_cast hq_le
+  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by exact_mod_cast hq_le
   calc
     |((rootCountAtOrAbove p x : ℤ) - (rootCountAtOrAbove q x : ℤ))|
         = |(rootCountAtOrAbove q x : ℤ)| := by
@@ -208,10 +207,8 @@ theorem RootCountCompatible.of_natDegree_le_one
     exact_mod_cast Nat.zero_le (rootCountAtOrAbove p x)
   have hq_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove q x : ℤ) := by
     exact_mod_cast Nat.zero_le (rootCountAtOrAbove q x)
-  have hp_le_int : (rootCountAtOrAbove p x : ℤ) ≤ 1 := by
-    exact_mod_cast hp_le
-  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by
-    exact_mod_cast hq_le
+  have hp_le_int : (rootCountAtOrAbove p x : ℤ) ≤ 1 := by exact_mod_cast hp_le
+  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by exact_mod_cast hq_le
   rw [abs_le]
   constructor <;> linarith
 
@@ -345,8 +342,7 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
     exact Iff.intro (fun h hy_pos => by linarith)
       (fun h => lt_of_le_of_ne (le_of_not_gt h) hy)
   rcases h.pos_neg_or_neg_pos with ⟨hp_pos, hnegq_pos⟩ | ⟨hnegp_pos, hq_pos⟩
-  · have hxnegq : ¬ (-q).IsRoot x := by
-      simpa using hxq
+  · have hxnegq : ¬ (-q).IsRoot x := by simpa using hxq
     have hparity :
         Even d ↔ ¬ (0 < p.eval x ↔ 0 < q.eval x) := by
       have hpos :=
@@ -361,8 +357,7 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
       tauto
     rw [Int.not_even_iff_odd.symm, hparity]
     tauto
-  · have hxnegp : ¬ (-p).IsRoot x := by
-      simpa using hxp
+  · have hxnegp : ¬ (-p).IsRoot x := by simpa using hxp
     have hparity :
         Even d ↔ ¬ (0 < p.eval x ↔ 0 < q.eval x) := by
       have hpos :=
@@ -435,8 +430,7 @@ theorem not_isRoot_of_not_deleteRootFactor_isRoot_of_lt
     (hdelete : ¬ (deleteRootFactor p r).IsRoot x) :
     ¬ p.IsRoot x := by
   intro hpx
-  have hx_factor : (X - C r : ℝ[X]).eval x ≠ 0 := by
-    simp [sub_ne_zero, ne_of_lt hx]
+  have hx_factor : (X - C r : ℝ[X]).eval x ≠ 0 := by simp [sub_ne_zero, ne_of_lt hx]
   rw [← factor_deleteRootFactor_of_isRoot hr, Polynomial.IsRoot.def,
     eval_mul] at hpx
   exact hdelete (by
@@ -603,14 +597,12 @@ theorem RootCountCompatible.card_right_roots_gt_eq_left_roots_gt_add_one_of_left
   have hQ_at_b : rootCountAtOrAbove q b = Qb := by
     simpa [Qb] using rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
       hq_ne hqb
-  have hP_Qb_le : ((P : ℤ) - Qb) ≤ 1 := by
-    simpa [hP_at_b, hQ_at_b] using (h.bounds b).1
+  have hP_Qb_le : ((P : ℤ) - Qb) ≤ 1 := by simpa [hP_at_b, hQ_at_b] using (h.bounds b).1
   have habove :=
     rootCountAbove_diff_le_one_of_nonRoot_isRoot hp_ne hq_ne
       (fun x hpx hqx =>
         h.rootCountAbove_bounds_of_nonRoot hp_ne hq_ne hpx hqx) a
-  have hQa_P_le : ((Qa : ℤ) - P) ≤ 1 := by
-    simpa [P, Qa] using habove.2
+  have hQa_P_le : ((Qa : ℤ) - P) ≤ 1 := by simpa [P, Qa] using habove.2
   have hq_not_mem_b : b ∉ q.roots := by
     intro hb_mem
     exact hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
@@ -618,16 +610,12 @@ theorem RootCountCompatible.card_right_roots_gt_eq_left_roots_gt_add_one_of_left
     simpa [I, Qb, Qa] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
         q.roots (le_of_lt hab) hq_not_mem_b
-  have htwo' : 2 ≤ I := by
-    simpa [I] using htwo
+  have htwo' : 2 ≤ I := by simpa [I] using htwo
   have hQa_eq_int : (Qa : ℤ) = (P : ℤ) + 1 := by
-    have hpart_int : (I : ℤ) + Qb = Qa := by
-      exact_mod_cast hpart
-    have htwo_int : (2 : ℤ) ≤ I := by
-      exact_mod_cast htwo'
+    have hpart_int : (I : ℤ) + Qb = Qa := by exact_mod_cast hpart
+    have htwo_int : (2 : ℤ) ≤ I := by exact_mod_cast htwo'
     linarith
-  have hQa_eq : Qa = P + 1 := by
-    exact_mod_cast hQa_eq_int
+  have hQa_eq : Qa = P + 1 := by exact_mod_cast hQa_eq_int
   simpa [P, Qa] using hQa_eq
 
 /-- If the left polynomial has no roots in `(a, b)` and the right polynomial
@@ -663,8 +651,7 @@ theorem exists_threshold_no_mem_Ico_left (s : Multiset ℝ) (x : ℝ) :
   by_cases hSne : S.Nonempty
   · set m : ℝ := S.max' hSne with hm
     have hmS : m ∈ S := Finset.max'_mem S hSne
-    have hmx : m < x := by
-      exact (Finset.mem_filter.mp hmS).2
+    have hmx : m < x := by exact (Finset.mem_filter.mp hmS).2
     refine ⟨(m + x) / 2, by linarith, ?_⟩
     intro r hr
     by_cases hrx : r < x
@@ -821,8 +808,7 @@ theorem natDegree_X_mul_sub_C_mul_le_left_natDegree_add_one {p q : ℝ[X]}
   have hq_le : q.natDegree ≤ p.natDegree + 1 := by
     have hgap := h.natDegree_abs_sub_le_one
     rw [abs_le] at hgap
-    have hq_le_int : (q.natDegree : ℤ) ≤ (p.natDegree : ℤ) + 1 := by
-      linarith
+    have hq_le_int : (q.natDegree : ℤ) ≤ (p.natDegree : ℤ) + 1 := by linarith
     exact_mod_cast hq_le_int
   have hright : (C μ * q).natDegree ≤ p.natDegree + 1 :=
     (Polynomial.natDegree_C_mul_le μ q).trans hq_le
@@ -849,8 +835,7 @@ theorem coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
   have hX : (X * p).coeff q.natDegree = p.leadingCoeff := by
     rw [hdeg, coeff_X_mul]
     rw [coeff_natDegree]
-  have hC : (C μ * q).coeff q.natDegree = μ * q.leadingCoeff := by
-    rw [coeff_C_mul, coeff_natDegree]
+  have hC : (C μ * q).coeff q.natDegree = μ * q.leadingCoeff := by rw [coeff_C_mul, coeff_natDegree]
   rw [coeff_sub, hX, hC]
 
 /-- In the right-successor case, non-cancellation of the top coefficient keeps
@@ -951,8 +936,7 @@ theorem posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
       Polynomial.natDegree_C_mul_le μ q
     rw [hXp_deg]
     exact hC_le.trans_lt (hqdeg.trans_lt (Nat.lt_succ_self _))
-  have hnegC_deg_lt : (-(C μ * q)).natDegree < (X * p).natDegree := by
-    simpa using hC_deg_lt
+  have hnegC_deg_lt : (-(C μ * q)).natDegree < (X * p).natDegree := by simpa using hC_deg_lt
   constructor
   · simpa [sub_eq_add_neg] using
       hasPosLeadingCoeff_add_of_natDegree_lt_left
@@ -981,8 +965,7 @@ theorem card_right_roots_filter_gt_le_one_of_left_largest_root
       (fun x hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx) a
   have hp_zero : (p.roots.filter (a < ·)).card = 0 :=
     rootCountAbove_eq_zero_of_forall_roots_le fun r hr => ha.roots_le r hr
-  have hq_le_int : ((q.roots.filter (a < ·)).card : ℤ) ≤ 1 := by
-    simpa [hp_zero] using hbound.2
+  have hq_le_int : ((q.roots.filter (a < ·)).card : ℤ) ≤ 1 := by simpa [hp_zero] using hbound.2
   exact_mod_cast hq_le_int
 
 theorem left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
@@ -1009,10 +992,8 @@ theorem left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
       using hcard
   have hbound : ((p.natDegree : ℤ) - upper) ≤ 1 := by
     simpa [hp_count, upper] using (h.count.bounds a).1
-  have hpart_int : (lower : ℤ) + upper = q.natDegree := by
-    exact_mod_cast hpart
-  have hmain : (p.natDegree : ℤ) + lower ≤ q.natDegree + 1 := by
-    linarith
+  have hpart_int : (lower : ℤ) + upper = q.natDegree := by exact_mod_cast hpart
+  have hmain : (p.natDegree : ℤ) + lower ≤ q.natDegree + 1 := by linarith
   exact_mod_cast hmain
 
 theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq_right_add_one
@@ -1023,8 +1004,7 @@ theorem card_right_roots_filter_lt_eq_zero_of_left_roots_ge_of_left_natDegree_eq
   have hbound :=
     h.left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
       hroots_ge
-  have hlower_le : (q.roots.filter (fun r => r < a)).card ≤ 0 := by
-    lia
+  have hlower_le : (q.roots.filter (fun r => r < a)).card ≤ 0 := by lia
   exact Nat.eq_zero_of_le_zero hlower_le
 
 theorem card_right_roots_filter_lt_le_one_of_left_roots_ge_of_natDegree_eq
@@ -1807,8 +1787,7 @@ theorem owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
         rcases hgap_f r hr_mem with hle | hlt <;> linarith
       · exact False.elim (hnext ⟨r, lt_of_not_ge hrb, Or.inl hr.isRoot⟩)
     have hcr_eq : c = r := le_antisymm hcr hrc
-    have hfc : f.IsRoot c := by
-      simpa [hcr_eq] using hr.isRoot
+    have hfc : f.IsRoot c := by simpa [hcr_eq] using hr.isRoot
     have hdiff := hstep_f hfc hdiff_b
     exact Or.inl ⟨hfc, hdiff⟩
 
@@ -2000,8 +1979,7 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
         rcases hgap_f r hr_mem with hle | hlt <;> linarith
       · exact False.elim (hnext ⟨r, lt_of_not_ge hrb, Or.inl hr.isRoot⟩)
     have hcr_eq : c = r := le_antisymm hcr hrc
-    have hfc : f.IsRoot c := by
-      simpa [hcr_eq] using hr.isRoot
+    have hfc : f.IsRoot c := by simpa [hcr_eq] using hr.isRoot
     have hdiff := hstep_f hfc
     exact Or.inl ⟨hfc, by linarith, by linarith⟩
 

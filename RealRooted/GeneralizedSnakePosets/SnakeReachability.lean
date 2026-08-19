@@ -100,11 +100,9 @@ theorem snakeReachableFuel_rowCode_colCode_eq_false_of_le
           · simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
             rcases hbool with ⟨hrow, hx⟩
             have hgap_eq : w.length - (idx + 1) = r := by
-              have hrgap : r = w.length - (idx + 1) := by
-                simpa [snakeRowCode] using hrow
+              have hrgap : r = w.length - (idx + 1) := by simpa [snakeRowCode] using hrow
               exact hrgap.symm
-            have hx' : x = snakeColCode (r + 1) := by
-              simpa [hgap_eq] using hx
+            have hx' : x = snakeColCode (r + 1) := by simpa [hgap_eq] using hx
             rw [hx'] at htail
             have hdrop : snakeColCode c < snakeColCode (r + 1) := by
               simp [snakeColCode]
@@ -246,17 +244,14 @@ theorem snakeReachableFuel_colCode_add (w : SnakeWord) :
       simp
   | succ k ih =>
       intro hck
-      have hc : c < w.length := by
-        lia
+      have hc : c < w.length := by lia
       have hnext_bound : snakeColCode (c + 1) < snakeCodeBound w := by
         simp [snakeColCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_colCode_succ (w := w) (c := c) hc
-      have htail : c + 1 + k ≤ w.length := by
-        lia
+      have htail : c + 1 + k ≤ w.length := by lia
       have hreach := ih (c := c + 1) htail
-      have hend : c + (k + 1) = c + 1 + k := by
-        lia
+      have hend : c + (k + 1) = c + 1 + k := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -272,17 +267,14 @@ theorem snakeReachableFuel_rowCode_add (w : SnakeWord) :
       simp
   | succ k ih =>
       intro hrk
-      have hr : r < w.length := by
-        lia
+      have hr : r < w.length := by lia
       have hnext_bound : snakeRowCode (r + 1) < snakeCodeBound w := by
         simp [snakeRowCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_rowCode_succ (w := w) (r := r) hr
-      have htail : r + 1 + k ≤ w.length := by
-        lia
+      have htail : r + 1 + k ≤ w.length := by lia
       have hreach := ih (r := r + 1) htail
-      have hend : r + (k + 1) = r + 1 + k := by
-        lia
+      have hend : r + (k + 1) = r + 1 + k := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -301,19 +293,16 @@ theorem snakeReachableFuel_replicate_R_colCode_rowCode_succ_add {n c k : ℕ}
       exact snakeReachableFuel_succ_of_coverEdge hrow_bound
         (snakeCoverEdge_replicate_R_colCode_rowCode_succ hck)
   | succ k ih =>
-      have hc : c < n := by
-        lia
+      have hc : c < n := by lia
       have hnext_bound :
           snakeColCode (c + 1) < snakeCodeBound (List.replicate n SnakeLetter.R) := by
         simp [snakeColCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_colCode_succ (w := List.replicate n SnakeLetter.R)
         (c := c) (by simpa using hc)
-      have htail : c + 1 + k < n := by
-        lia
+      have htail : c + 1 + k < n := by lia
       have hreach := ih (c := c + 1) htail
-      have hend : c + (k + 1) + 1 = c + 1 + k + 1 := by
-        lia
+      have hend : c + (k + 1) + 1 = c + 1 + k + 1 := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -332,19 +321,16 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_succ_add {n r k : ℕ}
       exact snakeReachableFuel_succ_of_coverEdge hcol_bound
         (snakeCoverEdge_replicate_L_rowCode_colCode_succ hrk)
   | succ k ih =>
-      have hr : r < n := by
-        lia
+      have hr : r < n := by lia
       have hnext_bound :
           snakeRowCode (r + 1) < snakeCodeBound (List.replicate n SnakeLetter.L) := by
         simp [snakeRowCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_rowCode_succ (w := List.replicate n SnakeLetter.L)
         (r := r) (by simpa using hr)
-      have htail : r + 1 + k < n := by
-        lia
+      have htail : r + 1 + k < n := by lia
       have hreach := ih (r := r + 1) htail
-      have hend : r + (k + 1) + 1 = r + 1 + k + 1 := by
-        lia
+      have hend : r + (k + 1) + 1 = r + 1 + k + 1 := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -369,17 +355,14 @@ theorem snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
         simp [hcross]
       exact snakeReachableFuel_succ_of_coverEdge hrow_bound hcover
   | succ steps ih =>
-      have hc : c < w.length := by
-        lia
+      have hc : c < w.length := by lia
       have hnext_bound : snakeColCode (c + 1) < snakeCodeBound w := by
         simp [snakeColCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_colCode_succ (w := w) (c := c) hc
-      have htail : c + 1 + steps < w.length - (last + 1) := by
-        lia
+      have htail : c + 1 + steps < w.length - (last + 1) := by lia
       have hreach := ih (c := c + 1) htail
-      have hend : c + (steps + 1) + 1 = c + 1 + steps + 1 := by
-        lia
+      have hend : c + (steps + 1) + 1 = c + 1 + steps + 1 := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -404,17 +387,14 @@ theorem snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
         simp [hcross]
       exact snakeReachableFuel_succ_of_coverEdge hcol_bound hcover
   | succ steps ih =>
-      have hr : r < w.length := by
-        lia
+      have hr : r < w.length := by lia
       have hnext_bound : snakeRowCode (r + 1) < snakeCodeBound w := by
         simp [snakeRowCode, snakeCodeBound]
         lia
       have hcover := snakeCoverEdge_rowCode_succ (w := w) (r := r) hr
-      have htail : r + 1 + steps < w.length - (last + 1) := by
-        lia
+      have htail : r + 1 + steps < w.length - (last + 1) := by lia
       have hreach := ih (r := r + 1) htail
-      have hend : r + (steps + 1) + 1 = r + 1 + steps + 1 := by
-        lia
+      have hend : r + (steps + 1) + 1 = r + 1 + steps + 1 := by lia
       rw [hend]
       exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
 
@@ -474,15 +454,12 @@ theorem snakeReachableFuel_suffix_R_rowCode_colCode_eq_false
           · simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
             rcases hbool with ⟨hrow, hx⟩
             have hgap_eq : w.length - (idx + 1) = r := by
-              have hrgap : r = w.length - (idx + 1) := by
-                simpa [snakeRowCode] using hrow
+              have hrgap : r = w.length - (idx + 1) := by simpa [snakeRowCode] using hrow
               exact hrgap.symm
-            have hx' : x = snakeColCode (r + 1) := by
-              simpa [hgap_eq] using hx
+            have hx' : x = snakeColCode (r + 1) := by simpa [hgap_eq] using hx
             rw [hx'] at htail
             by_cases hrm : r < w.length - (last + 1)
-            · have hkidx : last < idx := by
-                lia
+            · have hkidx : last < idx := by lia
               have hletter_final : w.getD idx SnakeLetter.L = SnakeLetter.R := by
                 rw [hlast.getD_eq_final_of_lt hkidx hidx, hfinal]
               rw [hletter_final] at hletter
@@ -559,15 +536,12 @@ theorem snakeReachableFuel_suffix_L_colCode_rowCode_eq_false
           · simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
             rcases hbool with ⟨hcol, hx⟩
             have hgap_eq : w.length - (idx + 1) = c := by
-              have hcgap : c = w.length - (idx + 1) := by
-                simpa [snakeColCode] using hcol
+              have hcgap : c = w.length - (idx + 1) := by simpa [snakeColCode] using hcol
               exact hcgap.symm
-            have hx' : x = snakeRowCode (c + 1) := by
-              simpa [hgap_eq] using hx
+            have hx' : x = snakeRowCode (c + 1) := by simpa [hgap_eq] using hx
             rw [hx'] at htail
             by_cases hcm : c < w.length - (last + 1)
-            · have hkidx : last < idx := by
-                lia
+            · have hkidx : last < idx := by lia
               have hletter_final : w.getD idx SnakeLetter.L = SnakeLetter.L := by
                 rw [hlast.getD_eq_final_of_lt hkidx hidx, hfinal]
               rw [hletter_final] at hletter
@@ -594,8 +568,7 @@ theorem snakeReachableFuel_replicate_R_colCode_rowCode_of_lt {n c r : ℕ}
     (hcr : c < r) (hr : r ≤ n) :
     snakeReachableFuel (List.replicate n SnakeLetter.R) (r - c)
       (snakeColCode c) (snakeRowCode r) = true := by
-  have hgap : c + (r - c - 1) < n := by
-    lia
+  have hgap : c + (r - c - 1) < n := by lia
   have hreach := snakeReachableFuel_replicate_R_colCode_rowCode_succ_add
     (n := n) (c := c) (k := r - c - 1) hgap
   have htarget :
@@ -613,8 +586,7 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
     (hrc : r < c) (hc : c ≤ n) :
     snakeReachableFuel (List.replicate n SnakeLetter.L) (c - r)
       (snakeRowCode r) (snakeColCode c) = true := by
-  have hgap : r + (c - r - 1) < n := by
-    lia
+  have hgap : r + (c - r - 1) < n := by lia
   have hreach := snakeReachableFuel_replicate_L_rowCode_colCode_succ_add
     (n := n) (r := r) (k := c - r - 1) hgap
   have htarget :
@@ -747,8 +719,7 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_eq_false_of_le
           rw [hfalse] at htail
           cases htail
         · rcases hcross with ⟨d, _hd, hrow, hxcol⟩
-          have hrd : r = d := by
-            simpa [snakeRowCode] using hrow
+          have hrd : r = d := by simpa [snakeRowCode] using hrow
           rw [← hrd] at hxcol
           rw [hxcol] at htail
           have hdrop : snakeColCode c < snakeColCode (r + 1) := by
@@ -847,8 +818,7 @@ theorem snakeElementReachable_suffix_R_colCode_rowCode_of_lt
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
     snakeElementReachable w (snakeColCode c) (snakeRowCode r) = true := by
   unfold snakeElementReachable
-  have hgap : c + (r - c - 1) < w.length - (last + 1) := by
-    lia
+  have hgap : c + (r - c - 1) < w.length - (last + 1) := by lia
   have hreach := snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
     (w := w) (last := last) (c := c) (steps := r - c - 1) hlast hgap hfinal
   have hreach_exact :
@@ -880,8 +850,7 @@ theorem snakeElementReachable_suffix_L_rowCode_colCode_of_lt
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
     snakeElementReachable w (snakeRowCode r) (snakeColCode c) = true := by
   unfold snakeElementReachable
-  have hgap : r + (c - r - 1) < w.length - (last + 1) := by
-    lia
+  have hgap : r + (c - r - 1) < w.length - (last + 1) := by lia
   have hreach := snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
     (w := w) (last := last) (r := r) (steps := c - r - 1) hlast hgap hfinal
   have hreach_exact :

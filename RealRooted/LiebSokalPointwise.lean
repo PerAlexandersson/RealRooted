@@ -82,10 +82,8 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   let A : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
   let B : Polynomial ℂ := affineLineRestriction
     (Function.update z i 0) (Function.update v i 0) P
-  have hA0 : A.eval 0 = 0 := by
-    simp [A, hQz]
-  have hA1 : A.eval 1 ≠ 0 := by
-    simpa [A, v] using hQz₁
+  have hA0 : A.eval 0 = 0 := by simp [A, hQz]
+  have hA1 : A.eval 1 ≠ 0 := by simpa [A, v] using hQz₁
   have hA : A ≠ 0 := by
     intro hzero
     rw [hzero, Polynomial.eval_zero] at hA1
@@ -142,10 +140,8 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
       · simpa [zt, v, z₁, hjQ] using hz j
   apply hP (Function.update zt i r) hzroot
   rw [MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
-  have hAeval : MvPolynomial.eval zt (MvPolynomial.pderiv i P) = A.eval t := by
-    simp [A, zt]
-  have hBeval : MvPolynomial.eval (Function.update zt i 0) P = B.eval t := by
-    rw [hB_eval]
+  have hAeval : MvPolynomial.eval zt (MvPolynomial.pderiv i P) = A.eval t := by simp [A, zt]
+  have hBeval : MvPolynomial.eval (Function.update zt i 0) P = B.eval t := by rw [hB_eval]
   rw [hAeval, hBeval]
   dsimp [r]
   field_simp
@@ -189,8 +185,7 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
   have hA0 : A.eval 0 = 0 := by
     simp only [A, eval_affineLineRestriction, mul_zero, add_zero]
     simpa [Q] using hQz
-  have hA1 : A.eval 1 ≠ 0 := by
-    simpa [A, v] using hQz₁
+  have hA1 : A.eval 1 ≠ 0 := by simpa [A, v] using hQz₁
   have hA : A ≠ 0 := by
     intro hzero
     rw [hzero, Polynomial.eval_zero] at hA1

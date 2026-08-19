@@ -129,8 +129,7 @@ theorem count_diff_le_one_of_rootCrossing
   have h_helper := sorted_getElem_le_iff_lt_card_filter
   have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
       l.reverse.getD i 0 = l[d - 1 - i]! := by grind
-  have hint1 : ∀ i, i + 1 < d → sN[i]! ≤ sM[i + 1]! := by
-    grind
+  have hint1 : ∀ i, i + 1 < d → sN[i]! ≤ sM[i + 1]! := by grind
   have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 1]! := by grind
   intro x
   have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
@@ -141,8 +140,7 @@ theorem count_diff_le_one_of_rootCrossing
     by_contra hcon
     push Not at hcon
     have hb1_lt_d : (N.filter (· ≤ x)).card + 1 < d := by lia
-    have hbx : sM[(N.filter (· ≤ x)).card + 1]! ≤ x := by
-      grind
+    have hbx : sM[(N.filter (· ≤ x)).card + 1]! ≤ x := by grind
     have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
       le_trans (hint1 _ hb1_lt_d) hbx
     grind
@@ -150,8 +148,7 @@ theorem count_diff_le_one_of_rootCrossing
     by_contra hcon
     push Not at hcon
     have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
-    have hax : sN[(M.filter (· ≤ x)).card + 1]! ≤ x := by
-      grind
+    have hax : sN[(M.filter (· ≤ x)).card + 1]! ≤ x := by grind
     have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
       le_trans (hint2 _ ha1_lt_d) hax
     grind
@@ -179,10 +176,8 @@ theorem count_le_two_of_succRootCrossing
   set sN := N.sort (· ≤ ·)
   have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hsM : sM.length = d := by
-    simpa [sM] using hM
-  have hsN : sN.length = d + 1 := by
-    simpa [sN] using hN
+  have hsM : sM.length = d := by simpa [sM] using hM
+  have hsN : sN.length = d + 1 := by simpa [sN] using hN
   have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
   have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
   have h_helper := sorted_getElem_le_iff_lt_card_filter
@@ -197,8 +192,7 @@ theorem count_le_two_of_succRootCrossing
     have hidx : d + 1 - 1 - i = d - i := by lia
     have hdi : d - i < l.length := by lia
     simp only [hidx, getElem!_pos, hdi]
-  have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by
-    grind
+  have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by grind
   have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 2]! := by
     intro i hi
     let j := d - 1 - i
@@ -228,8 +222,7 @@ theorem count_le_two_of_succRootCrossing
     by_contra hcon
     push Not at hcon
     have hb_lt_d : (N.filter (· ≤ x)).card < d := by lia
-    have hMx : sM[(N.filter (· ≤ x)).card]! ≤ x := by
-      grind
+    have hMx : sM[(N.filter (· ≤ x)).card]! ≤ x := by grind
     have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
       le_trans (hint1 _ hb_lt_d) hMx
     grind
@@ -238,8 +231,7 @@ theorem count_le_two_of_succRootCrossing
     by_contra hcon
     push Not at hcon
     have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
-    have hNx : sN[(M.filter (· ≤ x)).card + 2]! ≤ x := by
-      grind
+    have hNx : sN[(M.filter (· ≤ x)).card + 2]! ≤ x := by grind
     have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
       le_trans (hint2 _ ha1_lt_d) hNx
     grind

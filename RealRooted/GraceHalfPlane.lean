@@ -113,8 +113,7 @@ theorem mem_lowerHalf_of_recip_sum_of_card_le
     rw [← hζ]
     dsimp [ζ', t]
     have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
-    have hd0 : (S.card : ℂ) ≠ 0 := by
-      exact_mod_cast (Multiset.card_pos.mpr hS).ne'
+    have hd0 : (S.card : ℂ) ≠ 0 := by exact_mod_cast (Multiset.card_pos.mpr hS).ne'
     by_cases hwζ : w - ζ = 0
     · simp [hwζ]
     · push_cast
@@ -122,8 +121,7 @@ theorem mem_lowerHalf_of_recip_sum_of_card_le
       ring
   have hζ' : ζ' ∈ lowerHalf b :=
     mem_lowerHalf_of_recip_avg S hS hw hz hscaled
-  have hw_im : b < w.im := by
-    simpa [lowerHalf] using hw
+  have hw_im : b < w.im := by simpa [lowerHalf] using hw
   simp only [mem_lowerHalf] at hζ' ⊢
   dsimp [ζ'] at hζ'
   simp only [Complex.sub_im, Complex.mul_im,
@@ -139,8 +137,7 @@ theorem polarDeriv_rootsIn_lowerHalf_of_natDegree_le
     (hζ : ζ ∉ lowerHalf b) :
     (polarDeriv n ζ A).RootsIn (lowerHalf b) := by
   intro w hw0
-  have hn0 : (n : ℂ) ≠ 0 := by
-    exact_mod_cast (show n ≠ 0 by lia)
+  have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by lia)
   by_cases hA0 : A.natDegree = 0
   · have hder : derivative A = 0 :=
       Polynomial.derivative_eq_zero.mpr hA0
@@ -335,8 +332,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
           ∃ g' : ℂ[X], (X - C ζ) * binomialLift (n - 1) g' = binomialLift n g := by
         obtain ⟨g', hg'⟩ : ∃ g' : ℂ[X], binomialLift n g = (X - C ζ) * g' := by
           exact Polynomial.dvd_iff_isRoot.mpr hζ
-        have : g'.natDegree = n - 1 := by
-          rw [hg', Polynomial.natDegree_mul'] at hg <;> aesop
+        have : g'.natDegree = n - 1 := by rw [hg', Polynomial.natDegree_mul'] at hg <;> aesop
         obtain ⟨_, _⟩ := exists_binomialLift_eq g' (by linarith)
         grind
       have hap' : AreApolar (n - 1) f' g' := by

@@ -64,8 +64,7 @@ theorem tendsto_gaussianMatrix_atTop (n : ℕ) :
         (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ≠ 0 := by
       rw [sub_ne_zero]
       intro heq
-      have hval : (i : ℕ) = (j : ℕ) := by
-        exact_mod_cast heq
+      have hval : (i : ℕ) = (j : ℕ) := by exact_mod_cast heq
       exact hij (Fin.ext hval)
     have hsquare :
         0 < (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ^ 2 :=

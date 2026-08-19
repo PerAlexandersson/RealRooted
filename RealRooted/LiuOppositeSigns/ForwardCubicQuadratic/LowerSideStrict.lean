@@ -72,8 +72,7 @@ lemma cubicDiscr_cubicSubQuadratic_left_roots_below_strict_neg
     exact mul_neg_of_pos_of_neg (mul_pos_of_neg_of_neg hva_neg hvb_neg) hvc_neg
   have hy_ne : y ≠ 0 := ne_of_lt hy_neg
   have hsecond_nonpos : 3 * v - (a + b + c + μ) ≤ 0 := by
-    have hsecond_neg : 3 * v - (a + b + c + μ) < 0 := by
-      nlinarith
+    have hsecond_neg : 3 * v - (a + b + c + μ) < 0 := by nlinarith
     exact le_of_lt hsecond_neg
   have hsecond_cube_nonpos : (3 * v - (a + b + c + μ)) ^ 3 ≤ 0 := by
     nlinarith [sq_nonneg (3 * v - (a + b + c + μ))]

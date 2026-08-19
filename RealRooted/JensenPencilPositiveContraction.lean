@@ -84,8 +84,7 @@ private theorem roots_signedReciprocal_nonneg {d : ℕ} {F : ℝ[X]}
     dsimp [q]
     rw [Polynomial.natDegree_comp]
     simpa using hFdeg
-  have hq0 : q.coeff 0 ≠ 0 := by
-    simpa [q, Polynomial.coeff_zero_eq_eval_zero] using hF0
+  have hq0 : q.coeff 0 ≠ 0 := by simpa [q, Polynomial.coeff_zero_eq_eval_zero] using hF0
   have hqsplit : q.Splits := hFs.comp_neg_X
   have hrev0 : q.reverse ≠ 0 :=
     DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hq0
@@ -288,8 +287,7 @@ private theorem compatible_schurSzego_jensen_of_pos_coeff_zero_of_nonconstant
           (natDegree_schurSzegoComp_le d B p) hV0.ne' hs,
         card_roots_signedReciprocal_filter_gt hU
           (natDegree_schurSzegoComp_le d A p) hU0.ne' hs] at hr
-      have hthreshold : -(-x⁻¹)⁻¹ = x := by
-        simp
+      have hthreshold : -(-x⁻¹)⁻¹ = x := by simp
       rw [hthreshold] at hr
       have hXVcount :
           ((X * V).roots.filter (x < ·)).card =
@@ -345,8 +343,7 @@ theorem compatible_schurSzego_jensen_of_pos_coeff_zero
     have hVdeg : V.natDegree = 0 := by
       apply Nat.eq_zero_of_le_zero
       exact (natDegree_schurSzegoComp_le_right d B p).trans hpdeg0.le
-    have hXVdeg : (X * V).natDegree ≤ 1 := by
-      rw [Polynomial.natDegree_X_mul hVne, hVdeg]
+    have hXVdeg : (X * V).natDegree ≤ 1 := by rw [Polynomial.natDegree_X_mul hVne, hVdeg]
     have hcount :=
       LiuOppositeSigns.RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
         (hU.eq_zero_or_splits.resolve_left hUne)

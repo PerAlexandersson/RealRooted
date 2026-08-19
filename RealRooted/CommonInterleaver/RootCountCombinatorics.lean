@@ -458,8 +458,7 @@ theorem succDegreeRootCrossing_of_rootCount
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree + 1 := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree + 1 := by rw [card_roots_of_splits hg, hdeg]
   exact succRootCrossing_of_count_le_two hMcard hNcard hcount
 
 /-- Converse root-count bridge from successor-degree descending-root crossing
@@ -480,8 +479,7 @@ theorem succDegreeRootCount_of_rootCrossing
       ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 2 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree + 1 := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree + 1 := by rw [card_roots_of_splits hg, hdeg]
   exact count_le_two_of_succRootCrossing hMcard hNcard hcross
 
 /-- Root-count bridge from the upper-threshold formulation to the succ-degree
@@ -497,8 +495,7 @@ theorem succDegreeRootCrossing_of_rootCountAbove
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree + 1 := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree + 1 := by rw [card_roots_of_splits hg, hdeg]
   exact succRootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Convert the upper-threshold succ-degree root-count formulation into the
@@ -513,8 +510,7 @@ theorem succDegreeRootCount_of_rootCountAbove
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree + 1 := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree + 1 := by rw [card_roots_of_splits hg, hdeg]
   exact count_le_two_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Convert the lower-threshold succ-degree root-count formulation into the
@@ -529,8 +525,7 @@ theorem succDegreeRootCountAbove_of_rootCount
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree + 1 := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree + 1 := by rw [card_roots_of_splits hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_two hMcard hNcard hcount
 
 /-- If every entry of a list lies strictly above `x`, then filtering by

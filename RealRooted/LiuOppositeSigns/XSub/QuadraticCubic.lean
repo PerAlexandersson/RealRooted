@@ -407,8 +407,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have htail_pos : 0 < (a - d) * (a - e) :=
       mul_pos_of_neg_of_neg had_neg hae_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by
-      nlinarith [mul_pos hac_pos htail_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
     nlinarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
@@ -590,8 +589,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have htail_pos : 0 < (a - d) * (a - e) :=
       mul_pos_of_neg_of_neg had_neg hae_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by
-      nlinarith [mul_pos hac_pos htail_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
     nlinarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
@@ -1160,8 +1158,7 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
     have had_neg : a - d < 0 := sub_neg.mpr had
     have htail_pos : 0 < (a - d) * (a - d) :=
       mul_pos_of_neg_of_neg had_neg had_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - d) := by
-      nlinarith [mul_pos hac_pos htail_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - d) := by nlinarith [mul_pos hac_pos htail_pos]
     nlinarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
@@ -1179,8 +1176,7 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
     have hbc_pos : 0 < b - c := sub_pos.mpr hcb
     have hbd_pos : 0 < b - d := sub_pos.mpr hdb
     have htail_pos : 0 < (b - d) * (b - d) := mul_pos hbd_pos hbd_pos
-    have hG_pos : 0 < (b - c) * (b - d) * (b - d) := by
-      nlinarith [mul_pos hbc_pos htail_pos]
+    have hG_pos : 0 < (b - c) * (b - d) * (b - d) := by nlinarith [mul_pos hbc_pos htail_pos]
     nlinarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
@@ -1255,8 +1251,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
       have hae_neg : a - e < 0 := sub_neg.mpr hae
       have htail_pos : 0 < (a - d) * (a - e) :=
         mul_pos_of_neg_of_neg had_neg hae_neg
-      have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by
-        nlinarith [mul_pos hac_pos htail_pos]
+      have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
       nlinarith [mul_pos hμ hG_pos]
     have hP_d_pos : 0 < P.eval d := by
       dsimp [P]
@@ -1455,12 +1450,9 @@ theorem
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 2 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 2 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 3 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 2 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_three_of_monic
     hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
@@ -1495,8 +1487,7 @@ theorem
   by_cases hle_two : g.natDegree ≤ 2
   · exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two
       hpair hfnn hgnn hdeg hle_two
-  · have hthree : g.natDegree = 3 := by
-      lia
+  · have hthree : g.natDegree = 3 := by lia
     exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
       hmono hpair hfnn hgnn hdeg hthree
 

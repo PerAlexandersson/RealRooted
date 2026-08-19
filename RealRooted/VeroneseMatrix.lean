@@ -292,8 +292,7 @@ lemma prec0_const_entries_affine_of_det_nonneg
       refine prec0_congr (q' := 0) rfl ?_ (prec0_zero_right _)
       simp_all
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
-      have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by
-        nlinarith [hdet, hs]
+      have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by nlinarith [hdet, hs]
       refine
         prec0_congr
           (p' := C (b * s) * X + C (b * t + d))
@@ -435,8 +434,7 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
         have hs : i.1 + 1 = r := le_antisymm hle' hle
         exact Nat.eq_sub_of_add_eq hs
       have hrec := veroneseSectionPolynomial_X_add_C_mul_zero (r := r) hr a p
-      have h_zero : r - 1 - n = 0 := by
-        simpa [i] using congrArg (fun m => r - 1 - m) hi_last
+      have h_zero : r - 1 - n = 0 := by simpa [i] using congrArg (fun m => r - 1 - m) hi_last
       unfold matPolyAction
       unfold veroneseLinearFactorMatrixDesc
       simp only [List.get_eq_getElem, List.getElem_map, List.getElem_ofFn]
@@ -1022,8 +1020,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     calc
       veroneseSectionPolynomialListDesc r p =
           veroneseSectionPolynomialListDesc r
-            (C p.leadingCoeff * linearFactorProduct as) := by
-            lia
+            (C p.leadingCoeff * linearFactorProduct as) := by lia
       _ = (veroneseSectionPolynomialListDesc r (linearFactorProduct as)).map
           (fun q => C p.leadingCoeff * q) :=
             veroneseSectionPolynomialListDesc_C_mul hr p.leadingCoeff (linearFactorProduct as)

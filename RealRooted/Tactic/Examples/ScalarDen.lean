@@ -100,20 +100,16 @@ example {d b c e f : ℝ} {F A Q R : ℝ[X]} (hd : d ≠ 0)
     first_coeff_eq := hcoeff1,
     second_coeff_eq := hcoeff2
 
-example {n : Nat} : ((n : ℝ) + 1) ≠ 0 := by
-  rr_scalar_active_den_at n
+example {n : Nat} : ((n : ℝ) + 1) ≠ 0 := by rr_scalar_active_den_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
-  rr_scalar_active_den_all
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by rr_scalar_active_den_all
 
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_scalar_active_den_all_term
 
-example {n : Nat} : ((n : ℝ) + 1) ≠ 0 := by
-  rr_mw_active_den_at n
+example {n : Nat} : ((n : ℝ) + 1) ≠ 0 := by rr_mw_active_den_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
-  rr_mw_active_den_all
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by rr_mw_active_den_all
 
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_mw_active_den_all_term
@@ -121,17 +117,14 @@ example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
 example {n : Nat} : ((n : ℝ) + 1) ≠ 0 :=
   rr_mw_active_den_at_term n
 
-example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_scalar_coeff_all
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_scalar_coeff_all
 
 example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_scalar_coeff_all_term
 
-example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_mw_coeff_at n
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_mw_coeff_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_mw_coeff_all
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_mw_coeff_all
 
 example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_mw_coeff_at_term n

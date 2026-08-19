@@ -55,10 +55,8 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
   have hg' : (g' ≠ 0 ∧
     g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1.1 h.2.1.2 r
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -69,10 +67,8 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     simp only [g', roots_comp_X_add_C r] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
-  have hdeg' : f'.natDegree = g'.natDegree := by
-    simpa [f', g', natDegree_comp] using hdeg
-  have hfg' : Prec f' g' := by
-    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
+  have hfg' : Prec f' g' := by simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hgxf' : Prec g' (X * f') :=
     prec_sameDegree_to_prec_mul_X_of_roots_nonpos hfg' hdeg' hf'_nonpos hg'_nonpos
   have htranslated : Prec g' (((X - C r) * f).comp (X + C r)) := by
@@ -97,10 +93,8 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C hf.1 hf.2 r
   have hg' : (g' ≠ 0 ∧
     g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -111,8 +105,7 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     simp only [g', roots_comp_X_add_C r] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
-  have hdeg' : f'.natDegree = g'.natDegree := by
-    simpa [f', g', natDegree_comp] using hdeg
+  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hgf' : Prec g' (((X - C r) * f).comp (X + C r)) := by
     simpa [g'] using (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
   have hgxf' : Prec g' (X * f') := by
@@ -161,12 +154,10 @@ theorem prec_weightedSum_left_of_common_left
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     roots_le_of_prec_right hweighted_right hH_le
   rcases natDegree_eq_or_succ_of_prec hweighted_right with hcase | hcase
-  · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by
-      lia
+  · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
     exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
         hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
-  · have hdeg : h.natDegree = (weightedSum l).natDegree := by
-      lia
+  · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
     exact
       prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le r hweighted_right hdeg
         hpos hweighted_pos hh_le hweighted_le
@@ -237,11 +228,9 @@ theorem prec0_sum_left_of_common_left_of_nonneg
   by_cases hh0 : h = 0
   · simpa [hh0] using prec0_zero_left l.sum
   let l' := l.filter (· ≠ 0)
-  have hsum : l'.sum = l.sum := by
-    simpa [l'] using sum_filter_ne_zero l
+  have hsum : l'.sum = l.sum := by simpa [l'] using sum_filter_ne_zero l
   by_cases hl' : l' = []
-  · have hsum0 : l.sum = 0 := by
-      simp_all
+  · have hsum0 : l.sum = 0 := by simp_all
     simpa [hsum0] using prec0_zero_right h
   · have hprec' : ∀ p ∈ l', Prec h p := by
       intro p hp
@@ -469,10 +458,8 @@ lemma divX_of_coeff_zero {f g : ℝ[X]} (h : PosComboRealRooted f g)
     PosComboRealRooted f.divX g.divX := by
   intro lam μ hlam hμ
   have hbase := h (lam := lam) (μ := μ) hlam hμ
-  have hf_eq : X * f.divX = f := by
-    simpa [hf0] using Polynomial.X_mul_divX_add f
-  have hg_eq : X * g.divX = g := by
-    simpa [hg0] using Polynomial.X_mul_divX_add g
+  have hf_eq : X * f.divX = f := by simpa [hf0] using Polynomial.X_mul_divX_add f
+  have hg_eq : X * g.divX = g := by simpa [hg0] using Polynomial.X_mul_divX_add g
   have hfactor :
       X * (C lam * f.divX + C μ * g.divX) = C lam * f + C μ * g := by grind
   have hX :
@@ -523,8 +510,7 @@ lemma iff_add_right {f g : ℝ[X]} :
       calc
         C lam * (C (μ / lam) * g) = (C lam * C (μ / lam)) * g := by grind
         _ = C (lam * (μ / lam)) * g := by simp
-        _ = C μ * g := by
-          grind
+        _ = C μ * g := by grind
     lia
 
 lemma iff_add_left {f g : ℝ[X]} :
@@ -546,8 +532,7 @@ lemma iff_add_left {f g : ℝ[X]} :
         calc
           C μ * (C (lam / μ) * f) = (C μ * C (lam / μ)) * f := by grind
           _ = C (μ * (lam / μ)) * f := by simp
-          _ = C lam * f := by
-            grind
+          _ = C lam * f := by grind
       lia
     lia
 
@@ -871,14 +856,11 @@ lemma family_no_common_segment {f g : ℝ[X]}
     ∀ r, (C (1 - β₁) * f + C β₁ * g).IsRoot r →
       ¬ (C (1 - β₂) * f + C β₂ * g).IsRoot r := by
   intro r hr₁ hr₂
-  have h₁ : (1 - β₁) * f.eval r + β₁ * g.eval r = 0 := by
-    simp_all
+  have h₁ : (1 - β₁) * f.eval r + β₁ * g.eval r = 0 := by simp_all
   have h₂ : (1 - β₂) * f.eval r + β₂ * g.eval r = 0 := by simp_all
-  have hfg : f.eval r = g.eval r := by
-    grind
+  have hfg : f.eval r = g.eval r := by grind
   have : f.eval r = 0 := by grind
-  have hg0 : g.eval r = 0 := by
-    simp_all
+  have hg0 : g.eval r = 0 := by simp_all
   simp_all
 
 /-- Two interior closed-segment members again form a positive-combination
@@ -1010,8 +992,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
       common_root_reduction_data hfg hf_pos hg_pos hdeg_lo hdeg_hi hrf hrg
     have hf_ne : f ≠ 0 := hf_pos.ne_zero
-    have hqf_ne : qf ≠ 0 := by
-      simp_all
+    have hqf_ne : qf ≠ 0 := by simp_all
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
@@ -1413,8 +1394,7 @@ theorem prec_same_of_root_sign_data
   have hlen : rs.length = f.natDegree := by
     rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
       card_roots_of_splits hf_splits]
-  have hn : 1 ≤ rs.length := by
-    lia
+  have hn : 1 ≤ rs.length := by lia
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
   exact
     prec_same_of_strict_signs_of_right_root
@@ -1527,8 +1507,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
   · by_cases hb0 : b = 0
     · simpa [hb0, weightedSum, weightedSum_cons] using
         (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
-    · have hb_pos : 0 < b := by
-        grind
+    · have hb_pos : 0 < b := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
@@ -1538,8 +1517,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
   · by_cases ha0 : a = 0
     · simpa [ha0, weightedSum, weightedSum_cons] using
         (prec_C_mul_right hfg hb_pos.ne')
-    · have ha_pos : 0 < a := by
-        grind
+    · have ha_pos : 0 < a := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left

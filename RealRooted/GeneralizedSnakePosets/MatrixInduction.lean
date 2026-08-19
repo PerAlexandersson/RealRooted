@@ -50,8 +50,7 @@ theorem theorem41StepMatrix_entry_nonneg {P G : ℕ → ℝ[X]} {m : ℕ}
         row = [narayanaDifference P m, auxiliaryDifference G m] := by
     simpa [theorem41StepMatrix] using hrow
   rcases hrow' with rfl | rfl
-  · have hp' : p = P (m - 1) ∨ p = G (m - 1) := by
-      simpa using hp
+  · have hp' : p = P (m - 1) ∨ p = G (m - 1) := by simpa using hp
     rcases hp' with rfl | rfl
     · exact hP_nonneg (m - 1)
     · exact hG_nonneg (m - 1)
@@ -79,8 +78,7 @@ theorem theorem41InputPair_interlacingSeqNonneg {f g : ℝ[X]}
     IsInterlacingSeqNonneg [f, X * g] := by
   refine ⟨?_, ?_⟩
   · intro p hp
-    have hp' : p = f ∨ p = X * g := by
-      simpa using hp
+    have hp' : p = f ∨ p = X * g := by simpa using hp
     rcases hp' with rfl | rfl
     · exact ⟨⟨hgf.2.1.1, hgf.2.1.2⟩, hf_nonneg⟩
     · exact ⟨isRealRooted_X_mul hgf.1.1 hgf.1.2, hg_nonneg.X_mul⟩
@@ -212,8 +210,7 @@ theorem theorem41NonconstantStep_prec_of_claim7
     rw [SnakeWord.length_deleteFinal] at hk
     lia
   have hkp1_le : k + 1 ≤ w.deleteFinal.length := le_of_lt hk
-  have hk_le : k ≤ w.deleteFinal.length := by
-    lia
+  have hk_le : k ≤ w.deleteFinal.length := by lia
   have hrec_w :
       M w = f * P m + X * g * G m := by
     dsimp [f, g, m]
@@ -301,8 +298,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
       (hM_nonneg w.deleteFinal) hdiff_nonneg hstep.2.1.1
   have hfinal := hsum0.toPrec_of_ne hstep.1.1 hsum_ne
-  have hsum_eq : M w.deleteFinal + (M w - M w.deleteFinal) = M w := by
-    ring
+  have hsum_eq : M w.deleteFinal + (M w - M w.deleteFinal) = M w := by ring
   rw [hsum_eq] at hfinal
   exact hfinal
 
@@ -471,8 +467,7 @@ theorem theorem41_constant_of_matches_length
     SnakeWord.length_deleteFinal w
   have hinter : Interlaces (P (w.length - 1)) (P w.length) :=
     hP_interlaces hw
-  have hright : M w ≠ 0 ∧ (M w).Splits := by
-    simpa [hM_const (w := w) hconstw] using hinter.1
+  have hright : M w ≠ 0 ∧ (M w).Splits := by simpa [hM_const (w := w) hconstw] using hinter.1
   have hinter_M : Interlaces (M w.deleteFinal) (M w) := by
     rw [hM_const (w := w) hconstw]
     rw [hM_const (w := w.deleteFinal) hdel_const]
@@ -498,8 +493,7 @@ theorem theorem41_constant_of_matches_succ_length
     exact Nat.sub_add_cancel hw
   have hinter : Interlaces (P w.length) (P (w.length + 1)) :=
     hP_interlaces w.length
-  have hright : M w ≠ 0 ∧ (M w).Splits := by
-    simpa [hM_const (w := w) hconstw] using hinter.1
+  have hright : M w ≠ 0 ∧ (M w).Splits := by simpa [hM_const (w := w) hconstw] using hinter.1
   have hinter_M : Interlaces (M w.deleteFinal) (M w) := by
     rw [hM_const (w := w) hconstw]
     rw [hM_const (w := w.deleteFinal) hdel_const]

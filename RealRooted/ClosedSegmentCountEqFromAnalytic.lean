@@ -25,8 +25,7 @@ private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
   fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg => by
   have hx_roots : x ∉ f.roots :=
     fun hx => hxf ((Polynomial.mem_roots hf_pos.ne_zero).mp hx)
-  have hlt : f.natDegree < g.natDegree := by
-    simp [hdeg]
+  have hlt : f.natDegree < g.natDegree := by simp [hdeg]
   have hfg_split_pos : ∀ μ : ℝ, 0 < μ → (f + C μ * g).Splits := fun μ hμ ↦ by
     rcases hcomp 1 μ zero_le_one hμ.le with hzero | hrr
     · simp [show f + C μ * g = 0 by grind]

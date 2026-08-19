@@ -170,8 +170,7 @@ lemma cubicSubQuadratic_right_protruding_midpoint_mu_pos
   have hprod_pos : 0 < (3 * u - e1) * (3 * v - e1) := by
     rw [hprod_eq]
     nlinarith
-  have hu_pos : 0 < 3 * u - e1 := by
-    nlinarith [hprod_pos, hv_pos]
+  have hu_pos : 0 < 3 * u - e1 := by nlinarith [hprod_pos, hv_pos]
   dsimp [e1] at hu_pos hv_pos ⊢
   nlinarith
 

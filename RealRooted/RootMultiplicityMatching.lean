@@ -153,8 +153,7 @@ theorem rel_of_forall_le_count_of_card_eq {s t : Multiset ℝ} {δ : ℝ}
     Rel (fun r q => |q - r| < δ) s t := by
   obtain ⟨u, hu, hrel⟩ :=
     exists_rel_le_of_forall_le_count hsep hcount
-  have hu_card : u.card = t.card := by
-    simpa [hcard] using (card_eq_card_of_rel hrel).symm
+  have hu_card : u.card = t.card := by simpa [hcard] using (card_eq_card_of_rel hrel).symm
   have hut : u = t := eq_of_le_of_card_le hu hu_card.ge
   rwa [hut] at hrel
 

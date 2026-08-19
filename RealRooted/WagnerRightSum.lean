@@ -394,8 +394,7 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     f.IsRoot r ∧ g.IsRoot r := by
   have hfg_nonneg := eval_mul_eval_nonneg_of_prec_right hfh hgh hf_pos hg_pos hr
   have hsum : f.eval r + g.eval r = 0 := by simp_all
-  have hf0 : f.eval r = 0 := by
-    nlinarith
+  have hf0 : f.eval r = 0 := by nlinarith
   simp_all
 
 /-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
@@ -532,8 +531,7 @@ lemma sum_has_root_between {f g : ℝ[X]}
         have hcont : ContinuousOn (fun x => (f + g).eval x) (Set.Icc s t) :=
           (f + g).continuous.continuousOn
         -- (f+g)(s) = g(s) ≤ 0 ≤ f(t) = (f+g)(t), use IVT
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval s) ((f + g).eval t) := by
-          grind
+        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval s) ((f + g).eval t) := by grind
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc (le_of_lt hlt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
     · -- g(s) > 0
@@ -547,8 +545,7 @@ lemma sum_has_root_between {f g : ℝ[X]}
         -- g(s) > 0 > f(t), so Icc goes f(t)..g(s)
         -- IVT gives Icc (eval a) (eval b), but (eval s) > 0 > (eval t)
         -- (f+g)(s) = g(s) > 0 > f(t) = (f+g)(t), use IVT'
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval t) ((f + g).eval s) := by
-          grind
+        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval t) ((f + g).eval s) := by grind
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hlt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
 
@@ -689,18 +686,14 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
     have hcons_g_le : ∀ r ∈ consumed_g, r ≤ a := hcons_g
     -- sf is a root of f, sg is a root of g
     have hsf_root : f.IsRoot sf := by
-      have : sf ∈ f.roots := by
-        rw [← hss_f_eq]; simp [Multiset.mem_add]
+      have : sf ∈ f.roots := by rw [← hss_f_eq]; simp [Multiset.mem_add]
       simp_all
     have hsg_root : g.IsRoot sg := by
-      have : sg ∈ g.roots := by
-        rw [← hss_g_eq]; simp [Multiset.mem_add]
+      have : sg ∈ g.roots := by rw [← hss_g_eq]; simp [Multiset.mem_add]
       simp_all
     -- Shared recursive call arguments
-    have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
-      grind
-    have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by
-      grind
+    have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by grind
+    have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by grind
     have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots :=
       calc (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f)
           = sf ::ₘ consumed_f + ↑rest_f := add_comm _ _
@@ -717,10 +710,8 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
         _ = sg ::ₘ ↑rest_g + consumed_g := (Multiset.cons_add ..).symm
         _ = (↑(sg :: rest_g) : Multiset ℝ) + consumed_g := by simp
         _ = g.roots := hss_g_eq
-    have hcons_f' : ∀ r ∈ (sf ::ₘ consumed_f), r ≤ b := by
-      grind
-    have hcons_g' : ∀ r ∈ (sg ::ₘ consumed_g), r ≤ b := by
-      grind
+    have hcons_f' : ∀ r ∈ (sf ::ₘ consumed_f), r ≤ b := by grind
+    have hcons_g' : ∀ r ∈ (sg ::ₘ consumed_g), r ≤ b := by grind
     -- Case split: a = b (trivial root) vs a < b (sign lemma)
     rcases eq_or_lt_of_le hab with hab_eq | hab_lt
     · -- a = b: sf = sg = a, but then f(a) = 0 = g(a), contradicting IsCoprime f g
@@ -778,8 +769,7 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
             -- h : u = b
             have hsg_b : sg = b := le_antisymm hsgb (h ▸ hub)
             have hgb : g.eval b = 0 := by simp_all
-            have hfb : f.eval b = 0 := by
-              simp_all
+            have hfb : f.eval b = 0 := by simp_all
             obtain ⟨p, q, hpq⟩ := hcop
             have h1 := congr_arg (Polynomial.eval b) hpq
             simp [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one,
@@ -813,8 +803,7 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
             -- h : u = b
             have hsf_b : sf = b := le_antisymm hsfb (h ▸ huf)
             have hfb : f.eval b = 0 := by simp_all
-            have hgb : g.eval b = 0 := by
-              simp_all
+            have hgb : g.eval b = 0 := by simp_all
             obtain ⟨p, q, hpq⟩ := hcop
             have h1 := congr_arg (Polynomial.eval b) hpq
             simp [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one,
@@ -892,10 +881,8 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
           rw [← hss_g_eq]
           simp [Multiset.mem_add]
         simp_all
-      have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
-        grind
-      have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by
-        grind
+      have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by grind
+      have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by grind
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots :=
         calc
           (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f)
@@ -914,10 +901,8 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
           _ = sg ::ₘ ↑rest_g + consumed_g := (Multiset.cons_add ..).symm
           _ = (↑(sg :: rest_g) : Multiset ℝ) + consumed_g := by simp
           _ = g.roots := hss_g_eq
-      have hcons_f' : ∀ r ∈ (sf ::ₘ consumed_f), r ≤ b := by
-        grind
-      have hcons_g' : ∀ r ∈ (sg ::ₘ consumed_g), r ≤ b := by
-        grind
+      have hcons_f' : ∀ r ∈ (sf ::ₘ consumed_f), r ≤ b := by grind
+      have hcons_g' : ∀ r ∈ (sg ::ₘ consumed_g), r ≤ b := by grind
       rcases eq_or_lt_of_le hab with hab_eq | hab_lt
       · have hsf_eq : sf = a := le_antisymm (hab_eq.symm ▸ hsfb) hasf
         have hsg_eq : sg = a := le_antisymm (hab_eq.symm ▸ hsgb) hasg
@@ -961,8 +946,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
               rest_f rest_g (b :: rest_rs) hlen_f' hlen_g' hint_f_tail hint_g_tail
               hss_f_eq' hss_g_eq' hcons_f' hcons_g'
               (List.forall_mem_of_forall_mem_cons hno_rs)
-          have hu_lt_b : u < b := by
-            grind
+          have hu_lt_b : u < b := by grind
           have hus_pw' : (u :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
               lt_of_lt_of_le hu_lt_b (listInterlaces_all_ge us rest_rs b hus_int w hw), hus_pw⟩
@@ -978,16 +962,14 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
           obtain ⟨u, hug, huf, hufg⟩ :=
             sum_has_root_between hsgf hsg_root hsf_root
               (by lia)
-          have hufg' : (f + g).IsRoot u := by
-            rwa [add_comm] at hufg
+          have hufg' : (f + g).IsRoot u := by rwa [add_comm] at hufg
           obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
             wagner1_roots_exist_of_no_common_right f g hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
               (sf ::ₘ consumed_f) (sg ::ₘ consumed_g)
               rest_f rest_g (b :: rest_rs) hlen_f' hlen_g' hint_f_tail hint_g_tail
               hss_f_eq' hss_g_eq' hcons_f' hcons_g'
               (List.forall_mem_of_forall_mem_cons hno_rs)
-          have hu_lt_b : u < b := by
-            grind
+          have hu_lt_b : u < b := by grind
           have hus_pw' : (u :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
               lt_of_lt_of_le hu_lt_b (listInterlaces_all_ge us rest_rs b hus_int w hw), hus_pw⟩
@@ -1021,18 +1003,15 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
     ∃ u₀ : ℝ, u₀ ≤ p ∧ (smaller + bigger).IsRoot u₀ := by
   have hsum_ne : smaller + bigger ≠ 0 := hsum_pos.ne_zero
   have hbig0 : bigger.eval p = 0 := hbigp
-  have hsum_eval : (smaller + bigger).eval p = smaller.eval p := by
-    simp_all
+  have hsum_eval : (smaller + bigger).eval p = smaller.eval p := by simp_all
   rcases Nat.even_or_odd smaller.natDegree with hpar | hpar
   · have hsmaller_pos_eval : 0 < smaller.eval p :=
       eval_pos_of_all_roots_gt_of_even hsmaller_ne hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
-      have : 0 < (smaller + bigger).natDegree := by
-        lia
+      have : 0 < (smaller + bigger).natDegree := by lia
       simp_all
-    have hsum_odd : Odd (smaller + bigger).natDegree := by
-      grind
+    have hsum_odd : Odd (smaller + bigger).natDegree := by grind
     obtain ⟨u, hu_le, hu_root⟩ :=
       exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot
         (hsum_eval ▸ hsmaller_pos_eval)
@@ -1042,11 +1021,9 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
       eval_neg_of_all_roots_gt_of_odd hsmaller_ne hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
-      have : 0 < (smaller + bigger).natDegree := by
-        lia
+      have : 0 < (smaller + bigger).natDegree := by lia
       simp_all
-    have hsum_even : Even (smaller + bigger).natDegree := by
-      grind
+    have hsum_even : Even (smaller + bigger).natDegree := by grind
     obtain ⟨u, hu_le, hu_root⟩ :=
       exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop
         (hsum_eval ▸ hsmaller_neg_eval)
@@ -1149,8 +1126,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
       -- Main roots via recursive helper
-      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         simp
@@ -1167,8 +1143,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         · exfalso
           have hs_eq : s₁_g = r₁ := le_antisymm hs₁_le (h ▸ hu₀_le)
           have hgr₁ : Polynomial.eval r₁ g = 0 := by simp_all
-          have hfr₁ : Polynomial.eval r₁ f = 0 := by
-            simp_all
+          have hfr₁ : Polynomial.eval r₁ f = 0 := by simp_all
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1234,8 +1209,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           hs₁_root hsmaller_gt (by
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
       have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
-      have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
         rw [← hss_f_eq, Multiset.coe_add]
         simp
@@ -1251,8 +1225,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         · exfalso
           have hs_eq : s₁_f = r₁ := le_antisymm hs₁_le (h ▸ hu₀_le)
           have hfr₁ : Polynomial.eval r₁ f = 0 := by simp_all
-          have hgr₁ : Polynomial.eval r₁ g = 0 := by
-            simp_all
+          have hgr₁ : Polynomial.eval r₁ g = 0 := by simp_all
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1304,8 +1277,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have := card_roots_of_splits hf.2; rw [← hss_f_eq, Multiset.coe_card] at this; lia
         have hg_deg : (s₁_g :: rest_g).length = g.natDegree := by
           have := card_roots_of_splits hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; lia
-        have hdeg_eq : f.natDegree = g.natDegree := by
-          lia
+        have hdeg_eq : f.natDegree = g.natDegree := by lia
         have hfg_deg : (f + g).natDegree = f.natDegree :=
           natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
@@ -1321,10 +1293,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hcg := Multiset.countP_eq_card.mpr (fun r hr =>
             listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr))
           simp_all
-        have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-          grind
-        have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-          grind
+        have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by grind
+        have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           simp
@@ -1349,8 +1319,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             · exfalso
               have : s₁_g = r₁ := le_antisymm hs₁g_le (h ▸ hcg)
               have hgr₁ : Polynomial.eval r₁ g = 0 := by simp_all
-              have hfr₁ : Polynomial.eval r₁ f = 0 := by
-                simp_all
+              have hfr₁ : Polynomial.eval r₁ f = 0 := by simp_all
               obtain ⟨a, b, hab⟩ := hcop
               have := congr_arg (Polynomial.eval r₁) hab
               simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1400,8 +1369,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             · exfalso
               have : s₁_f = r₁ := le_antisymm hs₁f_le (h ▸ hcf)
               have hfr₁ : Polynomial.eval r₁ f = 0 := by simp_all
-              have hgr₁ : Polynomial.eval r₁ g = 0 := by
-                simp_all
+              have hgr₁ : Polynomial.eval r₁ g = 0 := by simp_all
               obtain ⟨a, b, hab⟩ := hcop
               have := congr_arg (Polynomial.eval r₁) hab
               simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1534,14 +1502,12 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           subst h
           have hf0 : Polynomial.eval s₁_g f = 0 :=
             (mem_roots hf.1).mp (by lia)
-          have hsum0 : (f + g).IsRoot s₁_g := by
-            simp_all
+          have hsum0 : (f + g).IsRoot s₁_g := by simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
         exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
-      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         simp
@@ -1552,8 +1518,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           (by
              simp_all)
           hno_rs_f
-      have hu₀_lt_r₁ : u₀ < r₁ := by
-        grind
+      have hu₀_lt_r₁ : u₀ < r₁ := by grind
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw =>
           lt_of_lt_of_le hu₀_lt_r₁
@@ -1625,8 +1590,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           subst h
           have hg0 : Polynomial.eval s₁_f g = 0 :=
             (mem_roots hg.1).mp (by lia)
-          have hsum0 : (f + g).IsRoot s₁_f := by
-            simp_all
+          have hsum0 : (f + g).IsRoot s₁_f := by simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root_gf⟩ :=
         exists_root_le_of_mixed hg.1 hg_pos
@@ -1634,8 +1598,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           hs₁_root hsmaller_gt (by
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
       have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
-      have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
         rw [← hss_f_eq, Multiset.coe_add]
         simp
@@ -1646,8 +1609,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           (by
              simp_all) (by simp)
           hno_rs_f
-      have hu₀_lt_r₁ : u₀ < r₁ := by
-        grind
+      have hu₀_lt_r₁ : u₀ < r₁ := by grind
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw =>
           lt_of_lt_of_le hu₀_lt_r₁
@@ -1667,8 +1629,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
             _ = f.natDegree := hfg_deg
             _ = g.natDegree + 1 := hf_deg
-            _ = us.length + 1 := by
-              lia
+            _ = us.length + 1 := by lia
         grind
       have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
         refine ⟨hfg_ne, splits_of_card_roots ?_⟩
@@ -1705,8 +1666,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           lia
         refine ⟨hfg_rr, hh, [], [], List.Pairwise.nil, List.Pairwise.nil, ?_,
           hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
-        have hroots0 : (f + g).roots.card = 0 := by
-          rw [card_roots_of_splits hfg_rr.2, hfgnd]
+        have hroots0 : (f + g).roots.card = 0 := by rw [card_roots_of_splits hfg_rr.2, hfgnd]
         simp_all
       · obtain ⟨s₁_f, rest_f, rfl⟩ : ∃ a l, ss_f = a :: l := by
           cases ss_f with
@@ -1730,8 +1690,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           have := card_roots_of_splits hg.2
           rw [← hss_g_eq, Multiset.coe_card] at this
           lia
-        have hdeg_eq : f.natDegree = g.natDegree := by
-          lia
+        have hdeg_eq : f.natDegree = g.natDegree := by lia
         have hfg_deg : (f + g).natDegree = f.natDegree :=
           natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
@@ -1747,10 +1706,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           have hcg := Multiset.countP_eq_card.mpr (fun r hr =>
             listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr))
           simp_all
-        have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-          grind
-        have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-          grind
+        have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by grind
+        have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           simp
@@ -1773,8 +1730,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             hs₁f_root hs₁g_root hf_dich hg_dich hcount_eq
           obtain ⟨c, hcf, hcg, hc_root⟩ :=
             sum_has_root_between hsfsg hs₁f_root hs₁g_root hsign
-          have hc_lt_r₁ : c < r₁ := by
-            grind
+          have hc_lt_r₁ : c < r₁ := by grind
           obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
             wagner1_roots_exist_of_no_common_right f g hf.1 hf.2 hg.1 hg.2
               hf_pos hg_pos ↑[s₁_f] ↑[s₁_g]
@@ -1803,8 +1759,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               calc
                 (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
                 _ = f.natDegree := hfg_deg
-                _ = us.length + 1 := by
-                  lia
+                _ = us.length + 1 := by lia
             grind
           have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
             refine ⟨hfg_ne, splits_of_card_roots ?_⟩
@@ -1832,8 +1787,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             sum_has_root_between hsgf hs₁g_root hs₁f_root
               (by lia)
           have hc_root : (f + g).IsRoot c := by rwa [add_comm] at hc_root_gf
-          have hc_lt_r₁ : c < r₁ := by
-            grind
+          have hc_lt_r₁ : c < r₁ := by grind
           obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
             wagner1_roots_exist_of_no_common_right f g hf.1 hf.2 hg.1 hg.2
               hf_pos hg_pos ↑[s₁_f] ↑[s₁_g]
@@ -1862,8 +1816,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               calc
                 (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
                 _ = f.natDegree := hfg_deg
-                _ = us.length + 1 := by
-                  lia
+                _ = us.length + 1 := by lia
             grind
           have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
             refine ⟨hfg_ne, splits_of_card_roots ?_⟩
@@ -1950,20 +1903,17 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
             unfold HasPosLeadingCoeff at hg_pos ⊢
             simp_all
           have hh_ne : h ≠ 0 := hfh.2.1.1
-          have hqh_ne : qh ≠ 0 := by
-            grind
+          have hqh_ne : qh ≠ 0 := by grind
           have hqh_lt : qh.natDegree < n := by
             have hqh_succ : qh.natDegree + 1 = h.natDegree := by
               rw [hqh, natDegree_mul (X_sub_C_ne_zero r) hqh_ne, natDegree_X_sub_C]
               lia
             lia
-          have hsum' : Prec (qf + qg) qh := by
-            grind
+          have hsum' : Prec (qf + qg) qh := by grind
           have hmul : Prec ((X - C r) * (qf + qg)) ((X - C r) * qh) :=
             prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hsum'
           grind
-        · have hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r := by
-            grind
+        · have hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r := by grind
           exact prec_add_of_prec_right_of_no_common_right hfh hgh hf_pos hg_pos hno)
   grind
 
@@ -2002,8 +1952,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
         (mem_roots hg.1).mp (by rw [← hss_g_eq]; simp)
       have hf_deg : ss_f.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_f_eq, card_roots_of_splits hf.2]
-      have hg_deg : g.natDegree = f.natDegree + 1 := by
-        lia
+      have hg_deg : g.natDegree = f.natDegree + 1 := by lia
       have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
@@ -2027,8 +1976,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
         exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
-      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         simp
@@ -2043,10 +1991,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
         · lia
         · exfalso
           have hs_eq : s₁_g = r₁ := le_antisymm hs₁_le (h ▸ hu₀_le)
-          have hgr₁ : Polynomial.eval r₁ g = 0 := by
-            simp_all
-          have hfr₁ : Polynomial.eval r₁ f = 0 := by
-            simp_all
+          have hgr₁ : Polynomial.eval r₁ g = 0 := by simp_all
+          have hfr₁ : Polynomial.eval r₁ f = 0 := by simp_all
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -2125,8 +2071,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
         (mem_roots hg.1).mp (by rw [← hss_g_eq]; simp)
       have hf_deg : ss_f.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_f_eq, card_roots_of_splits hf.2]
-      have hg_deg : g.natDegree = f.natDegree + 1 := by
-        lia
+      have hg_deg : g.natDegree = f.natDegree + 1 := by lia
       have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
@@ -2143,14 +2088,12 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
           subst h
           have hf0 : Polynomial.eval s₁_g f = 0 :=
             (mem_roots hf.1).mp (by lia)
-          have hsum0 : (f + g).IsRoot s₁_g := by
-            simp_all
+          have hsum0 : (f + g).IsRoot s₁_g := by simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
         exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
-      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        grind
+      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by grind
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         simp
@@ -2161,8 +2104,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
           (by
             simp_all)
           hno_rs_f
-      have hu₀_lt_r₁ : u₀ < r₁ := by
-        grind
+      have hu₀_lt_r₁ : u₀ < r₁ := by grind
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩

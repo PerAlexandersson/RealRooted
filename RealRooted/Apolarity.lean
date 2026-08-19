@@ -685,8 +685,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
       (1 / (w - z)) ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
     intro z hzS
     have hz_dist : Complex.normSq (z - c) ≤ r^2 := by
-      have hz_norm : ‖z - c‖ ≤ r := by
-        simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
+      have hz_norm : ‖z - c‖ ≤ r := by simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
       rw [Complex.normSq_eq_norm_sq]
       exact pow_le_pow_left₀ (norm_nonneg (z - c)) hz_norm 2
     have hwz_ne : w - z ≠ 0 := by

@@ -128,8 +128,7 @@ theorem aswCubicShiftOneCharPoly_complex_factor_of_cubicDiscr_neg
         hzre, hzim]
       ring
   -- The three Vieta identities matching the characteristic polynomial.
-  have V1 : (r : ℂ) + z + starRingEnd ℂ z = (b : ℂ) := by
-    rw [add_assoc, h1, hs]; push_cast; ring
+  have V1 : (r : ℂ) + z + starRingEnd ℂ z = (b : ℂ) := by rw [add_assoc, h1, hs]; push_cast; ring
   have V2 : (r : ℂ) * z + z * starRingEnd ℂ z + starRingEnd ℂ z * (r : ℂ)
       = (a : ℂ) * (c : ℂ) := by
     have e : (r : ℂ) * z + z * starRingEnd ℂ z + starRingEnd ℂ z * (r : ℂ)

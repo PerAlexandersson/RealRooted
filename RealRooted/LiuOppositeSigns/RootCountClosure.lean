@@ -51,14 +51,12 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
       apply le_of_forall_pos_exists_close_le
       intro ρ hρ
       obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjg : j < (rootSeqDesc g).length := by
-        simpa only [rootSeqDesc_length hg, hdeg] using hj
+      have hjg : j < (rootSeqDesc g).length := by simpa only [rootSeqDesc_length hg, hdeg] using hj
       have hjf : j - 1 < (rootSeqDesc f).length := by
         rw [rootSeqDesc_length hf]
         lia
       have hjrg : j < rg.length := by simpa only [hgg.length_eq] using hjg
-      have hjrf : j - 1 < rf.length := by
-        simpa only [hff.length_eq] using hjf
+      have hjrf : j - 1 < rf.length := by simpa only [hff.length_eq] using hjf
       exact ⟨rg.getD j 0, rf.getD (j - 1) 0,
         abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
         abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
@@ -67,14 +65,12 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
       apply le_of_forall_pos_exists_close_le
       intro ρ hρ
       obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjf : j < (rootSeqDesc f).length := by
-        simpa only [rootSeqDesc_length hf] using hj
+      have hjf : j < (rootSeqDesc f).length := by simpa only [rootSeqDesc_length hf] using hj
       have hjg : j - 1 < (rootSeqDesc g).length := by
         rw [rootSeqDesc_length hg, hdeg]
         lia
       have hjrf : j < rf.length := by simpa only [hff.length_eq] using hjf
-      have hjrg : j - 1 < rg.length := by
-        simpa only [hgg.length_eq] using hjg
+      have hjrg : j - 1 < rg.length := by simpa only [hgg.length_eq] using hjg
       exact ⟨rf.getD j 0, rg.getD (j - 1) 0,
         abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
         abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
@@ -117,8 +113,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCrossing
         rw [rootSeqDesc_length hf]
         lia
       have hjrg : j < rg.length := by simpa only [hgg.length_eq] using hjg
-      have hjrf : j - 1 < rf.length := by
-        simpa only [hff.length_eq] using hjf
+      have hjrf : j - 1 < rf.length := by simpa only [hff.length_eq] using hjf
       exact ⟨rg.getD j 0, rf.getD (j - 1) 0,
         abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
         abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
@@ -127,14 +122,12 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCrossing
       apply le_of_forall_pos_exists_close_le
       intro ρ hρ
       obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjf : j < (rootSeqDesc f).length := by
-        simpa only [rootSeqDesc_length hf] using hj
+      have hjf : j < (rootSeqDesc f).length := by simpa only [rootSeqDesc_length hf] using hj
       have hjg : j - 1 < (rootSeqDesc g).length := by
         rw [rootSeqDesc_length hg, hdeg]
         lia
       have hjrf : j < rf.length := by simpa only [hff.length_eq] using hjf
-      have hjrg : j - 1 < rg.length := by
-        simpa only [hgg.length_eq] using hjg
+      have hjrg : j - 1 < rg.length := by simpa only [hgg.length_eq] using hjg
       exact ⟨rf.getD j 0, rg.getD (j - 1) 0,
         abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
         abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
@@ -175,8 +168,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
   have hqdeg : q'.natDegree = q.natDegree := by
     rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
     exact hqq'.length_eq.symm
-  have hdeg' : q'.natDegree = p'.natDegree := by
-    rw [hqdeg, hpdeg, hdeg]
+  have hdeg' : q'.natDegree = p'.natDegree := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
       (fun x hpx hqx =>
@@ -217,8 +209,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
   have hqdeg : q'.natDegree = q.natDegree := by
     rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
     exact hqq'.length_eq.symm
-  have hdeg' : q'.natDegree = p'.natDegree + 1 := by
-    rw [hqdeg, hpdeg, hdeg]
+  have hdeg' : q'.natDegree = p'.natDegree + 1 := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
       (fun x hpx hqx =>

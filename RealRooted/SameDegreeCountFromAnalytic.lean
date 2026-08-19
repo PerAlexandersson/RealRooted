@@ -251,20 +251,16 @@ theorem sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
       (by simpa using (hfg (lam := 1) (μ := μ) zero_lt_one hμ).2)
       hsimple hroot
   let δ : ℝ := min (μ / 2) (ε / 2)
-  have hδ_pos : 0 < δ := by
-    grind
-  have hδ_lt_μ : δ < μ := by
-    grind
+  have hδ_pos : 0 < δ := by grind
+  have hδ_lt_μ : δ < μ := by grind
   have hδ_lt_ε : δ < ε := by grind
   let μL : ℝ := μ - δ
   let μR : ℝ := μ + δ
   have hμL_pos : 0 < μL := by grind
   have hμL_lt_μ : μL < μ := by grind
-  have hμR_pos : 0 < μR := by
-    grind
+  have hμR_pos : 0 < μR := by grind
   have hμ_lt_μR : μ < μR := by grind
-  have hdistL : |μL - μ| < ε := by
-    grind
+  have hdistL : |μL - μ| < ε := by grind
   have hdistR : |μR - μ| < ε := by grind
   have hsplit_pos : ∀ τ : ℝ, 0 < τ → (f + C τ * g).Splits := fun τ hτ ↦ by
     simpa using (hfg (lam := 1) (μ := τ) zero_lt_one hτ).2

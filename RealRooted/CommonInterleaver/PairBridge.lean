@@ -41,8 +41,7 @@ private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
   by_contra ha
   have ha_lt : a < 0 := lt_of_not_ge ha
   by_cases hb : b ≤ 0
-  · have hbad : a + (1 : ℝ) * b < 0 := by
-      nlinarith
+  · have hbad : a + (1 : ℝ) * b < 0 := by nlinarith
     exact not_lt_of_ge (h zero_lt_one) hbad
   · have hb_pos : 0 < b := lt_of_not_ge hb
     let μ : ℝ := -a / (2 * b)
@@ -141,8 +140,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
     dsimp [F, G] at hGq ⊢
     calc
       C (-1 : ℝ) * (f + g) + (X - C uR) * q
-          = C (-1 : ℝ) * (f + g) + (f + C (2 : ℝ) * g) := by
-              lia
+          = C (-1 : ℝ) * (f + g) + (f + C (2 : ℝ) * g) := by lia
       _ = g := by
             ext n
             simp [Polynomial.coeff_C_mul]
@@ -670,8 +668,7 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
         have hfder_lt_self : f.derivative.natDegree < f.natDegree := by
           rw [f.natDegree_derivative]
           lia
-        have hfder_lt : f.derivative.natDegree < n := by
-          rwa [hfdeg_eq] at hfder_lt_self
+        have hfder_lt : f.derivative.natDegree < n := by rwa [hfdeg_eq] at hfder_lt_self
         have hder_bound :
             ∀ y : ℝ,
               ¬ f.derivative.IsRoot y → ¬ g.derivative.IsRoot y →
@@ -1367,8 +1364,7 @@ private lemma prec_or_revPrec_of_allComboRealRooted_ordered
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
-  have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-    lia
+  have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
   exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
 
 /-- The same affine-family bridge also yields the no-common orientation step,
@@ -1403,8 +1399,7 @@ private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
     (hμ : 0 < μ) :
     HasNonnegCoeffs (qf + C μ * qg) := by
   let p : ℝ[X] := f + C μ * g
-  have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-    simpa [p] using hfg.isRealRooted_add_right hμ
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := by simpa [p] using hfg.isRealRooted_add_right hμ
   have hp_nn : HasNonnegCoeffs p := by
     dsimp [p]
     exact hfnn.add (nonnegCoeffs_C_mul hμ.le hgnn)
@@ -1955,12 +1950,10 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
     natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
-  · have hdeg' : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-      lia
+  · have hdeg' : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
     exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by
-      lia
+    have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by lia
     have hprec' : Prec g f ∨ Prec f g :=
       prec_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         (allComboRealRooted_comm hall) hdeg''
@@ -2560,10 +2553,8 @@ private theorem posComboPairHasCommonInterleaver_via_nonnegShift
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hfnn : HasNonnegCoeffs f' := by
     refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_rr_splits ?_
     grind
@@ -2619,10 +2610,8 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hfnn : HasNonnegCoeffs f' := by
     refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_splits ?_
     grind
@@ -2633,12 +2622,10 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via
     intro α β hα hβ
     simpa [f', g'] using hfg.comp_X_add_C r hα hβ
   have hfdeg' : f'.natDegree ≤ N := by
-    have hdeg_eq : f'.natDegree = f.natDegree := by
-      simp [f', Polynomial.natDegree_comp]
+    have hdeg_eq : f'.natDegree = f.natDegree := by simp [f', Polynomial.natDegree_comp]
     lia
   have hgdeg' : g'.natDegree ≤ N := by
-    have hdeg_eq : g'.natDegree = g.natDegree := by
-      simp [g', Polynomial.natDegree_comp]
+    have hdeg_eq : g'.natDegree = g.natDegree := by simp [g', Polynomial.natDegree_comp]
     lia
   rcases
       posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered

@@ -406,8 +406,7 @@ theorem gwL_gwSchurProduct (p q : ℝ[X]) :
     gwL (gwSchurProduct p q) = hadamardProduct p q := by
   ext k
   rw [coeff_gwL, coeff_gwSchurProduct, coeff_hadamardProduct]
-  have hfact : (Nat.factorial k : ℝ) ≠ 0 := by
-    exact_mod_cast Nat.factorial_ne_zero k
+  have hfact : (Nat.factorial k : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
   field_simp [hfact]
 
 /-- Lemma 10(i), second form: `L f ( g = f ⊙ g`. -/
@@ -415,8 +414,7 @@ theorem gwSchurProduct_gwL_left (p q : ℝ[X]) :
     gwSchurProduct (gwL p) q = hadamardProduct p q := by
   ext k
   rw [coeff_gwSchurProduct, coeff_gwL, coeff_hadamardProduct]
-  have hfact : (Nat.factorial k : ℝ) ≠ 0 := by
-    exact_mod_cast Nat.factorial_ne_zero k
+  have hfact : (Nat.factorial k : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
   field_simp [hfact]
 
 /-- Lemma 10(i), third form: `f ( L g = f ⊙ g`. -/
@@ -597,8 +595,7 @@ theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
     Prec p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
   · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
-  have hdeg2 : 2 ≤ p.natDegree := by
-    lia
+  have hdeg2 : 2 ≤ p.natDegree := by lia
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
   have hT_rr : TDeriv eps p ≠ 0 ∧ (TDeriv eps p).Splits :=
@@ -647,8 +644,7 @@ theorem gwJL_factor_prec_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : ℝ[X]}
   have hprec :=
     derivative_prec_TDeriv_of_nonpos_of_coprime
       (eps := u) (p := gwJL (k + 1) f) hu hF0 hFs hFpos hdeg hcop
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -677,8 +673,7 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor {k : ℕ} {u : ℝ} {f d q r
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hcop
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -703,8 +698,7 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor_no_common
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hno
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -726,8 +720,7 @@ theorem gwJL_factor_prec_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (q := q) (a := a) (m := m)
       hu hF0 hFs hFpos hdeg hm hF_factor hq_nodvd hq_simple
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -750,8 +743,7 @@ theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
     derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -772,8 +764,7 @@ theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExce
     derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -812,8 +803,7 @@ lemma hasSimpleRootsExcept_zero_C_mul_X_pow {a : ℝ} (ha : a ≠ 0) (k : ℕ) :
     HasSimpleRootsExcept (C a * X ^ k) 0 := by
   intro r hr0 hroot
   exfalso
-  have hzero : a * r ^ k = 0 := by
-    simpa [Polynomial.IsRoot.def] using hroot
+  have hzero : a * r ^ k = 0 := by simpa [Polynomial.IsRoot.def] using hroot
   exact (mul_ne_zero ha (pow_ne_zero k hr0)) hzero
 
 theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
@@ -870,8 +860,7 @@ theorem gwJL_factor_prec_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
   have hprec :=
     derivative_prec_TDeriv_of_splits
       (eps := u) (p := gwJL (k + 1) f) hF0 hFs hdeg
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -1063,8 +1052,7 @@ theorem gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
     derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
       (eps := u) (p := gwJL (k + 1) f)
       hu hF0 hFs hFpos hdeg hFsimple
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by
-    simpa [gwD] using gwD_gwJL_succ k f
+  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hprec
 
@@ -1334,8 +1322,7 @@ theorem kreinDeletedSummand_dvd_fullRootMultiplicity_of_ne
   have hlin : (X - C u : ℝ[X]).rootMultiplicity v = 0 := by
     rw [rootMultiplicity_X_sub_C]
     simp [hvu]
-  have hmult : g.rootMultiplicity v = q.rootMultiplicity v := by
-    rw [hfactor, hmul, hlin, zero_add]
+  have hmult : g.rootMultiplicity v = q.rootMultiplicity v := by rw [hfactor, hmul, hlin, zero_add]
   exact (le_rootMultiplicity_iff hq0).mp hmult.le
 
 /-- Subtracting a multiple of a root-deleted summand preserves full-power
@@ -1506,8 +1493,7 @@ theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     HasPosLeadingCoeff q := by
   rcases h with hself | ⟨u, hq⟩
   · simpa [hself] using hgpos
-  · have hmul : HasPosLeadingCoeff ((X - C u) * q) := by
-      simpa [hq] using hgpos
+  · have hmul : HasPosLeadingCoeff ((X - C u) * q) := by simpa [hq] using hgpos
     exact hasPosLeadingCoeff_of_X_sub_C_mul hmul
 
 theorem gwJL_prec {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
@@ -1859,8 +1845,7 @@ theorem prec_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
     intro α β
     have hlin_splits : (C α + C β * (X - C u : ℝ[X])).Splits := by
       apply Polynomial.Splits.of_natDegree_le_one
-      have hdegC : (C α : ℝ[X]).natDegree ≤ 1 := by
-        simp
+      have hdegC : (C α : ℝ[X]).natDegree ≤ 1 := by simp
       have hdegmul : (C β * (X - C u : ℝ[X])).natDegree ≤ 1 := by
         exact (natDegree_C_mul_le β (X - C u : ℝ[X])).trans (by simp)
       exact natDegree_add_le_of_le hdegC hdegmul
@@ -1894,10 +1879,8 @@ theorem kreinCoefficient_eval_div_nonneg
   have hm : 1 ≤ m := by
     dsimp [m]
     exact Nat.succ_le_of_lt ((rootMultiplicity_pos hfg.2.1.1).2 hu)
-  have hf_factor_m : f = (X - C u) ^ (m - 1) * s := by
-    simpa [m] using hf_factor
-  have hg_factor_m : g = (X - C u) ^ m * r := by
-    simpa [m] using hg_factor
+  have hf_factor_m : f = (X - C u) ^ (m - 1) * s := by simpa [m] using hf_factor
+  have hg_factor_m : g = (X - C u) ^ m * r := by simpa [m] using hg_factor
   have hg_common : g = (X - C u) ^ (m - 1) * ((X - C u) * r) := by
     rw [hg_factor_m]
     nth_rw 1 [show m = m - 1 + 1 by exact (Nat.sub_add_cancel hm).symm]
@@ -1947,16 +1930,13 @@ theorem kreinCoefficient_residual_eval_div_nonneg
   let m : ℕ := g.rootMultiplicity u
   let d : ℝ[X] := (X - C u) ^ (m - 1)
   rcases exists_precLeft_factor_of_right_isRoot hfg hu with ⟨t, hf_t, _, _, _⟩
-  have hf_t_m : f = d * t := by
-    simpa [d, m] using hf_t
-  have hq_m : q = d * r := by
-    simpa [d, m] using hq
+  have hf_t_m : f = d * t := by simpa [d, m] using hf_t
+  have hq_m : q = d * r := by simpa [d, m] using hq
   have hg_common : g = d * ((X - C u) * r) := by
     rw [hfactor, hq_m]
     dsimp [d]
     ring
-  have hres_m : f - C c * g = d * s := by
-    simpa [d, m] using hres
+  have hres_m : f - C c * g = d * s := by simpa [d, m] using hres
   have hd0 : d ≠ 0 := by
     dsimp [d]
     exact pow_ne_zero _ (X_sub_C_ne_zero u)
@@ -1975,8 +1955,7 @@ theorem kreinCoefficient_residual_eval_div_nonneg
     dsimp [d]
     nth_rw 2 [show m = m - 1 + 1 by exact (Nat.sub_add_cancel hm).symm]
     ring_nf
-  have hg_full : g = (X - C u) ^ g.rootMultiplicity u * r := by
-    simpa [m] using hg_full_m
+  have hg_full : g = (X - C u) ^ g.rootMultiplicity u * r := by simpa [m] using hg_full_m
   have hnonneg : 0 ≤ t.eval u / r.eval u :=
     kreinCoefficient_eval_div_nonneg hfg hfpos hgpos hu hf_t hg_full hr0 hrs
       hr_eval
@@ -2248,8 +2227,7 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
       Prec (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
     gwJL_prec_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
       hsg_pos hnonneg hsummand hex
-  have hscaled' : Prec (C sf * gwJL k f) (C sg * gwJL k g) := by
-    simpa [gwJL_C_mul] using hscaled
+  have hscaled' : Prec (C sf * gwJL k f) (C sg * gwJL k g) := by simpa [gwJL_C_mul] using hscaled
   have hleft :
       Prec (gwJL k f) (C sg * gwJL k g) := by
     have htmp := prec_C_mul_left hscaled' (inv_ne_zero hsf)
@@ -2556,8 +2534,7 @@ theorem IsPFPolynomial.derivative_prec0_self {p : ℝ[X]}
   by_cases hdeg1 : p.natDegree = 1
   · have hder_ne : p.derivative ≠ 0 :=
       Polynomial.derivative_ne_zero.mpr hdeg0
-    have hder_deg0 : p.derivative.natDegree = 0 := by
-      rw [p.natDegree_derivative, hdeg1]
+    have hder_deg0 : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg1]
     exact
       (prec_degree_zero_right_of_degree_one hder_ne
         (Polynomial.Splits.of_natDegree_eq_zero hder_deg0) hp0 hps.2 hder_deg0
@@ -2570,16 +2547,14 @@ paragraph: for `u <= 0`, `(1 - uD)Lp` precedes `Lp`. -/
 theorem gwL_sub_C_mul_gwD_gwL_prec0_self {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
     Prec0 (gwL p - C u * gwD (gwL p)) (gwL p) := by
-  have hpL : IsPFPolynomial (gwL p) := by
-    simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
+  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
   have hder :
       Prec0 (gwD (gwL p)) (gwL p) := by
     simpa [gwD] using hpL.derivative_prec0_self
   have hscaled :
       Prec0 (C (-u) * gwD (gwL p)) (gwL p) :=
     prec0_C_mul_left_of_nonneg hder (by linarith)
-  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by
-    simpa [gwD] using hpL.derivative.hasNonnegCoeffs
+  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
   have hscaled_nn :
       HasNonnegCoeffs (C (-u) * gwD (gwL p)) :=
     nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
@@ -2594,12 +2569,10 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
     IsPFPolynomial (gwL p - C u * gwD (gwL p)) := by
   let T : ℝ[X] := gwL p - C u * gwD (gwL p)
-  have hpL : IsPFPolynomial (gwL p) := by
-    simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
+  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
   have hprec : Prec0 T (gwL p) :=
     gwL_sub_C_mul_gwD_gwL_prec0_self hp hu
-  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by
-    simpa [gwD] using hpL.derivative.hasNonnegCoeffs
+  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
   have hTnn : HasNonnegCoeffs T := by
     change HasNonnegCoeffs (gwL p - C u * gwD (gwL p))
     have hscaled_nn :
@@ -2612,8 +2585,7 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
   rcases hprec with hleft0 | hright0 | hstrict
   · exact False.elim (hT0 hleft0)
   · have hp0 : p = 0 := (gwL_eq_zero_iff p).1 hright0
-    have hTzero : T = 0 := by
-      simp [T, hp0, gwL_zero, gwD_zero]
+    have hTzero : T = 0 := by simp [T, hp0, gwL_zero, gwD_zero]
     exact False.elim (hT0 hTzero)
   · exact IsPFPolynomial.of_realRooted_nonneg hTnn hstrict.1.2
 
@@ -2691,8 +2663,7 @@ theorem gwSchurProduct_prec0_of_kreinDeletedFactor
     (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
     Prec0 (gwSchurProduct q p) (gwSchurProduct g p) := by
   by_cases hq0 : q = 0
-  · have hg0 : g = 0 := by
-      rw [hfactor, hq0, mul_zero]
+  · have hg0 : g = 0 := by rw [hfactor, hq0, mul_zero]
     simp [hq0, hg0, prec0_zero_left]
   have hg0 : g ≠ 0 := by
     rw [hfactor]
@@ -2819,8 +2790,7 @@ theorem gwSchurProductPFAndPrec :
               change IsPFPolynomial f.derivative
               exact hf.derivative
             apply hA_lt hfD hq
-            have hDdeg : (gwD f).natDegree ≤ f.natDegree := by
-              simp [gwD]
+            have hDdeg : (gwD f).natDegree ≤ f.natDegree := by simp [gwD]
             rw [← hmeasure]
             lia
           have hder :
@@ -2914,8 +2884,7 @@ theorem gwSchurProductPFAndPrec :
                 change IsPFPolynomial p.derivative
                 exact hp.derivative
               apply hA_lt hpD hq
-              have hDdeg : (gwD p).natDegree ≤ p.natDegree := by
-                simp [gwD]
+              have hDdeg : (gwD p).natDegree ≤ p.natDegree := by simp [gwD]
               rw [← hmeasure]
               lia)
         exact ⟨hA, hB⟩
@@ -2934,8 +2903,7 @@ the Schur-product theorem to the `L`-normalized left input. -/
 theorem gwHadamardProductPF {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) := by
-  have hpL : IsPFPolynomial (gwL p) := by
-    simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
+  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
   simpa [gwSchurProduct_gwL_left] using gwSchurProductPF hpL hq
 
 /-- The `L` operator preserves the PF cone. -/

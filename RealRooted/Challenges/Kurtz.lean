@@ -284,8 +284,7 @@ lemma add_mul_self_lt_mul_self_of_add_mul_sq_lt {u v w x : ℝ} {k : ℕ} (hk₁
     u * x ^ (k - 1) + w * x ^ (k + 1) < v * x ^ k := by
   have hxk_pred : 0 < x ^ (k - 1) := pow_pos hx _
   have hlhs : u * x ^ (k - 1) + w * x ^ (k + 1) = (u + w * x ^ 2) * x ^ (k - 1) := by
-    have : x ^ (k + 1) = x ^ 2 * x ^ (k - 1) := by
-      rw [show k + 1 = 2 + (k - 1) by lia, pow_add]
+    have : x ^ (k + 1) = x ^ 2 * x ^ (k - 1) := by rw [show k + 1 = 2 + (k - 1) by lia, pow_add]
     rw [this]
     ring
   have hrhs : v * x ^ k = (v * x) * x ^ (k - 1) := by
@@ -411,8 +410,7 @@ theorem coefficient_criterion_card_roots {p : ℝ[X]}
     div_pos (hapos ((Nat.sub_le i 1).trans hin)) (hapos hin)
   have hxpt_between (k : ℕ) (hk₁ : 1 ≤ k) (hkn : k < n) :
       r k < xpt k ∧ xpt k < r (k + 1) := by
-    have heq : xpt k = Real.sqrt (a (k - 1) / a (k + 1)) := by
-      simp only [hxpt, hkn, if_true]
+    have heq : xpt k = Real.sqrt (a (k - 1) / a (k + 1)) := by simp only [hxpt, hkn, if_true]
     rw [heq]
     exact sqrt_ratio_between (fun i hi ↦ hapos hi) hlogconc k hk₁ hkn
   have hxpt_pos (k : ℕ) (hk₁ : 1 ≤ k) (hkn : k ≤ n) : 0 < xpt k := by grind

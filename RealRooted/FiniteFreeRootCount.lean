@@ -121,8 +121,7 @@ private theorem roots_sum_schurSzegoComp_scaled
         -((d : ℝ) *
           (-(schurSzegoComp d f p).roots.sum *
             (f.coeff d * p.coeff d))) := by ring
-    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by
-      nlinarith [hout_vieta]
+    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by nlinarith [hout_vieta]
     _ = f.coeff d * (p.coeff (d - 1) * f.roots.sum) := by
       rw [hf_vieta]
       ring
@@ -624,8 +623,7 @@ private theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
         subst f
         simp at hfdeg
         exact hd hfdeg.symm)
-    have href_top : (reflect d p).coeff d ≠ 0 := by
-      simpa [coeff_reflect] using hp0
+    have href_top : (reflect d p).coeff d ≠ 0 := by simpa [coeff_reflect] using hp0
     exact natDegree_schurSzegoComp_eq_of_coeff_top_ne hf_top href_top
   · intro f g hfdeg hgdeg hfg
     exact schurSzegoComp_prec_of_reflect_pf_factor
@@ -667,10 +665,8 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
   let M := max (listMax ps) (listMax qs)
   have hps_pair : ps.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hqs_pair : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hps_len : ps.length = d := by
-    simp [ps, card_roots_of_splits hPsplit, hPdeg]
-  have hqs_len : qs.length = d := by
-    simp [qs, card_roots_of_splits hQsplit, hQdeg]
+  have hps_len : ps.length = d := by simp [ps, card_roots_of_splits hPsplit, hPdeg]
+  have hqs_len : qs.length = d := by simp [qs, card_roots_of_splits hQsplit, hQdeg]
   have hlen : ps.length = qs.length := hps_len.trans hqs_len.symm
   have hMps : ∀ r ∈ ps, r ≤ M := by
     intro r hr
@@ -721,8 +717,7 @@ theorem card_filter_roots_signedReciprocal
       (F.roots.filter (fun x ↦ P (-x)⁻¹)).card := by
   let g := F.comp (-X)
   have hgsplit : g.Splits := hFsplit.comp_neg_X
-  have hg0 : g.coeff 0 ≠ 0 := by
-    simpa [g, Polynomial.coeff_zero_eq_eval_zero] using hF0
+  have hg0 : g.coeff 0 ≠ 0 := by simpa [g, Polynomial.coeff_zero_eq_eval_zero] using hF0
   have hgdeg : g.natDegree ≤ d := by
     dsimp [g]
     rw [Polynomial.natDegree_comp]

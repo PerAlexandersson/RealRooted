@@ -236,8 +236,7 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R
           = (u ^ f.natDegree) ^ ((f.natDegree : ℝ)⁻¹) * R := by lia
       _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
-      _ = δ / 2 := by
-            grind
+      _ = δ / 2 := by grind
   have hdist_lt_delta : ‖z - w‖ < δ := by grind
   have him_le : |z.im| ≤ ‖z - w‖ := by
     simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
@@ -651,8 +650,7 @@ theorem exists_beta_and_root_near_closedSegment_left_of_bound_right
           ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   obtain ⟨β, hβ0, hβ1, hbr⟩ :=
     exists_beta_pos_with_normalized_closedSegment_bound_right f g hε
-  have hbound : β * (coeffSumRange f + coeffSumRange g) < ε := by
-    grind
+  have hbound : β * (coeffSumRange f + coeffSumRange g) < ε := by grind
   obtain ⟨b, hb_root, hb_dist⟩ :=
     exists_root_near_closedSegment hfg ha hf_monic hg_monic hdeg hβ0 hβ1 hbound
   grind

@@ -22,8 +22,7 @@ theorem exists_pos_pow_re_gt_of_norm_eq_one {w : ℂ}
     simp [mem_closedBall, dist_eq_norm, norm_pow, hw]
   obtain ⟨l, hlmem, φ, hφ, hlim⟩ :=
     (isCompact_closedBall (0 : ℂ) 1).tendsto_subseq hmem
-  have hlim' : Tendsto (fun n ↦ w ^ φ n) atTop (nhds l) := by
-    simpa [Function.comp_def] using hlim
+  have hlim' : Tendsto (fun n ↦ w ^ φ n) atTop (nhds l) := by simpa [Function.comp_def] using hlim
   have hlnorm : ‖l‖ = 1 := by
     have hnormlim : Tendsto (fun n ↦ ‖w ^ φ n‖) atTop (nhds ‖l‖) :=
       hlim'.norm

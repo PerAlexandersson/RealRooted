@@ -102,8 +102,7 @@ theorem not_mem_of_mem_zip_tail_of_pairwise_lt
             · have hleft_mem : left ∈ y :: ys :=
                 fst_mem_of_mem_zip htail
               have hxleft : x < left := hxs.1 left hleft_mem
-              have hbad : x < x := by
-                exact lt_trans hxleft (by simpa [hz_eq] using hleft)
+              have hbad : x < x := by exact lt_trans hxleft (by simpa [hz_eq] using hleft)
               exact (lt_irrefl x hbad).elim
             · exact ih hxs.2 htail hz_tail
 

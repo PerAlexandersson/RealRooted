@@ -73,8 +73,7 @@ theorem cornerZeroed_eq : cornerZeroed = -1000 := by
   norm_num [cornerZeroed, M, hurwitz, toeplitz, cseq]
 
 /-- The full determinant of the same window is positive. -/
-theorem fullMinor_eq : fullMinor = 2000 := by
-  norm_num [fullMinor, M, hurwitz, toeplitz, cseq]
+theorem fullMinor_eq : fullMinor = 2000 := by norm_num [fullMinor, M, hurwitz, toeplitz, cseq]
 
 /-- The corner-zeroed expression violates the claimed nonnegativity conclusion. -/
 theorem cornerZeroed_negative : cornerZeroed < 0 := by norm_num [cornerZeroed_eq]

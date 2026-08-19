@@ -11,17 +11,14 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
-  rr_favard_active_den_all
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by rr_favard_active_den_all
 
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_favard_active_den_all_term
 
-example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_favard_coeff_at n
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_favard_coeff_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_favard_coeff_all
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_favard_coeff_all
 
 example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_favard_coeff_at_term n
@@ -513,8 +510,7 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   let αfun : Nat → ℝ := fun m => (m : ℝ)
   let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
+  have hP1' : P 1 = X - C (αfun 0) := by simpa [αfun] using hP1
   have hstep' :
       ∀ n : Nat,
         P (n + 2) =
@@ -575,8 +571,7 @@ example {P : Nat → ℝ[X]}
   let sfun : Nat → ℝ := fun _ => 2
   let αfun : Nat → ℝ := fun m => (m : ℝ)
   let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by
-    simpa [sfun, αfun] using hP1
+  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by simpa [sfun, αfun] using hP1
   have hstep' :
       ∀ n : Nat,
         P (n + 2) =

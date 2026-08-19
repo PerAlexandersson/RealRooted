@@ -100,8 +100,7 @@ theorem jacobi11TransportCoeff_eq_narayanaTransformCoeff_one
     jacobi11TransportCoeff n k = narayanaTransformCoeff 1 n k := by
   unfold jacobi11TransportCoeff narayanaTransformCoeff
   have hden_choose : (Nat.choose (1 + k) k : ℝ) = (k + 1 : ℝ) := by
-    have hnat : Nat.choose (1 + k) k = k + 1 := by
-      simp [Nat.add_comm]
+    have hnat : Nat.choose (1 + k) k = k + 1 := by simp [Nat.add_comm]
     exact_mod_cast hnat
   rw [hden_choose]
   have hsym : Nat.choose (n + 1) (n - k) = Nat.choose (n + 1) (k + 1) := by
@@ -180,10 +179,8 @@ private theorem jacobi11Transport_denominator_cancel
     (r - 1) ^ n * (r - 1)⁻¹ ^ (n - k) *
         (r ^ k * (r - 1)⁻¹ ^ k)
         = r ^ k * ((r - 1) ^ n *
-          ((r - 1)⁻¹ ^ (n - k) * (r - 1)⁻¹ ^ k)) := by
-            ring
-    _ = r ^ k * ((r - 1) ^ n * ((r - 1)⁻¹ ^ n)) := by
-      rw [← pow_add, hsum]
+          ((r - 1)⁻¹ ^ (n - k) * (r - 1)⁻¹ ^ k)) := by ring
+    _ = r ^ k * ((r - 1) ^ n * ((r - 1)⁻¹ ^ n)) := by rw [← pow_add, hsum]
     _ = r ^ k := by simp [hden]
 
 /-- After Braun--Jal's change of variables, multiplying by `(r - 1)^n`
@@ -216,10 +213,8 @@ theorem jacobi11NormalizedPolynomial_transport_eval
         (r - 1)⁻¹ ^ (n - k) * (r / (r - 1)) ^ k)
         = jacobi11TransportCoeff n k *
           ((r - 1) ^ n * (r - 1)⁻¹ ^ (n - k) *
-            (r / (r - 1)) ^ k) := by
-            ring
-    _ = jacobi11TransportCoeff n k * r ^ k := by
-      rw [jacobi11Transport_denominator_cancel hk hden]
+            (r / (r - 1)) ^ k) := by ring
+    _ = jacobi11TransportCoeff n k * r ^ k := by rw [jacobi11Transport_denominator_cancel hk hden]
 
 /-- The quotient Narayana sequence has nonnegative coefficients, via the
 coefficient-side model. -/
@@ -355,8 +350,7 @@ private theorem affineLinear_natDegree_le {lam mu : ℝ} :
 private theorem affineLinear_natDegree_of_lam_pos
     {lam mu : ℝ} (hlam : 0 < lam) :
     (C lam * X + C mu : ℝ[X]).natDegree = 1 := by
-  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by
-    simp [HasPosLeadingCoeff]
+  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by simp [HasPosLeadingCoeff]
   have hCX_pos : HasPosLeadingCoeff (C lam * X : ℝ[X]) :=
     hasPosLeadingCoeff_C_mul hlam hX_pos
   have hdeg : (C mu : ℝ[X]).natDegree < (C lam * X : ℝ[X]).natDegree := by
@@ -369,8 +363,7 @@ private theorem affineLinear_natDegree_of_lam_pos
 private theorem affineLinear_posLeadingCoeff_of_lam_pos
     {lam mu : ℝ} (hlam : 0 < lam) :
     HasPosLeadingCoeff (C lam * X + C mu : ℝ[X]) := by
-  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by
-    simp [HasPosLeadingCoeff]
+  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by simp [HasPosLeadingCoeff]
   have hCX_pos : HasPosLeadingCoeff (C lam * X : ℝ[X]) :=
     hasPosLeadingCoeff_C_mul hlam hX_pos
   have hdeg : (C mu : ℝ[X]).natDegree < (C lam * X : ℝ[X]).natDegree := by

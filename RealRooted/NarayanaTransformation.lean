@@ -147,8 +147,7 @@ theorem HasOnlyNonnegRoots.coeff_zero_nonpos_of_natDegree_eq_one {p : ℝ[X]}
     p.coeff 0 ≤ 0 := by
   rcases hp with hpzero | ⟨_hsplits, hroot_nonneg⟩
   · simp [hpzero] at hpdeg
-  have hcoeff1pos : 0 < p.coeff 1 := by
-    simpa [Polynomial.leadingCoeff, hpdeg] using hplead
+  have hcoeff1pos : 0 < p.coeff 1 := by simpa [Polynomial.leadingCoeff, hpdeg] using hplead
   have hcoeff1ne : p.coeff 1 ≠ 0 := hcoeff1pos.ne'
   have hroot_mem : -(p.coeff 1)⁻¹ * p.coeff 0 ∈ p.roots := by
     rw [Polynomial.eq_X_add_C_of_natDegree_le_one hpdeg.le,
@@ -499,8 +498,7 @@ private theorem basisTransform_touchard_preservesPF_aux :
           apply hp0
           simp [hfactor, hqzero]
         have ihq := ih q.natDegree (by lia) q rfl hq0 hq
-        have hfactor' : p = (X + C (-u)) * q := by
-          simpa [sub_eq_add_neg] using hfactor
+        have hfactor' : p = (X + C (-u)) * q := by simpa [sub_eq_add_neg] using hfactor
         rw [hfactor', basisTransform_touchard_mul_X_add_C]
         exact touchardFactorStep_preservesPF (neg_nonneg.mpr hu) ihq
 
@@ -748,8 +746,7 @@ private theorem risingFactorialStep_pf_shiftPrec
     hf_g0.toPrec_of_ne hfrr.1 hg0
   have hfμg : Prec fμ (X * fμ + C r * f) :=
     hfμ_g0.toPrec_of_ne hfμrr.1 hg0
-  have hfμdeg : fμ.natDegree = f.natDegree := by
-    simp [fμ, Polynomial.natDegree_comp]
+  have hfμdeg : fμ.natDegree = f.natDegree := by simp [fμ, Polynomial.natDegree_comp]
   have hXfμdeg : (X * fμ).natDegree = f.natDegree + 1 := by
     rw [Polynomial.natDegree_mul X_ne_zero hfμrr.1, Polynomial.natDegree_X, hfμdeg]
     simp [add_comm]
@@ -867,8 +864,7 @@ private theorem brentiFallingFactorial_of_natDegree_eq_two_pos_leading {p : ℝ[
   have hpsplits_quad : (C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X +
       C (p.coeff 0) : ℝ[X]).Splits :=
     quadraticPoly_splits_of_le hpos hdisc_p
-  have hpsplits : p.Splits := by
-    simpa [← hpform] using hpsplits_quad
+  have hpsplits : p.Splits := by simpa [← hpform] using hpsplits_quad
   exact HasOnlyNonposRoots.of_nonnegCoeffs_splits hpnn hpsplits
 
 /-- Degree-two case of Brenti's falling-factorial inverse transform. -/
@@ -882,8 +878,7 @@ theorem brentiFallingFactorial_of_natDegree_eq_two {p : ℝ[X]}
   have hcoeff2_ne : p.coeff 2 ≠ 0 := by
     simpa [Polynomial.leadingCoeff, hpdeg] using (Polynomial.leadingCoeff_ne_zero.mpr hp0)
   rcases lt_or_gt_of_ne hcoeff2_ne with hneg | hpos
-  · have hnegdeg : (-p).natDegree = 2 := by
-      rw [Polynomial.natDegree_neg, hpdeg]
+  · have hnegdeg : (-p).natDegree = 2 := by rw [Polynomial.natDegree_neg, hpdeg]
     have hnegpos : 0 < (-p).coeff 2 := by
       simp
       linarith
@@ -938,8 +933,7 @@ theorem brentiFallingFactorial_degreeAtLeastThree :
   rcases lt_or_gt_of_ne hq_lc_ne with hqneg | hqpos
   · have hnq_splits : (-q).Splits := hqsplits.neg
     have hnq_pos : HasPosLeadingCoeff (-q) := hasPosLeadingCoeff_neg hqneg
-    have hnq_roots : ∀ r ∈ (-q).roots, r ≤ 0 := by
-      simpa [Polynomial.roots_neg] using hqroots
+    have hnq_roots : ∀ r ∈ (-q).roots, r ≤ 0 := by simpa [Polynomial.roots_neg] using hqroots
     have hnq_nn : HasNonnegCoeffs (-q) :=
       ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hnq_splits).mpr
         ⟨hnq_pos, hnq_roots⟩).1
@@ -1071,8 +1065,7 @@ private theorem generalizedRisingFactorialPreservesPF_shiftPrec {μ : ℝ}
         have ihq := ih q.natDegree (by lia) q rfl hq0 hq
         have hstep := risingFactorialStep_pf_shiftPrec hμ.le (neg_nonneg.mpr hu)
           ihq.1 ihq.2
-        have hfactor' : p = (X + C (-u)) * q := by
-          simpa [sub_eq_add_neg] using hfactor
+        have hfactor' : p = (X + C (-u)) * q := by simpa [sub_eq_add_neg] using hfactor
         rw [hfactor', basisTransform_risingFactorial_mul_X_add_C]
         exact hstep
 
@@ -1261,8 +1254,7 @@ theorem sum_range_choose_gamma (m k : ℕ) (hk : k ≤ m) :
           apply Finset.sum_congr rfl
           intro r _
           ring
-    _ = (Nat.choose m k) ^ 2 := by
-      rw [sum_range_choose_mul_choose_same m k hk, pow_two]
+    _ = (Nat.choose m k) ^ 2 := by rw [sum_range_choose_mul_choose_same m k hk, pow_two]
 
 /-- Gamma coefficients of the binomial-square Narayana polynomial
 `narayanaPolynomial 0 n`. -/
@@ -1358,10 +1350,8 @@ theorem gammaTransform_narayanaZeroGammaPolynomial (n : ℕ) :
               intro i hi
               have hik : i ≤ k := by simpa using hi
               simp [hik]
-        _ = ((Nat.choose n k) ^ 2 : ℕ) := by
-              exact_mod_cast sum_range_choose_gamma n k hk
-        _ = narayanaTransformCoeff 0 n k := by
-              simp [narayanaTransformCoeff, pow_two]
+        _ = ((Nat.choose n k) ^ 2 : ℕ) := by exact_mod_cast sum_range_choose_gamma n k hk
+        _ = narayanaTransformCoeff 0 n k := by simp [narayanaTransformCoeff, pow_two]
     · have hhalf : n / 2 < k := Nat.lt_of_not_ge hkh
       have hsub : Finset.range (n / 2 + 1) ⊆ Finset.range (k + 1) :=
         Finset.range_mono (by lia)
@@ -1390,10 +1380,8 @@ theorem gammaTransform_narayanaZeroGammaPolynomial (n : ℕ) :
                 apply Nat.choose_eq_zero_of_lt
                 lia
               simp [hchoose]
-        _ = ((Nat.choose n k) ^ 2 : ℕ) := by
-              exact_mod_cast sum_range_choose_gamma n k hk
-        _ = narayanaTransformCoeff 0 n k := by
-              simp [narayanaTransformCoeff, pow_two]
+        _ = ((Nat.choose n k) ^ 2 : ℕ) := by exact_mod_cast sum_range_choose_gamma n k hk
+        _ = narayanaTransformCoeff 0 n k := by simp [narayanaTransformCoeff, pow_two]
   · have hnk : n < k := Nat.lt_of_not_ge hk
     rw [coeff_narayanaPolynomial_of_lt hnk]
     apply Polynomial.coeff_eq_zero_of_natDegree_lt
@@ -1468,8 +1456,7 @@ theorem narayanaTransform_coeff_sum_reflect
     · exact Finset.sum_subset (Finset.range_mono (Nat.succ_le_succ hpdeg)) (by
         intro k hk_big hk_small
         have hkgt : p.natDegree < k := by
-          have hnot : ¬ k < p.natDegree + 1 := by
-            simpa [Finset.mem_range] using hk_small
+          have hnot : ¬ k < p.natDegree + 1 := by simpa [Finset.mem_range] using hk_small
           exact Nat.lt_of_not_ge (by
             intro hk_le
             exact hnot (Nat.lt_succ_iff.mpr hk_le))
@@ -1680,10 +1667,8 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_one {m : ℕ} {f g : 
     (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
     HasOnlyNonnegRoots (rectangularAdditiveConvolution m 1 f g) := by
   rw [rectangularAdditiveConvolution_one]
-  have hf1pos : 0 < f.coeff 1 := by
-    simpa [Polynomial.leadingCoeff, hfdeg] using hflead
-  have hg1pos : 0 < g.coeff 1 := by
-    simpa [Polynomial.leadingCoeff, hgdeg] using hglead
+  have hf1pos : 0 < f.coeff 1 := by simpa [Polynomial.leadingCoeff, hfdeg] using hflead
+  have hg1pos : 0 < g.coeff 1 := by simpa [Polynomial.leadingCoeff, hgdeg] using hglead
   have hf0nonpos : f.coeff 0 ≤ 0 :=
     hfroots.coeff_zero_nonpos_of_natDegree_eq_one hfdeg hflead
   have hg0nonpos : g.coeff 0 ≤ 0 :=
@@ -1698,8 +1683,7 @@ private theorem quadratic_data_of_hasOnlyNonnegRoots {p : ℝ[X]}
     (hproots : HasOnlyNonnegRoots p) :
     0 < p.coeff 2 ∧ p.coeff 1 ≤ 0 ∧ 0 ≤ p.coeff 0 ∧ p.Splits ∧
       4 * p.coeff 2 * p.coeff 0 ≤ p.coeff 1 ^ 2 := by
-  have h2pos : 0 < p.coeff 2 := by
-    simpa [Polynomial.leadingCoeff, hpdeg] using hplead
+  have h2pos : 0 < p.coeff 2 := by simpa [Polynomial.leadingCoeff, hpdeg] using hplead
   have hfliproots : HasOnlyNonposRoots (degreeSignFlip 2 p) :=
     hproots.degreeSignFlip_hasOnlyNonposRoots (by rw [hpdeg])
   have hp0 : p ≠ 0 := Polynomial.leadingCoeff_ne_zero.mp hplead.ne'
@@ -1801,8 +1785,7 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_two
     nlinarith [hfdisc_scaled, hgdisc_scaled, hcross_scaled]
   have hqquad_splits : (C A * X ^ 2 + C B * X + C D : ℝ[X]).Splits :=
     quadraticPoly_splits_of_le hApos hdisc
-  have hqsplits : q.Splits := by
-    simpa [← hqform] using hqquad_splits
+  have hqsplits : q.Splits := by simpa [← hqform] using hqquad_splits
   have hqdeg_le : q.natDegree ≤ 2 := by
     dsimp [q]
     exact natDegree_rectangularAdditiveConvolution_le m 2 f g
@@ -2207,10 +2190,8 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLif
     (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
     (hstab : MvRealStable (xyLift (rectangularAdditiveConvolution m n f g))) :
     HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
-  have hfn : f.coeff n = f.leadingCoeff := by
-    rw [← hfdeg, Polynomial.coeff_natDegree]
-  have hgn : g.coeff n = g.leadingCoeff := by
-    rw [← hgdeg, Polynomial.coeff_natDegree]
+  have hfn : f.coeff n = f.leadingCoeff := by rw [← hfdeg, Polynomial.coeff_natDegree]
+  have hgn : g.coeff n = g.leadingCoeff := by rw [← hgdeg, Polynomial.coeff_natDegree]
   have hpos : 0 < (rectangularAdditiveConvolution m n f g).coeff n := by
     rw [coeff_rectangularAdditiveConvolution_top m n f g, hfn, hgn]
     exact mul_pos hflead hglead
@@ -3163,8 +3144,7 @@ theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
       · have heq : 2 * k = n + 2 := by lia
         have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
         push_cast at heqR
-        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by
-          nlinarith
+        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by nlinarith
         rw [hfactor]
         ring
       · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]
@@ -3183,8 +3163,7 @@ theorem narayanaZeroGammaPolynomial_deriv_rec (n : ℕ) :
         calc
           C (2 : ℝ) * X * (1 - C 4 * X) =
               C 2 * X - (C 2 * C 4) * (X * X) := by ring
-          _ = C 2 * X - C 8 * X ^ 2 := by
-            norm_num [← map_mul, pow_two]]
+          _ = C 2 * X - C 8 * X ^ 2 := by norm_num [← map_mul, pow_two]]
   ext k
   rw [add_mul, sub_mul, mul_assoc, mul_assoc]
   rcases k with _ | _ | k
@@ -3291,8 +3270,7 @@ theorem narayanaTransformPreservesPF :
       rw [leadingCoeff_degreeSignFlip_of_coeff_ne_zero hpcoeff, hn,
         Polynomial.coeff_natDegree]
       exact hp.hasNonnegCoeffs.pos_leadingCoeff hp0
-    have hNdeg : (narayanaPolynomial m n).natDegree ≤ n := by
-      rw [natDegree_narayanaPolynomial]
+    have hNdeg : (narayanaPolynomial m n).natDegree ≤ n := by rw [natDegree_narayanaPolynomial]
     have hNcoeff : (narayanaPolynomial m n).coeff n ≠ 0 := by simp
     have hgdeg : (degreeSignFlip n (narayanaPolynomial m n)).natDegree = n :=
       natDegree_degreeSignFlip_eq_of_coeff_ne_zero hNcoeff

@@ -178,8 +178,7 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
       rw [hfq₂, derivative_mul, derivative_X_sub_C, one_mul]
     calc q₂.eval r₂ = q₂.eval r₂ + 0 := (add_zero _).symm
       _ = q₂.eval r₂ + (r₂ - r₂) * q₂.derivative.eval r₂ := by simp
-      _ = f.derivative.eval r₂ := by
-          rw [hd, eval_add, eval_mul, eval_sub, eval_X, eval_C]
+      _ = f.derivative.eval r₂ := by rw [hd, eval_add, eval_mul, eval_sub, eval_X, eval_C]
   -- q₁, q₂ have no roots in (r₁, r₂) (otherwise f would)
   have hq₁_nr : ∀ x, r₁ < x → x < r₂ → q₁.eval x ≠ 0 := by
     intro x hx1 hx2 hq
@@ -206,10 +205,8 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
   have hmr₂ : m - r₂ < 0 := by linarith
   have hq₁m_ne : q₁.eval m ≠ 0 := hq₁_nr m hm1 hm2
   have heq : (m - r₁) * q₁.eval m = (m - r₂) * q₂.eval m := by
-    have h1 : f.eval m = (m - r₁) * q₁.eval m := by
-      rw [hfq₁, eval_mul, eval_sub, eval_X, eval_C]
-    have h2 : f.eval m = (m - r₂) * q₂.eval m := by
-      rw [hfq₂, eval_mul, eval_sub, eval_X, eval_C]
+    have h1 : f.eval m = (m - r₁) * q₁.eval m := by rw [hfq₁, eval_mul, eval_sub, eval_X, eval_C]
+    have h2 : f.eval m = (m - r₂) * q₂.eval m := by rw [hfq₂, eval_mul, eval_sub, eval_X, eval_C]
     lia
   -- q₁(m) and q₂(m) have opposite signs
   have hprod_neg : q₁.eval m * q₂.eval m < 0 := by
@@ -253,8 +250,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
     rw [count_roots] at hcount
     have hf'_root : f.derivative.IsRoot r₁ :=
       isRoot_derivative_of_rootMultiplicity_ge_two hcount
-    have : g.IsRoot r₁ := by
-      rw [IsRoot.def, eval_affineDeriv_at_root hr₁ c, hf'_root, mul_zero]
+    have : g.IsRoot r₁ := by rw [IsRoot.def, eval_affineDeriv_at_root hr₁ c, hf'_root, mul_zero]
     grind
   · -- Distinct roots: IVT via sign change
     -- g(rᵢ) = (1-rᵢ)*f'(rᵢ). Since 1-rᵢ > 0, sign(g) = sign(f').
@@ -352,8 +348,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
             = (c * f.eval x + (1 - x) * f.derivative.eval x) * (1 - x) ^ (-c - 1) := by
                 simp [eval_add, eval_mul, eval_C, eval_sub, eval_X]
         _ = c * f.eval x * (1 - x) ^ (-c - 1) +
-              f.derivative.eval x * ((1 - x) * (1 - x) ^ (-1 - c)) := by
-                grind
+              f.derivative.eval x * ((1 - x) * (1 - x) ^ (-1 - c)) := by grind
         _ = c * f.eval x * (1 - x) ^ (-c - 1) +
               f.derivative.eval x * (1 - x) ^ (-c) := by lia
         _ = f.derivative.eval x * (1 - x) ^ (-c) +
@@ -364,8 +359,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have hs_nonneg : 0 ≤ 1 - s := by grind
     have hs_ne : 1 - s ≠ 0 := by grind
     exact (Real.rpow_ne_zero hs_nonneg (by linarith)).2 hs_ne
-  have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by
-    simp_all
+  have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by simp_all
   exact ⟨s, hs.1, hs.2, hs_root_eval⟩
 
 /-! ## Inner interleaving construction
@@ -513,8 +507,7 @@ lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natDegree
       rw [count_roots] at hcount
       have hf'_root : f.derivative.IsRoot r₁ :=
         isRoot_derivative_of_rootMultiplicity_ge_two hcount
-      have hg_root : (C c * f + (1 - X) * f.derivative).IsRoot r₁ := by
-        simp_all
+      have hg_root : (C c * f + (1 - X) * f.derivative).IsRoot r₁ := by simp_all
       constructor
       · simp_all
       · exact ⟨le_refl _, hr_eq ▸ le_refl _, ih.2⟩
@@ -549,8 +542,7 @@ private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.nat
       have hrest : ∀ r ∈ r₂ :: rest', f.IsRoot r :=
         List.forall_mem_of_forall_mem_cons hrs
       have hsorted_tail := (List.pairwise_cons.mp hsorted).2
-      have hsub_tail : (↑(r₂ :: rest') : Multiset ℝ) ≤ f.roots := by
-        lia
+      have hsub_tail : (↑(r₂ :: rest') : Multiset ℝ) ≤ f.roots := by lia
       exact le_trans hr₁r₂ (mkAffineInterleaving_ge f c hdeg hc hroots_nonpos
         r₂ rest' hrest hsorted_tail hsub_tail hgap.2 x hx)
 
@@ -831,8 +823,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : 
     sorted_of_listInterlaces ss (r₁ :: rest) hrs_sorted hint
   have hu_le_all : ∀ s ∈ ss, u ≤ s :=
     fun s hs => le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs)
-  have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by
-    simp_all
+  have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by simp_all
   have hlen : ss.length = rest.length := listInterlaces_cons_length_eq hint
   exact ⟨⟨hg₀, hg⟩, ⟨hf₀, hf⟩, u :: ss, r₁ :: rest, hug_sorted, hrs_sorted,
     hss_eq, hrs_eq, Or.inr ⟨by simp [hlen], ⟨hu, hint⟩⟩⟩
@@ -856,17 +847,14 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_length : rs.length = d := by
-    rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
-  have hrs_root : ∀ r ∈ rs, f.IsRoot r := by
-    simp_all
+  have hrs_length : rs.length = d := by rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
+  have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_eq
   have hgap_rs : ConsecNoRoots f rs := consecNoRoots_of_sorted_eq hrs_eq hrs_sorted
   -- Construct d-1 inner roots of g
   set ss := mkAffineInterleaving f c hdeg hc hroots_nonpos rs hrs_root hrs_sorted hsub_rs
     hgap_rs
-  have hss_length : ss.length = d - 1 := by
-    rw [mkAffineInterleaving_length]; lia
+  have hss_length : ss.length = d - 1 := by rw [mkAffineInterleaving_length]; lia
   have hspec := mkAffineInterleaving_spec f c hdeg hc hroots_nonpos
     rs hrs_root hrs_sorted hsub_rs hgap_rs
   have hss_roots : ∀ s ∈ ss, g.IsRoot s := hspec.1
@@ -900,8 +888,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         lia
   obtain ⟨u, hu_roots_eq⟩ : ∃ u, g.roots = u ::ₘ (↑ss : Multiset ℝ) :=
     exists_cons_of_card_succ hss_sub hss_eq_card
-  have hu_roots_eq' : (↑(u :: ss) : Multiset ℝ) = g.roots := by
-    simp_all
+  have hu_roots_eq' : (↑(u :: ss) : Multiset ℝ) = g.roots := by simp_all
   rw [hrs_cons] at hrs_sorted hrs_eq hss_interlaces
   have hr₁_root : f.IsRoot r₁ :=
     hrs_root r₁ (by simp [hrs_cons])
@@ -914,10 +901,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   · have hu_gt : r₁ < u := lt_of_not_ge hu
     set m := f.rootMultiplicity r₁ with hm_def
     have hm_pos : 0 < m := by simp_all
-    have hrs_count_r₁ : (↑(r₁ :: rest) : Multiset ℝ).count r₁ = m := by
-      simp_all
-    have hss_count_r₁_le : (↑ss : Multiset ℝ).count r₁ + 1 ≤ m := by
-      simp_all
+    have hrs_count_r₁ : (↑(r₁ :: rest) : Multiset ℝ).count r₁ = m := by simp_all
+    have hss_count_r₁_le : (↑ss : Multiset ℝ).count r₁ + 1 ≤ m := by simp_all
     have h_u_ne : u ≠ r₁ := ne_of_gt hu_gt
     have hgmult_eq_ss : g.rootMultiplicity r₁ = (↑ss : Multiset ℝ).count r₁ := by
       rw [← count_roots, hu_roots_eq, Multiset.count_cons, if_neg (by lia)]
@@ -1060,8 +1045,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       calc
         qg.roots.card = qg.natDegree := card_roots_of_splits hqg_rr.2
         _ = d - (m - 1) := hqg_deg
-        _ = d - m + 1 := by
-          lia
+        _ = d - m + 1 := by lia
         _ = q.natDegree + 1 := by lia
         _ = q.roots.card + 1 := by rw [← card_roots_of_splits hq_rr.2]
     have hPg_nonneg' : 0 ≤ -(((-1 : ℝ) ^ q.roots.card) * Pg) := by
@@ -1073,8 +1057,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         nth_rewrite 2 [← one_mul q.roots.card]
         rw [← pow_add, one_mul]
         norm_num
-      have hmulp' : 0 ≤ -(Pg * Pq) := by
-        nlinarith [hmulp, hsquare]
+      have hmulp' : 0 ≤ -(Pg * Pq) := by nlinarith [hmulp, hsquare]
       linarith
     have hEval_nonpos : qg.eval r₁ * q.eval r₁ ≤ 0 := by
       rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr.2 r₁,

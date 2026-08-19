@@ -50,8 +50,7 @@ theorem favardInterlacing :
         let g : ℝ[X] := P n
         let aPoly : ℝ[X] := X - C (α (n + 1))
         let bPoly : ℝ[X] := C (-β (n + 1))
-        have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using hInter.2.2.1
+        have hdeg_gf : g.natDegree + 1 = f.natDegree := by simpa [f, g] using hInter.2.2.1
         have hf_ne : f ≠ 0 := by simpa [f] using hInter.1.1
         have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
           simpa [aPoly, natDegree_X_sub_C, Nat.add_comm] using

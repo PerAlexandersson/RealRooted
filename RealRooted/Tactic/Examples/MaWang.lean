@@ -11,20 +11,15 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
-  rr_mw_active_nonneg_at n
+example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by rr_mw_active_nonneg_at n
 
-example {n : Nat} : (n : ℝ) + 2 ≠ 0 := by
-  rr_mw_active_den_at n
+example {n : Nat} : (n : ℝ) + 2 ≠ 0 := by rr_mw_active_den_at n
 
-example : ∀ n : Nat, (n : ℝ) + 2 ≠ 0 := by
-  rr_mw_active_den_all
+example : ∀ n : Nat, (n : ℝ) + 2 ≠ 0 := by rr_mw_active_den_all
 
-example {n : Nat} : 1 - ((n : ℝ) + 3) ≠ 0 := by
-  rr_scalar_active_den_at n
+example {n : Nat} : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
 
-example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by
-  rr_scalar_active_den_all
+example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_all
 
 /-- A supplied recurrence fixes the hidden target before atomic lookup. -/
 example {f F u v : ℝ[X]}
@@ -815,8 +810,7 @@ example : ∀ n : Nat, P n ≠ 0 := by
   rr_mw_derivative_nonpos_sequence_realrooted using recurrence := hrec
 
 /-- The inferred real-rooted shell supports an indexed splitting projection. -/
-example : (P 3).Splits := by
-  rr_mw_derivative_nonpos_sequence_realrooted using recurrence := hrec
+example : (P 3).Splits := by rr_mw_derivative_nonpos_sequence_realrooted using recurrence := hrec
 
 end InferredWeakSequence
 

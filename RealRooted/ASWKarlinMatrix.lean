@@ -99,8 +99,7 @@ lemma aswKarlinRowPos_lt (degree order blocks : ℕ) (hdegree : 0 < degree)
     aswKarlinRowPos degree order i < blocks * (degree + order - 1) + 1 := by
   have hdiv : (i : ℕ) / order < blocks :=
     (Nat.div_lt_iff_lt_mul horder).2 i.isLt
-  have hinner : order + (degree - 1) = degree + order - 1 := by
-    lia
+  have hinner : order + (degree - 1) = degree + order - 1 := by lia
   calc
     aswKarlinRowPos degree order i <
         blocks * order + blocks * (degree - 1) :=
@@ -120,8 +119,7 @@ lemma aswKarlinRowPos_add_degree_le (degree order blocks : ℕ)
   have hdiv : (i : ℕ) / order < blocks :=
     (Nat.div_lt_iff_lt_mul horder).2 i.isLt
   have hmod : (i : ℕ) % order < order := Nat.mod_lt _ horder
-  have hinner : degree + order - 1 = order + (degree - 1) := by
-    lia
+  have hinner : degree + order - 1 = order + (degree - 1) := by lia
   have hpos : aswKarlinRowPos degree order i =
       ((i : ℕ) / order) * (degree + order - 1) + (i : ℕ) % order := by
     rw [hinner]
