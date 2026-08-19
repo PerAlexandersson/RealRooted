@@ -169,9 +169,7 @@ theorem rowPolynomial_mul_affineSubstitutionMatrix
     (a d : ℝ) (M : LowerTriangularMatrix ℝ) (i : ℕ) :
     rowPolynomial (mul M (affineSubstitutionMatrix a d)) i =
       (rowPolynomial M i).comp (C a * X + C d) := by
-  rw [affineSubstitutionMatrix]
-  rw [rowPolynomial_mul_basisCoefficientMatrix (natDegree_affineBasisPolynomial_le a d)]
-  rw [basisTransform_affineBasisPolynomial]
+  simp [affineSubstitutionMatrix, rowPolynomial_mul_basisCoefficientMatrix (natDegree_affineBasisPolynomial_le a d), basisTransform_affineBasisPolynomial]
 
 theorem RowGeneratingFunctionsPF.mul_affineSubstitutionMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M)
