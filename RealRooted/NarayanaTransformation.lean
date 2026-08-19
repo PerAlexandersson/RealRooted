@@ -1,4 +1,5 @@
 import Mathlib.Tactic
+import RealRooted.GammaRealRoots
 import RealRooted.LiebSokal
 import RealRooted.LiuWangRecursion
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
@@ -1200,6 +1201,204 @@ theorem natDegree_narayanaPolynomial_le (m n : ℕ) :
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro k hk
   exact coeff_narayanaPolynomial_of_lt hk
+
+/-- A symmetric form of Vandermonde's identity. -/
+theorem sum_range_choose_mul_choose_same (m k : ℕ) (hk : k ≤ m) :
+    ∑ r ∈ Finset.range (k + 1),
+        Nat.choose k r * Nat.choose (m - k) r = Nat.choose m k := by
+  have h := Nat.add_choose_eq (m - k) k k
+  rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk,
+    show (m - k) + k = m by lia] at h
+  rw [h]
+  apply Finset.sum_congr rfl
+  intro r hr
+  have hrk : r ≤ k := by simpa using hr
+  simp only
+  rw [Nat.choose_symm hrk]
+  ring
+
+/-- The termwise multinomial identity behind the gamma expansion of the
+binomial-square Narayana polynomial. -/
+theorem choose_gamma_term (m k r : ℕ) (hk : k ≤ m) (hr : r ≤ k) :
+    Nat.choose m r * Nat.choose (m - r) r * Nat.choose (m - 2 * r) (k - r) =
+      Nat.choose m k * Nat.choose k r * Nat.choose (m - k) r := by
+  have hA := Nat.choose_mul (n := m - r) (k := k) (s := r) hr
+  have hB := Nat.choose_mul (n := m - r) (k := k) (s := k - r) (Nat.sub_le k r)
+  have hC := Nat.choose_mul (n := m) (k := k) (s := r) hr
+  rw [show m - r - r = m - 2 * r by lia] at hA
+  rw [show m - r - (k - r) = m - k by lia,
+    show k - (k - r) = r by lia, Nat.choose_symm hr] at hB
+  calc
+    Nat.choose m r * Nat.choose (m - r) r * Nat.choose (m - 2 * r) (k - r) =
+        Nat.choose m r *
+          (Nat.choose (m - r) r * Nat.choose (m - 2 * r) (k - r)) := by ring
+    _ = Nat.choose m r * (Nat.choose (m - r) k * Nat.choose k r) := by rw [hA]
+    _ = Nat.choose m r *
+        (Nat.choose (m - r) (k - r) * Nat.choose (m - k) r) := by rw [hB]
+    _ = (Nat.choose m r * Nat.choose (m - r) (k - r)) *
+        Nat.choose (m - k) r := by ring
+    _ = (Nat.choose m k * Nat.choose k r) * Nat.choose (m - k) r := by rw [hC]
+    _ = Nat.choose m k * Nat.choose k r * Nat.choose (m - k) r := by ring
+
+/-- Summing the gamma-basis coefficients recovers a squared binomial
+coefficient. -/
+theorem sum_range_choose_gamma (m k : ℕ) (hk : k ≤ m) :
+    ∑ r ∈ Finset.range (k + 1),
+        Nat.choose m r * Nat.choose (m - r) r * Nat.choose (m - 2 * r) (k - r) =
+      (Nat.choose m k) ^ 2 := by
+  calc
+    ∑ r ∈ Finset.range (k + 1),
+        Nat.choose m r * Nat.choose (m - r) r * Nat.choose (m - 2 * r) (k - r) =
+        ∑ r ∈ Finset.range (k + 1),
+          Nat.choose m k * Nat.choose k r * Nat.choose (m - k) r := by
+            apply Finset.sum_congr rfl
+            intro r hr
+            exact choose_gamma_term m k r hk (by simpa using hr)
+    _ = Nat.choose m k *
+        (∑ r ∈ Finset.range (k + 1),
+          Nat.choose k r * Nat.choose (m - k) r) := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro r _
+          ring
+    _ = (Nat.choose m k) ^ 2 := by
+      rw [sum_range_choose_mul_choose_same m k hk, pow_two]
+
+/-- Gamma coefficients of the binomial-square Narayana polynomial
+`narayanaPolynomial 0 n`. -/
+def narayanaZeroGammaPolynomial (n : ℕ) : ℝ[X] :=
+  ∑ r ∈ Finset.range (n / 2 + 1),
+    Polynomial.monomial r ((Nat.choose n r * Nat.choose (n - r) r : ℕ) : ℝ)
+
+@[simp] theorem coeff_narayanaZeroGammaPolynomial_of_le {n r : ℕ}
+    (hr : r ≤ n / 2) :
+    (narayanaZeroGammaPolynomial n).coeff r =
+      ((Nat.choose n r * Nat.choose (n - r) r : ℕ) : ℝ) := by
+  rw [narayanaZeroGammaPolynomial, Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single r]
+  · simp
+  · intro b _ hbr
+    rw [Polynomial.coeff_monomial]
+    simp [hbr]
+  · intro hnot
+    exact (hnot (by simpa using hr)).elim
+
+@[simp] theorem coeff_narayanaZeroGammaPolynomial_of_lt {n r : ℕ}
+    (hr : n / 2 < r) : (narayanaZeroGammaPolynomial n).coeff r = 0 := by
+  rw [narayanaZeroGammaPolynomial, Polynomial.finsetSum_coeff]
+  apply Finset.sum_eq_zero
+  intro b hb
+  have hbr : b ≠ r := by
+    have hb_le : b ≤ n / 2 := by simpa using hb
+    lia
+  rw [Polynomial.coeff_monomial]
+  simp [hbr]
+
+theorem natDegree_narayanaZeroGammaPolynomial_le (n : ℕ) :
+    (narayanaZeroGammaPolynomial n).natDegree ≤ n / 2 := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro r hr
+  exact coeff_narayanaZeroGammaPolynomial_of_lt hr
+
+theorem coeff_gammaBasisTerm (d i k : ℕ) :
+    (gammaBasisTerm d i).coeff k =
+      if i ≤ k then (Nat.choose (d - 2 * i) (k - i) : ℝ) else 0 := by
+  rw [gammaBasisTerm, Polynomial.coeff_X_pow_mul']
+  split_ifs with hik
+  · rw [Polynomial.coeff_X_add_one_pow]
+  · rfl
+
+/-- The binomial-square Narayana polynomial has the classical gamma expansion
+with coefficients `choose n i * choose (n - i) i`. -/
+theorem gammaTransform_narayanaZeroGammaPolynomial (n : ℕ) :
+    gammaTransform n (narayanaZeroGammaPolynomial n) = narayanaPolynomial 0 n := by
+  ext k
+  by_cases hk : k ≤ n
+  · rw [coeff_narayanaPolynomial_of_le hk]
+    have hcoeff :
+        (gammaTransform n (narayanaZeroGammaPolynomial n)).coeff k =
+          ∑ i ∈ Finset.range (n / 2 + 1),
+            if i ≤ k then
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ)
+            else 0 := by
+      rw [gammaTransform, Polynomial.finsetSum_coeff]
+      apply Finset.sum_congr rfl
+      intro i hi
+      have hi_le : i ≤ n / 2 := by simpa using hi
+      rw [Polynomial.coeff_C_mul, coeff_gammaBasisTerm,
+        coeff_narayanaZeroGammaPolynomial_of_le hi_le]
+      split_ifs
+      · norm_num [Nat.cast_mul]
+      · simp
+    rw [hcoeff]
+    by_cases hkh : k ≤ n / 2
+    · have hsub : Finset.range (k + 1) ⊆ Finset.range (n / 2 + 1) :=
+        Finset.range_mono (by lia)
+      calc
+        ∑ i ∈ Finset.range (n / 2 + 1),
+            (if i ≤ k then
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ)
+            else 0) =
+            ∑ i ∈ Finset.range (k + 1),
+              if i ≤ k then
+                ((Nat.choose n i * Nat.choose (n - i) i *
+                  Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ)
+              else 0 := by
+                symm
+                apply Finset.sum_subset hsub
+                intro i hi hni
+                have hki : k < i := by simpa using hni
+                simp [hki.not_ge]
+        _ = ∑ i ∈ Finset.range (k + 1),
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ) := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              have hik : i ≤ k := by simpa using hi
+              simp [hik]
+        _ = ((Nat.choose n k) ^ 2 : ℕ) := by
+              exact_mod_cast sum_range_choose_gamma n k hk
+        _ = narayanaTransformCoeff 0 n k := by
+              simp [narayanaTransformCoeff, pow_two]
+    · have hhalf : n / 2 < k := Nat.lt_of_not_ge hkh
+      have hsub : Finset.range (n / 2 + 1) ⊆ Finset.range (k + 1) :=
+        Finset.range_mono (by lia)
+      calc
+        ∑ i ∈ Finset.range (n / 2 + 1),
+            (if i ≤ k then
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ)
+            else 0) =
+            ∑ i ∈ Finset.range (n / 2 + 1),
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ) := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              have hik : i ≤ k := by
+                have hi_le : i ≤ n / 2 := by simpa using hi
+                lia
+              simp [hik]
+        _ = ∑ i ∈ Finset.range (k + 1),
+              ((Nat.choose n i * Nat.choose (n - i) i *
+                Nat.choose (n - 2 * i) (k - i) : ℕ) : ℝ) := by
+              apply Finset.sum_subset hsub
+              intro i hi hni
+              have hhalf_i : n / 2 < i := by simpa using hni
+              have hchoose : Nat.choose (n - i) i = 0 := by
+                apply Nat.choose_eq_zero_of_lt
+                lia
+              simp [hchoose]
+        _ = ((Nat.choose n k) ^ 2 : ℕ) := by
+              exact_mod_cast sum_range_choose_gamma n k hk
+        _ = narayanaTransformCoeff 0 n k := by
+              simp [narayanaTransformCoeff, pow_two]
+  · have hnk : n < k := Nat.lt_of_not_ge hk
+    rw [coeff_narayanaPolynomial_of_lt hnk]
+    apply Polynomial.coeff_eq_zero_of_natDegree_lt
+    exact lt_of_le_of_lt
+      (natDegree_gammaTransform_le n (narayanaZeroGammaPolynomial n)) hnk
 
 /-- The Narayana basis transform `X ^ k ↦ N_{k,m}`. -/
 def narayanaTransform (m : ℕ) : ℝ[X] → ℝ[X] :=
@@ -2776,12 +2975,289 @@ theorem prec_narayanaPolynomial_succ (m n : ℕ) :
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   simpa [P] using hbuild n
 
+private lemma gammaTransform_succ_of_natDegree_le
+    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
+  rcases Nat.mod_two_eq_zero_or_one d with hd | hd
+  · have hd' : d = 2 * (d / 2) := by omega
+    rw [hd']
+    exact gammaTransform_odd (d / 2) γ
+  · have hd' : d = 2 * (d / 2) + 1 := by omega
+    have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by omega))
+    rw [hd']
+    change gammaTransform (2 * (d / 2 + 1)) γ =
+      (X + 1) * gammaTransform (2 * (d / 2) + 1) γ
+    rw [gammaTransform_even_succ, hcoeff]
+    simp
+
+/-- The binomial-square Narayana gamma rows satisfy the transported pure
+three-term recurrence. -/
+theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
+    C ((n : ℝ) + 2) * narayanaZeroGammaPolynomial (n + 2) =
+      C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) -
+        C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n := by
+  let γ₂ := C ((n : ℝ) + 2) * narayanaZeroGammaPolynomial (n + 2)
+  let γ₁ := C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1)
+  let γ₀ := C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n
+  have hγ₂ : γ₂.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₂]
+    rw [natDegree_C_mul (by positivity)]
+    exact natDegree_narayanaZeroGammaPolynomial_le (n + 2)
+  have hγ₁ : γ₁.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₁]
+    rw [natDegree_C_mul (by positivity)]
+    exact (natDegree_narayanaZeroGammaPolynomial_le (n + 1)).trans (by omega)
+  have hγ₀ : γ₀.natDegree ≤ (n + 2) / 2 := by
+    dsimp [γ₀]
+    calc
+      (C ((n : ℝ) + 1) * (1 - C 4 * X) *
+          narayanaZeroGammaPolynomial n).natDegree ≤
+          (C ((n : ℝ) + 1) * (1 - C 4 * X)).natDegree +
+            (narayanaZeroGammaPolynomial n).natDegree := natDegree_mul_le
+      _ ≤ 1 + n / 2 := by
+        gcongr
+        · compute_degree!
+        · exact natDegree_narayanaZeroGammaPolynomial_le n
+      _ ≤ (n + 2) / 2 := by omega
+  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
+    exact (natDegree_sub_le γ₁ γ₀).trans
+      (max_le hγ₁ hγ₀)
+  apply gammaTransform_injective_of_natDegree_le hγ₂ hγsub
+  dsimp [γ₂, γ₁, γ₀]
+  rw [gammaTransform_C_mul, gammaTransform_narayanaZeroGammaPolynomial]
+  rw [show C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) -
+      C ((n : ℝ) + 1) * (1 - C 4 * X) * narayanaZeroGammaPolynomial n =
+      C ((2 * n : ℝ) + 3) * narayanaZeroGammaPolynomial (n + 1) +
+        C (-((n : ℝ) + 1)) *
+          (narayanaZeroGammaPolynomial n + C (-4) *
+            (X * narayanaZeroGammaPolynomial n)) by
+              rw [map_neg, map_neg]
+              ring]
+  rw [gammaTransform_add, gammaTransform_C_mul, gammaTransform_C_mul,
+    gammaTransform_add, gammaTransform_C_mul,
+    gammaTransform_succ_of_natDegree_le
+      (natDegree_narayanaZeroGammaPolynomial_le (n + 1)),
+    gammaTransform_pad_two (natDegree_narayanaZeroGammaPolynomial_le n),
+    gammaTransform_X_mul_two]
+  simp only [gammaTransform_narayanaZeroGammaPolynomial]
+  have hrec := narayanaPolynomial_pure_rec 0 n
+  simp only [Nat.cast_zero, mul_zero] at hrec
+  rw [map_neg, map_neg]
+  rw [C_ofNat 4]
+  convert hrec using 1 <;> ring_nf
+
+private lemma narayanaZeroGammaCoeff_mul_factorial {n k : ℕ} (hk : 2 * k ≤ n) :
+    (Nat.choose n k * Nat.choose (n - k) k) *
+        (Nat.factorial k * Nat.factorial k * Nat.factorial (n - 2 * k)) =
+      Nat.factorial n := by
+  have hkn : k ≤ n := by lia
+  have hknk : k ≤ n - k := by lia
+  have h₁ : Nat.choose n k *
+      (Nat.factorial k * Nat.factorial (n - k)) = Nat.factorial n := by
+    simpa [mul_assoc] using Nat.choose_mul_factorial_mul_factorial hkn
+  have h₂ : Nat.choose (n - k) k *
+      (Nat.factorial k * Nat.factorial (n - 2 * k)) = Nat.factorial (n - k) := by
+    rw [show n - 2 * k = n - k - k by lia]
+    simpa [mul_assoc] using Nat.choose_mul_factorial_mul_factorial hknk
+  calc
+    (Nat.choose n k * Nat.choose (n - k) k) *
+          (Nat.factorial k * Nat.factorial k * Nat.factorial (n - 2 * k)) =
+        Nat.choose n k *
+          (Nat.factorial k *
+            (Nat.choose (n - k) k *
+              (Nat.factorial k * Nat.factorial (n - 2 * k)))) := by ring
+    _ = Nat.choose n k *
+        (Nat.factorial k * Nat.factorial (n - k)) := by rw [h₂]
+    _ = Nat.factorial n := h₁
+
+private lemma coeff_narayanaZeroGammaPolynomial_eq_factorial
+    {n k : ℕ} (hk : 2 * k ≤ n) :
+    (narayanaZeroGammaPolynomial n).coeff k =
+      (Nat.factorial n : ℝ) /
+        ((Nat.factorial k : ℝ) ^ 2 * (Nat.factorial (n - 2 * k) : ℝ)) := by
+  rw [coeff_narayanaZeroGammaPolynomial_of_le (by lia)]
+  have h := congrArg (fun m : ℕ => (m : ℝ))
+    (narayanaZeroGammaCoeff_mul_factorial hk)
+  push_cast at h
+  field_simp [factorial_cast_ne_zero]
+  simpa [Nat.cast_mul, pow_two, mul_assoc] using h
+
+private lemma narayanaZeroGammaCoeff_deriv_rec_core
+    {n k : ℕ} (hkpos : k ≠ 0) (hk : 2 * k ≤ n) :
+    ((n + 1 : ℕ) : ℝ) * (narayanaZeroGammaPolynomial (n + 1)).coeff k =
+      (((n + 1 : ℕ) : ℝ) + 2 * (k : ℝ)) *
+          (narayanaZeroGammaPolynomial n).coeff k +
+        (4 * (n : ℝ) + 8 - 8 * (k : ℝ)) *
+          (narayanaZeroGammaPolynomial n).coeff (k - 1) := by
+  let F : ℝ := (Nat.factorial n : ℝ) /
+    ((Nat.factorial k : ℝ) ^ 2 * Nat.factorial (n - 2 * k + 2))
+  have hF₁ : (narayanaZeroGammaPolynomial (n + 1)).coeff k =
+      (((n + 1 : ℕ) : ℝ) * ((n - 2 * k + 2 : ℕ) : ℝ)) * F := by
+    rw [coeff_narayanaZeroGammaPolynomial_eq_factorial (by lia)]
+    dsimp only [F]
+    field_simp [factorial_cast_ne_zero]
+    rw [factorial_succ_cast n]
+    rw [show n - 2 * k + 2 = (n + 1 - 2 * k) + 1 by lia,
+      factorial_succ_cast (n + 1 - 2 * k)]
+    push_cast
+    ring
+  have hF₂ : (narayanaZeroGammaPolynomial n).coeff k =
+      (((n - 2 * k + 2 : ℕ) : ℝ) *
+        ((n - 2 * k + 1 : ℕ) : ℝ)) * F := by
+    rw [coeff_narayanaZeroGammaPolynomial_eq_factorial hk]
+    dsimp only [F]
+    field_simp [factorial_cast_ne_zero]
+    rw [show n - 2 * k + 2 = (n - 2 * k + 1) + 1 by lia,
+      factorial_succ_cast (n - 2 * k + 1),
+      show n - 2 * k + 1 = (n - 2 * k) + 1 by lia,
+      factorial_succ_cast (n - 2 * k)]
+    push_cast
+    ring
+  have hF₃ : (narayanaZeroGammaPolynomial n).coeff (k - 1) =
+      ((k : ℝ) ^ 2) * F := by
+    rw [coeff_narayanaZeroGammaPolynomial_eq_factorial (by lia)]
+    dsimp only [F]
+    have hkfac : (Nat.factorial k : ℝ) =
+        (k : ℝ) * Nat.factorial (k - 1) := factorial_cast_pred hkpos
+    have hgap : n - 2 * (k - 1) = n - 2 * k + 2 := by lia
+    rw [hgap, hkfac]
+    field_simp [factorial_cast_ne_zero]
+  rw [hF₁, hF₂, hF₃]
+  have hcast : ((n - 2 * k : ℕ) : ℝ) = (n : ℝ) - 2 * (k : ℝ) := by
+    rw [Nat.cast_sub hk]
+    norm_num
+  push_cast
+  rw [hcast]
+  ring
+
+theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
+    (n k : ℕ) (hkpos : k ≠ 0) :
+    ((n + 1 : ℕ) : ℝ) * (narayanaZeroGammaPolynomial (n + 1)).coeff k =
+      (((n + 1 : ℕ) : ℝ) + 2 * (k : ℝ)) *
+          (narayanaZeroGammaPolynomial n).coeff k +
+        (4 * (n : ℝ) + 8 - 8 * (k : ℝ)) *
+          (narayanaZeroGammaPolynomial n).coeff (k - 1) := by
+  by_cases hk : 2 * k ≤ n
+  · exact narayanaZeroGammaCoeff_deriv_rec_core hkpos hk
+  · by_cases htop : 2 * k ≤ n + 1
+    · have heq : 2 * k = n + 1 := by lia
+      rw [coeff_narayanaZeroGammaPolynomial_eq_factorial htop,
+        coeff_narayanaZeroGammaPolynomial_of_lt (by lia),
+        coeff_narayanaZeroGammaPolynomial_eq_factorial (by lia)]
+      have hgap₀ : n + 1 - 2 * k = 0 := by lia
+      have hgap₁ : n - 2 * (k - 1) = 1 := by lia
+      rw [hgap₀, hgap₁]
+      norm_num only [Nat.factorial_zero, Nat.factorial_one, Nat.cast_one, mul_zero,
+        add_zero]
+      field_simp [factorial_cast_ne_zero]
+      rw [factorial_succ_cast n, factorial_cast_pred hkpos]
+      have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
+      push_cast at heqR ⊢
+      have hnR : (n : ℝ) = 2 * (k : ℝ) - 1 := by nlinarith
+      rw [hnR]
+      ring
+    · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia),
+        coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]
+      by_cases hprev : 2 * (k - 1) ≤ n
+      · have heq : 2 * k = n + 2 := by lia
+        have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
+        push_cast at heqR
+        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by
+          nlinarith
+        rw [hfactor]
+        ring
+      · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]
+        ring
+
+/-- The binomial-square Narayana gamma rows satisfy a first-order differential
+recurrence. -/
+theorem narayanaZeroGammaPolynomial_deriv_rec (n : ℕ) :
+    C (((n + 1 : ℕ) : ℝ)) * narayanaZeroGammaPolynomial (n + 1) =
+      (C (((n + 1 : ℕ) : ℝ)) + C (4 * (n : ℝ)) * X) *
+          narayanaZeroGammaPolynomial n +
+        C (2 : ℝ) * X * (1 - C 4 * X) *
+          (narayanaZeroGammaPolynomial n).derivative := by
+  rw [show C (2 : ℝ) * X * (1 - C 4 * X) =
+      C (2 : ℝ) * X - C 8 * X ^ 2 by
+        calc
+          C (2 : ℝ) * X * (1 - C 4 * X) =
+              C 2 * X - (C 2 * C 4) * (X * X) := by ring
+          _ = C 2 * X - C 8 * X ^ 2 := by
+            norm_num [← map_mul, pow_two]]
+  ext k
+  rw [add_mul, sub_mul, mul_assoc, mul_assoc]
+  rcases k with _ | _ | k
+  · simp [coeff_narayanaZeroGammaPolynomial_of_le]
+  · rw [coeff_C_mul,
+      coeff_narayanaZeroGammaPolynomial_deriv_rec n 1 one_ne_zero]
+    simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul, coeff_derivative,
+      sq, mul_assoc, coeff_X_mul_zero]
+    ring
+  · rw [coeff_C_mul,
+      coeff_narayanaZeroGammaPolynomial_deriv_rec n (k + 2) (by lia)]
+    simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul, coeff_derivative,
+      sq, mul_assoc]
+    push_cast
+    ring
+
 /-- Generalized Narayana polynomials split over the reals. -/
 theorem splits_narayanaPolynomial (m n : ℕ) :
     (narayanaPolynomial m n).Splits := by
   rcases n with _ | n
   · simp
   · exact (prec_narayanaPolynomial_succ m n).1.2
+
+/-- The gamma polynomial of the binomial-square Narayana polynomial is itself
+real-rooted, with all roots nonpositive. -/
+theorem narayanaZeroGammaPolynomial_realRooted (n : ℕ) :
+    (narayanaZeroGammaPolynomial n ≠ 0 ∧ (narayanaZeroGammaPolynomial n).Splits) ∧
+      HasRootsNonpos (narayanaZeroGammaPolynomial n) := by
+  apply isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+    (natDegree_narayanaZeroGammaPolynomial_le n)
+  · rw [gammaTransform_narayanaZeroGammaPolynomial]
+    exact narayanaPolynomial_ne_zero 0 n
+  · rw [gammaTransform_narayanaZeroGammaPolynomial]
+    exact splits_narayanaPolynomial 0 n
+  · rw [gammaTransform_narayanaZeroGammaPolynomial]
+    intro r hr
+    exact narayanaPolynomial_root_nonpos
+      ((Polynomial.mem_roots (narayanaPolynomial_ne_zero 0 n)).mp hr)
+
+theorem splits_narayanaZeroGammaPolynomial (n : ℕ) :
+    (narayanaZeroGammaPolynomial n).Splits :=
+  (narayanaZeroGammaPolynomial_realRooted n).1.2
+
+/-- Consecutive gamma polynomials of the binomial-square Narayana family are
+in proper position. -/
+theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
+    Prec (narayanaZeroGammaPolynomial n)
+      (narayanaZeroGammaPolynomial (n + 1)) := by
+  cases n with
+  | zero =>
+      simpa [narayanaZeroGammaPolynomial] using
+        (prec_refl (by simp) (by simp) : Prec (1 : ℝ[X]) 1)
+  | succ n =>
+      rw [← prec_gammaTransform_succ_iff
+        (natDegree_narayanaZeroGammaPolynomial_le (n + 1))
+        (natDegree_narayanaZeroGammaPolynomial_le (n + 2))]
+      · rw [gammaTransform_narayanaZeroGammaPolynomial,
+          gammaTransform_narayanaZeroGammaPolynomial]
+        exact prec_narayanaPolynomial_succ 0 n
+      · intro k
+        by_cases hk : k ≤ (n + 1) / 2
+        · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
+          positivity
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
+      · intro k
+        by_cases hk : k ≤ (n + 2) / 2
+        · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
+          positivity
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+        norm_num
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+        norm_num
 
 /-- The generalized Narayana polynomials are PF polynomials. -/
 theorem narayanaPolynomialRootLocation :
