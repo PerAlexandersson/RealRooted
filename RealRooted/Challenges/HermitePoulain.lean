@@ -40,6 +40,70 @@ theorem applyAsDifferentialOperator_eq_sum_range {f : ℝ[X]} {N : ℕ}
   have : f.natDegree < k := by simpa using hk
   simp [coeff_eq_zero_of_natDegree_lt this]
 
+/-- The range for `f(D)g` can be truncated at the degree of the input `g`,
+even when the symbol `f` has larger degree. -/
+theorem applyAsDifferentialOperator_eq_sum_range_right (f g : ℝ[X]) :
+    applyAsDifferentialOperator f g =
+      (Finset.range (g.natDegree + 1)).sum fun k =>
+        C (f.coeff k) * ((derivative^[k]) g) := by
+  let N := max (f.natDegree + 1) (g.natDegree + 1)
+  have hfN : f.natDegree < N :=
+    (Nat.lt_succ_self f.natDegree).trans_le (le_max_left _ _)
+  rw [applyAsDifferentialOperator_eq_sum_range hfN]
+  symm
+  refine Finset.sum_subset (Finset.range_subset_range.mpr (le_max_right _ _)) ?_
+  intro k _ hkg
+  have hgk : g.natDegree < k := by simpa using hkg
+  rw [Polynomial.iterate_derivative_eq_zero hgk]
+  simp
+
+/-- The top-degree coefficient of `f(D)g` comes only from the constant term
+of the symbol `f`. -/
+theorem coeff_applyAsDifferentialOperator_natDegree (f g : ℝ[X]) :
+    (applyAsDifferentialOperator f g).coeff g.natDegree =
+      f.coeff 0 * g.coeff g.natDegree := by
+  rw [applyAsDifferentialOperator, Polynomial.finsetSum_coeff,
+    Finset.sum_eq_single 0]
+  · simp
+  · intro k _ hk
+    have hkpos : 0 < k := Nat.pos_of_ne_zero hk
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_iterate_derivative,
+      Polynomial.coeff_eq_zero_of_natDegree_lt (Nat.lt_add_of_pos_right hkpos)]
+    simp
+  · simp
+
+/-- A constant-term-one differential symbol sends a monic polynomial to a
+monic polynomial. -/
+theorem applyAsDifferentialOperator_monic {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    (applyAsDifferentialOperator f g).Monic := by
+  apply Polynomial.monic_of_natDegree_le_of_coeff_eq_one g.natDegree
+  · apply Polynomial.natDegree_sum_le_of_forall_le
+    intro k _
+    exact (Polynomial.natDegree_C_mul_le _ _).trans
+      ((Polynomial.natDegree_iterate_derivative g k).trans (Nat.sub_le _ _))
+  · rw [coeff_applyAsDifferentialOperator_natDegree, hf0, hg.coeff_natDegree]
+    norm_num
+
+/-- A constant-term-one differential symbol preserves the degree of a monic
+input. -/
+theorem natDegree_applyAsDifferentialOperator {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    (applyAsDifferentialOperator f g).natDegree = g.natDegree := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+  · apply Polynomial.natDegree_sum_le_of_forall_le
+    intro k _
+    exact (Polynomial.natDegree_C_mul_le _ _).trans
+      ((Polynomial.natDegree_iterate_derivative g k).trans (Nat.sub_le _ _))
+  · rw [coeff_applyAsDifferentialOperator_natDegree, hf0, hg.coeff_natDegree]
+    norm_num
+
+/-- A constant-term-one differential symbol cannot annihilate a monic input. -/
+theorem applyAsDifferentialOperator_ne_zero {f g : ℝ[X]}
+    (hf0 : f.coeff 0 = 1) (hg : g.Monic) :
+    applyAsDifferentialOperator f g ≠ 0 :=
+  (applyAsDifferentialOperator_monic hf0 hg).ne_zero
+
 @[simp] theorem applyAsDifferentialOperator_zero_right (f : ℝ[X]) :
     applyAsDifferentialOperator f 0 = 0 := by
   simp [applyAsDifferentialOperator]
