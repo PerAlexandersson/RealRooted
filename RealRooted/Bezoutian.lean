@@ -1925,13 +1925,10 @@ lemma prec_of_wronskian_pos_succ {n : ℕ}
       have ht₀_mem : t 0 ∈ p.roots := mem_roots'.mpr ⟨hp_ne, ht_roots 0⟩
       rw [ha] at ht₀_mem ⊢
       rw [Multiset.mem_singleton.mp ht₀_mem]
-    refine ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, [], [t 0], ?_, ?_, ?_, ?_, ?_⟩
-    · simp
-    · simp
-    · simp [hq_roots]
-    · simp [hp_roots]
-    · left
-      constructor <;> simp [ListInterlaces]
+    refine ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, [], [t 0], by simp, by simp,
+      by simp [hq_roots], by simp [hp_roots], ?_⟩
+    left
+    constructor <;> simp [ListInterlaces]
   classical
   obtain ⟨xl, h_xl_root, h_xl_lt⟩ :=
     exists_root_below_min_of_wronskian_pos hn hp_pos hq_pos hp_deg hq_deg hW s hs_mono hs_roots

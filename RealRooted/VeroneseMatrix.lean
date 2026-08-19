@@ -162,10 +162,8 @@ lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
     isRealRooted_of_deg_zero hCa (by simp)
   have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) :=
     isRealRooted_of_deg_zero hCb (by simp)
-  refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · simp
-  · simp
-  · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
+  refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, by simp, by simp, ?_⟩
+  exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
 lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
     Prec0 (C c : ℝ[X]) (C u * X + C v) := by

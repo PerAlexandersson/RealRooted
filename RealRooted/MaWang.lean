@@ -797,15 +797,9 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
         (∀ u ∈ us, F.IsRoot u) ∧
         us.Pairwise (· < ·)
   | [], _, _ => by
-      refine ⟨[], by simp, ?_, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-      · simp
+      refine ⟨[], by simp, ?_, ?_, ?_⟩ <;> simp [ListInterlaces]
   | [_], _, _ => by
-      refine ⟨[], by simp, ?_, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-      · simp
+      refine ⟨[], by simp, ?_, ?_, ?_⟩ <;> simp [ListInterlaces]
   | r₁ :: r₂ :: rest, hrs_sorted, hsign => by
       have hr₁r₂ : r₁ < r₂ := by
         have hprod : F.eval r₁ * F.eval r₂ < 0 := by simpa using hsign [] rfl
@@ -824,11 +818,8 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
             grind)
       have hu_lt_all : ∀ w ∈ us, u < w :=
         fun w hw => lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
-      refine ⟨u :: us, ?_, ?_, ?_, ?_⟩
-      · simp [hus_len]
-      · exact ⟨le_of_lt hu₁, le_of_lt hu₂, hus_int⟩
-      · simp_all
-      · simp_all
+      refine ⟨u :: us, by simp [hus_len], ⟨hu₁.le, hu₂.le, hus_int⟩, ?_, ?_⟩ <;>
+        simp_all
 
 /-- Public strict wrapper around `exists_strictSignInterleaving`. -/
 theorem exists_roots_strictly_interlacing_of_consecutive_signs {F : ℝ[X]} {rs : List ℝ}
@@ -1071,11 +1062,7 @@ private lemma countP_lt_of_eq_max_isRoot
       apply Multiset.mem_coe.mp
       simp_all
     have hlt : ts.countP (· < r) < ts.countP (· ≤ r) := by
-      apply countP_lt_countP_of_exists
-      · grind
-      · exact hr_mem
-      · simp
-      · simp
+      exact countP_lt_countP_of_exists (by grind) hr_mem (by simp) (by simp)
     lia
 
 lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
@@ -2238,10 +2225,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
   have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
-    · lia
-    · lia
-    · simp_all
-    · simp_all
+    all_goals simp_all
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -2401,10 +2385,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
   have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
-    · lia
-    · lia
-    · simp_all
-    · simp_all
+    all_goals simp_all
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..

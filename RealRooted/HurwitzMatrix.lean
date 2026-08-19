@@ -770,10 +770,7 @@ theorem
     · simp
   have hrow_ge_zero : ∀ i : Fin 3, rows 0 ≤ rows i := by
     intro i
-    fin_cases i
-    · simp
-    · grind
-    · grind
+    fin_cases i <;> grind
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
     grind
   have hentry (i j : Fin 3) :
@@ -882,16 +879,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_co
     grind
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
     intro i j
-    fin_cases i <;> fin_cases j
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
+    fin_cases i <;> fin_cases j <;> grind
   have hentry (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows' i) (cols' j) := by
     have : cols' j + d = cols j := by grind

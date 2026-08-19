@@ -1449,10 +1449,7 @@ lemma triangle_of_sq {A B t S : ℝ} (hA₀ : 0 ≤ A) (hB₀ : 0 ≤ B) (ht₀ 
     A - B ≤ t ∧ B - A ≤ t ∧ t ≤ A + B := by
   have hd₁ : (A - B) ^ 2 ≤ t ^ 2 := by nlinarith
   have hd₃ : t ^ 2 ≤ (A + B) ^ 2 := by nlinarith
-  refine ⟨?_, ?_, ?_⟩
-  · nlinarith [hd₁, ht₀]
-  · nlinarith [hd₁, ht₀]
-  · nlinarith [hd₃, hA₀, hB₀]
+  refine ⟨?_, ?_, ?_⟩ <;> nlinarith [hd₁, hd₃, ht₀, hA₀, hB₀]
 
 lemma interlace_core {u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0)

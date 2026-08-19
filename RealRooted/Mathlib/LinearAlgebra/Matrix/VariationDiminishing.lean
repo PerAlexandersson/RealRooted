@@ -202,7 +202,7 @@ theorem signVariations_mulVec_le_card_sub_one_of_strictMaximalMinors
     simp [hzero]
   · have hq : 0 < q := Nat.pos_of_ne_zero hq0
     by_contra hle
-    have hlarge : q ≤ Fin.signVariations (A.mulVec x) := by omega
+    have hlarge : q ≤ Fin.signVariations (A.mulVec x) := by lia
     exact not_exists_strictlyAlternating_rows_of_strictMaximalMinors
       hq hminor x
         (Fin.exists_strictMono_strictlyAlternates_of_le_signVariations

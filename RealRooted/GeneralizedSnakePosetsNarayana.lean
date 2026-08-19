@@ -1341,13 +1341,7 @@ theorem modifiedNarayanaPolynomial_six_exists_ordered_roots :
   rw [← hcons5] at hrs_sorted hrs_eq
   have hrs6_nil : rs6 = [] := List.length_eq_zero_iff.mp hlen6
   rw [hrs6_nil] at hrs_sorted hrs_eq
-  refine ⟨a, b, c, d, e, r, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · simpa using hrs_eq.symm
-  · simp_all
-  · simp_all
-  · simp_all
-  · simp_all
-  · simp_all
+  refine ⟨a, b, c, d, e, r, by simpa using hrs_eq.symm, ?_, ?_, ?_, ?_, ?_⟩ <;> simp_all
 
 /-- Modified Narayana polynomials are nonzero and split over the reals. -/
 theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :

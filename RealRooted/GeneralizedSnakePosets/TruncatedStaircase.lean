@@ -778,10 +778,7 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairLexList_reflectBack_toFi
     have hb_cell := hP.1 hb
     rw [mem_truncatedStaircase_full_cells_iff] at hb_cell
     have hback : (b.1, n - 1 - (n - 1 - b.2)) = b := by
-      ext
-      · simp
-      · simp
-        lia
+      ext <;> simp; lia
     simpa [hback] using hb
   · intro ha
     apply List.mem_map.mpr
@@ -790,10 +787,7 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairLexList_reflectBack_toFi
       exact mem_fullStaircaseReflectedPairs.mpr ⟨a, ha, rfl⟩
     · have ha_cell := hP.1 ha
       rw [mem_truncatedStaircase_full_cells_iff] at ha_cell
-      ext
-      · simp
-      · simp
-        lia
+      ext <;> simp; lia
 
 /-- Constructing an ordered pair from a full-staircase placement and then
 constructing a placement recovers the original placement. -/

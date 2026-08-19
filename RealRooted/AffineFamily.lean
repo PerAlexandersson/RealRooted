@@ -679,9 +679,7 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
   · intro t ht
     simpa [add_assoc, add_left_comm, add_comm, mul_assoc, left_distrib, right_distrib] using
       haff hs ht
-  · lia
-  · lia
-  · lia
+  all_goals lia
 
 /-- The affine-family hypothesis already implies that the fixed right-hand pair
 `(g, X * f)` satisfies the restricted Obreschkoff condition: every strictly
@@ -1044,8 +1042,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     · intro μ hμ
       simpa [add_comm] using hfamilyN hμ
     · exact hfN_nonneg.pos_leadingCoeff hfN_ne
-    · lia
-    · lia
+    all_goals lia
   have hposComboN : PosComboRealRooted gN fN :=
     PosComboRealRooted.of_add_right hfamilyN
   have hposComboC : PosComboRealRooted gN (C (fN.coeff 0)) := by
@@ -1762,9 +1759,7 @@ private lemma isRealRooted_X_mul_of_affine_family
       grind
     rw [hEq] at hscaled
     simpa using hscaled
-  · lia
-  · lia
-  · lia
+  all_goals lia
 
 /-- Direct endpoint form of the affine-family converse: the two-parameter
 positive affine family already forces `X * f` to be real-rooted. -/

@@ -122,15 +122,10 @@ lemma prec_X_add_C_iff {a b : ℝ} :
     have hsum := roots_sum_le_of_prec_sameDegree h (by simp)
     simpa using hsum
   · intro hab
-    refine ⟨?_, ?_, [(-b)], [(-a)], ?_, ?_, ?_, ?_, ?_⟩
+    refine ⟨?_, ?_, [(-b)], [(-a)], by simp, by simp, by simp, by simp, ?_⟩
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-    · simp
-    · simp
-    · simp
-    · simp
-    · refine Or.inr ⟨by simp, ?_⟩
-      simpa [ListAlternates, ListInterlaces] using hab
+    · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hab⟩
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
