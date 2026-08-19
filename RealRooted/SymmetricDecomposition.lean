@@ -598,7 +598,8 @@ lemma isRoot_transformedRoot_fPolynomial_of_isRoot
 lemma isRoot_neg_one_fPolynomial_of_natDegree_lt
     {d : ℕ} {p : ℝ[X]} (hpd : p.natDegree < d) :
     (fPolynomial d p).IsRoot (-1) := by
-  simp [Polynomial.IsRoot.def, eval_neg_one_fPolynomial, Polynomial.coeff_eq_zero_of_natDegree_lt hpd]
+  simp [Polynomial.IsRoot.def, eval_neg_one_fPolynomial,
+    Polynomial.coeff_eq_zero_of_natDegree_lt hpd]
 
 lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree = d)
@@ -1480,11 +1481,13 @@ lemma eval_one_IdTransform {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
 
 lemma X_sub_one_dvd_sub_IdTransform {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     X - 1 ∣ p - IdTransform d p := by
-  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, eval_one_IdTransform hd]
+  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot,
+    Polynomial.IsRoot.def, eval_one_IdTransform hd]
 
 lemma X_sub_one_dvd_X_mul_IdTransform_sub {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     X - 1 ∣ X * IdTransform d p - p := by
-  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, eval_one_IdTransform hd]
+  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot,
+    Polynomial.IsRoot.def, eval_one_IdTransform hd]
 
 lemma idDecompositionBFormula_mul_X_sub_one {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     (X - 1) * idDecompositionBFormula d p = p - IdTransform d p := by

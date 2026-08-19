@@ -958,7 +958,8 @@ lemma Polynomial.eval_derivative_prod_X_sub_C_univ_at_root {n : ℕ} (r : Fin n 
     (k : Fin n) :
     eval (r k) (derivative (∏ j : Fin n, (X - C (r j)))) =
     ∏ j ∈ Finset.univ.erase k, (r k - r j) := by
-  simp [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ k), eval_prod, Finset.sdiff_singleton_eq_erase]
+  simp [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ k), eval_prod,
+    Finset.sdiff_singleton_eq_erase]
 
 lemma Polynomial.splits_eq_C_mul_prod {n : ℕ} {q : ℝ[X]}
     (hq_ne : q ≠ 0) (hq_deg : q.natDegree = n)
