@@ -238,8 +238,7 @@ lemma coeff_fPolynomial_top (d : ℕ) (h : ℝ[X]) :
 lemma eval_one_eq_sum_coeffs_of_natDegree_le {d : ℕ} {h : ℝ[X]}
     (hd : h.natDegree ≤ d) :
     h.eval 1 = ∑ k ∈ Finset.range (d + 1), h.coeff k := by
-  rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hd)]
-  simp
+  simp [Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hd)]
 
 lemma coeff_fPolynomial_top_eq_eval_one {d : ℕ} {h : ℝ[X]}
     (hd : h.natDegree ≤ d) :
@@ -623,8 +622,7 @@ lemma isRoot_transformedRoot_fPolynomial_of_isRoot
 lemma isRoot_neg_one_fPolynomial_of_natDegree_lt
     {d : ℕ} {p : ℝ[X]} (hpd : p.natDegree < d) :
     (fPolynomial d p).IsRoot (-1) := by
-  rw [Polynomial.IsRoot.def, eval_neg_one_fPolynomial]
-  simp [Polynomial.coeff_eq_zero_of_natDegree_lt hpd]
+  simp [Polynomial.IsRoot.def, eval_neg_one_fPolynomial, Polynomial.coeff_eq_zero_of_natDegree_lt hpd]
 
 lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree = d)
@@ -1551,15 +1549,11 @@ lemma eval_one_IdTransform {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
 
 lemma X_sub_one_dvd_sub_IdTransform {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     X - 1 ∣ p - IdTransform d p := by
-  rw [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp]
-  rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def]
-  simp [eval_one_IdTransform hd]
+  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, eval_one_IdTransform hd]
 
 lemma X_sub_one_dvd_X_mul_IdTransform_sub {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     X - 1 ∣ X * IdTransform d p - p := by
-  rw [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp]
-  rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def]
-  simp [eval_one_IdTransform hd]
+  simp [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp, Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, eval_one_IdTransform hd]
 
 lemma idDecompositionBFormula_mul_X_sub_one {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     (X - 1) * idDecompositionBFormula d p = p - IdTransform d p := by
@@ -2056,8 +2050,7 @@ lemma leadingCoeff_RdTransform (d : ℕ) (p : ℝ[X]) :
 
 lemma leadingCoeff_RdTransform_eq_of_natDegree_eq {d : ℕ} {p : ℝ[X]} (hd : p.natDegree = d) :
     (RdTransform d p).leadingCoeff = p.leadingCoeff := by
-  rw [leadingCoeff_RdTransform, hd, ← two_mul d, pow_mul]
-  simp
+  simp [leadingCoeff_RdTransform, hd, ← two_mul d, pow_mul]
 
 theorem rdDecompositionFormula_eq_add_X_mul (d : ℕ) (p : ℝ[X]) :
     p = rdDecompositionAFormula d p + X * rdDecompositionBFormula d p := by
@@ -2559,7 +2552,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
-    ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+    ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hdeg_aXb : a.natDegree + 1 = (X * b).natDegree := by
     simp_all
   have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
@@ -2663,7 +2656,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
-    ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+    ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hsame : a.natDegree = (X * b).natDegree := by
     lia
   have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
@@ -2708,7 +2701,7 @@ private theorem prec_b_component_of_prec_left_top
     have hall_aXb : AllComboRealRooted a (X * b) :=
       allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
     have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
-      ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+      ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
     have hall_Xba : AllComboRealRooted (X * b) a := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_aXb β α
@@ -2748,7 +2741,7 @@ private theorem prec_b_component_of_prec_right_top
   have hpxb : Prec p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
-  have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, by simpa using hall_aXb 1 0⟩
+  have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, hall_aXb.left_splits⟩
   have hp_deg : p.natDegree = d := by
     apply le_antisymm hd
     apply Polynomial.le_natDegree_of_ne_zero
@@ -2909,7 +2902,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have ht_ne : t ≠ 0 :=
     mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_rr : (t ≠ 0 ∧ t.Splits) :=
-    ⟨ht_ne, by simpa using hall_ht 0 1⟩
+    ⟨ht_ne, hall_ht.right_splits⟩
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     exact hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hb_pos
@@ -3042,7 +3035,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   have ht_ne : t ≠ 0 :=
     mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_rr : (t ≠ 0 ∧ t.Splits) :=
-    ⟨ht_ne, by simpa using hall_ht 0 1⟩
+    ⟨ht_ne, hall_ht.right_splits⟩
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
@@ -3542,7 +3535,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
       grind
     simpa [hrew] using hall_hp (α - β) β
   have ht_rr : (t ≠ 0 ∧ t.Splits) :=
-    ⟨ht_ne, by simpa using hall_ht 0 1⟩
+    ⟨ht_ne, hall_ht.right_splits⟩
   have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr.1 ht_rr.2 hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
