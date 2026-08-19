@@ -500,12 +500,7 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
   -- Pg has k negative factors, Pf has k negative factors (from hcount_eq).
   -- sign(Pg) = (-1)^k, sign(Pf) = (-1)^k, so Pg * Pf has sign (-1)^{2k} ≥ 0.
   have hrest_nonneg : 0 ≤ Pg * Pf := by
-    apply prod_mul_prod_nonneg_of_same_neg_count (p := (b ≤ ·))
-    · grind
-    · grind
-    · grind
-    · grind
-    · lia
+    apply prod_mul_prod_nonneg_of_same_neg_count (p := (b ≤ ·)) <;> grind
   -- Goal: (s - t) * Pg * ((t - s) * Pf) ≤ 0
   -- = (s - t) * (t - s) * (Pg * Pf) ≤ 0
   -- since (s-t)(t-s) ≤ 0 and Pg*Pf ≥ 0

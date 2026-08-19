@@ -763,9 +763,7 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
           (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).Splits) ∧
             HasSimpleRoots (C α * f + C β * g))) :
     HasSimpleRoots f := by
-  rcases hcombo 1 0 with hzero | ⟨_, hsimple⟩
-  · simp_all
-  · simp_all
+  rcases hcombo 1 0 with hzero | ⟨_, hsimple⟩ <;> simp_all
 
 private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
     {f g : ℝ[X]}
@@ -776,9 +774,7 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
           (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).Splits) ∧
             HasSimpleRoots (C α * f + C β * g))) :
     HasSimpleRoots g := by
-  rcases hcombo 0 1 with hzero | ⟨_, hsimple⟩
-  · simp_all
-  · simp_all
+  rcases hcombo 0 1 with hzero | ⟨_, hsimple⟩ <;> simp_all
 
 private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     {f g : ℝ[X]}
@@ -2962,10 +2958,10 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec
-  · simp_all
-  · simp_all
-  · grind
+  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec <;>
+    first
+      | simp_all
+      | grind
 
 /-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec

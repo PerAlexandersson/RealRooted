@@ -1697,9 +1697,7 @@ theorem isIdDecomposition_descend_of_lt_top
   have hsub : (d - 2) - 1 = d - 3 := by
     lia
   refine ⟨a', b', haX, hbX, hpX, ?_⟩
-  refine ⟨rfl, ha'deg, ?_, hfixA', ?_⟩
-  · lia
-  · lia
+  refine ⟨rfl, ha'deg, ?_, hfixA', ?_⟩ <;> lia
 
 lemma IdTransform_X_mul_of_natDegree_le_two_pred {d : ℕ} {p : ℝ[X]}
     (hd : 2 ≤ d) (hp : p.natDegree ≤ d - 2) :
@@ -2288,10 +2286,7 @@ theorem fPolynomialDecompositionCompatibility : fPolynomialDecompositionCompatib
 lemma prec_of_prec0_of_ne_zero {f g : ℝ[X]}
     (hf : f ≠ 0) (hg : g ≠ 0) (h : Prec0 f g) :
     Prec f g := by
-  rcases h with rfl | rfl | hprec
-  · lia
-  · lia
-  · lia
+  rcases h with rfl | rfl | hprec <;> lia
 
 private lemma natDegree_add_X_mul_ge_of_hasNonnegCoeffs
     {a b : ℝ[X]}
@@ -2595,10 +2590,7 @@ private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
     grind
   have hXb_le_d : (X * b).natDegree ≤ d := le_trans hXb_le_p hd
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hall_aXb hap.1.1 hXb0 with
-    hdeg | hdeg | hdeg
-  · lia
-  · lia
-  · lia
+    hdeg | hdeg | hdeg <;> lia
 
 private lemma not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]}
@@ -2955,10 +2947,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
       (prec_refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le_one hb_le_one
   have hbp_sum : Prec b [h, t].sum := by
-    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_
-    · simp_all
-    · simp_all
-    · lia
+    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
 
 theorem brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
@@ -3367,10 +3356,7 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
         lia
       _ ↔ Prec (IdTransform (d - 2) q) q :=
         (prec_iff_prec_mul_X_both_of_hasNonnegCoeffs hIdq_nonneg hq_nonneg).symm
-  refine ⟨?_, ?_, ?_, brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg⟩
-  · lia
-  · lia
-  · lia
+  refine ⟨?_, ?_, ?_, brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg⟩ <;> lia
 
 /-- Naive fully strict translation of Brändén--Solus Theorem 2.6 into the
 current `Prec` API.
@@ -3571,10 +3557,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
       (prec_refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le hb_le
   have hbp_sum : Prec b [h, t].sum := by
-    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_
-    · simp_all
-    · simp_all
-    · lia
+    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
 
 /-- The ordered-degree converse bridge, packaged as a standalone statement so it
