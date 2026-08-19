@@ -243,9 +243,7 @@ private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f 
   have hsum : C α * (X * f) + C β * (X * g) =
       X * (C α * f + C β * g) := by
     ring
-  rcases h α β hα hβ with hzero | hrr
-  · simp_all
-  · simp_all
+  rcases h α β hα hβ with hzero | hrr <;> simp_all
 
 private theorem splits_add_of_compatible {p q : ℝ[X]} (h : Compatible p q)
     (hadd : p + q ≠ 0) : (p + q).Splits := by

@@ -2958,10 +2958,7 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec <;>
-    first
-      | simp_all
-      | grind
+  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec <;> simp_all
 
 /-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec
