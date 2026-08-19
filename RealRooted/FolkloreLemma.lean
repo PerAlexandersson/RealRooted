@@ -273,6 +273,77 @@ theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
         (inv_ne_zero hc_ne)
     simpa [hcancel_f, hcancel_sub] using hback
 
+/-- A positive right shear preserves `Prec` when a larger scaled subtraction
+has positive leading coefficient.
+
+The scale `c > 1` is chosen so that `f` and `C c * g` have equal leading
+coefficients.  The equal-leading subtraction theorem handles
+`f - X * (C c * g)`, and `f - X * g` is then a positive convex combination
+of this cancellation remainder and `f`. -/
+theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
+    (hc : 1 < c)
+    (hgf : Prec g f)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
+    (hlc : f.leadingCoeff = (C c * g).leadingCoeff)
+    (hcancel_pos : HasPosLeadingCoeff (f - X * (C c * g))) :
+    Prec g (f - X * g) := by
+  have hc_pos : 0 < c := lt_trans zero_lt_one hc
+  have hc_ne : c ≠ 0 := ne_of_gt hc_pos
+  have hscaled : Prec (C c * g) f := prec_C_mul_left hgf hc_ne
+  have hdeg_scaled : (C c * g).natDegree + 1 = f.natDegree := by
+    rw [natDegree_C_mul hc_ne, hdeg]
+  have hg_scaled_nonpos : ∀ r ∈ (C c * g).roots, r ≤ 0 := by
+    simpa [roots_C_mul _ hc_ne] using hg_nonpos
+  have hpair := prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+    hscaled hf_pos hlc hdeg_scaled hf_nonpos hg_scaled_nonpos hcancel_pos
+  have hleft_scaled : Prec (C c⁻¹ * (C c * g)) (f - X * (C c * g)) :=
+    prec_C_mul_left hpair.1 (inv_ne_zero hc_ne)
+  have hcancel_left : C c⁻¹ * (C c * g) = g := by
+    calc
+      C c⁻¹ * (C c * g) = C (c⁻¹ * c) * g := by grind
+      _ = g := by simp [hc_ne]
+  have hleft : Prec g (f - X * (C c * g)) := by
+    rwa [hcancel_left] at hleft_scaled
+  have hinv_pos : 0 < c⁻¹ := inv_pos.mpr hc_pos
+  have hone_sub_inv_pos : 0 < 1 - c⁻¹ := by
+    rw [sub_pos, inv_lt_one₀ hc_pos]
+    exact hc
+  have hfirst : Prec g (C (1 - c⁻¹) * f) :=
+    prec_C_mul_right hgf (ne_of_gt hone_sub_inv_pos)
+  have hsecond : Prec g (C c⁻¹ * (f - X * (C c * g))) :=
+    prec_C_mul_right hleft (ne_of_gt hinv_pos)
+  have hsum : Prec g
+      ([C (1 - c⁻¹) * f, C c⁻¹ * (f - X * (C c * g))] : List ℝ[X]).sum := by
+    apply prec_sum_left_of_common_left_signed
+    · intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hfirst
+      · exact hsecond
+    · intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact hasPosLeadingCoeff_C_mul hone_sub_inv_pos hf_pos
+      · exact hasPosLeadingCoeff_C_mul hinv_pos hcancel_pos
+    · simp
+  have hcinv : C c⁻¹ * C c = (1 : ℝ[X]) := by
+    rw [← map_mul, inv_mul_cancel₀ hc_ne, map_one]
+  have hsum_eq :
+      ([C (1 - c⁻¹) * f, C c⁻¹ * (f - X * (C c * g))] : List ℝ[X]).sum =
+        f - X * g := by
+    simp only [List.sum_cons, List.sum_nil, add_zero]
+    calc
+      C (1 - c⁻¹) * f + C c⁻¹ * (f - X * (C c * g)) =
+          (C (1 - c⁻¹) + C c⁻¹) * f - (C c⁻¹ * C c) * (X * g) := by ring
+      _ = f - X * g := by
+        rw [← map_add, sub_add_cancel, map_one, hcinv]
+        ring
+  rw [hsum_eq] at hsum
+  exact hsum
+
 /-- If the oriented same-degree relation `U ≪ X * V` is already known, then
 the nonpositive-root Wagner step removes the factor `X` and gives `V ≪ U`. -/
 theorem prec_component_of_prec_mul_X_of_roots_nonpos
