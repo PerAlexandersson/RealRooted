@@ -212,6 +212,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize

@@ -2,6 +2,7 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.CommonInterleaverTwo
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.MaWang
 import RealRooted.MultivariateStability
 import Mathlib.Algebra.MvPolynomial.Equiv
@@ -1416,24 +1417,12 @@ theorem splits_of_stable_monic_two {f g : ℝ[X]}
     have h₂ : f.coeff 2 = 1 := by
       rw [← hf₂]
       exact hf
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow, h₂]
-    · have hz : f.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt (by simp [*])
-      simp [coeff_add, coeff_X_pow, hz]
+    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := f) (by lia)
   have hgexp : g = C 1 * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
     have h₂ : g.coeff 2 = 1 := by
       rw [← hg₂]
       exact hg
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow, h₂]
-    · have hz : g.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt (by simp [*])
-      simp [coeff_add, coeff_X_pow, hz]
+    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia)
   constructor
   · rw [hfexp]
     exact splits_of_discrim_nonneg one_ne_zero hdiscf
@@ -1568,24 +1557,12 @@ theorem prec_of_stable_monic_two {f g : ℝ[X]}
     have h₂ : f.coeff 2 = 1 := by
       rw [← hf₂]
       exact hf
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow, h₂]
-    · have : f.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt (by simp [*])
-      simp [coeff_add, coeff_X_pow, this]
+    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := f) (by lia)
   have hgexp : g = C 1 * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
     have h₂ : g.coeff 2 = 1 := by
       rw [← hg₂]
       exact hg
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow, h₂]
-    · have : g.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt (by simp [*])
-      simp [coeff_add, coeff_X_pow, this]
+    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia)
   set b₁ := f.coeff 1 with hb₁def
   set c₁ := f.coeff 0 with hc₁def
   set b₂ := g.coeff 1 with hb₂def
@@ -1768,28 +1745,10 @@ theorem splits_of_stable_two {f g : ℝ[X]}
     have := discrim_nonneg_of_im_nonpos_g (a := f.coeff 2) (b := g.coeff 2)
       (u₁ := u₁) (u₂ := u₂) hv₁ hv₂
     assumption
-  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow]
-    · have h_lt : f.natDegree < n + 3 := by
-        rw [hf₂]
-        lia
-      have : f.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, this]
-  have hgexp : g = C (g.coeff 2) * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow]
-    · have h_lt : g.natDegree < n + 3 := by
-        rw [hg₂]
-        lia
-      have : g.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, this]
+  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) :=
+    eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
+  have hgexp : g = C (g.coeff 2) * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) :=
+    eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
   constructor
   · rw [hfexp]
     exact splits_of_discrim_nonneg (ne_of_gt ha) hdiscf
@@ -1883,28 +1842,10 @@ theorem prec_of_stable_two {f g : ℝ[X]}
   have h_g_ne : g ≠ 0 := fun h_zero => by simp [h_zero] at h_b_pos
   obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, h_cf, h_cg⟩ :=
     hermiteBiehler_vieta_two_posLead ha hf₂ hg₂ hstab
-  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow]
-    · have h_lt : f.natDegree < n + 3 := by
-        rw [hf₂]
-        lia
-      have hz : f.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, hz]
-  have hgexp : g = C (g.coeff 2) * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_X_pow]
-    · have h_lt : g.natDegree < n + 3 := by
-        rw [hg₂]
-        lia
-      have hz : g.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, hz]
+  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) :=
+    eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
+  have hgexp : g = C (g.coeff 2) * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) :=
+    eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
   set a := f.coeff 2
   set bb := g.coeff 2
   set b₁ := f.coeff 1
@@ -2276,17 +2217,8 @@ theorem prec_of_stable_two_one {f g : ℝ[X]}
   have h_g_ne : g ≠ 0 := fun h_zero ↦ by simp [h_zero] at hb₂_pos
   obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, hc₁, hc₂⟩ :=
     hermiteBiehler_vieta_two_one ha hf₂ (by simp [*]) hstab
-  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
-    ext n
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp [coeff_add, coeff_C_mul, coeff_X_pow]
-    · have h_lt : f.natDegree < n + 3 := by
-        rw [hf₂]
-        lia
-      have hz : f.coeff (n + 3) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, hz]
+  have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) :=
+    eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
   have hgexp : g = C (g.coeff 1) * X + C (g.coeff 0) := by
     ext n
     rcases n with _ | _ | n
