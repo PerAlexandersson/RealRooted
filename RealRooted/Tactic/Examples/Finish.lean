@@ -1,3 +1,4 @@
+import RealRooted.InterlacingSequenceBasic
 import RealRooted.Tactic.Finish
 
 /-!
@@ -10,6 +11,66 @@ open Polynomial
 
 namespace RealRooted
 namespace Tactic
+
+/-- Synthetic family used to test generated-style named-wrapper lookup. -/
+noncomputable def namedFinishSmoke (_ : Nat) : ℝ[X] :=
+  1
+
+/-- Synthetic refinement used to test generated-style interlacing lookup. -/
+noncomputable def namedFinishSmokeRefined (_ : Nat) : List ℝ[X] :=
+  []
+
+theorem namedFinishSmoke_generated_realRooted (n : Nat) :
+    namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by
+  simp [namedFinishSmoke]
+
+theorem namedFinishSmoke_generated_ne_zero (n : Nat) :
+    namedFinishSmoke n ≠ 0 :=
+  (namedFinishSmoke_generated_realRooted n).1
+
+theorem namedFinishSmoke_generated_splits (n : Nat) :
+    (namedFinishSmoke n).Splits :=
+  (namedFinishSmoke_generated_realRooted n).2
+
+theorem namedFinishSmoke_generated_interlaces (n : Nat) :
+    IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n) := by
+  simp [namedFinishSmokeRefined, IsInterlacingSeq0Nonneg, IsInterlacingSeq0]
+
+-- Generated-style final wrappers are found by generic named-wrapper lookup.
+example (n : Nat) : namedFinishSmoke n ≠ 0 := by
+  rr_nonzero
+
+-- Generated-style final wrappers are found by generic named-wrapper lookup.
+example (n : Nat) : (namedFinishSmoke n).Splits := by
+  rr_splits
+
+-- Generated-style final wrappers are found by generic named-wrapper lookup.
+example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by
+  rr_realrooted
+
+-- Generated-style refinement wrappers are found by generic named-wrapper lookup.
+example (n : Nat) : IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n) := by
+  rr_interlaces
+
+-- Generated-style final wrappers are found by generic named-wrapper lookup.
+example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by
+  rr_finish
+
+noncomputable def recurrenceEvalSmoke : Nat → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X) * recurrenceEvalSmoke n
+
+example : recurrenceEvalSmoke 0 = 1 := by
+  recurrence_eval
+
+example : recurrenceEvalSmoke 1 = 1 + X := by
+  recurrence_eval
+
+example : recurrenceEvalSmoke 2 = 1 + 2 * X + X ^ 2 := by
+  recurrence_eval
+
+example : (recurrenceEvalSmoke 2).derivative = 2 + 2 * X := by
+  recurrence_eval
 
 example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
   rr_nonzero using hf
