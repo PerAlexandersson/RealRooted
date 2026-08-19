@@ -100,8 +100,7 @@ lemma signVariations_sin_mul_le_one_of_last_le_two_pi
         have hindex : q + 1 + (i : ℕ) ≤ N := by
           have hi := i.isLt
           lia
-        have hindex_cast : ((q + 1 + (i : ℕ) : ℕ) : ℝ) ≤ N := by
-          exact_mod_cast hindex
+        have hindex_cast : ((q + 1 + (i : ℕ) : ℕ) : ℝ) ≤ N := by exact_mod_cast hindex
         exact (mul_le_mul_of_nonneg_right hindex_cast hθ0).trans hlast)
     have hsum : q + 1 + (N + 1 - (q + 1)) = N + 1 := Nat.add_sub_of_le hcut
     rw [hsum] at hle
@@ -211,8 +210,7 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
                 Fin.signVariations
                     (fun j : Fin (N + 1) => Real.sin ((j : ℕ) * θ)) ≤ k :=
               happend.trans hinit_le
-            have hk_lt : k < Nat.succ (Nat.succ prev) := by
-              simp [k]
+            have hk_lt : k < Nat.succ (Nat.succ prev) := by simp [k]
             exact lt_of_le_of_lt hle hk_lt
           · have hNq : N ≤ q := by lia
             have hlast_prev : (N : ℝ) * θ ≤ (k : ℝ) * Real.pi := by
@@ -222,8 +220,7 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
               have hN_le : (N : ℝ) ≤ ((k : ℝ) * Real.pi) / θ := hN_le_q.trans hq_le
               nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
             have hlt := ih (N := N) (θ := θ) hk_pos hθ0 hlast_prev
-            have hk_lt : k < Nat.succ (Nat.succ prev) := by
-              simp [k]
+            have hk_lt : k < Nat.succ (Nat.succ prev) := by simp [k]
             exact lt_trans hlt hk_lt
 
 /-- The sampled sine vector has at most the number of completed half-turns in
@@ -295,8 +292,7 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
               have hangle_le_last :
                   phase + ((j : ℕ) : ℝ) * θ ≤ phase + (N : ℝ) * θ := by
                 nlinarith [mul_le_mul_of_nonneg_right hj_cast hθpos.le]
-              have hlast_pi : phase + (N : ℝ) * θ ≤ Real.pi := by
-                simpa using hlast
+              have hlast_pi : phase + (N : ℝ) * θ ≤ Real.pi := by simpa using hlast
               exact hangle_le_last.trans hlast_pi
           rw [hzero]
           norm_num
@@ -406,8 +402,7 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
                       (fun j : Fin (N + 1) =>
                         Real.sin (phase + (j : ℕ) * θ)) ≤ k :=
                 happend.trans hinit_le
-              have hk_lt : k < Nat.succ (Nat.succ prev) := by
-                simp [k]
+              have hk_lt : k < Nat.succ (Nat.succ prev) := by simp [k]
               exact lt_of_le_of_lt hle hk_lt
             · have hNq : N ≤ q := by lia
               have hlast_prev : phase + (N : ℝ) * θ ≤ (k : ℝ) * Real.pi := by
@@ -417,8 +412,7 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
                 linarith
               have hlt := ih (N := N) (phase := phase) (θ := θ)
                 hk_pos hphase0 hθpos hlast_prev
-              have hk_lt : k < Nat.succ (Nat.succ prev) := by
-                simp [k]
+              have hk_lt : k < Nat.succ (Nat.succ prev) := by simp [k]
               exact lt_trans hlt hk_lt
           · have hphase_ge : (k : ℝ) * Real.pi ≤ phase :=
               le_of_not_gt hphase_before
@@ -546,8 +540,7 @@ lemma signVariations_aswKarlinSineVector_lt_of_lt_threshold
         ((order : ℝ) + degree - 1) *
           ((order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi) :=
       mul_le_mul_of_nonneg_left hθ_le hden_pos.le
-    _ = (order : ℝ) * Real.pi := by
-      field_simp [hden_pos.ne']
+    _ = (order : ℝ) * Real.pi := by field_simp [hden_pos.ne']
 
 /-- For order one, the one-block Karlin sine vector has no sign variations
 through the sector threshold. -/
@@ -592,8 +585,7 @@ lemma signVariations_aswKarlinSineVector_order_two_lt
       ((degree + 1 : ℕ) : ℝ) * θ ≤
           ((degree + 1 : ℕ) : ℝ) * (2 * Real.pi / ((degree + 1 : ℕ) : ℝ)) :=
         mul_le_mul_of_nonneg_left hθ_le (by positivity)
-      _ = 2 * Real.pi := by
-        field_simp [hden_pos.ne']
+      _ = 2 * Real.pi := by field_simp [hden_pos.ne']
   have hlast : ((1 * (degree + 2 - 1) : ℕ) : ℝ) * θ ≤ 2 * Real.pi := by
     have hcoeff : 1 * (degree + 2 - 1) = degree + 1 := by lia
     simpa [hcoeff] using hlast_degree
@@ -612,8 +604,7 @@ lemma signVariations_aswKarlinSineVector_order_two_lt
 lemma signVariations_aswKarlinSineVector_degree_one_lt
     (θ : ℝ) {order : ℕ} (horder : 0 < order) :
     Fin.signVariations (aswKarlinSineVector θ 1 order 1) < order := by
-  have hzero : aswKarlinSineVector θ 1 order 1 0 = 0 := by
-    simp [aswKarlinSineVector]
+  have hzero : aswKarlinSineVector θ 1 order 1 0 = 0 := by simp [aswKarlinSineVector]
   have hle := Fin.signVariations_le_card_sub_two_of_zero_first
     (aswKarlinSineVector θ 1 order 1) hzero
   have hle' :

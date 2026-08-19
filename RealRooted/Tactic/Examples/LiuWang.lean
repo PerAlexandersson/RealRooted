@@ -13,23 +13,18 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
-  rr_lw_coeff_nonneg
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by rr_lw_coeff_nonneg
 
-example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
-  rr_lw_coeff_nonneg
+example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by rr_lw_coeff_nonneg
 
-example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
-  rr_lw_coeff_nonneg
+example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by rr_lw_coeff_nonneg
 
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_lw_active_den_all_term
 
-example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_lw_coeff_at n
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_lw_coeff_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_lw_coeff_all
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_lw_coeff_all
 
 example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_lw_coeff_at_term n
@@ -652,8 +647,7 @@ example {f g : ℝ[X]} {n : ℝ}
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f ((1 + X : ℝ[X]) * f + (C (n ^ 2 + n - 1) * X) * g) := by
-  have hc : 0 ≤ n ^ 2 + n - 1 := by
-    nlinarith [sq_nonneg n]
+  have hc : 0 ≤ n ^ 2 + n - 1 := by nlinarith [sq_nonneg n]
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -4887,12 +4881,10 @@ example : ∀ n : Nat, (P n).Splits := by
   rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
 
 /-- The inferred nonpositive-lag shell supports the nonzero projection. -/
-example : ∀ n : Nat, P n ≠ 0 := by
-  rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
+example : ∀ n : Nat, P n ≠ 0 := by rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
 
 /-- The inferred nonpositive-lag shell supports an indexed splitting projection. -/
-example : (P 3).Splits := by
-  rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
+example : (P 3).Splits := by rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
 
 variable (_hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
 variable (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -4903,16 +4895,14 @@ variable (hraw : ∀ n : Nat,
   P (n + 2) = A n * P (n + 1) + X * (R n * P n))
 
 /-- The tR recurrence selects its factor family ahead of the decoy before lookup. -/
-example : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_lw_tR_lag_sequence using recurrence := hrecR
+example : ∀ n : Nat, Prec (P n) (P (n + 1)) := by rr_lw_tR_lag_sequence using recurrence := hrecR
 
 /-- The inferred tR shell returns its full real-rooted endpoint. -/
 example : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_lw_tR_lag_sequence_realrooted using recurrence := hrecR
 
 /-- The inferred tR shell supports an indexed splitting projection. -/
-example : (P 3).Splits := by
-  rr_lw_tR_lag_sequence_realrooted using recurrence := hrecR
+example : (P 3).Splits := by rr_lw_tR_lag_sequence_realrooted using recurrence := hrecR
 
 /-- An ascribed normalizer fixes the hidden factor family before its tactic runs. -/
 example : ∀ n : Nat, Prec (P n) (P (n + 1)) := by

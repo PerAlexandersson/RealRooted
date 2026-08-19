@@ -111,8 +111,7 @@ theorem lemma34ModifiedNarayanaInterlacing_of_shifted
   intro m lam nu hm hlam hnu
   have hmu : 0 ≤ nu + 1 := by linarith
   have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
-  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
-    simp
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
   have hleft :
       ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
         ((C lam * X + C nu) * P (m - 1) + P m) := by
@@ -135,8 +134,7 @@ theorem lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34
   intro m lam mu hm hlam hmu
   have hnu : -1 ≤ mu - 1 := by linarith
   have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
-  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
-    simp
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by simp
   have hleft :
       ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
         ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
@@ -227,8 +225,7 @@ theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
   intro m lam nu hm hmN hlam hnu
   have hmu : 0 ≤ nu + 1 := by linarith
   have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hmN hlam hmu
-  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
-    simp
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
   have hleft :
       ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
         ((C lam * X + C nu) * P (m - 1) + P m) := by
@@ -251,8 +248,7 @@ theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34
   intro m lam mu hm hmN hlam hmu
   have hnu : -1 ≤ mu - 1 := by linarith
   have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hmN hlam hnu
-  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
-    simp
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by simp
   have hleft :
       ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
         ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
@@ -450,8 +446,7 @@ theorem theorem41Claim7_of_section3
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
   let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
-  have hUW : Prec U W := by
-    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
@@ -497,8 +492,7 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
   let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
-  have hUW : Prec U W := by
-    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
@@ -523,8 +517,7 @@ theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
   · intro hclaim m lam nu hm hlam hnu
     have hmu : 0 ≤ nu + 1 := by linarith
     have hbase := hclaim (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
-    have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by
-      simp
+    have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
     have hleft :
         ((C lam * X + C (nu + 1)) * G (m - 1) + auxiliaryDifference G m) =
           ((C lam * X + C nu) * G (m - 1) + G m) := by
@@ -539,8 +532,7 @@ theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
   · intro hclaim m lam mu hm hlam hmu
     have hnu : -1 ≤ mu - 1 := by linarith
     have hbase := hclaim (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
-    have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by
-      simp
+    have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by simp
     have hleft :
         ((C lam * X + C (mu - 1)) * G (m - 1) + G m) =
           ((C lam * X + C mu) * G (m - 1) + auxiliaryDifference G m) := by

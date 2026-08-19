@@ -48,10 +48,8 @@ theorem NoCommonRoots.exists_delta_TDeriv
     rintro rfl
     exact (hno a ((Polynomial.mem_roots hf_ne).mp ha_mem))
       ((Polynomial.mem_roots hg_ne).mp hb_mem)
-  have ha_sum : a ∈ (f.roots + g.roots).toFinset := by
-    simp [ha_mem]
-  have hb_sum : b ∈ (f.roots + g.roots).toFinset := by
-    simp [hb_mem]
+  have ha_sum : a ∈ (f.roots + g.roots).toFinset := by simp [ha_mem]
+  have hb_sum : b ∈ (f.roots + g.roots).toFinset := by simp [hb_mem]
   have hab_sep : 2 * η ≤ |a - b| :=
     hsep a ha_sum b hb_sum hab_ne
   have hab_lt : |a - b| < 2 * η := by

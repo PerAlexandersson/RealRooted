@@ -81,10 +81,8 @@ theorem preservesRealRootedOnPencilsAlong_of_preservesRealRootedOrZero
 /-- Multiplication by a fixed polynomial, viewed as an `ℝ`-linear map. -/
 def polynomialMulLinearMap (k : ℝ[X]) : ℝ[X] →ₗ[ℝ] ℝ[X] where
   toFun p := k * p
-  map_add' p q := by
-    simp [mul_add]
-  map_smul' a p := by
-    simp [Polynomial.smul_eq_C_mul, mul_assoc, mul_comm]
+  map_add' p q := by simp [mul_add]
+  map_smul' a p := by simp [Polynomial.smul_eq_C_mul, mul_assoc, mul_comm]
 
 @[simp]
 theorem polynomialMulLinearMap_apply (k p : ℝ[X]) :

@@ -39,16 +39,13 @@ theorem cast_choose_sq_sub_choose_pred_mul_choose_succ_eq
         (Nat.choose n (k - 1) : R) * (Nat.choose n (k + 1) : R) =
       (Nat.choose n k : R) * (Nat.choose (n + 1) k : R) / (k + 1 : R) := by
   have hk_pred_succ : k - 1 + 1 = k := Nat.sub_add_cancel (Nat.succ_le_of_lt hkpos)
-  have hk_pred_succ_cast : ((k - 1 : ℕ) : R) + 1 = (k : R) := by
-    exact_mod_cast hk_pred_succ
+  have hk_pred_succ_cast : ((k - 1 : ℕ) : R) + 1 = (k : R) := by exact_mod_cast hk_pred_succ
   have hden_prev_nat : n - (k - 1) = n + 1 - k := by lia
   have hden_prev_pos : 0 < n - (k - 1) := by lia
   have hden_succ_pos : 0 < n + 1 - k := by lia
   have hk_succ_ne : (k + 1 : R) ≠ 0 := by positivity
-  have hden_prev_ne : ((n - (k - 1) : ℕ) : R) ≠ 0 := by
-    exact_mod_cast (ne_of_gt hden_prev_pos)
-  have hden_succ_ne : ((n + 1 - k : ℕ) : R) ≠ 0 := by
-    exact_mod_cast (ne_of_gt hden_succ_pos)
+  have hden_prev_ne : ((n - (k - 1) : ℕ) : R) ≠ 0 := by exact_mod_cast (ne_of_gt hden_prev_pos)
+  have hden_succ_ne : ((n + 1 - k : ℕ) : R) ≠ 0 := by exact_mod_cast (ne_of_gt hden_succ_pos)
   have hD_pos : 0 < (n : R) + 1 - (k : R) := by
     have hknR : (k : R) ≤ (n : R) := by exact_mod_cast hkn
     linarith
@@ -79,8 +76,7 @@ theorem cast_choose_sq_sub_choose_pred_mul_choose_succ_eq
           ((n + 1 - k : ℕ) : R) := by
     field_simp [hden_succ_ne]
     nlinarith [hsucc_raw]
-  have hnk_cast : ((n - k : ℕ) : R) = (n : R) - (k : R) := by
-    rw [Nat.cast_sub hkn]
+  have hnk_cast : ((n - k : ℕ) : R) = (n : R) - (k : R) := by rw [Nat.cast_sub hkn]
   have hnkp1_cast : ((n + 1 - k : ℕ) : R) = (n : R) + 1 - (k : R) := by
     rw [Nat.cast_sub (by lia : k ≤ n + 1)]
     norm_num [Nat.cast_add]

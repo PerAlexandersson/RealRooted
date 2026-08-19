@@ -37,10 +37,8 @@ private theorem isRealRooted_of_two_left_roots_of_strict_signs
     (huLL_lt_uL : uLL < uL)
     (huL_lt_head : uL < rs.head!) :
     F ≠ 0 ∧ F.Splits := by
-  have hrs_ne : rs ≠ [] := by
-    grind
-  have hF_natDegree_pos : 0 < F.natDegree := by
-    lia
+  have hrs_ne : rs ≠ [] := by grind
+  have hF_natDegree_pos : 0 < F.natDegree := by lia
   have hF_degree_pos : 0 < F.degree :=
     natDegree_pos_iff_degree_pos.mp hF_natDegree_pos
   obtain ⟨us, hus_len, hus_interlaces, hus_roots, hus_strict⟩ :=
@@ -73,8 +71,7 @@ private theorem isRealRooted_of_two_left_roots_of_strict_signs
     lt_trans huL_lt_head
       (lt_of_le_of_lt
         (hrs_sorted.head!_le (List.getLast_mem hrs_ne)) hlast_lt_uR)
-  have hus_uR_strict : (us ++ [uR]).Pairwise (· < ·) := by
-    grind
+  have hus_uR_strict : (us ++ [uR]).Pairwise (· < ·) := by grind
   have huL_us_uR_strict : (uL :: (us ++ [uR])).Pairwise (· < ·) := by
     refine List.pairwise_cons.mpr ⟨?_, hus_uR_strict⟩
     intro u hu
@@ -135,8 +132,7 @@ theorem isRealRooted_of_strict_signs_of_natDegree_eq_length_add_two
     (ha_lt : a < rs.head!)
     (ha_pos : 0 < F.eval a) :
     F ≠ 0 ∧ F.Splits := by
-  have hF_natDegree_pos : 0 < F.natDegree := by
-    lia
+  have hF_natDegree_pos : 0 < F.natDegree := by lia
   have hF_degree_pos : 0 < F.degree :=
     natDegree_pos_iff_degree_pos.mp hF_natDegree_pos
   have hbot : Tendsto (fun x => F.eval x) atBot atBot :=
@@ -203,8 +199,7 @@ theorem isRealRooted_of_strict_signs_of_natDegree_eq_length_add_two_even
     (ha_lt : a < rs.head!)
     (ha_neg : F.eval a < 0) :
     F ≠ 0 ∧ F.Splits := by
-  have hF_natDegree_pos : 0 < F.natDegree := by
-    lia
+  have hF_natDegree_pos : 0 < F.natDegree := by lia
   have hF_degree_pos : 0 < F.degree :=
     natDegree_pos_iff_degree_pos.mp hF_natDegree_pos
   have hbot : Tendsto (fun x => F.eval x) atBot atTop :=

@@ -128,8 +128,7 @@ lemma aswSectorThreshold_repeated_last_angle_lt_order_pi
         (blocks : ℝ) * ((order : ℝ) + degree - 1) *
           ((order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi) :=
       mul_lt_mul_of_pos_left hθ_lt hmul_pos
-    _ = (blocks : ℝ) * (order : ℝ) * Real.pi := by
-      field_simp [hden_pos.ne']
+    _ = (blocks : ℝ) * (order : ℝ) * Real.pi := by field_simp [hden_pos.ne']
 
 /-- For fixed degree, Karlin's finite-order sector threshold tends to `π` as
 the PF order tends to infinity. -/

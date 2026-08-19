@@ -78,8 +78,7 @@ theorem specializeRight_zero_paperDifferentialSum
       apply Finset.sum_congr rfl
       intro m _hm
       rw [map_smul]
-    _ = T f := by
-      rw [Module.Basis.sum_repr]
+    _ = T f := by rw [Module.Basis.sum_repr]
 
 end
 

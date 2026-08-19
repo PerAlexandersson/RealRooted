@@ -195,9 +195,7 @@ theorem source_lowerPartialSums_counterexample :
         rw [roots_mul (mul_ne_zero htwo.1 hfive.1), roots_X_add_C,
           roots_X_add_C] at hr
         simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
-        rcases hr with rfl | rfl
-        · norm_num
-        · norm_num
+        rcases hr with rfl | rfl <;> norm_num
       have hleftRoot : (-1 : ℝ) ∈ lowDegreeCounterexampleLeft.roots := by
         change (-1 : ℝ) ∈ (X + C 1 : ℝ[X]).roots
         rw [roots_X_add_C]
@@ -309,9 +307,7 @@ theorem weak_xShiftedSplitSums_counterexample :
     IsInterlacingSeq0Nonneg [weakQuadratic] ∧
       ¬IsInterlacingSeq0Nonneg (xShiftedSplitSums [weakQuadratic]) := by
   constructor
-  · apply weakInput
-    · simp
-    · simp
+  · apply weakInput <;> simp
   · intro h
     have hp := isInterlacingSeq0_iff_pairwise.mp h.1
     have hout : xShiftedSplitSums [weakQuadratic] =

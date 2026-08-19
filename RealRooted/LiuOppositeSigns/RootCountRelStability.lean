@@ -26,8 +26,7 @@ theorem rootCountAtOrAbove_eq_of_roots_rel_abs_sub_lt
   have habs := abs_lt.mp hrs
   constructor
   · intro hxr
-    have hrx : δ ≤ r - x := by
-      simpa [abs_of_nonneg (sub_nonneg.mpr hxr)] using hsep r hr
+    have hrx : δ ≤ r - x := by simpa [abs_of_nonneg (sub_nonneg.mpr hxr)] using hsep r hr
     linarith [habs.1]
   · intro hxs
     by_contra hxr

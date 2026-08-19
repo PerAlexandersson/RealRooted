@@ -587,12 +587,10 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
             simp_all)
           -- count a (r₁ :: r₂ :: rest) ≤ rootMultiplicity a f
           have hcount_full : (↑(r₁ :: r₂ :: rest) : Multiset ℝ).count a ≤
-            f.rootMultiplicity a := by
-            rw [← count_roots]; exact Multiset.count_le_of_le a hsub
+            f.rootMultiplicity a := by rw [← count_roots]; exact Multiset.count_le_of_le a hsub
           -- (r₁ :: r₂ :: rest).count a = 1 + (r₂ :: rest).count a since r₁ = s = a
           have : (↑(r₁ :: r₂ :: rest) : Multiset ℝ).count a =
-            (↑(r₂ :: rest) : Multiset ℝ).count a + 1 := by
-            simp_all
+            (↑(r₂ :: rest) : Multiset ℝ).count a + 1 := by simp_all
           rw [this] at hcount_full
           have hmult := rootMultiplicity_sub_one_le_derivative_rootMultiplicity_of_ne_zero
             f a hf'_ne
@@ -687,8 +685,7 @@ private lemma exists_penultimate_listInterlaces_prod_nonneg :
                     simpa [mul_assoc] using
                       mul_nonneg h₁
                         (mul_nonneg_of_nonpos_of_nonpos h₂ h₃)
-                  · have htail_len : 2 ≤ (t :: ts).length := by
-                      grind
+                  · have htail_len : 2 ≤ (t :: ts).length := by grind
                     have hss_cons := List.pairwise_cons.mp hss
                     obtain ⟨c, hc, hcprod⟩ :=
                       ih hss_cons.2 htail htail_len
@@ -716,8 +713,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
   -- Construct interleaving
   set ss := mkInterleaving f rs hrs_root
-  have hss_length : ss.length = f.natDegree - 1 := by
-    rw [mkInterleaving_length]; lia
+  have hss_length : ss.length = f.natDegree - 1 := by rw [mkInterleaving_length]; lia
   -- Properties from the construction
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_multiset
   have hspec := mkInterleaving_spec f rs hrs_root hrs_sorted hsub_rs
@@ -812,10 +808,8 @@ lemma interlaces_derivative_of_pos_natDegree
     Interlaces f.derivative f := by
   by_cases hdeg1 : f.natDegree = 1
   · have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-    have hf'_ne : f.derivative ≠ 0 := by
-      simp_all
-    have hf'_deg0 : f.derivative.natDegree = 0 := by
-      simp [hdeg1, f.natDegree_derivative]
+    have hf'_ne : f.derivative ≠ 0 := by simp_all
+    have hf'_deg0 : f.derivative.natDegree = 0 := by simp [hdeg1, f.natDegree_derivative]
     have hf'_rr : f.derivative ≠ 0 ∧ f.derivative.Splits :=
       ⟨hf'_ne, Polynomial.Splits.of_natDegree_eq_zero hf'_deg0⟩
     exact
@@ -1030,8 +1024,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
   by_cases hdeg0 : p.natDegree = 0
   · simp [derivative_eq_zero_of_natDegree_eq_zero hdeg0]
   by_cases hdeg1 : p.natDegree = 1
-  · have hderdeg : p.derivative.natDegree = 0 := by
-      rw [p.natDegree_derivative, hdeg1]
+  · have hderdeg : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg1]
     have hderC : p.derivative = C (p.derivative.coeff 0) :=
       eq_C_of_natDegree_eq_zero hderdeg
     rw [hderC]

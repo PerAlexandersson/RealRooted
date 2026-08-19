@@ -240,8 +240,7 @@ theorem disjoint_nonNestingPlacementsWithoutRow_withRow
   rw [mem_nonNestingPlacementsWithRow] at hrow
   rcases hrow.2 with ⟨a, ha, haP⟩
   have hrow_eq : a.1 = row := (mem_rowCells.mp ha).2
-  have hcell : (row, a.2) = a := by
-    ext <;> simp [hrow_eq]
+  have hcell : (row, a.2) = a := by ext <;> simp [hrow_eq]
   exact hfree.2 a.2 (by simpa [hcell] using haP)
 
 /-- Every placement either avoids a fixed row or uses a cell in that row. -/
@@ -320,8 +319,7 @@ theorem disjoint_nonNestingPlacementsWithoutCol_withCol
   rw [mem_nonNestingPlacementsWithCol] at hcol
   rcases hcol.2 with ⟨a, ha, haP⟩
   have hcol_eq : a.2 = col := (mem_colCells.mp ha).2
-  have hcell : (a.1, col) = a := by
-    ext <;> simp [hcol_eq]
+  have hcell : (a.1, col) = a := by ext <;> simp [hcol_eq]
   exact hfree.2 a.1 (by simpa [hcell] using haP)
 
 /-- Every placement either avoids a fixed column or uses a cell in that
@@ -589,8 +587,7 @@ theorem isNonNestingPlacementBool_iff (B : FiniteSkewBoard)
     rw [hpowerset]
     apply Finset.filter_true_of_mem
     intro P hP
-    have hPempty : P = ∅ := by
-      simpa using hP
+    have hPempty : P = ∅ := by simpa using hP
     subst P
     simp [IsNonNestingPlacement, empty]
   simp [rookPolynomial, hfilter]
@@ -610,8 +607,7 @@ rook polynomial. -/
   rw [rookPolynomial, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
   · simp
   · intro P _hP hne
-    have hP_nonzero : P.card ≠ 0 := by
-      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
+    have hP_nonzero : P.card ≠ 0 := by rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
     have hzero : ¬ 0 = P.card := fun h => hP_nonzero h.symm
     simp [Polynomial.coeff_X_pow, hzero]
   · intro hnot

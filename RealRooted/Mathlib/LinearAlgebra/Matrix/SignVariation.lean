@@ -361,8 +361,7 @@ end List
 
 /-- Taking the sign of a sign is the identity. -/
 @[simp]
-theorem SignType.sign_sign (s : SignType) : SignType.sign s = s := by
-  fin_cases s <;> rfl
+theorem SignType.sign_sign (s : SignType) : SignType.sign s = s := by fin_cases s <;> rfl
 
 private lemma add_one_le_pred_add_two (n : ℕ) :
     n + 1 ≤ n - 1 + 1 + 1 := by
@@ -522,8 +521,7 @@ protected theorem NodalInsertion.eraseIdx_last_append_singleton
   have hiLocal : i + 2 < (middle ++ [b]).length := by simp [hlen]
   have hleft : (middle ++ [b])[i] = middle[i] :=
     List.getElem_append_left hi
-  have hright : (middle ++ [b])[i + 2] = b := by
-    simp [List.getElem_append_right, hlen]
+  have hright : (middle ++ [b])[i + 2] = b := by simp [List.getElem_append_right, hlen]
   rw [← List.eraseIdx_append_middle
     pre middle [b] (i + 1) hiErase]
   simpa only [List.append_nil, List.append_assoc] using
@@ -576,8 +574,7 @@ theorem signVariations_endpoints_le_add_two_of_nodalInsertions
     _ ≤ (l'.signVariations + 1) + 1 :=
       Nat.add_le_add_right
         (signVariations_append_singleton_signType_le_succ l' b) 1
-    _ = l.signVariations + 2 := by
-      rw [signVariations_eq_of_nodalInsertions h]
+    _ = l.signVariations + 2 := by rw [signVariations_eq_of_nodalInsertions h]
 
 end List
 
@@ -762,10 +759,8 @@ theorem nodalInsertions_coreSigns_remove
     rw [hofFn]
     exact List.filter_eraseIdx_eq_of_getElem_not
       hlenSource hfilteredSource
-  have hxzero : x' 0 = x 0 := by
-    simp only [x', p, Fin.succAbove_zero_of_interior]
-  have hyzero : y' 0 = y 0 := by
-    simp only [y', p, Fin.succAbove_zero_of_interior]
+  have hxzero : x' 0 = x 0 := by simp only [x', p, Fin.succAbove_zero_of_interior]
+  have hyzero : y' 0 = y 0 := by simp only [y', p, Fin.succAbove_zero_of_interior]
   have hxlast :
       x' (Fin.last (n + 1)) = x (Fin.last (n + 2)) := by
     simp only [x', p, Fin.succAbove_last_of_interior]
@@ -833,14 +828,10 @@ theorem nodalInsertions_coreSigns_remove
       have hlastIndex :
           (Fin.last 2 : Fin 3) = (2 : Fin 3) := by
         exact Fin.ext rfl
-      have hxzero' : x (0 : Fin 3) ≠ 0 := by
-        simpa only [hleftIndex] using hxleft
-      have hxtwo : x (2 : Fin 3) ≠ 0 := by
-        simpa only [hrightIndex] using hxright
-      have hsignLeft : SignType.sign (y 0) ≠ 0 := by
-        simpa only [hleftIndex] using hopposite.1
-      have hsignTwo : SignType.sign (y 2) ≠ 0 := by
-        simpa only [hrightIndex] using hopposite.2.1
+      have hxzero' : x (0 : Fin 3) ≠ 0 := by simpa only [hleftIndex] using hxleft
+      have hxtwo : x (2 : Fin 3) ≠ 0 := by simpa only [hrightIndex] using hxright
+      have hsignLeft : SignType.sign (y 0) ≠ 0 := by simpa only [hleftIndex] using hopposite.1
+      have hsignTwo : SignType.sign (y 2) ≠ 0 := by simpa only [hrightIndex] using hopposite.2.1
       have hsignNe :
           SignType.sign (y 0) ≠ SignType.sign (y 2) := by
         simpa only [hleftIndex, hrightIndex] using hopposite.2.2
@@ -855,8 +846,7 @@ theorem nodalInsertions_coreSigns_remove
       by_cases hkzero : (k : ℕ) = 0
       · have hkeq : k = 0 := Fin.ext hkzero
         subst k
-        have hxzero' : x 0 ≠ 0 := by
-          simpa using hxleft
+        have hxzero' : x 0 ≠ 0 := by simpa using hxleft
         have hmiddleLength : 1 < middle.length := by
           simp [middle]
           lia
@@ -870,8 +860,7 @@ theorem nodalInsertions_coreSigns_remove
       · by_cases hklast : (k : ℕ) = n
         · have hkeq : k = Fin.last n := Fin.ext hklast
           subst k
-          have hxlast' : x (Fin.last (n + 2)) ≠ 0 := by
-            simpa using hxright
+          have hxlast' : x (Fin.last (n + 2)) ≠ 0 := by simpa using hxright
           have hpred : n - 1 + 1 = n := by lia
           have hlen : middle.length = n - 1 + 2 := by
             simp [middle]
@@ -957,8 +946,7 @@ theorem nodalInsertions_coreSigns_remove
             List.NodalInsertion.eraseIdx_append_middle
               left middle right ((k : ℕ) - 1)
               hrightBound haMiddle hbMiddle habMiddle
-          have hkMiddle : (k : ℕ) < middle.length := by
-            simpa [middle] using k.isLt
+          have hkMiddle : (k : ℕ) < middle.length := by simpa [middle] using k.isLt
           rw [hpred] at hlocal
           rw [List.eraseIdx_append_middle
             left middle right (k : ℕ) hkMiddle] at hlocal
@@ -978,8 +966,7 @@ theorem nodalInsertions_coreSigns_remove
         congr 2
       _ = (List.ofFn (fun i => SignType.sign (x i))).filter
           (· ≠ 0) := hsource
-      _ = _ := by
-        congr 2
+      _ = _ := by congr 2
   rw [hsourceComp] at hrec
   exact hrec.tail hstepCore
 
@@ -1162,8 +1149,7 @@ lemma signVariations_le_card_sub_two_of_zero_first {R : Type*}
     (hzero : x 0 = 0) : signVariations x ≤ n - 1 := by
   rw [signVariations]
   have hlist_ne : List.ofFn x ≠ [] := by simp
-  have hhead : SignType.sign (List.head (List.ofFn x) hlist_ne) = 0 := by
-    simp [hzero]
+  have hhead : SignType.sign (List.head (List.ofFn x) hlist_ne) = 0 := by simp [hzero]
   have h := List.signVariations_le_length_sub_two_of_head_zero
     (l := List.ofFn x) hlist_ne hhead
   simpa using h
@@ -1335,8 +1321,7 @@ lemma exists_strictMono_strictlyAlternates_of_le_signVariations
     have hklt : (i : ℕ) + 1 < d.length := by lia
     have hchain : d.IsChain (· ≠ ·) :=
       List.isChain_destutter (R := fun a b : SignType => a ≠ b) nz
-    have hkd : d.get k0 ≠ d.get k1 := by
-      simpa [k0, k1] using hchain.getElem (i : ℕ) hklt
+    have hkd : d.get k0 ≠ d.get k1 := by simpa [k0, k1] using hchain.getElem (i : ℕ) hklt
     have hk0 : d.get k0 ≠ 0 := by
       have hm : d.get k0 ∈ nz :=
         (List.destutter_sublist

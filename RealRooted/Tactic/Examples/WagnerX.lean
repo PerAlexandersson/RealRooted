@@ -14,14 +14,11 @@ noncomputable section
 namespace RealRooted
 namespace Tactic
 
-example {c : ℝ} (hc : 0 < c) : 0 < c := by
-  rr_wagner_pos
+example {c : ℝ} (hc : 0 < c) : 0 < c := by rr_wagner_pos
 
-example {n : Nat} : 0 < (n : ℝ) + 1 := by
-  rr_wagner_pos
+example {n : Nat} : 0 < (n : ℝ) + 1 := by rr_wagner_pos
 
-example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
-  rr_wagner_pos
+example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by rr_wagner_pos
 
 example : 0 < (2 : ℝ) :=
   rr_wagner_pos_term
@@ -132,8 +129,7 @@ namespace WagnerXInferenceSmoke
 @[rr_nonneg] theorem zero_nonneg : HasNonnegCoeffs (0 : ℝ[X]) :=
   hasNonnegCoeffs_zero
 
-example : Prec (1 : ℝ[X]) (X * 1) := by
-  rr_prec_mul_X
+example : Prec (1 : ℝ[X]) (X * 1) := by rr_prec_mul_X
 
 end WagnerXInferenceSmoke
 
@@ -649,8 +645,7 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
         X * (C (1 : ℝ) * (P (n + 4)).derivative + C ((n : ℝ) + 4) * P (n + 3))) :
     ∀ n : Nat, Prec (P (n + 3)) (P (n + 4)) := by
   let Q : Nat → ℝ[X] := fun n => P (n + 3)
-  have hQbase : Prec (Q 0) (Q 1) := by
-    simpa [Q] using hbase
+  have hQbase : Prec (Q 0) (Q 1) := by simpa [Q] using hbase
   have hQnonneg : ∀ n : Nat, HasNonnegCoeffs (Q n) := by
     intro n
     simpa [Q] using hnonneg (n + 3)
@@ -684,8 +679,7 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
         X * (C (1 : ℝ) * (P (n + 4)).derivative + C ((n : ℝ) + 4) * P (n + 3))) :
     ∀ n : Nat, P (n + 3) ≠ 0 ∧ (P (n + 3)).Splits := by
   let Q : Nat → ℝ[X] := fun n => P (n + 3)
-  have hQbase : Prec (Q 0) (Q 1) := by
-    simpa [Q] using hbase
+  have hQbase : Prec (Q 0) (Q 1) := by simpa [Q] using hbase
   have hQnonneg : ∀ n : Nat, HasNonnegCoeffs (Q n) := by
     intro n
     simpa [Q] using hnonneg (n + 3)
@@ -737,8 +731,7 @@ lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
-  have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
-    rr_nonneg_coeffs
+  have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by rr_nonneg_coeffs
   have hmul : Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_prec_mul_X_both using
       proper := hprec,

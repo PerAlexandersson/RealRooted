@@ -104,8 +104,7 @@ theorem hasSimpleRoots_applyTDerivList_of_natDegree_le_length
   have hmult_pos : 0 < (applyTDerivList epss p).rootMultiplicity a :=
     (rootMultiplicity_pos hfinal_ne).mpr ha
   by_contra hne
-  have hmult : 2 ≤ (applyTDerivList epss p).rootMultiplicity a := by
-    lia
+  have hmult : 2 ≤ (applyTDerivList epss p).rootMultiplicity a := by lia
   have hback :=
     rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two hpos hsplit hmult
   have hmult_le : p.rootMultiplicity a ≤ p.natDegree := by

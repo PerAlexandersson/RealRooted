@@ -63,17 +63,13 @@ private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
     Prec f (aPoly * f + bPoly * g) ∧
       Interlaces f (aPoly * f + bPoly * g) ∧
       HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
-  have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-    simpa using natDegree_succ_of_interlaces hInter
-  have hf_ne : f ≠ 0 := by
-    simpa using right_ne_zero_of_interlaces hInter
+  have hdeg_gf : g.natDegree + 1 = f.natDegree := by simpa using natDegree_succ_of_interlaces hInter
+  have hf_ne : f ≠ 0 := by simpa using right_ne_zero_of_interlaces hInter
   have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
     rw [natDegree_mul hA_ne hf_ne, hA_deg]
     lia
-  have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-    rr_pos_lc
-  have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
-    lia
+  have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by rr_pos_lc
+  have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by lia
   have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
     simpa [add_comm] using
       hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
@@ -134,8 +130,7 @@ private theorem affineFavardChainPackage_of_param_coeff
     have hA_pos : HasPosLeadingCoeff aPoly := by
       simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C
         (s := s (n + 1)) (t := α (n + 1)) (hs (n + 1))
-    have hA_ne : aPoly ≠ 0 := by
-      rr_nonzero
+    have hA_ne : aPoly ≠ 0 := by rr_nonzero
     have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
       dsimp [bPoly]
       exact Polynomial.natDegree_C_mul_le _ _
@@ -298,10 +293,8 @@ theorem favardInterlacing_affine_const_coeff_rowSign
       P (n + 2) = -(C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   let Q : Nat → ℝ[X] := fun n => C ((-1 : ℝ) ^ n) * P n
-  have hQ0 : Q 0 = 1 := by
-    simp [Q, hP0]
-  have hQ1 : Q 1 = C s * X - C α := by
-    simp [Q, hP1]
+  have hQ0 : Q 0 = 1 := by simp [Q, hP0]
+  have hQ1 : Q 1 = C s * X - C α := by simp [Q, hP1]
   have hQstep : ∀ n : Nat,
       Q (n + 2) = (C s * X - C α) * Q (n + 1) - C β * Q n := by
     intro n
@@ -752,10 +745,8 @@ theorem favardInterlacing_affine_param_coeff_rowSign
           C (β (n + 1)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   let Q : Nat → ℝ[X] := fun n => C ((-1 : ℝ) ^ n) * P n
-  have hQ0 : Q 0 = 1 := by
-    simp [Q, hP0]
-  have hQ1 : Q 1 = C (s 0) * X - C (α 0) := by
-    simp [Q, hP1]
+  have hQ0 : Q 0 = 1 := by simp [Q, hP0]
+  have hQ1 : Q 1 = C (s 0) * X - C (α 0) := by simp [Q, hP1]
   have hQstep : ∀ n : Nat,
       Q (n + 2) =
         (C (s (n + 1)) * X - C (α (n + 1))) * Q (n + 1) -

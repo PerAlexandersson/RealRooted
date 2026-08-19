@@ -37,105 +37,77 @@ theorem namedFinishSmoke_generated_interlaces (n : Nat) :
   simp [namedFinishSmokeRefined, IsInterlacingSeq0Nonneg, IsInterlacingSeq0]
 
 -- Generated-style final wrappers are found by generic named-wrapper lookup.
-example (n : Nat) : namedFinishSmoke n ≠ 0 := by
-  rr_nonzero
+example (n : Nat) : namedFinishSmoke n ≠ 0 := by rr_nonzero
 
 -- Generated-style final wrappers are found by generic named-wrapper lookup.
-example (n : Nat) : (namedFinishSmoke n).Splits := by
-  rr_splits
+example (n : Nat) : (namedFinishSmoke n).Splits := by rr_splits
 
 -- Generated-style final wrappers are found by generic named-wrapper lookup.
-example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by
-  rr_realrooted
+example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by rr_realrooted
 
 -- Generated-style refinement wrappers are found by generic named-wrapper lookup.
-example (n : Nat) : IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n) := by
-  rr_interlaces
+example (n : Nat) : IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n) := by rr_interlaces
 
 -- Generated-style final wrappers are found by generic named-wrapper lookup.
-example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by
-  rr_finish
+example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by rr_finish
 
 noncomputable def recurrenceEvalSmoke : Nat → ℝ[X]
   | 0 => 1
   | n + 1 => (1 + X) * recurrenceEvalSmoke n
 
-example : recurrenceEvalSmoke 0 = 1 := by
-  recurrence_eval
+example : recurrenceEvalSmoke 0 = 1 := by recurrence_eval
 
-example : recurrenceEvalSmoke 1 = 1 + X := by
-  recurrence_eval
+example : recurrenceEvalSmoke 1 = 1 + X := by recurrence_eval
 
-example : recurrenceEvalSmoke 2 = 1 + 2 * X + X ^ 2 := by
-  recurrence_eval
+example : recurrenceEvalSmoke 2 = 1 + 2 * X + X ^ 2 := by recurrence_eval
 
-example : (recurrenceEvalSmoke 2).derivative = 2 + 2 * X := by
-  recurrence_eval
+example : (recurrenceEvalSmoke 2).derivative = 2 + 2 * X := by recurrence_eval
 
-example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
-  rr_nonzero using hf
+example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by rr_nonzero using hf
 
-example : (X : ℝ[X]) ≠ 0 := by
-  rr_nonzero
+example : (X : ℝ[X]) ≠ 0 := by rr_nonzero
 
-example {a : ℝ} (ha : a ≠ 0) : (C a : ℝ[X]) ≠ 0 := by
-  rr_nonzero
+example {a : ℝ} (ha : a ≠ 0) : (C a : ℝ[X]) ≠ 0 := by rr_nonzero
 
 example {m k : Nat} (hk : k ≤ m) :
     (C (((Nat.choose m k : Nat) : ℝ)) : ℝ[X]) ≠ 0 := by
   rr_nonzero
 
-example {a : ℝ} : (X + C a : ℝ[X]) ≠ 0 := by
-  rr_nonzero
+example {a : ℝ} : (X + C a : ℝ[X]) ≠ 0 := by rr_nonzero
 
-example {a : ℝ} : (C a + X : ℝ[X]) ≠ 0 := by
-  rr_nonzero
+example {a : ℝ} : (C a + X : ℝ[X]) ≠ 0 := by rr_nonzero
 
-example {a : ℝ} : (X - C a : ℝ[X]) ≠ 0 := by
-  rr_nonzero
+example {a : ℝ} : (X - C a : ℝ[X]) ≠ 0 := by rr_nonzero
 
-example {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0) : p * q ≠ 0 := by
-  rr_nonzero
+example {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0) : p * q ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : p ^ n ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : p ^ n ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} (hp : p ≠ 0) : p.reverse ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} (hp : p ≠ 0) : p.reverse ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : X ^ n * p.reverse ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : X ^ n * p.reverse ≠ 0 := by rr_nonzero
 
-example {p q : ℝ[X]} (hpq : p * q ≠ 0) : p ≠ 0 := by
-  rr_nonzero
+example {p q : ℝ[X]} (hpq : p * q ≠ 0) : p ≠ 0 := by rr_nonzero
 
-example {p q : ℝ[X]} (hpq : p * q ≠ 0) : q ≠ 0 := by
-  rr_nonzero
+example {p q : ℝ[X]} (hpq : p * q ≠ 0) : q ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} (hdeg : p.natDegree ≠ 0) : p.derivative ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} (hdeg : p.natDegree ≠ 0) : p.derivative ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.derivative ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.derivative ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} (hp : X ^ 2 * p.derivative ≠ 0) : p.derivative ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} (hp : X ^ 2 * p.derivative ≠ 0) : p.derivative ≠ 0 := by rr_nonzero
 
-example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
-  rr_nonzero
+example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by rr_nonzero
 
 example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
     p * q ≠ 0 := by
   rr_nonzero
 
-example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
-  rr_nonzero
+example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by rr_nonzero
 
-example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
-  rr_finish
+example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by rr_finish
 
-example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by rr_splits using hf
 
 example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     p.derivative.Splits := by
@@ -161,32 +133,23 @@ example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     p.derivative ≠ 0 ∧ p.derivative.Splits := by
   rr_realrooted
 
-example {a : ℝ} : (C a : ℝ[X]).Splits := by
-  rr_splits
+example {a : ℝ} : (C a : ℝ[X]).Splits := by rr_splits
 
-example : (X : ℝ[X]).Splits := by
-  rr_splits
+example : (X : ℝ[X]).Splits := by rr_splits
 
-example {a : ℝ} : (X + C a : ℝ[X]).Splits := by
-  rr_splits
+example {a : ℝ} : (X + C a : ℝ[X]).Splits := by rr_splits
 
-example {a : ℝ} : (C a + X : ℝ[X]).Splits := by
-  rr_splits
+example {a : ℝ} : (C a + X : ℝ[X]).Splits := by rr_splits
 
-example {a : ℝ} : (X - C a : ℝ[X]).Splits := by
-  rr_splits
+example {a : ℝ} : (X - C a : ℝ[X]).Splits := by rr_splits
 
-example {n : Nat} : ((X : ℝ[X]) ^ n).Splits := by
-  rr_splits
+example {n : Nat} : ((X : ℝ[X]) ^ n).Splits := by rr_splits
 
-example {a : ℝ} {n : Nat} : (C a * X ^ n : ℝ[X]).Splits := by
-  rr_splits
+example {a : ℝ} {n : Nat} : (C a * X ^ n : ℝ[X]).Splits := by rr_splits
 
-example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by rr_splits using hf
 
-example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by
-  rr_splits
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by rr_splits
 
 example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by
   rr_splits_pow using
@@ -197,15 +160,13 @@ example {f : ℝ[X]} (hf : f.Splits) : f.reverse.Splits := by
   rr_splits_reverse using
     splits := hf
 
-example {f : ℝ[X]} (hf : f.Splits) : f.reverse.Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} (hf : f.Splits) : f.reverse.Splits := by rr_splits using hf
 
 example {f : ℝ[X]} (hf : f.reverse.Splits) : f.Splits := by
   rr_splits_of_reverse using
     reverse_splits := hf
 
-example {f : ℝ[X]} (hf : f.reverse.Splits) : f.Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} (hf : f.reverse.Splits) : f.Splits := by rr_splits using hf
 
 example {f : ℝ[X]} {N : Nat} (hf : f.Splits) (hN : f.natDegree ≤ N) :
     (reflect N f).Splits := by
@@ -222,11 +183,9 @@ example {f : ℝ[X]} {N : Nat} (hf : f.Splits) :
     (X ^ (N - f.natDegree) * f.reverse).Splits := by
   rr_splits using hf
 
-example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (X ^ n * f).Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (X ^ n * f).Splits := by rr_splits using hf
 
-example {f : ℝ[X]} {n : Nat} (hf : (X ^ n * f).Splits) : f.Splits := by
-  rr_splits using hf
+example {f : ℝ[X]} {n : Nat} (hf : (X ^ n * f).Splits) : f.Splits := by rr_splits using hf
 
 example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f.Splits) :
     f.divX.Splits := by
@@ -240,14 +199,11 @@ example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f.divX.Splits) :
     coeff_zero := h0,
     divX_splits := hf
 
-example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by
-  rr_zero_or_splits using hf
+example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by rr_zero_or_splits using hf
 
-example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by
-  rr_zero_or_splits
+example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by rr_zero_or_splits
 
-example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
-  rr_zero_or_splits using hf
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by rr_zero_or_splits using hf
 
 example {f : ℝ[X]} (hf : f = 0 ∨ f.Splits) :
     f.reverse = 0 ∨ f.reverse.Splits := by
@@ -374,11 +330,9 @@ example {f g : ℝ[X]} (hf : f = 0 ∨ f.Splits) (hg : g = 0 ∨ g.Splits) :
     g * f = 0 ∨ (g * f).Splits := by
   rr_finish
 
-example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
-  rr_splits
+example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by rr_splits
 
-example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
-  rr_finish
+example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by rr_finish
 
 example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree ≤ 1) :
     f ≠ 0 ∧ f.Splits := by
@@ -483,56 +437,39 @@ example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree = 1) :
     f ≠ 0 ∧ f.Splits := by
   rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
-  rr_nonzero using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_nonzero using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
-  rr_nonzero
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_nonzero
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
-  rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
-  rr_splits using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_splits using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
-  rr_splits
+example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_splits
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
-  rr_realrooted using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
-  rr_realrooted
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
-  rr_realrooted using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
-  rr_realrooted
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 := by
-  rr_nonzero using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 := by rr_nonzero using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f.Splits := by
-  rr_splits using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : f.Splits := by rr_splits using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
-  rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g = 0 ∨ g.Splits := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : g = 0 ∨ g.Splits := by rr_finish
 
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
@@ -542,8 +479,7 @@ example {f g : ℝ[X]}
 example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
   rr_exact_realrooted_or_projection hf
 
-example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
-  rr_finish
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by rr_finish
 
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
@@ -585,41 +521,29 @@ example {f g : ℝ[X]}
     g ≠ 0 ∧ g.Splits := by
   rr_finish
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
-  rr_realrooted using hgf
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by rr_realrooted using hgf
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
-  rr_realrooted
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by rr_realrooted
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
-  rr_realrooted using hgf
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by rr_realrooted using hgf
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
-  rr_realrooted
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by rr_realrooted
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by
-  rr_nonzero using hgf
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by rr_nonzero using hgf
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by
-  rr_nonzero
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by rr_nonzero
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by
-  rr_splits using hgf
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by rr_splits using hgf
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by
-  rr_splits
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by rr_splits
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
-  rr_finish
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by rr_finish
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
-  rr_finish using hgf
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by rr_finish using hgf
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
-  rr_finish
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by rr_finish
 
-example {g f : ℝ[X]} (hgf : Interlaces g f) : g = 0 ∨ g.Splits := by
-  rr_finish
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g = 0 ∨ g.Splits := by rr_finish
 
 example {g f : ℝ[X]} (hgf : Interlaces g f) :
     g.natDegree + 1 = f.natDegree := by
@@ -1067,17 +991,13 @@ example {p : ℝ[X]} {d : Nat}
     top_eq := htop,
     above := habove
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
-  rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_prec0 using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
-  rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
-  rr_prec using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_prec using hfg
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
@@ -1099,17 +1019,13 @@ example {P : Nat → ℝ[X]} {n : Nat}
     Prec (P n) (P (n + 1)) := by
   rr_finish using hinter
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
-  rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
-  rr_finish
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by
-  rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by rr_prec0 using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by
-  rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by rr_finish using hfg
 
 example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     Prec f g := by
@@ -1332,17 +1248,13 @@ example {p q : ℝ[X]} {rest : List ℝ[X]}
     IsSturmSeq (p :: q :: rest) := by
   rr_finish
 
-example : IsSturmSeq ([] : List ℝ[X]) := by
-  rr_sturm_base
+example : IsSturmSeq ([] : List ℝ[X]) := by rr_sturm_base
 
-example (p : ℝ[X]) : IsGeneralizedSturmSeq [p] := by
-  rr_sturm_base
+example (p : ℝ[X]) : IsGeneralizedSturmSeq [p] := by rr_sturm_base
 
-@[rr_nonzero] theorem rr_finish_true_smoke : True := by
-  trivial
+@[rr_nonzero] theorem rr_finish_true_smoke : True := by trivial
 
-example : True := by
-  rr_finish
+example : True := by rr_finish
 
 end Tactic
 end RealRooted

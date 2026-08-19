@@ -234,8 +234,7 @@ theorem veronesePairLace_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     calc
       k + r * n - r * c = k + (r * n - r * c) :=
         Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
-      _ = k + r * (n - c) := by
-        rw [← Nat.mul_sub_left_distrib]
+      _ = k + r * (n - c) := by rw [← Nat.mul_sub_left_distrib]
   · have hlt : n < c := Nat.lt_of_not_ge hc
     have hc' : ¬ r * c ≤ k + r * n := by
       have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
@@ -261,8 +260,7 @@ theorem veronesePairLace_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     calc
       k + r * n - r * c = k + (r * n - r * c) :=
         Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
-      _ = k + r * (n - c) := by
-        rw [← Nat.mul_sub_left_distrib]
+      _ = k + r * (n - c) := by rw [← Nat.mul_sub_left_distrib]
   · have hlt : n < c := Nat.lt_of_not_ge hc
     have hc' : ¬ r * c ≤ k + r * n := by
       have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
@@ -376,8 +374,7 @@ def veronesePairSelectRowMap (r i j : ℕ) (row : ℕ) : ℕ :=
   else
     j + (2 * r) * (row / 2)
 
-theorem div_two_lt_of_lt_two_mul {i r : ℕ} (hi : i < 2 * r) : i / 2 < r := by
-  lia
+theorem div_two_lt_of_lt_two_mul {i r : ℕ} (hi : i < 2 * r) : i / 2 < r := by lia
 
 theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
@@ -1157,8 +1154,7 @@ theorem comp_X_sq_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
   rintro (h | ⟨_, hc⟩)
   · exact hp h
   · have hd :
-      (X ^ 2 : ℝ[X]).natDegree = (C ((X ^ 2 : ℝ[X]).coeff 0)).natDegree := by
-      rw [← hc]
+      (X ^ 2 : ℝ[X]).natDegree = (C ((X ^ 2 : ℝ[X]).coeff 0)).natDegree := by rw [← hc]
     simp at hd
 
 /-- The Veronese substitution `X ↦ X²` doubles the degree. -/

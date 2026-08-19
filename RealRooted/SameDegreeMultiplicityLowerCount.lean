@@ -191,8 +191,7 @@ private lemma exists_delta_le_card_filter_roots_near_zero
       exact Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
     have hN_deg : N.natDegree = near.card :=
       Polynomial.natDegree_multiset_prod_X_sub_C_eq_card near
-    have hN_coeff : N.coeff near.card = 1 := by
-      rw [← hN_deg, hN_monic.coeff_natDegree]
+    have hN_coeff : N.coeff near.card = 1 := by rw [← hN_deg, hN_monic.coeff_natDegree]
     -- Facts about F:
     have hF_monic : F.Monic := by
       exact Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
@@ -268,11 +267,9 @@ If `j` is below the multiplicity of `a` as a root of `p ≠ 0`, then the
 lemma coeff_taylor_eq_zero_of_lt_count {p : ℝ[X]} {a : ℝ} {j : ℕ}
     (hj : j < p.roots.count a) : (taylor a p).coeff j = 0 := by
   set m := p.roots.count a with hm
-  have h_div : (X - C a) ^ m ∣ p := by
-    rw [hm, count_roots]; exact pow_rootMultiplicity_dvd p a
+  have h_div : (X - C a) ^ m ∣ p := by rw [hm, count_roots]; exact pow_rootMultiplicity_dvd p a
   obtain ⟨q, hq⟩ := h_div
-  have hXa : (X - C a).comp (X + C a) = (X : ℝ[X]) := by
-    rw [sub_comp, X_comp, C_comp]; ring
+  have hXa : (X - C a).comp (X + C a) = (X : ℝ[X]) := by rw [sub_comp, X_comp, C_comp]; ring
   have htay : taylor a p = X ^ m * taylor a q := by
     conv_lhs => rw [hq]
     rw [taylor_apply, taylor_apply, mul_comp, pow_comp, hXa]
@@ -292,8 +289,7 @@ private lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
   have hroot : p.IsRoot r := (mem_roots'.mp hr).2
   have hlt := hroot.norm_lt_cauchyBound hp0
   have hcb : |r| < (p.cauchyBound : ℝ) := by
-    have h2 : ((‖r‖₊ : ℝ≥0) : ℝ) < ((p.cauchyBound : ℝ≥0) : ℝ) := by
-      exact_mod_cast hlt
+    have h2 : ((‖r‖₊ : ℝ≥0) : ℝ) < ((p.cauchyBound : ℝ≥0) : ℝ) := by exact_mod_cast hlt
     simpa [Real.norm_eq_abs] using h2
   set s : ℝ≥0 := Finset.sup (Finset.range p.natDegree) (fun i => ‖p.coeff i‖₊) with hs
   have hsM : (s : ℝ) ≤ M := by
@@ -411,10 +407,8 @@ theorem exists_eps_forall_root_count_le_card_filter_near
   have hpnu_lc : pnu.leadingCoeff = pnu.coeff n := by rw [leadingCoeff, hpnu_deg]
   have hp0_cn : p0.coeff n = lc0 := by rw [hlc0def, leadingCoeff, hndef]
   have hpnu_cn : pnu.coeff n = lc0 + (ν - μ0) * g.coeff n := by
-    have e1 : pnu.coeff n = f.coeff n + ν * g.coeff n := by
-      simp [hpnudef, coeff_add, coeff_C_mul]
-    have e2 : p0.coeff n = f.coeff n + μ0 * g.coeff n := by
-      simp [hp0def, coeff_add, coeff_C_mul]
+    have e1 : pnu.coeff n = f.coeff n + ν * g.coeff n := by simp [hpnudef, coeff_add, coeff_C_mul]
+    have e2 : p0.coeff n = f.coeff n + μ0 * g.coeff n := by simp [hp0def, coeff_add, coeff_C_mul]
     have hlc0e : lc0 = f.coeff n + μ0 * g.coeff n := by rw [← hp0_cn, e2]
     rw [e1, hlc0e]; ring
   have hgabs : |ν - μ0| * |g.coeff n| ≤ c0 := by

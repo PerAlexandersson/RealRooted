@@ -685,8 +685,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
       (1 / (w - z)) ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
     intro z hzS
     have hz_dist : Complex.normSq (z - c) ≤ r^2 := by
-      have hz_norm : ‖z - c‖ ≤ r := by
-        simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
+      have hz_norm : ‖z - c‖ ≤ r := by simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
       rw [Complex.normSq_eq_norm_sq]
       exact pow_le_pow_left₀ (norm_nonneg (z - c)) hz_norm 2
     have hwz_ne : w - z ≠ 0 := by
@@ -1078,11 +1077,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       set f' := polarShift ζ f
       have hf' : (binomialLift (n - 1) f').natDegree = n - 1 := by
         have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 := by
-          apply polarDeriv_natDegree
-          · exact Nat.pos_of_ne_zero hn
-          · exact hf
-          · exact hroots
-          · exact hζ'
+          exact polarDeriv_natDegree (Nat.pos_of_ne_zero hn) hf hroots hζ'
         rw [ polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f ] at hf';
         rwa [ Polynomial.natDegree_C_mul ] at hf' ; aesop
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (Metric.closedBall c r) := by

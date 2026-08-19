@@ -45,10 +45,8 @@ lemma thresholdEntry_of_lt {t j : ℕ} (α : ℝ[X]) (h : j < t) :
 
 lemma thresholdEntry_of_gt {t j : ℕ} (α : ℝ[X]) (h : t < j) :
     thresholdEntry t α j = 1 := by
-  have hlt : ¬ j < t := by
-    lia
-  have hne : ¬ j = t := by
-    lia
+  have hlt : ¬ j < t := by lia
+  have hne : ¬ j = t := by lia
   simp [thresholdEntry, hlt, hne]
 
 /-- The linear form `1 + X` has nonnegative coefficients. -/
@@ -214,8 +212,7 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
   have hfilter_ne : fs.filter (· ≠ 0) ≠ [] := by
     intro hnil
     have hsum_filter : (fs.filter (· ≠ 0)).sum = fs.sum := sum_filter_ne_zero fs
-    have hsum_zero : (fs.filter (· ≠ 0)).sum = 0 := by
-      simpa using congrArg List.sum hnil
+    have hsum_zero : (fs.filter (· ≠ 0)).sum = 0 := by simpa using congrArg List.sum hnil
     apply hsum_ne
     exact hsum_filter.symm.trans hsum_zero
   have hlen_pos : 0 < (fs.filter (· ≠ 0)).length := by
@@ -376,8 +373,7 @@ lemma hzTerminalRows_data :
     HZData hzTerminalRows := by
   constructor
   · intro p hp
-    have hp' : p = (0, (1 + X : ℝ[X])) := by
-      simpa [hzTerminalRows] using hp
+    have hp' : p = (0, (1 + X : ℝ[X])) := by simpa [hzTerminalRows] using hp
     subst p
     exact Or.inr rfl
   · intro i j _
@@ -1470,8 +1466,7 @@ private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
 private lemma prec0_gs_X_X : Prec0 (X : ℝ[X]) X :=
   prec0_refl_of_isRealRooted isRealRooted_X
 
-private lemma prec0_gs_one_one : Prec0 (1 : ℝ[X]) 1 := by
-  simpa using prec0_C_C (1 : ℝ) (1 : ℝ)
+private lemma prec0_gs_one_one : Prec0 (1 : ℝ[X]) 1 := by simpa using prec0_C_C (1 : ℝ) (1 : ℝ)
 
 private lemma prec0_gs_affine_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -1645,8 +1640,7 @@ lemma gsChoiceRows_data {choices : List (ℕ × Bool)}
       simpa [gsChoiceRows, List.get_eq_getElem, i', j'] using heq
     have hdel_marker : gsChoiceMarker (choices.get i').2 = 0 := by
       simpa [gsChoiceRows, List.get_eq_getElem, i'] using hdel
-    have hdel' : (choices.get i').2 = true := by
-      simpa using hdel_marker
+    have hdel' : (choices.get i').2 = true := by simpa using hdel_marker
     have hdelj := hdelete i' j' hij' heq' hdel'
     simpa [gsChoiceRows, List.get_eq_getElem, j', hdelj]
 
@@ -1966,8 +1960,7 @@ private lemma gsPaperChoices_local_of_fin {m : ℕ}
         ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hn⟩).2 = true →
       ((gsPaperChoices m phi delete).get ⟨n + 1, hn⟩).2 = true := by
   intro n hn heq hdel
-  have hn_m : n < m := by
-    simpa [length_gsPaperChoices] using hn
+  have hn_m : n < m := by simpa [length_gsPaperChoices] using hn
   let i : Fin m := ⟨n, hn_m⟩
   have hleft : (i.castSucc : Fin (m + 1)) =
       Fin.cast (length_gsPaperChoices m phi delete)

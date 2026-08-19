@@ -79,20 +79,16 @@ lemma coeff_motzkin_top_pos_and_above :
           have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
           have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
           rw [hcoeff_eq, hlow_zero]
-          have hA_pos : 0 < motzkinCoeffA n := by
-            rw [motzkinCoeffA]; positivity
-          have hB_pos : 0 < motzkinCoeffB n := by
-            rw [motzkinCoeffB]; positivity
-          have hshift_nonneg : 0 ≤ motzkinShift := by
-            rw [motzkinShift]; positivity
+          have hA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
+          have hB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
+          have hshift_nonneg : 0 ≤ motzkinShift := by rw [motzkinShift]; positivity
           nlinarith
         · have hprev_zero : coeff (motzkin (n + 1)) ((n + 3) / 2) = 0 := by grind
           have hlow_pos : 0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by grind
           have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
           have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
           rw [hcoeff_eq, hprev_zero, hlow_zero]
-          have hB_pos : 0 < motzkinCoeffB n := by
-            rw [motzkinCoeffB]; positivity
+          have hB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
           simp_all
       · intro m hm
         cases m with
@@ -159,10 +155,8 @@ lemma prec_motzkin_shifted_succ {n : Nat}
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
     Prec (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) := by
-  have hscalarA_pos : 0 < motzkinCoeffA n := by
-    rw [motzkinCoeffA]; positivity
-  have hscalarB_pos : 0 < motzkinCoeffB n := by
-    rw [motzkinCoeffB]; positivity
+  have hscalarA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
+  have hscalarB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
   have hleft :
       Prec (C (motzkinCoeffA n) * motzkin (n + 1))
         ((X - C motzkinShift) * motzkin (n + 1)) :=

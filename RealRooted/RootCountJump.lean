@@ -167,8 +167,7 @@ theorem sum_card_filter_Ioo_zip_tail_le_card_filter_gt
             ≤ (s.filter (fun r => a < r ∧ r ≤ b)).card +
                 (s.filter (b < ·)).card :=
           Nat.add_le_add hgap_le hih
-        _ = (s.filter (a < ·)).card := by
-          simpa using hpart.symm
+        _ = (s.filter (a < ·)).card := by simpa using hpart.symm
 
 /-- The sum of open-interval counts over a strictly increasing chain, plus the
 closed upper-tail count at the last list entry, is bounded by the strict-upper
@@ -212,8 +211,7 @@ theorem sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_g
           rw [Nat.add_assoc]
         _ ≤ (s.filter (fun r => a < r ∧ r ≤ b)).card +
             (s.filter (b < ·)).card := Nat.add_le_add hgap_le hih
-        _ = (s.filter (a < ·)).card := by
-          simpa using hpart.symm
+        _ = (s.filter (a < ·)).card := by simpa using hpart.symm
 
 /-- The closed lower tail at the first list entry, the adjacent open gaps, and
 the closed upper tail at the last list entry fit inside the whole multiset. -/
@@ -242,8 +240,7 @@ theorem card_filter_le_add_sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLa
       rw [Nat.add_assoc]
     _ ≤ (s.filter (· ≤ a)).card + (s.filter (a < ·)).card :=
       Nat.add_le_add_left hupper _
-    _ = s.card := by
-      simpa using hpart
+    _ = s.card := by simpa using hpart
 
 /-- If `a` is absent from a multiset, the strict lower and strict upper filters
 at `a` partition the multiset. -/
@@ -328,8 +325,7 @@ theorem card_filter_gt_lt_of_mem_Ioc
     (hc : c ∈ s) (hac : a < c) (hcb : c ≤ b) :
     (s.filter (b < ·)).card < (s.filter (a < ·)).card := by
   have hpart := card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
-  have hcIoc : c ∈ s.filter (fun r => a < r ∧ r ≤ b) := by
-    simp [hc, hac, hcb]
+  have hcIoc : c ∈ s.filter (fun r => a < r ∧ r ≤ b) := by simp [hc, hac, hcb]
   have hpos : 0 < (s.filter (fun r => a < r ∧ r ≤ b)).card :=
     Multiset.card_pos_iff_exists_mem.mpr ⟨c, hcIoc⟩
   rw [← hpart]
@@ -716,14 +712,12 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
   let I := (p.roots.filter (fun r => a < r ∧ r < b)).card
   have hpa : ¬ p.IsRoot a := by
     intro hroot
-    have hzero : p.eval a = 0 := by
-      simpa [Polynomial.IsRoot.def] using hroot
+    have hzero : p.eval a = 0 := by simpa [Polynomial.IsRoot.def] using hroot
     rw [hzero, zero_mul] at hprod
     linarith
   have hpb : ¬ p.IsRoot b := by
     intro hroot
-    have hzero : p.eval b = 0 := by
-      simpa [Polynomial.IsRoot.def] using hroot
+    have hzero : p.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hroot
     rw [hzero, mul_zero] at hprod
     linarith
   have hnorm_a : 0 < p.eval a * p.leadingCoeff * (-1 : ℝ) ^ A := by
@@ -757,11 +751,9 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
         (s := p.roots) hab hb_not_mem
   rw [← hsplit] at hAB_even
-  have hsum : Even (I + (B + B)) := by
-    simpa [Nat.add_assoc] using hAB_even
+  have hsum : Even (I + (B + B)) := by simpa [Nat.add_assoc] using hAB_even
   rw [Nat.even_add] at hsum
-  have hBB : Even (B + B) := by
-    exact ⟨B, by ring⟩
+  have hBB : Even (B + B) := by exact ⟨B, by ring⟩
   exact hsum.mpr hBB
 
 /-- A nonzero splitting polynomial with an even number of roots, counted with
@@ -789,10 +781,8 @@ theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
     simpa [I, B, A] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
         (s := p.roots) hab hb_not_mem
-  have hI_even : Even I := by
-    simpa [I] using heven
-  have hBB_even : Even (B + B) := by
-    exact ⟨B, by ring_nf⟩
+  have hI_even : Even I := by simpa [I] using heven
+  have hBB_even : Even (B + B) := by exact ⟨B, by ring_nf⟩
   have hAB_even : Even (A + B) := by
     rw [← hsplit]
     simpa [Nat.add_assoc] using Even.add hI_even hBB_even
@@ -860,8 +850,7 @@ theorem exists_roots_pair_le_roots_filter_Ioo_of_two_le_card_roots_filter_Ioo
         ({u, v} : Multiset ℝ) ≤ p.roots.filter (fun r => a < r ∧ r < b) := by
   let s := p.roots.filter (fun r => a < r ∧ r < b)
   change 2 ≤ s.card at hcard
-  have hs_pos : 0 < s.card := by
-    linarith
+  have hs_pos : 0 < s.card := by linarith
   obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp hs_pos
   have herase_pos : 0 < (s.erase u).card := by
     rw [Multiset.card_erase_of_mem hu]
@@ -947,10 +936,8 @@ theorem closedSegment_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
         (C (1 - β) * f + C β * g).eval b := by
   have hgprod : 0 < g.eval a * g.eval b :=
     eval_mul_pos_of_forall_not_isRoot_Icc hab hg_no
-  have hfa_eval : f.eval a = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfa
-  have hfb_eval : f.eval b = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfb
+  have hfa_eval : f.eval a = 0 := by simpa [Polynomial.IsRoot.def] using hfa
+  have hfb_eval : f.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hfb
   have ha : (C (1 - β) * f + C β * g).eval a = β * g.eval a := by
     simp [eval_add, eval_mul, eval_C, hfa_eval]
   have hb : (C (1 - β) * f + C β * g).eval b = β * g.eval b := by
@@ -968,13 +955,10 @@ theorem rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
     0 < (f + C μ * g).eval a * (f + C μ * g).eval b := by
   have hgprod : 0 < g.eval a * g.eval b :=
     eval_mul_pos_of_forall_not_isRoot_Icc hab hg_no
-  have hfa_eval : f.eval a = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfa
-  have hfb_eval : f.eval b = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfb
+  have hfa_eval : f.eval a = 0 := by simpa [Polynomial.IsRoot.def] using hfa
+  have hfb_eval : f.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hfb
   have hμ_sq : 0 < μ * μ := mul_pos hμ_pos hμ_pos
-  have htarget : 0 < (μ * g.eval a) * (μ * g.eval b) := by
-    nlinarith [mul_pos hμ_sq hgprod]
+  have htarget : 0 < (μ * g.eval a) * (μ * g.eval b) := by nlinarith [mul_pos hμ_sq hgprod]
   simpa [eval_add, eval_mul, eval_C, hfa_eval, hfb_eval] using htarget
 
 /-- If two endpoint polynomials have the same nonzero sign at `x`, then every
@@ -1012,22 +996,19 @@ theorem exists_threshold_no_mem_Ioc (s : Multiset ℝ) (x : ℝ) :
   by_cases hSne : S.Nonempty
   · set m : ℝ := S.min' hSne with hm
     have hmS : m ∈ S := Finset.min'_mem S hSne
-    have hxm : x < m := by
-      simp_all
+    have hxm : x < m := by simp_all
     refine ⟨(x + m) / 2, by linarith, ?_⟩
     intro r hr
     by_cases hxr : x < r
     · right
-      have hrS : r ∈ S := by
-        simp_all
+      have hrS : r ∈ S := by simp_all
       have : m ≤ r := Finset.min'_le S _ hrS
       linarith
     · simp_all
   · rw [Finset.not_nonempty_iff_eq_empty] at hSne
     have hall : ∀ r ∈ s, ¬ x < r := by
       intro r hr hxr
-      have : r ∈ S := by
-        simp_all
+      have : r ∈ S := by simp_all
       grind
     refine ⟨x + 1, by linarith, ?_⟩
     simp_all

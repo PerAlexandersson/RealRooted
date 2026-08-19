@@ -483,8 +483,7 @@ theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
   have hPlead : (modifiedNarayanaPolynomial n).coeff n = 1 := by
     calc
       _ = (modifiedNarayanaPolynomial n).coeff
-          (modifiedNarayanaPolynomial n).natDegree := by
-            rw [modifiedNarayanaPolynomial_natDegree]
+          (modifiedNarayanaPolynomial n).natDegree := by rw [modifiedNarayanaPolynomial_natDegree]
       _ = (modifiedNarayanaPolynomial n).leadingCoeff := coeff_natDegree
       _ = 1 := modifiedNarayanaPolynomial_leadingCoeff n
   have hPnext := modifiedNarayanaPolynomial_coeff_sub_one n hn
@@ -550,8 +549,7 @@ theorem auxiliaryG_coeff_self_of_narayanaRecurrence
   have hPlead : (modifiedNarayanaPolynomial n).coeff n = 1 := by
     calc
       _ = (modifiedNarayanaPolynomial n).coeff
-          (modifiedNarayanaPolynomial n).natDegree := by
-            rw [modifiedNarayanaPolynomial_natDegree]
+          (modifiedNarayanaPolynomial n).natDegree := by rw [modifiedNarayanaPolynomial_natDegree]
       _ = (modifiedNarayanaPolynomial n).leadingCoeff := coeff_natDegree
       _ = 1 := modifiedNarayanaPolynomial_leadingCoeff n
   rw [hPsucc, hPabove, hPlead] at hcoeff
@@ -746,20 +744,17 @@ theorem theorem41Claim7_modified_rootSum_ratio_le
   have hdm2 : 0 ≤ d - 2 := by linarith
   have hdp2 : 0 ≤ d + 2 := by linarith
   have hdenU : 0 < lam + 1 := by linarith
-  have hdenV : 0 < d + lam * (d - 1) := by
-    nlinarith [mul_nonneg hlam hdm1]
+  have hdenV : 0 < d + lam * (d - 1) := by nlinarith [mul_nonneg hlam hdm1]
   rw [div_le_div_iff₀ hdenU hdenV]
   have hsq : 0 ≤ d ^ 2 - 1 := by nlinarith
   have ht1 : 0 ≤ lam ^ 2 * d * (d ^ 2 - 1) := by positivity
-  have hd_sq : 4 ≤ d ^ 2 := by
-    nlinarith [mul_nonneg hdm2 hdp2]
+  have hd_sq : 4 ≤ d ^ 2 := by nlinarith [mul_nonneg hdm2 hdp2]
   have hpoly : 0 ≤ 2 * d ^ 2 + 3 * d - 5 := by nlinarith
   have ht2 : 0 ≤ lam * d * (2 * d ^ 2 + 3 * d - 5) := by positivity
   have hquad : 0 ≤ d ^ 2 + 5 * d + 12 := by nlinarith [sq_nonneg d]
   have hbaseprod : 0 ≤ (d - 2) * (d ^ 2 + 5 * d + 12) :=
     mul_nonneg hdm2 hquad
-  have hbase : 0 ≤ d * (d + 1) * (d + 2) + 6 * nu := by
-    nlinarith [hbaseprod]
+  have hbase : 0 ≤ d * (d + 1) * (d + 2) + 6 * nu := by nlinarith [hbaseprod]
   have hfactor :
       (d * (d + 1) / 2 + lam * (d - 1) * d / 2 + nu) *
           (d + lam * (d - 1)) -
@@ -830,8 +825,7 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
   have hPmLead : (modifiedNarayanaPolynomial m).coeff m = 1 := by
     calc
       _ = (modifiedNarayanaPolynomial m).coeff
-          (modifiedNarayanaPolynomial m).natDegree := by
-            rw [modifiedNarayanaPolynomial_natDegree]
+          (modifiedNarayanaPolynomial m).natDegree := by rw [modifiedNarayanaPolynomial_natDegree]
       _ = (modifiedNarayanaPolynomial m).leadingCoeff := coeff_natDegree
       _ = 1 := modifiedNarayanaPolynomial_leadingCoeff m
   have hPmNext := modifiedNarayanaPolynomial_coeff_sub_one m (by lia)
@@ -931,8 +925,7 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
     linarith
   have hVlc_ne : V.leadingCoeff ≠ 0 := by
     rw [hVlc]
-    have hm_real : (2 : ℝ) ≤ m := by
-      exact_mod_cast (show 2 ≤ m by lia)
+    have hm_real : (2 : ℝ) ≤ m := by exact_mod_cast (show 2 ≤ m by lia)
     have hterm : 0 ≤ lam * ((m : ℝ) - 1) :=
       mul_nonneg hlam (by linarith)
     nlinarith
@@ -1341,13 +1334,7 @@ theorem modifiedNarayanaPolynomial_six_exists_ordered_roots :
   rw [← hcons5] at hrs_sorted hrs_eq
   have hrs6_nil : rs6 = [] := List.length_eq_zero_iff.mp hlen6
   rw [hrs6_nil] at hrs_sorted hrs_eq
-  refine ⟨a, b, c, d, e, r, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · simpa using hrs_eq.symm
-  · simp_all
-  · simp_all
-  · simp_all
-  · simp_all
-  · simp_all
+  refine ⟨a, b, c, d, e, r, by simpa using hrs_eq.symm, ?_, ?_, ?_, ?_, ?_⟩ <;> simp_all
 
 /-- Modified Narayana polynomials are nonzero and split over the reals. -/
 theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :
@@ -1463,8 +1450,7 @@ theorem auxiliaryG_six_quartic_scaled_factor :
           C (3 : ℝ)) := by
   have hs_sq' : Real.sqrt (55 : ℝ) ^ 2 = (55 : ℝ) :=
     Real.sq_sqrt (by norm_num)
-  have hCsq : (C (Real.sqrt (55 : ℝ)) : ℝ[X]) ^ 2 = C (55 : ℝ) := by
-    rw [← map_pow, hs_sq']
+  have hCsq : (C (Real.sqrt (55 : ℝ)) : ℝ[X]) ^ 2 = C (55 : ℝ) := by rw [← map_pow, hs_sq']
   have hCplus :
       (C ((16 : ℝ) + Real.sqrt (55 : ℝ)) : ℝ[X]) =
         C (16 : ℝ) + C (Real.sqrt (55 : ℝ)) := by
@@ -1627,8 +1613,7 @@ theorem auxiliaryG_six_root_order :
     dsimp [s]
     rw [Real.sqrt_le_left (by norm_num)]
     norm_num
-  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
-    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by nlinarith [hs_sq, sq_nonneg (s - 8)]
   have hα_sq : α ^ 2 = (275 : ℝ) + 32 * s := by
     dsimp [α]
     exact Real.sq_sqrt (by positivity)
@@ -1645,17 +1630,14 @@ theorem auxiliaryG_six_root_order :
     dsimp [β]
     rw [Real.sqrt_le_left (by norm_num)]
     nlinarith [hs_ge7]
-  have hβ_le_2sα : β ≤ 2 * s + α := by
-    nlinarith [hβ_nonneg, hs_nonneg, hα_nonneg]
+  have hβ_le_2sα : β ≤ 2 * s + α := by nlinarith [hβ_nonneg, hs_nonneg, hα_nonneg]
   have hten_minus_s_leβ : (10 : ℝ) - s ≤ β := by
     dsimp [β]
     apply Real.le_sqrt_of_sq_le
     nlinarith [hs_sq, hs_le8]
   have h2sβ_leα : 2 * s + β ≤ α := by
-    have hmul : 4 * s * β ≤ 4 * s * 8 := by
-      exact mul_le_mul_of_nonneg_left hβ_le8 (by positivity)
-    have hsq_le : (2 * s + β) ^ 2 ≤ α ^ 2 := by
-      nlinarith [hs_sq, hβ_sq, hα_sq, hmul, hs_ge7]
+    have hmul : 4 * s * β ≤ 4 * s * 8 := by exact mul_le_mul_of_nonneg_left hβ_le8 (by positivity)
+    have hsq_le : (2 * s + β) ^ 2 ≤ α ^ 2 := by nlinarith [hs_sq, hβ_sq, hα_sq, hmul, hs_ge7]
     nlinarith [sq_nonneg (α - (2 * s + β)), hsq_le, hα_nonneg, hs_nonneg,
       hβ_nonneg]
   constructor
@@ -1791,8 +1773,7 @@ theorem auxiliaryG_six_root1_qMinus :
   have hs_sq : s ^ 2 = (55 : ℝ) := by
     dsimp [s]
     exact Real.sq_sqrt (by norm_num)
-  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
-    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by nlinarith [hs_sq, sq_nonneg (s - 8)]
   have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
     dsimp [β]
     exact Real.sq_sqrt hβ_arg_nonneg
@@ -1808,8 +1789,7 @@ theorem auxiliaryG_six_root3_qMinus :
   have hs_sq : s ^ 2 = (55 : ℝ) := by
     dsimp [s]
     exact Real.sq_sqrt (by norm_num)
-  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
-    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by nlinarith [hs_sq, sq_nonneg (s - 8)]
   have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
     dsimp [β]
     exact Real.sq_sqrt hβ_arg_nonneg
@@ -1922,8 +1902,7 @@ theorem modifiedNarayanaPolynomial_six_eval_root3_pos :
     dsimp [s]
     rw [Real.sqrt_le_left (by norm_num)]
     norm_num
-  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by
-    nlinarith [hs_sq, sq_nonneg (s - 8)]
+  have hβ_arg_nonneg : 0 ≤ (275 : ℝ) - 32 * s := by nlinarith [hs_sq, sq_nonneg (s - 8)]
   have hβ_sq : β ^ 2 = (275 : ℝ) - 32 * s := by
     dsimp [β]
     exact Real.sq_sqrt hβ_arg_nonneg
@@ -2165,8 +2144,7 @@ theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
     hxs_sorted_lt.imp (by intro _ _ h; exact le_of_lt h)
   have hxs_nodup_list : ([x0, x1, x2, x3, x4, x5] : List ℝ).Nodup :=
     hxs_sorted_lt.imp (by intro _ _ h; exact ne_of_lt h)
-  have hxs_nodup : (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ).Nodup := by
-    simpa using hxs_nodup_list
+  have hxs_nodup : (↑[x0, x1, x2, x3, x4, x5] : Multiset ℝ).Nodup := by simpa using hxs_nodup_list
   have hP_ne : modifiedNarayanaPolynomialSix ≠ 0 := by
     simpa [modifiedNarayanaPolynomialSix] using modifiedNarayanaPolynomial_six_ne_zero
   have hx0_mem : x0 ∈ modifiedNarayanaPolynomialSix.roots :=
@@ -2222,8 +2200,7 @@ theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
       hab.trans (hbc.trans (hcd.trans (hde.trans her)))]
   have hlist_eq : [x0, x1, x2, x3, x4, x5] = [a, b, c, d, e, r] :=
     List.Perm.eq_of_pairwise' hxs_sorted habs_sorted hperm
-  have hcoords : x0 = a ∧ x1 = b ∧ x2 = c ∧ x3 = d ∧ x4 = e ∧ x5 = r := by
-    simpa using hlist_eq
+  have hcoords : x0 = a ∧ x1 = b ∧ x2 = c ∧ x3 = d ∧ x4 = e ∧ x5 = r := by simpa using hlist_eq
   rcases hcoords with ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
   exact ⟨le_of_lt hx0_lt, le_of_lt hx01, le_of_lt hx1_lt, le_of_lt hx12,
     le_of_lt hx2_lt, le_of_lt hx23, le_of_lt hx3_lt, le_of_lt hx34,
@@ -2525,8 +2502,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
     dsimp [s]
     have hs_sq' : Real.sqrt (7 : ℝ) ^ 2 = (7 : ℝ) :=
       Real.sq_sqrt (by norm_num)
-    have hCsq : (C (Real.sqrt (7 : ℝ)) : ℝ[X]) ^ 2 = C (7 : ℝ) := by
-      rw [← map_pow, hs_sq']
+    have hCsq : (C (Real.sqrt (7 : ℝ)) : ℝ[X]) ^ 2 = C (7 : ℝ) := by rw [← map_pow, hs_sq']
     have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
     have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
     have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
@@ -2663,8 +2639,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
     nlinarith [hs_sq, hs_ge2]
-  have hsumβ_leα : 2 * s + β ≤ α := by
-    linarith
+  have hsumβ_leα : 2 * s + β ≤ α := by linarith
   have hsumβγ_le : s + β - 1 ≤ γ := by
     dsimp [γ]
     apply Real.le_sqrt_of_sq_le
@@ -2760,8 +2735,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     dsimp [s]
     have hs_sq' : Real.sqrt (3 : ℝ) ^ 2 = (3 : ℝ) :=
       Real.sq_sqrt (by norm_num)
-    have hCsq : (C (Real.sqrt (3 : ℝ)) : ℝ[X]) ^ 2 = C (3 : ℝ) := by
-      rw [← map_pow, hs_sq']
+    have hCsq : (C (Real.sqrt (3 : ℝ)) : ℝ[X]) ^ 2 = C (3 : ℝ) := by rw [← map_pow, hs_sq']
     have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
     have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
     have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
@@ -2784,8 +2758,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     dsimp [t, c]
     have ht_sq' : Real.sqrt (15 : ℝ) ^ 2 = (15 : ℝ) :=
       Real.sq_sqrt (by norm_num)
-    have hCsq : (C (Real.sqrt (15 : ℝ)) : ℝ[X]) ^ 2 = C (15 : ℝ) := by
-      rw [← map_pow, ht_sq']
+    have hCsq : (C (Real.sqrt (15 : ℝ)) : ℝ[X]) ^ 2 = C (15 : ℝ) := by rw [← map_pow, ht_sq']
     have hC1 : (C (1 : ℝ) : ℝ[X]) = 1 := by simp
     have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
     have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
@@ -2884,10 +2857,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     rw [Real.sqrt_le_left (by norm_num)]
     norm_num
   have ht_le4 : t ≤ (4 : ℝ) := by linarith
-  have h15_sub_8s_nonneg : 0 ≤ (15 : ℝ) - 8 * s := by
-    nlinarith only [hs_le7div4]
-  have h60_sub_14t_nonneg : 0 ≤ (60 : ℝ) - 14 * t := by
-    nlinarith only [ht_le4]
+  have h15_sub_8s_nonneg : 0 ≤ (15 : ℝ) - 8 * s := by nlinarith only [hs_le7div4]
+  have h60_sub_14t_nonneg : 0 ≤ (60 : ℝ) - 14 * t := by nlinarith only [ht_le4]
   have hα_sq : α ^ 2 = (15 : ℝ) + 8 * s := by
     dsimp [α]
     exact Real.sq_sqrt (by positivity)
@@ -2964,12 +2935,9 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     dsimp [δ]
     rw [Real.sqrt_le_left (by norm_num)]
     nlinarith only [ht_ge15div4]
-  have h2sβ_leα : 2 * s + β ≤ α := by
-    linarith
-  have h2tδ_leγ : 2 * t + δ ≤ γ := by
-    linarith
-  have htwo_sub_s_leβ : 2 - s ≤ β := by
-    linarith only [hs_ge6div5, hβ_ge1]
+  have h2sβ_leα : 2 * s + β ≤ α := by linarith
+  have h2tδ_leγ : 2 * t + δ ≤ γ := by linarith
+  have htwo_sub_s_leβ : 2 - s ≤ β := by linarith only [hs_ge6div5, hβ_ge1]
   have hG_splits : (FiniteSkewBoard.auxiliaryG 5).Splits := by
     rw [hGfactor]
     refine (Polynomial.Splits.C (5 : ℝ)).mul ?_
@@ -3252,8 +3220,7 @@ theorem modifiedNarayanaPencil_leadingCoeff {m : ℕ} {lam nu : ℝ}
   have hPmLead : (modifiedNarayanaPolynomial m).coeff m = 1 := by
     calc
       _ = (modifiedNarayanaPolynomial m).coeff
-          (modifiedNarayanaPolynomial m).natDegree := by
-            rw [modifiedNarayanaPolynomial_natDegree]
+          (modifiedNarayanaPolynomial m).natDegree := by rw [modifiedNarayanaPolynomial_natDegree]
       _ = (modifiedNarayanaPolynomial m).leadingCoeff := coeff_natDegree
       _ = 1 := modifiedNarayanaPolynomial_leadingCoeff m
   have hXPprevLead : (X * modifiedNarayanaPolynomial (m - 1)).coeff m = 1 := by
@@ -3370,8 +3337,7 @@ theorem auxiliaryGPencil_splits_of_section3
   let W : ℝ[X] :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial m +
       modifiedNarayanaPolynomial (m + 1)
-  have hUW : Prec U W := by
-    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
@@ -3410,8 +3376,7 @@ theorem auxiliaryGPencil_splits_of_section3
   have hpair : Prec U (W - X * U) ∧ Prec (W - X * U) W :=
     prec_sub_X_mul_pair_of_eq_posLeadingCoeff hUW hW_pos hWU_lc hdeg_UW
       hW_nonpos hU_nonpos (by simpa [hmid_eq] using hmid_pos)
-  have hU_mid : Prec U (U + X * V) := by
-    simpa [hmid_eq] using hpair.left
+  have hU_mid : Prec U (U + X * V) := by simpa [hmid_eq] using hpair.left
   have hall_U_mid := allComboRealRooted_of_prec hU_mid
   have hall_U_XV : AllComboRealRooted U (X * V) := by
     intro alpha beta
@@ -3422,8 +3387,7 @@ theorem auxiliaryGPencil_splits_of_section3
       rw [map_sub]
       ring]
     exact hsplit
-  have hXV_split : (X * V).Splits := by
-    simpa using hall_U_XV 0 1
+  have hXV_split : (X * V).Splits := by simpa using hall_U_XV 0 1
   simpa [V] using Polynomial.splits_X_mul.mp hXV_split
 
 /-- Convert the combinatorial nonnegativity of the auxiliary difference into

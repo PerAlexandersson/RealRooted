@@ -474,8 +474,7 @@ theorem rootCrossing_of_rootCount_diff_le_one
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
 
 /-- Root-count bridge from the upper-threshold formulation to the same-degree
@@ -491,8 +490,7 @@ theorem rootCrossing_of_rootCountAbove_diff_le_one
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Same-degree descending-root crossing implies the lower-threshold root-count
@@ -509,8 +507,7 @@ theorem sameDegreeRootCount_of_rootCrossing
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   simpa [rootSeqDesc] using
     (count_diff_le_one_of_rootCrossing (M := f.roots) (N := g.roots)
       hMcard hNcard hcross)
@@ -527,8 +524,7 @@ theorem sameDegreeRootCount_of_rootCountAbove
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   exact count_le_diff_le_one_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Convert the lower-threshold same-degree root-count formulation into the
@@ -543,8 +539,7 @@ theorem sameDegreeRootCountAbove_of_rootCount
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by
-    rw [card_roots_of_splits hg, hdeg]
+  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_diff_le_one hMcard hNcard hcount
 
 /-- The same-degree root-count formulation implies the descending-root
@@ -678,10 +673,8 @@ theorem rootCount_diff_le_one_of_natDegree_le_one
       _ = g.natDegree := card_roots_of_splits hg
       _ = f.natDegree := hdeg
       _ ≤ 1 := hfdeg
-  have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by
-    exact_mod_cast hfcard_nat
-  have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by
-    exact_mod_cast hgcard_nat
+  have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by exact_mod_cast hfcard_nat
+  have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by exact_mod_cast hgcard_nat
   have hfnonneg : (0 : ℤ) ≤ (f.roots.filter (· ≤ x)).card := by
     exact_mod_cast Nat.zero_le (f.roots.filter (· ≤ x)).card
   have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
@@ -744,8 +737,7 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
     (hfdeg : f.natDegree = 2) (x : ℝ) :
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hgdeg : g.natDegree = 2 := by
-    rw [hdeg, hfdeg]
+  have hgdeg : g.natDegree = 2 := by rw [hdeg, hfdeg]
   exact sameDegree_quadratic_rootCount_le_one
     hfdeg hgdeg
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -788,8 +780,7 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
   by_cases hle : f.natDegree ≤ 1
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · have htwo : f.natDegree = 2 := by
-      lia
+  · have htwo : f.natDegree = 2 := by lia
     exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
       hf_pos hg_pos hfg hdeg htwo x
 
@@ -808,8 +799,7 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
   by_cases hle : f.natDegree ≤ 1
   · exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · have htwo : f.natDegree = 2 := by
-      lia
+  · have htwo : f.natDegree = 2 := by lia
     exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
       hf_pos hg_pos hfg hdeg htwo x
 
@@ -882,10 +872,8 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubic
   by_cases hle : f.natDegree ≤ 2
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · have hfdeg3 : f.natDegree = 3 := by
-      lia
-    have hgdeg3 : g.natDegree = 3 := by
-      rw [hdeg, hfdeg3]
+  · have hfdeg3 : f.natDegree = 3 := by lia
+    have hgdeg3 : g.natDegree = 3 := by rw [hdeg, hfdeg3]
     exact sameDegree_cubic_rootCount_le_one_of_interior hbelow habove
       hfdeg3 hgdeg3
       (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2

@@ -97,10 +97,8 @@ theorem forall₂_le_of_forall_pos_exists_close
   apply le_of_forall_pos_exists_close_le
   intro ρ hρ
   obtain ⟨xs', ys', hxs, hys, hxy⟩ := h ρ hρ
-  have hix' : i < xs'.length := by
-    simpa only [hxs.length_eq] using hix
-  have hiy' : i < ys'.length := by
-    simpa only [hys.length_eq] using hiy
+  have hix' : i < xs'.length := by simpa only [hxs.length_eq] using hix
+  have hiy' : i < ys'.length := by simpa only [hys.length_eq] using hiy
   exact ⟨xs'.get ⟨i, hix'⟩, ys'.get ⟨i, hiy'⟩,
     hxs.get hix hix', hys.get hiy hiy', hxy.get hix' hiy'⟩
 

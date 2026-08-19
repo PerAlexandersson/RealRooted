@@ -25,8 +25,7 @@ def touchard : Nat → ℝ[X]
 lemma touchard_succ (n : Nat) :
     touchard (n + 1) = X * touchard n + X * (touchard n).derivative := rfl
 
-lemma touchard_one : touchard 1 = X := by
-  simp [touchard]
+lemma touchard_one : touchard 1 = X := by simp [touchard]
 
 lemma touchard_two : touchard 2 = X + X ^ 2 := by
   simp [touchard_succ, pow_two]

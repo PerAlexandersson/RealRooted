@@ -5,17 +5,13 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example : IsPFPolynomial (0 : ℝ[X]) := by
-  rr_pf_zero
+example : IsPFPolynomial (0 : ℝ[X]) := by rr_pf_zero
 
-example : IsPFPolynomial (1 : ℝ[X]) := by
-  rr_pf_one
+example : IsPFPolynomial (1 : ℝ[X]) := by rr_pf_one
 
-example : IsPFPolynomial (X : ℝ[X]) := by
-  rr_pf_X
+example : IsPFPolynomial (X : ℝ[X]) := by rr_pf_X
 
-example : IsPFPolynomial (X + 1 : ℝ[X]) := by
-  rr_pf_X_add_one
+example : IsPFPolynomial (X + 1 : ℝ[X]) := by rr_pf_X_add_one
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :
     HasNonnegCoeffs p := by
@@ -90,8 +86,7 @@ example {P : Nat → ℝ[X]}
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     IsPolyaFreqSeq p.coeff := by
   rr_pf_to_coefficient_sequence using
-    pf := by
-      rr_pf_of_nonneg_splits using nonneg := hnn, splits := hsplits
+    pf := by rr_pf_of_nonneg_splits using nonneg := hnn, splits := hsplits
 
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     IsPFPolynomial p := by

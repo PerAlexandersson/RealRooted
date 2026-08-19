@@ -230,8 +230,7 @@ theorem splits_of_eventually_add_C_mul_family_of_succDegree
     f.Splits := by
   refine Polynomial.Splits.of_splits_map (algebraMap ℝ ℂ) (IsAlgClosed.splits _) ?_
   intro z hz_mem
-  have hzf : (Polynomial.aeval (R := ℝ) z f) = 0 := by
-    aesop
+  have hzf : (Polynomial.aeval (R := ℝ) z f) = 0 := by aesop
   by_contra hz_im_ne_zero
   have hz_im : z.im ≠ 0 :=
     fun h => hz_im_ne_zero <| ⟨z.re, by simp [Complex.ext_iff, h]⟩

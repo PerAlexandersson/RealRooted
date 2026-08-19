@@ -38,8 +38,7 @@ theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
     rw [generalizedSnakeBoard, Finset.mem_filter] at h
     simp only [List.length_replicate] at h
     rcases h with ⟨hbound, hcell⟩
-    have hbounds : r ≤ n ∧ c ≤ n := by
-      simpa [Finset.mem_product] using hbound
+    have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
     rw [Bool.and_eq_true] at hcell
     rcases hcell with ⟨_hrow_col, hcol_row⟩
     have hrc : r ≤ c := by
@@ -69,8 +68,7 @@ theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
     rw [generalizedSnakeBoard, Finset.mem_filter] at h
     simp only [List.length_replicate] at h
     rcases h with ⟨hbound, hcell⟩
-    have hbounds : r ≤ n ∧ c ≤ n := by
-      simpa [Finset.mem_product] using hbound
+    have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
     rw [Bool.and_eq_true] at hcell
     rcases hcell with ⟨hrow_col, _hcol_row⟩
     have hcr : c ≤ r := by

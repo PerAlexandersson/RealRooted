@@ -53,8 +53,7 @@ private theorem specializeZero_zero_or_of_degreeOf_le_one_unrestricted
   have hA0 : A.eval 0 = 0 := by
     simp only [A, eval_affineLineRestriction, mul_zero, add_zero]
     simpa [Q] using hQz
-  have hA1 : A.eval 1 ≠ 0 := by
-    simpa [A, v] using hQz₁
+  have hA1 : A.eval 1 ≠ 0 := by simpa [A, v] using hQz₁
   have hA : A ≠ 0 := by
     intro hzero
     rw [hzero, Polynomial.eval_zero] at hA1

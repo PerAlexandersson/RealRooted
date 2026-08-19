@@ -133,7 +133,6 @@ def finOneSumEquivFinTwo : Fin 1 ⊕ Fin 1 ≃ Fin 2 where
       rfl
     · rw [Subsingleton.elim i 0]
       rfl
-  right_inv i := by
-    fin_cases i <;> rfl
+  right_inv i := by fin_cases i <;> rfl
 
 end RealRooted.BorceaBranden

@@ -82,8 +82,7 @@ private lemma unit_complex_weight_mul {w : ℂ}
   have hden : (2 : ℂ) - (w + conj w) ≠ 0 := by
     intro h
     have hs : w + conj w = 2 := by linear_combination -h
-    have hsquare : (w - 1) ^ 2 = 0 := by
-      linear_combination w * hs - hunit
+    have hsquare : (w - 1) ^ 2 = 0 := by linear_combination w * hs - hunit
     exact h1w (sub_eq_zero.mp (sq_eq_zero_iff.mp hsquare)).symm
   simp only [aswCubicComplexModeWeight, Complex.ofReal_one]
   field_simp [hw0, sub_ne_zero.mpr h1w.symm, sub_ne_zero.mpr hwc, hden]
@@ -140,8 +139,7 @@ theorem aswCubicClosedForm_unit_gap_re {w : ℂ}
           (2 - (w + conj w)) by ring]
   simp only [← map_pow, Complex.add_conj, Complex.ofReal_sub, Complex.ofReal_div,
     Complex.ofReal_one]
-  have hden1C : (1 : ℂ) - (w.re : ℂ) ≠ 0 := by
-    exact_mod_cast (ne_of_gt (sub_pos.mpr hrelt))
+  have hden1C : (1 : ℂ) - (w.re : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt (sub_pos.mpr hrelt))
   have hden2C : (2 : ℂ) - ((2 * w.re : ℝ) : ℂ) ≠ 0 := by
     exact_mod_cast (by linarith : (2 : ℝ) - 2 * w.re ≠ 0)
   field_simp [hden1C, hden2C]

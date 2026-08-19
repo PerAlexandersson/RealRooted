@@ -52,8 +52,7 @@ quotient by the common factor `X` still has positive leading coefficient. -/
 lemma HasPosLeadingCoeff.divX_of_coeff_zero {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) (h0 : p.coeff 0 = 0) :
     HasPosLeadingCoeff p.divX := by
-  have hX : X * p.divX = p := by
-    simpa [h0] using Polynomial.X_mul_divX_add p
+  have hX : X * p.divX = p := by simpa [h0] using Polynomial.X_mul_divX_add p
   have hX_pos : HasPosLeadingCoeff (X * p.divX) := by simp_all
   have hXC_pos : HasPosLeadingCoeff ((X - C 0) * p.divX) := by grind
   exact hasPosLeadingCoeff_of_X_sub_C_mul hXC_pos
@@ -101,14 +100,12 @@ lemma splits_of_divX_splits_of_coeff_zero {p : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (h0 : p.coeff 0 = 0)
     (hdiv : p.divX.Splits) :
     p.Splits := by
-  have hX : X * p.divX = p := by
-    simpa [h0] using Polynomial.X_mul_divX_add p
+  have hX : X * p.divX = p := by simpa [h0] using Polynomial.X_mul_divX_add p
   have hdiv_pos : HasPosLeadingCoeff p.divX := hp_pos.divX_of_coeff_zero h0
   have hX_rr := isRealRooted_X_mul hdiv_pos.ne_zero hdiv
   simp_all
 
-lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
-  simp
+lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by simp
 
 /-- Orientation sanity check for the local `Prec` convention on linear factors.
 
@@ -122,15 +119,10 @@ lemma prec_X_add_C_iff {a b : ℝ} :
     have hsum := roots_sum_le_of_prec_sameDegree h (by simp)
     simpa using hsum
   · intro hab
-    refine ⟨?_, ?_, [(-b)], [(-a)], ?_, ?_, ?_, ?_, ?_⟩
+    refine ⟨?_, ?_, [(-b)], [(-a)], by simp, by simp, by simp, by simp, ?_⟩
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-    · simp
-    · simp
-    · simp
-    · simp
-    · refine Or.inr ⟨by simp, ?_⟩
-      simpa [ListAlternates, ListInterlaces] using hab
+    · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hab⟩
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
@@ -185,8 +177,7 @@ lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp_ne : p ≠ 0)
   have hdeg : 0 < p.natDegree := by
     rw [natDegree_pos_iff_degree_pos]
     exact degree_pos_of_ne_zero_of_nonunit hp_ne hu
-  have hcard : 0 < p.roots.card := by
-    rwa [card_roots_of_splits hp_splits]
+  have hcard : 0 < p.roots.card := by rwa [card_roots_of_splits hp_splits]
   obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hcard
   exact ⟨r, (mem_roots hp_ne).mp hr⟩
 
@@ -285,10 +276,8 @@ lemma rootMultiplicity_comp_X_add_C {p : ℝ[X]} (r x : ℝ) :
     (p.comp (X + C r)).rootMultiplicity x
       = ((p.comp (X + C r)).comp (X + C x)).rootMultiplicity 0 := by
           rw [Polynomial.rootMultiplicity_eq_rootMultiplicity]
-    _ = (p.comp (X + C (x + r))).rootMultiplicity 0 := by
-          simp [comp_assoc, add_comm, add_left_comm]
-    _ = p.rootMultiplicity (x + r) := by
-          rw [← Polynomial.rootMultiplicity_eq_rootMultiplicity]
+    _ = (p.comp (X + C (x + r))).rootMultiplicity 0 := by simp [comp_assoc, add_comm, add_left_comm]
+    _ = p.rootMultiplicity (x + r) := by rw [← Polynomial.rootMultiplicity_eq_rootMultiplicity]
 
 lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
     (p.comp (X + C r)).roots = p.roots.map (fun x => x - r) := by
@@ -382,8 +371,7 @@ lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     Interlaces (C c) p := by
   have hprec : Prec (C c * (1 : ℝ[X])) p :=
     prec_C_mul_left (interlaces_one_linear hp_deg).toPrec hc
-  have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by
-    simp [hp_deg]
+  have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by simp [hp_deg]
   simpa using hprec.toInterlaces hdeg
 
 /-- Multiplying the right polynomial in a zero-aware `Prec0` relation by a
@@ -466,8 +454,7 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
         exact
           mul_le_mul_of_nonneg_left
             (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
-      _ < ε * (|q.coeff p.natDegree| + 1) := by
-        exact mul_lt_mul_of_pos_right hμε (by positivity)
+      _ < ε * (|q.coeff p.natDegree| + 1) := by exact mul_lt_mul_of_pos_right hμε (by positivity)
       _ = |p.leadingCoeff| := by
         have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
         exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
@@ -491,8 +478,7 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_at_zero_on_Icc_of_natDegree_le
   have hηε : η < ε := lt_of_le_of_lt hη.2 hνε
   have hηdeg : (p + C η * q).natDegree = p.natDegree :=
     hε η hη.1 hηε
-  have hzero : (p + C (0 : ℝ) * q).natDegree = p.natDegree := by
-    simp
+  have hzero : (p + C (0 : ℝ) * q).natDegree = p.natDegree := by simp
   exact hηdeg.trans hzero.symm
 
 /-- If the left summand has strictly larger degree, then every member of a
@@ -572,8 +558,7 @@ lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_add_ne_zero
     ∀ τ ∈ s,
       (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
   intro τ hτmem
-  have hle : q.natDegree ≤ p.natDegree := by
-    rw [← hdeg]
+  have hle : q.natDegree ≤ p.natDegree := by rw [← hdeg]
   have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
     rw [hdeg]
     rfl

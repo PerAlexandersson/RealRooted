@@ -135,8 +135,7 @@ theorem not_splits_quadratic_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
   have hcard : p.roots.card = p.natDegree :=
     Polynomial.splits_iff_card_roots.1 hsplit
   rw [hdeg] at hcard
-  have hpos : 0 < p.roots.card := by
-    simp_all
+  have hpos : 0 < p.roots.card := by simp_all
   obtain ⟨x, hxmem⟩ := Multiset.card_pos_iff_exists_mem.1 hpos
   simp_all
 

@@ -120,8 +120,7 @@ theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
   simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
   by_cases hk : k ≤ n
   · simp only [if_pos hk]
-    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-      exact_mod_cast (Nat.choose_pos hk).ne'
+    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hk).ne'
     field_simp
   · simp only [if_neg hk]
 
@@ -555,8 +554,7 @@ theorem cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le
   have h2n : 2 ≤ n := le_trans (by norm_num) hn
   have hc2R : (0 : ℝ) < (Nat.choose n 2 : ℝ) := by exact_mod_cast Nat.choose_pos h2n
   have hc3R : (0 : ℝ) < (Nat.choose n 3 : ℝ) := by exact_mod_cast Nat.choose_pos hn
-  have hnR : (0 : ℝ) < (n : ℝ) := by
-    exact_mod_cast lt_of_lt_of_le (by norm_num) hn
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast lt_of_lt_of_le (by norm_num) hn
   have hc2ne : (Nat.choose n 2 : ℝ) ≠ 0 := ne_of_gt hc2R
   have hc3ne : (Nat.choose n 3 : ℝ) ≠ 0 := ne_of_gt hc3R
   have hnne : (n : ℝ) ≠ 0 := ne_of_gt hnR
@@ -1213,15 +1211,13 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
       have hN1pos : (0 : ℝ) < N - 1 := by linarith
       have hc0 : (n.choose 0 : ℝ) = 1 := by norm_num
       have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
-      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by
-        rw [Nat.cast_choose_two, hN_def]
+      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by rw [Nat.cast_choose_two, hN_def]
       rw [hc0, hc1, hc2]
       have key1 :
           p.coeff 0 / 1 * (p.coeff 2 / (N * (N - 1) / 2))
             = 2 * (p.coeff 0 * p.coeff 2) / (N * (N - 1)) := by
         field_simp
-      have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by
-        rw [div_pow]
+      have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by rw [div_pow]
       rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
       nlinarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
     · have hlt : n < 2 := h2
@@ -1239,8 +1235,7 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
       have hN1pos : (0 : ℝ) < N - 1 := by linarith
       have hN2pos : (0 : ℝ) < N - 2 := by linarith
       have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
-      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by
-        rw [Nat.cast_choose_two, hN_def]
+      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by rw [Nat.cast_choose_two, hN_def]
       have hc3 : (n.choose 3 : ℝ) = N * (N - 1) * (N - 2) / 6 := by
         rw [Nat.cast_choose_three, hN_def]
       rw [hc1, hc2, hc3]

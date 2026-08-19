@@ -429,8 +429,7 @@ lemma toPosComboRealRooted_of_natDegree_lt {f g : ℝ[X]}
   have hcoeff : (C lam * f + C μ * g).coeff g.natDegree = μ * g.leadingCoeff := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hf0, mul_zero, zero_add]
     simp
-  have hzc : (C lam * f + C μ * g).coeff g.natDegree = 0 := by
-    simp_all
+  have hzc : (C lam * f + C μ * g).coeff g.natDegree = 0 := by simp_all
   grind
 
 /-- Symmetric to `toPosComboRealRooted_of_natDegree_lt`: if the left member has
@@ -450,8 +449,7 @@ lemma toPosComboRealRooted_of_natDegree_gt {f g : ℝ[X]}
   have hcoeff : (C lam * f + C μ * g).coeff f.natDegree = lam * f.leadingCoeff := by
     rw [coeff_add, coeff_C_mul, coeff_C_mul, hg0, mul_zero, add_zero]
     simp
-  have hzc : (C lam * f + C μ * g).coeff f.natDegree = 0 := by
-    simp_all
+  have hzc : (C lam * f + C μ * g).coeff f.natDegree = 0 := by simp_all
   grind
 
 end AllComboRealRooted

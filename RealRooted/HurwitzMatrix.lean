@@ -274,8 +274,7 @@ theorem hurwitz_schurProduct_det_of_card_le_three
     0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
   by_cases hn2 : n ≤ 2
   · exact hurwitz_schurProduct_det_of_card_le_two ha hb hrows hcols hn2
-  · have hn3 : n = 3 := by
-      lia
+  · have hn3 : n = 3 := by lia
     subst n
     exact hurwitz_schurProduct_det_fin_three hInBand ha hb hrows hcols
 
@@ -677,8 +676,7 @@ theorem
     · exact Nat.zero_le col2
     · exact le_of_lt hc12
     · rfl
-  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
-    grind
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by grind
   have hshift (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
     simpa using
@@ -770,12 +768,8 @@ theorem
     · simp
   have hrow_ge_zero : ∀ i : Fin 3, rows 0 ≤ rows i := by
     intro i
-    fin_cases i
-    · simp
-    · grind
-    · grind
-  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
-    grind
+    fin_cases i <;> grind
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by grind
   have hentry (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
     simpa using
@@ -806,10 +800,8 @@ theorem
     fin_cases l <;> simp [rows, cols] <;> lia
   have h01 : 2 * cols 1 ≤ rows 0 := by
     simpa [rows, cols] using le_trans (Nat.mul_le_mul_left 2 (le_of_lt hc12)) h02
-  have h12 : 2 * cols 2 ≤ rows 1 := by
-    simpa [rows, cols] using le_trans h02 (le_of_lt hr01)
-  have h02' : 2 * cols 2 ≤ rows 0 := by
-    simpa [rows, cols] using h02
+  have h12 : 2 * cols 2 ≤ rows 1 := by simpa [rows, cols] using le_trans h02 (le_of_lt hr01)
+  have h02' : 2 * cols 2 ≤ rows 0 := by simpa [rows, cols] using h02
   have hcol0 : cols 0 = 0 := by simp [cols]
   have hres := hZero ha hrows hcols hband h01 h12 h02' hcol0
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
@@ -860,8 +852,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_co
     intro i
     have h0i : (0 : Fin 3) ≤ i := by simp
     exact hcols.monotone h0i
-  have hdrow : ∀ i : Fin 3, 2 * d ≤ rows i := by
-    grind
+  have hdrow : ∀ i : Fin 3, 2 * d ≤ rows i := by grind
   have hrows' : StrictMono rows' := by
     intro i j hij
     dsimp [rows']
@@ -872,26 +863,14 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_co
     dsimp [cols']
     have hij' := hcols hij
     grind
-  have hband' : ∀ l : Fin 3, 2 * cols' l ≤ rows' l := by
-    grind
+  have hband' : ∀ l : Fin 3, 2 * cols' l ≤ rows' l := by grind
   have h01' : 2 * cols' 1 ≤ rows' 0 := by grind
-  have h12' : 2 * cols' 2 ≤ rows' 1 := by
-    grind
+  have h12' : 2 * cols' 2 ≤ rows' 1 := by grind
   have h02' : 2 * cols' 2 ≤ rows' 0 := by grind
-  have hcol0' : cols' 0 = 0 := by
-    grind
+  have hcol0' : cols' 0 = 0 := by grind
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
     intro i j
-    fin_cases i <;> fin_cases j
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
-    · grind
+    fin_cases i <;> fin_cases j <;> grind
   have hentry (i j : Fin 3) :
       hurwitz a (rows i) (cols j) = hurwitz a (rows' i) (cols' j) := by
     have : cols' j + d = cols j := by grind

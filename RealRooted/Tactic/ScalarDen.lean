@@ -61,12 +61,9 @@ theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul {d b c : ℝ}
   rw [hsplit]
   congr 1
   calc
-    C d⁻¹ * (C b * Q) = (C d⁻¹ * C b) * Q := by
-      rw [mul_assoc]
-    _ = C (d⁻¹ * b) * Q := by
-      rw [C_mul]
-    _ = C c * Q := by
-      rw [hbc]
+    C d⁻¹ * (C b * Q) = (C d⁻¹ * C b) * Q := by rw [mul_assoc]
+    _ = C (d⁻¹ * b) * Q := by rw [C_mul]
+    _ = C c * Q := by rw [hbc]
 
 /-- Symmetric variant of `eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul`. -/
 theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul {d b c : ℝ}

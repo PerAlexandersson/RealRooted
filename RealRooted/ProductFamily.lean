@@ -180,12 +180,9 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hkj_ki : kj < ki := by
     have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by lia
     simpa [kj, ki] using hrev_idx
-  have hgi_eq : gi = gs.get ki := by
-    simp [gi, ki]
-  have hgj_eq : gj = gs.get kj := by
-    simp [gj, kj]
-  have hfi_fj : Prec fi fj := by
-    simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
+  have hgi_eq : gi = gs.get ki := by simp [gi, ki]
+  have hgj_eq : gj = gs.get kj := by simp [gj, kj]
+  have hfi_fj : Prec fi fj := by simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
     simpa [hgj_eq, hgi_eq] using List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfi_rr : (fi ≠ 0 ∧ fi.Splits) := hfs.realRooted fi (List.get_mem _ _)

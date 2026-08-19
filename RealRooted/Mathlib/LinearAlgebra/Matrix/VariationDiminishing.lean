@@ -85,8 +85,7 @@ lemma mulVec_ne_zero_of_strictMaximalMinors
   let rows : Fin q → Fin m := Fin.castLE hqm
   let B : Matrix (Fin q) (Fin q) ℝ := A.submatrix rows id
   have hrows : StrictMono rows := Fin.strictMono_castLE hqm
-  have hdetprod : 0 < B.det * B.det := by
-    simpa [B] using hminor hrows hrows
+  have hdetprod : 0 < B.det * B.det := by simpa [B] using hminor hrows hrows
   have hdet : B.det ≠ 0 := by
     intro h
     rw [h, zero_mul] at hdetprod
@@ -148,8 +147,7 @@ private theorem not_exists_strictlyAlternating_rows_of_strictMaximalMinors
   have hc0 : c 0 ≠ 0 := by
     have hd := hdet 0 0
     intro hc0
-    have hc0' : (B.submatrix (0 : Fin (q + 1)).succAbove id).det = 0 := by
-      simpa [c] using hc0
+    have hc0' : (B.submatrix (0 : Fin (q + 1)).succAbove id).det = 0 := by simpa [c] using hc0
     rw [hc0', zero_mul] at hd
     exact (lt_irrefl 0) hd
   let i0 : Fin q := ⟨0, hq⟩
@@ -202,7 +200,7 @@ theorem signVariations_mulVec_le_card_sub_one_of_strictMaximalMinors
     simp [hzero]
   · have hq : 0 < q := Nat.pos_of_ne_zero hq0
     by_contra hle
-    have hlarge : q ≤ Fin.signVariations (A.mulVec x) := by omega
+    have hlarge : q ≤ Fin.signVariations (A.mulVec x) := by lia
     exact not_exists_strictlyAlternating_rows_of_strictMaximalMinors
       hq hminor x
         (Fin.exists_strictMono_strictlyAlternates_of_le_signVariations

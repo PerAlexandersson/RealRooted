@@ -143,12 +143,10 @@ private theorem isRealRooted_of_even_odd_sequence {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
   rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
+  · have hn : n = 2 * (n / 2) := by simpa [hmod] using (Nat.div_add_mod n 2).symm
     rw [hn]
     exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
+  · have hn : n = 2 * (n / 2) + 1 := by simpa [hmod] using (Nat.div_add_mod n 2).symm
     rw [hn]
     exact hodd (n / 2)
 
@@ -1141,24 +1139,19 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * (a + b))) :
     Prec (a + b) (b + X * (a + b)) := by
-  have ha_pos : HasPosLeadingCoeff a := by
-    rr_pos_lc using nonzero := left_ne_zero_of_prec hab
-  have hb_pos : HasPosLeadingCoeff b := by
-    rr_pos_lc using nonzero := right_ne_zero_of_prec hab
+  have ha_pos : HasPosLeadingCoeff a := by rr_pos_lc using nonzero := left_ne_zero_of_prec hab
+  have hb_pos : HasPosLeadingCoeff b := by rr_pos_lc using nonzero := right_ne_zero_of_prec hab
   have hsum_prec_raw : Prec (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
     prec_nonneg_combo_right hab ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
-  have hsum_prec : Prec (a + b) b := by
-    simpa using hsum_prec_raw
-  have hsum_nonneg : HasNonnegCoeffs (a + b) := by
-    rr_nonneg_coeffs
+  have hsum_prec : Prec (a + b) b := by simpa using hsum_prec_raw
+  have hsum_nonneg : HasNonnegCoeffs (a + b) := by rr_nonneg_coeffs
   have hsum_pos : HasPosLeadingCoeff (a + b) := by
     rr_pos_lc using nonzero := left_ne_zero_of_prec hsum_prec
   have hXsum_prec : Prec (a + b) (X * (a + b)) :=
     prec_mul_X_of_prec_of_nonneg
       (prec_refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
       hsum_nonneg hsum_nonneg
-  have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := by
-    rr_pos_lc
+  have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := by rr_pos_lc
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
     PosComboRealRooted.of_commonLeftInterleaver
       hsum_prec hXsum_prec hb_pos hXsum_pos
@@ -1175,24 +1168,20 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * a)) :
     Prec (a + (b + X * a)) (b + X * a) := by
-  have ha_pos : HasPosLeadingCoeff a := by
-    rr_pos_lc using nonzero := left_ne_zero_of_prec hab
-  have hb_pos : HasPosLeadingCoeff b := by
-    rr_pos_lc using nonzero := right_ne_zero_of_prec hab
+  have ha_pos : HasPosLeadingCoeff a := by rr_pos_lc using nonzero := left_ne_zero_of_prec hab
+  have hb_pos : HasPosLeadingCoeff b := by rr_pos_lc using nonzero := right_ne_zero_of_prec hab
   have hXa_prec : Prec a (X * a) :=
     prec_mul_X_of_prec_of_nonneg
       (prec_refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
       ha_nonneg ha_nonneg
-  have hXa_pos : HasPosLeadingCoeff (X * a) := by
-    rr_pos_lc
+  have hXa_pos : HasPosLeadingCoeff (X * a) := by rr_pos_lc
   have hcombo : PosComboRealRooted b (X * a) :=
     PosComboRealRooted.of_commonLeftInterleaver hab hXa_prec hb_pos hXa_pos
   have hrr : b + X * a ≠ 0 ∧ (b + X * a).Splits :=
     PosComboRealRooted.isRealRooted_add hcombo
   have ha_sum_prec : Prec a (b + X * a) :=
     prec_add_of_prec_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
-  have hsum_nonneg : HasNonnegCoeffs (b + X * a) := by
-    rr_nonneg_coeffs
+  have hsum_nonneg : HasNonnegCoeffs (b + X * a) := by rr_nonneg_coeffs
   have hsum_pos : HasPosLeadingCoeff (b + X * a) := by
     rr_pos_lc using nonzero := right_ne_zero_of_prec ha_sum_prec
   have hnext_raw :
@@ -1226,8 +1215,7 @@ theorem prec_endpoint_sum_then_X_pair_sequence
   have hpack : ∀ n : Nat, endpointPairPackage A B n :=
     sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
       rcases hP with ⟨hprec, hA_nonneg, hB_nonneg⟩
-      have hcop' : IsCoprime (B n) (X * (A n + B n)) := by
-        simpa [hstepA n] using hcop n
+      have hcop' : IsCoprime (B n) (X * (A n + B n)) := by simpa [hstepA n] using hcop n
       have hprec_next :
           Prec (A (n + 1)) (B (n + 1)) := by
         simpa [hstepA n, hstepB n] using

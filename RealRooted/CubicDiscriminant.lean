@@ -277,16 +277,14 @@ lemma cubicDiscr_eq_of_factor {q : ℝ[X]} {r : ℝ} (hqdeg : q.natDegree = 2) :
 /-- A real quadratic with nonnegative discriminant splits. -/
 lemma quadratic_splits_of_discrim_nonneg {q : ℝ[X]} (hqdeg : q.natDegree = 2)
     (hdisc : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0)) : q.Splits := by
-  have hq_ne : q ≠ 0 := by
-    intro h; rw [h, natDegree_zero] at hqdeg; exact absurd hqdeg (by decide)
+  have hq_ne : q ≠ 0 := by intro h; rw [h, natDegree_zero] at hqdeg; exact absurd hqdeg (by decide)
   have hc2 : q.coeff 2 ≠ 0 := by
     have hlc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq_ne
     rwa [leadingCoeff, hqdeg] at hlc
   obtain ⟨x, hx⟩ := exists_quadratic_eq_zero hc2
     ⟨Real.sqrt (discrim (q.coeff 2) (q.coeff 1) (q.coeff 0)),
       (Real.mul_self_sqrt hdisc).symm⟩
-  have hroot : q.eval x = 0 := by
-    rw [eval_of_natDegree_two x hqdeg]; linear_combination hx
+  have hroot : q.eval x = 0 := by rw [eval_of_natDegree_two x hqdeg]; linear_combination hx
   exact Splits.of_natDegree_eq_two hqdeg hroot
 
 /-- **Discriminant criterion for real cubics.**  A real polynomial of
@@ -369,8 +367,7 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_three
   have hqdeg : q.natDegree = 2 := by
     rw [hq, natDegree_divByMonic p (monic_X_sub_C r), hdeg, natDegree_X_sub_C]
   have hqsplit : q.Splits := by
-    have hp : ((X - C r) * q).Splits := by
-      rwa [hfact]
+    have hp : ((X - C r) * q).Splits := by rwa [hfact]
     rwa [splits_X_sub_C_mul_iff] at hp
   have hdisc_q : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
     have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two hqdeg hqsplit

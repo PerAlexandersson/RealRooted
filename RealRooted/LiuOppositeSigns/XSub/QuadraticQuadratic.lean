@@ -193,8 +193,7 @@ lemma hasPosLeadingCoeff_xSubQuadraticQuadratic (a b c d μ : ℝ) :
     (hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)
   have hleft_pos : HasPosLeadingCoeff (X * ((X - C a) * (X - C b))) :=
     hquad_pos.X_mul
-  have hleft_deg : (X * ((X - C a) * (X - C b))).natDegree = 3 := by
-    compute_degree <;> norm_num
+  have hleft_deg : (X * ((X - C a) * (X - C b))).natDegree = 3 := by compute_degree <;> norm_num
   have hdeg_lt : (C μ * ((X - C c) * (X - C d))).natDegree <
       (X * ((X - C a) * (X - C b))).natDegree := by
     rw [hleft_deg]
@@ -611,8 +610,7 @@ theorem xSubQuadraticQuadraticSplits :
   have hdlt : d < 0 := lt_of_le_of_ne hd0 hd_zero
   rcases lt_or_gt_of_ne hac_eq with hac | hca
   · rcases lt_or_gt_of_ne hbd_eq with hbd | hdb
-    · have hcb_lt : c < b := by
-        exact lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
+    · have hcb_lt : c < b := by exact lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
       exact xSubQuadraticQuadraticSplits_of_order_a_c_b_d
         hac hcb_lt hbd hdlt hμ
     · exact xSubQuadraticQuadraticSplits_of_order_a_c_d_b
@@ -669,10 +667,8 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
   have hinner_splits : inner.Splits := by
     dsimp [inner]
     exact hmono hab hcd had hcb hb0 hd0 hν_pos
-  have hpfacA : p = C A * ((X - C a) * (X - C b)) := by
-    simpa [A] using hpfac
-  have hqfacB : q = C B * ((X - C c) * (X - C d)) := by
-    simpa [B] using hqfac
+  have hpfacA : p = C A * ((X - C a) * (X - C b)) := by simpa [A] using hpfac
+  have hqfacB : q = C B * ((X - C c) * (X - C d)) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
     rw [hpfacA, hqfacB]
     dsimp [inner, ν]
@@ -706,12 +702,9 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 2 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 2 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 2 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 2 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
     hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
@@ -745,8 +738,7 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_t
   by_cases hle_one : g.natDegree ≤ 1
   · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
       hpair hfnn hgnn hdeg hle_one
-  · have htwo : g.natDegree = 2 := by
-      lia
+  · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_of_monic
       hmono hpair hfnn hgnn hdeg htwo
 

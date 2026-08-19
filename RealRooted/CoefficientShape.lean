@@ -156,8 +156,7 @@ lemma CoeffLogConcaveUpTo.no_strict_decrease_before_max {d : ℕ} {a : ℕ → �
         have hmid_ne : a (t + 1) ≠ 0 :=
           hnozero t (t + 1) m (by lia) (by lia) hm_le ht_ne hm_ne
         exact hlc.strict_decrease_next hnonneg (by lia) hcurr hmid_ne
-  have hlast : a m < a (m - 1) := by
-    grind
+  have hlast : a m < a (m - 1) := by grind
   grind
 
 /-- No strict increase can occur after a maximal coefficient of a nonnegative

@@ -697,8 +697,7 @@ private theorem prec_roots_deg1 (f g : ℝ[X]) (hpq : Prec g f) (hd : f.natDegre
   · right
     obtain ⟨r, h_ss_r⟩ := List.length_eq_one_iff.mp (by simp [*] : ss.length = 1)
     obtain ⟨s', h_rs_r⟩ := List.length_eq_one_iff.mp hrslen
-    have h_s's : s' = s := by
-      simp_all
+    have h_s's : s' = s := by simp_all
     refine ⟨r, s, hfr, by simp_all, ?_⟩
     rw [h_ss_r, h_rs_r, h_s's] at halt
     simp only [ListAlternates] at halt
@@ -901,10 +900,8 @@ theorem degree_sub_c₀_mul_lt {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0
   have h_flc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hflc
   have hc₀_ne : c₀ ≠ 0 := div_ne_zero (leadingCoeff_ne_zero.mpr hg₀) h_flc_ne
   have : (C c₀ * f).degree = f.degree := degree_C_mul hc₀_ne
-  have : (C c₀ * f).leadingCoeff = g.leadingCoeff := by
-    simp [*]
-  have : g.degree = f.degree := by
-    rw [degree_eq_natDegree hg₀, degree_eq_natDegree hf₀, hdeg]
+  have : (C c₀ * f).leadingCoeff = g.leadingCoeff := by simp [*]
+  have : g.degree = f.degree := by rw [degree_eq_natDegree hg₀, degree_eq_natDegree hf₀, hdeg]
   have hsub : (g - C c₀ * f).degree < g.degree :=
     degree_sub_lt (by simp [*]) hg₀ (by simp [*])
   rw [degree_eq_natDegree hg₀, hdeg] at hsub
@@ -1268,8 +1265,7 @@ theorem no_lower_root_hermiteBiehler_neg_of_stable {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
     ∀ z : ℂ, z.im < 0 → (hermiteBiehlerPolynomial f (-g)).eval z ≠ 0 := by
   intro z hz hzero
-  have hconj_im : 0 < (starRingEnd ℂ z).im := by
-    simp [*]
+  have hconj_im : 0 < (starRingEnd ℂ z).im := by simp [*]
   apply hstab (starRingEnd ℂ z) hconj_im
   have hthis := eval_hermiteBiehler_neg_conj f g (starRingEnd ℂ z)
   rw [Complex.conj_conj] at hthis
@@ -1449,10 +1445,7 @@ lemma triangle_of_sq {A B t S : ℝ} (hA₀ : 0 ≤ A) (hB₀ : 0 ≤ B) (ht₀ 
     A - B ≤ t ∧ B - A ≤ t ∧ t ≤ A + B := by
   have hd₁ : (A - B) ^ 2 ≤ t ^ 2 := by nlinarith
   have hd₃ : t ^ 2 ≤ (A + B) ^ 2 := by nlinarith
-  refine ⟨?_, ?_, ?_⟩
-  · nlinarith [hd₁, ht₀]
-  · nlinarith [hd₁, ht₀]
-  · nlinarith [hd₃, hA₀, hB₀]
+  refine ⟨?_, ?_, ?_⟩ <;> nlinarith [hd₁, hd₃, ht₀, hA₀, hB₀]
 
 lemma interlace_core {u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0)
@@ -1487,8 +1480,7 @@ lemma interlace_core {u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
   have hB₂ : B ^ 2 = b₂ ^ 2 - 4 * c₂ := Real.sq_sqrt hDg₀
   have hAB₀ : 0 ≤ A * B := mul_nonneg hA₀ hB₀
   have hprodsq : ((u₁ - u₂) ^ 2 - (v₁ - v₂) ^ 2) ^ 2 ≤ (A * B) ^ 2 := by
-    have hABsq : (A * B) ^ 2 = (b₁ ^ 2 - 4 * c₁) * (b₂ ^ 2 - 4 * c₂) := by
-      rw [mul_pow, hA₂, hB₂]
+    have hABsq : (A * B) ^ 2 = (b₁ ^ 2 - 4 * c₁) * (b₂ ^ 2 - 4 * c₂) := by rw [mul_pow, hA₂, hB₂]
     rw [hABsq, hDf, hDg]
     nlinarith [mul_nonneg hvv (by positivity : (0 : ℝ) ≤ (u₁ - u₂) ^ 2 + (v₁ - v₂) ^ 2),
       sq_nonneg (v₁ * v₂)]
@@ -1869,8 +1861,7 @@ lemma interlace_core_posLead {a b u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     ha hb (by positivity) ?_ ?_ ?_ ?_
   · rw [hb₁, hc₁]; ring
   · rw [hb₂, hc₂]; ring
-  · have htid : a * b₂ - b * b₁ = -((a ^ 2 + b ^ 2) * (v₁ + v₂)) := by
-      rw [hb₁, hb₂]; ring
+  · have htid : a * b₂ - b * b₁ = -((a ^ 2 + b ^ 2) * (v₁ + v₂)) := by rw [hb₁, hb₂]; ring
     rw [htid]
     have hsum : v₁ + v₂ ≤ 0 := add_nonpos hv₁ hv₂
     nlinarith [sq_nonneg a, sq_nonneg b]
@@ -2168,21 +2159,17 @@ lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (
     (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a) ≤ -c₂ / b₂ ∧
       -c₂ / b₂ ≤ (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a) := by
   have hvv : 0 ≤ v₁ * v₂ := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
-  have hinner : 0 ≤ (u₁ - u₂) ^ 2 + 4 * (v₁ * v₂) := by
-    nlinarith [sq_nonneg (u₁ - u₂)]
-  have hd : b₁ ^ 2 - 4 * a * c₁ = a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) := by
-    rw [hb₁, hc₁]; ring
+  have hinner : 0 ≤ (u₁ - u₂) ^ 2 + 4 * (v₁ * v₂) := by nlinarith [sq_nonneg (u₁ - u₂)]
+  have hd : b₁ ^ 2 - 4 * a * c₁ = a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) := by rw [hb₁, hc₁]; ring
   have hD₀ : 0 ≤ b₁ ^ 2 - 4 * a * c₁ := by simp_all
   set t := Real.sqrt (b₁ ^ 2 - 4 * a * c₁) with ht
   have ht₀ : 0 ≤ t := Real.sqrt_nonneg _
-  have ht₂ : t ^ 2 = a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) := by
-    rw [ht, Real.sq_sqrt hD₀, hd]
+  have ht₂ : t ^ 2 = a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) := by rw [ht, Real.sq_sqrt hD₀, hd]
   have hS : v₁ + v₂ < 0 := by
     by_contra hcon
     have hge : 0 ≤ a * (v₁ + v₂) := mul_nonneg ha.le (not_lt.mp hcon)
     rw [hb₂] at hb₂_pos; linarith
-  have hW0 : t * (a * (v₁ + v₂)) ≤ 0 := by
-    nlinarith [mul_nonneg ht₀ ha.le]
+  have hW0 : t * (a * (v₁ + v₂)) ≤ 0 := by nlinarith [mul_nonneg ht₀ ha.le]
   have hWsq : (t * (a * (v₁ + v₂))) ^ 2 =
       a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) * (a ^ 2 * (v₁ + v₂) ^ 2) := by
     rw [mul_pow, ht₂]; ring
@@ -2196,8 +2183,7 @@ lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (
     have h₁ : (0 : ℝ) ≤ 4 * (a ^ 2 * a ^ 2) := by positivity
     have h₂ : (0 : ℝ) ≤ (u₁ - u₂) ^ 2 + (v₁ + v₂) ^ 2 := by positivity
     exact mul_nonneg (mul_nonneg h₁ hvv) h₂
-  have hsq : (a ^ 2 * ((u₁ - u₂) * (v₁ - v₂))) ^ 2 ≤ (t * (a * (v₁ + v₂))) ^ 2 := by
-    linarith
+  have hsq : (a ^ 2 * ((u₁ - u₂) * (v₁ - v₂))) ^ 2 ≤ (t * (a * (v₁ + v₂))) ^ 2 := by linarith
   obtain ⟨hle₁, hle₂⟩ := nonpos_le_of_sq_le_sq hW0 hsq
   constructor
   · rw [div_le_div_iff₀ (by simp [*]) hb₂_pos]
@@ -2332,8 +2318,7 @@ theorem prec_of_stable_two_one {f g : ℝ[X]}
     rw [hgexp, mul_sub, ← C_mul]
     have : b₂ * (-c₂ / b₂) = -c₂ := by field_simp
     rw [this, C_neg, sub_neg_eq_add]
-  have hgroots : g.roots = {-c₂ / b₂} := by
-    rw [hgfact, roots_C_mul _ hb₂_ne, roots_X_sub_C]
+  have hgroots : g.roots = {-c₂ / b₂} := by rw [hgfact, roots_C_mul _ hb₂_ne, roots_X_sub_C]
   have hfs : f.Splits := splits_of_card_roots (by rw [hfroots, hf₂]; simp)
   have hgs : g.Splits := splits_of_card_roots (by rw [hgroots, hg₁]; simp)
   obtain ⟨h₁, h₂⟩ := interlace_core_two_one ha hv₁ hv₂ hb₂_pos hb₁ hb₂ hc₁ hc₂
@@ -2655,8 +2640,7 @@ theorem hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
     apply h_ne
     rw [h_conj, h₀, map_zero]
   · -- Real axis: positivity of the nonnegative-coefficient polynomial.
-    have h_z : z = ((z.re : ℝ) : ℂ) := by
-      apply Complex.ext <;> simp [h_im]
+    have h_z : z = ((z.re : ℝ) : ℂ) := by apply Complex.ext <;> simp [h_im]
     rw [h_z, eval_complexify_ofReal]
     have h_pos : 0 < (oddEvenPolynomial p q).eval z.re :=
       eval_pos_of_hasNonnegCoeffs (hasNonnegCoeffs_oddEvenPolynomial h_p h_q) h_f_ne hzre
@@ -3033,8 +3017,7 @@ theorem hermiteBiehlerStableToHurwitzOddEven_upperHalfSubstitution :
     · exact h
   have h_q_pos : HasPosLeadingCoeff q := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_q h_q_ne
   by_cases h_q_deg : 1 ≤ q.natDegree
-  · have h_p_ne : p ≠ 0 := by
-      rintro rfl; simp [complexify] at hpw
+  · have h_p_ne : p ≠ 0 := by rintro rfl; simp [complexify] at hpw
     have h_p_pos : HasPosLeadingCoeff p := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_p h_p_ne
     have h_prec : Prec p q := prec_of_stable_general h_q_pos h_p_pos h_stable h_q_deg
     have h_ratio : ((complexify p).eval w / (complexify q).eval w).im ≤ 0 :=

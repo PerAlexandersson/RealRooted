@@ -157,8 +157,7 @@ same prefixes of the original word. -/
 theorem takePrefix_deleteFinal_eq_takePrefix_of_le
     {w : SnakeWord} {k : ℕ} (hk : k ≤ w.deleteFinal.length) :
     w.deleteFinal.takePrefix k = w.takePrefix k := by
-  have hk' : k ≤ w.length - 1 := by
-    simpa [length_deleteFinal] using hk
+  have hk' : k ≤ w.length - 1 := by simpa [length_deleteFinal] using hk
   simp [takePrefix, deleteFinal, List.take_take, min_eq_left hk']
 
 /-- Subtracting a prefix length after final-letter deletion subtracts one from
@@ -183,8 +182,7 @@ original word. -/
 @[simp] theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
     (hidx : idx < w.deleteFinal.length) :
     w.deleteFinal[idx]? = w[idx]? := by
-  have hidx' : idx < w.length - 1 := by
-    simpa [length_deleteFinal] using hidx
+  have hidx' : idx < w.length - 1 := by simpa [length_deleteFinal] using hidx
   simpa [deleteFinal] using
     (List.getElem?_take_of_lt (l := w) (i := idx) (j := w.length - 1) hidx')
 
@@ -317,8 +315,7 @@ theorem isLastChangeIndex_of_lastChangeIndex?_eq_some {w : SnakeWord} {k : ℕ}
     (h : w.lastChangeIndex? = some k) :
     w.IsLastChangeIndex k := by
   let l := w.changeIndices
-  have hlast : l.getLast? = some k := by
-    simpa [l, lastChangeIndex?] using h
+  have hlast : l.getLast? = some k := by simpa [l, lastChangeIndex?] using h
   have hne : l ≠ [] := by
     intro hnil
     rw [hnil] at hlast
@@ -341,15 +338,13 @@ theorem lastChangeIndex?_eq_some_of_isLastChangeIndex {w : SnakeWord} {k : ℕ}
   let l := w.changeIndices
   have hne : l ≠ [] := by
     intro hnil
-    have hk : k ∈ ([] : List ℕ) := by
-      simpa [l, hnil] using h.1
+    have hk : k ∈ ([] : List ℕ) := by simpa [l, hnil] using h.1
     cases hk
   have hpair : l.Pairwise (fun a b => a ≤ b) :=
     List.SortedLE.pairwise (by simpa [l] using sortedLE_changeIndices w)
   have hk_le_last : k ≤ l.getLast hne :=
     hpair.rel_getLast (by simpa [l] using h.1)
-  have hlast_mem : l.getLast hne ∈ w.changeIndices := by
-    simp [l, List.getLast_mem hne]
+  have hlast_mem : l.getLast hne ∈ w.changeIndices := by simp [l, List.getLast_mem hne]
   have hlast_le_k : l.getLast hne ≤ k :=
     h.2 (l.getLast hne) hlast_mem
   have hlast_eq : l.getLast hne = k := le_antisymm hlast_le_k hk_le_last
@@ -414,8 +409,7 @@ theorem IsLastChangeIndex.succ_lt_length {w : SnakeWord} {k : ℕ}
     k + 1 < w.length := by
   have hklt : k < w.length := h.index_lt_length
   by_contra hnot
-  have hk_last : k = w.length - 1 := by
-    lia
+  have hk_last : k = w.length - 1 := by lia
   exact (SnakeWord.mem_changeIndices.mp h.1).2 (by rw [hk_last])
 
 /-- At a last-change index, the letter differs from the final letter. -/

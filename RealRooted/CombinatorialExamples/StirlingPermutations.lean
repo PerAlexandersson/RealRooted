@@ -96,8 +96,7 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_stirlingPermutations_succ]
         have hzero : coeff (stirlingPermutations n) (n + 1) = 0 :=
           habove (n + 1) (by lia)
-        have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by
-          nlinarith
+        have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by nlinarith
         simp_all
       · intro k hk
         cases k with

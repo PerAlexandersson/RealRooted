@@ -493,11 +493,9 @@ def baseMatrix : List (List ℝ[X]) := []
 
 def decoyMatrix : List (List ℝ[X]) := [[]]
 
-theorem baseMatrix_rect : ∀ row ∈ baseMatrix, row.length = 0 := by
-  simp [baseMatrix]
+theorem baseMatrix_rect : ∀ row ∈ baseMatrix, row.length = 0 := by simp [baseMatrix]
 
-theorem decoyMatrix_rect : ∀ row ∈ decoyMatrix, row.length = 0 := by
-  simp [decoyMatrix]
+theorem decoyMatrix_rect : ∀ row ∈ decoyMatrix, row.length = 0 := by simp [decoyMatrix]
 
 theorem baseMatrix_wrongWidth_rect (h : False) :
     ∀ row ∈ baseMatrix, row.length = 1 := by
@@ -577,8 +575,7 @@ example (hfs_len : ([] : List ℝ[X]).length = 0)
       ∀ f ∈ matPolyAction baseMatrix [], f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
   rr_matrix0_weak
 
-example : ∀ row ∈ baseMatrix, ∀ p ∈ row, HasNonnegCoeffs p := by
-  rr_row_threshold_entry_nonneg
+example : ∀ row ∈ baseMatrix, ∀ p ∈ row, HasNonnegCoeffs p := by rr_row_threshold_entry_nonneg
 
 end MatrixInferenceSmoke
 

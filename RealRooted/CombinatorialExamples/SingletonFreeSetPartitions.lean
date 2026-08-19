@@ -207,8 +207,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
-    have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by
-      rintro (_ | _ | m) <;> simp [coeff_X]
+    have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
       nonnegCoeffs_C_mul (by simp) hX_nonneg
     exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)

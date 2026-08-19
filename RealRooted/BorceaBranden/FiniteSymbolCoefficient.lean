@@ -168,8 +168,7 @@ theorem specializeRight_zero_monomial
   · subst t
     simp [specializeRight_zero_eq_killCompl]
   · rw [if_neg ht, specializeRight_zero_eq_killCompl]
-    have hsupport : t.support ≠ ∅ := by
-      simpa using ht
+    have hsupport : t.support ≠ ∅ := by simpa using ht
     obtain ⟨j, hj⟩ := Finset.nonempty_iff_ne_empty.mpr hsupport
     exact MvPolynomial.killCompl_monomial_eq_zero_of_notMem_range
       Sum.inl_injective c (a := Sum.inr j)

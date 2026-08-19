@@ -171,8 +171,7 @@ theorem esymm_const_fin (n k : ℕ) (w : ℂ) :
       apply Finset.sum_congr rfl
       intro t ht
       rw [Finset.prod_const, (Finset.mem_powersetCard.mp ht).2]
-    _ = (n.choose k : ℂ) * w ^ k := by
-      simp [Finset.card_powersetCard, nsmul_eq_mul]
+    _ = (n.choose k : ℂ) * w ^ k := by simp [Finset.card_powersetCard, nsmul_eq_mul]
 
 /-- The diagonal specialization of a reduced polarization is its binomial
 lift. -/
@@ -246,8 +245,7 @@ noncomputable def diagonalProjection (n : ℕ) :
     MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
       (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q)
   map_add' q r := by simp
-  map_smul' c q := by
-    simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
+  map_smul' c q := by simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
 
 /-- Diagonal projection of an all-ones degree-box polynomial has degree at
 most the size of its polarization block. -/
@@ -425,8 +423,7 @@ theorem mvUpperHalfPlaneStable_reducedPolarization {n : ℕ} {f : ℂ[X]}
   intro z hz hzero
   obtain ⟨g, hg⟩ := exists_binomialLift_eq (polarizationRootPolynomial z)
     (natDegree_polarizationRootPolynomial z).le
-  have hgdeg : (binomialLift n g).natDegree = n := by
-    rw [hg, natDegree_polarizationRootPolynomial]
+  have hgdeg : (binomialLift n g).natDegree = n := by rw [hg, natDegree_polarizationRootPolynomial]
   have hap : AreApolar n f g := by
     rw [AreApolar,
       ← eval_reducedPolarization_eq_apolarPairing_of_binomialLift_eq_rootPolynomial

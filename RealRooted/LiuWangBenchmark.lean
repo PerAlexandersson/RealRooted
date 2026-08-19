@@ -97,8 +97,7 @@ lemma zero_isRoot_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
     (liuWangRec d n).IsRoot 0 := by
   rw [Polynomial.IsRoot.def, eval_zero_liuWangRec_of_ge_threshold d n hn]
 
-@[simp] lemma liuWangPoly_zero (d : Nat) : liuWangPoly d 0 = 0 := by
-  simp [liuWangPoly]
+@[simp] lemma liuWangPoly_zero (d : Nat) : liuWangPoly d 0 = 0 := by simp [liuWangPoly]
 
 @[simp] lemma liuWangPoly_one (d : Nat) : liuWangPoly d 1 = 1 := by
   ext m
@@ -514,12 +513,9 @@ private lemma eval_liuWangRec_mul_prev_of_isRoot {d n : Nat} {r : ℝ}
       = ((((C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X).eval r) *
             (liuWangRec d (n + 1)).eval r +
           (X * (1 - X : ℝ[X])).eval r * (liuWangRec d n).eval r) *
-          (liuWangRec d n).eval r) := by
-            simp [eval_add, eval_mul]
-    _ = ((r * (1 - r)) * (liuWangRec d n).eval r) * (liuWangRec d n).eval r := by
-          simp [hf0]
-    _ = (r * (1 - r)) * ((liuWangRec d n).eval r) ^ 2 := by
-          ring
+          (liuWangRec d n).eval r) := by simp [eval_add, eval_mul]
+    _ = ((r * (1 - r)) * (liuWangRec d n).eval r) * (liuWangRec d n).eval r := by simp [hf0]
+    _ = (r * (1 - r)) * ((liuWangRec d n).eval r) ^ 2 := by ring
 
 private theorem strictData_liuWangRec (d : Nat) :
     ∀ n, 1 ≤ n → n + 1 ≤ d + 1 →
@@ -531,8 +527,7 @@ private theorem strictData_liuWangRec (d : Nat) :
       have hInter : Interlaces (liuWangRec d 1) (liuWangRec d 2) :=
         interlaces_liuWangRec_one_two d
       have hOne_no_root : ∀ r, ¬ (liuWangRec d 1).IsRoot r := by simp
-      have hNoCommon : ∀ r, (liuWangRec d 2).IsRoot r → ¬ (liuWangRec d 1).IsRoot r := by
-        simp
+      have hNoCommon : ∀ r, (liuWangRec d 2).IsRoot r → ¬ (liuWangRec d 1).IsRoot r := by simp
       have hNeg : ∀ r, (liuWangRec d 2).IsRoot r → r < 0 :=
         roots_neg_of_interlaces_of_eval_zero_pos hInter
           (liuWangRec_posLeadingCoeff d 2 (by lia))
@@ -559,8 +554,7 @@ private theorem strictData_liuWangRec (d : Nat) :
           (by
             intro r hr
             have hr_neg : r < 0 := hNeg r hr
-            have : (r : ℝ) * (1 - r) < 0 := by
-              nlinarith
+            have : (r : ℝ) * (1 - r) < 0 := by nlinarith
             simp_all)
       have hInter' : Interlaces (liuWangRec d (n + 2)) (liuWangRec d (n + 3)) :=
         hPrec.toInterlaces hdeg.symm
@@ -726,8 +720,7 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
           (by
             intro r hr
             have hr_neg : r < 0 := hNeg r hr
-            have : (r : ℝ) * (1 - r) < 0 := by
-              nlinarith
+            have : (r : ℝ) * (1 - r) < 0 := by nlinarith
             simp_all)
       simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hPrec.toInterlaces hdeg.symm
 
@@ -768,8 +761,7 @@ private lemma weakPrec_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
         (X * (1 - X : ℝ[X])).eval r ≤ 0 := by
     intro r hr
     have hr_nonpos : r ≤ 0 := hnonpos r hr
-    have : r * (1 - r) ≤ 0 := by
-      nlinarith
+    have : r * (1 - r) ≤ 0 := by nlinarith
     simp_all
   simpa [liuWangRec_succ_succ] using
     (prec_of_interlaces_evalCoeff_nonpos

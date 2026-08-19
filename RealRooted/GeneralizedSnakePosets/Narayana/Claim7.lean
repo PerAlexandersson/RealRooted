@@ -182,8 +182,7 @@ theorem auxiliaryG_prec_succ_of_narayanaTwoModel
   intro m hm
   rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
   have hprec := prec_narayanaPolynomial_two (m - 2)
-  have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by
-    exact_mod_cast (show m - 1 ≠ 0 by lia)
+  have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (show m - 1 ≠ 0 by lia)
   have hscaled :=
     (hprec.C_mul_left hm1_ne).C_mul_right
       (show (m : ℝ) ≠ 0 by positivity)

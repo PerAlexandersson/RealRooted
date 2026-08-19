@@ -183,8 +183,7 @@ original constant coefficient. -/
 theorem leadingCoeff_signedReciprocal_eq_coeff_zero
     {d : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ d) (hp0 : p.coeff 0 ≠ 0) :
     (signedReciprocal d p).leadingCoeff = p.coeff 0 := by
-  have hcomp0 : (p.comp (-X)).coeff 0 ≠ 0 := by
-    simpa [coeff_comp_neg_X] using hp0
+  have hcomp0 : (p.comp (-X)).coeff 0 ≠ 0 := by simpa [coeff_comp_neg_X] using hp0
   unfold signedReciprocal
   rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le
     (natDegree_comp_neg_X_le hp) hcomp0]
@@ -292,8 +291,7 @@ theorem signedReciprocal_schurSzegoComp
       coeff_signedReciprocal_of_le hj,
       coeff_signedReciprocal_of_le hj, Nat.choose_symm hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by
-      simpa [pow_two] using neg_one_pow_sq (d - j)
+    have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq (d - j)
     have hprod :
         (s * f.coeff (d - j)) * (s * g.coeff (d - j)) =
           f.coeff (d - j) * g.coeff (d - j) := by
@@ -327,8 +325,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       coeff_signedReciprocal_of_le hj,
       coeff_schurSzegoComp_of_le hj, coeff_reflect, revAt_le hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by
-      simpa [pow_two] using neg_one_pow_sq (d - j)
+    have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq (d - j)
     change
       s * (P.coeff j * (s * p.coeff (d - j)) /
         (Nat.choose d j : ℝ)) =

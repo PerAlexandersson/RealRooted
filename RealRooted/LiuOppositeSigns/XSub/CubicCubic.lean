@@ -490,9 +490,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
         Multiset.filter_singleton]
       have hnot_xa : ¬ x ≤ a := not_le.mpr hax
       have hnot_xb : ¬ x ≤ b := not_le.mpr hbx
-      by_cases hxc : x ≤ c
-      · simp [hnot_xa, hnot_xb, hxc]
-      · simp [hnot_xa, hnot_xb, hxc]
+      by_cases hxc : x ≤ c <;> simp [hnot_xa, hnot_xb, hxc]
     have hg_count : rootCountAtOrAbove g x = 3 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
@@ -501,8 +499,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
     have hcount := h.count.right_sub_le_one x
     rw [hg_count] at hcount
     norm_num at hcount
-    have hf_count_int : ((rootCountAtOrAbove f x : ℤ) ≤ 1) := by
-      exact_mod_cast hf_count_le
+    have hf_count_int : ((rootCountAtOrAbove f x : ℤ) ≤ 1) := by exact_mod_cast hf_count_le
     linarith
   · by_contra hvc
     have hcv : c < v := lt_of_not_ge hvc
@@ -528,14 +525,11 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxu : x ≤ u
-      · simp [hxu, hxv, hxw]
-      · simp [hxu, hxv, hxw]
+      by_cases hxu : x ≤ u <;> simp [hxu, hxv, hxw]
     have hcount := h.count.right_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
-    have hg_count_int : (2 : ℤ) ≤ rootCountAtOrAbove g x := by
-      exact_mod_cast hg_count_ge
+    have hg_count_int : (2 : ℤ) ≤ rootCountAtOrAbove g x := by exact_mod_cast hg_count_ge
     linarith
   · by_contra hav
     have hva : v < a := lt_of_not_ge hav
@@ -560,14 +554,11 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
         Multiset.filter_singleton]
       have hnot_xu : ¬ x ≤ u := not_le.mpr hux
       have hnot_xv : ¬ x ≤ v := not_le.mpr hvx
-      by_cases hxw : x ≤ w
-      · simp [hnot_xu, hnot_xv, hxw]
-      · simp [hnot_xu, hnot_xv, hxw]
+      by_cases hxw : x ≤ w <;> simp [hnot_xu, hnot_xv, hxw]
     have hcount := h.count.left_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
-    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by
-      exact_mod_cast hg_count_le
+    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by exact_mod_cast hg_count_le
     linarith
   · by_contra hbw
     have hwb : w < b := lt_of_not_ge hbw
@@ -585,9 +576,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxa : x ≤ a
-      · simp [hxa, hxb, hxc]
-      · simp [hxa, hxb, hxc]
+      by_cases hxa : x ≤ a <;> simp [hxa, hxb, hxc]
     have hg_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
@@ -599,8 +588,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
     have hcount := h.count.left_sub_le_one x
     rw [hg_count] at hcount
     norm_num at hcount
-    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by
-      exact_mod_cast hf_count_ge
+    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by exact_mod_cast hf_count_ge
     linarith
 
 /-- A `(3, 3)` positive split root-count pair admits ordered root data with
@@ -820,8 +808,7 @@ lemma xSubCubicCubicSplits_of_interlacing_roots {a b c u v w μ : ℝ}
   have hF_pos : HasPosLeadingCoeff ((1 : ℝ[X]) * f + (-C μ) * g) := by
     dsimp [f, g]
     simpa [sub_eq_add_neg] using hasPosLeadingCoeff_xSubCubicCubic a b c u v w μ
-  have hdeg_lo : f.natDegree ≤ ((1 : ℝ[X]) * f + (-C μ) * g).natDegree := by
-    rw [hf_deg, hF_deg]
+  have hdeg_lo : f.natDegree ≤ ((1 : ℝ[X]) * f + (-C μ) * g).natDegree := by rw [hf_deg, hF_deg]
   have hdeg_hi : ((1 : ℝ[X]) * f + (-C μ) * g).natDegree ≤ f.natDegree + 1 := by
     rw [hf_deg, hF_deg]
     norm_num
@@ -1404,10 +1391,8 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
       C μ * ((X - C u) * (X - C v) * (X - C w))).Splits := by
   by_cases hva : v = a
   · subst v
-    have huw : u ≤ w := by
-      exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
-    have huc : u ≤ c := by
-      exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
+    have huw : u ≤ w := by exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
+    have huc : u ≤ c := by exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
     have hcommon := xSubCubicCubicSplits_of_common_root
       (r := a) (a := b) (b := c) (c := u) (d := w)
       (le_of_lt hbc) huw hbw huc hc0 (le_of_lt hw0) hμ
@@ -1419,8 +1404,7 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
       (le_of_lt hab) (le_of_lt hbc) hub hbw hc0 (le_of_lt hw0) hμ
   by_cases hvc_eq : v = c
   · subst v
-    have huw : u ≤ w := by
-      exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
+    have huw : u ≤ w := by exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
     have haw : a ≤ w := (le_of_lt hab).trans hbw
     have hub : u ≤ b := (le_of_lt hua).trans (le_of_lt hab)
     have hb0 : b ≤ 0 := (le_of_lt hbc).trans hc0
@@ -1432,8 +1416,7 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
   · subst w
     have hac : a ≤ c := (le_of_lt hab).trans (le_of_lt hbc)
     have huv : u ≤ v := (le_of_lt hua).trans hav
-    have huc : u ≤ c := by
-      exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
+    have huc : u ≤ c := by exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
     have hv0 : v ≤ 0 := hvc.trans hc0
     have hcommon := xSubCubicCubicSplits_of_common_root
       (r := b) (a := a) (b := c) (c := u) (d := v)
@@ -1445,12 +1428,9 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
     have hub : u ≤ b := (le_of_lt hua).trans (le_of_lt hab)
     exact xSubCubicCubicSplits_of_upper_common_root
       (le_of_lt hab) (le_of_lt hbc) huv hub hav hvc hc0 hμ
-  have hav_lt : a < v := by
-    exact lt_of_le_of_ne hav (by intro h; exact hva h.symm)
-  have hvc_lt : v < c := by
-    exact lt_of_le_of_ne hvc hvc_eq
-  have hbw_lt : b < w := by
-    exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
+  have hav_lt : a < v := by exact lt_of_le_of_ne hav (by intro h; exact hva h.symm)
+  have hvc_lt : v < c := by exact lt_of_le_of_ne hvc hvc_eq
+  have hbw_lt : b < w := by exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
   exact xSubCubicCubicSplits_of_left_root_left_strict_distinct
     hua hab hbc hav_lt hvc_lt hvw hbw_lt hc0 hw0 hvb hwc hμ
 
@@ -2346,8 +2326,7 @@ lemma xSubCubicCubicSplits_of_left_root_right_strict_roots {a b c u v w μ : ℝ
       hc0 hμ
   have hub_lt : u < b := lt_of_le_of_ne hub hub_eq
   have hvc_lt : v < c := lt_of_le_of_ne hvc hvc_eq
-  have hbw_lt : b < w := by
-    exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
+  have hbw_lt : b < w := by exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
   exact xSubCubicCubicSplits_of_left_root_right_strict_distinct
     hab hbc hau hub_lt huv hvw hvc_lt hbw_lt hc0 hw0 hvb hwc hμ
 
@@ -2367,8 +2346,7 @@ lemma xSubCubicCubicSplits_of_strict_roots {a b c u v w μ : ℝ}
   · subst u
     exact xSubCubicCubicSplits_of_lower_common_root
       (le_of_lt hbc) (le_of_lt hvw) hvc hbw hc0 (le_of_lt hw0) hμ
-  have hau : a < u := by
-    exact lt_of_le_of_ne (le_of_not_gt hua) (by intro h; exact hua_eq h.symm)
+  have hau : a < u := by exact lt_of_le_of_ne (le_of_not_gt hua) (by intro h; exact hua_eq h.symm)
   exact xSubCubicCubicSplits_of_left_root_right_strict_roots
     hab hbc hau hub huv hvw hvc hbw hc0 hw0 hμ
 
@@ -3072,12 +3050,9 @@ theorem
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 3 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 3 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 3 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 3 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
     hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
@@ -3111,8 +3086,7 @@ theorem
   by_cases hle_two : g.natDegree ≤ 2
   · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two
       hpair hfnn hgnn hdeg hle_two
-  · have hthree : g.natDegree = 3 := by
-      lia
+  · have hthree : g.natDegree = 3 := by lia
     exact
       positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
         hmono hpair hfnn hgnn hdeg hthree

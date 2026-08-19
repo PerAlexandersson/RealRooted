@@ -82,8 +82,7 @@ private theorem card_filter_gt_add_C_mul_eventually_eq
     hδmatch μ hμ (lt_of_lt_of_le hμδ (min_le_right _ _))
   obtain ⟨a, ha_mem, ha_lt⟩ :=
     hδesc μ hμ (lt_of_lt_of_le hμδ (min_le_left _ _)) hp_split
-  have hlt : f.natDegree < g.natDegree := by
-    simp [hdeg]
+  have hlt : f.natDegree < g.natDegree := by simp [hdeg]
   have hnat : (f + C μ * g).natDegree = g.natDegree :=
     Polynomial.natDegree_add_C_mul_of_natDegree_lt (ne_of_gt hμ) hlt
   have hcard : (f + C μ * g).roots.card = f.roots.card + 1 := by
@@ -125,8 +124,7 @@ theorem card_filter_gt_endpoint_eq_of_local_lower_counts
   have hμ₀_le_one : μ₀ ≤ 1 := by linarith [min_le_right (δ / 2) (1 / 2)]
   have hμ₀_ltδ : μ₀ < δ := by grind
   have hsmall := hδ μ₀ hμ₀_pos hμ₀_ltδ
-  have hlt : f.natDegree < g.natDegree := by
-    simp [hdeg]
+  have hlt : f.natDegree < g.natDegree := by simp [hdeg]
   have hdeg_fg : ∀ μ ∈ Set.Icc μ₀ 1,
       (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree := by
     intro μ hμ

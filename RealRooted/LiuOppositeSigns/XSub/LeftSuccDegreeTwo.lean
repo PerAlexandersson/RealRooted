@@ -90,8 +90,7 @@ theorem
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
   have hfdeg_shift : (f.comp (X + C r)).natDegree = 3 := by
-    have hfdeg : f.natDegree = 3 := by
-      lia
+    have hfdeg : f.natDegree = 3 := by lia
     simpa [Polynomial.natDegree_comp] using hfdeg
   have hgdeg_shift : (g.comp (X + C r)).natDegree = 2 := by
     simpa [Polynomial.natDegree_comp] using hgdeg
@@ -127,8 +126,7 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
   by_cases hzero : g.natDegree = 0
   · exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
       hpair hfnn hgnn hdeg hzero
-  · have hone : g.natDegree = 1 := by
-      lia
+  · have hone : g.natDegree = 1 := by lia
     exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
       hpair hfnn hgnn hdeg hone
 
@@ -146,8 +144,7 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
   by_cases hle_one : g.natDegree ≤ 1
   · exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
       hpair hfnn hgnn hdeg hle_one
-  · have htwo : g.natDegree = 2 := by
-      lia
+  · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo
 

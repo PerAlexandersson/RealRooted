@@ -513,8 +513,7 @@ lemma Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one {p : ℝ[X]}
   calc
     p = C u * X + C (p.coeff 0) := by
       simpa [u] using Polynomial.eq_X_add_C_of_natDegree_le_one (p := p) hp_deg.le
-    _ = C u * (X + C (p.coeff 0 / u)) := by
-      rw [mul_add, ← C_mul, mul_div_cancel₀ _ hu_pos.ne']
+    _ = C u * (X + C (p.coeff 0 / u)) := by rw [mul_add, ← C_mul, mul_div_cancel₀ _ hu_pos.ne']
 
 lemma StrictPrecSameDegree.X_add_C_iff {a b : ℝ} :
     StrictPrecSameDegree (X + C b) (X + C a) ↔ a < b := by
@@ -931,8 +930,7 @@ lemma Matrix.PosDef.of_congruent_to_diagonal {n : ℕ}
     (heq : V * B * Vᵀ = diagonal d) :
     B.PosDef := by
   let W := (V⁻¹)ᵀ
-  have hW : W.det ≠ 0 := by
-    simp [W, hV]
+  have hW : W.det ≠ 0 := by simp [W, hV]
   have hB_eq : B = Wᵀ * diagonal d * W := by
     rw [show B = V⁻¹ * (V * B * Vᵀ) * (Vᵀ)⁻¹ by simp [Matrix.mul_assoc, hV], heq]
     simp [W, Matrix.transpose_nonsing_inv]
@@ -960,7 +958,8 @@ lemma Polynomial.eval_derivative_prod_X_sub_C_univ_at_root {n : ℕ} (r : Fin n 
     (k : Fin n) :
     eval (r k) (derivative (∏ j : Fin n, (X - C (r j)))) =
     ∏ j ∈ Finset.univ.erase k, (r k - r j) := by
-  simp [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ k), eval_prod, Finset.sdiff_singleton_eq_erase]
+  simp [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ k), eval_prod,
+    Finset.sdiff_singleton_eq_erase]
 
 lemma Polynomial.splits_eq_C_mul_prod {n : ℕ} {q : ℝ[X]}
     (hq_ne : q ≠ 0) (hq_deg : q.natDegree = n)
@@ -1443,8 +1442,7 @@ lemma exists_index_eq_of_mem_roots {n : ℕ} {p : ℝ[X]} (s : Fin n → ℝ) (h
     rw [Finset.card_image_of_injective _ hs.injective, Finset.card_univ, Fintype.card_fin]
     exact le_trans (Multiset.toFinset_card_le _) (Polynomial.card_roots' p |>.trans hp_deg)
   have h_eq := Finset.eq_of_subset_of_card_le h_subset h_card
-  have hx_in : x ∈ Finset.image s Finset.univ := by
-    rwa [h_eq, Multiset.mem_toFinset]
+  have hx_in : x ∈ Finset.image s Finset.univ := by rwa [h_eq, Multiset.mem_toFinset]
   rcases Finset.mem_image.mp hx_in with ⟨i, _, hi⟩
   exact ⟨i, hi⟩
 
@@ -1918,19 +1916,15 @@ lemma prec_of_wronskian_pos_succ {n : ℕ}
     have hq_roots : q.roots = 0 := by
       rw [← Multiset.card_eq_zero, ← Splits.natDegree_eq_card_roots hq_splits, hq_deg]
     have hp_roots : p.roots = {t 0} := by
-      have : p.roots.card = 1 := by
-        rw [← Splits.natDegree_eq_card_roots hp_splits, hp_deg]
+      have : p.roots.card = 1 := by rw [← Splits.natDegree_eq_card_roots hp_splits, hp_deg]
       obtain ⟨a, ha⟩ := Multiset.card_eq_one.mp this
       have ht₀_mem : t 0 ∈ p.roots := mem_roots'.mpr ⟨hp_ne, ht_roots 0⟩
       rw [ha] at ht₀_mem ⊢
       rw [Multiset.mem_singleton.mp ht₀_mem]
-    refine ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, [], [t 0], ?_, ?_, ?_, ?_, ?_⟩
-    · simp
-    · simp
-    · simp [hq_roots]
-    · simp [hp_roots]
-    · left
-      constructor <;> simp [ListInterlaces]
+    refine ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, [], [t 0], by simp, by simp,
+      by simp [hq_roots], by simp [hp_roots], ?_⟩
+    left
+    constructor <;> simp [ListInterlaces]
   classical
   obtain ⟨xl, h_xl_root, h_xl_lt⟩ :=
     exists_root_below_min_of_wronskian_pos hn hp_pos hq_pos hp_deg hq_deg hW s hs_mono hs_roots

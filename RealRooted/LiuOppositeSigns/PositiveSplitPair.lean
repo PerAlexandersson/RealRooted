@@ -213,14 +213,11 @@ lemma roots_order_of_positiveSplitRootCountPair_three_two
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
       have hnot_xu : ¬ x ≤ u := not_le.mpr hux
-      by_cases hxv : x ≤ v
-      · simp [hnot_xu, hxv]
-      · simp [hnot_xu, hxv]
+      by_cases hxv : x ≤ v <;> simp [hnot_xu, hxv]
     have hcount := h.count.left_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
-    have hq_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by
-      exact_mod_cast hq_count_le
+    have hq_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by exact_mod_cast hq_count_le
     linarith
   · by_contra hbv
     have hvb : v < b := lt_of_not_ge hbv
@@ -237,9 +234,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_two
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxa : x ≤ a
-      · simp [hxa, hxb, hxc]
-      · simp [hxa, hxb, hxc]
+      by_cases hxa : x ≤ a <;> simp [hxa, hxb, hxc]
     have hq_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
@@ -250,8 +245,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_two
     have hcount := h.count.left_sub_le_one x
     rw [hq_count] at hcount
     norm_num at hcount
-    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by
-      exact_mod_cast hf_count_ge
+    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by exact_mod_cast hf_count_ge
     linarith
   · by_contra huc
     have hcu : c < u := lt_of_not_ge huc
@@ -342,8 +336,7 @@ lemma roots_order_of_positiveSplitRootCountPair_four_three
     have hcount := h.count.left_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
-    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 2) := by
-      exact_mod_cast hg_count_le
+    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 2) := by exact_mod_cast hg_count_le
     linarith
   · by_contra hbv
     have hvb : v < b := lt_of_not_ge hbv
@@ -370,10 +363,8 @@ lemma roots_order_of_positiveSplitRootCountPair_four_three
       have hnot_xv : ¬ x ≤ v := not_le.mpr hvx
       by_cases hxw : x ≤ w <;> simp [hnot_xu, hnot_xv, hxw]
     have hcount := h.count.left_sub_le_one x
-    have hf_count_int : (3 : ℤ) ≤ rootCountAtOrAbove f x := by
-      exact_mod_cast hf_count_ge
-    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by
-      exact_mod_cast hg_count_le
+    have hf_count_int : (3 : ℤ) ≤ rootCountAtOrAbove f x := by exact_mod_cast hf_count_ge
+    have hg_count_int : ((rootCountAtOrAbove g x : ℤ) ≤ 1) := by exact_mod_cast hg_count_le
     linarith
   · by_contra hcw
     have hwc : w < c := lt_of_not_ge hcw
@@ -404,8 +395,7 @@ lemma roots_order_of_positiveSplitRootCountPair_four_three
     have hcount := h.count.left_sub_le_one x
     rw [hg_count] at hcount
     norm_num at hcount
-    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by
-      exact_mod_cast hf_count_ge
+    have hf_count_int : (2 : ℤ) ≤ rootCountAtOrAbove f x := by exact_mod_cast hf_count_ge
     linarith
   · by_contra huc
     have hcu : c < u := lt_of_not_ge huc
@@ -436,8 +426,7 @@ lemma roots_order_of_positiveSplitRootCountPair_four_three
     have hcount := h.count.right_sub_le_one x
     rw [hg_count] at hcount
     norm_num at hcount
-    have hf_count_int : ((rootCountAtOrAbove f x : ℤ) ≤ 1) := by
-      exact_mod_cast hf_count_le
+    have hf_count_int : ((rootCountAtOrAbove f x : ℤ) ≤ 1) := by exact_mod_cast hf_count_le
     linarith
   · by_contra hvd
     have hdv : d < v := lt_of_not_ge hvd
@@ -469,8 +458,7 @@ lemma roots_order_of_positiveSplitRootCountPair_four_three
     have hcount := h.count.right_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
-    have hg_count_int : (2 : ℤ) ≤ rootCountAtOrAbove g x := by
-      exact_mod_cast hg_count_ge
+    have hg_count_int : (2 : ℤ) ≤ rootCountAtOrAbove g x := by exact_mod_cast hg_count_ge
     linarith
 
 /-- A `(4, 3)` positive split root-count pair admits ordered root data with
@@ -689,11 +677,9 @@ lemma of_splits_of_pos_right_family {f g : ℝ[X]}
             C α * (f + C (β / α) * g) = C α * f + C β * g := by
           rw [mul_add]
           congr 1
-          have hαβ : α * (β / α) = β := by
-            field_simp [hα0]
+          have hαβ : α * (β / α) = β := by field_simp [hα0]
           calc
-            C α * (C (β / α) * g) = C (α * (β / α)) * g := by
-              simp [mul_assoc]
+            C α * (C (β / α) * g) = C (α * (β / α)) * g := by simp [mul_assoc]
             _ = C β * g := by rw [hαβ]
         rw [← hscale]
         exact (Polynomial.Splits.C (R := ℝ) α).mul hright
