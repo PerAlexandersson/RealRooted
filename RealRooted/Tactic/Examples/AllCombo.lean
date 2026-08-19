@@ -9,6 +9,58 @@ example {f g : ℝ[X]} (hall : AllComboRealRooted f g) (a b : ℝ) :
     (C a * f + C b * g).Splits := by
   rr_all_combo_splits using all_combo := hall, left_scalar := a, right_scalar := b
 
+example {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g) :
+    p.Splits := by
+  rr_all_combo_splits_of_eq_combo using all_combo := hall, eq_combo := hp
+
+example {f g p : ℝ[X]} {a b : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g)
+    (hp0 : p ≠ 0) :
+    p ≠ 0 ∧ p.Splits := by
+  rr_all_combo_ne_zero_and_splits_of_eq_combo using
+    all_combo := hall,
+    eq_combo := hp,
+    nonzero := hp0
+
+example {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i) :
+    ∀ i : Nat, (P i).Splits := by
+  rr_all_combo_sequence_splits_of_eq_combo using all_combo := hall, eq_combo := hP
+
+example {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hP0 : ∀ i : Nat, P i ≠ 0) :
+    ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits := by
+  rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo using
+    all_combo := hall,
+    eq_combo := hP,
+    nonzero := hP0
+
+example {f g p q : ℝ[X]} {a b c d : ℝ}
+    (hall : AllComboRealRooted f g)
+    (hp : p = C a * f + C b * g)
+    (hq : q = C c * f + C d * g) :
+    AllComboRealRooted p q := by
+  rr_all_combo_linear_recombination using
+    all_combo := hall,
+    left_eq_combo := hp,
+    right_eq_combo := hq
+
+example {F G P Q : Nat → ℝ[X]} {a b c d : Nat → ℝ}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
+    (hP : ∀ i : Nat, P i = C (a i) * F i + C (b i) * G i)
+    (hQ : ∀ i : Nat, Q i = C (c i) * F i + C (d i) * G i) :
+    ∀ i : Nat, AllComboRealRooted (P i) (Q i) := by
+  rr_all_combo_sequence_linear_recombination using
+    all_combo := hall,
+    left_eq_combo := hP,
+    right_eq_combo := hQ
+
 example {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
     f ≠ 0 ∧ f.Splits := by
   rr_all_combo_left_realrooted using all_combo := hall, nonzero := hf0
@@ -19,6 +71,15 @@ example {F G : Nat → ℝ[X]}
     ∀ i : Nat, F i ≠ 0 ∧ (F i).Splits := by
   rr_all_combo_sequence_left_realrooted using all_combo := hall, nonzero := hF0
 
+example {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+    f.Splits := by
+  rr_all_combo_left_splits using all_combo := hall
+
+example {F G : Nat → ℝ[X]}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (F i).Splits := by
+  rr_all_combo_sequence_left_splits using all_combo := hall
+
 example {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
     g ≠ 0 ∧ g.Splits := by
   rr_all_combo_right_realrooted using all_combo := hall, nonzero := hg0
@@ -28,6 +89,15 @@ example {F G : Nat → ℝ[X]}
     (hG0 : ∀ i : Nat, G i ≠ 0) :
     ∀ i : Nat, G i ≠ 0 ∧ (G i).Splits := by
   rr_all_combo_sequence_right_realrooted using all_combo := hall, nonzero := hG0
+
+example {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+    g.Splits := by
+  rr_all_combo_right_splits using all_combo := hall
+
+example {F G : Nat → ℝ[X]}
+    (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, (G i).Splits := by
+  rr_all_combo_sequence_right_splits using all_combo := hall
 
 example {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by
