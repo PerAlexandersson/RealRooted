@@ -490,9 +490,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
         Multiset.filter_singleton]
       have hnot_xa : ¬ x ≤ a := not_le.mpr hax
       have hnot_xb : ¬ x ≤ b := not_le.mpr hbx
-      by_cases hxc : x ≤ c
-      · simp [hnot_xa, hnot_xb, hxc]
-      · simp [hnot_xa, hnot_xb, hxc]
+      by_cases hxc : x ≤ c <;> simp [hnot_xa, hnot_xb, hxc]
     have hg_count : rootCountAtOrAbove g x = 3 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
@@ -528,9 +526,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxu : x ≤ u
-      · simp [hxu, hxv, hxw]
-      · simp [hxu, hxv, hxw]
+      by_cases hxu : x ≤ u <;> simp [hxu, hxv, hxw]
     have hcount := h.count.right_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
@@ -560,9 +556,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
         Multiset.filter_singleton]
       have hnot_xu : ¬ x ≤ u := not_le.mpr hux
       have hnot_xv : ¬ x ≤ v := not_le.mpr hvx
-      by_cases hxw : x ≤ w
-      · simp [hnot_xu, hnot_xv, hxw]
-      · simp [hnot_xu, hnot_xv, hxw]
+      by_cases hxw : x ≤ w <;> simp [hnot_xu, hnot_xv, hxw]
     have hcount := h.count.left_sub_le_one x
     rw [hf_count] at hcount
     norm_num at hcount
@@ -585,9 +579,7 @@ lemma roots_order_of_positiveSplitRootCountPair_three_three
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      by_cases hxa : x ≤ a
-      · simp [hxa, hxb, hxc]
-      · simp [hxa, hxb, hxc]
+      by_cases hxa : x ≤ a <;> simp [hxa, hxb, hxc]
     have hg_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
