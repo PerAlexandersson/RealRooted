@@ -27,9 +27,7 @@ theorem splits_of_le_roots_of_natDegree_le_card
     {K : Type*} [Field K] {p : K[X]} {s : Multiset K}
     (hsub : s ≤ p.roots) (hdeg : p.natDegree ≤ s.card) : p.Splits := by
   rw [splits_iff_card_roots]
-  apply le_antisymm
-  · exact card_roots' p
-  · exact hdeg.trans (Multiset.card_le_card hsub)
+  exact le_antisymm (card_roots' p) (hdeg.trans (Multiset.card_le_card hsub))
 
 /-- A polynomial splits if a finset of roots already has cardinality at least
 its natural degree. -/
