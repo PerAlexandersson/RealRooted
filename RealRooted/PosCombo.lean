@@ -739,7 +739,8 @@ theorem of_aissenSchoenbergWhitney_right_pencil
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
   rw [← hscale]
-  exact ⟨mul_ne_zero (by grind) (hne hz), .mul (.C _) <| (aissenSchoenbergWhitneyForward (hpf hz)).1⟩
+  exact ⟨mul_ne_zero (by grind) (hne hz),
+    .mul (.C _) <| (aissenSchoenbergWhitneyForward (hpf hz)).1⟩
 
 /--
 TNN-named version of `of_aissenSchoenbergWhitney_right_pencil`.

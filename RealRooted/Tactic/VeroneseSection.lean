@@ -46,7 +46,8 @@ theorem veroneseSectionPolynomial_sequence_zero_or_splits_of_nonneg
     ∀ n : Nat,
       veroneseSectionPolynomial (r n) (k n) (P n) = 0 ∨
         (veroneseSectionPolynomial (r n) (k n) (P n)).Splits := fun n =>
-  veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg (hnn n) (hsplits n) (hr n) (hk n)
+  veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
+    (hnn n) (hsplits n) (hr n) (hk n)
 
 theorem prec0_veroneseSectionPolynomial_sequence_of_prec
     {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
@@ -337,7 +338,8 @@ macro_rules
         k_lt_r := $hk:term) =>
       `(tactic|
         exact
-          RealRooted.veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg $hpnn $hsplits $hr $hk)
+          RealRooted.veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
+            $hpnn $hsplits $hr $hk)
   | `(tactic|
       rr_veronese_section_prec0 using
         prec_to_full := $hPrecToFull:term,
@@ -434,7 +436,8 @@ macro_rules
         k_lt_r := $hk:term) =>
       `(tactic|
         exact
-          RealRooted.veroneseSectionPolynomial_sequence_zero_or_splits_of_nonneg $hpnn $hsplits $hr $hk)
+          RealRooted.veroneseSectionPolynomial_sequence_zero_or_splits_of_nonneg
+            $hpnn $hsplits $hr $hk)
   | `(tactic|
       rr_veronese_section_sequence_prec0 using
         prec_to_full := $hPrecToFull:term,
