@@ -1,6 +1,8 @@
 import RealRooted.Basic
 import RealRooted.DegreeDropReversal
 import RealRooted.Tactic.Lookup
+import RealRooted.Tactic.Named
+import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.SideGoals
 
@@ -108,6 +110,12 @@ theorem isRealRooted_of_prec_chain_from_step {P : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_prec_chain (hprec 0) hprec
+
+/-- A consecutive `Interlaces` chain gives rowwise nonzero real-rootedness. -/
+theorem isRealRooted_of_interlaces_chain {P : Nat → ℝ[X]}
+    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain_from_step fun n => (hinter n).toPrec
 
 /-- A consecutive `Prec` chain gives consecutive interlacing once the degree
 increments are supplied. -/
@@ -682,6 +690,10 @@ theorem swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
 
 namespace Tactic
 
+open Lean
+open Lean.Meta
+open Lean.Elab.Tactic
+
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
 syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
@@ -880,6 +892,8 @@ syntax (name := rr_interlaces_with_degree)
 syntax (name := rr_interlaces_auto_degree)
   "rr_interlaces" " using " term : tactic
 
+syntax (name := rr_interlaces_auto_named) "rr_interlaces" : tactic
+
 syntax (name := rr_prec0) "rr_prec0" " using " term : tactic
 
 syntax (name := rr_prec_of_interlaces)
@@ -986,6 +1000,78 @@ syntax (name := rr_finish_using_sequence_branches)
   "rr_finish" " using " term ", " term ", " term ", " term : tactic
 
 syntax (name := rr_finish) "rr_finish" : tactic
+
+private def closeWithProof? (tacticName : Name) (proof : Expr) : TacticM Bool := do
+  let result? ← observing? do
+    withMainContext do
+      let target ← getMainTarget
+      let proofType ← inferType proof
+      if ← withNewMCtxDepth <| isDefEq proofType target then
+        closeMainGoal tacticName proof
+        return true
+      else
+        return false
+  return result?.getD false
+
+private def assertProofAs (nameBase : Name) (proof : Expr) : TacticM Ident := do
+  let name ← mkFreshUserName nameBase
+  let type ← inferType proof
+  let goal ← getMainGoal
+  let (_, goal) ← (← goal.assert name type proof).intro1P
+  replaceMainGoal [goal]
+  return mkIdent name
+
+private def closeNamedDirect? (tacticName : Name) (cName : Name) (arg : Expr)
+    (suffix : String) : TacticM Bool := do
+  for candidate in namedSuffixCandidates suffix do
+    if let some proof ← mkNamedTheoremApp? cName candidate arg then
+      if ← closeWithProof? tacticName proof then
+        return true
+  return false
+
+private def closeNamedDirectOrPrec (tacticName : Name) (target : Expr)
+    (directSuffix : String) (closePrec : Ident → TacticM Unit) : TacticM Unit := do
+  let some (cName, arg) ← findNamedPolynomialConstantApp? target
+    | throwError "{tacticName} failed: could not find named polynomial in target: {target}"
+  if ← closeNamedDirect? tacticName cName arg directSuffix then
+    return
+  for candidate in namedSuffixCandidates "_prec" do
+    if let some proof ← mkNamedTheoremApp? cName candidate arg then
+      let hprec ← assertProofAs `hprec proof
+      withMainContext do
+        closePrec hprec
+      return
+  throwError "{tacticName} failed: no matching named final wrapper closes target: {target}"
+
+elab "rr_named_nonzero" : tactic => do
+  withMainContext do
+    let target ← getMainTarget
+    closeNamedDirectOrPrec `rr_named_nonzero target "_ne_zero" fun hprec => do
+      evalTactic (← `(tactic| rr_nonzero using $hprec:ident))
+
+elab "rr_named_splits" : tactic => do
+  withMainContext do
+    let target ← getMainTarget
+    closeNamedDirectOrPrec `rr_named_splits target "_splits" fun hprec => do
+      evalTactic (← `(tactic| rr_splits using $hprec:ident))
+
+elab "rr_named_realrooted" : tactic => do
+  withMainContext do
+    let target ← instantiateMVars (← getMainTarget)
+    let some (cName, arg) ← findNamedPolynomialConstantApp? target
+      | throwError "rr_named_realrooted failed: could not find named polynomial"
+    if ← closeNamedDirect? `rr_named_realrooted cName arg "_realRooted" then
+      return
+    evalTactic (← `(tactic| exact ⟨by rr_named_nonzero, by rr_named_splits⟩))
+
+elab "rr_named_interlaces" : tactic => do
+  withMainContext do
+    let target ← getMainTarget
+    let some (cName, arg) ← findNamedConstantApp? target
+      | throwError "rr_named_interlaces failed: could not find named expression"
+    unless ← closeNamedDirect? `rr_named_interlaces cName arg "_interlaces" do
+      throwError
+        "rr_named_interlaces failed: no matching named interlacing wrapper for {cName}"
 
 macro_rules
   | `(rr_lookup_term) =>
@@ -1194,6 +1280,7 @@ macro_rules
           | (rw [add_comm]; exact Polynomial.X_add_C_ne_zero _)
           | (apply Polynomial.C_ne_zero.mpr <;> rr_side_ne)
           | exact RealRooted.HasPosLeadingCoeff.ne_zero (by assumption)
+          | rr_named_nonzero
           | (apply mul_ne_zero <;> rr_nonzero)
           | (apply pow_ne_zero <;> rr_nonzero)
           | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
@@ -1306,6 +1393,7 @@ macro_rules
           | exact Polynomial.Splits.C_mul_X_pow _ _
           | exact RealRooted.left_splits_of_interlaces
               (RealRooted.derivative_interlaces (by assumption) (by rr_close_side))
+          | rr_named_splits
           | (apply Polynomial.Splits.mul <;> rr_splits)
           | (apply Polynomial.Splits.pow <;> rr_splits)
           | simp [add_comm]
@@ -1528,6 +1616,7 @@ macro_rules
           | rr_lookup
           | rr_realrooted using rr_lookup_term
           | assumption
+          | rr_named_realrooted
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
@@ -1538,6 +1627,11 @@ macro_rules
   | `(tactic| rr_interlaces using $hprec:term) =>
       `(tactic|
         exact RealRooted.Prec.toInterlaces $hprec (by rr_close_side))
+  | `(tactic| rr_interlaces) =>
+      `(tactic|
+        first
+          | rr_named_interlaces
+          | exact rr_lookup_interlaces_term)
   | `(tactic| rr_prec0 using $hprec:term) =>
       `(tactic|
         rr_first_exact
@@ -1741,6 +1835,10 @@ macro_rules
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec rr_lookup_term)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
+          | rr_named_interlaces
+          | rr_named_realrooted
+          | rr_named_nonzero
+          | rr_named_splits
           | rr_zero_or_splits
           | rr_sign
           | simp_all [
