@@ -52,8 +52,7 @@ private lemma middle_gap_left_deriv_neg_of_side_nonneg
     dsimp [x, y, z, w]
     ring
   rw [hP_gap]
-  have hS : 0 ≤ w * x + 2 * w * y + w * z - x * y - y ^ 2 + z ^ 2 := by
-    rwa [hS_gap] at hside
+  have hS : 0 ≤ w * x + 2 * w * y + w * z - x * y - y ^ 2 + z ^ 2 := by rwa [hS_gap] at hside
   by_contra hnot
   have hP : 0 ≤ -w * x - 2 * w * y + x * y - x * z + y ^ 2 - 2 * y * z :=
     le_of_not_gt hnot
@@ -103,19 +102,16 @@ private lemma middle_gap_right_deriv_pos_of_side_nonpos
     dsimp [x, y, z, w]
     ring
   rw [hP_gap]
-  have hS : w * x + 2 * w * y + w * z - x * y - y ^ 2 + z ^ 2 ≤ 0 := by
-    rwa [hS_gap] at hside
+  have hS : w * x + 2 * w * y + w * z - x * y - y ^ 2 + z ^ 2 ≤ 0 := by rwa [hS_gap] at hside
   have hden_pos : 0 < x + 2 * y + z := by positivity
-  have hw_upper : w * (x + 2 * y + z) ≤ y * (x + y) - z ^ 2 := by
-    nlinarith
+  have hw_upper : w * (x + 2 * y + z) ≤ y * (x + y) - z ^ 2 := by nlinarith
   have htarget_bound :
       y * (x + y) - z ^ 2 <
         (x + 2 * y + 2 * z) * (x + 2 * y + z) := by
     nlinarith [sq_nonneg x, sq_nonneg z, mul_nonneg hx (le_of_lt hy),
       mul_pos hy hz]
   have hw_lt : w < x + 2 * y + 2 * z := by nlinarith
-  have hfirst : 0 ≤ y * (x + y) - w * (x + 2 * y + z) - z ^ 2 := by
-    nlinarith
+  have hfirst : 0 ≤ y * (x + y) - w * (x + 2 * y + z) - z ^ 2 := by nlinarith
   have hdecomp :
       -w * x - 2 * w * y - 2 * w * z + x * y + x * z +
           y ^ 2 + 2 * y * z + z ^ 2 =
@@ -339,8 +335,7 @@ private lemma cubicDiscr_cubicSubQuadratic_middle_double_roots_neg
     ring
   have hlead : 0 < β ^ 2 - 3 * (1 : ℝ) * lam := by
     rw [hlead_eq]
-    have htail_nonneg : 0 ≤ 3 * lam ^ 2 + 3 := by
-      nlinarith only [sq_nonneg lam]
+    have htail_nonneg : 0 ≤ 3 * lam ^ 2 + 3 := by nlinarith only [sq_nonneg lam]
     have hprod_nonneg : 0 ≤ (3 * lam ^ 2 + 3) * extra :=
       mul_nonneg htail_nonneg hextra_nonneg
     have hextra_terms :
@@ -361,8 +356,7 @@ private lemma cubicDiscr_cubicSubQuadratic_middle_double_roots_neg
     ring_nf
   have hval_simple : lam ^ 2 - 3 * β * (-p) < 0 := by
     rw [hval_eq]
-    have hbracket : 0 < suc + 3 * lam ^ 2 + 3 := by
-      nlinarith only [sq_nonneg lam, hsuc_pos]
+    have hbracket : 0 < suc + 3 * lam ^ 2 + 3 := by nlinarith only [sq_nonneg lam, hsuc_pos]
     have hprod_pos : 0 < 3 * p * (suc + 3 * lam ^ 2 + 3) :=
       mul_pos (mul_pos (by norm_num) hp_pos) hbracket
     nlinarith only [hprod_pos]

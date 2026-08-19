@@ -125,8 +125,7 @@ theorem roots_endpointDerivative_mem_Icc {f : ℝ[X]} {a b : ℝ}
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hder_roots : ∀ r ∈ f.derivative.roots, r ∈ Icc a b := by
     by_cases hdeg_one : f.natDegree = 1
-    · have hder_deg : f.derivative.natDegree = 0 := by
-        rw [f.natDegree_derivative, hdeg_one]
+    · have hder_deg : f.derivative.natDegree = 0 := by rw [f.natDegree_derivative, hdeg_one]
       rw [eq_C_of_natDegree_eq_zero hder_deg]
       simp
     · exact roots_derivative_mem_Icc_of_roots_mem_Icc hf (by lia)

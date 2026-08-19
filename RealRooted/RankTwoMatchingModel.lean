@@ -255,10 +255,8 @@ theorem scalar_mul_normalizedFactor (g : ℝ) (hg : 0 < g) :
     embedReal (1 + g) * normalizedFactor (g / (1 + g)) (1 / (1 + g)) =
       rawFactor g := by
   have hne : 1 + g ≠ 0 := ne_of_gt (by linarith)
-  have hga : (1 + g) * (g / (1 + g)) = g := by
-    field_simp
-  have hgb : (1 + g) * (1 / (1 + g)) = 1 := by
-    field_simp
+  have hga : (1 + g) * (g / (1 + g)) = g := by field_simp
+  have hgb : (1 + g) * (1 / (1 + g)) = 1 := by field_simp
   have ha :
       embedReal (1 + g) * embedReal (g / (1 + g)) = embedReal g := by
     change
@@ -269,8 +267,7 @@ theorem scalar_mul_normalizedFactor (g : ℝ) (hg : 0 < g) :
       embedReal (1 + g) * embedReal (1 / (1 + g)) = 1 := by
     change embedRealHom (1 + g) * embedRealHom (1 / (1 + g)) = 1
     rw [← map_mul, hgb, map_one]
-  have hc : embedReal (1 + g) = 1 + embedReal g := by
-    simp [embedReal, embedRealHom]
+  have hc : embedReal (1 + g) = 1 + embedReal g := by simp [embedReal, embedRealHom]
   simp only [normalizedFactor, rawFactor]
   rw [mul_add, mul_add, ← mul_assoc, ha, ← mul_assoc, hb, hc]
   ring
@@ -390,8 +387,7 @@ theorem exists_factors_of_isPFPolynomial
   have hg : ∀ i : s, 0 < (i : ℝ) := by
     intro i
     exact hs i Multiset.coe_mem
-  have hcard : Fintype.card s ≤ M := by
-    simpa [hscard] using hdegree
+  have hcard : Fintype.card s ≤ M := by simpa [hscard] using hdegree
   have hp_factor' :
       p = ∏ i : s, (1 + Polynomial.C (i : ℝ) * Polynomial.X) := by
     rw [hp_factor]
@@ -423,8 +419,7 @@ theorem exists_nonneg_disjointSubsetWeight_eq_coeff_sum
   refine ⟨a, b, ha, hb, ?_⟩
   intro k
   rw [disjointSubsetWeight_eq_diagonal_coeff]
-  have hcard : Fintype.card s ≤ M := by
-    simpa [Multiset.card_coe, hscard] using hdegree
+  have hcard : Fintype.card s ≤ M := by simpa [Multiset.card_coe, hscard] using hdegree
   have hp_factor' :
       p = ∏ i : s, (1 + Polynomial.C (i : ℝ) * Polynomial.X) := by
     rw [hp_factor]

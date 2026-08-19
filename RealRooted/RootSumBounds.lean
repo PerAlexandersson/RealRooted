@@ -56,8 +56,7 @@ private theorem nextCoeff_add_C_mul_of_natDegree_succ {f g : ℝ[X]} {μ : ℝ}
       f.leadingCoeff + μ * g.coeff f.natDegree := by
   have hlt : f.natDegree < g.natDegree := by lia
   have hsum_deg := natDegree_add_C_mul_of_natDegree_lt hμ hlt
-  have hsum_pos : 0 < (f + C μ * g).natDegree := by
-    simp [hsum_deg, hdeg]
+  have hsum_pos : 0 < (f + C μ * g).natDegree := by simp [hsum_deg, hdeg]
   rw [nextCoeff_of_natDegree_pos hsum_pos, hsum_deg, hdeg, Nat.add_sub_cancel,
     coeff_add, coeff_C_mul, leadingCoeff]
 
@@ -102,8 +101,7 @@ private theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
     have hle : -(|B| * (μ * b)) ≤ B * (μ * b) := by
       nlinarith [mul_le_mul_of_nonneg_right hBneg hprod_nonneg]
     nlinarith
-  have htarget : - (a + μ * c) < B * (μ * b) := by
-    nlinarith
+  have htarget : - (a + μ * c) < B * (μ * b) := by nlinarith
   have hden : 0 < μ * b := by positivity
   rwa [div_lt_iff₀ hden]
 

@@ -388,8 +388,7 @@ theorem degreeOf_specializeZero_le
   apply Finset.sup_le
   intro d hd
   rw [Finset.mem_filter] at hd
-  have hc : p.coeff d ≠ 0 := by
-    simpa [Finsupp.mem_support_iff] using hd.1
+  have hc : p.coeff d ≠ 0 := by simpa [Finsupp.mem_support_iff] using hd.1
   rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
   exact MvPolynomial.degreeOf_le_iff.mp le_rfl d hd.1
 

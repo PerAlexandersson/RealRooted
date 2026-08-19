@@ -661,8 +661,7 @@ private theorem orientationOf_orientationVertexEquiv_eq
   let hdisj := orientationVertices_disjoint hM o ho
   let f := orientationVertexEquiv hM o ho
   let x := orientationOfDisjointEquiv hdisj f e he'
-  have hxA : x ∈ orientationLeftVertices o := by
-    exact ((edgeIndexEquiv hdisj f).symm ⟨e, he'⟩).2
+  have hxA : x ∈ orientationLeftVertices o := by exact ((edgeIndexEquiv hdisj f).symm ⟨e, he'⟩).2
   have hxedge : x ∈ e.1 :=
     orientationOfDisjointEquiv_mem hdisj f e he'
   have hspec : s(o e he, Sym2.Mem.other' (ho e he)) = e.1 :=
@@ -759,8 +758,7 @@ private theorem orientationVertexEquiv_ofDisjointEquiv_val
   have heleft : o e.1 e.2 = i.1 := by
     exact congrArg Subtype.val
       ((orientationLeftEquiv hM o ho).apply_symm_apply i)
-  have hedgeIndex : ((edgeIndexEquiv hAB f).symm e).1 = j.1 := by
-    exact heleft.trans hij
+  have hedgeIndex : ((edgeIndexEquiv hAB f).symm e).1 = j.1 := by exact heleft.trans hij
   change Sym2.Mem.other' (ho e.1 e.2) = (f j).1
   rw [other_orientationOfDisjointEquiv hAB f e.1 e.2]
   exact congrArg Subtype.val (congrArg f (Subtype.ext hedgeIndex))
@@ -962,8 +960,7 @@ private theorem disjointSelectionWeight_eq_disjointSubsetWeight
     by_cases hB : B.card = k
     · by_cases hAB : Disjoint A B
       · simp [hB, hAB.symm, mul_comm]
-      · have hBA : ¬ Disjoint B A := by
-          simpa [disjoint_comm] using hAB
+      · have hBA : ¬ Disjoint B A := by simpa [disjoint_comm] using hAB
         simp [hB, hBA]
     · simp [hB]
   · simp [hA]

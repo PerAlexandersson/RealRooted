@@ -49,16 +49,11 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
   have hg'_ne : g' ≠ 0 := by
     simpa [g'] using
       applyTDerivList_ne_zero (epss := epss) hsgn.right_ne_zero
-  have hf'_split : f'.Splits := by
-    simpa [f'] using hf.applyTDerivList hpos
-  have hg'_split : g'.Splits := by
-    simpa [g'] using hg.applyTDerivList hpos
-  have hf'_deg : f'.natDegree ≠ 0 := by
-    simpa [f'] using hf_deg
-  have hg'_deg : g'.natDegree ≠ 0 := by
-    simpa [g'] using hg_deg
-  have hsgn' : OppositeLeadingSigns f' g' := by
-    simpa [f', g', OppositeLeadingSigns] using hsgn
+  have hf'_split : f'.Splits := by simpa [f'] using hf.applyTDerivList hpos
+  have hg'_split : g'.Splits := by simpa [g'] using hg.applyTDerivList hpos
+  have hf'_deg : f'.natDegree ≠ 0 := by simpa [f'] using hf_deg
+  have hg'_deg : g'.natDegree ≠ 0 := by simpa [g'] using hg_deg
+  have hsgn' : OppositeLeadingSigns f' g' := by simpa [f', g', OppositeLeadingSigns] using hsgn
   have hf'_simple : HasSimpleRoots f' := by
     change HasSimpleRoots (applyTDerivList epss f)
     apply hasSimpleRoots_applyTDerivList_of_natDegree_le_length
@@ -197,8 +192,7 @@ theorem not_allComboRealRooted_X_mul_quadratic_linear_example :
   let p : ℝ[X] :=
     C (1 : ℝ) * (X * ((X + C (1 : ℝ)) * (X + C (3 : ℝ)))) +
       C (-1 : ℝ) * (-(X + C (2 : ℝ)))
-  have hp_splits : p.Splits := by
-    simpa [p] using hall 1 (-1)
+  have hp_splits : p.Splits := by simpa [p] using hall 1 (-1)
   have hp_deg : p.natDegree ≤ 3 := by
     dsimp [p]
     compute_degree!
@@ -301,8 +295,7 @@ lemma natDegree_le_two_of_compatible_C_left
     (hsgn : OppositeLeadingSigns (C c) p) (hcompat : Compatible (C c) p) :
     p.natDegree ≤ 2 := by
   by_contra hnot
-  have hthree : 3 ≤ p.natDegree := by
-    lia
+  have hthree : 3 ≤ p.natDegree := by lia
   have shift_ne {q : ℝ[X]} (t : ℝ) (hqdeg : 3 ≤ q.natDegree) :
       q - C t ≠ 0 := by
     have hdegree : (q - C t).natDegree = q.natDegree := by
@@ -310,14 +303,11 @@ lemma natDegree_le_two_of_compatible_C_left
       simp only [natDegree_C]
       lia
     intro hzero
-    have : q.natDegree = 0 := by
-      rw [← hdegree, hzero, natDegree_zero]
+    have : q.natDegree = 0 := by rw [← hdegree, hzero, natDegree_zero]
     lia
   rcases hsgn.pos_neg_or_neg_pos with hpos | hneg
-  · have hc_pos : 0 < c := by
-      simpa [HasPosLeadingCoeff] using hpos.1
-    have hneg_three : 3 ≤ (-p).natDegree := by
-      simpa only [natDegree_neg] using hthree
+  · have hc_pos : 0 < c := by simpa [HasPosLeadingCoeff] using hpos.1
+    have hneg_three : 3 ≤ (-p).natDegree := by simpa only [natDegree_neg] using hthree
     obtain ⟨t, ht, hshift⟩ :=
       exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_three
         hp.neg hpos.2 hneg_three
@@ -328,16 +318,14 @@ lemma natDegree_le_two_of_compatible_C_left
     have hpoly :
         C (t / c) * C c + C 1 * p = -((-p) - C t) := by
       calc
-        C (t / c) * C c + C 1 * p = C ((t / c) * c) + p := by
-          rw [C_mul, C_1, one_mul]
+        C (t / c) * C c + C 1 * p = C ((t / c) * c) + p := by rw [C_mul, C_1, one_mul]
         _ = C t + p := by rw [div_mul_cancel₀ t hc_ne]
         _ = -((-p) - C t) := by ring
     rw [hpoly] at hcomb
     rcases hcomb with hzero | hreal
     · exact hq_ne (neg_eq_zero.mp hzero)
     · exact hshift ⟨hq_ne, by simpa only [neg_neg] using hreal.2.neg⟩
-  · have hc_pos : 0 < -c := by
-      simpa [HasPosLeadingCoeff] using hneg.1
+  · have hc_pos : 0 < -c := by simpa [HasPosLeadingCoeff] using hneg.1
     obtain ⟨t, ht, hshift⟩ :=
       exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_three
         hp hneg.2 hthree
@@ -348,8 +336,7 @@ lemma natDegree_le_two_of_compatible_C_left
     have hpoly : C (t / (-c)) * C c + C 1 * p = p - C t := by
       have hc' : c ≠ 0 := neg_ne_zero.mp hc_ne
       calc
-        C (t / (-c)) * C c + C 1 * p = C ((t / (-c)) * c) + p := by
-          rw [C_mul, C_1, one_mul]
+        C (t / (-c)) * C c + C 1 * p = C ((t / (-c)) * c) + p := by rw [C_mul, C_1, one_mul]
         _ = C (-t) + p := by
           congr 2
           field_simp

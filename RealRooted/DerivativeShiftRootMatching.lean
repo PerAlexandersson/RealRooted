@@ -28,15 +28,13 @@ theorem exists_delta_roots_rel_TDeriv
   have hshift (nu : ℝ) :
       p + C nu * (-p.derivative) = TDeriv nu p := by
     simp only [TDeriv, sub_eq_add_neg, mul_neg]
-  have hp0 : (p + C (0 : ℝ) * (-p.derivative)).Splits := by
-    simpa using hp
+  have hp0 : (p + C (0 : ℝ) * (-p.derivative)).Splits := by simpa using hp
   obtain ⟨δ, hδ_pos, hlocal⟩ :=
     exists_eps_forall_root_count_le_card_filter_near
       (f := p) (g := -p.derivative) (μ0 := 0) hp0 η hη_pos
   refine ⟨δ, hδ_pos, ?_⟩
   intro eps heps_pos hepsδ
-  have heps_abs : |eps - 0| < δ := by
-    simpa [abs_of_pos heps_pos] using hepsδ
+  have heps_abs : |eps - 0| < δ := by simpa [abs_of_pos heps_pos] using hepsδ
   have hsplit : (p + C eps * (-p.derivative)).Splits := by
     rw [hshift]
     exact splits_tderiv heps_pos hp

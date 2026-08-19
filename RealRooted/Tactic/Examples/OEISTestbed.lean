@@ -612,8 +612,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (-(C (((n : ℝ) + 2) / ((n : ℝ) + 1))) * X ^ 2) *
             (P (n + 1)).derivative := by
     intro n
-    have hden : 1 - (1 / 2 : ℝ) * ((n : ℝ) + 3) ≠ 0 := by
-      rr_mw_active_den_at n
+    have hden : 1 - (1 / 2 : ℝ) * ((n : ℝ) + 3) ≠ 0 := by rr_mw_active_den_at n
     have hscalar :
         (1 - (1 / 2 : ℝ) * ((n : ℝ) + 3))⁻¹ * (((n : ℝ) + 2) / 2) =
           -(((n : ℝ) + 2) / ((n : ℝ) + 1)) := by

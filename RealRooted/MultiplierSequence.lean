@@ -687,8 +687,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
   intro p hp hsplit
   by_cases hn1 : n ≤ 1
   · exact isFiniteMultiplierSequence_of_natDegree_le_one hn1 gamma hp hsplit
-  have hn_eq : n = 2 := by
-    lia
+  have hn_eq : n = 2 := by lia
   subst n
   by_cases hzero : diagonalOperator gamma p = 0
   · simp_all

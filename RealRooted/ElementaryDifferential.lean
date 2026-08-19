@@ -130,8 +130,7 @@ private theorem listPDeriv_esymmOn {R sigma : Type*} [CommSemiring R]
           have hset : (u.erase x) \ l.toFinset = u \ (x :: l).toFinset := by
             ext y
             simp [and_assoc, and_left_comm]
-          have hnat : j - 1 - l.length = j - (l.length + 1) := by
-            lia
+          have hnat : j - 1 - l.length = j - (l.length + 1) := by lia
           rw [hset, hnat]
         · rw [if_neg hlen, if_neg (by
             intro h
@@ -188,8 +187,7 @@ private theorem applyMonomialDifferential_indicator_esymm
   have hfinset : l.toFinset = s := by
     ext x
     simp [l]
-  have hlength : l.length = s.card := by
-    rw [← hfinset, List.toFinset_card_of_nodup hl]
+  have hlength : l.length = s.card := by rw [← hfinset, List.toFinset_card_of_nodup hl]
   change listPDeriv l (esymmOn (R := R) Finset.univ j) = _
   rw [listPDeriv_esymmOn l hl Finset.univ (by simp) j, hlength, hfinset]
 

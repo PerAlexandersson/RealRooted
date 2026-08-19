@@ -205,10 +205,8 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two_of_monic
   have hinner_splits : inner.Splits := by
     dsimp [inner]
     exact hmono hab hac hb0 hc0 hν_pos
-  have hpfacA : p = C A * (X - C c) := by
-    simpa [A] using hpfac
-  have hqfacB : q = C B * ((X - C a) * (X - C b)) := by
-    simpa [B] using hqfac
+  have hpfacA : p = C A * (X - C c) := by simpa [A] using hpfac
+  have hqfacB : q = C B * ((X - C a) * (X - C b)) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
     rw [hpfacA, hqfacB]
     dsimp [inner, ν]
@@ -241,12 +239,9 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 1 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 2 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 1 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two
     (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
@@ -264,8 +259,7 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
   by_cases hone : g.natDegree = 1
   · exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
       hpair hfnn hgnn hdeg hone
-  · have htwo : g.natDegree = 2 := by
-      lia
+  · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo
 

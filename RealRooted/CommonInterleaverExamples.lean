@@ -253,10 +253,8 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
     simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (((X + 2) * (X + 3)) : ℝ[X]).roots.card = 2 := by
     simpa [xSq_add_fiveX_add_six_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by
-    rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 2 := by
-    rw [← Multiset.coe_card, hrs_eq, hrs_card]
+  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
+  have hrs_len : rs.length = 2 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
   cases ss with
   | nil =>
       simp at hss_len
@@ -274,8 +272,7 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
                   cases rs'' with
                   | nil =>
                       have hs_eq : s = -1 := by
-                        have hs_mem : (-1 : ℝ) ∈ (X + 1 : ℝ[X]).roots := by
-                          simp_all
+                        have hs_mem : (-1 : ℝ) ∈ (X + 1 : ℝ[X]).roots := by simp_all
                         have hs_mem' :
                             (-1 : ℝ) ∈ (([s] : List ℝ) : Multiset ℝ) := by
                           lia
@@ -306,8 +303,7 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
                       have hr1_eq : r₁ = -3 := by grind
                       have hr2_eq : r₂ = -2 := by simp_all
                       have hinter : ListInterlaces [s] [r₁, r₂] := by lia
-                      have : False := by
-                        simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
+                      have : False := by simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
                       lia
                   | cons r₃ rs''' =>
                       simp at hrs_len
@@ -390,8 +386,7 @@ private lemma xSq_add_threeX_add_three_not_isRealRooted :
   obtain ⟨x, hx⟩ :=
     exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
       (not_isUnit_of_natDegree_pos _ (by lia))
-  have hx_eval : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).eval x = 0 := by
-    simp_all
+  have hx_eval : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).eval x = 0 := by simp_all
   have hquad : (1 : ℝ) * (x * x) + 3 * x + 3 = 0 := by
     simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
   have hdisc_sq : discrim (1 : ℝ) 3 3 = (2 * (1 : ℝ) * x + 3) ^ 2 :=
@@ -435,8 +430,7 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
   obtain ⟨x, hx⟩ :=
     exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
       (not_isUnit_of_natDegree_pos _ (by lia))
-  have hx_eval : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).eval x = 0 := by
-    simp_all
+  have hx_eval : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).eval x = 0 := by simp_all
   have hquad : (1 : ℝ) * (x * x) + 2 * x + 2 = 0 := by
     simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
   have hdisc_sq : discrim (1 : ℝ) 2 2 = (2 * (1 : ℝ) * x + 2) ^ 2 :=
@@ -454,10 +448,8 @@ private lemma xAddOne_xAddTwo_not_prec :
     simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (X + 2 : ℝ[X]).roots.card = 1 := by
     simpa [xAddTwo_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by
-    rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 1 := by
-    rw [← Multiset.coe_card, hrs_eq, hrs_card]
+  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
+  have hrs_len : rs.length = 1 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
   cases ss with
   | nil =>
       simp at hss_len
@@ -487,8 +479,7 @@ private lemma xAddOne_xAddTwo_not_prec :
                     have hr_eval : r + 2 = 0 := by simp_all
                     linarith
                   have hsame_alt : ListAlternates [s] [r] := by lia
-                  have hs_le_r : s ≤ r := by
-                    simpa [ListAlternates, ListInterlaces] using hsame_alt
+                  have hs_le_r : s ≤ r := by simpa [ListAlternates, ListInterlaces] using hsame_alt
                   linarith
               | cons r₂ rs'' =>
                   simp at hrs_len
@@ -837,11 +828,9 @@ private lemma X_hasNonnegCoeffs : HasNonnegCoeffs (X : ℝ[X]) :=
 private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
   X_hasNonnegCoeffs.pos_leadingCoeff X_ne_zero
 
-private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by
-  simp
+private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by simp
 
-private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by
-  simp
+private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by simp
 
 private lemma xAddOne_xAddTwo_isRealRooted :
     ((((X + 1) * (X + 2)) : ℝ[X]) ≠ 0 ∧ (((X + 1) * (X + 2)) : ℝ[X]).Splits) :=

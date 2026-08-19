@@ -14,17 +14,14 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
-  rr_oeis_active_den_all
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by rr_oeis_active_den_all
 
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_oeis_active_den_all_term
 
-example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_oeis_coeff_at n
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_oeis_coeff_at n
 
-example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
-  rr_oeis_coeff_all
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by rr_oeis_coeff_all
 
 example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
   rr_oeis_coeff_at_term n
@@ -588,33 +585,27 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
 
 /-- error: rr_i2_derivative_lag_sequence: jacobiOrHypergeom requires a classical coefficient-formula/root-location bridge -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence using certificate := jacobiOrHypergeom
+example : True := by rr_i2_derivative_lag_sequence using certificate := jacobiOrHypergeom
 
 /-- error: rr_i2_derivative_lag_sequence_realrooted: jacobiOrHypergeom requires a classical coefficient-formula/root-location bridge -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence_realrooted using certificate := jacobiOrHypergeom
+example : True := by rr_i2_derivative_lag_sequence_realrooted using certificate := jacobiOrHypergeom
 
 /-- error: rr_i2_derivative_lag_sequence: transformNeeded requires an explicit transformed recurrence and root-window certificate -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence using certificate := transformNeeded
+example : True := by rr_i2_derivative_lag_sequence using certificate := transformNeeded
 
 /-- error: rr_i2_derivative_lag_sequence_realrooted: transformNeeded requires an explicit transformed recurrence and root-window certificate -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence_realrooted using certificate := transformNeeded
+example : True := by rr_i2_derivative_lag_sequence_realrooted using certificate := transformNeeded
 
 /-- error: rr_i2_derivative_lag_sequence: vectorNeeded means the scalar derivative-lag wrapper is invalid; provide a vector/PF certificate -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence using certificate := vectorNeeded
+example : True := by rr_i2_derivative_lag_sequence using certificate := vectorNeeded
 
 /-- error: rr_i2_derivative_lag_sequence_realrooted: vectorNeeded means the scalar derivative-lag wrapper is invalid; provide a vector/PF certificate -/
 #guard_msgs in
-example : True := by
-  rr_i2_derivative_lag_sequence_realrooted using certificate := vectorNeeded
+example : True := by rr_i2_derivative_lag_sequence_realrooted using certificate := vectorNeeded
 
 /-- Family E positive `t`-lag router, exact-current `X` branch. -/
 example {P : Nat → ℝ[X]}

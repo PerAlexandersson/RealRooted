@@ -142,8 +142,7 @@ lemma oneDescentGamma_recurrence
             intro r hr
             exact oneDescentGammaTerm_succ d m j r (Finset.mem_Ioc.mp hr).1
     _ = (∑ r ∈ Finset.Ioc j m, oneDescentGammaTerm d m j r) +
-          ∑ r ∈ Finset.Ioc j m, oneDescentGammaTerm d m (j + 1) r := by
-            rw [Finset.sum_add_distrib]
+          ∑ r ∈ Finset.Ioc j m, oneDescentGammaTerm d m (j + 1) r := by rw [Finset.sum_add_distrib]
 
 @[simp] lemma oneDescentGamma_diag (d m : Nat) :
     oneDescentGamma d m m = 1 := by

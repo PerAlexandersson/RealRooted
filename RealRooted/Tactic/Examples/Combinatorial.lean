@@ -18,11 +18,9 @@ example (n : Nat) :
     simp [natDegree_touchard]
   rr_finish using prec_touchard_succ n, hdeg
 
-example (n : Nat) : touchard (n + 1) ≠ 0 := by
-  rr_finish using prec_touchard_succ n
+example (n : Nat) : touchard (n + 1) ≠ 0 := by rr_finish using prec_touchard_succ n
 
-example (n : Nat) : (touchard (n + 1)).Splits := by
-  rr_finish using prec_touchard_succ n
+example (n : Nat) : (touchard (n + 1)).Splits := by rr_finish using prec_touchard_succ n
 
 example (n : Nat) :
     touchard (n + 1) ≠ 0 ∧ (touchard (n + 1)).Splits := by

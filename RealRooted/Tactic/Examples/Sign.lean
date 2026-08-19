@@ -12,8 +12,7 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
-  rr_sign_side
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by rr_sign_side
 
 example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X : ℝ[X]).eval r ≤ 0 := by

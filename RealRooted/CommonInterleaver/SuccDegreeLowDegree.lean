@@ -710,10 +710,8 @@ theorem succDegreeRootCount_of_natDegree_eq_zero
       _ = g.natDegree := card_roots_of_splits hg
       _ = f.natDegree + 1 := hdeg
       _ = 1 := by rw [hfdeg]
-  have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) = 0 := by
-    exact_mod_cast hfcard_nat
-  have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by
-    exact_mod_cast hgcard_nat
+  have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) = 0 := by exact_mod_cast hfcard_nat
+  have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by exact_mod_cast hgcard_nat
   have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
     exact_mod_cast Nat.zero_le (g.roots.filter (· ≤ x)).card
   constructor <;> lia
@@ -914,8 +912,7 @@ private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
     n = 0 ∨ n = 1 := by
   rcases n with _ | n
   · exact Or.inl rfl
-  · have hn0 : n = 0 := by
-      exact Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
+  · have hn0 : n = 0 := by exact Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
     exact Or.inr (by rw [hn0])
 
 /-- Low-degree base case for the upper-threshold succ-degree root-count
@@ -1183,10 +1180,8 @@ private lemma int_eq_zero_of_even_of_le_one_of_neg_le_one {z : ℤ}
     (hz_even : Even z) (hz_le : z ≤ 1) (hneg_le : -z ≤ 1) :
     z = 0 := by
   rcases hz_even with ⟨k, hk⟩
-  have hk_le : k ≤ 0 := by
-    linarith
-  have hk_nonneg : 0 ≤ k := by
-    linarith
+  have hk_le : k ≤ 0 := by linarith
+  have hk_nonneg : 0 ≤ k := by linarith
   have hk_zero : k = 0 := le_antisymm hk_le hk_nonneg
   rw [hk, hk_zero]
   norm_num
@@ -1289,8 +1284,7 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
           (g.roots.filter (· ≤ x)).card =
         g.natDegree := by
     exact_mod_cast hgpart
-  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by
-    exact_mod_cast hdeg
+  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   linarith
 
 /-- Low-degree base case for closed-segment endpoint count equality through

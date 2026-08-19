@@ -229,8 +229,7 @@ theorem natDegree_rectangularLeftSlice_eq
   refine Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_rectangularLeftSlice_le m n p y) ?_
   rw [coeff_rectangularLeftSlice_of_le m n p y le_rfl]
-  have hpcoeff : p.coeff n ≠ 0 := by
-    simpa [← hpdeg] using hplead
+  have hpcoeff : p.coeff n ≠ 0 := by simpa [← hpdeg] using hplead
   have hyne : ∀ i, y i ≠ 0 := fun i hzero => by
     have hi := hy i
     rw [hzero] at hi

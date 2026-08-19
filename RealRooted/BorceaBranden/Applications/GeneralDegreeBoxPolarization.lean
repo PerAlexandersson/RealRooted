@@ -84,8 +84,7 @@ def sourcePolarizationStageInstallEquiv
       · exact Sum.inr (Fin.cast (congrArg κ hji) k)
       · exact Sum.inl (Sum.inl
           ⟨⟨j.1, (Finset.mem_insert.mp j.2).resolve_left hji⟩, k⟩)
-    · have hj : j.1 ≠ i ∧ j.1 ∉ S := by
-        simpa [Finset.mem_insert] using j.2
+    · have hj : j.1 ≠ i ∧ j.1 ∉ S := by simpa [Finset.mem_insert] using j.2
       exact Sum.inl (Sum.inr ⟨j.1, hj.2, hj.1⟩)
   invFun x := by
     rcases x with x | k

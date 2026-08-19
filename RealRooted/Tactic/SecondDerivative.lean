@@ -87,8 +87,7 @@ theorem splits_mw_derivative_of_nonneg_neg_inner {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonneg : ∀ r, f.IsRoot r → 0 ≤ v.eval r) :
     (u * f + v * f.derivative).Splits := by
-  have hneg_eq : (-u) * f + (-v) * f.derivative = -(u * f + v * f.derivative) := by
-    ring
+  have hneg_eq : (-u) * f + (-v) * f.derivative = -(u * f + v * f.derivative) := by ring
   have hdeg_lo_neg : f.natDegree ≤ ((-u) * f + (-v) * f.derivative).natDegree := by
     rw [hneg_eq, natDegree_neg]
     exact hdeg_lo
@@ -307,8 +306,7 @@ theorem ls4_C_eight_real : (C (8 : ℝ) : ℝ[X]) = 8 :=
 theorem ls4_C_sixteen_real : (C (16 : ℝ) : ℝ[X]) = 16 :=
   Polynomial.C_eq_natCast 16
 
-theorem ls4_C_neg_one_real : (C (-1 : ℝ) : ℝ[X]) = -1 := by
-  norm_num
+theorem ls4_C_neg_one_real : (C (-1 : ℝ) : ℝ[X]) = -1 := by norm_num
 
 theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
     (C (OfNat.ofNat m : ℝ) : ℝ[X]) = (OfNat.ofNat m : ℝ[X]) := by

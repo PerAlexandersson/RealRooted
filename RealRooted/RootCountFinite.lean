@@ -67,8 +67,7 @@ theorem exists_guard_le_and_pos_le_abs_sub
       (∀ r ∈ s, ε ≤ |r - B|) := by
   obtain ⟨B₀, hB₀⟩ := exists_lt_forall_mem_lt s
   let B : ℝ := min B₀ x - 1
-  have hB_le_x : B ≤ x := by
-    grind
+  have hB_le_x : B ≤ x := by grind
   have hB_lt_B₀ : B < B₀ := by grind
   have : ∀ r ∈ s, B < r := by grind
   have hB_not_mem : B ∉ s := by grind
@@ -112,8 +111,7 @@ theorem exists_le_card_eq_of_le_card {α : Type*} (t : Multiset α) {n : ℕ}
       | zero =>
           exact ⟨0, zero_le _, by simp⟩
       | succ n =>
-          have hsucc : n.succ ≤ t.card.succ := by
-            simpa using h
+          have hsucc : n.succ ≤ t.card.succ := by simpa using h
           have hn : n ≤ t.card := by simp_all
           obtain ⟨u, hut, hcard⟩ := ih hn
           exact ⟨a ::ₘ u, Multiset.cons_le_cons a hut, by simp [hcard]⟩

@@ -277,10 +277,8 @@ theorem snakeCrossCoverEdge_takePrefix_succ_shift_iff
     rw [snakeCrossCoverEdge] at hcover
     simp only [List.any_eq_true, List.mem_range] at hcover
     rcases hcover with ⟨idx, hidx, hbool⟩
-    have hidx_prefix : idx < last + 1 := by
-      simpa [hprefix_len] using hidx
-    have hidx_full : idx < w.length := by
-      lia
+    have hidx_prefix : idx < last + 1 := by simpa [hprefix_len] using hidx
+    have hidx_full : idx < w.length := by lia
     cases hletter_prefixD :
         (w.takePrefix (last + 1)).getD idx SnakeLetter.L with
     | L =>
@@ -360,8 +358,7 @@ theorem snakeCoverEdge_takePrefix_succ_shift_iff
     · left
       constructor
       · lia
-      · have hbound0 : b + 2 * m < 2 * (w.length + 1) := by
-          simpa [snakeCodeBound] using hbound
+      · have hbound0 : b + 2 * m < 2 * (w.length + 1) := by simpa [snakeCodeBound] using hbound
         rw [snakeCodeBound, hprefix_len]
         dsimp [m] at hbound0
         lia
@@ -370,8 +367,7 @@ theorem snakeCoverEdge_takePrefix_succ_shift_iff
     · left
       constructor
       · lia
-      · have hbound0 : b < 2 * (last + 1 + 1) := by
-          simpa [snakeCodeBound, hprefix_len] using hbound
+      · have hbound0 : b < 2 * (last + 1 + 1) := by simpa [snakeCodeBound, hprefix_len] using hbound
         rw [snakeCodeBound]
         dsimp [m]
         lia

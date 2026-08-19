@@ -226,8 +226,7 @@ theorem disjoint_nonNestingPlacementsWithoutFirstColumn_withFirstColumn
   rw [mem_nonNestingPlacementsWithFirstColumn] at hfirst
   rcases hfirst.2 with ⟨a, ha, haP⟩
   have hcol : a.2 = 1 := (mem_firstColumnCells.mp ha).2
-  have hcell : (a.1, 1) = a := by
-    ext <;> simp [hcol]
+  have hcell : (a.1, 1) = a := by ext <;> simp [hcol]
   exact hfree.2 a.1 (by simpa [hcell] using haP)
 
 /-- Valid Ferrers placements split into those avoiding the first column and
@@ -268,8 +267,7 @@ theorem pairwiseDisjoint_nonNestingPlacementsWithCell_firstColumn
   have hcol_a : a.2 = 1 := (mem_firstColumnCells.mp ha).2
   have hcol_b : b.2 = 1 := (mem_firstColumnCells.mp hb).2
   by_cases hrow : a.1 = b.1
-  · have hab : a = b := by
-      ext <;> simp [hrow, hcol_a, hcol_b]
+  · have hab : a = b := by ext <;> simp [hrow, hcol_a, hcol_b]
     exact hne hab
   · rcases Nat.lt_or_gt_of_ne hrow with hlt | hgt
     · have hcol := hPa.1.2.2 a hPa.2 b hQ.2 hlt
@@ -327,8 +325,7 @@ theorem deleteFirstColumnPlacement_isNonNestingPlacement
     have hcol_ne : col ≠ 1 := by
       intro hcol
       exact hfree row (by simpa [hcol] using ha)
-    have hcol_gt : 1 < col := by
-      exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
+    have hcol_gt : 1 < col := by exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
     refine ⟨by simpa [partitionSubOne] using ha_cell.1,
       Nat.sub_pos_of_lt hcol_gt, ?_⟩
     rw [partitionSubOne_getD]
@@ -352,8 +349,7 @@ theorem deleteFirstColumnPlacement_isNonNestingPlacement
     rw [mem_ferrers_cells] at hb_cell
     have hb_col_ne : b.2 ≠ 1 := by
       intro hcol_one
-      have hb_eq : (b.1, 1) = b := by
-        ext <;> simp [hcol_one]
+      have hb_eq : (b.1, 1) = b := by ext <;> simp [hcol_one]
       exact hfree b.1 (by simpa [hb_eq] using hb)
     have hb_col_gt : 1 < b.2 := by
       exact lt_of_le_of_ne (Nat.succ_le_of_lt hb_cell.2.1) hb_col_ne.symm
@@ -399,8 +395,7 @@ theorem addFirstColumnPlacement_avoids_firstColumn
   intro row hrow
   rw [addFirstColumnPlacement] at hrow
   rcases Finset.mem_image.mp hrow with ⟨a, ha, hmap⟩
-  have hcol : a.2 + 1 = 1 := by
-    simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+  have hcol : a.2 + 1 = 1 := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
   have ha_cell := hP.1 ha
   rw [mem_ferrers_cells] at ha_cell
   lia
@@ -417,8 +412,7 @@ theorem deleteFirstColumnPlacement_addFirstColumnPlacement
     rcases Finset.mem_image.mp hx with ⟨y, hy, hxy⟩
     rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
     subst y
-    have hxa : x = a := by
-      simpa using hxy.symm
+    have hxa : x = a := by simpa using hxy.symm
     simpa [hxa] using ha
   · intro hx
     rw [deleteFirstColumnPlacement, addFirstColumnPlacement]
@@ -440,8 +434,7 @@ theorem addFirstColumnPlacement_deleteFirstColumnPlacement
     rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
     subst y
     have hone : 1 ≤ a.2 := Nat.le_of_lt (hcol a ha)
-    have hxa : x = a := by
-      simpa [Nat.sub_add_cancel hone] using hxy.symm
+    have hxa : x = a := by simpa [Nat.sub_add_cancel hone] using hxy.symm
     simpa [hxa] using ha
   · intro hx
     rw [addFirstColumnPlacement, deleteFirstColumnPlacement]
@@ -459,10 +452,8 @@ theorem deleteFirstColumnPlacement_card
   rw [deleteFirstColumnPlacement]
   have hinj : Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - 1)) ↑P := by
     intro a ha b hb hmap
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
-    have hcol_sub : a.2 - 1 = b.2 - 1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_sub : a.2 - 1 = b.2 - 1 := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     have haone : 1 ≤ a.2 := Nat.le_of_lt (hcol a ha)
     have hbone : 1 ≤ b.2 := Nat.le_of_lt (hcol b hb)
     have hcol_eq : a.2 = b.2 := by
@@ -486,8 +477,7 @@ theorem one_lt_col_of_mem_withoutFirstColumn
   have hcol_ne : a.2 ≠ 1 := by
     intro hcol
     exact hP.2 a.1 (by
-      have ha_eq : (a.1, 1) = a := by
-        ext <;> simp [hcol]
+      have ha_eq : (a.1, 1) = a := by ext <;> simp [hcol]
       simpa [ha_eq] using ha)
   exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
 
@@ -553,8 +543,7 @@ theorem sum_nonNestingPlacementsWithoutFirstColumn_eq_partitionSubOne
           intro P hP
           rw [deleteFirstColumnPlacement_card
             (one_lt_col_of_mem_withoutFirstColumn (by simpa [S] using hP))]
-    _ = T.sum (fun Q => (X : ℝ[X]) ^ Q.card) := by
-          rw [← hsum_image, himage]
+    _ = T.sum (fun Q => (X : ℝ[X]) ^ Q.card) := by rw [← hsum_image, himage]
     _ = ferrersRookPolynomial (partitionSubOne lam) := by
           rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
 
@@ -727,10 +716,8 @@ theorem firstColumnRemainder_card_add_one
   have hinj :
       Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 - 1)) ↑(P.erase (i, 1)) := by
     intro a ha b hb hmap
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
-    have hcol_sub : a.2 - 1 = b.2 - 1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_sub : a.2 - 1 = b.2 - 1 := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     have haone : 1 ≤ a.2 :=
       Nat.le_of_lt (one_lt_col_of_mem_erase_firstColumn hP hfirst a ha)
     have hbone : 1 ≤ b.2 :=
@@ -756,8 +743,7 @@ theorem firstColumnExtension_card
   have hnot : (i, 1) ∉ Q.image fun a => (a.1, a.2 + 1) := by
     intro hi
     rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
-    have hrow : a.1 = i := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hrow : a.1 = i := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
     have ha_cell := hQ.1 ha
     rw [mem_ferrers_cells] at ha_cell
     have hrow_lt : a.1 < i := by
@@ -768,10 +754,8 @@ theorem firstColumnExtension_card
   have hinj :
       Set.InjOn (fun a : ℕ × ℕ => (a.1, a.2 + 1)) ↑Q := by
     intro a _ha b _hb hmap
-    have hrow : a.1 = b.1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
-    have hcol_add : a.2 + 1 = b.2 + 1 := by
-      simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+    have hcol_add : a.2 + 1 = b.2 + 1 := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
   rw [Finset.card_insert_eq_ite, if_neg hnot, Finset.card_image_of_injOn hinj]
 
@@ -785,8 +769,7 @@ theorem firstColumnRook_not_mem_addFirstColumnPlacement
   intro hi
   rw [addFirstColumnPlacement] at hi
   rcases Finset.mem_image.mp hi with ⟨a, ha, hmap⟩
-  have hrow : a.1 = i := by
-    simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
+  have hrow : a.1 = i := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
   have ha_cell := hQ.1 ha
   rw [mem_ferrers_cells] at ha_cell
   have hrow_lt : a.1 < i := by
@@ -903,10 +886,8 @@ theorem sum_nonNestingPlacementsWithFirstColumnCell_eq_mul_partitionPrefix
           have hcard := firstColumnRemainder_card_add_one hPvalid.1 hPvalid.2
           rw [← hcard, pow_succ]
           ring
-    _ = X * S.sum (fun P => X ^ (firstColumnRemainder i P).card) := by
-          rw [Finset.mul_sum]
-    _ = X * T.sum (fun Q => X ^ Q.card) := by
-          rw [← hsum_image, himage]
+    _ = X * S.sum (fun P => X ^ (firstColumnRemainder i P).card) := by rw [Finset.mul_sum]
+    _ = X * T.sum (fun Q => X ^ Q.card) := by rw [← hsum_image, himage]
     _ = X * ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i) := by
           rw [ferrersRookPolynomial, rookPolynomial_eq_nonNestingPlacements_sum]
 

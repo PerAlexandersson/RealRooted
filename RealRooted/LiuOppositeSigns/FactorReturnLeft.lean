@@ -50,8 +50,7 @@ theorem theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub_rightPr
     have hdeg_pos :
         (-g).natDegree = (deleteRootFactor f r).natDegree + 1 := by
       simpa [Polynomial.natDegree_neg] using hdelete_deg.symm
-    have hGdeg : P (-g).natDegree := by
-      simpa [Polynomial.natDegree_neg] using hgdeg
+    have hGdeg : P (-g).natDegree := by simpa [Polynomial.natDegree_neg] using hgdeg
     have hsplit :=
       hterminal r hpair hqnn hGnn hdeg_pos hGdeg μ hμ
     simpa [sub_eq_add_neg, mul_neg] using hsplit
@@ -118,8 +117,7 @@ theorem theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPr
     have hdeg_pos :
         (deleteRootFactor f r).natDegree = (-g).natDegree := by
       simpa [Polynomial.natDegree_neg] using hdelete_deg
-    have hGdeg : P (-g).natDegree := by
-      simpa [Polynomial.natDegree_neg] using hgdeg
+    have hGdeg : P (-g).natDegree := by simpa [Polynomial.natDegree_neg] using hgdeg
     have hsplit :=
       hterminal r hpair hqnn hGnn hdeg_pos hGdeg μ hμ
     simpa [sub_eq_add_neg, mul_neg] using hsplit

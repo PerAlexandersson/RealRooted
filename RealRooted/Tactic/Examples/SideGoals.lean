@@ -11,77 +11,56 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-@[rr_recurrence] lemma rr_side_attr_smoke : True := by
-  trivial
+@[rr_recurrence] lemma rr_side_attr_smoke : True := by trivial
 
-example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
-  rr_side_nonneg
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by rr_side_nonneg
 
 example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c :=
   rr_side_nonneg_term
 
-example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
-  rr_side_nonneg
+example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by rr_side_nonneg
 
-example {n : Nat} (hn : 2 ≤ n) : 0 ≤ (n : ℝ) / ((n : ℝ) - 1) := by
-  rr_side_nonneg
+example {n : Nat} (hn : 2 ≤ n) : 0 ≤ (n : ℝ) / ((n : ℝ) - 1) := by rr_side_nonneg
 
-example {n : Nat} : 0 ≤ (n : ℝ) := by
-  rr_side_nonneg
+example {n : Nat} : 0 ≤ (n : ℝ) := by rr_side_nonneg
 
-example {m k : Nat} : 0 ≤ (((Nat.choose m k : Nat) : ℝ)) := by
-  rr_side_nonneg
+example {m k : Nat} : 0 ≤ (((Nat.choose m k : Nat) : ℝ)) := by rr_side_nonneg
 
-example {c : ℝ} (hc : 0 < c) : 0 < c := by
-  rr_side_pos
+example {c : ℝ} (hc : 0 < c) : 0 < c := by rr_side_pos
 
 example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 :=
   rr_side_ne_term
 
-example {n : Nat} : 0 < (n : ℝ) + 1 := by
-  rr_side_pos
+example {n : Nat} : 0 < (n : ℝ) + 1 := by rr_side_pos
 
 example : ∀ n : Nat, 0 < (n : ℝ) + 1 :=
   rr_side_pos_seq_term
 
-example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
-  rr_side_pos
+example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by rr_side_pos
 
-example {n : Nat} (hn : 2 ≤ n) : 0 < (n : ℝ) - 1 := by
-  rr_side_pos
+example {n : Nat} (hn : 2 ≤ n) : 0 < (n : ℝ) - 1 := by rr_side_pos
 
-example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 := by
-  rr_side_ne
+example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 := by rr_side_ne
 
-example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by
-  rr_side_ne
+example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
 
-example {n : Nat} : (n : ℝ) + 3 ≠ 0 := by
-  rr_side_ne
+example {n : Nat} : (n : ℝ) + 3 ≠ 0 := by rr_side_ne
 
-example {n : Nat} : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by
-  rr_side_ne
+example {n : Nat} : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
 
-example {n : Nat} : -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3) ≠ 0 := by
-  rr_side_ne
+example {n : Nat} : -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3) ≠ 0 := by rr_side_ne
 
-example {n : Nat} : ((-1 : ℝ) ^ n) ≠ 0 := by
-  rr_side_ne
+example {n : Nat} : ((-1 : ℝ) ^ n) ≠ 0 := by rr_side_ne
 
-example {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) : a / b ≠ 0 := by
-  rr_side_ne
+example {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) : a / b ≠ 0 := by rr_side_ne
 
-example {a : ℝ} (ha : a ≠ 0) : a⁻¹ ≠ 0 := by
-  rr_side_ne
+example {a : ℝ} (ha : a ≠ 0) : a⁻¹ ≠ 0 := by rr_side_ne
 
-example {n : Nat} (hn : 0 < n) : (-(n : ℝ)) / ((n : ℝ) + 3) ≠ 0 := by
-  rr_side_ne
+example {n : Nat} (hn : 0 < n) : (-(n : ℝ)) / ((n : ℝ) + 3) ≠ 0 := by rr_side_ne
 
-example {n : Nat} (hn : 0 < n) : (n : ℝ) ≠ 0 := by
-  rr_side_ne
+example {n : Nat} (hn : 0 < n) : (n : ℝ) ≠ 0 := by rr_side_ne
 
-example {n : Nat} (hn : 0 < n) : (n : ℂ) ≠ 0 := by
-  rr_side_ne
+example {n : Nat} (hn : 0 < n) : (n : ℂ) ≠ 0 := by rr_side_ne
 
 example {m k : Nat} (hk : k ≤ m) :
     (((Nat.choose m k : Nat) : ℝ)) ≠ 0 := by
@@ -107,8 +86,7 @@ example (p : ℝ[X]) (n : Nat) :
     p.derivative.coeff n = p.coeff (n + 1) * ((n : ℝ) + 1) := by
   rr_coeff
 
-example {r : ℝ} (hlo : -1 ≤ r) : 0 ≤ ((1 + X : ℝ[X]).eval r) := by
-  rr_eval_simp_arith
+example {r : ℝ} (hlo : -1 ≤ r) : 0 ≤ ((1 + X : ℝ[X]).eval r) := by rr_eval_simp_arith
 
 example (p : ℝ[X]) (a n : Nat) :
     (((a : ℝ[X]) * p).coeff n) = (a : ℝ) * p.coeff n := by
@@ -118,17 +96,14 @@ example :
     ((X * (X + C 2) : ℝ[X]).coeff 2) = 1 := by
   rr_coeff
 
-example : HasNonnegCoeffs (0 : ℝ[X]) := by
-  rr_nonneg_coeffs_zero
+example : HasNonnegCoeffs (0 : ℝ[X]) := by rr_nonneg_coeffs_zero
 
-example : HasNonnegCoeffs (1 : ℝ[X]) := by
-  rr_nonneg_coeffs_one
+example : HasNonnegCoeffs (1 : ℝ[X]) := by rr_nonneg_coeffs_one
 
 example {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
   rr_nonneg_coeffs_C using scalar_nonneg := ha
 
-example : HasNonnegCoeffs (X : ℝ[X]) := by
-  rr_nonneg_coeffs_X
+example : HasNonnegCoeffs (X : ℝ[X]) := by rr_nonneg_coeffs_X
 
 example {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (X + C a : ℝ[X]) := by
   rr_nonneg_coeffs_X_add_C using scalar_nonneg := ha
@@ -191,20 +166,15 @@ example (d : Nat) :
         ℝ[X]) := by
   rr_nonneg_coeffs
 
-example : HasPosLeadingCoeff (1 : ℝ[X]) := by
-  rr_pos_lc_one
+example : HasPosLeadingCoeff (1 : ℝ[X]) := by rr_pos_lc_one
 
-example : HasPosLeadingCoeff (1 : ℝ[X]) := by
-  rr_pos_lc
+example : HasPosLeadingCoeff (1 : ℝ[X]) := by rr_pos_lc
 
-example {a : ℝ} (ha : 0 < a) : HasPosLeadingCoeff (C a : ℝ[X]) := by
-  rr_pos_lc
+example {a : ℝ} (ha : 0 < a) : HasPosLeadingCoeff (C a : ℝ[X]) := by rr_pos_lc
 
-example {a : ℝ} : HasPosLeadingCoeff (X + C a : ℝ[X]) := by
-  rr_pos_lc
+example {a : ℝ} : HasPosLeadingCoeff (X + C a : ℝ[X]) := by rr_pos_lc
 
-example {a : ℝ} : HasPosLeadingCoeff (X - C a : ℝ[X]) := by
-  rr_pos_lc
+example {a : ℝ} : HasPosLeadingCoeff (X - C a : ℝ[X]) := by rr_pos_lc
 
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
     HasPosLeadingCoeff p := by
@@ -298,20 +268,15 @@ example {P F : Nat → ℝ[X]} (hrec : ∀ n : Nat, P (n + 2) = F n)
     (F n).natDegree ≤ (P (n + 1)).natDegree + 1 := by
   rr_recurrence_degree using recurrence := hrec n, degree := hdeg (n + 1)
 
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
-  rr_side
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by rr_side
 
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
-  rr_close_side
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by rr_close_side
 
-example (n : Nat) : n ≤ n + 1 := by
-  rr_side
+example (n : Nat) : n ≤ n + 1 := by rr_side
 
-example (n : Nat) : n ≤ n + 1 := by
-  rr_close_side
+example (n : Nat) : n ≤ n + 1 := by rr_close_side
 
-example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.natDegree ≠ 0 := by
-  rr_close_side
+example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.natDegree ≠ 0 := by rr_close_side
 
 example (p q : ℝ[X]) (r : ℝ) :
     (p + q).eval r = p.eval r + q.eval r := by

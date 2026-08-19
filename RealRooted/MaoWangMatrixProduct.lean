@@ -90,8 +90,7 @@ theorem rowPolynomial_mul_basisCoefficientMatrix {P : ℕ → ℝ[X]}
     · simp [basisCoefficientMatrix]
     · intro k hkrange hkIcc
       have hki : k ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkrange)
-      have hkj : k < j := by
-        exact lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
+      have hkj : k < j := by exact lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
       rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hP k) hkj),
         mul_zero]
   · have hij : i < j := Nat.lt_of_not_ge hji
@@ -201,8 +200,7 @@ theorem natDegree_fallingFactorialPolynomial_le (n : ℕ) :
     _ ≤ ∑ _i ∈ Finset.range n, 1 := by
       apply Finset.sum_le_sum
       intro i _hi
-      have hsub : (X - C (i : ℝ) : ℝ[X]) = X + C (-(i : ℝ)) := by
-        simp [sub_eq_add_neg]
+      have hsub : (X - C (i : ℝ) : ℝ[X]) = X + C (-(i : ℝ)) := by simp [sub_eq_add_neg]
       rw [hsub]
       exact le_of_eq (Polynomial.natDegree_X_add_C (-(i : ℝ)))
     _ = n := by simp

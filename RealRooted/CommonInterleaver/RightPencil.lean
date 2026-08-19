@@ -405,8 +405,7 @@ theorem succDegree_closedSegment_natDegree_eq_right_of_pos
     (C (1 - β) * f + C β * g).natDegree = g.natDegree := by
   have hleft_le : (C (1 - β) * f).natDegree ≤ f.natDegree :=
     Polynomial.natDegree_C_mul_le _ _
-  have hright_deg : (C β * g).natDegree = g.natDegree := by
-    rw [Polynomial.natDegree_C_mul hβ.ne']
+  have hright_deg : (C β * g).natDegree = g.natDegree := by rw [Polynomial.natDegree_C_mul hβ.ne']
   have hlt : (C (1 - β) * f).natDegree < (C β * g).natDegree := by
     rw [hright_deg, hdeg]
     exact Nat.lt_succ_of_le hleft_le
@@ -424,8 +423,7 @@ theorem succDegree_closedSegment_hasPosLeadingCoeff_of_pos
     HasPosLeadingCoeff (C (1 - β) * f + C β * g) := by
   have hleft_le : (C (1 - β) * f).natDegree ≤ f.natDegree :=
     Polynomial.natDegree_C_mul_le _ _
-  have hright_deg : (C β * g).natDegree = g.natDegree := by
-    rw [Polynomial.natDegree_C_mul hβ.ne']
+  have hright_deg : (C β * g).natDegree = g.natDegree := by rw [Polynomial.natDegree_C_mul hβ.ne']
   have hlt : (C (1 - β) * f).natDegree < (C β * g).natDegree := by
     rw [hright_deg, hdeg]
     exact Nat.lt_succ_of_le hleft_le
@@ -484,8 +482,7 @@ theorem closedSegment_eq_C_mul_add_right
       C (1 - β) * (f + C (β / (1 - β)) * g) := by
   have hden : 1 - β ≠ 0 := by linarith
   rw [mul_add, ← mul_assoc, ← C_mul]
-  have hmul : (1 - β) * (β / (1 - β)) = β := by
-    field_simp [hden]
+  have hmul : (1 - β) * (β / (1 - β)) = β := by field_simp [hden]
   rw [hmul]
 
 /-- Passing from an interior closed-segment member to the corresponding right
@@ -514,8 +511,7 @@ theorem HasSimpleRoots.C_mul {p : ℝ[X]} {c : ℝ}
   have hp_ne : p ≠ 0 := hp.ne_zero
   have hcp_ne : C c * p ≠ 0 := mul_ne_zero (C_ne_zero.mpr hc) hp_ne
   rw [Polynomial.rootMultiplicity_mul hcp_ne, Polynomial.rootMultiplicity_C]
-  have hroot_p : p.IsRoot x := by
-    simpa [Polynomial.IsRoot.def, eval_mul, eval_C, hc] using hx
+  have hroot_p : p.IsRoot x := by simpa [Polynomial.IsRoot.def, eval_mul, eval_C, hc] using hx
   rw [hp x hroot_p]
 
 private lemma div_one_sub_inj_of_lt_one {β γ : ℝ}
@@ -865,8 +861,7 @@ theorem compatibleSuccDegreeAllCombo_of_signedRightFamily
     have hscale : C α * (f + C (β / α) * g) = C α * f + C β * g := by
       rw [mul_add]
       congr 1
-      have hαβ : α * (β / α) = β := by
-        field_simp [hα]
+      have hαβ : α * (β / α) = β := by field_simp [hα]
       calc
         C α * (C (β / α) * g) = C (α * (β / α)) * g := by grind
         _ = C β * g := by rw [hαβ]
@@ -913,12 +908,9 @@ theorem compatibleSuccDegreeNegativeRightFamily_of_nonnegShift
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
-  have hcomp' : Compatible f' g' := by
-    simpa [f', g'] using hcomp.comp_X_add_C r
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hcomp' : Compatible f' g' := by simpa [f', g'] using hcomp.comp_X_add_C r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hfnn : HasNonnegCoeffs f' := by
     refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_split ?_
     grind
@@ -1144,8 +1136,7 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq
           (g.roots.filter (· ≤ x)).card =
         g.natDegree := by
     exact_mod_cast hgpart
-  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by
-    exact_mod_cast hdeg
+  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   linarith
 
 /-- The exact lower-threshold endpoint-sign comparison implies closed-segment
@@ -1170,8 +1161,7 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq
           (g.roots.filter (· ≤ x)).card =
         g.natDegree := by
     exact_mod_cast hgpart
-  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by
-    exact_mod_cast hdeg
+  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   have hgtZ :
       ((f.roots.filter (x < ·)).card : ℤ) =
         (g.roots.filter (x < ·)).card := by
@@ -1451,8 +1441,7 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
   have hd_le_one : d ≤ 1 := by
     dsimp [d]
     linarith
-  have hd_ne_one : d ≠ 1 := by
-    simpa [d] using hne
+  have hd_ne_one : d ≠ 1 := by simpa [d] using hne
   have hd_le_zero : d ≤ 0 :=
     Int.lt_add_one_iff.mp (lt_of_le_of_ne hd_le_one hd_ne_one)
   have hd_zero : d = 0 := le_antisymm hd_le_zero hd_nonneg

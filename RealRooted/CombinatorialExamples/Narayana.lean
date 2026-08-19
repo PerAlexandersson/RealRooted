@@ -58,11 +58,9 @@ def narayana (n : Nat) : ℝ[X] :=
       narayanaCoeffA n * narayanaQuot (n + 1) + narayanaCoeffB n * narayanaQuot n := by
   simp [narayanaQuot]
 
-@[simp] lemma narayana_zero : narayana 0 = 0 := by
-  simp [narayana]
+@[simp] lemma narayana_zero : narayana 0 = 0 := by simp [narayana]
 
-@[simp] lemma narayana_one : narayana 1 = X := by
-  simp [narayana]
+@[simp] lemma narayana_one : narayana 1 = X := by simp [narayana]
 
 lemma narayanaQuot_two : narayanaQuot 2 = 1 + X := by
   simp [narayanaQuot, narayanaCoeffA, narayanaCoeffB]
@@ -340,8 +338,7 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
       proper := hprecQ,
       left_nonneg := hnonneg n,
       right_nonneg := hnonneg (n + 1)
-  have hprec : Prec (narayana n) (narayana (n + 1)) := by
-    simpa [narayana] using hmain
+  have hprec : Prec (narayana n) (narayana (n + 1)) := by simpa [narayana] using hmain
   exact hprec.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 

@@ -470,8 +470,7 @@ theorem finiteSymbol_eval_eq_y_pow_dehomog
             rw [scale_pow_div x y (d + 1) (k + 1) hy (by lia)]
     _ = y ^ (d + 1) * ((d.choose k : ℝ) * alpha k * (x / y) ^ k) +
           y ^ (d + 1) *
-            (x / y * ((d.choose k : ℝ) * beta k * (x / y) ^ k)) := by
-            ring_nf
+            (x / y * ((d.choose k : ℝ) * beta k * (x / y) ^ k)) := by ring_nf
 
 /-- Evaluating a homogeneous bivariate lift at `(x,y)` with `y ≠ 0`
 recovers `y^n p(x/y)`. -/
@@ -581,8 +580,7 @@ theorem finiteSymbol_quadratic_eq_factor_homogenize_three
     simp only [hhom, Polynomial.eval_mul, Polynomial.eval_pow,
       Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one,
       Fin.isValue, map_mul, map_pow, map_add, MvPolynomial.eval_X]
-    have hxy : x / y + 1 = (x + y) / y := by
-      field_simp [hy]
+    have hxy : x / y + 1 = (x + y) / y := by field_simp [hy]
     rw [hxy]
     have hsplit : y ^ (d + 1) = y ^ 3 * y ^ (d - 2) := by
       have hdadd : d + 1 = 3 + (d - 2) := by lia

@@ -178,8 +178,7 @@ theorem Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add
   have hq_eval_ne : q.eval y ≠ 0 := by
     intro hzero
     exact hyq (by simpa [Polynomial.IsRoot.def] using hzero)
-  have hodd' : Odd (P + Q) := by
-    simpa [P, Q] using hodd
+  have hodd' : Odd (P + Q) := by simpa [P, Q] using hodd
   by_cases hpx_pos : 0 < p.eval x
   · have hP_even : Even P := by
       simpa [P] using (hp.eval_pos_iff_even_card_roots_gt hp_pos hxp).mp hpx_pos

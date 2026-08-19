@@ -22,8 +22,7 @@ theorem bivariateQuotient_ne_of_ne
       (a + b * t) / (c + d * t) := by
   intro heq
   have hmul := (div_eq_div_iff hdenz hdent).mp heq
-  have hzero : (a * d - b * c) * (t - z) = 0 := by
-    linear_combination hmul
+  have hzero : (a * d - b * c) * (t - z) = 0 := by linear_combination hmul
   exact (mul_ne_zero (sub_ne_zero.mpr hcross)
     (sub_ne_zero.mpr hzt.symm)) hzero
 

@@ -110,10 +110,8 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXPrec
       (X * f.comp (X + C r)).natDegree =
         (f.comp (X + C r)).natDegree + 1 :=
     natDegree_X_mul hF_ne
-  have hF_deg : (f.comp (X + C r)).natDegree = f.natDegree := by
-    simp [Polynomial.natDegree_comp]
-  have hG_deg : (g.comp (X + C r)).natDegree = g.natDegree := by
-    simp [Polynomial.natDegree_comp]
+  have hF_deg : (f.comp (X + C r)).natDegree = f.natDegree := by simp [Polynomial.natDegree_comp]
+  have hG_deg : (g.comp (X + C r)).natDegree = g.natDegree := by simp [Polynomial.natDegree_comp]
   have hgap :
       (g.comp (X + C r)).natDegree + 1 <
         (X * f.comp (X + C r)).natDegree := by
@@ -136,10 +134,8 @@ lemma splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg
     simpa [a, b] using Polynomial.eq_X_add_C_of_natDegree_le_one hpdeg.le
   have hq_eq : q = C c * X + C d := by
     simpa [c, d] using Polynomial.eq_X_add_C_of_natDegree_le_one hqdeg.le
-  have ha_pos : 0 < a := by
-    simpa [HasPosLeadingCoeff, hpdeg, leadingCoeff, a] using hp_pos
-  have hd_nonneg : 0 ≤ d := by
-    simpa [d] using hqnn 0
+  have ha_pos : 0 < a := by simpa [HasPosLeadingCoeff, hpdeg, leadingCoeff, a] using hp_pos
+  have hd_nonneg : 0 ≤ d := by simpa [d] using hqnn 0
   have hpoly :
       X * p - C μ * q =
         C a * X ^ 2 + C (b - μ * c) * X + C (-μ * d) := by
@@ -179,10 +175,8 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ _hμ
-  have hfdeg : f.natDegree = 0 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 0 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
+  have hfdeg : f.natDegree = 0 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 0 := by simpa [Polynomial.natDegree_comp] using hfdeg
   have hGdeg : (g.comp (X + C r)).natDegree ≤ 1 := by
     have hGdeg_eq : (g.comp (X + C r)).natDegree = 0 := by
       simpa [Polynomial.natDegree_comp] using hgdeg
@@ -202,12 +196,9 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 1 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 1 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 1 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 1 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg
     (hpair.left_pos.comp_X_add_C r) hFdeg hGdeg hgnn hμ
 
@@ -225,8 +216,7 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_o
   by_cases hzero : g.natDegree = 0
   · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
       hpair hfnn hgnn hdeg hzero
-  · have hone : g.natDegree = 1 := by
-      lia
+  · have hone : g.natDegree = 1 := by lia
     exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
       hpair hfnn hgnn hdeg hone
 
@@ -242,10 +232,8 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ _hμ
-  have hfdeg : f.natDegree = 0 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 0 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
+  have hfdeg : f.natDegree = 0 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 0 := by simpa [Polynomial.natDegree_comp] using hfdeg
   have hGdeg : (g.comp (X + C r)).natDegree ≤ 1 := by
     simpa [Polynomial.natDegree_comp] using hgdeg.le
   exact splits_X_mul_sub_C_mul_of_left_natDegree_zero_right_natDegree_le_one

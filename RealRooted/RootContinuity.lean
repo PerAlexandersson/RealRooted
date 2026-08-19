@@ -124,17 +124,14 @@ lemma norm_coeff_sub_normalized_left_family_le
         (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
     calc
       (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i
-          = ((t + 1)⁻¹ * (t * f.coeff i + g.coeff i)) - f.coeff i := by
-              simp
-      _ = (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
-            grind
+          = ((t + 1)⁻¹ * (t * f.coeff i + g.coeff i)) - f.coeff i := by simp
+      _ = (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by grind
   have hden_nonneg : 0 ≤ (t + 1)⁻¹ := by positivity
   calc
     ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖
         = ‖(t + 1)⁻¹ * (g.coeff i - f.coeff i)‖ := by lia
     _ = ‖(t + 1)⁻¹‖ * ‖g.coeff i - f.coeff i‖ := norm_mul _ _
-    _ = (t + 1)⁻¹ * ‖g.coeff i - f.coeff i‖ := by
-          simp [Real.norm_of_nonneg hden_nonneg]
+    _ = (t + 1)⁻¹ * ‖g.coeff i - f.coeff i‖ := by simp [Real.norm_of_nonneg hden_nonneg]
     _ ≤ (t + 1)⁻¹ * (‖g.coeff i‖ + ‖f.coeff i‖) := by
           gcongr
           exact norm_sub_le _ _
@@ -309,8 +306,7 @@ theorem splits_of_forall_aeval_im_eq_zero {p : ℝ[X]}
     have hdvd : (X - C a) ∣ p.map (algebraMap ℝ ℂ) := by
       rw [hm]
       exact Dvd.dvd.mul_left (Multiset.dvd_prod (Multiset.mem_map_of_mem _ ha)) _
-    have hroot : (p.map (algebraMap ℝ ℂ)).IsRoot a := by
-      rwa [← Polynomial.dvd_iff_isRoot]
+    have hroot : (p.map (algebraMap ℝ ℂ)).IsRoot a := by rwa [← Polynomial.dvd_iff_isRoot]
     have hz : p.aeval a = 0 := by
       rw [Polynomial.aeval_def, ← Polynomial.eval_map]
       exact hroot
@@ -339,8 +335,7 @@ theorem im_eq_zero_of_aeval_eq_zero {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
 theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
     (hreal : ((1 - u ^ 2) / u).im = 0) :
     (-(u ^ 2)).im = 0 := by
-  have heq : (1 - u ^ 2) / u = u⁻¹ - u := by
-    field_simp
+  have heq : (1 - u ^ 2) / u = u⁻¹ - u := by field_simp
   have him : u⁻¹.im - u.im = 0 := by
     rw [heq, Complex.sub_im] at hreal
     exact hreal
@@ -642,8 +637,7 @@ theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
   have h_abs_eq : |f.eval z| = |μ| * |g.eval z| := by
     rw [hf_eq]
     simp [abs_mul]
-  have hmin_le : |f.eval c| ≤ |μ| * |g.eval z| := by
-    simpa [h_abs_eq] using hcmin hz
+  have hmin_le : |f.eval c| ≤ |μ| * |g.eval z| := by simpa [h_abs_eq] using hcmin hz
   have hgz_le : |g.eval z| ≤ |g.eval d| + 1 := by
     have hmax : |g.eval z| ≤ |g.eval d| := hdmax hz
     linarith

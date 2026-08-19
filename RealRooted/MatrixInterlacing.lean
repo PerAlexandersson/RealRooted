@@ -613,12 +613,10 @@ lemma rowPairAffine_combo_eq_zipWith_sum
                           simp [mul_add, add_mul, mul_assoc, add_assoc, add_left_comm, add_comm]
                 _ =
                     ((((C s * X + C t) * a) + b) * f) +
-                      (((rowPairAffineSeq row₁ row₂ s t).zipWith (· * ·) fs).sum) := by
-                          simp_all
+                      (((rowPairAffineSeq row₁ row₂ s t).zipWith (· * ·) fs).sum) := by simp_all
                 _ =
                     ((rowPairAffineSeq (a :: row₁) (b :: row₂) s t).zipWith
-                      (· * ·) (f :: fs)).sum := by
-                      simp [rowPairAffineSeq]
+                      (· * ·) (f :: fs)).sum := by simp [rowPairAffineSeq]
 
 lemma zipWith_mul_sum_reverse_reverse
     {row fs : List ℝ[X]} (hlen : row.length = fs.length) :
@@ -789,15 +787,13 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
       (hrow₂_head_ne := by simpa using hp.2.1.1)
       (hrow₁_nonneg := by
         intro p hp_mem
-        have hp_mem' : p = p₁ ∨ p = q₁ := by
-          simpa using hp_mem
+        have hp_mem' : p = p₁ ∨ p = q₁ := by simpa using hp_mem
         rcases hp_mem' with rfl | rfl
         · exact hp₁nn
         · exact hq₁nn)
       (hrow₂_nonneg := by
         intro p hp_mem
-        have hp_mem' : p = p₂ ∨ p = q₂ := by
-          simpa using hp_mem
+        have hp_mem' : p = p₂ ∨ p = q₂ := by simpa using hp_mem
         rcases hp_mem' with rfl | rfl
         · exact hp₂nn
         · exact hq₂nn)
@@ -812,8 +808,7 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
       (hfs := by
         refine ⟨?_, ?_⟩
         · intro p hp_mem
-          have hp_mem' : p = u ∨ p = v := by
-            simpa using hp_mem
+          have hp_mem' : p = u ∨ p = v := by simpa using hp_mem
           rcases hp_mem' with rfl | rfl
           · exact ⟨huv.1, hunn⟩
           · exact ⟨huv.2.1, hvnn⟩

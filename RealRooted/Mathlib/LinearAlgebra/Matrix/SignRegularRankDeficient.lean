@@ -27,8 +27,7 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
       Fintype.card κ =
           Module.finrank R (Submodule.span R (Set.range (A.col ∘ a))) :=
         (finrank_span_eq_card hli).symm
-      _ = Module.finrank R (Submodule.span R (Set.range A.col)) := by
-        rw [hspan]
+      _ = Module.finrank R (Submodule.span R (Set.range A.col)) := by rw [hspan]
       _ = A.rank := (Matrix.rank_eq_finrank_span_cols A).symm
       _ = r := hrank
   let e : Fin r ≃ κ := (Fintype.equivFinOfCardEq hcard).symm
@@ -88,8 +87,7 @@ theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
   have hz : z = (-1 : R) ^ (i0 : ℕ) • z0 := by
     funext j
     simp only [z, z0, Pi.smul_apply, smul_eq_mul, pow_add, mul_assoc]
-  have hremoved : C.mulVec z = 0 := by
-    rw [hz, Matrix.mulVec_smul, hremoved0, smul_zero]
+  have hremoved : C.mulVec z = 0 := by rw [hz, Matrix.mulVec_smul, hremoved0, smul_zero]
   change B.mulVec z = 0
   apply funext
   refine Fin.succAboveCases i0 ?_ (fun i => ?_)
@@ -131,8 +129,7 @@ theorem Matrix.rank_deleteColumn_eq_of_minor_ne_zero
       A'.rank ≤ A.rank := Matrix.rank_submatrix_le A id j0.succAbove
       _ = r := hrank
   · calc
-      r = (A'.submatrix rows cols).rank := by
-        simpa using (Matrix.rank_of_isUnit _ hunit).symm
+      r = (A'.submatrix rows cols).rank := by simpa using (Matrix.rank_of_isUnit _ hunit).symm
       _ ≤ A'.rank := Matrix.rank_submatrix_le A' rows cols
 
 /-- Karlin's nonzero-cofactor branch for a selected singular square submatrix.
@@ -172,15 +169,13 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
       _ ≤ B.rank :=
         Matrix.rank_submatrix_le B i0.succAbove j0.succAbove
       _ ≤ A.rank := Matrix.rank_submatrix_le A rows id
-  have hrank : A.rank = k := by
-    lia
+  have hrank : A.rank = k := by lia
   have hdet : B.det = 0 := by
     by_contra hdet
     have hBunit : IsUnit B := by
       rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
       exact hdet
-    have hBrank : B.rank = k + 1 := by
-      simpa using Matrix.rank_of_isUnit B hBunit
+    have hBrank : B.rank = k + 1 := by simpa using Matrix.rank_of_isUnit B hBunit
     have hle : B.rank ≤ A.rank := Matrix.rank_submatrix_le A rows id
     rw [hBrank, hrank] at hle
     lia
@@ -308,8 +303,7 @@ theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_n
     exact hAltPert
   have hA' : A'.IsSignConsistentOrder k := by
     exact hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
-  have hk1n : k + 1 ≤ n := by
-    simpa using Fintype.card_le_of_injective rows hrows.injective
+  have hk1n : k + 1 ≤ n := by simpa using Fintype.card_le_of_injective rows hrows.injective
   have hkn : k ≤ n := (Nat.le_succ k).trans hk1n
   have hA'inj : Function.Injective A'.mulVec := by
     rw [Matrix.mulVec_injective_iff,
@@ -413,8 +407,7 @@ theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
     rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
     simpa only [B, selected, Matrix.submatrix_submatrix,
       Function.id_comp, Function.comp_id] using hminor
-  have hminor_rank : (B.submatrix rows id).rank = r := by
-    simpa using Matrix.rank_of_isUnit _ hunit
+  have hminor_rank : (B.submatrix rows id).rank = r := by simpa using Matrix.rank_of_isUnit _ hunit
   have hBge : r ≤ B.rank := by
     calc
       r = (B.submatrix rows id).rank := hminor_rank.symm
@@ -513,8 +506,7 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
     (c : Fin (k + 1) → ℝ) :
     Fin.signVariations (A.mulVec c) ≤ r - 1 := by
   by_contra hle
-  have hbad : r ≤ Fin.signVariations (A.mulVec c) := by
-    lia
+  have hbad : r ≤ Fin.signVariations (A.mulVec c) := by lia
   obtain ⟨rows, hrows, halt⟩ :=
     Fin.exists_strictMono_strictlyAlternates_of_le_signVariations hr hbad
   obtain ⟨j0, z, hkernel, hzj0, hdelete⟩ :=

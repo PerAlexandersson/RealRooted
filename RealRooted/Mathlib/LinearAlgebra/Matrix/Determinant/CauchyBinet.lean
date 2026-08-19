@@ -165,8 +165,7 @@ theorem Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm
     _ = ∑ s : Set.powersetCard I q, ∑ p : Equiv.Perm (Fin q),
         g (Set.powersetCard.orderEmbPermEquivEmbedding (s, p)) :=
       Fintype.sum_prod_type _
-    _ = _ := by
-      simp [Set.powersetCard.orderEmbPermEquivEmbedding]
+    _ = _ := by simp [Set.powersetCard.orderEmbPermEquivEmbedding]
 
 private theorem sum_function_eq_sum_embedding_of_zero_noninjective
     {q : ℕ} {I M : Type*} [Fintype I] [AddCommMonoid M]
@@ -281,8 +280,7 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective
       (A.submatrix rows cols).det ≠ 0 := by
   classical
   let B := A.submatrix id cols
-  have hB : Function.Injective B.mulVec := by
-    exact selected_mulVec_injective A hA cols hcols
+  have hB : Function.Injective B.mulVec := by exact selected_mulVec_injective A hA cols hcols
   obtain ⟨C, hCB⟩ := exists_left_inverse_matrix B hB
   have hsum :
       (∑ s : Set.powersetCard (Fin n) q,

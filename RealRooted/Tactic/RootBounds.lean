@@ -343,8 +343,7 @@ macro_rules
   | `(tactic| rr_sign_at_roots) =>
       `(tactic|
         exact fun r hroot => by
-          have hroot_nonpos : r ≤ 0 := by
-            rr_root_nonpos
+          have hroot_nonpos : r ≤ 0 := by rr_root_nonpos
           rr_sign)
   | `(tactic|
       rr_sign_at_roots_sequence using
@@ -382,8 +381,7 @@ macro_rules
         factor_nonneg := $hq:term) =>
       `(tactic|
         exact fun r hroot => by
-          have hroot_nonpos : r ≤ 0 := by
-            rr_root_nonpos
+          have hroot_nonpos : r ≤ 0 := by rr_root_nonpos
           have hfactor_nonneg := $hq r hroot
           rr_sign)
   | `(tactic|

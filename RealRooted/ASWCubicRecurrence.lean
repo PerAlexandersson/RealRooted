@@ -198,20 +198,16 @@ def aswCubicReverse (u : ℕ → ℝ) (j : ℕ) : ℝ :=
   if j ≤ 3 then u (3 - j) else 0
 
 @[simp]
-lemma aswCubicReverse_zero (u : ℕ → ℝ) : aswCubicReverse u 0 = u 3 := by
-  simp [aswCubicReverse]
+lemma aswCubicReverse_zero (u : ℕ → ℝ) : aswCubicReverse u 0 = u 3 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_one (u : ℕ → ℝ) : aswCubicReverse u 1 = u 2 := by
-  simp [aswCubicReverse]
+lemma aswCubicReverse_one (u : ℕ → ℝ) : aswCubicReverse u 1 = u 2 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_two (u : ℕ → ℝ) : aswCubicReverse u 2 = u 1 := by
-  simp [aswCubicReverse]
+lemma aswCubicReverse_two (u : ℕ → ℝ) : aswCubicReverse u 2 = u 1 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_three (u : ℕ → ℝ) : aswCubicReverse u 3 = u 0 := by
-  simp [aswCubicReverse]
+lemma aswCubicReverse_three (u : ℕ → ℝ) : aswCubicReverse u 3 = u 0 := by simp [aswCubicReverse]
 
 lemma aswCubicReverse_eq_zero (u : ℕ → ℝ) {j : ℕ} (hj : 4 ≤ j) :
     aswCubicReverse u j = 0 := by

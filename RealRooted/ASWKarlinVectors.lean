@@ -247,8 +247,7 @@ lemma im_pow_mul_im_pow_add_two_neg_of_im_pow_add_one_eq_zero
     calc
       (-Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ) *
           (Real.cos ((i + 1 : ℕ) * θ) * Real.sin θ) =
-          -(Real.cos ((i + 1 : ℕ) * θ) ^ 2 * Real.sin θ ^ 2) := by
-            ring
+          -(Real.cos ((i + 1 : ℕ) * θ) ^ 2 * Real.sin θ ^ 2) := by ring
       _ < 0 := neg_lt_zero.mpr
         (mul_pos (sq_pos_of_ne_zero hcos) (sq_pos_of_ne_zero hsin))
   rw [im_pow_eq_norm_pow_mul_sin_arg,
@@ -257,8 +256,7 @@ lemma im_pow_mul_im_pow_add_two_neg_of_im_pow_add_one_eq_zero
     (‖z‖ ^ i * Real.sin (i * θ)) *
         (‖z‖ ^ (i + 2) * Real.sin ((i + 2 : ℕ) * θ)) =
         (‖z‖ ^ i * ‖z‖ ^ (i + 2)) *
-          (Real.sin (i * θ) * Real.sin ((i + 2 : ℕ) * θ)) := by
-            ring
+          (Real.sin (i * θ) * Real.sin ((i + 2 : ℕ) * θ)) := by ring
     _ < 0 := mul_neg_of_pos_of_neg
       (mul_pos (pow_pos hnorm _) (pow_pos hnorm _)) htrig
 lemma im_phase_mul_pow_eq_norm_pow_mul_sin_add_arg

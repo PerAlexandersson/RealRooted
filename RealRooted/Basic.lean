@@ -433,8 +433,7 @@ lemma listInterlaces_dropLast_forall₂_le :
   | _ :: _, [_], h, _ => by simp [ListInterlaces] at h
   | s :: ss', r₁ :: r₂ :: rs', h, hlen => by
       obtain ⟨hr₁s, _, htail⟩ := h
-      have hlen' : ss'.length + 1 = (r₂ :: rs').length := by
-        simpa using hlen
+      have hlen' : ss'.length + 1 = (r₂ :: rs').length := by simpa using hlen
       have ih := listInterlaces_dropLast_forall₂_le htail hlen'
       simpa [List.dropLast] using List.Forall₂.cons hr₁s ih
 
@@ -826,10 +825,8 @@ theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hsum_ss : ss.sum = f.roots.sum := by
-    rw [← Multiset.sum_coe, hss_eq]
-  have hsum_rs : rs.sum = g.roots.sum := by
-    rw [← Multiset.sum_coe, hrs_eq]
+  have hsum_ss : ss.sum = f.roots.sum := by rw [← Multiset.sum_coe, hss_eq]
+  have hsum_rs : rs.sum = g.roots.sum := by rw [← Multiset.sum_coe, hrs_eq]
   rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
   · exfalso
     lia
@@ -861,10 +858,8 @@ theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
-  have hsum_ss : ss.sum = g.roots.sum := by
-    rw [← Multiset.sum_coe, hss_eq]
-  have hsum_rs : rs.sum = f.roots.sum := by
-    rw [← Multiset.sum_coe, hrs_eq]
+  have hsum_ss : ss.sum = g.roots.sum := by rw [← Multiset.sum_coe, hss_eq]
+  have hsum_rs : rs.sum = f.roots.sum := by rw [← Multiset.sum_coe, hrs_eq]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, halt⟩
   · exfalso
     lia
@@ -1018,20 +1013,16 @@ def IsGeneralizedSturmSeq : List ℝ[X] → Prop
 lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : Prec g f := by
   obtain ⟨hf, hg, _, rs, ss, hrs, hss, hrs_eq, hss_eq, hint⟩ := h
   refine ⟨hg, hf, _, _, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨?_, hint⟩⟩
-  have : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have : ss.length = g.natDegree := by rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
+  have : rs.length = f.natDegree := by rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
 lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
     (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f := by
   rcases h with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, _⟩
   refine ⟨hf, hg, hdeg, _, _, hrs, hss, hrs_eq, hss_eq, ?_⟩
-  have : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have : ss.length = g.natDegree := by rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
+  have : rs.length = f.natDegree := by rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
 /-- Multiplying the left polynomial in a proper-position relation by a nonzero

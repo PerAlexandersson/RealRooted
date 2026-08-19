@@ -66,8 +66,7 @@ lemma cubicSubQuadratic_average_above_mu_pos {a b c u v : ℝ}
     (hab : a ≤ b) (hbc : b ≤ c) (hcmean : c < (u + v) / 2) :
     0 < 3 * ((u + v) / 2) - (a + b + c) := by
   let m : ℝ := (u + v) / 2
-  have hcm : c < m := by
-    simpa [m] using hcmean
+  have hcm : c < m := by simpa [m] using hcmean
   have hma : 0 < m - a := by linarith
   have hmb : 0 < m - b := by linarith
   have hmc : 0 < m - c := by linarith
@@ -88,8 +87,7 @@ lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
         (a * b + a * c + b * c +
           (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
   let m : ℝ := (u + v) / 2
-  have hcm : c < m := by
-    simpa [m] using hcmean
+  have hcm : c < m := by simpa [m] using hcmean
   have hma : 0 < m - a := by linarith
   have hmb : 0 < m - b := by linarith
   have hmc : 0 < m - c := by linarith
@@ -342,8 +340,7 @@ lemma not_splits_common_factor_sub_of_not_splits
   have hnot_product : ¬ (D * (P - C μ * Q)).Splits := by
     intro hsplits
     exact hnot_splits ((splits_mul_iff_right hD_ne hD_splits).mp hsplits)
-  have hsub_eq : D * P - C μ * (D * Q) = D * (P - C μ * Q) := by
-    ring
+  have hsub_eq : D * P - C μ * (D * Q) = D * (P - C μ * Q) := by ring
   intro hsplits
   exact hnot_product (by simpa [hsub_eq] using hsplits)
 

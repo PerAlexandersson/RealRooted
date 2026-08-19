@@ -29,12 +29,9 @@ theorem rightFamily_card_roots_Ioo_zero_eq_zero_param_of_degree_bound
       (f.roots.filter (fun r ↦ 0 < r ∧ r < b)).card := by
   have hzero_mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) μ := ⟨le_rfl, hμ.le⟩
   have hμ_mem : μ ∈ Set.Icc (0 : ℝ) μ := ⟨hμ.le, le_rfl⟩
-  have hfN : f.natDegree ≤ N := by
-    simpa using hN 0 hzero_mem
-  have hfzero : f.coeff 0 ≠ 0 := by
-    simpa using hzero 0 hzero_mem
-  have hf_split : f.Splits := by
-    simpa using hsplit 0 hzero_mem
+  have hfN : f.natDegree ≤ N := by simpa using hN 0 hzero_mem
+  have hfzero : f.coeff 0 ≠ 0 := by simpa using hzero 0 hzero_mem
+  have hf_split : f.Splits := by simpa using hsplit 0 hzero_mem
   have hreflect_degree : ∀ η ∈ Set.Icc (0 : ℝ) μ,
       (reflect N f + C η * reflect N g).natDegree =
         (reflect N f + C (0 : ℝ) * reflect N g).natDegree := by
@@ -72,11 +69,9 @@ theorem rightFamily_card_roots_Ioo_zero_eq_zero_param_of_degree_bound
     (p := f) hf_split hfzero hfN (a := b⁻¹) (inv_pos.mpr hb)
   calc
     ((f + C μ * g).roots.filter (fun r ↦ 0 < r ∧ r < b)).card =
-        ((reflect N (f + C μ * g)).roots.filter (b⁻¹ < ·)).card := by
-          simpa using hμ_transport.symm
+        ((reflect N (f + C μ * g)).roots.filter (b⁻¹ < ·)).card := by simpa using hμ_transport.symm
     _ = ((reflect N f).roots.filter (b⁻¹ < ·)).card := hcount
-    _ = (f.roots.filter (fun r ↦ 0 < r ∧ r < b)).card := by
-      simpa using hf_transport
+    _ = (f.roots.filter (fun r ↦ 0 < r ∧ r < b)).card := by simpa using hf_transport
 
 /-- Root counts in any bounded open interval are constant along a split affine
 family whose interval endpoints stay root-free, even if its degree drops. -/
@@ -124,8 +119,7 @@ theorem rightFamily_card_roots_Ioo_eq_zero_param_of_degree_bound
     ((f + C μ * g).roots.filter (fun r ↦ a < r ∧ r < b)).card =
         (((f + C μ * g).comp (X + C a)).roots.filter
           (fun r ↦ 0 < r ∧ r < b - a)).card := htop.symm
-    _ = ((f' + C μ * g').roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := by
-      rw [hfamily_comp]
+    _ = ((f' + C μ * g').roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := by rw [hfamily_comp]
     _ = (f'.roots.filter (fun r ↦ 0 < r ∧ r < b - a)).card := hshifted
     _ = (f.roots.filter (fun r ↦ a < r ∧ r < b)).card := hbase
 

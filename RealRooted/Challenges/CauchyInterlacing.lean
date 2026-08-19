@@ -70,8 +70,7 @@ private lemma coe_ofFn_id_eq_univ_val {n : ℕ} :
     exact (Finset.univ : Finset (Fin n)).nodup
   have hmem_left : a ∈ (↑(List.ofFn fun k : Fin n => k) : Multiset (Fin n)) := by
     simp [List.mem_ofFn]
-  have hmem_right : a ∈ (Finset.univ : Finset (Fin n)).val := by
-    simp
+  have hmem_right : a ∈ (Finset.univ : Finset (Fin n)).val := by simp
   rw [Multiset.count_eq_one_of_mem hnodup_left hmem_left,
     Multiset.count_eq_one_of_mem hnodup_right hmem_right]
 

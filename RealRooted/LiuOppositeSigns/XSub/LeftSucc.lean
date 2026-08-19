@@ -88,12 +88,9 @@ lemma splits_X_mul_sub_C_mul_of_natDegree_one_zero
   let c := q.coeff 0
   have hp_eq : p = C a * X + C b := by
     simpa [a, b] using Polynomial.eq_X_add_C_of_natDegree_le_one hpdeg.le
-  have hq_eq : q = C c := by
-    simpa [c] using Polynomial.eq_C_of_natDegree_eq_zero hqdeg
-  have ha_pos : 0 < a := by
-    simpa [HasPosLeadingCoeff, hpdeg, leadingCoeff, a] using hp_pos
-  have hc_pos : 0 < c := by
-    simpa [HasPosLeadingCoeff, hqdeg, leadingCoeff, c] using hq_pos
+  have hq_eq : q = C c := by simpa [c] using Polynomial.eq_C_of_natDegree_eq_zero hqdeg
+  have ha_pos : 0 < a := by simpa [HasPosLeadingCoeff, hpdeg, leadingCoeff, a] using hp_pos
+  have hc_pos : 0 < c := by simpa [HasPosLeadingCoeff, hqdeg, leadingCoeff, c] using hq_pos
   have hpoly : X * p - C μ * q = C a * X ^ 2 + C b * X + C (-μ * c) := by
     rw [hp_eq, hq_eq]
     simp [C_mul, C_neg]
@@ -116,12 +113,9 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
     ∀ μ : ℝ, 0 < μ →
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
-  have hfdeg : f.natDegree = 1 := by
-    lia
-  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by
-    simpa [Polynomial.natDegree_comp] using hfdeg
-  have hGdeg : (g.comp (X + C r)).natDegree = 0 := by
-    simpa [Polynomial.natDegree_comp] using hgdeg
+  have hfdeg : f.natDegree = 1 := by lia
+  have hFdeg : (f.comp (X + C r)).natDegree = 1 := by simpa [Polynomial.natDegree_comp] using hfdeg
+  have hGdeg : (g.comp (X + C r)).natDegree = 0 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_natDegree_one_zero
     (hpair.left_pos.comp_X_add_C r) (hpair.right_pos.comp_X_add_C r)
     hFdeg hGdeg hμ
@@ -298,10 +292,8 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one_of_cubicDiscrim
     exact harith hab hac hb0 hc0 hν_pos
   have hinner_splits : inner.Splits :=
     splits_of_natDegree_le_three_cubicDiscr_nonneg hinner_deg hinner_disc
-  have hpfacA : p = C A * ((X - C a) * (X - C b)) := by
-    simpa [A] using hpfac
-  have hqfacB : q = C B * (X - C c) := by
-    simpa [B] using hqfac
+  have hpfacA : p = C A * ((X - C a) * (X - C b)) := by simpa [A] using hpfac
+  have hqfacB : q = C B * (X - C c) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
     rw [hpfacA, hqfacB]
     dsimp [inner, ν]
@@ -327,8 +319,7 @@ theorem
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   intro μ hμ
   have hfdeg_shift : (f.comp (X + C r)).natDegree = 2 := by
-    have hfdeg : f.natDegree = 2 := by
-      lia
+    have hfdeg : f.natDegree = 2 := by lia
     simpa [Polynomial.natDegree_comp] using hfdeg
   have hgdeg_shift : (g.comp (X + C r)).natDegree = 1 := by
     simpa [Polynomial.natDegree_comp] using hgdeg

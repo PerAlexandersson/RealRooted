@@ -85,8 +85,7 @@ lemma listInterlaces_prod_mul_prod_nonpos_at_heads
     | cons s ss => simp
   obtain ⟨hr₁s, hsr₂, htail⟩ := hint
   have hr₁r₂ : r₁ ≤ r₂ := le_trans hr₁s hsr₂
-  have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
-    nlinarith
+  have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by nlinarith
   have htail_nonneg :
       0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod :=
     listInterlaces_tail_pair_prod_nonneg hr₁r₂ htail
@@ -394,16 +393,14 @@ lemma interlaces_of_prec_sameDegree_rightmost_factor
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hq_ne : q ≠ 0 := by
-    simp_all
+  have hq_ne : q ≠ 0 := by simp_all
   have hq : q ≠ 0 ∧ q.Splits := by
     apply isRealRooted_of_dvd hg.1 hg.2 hq_ne
     simp_all
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
     lia
-  have hq_deg : q.natDegree + 1 = f.natDegree := by
-    lia
+  have hq_deg : q.natDegree + 1 = f.natDegree := by lia
   rcases hshape with ⟨_, _⟩ | ⟨_, halt⟩
   · lia
   · let qs := q.roots.sort (· ≤ ·)
@@ -418,8 +415,7 @@ lemma interlaces_of_prec_sameDegree_rightmost_factor
         apply Multiset.mem_add.mpr
         right
         simpa [hqs_eq] using Multiset.mem_coe.mpr hr)
-    have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by
-      grind
+    have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by grind
     have hrs_eq_right : rs = qs ++ [uR] := by
       apply List.Perm.eq_of_pairwise' hrs_sorted hqs_sorted_right
       apply Multiset.coe_eq_coe.mp
@@ -431,10 +427,8 @@ lemma interlaces_of_prec_sameDegree_rightmost_factor
         _ = q.roots + ↑[uR] := by simp
         _ = (↑qs : Multiset ℝ) + ↑[uR] := by lia
         _ = (↑(qs ++ [uR]) : Multiset ℝ) := by rw [Multiset.coe_add]
-    have hlen_qs : qs.length + 1 = ss.length := by
-      lia
-    have halt_right : ListAlternates ss (qs ++ [uR]) := by
-      lia
+    have hlen_qs : qs.length + 1 = ss.length := by lia
+    have halt_right : ListAlternates ss (qs ++ [uR]) := by lia
     have hshape_qs_rs : ListInterlaces qs ss :=
       listInterlaces_of_listAlternates_append_right hlen_qs halt_right
     exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
@@ -516,8 +510,7 @@ lemma listAlternates_of_append_zero_both :
 
 /-! ## Roots of nonneg-coefficient polynomials are ≤ 0 -/
 
-lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
-  simp [HasNonnegCoeffs]
+lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by simp [HasNonnegCoeffs]
 
 lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
   rintro (_ | n)
@@ -708,10 +701,8 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
         ⟨⟨hg₀, hg⟩, by simp_all, rs, ss ++ [(0 : ℝ)], hrs, hss0_sorted,
           hrs_eq, hss0_eq,
           Or.inr ⟨by simp_all, listAlternates_append_zero ss rs hlen hint hrs_nonpos⟩⟩
-    · have : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf]
-      have : rs.length = g.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg]
+    · have : ss.length = f.natDegree := by rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf]
+      have : rs.length = g.natDegree := by rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg]
       lia
   · -- Backward: Prec g (X * f) → Prec f g
     intro ⟨_, _, ss_g, rs_xf, hss_g, hrs_xf, hss_g_eq, hrs_xf_eq, hcase⟩
@@ -985,8 +976,7 @@ theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g
     Prec ((X - C r) * f) ((X - C r) * g) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hfg' : Prec f' g' := by
-    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+  have hfg' : Prec f' g' := by simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -1052,8 +1042,7 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         calc
           (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) :=
             Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
-          _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
-            simp
+          _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by simp
     have hroots :
         ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) = ((X - C r) * f).roots := by
       rw [hss_eq]
@@ -1065,8 +1054,7 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         calc
           (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) :=
             Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
-          _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
-            simp
+          _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by simp
     have hroots :
         ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) = ((X - C r) * g).roots := by
       rw [hrs_eq]
@@ -1104,8 +1092,7 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
           calc
             (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) :=
               Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
-            _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
-              simp]
+            _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by simp]
     rw [hss_eq]
     symm
     rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C]
@@ -1116,8 +1103,7 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
           calc
             (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) :=
               Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
-            _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
-              simp]
+            _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by simp]
     rw [hrs_eq]
     symm
     rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hg.1), roots_X_sub_C]
@@ -1170,14 +1156,10 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     Prec f g ↔ Prec g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hf' : f' ≠ 0 ∧ f'.Splits := by
-    simpa [f'] using isRealRooted_comp_X_add_C hf_pos.ne_zero hf r
-  have hg' : g' ≠ 0 ∧ g'.Splits := by
-    simpa [g'] using isRealRooted_comp_X_add_C hg_pos.ne_zero hg r
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
+  have hf' : f' ≠ 0 ∧ f'.Splits := by simpa [f'] using isRealRooted_comp_X_add_C hf_pos.ne_zero hf r
+  have hg' : g' ≠ 0 ∧ g'.Splits := by simpa [g'] using isRealRooted_comp_X_add_C hg_pos.ne_zero hg r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -1188,8 +1170,7 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     simp only [g', roots_comp_X_add_C r] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
-  have hdeg' : f'.natDegree + 1 = g'.natDegree := by
-    simpa [f', g', natDegree_comp] using hdeg
+  have hdeg' : f'.natDegree + 1 = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hshift :
       Prec f' g' ↔ Prec g' (X * f') :=
     prec_iff_prec_mul_X_of_roots_nonpos hf'.2 hg'.2 hf'_pos hg'_pos hf'_nonpos hg'_nonpos hdeg'

@@ -481,8 +481,7 @@ lemma xSubCubicQuadraticSplits_of_interlacing_roots {a b c u v μ : ℝ}
   have hXf_deg_lo : f.natDegree ≤ (X * f).natDegree := by
     rw [hXf_deg]
     exact Nat.le_succ _
-  have hsum_eq : X * f + (-C μ) * g = X * f - C μ * g := by
-    ring
+  have hsum_eq : X * f + (-C μ) * g = X * f - C μ * g := by ring
   have hsum_deg : (X * f + (-C μ) * g).natDegree = (X * f).natDegree := by
     rw [hsum_eq]
     exact natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hXf_deg_lo μ
@@ -493,8 +492,7 @@ lemma xSubCubicQuadraticSplits_of_interlacing_roots {a b c u v μ : ℝ}
   have hdeg_lo : f.natDegree ≤ (X * f + (-C μ) * g).natDegree := by
     rw [hsum_deg]
     exact hXf_deg_lo
-  have hdeg_hi : (X * f + (-C μ) * g).natDegree ≤ f.natDegree + 1 := by
-    rw [hsum_deg, hXf_deg]
+  have hdeg_hi : (X * f + (-C μ) * g).natDegree ≤ f.natDegree + 1 := by rw [hsum_deg, hXf_deg]
   have hcoeff_nonpos : ∀ r, f.IsRoot r → (-C μ).eval r ≤ 0 := by
     intro r _
     simpa only [eval_neg, eval_C, Left.neg_nonpos_iff] using le_of_lt hμ
@@ -570,8 +568,7 @@ lemma xSubCubicQuadraticSplits_of_middle_quadratic_roots_strict
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by
-      exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]
@@ -701,8 +698,7 @@ lemma xSubCubicQuadraticSplits_of_right_quadratic_root_strict
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by
-      exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]
@@ -1006,8 +1002,7 @@ lemma xSubCubicQuadraticSplits_of_upper_quadratic_root_right_strict
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by
-      exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]

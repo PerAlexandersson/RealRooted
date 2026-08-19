@@ -121,8 +121,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
       obtain ⟨ap₀, hap₀, h₀⟩ := hex
       rcases lt_or_gt_of_ne
         (leadingCoeff_ne_zero.mpr (hprec ap₀.2 (hmem ap₀ hap₀)).1.1) with hlt | hgt
-      · have : HasPosLeadingCoeff (C (-1 : ℝ) * h) := by
-          simp [HasPosLeadingCoeff, hlt]
+      · have : HasPosLeadingCoeff (C (-1 : ℝ) * h) := by simp [HasPosLeadingCoeff, hlt]
         exact (prec_weightedSum_left_of_common_left
           l (C (-1 : ℝ) * h) hnonneg
           (fun ap hap =>

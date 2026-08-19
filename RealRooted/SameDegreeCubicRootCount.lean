@@ -19,17 +19,14 @@ theorem exists_roots_triple_of_splits_natDegree_three {f : ℝ[X]}
     ∃ a b c : ℝ, a ≤ b ∧ b ≤ c ∧ f.roots = {a, b, c} ∧
       f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
   let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 3 := by
-    simp [rs, card_roots_of_splits hf, hdeg]
+  have hrs_len : rs.length = 3 := by simp [rs, card_roots_of_splits hf, hdeg]
   obtain ⟨a, b, c, hrs⟩ := List.length_eq_three.mp hrs_len
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := by
-    simp [rs]
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
   have hsorted : ([a, b, c] : List ℝ).Pairwise (· ≤ ·) := by simp_all
   have hab : a ≤ b := by grind
   have hbc : b ≤ c := by simp_all
   have hcoe : f.roots = {a, b, c} := by
-    have hse : (↑rs : Multiset ℝ) = f.roots := by
-      simp [rs]
+    have hse : (↑rs : Multiset ℝ) = f.roots := by simp [rs]
     rw [hrs] at hse
     rw [← hse]
     rfl
@@ -53,15 +50,11 @@ theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
         f = C f.leadingCoeff *
           ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
   let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 4 := by
-    simp [rs, card_roots_of_splits hf, hdeg]
+  have hrs_len : rs.length = 4 := by simp [rs, card_roots_of_splits hf, hdeg]
   obtain ⟨a, b, c, d, hrs⟩ := List.length_eq_four.mp hrs_len
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := by
-    simp [rs]
-  have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by
-    simpa [hrs] using hrs_sorted
-  have hab : a ≤ b := by
-    simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
+  have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by simpa [hrs] using hrs_sorted
+  have hab : a ≤ b := by simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
   have hbc : b ≤ c := by
     have htail := (List.pairwise_cons.1 hsorted).2
     simpa using (List.pairwise_cons.1 htail).1 c (by simp)
@@ -70,8 +63,7 @@ theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
     have htail2 := (List.pairwise_cons.1 htail).2
     simpa using (List.pairwise_cons.1 htail2).1 d (by simp)
   have hcoe : f.roots = {a, b, c, d} := by
-    have hse : (↑rs : Multiset ℝ) = f.roots := by
-      simp [rs]
+    have hse : (↑rs : Multiset ℝ) = f.roots := by simp [rs]
     rw [hrs] at hse
     rw [← hse]
     rfl
@@ -108,19 +100,15 @@ theorem cubicDiscr_monicPencil_nonneg_of_posCombo
   have ht0 : 0 < s * lf / lg := by positivity
   have ht0' : 0 < s * f.leadingCoeff / g.leadingCoeff := by grind
   obtain ⟨_, hsplit⟩ := hpc.isRealRooted_add_right ht0'
-  have hfeq : f = C lf * F := by
-    simpa [lf, F] using eq_C_leadingCoeff_mul_prod_three hfs a b c hfr
-  have hgeq : g = C lg * G := by
-    simpa [lg, G] using eq_C_leadingCoeff_mul_prod_three hgs p q r hgr
-  have hscalar : (s * lf / lg) * lg = lf * s := by
-    field_simp [hlg0.ne']
+  have hfeq : f = C lf * F := by simpa [lf, F] using eq_C_leadingCoeff_mul_prod_three hfs a b c hfr
+  have hgeq : g = C lg * G := by simpa [lg, G] using eq_C_leadingCoeff_mul_prod_three hgs p q r hgr
+  have hscalar : (s * lf / lg) * lg = lf * s := by field_simp [hlg0.ne']
   have hscaled : C (s * lf / lg) * (C lg * G) = C lf * (C s * G) := by
     calc
       C (s * lf / lg) * (C lg * G)
           = C ((s * lf / lg) * lg) * G := by rw [← mul_assoc, ← C_mul]
       _ = C (lf * s) * G := by simp_all
-      _ = C lf * (C s * G) := by
-        simp [G, C_mul, mul_assoc, mul_comm, mul_left_comm]
+      _ = C lf * (C s * G) := by simp [G, C_mul, mul_assoc, mul_comm, mul_left_comm]
   have hcombo :
       f + C (s * f.leadingCoeff / g.leadingCoeff) * g
         = C f.leadingCoeff *
@@ -217,8 +205,7 @@ theorem eval_monicCubicPencil_at_a_neg_twoBelow
   have hpa : 0 < a - p := by linarith
   have hqa' : 0 < a - q := by linarith
   have har' : a - r < 0 := by linarith
-  have hg : (a - p) * (a - q) * (a - r) < 0 := by
-    nlinarith [mul_pos hpa hqa']
+  have hg : (a - p) * (a - q) * (a - r) < 0 := by nlinarith [mul_pos hpa hqa']
   nlinarith [mul_neg_of_pos_of_neg hs hg]
 
 /-- In the two-above configuration, the monic pencil is positive at the middle
@@ -778,8 +765,7 @@ theorem cubicSecondRootBound_of_interior
     (habove : CubicInteriorTwoAboveStatement) :
     CubicSecondRootBoundStatement := by
   intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr
-  have hfmem : ∀ x ∈ f.roots, x = a ∨ x = b ∨ x = c := by
-    simp_all
+  have hfmem : ∀ x ∈ f.roots, x = a ∨ x = b ∨ x = c := by simp_all
   have hgmem : ∀ x ∈ g.roots, x = p ∨ x = q ∨ x = r := by simp_all
   refine ⟨?_, ?_⟩
   · by_contra hnot

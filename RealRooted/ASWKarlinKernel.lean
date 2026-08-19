@@ -29,10 +29,8 @@ lemma sum_fin_shifted_window {R : Type*} [Semiring R]
       ∑ k ∈ Finset.range (d + 1), u k * f (s + k) := by
   rw [Fin.sum_univ_eq_sum_range
     (fun j => if s ≤ j then u (j - s) * f j else 0) (N + 1)]
-  have hcut : s + (d + 1) ≤ N + 1 := by
-    lia
-  have hN : N + 1 = s + (d + 1) + (N + 1 - (s + (d + 1))) := by
-    lia
+  have hcut : s + (d + 1) ≤ N + 1 := by lia
+  have hN : N + 1 = s + (d + 1) + (N + 1 - (s + (d + 1))) := by lia
   conv_lhs => rw [hN, Finset.sum_range_add]
   have hbefore :
       (∑ x ∈ Finset.range s, if s ≤ x then u (x - s) * f x else 0) = 0 := by
@@ -52,8 +50,7 @@ lemma sum_fin_shifted_window {R : Type*} [Semiring R]
           u (s + (d + 1) + k - s) * f (s + (d + 1) + k) else 0) = 0 := by
     apply Finset.sum_eq_zero
     intro k hk
-    have hk' : d < s + (d + 1) + k - s := by
-      lia
+    have hk' : d < s + (d + 1) + k - s := by lia
     simp [hu _ hk']
   rw [hfirst, htail, add_zero]
 
@@ -112,8 +109,7 @@ lemma complex_root_ne_zero_of_coeff_zero_pos {p : ℝ[X]} {z : ℂ}
     isRoot_of_mem_roots hz
   rw [Polynomial.IsRoot.def] at hzroot
   rw [hz0, Polynomial.eval_map_algebraMap] at hzroot
-  have hroot_map : (Polynomial.aeval (algebraMap ℝ ℂ (0 : ℝ)) p) = 0 := by
-    simpa using hzroot
+  have hroot_map : (Polynomial.aeval (algebraMap ℝ ℂ (0 : ℝ)) p) = 0 := by simpa using hzroot
   rw [Polynomial.aeval_algebraMap_apply_eq_algebraMap_eval] at hroot_map
   have heval : p.eval 0 = 0 := Complex.ofReal_eq_zero.mp hroot_map
   have hcoeff : p.coeff 0 = 0 := by
@@ -300,8 +296,7 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
   have hnat : blocks * order ≤ ⌊x⌋₊ + 3 := by
     dsimp [x]
     lia
-  have hcast : ((blocks * order : ℕ) : ℝ) ≤ (⌊x⌋₊ : ℝ) + 3 := by
-    exact_mod_cast hnat
+  have hcast : ((blocks * order : ℕ) : ℝ) ≤ (⌊x⌋₊ : ℝ) + 3 := by exact_mod_cast hnat
   have hfloor : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le (by dsimp [x]; positivity)
   have hx_eq :
       x =
