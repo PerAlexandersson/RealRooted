@@ -20,6 +20,7 @@ import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
 import RealRooted.Apolarity
 import RealRooted.ArrayPolynomialSchur
+import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.BivariateOpenMapping
