@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Tactic.FieldSimp
@@ -155,6 +156,84 @@ theorem cWeight_recurrence (i j : ℕ) :
   have b1 : ((j : ℝ) + 1) ≠ 0 := by positivity
   have b2 : ((j : ℝ) + 2) ≠ 0 := by positivity
   field_simp
+  ring
+
+/-! ### Convolution against `1 / m ! ^ 3` -/
+
+/-- The sequence the weights are convolved against, `eCube m = 1 / m ! ^ 3`. -/
+def eCube (m : ℕ) : ℝ := 1 / (Nat.factorial m : ℝ) ^ 3
+
+/-- The normalized array coefficient, `dNorm n k = t (n, k) / (n)_k ^ 3`,
+written as the convolution of `cWeight n` against `eCube`. -/
+def dNorm (n k : ℕ) : ℝ := ∑ j ∈ Finset.range (k + 1), cWeight n j * eCube (k - j)
+
+theorem dNorm_eq (n l : ℕ) :
+    dNorm n l = ∑ j ∈ Finset.range (l + 1), cWeight n j * eCube (l - j) := rfl
+
+@[simp] theorem eCube_zero : eCube 0 = 1 := by simp [eCube]
+
+@[simp] theorem eCube_one : eCube 1 = 1 := by simp [eCube]
+
+@[simp] theorem dNorm_zero_index (n : ℕ) : dNorm n 0 = 1 := by
+  simp [dNorm]
+
+/-- At index one the convolution is a single correction term. -/
+theorem dNorm_one_index (n : ℕ) : dNorm n 1 = 1 + cWeight n 1 := by
+  simp [dNorm, Finset.sum_range_succ]
+
+/-- Peeling the two lowest terms of the convolution at index `l + 2`. -/
+theorem dNorm_split_two (n l : ℕ) :
+    dNorm n (l + 2)
+      = (∑ j ∈ Finset.range (l + 1), cWeight n (j + 2) * eCube (l - j))
+        + cWeight n 1 * eCube (l + 1) + cWeight n 0 * eCube (l + 2) := by
+  have h : l + 2 - 1 = l + 1 := by omega
+  rw [dNorm, Finset.sum_range_succ', Finset.sum_range_succ']
+  simp only [Nat.add_sub_add_right, Nat.sub_zero, h]
+
+/-- Peeling the lowest term of the convolution at index `l + 1`. -/
+theorem dNorm_split_one (n l : ℕ) :
+    dNorm n (l + 1)
+      = (∑ j ∈ Finset.range (l + 1), cWeight n (j + 1) * eCube (l - j))
+        + cWeight n 0 * eCube (l + 1) := by
+  rw [dNorm, Finset.sum_range_succ']
+  simp only [Nat.add_sub_add_right, Nat.sub_zero]
+
+/-- The coefficient recurrence at index zero. -/
+theorem dNorm_recurrence_zero (m : ℕ) : dNorm (m + 3) 0 = dNorm (m + 2) 0 := by simp
+
+/-- The coefficient recurrence at index one. -/
+theorem dNorm_recurrence_one (m : ℕ) :
+    dNorm (m + 3) 1 = dNorm (m + 2) 1 + alphaC (m + 3) * dNorm (m + 1) 0 := by
+  rw [dNorm_one_index, dNorm_one_index, dNorm_zero_index, cWeight_recurrence_one m,
+    cWeight_zero_index]
+  ring
+
+/-- **The coefficient recurrence.**  Convolving `cWeight_recurrence` against
+`eCube` gives the three-term recurrence for the normalized array coefficients.
+The hypothesis `l + 2 ≤ m` is what keeps every weight index strictly below its
+first argument, so that `cWeight_recurrence` applies throughout the sum. -/
+theorem dNorm_recurrence (m l : ℕ) (hl : l + 2 ≤ m) :
+    dNorm (m + 3) (l + 2)
+      = dNorm (m + 2) (l + 2)
+        + alphaC (m + 3) * dNorm (m + 1) (l + 1)
+        + betaC (m + 3) * dNorm m l := by
+  have key : ∀ j ∈ Finset.range (l + 1),
+      cWeight (m + 3) (j + 2) * eCube (l - j)
+        = cWeight (m + 2) (j + 2) * eCube (l - j)
+          + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
+          + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
+    intro j hj
+    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; omega
+    have e1 : j + (m - j) + 3 = m + 3 := by omega
+    have e2 : j + (m - j) + 2 = m + 2 := by omega
+    have e3 : j + (m - j) + 1 = m + 1 := by omega
+    have e4 : j + (m - j) = m := by omega
+    have hrec := cWeight_recurrence (m - j) j
+    rw [e1, e2, e3, e4] at hrec
+    rw [hrec]; ring
+  rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l, dNorm_split_one (m + 1) l,
+    dNorm_eq m l, Finset.sum_congr rfl key, Finset.sum_add_distrib, Finset.sum_add_distrib,
+    ← Finset.mul_sum, ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
   ring
 
 end RealRooted
