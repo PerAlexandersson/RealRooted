@@ -236,4 +236,62 @@ theorem dNorm_recurrence (m l : ℕ) (hl : l + 2 ≤ m) :
     ← Finset.mul_sum, ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
   ring
 
+/-! ### Identification with the inclusion-exclusion count -/
+
+/-- The array count, by inclusion-exclusion:
+`tArray n k = ∑ j, (-1) ^ j * n.choose j * ((n - j).choose (k - j)) ^ 3`. -/
+def tArray (n k : ℕ) : ℝ :=
+  ∑ j ∈ Finset.range (k + 1),
+    (-1) ^ j * (n.choose j : ℝ) * (((n - j).choose (k - j) : ℕ) : ℝ) ^ 3
+
+/-- The termwise form of the identification: each convolution term, scaled by
+`(n)_k ^ 3`, is the corresponding inclusion-exclusion term. -/
+private theorem cWeight_mul_eCube_mul_descFactorial_pow_three
+    (n k j : ℕ) (hjk : j ≤ k) (hk : k ≤ n) :
+    cWeight n j * eCube (k - j) * (Nat.descFactorial n k : ℝ) ^ 3
+      = (-1) ^ j * (n.choose j : ℝ) * (((n - j).choose (k - j) : ℕ) : ℝ) ^ 3 := by
+  have hjn : j ≤ n := le_trans hjk hk
+  have hkj : k - j ≤ n - j := by omega
+  have hsub : n - j - (k - j) = n - k := by omega
+  have nf : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 := fun m =>
+    Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero m)
+  have h1 : (n.choose j : ℝ) * (Nat.factorial j : ℝ) * (Nat.factorial (n - j) : ℝ)
+      = (Nat.factorial n : ℝ) := by
+    exact_mod_cast Nat.choose_mul_factorial_mul_factorial hjn
+  have h2 : (((n - j).choose (k - j) : ℕ) : ℝ) * (Nat.factorial (k - j) : ℝ)
+      * (Nat.factorial (n - k) : ℝ) = (Nat.factorial (n - j) : ℝ) := by
+    have hx := Nat.choose_mul_factorial_mul_factorial hkj
+    rw [hsub] at hx
+    exact_mod_cast hx
+  have h3 : (Nat.descFactorial n k : ℝ) * (Nat.factorial (n - k) : ℝ)
+      = (Nat.factorial n : ℝ) := by
+    have hx : Nat.descFactorial n k * Nat.factorial (n - k) = Nat.factorial n := by
+      rw [Nat.descFactorial_eq_factorial_mul_choose]
+      calc Nat.factorial k * n.choose k * Nat.factorial (n - k)
+          = n.choose k * Nat.factorial k * Nat.factorial (n - k) := by ring
+        _ = Nat.factorial n := Nat.choose_mul_factorial_mul_factorial hk
+    exact_mod_cast hx
+  have hD : (Nat.descFactorial n k : ℝ)
+      = (Nat.factorial n : ℝ) / (Nat.factorial (n - k) : ℝ) := by
+    rw [eq_div_iff (nf _)]; exact h3
+  unfold cWeight eCube
+  rw [hD, ← h1, ← h2]
+  field_simp
+
+/-- **The coefficient identity.**  The normalized coefficients scaled by
+`(n)_k ^ 3` recover the inclusion-exclusion array count.  This is exactly the
+hypothesis needed by
+`RealRooted.isPFPolynomial_of_coeff_eq_descFactorial_pow_three`. -/
+theorem dNorm_mul_descFactorial_pow_three (n k : ℕ) (hk : k ≤ n) :
+    dNorm n k * (Nat.descFactorial n k : ℝ) ^ 3 = tArray n k := by
+  rw [dNorm_eq, tArray, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  have hjk : j ≤ k := by simp only [Finset.mem_range] at hj; omega
+  exact cWeight_mul_eCube_mul_descFactorial_pow_three n k j hjk hk
+
+/-- The coefficient identity in the orientation used downstream. -/
+theorem tArray_eq_descFactorial_pow_three_mul (n k : ℕ) (hk : k ≤ n) :
+    tArray n k = (Nat.descFactorial n k : ℝ) ^ 3 * dNorm n k := by
+  rw [← dNorm_mul_descFactorial_pow_three n k hk]; ring
+
 end RealRooted
