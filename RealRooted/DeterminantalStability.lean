@@ -3,7 +3,7 @@ import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 import RealRooted.MultivariateStability
 
 open Matrix MvPolynomial
-open scoped ComplexOrder
+open scoped ComplexOrder MatrixOrder
 
 noncomputable section
 
@@ -143,5 +143,83 @@ theorem mvUpperHalfPlaneStableOrZero_detPencil
   refine Matrix.exists_mulVec_eq_zero_iff.mp ⟨v, hv0, ?_⟩
   rw [pencil_mulVec, hAv]
   simp [hBv]
+
+/-! ### The real symmetric case -/
+
+omit [DecidableEq m] in
+/-- A real positive semidefinite matrix factors as `S * S` with `S` Hermitian. -/
+theorem exists_isHermitian_mul_self_of_posSemidef {A : Matrix m m ℝ} (hA : A.PosSemidef) :
+    ∃ S : Matrix m m ℝ, S.IsHermitian ∧ S * S = A := by
+  classical
+  refine ⟨CFC.sqrt A, (CFC.sqrt_nonneg A).posSemidef.isHermitian, ?_⟩
+  rw [← sq]
+  exact CFC.sq_sqrt A
+
+-- `PosSemidef` needs only `Finite m` in its statement, but the real square root
+-- used in the proof needs the full `Fintype`/`DecidableEq` data, so the
+-- unused-in-type linter cannot be satisfied by weakening the binders here.
+set_option linter.unusedFintypeInType false in
+omit [DecidableEq m] in
+/-- **Real-to-complex transfer of positive semidefiniteness.**  Complexifying a
+real positive semidefinite matrix keeps it positive semidefinite.  Mathlib has
+no such transfer, so it is proved here through the real square root: `A = S * S`
+with `S` Hermitian gives `A_ℂ = S_ℂᴴ * S_ℂ`. -/
+theorem posSemidef_map_ofReal {A : Matrix m m ℝ} (hA : A.PosSemidef) :
+    (A.map (Complex.ofReal)).PosSemidef := by
+  classical
+  obtain ⟨S, hSherm, hSS⟩ := exists_isHermitian_mul_self_of_posSemidef hA
+  have hsemi : Function.Semiconj (Complex.ofReal) star star := fun r => by simp
+  have hHerm : (S.map (Complex.ofReal)).IsHermitian := hSherm.map _ hsemi
+  have hmul : (S * S).map (Complex.ofReal)
+      = S.map (Complex.ofReal) * S.map (Complex.ofReal) := by
+    ext i j
+    simp [Matrix.mul_apply, Complex.ofReal_sum]
+  have hmap : A.map (Complex.ofReal)
+      = (S.map (Complex.ofReal))ᴴ * (S.map (Complex.ofReal)) := by
+    rw [hHerm.eq, ← hSS, hmul]
+  rw [hmap]
+  exact posSemidef_conjTranspose_mul_self _
+
+omit [Fintype m] [DecidableEq m] in
+/-- A real symmetric matrix complexifies to a Hermitian matrix. -/
+theorem isHermitian_map_ofReal {A : Matrix m m ℝ} (hA : A.IsHermitian) :
+    (A.map (Complex.ofReal)).IsHermitian :=
+  hA.map _ fun r => by simp
+
+/-- The real affine pencil determinant. -/
+def realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) : MvPolynomial sigma ℝ :=
+  Matrix.det fun i j => C (A i j) + ∑ k : sigma, X k * C (B k i j)
+
+/-- Complexifying the real pencil determinant gives the complex pencil
+determinant of the complexified data. -/
+theorem complexifyMv_realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) :
+    complexifyMv (realDetPencil A B)
+      = detPencil (A.map (Complex.ofReal)) (fun k => (B k).map (Complex.ofReal)) := by
+  classical
+  rw [complexifyMv, realDetPencil, detPencil, RingHom.map_det]
+  congr 1
+  ext i j
+  simp [map_sum]
+
+/-- **Determinantal stability, real symmetric case.**  For a real symmetric `A`
+and real positive semidefinite `B k`, the real pencil determinant is real stable
+or identically zero.  Here the coefficients are real by construction, so this is
+literally the Borcea--Branden conclusion, with no separate coefficient
+descent. -/
+theorem mvUpperHalfPlaneStableOrZero_complexify_realDetPencil
+    (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ)
+    (hA : A.IsHermitian) (hB : ∀ k, (B k).PosSemidef) :
+    MvUpperHalfPlaneStableOrZero (complexifyMv (realDetPencil A B)) := by
+  rw [complexifyMv_realDetPencil]
+  exact mvUpperHalfPlaneStableOrZero_detPencil _ _ (isHermitian_map_ofReal hA)
+    fun k => posSemidef_map_ofReal (hB k)
+
+/-- The real pencil determinant is `MvRealStable` as soon as it is nonzero. -/
+theorem mvRealStable_realDetPencil
+    (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ)
+    (hA : A.IsHermitian) (hB : ∀ k, (B k).PosSemidef)
+    (hne : complexifyMv (realDetPencil A B) ≠ 0) :
+    MvRealStable (realDetPencil A B) :=
+  (mvUpperHalfPlaneStableOrZero_complexify_realDetPencil A B hA hB).resolve_left hne
 
 end RealRooted
