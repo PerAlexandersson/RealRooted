@@ -269,6 +269,7 @@ import RealRooted.RankTwoMatchingModel
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PartialSumStep
 import RealRooted.PosCombo
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.ProductFamily
