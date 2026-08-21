@@ -260,6 +260,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
