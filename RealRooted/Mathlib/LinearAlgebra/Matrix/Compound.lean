@@ -159,8 +159,8 @@ theorem powersetCode_injective {n q : ℕ} :
     Function.Injective (powersetCode (n := n) (q := q)) := by
   intro s t hst
   have hsum : ∀ u : Set.powersetCard (Fin n) q,
-      powersetCode u = ∑ a ∈ Finset.univ.image fun k => (powersetEnum u k : ℕ), 2 ^ a := fun u =>
-    (Finset.sum_image fun x _ y _ hxy =>
+      powersetCode u = ∑ a ∈ Finset.univ.image fun k => (powersetEnum u k : ℕ), 2 ^ a :=
+    fun u => (Finset.sum_image fun x _ y _ hxy =>
       (strictMono_powersetEnum u).injective (Fin.val_injective hxy)).symm
   rw [hsum s, hsum t] at hst
   have himg := Finset.geomSum_injective le_rfl hst
