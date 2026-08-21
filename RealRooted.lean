@@ -248,6 +248,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
@@ -270,6 +271,7 @@ import RealRooted.RankTwoMatchingModel
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PartialSumStep
 import RealRooted.PosCombo
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.ProductFamily
