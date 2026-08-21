@@ -162,7 +162,8 @@ private theorem exists_unitsConj_blockTriangular_aux [IsAlgClosed K] :
       simp
     have hexp : ((P₁ * E₁)⁻¹).val * A * (P₁ * E₁).val
         = (Et' * Nm * Et).submatrix e.symm e.symm := by
-      rw [show (P₁ * E₁)⁻¹ = E₁⁻¹ * P₁⁻¹ from _root_.mul_inv_rev _ _, Units.val_mul, Units.val_mul]
+      rw [show (P₁ * E₁)⁻¹ = E₁⁻¹ * P₁⁻¹ from _root_.mul_inv_rev _ _, Units.val_mul,
+        Units.val_mul]
       have hinv : (E₁⁻¹).val = Et'.submatrix e.symm e.symm := rfl
       have hval : E₁.val = Et.submatrix e.symm e.symm := rfl
       calc (E₁⁻¹).val * (P₁⁻¹).val * A * (P₁.val * E₁.val)
