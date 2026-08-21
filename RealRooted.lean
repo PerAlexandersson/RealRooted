@@ -106,6 +106,7 @@ import RealRooted.CubicNewton
 import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.DeterminantalStability
 import RealRooted.Derivative
 import RealRooted.DerivativeShiftRootMatching
 import RealRooted.DerivativeShiftSequence
