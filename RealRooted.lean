@@ -247,6 +247,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
