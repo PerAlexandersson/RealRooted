@@ -299,4 +299,60 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
   exact ⟨μr, hμr_pos,
     Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective hmapped⟩
 
+/-! ### The oscillatory bridge -/
+
+/-- Compounds commute with matrix powers. -/
+theorem compound_pow {m : ℕ} {R : Type*} [CommRing R] (q k : ℕ)
+    (A : Matrix (Fin m) (Fin m) R) :
+    compound q (A ^ k) = compound q A ^ k := by
+  induction k with
+  | zero => simpa using compound_one
+  | succ k ih => rw [pow_succ, compound_mul, ih, pow_succ]
+
+/-- If some positive power of a totally nonnegative matrix has strictly
+positive compound entries — the oscillatory situation — then every compound is
+primitive. -/
+theorem isPrimitive_compound_of_pow {A : Matrix (Fin n) (Fin n) ℝ}
+    (hTN : A.IsTotallyNonneg) {k : ℕ} (hk : 0 < k)
+    (hpos : ∀ q, 1 ≤ q → q ≤ n → ∀ s t, 0 < compound q (A ^ k) s t) :
+    ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive := by
+  intro q hq1 hqn
+  refine ⟨fun s t => compound_nonneg q hTN.toRect s t, ⟨k, hk, fun s t => ?_⟩⟩
+  have h := hpos q hq1 hqn s t
+  rwa [compound_pow] at h
+
+/-- **Oscillatory matrices have real positive spectrum.**  A totally
+nonnegative matrix, some power of which has strictly positive compound
+entries, has characteristic polynomial splitting over `ℝ` with strictly
+positive roots. -/
+theorem exists_charpoly_eq_prod_of_pow_compound_pos
+    {A : Matrix (Fin n) (Fin n) ℝ} (hTN : A.IsTotallyNonneg) {k : ℕ} (hk : 0 < k)
+    (hpos : ∀ q, 1 ≤ q → q ≤ n → ∀ s t, 0 < compound q (A ^ k) s t) :
+    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) :=
+  exists_charpoly_eq_prod_of_forall_compound_primitive
+    (isPrimitive_compound_of_pow hTN hk hpos)
+
+/-- The splitting form of the conclusion: the characteristic polynomial is
+real-rooted with strictly positive roots. -/
+theorem charpoly_splits_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
+    A.charpoly.Splits ∧ ∀ t ∈ A.charpoly.roots, 0 < t := by
+  obtain ⟨μ, hμ_pos, hfact⟩ := exists_charpoly_eq_prod_of_forall_compound_primitive hprim
+  have hmulti : A.charpoly
+      = ((Finset.univ.val.map μ).map fun a => (X : ℝ[X]) - C a).prod := by
+    rw [hfact, Finset.prod, Multiset.map_map]
+    rfl
+  have hroots : A.charpoly.roots = Finset.univ.val.map μ := by
+    rw [hmulti, Polynomial.roots_multiset_prod_X_sub_C]
+  constructor
+  · rw [Polynomial.splits_iff_card_roots, hroots]
+    have hdeg : A.charpoly.natDegree = n := by
+      simpa using A.charpoly_natDegree_eq_dim
+    simp [hdeg]
+  · intro t ht
+    rw [hroots] at ht
+    obtain ⟨i, -, rfl⟩ := Multiset.mem_map.mp ht
+    exact hμ_pos i
+
 end Matrix
