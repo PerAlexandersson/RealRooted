@@ -2,7 +2,9 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.PFPolynomial
 import RealRooted.PolyaFrequencyConvolution
 
 open Matrix
@@ -272,5 +274,68 @@ theorem arrayKernelShiftFin_complex_roots_nonneg (N : ℕ) :
       simp only [δ]
       positivity
     exact arrayPerturbedKernelFin_complex_roots_nonneg N (δ k) hδpos z hz
+
+private theorem charpoly_splits_of_complex_roots_real
+    {n : ℕ} {A : Matrix (Fin n) (Fin n) ℝ}
+    (hroots : ∀ z ∈ ((A.map (algebraMap ℝ ℂ)).charpoly.roots),
+      ∃ r : ℝ, (r : ℂ) = z) : A.charpoly.Splits := by
+  apply Polynomial.Splits.of_splits_map_of_injective
+    (algebraMap ℝ ℂ).injective (IsAlgClosed.splits _)
+  intro z hz
+  have hz' : z ∈ (A.map (algebraMap ℝ ℂ)).charpoly.roots := by
+    rwa [Matrix.charpoly_map]
+  obtain ⟨r, hrz⟩ := hroots z hz'
+  exact ⟨r, hrz⟩
+
+private theorem det_one_add_X_smul_eq_reverse_charpoly_comp_neg_X
+    {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ) :
+    Matrix.det (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C) =
+      A.charpoly.reverse.comp (-Polynomial.X) := by
+  open Polynomial in
+  rw [Matrix.reverse_charpoly]
+  apply Polynomial.funext
+  intro x
+  rw [Polynomial.eval_comp]
+  simp only [Polynomial.eval_neg, Polynomial.eval_X]
+  rw [Matrix.charpolyRev, ← Polynomial.coe_evalRingHom,
+    RingHom.map_det, ← Polynomial.coe_evalRingHom, RingHom.map_det]
+  congr 1
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp
+  · simp [hij]
+
+/-- The normalized determinant polynomial `det (I + X * B⁻¹ S)`. -/
+def arrayDetPolynomialFin (N : ℕ) : Polynomial ℝ :=
+  Matrix.det (1 + (Polynomial.X : Polynomial ℝ) •
+    (arrayKernelShiftFin N).map Polynomial.C)
+
+theorem arrayKernelShiftFin_isTotallyNonneg (N : ℕ) :
+    (arrayKernelShiftFin N).IsTotallyNonneg :=
+  arrayPerturbedKernelFin_isTotallyNonneg N 0 (by norm_num)
+
+theorem arrayDetPolynomialFin_hasNonnegCoeffs (N : ℕ) :
+    HasNonnegCoeffs (arrayDetPolynomialFin N) := by
+  intro k
+  rw [arrayDetPolynomialFin, Matrix.coeff_det_one_add_X_smul_eq_sum_minors]
+  exact Finset.sum_nonneg fun s _ =>
+    (arrayKernelShiftFin_isTotallyNonneg N).principalMinor_nonneg s
+
+theorem arrayDetPolynomialFin_splits (N : ℕ) :
+    (arrayDetPolynomialFin N).Splits := by
+  rw [arrayDetPolynomialFin,
+    det_one_add_X_smul_eq_reverse_charpoly_comp_neg_X]
+  apply (DegreeDropReversal.splits_reverse ?_).comp_of_natDegree_le_one
+  · simp
+  · exact charpoly_splits_of_complex_roots_real fun z hz => by
+      obtain ⟨r, hr, hrz⟩ := arrayKernelShiftFin_complex_roots_nonneg N z hz
+      exact ⟨r, hrz⟩
+
+/-- The normalized determinant polynomial is Pólya-frequency. -/
+theorem arrayDetPolynomialFin_isPFPolynomial (N : ℕ) :
+    IsPFPolynomial (arrayDetPolynomialFin N) :=
+  IsPFPolynomial.of_realRooted_nonneg
+    (arrayDetPolynomialFin_hasNonnegCoeffs N) (arrayDetPolynomialFin_splits N)
 
 end RealRooted
