@@ -1,8 +1,12 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.PolyaFrequencyConvolution
 
 open Matrix
+open Filter Topology
 
 noncomputable section
 
@@ -119,5 +123,154 @@ lemma upperBidiagonalFin_blockTriangular (N : ℕ) (a : ℝ) :
     (upperBidiagonalFin N a).det = a ^ (N + 1) := by
   rw [Matrix.det_of_upperTriangular (upperBidiagonalFin_blockTriangular N a)]
   simp [upperBidiagonalFin_apply]
+
+/-- The invertible perturbation of `B⁻¹ S` used before Gaussian
+strictification. -/
+def arrayPerturbedKernelFin (N : ℕ) (a : ℝ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+  arrayKernelFin N * upperBidiagonalFin N a
+
+theorem arrayPerturbedKernelFin_isTotallyNonneg (N : ℕ) (a : ℝ) (ha : 0 ≤ a) :
+    (arrayPerturbedKernelFin N a).IsTotallyNonneg :=
+  (arrayKernelFin_isTotallyNonneg N).mul (upperBidiagonalFin_isTotallyNonneg N a ha)
+
+@[simp] theorem arrayPerturbedKernelFin_det (N : ℕ) (a : ℝ) :
+    (arrayPerturbedKernelFin N a).det = a ^ (N + 1) := by
+  rw [arrayPerturbedKernelFin, Matrix.det_mul, arrayKernelFin_det,
+    upperBidiagonalFin_det, one_mul]
+
+theorem arrayPerturbedKernelFin_mulVec_injective (N : ℕ) (a : ℝ) (ha : a ≠ 0) :
+    Function.Injective (arrayPerturbedKernelFin N a).mulVec := by
+  rw [Matrix.mulVec_injective_iff_isUnit, isUnit_iff_isUnit_det, isUnit_iff_ne_zero,
+    arrayPerturbedKernelFin_det]
+  exact pow_ne_zero _ ha
+
+/-- Gaussian strictification of the invertible perturbed kernel. -/
+def gaussianArrayKernelFin (N : ℕ) (a δ : ℝ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+  gaussianMatrix (N + 1) a * arrayPerturbedKernelFin N δ
+
+theorem gaussianArrayKernelFin_isTotallyNonneg (N : ℕ) (a δ : ℝ)
+    (ha : 0 < a) (hδ : 0 < δ) : (gaussianArrayKernelFin N a δ).IsTotallyNonneg := by
+  intro q rows cols hrows hcols
+  exact (Matrix.IsTotallyNonnegRect.det_gaussianMatrix_mul_pos_of_injective
+    (arrayPerturbedKernelFin_isTotallyNonneg N δ hδ.le).toRect
+    (arrayPerturbedKernelFin_mulVec_injective N δ hδ.ne') ha hrows hcols).le
+
+theorem gaussianArrayKernelFin_minors_pos (N : ℕ) (a δ : ℝ)
+    (ha : 0 < a) (hδ : 0 < δ) {q : ℕ}
+    {rows cols : Fin q → Fin (N + 1)}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 < ((gaussianArrayKernelFin N a δ).submatrix rows cols).det := by
+  exact Matrix.IsTotallyNonnegRect.det_gaussianMatrix_mul_pos_of_injective
+    (arrayPerturbedKernelFin_isTotallyNonneg N δ hδ.le).toRect
+    (arrayPerturbedKernelFin_mulVec_injective N δ hδ.ne') ha hrows hcols
+
+theorem gaussianArrayKernelFin_charpoly_factorization (N : ℕ) (a δ : ℝ)
+    (ha : 0 < a) (hδ : 0 < δ) :
+    ∃ μ : Fin (N + 1) → ℝ, (∀ i, 0 < μ i) ∧
+      (gaussianArrayKernelFin N a δ).charpoly =
+        ∏ i, (Polynomial.X - Polynomial.C (μ i)) := by
+  apply exists_charpoly_eq_prod_of_pow_compound_pos
+    (gaussianArrayKernelFin_isTotallyNonneg N a δ ha hδ) (k := 1) one_pos
+  intro q hq hqN s t
+  rw [pow_one, compound_apply]
+  exact gaussianArrayKernelFin_minors_pos N a δ ha hδ
+    (strictMono_powersetEnum s) (strictMono_powersetEnum t)
+
+private theorem complex_charpoly_roots_pos_of_factorization
+    {n : ℕ} {A : Matrix (Fin n) (Fin n) ℝ} {μ : Fin n → ℝ}
+    (hμ : ∀ i, 0 < μ i)
+    (hfact : A.charpoly = ∏ i, (Polynomial.X - Polynomial.C (μ i))) :
+    ∀ z ∈ ((A.map (algebraMap ℝ ℂ)).charpoly.roots),
+      ∃ r : ℝ, 0 < r ∧ (r : ℂ) = z := by
+  open Polynomial in
+  have hfactC : (A.map (algebraMap ℝ ℂ)).charpoly =
+      ∏ i, ((X : ℂ[X]) - C (μ i : ℂ)) := by
+    rw [Matrix.charpoly_map, hfact, Polynomial.map_prod]
+    apply Finset.prod_congr rfl
+    intro i hi
+    simp
+  intro z hz
+  rw [hfactC] at hz
+  open Polynomial in
+  have hmulti :
+      (∏ i, ((X : ℂ[X]) - C (μ i : ℂ))) =
+        ((Finset.univ.val.map fun i => (μ i : ℂ)).map
+          fun x => (X : ℂ[X]) - C x).prod := by
+    rw [Finset.prod, Multiset.map_map]
+    rfl
+  rw [hmulti, Polynomial.roots_multiset_prod_X_sub_C] at hz
+  obtain ⟨i, -, rfl⟩ := Multiset.mem_map.mp hz
+  exact ⟨μ i, hμ i, rfl⟩
+
+theorem gaussianArrayKernelFin_complex_roots_pos (N : ℕ) (a δ : ℝ)
+    (ha : 0 < a) (hδ : 0 < δ) :
+    ∀ z ∈ (((gaussianArrayKernelFin N a δ).map
+      (algebraMap ℝ ℂ)).charpoly.roots),
+      ∃ r : ℝ, 0 < r ∧ (r : ℂ) = z := by
+  obtain ⟨μ, hμ, hfact⟩ := gaussianArrayKernelFin_charpoly_factorization N a δ ha hδ
+  exact complex_charpoly_roots_pos_of_factorization hμ hfact
+
+/-- Removing the Gaussian strictifier preserves real nonnegative spectrum. -/
+theorem arrayPerturbedKernelFin_complex_roots_nonneg (N : ℕ) (δ : ℝ)
+    (hδ : 0 < δ) :
+    ∀ z ∈ (((arrayPerturbedKernelFin N δ).map
+      (algebraMap ℝ ℂ)).charpoly.roots),
+      ∃ r : ℝ, 0 ≤ r ∧ (r : ℂ) = z := by
+  apply charpoly_roots_nonneg_real_of_tendsto
+    (A := fun k => gaussianArrayKernelFin N ((k : ℝ) + 1) δ)
+    (A₀ := arrayPerturbedKernelFin N δ)
+  · have hparam : Tendsto (fun k : ℕ => (k : ℝ) + 1) atTop atTop :=
+      tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+    have hmat := (tendsto_gaussianMatrix_mul_atTop
+      (arrayPerturbedKernelFin N δ)).comp hparam
+    intro i j
+    exact tendsto_pi_nhds.mp (tendsto_pi_nhds.mp
+      (show Tendsto
+        (fun k : ℕ => gaussianArrayKernelFin N ((k : ℝ) + 1) δ) atTop
+          (nhds (arrayPerturbedKernelFin N δ)) by
+        change Tendsto
+          ((fun a => gaussianMatrix (N + 1) a * arrayPerturbedKernelFin N δ) ∘
+            fun k : ℕ => (k : ℝ) + 1) atTop
+              (nhds (arrayPerturbedKernelFin N δ))
+        exact hmat) i) j
+  · intro k z hz
+    obtain ⟨r, hr, hrz⟩ := gaussianArrayKernelFin_complex_roots_pos
+      N ((k : ℝ) + 1) δ (by positivity) hδ z hz
+    exact ⟨r, hr.le, hrz⟩
+
+/-- The unperturbed totally nonnegative matrix `B⁻¹ S`. -/
+def arrayKernelShiftFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+  arrayPerturbedKernelFin N 0
+
+/-- The actual determinant kernel has real nonnegative spectrum. This is the
+specialized Gantmacher--Krein conclusion needed for `A262704`; it avoids any
+general density theorem for totally nonnegative matrices. -/
+theorem arrayKernelShiftFin_complex_roots_nonneg (N : ℕ) :
+    ∀ z ∈ (((arrayKernelShiftFin N).map
+      (algebraMap ℝ ℂ)).charpoly.roots),
+      ∃ r : ℝ, 0 ≤ r ∧ (r : ℂ) = z := by
+  let δ : ℕ → ℝ := fun k => ((k : ℝ) + 1)⁻¹
+  have hδ : Tendsto δ atTop (nhds 0) := by
+    simpa [δ, one_div] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  apply charpoly_roots_nonneg_real_of_tendsto
+    (A := fun k => arrayPerturbedKernelFin N (δ k))
+    (A₀ := arrayKernelShiftFin N)
+  · intro i j
+    simp only [arrayPerturbedKernelFin, Matrix.mul_apply, arrayKernelShiftFin]
+    apply tendsto_finsetSum
+    intro x hx
+    apply tendsto_const_nhds.mul
+    simp only [upperBidiagonalFin_apply]
+    by_cases hjx : j = x
+    · simpa [hjx] using hδ
+    · simp [hjx]
+  · intro k z hz
+    have hδpos : 0 < δ k := by
+      simp only [δ]
+      positivity
+    exact arrayPerturbedKernelFin_complex_roots_nonneg N (δ k) hδpos z hz
 
 end RealRooted
