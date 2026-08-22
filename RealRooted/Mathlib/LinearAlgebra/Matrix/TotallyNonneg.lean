@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 public section
@@ -99,6 +100,26 @@ lemma IsTotallyNonneg.smul {M : Matrix ι ι R}
   change 0 ≤ (c • M.submatrix rows cols).det
   rw [Matrix.det_smul]
   exact mul_nonneg (by positivity) (hM hrows hcols)
+
+/-- Multiplying rows and columns by nonnegative scalars preserves total
+nonnegativity. -/
+protected lemma IsTotallyNonneg.scaleRowsCols {M : Matrix ι ι R}
+    (hM : M.IsTotallyNonneg) (r c : ι → R)
+    (hr : ∀ i, 0 ≤ r i) (hc : ∀ i, 0 ≤ c i) :
+    (Matrix.of fun i j => r i * (c j * M i j)).IsTotallyNonneg := by
+  intro n rows cols hrows hcols
+  have hmatrix :
+      (Matrix.of fun i j => r i * (c j * M i j)).submatrix rows cols =
+        Matrix.of fun i j =>
+          r (rows i) * (c (cols j) * (M.submatrix rows cols) i j) := by
+    rfl
+  rw [hmatrix, Matrix.det_mul_column]
+  change 0 ≤ (∏ i, r (rows i)) *
+    (Matrix.of fun i j => c (cols j) * (M.submatrix rows cols) i j).det
+  rw [Matrix.det_mul_row]
+  exact mul_nonneg (Finset.prod_nonneg fun i _ => hr (rows i))
+    (mul_nonneg (Finset.prod_nonneg fun j _ => hc (cols j))
+      (hM hrows hcols))
 
 /-- Every `2 × 2` minor of the entrywise product of two totally nonnegative
 matrices is nonnegative.  The analogous statement is false for larger minors
