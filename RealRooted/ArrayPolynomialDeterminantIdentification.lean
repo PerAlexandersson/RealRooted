@@ -355,4 +355,148 @@ theorem arrayNormalizedDeterminant_recurrence (n : ℕ) :
     (fun m => Polynomial.C (alphaC m))
     (fun m => Polynomial.C (betaC m)) Polynomial.X n
 
+@[simp] theorem arrayNormalizedDeterminant_zero :
+    arrayNormalizedDeterminant 0 = 1 := by
+  simp [arrayNormalizedDeterminant]
+
+@[simp] theorem arrayNormalizedDeterminant_one :
+    arrayNormalizedDeterminant 1 = 1 := by
+  simp [arrayNormalizedDeterminant, lowerHessenbergTwo]
+
+@[simp] theorem arrayNormalizedDeterminant_two :
+    arrayNormalizedDeterminant 2 = 1 + Polynomial.C (3 / 4) * Polynomial.X := by
+  rw [arrayNormalizedDeterminant, Matrix.det_fin_two]
+  norm_num [lowerHessenbergTwo, alphaC]
+
+/-! ### Coefficient identification -/
+
+/-- The factorial-normalized array polynomial, truncated at its natural
+degree bound. -/
+def arrayNormalizedCoefficientPolynomial (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1), Polynomial.monomial k (dNorm n k)
+
+@[simp] theorem coeff_arrayNormalizedCoefficientPolynomial (n k : ℕ) :
+    (arrayNormalizedCoefficientPolynomial n).coeff k =
+      if k ≤ n then dNorm n k else 0 := by
+  simp only [arrayNormalizedCoefficientPolynomial, Polynomial.finsetSum_coeff,
+    Polynomial.coeff_monomial]
+  rw [Finset.sum_ite_eq' (Finset.range (n + 1)) k]
+  simp
+
+lemma coeff_C_mul_X_pow_mul (a : ℝ) (r k : ℕ) (p : ℝ[X]) :
+    (Polynomial.C a * Polynomial.X ^ r * p).coeff k =
+      if r ≤ k then a * p.coeff (k - r) else 0 := by
+  rw [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow_mul']
+  split_ifs <;> ring
+
+lemma coeff_C_mul_X_mul (a : ℝ) (k : ℕ) (p : ℝ[X]) :
+    (Polynomial.C a * Polynomial.X * p).coeff k =
+      if 1 ≤ k then a * p.coeff (k - 1) else 0 := by
+  simpa using coeff_C_mul_X_pow_mul a 1 k p
+
+theorem arrayNormalizedCoefficientPolynomial_recurrence (m : ℕ) :
+    arrayNormalizedCoefficientPolynomial (m + 3) =
+      arrayNormalizedCoefficientPolynomial (m + 2) +
+        Polynomial.C (alphaC (m + 3)) * Polynomial.X *
+          arrayNormalizedCoefficientPolynomial (m + 1) +
+        Polynomial.C (betaC (m + 3)) * Polynomial.X ^ 2 *
+          arrayNormalizedCoefficientPolynomial m := by
+  rw [show (Polynomial.X : ℝ[X]) = Polynomial.X ^ 1 by simp]
+  ext k
+  rcases k with _ | _ | l
+  · have h3 : 0 ≤ m + 3 := by lia
+    have h2 : 0 ≤ m + 2 := by lia
+    simp [h3, h2]
+  · have h3 : 1 ≤ m + 3 := by lia
+    have h2 : 1 ≤ m + 2 := by lia
+    have h1 : 0 ≤ m + 1 := by lia
+    simp [h3, h2, h1, coeff_C_mul_X_mul, coeff_C_mul_X_pow_mul,
+      dNorm_recurrence_one]
+  · by_cases htop : l + 2 = m + 3
+    · have hm3 : m + 3 ≠ 0 := by lia
+      have hnot1 : ¬m + 2 ≤ m + 1 := by lia
+      have hnot2 : ¬m + 1 ≤ m := by lia
+      simp [coeff_C_mul_X_mul, coeff_C_mul_X_pow_mul, htop, hnot1, hnot2,
+        dNorm_self_eq_zero (m + 3) hm3]
+    · by_cases hle : l + 2 ≤ m + 2
+      · have hlm : l ≤ m := by lia
+        have hl1 : l + 1 ≤ m + 1 := by lia
+        have hl3 : l + 2 ≤ m + 3 := by lia
+        simp [coeff_C_mul_X_mul, coeff_C_mul_X_pow_mul, hle, hlm, hl1, hl3,
+          dNorm_recurrence_of_le m l hlm]
+      · have hlarge : m + 3 < l + 2 := by lia
+        have hnot3 : ¬l + 2 ≤ m + 3 := by lia
+        have hnot2 : ¬l + 2 ≤ m + 2 := by lia
+        have hnot1 : ¬l + 1 ≤ m + 1 := by lia
+        have hnot0 : ¬l ≤ m := by lia
+        simp [coeff_C_mul_X_mul, coeff_C_mul_X_pow_mul, hnot3, hnot2, hnot1,
+          hnot0]
+
+@[simp] theorem arrayNormalizedCoefficientPolynomial_zero :
+    arrayNormalizedCoefficientPolynomial 0 = 1 := by
+  norm_num [arrayNormalizedCoefficientPolynomial, dNorm, cWeight, eCube]
+
+@[simp] theorem arrayNormalizedCoefficientPolynomial_one :
+    arrayNormalizedCoefficientPolynomial 1 = 1 := by
+  ext k
+  rcases k with _ | _ | k
+  · simp
+  · simp [dNorm_self_eq_zero, Polynomial.coeff_one]
+  · simp [show ¬k + 2 ≤ 1 by lia, Polynomial.coeff_one]
+
+@[simp] theorem arrayNormalizedCoefficientPolynomial_two :
+    arrayNormalizedCoefficientPolynomial 2 = 1 + Polynomial.C (3 / 4) * Polynomial.X := by
+  have hone : dNorm 2 1 = 3 / 4 := by
+    rw [dNorm_one_index, cWeight_one_index 2 (by lia)]
+    norm_num
+  ext k
+  rcases k with _ | _ | _ | k
+  · norm_num
+  · norm_num [hone, Polynomial.coeff_one]
+  · norm_num [dNorm_self_eq_zero, Polynomial.coeff_one]
+  · simp [show ¬k + 3 ≤ 2 by lia, Polynomial.coeff_one]
+
+theorem arrayNormalizedDeterminant_eq_coefficientPolynomial (n : ℕ) :
+    arrayNormalizedDeterminant n = arrayNormalizedCoefficientPolynomial n := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      rcases n with _ | _ | _ | m
+      · simp
+      · simp
+      · simp
+      · rw [arrayNormalizedDeterminant_recurrence,
+          arrayNormalizedCoefficientPolynomial_recurrence,
+          ih (m + 2) (by lia), ih (m + 1) (by lia), ih m (by lia)]
+
+@[simp] theorem coeff_arrayNormalizedDeterminant (n k : ℕ) :
+    (arrayNormalizedDeterminant n).coeff k =
+      if k ≤ n then dNorm n k else 0 := by
+  rw [arrayNormalizedDeterminant_eq_coefficientPolynomial]
+  exact coeff_arrayNormalizedCoefficientPolynomial n k
+
+theorem coeff_arrayWeightedDeterminant (n k : ℕ) (hk : k ≤ n) :
+    ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).coeff k = tArray n k := by
+  rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant, if_pos hk]
+  exact (tArray_eq_descFactorial_pow_three_mul n k hk).symm
+
+theorem arrayWeightedDeterminant_natDegree_le (n : ℕ) :
+    ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant,
+    if_neg (Nat.not_le.mpr hk)]
+  ring
+
+@[simp] theorem coeff_zero_arrayWeightedDeterminant (n : ℕ) :
+    ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).coeff 0 = 1 := by
+  rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant,
+    if_pos (Nat.zero_le n)]
+  simp
+
+theorem arrayWeightedDeterminant_ne_zero (n : ℕ) :
+    (fallingSchur n)^[3] (arrayNormalizedDeterminant n) ≠ 0 := by
+  intro h
+  have := congrArg (fun p : ℝ[X] => p.coeff 0) h
+  simp at this
+
 end RealRooted

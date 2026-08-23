@@ -1,6 +1,7 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Nat.Factorial.Basic
+import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
@@ -223,17 +224,44 @@ theorem dNorm_recurrence (m l : ℕ) (hl : l + 2 ≤ m) :
           + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
           + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
     intro j hj
-    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; omega
-    have e1 : j + (m - j) + 3 = m + 3 := by omega
-    have e2 : j + (m - j) + 2 = m + 2 := by omega
-    have e3 : j + (m - j) + 1 = m + 1 := by omega
-    have e4 : j + (m - j) = m := by omega
+    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; lia
+    have e1 : j + (m - j) + 3 = m + 3 := by lia
+    have e2 : j + (m - j) + 2 = m + 2 := by lia
+    have e3 : j + (m - j) + 1 = m + 1 := by lia
+    have e4 : j + (m - j) = m := by lia
     have hrec := cWeight_recurrence (m - j) j
     rw [e1, e2, e3, e4] at hrec
     rw [hrec]; ring
   rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l, dNorm_split_one (m + 1) l,
     dNorm_eq m l, Finset.sum_congr rfl key, Finset.sum_add_distrib, Finset.sum_add_distrib,
     ← Finset.mul_sum, ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
+  ring
+
+/-- The coefficient recurrence under its sharp index hypothesis. -/
+theorem dNorm_recurrence_of_le (m l : ℕ) (hl : l ≤ m) :
+    dNorm (m + 3) (l + 2)
+      = dNorm (m + 2) (l + 2)
+        + alphaC (m + 3) * dNorm (m + 1) (l + 1)
+        + betaC (m + 3) * dNorm m l := by
+  have key : ∀ j ∈ Finset.range (l + 1),
+      cWeight (m + 3) (j + 2) * eCube (l - j)
+        = cWeight (m + 2) (j + 2) * eCube (l - j)
+          + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
+          + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
+    intro j hj
+    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; lia
+    have e1 : j + (m - j) + 3 = m + 3 := by lia
+    have e2 : j + (m - j) + 2 = m + 2 := by lia
+    have e3 : j + (m - j) + 1 = m + 1 := by lia
+    have e4 : j + (m - j) = m := by lia
+    have hrec := cWeight_recurrence (m - j) j
+    rw [e1, e2, e3, e4] at hrec
+    rw [hrec]
+    ring
+  rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l,
+    dNorm_split_one (m + 1) l, dNorm_eq m l, Finset.sum_congr rfl key,
+    Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum,
+    ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
   ring
 
 /-! ### Identification with the inclusion-exclusion count -/
@@ -293,5 +321,26 @@ theorem dNorm_mul_descFactorial_pow_three (n k : ℕ) (hk : k ≤ n) :
 theorem tArray_eq_descFactorial_pow_three_mul (n k : ℕ) (hk : k ≤ n) :
     tArray n k = (Nat.descFactorial n k : ℝ) ^ 3 * dNorm n k := by
   rw [← dNorm_mul_descFactorial_pow_three n k hk]; ring
+
+theorem tArray_self_eq_zero (n : ℕ) (hn : n ≠ 0) : tArray n n = 0 := by
+  rw [tArray]
+  calc
+    (∑ j ∈ Finset.range (n + 1),
+        (-1 : ℝ) ^ j * (n.choose j : ℝ) *
+          (((n - j).choose (n - j) : ℕ) : ℝ) ^ 3) =
+        ∑ j ∈ Finset.range (n + 1), (-1 : ℝ) ^ j * (n.choose j : ℝ) := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      simp
+    _ = 0 := by
+      exact_mod_cast Int.alternating_sum_range_choose_of_ne hn
+
+theorem dNorm_self_eq_zero (n : ℕ) (hn : n ≠ 0) : dNorm n n = 0 := by
+  have h := dNorm_mul_descFactorial_pow_three n n le_rfl
+  rw [tArray_self_eq_zero n hn] at h
+  have hfactorial : (Nat.descFactorial n n : ℝ) ^ 3 ≠ 0 := by
+    rw [Nat.descFactorial_self]
+    exact pow_ne_zero 3 (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n))
+  exact (mul_eq_zero.mp h).resolve_right hfactorial
 
 end RealRooted
