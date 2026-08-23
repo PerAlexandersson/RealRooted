@@ -87,6 +87,33 @@ theorem IsSignConsistentOrder.isStrictlySignConsistentOrder_gaussianMatrix_mul
   intro rows cols hrows hcols
   exact det_gaussianMatrix_submatrix_pos a rows cols ha hrows hcols
 
+/-- A Gaussian left factor makes every ordered minor of a full-column-rank
+totally nonnegative matrix strictly positive. -/
+theorem IsTotallyNonnegRect.det_gaussianMatrix_mul_pos_of_injective
+    {n m q : ℕ} {A : Matrix (Fin n) (Fin m) ℝ}
+    (hA : A.IsTotallyNonnegRect) (hAinj : Function.Injective A.mulVec)
+    {a : ℝ} (ha : 0 < a) {rows : Fin q → Fin n} {cols : Fin q → Fin m}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 < ((gaussianMatrix n a * A).submatrix rows cols).det := by
+  classical
+  rw [det_submatrix_mul_eq_sum_powersetCard]
+  apply Finset.sum_pos'
+  · intro s _
+    exact mul_nonneg
+      (det_gaussianMatrix_submatrix_pos a rows
+        (Set.powersetCard.ofFinEmbEquiv.symm s) ha hrows
+        (Set.powersetCard.ofFinEmbEquiv.symm s).strictMono).le
+      (hA (Set.powersetCard.ofFinEmbEquiv.symm s).strictMono hcols)
+  · obtain ⟨rows₀, hrows₀, href_ne⟩ :=
+      exists_ordered_minor_ne_zero_of_mulVec_injective A hAinj cols hcols
+    have href_pos : 0 < (A.submatrix rows₀ cols).det :=
+      lt_of_le_of_ne (hA hrows₀ hcols) href_ne.symm
+    let e := OrderEmbedding.ofStrictMono rows₀ hrows₀
+    refine ⟨Set.powersetCard.ofFinEmbEquiv e, Finset.mem_univ _, ?_⟩
+    simpa [e] using mul_pos
+      (det_gaussianMatrix_submatrix_pos a rows rows₀ ha hrows hrows₀)
+      href_pos
+
 /-- Gaussian left multiplication converges entrywise to the original matrix. -/
 theorem tendsto_gaussianMatrix_mul_atTop {n m : ℕ}
     (A : Matrix (Fin n) (Fin m) ℝ) :
