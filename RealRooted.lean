@@ -273,6 +273,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.MatrixInterlacing
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
