@@ -571,13 +571,13 @@ essential; real-rootedness and disjoint spectra alone do not imply it. -/
 theorem strictInterlace_charpoly_of_interlace_of_noCommonRoot
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     {B : Matrix (Fin n) (Fin n) ℝ}
-    {λ : Fin (n + 1) → ℝ} {μ : Fin n → ℝ}
-    (hA : A.charpoly = ∏ i, (X - C (λ i)))
+    {lam : Fin (n + 1) → ℝ} {μ : Fin n → ℝ}
+    (hA : A.charpoly = ∏ i, (X - C (lam i)))
     (hB : B.charpoly = ∏ i, (X - C (μ i)))
-    (hinter : ∀ k : Fin n, λ k.succ ≤ μ k ∧ μ k ≤ λ k.castSucc)
+    (hinter : ∀ k : Fin n, lam k.succ ≤ μ k ∧ μ k ≤ lam k.castSucc)
     (hno : ∀ r : ℝ, A.charpoly.IsRoot r → ¬ B.charpoly.IsRoot r) :
-    ∀ k : Fin n, λ k.succ < μ k ∧ μ k < λ k.castSucc := by
-  have hrootA : ∀ i, A.charpoly.IsRoot (λ i) := by
+    ∀ k : Fin n, lam k.succ < μ k ∧ μ k < lam k.castSucc := by
+  have hrootA : ∀ i, A.charpoly.IsRoot (lam i) := by
     intro i
     rw [hA, Polynomial.IsRoot.def, Polynomial.eval_prod]
     exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
@@ -585,9 +585,9 @@ theorem strictInterlace_charpoly_of_interlace_of_noCommonRoot
     intro j
     rw [hB, Polynomial.IsRoot.def, Polynomial.eval_prod]
     exact Finset.prod_eq_zero (Finset.mem_univ j) (by simp)
-  have hne : ∀ i j, λ i ≠ μ j := by
+  have hne : ∀ i j, lam i ≠ μ j := by
     intro i j hij
-    exact hno (λ i) (hrootA i) (by simpa [hij] using hrootB j)
+    exact hno (lam i) (hrootA i) (by simpa [hij] using hrootB j)
   intro k
   exact ⟨lt_of_le_of_ne (hinter k).1 (hne k.succ k),
     lt_of_le_of_ne (hinter k).2 (hne k.castSucc k).symm⟩
