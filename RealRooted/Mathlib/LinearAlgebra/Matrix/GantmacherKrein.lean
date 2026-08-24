@@ -563,6 +563,35 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
     exists_charpoly_eq_prod_antitone_of_forall_compound_primitive hprim
   exact ⟨μ, hμ_pos, hchar⟩
 
+/-! ### Strict interlacing closure -/
+
+/-- Weak interlacing of two factored characteristic polynomials is strict when
+the polynomials have no common root.  The weak interlacing hypothesis remains
+essential; real-rootedness and disjoint spectra alone do not imply it. -/
+theorem strictInterlace_charpoly_of_interlace_of_noCommonRoot
+    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    {B : Matrix (Fin n) (Fin n) ℝ}
+    {λ : Fin (n + 1) → ℝ} {μ : Fin n → ℝ}
+    (hA : A.charpoly = ∏ i, (X - C (λ i)))
+    (hB : B.charpoly = ∏ i, (X - C (μ i)))
+    (hinter : ∀ k : Fin n, λ k.succ ≤ μ k ∧ μ k ≤ λ k.castSucc)
+    (hno : ∀ r : ℝ, A.charpoly.IsRoot r → ¬ B.charpoly.IsRoot r) :
+    ∀ k : Fin n, λ k.succ < μ k ∧ μ k < λ k.castSucc := by
+  have hrootA : ∀ i, A.charpoly.IsRoot (λ i) := by
+    intro i
+    rw [hA, Polynomial.IsRoot.def, Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+  have hrootB : ∀ j, B.charpoly.IsRoot (μ j) := by
+    intro j
+    rw [hB, Polynomial.IsRoot.def, Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ j) (by simp)
+  have hne : ∀ i j, λ i ≠ μ j := by
+    intro i j hij
+    exact hno (λ i) (hrootA i) (by simpa [hij] using hrootB j)
+  intro k
+  exact ⟨lt_of_le_of_ne (hinter k).1 (hne k.succ k),
+    lt_of_le_of_ne (hinter k).2 (hne k.castSucc k).symm⟩
+
 /-! ### The oscillatory bridge -/
 
 /-- Compounds commute with matrix powers. -/
