@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 public import Mathlib.Tactic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
@@ -35,6 +36,9 @@ here.
 
 * `Matrix.isIrreducible_of_nonneg_of_adjacent_pos`
 * `Matrix.IsTotallyNonneg.isIrreducible_of_det_ne_zero_of_adjacent_pos`
+* `Matrix.charpoly_fromBlocks_diagonal_conj`
+* `Matrix.charpoly_toBlocks₁₁_fromBlocks_diagonal_conj`
+* `Matrix.charpoly_toBlocks₂₂_fromBlocks_diagonal_conj`
 -/
 
 open Quiver
@@ -85,6 +89,50 @@ private theorem isSStronglyConnected_fin_of_adjacent {n : ℕ}
 end Quiver
 
 namespace Matrix
+
+section BlockDiagonalConjugation
+
+variable {R m n : Type*} [CommRing R]
+  [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+
+/-- Conjugation by two invertible diagonal blocks preserves the characteristic
+polynomial of the ambient block matrix. -/
+theorem charpoly_fromBlocks_diagonal_conj
+    (A : Matrix (m ⊕ n) (m ⊕ n) R)
+    (P : (Matrix m m R)ˣ) (Q : (Matrix n n R)ˣ) :
+    (fromBlocks (P : Matrix m m R) 0 0 (Q : Matrix n n R) * A *
+      fromBlocks (P⁻¹ : Matrix m m R) 0 0 (Q⁻¹ : Matrix n n R)).charpoly =
+        A.charpoly := by
+  rw [Matrix.charpoly_mul_comm, ← Matrix.mul_assoc]
+  simp [Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
+
+/-- Block-diagonal conjugation preserves the characteristic polynomial of the
+upper-left principal block. -/
+theorem charpoly_toBlocks₁₁_fromBlocks_diagonal_conj
+    (A₁₁ : Matrix m m R) (A₁₂ : Matrix m n R)
+    (A₂₁ : Matrix n m R) (A₂₂ : Matrix n n R)
+    (P : (Matrix m m R)ˣ) (Q : (Matrix n n R)ˣ) :
+    ((fromBlocks (P : Matrix m m R) 0 0 (Q : Matrix n n R) *
+      fromBlocks A₁₁ A₁₂ A₂₁ A₂₂ *
+      fromBlocks (P⁻¹ : Matrix m m R) 0 0
+        (Q⁻¹ : Matrix n n R)).toBlocks₁₁).charpoly =
+          A₁₁.charpoly := by
+  simp [Matrix.fromBlocks_multiply]
+
+/-- Block-diagonal conjugation preserves the characteristic polynomial of the
+lower-right principal block. -/
+theorem charpoly_toBlocks₂₂_fromBlocks_diagonal_conj
+    (A₁₁ : Matrix m m R) (A₁₂ : Matrix m n R)
+    (A₂₁ : Matrix n m R) (A₂₂ : Matrix n n R)
+    (P : (Matrix m m R)ˣ) (Q : (Matrix n n R)ˣ) :
+    ((fromBlocks (P : Matrix m m R) 0 0 (Q : Matrix n n R) *
+      fromBlocks A₁₁ A₁₂ A₂₁ A₂₂ *
+      fromBlocks (P⁻¹ : Matrix m m R) 0 0
+        (Q⁻¹ : Matrix n n R)).toBlocks₂₂).charpoly =
+          A₂₂.charpoly := by
+  simp [Matrix.fromBlocks_multiply]
+
+end BlockDiagonalConjugation
 
 /-- A nonnegative matrix on a finite chain of cardinality at least two is
 irreducible when all entries immediately above and below the diagonal are
