@@ -20,6 +20,7 @@ a variable diagonal, a fixed first superdiagonal, and two varying lower bands.
 
 /-- A lower-Hessenberg matrix with a variable diagonal, a fixed first
 superdiagonal, and two varying lower bands. -/
+@[expose]
 def bandedLowerHessenberg {R : Type*} [CommRing R]
     (d a b : ℕ → R) (x : R) (n : ℕ) : Matrix (Fin n) (Fin n) R :=
   Matrix.of fun i j =>
