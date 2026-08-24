@@ -151,12 +151,14 @@ private lemma topFinset_eq_image {q : ℕ} (hq : q ≤ n) :
 
 /-- **Gantmacher-Krein for matrices with primitive compounds.**  If every
 compound of `A` is primitive, the characteristic polynomial of `A` splits over
-`ℝ` with strictly positive roots.  This covers the oscillatory case; the
-general totally nonnegative case needs Whitney density and root continuity. -/
-theorem exists_charpoly_eq_prod_of_forall_compound_primitive
+`ℝ` with positive roots in nonincreasing order.  This covers the currently
+formalized part of the oscillatory case; strictness additionally needs
+algebraic simplicity of the Perron roots of the compounds. -/
+theorem exists_charpoly_eq_prod_antitone_of_forall_compound_primitive
     {A : Matrix (Fin n) (Fin n) ℝ}
     (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
-    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) := by
+    ∃ μ : Fin n → ℝ, Antitone μ ∧ (∀ i, 0 < μ i) ∧
+      A.charpoly = ∏ i, (X - C (μ i)) := by
   classical
   -- the complex eigenvalue enumeration, sorted by descending modulus
   obtain ⟨ν, hν_char, hν_comp⟩ :=
@@ -289,6 +291,13 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
     rw [hμr]
     push_cast
     exact (eq_div_iff hR_ne).mpr h1
+  have hμr_anti : Antitone μr := by
+    intro i j hij
+    have hj : ‖μc j‖ = μr j := by
+      rw [hμc_real j, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos j)]
+    have hi : ‖μc i‖ = μr i := by
+      rw [hμc_real i, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos i)]
+    simpa [hj, hi] using hanti i j hij
   -- transport the complex factorization back to `ℝ`
   have hmapped : A.charpoly.map (algebraMap ℝ ℂ)
       = (∏ i, ((X : ℝ[X]) - C (μr i))).map (algebraMap ℝ ℂ) := by
@@ -296,8 +305,35 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C, hμc_real i]
     rfl
-  exact ⟨μr, hμr_pos,
+  exact ⟨μr, hμr_anti, hμr_pos,
     Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective hmapped⟩
+
+/-- If, in addition to primitive compounds, the characteristic polynomial is
+separable, its positive roots can be enumerated in strictly decreasing order.
+This isolates algebraic simplicity as the remaining Perron--Frobenius input. -/
+theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive)
+    (hsep : A.charpoly.Separable) :
+    ∃ μ : Fin n → ℝ, StrictAnti μ ∧ (∀ i, 0 < μ i) ∧
+      A.charpoly = ∏ i, (X - C (μ i)) := by
+  obtain ⟨μ, hμ_anti, hμ_pos, hchar⟩ :=
+    exists_charpoly_eq_prod_antitone_of_forall_compound_primitive hprim
+  have hprod_sep : (∏ i, (X - C (μ i))).Separable := by
+    rw [← hchar]
+    exact hsep
+  exact ⟨μ, hμ_anti.strictAnti_of_injective
+    (Polynomial.separable_prod_X_sub_C_iff.mp hprod_sep), hμ_pos, hchar⟩
+
+/-- If every compound of `A` is primitive, the characteristic polynomial of
+`A` splits over `ℝ` with strictly positive roots. -/
+theorem exists_charpoly_eq_prod_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
+    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) := by
+  obtain ⟨μ, -, hμ_pos, hchar⟩ :=
+    exists_charpoly_eq_prod_antitone_of_forall_compound_primitive hprim
+  exact ⟨μ, hμ_pos, hchar⟩
 
 /-! ### The oscillatory bridge -/
 
