@@ -513,6 +513,22 @@ private theorem whitney_hard_minor_nonneg
     nlinarith [hplucker, hsmallEq]
   nlinarith
 
+private theorem exists_pos_deleted_minor_of_det_pos {q : ℕ}
+    (M : Matrix (Fin (q + 1)) (Fin (q + 1)) ℝ) (r : Fin (q + 1))
+    (hminor : ∀ j : Fin (q + 1),
+      0 ≤ (M.submatrix r.succAbove j.succAbove).det)
+    (hdet : 0 < M.det) :
+    ∃ j : Fin (q + 1),
+      0 < (M.submatrix r.succAbove j.succAbove).det := by
+  by_contra h
+  simp only [not_exists, not_lt] at h
+  have hzero : ∀ j : Fin (q + 1),
+      (M.submatrix r.succAbove j.succAbove).det = 0 := by
+    intro j
+    exact le_antisymm (h j) (hminor j)
+  rw [Matrix.det_succ_row M r] at hdet
+  simp [hzero] at hdet
+
 end WhitneyElimination
 
 /-- In a TN matrix with positive adjacent off-diagonal entries, the two
