@@ -1419,6 +1419,22 @@ theorem whitneyRestoreFirst_eliminate {m n : ℕ}
   · simp [Matrix.whitneyRestoreFirst, whitneyEliminateFirst,
       Matrix.updateRow, hi]
 
+/-- Restoring with the selected-column pivot ratio reverses the corresponding
+Whitney elimination. -/
+theorem whitneyRestoreFirst_eliminateAt {m n : ℕ}
+    (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ) (s : Fin m)
+    (c : Fin (n + 1)) :
+    Matrix.whitneyRestoreFirst (whitneyEliminateAt A s c) s
+      (A s.succ c / A s.castSucc c) = A := by
+  ext i j
+  by_cases hi : i = s.succ
+  · subst i
+    have hne : s.castSucc ≠ s.succ := Fin.ne_of_lt s.castSucc_lt_succ
+    simp [Matrix.whitneyRestoreFirst, whitneyEliminateAt,
+      Matrix.updateRow, hne]
+  · simp [Matrix.whitneyRestoreFirst, whitneyEliminateAt,
+      Matrix.updateRow, hi]
+
 /-- A Whitney row operation does not change the determinant. -/
 theorem det_whitneyEliminateFirst {m : ℕ}
     (A : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (s : Fin m) :
@@ -1432,6 +1448,23 @@ theorem det_whitneyEliminateFirst {m : ℕ}
       simp [whitneyEliminateFirst, c, Matrix.updateRow]
       ring
     · simp [whitneyEliminateFirst, c, Matrix.updateRow, hi]
+  rw [hmatrix, Matrix.det_updateRow_add_smul_self]
+  exact Fin.ne_of_gt s.castSucc_lt_succ
+
+/-- A Whitney row operation in any selected column preserves determinant. -/
+theorem det_whitneyEliminateAt {m : ℕ}
+    (A : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (s : Fin m)
+    (c : Fin (m + 1)) :
+    (whitneyEliminateAt A s c).det = A.det := by
+  let ratio := A s.succ c / A s.castSucc c
+  have hmatrix : whitneyEliminateAt A s c =
+      A.updateRow s.succ (A s.succ + (-ratio) • A s.castSucc) := by
+    ext i j
+    by_cases hi : i = s.succ
+    · subst i
+      simp [whitneyEliminateAt, ratio, Matrix.updateRow]
+      ring
+    · simp [whitneyEliminateAt, ratio, Matrix.updateRow, hi]
   rw [hmatrix, Matrix.det_updateRow_add_smul_self]
   exact Fin.ne_of_gt s.castSucc_lt_succ
 
@@ -1478,6 +1511,408 @@ private theorem IsTotallyNonneg.firstColumn_pred_pos_of_det_ne_zero
   · have htail := hA.firstColumn_zero_tail_of_det_ne_zero hdet hzero i
     exact (hi.ne' (htail (Fin.castSucc_pred_lt hi0))).elim
   · exact lt_of_le_of_ne hnonneg (Ne.symm hzero)
+
+/-- Under an already-cleared Hessenberg prefix, a zero below a selected
+column in a nonsingular TN matrix forces the rest of that column to vanish. -/
+private theorem IsTotallyNonneg.column_zero_tail_of_det_ne_zero
+    {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0)
+    {c i : Fin (N + 1)} (hci : c < i)
+    (hleft : ∀ k, k < c → A i k = 0) (hi : A i c = 0) :
+    ∀ j, i < j → A j c = 0 := by
+  intro j hij
+  by_contra hj
+  have hjpos : 0 < A j c :=
+    lt_of_le_of_ne (hA.nonneg j c) (Ne.symm hj)
+  have hrow : ∀ k, A i k = 0 := by
+    intro k
+    rcases lt_trichotomy k c with hkc | rfl | hck
+    · exact hleft k hkc
+    · exact hi
+    · let rows : Fin 2 → Fin (N + 1) := ![i, j]
+      let cols : Fin 2 → Fin (N + 1) := ![c, k]
+      have hrows : StrictMono rows := by
+        intro a b hab
+        fin_cases a <;> fin_cases b <;> simp_all [rows]
+      have hcols : StrictMono cols := by
+        intro a b hab
+        fin_cases a <;> fin_cases b <;> simp_all [cols]
+      have hminor := hA hrows hcols
+      simp only [Matrix.det_fin_two, Matrix.submatrix_apply, rows, cols,
+        Matrix.cons_val_zero, Matrix.cons_val_one] at hminor
+      rw [hi, zero_mul, zero_sub] at hminor
+      nlinarith [hA.nonneg i k]
+  exact hdet (Matrix.det_eq_zero_of_row_eq_zero i hrow)
+
+/-- Positive support below a selected column has no gaps once all columns to
+its left have already been cleared. -/
+private theorem IsTotallyNonneg.column_pred_pos_of_det_ne_zero
+    {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0)
+    (c i : Fin (N + 1)) (hgap : c.val + 1 < i.val)
+    (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0)
+    (hi : 0 < A i c) :
+    0 < A (i.pred (by lia)).castSucc c := by
+  let p : Fin (N + 1) := (i.pred (by lia)).castSucc
+  have hpc : c < p := by
+    apply Fin.lt_def.2
+    dsimp [p]
+    lia
+  have hnonneg := hA.nonneg p c
+  by_cases hzero : A p c = 0
+  · have hleft : ∀ k, k < c → A p k = 0 := by
+      intro k hkc
+      apply hprefix p k (Fin.lt_def.mp hkc)
+      have hpval : p.val + 1 = i.val := by
+        dsimp [p]
+        lia
+      lia
+    have htail := hA.column_zero_tail_of_det_ne_zero hdet hpc hleft hzero i
+    have hpi : p < i := by
+      apply Fin.lt_def.2
+      dsimp [p]
+      lia
+    exact (hi.ne' (htail hpi)).elim
+  · exact lt_of_le_of_ne hnonneg (Ne.symm hzero)
+
+/-- Bottom-up Whitney sweep in a selected column.  The number of active
+stages is exactly the number of entries below its subdiagonal. -/
+noncomputable def whitneyClearColumnAux {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (c : Fin (N + 1)) :
+    ℕ → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ
+  | 0 => A
+  | t + 1 =>
+      if ht : t < N - (c.val + 1) then
+        let s : Fin N := ⟨N - (t + 1), by lia⟩
+        let B := whitneyClearColumnAux A c t
+        if B s.succ c = 0 then B else whitneyEliminateAt B s c
+      else
+        whitneyClearColumnAux A c t
+
+/-- Product of the nonnegative lower transvections removed by a selected
+column sweep. -/
+noncomputable def whitneyClearColumnLowerAux {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (c : Fin (N + 1)) :
+    ℕ → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ
+  | 0 => 1
+  | t + 1 =>
+      if ht : t < N - (c.val + 1) then
+        let s : Fin N := ⟨N - (t + 1), by lia⟩
+        let B := whitneyClearColumnAux A c t
+        let L := whitneyClearColumnLowerAux A c t
+        if B s.succ c = 0 then L
+        else L * Matrix.transvection s.succ s.castSucc
+          (B s.succ c / B s.castSucc c)
+      else
+        whitneyClearColumnLowerAux A c t
+
+private theorem whitneyClearColumnAux_spec {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) (c : Fin (N + 1))
+    (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0) :
+    ∀ t, t ≤ N - (c.val + 1) →
+      (whitneyClearColumnAux A c t).IsTotallyNonneg ∧
+      (whitneyClearColumnAux A c t).det = A.det ∧
+      (∀ r k, k.val < c.val → k.val + 1 < r.val →
+        whitneyClearColumnAux A c t r k = 0) ∧
+      ∀ i, N - t < i.val → whitneyClearColumnAux A c t i c = 0 := by
+  intro t ht
+  induction t with
+  | zero =>
+      refine ⟨hA, rfl, hprefix, ?_⟩
+      intro i hi
+      exact (Nat.not_lt_of_ge (Nat.le_of_lt_succ i.isLt) hi).elim
+  | succ t ih =>
+      have htActive : t < N - (c.val + 1) := by lia
+      obtain ⟨hB, hBdet, hBprefix, hBtail⟩ := ih htActive.le
+      let s : Fin N := ⟨N - (t + 1), by lia⟩
+      let B := whitneyClearColumnAux A c t
+      have hsval : s.succ.val = N - t := by
+        simp [s]
+        lia
+      have hsc : c.val + 1 < s.succ.val := by
+        rw [hsval]
+        lia
+      have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
+      rw [whitneyClearColumnAux, dif_pos htActive]
+      dsimp only
+      by_cases hzero : B s.succ c = 0
+      · rw [if_pos hzero]
+        refine ⟨hB, hBdet, hBprefix, ?_⟩
+        intro i hi
+        by_cases his : i = s.succ
+        · simpa [his] using hzero
+        · apply hBtail i
+          have hle : s.succ.val ≤ i.val := by
+            rw [hsval]
+            lia
+          rw [← hsval]
+          exact lt_of_le_of_ne hle (fun h ↦ his (Fin.ext h.symm))
+      · rw [if_neg hzero]
+        have htarget : 0 < B s.succ c :=
+          lt_of_le_of_ne (hB.nonneg s.succ c) (Ne.symm hzero)
+        have hpivot : 0 < B s.castSucc c := by
+          have hpred := hB.column_pred_pos_of_det_ne_zero hBdetne c s.succ
+            (by simpa using hsc) hBprefix htarget
+          simpa using hpred
+        have htail : ∀ i, s.succ < i → B i c = 0 := by
+          intro i hi
+          apply hBtail i
+          rw [← hsval]
+          exact hi
+        have hleft : ∀ i, s.castSucc ≤ i → ∀ j, j < c → B i j = 0 := by
+          intro i hsi j hjc
+          apply hBprefix i j (Fin.lt_def.mp hjc)
+          have hsLower : j.val + 1 < s.castSucc.val := by
+            have hjle : j.val + 1 ≤ c.val := by lia
+            have hcs : c.val < s.castSucc.val := by
+              rw [Fin.val_castSucc]
+              dsimp [s]
+              lia
+            exact lt_of_le_of_lt hjle hcs
+          exact lt_of_lt_of_le hsLower (Fin.le_def.mp hsi)
+        have hTN := hB.toRect.whitneyEliminateAt_nonneg s c hpivot htail hleft
+        have hdetEq : (whitneyEliminateAt B s c).det = A.det := by
+          rw [det_whitneyEliminateAt, hBdet]
+        refine ⟨hTN.toSquare, hdetEq, ?_, ?_⟩
+        · intro r k hkc hkr
+          by_cases hrs : r = s.succ
+          · subst r
+            have htargetZero : B s.succ k = 0 := hBprefix _ _ hkc hkr
+            have hpivotZero : B s.castSucc k = 0 := by
+              apply hBprefix _ _ hkc
+              dsimp [s] at hkr ⊢
+              lia
+            change whitneyEliminateAt B s c s.succ k = 0
+            rw [whitneyEliminateAt_apply_same, htargetZero, hpivotZero]
+            ring
+          · change whitneyEliminateAt B s c r k = 0
+            rw [whitneyEliminateAt_apply_of_ne B s c r k hrs]
+            exact hBprefix r k hkc hkr
+        · intro i hi
+          by_cases his : i = s.succ
+          · subst i
+            change whitneyEliminateAt B s c s.succ c = 0
+            rw [whitneyEliminateAt_apply_same]
+            field_simp [hpivot.ne']
+            ring
+          · have hit : s.succ < i := by
+              apply Fin.lt_def.2
+              have hle : s.succ.val ≤ i.val := by
+                rw [hsval]
+                lia
+              exact lt_of_le_of_ne hle (fun h ↦ his (Fin.ext h.symm))
+            change whitneyEliminateAt B s c i c = 0
+            rw [whitneyEliminateAt_apply_of_ne B s c i c his]
+            exact htail i hit
+
+private theorem whitneyClearColumnLowerAux_spec {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) (c : Fin (N + 1))
+    (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0) :
+    ∀ t, t ≤ N - (c.val + 1) →
+      (whitneyClearColumnLowerAux A c t).IsTotallyNonneg ∧
+      A = whitneyClearColumnLowerAux A c t *
+        whitneyClearColumnAux A c t := by
+  intro t ht
+  induction t with
+  | zero =>
+      have hone :
+          (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ).IsTotallyNonneg := by
+        simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
+          (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
+            Fin.val_strictMono Fin.val_strictMono
+      exact ⟨hone, by
+        simp [whitneyClearColumnLowerAux, whitneyClearColumnAux]⟩
+  | succ t ih =>
+      have htActive : t < N - (c.val + 1) := by lia
+      obtain ⟨hL, hfactor⟩ := ih htActive.le
+      obtain ⟨hB, hBdet, hBprefix, hBtail⟩ :=
+        whitneyClearColumnAux_spec A hA hdet c hprefix t htActive.le
+      let s : Fin N := ⟨N - (t + 1), by lia⟩
+      let B := whitneyClearColumnAux A c t
+      let L := whitneyClearColumnLowerAux A c t
+      have hsval : s.succ.val = N - t := by
+        simp [s]
+        lia
+      have hsc : c.val + 1 < s.succ.val := by
+        rw [hsval]
+        lia
+      have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
+      have hclear : whitneyClearColumnAux A c (t + 1) =
+          if B s.succ c = 0 then B else whitneyEliminateAt B s c := by
+        rw [whitneyClearColumnAux, dif_pos htActive]
+      have hlower : whitneyClearColumnLowerAux A c (t + 1) =
+          if B s.succ c = 0 then L
+          else L * Matrix.transvection s.succ s.castSucc
+            (B s.succ c / B s.castSucc c) := by
+        rw [whitneyClearColumnLowerAux, dif_pos htActive]
+      rw [hclear, hlower]
+      by_cases hzero : B s.succ c = 0
+      · rw [if_pos hzero, if_pos hzero]
+        exact ⟨hL, hfactor⟩
+      · rw [if_neg hzero, if_neg hzero]
+        have htarget : 0 < B s.succ c :=
+          lt_of_le_of_ne (hB.nonneg s.succ c) (Ne.symm hzero)
+        have hpivot : 0 < B s.castSucc c := by
+          have hpred := hB.column_pred_pos_of_det_ne_zero hBdetne c s.succ
+            (by simpa using hsc) hBprefix htarget
+          simpa using hpred
+        have hratio : 0 ≤ B s.succ c / B s.castSucc c :=
+          div_nonneg htarget.le hpivot.le
+        have hE := isTotallyNonneg_transvection_succ_castSucc s _ hratio
+        have hLE : (L * Matrix.transvection s.succ s.castSucc
+            (B s.succ c / B s.castSucc c)).IsTotallyNonneg :=
+          (hL.toRect.mul hE.toRect).toSquare
+        refine ⟨hLE, ?_⟩
+        calc
+          A = L * B := hfactor
+          _ = L * (Matrix.transvection s.succ s.castSucc
+              (B s.succ c / B s.castSucc c) *
+                whitneyEliminateAt B s c) := by
+            rw [← whitneyRestoreFirst_eq_transvection_mul,
+              whitneyRestoreFirst_eliminateAt]
+          _ = (L * Matrix.transvection s.succ s.castSucc
+              (B s.succ c / B s.castSucc c)) *
+                whitneyEliminateAt B s c := by rw [Matrix.mul_assoc]
+
+private theorem whitneyClearColumnLowerAux_prefix_block {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (c : Fin (N + 1)) :
+    ∀ t,
+      (∀ i j, j.val ≤ c.val →
+        whitneyClearColumnLowerAux A c t i j =
+          (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) i j) ∧
+      ∀ j, whitneyClearColumnLowerAux A c t 0 j =
+        (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) 0 j := by
+  intro t
+  induction t with
+  | zero =>
+      exact ⟨fun _ _ _ ↦ rfl, fun _ ↦ rfl⟩
+  | succ t ih =>
+      by_cases htActive : t < N - (c.val + 1)
+      · let s : Fin N := ⟨N - (t + 1), by lia⟩
+        let B := whitneyClearColumnAux A c t
+        let L := whitneyClearColumnLowerAux A c t
+        rw [whitneyClearColumnLowerAux, dif_pos htActive]
+        by_cases hzero : B s.succ c = 0
+        · rw [if_pos hzero]
+          exact ih
+        · rw [if_neg hzero]
+          have hcs : c.val < s.castSucc.val := by
+            dsimp [s]
+            lia
+          constructor
+          · intro i j hjc
+            have hne : j ≠ s.castSucc := by
+              intro h
+              subst j
+              lia
+            rw [Matrix.mul_transvection_apply_of_ne
+              (i := s.succ) (j := s.castSucc) i j hne]
+            exact ih.1 i j hjc
+          · intro j
+            by_cases hj : j = s.castSucc
+            · subst j
+              rw [Matrix.mul_transvection_apply_same
+                (i := s.succ) (j := s.castSucc)]
+              rw [ih.2 s.castSucc, ih.2 s.succ]
+              have hzeroCast : (0 : Fin (N + 1)) ≠ s.castSucc :=
+                ne_of_lt (lt_of_le_of_lt (Fin.zero_le c) (Fin.lt_def.2 hcs))
+              have hzeroSucc : (0 : Fin (N + 1)) ≠ s.succ :=
+                ne_of_lt (Fin.succ_pos s)
+              simp [hzeroCast, hzeroSucc]
+            · rw [Matrix.mul_transvection_apply_of_ne
+                (i := s.succ) (j := s.castSucc) 0 j hj]
+              exact ih.2 j
+      · rw [whitneyClearColumnLowerAux, dif_neg htActive]
+        exact ih
+
+/-- One recursive Whitney cycle extends a lower-Hessenberg prefix by one
+column while preserving TN, nonsingularity, and the full and trailing
+principal characteristic polynomials. -/
+theorem exists_whitneyClearColumn {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) (c : Fin (N + 1))
+    (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0) :
+    ∃ C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ,
+      C.IsTotallyNonneg ∧ C.det ≠ 0 ∧ C.charpoly = A.charpoly ∧
+        (C.submatrix Fin.succ Fin.succ).charpoly =
+          (A.submatrix Fin.succ Fin.succ).charpoly ∧
+        ∀ r k, k.val ≤ c.val → k.val + 1 < r.val → C r k = 0 := by
+  let stages := N - (c.val + 1)
+  let L := whitneyClearColumnLowerAux A c stages
+  let B := whitneyClearColumnAux A c stages
+  let C := B * L
+  obtain ⟨hB, hBdet, hBprefix, hBtail⟩ :=
+    whitneyClearColumnAux_spec A hA hdet c hprefix stages le_rfl
+  obtain ⟨hL, hfactor⟩ :=
+    whitneyClearColumnLowerAux_spec A hA hdet c hprefix stages le_rfl
+  obtain ⟨hLcols, hLrowZero⟩ :=
+    whitneyClearColumnLowerAux_prefix_block A c stages
+  have hLcols' : ∀ i j, j.val ≤ c.val →
+      L i j = (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) i j := hLcols
+  have hLrowZero' : ∀ j,
+      L (0 : Fin (N + 1)) j =
+        (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+          (0 : Fin (N + 1)) j :=
+    hLrowZero
+  have hLcolZero : ∀ i : Fin N, L i.succ 0 = 0 := by
+    intro i
+    rw [hLcols' i.succ 0 (Nat.zero_le c.val)]
+    simp
+  have hLrow : ∀ j : Fin N, L (0 : Fin (N + 1)) j.succ = 0 := by
+    intro j
+    calc
+      L (0 : Fin (N + 1)) j.succ =
+          (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+            (0 : Fin (N + 1)) j.succ :=
+        hLrowZero' j.succ
+      _ = 0 := Matrix.one_apply_ne (ne_of_lt (Fin.succ_pos j))
+  have hC : C.IsTotallyNonneg := (hB.toRect.mul hL.toRect).toSquare
+  have hCdet : C.det ≠ 0 := by
+    intro hzero
+    apply hdet
+    rw [hfactor, Matrix.det_mul]
+    simp only [C, Matrix.det_mul] at hzero
+    simpa only [mul_comm] using hzero
+  have hCchar : C.charpoly = A.charpoly := by
+    calc
+      C.charpoly = (B * L).charpoly := rfl
+      _ = (L * B).charpoly := Matrix.charpoly_mul_comm B L
+      _ = A.charpoly := congrArg Matrix.charpoly hfactor.symm
+  have hAtrailing : A.submatrix Fin.succ Fin.succ =
+      L.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
+    rw [hfactor,
+      trailing_submatrix_mul_of_left_firstColumn_zero L B hLcolZero]
+  have hCtrailing : C.submatrix Fin.succ Fin.succ =
+      B.submatrix Fin.succ Fin.succ * L.submatrix Fin.succ Fin.succ := by
+    change (B * L).submatrix Fin.succ Fin.succ = _
+    exact trailing_submatrix_mul_of_right_firstRow_zero B L hLrow
+  have htrailingChar : (C.submatrix Fin.succ Fin.succ).charpoly =
+      (A.submatrix Fin.succ Fin.succ).charpoly := by
+    rw [hAtrailing, hCtrailing, Matrix.charpoly_mul_comm]
+  have hCcol : ∀ i j, j.val ≤ c.val → C i j = B i j := by
+    intro i j hjc
+    change (B * L) i j = B i j
+    calc
+      (B * L) i j =
+          (B * (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)) i j := by
+        simp only [Matrix.mul_apply]
+        apply Finset.sum_congr rfl
+        intro x _
+        rw [hLcols' x j hjc]
+      _ = B i j := by rw [Matrix.mul_one]
+  refine ⟨C, hC, hCdet, hCchar, htrailingChar, ?_⟩
+  intro r k hkc hkr
+  rw [hCcol r k hkc]
+  rcases hkc.eq_or_lt with hkcEq | hkcLt
+  · have hk : k = c := Fin.ext hkcEq
+    subst k
+    apply hBtail r
+    dsimp [stages]
+    have hrBound := r.isLt
+    lia
+  · exact hBprefix r k hkcLt hkr
 
 /-- Bottom-up Whitney sweep of the first column. After `t` stages the last
 `t` entries have been cleared, unless `t` exceeds the matrix dimension. -/
