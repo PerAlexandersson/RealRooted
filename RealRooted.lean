@@ -247,6 +247,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
