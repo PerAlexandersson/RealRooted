@@ -964,6 +964,44 @@ theorem isTotallyNonneg_transvection_succ_castSucc {m : ℕ}
   rw [whitneyRestoreFirst_eq_transvection_mul, Matrix.mul_one] at hrestore
   exact hrestore.toSquare
 
+private theorem trailing_submatrix_mul_of_left_firstColumn_zero {m : ℕ}
+    (A B : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
+    (hzero : ∀ i : Fin m, A i.succ 0 = 0) :
+    (A * B).submatrix Fin.succ Fin.succ =
+      A.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
+  ext i j
+  change (A * B) i.succ j.succ =
+    (A.submatrix Fin.succ Fin.succ *
+      B.submatrix Fin.succ Fin.succ) i j
+  simp only [Matrix.mul_apply, Matrix.submatrix_apply]
+  rw [Fin.sum_univ_succ]
+  simp [hzero]
+
+private theorem trailing_submatrix_mul_of_right_firstRow_zero {m : ℕ}
+    (A B : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
+    (hzero : ∀ j : Fin m, B 0 j.succ = 0) :
+    (A * B).submatrix Fin.succ Fin.succ =
+      A.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
+  ext i j
+  change (A * B) i.succ j.succ =
+    (A.submatrix Fin.succ Fin.succ *
+      B.submatrix Fin.succ Fin.succ) i j
+  simp only [Matrix.mul_apply, Matrix.submatrix_apply]
+  rw [Fin.sum_univ_succ]
+  simp [hzero]
+
+private theorem transvection_succ_castSucc_firstColumn_zero {m : ℕ}
+    (s : Fin m) (hs : s.castSucc ≠ (0 : Fin (m + 1)))
+    (c : ℝ) (i : Fin m) :
+    Matrix.transvection s.succ s.castSucc c i.succ 0 = 0 := by
+  simp [Matrix.transvection, Matrix.single, hs]
+
+private theorem transvection_succ_castSucc_firstRow_zero {m : ℕ}
+    (s : Fin m) (c : ℝ) (j : Fin m) :
+    Matrix.transvection s.succ s.castSucc c 0 j.succ = 0 := by
+  have hzero : (0 : Fin (m + 1)) ≠ j.succ := ne_of_lt (Fin.succ_pos j)
+  simp [Matrix.transvection, Matrix.single, hzero]
+
 /-- Restoring with the pivot ratio exactly reverses one Whitney elimination
 step. -/
 theorem whitneyRestoreFirst_eliminate {m n : ℕ}
