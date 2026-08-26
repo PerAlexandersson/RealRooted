@@ -1254,6 +1254,51 @@ theorem exists_whitneyClearFirst {N : ℕ}
   obtain ⟨hTN, hdetEq, htail⟩ := whitneyClearFirstAux_spec A hA hdet N le_rfl
   exact ⟨hTN, hdetEq, fun i hi ↦ htail i (by simpa using hi)⟩
 
+/-- The complete Whitney sweep records the removed nonnegative lower
+transvections as an exact factorization. -/
+theorem whitneyClearFirst_factorization {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) :
+    let L := whitneyClearLowerAux A N
+    let B := whitneyClearFirstAux A N
+    L.IsTotallyNonneg ∧ B.IsTotallyNonneg ∧ B.det = A.det ∧
+      A = L * B ∧ ∀ i, 0 < i → B i 0 = 0 := by
+  dsimp only
+  obtain ⟨hB, hBdet, hBzero⟩ :=
+    whitneyClearFirstAux_spec A hA hdet N le_rfl
+  obtain ⟨hL, hfactor⟩ := whitneyClearLowerAux_spec A hA hdet N le_rfl
+  exact ⟨hL, hB, hBdet, hfactor,
+    fun i hi ↦ hBzero i (by simpa using hi)⟩
+
+private theorem det_eq_entry_zero_zero_mul_trailing_of_firstColumn_zero
+    {m : ℕ} (A : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
+    (hzero : ∀ i : Fin m, A i.succ 0 = 0) :
+    A.det = A 0 0 * (A.submatrix Fin.succ Fin.succ).det := by
+  rw [Matrix.det_succ_column_zero, Fin.sum_univ_succ]
+  simp [hzero]
+
+/-- The trailing block after a complete Whitney sweep remains nonsingular and
+totally nonnegative. -/
+theorem whitneyClearFirst_trailing {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) :
+    let B := whitneyClearFirstAux A N
+    (B.submatrix Fin.succ Fin.succ).IsTotallyNonneg ∧
+      (B.submatrix Fin.succ Fin.succ).det ≠ 0 := by
+  dsimp only
+  obtain ⟨hB, hBdet, hBzero⟩ :=
+    whitneyClearFirstAux_spec A hA hdet N le_rfl
+  have hzero : ∀ i : Fin N, whitneyClearFirstAux A N i.succ 0 = 0 :=
+    fun i ↦ hBzero i.succ (by
+      simpa only [Nat.sub_self, Fin.val_succ] using Nat.zero_lt_succ i.val)
+  refine ⟨hB.submatrix Fin.strictMono_succ Fin.strictMono_succ, ?_⟩
+  intro htrailing
+  have hfactor :=
+    det_eq_entry_zero_zero_mul_trailing_of_firstColumn_zero
+      (whitneyClearFirstAux A N) hzero
+  rw [htrailing, mul_zero] at hfactor
+  exact hdet (hBdet.symm.trans hfactor)
+
 /-- In a TN square matrix with positive diagonal, a zero in the first column
 forces the entire tail below it to vanish. -/
 private theorem IsTotallyNonneg.firstColumn_zero_tail_of_diagonal_pos
