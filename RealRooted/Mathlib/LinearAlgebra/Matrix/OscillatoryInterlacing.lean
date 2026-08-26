@@ -1,7 +1,11 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+import RealRooted.CauchyInterlacing
+import RealRooted.Basic
+import RealRooted.Challenges.CauchyInterlacing
 import Mathlib.LinearAlgebra.Matrix.Transvection
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 
 /-!
 # Leading-principal interlacing for oscillatory matrices
@@ -3077,5 +3081,393 @@ theorem exists_whitneyTridiagonal_adjacent_pos {N : ℕ}
       _ = (H.submatrix Fin.succ Fin.succ).charpoly :=
         Matrix.charpoly_transpose _
       _ = (A.submatrix Fin.succ Fin.succ).charpoly := hHtrailing
+
+private noncomputable def tridiagonalScale {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) : Fin (N + 1) → ℝ :=
+  fun i ↦ Nat.rec (motive := fun k ↦ k < N + 1 → ℝ)
+    (fun _ ↦ 1)
+    (fun k previous hk ↦
+      let j : Fin N := ⟨k, by lia⟩
+      previous (by lia) *
+        Real.sqrt (T j.succ j.castSucc / T j.castSucc j.succ))
+    i.val i.isLt
+
+@[simp] private theorem tridiagonalScale_zero {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
+    tridiagonalScale T 0 = 1 := rfl
+
+private theorem tridiagonalScale_succ {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (i : Fin N) :
+    tridiagonalScale T i.succ = tridiagonalScale T i.castSucc *
+      Real.sqrt (T i.succ i.castSucc / T i.castSucc i.succ) := by
+  rfl
+
+private theorem tridiagonalScale_pos {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hsuper : ∀ i : Fin N, 0 < T i.castSucc i.succ)
+    (hsub : ∀ i : Fin N, 0 < T i.succ i.castSucc) :
+    ∀ i, 0 < tridiagonalScale T i := by
+  intro i
+  induction i using Fin.induction with
+  | zero => simp
+  | succ i ih =>
+      rw [tridiagonalScale_succ]
+      exact mul_pos ih (Real.sqrt_pos.2 (div_pos (hsub i) (hsuper i)))
+
+private noncomputable def symmetrizeTridiagonal {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
+    Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+  let d := tridiagonalScale T
+  Matrix.diagonal (fun i ↦ (d i)⁻¹) * T * Matrix.diagonal d
+
+private theorem symmetrizeTridiagonal_apply {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (i j : Fin (N + 1)) :
+    symmetrizeTridiagonal T i j =
+      (tridiagonalScale T i)⁻¹ * T i j * tridiagonalScale T j := by
+  simp [symmetrizeTridiagonal]
+
+private theorem symmetrizeTridiagonal_charpoly {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hd : ∀ i, tridiagonalScale T i ≠ 0) :
+    (symmetrizeTridiagonal T).charpoly = T.charpoly := by
+  let d := tridiagonalScale T
+  let D := Matrix.diagonal d
+  let Dinv := Matrix.diagonal (fun i ↦ (d i)⁻¹)
+  have hcancel : D * Dinv = 1 := by
+    dsimp only [D, Dinv]
+    rw [Matrix.diagonal_mul_diagonal]
+    ext i j
+    by_cases hij : i = j
+    · subst j
+      simp [d, hd i]
+    · simp [hij]
+  calc
+    (symmetrizeTridiagonal T).charpoly = (Dinv * T * D).charpoly := rfl
+    _ = (D * (Dinv * T)).charpoly := Matrix.charpoly_mul_comm (Dinv * T) D
+    _ = ((D * Dinv) * T).charpoly := by rw [Matrix.mul_assoc]
+    _ = T.charpoly := by rw [hcancel, Matrix.one_mul]
+
+private theorem symmetrizeTridiagonal_trailing_charpoly {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hd : ∀ i, tridiagonalScale T i ≠ 0) :
+    ((symmetrizeTridiagonal T).submatrix Fin.succ Fin.succ).charpoly =
+      (T.submatrix Fin.succ Fin.succ).charpoly := by
+  let d : Fin N → ℝ := fun i ↦ tridiagonalScale T i.succ
+  let D := Matrix.diagonal d
+  let Dinv := Matrix.diagonal (fun i ↦ (d i)⁻¹)
+  have hmatrix : (symmetrizeTridiagonal T).submatrix Fin.succ Fin.succ =
+      Dinv * T.submatrix Fin.succ Fin.succ * D := by
+    ext i j
+    simp [D, Dinv, d, symmetrizeTridiagonal_apply]
+  have hcancel : D * Dinv = 1 := by
+    dsimp only [D, Dinv]
+    rw [Matrix.diagonal_mul_diagonal]
+    ext i j
+    by_cases hij : i = j
+    · subst j
+      simp [d, hd i.succ]
+    · simp [hij]
+  rw [hmatrix]
+  calc
+    (Dinv * T.submatrix Fin.succ Fin.succ * D).charpoly =
+        (D * (Dinv * T.submatrix Fin.succ Fin.succ)).charpoly :=
+      Matrix.charpoly_mul_comm _ _
+    _ = ((D * Dinv) * T.submatrix Fin.succ Fin.succ).charpoly := by
+      rw [Matrix.mul_assoc]
+    _ = (T.submatrix Fin.succ Fin.succ).charpoly := by
+      rw [hcancel, Matrix.one_mul]
+
+private theorem symmetrizeTridiagonal_adjacent {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hsuper : ∀ i : Fin N, 0 < T i.castSucc i.succ)
+    (hsub : ∀ i : Fin N, 0 < T i.succ i.castSucc) (i : Fin N) :
+    symmetrizeTridiagonal T i.castSucc i.succ =
+      symmetrizeTridiagonal T i.succ i.castSucc := by
+  have hdpos := tridiagonalScale_pos T hsuper hsub i.castSucc
+  have hratio : 0 < T i.succ i.castSucc / T i.castSucc i.succ :=
+    div_pos (hsub i) (hsuper i)
+  have hsqrt : 0 < Real.sqrt
+      (T i.succ i.castSucc / T i.castSucc i.succ) :=
+    Real.sqrt_pos.2 hratio
+  have hsquare : Real.sqrt
+      (T i.succ i.castSucc / T i.castSucc i.succ) ^ 2 =
+        T i.succ i.castSucc / T i.castSucc i.succ :=
+    Real.sq_sqrt hratio.le
+  rw [symmetrizeTridiagonal_apply, symmetrizeTridiagonal_apply,
+    tridiagonalScale_succ]
+  field_simp [hdpos.ne', hsqrt.ne', (hsuper i).ne']
+  rw [hsquare]
+  field_simp [(hsuper i).ne']
+
+private theorem symmetrizeTridiagonal_isHermitian {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
+    (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0)
+    (hsuper : ∀ i : Fin N, 0 < T i.castSucc i.succ)
+    (hsub : ∀ i : Fin N, 0 < T i.succ i.castSucc) :
+    (symmetrizeTridiagonal T).IsHermitian := by
+  apply Matrix.IsHermitian.ext
+  intro i j
+  simp only [star_trivial]
+  rcases lt_trichotomy i j with hij | rfl | hji
+  · by_cases hadj : i.val + 1 = j.val
+    · let k : Fin N := ⟨i.val, by have := j.isLt; lia⟩
+      have hi : k.castSucc = i := Fin.ext rfl
+      have hj : k.succ = j := Fin.ext hadj
+      rw [← hi, ← hj]
+      exact (symmetrizeTridiagonal_adjacent T hsuper hsub k).symm
+    · have hgap : i.val + 1 < j.val := by lia
+      rw [symmetrizeTridiagonal_apply, symmetrizeTridiagonal_apply,
+        hupper i j hgap, hlower j i hgap]
+      ring
+  · rfl
+  · by_cases hadj : j.val + 1 = i.val
+    · let k : Fin N := ⟨j.val, by have := i.isLt; lia⟩
+      have hj : k.castSucc = j := Fin.ext rfl
+      have hi : k.succ = i := Fin.ext hadj
+      rw [← hi, ← hj]
+      exact symmetrizeTridiagonal_adjacent T hsuper hsub k
+    · have hgap : j.val + 1 < i.val := by lia
+      rw [symmetrizeTridiagonal_apply, symmetrizeTridiagonal_apply,
+        hupper j i hgap, hlower i j hgap]
+      ring
+
+private theorem det_tridiagonal_first_rec {R : Type*} [CommRing R] {N : ℕ}
+    (A : Matrix (Fin (N + 2)) (Fin (N + 2)) R)
+    (hcol : ∀ i : Fin N, A i.succ.succ 0 = 0)
+    (hrow : ∀ j : Fin N, A 0 j.succ.succ = 0) :
+    A.det = A 0 0 * (A.submatrix Fin.succ Fin.succ).det -
+      A 1 0 * A 0 1 *
+        ((A.submatrix Fin.succ Fin.succ).submatrix
+          Fin.succ Fin.succ).det := by
+  have hoff : (A.submatrix (1 : Fin (N + 2)).succAbove Fin.succ).det =
+      A 0 1 * ((A.submatrix Fin.succ Fin.succ).submatrix
+        Fin.succ Fin.succ).det := by
+    let B := A.submatrix (1 : Fin (N + 2)).succAbove Fin.succ
+    have hBrow : ∀ j : Fin N, B 0 j.succ = 0 := by
+      intro j
+      simpa [B, Matrix.submatrix] using hrow j
+    have hB00 : B 0 0 = A 0 1 := by
+      simp [B, Matrix.submatrix]
+    have hBtail : B.submatrix Fin.succ Fin.succ =
+        (A.submatrix Fin.succ Fin.succ).submatrix
+          Fin.succ Fin.succ := by
+      ext i j
+      simp [B, Matrix.submatrix]
+    change B.det = _
+    rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+    simp_rw [hBrow]
+    rw [hB00]
+    simp only [Fin.val_zero, pow_zero, one_mul]
+    rw [Fin.succAbove_zero, hBtail]
+    simp
+  rw [Matrix.det_succ_column_zero, Fin.sum_univ_succ,
+    Fin.sum_univ_succ]
+  simp_rw [hcol]
+  simp only [Nat.succ_eq_add_one, Fin.coe_ofNat_eq_mod, Nat.zero_mod,
+    Std.le_refl, List.Nat.eq_of_le_zero, pow_zero, one_mul,
+    Fin.succAbove_zero, Fin.succ_zero_eq_one, Nat.one_mod, pow_one,
+    neg_mul, Fin.val_succ, mul_zero, zero_mul, Finset.sum_const_zero,
+    add_zero, Matrix.submatrix_submatrix]
+  rw [hoff]
+  rw [Matrix.submatrix_submatrix]
+  ring
+
+private theorem charmatrix_trailing {R : Type*} [CommRing R] {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    A.charmatrix.submatrix Fin.succ Fin.succ =
+      (A.submatrix Fin.succ Fin.succ).charmatrix := by
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp only [Matrix.submatrix_apply, Matrix.charmatrix_apply_eq]
+  · rw [Matrix.submatrix_apply,
+      Matrix.charmatrix_apply_ne _ _ _
+        (fun h ↦ hij (Fin.ext (by simpa using congrArg Fin.val h))),
+      Matrix.charmatrix_apply_ne _ _ _ hij, Matrix.submatrix_apply]
+
+private theorem charpoly_tridiagonal_rec {N : ℕ}
+    (T : Matrix (Fin (N + 2)) (Fin (N + 2)) ℝ)
+    (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
+    (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0) :
+    T.charpoly =
+      (Polynomial.X - Polynomial.C (T 0 0)) *
+          (T.submatrix Fin.succ Fin.succ).charpoly -
+        Polynomial.C (T 0 1 * T 1 0) *
+          ((T.submatrix Fin.succ Fin.succ).submatrix
+            Fin.succ Fin.succ).charpoly := by
+  let M := T.charmatrix
+  have hcol : ∀ i : Fin N, M i.succ.succ 0 = 0 := by
+    intro i
+    have hgap : (0 : Fin (N + 2)).val + 1 < i.succ.succ.val := by
+      simp only [Fin.val_zero, Fin.val_succ]
+      lia
+    have hzero := hlower i.succ.succ 0 hgap
+    change T.charmatrix i.succ.succ 0 = 0
+    rw [Matrix.charmatrix_apply_ne _ _ _
+      (ne_of_gt (Fin.succ_pos i.succ)), hzero, map_zero,
+      neg_zero]
+  have hrow : ∀ j : Fin N, M 0 j.succ.succ = 0 := by
+    intro j
+    have hgap : (0 : Fin (N + 2)).val + 1 < j.succ.succ.val := by
+      simp only [Fin.val_zero, Fin.val_succ]
+      lia
+    have hzero := hupper 0 j.succ.succ hgap
+    change T.charmatrix 0 j.succ.succ = 0
+    rw [Matrix.charmatrix_apply_ne _ _ _
+      (ne_of_lt (Fin.succ_pos j.succ)), hzero, map_zero,
+      neg_zero]
+  rw [Matrix.charpoly, det_tridiagonal_first_rec M hcol hrow]
+  dsimp only [M]
+  rw [charmatrix_trailing T,
+    charmatrix_trailing (T.submatrix Fin.succ Fin.succ)]
+  rw [Matrix.charmatrix_apply_eq,
+    Matrix.charmatrix_apply_ne T 1 0 one_ne_zero,
+    Matrix.charmatrix_apply_ne T 0 1 zero_ne_one]
+  simp only [Matrix.charpoly, map_mul]
+  ring
+
+private theorem charpoly_tridiagonal_no_common_root {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
+    (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0)
+    (hsuper : ∀ i : Fin N, 0 < T i.castSucc i.succ)
+    (hsub : ∀ i : Fin N, 0 < T i.succ i.castSucc) :
+    ∀ x : ℝ, ¬(T.charpoly.IsRoot x ∧
+      (T.submatrix Fin.succ Fin.succ).charpoly.IsRoot x) := by
+  induction N with
+  | zero =>
+      intro x hroots
+      have hzero := hroots.2.eq_zero
+      simp [Matrix.charpoly, Matrix.charmatrix] at hzero
+  | succ N ih =>
+      intro x hroots
+      let B := T.submatrix Fin.succ Fin.succ
+      have hBlower : ∀ r k, k.val + 1 < r.val → B r k = 0 := by
+        intro r k hrk
+        exact hlower r.succ k.succ (by simpa [B] using hrk)
+      have hBupper : ∀ i j, i.val + 1 < j.val → B i j = 0 := by
+        intro i j hij
+        exact hupper i.succ j.succ (by simpa [B] using hij)
+      have hBsuper : ∀ i : Fin N, 0 < B i.castSucc i.succ := by
+        intro i
+        simpa [B, Matrix.submatrix] using hsuper i.succ
+      have hBsub : ∀ i : Fin N, 0 < B i.succ i.castSucc := by
+        intro i
+        simpa [B, Matrix.submatrix] using hsub i.succ
+      have hrec := congrArg (Polynomial.eval x)
+        (charpoly_tridiagonal_rec T hlower hupper)
+      have hprod : (T 0 1 * T 1 0) *
+          Polynomial.eval x
+            ((T.submatrix Fin.succ Fin.succ).submatrix
+              Fin.succ Fin.succ).charpoly = 0 := by
+        simp only [Polynomial.eval_sub, Polynomial.eval_mul,
+          Polynomial.eval_X, Polynomial.eval_C, hroots.1.eq_zero,
+          hroots.2.eq_zero] at hrec
+        linarith
+      have hcoeff : T 0 1 * T 1 0 ≠ 0 :=
+        mul_ne_zero (hsuper 0).ne' (hsub 0).ne'
+      have htailRoot :
+          ((T.submatrix Fin.succ Fin.succ).submatrix
+            Fin.succ Fin.succ).charpoly.IsRoot x :=
+        Polynomial.IsRoot.def.2 ((mul_eq_zero.mp hprod).resolve_left hcoeff)
+      exact ih B hBlower hBupper hBsuper hBsub x ⟨hroots.2, htailRoot⟩
+
+/-- Strict trailing-principal interlacing for the classical oscillatory
+criterion. The `Interlaces` component supplies weak interlacing and splitness;
+the two root-multiplicity conclusions together with root-disjointness make
+every interlacing inequality strict. All roots of the ambient characteristic
+polynomial are positive. -/
+theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
+    {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0)
+    (hsuper : ∀ i : Fin N, 0 < A i.castSucc i.succ)
+    (hsub : ∀ i : Fin N, 0 < A i.succ i.castSucc) :
+    RealRooted.Interlaces
+        (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly ∧
+      (∀ x : ℝ, A.charpoly.IsRoot x →
+        A.charpoly.rootMultiplicity x = 1) ∧
+      (∀ x : ℝ, (A.submatrix Fin.succ Fin.succ).charpoly.IsRoot x →
+        (A.submatrix Fin.succ Fin.succ).charpoly.rootMultiplicity x = 1) ∧
+      (∀ x : ℝ, ¬(A.charpoly.IsRoot x ∧
+        (A.submatrix Fin.succ Fin.succ).charpoly.IsRoot x)) ∧
+      ∀ x ∈ A.charpoly.roots, 0 < x := by
+  obtain ⟨T, hT, hTdet, hTchar, hTtrailing, hTlower, hTupper,
+      hTsuper, hTsub⟩ :=
+    exists_whitneyTridiagonal_adjacent_pos A hA hdet hsuper hsub
+  let S := symmetrizeTridiagonal T
+  have hdpos := tridiagonalScale_pos T hTsuper hTsub
+  have hdne : ∀ i, tridiagonalScale T i ≠ 0 := fun i ↦ (hdpos i).ne'
+  have hS : S.IsHermitian :=
+    symmetrizeTridiagonal_isHermitian T hTlower hTupper hTsuper hTsub
+  have hSchar : S.charpoly = T.charpoly :=
+    symmetrizeTridiagonal_charpoly T hdne
+  have hStrailing : (S.submatrix Fin.succ Fin.succ).charpoly =
+      (T.submatrix Fin.succ Fin.succ).charpoly :=
+    symmetrizeTridiagonal_trailing_charpoly T hdne
+  have hInterS : RealRooted.Interlaces
+      (S.submatrix Fin.succ Fin.succ).charpoly S.charpoly := by
+    simpa only [RealRooted.Challenges.CauchyInterlacing.PrincipalSubmatrix,
+      Fin.succAbove_zero] using
+      RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces
+        S hS 0
+  have hInter : RealRooted.Interlaces
+      (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly := by
+    rw [← hTchar, ← hTtrailing, ← hSchar, ← hStrailing]
+    exact hInterS
+  have hNoCommonT := charpoly_tridiagonal_no_common_root T hTlower hTupper
+    hTsuper hTsub
+  have hNoCommon : ∀ x : ℝ, ¬(A.charpoly.IsRoot x ∧
+      (A.submatrix Fin.succ Fin.succ).charpoly.IsRoot x) := by
+    intro x hroots
+    apply hNoCommonT x
+    constructor
+    · rw [hTchar]
+      exact hroots.1
+    · rw [hTtrailing]
+      exact hroots.2
+  have hPrec : RealRooted.Prec
+      (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly :=
+    hInter.toPrec
+  have hFullSimple : ∀ x : ℝ, A.charpoly.IsRoot x →
+      A.charpoly.rootMultiplicity x = 1 := by
+    intro x hx
+    have hTrailingNotRoot :
+        ¬(A.submatrix Fin.succ Fin.succ).charpoly.IsRoot x := by
+      intro hxTrailing
+      exact hNoCommon x ⟨hx, hxTrailing⟩
+    have hTrailingMult :
+        (A.submatrix Fin.succ Fin.succ).charpoly.rootMultiplicity x = 0 :=
+      Polynomial.rootMultiplicity_eq_zero hTrailingNotRoot
+    have hbound := (RealRooted.rootMultiplicity_bounds_of_prec hPrec x).2
+    have hpos := (Polynomial.rootMultiplicity_pos A.charpoly_monic.ne_zero).2 hx
+    lia
+  have hTrailingSimple : ∀ x : ℝ,
+      (A.submatrix Fin.succ Fin.succ).charpoly.IsRoot x →
+        (A.submatrix Fin.succ Fin.succ).charpoly.rootMultiplicity x = 1 := by
+    intro x hx
+    have hFullNotRoot : ¬A.charpoly.IsRoot x := by
+      intro hxFull
+      exact hNoCommon x ⟨hxFull, hx⟩
+    have hFullMult : A.charpoly.rootMultiplicity x = 0 :=
+      Polynomial.rootMultiplicity_eq_zero hFullNotRoot
+    have hbound := (RealRooted.rootMultiplicity_bounds_of_prec hPrec x).1
+    have hpos := (Polynomial.rootMultiplicity_pos
+      (A.submatrix Fin.succ Fin.succ).charpoly_monic.ne_zero).2 hx
+    lia
+  refine ⟨hInter, hFullSimple, hTrailingSimple, hNoCommon, ?_⟩
+  intro x hx
+  have hxRoot : A.charpoly.IsRoot x :=
+    (Polynomial.mem_roots A.charpoly_monic.ne_zero).mp hx
+  have hxNonneg : 0 ≤ x := hA.nonneg_of_isRoot_charpoly hxRoot
+  have hxNe : x ≠ 0 := by
+    intro hxZero
+    subst x
+    have hcoeff : A.charpoly.coeff 0 = 0 := by
+      rw [Polynomial.coeff_zero_eq_eval_zero]
+      exact hxRoot.eq_zero
+    apply hdet
+    rw [Matrix.det_eq_sign_charpoly_coeff, hcoeff, mul_zero]
+  exact lt_of_le_of_ne hxNonneg (Ne.symm hxNe)
 
 end Matrix
