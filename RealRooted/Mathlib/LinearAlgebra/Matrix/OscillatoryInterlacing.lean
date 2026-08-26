@@ -1243,6 +1243,115 @@ private theorem whitneyClearLowerAux_spec {N : ℕ}
               (B s.succ 0 / B s.castSucc 0)) *
                 whitneyEliminateFirst B s := by rw [Matrix.mul_assoc]
 
+private theorem whitneyClearLowerAux_first_block {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
+    ∀ t, t < N →
+      (∀ i : Fin N, whitneyClearLowerAux A t i.succ 0 = 0) ∧
+      ∀ j : Fin N, whitneyClearLowerAux A t 0 j.succ = 0 := by
+  intro t ht
+  induction t with
+  | zero =>
+      constructor
+      · intro i
+        simp [whitneyClearLowerAux]
+      · intro j
+        have hne : (0 : Fin (N + 1)) ≠ j.succ :=
+          ne_of_lt (Fin.succ_pos j)
+        simp [whitneyClearLowerAux, hne]
+  | succ t ih =>
+      have htN : t < N := by lia
+      obtain ⟨hcol, hrow⟩ := ih htN
+      let s : Fin N := ⟨N - (t + 1), by lia⟩
+      have hs : s.castSucc ≠ (0 : Fin (N + 1)) := by
+        apply Fin.ne_of_gt
+        rw [Fin.pos_iff_ne_zero]
+        intro hzero
+        have : s.val = 0 := congrArg Fin.val hzero
+        dsimp [s] at this
+        lia
+      by_cases hzero : whitneyClearFirstAux A t s.succ 0 = 0
+      · rw [whitneyClearLowerAux, dif_pos htN, if_pos hzero]
+        exact ⟨hcol, hrow⟩
+      · rw [whitneyClearLowerAux, dif_pos htN, if_neg hzero]
+        let E := Matrix.transvection s.succ s.castSucc
+          (whitneyClearFirstAux A t s.succ 0 /
+            whitneyClearFirstAux A t s.castSucc 0)
+        have hEcol : ∀ i : Fin N, E i.succ 0 = 0 :=
+          transvection_succ_castSucc_firstColumn_zero s hs _
+        have hErow : ∀ j : Fin N, E 0 j.succ = 0 :=
+          transvection_succ_castSucc_firstRow_zero s _
+        constructor
+        · intro i
+          change (whitneyClearLowerAux A t * E) i.succ 0 = 0
+          simp only [Matrix.mul_apply]
+          rw [Fin.sum_univ_succ]
+          rw [hcol i, zero_mul]
+          simp_rw [hEcol]
+          simp
+        · intro j
+          change (whitneyClearLowerAux A t * E) 0 j.succ = 0
+          simp only [Matrix.mul_apply]
+          rw [Fin.sum_univ_succ]
+          rw [hErow j, mul_zero]
+          simp_rw [hrow]
+          simp
+
+/-- Cycling one bottom-up Whitney sweep produces a TN matrix with the same
+ambient and trailing-principal characteristic polynomials, and clears the
+first column below the subdiagonal. -/
+theorem exists_whitneyClearBelowSubdiagonal {n : ℕ}
+    (A : Matrix (Fin (n + 2)) (Fin (n + 2)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) :
+    ∃ C : Matrix (Fin (n + 2)) (Fin (n + 2)) ℝ,
+      C.IsTotallyNonneg ∧ C.det ≠ 0 ∧ C.charpoly = A.charpoly ∧
+        (C.submatrix Fin.succ Fin.succ).charpoly =
+          (A.submatrix Fin.succ Fin.succ).charpoly ∧
+        ∀ i, 1 < i → C i 0 = 0 := by
+  let L := whitneyClearLowerAux A n
+  let B := whitneyClearFirstAux A n
+  let C := B * L
+  have hnlt : n < n + 1 := Nat.lt_succ_self n
+  obtain ⟨hB, hBdet, hBzero⟩ :=
+    whitneyClearFirstAux_spec A hA hdet n hnlt.le
+  obtain ⟨hL, hfactor⟩ :=
+    whitneyClearLowerAux_spec A hA hdet n hnlt.le
+  obtain ⟨hLcol, hLrow⟩ := whitneyClearLowerAux_first_block A n hnlt
+  have hC : C.IsTotallyNonneg := (hB.toRect.mul hL.toRect).toSquare
+  have hCdet : C.det ≠ 0 := by
+    intro hzero
+    apply hdet
+    rw [hfactor, Matrix.det_mul]
+    simp only [C, Matrix.det_mul] at hzero
+    simpa only [mul_comm] using hzero
+  have hCchar : C.charpoly = A.charpoly := by
+    calc
+      C.charpoly = (B * L).charpoly := rfl
+      _ = (L * B).charpoly := Matrix.charpoly_mul_comm B L
+      _ = A.charpoly := congrArg Matrix.charpoly hfactor.symm
+  have hAtrailing : A.submatrix Fin.succ Fin.succ =
+      L.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
+    rw [hfactor,
+      trailing_submatrix_mul_of_left_firstColumn_zero L B hLcol]
+  have hCtrailing : C.submatrix Fin.succ Fin.succ =
+      B.submatrix Fin.succ Fin.succ * L.submatrix Fin.succ Fin.succ := by
+    change (B * L).submatrix Fin.succ Fin.succ = _
+    exact trailing_submatrix_mul_of_right_firstRow_zero B L hLrow
+  have htrailingChar : (C.submatrix Fin.succ Fin.succ).charpoly =
+      (A.submatrix Fin.succ Fin.succ).charpoly := by
+    rw [hAtrailing, hCtrailing, Matrix.charpoly_mul_comm]
+  refine ⟨C, hC, hCdet, hCchar, htrailingChar, ?_⟩
+  intro i hi
+  change (B * L) i 0 = 0
+  simp only [Matrix.mul_apply]
+  rw [Fin.sum_univ_succ]
+  have hi' : 1 < i.val := hi
+  have hiB : B i 0 = 0 := hBzero i (by simpa using hi')
+  have hLcol' : ∀ j : Fin (n + 1), L j.succ 0 = 0 := hLcol
+  rw [hiB, zero_mul, zero_add]
+  apply Finset.sum_eq_zero
+  intro j _
+  rw [hLcol' j, mul_zero]
+
 /-- The completed bottom-up sweep clears every first-column entry below the
 top pivot while preserving TN and determinant. -/
 theorem exists_whitneyClearFirst {N : ℕ}
