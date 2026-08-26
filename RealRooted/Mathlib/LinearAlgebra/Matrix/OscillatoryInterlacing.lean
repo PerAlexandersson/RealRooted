@@ -1053,6 +1053,23 @@ noncomputable def whitneyClearFirstAux {N : ℕ}
       else
         whitneyClearFirstAux A t
 
+/-- Product of the nonnegative lower transvections removed by
+`whitneyClearFirstAux`. -/
+noncomputable def whitneyClearLowerAux {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
+    ℕ → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ
+  | 0 => 1
+  | t + 1 =>
+      if ht : t < N then
+        let s : Fin N := ⟨N - (t + 1), by lia⟩
+        let B := whitneyClearFirstAux A t
+        let L := whitneyClearLowerAux A t
+        if B s.succ 0 = 0 then L
+        else L * Matrix.transvection s.succ s.castSucc
+          (B s.succ 0 / B s.castSucc 0)
+      else
+        whitneyClearLowerAux A t
+
 private theorem whitneyClearFirstAux_spec {N : ℕ}
     (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
     (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) :
@@ -1121,6 +1138,72 @@ private theorem whitneyClearFirstAux_spec {N : ℕ}
             exact lt_of_le_of_ne hle (fun h ↦ his (Fin.ext h.symm))
           change (whitneyEliminateFirst B s) i 0 = 0
           simp [whitneyEliminateFirst, Matrix.updateRow, his, htail i hit]
+
+private theorem isTotallyNonneg_one_fin (N : ℕ) :
+    (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ).IsTotallyNonneg := by
+  simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
+    (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
+      Fin.val_strictMono Fin.val_strictMono
+
+private theorem whitneyClearLowerAux_spec {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) :
+    ∀ t, t ≤ N →
+      (whitneyClearLowerAux A t).IsTotallyNonneg ∧
+      A = whitneyClearLowerAux A t * whitneyClearFirstAux A t := by
+  intro t ht
+  induction t with
+  | zero =>
+      exact ⟨isTotallyNonneg_one_fin N, by simp [whitneyClearLowerAux,
+        whitneyClearFirstAux]⟩
+  | succ t ih =>
+      have htN : t < N := by lia
+      obtain ⟨hL, hfactor⟩ := ih htN.le
+      obtain ⟨hB, hBdet, hBtail⟩ :=
+        whitneyClearFirstAux_spec A hA hdet t htN.le
+      let s : Fin N := ⟨N - (t + 1), by lia⟩
+      let B := whitneyClearFirstAux A t
+      let L := whitneyClearLowerAux A t
+      have hsval : s.succ.val = N - t := by
+        simp [s]
+        lia
+      have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
+      have hclear : whitneyClearFirstAux A (t + 1) =
+          if B s.succ 0 = 0 then B else whitneyEliminateFirst B s := by
+        rw [whitneyClearFirstAux, dif_pos htN]
+      have hlower : whitneyClearLowerAux A (t + 1) =
+          if B s.succ 0 = 0 then L
+          else L * Matrix.transvection s.succ s.castSucc
+            (B s.succ 0 / B s.castSucc 0) := by
+        rw [whitneyClearLowerAux, dif_pos htN]
+      rw [hclear, hlower]
+      by_cases hzero : B s.succ 0 = 0
+      · rw [if_pos hzero, if_pos hzero]
+        exact ⟨hL, hfactor⟩
+      · rw [if_neg hzero, if_neg hzero]
+        have htarget : 0 < B s.succ 0 :=
+          lt_of_le_of_ne (hB.nonneg s.succ 0) (Ne.symm hzero)
+        have hpivot : 0 < B s.castSucc 0 := by
+          have hpred := hB.firstColumn_pred_pos_of_det_ne_zero
+            hBdetne s.succ (by simp) htarget
+          simpa using hpred
+        have hratio : 0 ≤ B s.succ 0 / B s.castSucc 0 :=
+          (div_nonneg htarget.le hpivot.le)
+        have hE := isTotallyNonneg_transvection_succ_castSucc s _ hratio
+        have hLE : (L * Matrix.transvection s.succ s.castSucc
+            (B s.succ 0 / B s.castSucc 0)).IsTotallyNonneg :=
+          (hL.toRect.mul hE.toRect).toSquare
+        refine ⟨hLE, ?_⟩
+        calc
+          A = L * B := hfactor
+          _ = L * (Matrix.transvection s.succ s.castSucc
+              (B s.succ 0 / B s.castSucc 0) *
+                whitneyEliminateFirst B s) := by
+            rw [← whitneyRestoreFirst_eq_transvection_mul,
+              whitneyRestoreFirst_eliminate]
+          _ = (L * Matrix.transvection s.succ s.castSucc
+              (B s.succ 0 / B s.castSucc 0)) *
+                whitneyEliminateFirst B s := by rw [Matrix.mul_assoc]
 
 /-- The completed bottom-up sweep clears every first-column entry below the
 top pivot while preserving TN and determinant. -/
