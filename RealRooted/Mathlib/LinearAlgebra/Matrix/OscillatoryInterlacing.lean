@@ -863,6 +863,134 @@ theorem IsTotallyNonnegRect.whitneyEliminateFirst {m n : ℕ}
         rw [submatrix_whitneyEliminateFirst_eq_of_not_mem A s rows cols hu]
         exact hA hrows hcols
 
+/-- Add a nonnegative multiple of a row to its immediate successor. This is
+the inverse elementary operation to `whitneyEliminateFirst`. -/
+noncomputable def whitneyRestoreFirst {m n : ℕ}
+    (A : Matrix (Fin (m + 2)) (Fin (n + 1)) ℝ) (s : Fin (m + 1))
+    (c : ℝ) : Matrix (Fin (m + 2)) (Fin (n + 1)) ℝ :=
+  A.updateRow s.succ (A s.succ + c • A s.castSucc)
+
+/-- Adding a nonnegative multiple of a row to its immediate successor
+preserves rectangular total nonnegativity. -/
+theorem IsTotallyNonnegRect.whitneyRestoreFirst {m n : ℕ}
+    {A : Matrix (Fin (m + 2)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTotallyNonnegRect) (s : Fin (m + 1)) (c : ℝ) (hc : 0 ≤ c) :
+    (Matrix.whitneyRestoreFirst A s c).IsTotallyNonnegRect := by
+  intro q rows cols hrows hcols
+  by_cases hu : ∃ p, rows p = s.succ
+  · obtain ⟨p, hp⟩ := hu
+    let M := A.submatrix rows cols
+    let prev : Fin (m + 2) := s.castSucc
+    let v : Fin q → ℝ := fun j ↦ A prev (cols j)
+    have hsub : (Matrix.whitneyRestoreFirst A s c).submatrix rows cols =
+        M.updateRow p (M p + c • v) := by
+      ext i j
+      by_cases hi : i = p
+      · subst i
+        simp [Matrix.whitneyRestoreFirst, M, v, prev, hp]
+      · have hne : rows i ≠ s.succ := by
+          intro h
+          exact hi (hrows.injective (h.trans hp.symm))
+        simp [Matrix.whitneyRestoreFirst, M, v, prev, hi, hne]
+    rw [hsub, Matrix.det_updateRow_add, Matrix.updateRow_eq_self,
+      Matrix.det_updateRow_smul]
+    have hM : 0 ≤ M.det := hA hrows hcols
+    by_cases hprev : ∃ r, rows r = prev
+    · obtain ⟨r, hr⟩ := hprev
+      have hrp : r ≠ p := by
+        intro h
+        subst r
+        exact (Fin.ne_of_gt s.castSucc_lt_succ) (hp.symm.trans hr)
+      have hzero : (M.updateRow p v).det = 0 := by
+        apply Matrix.det_zero_of_row_eq hrp
+        funext j
+        simp [M, v, Matrix.updateRow, hrp, hr]
+      rw [hzero, mul_zero, add_zero]
+      exact hM
+    · simp only [not_exists] at hprev
+      let rows' := Function.update rows p prev
+      have hrows' : StrictMono rows' := by
+        apply strictMono_update_at rows p prev hrows
+        · intro i hi
+          have hlt := hrows hi
+          have hle : rows i ≤ prev := by
+            rw [hp] at hlt
+            exact Fin.le_iff_val_le_val.2 (by
+              change (rows i).val < s.val + 1 at hlt
+              exact Nat.lt_succ_iff.mp hlt)
+          exact lt_of_le_of_ne hle (hprev i)
+        · intro i hi
+          exact lt_trans s.castSucc_lt_succ (by rw [← hp]; exact hrows hi)
+      have hreplace : M.updateRow p v = A.submatrix rows' cols := by
+        rw [updateRow_submatrix]
+      rw [hreplace]
+      exact add_nonneg hM (mul_nonneg hc (hA hrows' hcols))
+  · simp only [not_exists] at hu
+    have hsub : (Matrix.whitneyRestoreFirst A s c).submatrix rows cols =
+        A.submatrix rows cols := by
+      ext i j
+      simp [Matrix.whitneyRestoreFirst, Matrix.updateRow, hu i]
+    rw [hsub]
+    exact hA hrows hcols
+
+/-- Restoring with the pivot ratio exactly reverses one Whitney elimination
+step. -/
+theorem whitneyRestoreFirst_eliminate {m n : ℕ}
+    (A : Matrix (Fin (m + 2)) (Fin (n + 1)) ℝ) (s : Fin (m + 1)) :
+    Matrix.whitneyRestoreFirst (whitneyEliminateFirst A s) s
+      (A s.succ 0 / A s.castSucc 0) = A := by
+  ext i j
+  by_cases hi : i = s.succ
+  · subst i
+    have hne : s.castSucc ≠ s.succ := Fin.ne_of_lt s.castSucc_lt_succ
+    simp [Matrix.whitneyRestoreFirst, whitneyEliminateFirst,
+      Matrix.updateRow, hne]
+  · simp [Matrix.whitneyRestoreFirst, whitneyEliminateFirst,
+      Matrix.updateRow, hi]
+
+/-- In a TN square matrix with positive diagonal, a zero in the first column
+forces the entire tail below it to vanish. -/
+private theorem IsTotallyNonneg.firstColumn_zero_tail_of_diagonal_pos
+    {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hdiag : ∀ i, 0 < A i i)
+    {i : Fin (N + 1)} (hi : A i 0 = 0) :
+    ∀ j, i < j → A j 0 = 0 := by
+  intro j hij
+  have hi0 : (0 : Fin (N + 1)) < i := by
+    apply Fin.pos_iff_ne_zero.2
+    intro hieq
+    subst i
+    exact (hdiag 0).ne' hi
+  let rows : Fin 2 → Fin (N + 1) := ![i, j]
+  let cols : Fin 2 → Fin (N + 1) := ![0, i]
+  have hrows : StrictMono rows := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> simp_all [rows]
+  have hcols : StrictMono cols := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> simp_all [cols]
+  have hminor := hA hrows hcols
+  simp only [Matrix.det_fin_two, Matrix.submatrix_apply, rows, cols,
+    Matrix.cons_val_zero, Matrix.cons_val_one] at hminor
+  have hj0 : 0 ≤ A j 0 := hA.nonneg j 0
+  rw [hi, zero_mul, zero_sub] at hminor
+  nlinarith [hdiag i]
+
+/-- Nonzero first-column support in a TN matrix with positive diagonal has no
+gaps: a positive entry has a positive immediate predecessor. -/
+private theorem IsTotallyNonneg.firstColumn_pred_pos_of_pos
+    {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hdiag : ∀ i, 0 < A i i)
+    (i : Fin (N + 1)) (hi0 : i ≠ 0) (hi : 0 < A i 0) :
+    0 < A (i.pred hi0).castSucc 0 := by
+  have hnonneg := hA.nonneg (i.pred hi0).castSucc 0
+  by_cases hzero : A (i.pred hi0).castSucc 0 = 0
+  · have htail := hA.firstColumn_zero_tail_of_diagonal_pos hdiag hzero i
+    have hlt : (i.pred hi0).castSucc < i := by
+      exact Fin.castSucc_pred_lt hi0
+    exact (hi.ne' (htail hlt)).elim
+  · exact lt_of_le_of_ne hnonneg (Ne.symm hzero)
+
 end WhitneyElimination
 
 /-- In a TN matrix with positive adjacent off-diagonal entries, the two
