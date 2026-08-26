@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Zero
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 
@@ -7,22 +8,25 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 
 If every compound matrix `compound q A` of a real matrix `A` is primitive
 (in particular entrywise nonnegative), then the spectrum of `A` is real,
-positive, and the characteristic polynomial splits over `ℝ`.
+positive, algebraically simple, and the characteristic polynomial splits over
+`ℝ`.
 
 This covers the oscillatory case of the Gantmacher-Krein theorem: for an
 oscillatory (totally nonnegative and suitably irreducible) matrix all
 compounds are primitive.  The general totally nonnegative case requires
 Whitney density and root continuity and is not treated here.
 
-The argument needs no tie analysis.  Sort an eigenvalue enumeration `μ` from
-`exists_charpoly_compound_eq_prod` by descending modulus.  For each `q` the
+Sort an eigenvalue enumeration `μ` from `exists_charpoly_compound_eq_prod` by
+descending modulus.  For each `q` the
 Perron root `ρ_q` of `compound q A` is an eigenvalue, and by strict spectral
 dominance (`spectral_dominance_of_primitive'`) every other eigenvalue of
 `compound q A` has strictly smaller modulus.  The top product
 `μ 0 * ⋯ * μ (q-1)` is an eigenvalue of maximal modulus, so it must *equal*
 `ρ_q` — otherwise its modulus would be strictly below `ρ_q ≤ ‖μ 0 ⋯ μ (q-1)‖`.
 Hence every partial product is real and positive, and
-`μ q = ρ_{q+1} / ρ_q > 0` is real.
+`μ q = ρ_{q+1} / ρ_q > 0` is real.  Finally, equal eigenvalues would give two
+different selections with the same Perron-root product in a compound.  This
+contradicts algebraic simplicity of that compound's Perron root.
 -/
 
 open Polynomial Finset
@@ -90,6 +94,126 @@ theorem prod_powersetCard_comp_perm {q : ℕ} (π : Equiv.Perm (Fin n)) (μ : Fi
       = ∏ i ∈ (s : Finset (Fin n)).image π, μ i
     exact (Finset.prod_image fun x _ y _ h => π.injective h).symm
 
+/-! ### Algebraic simplicity of the Perron root -/
+
+private lemma exists_pos_add_smul {ι : Type*} [Finite ι] [Nonempty ι]
+    {v x : ι → ℝ} (hv : ∀ i, 0 < v i) :
+    ∃ c : ℝ, 0 < c ∧ ∀ i, 0 < (x + c • v) i := by
+  letI := Fintype.ofFinite ι
+  let b := Finset.univ.sup' Finset.univ_nonempty (fun i => -x i / v i)
+  refine ⟨max 0 b + 1, by positivity, ?_⟩
+  intro i
+  have hi : -x i / v i ≤ b :=
+    Finset.le_sup' (fun j => -x j / v j) (Finset.mem_univ i)
+  have hi' : -x i / v i < max 0 b + 1 :=
+    lt_of_le_of_lt (hi.trans (le_max_right 0 b)) (lt_add_one _)
+  have hmul : -x i < (max 0 b + 1) * v i :=
+    (div_lt_iff₀ (hv i)).mp hi'
+  change 0 < x i + (max 0 b + 1) * v i
+  linarith
+
+private lemma maxGenEigenspace_eq_span_of_eigenspace_eq_span
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {f : Module.End ℝ V} {r : ℝ} {v : V} {L : V →ₗ[ℝ] ℝ}
+    (heig : f.eigenspace r = ℝ ∙ v) (hLv : L v ≠ 0)
+    (hL : ∀ x, L (f x - r • x) = 0) :
+    f.maxGenEigenspace r = ℝ ∙ v := by
+  apply le_antisymm
+  · intro x hx
+    obtain ⟨k, hk⟩ := (Module.End.mem_maxGenEigenspace f r x).mp hx
+    clear hx
+    induction k generalizing x with
+    | zero =>
+        have hx_zero : x = 0 := by simpa using hk
+        simp [hx_zero]
+    | succ k ih =>
+        let T := f - r • (1 : Module.End ℝ V)
+        let y := T x
+        have hy_pow : (T ^ k) y = 0 := by
+          change (T ^ k) (T x) = 0
+          rw [← Module.End.mul_apply, ← pow_succ]
+          exact hk
+        have hy_span : y ∈ ℝ ∙ v := ih hy_pow
+        obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp hy_span
+        have hLy : L y = 0 := by
+          simpa [y, T, LinearMap.sub_apply] using hL x
+        have hc_mul : c * L v = 0 := by
+          calc
+            c * L v = L (c • v) := by simp
+            _ = L y := by rw [hc]
+            _ = 0 := hLy
+        have hc_zero : c = 0 := (mul_eq_zero.mp hc_mul).resolve_right hLv
+        have hy_zero : y = 0 := by rw [← hc, hc_zero, zero_smul]
+        have hx_eig : x ∈ f.eigenspace r := by
+          rw [Module.End.mem_eigenspace_iff]
+          apply sub_eq_zero.mp
+          simpa [y, T, LinearMap.sub_apply] using hy_zero
+        exact heig ▸ hx_eig
+  · rw [← heig]
+    exact Module.End.eigenspace_le_maxGenEigenspace
+
+/-- The Perron root of an irreducible nonnegative real matrix is algebraically simple. -/
+theorem perronRoot_rootMultiplicity_eq_one_of_irreducible
+    {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+    {A : Matrix ι ι ℝ} (hA_irred : A.IsIrreducible) :
+    A.charpoly.rootMultiplicity (perronRoot A) = 1 := by
+  obtain ⟨r, v, hr_pos, hv_pos, hv_eig⟩ :=
+    exists_positive_eigenvector_of_irreducible hA_irred
+  have hr_eq : r = perronRoot A :=
+    eigenvalue_is_perron_root_of_positive_eigenvector
+      hA_irred hA_irred.nonneg hr_pos hv_pos hv_eig
+  subst r
+  have hv_ne_zero : v ≠ 0 := Pi.ne_zero_of_pos hv_pos
+  have heig : Module.End.eigenspace A.toLin' (perronRoot A) = ℝ ∙ v := by
+    apply le_antisymm
+    · intro x hx
+      have hx_eig : A *ᵥ x = perronRoot A • x := by
+        simpa [Matrix.toLin'_apply] using Module.End.mem_eigenspace_iff.mp hx
+      obtain ⟨c, hc_pos, hx_add_pos⟩ := exists_pos_add_smul hv_pos (x := x)
+      have hx_add_eig : A *ᵥ (x + c • v) = perronRoot A • (x + c • v) := by
+        calc
+          A *ᵥ (x + c • v) = A *ᵥ x + c • (A *ᵥ v) := by
+            rw [mulVec_add, mulVec_smul]
+          _ = perronRoot A • x + c • (perronRoot A • v) := by
+            rw [hx_eig, hv_eig]
+          _ = perronRoot A • (x + c • v) := by
+            rw [smul_add, smul_smul, smul_smul, mul_comm c]
+      obtain ⟨d, _, h_add_eq⟩ := uniqueness_of_positive_eigenvector_gen
+        hA_irred (perronRoot_pos_of_irreducible hA_irred hA_irred.nonneg)
+        hx_add_pos hv_pos hx_add_eig hv_eig
+      apply Submodule.mem_span_singleton.mpr
+      refine ⟨d - c, ?_⟩
+      simpa [sub_smul] using (eq_sub_of_add_eq h_add_eq).symm
+    · rw [Submodule.span_singleton_le_iff_mem]
+      apply Module.End.mem_eigenspace_iff.mpr
+      simpa [Matrix.toLin'_apply] using hv_eig
+  obtain ⟨u, hu_pos, hu_left_eig⟩ :=
+    exists_positive_left_perron_eigenvector hA_irred hA_irred.nonneg
+  let L : (ι → ℝ) →ₗ[ℝ] ℝ := (dotProductBilin ℝ ℝ) u
+  have hLv : L v ≠ 0 := by
+    exact (dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos
+      (fun i => (hv_pos i).le) hv_ne_zero).ne'
+  have hL : ∀ x, L (A.toLin' x - perronRoot A • x) = 0 := by
+    intro x
+    simpa [L, Matrix.toLin'_apply] using
+      dotProduct_left_perron_sub_eq_zero (y := x) hu_left_eig
+  have hmax : Module.End.maxGenEigenspace A.toLin' (perronRoot A) = ℝ ∙ v :=
+    maxGenEigenspace_eq_span_of_eigenspace_eq_span heig hLv hL
+  calc
+    A.charpoly.rootMultiplicity (perronRoot A) =
+        Module.finrank ℝ (Module.End.maxGenEigenspace A.toLin' (perronRoot A)) := by
+      rw [LinearMap.finrank_maxGenEigenspace_eq]
+      simp
+    _ = Module.finrank ℝ (ℝ ∙ v) := by rw [hmax]
+    _ = 1 := finrank_span_singleton hv_ne_zero
+
+/-- The Perron root of a primitive nonnegative real matrix is algebraically simple. -/
+theorem perronRoot_rootMultiplicity_eq_one_of_primitive
+    {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+    {A : Matrix ι ι ℝ} (hA_prim : A.IsPrimitive) :
+    A.charpoly.rootMultiplicity (perronRoot A) = 1 :=
+  perronRoot_rootMultiplicity_eq_one_of_irreducible hA_prim.isIrreducible
+
 /-! ### The main theorem -/
 
 /-- Values of a strictly monotone map out of `Fin q` dominate the index. -/
@@ -149,14 +273,55 @@ private lemma topFinset_eq_image {q : ℕ} (hq : q ≤ n) :
   · rintro ⟨k, rfl⟩
     exact k.isLt
 
+private lemma two_le_count_map_univ_of_eq
+    {α β : Type*} [Fintype α] [DecidableEq β]
+    (f : α → β) {a b : α} (hab : a ≠ b) (hfab : f a = f b) :
+    2 ≤ (Finset.univ.val.map f).count (f a) := by
+  classical
+  rw [Multiset.count_map]
+  have hsub :
+      ({a, b} : Finset α) ⊆ Finset.univ.filter (fun x => f a = f x) := by
+    intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · simp
+    · simp [hfab]
+  calc
+    2 = ({a, b} : Finset α).card := by simp [hab]
+    _ ≤ (Finset.univ.filter (fun x => f a = f x)).card :=
+      Finset.card_le_card hsub
+    _ = (Finset.univ.val.filter fun x => f a = f x).card := by
+      rw [← Finset.filter_val]
+      rfl
+
+private lemma card_prod_insert_erase_eq_of_eq
+    {α M : Type*} [DecidableEq α] [CommMonoid M]
+    (f : α → M) {S : Finset α} {a b : α}
+    (ha : a ∈ S) (hb : b ∉ S) (hfab : f a = f b) :
+    (insert b (S.erase a)).card = S.card ∧
+      (∏ x ∈ insert b (S.erase a), f x) = ∏ x ∈ S, f x ∧
+      insert b (S.erase a) ≠ S := by
+  have hb_erase : b ∉ S.erase a := fun h => hb (Finset.mem_of_mem_erase h)
+  have hcard : (insert b (S.erase a)).card = S.card := by
+    rw [Finset.card_insert_of_notMem hb_erase, Finset.card_erase_of_mem ha]
+    exact Nat.sub_add_cancel (Finset.one_le_card.mpr ⟨a, ha⟩)
+  have hprod : (∏ x ∈ insert b (S.erase a), f x) = ∏ x ∈ S, f x := by
+    rw [Finset.prod_insert hb_erase, ← hfab]
+    exact Finset.mul_prod_erase S f ha
+  have hne : insert b (S.erase a) ≠ S := by
+    intro h
+    have : b ∈ insert b (S.erase a) := by simp
+    exact hb (h ▸ this)
+  exact ⟨hcard, hprod, hne⟩
+
 /-- **Gantmacher-Krein for matrices with primitive compounds.**  If every
 compound of `A` is primitive, the characteristic polynomial of `A` splits over
-`ℝ` with strictly positive roots.  This covers the oscillatory case; the
-general totally nonnegative case needs Whitney density and root continuity. -/
-theorem exists_charpoly_eq_prod_of_forall_compound_primitive
+`ℝ` with positive roots in strictly decreasing order. -/
+theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
     {A : Matrix (Fin n) (Fin n) ℝ}
     (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
-    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) := by
+    ∃ μ : Fin n → ℝ, StrictAnti μ ∧ (∀ i, 0 < μ i) ∧
+      A.charpoly = ∏ i, (X - C (μ i)) := by
   classical
   -- the complex eigenvalue enumeration, sorted by descending modulus
   obtain ⟨ν, hν_char, hν_comp⟩ :=
@@ -289,6 +454,84 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
     rw [hμr]
     push_cast
     exact (eq_div_iff hR_ne).mpr h1
+  have hμr_anti : Antitone μr := by
+    intro i j hij
+    have hj : ‖μc j‖ = μr j := by
+      rw [hμc_real j, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos j)]
+    have hi : ‖μc i‖ = μr i := by
+      rw [hμc_real i, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos i)]
+    simpa [hj, hi] using hanti i j hij
+  -- Equal values at two indices would give two distinct selections with the
+  -- Perron root as their product in one compound.  Its characteristic
+  -- polynomial would therefore contain that root at least twice.
+  have hμr_ne_of_lt : ∀ {i j : Fin n}, i < j → μr i ≠ μr j := by
+    intro i j hij hμij
+    let q := (i : ℕ) + 1
+    have hq1 : 1 ≤ q := by simp [q]
+    have hqn : q ≤ n := by
+      dsimp [q]
+      exact Nat.succ_le_of_lt i.isLt
+    have hi_top : i ∈ topFinset n q := by simp [topFinset, q]
+    have hj_not : j ∉ topFinset n q := by
+      simp only [topFinset, Finset.mem_filter, Finset.mem_univ, true_and]
+      dsimp [q]
+      exact Nat.not_lt.mpr (Nat.succ_le_of_lt hij)
+    have hμcij : μc i = μc j := by
+      rw [hμc_real i, hμc_real j, hμij]
+    have hswap := card_prod_insert_erase_eq_of_eq μc hi_top hj_not hμcij
+    let sTop : Set.powersetCard (Fin n) q :=
+      ⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩
+    let sAlt : Set.powersetCard (Fin n) q :=
+      ⟨insert j ((topFinset n q).erase i),
+        Set.powersetCard.mem_iff.mpr (hswap.1.trans (topFinset_card hqn))⟩
+    have hs_ne : sTop ≠ sAlt := by
+      intro h
+      apply hswap.2.2
+      exact (congrArg Subtype.val h).symm
+    let g : Set.powersetCard (Fin n) q → ℂ :=
+      fun s => ∏ k, μc (powersetEnum s k)
+    have hg_eq : g sTop = g sAlt := by
+      dsimp only [g]
+      rw [prod_powersetEnum, prod_powersetEnum]
+      exact hswap.2.1.symm
+    have hg_top : g sTop = ((perronRoot (compound q A) : ℝ) : ℂ) := by
+      dsimp only [g]
+      rw [prod_powersetEnum]
+      exact hkey q hq1 hqn
+    have hroots :
+        ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots =
+          Finset.univ.val.map g := by
+      rw [hcomp q, Finset.prod]
+      rw [show (fun s => (X : ℂ[X]) - C (∏ k, μc (powersetEnum s k))) =
+          (fun y => (X : ℂ[X]) - C y) ∘ g by rfl]
+      rw [← Multiset.map_map]
+      exact Polynomial.roots_multiset_prod_X_sub_C _
+    have htwo :
+        2 ≤ ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots.count
+          (((perronRoot (compound q A) : ℝ) : ℂ)) := by
+      rw [hroots, ← hg_top]
+      exact two_le_count_map_univ_of_eq g hs_ne hg_eq
+    letI : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
+    have hsimpleC :
+        ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
+          (((perronRoot (compound q A) : ℝ) : ℂ)) = 1 := by
+      calc
+        ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
+              (((perronRoot (compound q A) : ℝ) : ℂ)) =
+            (compound q A).charpoly.rootMultiplicity (perronRoot (compound q A)) :=
+          (Polynomial.eq_rootMultiplicity_map
+            (p := (compound q A).charpoly) (f := algebraMap ℝ ℂ)
+            (algebraMap ℝ ℂ).injective (perronRoot (compound q A))).symm
+        _ = 1 := perronRoot_rootMultiplicity_eq_one_of_primitive (hprim q hq1 hqn)
+    rw [Polynomial.count_roots, hsimpleC] at htwo
+    lia
+  have hμr_inj : Function.Injective μr := by
+    intro i j hμij
+    by_contra hij
+    rcases lt_or_gt_of_ne hij with hij | hji
+    · exact hμr_ne_of_lt hij hμij
+    · exact hμr_ne_of_lt hji hμij.symm
+  have hμr_strict : StrictAnti μr := hμr_anti.strictAnti_of_injective hμr_inj
   -- transport the complex factorization back to `ℝ`
   have hmapped : A.charpoly.map (algebraMap ℝ ℂ)
       = (∏ i, ((X : ℝ[X]) - C (μr i))).map (algebraMap ℝ ℂ) := by
@@ -296,8 +539,58 @@ theorem exists_charpoly_eq_prod_of_forall_compound_primitive
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C, hμc_real i]
     rfl
-  exact ⟨μr, hμr_pos,
+  exact ⟨μr, hμr_strict, hμr_pos,
     Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective hmapped⟩
+
+/-- If every compound of `A` is primitive, the positive roots of its
+characteristic polynomial can be enumerated in nonincreasing order. -/
+theorem exists_charpoly_eq_prod_antitone_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
+    ∃ μ : Fin n → ℝ, Antitone μ ∧ (∀ i, 0 < μ i) ∧
+      A.charpoly = ∏ i, (X - C (μ i)) := by
+  obtain ⟨μ, hμ_strict, hμ_pos, hchar⟩ :=
+    exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive hprim
+  exact ⟨μ, hμ_strict.antitone, hμ_pos, hchar⟩
+
+/-- If every compound of `A` is primitive, the characteristic polynomial of
+`A` splits over `ℝ` with strictly positive roots. -/
+theorem exists_charpoly_eq_prod_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
+    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) := by
+  obtain ⟨μ, -, hμ_pos, hchar⟩ :=
+    exists_charpoly_eq_prod_antitone_of_forall_compound_primitive hprim
+  exact ⟨μ, hμ_pos, hchar⟩
+
+/-! ### Strict interlacing closure -/
+
+/-- Weak interlacing of two factored characteristic polynomials is strict when
+the polynomials have no common root.  The weak interlacing hypothesis remains
+essential; real-rootedness and disjoint spectra alone do not imply it. -/
+theorem strictInterlace_charpoly_of_interlace_of_noCommonRoot
+    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    {B : Matrix (Fin n) (Fin n) ℝ}
+    {lam : Fin (n + 1) → ℝ} {μ : Fin n → ℝ}
+    (hA : A.charpoly = ∏ i, (X - C (lam i)))
+    (hB : B.charpoly = ∏ i, (X - C (μ i)))
+    (hinter : ∀ k : Fin n, lam k.succ ≤ μ k ∧ μ k ≤ lam k.castSucc)
+    (hno : ∀ r : ℝ, A.charpoly.IsRoot r → ¬ B.charpoly.IsRoot r) :
+    ∀ k : Fin n, lam k.succ < μ k ∧ μ k < lam k.castSucc := by
+  have hrootA : ∀ i, A.charpoly.IsRoot (lam i) := by
+    intro i
+    rw [hA, Polynomial.IsRoot.def, Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+  have hrootB : ∀ j, B.charpoly.IsRoot (μ j) := by
+    intro j
+    rw [hB, Polynomial.IsRoot.def, Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ j) (by simp)
+  have hne : ∀ i j, lam i ≠ μ j := by
+    intro i j hij
+    exact hno (lam i) (hrootA i) (by simpa [hij] using hrootB j)
+  intro k
+  exact ⟨lt_of_le_of_ne (hinter k).1 (hne k.succ k),
+    lt_of_le_of_ne (hinter k).2 (hne k.castSucc k).symm⟩
 
 /-! ### The oscillatory bridge -/
 
