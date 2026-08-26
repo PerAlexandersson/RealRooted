@@ -325,6 +325,23 @@ private theorem det_borderAt_zero_zero_of_tail {q : ℕ}
   simp [M, borderAt]
   ring
 
+/-- Moving an inserted row one place to the right changes the bordered
+determinant's sign. -/
+private theorem det_borderAt_pred_insert {q : ℕ}
+    (A : Matrix (Fin (q + 1)) (Fin (q + 1)) R)
+    (p : Fin (q + 2)) (hp : p ≠ 0) (cp : Fin (q + 2))
+    (b x : Fin (q + 1) → R) (a : R) :
+    (borderAt A p cp b x a).det =
+      -(borderAt A (p.pred hp).castSucc cp b x a).det := by
+  rw [det_borderAt, det_borderAt]
+  have hpval : (p : ℕ) = (p.pred hp : ℕ) + 1 := by
+    rw [← Fin.val_succ, Fin.succ_pred p hp]
+  rw [hpval]
+  simp only [Fin.val_castSucc]
+  rw [show (p.pred hp : ℕ) + 1 + (cp : ℕ) =
+      ((p.pred hp : ℕ) + (cp : ℕ)) + 1 by lia, pow_succ']
+  ring
+
 end WhitneyDeterminants
 
 section WhitneyElimination
