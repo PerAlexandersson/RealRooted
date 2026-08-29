@@ -53,6 +53,16 @@ theorem shiftedJacobiMonic_splits (n : ℕ) {α β : ℝ}
     (shiftedJacobiMonic n α β).Splits :=
   (shiftedJacobiMonic_prec_succ n hα hβ).1.2
 
+/-- The roots of a monic shifted Jacobi polynomial are simple when both
+parameters exceed `-1`. -/
+theorem shiftedJacobiMonic_roots_nodup (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobiMonic n α β).roots.Nodup := by
+  apply roots_nodup_of_favard
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ)
+  intro k
+  exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+
 private theorem shiftedJacobi_leadingScale_ne_zero (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 := by
@@ -68,6 +78,19 @@ theorem shiftedJacobi_ne_zero (n : ℕ) {α β : ℝ}
   intro hzero
   apply (monic_shiftedJacobiMonic n hα hβ).ne_zero
   simp [shiftedJacobiMonic, hzero]
+
+/-- The roots of a shifted Jacobi polynomial are simple when both parameters
+exceed `-1`. -/
+theorem shiftedJacobi_roots_nodup (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobi n α β).roots.Nodup := by
+  have hscale := shiftedJacobi_leadingScale_ne_zero n hα hβ
+  have hroots :
+      (shiftedJacobiMonic n α β).roots = (shiftedJacobi n α β).roots := by
+    rw [shiftedJacobiMonic]
+    exact roots_C_mul _ (inv_ne_zero hscale)
+  rw [← hroots]
+  exact shiftedJacobiMonic_roots_nodup n hα hβ
 
 /-- A shifted Jacobi polynomial splits over `ℝ` when both parameters exceed
 `-1`. -/

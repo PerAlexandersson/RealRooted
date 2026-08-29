@@ -94,6 +94,64 @@ theorem nonzero_of_favard
     ∀ n : Nat, P n ≠ 0 :=
   fun n => (favardInterlacing hrec hβ n).1.1
 
+/-- Consecutive members of a Favard family with positive subdiagonal
+coefficients have no common real root. -/
+theorem noCommonRoot_succ_of_favard
+    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n r, (P n).IsRoot r → ¬ (P (n + 1)).IsRoot r := by
+  intro n
+  induction n with
+  | zero =>
+      intro r hr
+      rw [Polynomial.IsRoot.def, hrec.1] at hr
+      simp at hr
+  | succ n ih =>
+      intro r hn hn_succ
+      have hstep := congrArg (fun p : ℝ[X] => p.eval r) (hrec.2.2 n)
+      rw [Polynomial.IsRoot.def] at hn hn_succ
+      simp only [eval_sub, eval_mul, eval_C, eval_X] at hstep
+      rw [hn, hn_succ] at hstep
+      have hprev : (P n).IsRoot r := by
+        rw [Polynomial.IsRoot.def]
+        have hβ_pos := hβ n
+        nlinarith
+      exact ih r hprev hn
+
+/-- Every real root of a member of a positive Favard family has multiplicity
+one. -/
+theorem rootMultiplicity_eq_one_of_favard
+    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (n : Nat) {r : ℝ} (hr : (P n).IsRoot r) :
+    (P n).rootMultiplicity r = 1 := by
+  have hprec := favardInterlacing hrec hβ n
+  have hnext_not_root := noCommonRoot_succ_of_favard hrec hβ n r hr
+  have hnext_mult : (P (n + 1)).rootMultiplicity r = 0 := by
+    simp_all
+  have hbound := (rootMultiplicity_bounds_of_prec hprec r).1
+  have hpos : 0 < (P n).rootMultiplicity r :=
+    (rootMultiplicity_pos hprec.1.1).mpr hr
+  lia
+
+/-- The real-root multiset of every member of a positive Favard family has no
+duplicates. -/
+theorem roots_nodup_of_favard
+    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n, (P n).roots.Nodup := by
+  intro n
+  refine Multiset.nodup_iff_count_le_one.mpr ?_
+  intro r
+  rw [count_roots]
+  by_cases hr : (P n).IsRoot r
+  · rw [rootMultiplicity_eq_one_of_favard hrec hβ n hr]
+  · have hmult : (P n).rootMultiplicity r = 0 := by simp_all
+    lia
+
 theorem isGeneralizedSturmSeq_reverse_range_map_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
