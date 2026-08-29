@@ -50,7 +50,9 @@ theorem coeff_shiftedJacobi (n k : ℕ) (α β : ℝ) :
   · simp [h, Nat.lt_succ_iff.mpr h]
   · simp [h, Nat.lt_succ_iff.not.mpr h]
 
-private lemma ring_choose_pos {x : ℝ} {n : ℕ} (h : (n : ℝ) - 1 < x) :
+/-- A generalized real binomial coefficient is positive above its largest
+possible zero. -/
+theorem ring_choose_pos {x : ℝ} {n : ℕ} (h : (n : ℝ) - 1 < x) :
     0 < Ring.choose x n := by
   rw [Ring.choose_eq_smul, smul_eq_mul]
   apply mul_pos
@@ -186,6 +188,42 @@ theorem derivative_shiftedJacobi (n : ℕ) (α β : ℝ) :
       if_neg (Nat.not_le.mpr (Nat.lt_succ_iff.mpr (Nat.lt_of_not_ge hk))),
       coeff_shiftedJacobi, if_neg hk]
     simp
+
+private lemma eq_of_derivative_eq_of_eval_zero_eq {p q : ℝ[X]}
+    (hderivative : p.derivative = q.derivative)
+    (heval : p.eval 0 = q.eval 0) :
+    p = q := by
+  ext k
+  cases k with
+  | zero => simpa [coeff_zero_eq_eval_zero] using heval
+  | succ k =>
+      have hcoeff := congrArg (fun r : ℝ[X] => r.coeff k) hderivative
+      simp only [coeff_derivative] at hcoeff
+      have hk : 0 < (k : ℝ) + 1 := by positivity
+      nlinarith
+
+/-- Reflection symmetry for shifted Jacobi polynomials. -/
+theorem shiftedJacobi_reflection (n : ℕ) (α β : ℝ) :
+    shiftedJacobi n α β =
+      C ((-1 : ℝ) ^ n) * (shiftedJacobi n β α).comp (1 - X) := by
+  induction n generalizing α β with
+  | zero => simp [shiftedJacobi]
+  | succ n ih =>
+      apply eq_of_derivative_eq_of_eval_zero_eq
+      · rw [derivative_shiftedJacobi]
+        simp only [derivative_mul, derivative_C, zero_mul, zero_add,
+          derivative_comp_one_sub_X]
+        rw [derivative_shiftedJacobi, ih (α + 1) (β + 1)]
+        simp
+        ring
+      · have hsign :
+            (-1 : ℝ) ^ (n + 1) * (-1 : ℝ) ^ (n + 1) = 1 := by
+          rw [← pow_add, show n + 1 + (n + 1) = 2 * (n + 1) by lia, pow_mul]
+          norm_num
+        simp only [shiftedJacobi_eval_zero, Nat.cast_add, Nat.cast_one, map_pow,
+          map_neg, map_one, eval_mul, eval_pow, eval_neg, eval_one, eval_comp,
+          eval_sub, eval_X, sub_zero, shiftedJacobi_eval_one]
+        rw [← mul_assoc, hsign, one_mul]
 
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
