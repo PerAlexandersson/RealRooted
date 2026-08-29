@@ -1,6 +1,7 @@
 import RealRooted.Bezoutian
 import RealRooted.Derivative
 import RealRooted.Jacobi
+import RealRooted.Linear
 
 /-!
 # Parameter interlacing for shifted Jacobi polynomials
@@ -246,5 +247,21 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
           (fun _ _ => by simpa using hb)
       rw [← hcombination] at hproper
       exact hproper
+
+/-- Increasing the first Jacobi parameter by one moves the roots to the right
+in the shifted variable. -/
+theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    Prec (shiftedJacobiMonic n α β)
+      (shiftedJacobiMonic n (α + 1) β) := by
+  have hbeta := shiftedJacobiMonic_prec_beta_add_one n (α := β) (β := α) hβ hα
+  have hreflected := prec_comp_one_sub_X_of_sameDegree hbeta (by
+    rw [natDegree_shiftedJacobiMonic n (by linarith) hα,
+      natDegree_shiftedJacobiMonic n hβ (by linarith)])
+  have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+  have hscaled := (hreflected.C_mul_left hsign).C_mul_right hsign
+  rw [← shiftedJacobiMonic_reflection n α β,
+    ← shiftedJacobiMonic_reflection n (α + 1) β] at hscaled
+  exact hscaled
 
 end RealRooted

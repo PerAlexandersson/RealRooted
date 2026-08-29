@@ -352,6 +352,27 @@ theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
     rw [if_neg hk_pred, if_neg hk]
     simp
 
+/-- The unit shift in the first Jacobi parameter, obtained from the second
+parameter identity by reflection. -/
+theorem shiftedJacobi_alpha_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
+    C (2 * n + α + β + 1) * shiftedJacobi n α β =
+      C (n + α + β + 1) * shiftedJacobi n (α + 1) β -
+        C (n + β) * shiftedJacobi (n - 1) (α + 1) β := by
+  have h := shiftedJacobi_beta_add_one n β α hn
+  have hcomp := congrArg
+    (fun p : ℝ[X] => C ((-1 : ℝ) ^ n) * p.comp (1 - X)) h
+  simp only [add_comp, mul_comp, C_comp] at hcomp
+  have hsign : (-1 : ℝ) ^ n = -((-1 : ℝ) ^ (n - 1)) := by
+    cases n with
+    | zero => contradiction
+    | succ m => simp [pow_succ]
+  rw [shiftedJacobi_reflection n α β,
+    shiftedJacobi_reflection n (α + 1) β,
+    shiftedJacobi_reflection (n - 1) (α + 1) β, hsign]
+  rw [hsign] at hcomp
+  simp only [map_add, map_mul, map_neg, map_one, map_ofNat] at hcomp ⊢
+  linear_combination hcomp
+
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
       (x + k + 1) * Ring.choose (x + k) k := by
@@ -496,6 +517,16 @@ theorem eq_of_jacobi_differential_equation
 noncomputable def shiftedJacobiMonic (n : ℕ) (α β : ℝ) : ℝ[X] :=
   C (((-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n)⁻¹) *
     shiftedJacobi n α β
+
+/-- Reflection symmetry for the monic shifted Jacobi polynomial. -/
+theorem shiftedJacobiMonic_reflection (n : ℕ) (α β : ℝ) :
+    shiftedJacobiMonic n α β =
+      C ((-1 : ℝ) ^ n) * (shiftedJacobiMonic n β α).comp (1 - X) := by
+  rw [shiftedJacobiMonic, shiftedJacobiMonic, shiftedJacobi_reflection]
+  simp only [mul_comp, C_comp, ← mul_assoc, ← C_mul]
+  congr 1
+  congr 1
+  ring_nf
 
 /-- The coefficient formula for the monic shifted Jacobi polynomial. -/
 theorem coeff_shiftedJacobiMonic (n k : ℕ) (α β : ℝ) :
