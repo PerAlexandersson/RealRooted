@@ -892,6 +892,215 @@ theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
   rw [hrearrange]
   positivity
 
+theorem exceptionalBaseCoeff_ne_zero_of_le
+    (m ε k : ℕ) (hk : k ≤ m) :
+    exceptionalBaseCoeff m ε k ≠ 0 := by
+  rw [exceptionalBaseCoeff,
+    realRisingFactorial_neg_nat_eq_factorial_div m k hk]
+  have hc : 0 < (ε : ℝ) + 1 / 2 := by positivity
+  have hcm : 0 < (ε : ℝ) + 1 / 2 + m := by positivity
+  have hnum :
+      realRisingFactorial ((ε : ℝ) + 1 / 2 + m) k ≠ 0 :=
+    ne_of_gt (realRisingFactorial_pos k hcm)
+  have hden : realRisingFactorial ((ε : ℝ) + 1 / 2) k ≠ 0 :=
+    ne_of_gt (realRisingFactorial_pos k hc)
+  positivity
+
+theorem natDegree_exceptionalEulerInverse_le
+    (m ε : ℕ) (γ : ℝ) :
+    (exceptionalEulerInverse m ε γ).natDegree ≤ m := by
+  rw [exceptionalEulerInverse]
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro k hk
+  exact (Polynomial.natDegree_monomial_le _).trans
+    (Finset.mem_range_succ_iff.mp hk)
+
+theorem natDegree_exceptionalEulerInverse
+    (m ε : ℕ) {γ : ℝ} (hγ : 0 < γ) :
+    (exceptionalEulerInverse m ε γ).natDegree = m := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_exceptionalEulerInverse_le m ε γ)
+  rw [coeff_exceptionalEulerInverse, if_pos le_rfl]
+  exact div_ne_zero
+    (mul_ne_zero (exceptionalBaseCoeff_ne_zero_of_le m ε m le_rfl)
+      hγ.ne')
+    (by positivity)
+
+/-- Ratio of the two highest coefficients in the exceptional family. -/
+theorem exceptionalEulerInverse_topCoeff_ratio
+    (m ε : ℕ) {γ : ℝ} (hm : 0 < m) (hγ : 0 < γ) :
+    (exceptionalEulerInverse m ε γ).coeff m /
+        (exceptionalEulerInverse m ε γ).coeff (m - 1) =
+      (exceptionalBaseCoeff m ε m /
+          exceptionalBaseCoeff m ε (m - 1)) *
+        (γ + (m : ℝ) - 1) / (γ + m) := by
+  rw [coeff_exceptionalEulerInverse, if_pos le_rfl,
+    coeff_exceptionalEulerInverse, if_pos (by lia)]
+  have hbasePrev := exceptionalBaseCoeff_ne_zero_of_le
+    m ε (m - 1) (by lia)
+  have hγm : γ + (m : ℝ) ≠ 0 := by positivity
+  have hγprev : γ + (m : ℝ) - 1 ≠ 0 := by
+    have hmCast : (1 : ℝ) ≤ m := by exact_mod_cast hm
+    linarith
+  rw [Nat.cast_sub (by lia : 1 ≤ m)]
+  field_simp
+  ring
+
+private theorem exceptionalParameterTopRatio_strictMono
+    (m : ℕ) {γ₁ γ₂ : ℝ} (hm : 0 < m)
+    (hγ₁ : 0 < γ₁) (hγ₂ : 0 < γ₂) (hγ : γ₁ < γ₂) :
+    (γ₁ + (m : ℝ) - 1) / (γ₁ + m) <
+      (γ₂ + (m : ℝ) - 1) / (γ₂ + m) := by
+  apply (div_lt_div_iff₀ (by positivity) (by positivity)).2
+  nlinarith
+
+/-- At distinct positive parameters, the top two coefficient vectors are
+linearly independent. -/
+theorem exceptionalEulerInverse_topCoeff_det_ne_zero
+    (m ε : ℕ) {γ₁ γ₂ : ℝ} (hm : 0 < m)
+    (hγ₁ : 0 < γ₁) (hγ₂ : 0 < γ₂) (hγ : γ₁ ≠ γ₂) :
+    (exceptionalEulerInverse m ε γ₁).coeff m *
+          (exceptionalEulerInverse m ε γ₂).coeff (m - 1) ≠
+      (exceptionalEulerInverse m ε γ₂).coeff m *
+          (exceptionalEulerInverse m ε γ₁).coeff (m - 1) := by
+  let R₁ := exceptionalEulerInverse m ε γ₁
+  let R₂ := exceptionalEulerInverse m ε γ₂
+  have hb₁ : R₁.coeff (m - 1) ≠ 0 := by
+    dsimp only [R₁]
+    rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+    exact div_ne_zero
+      (mul_ne_zero
+        (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
+        hγ₁.ne')
+      (by positivity)
+  have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
+    dsimp only [R₂]
+    rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+    exact div_ne_zero
+      (mul_ne_zero
+        (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
+        hγ₂.ne')
+      (by positivity)
+  intro hdet
+  have hratio : R₁.coeff m / R₁.coeff (m - 1) =
+      R₂.coeff m / R₂.coeff (m - 1) :=
+    (div_eq_div_iff hb₁ hb₂).2 hdet
+  rw [show R₁ = exceptionalEulerInverse m ε γ₁ by rfl,
+    exceptionalEulerInverse_topCoeff_ratio m ε hm hγ₁,
+    show R₂ = exceptionalEulerInverse m ε γ₂ by rfl,
+    exceptionalEulerInverse_topCoeff_ratio m ε hm hγ₂] at hratio
+  have hbase :
+      exceptionalBaseCoeff m ε m /
+          exceptionalBaseCoeff m ε (m - 1) ≠ 0 :=
+    div_ne_zero
+      (exceptionalBaseCoeff_ne_zero_of_le m ε m le_rfl)
+      (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
+  have hparameter :
+      (γ₁ + (m : ℝ) - 1) / (γ₁ + m) =
+        (γ₂ + (m : ℝ) - 1) / (γ₂ + m) :=
+    mul_left_cancel₀ hbase (by
+      simpa only [mul_div_assoc] using hratio)
+  rcases lt_or_gt_of_ne hγ with hγlt | hγgt
+  · exact (ne_of_lt
+      (exceptionalParameterTopRatio_strictMono m hm hγ₁ hγ₂ hγlt))
+      hparameter
+  · exact (ne_of_gt
+      (exceptionalParameterTopRatio_strictMono m hm hγ₂ hγ₁ hγgt))
+      hparameter
+
+/-- A nonzero pencil member at distinct positive parameters cannot drop below
+degree `m - 1`. -/
+theorem exceptionalEulerInverse_pencil_natDegree_ge_sub_one
+    (m ε : ℕ) {γ₁ γ₂ a b : ℝ} (hm : 0 < m)
+    (hγ₁ : 0 < γ₁) (hγ₂ : 0 < γ₂) (hγ : γ₁ ≠ γ₂)
+    (hne : C a * exceptionalEulerInverse m ε γ₁ +
+        C b * exceptionalEulerInverse m ε γ₂ ≠ 0) :
+    m - 1 ≤ (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).natDegree := by
+  let R₁ := exceptionalEulerInverse m ε γ₁
+  let R₂ := exceptionalEulerInverse m ε γ₂
+  let Q := C a * R₁ + C b * R₂
+  have hdet : R₁.coeff m * R₂.coeff (m - 1) ≠
+      R₂.coeff m * R₁.coeff (m - 1) :=
+    exceptionalEulerInverse_topCoeff_det_ne_zero
+      m ε hm hγ₁ hγ₂ hγ
+  by_cases htop : Q.coeff m = 0
+  · have hprev : Q.coeff (m - 1) ≠ 0 := by
+      intro hprev
+      have htop' : a * R₁.coeff m + b * R₂.coeff m = 0 := by
+        simpa only [Q, coeff_add, coeff_C_mul] using htop
+      have hprev' :
+          a * R₁.coeff (m - 1) + b * R₂.coeff (m - 1) = 0 := by
+        simpa only [Q, coeff_add, coeff_C_mul] using hprev
+      have haDet :
+          a * (R₁.coeff m * R₂.coeff (m - 1) -
+            R₂.coeff m * R₁.coeff (m - 1)) = 0 := by
+        linear_combination R₂.coeff (m - 1) * htop' -
+          R₂.coeff m * hprev'
+      have hdetSub : R₁.coeff m * R₂.coeff (m - 1) -
+          R₂.coeff m * R₁.coeff (m - 1) ≠ 0 :=
+        sub_ne_zero.mpr hdet
+      have ha : a = 0 := (mul_eq_zero.mp haDet).resolve_right hdetSub
+      have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
+        dsimp only [R₂]
+        rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+        exact div_ne_zero
+          (mul_ne_zero
+            (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
+            hγ₂.ne')
+          (by positivity)
+      have hb : b = 0 := by
+        rw [ha, zero_mul, zero_add] at hprev'
+        exact (mul_eq_zero.mp hprev').resolve_right hb₂
+      apply hne
+      rw [ha, hb]
+      simp
+    simpa only [Q, R₁, R₂] using
+      Polynomial.le_natDegree_of_ne_zero hprev
+  · have hdegree := (Nat.sub_le m 1).trans
+      (Polynomial.le_natDegree_of_ne_zero htop)
+    simpa only [Q, R₁, R₂] using hdegree
+
+theorem exceptionalBaseCoeff_one
+    (m ε : ℕ) :
+    exceptionalBaseCoeff m ε 1 =
+      -(m : ℝ) * ((ε : ℝ) + 1 / 2 + m) /
+        ((ε : ℝ) + 1 / 2) := by
+  rw [exceptionalBaseCoeff]
+  simp only [realRisingFactorial_succ, realRisingFactorial_zero,
+    mul_one, Nat.factorial_one, Nat.cast_one]
+  have hc : (ε : ℝ) + 1 / 2 ≠ 0 := by positivity
+  field_simp
+  ring
+
+/-- The negative linear coefficient is the reciprocal-root sum from the
+orientation step. -/
+theorem neg_coeff_one_exceptionalEulerInverse
+    (m ε : ℕ) {γ : ℝ} (hm : 0 < m) :
+    -(exceptionalEulerInverse m ε γ).coeff 1 =
+      ((m : ℝ) * ((ε : ℝ) + 1 / 2 + m) /
+          ((ε : ℝ) + 1 / 2)) *
+        (γ / (γ + 1)) := by
+  rw [coeff_exceptionalEulerInverse, if_pos (by lia : 1 ≤ m),
+    exceptionalBaseCoeff_one]
+  ring
+
+theorem neg_coeff_one_exceptionalEulerInverse_strictMono
+    (m ε : ℕ) {γ₁ γ₂ : ℝ} (hm : 0 < m)
+    (hγ₁ : 0 < γ₁) (hγ : γ₁ < γ₂) :
+    -(exceptionalEulerInverse m ε γ₁).coeff 1 <
+      -(exceptionalEulerInverse m ε γ₂).coeff 1 := by
+  rw [neg_coeff_one_exceptionalEulerInverse m ε hm,
+    neg_coeff_one_exceptionalEulerInverse m ε hm]
+  have hγ₂ : 0 < γ₂ := lt_trans hγ₁ hγ
+  have hratio : γ₁ / (γ₁ + 1) < γ₂ / (γ₂ + 1) := by
+    apply (div_lt_div_iff₀ (by positivity) (by positivity)).2
+    nlinarith
+  have hfactor :
+      0 < (m : ℝ) * ((ε : ℝ) + 1 / 2 + m) /
+        ((ε : ℝ) + 1 / 2) := by positivity
+  exact mul_lt_mul_of_pos_left hratio hfactor
+
 private theorem exceptionalEulerInverse_partialFraction_sum
     (m ε j : ℕ) {γ : ℝ}
     (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) (hj : j < m) :
