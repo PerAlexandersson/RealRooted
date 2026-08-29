@@ -665,6 +665,75 @@ theorem insertionOperator_C_mul_X_sub_C_data
     (∀ r, (C k * p).IsRoot r → (C k * p).derivative.eval r ≠ 0)
   exact ⟨hscaled_deg, hscaled_splits, hscaled_roots, hscaled_simple⟩
 
+theorem insertionOperator_natDegree_one_data
+    (a b : ℝ) {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree = 1)
+    (hroots : ∀ r, f.IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1)
+    (ha : 0 < a) (hba : 0 < b - a) :
+    (insertionOperator a b f).natDegree = 2 ∧
+      (insertionOperator a b f).Splits ∧
+      (∀ r ∈ (insertionOperator a b f).roots, r ∈ Set.Ioo (0 : ℝ) 1) ∧
+      (∀ r, (insertionOperator a b f).IsRoot r →
+        (insertionOperator a b f).derivative.eval r ≠ 0) := by
+  have hf_ne : f ≠ 0 := by
+    intro hzero
+    simp [hzero] at hdeg
+  have hcard : f.roots.card = 1 := by
+    rw [card_roots_of_splits hf, hdeg]
+  obtain ⟨u, hu_roots⟩ := Multiset.card_eq_one.mp hcard
+  have hu_root : f.IsRoot u := by
+    apply (mem_roots hf_ne).mp
+    rw [hu_roots]
+    simp
+  have hu := hroots u hu_root
+  have hfactor : f = C f.leadingCoeff * (X - C u) := by
+    have hprod :=
+      (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hf)).symm
+    rw [hu_roots] at hprod
+    simpa using hprod
+  have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf_ne
+  rw [hfactor]
+  exact insertionOperator_C_mul_X_sub_C_data a b f.leadingCoeff u hlc hu ha hba
+
+/-- Uniform interval-insertion data in every input degree.  The endpoint value
+hypothesis excludes the zero polynomial in the constant case. -/
+theorem insertionOperator_data_of_simple_roots_Ioo
+    (a b : ℝ) {f : ℝ[X]} (hf : f.Splits) (hf0 : f.eval 0 ≠ 0)
+    (hroots : ∀ r, f.IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1)
+    (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
+    (ha : 0 < a) (hba : 0 < b - a) :
+    (insertionOperator a b f).natDegree = f.natDegree + 1 ∧
+      (insertionOperator a b f).Splits ∧
+      (∀ r ∈ (insertionOperator a b f).roots,
+        r ∈ Set.Ioo (0 : ℝ) 1) ∧
+      (∀ r, (insertionOperator a b f).IsRoot r →
+        (insertionOperator a b f).derivative.eval r ≠ 0) := by
+  rcases eq_or_lt_of_le (Nat.zero_le f.natDegree) with hdeg | hdeg
+  · have hdegree := natDegree_insertionOperator_of_natDegree_zero
+      a b hdeg.symm hf0 (by linarith : b ≠ 0)
+    refine ⟨by rw [← hdeg]; exact hdegree,
+      insertionOperator_splits_of_natDegree_zero a b hdeg.symm hf0 (by linarith),
+      roots_insertionOperator_mem_Ioo_of_natDegree_zero a b hdeg.symm hf0 ha hba,
+      fun r _ => insertionOperator_eval_derivative_ne_zero_of_natDegree_zero
+        a b hdeg.symm hf0 (by linarith) r⟩
+  · have hone : 1 ≤ f.natDegree := by lia
+    rcases eq_or_lt_of_le hone with hdegree | hdegree
+    · have hdata := insertionOperator_natDegree_one_data
+        a b hf hdegree.symm hroots ha hba
+      rw [← hdegree]
+      simpa using hdata
+    · have htwo : 2 ≤ f.natDegree := by lia
+      have hb : 0 < b := by linarith
+      refine ⟨?_, insertionOperator_splits_of_simple_roots_Ioo
+          a b hf htwo hroots hsimple hb,
+        roots_insertionOperator_mem_Ioo_of_simple_roots_Ioo
+          a b hf htwo hroots hsimple ha hba,
+        fun r hr => insertionOperator_eval_derivative_ne_zero_of_simple_roots_Ioo
+          a b hf htwo hroots hsimple hb hr⟩
+      rw [← natDegree_neg]
+      exact natDegree_neg_insertionOperator a b (by
+        intro hzero
+        simp [hzero] at htwo) (by lia) hb
+
 end ToricContribution
 end ParkingFunctions
 end RealRooted
