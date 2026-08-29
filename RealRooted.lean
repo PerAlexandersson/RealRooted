@@ -156,6 +156,7 @@ import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
+import RealRooted.JacobiOrthogonality
 import RealRooted.JacobiParameterInterlacing
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
@@ -229,6 +230,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.Fin.Basic
