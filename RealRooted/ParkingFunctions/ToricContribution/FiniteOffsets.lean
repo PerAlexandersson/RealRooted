@@ -50,8 +50,27 @@ theorem IntervalRootData.hasPosLeadingCoeff_negOnePow_mul
 hypothesis, using positive orientation at zero to normalize the input. -/
 theorem IntervalRootData.prec_neg_insertionOperator
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0)
-    (a b : ℝ) (hn : 2 ≤ n) (hb : 0 < b) :
+    (a b : ℝ) (hb : 0 < b) :
     Prec p (-ToricContribution.insertionOperator a b p) := by
+  by_cases hn : n = 0
+  · have hpDegree : p.natDegree = 0 := hp.natDegree_eq.trans hn
+    have hpNe : p ≠ 0 := by
+      intro hpEq
+      simp [hpEq] at hpZero
+    have houtputDegree :
+        (-ToricContribution.insertionOperator a b p).natDegree = 1 := by
+      rw [natDegree_neg]
+      exact natDegree_insertionOperator_of_natDegree_zero
+        a b hpDegree hpZero.ne' hb.ne'
+    have houtputNe : -ToricContribution.insertionOperator a b p ≠ 0 := by
+      intro houtputEq
+      simp [houtputEq] at houtputDegree
+    have houtputSplits :
+        (-ToricContribution.insertionOperator a b p).Splits := by
+      simpa using insertionOperator_splits_of_natDegree_zero
+        a b hpDegree hpZero.ne' hb.ne'
+    exact prec_degree_zero_right_of_degree_one hpNe hp.splits
+      houtputNe houtputSplits hpDegree houtputDegree
   let sign : ℝ := (-1 : ℝ) ^ n
   have hsign : sign ≠ 0 := pow_ne_zero n (by norm_num)
   have hscaledData : IntervalRootData (C sign * p) n := hp.C_mul hsign
@@ -62,7 +81,7 @@ theorem IntervalRootData.prec_neg_insertionOperator
         (-ToricContribution.insertionOperator a b (C sign * p)) := by
     apply ToricContribution.prec_neg_insertionOperator a b
       hscaledData.splits hscaledPos
-      (by rw [hscaledData.natDegree_eq]; exact hn)
+      (by rw [hscaledData.natDegree_eq]; exact Nat.one_le_iff_ne_zero.mpr hn)
       (fun r hr => hscaledData.roots_mem_Ioo r
         ((mem_roots hscaledPos.ne_zero).mpr hr))
       hscaledData.eval_derivative_ne_zero hb
@@ -205,12 +224,11 @@ theorem rPolynomial_rightClosedIntervalRootData
   convert hdata using 1
   lia
 
-/-- Above the two low-degree boundary cases, the next signed diagonal lies
-strictly before the current signed diagonal in proper-position order. This is
-the polynomial form of the directed gap comparison in the last Darboux
-square. -/
+/-- The next signed diagonal lies strictly before the current signed diagonal
+in proper-position order. This is the polynomial form of the directed gap
+comparison in the last Darboux square. -/
 theorem consecutive_signedTriangleFamily_prec
-    (m ε d : ℕ) (hm : 4 ≤ m) (hd : d ≤ m - 2) :
+    (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
     Prec
       (signedTriangleFamily ((ε : ℝ) + 1 / 2)
         (jPolynomial m ε) (d + 1) (d + 1))
@@ -303,16 +321,14 @@ theorem consecutive_signedTriangleFamily_prec
     ring
   have hHBPrec : Prec Hpos Bpos := by
     rw [hBposOperator]
-    apply ToricContribution.prec_neg_insertionOperator a b
-      hHposData.splits hHLeading
-    · rw [hHposData.natDegree_eq]
-      lia
-    · intro r hr
-      exact hHposData.roots_mem_Ioo r
-        ((mem_roots hHLeading.ne_zero).mpr hr)
-    · exact hHposData.eval_derivative_ne_zero
-    · dsimp only [b]
-      positivity
+    have hraw := hHData.prec_neg_insertionOperator hHEval a b (by
+      dsimp only [b]
+      positivity)
+    have hleft := prec_C_mul_left hraw hsignH
+    have hboth := prec_C_mul_right hleft hsignH
+    dsimp only [Hpos]
+    rw [insertionOperator_C_mul]
+    simpa only [mul_neg] using hboth
   have hHBInterlaces : Interlaces Hpos Bpos := by
     apply hHBPrec.toInterlaces
     rw [hHposData.natDegree_eq, hBposData.natDegree_eq]

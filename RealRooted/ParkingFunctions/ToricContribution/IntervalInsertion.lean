@@ -138,7 +138,7 @@ proper position with its sign-normalized output. -/
 theorem prec_neg_insertionOperator
     (a b : ℝ) {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
-    (hdeg : 2 ≤ f.natDegree)
+    (hdeg : 1 ≤ f.natDegree)
     (hroots : ∀ r, f.IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1)
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) :
@@ -188,7 +188,7 @@ theorem roots_neg_insertionOperator_mem_Ioo
   let F := -insertionOperator a b f
   have hb : 0 < b := by linarith
   have hprec : Prec f F := by
-    simpa [F] using prec_neg_insertionOperator a b hf hf_pos hdeg hroots hsimple hb
+    simpa [F] using prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
   have hFdeg : F.natDegree = f.natDegree + 1 := by
     simpa [F] using natDegree_neg_insertionOperator a b hf_pos.ne_zero (by lia) hb
   have hF_pos : HasPosLeadingCoeff F := by
@@ -318,7 +318,7 @@ theorem neg_insertionOperator_splits
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) :
     (-insertionOperator a b f).Splits :=
-  (prec_neg_insertionOperator a b hf hf_pos hdeg hroots hsimple hb).2.1.2
+  (prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb).2.1.2
 
 theorem insertionOperator_splits
     (a b : ℝ) {f : ℝ[X]}
@@ -341,7 +341,7 @@ theorem rootMultiplicity_neg_insertionOperator_eq_one
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) {r : ℝ} (hr : (-insertionOperator a b f).IsRoot r) :
     (-insertionOperator a b f).rootMultiplicity r = 1 := by
-  have hprec := prec_neg_insertionOperator a b hf hf_pos hdeg hroots hsimple hb
+  have hprec := prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
   have hnot : ¬f.IsRoot r := by
     intro hfr
     exact insertionOperator_no_common_root a b hroots hsimple r hfr (by
