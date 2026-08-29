@@ -768,6 +768,51 @@ lemma _root_.Matrix.posDef_fin_two_of_entries {a b c : ℝ}
     field_simp [ne_of_gt ha] at hmain
     nlinarith
 
+/-- An explicit `LDLᵀ` certificate for positive definiteness of a symmetric
+`3 × 3` real matrix. -/
+lemma _root_.Matrix.posDef_fin_three_of_ldl {d₀ d₁ d₂ l₁₀ l₂₀ l₂₁ : ℝ}
+    (hd₀ : 0 < d₀) (hd₁ : 0 < d₁) (hd₂ : 0 < d₂) :
+    (!![d₀, d₀ * l₁₀, d₀ * l₂₀;
+        d₀ * l₁₀, d₀ * l₁₀ ^ 2 + d₁,
+          d₀ * l₁₀ * l₂₀ + d₁ * l₂₁;
+        d₀ * l₂₀, d₀ * l₁₀ * l₂₀ + d₁ * l₂₁,
+          d₀ * l₂₀ ^ 2 + d₁ * l₂₁ ^ 2 + d₂] :
+      Matrix (Fin 3) (Fin 3) ℝ).PosDef := by
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
+  · exact Matrix.IsHermitian.ext (by
+      intro i j
+      fin_cases i <;> fin_cases j <;> simp)
+  · intro x hx
+    have hform :
+        dotProduct (star x) (Matrix.mulVec
+          ((!![d₀, d₀ * l₁₀, d₀ * l₂₀;
+            d₀ * l₁₀, d₀ * l₁₀ ^ 2 + d₁,
+              d₀ * l₁₀ * l₂₀ + d₁ * l₂₁;
+            d₀ * l₂₀, d₀ * l₁₀ * l₂₀ + d₁ * l₂₁,
+              d₀ * l₂₀ ^ 2 + d₁ * l₂₁ ^ 2 + d₂] :
+            Matrix (Fin 3) (Fin 3) ℝ)) x) =
+          d₀ * (x 0 + l₁₀ * x 1 + l₂₀ * x 2) ^ 2 +
+          d₁ * (x 1 + l₂₁ * x 2) ^ 2 + d₂ * (x 2) ^ 2 := by
+      rw [Matrix.vec3_dotProduct]
+      simp only [Matrix.mulVec, Matrix.vec3_dotProduct]
+      simp
+      ring
+    rw [hform]
+    by_cases hx₂ : x 2 = 0
+    · by_cases hx₁ : x 1 = 0
+      · have hx₀ : x 0 ≠ 0 := by
+          intro hx₀
+          apply hx
+          funext i
+          fin_cases i <;> assumption
+        simp [hx₂, hx₁, mul_pos hd₀ (sq_pos_of_ne_zero hx₀)]
+      · have h₁ : 0 < d₁ * (x 1 + l₂₁ * x 2) ^ 2 := by
+          simp [hx₂, mul_pos hd₁ (sq_pos_of_ne_zero hx₁)]
+        positivity
+    · have h₂ : 0 < d₂ * (x 2) ^ 2 :=
+        mul_pos hd₂ (sq_pos_of_ne_zero hx₂)
+      positivity
+
 lemma bezoutEntry.eq_zero_of_le_left (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hi : n ≤ i) :
     bezoutEntry p q i j = 0 := by
