@@ -1,4 +1,9 @@
+import RealRooted.Bezoutian
 import RealRooted.JacobiOrthogonality
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Calculus.ImplicitContDiff
+import Mathlib.Data.List.GetD
 
 /-!
 # Markoff monotonicity for shifted Jacobi roots
@@ -8,6 +13,7 @@ first parameter of beta-one shifted Jacobi polynomials.
 -/
 
 open Filter Polynomial Topology
+open scoped ContDiff
 
 noncomputable section
 
@@ -422,6 +428,15 @@ theorem differentiable_ring_choose (n : ℕ) :
     ← eval₂_smulOneHom_eq_smeval, ← eval_map]
   fun_prop
 
+@[fun_prop]
+theorem contDiff_ring_choose (n : ℕ) :
+    ContDiff ℝ ∞ (fun x : ℝ => Ring.choose x n) := by
+  simp_rw [Ring.choose_eq_smul, smul_eq_mul,
+    ← eval₂_smulOneHom_eq_smeval, ← eval_map]
+  simpa [aeval_def] using
+    (contDiff_const.mul
+      (Polynomial.contDiff_aeval (descPochhammer ℝ n) ∞))
+
 theorem natDegree_shiftedJacobiMonic_le (n : ℕ) (α β : ℝ) :
     (shiftedJacobiMonic n α β).natDegree ≤ n := by
   rw [natDegree_le_iff_coeff_eq_zero]
@@ -480,6 +495,40 @@ theorem natDegree_shiftedJacobiMonicAlphaDeriv_lt (n : ℕ) (α β : ℝ)
   intro k hk
   have hkn : n ≤ k := by lia
   simp [shiftedJacobiMonicAlphaDeriv, hkn]
+
+/-- The evaluation of the monic shifted Jacobi family is smooth jointly in
+the first parameter and the polynomial variable away from the normalization
+poles. -/
+theorem contDiffAt_shiftedJacobiMonic_eval_alpha_prod (n : ℕ)
+    {α β x : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    ContDiffAt ℝ ∞
+      (fun z : ℝ × ℝ => (shiftedJacobiMonic n z.1 β).eval z.2) (α, x) := by
+  have hchoose : Ring.choose (n + α + β + n) n ≠ 0 := by
+    cases n with
+    | zero => simp
+    | succ n =>
+        exact (Polynomial.ring_choose_pos (by
+          push_cast
+          linarith)).ne'
+  have hscale :
+      (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hchoose
+  rw [show (fun z : ℝ × ℝ =>
+      (shiftedJacobiMonic n z.1 β).eval z.2) =
+        fun z => ∑ k ∈ Finset.range (n + 1),
+          (((-1 : ℝ) ^ n *
+              Ring.choose ((n : ℝ) + z.1 + β + n) n)⁻¹ *
+              ((-1 : ℝ) ^ k * Ring.choose ((n : ℝ) + z.1) (n - k) *
+                Ring.choose ((n : ℝ) + z.1 + β + k) k)) * z.2 ^ k by
+    funext z
+    rw [Polynomial.eval_eq_sum_range'
+      (Nat.lt_succ_of_le (natDegree_shiftedJacobiMonic_le n z.1 β))]
+    apply Finset.sum_congr rfl
+    intro k hk
+    rw [coeff_shiftedJacobiMonic]
+    simp only [Finset.mem_range] at hk
+    simp [Nat.le_of_lt_succ hk]]
+  fun_prop (disch := assumption)
 
 theorem hasDerivAt_shiftedJacobiMonic_eval_alpha (n : ℕ) {α β x : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
@@ -862,5 +911,235 @@ theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
     · exact h.1
   change d.eval r * p.derivative.eval r < 0
   rwa [← hqeval]
+
+private theorem toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
+    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
+  let e : ℝ ≃L[ℝ] ℝ :=
+    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
+  refine ⟨e, ?_⟩
+  ext
+  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
+
+private theorem inverse_toSpanSingleton_apply {c y : ℝ} (hc : c ≠ 0) :
+    (ContinuousLinearMap.toSpanSingleton ℝ c).inverse y = y / c := by
+  have hinv := toSpanSingleton_isInvertible hc
+  have h := hinv.self_apply_inverse y
+  simp only [ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul] at h
+  exact (eq_div_iff hc).2 h
+
+/-- The `i`th root, in increasing order, of a monic shifted Jacobi
+polynomial. The default value is irrelevant in the admissible parameter
+range, where the root list has length `n`. -/
+noncomputable def shiftedJacobiMonicRoot (n : ℕ) (i : Fin n)
+    (α β : ℝ) : ℝ :=
+  ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).getD i 0
+
+theorem shiftedJacobiMonic_roots_sort_length (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).length = n := by
+  rw [Multiset.length_sort,
+    card_roots_of_splits (shiftedJacobiMonic_splits n hα hβ),
+    natDegree_shiftedJacobiMonic n hα hβ]
+
+theorem shiftedJacobiMonicRoot_isRoot (n : ℕ) (i : Fin n)
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobiMonic n α β).IsRoot
+      (shiftedJacobiMonicRoot n i α β) := by
+  have hlen := shiftedJacobiMonic_roots_sort_length n hα hβ
+  have hi : i.val <
+      ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).length := by
+    rw [hlen]
+    exact i.isLt
+  rw [shiftedJacobiMonicRoot, List.getD_eq_getElem _ _ hi]
+  apply Polynomial.isRoot_of_mem_roots
+  exact (Multiset.mem_sort _).mp (List.getElem_mem ..)
+
+theorem strictMono_shiftedJacobiMonicRoot (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    StrictMono (fun i : Fin n => shiftedJacobiMonicRoot n i α β) := by
+  have hlen := shiftedJacobiMonic_roots_sort_length n hα hβ
+  have hsorted :
+      ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).SortedLE := by
+    simpa using (Multiset.pairwise_sort
+      (s := (shiftedJacobiMonic n α β).roots) (r := (· ≤ ·))).sortedLE
+  have hnodup :
+      ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).Nodup := by
+    apply Multiset.coe_nodup.mp
+    simpa using shiftedJacobiMonic_roots_nodup n hα hβ
+  have hstrict := hsorted.sortedLT_of_nodup hnodup
+  intro i j hij
+  have hi : i.val <
+      ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).length := by
+    rw [hlen]
+    exact i.isLt
+  have hj : j.val <
+      ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).length := by
+    rw [hlen]
+    exact j.isLt
+  change ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).getD i 0 <
+    ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).getD j 0
+  rw [List.getD_eq_getElem _ _ hi, List.getD_eq_getElem _ _ hj]
+  exact hstrict.getElem_lt_getElem_of_lt hij
+
+theorem exists_shiftedJacobiMonicRoot_eq (n : ℕ) {α β r : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (hr : (shiftedJacobiMonic n α β).IsRoot r) :
+    ∃ i : Fin n, shiftedJacobiMonicRoot n i α β = r := by
+  have hp_ne := shiftedJacobiMonic_ne_zero n hα hβ
+  apply exists_index_eq_of_mem_roots
+    (fun i : Fin n => shiftedJacobiMonicRoot n i α β)
+    (strictMono_shiftedJacobiMonicRoot n hα hβ)
+    (fun i => shiftedJacobiMonicRoot_isRoot n i hα hβ) hp_ne
+  · rw [natDegree_shiftedJacobiMonic n hα hβ]
+  · exact (Polynomial.mem_roots hp_ne).mpr hr
+
+/-- A simple root of the beta-one monic shifted Jacobi family admits a local
+smooth parameter branch. Its derivative is the usual implicit quotient. -/
+theorem exists_hasDerivAt_shiftedJacobiMonic_root_alpha
+    (n : ℕ) {α r : ℝ} (hα : -1 < α)
+    (hr : (shiftedJacobiMonic n α 1).IsRoot r) :
+    ∃ ρ : ℝ → ℝ,
+      HasDerivAt ρ
+        (-((shiftedJacobiMonicAlphaDeriv n α 1).eval r) /
+          (shiftedJacobiMonic n α 1).derivative.eval r) α ∧
+      ρ α = r ∧
+      ∀ᶠ a in 𝓝 α, (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
+  let F : ℝ × ℝ → ℝ := fun z =>
+    (shiftedJacobiMonic n z.1 1).eval z.2
+  have hcont : ContDiffAt ℝ ∞ F (α, r) := by
+    exact contDiffAt_shiftedJacobiMonic_eval_alpha_prod n hα (by norm_num)
+  let A : ℝ →L[ℝ] ℝ :=
+    fderiv ℝ F (α, r) ∘L ContinuousLinearMap.inr ℝ ℝ ℝ
+  let B : ℝ →L[ℝ] ℝ :=
+    fderiv ℝ F (α, r) ∘L ContinuousLinearMap.inl ℝ ℝ ℝ
+  have hfull : HasFDerivAt F (fderiv ℝ F (α, r)) (α, r) :=
+    (hcont.differentiableAt (by simp)).hasFDerivAt
+  have hA : A = ContinuousLinearMap.toSpanSingleton ℝ
+      ((shiftedJacobiMonic n α 1).derivative.eval r) := by
+    apply HasFDerivAt.unique
+    · exact hfull.comp r (hasFDerivAt_prodMk_right α r)
+    · exact (shiftedJacobiMonic n α 1).hasFDerivAt r
+  have hB : B = ContinuousLinearMap.toSpanSingleton ℝ
+      ((shiftedJacobiMonicAlphaDeriv n α 1).eval r) := by
+    apply HasFDerivAt.unique
+    · exact hfull.comp α (hasFDerivAt_prodMk_left α r)
+    · exact (hasDerivAt_shiftedJacobiMonic_eval_alpha n hα
+        (by norm_num : (-1 : ℝ) < 1)).hasFDerivAt
+  have hspatial : (shiftedJacobiMonic n α 1).derivative.eval r ≠ 0 :=
+    shiftedJacobiMonic_derivative_eval_ne_zero n hα (by norm_num) hr
+  have hAinv : A.IsInvertible := by
+    rw [hA]
+    exact toSpanSingleton_isInvertible hspatial
+  let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
+  have hρbase : ρ α = r := by
+    exact hcont.implicitFunction_apply_self (by simp) hAinv
+  have hρroot : ∀ᶠ a in 𝓝 α,
+      (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
+    have heq := hcont.eventually_apply_implicitFunction (by simp) hAinv
+    filter_upwards [heq] with a ha
+    rw [Polynomial.IsRoot.def]
+    change F (a, ρ a) = 0
+    simpa only [F, Polynomial.IsRoot.def] using ha.trans (by simpa using hr)
+  have hρstrict := hcont.hasStrictFDerivAt_implicitFunction (by simp) hAinv
+  have hρderiv : HasDerivAt ρ
+      ((-(A.inverse ∘L B)) 1) α := by
+    simpa only [ρ, A, B] using hρstrict.hasFDerivAt.hasDerivAt
+  have hquotient : (-(A.inverse ∘L B)) 1 =
+      -((shiftedJacobiMonicAlphaDeriv n α 1).eval r) /
+        (shiftedJacobiMonic n α 1).derivative.eval r := by
+    rw [neg_apply, ContinuousLinearMap.comp_apply,
+      hB, ContinuousLinearMap.toSpanSingleton_apply, one_smul, hA]
+    rw [inverse_toSpanSingleton_apply hspatial]
+    ring
+  refine ⟨ρ, ?_, hρbase, hρroot⟩
+  rwa [hquotient] at hρderiv
+
+/-- The ordered beta-one shifted Jacobi roots are differentiable in the first
+parameter throughout the orthogonality range. -/
+theorem hasDerivAt_shiftedJacobiMonicRoot_alpha
+    (n : ℕ) (i : Fin n) {α : ℝ} (hα : -1 < α) :
+    HasDerivAt (fun a => shiftedJacobiMonicRoot n i a 1)
+      (-((shiftedJacobiMonicAlphaDeriv n α 1).eval
+          (shiftedJacobiMonicRoot n i α 1)) /
+        (shiftedJacobiMonic n α 1).derivative.eval
+          (shiftedJacobiMonicRoot n i α 1)) α := by
+  let r : Fin n → ℝ := fun j => shiftedJacobiMonicRoot n j α 1
+  have hr_root : ∀ j, (shiftedJacobiMonic n α 1).IsRoot (r j) := by
+    intro j
+    exact shiftedJacobiMonicRoot_isRoot n j hα (by norm_num)
+  have hbranch : ∀ j : Fin n, ∃ ρ : ℝ → ℝ,
+      HasDerivAt ρ
+        (-((shiftedJacobiMonicAlphaDeriv n α 1).eval (r j)) /
+          (shiftedJacobiMonic n α 1).derivative.eval (r j)) α ∧
+      ρ α = r j ∧
+      ∀ᶠ a in 𝓝 α, (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
+    intro j
+    exact exists_hasDerivAt_shiftedJacobiMonic_root_alpha n hα (hr_root j)
+  choose ρ hρderiv hρbase hρroot using hbranch
+  have hall_roots : ∀ᶠ a in 𝓝 α, ∀ j : Fin n,
+      (shiftedJacobiMonic n a 1).IsRoot (ρ j a) := by
+    rw [Filter.eventually_all]
+    exact hρroot
+  have hall_order : ∀ᶠ a in 𝓝 α, StrictMono (fun j : Fin n => ρ j a) := by
+    have hpairs : ∀ᶠ a in 𝓝 α, ∀ j k : Fin n,
+        j < k → ρ j a < ρ k a := by
+      rw [Filter.eventually_all]
+      intro j
+      rw [Filter.eventually_all]
+      intro k
+      by_cases hjk : j < k
+      · have hbase : ρ j α < ρ k α := by
+          rw [hρbase j, hρbase k]
+          exact strictMono_shiftedJacobiMonicRoot n hα (by norm_num) hjk
+        exact ((hρderiv j).continuousAt.eventually_lt
+          (hρderiv k).continuousAt hbase).mono fun _ h _ => h
+      · exact Filter.Eventually.of_forall fun _ h => (hjk h).elim
+    exact hpairs.mono fun _ h => h
+  have hparam : ∀ᶠ a in 𝓝 α, -1 < a := Ioi_mem_nhds hα
+  have hall_eq : ∀ᶠ a in 𝓝 α, ∀ j : Fin n,
+      shiftedJacobiMonicRoot n j a 1 = ρ j a := by
+    filter_upwards [hall_roots, hall_order, hparam] with a ha_roots ha_order ha
+    intro j
+    have hsort := Polynomial.roots_sort_eq_of_isRoot
+      (shiftedJacobiMonic_ne_zero n ha (by norm_num))
+      (natDegree_shiftedJacobiMonic n ha (by norm_num))
+      (fun k : Fin n => ρ k a) ha_roots ha_order
+    rw [shiftedJacobiMonicRoot, hsort,
+      List.getD_eq_getElem _ _ (by simp : j.val < (List.map (fun k : Fin n => ρ k a)
+        (List.finRange n)).length)]
+    simp
+  apply (hρderiv i).congr_of_eventuallyEq
+  exact hall_eq.mono fun _ h => h i
+
+theorem shiftedJacobiMonicRoot_alpha_deriv_pos
+    (n : ℕ) (i : Fin n) {α : ℝ} (hα : -1 < α) :
+    0 < -((shiftedJacobiMonicAlphaDeriv n α 1).eval
+          (shiftedJacobiMonicRoot n i α 1)) /
+        (shiftedJacobiMonic n α 1).derivative.eval
+          (shiftedJacobiMonicRoot n i α 1) := by
+  have hroot := shiftedJacobiMonicRoot_isRoot n i
+    (α := α) (β := 1) hα (by norm_num)
+  have hneg :=
+    shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg n
+      (α := α) (r := shiftedJacobiMonicRoot n i α 1) hα
+      (by have := i.isLt; lia) hroot
+  rcases mul_neg_iff.mp hneg with h | h
+  · exact div_pos_of_neg_of_neg (by linarith) h.2
+  · exact div_pos (by linarith) h.2
+
+/-- Every ordered beta-one shifted Jacobi root moves strictly to the right as
+the first parameter increases. -/
+theorem strictMonoOn_shiftedJacobiMonicRoot_alpha
+    (n : ℕ) (i : Fin n) :
+    StrictMonoOn (fun a => shiftedJacobiMonicRoot n i a 1)
+      (Set.Ioi (-1 : ℝ)) := by
+  apply strictMonoOn_of_deriv_pos (convex_Ioi (-1 : ℝ))
+  · intro a ha
+    have ha' : -1 < a := by simpa using ha
+    exact (hasDerivAt_shiftedJacobiMonicRoot_alpha n i ha').continuousAt.continuousWithinAt
+  · intro a ha
+    have ha' : -1 < a := by simpa using ha
+    rw [(hasDerivAt_shiftedJacobiMonicRoot_alpha n i ha').deriv]
+    exact shiftedJacobiMonicRoot_alpha_deriv_pos n i ha'
 
 end RealRooted

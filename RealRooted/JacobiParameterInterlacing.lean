@@ -1,6 +1,7 @@
 import RealRooted.Bezoutian
 import RealRooted.Derivative
 import RealRooted.Jacobi
+import RealRooted.JacobiMarkoff
 import RealRooted.Linear
 
 /-!
@@ -825,6 +826,58 @@ theorem shiftedJacobiMonic_prec_three_halves_degree_three
       (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) :=
   (shiftedJacobiMonic_strictPrec_three_halves_degree_three ε hε).to_prec
 
+/-- A beta-one shifted Jacobi polynomial and a positive first-parameter shift
+of at most two have no common root. -/
+theorem shiftedJacobiMonic_noCommonRoot_alpha_add
+    (n : ℕ) {α s : ℝ} (hα : -1 < α) (hs_pos : 0 < s)
+    (hs_two : s ≤ 2) :
+    ∀ r, (shiftedJacobiMonic n α 1).IsRoot r →
+      ¬(shiftedJacobiMonic n (α + s) 1).IsRoot r := by
+  intro r hr₀ hrs
+  obtain ⟨i, hi⟩ := exists_shiftedJacobiMonicRoot_eq n hα
+    (by norm_num : (-1 : ℝ) < 1) hr₀
+  obtain ⟨j, hj⟩ := exists_shiftedJacobiMonicRoot_eq n
+    (by linarith : -1 < α + s) (by norm_num : (-1 : ℝ) < 1) hrs
+  have hαs : -1 < α + s := by linarith
+  have hα_lt_αs : α < α + s := lt_add_of_pos_right α hs_pos
+  have hi_move : shiftedJacobiMonicRoot n i α 1 <
+      shiftedJacobiMonicRoot n i (α + s) 1 :=
+    strictMonoOn_shiftedJacobiMonicRoot_alpha n i
+      (a := α) (b := α + s) hα hαs hα_lt_αs
+  by_cases hji : j < i
+  · have hendpoint := shiftedJacobiMonic_strictPrec_alpha_add_two n hα
+      (by norm_num : (-1 : ℝ) < 1)
+    have hinter := hendpoint.interlacing_fin
+      (natDegree_shiftedJacobiMonic n (by linarith : -1 < α + 2)
+        (by norm_num : (-1 : ℝ) < 1))
+      (fun k : Fin n => shiftedJacobiMonicRoot n k α 1)
+      (fun k => shiftedJacobiMonicRoot_isRoot n k hα (by norm_num))
+      (strictMono_shiftedJacobiMonicRoot n hα (by norm_num))
+      (fun k : Fin n => shiftedJacobiMonicRoot n k (α + 2) 1)
+      (fun k => shiftedJacobiMonicRoot_isRoot n k (by linarith) (by norm_num))
+      (strictMono_shiftedJacobiMonicRoot n (by linarith) (by norm_num))
+    have hj_endpoint : shiftedJacobiMonicRoot n j (α + 2) 1 <
+        shiftedJacobiMonicRoot n i α 1 := hinter.2 j i hji
+    have hj_le : shiftedJacobiMonicRoot n j (α + s) 1 ≤
+        shiftedJacobiMonicRoot n j (α + 2) 1 := by
+      rcases eq_or_lt_of_le hs_two with rfl | hs_lt
+      · exact le_rfl
+      · have hαtwo : -1 < α + 2 := by linarith
+        have hshift_lt : α + s < α + 2 := by
+          simpa [add_comm] using add_lt_add_left hs_lt α
+        exact (strictMonoOn_shiftedJacobiMonicRoot_alpha n j
+          (a := α + s) (b := α + 2) hαs hαtwo hshift_lt).le
+    rw [hi] at hj_endpoint
+    rw [hj] at hj_le
+    linarith
+  · have hij : i ≤ j := le_of_not_gt hji
+    have hij_roots : shiftedJacobiMonicRoot n i (α + s) 1 ≤
+        shiftedJacobiMonicRoot n j (α + s) 1 :=
+      (strictMono_shiftedJacobiMonicRoot n (by linarith) (by norm_num)).monotone hij
+    rw [hi] at hi_move
+    rw [hj] at hij_roots
+    linarith
+
 /-- The two-unit endpoint certificate propagates to an intermediate positive
 first-parameter shift if no root of the lower-parameter polynomial is crossed
 along the remaining parameter interval. -/
@@ -882,6 +935,32 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
             dsimp only [p]
             exact natDegree_shiftedJacobiMonic (n + 1) (by linarith) hβ) hr
         simpa only [mul_comm] using hsign
+
+/-- Every positive beta-one first-parameter shift of at most two puts the
+lower-parameter shifted Jacobi polynomial in proper position before the
+higher-parameter polynomial. -/
+theorem shiftedJacobiMonic_prec_alpha_add
+    (n : ℕ) {α t : ℝ} (hα : -1 < α) (ht_pos : 0 < t)
+    (ht_two : t ≤ 2) :
+    Prec (shiftedJacobiMonic n α 1)
+      (shiftedJacobiMonic n (α + t) 1) := by
+  apply shiftedJacobiMonic_prec_alpha_add_of_no_crossing n hα
+    (by norm_num) ht_pos ht_two
+  intro r hr s hs
+  exact shiftedJacobiMonic_noCommonRoot_alpha_add n hα
+    (lt_of_lt_of_le ht_pos hs.1) hs.2 r hr
+
+/-- The fractional first-parameter comparison used by the two parity classes
+in the A390883 Jacobi representation. -/
+theorem shiftedJacobiMonic_prec_three_halves (n ε : ℕ) :
+    Prec (shiftedJacobiMonic n ((ε : ℝ) - 1 / 2) 1)
+      (shiftedJacobiMonic n ((ε : ℝ) + 1) 1) := by
+  have hε : 0 ≤ (ε : ℝ) := Nat.cast_nonneg ε
+  have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
+  have hprec := shiftedJacobiMonic_prec_alpha_add n hα
+    (by norm_num : (0 : ℝ) < 3 / 2) (by norm_num : (3 / 2 : ℝ) ≤ 2)
+  convert hprec using 1
+  ring_nf
 
 /-- At a root of the degree-`m + 1` lower-parameter polynomial, the
 degree-`m` polynomials at first-parameter shifts zero and two have the same
