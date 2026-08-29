@@ -248,6 +248,32 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
       rw [← hcombination] at hproper
       exact hproper
 
+/-- Consecutive second-parameter shifts of a monic shifted Jacobi polynomial
+have no common root. -/
+theorem shiftedJacobiMonic_noCommonRoot_beta_add_one (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    ∀ r, (shiftedJacobiMonic n α (β + 1)).IsRoot r →
+      ¬(shiftedJacobiMonic n α β).IsRoot r := by
+  cases n with
+  | zero => simp [Polynomial.IsRoot.def]
+  | succ m =>
+      obtain ⟨a, b, ha, hb, hcombination⟩ :=
+        exists_shiftedJacobiMonic_beta_add_one_linearCombination m hα hβ
+      have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence
+        α (β + 1) (by linarith) (by linarith)
+      have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α (β + 1) := by
+        intro k
+        exact shiftedJacobiSubdiag_pos (k + 1) (by lia) (by linarith) (by linarith)
+      have hcommon := noCommonRoot_succ_of_favard hrec hsub m
+      intro r hf hF
+      have heval := congrArg (Polynomial.eval r) hcombination
+      rw [Polynomial.IsRoot.def] at hf hF
+      simp only [eval_add, eval_mul, eval_C, hf, hF, mul_zero] at heval
+      have hg : (shiftedJacobiMonic m α (β + 1)).IsRoot r := by
+        rw [Polynomial.IsRoot.def]
+        nlinarith
+      exact hcommon r hg hf
+
 /-- Increasing the first Jacobi parameter by one moves the roots to the right
 in the shifted variable. -/
 theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
@@ -263,5 +289,43 @@ theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
   rw [← shiftedJacobiMonic_reflection n α β,
     ← shiftedJacobiMonic_reflection n (α + 1) β] at hscaled
   exact hscaled
+
+/-- Consecutive first-parameter shifts of a monic shifted Jacobi polynomial
+have no common root. -/
+theorem shiftedJacobiMonic_noCommonRoot_alpha_add_one (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    ∀ r, (shiftedJacobiMonic n α β).IsRoot r →
+      ¬(shiftedJacobiMonic n (α + 1) β).IsRoot r := by
+  have hnoBeta : ∀ r, (shiftedJacobiMonic n β (α + 1)).IsRoot r →
+      ¬(shiftedJacobiMonic n β α).IsRoot r :=
+    shiftedJacobiMonic_noCommonRoot_beta_add_one n hβ hα
+  intro r hlo hhi
+  have hlo' : (shiftedJacobiMonic n β α).IsRoot (1 - r) := by
+    rw [Polynomial.IsRoot.def] at hlo ⊢
+    have href := congrArg (Polynomial.eval r) (shiftedJacobiMonic_reflection n α β)
+    simp only [eval_mul, eval_C, eval_comp, eval_sub, eval_one, eval_X] at href
+    have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+    rw [hlo] at href
+    exact (mul_eq_zero.mp href.symm).resolve_left hsign
+  have hhi' : (shiftedJacobiMonic n β (α + 1)).IsRoot (1 - r) := by
+    rw [Polynomial.IsRoot.def] at hhi ⊢
+    have href := congrArg (Polynomial.eval r)
+      (shiftedJacobiMonic_reflection n (α + 1) β)
+    simp only [eval_mul, eval_C, eval_comp, eval_sub, eval_one, eval_X] at href
+    have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+    rw [hhi] at href
+    exact (mul_eq_zero.mp href.symm).resolve_left hsign
+  exact hnoBeta (1 - r) hhi' hlo'
+
+/-- The first-parameter unit comparison is strictly interleaving. -/
+theorem shiftedJacobiMonic_strictPrec_alpha_add_one (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    StrictPrecSameDegree (shiftedJacobiMonic n α β)
+      (shiftedJacobiMonic n (α + 1) β) := by
+  apply StrictPrecSameDegree.of_prec_of_no_common
+    (shiftedJacobiMonic_prec_alpha_add_one n hα hβ)
+  · rw [natDegree_shiftedJacobiMonic n hα hβ,
+      natDegree_shiftedJacobiMonic n (by linarith) hβ]
+  · exact shiftedJacobiMonic_noCommonRoot_alpha_add_one n hα hβ
 
 end RealRooted

@@ -243,10 +243,63 @@ protected lemma interlaced_of_interleaves_reverse :
           exact h_tail.2 ⟨i_val + 1, h_lt⟩ ⟨j_val, Nat.lt_of_succ_lt_succ hj⟩ hij
 
 
+private lemma interleaves_lt_of_le_of_forall_ne :
+    ∀ {l₁ l₂ : List ℝ}, List.Interleaves (· ≤ ·) l₁ l₂ →
+      (∀ a ∈ l₁, ∀ b ∈ l₂, a ≠ b) → List.Interleaves (· < ·) l₁ l₂
+  | _, _, .nil_nil, _ => .nil_nil
+  | _, _, .nil_singleton a, _ => .nil_singleton a
+  | _, _, .cons_symm h hab, hne => by
+      apply List.Interleaves.cons_symm
+      · apply interleaves_lt_of_le_of_forall_ne h
+        intro a ha b hb
+        exact (hne b hb a (by simp [ha])).symm
+      · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
+
 /-- Strict same-degree proper position, stated on canonical sorted root lists. -/
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
   (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
     List.Interleaves (· > ·) (p.roots.sort (· ≤ ·)).reverse (q.roots.sort (· ≤ ·)).reverse
+
+/-- Equal-degree proper position is strict when the two polynomials have no
+common root. -/
+theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : Prec p q)
+    (hdeg : p.natDegree = q.natDegree)
+    (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
+    StrictPrecSameDegree p q := by
+  obtain ⟨hp, hq, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := h
+  have hss_len : ss.length = p.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
+  have hrs_len : rs.length = q.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+  obtain ⟨_, halt⟩ := hshape.resolve_left (by intro hbad; lia)
+  have hlen : ss.length = rs.length := by lia
+  have hinter : List.Interleaves (· ≤ ·) rs ss :=
+    interleaves_of_listAlternates_of_length hlen halt
+  have hne : ∀ r ∈ rs, ∀ s ∈ ss, r ≠ s := by
+    intro r hr s hs heq
+    subst r
+    have hsRoot : p.IsRoot s := by
+      apply (mem_roots hp.1).mp
+      rw [← hss_eq]
+      exact Multiset.mem_coe.mpr hs
+    have hqRoot : q.IsRoot s := by
+      apply (mem_roots hq.1).mp
+      rw [← hrs_eq]
+      exact Multiset.mem_coe.mpr hr
+    exact hno s hsRoot hqRoot
+  have hstrict : List.Interleaves (· < ·) rs ss :=
+    interleaves_lt_of_le_of_forall_ne hinter hne
+  have hreverse : List.Interleaves (· > ·) ss.reverse rs.reverse := by
+    apply (List.interleaves_reverse_reverse_of_length_eq_length hlen).2
+    simpa [Function.swap] using hstrict
+  have hssCanonical : ss = p.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hss_sorted (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hss_eq.trans (Multiset.sort_eq ..).symm)
+  have hrsCanonical : rs = q.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hrs_eq.trans (Multiset.sort_eq ..).symm)
+  rw [hssCanonical, hrsCanonical] at hreverse
+  exact ⟨hp, hq, hdeg, hreverse⟩
 
 lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
