@@ -274,6 +274,17 @@ private lemma succ_mul_ringChoose (x : ℝ) (k : ℕ) :
   norm_num only [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
   field_simp
 
+private lemma sub_mul_ringChoose (x : ℝ) (k : ℕ) :
+    (x - k) * Ring.choose x k = x * Ring.choose (x - 1) k := by
+  cases k with
+  | zero => simp
+  | succ k =>
+      have hpascal := Ring.choose_succ_succ (x - 1) k
+      have hsucc := succ_mul_ringChoose x k
+      rw [show x - 1 + 1 = x by ring] at hpascal
+      norm_num only [Nat.cast_add, Nat.cast_one] at hsucc ⊢
+      linear_combination x * hpascal - hsucc
+
 /-- The unit shift in the second Jacobi parameter, in a form relating two
 degrees. -/
 theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
@@ -372,6 +383,173 @@ theorem shiftedJacobi_alpha_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
   rw [hsign] at hcomp
   simp only [map_add, map_mul, map_neg, map_one, map_ofNat] at hcomp ⊢
   linear_combination hcomp
+
+/-- The two-unit shift in the first Jacobi parameter. This is the shifted
+form of the contiguous identity used in same-degree endpoint comparisons. -/
+theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
+    C (-(n + α + 1)) * shiftedJacobi n α β =
+      C (n + α + β + 2) * X * shiftedJacobi n (α + 2) β -
+        (C (α + 1) + C (α + β + 2 * n + 2) * X) *
+          shiftedJacobi n (α + 1) β := by
+  rw [show C (n + α + β + 2) * X * shiftedJacobi n (α + 2) β =
+    C (n + α + β + 2) * (X * shiftedJacobi n (α + 2) β) by ring]
+  rw [show (C (α + 1) + C (α + β + 2 * n + 2) * X) *
+      shiftedJacobi n (α + 1) β =
+    C (α + 1) * shiftedJacobi n (α + 1) β +
+      C (α + β + 2 * n + 2) * (X * shiftedJacobi n (α + 1) β) by ring]
+  ext k
+  cases k with
+  | zero =>
+      have hleft := succ_mul_ringChoose (n + α + 1) n
+      have hright := succ_mul_choose_add (α + 1) n
+      rw [show (n : ℝ) + α + 1 - 1 = n + α by ring] at hleft
+      rw [show α + 1 + n = n + α + 1 by ring] at hright
+      simp only [coeff_C_mul, coeff_sub, coeff_add]
+      simp only [coeff_shiftedJacobi, if_pos (Nat.zero_le n), pow_zero,
+        Ring.choose_zero_right, Nat.sub_zero, one_mul]
+      have hx2 : (X * shiftedJacobi n (α + 2) β).coeff 0 = 0 := by
+        rw [coeff_zero_eq_eval_zero]
+        simp
+      have hx1 : (X * shiftedJacobi n (α + 1) β).coeff 0 = 0 := by
+        rw [coeff_zero_eq_eval_zero]
+        simp
+      rw [hx2, hx1]
+      have hchoose :
+          (n + α + 1) * Ring.choose (n + α) n =
+            (α + 1) * Ring.choose (n + α + 1) n := hleft.symm.trans hright
+      simp only [mul_zero, mul_one, add_zero, zero_sub]
+      rw [show (n : ℝ) + (α + 1) = n + α + 1 by ring]
+      simpa only [neg_mul] using congrArg Neg.neg hchoose
+  | succ k =>
+      simp only [coeff_C_mul, coeff_sub, coeff_add]
+      simp only [coeff_X_mul]
+      rcases lt_trichotomy k n with hk | rfl | hk
+      · rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k,
+          coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
+        rw [if_pos (Nat.succ_le_iff.mpr hk), if_pos hk.le,
+          if_pos (Nat.succ_le_iff.mpr hk), if_pos hk.le]
+        have hA0 := succ_mul_ringChoose (n + α + 1) (n - k - 1)
+        rw [show n - k - 1 + 1 = n - k by lia,
+          show (n : ℝ) + α + 1 - 1 = n + α by ring] at hA0
+        have hB0 := succ_mul_choose_add (n + α + β + 1) k
+        rw [show (n : ℝ) + α + β + 1 + k = n + α + β + k + 1 by ring]
+          at hB0
+        have hA2 := sub_mul_ringChoose (n + α + 2) (n - k)
+        rw [show (n : ℝ) + α + 2 - 1 = n + α + 1 by ring] at hA2
+        have hB2 := sub_mul_ringChoose (n + α + β + k + 2) k
+        rw [show (n : ℝ) + α + β + k + 2 - 1 = n + α + β + k + 1 by ring]
+          at hB2
+        have hA1 := succ_mul_choose_add (α + k + 2) (n - k - 1)
+        rw [show n - k - 1 + 1 = n - k by lia] at hA1
+        have hB1 := succ_mul_ringChoose (n + α + β + k + 2) k
+        rw [show (n : ℝ) + α + β + k + 2 - 1 = n + α + β + k + 1 by ring]
+          at hB1
+        norm_num only [Nat.cast_add, Nat.cast_one] at hA0 hB0 hA2 hB2 hA1 hB1 ⊢
+        have hsub : n - (k + 1) = n - k - 1 := by lia
+        have hcast : ((n - k : ℕ) : ℝ) = n - k := by
+          rw [Nat.cast_sub hk.le]
+        have hcastPred : ((n - k - 1 : ℕ) : ℝ) = n - k - 1 := by
+          rw [Nat.cast_sub (by lia : 1 ≤ n - k), Nat.cast_sub hk.le]
+          norm_num
+        rw [hsub]
+        rw [hcastPred] at hA0 hA1
+        rw [hcast] at hA2
+        rw [show α + (k : ℝ) + 2 + (n - k - 1) = n + α + 1 by ring] at hA1
+        have hA0' :
+            (n - k) * Ring.choose (n + α + 1) (n - k) =
+              (n + α + 1) * Ring.choose (n + α) (n - k - 1) := by
+          convert hA0 using 1
+          ring
+        have hB0' :
+            (k + 1) * Ring.choose (n + α + β + k + 1) (k + 1) =
+              (n + α + β + 1) * Ring.choose (n + α + β + k + 1) k := hB0
+        have hA2' :
+            (α + k + 2) * Ring.choose (n + α + 2) (n - k) =
+              (n + α + 2) * Ring.choose (n + α + 1) (n - k) := by
+          convert hA2 using 1
+          ring
+        have hB2' :
+            (n + α + β + 2) * Ring.choose (n + α + β + k + 2) k =
+              (n + α + β + k + 2) * Ring.choose (n + α + β + k + 1) k := by
+          convert hB2 using 1
+          ring
+        have hA1' :
+            (n - k) * Ring.choose (n + α + 1) (n - k) =
+              (α + k + 2) * Ring.choose (n + α + 1) (n - k - 1) := by
+          convert hA1 using 1
+          ring
+        have hB1' :
+            (k + 1) * Ring.choose (n + α + β + k + 2) (k + 1) =
+              (n + α + β + k + 2) *
+                Ring.choose (n + α + β + k + 1) k := hB1
+        have hterm0 :
+            (n + α + 1) * (k + 1) * Ring.choose (n + α) (n - k - 1) *
+                Ring.choose (n + α + β + k + 1) (k + 1) =
+              (n - k) * (n + α + β + 1) *
+                Ring.choose (n + α + 1) (n - k) *
+                Ring.choose (n + α + β + k + 1) k := by
+          calc
+            _ = ((n + α + 1) * Ring.choose (n + α) (n - k - 1)) *
+                ((k + 1) * Ring.choose (n + α + β + k + 1) (k + 1)) := by ring
+            _ = ((n - k) * Ring.choose (n + α + 1) (n - k)) *
+                ((n + α + β + 1) * Ring.choose (n + α + β + k + 1) k) := by
+              rw [← hA0', hB0']
+            _ = _ := by ring
+        have hterm2 :
+            (α + k + 2) * (n + α + β + 2) *
+                Ring.choose (n + α + 2) (n - k) *
+                Ring.choose (n + α + β + k + 2) k =
+              (n + α + 2) * (n + α + β + k + 2) *
+                Ring.choose (n + α + 1) (n - k) *
+                Ring.choose (n + α + β + k + 1) k := by
+          calc
+            _ = ((α + k + 2) * Ring.choose (n + α + 2) (n - k)) *
+                ((n + α + β + 2) * Ring.choose (n + α + β + k + 2) k) := by ring
+            _ = ((n + α + 2) * Ring.choose (n + α + 1) (n - k)) *
+                ((n + α + β + k + 2) *
+                  Ring.choose (n + α + β + k + 1) k) := by
+              rw [hA2', hB2']
+            _ = _ := by ring
+        have hterm1 :
+            (k + 1) * (α + k + 2) *
+                Ring.choose (n + α + 1) (n - k - 1) *
+                Ring.choose (n + α + β + k + 2) (k + 1) =
+              (n - k) * (n + α + β + k + 2) *
+                Ring.choose (n + α + 1) (n - k) *
+                Ring.choose (n + α + β + k + 1) k := by
+          calc
+            _ = ((α + k + 2) * Ring.choose (n + α + 1) (n - k - 1)) *
+                ((k + 1) * Ring.choose (n + α + β + k + 2) (k + 1)) := by ring
+            _ = ((n - k) * Ring.choose (n + α + 1) (n - k)) *
+                ((n + α + β + k + 2) *
+                  Ring.choose (n + α + β + k + 1) k) := by
+              rw [← hA1', hB1']
+            _ = _ := by ring
+        have hfactor : (k + 1 : ℝ) * (α + k + 2) ≠ 0 := by
+          apply mul_ne_zero
+          · positivity
+          · have hkNonneg : 0 ≤ (k : ℝ) := by positivity
+            linarith
+        apply mul_left_cancel₀ hfactor
+        ring_nf at hterm0 hterm2 hterm1 ⊢
+        linear_combination
+          ((-1 : ℝ) ^ k * (α + k + 2)) * hterm0 -
+            ((-1 : ℝ) ^ k * (k + 1)) * hterm2 -
+            ((-1 : ℝ) ^ k * (α + 1)) * hterm1
+      · rw [coeff_shiftedJacobi k (k + 1), coeff_shiftedJacobi k k,
+          coeff_shiftedJacobi k (k + 1), coeff_shiftedJacobi k k]
+        rw [if_neg (by lia), if_pos le_rfl, if_neg (by lia), if_pos le_rfl]
+        have hlead := sub_mul_ringChoose (2 * k + α + β + 2) k
+        rw [show (2 : ℝ) * k + α + β + 2 - 1 = 2 * k + α + β + 1 by ring]
+          at hlead
+        norm_num only [Nat.cast_add, Nat.cast_one, Nat.sub_self,
+          Ring.choose_zero_right, mul_one, zero_mul, add_zero]
+        ring_nf at hlead ⊢
+        linear_combination (-((-1 : ℝ) ^ k)) * hlead
+      · rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k,
+          coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
+        rw [if_neg (by lia), if_neg (by lia), if_neg (by lia), if_neg (by lia)]
+        ring
 
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
