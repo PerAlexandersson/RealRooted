@@ -257,6 +257,27 @@ theorem insertionOperator_eval_zero (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).eval 0 = a * f.eval 0 := by
   simp [insertionOperator, intervalWeight]
 
+theorem coeff_insertionOperator_succ (a b : ℝ) (f : ℝ[X]) (k : ℕ) :
+    (insertionOperator a b f).coeff (k + 1) =
+      (k + 1 + a) * f.coeff (k + 1) - (k + b) * f.coeff k := by
+  have hform :
+      insertionOperator a b f =
+        X * f.derivative - X * (X * f.derivative) +
+          C a * f - C b * (X * f) := by
+    simp only [insertionOperator, intervalWeight]
+    ring
+  rw [hform, coeff_sub, coeff_add, coeff_sub, coeff_X_mul,
+    coeff_C_mul, coeff_C_mul, coeff_X_mul, coeff_derivative]
+  cases k with
+  | zero =>
+      simp
+      ring
+  | succ k =>
+      rw [coeff_X_mul, coeff_derivative,
+        show k + 1 + 1 = (k + 1) + 1 by rfl, coeff_X_mul]
+      push_cast
+      ring
+
 /-- The triangular differential family beginning with the `d`th derivative
 of `J` and applying the horizontal insertion operators successively. -/
 def triangleFamily (c : ℝ) (J : ℝ[X]) (d : ℕ) : ℕ → ℝ[X]
