@@ -51,9 +51,9 @@ theorem jacobiBetaOneLogFunctional_monomial (α c : ℝ) (k : ℕ) :
   simp [jacobiBetaOneLogFunctional]
 
 /-- The logarithmic moment is the derivative of the ordinary beta-one moment. -/
-theorem deriv_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
-    deriv (fun a => jacobiBetaOneMoment a k) α =
-      jacobiBetaOneLogMoment α k := by
+theorem hasDerivAt_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
+    HasDerivAt (fun a => jacobiBetaOneMoment a k)
+      (jacobiBetaOneLogMoment α k) α := by
   have hu : α + (k : ℝ) + 1 ≠ 0 := by
     have hk : 0 ≤ (k : ℝ) := by positivity
     linarith
@@ -80,7 +80,51 @@ theorem deriv_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
     funext a
     rfl
   rw [← hfun]
-  exact (hinv.congr_deriv hvalue).deriv
+  exact hinv.congr_deriv hvalue
+
+theorem deriv_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
+    deriv (fun a => jacobiBetaOneMoment a k) α =
+      jacobiBetaOneLogMoment α k :=
+  (hasDerivAt_jacobiBetaOneMoment hα k).deriv
+
+/-- Differentiating the beta-one moment functional at a fixed polynomial
+gives its logarithmic moment functional. -/
+theorem hasDerivAt_jacobiBetaOneFunctional {α : ℝ} (hα : -1 < α)
+    (p : ℝ[X]) :
+    HasDerivAt (fun a => jacobiBetaOneFunctional a p)
+      (jacobiBetaOneLogFunctional α p) α := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [jacobiBetaOneFunctional_add,
+        jacobiBetaOneLogFunctional_add]
+      change HasDerivAt
+        ((fun a => jacobiBetaOneFunctional a p) +
+          fun a => jacobiBetaOneFunctional a q)
+        (jacobiBetaOneLogFunctional α p +
+          jacobiBetaOneLogFunctional α q) α
+      exact hp.add hq
+  | monomial n c =>
+      simpa using (hasDerivAt_jacobiBetaOneMoment hα n).const_mul c
+
+@[simp]
+theorem jacobiBetaOneLogFunctional_sum {ι : Type*} (α : ℝ)
+    (s : Finset ι) (p : ι → ℝ[X]) :
+    jacobiBetaOneLogFunctional α (∑ i ∈ s, p i) =
+      ∑ i ∈ s, jacobiBetaOneLogFunctional α (p i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert i s hi hs => simp [hi, hs]
+
+@[simp]
+theorem jacobiBetaOneInner_sum_left {ι : Type*} (α : ℝ)
+    (s : Finset ι) (p : ι → ℝ[X]) (q : ℝ[X]) :
+    jacobiBetaOneInner α (∑ i ∈ s, p i) q =
+      ∑ i ∈ s, jacobiBetaOneInner α (p i) q := by
+  rw [jacobiBetaOneInner_comm, jacobiBetaOneInner_sum_right]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [jacobiBetaOneInner_comm]
 
 /-- Integral representation of the logarithmic beta-one moment. -/
 theorem integral_rpow_mul_one_sub_mul_log_zero_one {α : ℝ}
@@ -475,5 +519,348 @@ theorem hasDerivAt_shiftedJacobiMonic_eval_alpha (n : ℕ) {α β x : ℝ}
         fun a => (shiftedJacobiMonic n a β).coeff n * x ^ n)
       ((shiftedJacobiMonicAlphaDeriv n α β).eval x) α
   simpa [shiftedJacobiMonicAlphaDeriv, eval_finsetSum] using hall
+
+/-- The monic normalization preserves beta-one Jacobi orthogonality. -/
+theorem shiftedJacobiMonic_betaOneInner_eq_zero {α : ℝ} (hα : -1 < α)
+    {n : ℕ} (q : ℝ[X]) (hq : q.natDegree < n) :
+    jacobiBetaOneInner α (shiftedJacobiMonic n α 1) q = 0 := by
+  rw [shiftedJacobiMonic, jacobiBetaOneInner_C_mul_left,
+    shiftedJacobi_betaOneInner_eq_zero hα q hq, mul_zero]
+
+/-- Parameter derivative of the beta-one orthogonality pairing for the moving
+monic shifted Jacobi polynomial. -/
+theorem hasDerivAt_jacobiBetaOneInner_shiftedJacobiMonic_alpha (n : ℕ)
+    {α : ℝ} (hα : -1 < α) (q : ℝ[X]) :
+    HasDerivAt
+      (fun a => jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q)
+      (jacobiBetaOneInner α (shiftedJacobiMonicAlphaDeriv n α 1) q +
+        jacobiBetaOneLogFunctional α
+          (shiftedJacobiMonic n α 1 * q)) α := by
+  have hp_repr : ∀ a : ℝ,
+      shiftedJacobiMonic n a 1 =
+        ∑ k ∈ Finset.range (n + 1),
+          C ((shiftedJacobiMonic n a 1).coeff k) * X ^ k := by
+    intro a
+    exact (shiftedJacobiMonic n a 1).as_sum_range_C_mul_X_pow'
+      (Nat.lt_succ_of_le (natDegree_shiftedJacobiMonic_le n a 1))
+  have hfun :
+      (fun a => jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q) =
+        fun a => ∑ k ∈ Finset.range (n + 1),
+          (shiftedJacobiMonic n a 1).coeff k *
+            jacobiBetaOneInner a (X ^ k) q := by
+    funext a
+    calc
+      jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q =
+          jacobiBetaOneInner a
+            (∑ k ∈ Finset.range (n + 1),
+              C ((shiftedJacobiMonic n a 1).coeff k) * X ^ k) q :=
+        congrArg (fun p => jacobiBetaOneInner a p q) (hp_repr a)
+      _ = ∑ k ∈ Finset.range (n + 1),
+          (shiftedJacobiMonic n a 1).coeff k *
+            jacobiBetaOneInner a (X ^ k) q := by
+        rw [jacobiBetaOneInner_sum_left]
+        simp only [jacobiBetaOneInner_C_mul_left]
+  have hterm : ∀ k ∈ Finset.range (n + 1),
+      HasDerivAt
+        (fun a => (shiftedJacobiMonic n a 1).coeff k *
+          jacobiBetaOneInner a (X ^ k) q)
+        (deriv (fun a => (shiftedJacobiMonic n a 1).coeff k) α *
+            jacobiBetaOneInner α (X ^ k) q +
+          (shiftedJacobiMonic n α 1).coeff k *
+            jacobiBetaOneLogFunctional α (X ^ k * q)) α := by
+    intro k hk
+    have hc :=
+      (differentiableAt_shiftedJacobiMonic_coeff_alpha n k
+        (α := α) (β := 1) hα (by norm_num)).hasDerivAt
+    have hf : HasDerivAt (fun a => jacobiBetaOneInner a (X ^ k) q)
+        (jacobiBetaOneLogFunctional α (X ^ k * q)) α := by
+      simpa only [jacobiBetaOneInner] using
+        hasDerivAt_jacobiBetaOneFunctional hα (X ^ k * q)
+    exact hc.mul hf
+  have hsum : HasDerivAt
+      (fun a => ∑ k ∈ Finset.range (n + 1),
+        (shiftedJacobiMonic n a 1).coeff k *
+          jacobiBetaOneInner a (X ^ k) q)
+      (∑ k ∈ Finset.range (n + 1),
+        (deriv (fun a => (shiftedJacobiMonic n a 1).coeff k) α *
+            jacobiBetaOneInner α (X ^ k) q +
+          (shiftedJacobiMonic n α 1).coeff k *
+            jacobiBetaOneLogFunctional α (X ^ k * q))) α := by
+    exact HasDerivAt.fun_sum hterm
+  have hfirst :
+      (∑ k ∈ Finset.range (n + 1),
+        deriv (fun a => (shiftedJacobiMonic n a 1).coeff k) α *
+          jacobiBetaOneInner α (X ^ k) q) =
+        jacobiBetaOneInner α (shiftedJacobiMonicAlphaDeriv n α 1) q := by
+    rw [Finset.sum_range_succ,
+      (hasDerivAt_shiftedJacobiMonic_coeff_natDegree_alpha n hα
+        (by norm_num)).deriv,
+      zero_mul, add_zero, shiftedJacobiMonicAlphaDeriv,
+      jacobiBetaOneInner_sum_left]
+    simp only [jacobiBetaOneInner_C_mul_left]
+  have hsecond :
+      (∑ k ∈ Finset.range (n + 1),
+        (shiftedJacobiMonic n α 1).coeff k *
+          jacobiBetaOneLogFunctional α (X ^ k * q)) =
+        jacobiBetaOneLogFunctional α
+          (shiftedJacobiMonic n α 1 * q) := by
+    conv_rhs => rw [hp_repr α]
+    rw [Finset.sum_mul, jacobiBetaOneLogFunctional_sum]
+    simp only [mul_assoc, jacobiBetaOneLogFunctional_C_mul]
+  rw [hfun]
+  convert hsum using 1
+  rw [Finset.sum_add_distrib, hfirst, hsecond]
+
+/-- Differentiating the identically zero lower-degree orthogonality pairing
+gives the Markoff derivative identity. -/
+theorem jacobiBetaOneInner_alphaDeriv_add_logFunctional_eq_zero (n : ℕ)
+    {α : ℝ} (hα : -1 < α) (q : ℝ[X]) (hq : q.natDegree < n) :
+    jacobiBetaOneInner α (shiftedJacobiMonicAlphaDeriv n α 1) q +
+        jacobiBetaOneLogFunctional α
+          (shiftedJacobiMonic n α 1 * q) = 0 := by
+  have hevent : Filter.EventuallyEq (nhds α)
+      (fun a => jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q)
+      (fun _ => 0) := by
+    filter_upwards [Ioi_mem_nhds hα] with a ha
+    exact shiftedJacobiMonic_betaOneInner_eq_zero ha q hq
+  have hzero : HasDerivAt
+      (fun a => jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q) 0 α :=
+    (hasDerivAt_const α 0).congr_of_eventuallyEq hevent
+  exact HasDerivAt.unique
+    (hasDerivAt_jacobiBetaOneInner_shiftedJacobiMonic_alpha n hα q) hzero
+
+/-- The beta-one moment functional is strictly positive on the square of a
+nonzero real polynomial. -/
+theorem jacobiBetaOneFunctional_sq_pos {α : ℝ} (hα : -1 < α)
+    {q : ℝ[X]} (hq : q ≠ 0) :
+    0 < jacobiBetaOneFunctional α (q ^ 2) := by
+  let f : ℝ → ℝ := fun x => (q.eval x) ^ 2 * x ^ α * (1 - x)
+  have hfInt : IntervalIntegrable f MeasureTheory.volume 0 1 := by
+    convert intervalIntegrable_jacobiBetaOneIntegrand hα (q ^ 2) using 1
+    ext x
+    simp only [f, eval_pow]
+  have hf_nonneg : 0 ≤ᵐ[MeasureTheory.volume.restrict (Set.uIoc 0 1)] f := by
+    rw [Set.uIoc_of_le zero_le_one, Filter.EventuallyLE,
+      MeasureTheory.ae_restrict_iff' measurableSet_Ioc]
+    filter_upwards with x hx
+    have hpow : 0 < x ^ α := Real.rpow_pos_of_pos hx.1 α
+    have hone : 0 ≤ 1 - x := sub_nonneg.mpr hx.2
+    dsimp only [f]
+    positivity
+  obtain ⟨x, hx, havoid⟩ :=
+    (Set.Ioo_infinite (show (0 : ℝ) < 1 by norm_num)).exists_notMem_finset
+      q.roots.toFinset
+  have hqx : q.eval x ≠ 0 := by
+    intro heval
+    apply havoid
+    have hroot : q.IsRoot x := by simpa [Polynomial.IsRoot.def]
+    exact Multiset.mem_toFinset.mpr ((Polynomial.mem_roots hq).mpr hroot)
+  have hfx : 0 < f x := by
+    have hpow : 0 < x ^ α := Real.rpow_pos_of_pos hx.1 α
+    have hone : 0 < 1 - x := sub_pos.mpr hx.2
+    dsimp only [f]
+    positivity
+  have hfcont : ContinuousAt f x := by
+    have hx0 : x ≠ 0 := hx.1.ne'
+    dsimp only [f]
+    exact (((q.continuousAt.pow 2).mul
+      (continuousAt_id.rpow_const (Or.inl hx0))).mul
+        (continuousAt_const.sub continuousAt_id))
+  have hevent : Filter.Eventually (fun y => f y ≠ 0) (nhds x) :=
+    hfcont.eventually_ne hfx.ne'
+  obtain ⟨a, b, hxab, hab⟩ := hevent.exists_Ioo_subset
+  let a' := max a 0
+  let b' := min b 1
+  have ha'x : a' < x := max_lt hxab.1 hx.1
+  have hxb' : x < b' := lt_min hxab.2 hx.2
+  have ha'b' : a' < b' := ha'x.trans hxb'
+  have hsubset : Set.Ioo a' b' ⊆ Function.support f ∩ Set.Ioc 0 1 := by
+    intro y hy
+    have hay : a < y := (le_max_left a 0).trans_lt hy.1
+    have hyb : y < b := hy.2.trans_le (min_le_left b 1)
+    refine ⟨Function.mem_support.mpr (hab ⟨hay, hyb⟩), ?_⟩
+    exact ⟨(le_max_right a 0).trans_lt hy.1,
+      (hy.2.trans_le (min_le_right b 1)).le⟩
+  have hmeasure : 0 < MeasureTheory.volume
+      (Function.support f ∩ Set.Ioc 0 1) :=
+    ((MeasureTheory.Measure.measure_Ioo_pos _).mpr ha'b').trans_le
+      (MeasureTheory.measure_mono hsubset)
+  rw [jacobiBetaOneFunctional_eq_integral hα]
+  convert (intervalIntegral.integral_pos_iff_support_of_nonneg_ae'
+    hf_nonneg hfInt).mpr ⟨zero_lt_one, hmeasure⟩ using 1
+  simp only [f, eval_pow]
+
+/-- Every root of a monic shifted Jacobi polynomial is simple. -/
+theorem shiftedJacobiMonic_derivative_eval_ne_zero (n : ℕ) {α β r : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (hr : (shiftedJacobiMonic n α β).IsRoot r) :
+    (shiftedJacobiMonic n α β).derivative.eval r ≠ 0 := by
+  intro hder
+  let p := shiftedJacobiMonic n α β
+  have hp_ne : p ≠ 0 := shiftedJacobiMonic_ne_zero n hα hβ
+  have hder_root : p.derivative.IsRoot r := by
+    simpa only [Polynomial.IsRoot.def, p] using hder
+  have hmult : 1 < p.rootMultiplicity r :=
+    (Polynomial.one_lt_rootMultiplicity_iff_isRoot hp_ne).mpr ⟨hr, hder_root⟩
+  have hcount := (Multiset.nodup_iff_count_le_one.mp
+    (shiftedJacobiMonic_roots_nodup n hα hβ)) r
+  rw [Polynomial.count_roots] at hcount
+  lia
+
+/-- Every root of a monic shifted Jacobi polynomial lies in the open unit
+interval. -/
+theorem shiftedJacobiMonic_isRoot_mem_Ioo (n : ℕ) {α β r : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (hr : (shiftedJacobiMonic n α β).IsRoot r) :
+    r ∈ Set.Ioo (0 : ℝ) 1 := by
+  have hchoose : Ring.choose (n + α + β + n) n ≠ 0 := by
+    cases n with
+    | zero => simp
+    | succ n =>
+        exact (Polynomial.ring_choose_pos (by
+          push_cast
+          linarith)).ne'
+  have hscale :
+      (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hchoose
+  have hraw : (shiftedJacobi n α β).IsRoot r := by
+    rw [Polynomial.IsRoot.def] at hr ⊢
+    simp only [shiftedJacobiMonic, eval_mul, eval_C] at hr
+    exact (mul_eq_zero.mp hr).resolve_left (inv_ne_zero hscale)
+  exact shiftedJacobi_isRoot_mem_Ioo n hα hβ hraw
+
+/-- Evaluation at a Jacobi root is represented, on lower-degree polynomials,
+by pairing with the corresponding root quotient. -/
+theorem jacobiBetaOneInner_rootQuotient_eq_eval_mul {n : ℕ} {α r : ℝ}
+    (hα : -1 < α) (hr : (shiftedJacobiMonic n α 1).IsRoot r)
+    (h : ℝ[X]) (hh : h.natDegree < n) :
+    jacobiBetaOneInner α h
+        (shiftedJacobiMonic n α 1 /ₘ (X - C r)) =
+      h.eval r * jacobiBetaOneInner α 1
+        (shiftedJacobiMonic n α 1 /ₘ (X - C r)) := by
+  let p := shiftedJacobiMonic n α 1
+  let q := p /ₘ (X - C r)
+  let s := (h - C (h.eval r)) /ₘ (X - C r)
+  have hp_factor : (X - C r) * q = p := by
+    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
+  have ht_root : (h - C (h.eval r)).IsRoot r := by
+    simp [Polynomial.IsRoot.def]
+  have ht_factor : (X - C r) * s = h - C (h.eval r) := by
+    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr ht_root
+  have hn : 1 ≤ n := by lia
+  have hcdeg : (C (h.eval r)).natDegree < n := by
+    rw [natDegree_C]
+    exact hn
+  have htdeg : (h - C (h.eval r)).natDegree < n :=
+    (natDegree_sub_le h (C (h.eval r))).trans_lt (max_lt hh hcdeg)
+  have hsdeg : s.natDegree < n := by
+    calc
+      s.natDegree = (h - C (h.eval r)).natDegree -
+          (X - C r).natDegree := by
+        exact natDegree_divByMonic (h - C (h.eval r)) (monic_X_sub_C r)
+      _ ≤ (h - C (h.eval r)).natDegree := Nat.sub_le _ _
+      _ < n := htdeg
+  have horth : jacobiBetaOneInner α p s = 0 := by
+    exact shiftedJacobiMonic_betaOneInner_eq_zero hα s hsdeg
+  have hcross : jacobiBetaOneInner α ((X - C r) * s) q =
+      jacobiBetaOneInner α p s := by
+    simp only [jacobiBetaOneInner]
+    apply congrArg (jacobiBetaOneFunctional α)
+    rw [← hp_factor]
+    ring
+  have hdecomp : h = C (h.eval r) * 1 + (X - C r) * s := by
+    rw [ht_factor]
+    ring
+  change jacobiBetaOneInner α h q =
+    h.eval r * jacobiBetaOneInner α 1 q
+  calc
+    jacobiBetaOneInner α h q =
+        jacobiBetaOneInner α
+          (C (h.eval r) * 1 + (X - C r) * s) q :=
+      congrArg (fun u => jacobiBetaOneInner α u q) hdecomp
+    _ = h.eval r * jacobiBetaOneInner α 1 q := by
+      rw [jacobiBetaOneInner_add_left,
+        jacobiBetaOneInner_C_mul_left, hcross, horth, add_zero]
+
+/-- At every root, the first-parameter derivative and the spatial derivative
+of the monic beta-one shifted Jacobi family have opposite signs. -/
+theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
+    (n : ℕ) {α r : ℝ} (hα : -1 < α) (hn : 1 ≤ n)
+    (hr : (shiftedJacobiMonic n α 1).IsRoot r) :
+    (shiftedJacobiMonicAlphaDeriv n α 1).eval r *
+        (shiftedJacobiMonic n α 1).derivative.eval r < 0 := by
+  let p := shiftedJacobiMonic n α 1
+  let d := shiftedJacobiMonicAlphaDeriv n α 1
+  let q := p /ₘ (X - C r)
+  have hp_factor : (X - C r) * q = p := by
+    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
+  have hq_ne : q ≠ 0 := by
+    intro hqzero
+    have hp_ne : p ≠ 0 :=
+      shiftedJacobiMonic_ne_zero n (α := α) (β := 1) hα (by norm_num)
+    apply hp_ne
+    rw [← hp_factor, hqzero, mul_zero]
+  have hqdeg : q.natDegree < n := by
+    dsimp only [q, p]
+    rw [natDegree_divByMonic (shiftedJacobiMonic n α 1)
+      (monic_X_sub_C r), natDegree_X_sub_C,
+      natDegree_shiftedJacobiMonic n hα (by norm_num)]
+    lia
+  have hrIoo : r ∈ Set.Ioo (0 : ℝ) 1 :=
+    shiftedJacobiMonic_isRoot_mem_Ioo n hα (by norm_num) hr
+  have horth :
+      jacobiBetaOneFunctional α ((X - C r) * q ^ 2) = 0 := by
+    have hpoly : (X - C r) * q ^ 2 = p * q := by
+      rw [← hp_factor]
+      ring
+    rw [hpoly]
+    exact shiftedJacobiMonic_betaOneInner_eq_zero hα q hqdeg
+  have hlogpos :
+      0 < jacobiBetaOneLogFunctional α ((X - C r) * q ^ 2) :=
+    jacobiBetaOneLogFunctional_X_sub_C_mul_sq_pos hα hrIoo hq_ne horth
+  have hmarkoff :=
+    jacobiBetaOneInner_alphaDeriv_add_logFunctional_eq_zero n hα q hqdeg
+  have hpoly : (X - C r) * q ^ 2 = p * q := by
+    rw [← hp_factor]
+    ring
+  change jacobiBetaOneInner α d q +
+    jacobiBetaOneLogFunctional α (p * q) = 0 at hmarkoff
+  rw [← hpoly] at hmarkoff
+  have hinner_neg : jacobiBetaOneInner α d q < 0 := by linarith
+  have hqeval : q.eval r = p.derivative.eval r := by
+    have hid := congrArg (Polynomial.eval r)
+      (Polynomial.divByMonic_add_X_sub_C_mul_derivative_divByMonic_eq_derivative
+        p r)
+    simpa only [q, eval_add, eval_mul, eval_sub, eval_X, eval_C,
+      sub_self, zero_mul, add_zero] using hid
+  have hqeval_ne : q.eval r ≠ 0 := by
+    rw [hqeval]
+    exact shiftedJacobiMonic_derivative_eval_ne_zero n hα (by norm_num) hr
+  have hddeg : d.natDegree < n :=
+    natDegree_shiftedJacobiMonicAlphaDeriv_lt n α 1 hn
+  have hdrep : jacobiBetaOneInner α d q =
+      d.eval r * jacobiBetaOneInner α 1 q := by
+    exact jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr d hddeg
+  have hqrep : jacobiBetaOneInner α q q =
+      q.eval r * jacobiBetaOneInner α 1 q := by
+    exact jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr q hqdeg
+  have hqq_pos : 0 < jacobiBetaOneInner α q q := by
+    simpa only [jacobiBetaOneInner, pow_two] using
+      jacobiBetaOneFunctional_sq_pos hα hq_ne
+  have hidentity :
+      jacobiBetaOneInner α d q * (q.eval r) ^ 2 =
+        (d.eval r * q.eval r) * jacobiBetaOneInner α q q := by
+    rw [hdrep, hqrep]
+    ring
+  have hneg :
+      (d.eval r * q.eval r) * jacobiBetaOneInner α q q < 0 := by
+    rw [← hidentity]
+    exact mul_neg_of_neg_of_pos hinner_neg (sq_pos_of_ne_zero hqeval_ne)
+  have hdq_neg : d.eval r * q.eval r < 0 := by
+    rcases mul_neg_iff.mp hneg with h | h
+    · linarith
+    · exact h.1
+  change d.eval r * p.derivative.eval r < 0
+  rwa [← hqeval]
 
 end RealRooted
