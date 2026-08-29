@@ -225,6 +225,95 @@ theorem shiftedJacobi_reflection (n : ℕ) (α β : ℝ) :
           eval_sub, eval_X, sub_zero, shiftedJacobi_eval_one]
         rw [← mul_assoc, hsign, one_mul]
 
+private lemma succ_mul_ringChoose (x : ℝ) (k : ℕ) :
+    (k + 1 : ℝ) * Ring.choose x (k + 1) =
+      x * Ring.choose (x - 1) k := by
+  rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
+  simp only [smul_eq_mul]
+  rw [descPochhammer_succ_left]
+  simp only [smeval_mul, smeval_X, pow_one, smeval_comp, smeval_sub,
+    smeval_one, one_smul]
+  norm_num only [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
+  field_simp
+
+/-- The unit shift in the second Jacobi parameter, in a form relating two
+degrees. -/
+theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
+    C (2 * n + α + β + 1) * shiftedJacobi n α β =
+      C (n + α + β + 1) * shiftedJacobi n α (β + 1) +
+        C (n + α) * shiftedJacobi (n - 1) α (β + 1) := by
+  ext k
+  simp only [coeff_C_mul, coeff_add]
+  rw [coeff_shiftedJacobi n k α β, coeff_shiftedJacobi n k α (β + 1),
+    coeff_shiftedJacobi (n - 1) k α (β + 1)]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk, if_pos hk]
+    by_cases hkn : k = n
+    · subst k
+      rw [if_neg (by lia : ¬n ≤ n - 1)]
+      cases n with
+      | zero => contradiction
+      | succ d =>
+          let t : ℝ := 2 * d + α + β + 2
+          let b : ℝ := d + α + β + 2
+          have hchoose :
+              Ring.choose (t + 1) (d + 1) =
+                Ring.choose t d + Ring.choose t (d + 1) := by
+            exact Ring.choose_succ_succ t d
+          have hratio :
+              (d + 1 : ℝ) * Ring.choose t (d + 1) =
+                b * Ring.choose t d := by
+            have h := succ_mul_choose_add b d
+            rw [show b + d = t by simp [t, b]; ring] at h
+            exact h
+          norm_num only [Nat.cast_add, Nat.cast_one, Nat.sub_self,
+            Ring.choose_zero_right, mul_one, mul_zero, add_zero]
+          rw [show (d : ℝ) + 1 + α + β + (d + 1) = t by simp [t]; ring,
+            show (d : ℝ) + 1 + α + (β + 1) + (d + 1) = t + 1 by
+              simp [t]
+              ring,
+            hchoose]
+          simp only [t, b] at hratio ⊢
+          linear_combination
+            ((-1 : ℝ) ^ (d + 1)) * hratio
+    · have hk_pred : k ≤ n - 1 := by lia
+      rw [if_pos hk_pred]
+      have hleft := succ_mul_ringChoose (n + α) (n - 1 - k)
+      rw [show n - 1 - k + 1 = n - k by lia] at hleft
+      have hn_one : 1 ≤ n := by lia
+      have hindex : ((n - 1 - k : ℕ) : ℝ) + 1 = (n - k : ℕ) := by
+        exact_mod_cast (show n - 1 - k + 1 = n - k by lia)
+      rw [hindex, Nat.cast_sub hk] at hleft
+      rw [show ((n - 1 : ℕ) : ℝ) + α = n + α - 1 by
+        rw [Nat.cast_sub hn_one, Nat.cast_one]
+        ring]
+      rw [show n + α - 1 + (β + 1) + k = n + α + β + k by ring]
+      rw [show n + α + (β + 1) + k = (n + α + β + k) + 1 by ring]
+      cases k with
+      | zero =>
+          norm_num only [Nat.cast_zero, pow_zero, Ring.choose_zero_right, mul_one]
+          linear_combination
+            hleft
+      | succ d =>
+          have hright :
+              (d + 1 : ℝ) *
+                  Ring.choose (n + α + β + (d + 1)) (d + 1) =
+                (n + α + β + 1) *
+                  Ring.choose (n + α + β + (d + 1)) d := by
+            convert succ_mul_choose_add (n + α + β + 1) d using 1 <;>
+              ring
+          rw [Ring.choose_succ_succ]
+          norm_num only [Nat.cast_add, Nat.cast_one] at hleft hright ⊢
+          linear_combination
+            ((-1 : ℝ) ^ (d + 1) * Ring.choose (n + α + β + (d + 1)) (d + 1)) *
+                hleft +
+              ((-1 : ℝ) ^ (d + 1) * Ring.choose (n + α) (n - (d + 1))) *
+                hright
+  · rw [if_neg hk]
+    have hk_pred : ¬k ≤ n - 1 := by lia
+    rw [if_neg hk_pred, if_neg hk]
+    simp
+
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
       (x + k + 1) * Ring.choose (x + k) k := by
@@ -393,6 +482,16 @@ theorem monic_shiftedJacobiMonic (n : ℕ) {α β : ℝ}
     leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr (inv_ne_zero hscale)),
     leadingCoeff_shiftedJacobi n hα hβ]
   exact inv_mul_cancel₀ hscale
+
+/-- The monic shifted Jacobi polynomial has its indexed degree. -/
+@[simp]
+theorem natDegree_shiftedJacobiMonic (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobiMonic n α β).natDegree = n := by
+  have hscale : (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) (leading_choose_pos n hα hβ).ne'
+  rw [shiftedJacobiMonic, natDegree_C_mul (inv_ne_zero hscale),
+    natDegree_shiftedJacobi n hα hβ]
 
 /-- The diagonal coefficient in the monic shifted-Jacobi recurrence. -/
 noncomputable def shiftedJacobiDiag (n : ℕ) (α β : ℝ) : ℝ :=
