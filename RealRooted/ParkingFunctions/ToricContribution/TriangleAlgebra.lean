@@ -327,18 +327,26 @@ theorem negOnePow_mul_iterate_derivative_jPolynomial_eval_zero_pos
       field_simp [hF.ne']]
   exact div_pos (mul_pos hA hB) hC
 
-/-- Every signed diagonal entry is positively oriented at the left endpoint. -/
-theorem signedTriangleFamily_diagonal_eval_zero_pos
-    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+/-- Every signed triangle entry in a nonexceptional row is positively oriented
+at the left endpoint. -/
+theorem signedTriangleFamily_eval_zero_pos
+    (m ε d t : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
     0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2)
-      (jPolynomial m ε) d d).eval 0 := by
+      (jPolynomial m ε) d t).eval 0 := by
   rw [signedTriangleFamily, eval_mul, eval_C, triangleFamily_eval_zero]
-  have hc : 0 < realRisingFactorial ((ε : ℝ) + 1 / 2) d := by
+  have hc : 0 < realRisingFactorial ((ε : ℝ) + 1 / 2) t := by
     apply realRisingFactorial_pos
     positivity
   have hder := negOnePow_mul_iterate_derivative_jPolynomial_eval_zero_pos
     m ε d hm hd
   nlinarith
+
+/-- Every signed diagonal entry is positively oriented at the left endpoint. -/
+theorem signedTriangleFamily_diagonal_eval_zero_pos
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2)
+      (jPolynomial m ε) d d).eval 0 := by
+  exact signedTriangleFamily_eval_zero_pos m ε d d hm hd
 
 /-- The differentiated hypergeometric equation for every row of derivatives
 of `J`. The identity remains valid after the derivative tower reaches zero. -/

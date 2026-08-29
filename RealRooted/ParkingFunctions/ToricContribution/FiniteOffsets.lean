@@ -26,6 +26,60 @@ structure RightClosedIntervalRootData (p : ℝ[X]) (n : ℕ) : Prop where
   roots_mem_Ioc : ∀ r ∈ p.roots, r ∈ Set.Ioc (0 : ℝ) 1
   eval_derivative_ne_zero : ∀ r, p.IsRoot r → p.derivative.eval r ≠ 0
 
+/-- If a split polynomial has positive value at zero and all roots are
+positive, multiplying it by `(-1)^n` makes its leading coefficient positive. -/
+theorem IntervalRootData.hasPosLeadingCoeff_negOnePow_mul
+    {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0) :
+    HasPosLeadingCoeff (C ((-1 : ℝ) ^ n) * p) := by
+  have hprod : 0 < p.roots.prod := by
+    apply Multiset.prod_pos
+    intro r hr
+    exact (hp.roots_mem_Ioo r hr).1
+  have hcoeff := hp.splits.coeff_zero_eq_leadingCoeff_mul_prod_roots
+  rw [coeff_zero_eq_eval_zero, hp.natDegree_eq] at hcoeff
+  have hfactor : 0 < (-1 : ℝ) ^ n * p.leadingCoeff := by
+    rw [show (-1 : ℝ) ^ n * p.leadingCoeff = p.eval 0 / p.roots.prod by
+      rw [hcoeff]
+      field_simp [hprod.ne']]
+    exact div_pos hpZero hprod
+  rw [HasPosLeadingCoeff, Polynomial.leadingCoeff_C_mul_of_isUnit
+    (isUnit_iff_ne_zero.mpr (pow_ne_zero n (by norm_num)))]
+  exact hfactor
+
+/-- The interval-insertion proper-position theorem without a leading-sign
+hypothesis, using positive orientation at zero to normalize the input. -/
+theorem IntervalRootData.prec_neg_insertionOperator
+    {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0)
+    (a b : ℝ) (hn : 2 ≤ n) (hb : 0 < b) :
+    Prec p (-ToricContribution.insertionOperator a b p) := by
+  let sign : ℝ := (-1 : ℝ) ^ n
+  have hsign : sign ≠ 0 := pow_ne_zero n (by norm_num)
+  have hscaledData : IntervalRootData (C sign * p) n := hp.C_mul hsign
+  have hscaledPos : HasPosLeadingCoeff (C sign * p) := by
+    exact hp.hasPosLeadingCoeff_negOnePow_mul hpZero
+  have hprec :
+      Prec (C sign * p)
+        (-ToricContribution.insertionOperator a b (C sign * p)) := by
+    apply ToricContribution.prec_neg_insertionOperator a b
+      hscaledData.splits hscaledPos
+      (by rw [hscaledData.natDegree_eq]; exact hn)
+      (fun r hr => hscaledData.roots_mem_Ioo r
+        ((mem_roots hscaledPos.ne_zero).mpr hr))
+      hscaledData.eval_derivative_ne_zero hb
+  have hoperator :
+      -ToricContribution.insertionOperator a b (C sign * p) =
+        C sign * (-ToricContribution.insertionOperator a b p) := by
+    rw [insertionOperator_C_mul]
+    ring
+  rw [hoperator] at hprec
+  have hleft := prec_C_mul_left hprec (inv_ne_zero hsign)
+  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
+    one_mul] at hleft
+  have hboth := prec_C_mul_right hleft (inv_ne_zero hsign)
+  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
+    one_mul] at hboth
+  exact hboth
+
 /-- Multiplication by `1-X`, followed by a nonzero rescaling, adjoins one
 simple root at the right endpoint to an open-interval root package. -/
 theorem rightClosedIntervalRootData_of_one_sub_X_mul_eq_C_mul
@@ -150,6 +204,166 @@ theorem rPolynomial_rightClosedIntervalRootData
   have hdata := rightClosedIntervalRootData_of_one_sub_X_mul_eq_C_mul hf hs heq
   convert hdata using 1
   lia
+
+/-- Above the two low-degree boundary cases, the next signed diagonal lies
+strictly before the current signed diagonal in proper-position order. This is
+the polynomial form of the directed gap comparison in the last Darboux
+square. -/
+theorem consecutive_signedTriangleFamily_prec
+    (m ε d : ℕ) (hm : 4 ≤ m) (hd : d ≤ m - 2) :
+    Prec
+      (signedTriangleFamily ((ε : ℝ) + 1 / 2)
+        (jPolynomial m ε) (d + 1) (d + 1))
+      (C ((((m - 1 : ℕ) : ℝ) - d) *
+          ((m - 1 : ℕ) + d + ε + 3)) *
+        signedTriangleFamily ((ε : ℝ) + 1 / 2)
+          (jPolynomial m ε) d d) := by
+  let a : ℝ := ε + 1 / 2 + d
+  let b : ℝ := ε + 1 / 2 + d + 2
+  let eigenvalue : ℝ :=
+    (((m - 1 : ℕ) : ℝ) - d) * ((m - 1 : ℕ) + d + ε + 3)
+  let H := signedTriangleFamily ((ε : ℝ) + 1 / 2)
+    (jPolynomial m ε) (d + 1) d
+  let A := signedTriangleFamily ((ε : ℝ) + 1 / 2)
+    (jPolynomial m ε) d d
+  let B := signedTriangleFamily ((ε : ℝ) + 1 / 2)
+    (jPolynomial m ε) (d + 1) (d + 1)
+  let signH : ℝ := (-1 : ℝ) ^ (m - 2)
+  let signAB : ℝ := (-1 : ℝ) ^ (m - 1)
+  let Hpos : ℝ[X] := C signH * H
+  let Apos : ℝ[X] := C signAB * (C eigenvalue * A)
+  let Bpos : ℝ[X] := C signAB * B
+  have hmPos : 0 < m := by lia
+  have hdRow : d ≤ m - 1 := by lia
+  have hdNext : d + 1 ≤ m - 1 := by lia
+  have hHData : IntervalRootData H (m - 2) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε (d + 1) d hmPos hdNext (by lia)
+    dsimp only [H]
+    convert hdata using 1
+    lia
+  have hAData : IntervalRootData A (m - 1) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε d d hmPos hdRow le_rfl
+    dsimp only [A]
+    convert hdata using 1
+    lia
+  have hBData : IntervalRootData B (m - 1) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε (d + 1) (d + 1) hmPos hdNext le_rfl
+    dsimp only [B]
+    convert hdata using 1
+    lia
+  have hHEval : 0 < H.eval 0 := by
+    exact signedTriangleFamily_eval_zero_pos m ε (d + 1) d hmPos hdNext
+  have hAEval : 0 < A.eval 0 := by
+    exact signedTriangleFamily_eval_zero_pos m ε d d hmPos hdRow
+  have hBEval : 0 < B.eval 0 := by
+    exact signedTriangleFamily_eval_zero_pos m ε (d + 1) (d + 1) hmPos hdNext
+  have heigenvalue : 0 < eigenvalue := by
+    have hfirst : 0 < (((m - 1 : ℕ) : ℝ) - d) := by
+      have hnat : 0 < m - 1 - d := by lia
+      rw [← Nat.cast_sub hdRow]
+      exact_mod_cast hnat
+    have hsecond : 0 < (((m - 1 : ℕ) : ℝ) + d + ε + 3) := by positivity
+    exact mul_pos hfirst hsecond
+  have hsignH : signH ≠ 0 := pow_ne_zero (m - 2) (by norm_num)
+  have hsignAB : signAB ≠ 0 := pow_ne_zero (m - 1) (by norm_num)
+  have hsignRelation : signAB = -signH := by
+    dsimp only [signAB, signH]
+    rw [show m - 1 = (m - 2) + 1 by lia, pow_succ]
+    ring
+  have hHposData : IntervalRootData Hpos (m - 2) := hHData.C_mul hsignH
+  have hBposData : IntervalRootData Bpos (m - 1) := hBData.C_mul hsignAB
+  have hAposData : IntervalRootData Apos (m - 1) := by
+    exact (hAData.C_mul heigenvalue.ne').C_mul hsignAB
+  have hHLeading : HasPosLeadingCoeff Hpos := by
+    exact hHData.hasPosLeadingCoeff_negOnePow_mul hHEval
+  have hBLeading : HasPosLeadingCoeff Bpos := by
+    exact hBData.hasPosLeadingCoeff_negOnePow_mul hBEval
+  have hALeading : HasPosLeadingCoeff Apos := by
+    apply (hAData.C_mul heigenvalue.ne').hasPosLeadingCoeff_negOnePow_mul
+    simp only [eval_mul, eval_C]
+    exact mul_pos heigenvalue hAEval
+  have hhorizontal : B = insertionOperator a b H := by
+    dsimp only [B, H, a, b, signedTriangleFamily]
+    rw [triangleFamily_succ]
+    have hparameter :
+        (ε : ℝ) + 1 / 2 + ((d + 1 : ℕ) : ℝ) + 1 =
+          (ε : ℝ) + 1 / 2 + (d : ℝ) + 2 := by
+      push_cast
+      ring
+    rw [hparameter, insertionOperator_C_mul]
+  have hBposOperator : Bpos = -insertionOperator a b Hpos := by
+    dsimp only [Bpos, Hpos]
+    rw [insertionOperator_C_mul, ← hhorizontal, hsignRelation]
+    apply Polynomial.funext
+    intro x
+    simp only [eval_neg, eval_mul, eval_C]
+    ring
+  have hHBPrec : Prec Hpos Bpos := by
+    rw [hBposOperator]
+    apply ToricContribution.prec_neg_insertionOperator a b
+      hHposData.splits hHLeading
+    · rw [hHposData.natDegree_eq]
+      lia
+    · intro r hr
+      exact hHposData.roots_mem_Ioo r
+        ((mem_roots hHLeading.ne_zero).mpr hr)
+    · exact hHposData.eval_derivative_ne_zero
+    · dsimp only [b]
+      positivity
+  have hHBInterlaces : Interlaces Hpos Bpos := by
+    apply hHBPrec.toInterlaces
+    rw [hHposData.natDegree_eq, hBposData.natDegree_eq]
+    lia
+  have hnoCommon : ∀ r, Bpos.IsRoot r → ¬Hpos.IsRoot r := by
+    intro r hrB hrH
+    have hMroot : (insertionOperator a b Hpos).IsRoot r := by
+      rw [hBposOperator, IsRoot.def] at hrB
+      rw [IsRoot.def]
+      simpa using hrB
+    exact insertionOperator_no_common_root a b
+      (fun x hx => hHposData.roots_mem_Ioo x
+        ((mem_roots hHLeading.ne_zero).mpr hx))
+      hHposData.eval_derivative_ne_zero r hrH hMroot
+  have hcombination :
+      Apos = 1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos := by
+    have hscaled := congrArg (C signAB * ·)
+      (signedTriangleFamily_diagonal_relation m ε d)
+    dsimp only [Apos, Bpos, Hpos, A, B, H, eigenvalue]
+    rw [hsignRelation] at hscaled ⊢
+    simp only [map_neg, map_mul] at hscaled ⊢
+    linear_combination hscaled
+  have hcombinationLeading :
+      HasPosLeadingCoeff
+        (1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos) := by
+    rw [← hcombination]
+    exact hALeading
+  have hcombinationDegree :
+      (1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos).natDegree =
+        Bpos.natDegree := by
+    rw [← hcombination, hAposData.natDegree_eq, hBposData.natDegree_eq]
+  have hcoefficientNeg :
+      ∀ r, Bpos.IsRoot r → (-(C (3 / 2 : ℝ) * (1 - X))).eval r < 0 := by
+    intro r hr
+    have hri := hBposData.roots_mem_Ioo r
+      ((mem_roots hBLeading.ne_zero).mpr hr)
+    have hone : 0 < 1 - r := sub_pos.mpr hri.2
+    simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
+    norm_num
+    nlinarith
+  have hprecPos := prec_of_interlaces_evalCoeff_neg_same
+    hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
+    hnoCommon hcoefficientNeg
+  rw [← hcombination] at hprecPos
+  have hleft := prec_C_mul_left hprecPos (inv_ne_zero hsignAB)
+  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
+    C_1, one_mul] at hleft
+  have hboth := prec_C_mul_right hleft (inv_ne_zero hsignAB)
+  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
+    C_1, one_mul] at hboth
+  exact hboth
 
 end ToricContribution
 end ParkingFunctions
