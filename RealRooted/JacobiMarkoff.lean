@@ -371,4 +371,109 @@ theorem jacobiBetaOneLogFunctional_X_sub_C_mul_sq_pos {α r : ℝ}
   rw [hIntegral]
   exact hfpos
 
+@[fun_prop]
+theorem differentiable_ring_choose (n : ℕ) :
+    Differentiable ℝ (fun x : ℝ => Ring.choose x n) := by
+  simp_rw [Ring.choose_eq_smul, smul_eq_mul,
+    ← eval₂_smulOneHom_eq_smeval, ← eval_map]
+  fun_prop
+
+theorem natDegree_shiftedJacobiMonic_le (n : ℕ) (α β : ℝ) :
+    (shiftedJacobiMonic n α β).natDegree ≤ n := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_shiftedJacobiMonic]
+  simp [Nat.not_le_of_lt hk]
+
+theorem differentiableAt_shiftedJacobiMonic_coeff_alpha (n k : ℕ)
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    DifferentiableAt ℝ
+      (fun a => (shiftedJacobiMonic n a β).coeff k) α := by
+  have hchoose : Ring.choose (n + α + β + n) n ≠ 0 := by
+    cases n with
+    | zero => simp
+    | succ n =>
+        exact (Polynomial.ring_choose_pos (by
+          push_cast
+          linarith)).ne'
+  have hscale :
+      (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hchoose
+  rw [show (fun a => (shiftedJacobiMonic n a β).coeff k) =
+      fun a =>
+        (((-1 : ℝ) ^ n * Ring.choose (n + a + β + n) n)⁻¹) *
+          (if k ≤ n then
+            (-1 : ℝ) ^ k * Ring.choose (n + a) (n - k) *
+              Ring.choose (n + a + β + k) k
+          else 0) by
+    funext a
+    exact coeff_shiftedJacobiMonic n k a β]
+  split_ifs
+  · fun_prop (disch := assumption)
+  · fun_prop
+
+theorem hasDerivAt_shiftedJacobiMonic_coeff_natDegree_alpha (n : ℕ)
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    HasDerivAt (fun a => (shiftedJacobiMonic n a β).coeff n) 0 α := by
+  have hevent :
+      Filter.EventuallyEq (nhds α)
+        (fun a => (shiftedJacobiMonic n a β).coeff n) (fun _ => 1) := by
+    filter_upwards [Ioi_mem_nhds hα] with a ha
+    simpa only [natDegree_shiftedJacobiMonic n ha hβ] using
+      (monic_shiftedJacobiMonic n ha hβ).coeff_natDegree
+  exact (hasDerivAt_const α 1).congr_of_eventuallyEq hevent
+
+/-- Coefficientwise derivative of the monic shifted Jacobi polynomial with
+respect to its first parameter. -/
+def shiftedJacobiMonicAlphaDeriv (n : ℕ) (α β : ℝ) : ℝ[X] :=
+  ∑ k ∈ Finset.range n,
+    C (deriv (fun a => (shiftedJacobiMonic n a β).coeff k) α) * X ^ k
+
+theorem natDegree_shiftedJacobiMonicAlphaDeriv_lt (n : ℕ) (α β : ℝ)
+    (hn : 1 ≤ n) :
+    (shiftedJacobiMonicAlphaDeriv n α β).natDegree < n := by
+  rw [Nat.lt_iff_le_pred hn, natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  have hkn : n ≤ k := by lia
+  simp [shiftedJacobiMonicAlphaDeriv, hkn]
+
+theorem hasDerivAt_shiftedJacobiMonic_eval_alpha (n : ℕ) {α β x : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    HasDerivAt (fun a => (shiftedJacobiMonic n a β).eval x)
+      ((shiftedJacobiMonicAlphaDeriv n α β).eval x) α := by
+  have hcoeff : ∀ k ∈ Finset.range n,
+      DifferentiableAt ℝ
+        (fun a => (shiftedJacobiMonic n a β).coeff k) α := by
+    intro k hk
+    exact differentiableAt_shiftedJacobiMonic_coeff_alpha n k hα hβ
+  have hsum : HasDerivAt
+      (fun a => ∑ k ∈ Finset.range n,
+        (shiftedJacobiMonic n a β).coeff k * x ^ k)
+      (∑ k ∈ Finset.range n,
+        deriv (fun a => (shiftedJacobiMonic n a β).coeff k) α * x ^ k) α := by
+    exact HasDerivAt.fun_sum fun k hk =>
+      (hcoeff k hk).hasDerivAt.mul_const (x ^ k)
+  have htop : HasDerivAt
+      (fun a => (shiftedJacobiMonic n a β).coeff n * x ^ n) 0 α := by
+    simpa using
+      (hasDerivAt_shiftedJacobiMonic_coeff_natDegree_alpha n hα hβ).mul_const
+        (x ^ n)
+  have hall := hsum.add htop
+  have heval : (fun a => (shiftedJacobiMonic n a β).eval x) =
+      fun a =>
+        (∑ k ∈ Finset.range n,
+          (shiftedJacobiMonic n a β).coeff k * x ^ k) +
+            (shiftedJacobiMonic n a β).coeff n * x ^ n := by
+    funext a
+    rw [← Finset.sum_range_succ]
+    exact Polynomial.eval_eq_sum_range'
+      (Nat.lt_succ_of_le (natDegree_shiftedJacobiMonic_le n a β)) x
+  rw [heval]
+  change HasDerivAt
+    ((fun a => ∑ k ∈ Finset.range n,
+      (shiftedJacobiMonic n a β).coeff k * x ^ k) +
+        fun a => (shiftedJacobiMonic n a β).coeff n * x ^ n)
+      ((shiftedJacobiMonicAlphaDeriv n α β).eval x) α
+  simpa [shiftedJacobiMonicAlphaDeriv, eval_finsetSum] using hall
+
 end RealRooted
