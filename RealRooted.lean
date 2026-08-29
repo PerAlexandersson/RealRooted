@@ -155,6 +155,7 @@ import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
+import RealRooted.Jacobi
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
 import RealRooted.LiebSokal
