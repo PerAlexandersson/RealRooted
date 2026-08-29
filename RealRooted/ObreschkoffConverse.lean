@@ -161,59 +161,6 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
   have hg₂_ne : g.eval r₂ ≠ 0 := by simp_all
   grind
 
-/-- Degree-drop converse to the usual Ma--Wang assembly step: if a nonzero
-polynomial `F` has strictly alternating signs on consecutive roots of a
-real-rooted polynomial `f`, and `F` has strictly smaller degree than `f`, then
-the degree gap is forced to be exactly one and `F` is the left interlacer of
-`f`.
-
-This is the shape needed for the same-degree Obreschkoff forward direction when
-the top coefficient cancels in `α f + β g`: the canceled combination should not
-sit on the right of `f`, but rather become the common interlacer on the left. -/
-private theorem interlaces_of_consecutive_signs_of_natDegree_lt
-    {f F : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hF_ne : F ≠ 0)
-    (hdeg_lt : F.natDegree < f.natDegree)
-    (hsign :
-      let rs := f.roots.sort (· ≤ ·)
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ < 0) :
-    Interlaces F f := by
-  let rs := f.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
-    exists_roots_strictly_interlacing_of_consecutive_signs
-      (F := F) hrs_sorted (by grind)
-  have hrs_len : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hf_splits]
-  have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
-    rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
-    intro x hx
-    simp_all
-  have hus_card_le : us.length ≤ F.natDegree := by
-    calc
-      us.length = (↑us : Multiset ℝ).card := (Multiset.coe_card _).symm
-      _ ≤ F.roots.card := Multiset.card_le_card hus_sub
-      _ ≤ F.natDegree := card_roots' F
-  have hus_len_f : us.length = f.natDegree - 1 := by lia
-  have hdeg : F.natDegree + 1 = f.natDegree := by lia
-  have hus_len_deg : us.length = F.natDegree := by lia
-  have hus_eq : (↑us : Multiset ℝ) = F.roots :=
-    Multiset.eq_of_le_of_card_le hus_sub (by
-      calc
-        F.roots.card ≤ F.natDegree := card_roots' F
-        _ = us.length := hus_len_deg.symm
-        _ = (↑us : Multiset ℝ).card := (Multiset.coe_card _).symm)
-  have hF : (F ≠ 0 ∧ F.Splits) := by
-    refine ⟨hF_ne, splits_of_card_roots ?_⟩
-    rw [← hus_eq, Multiset.coe_card, hus_len_deg]
-  exact
-    ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted, hus_pw.imp le_of_lt,
-      hrs_eq, hus_eq, hus_int⟩
-
 /-- The right-family pair `(f + g, f + 2g)` stays in the same Obreschkoff plane.
 
 This is a convenient basis change for later converse work: every linear

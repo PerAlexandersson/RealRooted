@@ -518,4 +518,205 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
     rw [Polynomial.IsRoot.def] at hhigh
     simp [hhigh] at hpos
 
+/-- At a root of the degree-`m + 1` lower-parameter polynomial, the
+degree-`m` polynomials at first-parameter shifts zero and two have the same
+sign. -/
+theorem shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos (m : ℕ)
+    {α β x : ℝ} (hα : -1 < α) (hβ : -1 < β)
+    (hx : (shiftedJacobiMonic (m + 1) α β).IsRoot x) :
+    0 < (shiftedJacobiMonic m α β).eval x *
+      (shiftedJacobiMonic m (α + 2) β).eval x := by
+  let l₀ : ℝ := (-1 : ℝ) ^ m * Ring.choose (m + α + β + m) m
+  let l₂ : ℝ := (-1 : ℝ) ^ m *
+    Ring.choose (m + (α + 2) + β + m) m
+  have hp₀ : 0 < Ring.choose (m + α + β + m) m := by
+    cases m with
+    | zero => simp
+    | succ m =>
+        apply Polynomial.ring_choose_pos
+        push_cast
+        linarith
+  have hp₂ : 0 < Ring.choose (m + (α + 2) + β + m) m :=
+    Polynomial.ring_choose_pos (by linarith)
+  have hsign : (-1 : ℝ) ^ m ≠ 0 := pow_ne_zero m (by norm_num)
+  have hlprod : 0 < l₀ * l₂ := by
+    calc
+      l₀ * l₂ = (((-1 : ℝ) ^ m) ^ 2) *
+          Ring.choose (m + α + β + m) m *
+          Ring.choose (m + (α + 2) + β + m) m := by
+            simp only [l₀, l₂]
+            ring
+      _ > 0 := by positivity
+  have hrawLow : (shiftedJacobi (m + 1) α β).IsRoot x := by
+    rw [Polynomial.IsRoot.def] at hx ⊢
+    rw [shiftedJacobi_eq_leading_mul_monic (m + 1) hα hβ]
+    simp [hx]
+  have hx_pos :=
+    (shiftedJacobi_isRoot_mem_Ioo (m + 1) hα hβ hrawLow).1
+  have hprev_ne : (shiftedJacobiMonic m α β).eval x ≠ 0 := by
+    have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ
+    have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β := by
+      intro k
+      exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+    have hcommon := noCommonRoot_succ_of_favard hrec hsub m
+    intro hzero
+    exact hcommon x (by simpa only [Polynomial.IsRoot.def] using hzero) hx
+  have hraw₀ : shiftedJacobi m α β =
+      C l₀ * shiftedJacobiMonic m α β := by
+    simpa only [l₀] using shiftedJacobi_eq_leading_mul_monic m hα hβ
+  have hraw₂ : shiftedJacobi m (α + 2) β =
+      C l₂ * shiftedJacobiMonic m (α + 2) β := by
+    simpa only [l₂] using
+      shiftedJacobi_eq_leading_mul_monic m (by linarith : -1 < α + 2) hβ
+  have hl₀_ne : l₀ ≠ 0 := mul_ne_zero hsign hp₀.ne'
+  have hraw₀_ne : (shiftedJacobi m α β).eval x ≠ 0 := by
+    rw [hraw₀]
+    simp only [eval_mul, eval_C]
+    exact mul_ne_zero hl₀_ne hprev_ne
+  have hid := congrArg (Polynomial.eval x)
+    (Polynomial.shiftedJacobi_alpha_add_two_degree_pred m α β hα)
+  rw [Polynomial.IsRoot.def] at hrawLow
+  simp only [eval_add, eval_mul, eval_neg, eval_C, eval_pow, eval_X,
+    hrawLow, mul_zero, zero_add] at hid
+  have hm_nonneg : 0 ≤ (m : ℝ) := by positivity
+  have hA : 0 < ((m : ℝ) + α + β + 2) *
+      (α + β + 2 * (m : ℝ) + 2) := by
+    have hA₁ : 0 < (m : ℝ) + α + β + 2 := by linarith
+    have hA₂ : 0 < α + β + 2 * (m : ℝ) + 2 := by linarith
+    exact mul_pos hA₁ hA₂
+  have hc : 0 < (α + 1) * ((m : ℝ) + α + 1) := by
+    have hα1 : 0 < α + 1 := by linarith
+    have hmα1 : 0 < (m : ℝ) + α + 1 := by linarith
+    exact mul_pos hα1 hmα1
+  have heq : ((m : ℝ) + α + β + 2) *
+      (α + β + 2 * (m : ℝ) + 2) * x ^ 2 *
+        (shiftedJacobi m (α + 2) β).eval x =
+      (α + 1) * ((m : ℝ) + α + 1) *
+        (shiftedJacobi m α β).eval x := by
+    nlinarith
+  have hrawprod : 0 < (shiftedJacobi m α β).eval x *
+      (shiftedJacobi m (α + 2) β).eval x := by
+    have hsqPrev : 0 < ((shiftedJacobi m α β).eval x) ^ 2 :=
+      sq_pos_of_ne_zero hraw₀_ne
+    have hxSq : 0 < x ^ 2 := sq_pos_of_pos hx_pos
+    have hleft : 0 < (((m : ℝ) + α + β + 2) *
+        (α + β + 2 * (m : ℝ) + 2) * x ^ 2) *
+          ((shiftedJacobi m α β).eval x *
+            (shiftedJacobi m (α + 2) β).eval x) := by
+      rw [show (((m : ℝ) + α + β + 2) *
+          (α + β + 2 * (m : ℝ) + 2) * x ^ 2) *
+            ((shiftedJacobi m α β).eval x *
+              (shiftedJacobi m (α + 2) β).eval x) =
+          (shiftedJacobi m α β).eval x *
+            ((((m : ℝ) + α + β + 2) *
+              (α + β + 2 * (m : ℝ) + 2) * x ^ 2) *
+              (shiftedJacobi m (α + 2) β).eval x) by ring,
+        heq]
+      ring_nf
+      nlinarith [mul_pos hc hsqPrev]
+    exact pos_of_mul_pos_right hleft
+      (le_of_lt (mul_pos hA hxSq))
+  rw [hraw₀, hraw₂] at hrawprod
+  simp only [eval_mul, eval_C] at hrawprod
+  have hfactor : l₀ * (shiftedJacobiMonic m α β).eval x *
+      (l₂ * (shiftedJacobiMonic m (α + 2) β).eval x) =
+      (l₀ * l₂) * ((shiftedJacobiMonic m α β).eval x *
+        (shiftedJacobiMonic m (α + 2) β).eval x) := by ring
+  rw [hfactor] at hrawprod
+  exact pos_of_mul_pos_right hrawprod (le_of_lt hlprod)
+
+/-- Increasing the first Jacobi parameter by two in the degree-one interlacer
+preserves strict interlacing with the higher-degree polynomial. -/
+theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    Interlaces (shiftedJacobiMonic m (α + 2) β)
+      (shiftedJacobiMonic (m + 1) α β) := by
+  let f := shiftedJacobiMonic (m + 1) α β
+  let g := shiftedJacobiMonic m α β
+  let F := shiftedJacobiMonic m (α + 2) β
+  have hgf : Interlaces g f := by
+    apply (shiftedJacobiMonic_prec_succ m hα hβ).toInterlaces
+    rw [natDegree_shiftedJacobiMonic m hα hβ,
+      natDegree_shiftedJacobiMonic (m + 1) hα hβ]
+  obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, hss_sorted,
+    hrs_eq, hss_eq, hint⟩ := hgf
+  have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ
+  have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β := by
+    intro k
+    exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+  have hcommon := noCommonRoot_succ_of_favard hrec hsub m
+  have hrs_canonical : f.roots.sort (· ≤ ·) = rs := by
+    rw [← hrs_eq, Multiset.coe_sort]
+    exact List.mergeSort_eq_self (· ≤ ·) hrs_sorted
+  have hF_ne : F ≠ 0 := shiftedJacobiMonic_ne_zero m (by linarith) hβ
+  have hdeg_lt : F.natDegree < f.natDegree := by
+    dsimp only [F, f]
+    rw [natDegree_shiftedJacobiMonic m (by linarith) hβ,
+      natDegree_shiftedJacobiMonic (m + 1) hα hβ]
+    lia
+  have hsign :
+      let roots := f.roots.sort (· ≤ ·)
+      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+        roots = pre ++ r₁ :: r₂ :: rest →
+        F.eval r₁ * F.eval r₂ < 0 := by
+    dsimp only
+    intro pre r₁ r₂ rest hEq
+    have hEq' : rs = pre ++ r₁ :: r₂ :: rest := hrs_canonical.symm.trans hEq
+    have hr₁_root : f.IsRoot r₁ := by
+      apply (Polynomial.mem_roots hf.1).mp
+      rw [← hrs_eq]
+      exact Multiset.mem_coe.mpr (by simp [hEq'])
+    have hr₂_root : f.IsRoot r₂ := by
+      apply (Polynomial.mem_roots hf.1).mp
+      rw [← hrs_eq]
+      exact Multiset.mem_coe.mpr (by simp [hEq'])
+    have hg₁_ne : g.eval r₁ ≠ 0 := by
+      intro hzero
+      exact hcommon r₁ (by simpa only [Polynomial.IsRoot.def] using hzero)
+        hr₁_root
+    have hg₂_ne : g.eval r₂ ≠ 0 := by
+      intro hzero
+      exact hcommon r₂ (by simpa only [Polynomial.IsRoot.def] using hzero)
+        hr₂_root
+    have hg_nonpos : g.eval r₁ * g.eval r₂ ≤ 0 :=
+      eval_mul_eval_nonpos_of_interlacing_consecutive hg.2 hrs_sorted
+        hss_eq hint hEq'
+    have hg_neg : g.eval r₁ * g.eval r₂ < 0 :=
+      lt_of_le_of_ne hg_nonpos (mul_ne_zero hg₁_ne hg₂_ne)
+    have hsame₁ : 0 < g.eval r₁ * F.eval r₁ := by
+      exact shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
+        m hα hβ hr₁_root
+    have hsame₂ : 0 < g.eval r₂ * F.eval r₂ := by
+      exact shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
+        m hα hβ hr₂_root
+    rcases mul_neg_iff.mp hg_neg with ⟨hg₁_pos, hg₂_neg⟩ |
+        ⟨hg₁_neg, hg₂_pos⟩
+    · have hF₁_pos : 0 < F.eval r₁ := by
+        rcases mul_pos_iff.mp hsame₁ with ⟨_, hpos⟩ | ⟨hneg, _⟩
+        · exact hpos
+        · linarith
+      have hF₂_neg : F.eval r₂ < 0 := by
+        rcases mul_pos_iff.mp hsame₂ with ⟨hpos, _⟩ | ⟨_, hneg⟩
+        · linarith
+        · exact hneg
+      exact mul_neg_of_pos_of_neg hF₁_pos hF₂_neg
+    · have hF₁_neg : F.eval r₁ < 0 := by
+        rcases mul_pos_iff.mp hsame₁ with ⟨hpos, _⟩ | ⟨_, hneg⟩
+        · linarith
+        · exact hneg
+      have hF₂_pos : 0 < F.eval r₂ := by
+        rcases mul_pos_iff.mp hsame₂ with ⟨_, hpos⟩ | ⟨hneg, _⟩
+        · exact hpos
+        · linarith
+      exact mul_neg_of_neg_of_pos hF₁_neg hF₂_pos
+  exact interlaces_of_consecutive_signs_of_natDegree_lt
+    hf.1 hf.2 hF_ne hdeg_lt hsign
+
+/-- Proper position form of the adjacent-degree two-unit endpoint. -/
+theorem shiftedJacobiMonic_prec_alpha_add_two_degree_pred (m : ℕ)
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    Prec (shiftedJacobiMonic m (α + 2) β)
+      (shiftedJacobiMonic (m + 1) α β) :=
+  (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toPrec
+
 end RealRooted

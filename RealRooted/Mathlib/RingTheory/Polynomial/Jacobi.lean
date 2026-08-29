@@ -551,6 +551,114 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
         rw [if_neg (by lia), if_neg (by lia), if_neg (by lia), if_neg (by lia)]
         ring
 
+/-- A degree-lowering relation for a unit increase in the first Jacobi
+parameter. -/
+theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
+    C (α + β + 2 * m + 2) * X * shiftedJacobi m (α + 1) β +
+        C ((m + 1 : ℕ) : ℝ) * shiftedJacobi (m + 1) α β =
+      C (m + 1 + α) * shiftedJacobi m α β := by
+  rw [show C (α + β + 2 * m + 2) * X * shiftedJacobi m (α + 1) β =
+    C (α + β + 2 * m + 2) * (X * shiftedJacobi m (α + 1) β) by ring]
+  ext k
+  cases k with
+  | zero =>
+      simp only [coeff_add, coeff_C_mul, coeff_X_mul_zero,
+        coeff_shiftedJacobi, if_pos (Nat.zero_le (m + 1)),
+        if_pos (Nat.zero_le m), pow_zero, Ring.choose_zero_right,
+        Nat.sub_zero, one_mul, mul_one, mul_zero, zero_add]
+      have hchoose := succ_mul_ringChoose (m + 1 + α) m
+      rw [show (m : ℝ) + 1 + α - 1 = m + α by ring] at hchoose
+      norm_num only [Nat.cast_add, Nat.cast_one] at hchoose ⊢
+      simpa only [add_comm, add_left_comm, add_assoc] using hchoose
+  | succ k =>
+      simp only [coeff_add, coeff_C_mul, coeff_X_mul]
+      by_cases hk : k < m
+      · rw [coeff_shiftedJacobi m k, if_pos hk.le,
+          coeff_shiftedJacobi (m + 1) (k + 1),
+          if_pos (by lia : k + 1 ≤ m + 1),
+          coeff_shiftedJacobi m (k + 1), if_pos (Nat.succ_le_iff.mpr hk)]
+        have hAE := succ_mul_ringChoose (m + α + 1) (m - k - 1)
+        rw [show m - k - 1 + 1 = m - k by lia,
+          show (m : ℝ) + α + 1 - 1 = m + α by ring] at hAE
+        have hBF := succ_mul_choose_add (m + α + β + 1) k
+        have hPascal := Ring.choose_succ_succ (m + α + β + k + 1) k
+        have hsub : m - (k + 1) = m - k - 1 := by lia
+        have hsubUp : m + 1 - (k + 1) = m - k := by lia
+        have hcastPred : ((m - k - 1 : ℕ) : ℝ) = m - k - 1 := by
+          rw [Nat.cast_sub (by lia : 1 ≤ m - k), Nat.cast_sub hk.le]
+          norm_num
+        rw [hcastPred] at hAE
+        rw [hsub, hsubUp]
+        norm_num only [Nat.cast_add, Nat.cast_one] at hAE hBF hPascal ⊢
+        let A := Ring.choose (m + α + 1) (m - k)
+        let B := Ring.choose (m + α + β + k + 1) k
+        let D := Ring.choose (m + α + β + k + 2) (k + 1)
+        let E := Ring.choose (m + α) (m - k - 1)
+        let F := Ring.choose (m + α + β + k + 1) (k + 1)
+        have hAE' : (m - k) * A = (m + α + 1) * E := by
+          dsimp only [A, E]
+          convert hAE using 1
+          ring
+        have hBF' : (k + 1) * F = (m + α + β + 1) * B := by
+          dsimp only [B, F]
+          convert hBF using 1 <;> ring
+        have hPascal' : D = B + F := by
+          dsimp only [B, D, F]
+          convert hPascal using 1
+          ring
+        have hclean :
+            (α + β + 2 * m + 2) * ((-1 : ℝ) ^ k * A * B) +
+                (m + 1) * ((-1 : ℝ) ^ (k + 1) * A * D) =
+              (m + α + 1) * ((-1 : ℝ) ^ (k + 1) * E * F) := by
+          rw [pow_succ]
+          linear_combination
+            (-((-1 : ℝ) ^ k * (m + 1) * A)) * hPascal' -
+              ((-1 : ℝ) ^ k * A) * hBF' -
+              ((-1 : ℝ) ^ k * F) * hAE'
+        dsimp only [A, B, D, E, F] at hclean
+        convert hclean using 1 <;> ring
+      · by_cases hkm : k = m
+        · subst k
+          rw [coeff_shiftedJacobi m m, if_pos le_rfl,
+            coeff_shiftedJacobi (m + 1) (m + 1), if_pos le_rfl,
+            coeff_shiftedJacobi m (m + 1), if_neg (by lia)]
+          have hchoose := succ_mul_ringChoose
+            (2 * m + α + β + 2) m
+          rw [show 2 * (m : ℝ) + α + β + 2 - 1 =
+            m + α + 1 + β + m by ring] at hchoose
+          norm_num only [Nat.cast_add, Nat.cast_one, Nat.sub_self,
+            Ring.choose_zero_right, mul_one, mul_zero] at hchoose ⊢
+          rw [show (m : ℝ) + (α + 1) + β + m =
+            2 * m + α + β + 1 by ring,
+            show (m : ℝ) + 1 + α + β + (m + 1) =
+              2 * m + α + β + 2 by ring]
+          rw [show (m : ℝ) + α + 1 + β + m =
+            2 * m + α + β + 1 by ring] at hchoose
+          rw [pow_succ]
+          linear_combination (-((-1 : ℝ) ^ m)) * hchoose
+        · have hlarge : m < k := by lia
+          rw [coeff_shiftedJacobi m k, if_neg (by lia),
+            coeff_shiftedJacobi (m + 1) (k + 1), if_neg (by lia),
+            coeff_shiftedJacobi m (k + 1), if_neg (by lia)]
+          ring
+
+/-- The two-unit first-parameter endpoint relation in adjacent degrees. -/
+theorem shiftedJacobi_alpha_add_two_degree_pred (m : ℕ) (α β : ℝ)
+    (hα : -1 < α) :
+    C ((m + α + β + 2) * (α + β + 2 * m + 2)) * X ^ 2 *
+        shiftedJacobi m (α + 2) β =
+      -C ((m + 1 : ℕ) : ℝ) *
+          (C (α + 1) + C (α + β + 2 * m + 2) * X) *
+          shiftedJacobi (m + 1) α β +
+        C ((α + 1) * (m + α + 1)) * shiftedJacobi m α β := by
+  have htwo := shiftedJacobi_alpha_add_two m α β hα
+  have hlower := shiftedJacobi_alpha_lowering m α β
+  linear_combination (norm := skip)
+    (-(C (α + β + 2 * m + 2) * X)) * htwo +
+      (C (α + 1) + C (α + β + 2 * m + 2) * X) * hlower
+  simp only [map_add, map_mul, map_neg, map_ofNat]
+  ring
+
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
       (x + k + 1) * Ring.choose (x + k) k := by
