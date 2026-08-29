@@ -8,6 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.RingTheory.Binomial
 public import Mathlib.Tactic
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Shifted Jacobi polynomials
@@ -66,6 +67,23 @@ theorem ring_choose_pos {x : ℝ} {n : ℕ} (h : (n : ℝ) - 1 < x) :
   · rw [← eval₂_smulOneHom_eq_smeval]
     rw [← eval_map]
     simpa using descPochhammer_pos h
+
+/-- A generalized real binomial coefficient depends continuously on its top
+parameter. -/
+@[fun_prop]
+theorem continuous_ring_choose (n : ℕ) :
+    Continuous (fun x : ℝ ↦ Ring.choose x n) := by
+  simp_rw [Ring.choose_eq_smul, smul_eq_mul,
+    ← eval₂_smulOneHom_eq_smeval, ← eval_map]
+  fun_prop
+
+/-- Evaluation of a shifted Jacobi polynomial is continuous in its first
+parameter. -/
+@[fun_prop]
+theorem continuous_shiftedJacobi_eval_alpha (n : ℕ) (beta x : ℝ) :
+    Continuous (fun alpha : ℝ ↦ (shiftedJacobi n alpha beta).eval x) := by
+  simp only [shiftedJacobi, eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
+  fun_prop
 
 private lemma ring_choose_two (x : ℝ) :
     Ring.choose x 2 = x * (x - 1) / 2 := by
@@ -830,6 +848,32 @@ theorem shiftedJacobiMonic_zero (α β : ℝ) :
     shiftedJacobiMonic 0 α β = 1 := by
   ext k
   cases k <;> simp [coeff_shiftedJacobiMonic, Polynomial.coeff_one]
+
+/-- On a parameter interval contained in `(-1, ∞)`, evaluation of the monic
+shifted Jacobi polynomial is continuous in its first parameter. -/
+theorem continuousOn_shiftedJacobiMonic_eval_alpha
+    (n : ℕ) (beta x : ℝ) {a b : ℝ} (ha : -1 < a) (hbeta : -1 < beta) :
+    ContinuousOn (fun t : ℝ ↦ (shiftedJacobiMonic n t beta).eval x)
+      (Set.Icc a b) := by
+  cases n with
+  | zero =>
+      simpa using
+        (continuous_const : Continuous (fun _ : ℝ ↦ (1 : ℝ))).continuousOn
+  | succ n =>
+      simp only [shiftedJacobiMonic, eval_mul, eval_C]
+      apply ContinuousOn.mul
+      · apply ContinuousOn.inv₀
+        · apply Continuous.continuousOn
+          fun_prop
+        · intro t ht
+          apply mul_ne_zero (pow_ne_zero (n + 1) (by norm_num))
+          apply _root_.ne_of_gt
+          apply ring_choose_pos
+          have ht_lower : a ≤ t := ht.1
+          have hn_nonneg : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+          norm_num only [Nat.cast_add, Nat.cast_one]
+          linarith
+      · exact (continuous_shiftedJacobi_eval_alpha (n + 1) beta x).continuousOn
 
 /-- The monic shifted Jacobi polynomial of degree one. -/
 theorem shiftedJacobiMonic_one (α β : ℝ) (h : α + β + 2 ≠ 0) :

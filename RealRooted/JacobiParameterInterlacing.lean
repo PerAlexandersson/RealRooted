@@ -518,6 +518,64 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
     rw [Polynomial.IsRoot.def] at hhigh
     simp [hhigh] at hpos
 
+/-- The two-unit endpoint certificate propagates to an intermediate positive
+first-parameter shift if no root of the lower-parameter polynomial is crossed
+along the remaining parameter interval. -/
+theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
+    (n : ℕ) {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β)
+    (ht_pos : 0 < t) (ht_two : t ≤ 2)
+    (hno : ∀ r, (shiftedJacobiMonic n α β).IsRoot r →
+      ∀ s ∈ Set.Icc t 2,
+        ¬(shiftedJacobiMonic n (α + s) β).IsRoot r) :
+    Prec (shiftedJacobiMonic n α β)
+      (shiftedJacobiMonic n (α + t) β) := by
+  cases n with
+  | zero =>
+      simpa using (prec_refl (f := (1 : ℝ[X])) (by simp) (by simp))
+  | succ n =>
+      let f := shiftedJacobiMonic (n + 1) α β
+      let p : ℝ → ℝ[X] := fun s ↦ shiftedJacobiMonic (n + 1) (α + s) β
+      have hf_pos : HasPosLeadingCoeff f := by
+        exact hasPosLeadingCoeff_of_monic (monic_shiftedJacobiMonic (n + 1) hα hβ)
+      have hf_deg : f.natDegree = n + 1 := by
+        exact natDegree_shiftedJacobiMonic (n + 1) hα hβ
+      have hder_pos : HasPosLeadingCoeff f.derivative := by
+        exact hf_pos.derivative (by rw [hf_deg]; lia)
+      have hinter : Interlaces f.derivative f := by
+        exact interlaces_derivative_of_pos_natDegree hf_pos.ne_zero
+          (shiftedJacobiMonic_splits (n + 1) hα hβ) hf_pos (by rw [hf_deg]; lia)
+      have hpt_pos : HasPosLeadingCoeff (p t) := by
+        exact hasPosLeadingCoeff_of_monic
+          (monic_shiftedJacobiMonic (n + 1) (by linarith) hβ)
+      have hpt_deg : (p t).natDegree = f.natDegree := by
+        dsimp only [p, f]
+        rw [natDegree_shiftedJacobiMonic (n + 1) (by linarith) hβ,
+          natDegree_shiftedJacobiMonic (n + 1) hα hβ]
+      have htwo_pos : HasPosLeadingCoeff (p 2) := by
+        exact hasPosLeadingCoeff_of_monic
+          (monic_shiftedJacobiMonic (n + 1) (by linarith) hβ)
+      have hendpoint : StrictPrecSameDegree f (p 2) := by
+        simpa only [f, p] using
+          shiftedJacobiMonic_strictPrec_alpha_add_two (n + 1) hα hβ
+      apply prec_of_interlaces_endpoint_sign_of_no_crossing
+        hinter hder_pos hpt_pos hpt_deg ht_two
+      · intro r hr
+        have hbase := continuousOn_shiftedJacobiMonic_eval_alpha
+          (n + 1) β r (a := α + t) (b := α + 2) (by linarith) hβ
+        apply hbase.comp (continuous_const.add continuous_id).continuousOn
+        intro s hs
+        change α + s ∈ Set.Icc (α + t) (α + 2)
+        exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
+      · intro r hr s hs
+        exact (Polynomial.not_isRoot_iff_eval_ne_zero _ _).mp
+          (hno r hr s hs)
+      · intro r hr
+        have hsign := hendpoint.derivative_mul_eval_neg
+          hf_pos htwo_pos hf_deg (by
+            dsimp only [p]
+            exact natDegree_shiftedJacobiMonic (n + 1) (by linarith) hβ) hr
+        simpa only [mul_comm] using hsign
+
 /-- At a root of the degree-`m + 1` lower-parameter polynomial, the
 degree-`m` polynomials at first-parameter shifts zero and two have the same
 sign. -/

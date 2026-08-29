@@ -1628,6 +1628,32 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
   exact prec_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
     hdeg hn hsign hright
 
+/-- Transport a same-degree Liu--Wang root-sign certificate backward through a
+continuous polynomial family that never vanishes at a root of the fixed
+polynomial. -/
+theorem prec_of_interlaces_endpoint_sign_of_no_crossing
+    {f g : ℝ[X]} {p : ℝ → ℝ[X]} {a b : ℝ}
+    (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
+    (hpa_pos : HasPosLeadingCoeff (p a))
+    (hdeg : (p a).natDegree = f.natDegree) (hab : a ≤ b)
+    (hcont : ∀ r, f.IsRoot r →
+      ContinuousOn (fun t ↦ (p t).eval r) (Set.Icc a b))
+    (hne : ∀ r, f.IsRoot r → ∀ t ∈ Set.Icc a b, (p t).eval r ≠ 0)
+    (hend : ∀ r, f.IsRoot r → (p b).eval r * g.eval r < 0) :
+    Prec f (p a) := by
+  apply prec_of_interlaces_eval_mul_neg_same hgf hg_pos hpa_pos hdeg
+  intro r hr
+  have hsame : 0 < (p a).eval r * (p b).eval r :=
+    eval_endpoint_pos_of_forall_ne_zero hab (hcont r hr) (hne r hr)
+  have hfinal := hend r hr
+  rcases mul_pos_iff.mp hsame with ⟨ha_pos, hb_pos⟩ | ⟨ha_neg, hb_neg⟩
+  · rcases mul_neg_iff.mp hfinal with ⟨_, hg_neg⟩ | ⟨hb_neg, _⟩
+    · exact mul_neg_of_pos_of_neg ha_pos hg_neg
+    · linarith
+  · rcases mul_neg_iff.mp hfinal with ⟨hb_pos, _⟩ | ⟨_, hg_pos⟩
+    · linarith
+    · exact mul_neg_of_neg_of_pos ha_neg hg_pos
+
 private lemma eval_mul_derivative_eq_of_isRoot {f u v : ℝ[X]} {r : ℝ}
     (hr : f.IsRoot r) :
     (u * f + v * f.derivative).eval r * f.derivative.eval r =
