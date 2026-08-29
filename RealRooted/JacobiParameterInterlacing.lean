@@ -518,6 +518,29 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
     rw [Polynomial.IsRoot.def] at hhigh
     simp [hhigh] at hpos
 
+/-- In degree one, every positive increase in the first Jacobi parameter
+moves the unique shifted root strictly to the right. -/
+theorem shiftedJacobiMonic_strictPrec_alpha_add_degree_one
+    {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
+    StrictPrecSameDegree (shiftedJacobiMonic 1 α β)
+      (shiftedJacobiMonic 1 (α + t) β) := by
+  have hden₀ : 0 < α + β + 2 := by linarith
+  have hdenₜ : 0 < α + t + β + 2 := by linarith
+  rw [shiftedJacobiMonic_one α β hden₀.ne',
+    shiftedJacobiMonic_one (α + t) β hdenₜ.ne']
+  simp only [sub_eq_add_neg, ← map_neg]
+  rw [StrictPrecSameDegree.X_add_C_iff]
+  rw [neg_lt_neg_iff, div_lt_div_iff₀ hden₀ hdenₜ]
+  nlinarith [mul_pos ht (by linarith : 0 < β + 1)]
+
+/-- Proper-position form of arbitrary positive first-parameter movement in
+degree one. -/
+theorem shiftedJacobiMonic_prec_alpha_add_degree_one
+    {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
+    Prec (shiftedJacobiMonic 1 α β)
+      (shiftedJacobiMonic 1 (α + t) β) :=
+  (shiftedJacobiMonic_strictPrec_alpha_add_degree_one hα hβ ht).to_prec
+
 /-- The two-unit endpoint certificate propagates to an intermediate positive
 first-parameter shift if no root of the lower-parameter polynomial is crossed
 along the remaining parameter interval. -/
