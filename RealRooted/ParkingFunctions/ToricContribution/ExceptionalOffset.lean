@@ -372,6 +372,526 @@ private theorem exceptionalEulerInverse_eval_one_eq_sum
   simp only [eval_monomial, one_pow, mul_one]
   rw [mul_div_assoc]
 
+private theorem exceptionalBase_partialFraction_eq_zero
+    (m ε j : ℕ) (hj : j < m) :
+    ∑ k ∈ Finset.range (m + 1),
+        exceptionalBaseCoeff m ε k /
+          ((ε : ℝ) + 1 / 2 + k + j) = 0 := by
+  have horth := exceptionalBasePolynomial_betaZeroInner_eq_zero
+    m ε (X ^ j) (by simp [hj])
+  rw [jacobiBetaZeroInner,
+    jacobiBetaZeroFunctional_exceptionalBase_mul_X_pow] at horth
+  exact horth
+
+/-- Common denominator for the exceptional endpoint sum, regarded as a
+polynomial in the Euler parameter. -/
+def exceptionalEndpointDenominator (m : ℕ) : ℝ[X] :=
+  ∏ k ∈ Finset.range (m + 1), (X + C (k : ℝ))
+
+/-- Numerator obtained after clearing the common denominator in the
+exceptional endpoint sum. -/
+def exceptionalEndpointNumerator (m ε : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (m + 1),
+    C (exceptionalBaseCoeff m ε k) * X *
+      ∏ l ∈ (Finset.range (m + 1)).erase k, (X + C (l : ℝ))
+
+@[simp]
+theorem exceptionalEndpointDenominator_eval (m : ℕ) (γ : ℝ) :
+    (exceptionalEndpointDenominator m).eval γ =
+      ∏ k ∈ Finset.range (m + 1), (γ + (k : ℝ)) := by
+  rw [exceptionalEndpointDenominator, eval_prod]
+  simp
+
+@[simp]
+theorem exceptionalEndpointNumerator_eval (m ε : ℕ) (γ : ℝ) :
+    (exceptionalEndpointNumerator m ε).eval γ =
+      ∑ k ∈ Finset.range (m + 1),
+        exceptionalBaseCoeff m ε k * γ *
+          ∏ l ∈ (Finset.range (m + 1)).erase k,
+            (γ + (l : ℝ)) := by
+  rw [exceptionalEndpointNumerator, eval_finsetSum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp only [eval_mul, eval_C, eval_X, eval_prod, eval_add]
+
+theorem exceptionalEulerInverse_eval_one_mul_endpointDenominator
+    (m ε : ℕ) {γ : ℝ}
+    (hγ : ∀ k ∈ Finset.range (m + 1), γ + k ≠ 0) :
+    (exceptionalEulerInverse m ε γ).eval 1 *
+        (exceptionalEndpointDenominator m).eval γ =
+      (exceptionalEndpointNumerator m ε).eval γ := by
+  rw [exceptionalEulerInverse_eval_one_eq_sum,
+    exceptionalEndpointDenominator_eval,
+    exceptionalEndpointNumerator_eval, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [← Finset.prod_erase_mul _ _ hk]
+  have hγk := hγ k hk
+  field_simp
+
+theorem exceptionalEndpointNumerator_eval_parameterRoot
+    (m ε j : ℕ) (hj : j < m) :
+    (exceptionalEndpointNumerator m ε).eval
+        ((ε : ℝ) + 1 / 2 + j) = 0 := by
+  let γ : ℝ := ε + 1 / 2 + j
+  have hγpos : 0 < γ := by
+    dsimp only [γ]
+    positivity
+  have hden : ∀ k ∈ Finset.range (m + 1), γ + k ≠ 0 := by
+    intro k hk
+    positivity
+  rw [← exceptionalEulerInverse_eval_one_mul_endpointDenominator
+    m ε hden]
+  have hsum := exceptionalBase_partialFraction_eq_zero m ε j hj
+  have hendpoint : (exceptionalEulerInverse m ε γ).eval 1 = 0 := by
+    rw [exceptionalEulerInverse_eval_one_eq_sum]
+    rw [show (∑ k ∈ Finset.range (m + 1),
+        exceptionalBaseCoeff m ε k * (γ / (γ + k))) =
+      γ * ∑ k ∈ Finset.range (m + 1),
+        exceptionalBaseCoeff m ε k / (γ + k) by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro k hk
+          ring]
+    have hsum' : ∑ k ∈ Finset.range (m + 1),
+        exceptionalBaseCoeff m ε k / (γ + k) = 0 := by
+      simpa only [γ, add_assoc, add_left_comm, add_comm] using hsum
+    rw [hsum', mul_zero]
+  rw [hendpoint, zero_mul]
+
+private theorem prod_range_erase_natCast_sub
+    (m r : ℕ) (hr : r ≤ m) :
+    ∏ l ∈ (Finset.range (m + 1)).erase r,
+        ((l : ℝ) - r) =
+      (-1 : ℝ) ^ r * r.factorial * (m - r).factorial := by
+  have herase :
+      (Finset.range (m + 1)).erase r =
+        Finset.range r ∪ Finset.Ioc r m := by
+    ext l
+    simp only [Finset.mem_erase, Finset.mem_range, Finset.mem_union,
+      Finset.mem_Ioc]
+    constructor
+    · intro hl
+      by_cases hlr : l < r
+      · exact Or.inl hlr
+      · exact Or.inr ⟨by lia, by lia⟩
+    · intro hl
+      constructor
+      · rcases hl with hl | hl <;> lia
+      · rcases hl with hl | hl <;> lia
+  have hdisjoint : Disjoint (Finset.range r) (Finset.Ioc r m) := by
+    rw [Finset.disjoint_left]
+    intro l hlrange hlIoc
+    simp only [Finset.mem_range] at hlrange
+    simp only [Finset.mem_Ioc] at hlIoc
+    lia
+  have hlower :
+      ∏ l ∈ Finset.range r, ((l : ℝ) - r) =
+        (-1 : ℝ) ^ r * r.factorial := by
+    simp_rw [show ∀ l : ℕ, (l : ℝ) - r = -((r : ℝ) - l) by
+      intro l
+      ring]
+    rw [Finset.prod_neg, Finset.card_range,
+      Finset.prod_range_natCast_sub]
+    norm_cast
+    rw [← Nat.descFactorial_eq_prod_range,
+      Nat.descFactorial_self]
+  have hupper :
+      ∏ l ∈ Finset.Ioc r m, ((l : ℝ) - r) =
+        (m - r).factorial := by
+    have hIoc : Finset.Ioc r m = Finset.Ico (r + 1) (m + 1) := by
+      ext l
+      simp
+    rw [hIoc, Finset.prod_Ico_eq_prod_range]
+    have hsub : m + 1 - (r + 1) = m - r := by lia
+    rw [hsub]
+    have hfactorial :
+        (∏ l ∈ Finset.range (m - r), ((l + 1 : ℕ) : ℝ)) =
+          ((m - r).factorial : ℝ) := by
+      exact_mod_cast Finset.prod_range_add_one_eq_factorial (m - r)
+    rw [← hfactorial]
+    apply Finset.prod_congr rfl
+    intro l hl
+    push_cast
+    ring
+  rw [herase, Finset.prod_union hdisjoint, hlower, hupper]
+
+private theorem realRisingFactorial_neg_nat_eq_descFactorial
+    (m r : ℕ) (hr : r ≤ m) :
+    realRisingFactorial (-(m : ℝ)) r =
+      (-1 : ℝ) ^ r * m.descFactorial r := by
+  induction r with
+  | zero => simp
+  | succ r ih =>
+      have hrle : r ≤ m := by lia
+      rw [realRisingFactorial_succ, ih hrle,
+        Nat.descFactorial_succ, pow_succ]
+      have hcast : ((m - r : ℕ) : ℝ) = (m : ℝ) - r := by
+        rw [Nat.cast_sub hrle]
+      push_cast
+      rw [hcast]
+      ring
+
+private theorem realRisingFactorial_neg_nat_eq_factorial_div
+    (m r : ℕ) (hr : r ≤ m) :
+    realRisingFactorial (-(m : ℝ)) r =
+      (-1 : ℝ) ^ r * m.factorial / (m - r).factorial := by
+  rw [realRisingFactorial_neg_nat_eq_descFactorial m r hr]
+  have hfactorial := Nat.factorial_mul_descFactorial hr
+  have hden : (0 : ℝ) < (m - r).factorial := by positivity
+  have hfactorialCast :
+      ((m - r).factorial : ℝ) * m.descFactorial r = m.factorial := by
+    exact_mod_cast hfactorial
+  have hdesc :
+      (m.descFactorial r : ℝ) =
+        m.factorial / (m - r).factorial := by
+    rw [eq_div_iff hden.ne']
+    nlinarith
+  rw [hdesc]
+  ring
+
+private theorem prod_range_add_eq_realRisingFactorial
+    (a : ℝ) (m : ℕ) :
+    ∏ j ∈ Finset.range m, (a + j) = realRisingFactorial a m := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+      rw [Finset.prod_range_succ, realRisingFactorial_succ, ih]
+
+private theorem prod_range_neg_add_eq_realRisingFactorial
+    (a : ℝ) (m : ℕ) :
+    ∏ j ∈ Finset.range m, (-(a + j)) =
+      (-1 : ℝ) ^ m * realRisingFactorial a m := by
+  rw [Finset.prod_neg, Finset.card_range,
+    prod_range_add_eq_realRisingFactorial]
+
+private theorem neg_one_pow_sq_real (k : ℕ) :
+    ((-1 : ℝ) ^ k) ^ 2 = 1 := by
+  rw [← pow_mul]
+  norm_num
+
+/-- Closed product form of the numerator predicted by the terminating
+Saalschütz evaluation. -/
+def exceptionalEndpointClosedNumerator (m ε : ℕ) : ℝ[X] :=
+  C (realRisingFactorial (-(m : ℝ)) m /
+      realRisingFactorial ((ε : ℝ) + 1 / 2) m) *
+    X * ∏ j ∈ Finset.range m,
+      (X - C ((ε : ℝ) + 1 / 2 + j))
+
+@[simp]
+theorem exceptionalEndpointClosedNumerator_eval
+    (m ε : ℕ) (γ : ℝ) :
+    (exceptionalEndpointClosedNumerator m ε).eval γ =
+      (realRisingFactorial (-(m : ℝ)) m /
+          realRisingFactorial ((ε : ℝ) + 1 / 2) m) *
+        γ * ∏ j ∈ Finset.range m,
+          (γ - ((ε : ℝ) + 1 / 2 + j)) := by
+  rw [exceptionalEndpointClosedNumerator, eval_mul, eval_mul,
+    eval_C, eval_X, eval_prod]
+  simp
+
+private theorem natDegree_exceptionalEndpointNumerator_le
+    (m ε : ℕ) :
+    (exceptionalEndpointNumerator m ε).natDegree ≤ m + 1 := by
+  rw [exceptionalEndpointNumerator]
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro k hk
+  calc
+    (C (exceptionalBaseCoeff m ε k) * X *
+          ∏ l ∈ (Finset.range (m + 1)).erase k,
+            (X + C (l : ℝ))).natDegree ≤
+        (C (exceptionalBaseCoeff m ε k) * X).natDegree +
+          (∏ l ∈ (Finset.range (m + 1)).erase k,
+            (X + C (l : ℝ))).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ 1 + m := by
+      apply Nat.add_le_add
+      · exact Polynomial.natDegree_mul_le.trans (by simp)
+      · rw [Polynomial.natDegree_prod_of_monic]
+        · calc
+            ∑ l ∈ (Finset.range (m + 1)).erase k,
+                (X + C (l : ℝ)).natDegree =
+                ∑ l ∈ (Finset.range (m + 1)).erase k, 1 := by
+              apply Finset.sum_congr rfl
+              intro l hl
+              rw [Polynomial.natDegree_X_add_C]
+            _ = ((Finset.range (m + 1)).erase k).card := by simp
+            _ ≤ m := by simp [hk]
+        · intro l hl
+          exact Polynomial.monic_X_add_C _
+    _ = m + 1 := by lia
+
+private theorem natDegree_exceptionalEndpointClosedNumerator_le
+    (m ε : ℕ) :
+    (exceptionalEndpointClosedNumerator m ε).natDegree ≤ m + 1 := by
+  rw [exceptionalEndpointClosedNumerator]
+  calc
+    (C (realRisingFactorial (-(m : ℝ)) m /
+          realRisingFactorial ((ε : ℝ) + 1 / 2) m) * X *
+        ∏ j ∈ Finset.range m,
+          (X - C ((ε : ℝ) + 1 / 2 + j))).natDegree ≤
+        (C (realRisingFactorial (-(m : ℝ)) m /
+          realRisingFactorial ((ε : ℝ) + 1 / 2) m) * X).natDegree +
+        (∏ j ∈ Finset.range m,
+          (X - C ((ε : ℝ) + 1 / 2 + j))).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ 1 + m := by
+      apply Nat.add_le_add
+      · exact Polynomial.natDegree_mul_le.trans (by simp)
+      · rw [Polynomial.natDegree_prod_of_monic]
+        · calc
+            ∑ j ∈ Finset.range m,
+                (X - C ((ε : ℝ) + 1 / 2 + j)).natDegree =
+                ∑ j ∈ Finset.range m, 1 := by
+              apply Finset.sum_congr rfl
+              intro j hj
+              rw [Polynomial.natDegree_X_sub_C]
+            _ ≤ m := by simp
+        · intro j hj
+          exact Polynomial.monic_X_sub_C _
+    _ = m + 1 := by lia
+
+private theorem exceptionalEndpointNumerator_eval_neg_nat
+    (m ε r : ℕ) (hr : r ≤ m) :
+    (exceptionalEndpointNumerator m ε).eval (-(r : ℝ)) =
+      (exceptionalEndpointClosedNumerator m ε).eval (-(r : ℝ)) := by
+  let c : ℝ := ε + 1 / 2
+  have hc : 0 < c := by
+    dsimp only [c]
+    positivity
+  have hnum :
+      (exceptionalEndpointNumerator m ε).eval (-(r : ℝ)) =
+        exceptionalBaseCoeff m ε r * (-(r : ℝ)) *
+          ((-1 : ℝ) ^ r * r.factorial * (m - r).factorial) := by
+    rw [exceptionalEndpointNumerator_eval, Finset.sum_eq_single r]
+    · rw [show ∏ l ∈ (Finset.range (m + 1)).erase r,
+          (-(r : ℝ) + l) =
+        ∏ l ∈ (Finset.range (m + 1)).erase r,
+          ((l : ℝ) - r) by
+            apply Finset.prod_congr rfl
+            intro l hl
+            ring,
+        prod_range_erase_natCast_sub m r hr]
+    · intro k hk hkr
+      have hrmem : r ∈ (Finset.range (m + 1)).erase k := by
+        simp [hr, hkr.symm]
+      have hprod :
+          ∏ l ∈ (Finset.range (m + 1)).erase k,
+              (-(r : ℝ) + l) = 0 := by
+        apply Finset.prod_eq_zero hrmem
+        ring
+      rw [hprod, mul_zero]
+    · intro hrnot
+      exact False.elim (hrnot (by simp [hr]))
+  have hclosed :
+      (exceptionalEndpointClosedNumerator m ε).eval (-(r : ℝ)) =
+        (realRisingFactorial (-(m : ℝ)) m /
+            realRisingFactorial c m) *
+          (-(r : ℝ)) *
+            ((-1 : ℝ) ^ m * realRisingFactorial (c + r) m) := by
+    rw [exceptionalEndpointClosedNumerator_eval]
+    rw [show ∏ j ∈ Finset.range m,
+          (-(r : ℝ) - ((ε : ℝ) + 1 / 2 + j)) =
+        ∏ j ∈ Finset.range m, (-((c + r) + j)) by
+          apply Finset.prod_congr rfl
+          intro j hj
+          dsimp only [c]
+          ring]
+    change
+      (realRisingFactorial (-(m : ℝ)) m /
+            realRisingFactorial c m) *
+          (-(r : ℝ)) *
+            (∏ j ∈ Finset.range m, (-((c + r) + j))) = _
+    rw [prod_range_neg_add_eq_realRisingFactorial]
+  rw [hnum, hclosed, exceptionalBaseCoeff]
+  rw [realRisingFactorial_neg_nat_eq_factorial_div m r hr,
+    realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
+  have hcr : 0 < realRisingFactorial c r :=
+    realRisingFactorial_pos r hc
+  have hcm : 0 < realRisingFactorial c m :=
+    realRisingFactorial_pos m hc
+  have hfactorialR : (0 : ℝ) < r.factorial := by positivity
+  have hfactorialSub : (0 : ℝ) < (m - r).factorial := by positivity
+  have hshift := realRisingFactorial_shift_mul c m r
+  have hratio :
+      realRisingFactorial (c + m) r / realRisingFactorial c r =
+        realRisingFactorial (c + r) m / realRisingFactorial c m := by
+    field_simp [hcr.ne', hcm.ne']
+    nlinarith [hshift]
+  dsimp only [c] at hshift hratio ⊢
+  simp only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
+  field_simp [hcr.ne', hcm.ne', hfactorialR.ne', hfactorialSub.ne']
+  ring_nf at hshift hratio ⊢
+  have hsignR : (-1 : ℝ) ^ (r * 2) = 1 := by
+    rw [pow_mul, neg_one_pow_sq_real]
+  have hsignM : (-1 : ℝ) ^ (m * 2) = 1 := by
+    rw [pow_mul, neg_one_pow_sq_real]
+  rw [hsignR, hsignM, mul_one] at ⊢
+  nlinarith [hratio]
+
+private theorem exceptionalEndpointNumerator_eval_baseParameter
+    (m ε : ℕ) :
+    (exceptionalEndpointNumerator m ε).eval
+        ((ε : ℝ) + 1 / 2) =
+      (exceptionalEndpointClosedNumerator m ε).eval
+        ((ε : ℝ) + 1 / 2) := by
+  cases m with
+  | zero =>
+      simp [exceptionalEndpointNumerator,
+        exceptionalEndpointClosedNumerator, exceptionalBaseCoeff]
+  | succ m =>
+      have hnum := exceptionalEndpointNumerator_eval_parameterRoot
+        (m + 1) ε 0 (by lia)
+      have hnum' :
+          (exceptionalEndpointNumerator (m + 1) ε).eval
+              ((ε : ℝ) + 1 / 2) = 0 := by
+        simpa only [Nat.cast_zero, add_zero] using hnum
+      have hzero :
+          ∏ j ∈ Finset.range (m + 1),
+              ((ε : ℝ) + 1 / 2 - ((ε : ℝ) + 1 / 2 + j)) = 0 := by
+        apply Finset.prod_eq_zero (Finset.mem_range.mpr (by lia : 0 < m + 1))
+        ring
+      rw [hnum', exceptionalEndpointClosedNumerator_eval, hzero]
+      ring
+
+/-- The cleared endpoint numerator is the product predicted by the terminating
+Saalschütz evaluation. The proof uses finite polynomial interpolation. -/
+theorem exceptionalEndpointNumerator_eq_closed (m ε : ℕ) :
+    exceptionalEndpointNumerator m ε =
+      exceptionalEndpointClosedNumerator m ε := by
+  let c : ℝ := ε + 1 / 2
+  let f : Fin (m + 2) → ℝ := fun i =>
+    if i.val ≤ m then -(i.val : ℝ) else c
+  have hc : 0 < c := by
+    dsimp only [c]
+    positivity
+  have hf : Function.Injective f := by
+    intro i j hij
+    by_cases hi : i.val ≤ m
+    · by_cases hj : j.val ≤ m
+      · simp only [f, hi, hj, ↓reduceIte] at hij
+        apply Fin.ext
+        exact_mod_cast neg_inj.mp hij
+      · have hnonpos : -(i.val : ℝ) ≤ 0 :=
+          neg_nonpos.mpr (Nat.cast_nonneg _)
+        simp only [f, hi, hj, ↓reduceIte] at hij
+        linarith
+    · by_cases hj : j.val ≤ m
+      · have hnonpos : -(j.val : ℝ) ≤ 0 :=
+          neg_nonpos.mpr (Nat.cast_nonneg _)
+        simp only [f, hi, hj, ↓reduceIte] at hij
+        linarith
+      · apply Fin.ext
+        have hiBound := i.isLt
+        have hjBound := j.isLt
+        lia
+  apply Polynomial.eq_of_natDegree_lt_card_of_eval_eq
+    (exceptionalEndpointNumerator m ε)
+    (exceptionalEndpointClosedNumerator m ε) hf
+  · intro i
+    by_cases hi : i.val ≤ m
+    · simpa only [f, hi, ↓reduceIte] using
+        exceptionalEndpointNumerator_eval_neg_nat m ε i.val hi
+    · simpa only [f, hi, ↓reduceIte, c] using
+        exceptionalEndpointNumerator_eval_baseParameter m ε
+  · simp only [Fintype.card_fin]
+    have hnum := natDegree_exceptionalEndpointNumerator_le m ε
+    have hclosed := natDegree_exceptionalEndpointClosedNumerator_le m ε
+    have hmax : max
+        (exceptionalEndpointNumerator m ε).natDegree
+        (exceptionalEndpointClosedNumerator m ε).natDegree ≤ m + 1 :=
+      max_le hnum hclosed
+    lia
+
+/-- Product evaluation of the exceptional Euler inverse at the right
+endpoint. -/
+theorem exceptionalEulerInverse_eval_one_eq_endpointProduct
+    (m ε : ℕ) {γ : ℝ} (hm : 0 < m)
+    (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) :
+    (exceptionalEulerInverse m ε γ).eval 1 =
+      (realRisingFactorial (-(m : ℝ)) m /
+          realRisingFactorial ((ε : ℝ) + 1 / 2) m) *
+        (∏ j ∈ Finset.range m,
+          (γ - ((ε : ℝ) + 1 / 2 + j))) /
+        realRisingFactorial (γ + 1) m := by
+  let c : ℝ := ε + 1 / 2
+  have hc : 0 < c := by
+    dsimp only [c]
+    positivity
+  have hmCast : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hγpos : 0 < γ := by
+    dsimp only [c] at hc
+    linarith
+  have hden : ∀ k ∈ Finset.range (m + 1), γ + k ≠ 0 := by
+    intro k hk
+    positivity
+  have hmul := exceptionalEulerInverse_eval_one_mul_endpointDenominator
+    m ε hden
+  rw [exceptionalEndpointDenominator_eval,
+    exceptionalEndpointNumerator_eq_closed,
+    exceptionalEndpointClosedNumerator_eval] at hmul
+  have hdenProduct :
+      ∏ k ∈ Finset.range (m + 1), (γ + (k : ℝ)) =
+        γ * realRisingFactorial (γ + 1) m := by
+    rw [prod_range_add_eq_realRisingFactorial,
+      realRisingFactorial_succ_left]
+  have hrf : 0 < realRisingFactorial (γ + 1) m :=
+    realRisingFactorial_pos m (by linarith)
+  rw [hdenProduct] at hmul
+  apply (eq_div_iff hrf.ne').2
+  apply (mul_left_cancel₀ hγpos.ne')
+  nlinarith [hmul]
+
+/-- The exceptional endpoint has the parity sign prescribed by the signed
+moment route. -/
+theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
+    (m ε : ℕ) {γ : ℝ} (hm : 0 < m)
+    (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) :
+    0 < (-1 : ℝ) ^ m *
+      (exceptionalEulerInverse m ε γ).eval 1 := by
+  rw [exceptionalEulerInverse_eval_one_eq_endpointProduct m ε hm hγ]
+  rw [realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
+  simp only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
+  have hc : 0 < (ε : ℝ) + 1 / 2 := by positivity
+  have hmCast : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hγpos : 0 < γ := by linarith
+  have hbase :
+      0 < realRisingFactorial ((ε : ℝ) + 1 / 2) m :=
+    realRisingFactorial_pos m hc
+  have hden : 0 < realRisingFactorial (γ + 1) m :=
+    realRisingFactorial_pos m (by linarith)
+  have hprod :
+      0 < ∏ j ∈ Finset.range m,
+        (γ - ((ε : ℝ) + 1 / 2 + j)) := by
+    apply Finset.prod_pos
+    intro j hj
+    have hjlt : j < m := Finset.mem_range.mp hj
+    have hjCast : (j : ℝ) ≤ m - 1 := by
+      have hjSucc : j + 1 ≤ m := by lia
+      have hjSuccCast : (j : ℝ) + 1 ≤ m := by
+        exact_mod_cast hjSucc
+      linarith
+    linarith
+  have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
+    neg_one_pow_sq_real m
+  have hrearrange :
+      (-1 : ℝ) ^ m *
+          (((-1 : ℝ) ^ m * (m.factorial : ℝ) /
+              realRisingFactorial ((ε : ℝ) + 1 / 2) m) *
+            (∏ j ∈ Finset.range m,
+              (γ - ((ε : ℝ) + 1 / 2 + j))) /
+            realRisingFactorial (γ + 1) m) =
+        (m.factorial : ℝ) *
+            (∏ j ∈ Finset.range m,
+              (γ - ((ε : ℝ) + 1 / 2 + j))) /
+          (realRisingFactorial ((ε : ℝ) + 1 / 2) m *
+            realRisingFactorial (γ + 1) m) := by
+    field_simp [hbase.ne', hden.ne']
+    rw [hsignSq]
+    ring
+  rw [hrearrange]
+  positivity
+
 private theorem exceptionalEulerInverse_partialFraction_sum
     (m ε j : ℕ) {γ : ℝ}
     (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) (hj : j < m) :
