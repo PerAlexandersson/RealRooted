@@ -17,6 +17,24 @@ noncomputable section
 
 namespace RealRooted
 
+private theorem shiftedJacobi_eq_leading_mul_monic (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    shiftedJacobi n α β =
+      C ((-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n) *
+        shiftedJacobiMonic n α β := by
+  have hchoose : 0 < Ring.choose (n + α + β + n) n := by
+    cases n with
+    | zero => simp
+    | succ n =>
+        apply Polynomial.ring_choose_pos
+        push_cast
+        linarith
+  have hscale : (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hchoose.ne'
+  symm
+  rw [shiftedJacobiMonic, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hscale,
+    C_1, one_mul]
+
 /-- A shifted Jacobi polynomial has an increasing enumeration of all its
 roots, and every enumerated root lies in the open unit interval. -/
 theorem exists_shiftedJacobi_orderedRoots (n : ℕ) {α β : ℝ}
@@ -327,5 +345,177 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_one (n : ℕ) {α β : ℝ}
   · rw [natDegree_shiftedJacobiMonic n hα hβ,
       natDegree_shiftedJacobiMonic n (by linarith) hβ]
   · exact shiftedJacobiMonic_noCommonRoot_alpha_add_one n hα hβ
+
+/-- At a root of the lower-parameter polynomial, the monic Jacobi
+polynomials one and two first-parameter units higher have the same sign. -/
+theorem shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos (n : ℕ)
+    {α β x : ℝ} (hα : -1 < α) (hβ : -1 < β)
+    (hx : (shiftedJacobiMonic n α β).IsRoot x) :
+    0 < (shiftedJacobiMonic n (α + 1) β).eval x *
+      (shiftedJacobiMonic n (α + 2) β).eval x := by
+  let l₁ : ℝ := (-1 : ℝ) ^ n *
+    Ring.choose (n + (α + 1) + β + n) n
+  let l₂ : ℝ := (-1 : ℝ) ^ n *
+    Ring.choose (n + (α + 2) + β + n) n
+  have hp₁ : 0 < Ring.choose (n + (α + 1) + β + n) n :=
+    Polynomial.ring_choose_pos (by linarith)
+  have hp₂ : 0 < Ring.choose (n + (α + 2) + β + n) n :=
+    Polynomial.ring_choose_pos (by linarith)
+  have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+  have hlprod : 0 < l₁ * l₂ := by
+    calc
+      l₁ * l₂ = (((-1 : ℝ) ^ n) ^ 2) *
+          Ring.choose (n + (α + 1) + β + n) n *
+          Ring.choose (n + (α + 2) + β + n) n := by
+            simp only [l₁, l₂]
+            ring
+      _ > 0 := by positivity
+  have hraw₀ : (shiftedJacobi n α β).IsRoot x := by
+    rw [Polynomial.IsRoot.def] at hx ⊢
+    rw [shiftedJacobi_eq_leading_mul_monic n hα hβ]
+    simp [hx]
+  have hx_pos := (shiftedJacobi_isRoot_mem_Ioo n hα hβ hraw₀).1
+  have hmid_ne : (shiftedJacobiMonic n (α + 1) β).eval x ≠ 0 := by
+    intro hzero
+    exact shiftedJacobiMonic_noCommonRoot_alpha_add_one n hα hβ x hx
+      (by simpa only [Polynomial.IsRoot.def] using hzero)
+  have hraw₁ : shiftedJacobi n (α + 1) β =
+      C l₁ * shiftedJacobiMonic n (α + 1) β := by
+    simpa only [l₁] using
+      shiftedJacobi_eq_leading_mul_monic n (by linarith : -1 < α + 1) hβ
+  have hraw₂ : shiftedJacobi n (α + 2) β =
+      C l₂ * shiftedJacobiMonic n (α + 2) β := by
+    simpa only [l₂] using
+      shiftedJacobi_eq_leading_mul_monic n (by linarith : -1 < α + 2) hβ
+  have hl₁_ne : l₁ ≠ 0 := by
+    exact mul_ne_zero hsign hp₁.ne'
+  have hraw₁_ne : (shiftedJacobi n (α + 1) β).eval x ≠ 0 := by
+    rw [hraw₁]
+    simp only [eval_mul, eval_C]
+    exact mul_ne_zero hl₁_ne hmid_ne
+  have hid := congrArg (Polynomial.eval x)
+    (Polynomial.shiftedJacobi_alpha_add_two n α β hα)
+  rw [Polynomial.IsRoot.def] at hraw₀
+  simp only [eval_mul, eval_C, eval_sub, eval_add, eval_X, hraw₀,
+    mul_zero] at hid
+  have hn_nonneg : 0 ≤ (n : ℝ) := by positivity
+  have hA : 0 < (n : ℝ) + α + β + 2 := by linarith
+  have hB : 0 < α + 1 + (α + β + 2 * n + 2) * x := by
+    have hα1 : 0 < α + 1 := by linarith
+    have hE : 0 < α + β + 2 * (n : ℝ) + 2 := by linarith
+    have hEx : 0 < (α + β + 2 * (n : ℝ) + 2) * x :=
+      mul_pos hE hx_pos
+    linarith
+  have hrawprod : 0 < (shiftedJacobi n (α + 1) β).eval x *
+      (shiftedJacobi n (α + 2) β).eval x := by
+    have hsq : 0 < ((shiftedJacobi n (α + 1) β).eval x) ^ 2 :=
+      sq_pos_of_ne_zero hraw₁_ne
+    have heq : ((n : ℝ) + α + β + 2) * x *
+        (shiftedJacobi n (α + 2) β).eval x =
+        (α + 1 + (α + β + 2 * (n : ℝ) + 2) * x) *
+          (shiftedJacobi n (α + 1) β).eval x := by
+      linarith
+    have heqmul : ((n : ℝ) + α + β + 2) * x *
+        ((shiftedJacobi n (α + 1) β).eval x *
+          (shiftedJacobi n (α + 2) β).eval x) =
+        (α + 1 + (α + β + 2 * (n : ℝ) + 2) * x) *
+          ((shiftedJacobi n (α + 1) β).eval x) ^ 2 := by
+      calc
+        _ = (shiftedJacobi n (α + 1) β).eval x *
+            (((n : ℝ) + α + β + 2) * x *
+              (shiftedJacobi n (α + 2) β).eval x) := by ring
+        _ = (shiftedJacobi n (α + 1) β).eval x *
+            ((α + 1 + (α + β + 2 * (n : ℝ) + 2) * x) *
+              (shiftedJacobi n (α + 1) β).eval x) := by rw [heq]
+        _ = _ := by ring
+    have hpositive : 0 < ((n : ℝ) + α + β + 2) * x *
+        ((shiftedJacobi n (α + 1) β).eval x *
+          (shiftedJacobi n (α + 2) β).eval x) := by
+      rw [heqmul]
+      exact mul_pos hB hsq
+    exact pos_of_mul_pos_right hpositive (le_of_lt (mul_pos hA hx_pos))
+  rw [hraw₁, hraw₂] at hrawprod
+  simp only [eval_mul, eval_C] at hrawprod
+  have hfactor : l₁ *
+      (shiftedJacobiMonic n (α + 1) β).eval x *
+      (l₂ * (shiftedJacobiMonic n (α + 2) β).eval x) =
+      (l₁ * l₂) * ((shiftedJacobiMonic n (α + 1) β).eval x *
+        (shiftedJacobiMonic n (α + 2) β).eval x) := by ring
+  rw [hfactor] at hrawprod
+  exact pos_of_mul_pos_right hrawprod (le_of_lt hlprod)
+
+/-- A two-unit increase in the first Jacobi parameter moves every root past
+the corresponding lower-parameter root. -/
+theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    Prec (shiftedJacobiMonic n α β)
+      (shiftedJacobiMonic n (α + 2) β) := by
+  cases n with
+  | zero =>
+      simpa using (prec_refl (f := (1 : ℝ[X])) (by simp) (by simp))
+  | succ m =>
+      let p₀ := shiftedJacobiMonic (m + 1) α β
+      let p₁ := shiftedJacobiMonic (m + 1) (α + 1) β
+      let p₂ := shiftedJacobiMonic (m + 1) (α + 2) β
+      have hp₀_monic : p₀.Monic := by
+        exact monic_shiftedJacobiMonic (m + 1) hα hβ
+      have hp₁_monic : p₁.Monic := by
+        exact monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₂_monic : p₂.Monic := by
+        exact monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₀_pos : HasPosLeadingCoeff p₀ :=
+        hasPosLeadingCoeff_of_monic hp₀_monic
+      have hp₁_pos : HasPosLeadingCoeff p₁ :=
+        hasPosLeadingCoeff_of_monic hp₁_monic
+      have hp₂_pos : HasPosLeadingCoeff p₂ :=
+        hasPosLeadingCoeff_of_monic hp₂_monic
+      have hp₀_deg : p₀.natDegree = m + 1 := by
+        exact natDegree_shiftedJacobiMonic (m + 1) hα hβ
+      have hp₁_deg : p₁.natDegree = m + 1 := by
+        exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₂_deg : p₂.natDegree = m + 1 := by
+        exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hstrict : StrictPrecSameDegree p₀ p₁ := by
+        exact shiftedJacobiMonic_strictPrec_alpha_add_one (m + 1) hα hβ
+      have hroot_sign : ∀ x, p₀.IsRoot x → p₂.eval x * p₀.derivative.eval x < 0 := by
+        intro x hx
+        have hder_mid : p₀.derivative.eval x * p₁.eval x < 0 :=
+          hstrict.derivative_mul_eval_neg hp₀_pos hp₁_pos hp₀_deg hp₁_deg hx
+        have hmid_high : 0 < p₁.eval x * p₂.eval x := by
+          exact shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos
+            (m + 1) hα hβ hx
+        rcases mul_neg_iff.mp hder_mid with ⟨hder_pos, hmid_neg⟩ |
+            ⟨hder_neg, hmid_pos⟩
+        · rcases mul_pos_iff.mp hmid_high with ⟨hmid_pos, _⟩ |
+              ⟨_, hhigh_neg⟩
+          · linarith
+          · exact mul_neg_of_neg_of_pos hhigh_neg hder_pos
+        · rcases mul_pos_iff.mp hmid_high with ⟨_, hhigh_pos⟩ |
+              ⟨hmid_neg, _⟩
+          · exact mul_neg_of_pos_of_neg hhigh_pos hder_neg
+          · linarith
+      have hinter : Interlaces p₀.derivative p₀ :=
+        interlaces_derivative_of_pos_natDegree hp₀_pos.ne_zero
+          (shiftedJacobiMonic_splits (m + 1) hα hβ) hp₀_pos (by
+            rw [hp₀_deg]
+            lia)
+      have hder_pos : HasPosLeadingCoeff p₀.derivative :=
+        hp₀_pos.derivative (by rw [hp₀_deg]; lia)
+      exact prec_of_interlaces_eval_mul_neg_same hinter hder_pos hp₂_pos
+        (by rw [hp₂_deg, hp₀_deg]) hroot_sign
+
+/-- The two-unit first-parameter comparison is strictly interleaving. -/
+theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    StrictPrecSameDegree (shiftedJacobiMonic n α β)
+      (shiftedJacobiMonic n (α + 2) β) := by
+  apply StrictPrecSameDegree.of_prec_of_no_common
+    (shiftedJacobiMonic_prec_alpha_add_two n hα hβ)
+  · rw [natDegree_shiftedJacobiMonic n hα hβ,
+      natDegree_shiftedJacobiMonic n (by linarith) hβ]
+  · intro x hx hhigh
+    have hpos := shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos n hα hβ hx
+    rw [Polynomial.IsRoot.def] at hhigh
+    simp [hhigh] at hpos
 
 end RealRooted
