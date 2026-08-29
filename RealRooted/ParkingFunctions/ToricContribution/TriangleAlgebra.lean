@@ -272,6 +272,74 @@ theorem jPolynomial_signedTriangleFamily_intervalRootData
   exact signedTriangleFamily_intervalRootData
     (jPolynomial_triangleFamily_intervalRootData m ε d t hm hd ht)
 
+/-- The value at zero of an iterated derivative of `J` is its corresponding
+coefficient times the factorial. -/
+theorem iterate_derivative_jPolynomial_eval_zero
+    (m ε d : ℕ) (hd : d < m) :
+    ((derivative^[d]) (jPolynomial m ε)).eval 0 =
+      d.factorial * jCoeff m ε d := by
+  rw [← coeff_zero_eq_eval_zero, coeff_iterate_derivative, zero_add,
+    nsmul_eq_mul, Nat.descFactorial_self, coeff_jPolynomial, if_pos hd]
+
+/-- The terminating rising factorial `(1-m)_d` has sign `(-1)^d` before its
+zero at `d=m`. -/
+theorem negOnePow_mul_realRisingFactorial_one_sub_nat_pos
+    (m d : ℕ) (hd : d ≤ m - 1) :
+    0 < (-1 : ℝ) ^ d * realRisingFactorial (1 - (m : ℝ)) d := by
+  induction d with
+  | zero => simp
+  | succ d ih =>
+      have hd' : d ≤ m - 1 := by lia
+      have hfactor : 1 - (m : ℝ) + d < 0 := by
+        have hdm : d + 1 < m := by lia
+        have hdmR : (d : ℝ) + 1 < m := by exact_mod_cast hdm
+        linarith
+      rw [realRisingFactorial_succ, pow_succ]
+      rw [show (-1 : ℝ) ^ d * -1 *
+          (realRisingFactorial (1 - (m : ℝ)) d * (1 - (m : ℝ) + d)) =
+        ((-1 : ℝ) ^ d * realRisingFactorial (1 - (m : ℝ)) d) *
+          -(1 - (m : ℝ) + d) by ring]
+      exact mul_pos (ih hd') (neg_pos.mpr hfactor)
+
+/-- The derivative tower has the sign removed by the normalization
+`(-1)^d`. -/
+theorem negOnePow_mul_iterate_derivative_jPolynomial_eval_zero_pos
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    0 < (-1 : ℝ) ^ d * ((derivative^[d]) (jPolynomial m ε)).eval 0 := by
+  rw [iterate_derivative_jPolynomial_eval_zero m ε d (by lia), jCoeff]
+  have hA := negOnePow_mul_realRisingFactorial_one_sub_nat_pos m d hd
+  have hB : 0 < realRisingFactorial ((m : ℝ) + 2 + ε) d := by
+    apply realRisingFactorial_pos
+    positivity
+  have hC : 0 < realRisingFactorial ((ε : ℝ) + 2) d := by
+    apply realRisingFactorial_pos
+    positivity
+  have hF : 0 < (d.factorial : ℝ) := by positivity
+  rw [show
+      (-1 : ℝ) ^ d *
+          ((d.factorial : ℝ) *
+            (realRisingFactorial (1 - (m : ℝ)) d *
+                realRisingFactorial ((m : ℝ) + 2 + ε) d /
+              (realRisingFactorial ((ε : ℝ) + 2) d * d.factorial))) =
+        ((-1 : ℝ) ^ d * realRisingFactorial (1 - (m : ℝ)) d) *
+            realRisingFactorial ((m : ℝ) + 2 + ε) d /
+          realRisingFactorial ((ε : ℝ) + 2) d by
+      field_simp [hF.ne']]
+  exact div_pos (mul_pos hA hB) hC
+
+/-- Every signed diagonal entry is positively oriented at the left endpoint. -/
+theorem signedTriangleFamily_diagonal_eval_zero_pos
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2)
+      (jPolynomial m ε) d d).eval 0 := by
+  rw [signedTriangleFamily, eval_mul, eval_C, triangleFamily_eval_zero]
+  have hc : 0 < realRisingFactorial ((ε : ℝ) + 1 / 2) d := by
+    apply realRisingFactorial_pos
+    positivity
+  have hder := negOnePow_mul_iterate_derivative_jPolynomial_eval_zero_pos
+    m ε d hm hd
+  nlinarith
+
 /-- The differentiated hypergeometric equation for every row of derivatives
 of `J`. The identity remains valid after the derivative tower reaches zero. -/
 theorem iteratedDerivative_jPolynomial_differentialEquation (m ε d : ℕ) :
