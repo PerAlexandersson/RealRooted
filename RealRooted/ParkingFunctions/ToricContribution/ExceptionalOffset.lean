@@ -1228,6 +1228,211 @@ theorem exceptionalEulerInverse_signedMomentIdentity
             p.eval x * x ^ ((ε : ℝ) + 1 / 2 - γ - 1) := by
       rw [exceptionalExteriorFunctional_eq_integral _ _ p hExterior]
 
+/-- Exterior density associated with a signed pencil member. -/
+def exceptionalPencilExteriorDensity
+    (m ε : ℕ) (γ₁ γ₂ a b x : ℝ) : ℝ :=
+  a * (exceptionalEulerInverse m ε γ₁).eval 1 *
+      x ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) +
+    b * (exceptionalEulerInverse m ε γ₂).eval 1 *
+      x ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1)
+
+@[simp]
+theorem exceptionalPencilExteriorDensity_one
+    (m ε : ℕ) (γ₁ γ₂ a b : ℝ) :
+    exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b 1 =
+      (C a * exceptionalEulerInverse m ε γ₁ +
+        C b * exceptionalEulerInverse m ε γ₂).eval 1 := by
+  simp [exceptionalPencilExteriorDensity]
+
+/-- A nonzero two-power exterior density has at most one zero on `(1, ∞)`.
+This is the analytic core of P6. -/
+theorem exceptionalPencilExteriorDensity_ne_zero_of_lt
+    (m ε : ℕ) {γ₁ γ₂ a b x y : ℝ}
+    (hγ : γ₁ < γ₂) (hx : 1 < x) (hxy : x < y)
+    (hcoeff :
+      a * (exceptionalEulerInverse m ε γ₁).eval 1 ≠ 0 ∨
+        b * (exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hxzero : exceptionalPencilExteriorDensity
+      m ε γ₁ γ₂ a b x = 0) :
+    exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b y ≠ 0 := by
+  let A := a * (exceptionalEulerInverse m ε γ₁).eval 1
+  let B := b * (exceptionalEulerInverse m ε γ₂).eval 1
+  let e := (ε : ℝ) + 1 / 2 - γ₂ - 1
+  let d := γ₂ - γ₁
+  have hxpos : 0 < x := lt_trans one_pos hx
+  have hypos : 0 < y := lt_trans hxpos hxy
+  have hd : 0 < d := by
+    dsimp only [d]
+    linarith
+  have hxFactor :
+      exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x =
+        x ^ e * (A * x ^ d + B) := by
+    rw [exceptionalPencilExteriorDensity]
+    dsimp only [A, B, e, d]
+    have hxpow :
+        x ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
+          x ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) * x ^ (γ₂ - γ₁) := by
+      calc
+        x ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
+            x ^ (((ε : ℝ) + 1 / 2 - γ₂ - 1) + (γ₂ - γ₁)) := by
+          congr 1
+          ring
+        _ = _ := Real.rpow_add hxpos _ _
+    rw [hxpow]
+    ring
+  have hyFactor :
+      exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b y =
+        y ^ e * (A * y ^ d + B) := by
+    rw [exceptionalPencilExteriorDensity]
+    dsimp only [A, B, e, d]
+    have hypow :
+        y ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
+          y ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) * y ^ (γ₂ - γ₁) := by
+      calc
+        y ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
+            y ^ (((ε : ℝ) + 1 / 2 - γ₂ - 1) + (γ₂ - γ₁)) := by
+          congr 1
+          ring
+        _ = _ := Real.rpow_add hypos _ _
+    rw [hypow]
+    ring
+  have hxLinear : A * x ^ d + B = 0 := by
+    rw [hxFactor] at hxzero
+    exact (mul_eq_zero.mp hxzero).resolve_left
+      (Real.rpow_pos_of_pos hxpos e).ne'
+  intro hyzero
+  have hyLinear : A * y ^ d + B = 0 := by
+    rw [hyFactor] at hyzero
+    exact (mul_eq_zero.mp hyzero).resolve_left
+      (Real.rpow_pos_of_pos hypos e).ne'
+  have hA : A ≠ 0 := by
+    intro hAzero
+    have hBzero : B = 0 := by simpa only [hAzero, zero_mul, zero_add] using hxLinear
+    rcases hcoeff with hcoeff | hcoeff
+    · exact hcoeff hAzero
+    · exact hcoeff hBzero
+  have hpowers : x ^ d = y ^ d := by
+    apply mul_left_cancel₀ hA
+    linarith
+  have hpowlt : x ^ d < y ^ d :=
+    Real.rpow_lt_rpow hxpos.le hxy hd
+  linarith
+
+/-- Algebraic P6 identity for an arbitrary signed pencil member. -/
+theorem jacobiBetaZeroFunctional_exceptionalPencil_mul_eq
+    (m ε : ℕ) {γ₁ γ₂ a b : ℝ} (p : ℝ[X])
+    (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
+    (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
+    (hp : p.natDegree < m) :
+    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+        ((C a * exceptionalEulerInverse m ε γ₁ +
+          C b * exceptionalEulerInverse m ε γ₂) * p) =
+      -(a * (exceptionalEulerInverse m ε γ₁).eval 1) *
+          exceptionalExteriorFunctional
+            ((ε : ℝ) + 1 / 2) γ₁ p -
+        (b * (exceptionalEulerInverse m ε γ₂).eval 1) *
+          exceptionalExteriorFunctional
+            ((ε : ℝ) + 1 / 2) γ₂ p := by
+  rw [add_mul, jacobiBetaZeroFunctional_add]
+  rw [show C a * exceptionalEulerInverse m ε γ₁ * p =
+      C a * (exceptionalEulerInverse m ε γ₁ * p) by ring,
+    show C b * exceptionalEulerInverse m ε γ₂ * p =
+      C b * (exceptionalEulerInverse m ε γ₂ * p) by ring,
+    jacobiBetaZeroFunctional_C_mul,
+    jacobiBetaZeroFunctional_C_mul,
+    jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+      m ε p hγ₁ hp,
+    jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+      m ε p hγ₂ hp]
+  ring
+
+private theorem integrableOn_exceptionalExteriorIntegrand
+    (c γ : ℝ) (p : ℝ[X]) (hγ : c + p.natDegree < γ) :
+    IntegrableOn (fun x : ℝ => p.eval x * x ^ (c - γ - 1))
+      (Ioi 1) volume := by
+  have hexponent : ∀ j ∈ Finset.range (p.natDegree + 1),
+      c - γ - 1 + (j : ℝ) < -1 := by
+    intro j hj
+    have hjle : j ≤ p.natDegree := by
+      have hjlt := Finset.mem_range.mp hj
+      lia
+    have hjleCast : (j : ℝ) ≤ p.natDegree := by exact_mod_cast hjle
+    linarith
+  have hsum : IntegrableOn
+      (fun x : ℝ => ∑ j ∈ Finset.range (p.natDegree + 1),
+        p.coeff j * x ^ (c - γ - 1 + (j : ℝ)))
+      (Ioi 1) volume := by
+    apply integrable_finsetSum
+    intro j hj
+    exact (integrableOn_Ioi_rpow_of_lt
+      (hexponent j hj) one_pos).const_mul _
+  exact hsum.congr_fun (fun x hx => by
+    have hxpos : 0 < x := lt_trans one_pos hx
+    rw [Polynomial.eval_eq_sum_range]
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro j hj
+    rw [Real.rpow_add hxpos, Real.rpow_natCast]
+    ring) measurableSet_Ioi
+
+/-- Integral form of P6 for an arbitrary signed pencil member. -/
+theorem exceptionalEulerInverse_pencil_signedMomentIdentity
+    (m ε : ℕ) {γ₁ γ₂ a b : ℝ} (p : ℝ[X])
+    (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
+    (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
+    (hp : p.natDegree < m) :
+    (∫ x : ℝ in 0..1,
+        ((C a * exceptionalEulerInverse m ε γ₁ +
+          C b * exceptionalEulerInverse m ε γ₂) * p).eval x *
+            x ^ ((ε : ℝ) - 1 / 2)) =
+      -∫ x in Ioi (1 : ℝ),
+        p.eval x * exceptionalPencilExteriorDensity
+          m ε γ₁ γ₂ a b x := by
+  let c : ℝ := ε + 1 / 2
+  let A := a * (exceptionalEulerInverse m ε γ₁).eval 1
+  let B := b * (exceptionalEulerInverse m ε γ₂).eval 1
+  have hε : 0 ≤ (ε : ℝ) := by positivity
+  have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
+  have hpCast : (p.natDegree : ℝ) ≤ m - 1 := by
+    have hpOne : p.natDegree + 1 ≤ m := by lia
+    have hpOneCast : (p.natDegree : ℝ) + 1 ≤ m := by
+      exact_mod_cast hpOne
+    linarith
+  have hγ₁p : c + p.natDegree < γ₁ := by
+    dsimp only [c]
+    linarith
+  have hγ₂p : c + p.natDegree < γ₂ := by
+    dsimp only [c]
+    linarith
+  have hint₁ := integrableOn_exceptionalExteriorIntegrand
+    c γ₁ p hγ₁p
+  have hint₂ := integrableOn_exceptionalExteriorIntegrand
+    c γ₂ p hγ₂p
+  rw [← jacobiBetaZeroFunctional_eq_integral hα]
+  rw [jacobiBetaZeroFunctional_exceptionalPencil_mul_eq
+    m ε p hγ₁ hγ₂ hp]
+  rw [exceptionalExteriorFunctional_eq_integral c γ₁ p hγ₁p,
+    exceptionalExteriorFunctional_eq_integral c γ₂ p hγ₂p]
+  change
+    -A * (∫ x in Ioi (1 : ℝ), p.eval x * x ^ (c - γ₁ - 1)) -
+        B * (∫ x in Ioi (1 : ℝ), p.eval x * x ^ (c - γ₂ - 1)) = _
+  rw [show -A * (∫ x in Ioi (1 : ℝ),
+          p.eval x * x ^ (c - γ₁ - 1)) -
+        B * (∫ x in Ioi (1 : ℝ),
+          p.eval x * x ^ (c - γ₂ - 1)) =
+      -(A * (∫ x in Ioi (1 : ℝ),
+          p.eval x * x ^ (c - γ₁ - 1)) +
+        B * (∫ x in Ioi (1 : ℝ),
+          p.eval x * x ^ (c - γ₂ - 1))) by ring]
+  congr 1
+  rw [← integral_const_mul, ← integral_const_mul,
+    ← integral_add (hint₁.const_mul A) (hint₂.const_mul B)]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro x hx
+  unfold exceptionalPencilExteriorDensity
+  dsimp only [A, B, c]
+  ring
+
 @[simp]
 theorem exceptionalEulerInverse_eval_zero (m ε : ℕ) {γ : ℝ}
     (hγ : γ ≠ 0) :
