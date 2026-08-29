@@ -541,6 +541,128 @@ theorem shiftedJacobiMonic_prec_alpha_add_degree_one
       (shiftedJacobiMonic 1 (α + t) β) :=
   (shiftedJacobiMonic_strictPrec_alpha_add_degree_one hα hβ ht).to_prec
 
+private theorem shiftedJacobiMonic_two_neg_half_one :
+    shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
+      X ^ 2 - C (2 / 3 : ℝ) * X + C (1 / 21 : ℝ) := by
+  ext k
+  rw [coeff_shiftedJacobiMonic]
+  by_cases hk : k ≤ 2
+  · interval_cases k <;>
+      norm_num [Ring.choose_eq_smul, descPochhammer_succ_left,
+        smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
+        coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
+        coeff_X, coeff_C]
+  · rw [if_neg hk]
+    have hk0 : k ≠ 0 := by lia
+    have hk1 : 1 ≠ k := by lia
+    have hk2 : k ≠ 2 := by lia
+    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
+      coeff_X, coeff_C, hk0, hk1, hk2]
+
+private theorem shiftedJacobiMonic_two_one_one :
+    shiftedJacobiMonic 2 (1 : ℝ) 1 =
+      X ^ 2 - X + C (1 / 5 : ℝ) := by
+  ext k
+  rw [coeff_shiftedJacobiMonic]
+  by_cases hk : k ≤ 2
+  · interval_cases k <;>
+      norm_num [Ring.choose_eq_smul, descPochhammer_succ_left,
+        smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
+        coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
+        coeff_X, coeff_C]
+  · rw [if_neg hk]
+    have hk0 : k ≠ 0 := by lia
+    have hk1 : 1 ≠ k := by lia
+    have hk2 : k ≠ 2 := by lia
+    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
+      hk0, hk1, hk2]
+
+private theorem shiftedJacobiMonic_two_half_one :
+    shiftedJacobiMonic 2 (1 / 2 : ℝ) 1 =
+      X ^ 2 - C (10 / 11 : ℝ) * X + C (5 / 33 : ℝ) := by
+  ext k
+  rw [coeff_shiftedJacobiMonic]
+  by_cases hk : k ≤ 2
+  · interval_cases k <;>
+      norm_num [Ring.choose_eq_smul, descPochhammer_succ_left,
+        smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
+        coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
+        coeff_X, coeff_C]
+  · rw [if_neg hk]
+    have hk0 : k ≠ 0 := by lia
+    have hk1 : 1 ≠ k := by lia
+    have hk2 : k ≠ 2 := by lia
+    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
+      hk0, hk1, hk2]
+
+private theorem shiftedJacobiMonic_two_two_one :
+    shiftedJacobiMonic 2 (2 : ℝ) 1 =
+      X ^ 2 - C (8 / 7 : ℝ) * X + C (2 / 7 : ℝ) := by
+  ext k
+  rw [coeff_shiftedJacobiMonic]
+  by_cases hk : k ≤ 2
+  · interval_cases k <;>
+      norm_num [Ring.choose_eq_smul, descPochhammer_succ_left,
+        smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
+        coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
+        coeff_X, coeff_C]
+  · rw [if_neg hk]
+    have hk0 : k ≠ 0 := by lia
+    have hk1 : 1 ≠ k := by lia
+    have hk2 : k ≠ 2 := by lia
+    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
+      hk0, hk1, hk2]
+
+/-- In degree two, the fractional first-parameter comparison needed by the
+two parking-function parity classes is strictly interleaving. -/
+theorem shiftedJacobiMonic_strictPrec_three_halves_degree_two
+    (ε : ℕ) (hε : ε < 2) :
+    StrictPrecSameDegree
+      (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
+      (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) := by
+  have hcases : ε = 0 ∨ ε = 1 := by lia
+  rcases hcases with rfl | rfl
+  · norm_num
+    apply StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+      (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
+      (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
+      (hasPosLeadingCoeff_of_monic
+        (monic_shiftedJacobiMonic 2 (by norm_num) (by norm_num)))
+      (hasPosLeadingCoeff_of_monic
+        (monic_shiftedJacobiMonic 2 (by norm_num) (by norm_num)))
+      (natDegree_shiftedJacobiMonic 2 (by norm_num) (by norm_num))
+      (natDegree_shiftedJacobiMonic 2 (by norm_num) (by norm_num))
+    rw [shiftedJacobiMonic_two_neg_half_one, shiftedJacobiMonic_two_one_one]
+    rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two
+      (by compute_degree) (by compute_degree)]
+    norm_num [coeff_sub, coeff_add, coeff_C_mul,
+      Polynomial.coeff_X_pow, coeff_X, coeff_C]
+    apply Matrix.posDef_fin_two_of_entries <;> norm_num
+  · norm_num
+    apply StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+      (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
+      (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
+      (hasPosLeadingCoeff_of_monic
+        (monic_shiftedJacobiMonic 2 (by norm_num) (by norm_num)))
+      (hasPosLeadingCoeff_of_monic
+        (monic_shiftedJacobiMonic 2 (by norm_num) (by norm_num)))
+      (natDegree_shiftedJacobiMonic 2 (by norm_num) (by norm_num))
+      (natDegree_shiftedJacobiMonic 2 (by norm_num) (by norm_num))
+    rw [shiftedJacobiMonic_two_half_one, shiftedJacobiMonic_two_two_one]
+    rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two
+      (by compute_degree) (by compute_degree)]
+    norm_num [coeff_sub, coeff_add, coeff_C_mul,
+      Polynomial.coeff_X_pow, coeff_X, coeff_C]
+    apply Matrix.posDef_fin_two_of_entries <;> norm_num
+
+/-- Proper-position form of the degree-two fractional comparison for the two
+parking-function parity classes. -/
+theorem shiftedJacobiMonic_prec_three_halves_degree_two
+    (ε : ℕ) (hε : ε < 2) :
+    Prec (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
+      (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) :=
+  (shiftedJacobiMonic_strictPrec_three_halves_degree_two ε hε).to_prec
+
 /-- The two-unit endpoint certificate propagates to an intermediate positive
 first-parameter shift if no root of the lower-parameter polynomial is crossed
 along the remaining parameter interval. -/
