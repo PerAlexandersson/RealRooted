@@ -50,6 +50,12 @@ theorem coeff_shiftedJacobi (n k : ℕ) (α β : ℝ) :
   · simp [h, Nat.lt_succ_iff.mpr h]
   · simp [h, Nat.lt_succ_iff.not.mpr h]
 
+@[simp]
+theorem shiftedJacobi_zero (α β : ℝ) :
+    shiftedJacobi 0 α β = 1 := by
+  ext k
+  cases k <;> simp [coeff_shiftedJacobi, Polynomial.coeff_one]
+
 /-- A generalized real binomial coefficient is positive above its largest
 possible zero. -/
 theorem ring_choose_pos {x : ℝ} {n : ℕ} (h : (n : ℝ) - 1 < x) :
@@ -602,6 +608,114 @@ private lemma sub_mul_choose_add_one (r : ℝ) (k : ℕ) :
         Nat.cast_one, Nat.add_sub_cancel_left, Ring.choose_one_right] at h
       push_cast at h ⊢
       linear_combination -h
+
+private lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
+    (k + 1 : ℝ) * Ring.choose x (k + 1) =
+      (x - k) * Ring.choose x k := by
+  have hleft := succ_mul_ringChoose x k
+  have hright := sub_mul_choose_add_one (x - 1) k
+  calc
+    (k + 1 : ℝ) * Ring.choose x (k + 1) =
+        x * Ring.choose (x - 1) k := hleft
+    _ = (x - k) * Ring.choose x k := by
+      convert hright.symm using 1 <;> ring
+
+private lemma coeff_X_mul_derivative_eq (f : ℝ[X]) (k : ℕ) :
+    (X * f.derivative).coeff k = k * f.coeff k := by
+  cases k with
+  | zero => simp
+  | succ k =>
+      rw [coeff_X_mul, coeff_derivative]
+      push_cast
+      ring
+
+/-- Raising the degree while lowering the second Jacobi parameter is a
+first-order differential operation. -/
+theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
+    X * (1 - X) * (shiftedJacobi n α β).derivative +
+        (C (n + α + 1) - C (n + α + β + 1) * X) *
+          shiftedJacobi n α β =
+      C ((n + 1 : ℕ) : ℝ) * shiftedJacobi (n + 1) α (β - 1) := by
+  let f := shiftedJacobi n α β
+  let g := shiftedJacobi (n + 1) α (β - 1)
+  have hform :
+      X * (1 - X) * f.derivative +
+          (C (n + α + 1) - C (n + α + β + 1) * X) * f =
+        X * f.derivative - X * (X * f.derivative) +
+          C (n + α + 1) * f - C (n + α + β + 1) * (X * f) := by
+    ring
+  apply Polynomial.ext
+  intro k
+  rw [hform]
+  cases k with
+  | zero =>
+      simp only [coeff_add, coeff_sub, coeff_X_mul_zero, coeff_C_mul]
+      dsimp only [f, g]
+      rw [coeff_shiftedJacobi, if_pos (Nat.zero_le n),
+        coeff_shiftedJacobi, if_pos (Nat.zero_le (n + 1))]
+      norm_num only [Nat.cast_zero, pow_zero, Ring.choose_zero_right, mul_one,
+        Nat.sub_zero, Nat.zero_add, Nat.cast_add, Nat.cast_one]
+      have hchoose := succ_mul_choose_succ (n + α) n
+      convert hchoose.symm using 1 <;> ring
+  | succ k =>
+      simp only [coeff_sub, coeff_add, coeff_X_mul, coeff_C_mul,
+        coeff_derivative, coeff_X_mul_derivative_eq]
+      push_cast
+      dsimp only [f, g]
+      by_cases hk : k + 1 ≤ n
+      · rw [coeff_shiftedJacobi, if_pos hk, coeff_shiftedJacobi,
+          if_pos (by lia : k ≤ n), coeff_shiftedJacobi,
+          if_pos (by lia : k + 1 ≤ n + 1)]
+        have hfirst := succ_mul_ringChoose_same (n + α) (n - (k + 1))
+        have hsecond := succ_mul_choose_succ_add (n + α + β) k
+        have hpascal := Ring.choose_succ_succ (n + α) (n - (k + 1))
+        rw [show n - (k + 1) + 1 = n - k by lia] at hfirst
+        rw [Nat.cast_sub hk] at hfirst
+        norm_num only [Nat.cast_add, Nat.cast_one, pow_succ] at hfirst hsecond ⊢
+        have htop : (n : ℝ) + 1 + α = n + α + 1 := by ring
+        have hsecondTop :
+            (n : ℝ) + α + 1 + (β - 1) + (k + 1) =
+              n + α + β + (k + 1) := by ring
+        rw [htop, hsecondTop]
+        rw [show n + 1 - (k + 1) = n - (k + 1) + 1 by lia,
+          hpascal]
+        rw [show n - (k + 1) + 1 = n - k by lia]
+        have hfirst' :
+            ((n : ℝ) - k) * Ring.choose (n + α) (n - k) =
+              (α + k + 1) * Ring.choose (n + α) (n - (k + 1)) := by
+          convert hfirst using 1 <;> ring
+        have hsecond' :
+            (k + 1 : ℝ) * Ring.choose (n + α + β + (k + 1)) (k + 1) =
+              (n + α + β + k + 1) *
+                Ring.choose (n + α + β + k) k := by
+          convert hsecond using 1
+          · ring
+        have hfirstScaled := congrArg
+          (((-1 : ℝ) ^ k *
+            Ring.choose (n + α + β + (k + 1)) (k + 1)) * ·) hfirst'
+        have hsecondScaled := congrArg
+          (((-1 : ℝ) ^ k * Ring.choose (n + α) (n - k)) * ·) hsecond'
+        ring_nf at hfirstScaled hsecondScaled ⊢
+        linarith
+      · by_cases hboundary : k + 1 = n + 1
+        · have hkEq : k = n := by lia
+          subst k
+          rw [coeff_shiftedJacobi, if_neg (by lia : ¬n + 1 ≤ n),
+            coeff_shiftedJacobi, if_pos le_rfl, coeff_shiftedJacobi,
+            if_pos le_rfl]
+          have hchoose := succ_mul_choose_succ_add (n + α + β) n
+          norm_num only [Nat.cast_add, Nat.cast_one, Nat.sub_self,
+            Ring.choose_zero_right, pow_succ, zero_mul, add_zero]
+          have htop :
+              (n : ℝ) + 1 + α + (β - 1) + (n + 1) =
+                n + α + β + n + 1 := by ring
+          rw [htop]
+          linear_combination ((-1 : ℝ) ^ n) * hchoose
+        · have hlarge : n + 1 < k + 1 := by lia
+          rw [coeff_shiftedJacobi, if_neg (by lia : ¬k + 1 ≤ n),
+            coeff_shiftedJacobi, if_neg (by lia : ¬k ≤ n),
+            coeff_shiftedJacobi, if_neg (by lia : ¬k + 1 ≤ n + 1)]
+          ring
 
 private lemma coeff_shiftedJacobi_succ_degree
     (n k : ℕ) (α β : ℝ) (hk : k ≤ n) :

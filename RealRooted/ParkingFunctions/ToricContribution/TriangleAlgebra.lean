@@ -60,6 +60,51 @@ theorem insertionOperator_zero (a b : ℝ) :
     insertionOperator a b 0 = 0 := by
   simp only [insertionOperator, derivative_zero, mul_zero, add_zero]
 
+/-- The Jacobi degree-raising identity in the notation of the finite-offset
+triangle. -/
+theorem insertionOperator_shiftedJacobi_degree_add_one_beta_sub_one
+    (n : ℕ) (α β : ℝ) :
+    insertionOperator (n + α + 1) (n + α + β + 1)
+        (shiftedJacobi n α β) =
+      C ((n + 1 : ℕ) : ℝ) * shiftedJacobi (n + 1) α (β - 1) := by
+  simpa only [insertionOperator, intervalWeight] using
+    shiftedJacobi_degree_add_one_beta_sub_one n α β
+
+/-- Starting a triangle row from a constant produces a shifted Jacobi
+polynomial at every horizontal step. -/
+theorem triangleFamily_eq_C_mul_shiftedJacobi_of_iterate_derivative_eq_C
+    (c K : ℝ) (J : ℝ[X]) (d t : ℕ) (ht : t ≤ d)
+    (hbase : (derivative^[d]) J = C K) :
+    triangleFamily c J d t =
+      C ((t.factorial : ℝ) * K) *
+        shiftedJacobi t (c - 1) ((d + 1 - t : ℕ) : ℝ) := by
+  induction t with
+  | zero => simpa using hbase
+  | succ t ih =>
+      have ht' : t ≤ d := by lia
+      have ht_d_succ : t ≤ d + 1 := by lia
+      have ht_succ_d_succ : t + 1 ≤ d + 1 := by lia
+      have ha : c + (t : ℝ) = (t : ℝ) + (c - 1) + 1 := by ring
+      have hb :
+          c + (d : ℝ) + 1 =
+            (t : ℝ) + (c - 1) + ((d + 1 - t : ℕ) : ℝ) + 1 := by
+        rw [Nat.cast_sub ht_d_succ]
+        push_cast
+        ring
+      have hβ :
+          ((d + 1 - t : ℕ) : ℝ) - 1 =
+            ((d + 1 - (t + 1) : ℕ) : ℝ) := by
+        rw [Nat.cast_sub ht_d_succ, Nat.cast_sub ht_succ_d_succ]
+        push_cast
+        ring
+      rw [triangleFamily_succ, ih ht', insertionOperator_C_mul, ha, hb,
+        insertionOperator_shiftedJacobi_degree_add_one_beta_sub_one, hβ]
+      rw [← mul_assoc, ← C_mul]
+      congr 2
+      rw [Nat.factorial_succ]
+      push_cast
+      ring
+
 /-- Every derivative of an eigenfunction of an insertion operator is again an
 eigenfunction, with shifted parameters and the accumulated scalar correction. -/
 theorem iteratedDerivative_differentialEquation
@@ -347,6 +392,53 @@ theorem signedTriangleFamily_diagonal_eval_zero_pos
     0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2)
       (jPolynomial m ε) d d).eval 0 := by
   exact signedTriangleFamily_eval_zero_pos m ε d d hm hd
+
+/-- The terminal signed diagonal is a positively scaled shifted Jacobi
+polynomial with the lower half-integer first parameter. -/
+theorem exists_signedTriangleFamily_terminal_eq_C_mul_shiftedJacobi
+    (m ε : ℕ) (hm : 0 < m) :
+    ∃ k : ℝ, 0 < k ∧
+      signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
+          (m - 1) (m - 1) =
+        C k * shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1 := by
+  obtain ⟨u, hu, hderivative⟩ :=
+    exists_iterate_derivative_jPolynomial_eq_C_mul_shiftedJacobi
+      m ε (m - 1) hm le_rfl
+  have hbase :
+      (derivative^[m - 1]) (jPolynomial m ε) = C u := by
+    simpa using hderivative
+  have htriangle :=
+    triangleFamily_eq_C_mul_shiftedJacobi_of_iterate_derivative_eq_C
+      ((ε : ℝ) + 1 / 2) u (jPolynomial m ε) (m - 1) (m - 1)
+      le_rfl hbase
+  have htriangle' :
+      triangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
+          (m - 1) (m - 1) =
+        C (((m - 1).factorial : ℝ) * u) *
+          shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1 := by
+    have hα : (ε : ℝ) + 1 / 2 - 1 = (ε : ℝ) - 1 / 2 := by ring
+    have hβ : m - 1 + 1 - (m - 1) = 1 := by lia
+    simpa only [hα, hβ, Nat.cast_one] using htriangle
+  let k : ℝ := (-1 : ℝ) ^ (m - 1) * (((m - 1).factorial : ℝ) * u)
+  have heq :
+      signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
+          (m - 1) (m - 1) =
+        C k * shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1 := by
+    rw [signedTriangleFamily, htriangle', ← mul_assoc, ← C_mul]
+  have hsigned :
+      0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
+        (m - 1) (m - 1)).eval 0 :=
+    signedTriangleFamily_diagonal_eval_zero_pos m ε (m - 1) hm le_rfl
+  have hJacobi :
+      0 < (shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1).eval 0 := by
+    rw [shiftedJacobi_eval_zero]
+    apply Polynomial.ring_choose_pos
+    have hε : 0 ≤ (ε : ℝ) := by positivity
+    linarith
+  have heval := congrArg (Polynomial.eval 0) heq
+  simp only [eval_mul, eval_C] at heval
+  refine ⟨k, ?_, heq⟩
+  nlinarith
 
 /-- The differentiated hypergeometric equation for every row of derivatives
 of `J`. The identity remains valid after the derivative tower reaches zero. -/
