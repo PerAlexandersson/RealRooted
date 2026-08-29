@@ -289,6 +289,7 @@ import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.ParkingFunctions.ToricContribution.Definitions
+import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
 import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
