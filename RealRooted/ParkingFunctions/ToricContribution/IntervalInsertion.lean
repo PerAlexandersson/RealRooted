@@ -38,7 +38,8 @@ theorem insertionOperator_neg (a b : ℝ) (f : ℝ[X]) :
   simp only [insertionOperator, derivative_neg]
   ring
 
-private theorem eval_derivative_ne_zero_of_rootMultiplicity_eq_one
+/-- The derivative does not vanish at a root of multiplicity one. -/
+theorem eval_derivative_ne_zero_of_rootMultiplicity_eq_one
     {p : ℝ[X]} {r : ℝ} (hr : p.IsRoot r) (hmult : p.rootMultiplicity r = 1) :
     p.derivative.eval r ≠ 0 := by
   have hder_ne : p.derivative ≠ 0 := by

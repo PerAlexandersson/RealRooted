@@ -189,6 +189,38 @@ theorem derivative_shiftedJacobi (n : ℕ) (α β : ℝ) :
       coeff_shiftedJacobi, if_neg hk]
     simp
 
+/-- Every iterated derivative of a shifted Jacobi polynomial is a nonzero
+scalar multiple of the shifted Jacobi polynomial with shifted parameters. -/
+theorem exists_iterate_derivative_shiftedJacobi_eq_C_mul
+    (n d : ℕ) {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (hd : d ≤ n) :
+    ∃ c : ℝ, c ≠ 0 ∧
+      (derivative^[d]) (shiftedJacobi n α β) =
+        C c * shiftedJacobi (n - d) (α + d) (β + d) := by
+  induction d with
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | succ d ih =>
+      have hdle : d ≤ n := by lia
+      obtain ⟨c, hc, hcder⟩ := ih hdle
+      let factor : ℝ :=
+        -(((n - (d + 1) : ℕ) : ℝ) + (α + d) + (β + d) + 2)
+      have hfactor_pos : 0 < -factor := by
+        dsimp only [factor]
+        have hn0 : 0 ≤ ((n - (d + 1) : ℕ) : ℝ) := by positivity
+        have hd0 : 0 ≤ (d : ℝ) := by positivity
+        linarith
+      refine ⟨c * factor, mul_ne_zero hc (by linarith), ?_⟩
+      have hdegree : n - d = n - (d + 1) + 1 := by lia
+      have hderivative := derivative_shiftedJacobi
+        (n - (d + 1)) (α + d) (β + d)
+      have hαshift : α + (d + 1 : ℕ) = α + d + 1 := by
+        push_cast
+        ring
+      have hβshift : β + (d + 1 : ℕ) = β + d + 1 := by
+        push_cast
+        ring
+      rw [Function.iterate_succ_apply', hcder, derivative_C_mul, hdegree,
+        hderivative, ← mul_assoc, ← C_mul, hαshift, hβshift]
+
 private lemma eq_of_derivative_eq_of_eval_zero_eq {p q : ℝ[X]}
     (hderivative : p.derivative = q.derivative)
     (heval : p.eval 0 = q.eval 0) :
@@ -416,6 +448,43 @@ theorem shiftedJacobi_differential_equation (n : ℕ) (α β : ℝ) :
     rw [if_neg (Nat.not_le.mpr (hk.trans_le (Nat.le_succ k))),
       if_neg (Nat.not_le.mpr hk)]
     simp
+
+/-- Two degree-at-most-`n` solutions of the shifted Jacobi differential
+equation agree if their constant coefficients agree. -/
+theorem eq_of_jacobi_differential_equation
+    (n : ℕ) {α β : ℝ} (hα : -1 < α) {p q : ℝ[X]}
+    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
+    (hcoeff : p.coeff 0 = q.coeff 0)
+    (hpode :
+      X * (1 - X) * p.derivative.derivative +
+        (C (α + 1) - C (α + β + 2) * X) * p.derivative +
+        C (n * (n + α + β + 1)) * p = 0)
+    (hqode :
+      X * (1 - X) * q.derivative.derivative +
+        (C (α + 1) - C (α + β + 2) * X) * q.derivative +
+        C (n * (n + α + β + 1)) * q = 0) :
+    p = q := by
+  apply Polynomial.ext
+  intro k
+  induction k with
+  | zero => exact hcoeff
+  | succ k ih =>
+      by_cases hk : k < n
+      · have hpcoeff := congrArg (fun r : ℝ[X] => r.coeff k) hpode
+        have hqcoeff := congrArg (fun r : ℝ[X] => r.coeff k) hqode
+        rw [coeff_jacobiOperator, coeff_zero, ih] at hpcoeff
+        rw [coeff_jacobiOperator, coeff_zero] at hqcoeff
+        have hkα : 0 < (k : ℝ) + α + 1 := by
+          have hk0 : 0 ≤ (k : ℝ) := by positivity
+          linarith
+        have hfactor : 0 < ((k : ℝ) + 1) * (k + α + 1) := by
+          exact mul_pos (by positivity) hkα
+        nlinarith
+      · have hpzero : p.coeff (k + 1) = 0 :=
+          coeff_eq_zero_of_natDegree_lt (by lia)
+        have hqzero : q.coeff (k + 1) = 0 :=
+          coeff_eq_zero_of_natDegree_lt (by lia)
+        rw [hpzero, hqzero]
 
 /-- The monic normalization of the shifted Jacobi polynomial. -/
 noncomputable def shiftedJacobiMonic (n : ℕ) (α β : ℝ) : ℝ[X] :=

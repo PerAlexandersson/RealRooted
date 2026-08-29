@@ -1,3 +1,4 @@
+import RealRooted.Jacobi
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 
 /-!
@@ -145,6 +146,131 @@ theorem jPolynomial_differentialEquation (m ε : ℕ) :
                     if_neg (by lia : ¬k + 1 + 1 < n + 1 + 1)]
                 rw [hcur, hnext]
                 ring
+
+/-- For positive `m`, the finite polynomial `J` is the shifted Jacobi
+polynomial of degree `m-1`, normalized to have constant coefficient one. -/
+theorem C_mul_jPolynomial_eq_shiftedJacobi (m ε : ℕ) (hm : 0 < m) :
+    C (Ring.choose (((m - 1 : ℕ) : ℝ) + (ε + 1)) (m - 1)) *
+        jPolynomial m ε =
+      shiftedJacobi (m - 1) (ε + 1) 1 := by
+  let scale : ℝ := Ring.choose (((m - 1 : ℕ) : ℝ) + (ε + 1)) (m - 1)
+  have hscale : 0 < scale := by
+    apply Polynomial.ring_choose_pos
+    have hε : 0 ≤ (ε : ℝ) := by positivity
+    linarith
+  have hα : -1 < (ε : ℝ) + 1 := by
+    have hε : 0 ≤ (ε : ℝ) := by positivity
+    linarith
+  apply eq_of_jacobi_differential_equation (m - 1)
+    (α := (ε : ℝ) + 1) (β := 1) hα
+  · rw [natDegree_C_mul hscale.ne']
+    exact natDegree_jPolynomial_le m ε
+  · rw [natDegree_shiftedJacobi (m - 1) hα (by norm_num)]
+  · simp [coeff_shiftedJacobi, hm]
+  · have hbase := jPolynomial_differentialEquation m ε
+    have hscaled := congrArg (C scale * ·) hbase
+    simp only [mul_zero] at hscaled
+    simp only [derivative_C_mul]
+    dsimp only [scale] at hscaled ⊢
+    simp only [insertionOperator, intervalWeight] at hscaled
+    have ha : (ε : ℝ) + 1 + 1 = (ε : ℝ) + 2 := by ring
+    have hb : (ε : ℝ) + 2 + 2 = (ε : ℝ) + 4 := by ring
+    have heigen :
+        ((m - 1 : ℕ) : ℝ) *
+            ((m - 1 : ℕ) + ((ε : ℝ) + 1) + 1 + 1) =
+          ((m - 1 : ℕ) : ℝ) * ((m - 1 : ℕ) + (ε : ℝ) + 3) := by
+      ring
+    rw [ha, hb, heigen]
+    linear_combination hscaled
+  · exact shiftedJacobi_differential_equation (m - 1) (ε + 1) 1
+
+/-- The standard shifted Jacobi root package in the form required by the
+finite-offset triangle. -/
+theorem shiftedJacobi_intervalRootData
+    (n : ℕ) {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    IntervalRootData (shiftedJacobi n α β) n := by
+  have hp_ne := shiftedJacobi_ne_zero n hα hβ
+  refine ⟨natDegree_shiftedJacobi n hα hβ, ?_, shiftedJacobi_splits n hα hβ,
+    ?_, ?_⟩
+  · rw [shiftedJacobi_eval_zero]
+    apply ne_of_gt
+    apply Polynomial.ring_choose_pos
+    linarith
+  · intro r hr
+    exact shiftedJacobi_isRoot_mem_Ioo n hα hβ ((mem_roots hp_ne).mp hr)
+  · intro r hr
+    apply eval_derivative_ne_zero_of_rootMultiplicity_eq_one hr
+    have hcount : (shiftedJacobi n α β).roots.count r = 1 :=
+      Multiset.count_eq_one_of_mem (shiftedJacobi_roots_nodup n hα hβ)
+        ((mem_roots hp_ne).mpr hr)
+    simpa [count_roots] using hcount
+
+/-- Each derivative of `J` is a nonzero scalar multiple of the corresponding
+shifted Jacobi polynomial. -/
+theorem exists_iterate_derivative_jPolynomial_eq_C_mul_shiftedJacobi
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    ∃ c : ℝ, c ≠ 0 ∧
+      (derivative^[d]) (jPolynomial m ε) =
+        C c * shiftedJacobi (m - 1 - d) (ε + 1 + d) (1 + d) := by
+  let scale : ℝ := Ring.choose (((m - 1 : ℕ) : ℝ) + (ε + 1)) (m - 1)
+  have hscale : 0 < scale := by
+    apply Polynomial.ring_choose_pos
+    have hε : 0 ≤ (ε : ℝ) := by positivity
+    linarith
+  have hα : -1 < (ε : ℝ) + 1 := by
+    have hε : 0 ≤ (ε : ℝ) := by positivity
+    linarith
+  obtain ⟨c, hc, hcder⟩ :=
+    exists_iterate_derivative_shiftedJacobi_eq_C_mul
+      (m - 1) d (α := (ε : ℝ) + 1) (β := 1) hα (by norm_num) hd
+  have hscaled := congrArg (derivative^[d])
+    (C_mul_jPolynomial_eq_shiftedJacobi m ε hm)
+  rw [iterate_derivative_C_mul] at hscaled
+  refine ⟨scale⁻¹ * c, mul_ne_zero (inv_ne_zero hscale.ne') hc, ?_⟩
+  calc
+    (derivative^[d]) (jPolynomial m ε) =
+        C scale⁻¹ * (C scale * (derivative^[d]) (jPolynomial m ε)) := by
+          rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hscale.ne', C_1, one_mul]
+    _ = C scale⁻¹ * (C c * shiftedJacobi (m - 1 - d)
+        ((ε : ℝ) + 1 + d) (1 + d)) := by rw [hscaled, hcder]
+    _ = C (scale⁻¹ * c) * shiftedJacobi (m - 1 - d)
+        ((ε : ℝ) + 1 + d) (1 + d) := by rw [← mul_assoc, ← C_mul]
+
+/-- The Jacobi/Rolle base-row invariant needed for horizontal propagation
+through the finite-offset triangle. -/
+theorem iteratedDerivative_jPolynomial_intervalRootData
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    IntervalRootData ((derivative^[d]) (jPolynomial m ε)) (m - 1 - d) := by
+  obtain ⟨c, hc, heq⟩ :=
+    exists_iterate_derivative_jPolynomial_eq_C_mul_shiftedJacobi m ε d hm hd
+  have hd0 : 0 ≤ (d : ℝ) := by positivity
+  have hε0 : 0 ≤ (ε : ℝ) := by positivity
+  have hα : -1 < (ε : ℝ) + 1 + d := by linarith
+  have hβ : -1 < (1 : ℝ) + d := by linarith
+  have hdata :=
+    (shiftedJacobi_intervalRootData (m - 1 - d) hα hβ).C_mul hc
+  rw [← heq] at hdata
+  exact hdata
+
+/-- Every entry in the finite `J` triangle through its diagonal has the exact
+degree and simple roots in the open unit interval. -/
+theorem jPolynomial_triangleFamily_intervalRootData
+    (m ε d t : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) (ht : t ≤ d) :
+    IntervalRootData
+      (triangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) d t)
+      (m - 1 - d + t) := by
+  apply triangleFamily_intervalRootData hd (by positivity)
+    (iteratedDerivative_jPolynomial_intervalRootData m ε d hm hd) t ht
+
+/-- Signed normalization preserves the complete root package throughout the
+finite `J` triangle. -/
+theorem jPolynomial_signedTriangleFamily_intervalRootData
+    (m ε d t : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) (ht : t ≤ d) :
+    IntervalRootData
+      (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) d t)
+      (m - 1 - d + t) := by
+  exact signedTriangleFamily_intervalRootData
+    (jPolynomial_triangleFamily_intervalRootData m ε d t hm hd ht)
 
 /-- The differentiated hypergeometric equation for every row of derivatives
 of `J`. The identity remains valid after the derivative tower reaches zero. -/
