@@ -1,6 +1,7 @@
 import RealRooted.JacobiBetaZeroOrthogonality
 import RealRooted.ObreschkoffConverse
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.CommonInterleaverSeq
 import RealRooted.DegreeDropReversal
 import RealRooted.RootContinuity
 import RealRooted.SuccDegreeLeftEndpoint
@@ -3045,16 +3046,17 @@ theorem rPolynomial_exceptional_prec (m ε : ℕ) (hm : 0 < m) :
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
   exact exceptionalEulerInverse_upper_prec_lower m ε hm
 
-private theorem terminal_roots_sort (m ε : ℕ) (hm : 0 < m) :
-    ((rPolynomial m ε (m - 1)).roots.sort (· ≤ ·)) =
+private theorem finite_roots_sort
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    ((rPolynomial m ε d).roots.sort (· ≤ ·)) =
       ((signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
-        (m - 1) (m - 1)).roots.sort (· ≤ ·)) ++ [1] := by
+        d d).roots.sort (· ≤ ·)) ++ [1] := by
   let S := signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
-    (m - 1) (m - 1)
-  let R := rPolynomial m ε (m - 1)
+    d d
+  let R := rPolynomial m ε d
   have hS_data : IntervalRootData S (m - 1) := by
     have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (m - 1) (m - 1) hm le_rfl le_rfl
+      m ε d d hm hd le_rfl
     dsimp only [S]
     convert hdata using 1
     lia
@@ -3064,7 +3066,7 @@ private theorem terminal_roots_sort (m ε : ℕ) (hm : 0 < m) :
     simp [hzero]
   obtain ⟨k, hk, hcollapse⟩ :=
     exists_one_sub_X_mul_signedTriangleFamily_diagonal_eq_C_mul_rPolynomial
-      m ε (m - 1) hm le_rfl
+      m ε d hm hd
   have hone_sub_ne : (1 - X : ℝ[X]) ≠ 0 := by
     intro hzero
     have h := congrArg (Polynomial.eval 0) hzero
@@ -3462,27 +3464,28 @@ private theorem Prec.orderedRoot_sameDegree_bounds {p q : ℝ[X]} {n : ℕ}
   rw [hss_canonical, hrs_canonical]
   exact hbounds.1 i.val (by lia)
 
-private theorem orderedRoot_terminal_eq_signedDiagonalRoot
-    (m ε : ℕ) (hm : 0 < m) (i : Fin (m - 1)) :
-    orderedRoot (rPolynomial m ε (m - 1)) m
-        (Fin.cast (by lia) i.castSucc) =
-      signedDiagonalRoot m ε (m - 1) i := by
+private theorem orderedRoot_finite_eq_signedDiagonalRoot
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1)
+    (i : Fin (m - 1)) :
+    orderedRoot (rPolynomial m ε d) (m - 1 + 1) i.castSucc =
+      signedDiagonalRoot m ε d i := by
   have hSdata : IntervalRootData
       (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
-        (m - 1) (m - 1)) (m - 1) := by
+        d d) (m - 1) := by
     have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (m - 1) (m - 1) hm le_rfl le_rfl
+      m ε d d hm hd le_rfl
     convert hdata using 1
     lia
-  rw [orderedRoot, terminal_roots_sort m ε hm, signedDiagonalRoot, orderedRoot]
+  rw [orderedRoot, finite_roots_sort m ε d hm hd,
+    signedDiagonalRoot, orderedRoot]
   have hi : i.val <
       ((signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
-        (m - 1) (m - 1)).roots.sort (· ≤ ·)).length := by
+        d d).roots.sort (· ≤ ·)).length := by
     rw [hSdata.roots_sort_length]
     exact i.isLt
   simpa using List.getD_append
     ((signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
-      (m - 1) (m - 1)).roots.sort (· ≤ ·)) [(1 : ℝ)] 0 i.val hi
+      d d).roots.sort (· ≤ ·)) [(1 : ℝ)] 0 i.val hi
 
 private theorem shiftedJacobiMonicRoot_cast_degree
     {n m : ℕ} (h : n = m) (i : Fin n) (α β : ℝ) :
@@ -3582,7 +3585,12 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
   constructor
   · intro i
     have hweak := hleftBounds (Fin.cast (by lia) i.castSucc)
-    rw [orderedRoot_terminal_eq_signedDiagonalRoot m ε hm i] at hweak
+    rw [show orderedRoot (rPolynomial m ε (m - 1)) m
+        (Fin.cast (by lia) i.castSucc) =
+          signedDiagonalRoot m ε (m - 1) i by
+      simpa [orderedRoot] using
+        orderedRoot_finite_eq_signedDiagonalRoot
+          m ε (m - 1) hm le_rfl i] at hweak
     exact hweak.trans_lt
       ((signedDiagonalRoot_terminal_interlacing_jPolynomialRoot m ε hm).1 i)
   · intro i
@@ -3772,6 +3780,210 @@ theorem rPolynomial_allOffsets_eval_mul_jPolynomial_derivative_pos_of_isRoot
     subst d
     exact rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos_of_isRoot
       m ε hm hx
+
+private theorem orderedRoot_finite_last_eq_one
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    orderedRoot (rPolynomial m ε d) (m - 1 + 1) (Fin.last (m - 1)) = 1 := by
+  let S := signedTriangleFamily ((ε : ℝ) + 1 / 2)
+    (jPolynomial m ε) d d
+  have hSData : IntervalRootData S (m - 1) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε d d hm hd le_rfl
+    dsimp only [S]
+    convert hdata using 1
+    lia
+  rw [orderedRoot, finite_roots_sort m ε d hm hd]
+  have hlength :
+      ((signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
+        d d).roots.sort (· ≤ ·)).length = m - 1 := by
+    simpa only [S] using hSData.roots_sort_length
+  rw [List.getD_append_right]
+  · rw [hlength]
+    simp
+  · rw [hlength]
+    change m - 1 ≤ m - 1
+    exact le_rfl
+
+private theorem finiteRoot_interlacing_jPolynomialRoot
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    (∀ i : Fin (m - 1),
+      orderedRoot (rPolynomial m ε d) (m - 1 + 1) i.castSucc ≤
+        jPolynomialRoot m ε i) ∧
+    ∀ i : Fin (m - 1),
+      jPolynomialRoot m ε i ≤
+        orderedRoot (rPolynomial m ε d) (m - 1 + 1) i.succ := by
+  have hJData : IntervalRootData (jPolynomial m ε) (m - 1) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε 0 0 hm (by lia) le_rfl
+    simpa [signedTriangleFamily] using hdata
+  constructor
+  · intro i
+    rw [orderedRoot_finite_eq_signedDiagonalRoot m ε d hm hd i]
+    by_cases hdZero : d = 0
+    · subst d
+      simp [signedDiagonalRoot, jPolynomialRoot, signedTriangleFamily]
+    · exact (signedDiagonalRoot_interlacing_jPolynomialRoot
+        m ε d hm (Nat.pos_of_ne_zero hdZero) hd).1 i |>.le
+  · intro i
+    by_cases hi : i.val + 1 < m - 1
+    · let k : Fin (m - 1) := ⟨i.val + 1, hi⟩
+      have hright : jPolynomialRoot m ε i ≤ signedDiagonalRoot m ε d k := by
+        by_cases hdZero : d = 0
+        · subst d
+          rw [show signedDiagonalRoot m ε 0 k = jPolynomialRoot m ε k by
+            simp [signedDiagonalRoot, jPolynomialRoot, signedTriangleFamily]]
+          have hik : i < k := by
+            change i.val < k.val
+            simp [k]
+          exact (hJData.strictMono_orderedRoot hik).le
+        · exact (signedDiagonalRoot_interlacing_jPolynomialRoot
+            m ε d hm (Nat.pos_of_ne_zero hdZero) hd).2 i k
+              (by change i.val < k.val; simp [k]) |>.le
+      rw [← orderedRoot_finite_eq_signedDiagonalRoot m ε d hm hd k] at hright
+      have hik : i.succ = k.castSucc := by
+        apply Fin.ext
+        simp [k]
+      simpa [hik] using hright
+    · have hiLast : i.val = m - 2 := by lia
+      have hroot := hJData.roots_mem_Ioo
+        (jPolynomialRoot m ε i)
+        ((mem_roots (by
+          intro hzero
+          apply hJData.eval_zero_ne
+          simp [hzero])).mpr (hJData.orderedRoot_isRoot i))
+      rw [show i.succ = Fin.last (m - 1) by
+        apply Fin.ext
+        simp [hiLast]
+        omega, orderedRoot_finite_last_eq_one m ε d hm hd]
+      exact hroot.2.le
+
+private theorem interlaces_of_intervalRootData_orderedRoot_bounds
+    {g f : ℝ[X]} {n : ℕ}
+    (hg : IntervalRootData g n) (hfNe : f ≠ 0) (hfSplits : f.Splits)
+    (hfDegree : f.natDegree = n + 1)
+    (hleft : ∀ i : Fin n,
+      orderedRoot f (n + 1) i.castSucc ≤ orderedRoot g n i)
+    (hright : ∀ i : Fin n,
+      orderedRoot g n i ≤ orderedRoot f (n + 1) i.succ) :
+    Interlaces g f := by
+  let rs := f.roots.sort (· ≤ ·)
+  let ss := g.roots.sort (· ≤ ·)
+  have hgNe : g ≠ 0 := by
+    intro hzero
+    apply hg.eval_zero_ne
+    simp [hzero]
+  have hrsLength : rs.length = n + 1 := by
+    rw [show rs = f.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
+      card_roots_of_splits hfSplits, hfDegree]
+  have hssLength : ss.length = n := by
+    rw [show ss = g.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
+      card_roots_of_splits hg.splits, hg.natDegree_eq]
+  refine ⟨⟨hfNe, hfSplits⟩, ⟨hgNe, hg.splits⟩, ?_, rs, ss,
+    by simp [rs], by simp [ss], by simp [rs], by simp [ss], ?_⟩
+  · rw [hg.natDegree_eq, hfDegree]
+  · apply listInterlaces_of_getD_bounds ss rs (by lia)
+    · intro k hk
+      let i : Fin n := ⟨k, by lia⟩
+      simpa only [orderedRoot, rs, ss, i, Fin.val_castSucc] using hleft i
+    · intro k hk
+      let i : Fin n := ⟨k, by lia⟩
+      simpa only [orderedRoot, rs, ss, i, Fin.val_succ] using hright i
+
+/-- The terminating Jacobi polynomial interlaces every normalized
+toric-contribution polynomial, including both boundary offsets. -/
+theorem jPolynomial_interlaces_rPolynomial
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m) :
+    Interlaces (jPolynomial m ε) (rPolynomial m ε d) := by
+  have hJData : IntervalRootData (jPolynomial m ε) (m - 1) := by
+    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
+      m ε 0 0 hm (by lia) le_rfl
+    simpa [signedTriangleFamily] using hdata
+  have hmSucc : m - 1 + 1 = m := Nat.sub_add_cancel (by lia)
+  by_cases hfinite : d ≤ m - 1
+  · have hRData := rPolynomial_rightClosedIntervalRootData
+      m ε d hm hfinite
+    obtain ⟨hleft, hright⟩ :=
+      finiteRoot_interlacing_jPolynomialRoot m ε d hm hfinite
+    apply interlaces_of_intervalRootData_orderedRoot_bounds hJData
+      (fun hzero => hRData.eval_zero_ne (by simp [hzero])) hRData.splits
+      (hRData.natDegree_eq.trans hmSucc.symm)
+    · simpa only [jPolynomialRoot] using hleft
+    · simpa only [jPolynomialRoot] using hright
+  · have hdEq : d = m := by lia
+    subst d
+    have hRPrec := rPolynomial_exceptional_prec m ε hm
+    have hRDegree : (rPolynomial m ε m).natDegree = m := by
+      rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
+      exact natDegree_exceptionalEulerInverse m ε (by positivity)
+    obtain ⟨hleft, hright⟩ :=
+      exceptionalRoot_interlacing_jPolynomialRoot m ε hm
+    apply interlaces_of_intervalRootData_orderedRoot_bounds hJData
+      hRPrec.1.1 hRPrec.1.2 (hRDegree.trans hmSucc.symm)
+    · intro i
+      simpa only [jPolynomialRoot, orderedRoot, Fin.val_cast] using (hleft i).le
+    · intro i
+      simpa only [jPolynomialRoot, orderedRoot, Fin.val_cast] using (hright i).le
+
+/-- The top coefficient of every normalized toric-contribution polynomial
+has the parity sign predicted by its terminating hypergeometric factor. -/
+theorem rPolynomial_top_signed_coeff_pos (m ε d : ℕ) :
+    0 < (-1 : ℝ) ^ m * (rPolynomial m ε d).coeff m := by
+  rw [coeff_rPolynomial, if_pos le_rfl, rCoeff,
+    realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
+  have hleft : (-1 : ℝ) ^ m * (-1 : ℝ) ^ m = 1 := by
+    rw [← pow_add, show m + m = 2 * m by omega, pow_mul]
+    norm_num
+  rw [show (-1 : ℝ) ^ m *
+      (((-1 : ℝ) ^ m * m.factorial / (m - m).factorial) *
+          realRisingFactorial ((m : ℝ) + 1 + ε) m *
+          realRisingFactorial ((ε : ℝ) + 1 / 2 + d) m /
+        (realRisingFactorial ((ε : ℝ) + 1 / 2) m *
+          realRisingFactorial ((ε : ℝ) + 1 / 2 + d + 3 / 2) m *
+          m.factorial)) =
+      ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m) *
+        ((m.factorial : ℝ) / (m - m).factorial *
+          realRisingFactorial ((m : ℝ) + 1 + ε) m *
+          realRisingFactorial ((ε : ℝ) + 1 / 2 + d) m /
+        (realRisingFactorial ((ε : ℝ) + 1 / 2) m *
+          realRisingFactorial ((ε : ℝ) + 1 / 2 + d + 3 / 2) m *
+          m.factorial)) by ring,
+    hleft, one_mul]
+  have hA : 0 < realRisingFactorial ((m : ℝ) + 1 + ε) m := by
+    apply realRisingFactorial_pos
+    positivity
+  have hB : 0 < realRisingFactorial ((ε : ℝ) + 1 / 2 + d) m := by
+    apply realRisingFactorial_pos
+    positivity
+  have hC : 0 < realRisingFactorial ((ε : ℝ) + 1 / 2) m := by
+    apply realRisingFactorial_pos
+    positivity
+  have hD : 0 <
+      realRisingFactorial ((ε : ℝ) + 1 / 2 + d + 3 / 2) m := by
+    apply realRisingFactorial_pos
+    positivity
+  have hF : 0 < (m.factorial : ℝ) := by positivity
+  norm_num only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
+  positivity
+
+/-- Every normalized toric-contribution polynomial has its full terminating
+degree. -/
+theorem rPolynomial_natDegree (m ε d : ℕ) :
+    (rPolynomial m ε d).natDegree = m := by
+  apply natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_rPolynomial_le m ε d)
+  intro hzero
+  have hpositive := rPolynomial_top_signed_coeff_pos m ε d
+  rw [hzero, mul_zero] at hpositive
+  exact lt_irrefl 0 hpositive
+
+/-- Multiplication by the parity sign gives every normalized
+toric-contribution polynomial positive leading coefficient. -/
+theorem negOnePow_mul_rPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
+    HasPosLeadingCoeff (C ((-1 : ℝ) ^ m) * rPolynomial m ε d) := by
+  rw [HasPosLeadingCoeff, Polynomial.leadingCoeff_C_mul_of_isUnit
+    (isUnit_iff_ne_zero.mpr (pow_ne_zero m (by norm_num))), leadingCoeff,
+    rPolynomial_natDegree]
+  exact rPolynomial_top_signed_coeff_pos m ε d
 
 end ToricContribution
 end ParkingFunctions
