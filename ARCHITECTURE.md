@@ -101,7 +101,12 @@ Derivative recurrence results have a focused package entry point:
 - `DerivativeRecurrence.Linear` owns coefficient, degree, and interlacing
   theorems for first-order recurrences with linear polynomial coefficients;
 - `DerivativeRecurrence.SecondOrderDegree` owns coefficient, degree, and
-  nonvanishing results for a common second-order recurrence; and
+  nonvanishing results for a common second-order recurrence;
+- `DerivativeRecurrence.QuadraticDegree` owns the coefficient, degree, and
+  nonvanishing core for recurrences with a quadratic derivative coefficient;
+- `DerivativeRecurrence.QuadraticShift`, `QuadraticInterlacing`, and
+  `QuadraticSeed` own the normalized-shift, general proper-position, and
+  quadratic-seed layers over that core; and
 - `DerivativeRecurrence` is the compatibility umbrella for this family.
 
 These results were promoted from sequence proofs because their statements do

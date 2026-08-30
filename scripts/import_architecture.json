@@ -11,7 +11,13 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 20
+      "max_modules": 30
+    },
+    "RealRooted.DerivativeRecurrence.QuadraticDegree": {
+      "max_modules": 12
+    },
+    "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
+      "max_modules": 25
     },
     "RealRooted.Wronskian": {
       "max_modules": 85
@@ -85,6 +91,8 @@
     "RealRooted.Basic",
     "RealRooted.Derivative",
     "RealRooted.DerivativeRecurrence",
+    "RealRooted.DerivativeRecurrence.QuadraticDegree",
+    "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
     "RealRooted.SequenceClosure",
