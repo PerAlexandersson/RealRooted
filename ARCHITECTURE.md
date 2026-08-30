@@ -82,6 +82,20 @@ lines and 61 modules / 29,448 local lines, respectively. Their explicit import
 budgets prevent them from silently acquiring tactic dependencies or growing
 back toward the tactic umbrella.
 
+Wronskian results have a focused package entry point:
+
+- `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and
+  Euler-operator Wronskian formulas;
+- `Wronskian.Forward` owns the global strict-interlacing-to-positivity bridge;
+  and
+- `Wronskian` is the small umbrella for both.
+
+The reverse positivity-to-interlacing bridge remains in `Bezoutian`, where it
+is part of the Bezout-matrix characterization. The stability implication stays
+in `HermiteBiehler`, and private Wronskian calculations remain with their
+affine-family and Obreschkoff proofs. This keeps the package based on theorem
+ownership rather than moving every file that happens to mention a Wronskian.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on
@@ -174,9 +188,9 @@ are diagnostics rather than hard line-count limits.
    then pilot narrow imports on representative generated sequence modules.
 2. Separate tactic examples from the production tactic umbrella, building on
    the completed finish/product frontend split.
-3. Continue generalizing the extracted `WronskianAlgebra` coefficient
+3. Continue generalizing the extracted `Wronskian.Algebra` coefficient
    identities in its Mathlib-shaped shim and use the extracted
-   `ForwardWronskian` bridge in the consumer.
+   `Wronskian.Forward` bridge in the consumer.
 4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
    RealRooted packages.
 5. Maintain a Mathlib-upstream queue beginning with small Wronskian, multiset,

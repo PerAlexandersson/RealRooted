@@ -10,7 +10,10 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
-    "RealRooted.ForwardWronskian": {
+    "RealRooted.Wronskian": {
+      "max_modules": 85
+    },
+    "RealRooted.Wronskian.Forward": {
       "max_modules": 15
     },
     "RealRooted.ProductSequence": {
@@ -19,7 +22,7 @@
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
-    "RealRooted.WronskianAlgebra": {
+    "RealRooted.Wronskian.Algebra": {
       "max_modules": 80
     },
     "RealRooted.Tactic": {
@@ -78,11 +81,12 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
-    "RealRooted.ForwardWronskian",
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
     "RealRooted.SequenceClosure",
-    "RealRooted.WronskianAlgebra",
+    "RealRooted.Wronskian",
+    "RealRooted.Wronskian.Algebra",
+    "RealRooted.Wronskian.Forward",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.MaWang",
     "RealRooted.Tactic.Product",

@@ -124,7 +124,6 @@ import RealRooted.Favard
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
-import RealRooted.ForwardWronskian
 import RealRooted.GammaRealRoots
 import RealRooted.GarloffWagner
 import RealRooted.GeneralizedLiuWang
@@ -491,4 +490,6 @@ import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
 import RealRooted.WeightedSum
-import RealRooted.WronskianAlgebra
+import RealRooted.Wronskian
+import RealRooted.Wronskian.Algebra
+import RealRooted.Wronskian.Forward
