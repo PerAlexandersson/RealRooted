@@ -316,6 +316,7 @@ import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PosCombo
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.ProductFamily
+import RealRooted.ProductSequence
 import RealRooted.QuadraticCubicPencil
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
@@ -343,6 +344,7 @@ import RealRooted.SameDegreeDerivative
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.StaircaseSum

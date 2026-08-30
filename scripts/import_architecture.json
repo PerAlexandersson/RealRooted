@@ -10,6 +10,12 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.ProductSequence": {
+      "max_modules": 70
+    },
+    "RealRooted.SequenceClosure": {
+      "max_modules": 12
+    },
     "RealRooted.Tactic": {
       "max_modules": 300
     },
@@ -36,8 +42,7 @@
       "source_prefix": "RealRooted",
       "target_prefix": "RealRooted.Tactic.",
       "allowed_sources": [
-        "RealRooted",
-        "RealRooted.LinearPowerFamily"
+        "RealRooted"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges.",
@@ -68,6 +73,8 @@
     "RealRooted.Basic",
     "RealRooted.Derivative",
     "RealRooted.MaWang",
+    "RealRooted.ProductSequence",
+    "RealRooted.SequenceClosure",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.MaWang",
     "RealRooted.Tactic.Product",

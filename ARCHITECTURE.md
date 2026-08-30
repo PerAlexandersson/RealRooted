@@ -42,9 +42,8 @@ The current tree predates these boundaries. In particular, a few theorem and
 example modules still import tactic or challenge modules. Those are migration
 targets rather than exceptions to preserve indefinitely.
 
-The no-regression checker currently allowlists the known upward edges:
+The no-regression checker currently allowlists the remaining known upward edges:
 
-- `LinearPowerFamily` imports `Tactic.Finish`;
 - three tactic modules import their challenge wrappers; and
 - two Borcea--Brändén application modules import the corresponding challenge
   wrapper.
@@ -68,6 +67,20 @@ Tactic examples and other regression-only modules should eventually move to a
 separate test umbrella. The root-import checker will continue to require every
 current library module until that test surface exists and the checker has an
 explicit production/test distinction.
+
+The first frontend/backend split keeps the existing tactic imports compatible:
+
+- `SequenceClosure` contains the induction, `Prec`, splitness, and product
+  transport theorems formerly defined in `Tactic.Finish`;
+- `ProductSequence` contains the product-recurrence theorems formerly defined
+  in `Tactic.Product`; and
+- `Tactic.Finish` and `Tactic.Product` now contain only their syntax and
+  elaboration layers.
+
+At this checkpoint, the theorem-only closures contain 7 modules / 3,200 local
+lines and 61 modules / 29,448 local lines, respectively. Their explicit import
+budgets prevent them from silently acquiring tactic dependencies or growing
+back toward the tactic umbrella.
 
 ## Baseline
 
@@ -159,8 +172,8 @@ are diagnostics rather than hard line-count limits.
 
 1. Recover or replace the missing source generator used by the OEIS project,
    then pilot narrow imports on representative generated sequence modules.
-2. Separate tactic examples and split one tactic engine while preserving its
-   old import path.
+2. Separate tactic examples from the production tactic umbrella, building on
+   the completed finish/product frontend split.
 3. Extract the consumer Wronskian algebra and forward-interlacing bridge into
    small canonical RealRooted modules.
 4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
