@@ -112,6 +112,9 @@ import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
+import RealRooted.DerivativeRecurrence
+import RealRooted.DerivativeRecurrence.Linear
+import RealRooted.DerivativeRecurrence.SecondOrderDegree
 import RealRooted.DerivativeShiftRootMatching
 import RealRooted.DerivativeShiftSequence
 import RealRooted.DeterminantalStability

@@ -96,6 +96,17 @@ in `HermiteBiehler`, and private Wronskian calculations remain with their
 affine-family and Obreschkoff proofs. This keeps the package based on theorem
 ownership rather than moving every file that happens to mention a Wronskian.
 
+Derivative recurrence results have a focused package entry point:
+
+- `DerivativeRecurrence.Linear` owns coefficient, degree, and interlacing
+  theorems for first-order recurrences with linear polynomial coefficients;
+- `DerivativeRecurrence.SecondOrderDegree` owns coefficient, degree, and
+  nonvanishing results for a common second-order recurrence; and
+- `DerivativeRecurrence` is the compatibility umbrella for this family.
+
+These results were promoted from sequence proofs because their statements do
+not mention an OEIS sequence and they already have multiple downstream users.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on
@@ -130,10 +141,14 @@ Prefer the following progression:
 5. Update downstream imports before considering removal of compatibility
    umbrellas.
 
-Files above roughly 3,000 lines should have one mathematical responsibility or
-a documented reason to remain monolithic. Generated files require a
-generator-aware split; moving only a few helper lemmas does not improve Lean's
-elaboration unit or object-file caching.
+Line count is a diagnostic, not a hard limit: a split should expose a coherent
+theorem family or dependency boundary. As a practical review threshold, files
+above 1,000 lines should be checked for multiple responsibilities, and files
+above 1,500 lines should normally be split or have a documented reason to stay
+cohesive. This is deliberately close to the upper end of current Mathlib
+modules rather than the historical size of this repository. Generated files
+require a generator-aware split; moving only a few helper lemmas does not
+improve Lean's elaboration unit or object-file caching.
 
 The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
 tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
