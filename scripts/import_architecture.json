@@ -10,6 +10,9 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.ForwardWronskian": {
+      "max_modules": 15
+    },
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
@@ -75,6 +78,7 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
+    "RealRooted.ForwardWronskian",
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
     "RealRooted.SequenceClosure",
