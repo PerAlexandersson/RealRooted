@@ -10,6 +10,9 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.CommonInterleaverFamilySum": {
+      "max_modules": 70
+    },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 30
     },
@@ -17,6 +20,15 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
+      "max_modules": 25
+    },
+    "RealRooted.LiuWang": {
+      "max_modules": 35
+    },
+    "RealRooted.LiuWang.OneAddXPositive": {
+      "max_modules": 30
+    },
+    "RealRooted.LiuWang.Step": {
       "max_modules": 25
     },
     "RealRooted.Wronskian": {
@@ -27,6 +39,9 @@
     },
     "RealRooted.ProductSequence": {
       "max_modules": 70
+    },
+    "RealRooted.ProductOrientation": {
+      "max_modules": 80
     },
     "RealRooted.RootCounting": {
       "max_modules": 25
@@ -40,6 +55,9 @@
     "RealRooted.RootVieta": {
       "max_modules": 5
     },
+    "RealRooted.ScalarNormalization": {
+      "max_modules": 2
+    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
@@ -49,6 +67,9 @@
     "RealRooted.SortedRoots": {
       "max_modules": 5
     },
+    "RealRooted.VeroneseSectionPair": {
+      "max_modules": 110
+    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 80
     },
@@ -56,7 +77,7 @@
       "max_modules": 300
     },
     "RealRooted.Tactic.LiuWang": {
-      "max_modules": 40
+      "max_modules": 45
     },
     "RealRooted.Tactic.MaWang": {
       "max_modules": 40
@@ -108,18 +129,25 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
+    "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
+    "RealRooted.LiuWang",
+    "RealRooted.LiuWang.OneAddXPositive",
+    "RealRooted.LiuWang.Step",
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
+    "RealRooted.ProductOrientation",
     "RealRooted.RootCounting",
     "RealRooted.RootCounting.Finite",
     "RealRooted.RootBounds",
     "RealRooted.RootVieta",
+    "RealRooted.ScalarNormalization",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
+    "RealRooted.VeroneseSectionPair",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",
     "RealRooted.Wronskian.Forward",

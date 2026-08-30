@@ -5,6 +5,7 @@
 *.md
 !README.md
 !ARCHITECTURE.md
+!OEIS_THEORY_AUDIT.md
 !RealRooted/Tactic/PLAN.md
 !RealRooted/Tactic/OEIS_COVERAGE.md
 

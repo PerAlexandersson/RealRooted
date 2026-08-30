@@ -145,6 +145,36 @@ This boundary is a prerequisite for moving the reusable Liu--Wang sequence
 theorems out of its oversized tactic frontend without retaining hidden upward
 imports.
 
+The Liu--Wang stack now follows that boundary:
+
+- `LiuWang.Step` owns two-polynomial criteria and coefficient sign lemmas;
+- `LiuWang.SequenceCore`, `SequencePositive`, `SequenceIntervals`, and
+  `SequenceProducts` separate sequence induction by the shape of the lag
+  coefficient;
+- `LiuWang.OneAddXPositive` packages degree growth and consecutive interlacing
+  for positive three-term recurrences with current coefficient `1 + X`; this
+  sequence-independent family was promoted from the OEIS proof repository;
+- `LiuWang` is the theorem-only package entry point; and
+- `Tactic.LiuWang` contains only syntax, macros, and certificate plumbing.
+
+`ScalarNormalization` similarly owns the ordinary constant-polynomial
+cancellation theorems formerly embedded in `Tactic.ScalarDen`. This keeps
+recurrence backends from importing the scalar-denominator tactic frontend.
+
+Two further OEIS-derived corollary modules keep large owning modules cohesive:
+
+- `CommonInterleaverFamilySum` turns pairwise common right or left interleavers
+  into splitness of a nonempty finite sum; and
+- `VeroneseSectionPair` extracts strict proper position between two nonzero
+  ordered residue sections from the Veronese matrix package.
+
+`ProductOrientation` packages a further OEIS-derived Obreschkoff corollary:
+for same-degree nonnegative-coefficient polynomials, a strict normalized
+value-at-zero comparison selects the proper-position orientation.
+
+The maintained candidate inventory and extraction prerequisites are recorded
+in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on
