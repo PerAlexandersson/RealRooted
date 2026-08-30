@@ -34,11 +34,17 @@
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
+    "RealRooted.RootBounds": {
+      "max_modules": 15
+    },
     "RealRooted.RootVieta": {
       "max_modules": 5
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
+    },
+    "RealRooted.SignEvaluation": {
+      "max_modules": 10
     },
     "RealRooted.SortedRoots": {
       "max_modules": 5
@@ -109,8 +115,10 @@
     "RealRooted.ProductSequence",
     "RealRooted.RootCounting",
     "RealRooted.RootCounting.Finite",
+    "RealRooted.RootBounds",
     "RealRooted.RootVieta",
     "RealRooted.SequenceClosure",
+    "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",

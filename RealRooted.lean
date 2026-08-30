@@ -336,6 +336,7 @@ import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
+import RealRooted.RootBounds
 import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
 import RealRooted.RootCountJump
@@ -359,6 +360,7 @@ import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
+import RealRooted.SignEvaluation
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SortedRoots
 import RealRooted.StaircaseSum

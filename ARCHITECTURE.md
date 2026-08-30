@@ -133,6 +133,18 @@ consumer-specific amplitude comparison remains downstream. Its product
 reindexing helper was generalized to arbitrary lists and placed in
 `Mathlib.Data.List.Basic`.
 
+The sign-certificate stack separates theorem backends from tactic syntax:
+
+- `SignEvaluation` owns reusable polynomial-evaluation inequalities;
+- `RootBounds` owns root bounds derived from splitness and coefficient
+  positivity; and
+- `Tactic.Sign` and `Tactic.RootBounds` are frontends importing those
+  backends.
+
+This boundary is a prerequisite for moving the reusable Liu--Wang sequence
+theorems out of its oversized tactic frontend without retaining hidden upward
+imports.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on
