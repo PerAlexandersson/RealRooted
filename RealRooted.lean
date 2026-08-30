@@ -472,6 +472,12 @@ import RealRooted.Tactic.Kurtz
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
+import RealRooted.Tactic.LiuWang.SequenceIntervals
+import RealRooted.Tactic.LiuWang.SequenceNonpositive
+import RealRooted.Tactic.LiuWang.SequencePositive
+import RealRooted.Tactic.LiuWang.SequenceProducts
+import RealRooted.Tactic.LiuWang.SequenceQuadratic
+import RealRooted.Tactic.LiuWang.Step
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang

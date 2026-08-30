@@ -77,6 +77,18 @@
       "max_modules": 300
     },
     "RealRooted.Tactic.LiuWang": {
+      "max_modules": 50
+    },
+    "RealRooted.Tactic.LiuWang.Step": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.LiuWang.SequenceIntervals": {
+      "max_modules": 50
+    },
+    "RealRooted.Tactic.LiuWang.SequenceNonpositive": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.LiuWang.SequenceProducts": {
       "max_modules": 45
     },
     "RealRooted.Tactic.MaWang": {
@@ -152,6 +164,10 @@
     "RealRooted.Wronskian.Algebra",
     "RealRooted.Wronskian.Forward",
     "RealRooted.Tactic.LiuWang",
+    "RealRooted.Tactic.LiuWang.Step",
+    "RealRooted.Tactic.LiuWang.SequenceIntervals",
+    "RealRooted.Tactic.LiuWang.SequenceNonpositive",
+    "RealRooted.Tactic.LiuWang.SequenceProducts",
     "RealRooted.Tactic.MaWang",
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic"

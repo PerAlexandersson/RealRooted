@@ -154,8 +154,17 @@ The Liu--Wang stack now follows that boundary:
 - `LiuWang.OneAddXPositive` packages degree growth and consecutive interlacing
   for positive three-term recurrences with current coefficient `1 + X`; this
   sequence-independent family was promoted from the OEIS proof repository;
-- `LiuWang` is the theorem-only package entry point; and
-- `Tactic.LiuWang` contains only syntax, macros, and certificate plumbing.
+- `LiuWang` is the theorem-only package entry point;
+- `Tactic.LiuWang.Step` owns shared tactic plumbing and the single-step
+  dispatchers;
+- the five `Tactic.LiuWang.Sequence*` modules pair parser declarations with
+  their nonpositive, quadratic, positive, interval, or product-lag macro
+  implementations; and
+- `Tactic.LiuWang` is the compatibility umbrella for those frontends.
+
+Every Liu--Wang source unit is now below 1,500 lines. Keeping each syntax
+declaration beside the macro rules that implement it makes these splits useful
+for both responsibility review and Lean's per-module elaboration cache.
 
 `ScalarNormalization` similarly owns the ordinary constant-polynomial
 cancellation theorems formerly embedded in `Tactic.ScalarDen`. This keeps
