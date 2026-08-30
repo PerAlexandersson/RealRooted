@@ -1,0 +1,157 @@
+# RealRooted Architecture
+
+This document records the intended dependency layers and the migration rules
+for splitting the research repository into reusable components. It describes
+source organization, not proof status; checked theorem claims remain governed
+by `README.md` and `PROOF_STATUS.md`.
+
+## Goals
+
+- Keep small theorem imports small enough for focused downstream builds.
+- Separate reusable mathematics from tactic elaboration and examples.
+- Give sequence-independent results an incubation path from consumer projects
+  into RealRooted and, where appropriate, into Mathlib.
+- Preserve public declaration names and old module imports while modules are
+  split.
+- Make architectural regressions visible through inexpensive source checks.
+
+## Dependency layers
+
+The layers are ordered from lowest to highest. Imports should point downward
+unless a documented compatibility module is temporarily bridging a migration.
+
+1. **Mathlib shims.** `RealRooted/Mathlib/` contains upstream-shaped additions
+   to Mathlib namespaces. These files may import Mathlib or other
+   `RealRooted.Mathlib` files, but not the RealRooted theorem library.
+2. **Polynomial and root infrastructure.** Elementary polynomial identities,
+   root lists, derivatives, reversals, Wronskians, and the basic interlacing
+   predicates.
+3. **Real-rootedness structures.** Proper position, interlacing sequences,
+   compatibility, common interleavers, stability, and PF polynomials.
+4. **Preservers and recurrence backends.** Ma--Wang, Liu--Wang, Favard,
+   finite-symbol, matrix, and transformation theorems. This layer contains
+   theorem APIs and no tactic elaborators.
+5. **Tactic frontends.** Syntax, elaboration, lookup, and certificate plumbing.
+   A tactic engine may import its theorem backend; theorem modules must not
+   import tactic modules.
+6. **Applications and examples.** Named combinatorial families, challenges,
+   benchmarks, and tactic regression tests. These may use the preceding layers
+   but should not become dependencies of the reusable theorem library.
+
+The current tree predates these boundaries. In particular, a few theorem and
+example modules still import tactic or challenge modules. Those are migration
+targets rather than exceptions to preserve indefinitely.
+
+## Umbrella imports
+
+`RealRooted.lean` remains the broad compatibility umbrella. It is useful for a
+full integration build, documentation, and exploratory work, but it is not a
+prelude for downstream generated files.
+
+New consumers should import the smallest theorem or tactic modules they use.
+Curated entry points may be introduced for stable families, but each entry
+point needs an import budget so that it does not silently become another full
+umbrella.
+
+Tactic examples and other regression-only modules should eventually move to a
+separate test umbrella. The root-import checker will continue to require every
+current library module until that test surface exists and the checker has an
+explicit production/test distinction.
+
+## Baseline
+
+The following source-only measurements were recorded at commit `41ce000a` on
+2026-08-30. A closure includes the named module itself and counts only modules
+and lines in this repository, not Mathlib dependencies.
+
+| Module | Local modules | Local lines |
+| --- | ---: | ---: |
+| `RealRooted` | 483 | 297,928 |
+| `RealRooted.Basic` | 5 | 1,927 |
+| `RealRooted.Derivative` | 6 | 2,967 |
+| `RealRooted.MaWang` | 16 | 12,592 |
+| `RealRooted.Tactic.LiuWang` | 28 | 26,416 |
+| `RealRooted.Tactic.MaWang` | 29 | 24,414 |
+| `RealRooted.Tactic.Product` | 67 | 35,738 |
+| `RealRooted.Tactic` | 248 | 175,041 |
+
+The CI budgets in `scripts/import_architecture.json` deliberately include
+headroom. They are tripwires for accidental umbrella growth, not a prohibition
+on adding a well-factored theorem module. Budget reductions should accompany
+successful module splits.
+
+## Splitting large modules
+
+Prefer the following progression:
+
+1. Extract definitions and theorem backends without changing namespaces or
+   declaration names.
+2. Put syntax and elaboration in separate tactic modules.
+3. Leave the old module path as a thin re-exporting umbrella.
+4. Move examples to a test module after all production imports are removed.
+5. Update downstream imports before considering removal of compatibility
+   umbrellas.
+
+Files above roughly 3,000 lines should have one mathematical responsibility or
+a documented reason to remain monolithic. Generated files require a
+generator-aware split; moving only a few helper lemmas does not improve Lean's
+elaboration unit or object-file caching.
+
+The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
+tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
+`SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
+
+## Consumer-to-library extraction
+
+A theorem discovered in an application or OEIS proof should pass through the
+following filters.
+
+1. Keep sequence definitions, coefficient models, and one-off boundary
+   calculations in the consumer.
+2. Promote a theorem to RealRooted when its statement is independent of the
+   sequence and has either a second consumer or a clear classical library role.
+3. Put it under `RealRooted/Mathlib/` only when the statement and proof can be
+   expressed using Mathlib APIs without importing the RealRooted theorem
+   library.
+4. Generalize types and hypotheses only as far as the proof remains stable and
+   the resulting statement has a plausible Mathlib home.
+5. Preserve provenance and confirm compatible licensing before copying proof
+   source between repositories.
+
+Each cross-repository extraction should use two checkpoints: first add and
+verify the canonical theorem in RealRooted, then advance the consumer pin and
+remove or temporarily re-export the duplicate. A consumer proof is not evidence
+that an upstream-shaped restatement compiles; both repositories need their own
+focused verification.
+
+## Import checks
+
+Run the architecture check with:
+
+```bash
+python3 scripts/check_import_architecture.py --self-test
+python3 scripts/check_import_architecture.py
+```
+
+The check currently enforces:
+
+- a valid acyclic local import graph;
+- no unresolved imports in the `RealRooted` namespace;
+- the strict dependency boundary for `RealRooted.Mathlib` shims; and
+- conservative closure-size budgets for important entry points.
+
+It also prints local source-line and transitive-user counts for planning. These
+are diagnostics rather than hard line-count limits.
+
+## Near-term roadmap
+
+1. Recover or replace the missing source generator used by the OEIS project,
+   then pilot narrow imports on representative generated sequence modules.
+2. Separate tactic examples and split one tactic engine while preserving its
+   old import path.
+3. Extract the consumer Wronskian algebra and forward-interlacing bridge into
+   small canonical RealRooted modules.
+4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
+   RealRooted packages.
+5. Maintain a Mathlib-upstream queue beginning with small Wronskian, multiset,
+   list, homogenization, and Mahler-measure lemmas.

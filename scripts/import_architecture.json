@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "budgets": {
+    "RealRooted": {
+      "max_modules": 600
+    },
+    "RealRooted.Basic": {
+      "max_modules": 10
+    },
+    "RealRooted.Derivative": {
+      "max_modules": 12
+    },
+    "RealRooted.Tactic": {
+      "max_modules": 300
+    },
+    "RealRooted.Tactic.LiuWang": {
+      "max_modules": 40
+    },
+    "RealRooted.Tactic.MaWang": {
+      "max_modules": 40
+    },
+    "RealRooted.Tactic.Product": {
+      "max_modules": 80
+    }
+  },
+  "forbidden_imports": [
+    {
+      "source_prefix": "RealRooted.Mathlib.",
+      "target_prefix": "RealRooted.",
+      "allowed_target_prefixes": [
+        "RealRooted.Mathlib."
+      ],
+      "reason": "Mathlib-shaped shims must not depend on the RealRooted theorem library"
+    }
+  ],
+  "report_modules": [
+    "RealRooted",
+    "RealRooted.Basic",
+    "RealRooted.Derivative",
+    "RealRooted.MaWang",
+    "RealRooted.Tactic.LiuWang",
+    "RealRooted.Tactic.MaWang",
+    "RealRooted.Tactic.Product",
+    "RealRooted.Tactic"
+  ]
+}

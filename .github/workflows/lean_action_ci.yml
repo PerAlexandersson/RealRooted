@@ -26,6 +26,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Check root imports
         run: python3 scripts/check_root_imports.py
+      - name: Check import architecture
+        run: |
+          python3 scripts/check_import_architecture.py --self-test
+          python3 scripts/check_import_architecture.py
       - name: Check generated OEIS tactic coverage
         run: python3 scripts/generate-oeis-tactic-coverage.py --check
       - name: Check proof status

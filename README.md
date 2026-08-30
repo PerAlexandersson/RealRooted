@@ -46,6 +46,9 @@ lake build RealRooted.Bezoutian
 
 ## Repository Layout
 
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) records the intended dependency layers,
+  import budgets, module-splitting rules, and consumer-to-library extraction
+  workflow.
 - `RealRooted.lean` is the umbrella import for the public development.
 - `RealRooted/Basic.lean`, `Derivative.lean`, `Wagner*.lean`, and
   `InterlacingSequence*.lean` contain the core interlacing API.
