@@ -252,6 +252,7 @@ import RealRooted.Mathlib.Data.List.Destutter
 import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.List.OfFn
 import RealRooted.Mathlib.Data.List.Zip
+import RealRooted.Mathlib.Data.Multiset.Card
 import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
@@ -339,6 +340,9 @@ import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
 import RealRooted.RootCountJump
 import RealRooted.RootCountLocalConstancy
+import RealRooted.RootCounting
+import RealRooted.RootCounting.Finite
+import RealRooted.RootCounting.SignChanges
 import RealRooted.RootMatchingSort
 import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge

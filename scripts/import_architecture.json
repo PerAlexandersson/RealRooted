@@ -28,6 +28,12 @@
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
+    "RealRooted.RootCounting": {
+      "max_modules": 25
+    },
+    "RealRooted.RootCounting.Finite": {
+      "max_modules": 10
+    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
@@ -95,6 +101,8 @@
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
+    "RealRooted.RootCounting",
+    "RealRooted.RootCounting.Finite",
     "RealRooted.SequenceClosure",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",

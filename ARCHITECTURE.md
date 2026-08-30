@@ -112,6 +112,16 @@ Derivative recurrence results have a focused package entry point:
 These results were promoted from sequence proofs because their statements do
 not mention an OEIS sequence and they already have multiple downstream users.
 
+Finite root-counting results have a separate focused package:
+
+- `Mathlib.Data.Multiset.Card` contains upstream-shaped cardinality criteria
+  for multiset nodupness;
+- `RootCounting.Finite` contains finite families of exhibited polynomial roots
+  and the elementary index-counting arguments built on them;
+- `RootCounting.SignChanges` turns alternating signs at ordered test points
+  into splitness; and
+- `RootCounting` is the umbrella for the two root-counting layers.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on
