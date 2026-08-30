@@ -1,4 +1,5 @@
 import RealRooted.EulerOperator
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # Wronskian algebra and Laguerre inequalities
@@ -56,15 +57,13 @@ private theorem iterate_derivative_eq_zero_or_splits_of_splits
 /-- General product form: multiplying the right argument by `X` scales the
 Wronskian by `X` and adds the product term, `W(p, X*q) = X * W(p, q) + p*q`. -/
 theorem wronskian_X_mul_right_eq (p q : ℝ[X]) :
-    wronskian p (X * q) = X * wronskian p q + p * q := by
-  simp only [wronskian, derivative_mul, derivative_X, one_mul]
-  ring
+    wronskian p (X * q) = X * wronskian p q + p * q :=
+  Polynomial.wronskian_X_mul_right_eq p q
 
 /-- **The star lemma.**  `W(p, X*p) = p^2`: the Wronskian of `p` against
 `X*p` is a perfect square, hence manifestly pointwise nonnegative. -/
-theorem wronskian_X_mul_right (p : ℝ[X]) : wronskian p (X * p) = p ^ 2 := by
-  rw [wronskian_X_mul_right_eq, wronskian_self_eq_zero]
-  ring
+theorem wronskian_X_mul_right (p : ℝ[X]) : wronskian p (X * p) = p ^ 2 :=
+  Polynomial.wronskian_X_mul_right p
 
 theorem wronskian_X_mul_right_eval (p : ℝ[X]) (t : ℝ) :
     (wronskian p (X * p)).eval t = p.eval t ^ 2 := by
@@ -81,9 +80,8 @@ theorem wronskian_X_mul_right_eval_nonneg (p : ℝ[X]) (t : ℝ) :
 /-- `W(p, p') = p * p'' - p'^2`, the negated Laguerre form of `p`. -/
 theorem wronskian_derivative_right (p : ℝ[X]) :
     wronskian p (derivative p) =
-      p * derivative (derivative p) - derivative p ^ 2 := by
-  rw [wronskian]
-  ring
+      p * derivative (derivative p) - derivative p ^ 2 :=
+  Polynomial.wronskian_derivative_right p
 
 theorem wronskian_derivative_right_eval (p : ℝ[X]) (t : ℝ) :
     (wronskian p (derivative p)).eval t =
@@ -180,37 +178,35 @@ theorem wronskian_theta_right (p : ℝ[X]) :
 /-! ### ℝ-scalar bilinearity conveniences -/
 
 theorem wronskian_C_mul_right (a : ℝ) (p q : ℝ[X]) :
-    wronskian p (C a * q) = C a * wronskian p q := by
-  simp only [wronskian, derivative_C_mul]
-  ring
+    wronskian p (C a * q) = C a * wronskian p q :=
+  Polynomial.wronskian_C_mul_right a p q
 
 theorem wronskian_C_mul_left (a : ℝ) (p q : ℝ[X]) :
-    wronskian (C a * p) q = C a * wronskian p q := by
-  simp only [wronskian, derivative_C_mul]
-  ring
+    wronskian (C a * p) q = C a * wronskian p q :=
+  Polynomial.wronskian_C_mul_left a p q
 
 theorem wronskian_smul_right (a : ℝ) (p q : ℝ[X]) :
     wronskian p (a • q) = a • wronskian p q :=
-  (wronskianBilin ℝ p).map_smul a q
+  Polynomial.wronskian_smul_right a p q
 
 theorem wronskian_smul_left (a : ℝ) (p q : ℝ[X]) :
     wronskian (a • p) q = a • wronskian p q :=
-  LinearMap.map_smul₂ (wronskianBilin ℝ) a p q
+  Polynomial.wronskian_smul_left a p q
 
 /-- Decompose the Wronskian of `p` against an ℝ-linear combination:
 `W(p, a*q + b*r) = a * W(p, q) + b * W(p, r)`. -/
 theorem wronskian_linear_combination_right (p q r : ℝ[X]) (a b : ℝ) :
     wronskian p (C a * q + C b * r) =
-      C a * wronskian p q + C b * wronskian p r := by
-  rw [wronskian_add_right, wronskian_C_mul_right, wronskian_C_mul_right]
+      C a * wronskian p q + C b * wronskian p r :=
+  Polynomial.wronskian_C_mul_add_C_mul_right p q r a b
 
 theorem wronskian_sub_right (p q r : ℝ[X]) :
     wronskian p (q - r) = wronskian p q - wronskian p r :=
-  (wronskianBilin ℝ p).map_sub q r
+  Polynomial.wronskian_sub_right p q r
 
 theorem wronskian_sub_left (p q r : ℝ[X]) :
     wronskian (p - q) r = wronskian p r - wronskian q r :=
-  LinearMap.map_sub₂ (wronskianBilin ℝ) p q r
+  Polynomial.wronskian_sub_left p q r
 
 /-! ### Root-localized evaluations -/
 
@@ -218,15 +214,15 @@ theorem wronskian_sub_left (p q r : ℝ[X]) :
 `p(r) = 0 → W(p, q)(r) = -p'(r) * q(r)`. -/
 theorem wronskian_eval_left_root {p : ℝ[X]} {r : ℝ} (hr : p.IsRoot r)
     (q : ℝ[X]) :
-    (wronskian p q).eval r = -((derivative p).eval r * q.eval r) := by
-  simp [wronskian, hr.eq_zero]
+    (wronskian p q).eval r = -((derivative p).eval r * q.eval r) :=
+  Polynomial.wronskian_eval_left_root hr q
 
 /-- Value of the Wronskian at a root of the right argument:
 `q(s) = 0 → W(p, q)(s) = p(s) * q'(s)`. -/
 theorem wronskian_eval_right_root (p : ℝ[X]) {q : ℝ[X]} {s : ℝ}
     (hs : q.IsRoot s) :
-    (wronskian p q).eval s = p.eval s * (derivative q).eval s := by
-  simp [wronskian, hs.eq_zero]
+    (wronskian p q).eval s = p.eval s * (derivative q).eval s :=
+  Polynomial.wronskian_eval_right_root p hs
 
 /-! ### The double-Euler shell (A268434 shape) -/
 
@@ -277,23 +273,21 @@ theorem laguerre_form_derivative_nonneg {p : ℝ[X]} (hp : p.Splits) (t : ℝ) :
 /-- Leibniz rule for the derivative of a Wronskian. -/
 theorem derivative_wronskian (a b : ℝ[X]) :
     derivative (wronskian a b) =
-      wronskian a (derivative b) + wronskian (derivative a) b := by
-  simp only [wronskian, derivative_sub, derivative_mul]
-  ring
+      wronskian a (derivative b) + wronskian (derivative a) b :=
+  Polynomial.derivative_wronskian a b
 
 /-- Differentiating `W(p, p')` gives `W(p, p'')`. -/
 theorem derivative_wronskian_derivative_right (p : ℝ[X]) :
     derivative (wronskian p (derivative p)) =
-      wronskian p (derivative (derivative p)) := by
-  rw [derivative_wronskian, wronskian_self_eq_zero, add_zero]
+      wronskian p (derivative (derivative p)) :=
+  Polynomial.derivative_wronskian_derivative_right p
 
 /-- The Wronskian `W(p', p'')` is the negated derivative Laguerre form. -/
 theorem wronskian_derivative_derivative (p : ℝ[X]) :
     wronskian (derivative p) (derivative (derivative p)) =
       derivative p * derivative (derivative (derivative p)) -
-        derivative (derivative p) ^ 2 := by
-  rw [wronskian]
-  ring
+        derivative (derivative p) ^ 2 :=
+  Polynomial.wronskian_derivative_derivative p
 
 theorem wronskian_derivative_derivative_eval (p : ℝ[X]) (t : ℝ) :
     (wronskian (derivative p) (derivative (derivative p))).eval t =
@@ -314,8 +308,8 @@ theorem wronskian_derivative_derivative_eval_nonpos {p : ℝ[X]}
 theorem wronskian_self_second_derivative (p : ℝ[X]) :
     wronskian p (derivative (derivative p)) =
       p * derivative (derivative (derivative p)) -
-        derivative p * derivative (derivative p) := by
-  rw [wronskian]
+        derivative p * derivative (derivative p) :=
+  Polynomial.wronskian_self_second_derivative p
 
 theorem wronskian_self_second_derivative_eval (p : ℝ[X]) (t : ℝ) :
     (wronskian p (derivative (derivative p))).eval t =
@@ -328,9 +322,8 @@ theorem wronskian_self_second_derivative_eval (p : ℝ[X]) (t : ℝ) :
 theorem wronskian_iterate_derivative_succ (p : ℝ[X]) (k : ℕ) :
     wronskian ((derivative^[k]) p) ((derivative^[k + 1]) p) =
       (derivative^[k]) p * (derivative^[k + 2]) p -
-        (derivative^[k + 1]) p ^ 2 := by
-  simp only [wronskian, Function.iterate_succ_apply']
-  ring
+        (derivative^[k + 1]) p ^ 2 :=
+  Polynomial.wronskian_iterate_derivative_succ p k
 
 /-- Every consecutive-derivative Wronskian of a splitting polynomial is
 pointwise nonpositive. -/
