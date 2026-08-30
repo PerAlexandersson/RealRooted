@@ -174,8 +174,8 @@ are diagnostics rather than hard line-count limits.
    then pilot narrow imports on representative generated sequence modules.
 2. Separate tactic examples from the production tactic umbrella, building on
    the completed finish/product frontend split.
-3. Extract the consumer Wronskian algebra and forward-interlacing bridge into
-   small canonical RealRooted modules.
+3. Generalize the extracted `WronskianAlgebra` identities into a Mathlib-shaped
+   shim, then extract the consumer forward-interlacing bridge.
 4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
    RealRooted packages.
 5. Maintain a Mathlib-upstream queue beginning with small Wronskian, multiset,

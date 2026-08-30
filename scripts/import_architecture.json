@@ -16,6 +16,9 @@
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
+    "RealRooted.WronskianAlgebra": {
+      "max_modules": 80
+    },
     "RealRooted.Tactic": {
       "max_modules": 300
     },
@@ -75,6 +78,7 @@
     "RealRooted.MaWang",
     "RealRooted.ProductSequence",
     "RealRooted.SequenceClosure",
+    "RealRooted.WronskianAlgebra",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.MaWang",
     "RealRooted.Tactic.Product",

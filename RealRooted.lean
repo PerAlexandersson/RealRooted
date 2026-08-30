@@ -489,3 +489,4 @@ import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
 import RealRooted.WeightedSum
+import RealRooted.WronskianAlgebra
