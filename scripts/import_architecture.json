@@ -34,6 +34,9 @@
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
+    "RealRooted.RootVieta": {
+      "max_modules": 5
+    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
@@ -103,6 +106,7 @@
     "RealRooted.ProductSequence",
     "RealRooted.RootCounting",
     "RealRooted.RootCounting.Finite",
+    "RealRooted.RootVieta",
     "RealRooted.SequenceClosure",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",

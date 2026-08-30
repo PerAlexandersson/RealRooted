@@ -122,6 +122,11 @@ Finite root-counting results have a separate focused package:
   into splitness; and
 - `RootCounting` is the umbrella for the two root-counting layers.
 
+`RootVieta` contains reciprocal-root power-sum formulas and the corresponding
+factorization by `1 + x_i X`. It currently states the consumer's real version
+with a one-module local closure; generalization to characteristic-zero fields
+is the next step before proposing it as a Mathlib shim.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on

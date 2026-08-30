@@ -347,6 +347,7 @@ import RealRooted.RootMatchingSort
 import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge
 import RealRooted.RootSumBounds
+import RealRooted.RootVieta
 import RealRooted.RowThreshold
 import RealRooted.RowThresholdOne
 import RealRooted.SameDegreeCountFromAnalytic
