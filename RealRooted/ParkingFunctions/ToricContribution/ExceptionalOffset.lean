@@ -3854,7 +3854,7 @@ private theorem finiteRoot_interlacing_jPolynomialRoot
       rw [show i.succ = Fin.last (m - 1) by
         apply Fin.ext
         simp [hiLast]
-        omega, orderedRoot_finite_last_eq_one m ε d hm hd]
+        lia, orderedRoot_finite_last_eq_one m ε d hm hd]
       exact hroot.2.le
 
 private theorem interlaces_of_intervalRootData_orderedRoot_bounds
@@ -3931,7 +3931,7 @@ theorem rPolynomial_top_signed_coeff_pos (m ε d : ℕ) :
   rw [coeff_rPolynomial, if_pos le_rfl, rCoeff,
     realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
   have hleft : (-1 : ℝ) ^ m * (-1 : ℝ) ^ m = 1 := by
-    rw [← pow_add, show m + m = 2 * m by omega, pow_mul]
+    rw [← pow_add, show m + m = 2 * m by lia, pow_mul]
     norm_num
   rw [show (-1 : ℝ) ^ m *
       (((-1 : ℝ) ^ m * m.factorial / (m - m).factorial) *

@@ -51,19 +51,19 @@ private theorem choose_offset_succ_mul
   let r := m - k
   have hr : 0 < r := by
     dsimp only [r]
-    omega
+    lia
   have hrn : r ≤ n := by
     dsimp only [r, n]
-    omega
+    lia
   have hfirst := Nat.choose_succ_right_eq (n + 1) (r - 1)
   have hsecond := Nat.choose_mul_succ_eq n r
-  have hrsub : r - 1 + 1 = r := by omega
+  have hrsub : r - 1 + 1 = r := by lia
   have hnsub : n + 1 - (r - 1) = ε + 2 * k + 2 := by
     dsimp only [n, r]
-    omega
+    lia
   have hnsub' : n + 1 - r = ε + 2 * k + 1 := by
     dsimp only [n, r]
-    omega
+    lia
   rw [hrsub] at hfirst
   have hcombine :
       Nat.choose (n + 1) (r - 1) *
@@ -81,8 +81,8 @@ private theorem choose_offset_succ_mul
       _ = Nat.choose n r * ((n + 1) * r) := by ring
   rw [hnsub, hnsub'] at hcombine
   dsimp only [n, r] at hcombine ⊢
-  have htop : m + ε + (k + 1) = m + ε + k + 1 := by omega
-  rw [htop, show m - (k + 1) = m - k - 1 by omega]
+  have htop : m + ε + (k + 1) = m + ε + k + 1 := by lia
+  rw [htop, show m - (k + 1) = m - k - 1 by lia]
   exact hcombine
 
 /-- The Catalan quotient in successive reversed packet coefficients. -/
@@ -93,7 +93,7 @@ private theorem catalan_succ_mul (q : ℕ) :
   have hsucc := succ_mul_catalan_eq_centralBinom (q + 1)
   have hcentral := Nat.succ_mul_centralBinom_succ q
   rw [← hzero, ← hsucc] at hcentral
-  rw [show q + 1 + 1 = q + 2 by omega] at hcentral
+  rw [show q + 1 + 1 = q + 2 by lia] at hcentral
   have hcentral' :
       (q + 1) * ((q + 2) * catalan (q + 1)) =
         (q + 1) * (2 * (2 * q + 1) * catalan q) := by
@@ -136,7 +136,7 @@ theorem reversedContributionCoeff_succ_mul
     rw [pow_succ]
     ring_nf at hproduct ⊢
     linear_combination (-((-1 : ℝ) ^ k) / 4) * hproduct
-  · have hεone : ε = 1 := by omega
+  · have hεone : ε = 1 := by lia
     subst ε
     norm_num only [Nat.cast_one] at hchooseR hcatalanR ⊢
     rw [pow_succ]
@@ -182,7 +182,7 @@ theorem reversedContributionCoeff_eq_mul_rCoeff
   induction k with
   | zero => simp
   | succ k ih =>
-      have hklt : k < m := by omega
+      have hklt : k < m := by lia
       have hkle : k ≤ m := Nat.le_of_lt hklt
       let a : ℝ :=
         ((ε : ℝ) + 1 / 2 + k) * ((ε : ℝ) + d + 2 + k) * (k + 1)
@@ -226,7 +226,7 @@ theorem reversedContribution_eq_C_mul_rPolynomial
 
 theorem reversedContribution_scale_pos (m ε d : ℕ) :
     0 < ((Nat.choose (m + ε) m * catalan (d + ε) : ℕ) : ℝ) := by
-  exact_mod_cast Nat.mul_pos (Nat.choose_pos (by omega)) (catalan_pos (d + ε))
+  exact_mod_cast Nat.mul_pos (Nat.choose_pos (by lia)) (catalan_pos (d + ε))
 
 /-- Every parity-normalized reversed contribution has positive leading
 coefficient. -/
