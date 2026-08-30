@@ -360,6 +360,7 @@ import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SmallPositiveParameterCount
+import RealRooted.SortedRoots
 import RealRooted.StaircaseSum
 import RealRooted.SuccDegreeLeftEndpoint
 import RealRooted.SuccDegreeRootCrossing

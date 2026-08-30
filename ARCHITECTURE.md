@@ -127,6 +127,12 @@ factorization by `1 + x_i X`. It currently states the consumer's real version
 with a one-module local closure; generalization to characteristic-zero fields
 is the next step before proposing it as a Mathlib shim.
 
+`SortedRoots` contains only the reusable bridge from a polynomial's root
+multiset to the increasing list and indexed sequence of negated roots. The
+consumer-specific amplitude comparison remains downstream. Its product
+reindexing helper was generalized to arbitrary lists and placed in
+`Mathlib.Data.List.Basic`.
+
 ## Baseline
 
 The following source-only measurements were recorded at commit `41ce000a` on

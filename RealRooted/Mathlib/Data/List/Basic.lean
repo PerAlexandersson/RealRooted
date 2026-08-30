@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Data.List.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 /-!
 # Additional basic list lemmas
@@ -34,5 +35,18 @@ theorem eraseIdx_append_middle
     Nat.add_sub_cancel_left,
     eraseIdx_append_of_lt_length hi,
     append_assoc]
+
+/-- Reindex a mapped list product by the range of valid list indices. -/
+theorem prod_map_eq_prod_range_getD {α M : Type*} [CommMonoid M]
+    (L : List α) (g : α → M) (a₀ : α) :
+    (L.map g).prod = ∏ i ∈ Finset.range L.length, g (L.getD i a₀) := by
+  induction L with
+  | nil => simp
+  | cons a t ih =>
+      rw [List.map_cons, List.prod_cons, List.length_cons,
+        Finset.prod_range_succ']
+      simp only [List.getD_cons_zero, List.getD_cons_succ]
+      rw [ih]
+      exact mul_comm _ _
 
 end List
