@@ -3614,7 +3614,8 @@ macro_rules
         $hf_pos:term, $hroot_sign:term) =>
       `(tactic|
         exact RealRooted.prec_ma_wang
-          $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hroot_sign)
+          $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
+          $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
       rr_ma_wang using
         splits := $hf:term,
@@ -3633,7 +3634,8 @@ macro_rules
         $hroot_sign:term) =>
       `(tactic|
         exact RealRooted.prec_ma_wang_same
-          $hf $hdegf $hdeg $hF_pos $hf_pos $hroot_sign)
+          $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
+          $hdeg $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
       rr_ma_wang_same using
         splits := $hf:term,
@@ -3650,7 +3652,8 @@ macro_rules
         $hroot_sign:term) =>
       `(tactic|
         exact RealRooted.prec_ma_wang_succ
-          $hf $hdegf $hdeg $hF_pos $hf_pos $hroot_sign)
+          $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
+          $hdeg $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
       rr_ma_wang_succ using
         splits := $hf:term,
