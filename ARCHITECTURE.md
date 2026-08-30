@@ -42,6 +42,17 @@ The current tree predates these boundaries. In particular, a few theorem and
 example modules still import tactic or challenge modules. Those are migration
 targets rather than exceptions to preserve indefinitely.
 
+The no-regression checker currently allowlists the known upward edges:
+
+- `LinearPowerFamily` imports `Tactic.Finish`;
+- three tactic modules import their challenge wrappers; and
+- two Borcea--Brändén application modules import the corresponding challenge
+  wrapper.
+
+The allowlist makes this finite architectural debt visible and prevents new
+edges of those forms. Removing an edge should remove its exact allowlist entry
+in the same checkpoint.
+
 ## Umbrella imports
 
 `RealRooted.lean` remains the broad compatibility umbrella. It is useful for a
@@ -138,6 +149,7 @@ The check currently enforces:
 - a valid acyclic local import graph;
 - no unresolved imports in the `RealRooted` namespace;
 - the strict dependency boundary for `RealRooted.Mathlib` shims; and
+- no new theorem-to-tactic or library-to-challenge dependency edges; and
 - conservative closure-size budgets for important entry points.
 
 It also prints local source-line and transitive-user counts for planning. These

@@ -31,6 +31,36 @@
         "RealRooted.Mathlib."
       ],
       "reason": "Mathlib-shaped shims must not depend on the RealRooted theorem library"
+    },
+    {
+      "source_prefix": "RealRooted",
+      "target_prefix": "RealRooted.Tactic.",
+      "allowed_sources": [
+        "RealRooted",
+        "RealRooted.LinearPowerFamily"
+      ],
+      "allowed_source_prefixes": [
+        "RealRooted.Challenges.",
+        "RealRooted.CombinatorialExamples.",
+        "RealRooted.Tactic."
+      ],
+      "reason": "reusable theorem modules must not depend on tactic elaboration"
+    },
+    {
+      "source_prefix": "RealRooted",
+      "target_prefix": "RealRooted.Challenges.",
+      "allowed_sources": [
+        "RealRooted",
+        "RealRooted.BorceaBranden.Applications.ComplexClassification",
+        "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
+        "RealRooted.Tactic.HermitePoulain",
+        "RealRooted.Tactic.Kurtz",
+        "RealRooted.Tactic.Wagner"
+      ],
+      "allowed_source_prefixes": [
+        "RealRooted.Challenges."
+      ],
+      "reason": "challenge wrappers must not become reusable library dependencies"
     }
   ],
   "report_modules": [

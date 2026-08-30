@@ -191,9 +191,18 @@ def check_graph(graph: ImportGraph, config: dict[str, Any]) -> list[str]:
         source_prefix = rule["source_prefix"]
         target_prefix = rule["target_prefix"]
         allowed = rule.get("allowed_target_prefixes", [])
+        allowed_sources = set(rule.get("allowed_sources", []))
+        allowed_source_prefixes = rule.get("allowed_source_prefixes", [])
         reason = rule.get("reason", "forbidden dependency")
         for source, targets in graph.imports.items():
             if not has_prefix(source, source_prefix):
+                continue
+            if source in allowed_sources:
+                continue
+            if any(
+                has_prefix(source, prefix)
+                for prefix in allowed_source_prefixes
+            ):
                 continue
             for target in targets:
                 if not has_prefix(target, target_prefix):
@@ -264,9 +273,23 @@ def run_self_test() -> int:
         tight_config = {**config, "budgets": {"TestLib": {"max_modules": 2}}}
         assert any("budget is 2" in error for error in check_graph(graph, tight_config))
 
+        source_rule = {
+            "budgets": {},
+            "forbidden_imports": [
+                {
+                    "source_prefix": "TestLib",
+                    "target_prefix": "TestLib.Basic",
+                    "allowed_sources": ["TestLib"],
+                }
+            ],
+        }
+        assert not check_graph(graph, source_rule)
+
         good_path.write_text("import TestLib.Basic\n", encoding="utf-8")
         graph = ImportGraph.from_repo(root)
         errors = check_graph(graph, config)
+        assert any("imports TestLib.Basic" in error for error in errors)
+        errors = check_graph(graph, source_rule)
         assert any("imports TestLib.Basic" in error for error in errors)
 
         (root / "TestLib" / "Basic.lean").write_text(
