@@ -243,10 +243,63 @@ protected lemma interlaced_of_interleaves_reverse :
           exact h_tail.2 ⟨i_val + 1, h_lt⟩ ⟨j_val, Nat.lt_of_succ_lt_succ hj⟩ hij
 
 
+private lemma interleaves_lt_of_le_of_forall_ne :
+    ∀ {l₁ l₂ : List ℝ}, List.Interleaves (· ≤ ·) l₁ l₂ →
+      (∀ a ∈ l₁, ∀ b ∈ l₂, a ≠ b) → List.Interleaves (· < ·) l₁ l₂
+  | _, _, .nil_nil, _ => .nil_nil
+  | _, _, .nil_singleton a, _ => .nil_singleton a
+  | _, _, .cons_symm h hab, hne => by
+      apply List.Interleaves.cons_symm
+      · apply interleaves_lt_of_le_of_forall_ne h
+        intro a ha b hb
+        exact (hne b hb a (by simp [ha])).symm
+      · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
+
 /-- Strict same-degree proper position, stated on canonical sorted root lists. -/
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
   (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
     List.Interleaves (· > ·) (p.roots.sort (· ≤ ·)).reverse (q.roots.sort (· ≤ ·)).reverse
+
+/-- Equal-degree proper position is strict when the two polynomials have no
+common root. -/
+theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : Prec p q)
+    (hdeg : p.natDegree = q.natDegree)
+    (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
+    StrictPrecSameDegree p q := by
+  obtain ⟨hp, hq, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := h
+  have hss_len : ss.length = p.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
+  have hrs_len : rs.length = q.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+  obtain ⟨_, halt⟩ := hshape.resolve_left (by intro hbad; lia)
+  have hlen : ss.length = rs.length := by lia
+  have hinter : List.Interleaves (· ≤ ·) rs ss :=
+    interleaves_of_listAlternates_of_length hlen halt
+  have hne : ∀ r ∈ rs, ∀ s ∈ ss, r ≠ s := by
+    intro r hr s hs heq
+    subst r
+    have hsRoot : p.IsRoot s := by
+      apply (mem_roots hp.1).mp
+      rw [← hss_eq]
+      exact Multiset.mem_coe.mpr hs
+    have hqRoot : q.IsRoot s := by
+      apply (mem_roots hq.1).mp
+      rw [← hrs_eq]
+      exact Multiset.mem_coe.mpr hr
+    exact hno s hsRoot hqRoot
+  have hstrict : List.Interleaves (· < ·) rs ss :=
+    interleaves_lt_of_le_of_forall_ne hinter hne
+  have hreverse : List.Interleaves (· > ·) ss.reverse rs.reverse := by
+    apply (List.interleaves_reverse_reverse_of_length_eq_length hlen).2
+    simpa [Function.swap] using hstrict
+  have hssCanonical : ss = p.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hss_sorted (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hss_eq.trans (Multiset.sort_eq ..).symm)
+  have hrsCanonical : rs = q.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort _ _)
+    exact Multiset.coe_eq_coe.mp (hrs_eq.trans (Multiset.sort_eq ..).symm)
+  rw [hssCanonical, hrsCanonical] at hreverse
+  exact ⟨hp, hq, hdeg, hreverse⟩
 
 lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
@@ -715,6 +768,51 @@ lemma _root_.Matrix.posDef_fin_two_of_entries {a b c : ℝ}
     field_simp [ne_of_gt ha] at hmain
     nlinarith
 
+/-- An explicit `LDLᵀ` certificate for positive definiteness of a symmetric
+`3 × 3` real matrix. -/
+lemma _root_.Matrix.posDef_fin_three_of_ldl {d₀ d₁ d₂ l₁₀ l₂₀ l₂₁ : ℝ}
+    (hd₀ : 0 < d₀) (hd₁ : 0 < d₁) (hd₂ : 0 < d₂) :
+    (!![d₀, d₀ * l₁₀, d₀ * l₂₀;
+        d₀ * l₁₀, d₀ * l₁₀ ^ 2 + d₁,
+          d₀ * l₁₀ * l₂₀ + d₁ * l₂₁;
+        d₀ * l₂₀, d₀ * l₁₀ * l₂₀ + d₁ * l₂₁,
+          d₀ * l₂₀ ^ 2 + d₁ * l₂₁ ^ 2 + d₂] :
+      Matrix (Fin 3) (Fin 3) ℝ).PosDef := by
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
+  · exact Matrix.IsHermitian.ext (by
+      intro i j
+      fin_cases i <;> fin_cases j <;> simp)
+  · intro x hx
+    have hform :
+        dotProduct (star x) (Matrix.mulVec
+          ((!![d₀, d₀ * l₁₀, d₀ * l₂₀;
+            d₀ * l₁₀, d₀ * l₁₀ ^ 2 + d₁,
+              d₀ * l₁₀ * l₂₀ + d₁ * l₂₁;
+            d₀ * l₂₀, d₀ * l₁₀ * l₂₀ + d₁ * l₂₁,
+              d₀ * l₂₀ ^ 2 + d₁ * l₂₁ ^ 2 + d₂] :
+            Matrix (Fin 3) (Fin 3) ℝ)) x) =
+          d₀ * (x 0 + l₁₀ * x 1 + l₂₀ * x 2) ^ 2 +
+          d₁ * (x 1 + l₂₁ * x 2) ^ 2 + d₂ * (x 2) ^ 2 := by
+      rw [Matrix.vec3_dotProduct]
+      simp only [Matrix.mulVec, Matrix.vec3_dotProduct]
+      simp
+      ring
+    rw [hform]
+    by_cases hx₂ : x 2 = 0
+    · by_cases hx₁ : x 1 = 0
+      · have hx₀ : x 0 ≠ 0 := by
+          intro hx₀
+          apply hx
+          funext i
+          fin_cases i <;> assumption
+        simp [hx₂, hx₁, mul_pos hd₀ (sq_pos_of_ne_zero hx₀)]
+      · have h₁ : 0 < d₁ * (x 1 + l₂₁ * x 2) ^ 2 := by
+          simp [hx₂, mul_pos hd₁ (sq_pos_of_ne_zero hx₁)]
+        positivity
+    · have h₂ : 0 < d₂ * (x 2) ^ 2 :=
+        mul_pos hd₂ (sq_pos_of_ne_zero hx₂)
+      positivity
+
 lemma bezoutEntry.eq_zero_of_le_left (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hi : n ≤ i) :
     bezoutEntry p q i j = 0 := by
@@ -954,6 +1052,24 @@ lemma StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing {n : ℕ}
     · exact mul_pos_of_neg_of_neg (sub_neg.mpr (hr h)) (sub_neg.mpr (hint' k x h))
   nlinarith [hint k]
 
+lemma StrictMono.prod_sub_mul_prod_sub_neg_of_interlacing {n : ℕ}
+    (s r : Fin n → ℝ) (hs : StrictMono s)
+    (hint : ∀ k : Fin n, s k < r k)
+    (hint' : ∀ (i j : Fin n), i < j → r i < s j)
+    (k : Fin n) :
+    (∏ j ∈ Finset.univ.erase k, (s k - s j)) *
+      (∏ j : Fin n, (s k - r j)) < 0 := by
+  rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ k)]
+  have h_prod : 0 < (∏ j ∈ Finset.univ.erase k, (s k - s j)) *
+      (∏ j ∈ Finset.univ.erase k, (s k - r j)) := by
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_pos fun x hx ↦ ?_
+    rcases lt_or_gt_of_ne (Finset.ne_of_mem_erase hx) with h | h
+    · exact mul_pos (sub_pos.mpr (hs h)) (sub_pos.mpr (hint' x k h))
+    · exact mul_pos_of_neg_of_neg (sub_neg.mpr (hs h))
+        (sub_neg.mpr (lt_trans (hs h) (hint x)))
+  nlinarith [hint k]
+
 lemma Polynomial.eval_derivative_prod_X_sub_C_univ_at_root {n : ℕ} (r : Fin n → ℝ)
     (k : Fin n) :
     eval (r k) (derivative (∏ j : Fin n, (X - C (r j)))) =
@@ -1082,6 +1198,60 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
       h_interlacing.1 h_interlacing.2 k
   rw [h_eval, mul_assoc]
   simp_all
+
+/-- At every root of the left polynomial in a strict same-degree interleaving,
+the derivative of the left polynomial and the value of the right polynomial
+have opposite signs. -/
+theorem StrictPrecSameDegree.derivative_mul_eval_neg {n : ℕ}
+    {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    {x : ℝ} (hx : p.IsRoot x) :
+    p.derivative.eval x * q.eval x < 0 := by
+  obtain ⟨hp_nodup, hq_nodup⟩ := h.roots_nodup
+  obtain ⟨s, hs_mono, hs_roots⟩ :=
+    Polynomial.exists_strictMono_roots h.1.2 hp_deg hp_nodup
+  obtain ⟨r, hr_mono, hr_roots⟩ :=
+    Polynomial.exists_strictMono_roots h.2.1.2 hq_deg hq_nodup
+  have hp_eq : p = C p.leadingCoeff * ∏ j : Fin n, (X - C (s j)) :=
+    Polynomial.splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hp_pos.ne')
+      hp_deg s hs_roots hs_mono.injective
+  have hq_eq : q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) :=
+    Polynomial.splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hq_pos.ne')
+      hq_deg r hr_roots hr_mono.injective
+  obtain ⟨k, rfl⟩ : ∃ k : Fin n, x = s k := by
+    rw [Polynomial.IsRoot.def, hp_eq] at hx
+    simp only [eval_mul, eval_C, eval_prod, eval_sub, eval_X] at hx
+    have hprod : ∏ j : Fin n, (x - s j) = 0 :=
+      (mul_eq_zero.mp hx).resolve_left (ne_of_gt hp_pos)
+    rw [Finset.prod_eq_zero_iff] at hprod
+    obtain ⟨k, _, hk⟩ := hprod
+    exact ⟨k, sub_eq_zero.mp hk⟩
+  let c₁ := p.leadingCoeff
+  let c₂ := q.leadingCoeff
+  have hc₁ : 0 < c₁ := hp_pos
+  have hc₂ : 0 < c₂ := hq_pos
+  have hp_eq' : p = C c₁ * ∏ j : Fin n, (X - C (s j)) := hp_eq
+  have hq_eq' : q = C c₂ * ∏ j : Fin n, (X - C (r j)) := hq_eq
+  have h_eval : p.derivative.eval (s k) * q.eval (s k) =
+      c₁ * c₂ *
+        (∏ j ∈ Finset.univ.erase k, (s k - s j)) *
+        (∏ j : Fin n, (s k - r j)) := by
+    rw [hp_eq', hq_eq']
+    simp only [Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root,
+      eval_mul, eval_C, eval_prod, eval_sub, eval_X]
+    ring
+  obtain ⟨h_inter1, h_inter2⟩ :=
+    h.interlacing_fin hq_deg s hs_roots hs_mono r hr_roots hr_mono
+  have hprod := StrictMono.prod_sub_mul_prod_sub_neg_of_interlacing
+    s r hs_mono h_inter1 h_inter2 k
+  rw [h_eval]
+  calc
+    c₁ * c₂ * (∏ j ∈ Finset.univ.erase k, (s k - s j)) *
+        (∏ j : Fin n, (s k - r j)) =
+        (c₁ * c₂) * ((∏ j ∈ Finset.univ.erase k, (s k - s j)) *
+          (∏ j : Fin n, (s k - r j))) := by ring
+    _ < 0 := mul_neg_of_pos_of_neg (mul_pos hc₁ hc₂) hprod
 
 lemma StrictPrecSameDegree.bezoutMatrix_posDef_three_le
     {p q : ℝ[X]} {n : ℕ}

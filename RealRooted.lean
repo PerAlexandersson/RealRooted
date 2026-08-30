@@ -155,6 +155,11 @@ import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
+import RealRooted.Jacobi
+import RealRooted.JacobiBetaZeroOrthogonality
+import RealRooted.JacobiMarkoff
+import RealRooted.JacobiOrthogonality
+import RealRooted.JacobiParameterInterlacing
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
 import RealRooted.LiebSokal
@@ -227,6 +232,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.Fin.Basic
@@ -273,6 +279,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.MatrixInterlacing
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
@@ -285,6 +292,15 @@ import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.OperatorPreservesInterlacing
+import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
+import RealRooted.ParkingFunctions.ToricContribution.Definitions
+import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset
+import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
+import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.PFPolynomial
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization

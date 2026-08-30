@@ -826,6 +826,53 @@ theorem exists_roots_strictly_interlacing_of_consecutive_signs {F : ℝ[X]} {rs 
       us.Pairwise (· < ·) :=
   exists_strictSignInterleaving (F := F) rs hrs_sorted hsign
 
+/-- If a nonzero polynomial has strictly alternating signs on consecutive
+roots of a real-rooted polynomial and has smaller degree, then it is the
+degree-one left interlacer. -/
+theorem interlaces_of_consecutive_signs_of_natDegree_lt
+    {f F : ℝ[X]}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hF_ne : F ≠ 0)
+    (hdeg_lt : F.natDegree < f.natDegree)
+    (hsign :
+      let rs := f.roots.sort (· ≤ ·)
+      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+        rs = pre ++ r₁ :: r₂ :: rest →
+        F.eval r₁ * F.eval r₂ < 0) :
+    Interlaces F f := by
+  let rs := f.roots.sort (· ≤ ·)
+  have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
+    exists_roots_strictly_interlacing_of_consecutive_signs
+      (F := F) hrs_sorted (by grind)
+  have hrs_len : rs.length = f.natDegree := by
+    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
+      card_roots_of_splits hf_splits]
+  have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
+    rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
+    intro x hx
+    simp_all
+  have hus_card_le : us.length ≤ F.natDegree := by
+    calc
+      us.length = (↑us : Multiset ℝ).card := (Multiset.coe_card _).symm
+      _ ≤ F.roots.card := Multiset.card_le_card hus_sub
+      _ ≤ F.natDegree := card_roots' F
+  have hus_len_f : us.length = f.natDegree - 1 := by lia
+  have hdeg : F.natDegree + 1 = f.natDegree := by lia
+  have hus_len_deg : us.length = F.natDegree := by lia
+  have hus_eq : (↑us : Multiset ℝ) = F.roots :=
+    Multiset.eq_of_le_of_card_le hus_sub (by
+      calc
+        F.roots.card ≤ F.natDegree := card_roots' F
+        _ = us.length := hus_len_deg.symm
+        _ = (↑us : Multiset ℝ).card := (Multiset.coe_card _).symm)
+  have hF : F ≠ 0 ∧ F.Splits := by
+    refine ⟨hF_ne, splits_of_card_roots ?_⟩
+    rw [← hus_eq, Multiset.coe_card, hus_len_deg]
+  exact
+    ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted,
+      hus_pw.imp le_of_lt, hrs_eq, hus_eq, hus_int⟩
+
 /-- If every element of the right-hand list is strictly above `a`, then so is
 every element of the interlacing left-hand list. -/
 private lemma listInterlaces_all_gt_of_lowerBound :
@@ -1580,6 +1627,32 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
   exact prec_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
     hdeg hn hsign hright
+
+/-- Transport a same-degree Liu--Wang root-sign certificate backward through a
+continuous polynomial family that never vanishes at a root of the fixed
+polynomial. -/
+theorem prec_of_interlaces_endpoint_sign_of_no_crossing
+    {f g : ℝ[X]} {p : ℝ → ℝ[X]} {a b : ℝ}
+    (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
+    (hpa_pos : HasPosLeadingCoeff (p a))
+    (hdeg : (p a).natDegree = f.natDegree) (hab : a ≤ b)
+    (hcont : ∀ r, f.IsRoot r →
+      ContinuousOn (fun t ↦ (p t).eval r) (Set.Icc a b))
+    (hne : ∀ r, f.IsRoot r → ∀ t ∈ Set.Icc a b, (p t).eval r ≠ 0)
+    (hend : ∀ r, f.IsRoot r → (p b).eval r * g.eval r < 0) :
+    Prec f (p a) := by
+  apply prec_of_interlaces_eval_mul_neg_same hgf hg_pos hpa_pos hdeg
+  intro r hr
+  have hsame : 0 < (p a).eval r * (p b).eval r :=
+    eval_endpoint_pos_of_forall_ne_zero hab (hcont r hr) (hne r hr)
+  have hfinal := hend r hr
+  rcases mul_pos_iff.mp hsame with ⟨ha_pos, hb_pos⟩ | ⟨ha_neg, hb_neg⟩
+  · rcases mul_neg_iff.mp hfinal with ⟨_, hg_neg⟩ | ⟨hb_neg, _⟩
+    · exact mul_neg_of_pos_of_neg ha_pos hg_neg
+    · linarith
+  · rcases mul_neg_iff.mp hfinal with ⟨hb_pos, _⟩ | ⟨_, hg_pos⟩
+    · linarith
+    · exact mul_neg_of_neg_of_pos ha_neg hg_pos
 
 private lemma eval_mul_derivative_eq_of_isRoot {f u v : ℝ[X]} {r : ℝ}
     (hr : f.IsRoot r) :
@@ -2851,13 +2924,14 @@ theorem prec_of_interlaces_evalCoeff_nonpos
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
 theorem prec_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
+    (hdegf : 1 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     Prec f (u * f + v * f.derivative) := by
-  have hder : Interlaces f.derivative f := derivative_interlaces hf hdegf
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   refine prec_of_interlaces_eval_mul_neg_succ hder hf'_pos hF_pos hdeg ?_
   intro r hr
@@ -2868,13 +2942,14 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
 theorem prec_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
+    (hdegf : 1 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     Prec f (u * f + v * f.derivative) := by
-  have hder : Interlaces f.derivative f := derivative_interlaces hf hdegf
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   refine prec_of_interlaces_eval_mul_neg_same hder hf'_pos hF_pos hdeg ?_
   intro r hr
@@ -2884,7 +2959,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
 /-- Derivative specialization of the Liu--Wang mixed theorem allowing either the
 same-degree or degree `+1` outcome. -/
 theorem prec_ma_wang {f u v : ℝ[X]} (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
+    (hdegf : 1 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))

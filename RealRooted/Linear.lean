@@ -314,6 +314,75 @@ lemma isRealRooted_comp_X_add_C
   rw [roots_comp_X_add_C r, Multiset.card_map, natDegree_comp, natDegree_X_add_C,
     card_roots_of_splits hp_splits, mul_one]
 
+private lemma interleaves_map_of
+    {α β : Type*} {r : α → α → Prop} {s : β → β → Prop}
+    {φ : α → β} (hφ : ∀ {a b}, r a b → s (φ a) (φ b)) :
+    ∀ {l₁ l₂ : List α}, List.Interleaves r l₁ l₂ →
+      List.Interleaves s (l₁.map φ) (l₂.map φ)
+  | _, _, .nil_nil => .nil_nil
+  | _, _, .nil_singleton a => .nil_singleton (φ a)
+  | _, _, .cons_symm h hab => by
+      simpa using List.Interleaves.cons_symm
+        (interleaves_map_of (φ := φ) hφ h) (hφ hab)
+
+private lemma listAlternates_reverse_map_one_sub {ss rs : List ℝ}
+    (hlen : ss.length = rs.length) (halt : ListAlternates ss rs) :
+    ListAlternates (rs.reverse.map (1 - ·)) (ss.reverse.map (1 - ·)) := by
+  apply listAlternates_of_interleaves_of_length
+  · simp [hlen]
+  have hold : List.Interleaves (· ≤ ·) rs ss :=
+    interleaves_of_listAlternates_of_length hlen halt
+  have hreverse :
+      List.Interleaves (fun a b : ℝ => b ≤ a) ss.reverse rs.reverse := by
+    apply (List.interleaves_reverse_reverse_of_length_eq_length hlen).2
+    simpa [Function.swap] using hold
+  exact interleaves_map_of (fun hab => by linarith) hreverse
+
+lemma roots_comp_one_sub_X (p : ℝ[X]) :
+    (p.comp (1 - X)).roots = p.roots.map (1 - ·) := by
+  simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+    Polynomial.roots_comp_C_mul_X_add_C p (-1) 1 isUnit_neg_one
+
+lemma isRealRooted_comp_one_sub_X
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
+    (p.comp (1 - X) ≠ 0 ∧ (p.comp (1 - X)).Splits) := by
+  have hpneg_ne : p.comp (-X) ≠ 0 := by
+    simpa using (Polynomial.comp_neg_X_eq_zero_iff.not.mpr hp_ne)
+  have hpneg_splits : (p.comp (-X)).Splits := hp_splits.comp_neg_X
+  have htranslated :=
+    isRealRooted_comp_X_add_C hpneg_ne hpneg_splits (-1)
+  have heq : (p.comp (-X)).comp (X + C (-1)) = p.comp (1 - X) := by
+    rw [comp_assoc]
+    congr 1
+    simp [sub_eq_add_neg]
+  rwa [heq] at htranslated
+
+/-- Reflection about `1 / 2` reverses same-degree proper position. -/
+lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
+    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    Prec (g.comp (1 - X)) (f.comp (1 - X)) := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  obtain ⟨_, halt⟩ := hshape.resolve_left (by intro hbad; lia)
+  have hlen : ss.length = rs.length := by lia
+  have halt' := listAlternates_reverse_map_one_sub hlen halt
+  have hinter :
+      List.Interleaves (· ≤ ·) (ss.reverse.map (1 - ·))
+        (rs.reverse.map (1 - ·)) :=
+    interleaves_of_listAlternates_of_length (by simp [hlen]) halt'
+  refine ⟨isRealRooted_comp_one_sub_X hg.1 hg.2,
+    isRealRooted_comp_one_sub_X hf.1 hf.2,
+    rs.reverse.map (1 - ·), ss.reverse.map (1 - ·),
+    hinter.pairwise_right, hinter.pairwise_left, ?_, ?_, Or.inr ⟨?_, halt'⟩⟩
+  · rw [roots_comp_one_sub_X, ← hrs_eq]
+    simp
+  · rw [roots_comp_one_sub_X, ← hss_eq]
+    simp
+  · simp [hlen]
+
 /-- Translation by `r` preserves `Prec`: roots are shifted left by `r`,
 so the relative order is unchanged. -/
 lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
