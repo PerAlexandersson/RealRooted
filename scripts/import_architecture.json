@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 722
+      "max_modules": 723
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -350,7 +350,10 @@
       "max_modules": 130
     },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 38
+      "max_modules": 39
+    },
+    "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
+      "max_modules": 6
     },
     "RealRooted.DerivativeRecurrence.QuadraticDegree": {
       "max_modules": 12
@@ -875,6 +878,7 @@
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
+    "RealRooted.DerivativeRecurrence.GeneralizedLaguerre",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
     "RealRooted.DerivativeRecurrence.SecondDerivativeDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",

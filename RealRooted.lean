@@ -151,6 +151,7 @@ import RealRooted.Derivative
 import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.Linear
 import RealRooted.DerivativeRecurrence.QuadraticDegree
+import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
 import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 import RealRooted.DerivativeRecurrence.QuadraticSeed
 import RealRooted.DerivativeRecurrence.QuadraticShift

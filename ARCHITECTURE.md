@@ -118,6 +118,8 @@ Derivative recurrence results have a focused package entry point:
   second-derivative recurrence;
 - `DerivativeRecurrence.QuadraticDegree` owns the coefficient, degree, and
   nonvanishing core for recurrences with a quadratic derivative coefficient;
+- `DerivativeRecurrence.GeneralizedLaguerre` reduces a parameterized
+  generalized-Laguerre second-derivative recurrence to its first-order form;
 - `DerivativeRecurrence.QuadraticShift`, `QuadraticInterlacing`, and
   `QuadraticSeed` own the normalized-shift, general proper-position, and
   quadratic-seed layers over that core; and
