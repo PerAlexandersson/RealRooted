@@ -538,6 +538,18 @@ other legacy guards, so BidiagonalSymbol RealConsequences, Jensen LowDegree,
 and Jensen Contraction have conservative 150, 125, and 145-module bounds,
 respectively; these are import-budget adjustments, not new mathematical edges.
 
+`SymmetricDecomposition` is now a compatibility façade over five theorem
+layers. `Definitions` owns the `I_d`/`R_d` transforms, formula components, and
+decomposition predicates; `FPolynomial` owns the coefficient transform and
+its root-coordinate/real-rootedness transport; and `FPolynomialInterlacing`
+owns the resulting `Prec` and positive-combination consequences.
+`Decomposition` owns formula, existence, uniqueness, and compatibility results
+for the two symmetric decompositions, while `Theorem26` owns the proper-
+position equivalences, boundary analysis, and ordered-degree bridge. The
+largest source unit is the 1,376-line theorem package, rather than the former
+3,553-line mixed module; the established parent import continues to re-export
+the full API.
+
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
 the remaining recurrence wrappers acquire a second independent consumer;

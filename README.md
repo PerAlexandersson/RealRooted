@@ -60,8 +60,10 @@ lake build RealRooted.Bezoutian
 - `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
   product API; `GarloffWagner.lean` proves the proper-position preservation
   theorem; `Hadamard.lean` packages its downstream consequences.
-- `RealRooted/SymmetricDecomposition.lean` and `Bezoutian.lean` contain larger
-  theorem packages and classical interfaces.
+- `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
+  definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
+  2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
+  import. `Bezoutian.lean` contains the classical Bezoutian interface.
 - `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
   row-threshold and threshold-matrix preservers, including the
   Gustafsson-Solus and Haglund-Zhang/A046802 backends.

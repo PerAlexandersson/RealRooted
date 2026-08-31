@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 625
+      "max_modules": 630
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -44,16 +44,34 @@
       "max_modules": 110
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 160
+      "max_modules": 165
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.Derivative": {
       "max_modules": 12
+    },
+    "RealRooted.SymmetricDecomposition.Definitions": {
+      "max_modules": 15
+    },
+    "RealRooted.SymmetricDecomposition.FPolynomial": {
+      "max_modules": 75
+    },
+    "RealRooted.SymmetricDecomposition.FPolynomialInterlacing": {
+      "max_modules": 100
+    },
+    "RealRooted.SymmetricDecomposition.Decomposition": {
+      "max_modules": 105
+    },
+    "RealRooted.SymmetricDecomposition.Theorem26": {
+      "max_modules": 110
+    },
+    "RealRooted.SymmetricDecomposition": {
+      "max_modules": 115
     },
     "RealRooted.CoefficientDominance": {
       "max_modules": 15
@@ -140,19 +158,19 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 135
+      "max_modules": 140
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 135
+      "max_modules": 140
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 155
+      "max_modules": 165
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -344,13 +362,13 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 125
+      "max_modules": 130
     },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 310
+      "max_modules": 315
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -549,6 +567,12 @@
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
     "RealRooted.SortedRoots.Exhibited",
+    "RealRooted.SymmetricDecomposition.Definitions",
+    "RealRooted.SymmetricDecomposition.FPolynomial",
+    "RealRooted.SymmetricDecomposition.FPolynomialInterlacing",
+    "RealRooted.SymmetricDecomposition.Decomposition",
+    "RealRooted.SymmetricDecomposition.Theorem26",
+    "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",

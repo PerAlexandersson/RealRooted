@@ -462,6 +462,11 @@ import RealRooted.StaircaseSum
 import RealRooted.SuccDegreeLeftEndpoint
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SymmetricDecomposition
+import RealRooted.SymmetricDecomposition.Decomposition
+import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.SymmetricDecomposition.FPolynomial
+import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+import RealRooted.SymmetricDecomposition.Theorem26
 import RealRooted.Tactic
 import RealRooted.Tactic.AffineDerivative
 import RealRooted.Tactic.AissenSchoenbergWhitney
