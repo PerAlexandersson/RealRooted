@@ -564,6 +564,13 @@ import RealRooted.Tactic.Examples.Wagner
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Favard
+import RealRooted.Tactic.Favard.Basic
+import RealRooted.Tactic.Favard.Denominator
+import RealRooted.Tactic.Favard.DenominatorSyntax
+import RealRooted.Tactic.Favard.Direct
+import RealRooted.Tactic.Favard.DirectSyntax
+import RealRooted.Tactic.Favard.RowSign
+import RealRooted.Tactic.Favard.RowSignSyntax
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF

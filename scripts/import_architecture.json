@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 655
+      "max_modules": 660
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -416,7 +416,28 @@
       "max_modules": 30
     },
     "RealRooted.Tactic.Favard": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.Favard.Basic": {
       "max_modules": 40
+    },
+    "RealRooted.Tactic.Favard.DirectSyntax": {
+      "max_modules": 40
+    },
+    "RealRooted.Tactic.Favard.DenominatorSyntax": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.Favard.RowSignSyntax": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.Favard.Direct": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.Favard.Denominator": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.Favard.RowSign": {
+      "max_modules": 45
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -440,7 +461,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 335
+      "max_modules": 340
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -658,6 +679,13 @@
     "RealRooted.Favard.Affine.RowSign",
     "RealRooted.Favard.Affine",
     "RealRooted.Tactic.Favard",
+    "RealRooted.Tactic.Favard.Basic",
+    "RealRooted.Tactic.Favard.DirectSyntax",
+    "RealRooted.Tactic.Favard.DenominatorSyntax",
+    "RealRooted.Tactic.Favard.RowSignSyntax",
+    "RealRooted.Tactic.Favard.Direct",
+    "RealRooted.Tactic.Favard.Denominator",
+    "RealRooted.Tactic.Favard.RowSign",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",

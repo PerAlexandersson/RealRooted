@@ -210,9 +210,13 @@ The affine Favard recurrence APIs are likewise now theorem-only:
   scalar-normalized variants.
 
 `Favard.Affine` is their small compatibility entry point, while
-`Tactic.Favard` retains syntax and elaboration only. The frontend still needs
-a later syntax/macro split; this extraction first enforces the theorem-to-
-tactic dependency boundary without changing existing tactic imports.
+`Tactic.Favard` is now a compatibility façade over a dependency-ordered
+frontend: `Basic` owns shared helper syntax, `DirectSyntax`,
+`DenominatorSyntax`, and `RowSignSyntax` own their respective parser
+declarations, while `Direct`, `Denominator`, and `RowSign` own the matching
+macro-rule families. This separates parser declarations from elaboration and
+keeps the largest frontend source unit at 825 lines without changing the
+established tactic import.
 
 Two further OEIS-derived corollary modules keep large owning modules cohesive:
 
@@ -663,14 +667,12 @@ are diagnostics rather than hard line-count limits.
 
 ## Near-term roadmap
 
-1. Split `Tactic.Favard` into shared syntax and direct, denominator, and
-   row-sign macro-rule modules, retaining its established import as a façade.
-2. Separate tactic examples from the production tactic umbrella, building on
+1. Separate tactic examples from the production tactic umbrella, building on
    the completed Finish/Product, Ma--Wang, and Favard backend splits.
-3. Audit `Tactic.OEIS` by certificate family before splitting its dispatch
+2. Audit `Tactic.OEIS` by certificate family before splitting its dispatch
    wrappers; do not make a mechanical line-count split.
-4. Audit `LiuOppositeSigns.XSub.IntervalRootCount` by theorem clusters before
+3. Audit `LiuOppositeSigns.XSub.IntervalRootCount` by theorem clusters before
    exposing any implementation bridge; its current case distinctions need a
    dependency inventory first.
-5. Maintain the Mathlib-upstream queue: small Wronskian, multiset, list,
+4. Maintain the Mathlib-upstream queue: small Wronskian, multiset, list,
    homogenization, Mahler-measure, and scalar-polynomial normalization lemmas.

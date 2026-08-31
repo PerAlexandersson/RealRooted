@@ -106,7 +106,8 @@ lake build RealRooted.Bezoutian
 - `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
   scalar-denominator normalizations, and row-sign normalizations; its parent
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
-  remains the compatible tactic frontend.
+  is the compatible frontend façade over its focused syntax and macro-rule
+  modules.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
