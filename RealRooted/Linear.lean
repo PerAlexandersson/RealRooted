@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Data.List.Interleave
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
@@ -314,17 +315,6 @@ lemma isRealRooted_comp_X_add_C
   rw [roots_comp_X_add_C r, Multiset.card_map, natDegree_comp, natDegree_X_add_C,
     card_roots_of_splits hp_splits, mul_one]
 
-private lemma interleaves_map_of
-    {α β : Type*} {r : α → α → Prop} {s : β → β → Prop}
-    {φ : α → β} (hφ : ∀ {a b}, r a b → s (φ a) (φ b)) :
-    ∀ {l₁ l₂ : List α}, List.Interleaves r l₁ l₂ →
-      List.Interleaves s (l₁.map φ) (l₂.map φ)
-  | _, _, .nil_nil => .nil_nil
-  | _, _, .nil_singleton a => .nil_singleton (φ a)
-  | _, _, .cons_symm h hab => by
-      simpa using List.Interleaves.cons_symm
-        (interleaves_map_of (φ := φ) hφ h) (hφ hab)
-
 private lemma listAlternates_reverse_map_one_sub {ss rs : List ℝ}
     (hlen : ss.length = rs.length) (halt : ListAlternates ss rs) :
     ListAlternates (rs.reverse.map (1 - ·)) (ss.reverse.map (1 - ·)) := by
@@ -336,7 +326,9 @@ private lemma listAlternates_reverse_map_one_sub {ss rs : List ℝ}
       List.Interleaves (fun a b : ℝ => b ≤ a) ss.reverse rs.reverse := by
     apply (List.interleaves_reverse_reverse_of_length_eq_length hlen).2
     simpa [Function.swap] using hold
-  exact interleaves_map_of (fun hab => by linarith) hreverse
+  exact List.Interleaves.map hreverse (fun x : ℝ ↦ 1 - x) (by
+    intro a b hab
+    linarith)
 
 lemma roots_comp_one_sub_X (p : ℝ[X]) :
     (p.comp (1 - X)).roots = p.roots.map (1 - ·) := by

@@ -227,6 +227,10 @@ project's degree-padded reciprocal shift. Proper-position transport remains a
 separate layer: it is an application of root transport plus sorted-list
 interlacing, rather than part of either root-multiset API.
 
+`Mathlib.Data.List.Interleave` adds the relation-preserving map transport for
+`List.Interleaves`. It removes duplicated inductions from the linear and
+affine-interlacing modules, and is independent of all polynomial theory.
+
 The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator.Pencil` owns proper-position comparisons for positive

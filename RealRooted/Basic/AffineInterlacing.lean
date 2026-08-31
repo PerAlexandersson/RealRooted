@@ -23,11 +23,9 @@ private lemma pairwise_reverse_map_neg {l : List ℝ} (h : l.Pairwise (· ≤ ·
 private lemma interleaves_map_neg {ss rs : List ℝ}
     (h : List.Interleaves (fun x y : ℝ => x ≤ y) ss rs) :
     List.Interleaves (fun x y : ℝ => y ≤ x) (ss.map Neg.neg) (rs.map Neg.neg) := by
-  induction h with
-  | nil_nil => exact .nil_nil
-  | nil_singleton a => exact .nil_singleton _
-  | @cons_symm l₁ l₂ b hl a hab ih =>
-      exact .cons_symm ih (by simpa using neg_le_neg hab)
+  exact List.Interleaves.map h Neg.neg (by
+    intro a b hab
+    simpa using neg_le_neg hab)
 
 private lemma interlaces_reverse_map_neg {ss rs : List ℝ}
     (h : ListInterlaces ss rs) (hlen : ss.length + 1 = rs.length) :

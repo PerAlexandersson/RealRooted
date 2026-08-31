@@ -62,6 +62,10 @@ of the RealRooted interlacing library.
   `ProofsOeis.EulerPencil`. `ReciprocalShift.Roots` separately adds the
   real degree-padded root-multiset formula; sorted-list and proper-position
   transport stay outside both root APIs.
+- `Mathlib.Data.List.Interleave` contains the relation-preserving map theorem
+  for the generic `List.Interleaves` predicate. It was independently repeated
+  in the Euler-pencil and affine-interlacing proofs, so it belongs below the
+  polynomial layer and is a direct Mathlib upstream candidate.
 - `Analysis.PowerTail` contains the finite reciprocal-power tail bounds from
   `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
   its finite telescoping consequence, and the quadratic-denominator
