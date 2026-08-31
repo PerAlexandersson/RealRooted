@@ -118,11 +118,12 @@ and its later sections mix that named basis with Delannoy, Eulerian, and type-D
 applications. Its sequence-independent first-order differential core is now
 also extracted: `basisTransform_X_mul_of_succ_derivative` and its affine-factor
 companion transport a successor-basis recurrence to the corresponding
-transform identity over any commutative semiring. The Touchard transform uses
-both lemmas directly, while the Brändén and type-B recurrences are instances.
-A later transfer should target only genuinely higher-order or otherwise
-independent operator transport; it should not export the named `brandenE`
-definition as a generic library primitive.
+transform identity over any commutative semiring. Their semiring-generic
+parent `basisTransform_X_mul_of_succ` handles an arbitrary polynomial linear
+map, including the OEIS higher-derivative cases. The Touchard transform uses
+both first-order lemmas directly, while the Brändén and type-B recurrences are
+instances. No named `brandenE` definition should be exported as a generic
+library primitive.
 
 ### Euler pencils and Wronskian converses
 

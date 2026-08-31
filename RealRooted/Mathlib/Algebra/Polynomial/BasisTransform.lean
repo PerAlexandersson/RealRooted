@@ -62,6 +62,22 @@ theorem basisTransform_smul (B : ℕ → R[X]) (a : R) (p : R[X]) :
   · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
   · simp
 
+/-- A basis transform transports multiplication by `X` to a linear map when
+the basis satisfies the corresponding successor recurrence. -/
+theorem basisTransform_X_mul_of_succ
+    (B : ℕ → R[X]) (L : R[X] →ₗ[R] R[X])
+    (hsucc : ∀ n, B (n + 1) = L (B n)) (p : R[X]) :
+    basisTransform B (X * p) = L (basisTransform B p) := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [mul_add, basisTransform_add, hp, hq, LinearMap.map_add]
+  | monomial n a =>
+      rw [Polynomial.X_mul_monomial, basisTransform_monomial, hsucc,
+        basisTransform_monomial]
+      rw [show C a * B n = a • B n by rw [Polynomial.smul_eq_C_mul],
+        L.map_smul]
+      rw [Polynomial.smul_eq_C_mul]
+
 end Semiring
 
 section Differential
@@ -77,14 +93,10 @@ theorem basisTransform_X_mul_of_succ_derivative
     (p : R[X]) :
     basisTransform B (X * p) =
       A * basisTransform B p + D * (basisTransform B p).derivative := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-      simp only [mul_add, basisTransform_add, hp, hq, derivative_add]
-      ring
-  | monomial n a =>
-      rw [Polynomial.X_mul_monomial, basisTransform_monomial, hsucc]
-      simp [Polynomial.derivative_mul]
-      ring
+  apply basisTransform_X_mul_of_succ B
+    (LinearMap.mul R R[X] A + (LinearMap.mul R R[X] D).comp derivative) ?_ p
+  intro n
+  exact hsucc n
 
 /-- The affine factor version of
 `basisTransform_X_mul_of_succ_derivative`. -/
