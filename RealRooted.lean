@@ -386,6 +386,12 @@ import RealRooted.RootCountLocalConstancy
 import RealRooted.RootCounting
 import RealRooted.RootCounting.Finite
 import RealRooted.RootCounting.SignChanges
+import RealRooted.RootCounting.Threshold
+import RealRooted.RootCounting.Threshold.Anchor
+import RealRooted.RootCounting.Threshold.Basic
+import RealRooted.RootCounting.Threshold.Derivative
+import RealRooted.RootCounting.Threshold.Signs
+import RealRooted.RootCounting.Threshold.Sorted
 import RealRooted.RootMatchingSort
 import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge

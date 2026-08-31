@@ -17,8 +17,11 @@ of the RealRooted interlacing library.
 
 - `Wronskian`, `DerivativeRecurrence`, `RootCounting`, `RootVieta`, and
   `SortedRoots` contain the reusable parts of the corresponding OEIS helper
-  files. Consumer-specific model identifications and amplitude conclusions
-  remain downstream.
+  files. In particular, `RootCounting.Threshold` separates all of
+  `ProofsOeis.RootSignCount` into generic threshold/parity and anchoring
+  layers, a sorted-root bridge, derivative signs, and signed-evaluation
+  applications. Consumer-specific model identifications and amplitude
+  conclusions remain downstream.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum

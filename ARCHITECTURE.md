@@ -120,7 +120,17 @@ Finite root-counting results have a separate focused package:
   and the elementary index-counting arguments built on them;
 - `RootCounting.SignChanges` turns alternating signs at ordered test points
   into splitness; and
-- `RootCounting` is the umbrella for the two root-counting layers.
+- `RootCounting.Threshold` separates counts above a negative threshold from
+  their parity, sorted-magnitude translation, count anchors, derivative signs,
+  and signed-evaluation applications; and
+- `RootCounting` is the umbrella for the three root-counting layers.
+
+The threshold package keeps the raw multiset and parity argument over arbitrary
+linearly ordered fields, while the sorted-root and derivative layers are
+specialized only where the established real `SortedRoots` and split-polynomial
+interfaces are genuinely required. This makes the ordered-field core a clear
+future Mathlib review candidate without making a premature claim about its
+final upstream API.
 
 `RootVieta` contains reciprocal-root power-sum formulas and the corresponding
 factorization by `1 + x_i X`. It currently states the consumer's real version
