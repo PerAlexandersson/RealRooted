@@ -33,6 +33,10 @@ of the RealRooted interlacing library.
   nonvanishing, and nonnegative-coefficient consequences from the opening of
   `ProofsOeis.SecondDerivativeTop`. Its later gamma model, branch comparison,
   and sequence-specific real-rootedness program remain consumer-side.
+- `DerivativeRecurrence.Linear` contains the first-order linear derivative
+  recurrence's coefficient transport, degree growth, and consecutive
+  interlacing theorem from `ProofsOeis.DerivativeLinear`. It is already a
+  promoted theorem family, not a remaining extraction candidate.
 - `SortedRoots.Exhibited` promotes the remaining nonduplicate
   `ProofsOeis.RootFamily` bridge: an explicitly indexed strictly increasing
   family of all roots both saturates the root count and identifies the sorted
@@ -227,6 +231,21 @@ project-level compatibility interface.
   argument is `MaWang.exists_isRoot_between_of_eval_mul_neg`, and its finite
   sign-alternation conclusion is `RootCounting.SignChanges` (with the
   parity-normalized convenience API in `Threshold.Signs`).
+- `ProofsOeis.DerivativeLinear` is duplicate coverage: its generic
+  first-order derivative recurrence is `DerivativeRecurrence.Linear`.
+- `ProofsOeis.LagThree` should not be copied as written. Its three-step
+  recurrence hypothesis is unused; its substantive input is already a
+  caller-supplied one-step proper-position certificate, so a future API would
+  need to be a genuinely generalized sequence-step theorem rather than this
+  redundant wrapper.
+- `ProofsOeis.NonicBernstein` is an explicit degree-nine numerical Bernstein
+  certificate. It is not a general Bernstein-basis interface and retains
+  forbidden `omega` arithmetic, so it stays consumer-side pending a separate,
+  degree-parametric Mathlib-shaped development.
+- `ProofsOeis.OrderFiveTop` and `EulerianEsym` are fixed-recurrence and
+  Eulerian-root-coordinate applications, respectively. The latter merely
+  composes the extracted Vieta, sorted-root, and symmetric-coefficient APIs;
+  neither source supplies a new sequence-independent primitive.
 - The raw finite-root criterion in `ProofsOeis.RootFamily` is already the
   upstream-shaped `Mathlib.Algebra.Polynomial.Splits` theorem. Its remaining
   root-count and sorted-enumeration bridge is `SortedRoots.Exhibited`.
