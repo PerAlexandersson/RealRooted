@@ -61,6 +61,8 @@ lake build RealRooted.Bezoutian
   product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
   Schur-product and differential-operator algebra, and
   `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
+  `GarloffWagner/KreinData.lean` owns the root-multiplicity and divisibility
+  data for the later Krein expansion.
   `GarloffWagner.lean` remains their theorem-route compatibility import.
   `Hadamard.lean` packages downstream consequences.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
