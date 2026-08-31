@@ -148,6 +148,12 @@
     "RealRooted.Wronskian.Converse": {
       "max_modules": 15
     },
+    "RealRooted.Wronskian.Successor": {
+      "max_modules": 15
+    },
+    "RealRooted.Wronskian.Successor.Gap": {
+      "max_modules": 15
+    },
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
@@ -375,6 +381,8 @@
     "RealRooted.Wronskian.Algebra",
     "RealRooted.Wronskian.Converse",
     "RealRooted.Wronskian.Forward",
+    "RealRooted.Wronskian.Successor",
+    "RealRooted.Wronskian.Successor.Gap",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.LiuWang.Step",
     "RealRooted.Tactic.LiuWang.SequenceIntervals",

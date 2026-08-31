@@ -576,3 +576,5 @@ import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra
 import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.Forward
+import RealRooted.Wronskian.Successor
+import RealRooted.Wronskian.Successor.Gap

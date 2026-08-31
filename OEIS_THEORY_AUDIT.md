@@ -106,11 +106,12 @@ library primitive.
 moved as its 2,018-line monolith. Its strict same-degree bridge is now
 `Wronskian.Converse.strictPrecSameDegree_toPrec`: it turns the output of the
 Bezoutian/Wronskian criterion into the legacy `Prec` predicate required by
-existing recurrence APIs. The next layer is the successor-degree Wronskian
-converse: root-local or global strict Wronskian sign should yield
-interlacing, and a lower-degree split polynomial together with the sign should
-force splitness of its successor. Those belong in small `Wronskian` children,
-factored first into root-gap, interlacing, and splitness-transfer modules.
+existing recurrence APIs. The successor-degree root-gap core is now
+`Wronskian.Successor.Gap`: a root-local strict Wronskian sign forces a root in
+every consecutive gap, and the global-sign corollary delegates to that
+stronger statement. The remaining successor-degree interlacing and
+splitness-transfer arguments belong in separate small `Wronskian.Successor`
+children, rather than in the gap module.
 
 The remaining Euler-pencil material is separate operator theory: positive
 `theta + c` pencil comparisons, then a degree-padded reciprocal-shift proper-
