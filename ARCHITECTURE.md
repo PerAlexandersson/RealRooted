@@ -231,11 +231,14 @@ on that small shim. The finite-sequence package is split by responsibility:
   distance-comparison reduction;
 - `RootAmplitude.Convex` owns gap convexity, the distance injection, and the
   convexity-based step theorem;
+- `RootAmplitude.Density` owns the logarithmic-gap density criterion, its
+  perturbative transfer, and the outer-region shortcut;
+- `RootAmplitude.Extension` owns the finite-to-global affine continuation;
 - `RootAmplitude.Minimum` owns propagation from the smallest amplitude and the
   alternative reciprocal-distance-sum criterion; and
 - `RootAmplitude.Polynomial` owns the separate split-polynomial bridge.
 
-The four layers are re-exported by `RootAmplitude`; this keeps every source unit
+The six layers are re-exported by `RootAmplitude`; this keeps every source unit
 below 250 lines and lets consumers import a finite-sequence theorem without a
 polynomial dependency.
 

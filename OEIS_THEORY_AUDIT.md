@@ -40,9 +40,10 @@ of the RealRooted interlacing library.
   of positive log-concave sequences, the resulting polynomial certificate,
   and the root-free-interval-to-reciprocal-gap conversion.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
-  product identity, and its `Finite`, `Convex`, and `Minimum` layers contain
-  the generic finite-sequence amplitude theory formerly in
-  `ProofsOeis.AmplitudeMonotone`.
+  product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, and
+  `Density` layers contain the generic finite-sequence amplitude theory,
+  finite continuation, and log-gap density criteria formerly in
+  `ProofsOeis.AmplitudeMonotone`, `SequenceExtension`, and `RootConvexity`.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
@@ -50,11 +51,11 @@ only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
 
-### Finite convex-sequence extension and amplitude theory
+### Separation-specific amplitude applications
 
-`ProofsOeis.SequenceExtension` and `RootConvexity` can now be moved as the
-finite-extension and density-criterion layers over `RootAmplitude`. The
-separation-specific helper still depends on consumer-owned staircase theory.
+The finite-extension and density-criterion layers now live in
+`RootAmplitude`. The separation-specific helper still depends on
+consumer-owned staircase theory.
 
 ## Keep consumer-side for now
 

@@ -91,6 +91,12 @@
     "RealRooted.RootAmplitude.Convex": {
       "max_modules": 5
     },
+    "RealRooted.RootAmplitude.Density": {
+      "max_modules": 5
+    },
+    "RealRooted.RootAmplitude.Extension": {
+      "max_modules": 8
+    },
     "RealRooted.RootAmplitude.Finite": {
       "max_modules": 5
     },
@@ -218,6 +224,8 @@
     "RealRooted.RootBounds",
     "RealRooted.RootAmplitude",
     "RealRooted.RootAmplitude.Convex",
+    "RealRooted.RootAmplitude.Density",
+    "RealRooted.RootAmplitude.Extension",
     "RealRooted.RootAmplitude.Finite",
     "RealRooted.RootAmplitude.Minimum",
     "RealRooted.RootAmplitude.Polynomial",

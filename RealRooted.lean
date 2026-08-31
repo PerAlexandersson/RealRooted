@@ -360,6 +360,8 @@ import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RootAmplitude
 import RealRooted.RootAmplitude.Convex
+import RealRooted.RootAmplitude.Density
+import RealRooted.RootAmplitude.Extension
 import RealRooted.RootAmplitude.Finite
 import RealRooted.RootAmplitude.Minimum
 import RealRooted.RootAmplitude.Polynomial
