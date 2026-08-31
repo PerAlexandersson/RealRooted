@@ -112,6 +112,7 @@ import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.CommonInterleaver.AffineBoundary
+import RealRooted.CommonInterleaver.Finite
 import RealRooted.CommonInterleaver.IntervalLemmas
 import RealRooted.CommonInterleaver.PairBridge
 import RealRooted.CommonInterleaver.PairwiseUpgrade

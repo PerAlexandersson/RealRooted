@@ -466,6 +466,14 @@ finite-Helly and Chudnovsky--Seymour construction layer, not proposed general
 theorem API. This keeps the two source units at 352 and 695 lines rather than
 creating a monolithic root-slot module.
 
+`CommonInterleaver.Finite` then owns finite intersections, the finite-Helly
+argument for order-connected subsets of the real line, the left and right
+degree extrema, and the pairwise root-slot intersection consequence. The
+finite-Helly lemma is deliberately isolated as a future Mathlib candidate: its
+current statement stays over `ℝ` until it is generalized with a natural order
+typeclass boundary, rather than coupling that generalization to this source
+split.
+
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
 It has a 10-module closure by importing only the Wagner addition and
