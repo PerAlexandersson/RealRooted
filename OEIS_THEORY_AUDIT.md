@@ -143,7 +143,8 @@ the Wronskian package.
 The remaining work has a fixed responsibility order:
 
 1. `ReciprocalShift.Interlacing` should own inverse-root list ordering,
-   deletion of zero roots, and zero-padding transport.
+   deletion of zero roots, and zero-padding transport. Its inverse-order and
+   root-list-model core is now extracted; padding transport remains there.
 2. `ReciprocalShift.ProperPosition` should use that list layer to prove that a
    degree-bounded reciprocal shift reverses a `Prec` pair.
 3. A small `EulerOperator` companion can then supply the checked witness for
