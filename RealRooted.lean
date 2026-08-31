@@ -266,6 +266,7 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
 import RealRooted.LiuOppositeSigns.XSub.CubicQuadratic
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+import RealRooted.LiuOppositeSigns.XSub.ProperPosition
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeThree
 import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeTwo

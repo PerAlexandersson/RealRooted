@@ -211,6 +211,13 @@ Two further OEIS-derived corollary modules keep large owning modules cohesive:
 for same-degree nonnegative-coefficient polynomials, a strict normalized
 value-at-zero comparison selects the proper-position orientation.
 
+`LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
+positive-leading `Prec` interface to Liu's positive root-count package. It
+then applies the package's same-degree and successor-degree results to the
+general `X * p - μ * q` splitness corollary under nonnegative coefficients.
+This keeps the user-facing proper-position interface out of the interval-root
+count implementation.
+
 The Cayley-transform extraction is entirely Mathlib-shaped:
 
 - `Mathlib.Algebra.Polynomial.CayleyTransform.Basic` defines the transform

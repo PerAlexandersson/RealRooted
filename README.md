@@ -100,7 +100,9 @@ lake build RealRooted.Bezoutian
   its lower-triangular row-generating-function API, and matrix-product
   endpoint wrappers.
 - `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
-  contain the current Liu opposite-leading-sign root-count interface.
+  contain the current Liu opposite-leading-sign root-count interface; its
+  `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
+  nonnegative `X * p - μ * q` splitness corollary.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem

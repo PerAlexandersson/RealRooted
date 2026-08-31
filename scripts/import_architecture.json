@@ -292,6 +292,9 @@
     "RealRooted.LiuWang.Step": {
       "max_modules": 25
     },
+    "RealRooted.LiuOppositeSigns.XSub.ProperPosition": {
+      "max_modules": 140
+    },
     "RealRooted.Wronskian": {
       "max_modules": 85
     },
@@ -594,6 +597,7 @@
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",
+    "RealRooted.LiuOppositeSigns.XSub.ProperPosition",
     "RealRooted.MaWang",
     "RealRooted.MaWang.DerivativeStep",
     "RealRooted.MaWang.DerivativeSequence",

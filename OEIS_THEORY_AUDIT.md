@@ -40,6 +40,10 @@ of the RealRooted interlacing library.
   present in `Mathlib.Algebra.Polynomial.Splits` and is not duplicated.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
+- `LiuOppositeSigns.XSub.ProperPosition` bridges a positive-leading `Prec`
+  pair to Liu's `PositiveSplitRootCountPair` certificate, then obtains
+  splitness of `X * p - μ * q` for `μ > 0` under nonnegative coefficients.
+  It is the sequence-independent core of `ProofsOeis.LiuXSub`.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum
   corollaries.
 - `VeroneseSectionPair` contains strict proper position for ordered nonzero
