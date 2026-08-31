@@ -62,7 +62,7 @@ theorem topProd_mul_tail_le {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) {n j : ℕ
     _ = ∑ S ∈ (Ico (j + 1) n).image (fun l => insert l (range (j + 1))),
           ∏ i ∈ S, x i := by rw [Finset.sum_image hinj]
     _ ≤ esym x n (j + 2) := by
-      rw [esym]
+      rw [esym_eq_sum]
       refine Finset.sum_le_sum_of_subset_of_nonneg ?_
         (fun S _ _ => prod_nonneg (fun i _ => (hpos i).le))
       intro S hS

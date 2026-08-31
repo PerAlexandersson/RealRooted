@@ -48,7 +48,10 @@ of the RealRooted interlacing library.
   root-exclusion criterion. `CoefficientDominance` separates geometric decay
   of positive log-concave sequences, the resulting polynomial certificate,
   the root-free-interval-to-reciprocal-gap conversion, and the
-  elementary-symmetric coefficient sandwich.
+  elementary-symmetric coefficient sandwich. Its initial-segment `esym` API is
+  now a thin wrapper around Mathlib's canonical `Multiset.esymm`, with
+  `esym_eq_sum` retaining the explicit `Finset.powersetCard` form used by the
+  root-gap arguments.
 - `Mathlib.Algebra.Order.BigOperators.Alternating` contains the finite
   nonnegative-decreasing alternating-sum truncation bounds, with an arbitrary
   linearly ordered commutative ring in place of the original real sequence.
@@ -105,15 +108,6 @@ only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
 
-### Elementary-symmetric Mathlib bridge
-
-`CoefficientDominance.Symmetric` now contains all 17 theorems and four
-definitions from the sequence-independent `ProofsOeis.SymmetricSandwich`,
-split across five focused source modules. Its initial-segment presentation is
-useful to the root-gap application, while Mathlib already has the more general
-`Multiset.esymm` API; a future upstream candidate should bridge those forms
-rather than duplicate either one.
-
 ### Named basis transforms
 
 The generic coefficientwise basis-transform API and its triangular injectivity
@@ -143,13 +137,13 @@ splitness transfer. This completes the reusable Wronskian portion of the
 Euler-pencil source without importing its unrelated operator or list-reversal
 layers.
 
-The remaining Euler-pencil material is reciprocal-shift proper-position
-transport. Its generic root-list reversal formula is now in
-`Mathlib.Algebra.Polynomial.Reverse`, and its degree-padded root-multiset
-consequence is in `ReciprocalShift.Roots`; the next layer should reconcile the
-remaining sorted-list/interlacing steps with `DegreeDropReversal`. This keeps
-the large list-combinatorics port from becoming an accidental dependency of
-the Wronskian package.
+The reciprocal-shift proper-position transport is now complete as a separate
+dependency direction: its generic root-list reversal formula is in
+`Mathlib.Algebra.Polynomial.Reverse`, its degree-padded root-multiset
+consequence is in `ReciprocalShift.Roots`, and its ordered-list/proper-position
+layers are in `ReciprocalShift.Interlacing` and
+`ReciprocalShift.ProperPosition`. This keeps list combinatorics out of the
+Wronskian package.
 
 The remaining work has a fixed responsibility order:
 

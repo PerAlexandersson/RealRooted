@@ -81,7 +81,7 @@ theorem esym_mul_pow_le (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ} {
   calc
     esym x n j * t ^ j
         = ∑ U ∈ (range n).powersetCard j, (∏ i ∈ U, x i) * t ^ j := by
-          rw [esym, Finset.sum_mul]
+          rw [esym_eq_sum, Finset.sum_mul]
     _ = ∑ U ∈ (range n).powersetCard j, ∏ i ∈ U, (x i * t) :=
       Finset.sum_congr rfl hterm
     _ ≤ ∑ U ∈ (range n).powerset, ∏ i ∈ U, (x i * t) := hle

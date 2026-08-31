@@ -15,7 +15,7 @@ theorem coeff_prod_one_add (x : ℕ → ℝ) (n j : ℕ) :
     (∏ i ∈ range n, (1 + Polynomial.C (x i) * Polynomial.X)).coeff j = esym x n j := by
   induction n generalizing j with
   | zero =>
-      rw [Finset.range_zero, Finset.prod_empty, esym, Finset.range_zero]
+      rw [Finset.range_zero, Finset.prod_empty, esym_eq_sum, Finset.range_zero]
       cases j with
       | zero => simp
       | succ i =>

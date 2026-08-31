@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Data.Real.Basic
+import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -15,9 +16,16 @@ namespace RealRooted.CoefficientDominance.Symmetric
 
 open Finset
 
-/-- The `j`-th elementary symmetric function of `x 0, ..., x (n - 1)`. -/
+/-- The `j`-th elementary symmetric function of `x 0, ..., x (n - 1)`,
+expressed through Mathlib's canonical `Multiset.esymm`. -/
 noncomputable def esym (x : ℕ → ℝ) (n j : ℕ) : ℝ :=
-  ∑ S ∈ (range n).powersetCard j, ∏ i ∈ S, x i
+  ((range n).val.map x).esymm j
+
+/-- The initial-segment elementary symmetric function as an explicit finite
+sum. This is Mathlib's `Finset.esymm_map_val` at `Finset.range`. -/
+theorem esym_eq_sum (x : ℕ → ℝ) (n j : ℕ) :
+    esym x n j = ∑ S ∈ (range n).powersetCard j, ∏ i ∈ S, x i :=
+  Finset.esymm_map_val x (range n) j
 
 /-- The leading partial product `x 0 ⋯ x (j - 1)`. -/
 noncomputable def topProd (x : ℕ → ℝ) (j : ℕ) : ℝ := ∏ i ∈ range j, x i
@@ -30,6 +38,7 @@ theorem topProd_pos {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) (j : ℕ) :
 function. -/
 theorem topProd_le_esym {x : ℕ → ℝ} (hx : ∀ i, 0 ≤ x i) {n j : ℕ} (hj : j ≤ n) :
     topProd x j ≤ esym x n j := by
+  rw [esym_eq_sum]
   refine single_le_sum (f := fun S => ∏ i ∈ S, x i)
     (fun S _ => prod_nonneg (fun i _ => hx i)) ?_
   rw [mem_powersetCard]
@@ -82,8 +91,9 @@ theorem esym_succ (x : ℕ → ℝ) (n j : ℕ) :
     have hnT : n ∉ T := fun h => hnot (hT.1 h)
     have h := congrArg (fun U => Finset.erase U n) hEq
     simpa [Finset.erase_insert hnS, Finset.erase_insert hnT] using h
-  rw [esym, hins, Finset.powersetCard_succ_insert hnot, Finset.sum_union hdisj,
-    Finset.sum_image hinj, esym, esym, Finset.mul_sum]
+  rw [esym_eq_sum, hins, Finset.powersetCard_succ_insert hnot,
+    Finset.sum_union hdisj, Finset.sum_image hinj, esym_eq_sum, esym_eq_sum,
+    Finset.mul_sum]
   congr 1
   refine Finset.sum_congr rfl (fun S hS => ?_)
   rw [mem_powersetCard] at hS
@@ -91,7 +101,7 @@ theorem esym_succ (x : ℕ → ℝ) (n j : ℕ) :
   rw [Finset.prod_insert hnS]
 
 @[simp] theorem esym_zero (x : ℕ → ℝ) (n : ℕ) : esym x n 0 = 1 := by
-  rw [esym, Finset.powersetCard_zero]
+  rw [esym_eq_sum, Finset.powersetCard_zero]
   simp
 
 /-- The generating-function expansion of finite elementary symmetric values. -/
@@ -105,7 +115,7 @@ theorem prod_one_add_eq_sum (x : ℕ → ℝ) (n : ℕ) (t : ℝ) :
   rw [h1, Finset.powerset_card_disjiUnion, Finset.sum_disjiUnion]
   rw [card_range]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [esym, Finset.sum_mul]
+  rw [esym_eq_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl (fun U hU => ?_)
   rw [mem_powersetCard] at hU
   rw [Finset.prod_mul_distrib, Finset.prod_const, hU.2]
