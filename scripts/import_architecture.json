@@ -445,6 +445,9 @@
     "RealRooted.Tactic.OEIS.DerivativeLag": {
       "max_modules": 125
     },
+    "RealRooted.Tactic.OEIS.PositiveLag": {
+      "max_modules": 115
+    },
     "RealRooted.Tactic.OEIS": {
       "max_modules": 330
     },
@@ -697,6 +700,7 @@
     "RealRooted.Tactic.Favard.RowSign",
     "RealRooted.Tactic.OEIS.Basic",
     "RealRooted.Tactic.OEIS.DerivativeLag",
+    "RealRooted.Tactic.OEIS.PositiveLag",
     "RealRooted.Tactic.OEIS",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",

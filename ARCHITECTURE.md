@@ -221,8 +221,9 @@ established tactic import.
 `Tactic.OEIS` is undergoing the same certificate-family migration. Its
 `OEIS.Basic` child owns the scalar-denominator certificate aliases, and
 `OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and
-explicit unsupported-certificate diagnostics. The parent remains the existing
-compatible import while the positive- and negative-lag fronts and the separate
+explicit unsupported-certificate diagnostics. `OEIS.PositiveLag` independently
+owns the positive t-lag certificate parser and dispatch. The parent remains
+the existing compatible import while the negative-lag front and the separate
 product-certificate family are audited as their own units.
 
 Two further OEIS-derived corollary modules keep large owning modules cohesive:

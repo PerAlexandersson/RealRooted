@@ -615,6 +615,7 @@ import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.OEIS.Basic
 import RealRooted.Tactic.OEIS.DerivativeLag
+import RealRooted.Tactic.OEIS.PositiveLag
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFPolynomial
