@@ -39,6 +39,8 @@ of the RealRooted interlacing library.
   root-exclusion criterion. `CoefficientDominance` separates geometric decay
   of positive log-concave sequences, the resulting polynomial certificate,
   and the root-free-interval-to-reciprocal-gap conversion.
+- `RootAmplitude` contains the split-polynomial normalized-root-derivative
+  product identity, separated from the finite-sequence amplitude arguments.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
@@ -48,12 +50,12 @@ only after both repositories build against the same RealRooted checkpoint.
 
 ### Finite convex-sequence extension and amplitude theory
 
-`ProofsOeis.SequenceExtension`, `RootConvexity`, and the amplitude helper files
-contain general finite-sequence and analytic inequalities, but their public
-statements currently depend on the consumer-owned `amp` definition. First
-design a stable amplitude or alternating-product API; then promote the finite
-extension and convexity lemmas as a coherent package. Moving isolated helper
-inequalities before that API exists would create an orphaned module.
+`ProofsOeis.AmplitudeMonotone` is a sequence-independent 587-line proof and
+the natural owner of the needed API. Promote it first as a `RootAmplitude`
+package split by finite-product algebra, convexity, and minimum-amplitude
+arguments. `SequenceExtension` and `RootConvexity` can then be moved as the
+finite-extension and density-criterion layers over that API. The
+separation-specific helper still depends on consumer-owned staircase theory.
 
 ## Keep consumer-side for now
 

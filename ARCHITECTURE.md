@@ -222,6 +222,12 @@ interleaved in a consumer proof:
 future users import a polynomial fact or sequence fact without inheriting an
 application's Eulerian specialization.
 
+`Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
+formula for a split polynomial's derivative at a simple root, without requiring
+monicity. `RootAmplitude` builds the normalized-root-derivative product identity
+on that small shim. The forthcoming finite-sequence amplitude package will
+depend on this bridge; polynomial and sequence layers remain separate.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 

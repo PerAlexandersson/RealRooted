@@ -85,6 +85,12 @@
     "RealRooted.RootBounds": {
       "max_modules": 15
     },
+    "RealRooted.RootAmplitude": {
+      "max_modules": 5
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative": {
+      "max_modules": 2
+    },
     "RealRooted.RootVieta": {
       "max_modules": 5
     },
@@ -198,6 +204,8 @@
     "RealRooted.RootCounting",
     "RealRooted.RootCounting.Finite",
     "RealRooted.RootBounds",
+    "RealRooted.RootAmplitude",
+    "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
     "RealRooted.ScalarNormalization",
     "RealRooted.SequenceClosure",

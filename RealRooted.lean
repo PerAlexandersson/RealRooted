@@ -260,6 +260,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
@@ -357,6 +358,7 @@ import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
+import RealRooted.RootAmplitude
 import RealRooted.RootBounds
 import RealRooted.RootContinuity
 import RealRooted.RootCountFinite
