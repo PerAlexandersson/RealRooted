@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 670
+      "max_modules": 680
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -292,8 +292,35 @@
     "RealRooted.LiuWang.Step": {
       "max_modules": 25
     },
-    "RealRooted.LiuOppositeSigns.XSub.ProperPosition": {
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters": {
       "max_modules": 140
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts": {
+      "max_modules": 140
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount": {
+      "max_modules": 150
+    },
+    "RealRooted.LiuOppositeSigns.XSub.ProperPosition": {
+      "max_modules": 150
     },
     "RealRooted.Wronskian": {
       "max_modules": 85
@@ -660,6 +687,15 @@
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns",
+    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount",
     "RealRooted.LiuOppositeSigns.XSub.ProperPosition",
     "RealRooted.MaWang",
     "RealRooted.MaWang.DerivativeStep",

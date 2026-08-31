@@ -102,7 +102,10 @@ lake build RealRooted.Bezoutian
 - `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
   contain the current Liu opposite-leading-sign root-count interface; its
   `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
-  nonnegative `X * p - μ * q` splitness corollary.
+  nonnegative `X * p - μ * q` splitness corollary. Its
+  `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
+  exterior tails, count-to-splitting endpoints, and the three degree cases;
+  `XSub/IntervalRootCount.lean` remains the compatible import.
 - `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
   scalar-denominator normalizations, and row-sign normalizations; its parent
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`

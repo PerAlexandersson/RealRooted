@@ -247,6 +247,13 @@ value-at-zero comparison selects the proper-position orientation.
 positive-leading `Prec` interface to Liu's positive root-count package. It
 then applies the package's same-degree and successor-degree results to the
 general `X * p - μ * q` splitness corollary under nonnegative coefficients.
+
+`LiuOppositeSigns.XSub.IntervalRootCount` is now a compatibility facade over
+the interval-count proof layers: `RootFilters`, `GapCounts`, `UpperTail`, and
+`SplitEndpoints` establish the root-count infrastructure, while
+`RightSuccessor`, `SameDegree`, `LeftSuccessor`, and `TailSigns` own the
+mutually independent degree and endpoint-sign endgames. This follows the
+proof's dependencies rather than its former source order.
 This keeps the user-facing proper-position interface out of the interval-root
 count implementation.
 
@@ -473,11 +480,11 @@ require a generator-aware split; moving only a few helper lemmas does not
 improve Lean's elaboration unit or object-file caching.
 
 The completed first-wave splits cover Liu--Wang, Ma--Wang, Product,
-`AffineFamily`, `SymmetricDecomposition`, `GarloffWagner`, Hadamard, and the
-Favard theorem backend. The remaining candidates need an actual responsibility
-boundary before code moves: the Favard and OEIS tactic frontends, the
-`LiuOppositeSigns.XSub.IntervalRootCount` theorem program, and selected
-large application proofs.
+`AffineFamily`, `SymmetricDecomposition`, `GarloffWagner`, Hadamard, the
+Favard theorem backend, the OEIS certificate frontend, and the
+`LiuOppositeSigns.XSub.IntervalRootCount` theorem program. The remaining
+candidates need an actual responsibility boundary before code moves, notably
+selected large application proofs and case-analysis modules.
 
 The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
 `MaWang.Derivative` package:
@@ -683,8 +690,8 @@ are diagnostics rather than hard line-count limits.
    the completed Finish/Product, Ma--Wang, and Favard backend splits.
 2. Keep the `Tactic.OEIS` compatibility facade bounded; extract a future
    certificate family only after a dependency and responsibility audit.
-3. Audit `LiuOppositeSigns.XSub.IntervalRootCount` by theorem clusters before
-   exposing any implementation bridge; its current case distinctions need a
-   dependency inventory first.
+3. Apply the same theorem-cluster inventory to a further X-subtraction
+   case-analysis module before extracting it; do not split its algebraic cases
+   solely to reduce line count.
 4. Maintain the Mathlib-upstream queue: small Wronskian, multiset, list,
    homogenization, Mahler-measure, and scalar-polynomial normalization lemmas.

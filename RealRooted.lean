@@ -270,6 +270,14 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
 import RealRooted.LiuOppositeSigns.XSub.CubicQuadratic
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
 import RealRooted.LiuOppositeSigns.XSub.ProperPosition
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeThree
