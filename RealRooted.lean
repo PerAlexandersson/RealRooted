@@ -15,6 +15,8 @@ import RealRooted.ASWKarlinVariation
 import RealRooted.ASWKarlinVectors
 import RealRooted.AffineDerivative
 import RealRooted.AffineFamily
+import RealRooted.AffineFamily.Basic
+import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
