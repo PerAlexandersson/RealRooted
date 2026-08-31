@@ -97,6 +97,12 @@
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 70
     },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
+      "max_modules": 120
+    },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
+      "max_modules": 120
+    },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
     },
@@ -308,6 +314,8 @@
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.MultiplierSequence",
     "RealRooted.MultiplierSequence.Bidiagonal",
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen",
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",

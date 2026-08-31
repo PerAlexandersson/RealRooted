@@ -256,7 +256,11 @@ The finite-symbol application layer is split at its actual dependency boundary:
 coefficient formulas, degree bound, nonnegativity transport, and the
 degree-bounded PF-preserver interface. It has no finite-symbol or tactic
 dependency. Its `SecondDerivative` child owns the independent normalization of
-a six-parameter differential form to that raw operator.
+a six-parameter differential form to that raw operator. Its `Jensen` child
+owns the finite pencil, quadratic-residual factorization, and certificate API;
+the `Jensen.LowDegree` child owns the degree-one and degree-two preserver
+proofs. Thus each differential-form, certificate, and low-degree proof unit
+can evolve independently of the tactic-only sequence wrappers.
 `BorceaBranden.Applications.RealUnivariateSymbol` owns the complexification
 and degree-box symbol calculation, while its `Interlacing` child owns pencil
 and oriented-interlacing consequences for arbitrary real linear maps.
@@ -345,10 +349,10 @@ tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
 `SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
-a 1,947-line frontend and theorem mixture. Its next review should separate any
-remaining sequence-independent differential-form normalizations from
-certificate assembly and syntax, preserving the new
-`MultiplierSequence.Bidiagonal` module as the sole owner of the raw operator.
+a 1,436-line frontend and theorem mixture. Its next review should separate
+certificate assembly and sequence-wrapper syntax from the theorem-level
+contraction backend, preserving `MultiplierSequence.Bidiagonal` as the sole
+owner of the raw operator.
 `Tactic.FiniteSymbolPF` has a namespace-local compatibility copy of parts of
 that API; a later compatibility-preserving cleanup should route it through the
 library owner instead of introducing a second mathematical implementation.
