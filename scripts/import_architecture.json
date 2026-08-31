@@ -145,6 +145,9 @@
     "RealRooted.Wronskian.Forward": {
       "max_modules": 15
     },
+    "RealRooted.Wronskian.Converse": {
+      "max_modules": 15
+    },
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
@@ -370,6 +373,7 @@
     "RealRooted.VeroneseSectionPair",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",
+    "RealRooted.Wronskian.Converse",
     "RealRooted.Wronskian.Forward",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.LiuWang.Step",

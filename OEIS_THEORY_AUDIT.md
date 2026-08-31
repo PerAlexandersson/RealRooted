@@ -100,6 +100,25 @@ an arbitrary basis satisfying a differential recurrence from those model
 identities; it should not export the named `brandenE` definition as a generic
 library primitive.
 
+### Euler pencils and Wronskian converses
+
+`ProofsOeis.EulerPencil` has three distinct reusable layers and should not be
+moved as its 2,018-line monolith. Its strict same-degree bridge is now
+`Wronskian.Converse.strictPrecSameDegree_toPrec`: it turns the output of the
+Bezoutian/Wronskian criterion into the legacy `Prec` predicate required by
+existing recurrence APIs. The next layer is the successor-degree Wronskian
+converse: root-local or global strict Wronskian sign should yield
+interlacing, and a lower-degree split polynomial together with the sign should
+force splitness of its successor. Those belong in small `Wronskian` children,
+factored first into root-gap, interlacing, and splitness-transfer modules.
+
+The remaining Euler-pencil material is separate operator theory: positive
+`theta + c` pencil comparisons, then a degree-padded reciprocal-shift proper-
+position transport. It should be extracted under `EulerOperator` only after
+its root-list reversal lemmas are reconciled with the existing
+`DegreeDropReversal` API. This prevents a large list-combinatorics port from
+becoming an accidental dependency of the Wronskian package.
+
 ### Separation-specific amplitude applications
 
 The finite-extension and density-criterion layers now live in

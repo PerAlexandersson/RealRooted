@@ -86,9 +86,11 @@ Wronskian results have a focused package entry point:
 
 - `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and
   Euler-operator Wronskian formulas;
+- `Wronskian.Converse` owns conversion from the strict same-degree
+  Wronskian/Bezoutian conclusion to the legacy `Prec` predicate;
 - `Wronskian.Forward` owns the global strict-interlacing-to-positivity bridge;
   and
-- `Wronskian` is the small umbrella for both.
+- `Wronskian` is the small umbrella for all three.
 
 The reverse positivity-to-interlacing bridge remains in `Bezoutian`, where it
 is part of the Bezout-matrix characterization. The stability implication stays

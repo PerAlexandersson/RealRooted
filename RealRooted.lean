@@ -574,4 +574,5 @@ import RealRooted.WagnerX
 import RealRooted.WeightedSum
 import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra
+import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.Forward
