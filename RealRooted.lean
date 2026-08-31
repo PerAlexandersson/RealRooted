@@ -548,6 +548,15 @@ import RealRooted.Tactic.LiuWang.Step
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.MaWang.Basic
+import RealRooted.Tactic.MaWang.Denominator
+import RealRooted.Tactic.MaWang.DenominatorSyntax
+import RealRooted.Tactic.MaWang.Factors
+import RealRooted.Tactic.MaWang.FactorSyntax
+import RealRooted.Tactic.MaWang.Sequences
+import RealRooted.Tactic.MaWang.SequenceSyntax
+import RealRooted.Tactic.MaWang.Steps
+import RealRooted.Tactic.MaWang.StepSyntax
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence

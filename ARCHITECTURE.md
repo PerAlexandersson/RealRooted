@@ -435,8 +435,17 @@ The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
   and certificate lookup only.
 
 The theorem units have 180, 891, and 675 local lines, respectively. The tactic
-frontend is still a large user-interface module; its later split should group
-syntax with the corresponding elaborators rather than scatter macros by size.
+frontend is a compatibility umbrella over a dependency-ordered package:
+
+- `Basic` owns shared term and tactic helpers;
+- `StepSyntax`, `SequenceSyntax`, `DenominatorSyntax`, and `FactorSyntax` own
+  their respective parser declarations; and
+- `Steps`, `Sequences`, `Denominator`, and `Factors` own the corresponding
+  macro-rule groups, importing all prerequisite syntax and earlier rules.
+
+The largest frontend source unit is `Denominator` at 858 lines. This grouping
+keeps each declaration adjacent to its certificate family while preserving the
+old `RealRooted.Tactic.MaWang` import path.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

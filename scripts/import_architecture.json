@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 600
+      "max_modules": 610
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -319,8 +319,35 @@
     "RealRooted.MaWang.Derivative": {
       "max_modules": 30
     },
-    "RealRooted.Tactic.MaWang": {
+    "RealRooted.Tactic.MaWang.Basic": {
       "max_modules": 40
+    },
+    "RealRooted.Tactic.MaWang.StepSyntax": {
+      "max_modules": 40
+    },
+    "RealRooted.Tactic.MaWang.SequenceSyntax": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.MaWang.DenominatorSyntax": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.MaWang.FactorSyntax": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.MaWang.Steps": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.MaWang.Sequences": {
+      "max_modules": 45
+    },
+    "RealRooted.Tactic.MaWang.Denominator": {
+      "max_modules": 50
+    },
+    "RealRooted.Tactic.MaWang.Factors": {
+      "max_modules": 50
+    },
+    "RealRooted.Tactic.MaWang": {
+      "max_modules": 50
     },
     "RealRooted.Tactic.Product": {
       "max_modules": 80
@@ -473,6 +500,15 @@
     "RealRooted.Tactic.LiuWang.SequenceNonpositive",
     "RealRooted.Tactic.LiuWang.SequenceProducts",
     "RealRooted.Tactic.MaWang",
+    "RealRooted.Tactic.MaWang.Basic",
+    "RealRooted.Tactic.MaWang.StepSyntax",
+    "RealRooted.Tactic.MaWang.SequenceSyntax",
+    "RealRooted.Tactic.MaWang.DenominatorSyntax",
+    "RealRooted.Tactic.MaWang.FactorSyntax",
+    "RealRooted.Tactic.MaWang.Steps",
+    "RealRooted.Tactic.MaWang.Sequences",
+    "RealRooted.Tactic.MaWang.Denominator",
+    "RealRooted.Tactic.MaWang.Factors",
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic"
   ]
