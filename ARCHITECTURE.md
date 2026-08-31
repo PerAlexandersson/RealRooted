@@ -361,6 +361,8 @@ even when they have no interleaving witness.
 
 The Euler-operator package also now isolates two different theorem duties:
 
+- `EulerOperator` owns the operator definitions, coefficient formulae, and
+  elementary operator algebra, including the polar/Euler commutation law;
 - `EulerOperator.Pencil` owns proper-position comparisons for positive
   `theta + c` shifts;
 - `EulerOperator.Polar` proves finite-degree preservation of ordinary

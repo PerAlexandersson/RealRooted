@@ -42,6 +42,15 @@ def iterateThetaPlusOne (l : ℕ) (p : ℝ[X]) : ℝ[X] :=
 def polarTheta (N : ℕ) (p : ℝ[X]) : ℝ[X] :=
   C (N : ℝ) * p - theta p
 
+/-- The Euler operator is additive. -/
+theorem theta_add (p q : ℝ[X]) : theta (p + q) = theta p + theta q := by
+  simp [theta, derivative_add, mul_add]
+
+/-- The Euler operator commutes with scalar multiplication. -/
+theorem theta_C_mul (a : ℝ) (p : ℝ[X]) : theta (C a * p) = C a * theta p := by
+  simp [theta, derivative_mul]
+  ring
+
 @[simp] theorem coeff_theta (p : ℝ[X]) (n : ℕ) :
     (theta p).coeff n = (n : ℝ) * p.coeff n := by
   cases n with
@@ -78,6 +87,14 @@ theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
 @[simp] theorem coeff_polarTheta (N : ℕ) (p : ℝ[X]) (n : ℕ) :
     (polarTheta N p).coeff n = ((N : ℝ) - n) * p.coeff n := by
   simp [polarTheta]
+  ring
+
+/-- The polar theta operator commutes with `theta + 1`. -/
+theorem polarTheta_thetaPlusOne_comm (N : ℕ) (p : ℝ[X]) :
+    polarTheta N (thetaPlusOne p) = thetaPlusOne (polarTheta N p) := by
+  ext k
+  rw [coeff_polarTheta, coeff_thetaPlusOne, coeff_thetaPlusOne,
+    coeff_polarTheta]
   ring
 
 theorem HasNonnegCoeffs.thetaPlusOne {p : ℝ[X]}
