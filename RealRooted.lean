@@ -359,6 +359,10 @@ import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RootAmplitude
+import RealRooted.RootAmplitude.Convex
+import RealRooted.RootAmplitude.Finite
+import RealRooted.RootAmplitude.Minimum
+import RealRooted.RootAmplitude.Polynomial
 import RealRooted.RootBounds
 import RealRooted.RootContinuity
 import RealRooted.RootCountFinite

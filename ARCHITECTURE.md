@@ -225,8 +225,19 @@ application's Eulerian specialization.
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
 monicity. `RootAmplitude` builds the normalized-root-derivative product identity
-on that small shim. The forthcoming finite-sequence amplitude package will
-depend on this bridge; polynomial and sequence layers remain separate.
+on that small shim. The finite-sequence package is split by responsibility:
+
+- `RootAmplitude.Finite` owns the product algebra and the core
+  distance-comparison reduction;
+- `RootAmplitude.Convex` owns gap convexity, the distance injection, and the
+  convexity-based step theorem;
+- `RootAmplitude.Minimum` owns propagation from the smallest amplitude and the
+  alternative reciprocal-distance-sum criterion; and
+- `RootAmplitude.Polynomial` owns the separate split-polynomial bridge.
+
+The four layers are re-exported by `RootAmplitude`; this keeps every source unit
+below 250 lines and lets consumers import a finite-sequence theorem without a
+polynomial dependency.
 
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
