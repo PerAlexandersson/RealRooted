@@ -274,6 +274,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative

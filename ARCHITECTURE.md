@@ -219,6 +219,13 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`Mathlib.Algebra.Polynomial.Reverse` is another focused field-general shim. It
+identifies the roots of a reversed split polynomial as the inverses of its
+nonzero roots, with multiplicity and without a nonzero-constant-coefficient
+hypothesis. Degree padding and reciprocal shifts remain in the RealRooted
+layer: they are applications of this root transport rather than part of its
+generic polynomial API.
+
 The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator.Pencil` owns proper-position comparisons for positive
