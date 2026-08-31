@@ -382,6 +382,7 @@ import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
+import RealRooted.ReciprocalShift.Roots
 import RealRooted.RootAmplitude
 import RealRooted.RootAmplitude.Convex
 import RealRooted.RootAmplitude.Density

@@ -202,6 +202,9 @@
     "RealRooted.RootCounting.Threshold.Sorted": {
       "max_modules": 5
     },
+    "RealRooted.ReciprocalShift.Roots": {
+      "max_modules": 70
+    },
     "RealRooted.RootBounds": {
       "max_modules": 15
     },
@@ -380,6 +383,7 @@
     "RealRooted.RootCounting.Threshold.Derivative",
     "RealRooted.RootCounting.Threshold.Signs",
     "RealRooted.RootCounting.Threshold.Sorted",
+    "RealRooted.ReciprocalShift.Roots",
     "RealRooted.RootBounds",
     "RealRooted.RootAmplitude",
     "RealRooted.RootAmplitude.Convex",

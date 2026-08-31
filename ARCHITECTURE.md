@@ -222,9 +222,10 @@ and preservation arguments at their owning application layer.
 `Mathlib.Algebra.Polynomial.Reverse` is another focused field-general shim. It
 identifies the roots of a reversed split polynomial as the inverses of its
 nonzero roots, with multiplicity and without a nonzero-constant-coefficient
-hypothesis. Degree padding and reciprocal shifts remain in the RealRooted
-layer: they are applications of this root transport rather than part of its
-generic polynomial API.
+hypothesis. `ReciprocalShift.Roots` applies that generic transport to the
+project's degree-padded reciprocal shift. Proper-position transport remains a
+separate layer: it is an application of root transport plus sorted-list
+interlacing, rather than part of either root-multiset API.
 
 The Euler-operator package also now isolates two different theorem duties:
 

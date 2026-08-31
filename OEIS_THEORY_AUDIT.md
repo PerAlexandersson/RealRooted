@@ -59,8 +59,9 @@ of the RealRooted interlacing library.
 - `Mathlib.Algebra.Polynomial.Reverse` contains the field-general root formula
   for a reversed split polynomial, including its zero roots. This is the
   generic algebraic core of the reciprocal-shift portion of
-  `ProofsOeis.EulerPencil`; degree padding and proper-position transport stay
-  outside the shim.
+  `ProofsOeis.EulerPencil`. `ReciprocalShift.Roots` separately adds the
+  real degree-padded root-multiset formula; sorted-list and proper-position
+  transport stay outside both root APIs.
 - `Analysis.PowerTail` contains the finite reciprocal-power tail bounds from
   `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
   its finite telescoping consequence, and the quadratic-denominator
@@ -127,12 +128,13 @@ splitness transfer. This completes the reusable Wronskian portion of the
 Euler-pencil source without importing its unrelated operator or list-reversal
 layers.
 
-The remaining Euler-pencil material is the degree-padded reciprocal-shift
-proper-position transport. Its generic root-list reversal formula now lives in
-`Mathlib.Algebra.Polynomial.Reverse`; the next layer should consume that API
-and reconcile the padding/list-interlacing steps with `DegreeDropReversal`.
-This prevents a large list-combinatorics port from becoming an accidental
-dependency of the Wronskian package.
+The remaining Euler-pencil material is reciprocal-shift proper-position
+transport. Its generic root-list reversal formula is now in
+`Mathlib.Algebra.Polynomial.Reverse`, and its degree-padded root-multiset
+consequence is in `ReciprocalShift.Roots`; the next layer should reconcile the
+remaining sorted-list/interlacing steps with `DegreeDropReversal`. This keeps
+the large list-combinatorics port from becoming an accidental dependency of
+the Wronskian package.
 
 ### Separation-specific amplitude applications
 
