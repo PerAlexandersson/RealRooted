@@ -48,6 +48,25 @@ theorem sign_at_far_left {p : K[X]} (hpos : ∀ k, k ≤ p.natDegree → 0 < p.c
     nlinarith [hbig, hR1, hpow, hcd]
   exact sign_of_dominant hR0 (Nat.lt_succ_self _) (Nat.lt_succ_self _) hcd hdom
 
+/-- Consecutive signed evaluations at negative points yield a root between the
+corresponding evaluation magnitudes. -/
+theorem exists_isRoot_neg_between_of_signed_evals {p : ℝ[X]} {s₁ s₂ : ℝ}
+    (h12 : s₁ < s₂) {j : ℕ}
+    (h₁ : 0 < (-1 : ℝ) ^ j * p.eval (-s₁))
+    (h₂ : 0 < (-1 : ℝ) ^ (j + 1) * p.eval (-s₂)) :
+    ∃ x, s₁ < x ∧ x < s₂ ∧ p.IsRoot (-x) := by
+  have hmul : p.eval (-s₂) * p.eval (-s₁) < 0 := by
+    rcases neg_one_pow_eq_or ℝ j with hneg | hneg
+    · rw [hneg] at h₁
+      rw [pow_succ, hneg] at h₂
+      nlinarith [h₁, h₂]
+    · rw [hneg] at h₁
+      rw [pow_succ, hneg] at h₂
+      nlinarith [h₁, h₂]
+  obtain ⟨c, hc1, hc2, hc0⟩ : ∃ c, -s₂ < c ∧ c < -s₁ ∧ p.IsRoot c :=
+    exists_isRoot_between_of_eval_mul_neg (by linarith) hmul
+  exact ⟨-c, by linarith, by linarith, by simpa using hc0⟩
+
 /-- Alternating signed evaluations at `d + 1` ordered points imply splitness. -/
 theorem splits_of_signs {q : ℝ[X]} {d : ℕ} (hd : q.natDegree = d)
     (x : Fin (d + 1) → ℝ) (hmono : StrictMono x) (σ : Fin (d + 1) → ℕ)
