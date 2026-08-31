@@ -462,9 +462,12 @@ double-root exclusion and simple-root work, together with the public
 positive-pencil parameter and crossing API. Its one helper needed by the
 remaining Wronskian bridge is also a `protected` `AffineFamily` member. The
 compatibility-preserving source split adds one module to the CubicResidual
-Quadratic consumer closure, so its conservative budget is 145 rather than
-its former exhausted 140. The next split must move the local Wronskian bridge
-with its own root-picker helpers.
+CubicResidual compatibility closures, so their conservative guards are 145
+rather than their former exhausted 140. `AffineFamily.Wronskian` owns the
+625-line local Wronskian obstruction, root picker, and all-combinations bridge;
+its only parent-facing fact is a protected helper whose explicit splitness input
+keeps the dependency direction downward. The parent now retains the high-degree
+recursion and public endpoint wrappers.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
