@@ -234,8 +234,12 @@ polynomial `Prec` transport to later modules.
 
 `ReciprocalShift.Interlacing.Inversion` is its negative-root child: it owns
 only inverse/reversal transport of equal- and successor-length interleavings.
-The list endpoint shims own padding and deletion, while the future polynomial
-proper-position layer will consume both APIs.
+The list endpoint shims own padding and deletion.
+
+`ReciprocalShift.ProperPosition` consumes those list APIs to prove the
+polynomial-level `reciprocalShift_reverses_prec` theorem. This completes the
+reciprocal-shift side of the bridge without importing the Euler operator;
+the eventual polar-theta witness remains its consumer.
 
 `Mathlib.Data.List.Interleave` adds global and membership-aware
 relation-preserving map transport for `List.Interleaves`. It removes duplicated

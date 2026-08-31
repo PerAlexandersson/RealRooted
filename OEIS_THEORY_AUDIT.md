@@ -152,15 +152,14 @@ the Wronskian package.
 
 The remaining work has a fixed responsibility order:
 
-1. `ReciprocalShift.Interlacing` should own inverse-root list ordering and
-   its zero-root specialization. Its inverse-order and root-list-model core is
-   now extracted. Its `Interlacing.Inversion` child now handles inverse/reversal
-   transport on strict negative roots; generic end padding is in
+1. `ReciprocalShift.Interlacing` owns inverse-root list ordering, with its
+   `Interlacing.Inversion` child handling inverse/reversal transport on strict
+   negative roots. Generic end padding is in
    `Mathlib.Data.List.Interleave.Padding` and the sorted zero-tail
    decomposition is in `Mathlib.Data.List.Sort.Endpoint`.
-2. `ReciprocalShift.ProperPosition` should use that list layer to prove that a
-   degree-bounded reciprocal shift reverses a `Prec` pair.
-3. A small `EulerOperator` companion can then supply the checked witness for
+2. `ReciprocalShift.ProperPosition` now proves that a degree-bounded reciprocal
+   shift reverses a `Prec` pair.
+3. A small `EulerOperator` companion can now supply the checked witness for
    `polarThetaPreservesPrec0Statement` by composing two reciprocal-shift swaps
    with the existing derivative theorem.
 

@@ -217,6 +217,9 @@
     "RealRooted.ReciprocalShift.Interlacing.Inversion": {
       "max_modules": 70
     },
+    "RealRooted.ReciprocalShift.ProperPosition": {
+      "max_modules": 75
+    },
     "RealRooted.RootBounds": {
       "max_modules": 15
     },
@@ -399,6 +402,7 @@
     "RealRooted.RootCounting.Threshold.Sorted",
     "RealRooted.ReciprocalShift.Interlacing",
     "RealRooted.ReciprocalShift.Interlacing.Inversion",
+    "RealRooted.ReciprocalShift.ProperPosition",
     "RealRooted.ReciprocalShift.Roots",
     "RealRooted.RootBounds",
     "RealRooted.RootAmplitude",
