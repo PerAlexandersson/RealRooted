@@ -448,13 +448,23 @@ keeps each declaration adjacent to its certificate family while preserving the
 old `RealRooted.Tactic.MaWang` import path.
 
 `CommonInterleaverSeq` is now a compatibility parent over the first
-descending-root layer, `CommonInterleaver.RootDesc`, and the remaining
-root-slot, finite-Helly, degree, and Chudnovsky--Seymour construction layers.
+descending-root layer, `CommonInterleaver.RootDesc`, the root-slot package,
+and the remaining finite-Helly, degree, and Chudnovsky--Seymour construction
+layers.
 `RootDesc` owns the common-interleaver predicates, canonical descending root
 sequence, the indexwise `Prec` characterisation, and the consecutive-chain
 lemma. Its two nonemptiness facts are protected members of the
 `CommonInterleaver` namespace because the construction layer needs them; they
 are implementation bridges rather than a second public API.
+
+The root-slot package is deliberately split at its dependency boundary:
+`CommonInterleaver.RootSlots.Basic` owns interval endpoints and order facts,
+while `CommonInterleaver.RootSlots` owns interlacing transport. The 15
+parent-facing helpers are protected members of the `CommonInterleaver.RootSlots`
+namespace: they are shared implementation facts needed by the still-unsplit
+finite-Helly and Chudnovsky--Seymour construction layer, not proposed general
+theorem API. This keeps the two source units at 352 and 695 lines rather than
+creating a monolithic root-slot module.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
