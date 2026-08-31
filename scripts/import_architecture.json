@@ -50,7 +50,7 @@
       "max_modules": 150
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.Derivative": {
       "max_modules": 12
@@ -86,6 +86,9 @@
       "max_modules": 5
     },
     "RealRooted.Mathlib.Algebra.Polynomial.BasisTransform": {
+      "max_modules": 2
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Bezoutian": {
       "max_modules": 2
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse": {
@@ -341,7 +344,7 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 120
+      "max_modules": 125
     },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 80

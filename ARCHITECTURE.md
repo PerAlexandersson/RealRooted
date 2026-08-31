@@ -230,6 +230,13 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`Mathlib.Algebra.Polynomial.Bezoutian` similarly promotes the
+commutative-ring coefficient Bezoutian, its finite telescoping identities, and
+the generic Bezoutian matrix and row-polynomial definitions. The real
+positive-definiteness and strict-interlacing arguments remain in
+`RealRooted.Bezoutian`; its original coefficient API is retained as a
+compatibility layer.
+
 `Mathlib.Algebra.Polynomial.Reverse` is another focused field-general shim. It
 identifies the roots of a reversed split polynomial as the inverses of its
 nonzero roots, with multiplicity and without a nonzero-constant-coefficient
