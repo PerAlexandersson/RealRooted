@@ -173,6 +173,7 @@ import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
 import RealRooted.GammaRealRoots
 import RealRooted.GarloffWagner
+import RealRooted.GarloffWagner.Algebra
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.FiniteBoard

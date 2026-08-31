@@ -55,6 +55,9 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.GarloffWagner.Algebra": {
+      "max_modules": 90
+    },
     "RealRooted.SymmetricDecomposition.Definitions": {
       "max_modules": 15
     },
@@ -562,6 +565,7 @@
     "RealRooted.RootAmplitude.SumSquares",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
+    "RealRooted.GarloffWagner.Algebra",
     "RealRooted.ScalarNormalization",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",

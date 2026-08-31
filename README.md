@@ -58,8 +58,10 @@ lake build RealRooted.Bezoutian
   `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
   and Veronese-section material.
 - `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
-  product API; `GarloffWagner.lean` proves the proper-position preservation
-  theorem; `Hadamard.lean` packages its downstream consequences.
+  product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
+  Schur-product and differential-operator algebra, while
+  `GarloffWagner.lean` remains its theorem-route compatibility import.
+  `Hadamard.lean` packages downstream consequences.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
