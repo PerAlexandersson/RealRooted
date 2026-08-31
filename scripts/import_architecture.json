@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 640
+      "max_modules": 645
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -179,13 +179,13 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 145
+      "max_modules": 150
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 145
+      "max_modules": 155
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 165
+      "max_modules": 175
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 175
@@ -195,6 +195,15 @@
     },
     "RealRooted.Hadamard.Basic": {
       "max_modules": 145
+    },
+    "RealRooted.Hadamard.Finite": {
+      "max_modules": 150
+    },
+    "RealRooted.Hadamard.Newton": {
+      "max_modules": 150
+    },
+    "RealRooted.Hadamard.Cubic": {
+      "max_modules": 150
     },
     "RealRooted.Hadamard": {
       "max_modules": 150
@@ -395,7 +404,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 320
+      "max_modules": 325
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -548,6 +557,9 @@
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic",
     "RealRooted.Hadamard.Basic",
+    "RealRooted.Hadamard.Finite",
+    "RealRooted.Hadamard.Newton",
+    "RealRooted.Hadamard.Cubic",
     "RealRooted.Hadamard",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",

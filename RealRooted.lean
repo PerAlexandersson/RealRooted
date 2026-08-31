@@ -202,6 +202,9 @@ import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
 import RealRooted.Hadamard.Basic
+import RealRooted.Hadamard.Finite
+import RealRooted.Hadamard.Newton
+import RealRooted.Hadamard.Cubic
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler

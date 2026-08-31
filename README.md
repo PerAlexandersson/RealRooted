@@ -75,7 +75,9 @@ lake build RealRooted.Bezoutian
   compatibility import.
   `Hadamard/Basic.lean` owns the coefficient-support and Schur--Szego
   composition algebra, including the Jensen and degree-three identities;
-  `Hadamard.lean` retains the higher finite-composition and downstream
+  `Hadamard/Finite.lean`, `Newton.lean`, and `Cubic.lean` respectively own
+  the finite-composition interfaces, normalized Newton inequalities, and
+  degree-three reductions. `Hadamard.lean` retains the analytic, Hurwitz, and
   consequence layers during their incremental split.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem

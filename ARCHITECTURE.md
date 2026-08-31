@@ -568,8 +568,12 @@ the layers remain ordered by their mathematical dependency.
 
 `Hadamard.Basic` now owns the 765-line coefficient-support, fixed-degree
 Schur--Szego, diagonal-operator, Jensen-section, and degree-three-discriminant
-algebra. The compatibility parent retains the finite-composition, analytic,
-Hurwitz, and consequence layers for later dependency-ordered extraction.
+algebra. `Hadamard.Finite` owns the 255-line finite-composition interface and
+degree-two base case; `Hadamard.Newton` owns the 461-line normalized
+coefficient inequalities; and `Hadamard.Cubic` owns the 440-line degree-three
+reductions and finite Polya--Schur equivalences. The parent is down to 1,135
+lines and retains only the apolar/Grace, Hurwitz, and consequence layers for
+later dependency-ordered extraction.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
