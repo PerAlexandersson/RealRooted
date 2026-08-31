@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 620
+      "max_modules": 625
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -44,10 +44,10 @@
       "max_modules": 110
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 145
+      "max_modules": 150
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
       "max_modules": 150
@@ -137,19 +137,19 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 130
+      "max_modules": 135
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 130
+      "max_modules": 135
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -178,8 +178,23 @@
     "RealRooted.CommonInterleaver.Sequence": {
       "max_modules": 70
     },
+    "RealRooted.CommonInterleaver.PairBridge.Forward": {
+      "max_modules": 115
+    },
+    "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
+      "max_modules": 115
+    },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction": {
+      "max_modules": 115
+    },
+    "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
+      "max_modules": 115
+    },
     "RealRooted.CommonInterleaverSeq": {
       "max_modules": 70
+    },
+    "RealRooted.CommonInterleaver.PairBridge": {
+      "max_modules": 115
     },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 30
@@ -332,7 +347,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 305
+      "max_modules": 310
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50

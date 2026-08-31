@@ -117,6 +117,10 @@ import RealRooted.CommonInterleaver.FamilyUpgrade
 import RealRooted.CommonInterleaver.Finite
 import RealRooted.CommonInterleaver.IntervalLemmas
 import RealRooted.CommonInterleaver.PairBridge
+import RealRooted.CommonInterleaver.PairBridge.Compatibility
+import RealRooted.CommonInterleaver.PairBridge.Forward
+import RealRooted.CommonInterleaver.PairBridge.Reduction
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 import RealRooted.CommonInterleaver.PairwiseUpgrade
 import RealRooted.CommonInterleaver.RightPencil
 import RealRooted.CommonInterleaver.RootDesc

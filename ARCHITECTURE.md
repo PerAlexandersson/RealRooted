@@ -490,6 +490,15 @@ family-upgrade layer; they are implementation details, not another general
 theorem API. This leaves `CommonInterleaverSeq` as a 937-line public pairwise
 closure façade rather than a mixed 1,791-line implementation.
 
+`CommonInterleaver.PairBridge` is likewise a compatibility façade. Its former
+2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
+forward/same-degree transport), `PairBridge.SuccDegree` (999 lines of
+root-count and slot-data work), `PairBridge.Reduction` (944 lines of
+common-root and degree-split reductions), and `PairBridge.Compatibility`
+(856 endpoint wrappers). The two protected `PairBridge` helpers are the only
+implementation facts crossing the reduction/endpoint boundary; all existing
+ordinary public declarations retain their original names.
+
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
 It has a 10-module closure by importing only the Wagner addition and
@@ -516,7 +525,7 @@ its six protected `AffineFamily` helpers are the small interface genuinely
 needed by the remaining shifted-pair and high-degree code. The parent is now a
 976-line coordinator over the shared-root reduction, shifted-pair machinery,
 high-degree recursion, and public wrappers. Since the public umbrella imports
-every source module during this compatibility migration, its guard is 620 rather
+every source module during this compatibility migration, its guard is 625 rather
 than the exhausted 610. The same one-module closure increase exhausts three
 other legacy guards, so BidiagonalSymbol RealConsequences, Jensen LowDegree,
 and Jensen Contraction have conservative 150, 125, and 145-module bounds,
