@@ -25,6 +25,9 @@
     "RealRooted.AffineFamily.Basic": {
       "max_modules": 12
     },
+    "RealRooted.AffineFamily.Boundary": {
+      "max_modules": 75
+    },
     "RealRooted.AffineFamily.PositiveFamily": {
       "max_modules": 65
     },
@@ -407,6 +410,7 @@
     "RealRooted.Basic",
     "RealRooted.Basic.AffineInterlacing",
     "RealRooted.AffineFamily.Basic",
+    "RealRooted.AffineFamily.Boundary",
     "RealRooted.AffineFamily.PositiveFamily",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",

@@ -452,10 +452,12 @@ nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
 It has a 10-module closure by importing only the Wagner addition and
 `X`-transport APIs. `AffineFamily.PositiveFamily` separately packages the
 one-parameter `PosComboRealRooted` consequence, which necessarily carries the
-broader positive-combination stack. The remaining parent still owns the
-interdependent degree, root-zero, crossing, and Wronskian endgame. Its next
-split must move those private helper clusters together, rather than promoting
-them accidentally as public API.
+broader positive-combination stack. `AffineFamily.Boundary` owns the 681-line
+degree control, boundary-real-rootedness, and root-zero layer. Its seven
+implementation lemmas used by the high-degree endgame are explicitly marked
+`protected` in the `AffineFamily` namespace, rather than being accidentally
+presented as general theorem API. The parent now owns the crossing and
+Wronskian endgame; its next split must move those helper clusters together.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
