@@ -467,7 +467,17 @@ rather than their former exhausted 140. `AffineFamily.Wronskian` owns the
 625-line local Wronskian obstruction, root picker, and all-combinations bridge;
 its only parent-facing fact is a protected helper whose explicit splitness input
 keeps the dependency direction downward. The parent now retains the high-degree
-recursion and public endpoint wrappers.
+recursion and public endpoint wrappers. `AffineFamily.LowDegree` owns the
+835-line degree control, root-zero reductions, and explicit low-degree branch;
+its six protected `AffineFamily` helpers are the small interface genuinely
+needed by the remaining shifted-pair and high-degree code. The parent is now a
+976-line coordinator over the shared-root reduction, shifted-pair machinery,
+high-degree recursion, and public wrappers. Since the public umbrella imports
+every source module during this compatibility migration, its guard is 620 rather
+than the exhausted 610. The same one-module closure increase exhausts three
+other legacy guards, so BidiagonalSymbol RealConsequences, Jensen LowDegree,
+and Jensen Contraction have conservative 150, 125, and 145-module bounds,
+respectively; these are import-budget adjustments, not new mathematical edges.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

@@ -17,6 +17,7 @@ import RealRooted.AffineDerivative
 import RealRooted.AffineFamily
 import RealRooted.AffineFamily.Basic
 import RealRooted.AffineFamily.Boundary
+import RealRooted.AffineFamily.LowDegree
 import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AffineFamily.Wronskian

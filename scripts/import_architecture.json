@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 610
+      "max_modules": 620
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -28,6 +28,9 @@
     "RealRooted.AffineFamily.Boundary": {
       "max_modules": 75
     },
+    "RealRooted.AffineFamily.LowDegree": {
+      "max_modules": 75
+    },
     "RealRooted.AffineFamily.PositiveFamily": {
       "max_modules": 65
     },
@@ -41,7 +44,7 @@
       "max_modules": 110
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 145
+      "max_modules": 150
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 140
@@ -137,10 +140,10 @@
       "max_modules": 120
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 120
+      "max_modules": 125
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 140
+      "max_modules": 145
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 145
@@ -417,6 +420,7 @@
     "RealRooted.Basic.AffineInterlacing",
     "RealRooted.AffineFamily.Basic",
     "RealRooted.AffineFamily.Boundary",
+    "RealRooted.AffineFamily.LowDegree",
     "RealRooted.AffineFamily.PositiveFamily",
     "RealRooted.AffineFamily.RootCrossing",
     "RealRooted.AffineFamily.Wronskian",
