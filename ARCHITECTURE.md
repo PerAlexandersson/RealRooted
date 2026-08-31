@@ -108,6 +108,9 @@ Derivative recurrence results have a focused package entry point:
   theorems for first-order recurrences with linear polynomial coefficients;
 - `DerivativeRecurrence.SecondOrderDegree` owns coefficient, degree, and
   nonvanishing results for a common second-order recurrence;
+- `DerivativeRecurrence.SecondDerivativeDegree` owns the coefficient, degree,
+  nonvanishing, and coefficient-positivity consequences of a parameterized
+  second-derivative recurrence;
 - `DerivativeRecurrence.QuadraticDegree` owns the coefficient, degree, and
   nonvanishing core for recurrences with a quadratic derivative coefficient;
 - `DerivativeRecurrence.QuadraticShift`, `QuadraticInterlacing`, and

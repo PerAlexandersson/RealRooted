@@ -25,6 +25,11 @@ of the RealRooted interlacing library.
   signed-evaluation interval-root bridge is also now part of the threshold
   package. Consumer-specific model identifications and amplitude conclusions
   remain downstream.
+- `DerivativeRecurrence.SecondDerivativeDegree` contains the parameterized
+  second-derivative recurrence's coefficient form, monic degree formula,
+  nonvanishing, and nonnegative-coefficient consequences from the opening of
+  `ProofsOeis.SecondDerivativeTop`. Its later gamma model, branch comparison,
+  and sequence-specific real-rootedness program remain consumer-side.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum
@@ -195,9 +200,10 @@ project-level compatibility interface.
 
 - Eulerian, Delannoy, Eisenstein, cotangent, and named model identities remain
   applications unless their statements are separated from those models.
-- Large second-derivative ports and gap arguments mix generic infrastructure
-  with a specific target and should be split in the OEIS repository before any
-  source transfer.
+- The remaining large second-derivative source mixes the extracted
+  coefficient/degree layer with a gamma model, branch comparisons, and a
+  specific target; those later responsibilities should stay separate in the
+  OEIS repository until a further model-independent interface emerges.
 - Boundary cases and finite initial-row computations should remain adjacent to
   the generated sequence theorem that uses them.
 - `LogBounds` is a collection of numerical certificates for one perturbative

@@ -145,6 +145,9 @@
     "RealRooted.DerivativeRecurrence.QuadraticDegree": {
       "max_modules": 12
     },
+    "RealRooted.DerivativeRecurrence.SecondDerivativeDegree": {
+      "max_modules": 12
+    },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
       "max_modules": 25
     },
@@ -392,6 +395,7 @@
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
+    "RealRooted.DerivativeRecurrence.SecondDerivativeDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
