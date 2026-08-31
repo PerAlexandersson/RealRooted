@@ -10,6 +10,21 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.CoefficientDominance": {
+      "max_modules": 10
+    },
+    "RealRooted.CoefficientDominance.LogConcavity": {
+      "max_modules": 10
+    },
+    "RealRooted.CoefficientDominance.RootGap": {
+      "max_modules": 5
+    },
+    "RealRooted.CoefficientDominance.Sequence": {
+      "max_modules": 5
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Dominance": {
+      "max_modules": 5
+    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
     },
@@ -159,6 +174,11 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
+    "RealRooted.CoefficientDominance",
+    "RealRooted.CoefficientDominance.LogConcavity",
+    "RealRooted.CoefficientDominance.RootGap",
+    "RealRooted.CoefficientDominance.Sequence",
+    "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.EulerOperator.Polar",
     "RealRooted.EulerOperator.ScaledPolar",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",

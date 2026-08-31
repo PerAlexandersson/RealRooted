@@ -72,6 +72,10 @@ import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
 import RealRooted.ChudnovskySeymour
 import RealRooted.ClosedSegmentCountEqFromAnalytic
+import RealRooted.CoefficientDominance
+import RealRooted.CoefficientDominance.LogConcavity
+import RealRooted.CoefficientDominance.RootGap
+import RealRooted.CoefficientDominance.Sequence
 import RealRooted.CoefficientShape
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
@@ -251,6 +255,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Roots

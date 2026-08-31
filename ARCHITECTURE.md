@@ -206,6 +206,22 @@ The two modules are kept separate because the first is a general polar theorem,
 whereas the second is the specific Veronese transformation argument. Both stay
 well below the responsibility-review threshold.
 
+The coefficient-dominance package separates three logical jobs which had been
+interleaved in a consumer proof:
+
+- `Mathlib.Algebra.Polynomial.Dominance` supplies the upstream-shaped
+  dominant-term root-exclusion lemmas;
+- `CoefficientDominance.Sequence` proves the purely finite/infinite
+  log-concave sequence decay estimates;
+- `CoefficientDominance.LogConcavity` turns the two neighboring ratios into a
+  polynomial root-exclusion certificate; and
+- `CoefficientDominance.RootGap` converts a root-free reciprocal interval into
+  multiplicative and logarithmic gap bounds.
+
+`CoefficientDominance` is the small curated entry point. This distinction lets
+future users import a polynomial fact or sequence fact without inheriting an
+application's Eulerian specialization.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 

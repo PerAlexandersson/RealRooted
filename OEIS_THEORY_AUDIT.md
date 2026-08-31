@@ -35,21 +35,16 @@ of the RealRooted interlacing library.
   splitness by the polar theta operator, while `EulerOperator.ScaledPolar`
   contains the `-X²` composition/descent argument and the scale-two
   PF-preservation theorem.
+- `Mathlib.Algebra.Polynomial.Dominance` contains the generic dominant-term
+  root-exclusion criterion. `CoefficientDominance` separates geometric decay
+  of positive log-concave sequences, the resulting polynomial certificate,
+  and the root-free-interval-to-reciprocal-gap conversion.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
 only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
-
-### Coefficient dominance and root-free intervals
-
-The first part of `ProofsOeis.NewtonDominance` gives generic root-exclusion
-criteria from domination of one coefficient term and quantitative decay
-bounds for positive sequences. Split those lemmas from the later generalized
-Eulerian specialization before promotion. The polynomial root-exclusion
-statements are plausible Mathlib candidates after their hypotheses are
-generalized and imports minimized.
 
 ### Finite convex-sequence extension and amplitude theory
 
