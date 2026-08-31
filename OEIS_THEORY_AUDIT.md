@@ -202,6 +202,12 @@ project-level compatibility interface.
   `BrandenBinomialTransform` mix a named basis/model with generic fragments;
   those consumer files need internal responsibility splits before another
   library transfer.
+- `EisensteinCriticalLine` is a modular-form argument: its bilateral
+  Eisenstein sum, critical-line conjugation, and cotangent tail estimate are
+  tied to the Eulerian nome/root identification. The isolated reindexing and
+  summability facts belong, if anywhere, with a future Mathlib Eisenstein-series
+  API rather than in RealRooted. `LevelGap` combines those same model roots
+  with explicit window constants, and therefore remains consumer-side.
 - The vendored `BandedHessenberg` and `GantmacherKreinOrdered` modules are
   temporary copies of a named RealRooted pull request, not OEIS-owned theory.
   They should be deleted when the dependency pin advances, rather than copied
