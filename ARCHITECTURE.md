@@ -91,8 +91,8 @@ Wronskian results have a focused package entry point:
 - `Wronskian.Forward` owns the global strict-interlacing-to-positivity bridge;
   and
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
-  Wronskian sign, with a small `Successor` entry point for later interlacing
-  and splitness-transfer layers; and
+  Wronskian sign; `Wronskian.Successor.Interlacing` lifts those gaps to the
+  root-local and global interlacing criteria; and
 - `Wronskian` is the small umbrella for all four.
 
 The reverse positivity-to-interlacing bridge remains in `Bezoutian`, where it

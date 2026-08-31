@@ -1,4 +1,4 @@
-import RealRooted.Wronskian.Successor.Gap
+import RealRooted.Wronskian.Successor.Interlacing
 
 /-!
 # Successor-degree Wronskian criteria

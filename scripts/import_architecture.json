@@ -154,6 +154,9 @@
     "RealRooted.Wronskian.Successor.Gap": {
       "max_modules": 15
     },
+    "RealRooted.Wronskian.Successor.Interlacing": {
+      "max_modules": 15
+    },
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
@@ -383,6 +386,7 @@
     "RealRooted.Wronskian.Forward",
     "RealRooted.Wronskian.Successor",
     "RealRooted.Wronskian.Successor.Gap",
+    "RealRooted.Wronskian.Successor.Interlacing",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.LiuWang.Step",
     "RealRooted.Tactic.LiuWang.SequenceIntervals",
