@@ -337,6 +337,7 @@ import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiaffineReciprocalRight
 import RealRooted.MultiplierSequence
 import RealRooted.MultiplierSequence.Bidiagonal
+import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation
 import RealRooted.NewtonAux

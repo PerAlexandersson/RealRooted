@@ -255,12 +255,14 @@ The finite-symbol application layer is split at its actual dependency boundary:
 `MultiplierSequence.Bidiagonal` owns the coefficient-bidiagonal operator,
 coefficient formulas, degree bound, nonnegativity transport, and the
 degree-bounded PF-preserver interface. It has no finite-symbol or tactic
-dependency. `BorceaBranden.Applications.RealUnivariateSymbol` owns the
-complexification and degree-box symbol calculation, while its `Interlacing`
-child owns pencil and oriented-interlacing consequences for arbitrary real
-linear maps. `BidiagonalSymbol.RealConsequences` is the small specialization
-layer. Thus the reusable affine-symbol route no longer imports the tactic-only
-bidiagonal operator API.
+dependency. Its `SecondDerivative` child owns the independent normalization of
+a six-parameter differential form to that raw operator.
+`BorceaBranden.Applications.RealUnivariateSymbol` owns the complexification
+and degree-box symbol calculation, while its `Interlacing` child owns pencil
+and oriented-interlacing consequences for arbitrary real linear maps.
+`BidiagonalSymbol.RealConsequences` is the small specialization layer. Thus the
+reusable affine-symbol route no longer imports the tactic-only bidiagonal
+operator API.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
@@ -343,7 +345,7 @@ tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
 `SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
-a 2,089-line frontend and theorem mixture. Its next review should separate any
+a 1,947-line frontend and theorem mixture. Its next review should separate any
 remaining sequence-independent differential-form normalizations from
 certificate assembly and syntax, preserving the new
 `MultiplierSequence.Bidiagonal` module as the sole owner of the raw operator.

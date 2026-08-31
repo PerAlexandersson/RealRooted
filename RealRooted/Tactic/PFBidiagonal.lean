@@ -1,8 +1,9 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
 import RealRooted.Hadamard
 import RealRooted.HermiteBiehler
 import RealRooted.JensenPencilContraction
 import RealRooted.MultiplierSequence.Bidiagonal
+import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.Lookup
@@ -21,151 +22,8 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-/-- Quadratic coefficient shape produced by
-`a + b X D + c X^2 D^2` on the diagonal, and by the shifted
-`a X + b X^2 D + c X^3 D^2` part on the lower bidiagonal. -/
-def secondDerivativeQuadraticCoeff (a b c : ℝ) (k : ℕ) : ℝ :=
-  a + b * (k : ℝ) + c * (k : ℝ) * ((k : ℝ) - 1)
-
-/-- Six-parameter second-derivative operator whose coefficient action is
-lower bidiagonal.
-
-The parameters are the coefficients of
-`a₀ + a₁ X + b₁ X D + b₂ X² D + c₂ X² D² + c₃ X³ D²`.
-The nested `X * (...)` presentation is deliberate: it keeps coefficient
-normalization close to repeated uses of `coeff_X_mul`. -/
-def secondDerivativeBidiagonalForm
-    (a0 a1 b1 b2 c2 c3 : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  C a0 * p +
-    C a1 * (X * p) +
-    C b1 * (X * p.derivative) +
-    C b2 * (X * (X * p.derivative)) +
-    C c2 * (X * (X * p.derivative.derivative)) +
-    C c3 * (X * (X * (X * p.derivative.derivative)))
-
-/-- The six-parameter second-derivative form acts as a coefficient-bidiagonal
-operator. -/
-theorem secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-    (a0 a1 b1 b2 c2 c3 : ℝ) (p : ℝ[X]) :
-    secondDerivativeBidiagonalForm a0 a1 b1 b2 c2 c3 p =
-      bidiagonalOperator
-        (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
-        (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k)
-        p := by
-  ext k
-  cases k with
-  | zero =>
-      simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-        secondDerivativeQuadraticCoeff]
-  | succ k =>
-      cases k with
-      | zero =>
-          simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-            secondDerivativeQuadraticCoeff, coeff_derivative]
-          ring
-      | succ k =>
-          cases k with
-          | zero =>
-              simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-                secondDerivativeQuadraticCoeff, coeff_derivative]
-              ring
-          | succ k =>
-              simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-                secondDerivativeQuadraticCoeff, coeff_derivative]
-              ring
-
-/-- Normalize a second-derivative differential form to a named coefficient
-bidiagonal operator by identifying the two quadratic coefficient functions. -/
-theorem secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq
-    {alpha beta : ℕ → ℝ} {a0 a1 b1 b2 c2 c3 : ℝ} (p : ℝ[X])
-    (halpha : ∀ k : ℕ, secondDerivativeQuadraticCoeff a0 b1 c2 k = alpha k)
-    (hbeta : ∀ k : ℕ, secondDerivativeQuadraticCoeff a1 b2 c3 k = beta k) :
-    secondDerivativeBidiagonalForm a0 a1 b1 b2 c2 c3 p =
-      bidiagonalOperator alpha beta p := by
-  rw [secondDerivativeBidiagonalForm_eq_bidiagonalOperator]
-  congr
-  · funext k
-    exact halpha k
-  · funext k
-    exact hbeta k
-
-
-private theorem complexBidiagonalLinearMap_complexify
-    (alpha beta : ℕ → ℝ) (p : ℝ[X]) :
-    BorceaBranden.complexBidiagonalLinearMap alpha beta (complexify p) =
-      complexify (bidiagonalOperator alpha beta p) := by
-  ext n
-  cases n with
-  | zero =>
-      simp [BorceaBranden.complexBidiagonalLinearMap, bidiagonalOperator,
-        complexify]
-  | succ n =>
-      simp [BorceaBranden.complexBidiagonalLinearMap, bidiagonalOperator,
-        complexify, coeff_X_mul]
-
-/-- A genuinely stable affine Borcea--Branden symbol gives a degree-bounded
-PF-bidiagonal preserver when the relevant coefficient weights are nonnegative.
-
-This is the sound replacement for the insufficient one-sided Jensen-pencil
-criterion tracked by issue #240. It invokes the checked degree-box sufficiency
-theorem from issue #297 and does not assume a PF-preserver conclusion. -/
-theorem bidiagonalPFPreserver_of_affineSymbol
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
-          (BorceaBranden.bidiagonalLinearMap alpha beta))))
-    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
-    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
-    BidiagonalPFPreserver alpha beta d := by
-  intro p hp hdeg
-  have hout_nonneg : HasNonnegCoeffs (bidiagonalOperator alpha beta p) :=
-    hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta
-  by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
-  let fmv : MvPolynomial (Fin 1) ℂ :=
-    (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm (complexify p)
-  have hfmem : fmv ∈ MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) := by
-    rw [MvPolynomial.mem_degreeOfLE_iff_degreeOf]
-    intro i
-    rw [Subsingleton.elim i default]
-    simpa [fmv] using
-      (MvPolynomial.degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
-        (complexify p)).trans_le (Polynomial.natDegree_map_le.trans hdeg)
-  let f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) := ⟨fmv, hfmem⟩
-  have hinput_stable : MvUpperHalfPlaneStable f.1 := by
-    simpa [f, fmv] using
-      (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (complexify p)).mp
-        (fun z hz =>
-          eval_complexify_ne_zero_of_splits_of_im_pos
-            (hp.eq_zero_or_splits.resolve_left hp0) hp0 hz)
-  have hout := BorceaBranden.complexBidiagonalDegreeBox_preserves_stability
-    alpha beta d hSymbol f hinput_stable
-  change MvUpperHalfPlaneStableOrZero
-    ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
-      (BorceaBranden.complexBidiagonalLinearMap alpha beta
-        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1))) at hout
-  have hfpoly :
-      MvPolynomial.uniqueAlgEquiv ℂ (Fin 1) f.1 = complexify p := by
-    change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
-        ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm (complexify p)) =
-      complexify p
-    exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply (complexify p)
-  rw [hfpoly] at hout
-  rcases hout with hzero | hstable
-  · have hcomplex_zero :
-        BorceaBranden.complexBidiagonalLinearMap alpha beta (complexify p) = 0 := by
-      apply (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm.injective
-      simpa using hzero
-    rw [complexBidiagonalLinearMap_complexify] at hcomplex_zero
-    have hout_zero : bidiagonalOperator alpha beta p = 0 :=
-      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hcomplex_zero
-    simpa [hout_zero] using IsPFPolynomial.zero
-  · apply IsPFPolynomial.of_realRooted_nonneg hout_nonneg
-    apply IsUpperHalfPlaneStable.splits_complexify
-    rw [isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable]
-    simpa [complexBidiagonalLinearMap_complexify] using hstable
-
+/-! Second-derivative normalization is supplied by
+`MultiplierSequence.Bidiagonal.SecondDerivative`. -/
 /-- Jensen-pencil attached to a coefficient-bidiagonal operator.
 
 For a degree bound `d`, the two diagonal parts have finite Jensen kernels

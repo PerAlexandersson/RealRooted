@@ -97,6 +97,9 @@
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 70
     },
+    "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
+      "max_modules": 70
+    },
     "RealRooted.CommonInterleaverFamilySum": {
       "max_modules": 70
     },
@@ -305,6 +308,7 @@
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.MultiplierSequence",
     "RealRooted.MultiplierSequence.Bidiagonal",
+    "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",

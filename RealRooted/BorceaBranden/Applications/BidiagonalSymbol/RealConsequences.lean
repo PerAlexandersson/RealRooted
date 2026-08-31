@@ -47,6 +47,27 @@ theorem bidiagonalOperator_isPF_of_affineSymbol_stable
     · simp [hzero]
     · exact hsplits
 
+/-- A stable affine symbol provides a degree-bounded PF preserver when the
+relevant bidiagonal weights are nonnegative on that degree box. -/
+theorem bidiagonalPFPreserver_of_affineSymbol
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv
+        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+          (bidiagonalLinearMap alpha beta))))
+    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
+    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
+    BidiagonalPFPreserver alpha beta d := by
+  intro p hp hdeg
+  by_cases hp0 : p = 0
+  · simpa [hp0] using IsPFPolynomial.zero
+  apply IsPFPolynomial.of_realRooted_nonneg
+  · exact hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta
+  · rcases bidiagonalOperator_splits_of_affineSymbol_stable
+        hSymbol hdeg (hp.eq_zero_or_splits.resolve_left hp0) with hzero | hsplits
+    · simp [hzero]
+    · exact hsplits
+
 /-- A genuine stable affine symbol preserves an oriented interlacing pair when
 the two nonzero outputs have positive leading coefficients. -/
 theorem bidiagonalOperator_prec_of_affineSymbol_stable
@@ -66,3 +87,20 @@ theorem bidiagonalOperator_prec_of_affineSymbol_stable
     hSymbol hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 
 end RealRooted.BorceaBranden
+
+namespace RealRooted
+
+/-- Compatibility wrapper for the affine-symbol PF-preserver theorem. The
+finite-symbol application theorem is owned by `BorceaBranden`. -/
+theorem bidiagonalPFPreserver_of_affineSymbol
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv
+        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+          (BorceaBranden.bidiagonalLinearMap alpha beta))))
+    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
+    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
+    BidiagonalPFPreserver alpha beta d :=
+  BorceaBranden.bidiagonalPFPreserver_of_affineSymbol hSymbol halpha hbeta
+
+end RealRooted
