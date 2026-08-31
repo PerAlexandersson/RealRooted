@@ -194,7 +194,7 @@
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold": {
-      "max_modules": 30
+      "max_modules": 35
     },
     "RealRooted.RootCounting.Threshold.Anchor": {
       "max_modules": 5
@@ -203,6 +203,9 @@
       "max_modules": 3
     },
     "RealRooted.RootCounting.Threshold.Derivative": {
+      "max_modules": 10
+    },
+    "RealRooted.RootCounting.Threshold.LogConcavity": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.Signs": {
@@ -402,6 +405,7 @@
     "RealRooted.RootCounting.Threshold.Anchor",
     "RealRooted.RootCounting.Threshold.Basic",
     "RealRooted.RootCounting.Threshold.Derivative",
+    "RealRooted.RootCounting.Threshold.LogConcavity",
     "RealRooted.RootCounting.Threshold.Signs",
     "RealRooted.RootCounting.Threshold.Sorted",
     "RealRooted.ReciprocalShift.Interlacing",

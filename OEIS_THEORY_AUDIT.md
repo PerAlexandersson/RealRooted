@@ -19,9 +19,10 @@ of the RealRooted interlacing library.
   `SortedRoots` contain the reusable parts of the corresponding OEIS helper
   files. In particular, `RootCounting.Threshold` separates all of
   `ProofsOeis.RootSignCount` into generic threshold/parity and anchoring
-  layers, a sorted-root bridge, derivative signs, and signed-evaluation
-  applications. Consumer-specific model identifications and amplitude
-  conclusions remain downstream.
+  layers, a sorted-root bridge, derivative signs, signed-evaluation
+  applications, and log-concave coefficient dominance. The latter promotes the
+  sequence-independent sign core of `ProofsOeis.OuterRoots`. Consumer-specific
+  model identifications and amplitude conclusions remain downstream.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum
