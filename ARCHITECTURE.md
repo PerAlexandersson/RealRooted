@@ -195,6 +195,17 @@ The Cayley-transform extraction is entirely Mathlib-shaped:
 This replaces the consumer's duplicate real and complex transform definitions
 with one coefficient-ring-polymorphic API.
 
+The Euler-operator package also now isolates two different theorem duties:
+
+- `EulerOperator.Polar` proves finite-degree preservation of ordinary
+  splitness by the polar-theta operator; and
+- `EulerOperator.ScaledPolar` owns the `-X²` composition and descent lemmas,
+  then applies the polar bridge to prove the scale-two PF-preservation theorem.
+
+The two modules are kept separate because the first is a general polar theorem,
+whereas the second is the specific Veronese transformation argument. Both stay
+well below the responsibility-review threshold.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 

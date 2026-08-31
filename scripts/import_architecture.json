@@ -10,6 +10,12 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.EulerOperator.Polar": {
+      "max_modules": 75
+    },
+    "RealRooted.EulerOperator.ScaledPolar": {
+      "max_modules": 75
+    },
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
       "max_modules": 10
     },
@@ -153,6 +159,8 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
+    "RealRooted.EulerOperator.Polar",
+    "RealRooted.EulerOperator.ScaledPolar",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",

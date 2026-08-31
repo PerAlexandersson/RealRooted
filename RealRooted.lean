@@ -126,6 +126,8 @@ import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
+import RealRooted.EulerOperator.Polar
+import RealRooted.EulerOperator.ScaledPolar
 import RealRooted.EulerianCompletion
 import RealRooted.EulerianMixedCompatibility
 import RealRooted.Favard

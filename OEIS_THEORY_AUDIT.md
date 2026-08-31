@@ -31,20 +31,16 @@ of the RealRooted interlacing library.
   degree transform, field-level algebraic formulas, and complex root geometry.
   Its Mahler/Vieta coefficient estimate lives independently in
   `Mathlib.Analysis.Polynomial.MahlerMeasure`.
+- `EulerOperator.Polar` contains finite-degree preservation of ordinary
+  splitness by the polar theta operator, while `EulerOperator.ScaledPolar`
+  contains the `-X²` composition/descent argument and the scale-two
+  PF-preservation theorem.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
 only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
-
-### Scale-two polar preservation
-
-`ProofsOeis.ScaledPolarSplits` proves a general Pólya-frequency preservation
-theorem for `C N * h - C 2 * theta h` under `2 * h.natDegree ≤ N`. It should
-move beside `EulerOperator` after its `-X²` composition and splitness helpers
-are checked for overlap with the existing composition API. This is library
-theory, not an OEIS-specific endpoint.
 
 ### Coefficient dominance and root-free intervals
 
