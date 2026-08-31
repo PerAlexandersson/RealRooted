@@ -257,6 +257,14 @@ proof's dependencies rather than its former source order.
 This keeps the user-facing proper-position interface out of the interval-root
 count implementation.
 
+`LiuOppositeSigns.XSub.CubicCubic` is likewise a compatibility facade over an
+acyclic cubic/cubic case-analysis package. `CubicSubQuadratic` provides the
+shared root-factor and cubic-minus-quadratic infrastructure; `Basic` records
+the normalized leaf and common-root cases; `LeftOutlier`, `MiddleCases`,
+`RightRepeated`, and `LeftRepeated` own the ordered-root and repeated-root
+families in proof dependency order; and `Endpoints` derives the degree-three
+interface. The facade preserves the previous public import path.
+
 The Cayley-transform extraction is entirely Mathlib-shaped:
 
 - `Mathlib.Algebra.Polynomial.CayleyTransform.Basic` defines the transform

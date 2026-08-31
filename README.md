@@ -105,7 +105,11 @@ lake build RealRooted.Bezoutian
   nonnegative `X * p - μ * q` splitness corollary. Its
   `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
   exterior tails, count-to-splitting endpoints, and the three degree cases;
-  `XSub/IntervalRootCount.lean` remains the compatible import.
+  `XSub/IntervalRootCount.lean` remains the compatible import. Its
+  `XSub/CubicCubic/` package similarly separates cubic-minus-quadratic
+  infrastructure, normalized setup, root-order case families, repeated-root
+  boundaries, and the degree-three endpoints; `XSub/CubicCubic.lean` remains
+  the compatible import.
 - `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
   scalar-denominator normalizations, and row-sign normalizations; its parent
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
