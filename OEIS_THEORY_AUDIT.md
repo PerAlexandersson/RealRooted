@@ -89,6 +89,22 @@ The finite-extension and density-criterion layers now live in
 `RootAmplitude`. The separation-specific helper still depends on
 consumer-owned staircase theory.
 
+### Affine finite symbols and legacy interlacing
+
+The previous 522-line `ProofsOeis.AffineFiniteSymbol` source was not copied as
+a monolith: its complexification and degree-box calculation already lived in
+`BorceaBranden.Applications.RealUnivariateSymbol`; the missing arbitrary-map
+consequences now live in its `Interlacing` child, and its affine-bidiagonal
+corollaries are a separate 68-line specialization. The tactic-only
+coefficient-bidiagonal operator was extracted first into
+`MultiplierSequence.Bidiagonal` so the new application theorem modules do not
+depend on tactic elaboration.
+
+`ProofsOeis.AffineInterlaces` is now `Basic.AffineInterlacing`, a small
+`Linear`-only companion for the established legacy `Interlaces` predicate. It
+is intentionally not a Mathlib candidate because that predicate itself is a
+project-level compatibility interface.
+
 ## Keep consumer-side for now
 
 - Eulerian, Delannoy, Eisenstein, cotangent, and named model identities remain
@@ -98,3 +114,12 @@ consumer-owned staircase theory.
   source transfer.
 - Boundary cases and finite initial-row computations should remain adjacent to
   the generated sequence theorem that uses them.
+- `LogBounds` is a collection of numerical certificates for one perturbative
+  inequality, not a reusable logarithm API. `EvenBinomial` and the 1,192-line
+  `BrandenBinomialTransform` mix a named basis/model with generic fragments;
+  those consumer files need internal responsibility splits before another
+  library transfer.
+- The vendored `BandedHessenberg` and `GantmacherKreinOrdered` modules are
+  temporary copies of a named RealRooted pull request, not OEIS-owned theory.
+  They should be deleted when the dependency pin advances, rather than copied
+  again into a competing local API.

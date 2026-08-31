@@ -342,6 +342,15 @@ The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
 tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
 `SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
 
+After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
+a 2,089-line frontend and theorem mixture. Its next review should separate any
+remaining sequence-independent differential-form normalizations from
+certificate assembly and syntax, preserving the new
+`MultiplierSequence.Bidiagonal` module as the sole owner of the raw operator.
+`Tactic.FiniteSymbolPF` has a namespace-local compatibility copy of parts of
+that API; a later compatibility-preserving cleanup should route it through the
+library owner instead of introducing a second mathematical implementation.
+
 ## Consumer-to-library extraction
 
 A theorem discovered in an application or OEIS proof should pass through the
