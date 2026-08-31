@@ -206,6 +206,25 @@ depend on tactic elaboration.
 is intentionally not a Mathlib candidate because that predicate itself is a
 project-level compatibility interface.
 
+## Audited helper boundary
+
+- `ProofsOeis.SignAlternation` is now duplicate coverage: its interval-root
+  argument is `MaWang.exists_isRoot_between_of_eval_mul_neg`, and its finite
+  sign-alternation conclusion is `RootCounting.SignChanges` (with the
+  parity-normalized convenience API in `Threshold.Signs`).
+- The raw finite-root criterion in `ProofsOeis.RootFamily` is already the
+  upstream-shaped `Mathlib.Algebra.Polynomial.Splits` theorem. Its remaining
+  root-count and sorted-enumeration bridge is `SortedRoots.Exhibited`.
+- `ProofsOeis.OuterGap` composes the existing Vieta and
+  `RootAmplitude.Extreme` APIs with Eulerian coefficient estimates, so it does
+  not define an additional general layer. `AltPoints` has one
+  `A366159`-induction consumer and packages that induction's particular
+  endpoint arrangement; it remains adjacent to that model.
+- `Crossover`, `BandIndex`, and `MiddleGap` are numerical or trigonometric
+  windows tied to the Eisenstein/Eulerian model. They have no sequence-free
+  theorem interface to promote without first separating a broader analytic
+  library.
+
 ## Keep consumer-side for now
 
 - Eulerian, Delannoy, Eisenstein, cotangent, and named model identities remain
