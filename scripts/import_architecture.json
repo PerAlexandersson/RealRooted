@@ -88,6 +88,9 @@
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
     },
+    "RealRooted.EulerOperator.Polar.ProperPosition": {
+      "max_modules": 80
+    },
     "RealRooted.EulerOperator.Pencil": {
       "max_modules": 75
     },
@@ -366,6 +369,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
     "RealRooted.EulerOperator.Polar",
+    "RealRooted.EulerOperator.Polar.ProperPosition",
     "RealRooted.EulerOperator.Pencil",
     "RealRooted.EulerOperator.ScaledPolar",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",

@@ -279,8 +279,8 @@ theorem polarThetaPreservesPF_of_realRootedOrZero
   fun {_ _} hp hdeg =>
     ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
 
-/-- Classical polar-derivative input: `N - theta` preserves weak proper position
-on the bounded-degree part of the polynomial PF cone. -/
+/-- Polar-theta proper-position target. A checked witness is
+`RealRooted.polarTheta_preserves_prec0` in `EulerOperator.Polar.ProperPosition`. -/
 def polarThetaPreservesPrec0Statement : Prop :=
   ∀ {N : ℕ} {p q : ℝ[X]},
     IsPFPolynomial p →

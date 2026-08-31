@@ -35,9 +35,10 @@ of the RealRooted interlacing library.
   Its Mahler/Vieta coefficient estimate lives independently in
   `Mathlib.Analysis.Polynomial.MahlerMeasure`.
 - `EulerOperator.Polar` contains finite-degree preservation of ordinary
-  splitness by the polar theta operator, while `EulerOperator.ScaledPolar`
-  contains the `-X²` composition/descent argument and the scale-two
-  PF-preservation theorem.
+  splitness by the polar theta operator, and its `Polar.ProperPosition` child
+  proves bounded-degree `Prec0` preservation using the reciprocal-shift bridge.
+  `EulerOperator.ScaledPolar` contains the `-X²` composition/descent argument
+  and the scale-two PF-preservation theorem.
 - `EulerOperator.Pencil` contains the positive `theta + c` proper-position
   comparisons from `ProofsOeis.EulerPencil`. Its narrow theorem-only support
   is in `WagnerX.ProperPosition`, which separates general forward and reverse
@@ -159,7 +160,7 @@ The remaining work has a fixed responsibility order:
    decomposition is in `Mathlib.Data.List.Sort.Endpoint`.
 2. `ReciprocalShift.ProperPosition` now proves that a degree-bounded reciprocal
    shift reverses a `Prec` pair.
-3. A small `EulerOperator` companion can now supply the checked witness for
+3. `EulerOperator.Polar.ProperPosition` now supplies the checked witness for
    `polarThetaPreservesPrec0Statement` by composing two reciprocal-shift swaps
    with the existing derivative theorem.
 

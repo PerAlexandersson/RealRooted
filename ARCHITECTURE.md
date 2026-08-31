@@ -262,7 +262,9 @@ The Euler-operator package also now isolates two different theorem duties:
 - `EulerOperator.Pencil` owns proper-position comparisons for positive
   `theta + c` shifts;
 - `EulerOperator.Polar` proves finite-degree preservation of ordinary
-  splitness by the polar-theta operator; and
+  splitness by the polar-theta operator;
+- `EulerOperator.Polar.ProperPosition` combines the reciprocal-shift swap with
+  derivative preservation to discharge polar-theta `Prec0` preservation; and
 - `EulerOperator.ScaledPolar` owns the `-X²` composition and descent lemmas,
   then applies the polar bridge to prove the scale-two PF-preservation theorem.
 

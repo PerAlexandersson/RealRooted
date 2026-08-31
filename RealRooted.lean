@@ -145,6 +145,7 @@ import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar
+import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.EulerOperator.ScaledPolar
 import RealRooted.EulerianCompletion
 import RealRooted.EulerianMixedCompatibility
