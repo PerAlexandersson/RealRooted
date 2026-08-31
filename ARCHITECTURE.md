@@ -242,6 +242,11 @@ interleaving lists, including removal of arbitrary tails at a strict upper
 endpoint. The reciprocal-shift layer supplies only the negative-root and
 zero-multiplicity specialization of that API.
 
+`Mathlib.Data.List.Sort.Endpoint` supplies the separate sorted-list fact that
+an upper-bounded list ends in all copies of its endpoint. It is deliberately
+not part of interleaving: polynomial root applications need the decomposition
+even when they have no interleaving witness.
+
 The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator.Pencil` owns proper-position comparisons for positive

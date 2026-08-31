@@ -290,6 +290,7 @@ import RealRooted.Mathlib.Data.List.Destutter
 import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.Data.List.Interleave.Padding
 import RealRooted.Mathlib.Data.List.OfFn
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
 import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.Mathlib.Data.Multiset.Card
 import RealRooted.Mathlib.Data.Multiset.Rel
