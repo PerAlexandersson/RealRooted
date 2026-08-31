@@ -280,6 +280,9 @@
     "RealRooted.SortedRoots": {
       "max_modules": 5
     },
+    "RealRooted.SortedRoots.Exhibited": {
+      "max_modules": 12
+    },
     "RealRooted.VeroneseSectionPair": {
       "max_modules": 110
     },
@@ -436,6 +439,7 @@
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
+    "RealRooted.SortedRoots.Exhibited",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",

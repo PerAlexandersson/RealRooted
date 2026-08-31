@@ -30,6 +30,11 @@ of the RealRooted interlacing library.
   nonvanishing, and nonnegative-coefficient consequences from the opening of
   `ProofsOeis.SecondDerivativeTop`. Its later gamma model, branch comparison,
   and sequence-specific real-rootedness program remain consumer-side.
+- `SortedRoots.Exhibited` promotes the remaining nonduplicate
+  `ProofsOeis.RootFamily` bridge: an explicitly indexed strictly increasing
+  family of all roots both saturates the root count and identifies the sorted
+  negative-root magnitudes. The raw finite-root splitness criterion was already
+  present in `Mathlib.Algebra.Polynomial.Splits` and is not duplicated.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum

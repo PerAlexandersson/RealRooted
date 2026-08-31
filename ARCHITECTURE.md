@@ -152,9 +152,11 @@ factorization by `1 + x_i X`. It currently states the consumer's real version
 with a one-module local closure; generalization to characteristic-zero fields
 is the next step before proposing it as a Mathlib shim.
 
-`SortedRoots` contains only the reusable bridge from a polynomial's root
-multiset to the increasing list and indexed sequence of negated roots. The
-consumer-specific amplitude comparison remains downstream. Its product
+`SortedRoots` contains the reusable bridge from a polynomial's root multiset
+to the increasing list and indexed sequence of negated roots. Its `Exhibited`
+child turns an explicitly indexed strictly increasing family of all roots into
+that sequence, while the basic module remains free of root-counting imports.
+The consumer-specific amplitude comparison remains downstream. Its product
 reindexing helper was generalized to arbitrary lists and placed in
 `Mathlib.Data.List.Basic`.
 

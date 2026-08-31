@@ -435,6 +435,7 @@ import RealRooted.ShiftLemma
 import RealRooted.SignEvaluation
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SortedRoots
+import RealRooted.SortedRoots.Exhibited
 import RealRooted.StaircaseSum
 import RealRooted.SuccDegreeLeftEndpoint
 import RealRooted.SuccDegreeRootCrossing
