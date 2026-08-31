@@ -179,4 +179,106 @@ lemma Interleaves.append_replicate_left_of_length_add_one_eq
       simpa [Nat.add_assoc, append_assoc, replicate_succ'] using
         hsame.append_left_of_length_add_one_eq hlenksucc hupperk
 
+private lemma not_interleaves_append_replicate_succ_left
+    [LinearOrder α] (l₁ l₂ : List α) (k : ℕ) (hlt : ∀ x ∈ l₂, x < a)
+    (hlen : (l₁ ++ List.replicate (k + 1) a).length + 1 = l₂.length)
+    (h : Interleaves (· ≤ ·) (l₁ ++ List.replicate (k + 1) a) l₂) : False := by
+  have hlength : l₂.length ≥ 1 := by lia
+  obtain ⟨l₂', b, rfl⟩ : ∃ l₂' b, l₂ = l₂' ++ [b] := by
+    rcases eq_nil_or_concat l₂ with hnil | ⟨l₂', b, h₂⟩
+    · simp [hnil] at hlength
+    · exact ⟨l₂', b, by simpa only [concat_eq_append] using h₂⟩
+  rw [show l₁ ++ List.replicate (k + 1) a =
+        (l₁ ++ List.replicate k a) ++ [a] by
+      rw [append_assoc, ← replicate_succ']] at h hlen
+  have hlength' : (l₁ ++ List.replicate k a).length + 1 = l₂'.length := by
+    grind
+  rw [interleaves_append_singleton_append_singleton_of_length_add_one_eq_length hlength'] at h
+  have hb : b ∈ l₂' ++ [b] := by simp
+  grind
+
+private lemma not_interleaves_append_replicate_succ_right
+    [LinearOrder α] (l₁ l₂ : List α) (k : ℕ) (hlt : ∀ x ∈ l₁, x < a)
+    (hlen : l₁.length = (l₂ ++ List.replicate (k + 1) a).length)
+    (h : Interleaves (· ≤ ·) l₁ (l₂ ++ List.replicate (k + 1) a)) : False := by
+  have hlength : l₁.length ≥ 1 := by
+    simp only [length_append, length_replicate] at hlen
+    lia
+  obtain ⟨l₁', b, rfl⟩ : ∃ l₁' b, l₁ = l₁' ++ [b] := by
+    rcases eq_nil_or_concat l₁ with hnil | ⟨l₁', b, h₁⟩
+    · simp [hnil] at hlength
+    · exact ⟨l₁', b, by simpa only [concat_eq_append] using h₁⟩
+  rw [show l₂ ++ List.replicate (k + 1) a =
+        (l₂ ++ List.replicate k a) ++ [a] by
+      rw [append_assoc, ← replicate_succ']] at h hlen
+  have hlength' : l₁'.length = (l₂ ++ List.replicate k a).length := by
+    grind
+  rw [interleaves_append_singleton_append_singleton_of_length_eq_length hlength'] at h
+  have hb : b ∈ l₁' ++ [b] := by simp
+  grind
+
+private lemma interleaves_drop_replicate_of_lt_aux
+    [LinearOrder α] (l₁ l₂ : List α) (hlt₁ : ∀ x ∈ l₁, x < a)
+    (hlt₂ : ∀ x ∈ l₂, x < a) :
+    ∀ (n k₁ k₂ : ℕ), k₁ + k₂ = n →
+      Interleaves (· ≤ ·) (l₁ ++ List.replicate k₁ a) (l₂ ++ List.replicate k₂ a) →
+        Interleaves (· ≤ ·) l₁ l₂ := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+      intro k₁ k₂ hsum h
+      match k₁, k₂ with
+      | 0, 0 => simpa using h
+      | k₁ + 1, k₂ =>
+          have hlength := (interleaves_iff_length_isChain_interleave.mp h).1
+          simp only [length_append, length_replicate] at hlength
+          rcases hlength with heq | hsucc
+          · rw [show l₁ ++ List.replicate (k₁ + 1) a =
+                (l₁ ++ List.replicate k₁ a) ++ [a] by
+              rw [append_assoc, ← replicate_succ']] at h
+            have hlength' : (l₁ ++ List.replicate k₁ a).length + 1 =
+                (l₂ ++ List.replicate k₂ a).length := by
+              grind
+            exact ih (k₁ + k₂) (by lia) k₁ k₂ (by grind)
+              (h.drop_left_of_length_add_one_eq hlength')
+          · cases k₂ with
+            | succ k₂ =>
+                rw [show l₂ ++ List.replicate (k₂ + 1) a =
+                      (l₂ ++ List.replicate k₂ a) ++ [a] by
+                    rw [append_assoc, ← replicate_succ']] at h
+                have hlength' : (l₁ ++ List.replicate (k₁ + 1) a).length =
+                    (l₂ ++ List.replicate k₂ a).length := by
+                  grind
+                exact ih (k₁ + 1 + k₂) (by lia) (k₁ + 1) k₂ rfl
+                  (h.drop_right_of_length_eq hlength')
+            | zero =>
+                exact (not_interleaves_append_replicate_succ_left l₁ l₂ k₁ hlt₂
+                  (by grind) (by simpa using h)).elim
+      | 0, k₂ + 1 =>
+          have hlength := (interleaves_iff_length_isChain_interleave.mp h).1
+          simp only [length_append, length_replicate] at hlength
+          rcases hlength with heq | hsucc
+          · exact (not_interleaves_append_replicate_succ_right l₁ l₂ k₂ hlt₁
+              (by grind) (by simpa using h)).elim
+          · rw [show l₂ ++ List.replicate (k₂ + 1) a =
+                (l₂ ++ List.replicate k₂ a) ++ [a] by
+              rw [append_assoc, ← replicate_succ']] at h
+            have hlength' : l₁.length = (l₂ ++ List.replicate k₂ a).length := by
+              grind
+            have hlength'' : (l₁ ++ List.replicate 0 a).length =
+                (l₂ ++ List.replicate k₂ a).length := by
+              simpa using hlength'
+            have hdrop := h.drop_right_of_length_eq hlength''
+            exact ih k₂ (by lia) 0 k₂ (by simp) (by simpa using hdrop)
+
+/-- Removing repeated copies of a strict upper endpoint from both sides of an
+interleaving preserves the interleaving of the remaining lists. -/
+lemma Interleaves.drop_replicate_of_lt
+    [LinearOrder α] (hlt₁ : ∀ x ∈ l₁, x < a) (hlt₂ : ∀ x ∈ l₂, x < a)
+    {k₁ k₂ : ℕ}
+    (h : Interleaves (· ≤ ·) (l₁ ++ List.replicate k₁ a)
+      (l₂ ++ List.replicate k₂ a)) :
+    Interleaves (· ≤ ·) l₁ l₂ := by
+  exact interleaves_drop_replicate_of_lt_aux l₁ l₂ hlt₁ hlt₂ (k₁ + k₂) k₁ k₂ rfl h
+
 end List

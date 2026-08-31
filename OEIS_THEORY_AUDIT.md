@@ -67,10 +67,10 @@ of the RealRooted interlacing library.
   in the Euler-pencil and affine-interlacing proofs, so it belongs below the
   polynomial layer and is a direct Mathlib upstream candidate.
 - `Mathlib.Data.List.Interleave.Padding` contains the relation-generic
-  endpoint deletion and repeated-padding facts independently reconstructed in
-  the Euler-pencil proof. The reciprocal-shift consumer will instantiate them
-  at the ordered endpoint `0`; this package is another direct Mathlib upstream
-  candidate.
+  endpoint deletion, repeated padding, and strict-endpoint tail-removal facts
+  independently reconstructed in the Euler-pencil proof. The reciprocal-shift
+  consumer will instantiate them at the ordered endpoint `0`; this package is
+  another direct Mathlib upstream candidate.
 - `Analysis.PowerTail` contains the finite reciprocal-power tail bounds from
   `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
   its finite telescoping consequence, and the quadratic-denominator

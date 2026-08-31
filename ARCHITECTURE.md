@@ -238,8 +238,9 @@ affine-interlacing modules, and is independent of all polynomial theory.
 
 `Mathlib.Data.List.Interleave.Padding` is its endpoint companion: it owns
 relation-generic deletion and repeated padding at the right endpoints of
-interleaving lists. The reciprocal-shift layer supplies only the negative-root
-and zero-multiplicity specialization of that API.
+interleaving lists, including removal of arbitrary tails at a strict upper
+endpoint. The reciprocal-shift layer supplies only the negative-root and
+zero-multiplicity specialization of that API.
 
 The Euler-operator package also now isolates two different theorem duties:
 
