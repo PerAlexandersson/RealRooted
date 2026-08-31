@@ -191,6 +191,7 @@ import RealRooted.GarloffWagner.KreinData
 import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GarloffWagner.Hadamard
+import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.FiniteBoard

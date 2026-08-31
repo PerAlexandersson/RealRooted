@@ -1,8 +1,8 @@
 {
   "version": 1,
   "budgets": {
-   "RealRooted": {
-      "max_modules": 729
+    "RealRooted": {
+      "max_modules": 730
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -75,6 +75,9 @@
     },
     "RealRooted.GammaTransform": {
       "max_modules": 111
+    },
+    "RealRooted.GeneralizedEulerian": {
+      "max_modules": 82
     },
     "RealRooted.GarloffWagner.Algebra": {
       "max_modules": 90
@@ -835,6 +838,7 @@
     "RealRooted.GammaTransform.Preservation",
     "RealRooted.GammaTransform.ProperPosition",
     "RealRooted.GammaTransform",
+    "RealRooted.GeneralizedEulerian",
     "RealRooted.CoefficientDominance",
     "RealRooted.CoefficientDominance.LogConcavity",
     "RealRooted.CoefficientDominance.RootGap",

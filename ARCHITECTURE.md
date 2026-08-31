@@ -145,6 +145,11 @@ The finite-sum and scalar-monomial identities were first needed by generated
 sequence proofs, but their statements are independent of any sequence and now
 belong with the gamma-transform algebra.
 
+`GeneralizedEulerian` owns the positive-parameter Eulerian differential
+recurrence together with its degree, nonnegative-coefficient, and splitness
+invariants. Its parameterized statement is independent of any OEIS client, so
+it remains a compact theorem module rather than an application wrapper.
+
 Finite root-counting results have a separate focused package:
 
 - `Mathlib.Data.Multiset.Card` contains upstream-shaped cardinality criteria
