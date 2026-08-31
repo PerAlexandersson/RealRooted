@@ -23,10 +23,10 @@
       "max_modules": 10
     },
     "RealRooted.AffineFamily.Basic": {
-      "max_modules": 12
+      "max_modules": 15
     },
     "RealRooted.AffineFamily.Boundary": {
-      "max_modules": 80
+      "max_modules": 85
     },
     "RealRooted.AffineFamily.LowDegree": {
       "max_modules": 85
@@ -44,13 +44,13 @@
       "max_modules": 110
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 165
+      "max_modules": 170
     },
     "RealRooted.BorceaBranden.Applications.EulerBidiagonal": {
       "max_modules": 170
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
       "max_modules": 160
@@ -163,6 +163,18 @@
     "RealRooted.WagnerX.ProperPosition": {
       "max_modules": 15
     },
+    "RealRooted.WagnerX.ListInterlacing": {
+      "max_modules": 15
+    },
+    "RealRooted.WagnerX.NonnegativeRoots": {
+      "max_modules": 15
+    },
+    "RealRooted.WagnerX.AffineFactors": {
+      "max_modules": 15
+    },
+    "RealRooted.WagnerX": {
+      "max_modules": 15
+    },
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
       "max_modules": 10
     },
@@ -212,7 +224,7 @@
       "max_modules": 130
     },
     "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
-      "max_modules": 130
+      "max_modules": 135
     },
     "RealRooted.NarayanaTransformation.Gamma": {
       "max_modules": 135
@@ -272,7 +284,7 @@
       "max_modules": 70
     },
     "RealRooted.CommonInterleaverFamilySum": {
-      "max_modules": 70
+      "max_modules": 75
     },
     "RealRooted.CommonInterleaver.RootDesc": {
       "max_modules": 65
@@ -302,16 +314,16 @@
       "max_modules": 115
     },
     "RealRooted.CommonInterleaver.PairBridge.Reduction": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.CommonInterleaverSeq": {
-      "max_modules": 70
+      "max_modules": 75
     },
     "RealRooted.CommonInterleaver.PairBridge": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 30
@@ -332,7 +344,7 @@
       "max_modules": 35
     },
     "RealRooted.LiuWang.OneAddXPositive": {
-      "max_modules": 30
+      "max_modules": 35
     },
     "RealRooted.LiuWang.Step": {
       "max_modules": 25
@@ -422,13 +434,13 @@
       "max_modules": 80
     },
     "RealRooted.RootCounting": {
-      "max_modules": 35
+      "max_modules": 40
     },
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold": {
-      "max_modules": 35
+      "max_modules": 40
     },
     "RealRooted.RootCounting.Threshold.Anchor": {
       "max_modules": 5
@@ -539,10 +551,10 @@
       "max_modules": 20
     },
     "RealRooted.Tactic.OEIS.DerivativeLag": {
-      "max_modules": 125
+      "max_modules": 130
     },
     "RealRooted.Tactic.OEIS.PositiveLag": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.Tactic.OEIS.NegativeLag": {
       "max_modules": 50
@@ -623,7 +635,7 @@
       "max_modules": 45
     },
     "RealRooted.MaWang.DerivativeStep": {
-      "max_modules": 20
+      "max_modules": 25
     },
     "RealRooted.MaWang.DerivativeSequence": {
       "max_modules": 30
@@ -638,7 +650,7 @@
       "max_modules": 40
     },
     "RealRooted.Tactic.MaWang.StepSyntax": {
-      "max_modules": 40
+      "max_modules": 45
     },
     "RealRooted.Tactic.MaWang.SequenceSyntax": {
       "max_modules": 45
@@ -653,7 +665,7 @@
       "max_modules": 45
     },
     "RealRooted.Tactic.MaWang.Sequences": {
-      "max_modules": 45
+      "max_modules": 50
     },
     "RealRooted.Tactic.MaWang.Denominator": {
       "max_modules": 50
@@ -890,6 +902,10 @@
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
+    "RealRooted.WagnerX.ListInterlacing",
+    "RealRooted.WagnerX.NonnegativeRoots",
+    "RealRooted.WagnerX.AffineFactors",
+    "RealRooted.WagnerX",
     "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",

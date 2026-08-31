@@ -691,6 +691,9 @@ import RealRooted.Wagner
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.WagnerX.ProperPosition
 import RealRooted.WeightedSum
 import RealRooted.Wronskian

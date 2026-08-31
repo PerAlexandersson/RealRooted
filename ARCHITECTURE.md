@@ -358,10 +358,13 @@ The Euler-operator package also now isolates two different theorem duties:
 - `EulerOperator.ScaledPolar` owns the `-X²` composition and descent lemmas,
   then applies the polar bridge to prove the scale-two PF-preservation theorem.
 
-`WagnerX.ProperPosition` is the companion theorem-only layer for the forward
-and reverse `X`-multiplication transports on nonnegative-coefficient
-polynomials. It keeps those general bridges out of `AffineFamily` and tactic
-frontends, while allowing the Euler-pencil proofs to retain a narrow closure.
+`WagnerX` is a compatibility facade over legacy list-interlacing algebra,
+nonnegative-coefficient/root transport and the core `X` bridge, then affine
+and common-factor transport. `WagnerX.ProperPosition` is the companion
+theorem-only layer for the forward and reverse `X`-multiplication transports on
+nonnegative-coefficient polynomials. Together these keep the general bridges
+out of `AffineFamily` and tactic frontends, while allowing the Euler-pencil
+proofs to retain a narrow closure.
 
 The two modules are kept separate because the first is a general polar theorem,
 whereas the second is the specific Veronese transformation argument. Both stay
