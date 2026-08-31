@@ -38,7 +38,7 @@
       "max_modules": 75
     },
     "RealRooted.AffineFamily.Wronskian": {
-      "max_modules": 75
+      "max_modules": 80
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 110
@@ -137,7 +137,7 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 120
+      "max_modules": 125
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 125
@@ -156,6 +156,9 @@
     },
     "RealRooted.CommonInterleaverFamilySum": {
       "max_modules": 70
+    },
+    "RealRooted.CommonInterleaver.RootDesc": {
+      "max_modules": 65
     },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 30

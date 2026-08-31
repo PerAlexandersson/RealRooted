@@ -116,6 +116,7 @@ import RealRooted.CommonInterleaver.IntervalLemmas
 import RealRooted.CommonInterleaver.PairBridge
 import RealRooted.CommonInterleaver.PairwiseUpgrade
 import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.CommonInterleaver.RootCountCombinatorics
 import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.CommonInterleaver.Statements

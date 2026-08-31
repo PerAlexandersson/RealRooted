@@ -421,8 +421,8 @@ require a generator-aware split; moving only a few helper lemmas does not
 improve Lean's elaboration unit or object-file caching.
 
 The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
-tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
-`SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
+tactic frontends, followed by `AffineFamily`, `SymmetricDecomposition`,
+`GarloffWagner`, and `Hadamard`.
 
 The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
 `MaWang.Derivative` package:
@@ -446,6 +446,15 @@ frontend is a compatibility umbrella over a dependency-ordered package:
 The largest frontend source unit is `Denominator` at 858 lines. This grouping
 keeps each declaration adjacent to its certificate family while preserving the
 old `RealRooted.Tactic.MaWang` import path.
+
+`CommonInterleaverSeq` is now a compatibility parent over the first
+descending-root layer, `CommonInterleaver.RootDesc`, and the remaining
+root-slot, finite-Helly, degree, and Chudnovsky--Seymour construction layers.
+`RootDesc` owns the common-interleaver predicates, canonical descending root
+sequence, the indexwise `Prec` characterisation, and the consecutive-chain
+lemma. Its two nonemptiness facts are protected members of the
+`CommonInterleaver` namespace because the construction layer needs them; they
+are implementation bridges rather than a second public API.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
