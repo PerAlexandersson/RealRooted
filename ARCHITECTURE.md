@@ -111,8 +111,10 @@ The Obreschkoff package has a compatibility facade and three theorem layers:
 
 - `ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
   and degree-closeness reduction for all-real-rooted polynomial pencils;
-- `ObreschkoffConverse.Converse` owns the Wronskian regularization and
-  all-real-rooted-pencil-to-proper-position direction;
+- `ObreschkoffConverse.Regularization` owns Wronskian regularization,
+  simple-pencil root control, and common-root descent infrastructure;
+- `ObreschkoffConverse.Converse` owns the root-sign assembly and
+  all-real-rooted-pencil-to-proper-position endgame;
 - `ObreschkoffConverse.Forward` owns proper-position-to-all-real-rooted-pencil
   closure; and
 - `ObreschkoffConverse.Derivative` owns derivative preservation of proper

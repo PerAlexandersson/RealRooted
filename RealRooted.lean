@@ -454,6 +454,7 @@ import RealRooted.ObreschkoffConverse.Converse
 import RealRooted.ObreschkoffConverse.DegreeGap
 import RealRooted.ObreschkoffConverse.Derivative
 import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Regularization
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
