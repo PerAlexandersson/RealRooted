@@ -228,6 +228,11 @@ uses the local initial-segment representation while Mathlib's `Multiset.esymm`
 serves the more general multiset API, so an upstream bridge should be designed
 against that existing interface rather than create a competing wrapper.
 
+`Mathlib.Algebra.Order.BigOperators.Alternating` is an upstream-shaped shim for
+the finite alternating-sum truncation bounds that complement Mathlib's existing
+infinite alternating-series API. Its statements are over an arbitrary linearly
+ordered commutative ring, not the original real-valued consumer sequence.
+
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
 monicity. `RootAmplitude` builds the normalized-root-derivative product identity

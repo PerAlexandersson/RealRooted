@@ -43,6 +43,9 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance": {
       "max_modules": 5
     },
+    "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating": {
+      "max_modules": 2
+    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
     },
@@ -233,6 +236,7 @@
     "RealRooted.CoefficientDominance.Symmetric.Tail",
     "RealRooted.CoefficientDominance.Symmetric.Upper",
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
+    "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
     "RealRooted.EulerOperator.Polar",
     "RealRooted.EulerOperator.ScaledPolar",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",
