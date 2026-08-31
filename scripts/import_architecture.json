@@ -19,6 +19,9 @@
     "RealRooted.Basic": {
       "max_modules": 10
     },
+    "RealRooted.Basic.AffineInterlacing": {
+      "max_modules": 10
+    },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 110
     },
@@ -276,6 +279,7 @@
     "RealRooted.Analysis.PowerTail.Quadratic",
     "RealRooted.Analysis.PowerTail.Telescoping",
     "RealRooted.Basic",
+    "RealRooted.Basic.AffineInterlacing",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol",

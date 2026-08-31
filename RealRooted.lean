@@ -29,6 +29,7 @@ import RealRooted.ArrayPolynomialDeterminantRecurrence
 import RealRooted.ArrayPolynomialSchur
 import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
+import RealRooted.Basic.AffineInterlacing
 import RealRooted.Bezoutian
 import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol

@@ -57,6 +57,10 @@ of the RealRooted interlacing library.
   oriented-interlacing consequences for arbitrary real linear maps;
   `BidiagonalSymbol.RealConsequences` supplies the affine-bidiagonal
   specializations from `ProofsOeis.AffineFiniteSymbol`.
+- `Basic.AffineInterlacing` contains reflection, translation, and
+  reflected-translation transport for the project’s legacy sorted-root
+  `Interlaces` predicate, promoted from `ProofsOeis.AffineInterlaces` with a
+  `Linear`-only dependency.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
   product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, `Density`,
   `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude

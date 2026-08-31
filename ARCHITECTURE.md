@@ -262,6 +262,12 @@ linear maps. `BidiagonalSymbol.RealConsequences` is the small specialization
 layer. Thus the reusable affine-symbol route no longer imports the tactic-only
 bidiagonal operator API.
 
+`Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
+translation, and reflected-translation transport for the sorted-root
+`Interlaces` predicate. It imports only `Linear`; this keeps old root-list
+applications from rebuilding a transformed witness by hand while new APIs can
+continue to use `Prec`.
+
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
 monicity. `RootAmplitude` builds the normalized-root-derivative product identity
