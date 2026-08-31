@@ -205,6 +205,14 @@ The Cayley-transform extraction is entirely Mathlib-shaped:
 This replaces the consumer's duplicate real and complex transform definitions
 with one coefficient-ring-polymorphic API.
 
+`Mathlib.Algebra.Polynomial.BasisTransform` is the corresponding small
+polynomial-basis shim. It defines the coefficientwise map `X^n ↦ B n` over an
+arbitrary semiring and proves its elementary algebra; over an integral domain,
+a degree-triangular nonzero basis makes that map injective. This lifts the
+general triangular-basis argument out of the consumer's Brändén transform and
+out of the Narayana transformation implementation, while leaving named bases
+and preservation arguments at their owning application layer.
+
 The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator.Polar` proves finite-degree preservation of ordinary

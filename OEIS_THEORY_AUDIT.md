@@ -46,6 +46,11 @@ of the RealRooted interlacing library.
 - `Mathlib.Algebra.Order.BigOperators.Alternating` contains the finite
   nonnegative-decreasing alternating-sum truncation bounds, with an arbitrary
   linearly ordered commutative ring in place of the original real sequence.
+- `Mathlib.Algebra.Polynomial.BasisTransform` contains the coefficientwise
+  polynomial basis transform and the injectivity theorem for degree-triangular
+  nonzero bases. These were the sequence-independent part of
+  `ProofsOeis.BrandenBinomialTransform`; the named ordered-Bell basis,
+  transform identities, and model applications remain consumer-side.
 - `Analysis.PowerTail` contains the finite reciprocal-power tail bounds from
   `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
   its finite telescoping consequence, and the quadratic-denominator
@@ -82,6 +87,18 @@ split across five focused source modules. Its initial-segment presentation is
 useful to the root-gap application, while Mathlib already has the more general
 `Multiset.esymm` API; a future upstream candidate should bridge those forms
 rather than duplicate either one.
+
+### Named basis transforms
+
+The generic coefficientwise basis-transform API and its triangular injectivity
+criterion are now in `Mathlib.Algebra.Polynomial.BasisTransform`. The remaining
+`BrandenBinomialTransform` source is not a monolithic extraction candidate:
+its `brandenE` basis is defined through the consumer-owned ordered-Bell family
+and its later sections mix that named basis with Delannoy, Eulerian, and type-D
+applications. A future transfer should first separate a general theorem about
+an arbitrary basis satisfying a differential recurrence from those model
+identities; it should not export the named `brandenE` definition as a generic
+library primitive.
 
 ### Separation-specific amplitude applications
 

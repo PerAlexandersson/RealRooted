@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import RealRooted.GammaRealRoots
 import RealRooted.LiebSokal
 import RealRooted.LiuWangRecursion
+import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
@@ -311,45 +312,7 @@ private theorem degreeSignFlip_two_quadratic (a b c : ℝ) :
     rw [coeff_degreeSignFlip_of_lt _ hj]
     simp
 
-/-- The linear basis transform sending `X ^ k` to `P k`. -/
-def basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) : ℝ[X] :=
-  p.sum fun k a => C a * P k
-
-theorem coeff_basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) (j : ℕ) :
-    (basisTransform P p).coeff j = p.sum fun k a => a * (P k).coeff j := by
-  simp [basisTransform, Polynomial.coeff_sum, Polynomial.coeff_C_mul]
-
-@[simp] theorem basisTransform_zero (P : ℕ → ℝ[X]) :
-    basisTransform P 0 = 0 := by
-  simp [basisTransform]
-
-@[simp] theorem basisTransform_monomial (P : ℕ → ℝ[X]) (n : ℕ) (a : ℝ) :
-    basisTransform P (Polynomial.monomial n a) = C a * P n := by
-  rw [basisTransform, Polynomial.sum_monomial_index]
-  simp
-
-@[simp] theorem basisTransform_C (P : ℕ → ℝ[X]) (a : ℝ) :
-    basisTransform P (C a) = C a * P 0 := by
-  simpa using basisTransform_monomial P 0 a
-
-@[simp] theorem basisTransform_X_pow (P : ℕ → ℝ[X]) (n : ℕ) :
-    basisTransform P (X ^ n) = P n := by
-  rw [show (X ^ n : ℝ[X]) = Polynomial.monomial n 1 by
-    simp [Polynomial.X_pow_eq_monomial]]
-  simp
-
-theorem basisTransform_add (P : ℕ → ℝ[X]) (p q : ℝ[X]) :
-    basisTransform P (p + q) = basisTransform P p + basisTransform P q := by
-  rw [basisTransform, basisTransform, basisTransform]
-  exact Polynomial.sum_add_index p q (fun k a => C a * P k) (by simp) (by simp [add_mul])
-
-theorem basisTransform_smul (P : ℕ → ℝ[X]) (a : ℝ) (p : ℝ[X]) :
-    basisTransform P (a • p) = C a * basisTransform P p := by
-  rw [basisTransform, basisTransform]
-  rw [Polynomial.sum_smul_index]
-  · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
-  · simp
-
+/-- Basis transforms preserve coefficientwise nonnegativity. -/
 theorem HasNonnegCoeffs.basisTransform {P : ℕ → ℝ[X]} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hP : ∀ k, HasNonnegCoeffs (P k)) :
     HasNonnegCoeffs (basisTransform P p) := by
@@ -2960,12 +2923,12 @@ private lemma gammaTransform_succ_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
     gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
   rcases Nat.mod_two_eq_zero_or_one d with hd | hd
-  · have hd' : d = 2 * (d / 2) := by omega
+  · have hd' : d = 2 * (d / 2) := by lia
     rw [hd']
     exact gammaTransform_odd (d / 2) γ
-  · have hd' : d = 2 * (d / 2) + 1 := by omega
+  · have hd' : d = 2 * (d / 2) + 1 := by lia
     have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by omega))
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by lia))
     rw [hd']
     change gammaTransform (2 * (d / 2 + 1)) γ =
       (X + 1) * gammaTransform (2 * (d / 2) + 1) γ
@@ -2988,7 +2951,7 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
   have hγ₁ : γ₁.natDegree ≤ (n + 2) / 2 := by
     dsimp [γ₁]
     rw [natDegree_C_mul (by positivity)]
-    exact (natDegree_narayanaZeroGammaPolynomial_le (n + 1)).trans (by omega)
+    exact (natDegree_narayanaZeroGammaPolynomial_le (n + 1)).trans (by lia)
   have hγ₀ : γ₀.natDegree ≤ (n + 2) / 2 := by
     dsimp [γ₀]
     calc
@@ -3000,7 +2963,7 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
         gcongr
         · compute_degree!
         · exact natDegree_narayanaZeroGammaPolynomial_le n
-      _ ≤ (n + 2) / 2 := by omega
+      _ ≤ (n + 2) / 2 := by lia
   have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
     exact (natDegree_sub_le γ₁ γ₀).trans
       (max_le hγ₁ hγ₀)
@@ -3227,15 +3190,15 @@ theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
         by_cases hk : k ≤ (n + 1) / 2
         · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
           positivity
-        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]
       · intro k
         by_cases hk : k ≤ (n + 2) / 2
         · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
           positivity
-        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by omega)]
-      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+        · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by lia)]
         norm_num
-      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by omega)]
+      · rw [coeff_narayanaZeroGammaPolynomial_of_le (by lia)]
         norm_num
 
 /-- The generalized Narayana polynomials are PF polynomials. -/

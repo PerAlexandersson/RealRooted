@@ -262,6 +262,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
