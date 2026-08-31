@@ -19,6 +19,18 @@
     "RealRooted.Basic": {
       "max_modules": 10
     },
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
+      "max_modules": 110
+    },
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
+      "max_modules": 145
+    },
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
+      "max_modules": 140
+    },
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
+      "max_modules": 140
+    },
     "RealRooted.Derivative": {
       "max_modules": 12
     },
@@ -75,6 +87,12 @@
     },
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure": {
       "max_modules": 2
+    },
+    "RealRooted.MultiplierSequence": {
+      "max_modules": 70
+    },
+    "RealRooted.MultiplierSequence.Bidiagonal": {
+      "max_modules": 70
     },
     "RealRooted.CommonInterleaverFamilySum": {
       "max_modules": 70
@@ -258,6 +276,10 @@
     "RealRooted.Analysis.PowerTail.Quadratic",
     "RealRooted.Analysis.PowerTail.Telescoping",
     "RealRooted.Basic",
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol",
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing",
     "RealRooted.Derivative",
     "RealRooted.CoefficientDominance",
     "RealRooted.CoefficientDominance.LogConcavity",
@@ -277,6 +299,8 @@
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
+    "RealRooted.MultiplierSequence",
+    "RealRooted.MultiplierSequence.Bidiagonal",
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",

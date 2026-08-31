@@ -128,6 +128,21 @@ theorem algebraicSymbol_complexificationDegreeBoxOperator
   rw [MvPolynomial.rename_rename, hcomp, MvPolynomial.rename_id] at h
   exact h
 
+/-- The degree-box restriction of the complexified real map preserves upper
+half-plane stability up to the zero output when its finite real symbol is
+stable. -/
+theorem complexificationLinearMapDegreeBox_preserves_stability
+    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ)
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+    (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d))
+    (hf : MvUpperHalfPlaneStable f.1) :
+    MvUpperHalfPlaneStableOrZero
+      (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T) f) := by
+  apply finiteSymbol_finOne_preserves_stability d _ ?_ f hf
+  rw [algebraicSymbol_complexificationDegreeBoxOperator]
+  exact hSymbol.rename
+
 /-- Borcea--Branden positive-symbol sufficiency for real univariate operators.
 
 This is a checked witness of the application-facing statement introduced by

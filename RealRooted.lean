@@ -33,6 +33,7 @@ import RealRooted.Bezoutian
 import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
 import RealRooted.BorceaBranden.Applications.ComplexClassification
 import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
@@ -40,6 +41,7 @@ import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.BorceaBranden.FiniteSymbolBasis
@@ -333,6 +335,7 @@ import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiaffineReciprocalRight
 import RealRooted.MultiplierSequence
+import RealRooted.MultiplierSequence.Bidiagonal
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation
 import RealRooted.NewtonAux

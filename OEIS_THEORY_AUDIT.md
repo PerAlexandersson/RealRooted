@@ -50,6 +50,13 @@ of the RealRooted interlacing library.
   `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
   its finite telescoping consequence, and the quadratic-denominator
   applications over arbitrary linearly ordered fields.
+- `MultiplierSequence.Bidiagonal` contains the tactic-independent
+  coefficient-bidiagonal operator API formerly embedded in
+  `Tactic.PFBidiagonal`. `BorceaBranden.Applications.RealUnivariateSymbol`
+  and its `Interlacing` child expose finite-symbol splitness, pencil, and
+  oriented-interlacing consequences for arbitrary real linear maps;
+  `BidiagonalSymbol.RealConsequences` supplies the affine-bidiagonal
+  specializations from `ProofsOeis.AffineFiniteSymbol`.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
   product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, `Density`,
   `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude

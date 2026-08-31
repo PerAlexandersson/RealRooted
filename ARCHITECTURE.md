@@ -251,6 +251,17 @@ stated over arbitrary linearly ordered fields. This keeps the classical finite
 telescoping mechanism available independently of its original Eisenstein-tail
 application, while leaving the model-specific identification downstream.
 
+The finite-symbol application layer is split at its actual dependency boundary:
+`MultiplierSequence.Bidiagonal` owns the coefficient-bidiagonal operator,
+coefficient formulas, degree bound, nonnegativity transport, and the
+degree-bounded PF-preserver interface. It has no finite-symbol or tactic
+dependency. `BorceaBranden.Applications.RealUnivariateSymbol` owns the
+complexification and degree-box symbol calculation, while its `Interlacing`
+child owns pencil and oriented-interlacing consequences for arbitrary real
+linear maps. `BidiagonalSymbol.RealConsequences` is the small specialization
+layer. Thus the reusable affine-symbol route no longer imports the tactic-only
+bidiagonal operator API.
+
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
 monicity. `RootAmplitude` builds the normalized-root-derivative product identity
