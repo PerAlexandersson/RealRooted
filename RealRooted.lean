@@ -450,7 +450,10 @@ import RealRooted.NewtonAux
 import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
+import RealRooted.ObreschkoffConverse.Converse
 import RealRooted.ObreschkoffConverse.DegreeGap
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal

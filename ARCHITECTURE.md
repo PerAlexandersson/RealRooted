@@ -107,10 +107,19 @@ in `HermiteBiehler`, and private Wronskian calculations remain with their
 affine-family and Obreschkoff proofs. This keeps the package based on theorem
 ownership rather than moving every file that happens to mention a Wronskian.
 
-`ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
-and the degree-closeness reduction for all-real-rooted polynomial pencils.
-`ObreschkoffConverse` remains the compatibility import and owns the subsequent
-orientation and derivative-preservation argument.
+The Obreschkoff package has a compatibility facade and three theorem layers:
+
+- `ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
+  and degree-closeness reduction for all-real-rooted polynomial pencils;
+- `ObreschkoffConverse.Converse` owns the Wronskian regularization and
+  all-real-rooted-pencil-to-proper-position direction;
+- `ObreschkoffConverse.Forward` owns proper-position-to-all-real-rooted-pencil
+  closure; and
+- `ObreschkoffConverse.Derivative` owns derivative preservation of proper
+  position.
+
+The only shared proof helpers are explicitly package-internal, under
+`ObreschkoffConverseInternal`.
 
 Derivative recurrence results have a focused package entry point:
 
