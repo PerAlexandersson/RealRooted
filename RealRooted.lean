@@ -413,6 +413,7 @@ import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation
 import RealRooted.NarayanaTransformation.Basis
+import RealRooted.NarayanaTransformation.Basis.Stirling
 import RealRooted.NarayanaTransformation.Coefficients
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling

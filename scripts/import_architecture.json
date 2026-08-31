@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 705
+      "max_modules": 706
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -197,6 +197,9 @@
       "max_modules": 125
     },
     "RealRooted.NarayanaTransformation.Basis": {
+      "max_modules": 125
+    },
+    "RealRooted.NarayanaTransformation.Basis.Stirling": {
       "max_modules": 125
     },
     "RealRooted.NarayanaTransformation.Falling": {
@@ -575,7 +578,7 @@
       "max_modules": 75
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 355
+      "max_modules": 356
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -599,7 +602,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 370
+      "max_modules": 371
     },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 100
@@ -780,6 +783,7 @@
     "RealRooted.MultiplierSequence",
     "RealRooted.NarayanaTransformation.RootGeometry",
     "RealRooted.NarayanaTransformation.Basis",
+    "RealRooted.NarayanaTransformation.Basis.Stirling",
     "RealRooted.NarayanaTransformation.Falling",
     "RealRooted.NarayanaTransformation.Rising",
     "RealRooted.NarayanaTransformation.Coefficients",
