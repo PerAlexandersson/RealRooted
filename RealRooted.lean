@@ -257,6 +257,10 @@ import RealRooted.LiuWangBenchmark
 import RealRooted.LiuWangRecursion
 import RealRooted.LowerTriangularMatrix
 import RealRooted.MaWang
+import RealRooted.MaWang.Derivative
+import RealRooted.MaWang.DerivativeDenominator
+import RealRooted.MaWang.DerivativeSequence
+import RealRooted.MaWang.DerivativeStep
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees

@@ -424,6 +424,20 @@ The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
 tactic frontends, followed by `AffineFamily`, `CommonInterleaverSeq`,
 `SymmetricDecomposition`, `GarloffWagner`, and `Hadamard`.
 
+The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
+`MaWang.Derivative` package:
+
+- `DerivativeStep` owns the one-step weak Ma--Wang criteria;
+- `DerivativeSequence` owns ordinary and derivative-plus-lag sequence closure;
+- `DerivativeDenominator` owns scalar-denominator normalization and the
+  specialized factor wrappers; and
+- `Tactic.MaWang` imports that theorem package and owns syntax, elaboration,
+  and certificate lookup only.
+
+The theorem units have 180, 891, and 675 local lines, respectively. The tactic
+frontend is still a large user-interface module; its later split should group
+syntax with the corresponding elaborators rather than scatter macros by size.
+
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
 the remaining recurrence wrappers acquire a second independent consumer;

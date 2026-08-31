@@ -307,6 +307,18 @@
     "RealRooted.Tactic.LiuWang.SequenceProducts": {
       "max_modules": 45
     },
+    "RealRooted.MaWang.DerivativeStep": {
+      "max_modules": 20
+    },
+    "RealRooted.MaWang.DerivativeSequence": {
+      "max_modules": 30
+    },
+    "RealRooted.MaWang.DerivativeDenominator": {
+      "max_modules": 30
+    },
+    "RealRooted.MaWang.Derivative": {
+      "max_modules": 30
+    },
     "RealRooted.Tactic.MaWang": {
       "max_modules": 40
     },
@@ -408,6 +420,10 @@
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",
     "RealRooted.MaWang",
+    "RealRooted.MaWang.DerivativeStep",
+    "RealRooted.MaWang.DerivativeSequence",
+    "RealRooted.MaWang.DerivativeDenominator",
+    "RealRooted.MaWang.Derivative",
     "RealRooted.ProductSequence",
     "RealRooted.ProductOrientation",
     "RealRooted.RootCounting",
