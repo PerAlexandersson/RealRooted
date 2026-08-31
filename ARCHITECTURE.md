@@ -522,7 +522,16 @@ Favard theorem backend, the OEIS certificate frontend, and the
 candidates need an actual responsibility boundary before code moves, notably
 selected large application proofs and case-analysis modules.
 
-The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
+`MaWang` is a compatibility facade over the root-sign theorem package:
+`CountBounds` owns the list-counting endpoint, `StrictSigns.RootSigns` the
+factor-sign algebra, `StrictSigns.Assembly` the strict root construction,
+`Strong` the strict mixed-sign consequences, and `Weak.Regularization`,
+`Weak.SameDegree`, `Weak.Successor`, and `Weak.Endpoint` the weak-sign
+perturbation and degree cases. Former file-private plumbing is shared only
+within `RealRooted.MaWangInternal`; all established public declarations retain
+their `RealRooted` names through explicit exports.
+
+The reusable derivative region formerly embedded in `Tactic.MaWang` is now the
 `MaWang.Derivative` package:
 
 - `DerivativeStep` owns the one-step weak Ma--Wang criteria;
