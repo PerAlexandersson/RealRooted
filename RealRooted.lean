@@ -613,6 +613,8 @@ import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.Named
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.OEIS
+import RealRooted.Tactic.OEIS.Basic
+import RealRooted.Tactic.OEIS.DerivativeLag
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFPolynomial

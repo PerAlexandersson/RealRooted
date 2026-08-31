@@ -218,6 +218,13 @@ macro-rule families. This separates parser declarations from elaboration and
 keeps the largest frontend source unit at 825 lines without changing the
 established tactic import.
 
+`Tactic.OEIS` is undergoing the same certificate-family migration. Its
+`OEIS.Basic` child owns the scalar-denominator certificate aliases, and
+`OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and
+explicit unsupported-certificate diagnostics. The parent remains the existing
+compatible import while the positive- and negative-lag fronts and the separate
+product-certificate family are audited as their own units.
+
 Two further OEIS-derived corollary modules keep large owning modules cohesive:
 
 - `CommonInterleaverFamilySum` turns pairwise common right or left interleavers

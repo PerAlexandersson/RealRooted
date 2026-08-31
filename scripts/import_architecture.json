@@ -439,6 +439,15 @@
     "RealRooted.Tactic.Favard.RowSign": {
       "max_modules": 45
     },
+    "RealRooted.Tactic.OEIS.Basic": {
+      "max_modules": 20
+    },
+    "RealRooted.Tactic.OEIS.DerivativeLag": {
+      "max_modules": 125
+    },
+    "RealRooted.Tactic.OEIS": {
+      "max_modules": 330
+    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
@@ -686,6 +695,9 @@
     "RealRooted.Tactic.Favard.Direct",
     "RealRooted.Tactic.Favard.Denominator",
     "RealRooted.Tactic.Favard.RowSign",
+    "RealRooted.Tactic.OEIS.Basic",
+    "RealRooted.Tactic.OEIS.DerivativeLag",
+    "RealRooted.Tactic.OEIS",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
