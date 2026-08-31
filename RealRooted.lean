@@ -453,6 +453,7 @@ import RealRooted.ProductSequence
 import RealRooted.QuadraticCubicPencil
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
+import RealRooted.RankTwoMatching.Transform
 import RealRooted.RankTwoMatchingModel
 import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity

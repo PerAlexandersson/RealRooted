@@ -287,6 +287,11 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`RankTwoMatching.Transform` packages the binomial coefficient transform
+realized by the complete-graph rank-two matching model. The matching
+enumeration remains in `RankTwoMatching`; this focused child owns only the
+resulting PF-preservation theorem and its polynomial coefficient API.
+
 `NarayanaTransformation` is a compatibility facade over focused layers:
 `RootGeometry` handles sign flips and root transport; `Basis`, `Falling`, and
 `Rising` handle the three basis transformations; `Coefficients` records the
