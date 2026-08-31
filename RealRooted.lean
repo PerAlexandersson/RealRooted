@@ -143,6 +143,7 @@ import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
+import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar
 import RealRooted.EulerOperator.ScaledPolar
 import RealRooted.EulerianCompletion
@@ -571,6 +572,7 @@ import RealRooted.Wagner
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
+import RealRooted.WagnerX.ProperPosition
 import RealRooted.WeightedSum
 import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra

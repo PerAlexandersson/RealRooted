@@ -79,8 +79,14 @@
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
     },
+    "RealRooted.EulerOperator.Pencil": {
+      "max_modules": 75
+    },
     "RealRooted.EulerOperator.ScaledPolar": {
       "max_modules": 75
+    },
+    "RealRooted.WagnerX.ProperPosition": {
+      "max_modules": 15
     },
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
       "max_modules": 10
@@ -338,6 +344,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
     "RealRooted.EulerOperator.Polar",
+    "RealRooted.EulerOperator.Pencil",
     "RealRooted.EulerOperator.ScaledPolar",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
@@ -386,6 +393,7 @@
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",
     "RealRooted.VeroneseSectionPair",
+    "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",
     "RealRooted.Wronskian.Converse",

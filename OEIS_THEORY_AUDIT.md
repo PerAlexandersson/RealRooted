@@ -38,6 +38,11 @@ of the RealRooted interlacing library.
   splitness by the polar theta operator, while `EulerOperator.ScaledPolar`
   contains the `-X²` composition/descent argument and the scale-two
   PF-preservation theorem.
+- `EulerOperator.Pencil` contains the positive `theta + c` proper-position
+  comparisons from `ProofsOeis.EulerPencil`. Its narrow theorem-only support
+  is in `WagnerX.ProperPosition`, which separates general forward and reverse
+  `X`-multiplication transports from the existing affine-family and tactic
+  frontends.
 - `Mathlib.Algebra.Polynomial.Dominance` contains the generic dominant-term
   root-exclusion criterion. `CoefficientDominance` separates geometric decay
   of positive log-concave sequences, the resulting polynomial certificate,
@@ -117,10 +122,9 @@ splitness transfer. This completes the reusable Wronskian portion of the
 Euler-pencil source without importing its unrelated operator or list-reversal
 layers.
 
-The remaining Euler-pencil material is separate operator theory: positive
-`theta + c` pencil comparisons, then a degree-padded reciprocal-shift proper-
-position transport. It should be extracted under `EulerOperator` only after
-its root-list reversal lemmas are reconciled with the existing
+The remaining Euler-pencil material is the degree-padded reciprocal-shift
+proper-position transport. It should be extracted under `EulerOperator` only
+after its root-list reversal lemmas are reconciled with the existing
 `DegreeDropReversal` API. This prevents a large list-combinatorics port from
 becoming an accidental dependency of the Wronskian package.
 
