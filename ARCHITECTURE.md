@@ -287,6 +287,15 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`NarayanaTransformation` is a compatibility facade over focused layers:
+`RootGeometry` handles sign flips and root transport; `Basis`, `Falling`, and
+`Rising` handle the three basis transformations; `Coefficients` records the
+Narayana data; `Rectangular/` separates low-degree identities, the Narayana
+convolution, and its preservation result; and `Recurrences`, `Gamma`, and
+`Endpoints` finish the recurrence and application interfaces. This keeps the
+general basis-transform algebra in the Mathlib-shaped shim while retaining the
+named Narayana arguments in their application package.
+
 `Mathlib.Algebra.Polynomial.Bezoutian` similarly promotes the
 commutative-ring coefficient Bezoutian, its finite telescoping identities, and
 the generic Bezoutian matrix and row-polynomial definitions. The real

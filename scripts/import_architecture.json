@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 680
+      "max_modules": 700
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -177,6 +177,51 @@
     },
     "RealRooted.MultiplierSequence": {
       "max_modules": 70
+    },
+    "RealRooted.NarayanaTransformation.RootGeometry": {
+      "max_modules": 125
+    },
+    "RealRooted.NarayanaTransformation.Basis": {
+      "max_modules": 125
+    },
+    "RealRooted.NarayanaTransformation.Falling": {
+      "max_modules": 125
+    },
+    "RealRooted.NarayanaTransformation.Rising": {
+      "max_modules": 125
+    },
+    "RealRooted.NarayanaTransformation.Coefficients": {
+      "max_modules": 130
+    },
+    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
+      "max_modules": 130
+    },
+    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation.Rectangular": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation.Recurrences": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+      "max_modules": 130
+    },
+    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
+      "max_modules": 130
+    },
+    "RealRooted.NarayanaTransformation.Gamma": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation.Endpoints": {
+      "max_modules": 135
+    },
+    "RealRooted.NarayanaTransformation": {
+      "max_modules": 135
     },
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 70
@@ -515,7 +560,7 @@
       "max_modules": 75
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 335
+      "max_modules": 345
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -539,7 +584,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 350
+      "max_modules": 360
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -687,6 +732,21 @@
     "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
     "RealRooted.MultiplierSequence",
+    "RealRooted.NarayanaTransformation.RootGeometry",
+    "RealRooted.NarayanaTransformation.Basis",
+    "RealRooted.NarayanaTransformation.Falling",
+    "RealRooted.NarayanaTransformation.Rising",
+    "RealRooted.NarayanaTransformation.Coefficients",
+    "RealRooted.NarayanaTransformation.Rectangular.LowDegree",
+    "RealRooted.NarayanaTransformation.Rectangular.Narayana",
+    "RealRooted.NarayanaTransformation.Rectangular.Preservation",
+    "RealRooted.NarayanaTransformation.Rectangular",
+    "RealRooted.NarayanaTransformation.Recurrences",
+    "RealRooted.NarayanaTransformation.Recurrences.Identities",
+    "RealRooted.NarayanaTransformation.Recurrences.Interlacing",
+    "RealRooted.NarayanaTransformation.Gamma",
+    "RealRooted.NarayanaTransformation.Endpoints",
+    "RealRooted.NarayanaTransformation",
     "RealRooted.MultiplierSequence.Bidiagonal",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction",

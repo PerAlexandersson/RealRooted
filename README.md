@@ -95,10 +95,13 @@ lake build RealRooted.Bezoutian
 - `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
   row-threshold and threshold-matrix preservers, including the
   Gustafsson-Solus and Haglund-Zhang/A046802 backends.
-- `RealRooted/NarayanaTransformation.lean`, `LowerTriangularMatrix.lean`, and
-  `MaoWangMatrixProduct.lean` contain the Mao--Wang Narayana transformation,
-  its lower-triangular row-generating-function API, and matrix-product
-  endpoint wrappers.
+- `RealRooted/NarayanaTransformation/` layers the Mao--Wang Narayana
+  transformation by root geometry, basis transforms, factorial preservation,
+  coefficient identities, rectangular convolution, recurrences, and endpoints;
+  `NarayanaTransformation.lean` remains its compatibility import.
+  `LowerTriangularMatrix.lean` and `MaoWangMatrixProduct.lean` provide the
+  lower-triangular row-generating-function API and matrix-product endpoint
+  wrappers.
 - `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
   contain the current Liu opposite-leading-sign root-count interface; its
   `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
