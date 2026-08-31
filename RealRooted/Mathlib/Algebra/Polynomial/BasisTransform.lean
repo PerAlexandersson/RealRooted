@@ -62,6 +62,23 @@ theorem basisTransform_smul (B : ℕ → R[X]) (a : R) (p : R[X]) :
   · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
   · simp
 
+/-- A basis transform distributes over a finite polynomial sum. -/
+theorem basisTransform_finset_sum {ι : Type*} (B : ℕ → R[X])
+    (s : Finset ι) (f : ι → R[X]) :
+    basisTransform B (∑ i ∈ s, f i) = ∑ i ∈ s, basisTransform B (f i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      simp only [Finset.sum_insert ha]
+      rw [basisTransform_add, ih]
+
+/-- A scalar monomial is sent to the corresponding scalar basis element. -/
+theorem basisTransform_C_mul_X_pow (B : ℕ → R[X]) (a : R) (n : ℕ) :
+    basisTransform B (C a * X ^ n) = C a * B n := by
+  rw [show C a * X ^ n = a • X ^ n by rw [Polynomial.smul_eq_C_mul],
+    basisTransform_smul, basisTransform_X_pow]
+
 /-- A basis transform transports multiplication by `X` to a linear map when
 the basis satisfies the corresponding successor recurrence. -/
 theorem basisTransform_X_mul_of_succ

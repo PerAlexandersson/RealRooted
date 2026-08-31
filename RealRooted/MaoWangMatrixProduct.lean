@@ -57,13 +57,10 @@ theorem basisTransform_rowPolynomial
   let s := Finset.range (i + 1)
   change basisTransform P (∑ k ∈ s, C (M i k) * X ^ k) =
     ∑ k ∈ s, C (M i k) * P k
-  refine Finset.induction_on s ?zero ?insert
-  · simp
-  · intro k s hks hs
-    simp only [Finset.sum_insert hks, basisTransform_add, hs]
-    rw [show C (M i k) * X ^ k = (M i k) • X ^ k by
-      simp [Polynomial.C_mul']]
-    rw [basisTransform_smul, basisTransform_X_pow]
+  rw [basisTransform_finset_sum]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [basisTransform_C_mul_X_pow]
 
 theorem coeff_basisTransform_rowPolynomial
     (P : ℕ → ℝ[X]) (M : LowerTriangularMatrix ℝ) (i j : ℕ) :
