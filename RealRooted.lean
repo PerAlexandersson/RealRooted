@@ -224,6 +224,7 @@ import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
+import RealRooted.Interlacing.Multiplicity
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
 import RealRooted.JacobiBetaZeroOrthogonality
@@ -313,6 +314,7 @@ import RealRooted.MaWang.Derivative
 import RealRooted.MaWang.DerivativeDenominator
 import RealRooted.MaWang.DerivativeSequence
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.StrictStep
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
@@ -505,6 +507,7 @@ import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SignEvaluation
 import RealRooted.SmallPositiveParameterCount
+import RealRooted.SimpleRoots
 import RealRooted.SortedRoots
 import RealRooted.SortedRoots.Exhibited
 import RealRooted.StaircaseSum

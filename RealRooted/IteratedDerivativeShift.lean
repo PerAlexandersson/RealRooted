@@ -1,4 +1,4 @@
-import RealRooted.Basic
+import RealRooted.SimpleRoots
 import RealRooted.Derivative
 import RealRooted.MaWang
 import RealRooted.RootContinuity
@@ -25,75 +25,6 @@ def TDeriv (eps : ℝ) (p : ℝ[X]) : ℝ[X] :=
 /-- `n`-fold iterate of `T_ε`. -/
 def iterateTDeriv (eps : ℝ) (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
   (TDeriv eps)^[n] p
-
-/-- A polynomial has simple roots if every real root has multiplicity `1`. -/
-def HasSimpleRoots (p : ℝ[X]) : Prop :=
-  ∀ r : ℝ, p.IsRoot r → p.rootMultiplicity r = 1
-
-/-- A polynomial has simple roots away from one exceptional point.  This is the
-local form of the Garloff--Wagner phrase "simple except possibly at the
-origin", with the exceptional point kept as a parameter. -/
-def HasSimpleRootsExcept (p : ℝ[X]) (a : ℝ) : Prop :=
-  ∀ r : ℝ, r ≠ a → p.IsRoot r → p.rootMultiplicity r = 1
-
-@[simp] lemma not_hasSimpleRoots_zero : ¬ HasSimpleRoots 0 := by simp [HasSimpleRoots]
-
-@[grind <=]
-lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by rintro rfl; simp at hp
-
-lemma HasSimpleRoots.hasSimpleRootsExcept (hp : HasSimpleRoots p) (a : ℝ) :
-    HasSimpleRootsExcept p a :=
-  fun r _ hr => hp r hr
-
-/-- A polynomial with simple roots away from one exceptional point is nonzero. -/
-lemma HasSimpleRootsExcept.ne_zero {a : ℝ} {p : ℝ[X]}
-    (hp : HasSimpleRootsExcept p a) :
-    p ≠ 0 := by
-  intro hp0
-  have hmult := hp (a + 1) (by linarith)
-    (by simp [hp0, Polynomial.IsRoot.def])
-  simp [hp0] at hmult
-
-/-- At a simple real root, the derivative does not vanish. -/
-lemma HasSimpleRoots.eval_derivative_ne_zero
-    (hsimple : HasSimpleRoots p) {r : ℝ} (hr : p.IsRoot r) :
-    p.derivative.eval r ≠ 0 := by
-  intro hder0
-  have hder_root : p.derivative.IsRoot r := by simp_all
-  have hmult : 1 < p.rootMultiplicity r :=
-    (one_lt_rootMultiplicity_iff_isRoot hsimple.ne_zero).2 ⟨hr, hder_root⟩
-  rw [hsimple r hr] at hmult
-  lia
-
-/-- A polynomial with simple real roots has no duplicate entries in its root
-multiset. -/
-lemma HasSimpleRoots.roots_nodup (hsimple : HasSimpleRoots p) :
-    p.roots.Nodup := by
-  refine Multiset.nodup_iff_count_le_one.mpr ?_
-  intro r
-  rw [count_roots (a := r) p]
-  by_cases hr : p.IsRoot r
-  · simp [hsimple r hr]
-  · have hmult0 : p.rootMultiplicity r = 0 := by simp_all
-    lia
-
-/-- At a simple real root the root multiset carries exactly one copy. -/
-lemma HasSimpleRoots.roots_count_eq_one (hsimple : HasSimpleRoots p)
-    {c : ℝ} (hc : p.IsRoot c) :
-    p.roots.count c = 1 := by
-  rw [count_roots (a := c) p]
-  exact hsimple c hc
-
-/-- The sorted root list of a polynomial with simple real roots is strictly
-sorted. -/
-lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
-    (p.roots.sort (· ≤ ·)).SortedLT := by
-  have hsorted : (p.roots.sort (· ≤ ·)).SortedLE := by
-    simpa using (Multiset.pairwise_sort (s := p.roots) (r := (· ≤ ·))).sortedLE
-  have hnodup : (p.roots.sort (· ≤ ·)).Nodup := by
-    apply Multiset.coe_nodup.mp
-    simpa using hsimple.roots_nodup
-  exact hsorted.sortedLT_of_nodup hnodup
 
 @[simp] lemma iterateTDeriv_zero (eps : ℝ) (p : ℝ[X]) :
     iterateTDeriv eps 0 p = p :=
@@ -305,7 +236,10 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
     rw [← hrewrite, natDegree_TDeriv eps p]; lia
   -- sign condition: b = C(-eps), b.eval r = -eps ≤ 0 for all r
-  have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by intro r _; simp [eval_C]; grind
+  have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by
+    intro r _
+    simp [eval_C]
+    grind
   -- Apply Ma-Wang
   rw [hrewrite]
   exact (prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos).2.1
@@ -921,7 +855,9 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
           simp_all
         have hdeg_hi :
-            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by simp_all
+            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤
+              (-p).natDegree + 1 := by
+          simp_all
         have hb_nonpos : ∀ r, (-p).IsRoot r → (C (-eps)).eval r ≤ 0 := by
           intro r _
           simp [eval_C]
@@ -1173,7 +1109,8 @@ lemma exists_delta_for_eval_iterateTDeriv_joint_at_zero
 lemma pos_of_norm_sub_lt_half_of_pos {a b : ℝ}
     (ha : 0 < a) (hab : ‖b - a‖ < a / 2) :
     0 < b := by
-  have hab' : -(a / 2) < b - a ∧ b - a < a / 2 := by simpa [Real.norm_eq_abs] using (abs_lt.mp hab)
+  have hab' : -(a / 2) < b - a ∧ b - a < a / 2 := by
+    simpa [Real.norm_eq_abs] using (abs_lt.mp hab)
   linarith
 
 /-- If `p.eval x ≠ 0`, then for sufficiently small `eps`, the value of

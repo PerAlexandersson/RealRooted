@@ -522,6 +522,14 @@ The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
 - `Tactic.MaWang` imports that theorem package and owns syntax, elaboration,
   and certificate lookup only.
 
+`Interlacing.Multiplicity` isolates the list-interlacing fact that a repeated
+root in either row forces a common root. `SimpleRoots` isolates the
+root-multiplicity definitions and the equivalence between simple real roots and
+a duplicate-free root multiset. The independent `MaWang.StrictStep` layer then
+combines the strict root-sign Ma--Wang step with those bridges to propagate
+simple roots without attaching the result to a particular recurrence or OEIS
+row family.
+
 The theorem units have 180, 891, and 675 local lines, respectively. The tactic
 frontend is a compatibility umbrella over a dependency-ordered package:
 

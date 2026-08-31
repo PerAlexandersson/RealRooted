@@ -38,7 +38,7 @@
       "max_modules": 85
     },
     "RealRooted.AffineFamily.Wronskian": {
-      "max_modules": 85
+      "max_modules": 90
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 110
@@ -53,7 +53,7 @@
       "max_modules": 160
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 160
+      "max_modules": 165
     },
     "RealRooted.Derivative": {
       "max_modules": 12
@@ -221,7 +221,7 @@
       "max_modules": 135
     },
     "RealRooted.NarayanaTransformation.Recurrences.Identities": {
-      "max_modules": 130
+      "max_modules": 135
     },
     "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
       "max_modules": 135
@@ -233,13 +233,13 @@
       "max_modules": 135
     },
     "RealRooted.NarayanaTransformation": {
-      "max_modules": 135
+      "max_modules": 140
     },
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 155
+      "max_modules": 160
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 160
@@ -311,7 +311,7 @@
       "max_modules": 115
     },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.CommonInterleaver.PairBridge.Reduction": {
       "max_modules": 120
@@ -587,7 +587,7 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 130
+      "max_modules": 135
     },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
       "max_modules": 135
@@ -645,6 +645,15 @@
     },
     "RealRooted.MaWang.Derivative": {
       "max_modules": 30
+    },
+    "RealRooted.MaWang.StrictStep": {
+      "max_modules": 25
+    },
+    "RealRooted.SimpleRoots": {
+      "max_modules": 10
+    },
+    "RealRooted.Interlacing.Multiplicity": {
+      "max_modules": 10
     },
     "RealRooted.Tactic.MaWang.Basic": {
       "max_modules": 40
@@ -822,11 +831,13 @@
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Endpoints",
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic",
     "RealRooted.LiuOppositeSigns.XSub.ProperPosition",
+    "RealRooted.Interlacing.Multiplicity",
     "RealRooted.MaWang",
     "RealRooted.MaWang.DerivativeStep",
     "RealRooted.MaWang.DerivativeSequence",
     "RealRooted.MaWang.DerivativeDenominator",
     "RealRooted.MaWang.Derivative",
+    "RealRooted.MaWang.StrictStep",
     "RealRooted.ProductSequence",
     "RealRooted.ProductOrientation",
     "RealRooted.RootCounting",
@@ -854,6 +865,7 @@
     "RealRooted.RootAmplitude.SumSquares",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
+    "RealRooted.SimpleRoots",
     "RealRooted.GarloffWagner.Algebra",
     "RealRooted.GarloffWagner.Iterated",
     "RealRooted.GarloffWagner.KreinData",
