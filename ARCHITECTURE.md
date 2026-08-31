@@ -224,9 +224,11 @@ established tactic import.
 explicit unsupported-certificate diagnostics. `OEIS.PositiveLag` independently
 owns the positive t-lag certificate parser and dispatch, while
 `OEIS.NegativeLag` owns global-nonpositive, square, and quadratic
-denominator-normalized certificates. The parent remains the existing
-compatible import while the separate product-certificate family is audited as
-its own unit.
+denominator-normalized certificates. `OEIS.ProductExit`, `OEIS.ProductFactor`,
+`OEIS.ProductLift`, and `OEIS.ProductParity` separately own the endpoint,
+finite-factor, lift, and parity product certificates. The parent remains the
+existing compatible import, preserving the previous frontend boundary without
+making one file own every certificate parser.
 
 Two further OEIS-derived corollary modules keep large owning modules cohesive:
 
@@ -679,8 +681,8 @@ are diagnostics rather than hard line-count limits.
 
 1. Separate tactic examples from the production tactic umbrella, building on
    the completed Finish/Product, Ma--Wang, and Favard backend splits.
-2. Audit `Tactic.OEIS` by certificate family before splitting its dispatch
-   wrappers; do not make a mechanical line-count split.
+2. Keep the `Tactic.OEIS` compatibility facade bounded; extract a future
+   certificate family only after a dependency and responsibility audit.
 3. Audit `LiuOppositeSigns.XSub.IntervalRootCount` by theorem clusters before
    exposing any implementation bridge; its current case distinctions need a
    dependency inventory first.

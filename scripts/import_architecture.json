@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 660
+      "max_modules": 670
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -451,8 +451,20 @@
     "RealRooted.Tactic.OEIS.NegativeLag": {
       "max_modules": 50
     },
+    "RealRooted.Tactic.OEIS.ProductExit": {
+      "max_modules": 75
+    },
+    "RealRooted.Tactic.OEIS.ProductFactor": {
+      "max_modules": 80
+    },
+    "RealRooted.Tactic.OEIS.ProductLift": {
+      "max_modules": 75
+    },
+    "RealRooted.Tactic.OEIS.ProductParity": {
+      "max_modules": 75
+    },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 330
+      "max_modules": 335
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -476,7 +488,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 345
+      "max_modules": 350
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -705,6 +717,10 @@
     "RealRooted.Tactic.OEIS.DerivativeLag",
     "RealRooted.Tactic.OEIS.NegativeLag",
     "RealRooted.Tactic.OEIS.PositiveLag",
+    "RealRooted.Tactic.OEIS.ProductExit",
+    "RealRooted.Tactic.OEIS.ProductFactor",
+    "RealRooted.Tactic.OEIS.ProductLift",
+    "RealRooted.Tactic.OEIS.ProductParity",
     "RealRooted.Tactic.OEIS",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",

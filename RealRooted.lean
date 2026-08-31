@@ -617,6 +617,10 @@ import RealRooted.Tactic.OEIS.Basic
 import RealRooted.Tactic.OEIS.DerivativeLag
 import RealRooted.Tactic.OEIS.NegativeLag
 import RealRooted.Tactic.OEIS.PositiveLag
+import RealRooted.Tactic.OEIS.ProductExit
+import RealRooted.Tactic.OEIS.ProductFactor
+import RealRooted.Tactic.OEIS.ProductLift
+import RealRooted.Tactic.OEIS.ProductParity
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFPolynomial
