@@ -107,6 +107,11 @@ in `HermiteBiehler`, and private Wronskian calculations remain with their
 affine-family and Obreschkoff proofs. This keeps the package based on theorem
 ownership rather than moving every file that happens to mention a Wronskian.
 
+`ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
+and the degree-closeness reduction for all-real-rooted polynomial pencils.
+`ObreschkoffConverse` remains the compatibility import and owns the subsequent
+orientation and derivative-preservation argument.
+
 Derivative recurrence results have a focused package entry point:
 
 - `DerivativeRecurrence.Linear` owns coefficient, degree, and interlacing
