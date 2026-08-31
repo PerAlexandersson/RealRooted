@@ -14,6 +14,16 @@ noncomputable section
 
 namespace Polynomial
 
+variable {R : Type*} [Semiring R]
+
+/-- Increasing a reflection bound by one multiplies the reflected polynomial by
+`X`. -/
+theorem reflect_succ (p : R[X]) {D : ℕ} (hdeg : p.natDegree ≤ D) :
+    p.reflect (D + 1) = p.reflect D * X := by
+  simpa [Nat.add_comm] using
+    (Polynomial.reflect_mul (f := p) (g := (1 : R[X])) (F := D) (G := 1)
+      hdeg (by simp))
+
 variable {K : Type*} [Field K]
 
 local instance : DecidableEq K := Classical.decEq K
