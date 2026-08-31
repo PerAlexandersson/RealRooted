@@ -232,9 +232,10 @@ negative ordered lists, the sorted inverse-root model, and its root-multiset
 identification. It deliberately leaves zero-padding interlacing and the
 polynomial `Prec` transport to later modules.
 
-`Mathlib.Data.List.Interleave` adds the relation-preserving map transport for
-`List.Interleaves`. It removes duplicated inductions from the linear and
-affine-interlacing modules, and is independent of all polynomial theory.
+`Mathlib.Data.List.Interleave` adds global and membership-aware
+relation-preserving map transport for `List.Interleaves`. It removes duplicated
+inductions from the linear, affine-interlacing, and reciprocal-root modules,
+and is independent of all polynomial theory.
 
 `Mathlib.Data.List.Interleave.Padding` is its endpoint companion: it owns
 relation-generic deletion and repeated padding at the right endpoints of

@@ -209,6 +209,24 @@ lemma Interleaves.map
   | nil_singleton a => exact .nil_singleton (φ a)
   | cons_symm h hab ih => exact .cons_symm ih (hφ hab)
 
+/-- Mapping two interleaving lists along a relation-preserving function on
+their entries preserves their interleaving. -/
+lemma Interleaves.map_of_mem
+    {β : Type*} {s : β → β → Prop} {l₁ l₂ : List α}
+    (h : Interleaves r l₁ l₂) (φ : α → β)
+    (hφ : ∀ ⦃a b⦄, (a ∈ l₁ ∨ a ∈ l₂) → (b ∈ l₁ ∨ b ∈ l₂) →
+      r a b → s (φ a) (φ b)) :
+    Interleaves s (l₁.map φ) (l₂.map φ) := by
+  induction h with
+  | nil_nil => simp
+  | nil_singleton a => simp
+  | cons_symm h hab ih =>
+      rename_i l₁ l₂ b a
+      simp only [map_cons]
+      have hmid : Interleaves s (l₁.map φ) (φ b :: l₂.map φ) := by
+        grind
+      simp_all
+
 lemma interleaves_iff_length_isChain_interleave :
     ∀ {l₁ l₂ : List α},
     Interleaves r l₁ l₂ ↔

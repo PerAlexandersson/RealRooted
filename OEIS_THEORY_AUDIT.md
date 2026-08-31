@@ -62,10 +62,11 @@ of the RealRooted interlacing library.
   `ProofsOeis.EulerPencil`. `ReciprocalShift.Roots` separately adds the
   real degree-padded root-multiset formula; sorted-list and proper-position
   transport stay outside both root APIs.
-- `Mathlib.Data.List.Interleave` contains the relation-preserving map theorem
-  for the generic `List.Interleaves` predicate. It was independently repeated
-  in the Euler-pencil and affine-interlacing proofs, so it belongs below the
-  polynomial layer and is a direct Mathlib upstream candidate.
+- `Mathlib.Data.List.Interleave` contains global and membership-aware
+  relation-preserving map theorems for the generic `List.Interleaves`
+  predicate. They were independently repeated in the Euler-pencil and
+  affine-interlacing proofs, so they belong below the polynomial layer and are
+  direct Mathlib upstream candidates.
 - `Mathlib.Data.List.Interleave.Padding` contains the relation-generic
   endpoint deletion, repeated padding, and strict-endpoint tail-removal facts
   independently reconstructed in the Euler-pencil proof. The reciprocal-shift
