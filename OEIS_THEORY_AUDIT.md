@@ -40,16 +40,24 @@ of the RealRooted interlacing library.
   of positive log-concave sequences, the resulting polynomial certificate,
   and the root-free-interval-to-reciprocal-gap conversion.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
-  product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, and
-  `Density` layers contain the generic finite-sequence amplitude theory,
-  finite continuation, and log-gap density criteria formerly in
-  `ProofsOeis.AmplitudeMonotone`, `SequenceExtension`, and `RootConvexity`.
+  product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, `Density`,
+  `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude
+  theory, finite continuation, log-gap density, extreme-ratio, and square-sum
+  criteria formerly in `ProofsOeis.AmplitudeMonotone`, `SequenceExtension`,
+  `RootConvexity`, `ExtremeGap`, and `SumOfSquaresAmplitude`.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
 only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
+
+### Elementary symmetric-function sandwich
+
+`ProofsOeis.SymmetricSandwich` is sequence-independent and should move next,
+but not as its current 428-line unit. Its finite elementary-symmetric algebra,
+positive upper bounds, and polynomial-coefficient bridge should become three
+focused modules, with the first potentially shaped for Mathlib reuse.
 
 ### Separation-specific amplitude applications
 

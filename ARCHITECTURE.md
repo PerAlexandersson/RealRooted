@@ -234,11 +234,15 @@ on that small shim. The finite-sequence package is split by responsibility:
 - `RootAmplitude.Density` owns the logarithmic-gap density criterion, its
   perturbative transfer, and the outer-region shortcut;
 - `RootAmplitude.Extension` owns the finite-to-global affine continuation;
+- `RootAmplitude.Extreme` owns the finite-family power-sum extreme-gap
+  criterion and its numerical threshold;
 - `RootAmplitude.Minimum` owns propagation from the smallest amplitude and the
   alternative reciprocal-distance-sum criterion; and
-- `RootAmplitude.Polynomial` owns the separate split-polynomial bridge.
+- `RootAmplitude.Polynomial` owns the separate split-polynomial bridge; and
+- `RootAmplitude.SumSquares` owns the scalar square-sum-to-uniform-amplitude
+  reduction.
 
-The six layers are re-exported by `RootAmplitude`; this keeps every source unit
+The eight layers are re-exported by `RootAmplitude`; this keeps every source unit
 below 250 lines and lets consumers import a finite-sequence theorem without a
 polynomial dependency.
 

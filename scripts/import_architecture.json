@@ -97,6 +97,9 @@
     "RealRooted.RootAmplitude.Extension": {
       "max_modules": 8
     },
+    "RealRooted.RootAmplitude.Extreme": {
+      "max_modules": 5
+    },
     "RealRooted.RootAmplitude.Finite": {
       "max_modules": 5
     },
@@ -104,6 +107,9 @@
       "max_modules": 8
     },
     "RealRooted.RootAmplitude.Polynomial": {
+      "max_modules": 5
+    },
+    "RealRooted.RootAmplitude.SumSquares": {
       "max_modules": 5
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative": {
@@ -226,9 +232,11 @@
     "RealRooted.RootAmplitude.Convex",
     "RealRooted.RootAmplitude.Density",
     "RealRooted.RootAmplitude.Extension",
+    "RealRooted.RootAmplitude.Extreme",
     "RealRooted.RootAmplitude.Finite",
     "RealRooted.RootAmplitude.Minimum",
     "RealRooted.RootAmplitude.Polynomial",
+    "RealRooted.RootAmplitude.SumSquares",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
     "RealRooted.ScalarNormalization",
