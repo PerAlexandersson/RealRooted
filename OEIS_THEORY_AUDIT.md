@@ -37,6 +37,12 @@ of the RealRooted interlacing library.
   recurrence's coefficient transport, degree growth, and consecutive
   interlacing theorem from `ProofsOeis.DerivativeLinear`. It is already a
   promoted theorem family, not a remaining extraction candidate.
+- `GeneralizedEulerian` contains the positive-real-parameter Eulerian
+  differential recurrence and its exact degree, nonnegative-coefficient, and
+  splitness invariants from `ProofsOeis.GeneralizedEulerian`. The family has no
+  OEIS-specific parameter or initial-model identification and serves multiple
+  OEIS clients, so it is a compact RealRooted theorem module rather than an
+  application wrapper.
 - `SortedRoots.Exhibited` promotes the remaining nonduplicate
   `ProofsOeis.RootFamily` bridge: an explicitly indexed strictly increasing
   family of all roots both saturates the root count and identifies the sorted
