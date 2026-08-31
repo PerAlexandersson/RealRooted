@@ -553,9 +553,10 @@ the full API.
 `GarloffWagner.Algebra` now owns the 421-line factorial-normalized Schur
 product and the `L`, `D`, and `J` coefficient operators, including the checked
 Lemma 10 identities. `GarloffWagner` remains the compatibility import and owns
-the later Theorem 11/12 route; subsequent cuts should keep its iterated
-transform, Krein-data, Krein-expansion, Hadamard-propagation, and endpoint
-layers in that dependency order.
+the later Theorem 11/12 route. `GarloffWagner.Iterated` now owns the 785-line
+`J^k ∘ L` transform, its factor identities, and the Theorem 11 transport
+interfaces. Subsequent cuts should keep the Krein-data, Krein-expansion,
+Hadamard-propagation, and endpoint layers in that dependency order.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

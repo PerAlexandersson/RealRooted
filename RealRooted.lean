@@ -174,6 +174,7 @@ import RealRooted.FolkloreLemma
 import RealRooted.GammaRealRoots
 import RealRooted.GarloffWagner
 import RealRooted.GarloffWagner.Algebra
+import RealRooted.GarloffWagner.Iterated
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.FiniteBoard

@@ -59,8 +59,9 @@ lake build RealRooted.Bezoutian
   and Veronese-section material.
 - `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
   product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
-  Schur-product and differential-operator algebra, while
-  `GarloffWagner.lean` remains its theorem-route compatibility import.
+  Schur-product and differential-operator algebra, and
+  `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
+  `GarloffWagner.lean` remains their theorem-route compatibility import.
   `Hadamard.lean` packages downstream consequences.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
