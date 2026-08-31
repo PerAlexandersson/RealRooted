@@ -60,6 +60,9 @@ lake build RealRooted.Bezoutian
 - `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,
   `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
   and Veronese-section material.
+- `VeroneseSectionPair.lean` gives strict proper position for two nonzero
+  ordered residues; its `HermiteBiehler` child gives the induced
+  upper-half-plane and Hurwitz stability certificates.
 - `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
   product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
   Schur-product and differential-operator algebra, and

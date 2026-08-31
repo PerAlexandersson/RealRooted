@@ -203,7 +203,9 @@ Two further OEIS-derived corollary modules keep large owning modules cohesive:
 - `CommonInterleaverFamilySum` turns pairwise common right or left interleavers
   into splitness of a nonempty finite sum; and
 - `VeroneseSectionPair` extracts strict proper position between two nonzero
-  ordered residue sections from the Veronese matrix package.
+  ordered residue sections from the Veronese matrix package; its
+  `HermiteBiehler` child turns that relation into upper-half-plane and Hurwitz
+  stability certificates for the corresponding odd/even recombination.
 
 `ProductOrientation` packages a further OEIS-derived Obreschkoff corollary:
 for same-degree nonnegative-coefficient polynomials, a strict normalized

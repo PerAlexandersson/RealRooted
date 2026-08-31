@@ -415,6 +415,9 @@
     "RealRooted.VeroneseSectionPair": {
       "max_modules": 130
     },
+    "RealRooted.VeroneseSectionPair.HermiteBiehler": {
+      "max_modules": 135
+    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 80
     },
@@ -642,6 +645,7 @@
     "RealRooted.SymmetricDecomposition.Theorem26",
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
+    "RealRooted.VeroneseSectionPair.HermiteBiehler",
     "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",

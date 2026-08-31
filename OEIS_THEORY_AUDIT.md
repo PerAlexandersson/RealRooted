@@ -43,7 +43,9 @@ of the RealRooted interlacing library.
 - `CommonInterleaverFamilySum` contains the pairwise-common-interleaver sum
   corollaries.
 - `VeroneseSectionPair` contains strict proper position for ordered nonzero
-  Veronese residue sections.
+  Veronese residue sections; its `HermiteBiehler` child derives the
+  upper-half-plane and Hurwitz stability certificates for their normalized
+  odd/even recombination.
 - `ProductOrientation` contains the endpoint-product criterion selecting the
   same-degree Obreschkoff orientation.
 - `Mathlib.Algebra.Polynomial.CayleyTransform` contains the generic finite-

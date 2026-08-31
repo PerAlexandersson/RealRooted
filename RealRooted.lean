@@ -631,6 +631,7 @@ import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
 import RealRooted.VeroneseSection
 import RealRooted.VeroneseSectionPair
+import RealRooted.VeroneseSectionPair.HermiteBiehler
 import RealRooted.Wagner
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
