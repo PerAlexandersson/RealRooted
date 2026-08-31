@@ -169,6 +169,10 @@ import RealRooted.EulerOperator.ScaledPolar
 import RealRooted.EulerianCompletion
 import RealRooted.EulerianMixedCompatibility
 import RealRooted.Favard
+import RealRooted.Favard.Affine
+import RealRooted.Favard.Affine.Basic
+import RealRooted.Favard.Affine.Denominator
+import RealRooted.Favard.Affine.RowSign
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma

@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 650
+      "max_modules": 655
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -403,6 +403,21 @@
     "RealRooted.ScalarNormalization": {
       "max_modules": 2
     },
+    "RealRooted.Favard.Affine.Basic": {
+      "max_modules": 25
+    },
+    "RealRooted.Favard.Affine.Denominator": {
+      "max_modules": 30
+    },
+    "RealRooted.Favard.Affine.RowSign": {
+      "max_modules": 30
+    },
+    "RealRooted.Favard.Affine": {
+      "max_modules": 30
+    },
+    "RealRooted.Tactic.Favard": {
+      "max_modules": 40
+    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
@@ -425,7 +440,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 330
+      "max_modules": 335
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -638,6 +653,11 @@
     "RealRooted.GarloffWagner.Hadamard",
     "RealRooted.GarloffWagner",
     "RealRooted.ScalarNormalization",
+    "RealRooted.Favard.Affine.Basic",
+    "RealRooted.Favard.Affine.Denominator",
+    "RealRooted.Favard.Affine.RowSign",
+    "RealRooted.Favard.Affine",
+    "RealRooted.Tactic.Favard",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",

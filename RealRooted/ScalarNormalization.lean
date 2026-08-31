@@ -29,6 +29,12 @@ theorem eq_of_C_mul_eq_C_mul {d : ℝ} (hd : d ≠ 0) {F RHS : ℝ[X]}
   have hk := congrArg (fun p : ℝ[X] => p.coeff k) h
   simpa [hd] using hk
 
+/-- Cancel a scalar left denominator from a split recurrence. -/
+theorem eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul {d b : ℝ} (hd : d ≠ 0)
+    {F A Q : ℝ[X]} (h : C d * F = C d * A - C (d * b) * Q) :
+    F = A - C b * Q :=
+  eq_of_C_mul_eq_C_mul hd <| by rw [h, C_mul]; ring
+
 /-- Divide a recurrence where one summand already has the left scalar factor.
 
 This is useful for OEIS recurrences presented as

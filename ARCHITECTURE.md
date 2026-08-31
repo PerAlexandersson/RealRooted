@@ -197,6 +197,22 @@ for both responsibility review and Lean's per-module elaboration cache.
 `ScalarNormalization` similarly owns the ordinary constant-polynomial
 cancellation theorems formerly embedded in `Tactic.ScalarDen`. This keeps
 recurrence backends from importing the scalar-denominator tactic frontend.
+Its split-recurrence cancellation lemma is shared by the affine Favard
+normalizers as well, rather than remaining a private tactic helper.
+
+The affine Favard recurrence APIs are likewise now theorem-only:
+
+- `Favard.Affine.Basic` owns the direct monic and positive-slope coefficient
+  forms and their `Prec`, splitness, and nonzero consequences;
+- `Favard.Affine.Denominator` owns the scalar-normalized and raw-affine
+  positive-slope forms; and
+- `Favard.Affine.RowSign` owns the `(-1)^n` normalization and its
+  scalar-normalized variants.
+
+`Favard.Affine` is their small compatibility entry point, while
+`Tactic.Favard` retains syntax and elaboration only. The frontend still needs
+a later syntax/macro split; this extraction first enforces the theorem-to-
+tactic dependency boundary without changing existing tactic imports.
 
 Two further OEIS-derived corollary modules keep large owning modules cohesive:
 
@@ -440,9 +456,12 @@ modules rather than the historical size of this repository. Generated files
 require a generator-aware split; moving only a few helper lemmas does not
 improve Lean's elaboration unit or object-file caching.
 
-The initial split candidates are the Liu--Wang, Ma--Wang, Product, and OEIS
-tactic frontends, followed by `AffineFamily`, `SymmetricDecomposition`,
-`GarloffWagner`, and `Hadamard`.
+The completed first-wave splits cover Liu--Wang, Ma--Wang, Product,
+`AffineFamily`, `SymmetricDecomposition`, `GarloffWagner`, Hadamard, and the
+Favard theorem backend. The remaining candidates need an actual responsibility
+boundary before code moves: the Favard and OEIS tactic frontends, the
+`LiuOppositeSigns.XSub.IntervalRootCount` theorem program, and selected
+large application proofs.
 
 The reusable theorem region formerly embedded in `Tactic.MaWang` is now the
 `MaWang.Derivative` package:
@@ -644,14 +663,14 @@ are diagnostics rather than hard line-count limits.
 
 ## Near-term roadmap
 
-1. Recover or replace the missing source generator used by the OEIS project,
-   then pilot narrow imports on representative generated sequence modules.
+1. Split `Tactic.Favard` into shared syntax and direct, denominator, and
+   row-sign macro-rule modules, retaining its established import as a façade.
 2. Separate tactic examples from the production tactic umbrella, building on
-   the completed finish/product frontend split.
-3. Continue generalizing the extracted `Wronskian.Algebra` coefficient
-   identities in its Mathlib-shaped shim and migrate OEIS consumers to the
-   finite-root and interlacing bridges in `Wronskian.Forward`.
-4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
-   RealRooted packages.
-5. Maintain a Mathlib-upstream queue beginning with small Wronskian, multiset,
-   list, homogenization, and Mahler-measure lemmas.
+   the completed Finish/Product, Ma--Wang, and Favard backend splits.
+3. Audit `Tactic.OEIS` by certificate family before splitting its dispatch
+   wrappers; do not make a mechanical line-count split.
+4. Audit `LiuOppositeSigns.XSub.IntervalRootCount` by theorem clusters before
+   exposing any implementation bridge; its current case distinctions need a
+   dependency inventory first.
+5. Maintain the Mathlib-upstream queue: small Wronskian, multiset, list,
+   homogenization, Mahler-measure, and scalar-polynomial normalization lemmas.
