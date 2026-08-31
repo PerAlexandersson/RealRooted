@@ -730,7 +730,8 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
   have hW_ne x : (wronskianPoly f g).eval x ≠ 0 :=
     wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by grind) hno (x := x)
-  have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskianPoly f g).eval x * (wronskianPoly f g).eval y :=
+  have hW_prod {x y : ℝ} :
+      x ≤ y → 0 < (wronskianPoly f g).eval x * (wronskianPoly f g).eval y :=
     wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by grind) hno
   have hf'_pos : HasPosLeadingCoeff f.derivative :=
@@ -869,7 +870,8 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
   have hW_ne x : (wronskianPoly f g).eval x ≠ 0 :=
     wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by simp_all) hno
-  have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskianPoly f g).eval x * (wronskianPoly f g).eval y :=
+  have hW_prod {x y : ℝ} :
+      x ≤ y → 0 < (wronskianPoly f g).eval x * (wronskianPoly f g).eval y :=
     wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by simp_all) hno
   have hq_pos : HasPosLeadingCoeff (-wronskianPoly f g) := by
