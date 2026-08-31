@@ -1,6 +1,7 @@
 import RealRooted.CoefficientDominance.LogConcavity
 import RealRooted.CoefficientDominance.RootGap
 import RealRooted.CoefficientDominance.Sequence
+import RealRooted.CoefficientDominance.Symmetric
 
 /-!
 # Coefficient-dominance criteria

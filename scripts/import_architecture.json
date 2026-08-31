@@ -11,7 +11,7 @@
       "max_modules": 12
     },
     "RealRooted.CoefficientDominance": {
-      "max_modules": 10
+      "max_modules": 15
     },
     "RealRooted.CoefficientDominance.LogConcavity": {
       "max_modules": 10
@@ -20,6 +20,24 @@
       "max_modules": 5
     },
     "RealRooted.CoefficientDominance.Sequence": {
+      "max_modules": 5
+    },
+    "RealRooted.CoefficientDominance.Symmetric": {
+      "max_modules": 8
+    },
+    "RealRooted.CoefficientDominance.Symmetric.Finite": {
+      "max_modules": 3
+    },
+    "RealRooted.CoefficientDominance.Symmetric.Polynomial": {
+      "max_modules": 3
+    },
+    "RealRooted.CoefficientDominance.Symmetric.Sharp": {
+      "max_modules": 3
+    },
+    "RealRooted.CoefficientDominance.Symmetric.Tail": {
+      "max_modules": 3
+    },
+    "RealRooted.CoefficientDominance.Symmetric.Upper": {
       "max_modules": 5
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance": {
@@ -208,6 +226,12 @@
     "RealRooted.CoefficientDominance.LogConcavity",
     "RealRooted.CoefficientDominance.RootGap",
     "RealRooted.CoefficientDominance.Sequence",
+    "RealRooted.CoefficientDominance.Symmetric",
+    "RealRooted.CoefficientDominance.Symmetric.Finite",
+    "RealRooted.CoefficientDominance.Symmetric.Polynomial",
+    "RealRooted.CoefficientDominance.Symmetric.Sharp",
+    "RealRooted.CoefficientDominance.Symmetric.Tail",
+    "RealRooted.CoefficientDominance.Symmetric.Upper",
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.EulerOperator.Polar",
     "RealRooted.EulerOperator.ScaledPolar",

@@ -216,11 +216,17 @@ interleaved in a consumer proof:
 - `CoefficientDominance.LogConcavity` turns the two neighboring ratios into a
   polynomial root-exclusion certificate; and
 - `CoefficientDominance.RootGap` converts a root-free reciprocal interval into
-  multiplicative and logarithmic gap bounds.
+  multiplicative and logarithmic gap bounds; and
+- `CoefficientDominance.Symmetric` splits the elementary-symmetric sandwich
+  into finite algebra, analytic upper bounds, sharpened generating estimates,
+  a polynomial-coefficient bridge, and tail contributions.
 
 `CoefficientDominance` is the small curated entry point. This distinction lets
 future users import a polynomial fact or sequence fact without inheriting an
-application's Eulerian specialization.
+application's Eulerian specialization. The finite elementary-symmetric layer
+uses the local initial-segment representation while Mathlib's `Multiset.esymm`
+serves the more general multiset API, so an upstream bridge should be designed
+against that existing interface rather than create a competing wrapper.
 
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring

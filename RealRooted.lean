@@ -76,6 +76,12 @@ import RealRooted.CoefficientDominance
 import RealRooted.CoefficientDominance.LogConcavity
 import RealRooted.CoefficientDominance.RootGap
 import RealRooted.CoefficientDominance.Sequence
+import RealRooted.CoefficientDominance.Symmetric
+import RealRooted.CoefficientDominance.Symmetric.Finite
+import RealRooted.CoefficientDominance.Symmetric.Polynomial
+import RealRooted.CoefficientDominance.Symmetric.Sharp
+import RealRooted.CoefficientDominance.Symmetric.Tail
+import RealRooted.CoefficientDominance.Symmetric.Upper
 import RealRooted.CoefficientShape
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom

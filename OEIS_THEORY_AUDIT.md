@@ -38,7 +38,8 @@ of the RealRooted interlacing library.
 - `Mathlib.Algebra.Polynomial.Dominance` contains the generic dominant-term
   root-exclusion criterion. `CoefficientDominance` separates geometric decay
   of positive log-concave sequences, the resulting polynomial certificate,
-  and the root-free-interval-to-reciprocal-gap conversion.
+  the root-free-interval-to-reciprocal-gap conversion, and the
+  elementary-symmetric coefficient sandwich.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
   product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, `Density`,
   `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude
@@ -52,12 +53,14 @@ only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
 
-### Elementary symmetric-function sandwich
+### Elementary-symmetric Mathlib bridge
 
-`ProofsOeis.SymmetricSandwich` is sequence-independent and should move next,
-but not as its current 428-line unit. Its finite elementary-symmetric algebra,
-positive upper bounds, and polynomial-coefficient bridge should become three
-focused modules, with the first potentially shaped for Mathlib reuse.
+`CoefficientDominance.Symmetric` now contains all 17 theorems and four
+definitions from the sequence-independent `ProofsOeis.SymmetricSandwich`,
+split across five focused source modules. Its initial-segment presentation is
+useful to the root-gap application, while Mathlib already has the more general
+`Multiset.esymm` API; a future upstream candidate should bridge those forms
+rather than duplicate either one.
 
 ### Separation-specific amplitude applications
 
