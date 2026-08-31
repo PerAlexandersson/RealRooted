@@ -454,6 +454,11 @@ import RealRooted.ProductSequence
 import RealRooted.QuadraticCubicPencil
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
+import RealRooted.RankTwoMatching.Basic
+import RealRooted.RankTwoMatching.DisjointEquiv
+import RealRooted.RankTwoMatching.Endpoint
+import RealRooted.RankTwoMatching.Enumeration
+import RealRooted.RankTwoMatching.Orientation
 import RealRooted.RankTwoMatching.Transform
 import RealRooted.RankTwoMatchingModel
 import RealRooted.RectangularConvolution

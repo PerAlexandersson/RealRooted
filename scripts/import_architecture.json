@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 706
+      "max_modules": 711
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -149,7 +149,25 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
+      "max_modules": 140
+    },
+    "RealRooted.RankTwoMatching.Basic": {
+      "max_modules": 134
+    },
+    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 135
+    },
+    "RealRooted.RankTwoMatching.DisjointEquiv": {
+      "max_modules": 136
+    },
+    "RealRooted.RankTwoMatching.Enumeration": {
+      "max_modules": 137
+    },
+    "RealRooted.RankTwoMatching.Endpoint": {
+      "max_modules": 138
+    },
+    "RealRooted.RankTwoMatching": {
+      "max_modules": 139
     },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
@@ -779,6 +797,12 @@
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
     "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
+    "RealRooted.RankTwoMatching.Basic",
+    "RealRooted.RankTwoMatching.Orientation",
+    "RealRooted.RankTwoMatching.DisjointEquiv",
+    "RealRooted.RankTwoMatching.Enumeration",
+    "RealRooted.RankTwoMatching.Endpoint",
+    "RealRooted.RankTwoMatching",
     "RealRooted.RankTwoMatching.Transform",
     "RealRooted.MultiplierSequence",
     "RealRooted.NarayanaTransformation.RootGeometry",
