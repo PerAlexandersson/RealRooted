@@ -236,6 +236,11 @@ polynomial `Prec` transport to later modules.
 `List.Interleaves`. It removes duplicated inductions from the linear and
 affine-interlacing modules, and is independent of all polynomial theory.
 
+`Mathlib.Data.List.Interleave.Padding` is its endpoint companion: it owns
+relation-generic deletion and repeated padding at the right endpoints of
+interleaving lists. The reciprocal-shift layer supplies only the negative-root
+and zero-multiplicity specialization of that API.
+
 The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator.Pencil` owns proper-position comparisons for positive

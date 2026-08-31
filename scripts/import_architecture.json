@@ -79,6 +79,9 @@
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating": {
       "max_modules": 2
     },
+    "RealRooted.Mathlib.Data.List.Interleave.Padding": {
+      "max_modules": 5
+    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 75
     },
@@ -360,6 +363,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
+    "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.MultiplierSequence",
     "RealRooted.MultiplierSequence.Bidiagonal",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen",
