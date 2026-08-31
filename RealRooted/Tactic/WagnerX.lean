@@ -880,6 +880,17 @@ syntax (name := rr_prec_pos_X_lag_sequence_auto)
     "recurrence" ":=" term :
   tactic
 
+/-- Automatic scalar-side-condition frontend for a positive-`X` lag sequence
+with explicitly supplied current and lag coefficient functions. -/
+syntax (name := rr_prec_pos_X_lag_coeff_sequence_auto)
+  "rr_prec_pos_X_lag_coeff_sequence_auto" " using "
+    "current_coeff" ":=" term ","
+    "lag_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_prec_pos_X_lag_sequence_realrooted)
   "rr_prec_pos_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -891,6 +902,17 @@ syntax (name := rr_prec_pos_X_lag_sequence_realrooted)
 
 syntax (name := rr_prec_pos_X_lag_sequence_realrooted_auto)
   "rr_prec_pos_X_lag_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+/-- Real-rootedness endpoint for
+`rr_prec_pos_X_lag_coeff_sequence_auto`. -/
+syntax (name := rr_prec_pos_X_lag_coeff_sequence_realrooted_auto)
+  "rr_prec_pos_X_lag_coeff_sequence_realrooted_auto" " using "
+    "current_coeff" ":=" term ","
+    "lag_coeff" ":=" term ","
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
@@ -1230,6 +1252,18 @@ macro_rules
               $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
               (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
+      rr_prec_pos_X_lag_coeff_sequence_auto using
+        current_coeff := $a:term,
+        lag_coeff := $c:term,
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        exact RealRooted.prec_pos_X_lag_combo_sequence
+          (a := $a) (c := $c)
+          $hbase $hnonneg rr_side_pos_seq_term rr_side_nonneg_seq_term
+          (rr_wagner_recurrence_seq $hrec))
+  | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted using
         base := $hbase:term,
         nonneg_coeffs := $hnonneg:term,
@@ -1252,6 +1286,19 @@ macro_rules
           (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
             (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
+  | `(tactic|
+      rr_prec_pos_X_lag_coeff_sequence_realrooted_auto using
+        current_coeff := $a:term,
+        lag_coeff := $c:term,
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := $a) (c := $c)
+            $hbase $hnonneg rr_side_pos_seq_term rr_side_nonneg_seq_term
             (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_natDegree_pos_X_sub_C_lag_sequence using
