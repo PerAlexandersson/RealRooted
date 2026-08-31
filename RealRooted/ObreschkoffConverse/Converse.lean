@@ -1483,113 +1483,6 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
     simpa [n] using
       prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
         hf.1 hf.2 hg.1 hg.2 hall hsucc heps hno
-  -- Handoff note:
-  -- With `natDegree_close_of_allComboRealRooted` now available earlier in this
-  -- file, the remaining converse has a clean two-case split (for nonzero
-  -- inputs): up to swapping, either `f.natDegree + 1 = g.natDegree` or
-  -- `f.natDegree = g.natDegree`.
-  --
-  -- The `+1` case is the right next target because the orientation is forced:
-  -- one only has to prove `Prec f g`, not an Obreschkoff alternative. In that
-  -- branch, `hprec_iter` should also collapse to the left orientation by degree
-  -- alone after rewriting `hdeg_iter` with `natDegree_iterateTDeriv_of_isRealRooted`.
-  -- So the remaining `+1`-case gap is strictly narrower than the same-degree
-  -- gap: transport
-  --   `Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g)`
-  -- back to
-  --   `Prec f g`.
-  --
-  -- `hprec_iter` is now the fully regularized Obreschkoff conclusion for the
-  -- simple `iterateTDeriv` pair. The remaining gap is *only* a transport step
-  -- back to `(f, g)`. Two routes still look viable:
-  -- 1. prove directly that `hall + hno` already forces every nonzero original
-  --    combination `C α * f + C β * g` to have simple roots, then apply the
-  --    helper theorem above to `(f, g)` itself and bypass `iterateTDeriv`;
-  --    concretely, the target lemma is
-  --    `∀ α β : ℝ,
-  --        C α * f + C β * g = 0 ∨
-  --          (((C α * f + C β * g) ≠ 0 ∧
-  --            (C α * f + C β * g).Splits) ∧
-  --            HasSimpleRoots (C α * f + C β * g))`.
-  --    Once this is available, the endgame is exactly
-  --    `prec_of_eq_zero_or_simple_combo_of_no_common hf hg hcombo_original hdeg hno`.
-  -- 2. prove a closure / limit theorem saying that the orientation encoded by
-  --    `hprec_iter` survives the `iterateTDeriv` regularization.
-  --    In the succ-degree branch, the orientation issue is now resolved:
-  --    `hsucc_iter_forced` packages the degree argument showing that the
-  --    regularized pair cannot land in the reverse orientation. So the only
-  --    missing succ-degree step is the transport
-  --      `Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) -> Prec f g`.
-  --    The new continuity primitives now live in `IteratedDerivativeShift`:
-  --      * `iterateTDeriv_zero_eps`
-  --      * `coeff_TDeriv`
-  --      * `continuous_coeff_iterateTDeriv`
-  --      * `continuousAt_coeff_iterateTDeriv_zero`
-  --      * `continuous_eval_iterateTDeriv_joint`
-  --      * `continuousAt_eval_iterateTDeriv_joint_zero`
-  --      * `exists_delta_for_eval_iterateTDeriv_joint_at_zero`
-  --      * `exists_delta_eval_mul_pos_iterateTDeriv_joint_at_zero`
-  --      * `exists_delta_not_isRoot_iterateTDeriv_near_point`
-  --      * `exists_delta_and_real_root_near_iterateTDeriv`
-  --      * `exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted`
-  --    So the clean next refactor is to stop fixing `eps := 1` here, keep
-  --    `eps` symbolic, and combine those coefficientwise `ε → 0` facts with
-  --    `RootContinuity`. The new non-monic nearby-root wrapper means the
-  --    closure route can work after a one-time leading-coefficient/sign
-  --    normalization, without rebuilding monic scaling inside the converse.
-  --    For the slot-based variant of that closure route, the minimal public
-  --    `CommonInterleaverSeq` API is now available as:
-  --      * `polyOfDescRootsDesc`
-  --      * `rootSeqDesc_polyOfDescRootsDesc_eq`
-  --      * `mem_rootSlotInterval_of_prec_desc`
-  --      * `rootSlot_lower_bound_of_mem`
-  --      * `rootSlot_upper_bound_of_mem`
-  --      * `prec_of_slots_polyOfDescRootsDesc`
-  -- 3. reroute through the formalized right-family pair
-  --    `(f + g, f + 2g)`: `allComboRealRooted_right_family_one_two` keeps us
-  --    in the same Obreschkoff plane, and
-  --    `no_common_root_right_family_one_two_of_no_common` keeps the no-common
-  --    root hypothesis available for that basis change. The safe version of
-  --    this route should first sign-normalize to positive leading coefficients;
-  --    only then does the family reliably keep the top degree via
-  --    `right_family_degree_data_of_posLeadingCoeff`. The key strict root-sign
-  --    inputs are now also packaged:
-  --    `eval_mul_right_family_one_neg_at_root_two_of_no_common` and
-  --    `eval_mul_right_family_two_neg_at_root_one_of_no_common`.
-  --    Concretely, the next Ma--Wang-style continuation to test is:
-  --      a. scale `(f, g)` to positive-leading `(f₀, g₀)`;
-  --      b. set `F := f₀ + g₀`, `G := f₀ + C (2 : ℝ) * g₀`;
-  --      c. use `right_family_degree_data_of_posLeadingCoeff` to get the
-  --         same-degree family bookkeeping;
-  --      d. prove `Prec F G ∨ Prec G F`, then combine the two strict root-sign
-  --         lemmas above with `prec_same_of_root_sign_data` / Ma--Wang to
-  --         transport that orientation back to `Prec f₀ g₀ ∨ Prec g₀ f₀`;
-  --      e. scale back to `(f, g)`.
-  --    Important caveat: the tempting "pure subtraction" lemmas
-  --      `Prec p q ↔ Prec p (q - p)` and `Prec p q ↔ Prec (p - q) q`
-  --    are false for the current `Prec` API as stated; `prec_refl` already
-  --    gives a counterexample by taking `p = q ≠ 0`, since then `q - p = 0`
-  --    and `Prec p 0` does not hold. So this route still needs extra
-  --    hypotheses/sign data, not just linear algebra on polynomials.
-  --
-  -- The new helper facts above also settle one normalization annoyance for the
-  -- closure route: `iterateTDeriv` preserves leading coefficients exactly
-  -- (`hlead_f_iter`, `hlead_g_iter`), hence preserves `HasPosLeadingCoeff`
-  -- exactly (`hpos_f_iter`, `hpos_g_iter`). So if we sign-normalize `(f, g)`
-  -- once, the entire regularized family keeps that normalization without any
-  -- ε-dependent rescaling.
-  --    The first two derived facts to keep in scope for that route are
-  --    `have hall_family :
-  --        AllComboRealRooted (f + g) (f + C (2 : ℝ) * g) :=
-  --          allComboRealRooted_right_family_one_two hall`
-  --    and
-  --    `have hno_family :
-  --        ∀ r, (f + g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r :=
-  --          by simpa using no_common_root_right_family_one_two_of_no_common hno`.
-  --
-  -- Either route should finish this theorem without changing the Wronskian
-  -- infrastructure above. Keeping `hprec_iter` explicit here should make it
-  -- easier for another agent to pick up from the exact reduced goal.
   have hcombo_original :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -1624,22 +1517,6 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           lia
     · have hmax_pos : 0 < max f.natDegree g.natDegree := Nat.pos_of_ne_zero hmax0
       have hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0 := by
-        /-
-        Reduced live frontier.
-
-        The remaining converse contradiction now starts from the special-pair
-        reduction above: if the Wronskian vanished at `x`, we could replace
-        `(f, g)` inside the same `AllComboRealRooted` plane by a pair `(p, q)`
-        with no common roots such that
-        * `p` has a multiple root at `x`,
-        * `q.eval x ≠ 0`.
-
-        So the last missing theorem is now the explicit contradiction:
-        such a pair cannot exist in the positive-degree/no-common-root regime.
-        The keepalive facts above (`hprec_iter`, `hall_iter`, `hf_simple`,
-        `hg_simple`, `hlead_*_iter`, `hpos_*_iter`, `hsucc_iter_forced`) are
-        the intended ingredients for that final local argument.
-        -/
         intro x hw
         obtain ⟨p, q, hp_def, hq_case, hpq_all, hpq_no, hp_root, hp_der_root, hq_eval_ne⟩ :=
           exists_special_pair_of_wronskian_zero hall hno hw
@@ -1673,22 +1550,6 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         have hp_mult_gt : 1 < p.rootMultiplicity x :=
           (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hp_root, hp_der_root⟩
         have hp_mult_ge2 : 2 ≤ p.rootMultiplicity x := by lia
-        /-
-        Final local contradiction.
-
-        Instead of regularizing all the way to a simple pair and then passing
-        slot data back to the limit, we now only iterate `T_ε` long enough to
-        reduce the multiple root of `p` at `x` to an exact double root. For a
-        sufficiently small shift parameter `η`, the companion polynomial
-        `iterateTDeriv η (m - 2) q` still does not vanish at `x`, while
-        `iterateTDeriv η (m - 2) p` has root multiplicity exactly `2` there.
-
-        That exact double-root pair is impossible in an `AllComboRealRooted`
-        plane: a small perturbation by the companion violates the standard
-        second-derivative inequality for non-roots
-        (`deriv2_mul_lt_deriv_sq_at_non_root`). So the original Wronskian-zero
-        assumption was impossible.
-        -/
         let m : ℕ := p.rootMultiplicity x
         let k : ℕ := m - 2
         obtain ⟨δ, hδ, hqk_not_root⟩ :=
