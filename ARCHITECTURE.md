@@ -457,7 +457,14 @@ degree control, boundary-real-rootedness, and root-zero layer. Its seven
 implementation lemmas used by the high-degree endgame are explicitly marked
 `protected` in the `AffineFamily` namespace, rather than being accidentally
 presented as general theorem API. The parent now owns the crossing and
-Wronskian endgame; its next split must move those helper clusters together.
+Wronskian endgame. `AffineFamily.RootCrossing` then owns the 1,316-line
+double-root exclusion and simple-root work, together with the public
+positive-pencil parameter and crossing API. Its one helper needed by the
+remaining Wronskian bridge is also a `protected` `AffineFamily` member. The
+compatibility-preserving source split adds one module to the CubicResidual
+Quadratic consumer closure, so its conservative budget is 145 rather than
+its former exhausted 140. The next split must move the local Wronskian bridge
+with its own root-picker helpers.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

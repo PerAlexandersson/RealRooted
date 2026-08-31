@@ -18,6 +18,7 @@ import RealRooted.AffineFamily
 import RealRooted.AffineFamily.Basic
 import RealRooted.AffineFamily.Boundary
 import RealRooted.AffineFamily.PositiveFamily
+import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo

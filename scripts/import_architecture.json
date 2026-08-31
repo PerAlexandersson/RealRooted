@@ -31,6 +31,9 @@
     "RealRooted.AffineFamily.PositiveFamily": {
       "max_modules": 65
     },
+    "RealRooted.AffineFamily.RootCrossing": {
+      "max_modules": 75
+    },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 110
     },
@@ -140,7 +143,7 @@
       "max_modules": 140
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 140
+      "max_modules": 145
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -412,6 +415,7 @@
     "RealRooted.AffineFamily.Basic",
     "RealRooted.AffineFamily.Boundary",
     "RealRooted.AffineFamily.PositiveFamily",
+    "RealRooted.AffineFamily.RootCrossing",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol",
