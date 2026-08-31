@@ -350,7 +350,10 @@ and degree-box symbol calculation, while its `Interlacing` child owns pencil
 and oriented-interlacing consequences for arbitrary real linear maps.
 `BidiagonalSymbol.RealConsequences` is the small specialization layer. Thus the
 reusable affine-symbol route no longer imports the tactic-only bidiagonal
-operator API.
+operator API. `EulerBidiagonal` is its sequence-independent Euler-family
+application: it computes the affine symbol for the weights `c + k` and
+`d + 1 - k`, proves its stable quadratic factor for `c ≥ 1`, and exposes the
+resulting degree-box splitness and proper-position transport.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root

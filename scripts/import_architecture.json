@@ -46,6 +46,9 @@
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
       "max_modules": 165
     },
+    "RealRooted.BorceaBranden.Applications.EulerBidiagonal": {
+      "max_modules": 170
+    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 155
     },
@@ -534,6 +537,7 @@
     "RealRooted.AffineFamily.Wronskian",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
+    "RealRooted.BorceaBranden.Applications.EulerBidiagonal",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing",
     "RealRooted.Derivative",

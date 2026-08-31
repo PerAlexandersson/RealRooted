@@ -111,7 +111,11 @@ of the RealRooted interlacing library.
   and its `Interlacing` child expose finite-symbol splitness, pencil, and
   oriented-interlacing consequences for arbitrary real linear maps;
   `BidiagonalSymbol.RealConsequences` supplies the affine-bidiagonal
-  specializations from `ProofsOeis.AffineFiniteSymbol`.
+  specializations from `ProofsOeis.AffineFiniteSymbol`. Its
+  `EulerBidiagonal` child promotes the sequence-independent
+  `ProofsOeis.EulerFiniteSymbol` family: the symbol calculation and stability
+  certificate for weights `c + k` and `d + 1 - k`, together with the resulting
+  degree-box splitness and proper-position transport.
 - `Basic.AffineInterlacing` contains reflection, translation, and
   reflected-translation transport for the project’s legacy sorted-root
   `Interlaces` predicate, promoted from `ProofsOeis.AffineInterlaces` with a

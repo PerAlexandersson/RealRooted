@@ -41,6 +41,7 @@ import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+import RealRooted.BorceaBranden.Applications.EulerBidiagonal
 import RealRooted.BorceaBranden.Applications.ComplexClassification
 import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization

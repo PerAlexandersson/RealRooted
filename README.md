@@ -80,6 +80,11 @@ lake build RealRooted.Bezoutian
   degree-three reductions. `Hadamard/Grace.lean` owns the apolar/Grace proof,
   followed by `GarloffWagner.lean`, `Hurwitz.lean`, and `Consequences.lean`
   for the endpoint interfaces. `Hadamard.lean` is their compatibility import.
+- `BorceaBranden/Applications/BidiagonalSymbol.lean` computes genuine affine
+  finite symbols for coefficient-bidiagonal operators; its
+  `RealConsequences` child supplies their real preservation consequences, and
+  `EulerBidiagonal.lean` packages the stable Euler-family specialization with
+  diagonal constant `c ≥ 1`.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
