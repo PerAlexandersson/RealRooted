@@ -89,11 +89,12 @@ Wronskian results have a focused package entry point:
 - `Wronskian.Converse` owns conversion from the strict same-degree
   Wronskian/Bezoutian conclusion to the legacy `Prec` predicate;
 - `Wronskian.Forward` owns the global strict-interlacing-to-positivity bridge;
-  and
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
   Wronskian sign; `Wronskian.Successor.Interlacing` lifts those gaps to the
   root-local and global interlacing criteria; and
-- `Wronskian` is the small umbrella for all four.
+- `Wronskian.Successor.Signs` owns sign and root-location tools, while
+  `Wronskian.Successor.Splits` owns the lower-to-higher splitness transfer;
+- `Wronskian` is the small umbrella for the package.
 
 The reverse positivity-to-interlacing bridge remains in `Bezoutian`, where it
 is part of the Bezout-matrix characterization. The stability implication stays

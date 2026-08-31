@@ -157,6 +157,12 @@
     "RealRooted.Wronskian.Successor.Interlacing": {
       "max_modules": 15
     },
+    "RealRooted.Wronskian.Successor.Signs": {
+      "max_modules": 15
+    },
+    "RealRooted.Wronskian.Successor.Splits": {
+      "max_modules": 15
+    },
     "RealRooted.ProductSequence": {
       "max_modules": 70
     },
@@ -387,6 +393,8 @@
     "RealRooted.Wronskian.Successor",
     "RealRooted.Wronskian.Successor.Gap",
     "RealRooted.Wronskian.Successor.Interlacing",
+    "RealRooted.Wronskian.Successor.Signs",
+    "RealRooted.Wronskian.Successor.Splits",
     "RealRooted.Tactic.LiuWang",
     "RealRooted.Tactic.LiuWang.Step",
     "RealRooted.Tactic.LiuWang.SequenceIntervals",

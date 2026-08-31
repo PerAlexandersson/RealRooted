@@ -103,16 +103,19 @@ library primitive.
 ### Euler pencils and Wronskian converses
 
 `ProofsOeis.EulerPencil` has three distinct reusable layers and should not be
-moved as its 2,018-line monolith. Its strict same-degree bridge is now
+moved as its 2,073-line monolith. Its strict same-degree bridge is now
 `Wronskian.Converse.strictPrecSameDegree_toPrec`: it turns the output of the
 Bezoutian/Wronskian criterion into the legacy `Prec` predicate required by
 existing recurrence APIs. The successor-degree root-gap core is now
 `Wronskian.Successor.Gap`: a root-local strict Wronskian sign forces a root in
 every consecutive gap, and the global-sign corollary delegates to that
 stronger statement. `Wronskian.Successor.Interlacing` uses it to prove both
-the root-local and global successor-degree interlacing criteria. Only the
-splitness-transfer argument remains for a separate small
-`Wronskian.Successor` child.
+the root-local and global successor-degree interlacing criteria.
+`Wronskian.Successor.Signs` separately owns the sign and root-location
+arguments, and `Wronskian.Successor.Splits` uses them for the lower-to-higher
+splitness transfer. This completes the reusable Wronskian portion of the
+Euler-pencil source without importing its unrelated operator or list-reversal
+layers.
 
 The remaining Euler-pencil material is separate operator theory: positive
 `theta + c` pencil comparisons, then a degree-padded reciprocal-shift proper-

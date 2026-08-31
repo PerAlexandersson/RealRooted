@@ -579,3 +579,5 @@ import RealRooted.Wronskian.Forward
 import RealRooted.Wronskian.Successor
 import RealRooted.Wronskian.Successor.Gap
 import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Wronskian.Successor.Signs
+import RealRooted.Wronskian.Successor.Splits
