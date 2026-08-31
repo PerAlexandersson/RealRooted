@@ -43,6 +43,10 @@ of the RealRooted interlacing library.
 - `Mathlib.Algebra.Order.BigOperators.Alternating` contains the finite
   nonnegative-decreasing alternating-sum truncation bounds, with an arbitrary
   linearly ordered commutative ring in place of the original real sequence.
+- `Analysis.PowerTail` contains the finite reciprocal-power tail bounds from
+  `ProofsOeis.TailSumBound`, split into a positive-spacing Bernoulli step,
+  its finite telescoping consequence, and the quadratic-denominator
+  applications over arbitrary linearly ordered fields.
 - `RootAmplitude` contains the split-polynomial normalized-root-derivative
   product identity. Its `Finite`, `Convex`, `Minimum`, `Extension`, `Density`,
   `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude
@@ -64,13 +68,6 @@ split across five focused source modules. Its initial-segment presentation is
 useful to the root-gap application, while Mathlib already has the more general
 `Multiset.esymm` API; a future upstream candidate should bridge those forms
 rather than duplicate either one.
-
-### Discrete reciprocal-power tail bounds
-
-`ProofsOeis.TailSumBound` is a further sequence-independent candidate. Its
-319-line source combines a Bernoulli step, finite telescoping, and specialized
-normalizations, so it should be separated into those responsibilities before a
-transfer.
 
 ### Separation-specific amplitude applications
 

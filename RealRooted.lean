@@ -19,6 +19,10 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
 import RealRooted.Apolarity
+import RealRooted.Analysis.PowerTail
+import RealRooted.Analysis.PowerTail.Bernoulli
+import RealRooted.Analysis.PowerTail.Quadratic
+import RealRooted.Analysis.PowerTail.Telescoping
 import RealRooted.ArrayPolynomialDeterminant
 import RealRooted.ArrayPolynomialDeterminantIdentification
 import RealRooted.ArrayPolynomialDeterminantRecurrence

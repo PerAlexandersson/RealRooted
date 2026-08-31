@@ -233,6 +233,14 @@ the finite alternating-sum truncation bounds that complement Mathlib's existing
 infinite alternating-series API. Its statements are over an arbitrary linearly
 ordered commutative ring, not the original real-valued consumer sequence.
 
+`Analysis.PowerTail` separates a reusable ordered-field argument into three
+layers: `Bernoulli` owns the arbitrary positive-spacing power step,
+`Telescoping` turns it into a finite reciprocal-power tail bound, and
+`Quadratic` owns the paired quadratic-denominator applications. All three are
+stated over arbitrary linearly ordered fields. This keeps the classical finite
+telescoping mechanism available independently of its original Eisenstein-tail
+application, while leaving the model-specific identification downstream.
+
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
 monicity. `RootAmplitude` builds the normalized-root-derivative product identity

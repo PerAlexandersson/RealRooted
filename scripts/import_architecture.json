@@ -4,6 +4,18 @@
     "RealRooted": {
       "max_modules": 600
     },
+    "RealRooted.Analysis.PowerTail": {
+      "max_modules": 5
+    },
+    "RealRooted.Analysis.PowerTail.Bernoulli": {
+      "max_modules": 3
+    },
+    "RealRooted.Analysis.PowerTail.Quadratic": {
+      "max_modules": 5
+    },
+    "RealRooted.Analysis.PowerTail.Telescoping": {
+      "max_modules": 4
+    },
     "RealRooted.Basic": {
       "max_modules": 10
     },
@@ -223,6 +235,10 @@
   ],
   "report_modules": [
     "RealRooted",
+    "RealRooted.Analysis.PowerTail",
+    "RealRooted.Analysis.PowerTail.Bernoulli",
+    "RealRooted.Analysis.PowerTail.Quadratic",
+    "RealRooted.Analysis.PowerTail.Telescoping",
     "RealRooted.Basic",
     "RealRooted.Derivative",
     "RealRooted.CoefficientDominance",
