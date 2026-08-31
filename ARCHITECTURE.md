@@ -556,9 +556,11 @@ Lemma 10 identities. `GarloffWagner` remains the compatibility import and owns
 the later Theorem 11/12 route. `GarloffWagner.Iterated` now owns the 785-line
 `J^k ∘ L` transform, its factor identities, and the Theorem 11 transport
 interfaces. `GarloffWagner.KreinData` owns the 577-line root-multiplicity,
-divisibility, root-deleted summand, and degree-control package. Subsequent
-cuts should keep the Krein-expansion, Hadamard-propagation, and endpoint layers
-in that dependency order.
+divisibility, root-deleted summand, and degree-control package.
+`GarloffWagner.KreinExpansion` now owns the
+500-line positive root-deleted expansion and Theorem 11 proper-position
+consequences. The remaining Hadamard-propagation and endpoint layers should
+remain in that dependency order.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

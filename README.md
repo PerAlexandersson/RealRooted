@@ -63,6 +63,8 @@ lake build RealRooted.Bezoutian
   `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
   `GarloffWagner/KreinData.lean` owns the root-multiplicity and divisibility
   data for the later Krein expansion.
+  `GarloffWagner/KreinExpansion.lean` owns the positive root-deleted
+  expansions and their Theorem 11 proper-position consequences.
   `GarloffWagner.lean` remains their theorem-route compatibility import.
   `Hadamard.lean` packages downstream consequences.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus

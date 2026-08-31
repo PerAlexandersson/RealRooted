@@ -64,6 +64,9 @@
     "RealRooted.GarloffWagner.KreinData": {
       "max_modules": 100
     },
+    "RealRooted.GarloffWagner.KreinExpansion": {
+      "max_modules": 105
+    },
     "RealRooted.SymmetricDecomposition.Definitions": {
       "max_modules": 15
     },
@@ -167,7 +170,7 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 140
+      "max_modules": 145
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 145
@@ -377,7 +380,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 315
+      "max_modules": 320
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -574,6 +577,7 @@
     "RealRooted.GarloffWagner.Algebra",
     "RealRooted.GarloffWagner.Iterated",
     "RealRooted.GarloffWagner.KreinData",
+    "RealRooted.GarloffWagner.KreinExpansion",
     "RealRooted.ScalarNormalization",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
