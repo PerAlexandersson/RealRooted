@@ -154,7 +154,8 @@ The remaining work has a fixed responsibility order:
 
 1. `ReciprocalShift.Interlacing` should own inverse-root list ordering and
    its zero-root specialization. Its inverse-order and root-list-model core is
-   now extracted; generic end padding is in
+   now extracted. Its `Interlacing.Inversion` child now handles inverse/reversal
+   transport on strict negative roots; generic end padding is in
    `Mathlib.Data.List.Interleave.Padding` and the sorted zero-tail
    decomposition is in `Mathlib.Data.List.Sort.Endpoint`.
 2. `ReciprocalShift.ProperPosition` should use that list layer to prove that a

@@ -232,6 +232,11 @@ negative ordered lists, the sorted inverse-root model, and its root-multiset
 identification. It deliberately leaves zero-padding interlacing and the
 polynomial `Prec` transport to later modules.
 
+`ReciprocalShift.Interlacing.Inversion` is its negative-root child: it owns
+only inverse/reversal transport of equal- and successor-length interleavings.
+The list endpoint shims own padding and deletion, while the future polynomial
+proper-position layer will consume both APIs.
+
 `Mathlib.Data.List.Interleave` adds global and membership-aware
 relation-preserving map transport for `List.Interleaves`. It removes duplicated
 inductions from the linear, affine-interlacing, and reciprocal-root modules,
