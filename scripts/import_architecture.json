@@ -44,7 +44,7 @@
       "max_modules": 110
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 150
+      "max_modules": 155
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 145
@@ -140,10 +140,10 @@
       "max_modules": 125
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 125
+      "max_modules": 130
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 145
+      "max_modules": 150
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 150
@@ -167,6 +167,9 @@
       "max_modules": 65
     },
     "RealRooted.CommonInterleaver.Finite": {
+      "max_modules": 70
+    },
+    "RealRooted.CommonInterleaver.Sequence": {
       "max_modules": 70
     },
     "RealRooted.CommonInterleaverSeq": {

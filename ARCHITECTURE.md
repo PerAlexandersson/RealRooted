@@ -474,6 +474,11 @@ current statement stays over `ℝ` until it is generalized with a natural order
 typeclass boundary, rather than coupling that generalization to this source
 split.
 
+`CommonInterleaver.Sequence` owns the right and left root-sequence predicates,
+their finite-Helly constructions, and the pairwise sequence upgrades. Its
+private slot-set helpers are entirely internal to that module, so this cut
+does not increase the implementation interface of the compatibility parent.
+
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
 It has a 10-module closure by importing only the Wagner addition and

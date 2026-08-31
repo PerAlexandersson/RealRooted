@@ -121,6 +121,7 @@ import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.CommonInterleaver.RootCountCombinatorics
 import RealRooted.CommonInterleaver.RootSlots
 import RealRooted.CommonInterleaver.RootSlots.Basic
+import RealRooted.CommonInterleaver.Sequence
 import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.CommonInterleaver.Statements
 import RealRooted.CommonInterleaver.SuccDegreeEndpoint
