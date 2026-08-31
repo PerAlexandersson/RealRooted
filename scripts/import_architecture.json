@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 635
+      "max_modules": 640
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -66,6 +66,15 @@
     },
     "RealRooted.GarloffWagner.KreinExpansion": {
       "max_modules": 105
+    },
+    "RealRooted.GarloffWagner.Theorem12": {
+      "max_modules": 110
+    },
+    "RealRooted.GarloffWagner.Hadamard": {
+      "max_modules": 115
+    },
+    "RealRooted.GarloffWagner": {
+      "max_modules": 120
     },
     "RealRooted.SymmetricDecomposition.Definitions": {
       "max_modules": 15
@@ -182,7 +191,7 @@
       "max_modules": 165
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 165
+      "max_modules": 170
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -578,6 +587,9 @@
     "RealRooted.GarloffWagner.Iterated",
     "RealRooted.GarloffWagner.KreinData",
     "RealRooted.GarloffWagner.KreinExpansion",
+    "RealRooted.GarloffWagner.Theorem12",
+    "RealRooted.GarloffWagner.Hadamard",
+    "RealRooted.GarloffWagner",
     "RealRooted.ScalarNormalization",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",

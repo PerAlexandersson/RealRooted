@@ -560,8 +560,11 @@ interfaces. `GarloffWagner.KreinData` owns the 577-line root-multiplicity,
 divisibility, root-deleted summand, and degree-control package.
 `GarloffWagner.KreinExpansion` now owns the
 500-line positive root-deleted expansion and Theorem 11 proper-position
-consequences. The remaining Hadamard-propagation and endpoint layers should
-remain in that dependency order.
+consequences. `GarloffWagner.Theorem12` owns the 729-line factorial
+Schur-product induction and its fixed-factor Hadamard consequences.
+`GarloffWagner.Hadamard` then owns the 296-line double-deleted Krein reduction
+and final two-pair endpoint. `GarloffWagner` is now a compatibility facade;
+the layers remain ordered by their mathematical dependency.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

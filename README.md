@@ -68,7 +68,11 @@ lake build RealRooted.Bezoutian
   data for the later Krein expansion.
   `GarloffWagner/KreinExpansion.lean` owns the positive root-deleted
   expansions and their Theorem 11 proper-position consequences.
-  `GarloffWagner.lean` remains their theorem-route compatibility import.
+  `GarloffWagner/Theorem12.lean` owns the factorial Schur-product induction
+  and its fixed-factor Hadamard consequences, while
+  `GarloffWagner/Hadamard.lean` owns the double-deleted reduction and final
+  two-pair endpoint. `GarloffWagner.lean` remains their theorem-route
+  compatibility import.
   `Hadamard.lean` packages downstream consequences.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem

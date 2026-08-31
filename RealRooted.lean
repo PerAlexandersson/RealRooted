@@ -177,6 +177,8 @@ import RealRooted.GarloffWagner.Algebra
 import RealRooted.GarloffWagner.Iterated
 import RealRooted.GarloffWagner.KreinData
 import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.FiniteBoard
