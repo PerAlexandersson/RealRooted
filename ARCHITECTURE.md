@@ -222,9 +222,11 @@ established tactic import.
 `OEIS.Basic` child owns the scalar-denominator certificate aliases, and
 `OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and
 explicit unsupported-certificate diagnostics. `OEIS.PositiveLag` independently
-owns the positive t-lag certificate parser and dispatch. The parent remains
-the existing compatible import while the negative-lag front and the separate
-product-certificate family are audited as their own units.
+owns the positive t-lag certificate parser and dispatch, while
+`OEIS.NegativeLag` owns global-nonpositive, square, and quadratic
+denominator-normalized certificates. The parent remains the existing
+compatible import while the separate product-certificate family is audited as
+its own unit.
 
 Two further OEIS-derived corollary modules keep large owning modules cohesive:
 

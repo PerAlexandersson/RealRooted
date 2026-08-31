@@ -118,9 +118,9 @@ lake build RealRooted.Bezoutian
 - `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
   OEIS-labelled tactic shells, certificate fragments, and concrete theorems.
 - `RealRooted/Tactic/OEIS/` contains focused OEIS certificate-family frontends;
-  `DerivativeLag.lean` and `PositiveLag.lean` own their respective parser and
-  dispatch families, while `Tactic/OEIS.lean` remains the compatible umbrella
-  import.
+  `DerivativeLag.lean`, `PositiveLag.lean`, and `NegativeLag.lean` own their
+  respective parser and dispatch families, while `Tactic/OEIS.lean` remains
+  the compatible umbrella import.
 - `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
   like future Mathlib additions.
 
