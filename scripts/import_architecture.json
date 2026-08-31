@@ -29,16 +29,16 @@
       "max_modules": 80
     },
     "RealRooted.AffineFamily.LowDegree": {
-      "max_modules": 80
+      "max_modules": 85
     },
     "RealRooted.AffineFamily.PositiveFamily": {
       "max_modules": 65
     },
     "RealRooted.AffineFamily.RootCrossing": {
-      "max_modules": 80
+      "max_modules": 85
     },
     "RealRooted.AffineFamily.Wronskian": {
-      "max_modules": 80
+      "max_modules": 85
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 110
@@ -50,7 +50,7 @@
       "max_modules": 145
     },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 145
+      "max_modules": 150
     },
     "RealRooted.Derivative": {
       "max_modules": 12
@@ -137,7 +137,7 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 125
+      "max_modules": 130
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 130
@@ -165,6 +165,12 @@
     },
     "RealRooted.CommonInterleaver.RootSlots.Basic": {
       "max_modules": 65
+    },
+    "RealRooted.CommonInterleaver.DescPolynomial": {
+      "max_modules": 70
+    },
+    "RealRooted.CommonInterleaver.FamilyUpgrade": {
+      "max_modules": 70
     },
     "RealRooted.CommonInterleaver.Finite": {
       "max_modules": 70
@@ -320,13 +326,13 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 115
+      "max_modules": 120
     },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 300
+      "max_modules": 305
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50

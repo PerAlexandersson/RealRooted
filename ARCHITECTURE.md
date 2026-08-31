@@ -447,10 +447,12 @@ The largest frontend source unit is `Denominator` at 858 lines. This grouping
 keeps each declaration adjacent to its certificate family while preserving the
 old `RealRooted.Tactic.MaWang` import path.
 
-`CommonInterleaverSeq` is now a compatibility parent over the first
-descending-root layer, `CommonInterleaver.RootDesc`, the root-slot package,
-and the remaining finite-Helly, degree, and Chudnovsky--Seymour construction
-layers.
+`CommonInterleaverSeq` is now a compatibility parent over small,
+responsibility-specific children. It retains the public pairwise slot-data
+API, while `CommonInterleaver.RootDesc` owns the descending-root description,
+the root-slot package owns interval transport, `Finite` and `Sequence` own the
+finite-family setup, `DescPolynomial` owns the prescribed-root construction,
+and `FamilyUpgrade` owns the Chudnovsky--Seymour global upgrade.
 `RootDesc` owns the common-interleaver predicates, canonical descending root
 sequence, the indexwise `Prec` characterisation, and the consecutive-chain
 lemma. Its two nonemptiness facts are protected members of the
@@ -478,6 +480,15 @@ split.
 their finite-Helly constructions, and the pairwise sequence upgrades. Its
 private slot-set helpers are entirely internal to that module, so this cut
 does not increase the implementation interface of the compatibility parent.
+
+`CommonInterleaver.DescPolynomial` owns the 652-line descending-root
+polynomial construction and its right- and left-oriented slot witnesses.
+`CommonInterleaver.FamilyUpgrade` then owns the 296-line pairwise-to-global
+argument and its sum corollaries. The five protected `CommonInterleaver`
+construction bridges are deliberately limited to the compatibility parent and
+family-upgrade layer; they are implementation details, not another general
+theorem API. This leaves `CommonInterleaverSeq` as a 937-line public pairwise
+closure façade rather than a mixed 1,791-line implementation.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.
