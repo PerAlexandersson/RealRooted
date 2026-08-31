@@ -336,25 +336,14 @@ Touchard differential recurrence after the transform. -/
 theorem basisTransform_touchard_X_mul (p : ℝ[X]) :
     basisTransform touchard (X * p) =
       X * basisTransform touchard p + X * (basisTransform touchard p).derivative := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-      simp only [mul_add, basisTransform_add, hp, hq, derivative_add]
-      ring
-  | monomial n a =>
-      rw [Polynomial.X_mul_monomial]
-      simp only [basisTransform_monomial]
-      rw [touchard_succ]
-      simp [Polynomial.derivative_mul]
-      ring
+  exact basisTransform_X_mul_of_succ_derivative touchard X X touchard_succ p
 
 /-- Factor recurrence for the Touchard-basis transform. -/
 theorem basisTransform_touchard_mul_X_add_C (r : ℝ) (p : ℝ[X]) :
     basisTransform touchard ((X + C r) * p) =
       (X + C r) * basisTransform touchard p +
         X * (basisTransform touchard p).derivative := by
-  rw [add_mul, basisTransform_add, basisTransform_touchard_X_mul]
-  rw [Polynomial.C_mul', basisTransform_smul]
-  ring
+  exact basisTransform_mul_X_add_C_of_succ_derivative touchard X X touchard_succ r p
 
 /-- The Touchard-basis transform sends a falling factorial back to the
 corresponding monomial. -/

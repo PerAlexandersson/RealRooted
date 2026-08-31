@@ -64,6 +64,44 @@ theorem basisTransform_smul (B : ℕ → R[X]) (a : R) (p : R[X]) :
 
 end Semiring
 
+section Differential
+
+variable [CommSemiring R]
+
+/-- A basis transform transports multiplication by `X` to a first-order
+differential operator when its basis satisfies the corresponding successor
+recurrence. -/
+theorem basisTransform_X_mul_of_succ_derivative
+    (B : ℕ → R[X]) (A D : R[X])
+    (hsucc : ∀ n, B (n + 1) = A * B n + D * (B n).derivative)
+    (p : R[X]) :
+    basisTransform B (X * p) =
+      A * basisTransform B p + D * (basisTransform B p).derivative := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [mul_add, basisTransform_add, hp, hq, derivative_add]
+      ring
+  | monomial n a =>
+      rw [Polynomial.X_mul_monomial, basisTransform_monomial, hsucc]
+      simp [Polynomial.derivative_mul]
+      ring
+
+/-- The affine factor version of
+`basisTransform_X_mul_of_succ_derivative`. -/
+theorem basisTransform_mul_X_add_C_of_succ_derivative
+    (B : ℕ → R[X]) (A D : R[X])
+    (hsucc : ∀ n, B (n + 1) = A * B n + D * (B n).derivative)
+    (r : R) (p : R[X]) :
+    basisTransform B ((X + C r) * p) =
+      (A + C r) * basisTransform B p + D * (basisTransform B p).derivative := by
+  rw [add_mul, basisTransform_add,
+    basisTransform_X_mul_of_succ_derivative B A D hsucc]
+  rw [show C r * p = r • p by rw [Polynomial.smul_eq_C_mul],
+    basisTransform_smul]
+  ring
+
+end Differential
+
 section Domain
 
 variable [CommRing R] [IsDomain R]

@@ -115,10 +115,14 @@ criterion are now in `Mathlib.Algebra.Polynomial.BasisTransform`. The remaining
 `BrandenBinomialTransform` source is not a monolithic extraction candidate:
 its `brandenE` basis is defined through the consumer-owned ordered-Bell family
 and its later sections mix that named basis with Delannoy, Eulerian, and type-D
-applications. A future transfer should first separate a general theorem about
-an arbitrary basis satisfying a differential recurrence from those model
-identities; it should not export the named `brandenE` definition as a generic
-library primitive.
+applications. Its sequence-independent first-order differential core is now
+also extracted: `basisTransform_X_mul_of_succ_derivative` and its affine-factor
+companion transport a successor-basis recurrence to the corresponding
+transform identity over any commutative semiring. The Touchard transform uses
+both lemmas directly, while the Brändén and type-B recurrences are instances.
+A later transfer should target only genuinely higher-order or otherwise
+independent operator transport; it should not export the named `brandenE`
+definition as a generic library primitive.
 
 ### Euler pencils and Wronskian converses
 
