@@ -5,7 +5,31 @@ public import Mathlib.Algebra.Polynomial.Derivative
 public section
 
 namespace Polynomial
-variable {R : Type*} [CommRing R] [IsAddTorsionFree R] {p : R[X]}
+variable {R : Type*} [CommRing R] {p : R[X]}
+
+/-- The coefficient of `X * p'` at `k` is `k` times the coefficient of `p`
+at `k`. -/
+lemma coeff_X_mul_derivative (p : R[X]) (k : ℕ) :
+    (X * p.derivative).coeff k = (k : R) * p.coeff k := by
+  cases k with
+  | zero => simp
+  | succ k =>
+    rw [coeff_X_mul, coeff_derivative]
+    push_cast
+    ring
+
+/-- The coefficient of `X * (1 - X) * p'` at `k + 1`. -/
+lemma coeff_X_sub_X_sq_mul_derivative (p : R[X]) (k : ℕ) :
+    ((X - X ^ 2) * p.derivative).coeff (k + 1) =
+      ((k : R) + 1) * p.coeff (k + 1) - (k : R) * p.coeff k := by
+  rw [show (X - X ^ 2) * p.derivative = X * ((1 - X) * p.derivative) by ring,
+    coeff_X_mul]
+  rw [sub_mul, coeff_sub, one_mul, coeff_derivative, coeff_X_mul_derivative]
+  ring
+
+section AddTorsionFree
+
+variable [IsAddTorsionFree R]
 
 /-- The next coefficient of the derivative is `(n - 1)` times the next
 coefficient of the original polynomial, for degree `n ≥ 2`. -/
@@ -69,5 +93,7 @@ theorem natDegree_le_of_C_mul_eq_X_add_C_mul_derivative_add
     have hkltS : (k : S) < (a : S) := by exact_mod_cast hklt
     exact (ne_of_gt (sub_pos.mpr hkltS)) hzero
   · exact htop hzero
+
+end AddTorsionFree
 
 end Polynomial
