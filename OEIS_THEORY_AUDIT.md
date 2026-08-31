@@ -17,7 +17,10 @@ of the RealRooted interlacing library.
 
 - `Wronskian`, `DerivativeRecurrence`, `RootCounting`, `RootVieta`, and
   `SortedRoots` contain the reusable parts of the corresponding OEIS helper
-  files. In particular, `RootCounting.Threshold` separates all of
+  files. `Wronskian.Forward` additionally promotes the finite-root certificate
+  from the A141689 proof: positivity of the oriented Wronskian at every root
+  of a split polynomial globalizes through the Bezoutian/Vandermonde argument.
+  In particular, `RootCounting.Threshold` separates all of
   `ProofsOeis.RootSignCount` into generic threshold/parity and anchoring
   layers, a sorted-root bridge, derivative signs, signed-evaluation
   applications, and log-concave coefficient dominance. The latter promotes the
@@ -156,9 +159,11 @@ stronger statement. `Wronskian.Successor.Interlacing` uses it to prove both
 the root-local and global successor-degree interlacing criteria.
 `Wronskian.Successor.Signs` separately owns the sign and root-location
 arguments, and `Wronskian.Successor.Splits` uses them for the lower-to-higher
-splitness transfer. This completes the reusable Wronskian portion of the
-Euler-pencil source without importing its unrelated operator or list-reversal
-layers.
+splitness transfer. `Wronskian.Forward.wronskian_pos_of_pos_at_roots` also
+owns the sequence-independent finite-root-to-global bridge discovered in the
+A141689 induction. This completes the reusable Wronskian portion of the
+Euler-pencil and A141689 sources without importing their unrelated operator,
+model, or list-reversal layers.
 
 The reciprocal-shift proper-position transport is now complete as a separate
 dependency direction: its generic root-list reversal formula is in

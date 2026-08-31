@@ -92,7 +92,8 @@ Wronskian results have a focused package entry point:
   Euler-operator Wronskian formulas;
 - `Wronskian.Converse` owns conversion from the strict same-degree
   Wronskian/Bezoutian conclusion to the legacy `Prec` predicate;
-- `Wronskian.Forward` owns the global strict-interlacing-to-positivity bridge;
+- `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
+  finite-root-certificate-to-global-positivity bridges;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
   Wronskian sign; `Wronskian.Successor.Interlacing` lifts those gaps to the
   root-local and global interlacing criteria; and
@@ -621,8 +622,8 @@ are diagnostics rather than hard line-count limits.
 2. Separate tactic examples from the production tactic umbrella, building on
    the completed finish/product frontend split.
 3. Continue generalizing the extracted `Wronskian.Algebra` coefficient
-   identities in its Mathlib-shaped shim and use the extracted
-   `Wronskian.Forward` bridge in the consumer.
+   identities in its Mathlib-shaped shim and migrate OEIS consumers to the
+   finite-root and interlacing bridges in `Wronskian.Forward`.
 4. Move the finite-symbol and Veronese-pair consumer theorems into their owning
    RealRooted packages.
 5. Maintain a Mathlib-upstream queue beginning with small Wronskian, multiset,

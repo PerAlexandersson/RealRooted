@@ -52,6 +52,9 @@ lake build RealRooted.Bezoutian
 - `RealRooted.lean` is the umbrella import for the public development.
 - `RealRooted/Basic.lean`, `Derivative.lean`, `Wagner*.lean`, and
   `InterlacingSequence*.lean` contain the core interlacing API.
+- `RealRooted/Wronskian/` separates polynomial Wronskian algebra, forward and
+  converse Bezoutian bridges, and successor-degree sign/interlacing results;
+  `Wronskian.lean` is its focused public entry point.
 - `RealRooted/CommonInterleaver*.lean` and `ChudnovskySeymour.lean` contain the
   compatibility and common-interleaver work.
 - `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,

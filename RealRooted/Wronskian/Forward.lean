@@ -42,6 +42,38 @@ theorem wronskian_pos_of_strictPrecSameDegree {p q : ℝ[X]}
   exact bezoutMatrix.wronskian_pos_of_posDef hn.le hp_deg.le
     ((strictPrecSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hn).mp h) t
 
+/-- A finite certificate for global Wronskian positivity. If `p` splits with
+degree `d + 1` and `q' * p - q * p'` is positive at every root of `p`, then it
+is positive on all of `ℝ`.
+
+At a root of `p`, this certificate forces that root to be simple. The Bezout
+matrix is consequently congruent, through the Vandermonde matrix of the roots,
+to a positive diagonal matrix. Its positive definiteness gives the global
+conclusion. -/
+theorem wronskian_pos_of_pos_at_roots {d : ℕ} {p q : ℝ[X]}
+    (hp_splits : p.Splits) (hp_deg : p.natDegree = d + 1)
+    (hq_deg : q.natDegree ≤ d + 1)
+    (hW : ∀ r : ℝ, p.IsRoot r →
+      0 < q.derivative.eval r * p.eval r - q.eval r * p.derivative.eval r) :
+    ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t := by
+  have hnodup : p.roots.Nodup := by
+    apply Polynomial.roots_nodup_of_splits_and_simple
+    intro r hr hd
+    have hWr := hW r hr
+    rw [Polynomial.IsRoot.def] at hr hd
+    rw [hr, hd] at hWr
+    simp at hWr
+  obtain ⟨s, hs_mono, hs_roots⟩ :=
+    Polynomial.exists_strictMono_roots hp_splits hp_deg hnodup
+  have h_v_eq := bezoutMatrix.vandermonde_eq_diagonal q p (d + 1) s hq_deg
+    (le_of_eq hp_deg) (fun k => hs_roots k) hs_mono.injective
+  have hPD : (bezoutMatrix (d + 1) q p).PosDef := by
+    refine Matrix.PosDef.of_congruent_to_diagonal
+      (fun k => hW (s k) (hs_roots k)) ?_ h_v_eq
+    simp_all [Matrix.det_vandermonde, Finset.prod_eq_zero_iff, sub_eq_zero,
+      hs_mono.injective.eq_iff]
+  exact bezoutMatrix.wronskian_pos_of_posDef hq_deg (le_of_eq hp_deg) hPD
+
 /-- Indexed bounds extracted from a differ-by-one `ListInterlaces`:
 `rs[k] ≤ ss[k] ≤ rs[k+1]`. -/
 lemma listInterlaces_getElem_le {ss rs : List ℝ}
