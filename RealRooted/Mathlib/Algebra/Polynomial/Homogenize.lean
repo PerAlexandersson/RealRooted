@@ -44,4 +44,15 @@ theorem homogenize_rootFactorProduct {R : Type*} [CommRing R] [IsDomain R]
         homogenize_mul _ _ (natDegree_X_sub_C_le r) hdeg, ih]
       simp
 
+/-- Homogenization in a larger degree box adds a power of the second
+homogeneous variable. -/
+theorem homogenize_eq_homogenize_natDegree_mul_X_one_pow
+    {R : Type*} [CommRing R] [IsDomain R] {p : R[X]} {n : ℕ}
+    (hdeg : p.natDegree ≤ n) :
+    p.homogenize n = p.homogenize p.natDegree *
+      MvPolynomial.X 1 ^ (n - p.natDegree) := by
+  have hmul := homogenize_mul p (1 : R[X])
+    (m := p.natDegree) (n := n - p.natDegree) le_rfl (by simp)
+  simp_all
+
 end Polynomial

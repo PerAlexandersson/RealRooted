@@ -242,6 +242,10 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
@@ -250,6 +254,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic

@@ -27,21 +27,16 @@ of the RealRooted interlacing library.
   Veronese residue sections.
 - `ProductOrientation` contains the endpoint-product criterion selecting the
   same-degree Obreschkoff orientation.
+- `Mathlib.Algebra.Polynomial.CayleyTransform` contains the generic finite-
+  degree transform, field-level algebraic formulas, and complex root geometry.
+  Its Mahler/Vieta coefficient estimate lives independently in
+  `Mathlib.Analysis.Polynomial.MahlerMeasure`.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
 only after both repositories build against the same RealRooted checkpoint.
 
 ## Next extraction candidates
-
-### Cayley homogenization
-
-`ProofsOeis.CayleyHomogenize` is mostly sequence-independent and is a strong
-candidate for a `RealRooted/CayleyHomogenize` package. Before moving it, split
-the generic homogenization, injectivity, and root-transport API from the final
-coefficient estimate, which currently depends on the consumer's
-`UnitCircleCoefficient` module. The elementary homogenization identities may
-ultimately fit `RealRooted/Mathlib/Algebra/Polynomial/Homogenize`.
 
 ### Scale-two polar preservation
 

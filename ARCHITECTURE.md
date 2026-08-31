@@ -181,6 +181,20 @@ Two further OEIS-derived corollary modules keep large owning modules cohesive:
 for same-degree nonnegative-coefficient polynomials, a strict normalized
 value-at-zero comparison selects the proper-position orientation.
 
+The Cayley-transform extraction is entirely Mathlib-shaped:
+
+- `Mathlib.Algebra.Polynomial.CayleyTransform.Basic` defines the transform
+  generically over commutative rings and proves functoriality and linearity;
+- `CayleyTransform.Algebra` gives field-general root-factor and injectivity
+  formulas plus field-general binomial-basis identities;
+- `CayleyTransform.Roots` contains the complex vertical-line-to-unit-circle
+  geometry and coefficient consequence; and
+- `Mathlib.Analysis.Polynomial.MahlerMeasure` contains the independent
+  unit-disk coefficient bounds used by the root layer.
+
+This replaces the consumer's duplicate real and complex transform definitions
+with one coefficient-ring-polymorphic API.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 

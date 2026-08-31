@@ -10,6 +10,18 @@
     "RealRooted.Derivative": {
       "max_modules": 12
     },
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
+      "max_modules": 10
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic": {
+      "max_modules": 5
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots": {
+      "max_modules": 10
+    },
+    "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure": {
+      "max_modules": 2
+    },
     "RealRooted.CommonInterleaverFamilySum": {
       "max_modules": 70
     },
@@ -141,6 +153,10 @@
     "RealRooted",
     "RealRooted.Basic",
     "RealRooted.Derivative",
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform",
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
+    "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
+    "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.CommonInterleaverFamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
