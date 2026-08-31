@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 645
+      "max_modules": 650
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -179,19 +179,19 @@
       "max_modules": 70
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 150
-    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 155
     },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
+      "max_modules": 160
+    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 175
+      "max_modules": 180
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 175
+      "max_modules": 180
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 175
+      "max_modules": 180
     },
     "RealRooted.Hadamard.Basic": {
       "max_modules": 145
@@ -205,8 +205,20 @@
     "RealRooted.Hadamard.Cubic": {
       "max_modules": 150
     },
-    "RealRooted.Hadamard": {
+    "RealRooted.Hadamard.Grace": {
       "max_modules": 150
+    },
+    "RealRooted.Hadamard.GarloffWagner": {
+      "max_modules": 150
+    },
+    "RealRooted.Hadamard.Hurwitz": {
+      "max_modules": 155
+    },
+    "RealRooted.Hadamard.Consequences": {
+      "max_modules": 155
+    },
+    "RealRooted.Hadamard": {
+      "max_modules": 155
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -404,7 +416,7 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 325
+      "max_modules": 330
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -560,6 +572,10 @@
     "RealRooted.Hadamard.Finite",
     "RealRooted.Hadamard.Newton",
     "RealRooted.Hadamard.Cubic",
+    "RealRooted.Hadamard.Grace",
+    "RealRooted.Hadamard.GarloffWagner",
+    "RealRooted.Hadamard.Hurwitz",
+    "RealRooted.Hadamard.Consequences",
     "RealRooted.Hadamard",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",

@@ -205,6 +205,10 @@ import RealRooted.Hadamard.Basic
 import RealRooted.Hadamard.Finite
 import RealRooted.Hadamard.Newton
 import RealRooted.Hadamard.Cubic
+import RealRooted.Hadamard.Grace
+import RealRooted.Hadamard.GarloffWagner
+import RealRooted.Hadamard.Hurwitz
+import RealRooted.Hadamard.Consequences
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler

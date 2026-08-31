@@ -571,9 +571,12 @@ Schur--Szego, diagonal-operator, Jensen-section, and degree-three-discriminant
 algebra. `Hadamard.Finite` owns the 255-line finite-composition interface and
 degree-two base case; `Hadamard.Newton` owns the 461-line normalized
 coefficient inequalities; and `Hadamard.Cubic` owns the 440-line degree-three
-reductions and finite Polya--Schur equivalences. The parent is down to 1,135
-lines and retains only the apolar/Grace, Hurwitz, and consequence layers for
-later dependency-ordered extraction.
+reductions and finite Polya--Schur equivalences. `Hadamard.Grace` owns the
+549-line apolar/Grace analytic proof and checked finite-composition witness;
+`Hadamard.GarloffWagner` owns the 123-line direct theorem wrappers,
+`Hadamard.Hurwitz` the 270-line Hurwitz reductions, and
+`Hadamard.Consequences` the 237-line closure interfaces. `Hadamard` is now a
+9-line compatibility facade over that dependency-ordered package.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when

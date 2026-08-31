@@ -77,8 +77,9 @@ lake build RealRooted.Bezoutian
   composition algebra, including the Jensen and degree-three identities;
   `Hadamard/Finite.lean`, `Newton.lean`, and `Cubic.lean` respectively own
   the finite-composition interfaces, normalized Newton inequalities, and
-  degree-three reductions. `Hadamard.lean` retains the analytic, Hurwitz, and
-  consequence layers during their incremental split.
+  degree-three reductions. `Hadamard/Grace.lean` owns the apolar/Grace proof,
+  followed by `GarloffWagner.lean`, `Hurwitz.lean`, and `Consequences.lean`
+  for the endpoint interfaces. `Hadamard.lean` is their compatibility import.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
