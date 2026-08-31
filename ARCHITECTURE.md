@@ -42,6 +42,10 @@ The current tree predates these boundaries. In particular, a few theorem and
 example modules still import tactic or challenge modules. Those are migration
 targets rather than exceptions to preserve indefinitely.
 
+`Mathlib.Topology.Algebra.InfiniteSum.Int` is a small direct upstream candidate:
+it gives the finite-range and summable bounds that compare an integer-indexed
+tail with two natural-indexed tails, without importing any polynomial theory.
+
 The no-regression checker currently allowlists the remaining known upward edges:
 
 - three tactic modules import their challenge wrappers; and

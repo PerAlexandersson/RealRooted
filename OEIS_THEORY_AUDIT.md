@@ -63,6 +63,11 @@ of the RealRooted interlacing library.
 - `Mathlib.Algebra.Order.BigOperators.Alternating` contains the finite
   nonnegative-decreasing alternating-sum truncation bounds, with an arbitrary
   linearly ordered commutative ring in place of the original real sequence.
+- `Mathlib.Topology.Algebra.InfiniteSum.Int` contains the generic finite-range
+  and summable bounds comparing an integer-indexed tail, vanishing at the
+  central pair, with two natural-indexed majorant tails. This is the
+  sequence-independent core of `ProofsOeis.TailRatio` and a direct Mathlib
+  upstream candidate; its sharp Eisenstein-tail majorant remains consumer-side.
 - `Mathlib.Algebra.Polynomial.BasisTransform` contains the coefficientwise
   polynomial basis transform and the injectivity theorem for degree-triangular
   nonzero bases. These were the sequence-independent part of
@@ -213,10 +218,11 @@ project-level compatibility interface.
   library transfer.
 - `EisensteinCriticalLine` is a modular-form argument: its bilateral
   Eisenstein sum, critical-line conjugation, and cotangent tail estimate are
-  tied to the Eulerian nome/root identification. The isolated reindexing and
-  summability facts belong, if anywhere, with a future Mathlib Eisenstein-series
-  API rather than in RealRooted. `LevelGap` combines those same model roots
-  with explicit window constants, and therefore remains consumer-side.
+  tied to the Eulerian nome/root identification. The general integer-tail
+  comparison is extracted, while its isolated reindexing and remaining
+  summability facts belong, if anywhere, with a future Mathlib
+  Eisenstein-series API. `LevelGap` combines those same model roots with
+  explicit window constants, and therefore remains consumer-side.
 - The vendored `BandedHessenberg` and `GantmacherKreinOrdered` modules are
   temporary copies of a named RealRooted pull request, not OEIS-owned theory.
   They should be deleted when the dependency pin advances, rather than copied

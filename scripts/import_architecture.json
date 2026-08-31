@@ -151,6 +151,9 @@
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
       "max_modules": 25
     },
+    "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
+      "max_modules": 5
+    },
     "RealRooted.LiuWang": {
       "max_modules": 35
     },
@@ -382,6 +385,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
+    "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
     "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
     "RealRooted.MultiplierSequence",
