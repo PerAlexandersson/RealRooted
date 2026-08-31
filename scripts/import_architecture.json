@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 700
+      "max_modules": 705
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -560,7 +560,7 @@
       "max_modules": 75
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 345
+      "max_modules": 355
     },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -584,7 +584,28 @@
       "max_modules": 80
     },
     "RealRooted.Tactic": {
-      "max_modules": 360
+      "max_modules": 370
+    },
+    "RealRooted.Tactic.WagnerX.Core": {
+      "max_modules": 100
+    },
+    "RealRooted.Tactic.WagnerX.Obstructions": {
+      "max_modules": 100
+    },
+    "RealRooted.Tactic.WagnerX.PositiveLag": {
+      "max_modules": 100
+    },
+    "RealRooted.Tactic.WagnerX.TranslatedLag": {
+      "max_modules": 105
+    },
+    "RealRooted.Tactic.WagnerX.Syntax": {
+      "max_modules": 105
+    },
+    "RealRooted.Tactic.WagnerX.Frontend": {
+      "max_modules": 105
+    },
+    "RealRooted.Tactic.WagnerX": {
+      "max_modules": 105
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 50
@@ -850,6 +871,13 @@
     "RealRooted.Tactic.OEIS.ProductLift",
     "RealRooted.Tactic.OEIS.ProductParity",
     "RealRooted.Tactic.OEIS",
+    "RealRooted.Tactic.WagnerX.Core",
+    "RealRooted.Tactic.WagnerX.Obstructions",
+    "RealRooted.Tactic.WagnerX.PositiveLag",
+    "RealRooted.Tactic.WagnerX.TranslatedLag",
+    "RealRooted.Tactic.WagnerX.Syntax",
+    "RealRooted.Tactic.WagnerX.Frontend",
+    "RealRooted.Tactic.WagnerX",
     "RealRooted.SequenceClosure",
     "RealRooted.SignEvaluation",
     "RealRooted.SortedRoots",

@@ -672,6 +672,12 @@ import RealRooted.Tactic.Targets
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.Wagner
 import RealRooted.Tactic.WagnerX
+import RealRooted.Tactic.WagnerX.Core
+import RealRooted.Tactic.WagnerX.Frontend
+import RealRooted.Tactic.WagnerX.Obstructions
+import RealRooted.Tactic.WagnerX.PositiveLag
+import RealRooted.Tactic.WagnerX.Syntax
+import RealRooted.Tactic.WagnerX.TranslatedLag
 import RealRooted.Tactic.WeightedSum
 import RealRooted.ThresholdMatrix
 import RealRooted.Touchard

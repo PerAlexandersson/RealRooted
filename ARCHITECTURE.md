@@ -296,6 +296,12 @@ convolution, and its preservation result; and `Recurrences`, `Gamma`, and
 general basis-transform algebra in the Mathlib-shaped shim while retaining the
 named Narayana arguments in their application package.
 
+`Tactic.WagnerX` likewise keeps its historical import path while separating
+the derivative-gap core, orientation obstructions, positive and translated
+lag recurrence backends, syntax declarations, and macro elaboration. The
+theorem layers precede the syntax layers in the import graph, so consumers can
+depend on a recurrence backend without importing tactic elaboration.
+
 `Mathlib.Algebra.Polynomial.Bezoutian` similarly promotes the
 commutative-ring coefficient Bezoutian, its finite telescoping identities, and
 the generic Bezoutian matrix and row-polynomial definitions. The real
