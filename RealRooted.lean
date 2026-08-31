@@ -178,6 +178,12 @@ import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
 import RealRooted.GammaRealRoots
+import RealRooted.GammaTransform
+import RealRooted.GammaTransform.Basic
+import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaTransform.Preservation
+import RealRooted.GammaTransform.RootLists
+import RealRooted.GammaTransform.RootMap
 import RealRooted.GarloffWagner
 import RealRooted.GarloffWagner.Algebra
 import RealRooted.GarloffWagner.Iterated

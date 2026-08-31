@@ -128,6 +128,23 @@ Derivative recurrence results have a focused package entry point:
 These results were promoted from sequence proofs because their statements do
 not mention an OEIS sequence and they already have multiple downstream users.
 
+Gamma-transform results have a focused package entry point:
+
+- `GammaTransform.Basic` owns the gamma basis, linear algebra, degree bounds,
+  and the finite-sum and scalar-monomial identities used by applications;
+- `GammaTransform.RootMap` owns the Möbius root map and multiplicity transport;
+- `GammaTransform.RootLists` owns ordered roots and reciprocal-center
+  completion, with package-internal list plumbing under
+  `GammaTransformInternal`;
+- `GammaTransform.Preservation` owns real-rootedness preservation; and
+- `GammaTransform.ProperPosition` owns the adjacent-degree proper-position
+  equivalence. `GammaTransform` is the focused umbrella, while
+  `GammaRealRoots` remains its compatibility import.
+
+The finite-sum and scalar-monomial identities were first needed by generated
+sequence proofs, but their statements are independent of any sequence and now
+belong with the gamma-transform algebra.
+
 Finite root-counting results have a separate focused package:
 
 - `Mathlib.Data.Multiset.Card` contains upstream-shaped cardinality criteria
