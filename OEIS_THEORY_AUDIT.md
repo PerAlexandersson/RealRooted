@@ -140,6 +140,19 @@ remaining sorted-list/interlacing steps with `DegreeDropReversal`. This keeps
 the large list-combinatorics port from becoming an accidental dependency of
 the Wronskian package.
 
+The remaining work has a fixed responsibility order:
+
+1. `ReciprocalShift.Interlacing` should own inverse-root list ordering,
+   deletion of zero roots, and zero-padding transport.
+2. `ReciprocalShift.ProperPosition` should use that list layer to prove that a
+   degree-bounded reciprocal shift reverses a `Prec` pair.
+3. A small `EulerOperator` companion can then supply the checked witness for
+   `polarThetaPreservesPrec0Statement` by composing two reciprocal-shift swaps
+   with the existing derivative theorem.
+
+None of these modules should import Wronskian theory, tactic elaborators, or
+named OEIS models.
+
 ### Separation-specific amplitude applications
 
 The finite-extension and density-criterion layers now live in
