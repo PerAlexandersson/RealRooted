@@ -338,6 +338,9 @@ import RealRooted.MultiaffineReciprocalRight
 import RealRooted.MultiplierSequence
 import RealRooted.MultiplierSequence.Bidiagonal
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultivariateStability
