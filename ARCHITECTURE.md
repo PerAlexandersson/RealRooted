@@ -566,6 +566,11 @@ Schur-product induction and its fixed-factor Hadamard consequences.
 and final two-pair endpoint. `GarloffWagner` is now a compatibility facade;
 the layers remain ordered by their mathematical dependency.
 
+`Hadamard.Basic` now owns the 765-line coefficient-support, fixed-degree
+Schur--Szego, diagonal-operator, Jensen-section, and degree-three-discriminant
+algebra. The compatibility parent retains the finite-composition, analytic,
+Hurwitz, and consequence layers for later dependency-ordered extraction.
+
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
 the remaining recurrence wrappers acquire a second independent consumer;

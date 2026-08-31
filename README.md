@@ -73,7 +73,10 @@ lake build RealRooted.Bezoutian
   `GarloffWagner/Hadamard.lean` owns the double-deleted reduction and final
   two-pair endpoint. `GarloffWagner.lean` remains their theorem-route
   compatibility import.
-  `Hadamard.lean` packages downstream consequences.
+  `Hadamard/Basic.lean` owns the coefficient-support and Schur--Szego
+  composition algebra, including the Jensen and degree-three identities;
+  `Hadamard.lean` retains the higher finite-composition and downstream
+  consequence layers during their incremental split.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility

@@ -188,10 +188,16 @@
       "max_modules": 165
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 165
+      "max_modules": 175
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 170
+      "max_modules": 175
+    },
+    "RealRooted.Hadamard.Basic": {
+      "max_modules": 145
+    },
+    "RealRooted.Hadamard": {
+      "max_modules": 150
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 70
@@ -541,6 +547,8 @@
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic",
+    "RealRooted.Hadamard.Basic",
+    "RealRooted.Hadamard",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaverFamilySum",

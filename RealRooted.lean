@@ -201,6 +201,7 @@ import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
+import RealRooted.Hadamard.Basic
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
