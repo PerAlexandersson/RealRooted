@@ -241,6 +241,7 @@ import RealRooted.JacobiOrthogonality
 import RealRooted.JacobiParameterInterlacing
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
+import RealRooted.Kurtz
 import RealRooted.LiebSokal
 import RealRooted.LiebSokalOperator
 import RealRooted.LiebSokalPointwise

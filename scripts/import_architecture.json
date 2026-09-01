@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 745
+      "max_modules": 746
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -240,6 +240,15 @@
     },
     "RealRooted.Wagner.NonpositiveRoots": {
       "max_modules": 74
+    },
+    "RealRooted.Kurtz": {
+      "max_modules": 32
+    },
+    "RealRooted.Challenges.Kurtz": {
+      "max_modules": 33
+    },
+    "RealRooted.Tactic.Kurtz": {
+      "max_modules": 78
     },
     "RealRooted.Challenges.Wagner": {
       "max_modules": 75
@@ -844,8 +853,7 @@
         "RealRooted",
         "RealRooted.BorceaBranden.Applications.ComplexClassification",
         "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
-        "RealRooted.Tactic.HermitePoulain",
-        "RealRooted.Tactic.Kurtz"
+        "RealRooted.Tactic.HermitePoulain"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges."
@@ -1066,6 +1074,9 @@
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
+    "RealRooted.Kurtz",
+    "RealRooted.Challenges.Kurtz",
+    "RealRooted.Tactic.Kurtz",
     "RealRooted.Wagner.NonpositiveRoots",
     "RealRooted.Challenges.Wagner",
     "RealRooted.Tactic.Wagner",
