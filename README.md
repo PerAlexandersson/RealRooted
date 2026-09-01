@@ -231,9 +231,11 @@ the checked or challenge-facing highlights are:
 The challenge surface also records theorem-shaped targets as they mature.
 Kurtz's coefficient inequality criterion is implemented in
 `RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
-Hermite--Poulain differential-operator preserver, and the full finite complex
-Borcea--Branden classification, including its stable rank-at-most-one branch,
-are checked.
+Hermite--Poulain differential-operator preserver is implemented in
+`RealRooted.HermitePoulain` over the shared
+`RealRooted.Derivative.LinearCombination` theorem layer. The full finite
+complex Borcea--Branden classification, including its stable rank-at-most-one
+branch, is also checked.
 
 ### Interlacing And Preservers
 

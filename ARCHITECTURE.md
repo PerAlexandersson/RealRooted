@@ -48,7 +48,6 @@ tail with two natural-indexed tails, without importing any polynomial theory.
 
 The no-regression checker currently allowlists the remaining known upward edges:
 
-- one tactic module imports its challenge wrapper; and
 - two Borcea--Brändén application modules import the corresponding challenge
   wrapper; and
 - the legacy `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing` import is a
@@ -687,6 +686,14 @@ preserves those established names through an explicit 33-module compatibility
 export, while `Tactic.Kurtz` imports the theorem module directly. This leaves
 the challenge layer as documentation and compatibility rather than proof
 infrastructure.
+
+`Derivative.LinearCombination` owns the four general splitting-preservation
+theorems for constant linear combinations of a polynomial and its derivative;
+`Tactic.SecondDerivative` now consumes that theorem layer. `HermitePoulain`
+owns the 242-line finite differential-operator implementation and its 21 public
+declarations. `Challenges.HermitePoulain` preserves those names through an
+explicit compatibility export, while `Tactic.HermitePoulain` imports the
+theorem module directly. No tactic frontend now depends on a challenge module.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.

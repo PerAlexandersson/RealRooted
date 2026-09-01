@@ -1,4 +1,4 @@
-import RealRooted.Challenges.HermitePoulain
+import RealRooted.HermitePoulain
 
 /-!
 # Hermite--Poulain tactic frontends
@@ -18,10 +18,10 @@ theorem splits_of_nonzero {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
     (hg : g ≠ 0 ∧ g.Splits)
     (hout :
-      RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator f g ≠ 0) :
-    (RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator f g).Splits := by
+      RealRooted.HermitePoulain.applyAsDifferentialOperator f g ≠ 0) :
+    (RealRooted.HermitePoulain.applyAsDifferentialOperator f g).Splits := by
   rcases
-    RealRooted.Challenges.HermitePoulain.differential_operator_preserves_real_rooted
+    RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
       hf hg with hzero | hsplits
   · exact (hout hzero).elim
   · exact hsplits
@@ -30,11 +30,11 @@ theorem sequence_zero_or_splits {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hG : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits) :
     ∀ n : Nat,
-      RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator (F n) (G n)
+      RealRooted.HermitePoulain.applyAsDifferentialOperator (F n) (G n)
           = 0 ∨
-        (RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator
+        (RealRooted.HermitePoulain.applyAsDifferentialOperator
           (F n) (G n)).Splits := fun n =>
-  RealRooted.Challenges.HermitePoulain.differential_operator_preserves_real_rooted
+  RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
     (hF n) (hG n)
 
 theorem sequence_splits_of_nonzero {F G : Nat → ℝ[X]}
@@ -42,10 +42,10 @@ theorem sequence_splits_of_nonzero {F G : Nat → ℝ[X]}
     (hG : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
     (hout :
       ∀ n : Nat,
-        RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator (F n) (G n)
+        RealRooted.HermitePoulain.applyAsDifferentialOperator (F n) (G n)
           ≠ 0) :
     ∀ n : Nat,
-      (RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator
+      (RealRooted.HermitePoulain.applyAsDifferentialOperator
         (F n) (G n)).Splits := fun n =>
   splits_of_nonzero (hF n) (hG n) (hout n)
 
@@ -84,7 +84,7 @@ macro_rules
         input := $hg:term) =>
       `(tactic|
         exact
-          RealRooted.Challenges.HermitePoulain.differential_operator_preserves_real_rooted
+          RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
             $hf $hg)
   | `(tactic|
       rr_hermite_poulain_splits using
