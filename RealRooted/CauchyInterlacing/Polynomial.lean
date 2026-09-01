@@ -13,47 +13,12 @@ open Matrix Polynomial
 
 namespace RealRooted
 
-private lemma coe_ofFn_id_eq_univ_val {n : ℕ} :
-    (↑(List.ofFn fun k : Fin n => k) : Multiset (Fin n)) =
-      (Finset.univ : Finset (Fin n)).val := by
-  apply Multiset.ext'
-  intro a
-  have hnodup_left :
-      (↑(List.ofFn fun k : Fin n => k) : Multiset (Fin n)).Nodup := by
-    simpa using ((List.nodup_ofFn).2 (fun _ _ h => h))
-  have hnodup_right : (Finset.univ : Finset (Fin n)).val.Nodup := by
-    exact (Finset.univ : Finset (Fin n)).nodup
-  have hmem_left : a ∈ (↑(List.ofFn fun k : Fin n => k) : Multiset (Fin n)) := by
-    simp [List.mem_ofFn]
-  have hmem_right : a ∈ (Finset.univ : Finset (Fin n)).val := by simp
-  rw [Multiset.count_eq_one_of_mem hnodup_left hmem_left,
-    Multiset.count_eq_one_of_mem hnodup_right hmem_right]
-
-private lemma coe_ofFn_eq_univ_val_map {n : ℕ} {α : Type*} (f : Fin n → α) :
-    (↑(List.ofFn f) : Multiset α) =
-      (Finset.univ : Finset (Fin n)).val.map f := by
-  rw [List.ofFn_eq_map]
-  exact congrArg (Multiset.map f) (coe_ofFn_id_eq_univ_val (n := n))
-
 private lemma coe_ofFn_rev_eq_univ_val_map {n : ℕ} {α : Type*} (f : Fin n → α) :
     (↑(List.ofFn fun k : Fin n => f k.rev) : Multiset α) =
       (Finset.univ : Finset (Fin n)).val.map f := by
-  rw [coe_ofFn_eq_univ_val_map]
-  refine Multiset.map_eq_map_of_bij_of_nodup
-    (fun k : Fin n => f k.rev) f
-    (s := (Finset.univ : Finset (Fin n)).val)
-    (t := (Finset.univ : Finset (Fin n)).val)
-    (by exact (Finset.univ : Finset (Fin n)).nodup)
-    (by exact (Finset.univ : Finset (Fin n)).nodup)
-    (fun a _ => a.rev) ?_ ?_ ?_ ?_
-  · intro a ha
-    simp
-  · intro a ha b hb h
-    simpa using congrArg Fin.rev h
-  · intro b hb
-    exact ⟨b.rev, by simp, by simp⟩
-  · intro a ha
-    simp
+  rw [← Fin.univ_val_map]
+  change Multiset.map (f ∘ Fin.revPerm.toEmbedding) Finset.univ.val = _
+  rw [← Multiset.map_map, ← Finset.map_val, Finset.map_univ_equiv]
 
 private lemma pairwise_le_of_antitone_rev_ofFn {n : ℕ} {f : Fin n → ℝ}
     (hf : Antitone f) :
