@@ -50,7 +50,9 @@ The no-regression checker currently allowlists the remaining known upward edges:
 
 - three tactic modules import their challenge wrappers; and
 - two Borcea--Brändén application modules import the corresponding challenge
-  wrapper.
+  wrapper; and
+- the legacy `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing` import is a
+  one-line compatibility facade over the properly layered oscillatory endpoint.
 
 The allowlist makes this finite architectural debt visible and prevents new
 edges of those forms. Removing an edge should remove its exact allowlist entry
@@ -122,6 +124,22 @@ The Obreschkoff package has a compatibility facade and five focused theorem laye
 
 The only shared proof helpers are explicitly package-internal, under
 `ObreschkoffConverseInternal`.
+
+Cauchy and oscillatory matrix interlacing now meet at a narrow polynomial
+endpoint:
+
+- `CauchyInterlacing` owns the ordered-eigenvalue theorem;
+- `CauchyInterlacing.Polynomial` transports it to characteristic-polynomial
+  `Interlaces` without importing a challenge module;
+- `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core` owns Whitney
+  reduction, tridiagonal symmetrization, continuant arguments, and finite
+  reversal without importing the RealRooted theorem library; and
+- `OscillatoryInterlacing` combines those two layers to obtain the strict
+  leading- and trailing-principal characteristic-polynomial endpoints.
+
+The old Mathlib-shaped oscillatory import remains as a compatibility facade;
+new theorem consumers should import `OscillatoryInterlacing`, while consumers
+of matrix-only infrastructure should import the `Core` module directly.
 
 Derivative recurrence results have a focused package entry point:
 

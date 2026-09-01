@@ -63,6 +63,7 @@ import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 import RealRooted.BoundarySpecializationRight
 import RealRooted.CauchyInterlacing
+import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.BrandenSolus
@@ -387,6 +388,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
 import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
@@ -454,6 +456,7 @@ import RealRooted.ObreschkoffConverse.DegreeGap
 import RealRooted.ObreschkoffConverse.Derivative
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.ObreschkoffConverse.Regularization
+import RealRooted.OscillatoryInterlacing
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
