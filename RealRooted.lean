@@ -724,6 +724,7 @@ import RealRooted.VeroneseSection
 import RealRooted.VeroneseSectionPair
 import RealRooted.VeroneseSectionPair.HermiteBiehler
 import RealRooted.Wagner
+import RealRooted.Wagner.NonpositiveRoots
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX

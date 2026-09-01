@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 744
+      "max_modules": 745
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -237,6 +237,15 @@
     },
     "RealRooted.WagnerX": {
       "max_modules": 15
+    },
+    "RealRooted.Wagner.NonpositiveRoots": {
+      "max_modules": 74
+    },
+    "RealRooted.Challenges.Wagner": {
+      "max_modules": 75
+    },
+    "RealRooted.Tactic.Wagner": {
+      "max_modules": 77
     },
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
       "max_modules": 10
@@ -836,8 +845,7 @@
         "RealRooted.BorceaBranden.Applications.ComplexClassification",
         "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
         "RealRooted.Tactic.HermitePoulain",
-        "RealRooted.Tactic.Kurtz",
-        "RealRooted.Tactic.Wagner"
+        "RealRooted.Tactic.Kurtz"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges."
@@ -1058,6 +1066,9 @@
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
+    "RealRooted.Wagner.NonpositiveRoots",
+    "RealRooted.Challenges.Wagner",
+    "RealRooted.Tactic.Wagner",
     "RealRooted.WagnerX.ListInterlacing",
     "RealRooted.WagnerX.NonnegativeRoots",
     "RealRooted.WagnerX.AffineFactors",

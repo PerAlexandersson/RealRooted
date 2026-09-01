@@ -181,7 +181,9 @@ the checked or challenge-facing highlights are:
 - Wagner's lemma: for real-rooted polynomials with nonpositive roots and
   positive leading coefficients, common interlacers are closed under addition,
   and multiplication by `X` shifts the interlacing relation in the expected
-  way.  See `RealRooted.Challenges.Wagner`; reference: Wagner (1992).
+  way. The reusable forms live in `RealRooted.Wagner.NonpositiveRoots`, with
+  challenge-facing aliases in `RealRooted.Challenges.Wagner`; reference:
+  Wagner (1992).
 - Obreschkoff's theorem: two polynomials have a real-rooted real pencil
   `alpha * f + beta * g` if and only if they interlace, up to orientation and
   degree conventions.  See `allComboRealRooted_of_prec`,
