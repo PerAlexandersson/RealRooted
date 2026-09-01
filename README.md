@@ -169,9 +169,15 @@ the checked or challenge-facing highlights are:
 
 - Cauchy interlacing: the eigenvalues of a principal codimension-one submatrix
   of a real symmetric or Hermitian matrix interlace the eigenvalues of the
-  original matrix.  See `cauchy_interlacing` and
+  original matrix, with a reusable characteristic-polynomial bridge in
+  `RealRooted.CauchyInterlacing.Polynomial`. See `cauchy_interlacing` and
   `RealRooted.Challenges.CauchyInterlacing`; references include Fisk (2005)
   and Godsil (2017).
+- Oscillatory interlacing: Whitney reduction and tridiagonal matrix theory live
+  in `RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core`,
+  while `RealRooted.OscillatoryInterlacing` combines that core with Cauchy
+  interlacing to prove strict interlacing of consecutive principal-section
+  characteristic polynomials.
 - Wagner's lemma: for real-rooted polynomials with nonpositive roots and
   positive leading coefficients, common interlacers are closed under addition,
   and multiplication by `X` shifts the interlacing relation in the expected

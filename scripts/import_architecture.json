@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 741
+      "max_modules": 744
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -21,6 +21,9 @@
     },
     "RealRooted.Basic.AffineInterlacing": {
       "max_modules": 10
+    },
+    "RealRooted.CauchyInterlacing.Polynomial": {
+      "max_modules": 7
     },
     "RealRooted.AffineFamily.Basic": {
       "max_modules": 15
@@ -246,6 +249,15 @@
     },
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core": {
+      "max_modules": 24
+    },
+    "RealRooted.OscillatoryInterlacing": {
+      "max_modules": 32
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing": {
+      "max_modules": 33
     },
     "RealRooted.MultiplierSequence": {
       "max_modules": 78
@@ -823,7 +835,6 @@
         "RealRooted",
         "RealRooted.BorceaBranden.Applications.ComplexClassification",
         "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
-        "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing",
         "RealRooted.Tactic.HermitePoulain",
         "RealRooted.Tactic.Kurtz",
         "RealRooted.Tactic.Wagner"
