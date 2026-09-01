@@ -19,8 +19,9 @@
   nonpositive-root `Prec` pair to a compatible output pair.  Supporting
   zero/positive-constant Euler preservation and any general closure theorem
   required by the proof also belong in the new module.
-- No other shared or architecture-worktree file is owned.  No push or PR is
-  authorized.
+- No other shared or architecture-worktree file is owned.  The user explicitly
+  authorized committing and pushing this RealRooted branch on 2026-09-01; no
+  PR creation or merge is authorized by that instruction.
 
 - Completion-audit correction, 2026-09-01: the checked crossed-completion
   theorem is reusable operator theory and therefore must not remain
