@@ -48,7 +48,7 @@ tail with two natural-indexed tails, without importing any polynomial theory.
 
 The no-regression checker currently allowlists the remaining known upward edges:
 
-- three tactic modules import their challenge wrappers; and
+- two tactic modules import their challenge wrappers; and
 - two Borcea--Brändén application modules import the corresponding challenge
   wrapper; and
 - the legacy `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing` import is a
@@ -673,6 +673,13 @@ common-root and degree-split reductions), and `PairBridge.Compatibility`
 (856 endpoint wrappers). The two protected `PairBridge` helpers are the only
 implementation facts crossing the reduction/endpoint boundary; all existing
 ordinary public declarations retain their original names.
+
+`Wagner.NonpositiveRoots` owns the reusable nonpositive-root and
+positive-leading-coefficient forms of Wagner's three transports. The
+`Challenges.Wagner` entry point preserves its established declarations as
+thin wrappers, while `Tactic.Wagner` imports the theorem child directly. This
+removes the tactic-to-challenge dependency without making a challenge module a
+production theorem dependency.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.

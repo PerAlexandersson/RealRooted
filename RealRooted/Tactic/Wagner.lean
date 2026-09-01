@@ -1,10 +1,10 @@
-import RealRooted.Challenges.Wagner
 import RealRooted.Tactic.Lookup
+import RealRooted.Wagner.NonpositiveRoots
 
 /-!
-# Wagner challenge tactic frontends
+# Wagner tactic frontends
 
-Thin wrappers around the challenge-facing Wagner lemma forms.
+Thin wrappers around the reusable nonpositive-root Wagner lemma forms.
 
 Production-facing adapters also expose hypothesis-light common-right addition,
 common-factor transport, and linear-factor cancellation without
@@ -17,31 +17,31 @@ namespace RealRooted
 namespace Tactic
 
 theorem wagner_commonRight_add_sequence {F G H : Nat → ℝ[X]}
-    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hFH : ∀ n : Nat, Prec (F n) (H n))
     (hGH : ∀ n : Nat, Prec (G n) (H n)) :
     ∀ n : Nat, Prec (F n + G n) (H n) := fun n => by
   have _ := hH n
-  exact Challenges.Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
+  exact Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
 
 theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
-    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hHF : ∀ n : Nat, Prec (H n) (F n))
     (hHG : ∀ n : Nat, Prec (H n) (G n)) :
     ∀ n : Nat, Prec (H n) (F n + G n) := fun n => by
   have _ := hH n
-  exact Challenges.Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
+  exact Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
 
 theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
-    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
+    (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
     (hdeg : ∀ n : Nat, (F n).natDegree + 1 = (G n).natDegree) :
     ∀ n : Nat, Prec (F n) (G n) ↔ Prec (G n) (X * F n) := fun n =>
-  Challenges.Wagner.mulX_iff (hF n) (hG n) (hdeg n)
+  Wagner.mulX_iff (hF n) (hG n) (hdeg n)
 
 syntax (name := rr_wagner_common_right_add_named)
   "rr_wagner_common_right_add" " using "
@@ -134,7 +134,7 @@ macro_rules
         left_interlaces_common := $hfh:term,
         right_interlaces_common := $hgh:term) =>
       `(tactic|
-        exact RealRooted.Challenges.Wagner.commonRight_add
+        exact RealRooted.Wagner.commonRight_add
           $hf $hg $hfh $hgh)
   | `(tactic|
       rr_wagner_common_left_add using
@@ -144,7 +144,7 @@ macro_rules
         common_interlaces_left := $hhf:term,
         common_interlaces_right := $hhg:term) =>
       `(tactic|
-        exact RealRooted.Challenges.Wagner.commonLeft_add
+        exact RealRooted.Wagner.commonLeft_add
           $hf $hg $hhf $hhg)
   | `(tactic|
       rr_wagner_mulX_iff using
@@ -152,7 +152,7 @@ macro_rules
         longer := $hg:term,
         degree := $hdeg:term) =>
       `(tactic|
-        exact RealRooted.Challenges.Wagner.mulX_iff $hf $hg $hdeg)
+        exact RealRooted.Wagner.mulX_iff $hf $hg $hdeg)
   | `(tactic|
       rr_wagner_common_right_add_sequence using
         left := $hf:term,

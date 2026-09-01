@@ -1890,9 +1890,9 @@ example {eps : Nat → ℝ} {K : Nat → Nat} {P : Nat → ℝ[X]}
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
-    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hHF : ∀ n : Nat, Prec (H n) (F n))
     (hHG : ∀ n : Nat, Prec (H n) (G n)) :
     ∀ n : Nat, Prec (H n) (F n + G n) := by
