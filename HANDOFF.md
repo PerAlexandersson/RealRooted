@@ -28,6 +28,14 @@
   not apply verbatim.
 - Focused verification: `lake-workspace build
   RealRooted.EulerianMixedCompatibility` succeeds without source warnings.
-- Remaining general-theory task: discharge common roots and package the mixed
-  result as output compatibility.  Then the OEIS worktree can import this
-  module for the sequence-specific induction.
+- The common-root case is now discharged without a genericity hypothesis.
+  `mixedEulerStep_splits` uses nonnegative derivative regularization plus the
+  monic coefficient-limit theorem, and
+  `compatible_eulerInsertionStep_one_zero_succ` packages all nonnegative
+  mixtures, including both endpoint cases.
+- Focused verification after this increment: `lake-workspace build
+  RealRooted.EulerianMixedCompatibility` succeeds without source warnings;
+  the module contains no `sorry`, `admit`, or added axiom.
+- Remaining work is sequence-specific: use these exported theorems in the
+  OEIS-proofs worktree to formalize crossed completion and the final
+  derangement induction.

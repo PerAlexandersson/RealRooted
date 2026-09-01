@@ -2,6 +2,8 @@ import RealRooted.ChudnovskySeymour
 import RealRooted.GarloffWagner
 import RealRooted.HermiteBiehler
 import RealRooted.MaWang
+import RealRooted.RootContinuity
+import RealRooted.Tactic.SecondDerivative
 
 /-!
 # Adjacent Euler insertion operators
@@ -395,6 +397,403 @@ private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
       hterm_pos hterm_nonneg
   simpa [sub_eq_add_neg, hratio] using hstrict
 
+/-! ## A necessary endpoint sign for proper position -/
+
+private theorem pairwise_lt_of_le_of_nodup (l : List ℝ)
+    (hsort : l.Pairwise (· ≤ ·)) (hnd : l.Nodup) : l.Pairwise (· < ·) := by
+  induction l with
+  | nil => simp
+  | cons a l ih =>
+      rw [List.pairwise_cons] at hsort ⊢
+      rw [List.nodup_cons] at hnd
+      refine ⟨?_, ih hsort.2 hnd.2⟩
+      intro b hb
+      exact lt_of_le_of_ne (hsort.1 b hb) (by
+        intro hab
+        exact hnd.1 (hab ▸ hb))
+
+private theorem countP_succ_of_interlaces_left :
+    ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) →
+      ListInterlaces ss rs → ∀ x ∈ ss, x ∉ rs →
+        rs.countP (fun r ↦ decide (x < r)) =
+          ss.countP (fun s ↦ decide (x < s)) + 1 := by
+  intro ss
+  induction ss with
+  | nil => simp
+  | cons s ss ih =>
+      intro rs hss hrs hint x hx hxrs
+      match rs with
+      | [] => simp [ListInterlaces] at hint
+      | [r] => simp [ListInterlaces] at hint
+      | r₁ :: r₂ :: rs =>
+          obtain ⟨hr₁s, hsr₂, htail⟩ := hint
+          rw [List.pairwise_cons] at hss hrs
+          obtain ⟨hs_tail, hss_tail⟩ := hss
+          obtain ⟨hr₁_tail, hrs_tail⟩ := hrs
+          simp only [List.mem_cons, not_or] at hxrs
+          obtain ⟨hxr₁, hxr₂, hxrs⟩ := hxrs
+          rcases List.mem_cons.mp hx with hxs | hxss
+          · subst x
+            have hs_lt_r₂ : s < r₂ := lt_of_le_of_ne hsr₂ hxr₂
+            have hs_lt_tail : ∀ y ∈ r₂ :: rs, s < y := by
+              intro y hy
+              rcases List.mem_cons.mp hy with rfl | hyr
+              · exact hs_lt_r₂
+              · have hr₂_tail := (List.pairwise_cons.mp hrs_tail).1 y hyr
+                exact hs_lt_r₂.trans hr₂_tail
+            have hs_lt_ss : ∀ y ∈ ss, s < y := hs_tail
+            rw [show (r₁ :: r₂ :: rs).countP (fun r ↦ decide (s < r)) =
+                (r₂ :: rs).length by
+              have htail_count :
+                  (r₂ :: rs).countP (fun r ↦ decide (s < r)) =
+                    (r₂ :: rs).length := by
+                apply List.countP_eq_length.mpr
+                intro y hy
+                simp [hs_lt_tail y hy]
+              simp [not_lt_of_ge hr₁s, htail_count],
+              show (s :: ss).countP (fun t ↦ decide (s < t)) = ss.length by
+                simp only [List.countP_cons, lt_self_iff_false, decide_false]
+                apply List.countP_eq_length.mpr
+                intro y hy
+                simp [hs_lt_ss y hy]]
+            have hlen := listInterlaces_cons_length_eq htail
+            simp_all
+          · have hs_lt_x : s < x := hs_tail x hxss
+            have hr₁_not : ¬x < r₁ := by linarith
+            have hs_not : ¬x < s := not_lt_of_ge hs_lt_x.le
+            have hrec := ih (r₂ :: rs) hss_tail hrs_tail htail x hxss (by simp_all)
+            simpa [hr₁_not, hs_not] using hrec
+
+/-- At a root of the left member of a strict succ-degree proper-position
+pair, the right value and left derivative have opposite signs. -/
+private theorem eval_mul_derivative_neg_of_prec_succ_of_no_common
+    {f F : ℝ[X]} (hprec : Prec f F)
+    (hf_pos : HasPosLeadingCoeff f) (hF_pos : HasPosLeadingCoeff F)
+    (hdeg : f.natDegree + 1 = F.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬F.IsRoot r)
+    {r : ℝ} (hr : f.IsRoot r) :
+    F.eval r * f.derivative.eval r < 0 := by
+  have hprec0 := hprec
+  obtain ⟨hf, hF, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
+  obtain ⟨_, hint⟩ := hshape.resolve_right (by
+    rintro ⟨hlen, _⟩
+    have hss_len : ss.length = f.natDegree := by
+      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    have hrs_len : rs.length = F.natDegree := by
+      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hF.2]
+    lia)
+  have hf_nodup : f.roots.Nodup := by
+    by_contra hdup
+    obtain ⟨x, hxF, hxf⟩ := exists_common_root_of_not_nodup_g hprec0 hdup
+    exact hno x (isRoot_of_mem_roots hxf) (isRoot_of_mem_roots hxF)
+  have hF_nodup : F.roots.Nodup := by
+    by_contra hdup
+    obtain ⟨x, hxF, hxf⟩ := exists_common_root_of_not_nodup hprec0 hdup
+    exact hno x (isRoot_of_mem_roots hxf) (isRoot_of_mem_roots hxF)
+  have hss_nodup : ss.Nodup := by
+    rw [← Multiset.coe_nodup, hss_eq]
+    exact hf_nodup
+  have hrs_nodup : rs.Nodup := by
+    rw [← Multiset.coe_nodup, hrs_eq]
+    exact hF_nodup
+  have hss_lt := pairwise_lt_of_le_of_nodup ss hss hss_nodup
+  have hrs_lt := pairwise_lt_of_le_of_nodup rs hrs hrs_nodup
+  have hrmem : r ∈ f.roots := (mem_roots hf.1).mpr hr
+  have hrss : r ∈ ss := by
+    rw [← Multiset.mem_coe, hss_eq]
+    exact hrmem
+  have hrrs : r ∉ rs := by
+    intro hmem
+    apply hno r hr
+    apply (mem_roots hF.1).mp
+    rw [← hrs_eq]
+    exact Multiset.mem_coe.mpr hmem
+  have hcount := countP_succ_of_interlaces_left ss rs hss_lt hrs_lt hint r hrss hrrs
+  have hcount_roots :
+      F.roots.countP (fun x ↦ r < x) = f.roots.countP (fun x ↦ r < x) + 1 := by
+    rw [← hrs_eq, ← hss_eq]
+    simpa using hcount
+  have hcount_one : f.roots.count r = 1 :=
+    Multiset.count_eq_one_of_mem hf_nodup hrmem
+  have hder_sign := deriv_at_root_sign hf.2 hf_pos r hrmem hcount_one
+  have hr_not_F : r ∉ F.roots := by
+    intro hmem
+    exact hno r hr ((mem_roots hF.1).mp hmem)
+  have hF_sign := eval_sign hF.2 hF_pos r hr_not_F
+  rw [hcount_roots, pow_succ] at hF_sign
+  have hpow_ne : (-1 : ℝ) ^ f.roots.countP (fun x ↦ r < x) ≠ 0 := by
+    positivity
+  nlinarith [sq_pos_of_ne_zero hpow_ne]
+
+/-- Necessary weak endpoint sign for an arbitrary succ-degree proper-position
+pair.  Common factors are removed one at a time; at a shared root the product
+vanishes, and away from it multiplication contributes a square. -/
+private theorem eval_mul_derivative_nonpos_of_prec_succ
+    {f F : ℝ[X]} (hprec : Prec f F)
+    (hf_pos : HasPosLeadingCoeff f) (hF_pos : HasPosLeadingCoeff F)
+    (hdeg : f.natDegree + 1 = F.natDegree)
+    {r : ℝ} (hr : f.IsRoot r) :
+    F.eval r * f.derivative.eval r ≤ 0 := by
+  classical
+  refine Nat.strong_induction_on
+    (p := fun d ↦ ∀ {f F : ℝ[X]}, f.natDegree = d → Prec f F →
+      HasPosLeadingCoeff f → HasPosLeadingCoeff F →
+      f.natDegree + 1 = F.natDegree → ∀ {r : ℝ}, f.IsRoot r →
+        F.eval r * f.derivative.eval r ≤ 0)
+    f.natDegree ?_ rfl hprec hf_pos hF_pos hdeg hr
+  intro d ih f F hfdeg hprec hf_pos hF_pos hdeg r hr
+  by_cases hno : ∀ x, f.IsRoot x → ¬F.IsRoot x
+  · exact (eval_mul_derivative_neg_of_prec_succ_of_no_common
+      hprec hf_pos hF_pos hdeg hno hr).le
+  push Not at hno
+  obtain ⟨s, hsf, hsF⟩ := hno
+  let qf : ℝ[X] := f /ₘ (X - C s)
+  let qF : ℝ[X] := F /ₘ (X - C s)
+  have hffactor : f = (X - C s) * qf := by
+    dsimp [qf]
+    exact (mul_divByMonic_eq_iff_isRoot.mpr hsf).symm
+  have hFfactor : F = (X - C s) * qF := by
+    dsimp [qF]
+    exact (mul_divByMonic_eq_iff_isRoot.mpr hsF).symm
+  have hqprec : Prec qf qF :=
+    prec_cofactor_of_common_root hprec hsF hsf
+  have hqf_pos : HasPosLeadingCoeff qf := by
+    rw [HasPosLeadingCoeff]
+    dsimp [qf]
+    rw [leadingCoeff_divByMonic_X_sub_C hsf]
+    exact hf_pos
+  have hqF_pos : HasPosLeadingCoeff qF := by
+    rw [HasPosLeadingCoeff]
+    dsimp [qF]
+    rw [leadingCoeff_divByMonic_X_sub_C hsF]
+    exact hF_pos
+  have hqf_ne : qf ≠ 0 := hqf_pos.ne_zero
+  have hqF_ne : qF ≠ 0 := hqF_pos.ne_zero
+  have hqf_deg : qf.natDegree + 1 = f.natDegree := by
+    rw [hffactor, natDegree_mul (X_sub_C_ne_zero s) hqf_ne,
+      natDegree_X_sub_C]
+    lia
+  have hqF_deg : qF.natDegree + 1 = F.natDegree := by
+    rw [hFfactor, natDegree_mul (X_sub_C_ne_zero s) hqF_ne,
+      natDegree_X_sub_C]
+    lia
+  have hqdeg : qf.natDegree + 1 = qF.natDegree := by lia
+  by_cases hrs : r = s
+  · subst r
+    simp [Polynomial.IsRoot.def.mp hsF]
+  have hqroot : qf.IsRoot r := by
+    have hzero := Polynomial.IsRoot.def.mp hr
+    rw [hffactor] at hzero
+    simp only [eval_mul, eval_sub, eval_X, eval_C] at hzero
+    exact (mul_eq_zero.mp hzero).resolve_left (sub_ne_zero.mpr hrs)
+  have hqsign : qF.eval r * qf.derivative.eval r ≤ 0 :=
+    ih qf.natDegree (by lia) rfl hqprec hqf_pos hqF_pos hqdeg hqroot
+  have hFeval : F.eval r = (r - s) * qF.eval r := by
+    rw [hFfactor]
+    simp
+  have hfder : f.derivative.eval r = (r - s) * qf.derivative.eval r := by
+    rw [hffactor, derivative_mul]
+    simp only [derivative_sub, derivative_X, derivative_C, sub_zero, one_mul,
+      eval_add, eval_mul, eval_sub, eval_X, eval_C]
+    rw [Polynomial.IsRoot.def.mp hqroot]
+    ring
+  rw [hFeval, hfder]
+  nlinarith [sq_nonneg (r - s)]
+
+/-! ## Nonnegative simple regularization -/
+
+private theorem splits_iterateTDeriv_neg
+    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]} (hp : p.Splits) :
+    ∀ k, (iterateTDeriv (-eps) k p).Splits := by
+  intro k
+  induction k with
+  | zero => simpa
+  | succ k ih =>
+      rw [iterateTDeriv_succ]
+      convert splits_add_C_mul_derivative ih heps using 1
+      simp [TDeriv]
+
+private theorem HasNonnegCoeffs.iterateTDeriv_neg
+    {eps : ℝ} (heps : 0 ≤ eps) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    ∀ k, HasNonnegCoeffs (iterateTDeriv (-eps) k p) := by
+  intro k
+  induction k with
+  | zero => simpa
+  | succ k ih =>
+      rw [iterateTDeriv_succ]
+      intro i
+      simp only [TDeriv, coeff_sub, coeff_C_mul, coeff_derivative]
+      have hi := ih i
+      have hisucc := ih (i + 1)
+      simp only [neg_mul, sub_neg_eq_add]
+      exact add_nonneg hi (mul_nonneg heps (mul_nonneg hisucc (by positivity)))
+
+/-- Iterating `p ↦ p + eps * p'` at least `deg p` times makes every root
+simple.  The existing multiplicity transport is sign-independent; only the
+split-preservation input differs from the positive `TDeriv` theorem. -/
+private theorem hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]} (hp_ne : p ≠ 0)
+    (hp_splits : p.Splits) {k : ℕ} (hdeg : p.natDegree ≤ k) :
+    HasSimpleRoots (iterateTDeriv (-eps) k p) := by
+  intro a ha
+  by_contra hmult
+  push Not at hmult
+  have hge2 : 2 ≤ (iterateTDeriv (-eps) k p).rootMultiplicity a := by
+    have hpos := (rootMultiplicity_pos (iterateTDeriv_ne_zero hp_ne)).mpr ha
+    lia
+  have hsteps : ∀ j, j ≤ k →
+      2 + j ≤ (iterateTDeriv (-eps) (k - j) p).rootMultiplicity a := by
+    intro j
+    induction j with
+    | zero => simpa using hge2
+    | succ j ih =>
+        intro hj
+        have hprev := ih (by lia)
+        have hstep : k - j = (k - (j + 1)) + 1 := by lia
+        rw [hstep, iterateTDeriv_succ] at hprev
+        have hback := rootMultiplicity_eq_succ_of_TDeriv_ge_two_of_ne
+          (neg_ne_zero.mpr heps.ne')
+          (splits_iterateTDeriv_neg heps hp_splits (k - (j + 1)))
+          (by linarith :
+            2 ≤ (TDeriv (-eps) (iterateTDeriv (-eps) (k - (j + 1)) p)).rootMultiplicity a)
+        lia
+  have hzero := hsteps k le_rfl
+  simp only [Nat.sub_self, iterateTDeriv_zero] at hzero
+  have hmult_le : p.rootMultiplicity a ≤ p.natDegree := by
+    calc
+      p.rootMultiplicity a = p.roots.count a := (count_roots p).symm
+      _ ≤ p.roots.card := p.roots.count_le_card a
+      _ ≤ p.natDegree := card_roots' p
+  lia
+
+private theorem allComboRealRooted_iterateTDeriv_neg
+    {f g : ℝ[X]} (hall : AllComboRealRooted f g)
+    {eps : ℝ} (heps : 0 < eps) (k : ℕ) :
+    AllComboRealRooted
+      (iterateTDeriv (-eps) k f) (iterateTDeriv (-eps) k g) := by
+  intro a b
+  rw [← iterateTDeriv_linear_combo]
+  exact splits_iterateTDeriv_neg heps (hall a b) k
+
+private theorem tendsto_coeff_eulerInsertionStep_iterateTDeriv
+    (c : ℝ) (d iterations i : ℕ) (p : ℝ[X])
+    {eps : ℕ → ℝ} (heps : Filter.Tendsto eps Filter.atTop (nhds 0)) :
+    Filter.Tendsto
+      (fun M ↦ (eulerInsertionStep c d (iterateTDeriv (eps M) iterations p)).coeff i)
+      Filter.atTop (nhds ((eulerInsertionStep c d p).coeff i)) := by
+  have hcoeff (j : ℕ) :
+      Filter.Tendsto (fun M ↦ (iterateTDeriv (eps M) iterations p).coeff j)
+        Filter.atTop (nhds (p.coeff j)) := by
+    simpa [Function.comp_def, iterateTDeriv_zero_eps] using
+      (continuousAt_coeff_iterateTDeriv_zero iterations p j).tendsto.comp heps
+  cases i with
+  | zero =>
+      simp only [coeff_eulerInsertionStep_zero]
+      exact tendsto_const_nhds.mul (hcoeff 0)
+  | succ i =>
+      simp only [coeff_eulerInsertionStep_succ]
+      exact
+        (tendsto_const_nhds.mul (hcoeff (i + 1))).add
+          (tendsto_const_nhds.mul (hcoeff i))
+
+/-- Applying the same nonnegative derivative regularization to a succ-degree
+proper-position pair preserves its orientation and removes every common root.
+The latter follows because every nonzero regularized linear combination is
+simple: a shared root would produce a nonzero combination with a double root.
+-/
+private theorem regularized_prec_no_common
+    {f g : ℝ[X]} (hgf : Prec g f)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    {eps : ℝ} (heps : 0 < eps) :
+    let k := f.natDegree
+    let fε := iterateTDeriv (-eps) k f
+    let gε := iterateTDeriv (-eps) k g
+    Prec gε fε ∧ (∀ r, fε.IsRoot r → ¬gε.IsRoot r) := by
+  dsimp
+  let k := f.natDegree
+  let fε : ℝ[X] := iterateTDeriv (-eps) k f
+  let gε : ℝ[X] := iterateTDeriv (-eps) k g
+  have hall : AllComboRealRooted g f := allComboRealRooted_of_prec hgf
+  have hallε : AllComboRealRooted gε fε := by
+    dsimp [fε, gε, k]
+    exact allComboRealRooted_iterateTDeriv_neg hall heps f.natDegree
+  have hfε_ne : fε ≠ 0 := iterateTDeriv_ne_zero hf_pos.ne_zero
+  have hgε_ne : gε ≠ 0 := iterateTDeriv_ne_zero hg_pos.ne_zero
+  have hfε_splits : fε.Splits := by
+    dsimp [fε, k]
+    exact splits_iterateTDeriv_neg heps hgf.2.1.2 f.natDegree
+  have hgε_splits : gε.Splits := by
+    dsimp [gε, k]
+    exact splits_iterateTDeriv_neg heps hgf.1.2 f.natDegree
+  have hdegε : gε.natDegree + 1 = fε.natDegree := by
+    dsimp [fε, gε]
+    simpa using hdeg
+  have hprecε : Prec gε fε := by
+    rcases prec_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
+        hallε (Or.inl hdegε) with hforward | hreverse
+    · exact hforward
+    · exact False.elim <| not_prec_of_right_natDegree_lt_left (by lia) hreverse
+  refine ⟨hprecε, ?_⟩
+  have hfε_simple : HasSimpleRoots fε := by
+    dsimp [fε, k]
+    exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+      heps hf_pos.ne_zero hgf.2.1.2 le_rfl
+  have hgε_simple : HasSimpleRoots gε := by
+    dsimp [gε, k]
+    exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+      heps hg_pos.ne_zero hgf.1.2 (by lia)
+  intro r hrfε hrgε
+  have hfder_ne : fε.derivative.eval r ≠ 0 :=
+    derivative_eval_ne_zero_of_simple_root hrfε <| by
+      simpa [count_roots] using hfε_simple r hrfε
+  have hgder_ne : gε.derivative.eval r ≠ 0 :=
+    derivative_eval_ne_zero_of_simple_root hrgε <| by
+      simpa [count_roots] using hgε_simple r hrgε
+  let a : ℝ := gε.derivative.eval r
+  let b : ℝ := -fε.derivative.eval r
+  let q : ℝ[X] := C a * fε + C b * gε
+  have ha_ne : a ≠ 0 := hgder_ne
+  have hb_ne : b ≠ 0 := neg_ne_zero.mpr hfder_ne
+  have hqroot : q.IsRoot r := by
+    have hrf_eval : fε.eval r = 0 := Polynomial.IsRoot.def.mp hrfε
+    have hrg_eval : gε.eval r = 0 := Polynomial.IsRoot.def.mp hrgε
+    simp [q, Polynomial.IsRoot.def, hrf_eval, hrg_eval]
+  have hqderroot : q.derivative.IsRoot r := by
+    simp [q, a, b, Polynomial.IsRoot.def]
+    ring
+  have hq_ne : q ≠ 0 := by
+    intro hzero
+    have hcoeff := congrArg (fun p : ℝ[X] ↦ p.coeff f.natDegree) hzero
+    have hfdegε : fε.natDegree = f.natDegree := by simp [fε]
+    have hgdegε : gε.natDegree = g.natDegree := by simp [gε]
+    dsimp [q] at hcoeff
+    simp only [coeff_add, coeff_C_mul] at hcoeff
+    rw [show fε.coeff f.natDegree = f.leadingCoeff by
+      rw [← hfdegε, coeff_natDegree]
+      simp [fε],
+      coeff_eq_zero_of_natDegree_lt (by rw [hgdegε]; lia), mul_zero,
+      add_zero] at hcoeff
+    exact ha_ne ((mul_eq_zero.mp hcoeff).resolve_right hf_pos.ne')
+  have hq_simple : HasSimpleRoots q := by
+    have hbase_ne : C a * f + C b * g ≠ 0 := by
+      intro hzero
+      apply hq_ne
+      dsimp [q, fε, gε, k]
+      rw [← iterateTDeriv_linear_combo, hzero]
+      simp
+    have hbase_splits : (C a * f + C b * g).Splits := by
+      simpa [add_comm] using hall b a
+    have hbase_deg : (C a * f + C b * g).natDegree ≤ f.natDegree := by
+      exact (natDegree_add_le _ _).trans <|
+        max_le (natDegree_C_mul_le _ _) ((natDegree_C_mul_le _ _).trans (by lia))
+    have hsimple := hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+      heps hbase_ne hbase_splits hbase_deg
+    simpa [q, fε, gε, k, iterateTDeriv_linear_combo] using hsimple
+  have hder_nonzero := derivative_eval_ne_zero_of_simple_root hqroot <| by
+    simpa [count_roots] using hq_simple r hqroot
+  exact hder_nonzero (Polynomial.IsRoot.def.mp hqderroot)
+
 /-! ## The strict mixed adjacent step -/
 
 theorem eulerInsertionStep_one_eq_zero_succ_add
@@ -413,6 +812,69 @@ private theorem mixedEulerStep_eq
   rw [eulerInsertionStep_add, eulerInsertionStep_C_mul,
     eulerInsertionStep_one_eq_zero_succ_add]
   ring
+
+private theorem mixedEulerStep_nonneg_degree_leading
+    {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
+    (hlam : 0 < lam)
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hfdeg : f.natDegree ≤ n + 1) :
+    let P := eulerInsertionStep 0 (n + 1) f +
+      C lam * eulerInsertionStep 1 n g
+    HasNonnegCoeffs P ∧
+      P.natDegree = f.natDegree + 1 ∧
+      P.leadingCoeff = ((n : ℝ) + 2 - f.natDegree) * f.leadingCoeff ∧
+      HasPosLeadingCoeff P := by
+  dsimp
+  have hgdeg : g.natDegree ≤ n := by lia
+  have hEf_nonneg : HasNonnegCoeffs (eulerInsertionStep 0 (n + 1) f) :=
+    hf.eulerInsertionStep (by norm_num) hfdeg
+  have hEg_nonneg : HasNonnegCoeffs (eulerInsertionStep 1 n g) :=
+    hg.eulerInsertionStep (by norm_num) hgdeg
+  have hP_nonneg : HasNonnegCoeffs
+      (eulerInsertionStep 0 (n + 1) f + C lam * eulerInsertionStep 1 n g) := by
+    intro i
+    simp only [coeff_add, coeff_C_mul]
+    exact add_nonneg (hEf_nonneg i) (mul_nonneg hlam.le (hEg_nonneg i))
+  have htop : 0 < ((n : ℝ) + 2 - f.natDegree) * f.leadingCoeff := by
+    have hcast : (f.natDegree : ℝ) ≤ n + 1 := by exact_mod_cast hfdeg
+    exact mul_pos (by linarith) hf_pos
+  have hcoeff :
+      (eulerInsertionStep 0 (n + 1) f + C lam * eulerInsertionStep 1 n g).coeff
+          (f.natDegree + 1) =
+        ((n : ℝ) + 2 - f.natDegree) * f.leadingCoeff := by
+    rw [coeff_add, coeff_C_mul, coeff_eulerInsertionStep_succ]
+    have hfzero : f.coeff (f.natDegree + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by lia)
+    have hEgdeg := (eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg hg_pos).1
+    have hEgzero :
+        (eulerInsertionStep 1 n g).coeff (f.natDegree + 1) = 0 := by
+      apply coeff_eq_zero_of_natDegree_lt
+      rw [hEgdeg, hdeg]
+      lia
+    rw [hfzero, hEgzero]
+    simp only [mul_zero, add_zero, zero_add]
+    change
+      (((n + 1 : ℕ) : ℝ) + 1 - f.natDegree) * f.leadingCoeff = _
+    push_cast
+    ring
+  have hPdeg :
+      (eulerInsertionStep 0 (n + 1) f + C lam * eulerInsertionStep 1 n g).natDegree =
+        f.natDegree + 1 := by
+    apply natDegree_eq_of_le_of_coeff_ne_zero
+    · refine (natDegree_add_le _ _).trans (max_le ?_ ?_)
+      · exact natDegree_eulerInsertionStep_le 0 (n + 1) f
+      · exact (natDegree_C_mul_le lam _).trans <| by
+          rw [(eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg hg_pos).1, hdeg]
+          lia
+    · rw [hcoeff]
+      exact htop.ne'
+  have hlead :
+      (eulerInsertionStep 0 (n + 1) f + C lam * eulerInsertionStep 1 n g).leadingCoeff =
+        ((n : ℝ) + 2 - f.natDegree) * f.leadingCoeff := by
+    rw [Polynomial.leadingCoeff, hPdeg, hcoeff]
+  exact ⟨hP_nonneg, hPdeg, hlead, by rw [HasPosLeadingCoeff, hlead]; exact htop⟩
 
 /-- Strict core of the mixed adjacent Euler lemma.  The right input has one
 more degree, the two inputs have no common root, and its constant coefficient
@@ -746,5 +1208,196 @@ private theorem mixedEulerStep_prec_of_no_common
     prec_C_mul_right hbase hc_pos.ne'
   rw [← hPfactor] at hscaled
   exact hscaled
+
+/-! ## The common-root-safe mixed step -/
+
+/-- The mixed adjacent Euler output is real-rooted for every positive mixing
+parameter.  Multiple and common roots are handled by the coefficientwise
+closure of the nonnegative simple regularizations `p + eps * p'`; no
+genericity hypothesis remains in the statement. -/
+theorem mixedEulerStep_splits
+    {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
+    (hlam : 0 < lam)
+    (hgf : Prec g f)
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hfdeg : f.natDegree ≤ n + 1) :
+    (eulerInsertionStep 0 (n + 1) f +
+      C lam * eulerInsertionStep 1 n g).Splits := by
+  let P : ℝ[X] := eulerInsertionStep 0 (n + 1) f +
+    C lam * eulerInsertionStep 1 n g
+  obtain ⟨hP_nonneg, hP_deg, hP_lead, hP_pos⟩ :=
+    mixedEulerStep_nonneg_degree_leading hlam hf hg hf_pos hg_pos hdeg hfdeg
+  let delta : ℕ → ℝ := fun M ↦ ((M : ℝ) + 1)⁻¹
+  have hdelta_pos (M : ℕ) : 0 < delta M := by
+    dsimp [delta]
+    positivity
+  have hdelta : Filter.Tendsto delta Filter.atTop (nhds 0) := by
+    simpa [delta, one_div] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hneg_delta :
+      Filter.Tendsto (fun M ↦ -(delta M)) Filter.atTop (nhds 0) := by
+    simpa using hdelta.neg
+  let fM : ℕ → ℝ[X] := fun M ↦
+    iterateTDeriv (-(delta M)) f.natDegree f
+  let gM : ℕ → ℝ[X] := fun M ↦
+    iterateTDeriv (-(delta M)) f.natDegree g
+  let PM : ℕ → ℝ[X] := fun M ↦
+    eulerInsertionStep 0 (n + 1) (fM M) +
+      C lam * eulerInsertionStep 1 n (gM M)
+  have hfM_nonneg (M : ℕ) : HasNonnegCoeffs (fM M) := by
+    dsimp [fM]
+    exact hf.iterateTDeriv_neg (hdelta_pos M).le f.natDegree
+  have hgM_nonneg (M : ℕ) : HasNonnegCoeffs (gM M) := by
+    dsimp [gM]
+    exact hg.iterateTDeriv_neg (hdelta_pos M).le f.natDegree
+  have hfM_pos (M : ℕ) : HasPosLeadingCoeff (fM M) := by
+    simpa [fM] using hf_pos
+  have hgM_pos (M : ℕ) : HasPosLeadingCoeff (gM M) := by
+    simpa [gM] using hg_pos
+  have hdegM (M : ℕ) : (gM M).natDegree + 1 = (fM M).natDegree := by
+    simpa [fM, gM] using hdeg
+  have hfdegM (M : ℕ) : (fM M).natDegree ≤ n + 1 := by
+    simpa [fM] using hfdeg
+  have hgM_splits (M : ℕ) : (gM M).Splits := by
+    dsimp [gM]
+    exact splits_iterateTDeriv_neg (hdelta_pos M) hgf.1.2 f.natDegree
+  have hPM_data (M : ℕ) :
+      HasNonnegCoeffs (PM M) ∧
+        (PM M).natDegree = (fM M).natDegree + 1 ∧
+        (PM M).leadingCoeff =
+          ((n : ℝ) + 2 - (fM M).natDegree) * (fM M).leadingCoeff ∧
+        HasPosLeadingCoeff (PM M) := by
+    dsimp [PM]
+    exact mixedEulerStep_nonneg_degree_leading hlam
+      (hfM_nonneg M) (hgM_nonneg M) (hfM_pos M) (hgM_pos M)
+      (hdegM M) (hfdegM M)
+  have hPM_splits (M : ℕ) : (PM M).Splits := by
+    obtain ⟨hprecM, hnoM⟩ :=
+      regularized_prec_no_common hgf hf_pos hg_pos hdeg (hdelta_pos M)
+    have hmixed := mixedEulerStep_prec_of_no_common hlam hprecM
+      (hfM_nonneg M) (hgM_nonneg M) (hfM_pos M) (hgM_pos M)
+      (hgM_splits M) (hdegM M) (hfdegM M) hnoM
+    exact hmixed.2.1.2
+  have hPM_deg (M : ℕ) : (PM M).natDegree = P.natDegree := by
+    rw [(hPM_data M).2.1, hP_deg]
+    simp [fM]
+  have hPM_lead (M : ℕ) : (PM M).leadingCoeff = P.leadingCoeff := by
+    rw [(hPM_data M).2.2.1, hP_lead]
+    simp [fM]
+  have hPM_coeff (i : ℕ) :
+      Filter.Tendsto (fun M ↦ (PM M).coeff i) Filter.atTop
+        (nhds (P.coeff i)) := by
+    have hf_tendsto := tendsto_coeff_eulerInsertionStep_iterateTDeriv
+      0 (n + 1) f.natDegree i f hneg_delta
+    have hg_tendsto := tendsto_coeff_eulerInsertionStep_iterateTDeriv
+      1 n f.natDegree i g hneg_delta
+    dsimp [PM, P, fM, gM]
+    simpa only [coeff_add, coeff_C_mul] using
+      hf_tendsto.add (tendsto_const_nhds.mul hg_tendsto)
+  let pMonic : ℝ[X] := C P.leadingCoeff⁻¹ * P
+  let pMonicM : ℕ → ℝ[X] := fun M ↦ C P.leadingCoeff⁻¹ * PM M
+  have hPlead_ne : P.leadingCoeff ≠ 0 := hP_pos.ne'
+  have hpMonic : pMonic.Monic := by
+    dsimp [pMonic]
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    simp [hPlead_ne]
+  have hpMonicM (M : ℕ) : (pMonicM M).Monic := by
+    dsimp [pMonicM]
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    rw [hPM_lead]
+    simp [hPlead_ne]
+  have hpMonicM_deg (M : ℕ) : (pMonicM M).natDegree = pMonic.natDegree := by
+    dsimp [pMonicM, pMonic]
+    rw [natDegree_C_mul (inv_ne_zero hPlead_ne),
+      natDegree_C_mul (inv_ne_zero hPlead_ne), hPM_deg]
+  have hpMonicM_splits (M : ℕ) : (pMonicM M).Splits :=
+    (hPM_splits M).C_mul P.leadingCoeff⁻¹
+  have hpMonicM_coeff (i : ℕ) :
+      Filter.Tendsto (fun M ↦ (pMonicM M).coeff i) Filter.atTop
+        (nhds (pMonic.coeff i)) := by
+    dsimp [pMonicM, pMonic]
+    simp only [coeff_C_mul]
+    exact tendsto_const_nhds.mul (hPM_coeff i)
+  have hpMonic_splits : pMonic.Splits :=
+    splits_of_monic_of_coeff_tendsto hpMonic hpMonicM hpMonicM_deg
+      hpMonicM_splits hpMonicM_coeff
+  have hscaled := hpMonic_splits.C_mul P.leadingCoeff
+  rw [show C P.leadingCoeff * pMonic = P by
+    dsimp [pMonic]
+    rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hPlead_ne, C_1, one_mul]] at hscaled
+  exact hscaled
+
+/-- Mixed adjacent Euler compatibility.  This is the common-root-safe form of
+the paper's mixed `T/U` lemma in the exact succ-degree regime used by the
+derangement induction. -/
+theorem compatible_eulerInsertionStep_one_zero_succ
+    {n : ℕ} {f g : ℝ[X]}
+    (hgf : Prec g f)
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hfdeg : f.natDegree ≤ n + 1) :
+    Compatible (eulerInsertionStep 1 n g)
+      (eulerInsertionStep 0 (n + 1) f) := by
+  let A : ℝ[X] := eulerInsertionStep 1 n g
+  let B : ℝ[X] := eulerInsertionStep 0 (n + 1) f
+  have hgdeg : g.natDegree ≤ n := by lia
+  have hA_splits : A.Splits := by
+    dsimp [A]
+    exact splits_eulerInsertionStep hg hg_pos hgf.1.2 hgdeg
+  have hB_splits : B.Splits := by
+    dsimp [B]
+    exact splits_eulerInsertionStep hf hf_pos hgf.2.1.2 hfdeg
+  intro a b ha hb
+  by_cases ha0 : a = 0
+  · subst a
+    by_cases hb0 : b = 0
+    · left
+      simp [hb0]
+    · right
+      refine ⟨?_, by simpa [A, B] using hB_splits.C_mul b⟩
+      simpa [A, B] using mul_ne_zero (C_ne_zero.mpr hb0)
+        (eulerInsertionStep_degree_pos (c := (0 : ℝ)) hfdeg hf_pos).2.ne_zero
+  by_cases hb0 : b = 0
+  · subst b
+    right
+    refine ⟨?_, by simpa [A, B] using hA_splits.C_mul a⟩
+    simpa [A, B] using mul_ne_zero (C_ne_zero.mpr ha0)
+      (eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg hg_pos).2.ne_zero
+  have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+  have hb_pos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
+  let lam : ℝ := a / b
+  have hlam : 0 < lam := div_pos ha_pos hb_pos
+  have hmixed : (B + C lam * A).Splits := by
+    dsimp [A, B, lam]
+    exact mixedEulerStep_splits hlam hgf hf hg hf_pos hg_pos hdeg hfdeg
+  have hcombo : C a * A + C b * B = C b * (B + C lam * A) := by
+    dsimp [lam]
+    rw [mul_add, ← mul_assoc, ← C_mul]
+    have hba : b * (a / b) = a := by field_simp
+    rw [hba]
+    ring
+  right
+  refine ⟨?_, ?_⟩
+  · rw [hcombo]
+    exact mul_ne_zero (C_ne_zero.mpr hb0) <| by
+      dsimp [A, B]
+      have hB_pos :=
+        (eulerInsertionStep_degree_pos (c := (0 : ℝ)) hfdeg hf_pos).2
+      have hA_nonneg := hg.eulerInsertionStep (c := (1 : ℝ)) (by norm_num) hgdeg
+      have hB_nonneg := hf.eulerInsertionStep (c := (0 : ℝ)) (by norm_num) hfdeg
+      intro hzero
+      have heval := congrArg (Polynomial.eval 1) hzero
+      simp only [eval_add, eval_mul, eval_C] at heval
+      simp only [eval_zero] at heval
+      have hBeval := eval_pos_of_hasNonnegCoeffs hB_nonneg hB_pos.ne_zero zero_lt_one
+      have hApos :=
+        (eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg hg_pos).2
+      have hAeval := eval_pos_of_hasNonnegCoeffs hA_nonneg hApos.ne_zero zero_lt_one
+      nlinarith
+  · rw [hcombo]
+    exact hmixed.C_mul b
 
 end RealRooted
