@@ -3408,18 +3408,8 @@ theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) ℝ}
     (hA : A.IsTotallyNonneg) :
     (Matrix.reindex Fin.revPerm Fin.revPerm A).IsTotallyNonneg := by
   intro n rows cols hrows hcols
-  let rows' : Fin n → Fin N := fun i ↦ (rows i.rev).rev
-  let cols' : Fin n → Fin N := fun i ↦ (cols i.rev).rev
-  have hrows' : StrictMono rows' := by
-    intro i j hij
-    apply Fin.rev_lt_rev.mpr
-    exact hrows (Fin.rev_lt_rev.mpr hij)
-  have hcols' : StrictMono cols' := by
-    intro i j hij
-    apply Fin.rev_lt_rev.mpr
-    exact hcols (Fin.rev_lt_rev.mpr hij)
   rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
-  change 0 ≤ (A.submatrix rows' cols').det
-  exact hA hrows' hcols'
+  exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
+    (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
 
 end Matrix
