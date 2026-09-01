@@ -36,6 +36,15 @@
 - Focused verification after this increment: `lake-workspace build
   RealRooted.EulerianMixedCompatibility` succeeds without source warnings;
   the module contains no `sorry`, `admit`, or added axiom.
-- Remaining work is sequence-specific: use these exported theorems in the
-  OEIS-proofs worktree to formalize crossed completion and the final
-  derangement induction.
+- The exported compatibility theorem is complete, but the candidate paper's
+  crossed-completion proof has a separate orientation gap.  It treats
+  compatibility of `T_n h'` with each target as if it proved that the
+  *specific polynomial* `T_n h'` is a common left interlacer.  Compatibility
+  alone does not imply this: `1 + X` is compatible with
+  `6 + 5*X + X^2`, since every nonnegative combination has discriminant
+  `alpha^2 + 6*alpha*beta + beta^2 >= 0`, but the roots `-1` and `-2,-3` do
+  not interlace in the required orientation.  Thus the sequence proof needs a
+  new theorem exploiting its special derivative/Euler structure; it cannot be
+  completed merely by invoking `compatible_eulerInsertionStep_one_zero_succ`.
+  This is not a defect in the checked mixed compatibility theorem and not a
+  counterexample to the derangement theorem.
