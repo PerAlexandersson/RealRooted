@@ -18,7 +18,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **158 IDs**; **1 formalized**, **144 shells**, **13 fragments**, and **0 documented-only**.
+Current totals: **159 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -105,6 +105,7 @@ Current totals: **158 IDs**; **1 formalized**, **144 shells**, **13 fragments**,
 | A124324 | `shell` | Active-offset `/` shape: | `rr_nonneg_coeffs`, `rr_prec_mul_X_both`, `rr_prec_wagner_derivative_gap_lag_sequence`, `rr_prec_wagner_derivative_gap_lag_sequence_realrooted`, `rr_wagner_pos_seq` | `a`, `b`, `base`, `degree_two`, `derivative_coeff_pos`, `lag_coeff_pos`, `left_nonneg`, `natDegree`, `nonneg_coeffs`, `proper`, `recurrence`, `right_nonneg` | concrete row definition and proofs of the listed certificates |
 | A124848 | `shell` | This is the denominator bookkeeping needed for `/`-style | `rr_lw_coeff_nonneg_seq_term`, `rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg` | `base`, `coeff`, `coeff_nonneg`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `raw_recurrence`, `root_lower` | concrete row definition and proofs of the listed certificates |
 | A127672 | `shell` | OEIS shapes `//`: real-rootedness consequence of | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
+| A128099 | `shell` | positive-`X` lag with non-unit constant coefficient `2`. | `rr_prec_pos_X_lag_coeff_sequence_realrooted_auto` | `base`, `current_coeff`, `lag_coeff`, `nonneg_coeffs`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A131689 | `fragment` | `/`: MW3 inner case `v_n(t)=t+t^2=t(1+t)`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A136523 | `shell` | OEIS shapes `///`: | `rr_favard_affine_const`, `rr_favard_affine_const_unit` | `alpha`, `base_one`, `base_zero`, `slope`, `step` | concrete row definition and proofs of the listed certificates |
 | A136532 | `shell` | scalar-denominator row-sign Favard raw numerator. | `rr_favard_affine_param_row_sign_den_raw_auto`, `rr_favard_base_one_dsimp` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_const`, `raw_lag`, `raw_recurrence`, `raw_slope`, `slope` | concrete row definition and proofs of the listed certificates |

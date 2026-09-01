@@ -46,28 +46,78 @@ lake build RealRooted.Bezoutian
 
 ## Repository Layout
 
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) records the intended dependency layers,
+  import budgets, module-splitting rules, and consumer-to-library extraction
+  workflow.
 - `RealRooted.lean` is the umbrella import for the public development.
 - `RealRooted/Basic.lean`, `Derivative.lean`, `Wagner*.lean`, and
   `InterlacingSequence*.lean` contain the core interlacing API.
+- `RealRooted/Wronskian/` separates polynomial Wronskian algebra, forward and
+  converse Bezoutian bridges, and successor-degree sign/interlacing results;
+  `Wronskian.lean` is its focused public entry point.
 - `RealRooted/CommonInterleaver*.lean` and `ChudnovskySeymour.lean` contain the
   compatibility and common-interleaver work.
 - `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,
   `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
   and Veronese-section material.
+- `VeroneseSectionPair.lean` gives strict proper position for two nonzero
+  ordered residues; its `HermiteBiehler` child gives the induced
+  upper-half-plane and Hurwitz stability certificates.
 - `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
-  product API; `GarloffWagner.lean` proves the proper-position preservation
-  theorem; `Hadamard.lean` packages its downstream consequences.
-- `RealRooted/SymmetricDecomposition.lean` and `Bezoutian.lean` contain larger
-  theorem packages and classical interfaces.
+  product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
+  Schur-product and differential-operator algebra, and
+  `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
+  `GarloffWagner/KreinData.lean` owns the root-multiplicity and divisibility
+  data for the later Krein expansion.
+  `GarloffWagner/KreinExpansion.lean` owns the positive root-deleted
+  expansions and their Theorem 11 proper-position consequences.
+  `GarloffWagner/Theorem12.lean` owns the factorial Schur-product induction
+  and its fixed-factor Hadamard consequences, while
+  `GarloffWagner/Hadamard.lean` owns the double-deleted reduction and final
+  two-pair endpoint. `GarloffWagner.lean` remains their theorem-route
+  compatibility import.
+  `Hadamard/Basic.lean` owns the coefficient-support and Schur--Szego
+  composition algebra, including the Jensen and degree-three identities;
+  `Hadamard/Finite.lean`, `Newton.lean`, and `Cubic.lean` respectively own
+  the finite-composition interfaces, normalized Newton inequalities, and
+  degree-three reductions. `Hadamard/Grace.lean` owns the apolar/Grace proof,
+  followed by `GarloffWagner.lean`, `Hurwitz.lean`, and `Consequences.lean`
+  for the endpoint interfaces. `Hadamard.lean` is their compatibility import.
+- `BorceaBranden/Applications/BidiagonalSymbol.lean` computes genuine affine
+  finite symbols for coefficient-bidiagonal operators; its
+  `RealConsequences` child supplies their real preservation consequences, and
+  `EulerFiniteSymbol.lean` packages the stable Euler-family specialization with
+  diagonal constant `c ≥ 1`.
+- `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
+  definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
+  2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
+  import. `Bezoutian.lean` contains the classical Bezoutian interface.
 - `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
   row-threshold and threshold-matrix preservers, including the
   Gustafsson-Solus and Haglund-Zhang/A046802 backends.
-- `RealRooted/NarayanaTransformation.lean`, `LowerTriangularMatrix.lean`, and
-  `MaoWangMatrixProduct.lean` contain the Mao--Wang Narayana transformation,
-  its lower-triangular row-generating-function API, and matrix-product
-  endpoint wrappers.
+- `RealRooted/NarayanaTransformation/` layers the Mao--Wang Narayana
+  transformation by root geometry, basis transforms, factorial preservation,
+  coefficient identities, rectangular convolution, recurrences, and endpoints;
+  `NarayanaTransformation.lean` remains its compatibility import.
+  `LowerTriangularMatrix.lean` and `MaoWangMatrixProduct.lean` provide the
+  lower-triangular row-generating-function API and matrix-product endpoint
+  wrappers.
 - `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
-  contain the current Liu opposite-leading-sign root-count interface.
+  contain the current Liu opposite-leading-sign root-count interface; its
+  `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
+  nonnegative `X * p - μ * q` splitness corollary. Its
+  `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
+  exterior tails, count-to-splitting endpoints, and the three degree cases;
+  `XSub/IntervalRootCount.lean` remains the compatible import. Its
+  `XSub/CubicCubic/` package similarly separates cubic-minus-quadratic
+  infrastructure, normalized setup, root-order case families, repeated-root
+  boundaries, and the degree-three endpoints; `XSub/CubicCubic.lean` remains
+  the compatible import.
+- `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
+  scalar-denominator normalizations, and row-sign normalizations; its parent
+  `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
+  is the compatible frontend façade over its focused syntax and macro-rule
+  modules.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
@@ -77,6 +127,11 @@ lake build RealRooted.Bezoutian
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
   OEIS-labelled tactic shells, certificate fragments, and concrete theorems.
+- `RealRooted/Tactic/OEIS/` contains focused OEIS certificate-family frontends.
+  `DerivativeLag.lean`, `PositiveLag.lean`, and `NegativeLag.lean` own the
+  lag families, while `ProductExit.lean`, `ProductFactor.lean`,
+  `ProductLift.lean`, and `ProductParity.lean` own product certificates.
+  `Tactic/OEIS.lean` remains the compatible umbrella import.
 - `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
   like future Mathlib additions.
 

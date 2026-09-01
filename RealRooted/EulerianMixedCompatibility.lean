@@ -1,9 +1,9 @@
 import RealRooted.ChudnovskySeymour
 import RealRooted.GarloffWagner
 import RealRooted.HermiteBiehler
+import RealRooted.IteratedDerivativeShift
 import RealRooted.MaWang
 import RealRooted.RootContinuity
-import RealRooted.Tactic.SecondDerivative
 
 /-!
 # Adjacent Euler insertion operators
@@ -603,15 +603,14 @@ private theorem eval_mul_derivative_nonpos_of_prec_succ
 /-! ## Nonnegative simple regularization -/
 
 private theorem splits_iterateTDeriv_neg
-    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]} (hp : p.Splits) :
+    {eps : ℝ} (_heps : 0 < eps) {p : ℝ[X]} (hp : p.Splits) :
     ∀ k, (iterateTDeriv (-eps) k p).Splits := by
   intro k
   induction k with
   | zero => simpa
   | succ k ih =>
       rw [iterateTDeriv_succ]
-      convert splits_add_C_mul_derivative ih heps using 1
-      simp [TDeriv]
+      exact splits_tderiv_all ih
 
 private theorem HasNonnegCoeffs.iterateTDeriv_neg
     {eps : ℝ} (heps : 0 ≤ eps) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :

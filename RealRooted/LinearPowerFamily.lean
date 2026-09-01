@@ -1,7 +1,7 @@
 import Mathlib
 import RealRooted.AffineFamily
 import RealRooted.Linear
-import RealRooted.Tactic.Finish
+import RealRooted.SequenceClosure
 import RealRooted.WagnerX
 
 /-!

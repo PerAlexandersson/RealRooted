@@ -1,7 +1,6 @@
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.HermiteBiehler
 import RealRooted.OperatorPreservesInterlacing
-import RealRooted.Tactic.PFBidiagonal
 
 /-!
 # Real PF consequences of genuine affine finite symbols

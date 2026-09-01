@@ -1,6 +1,6 @@
 import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.MultiplierSequence
+import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Algebraic symbols of bidiagonal polynomial operators
@@ -19,12 +19,12 @@ open scoped BigOperators
 
 /-- The bidiagonal polynomial operator as a linear map. -/
 def bidiagonalLinearMap (alpha beta : ℕ → ℝ) : Polynomial ℝ →ₗ[ℝ] Polynomial ℝ where
-  toFun := fun p => diagonalOperator alpha p + Polynomial.X * diagonalOperator beta p
+  toFun := bidiagonalOperator alpha beta
   map_add' p q := by
-    simp only [diagonalOperator_add, mul_add]
+    simp only [bidiagonalOperator, diagonalOperator_add, mul_add]
     abel
   map_smul' c p := by
-    simp only [smul_eq_C_mul, diagonalOperator_C_mul]
+    simp only [bidiagonalOperator, smul_eq_C_mul, diagonalOperator_C_mul]
     simp [mul_comm]
     ring
 
@@ -44,8 +44,8 @@ theorem finiteAlgebraicSymbol_bidiagonalLinearMap (alpha beta : ℕ → ℝ) (d 
   apply Finset.sum_congr rfl
   intro k hk
   congr 1
-  simp [bidiagonalLinearMap, Polynomial.X_pow_eq_monomial, diagonalOperator_monomial,
-    Challenges.BorceaBranden.polynomialInFirstMv]
+  simp [bidiagonalLinearMap, bidiagonalOperator, Polynomial.X_pow_eq_monomial,
+    diagonalOperator_monomial, Challenges.BorceaBranden.polynomialInFirstMv]
 
 /-! ## Complex degree-box application -/
 

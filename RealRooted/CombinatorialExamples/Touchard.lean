@@ -1,6 +1,7 @@
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import RealRooted.Touchard
+import Mathlib.Combinatorics.Enumerative.Stirling
 import Mathlib.Tactic
 
 /-!
@@ -21,6 +22,20 @@ lemma coeff_touchard_succ (n m : Nat) :
       coeff (touchard n) m + (m + 1 : ℝ) * coeff (touchard n) (m + 1) := by
   simp [touchard_succ, coeff_derivative]
   ring
+
+/-- Touchard coefficients are Stirling numbers of the second kind. -/
+theorem coeff_touchard_eq_stirlingSecond : ∀ n k : ℕ,
+    (touchard n).coeff k = (Nat.stirlingSecond n k : ℝ)
+  | 0, 0 => by simp [touchard]
+  | 0, k + 1 => by
+      rw [touchard_zero, coeff_one]
+      simp
+  | n + 1, 0 => by simp [touchard_succ]
+  | n + 1, k + 1 => by
+      rw [coeff_touchard_succ, coeff_touchard_eq_stirlingSecond,
+        coeff_touchard_eq_stirlingSecond]
+      exact_mod_cast (by
+        simpa [add_comm] using (Nat.stirlingSecond_succ_succ n k).symm)
 
 lemma coeff_touchard_top_and_above :
     ∀ n : Nat, coeff (touchard n) n = 1 ∧ ∀ m > n, coeff (touchard n) m = 0

@@ -265,6 +265,35 @@ example {P : Nat → ℝ[X]}
     lag_coeff_nonneg := rr_side_nonneg_seq_term,
     recurrence := hrec
 
+/-- A128099 positive-`X` lag with non-unit constant coefficient `2`. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = P (n + 1) + (C (2 : ℝ) * X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_lag_coeff_sequence_realrooted_auto using
+    current_coeff := fun _ => (1 : ℝ),
+    lag_coeff := fun _ => (2 : ℝ),
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
+/-- The coefficient-aware auto frontend also discharges a nonconstant
+nonnegative lag, including the zero value at the initial step. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = P (n + 1) + (C (n : ℝ) * X) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_prec_pos_X_lag_coeff_sequence_auto using
+    current_coeff := fun _ => (1 : ℝ),
+    lag_coeff := fun n => (n : ℝ),
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
 /-- Real-rootedness corollary for the same `P_{n+2}=P_{n+1}+tP_n` shell. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
