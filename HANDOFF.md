@@ -16,3 +16,18 @@
   required by the proof also belong in the new module.
 - No other shared or architecture-worktree file is owned.  No push or PR is
   authorized.
+
+### Verified progress
+
+- Checkpoint `4a372384` introduced the Euler insertion operator, coefficient
+  formulas, degree and positive-leading-coefficient control, nonnegative
+  coefficient preservation, and `Prec`/`Splits`/compatibility preservation.
+- The current increment formalizes the partial-fraction comparison underlying
+  the mixed `T`/`U` lemma and proves the no-common-root case, including the
+  degree-one boundary where the candidate paper's strict limit argument does
+  not apply verbatim.
+- Focused verification: `lake-workspace build
+  RealRooted.EulerianMixedCompatibility` succeeds without source warnings.
+- Remaining general-theory task: discharge common roots and package the mixed
+  result as output compatibility.  Then the OEIS worktree can import this
+  module for the sequence-specific induction.
