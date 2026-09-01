@@ -116,6 +116,7 @@ import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
+import RealRooted.EulerianMixedCompatibility
 import RealRooted.Favard
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
