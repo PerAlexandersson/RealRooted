@@ -1,5 +1,5 @@
 import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.Challenges.BorceaBranden
+import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 /-!
 # Checked pieces of the complex finite-symbol classification
@@ -9,7 +9,7 @@ to the classification interface without creating a cycle between the challenge
 entry point and its univariate compatibility modules.
 -/
 
-namespace RealRooted.Challenges.BorceaBranden
+namespace RealRooted.BorceaBranden
 
 noncomputable section
 
@@ -43,5 +43,13 @@ theorem preservesComplexStabilityOnDegreeBox_one_of_rankOne_or_symbol
 
 end
 
+
+end RealRooted.BorceaBranden
+
+namespace RealRooted.Challenges.BorceaBranden
+
+export RealRooted.BorceaBranden
+  (preservesComplexStabilityOnDegreeBox_one_of_algebraicSymbol_stable
+    preservesComplexStabilityOnDegreeBox_one_of_rankOne_or_symbol)
 
 end RealRooted.Challenges.BorceaBranden

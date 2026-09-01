@@ -126,16 +126,16 @@ lemma complexifyLinearMap_complexify
 private lemma complexPolynomialInFirstMv_complexify (p : ℝ[X]) :
     complexPolynomialInFirstMv (complexify p) =
       MvPolynomial.map Complex.ofRealHom
-        (Challenges.BorceaBranden.polynomialInFirstMv p) := by
+        (RealRooted.BorceaBranden.polynomialInFirstMv p) := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
       rw [complexify_add]
       simpa only [complexPolynomialInFirstMv, Polynomial.eval₂_add,
-        Challenges.BorceaBranden.polynomialInFirstMv, map_add] using
+        RealRooted.BorceaBranden.polynomialInFirstMv, map_add] using
         congrArg₂ (· + ·) hp hq
   | monomial n a =>
       unfold complexify complexPolynomialInFirstMv
-      simp [Challenges.BorceaBranden.polynomialInFirstMv,
+      simp [RealRooted.BorceaBranden.polynomialInFirstMv,
         Polynomial.eval₂_monomial, Polynomial.map_monomial]
 
 /-- The complex finite symbol of the coefficientwise complex extension is the
@@ -143,10 +143,10 @@ complexification of the genuine real affine algebraic symbol. -/
 theorem complexFiniteAlgebraicSymbol_complexifyLinearMap
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ) :
     complexFiniteAlgebraicSymbol d (complexifyLinearMap T) =
-      complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T) := by
+      complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T) := by
   classical
   simp only [complexFiniteAlgebraicSymbol,
-    Challenges.BorceaBranden.finiteAlgebraicSymbol, complexifyMv, map_sum]
+    RealRooted.BorceaBranden.finiteAlgebraicSymbol, complexifyMv, map_sum]
   apply Finset.sum_congr rfl
   intro k hk
   simp only [map_mul, MvPolynomial.map_C, map_pow,
@@ -162,7 +162,7 @@ theorem algebraicSymbol_complexifyLinearMapDegreeBox
         (complexUnivariateDegreeBoxOperator d (complexifyLinearMap T)) =
       MvPolynomial.rename finOneSumEquivFinTwo.symm
         (complexifyMv
-          (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)) := by
+          (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)) := by
   have h := congrArg (MvPolynomial.rename finOneSumEquivFinTwo.symm)
     (rename_algebraicSymbol_complexUnivariateDegreeBoxOperator d
       (complexifyLinearMap T))
@@ -179,7 +179,7 @@ theorem complexifyLinearMapDegreeBox_preserves_stability
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ)
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d))
     (hf : MvUpperHalfPlaneStable f.1) :
     MvUpperHalfPlaneStableOrZero
@@ -212,7 +212,7 @@ theorem linearMap_splits_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hp : p.Splits) :
     T p = 0 ∨ (T p).Splits := by
   by_cases hp0 : p = 0
@@ -259,7 +259,7 @@ theorem linearMap_allComboRealRooted_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hall : AllComboRealRooted p q) :
     AllComboRealRooted (T p) (T q) := by
@@ -278,7 +278,7 @@ theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec p q) :
     Prec0 (T p) (T q) ∨ Prec0 (T q) (T p) := by
@@ -334,7 +334,7 @@ theorem linearMap_prec_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
@@ -447,7 +447,7 @@ theorem bidiagonalOperator_splits_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (hpdeg : p.natDegree ≤ d) (hp : p.Splits) :
     bidiagonalOperator alpha beta p = 0 ∨
@@ -494,7 +494,7 @@ theorem bidiagonalOperator_isPF_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (halpha : ∀ k, 0 ≤ alpha k) (hbeta : ∀ k, 0 ≤ beta k)
     (hpdeg : p.natDegree ≤ d) (hp : IsPFPolynomial p) :
@@ -516,7 +516,7 @@ theorem bidiagonalOperator_prec_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec q p)

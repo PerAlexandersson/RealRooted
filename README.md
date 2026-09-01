@@ -233,9 +233,12 @@ Kurtz's coefficient inequality criterion is implemented in
 `RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
 Hermite--Poulain differential-operator preserver is implemented in
 `RealRooted.HermitePoulain` over the shared
-`RealRooted.Derivative.LinearCombination` theorem layer. The full finite
-complex Borcea--Branden classification, including its stable rank-at-most-one
-branch, is also checked.
+`RealRooted.Derivative.LinearCombination` theorem layer. The full finite complex
+Borcea--Branden classification, including its stable rank-at-most-one branch,
+is implemented in `RealRooted.BorceaBranden.FiniteSymbolClassification`; its
+low-dependency real-univariate interface lives in
+`RealRooted.BorceaBranden.UnivariateFiniteSymbol`. The challenge entry point
+re-exports both APIs.
 
 ### Interlacing And Preservers
 
@@ -350,8 +353,10 @@ preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,
 Veronese sections, Favard, Kurtz, Hermite-Poulain, Borcea-Branden, and Eulerian
 polynomials.
 
-The finite complex Borcea--Branden classification is now checked using the
-multivariate stability and polarization infrastructure in this repository.
+The finite complex Borcea--Branden classification is checked using the
+multivariate stability and polarization infrastructure in this repository,
+with applications importing its reusable theorem modules rather than the
+challenge facade.
 Further stability work may revisit the correctly oriented classical Hurwitz
 matrix and its stability criterion; both directions proposed for the current
 row-oriented matrix are formally refuted.

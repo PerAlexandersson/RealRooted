@@ -1,6 +1,6 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.Challenges.BorceaBranden
 import RealRooted.BorceaBranden.FiniteSymbolBasis
+import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # Univariate compatibility for finite algebraic symbols
@@ -17,7 +17,6 @@ namespace RealRooted.BorceaBranden
 noncomputable section
 
 open _root_.MvPolynomial
-open Challenges.BorceaBranden
 
 /-- Identify the left and right singleton blocks with variables `0` and `1`. -/
 def finOneSumToFinTwo : Fin 1 ⊕ Fin 1 → Fin 2

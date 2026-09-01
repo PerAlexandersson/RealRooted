@@ -46,10 +46,8 @@ targets rather than exceptions to preserve indefinitely.
 it gives the finite-range and summable bounds that compare an integer-indexed
 tail with two natural-indexed tails, without importing any polynomial theory.
 
-The no-regression checker currently allowlists the remaining known upward edges:
+The no-regression checker currently allowlists one remaining known upward edge:
 
-- two Borcea--Brändén application modules import the corresponding challenge
-  wrapper; and
 - the legacy `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing` import is a
   one-line compatibility facade over the properly layered oscillatory endpoint.
 
@@ -694,6 +692,14 @@ owns the 242-line finite differential-operator implementation and its 21 public
 declarations. `Challenges.HermitePoulain` preserves those names through an
 explicit compatibility export, while `Tactic.HermitePoulain` imports the
 theorem module directly. No tactic frontend now depends on a challenge module.
+
+`BorceaBranden.FiniteSymbolClassification` owns the 23 public declarations in
+the complex finite-symbol classification, while the five real-univariate
+definitions and interface theorem live in the 7-module
+`BorceaBranden.UnivariateFiniteSymbol` layer. The challenge entry point is an
+explicit 28-name compatibility export. The general and univariate application
+bridges import these theorem layers directly, so no application module now
+depends on a challenge module.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.

@@ -14,7 +14,7 @@ namespace RealRooted
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (BorceaBranden.bidiagonalLinearMap alpha beta))))
     (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
     (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :

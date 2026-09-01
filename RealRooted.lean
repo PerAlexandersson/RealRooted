@@ -52,6 +52,7 @@ import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
 import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.BorceaBranden.FiniteSymbolBasis
+import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
 import RealRooted.BorceaBranden.FiniteSymbolContraction
 import RealRooted.BorceaBranden.FiniteSymbolDegree
@@ -61,6 +62,7 @@ import RealRooted.BorceaBranden.FiniteSymbolProduct
 import RealRooted.BorceaBranden.FiniteSymbolReciprocal
 import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 import RealRooted.BoundarySpecializationRight
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
