@@ -214,7 +214,7 @@ theorem eulerAffineBidiagonalSymbolWithConstant_stable
     (c : ℝ) (hc : 1 ≤ c) (d : ℕ) (hd : 1 ≤ d) :
     MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap (eulerAlphaWithConstant c) (eulerBeta d)))) := by
   rw [finiteAlgebraicSymbol_bidiagonalLinearMap,
     eulerAffineBidiagonalSymbolWithConstant_eq c d hd]
@@ -227,7 +227,7 @@ upper-half-plane stable on every positive degree box. -/
 theorem eulerAffineBidiagonalSymbol_stable (d : ℕ) (hd : 1 ≤ d) :
     MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap eulerAlpha (eulerBeta d)))) := by
   rw [finiteAlgebraicSymbol_bidiagonalLinearMap,
     eulerAffineBidiagonalSymbol_eq d hd]

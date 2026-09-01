@@ -20,7 +20,7 @@ theorem bidiagonalOperator_splits_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (hpdeg : p.natDegree ≤ d) (hp : p.Splits) :
     bidiagonalOperator alpha beta p = 0 ∨
@@ -33,7 +33,7 @@ theorem bidiagonalOperator_isPF_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (halpha : ∀ k, 0 ≤ alpha k) (hbeta : ∀ k, 0 ≤ beta k)
     (hpdeg : p.natDegree ≤ d) (hp : IsPFPolynomial p) :
@@ -53,7 +53,7 @@ theorem bidiagonalPFPreserver_of_affineSymbol
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
     (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
@@ -74,7 +74,7 @@ theorem bidiagonalOperator_prec_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec q p)
@@ -96,7 +96,7 @@ theorem bidiagonalPFPreserver_of_affineSymbol
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (BorceaBranden.bidiagonalLinearMap alpha beta))))
     (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
     (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :

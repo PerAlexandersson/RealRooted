@@ -38,14 +38,14 @@ def affineBidiagonalSymbol (alpha beta : ℕ → ℝ) (d : ℕ) : MvPolynomial (
 
 /-- The finite algebraic symbol of `bidiagonalLinearMap` is the affine bidiagonal symbol. -/
 theorem finiteAlgebraicSymbol_bidiagonalLinearMap (alpha beta : ℕ → ℝ) (d : ℕ) :
-    Challenges.BorceaBranden.finiteAlgebraicSymbol d (bidiagonalLinearMap alpha beta) =
+    RealRooted.BorceaBranden.finiteAlgebraicSymbol d (bidiagonalLinearMap alpha beta) =
       affineBidiagonalSymbol alpha beta d := by
-  simp only [Challenges.BorceaBranden.finiteAlgebraicSymbol, affineBidiagonalSymbol]
+  simp only [RealRooted.BorceaBranden.finiteAlgebraicSymbol, affineBidiagonalSymbol]
   apply Finset.sum_congr rfl
   intro k hk
   congr 1
   simp [bidiagonalLinearMap, bidiagonalOperator, Polynomial.X_pow_eq_monomial,
-    diagonalOperator_monomial, Challenges.BorceaBranden.polynomialInFirstMv]
+    diagonalOperator_monomial, RealRooted.BorceaBranden.polynomialInFirstMv]
 
 /-! ## Complex degree-box application -/
 
@@ -104,7 +104,7 @@ theorem complexFiniteAlgebraicSymbol_complexBidiagonalLinearMap
     (alpha beta : ℕ → ℝ) (d : ℕ) :
     complexFiniteAlgebraicSymbol d (complexBidiagonalLinearMap alpha beta) =
       complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta)) := by
   classical
   rw [finiteAlgebraicSymbol_bidiagonalLinearMap]
@@ -125,7 +125,7 @@ theorem algebraicSymbol_complexBidiagonalDegreeBoxOperator
           (complexBidiagonalLinearMap alpha beta)) =
       MvPolynomial.rename finOneSumEquivFinTwo.symm
         (complexifyMv
-          (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+          (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
             (bidiagonalLinearMap alpha beta))) := by
   have h := congrArg (MvPolynomial.rename finOneSumEquivFinTwo.symm)
     (rename_algebraicSymbol_complexUnivariateDegreeBoxOperator d
@@ -146,7 +146,7 @@ theorem complexBidiagonalDegreeBox_preserves_stability
     (alpha beta : ℕ → ℝ) (d : ℕ)
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d))
     (hf : MvUpperHalfPlaneStable f.1) :

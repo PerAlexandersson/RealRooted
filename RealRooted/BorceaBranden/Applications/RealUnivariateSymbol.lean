@@ -64,7 +64,7 @@ complexified inputs. -/
 with multivariate complexification. -/
 theorem complexPolynomialInFirstMv_complexify (p : ℝ[X]) :
     complexPolynomialInFirstMv (complexify p) =
-      complexifyMv (Challenges.BorceaBranden.polynomialInFirstMv p) := by
+      complexifyMv (RealRooted.BorceaBranden.polynomialInFirstMv p) := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
       calc
@@ -72,12 +72,12 @@ theorem complexPolynomialInFirstMv_complexify (p : ℝ[X]) :
             complexPolynomialInFirstMv (complexify p) +
               complexPolynomialInFirstMv (complexify q) := by
           simp [complexPolynomialInFirstMv, complexify]
-        _ = complexifyMv (Challenges.BorceaBranden.polynomialInFirstMv p) +
-              complexifyMv (Challenges.BorceaBranden.polynomialInFirstMv q) := by
+        _ = complexifyMv (RealRooted.BorceaBranden.polynomialInFirstMv p) +
+              complexifyMv (RealRooted.BorceaBranden.polynomialInFirstMv q) := by
           rw [hp, hq]
         _ = complexifyMv
-              (Challenges.BorceaBranden.polynomialInFirstMv (p + q)) := by
-          simp [Challenges.BorceaBranden.polynomialInFirstMv, complexifyMv]
+              (RealRooted.BorceaBranden.polynomialInFirstMv (p + q)) := by
+          simp [RealRooted.BorceaBranden.polynomialInFirstMv, complexifyMv]
   | monomial n a =>
       calc
         complexPolynomialInFirstMv (complexify (Polynomial.monomial n a)) =
@@ -87,9 +87,9 @@ theorem complexPolynomialInFirstMv_complexify (p : ℝ[X]) :
               (MvPolynomial.C a * MvPolynomial.X 0 ^ n) := by
           simp [complexifyMv]
         _ = complexifyMv
-              (Challenges.BorceaBranden.polynomialInFirstMv
+              (RealRooted.BorceaBranden.polynomialInFirstMv
                 (Polynomial.monomial n a)) := by
-          simp [Challenges.BorceaBranden.polynomialInFirstMv]
+          simp [RealRooted.BorceaBranden.polynomialInFirstMv]
 
 /-- The usual finite symbol of a complexified real operator is the
 coefficientwise complexification of its real finite symbol. -/
@@ -97,10 +97,10 @@ theorem complexFiniteAlgebraicSymbol_complexificationLinearMap
     (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
     complexFiniteAlgebraicSymbol d (complexificationLinearMap T) =
       complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T) := by
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T) := by
   classical
   simp only [complexFiniteAlgebraicSymbol,
-    Challenges.BorceaBranden.finiteAlgebraicSymbol, complexifyMv, map_sum]
+    RealRooted.BorceaBranden.finiteAlgebraicSymbol, complexifyMv, map_sum]
   apply Finset.sum_congr rfl
   intro k _
   rw [show ((X : ℂ[X]) ^ k) = complexify ((X : ℝ[X]) ^ k) by
@@ -117,7 +117,7 @@ theorem algebraicSymbol_complexificationDegreeBoxOperator
         (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T)) =
       MvPolynomial.rename finOneSumEquivFinTwo.symm
         (complexifyMv
-          (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)) := by
+          (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)) := by
   have h := congrArg (MvPolynomial.rename finOneSumEquivFinTwo.symm)
     (rename_algebraicSymbol_complexUnivariateDegreeBoxOperator d
       (complexificationLinearMap T))
@@ -134,7 +134,7 @@ stable. -/
 theorem complexificationLinearMapDegreeBox_preserves_stability
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ)
     (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d))
     (hf : MvUpperHalfPlaneStable f.1) :
     MvUpperHalfPlaneStableOrZero
@@ -149,7 +149,7 @@ This is a checked witness of the application-facing statement introduced by
 issue #69. It is derived from `finiteSymbol_finOne_preserves_stability`, not
 assumed as a backend and not routed through the false homogeneous symbol. -/
 theorem finiteSymbolTheorem :
-    Challenges.BorceaBranden.finiteSymbolTheoremStatement := by
+    RealRooted.BorceaBranden.finiteSymbolTheoremStatement := by
   intro d T hSymbol p hdeg hp
   by_cases hp0 : p = 0
   · left
@@ -203,8 +203,8 @@ theorem finiteSymbol_preservesRealRootedUpTo
     {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol d T))) :
-    Challenges.BorceaBranden.PreservesRealRootedUpTo d T :=
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T))) :
+    RealRooted.BorceaBranden.PreservesRealRootedUpTo d T :=
   finiteSymbolTheorem hSymbol
 
 end

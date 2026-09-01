@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 748
+      "max_modules": 750
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -44,20 +44,35 @@
       "max_modules": 102
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
-      "max_modules": 112
+      "max_modules": 111
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 190
-   },
-    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
       "max_modules": 189
    },
+    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
+      "max_modules": 188
+   },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 181
+      "max_modules": 180
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 183
+      "max_modules": 182
    },
+    "RealRooted.BorceaBranden.UnivariateFiniteSymbol": {
+      "max_modules": 7
+    },
+    "RealRooted.BorceaBranden.FiniteSymbolClassification": {
+      "max_modules": 35
+    },
+    "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
+      "max_modules": 14
+    },
+    "RealRooted.BorceaBranden.Applications.ComplexClassification": {
+      "max_modules": 36
+    },
+    "RealRooted.Challenges.BorceaBranden": {
+      "max_modules": 37
+    },
     "RealRooted.Derivative": {
       "max_modules": 12
     },
@@ -865,9 +880,7 @@
       "source_prefix": "RealRooted",
       "target_prefix": "RealRooted.Challenges.",
       "allowed_sources": [
-        "RealRooted",
-        "RealRooted.BorceaBranden.Applications.ComplexClassification",
-        "RealRooted.BorceaBranden.Applications.UnivariateSymbol"
+        "RealRooted"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges."
@@ -889,6 +902,11 @@
     "RealRooted.AffineFamily.PositiveFamily",
     "RealRooted.AffineFamily.RootCrossing",
     "RealRooted.AffineFamily.Wronskian",
+    "RealRooted.BorceaBranden.UnivariateFiniteSymbol",
+    "RealRooted.BorceaBranden.FiniteSymbolClassification",
+    "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
+    "RealRooted.BorceaBranden.Applications.ComplexClassification",
+    "RealRooted.Challenges.BorceaBranden",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
     "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol",

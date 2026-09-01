@@ -71,18 +71,18 @@ def loweringEulerLinearMap (M : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
 
 private theorem polynomialInFirstMv_loweringEulerStep_X_pow
     (M k : ℕ) :
-    Challenges.BorceaBranden.polynomialInFirstMv
+    RealRooted.BorceaBranden.polynomialInFirstMv
         (loweringEulerStep M ((X : ℝ[X]) ^ k)) =
       MvPolynomial.C ((M : ℝ) - k) * MvPolynomial.X 0 ^ k +
         MvPolynomial.C (k : ℝ) * MvPolynomial.X 0 ^ (k - 1) := by
   cases k with
   | zero =>
       simp [loweringEulerStep,
-        Challenges.BorceaBranden.polynomialInFirstMv]
+        RealRooted.BorceaBranden.polynomialInFirstMv]
   | succ k =>
       simp only [loweringEulerStep, derivative_pow, derivative_X,
         Nat.cast_add, Nat.cast_one, map_add, map_sub, map_one,
-        Challenges.BorceaBranden.polynomialInFirstMv,
+        RealRooted.BorceaBranden.polynomialInFirstMv,
         Polynomial.eval₂_add, Polynomial.eval₂_mul, Polynomial.eval₂_sub,
         Polynomial.eval₂_C, Polynomial.eval₂_X, Polynomial.eval₂_pow]
       simp
@@ -91,7 +91,7 @@ private theorem polynomialInFirstMv_loweringEulerStep_X_pow
 /-- The finite algebraic symbol of the lowering Euler operator. -/
 theorem loweringEulerSymbol_eq
     (M D : ℕ) (hD : 1 ≤ D) :
-    Challenges.BorceaBranden.finiteAlgebraicSymbol D
+    RealRooted.BorceaBranden.finiteAlgebraicSymbol D
         (loweringEulerLinearMap M) =
       (MvPolynomial.X 0 + MvPolynomial.X 1) ^ (D - 1) *
         (MvPolynomial.C ((M : ℝ) - (D : ℝ)) * MvPolynomial.X 0 +
@@ -145,7 +145,7 @@ theorem loweringEulerSymbol_eq
       MvPolynomial.pderiv_C, MvPolynomial.pderiv_pow,
       MvPolynomial.pderiv_pow]
     simp [x, y]
-  rw [Challenges.BorceaBranden.finiteAlgebraicSymbol]
+  rw [RealRooted.BorceaBranden.finiteAlgebraicSymbol]
   simp only [loweringEulerLinearMap_apply,
     polynomialInFirstMv_loweringEulerStep_X_pow]
   rw [show (∑ k ∈ Finset.range (D + 1),
@@ -199,7 +199,7 @@ theorem loweringEulerSymbol_stable
     (M D : ℕ) (hD : 1 ≤ D) (hM : D + 1 ≤ M) :
     MvUpperHalfPlaneStable
       (complexifyMv
-        (Challenges.BorceaBranden.finiteAlgebraicSymbol D
+        (RealRooted.BorceaBranden.finiteAlgebraicSymbol D
           (loweringEulerLinearMap M))) := by
   rw [loweringEulerSymbol_eq M D hD]
   simpa [complexifyMv] using

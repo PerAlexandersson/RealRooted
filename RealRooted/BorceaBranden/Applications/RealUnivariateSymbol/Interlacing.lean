@@ -21,7 +21,7 @@ split polynomial or to zero. -/
 theorem linearMap_splits_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hp : p.Splits) :
     T p = 0 ∨ (T p).Splits :=
   finiteSymbol_preservesRealRootedUpTo hSymbol hpdeg hp
@@ -31,7 +31,7 @@ two inputs in its degree box. -/
 theorem linearMap_allComboRealRooted_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hall : AllComboRealRooted p q) :
     AllComboRealRooted (T p) (T q) := by
@@ -48,7 +48,7 @@ zero ambiguities recorded by `Prec0`. -/
 theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec p q) :
     Prec0 (T p) (T q) ∨ Prec0 (T q) (T p) := by
@@ -101,7 +101,7 @@ nonzero outputs retain positive leading coefficients. -/
 theorem linearMap_prec_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv (Challenges.BorceaBranden.finiteAlgebraicSymbol d T)))
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : Prec q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
