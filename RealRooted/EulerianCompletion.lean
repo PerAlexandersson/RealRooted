@@ -124,11 +124,13 @@ theorem loweringEulerSymbol_eq
     rw [MvPolynomial.pderiv_mul, MvPolynomial.pderiv_mul,
       MvPolynomial.pderiv_C, MvPolynomial.pderiv_pow,
       MvPolynomial.pderiv_pow]
-    simp [x, y]
+    simp only [Fin.isValue, zero_mul, map_natCast, MvPolynomial.pderiv_X,
+      Pi.single_eq_same, mul_one, zero_add, ne_eq, one_ne_zero,
+      not_false_eq_true, Pi.single_eq_of_ne, mul_zero, add_zero, x, y]
     cases k with
     | zero => simp
     | succ k =>
-        rw [show k + 1 - 1 = k by omega, pow_succ]
+        rw [show k + 1 - 1 = k by lia, pow_succ]
         push_cast
         ring
   have hplainDer : MvPolynomial.pderiv 0 S =
@@ -165,7 +167,7 @@ theorem loweringEulerSymbol_eq
       (MvPolynomial.X 0 + MvPolynomial.X 1 : MvPolynomial (Fin 2) ℝ) ^ D =
         (MvPolynomial.X 0 + MvPolynomial.X 1) ^ (D - 1) *
           (MvPolynomial.X 0 + MvPolynomial.X 1) := by
-    conv_lhs => rw [show D = (D - 1) + 1 by omega, pow_succ]
+    conv_lhs => rw [show D = (D - 1) + 1 by lia, pow_succ]
   rw [hpow]
   simp only [map_sub]
   ring
@@ -179,7 +181,7 @@ theorem loweringEulerResidual_stable
         MvPolynomial.C (M : ℝ) * MvPolynomial.X 1 +
         MvPolynomial.C (D : ℝ) : MvPolynomial (Fin 2) ℝ)) := by
   intro z hz
-  simp [complexifyMv]
+  simp only [complexifyMv, MvPolynomial.C_sub, map_natCast, Fin.isValue, ne_eq]
   intro hzero
   have him := congrArg Complex.im hzero
   simp [Complex.mul_im] at him
@@ -187,7 +189,8 @@ theorem loweringEulerResidual_stable
     have hcast : (D : ℝ) + 1 ≤ (M : ℝ) := by exact_mod_cast hM
     linarith
   have hMpos : 0 < (M : ℝ) := by
-    exact_mod_cast (lt_of_lt_of_le (by omega) hM)
+    have hDpos : 0 < D := hD
+    exact_mod_cast (lt_of_lt_of_le hDpos (by lia : D ≤ M))
   nlinarith [mul_pos hMD (hz 0), mul_pos hMpos (hz 1)]
 
 /-- The genuine finite algebraic symbol of the lowering Euler operator is
@@ -217,12 +220,12 @@ theorem loweringEulerStep_degree_pos
     intro k hk
     rw [coeff_loweringEulerStep]
     have hpk : p.coeff k = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by omega)
+      coeff_eq_zero_of_natDegree_lt (by lia)
     have hpks : p.coeff (k + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by omega)
+      coeff_eq_zero_of_natDegree_lt (by lia)
     simp [hpk, hpks]
   have hpD1 : p.coeff (D + 1) = 0 :=
-    coeff_eq_zero_of_natDegree_lt (by omega)
+    coeff_eq_zero_of_natDegree_lt (by lia)
   have htop : p.coeff D = p.leadingCoeff := by
     simpa [hpdeg] using p.coeff_natDegree
   have hweight : 0 < (M : ℝ) - (D : ℝ) := by
@@ -285,7 +288,7 @@ theorem eulerInsertionStep_one_prec
   rw [← heq q] at hqout
   exact BorceaBranden.eulerBidiagonalStepWithConstant_prec
     (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
-      (by rw [hpout.1]; omega)
+      (by rw [hpout.1]; lia)
 
 /-- A polynomial PF member lies to the left of its Euler derivative. -/
 theorem prec_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
@@ -306,7 +309,7 @@ theorem loweringEulerStep_theta_eq
     loweringEulerStep M (theta p) =
       eulerInsertionStep 1 (M - 2) p.derivative := by
   have hcast : (((M - 2 : ℕ) : ℝ) + 1) = (M : ℝ) - 1 := by
-    rw [Nat.cast_sub (by omega : 2 ≤ M)]
+    rw [Nat.cast_sub (by lia : 2 ≤ M)]
     push_cast
     ring
   simp only [loweringEulerStep, theta, eulerInsertionStep, derivative_mul,
@@ -335,23 +338,23 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
     intro hz
     rw [hz] at hpdeg
     simp at hpdeg
-    omega
+    lia
   have htheta : IsPFPolynomial (theta p) := by
     unfold theta
     exact hp.derivative.X_mul
   have htheta_deg : (theta p).natDegree = D := by
     unfold theta
     rw [natDegree_mul X_ne_zero
-      (derivative_ne_zero_of_natDegree_ne_zero (by omega)), natDegree_X,
+      (derivative_ne_zero_of_natDegree_ne_zero (by lia)), natDegree_X,
       p.natDegree_derivative, hpdeg]
-    omega
+    lia
   have hbase : Prec p (theta p) :=
     prec_self_theta hp (by rw [hpdeg]; exact hD)
   have hlower : Prec (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=
-    loweringEulerStep_prec (by omega) hM hp htheta hpdeg htheta_deg hbase
-  have hpM : p.natDegree ≤ M := by rw [hpdeg]; omega
-  have hthetaM : (theta p).natDegree ≤ M := by rw [htheta_deg]; omega
+    loweringEulerStep_prec (by lia) hM hp htheta hpdeg htheta_deg hbase
+  have hpM : p.natDegree ≤ M := by rw [hpdeg]; lia
+  have hthetaM : (theta p).natDegree ≤ M := by rw [htheta_deg]; lia
   have hlower_p_nn : HasNonnegCoeffs (loweringEulerStep M p) :=
     loweringEulerStep_nonneg hp.hasNonnegCoeffs hpM
   have hlower_theta_nn : HasNonnegCoeffs (loweringEulerStep M (theta p)) :=
@@ -359,8 +362,8 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
   have hshift : Prec (loweringEulerStep M (theta p))
       (X * loweringEulerStep M p) :=
     prec_to_prec_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
-  rw [loweringEulerStep_theta_eq (by omega : 2 ≤ M),
-    X_mul_loweringEulerStep_eq (by omega : 1 ≤ M)] at hshift
+  rw [loweringEulerStep_theta_eq (by lia : 2 ≤ M),
+    X_mul_loweringEulerStep_eq (by lia : 1 ≤ M)] at hshift
   exact hshift
 
 /-- Four crossed Euler completions have one explicit common left
@@ -378,17 +381,17 @@ theorem crossedEulerCompletion_commonLeftInterleaver
     rw [natDegree_add_eq_left_of_natDegree_lt]
     · exact hpdeg
     · rw [natDegree_one, hpdeg]
-      omega
+      lia
   have hp_ne : p ≠ 0 := by
     intro hz
     rw [hz] at hpdeg
     simp at hpdeg
-    omega
+    lia
   have hp1_ne : p + 1 ≠ 0 := by
     intro hz
     rw [hz] at hp1deg
     simp at hp1deg
-    omega
+    lia
   have hp_splits : p.Splits := hp.eq_zero_or_splits.resolve_left hp_ne
   have hp1_splits : (p + 1).Splits := hp1.eq_zero_or_splits.resolve_left hp1_ne
   have hderPF : IsPFPolynomial p.derivative := hp.derivative
@@ -400,26 +403,26 @@ theorem crossedEulerCompletion_commonLeftInterleaver
     simpa using h
   have hderdeg : p.derivative.natDegree ≤ M - 2 := by
     rw [p.natDegree_derivative, hpdeg]
-    omega
-  have hpM : p.natDegree ≤ M - 2 := by rw [hpdeg]; omega
-  have hp1M : (p + 1).natDegree ≤ M - 2 := by rw [hp1deg]; omega
+    lia
+  have hpM : p.natDegree ≤ M - 2 := by rw [hpdeg]; lia
+  have hp1M : (p + 1).natDegree ≤ M - 2 := by rw [hp1deg]; lia
   have hT_p : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) p) :=
-    eulerInsertionStep_one_prec (by omega) hp hderPF hpM hderdeg hder_p
+    eulerInsertionStep_one_prec (by lia) hp hderPF hpM hderdeg hder_p
   have hT_p1 : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) (p + 1)) :=
-    eulerInsertionStep_one_prec (by omega) hp1 hderPF hp1M hderdeg hder_p1
+    eulerInsertionStep_one_prec (by lia) hp1 hderPF hp1M hderdeg hder_p1
   have hU_p : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) p) :=
-    eulerInsertionStep_derivative_prec_zeroStep hD (by omega) hp hpdeg
+    eulerInsertionStep_derivative_prec_zeroStep hD (by lia) hp hpdeg
   have hU_p1 : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) (p + 1)) := by
     have h := eulerInsertionStep_derivative_prec_zeroStep
-      hD (by omega : D + 1 ≤ M) hp1 hp1deg
+      hD (by lia : D + 1 ≤ M) hp1 hp1deg
     simpa using h
   refine ⟨eulerInsertionStep 1 (M - 2) p.derivative, ?_⟩
   intro q hq
-  simp at hq
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
   rcases hq with rfl | rfl | rfl | rfl
   · exact hT_p
   · exact hT_p1

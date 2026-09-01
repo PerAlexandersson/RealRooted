@@ -37,7 +37,7 @@ theorem eulerAffineBidiagonalSymbolWithConstant_eq
     cases k with
     | zero => simp
     | succ k =>
-        rw [show k + 1 - 1 = k by omega, pow_succ]
+        rw [show k + 1 - 1 = k by lia, pow_succ]
         push_cast
         rw [show MvPolynomial.C ((k : ℝ) + 1) =
           MvPolynomial.C (k : ℝ) + (1 : MvPolynomial (Fin 2) ℝ) by
@@ -113,7 +113,7 @@ theorem eulerAffineBidiagonalSymbolWithConstant_eq
       (MvPolynomial.X 0 + MvPolynomial.X 1 : MvPolynomial (Fin 2) ℝ) ^ d =
         (MvPolynomial.X 0 + MvPolynomial.X 1) ^ (d - 1) *
           (MvPolynomial.X 0 + MvPolynomial.X 1) := by
-    conv_lhs => rw [show d = (d - 1) + 1 by omega, pow_succ]
+    conv_lhs => rw [show d = (d - 1) + 1 by lia, pow_succ]
   rw [hpow]
   rw [show MvPolynomial.C ((d : ℝ) + 1) =
     MvPolynomial.C (d : ℝ) + (1 : MvPolynomial (Fin 2) ℝ) by
@@ -147,7 +147,8 @@ theorem eulerAffineBidiagonalResidualWithConstant_stable
         MvPolynomial.C ((d : ℝ) + c) * MvPolynomial.X 0 +
         MvPolynomial.C c * MvPolynomial.X 1 : MvPolynomial (Fin 2) ℝ))) := by
   intro z hz
-  simp [complexifyMv]
+  simp only [complexifyMv, Fin.isValue, Nat.cast_add, Nat.cast_one,
+    MvPolynomial.C_add, map_natCast, MvPolynomial.C_1, ne_eq]
   intro hzero
   have hb : 0 < (z 0).im := hz 0
   have he : 0 < (z 1).im := hz 1
@@ -156,7 +157,12 @@ theorem eulerAffineBidiagonalResidualWithConstant_stable
   have hcpos : 0 < c := lt_of_lt_of_le (by norm_num) hc
   have hre := congrArg Complex.re hzero
   have him := congrArg Complex.im hzero
-  simp [Complex.mul_re, Complex.mul_im, pow_two] at hre him
+  simp only [Fin.isValue, pow_two, map_add, map_mul, MvPolynomial.map_X,
+    map_natCast, map_one, MvPolynomial.map_C, Complex.ofRealHom_eq_coe,
+    MvPolynomial.eval_X, MvPolynomial.eval_C, Complex.add_re, Complex.mul_re,
+    Complex.natCast_re, Complex.one_re, Complex.add_im, Complex.natCast_im,
+    Complex.one_im, add_zero, zero_mul, sub_zero, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.zero_re, Complex.zero_im] at hre him
   have hbracket :
       0 < ((d : ℝ) + 1) * ((z 0).re ^ 2 + (z 0).im ^ 2) +
         2 * c * (z 0).re + ((d : ℝ) + 1) * c + c ^ 2 - c := by
@@ -169,7 +175,7 @@ theorem eulerAffineBidiagonalResidualWithConstant_stable
             c * ((d : ℝ) + 1 - 1) * ((d : ℝ) + 1 + c) := by ring
     have hrem :
         0 < c * ((d : ℝ) + 1 - 1) * ((d : ℝ) + 1 + c) := by
-      have hdpos : 0 < (d : ℝ) := by exact_mod_cast (lt_of_lt_of_le (by omega) hd)
+      have hdpos : 0 < (d : ℝ) := by exact_mod_cast (lt_of_lt_of_le (by lia) hd)
       have hmiddle : 0 < (d : ℝ) + 1 - 1 := by linarith
       have hlast : 0 < (d : ℝ) + 1 + c := by linarith
       exact mul_pos (mul_pos hcpos hmiddle) hlast
