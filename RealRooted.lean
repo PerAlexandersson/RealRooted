@@ -27,10 +27,12 @@ import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.BivariateOpenMapping
+import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.ComplexClassification
 import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
@@ -116,6 +118,8 @@ import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
+import RealRooted.EulerianCompletion
+import RealRooted.EulerianMixedCompatibility
 import RealRooted.Favard
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
