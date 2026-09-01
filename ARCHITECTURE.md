@@ -107,7 +107,7 @@ in `HermiteBiehler`, and private Wronskian calculations remain with their
 affine-family and Obreschkoff proofs. This keeps the package based on theorem
 ownership rather than moving every file that happens to mention a Wronskian.
 
-The Obreschkoff package has a compatibility facade and three theorem layers:
+The Obreschkoff package has a compatibility facade and five focused theorem layers:
 
 - `ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
   and degree-closeness reduction for all-real-rooted polynomial pencils;
