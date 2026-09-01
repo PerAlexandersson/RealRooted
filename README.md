@@ -229,9 +229,11 @@ the checked or challenge-facing highlights are:
   reference: Mao--Wang (2026).
 
 The challenge surface also records theorem-shaped targets as they mature.
-Kurtz's coefficient inequality criterion, the finite Hermite--Poulain
-differential-operator preserver, and the full finite complex Borcea--Branden
-classification, including its stable rank-at-most-one branch, are checked.
+Kurtz's coefficient inequality criterion is implemented in
+`RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
+Hermite--Poulain differential-operator preserver, and the full finite complex
+Borcea--Branden classification, including its stable rank-at-most-one branch,
+are checked.
 
 ### Interlacing And Preservers
 

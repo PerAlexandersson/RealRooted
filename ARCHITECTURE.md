@@ -48,7 +48,7 @@ tail with two natural-indexed tails, without importing any polynomial theory.
 
 The no-regression checker currently allowlists the remaining known upward edges:
 
-- two tactic modules import their challenge wrappers; and
+- one tactic module imports its challenge wrapper; and
 - two Borcea--Brändén application modules import the corresponding challenge
   wrapper; and
 - the legacy `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing` import is a
@@ -680,6 +680,13 @@ positive-leading-coefficient forms of Wagner's three transports. The
 thin wrappers, while `Tactic.Wagner` imports the theorem child directly. This
 removes the tactic-to-challenge dependency without making a challenge module a
 production theorem dependency.
+
+`Kurtz` owns the 494-line Hutchinson--Kurtz coefficient-criterion proof and
+its 27 public declarations with a 32-module closure. `Challenges.Kurtz`
+preserves those established names through an explicit 33-module compatibility
+export, while `Tactic.Kurtz` imports the theorem module directly. This leaves
+the challenge layer as documentation and compatibility rather than proof
+infrastructure.
 
 `AffineFamily.Basic` now owns the 2×2 affine interlacing predicates, their
 nonnegative `X`-transport lemmas, and the direct affine-combination criterion.

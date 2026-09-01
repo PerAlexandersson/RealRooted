@@ -8,7 +8,7 @@ namespace Tactic
 example {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (hineq : RealRooted.Challenges.Kurtz.KurtzStrictInequalities p) :
+    (hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     p.Splits := by
   rr_kurtz using
     degree := hdeg,
@@ -18,7 +18,7 @@ example {p : ℝ[X]}
 example {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (hineq : RealRooted.Challenges.Kurtz.KurtzStrictInequalities p) :
+    (hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     p ≠ 0 ∧ p.Splits := by
   rr_kurtz using
     degree := hdeg,
@@ -28,7 +28,7 @@ example {p : ℝ[X]}
 example {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (hineq : RealRooted.Challenges.Kurtz.KurtzStrictInequalities p) :
+    (hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     p = 0 ∨ p.Splits := by
   rr_kurtz using
     degree := hdeg,
@@ -38,7 +38,7 @@ example {p : ℝ[X]}
 example {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (hineq : RealRooted.Challenges.Kurtz.KurtzStrictInequalities p) :
+    (hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     IsPFPolynomial p := by
   rr_kurtz using
     degree := hdeg,
@@ -48,7 +48,7 @@ example {p : ℝ[X]}
 example {p : ℝ[X]}
     (_hdeg : 2 ≤ p.natDegree)
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (_hineq : RealRooted.Challenges.Kurtz.KurtzStrictInequalities p) :
+    (_hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     p ≠ 0 := by
   rr_kurtz using
     degree := _hdeg,
@@ -68,7 +68,7 @@ example {p : ℝ[X]}
 example {P : Nat → ℝ[X]}
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
-    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    (hineq : ∀ n : Nat, RealRooted.Kurtz.KurtzStrictInequalities (P n)) :
     ∀ n : Nat, (P n).Splits := by
   rr_kurtz_sequence using
     degree := hdeg,
@@ -78,7 +78,7 @@ example {P : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]}
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
-    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    (hineq : ∀ n : Nat, RealRooted.Kurtz.KurtzStrictInequalities (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_kurtz_sequence using
     degree := hdeg,
@@ -88,7 +88,7 @@ example {P : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]}
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
-    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    (hineq : ∀ n : Nat, RealRooted.Kurtz.KurtzStrictInequalities (P n)) :
     ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
   rr_kurtz_sequence using
     degree := hdeg,
@@ -98,7 +98,7 @@ example {P : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]}
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
-    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    (hineq : ∀ n : Nat, RealRooted.Kurtz.KurtzStrictInequalities (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_kurtz_sequence using
     degree := hdeg,
