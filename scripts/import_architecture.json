@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 735
+      "max_modules": 741
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -46,8 +46,8 @@
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
       "max_modules": 190
    },
-    "RealRooted.BorceaBranden.Applications.EulerBidiagonal": {
-      "max_modules": 191
+    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
+      "max_modules": 189
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 181
@@ -795,6 +795,9 @@
     {
       "source_prefix": "RealRooted.Mathlib.",
       "target_prefix": "RealRooted.",
+      "allowed_sources": [
+        "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing"
+      ],
       "allowed_target_prefixes": [
         "RealRooted.Mathlib."
       ],
@@ -820,6 +823,7 @@
         "RealRooted",
         "RealRooted.BorceaBranden.Applications.ComplexClassification",
         "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
+        "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing",
         "RealRooted.Tactic.HermitePoulain",
         "RealRooted.Tactic.Kurtz",
         "RealRooted.Tactic.Wagner"
@@ -846,7 +850,7 @@
     "RealRooted.AffineFamily.Wronskian",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
-    "RealRooted.BorceaBranden.Applications.EulerBidiagonal",
+    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol",
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing",
     "RealRooted.Derivative",

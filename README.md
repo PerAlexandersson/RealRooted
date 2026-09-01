@@ -86,7 +86,7 @@ lake build RealRooted.Bezoutian
 - `BorceaBranden/Applications/BidiagonalSymbol.lean` computes genuine affine
   finite symbols for coefficient-bidiagonal operators; its
   `RealConsequences` child supplies their real preservation consequences, and
-  `EulerBidiagonal.lean` packages the stable Euler-family specialization with
+  `EulerFiniteSymbol.lean` packages the stable Euler-family specialization with
   diagonal constant `c ≥ 1`.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem

@@ -128,7 +128,7 @@ of the RealRooted interlacing library.
   oriented-interlacing consequences for arbitrary real linear maps;
   `BidiagonalSymbol.RealConsequences` supplies the affine-bidiagonal
   specializations from `ProofsOeis.AffineFiniteSymbol`. Its
-  `EulerBidiagonal` child promotes the sequence-independent
+  `EulerFiniteSymbol` child promotes the sequence-independent
   `ProofsOeis.EulerFiniteSymbol` family: the symbol calculation and stability
   certificate for weights `c + k` and `d + 1 - k`, together with the resulting
   degree-box splitness and proper-position transport.
