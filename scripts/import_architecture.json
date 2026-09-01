@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 746
+      "max_modules": 748
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -60,6 +60,9 @@
    },
     "RealRooted.Derivative": {
       "max_modules": 12
+    },
+    "RealRooted.Derivative.LinearCombination": {
+      "max_modules": 76
     },
     "RealRooted.GammaTransform.Basic": {
       "max_modules": 111
@@ -243,6 +246,18 @@
     },
     "RealRooted.Kurtz": {
       "max_modules": 32
+    },
+    "RealRooted.HermitePoulain": {
+      "max_modules": 77
+    },
+    "RealRooted.Challenges.HermitePoulain": {
+      "max_modules": 78
+    },
+    "RealRooted.Tactic.HermitePoulain": {
+      "max_modules": 78
+    },
+    "RealRooted.Tactic.SecondDerivative": {
+      "max_modules": 106
     },
     "RealRooted.Challenges.Kurtz": {
       "max_modules": 33
@@ -668,7 +683,7 @@
       "max_modules": 85
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 378
+      "max_modules": 379
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -692,7 +707,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 393
+      "max_modules": 394
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
@@ -852,8 +867,7 @@
       "allowed_sources": [
         "RealRooted",
         "RealRooted.BorceaBranden.Applications.ComplexClassification",
-        "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
-        "RealRooted.Tactic.HermitePoulain"
+        "RealRooted.BorceaBranden.Applications.UnivariateSymbol"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges."
@@ -1055,6 +1069,11 @@
     "RealRooted.Tactic.OEIS.ProductLift",
     "RealRooted.Tactic.OEIS.ProductParity",
     "RealRooted.Tactic.OEIS",
+    "RealRooted.Derivative.LinearCombination",
+    "RealRooted.HermitePoulain",
+    "RealRooted.Challenges.HermitePoulain",
+    "RealRooted.Tactic.HermitePoulain",
+    "RealRooted.Tactic.SecondDerivative",
     "RealRooted.Tactic.WagnerX.Core",
     "RealRooted.Tactic.WagnerX.Obstructions",
     "RealRooted.Tactic.WagnerX.PositiveLag",

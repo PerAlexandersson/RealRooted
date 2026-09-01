@@ -148,6 +148,7 @@ import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
+import RealRooted.Derivative.LinearCombination
 import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.Linear
 import RealRooted.DerivativeRecurrence.QuadraticDegree
@@ -225,6 +226,7 @@ import RealRooted.Hadamard.Consequences
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
+import RealRooted.HermitePoulain
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HosterStumpInterlacing
