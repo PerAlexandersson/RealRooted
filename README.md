@@ -262,19 +262,15 @@ Garloff--Wagner Hadamard proper-position is now proved directly in
 `garloffWagnerHadamardNonnegPrec`. It no longer remains as an external standard
 fact for the `SuperEulerian` project.
 
-New formalization target: Braun-Jal, *Order polytopes of generalized snake
-posets are h^*-real-rooted*, arXiv:2607.00922v1.  The immediate Lean todo is
-their Theorem 4.1: for a generalized snake word `w` of length `n >= 1`, the
-non-nesting rook polynomial `M_{epsilon w}` is real-rooted and the polynomial
-for the word with the final letter deleted interlaces it.  Concrete subtasks:
-define generalized snake words, deletion of the final letter, and prefix
-operations; define the associated squarecase/non-nesting rook polynomials;
-formalize the modified Narayana polynomials `P_n`, the auxiliary sums `G_n`,
-and the interlacing inputs behind Lemmas 3.3 and 3.4; prove the positive
-non-nesting recurrence of Theorem 3.5; expose the Branden matrix interlacing
-preserver used in the induction; prove Theorem 4.1 by strong induction; then
-package the resulting h^*-real-rootedness statement for order polytopes via the
-Stanley / Alexandersson-Jal width-two correspondence.
+The Braun--Jal generalized-snake development now checks the recurrence,
+Liu--Wang proper-position, Claim 7, matrix-induction, real-rootedness, and
+interlacing deductions.  The public route is
+`theorem41NonNestingRook_modified_of_modelInputs`, with the challenge-facing
+rook and order-polytope wrappers in `RealRooted.Challenges.BraunJal`.  The
+paper's board-model identities and the Stanley / Alexandersson--Jal
+`h^*`-to-rook correspondence remain explicit combinatorial inputs.  In
+particular, the development does not claim an unconditional theorem for an
+arbitrary polynomial family satisfying only the statement-interface type.
 
 Short-term documentation/onboarding now uses concise challenge entry-point files
 in `RealRooted/Challenges/` for the famous general theorems and theorem-shaped
@@ -294,23 +290,29 @@ matrix and its stability criterion; both directions proposed for the current
 row-oriented matrix are formally refuted.
 
 GitHub issues track individual proof tasks rather than being duplicated here.
-Current open themes include Liu's compatible-sequences theorem and the
-Braun-Jal generalized snake poset target.  Recent checked issue surfaces
-include the Gustafsson-Solus interlacing recursion, the Haglund-Zhang
-`s`-inversion/A046802 backend, characteristic-polynomial packaging for Cauchy
-interlacing, and the finite Borcea--Branden symbol classification.
+Current open themes include the full singular/reducible Gantmacher--Krein
+theorem, the Branden--Leite chain-polynomial program, the associahedron toric
+`g`-polynomial conjecture, and analytic Chebyshev/Jacobi root-location
+backends for OEIS applications.  Liu's opposite-leading-sign theorem is
+checked as
+`compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`, with the
+necessary explicit common-root branch; its formerly proposed weaker interface
+has a checked counterexample.  Recent checked issue surfaces include the
+Braun--Jal route described above, the Gustafsson--Solus interlacing recursion,
+the Haglund--Zhang `s`-inversion/A046802 backend, characteristic-polynomial
+packaging for Cauchy interlacing, and the finite Borcea--Branden symbol
+classification.
 
 ## Development Notes
 
-For unproved conjectures and target theorem interfaces, the project prefers
-declaring standard Lean `theorem` signatures with `sorry` proofs. We avoid
-passing conjectures around as hypothetical parameters (axioms in disguise).
-Using standard `sorry` stubs simplifies downstream signatures, avoids
-parameter propagation clutter, and aligns with Mathlib best practices.
-Known false candidate interfaces are instead retained only when useful for
-diagnosis, together with checked negations. Any reduction through such an
-interface must expose it as an explicit hypothesis and document that the route
-is uninhabited.
+The project does not accept `sorry`, `admit`, or source `axiom` commands as
+proofs.  Track an unproved conjecture in a GitHub issue.  If a temporary
+`...Statement : Prop` interface is genuinely useful, list it in
+`PROOF_STATUS.md`, document that it is an unproved target, and keep it out of
+production theorem dependencies.  Known false candidate interfaces are
+retained only when useful for diagnosis, together with checked negations.  Any
+reduction through such an interface must expose it as an explicit hypothesis
+and document that the route is uninhabited.
 
 New Lean code should follow the Lean community style guidelines and Mathlib
 naming conventions where practical.  In particular, keep declarations explicit,
