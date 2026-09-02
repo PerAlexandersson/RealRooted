@@ -3,6 +3,7 @@ import RealRooted.Basic
 import RealRooted.Bezoutian
 import RealRooted.CommonInterleaverTwo
 import RealRooted.HermiteBiehler.Basic
+import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.Residue
@@ -22,56 +23,6 @@ theorem splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (h : 0 ≤ discrim a b c) :
     (C a * X ^ 2 + C b * X + C c).Splits := by
   exact quadraticPoly_splits_of_discrim_nonneg ha h
-
-theorem inv_sub_real_im_neg (r : ℝ) {z : ℂ} (hz : 0 < z.im) :
-    (1 / (z - (r : ℂ))).im < 0 := by
-  have h_ne : z - (r : ℂ) ≠ 0 := fun h ↦ hz.ne' (by simpa using congrArg Complex.im h)
-  rw [one_div, Complex.inv_im, Complex.sub_im, Complex.ofReal_im, sub_zero]
-  exact div_neg_of_neg_of_pos (neg_lt_zero.mpr hz) (Complex.normSq_pos.mpr h_ne)
-
-private theorem multiset_sum_div (s : Multiset ℂ) (c : ℂ) :
-    s.sum / c = (s.map (fun x => x / c)).sum := by
-  induction s using Multiset.induction with
-  | empty => simp
-  | cons a t ih => simp [add_div, ih]
-
-theorem eval_derivative_complexify_eq_sum {p : ℝ[X]} (hp : p.Splits) {z : ℂ} :
-    (complexify p).derivative.eval z
-      = (p.leadingCoeff : ℂ) *
-          (p.roots.map (fun r : ℝ =>
-            ((p.roots.erase r).map (fun s : ℝ => z - (s : ℂ))).prod)).sum := by
-  unfold complexify
-  conv_lhs => rw [hp.eq_prod_roots]
-  rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.map_multiset_prod, Multiset.map_map,
-      derivative_mul]
-  simp only [derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-  congr 1
-  rw [derivative_prod]
-  simp only [eval_multisetSum, Multiset.map_map]
-  congr 1
-  apply Multiset.map_congr rfl
-  intro r hr
-  simp only [Function.comp, eval_mul, eval_multiset_prod, Multiset.map_map]
-  simp
-
-theorem logDeriv_complexify_eq_sum {p : ℝ[X]} (hp : p.Splits) (hp₀ : p ≠ 0)
-    {z : ℂ} (hz : 0 < z.im) :
-    (complexify p).derivative.eval z / (complexify p).eval z
-      = (p.roots.map (fun r : ℝ ↦ 1 / (z - (r : ℂ)))).sum := by
-  rw [eval_derivative_complexify_eq_sum hp, eval_complexify_eq_prod hp]
-  have hlc : (p.leadingCoeff : ℂ) ≠ 0 := by simp [*]
-  rw [mul_div_mul_left _ _ hlc, multiset_sum_div, Multiset.map_map]
-  apply congrArg
-  apply Multiset.map_congr rfl
-  intro r hr
-  simp only [Function.comp_apply]
-  rw [← Multiset.prod_map_erase (f := fun s : ℝ ↦ z - (s : ℂ)) hr]
-  have hzr : z - (r : ℂ) ≠ 0 := fun h ↦ hz.ne' (by simpa using congrArg Complex.im h)
-  have hperase : ((p.roots.erase r).map (fun s : ℝ ↦ z - (s : ℂ))).prod ≠ 0 := by
-    refine Multiset.prod_ne_zero (fun h ↦ ?_)
-    obtain ⟨s, -, hs⟩ := Multiset.mem_map.mp h
-    exact hz.ne' (by simpa using congrArg Complex.im hs)
-  field_simp
 
 private theorem multiset_sum_im (s : Multiset ℂ) : s.sum.im = (s.map Complex.im).sum := by
   induction s using Multiset.induction with
