@@ -1114,10 +1114,8 @@ lemma multiset_prod_norm_conj_lt {z : ℂ} (hz : 0 < z.im) (S : Multiset ℂ)
         mul_lt_mul_of_pos_right (norm_conj_sub_lt hz hneg) h_norm_pos
 
 lemma eval_eq_prod_roots_complex (p : ℂ[X]) (x : ℂ) :
-    p.eval x = p.leadingCoeff * (p.roots.map fun a => x - a).prod := by
-  conv_lhs => rw [(IsAlgClosed.splits p).eq_prod_roots]
-  simp only [eval_mul, eval_C, eval_multiset_prod, Multiset.map_map, Function.comp_apply,
-    eval_sub, eval_X]
+    p.eval x = p.leadingCoeff * (p.roots.map fun a => x - a).prod :=
+  (IsAlgClosed.splits p).eval_eq_prod_roots x
 
 lemma roots_real_of_stable_norm_eq {p : ℂ[X]} (hp : p ≠ 0)
     (hstab : IsUpperHalfPlaneStable p) {z : ℂ} (hz : 0 < z.im)
@@ -1379,19 +1377,8 @@ theorem isHurwitzStable_oddEvenPolynomial_of_hermiteBiehlerStableToHurwitz
 theorem eval_derivative_eq_sum_complex (p : ℂ[X]) (x : ℂ) :
     p.derivative.eval x
       = p.leadingCoeff * (p.roots.map (fun w =>
-          ((p.roots.erase w).map (fun u => x - u)).prod)).sum := by
-  have hsplits : p.Splits := IsAlgClosed.splits _
-  conv_lhs => rw [hsplits.eq_prod_roots]
-  rw [derivative_mul]
-  simp only [derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-  congr 1
-  rw [derivative_prod]
-  simp only [eval_multisetSum, Multiset.map_map]
-  congr 1
-  apply Multiset.map_congr rfl
-  intro w hw
-  simp only [Function.comp_apply, eval_multiset_prod, Multiset.map_map,
-    eval_sub, eval_X, eval_C, derivative_X_sub_C, mul_one]
+          ((p.roots.erase w).map (fun u => x - u)).prod)).sum :=
+  (IsAlgClosed.splits p).eval_derivative x
 
 theorem im_deriv_mul_conj_eq (p : ℂ[X]) (x : ℝ) :
     (p.derivative.eval (x : ℂ) * (starRingEnd ℂ) (p.eval (x : ℂ))).im
