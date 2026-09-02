@@ -382,14 +382,10 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
           lia
         have hpq₁ : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
           prec_cofactor_of_common_root hpq hrfroot hrgroot
-        have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) := by
-          unfold HasPosLeadingCoeff at hf ⊢
-          rw [leadingCoeff_divByMonic_X_sub_C hrfroot]
-          exact hf
-        have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) := by
-          unfold HasPosLeadingCoeff at hg ⊢
-          rw [leadingCoeff_divByMonic_X_sub_C hrgroot]
-          exact hg
+        have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
+          hf.divByMonic_X_sub_C hrfroot
+        have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
+          hg.divByMonic_X_sub_C hrgroot
         exact ih (f /ₘ (X - C r)).natDegree hf₁deg hf₁ hg₁ hpq₁ rfl
       · push Not at hcom
         have hfnd : f.roots.Nodup := by
