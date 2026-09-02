@@ -551,26 +551,19 @@ theorem countP_eq_alternates_strict :
       (by simp_all) htail x hx hxss'
     simp [*]
 
-private theorem pairwise_lt_of_le_of_nodup (l : List ℝ)
-    (hsort : l.Pairwise (· ≤ ·)) (hnd : l.Nodup) : l.Pairwise (· < ·) := by
-  induction l with
-  | nil => simp
-  | cons a t ih =>
-    rw [List.pairwise_cons] at hsort ⊢
-    rw [List.nodup_cons] at hnd
-    refine ⟨fun b hb ↦ lt_of_le_of_ne (hsort.1 b hb) ?_, ih hsort.2 hnd.2⟩
-    intro h_eq
-    simp_all
-
 theorem prec_countP_eq {f g : ℝ[X]} (hpq : Prec g f)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (x : ℝ) (hxf : x ∈ f.roots) (hxg : x ∉ g.roots) :
     f.roots.countP (fun r => x < r) = g.roots.countP (fun r => x < r) := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq
   have hrs_strict : rs.Pairwise (· < ·) :=
-    pairwise_lt_of_le_of_nodup rs hrs (by rw [← Multiset.coe_nodup, hrseq]; exact hfnd)
+    (hrs.sortedLE.sortedLT_of_nodup (by
+      rw [← Multiset.coe_nodup, hrseq]
+      exact hfnd)).pairwise
   have hss_strict : ss.Pairwise (· < ·) :=
-    pairwise_lt_of_le_of_nodup ss hss (by rw [← Multiset.coe_nodup, hsseq]; exact hgnd)
+    (hss.sortedLE.sortedLT_of_nodup (by
+      rw [← Multiset.coe_nodup, hsseq]
+      exact hgnd)).pairwise
   have hxrs : x ∈ rs := by rw [← Multiset.mem_coe, hrseq]; simp_all
   have hxss : x ∉ ss := by rw [← Multiset.mem_coe, hsseq]; simp [*]
   have hlist : rs.countP (fun r ↦ decide (x < r)) = ss.countP (fun s ↦ decide (x < s)) := by
