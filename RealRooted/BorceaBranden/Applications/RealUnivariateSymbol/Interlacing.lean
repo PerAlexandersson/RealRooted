@@ -56,7 +56,8 @@ theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
   exact linearMap_allComboRealRooted_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg (allComboRealRooted_of_prec hpq)
 
-private lemma hermiteBiehlerPolynomial_natDegree_le
+/-- A common degree bound controls the Hermite--Biehler combination. -/
+lemma hermiteBiehlerPolynomial_natDegree_le
     {p q : ℝ[X]} {d : ℕ} (hpdeg : p.natDegree ≤ d)
     (hqdeg : q.natDegree ≤ d) :
     (hermiteBiehlerPolynomial p q).natDegree ≤ d := by

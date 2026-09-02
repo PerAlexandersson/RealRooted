@@ -498,10 +498,13 @@ and degree-box symbol calculation, while its `Interlacing` child owns pencil
 and oriented-interlacing consequences for arbitrary real linear maps.
 `BidiagonalSymbol.RealConsequences` is the small specialization layer. Thus the
 reusable affine-symbol route no longer imports the tactic-only bidiagonal
-operator API. `EulerFiniteSymbol` is its sequence-independent Euler-family
-application: it computes the affine symbol for the weights `c + k` and
-`d + 1 - k`, proves its stable quadratic factor for `c ≥ 1`, and exposes the
-resulting degree-box splitness and proper-position transport.
+operator API. The former 500-line `AffineFiniteSymbol` monolith is now a
+compatibility facade over those canonical layers; only old-name wrappers and
+two legacy value lemmas remain there. `EulerFiniteSymbol` imports the
+bidiagonal specialization directly. It is the sequence-independent
+Euler-family application: it computes the affine symbol for the weights
+`c + k` and `d + 1 - k`, proves its stable quadratic factor for `c ≥ 1`, and
+exposes the resulting degree-box splitness and proper-position transport.
 
 `Basic` owns the elementary closure algebra for `HasNonnegCoeffs`: zero, one,
 constants, nonnegative scaling, addition, finite and list sums, multiplication,
