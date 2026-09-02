@@ -473,6 +473,13 @@ telescoping mechanism available independently of its original Eisenstein-tail
 application, while leaving the model-specific identification downstream.
 
 The finite-symbol application layer is split at its actual dependency boundary:
+`LiebSokalOperator.Linearity` packages `applyNegDifferential` as a linear map
+in either argument and owns its finite-sum consequences with a four-module
+closure. Both
+`ElementaryDifferential` and `RectangularConvolutionIdentity` consume that one
+API instead of maintaining private copies, while
+`BorceaBranden.FiniteSymbolLinearity` remains a compatibility import for its
+old application-specific path.
 `MultiplierSequence.Bidiagonal` owns the coefficient-bidiagonal operator,
 coefficient formulas, degree bound, nonnegativity transport, and the
 degree-bounded PF-preserver interface. It has no finite-symbol or tactic

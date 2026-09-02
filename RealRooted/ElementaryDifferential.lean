@@ -1,5 +1,5 @@
 import Mathlib.Tactic
-import RealRooted.LiebSokalOperator
+import RealRooted.LiebSokalOperator.Linearity
 
 /-!
 # Elementary symmetric differential operators
@@ -284,19 +284,6 @@ theorem elementaryDifferential_esymm
     intro s hs
     have hcard : s.card = i := (Finset.mem_powersetCard.mp hs).2
     rw [applyMonomialDifferential_indicator_esymm, if_neg (by lia)]
-
-private theorem applyNegDifferential_finsetSum_left
-    {R sigma I : Type*} [CommRing R] [Fintype sigma]
-    (s : Finset I) (F : I → MvPolynomial sigma R)
-    (G : MvPolynomial sigma R) :
-    RealRooted.applyNegDifferential (∑ x ∈ s, F x) G =
-      ∑ x ∈ s, RealRooted.applyNegDifferential (F x) G := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert x s hxs ih =>
-      rw [Finset.sum_insert hxs, RealRooted.applyNegDifferential_add_left,
-        ih, Finset.sum_insert hxs]
 
 private theorem indicator_totalDegree {sigma : Type*}
     (s : Finset sigma) :
