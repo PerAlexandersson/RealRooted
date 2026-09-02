@@ -231,6 +231,7 @@ import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
 import RealRooted.HermiteBiehler.Basic
+import RealRooted.HermiteBiehler.Forward
 import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermitePoulain
