@@ -232,6 +232,7 @@ import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
 import RealRooted.HermiteBiehler.Basic
 import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.Converse.RootGeometry
 import RealRooted.HermiteBiehler.ConverseLowDegree
 import RealRooted.HermiteBiehler.Forward
 import RealRooted.HermiteBiehler.Hurwitz
