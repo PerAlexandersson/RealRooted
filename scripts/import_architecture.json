@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 761
+      "max_modules": 762
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -25,6 +25,9 @@
     "RealRooted.HermiteBiehler.Basic": {
       "max_modules": 8
     },
+    "RealRooted.HermiteBiehler.ConverseLowDegree": {
+      "max_modules": 133
+    },
     "RealRooted.HermiteBiehler.Forward": {
       "max_modules": 19
     },
@@ -35,7 +38,7 @@
       "max_modules": 9
     },
     "RealRooted.HermiteBiehler": {
-      "max_modules": 157
+      "max_modules": 158
     },
     "RealRooted.OrderedRoots": {
       "max_modules": 8
@@ -68,7 +71,7 @@
       "max_modules": 104
     },
     "RealRooted.EulerianCompletion": {
-      "max_modules": 202
+      "max_modules": 203
     },
     "RealRooted.Basic.AffineInterlacing": {
       "max_modules": 10
@@ -95,22 +98,22 @@
       "max_modules": 102
     },
     "RealRooted.BorceaBranden.Applications.AffineFiniteSymbol": {
-      "max_modules": 199
+      "max_modules": 200
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 112
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 198
+      "max_modules": 199
    },
     "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
-      "max_modules": 199
+      "max_modules": 200
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 40
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 191
+      "max_modules": 192
    },
     "RealRooted.BorceaBranden.UnivariateFiniteSymbol": {
       "max_modules": 7
@@ -449,13 +452,13 @@
       "max_modules": 103
    },
     "RealRooted.Hadamard.Hurwitz": {
-      "max_modules": 174
-   },
-    "RealRooted.Hadamard.Consequences": {
       "max_modules": 175
    },
+    "RealRooted.Hadamard.Consequences": {
+      "max_modules": 176
+   },
     "RealRooted.Hadamard": {
-      "max_modules": 183
+      "max_modules": 184
     },
     "RealRooted.FiniteFreeMultiplicative": {
       "max_modules": 85
@@ -758,7 +761,7 @@
       "max_modules": 85
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 388
+      "max_modules": 389
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -773,16 +776,16 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 161
+      "max_modules": 162
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 162
+      "max_modules": 163
    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 403
+      "max_modules": 404
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
@@ -960,6 +963,7 @@
     "RealRooted.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex",
     "RealRooted.HermiteBiehler.Basic",
+    "RealRooted.HermiteBiehler.ConverseLowDegree",
     "RealRooted.HermiteBiehler.Forward",
     "RealRooted.HermiteBiehler.LogDerivative",
     "RealRooted.HermiteBiehler.OddEven",
