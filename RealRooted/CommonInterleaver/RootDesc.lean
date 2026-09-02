@@ -110,14 +110,6 @@ inequalities
 which hold simultaneously in the equal-degree and the differ-by-one case.
 -/
 
-lemma getD_reverse_eq (l : List ℝ) (j : ℕ) (hj : j < l.length) :
-    l.reverse.getD j 0 = l.getD (l.length - 1 - j) 0 := by
-  have hj' : j < l.reverse.length := by simpa using hj
-  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
-    List.getElem?_eq_getElem hj', List.getElem?_eq_getElem (show l.length - 1 - j < l.length by
-      lia)]
-  simp [List.getElem_reverse]
-
 lemma desc_bounds_of_interlacing_shape (ss rs : List ℝ)
     (h : (ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs)) :

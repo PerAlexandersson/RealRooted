@@ -182,7 +182,8 @@ lemma listAlternates_forall₂_le :
       rcases h with ⟨hsr, htail⟩
       exact List.Forall₂.cons hsr (listInterlaces_forall₂_le_tail htail)
 
-private theorem getD_reverse_aux (l : List ℝ) (j : ℕ) (hj : j < l.length) :
+/-- Read an in-range `getD` index from the corresponding end of a reversed list. -/
+lemma getD_reverse_eq (l : List ℝ) (j : ℕ) (hj : j < l.length) :
     l.reverse.getD j 0 = l.getD (l.length - 1 - j) 0 := by
   have hj' : j < l.reverse.length := by simpa using hj
   rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
@@ -304,13 +305,13 @@ theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
   · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds ss rs halt hlen
     refine ⟨?_, ?_⟩
     · intro j hj1 hj2
-      rw [getD_reverse_aux rs j (by lia), getD_reverse_aux ss (j - 1) (by lia)]
+      rw [getD_reverse_eq rs j (by lia), getD_reverse_eq ss (j - 1) (by lia)]
       have e1 : rs.length - 1 - j = ss.length - 1 - j := by rw [hlen]
       have e2 : ss.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
       rw [e1, e2]
       exact hB (ss.length - 1 - j) (by lia)
     · intro j hj1 hj2
-      rw [getD_reverse_aux ss j (by lia), getD_reverse_aux rs (j - 1) (by lia)]
+      rw [getD_reverse_eq ss j (by lia), getD_reverse_eq rs (j - 1) (by lia)]
       have e2 : rs.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
       rw [e2]
       exact le_trans
@@ -319,14 +320,14 @@ theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
   · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds rs ss halt hlen.symm
     refine ⟨?_, ?_⟩
     · intro j hj1 hj2
-      rw [getD_reverse_aux rs j (by lia), getD_reverse_aux ss (j - 1) (by lia)]
+      rw [getD_reverse_eq rs j (by lia), getD_reverse_eq ss (j - 1) (by lia)]
       have e2 : ss.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
       rw [e2]
       exact le_trans
         (le_trans (hA (rs.length - 1 - j) (by lia)) (hB (rs.length - 1 - j) (by lia)))
         (hA (rs.length - 1 - j + 1) (by lia))
     · intro j hj1 hj2
-      rw [getD_reverse_aux ss j (by lia), getD_reverse_aux rs (j - 1) (by lia)]
+      rw [getD_reverse_eq ss j (by lia), getD_reverse_eq rs (j - 1) (by lia)]
       have e1 : ss.length - 1 - j = rs.length - 1 - j := by rw [hlen]
       have e2 : rs.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
       rw [e1, e2]
