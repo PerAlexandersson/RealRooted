@@ -506,10 +506,14 @@ canonical scaling lemma instead of maintaining a second proof.
 `Compatible`, symmetry, and transport through a degree-bounded real-linear
 preserver on nonnegative inputs. The higher `Compatibility.Basic` layer retains
 finite-family predicates, reflection, differentiation, regularization, and
-endpoint consequences. `EulerianMixedCompatibility.Insertion` uses the pair
-layer to package the Euler insertion operator, its linear map, coefficient and
-degree control, nonnegative-coefficient preservation, proper-position step,
-and compatibility transport in a 29-module closure. `EulerianCompletion`
+endpoint consequences. `PosComboRealRooted` owns both the common-left and
+common-right interleaver bridges for the strictly positive quadrant;
+`Compatibility.Basic` upgrades either bridge to the closed nonnegative
+quadrant once, using the shared endpoint lemma rather than repeating the four
+axis cases. `EulerianMixedCompatibility.Insertion` uses the pair layer to
+package the Euler insertion operator, its linear map, coefficient and degree
+control, nonnegative-coefficient preservation, proper-position step, and
+compatibility transport in a 29-module closure. `EulerianCompletion`
 imports this 202-line insertion layer directly rather than the 1,213-line mixed
 partial-fraction and regularization proof. The mixed parent remains the
 compatibility import and has a 164-module closure; the direct insertion layer

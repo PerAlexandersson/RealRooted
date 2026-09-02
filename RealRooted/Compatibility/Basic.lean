@@ -282,22 +282,10 @@ not just the strictly positive `PosComboRealRooted` condition. -/
 lemma of_commonLeftInterleaver {f g h : ℝ[X]}
     (hhf : Prec h f) (hhg : Prec h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    Compatible f g := by
-  intro α β hα hβ
-  by_cases hα0 : α = 0
-  · subst hα0
-    by_cases hβ0 : β = 0
-    · simp_all
-    · right
-      simpa using isRealRooted_C_mul hhg.2.1.1 hhg.2.1.2 hβ0
-  · by_cases hβ0 : β = 0
-    · subst hβ0
-      right
-      simpa using isRealRooted_C_mul hhf.2.1.1 hhf.2.1.2 hα0
-    · right
-      have hα_pos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
-      have hβ_pos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
-      exact PosComboRealRooted.of_commonLeftInterleaver hhf hhg hf_pos hg_pos hα_pos hβ_pos
+    Compatible f g :=
+  of_posComboRealRooted
+    (PosComboRealRooted.of_commonLeftInterleaver hhf hhg hf_pos hg_pos)
+    ⟨hhf.2.1.1, hhf.2.1.2⟩ ⟨hhg.2.1.1, hhg.2.1.2⟩
 
 /-- A common right interleaver gives full nonnegative compatibility for a pair.
 This is the right-oriented Wagner direction used by the list-level
@@ -305,24 +293,10 @@ Chudnovsky--Seymour chain. -/
 lemma of_commonInterleaver {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    Compatible f g := by
-  intro α β hα hβ
-  by_cases hα0 : α = 0
-  · subst hα0
-    by_cases hβ0 : β = 0
-    · simp_all
-    · right
-      simpa using isRealRooted_C_mul hgh.1.1 hgh.1.2 hβ0
-  · by_cases hβ0 : β = 0
-    · subst hβ0
-      right
-      simpa using isRealRooted_C_mul hfh.1.1 hfh.1.2 hα0
-    · have hα_pos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
-      right
-      have hprec :
-          Prec (weightedSum [(α, f), (β, g)]) h := by
-        refine prec_weightedSum_right [(α, f), (β, g)] h ?_ ?_ ?_ ?_ <;> simp_all
-      simpa [weightedSum, weightedSum_cons] using hprec.1
+    Compatible f g :=
+  of_posComboRealRooted
+    (PosComboRealRooted.of_commonInterleaver hfh hgh hf_pos hg_pos)
+    ⟨hfh.1.1, hfh.1.2⟩ ⟨hgh.1.1, hgh.1.2⟩
 
 end Compatible
 

@@ -567,6 +567,21 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
     · lia
   simpa using hprec.2.1
 
+/-- A common right interleaver for `f` and `g` forces every strictly positive
+linear combination of `f` and `g` to be real-rooted. -/
+lemma of_commonInterleaver {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
+    PosComboRealRooted f g := by
+  intro lam μ hlam hμ
+  have hprec : Prec (weightedSum [(lam, f), (μ, g)]) h := by
+    apply prec_weightedSum_right [(lam, f), (μ, g)] h
+    · simp [hlam.le, hμ.le]
+    · simp [hfh, hgh]
+    · simp [hf_pos, hg_pos]
+    · exact ⟨(lam, f), by simp [hlam]⟩
+  simpa [weightedSum, weightedSum_cons] using hprec.1
+
 /-- Equal-degree positive-combination real-rootedness forces the left summand
 to be real-rooted. -/
 lemma isRealRooted_left_of_sameDegree {f g : ℝ[X]}
