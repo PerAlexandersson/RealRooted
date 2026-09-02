@@ -333,4 +333,10 @@ theorem leadingCoeff_divByMonic_X_sub_C {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r)
   · exact Polynomial.leadingCoeff_divByMonic_X_sub_C f
       (ne_of_gt (degree_pos_of_root hf hr)) r
 
+/-- Removing a real root preserves positivity of the leading coefficient. -/
+lemma HasPosLeadingCoeff.divByMonic_X_sub_C {f : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) {r : ℝ} (hr : f.IsRoot r) :
+    HasPosLeadingCoeff (f /ₘ (X - C r)) := by
+  simpa only [HasPosLeadingCoeff, leadingCoeff_divByMonic_X_sub_C hr] using hf
+
 end RealRooted

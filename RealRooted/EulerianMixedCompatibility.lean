@@ -356,16 +356,8 @@ private theorem eval_mul_derivative_nonpos_of_prec_succ
     exact (mul_divByMonic_eq_iff_isRoot.mpr hsF).symm
   have hqprec : Prec qf qF :=
     prec_cofactor_of_common_root hprec hsF hsf
-  have hqf_pos : HasPosLeadingCoeff qf := by
-    rw [HasPosLeadingCoeff]
-    dsimp [qf]
-    rw [leadingCoeff_divByMonic_X_sub_C hsf]
-    exact hf_pos
-  have hqF_pos : HasPosLeadingCoeff qF := by
-    rw [HasPosLeadingCoeff]
-    dsimp [qF]
-    rw [leadingCoeff_divByMonic_X_sub_C hsF]
-    exact hF_pos
+  have hqf_pos : HasPosLeadingCoeff qf := hf_pos.divByMonic_X_sub_C hsf
+  have hqF_pos : HasPosLeadingCoeff qF := hF_pos.divByMonic_X_sub_C hsF
   have hqf_ne : qf ≠ 0 := hqf_pos.ne_zero
   have hqF_ne : qF ≠ 0 := hqF_pos.ne_zero
   have hqf_deg : qf.natDegree + 1 = f.natDegree := by

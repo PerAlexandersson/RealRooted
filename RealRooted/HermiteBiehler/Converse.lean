@@ -52,10 +52,10 @@ theorem hermiteBiehlerConverse_general :
         set g₁ := g /ₘ (X - C r) with hg₁
         have h_f_drop : f₁.natDegree = f.natDegree - 1 := by
           rw [hf₁, natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]
-        have h_f₁_pos : HasPosLeadingCoeff f₁ := by
-          rw [HasPosLeadingCoeff, hf₁, leadingCoeff_divByMonic_X_sub_C hrf]; exact hf
-        have h_g₁_pos : HasPosLeadingCoeff g₁ := by
-          rw [HasPosLeadingCoeff, hg₁, leadingCoeff_divByMonic_X_sub_C hrg]; exact hg
+        have h_f₁_pos : HasPosLeadingCoeff f₁ :=
+          hf₁ ▸ hf.divByMonic_X_sub_C hrf
+        have h_g₁_pos : HasPosLeadingCoeff g₁ :=
+          hg₁ ▸ hg.divByMonic_X_sub_C hrg
         have h_stab₁ : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f₁ g₁) :=
           isUpperHalfPlaneStable_cofactor_of_stable hrf hrg hstab
         have h_lt₁ : f₁.natDegree < n := by rw [h_f_drop, h_fn]; lia
@@ -108,12 +108,10 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
       rw [← ratio_cofactor_eq hrfroot hrgroot hzr]
       have hpq₁ : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
         prec_cofactor_of_common_root hpq hrfroot hrgroot
-      have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) := by
-        unfold HasPosLeadingCoeff at hf ⊢
-        rw [leadingCoeff_divByMonic_X_sub_C hrfroot]; exact hf
-      have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) := by
-        unfold HasPosLeadingCoeff at hg ⊢
-        rw [leadingCoeff_divByMonic_X_sub_C hrgroot]; exact hg
+      have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
+        hf.divByMonic_X_sub_C hrfroot
+      have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
+        hg.divByMonic_X_sub_C hrgroot
       have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
         rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]; lia
       by_cases hd₁ : 1 ≤ (f /ₘ (X - C r)).natDegree
@@ -150,12 +148,10 @@ theorem prec_of_stable_general {f g : ℝ[X]}
     by_cases hcom : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r
     · obtain ⟨r, hrf, hrg⟩ := hcom
       have hstab₁ := isUpperHalfPlaneStable_cofactor_of_stable hrf hrg hstab
-      have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) := by
-        unfold HasPosLeadingCoeff at hf ⊢
-        rw [leadingCoeff_divByMonic_X_sub_C hrf]; exact hf
-      have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) := by
-        unfold HasPosLeadingCoeff at hg ⊢
-        rw [leadingCoeff_divByMonic_X_sub_C hrg]; exact hg
+      have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
+        hf.divByMonic_X_sub_C hrf
+      have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
+        hg.divByMonic_X_sub_C hrg
       have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
         rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]; lia
       by_cases hd₁ : 1 ≤ (f /ₘ (X - C r)).natDegree
