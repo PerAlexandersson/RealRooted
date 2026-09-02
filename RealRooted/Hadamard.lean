@@ -1,4 +1,5 @@
 import RealRooted.Hadamard.Consequences
+import RealRooted.Hadamard.Grace
 
 /-!
 # Hadamard compatibility entry point

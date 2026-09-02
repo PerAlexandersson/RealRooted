@@ -1,13 +1,8 @@
-import RealRooted.PFPolynomial
-import RealRooted.HadamardProduct
-import RealRooted.GarloffWagner
-import RealRooted.VeroneseSection
-import RealRooted.GraceHalfPlane
+import RealRooted.Apolarity
 import RealRooted.Bezoutian
 import RealRooted.DegreeDropReversal
-import RealRooted.AllCombo
-import RealRooted.HurwitzMatrix
-import RealRooted.Apolarity
+import RealRooted.HadamardProduct
+import RealRooted.PFPolynomial
 
 open Polynomial
 

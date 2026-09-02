@@ -1,5 +1,5 @@
 import RealRooted.DegreeDropReversal
-import RealRooted.Hadamard
+import RealRooted.Hadamard.Basic
 
 /-!
 # Finite-free multiplicative convolution

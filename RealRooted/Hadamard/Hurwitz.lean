@@ -1,4 +1,5 @@
 import RealRooted.Hadamard.GarloffWagner
+import RealRooted.HurwitzMatrix
 
 open Polynomial
 

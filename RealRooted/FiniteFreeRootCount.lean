@@ -1,4 +1,5 @@
 import RealRooted.FiniteFreeMultiplicative
+import RealRooted.Hadamard.Grace
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.OperatorPreservesInterlacing
 
