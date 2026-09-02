@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.RootCount
 import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.RootMultiplicityMatching
 
