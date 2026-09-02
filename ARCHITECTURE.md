@@ -777,9 +777,11 @@ a 908-line sequence-wrapper frontend. Its next review should split only when
 the remaining recurrence wrappers acquire a second independent consumer;
 `MultiplierSequence.Bidiagonal` remains the sole owner of the raw operator,
 and its `Jensen` children own the theorem-level backends.
-`Tactic.FiniteSymbolPF` has a namespace-local compatibility copy of parts of
-that API; a later compatibility-preserving cleanup should route it through the
-library owner instead of introducing a second mathematical implementation.
+`Tactic.FiniteSymbolPF` preserves its historical namespace API through explicit
+exports: raw operator declarations come from `MultiplierSequence.Bidiagonal`,
+Jensen residual declarations come from its `Jensen` child, and the two sequence
+wrappers come from `Tactic.PFBidiagonal`. It does not carry a second
+mathematical implementation of those declarations.
 
 ## Consumer-to-library extraction
 
