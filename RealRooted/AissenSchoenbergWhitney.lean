@@ -216,7 +216,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
     have hpq : (X - C x) * (p /ₘ (X - C x)) = p :=
       mul_divByMonic_eq_iff_isRoot.mpr hev
     have hqdeg : (p /ₘ (X - C x)).natDegree = 1 := by
-      rw [natDegree_divByMonic p (monic_X_sub_C x), h2, natDegree_X_sub_C]
+      rw [natDegree_divByMonic_X_sub_C, h2]
     have hqsplits : (p /ₘ (X - C x)).Splits := (isRealRooted_of_degree_one hqdeg).2
     exact hpq ▸ splits_X_sub_C_mul_iff.mpr hqsplits
   · rcases Nat.lt_or_ge p.natDegree 1 with hlt | hge

@@ -375,9 +375,7 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_eval_pos_iff
 
 theorem natDegree_deleteRootFactor (p : ℝ[X]) (r : ℝ) :
     (deleteRootFactor p r).natDegree = p.natDegree - 1 := by
-  rw [deleteRootFactor,
-    Polynomial.natDegree_divByMonic p (Polynomial.monic_X_sub_C r),
-    Polynomial.natDegree_X_sub_C]
+  simpa [deleteRootFactor] using Polynomial.natDegree_divByMonic_X_sub_C p r
 
 theorem exists_isLargestRoot {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hdeg : 1 ≤ p.natDegree) :

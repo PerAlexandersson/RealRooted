@@ -4,6 +4,7 @@ import Mathlib.Algebra.Polynomial.SpecificDegree
 import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Real.Sqrt
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.QuadraticRoot
 
 /-!
@@ -295,7 +296,7 @@ theorem splits_of_cubicDiscr_nonneg {p : ℝ[X]} (hdeg : p.natDegree = 3)
   have hfact : (X - C r) * (p /ₘ (X - C r)) = p := mul_divByMonic_eq_iff_isRoot.mpr hr
   set q := p /ₘ (X - C r) with hq
   have hqdeg : q.natDegree = 2 := by
-    rw [hq, natDegree_divByMonic p (monic_X_sub_C r), hdeg, natDegree_X_sub_C]
+    rw [hq, natDegree_divByMonic_X_sub_C, hdeg]
   have hsplit : q.Splits := by
     by_cases hroot : q.IsRoot r
     · exact Splits.of_natDegree_eq_two hqdeg hroot
@@ -365,7 +366,7 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_three
   have hfact : (X - C r) * (p /ₘ (X - C r)) = p := mul_divByMonic_eq_iff_isRoot.mpr hr
   set q := p /ₘ (X - C r) with hq
   have hqdeg : q.natDegree = 2 := by
-    rw [hq, natDegree_divByMonic p (monic_X_sub_C r), hdeg, natDegree_X_sub_C]
+    rw [hq, natDegree_divByMonic_X_sub_C, hdeg]
   have hqsplit : q.Splits := by
     have hp : ((X - C r) * q).Splits := by rwa [hfact]
     rwa [splits_X_sub_C_mul_iff] at hp

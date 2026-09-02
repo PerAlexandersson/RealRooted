@@ -806,7 +806,8 @@ theorem jacobiBetaOneInner_rootQuotient_eq_eval_mul {n : ℕ} {α r : ℝ}
     calc
       s.natDegree = (h - C (h.eval r)).natDegree -
           (X - C r).natDegree := by
-        exact natDegree_divByMonic (h - C (h.eval r)) (monic_X_sub_C r)
+        simpa [natDegree_X_sub_C] using
+          natDegree_divByMonic_X_sub_C (h - C (h.eval r)) r
       _ ≤ (h - C (h.eval r)).natDegree := Nat.sub_le _ _
       _ < n := htdeg
   have horth : jacobiBetaOneInner α p s = 0 := by
@@ -851,8 +852,7 @@ theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
     rw [← hp_factor, hqzero, mul_zero]
   have hqdeg : q.natDegree < n := by
     dsimp only [q, p]
-    rw [natDegree_divByMonic (shiftedJacobiMonic n α 1)
-      (monic_X_sub_C r), natDegree_X_sub_C,
+    rw [natDegree_divByMonic_X_sub_C,
       natDegree_shiftedJacobiMonic n hα (by norm_num)]
     lia
   have hrIoo : r ∈ Set.Ioo (0 : ℝ) 1 :=
