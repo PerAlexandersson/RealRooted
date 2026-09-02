@@ -120,12 +120,14 @@ Hermite--Biehler now has a foundational dependency boundary:
 The two focused modules have one- and eight-module local closures,
 respectively. The full theorem module retains its historical import path, so
 existing consumers remain compatible while stability-only consumers can avoid
-its 153-module closure.
+its 154-module closure.
 
-`EulerianMixedCompatibility` still imports the full module because it uses the
-general Lagrange-residue, derivative-at-root, and common-root cofactor tools
-currently housed there. Those APIs are not Hermite--Biehler-specific; a future
-interlacing-residue extraction should move them together rather than recreate
+`Interlacing.Residue` now owns the general derivative-at-root signs, residue
+positivity, Lagrange interpolation, degree cancellation, and common-root
+cofactor transport in a 13-module closure. `HermiteBiehler` re-exports those
+established declarations through its historical import path.
+`EulerianMixedCompatibility` imports the residue and multiplicity layers
+directly, reducing its closure from 167 modules to 104 without recreating
 private Eulerian copies.
 
 The Obreschkoff package has a compatibility facade and five focused theorem layers:
@@ -571,13 +573,13 @@ control, nonnegative-coefficient preservation, proper-position step, and
 compatibility transport in a 29-module closure. `EulerianCompletion`
 imports this 202-line insertion layer directly rather than the 1,213-line mixed
 partial-fraction and regularization proof. The mixed parent remains the
-compatibility import and has a 164-module closure; the direct insertion layer
+compatibility import and has a 104-module closure; the direct insertion layer
 has three transitive users.
 
-The two new source modules raise the root closure to 752. Inserting the pair
-boundary below `Compatibility.Basic` raises each tracked compatibility consumer
-by exactly one module; the corresponding conservative guards advance by one
-without adding any new mathematical dependency edge.
+The residue boundary raises the root closure by one module to 758 while cutting
+63 modules from the mixed parent. Its explicit import in `HermiteBiehler`
+raises that historical umbrella and its tracked consumers by one module; the
+corresponding exact guards advance by one.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
@@ -587,12 +589,13 @@ continue to use `Prec`.
 
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
-monicity. `HermiteBiehler` now uses that field-generic formula directly in its
+monicity. `Interlacing.Residue` uses that field-generic formula directly in its
 root-sign argument instead of carrying a real-specialized derivative expansion
 and multiset-collapse proof. Its three established real-specialized declaration
-names remain as compatibility wrappers. `RootAmplitude` builds the normalized-
-root-derivative product identity on the same small shim. The finite-sequence
-package is split by responsibility:
+names remain as compatibility wrappers and are still re-exported by
+`HermiteBiehler`. `RootAmplitude` builds the normalized-root-derivative product
+identity on the same small shim. The finite-sequence package is split by
+responsibility:
 
 - `RootAmplitude.Finite` owns the product algebra and the core
   distance-comparison reduction;
@@ -686,12 +689,16 @@ The reusable derivative region formerly embedded in `Tactic.MaWang` is now the
   and certificate lookup only.
 
 `Interlacing.Multiplicity` isolates the list-interlacing fact that a repeated
-root in either row forces a common root. `SimpleRoots` isolates the
-root-multiplicity definitions and the equivalence between simple real roots and
-a duplicate-free root multiset. The independent `MaWang.StrictStep` layer then
-combines the strict root-sign Ma--Wang step with those bridges to propagate
-simple roots without attaching the result to a particular recurrence or OEIS
-row family.
+root in either row forces a common root. `Interlacing.Residue` owns the adjacent
+simple-root sign, residue, interpolation, and common-factor transport APIs.
+The canonical multiplicity-one derivative nonvanishing lemma lives in
+`Derivative`; the residue API keeps its established spelling as a thin wrapper,
+and the parking-function insertion package reuses the canonical declaration.
+`SimpleRoots` isolates the root-multiplicity definitions and the equivalence
+between simple real roots and a duplicate-free root multiset. The independent
+`MaWang.StrictStep` layer then combines the strict root-sign Ma--Wang step with
+those bridges to propagate simple roots without attaching the result to a
+particular recurrence or OEIS row family.
 
 The theorem units have 180, 891, and 675 local lines, respectively. The tactic
 frontend is a compatibility umbrella over a dependency-ordered package:
