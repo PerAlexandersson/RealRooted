@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
@@ -1343,28 +1344,6 @@ lemma bezoutMatrix.no_complex_root_q_of_posDef {n : ℕ}
   · convert hB using 1
     ext i j
     simp [bezoutMatrix, bezoutEntry, neg_add_eq_sub, Finset.sum_sub_distrib]
-
-lemma Polynomial.splits_of_all_roots_real {p : ℝ[X]}
-    (hall : ∀ z : ℂ, (p.map Complex.ofRealHom).eval z = 0 → z.im = 0) :
-    p.Splits := by
-  apply splits_iff_exists_multiset.mpr
-  use (p.map Complex.ofRealHom).roots.map Complex.re
-  refine map_injective (algebraMap ℝ ℂ) (Complex.ofReal_injective) ?_
-  have h_factor :
-      p.map Complex.ofRealHom =
-        C (p.leadingCoeff : ℂ) *
-          Multiset.prod (Multiset.map (fun z ↦ X - C z)
-            (p.map Complex.ofRealHom).roots) := by
-    convert Splits.eq_prod_roots _
-    · simp
-    · exact IsAlgClosed.splits _
-  convert h_factor using 1
-  · rfl
-  · norm_num [Polynomial.map_multiset_prod]
-    exact Or.inl (congr_arg _
-      (Multiset.map_congr rfl fun x hx ↦ by
-        rw [← Complex.re_add_im x]
-        simp [hall x (isRoot_of_mem_roots hx)]))
 
 lemma bezoutMatrix.splits_of_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
