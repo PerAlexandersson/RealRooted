@@ -200,14 +200,6 @@ private theorem iteratedPDerivAt_rename
       simp only [iteratedPDerivAt, ih]
       rw [MvPolynomial.pderiv_rename hf]
 
-private theorem inr_notMem_vars_rename_inl
-    {R sigma tau : Type*} [CommRing R] (j : tau)
-    (G : MvPolynomial sigma R) :
-    Sum.inr j ∉ (MvPolynomial.rename Sum.inl G).vars := by
-  intro h
-  obtain ⟨i, hi, hieq⟩ := MvPolynomial.mem_vars_rename Sum.inl G h
-  exact Sum.inl_ne_inr (hieq.trans rfl)
-
 private theorem iteratedPDerivAt_inr_mul_rename
     {R sigma tau : Type*} [CommRing R]
     (j : tau) (n : ℕ) (G : MvPolynomial sigma R)
@@ -221,7 +213,7 @@ private theorem iteratedPDerivAt_inr_mul_rename
   | succ n ih =>
       simp only [iteratedPDerivAt, ih, MvPolynomial.pderiv_mul,
         MvPolynomial.pderiv_eq_zero_of_notMem_vars
-          (inr_notMem_vars_rename_inl j G),
+          (MvPolynomial.inr_notMem_vars_rename_inl j G),
         MvPolynomial.pderiv_rename Sum.inr_injective]
       simp
 
@@ -278,14 +270,6 @@ private theorem applyNegDifferential_rename_inr_mul_rename
       rw [map_add, applyNegDifferential_add_left, hH, hL,
         applyNegDifferential_add_left, map_add, mul_add]
 
-private theorem inl_notMem_vars_rename_inr
-    {R sigma tau : Type*} [CommRing R] (i : sigma)
-    (K : MvPolynomial tau R) :
-    Sum.inl i ∉ (MvPolynomial.rename Sum.inr K).vars := by
-  intro h
-  obtain ⟨j, hj, hjeq⟩ := MvPolynomial.mem_vars_rename Sum.inr K h
-  exact Sum.inr_ne_inl (hjeq.trans rfl)
-
 private theorem iteratedPDerivAt_inl_rename_mul
     {R sigma tau : Type*} [CommRing R]
     (i : sigma) (n : ℕ) (G : MvPolynomial sigma R)
@@ -300,7 +284,7 @@ private theorem iteratedPDerivAt_inl_rename_mul
       simp only [iteratedPDerivAt, ih, MvPolynomial.pderiv_mul,
         MvPolynomial.pderiv_rename Sum.inl_injective,
         MvPolynomial.pderiv_eq_zero_of_notMem_vars
-          (inl_notMem_vars_rename_inr i K)]
+          (MvPolynomial.inl_notMem_vars_rename_inr i K)]
       simp
 
 private theorem applyMonomialDifferential_mapDomain_inl_rename_mul

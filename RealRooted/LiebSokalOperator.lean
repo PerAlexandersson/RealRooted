@@ -1,4 +1,5 @@
 import RealRooted.Multiaffine
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # The multivariate differential action
@@ -409,22 +410,6 @@ theorem isMultiaffine_contractVariables
     MvPolynomial.IsMultiaffine (contractVariables i j P) := by
   exact (hP.specializeZero_preserves i).sub ((hP.pderiv i).pderiv j)
 
-private theorem inl_notMem_vars_rename_inr
-    {R sigma : Type*} [CommRing R] (i : sigma)
-    (G : MvPolynomial sigma R) :
-    Sum.inl i ∉ (MvPolynomial.rename Sum.inr G).vars := by
-  intro h
-  obtain ⟨j, hj, hji⟩ := MvPolynomial.mem_vars_rename Sum.inr G h
-  exact Sum.inr_ne_inl hji
-
-private theorem inr_notMem_vars_rename_inl
-    {R sigma : Type*} [CommRing R] (i : sigma)
-    (F : MvPolynomial sigma R) :
-    Sum.inr i ∉ (MvPolynomial.rename Sum.inl F).vars := by
-  intro h
-  obtain ⟨j, hj, hji⟩ := MvPolynomial.mem_vars_rename Sum.inl F h
-  exact Sum.inl_ne_inr hji
-
 theorem pderiv_inl_pairedProduct
     {R sigma : Type*} [CommRing R] (i : sigma)
     (F G : MvPolynomial sigma R) :
@@ -433,7 +418,7 @@ theorem pderiv_inl_pairedProduct
   rw [pairedProduct, pairedProduct, MvPolynomial.pderiv_mul,
     MvPolynomial.pderiv_rename Sum.inl_injective,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars
-      (inl_notMem_vars_rename_inr i G)]
+      (MvPolynomial.inl_notMem_vars_rename_inr i G)]
   simp
 
 theorem pderiv_inr_pairedProduct
@@ -444,7 +429,7 @@ theorem pderiv_inr_pairedProduct
   rw [pairedProduct, pairedProduct, MvPolynomial.pderiv_mul,
     MvPolynomial.pderiv_rename Sum.inr_injective,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars
-      (inr_notMem_vars_rename_inl i F)]
+      (MvPolynomial.inr_notMem_vars_rename_inl i F)]
   simp
 
 theorem specializeZero_inl_pairedProduct
@@ -456,7 +441,7 @@ theorem specializeZero_inl_pairedProduct
     MvPolynomial.specializeZero_rename Sum.inl Sum.inl_injective]
   rw [MvPolynomial.specializeZero_eq_self_of_notMem_vars
     (Sum.inl i) (MvPolynomial.rename Sum.inr G)
-    (inl_notMem_vars_rename_inr i G)]
+    (MvPolynomial.inl_notMem_vars_rename_inr i G)]
 
 theorem contractVariables_pairedProduct
     {R sigma : Type*} [CommRing R]
