@@ -8,6 +8,7 @@ import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.Residue
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.MaWang
+import RealRooted.QuadraticRoot
 import Mathlib.Data.Complex.Basic
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
@@ -20,25 +21,7 @@ namespace RealRooted
 theorem splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (h : 0 ≤ discrim a b c) :
     (C a * X ^ 2 + C b * X + C c).Splits := by
-  set s := Real.sqrt (discrim a b c) with hs
-  have hs₂ : s ^ 2 = b ^ 2 - 4 * a * c := by rw [hs, Real.sq_sqrt h, discrim]
-  set r₁ := (-b + s) / (2 * a) with hr₁
-  set r₂ := (-b - s) / (2 * a) with hr₂
-  have hprod : a * (r₁ * r₂) = c := by
-    rw [hr₁, hr₂]
-    field_simp
-    nlinarith [hs₂]
-  have hsum : a * (r₁ + r₂) = -b := by
-    rw [hr₁, hr₂]
-    field_simp
-    ring
-  have hfact : C a * X ^ 2 + C b * X + C c = C a * ((X - C r₁) * (X - C r₂)) := by
-    have : C a * ((X - C r₁) * (X - C r₂))
-        = C a * X ^ 2 + C (-(a * (r₁ + r₂))) * X + C (a * (r₁ * r₂)) := by
-      simp only [C_mul, C_add, C_neg]
-      ring
-    simp_all
-  simp [*]
+  exact quadraticPoly_splits_of_discrim_nonneg ha h
 
 theorem inv_sub_real_im_neg (r : ℝ) {z : ℂ} (hz : 0 < z.im) :
     (1 / (z - (r : ℂ))).im < 0 := by
