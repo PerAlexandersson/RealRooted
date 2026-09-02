@@ -10,7 +10,9 @@ without requiring the polynomial to be monic.
 
 namespace Polynomial
 
-private theorem derivative_sum_collapse {K : Type*} [Field K] [DecidableEq K]
+/-- At a simple member `s`, every summand indexed by another member contains the
+zero factor `s - s`. -/
+theorem derivative_sum_collapse {K : Type*} [Field K] [DecidableEq K]
     (M : Multiset K) (s : K)
     (hroot : s ∈ M) (hmultiplicity : M.count s = 1) :
     (M.map (fun r : K => ((M.erase r).map (fun t : K => s - t)).prod)).sum
