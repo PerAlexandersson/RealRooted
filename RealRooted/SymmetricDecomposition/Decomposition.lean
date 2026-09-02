@@ -198,8 +198,7 @@ lemma natDegree_idDecompositionBFormula_le {d : ℕ} {p : ℝ[X]} (hd : p.natDeg
   have hnum : (p - IdTransform d p).natDegree ≤ d := by
     simpa using Polynomial.natDegree_sub_le_of_le hd (IdTransform_natDegree_le hd)
   rw [idDecompositionBFormula, show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp]
-  rw [Polynomial.natDegree_divByMonic _ (Polynomial.monic_X_sub_C (1 : ℝ))]
-  rw [Polynomial.natDegree_X_sub_C]
+  rw [Polynomial.natDegree_divByMonic_X_sub_C]
   lia
 
 lemma natDegree_idDecompositionAFormula_le {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
@@ -212,8 +211,7 @@ lemma natDegree_idDecompositionAFormula_le {d : ℕ} {p : ℝ[X]} (hd : p.natDeg
   have hnum : (X * IdTransform d p - p).natDegree ≤ d + 1 := by
     simpa using Polynomial.natDegree_sub_le_of_le hXI hp'
   rw [idDecompositionAFormula, show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp]
-  rw [Polynomial.natDegree_divByMonic _ (Polynomial.monic_X_sub_C (1 : ℝ))]
-  rw [Polynomial.natDegree_X_sub_C]
+  rw [Polynomial.natDegree_divByMonic_X_sub_C]
   lia
 
 theorem idDecompositionFormula_eq_add_X_mul {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :

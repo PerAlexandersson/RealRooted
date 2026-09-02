@@ -1,11 +1,18 @@
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 public section
 
 namespace Polynomial
+
+/-- Dividing by a monic linear factor lowers natural degree by one. -/
+theorem natDegree_divByMonic_X_sub_C {R : Type*} [Ring R] [Nontrivial R]
+    (p : R[X]) (r : R) :
+    (p /ₘ (X - C r)).natDegree = p.natDegree - 1 := by
+  rw [natDegree_divByMonic p (monic_X_sub_C r), natDegree_X_sub_C]
 
 /-- If `p` has strictly larger degree than `q`, then `p + C a * q` has the
 same degree as `p`. -/

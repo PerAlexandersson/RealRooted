@@ -50,8 +50,8 @@ theorem hermiteBiehlerConverse_general :
       · obtain ⟨r, hrf, hrg⟩ := hc
         set f₁ := f /ₘ (X - C r) with hf₁
         set g₁ := g /ₘ (X - C r) with hg₁
-        have h_f_drop : f₁.natDegree = f.natDegree - 1 := by
-          rw [hf₁, natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]
+        have h_f_drop : f₁.natDegree = f.natDegree - 1 :=
+          hf₁ ▸ natDegree_divByMonic_X_sub_C f r
         have h_f₁_pos : HasPosLeadingCoeff f₁ :=
           hf₁ ▸ hf.divByMonic_X_sub_C hrf
         have h_g₁_pos : HasPosLeadingCoeff g₁ :=
@@ -113,7 +113,8 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
       have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
         hg.divByMonic_X_sub_C hrgroot
       have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
-        rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]; lia
+        rw [natDegree_divByMonic_X_sub_C]
+        lia
       by_cases hd₁ : 1 ≤ (f /ₘ (X - C r)).natDegree
       · exact ih _ hf₁deg hf₁ hg₁ hpq₁ hd₁ rfl
       · push Not at hd₁
@@ -153,16 +154,19 @@ theorem prec_of_stable_general {f g : ℝ[X]}
       have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
         hg.divByMonic_X_sub_C hrg
       have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
-        rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]; lia
+        rw [natDegree_divByMonic_X_sub_C]
+        lia
       by_cases hd₁ : 1 ≤ (f /ₘ (X - C r)).natDegree
       · exact prec_of_prec_cofactor hrf hrg (ih _ hf₁deg hf₁ hg₁ hstab₁ hd₁ rfl)
       · push Not at hd₁
         have hf₁d₀ : (f /ₘ (X - C r)).natDegree = 0 := by lia
         have hfd₁ : f.natDegree = 1 := by
-          rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C] at hf₁d₀; lia
+          rw [natDegree_divByMonic_X_sub_C] at hf₁d₀
+          lia
         obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
         have hg₁d₀ : (g /ₘ (X - C r)).natDegree = 0 := by
-          rw [natDegree_divByMonic g (monic_X_sub_C r), natDegree_X_sub_C]; lia
+          rw [natDegree_divByMonic_X_sub_C]
+          lia
         refine prec_of_prec_cofactor hrf hrg ?_
         obtain ⟨⟨hg₁₀, hg₁s⟩, ⟨hf₁₀, hf₁s⟩⟩ :
             ((g /ₘ (X - C r)) ≠ 0 ∧ (g /ₘ (X - C r)).Splits) ∧

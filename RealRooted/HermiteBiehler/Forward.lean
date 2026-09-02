@@ -378,7 +378,7 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
         have hrgroot : g.IsRoot r := isRoot_of_mem_roots hrg
         apply isUpperHalfPlaneStable_of_cofactor hrfroot hrgroot
         have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
-          rw [natDegree_divByMonic f (monic_X_sub_C r), natDegree_X_sub_C]
+          rw [natDegree_divByMonic_X_sub_C]
           lia
         have hpq₁ : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
           prec_cofactor_of_common_root hpq hrfroot hrgroot
