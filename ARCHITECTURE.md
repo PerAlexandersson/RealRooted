@@ -496,6 +496,30 @@ application: it computes the affine symbol for the weights `c + k` and
 `d + 1 - k`, proves its stable quadratic factor for `c ≥ 1`, and exposes the
 resulting degree-box splitness and proper-position transport.
 
+`Basic` owns the elementary closure algebra for `HasNonnegCoeffs`: zero, one,
+constants, nonnegative scaling, addition, finite and list sums, multiplication,
+and powers. `WagnerX.NonnegativeRoots` now starts with the genuinely
+Wagner-specific `X - C r` root-factor API, and `InterlacingConeBounds` uses the
+canonical scaling lemma instead of maintaining a second proof.
+
+`Compatibility.Pair` is the six-module pair-level boundary: it owns
+`Compatible`, symmetry, and transport through a degree-bounded real-linear
+preserver on nonnegative inputs. The higher `Compatibility.Basic` layer retains
+finite-family predicates, reflection, differentiation, regularization, and
+endpoint consequences. `EulerianMixedCompatibility.Insertion` uses the pair
+layer to package the Euler insertion operator, its linear map, coefficient and
+degree control, nonnegative-coefficient preservation, proper-position step,
+and compatibility transport in a 29-module closure. `EulerianCompletion`
+imports this 202-line insertion layer directly rather than the 1,213-line mixed
+partial-fraction and regularization proof. The mixed parent remains the
+compatibility import and has a 164-module closure; the direct insertion layer
+has three transitive users.
+
+The two new source modules raise the root closure to 752. Inserting the pair
+boundary below `Compatibility.Basic` raises each tracked compatibility consumer
+by exactly one module; the corresponding conservative guards advance by one
+without adding any new mathematical dependency edge.
+
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
 `Interlaces` predicate. It imports only `Linear`; this keeps old root-list

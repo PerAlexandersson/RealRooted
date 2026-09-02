@@ -1,4 +1,5 @@
 import RealRooted.AffineFamily
+import RealRooted.Compatibility.Pair
 import RealRooted.DegreeDropReversal
 import RealRooted.WeightedSum
 
@@ -15,13 +16,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Chudnovsky--Seymour compatibility for a pair: every nonnegative linear
-combination is real-rooted, allowing the zero polynomial in the degenerate
-`α = β = 0` case. -/
-def Compatible (f g : ℝ[X]) : Prop :=
-  ∀ α β : ℝ, 0 ≤ α → 0 ≤ β →
-    C α * f + C β * g = 0 ∨ ((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).Splits)
-
 /-- Pairwise compatibility on a finite family, in the Chudnovsky--Seymour
 sense from `INTERLACING.md`. -/
 def PairwiseCompatible (fs : List ℝ[X]) : Prop :=
@@ -36,10 +30,6 @@ def FamilyCompatible (fs : List ℝ[X]) : Prop :=
     weightedSum l = 0 ∨ ((weightedSum l) ≠ 0 ∧ (weightedSum l).Splits)
 
 namespace Compatible
-
-lemma comm {f g : ℝ[X]} (h : Compatible f g) : Compatible g f := by
-  intro α β hα hβ
-  simpa [Compatible, add_comm, mul_comm, mul_left_comm, mul_assoc] using h β α hβ hα
 
 lemma comp_X_add_C {f g : ℝ[X]} (h : Compatible f g) (r : ℝ) :
     Compatible (f.comp (X + C r)) (g.comp (X + C r)) := by
