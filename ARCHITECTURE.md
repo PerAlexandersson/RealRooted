@@ -122,14 +122,18 @@ Hermite--Biehler now has a foundational dependency boundary:
 - `HermiteBiehler.ConverseLowDegree` owns the degree-at-most-two converse,
   quadratic/Vieta reductions, degree-shape bounds, and explicit low-degree
   interlacing inequalities; and
+- `HermiteBiehler.Converse` owns the general root-geometry, Wronskian,
+  common-root cofactor induction, and converse endpoint; and
 - `HermiteBiehler.OddEven` owns the odd/even construction, coefficient
   recovery, nonnegativity transport, and degree/parity formulas; and
-- `HermiteBiehler` retains the converse theorem and the Hurwitz consequences.
+- `HermiteBiehler.Hurwitz` owns the conformal odd/even substitution interfaces
+  and right-half-plane stability endpoint; and
+- `HermiteBiehler` is the historical compatibility import for the package.
 
-The six focused modules have one-, eight-, nine-, nineteen-, 133-, and
-nine-module local closures, respectively. The full theorem module retains its
-historical import path, so existing consumers remain compatible while focused
-consumers can avoid its 158-module closure.
+The eight focused modules have one-, eight-, nine-, nineteen-, 133-, 157-,
+nine-, and 159-module local closures, respectively. The compatibility module
+retains its historical import path, so existing consumers remain compatible
+while converse-only consumers can avoid its 160-module closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
@@ -594,8 +598,11 @@ forward boundary raises it to 761 while exposing that theorem program through
 a 19-module import instead of the 157-module umbrella. The low-degree converse
 boundary raises it to 762 while exposing that endpoint through a 133-module
 import instead of the 158-module umbrella.
-All five focused children remain re-exported by `HermiteBiehler`; the
-corresponding exact guards account explicitly for each compatibility edge.
+The general-converse and Hurwitz boundaries raise it to 764 while separating
+the 157-module converse proof from the 159-module application and reducing the
+historical parent to a nine-line compatibility import. All seven focused
+children remain re-exported by `HermiteBiehler`; the corresponding exact guards
+account explicitly for each compatibility edge.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
