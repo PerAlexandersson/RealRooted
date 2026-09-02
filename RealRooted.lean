@@ -465,6 +465,7 @@ import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.ObreschkoffConverse.Regularization
 import RealRooted.OscillatoryInterlacing
 import RealRooted.OperatorPreservesInterlacing
+import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 import RealRooted.ParkingFunctions.ToricContribution.Definitions

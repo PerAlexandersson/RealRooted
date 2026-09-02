@@ -1,4 +1,5 @@
 import RealRooted.JacobiParameterInterlacing
+import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
 
 /-!
@@ -27,10 +28,11 @@ structure RightClosedIntervalRootData (p : ℝ[X]) (n : ℕ) : Prop where
   roots_mem_Ioc : ∀ r ∈ p.roots, r ∈ Set.Ioc (0 : ℝ) 1
   eval_derivative_ne_zero : ∀ r, p.IsRoot r → p.derivative.eval r ≠ 0
 
-/-- The `i`th root of a polynomial, in increasing order. The default value is
-irrelevant when the polynomial has the expected degree and splits. -/
-noncomputable def orderedRoot (p : ℝ[X]) (n : ℕ) (i : Fin n) : ℝ :=
-  (p.roots.sort (· ≤ ·)).getD i 0
+/-- Compatibility alias for the former toric-contribution-local root accessor. -/
+noncomputable abbrev orderedRoot (p : ℝ[X]) (n : ℕ) (i : Fin n) : ℝ :=
+  RealRooted.orderedRoot p n i
+
+local notation "orderedRoot" => RealRooted.orderedRoot
 
 theorem IntervalRootData.roots_sort_length
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) :
@@ -44,7 +46,8 @@ theorem IntervalRootData.orderedRoot_isRoot
   have hi : i.val < (p.roots.sort (· ≤ ·)).length := by
     rw [hp.roots_sort_length]
     exact i.isLt
-  rw [orderedRoot, List.getD_eq_getElem _ _ hi]
+  change p.IsRoot ((p.roots.sort (· ≤ ·)).getD i 0)
+  rw [List.getD_eq_getElem _ _ hi]
   apply Polynomial.isRoot_of_mem_roots
   exact (Multiset.mem_sort _).mp (List.getElem_mem ..)
 

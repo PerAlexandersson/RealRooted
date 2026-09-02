@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 752
+      "max_modules": 753
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -18,6 +18,9 @@
     },
     "RealRooted.Basic": {
       "max_modules": 10
+    },
+    "RealRooted.OrderedRoots": {
+      "max_modules": 8
     },
     "RealRooted.ObreschkoffContinuity": {
       "max_modules": 11

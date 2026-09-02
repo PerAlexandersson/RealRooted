@@ -664,6 +664,11 @@ API, while `CommonInterleaver.RootDesc` owns the descending-root description,
 the root-slot package owns interval transport, `Finite` and `Sequence` own the
 finite-family setup, `DescPolynomial` owns the prescribed-root construction,
 and `FamilyUpgrade` owns the Chudnovsky--Seymour global upgrade.
+The low `Basic` layer owns both directions between the legacy list-interlacing
+predicates and their coordinate bounds. `OrderedRoots` adds the canonical
+increasing-root accessor and the same-degree `Prec` equivalence without pulling
+in the common-interleaver construction stack; orthogonal-polynomial and other
+root-location consumers should import this focused module.
 `RootDesc` owns the common-interleaver predicates, canonical descending root
 sequence, the indexwise `Prec` characterisation, and the consecutive-chain
 lemma. Its two nonemptiness facts are protected members of the

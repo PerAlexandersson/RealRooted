@@ -118,40 +118,6 @@ lemma getD_reverse_eq (l : List ℝ) (j : ℕ) (hj : j < l.length) :
       lia)]
   simp [List.getElem_reverse]
 
-lemma listInterlaces_of_getD_bounds :
-    ∀ (ss rs : List ℝ), ss.length + 1 = rs.length →
-      (∀ i, i < ss.length → rs.getD i 0 ≤ ss.getD i 0) →
-      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD (i + 1) 0) →
-      ListInterlaces ss rs
-  | [], [], hlen, _, _ => by simp at hlen
-  | [], [_], _, _, _ => trivial
-  | [], _ :: _ :: _, hlen, _, _ => by simp at hlen
-  | _ :: _, [], hlen, _, _ => by simp at hlen
-  | _ :: _, [_], hlen, _, _ => by simp at hlen
-  | _ :: ss', _ :: _ :: rs', hlen, h1, h2 => by
-      refine ⟨by simpa using h1 0 (by simp), by simpa using h2 0 (by simp), ?_⟩
-      refine listInterlaces_of_getD_bounds ss' _ (by simpa using hlen) ?_ ?_
-      · intro i hi
-        simpa using h1 (i + 1) (by simpa using hi)
-      · intro i hi
-        simpa using h2 (i + 1) (by simpa using hi)
-
-lemma listAlternates_of_getD_bounds :
-    ∀ (ss rs : List ℝ), ss.length = rs.length →
-      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD i 0) →
-      (∀ i, i + 1 < ss.length → rs.getD i 0 ≤ ss.getD (i + 1) 0) →
-      ListAlternates ss rs
-  | [], [], _, _, _ => trivial
-  | [], _ :: _, hlen, _, _ => by simp at hlen
-  | _ :: _, [], hlen, _, _ => by simp at hlen
-  | _ :: ss', _ :: _, hlen, h1, h2 => by
-      refine ⟨by simpa using h1 0 (by simp), ?_⟩
-      refine listInterlaces_of_getD_bounds ss' _ (by simpa using hlen) ?_ ?_
-      · intro i hi
-        simpa using h2 i (by simpa using hi)
-      · intro i hi
-        simpa using h1 (i + 1) (by simpa using hi)
-
 lemma desc_bounds_of_interlacing_shape (ss rs : List ℝ)
     (h : (ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs)) :
