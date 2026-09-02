@@ -20,17 +20,32 @@ namespace RealRooted
 
 section
 
-/-- Local hypothesis form of positive-combination real-rootedness used by the
-continuity bridge file. This avoids importing the converse-development file and
-keeps dependencies acyclic. -/
-abbrev PosComboHyp (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
+private abbrev posComboPredicate (f g : ℝ[X]) : Prop :=
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
+    ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
+
+/-- Every strictly positive linear combination of `f` and `g` is nonzero and
+real-rooted. This lightweight predicate lives at the continuity boundary so
+consumers need not import the full converse-development file. -/
+def PosComboRealRooted (f g : ℝ[X]) : Prop := posComboPredicate f g
+
+/-- Compatibility name for the local positive-combination hypothesis used by
+the continuity lemmas. -/
+abbrev PosComboHyp (f g : ℝ[X]) : Prop := posComboPredicate f g
+
+namespace PosComboRealRooted
+
+lemma comm {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
+    PosComboRealRooted g f := by
+  intro lam μ hlam hμ
+  simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hfg hμ hlam
+
+end PosComboRealRooted
 
 namespace PosComboHyp
 
-lemma comm {f g : ℝ[X]} (hfg : PosComboHyp f g) : PosComboHyp g f := by
-  intro lam μ hlam hμ
-  simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hfg hμ hlam
+lemma comm {f g : ℝ[X]} (hfg : PosComboHyp f g) : PosComboHyp g f :=
+  PosComboRealRooted.comm hfg
 
 lemma isRealRooted_add_left {f g : ℝ[X]} (hfg : PosComboHyp f g)
     {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by

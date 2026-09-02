@@ -24,152 +24,32 @@ namespace FiniteSymbolPF
 
 noncomputable section
 
-/-! ## Univariate quadratic Jensen residual -/
+/-! ## Compatibility exports
 
-/-- The residual quadratic in the factorization of a quadratic Jensen
-polynomial. -/
-def quadraticJensenResidual (a b c : ℝ) (d : ℕ) : ℝ[X] :=
-  C c * (X + 1) ^ 2 +
-    C ((a + b) * (d : ℝ)) * X * (X + 1) +
-      C (a * (d : ℝ) * ((d : ℝ) - 1)) * X ^ 2
+The tactic namespace historically carried local copies of these declarations.
+Keep its public surface while routing every implementation through the
+canonical multiplier-sequence or tactic owner. -/
 
-/-- Cubic residual for a bidiagonal finite symbol whose diagonal and
-subdiagonal coefficient functions are quadratic in the monomial degree. -/
-def quadraticBidiagonalResidual
-    (aa ab ac ba bb bc : ℝ) (d : ℕ) : ℝ[X] :=
-  quadraticJensenResidual aa ab ac d +
-    X * quadraticJensenResidual ba bb bc d
-
-/-- Cubic residual pencil for a bidiagonal finite symbol whose diagonal and
-subdiagonal coefficient functions are quadratic in the monomial degree. -/
-def quadraticBidiagonalPencilResidual
-    (aa ab ac ba bb bc lambda : ℝ) (d : ℕ) : ℝ[X] :=
-  quadraticJensenResidual aa ab ac d +
-    C lambda * X * quadraticJensenResidual ba bb bc d
-
-/-- The certificate residual is the `lambda = 1` member of the residual
-pencil. -/
-theorem quadraticBidiagonalPencilResidual_one
-    (aa ab ac ba bb bc : ℝ) (d : ℕ) :
-    quadraticBidiagonalPencilResidual aa ab ac ba bb bc 1 d =
-      quadraticBidiagonalResidual aa ab ac ba bb bc d := by
-  simp [quadraticBidiagonalPencilResidual, quadraticBidiagonalResidual]
-
-/-- The local quadratic Jensen polynomial agrees with the project-wide Jensen
-polynomial attached to the same quadratic coefficient function. -/
-theorem quadraticJensen_eq_jensenPolynomial
-    (a b c : ℝ) (d : ℕ) :
-    quadraticJensen a b c d =
-      jensenPolynomial d (quadraticJensenWeight a b c) := by
-  simp [quadraticJensen, jensenPolynomial,
-    ← Polynomial.C_mul_X_pow_eq_monomial]
-
-/-- Named residual form of `quadraticJensen_eq_factor`. -/
-theorem quadraticJensen_eq_factor_residual
-    (a b c : ℝ) {d : ℕ} (hd : 2 ≤ d) :
-    quadraticJensen a b c d =
-      (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d := by
-  simpa [quadraticJensenResidual, RealRooted.quadraticJensenResidual] using
-    RealRooted.quadraticJensen_eq_factor_residual a b c hd
-
-/-! ## Bidiagonal operator and finite symbol -/
-
-/-- Coefficient-bidiagonal operator
-`T(X^k) = alpha k * X^k + beta k * X^(k+1)`. -/
-def bidiagonalOperator (alpha beta : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
-  diagonalOperator alpha p + X * diagonalOperator beta p
-
-/-- Degree-`d` PF-preserver statement for a coefficient-bidiagonal operator. -/
-def BidiagonalPFPreserver (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
-  ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p.natDegree ≤ d →
-    IsPFPolynomial (bidiagonalOperator alpha beta p)
-
-/-- Replace a coefficient sequence by zero above degree `d`. -/
-def degreeTruncate (d : ℕ) (gamma : ℕ → ℝ) : ℕ → ℝ :=
-  fun k => if k ≤ d then gamma k else 0
-
-theorem degreeTruncate_eq_of_le (d : ℕ) (gamma : ℕ → ℝ) {k : ℕ}
-    (hk : k ≤ d) :
-    degreeTruncate d gamma k = gamma k := by
-  simp [degreeTruncate, hk]
-
-theorem degreeTruncate_nonneg {d : ℕ} {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, k ≤ d → 0 ≤ gamma k) :
-    ∀ k, 0 ≤ degreeTruncate d gamma k := by
-  intro k
-  by_cases hk : k ≤ d
-  · rw [degreeTruncate_eq_of_le d gamma hk]
-    exact hgamma k hk
-  · simp [degreeTruncate, hk]
-
-theorem diagonalOperator_congr_of_eq_on_degree
-    {gamma delta : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
-    (hgamma : ∀ k, k ≤ d → gamma k = delta k)
-    (hp : p.natDegree ≤ d) :
-    diagonalOperator gamma p = diagonalOperator delta p := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_diagonalOperator]
-  by_cases hk : k ≤ d
-  · rw [hgamma k hk]
-  · have hdk : d < k := Nat.lt_of_not_ge hk
-    have hklt : p.natDegree < k := lt_of_le_of_lt hp hdk
-    rw [Polynomial.coeff_eq_zero_of_natDegree_lt hklt]
-    ring
-
-theorem bidiagonalOperator_congr_of_eq_on_degree
-    {alpha beta alpha' beta' : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
-    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
-    (hbeta : ∀ k, k ≤ d → beta k = beta' k)
-    (hp : p.natDegree ≤ d) :
-    bidiagonalOperator alpha beta p = bidiagonalOperator alpha' beta' p := by
-  unfold bidiagonalOperator
-  rw [diagonalOperator_congr_of_eq_on_degree halpha hp]
-  rw [diagonalOperator_congr_of_eq_on_degree hbeta hp]
-
-theorem BidiagonalPFPreserver.of_eq_on_degree
-    {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
-    (hpres : BidiagonalPFPreserver alpha' beta' d)
-    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
-    (hbeta : ∀ k, k ≤ d → beta k = beta' k) :
-    BidiagonalPFPreserver alpha beta d := by
-  intro p hp hdeg
-  rw [bidiagonalOperator_congr_of_eq_on_degree halpha hbeta hdeg]
-  exact hpres hp hdeg
-
-/-- Jensen pencil obtained by dehomogenizing the finite symbol at `Y = 1`. -/
-def bidiagonalJensenPencil
-    (alpha beta : ℕ → ℝ) (d : ℕ) (lambda : ℝ) : ℝ[X] :=
-  jensenPolynomial d alpha + C lambda * X * jensenPolynomial d beta
-
-/-- Quadratic diagonal and subdiagonal coefficient functions give a cubic
-residual pencil after removing the universal `(1+X)^(d-2)` factor. -/
-theorem quadraticBidiagonalJensenPencil_eq_factor_residual
-    (aa ab ac ba bb bc lambda : ℝ) {d : ℕ} (hd : 2 ≤ d) :
+export RealRooted
+  (bidiagonalOperator
+    BidiagonalPFPreserver
+    degreeTruncate
+    degreeTruncate_eq_of_le
+    degreeTruncate_nonneg
+    diagonalOperator_congr_of_eq_on_degree
+    bidiagonalOperator_congr_of_eq_on_degree
+    BidiagonalPFPreserver.of_eq_on_degree
     bidiagonalJensenPencil
-        (quadraticJensenWeight aa ab ac)
-        (quadraticJensenWeight ba bb bc) d lambda =
-      (X + 1) ^ (d - 2) *
-        quadraticBidiagonalPencilResidual aa ab ac ba bb bc lambda d := by
-  rw [bidiagonalJensenPencil]
-  rw [← quadraticJensen_eq_jensenPolynomial aa ab ac d]
-  rw [← quadraticJensen_eq_jensenPolynomial ba bb bc d]
-  rw [quadraticJensen_eq_factor_residual aa ab ac hd]
-  rw [quadraticJensen_eq_factor_residual ba bb bc hd]
-  simp [quadraticBidiagonalPencilResidual]
-  ring
-
-/-- The actual bidiagonal finite symbol dehomogenizes to the `lambda = 1`
-cubic residual. -/
-theorem quadraticBidiagonalJensenPencil_eq_factor_residual_one
-    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d) :
-    bidiagonalJensenPencil
-        (quadraticJensenWeight aa ab ac)
-        (quadraticJensenWeight ba bb bc) d 1 =
-      (X + 1) ^ (d - 2) *
-        quadraticBidiagonalResidual aa ab ac ba bb bc d := by
-  rw [quadraticBidiagonalJensenPencil_eq_factor_residual
-    aa ab ac ba bb bc 1 hd]
-  rw [quadraticBidiagonalPencilResidual_one]
+    quadraticJensenResidual
+    quadraticBidiagonalResidual
+    quadraticBidiagonalPencilResidual
+    quadraticBidiagonalPencilResidual_one
+    quadraticJensen_eq_jensenPolynomial
+    quadraticJensen_eq_factor_residual
+    quadraticBidiagonalJensenPencil_eq_factor_residual
+    quadraticBidiagonalJensenPencil_eq_factor_residual_one
+    isPFPolynomial_of_bidiagonalOperator_sequence
+    isPFPolynomial_of_bidiagonalOperator_sequence_from)
 
 /-! ## Second-derivative recurrence normalization -/
 
@@ -427,12 +307,8 @@ theorem finiteSymbol_dehomog (alpha beta : ℕ → ℝ) (d : ℕ) :
 
 private lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
     y ^ n * (x / y) ^ k = x ^ k * y ^ (n - k) := by
-  rw [div_pow]
-  rw [div_eq_mul_inv]
-  rw [← mul_assoc]
-  rw [mul_comm (y ^ n) (x ^ k)]
-  rw [mul_assoc]
-  rw [← pow_sub₀ y hy hk]
+  rw [div_pow, pow_sub₀ y hy hk]
+  ring
 
 /-- Evaluating the finite symbol at `(x,y)` with `y ≠ 0` is the homogenized
 dehomogenized Jensen pencil. -/
@@ -638,38 +514,6 @@ def quadraticBidiagonalCubicResidualCertificate
   residual_pf := hpf
   alpha_nonneg := halpha
   beta_nonneg := hbeta
-
-/-- Induction principle for a sequence whose recurrence step is a
-degree-bounded PF-bidiagonal preserver. -/
-theorem isPFPolynomial_of_bidiagonalOperator_sequence
-    {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (hbase : IsPFPolynomial (P 0))
-    (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
-    (hpres : ∀ n, BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
-    (hrec : ∀ n, P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  RealRooted.sequence_of_base_and_step hbase fun n hP => by
-    rw [hrec n]
-    exact hpres n hP (hdegree n)
-
-/-- Induction principle for a sequence whose PF-bidiagonal recurrence
-certificate only starts from a cutoff row.  The finitely many rows before the
-cutoff are supplied as base cases. -/
-theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
-    {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
-    {degreeBound : ℕ → ℕ}
-    (N : ℕ)
-    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
-    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
-    (hpres :
-      ∀ n, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
-    (hrec : ∀ n, N ≤ n →
-      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) :=
-  RealRooted.sequence_of_base_interval_and_step_from N hbase fun n hn hP => by
-    rw [hrec n hn]
-    exact hpres n hn hP (hdegree n hn)
 
 /-- Diagonal coefficient of the second-derivative form as a quadratic Jensen
 weight. -/

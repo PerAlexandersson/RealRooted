@@ -1,7 +1,6 @@
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.ObreschkoffContinuity
-import RealRooted.PosCombo
 
 /-!
 # All-real-combination real-rootedness

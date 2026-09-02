@@ -391,13 +391,6 @@ theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
     ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
   isRealRooted_nonneg_combo_of_prec hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
-/-- A packaging of the positive-combination hypothesis that appears in the
-restricted Obreschkoff converse: every strictly positive linear combination of
-`f` and `g` is real-rooted. -/
-def PosComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-    ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
-
 namespace PosComboRealRooted
 
 /-- View `PosComboRealRooted` as the lightweight continuity hypothesis used in
@@ -405,11 +398,6 @@ namespace PosComboRealRooted
 lemma toPosComboHyp {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     RealRooted.PosComboHyp f g :=
   hfg
-
-lemma comm {f g : ℝ[X]} (h : PosComboRealRooted f g) :
-    PosComboRealRooted g f := by
-  intro lam μ hlam hμ
-  simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using h hμ hlam
 
 /-- Reflecting both members at a common degree bound preserves
 positive-combination real-rootedness. -/
@@ -566,6 +554,21 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
     · simp_all
     · lia
   simpa using hprec.2.1
+
+/-- A common right interleaver for `f` and `g` forces every strictly positive
+linear combination of `f` and `g` to be real-rooted. -/
+lemma of_commonInterleaver {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
+    PosComboRealRooted f g := by
+  intro lam μ hlam hμ
+  have hprec : Prec (weightedSum [(lam, f), (μ, g)]) h := by
+    apply prec_weightedSum_right [(lam, f), (μ, g)] h
+    · simp [hlam.le, hμ.le]
+    · simp [hfh, hgh]
+    · simp [hf_pos, hg_pos]
+    · exact ⟨(lam, f), by simp [hlam]⟩
+  simpa [weightedSum, weightedSum_cons] using hprec.1
 
 /-- Equal-degree positive-combination real-rootedness forces the left summand
 to be real-rooted. -/

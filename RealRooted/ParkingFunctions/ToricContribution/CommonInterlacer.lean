@@ -3,9 +3,15 @@ import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset
 /-!
 # Common interlacer for the A390883 toric-contribution family
 
-This file packages the all-offset Jacobi comparison as a finite-family
-common-left-interlacer theorem. It also closes splitness for arbitrary
-strictly positive weighted sums of the parity-normalized `R_d` family.
+This file packages the all-offset Jacobi comparison as both a fixed-row
+interlacing-sequence theorem and a finite-family common-left-interlacer
+theorem. It also closes splitness for arbitrary strictly positive weighted
+sums of the parity-normalized `R_d` family.
+
+The pairwise orientation is the normalized reciprocal form of Conjecture 4.2
+in Qiqi Xiao, *The real-rootedness of the toric g-contribution polynomials*,
+arXiv:2609.01086v1. The common-interlacer theorem is distinct and is what
+controls arbitrary nonnegative row sums.
 -/
 
 open Polynomial
@@ -27,6 +33,36 @@ def normalizedRPolynomialFamily (m ε : ℕ) : List ℝ[X] :=
 theorem normalizedRPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
     HasPosLeadingCoeff (normalizedRPolynomial m ε d) := by
   exact negOnePow_mul_rPolynomial_hasPosLeadingCoeff m ε d
+
+/-- The normalized reverse-offset polynomials inherit the fixed-row proper
+position orientation. -/
+theorem normalizedRPolynomial_prec_of_lt
+    (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
+    Prec (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
+  exact prec_C_mul_right
+    (prec_C_mul_left
+      (rPolynomial_prec_rPolynomial_of_lt m ε d e hm hde he)
+      (pow_ne_zero m (by norm_num)))
+    (pow_ne_zero m (by norm_num))
+
+/-- The normalized `R`-polynomials in the order corresponding to
+`g_(n,0), ..., g_(n,floor (n/2))`. -/
+def normalizedRPolynomialRow (m ε : ℕ) : List ℝ[X] :=
+  (List.range (m + 1)).map fun j => normalizedRPolynomial m ε (m - j)
+
+@[simp]
+theorem length_normalizedRPolynomialRow (m ε : ℕ) :
+    (normalizedRPolynomialRow m ε).length = m + 1 := by
+  simp [normalizedRPolynomialRow]
+
+/-- The fixed-row toric-contribution family is pairwise interlacing in its
+natural contribution-index order. This is the normalized reciprocal form of
+Xiao's Conjecture 4.2. -/
+theorem normalizedRPolynomialRow_isInterlacingSeq (m ε : ℕ) :
+    IsInterlacingSeq (normalizedRPolynomialRow m ε) := by
+  apply isInterlacingSeq_reverseOffsetRow
+  intro d e hde he
+  exact normalizedRPolynomial_prec_of_lt m ε d e (by lia) hde he
 
 /-- The terminating Jacobi polynomial is a common left interlacer of every
 parity-normalized toric-contribution polynomial. -/

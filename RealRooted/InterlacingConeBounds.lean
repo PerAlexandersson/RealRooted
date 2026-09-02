@@ -30,12 +30,10 @@ Note that the endpoints must be compared with themselves, so the statement also
 consumes reflexivity of `Prec` on the real-rooted members.
 -/
 
-/-- Scaling by a nonnegative constant keeps nonnegative coefficients. -/
+/-- Compatibility name for the foundational nonnegative-scaling lemma. -/
 theorem hasNonnegCoeffs_C_mul {a : ℝ} {p : ℝ[X]} (ha : 0 ≤ a)
-    (hp : HasNonnegCoeffs p) : HasNonnegCoeffs (C a * p) := by
-  intro k
-  rw [coeff_C_mul]
-  exact mul_nonneg ha (hp k)
+    (hp : HasNonnegCoeffs p) : HasNonnegCoeffs (C a * p) :=
+  nonnegCoeffs_C_mul ha hp
 
 /-- **Branden--Saud Leite Lemma 3.1(1).**  A nonnegative combination of an
 interlacing sequence is caught between its first and last members. -/
@@ -52,7 +50,7 @@ theorem prec0_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ
     simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hi
   have hnn' : ∀ i ∈ Finset.range (n + 1), HasNonnegCoeffs (C (lam i) * f i) := by
     intro i hi
-    exact hasNonnegCoeffs_C_mul (hlam i) (hnn i (hmem i hi))
+    exact nonnegCoeffs_C_mul (hlam i) (hnn i (hmem i hi))
   refine ⟨?_, ?_⟩
   · refine prec0_finsetSum_left_of_nonneg _ _ _ ?_ hnn'
     intro i hi

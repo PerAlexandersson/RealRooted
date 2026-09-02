@@ -1013,16 +1013,20 @@ def IsGeneralizedSturmSeq : List ℝ[X] → Prop
 lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : Prec g f := by
   obtain ⟨hf, hg, _, rs, ss, hrs, hss, hrs_eq, hss_eq, hint⟩ := h
   refine ⟨hg, hf, _, _, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨?_, hint⟩⟩
-  have : ss.length = g.natDegree := by rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have : ss.length = g.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
+  have : rs.length = f.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
 lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
     (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f := by
   rcases h with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, _⟩
   refine ⟨hf, hg, hdeg, _, _, hrs, hss, hrs_eq, hss_eq, ?_⟩
-  have : ss.length = g.natDegree := by rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have : ss.length = g.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
+  have : rs.length = f.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
 /-- Multiplying the left polynomial in a proper-position relation by a nonzero
@@ -1077,6 +1081,59 @@ lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
 
 /-- Non-negative coefficients. -/
 def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n
+
+/-! ### Elementary closure of nonnegative coefficients -/
+
+lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
+  simp [HasNonnegCoeffs]
+
+lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
+  rintro (_ | n)
+  · simp
+  · rw [coeff_one]
+    simp
+
+lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
+  rintro (_ | n) <;> simp [ha]
+
+lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs (C a * p) := by
+  intro n
+  simpa [coeff_C_mul] using mul_nonneg ha (hp n)
+
+lemma HasNonnegCoeffs.add {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (p + q) := fun n => by
+  simpa [coeff_add] using add_nonneg (hp n) (hq n)
+
+lemma hasNonnegCoeffs_finsetSum {ι : Type}
+    (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
+    HasNonnegCoeffs (s.sum f) := by
+  classical
+  intro n
+  simpa [finsetSum_coeff] using Finset.sum_nonneg fun i hi => hf i hi n
+
+lemma hasNonnegCoeffs_sum :
+    ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
+  | [], _ => by simpa using hasNonnegCoeffs_zero
+  | p :: ps, hps => by
+      have hp : HasNonnegCoeffs p := hps p (by simp)
+      have htail : HasNonnegCoeffs ps.sum :=
+        hasNonnegCoeffs_sum ps (fun q hq => hps q (by simp [hq]))
+      simpa using hp.add htail
+
+lemma HasNonnegCoeffs.mul {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (p * q) := by
+  intro n
+  simpa [coeff_mul] using Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
+
+protected lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    ∀ n : ℕ, HasNonnegCoeffs (p ^ n)
+  | 0 => hasNonnegCoeffs_one
+  | n + 1 => by
+      simpa [pow_succ] using (hp.pow n).mul hp
 
 /-- Positive leading coefficient. -/
 def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff

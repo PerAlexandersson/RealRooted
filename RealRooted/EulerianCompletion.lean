@@ -1,5 +1,5 @@
 import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
-import RealRooted.EulerianMixedCompatibility
+import RealRooted.EulerianMixedCompatibility.Insertion
 import RealRooted.EulerOperator
 
 /-!
