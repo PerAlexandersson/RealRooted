@@ -1,4 +1,7 @@
-import RealRooted.Hadamard.Grace
+import RealRooted.GarloffWagner
+import RealRooted.HadamardProduct
+import RealRooted.HermiteBiehler.OddEven
+import RealRooted.PFPolynomial
 
 open Polynomial
 

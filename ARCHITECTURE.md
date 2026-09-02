@@ -113,14 +113,15 @@ Hermite--Biehler now has a foundational dependency boundary:
 - `HermiteBiehler.Basic` owns real-polynomial complexification, the univariate
   half-plane predicates, their one-variable multivariate bridge, the
   Hermite--Biehler polynomial, and the splitness/stability bridge; and
-- `HermiteBiehler` retains the odd/even construction, logarithmic-derivative
-  analysis, proper-position forward and converse theorems, and the Hurwitz
-  consequences.
+- `HermiteBiehler.OddEven` owns the odd/even construction, coefficient
+  recovery, nonnegativity transport, and degree/parity formulas; and
+- `HermiteBiehler` retains the logarithmic-derivative analysis,
+  proper-position forward and converse theorems, and the Hurwitz consequences.
 
-The two focused modules have one- and eight-module local closures,
+The three focused modules have one-, eight-, and nine-module local closures,
 respectively. The full theorem module retains its historical import path, so
 existing consumers remain compatible while stability-only consumers can avoid
-its 154-module closure.
+its 155-module closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
@@ -576,10 +577,11 @@ partial-fraction and regularization proof. The mixed parent remains the
 compatibility import and has a 104-module closure; the direct insertion layer
 has three transitive users.
 
-The residue boundary raises the root closure by one module to 758 while cutting
-63 modules from the mixed parent. Its explicit import in `HermiteBiehler`
-raises that historical umbrella and its tracked consumers by one module; the
-corresponding exact guards advance by one.
+The residue boundary raised the root closure by one module to 758 while cutting
+63 modules from the mixed parent. The odd/even boundary raises it once more to
+759 and moves the degree/parity facts out of the Veronese theorem program.
+Both children remain re-exported by `HermiteBiehler`; the corresponding exact
+guards account explicitly for each compatibility edge.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
@@ -869,7 +871,25 @@ reductions and finite Polya--Schur equivalences. `Hadamard.Grace` owns the
 `Hadamard.GarloffWagner` owns the 123-line direct theorem wrappers,
 `Hadamard.Hurwitz` the 270-line Hurwitz reductions, and
 `Hadamard.Consequences` the 237-line closure interfaces. `Hadamard` is now a
-9-line compatibility facade over that dependency-ordered package.
+compatibility facade over the Grace and Consequences branch tips. The direct
+Garloff--Wagner wrapper imports only the top-level theorem, Hadamard-product,
+PF-polynomial, and odd/even algebra modules; it no longer reaches its inputs
+through the unrelated finite, Newton, cubic, and Grace stages. This lowers its
+closure from 177 modules to 103. `Hadamard.Hurwitz` declares its actual matrix
+dependency directly and falls from 178 to 172; Consequences falls from 179 to
+173. The umbrella deliberately retains the complete public API and therefore
+has a 181-module closure after adding the new odd/even module.
+`Hadamard.Basic` itself now imports only its five actual algebraic backends,
+instead of also importing Veronese, Hurwitz, Grace, Garloff--Wagner, and
+all-combination packages that its source never used. Its closure falls from
+172 modules to 84; the finite, Newton, and cubic layers then grow one module at
+a time from 85 through 87. Grace declares its half-plane and derivative-split
+inputs directly and has a 93-module closure. The bidiagonal Jensen layer now
+imports Basic and Compatibility.Pair directly, falling from 183 modules to 88;
+its low-degree child falls from 184 to 89, while its contraction, cubic, and
+quadratic descendants each fall by 21 modules. Finite-free multiplicative
+convolution likewise imports Basic directly (85 modules), and its root-count
+consumer declares the Grace theorems it actually uses.
 
 After the tactic-free bidiagonal core extraction, `Tactic.PFBidiagonal` remains
 a 908-line sequence-wrapper frontend. Its next review should split only when
