@@ -1,4 +1,5 @@
 import RealRooted.BorceaBranden.BoundarySpecialization
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # Boundary specialization with unrestricted spectator variables
@@ -13,14 +14,6 @@ open Complex
 namespace RealRooted
 
 noncomputable section
-
-private theorem eval_eq_of_eq_on_vars {alpha : Type*}
-    (P : MvPolynomial alpha ℂ) (x y : alpha → ℂ)
-    (hxy : ∀ i ∈ P.vars, x i = y i) :
-    MvPolynomial.eval x P = MvPolynomial.eval y P := by
-  change MvPolynomial.eval₂Hom (RingHom.id ℂ) x P =
-    MvPolynomial.eval₂Hom (RingHom.id ℂ) y P
-  exact MvPolynomial.eval₂Hom_congr' rfl (fun i hi _ => hxy i hi) rfl
 
 /-- The one-coordinate boundary argument, localized to the finite support of
 the polynomial being specialized.  This removes the ambient finiteness
@@ -42,7 +35,7 @@ private theorem specializeZero_zero_or_of_degreeOf_le_one_unrestricted
   let z₁ : alpha → ℂ := fun j => if j ∈ Q.vars then u j else z j
   have hQz₁ : MvPolynomial.eval z₁ Q ≠ 0 := by
     have heval : MvPolynomial.eval z₁ Q = MvPolynomial.eval u Q :=
-      eval_eq_of_eq_on_vars Q z₁ u (by
+      MvPolynomial.eval_eq_of_eq_on_vars Q z₁ u (by
         intro j hj
         simp [z₁, hj])
     rw [heval]

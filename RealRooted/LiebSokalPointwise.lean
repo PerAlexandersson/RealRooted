@@ -1,6 +1,7 @@
 import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
 import RealRooted.LiebSokalOperator
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
@@ -15,14 +16,6 @@ namespace RealRooted
 
 open Filter Metric
 open scoped Topology
-
-private theorem eval_eq_of_eq_on_vars {alpha : Type*}
-    (P : MvPolynomial alpha ℂ) (x y : alpha → ℂ)
-    (hxy : ∀ i ∈ P.vars, x i = y i) :
-    MvPolynomial.eval x P = MvPolynomial.eval y P := by
-  change MvPolynomial.eval₂Hom (RingHom.id ℂ) x P =
-    MvPolynomial.eval₂Hom (RingHom.id ℂ) y P
-  exact MvPolynomial.eval₂Hom_congr' rfl (fun i hi _ => hxy i hi) rfl
 
 /-- A complex polynomial with no roots in the open upper half-plane has zero
 derivative or a derivative with the same property. -/
@@ -73,7 +66,8 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   let z₁ : sigma → ℂ := fun j =>
     if j ∈ (MvPolynomial.pderiv i P).vars then u j else z j
   have hQz₁ : MvPolynomial.eval z₁ (MvPolynomial.pderiv i P) ≠ 0 := by
-    have heval := eval_eq_of_eq_on_vars (MvPolynomial.pderiv i P) z₁ u (by
+    have heval := MvPolynomial.eval_eq_of_eq_on_vars
+      (MvPolynomial.pderiv i P) z₁ u (by
       intro j hj
       simp [z₁, hj])
     rw [heval]
@@ -174,7 +168,7 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
   obtain ⟨u, _, hQu⟩ := exists_upperHalfPlane_eval_ne_zero hQ
   let z₁ : sigma → ℂ := fun j => if j ∈ Q.vars then u j else z j
   have hQz₁ : MvPolynomial.eval z₁ Q ≠ 0 := by
-    have heval := eval_eq_of_eq_on_vars Q z₁ u (by
+    have heval := MvPolynomial.eval_eq_of_eq_on_vars Q z₁ u (by
       intro j hj
       simp [z₁, hj])
     rw [heval]
