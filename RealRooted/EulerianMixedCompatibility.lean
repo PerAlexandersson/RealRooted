@@ -210,19 +210,6 @@ private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
 
 /-! ## A necessary endpoint sign for proper position -/
 
-private theorem pairwise_lt_of_le_of_nodup (l : List ℝ)
-    (hsort : l.Pairwise (· ≤ ·)) (hnd : l.Nodup) : l.Pairwise (· < ·) := by
-  induction l with
-  | nil => simp
-  | cons a l ih =>
-      rw [List.pairwise_cons] at hsort ⊢
-      rw [List.nodup_cons] at hnd
-      refine ⟨?_, ih hsort.2 hnd.2⟩
-      intro b hb
-      exact lt_of_le_of_ne (hsort.1 b hb) (by
-        intro hab
-        exact hnd.1 (hab ▸ hb))
-
 private theorem countP_succ_of_interlaces_left :
     ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) →
       ListInterlaces ss rs → ∀ x ∈ ss, x ∉ rs →
@@ -307,8 +294,8 @@ private theorem eval_mul_derivative_neg_of_prec_succ_of_no_common
   have hrs_nodup : rs.Nodup := by
     rw [← Multiset.coe_nodup, hrs_eq]
     exact hF_nodup
-  have hss_lt := pairwise_lt_of_le_of_nodup ss hss hss_nodup
-  have hrs_lt := pairwise_lt_of_le_of_nodup rs hrs hrs_nodup
+  have hss_lt := (hss.sortedLE.sortedLT_of_nodup hss_nodup).pairwise
+  have hrs_lt := (hrs.sortedLE.sortedLT_of_nodup hrs_nodup).pairwise
   have hrmem : r ∈ f.roots := (mem_roots hf.1).mpr hr
   have hrss : r ∈ ss := by
     rw [← Multiset.mem_coe, hss_eq]
