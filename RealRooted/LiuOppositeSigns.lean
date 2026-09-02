@@ -2417,9 +2417,8 @@ theorem rootCountAbove_delete_bounds_of_nonRoot
         ((deleteRootFactor g s).roots.filter (x < ·)).card ≤ 1 ∧
       (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ) -
         (f.roots.filter (x < ·)).card ≤ 1 := by
-    have hbounds := h.toLeftBranch_symm.rootCountAbove_delete_bounds_of_nonRoot
-      hg_ne hf_ne hgx hfx
-    exact ⟨hbounds.2, hbounds.1⟩
+  exact (h.toLeftBranch_symm.rootCountAbove_delete_bounds_of_nonRoot
+    hg_ne hf_ne hgx hfx).symm
 
 /-- To prove the right Liu deletion branch, it is enough to control the
 strict-upper root counts of the deletion pair at common non-root thresholds. -/
