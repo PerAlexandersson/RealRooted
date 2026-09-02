@@ -119,14 +119,17 @@ Hermite--Biehler now has a foundational dependency boundary:
 - `HermiteBiehler.Forward` owns the sign-normalized forward theorem, its
   partial-fraction proof, common-root induction, and reusable multiset sign
   helpers; and
+- `HermiteBiehler.ConverseLowDegree` owns the degree-at-most-two converse,
+  quadratic/Vieta reductions, degree-shape bounds, and explicit low-degree
+  interlacing inequalities; and
 - `HermiteBiehler.OddEven` owns the odd/even construction, coefficient
   recovery, nonnegativity transport, and degree/parity formulas; and
 - `HermiteBiehler` retains the converse theorem and the Hurwitz consequences.
 
-The five focused modules have one-, eight-, nine-, nineteen-, and nine-module
-local closures, respectively. The full theorem module retains its historical
-import path, so existing consumers remain compatible while stability-only
-consumers can avoid its 157-module closure.
+The six focused modules have one-, eight-, nine-, nineteen-, 133-, and
+nine-module local closures, respectively. The full theorem module retains its
+historical import path, so existing consumers remain compatible while focused
+consumers can avoid its 158-module closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
@@ -588,8 +591,10 @@ The residue boundary raised the root closure by one module to 758 while cutting
 logarithmic-derivative boundary raises it once more to 760 while isolating the
 generic complex root-sum identities from the Hermite--Biehler assembly. The
 forward boundary raises it to 761 while exposing that theorem program through
-a 19-module import instead of the 157-module umbrella.
-All four focused children remain re-exported by `HermiteBiehler`; the
+a 19-module import instead of the 157-module umbrella. The low-degree converse
+boundary raises it to 762 while exposing that endpoint through a 133-module
+import instead of the 158-module umbrella.
+All five focused children remain re-exported by `HermiteBiehler`; the
 corresponding exact guards account explicitly for each compatibility edge.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
@@ -885,9 +890,9 @@ Garloff--Wagner wrapper imports only the top-level theorem, Hadamard-product,
 PF-polynomial, and odd/even algebra modules; it no longer reaches its inputs
 through the unrelated finite, Newton, cubic, and Grace stages. This lowers its
 closure from 177 modules to 103. `Hadamard.Hurwitz` declares its actual matrix
-dependency directly and falls from 178 to 174; Consequences falls from 179 to
-175. The umbrella deliberately retains the complete public API and therefore
-has a 183-module closure after adding the new focused module.
+dependency directly and falls from 178 to 175; Consequences falls from 179 to
+176. The umbrella deliberately retains the complete public API and therefore
+has a 184-module closure after adding the new focused module.
 `Hadamard.Basic` itself now imports only its five actual algebraic backends,
 instead of also importing Veronese, Hurwitz, Grace, Garloff--Wagner, and
 all-combination packages that its source never used. Its closure falls from
