@@ -1,4 +1,4 @@
-import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
 
 open Polynomial
 open scoped BigOperators

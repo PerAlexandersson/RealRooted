@@ -47,7 +47,7 @@
       "max_modules": 164
     },
     "RealRooted.EulerianCompletion": {
-      "max_modules": 192
+      "max_modules": 194
     },
     "RealRooted.Basic.AffineInterlacing": {
       "max_modules": 10
@@ -73,6 +73,9 @@
     "RealRooted.AffineFamily.Wronskian": {
       "max_modules": 102
     },
+    "RealRooted.BorceaBranden.Applications.AffineFiniteSymbol": {
+      "max_modules": 191
+    },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 111
     },
@@ -80,7 +83,7 @@
       "max_modules": 190
    },
     "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
-      "max_modules": 189
+      "max_modules": 191
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 181
