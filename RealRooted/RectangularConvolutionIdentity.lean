@@ -267,43 +267,6 @@ private theorem rectangularDifferentialTerm_diagonal_ite
       applyNegDifferential_esymm, if_neg hi]
     simp
 
-private theorem applyNegDifferential_finsetSum_left
-    {R sigma I : Type*} [CommRing R] [Fintype sigma]
-    (s : Finset I) (F : I → MvPolynomial sigma R)
-    (G : MvPolynomial sigma R) :
-    applyNegDifferential (∑ x ∈ s, F x) G =
-      ∑ x ∈ s, applyNegDifferential (F x) G := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert x s hxs ih =>
-      rw [Finset.sum_insert hxs, applyNegDifferential_add_left,
-        ih, Finset.sum_insert hxs]
-
-private theorem applyNegDifferential_finsetSum_right
-    {R sigma I : Type*} [CommRing R] [Fintype sigma]
-    (F : MvPolynomial sigma R) (s : Finset I)
-    (G : I → MvPolynomial sigma R) :
-    applyNegDifferential F (∑ x ∈ s, G x) =
-      ∑ x ∈ s, applyNegDifferential F (G x) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert x s hxs ih =>
-      rw [Finset.sum_insert hxs, applyNegDifferential_add_right,
-        ih, Finset.sum_insert hxs]
-
-private theorem applyNegDifferential_doubleSum
-    {R sigma I J : Type*} [CommRing R] [Fintype sigma]
-    (s : Finset I) (t : Finset J)
-    (F : I → MvPolynomial sigma R) (G : J → MvPolynomial sigma R) :
-    applyNegDifferential (∑ i ∈ s, F i) (∑ j ∈ t, G j) =
-      ∑ i ∈ s, ∑ j ∈ t, applyNegDifferential (F i) (G j) := by
-  rw [applyNegDifferential_finsetSum_left]
-  apply Finset.sum_congr rfl
-  intro i _
-  exact applyNegDifferential_finsetSum_right (F i) t G
-
 private def reciprocalRectangularTerm
     (m n : ℕ) (q : ℂ[X]) (i : ℕ) :
     MvPolynomial (Sum (Fin n) (Fin (m + n))) ℂ :=

@@ -250,6 +250,7 @@ import RealRooted.JensenPencilPositiveContraction
 import RealRooted.Kurtz
 import RealRooted.LiebSokal
 import RealRooted.LiebSokalOperator
+import RealRooted.LiebSokalOperator.Linearity
 import RealRooted.LiebSokalPointwise
 import RealRooted.Linear
 import RealRooted.LinearPowerFamily
