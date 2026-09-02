@@ -166,10 +166,9 @@ theorem IsUpperHalfPlaneStable.splits_complexify {p : ℝ[X]}
     p.Splits := by
   apply Polynomial.splits_of_all_roots_real
   intro z hz
-  by_contra him
-  rcases lt_or_gt_of_ne him with hneg | hpos
-  · exact hp (starRingEnd ℂ z) (by simpa using neg_pos.mpr hneg)
-      (complexify_conj_root hz)
-  · exact hp z hpos hz
+  rcases lt_trichotomy z.im 0 with h | h | h
+  · exact absurd (complexify_conj_root hz) (hp _ (by simpa using h))
+  · exact h
+  · exact absurd hz (hp z h)
 
 end RealRooted
