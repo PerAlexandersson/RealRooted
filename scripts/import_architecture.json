@@ -26,7 +26,7 @@
       "max_modules": 8
     },
     "RealRooted.HermiteBiehler": {
-      "max_modules": 152
+      "max_modules": 153
     },
     "RealRooted.OrderedRoots": {
       "max_modules": 8
@@ -56,10 +56,10 @@
       "max_modules": 29
     },
     "RealRooted.EulerianMixedCompatibility": {
-      "max_modules": 166
+      "max_modules": 167
     },
     "RealRooted.EulerianCompletion": {
-      "max_modules": 197
+      "max_modules": 198
     },
     "RealRooted.Basic.AffineInterlacing": {
       "max_modules": 10
@@ -86,22 +86,22 @@
       "max_modules": 102
     },
     "RealRooted.BorceaBranden.Applications.AffineFiniteSymbol": {
-      "max_modules": 194
+      "max_modules": 195
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
       "max_modules": 112
     },
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 193
+      "max_modules": 194
    },
     "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
-      "max_modules": 194
+      "max_modules": 195
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
       "max_modules": 40
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 186
+      "max_modules": 187
    },
     "RealRooted.BorceaBranden.UnivariateFiniteSymbol": {
       "max_modules": 7
@@ -407,46 +407,46 @@
       "max_modules": 79
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 181
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
       "max_modules": 182
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 202
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
+      "max_modules": 183
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
       "max_modules": 203
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 204
    },
-    "RealRooted.Hadamard.Basic": {
-      "max_modules": 170
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+      "max_modules": 205
    },
-    "RealRooted.Hadamard.Finite": {
+    "RealRooted.Hadamard.Basic": {
       "max_modules": 171
    },
-    "RealRooted.Hadamard.Newton": {
+    "RealRooted.Hadamard.Finite": {
       "max_modules": 172
    },
-    "RealRooted.Hadamard.Cubic": {
+    "RealRooted.Hadamard.Newton": {
       "max_modules": 173
    },
-    "RealRooted.Hadamard.Grace": {
+    "RealRooted.Hadamard.Cubic": {
       "max_modules": 174
    },
-    "RealRooted.Hadamard.GarloffWagner": {
+    "RealRooted.Hadamard.Grace": {
       "max_modules": 175
    },
-    "RealRooted.Hadamard.Hurwitz": {
+    "RealRooted.Hadamard.GarloffWagner": {
       "max_modules": 176
    },
-    "RealRooted.Hadamard.Consequences": {
+    "RealRooted.Hadamard.Hurwitz": {
       "max_modules": 177
    },
-    "RealRooted.Hadamard": {
+    "RealRooted.Hadamard.Consequences": {
       "max_modules": 178
+   },
+    "RealRooted.Hadamard": {
+      "max_modules": 179
    },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 80
@@ -743,7 +743,7 @@
       "max_modules": 85
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 383
+      "max_modules": 384
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -758,16 +758,16 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 156
+      "max_modules": 157
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 157
+      "max_modules": 158
    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 398
+      "max_modules": 399
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114

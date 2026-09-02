@@ -120,7 +120,7 @@ Hermite--Biehler now has a foundational dependency boundary:
 The two focused modules have one- and eight-module local closures,
 respectively. The full theorem module retains its historical import path, so
 existing consumers remain compatible while stability-only consumers can avoid
-its 152-module closure.
+its 153-module closure.
 
 `EulerianMixedCompatibility` still imports the full module because it uses the
 general Lagrange-residue, derivative-at-root, and common-root cofactor tools
@@ -587,8 +587,12 @@ continue to use `Prec`.
 
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
-monicity. `RootAmplitude` builds the normalized-root-derivative product identity
-on that small shim. The finite-sequence package is split by responsibility:
+monicity. `HermiteBiehler` now uses that field-generic formula directly in its
+root-sign argument instead of carrying a real-specialized derivative expansion
+and multiset-collapse proof. Its three established real-specialized declaration
+names remain as compatibility wrappers. `RootAmplitude` builds the normalized-
+root-derivative product identity on the same small shim. The finite-sequence
+package is split by responsibility:
 
 - `RootAmplitude.Finite` owns the product algebra and the core
   distance-comparison reduction;

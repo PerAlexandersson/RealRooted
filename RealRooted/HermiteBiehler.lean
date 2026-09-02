@@ -5,6 +5,7 @@ import RealRooted.CommonInterleaverTwo
 import RealRooted.HermiteBiehler.Basic
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.MaWang
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Lagrange
@@ -262,48 +263,19 @@ theorem eval_derivative_eq_sum_real {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
     p.derivative.eval x
       = p.leadingCoeff *
           (p.roots.map (fun r : ℝ =>
-            ((p.roots.erase r).map (fun s : ℝ => x - s)).prod)).sum := by
-  conv_lhs => rw [hp.eq_prod_roots]
-  rw [derivative_mul]
-  simp only [derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-  congr 1
-  rw [derivative_prod]
-  simp only [eval_multisetSum, Multiset.map_map]
-  congr 1
-  apply Multiset.map_congr rfl
-  intro r hr
-  simp only [Function.comp, derivative_sub, derivative_X, derivative_C, sub_zero,
-    mul_one, eval_multiset_prod, Multiset.map_map, eval_sub, eval_X, eval_C]
+            ((p.roots.erase r).map (fun s : ℝ => x - s)).prod)).sum :=
+  hp.eval_derivative x
 
 theorem deriv_sum_collapse (M : Multiset ℝ) (s : ℝ) (hs : s ∈ M) (hcount : M.count s = 1) :
     (M.map (fun r : ℝ => ((M.erase r).map (fun t : ℝ => s - t)).prod)).sum
-      = ((M.erase s).map (fun t : ℝ => s - t)).prod := by
-  rw [← Multiset.cons_erase hs, Multiset.map_cons, Multiset.sum_cons,
-      Multiset.erase_cons_head]
-  have h_s_notin : s ∉ M.erase s := by
-    intro h
-    rw [← Multiset.count_pos, Multiset.count_erase_self] at h
-    lia
-  have h_rest : ((M.erase s).map (fun r : ℝ =>
-      (((s ::ₘ M.erase s).erase r).map (fun t : ℝ => s - t)).prod)).sum = 0 := by
-    apply Multiset.sum_eq_zero
-    intro y hy
-    simp only [Multiset.mem_map] at hy
-    obtain ⟨r, hr, rfl⟩ := hy
-    have h_r_s : r ≠ s := fun h ↦ h_s_notin (h ▸ hr)
-    apply Multiset.prod_eq_zero
-    rw [Multiset.mem_map]
-    refine ⟨s, ?_, ?_⟩
-    · rw [Multiset.erase_cons_tail (M.erase s) (Ne.symm h_r_s)]
-      simp
-    · exact sub_self s
-  simp_all
+      = ((M.erase s).map (fun t : ℝ => s - t)).prod :=
+  derivative_sum_collapse M s hs hcount
 
 theorem eval_derivative_at_root {p : ℝ[X]} (hp : p.Splits) (s : ℝ)
     (hs : s ∈ p.roots) (hcount : p.roots.count s = 1) :
     p.derivative.eval s
-      = p.leadingCoeff * ((p.roots.erase s).map (fun r : ℝ => s - r)).prod := by
-  rw [eval_derivative_eq_sum_real hp, deriv_sum_collapse p.roots s hs hcount]
+      = p.leadingCoeff * ((p.roots.erase s).map (fun r : ℝ => s - r)).prod :=
+  hp.eval_derivative_at_root_of_roots_count_one s hs hcount
 
 theorem prod_sub_sign_pos (M : Multiset ℝ) (s : ℝ) (hs : s ∉ M) :
     0 < (M.map (fun r => s - r)).prod * (-1 : ℝ) ^ (M.countP (fun r => s < r)) := by
@@ -337,7 +309,7 @@ theorem deriv_at_root_sign {p : ℝ[X]} (hp : p.Splits) (hlc : 0 < p.leadingCoef
       = p.roots.countP (fun r ↦ s < r) := by
     rw [← Multiset.cons_erase hs, Multiset.countP_cons]
     simp
-  rw [eval_derivative_at_root hp s hs hcount, mul_assoc]
+  rw [hp.eval_derivative_at_root_of_roots_count_one s hs hcount, mul_assoc]
   have h_pos := prod_sub_sign_pos (p.roots.erase s) s h_s_M
   rw [h_cnt] at h_pos
   exact mul_pos hlc h_pos
