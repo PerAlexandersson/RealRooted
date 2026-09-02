@@ -255,6 +255,42 @@ theorem listAlternates_getD_bounds :
               lia
             simpa using ih1 (k + 1) hk
 
+/-- A pair of coordinate bounds constructs a differ-by-one list interlacing. -/
+theorem listInterlaces_of_getD_bounds :
+    ∀ (ss rs : List ℝ), ss.length + 1 = rs.length →
+      (∀ i, i < ss.length → rs.getD i 0 ≤ ss.getD i 0) →
+      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD (i + 1) 0) →
+      ListInterlaces ss rs
+  | [], [], hlen, _, _ => by simp at hlen
+  | [], [_], _, _, _ => trivial
+  | [], _ :: _ :: _, hlen, _, _ => by simp at hlen
+  | _ :: _, [], hlen, _, _ => by simp at hlen
+  | _ :: _, [_], hlen, _, _ => by simp at hlen
+  | _ :: ss', _ :: _ :: rs', hlen, h1, h2 => by
+      refine ⟨by simpa using h1 0 (by simp), by simpa using h2 0 (by simp), ?_⟩
+      refine listInterlaces_of_getD_bounds ss' _ (by simpa using hlen) ?_ ?_
+      · intro i hi
+        simpa using h1 (i + 1) (by simpa using hi)
+      · intro i hi
+        simpa using h2 (i + 1) (by simpa using hi)
+
+/-- A pair of coordinate bounds constructs a same-degree list alternation. -/
+theorem listAlternates_of_getD_bounds :
+    ∀ (ss rs : List ℝ), ss.length = rs.length →
+      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD i 0) →
+      (∀ i, i + 1 < ss.length → rs.getD i 0 ≤ ss.getD (i + 1) 0) →
+      ListAlternates ss rs
+  | [], [], _, _, _ => trivial
+  | [], _ :: _, hlen, _, _ => by simp at hlen
+  | _ :: _, [], hlen, _, _ => by simp at hlen
+  | _ :: ss', _ :: _, hlen, h1, h2 => by
+      refine ⟨by simpa using h1 0 (by simp), ?_⟩
+      refine listInterlaces_of_getD_bounds ss' _ (by simpa using hlen) ?_ ?_
+      · intro i hi
+        simpa using h2 i (by simpa using hi)
+      · intro i hi
+        simpa using h1 (i + 1) (by simpa using hi)
+
 /-- Same-degree alternation in either direction gives descending root crossing
 inequalities for the reversed lists. -/
 theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
