@@ -2,6 +2,7 @@ import RealRooted.AllCombo
 import RealRooted.AffineDerivative
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.ObreschkoffConverse.DegreeGap
+import RealRooted.PosCombo
 
 /-!
 # Obreschkoff regularization

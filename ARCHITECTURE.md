@@ -502,6 +502,17 @@ and powers. `WagnerX.NonnegativeRoots` now starts with the genuinely
 Wagner-specific `X - C r` root-factor API, and `InterlacingConeBounds` uses the
 canonical scaling lemma instead of maintaining a second proof.
 
+`ObreschkoffContinuity` is the 11-module owner of the shared strict-positive
+combination predicate body. It exposes the opaque public
+`PosComboRealRooted` predicate and the reducible continuity-facing
+`PosComboHyp` compatibility name without duplicating their mathematical
+definition or symmetry proof. Definition-only consumers no longer import the
+1,568-line `PosCombo` theorem stack: `AffineFamily.PositiveFamily` has an
+18-module closure instead of 75, and `AllCombo` has a 35-module closure.
+`ObreschkoffConverse.Regularization` now imports `PosCombo` explicitly for the
+advanced family and orientation lemmas it had previously received accidentally
+through `AllCombo`.
+
 `Compatibility.Pair` is the six-module pair-level boundary: it owns
 `Compatible`, symmetry, and transport through a degree-bounded real-linear
 preserver on nonnegative inputs. The higher `Compatibility.Basic` layer retains

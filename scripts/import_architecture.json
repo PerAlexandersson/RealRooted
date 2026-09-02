@@ -19,6 +19,15 @@
     "RealRooted.Basic": {
       "max_modules": 10
     },
+    "RealRooted.ObreschkoffContinuity": {
+      "max_modules": 11
+    },
+    "RealRooted.PosCombo": {
+      "max_modules": 73
+    },
+    "RealRooted.AllCombo": {
+      "max_modules": 35
+    },
     "RealRooted.Compatibility.Pair": {
       "max_modules": 6
     },
@@ -50,7 +59,7 @@
       "max_modules": 101
     },
     "RealRooted.AffineFamily.PositiveFamily": {
-      "max_modules": 75
+      "max_modules": 18
     },
     "RealRooted.AffineFamily.RootCrossing": {
       "max_modules": 101
@@ -910,6 +919,9 @@
     "RealRooted.Analysis.PowerTail.Quadratic",
     "RealRooted.Analysis.PowerTail.Telescoping",
     "RealRooted.Basic",
+    "RealRooted.ObreschkoffContinuity",
+    "RealRooted.PosCombo",
+    "RealRooted.AllCombo",
     "RealRooted.Compatibility.Pair",
     "RealRooted.Compatibility.Basic",
     "RealRooted.EulerianMixedCompatibility.Insertion",
