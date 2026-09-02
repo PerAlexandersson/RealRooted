@@ -745,7 +745,9 @@ theorem signedDiagonalRoot_terminal_interlacing_jPolynomialRoot
     hJ_data.strictMono_orderedRoot
   exact hinter
 
-private theorem signedDiagonalRoot_le_of_le
+/-- Increasing the finite offset moves each indexed diagonal root weakly to
+the left. -/
+theorem signedDiagonalRoot_le_of_le
     (m ε d e : ℕ) (hm : 2 ≤ m) (hde : d ≤ e) (he : e ≤ m - 1)
     (i : Fin (m - 1)) :
     signedDiagonalRoot m ε e i ≤ signedDiagonalRoot m ε d i := by

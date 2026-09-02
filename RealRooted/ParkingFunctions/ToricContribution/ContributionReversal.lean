@@ -1,5 +1,6 @@
 import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
 # Coefficient reversal for the A390883 toric contributions
@@ -241,6 +242,187 @@ theorem normalizedReversedContribution_hasPosLeadingCoeff
   convert h using 1
   simp only [normalizedRPolynomial]
   ring
+
+/-- A parity-normalized reversed EHR contribution. -/
+def normalizedReversedContribution (m ε d : ℕ) : ℝ[X] :=
+  C ((-1 : ℝ) ^ m) * reversedContribution m ε d
+
+/-- A normalized reversed EHR contribution is a positive scalar multiple of
+the corresponding normalized hypergeometric polynomial. -/
+theorem normalizedReversedContribution_eq_C_mul_normalizedRPolynomial
+    (m ε d : ℕ) (hε : ε ≤ 1) :
+    normalizedReversedContribution m ε d =
+      C ((Nat.choose (m + ε) m * catalan (d + ε) : ℕ) : ℝ) *
+        normalizedRPolynomial m ε d := by
+  rw [normalizedReversedContribution,
+    reversedContribution_eq_C_mul_rPolynomial m ε d hε]
+  simp only [normalizedRPolynomial]
+  ring
+
+/-- The concrete reversed EHR contributions inherit the fixed-row proper
+position orientation. -/
+theorem normalizedReversedContribution_prec_of_lt
+    (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
+    (hde : d < e) (he : e ≤ m) :
+    Prec (normalizedReversedContribution m ε e)
+      (normalizedReversedContribution m ε d) := by
+  rw [normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε e hε,
+    normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε d hε]
+  exact prec_C_mul_right
+    (prec_C_mul_left
+      (normalizedRPolynomial_prec_of_lt m ε d e hm hde he)
+      (reversedContribution_scale_pos m ε e).ne')
+    (reversedContribution_scale_pos m ε d).ne'
+
+/-! ## The original toric contribution polynomials -/
+
+/-- The coefficient of `y^k` in
+`g_(2m+ε,m-d)(1+y)`. -/
+def shiftedToricContributionCoeff (m ε d k : ℕ) : ℝ :=
+  ((Nat.choose (2 * m + ε - k) k * catalan (m + ε + d - k) : ℕ) : ℝ)
+
+/-- The toric contribution in the shifted variable `y = x - 1`. -/
+def shiftedToricContribution (m ε d : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (m + 1),
+    monomial k (shiftedToricContributionCoeff m ε d k)
+
+@[simp]
+theorem coeff_shiftedToricContribution (m ε d k : ℕ) :
+    (shiftedToricContribution m ε d).coeff k =
+      if k ≤ m then shiftedToricContributionCoeff m ε d k else 0 := by
+  simp only [shiftedToricContribution, finsetSum_coeff, coeff_monomial]
+  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
+  simp
+
+theorem shiftedToricContribution_hasNonnegCoeffs (m ε d : ℕ) :
+    HasNonnegCoeffs (shiftedToricContribution m ε d) := by
+  intro k
+  rw [coeff_shiftedToricContribution]
+  split
+  · simp only [shiftedToricContributionCoeff]
+    positivity
+  · exact le_rfl
+
+theorem natDegree_shiftedToricContribution_le (m ε d : ℕ) :
+    (shiftedToricContribution m ε d).natDegree ≤ m := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_shiftedToricContribution, if_neg (by lia)]
+
+/-- Reversing the shifted toric contribution gives the concrete normalized
+reciprocal contribution. -/
+theorem reciprocalShift_shiftedToricContribution
+    (m ε d : ℕ) :
+    reciprocalShift m (shiftedToricContribution m ε d) =
+      C ((-1 : ℝ) ^ m) *
+        (normalizedReversedContribution m ε d).comp (-X) := by
+  ext k
+  have hneg : (-X : ℝ[X]) = C (-1 : ℝ) * X := by simp
+  rw [coeff_reciprocalShift, coeff_C_mul, hneg,
+    Polynomial.comp_C_mul_X_coeff]
+  simp only [normalizedReversedContribution, coeff_C_mul,
+    coeff_reversedContribution]
+  by_cases hk : k ≤ m
+  · rw [Polynomial.revAt_le hk, coeff_shiftedToricContribution,
+      if_pos (Nat.sub_le m k), if_pos hk]
+    simp only [shiftedToricContributionCoeff, reversedContributionCoeff]
+    have hchoose : 2 * m + ε - (m - k) = m + ε + k := by lia
+    have hcatalan : m + ε + d - (m - k) = d + ε + k := by lia
+    rw [hchoose, hcatalan]
+    ring_nf
+    rw [(show Even (m * 2) from ⟨m, by lia⟩).neg_one_pow,
+      (show Even (k * 2) from ⟨k, by lia⟩).neg_one_pow]
+    ring
+  · have hmk : m < k := Nat.lt_of_not_ge hk
+    rw [Polynomial.revAt_eq_self_of_lt hmk,
+      coeff_shiftedToricContribution, if_neg hk, if_neg hk]
+    simp
+
+theorem normalizedReversedContribution_natDegree
+    (m ε d : ℕ) (hε : ε ≤ 1) :
+    (normalizedReversedContribution m ε d).natDegree = m := by
+  rw [normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε d hε,
+    Polynomial.natDegree_C_mul (reversedContribution_scale_pos m ε d).ne']
+  simp only [normalizedRPolynomial]
+  rw [Polynomial.natDegree_C_mul (pow_ne_zero m (by norm_num)),
+    rPolynomial_natDegree]
+
+/-- The EHR toric contribution `g_(2m+ε,m-d)(x)`. -/
+def toricContribution (m ε d : ℕ) : ℝ[X] :=
+  (shiftedToricContribution m ε d).comp (X - 1)
+
+theorem toricContribution_eq_sum (m ε d : ℕ) :
+    toricContribution m ε d =
+      ∑ k ∈ Finset.range (m + 1),
+        C (shiftedToricContributionCoeff m ε d k) * (X - 1) ^ k := by
+  simp [toricContribution, shiftedToricContribution, Polynomial.monomial_comp]
+
+/-- Larger reverse offsets precede smaller reverse offsets for the original
+toric contribution polynomials. -/
+theorem toricContribution_prec_of_lt
+    (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
+    (hde : d < e) (he : e ≤ m) :
+    Prec (toricContribution m ε e) (toricContribution m ε d) := by
+  have hrev := normalizedReversedContribution_prec_of_lt
+    m ε d e hm hε hde he
+  have hdegree :
+      (normalizedReversedContribution m ε e).natDegree =
+        (normalizedReversedContribution m ε d).natDegree := by
+    rw [normalizedReversedContribution_natDegree m ε e hε,
+      normalizedReversedContribution_natDegree m ε d hε]
+  have hreflected := prec_comp_neg_X_of_sameDegree hrev hdegree
+  have hsign : (-1 : ℝ) ^ m ≠ 0 := pow_ne_zero m (by norm_num)
+  have hreciprocal :
+      Prec (reciprocalShift m (shiftedToricContribution m ε d))
+        (reciprocalShift m (shiftedToricContribution m ε e)) := by
+    rw [reciprocalShift_shiftedToricContribution,
+      reciprocalShift_shiftedToricContribution]
+    exact prec_C_mul_right (prec_C_mul_left hreflected hsign) hsign
+  have hdPF : IsPFPolynomial
+      (reciprocalShift m (shiftedToricContribution m ε d)) :=
+    IsPFPolynomial.of_realRooted_nonneg
+      (shiftedToricContribution_hasNonnegCoeffs m ε d).reciprocalShift
+      hreciprocal.1.2
+  have hePF : IsPFPolynomial
+      (reciprocalShift m (shiftedToricContribution m ε e)) :=
+    IsPFPolynomial.of_realRooted_nonneg
+      (shiftedToricContribution_hasNonnegCoeffs m ε e).reciprocalShift
+      hreciprocal.2.1.2
+  have hdDegree :
+      (reciprocalShift m (shiftedToricContribution m ε d)).natDegree ≤ m := by
+    exact Polynomial.natDegree_reflect_le.trans (max_le le_rfl
+      (natDegree_shiftedToricContribution_le m ε d))
+  have heDegree :
+      (reciprocalShift m (shiftedToricContribution m ε e)).natDegree ≤ m := by
+    exact Polynomial.natDegree_reflect_le.trans (max_le le_rfl
+      (natDegree_shiftedToricContribution_le m ε e))
+  have hshifted := reciprocalShift_reverses_prec
+    hdPF hePF hdDegree heDegree hreciprocal
+  have hshifted' :
+      Prec (shiftedToricContribution m ε e)
+        (shiftedToricContribution m ε d) := by
+    simpa [reciprocalShift] using hshifted
+  simpa [toricContribution, sub_eq_add_neg] using
+    prec_comp_X_add_C hshifted' (-1)
+
+/-- The fixed row `(g_(n,0), ..., g_(n,floor (n/2)))`, parametrized by
+`n = 2m+ε`. -/
+def toricContributionRow (m ε : ℕ) : List ℝ[X] :=
+  (List.range (m + 1)).map fun j => toricContribution m ε (m - j)
+
+@[simp]
+theorem length_toricContributionRow (m ε : ℕ) :
+    (toricContributionRow m ε).length = m + 1 := by
+  simp [toricContributionRow]
+
+/-- The fixed row of toric contributions is an oriented all-pairs
+interlacing sequence. This is Xiao's Conjecture 4.2. -/
+theorem toricContributionRow_isInterlacingSeq
+    (m ε : ℕ) (hε : ε ≤ 1) :
+    IsInterlacingSeq (toricContributionRow m ε) := by
+  apply isInterlacingSeq_reverseOffsetRow
+  intro d e hde he
+  exact toricContribution_prec_of_lt m ε d e (by lia) hε hde he
 
 /-- The normalized reversed contributions with a scalar weight at each
 offset. -/

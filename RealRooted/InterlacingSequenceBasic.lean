@@ -140,6 +140,21 @@ lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
   rw [isInterlacingSeq_iff_pairwise] at h
   exact List.pairwise_iff_get.1 h i j hij
 
+/-- Package a family indexed by decreasing offsets as an interlacing
+sequence. -/
+lemma isInterlacingSeq_reverseOffsetRow (m : ℕ) (f : ℕ → ℝ[X])
+    (hpair : ∀ d e, d < e → e ≤ m → Prec (f e) (f d)) :
+    IsInterlacingSeq ((List.range (m + 1)).map fun j => f (m - j)) := by
+  rw [isInterlacingSeq_iff_pairwise]
+  refine List.pairwise_iff_get.2 ?_
+  intro i j hij
+  have hiLt : i.val < m := by
+    have hjLe : j.val ≤ m := by simpa using j.isLt
+    exact lt_of_lt_of_le hij hjLe
+  have hsub : m - j.val < m - i.val :=
+    Nat.sub_lt_sub_left hiLt hij
+  simpa using hpair (m - j.val) (m - i.val) hsub (Nat.sub_le m i.val)
+
 /-- Any pair in a weak zero-aware interlacing sequence satisfies `Prec0`. -/
 lemma IsInterlacingSeq0.prec0 {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
     {i j : Fin fs.length} (hij : i < j) :

@@ -396,6 +396,13 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
       (fun h => Or.inl ⟨by simp_all, listInterlaces_map_sub_const h.2 r⟩)
       (fun h => Or.inr ⟨by simp_all, listAlternates_map_sub_const h.2 r⟩)
 
+/-- Reflection through the origin reverses same-degree proper position. -/
+lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}
+    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    Prec (g.comp (-X)) (f.comp (-X)) := by
+  have hreflected := prec_comp_one_sub_X_of_sameDegree h hdeg
+  simpa [Polynomial.comp_assoc] using prec_comp_X_add_C hreflected 1
+
 /-- Translation by `r` is an equivalence on `Prec`. -/
 lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     Prec (f.comp (X + C r)) (g.comp (X + C r)) ↔ Prec f g := by
