@@ -342,6 +342,12 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`Mathlib.Algebra.MvPolynomial.EvalOnVars` is the corresponding support-local
+evaluation shim. Its semiring-generic `MvPolynomial.eval_eq_of_eq_on_vars`
+states that evaluation depends only on coordinates in the polynomial's finite
+variable support. This removes private complex-specialized copies from the
+Lieb--Sokal pointwise and unrestricted boundary-specialization layers.
+
 `RankTwoMatching` is a compatibility facade over a complete-graph matching
 package: `Basic` owns the rank-two edge weights, `Orientation` the edge-choice
 weight calculation, `DisjointEquiv` the matching/disjoint-set equivalence,
