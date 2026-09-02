@@ -1457,42 +1457,18 @@ structure RightRootCountBranch (f g : ℝ[X]) (r s : ℝ) : Prop where
   largest_lt : r < s
   count : RootCountCompatible f (deleteRootFactor g s)
 
+/-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
+for `(f, g)`. The extra strict inequality supplies the strict largest-root
+condition required by the right branch. -/
+theorem LeftRootCountBranch.toRightBranch_symm_of_lt {f g : ℝ[X]} {r s : ℝ}
+    (h : LeftRootCountBranch g f s r) (hlargest : r < s) :
+    RightRootCountBranch f g r s where
+  f_largest := h.g_largest
+  g_largest := h.f_largest
+  largest_lt := hlargest
+  count := h.count.symm
+
 namespace RightRootCountBranch
-
-/-- If `f` is linear and `g` has degree at most two, the right deletion branch
-has Liu-compatible root counts by degree alone. -/
-theorem of_largestRoots_left_le_one_right_le_two
-    {f g : ℝ[X]} {r s : ℝ}
-    (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
-    (hlargest : r < s) (hfdeg : f.natDegree ≤ 1)
-    (hgdeg : g.natDegree ≤ 2) :
-    RightRootCountBranch f g r s where
-  f_largest := hr
-  g_largest := hs
-  largest_lt := hlargest
-  count :=
-    rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
-      hf_splits hg_splits hs.isRoot hfdeg hgdeg
-
-/-- If the right endpoint is cubic and deleting its displayed largest root
-leaves two roots whose interval overlaps the left two-root interval, then the
-right Liu branch has compatible root counts. -/
-theorem of_roots_pair_triple_right
-    {f g : ℝ[X]} {r s a b c d : ℝ}
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
-    (had : a ≤ d) (hcb : c ≤ b)
-    (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d, s})
-    (hgfac : g = C g.leadingCoeff * ((X - C c) * (X - C d) * (X - C s)))
-    (hg_ne : g ≠ 0) :
-    RightRootCountBranch f g r s where
-  f_largest := hr
-  g_largest := hs
-  largest_lt := hlargest
-  count := by
-    have hdelete_roots : (deleteRootFactor g s).roots = {c, d} :=
-      roots_deleteRootFactor_eq_pair_of_roots_triple_right hg_ne hgroots hgfac
-    exact RootCountCompatible.of_roots_pair_pair had hcb hfroots hdelete_roots
 
 /-- Swap a right Liu branch into the corresponding left branch for the swapped
 polynomial pair. -/
@@ -2102,18 +2078,6 @@ theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
       hf_ne hg_ne hfx hgx)
     hle
 
-/-- Swap a left Liu branch for `(g, f)` into the corresponding right branch
-for `(f, g)`.  The extra strict inequality supplies the strict largest-root
-condition required by the right branch, while the root-count field is obtained
-by `RootCountCompatible.symm`. -/
-theorem toRightBranch_symm_of_lt {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch g f s r) (hlargest : r < s) :
-    RightRootCountBranch f g r s where
-  f_largest := h.g_largest
-  g_largest := h.f_largest
-  largest_lt := hlargest
-  count := h.count.symm
-
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
@@ -2368,26 +2332,52 @@ end LeftRootCountBranch
 
 namespace RightRootCountBranch
 
+/-- If `f` is linear and `g` has degree at most two, the right deletion branch
+has Liu-compatible root counts by degree alone. -/
+theorem of_largestRoots_left_le_one_right_le_two
+    {f g : ℝ[X]} {r s : ℝ}
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
+    (hlargest : r < s) (hfdeg : f.natDegree ≤ 1)
+    (hgdeg : g.natDegree ≤ 2) :
+    RightRootCountBranch f g r s :=
+  (LeftRootCountBranch.of_largestRoots_natDegree_le_two_right_le_one
+    hg_splits hf_splits hs hr hlargest.le hgdeg hfdeg).toRightBranch_symm_of_lt hlargest
+
+/-- If the right endpoint is cubic and deleting its displayed largest root
+leaves two roots whose interval overlaps the left two-root interval, then the
+right Liu branch has compatible root counts. -/
+theorem of_roots_pair_triple_right
+    {f g : ℝ[X]} {r s a b c d : ℝ}
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
+    (had : a ≤ d) (hcb : c ≤ b)
+    (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d, s})
+    (hgfac : g = C g.leadingCoeff * ((X - C c) * (X - C d) * (X - C s)))
+    (hg_ne : g ≠ 0) :
+    RightRootCountBranch f g r s :=
+  (LeftRootCountBranch.of_roots_triple_pair_right hs hr hlargest.le hcb had
+    hgroots hgfac hfroots hg_ne).toRightBranch_symm_of_lt hlargest
+
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_splits : g.Splits) :
     (deleteRootFactor g s).Splits :=
-  h.g_largest.deleteRootFactor_splits hg_splits
+  h.toLeftBranch_symm.delete_splits hg_splits
 
 theorem delete_ne_zero {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
     deleteRootFactor g s ≠ 0 :=
-  h.g_largest.deleteRootFactor_ne_zero hg_ne
+  h.toLeftBranch_symm.delete_ne_zero hg_ne
 
 theorem delete_ne_zero_and_splits {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hg_splits : g.Splits) :
     deleteRootFactor g s ≠ 0 ∧ (deleteRootFactor g s).Splits :=
-  h.g_largest.deleteRootFactor_ne_zero_and_splits hg_ne hg_splits
+  h.toLeftBranch_symm.delete_ne_zero_and_splits hg_ne hg_splits
 
 theorem delete_oppositeLeadingSigns {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g) :
     OppositeLeadingSigns f (deleteRootFactor g s) :=
-  hsgn.deleteRootFactor_right h.g_largest.isRoot
+  (h.toLeftBranch_symm.delete_oppositeLeadingSigns hsgn.symm).symm
 
 theorem positiveDeletionCount {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g) :
@@ -2395,29 +2385,29 @@ theorem positiveDeletionCount {f g : ℝ[X]} {r s : ℝ}
         RootCountCompatible f (-(deleteRootFactor g s))) ∨
       (HasPosLeadingCoeff (-f) ∧ HasPosLeadingCoeff (deleteRootFactor g s) ∧
         RootCountCompatible (-f) (deleteRootFactor g s)) := by
-  rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
-  · exact Or.inl ⟨hpos.1, hpos.2, h.count.neg_right⟩
-  · exact Or.inr ⟨hpos.1, hpos.2, h.count.neg_left⟩
+  rcases h.toLeftBranch_symm.positiveDeletionCount hsgn.symm with hpos | hpos
+  · exact Or.inr ⟨hpos.2.1, hpos.1, hpos.2.2.symm⟩
+  · exact Or.inl ⟨hpos.2.1, hpos.1, hpos.2.2.symm⟩
 
 theorem positiveSplitDeletionCount {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
     (hf_splits : f.Splits) (hg_splits : g.Splits) :
     PositiveSplitRootCountPair f (-(deleteRootFactor g s)) ∨
       PositiveSplitRootCountPair (-f) (deleteRootFactor g s) := by
-  rcases h.positiveDeletionCount hsgn with hpos | hpos
-  · exact Or.inl
-      ⟨hpos.1, hpos.2.1, hf_splits, (h.delete_splits hg_splits).neg, hpos.2.2⟩
-  · exact Or.inr
-      ⟨hpos.1, hpos.2.1, hf_splits.neg, h.delete_splits hg_splits, hpos.2.2⟩
+  rcases h.toLeftBranch_symm.positiveSplitDeletionCount hsgn.symm
+    hg_splits hf_splits with hpair | hpair
+  · exact Or.inr hpair.symm
+  · exact Or.inl hpair.symm
 
 theorem rootCountAbove_delete_abs_sub_le_one_of_nonRoot
     {f g : ℝ[X]} {r s x : ℝ} (h : RightRootCountBranch f g r s)
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hfx : ¬ f.IsRoot x) (hgx : ¬ (deleteRootFactor g s).IsRoot x) :
     |(((f.roots.filter (x < ·)).card : ℤ) -
-        (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ))| ≤ 1 :=
-  h.count.rootCountAbove_abs_sub_le_one_of_nonRoot
-    hf_ne (h.delete_ne_zero hg_ne) hfx hgx
+        (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ))| ≤ 1 := by
+    simpa [abs_sub_comm] using
+      h.toLeftBranch_symm.rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+        hg_ne hf_ne hgx hfx
 
 theorem rootCountAbove_delete_bounds_of_nonRoot
     {f g : ℝ[X]} {r s x : ℝ} (h : RightRootCountBranch f g r s)
@@ -2426,9 +2416,10 @@ theorem rootCountAbove_delete_bounds_of_nonRoot
     ((f.roots.filter (x < ·)).card : ℤ) -
         ((deleteRootFactor g s).roots.filter (x < ·)).card ≤ 1 ∧
       (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ) -
-        (f.roots.filter (x < ·)).card ≤ 1 :=
-  h.count.rootCountAbove_bounds_of_nonRoot
-    hf_ne (h.delete_ne_zero hg_ne) hfx hgx
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+    have hbounds := h.toLeftBranch_symm.rootCountAbove_delete_bounds_of_nonRoot
+      hg_ne hf_ne hgx hfx
+    exact ⟨hbounds.2, hbounds.1⟩
 
 /-- To prove the right Liu deletion branch, it is enough to control the
 strict-upper root counts of the deletion pair at common non-root thresholds. -/
@@ -2438,13 +2429,11 @@ theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
     (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ (deleteRootFactor g s).IsRoot x →
       |(((f.roots.filter (x < ·)).card : ℤ) -
           (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ))| ≤ 1) :
-    RightRootCountBranch f g r s where
-  f_largest := hr
-  g_largest := hs
-  largest_lt := hlargest
-  count :=
-    RootCountCompatible.of_rootCountAbove_abs_sub_le_one_of_nonRoot
-      hf_ne (hs.deleteRootFactor_ne_zero hg_ne) hbound
+    RightRootCountBranch f g r s := by
+  apply (LeftRootCountBranch.of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
+    hg_ne hf_ne hs hr hlargest.le ?_).toRightBranch_symm_of_lt hlargest
+  intro x hgx hfx
+  simpa [abs_sub_comm] using hbound x hfx hgx
 
 theorem of_rootCountAbove_right_sub_left_bounds_of_nonRoot
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
@@ -2464,48 +2453,21 @@ theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) (hx : x ≤ s) :
     rootCountAtOrAbove g x =
       rootCountAtOrAbove (deleteRootFactor g s) x + 1 :=
-  h.g_largest.rootCountAtOrAbove_deleteRootFactor_add_one hg_ne hx
+  h.toLeftBranch_symm.rootCountAtOrAbove_delete_add_one hg_ne hx
 
 theorem rootCountAtOrAbove_abs_sub_le_two {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
     ∀ x : ℝ,
       |((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ))| ≤ 2 := by
   intro x
-  by_cases hx : x ≤ s
-  · have hdelete := h.rootCountAtOrAbove_delete_add_one hg_ne hx
-    have hdelete_int :
-        ((rootCountAtOrAbove (deleteRootFactor g s) x : ℤ) + 1 =
-          (rootCountAtOrAbove g x : ℤ)) := by
-      exact_mod_cast hdelete.symm
-    exact int_abs_sub_le_two_of_add_one_right hdelete_int (h.count x)
-  · have hx_lt : s < x := lt_of_not_ge hx
-    have hg_zero := h.g_largest.rootCountAtOrAbove_eq_zero_of_lt hx_lt
-    have hdelete_zero :=
-      h.g_largest.rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt hg_ne hx_lt
-    have hgap := h.count x
-    rw [hdelete_zero] at hgap
-    rw [hg_zero]
-    exact le_trans hgap (by norm_num)
+  simpa [abs_sub_comm] using
+    h.toLeftBranch_symm.rootCountAtOrAbove_abs_sub_le_two hg_ne x
 
 theorem rootCountAtOrAbove_left_sub_right_le_one {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
     ∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 := by
-  intro x
-  by_cases hx : x ≤ s
-  · have hdelete := h.rootCountAtOrAbove_delete_add_one hg_ne hx
-    have hdelete_int :
-        (rootCountAtOrAbove g x : ℤ) =
-          (rootCountAtOrAbove (deleteRootFactor g s) x : ℤ) + 1 := by
-      exact_mod_cast hdelete
-    have hgap := h.count.left_sub_le_one x
-    rw [hdelete_int]
-    linarith
-  · have hx_lt : s < x := lt_of_not_ge hx
-    have hg_zero := h.g_largest.rootCountAtOrAbove_eq_zero_of_lt hx_lt
-    have hdelete_zero :=
-      h.g_largest.rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt hg_ne hx_lt
-    simpa [hg_zero, hdelete_zero] using h.count.left_sub_le_one x
+      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 :=
+  h.toLeftBranch_symm.rootCountAtOrAbove_right_sub_left_le_one hg_ne
 
 theorem rootCountAtOrAbove_bounds {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
@@ -2513,126 +2475,102 @@ theorem rootCountAtOrAbove_bounds {f g : ℝ[X]} {r s : ℝ}
       ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 ∧
         ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 2 := by
   intro x
-  have h_abs := h.rootCountAtOrAbove_abs_sub_le_two hg_ne x
-  rw [abs_le] at h_abs
-  exact ⟨h.rootCountAtOrAbove_left_sub_right_le_one hg_ne x, by linarith [h_abs.1]⟩
+  have hbounds := h.toLeftBranch_symm.rootCountAtOrAbove_bounds hg_ne x
+  exact ⟨hbounds.2, hbounds.1⟩
 
 theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (ht : (deleteRootFactor g s).IsRoot t) :
     t ≤ s :=
-  h.g_largest.root_deleteRootFactor_le hg_ne ht
+  h.toLeftBranch_symm.root_delete_le hg_ne ht
 
 theorem left_roots_le_right_largest {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) :
-    ∀ t ∈ f.roots, t ≤ s := by
-  intro t ht
-  exact (h.f_largest.roots_le t ht).trans (le_of_lt h.largest_lt)
+    ∀ t ∈ f.roots, t ≤ s :=
+  h.toLeftBranch_symm.right_roots_le_left_largest
 
 theorem delete_roots_le_largest {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    ∀ t ∈ (deleteRootFactor g s).roots, t ≤ s := by
-  intro t ht
-  exact h.root_delete_le hg_ne
-    ((Polynomial.mem_roots (h.delete_ne_zero hg_ne)).mp ht)
+    ∀ t ∈ (deleteRootFactor g s).roots, t ≤ s :=
+  h.toLeftBranch_symm.delete_roots_le_largest hg_ne
 
 theorem deletionPair_roots_le_right_largest {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
     (∀ t ∈ f.roots, t ≤ s) ∧
       ∀ t ∈ (deleteRootFactor g s).roots, t ≤ s :=
-  ⟨h.left_roots_le_right_largest, h.delete_roots_le_largest hg_ne⟩
+  h.toLeftBranch_symm.deletionPair_roots_le_left_largest hg_ne |>.symm
 
 theorem right_comp_X_add_C_eq_X_mul_deleteRootFactor_comp
     {f g : ℝ[X]} {r s : ℝ} (h : RightRootCountBranch f g r s) :
     g.comp (X + C s) =
       X * (deleteRootFactor g s).comp (X + C s) :=
-  h.g_largest.comp_X_add_C_eq_X_mul_deleteRootFactor_comp
+  h.toLeftBranch_symm.left_comp_X_add_C_eq_X_mul_deleteRootFactor_comp
 
 theorem delete_natDegree_add_one_eq {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    (deleteRootFactor g s).natDegree + 1 = g.natDegree := by
-  have hg_degree_pos : 0 < g.natDegree :=
-    h.g_largest.natDegree_pos hg_ne
-  rw [natDegree_deleteRootFactor]
-  simpa [Nat.succ_eq_add_one] using Nat.succ_pred_eq_of_pos hg_degree_pos
+    (deleteRootFactor g s).natDegree + 1 = g.natDegree :=
+  h.toLeftBranch_symm.delete_natDegree_add_one_eq hg_ne
 
 theorem delete_natDegree_add_one_eq_of_sameDegree {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree) :
     (deleteRootFactor g s).natDegree + 1 = f.natDegree :=
-  (h.delete_natDegree_add_one_eq hg_ne).trans hdeg
+  h.toLeftBranch_symm.delete_natDegree_add_one_eq_of_sameDegree hg_ne hdeg
 
 theorem delete_natDegree_eq_of_succDegree {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 1) :
-    (deleteRootFactor g s).natDegree = f.natDegree := by
-  have hdelete_succ := h.delete_natDegree_add_one_eq hg_ne
-  lia
+    (deleteRootFactor g s).natDegree = f.natDegree :=
+  h.toLeftBranch_symm.delete_natDegree_eq_of_succDegree hg_ne hdeg
 
 theorem delete_natDegree_eq_succ_of_twoDegree {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 2) :
-    (deleteRootFactor g s).natDegree = f.natDegree + 1 := by
-  have hdelete_succ := h.delete_natDegree_add_one_eq hg_ne
-  lia
+    (deleteRootFactor g s).natDegree = f.natDegree + 1 :=
+  h.toLeftBranch_symm.delete_natDegree_eq_succ_of_twoDegree hg_ne hdeg
 
 theorem commonInterleaver_natDegree_eq_of_sameDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree)
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
-    k.natDegree = f.natDegree := by
-  have hdelete_succ :=
-    h.delete_natDegree_add_one_eq_of_sameDegree hg_ne hdeg
-  have hlower := hcommon.1.natDegree_le
-  have hupper := hcommon.2.natDegree_le_succ
-  lia
+    k.natDegree = f.natDegree :=
+  h.toLeftBranch_symm.commonInterleaver_natDegree_eq_of_sameDegree
+    hg_ne hdeg hcommon.symm
 
 theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 1)
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
-    k.natDegree = f.natDegree ∨ k.natDegree = f.natDegree + 1 := by
-  have hdelete := h.delete_natDegree_eq_of_succDegree hg_ne hdeg
-  have hlower := hcommon.1.natDegree_le
-  have hupper := hcommon.2.natDegree_le_succ
-  by_cases hk : k.natDegree = f.natDegree
-  · exact Or.inl hk
-  · right
-    lia
+    k.natDegree = f.natDegree ∨ k.natDegree = f.natDegree + 1 :=
+  h.toLeftBranch_symm.commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
+    hg_ne hdeg hcommon.symm
 
 theorem commonInterleaver_natDegree_eq_delete_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 2)
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
-    k.natDegree = (deleteRootFactor g s).natDegree := by
-  have hdelete := h.delete_natDegree_eq_succ_of_twoDegree hg_ne hdeg
-  have hupper := hcommon.1.natDegree_le_succ
-  have hlower := hcommon.2.natDegree_le
-  lia
+    k.natDegree = (deleteRootFactor g s).natDegree :=
+  h.toLeftBranch_symm.commonInterleaver_natDegree_eq_delete_of_twoDegree
+    hg_ne hdeg hcommon.symm
 
 theorem commonInterleaver_natDegree_eq_succ_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 2)
     (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
-    k.natDegree = f.natDegree + 1 := by
-  rw [h.commonInterleaver_natDegree_eq_delete_of_twoDegree hg_ne hdeg hcommon]
-  exact h.delete_natDegree_eq_succ_of_twoDegree hg_ne hdeg
+    k.natDegree = f.natDegree + 1 :=
+  h.toLeftBranch_symm.commonInterleaver_natDegree_eq_succ_of_twoDegree
+    hg_ne hdeg hcommon.symm
 
 theorem natDegree_abs_sub_le_two {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hf_splits : f.Splits) (hg_splits : g.Splits) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
-  have hgap := h.count.natDegree_abs_sub_le_one hf_splits
-    (h.delete_splits hg_splits)
-  have hdelete_succ := h.delete_natDegree_add_one_eq hg_ne
-  have hdelete_int :
-      ((deleteRootFactor g s).natDegree : ℤ) + 1 = (g.natDegree : ℤ) := by
-    exact_mod_cast hdelete_succ
-  exact int_abs_sub_le_two_of_add_one_right hdelete_int hgap
+  simpa [abs_sub_comm] using
+    h.toLeftBranch_symm.natDegree_abs_sub_le_two hg_ne hg_splits hf_splits
 
 /-- In the right Liu branch, restoring the deleted root of `g` leaves only the
 same-degree, left-succ-degree, or left-plus-two-degree alternatives. -/
@@ -2641,14 +2579,9 @@ theorem natDegree_eq_or_eq_succ_or_eq_succ_succ {f g : ℝ[X]} {r s : ℝ}
     (hf_splits : f.Splits) (hg_splits : g.Splits) :
     g.natDegree = f.natDegree ∨
       g.natDegree = f.natDegree + 1 ∨
-        g.natDegree = f.natDegree + 2 := by
-  have hgap := h.count.natDegree_abs_sub_le_one hf_splits
-    (h.delete_splits hg_splits)
-  have hdelete_succ := h.delete_natDegree_add_one_eq hg_ne
-  have hgap' : |(((deleteRootFactor g s).natDegree : ℤ) - (f.natDegree : ℤ))| ≤ 1 := by
-    simpa [abs_sub_comm] using hgap
-  exact nat_succ_eq_or_eq_succ_or_eq_succ_succ_of_abs_sub_le_one
-    hdelete_succ hgap'
+        g.natDegree = f.natDegree + 2 :=
+  h.toLeftBranch_symm.natDegree_eq_or_eq_succ_or_eq_succ_succ
+    hg_ne hg_splits hf_splits
 
 end RightRootCountBranch
 
