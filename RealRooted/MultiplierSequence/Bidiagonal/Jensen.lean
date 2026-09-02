@@ -1,5 +1,4 @@
 import RealRooted.Hadamard
-import RealRooted.HermiteBiehler
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 
 /-!

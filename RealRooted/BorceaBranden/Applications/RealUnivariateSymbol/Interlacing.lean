@@ -1,4 +1,5 @@
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+import RealRooted.HermiteBiehler
 import RealRooted.OperatorPreservesInterlacing
 
 /-!

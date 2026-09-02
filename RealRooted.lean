@@ -230,6 +230,7 @@ import RealRooted.Hadamard.Consequences
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
 import RealRooted.HermiteBiehler
+import RealRooted.HermiteBiehler.Basic
 import RealRooted.HermitePoulain
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
@@ -366,6 +367,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure

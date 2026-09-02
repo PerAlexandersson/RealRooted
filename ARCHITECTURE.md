@@ -106,6 +106,28 @@ in `HermiteBiehler`, and private Wronskian calculations remain with their
 affine-family and Obreschkoff proofs. This keeps the package based on theorem
 ownership rather than moving every file that happens to mention a Wronskian.
 
+Hermite--Biehler now has a foundational dependency boundary:
+
+- `Mathlib.Algebra.Polynomial.Splits.Complex` owns the general criterion that a
+  real polynomial splits when every root of its complexification is real;
+- `HermiteBiehler.Basic` owns real-polynomial complexification, the univariate
+  half-plane predicates, their one-variable multivariate bridge, the
+  Hermite--Biehler polynomial, and the splitness/stability bridge; and
+- `HermiteBiehler` retains the odd/even construction, logarithmic-derivative
+  analysis, proper-position forward and converse theorems, and the Hurwitz
+  consequences.
+
+The two focused modules have one- and eight-module local closures,
+respectively. The full theorem module retains its historical import path, so
+existing consumers remain compatible while stability-only consumers can avoid
+its 152-module closure.
+
+`EulerianMixedCompatibility` still imports the full module because it uses the
+general Lagrange-residue, derivative-at-root, and common-root cofactor tools
+currently housed there. Those APIs are not Hermite--Biehler-specific; a future
+interlacing-residue extraction should move them together rather than recreate
+private Eulerian copies.
+
 The Obreschkoff package has a compatibility facade and five focused theorem layers:
 
 - `ObreschkoffConverse.DegreeGap` owns the analytic constant-shift obstructions
@@ -380,7 +402,8 @@ commutative-ring coefficient Bezoutian, its finite telescoping identities, and
 the generic Bezoutian matrix and row-polynomial definitions. The real
 positive-definiteness and strict-interlacing arguments remain in
 `RealRooted.Bezoutian`; its original coefficient API is retained as a
-compatibility layer.
+compatibility layer. The generic real-to-complex splitting criterion formerly
+embedded in that proof now lives in `Mathlib.Algebra.Polynomial.Splits.Complex`.
 
 `Mathlib.Algebra.Polynomial.Reverse` is another focused field-general shim. It
 identifies the roots of a reversed split polynomial as the inverses of its
@@ -501,9 +524,12 @@ certificate construction, while its `Quadratic` child owns the quadratic and
 second-derivative specializations. Thus each differential-form, certificate,
 contraction, and low-degree proof unit can evolve independently of the
 tactic-only sequence wrappers.
-`BorceaBranden.Applications.RealUnivariateSymbol` owns the complexification
-and degree-box symbol calculation, while its `Interlacing` child owns pencil
-and oriented-interlacing consequences for arbitrary real linear maps.
+`BorceaBranden.Applications.RealUnivariateSymbol` consumes complexification and
+the splitness/stability bridge from `HermiteBiehler.Basic`; it owns the
+coefficientwise complex-linear extension and degree-box symbol calculation.
+Its closure is consequently 40 modules rather than 182. Its `Interlacing`
+child owns pencil and oriented-interlacing consequences for arbitrary real
+linear maps.
 `BidiagonalSymbol.RealConsequences` is the small specialization layer. Thus the
 reusable affine-symbol route no longer imports the tactic-only bidiagonal
 operator API. The former 500-line `AffineFiniteSymbol` monolith is now a
