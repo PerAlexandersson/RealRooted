@@ -122,18 +122,21 @@ Hermite--Biehler now has a foundational dependency boundary:
 - `HermiteBiehler.ConverseLowDegree` owns the degree-at-most-two converse,
   quadratic/Vieta reductions, degree-shape bounds, and explicit low-degree
   interlacing inequalities; and
-- `HermiteBiehler.Converse` owns the general root-geometry, Wronskian,
-  common-root cofactor induction, and converse endpoint; and
+- `HermiteBiehler.Converse.RootGeometry` owns the conjugation and multiset
+  norm-product argument excluding nonreal component roots and proving
+  splitness; and
+- `HermiteBiehler.Converse` owns the Wronskian, common-root cofactor induction,
+  ratio sign argument, and converse endpoints; and
 - `HermiteBiehler.OddEven` owns the odd/even construction, coefficient
   recovery, nonnegativity transport, and degree/parity formulas; and
 - `HermiteBiehler.Hurwitz` owns the conformal odd/even substitution interfaces
   and right-half-plane stability endpoint; and
 - `HermiteBiehler` is the historical compatibility import for the package.
 
-The eight focused modules have one-, eight-, nine-, nineteen-, 133-, 157-,
-nine-, and 159-module local closures, respectively. The compatibility module
+The nine focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
+158-, nine-, and 160-module local closures, respectively. The compatibility module
 retains its historical import path, so existing consumers remain compatible
-while converse-only consumers can avoid its 160-module closure.
+while root-geometry-only consumers can avoid its 161-module closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
@@ -603,6 +606,9 @@ the 157-module converse proof from the 159-module application and reducing the
 historical parent to a nine-line compatibility import. All seven focused
 children remain re-exported by `HermiteBiehler`; the corresponding exact guards
 account explicitly for each compatibility edge.
+The root-geometry boundary raises the root closure to 765 while exposing the
+splitness proof through a 134-module import and reducing the converse parent to
+361 lines. All eight focused children remain re-exported by `HermiteBiehler`.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
