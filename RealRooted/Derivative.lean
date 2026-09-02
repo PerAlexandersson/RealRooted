@@ -81,6 +81,15 @@ lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
   cases m <;> simp [sub_mul, coeff_derivative]
   ring_nf
 
+/-- The derivative does not vanish at a root of multiplicity one. -/
+theorem eval_derivative_ne_zero_of_rootMultiplicity_eq_one
+    {p : ℝ[X]} {r : ℝ} (hr : p.IsRoot r) (hmult : p.rootMultiplicity r = 1) :
+    p.derivative.eval r ≠ 0 := by
+  intro hder
+  have hp₀ : p ≠ 0 := by rintro rfl; simp at hmult
+  have hmultiple := (one_lt_rootMultiplicity_iff_isRoot hp₀).2 ⟨hr, hder⟩
+  omega
+
 /-- An exact double root has nonvanishing second derivative. -/
 lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
     {p : ℝ[X]} {x : ℝ} (hp0 : p ≠ 0) (hmult : p.rootMultiplicity x = 2) :
@@ -97,13 +106,9 @@ lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
-  intro hder2
-  have hpd_root : p.derivative.IsRoot x :=
-    (rootMultiplicity_pos hpd_ne).mp (by lia)
-  have hpd_der_root : p.derivative.derivative.IsRoot x := by simp_all
-  have hmult_gt : 1 < p.derivative.rootMultiplicity x :=
-    (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
-  lia
+  apply eval_derivative_ne_zero_of_rootMultiplicity_eq_one
+  · exact (rootMultiplicity_pos hpd_ne).mp (by lia)
+  · exact hpd_rootmult
 
 /-! ## Rolle's theorem for polynomials -/
 

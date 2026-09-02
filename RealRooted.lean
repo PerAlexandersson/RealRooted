@@ -240,6 +240,7 @@ import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
 import RealRooted.JacobiBetaZeroOrthogonality

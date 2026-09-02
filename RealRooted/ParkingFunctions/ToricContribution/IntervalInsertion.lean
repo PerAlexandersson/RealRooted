@@ -38,23 +38,6 @@ theorem insertionOperator_neg (a b : ℝ) (f : ℝ[X]) :
   simp only [insertionOperator, derivative_neg]
   ring
 
-/-- The derivative does not vanish at a root of multiplicity one. -/
-theorem eval_derivative_ne_zero_of_rootMultiplicity_eq_one
-    {p : ℝ[X]} {r : ℝ} (hr : p.IsRoot r) (hmult : p.rootMultiplicity r = 1) :
-    p.derivative.eval r ≠ 0 := by
-  have hder_ne : p.derivative ≠ 0 := by
-    intro hder
-    have hp_ne : p ≠ 0 := fun hp => by simp [hp] at hmult
-    have hp_C : p = C (p.coeff 0) :=
-      eq_C_of_natDegree_eq_zero (derivative_eq_zero.mp hder)
-    rw [hp_C, IsRoot.def, eval_C] at hr
-    rw [hp_C, hr] at hp_ne
-    simp at hp_ne
-  have hmult_derivative :
-      p.derivative.rootMultiplicity r = p.rootMultiplicity r - 1 :=
-    derivative_rootMultiplicity_of_root hr
-  simp_all
-
 theorem coeff_neg_insertionOperator_succ_natDegree
     (a b : ℝ) {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) :
     (-insertionOperator a b f).coeff (f.natDegree + 1) =

@@ -1,6 +1,7 @@
 import RealRooted.EulerianMixedCompatibility.Insertion
 import RealRooted.GarloffWagner
-import RealRooted.HermiteBiehler
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.MaWang.Strong
 import RealRooted.RootContinuity
