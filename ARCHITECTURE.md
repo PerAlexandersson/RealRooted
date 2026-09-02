@@ -125,18 +125,21 @@ Hermite--Biehler now has a foundational dependency boundary:
 - `HermiteBiehler.Converse.RootGeometry` owns the conjugation and multiset
   norm-product argument excluding nonreal component roots and proving
   splitness; and
-- `HermiteBiehler.Converse` owns the Wronskian, common-root cofactor induction,
-  ratio sign argument, and converse endpoints; and
+- `HermiteBiehler.Converse.Wronskian` owns the derivative root-sum identity,
+  Wronskian positivity, and the same- and successor-degree no-common-root
+  endpoints; and
+- `HermiteBiehler.Converse` owns the common-root cofactor inductions, ratio
+  sign argument, and general converse endpoints; and
 - `HermiteBiehler.OddEven` owns the odd/even construction, coefficient
   recovery, nonnegativity transport, and degree/parity formulas; and
 - `HermiteBiehler.Hurwitz` owns the conformal odd/even substitution interfaces
   and right-half-plane stability endpoint; and
 - `HermiteBiehler` is the historical compatibility import for the package.
 
-The nine focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
-158-, nine-, and 160-module local closures, respectively. The compatibility module
-retains its historical import path, so existing consumers remain compatible
-while root-geometry-only consumers can avoid its 161-module closure.
+The ten focused modules have one-, eight-, nine-, nineteen-, 133-, 134-, 137-,
+138-, nine-, and 140-module local closures, respectively. The compatibility
+module retains its historical import path, so existing consumers remain
+compatible while root-geometry-only consumers can avoid its 141-module closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
@@ -609,6 +612,12 @@ account explicitly for each compatibility edge.
 The root-geometry boundary raises the root closure to 765 while exposing the
 splitness proof through a 134-module import and reducing the converse parent to
 361 lines. All eight focused children remain re-exported by `HermiteBiehler`.
+The Wronskian boundary raises the root closure to 766 and separates the
+176-line Wronskian route from the 185-line common-root/ratio parent. Removing
+the parent's redundant `CommonInterleaverTwo` import cuts its closure from 158
+to 138 modules and propagates a 20-module reduction through the Hurwitz,
+Hadamard, finite-symbol, Eulerian-completion, and Veronese consumers. All nine
+focused children remain re-exported by `HermiteBiehler`.
 
 `Basic.AffineInterlacing` is a focused legacy-API companion: it owns reflection,
 translation, and reflected-translation transport for the sorted-root
