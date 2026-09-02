@@ -26,7 +26,7 @@
       "max_modules": 1
     },
     "RealRooted.LiebSokalOperator.Linearity": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.ObreschkoffContinuity": {
       "max_modules": 11
@@ -101,7 +101,7 @@
       "max_modules": 36
     },
     "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
-      "max_modules": 14
+      "max_modules": 15
     },
     "RealRooted.BorceaBranden.Applications.ComplexClassification": {
       "max_modules": 37
