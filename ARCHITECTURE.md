@@ -341,6 +341,14 @@ Two further OEIS-derived corollary modules keep large owning modules cohesive:
 for same-degree nonnegative-coefficient polynomials, a strict normalized
 value-at-zero comparison selects the proper-position orientation.
 
+`LiuOppositeSigns.RootCount` is the reusable foundation for Liu's threshold
+count: it owns `IsLargestRoot`, `deleteRootFactor`, `rootCountAtOrAbove`,
+`RootCountCompatible`, and the strict/non-strict threshold conversions. The
+historical `LiuOppositeSigns` module remains the compatible parent and adds
+positive-leading normalization, largest-root deletion lemmas, and the two Liu
+branches. `RootCountRelStability` imports the foundation directly, keeping its
+root-matching continuity argument independent of the branch layer.
+
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `Prec` interface to Liu's positive root-count package. It
 then applies the package's same-degree and successor-degree results to the
