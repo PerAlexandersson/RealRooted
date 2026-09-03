@@ -176,14 +176,9 @@ theorem indepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
 theorem indepPolyOn_empty {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
     indepPolyOn G (∅ : Finset V) = 1 := by
-  rw [indepPolyOn]
-  rw [Finset.sum_eq_single ∅]
-  · simp
-  · intro s hs hne
-    have hs' : s = ∅ ∧ G.IsIndepSet (s : Set V) := by simpa [indepSetsOn] using hs
-    simp_all
-  · intro hnot
-    simp [indepSetsOn] at hnot
+  have h := weightedIndepPolyOn_empty G (fun _ : V => (1 : ℝ))
+  rw [weightedIndepPolyOn] at h
+  simpa [indepPolyOn] using h
 
 /-- The empty support independence polynomial splits. -/
 theorem indepPolyOn_empty_splits {V : Type u} [DecidableEq V]
