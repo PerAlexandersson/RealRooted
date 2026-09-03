@@ -606,6 +606,13 @@ partial-fraction and regularization proof. The mixed parent remains the
 compatibility import and has a 104-module closure; the direct insertion layer
 has three transitive users.
 
+`WeightedSum` owns the elementary list algebra for its defining fold:
+concatenation, constant weights, and common scaling of weights. The generic
+memberwise constructor for `PairwiseCompatible` belongs to
+`Compatibility.Basic`. The graph-facing `HeilmannLieb` development consumes
+these public APIs and Mathlib's generalized-Boolean-algebra difference laws
+instead of carrying private copies of sequence-independent arguments.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The

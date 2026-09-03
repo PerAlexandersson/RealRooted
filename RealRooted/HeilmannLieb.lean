@@ -1083,45 +1083,6 @@ theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
     simp
   simp [cliqueDeletionFamily, hsum, indepPolyOn_sdiff_clique G S K hK hKS]
 
-private theorem weightedSum_map_const (a : ℝ) :
-    ∀ fs : List ℝ[X], weightedSum (fs.map fun p => (a, p)) = C a * fs.sum
-  | [] => by simp
-  | p :: fs => by
-      simp [weightedSum_map_const a fs, mul_add]
-
-private theorem weightedSum_map_mul_left (a : ℝ) :
-    ∀ ws : List (ℝ × ℝ[X]),
-      weightedSum (ws.map fun ap => (a * ap.1, ap.2)) =
-        C a * weightedSum ws
-  | [] => by simp
-  | (b, p) :: ws => by
-      simp only [List.map_cons, weightedSum_cons]
-      rw [weightedSum_map_mul_left a ws, map_mul]
-      ring
-
-private theorem weightedSum_append :
-    ∀ l m : List (ℝ × ℝ[X]), weightedSum (l ++ m) = weightedSum l + weightedSum m
-  | [], m => by simp
-  | (a, p) :: l, m => by
-      simp [weightedSum_append l m, add_assoc]
-
-private theorem sdiff_right_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
-    (S K L : Finset V) : (S \ L) \ (K \ L) = S \ (K ∪ L) := by
-  ext x
-  simp only [Finset.mem_sdiff, Finset.mem_union]
-  constructor <;> simp_all
-
-private theorem sdiff_left_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
-    (S K L : Finset V) : (S \ K) \ (L \ K) = S \ (K ∪ L) := by
-  ext x
-  simp only [Finset.mem_sdiff, Finset.mem_union]
-  constructor <;> simp_all
-
-private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
-    (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
-  intro i j _hij
-  simp_all
-
 private theorem compatible_add_C_mul_left_of_pairwiseCompatible_three
     {a b c : ℝ[X]} {r : ℝ} (hr : 0 ≤ r)
     (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
@@ -1725,9 +1686,9 @@ theorem compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompat
     (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
       (fs := fs) hrr hpos hnn).1 hpair
   have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
-    sdiff_right_sdiff_eq_sdiff_union S K L
+    by simp [sdiff_sdiff, union_comm]
   have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
-    sdiff_left_sdiff_eq_sdiff_union S K L
+    by simp [sdiff_sdiff]
   have hK' : G.IsClique ((K \ L : Finset V) : Set V) :=
     hK.subset fun _ hx => (Finset.mem_sdiff.mp hx).1
   have hL' : G.IsClique ((L \ K : Finset V) : Set V) :=
@@ -1865,9 +1826,9 @@ theorem compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
     (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
       (fs := fs) hrr hpos hnn).1 hpair
   have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
-    sdiff_right_sdiff_eq_sdiff_union S K L
+    by simp [sdiff_sdiff, union_comm]
   have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
-    sdiff_left_sdiff_eq_sdiff_union S K L
+    by simp [sdiff_sdiff]
   have hK_terms :
       kTerms.sum =
         ∑ v ∈ K \ L, X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v) := by
@@ -2433,9 +2394,9 @@ theorem supportSimplicialPairCompatible_of_smaller
     have hbase : (indepPolyOn G (S \ (K ∪ L))).Splits :=
       hSplit (S \ (K ∪ L)) sdiff_subset
     have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
-      sdiff_right_sdiff_eq_sdiff_union S K L
+      by simp [sdiff_sdiff, union_comm]
     have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
-      sdiff_left_sdiff_eq_sdiff_union S K L
+      by simp [sdiff_sdiff]
     have hK_simp : IsSimplicialCliqueOn G (S \ L) (K \ L) :=
       hK.sdiff_right L
     have hL_simp : IsSimplicialCliqueOn G (S \ K) (L \ K) :=
@@ -2573,9 +2534,9 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
         (weightedIndepPolyOn G (S \ (K ∪ L)) wt).Splits :=
       hSplit (S \ (K ∪ L)) sdiff_subset
     have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
-      sdiff_right_sdiff_eq_sdiff_union S K L
+      by simp [sdiff_sdiff, union_comm]
     have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
-      sdiff_left_sdiff_eq_sdiff_union S K L
+      by simp [sdiff_sdiff]
     have hK_simp : IsSimplicialCliqueOn G (S \ L) (K \ L) :=
       hK.sdiff_right L
     have hL_simp : IsSimplicialCliqueOn G (S \ K) (L \ K) :=
