@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 769
+      "max_modules": 770
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -278,25 +278,25 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
-      "max_modules": 163
+      "max_modules": 164
    },
     "RealRooted.RankTwoMatching.Basic": {
-      "max_modules": 157
-   },
-    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 158
    },
-    "RealRooted.RankTwoMatching.DisjointEquiv": {
+    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 159
    },
-    "RealRooted.RankTwoMatching.Enumeration": {
+    "RealRooted.RankTwoMatching.DisjointEquiv": {
       "max_modules": 160
    },
-    "RealRooted.RankTwoMatching.Endpoint": {
+    "RealRooted.RankTwoMatching.Enumeration": {
       "max_modules": 161
    },
-    "RealRooted.RankTwoMatching": {
+    "RealRooted.RankTwoMatching.Endpoint": {
       "max_modules": 162
+   },
+    "RealRooted.RankTwoMatching": {
+      "max_modules": 163
    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 88

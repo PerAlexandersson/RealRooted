@@ -1,4 +1,4 @@
-import RealRooted.ChudnovskySeymour
+import RealRooted.Compatibility.Three
 import Mathlib.Combinatorics.SimpleGraph.LineGraph
 import Mathlib.Combinatorics.SimpleGraph.Matching
 
@@ -193,19 +193,6 @@ theorem indepPolyOn_empty_splits {V : Type u} [DecidableEq V]
   rw [indepPolyOn_empty]
   simp
 
-private theorem compatible_self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
-    Compatible p (X * p) := by
-  intro α β _hα _hβ
-  have hlin : (C α + C β * X : ℝ[X]).Splits := by
-    by_cases hβ0 : β = 0
-    · simp [hβ0]
-    · have hβα : β * (α / β) = α := by grind
-      have : (C α + C β * X : ℝ[X]) = C β * (X + C (α / β)) := by grind
-      simp_all
-  have hsum : C α * p + C β * (X * p) = (C α + C β * X) * p := by ring
-  have : (C α * p + C β * (X * p)).Splits := by simp_all
-  grind
-
 /-- If a weighted support-restricted independence polynomial is real-rooted,
 then it is compatible with its `X`-multiple. -/
 theorem compatible_weightedIndepPolyOn_X_mul_self_of_splits
@@ -214,7 +201,7 @@ theorem compatible_weightedIndepPolyOn_X_mul_self_of_splits
     (wt : V → ℝ) (hS : (weightedIndepPolyOn G S wt).Splits) :
     Compatible (weightedIndepPolyOn G S wt)
       (X * weightedIndepPolyOn G S wt) :=
-  compatible_self_X_mul_of_splits hS
+  Compatible.self_X_mul_of_splits hS
 
 /-- If a support-restricted independence polynomial is real-rooted, then it is
 compatible with its `X`-multiple. -/
@@ -222,36 +209,7 @@ theorem compatible_indepPolyOn_X_mul_self_of_splits {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V)
     (hS : (indepPolyOn G S).Splits) :
     Compatible (indepPolyOn G S) (X * indepPolyOn G S) :=
-  compatible_self_X_mul_of_splits hS
-
-private theorem compatible_self_of_splits {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits) :
-    Compatible p p := by
-  intro α β _hα _hβ
-  have hsum : C α * p + C β * p = C (α + β) * p := by grind
-  by_cases hzero : α + β = 0
-  · simp_all
-  · right
-    rw [hsum]
-    exact isRealRooted_C_mul hp_ne hp hzero
-
-private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f g) :
-    Compatible (X * f) (X * g) := by
-  intro α β hα hβ
-  have hsum : C α * (X * f) + C β * (X * g) =
-      X * (C α * f + C β * g) := by
-    ring
-  rcases h α β hα hβ with hzero | hrr <;> simp_all
-
-private theorem splits_add_of_compatible {p q : ℝ[X]} (h : Compatible p q)
-    (hadd : p + q ≠ 0) : (p + q).Splits := by
-  have hcombo := h 1 1 zero_le_one zero_le_one
-  simp_all
-
-private theorem splits_add_C_mul_of_compatible {p q : ℝ[X]} (h : Compatible p q)
-    {r : ℝ} (hr : 0 ≤ r) (hadd : p + C r * q ≠ 0) :
-    (p + C r * q).Splits := by
-  have hcombo := h 1 r zero_le_one hr
-  simp_all
+  Compatible.self_X_mul_of_splits hS
 
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
@@ -1083,79 +1041,6 @@ theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
     simp
   simp [cliqueDeletionFamily, hsum, indepPolyOn_sdiff_clique G S K hK hKS]
 
-private theorem compatible_add_C_mul_left_of_pairwiseCompatible_three
-    {a b c : ℝ[X]} {r : ℝ} (hr : 0 ≤ r)
-    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
-    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
-    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
-    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
-    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
-    Compatible (a + C r * b) c := by
-  let fs : List ℝ[X] := [a, b, c]
-  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
-    intro f hf
-    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl | rfl <;> simp_all
-  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
-    intro f hf
-    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl | rfl
-    · exact hapos
-    · exact hbpos
-    · exact hcpos
-  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    intro f hf
-    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl | rfl
-    · exact hann
-    · exact hbnn
-    · exact hcnn
-  have hpair : PairwiseCompatible fs := by
-    apply pairwiseCompatible_of_forall_mem
-    intro f hf g hg
-    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf hg
-    rcases hf with rfl | rfl | rfl <;> rcases hg with rfl | rfl | rfl
-    · exact compatible_self_of_splits ha.1 ha.2
-    · exact hab
-    · exact hac
-    · exact hab.comm
-    · exact compatible_self_of_splits hb.1 hb.2
-    · exact hbc
-    · exact hac.comm
-    · exact hbc.comm
-    · exact compatible_self_of_splits hc.1 hc.2
-  have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      (fs := fs) hrr hpos hnn).1 hpair
-  intro α β hα hβ
-  let ws : List (ℝ × ℝ[X]) := [(α, a), (α * r, b), (β, c)]
-  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
-    rcases hap with rfl | rfl | rfl <;> simp [fs]
-  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
-    rcases hap with rfl | rfl | rfl
-    · exact hα
-    · exact mul_nonneg hα hr
-    · exact hβ
-  have hsum : weightedSum ws = C α * (a + C r * b) + C β * c := by
-    simp only [ws, weightedSum_cons, weightedSum_nil]
-    rw [map_mul]
-    ring
-  simpa [hsum] using hfam ws hmem hnonneg
-
-private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
-    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
-    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
-    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
-    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
-    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
-    Compatible (a + b) c := by
-  simpa using compatible_add_C_mul_left_of_pairwiseCompatible_three
-    (r := 1) zero_le_one ha hb hc hapos hbpos hcpos hann hbnn hcnn hab hac hbc
-
 /-- Pairwise compatibility of the clique-deletion family follows from the two
 compatibility obligations appearing in Chudnovsky--Seymour Lemma 2.5. -/
 theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
@@ -1174,11 +1059,11 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
   simp only [cliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
   rcases hf with rfl | ⟨u, huList, rfl⟩
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
-    · exact compatible_self_of_splits (indepPolyOn_ne_zero G (S \ K)) hbase
+    · exact Compatible.self_of_splits hbase
     · simp_all
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
     · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
-    · exact compatible_X_mul_of_compatible
+    · exact Compatible.X_mul
         (hdel_pair u (Finset.mem_toList.mp huList) v (Finset.mem_toList.mp hvList))
 
 /-- Pairwise compatibility of the weighted clique-deletion family follows
@@ -1203,12 +1088,11 @@ theorem weightedCliqueDeletionFamily_pairwiseCompatible_of_compatible
   simp only [weightedCliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
   rcases hf with rfl | ⟨u, huList, rfl⟩
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
-    · exact compatible_self_of_splits
-        (weightedIndepPolyOn_ne_zero G (S \ K) wt) hbase
+    · exact Compatible.self_of_splits hbase
     · exact hbase_del v (Finset.mem_toList.mp hvList)
   · rcases hg with rfl | ⟨v, hvList, rfl⟩
     · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
-    · exact compatible_X_mul_of_compatible
+    · exact Compatible.X_mul
         (hdel_pair u (Finset.mem_toList.mp huList)
           v (Finset.mem_toList.mp hvList))
 
@@ -1308,9 +1192,7 @@ theorem weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighbor
     weightedCliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
   rcases hf with rfl | rfl | ⟨u, huList, rfl⟩
   · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
-    · exact compatible_self_of_splits
-        (isRealRooted_X_mul
-          (weightedIndepPolyOn_ne_zero G (S \ K) wt) hbase).1
+    · exact Compatible.self_of_splits
         (isRealRooted_X_mul
           (weightedIndepPolyOn_ne_zero G (S \ K) wt) hbase).2
     · exact
@@ -1321,12 +1203,11 @@ theorem weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighbor
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
           G hK hKS hvK
       simpa [hvSupport] using
-        compatible_X_mul_of_compatible (hbase_neighbor v hvK)
+        Compatible.X_mul (hbase_neighbor v hvK)
   · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
     · exact compatible_weightedIndepPolyOn_X_mul_self_of_splits
         G (S \ K) wt hbase
-    · exact compatible_self_of_splits
-        (weightedIndepPolyOn_ne_zero G (S \ K) wt) hbase
+    · exact Compatible.self_of_splits hbase
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
@@ -1338,14 +1219,14 @@ theorem weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighbor
         G hK hKS huK
     rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
     · simpa [huSupport] using
-        (compatible_X_mul_of_compatible (hbase_neighbor u huK)).comm
+        (Compatible.X_mul (hbase_neighbor u huK)).comm
     · simpa [huSupport] using (hbase_neighbor_x u huK).comm
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
           G hK hKS hvK
       simpa [huSupport, hvSupport] using
-        compatible_X_mul_of_compatible (hneighbor_pair u huK v hvK)
+        Compatible.X_mul (hneighbor_pair u huK v hvK)
 
 /-- Pairwise compatibility of the extended clique-deletion family follows from
 the recursive compatibility hypotheses in Chudnovsky--Seymour Lemma 2.5. -/
@@ -1370,17 +1251,16 @@ theorem cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_
     List.mem_map] at hf hg
   rcases hf with rfl | rfl | ⟨u, huList, rfl⟩
   · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
-    · exact compatible_self_of_splits
-        (isRealRooted_X_mul (indepPolyOn_ne_zero G (S \ K)) hbase).1
+    · exact Compatible.self_of_splits
         (isRealRooted_X_mul (indepPolyOn_ne_zero G (S \ K)) hbase).2
     · exact (compatible_indepPolyOn_X_mul_self_of_splits G (S \ K) hbase).comm
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hvK
-      simpa [hvSupport] using compatible_X_mul_of_compatible (hbase_neighbor v hvK)
+      simpa [hvSupport] using Compatible.X_mul (hbase_neighbor v hvK)
   · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
     · exact compatible_indepPolyOn_X_mul_self_of_splits G (S \ K) hbase
-    · exact compatible_self_of_splits (indepPolyOn_ne_zero G (S \ K)) hbase
+    · exact Compatible.self_of_splits hbase
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hvK
@@ -1390,13 +1270,13 @@ theorem cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS huK
     rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
     · simpa [huSupport] using
-        (compatible_X_mul_of_compatible (hbase_neighbor u huK)).comm
+        (Compatible.X_mul (hbase_neighbor u huK)).comm
     · simpa [huSupport] using (hbase_neighbor_x u huK).comm
     · have hvK : v ∈ K := Finset.mem_toList.mp hvList
       have hvSupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hvK
       simpa [huSupport, hvSupport] using
-        compatible_X_mul_of_compatible (hneighbor_pair u huK v hvK)
+        Compatible.X_mul (hneighbor_pair u huK v hvK)
 
 /-- If the clique-deletion family is pairwise compatible, then the support
 independence polynomial splits. This is the Chudnovsky--Seymour engine applied
@@ -1989,7 +1869,7 @@ theorem compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbo
       H \ neighborSetOn G H v = deleteClosedNeighborSupport G S v := by
     exact sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
       G huv
-  simpa [H, huSupport, hvSupport] using compatible_X_mul_of_compatible hp
+  simpa [H, huSupport, hvSupport] using Compatible.X_mul hp
 
 /-- Weighted version of the common-closed-neighborhood compatibility bridge. -/
 theorem compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
@@ -2019,7 +1899,7 @@ theorem compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeig
     exact
       sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
         G huv
-  simpa [H, huSupport, hvSupport] using compatible_X_mul_of_compatible hp
+  simpa [H, huSupport, hvSupport] using Compatible.X_mul hp
 
 /-- The adjacent-neighbor case of Chudnovsky--Seymour Lemma 2.6.  Expanding
 `I(S.erase v)` at an adjacent vertex `u` reduces compatibility with
@@ -2081,7 +1961,7 @@ theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
     simpa [B, C] using
       compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor hG huv hPair
   have hABC : Compatible (A + B) C :=
-    compatible_add_left_of_pairwiseCompatible_three
+    Compatible.add_left_of_pairwise_three
       hA hB hC hApos hBpos hCpos hAnn hBnn hCnn
       (by simpa [A, B] using hBaseDelU)
       (by simpa [A, C] using hBaseDelV)
@@ -2173,7 +2053,7 @@ theorem compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
       compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
         hG wt huv hPair
   have hABC : Compatible (A + Polynomial.C (wt u) * B) C :=
-    compatible_add_C_mul_left_of_pairwiseCompatible_three
+    Compatible.add_C_mul_left_of_pairwise_three
       (r := wt u) (hwt u (Finset.mem_of_mem_erase huS))
       hA hB hC hApos hBpos hCpos hAnn hBnn hCnn
       (by simpa [A, B] using hBaseDelU)
@@ -2386,7 +2266,7 @@ theorem supportSimplicialPairCompatible_of_smaller
     have hL_empty : L = ∅ := by simp_all
     have hS : (indepPolyOn G S).Splits := hSplit S Subset.rfl
     simpa [hK_empty, hL_empty] using
-      compatible_self_of_splits (indepPolyOn_ne_zero G S) hS
+      Compatible.self_of_splits hS
   · have hUnion_nonempty : (K ∪ L).Nonempty :=
       Finset.nonempty_iff_ne_empty.mpr hUnion_empty
     have hsmall : (S \ (K ∪ L)).card < S.card :=
@@ -2459,7 +2339,7 @@ theorem supportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hK_neighbor_simp u hu) (hK_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hK_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hL_pair_x : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
         Compatible
           (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) u))
@@ -2468,7 +2348,7 @@ theorem supportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hL_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hL_delete_support u hu, hL_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hKL_pair_x : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
         Compatible
           (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) u))
@@ -2477,7 +2357,7 @@ theorem supportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hK_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hL_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hpair : PairwiseCompatible (cliquePairDeletionFamily G S K L) := by
       apply pairwiseCompatible_of_forall_mem
       intro f hf g hg
@@ -2485,8 +2365,7 @@ theorem supportSimplicialPairCompatible_of_smaller
         List.mem_map] at hf hg
       rcases hf with rfl | htailF
       · rcases hg with rfl | htailG
-        · exact compatible_self_of_splits
-            (indepPolyOn_ne_zero G (S \ (K ∪ L))) hbase
+        · exact Compatible.self_of_splits hbase
         · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;> simp_all
       · rcases htailF with ⟨u, huList, rfl⟩ | ⟨u, huList, rfl⟩
         · have hu : u ∈ K \ L := Finset.mem_toList.mp huList
@@ -2525,7 +2404,7 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
     have hS : (weightedIndepPolyOn G S wt).Splits :=
       hSplit S Subset.rfl
     simpa [hK_empty, hL_empty] using
-      compatible_self_of_splits (weightedIndepPolyOn_ne_zero G S wt) hS
+      Compatible.self_of_splits hS
   · have hUnion_nonempty : (K ∪ L).Nonempty :=
       Finset.nonempty_iff_ne_empty.mpr hUnion_empty
     have hsmall : (S \ (K ∪ L)).card < S.card :=
@@ -2613,7 +2492,7 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hK_neighbor_simp u hu) (hK_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hK_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hL_pair_x : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
@@ -2624,7 +2503,7 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hL_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hL_delete_support u hu, hL_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hKL_pair_x : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
@@ -2635,7 +2514,7 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
         (hK_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hL_delete_support v hv] using
-        compatible_X_mul_of_compatible hp
+        Compatible.X_mul hp
     have hpair : PairwiseCompatible
         (weightedCliquePairDeletionFamily G wt S K L) := by
       apply pairwiseCompatible_of_forall_mem
@@ -2644,8 +2523,7 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
         List.mem_append, List.mem_map] at hf hg
       rcases hf with rfl | htailF
       · rcases hg with rfl | htailG
-        · exact compatible_self_of_splits
-            (weightedIndepPolyOn_ne_zero G (S \ (K ∪ L)) wt) hbase
+        · exact Compatible.self_of_splits hbase
         · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;>
             simp_all
       · rcases htailF with ⟨u, huList, rfl⟩ | ⟨u, huList, rfl⟩
@@ -2848,7 +2726,7 @@ theorem supportIndepPoly_splits_of_clawFree
             rw [indepPolyOn_erase G hvS]
             simp_all)
         have hsum_splits :=
-          splits_add_of_compatible (hVertex hvS) hsum_ne
+          Compatible.splits_add (hVertex hvS) hsum_ne
         rw [indepPolyOn_erase G hvS]
         exact hsum_splits
     have hSplit : SupportIndepPolySplits G S := by
@@ -2926,7 +2804,7 @@ theorem weightedSupportIndepPoly_splits_of_clawFree
             rw [weightedIndepPolyOn_erase G wt hvS]
             simpa [mul_assoc] using hzero)
         have hsum_splits :=
-          splits_add_C_mul_of_compatible
+          Compatible.splits_add_C_mul
             (hVertex hvS) (r := wt v) (hwt v) hsum_ne
         rw [weightedIndepPolyOn_erase G wt hvS]
         simpa [mul_assoc] using hsum_splits

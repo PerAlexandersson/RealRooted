@@ -30,6 +30,53 @@ lemma comm {f g : ℝ[X]} (h : Compatible f g) : Compatible g f := by
   simpa [Compatible, add_comm, mul_comm, mul_left_comm, mul_assoc] using
     h β α hβ hα
 
+/-- A split polynomial is compatible with its `X`-multiple. -/
+theorem self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
+    Compatible p (X * p) := by
+  intro α β _hα _hβ
+  have hlin : (C α + C β * X : ℝ[X]).Splits := by
+    by_cases hβ0 : β = 0
+    · simp [hβ0]
+    · have hβα : β * (α / β) = α := by grind
+      have : (C α + C β * X : ℝ[X]) = C β * (X + C (α / β)) := by grind
+      simp_all
+  have hsum : C α * p + C β * (X * p) = (C α + C β * X) * p := by ring
+  have : (C α * p + C β * (X * p)).Splits := by simp_all
+  grind
+
+/-- A split polynomial is compatible with itself. -/
+theorem self_of_splits {p : ℝ[X]} (hp : p.Splits) : Compatible p p := by
+  intro α β _hα _hβ
+  have hsum : C α * p + C β * p = C (α + β) * p := by grind
+  by_cases hzero : C α * p + C β * p = 0
+  · exact Or.inl hzero
+  · right
+    rw [hsum]
+    exact ⟨hsum ▸ hzero, hp.C_mul (α + β)⟩
+
+/-- Multiplication by `X` preserves compatibility. -/
+theorem X_mul {f g : ℝ[X]} (h : Compatible f g) :
+    Compatible (X * f) (X * g) := by
+  intro α β hα hβ
+  have hsum : C α * (X * f) + C β * (X * g) =
+      X * (C α * f + C β * g) := by
+    ring
+  rcases h α β hα hβ with hzero | hrr <;> simp_all
+
+/-- A nonzero sum of compatible polynomials splits. -/
+theorem splits_add {p q : ℝ[X]} (h : Compatible p q)
+    (hadd : p + q ≠ 0) : (p + q).Splits := by
+  have hcombo := h 1 1 zero_le_one zero_le_one
+  simp_all
+
+/-- A nonnegative scalar multiple can be added to the left member of a
+compatible pair without losing splitness, provided the sum is nonzero. -/
+theorem splits_add_C_mul {p q : ℝ[X]} (h : Compatible p q)
+    {r : ℝ} (hr : 0 ≤ r) (hadd : p + C r * q ≠ 0) :
+    (p + C r * q).Splits := by
+  have hcombo := h 1 r zero_le_one hr
+  simp_all
+
 /-- A linear map that preserves nonzero real-rootedness on nonnegative inputs
 up to degree `d` transports compatibility inside that degree box. -/
 theorem map_linearMap_of_nonneg
