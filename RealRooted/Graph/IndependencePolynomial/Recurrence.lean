@@ -259,9 +259,8 @@ theorem indepPolyOn_erase {V : Type u} [DecidableEq V]
     indepPolyOn G S =
       indepPolyOn G (S.erase v) +
         X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
-  have h := indepPolyOn_insert
-    (G := G) (S := S.erase v) (v := v) (Finset.notMem_erase v S)
-  simpa [deleteClosedNeighborSupport, Finset.insert_erase hv] using h
+  simpa [weightedIndepPolyOn_one] using
+    weightedIndepPolyOn_erase G (fun _ => 1) hv
 
 /-- If `v` has no neighbors in `S.erase v`, then deleting the closed
 neighborhood of `v` only erases `v`. -/
@@ -402,41 +401,6 @@ theorem deleteClosedNeighborSupport_erase_eq_of_clique {V : Type u} [DecidableEq
     simp [deleteClosedNeighborSupport, hxv_adj]
   · simp [deleteClosedNeighborSupport, hwv]
 
-/-- Chudnovsky--Seymour's clique deletion expansion, in finite-support form.
-An independent set can meet a clique in at most one vertex, so the independence
-polynomial splits into the sets avoiding the clique and the sets containing a
-specified clique vertex. -/
-theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
-    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S) :
-    indepPolyOn G S =
-      indepPolyOn G (S \ K) +
-        ∑ v ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
-  classical
-  revert S hK
-  refine Finset.induction_on K ?_ ?_
-  · simp
-  · intro v K hvK ih S hK hKS
-    have hvS : v ∈ S := hKS (Finset.mem_insert_self v K)
-    have hK_old : G.IsClique (K : Set V) := by simp_all
-    have hKS_old : K ⊆ S.erase v := by
-      intro w hw
-      refine Finset.mem_erase.mpr ⟨?_, hKS (Finset.mem_insert.mpr (Or.inr hw))⟩
-      exact fun hwv ↦ hvK (by simp_all)
-    rw [indepPolyOn_erase G hvS, ih (S.erase v) hK_old hKS_old]
-    have hsdiff : S.erase v \ K = S \ insert v K := by
-      ext w
-      by_cases hwv : w = v <;> simp [Finset.mem_sdiff, hwv]
-    rw [hsdiff, Finset.sum_insert hvK]
-    have hsum :
-        (∑ x ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G (S.erase v) x)) =
-          ∑ x ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S x) := by
-      apply Finset.sum_congr rfl
-      intro x hx
-      rw [deleteClosedNeighborSupport_erase_eq_of_clique G hK hvK hx]
-    rw [hsum]
-    ring_nf
-
 /-- Weighted clique-deletion expansion.  The weight of a chosen clique vertex
 appears as the scalar on its closed-neighborhood deletion term. -/
 theorem weightedIndepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
@@ -483,6 +447,17 @@ theorem weightedIndepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
       rw [mul_comm (C (wt x)) X]
     rw [hsum_swap]
     ring
+
+/-- Chudnovsky--Seymour's clique-deletion expansion in finite-support form,
+specialized from the weighted recurrence at constant weight `1`. -/
+theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S) :
+    indepPolyOn G S =
+      indepPolyOn G (S \ K) +
+        ∑ v ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
+  simpa [weightedIndepPolyOn_one] using
+    weightedIndepPolyOn_sdiff_clique G (fun _ => 1) S K hK hKS
 
 end Graph
 end RealRooted
