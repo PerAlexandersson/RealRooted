@@ -1,7 +1,7 @@
 .lake/
 .lake
 
-# Keep the public repository focused on source and the top-level README.
+# Keep the public repository focused on source and maintained documentation.
 *.md
 !README.md
 !AGENTS.md

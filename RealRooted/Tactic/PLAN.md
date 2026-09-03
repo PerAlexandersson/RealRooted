@@ -1,4 +1,4 @@
-# RealRooted tactic plan
+# RealRooted tactic plan (historical)
 
 Date: 2026-07-01
 
@@ -10,7 +10,7 @@ Date: 2026-07-01
 > [`ARCHITECTURE.md`](../../ARCHITECTURE.md) and
 > [`OEIS_COVERAGE.md`](OEIS_COVERAGE.md).
 
-This note is a plan for tactic support for recurrence-based
+This note records the original plan for tactic support for recurrence-based
 real-rootedness proofs in the `RealRooted` Lean project.  It is written for
 an implementation agent.  The intent is not to create a broad mathematical
 search tactic.  The intent is to automate the repetitive proof shell that
