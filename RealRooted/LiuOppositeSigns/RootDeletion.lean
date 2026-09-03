@@ -239,21 +239,13 @@ theorem eq_right_of_roots_pair {p : ℝ[X]} {r a b : ℝ}
     (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b)
     (hroots : p.roots = {a, b}) :
     r = b := by
-  have hb_mem : b ∈ p.roots := by
-    rw [hroots]
-    simp only [Multiset.insert_eq_cons]
-    simp
-  have hb_le_r : b ≤ r := h.roots_le b hb_mem
-  have hr_mem : r ∈ p.roots := h.mem_roots hp_ne
-  have hr_le_b : r ≤ b := by
-    rw [hroots] at hr_mem
-    simp only [Multiset.insert_eq_cons] at hr_mem
-    simp only [Multiset.mem_cons, Multiset.mem_singleton] at hr_mem
-    rcases hr_mem with hr_eq_a | hr_eq_b
-    · rw [hr_eq_a]
-      exact hab
-    · rw [hr_eq_b]
-  exact le_antisymm hr_le_b hb_le_r
+  have hb_le : b ≤ r := h.roots_le b (by simp [hroots])
+  have hr := h.mem_roots hp_ne
+  rw [hroots] at hr
+  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hr
+  rcases hr with rfl | rfl
+  · exact le_antisymm hab hb_le
+  · rfl
 
 /-- For an ordered three-root multiset, the largest-root certificate selects
 the right entry. -/
@@ -261,23 +253,14 @@ theorem eq_right_of_roots_triple {p : ℝ[X]} {r a b c : ℝ}
     (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b) (hbc : b ≤ c)
     (hroots : p.roots = {a, b, c}) :
     r = c := by
-  have hc_mem : c ∈ p.roots := by
-    rw [hroots]
-    simp only [Multiset.insert_eq_cons]
-    simp
-  have hc_le_r : c ≤ r := h.roots_le c hc_mem
-  have hr_mem : r ∈ p.roots := h.mem_roots hp_ne
-  have hr_le_c : r ≤ c := by
-    rw [hroots] at hr_mem
-    simp only [Multiset.insert_eq_cons] at hr_mem
-    simp only [Multiset.mem_cons, Multiset.mem_singleton] at hr_mem
-    rcases hr_mem with hr_eq_a | hr_eq_b | hr_eq_c
-    · rw [hr_eq_a]
-      exact hab.trans hbc
-    · rw [hr_eq_b]
-      exact hbc
-    · rw [hr_eq_c]
-  exact le_antisymm hr_le_c hc_le_r
+  have hc_le : c ≤ r := h.roots_le c (by simp [hroots])
+  have hr := h.mem_roots hp_ne
+  rw [hroots] at hr
+  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hr
+  rcases hr with rfl | rfl | rfl
+  · exact le_antisymm (hab.trans hbc) hc_le
+  · exact le_antisymm hbc hc_le
+  · rfl
 
 end IsLargestRoot
 
