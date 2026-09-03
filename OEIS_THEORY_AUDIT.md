@@ -142,6 +142,12 @@ of the RealRooted interlacing library.
   theory, finite continuation, log-gap density, extreme-ratio, and square-sum
   criteria formerly in `ProofsOeis.AmplitudeMonotone`, `SequenceExtension`,
   `RootConvexity`, `ExtremeGap`, and `SumOfSquaresAmplitude`.
+- The A390883 extraction separates generic shifted-Jacobi root comparison in
+  `JacobiParameterInterlacing` from the model-specific
+  `ParkingFunctions.ToricContribution` stack. The public application proves
+  the fixed-row pairwise interlacing, common-left-interleaver, and positive
+  weighted-sum endpoints; only the OEIS row identification remains a consumer
+  responsibility.
 
 These modules preserve theorem names but use the `RealRooted` namespace. A
 consumer migration should import the focused module and remove its duplicate
@@ -287,7 +293,7 @@ project-level compatibility interface.
   summability facts belong, if anywhere, with a future Mathlib
   Eisenstein-series API. `LevelGap` combines those same model roots with
   explicit window constants, and therefore remains consumer-side.
-- The vendored `BandedHessenberg` and `GantmacherKreinOrdered` modules are
-  temporary copies of a named RealRooted pull request, not OEIS-owned theory.
-  They should be deleted when the dependency pin advances, rather than copied
-  again into a competing local API.
+- The former vendored `BandedHessenberg` and `GantmacherKreinOrdered` copies
+  have been removed from the consumer after its RealRooted dependency
+  advanced. Their maintained public descendants belong to RealRooted and
+  should not be reintroduced as competing OEIS-local APIs.

@@ -44,6 +44,13 @@ lake build RealRooted.VeroneseSection
 lake build RealRooted.Bezoutian
 ```
 
+For an independent kernel re-check and axiom audit of the small comparator
+surface, use `./verify.sh` on x86_64 Linux. The script downloads and caches
+the pinned comparator, exporter, sandbox, and independent Rust kernel listed
+in `comparator/versions.env`. On another host platform, or for a clean Ubuntu
+environment, use `./verify_docker.sh`; non-x86_64 hosts require Docker's amd64
+emulation. These scripts complement `lake build`; they do not replace it.
+
 ## Repository Layout
 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) records the intended dependency layers,
@@ -102,6 +109,10 @@ lake build RealRooted.Bezoutian
   `LowerTriangularMatrix.lean` and `MaoWangMatrixProduct.lean` provide the
   lower-triangular row-generating-function API and matrix-product endpoint
   wrappers.
+- `RealRooted/ParkingFunctions/ToricContribution/` layers the public A390883
+  backend from shifted-Jacobi and interval-insertion infrastructure through
+  the finite and exceptional offsets, coefficient reversal, fixed-row
+  pairwise interlacing, and the common-interlacer weighted-sum endpoint.
 - `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
   foundation, `RootDeletion.lean` contains the general cofactor and
   largest-root deletion API, and `PositiveSplitRootCount.lean` packages the
@@ -162,8 +173,9 @@ lake build RealRooted.Bezoutian
 
 ## Checked Highlights
 
-Every declaration named in this section is a checked Lean declaration, unless
-it is explicitly described as an unproved conjecture (bearing a `sorry` stub).
+Every declaration named in this section is a checked Lean declaration. Any
+open proposition scaffold is explicitly labeled and tracked in
+[`PROOF_STATUS.md`](PROOF_STATUS.md); the project does not use `sorry` stubs.
 
 ### Theorem-Level Highlights
 
@@ -217,6 +229,12 @@ the checked or challenge-facing highlights are:
   real-rooted, and the formalization proves stronger consecutive interlacing
   or Sturm-sequence statements.  See `RealRooted.Challenges.Eulerian`;
   references include Frobenius (1910).
+- Toric contributions for A390883: each fixed row is an oriented all-pairs
+  interlacing sequence, the normalized reverse-offset family has a common
+  left interleaver, and every strictly positive weighted normalized sum is
+  real-rooted. See `toricContributionRow_isInterlacingSeq`,
+  `normalizedRPolynomialFamily_hasCommonLeftInterleaver`, and
+  `normalizedRPolynomialFamily_weighted_sum_splits`; reference: Xiao (2026).
 - Graph polynomials: finite claw-free graphs have real-rooted independence
   polynomials, and matching-polynomial corollaries are packaged through the
   line-graph reduction.  See `Graph.clawFree_indepPoly_splits` and
@@ -367,9 +385,9 @@ row-oriented matrix are formally refuted.
 
 GitHub issues track individual proof tasks rather than being duplicated here.
 Current open themes include the full singular/reducible Gantmacher--Krein
-theorem, the Branden--Leite chain-polynomial program, the associahedron toric
-`g`-polynomial conjecture, and analytic Chebyshev/Jacobi root-location
-backends for OEIS applications.  Liu's opposite-leading-sign theorem is
+theorem, the Branden--Leite chain-polynomial program, and analytic
+Chebyshev/Jacobi root-location backends for OEIS applications. Liu's
+opposite-leading-sign theorem is
 checked as
 `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`, with the
 necessary explicit common-root branch; its formerly proposed weaker interface
@@ -377,7 +395,8 @@ has a checked counterexample.  Recent checked issue surfaces include the
 Braun--Jal route described above, the Gustafsson--Solus interlacing recursion,
 the Haglund--Zhang `s`-inversion/A046802 backend, characteristic-polynomial
 packaging for Cauchy interlacing, and the finite Borcea--Branden symbol
-classification.
+classification. The A390883 toric-contribution conjecture is also closed by
+the stronger fixed-row interlacing and common-interlacer results listed above.
 
 ## Development Notes
 
@@ -442,8 +461,9 @@ To maintain a polished repository:
   Git patch files (`*.patch`), backup files (e.g., `*~`), or temporary
   scratch files.
 * Keep issue-specific design or reference notes local. Note that `.gitignore`
-  is configured to ignore all Markdown (`*.md`) files by default, with
-  exceptions only for `README.md` and `RealRooted/Tactic/PLAN.md`.
+  ignores new Markdown (`*.md`) files by default and explicitly allows the
+  maintained top-level guides, architecture/status ledgers, tactic plan and
+  generated tactic coverage, and the public `SuperEulerian/` subtree.
 * Ensure any new types of temporary files or scratch directories are kept
   local or explicitly added to `.gitignore`.
 
@@ -497,6 +517,8 @@ RealRooted is distributed under the Apache License, Version 2.0. See
   Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963.
 - D. G. Wagner, *Total positivity of Hadamard products*, J. Math. Anal. Appl.
   163 (1992), 459--483.
+- Q. Xiao, *The real-rootedness of the toric g-contribution polynomials*,
+  arXiv:2609.01086.
 - Symmetric Functions Catalog:
   <https://www.symmetricfunctions.com/realRooted.htm>,
   <https://www.symmetricfunctions.com/realRootedInterlacing.htm>,
