@@ -665,6 +665,14 @@ The eight layers are re-exported by `RootAmplitude`; this keeps every source uni
 below 250 lines and lets consumers import a finite-sequence theorem without a
 polynomial dependency.
 
+The A390883 application has a one-directional
+`ParkingFunctions.ToricContribution` stack. `Definitions` and
+`IntervalInsertion` feed the triangular invariant and algebra, followed by the
+diagonal collapse, finite offsets, exceptional offset, common-interlacer
+package, and final contribution reversal. Generic shifted-Jacobi comparison
+stays in `JacobiParameterInterlacing`; the toric model definitions and
+finite-offset assembly remain in the application layer.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 

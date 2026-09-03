@@ -1,8 +1,16 @@
-# RealRooted tactic plan
+# RealRooted tactic plan (historical)
 
 Date: 2026-07-01
 
-This note is a plan for tactic support for recurrence-based
+> [!NOTE]
+> This is a historical design log, not the current tactic inventory. The
+> original proposal and implementation phases below record why the tactic
+> layer was introduced; later dated sections record selected checkpoints. For
+> the maintained architecture and generated current coverage, see
+> [`ARCHITECTURE.md`](../../ARCHITECTURE.md) and
+> [`OEIS_COVERAGE.md`](OEIS_COVERAGE.md).
+
+This note records the original plan for tactic support for recurrence-based
 real-rootedness proofs in the `RealRooted` Lean project.  It is written for
 an implementation agent.  The intent is not to create a broad mathematical
 search tactic.  The intent is to automate the repetitive proof shell that
@@ -803,9 +811,9 @@ That explicit syntax is likely better for generated OEIS files anyway.
 
 ## 2026-07-29 OEIS/Sturm Refactor Checkpoint
 
-The companion `real-rooted-oeis` repo now has enough tactic ledger data to
-guide refactoring without adding another layer of ad hoc wrappers.  The useful
-source files there are:
+At this checkpoint the companion `real-rooted-oeis` repo had enough tactic
+ledger data to guide refactoring without adding another layer of ad hoc
+wrappers. The then-useful source files, since retired from the live tree, were:
 
 - `proof-targets/tactic-ledger.md`;
 - `proof-targets/tactic-golf-audit.md`;

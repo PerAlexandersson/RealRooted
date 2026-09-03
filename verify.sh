@@ -17,6 +17,12 @@ WORK="${COMPARATOR_WORK:-$HOME/.cache/comparator-verify}"
 
 source "$WS/versions.env"
 
+PROJECT_TOOLCHAIN="$(tr -d '\r\n' < "$HERE/lean-toolchain")"
+if [[ "$PROJECT_TOOLCHAIN" != "leanprover/lean4:${LEAN_VERSION}" ]]; then
+  echo "error: lean-toolchain and comparator/versions.env disagree" >&2
+  exit 1
+fi
+
 mkdir -p "$WORK" "$HOME/.local/bin"
 
 verify_sha256() {
@@ -53,11 +59,18 @@ if [ ! -d "$WORK/comparator" ]; then
 fi
 git -C "$WORK/comparator" fetch -q --depth 1 origin "$COMPARATOR_REF"
 COMPARATOR_FETCH_SHA="$(git -C "$WORK/comparator" rev-parse FETCH_HEAD)"
-if [ ! -x "$WORK/comparator/.lake/build/bin/comparator" ] || [ "$COMPARATOR_FETCH_SHA" != "$COMPARATOR_REF" ]; then
-  git -C "$WORK/comparator" checkout -q FETCH_HEAD
+if [[ "$COMPARATOR_FETCH_SHA" != "$COMPARATOR_REF" ]]; then
+  echo "error: fetched comparator revision does not match COMPARATOR_REF" >&2
+  exit 1
+fi
+git -C "$WORK/comparator" checkout -q FETCH_HEAD
+COMPARATOR_BUILD_KEY="${COMPARATOR_REF}:${LEAN_VERSION}"
+COMPARATOR_STAMP="$WORK/.comparator-build-key"
+COMPARATOR_CACHED_KEY="$(cat "$COMPARATOR_STAMP" 2>/dev/null || true)"
+if [[ ! -x "$WORK/comparator/.lake/build/bin/comparator" ||
+    "$COMPARATOR_CACHED_KEY" != "$COMPARATOR_BUILD_KEY" ]]; then
   (cd "$WORK/comparator" && lake exe cache get && lake build)
-else
-  git -C "$WORK/comparator" checkout -q FETCH_HEAD
+  printf '%s\n' "$COMPARATOR_BUILD_KEY" > "$COMPARATOR_STAMP"
 fi
 
 if [ ! -d "$WORK/lean4export" ]; then
@@ -65,13 +78,19 @@ if [ ! -d "$WORK/lean4export" ]; then
 fi
 git -C "$WORK/lean4export" fetch -q --depth 1 origin "$LEAN4EXPORT_REF"
 LEAN4EXPORT_FETCH_SHA="$(git -C "$WORK/lean4export" rev-parse FETCH_HEAD)"
-if [ ! -x "$WORK/lean4export/.lake/build/bin/lean4export" ] || [ "$LEAN4EXPORT_FETCH_SHA" != "$LEAN4EXPORT_REF" ]; then
-  git -C "$WORK/lean4export" checkout -q FETCH_HEAD
-  cp "$HERE/lean-toolchain" "$WORK/lean4export/lean-toolchain"
+if [[ "$LEAN4EXPORT_FETCH_SHA" != "$LEAN4EXPORT_REF" ]]; then
+  echo "error: fetched lean4export revision does not match LEAN4EXPORT_REF" >&2
+  exit 1
+fi
+git -C "$WORK/lean4export" checkout -q FETCH_HEAD
+cp "$HERE/lean-toolchain" "$WORK/lean4export/lean-toolchain"
+LEAN4EXPORT_BUILD_KEY="${LEAN4EXPORT_REF}:${LEAN_VERSION}"
+LEAN4EXPORT_STAMP="$WORK/.lean4export-build-key"
+LEAN4EXPORT_CACHED_KEY="$(cat "$LEAN4EXPORT_STAMP" 2>/dev/null || true)"
+if [[ ! -x "$WORK/lean4export/.lake/build/bin/lean4export" ||
+    "$LEAN4EXPORT_CACHED_KEY" != "$LEAN4EXPORT_BUILD_KEY" ]]; then
   (cd "$WORK/lean4export" && lake build)
-else
-  git -C "$WORK/lean4export" checkout -q FETCH_HEAD
-  cp "$HERE/lean-toolchain" "$WORK/lean4export/lean-toolchain"
+  printf '%s\n' "$LEAN4EXPORT_BUILD_KEY" > "$LEAN4EXPORT_STAMP"
 fi
 
 LANDRUN_BIN="$HOME/.local/bin/landrun"
@@ -111,18 +130,24 @@ fi
 git -C "$WORK/nanoda_lib" fetch -q --depth 1 origin "$NANODA_REF"
 
 FETCH_SHA="$(git -C "$WORK/nanoda_lib" rev-parse FETCH_HEAD)"
-if [ ! -x "$NANODA_BIN" ] || [ "$FETCH_SHA" != "$NANODA_REF" ]; then
-  git -C "$WORK/nanoda_lib" checkout -q FETCH_HEAD
+if [[ "$FETCH_SHA" != "$NANODA_REF" ]]; then
+  echo "error: fetched nanoda revision does not match NANODA_REF" >&2
+  exit 1
+fi
+git -C "$WORK/nanoda_lib" checkout -q FETCH_HEAD
+NANODA_BUILD_KEY="${NANODA_REF}:${RUST_VERSION}"
+NANODA_STAMP="$WORK/.nanoda-build-key"
+NANODA_CACHED_KEY="$(cat "$NANODA_STAMP" 2>/dev/null || true)"
+if [[ ! -x "$NANODA_BIN" || "$NANODA_CACHED_KEY" != "$NANODA_BUILD_KEY" ]]; then
   echo "Building nanoda from pinned Rust ${RUST_VERSION}..."
   curl -fsSL -o /tmp/rust.tar.gz \
     "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
   verify_sha256 /tmp/rust.tar.gz "$RUST_SHA256"
   tar -xzf /tmp/rust.tar.gz -C /tmp
-  /tmp/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu/install.sh \
+  "/tmp/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu/install.sh" \
     --prefix="$HOME/.local" --without=rust-docs
   (cd "$WORK/nanoda_lib" && PATH="$HOME/.local/bin:$PATH" cargo build --release)
-else
-  git -C "$WORK/nanoda_lib" checkout -q FETCH_HEAD
+  printf '%s\n' "$NANODA_BUILD_KEY" > "$NANODA_STAMP"
 fi
 
 export COMPARATOR_NANODA="$NANODA_BIN"
