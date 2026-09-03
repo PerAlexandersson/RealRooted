@@ -658,6 +658,12 @@ to the support polynomial. Pairwise-compatibility assembly remains in
 `HeilmannLieb`, so consumers of these combinatorial expansions avoid the full
 Chudnovsky--Seymour induction.
 
+`Graph.IndependencePolynomial.CliqueDeletionCompatibility` is the 160-module
+finite-family assembly layer. It owns the extended deletion families,
+pairwise-compatibility constructors, and the conversions from compatible
+families to splitness or two-polynomial compatibility. The support-level
+claw-free induction and matching-polynomial adapters remain in `HeilmannLieb`.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The
