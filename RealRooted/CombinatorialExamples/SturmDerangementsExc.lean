@@ -2,7 +2,6 @@ import RealRooted.Basic
 import RealRooted.Derivative
 import RealRooted.Wagner
 import RealRooted.AffineDerivative
-import RealRooted.Tactic.WagnerX
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
@@ -448,20 +447,19 @@ lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
 
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (sturmDerangementsExc n)
-      (X * affineSturmDerangementsExc n) := by
-  rr_prec_mul_X using
-    proper := prec_affine_sturmDerangementsExc hn hrr,
-    left_nonneg := affine_sturmDerangementsExc_nonnegCoeffs hn,
-    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
+    Prec (sturmDerangementsExc n) (X * affineSturmDerangementsExc n) :=
+  prec_mul_X_of_prec_of_nonneg
+    (prec_affine_sturmDerangementsExc hn hrr)
+    (affine_sturmDerangementsExc_nonnegCoeffs hn)
+    (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
-  rr_prec_mul_X_both using
-    proper := prec_affine_sturmDerangementsExc hn hrr,
-    left_nonneg := affine_sturmDerangementsExc_nonnegCoeffs hn,
-    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
+    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
+  prec_mul_X_both_of_prec_of_nonneg
+    (prec_affine_sturmDerangementsExc hn hrr)
+    (affine_sturmDerangementsExc_nonnegCoeffs hn)
+    (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -473,10 +471,8 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
   have hlower_nonneg :
       HasNonnegCoeffs (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
     nonnegCoeffs_C_mul (by positivity) (sturmDerangementsExc_nonnegCoeffs (n - 1))
-  rr_prec_mul_X_both using
-    proper := hlower,
-    left_nonneg := hlower_nonneg,
-    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
+  exact prec_mul_X_both_of_prec_of_nonneg hlower hlower_nonneg
+    (sturmDerangementsExc_nonnegCoeffs n)
 
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/
@@ -510,11 +506,10 @@ lemma prec_sturmDerangementsExc_succ_of_prec_recurrenceCore {n : Nat} (hn : 2 �
     (hcore : Prec (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n)) :
     Prec (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
   have hmain :
-      Prec (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) := by
-    rr_prec_mul_X using
-      proper := hcore,
-      left_nonneg := recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn,
-      right_nonneg := sturmDerangementsExc_nonnegCoeffs n
+      Prec (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) :=
+    prec_mul_X_of_prec_of_nonneg hcore
+      (recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn)
+      (sturmDerangementsExc_nonnegCoeffs n)
   simpa [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] using hmain
 
 /-- Consecutive derangement excedance polynomials interlace in the oriented

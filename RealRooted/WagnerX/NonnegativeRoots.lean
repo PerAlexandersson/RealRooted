@@ -297,6 +297,14 @@ theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, halt⟩⟩
         hdeg hf_nonpos hg_nonpos
 
+/-- Nonzero scalar form of the Wagner `X`-shift bridge. -/
+theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
+    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hc : c ≠ 0) :
+    Prec g ((C c * X) * f) := by
+  simpa [mul_assoc] using
+    (prec_C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
+
 /-- Zero-aware Wagner (3): if `f ≪₀ g` and both polynomials have nonnegative
 coefficients, then `g ≪₀ X * f`. -/
 theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
@@ -382,6 +390,14 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     have hlen' : ss_f.length = rs_g.length := by simp_all
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inr ⟨hlen', listAlternates_of_append_zero_both ss_f rs_g hlen' halt⟩⟩
+
+/-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
+theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
+    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Prec (X * f) (X * g) :=
+  prec_mul_X_both_of_roots_nonpos h
+    (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
+    (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
 
 theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
