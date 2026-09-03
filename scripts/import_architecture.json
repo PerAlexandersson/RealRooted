@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 775
+      "max_modules": 776
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -81,6 +81,9 @@
     },
     "RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility": {
       "max_modules": 160
+    },
+    "RealRooted.Graph.IndependencePolynomial.ClawFree": {
+      "max_modules": 161
     },
     "RealRooted.Graph.IndependencePolynomial.Recurrence": {
       "max_modules": 9
@@ -293,25 +296,25 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
-      "max_modules": 169
+      "max_modules": 170
    },
     "RealRooted.RankTwoMatching.Basic": {
-      "max_modules": 163
-   },
-    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 164
    },
-    "RealRooted.RankTwoMatching.DisjointEquiv": {
+    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 165
    },
-    "RealRooted.RankTwoMatching.Enumeration": {
+    "RealRooted.RankTwoMatching.DisjointEquiv": {
       "max_modules": 166
    },
-    "RealRooted.RankTwoMatching.Endpoint": {
+    "RealRooted.RankTwoMatching.Enumeration": {
       "max_modules": 167
    },
-    "RealRooted.RankTwoMatching": {
+    "RealRooted.RankTwoMatching.Endpoint": {
       "max_modules": 168
+   },
+    "RealRooted.RankTwoMatching": {
+      "max_modules": 169
    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 88
