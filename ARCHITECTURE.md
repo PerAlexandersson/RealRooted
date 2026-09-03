@@ -651,6 +651,13 @@ compatibility induction and matching-polynomial applications remain in
 `HeilmannLieb`, so clients of the recurrence identities avoid those higher
 dependencies.
 
+`Graph.IndependencePolynomial.CliqueDeletion` is the 19-module data layer for
+the finite families and weighted combinations associated with clique deletion.
+It owns the list/weighted-sum encodings and the identities evaluating them back
+to the support polynomial. Pairwise-compatibility assembly remains in
+`HeilmannLieb`, so consumers of these combinatorial expansions avoid the full
+Chudnovsky--Seymour induction.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The
