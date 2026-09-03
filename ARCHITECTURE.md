@@ -629,6 +629,14 @@ instead of retaining polynomial-only helpers inside `HeilmannLieb`.
 The new responsibility-specific unit raises the root and graph-client closures
 by one module; their explicit budgets record that intentional boundary.
 
+`Graph.IndependencePolynomial.Basic` is the seven-module foundation for finite
+graph independence polynomials. It owns the global, support-restricted, and
+vertex-weighted definitions together with their elementary coefficient,
+nonvanishing, positivity, empty-support, full-support, and `X`-compatibility
+API. In particular, basic graph-polynomial consumers no longer inherit line
+graphs, matchings, claw-free geometry, or the 155-module finite-family
+Chudnovsky--Seymour assembly from `HeilmannLieb`.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The
