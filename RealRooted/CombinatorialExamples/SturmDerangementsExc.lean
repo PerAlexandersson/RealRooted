@@ -4,7 +4,7 @@ import RealRooted.Wagner
 import RealRooted.AffineDerivative
 import RealRooted.Tactic.WagnerX
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 
@@ -62,26 +62,8 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
 `(1 - X) * f'` sits on the "right" of `f` in the oriented `Prec` relation. -/
 lemma prec_one_sub_X_derivative_right {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hnn : HasNonnegCoeffs f) :
-    Prec f ((1 - X) * f.derivative) := by
-  have hder : Prec f.derivative f := (derivative_interlaces hf hdeg).toPrec
-  have hnn' : HasNonnegCoeffs f.derivative := hnn.derivative
-  have hf'_pos : HasPosLeadingCoeff f.derivative := hnn'.pos_leadingCoeff hder.1.1
-  have hf_pos : HasPosLeadingCoeff f := hnn.pos_leadingCoeff <| by rintro rfl; simp at hdeg
-  have hf_le1 : ∀ s ∈ f.roots, s ≤ 1 := by
-    intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hf hnn s hs]
-  have hf'_le1 : ∀ s ∈ f.derivative.roots, s ≤ 1 := by
-    intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hder.1.2 hnn' s hs]
-  have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
-    rw [f.natDegree_derivative]
-    lia
-  have hmain : Prec f ((X - C 1) * f.derivative) :=
-    (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hder.1.2 hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp
-      hder
-  have hscaled : Prec f (C (-1) * ((X - C 1) * f.derivative)) :=
-    prec_C_mul_right hmain (by simp)
-  grind
+    Prec f ((1 - X) * f.derivative) :=
+  prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs hf hdeg hnn
 
 /-- Every derangement excedance polynomial has `X` as a factor. In the original variable,
 this says every `P_n` is divisible by `t`. -/
@@ -275,17 +257,13 @@ lemma reflect_sturmDerangementsExc (n : Nat) :
 
 lemma eval_neg_one_mul_neg_one_pow_sturmDerangementsExc (n : Nat) :
     (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) := by
-  letI : Invertible (-1 : ℝ) := invertibleOfNonzero (by simp)
-  simpa [reflect_sturmDerangementsExc n] using
-    (Polynomial.eval₂_reflect_mul_pow (i := RingHom.id ℝ) (x := (-1 : ℝ)) n
-      (sturmDerangementsExc n) (natDegree_le_sturmDerangementsExc n))
+  exact Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
+    (natDegree_le_sturmDerangementsExc n) (reflect_sturmDerangementsExc n)
 
 lemma sturmDerangementsExc_isRoot_neg_one_of_odd {n : Nat} (hn : Odd n) :
-    (sturmDerangementsExc n).IsRoot (-1) := by
-  rw [Polynomial.IsRoot.def]
-  have h := eval_neg_one_mul_neg_one_pow_sturmDerangementsExc n
-  rw [hn.neg_one_pow] at h
-  linarith
+    (sturmDerangementsExc n).IsRoot (-1) :=
+  Polynomial.isRoot_neg_one_of_reflect_eq_self_of_odd
+    (natDegree_le_sturmDerangementsExc n) (reflect_sturmDerangementsExc n) hn
 
 lemma X_add_one_dvd_sturmDerangementsExc_of_odd {n : Nat} (hn : Odd n) :
     X + 1 ∣ sturmDerangementsExc n :=

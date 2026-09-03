@@ -1182,4 +1182,32 @@ theorem prec_affine_derivative_of_nonnegCoeffs {f : ℝ[X]} (hf : f.Splits)
   exact prec_affine_derivative' hf hdeg (hfnn.pos_leadingCoeff hf0)
     (roots_nonpos_of_hasNonnegCoeffs hfnn) hc
 
+/-- If `f` is split with nonnegative coefficients and degree at least two, then
+the derivative block `(1 - X) * f'` lies on the right of `f` in the oriented
+`Prec` relation. -/
+theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
+    (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
+    Prec f ((1 - X) * f.derivative) := by
+  have hder : Prec f.derivative f := (derivative_interlaces hf hdeg).toPrec
+  have hnn' : HasNonnegCoeffs f.derivative := hnn.derivative
+  have hf'_pos : HasPosLeadingCoeff f.derivative := hnn'.pos_leadingCoeff hder.1.1
+  have hf_pos : HasPosLeadingCoeff f := hnn.pos_leadingCoeff <| by
+    rintro rfl
+    simp at hdeg
+  have hf_le1 : ∀ s ∈ f.roots, s ≤ 1 := by
+    intro s hs
+    linarith [roots_nonpos_of_nonneg_coeffs hf hnn s hs]
+  have hf'_le1 : ∀ s ∈ f.derivative.roots, s ≤ 1 := by
+    intro s hs
+    linarith [roots_nonpos_of_nonneg_coeffs hder.1.2 hnn' s hs]
+  have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
+    rw [f.natDegree_derivative]
+    lia
+  have hmain : Prec f ((X - C 1) * f.derivative) :=
+    (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hder.1.2 hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp
+      hder
+  have hscaled : Prec f (C (-1) * ((X - C 1) * f.derivative)) :=
+    prec_C_mul_right hmain (by simp)
+  grind
+
 end RealRooted
