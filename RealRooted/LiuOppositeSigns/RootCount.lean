@@ -198,20 +198,11 @@ theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
 theorem RootCountCompatible.of_natDegree_le_one
     {p q : ℝ[X]} (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hpdeg : p.natDegree ≤ 1) (hqdeg : q.natDegree ≤ 1) :
-    RootCountCompatible p q := by
-  intro x
-  have hp_le : rootCountAtOrAbove p x ≤ 1 :=
-    (rootCountAtOrAbove_le_natDegree_of_splits hp_splits x).trans hpdeg
-  have hq_le : rootCountAtOrAbove q x ≤ 1 :=
-    (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
-  have hp_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove p x : ℤ) := by
-    exact_mod_cast Nat.zero_le (rootCountAtOrAbove p x)
-  have hq_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove q x : ℤ) := by
-    exact_mod_cast Nat.zero_le (rootCountAtOrAbove q x)
-  have hp_le_int : (rootCountAtOrAbove p x : ℤ) ≤ 1 := by exact_mod_cast hp_le
-  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by exact_mod_cast hq_le
+    RootCountCompatible p q := fun x => by
+  have hp := (rootCountAtOrAbove_le_natDegree_of_splits hp_splits x).trans hpdeg
+  have hq := (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
   rw [abs_le]
-  constructor <;> linarith
+  omega
 
 /-- A two-root polynomial and a one-root polynomial have Liu-compatible root
 counts when the lower root of the two-root side lies weakly below the singleton
@@ -250,16 +241,11 @@ closed root intervals overlap. -/
 theorem RootCountCompatible.of_roots_pair_pair
     {p q : ℝ[X]} {a b c d : ℝ} (had : a ≤ d) (hcb : c ≤ b)
     (hproots : p.roots = {a, b}) (hqroots : q.roots = {c, d}) :
-    RootCountCompatible p q := by
-  intro x
+    RootCountCompatible p q := fun x => by
   rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
-    Multiset.filter_singleton]
-  by_cases hxa : x ≤ a <;>
-    by_cases hxb : x ≤ b <;>
-    by_cases hxc : x ≤ c <;>
-    by_cases hxd : x ≤ d <;>
-    norm_num [hxa, hxb, hxc, hxd] <;> linarith
+  simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
+  by_cases hxa : x ≤ a <;> by_cases hxb : x ≤ b <;> by_cases hxc : x ≤ c <;>
+    by_cases hxd : x ≤ d <;> norm_num [hxa, hxb, hxc, hxd] <;> linarith
 
 /-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
@@ -475,22 +461,12 @@ theorem RootCountCompatible.deleteRootFactor_commonRoot
     {p q : ℝ[X]} (h : RootCountCompatible p q)
     (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {r : ℝ}
     (hp : p.IsRoot r) (hq : q.IsRoot r) :
-    RootCountCompatible (deleteRootFactor p r) (deleteRootFactor q r) := by
-  intro x
-  by_cases hx : x ≤ r
-  · have hp_count :=
-      rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hp_ne hp hx
-    have hq_count :=
-      rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hq_ne hq hx
-    have hbound := h x
-    rw [hp_count, hq_count] at hbound
-    simpa [Int.natCast_add] using hbound
-  · have hrx : r < x := lt_of_not_ge hx
-    have hp_count :=
-      rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hp_ne hp hrx
-    have hq_count :=
-      rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hq_ne hq hrx
-    simpa [hp_count, hq_count] using h x
+    RootCountCompatible (deleteRootFactor p r) (deleteRootFactor q r) := fun x => by
+  rcases le_or_gt x r with hx | hx
+  · simpa [rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hp_ne hp hx,
+      rootCountAtOrAbove_deleteRootFactor_add_one_of_isRoot hq_ne hq hx] using h x
+  · simpa [rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hp_ne hp hx,
+      rootCountAtOrAbove_deleteRootFactor_eq_of_isRoot_of_lt hq_ne hq hx] using h x
 
 theorem rootCountAbove_deleteRootFactor_add_one_of_isRoot
     {p : ℝ[X]} {r x : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r)
