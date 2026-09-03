@@ -19,31 +19,6 @@ namespace Graph
 
 universe u
 
-/-- Pairwise compatibility of the clique-deletion family follows from the two
-compatibility obligations appearing in Chudnovsky--Seymour Lemma 2.5. -/
-theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
-    {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S K : Finset V)
-    (hbase : (indepPolyOn G (S \ K)).Splits)
-    (hbase_del : ∀ v ∈ K,
-      Compatible (indepPolyOn G (S \ K))
-        (X * indepPolyOn G (deleteClosedNeighborSupport G S v)))
-    (hdel_pair : ∀ u ∈ K, ∀ v ∈ K,
-      Compatible (indepPolyOn G (deleteClosedNeighborSupport G S u))
-        (indepPolyOn G (deleteClosedNeighborSupport G S v))) :
-    PairwiseCompatible (cliqueDeletionFamily G S K) := by
-  apply pairwiseCompatible_of_forall_mem
-  intro f hf g hg
-  simp only [cliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
-  rcases hf with rfl | ⟨u, huList, rfl⟩
-  · rcases hg with rfl | ⟨v, hvList, rfl⟩
-    · exact Compatible.self_of_splits hbase
-    · simp_all
-  · rcases hg with rfl | ⟨v, hvList, rfl⟩
-    · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
-    · exact Compatible.X_mul
-        (hdel_pair u (Finset.mem_toList.mp huList) v (Finset.mem_toList.mp hvList))
-
 /-- Pairwise compatibility of the weighted clique-deletion family follows
 from the same two recursive compatibility obligations as in the unweighted
 case. -/
@@ -73,6 +48,26 @@ theorem weightedCliqueDeletionFamily_pairwiseCompatible_of_compatible
     · exact Compatible.X_mul
         (hdel_pair u (Finset.mem_toList.mp huList)
           v (Finset.mem_toList.mp hvList))
+
+/-- Pairwise compatibility of the unweighted clique-deletion family is the
+constant-weight specialization of the weighted result. -/
+theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S K : Finset V)
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hbase_del : ∀ v ∈ K,
+      Compatible (indepPolyOn G (S \ K))
+        (X * indepPolyOn G (deleteClosedNeighborSupport G S v)))
+    (hdel_pair : ∀ u ∈ K, ∀ v ∈ K,
+      Compatible (indepPolyOn G (deleteClosedNeighborSupport G S u))
+        (indepPolyOn G (deleteClosedNeighborSupport G S v))) :
+    PairwiseCompatible (cliqueDeletionFamily G S K) := by
+  simpa only [weightedCliqueDeletionFamily_one] using
+    weightedCliqueDeletionFamily_pairwiseCompatible_of_compatible
+      G (fun _ => 1) S K
+      (by simpa only [weightedIndepPolyOn_one] using hbase)
+      (by simpa only [weightedIndepPolyOn_one] using hbase_del)
+      (by simpa only [weightedIndepPolyOn_one] using hdel_pair)
 
 /-- Pairwise compatibility of the clique-deletion family can be proved on the
 recursive supports produced by the outside-neighbor cliques. -/
@@ -140,6 +135,28 @@ def weightedCliquePairDeletionFamily {V : Type u} [DecidableEq V]
       X * weightedIndepPolyOn G
         (deleteClosedNeighborSupport G (S \ K) v) wt))
 
+/-- The weighted extended clique-deletion family at constant weight `1` is the
+unweighted family. -/
+theorem weightedCliqueDeletionCompatibilityFamily_one
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S K : Finset V) :
+    weightedCliqueDeletionCompatibilityFamily G (fun _ => 1) S K =
+      cliqueDeletionCompatibilityFamily G S K := by
+  simp [weightedCliqueDeletionCompatibilityFamily,
+    cliqueDeletionCompatibilityFamily, weightedCliqueDeletionFamily_one,
+    weightedIndepPolyOn_one]
+
+/-- The weighted pair-deletion family at constant weight `1` is the unweighted
+family. -/
+theorem weightedCliquePairDeletionFamily_one
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K L : Finset V) :
+    weightedCliquePairDeletionFamily G (fun _ => 1) S K L =
+      cliquePairDeletionFamily G S K L := by
+  simp [weightedCliquePairDeletionFamily, cliquePairDeletionFamily,
+    weightedIndepPolyOn_one]
+
 /-- Pairwise compatibility of the weighted extended clique-deletion family
 follows from the same recursive compatibility hypotheses as in the unweighted
 case. -/
@@ -206,59 +223,6 @@ theorem weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighbor
       simpa [huSupport, hvSupport] using
         Compatible.X_mul (hneighbor_pair u huK v hvK)
 
-/-- Pairwise compatibility of the extended clique-deletion family follows from
-the recursive compatibility hypotheses in Chudnovsky--Seymour Lemma 2.5. -/
-theorem cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
-    {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S K : Finset V}
-    (hK : G.IsClique (K : Set V))
-    (hbase : (indepPolyOn G (S \ K)).Splits)
-    (hbase_neighbor_x : ∀ v ∈ K,
-      Compatible (indepPolyOn G (S \ K))
-        (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)))
-    (hbase_neighbor : ∀ v ∈ K,
-      Compatible (indepPolyOn G (S \ K))
-        (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)))
-    (hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
-      Compatible (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
-        (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v))) :
-    PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K) := by
-  apply pairwiseCompatible_of_forall_mem
-  intro f hf g hg
-  simp only [cliqueDeletionCompatibilityFamily, cliqueDeletionFamily, List.mem_cons,
-    List.mem_map] at hf hg
-  rcases hf with rfl | rfl | ⟨u, huList, rfl⟩
-  · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
-    · exact Compatible.self_of_splits
-        (isRealRooted_X_mul (indepPolyOn_ne_zero G (S \ K)) hbase).2
-    · exact (compatible_indepPolyOn_X_mul_self_of_splits G (S \ K) hbase).comm
-    · have hvK : v ∈ K := Finset.mem_toList.mp hvList
-      have hvSupport :=
-        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-          G (S := S) hK hvK
-      simpa [hvSupport] using Compatible.X_mul (hbase_neighbor v hvK)
-  · rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
-    · exact compatible_indepPolyOn_X_mul_self_of_splits G (S \ K) hbase
-    · exact Compatible.self_of_splits hbase
-    · have hvK : v ∈ K := Finset.mem_toList.mp hvList
-      have hvSupport :=
-        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-          G (S := S) hK hvK
-      simp_all
-  · have huK : u ∈ K := Finset.mem_toList.mp huList
-    have huSupport :=
-      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G (S := S) hK huK
-    rcases hg with rfl | rfl | ⟨v, hvList, rfl⟩
-    · simpa [huSupport] using
-        (Compatible.X_mul (hbase_neighbor u huK)).comm
-    · simpa [huSupport] using (hbase_neighbor_x u huK).comm
-    · have hvK : v ∈ K := Finset.mem_toList.mp hvList
-      have hvSupport :=
-        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-          G (S := S) hK hvK
-      simpa [huSupport, hvSupport] using
-        Compatible.X_mul (hneighbor_pair u huK v hvK)
-
 /-- If the clique-deletion family is pairwise compatible, then the support
 independence polynomial splits. This is the Chudnovsky--Seymour engine applied
 to the finite family from Lemma 2.3. -/
@@ -309,78 +273,6 @@ theorem indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
   rcases hweighted with hzero | ⟨_, hsplits⟩
   · simp_all
   · exact hsplits
-
-/-- The clique-deletion family also assembles the compatibility of `I(S)` with
-`X * I(S \ K)` once the one-extra-term family is pairwise compatible. -/
-theorem compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
-    {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
-    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S)
-    (hbase : (indepPolyOn G (S \ K)).Splits)
-    (hdel : ∀ v ∈ K, (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits)
-    (hpair : PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K)) :
-    Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K)) := by
-  let fs := cliqueDeletionCompatibilityFamily G S K
-  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
-    intro f hf
-    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
-    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact isRealRooted_X_mul (indepPolyOn_ne_zero G (S \ K)) hbase
-    · rcases htail with rfl | ⟨v, hvK, rfl⟩
-      · exact ⟨indepPolyOn_ne_zero G (S \ K), hbase⟩
-      · exact isRealRooted_X_mul
-          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G S v))
-          (hdel v (Finset.mem_toList.mp hvK))
-  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
-    intro f hf
-    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
-    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact (indepPolyOn_hasPosLeadingCoeff G (S \ K)).X_mul
-    · rcases htail with rfl | ⟨v, _hvK, rfl⟩
-      · exact indepPolyOn_hasPosLeadingCoeff G (S \ K)
-      · exact (indepPolyOn_hasPosLeadingCoeff G
-          (deleteClosedNeighborSupport G S v)).X_mul
-  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    intro f hf
-    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
-    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact (indepPolyOn_hasNonnegCoeffs G (S \ K)).X_mul
-    · rcases htail with rfl | ⟨v, _hvK, rfl⟩
-      · exact indepPolyOn_hasNonnegCoeffs G (S \ K)
-      · exact (indepPolyOn_hasNonnegCoeffs G
-          (deleteClosedNeighborSupport G S v)).X_mul
-  have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      (fs := fs) hrr hpos hnn).1 hpair
-  intro α β hα hβ
-  let ws : List (ℝ × ℝ[X]) :=
-    (β, X * indepPolyOn G (S \ K)) ::
-      (cliqueDeletionFamily G S K).map fun p => (α, p)
-  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.mem_map] at hap
-    rcases hap with rfl | ⟨p, hp, rfl⟩
-    · simp [fs, cliqueDeletionCompatibilityFamily]
-    · simp [fs, cliqueDeletionCompatibilityFamily, hp]
-  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.mem_map] at hap
-    rcases hap with rfl | ⟨_p, _hp, rfl⟩
-    · exact hβ
-    · exact hα
-  have hsum : weightedSum ws =
-      C α * indepPolyOn G S + C β * (X * indepPolyOn G (S \ K)) := by
-    simp only [ws, weightedSum_cons]
-    rw [weightedSum_map_const α (cliqueDeletionFamily G S K)]
-    rw [cliqueDeletionFamily_sum G S K hK hKS]
-    ring
-  simpa [hsum] using hfam ws hmem hnonneg
 
 /-- The weighted clique-deletion family assembles compatibility of `I_w(S)`
 with `X * I_w(S \ K)`. -/
@@ -621,9 +513,55 @@ theorem compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompat
       (S \ L) (K \ L) hK' hKS']
   simpa [hsum] using hfam ws hmem hnonneg
 
-/-- If the pair-deletion family is pairwise compatible, then the two
-simplicial-clique deletion polynomials are compatible.  This is the finite
-family assembly for Chudnovsky--Seymour Lemma 2.5.1. -/
+/-! ## Unweighted specializations -/
+
+/-- Pairwise compatibility of the extended unweighted clique-deletion family
+is the constant-weight specialization of the weighted result. -/
+theorem cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S K : Finset V}
+    (hK : G.IsClique (K : Set V))
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hbase_neighbor_x : ∀ v ∈ K,
+      Compatible (indepPolyOn G (S \ K))
+        (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)))
+    (hbase_neighbor : ∀ v ∈ K,
+      Compatible (indepPolyOn G (S \ K))
+        (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)))
+    (hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
+      Compatible (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
+        (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v))) :
+    PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K) := by
+  simpa only [weightedCliqueDeletionCompatibilityFamily_one] using
+    weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
+      G (fun _ => 1) hK
+      (by simpa only [weightedIndepPolyOn_one] using hbase)
+      (by simpa only [weightedIndepPolyOn_one] using hbase_neighbor_x)
+      (by simpa only [weightedIndepPolyOn_one] using hbase_neighbor)
+      (by simpa only [weightedIndepPolyOn_one] using hneighbor_pair)
+
+/-- The extended unweighted clique-deletion family assembles compatibility of
+`I(S)` with `X * I(S \ K)` by constant-weight specialization. -/
+theorem compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S)
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hdel : ∀ v ∈ K,
+      (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits)
+    (hpair : PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K)) :
+    Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K)) := by
+  have hpair' : PairwiseCompatible
+      (weightedCliqueDeletionCompatibilityFamily G (fun _ => 1) S K) := by
+    simpa only [weightedCliqueDeletionCompatibilityFamily_one] using hpair
+  simpa only [weightedIndepPolyOn_one] using
+    compatible_weightedIndepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
+      G (fun _ => 1) S K hK hKS (by simp)
+      (by simpa only [weightedIndepPolyOn_one] using hbase)
+      (by simpa only [weightedIndepPolyOn_one] using hdel) hpair'
+
+/-- The unweighted pair-deletion family assembles compatibility of the two
+simplicial-clique deletion polynomials by constant-weight specialization. -/
 theorem compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
     {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
@@ -631,133 +569,22 @@ theorem compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
     (hL : G.IsClique (L : Set V)) (hKS : K ⊆ S) (hLS : L ⊆ S)
     (hbase : (indepPolyOn G (S \ (K ∪ L))).Splits)
     (hKdel : ∀ v ∈ K \ L,
-      (indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)).Splits)
+      (indepPolyOn G
+        (deleteClosedNeighborSupport G (S \ L) v)).Splits)
     (hLdel : ∀ v ∈ L \ K,
-      (indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)).Splits)
+      (indepPolyOn G
+        (deleteClosedNeighborSupport G (S \ K) v)).Splits)
     (hpair : PairwiseCompatible (cliquePairDeletionFamily G S K L)) :
     Compatible (indepPolyOn G (S \ K)) (indepPolyOn G (S \ L)) := by
-  classical
-  let base := indepPolyOn G (S \ (K ∪ L))
-  let kTerms : List ℝ[X] :=
-    (K \ L).toList.map fun v =>
-      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)
-  let lTerms : List ℝ[X] :=
-    (L \ K).toList.map fun v =>
-      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)
-  let fs := cliquePairDeletionFamily G S K L
-  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
-    intro f hf
-    change f ∈ cliquePairDeletionFamily G S K L at hf
-    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact ⟨indepPolyOn_ne_zero G (S \ (K ∪ L)), hbase⟩
-    · rcases htail with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
-      · exact isRealRooted_X_mul
-          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G (S \ L) v))
-          (hKdel v (Finset.mem_toList.mp hvList))
-      · exact isRealRooted_X_mul
-          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G (S \ K) v))
-          (hLdel v (Finset.mem_toList.mp hvList))
-  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
-    intro f hf
-    change f ∈ cliquePairDeletionFamily G S K L at hf
-    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact indepPolyOn_hasPosLeadingCoeff G (S \ (K ∪ L))
-    · rcases htail with ⟨v, _hvList, rfl⟩ | ⟨v, _hvList, rfl⟩
-      · exact (indepPolyOn_hasPosLeadingCoeff G
-          (deleteClosedNeighborSupport G (S \ L) v)).X_mul
-      · exact (indepPolyOn_hasPosLeadingCoeff G
-          (deleteClosedNeighborSupport G (S \ K) v)).X_mul
-  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    intro f hf
-    change f ∈ cliquePairDeletionFamily G S K L at hf
-    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
-      List.mem_map] at hf
-    rcases hf with rfl | htail
-    · exact indepPolyOn_hasNonnegCoeffs G (S \ (K ∪ L))
-    · rcases htail with ⟨v, _hvList, rfl⟩ | ⟨v, _hvList, rfl⟩
-      · exact (indepPolyOn_hasNonnegCoeffs G
-          (deleteClosedNeighborSupport G (S \ L) v)).X_mul
-      · exact (indepPolyOn_hasNonnegCoeffs G
-          (deleteClosedNeighborSupport G (S \ K) v)).X_mul
-  have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      (fs := fs) hrr hpos hnn).1 hpair
-  have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
-    by simp [sdiff_sdiff, union_comm]
-  have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
-    by simp [sdiff_sdiff]
-  have hK_terms :
-      kTerms.sum =
-        ∑ v ∈ K \ L, X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v) := by
-    rw [Finset.sum_eq_multiset_sum]
-    simp [kTerms, Finset.toList]
-  have hL_terms :
-      lTerms.sum =
-        ∑ v ∈ L \ K, X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v) := by
-    rw [Finset.sum_eq_multiset_sum]
-    simp [lTerms, Finset.toList]
-  have hKsum : indepPolyOn G (S \ L) = base + kTerms.sum := by
-    have hK' : G.IsClique ((K \ L : Finset V) : Set V) :=
-      hK.subset fun _ hx => (Finset.mem_sdiff.mp hx).1
-    have hKS' : K \ L ⊆ S \ L := by
-      intro x hx
-      exact Finset.mem_sdiff.mpr ⟨hKS (Finset.mem_sdiff.mp hx).1,
-        (Finset.mem_sdiff.mp hx).2⟩
-    have h := indepPolyOn_sdiff_clique G (S \ L) (K \ L) hK' hKS'
-    rw [hK_support, ← hK_terms] at h
-    simpa [base] using h
-  have hLsum : indepPolyOn G (S \ K) = base + lTerms.sum := by
-    have hL' : G.IsClique ((L \ K : Finset V) : Set V) :=
-      hL.subset fun _ hx => (Finset.mem_sdiff.mp hx).1
-    have hLS' : L \ K ⊆ S \ K := by
-      intro x hx
-      exact Finset.mem_sdiff.mpr ⟨hLS (Finset.mem_sdiff.mp hx).1,
-        (Finset.mem_sdiff.mp hx).2⟩
-    have h := indepPolyOn_sdiff_clique G (S \ K) (L \ K) hL' hLS'
-    rw [hL_support, ← hL_terms] at h
-    simpa [base] using h
-  intro α β hα hβ
-  let ws : List (ℝ × ℝ[X]) :=
-    (α + β, base) ::
-      ((kTerms.map fun p => (β, p)) ++
-      (lTerms.map fun p => (α, p)))
-  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.mem_append, List.mem_map] at hap
-    change ap.2 ∈ cliquePairDeletionFamily G S K L
-    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append, List.mem_map]
-    rcases hap with rfl | htail
-    · exact Or.inl rfl
-    · rcases htail with hKterm | hLterm
-      · rcases hKterm with ⟨p, hp, rfl⟩
-        rcases List.mem_map.mp hp with ⟨v, hvList, rfl⟩
-        exact Or.inr (Or.inl ⟨v, hvList, rfl⟩)
-      · rcases hLterm with ⟨p, hp, rfl⟩
-        rcases List.mem_map.mp hp with ⟨v, hvList, rfl⟩
-        exact Or.inr (Or.inr ⟨v, hvList, rfl⟩)
-  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
-    intro ap hap
-    simp only [ws, List.mem_cons, List.mem_append, List.mem_map] at hap
-    rcases hap with rfl | htail
-    · exact add_nonneg hα hβ
-    · rcases htail with hKterm | hLterm
-      · rcases hKterm with ⟨_p, _hp, rfl⟩
-        exact hβ
-      · rcases hLterm with ⟨_p, _hp, rfl⟩
-        exact hα
-  have hsum : weightedSum ws =
-      C α * indepPolyOn G (S \ K) + C β * indepPolyOn G (S \ L) := by
-    simp only [ws, weightedSum_cons]
-    rw [weightedSum_append]
-    rw [weightedSum_map_const β kTerms, weightedSum_map_const α lTerms]
-    rw [hKsum, hLsum]
-    rw [C_add, add_mul]
-    ring
-  simpa [hsum] using hfam ws hmem hnonneg
+  have hpair' : PairwiseCompatible
+      (weightedCliquePairDeletionFamily G (fun _ => 1) S K L) := by
+    simpa only [weightedCliquePairDeletionFamily_one] using hpair
+  simpa only [weightedIndepPolyOn_one] using
+    compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
+      G (fun _ => 1) S K L hK hL hKS hLS (by simp)
+      (by simpa only [weightedIndepPolyOn_one] using hbase)
+      (by simpa only [weightedIndepPolyOn_one] using hKdel)
+      (by simpa only [weightedIndepPolyOn_one] using hLdel) hpair'
 
 end Graph
 end RealRooted

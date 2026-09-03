@@ -84,6 +84,16 @@ def cliqueDeletionFamily {V : Type u} [DecidableEq V]
   indepPolyOn G (S \ K) ::
     K.toList.map fun v ↦ X * indepPolyOn G (deleteClosedNeighborSupport G S v)
 
+/-- The weighted clique-deletion family at constant weight `1` is the
+unweighted family. -/
+theorem weightedCliqueDeletionFamily_one
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S K : Finset V) :
+    weightedCliqueDeletionFamily G (fun _ => 1) S K =
+      cliqueDeletionFamily G S K := by
+  simp [weightedCliqueDeletionFamily, cliqueDeletionFamily,
+    weightedIndepPolyOn_one]
+
 /-- The list form of the clique-deletion expansion. -/
 theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
