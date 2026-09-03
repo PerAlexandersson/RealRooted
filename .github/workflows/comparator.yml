@@ -41,6 +41,7 @@ jobs:
 
       - name: Install elan and pre-install Lean toolchain
         run: |
+          test "$(tr -d '\r\n' < lean-toolchain)" = "leanprover/lean4:${LEAN_VERSION}"
           curl -fsSL -o /tmp/elan.tar.gz \
             "https://github.com/leanprover/elan/releases/download/${ELAN_VERSION}/elan-x86_64-unknown-linux-gnu.tar.gz"
           echo "${ELAN_SHA256}  /tmp/elan.tar.gz" | sha256sum -c
