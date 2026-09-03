@@ -38,6 +38,28 @@ def weightedSum : List (ℝ × ℝ[X]) → ℝ[X]
     weightedSum (l.map (fun p => ((1 : ℝ), p))) = l.sum := by
   induction l <;> simp [weightedSum_cons, *]
 
+/-- `weightedSum` sends concatenation to polynomial addition. -/
+@[simp] lemma weightedSum_append :
+    ∀ l m : List (ℝ × ℝ[X]), weightedSum (l ++ m) = weightedSum l + weightedSum m
+  | [], m => by simp
+  | (a, p) :: l, m => by
+      simp [weightedSum_append l m, add_assoc]
+
+/-- A constant weight on every polynomial factors out of `weightedSum`. -/
+lemma weightedSum_map_const (a : ℝ) :
+    ∀ fs : List ℝ[X], weightedSum (fs.map fun p => (a, p)) = C a * fs.sum
+  | [] => by simp
+  | p :: fs => by
+      simp [weightedSum_map_const a fs, mul_add]
+
+/-- Multiplying every weight by a scalar multiplies the resulting weighted sum. -/
+lemma weightedSum_map_mul_left (a : ℝ) :
+    ∀ ws : List (ℝ × ℝ[X]),
+      weightedSum (ws.map fun ap => (a * ap.1, ap.2)) = C a * weightedSum ws
+  | [] => by simp
+  | (b, p) :: ws => by
+      simp [weightedSum_map_mul_left a ws, mul_add, map_mul, mul_assoc]
+
 lemma weightedSum_eq_zero_of_forall_coeff_zero :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, ap.1 = 0) →

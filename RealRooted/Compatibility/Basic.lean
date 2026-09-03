@@ -21,6 +21,12 @@ sense from `INTERLACING.md`. -/
 def PairwiseCompatible (fs : List ℝ[X]) : Prop :=
   ∀ (i j : Fin fs.length), i < j → Compatible (fs.get i) (fs.get j)
 
+/-- Memberwise compatibility implies indexed pairwise compatibility. -/
+theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
+    (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
+  intro i j _hij
+  exact h _ (fs.get_mem i) _ (fs.get_mem j)
+
 /-- Full Chudnovsky--Seymour compatibility for a finite family:
 every nonnegative weighted sum of members of `fs` is real-rooted (or zero). -/
 def FamilyCompatible (fs : List ℝ[X]) : Prop :=
