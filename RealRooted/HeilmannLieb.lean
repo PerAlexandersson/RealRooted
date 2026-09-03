@@ -18,20 +18,6 @@ namespace Graph
 
 universe u
 
-/-- Uniform statement of the Chudnovsky--Seymour theorem for finite claw-free
-graph independence polynomials. -/
-def ClawFreeIndepPolySplitsStatement : Prop :=
-  ∀ {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V), ClawFree G → (indepPoly G).Splits
-
-/-- Chudnovsky--Seymour graph theorem: finite claw-free graph independence
-polynomials are real-rooted. -/
-theorem clawFree_indepPoly_splits : ClawFreeIndepPolySplitsStatement.{u} := by
-  intro V _hfinite _hdec G hG
-  classical
-  rw [indepPoly_eq_indepPolyOn_univ]
-  exact supportIndepPoly_splits_of_clawFree hG Finset.univ
-
 /-- Conditional Heilmann--Lieb matching-generating corollary.
 
 Given the graph-form Chudnovsky--Seymour statement, the matching-polynomial
