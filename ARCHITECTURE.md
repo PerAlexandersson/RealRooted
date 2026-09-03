@@ -643,6 +643,14 @@ the simplicial-clique predicate, and the two local Chudnovsky--Seymour graph
 lemmas. It deliberately has no dependency on polynomials or compatibility;
 `HeilmannLieb` combines this geometry with the independence-polynomial layers.
 
+`Graph.IndependencePolynomial.Recurrence` is the nine-module combinatorial
+recurrence layer. It combines the elementary polynomial definitions with
+claw-free graph geometry and owns vertex insertion, closed-neighborhood
+deletion, support rewrites, and clique-deletion expansions. The finite-family
+compatibility induction and matching-polynomial applications remain in
+`HeilmannLieb`, so clients of the recurrence identities avoid those higher
+dependencies.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The
