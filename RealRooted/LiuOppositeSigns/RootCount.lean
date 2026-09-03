@@ -202,7 +202,7 @@ theorem RootCountCompatible.of_natDegree_le_one
   have hp := (rootCountAtOrAbove_le_natDegree_of_splits hp_splits x).trans hpdeg
   have hq := (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
   rw [abs_le]
-  omega
+  lia
 
 /-- A two-root polynomial and a one-root polynomial have Liu-compatible root
 counts when the lower root of the two-root side lies weakly below the singleton

@@ -1,6 +1,6 @@
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeCountFromAnalytic
-import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.RootDeletion
 
 /-!
 # The cubic second-root bound from analytic root counts

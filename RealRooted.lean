@@ -290,9 +290,11 @@ import RealRooted.LiuOppositeSigns.ForwardLowDegree
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
+import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 import RealRooted.LiuOppositeSigns.RootCount
 import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.RootCountRelStability
+import RealRooted.LiuOppositeSigns.RootDeletion
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic

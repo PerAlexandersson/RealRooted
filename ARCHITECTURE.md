@@ -343,11 +343,14 @@ value-at-zero comparison selects the proper-position orientation.
 
 `LiuOppositeSigns.RootCount` is the reusable foundation for Liu's threshold
 count: it owns `IsLargestRoot`, `deleteRootFactor`, `rootCountAtOrAbove`,
-`RootCountCompatible`, and the strict/non-strict threshold conversions. The
-historical `LiuOppositeSigns` module remains the compatible parent and adds
-positive-leading normalization, largest-root deletion lemmas, and the two Liu
-branches. `RootCountRelStability` imports the foundation directly, keeping its
-root-matching continuity argument independent of the branch layer.
+`RootCountCompatible`, and the strict/non-strict threshold conversions.
+`RootDeletion` adds the general cofactor, largest-root, and root-multiset
+deletion API without positive normalization. `PositiveSplitRootCount` packages
+positive-leading split pairs and their deletion transport. The historical
+`LiuOppositeSigns` module remains the compatible parent containing only the
+cross-owned-gap and left/right branch layers. `RootCountRelStability` imports
+the count foundation directly, while `RootMatchingSort` and the cubic analytic
+consumer import `RootDeletion` without acquiring the branch layer.
 
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `Prec` interface to Liu's positive root-count package. It
