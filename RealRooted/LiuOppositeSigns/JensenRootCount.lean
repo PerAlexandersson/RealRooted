@@ -23,17 +23,13 @@ theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : Prec p q) :
       ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
       ((q.roots.filter (x < ·)).card : ℤ) ≤
         (p.roots.filter (x < ·)).card + 1 := by
-  by_cases hdeg : q.natDegree = p.natDegree
+  rcases hprec.natDegree_eq_or_eq_succ with hdeg | hsucc
   · intro x
     exact
       (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
         (f := q) (g := p) hprec.2.1.2 hprec.1.2 hdeg.symm x).mpr
         (sameDegreeRootCountOriented_of_prec hprec hdeg x)
-  · have hpq_lt : p.natDegree < q.natDegree :=
-      Nat.lt_of_le_of_ne hprec.natDegree_le (Ne.symm hdeg)
-    have hsucc : q.natDegree = p.natDegree + 1 :=
-      Nat.le_antisymm hprec.natDegree_le_succ (Nat.succ_le_of_lt hpq_lt)
-    exact succDegreeRootCountAboveOriented_of_prec hprec hsucc
+  · exact succDegreeRootCountAboveOriented_of_prec hprec hsucc
 
 namespace Compatible
 

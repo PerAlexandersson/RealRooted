@@ -18,15 +18,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
-    g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-  rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  lia
-
 private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[X])) :
     ∃ c, (∀ r ∈ h.roots, r ≤ c) ∧ ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r ≤ c := by
   induction l with
@@ -139,7 +130,7 @@ theorem prec_weightedSum_left_of_common_left
     have hp := hprec ap hap
     have hp_pos := hpoly_pos ap hap
     have hp_le : ∀ s ∈ ap.2.roots, s ≤ r := hl_le ap hap
-    rcases natDegree_eq_or_succ_of_prec hp with hdeg | hdeg
+    rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
     · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le r hp hdeg.symm hpos hp_pos hh_le hp_le
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
@@ -153,7 +144,7 @@ theorem prec_weightedSum_left_of_common_left
   have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hprec ap0 hap0).1.2 hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     roots_le_of_prec_right hweighted_right hH_le
-  rcases natDegree_eq_or_succ_of_prec hweighted_right with hcase | hcase
+  rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
     exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
         hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
