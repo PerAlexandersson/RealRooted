@@ -537,14 +537,9 @@ private theorem allComboRealRooted_of_prec_sameDegree
 theorem allComboRealRooted_of_prec {f g : ℝ[X]}
     (hfg : Prec f g) :
     AllComboRealRooted f g := by
-  have hfg_le := hfg.natDegree_le
-  have hgf_le := hfg.natDegree_le_succ
-  have hdeg :
-      f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-    lia
-  rcases hdeg with hsucc | hsame
-  · exact allComboRealRooted_of_prec_succDegree hfg hsucc
-  · exact allComboRealRooted_of_prec_sameDegree hfg hsame
+  rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
+  · exact allComboRealRooted_of_prec_sameDegree hfg hsame.symm
+  · exact allComboRealRooted_of_prec_succDegree hfg hsucc.symm
 
 end
 end RealRooted

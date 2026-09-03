@@ -613,6 +613,11 @@ memberwise constructor for `PairwiseCompatible` belongs to
 these public APIs and Mathlib's generalized-Boolean-algebra difference laws
 instead of carrying private copies of sequence-independent arguments.
 
+`Basic` owns the complete natural-degree shape forced by `Prec`: its endpoints
+have equal degree or the right endpoint has successor degree. Higher layers
+branch through `Prec.natDegree_eq_or_eq_succ` instead of reconstructing this
+dichotomy from root-list witnesses or paired inequalities.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The

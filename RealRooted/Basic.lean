@@ -811,6 +811,13 @@ theorem Prec.natDegree_le_succ {f g : ℝ[X]} (h : Prec f g) :
     g.natDegree ≤ f.natDegree + 1 :=
   (natDegree_bounds_of_prec h).2
 
+/-- Proper position forces equal natural degrees or a one-degree increase. -/
+theorem Prec.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : Prec f g) :
+    g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
+  have hle := h.natDegree_le
+  have hle_succ := h.natDegree_le_succ
+  lia
+
 /-- A polynomial cannot be in `Prec` with a right endpoint of strictly lower
 degree. -/
 theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}

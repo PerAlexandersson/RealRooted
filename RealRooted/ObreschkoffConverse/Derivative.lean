@@ -343,11 +343,9 @@ theorem derivativePreservesPrec0_of_sameDegree
     exact prec0_zero_left _
   · rw [hgzero, derivative_zero]
     exact prec0_zero_right _
-  · have hfg_le := hfg'.natDegree_le
-    have hgf_le := hfg'.natDegree_le_succ
-    by_cases hdeg : f.natDegree = g.natDegree
-    · exact hsame hfg' hdeg
-    · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
+  · rcases hfg'.natDegree_eq_or_eq_succ with hsameDegree | hsuccDegree
+    · exact hsame hfg' hsameDegree.symm
+    · exact derivative_prec0_of_prec_succDegree hfg' hsuccDegree.symm
 
 /-- Same-degree branch of differentiation preserving weak proper position. -/
 theorem derivativePreservesPrecSameDegree :

@@ -18,16 +18,12 @@ theorem positiveSplitRootCountPair_of_prec
   apply RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hp.ne_zero hq.ne_zero
   intro x _ _
-  by_cases hdeg : q.natDegree = p.natDegree
+  rcases h.natDegree_eq_or_eq_succ with hdeg | hsucc
   · have hlower := sameDegreeRootCountOriented_of_prec h hdeg x
     exact
       (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
         h.1.2 h.2.1.2 hdeg x).2 ⟨by linarith, by linarith⟩
-  · have hsucc : q.natDegree = p.natDegree + 1 := by
-      have hle := h.natDegree_le
-      have hle1 := h.natDegree_le_succ
-      lia
-    exact succDegreeRootCountAbove_of_prec h hsucc x
+  · exact succDegreeRootCountAbove_of_prec h hsucc x
 
 /-- Liu's proved `X`-subtraction theorem in the ordinary `Prec` interface.
 The degree split required by the backend follows automatically from `Prec`. -/
@@ -37,13 +33,9 @@ theorem xSub_splits_of_prec_of_nonneg
     (hqnn : HasNonnegCoeffs q) {μ : ℝ} (hμ : 0 < μ) :
     (X * p - C μ * q).Splits := by
   have hpair := positiveSplitRootCountPair_of_prec hp hq hprec
-  by_cases hdeg : q.natDegree = p.natDegree
+  rcases hprec.natDegree_eq_or_eq_succ with hdeg | hsucc
   · exact hpair.xSub_splits_of_same_degree_nonneg hpnn hqnn hdeg.symm hμ
-  · have hsucc : q.natDegree = p.natDegree + 1 := by
-      have hle := hprec.natDegree_le
-      have hle1 := hprec.natDegree_le_succ
-      lia
-    exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn hsucc hμ
+  · exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn hsucc hμ
 
 end
 
