@@ -223,6 +223,7 @@ import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
 import RealRooted.Graph.IndependencePolynomial.Recurrence
+import RealRooted.Graph.MatchingPolynomial
 import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard

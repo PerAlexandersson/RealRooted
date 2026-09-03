@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 776
+      "max_modules": 777
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -90,6 +90,9 @@
     },
     "RealRooted.Graph.ClawFree": {
       "max_modules": 1
+    },
+    "RealRooted.Graph.MatchingPolynomial": {
+      "max_modules": 10
     },
     "RealRooted.Compatibility.Basic": {
       "max_modules": 106
@@ -296,25 +299,25 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
-      "max_modules": 170
+      "max_modules": 171
    },
     "RealRooted.RankTwoMatching.Basic": {
-      "max_modules": 164
-   },
-    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 165
    },
-    "RealRooted.RankTwoMatching.DisjointEquiv": {
+    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 166
    },
-    "RealRooted.RankTwoMatching.Enumeration": {
+    "RealRooted.RankTwoMatching.DisjointEquiv": {
       "max_modules": 167
    },
-    "RealRooted.RankTwoMatching.Endpoint": {
+    "RealRooted.RankTwoMatching.Enumeration": {
       "max_modules": 168
    },
-    "RealRooted.RankTwoMatching": {
+    "RealRooted.RankTwoMatching.Endpoint": {
       "max_modules": 169
+   },
+    "RealRooted.RankTwoMatching": {
+      "max_modules": 170
    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 88
@@ -1022,6 +1025,13 @@
     "RealRooted.AllCombo",
     "RealRooted.Compatibility.Pair",
     "RealRooted.Compatibility.Basic",
+    "RealRooted.Graph.ClawFree",
+    "RealRooted.Graph.IndependencePolynomial.Basic",
+    "RealRooted.Graph.IndependencePolynomial.Recurrence",
+    "RealRooted.Graph.IndependencePolynomial.CliqueDeletion",
+    "RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility",
+    "RealRooted.Graph.IndependencePolynomial.ClawFree",
+    "RealRooted.Graph.MatchingPolynomial",
     "RealRooted.EulerianMixedCompatibility.Insertion",
     "RealRooted.EulerianMixedCompatibility",
     "RealRooted.EulerianCompletion",
