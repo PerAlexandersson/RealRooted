@@ -219,6 +219,7 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.Graph.ClawFree
 import RealRooted.Graph.IndependencePolynomial.Basic
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
 import RealRooted.Graph.IndependencePolynomial.Recurrence
