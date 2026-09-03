@@ -666,7 +666,11 @@ families to splitness or two-polynomial compatibility.
 `Graph.IndependencePolynomial.ClawFree` is the 161-module support-induction
 layer. It owns the support invariants and the weighted and unweighted
 Chudnovsky--Seymour induction for claw-free independence polynomials.
-Line-graph geometry and matching-polynomial adapters remain in
+
+`Graph.MatchingPolynomial` is the ten-module matching data and graph-geometry
+layer. It owns induced-support identities, matching encodings and coefficient
+facts, and claw-freeness of line graphs. The theorem bridge from claw-free
+independence polynomials to matching-polynomial real-rootedness remains in
 `HeilmannLieb`.
 
 The residue boundary raised the root closure by one module to 758 while cutting
