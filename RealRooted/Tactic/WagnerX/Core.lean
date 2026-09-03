@@ -13,33 +13,6 @@ open Polynomial
 
 namespace RealRooted
 
-/-- Nonzero scalar form of the Wagner `X`-shift bridge.
-
-From `f ≪ g` and nonnegative coefficients, Wagner (3) gives
-`g ≪ X * f`.  This wrapper includes the nonzero scalar normalization used by
-positive `c * X` lag terms. -/
-theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hc : c ≠ 0) :
-    Prec g ((C c * X) * f) := by
-  simpa [mul_assoc] using
-    (prec_C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
-
-/-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge.
-
-This packages the standard root-nonpositive side conditions for applications
-where both polynomials are multiplied by the same factor `X`. -/
-theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
-    (h : Prec f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) :=
-  prec_mul_X_both_of_roots_nonpos h
-    (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec h) hfnn)
-    (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec h) hgnn)
-
 /-- Derivative-lag bridge for later mixed lag recurrences.
 
 If `f` is real-rooted with nonnegative coefficients, then `X * f'` is in
