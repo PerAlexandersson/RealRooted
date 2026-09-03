@@ -28,6 +28,29 @@ variable {K : Type*} [Field K]
 
 local instance : DecidableEq K := Classical.decEq K
 
+section CharZero
+
+variable [CharZero K] {p : K[X]} {n : ℕ}
+
+/-- Evaluation at `-1` of a polynomial fixed by reflection. -/
+theorem eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
+    (hdeg : p.natDegree ≤ n) (hreflect : p.reflect n = p) :
+    p.eval (-1) * (-1 : K) ^ n = p.eval (-1) := by
+  letI : Invertible (-1 : K) := invertibleOfNonzero (by simp)
+  simpa [hreflect] using
+    (Polynomial.eval₂_reflect_mul_pow (i := RingHom.id K) (x := (-1 : K)) n p hdeg)
+
+/-- A polynomial fixed by reflection through an odd bound has `-1` as a root. -/
+theorem isRoot_neg_one_of_reflect_eq_self_of_odd
+    (hdeg : p.natDegree ≤ n) (hreflect : p.reflect n = p) (hn : Odd n) :
+    p.IsRoot (-1) := by
+  rw [Polynomial.IsRoot.def]
+  have h := eval_neg_one_mul_neg_one_pow_of_reflect_eq_self hdeg hreflect
+  rw [hn.neg_one_pow] at h
+  exact CharZero.neg_eq_self_iff.mp (by simpa using h)
+
+end CharZero
+
 /-- The reversal of a nonzero monic linear factor is a nonzero scalar times
 the monic factor at the inverse root. -/
 theorem reverse_X_sub_C_eq (r : K) (hr : r ≠ 0) :
