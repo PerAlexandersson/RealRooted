@@ -618,6 +618,17 @@ have equal degree or the right endpoint has successor degree. Higher layers
 branch through `Prec.natDegree_eq_or_eq_succ` instead of reconstructing this
 dichotomy from root-list witnesses or paired inequalities.
 
+`Compatibility.Pair` owns pair-level algebra that does not depend on a
+particular family: reflexivity for split polynomials, compatibility
+with an `X`-multiple, transport of a compatible pair through multiplication by
+`X`, and splitness projections for nonnegative two-term sums.
+`Compatibility.Three` owns the reusable three-polynomial
+Chudnovsky--Seymour assembly through `Compatible.add_C_mul_left_of_pairwise_three`
+and its unscaled specialization. Graph applications import these layers
+instead of retaining polynomial-only helpers inside `HeilmannLieb`.
+The new responsibility-specific unit raises the root and graph-client closures
+by one module; their explicit budgets record that intentional boundary.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The
