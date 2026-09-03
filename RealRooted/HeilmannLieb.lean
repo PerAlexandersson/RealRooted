@@ -3014,34 +3014,30 @@ independence polynomial. -/
 theorem indepPoly_coeff_zero {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) : (indepPoly G).coeff 0 = 1 := by
   classical
-  rw [indepPoly, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
-  · simp
-  · intro s hs hne
-    have hs_nonzero : s.card ≠ 0 := by simp_all
-    have hzero : ¬ 0 = s.card := fun h ↦ hs_nonzero h.symm
-    simp [Polynomial.coeff_X_pow, hzero]
-  · simp
+  rw [indepPoly_eq_indepPolyOn_univ, ← weightedIndepPolyOn_one]
+  exact weightedIndepPolyOn_coeff_zero G Finset.univ fun _ ↦ 1
 
 /-- Independence polynomials are nonzero. -/
 theorem indepPoly_ne_zero {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) : indepPoly G ≠ 0 := by
-  intro h
-  have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) h
-  simp [indepPoly_coeff_zero] at hcoeff
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_ne_zero G Finset.univ
 
 /-- Independence polynomials have nonnegative coefficients by construction. -/
 theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) :
     HasNonnegCoeffs (indepPoly G) := by
   classical
-  intro n
-  rw [indepPoly, Polynomial.finsetSum_coeff]
-  simp
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_hasNonnegCoeffs G Finset.univ
 
 /-- Independence polynomials have positive leading coefficient. -/
 theorem indepPoly_hasPosLeadingCoeff {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V) : HasPosLeadingCoeff (indepPoly G) :=
-  (indepPoly_hasNonnegCoeffs G).pos_leadingCoeff (indepPoly_ne_zero G)
+    (G : _root_.SimpleGraph V) : HasPosLeadingCoeff (indepPoly G) := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_hasPosLeadingCoeff G Finset.univ
 
 /-- Line graphs are claw-free.
 
