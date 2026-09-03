@@ -102,8 +102,12 @@ lake build RealRooted.Bezoutian
   `LowerTriangularMatrix.lean` and `MaoWangMatrixProduct.lean` provide the
   lower-triangular row-generating-function API and matrix-product endpoint
   wrappers.
-- `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
-  contain the current Liu opposite-leading-sign root-count interface; its
+- `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
+  foundation, `RootDeletion.lean` contains the general cofactor and
+  largest-root deletion API, and `PositiveSplitRootCount.lean` packages the
+  normalized positive-leading pair. `LiuOppositeSigns.lean` retains the
+  cross-owned-gap and left/right branch interface, with
+  `LiuOppositeSignsTheorem.lean` providing the theorem endpoint. Its
   `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
   nonnegative `X * p - μ * q` splitness corollary. Its
   `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,

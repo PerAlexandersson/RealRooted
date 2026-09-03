@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 import RealRooted.WagnerX
 
 /-!

@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.RootDeletion
 import RealRooted.Mathlib.Data.Multiset.Rel
 
 /-!
