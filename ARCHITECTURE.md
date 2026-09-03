@@ -637,6 +637,12 @@ API. In particular, basic graph-polynomial consumers no longer inherit line
 graphs, matchings, claw-free geometry, or the 155-module finite-family
 Chudnovsky--Seymour assembly from `HeilmannLieb`.
 
+`Graph.ClawFree` is the one-module graph-geometry foundation. It owns the
+claw-free predicate, induced-subgraph transport, finite-support neighborhoods,
+the simplicial-clique predicate, and the two local Chudnovsky--Seymour graph
+lemmas. It deliberately has no dependency on polynomials or compatibility;
+`HeilmannLieb` combines this geometry with the independence-polynomial layers.
+
 The residue boundary raised the root closure by one module to 758 while cutting
 63 modules from the mixed parent. The odd/even boundary raises it once more to
 759 and moves the degree/parity facts out of the Veronese theorem program. The

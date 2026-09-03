@@ -217,6 +217,7 @@ import RealRooted.GeneralizedSnakePosets.SquarecaseModel
 import RealRooted.GeneralizedSnakePosets.Statements
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 import RealRooted.GeneralizedSnakePosetsNarayana
+import RealRooted.Graph.ClawFree
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
