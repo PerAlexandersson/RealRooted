@@ -142,17 +142,12 @@ theorem weightedIndepPolyOn_insert_update {V : Type u} [DecidableEq V]
     weightedIndepPolyOn G (insert v S) (Function.update wt v a) =
       weightedIndepPolyOn G S wt +
         C a * X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
-  rw [weightedIndepPolyOn_insert G (Function.update wt v a) hv]
-  have hS : weightedIndepPolyOn G S (Function.update wt v a) =
-      weightedIndepPolyOn G S wt := by
-    apply weightedIndepPolyOn_congr
-    grind
-  have hN : weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w)
-      (Function.update wt v a) =
-        weightedIndepPolyOn G (S.filter fun w ↦ ¬ G.Adj v w) wt := by
-    apply weightedIndepPolyOn_congr
-    grind
-  simp [hS, hN]
+  have hupd : ∀ T : Finset V, v ∉ T →
+      weightedIndepPolyOn G T (Function.update wt v a) = weightedIndepPolyOn G T wt :=
+    fun _ hT ↦ weightedIndepPolyOn_congr G
+      fun w hw ↦ Function.update_of_ne (by rintro rfl; exact hT hw) a wt
+  rw [weightedIndepPolyOn_insert G (Function.update wt v a) hv, Function.update_self,
+    hupd S hv, hupd _ fun hmem ↦ hv (Finset.mem_filter.mp hmem).1]
 
 /-- Weighted insertion supplies the two-term compatibility input for the
 Chudnovsky--Seymour engine: nonnegative combinations of the old support
@@ -275,16 +270,8 @@ theorem deleteClosedNeighborSupport_eq_erase_of_neighborSetOn_empty
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     {S : Finset V} {v : V} (hneighbor : neighborSetOn G (S.erase v) v = ∅) :
     deleteClosedNeighborSupport G S v = S.erase v := by
-  ext w
-  constructor
-  · intro hw
-    exact (Finset.mem_filter.mp hw).1
-  · intro hw
-    refine Finset.mem_filter.mpr ⟨hw, ?_⟩
-    intro hvw
-    have hwNeighbor : w ∈ neighborSetOn G (S.erase v) v :=
-      Finset.mem_filter.mpr ⟨hw, hvw⟩
-    simp [hneighbor] at hwNeighbor
+  simp only [neighborSetOn, Finset.filter_eq_empty_iff] at hneighbor
+  exact Finset.filter_true_of_mem fun w hw ↦ hneighbor hw
 
 /-- The no-neighbor case of Chudnovsky--Seymour Lemma 2.6.  If `v` is isolated
 inside `S`, then the vertex-deletion summands are just a polynomial and its
@@ -386,27 +373,16 @@ theorem deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
     {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     {S K : Finset V} {k : V} (hK : G.IsClique (K : Set V))
-    (hKS : K ⊆ S) (hk : k ∈ K) :
+    (hk : k ∈ K) :
     deleteClosedNeighborSupport G S k =
       (S \ K) \ neighborOutsideCliqueOn G S K k := by
+  have hkw : ∀ w ∈ K, w = k ∨ G.Adj k w := fun w hw ↦
+    (eq_or_ne w k).imp id fun hne ↦
+      hK (Finset.mem_coe.mpr hk) (Finset.mem_coe.mpr hw) (Ne.symm hne)
   ext w
-  by_cases hwS : w ∈ S
-  · by_cases hwK : w ∈ K
-    · by_cases hwk : w = k
-      · subst w
-        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hk]
-      · have hkw : G.Adj k w :=
-          hK (by grind) (by grind) (fun h ↦ hwk h.symm)
-        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
-          hwS, hwK, hwk, hkw]
-    · by_cases hAdj : G.Adj k w
-      · simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
-          hwS, hwK, hAdj]
-      · have hwk : w ≠ k := fun h ↦ hwK (by simp_all)
-        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
-          hwS, hwK, hAdj, hwk]
-  · have hwK : w ∉ K := fun h ↦ hwS (hKS h)
-    simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hwS, hwK]
+  simp only [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
+    Finset.mem_filter, Finset.mem_sdiff, Finset.mem_erase]
+  grind
 
 /-- If `v` is adjacent to a clique vertex `x`, then removing `v` from the
 ambient support does not change the support left after deleting the closed
