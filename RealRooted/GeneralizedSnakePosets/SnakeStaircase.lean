@@ -1,5 +1,5 @@
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
 
 /-!
 # Snake suffix blocks and truncated staircases

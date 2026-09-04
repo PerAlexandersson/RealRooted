@@ -1146,6 +1146,32 @@ challenge and compatibility imports deliberately continue to re-export both
 branches. The root umbrella budget rises by the exact six new source modules
 to 831.
 
+The truncated-staircase finite-board implementation is likewise layered by
+mathematical role. `TruncatedStaircase.Basic` owns the board definition and
+elementary reflection lemmas; `TruncatedStaircase.FullStaircase` owns the
+ordered-subset-pair enumeration of full placements; and
+`TruncatedStaircase.BottomRow` owns the remove-and-reinsert bijection and its
+polynomial decomposition. `TruncatedStaircase.FiniteCases` contains only the
+explicit small-board certificates, while `TruncatedStaircase.RowFormulas`
+contains the general coefficient recurrence, one-through-six-row formulas,
+and their tail sums. `TruncatedStaircase.Auxiliary` joins the independent
+finite-certificate and row-formula branches to assemble the auxiliary family
+`G`. The historical `TruncatedStaircase` path remains a compatibility import
+over both branch tips.
+
+The snake-suffix geometry imports only `TruncatedStaircase.Basic`; the broad
+`GeneralizedSnakePosets` umbrella imports the compatibility path explicitly to
+preserve its established API. The six implementation units have 133, 685,
+718, 566, 758, and 589 local lines, respectively, and replace one 3,355-line
+mixed source without renaming public declarations. `SnakeStaircase` falls from
+95 modules / 40,592 local lines to 94 / 36,717. The Narayana modified-family,
+recurrence, and root-sum layers now declare their actual auxiliary,
+full-staircase, and matrix-induction dependencies: their closures fall from
+195 / 80,255, 198 / 81,870, and 199 / 82,387 to 190 / 73,508, 195 / 76,462,
+and 198 / 79,112, respectively. The broad generalized-snake umbrella retains
+the complete API and therefore grows by six modules but only 105 local lines.
+The root umbrella budget rises by the exact six new source modules to 837.
+
 ## Consumer-to-library extraction
 
 A theorem discovered in an application or OEIS proof should pass through the
