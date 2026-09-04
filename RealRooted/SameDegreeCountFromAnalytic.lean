@@ -1,4 +1,5 @@
-import RealRooted.CommonInterleaverTwo
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.RootCountLocalConstancy
 
