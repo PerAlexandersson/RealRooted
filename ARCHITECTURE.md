@@ -903,9 +903,12 @@ forward/same-degree transport), `PairBridge.SuccDegree` (666 lines of
 root-count and root-crossing work), `PairBridge.SuccDegree.SlotData` (350
 lines of slot-data and common-interleaver wrappers),
 `PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
-shared-root induction principle), `PairBridge.Reduction` (754 lines of
-degree-split reductions and bridge assembly), `PairBridge.Compatibility` (441
-lines of nonnegative endpoint assembly), and
+shared-root induction principle), `PairBridge.Reduction.Basic` (184 lines of
+shared degree-split reductions), `PairBridge.Reduction.CommonInterleaver` (283
+lines of common-interleaver recursion), `PairBridge.Reduction.AllCombo` (316
+lines of all-combinations and orientation upgrades), the 10-line
+`PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
+nonnegative endpoint assembly), and
 `PairBridge.Compatibility.NonnegativeShift` (427 lines of translation-based
 positive-leading wrappers). The latter exports
 `pairHasCommonInterleaver_comp_X_add_C_iff`, which centralizes the previously

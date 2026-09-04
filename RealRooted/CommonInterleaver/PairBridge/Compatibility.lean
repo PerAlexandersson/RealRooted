@@ -1,4 +1,5 @@
-import RealRooted.CommonInterleaver.PairBridge.Reduction
+import RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo
+import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
 
 /-!
 # Pair bridge assembly: compatibility endpoints
