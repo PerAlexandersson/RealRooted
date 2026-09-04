@@ -901,10 +901,14 @@ closure façade rather than a mixed 1,791-line implementation.
 2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
 forward/same-degree transport), `PairBridge.SuccDegree` (666 lines of
 root-count and root-crossing work), `PairBridge.SuccDegree.SlotData` (350
-lines of slot-data and common-interleaver wrappers), `PairBridge.Reduction`
-(944 lines of common-root and degree-split reductions), and
-`PairBridge.Compatibility` (856 endpoint wrappers). The two protected
-`PairBridge` helpers are the only
+lines of slot-data and common-interleaver wrappers),
+`PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
+shared-root induction principle), `PairBridge.Reduction` (754 lines of
+degree-split reductions and bridge assembly), and `PairBridge.Compatibility`
+(856 endpoint wrappers). The public
+`PosComboRealRooted.induction_on_common_roots_nonneg` eliminator centralizes
+the common-factor recursion used by three reduction endpoints. The two
+protected `PairBridge` helpers are the only
 implementation facts crossing the reduction/endpoint boundary; all existing
 ordinary public declarations retain their original names.
 

@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 784
+      "max_modules": 785
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -80,10 +80,10 @@
       "max_modules": 19
     },
     "RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility": {
-      "max_modules": 165
+      "max_modules": 166
     },
     "RealRooted.Graph.IndependencePolynomial.ClawFree": {
-      "max_modules": 166
+      "max_modules": 167
     },
     "RealRooted.Graph.IndependencePolynomial.Recurrence": {
       "max_modules": 9
@@ -299,25 +299,25 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
-      "max_modules": 176
+      "max_modules": 177
    },
     "RealRooted.RankTwoMatching.Basic": {
-      "max_modules": 170
-   },
-    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 171
    },
-    "RealRooted.RankTwoMatching.DisjointEquiv": {
+    "RealRooted.RankTwoMatching.Orientation": {
       "max_modules": 172
    },
-    "RealRooted.RankTwoMatching.Enumeration": {
+    "RealRooted.RankTwoMatching.DisjointEquiv": {
       "max_modules": 173
    },
-    "RealRooted.RankTwoMatching.Endpoint": {
+    "RealRooted.RankTwoMatching.Enumeration": {
       "max_modules": 174
    },
-    "RealRooted.RankTwoMatching": {
+    "RealRooted.RankTwoMatching.Endpoint": {
       "max_modules": 175
+   },
+    "RealRooted.RankTwoMatching": {
+      "max_modules": 176
    },
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 88
@@ -458,13 +458,13 @@
       "max_modules": 89
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 191
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 192
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 193
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+      "max_modules": 194
    },
     "RealRooted.Hadamard.Basic": {
       "max_modules": 84
@@ -497,7 +497,7 @@
       "max_modules": 85
     },
     "RealRooted.FiniteFreeRootCount": {
-      "max_modules": 185
+      "max_modules": 186
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 80
@@ -532,17 +532,20 @@
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
       "max_modules": 139
    },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot": {
+      "max_modules": 74
+   },
     "RealRooted.CommonInterleaver.PairBridge.Reduction": {
-      "max_modules": 141
+      "max_modules": 142
    },
     "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
-      "max_modules": 142
+      "max_modules": 143
    },
     "RealRooted.CommonInterleaverSeq": {
       "max_modules": 82
     },
     "RealRooted.CommonInterleaver.PairBridge": {
-      "max_modules": 143
+      "max_modules": 144
    },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 39
@@ -809,7 +812,7 @@
       "max_modules": 85
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 403
+      "max_modules": 404
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -833,7 +836,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 418
+      "max_modules": 419
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
