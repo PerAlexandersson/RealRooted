@@ -1,4 +1,4 @@
-import RealRooted.Bezoutian
+import RealRooted.Bezoutian.LowDegree
 import RealRooted.Derivative
 import RealRooted.Jacobi
 import RealRooted.JacobiMarkoff

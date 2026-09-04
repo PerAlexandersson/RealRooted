@@ -1,5 +1,5 @@
-import RealRooted.Bezoutian
 import RealRooted.JacobiOrthogonality
+import RealRooted.Bezoutian.WronskianConverse
 import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.ImplicitContDiff

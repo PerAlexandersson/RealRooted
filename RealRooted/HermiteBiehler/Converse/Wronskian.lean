@@ -1,4 +1,4 @@
-import RealRooted.Bezoutian
+import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.HermiteBiehler.Converse.RootGeometry
 
 /-!
