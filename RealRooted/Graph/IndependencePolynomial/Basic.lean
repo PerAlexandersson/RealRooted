@@ -151,6 +151,14 @@ theorem weightedIndepPolyOn_empty_splits {V : Type u} [DecidableEq V]
   rw [weightedIndepPolyOn_empty]
   simp
 
+/-- The empty independent set gives the constant coefficient of a
+support-restricted independence polynomial. -/
+theorem indepPolyOn_coeff_zero {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    (indepPolyOn G S).coeff 0 = 1 := by
+  simpa [weightedIndepPolyOn_one] using
+    weightedIndepPolyOn_coeff_zero G S (fun _ ↦ 1)
+
 /-- Support-restricted independence polynomials are nonzero. -/
 theorem indepPolyOn_ne_zero {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
@@ -211,6 +219,35 @@ theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     indepPoly G = indepPolyOn G Finset.univ := by
   unfold indepPoly indepPolyOn indepSetsOn
   grind
+
+/-- The empty independent set gives the constant coefficient of the
+independence polynomial. -/
+theorem indepPoly_coeff_zero {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : (indepPoly G).coeff 0 = 1 := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_coeff_zero G Finset.univ
+
+/-- Independence polynomials are nonzero. -/
+theorem indepPoly_ne_zero {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : indepPoly G ≠ 0 := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_ne_zero G Finset.univ
+
+/-- Independence polynomials have nonnegative coefficients by construction. -/
+theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : HasNonnegCoeffs (indepPoly G) := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_hasNonnegCoeffs G Finset.univ
+
+/-- Independence polynomials have positive leading coefficient. -/
+theorem indepPoly_hasPosLeadingCoeff {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : HasPosLeadingCoeff (indepPoly G) := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_hasPosLeadingCoeff G Finset.univ
 
 end Graph
 end RealRooted
