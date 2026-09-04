@@ -1,6 +1,6 @@
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosetsNarayana
+import RealRooted.GeneralizedSnakePosets.Narayana.Claim7Analytic
 
 /-!
 # Braun--Jal Claim 7 for modified Narayana polynomials
