@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 804
+      "max_modules": 810
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -637,6 +637,27 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount": {
       "max_modules": 172
    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements": {
+      "max_modules": 140
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight": {
+      "max_modules": 141
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic": {
+      "max_modules": 141
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft": {
+      "max_modules": 142
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero": {
+      "max_modules": 144
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly": {
+      "max_modules": 145
+    },
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary": {
+      "max_modules": 146
+    },
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic": {
       "max_modules": 160
    },
@@ -1205,6 +1226,13 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly",
+    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary",
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic",
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic",
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftOutlier",
