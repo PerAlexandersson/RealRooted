@@ -173,9 +173,8 @@ theorem posCombo_sameDegree_rootCount_degree_le_three
   rcases Nat.le_or_eq_of_le_succ hfdeg with hle | hfdeg3
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · have hgdeg3 : g.natDegree = 3 := by rw [hdeg, hfdeg3]
-    exact sameDegree_cubic_rootCount_le_one_of_secondRootBound
-      cubicSecondRootBound_from_analytic hfdeg3 hgdeg3
+  · exact sameDegree_cubic_rootCount_le_one_of_secondRootBound
+      cubicSecondRootBound_from_analytic hfdeg3 (hdeg.trans hfdeg3)
       (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
       (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
       hf_pos hg_pos hfg x
