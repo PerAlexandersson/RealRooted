@@ -81,8 +81,12 @@ The first frontend/backend split keeps the existing tactic imports compatible:
   shells, `Lifts` row-wise quotient lifts, `EndpointPair` the paired endpoint
   recurrences, `FactorFamilies` the affine and powered-factor specializations,
   and `ScalarFamilies` the alternating scalar/product families; and
-- `Tactic.Finish` and `Tactic.Product` now contain only their syntax and
-  elaboration layers.
+- `Tactic.Finish` contains only its syntax and elaboration layer;
+- `Tactic.Product.Syntax` is a parser-declaration facade over `Basic`, `Lifts`,
+  `EndpointPair`, and `Families`; and
+- `Tactic.Product.Rules` owns checked expression inspection together with the
+  ordered macro expansion table, while `Tactic.Product` is its stable public
+  facade.
 
 At this checkpoint, the 13-line compatibility facade re-exports `Factors`
 (216 lines), `Core` (216 lines), `Lifts` (723 lines), `EndpointPair` (290
@@ -90,6 +94,14 @@ lines), `FactorFamilies` (460 lines), and `ScalarFamilies` (729 lines). Every
 implementation unit is below 800 lines. Explicit import budgets prevent the
 theorem backends from silently acquiring tactic dependencies or growing back
 toward the tactic umbrella.
+
+The product tactic's 150 parser declarations are now isolated in four files of
+314, 361, 95, and 292 lines behind a 10-line syntax facade. The checked
+elaborators and macro rules deliberately remain together in one 2,237-line
+unit: separating those imported environments made the affine-power auto-router
+exceed its established 200,000-heartbeat regression budget. This is a measured
+runtime boundary rather than a line-count exception by convenience. The public
+`Tactic.Product` path is a 9-line compatibility facade.
 
 Wronskian results have a focused package entry point:
 

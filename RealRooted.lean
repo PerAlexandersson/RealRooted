@@ -745,6 +745,12 @@ import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.Product.Rules
+import RealRooted.Tactic.Product.Syntax
+import RealRooted.Tactic.Product.Syntax.Basic
+import RealRooted.Tactic.Product.Syntax.EndpointPair
+import RealRooted.Tactic.Product.Syntax.Families
+import RealRooted.Tactic.Product.Syntax.Lifts
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification

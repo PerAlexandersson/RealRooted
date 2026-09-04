@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 798
+      "max_modules": 804
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -839,19 +839,19 @@
       "max_modules": 57
     },
     "RealRooted.Tactic.OEIS.ProductExit": {
-      "max_modules": 91
+      "max_modules": 97
     },
     "RealRooted.Tactic.OEIS.ProductFactor": {
-      "max_modules": 96
+      "max_modules": 102
     },
     "RealRooted.Tactic.OEIS.ProductLift": {
-      "max_modules": 91
+      "max_modules": 97
     },
     "RealRooted.Tactic.OEIS.ProductParity": {
-      "max_modules": 91
+      "max_modules": 97
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 416
+      "max_modules": 422
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -875,7 +875,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 431
+      "max_modules": 437
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
@@ -1004,7 +1004,25 @@
       "max_modules": 60
     },
     "RealRooted.Tactic.Product": {
-      "max_modules": 90
+      "max_modules": 96
+    },
+    "RealRooted.Tactic.Product.Rules": {
+      "max_modules": 95
+    },
+    "RealRooted.Tactic.Product.Syntax": {
+      "max_modules": 27
+    },
+    "RealRooted.Tactic.Product.Syntax.Basic": {
+      "max_modules": 23
+    },
+    "RealRooted.Tactic.Product.Syntax.EndpointPair": {
+      "max_modules": 23
+    },
+    "RealRooted.Tactic.Product.Syntax.Families": {
+      "max_modules": 23
+    },
+    "RealRooted.Tactic.Product.Syntax.Lifts": {
+      "max_modules": 23
     }
   },
   "forbidden_imports": [
@@ -1331,6 +1349,12 @@
     "RealRooted.Tactic.MaWang.Sequences",
     "RealRooted.Tactic.MaWang.Denominator",
     "RealRooted.Tactic.MaWang.Factors",
+    "RealRooted.Tactic.Product.Rules",
+    "RealRooted.Tactic.Product.Syntax.Basic",
+    "RealRooted.Tactic.Product.Syntax.EndpointPair",
+    "RealRooted.Tactic.Product.Syntax.Families",
+    "RealRooted.Tactic.Product.Syntax.Lifts",
+    "RealRooted.Tactic.Product.Syntax",
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic"
   ]
