@@ -646,6 +646,15 @@ import RealRooted.Tactic.Attr
 import RealRooted.Tactic.Bezoutian
 import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CommonInterleaver
+import RealRooted.Tactic.CommonInterleaver.AnalyticRules
+import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
+import RealRooted.Tactic.CommonInterleaver.BasicRules
+import RealRooted.Tactic.CommonInterleaver.BasicSyntax
+import RealRooted.Tactic.CommonInterleaver.Core
+import RealRooted.Tactic.CommonInterleaver.FamilyRules
+import RealRooted.Tactic.CommonInterleaver.FamilySyntax
+import RealRooted.Tactic.CommonInterleaver.LowDegreeRules
+import RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EndpointDerivative

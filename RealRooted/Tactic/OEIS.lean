@@ -3,7 +3,7 @@ import RealRooted.Tactic.AffineDerivative
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.CommonInterleaver
+import RealRooted.Tactic.CommonInterleaver.BasicRules
 import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Favard
