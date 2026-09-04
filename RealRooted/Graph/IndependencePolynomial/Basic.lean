@@ -220,6 +220,14 @@ theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
   unfold indepPoly indepPolyOn indepSetsOn
   grind
 
+/-- The weighted independence polynomial with all weights equal to `1` is the
+ordinary independence polynomial. -/
+theorem weightedIndepPoly_one {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
+    weightedIndepPoly G (fun _ ↦ 1) = indepPoly G := by
+  rw [weightedIndepPoly_eq_weightedIndepPolyOn_univ,
+    weightedIndepPolyOn_one, ← indepPoly_eq_indepPolyOn_univ]
+
 /-- The empty independent set gives the constant coefficient of the
 independence polynomial. -/
 theorem indepPoly_coeff_zero {V : Type u} [Fintype V] [DecidableEq V]

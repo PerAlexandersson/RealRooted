@@ -174,15 +174,6 @@ theorem coeff_weightedMatchingPolynomialByEdges
   rw [hprod, coeff_C_mul]
   simp [coeff_X_pow, eq_comm]
 
-/-- The intrinsic edge-matching polynomial agrees with the line-graph
-independence-polynomial definition. -/
-theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
-    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
-    matchingPolynomialByEdges G = matchingGeneratingPolynomial G := by
-  classical
-  simp [matchingPolynomialByEdges, matchingGeneratingPolynomial, indepPoly,
-    isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
-
 /-- The intrinsic weighted edge-matching polynomial agrees with the weighted
 line-graph independence-polynomial definition. -/
 theorem weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial
@@ -195,6 +186,18 @@ theorem weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomia
     weightedMatchingGeneratingPolynomial, weightedIndepPoly,
     weightedIndepPolyOn, indepSetsOn,
     isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
+
+/-- The intrinsic edge-matching polynomial agrees with the line-graph
+independence-polynomial definition. -/
+theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
+    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
+    matchingPolynomialByEdges G = matchingGeneratingPolynomial G := by
+  classical
+  simpa [weightedMatchingPolynomialByEdges, matchingPolynomialByEdges,
+    weightedMatchingGeneratingPolynomial, matchingGeneratingPolynomial,
+    weightedIndepPoly_one] using
+    weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial
+      G (fun _ ↦ 1)
 
 /-- Line graphs are claw-free.
 
