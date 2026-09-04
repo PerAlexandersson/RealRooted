@@ -1,5 +1,5 @@
 import RealRooted.DerivativeShiftRootMatching
-import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.NoCommonRoots
 
 /-!
 # Derivative-shift regularization for Liu pairs

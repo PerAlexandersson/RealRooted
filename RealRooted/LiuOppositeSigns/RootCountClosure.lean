@@ -1,7 +1,8 @@
 import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.LiuOppositeSigns
 import RealRooted.LiuOppositeSigns.RootCountRelStability
-import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.NoCommonRoots
 import RealRooted.RootMatchingSort
 
 /-!

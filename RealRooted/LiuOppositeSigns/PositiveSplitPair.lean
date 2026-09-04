@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeCountFromAnalytic
 

@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 810
+      "max_modules": 817
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -458,13 +458,13 @@
       "max_modules": 89
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 198
+      "max_modules": 195
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 199
+      "max_modules": 196
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 200
+      "max_modules": 197
    },
     "RealRooted.Hadamard.Basic": {
       "max_modules": 84
@@ -497,7 +497,7 @@
       "max_modules": 85
     },
     "RealRooted.FiniteFreeRootCount": {
-      "max_modules": 192
+      "max_modules": 189
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 80
@@ -638,25 +638,25 @@
       "max_modules": 172
    },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements": {
-      "max_modules": 140
+      "max_modules": 137
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight": {
-      "max_modules": 141
+      "max_modules": 138
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic": {
-      "max_modules": 141
+      "max_modules": 138
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft": {
-      "max_modules": 142
+      "max_modules": 139
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero": {
-      "max_modules": 144
+      "max_modules": 141
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly": {
-      "max_modules": 145
+      "max_modules": 142
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary": {
-      "max_modules": 146
+      "max_modules": 143
     },
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic": {
       "max_modules": 160
@@ -872,7 +872,7 @@
       "max_modules": 97
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 422
+      "max_modules": 419
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -896,7 +896,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 437
+      "max_modules": 434
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
