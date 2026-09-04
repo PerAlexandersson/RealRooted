@@ -477,15 +477,11 @@ theorem pairwiseCompatible_of_familyCompatible
     {fs : List ℝ[X]}
     (hfull : FamilyCompatible fs) :
     PairwiseCompatible fs := by
-  intro i j hij α β hα hβ
-  let fi : ℝ[X] := fs.get i
-  let fj : ℝ[X] := fs.get j
-  have hpair :
-      weightedSum [(α, fi), (β, fj)] = 0 ∨
-        ((weightedSum [(α, fi), (β, fj)]) ≠ 0 ∧
-          (weightedSum [(α, fi), (β, fj)]).Splits) :=
-    hfull [(α, fi), (β, fj)] (by grind) (by simp_all)
-  simpa [fi, fj, weightedSum, weightedSum_cons] using hpair
+  intro i j _hij α β hα hβ
+  have hpair := hfull [(α, fs.get i), (β, fs.get j)]
+    (by simp)
+    (by simp [hα, hβ])
+  simpa [weightedSum] using hpair
 
 /-- A forward common-interleaver upgrade is enough to identify pairwise
 compatibility with full family compatibility for positive-leading families. -/
