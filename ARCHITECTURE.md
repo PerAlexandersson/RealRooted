@@ -902,7 +902,7 @@ closure façade rather than a mixed 1,791-line implementation.
 forward/same-degree transport), `PairBridge.SuccDegree` (666 lines of
 root-count and root-crossing work), `PairBridge.SuccDegree.SlotData` (350
 lines of slot-data and common-interleaver wrappers),
-`PairBridge.Reduction.CommonRoot` (181 lines of quotient nonnegativity and a
+`PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
 shared-root induction principle), `PairBridge.Reduction` (754 lines of
 degree-split reductions and bridge assembly), and `PairBridge.Compatibility`
 (856 endpoint wrappers). The public

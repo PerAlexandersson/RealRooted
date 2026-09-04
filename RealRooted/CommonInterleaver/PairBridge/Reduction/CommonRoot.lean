@@ -146,36 +146,20 @@ theorem PosComboRealRooted.induction_on_common_roots_nonneg
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
     motive f g := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          motive f g)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_pos.ne_zero,
+  induction hn : f.natDegree using Nat.strong_induction_on generalizing f g with
+  | _ n ih =>
+    by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
+    · exact hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
+    · push Not at hno
+      obtain ⟨r, hrf, hrg⟩ := hno
+      obtain ⟨qf, qg, rfl, rfl, hqfg, hqf_nn, hqg_nn,
+        hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
+        common_root_reduction_data_of_posCombo_nonneg
+          hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
+      refine hmul hqf_pos hqg_pos (ih qf.natDegree ?_ hqf_pos hqg_pos
+        hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi rfl)
+      rw [← hn, natDegree_mul (X_sub_C_ne_zero r) hqf_pos.ne_zero,
         natDegree_X_sub_C]
       lia
-    have hq : motive qf qg :=
-      ih qf.natDegree hqf_deg_lt rfl
-        hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
-    simpa [hqf, hqg] using hmul hqf_pos hqg_pos hq
 
 end RealRooted
