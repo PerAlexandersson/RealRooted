@@ -1,4 +1,4 @@
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 
 /-!
 # Pair bridge assembly: common-root reduction
