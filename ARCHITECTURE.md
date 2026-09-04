@@ -904,8 +904,12 @@ root-count and root-crossing work), `PairBridge.SuccDegree.SlotData` (350
 lines of slot-data and common-interleaver wrappers),
 `PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
 shared-root induction principle), `PairBridge.Reduction` (754 lines of
-degree-split reductions and bridge assembly), and `PairBridge.Compatibility`
-(856 endpoint wrappers). The public
+degree-split reductions and bridge assembly), `PairBridge.Compatibility` (441
+lines of nonnegative endpoint assembly), and
+`PairBridge.Compatibility.NonnegativeShift` (427 lines of translation-based
+positive-leading wrappers). The latter exports
+`pairHasCommonInterleaver_comp_X_add_C_iff`, which centralizes the previously
+duplicated translation-back construction. The public
 `PosComboRealRooted.induction_on_common_roots_nonneg` eliminator centralizes
 the common-factor recursion used by three reduction endpoints. The two
 protected `PairBridge` helpers are the only
