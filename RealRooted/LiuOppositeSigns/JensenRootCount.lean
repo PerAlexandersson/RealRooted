@@ -1,4 +1,4 @@
-import RealRooted.ChudnovskySeymour
+import RealRooted.ChudnovskySeymour.Core
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 
 /-!

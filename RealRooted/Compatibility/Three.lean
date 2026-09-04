@@ -1,4 +1,4 @@
-import RealRooted.ChudnovskySeymour
+import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Three-polynomial compatibility assembly

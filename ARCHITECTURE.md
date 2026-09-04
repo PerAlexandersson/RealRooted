@@ -844,6 +844,15 @@ API, while `CommonInterleaver.RootDesc` owns the descending-root description,
 the root-slot package owns interval transport, `Finite` and `Sequence` own the
 finite-family setup, `DescPolynomial` owns the prescribed-root construction,
 and `FamilyUpgrade` owns the Chudnovsky--Seymour global upgrade.
+`ChudnovskySeymour.Core` owns the proved pair, common-interleaver, four-way,
+and family-compatibility theorem surface through the canonical nonnegative-
+coefficient result. The `ChudnovskySeymour` umbrella extends that core with
+roadmap reductions, direct endpoint combinations, and low-degree adapters.
+Consumers such as `Compatibility.Three` and
+`LiuOppositeSigns.JensenRootCount` import the core directly instead of parsing
+the later endpoint-adapter catalogue. The new source boundary raises the root,
+OEIS-tactic, and tactic-umbrella closures by exactly one module; their explicit
+budgets record that intentional re-export cost.
 The low `Basic` layer owns both directions between the legacy list-interlacing
 predicates and their coordinate bounds. `OrderedRoots` adds the canonical
 increasing-root accessor and the same-degree `Prec` equivalence without pulling
