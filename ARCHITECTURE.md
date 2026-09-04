@@ -334,6 +334,24 @@ macro-rule families. This separates parser declarations from elaboration and
 keeps the largest frontend source unit at 825 lines without changing the
 established tactic import.
 
+The root-count tactic follows the same theorem/frontend boundary:
+
+- `Tactic.RootCount.SequenceCore` owns the pointwise sequence transports for
+  general root counts and local continuity;
+- `Tactic.RootCount.LowDegree` adds the same-degree analytic and
+  degree-at-most-three endpoints without importing parser or macro code;
+- `CoreSyntax` and `LowDegreeSyntax` own the matching parser declarations;
+- `CoreRules` and `LowDegreeRules` own the two macro-expansion tables; and
+- `Tactic.RootCount` remains the compatibility facade.
+
+The six implementation units have 630, 405, 653, 401, 750, and 460 local
+lines, respectively, replacing one 3,226-line mixed source while preserving
+all 191 theorem and syntax declarations. The reusable sequence core has an
+83-module / 30,789-line closure, compared with 138 modules / 62,863 lines for
+the historical facade before the split. The low-degree theorem endpoint has a
+136-module / 59,977-line closure and remains independent of tactic syntax and
+rules.
+
 `Tactic.OEIS` is undergoing the same certificate-family migration. Its
 `OEIS.Basic` child owns the scalar-denominator certificate aliases, and
 `OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and

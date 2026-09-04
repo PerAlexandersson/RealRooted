@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 837
+      "max_modules": 843
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -872,7 +872,7 @@
       "max_modules": 97
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 419
+      "max_modules": 425
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -896,8 +896,29 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 434
+      "max_modules": 440
    },
+    "RealRooted.Tactic.RootCount.SequenceCore": {
+      "max_modules": 83
+    },
+    "RealRooted.Tactic.RootCount.LowDegree": {
+      "max_modules": 136
+    },
+    "RealRooted.Tactic.RootCount.CoreSyntax": {
+      "max_modules": 84
+    },
+    "RealRooted.Tactic.RootCount.LowDegreeSyntax": {
+      "max_modules": 138
+    },
+    "RealRooted.Tactic.RootCount.CoreRules": {
+      "max_modules": 88
+    },
+    "RealRooted.Tactic.RootCount.LowDegreeRules": {
+      "max_modules": 143
+    },
+    "RealRooted.Tactic.RootCount": {
+      "max_modules": 144
+    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
     },
@@ -1384,6 +1405,13 @@
     "RealRooted.Tactic.Product.Syntax.Lifts",
     "RealRooted.Tactic.Product.Syntax",
     "RealRooted.Tactic.Product",
+    "RealRooted.Tactic.RootCount.SequenceCore",
+    "RealRooted.Tactic.RootCount.LowDegree",
+    "RealRooted.Tactic.RootCount.CoreSyntax",
+    "RealRooted.Tactic.RootCount.LowDegreeSyntax",
+    "RealRooted.Tactic.RootCount.CoreRules",
+    "RealRooted.Tactic.RootCount.LowDegreeRules",
+    "RealRooted.Tactic.RootCount",
     "RealRooted.Tactic"
   ]
 }
