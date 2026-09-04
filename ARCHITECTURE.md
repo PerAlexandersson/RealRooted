@@ -846,13 +846,15 @@ finite-family setup, `DescPolynomial` owns the prescribed-root construction,
 and `FamilyUpgrade` owns the Chudnovsky--Seymour global upgrade.
 `ChudnovskySeymour.Core` owns the proved pair, common-interleaver, four-way,
 and family-compatibility theorem surface through the canonical nonnegative-
-coefficient result. The `ChudnovskySeymour` umbrella extends that core with
-roadmap reductions, direct endpoint combinations, and low-degree adapters.
+coefficient result. `ChudnovskySeymour.Reductions` adds the generic roadmap
+reductions and their first direct successor-degree adapters. The
+`ChudnovskySeymour` umbrella extends that layer with the full direct endpoint
+catalogue and low-degree adapters.
 Consumers such as `Compatibility.Three` and
 `LiuOppositeSigns.JensenRootCount` import the core directly instead of parsing
-the later endpoint-adapter catalogue. The new source boundary raises the root,
-OEIS-tactic, and tactic-umbrella closures by exactly one module; their explicit
-budgets record that intentional re-export cost.
+the later roadmap and endpoint-adapter catalogues. Each new source boundary
+raises the root, OEIS-tactic, and tactic-umbrella closures by exactly one
+module; their explicit budgets record those intentional re-export costs.
 The low `Basic` layer owns both directions between the legacy list-interlacing
 predicates and their coordinate bounds. `OrderedRoots` adds the canonical
 increasing-root accessor and the same-degree `Prec` equivalence without pulling
