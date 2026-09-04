@@ -458,16 +458,14 @@ theorem familyCompatible_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     FamilyCompatible fs := by
-  rcases hcommon with ⟨h, hprec⟩
+  obtain ⟨h, hprec⟩ := hcommon
   intro l hmem hnonneg
   by_cases hex : ∃ ap ∈ l, 0 < ap.1
-  · right
-    have hprec_l : ∀ ap ∈ l, Prec ap.2 h := by grind
-    have hpos_l : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 := by grind
-    exact (prec_weightedSum_right l h hnonneg hprec_l hpos_l hex).1
-  · left
-    have hall_zero : ∀ ap ∈ l, ap.1 = 0 := by grind
-    exact weightedSum_eq_zero_of_forall_coeff_zero l hall_zero
+  · exact Or.inr (prec_weightedSum_right l h hnonneg
+      (fun ap hap => hprec ap.2 (hmem ap hap))
+      (fun ap hap => hpos ap.2 (hmem ap hap)) hex).1
+  · exact Or.inl (weightedSum_eq_zero_of_forall_coeff_zero l fun ap hap =>
+      le_antisymm (not_lt.1 fun hlt => hex ⟨ap, hap, hlt⟩) (hnonneg ap hap))
 
 /-- Full family compatibility implies pairwise compatibility by specializing to
 two-term weighted sums. -/
