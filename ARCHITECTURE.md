@@ -382,6 +382,14 @@ wrappers. The historical `Theorem21Statements` path remains a compatibility
 facade, and consumers needing only the predicate import `NoCommonRoots`
 directly.
 
+`LiuOppositeSigns.FactorReturnAssembly` is a compatibility facade over the
+factor-return theorem route. `LeftDegreeCases` owns the translated and
+x-subtraction realizations of the three left deletion branches;
+`RightDegreeCases` obtains the symmetric right branches and their endpoint
+specializations; `PredicateDegreeCases` combines both orientations under
+lower-endpoint predicates; and `DegreeCaseAssembly` packages the final six-case
+factor-return principle.
+
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `Prec` interface to Liu's positive root-count package. It
 then applies the package's same-degree and successor-degree results to the
