@@ -21,17 +21,15 @@ theorem pairHasCommonInterleaver_comp_X_add_C_iff
         Prec (g.comp (X + C r)) h) ↔
       ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   constructor
-  · rintro ⟨h, hfh, hgh⟩
-    let h' : ℝ[X] := h.comp (X - C r)
-    refine ⟨h', ?_, ?_⟩
-    · apply (prec_comp_X_add_C_iff (f := f) (g := h') r).1
-      simpa [h', Polynomial.comp_assoc, sub_eq_add_neg, add_assoc, add_comm]
-        using hfh
-    · apply (prec_comp_X_add_C_iff (f := g) (g := h') r).1
-      simpa [h', Polynomial.comp_assoc, sub_eq_add_neg, add_assoc, add_comm]
-        using hgh
-  · rintro ⟨h, hfh, hgh⟩
-    exact ⟨h.comp (X + C r), prec_comp_X_add_C hfh r, prec_comp_X_add_C hgh r⟩
+  · rintro ⟨h, hf, hg⟩
+    have key : (h.comp (X + C (-r))).comp (X + C r) = h := by
+      rw [comp_assoc]
+      simp
+    exact ⟨h.comp (X + C (-r)),
+      (prec_comp_X_add_C_iff r).mp (by rw [key]; exact hf),
+      (prec_comp_X_add_C_iff r).mp (by rw [key]; exact hg)⟩
+  · rintro ⟨h, hf, hg⟩
+    exact ⟨h.comp (X + C r), prec_comp_X_add_C hf r, prec_comp_X_add_C hg r⟩
 
 private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     {f g : ℝ[X]}
