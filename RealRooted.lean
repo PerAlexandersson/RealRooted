@@ -126,6 +126,7 @@ import RealRooted.CommonInterleaver.PairBridge.Compatibility
 import RealRooted.CommonInterleaver.PairBridge.Forward
 import RealRooted.CommonInterleaver.PairBridge.Reduction
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 import RealRooted.CommonInterleaver.PairwiseUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay

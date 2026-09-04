@@ -1,4 +1,4 @@
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.SmallPositiveParameterCount
 
