@@ -906,6 +906,15 @@ common-root and degree-split reductions), and `PairBridge.Compatibility`
 implementation facts crossing the reduction/endpoint boundary; all existing
 ordinary public declarations retain their original names.
 
+`CommonInterleaver.PairwiseUpgrade` owns the generic finite-family upgrades,
+four-way packages, and equivalence projections. Its
+`PairwiseUpgrade.LowDegree` child owns the degree-at-most-one and
+degree-at-most-two specializations, importing the generic package rather than
+mixing those endpoint corollaries into it. `CommonInterleaverTwo` re-exports
+the child and therefore preserves the established umbrella API. The protected
+`PairwiseUpgrade.fourWay_of_pairwiseCommonForward` theorem is the single
+implementation bridge exposed across this boundary.
+
 `Wagner.NonpositiveRoots` owns the reusable nonpositive-root and
 positive-leading-coefficient forms of Wagner's three transports. The
 `Challenges.Wagner` entry point preserves its established declarations as
