@@ -367,24 +367,15 @@ lemma bezoutMatrix.det_factor_nonneg_of_quadratic_posSemidef {a b c d : ℝ}
 lemma _root_.Matrix.posDef_fin_two_of_entries {a b c : ℝ}
     (ha : 0 < a) (hdet : 0 < a * c - b * b) :
     (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ).PosDef := by
-  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
-  · exact Matrix.IsHermitian.ext (by simp)
-  · intro x hx
-    have hmain :
-        0 < a * (x 0 + b / a * x 1) ^ 2 + (a * c - b * b) / a * (x 1) ^ 2 := by
-      by_cases hx1 : x 1 = 0
-      · have hx0 : x 0 ≠ 0 := fun h0 ↦ hx <| funext fun i ↦ by fin_cases i <;> assumption
-        have hfirst : 0 < a * (x 0 + b / a * x 1) ^ 2 := by
-          simp [hx1, mul_pos ha (sq_pos_of_ne_zero hx0)]
-        simp_all
-      · have hfirst : 0 ≤ a * (x 0 + b / a * x 1) ^ 2 :=
-          mul_nonneg ha.le (sq_nonneg _)
-        have : 0 < (a * c - b * b) / a * (x 1) ^ 2 :=
-          mul_pos (div_pos hdet ha) (sq_pos_of_ne_zero hx1)
-        linarith
-    norm_num [dotProduct, Matrix.mulVec]
-    field_simp [ne_of_gt ha] at hmain
-    nlinarith
+  refine .of_dotProduct_mulVec_pos (.ext (by simp)) fun x hx ↦ ?_
+  have h : x 0 = 0 → x 1 ≠ 0 := by simpa [funext_iff, Fin.forall_fin_two] using hx
+  simp only [star_trivial, cons_mulVec, cons_dotProduct, dotProduct_of_isEmpty,
+    add_zero, empty_mulVec, dotProduct_cons, gt_iff_lt]
+  change 0 < x 0 * (a * x 0 + b * x 1) + x 1 * (b * x 0 + c * x 1)
+  rcases eq_or_ne (x 1) 0 with h1 | h1
+  · rw [h1]
+    nlinarith [mul_self_pos.mpr (fun h0 ↦ h h0 h1 : x 0 ≠ 0)]
+  · nlinarith [sq_nonneg (a * x 0 + b * x 1), mul_pos hdet (mul_self_pos.mpr h1)]
 
 /-- An explicit `LDLᵀ` certificate for positive definiteness of a symmetric
 `3 × 3` real matrix. -/
