@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 843
+      "max_modules": 852
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -896,8 +896,38 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 440
+      "max_modules": 447
    },
+    "RealRooted.Tactic.CommonInterleaver.Core": {
+      "max_modules": 167
+    },
+    "RealRooted.Tactic.CommonInterleaver.BasicSyntax": {
+      "max_modules": 168
+    },
+    "RealRooted.Tactic.CommonInterleaver.BasicRules": {
+      "max_modules": 169
+    },
+    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax": {
+      "max_modules": 169
+    },
+    "RealRooted.Tactic.CommonInterleaver.AnalyticRules": {
+      "max_modules": 171
+    },
+    "RealRooted.Tactic.CommonInterleaver.FamilySyntax": {
+      "max_modules": 170
+    },
+    "RealRooted.Tactic.CommonInterleaver.FamilyRules": {
+      "max_modules": 173
+    },
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax": {
+      "max_modules": 171
+    },
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules": {
+      "max_modules": 175
+    },
+    "RealRooted.Tactic.CommonInterleaver": {
+      "max_modules": 176
+    },
     "RealRooted.Tactic.RootCount.SequenceCore": {
       "max_modules": 83
     },
@@ -1405,6 +1435,16 @@
     "RealRooted.Tactic.Product.Syntax.Lifts",
     "RealRooted.Tactic.Product.Syntax",
     "RealRooted.Tactic.Product",
+    "RealRooted.Tactic.CommonInterleaver.Core",
+    "RealRooted.Tactic.CommonInterleaver.BasicSyntax",
+    "RealRooted.Tactic.CommonInterleaver.BasicRules",
+    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax",
+    "RealRooted.Tactic.CommonInterleaver.AnalyticRules",
+    "RealRooted.Tactic.CommonInterleaver.FamilySyntax",
+    "RealRooted.Tactic.CommonInterleaver.FamilyRules",
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax",
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules",
+    "RealRooted.Tactic.CommonInterleaver",
     "RealRooted.Tactic.RootCount.SequenceCore",
     "RealRooted.Tactic.RootCount.LowDegree",
     "RealRooted.Tactic.RootCount.CoreSyntax",

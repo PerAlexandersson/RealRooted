@@ -352,6 +352,26 @@ the historical facade before the split. The low-degree theorem endpoint has a
 136-module / 59,976-line closure and remains independent of tactic syntax and
 rules.
 
+The common-interleaver tactic now has the same stable frontend shape:
+
+- `Tactic.CommonInterleaver.Core` owns the pointwise sequence transports;
+- `BasicSyntax` and `BasicRules` own compatibility transports, finite-family
+  upgrades, and their sequence forms;
+- `AnalyticSyntax` and `AnalyticRules` own root-count certificates and
+  two-polynomial common-interleaver endpoints;
+- `FamilySyntax` and `FamilyRules` own the Chudnovsky--Seymour four-way and
+  pairwise-to-family certificate families, including their private routing
+  helpers; and
+- `LowDegreeSyntax` and `LowDegreeRules` own the degree-at-most-three endpoint
+  certificates, while `Tactic.CommonInterleaver` remains the compatibility
+  facade.
+
+The nine implementation units have 195, 338, 340, 298, 346, 546, 724, 196,
+and 227 local lines, replacing one 3,089-line mixed source. The OEIS tactic
+umbrella imports only `BasicRules`, exactly matching the sequence tactics it
+advertises and preserving its 425-module budget; the full tactic umbrella
+continues to re-export the complete compatibility facade.
+
 `Tactic.OEIS` is undergoing the same certificate-family migration. Its
 `OEIS.Basic` child owns the scalar-denominator certificate aliases, and
 `OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and
