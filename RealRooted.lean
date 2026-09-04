@@ -127,6 +127,7 @@ import RealRooted.CommonInterleaver.PairBridge.Forward
 import RealRooted.CommonInterleaver.PairBridge.Reduction
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 import RealRooted.CommonInterleaver.PairwiseUpgrade
+import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
 import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
 import RealRooted.CommonInterleaver.RightPencil
 import RealRooted.CommonInterleaver.RootDesc
