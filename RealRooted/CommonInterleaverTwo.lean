@@ -4,6 +4,7 @@
 Compatibility umbrella for the common-interleaver refactor.  The theorem
 families formerly in this file now live in `RealRooted.CommonInterleaver.*`,
 with the finite-family and Chudnovsky--Seymour packaging in
-`RealRooted.CommonInterleaver.PairwiseUpgrade`.
+`RealRooted.CommonInterleaver.PairwiseUpgrade` and its low-degree
+specializations in `RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree`.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade
+import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
