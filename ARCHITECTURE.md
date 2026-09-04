@@ -788,6 +788,14 @@ package, and final contribution reversal. Generic shifted-Jacobi comparison
 stays in `JacobiParameterInterlacing`; the toric model definitions and
 finite-offset assembly remain in the application layer.
 
+The exceptional offset is itself layered behind its historical compatibility
+facade. `BaseAndMoments` owns the Euler-inverse coefficients, endpoint product,
+and Jacobi moment identities; `PencilSplitting` proves real-rootedness of every
+signed pencil member; `ProperPositionAndParameters` orients that pencil and
+identifies its distinguished parameters; and `NodeInterlacing` combines the
+exceptional endpoint with the finite offsets and packages the Jacobi-node and
+all-offset conclusions.
+
 The maintained candidate inventory and extraction prerequisites are recorded
 in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
 
