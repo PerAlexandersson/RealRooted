@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 777
+      "max_modules": 778
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -809,7 +809,7 @@
       "max_modules": 85
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 396
+      "max_modules": 397
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -833,7 +833,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 411
+      "max_modules": 412
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
