@@ -907,14 +907,18 @@ implementation facts crossing the reduction/endpoint boundary; all existing
 ordinary public declarations retain their original names.
 
 `CommonInterleaver.PairwiseUpgrade` owns the primitive pairwise and global
-finite-family upgrades. Its `PairwiseUpgrade.FourWay` child owns the four-way
-packages, endpoint-specific assemblies, and equivalence projections, while
-`PairwiseUpgrade.LowDegree` owns the degree-at-most-one and degree-at-most-two
-specializations over that middle layer. `CommonInterleaverTwo` re-exports the
-low-degree child and therefore preserves the established umbrella API. The
+finite-family upgrades. Its `PairwiseUpgrade.FourWay` child constructs the
+four-way packages and endpoint-specific assemblies;
+`PairwiseUpgrade.FourWay.Equivalences` owns their equivalence projections and
+endpoint corollaries. `PairwiseUpgrade.LowDegree` owns the degree-at-most-one
+and degree-at-most-two specializations over those layers.
+`CommonInterleaverTwo` re-exports the low-degree child and therefore preserves
+the established umbrella API. The
 protected `PairwiseUpgrade.fourWay_of_pairwiseCommonForward` theorem is the
 single implementation bridge from the four-way layer to the low-degree layer.
-Four protected `PairwiseUpgrade` pair-bridge helpers are the only
+The protected `PairwiseUpgrade.fourWay_of_nonnegPairBridge` constructor is the
+single implementation bridge from package construction to equivalence
+projection. Four protected `PairwiseUpgrade` pair-bridge helpers are the only
 implementation facts shared from the primitive layer into the four-way layer.
 
 `Wagner.NonpositiveRoots` owns the reusable nonpositive-root and
