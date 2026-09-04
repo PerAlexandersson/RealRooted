@@ -399,7 +399,7 @@ branch; `QuarticSubQuadratic` owns the endpoint factor and right-only zero
 package; `RepeatedLeft` builds on that factor; `EndpointZero` combines the two
 completed boundary branches; and `Assembly` derives the normalized terminal.
 The 9-line facade preserves the former import path. The implementation units
-have 88, 434, 1,035, 707, 550, and 200 lines, respectively.
+have 88, 434, 1,022, 707, 550, and 200 lines, respectively.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 

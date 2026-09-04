@@ -39,31 +39,18 @@ lemma quarticSubQuadratic_ne_zero (a b c d u v μ : ℝ) :
   rw [hzero] at hdeg
   norm_num at hdeg
 
+/-- The quartic-minus-quadratic factor is monic. -/
+lemma monic_quarticSubQuadratic (a b c d u v μ : ℝ) :
+    (quarticSubQuadraticPolynomial a b c d u v μ).Monic := by
+  unfold quarticSubQuadraticPolynomial
+  monicity!
+
 /-- The normalized quartic-minus-quadratic factor has positive leading
 coefficient. -/
 lemma hasPosLeadingCoeff_quarticSubQuadratic (a b c d u v μ : ℝ) :
     HasPosLeadingCoeff (quarticSubQuadraticPolynomial a b c d u v μ) := by
-  unfold quarticSubQuadraticPolynomial
-  have hquartic_pos :
-      HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
-    exact (((hasPosLeadingCoeff_X_sub_C a).mul
-      (hasPosLeadingCoeff_X_sub_C b)).mul
-      (hasPosLeadingCoeff_X_sub_C c)).mul
-      (hasPosLeadingCoeff_X_sub_C d)
-  have hquartic_deg :
-      ((X - C a) * (X - C b) * (X - C c) * (X - C d)).natDegree = 4 := by
-    compute_degree <;> norm_num
-  have hdeg_lt : (C μ * ((X - C u) * (X - C v))).natDegree <
-      ((X - C a) * (X - C b) * (X - C c) * (X - C d)).natDegree := by
-    rw [hquartic_deg]
-    compute_degree
-    norm_num
-  unfold HasPosLeadingCoeff at hquartic_pos ⊢
-  have hdegree_lt : degree (C μ * ((X - C u) * (X - C v))) <
-      degree ((X - C a) * (X - C b) * (X - C c) * (X - C d)) :=
-    degree_lt_degree hdeg_lt
-  rw [leadingCoeff_sub_of_degree_lt hdegree_lt]
-  exact hquartic_pos
+  unfold HasPosLeadingCoeff
+  simp [(monic_quarticSubQuadratic a b c d u v μ).leadingCoeff]
 
 /-- Evaluation form of the normalized quartic-minus-quadratic factor. -/
 lemma eval_quarticSubQuadratic (a b c d u v μ x : ℝ) :
