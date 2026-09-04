@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 858
+      "max_modules": 862
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -129,6 +129,9 @@
     },
     "RealRooted.Basic.AffineInterlacing": {
       "max_modules": 10
+    },
+    "RealRooted.AffineProperPosition": {
+      "max_modules": 105
     },
     "RealRooted.CauchyInterlacing.Polynomial": {
       "max_modules": 7
@@ -908,10 +911,40 @@
       "max_modules": 12
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 149
+      "max_modules": 150
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 150
+      "max_modules": 151
+   },
+    "RealRooted.PFPolynomial": {
+      "max_modules": 74
+   },
+    "RealRooted.GarloffWagner.Theorem12": {
+      "max_modules": 96
+   },
+    "RealRooted.VeroneseMatrix": {
+      "max_modules": 149
+   },
+    "RealRooted.ThresholdMatrix.Basic": {
+      "max_modules": 110
+   },
+    "RealRooted.ThresholdMatrix.HaglundZhang": {
+      "max_modules": 111
+   },
+    "RealRooted.ThresholdMatrix.GustafssonSolus": {
+      "max_modules": 111
+   },
+    "RealRooted.ThresholdMatrix": {
+      "max_modules": 113
+   },
+    "RealRooted.RowThresholdOne": {
+      "max_modules": 153
+   },
+    "RealRooted.OEIS.A046802": {
+      "max_modules": 112
+   },
+    "RealRooted.GustafssonSolus": {
+      "max_modules": 112
    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 89
@@ -1196,6 +1229,7 @@
     "RealRooted.EulerianMixedCompatibility",
     "RealRooted.EulerianCompletion",
     "RealRooted.Basic.AffineInterlacing",
+    "RealRooted.AffineProperPosition",
     "RealRooted.AffineFamily.Basic",
     "RealRooted.AffineFamily.Boundary",
     "RealRooted.AffineFamily.LowDegree",
@@ -1421,6 +1455,16 @@
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
+    "RealRooted.PFPolynomial",
+    "RealRooted.GarloffWagner.Theorem12",
+    "RealRooted.VeroneseMatrix",
+    "RealRooted.ThresholdMatrix.Basic",
+    "RealRooted.ThresholdMatrix.HaglundZhang",
+    "RealRooted.ThresholdMatrix.GustafssonSolus",
+    "RealRooted.ThresholdMatrix",
+    "RealRooted.RowThresholdOne",
+    "RealRooted.OEIS.A046802",
+    "RealRooted.GustafssonSolus",
     "RealRooted.Kurtz",
     "RealRooted.Challenges.Kurtz",
     "RealRooted.Tactic.Kurtz",

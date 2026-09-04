@@ -99,9 +99,13 @@ emulation. These scripts complement `lake build`; they do not replace it.
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
   import. `Bezoutian.lean` contains the classical Bezoutian interface.
-- `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
-  row-threshold and threshold-matrix preservers, including the
-  Gustafsson-Solus and Haglund-Zhang/A046802 backends.
+- `RealRooted/RowThreshold.lean` contains the row-threshold preserver.
+  `ThresholdMatrix/Basic.lean` owns the generic threshold-matrix API,
+  while its `HaglundZhang` and `GustafssonSolus` children own the two
+  independent application backends. `ThresholdMatrix.lean` remains their
+  compatibility import. Shared constant and positive-slope affine
+  proper-position lemmas live in `AffineProperPosition.lean` rather than in a
+  Veronese-specific module.
 - `RealRooted/NarayanaTransformation/` layers the Mao--Wang Narayana
   transformation by root geometry, basis transforms, factorial preservation,
   coefficient identities, rectangular convolution, recurrences, and endpoints;

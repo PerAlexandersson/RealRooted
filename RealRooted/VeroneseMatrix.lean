@@ -1,4 +1,5 @@
 import RealRooted.MatrixInterlacing
+import RealRooted.AffineProperPosition
 import RealRooted.VeroneseSection
 
 /-!
@@ -147,24 +148,6 @@ lemma zipWith_mul_oneSupportSeq_left_sum_eq_get
 
 /-! ## Elementary affine interlacing helpers -/
 
-lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
-  by_cases ha : a = 0
-  · left
-    simp [ha]
-  by_cases hb : b = 0
-  · right
-    simp_all
-  right
-  right
-  have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
-  have hCb : (C b : ℝ[X]) ≠ 0 := C_ne_zero.mpr hb
-  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hCa (by simp)
-  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hCb (by simp)
-  refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, by simp, by simp, ?_⟩
-  exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
-
 lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
     Prec0 (C c : ℝ[X]) (C u * X + C v) := by
   by_cases hc : c = 0
@@ -201,18 +184,6 @@ lemma affine_mul_C_add_X (s t b : ℝ) :
       C (s * b + 1) * X + C (t * b) := by
   grind
 
-lemma affine_mul_X_add_X_eq (s t : ℝ) :
-    ((C s * X + C t) * X + X : ℝ[X]) =
-      X * (C s * X + C (t + 1)) := by
-  grind
-
-lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
-    (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * X + X : ℝ[X]).Splits) := by
-  rw [affine_mul_X_add_X_eq]
-  exact isRealRooted_X_mul
-    (isRealRooted_affine_factor (s := s) (t := t + 1) hs).1
-    (isRealRooted_affine_factor (s := s) (t := t + 1) hs).2
-
 lemma isRealRooted_affine_mul_C_add_X
     {A s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
     (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧
@@ -224,45 +195,6 @@ lemma affine_mul_C_add_same_eq (s t a : ℝ) :
     ((C s * X + C t) * C a + C a : ℝ[X]) =
       C a * (C s * X + C (t + 1)) := by
   grind
-
-lemma affineLinear_root_le_of_cross {u v U V : ℝ}
-    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v) :
-    -(u⁻¹ * v) ≤ -(U⁻¹ * V) := by
-  rw [neg_le_neg_iff]
-  rw [← div_eq_inv_mul, ← div_eq_inv_mul]
-  rw [div_le_div_iff₀ hU hu]
-  grind
-
-lemma prec_affine_linear_affine_linear_of_cross
-    {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
-    (hcross : u * V ≤ U * v) :
-    Prec (C u * X + C v) (C U * X + C V) := by
-  have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
-    affineLinear_root_le_of_cross hu hU hcross
-  have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
-  have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by grind
-  have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := u) (t := v) hu
-  have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧ (C U * X + C V : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := U) (t := V) hU
-  have hp_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hp_rr.1, hp_nat]
-    lia
-  have hq_deg : (C U * X + C V : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hq_rr.1, hq_nat]
-    lia
-  refine ⟨hp_rr, hq_rr, [-(u⁻¹ * v)], [-(U⁻¹ * V)], by simp, by simp, ?_, ?_, ?_⟩
-  · simpa [hp_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hp_deg).symm
-  · simpa [hq_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C U * X + C V : ℝ[X])) hq_deg).symm
-  · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hroot⟩
-
-lemma prec0_affine_linear_affine_linear_of_cross
-    {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
-    (hcross : u * V ≤ U * v) :
-    Prec0 (C u * X + C v) (C U * X + C V) :=
-  (prec_affine_linear_affine_linear_of_cross hu hU hcross).toPrec0
 
 lemma prec0_const_entries_affine_of_det_nonneg
     {A b c d s t : ℝ}

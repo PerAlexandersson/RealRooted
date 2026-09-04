@@ -1,10 +1,10 @@
-import RealRooted.ThresholdMatrix
+import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # OEIS A046802
 
 This module is the sequence-facing surface for the A046802 backend.  The
-mathematical work lives in `RealRooted.ThresholdMatrix`, where the
+mathematical work lives in `RealRooted.ThresholdMatrix.HaglundZhang`, where the
 Haglund--Zhang binomial Eulerian refined vector is encoded as a threshold
 matrix recursion and the reusable interlacing backend is proved.
 
