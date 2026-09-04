@@ -4,7 +4,7 @@
 This module contains the degree-at-most-one and degree-at-most-two
 specializations of the finite-family common-interleaver and compatibility API.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade
+import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
 
 open Polynomial
 
