@@ -906,8 +906,10 @@ common-root and degree-split reductions), and `PairBridge.Compatibility`
 implementation facts crossing the reduction/endpoint boundary; all existing
 ordinary public declarations retain their original names.
 
-`CommonInterleaver.PairwiseUpgrade` owns the primitive pairwise and global
-finite-family upgrades. Its `PairwiseUpgrade.FourWay` child constructs the
+`CommonInterleaver.PairwiseUpgrade` owns the primitive pair-bridge-to-pairwise
+finite-family upgrades. Its `PairwiseUpgrade.FamilyCompatibility` child owns
+the generic global/pairwise common-interleaver maps and full nonnegative
+family-compatibility API. `PairwiseUpgrade.FourWay` then constructs the
 four-way packages and endpoint-specific assemblies;
 `PairwiseUpgrade.FourWay.Equivalences` owns their equivalence projections and
 endpoint corollaries. `PairwiseUpgrade.LowDegree` owns the degree-at-most-one
