@@ -1,4 +1,4 @@
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
 
 /-!
 # Common interlacer for the A390883 toric-contribution family

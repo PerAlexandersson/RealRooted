@@ -338,6 +338,21 @@ lemma listAlternates_sum_le {ss rs : List ℝ} (h : ListAlternates ss rs) :
     ss.sum ≤ rs.sum :=
   List.Forall₂.sum_le_sum (listAlternates_forall₂_le h)
 
+/-- Coordinatewise comparison of positive real lists reverses after inversion
+and summation. Positivity of the lower list forces positivity of the upper
+list, so no separate hypothesis on the latter is needed. -/
+lemma sum_map_inv_le_sum_map_inv_of_forall₂_le
+    {xs ys : List ℝ}
+    (hxy : List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys)
+    (hxs : ∀ x ∈ xs, 0 < x) :
+    (ys.map fun y => y⁻¹).sum ≤ (xs.map fun x => x⁻¹).sum := by
+  induction hxy with
+  | nil => simp
+  | @cons x y l₁ l₂ h _ ih =>
+      simp only [List.map_cons, List.sum_cons]
+      exact add_le_add (inv_anti₀ (hxs x (List.mem_cons_self ..)) h)
+        (ih (fun a ha => hxs a (List.mem_cons_of_mem _ ha)))
+
 /-- Coordinatewise inequalities between two real lists, together with the
 opposite inequality on sums, force the two lists to be equal. -/
 lemma list_eq_of_forall₂_le_of_sum_ge :

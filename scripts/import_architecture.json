@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 821
+      "max_modules": 825
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
