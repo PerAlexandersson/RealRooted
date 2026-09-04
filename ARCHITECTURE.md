@@ -75,15 +75,21 @@ The first frontend/backend split keeps the existing tactic imports compatible:
 
 - `SequenceClosure` contains the induction, `Prec`, splitness, and product
   transport theorems formerly defined in `Tactic.Finish`;
-- `ProductSequence` contains the product-recurrence theorems formerly defined
-  in `Tactic.Product`; and
+- `ProductSequence` is the compatibility facade for the product-recurrence
+  backend formerly defined in `Tactic.Product`. `ProductSequence.Factors`
+  owns reusable factor certificates, `Core` the generic induction and model
+  shells, `Lifts` row-wise quotient lifts, `EndpointPair` the paired endpoint
+  recurrences, `FactorFamilies` the affine and powered-factor specializations,
+  and `ScalarFamilies` the alternating scalar/product families; and
 - `Tactic.Finish` and `Tactic.Product` now contain only their syntax and
   elaboration layers.
 
-At this checkpoint, the theorem-only closures contain 7 modules / 3,200 local
-lines and 61 modules / 29,448 local lines, respectively. Their explicit import
-budgets prevent them from silently acquiring tactic dependencies or growing
-back toward the tactic umbrella.
+At this checkpoint, the 13-line compatibility facade re-exports `Factors`
+(216 lines), `Core` (216 lines), `Lifts` (723 lines), `EndpointPair` (290
+lines), `FactorFamilies` (460 lines), and `ScalarFamilies` (729 lines). Every
+implementation unit is below 800 lines. Explicit import budgets prevent the
+theorem backends from silently acquiring tactic dependencies or growing back
+toward the tactic umbrella.
 
 Wronskian results have a focused package entry point:
 

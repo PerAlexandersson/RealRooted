@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 792
+      "max_modules": 798
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -689,7 +689,25 @@
       "max_modules": 15
     },
     "RealRooted.ProductSequence": {
-      "max_modules": 75
+      "max_modules": 81
+    },
+    "RealRooted.ProductSequence.Factors": {
+      "max_modules": 10
+    },
+    "RealRooted.ProductSequence.Core": {
+      "max_modules": 11
+    },
+    "RealRooted.ProductSequence.Lifts": {
+      "max_modules": 12
+    },
+    "RealRooted.ProductSequence.EndpointPair": {
+      "max_modules": 78
+    },
+    "RealRooted.ProductSequence.FactorFamilies": {
+      "max_modules": 12
+    },
+    "RealRooted.ProductSequence.ScalarFamilies": {
+      "max_modules": 13
     },
     "RealRooted.ProductOrientation": {
       "max_modules": 86
@@ -821,19 +839,19 @@
       "max_modules": 57
     },
     "RealRooted.Tactic.OEIS.ProductExit": {
-      "max_modules": 85
+      "max_modules": 91
     },
     "RealRooted.Tactic.OEIS.ProductFactor": {
-      "max_modules": 90
+      "max_modules": 96
     },
     "RealRooted.Tactic.OEIS.ProductLift": {
-      "max_modules": 85
+      "max_modules": 91
     },
     "RealRooted.Tactic.OEIS.ProductParity": {
-      "max_modules": 85
+      "max_modules": 91
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 410
+      "max_modules": 416
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -857,7 +875,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 425
+      "max_modules": 431
    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 114
@@ -986,7 +1004,7 @@
       "max_modules": 60
     },
     "RealRooted.Tactic.Product": {
-      "max_modules": 84
+      "max_modules": 90
     }
   },
   "forbidden_imports": [

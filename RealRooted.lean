@@ -524,6 +524,12 @@ import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.ProductFamily
 import RealRooted.ProductOrientation
 import RealRooted.ProductSequence
+import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.EndpointPair
+import RealRooted.ProductSequence.FactorFamilies
+import RealRooted.ProductSequence.Factors
+import RealRooted.ProductSequence.Lifts
+import RealRooted.ProductSequence.ScalarFamilies
 import RealRooted.QuadraticCubicPencil
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
