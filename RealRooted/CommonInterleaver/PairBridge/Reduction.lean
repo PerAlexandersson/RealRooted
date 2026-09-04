@@ -1,3 +1,4 @@
+import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 
 /-!
@@ -12,38 +13,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-
-private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
-    (h : ∀ {μ : ℝ}, 0 < μ → 0 ≤ a + μ * b) :
-    0 ≤ a := by
-  by_contra ha
-  have ha_lt : a < 0 := lt_of_not_ge ha
-  by_cases hb : b ≤ 0
-  · have hbad : a + (1 : ℝ) * b < 0 := by nlinarith
-    exact not_lt_of_ge (h zero_lt_one) hbad
-  · have hb_pos : 0 < b := lt_of_not_ge hb
-    let μ : ℝ := -a / (2 * b)
-    have hμ_pos : 0 < μ := by
-      unfold μ
-      simp_all
-    have hμ_ge : 0 ≤ a + μ * b := h hμ_pos
-    have hμ_bad : a + μ * b < 0 := by
-      unfold μ
-      have hb_ne : b ≠ 0 := ne_of_gt hb_pos
-      field_simp [hb_ne]
-      nlinarith
-    grind
-
-private lemma coeff_nonneg_of_add_C_mul_nonneg_forall
-    {f g : ℝ[X]}
-    (h : ∀ {μ : ℝ}, 0 < μ → HasNonnegCoeffs (f + C μ * g)) :
-    HasNonnegCoeffs f := by
-  intro n
-  refine nonneg_of_add_mul_pos_forall
-    (a := f.coeff n) (b := g.coeff n) ?_
-  intro μ hμ
-  have hμnn : HasNonnegCoeffs (f + C μ * g) := h hμ
-  simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hμnn n
 
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
@@ -213,88 +182,6 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered
       hf_pos hg_pos hall hdeg_lo hdeg_hi
 
-private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
-    {f g qf qg : ℝ[X]} {r μ : ℝ}
-    (hfg : PosComboRealRooted f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hqf : f = (X - C r) * qf)
-    (hqg : g = (X - C r) * qg)
-    (hμ : 0 < μ) :
-    HasNonnegCoeffs (qf + C μ * qg) := by
-  let p : ℝ[X] := f + C μ * g
-  have hp_rr : (p ≠ 0 ∧ p.Splits) := by simpa [p] using hfg.isRealRooted_add_right hμ
-  have hp_nn : HasNonnegCoeffs p := by
-    dsimp [p]
-    exact hfnn.add (nonnegCoeffs_C_mul hμ.le hgnn)
-  have hp_eq : p = (X - C r) * (qf + C μ * qg) := by grind
-  have hq_ne : qf + C μ * qg ≠ 0 := by simp_all
-  have hq_rr : ((qf + C μ * qg) ≠ 0 ∧ (qf + C μ * qg).Splits) :=
-    isRealRooted_of_dvd hp_rr.1 hp_rr.2 hq_ne
-      ⟨X - C r, by grind⟩
-  have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
-  have hq_pos : HasPosLeadingCoeff (qf + C μ * qg) :=
-    hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hp_eq] using hp_pos)
-  exact
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hp_rr.1 hp_rr.2 hp_nn hq_rr.1 hq_rr.2 hq_pos
-      ⟨X - C r, by grind⟩
-
-private lemma common_root_reduction_data_of_posCombo_nonneg
-    {f g : ℝ[X]} {r : ℝ}
-    (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hrf : f.IsRoot r)
-    (hrg : g.IsRoot r) :
-    ∃ qf qg,
-      f = (X - C r) * qf ∧
-      g = (X - C r) * qg ∧
-      PosComboRealRooted qf qg ∧
-      HasNonnegCoeffs qf ∧
-      HasNonnegCoeffs qg ∧
-      qf ≠ 0 ∧
-      qg ≠ 0 ∧
-      HasPosLeadingCoeff qf ∧
-      HasPosLeadingCoeff qg ∧
-      qf.natDegree ≤ qg.natDegree ∧
-      qg.natDegree ≤ qf.natDegree + 1 := by
-  obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
-  obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
-  have hqfg : PosComboRealRooted qf qg :=
-    PosComboRealRooted.of_mul_X_sub_C (r := r) (by lia)
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hqf0 : qf ≠ 0 := by simp_all
-  have hqg0 : qg ≠ 0 := by simp_all
-  have hqf_nn : HasNonnegCoeffs qf :=
-    coeff_nonneg_of_add_C_mul_nonneg_forall (f := qf) (g := qg) fun {μ} hμ =>
-      hasNonnegCoeffs_quotient_add_right_of_common_root
-        hfg hfnn hgnn hqf hqg hμ
-  have hqg_nn : HasNonnegCoeffs qg :=
-    coeff_nonneg_of_add_C_mul_nonneg_forall (f := qg) (g := qf) fun {μ} hμ => by
-      simpa [add_comm] using
-      hasNonnegCoeffs_quotient_add_right_of_common_root
-        (f := g) (g := f) (qf := qg) (qg := qf) (r := r)
-        (PosComboRealRooted.comm hfg) hgnn hfnn hqg hqf hμ
-  have hqf_pos : HasPosLeadingCoeff qf := hqf_nn.pos_leadingCoeff hqf0
-  have hqg_pos : HasPosLeadingCoeff qg := hqg_nn.pos_leadingCoeff hqg0
-  have hqdeg_lo : qf.natDegree ≤ qg.natDegree := by
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C,
-      natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C] at hdeg_lo
-    lia
-  have hqdeg_hi : qg.natDegree ≤ qf.natDegree + 1 := by
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C,
-      natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C] at hdeg_hi
-    lia
-  exact
-    ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0, hqf_pos, hqg_pos,
-      hqdeg_lo, hqdeg_hi⟩
-
 /-- Repaired no-common degree-split reduction of the common-interleaver bridge
 in the nonnegative regime: both same-degree and succ-degree branches are stated
 directly with the common-right-interleaver conclusion needed downstream. -/
@@ -378,43 +265,19 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          ∃ h : ℝ[X], Prec f h ∧ Prec g h)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact
-      hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      lia
-    rcases
-        ih qf.natDegree hqf_deg_lt rfl
-          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi with
-      ⟨h, hqf_prec, hqg_prec⟩
-    refine ⟨(X - C r) * h, ?_, ?_⟩
-    · simpa [hqf] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqf_prec
-    · simpa [hqg] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqg_prec
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  PosComboRealRooted.induction_on_common_roots_nonneg
+    (motive := fun f g => ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    hterminal
+    (fun {r f g} _ _ hfg => by
+      obtain ⟨h, hf_prec, hg_prec⟩ := hfg
+      exact
+        ⟨(X - C r) * h,
+          prec_mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf_prec,
+          prec_mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg_prec⟩)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 /-- Degree-bounded common-root reduction for the nonnegative
 common-interleaver bridge.  Given a terminal endpoint that produces a common
@@ -445,50 +308,24 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hgdeg : g.natDegree ≤ N) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          g.natDegree ≤ N →
-          ∃ h : ℝ[X], Prec f h ∧ Prec g h)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      lia
-    have hqg_deg_le : qg.natDegree ≤ N := by
-      have hle : qg.natDegree ≤ g.natDegree := by
-        rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C]
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  PosComboRealRooted.induction_on_common_roots_nonneg
+    (motive := fun f g => g.natDegree ≤ N → ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
+      hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
+    (fun {r f g} _ hg_pos ih hmul_deg => by
+      have hgdeg : g.natDegree ≤ N := by
+        rw [natDegree_mul (X_sub_C_ne_zero r) hg_pos.ne_zero, natDegree_X_sub_C]
+          at hmul_deg
         lia
-      exact le_trans hle hgdeg
-    rcases
-        ih qf.natDegree hqf_deg_lt rfl
-          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi hqg_deg_le with
-      ⟨h, hqf_prec, hqg_prec⟩
-    refine ⟨(X - C r) * h, ?_, ?_⟩
-    · simpa [hqf] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1
-          (isRealRooted_X_sub_C r).2 hqf_prec
-    · simpa [hqg] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1
-          (isRealRooted_X_sub_C r).2 hqg_prec
+      obtain ⟨h, hf_prec, hg_prec⟩ := ih hgdeg
+      exact
+        ⟨(X - C r) * h,
+          prec_mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf_prec,
+          prec_mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg_prec⟩)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
 
 /-- Unordered degree-bounded common-root reduction for the nonnegative
 common-interleaver bridge.  If a no-common terminal endpoint handles every
@@ -633,40 +470,13 @@ private theorem allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    AllComboRealRooted f g := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          AllComboRealRooted f g)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact
-      hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      lia
-    have hall_q : AllComboRealRooted qf qg :=
-      ih qf.natDegree hqf_deg_lt rfl
-        hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
-    have hall_mul : AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
-    lia
+    AllComboRealRooted f g :=
+  PosComboRealRooted.induction_on_common_roots_nonneg
+    (motive := AllComboRealRooted)
+    hterminal
+    (fun {r} {_f _g} _ _ hall =>
+      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
