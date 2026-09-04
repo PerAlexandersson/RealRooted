@@ -1,6 +1,6 @@
 import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
-import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.NoCommonRoots
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
 import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic

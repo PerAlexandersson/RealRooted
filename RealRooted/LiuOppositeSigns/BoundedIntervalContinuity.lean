@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
 import RealRooted.ReflectedRootCountLocalConstancy
 
 /-!

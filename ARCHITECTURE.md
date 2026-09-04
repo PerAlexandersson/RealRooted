@@ -370,6 +370,18 @@ cross-owned-gap and left/right branch layers. `RootCountRelStability` imports
 the count foundation directly, while `RootMatchingSort` and the cubic analytic
 consumer import `RootDeletion` without acquiring the branch layer.
 
+`LiuOppositeSigns.NoCommonRoots` isolates the reusable no-common-root predicate
+and its elementary endpoint consequences. The
+`Theorem21Statements.NoCommonCrossing` facade layers the main argument into
+`Witnesses`, `CrossOwnedGaps`, and `BranchConsequences`: affine-pencil and
+root-count transport first, then the finite-gap invariant, then the left/right
+Theorem 2.1 branch predicate. `Theorem21Statements.CommonRootDeletion` owns the
+independent shared-factor reduction, and `Theorem21Statements.Interfaces`
+combines the two branches into the theorem-shaped targets and implication
+wrappers. The historical `Theorem21Statements` path remains a compatibility
+facade, and consumers needing only the predicate import `NoCommonRoots`
+directly.
+
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `Prec` interface to Liu's positive root-count package. It
 then applies the package's same-degree and successor-degree results to the

@@ -1,4 +1,5 @@
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.Witnesses
 
 /-!
 # Liu x-subtraction adjacent-gap root counts.

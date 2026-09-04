@@ -311,6 +311,7 @@ import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderStatement
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 import RealRooted.LiuOppositeSigns.ForwardLowDegree
 import RealRooted.LiuOppositeSigns.JensenRootCount
+import RealRooted.LiuOppositeSigns.NoCommonRoots
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
@@ -320,6 +321,12 @@ import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.LiuOppositeSigns.RootDeletion
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
+import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
+import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.BranchConsequences
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.CrossOwnedGaps
+import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.Witnesses
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic
