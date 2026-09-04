@@ -1,4 +1,4 @@
-import RealRooted.ThresholdMatrix
+import RealRooted.ThresholdMatrix.Basic
 import RealRooted.VeroneseMatrix
 
 open Polynomial
@@ -39,27 +39,12 @@ theorem thresholdEntry_one (t j : ℕ) :
   unfold thresholdEntry
   split_ifs <;> simp_all
 
-/-- Reflexivity of `Prec0` on real-rooted polynomials. -/
-theorem prec0_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) : Prec0 p p :=
-  (prec_refl hp.1 hp.2).toPrec0
-
 /-- `X * (C s * X + C v)` is real-rooted for positive `s`. -/
 theorem isRealRooted_X_mul_affine {s v : ℝ} (hs : 0 < s) :
     (X * (C s * X + C v)) ≠ 0 ∧ (X * (C s * X + C v)).Splits := by
   obtain ⟨hne, hsplits⟩ := isRealRooted_affine_factor (s := s) (t := v) hs
   refine ⟨mul_ne_zero isRealRooted_X.1 hne, ?_⟩
   exact isRealRooted_X.2.mul hsplits
-
-/-- Degree-one to degree-two step: a positive affine form precedes the
-`X`-multiple of another one under the cross inequality. -/
-theorem prec0_affine_to_X_mul_affine {u v U V : ℝ}
-    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
-    (hv : 0 ≤ v) (hV : 0 ≤ V) :
-    Prec0 (C U * X + C V) (X * (C u * X + C v)) :=
-  (prec_to_prec_mul_X_of_nonneg
-    (prec_affine_linear_affine_linear_of_cross hu hU hcross)
-    (hasNonnegCoeffs_affine_linear hu.le hv)
-    (hasNonnegCoeffs_affine_linear hU.le hV)).toPrec0
 
 /-! ### The six entry patterns -/
 

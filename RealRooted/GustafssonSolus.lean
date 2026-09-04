@@ -1,4 +1,4 @@
-import RealRooted.ThresholdMatrix
+import RealRooted.ThresholdMatrix.GustafssonSolus
 
 /-!
 # Gustafsson--Solus interlacing recursion

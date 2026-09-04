@@ -21,6 +21,7 @@ import RealRooted.AffineFamily.LowDegree
 import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AffineFamily.Wronskian
+import RealRooted.AffineProperPosition
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
@@ -829,6 +830,9 @@ import RealRooted.Tactic.WagnerX.Syntax
 import RealRooted.Tactic.WagnerX.TranslatedLag
 import RealRooted.Tactic.WeightedSum
 import RealRooted.ThresholdMatrix
+import RealRooted.ThresholdMatrix.Basic
+import RealRooted.ThresholdMatrix.GustafssonSolus
+import RealRooted.ThresholdMatrix.HaglundZhang
 import RealRooted.Touchard
 import RealRooted.TridiagonalDet
 import RealRooted.UpperDerivativeInterlace

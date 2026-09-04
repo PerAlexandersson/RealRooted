@@ -159,23 +159,6 @@ theorem prec0_C_mul_left_of_nonneg {f g : ℝ[X]}
   · simpa [hg0] using prec0_zero_right (C a * f)
   · exact (prec_C_mul_left hprec ha_pos.ne').toPrec0
 
-/-- Adding two nonnegative-coefficient left summands with a common right bound
-preserves zero-aware proper position. -/
-theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
-    (hph : Prec0 p h) (hqh : Prec0 q h)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
-    Prec0 (p + q) h := by
-  classical
-  have hsum :
-      (Finset.univ.sum (fun b : Bool => cond b p q)) = p + q := by
-    simp
-  rw [← hsum]
-  apply prec0_finsetSum_right_of_nonneg
-  · intro b _
-    cases b <;> simp [hph, hqh]
-  · intro b _
-    cases b <;> simp [hpnn, hqnn]
-
 theorem HasNonnegCoeffs.weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →

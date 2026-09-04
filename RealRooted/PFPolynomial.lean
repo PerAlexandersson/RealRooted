@@ -493,6 +493,23 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
       (by
         simp_all)
 
+/-- Fixed-right cone closure in the two-summand form used downstream:
+if two nonnegative-coefficient summands have a common right interleaver, their
+sum has that same right interleaver. -/
+theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
+    (hph : Prec0 p h) (hqh : Prec0 q h)
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
+    Prec0 (p + q) h := by
+  classical
+  have hsum : Finset.univ.sum (fun b : Bool ↦ cond b p q) = p + q := by
+    simp
+  rw [← hsum]
+  apply prec0_finsetSum_right_of_nonneg
+  · intro b _
+    cases b <;> simp [hph, hqh]
+  · intro b _
+    cases b <;> simp [hpnn, hqnn]
+
 /-- Fixed-left cone closure for two nonnegative scalar multiples. -/
 theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hpq : Prec0 p q) (hpr : Prec0 p r)

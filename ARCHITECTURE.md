@@ -372,6 +372,23 @@ umbrella imports only `BasicRules`, exactly matching the sequence tactics it
 advertises and preserving its 425-module budget; the full tactic umbrella
 continues to re-export the complete compatibility facade.
 
+Threshold matrices now have a theorem-layer boundary of their own:
+
+- `AffineProperPosition` owns the constant and positive-slope affine facts
+  shared with the Veronese matrix development;
+- `ThresholdMatrix.Basic` owns threshold entries, rows, matrix preservation,
+  and the finite-entry helper interface;
+- `ThresholdMatrix.HaglundZhang` owns the Haglund--Zhang backend and A046802
+  surface;
+- `ThresholdMatrix.GustafssonSolus` owns the independent Gustafsson--Solus
+  row-choice backend; and
+- `ThresholdMatrix` remains the historical compatibility facade.
+
+The three implementation layers have 247, 1,124, and 778 local lines in place
+of one 2,140-line mixed source. Direct application consumers stop at their
+own child module. `AffineProperPosition` also removes the former dependency
+from the generic threshold layer to the full Veronese application.
+
 `Tactic.OEIS` is undergoing the same certificate-family migration. Its
 `OEIS.Basic` child owns the scalar-denominator certificate aliases, and
 `OEIS.DerivativeLag` owns the degree-two derivative-lag parser, dispatch, and
