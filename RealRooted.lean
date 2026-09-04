@@ -237,6 +237,12 @@ import RealRooted.GeneralizedSnakePosets.SnakeWord
 import RealRooted.GeneralizedSnakePosets.SquarecaseModel
 import RealRooted.GeneralizedSnakePosets.Statements
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.Graph.ClawFree
 import RealRooted.Graph.IndependencePolynomial.Basic

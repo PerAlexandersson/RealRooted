@@ -1,5 +1,6 @@
 import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.GeneralizedSnakePosets
+import RealRooted.GeneralizedSnakePosets.Statements
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
 import RealRooted.NarayanaTransformation
 
 /-!
@@ -654,7 +655,8 @@ theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
       narayanaCoeffA (n + 1) * narayanaPolynomial 1 (n + 1) +
         narayanaCoeffB (n + 1) * narayanaPolynomial 1 n := by
   have hrec := narayanaPolynomial_pure_rec 1 n
-  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 := by exact Polynomial.C_ne_zero.mpr (by positivity)
+  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 := by
+    exact Polynomial.C_ne_zero.mpr (by positivity)
   have hA : C ((n : ℝ) + 4) * narayanaCoeffA (n + 1) =
       C ((2 * n : ℝ) + 5) * (1 + X) := by
     unfold narayanaCoeffA

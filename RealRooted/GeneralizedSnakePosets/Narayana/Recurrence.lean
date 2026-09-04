@@ -1,5 +1,6 @@
 import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
 
 /-!
 # Modified-Narayana recurrence and coefficient algebra

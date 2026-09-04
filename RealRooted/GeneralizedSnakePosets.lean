@@ -1,6 +1,7 @@
 import RealRooted.GeneralizedSnakePosets.SnakeStaircase
 import RealRooted.GeneralizedSnakePosets.Section3Packages
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 
 /-!
 # Generalized snake poset finite-board interfaces

@@ -1,3 +1,4 @@
+import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 
 /-!
