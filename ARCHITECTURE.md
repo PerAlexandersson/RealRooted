@@ -344,12 +344,12 @@ The root-count tactic follows the same theorem/frontend boundary:
 - `CoreRules` and `LowDegreeRules` own the two macro-expansion tables; and
 - `Tactic.RootCount` remains the compatibility facade.
 
-The six implementation units have 630, 405, 653, 401, 750, and 460 local
+The six implementation units have 630, 404, 653, 401, 750, and 460 local
 lines, respectively, replacing one 3,226-line mixed source while preserving
 all 191 theorem and syntax declarations. The reusable sequence core has an
 83-module / 30,789-line closure, compared with 138 modules / 62,863 lines for
 the historical facade before the split. The low-degree theorem endpoint has a
-136-module / 59,977-line closure and remains independent of tactic syntax and
+136-module / 59,976-line closure and remains independent of tactic syntax and
 rules.
 
 `Tactic.OEIS` is undergoing the same certificate-family migration. Its
