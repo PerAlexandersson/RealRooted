@@ -1,4 +1,5 @@
-import RealRooted.CommonInterleaverTwo
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.LiuOppositeSigns
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 import RealRooted.PositiveParameterLocalLowerCount
