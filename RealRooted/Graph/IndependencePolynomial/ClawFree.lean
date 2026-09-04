@@ -90,9 +90,8 @@ theorem weightedSupportIndepPolySplits_one_iff
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     WeightedSupportIndepPolySplits G (fun _ => 1) S ↔
       SupportIndepPolySplits G S := by
-  constructor <;> intro h T hT
-  · simpa only [weightedIndepPolyOn_one] using h T hT
-  · simpa only [weightedIndepPolyOn_one] using h T hT
+  simp only [WeightedSupportIndepPolySplits, SupportIndepPolySplits,
+    weightedIndepPolyOn_one]
 
 /-- The weighted simplicial-pair invariant at constant weight `1` is the
 unweighted invariant. -/
@@ -101,9 +100,8 @@ theorem weightedSupportSimplicialPairCompatible_one_iff
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     WeightedSupportSimplicialPairCompatible G (fun _ => 1) S ↔
       SupportSimplicialPairCompatible G S := by
-  constructor <;> intro h K L hK hL
-  · simpa only [weightedIndepPolyOn_one] using h hK hL
-  · simpa only [weightedIndepPolyOn_one] using h hK hL
+  simp only [WeightedSupportSimplicialPairCompatible,
+    SupportSimplicialPairCompatible, weightedIndepPolyOn_one]
 
 /-- The weighted simplicial self/shift invariant at constant weight `1` is the
 unweighted invariant. -/
@@ -112,9 +110,8 @@ theorem weightedSupportSimplicialXCompatible_one_iff
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     WeightedSupportSimplicialXCompatible G (fun _ => 1) S ↔
       SupportSimplicialXCompatible G S := by
-  constructor <;> intro h K hK
-  · simpa only [weightedIndepPolyOn_one] using h hK
-  · simpa only [weightedIndepPolyOn_one] using h hK
+  simp only [WeightedSupportSimplicialXCompatible,
+    SupportSimplicialXCompatible, weightedIndepPolyOn_one]
 
 /-- The weighted vertex-deletion invariant at constant weight `1` is the
 unweighted invariant. -/
@@ -123,9 +120,8 @@ theorem weightedSupportVertexDeletionCompatible_one_iff
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     WeightedSupportVertexDeletionCompatible G (fun _ => 1) S ↔
       SupportVertexDeletionCompatible G S := by
-  constructor <;> intro h v hv
-  · simpa only [weightedIndepPolyOn_one] using h hv
-  · simpa only [weightedIndepPolyOn_one] using h hv
+  simp only [WeightedSupportVertexDeletionCompatible,
+    SupportVertexDeletionCompatible, weightedIndepPolyOn_one]
 
 /-! ## Weighted induction -/
 
