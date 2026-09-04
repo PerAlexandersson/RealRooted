@@ -1,4 +1,4 @@
-import RealRooted.Bezoutian
+import RealRooted.Bezoutian.LowDegree
 
 /-!
 # Bezoutian tactic frontends

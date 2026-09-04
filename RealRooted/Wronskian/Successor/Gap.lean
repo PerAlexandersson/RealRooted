@@ -1,4 +1,4 @@
-import RealRooted.Bezoutian
+import RealRooted.Bezoutian.WronskianConverse
 
 /-!
 # Successor-degree Wronskian root gaps

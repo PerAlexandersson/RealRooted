@@ -517,10 +517,18 @@ depend on a recurrence backend without importing tactic elaboration.
 `Mathlib.Algebra.Polynomial.Bezoutian` similarly promotes the
 commutative-ring coefficient Bezoutian, its finite telescoping identities, and
 the generic Bezoutian matrix and row-polynomial definitions. The real
-positive-definiteness and strict-interlacing arguments remain in
-`RealRooted.Bezoutian`; its original coefficient API is retained as a
-compatibility layer. The generic real-to-complex splitting criterion formerly
-embedded in that proof now lives in `Mathlib.Algebra.Polynomial.Splits.Complex`.
+positive-definiteness and interlacing argument is layered under
+`RealRooted.Bezoutian/`: `StrictInterleaving` owns the root-list predicates and
+their bridge to `Prec`; `MatrixBasics` owns elementary real matrices and the
+quadratic calculations; `RootEvaluation` owns evaluation on ordered roots;
+`ComplexRoots` excludes nonreal roots; `WronskianConverse` derives strict
+interlacing from Wronskian positivity; and `LowDegree` supplies the degree-zero
+through degree-two characterization. `RealRooted.Bezoutian` is now only the
+historical compatibility facade. This also lets `Wronskian.Converse` reuse
+`StrictPrecSameDegree.to_prec` instead of maintaining a duplicate root-list
+argument, while consumers can stop at the first layer they need. The generic
+real-to-complex splitting criterion formerly embedded in that proof lives in
+`Mathlib.Algebra.Polynomial.Splits.Complex`.
 
 `Mathlib.Algebra.Polynomial.Reverse` is another focused field-general shim. It
 identifies the roots of a reversed split polynomial as the inverses of its

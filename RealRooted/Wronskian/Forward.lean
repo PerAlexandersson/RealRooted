@@ -1,4 +1,4 @@
-import RealRooted.Bezoutian
+import RealRooted.Bezoutian.LowDegree
 
 /-!
 # Global forward Wronskian bridge

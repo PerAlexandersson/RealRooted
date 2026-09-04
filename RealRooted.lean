@@ -37,6 +37,12 @@ import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Bezoutian
+import RealRooted.Bezoutian.ComplexRoots
+import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.MatrixBasics
+import RealRooted.Bezoutian.RootEvaluation
+import RealRooted.Bezoutian.StrictInterleaving
+import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
