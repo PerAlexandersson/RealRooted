@@ -22,6 +22,7 @@ import RealRooted.Tactic.Examples.Wagner
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.GammaRealRoots
+import RealRooted.Tactic.Examples.GeneralizedLaguerre
 import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.MagnitudeDominated
