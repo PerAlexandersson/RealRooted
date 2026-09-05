@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 862
+      "max_modules": 865
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -593,7 +593,7 @@
       "max_modules": 150
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 39
+      "max_modules": 40
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 6
@@ -950,7 +950,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 452
+      "max_modules": 457
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 167

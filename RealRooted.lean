@@ -179,6 +179,7 @@ import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.Linear
 import RealRooted.DerivativeRecurrence.QuadraticDegree
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
+import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 import RealRooted.DerivativeRecurrence.QuadraticSeed
 import RealRooted.DerivativeRecurrence.QuadraticShift
@@ -684,6 +685,7 @@ import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
 import RealRooted.Tactic.Examples.GammaRealRoots
+import RealRooted.Tactic.Examples.GeneralizedLaguerre
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
@@ -742,6 +744,7 @@ import RealRooted.Tactic.Finish
 import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.GammaRealRoots
+import RealRooted.Tactic.GeneralizedLaguerre
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
