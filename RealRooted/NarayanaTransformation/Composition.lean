@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 
 import RealRooted.ArrayPolynomialSchur
-import RealRooted.NarayanaTransformation
+import RealRooted.NarayanaTransformation.Endpoints
 
 open Polynomial
 
