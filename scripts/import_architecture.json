@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 866
+      "max_modules": 868
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -18,6 +18,12 @@
     },
     "RealRooted.Basic": {
       "max_modules": 10
+    },
+    "RealRooted.BrandenLeite.ChainPolynomial": {
+      "max_modules": 175
+    },
+    "RealRooted.BrandenLeite.Resolvable": {
+      "max_modules": 76
     },
     "RealRooted.Bezoutian": {
       "max_modules": 16
