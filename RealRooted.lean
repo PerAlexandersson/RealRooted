@@ -47,6 +47,7 @@ import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.BivariateOpenMapping
 import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.Resolvable
+import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol

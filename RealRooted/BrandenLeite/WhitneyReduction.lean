@@ -299,6 +299,20 @@ theorem firstColumnRatio_mul
   · rw [hn, mul_zero, firstColumn_zero_succ hunit hR hn]
   · simp [firstColumnRatio, hn]
 
+theorem firstColumnRatio_zero_succ
+    {R : LowerTriangularMatrix ℝ}
+    (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
+    (hR : Matrix.IsTotallyNonneg R) {n : ℕ}
+    (hzero : firstColumnRatio R n = 0) :
+    firstColumnRatio R (n + 1) = 0 := by
+  have hnum : R (n + 1) 0 = 0 := by
+    by_cases hn : R n 0 = 0
+    · exact firstColumn_zero_succ hunit hR hn
+    · simpa [firstColumnRatio, hn] using hzero
+  have hnext : R (n + 1 + 1) 0 = 0 :=
+    firstColumn_zero_succ hunit hR hnum
+  simp [firstColumnRatio, hnext]
+
 theorem coeff_rowPolynomial
     {R : LowerTriangularMatrix ℝ} (hR : LowerTriangularMatrix.IsLowerTriangular R)
     (n k : ℕ) :
@@ -418,6 +432,24 @@ theorem isResolvable_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) : IsResolvable R :=
   ⟨resolutionOfTotallyNonneg R hunit hR⟩
+
+/-- The paper's normalization condition for resolution weights. -/
+def Resolution.IsNormalized {R : LowerTriangularMatrix ℝ}
+    (resolution : Resolution R) : Prop :=
+  ∀ n k, k ≤ n → resolution.lambda n k = 0 →
+    resolution.lambda (n + 1) k = 0
+
+theorem resolutionOfTotallyNonneg_isNormalized
+    {R : LowerTriangularMatrix ℝ}
+    (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
+    (hR : Matrix.IsTotallyNonneg R) :
+    (resolutionOfTotallyNonneg R hunit hR).IsNormalized := by
+  intro n k hk hzero
+  change firstColumnRatio (whitneyIterate R k) (n - k) = 0 at hzero
+  change firstColumnRatio (whitneyIterate R k) (n + 1 - k) = 0
+  rw [show n + 1 - k = (n - k) + 1 by lia]
+  obtain ⟨hiterUnit, hiterTN⟩ := whitneyIterate_invariant hunit hR k
+  exact firstColumnRatio_zero_succ hiterUnit hiterTN hzero
 
 end BrandenLeite
 
