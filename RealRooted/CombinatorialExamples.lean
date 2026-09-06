@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.OneDescentGamma
+import RealRooted.CombinatorialExamples.PeakValues
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
 

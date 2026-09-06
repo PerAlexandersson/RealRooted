@@ -118,6 +118,7 @@ import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
+import RealRooted.CombinatorialExamples.PeakValues
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -425,6 +426,8 @@ import RealRooted.MaoWangMatrixProduct
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
