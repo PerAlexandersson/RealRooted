@@ -512,6 +512,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
