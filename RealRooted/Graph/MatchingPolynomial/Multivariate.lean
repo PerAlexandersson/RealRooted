@@ -96,6 +96,30 @@ theorem commonPhaseRestriction_weightedMultivariateMatchingPolynomialByEdges
     commonPhaseRestriction_coordinateScale,
     commonPhaseRestriction_multivariateMatchingPolynomialByEdges]
 
+/-- Setting every edge variable to `X` recovers the ordinary univariate
+matching polynomial. -/
+@[simp] theorem commonPhaseRestriction_one_multivariateMatchingPolynomialByEdges
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) :
+    commonPhaseRestriction (fun _ => 1)
+        (multivariateMatchingPolynomialByEdges G) =
+      matchingPolynomialByEdges G := by
+  simpa [weightedMatchingPolynomialByEdges, matchingPolynomialByEdges] using
+    commonPhaseRestriction_multivariateMatchingPolynomialByEdges G (fun _ => 1)
+
+/-- Setting the phase direction to one recovers the existing weighted
+univariate edge-matching polynomial. -/
+@[simp] theorem
+    commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) :
+    commonPhaseRestriction (fun _ => 1)
+        (weightedMultivariateMatchingPolynomialByEdges G wt) =
+      weightedMatchingPolynomialByEdges G wt := by
+  simpa using
+    commonPhaseRestriction_weightedMultivariateMatchingPolynomialByEdges
+      G wt (fun _ => 1)
+
 /-- Multivariate matching polynomials are same-phase stable. -/
 theorem multivariateMatchingPolynomialByEdges_samePhaseStable
     {V : Type u} [Fintype V]

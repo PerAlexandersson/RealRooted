@@ -63,6 +63,27 @@ theorem commonPhaseRestriction_weightedMultivariateIndepPoly
     commonPhaseRestriction_coordinateScale,
     commonPhaseRestriction_multivariateIndepPoly]
 
+/-- Setting every common-phase coordinate to `X` recovers the ordinary
+univariate independence polynomial. -/
+@[simp] theorem commonPhaseRestriction_one_multivariateIndepPoly
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) :
+    commonPhaseRestriction (fun _ => 1) (multivariateIndepPoly G) =
+      indepPoly G := by
+  classical
+  rw [commonPhaseRestriction_multivariateIndepPoly, weightedIndepPoly_one]
+
+/-- Setting the phase direction to one recovers the existing weighted
+univariate independence polynomial. -/
+@[simp] theorem commonPhaseRestriction_one_weightedMultivariateIndepPoly
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ) :
+    commonPhaseRestriction (fun _ => 1)
+        (weightedMultivariateIndepPoly G wt) =
+      weightedIndepPoly G wt := by
+  simpa using
+    commonPhaseRestriction_weightedMultivariateIndepPoly G wt (fun _ => 1)
+
 /-- The forward implication in the Leake--Ryder characterization. -/
 theorem ClawFree.multivariateIndepPoly_samePhaseStable
     {V : Type u} [Fintype V] {G : _root_.SimpleGraph V} (hG : ClawFree G) :
@@ -81,6 +102,17 @@ theorem ClawFree.weightedMultivariateIndepPoly_samePhaseStable
   classical
   rw [weightedMultivariateIndepPoly_eq_coordinateScale]
   exact hG.multivariateIndepPoly_samePhaseStable.coordinateScale hwt
+
+/-- The unit common-phase specialization recovers the checked weighted
+univariate splitness theorem. -/
+theorem ClawFree.commonPhaseRestriction_one_weightedMultivariateIndepPoly_splits
+    {V : Type u} [Fintype V] {G : _root_.SimpleGraph V} (hG : ClawFree G)
+    (wt : V → ℝ) (hwt : ∀ v, 0 ≤ wt v) :
+    (commonPhaseRestriction (fun _ => 1)
+      (weightedMultivariateIndepPoly G wt)).Splits := by
+  classical
+  rw [commonPhaseRestriction_one_weightedMultivariateIndepPoly]
+  exact clawFree_weightedIndepPoly_splits hG wt hwt
 
 end Graph
 end RealRooted
