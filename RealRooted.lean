@@ -519,6 +519,7 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
+import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation
 import RealRooted.NarayanaTransformation.Basis
