@@ -120,6 +120,8 @@ import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.PeakValues
 import RealRooted.CombinatorialExamples.PeakValues.Insertion
+import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+import RealRooted.CombinatorialExamples.PeakValues.Sharpness
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -292,6 +294,7 @@ import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermitePoulain
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
+import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingConeBounds

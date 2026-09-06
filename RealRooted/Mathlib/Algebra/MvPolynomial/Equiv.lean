@@ -24,6 +24,39 @@ theorem optionEquivLeft_pderiv_none
   | mul_X p i hp =>
       cases i <;> simp [hp, Polynomial.derivative_mul] <;> ac_rfl
 
+/-- Renaming both the distinguished-variable polynomial and its coefficient
+variables agrees with mapping the univariate polynomial's coefficients. -/
+theorem optionEquivLeft_rename_option_map
+    {R σ τ : Type*} [CommSemiring R] (f : σ → τ)
+    (p : MvPolynomial (Option σ) R) :
+    optionEquivLeft R τ (rename (Option.map f) p) =
+      Polynomial.map (rename f).toRingHom (optionEquivLeft R σ p) := by
+  induction p using MvPolynomial.induction_on with
+  | C r => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+      cases i <;> simp [hp]
+
+/-- Multiplying by the distinguished variable plus one coefficient variable
+shifts a known scalar leading coefficient by one degree. -/
+theorem optionEquivLeft_coeff_succ_mul_X_none_add_new
+    {R σ : Type*} [CommSemiring R]
+    (p : MvPolynomial (Option σ) R) (d : ℕ) (c : R)
+    (hdeg : p.degreeOf none ≤ d)
+    (htop : (optionEquivLeft R σ p).coeff d = C c) :
+    (optionEquivLeft R (Option σ)
+      ((X none + X (some none)) * rename (Option.map some) p)).coeff
+        (d + 1) = C c := by
+  have hzero : (optionEquivLeft R σ p).coeff (d + 1) = 0 := by
+    apply Polynomial.coeff_eq_zero_of_natDegree_lt
+    rw [natDegree_optionEquivLeft]
+    lia
+  rw [map_mul, map_add, optionEquivLeft_X_none,
+    optionEquivLeft_X_some, optionEquivLeft_rename_option_map, add_mul,
+    Polynomial.coeff_add, Polynomial.coeff_X_mul, Polynomial.coeff_C_mul,
+    Polynomial.coeff_map, htop]
+  simp [hzero]
+
 /-- The degree in the unique variable after converting a univariate polynomial
 to an `MvPolynomial` is its natural degree. -/
 theorem degreeOf_uniqueAlgEquiv_symm

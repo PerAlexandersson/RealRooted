@@ -27,6 +27,19 @@ def dehomogenize {σ R : Type*} [CommSemiring R] :
     MvPolynomial (Option σ) R →ₐ[R] MvPolynomial σ R :=
   aeval fun o => Option.elim o 1 X
 
+@[simp] theorem eval_dehomogenize {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial (Option σ) R) (z : σ → R) :
+    eval z (dehomogenize p) =
+      eval (fun o => Option.elim o 1 z) p := by
+  unfold dehomogenize
+  change (aeval z) ((aeval (fun o => Option.elim o (C 1) X)) p) =
+    (aeval (fun o => Option.elim o 1 z)) p
+  rw [← AlgHom.comp_apply, comp_aeval]
+  congr 1
+  apply algHom_ext
+  intro o
+  cases o <;> simp
+
 @[simp] theorem dehomogenize_X_none {σ R : Type*} [CommSemiring R] :
     dehomogenize (X (none : Option σ) : MvPolynomial (Option σ) R) = 1 := by
   simp [dehomogenize]
