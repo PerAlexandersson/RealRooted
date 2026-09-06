@@ -368,7 +368,7 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
   have hrec : C γ * f = C γ * u + -(1 - X) * u.derivative := by
     have heuler := eulerShiftOperator_exceptionalEulerInverse m ε hγ
     have hcomp := congrArg (fun p : ℝ[X] => p.comp (1 - X)) heuler
-    dsimp only [eulerShiftOperator] at hcomp
+    dsimp only [eulerShiftOperator, eulerShift] at hcomp
     simp only [add_comp, mul_comp, X_comp, C_comp] at hcomp
     have hderivative : u.derivative = -U.derivative.comp (1 - X) := by
       dsimp only [u]
