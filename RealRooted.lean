@@ -122,6 +122,9 @@ import RealRooted.CombinatorialExamples.PeakValues
 import RealRooted.CombinatorialExamples.PeakValues.Insertion
 import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
 import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+import RealRooted.CombinatorialExamples.PeakValues.Stability
+import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -646,6 +649,7 @@ import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SamePhaseStability
+import RealRooted.SamePhaseInterlacing
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma

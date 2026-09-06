@@ -343,6 +343,11 @@ declarations include:
 - `isRealRooted_coloredSetPartitions`
 - `isRealRooted_narayana_of_nonnegCoeffs`
 - `isRealRooted_motzkin`
+- `peakValuePolynomial_mvRealStable`: the peak-value enumerator of
+  permutations is multivariate real stable in every rank.
+- `peakValueWeightedDiagonal_consecutive_prec`: positive weighted diagonal
+  specializations of consecutive peak-value enumerators are in proper
+  position (the weighted A008303 application).
 
 ## Current Roadmap
 

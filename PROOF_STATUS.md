@@ -45,6 +45,8 @@ a production caller.
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
+| Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
+| Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_prec` |
 
 ## Refuted interfaces retained as counterexamples
 

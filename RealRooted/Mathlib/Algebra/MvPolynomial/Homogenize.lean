@@ -40,6 +40,89 @@ def dehomogenize {σ R : Type*} [CommSemiring R] :
   intro o
   cases o <;> simp
 
+/-- Dehomogenization is evaluation of the distinguished-variable polynomial
+at one. -/
+theorem dehomogenize_eq_optionEquivLeft_eval_one
+    {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial (Option σ) R) :
+    dehomogenize p = (optionEquivLeft R σ p).eval 1 := by
+  induction p using MvPolynomial.induction_on with
+  | C r => simp [dehomogenize]
+  | add p q hp hq => simpa using congrArg₂ (· + ·) hp hq
+  | mul_X p i hp =>
+      rw [map_mul, map_mul, hp]
+      cases i <;> simp [dehomogenize]
+
+/-- Dehomogenization commutes with a rename that preserves the distinguished
+variable. -/
+theorem dehomogenize_rename_option_map
+    {R σ τ : Type*} [CommSemiring R] (f : σ → τ)
+    (p : MvPolynomial (Option σ) R) :
+    dehomogenize (rename (Option.map f) p) =
+      rename f (dehomogenize p) := by
+  induction p using MvPolynomial.induction_on with
+  | C r => simp [dehomogenize]
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+      rw [map_mul, map_mul, hp]
+      cases i <;> simp [dehomogenize]
+
+/-- Dehomogenizing after embedding every source variable as an ordinary
+variable recovers the source polynomial. -/
+@[simp] theorem dehomogenize_rename_some
+    {R σ : Type*} [CommSemiring R] (p : MvPolynomial σ R) :
+    dehomogenize (rename some p) = p := by
+  induction p using MvPolynomial.induction_on with
+  | C r => simp [dehomogenize]
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+      rw [map_mul, map_mul, hp]
+      simp [dehomogenize]
+
+/-- The top coefficient in the homogenizing variable is the constant term of
+the dehomogenized homogeneous polynomial. -/
+theorem IsHomogeneous.optionEquivLeft_coeff_eq_C_coeff_zero_dehomogenize
+    {R σ : Type*} [CommSemiring R] [Finite σ]
+    {p : MvPolynomial (Option σ) R} {d : ℕ}
+    (hp : p.IsHomogeneous d) :
+    (optionEquivLeft R σ p).coeff d =
+      C (coeff 0 (dehomogenize p)) := by
+  let q : Polynomial (MvPolynomial σ R) := optionEquivLeft R σ p
+  have hqdeg : q.natDegree ≤ d := by
+    calc
+      q.natDegree = p.degreeOf none :=
+        natDegree_optionEquivLeft (R := R) (σ := σ) p
+      _ ≤ p.totalDegree := degreeOf_le_totalDegree p none
+      _ ≤ d := hp.totalDegree_le
+  have hconst : q.coeff d = C (coeff 0 (q.coeff d)) := by
+    rw [← totalDegree_eq_zero_iff_eq_C]
+    rw [totalDegree_zero_iff_isHomogeneous]
+    apply coeff_isHomogeneous_of_optionEquivLeft_symm
+      (n := d) (i := d) (j := 0)
+    · simpa [q] using hp
+    · lia
+  rw [show optionEquivLeft R σ p = q by rfl, hconst]
+  congr 1
+  rw [dehomogenize_eq_optionEquivLeft_eval_one]
+  change coeff 0 (q.coeff d) = coeff 0 (q.eval 1)
+  rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hqdeg)]
+  simp only [one_pow, mul_one]
+  rw [coeff_sum]
+  rw [Finset.sum_eq_single d]
+  · intro i hi hid
+    have hi_le : i ≤ d := Nat.le_of_lt_succ (Finset.mem_range.mp hi)
+    have hihom : (q.coeff i).IsHomogeneous (d - i) := by
+      apply coeff_isHomogeneous_of_optionEquivLeft_symm
+        (n := d) (i := i) (j := d - i)
+      · simpa [q] using hp
+      · lia
+    by_contra hcoeff
+    have hmem : 0 ∈ (q.coeff i).support := mem_support_iff.mpr hcoeff
+    have hdegree := hihom.degree_eq_sum_deg_support hmem
+    have : d - i = 0 := by simpa using hdegree
+    lia
+  · simp
+
 @[simp] theorem dehomogenize_X_none {σ R : Type*} [CommSemiring R] :
     dehomogenize (X (none : Option σ) : MvPolynomial (Option σ) R) = 1 := by
   simp [dehomogenize]

@@ -178,6 +178,190 @@ theorem MvUpperHalfPlaneStable.dehomogenize
     simpa [base] using hzero
   exact hne (by rw [hscale, hbase, mul_zero])
 
+/-- Adjoin a new coefficient variable through the stable linear factor formed
+with the distinguished homogenizing variable. -/
+def homogeneousAdjoinFactor {σ R : Type*} [CommSemiring R]
+    (Q : MvPolynomial (Option σ) R) :
+    MvPolynomial (Option (Option σ)) R :=
+  (MvPolynomial.X none + MvPolynomial.X (some none)) *
+    MvPolynomial.rename (Option.map some) Q
+
+/-- Differentiate an adjoined-factor polynomial in its distinguished
+homogenizing variable. -/
+def homogeneousFactorDerivative {σ R : Type*} [CommSemiring R]
+    (Q : MvPolynomial (Option σ) R) :
+    MvPolynomial (Option (Option σ)) R :=
+  MvPolynomial.pderiv none (homogeneousAdjoinFactor Q)
+
+theorem dehomogenize_homogeneousAdjoinFactor
+    {σ R : Type*} [CommSemiring R]
+    (Q : MvPolynomial (Option σ) R) :
+    MvPolynomial.dehomogenize (homogeneousAdjoinFactor Q) =
+      (1 + MvPolynomial.X none) *
+        MvPolynomial.rename some (MvPolynomial.dehomogenize Q) := by
+  simp [homogeneousAdjoinFactor,
+    MvPolynomial.dehomogenize_rename_option_map]
+
+theorem dehomogenize_homogeneousFactorDerivative
+    {σ R : Type*} [CommSemiring R]
+    (Q : MvPolynomial (Option σ) R) :
+    MvPolynomial.dehomogenize (homogeneousFactorDerivative Q) =
+      MvPolynomial.rename some (MvPolynomial.dehomogenize Q) +
+        (1 + MvPolynomial.X none) *
+          MvPolynomial.rename some
+            (MvPolynomial.dehomogenize (MvPolynomial.pderiv none Q)) := by
+  classical
+  have hinj : Function.Injective (Option.map (@some σ)) := by
+    intro a b h
+    cases a <;> cases b <;> simp_all
+  have hpderiv :
+      MvPolynomial.pderiv none
+          (MvPolynomial.rename (Option.map (@some σ)) Q) =
+        MvPolynomial.rename (Option.map (@some σ))
+          (MvPolynomial.pderiv none Q) := by
+    simpa using MvPolynomial.pderiv_rename hinj none Q
+  rw [homogeneousFactorDerivative, homogeneousAdjoinFactor,
+    MvPolynomial.pderiv_mul, hpderiv, map_add, map_mul, map_mul,
+    MvPolynomial.dehomogenize_rename_option_map,
+    MvPolynomial.dehomogenize_rename_option_map]
+  simp
+
+theorem dehomogenize_rename_option_join
+    {σ R : Type*} [CommSemiring R]
+    (P : MvPolynomial (Option (Option σ)) R) :
+    MvPolynomial.dehomogenize (MvPolynomial.rename Option.join P) =
+      MvPolynomial.dehomogenize (MvPolynomial.dehomogenize P) := by
+  induction P using MvPolynomial.induction_on with
+  | C r => simp [MvPolynomial.dehomogenize]
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P i hP =>
+      rw [map_mul, map_mul, map_mul, hP]
+      cases i with
+      | none => simp [MvPolynomial.dehomogenize]
+      | some i =>
+          cases i <;> simp [MvPolynomial.dehomogenize]
+
+/-- The homogeneous derivative step used when the target rank is even. The
+outer `none` is the homogenizing variable and `some none` is the new ordinary
+variable. -/
+def homogeneousEvenStep {σ : Type*}
+    (Q : MvPolynomial (Option σ) ℂ) :
+    MvPolynomial (Option (Option σ)) ℂ :=
+  MvPolynomial.C 2 * homogeneousFactorDerivative Q
+
+/-- The homogeneous derivative step used when the target rank is odd. The
+auxiliary coefficient variable is collapsed into the homogenizing variable
+after differentiation. -/
+def homogeneousOddStep {σ : Type*}
+    (Q : MvPolynomial (Option σ) ℂ) :
+    MvPolynomial (Option (Option σ)) ℂ :=
+  MvPolynomial.rename Option.join
+    (homogeneousFactorDerivative (homogeneousAdjoinFactor Q))
+
+theorem dehomogenize_homogeneousOddStep
+    {σ : Type*} (Q : MvPolynomial (Option σ) ℂ) :
+    MvPolynomial.dehomogenize (homogeneousOddStep Q) =
+      (3 + MvPolynomial.X none) *
+          MvPolynomial.rename some (MvPolynomial.dehomogenize Q) +
+        2 * (1 + MvPolynomial.X none) *
+          MvPolynomial.rename some
+            (MvPolynomial.dehomogenize (MvPolynomial.pderiv none Q)) := by
+  have hderiv := dehomogenize_homogeneousFactorDerivative Q
+  change MvPolynomial.dehomogenize
+      (MvPolynomial.pderiv none (homogeneousAdjoinFactor Q)) = _ at hderiv
+  rw [homogeneousOddStep, dehomogenize_rename_option_join,
+    dehomogenize_homogeneousFactorDerivative, map_add, map_mul,
+    MvPolynomial.dehomogenize_rename_some,
+    dehomogenize_homogeneousAdjoinFactor,
+    MvPolynomial.dehomogenize_rename_some, hderiv]
+  simp
+  ring
+
+theorem homogeneousAdjoinFactor_isHomogeneous
+    {σ R : Type*} [CommSemiring R]
+    {Q : MvPolynomial (Option σ) R} {d : ℕ}
+    (hQ : Q.IsHomogeneous d) :
+    (homogeneousAdjoinFactor Q).IsHomogeneous (d + 1) := by
+  have hlinear :
+      (MvPolynomial.X none + MvPolynomial.X (some none) :
+        MvPolynomial (Option (Option σ)) R).IsHomogeneous 1 :=
+    (MvPolynomial.isHomogeneous_X R none).add
+      (MvPolynomial.isHomogeneous_X R (some none))
+  simpa [homogeneousAdjoinFactor, Nat.add_comm] using
+    hlinear.mul hQ.rename_isHomogeneous
+
+theorem MvUpperHalfPlaneStable.homogeneousAdjoinFactor
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ}
+    (hQ : MvUpperHalfPlaneStable Q) :
+    MvUpperHalfPlaneStable (homogeneousAdjoinFactor Q) := by
+  exact (MvUpperHalfPlaneStable.X_add_X none (some none)).mul hQ.rename
+
+theorem homogeneousAdjoinFactor_top_coeff
+    {σ R : Type*} [CommSemiring R]
+    {Q : MvPolynomial (Option σ) R} {d : ℕ} {c : R}
+    (hQ : Q.IsHomogeneous d)
+    (htop : (MvPolynomial.optionEquivLeft R σ Q).coeff d =
+      MvPolynomial.C c) :
+    (MvPolynomial.optionEquivLeft R (Option σ)
+      (homogeneousAdjoinFactor Q)).coeff (d + 1) = MvPolynomial.C c := by
+  apply MvPolynomial.optionEquivLeft_coeff_succ_mul_X_none_add_new Q d c
+  · exact (MvPolynomial.degreeOf_le_totalDegree Q none).trans
+      hQ.totalDegree_le
+  · exact htop
+
+theorem MvUpperHalfPlaneStable.homogeneousFactorDerivative
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ} {d : ℕ} {c : ℂ}
+    (hstable : MvUpperHalfPlaneStable Q) (hhom : Q.IsHomogeneous d)
+    (htop : (MvPolynomial.optionEquivLeft ℂ σ Q).coeff d =
+      MvPolynomial.C c) (hc : c ≠ 0) :
+    MvUpperHalfPlaneStable (homogeneousFactorDerivative Q) := by
+  apply MvUpperHalfPlaneStable.pderiv_none_of_top_coeff_C
+    (P := RealRooted.homogeneousAdjoinFactor Q) (m := d + 1) (c := c)
+    hstable.homogeneousAdjoinFactor (by lia) hc
+  · exact (MvPolynomial.degreeOf_le_totalDegree
+      (RealRooted.homogeneousAdjoinFactor Q) none).trans
+        (homogeneousAdjoinFactor_isHomogeneous hhom).totalDegree_le
+  · exact homogeneousAdjoinFactor_top_coeff hhom htop
+
+theorem homogeneousEvenStep_isHomogeneous
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ} {d : ℕ}
+    (hQ : Q.IsHomogeneous d) :
+    (homogeneousEvenStep Q).IsHomogeneous d := by
+  have hproduct := homogeneousAdjoinFactor_isHomogeneous hQ
+  simpa [homogeneousEvenStep, homogeneousFactorDerivative] using
+    (hproduct.pderiv (i := none)).C_mul (2 : ℂ)
+
+theorem MvUpperHalfPlaneStable.homogeneousEvenStep
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ} {d : ℕ} {c : ℂ}
+    (hstable : MvUpperHalfPlaneStable Q) (hhom : Q.IsHomogeneous d)
+    (htop : (MvPolynomial.optionEquivLeft ℂ σ Q).coeff d =
+      MvPolynomial.C c) (hc : c ≠ 0) :
+    MvUpperHalfPlaneStable (homogeneousEvenStep Q) := by
+  change MvUpperHalfPlaneStable
+    (MvPolynomial.C 2 * RealRooted.homogeneousFactorDerivative Q)
+  exact (hstable.homogeneousFactorDerivative hhom htop hc).C_mul
+    (by norm_num : (2 : ℂ) ≠ 0)
+
+theorem homogeneousOddStep_isHomogeneous
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ} {d : ℕ}
+    (hQ : Q.IsHomogeneous d) :
+    (homogeneousOddStep Q).IsHomogeneous (d + 1) := by
+  have hfirst := homogeneousAdjoinFactor_isHomogeneous hQ
+  have hsecond := homogeneousAdjoinFactor_isHomogeneous hfirst
+  simpa [homogeneousOddStep, homogeneousFactorDerivative] using
+    (hsecond.pderiv (i := none)).rename_isHomogeneous
+
+theorem MvUpperHalfPlaneStable.homogeneousOddStep
+    {σ : Type*} {Q : MvPolynomial (Option σ) ℂ} {d : ℕ} {c : ℂ}
+    (hstable : MvUpperHalfPlaneStable Q) (hhom : Q.IsHomogeneous d)
+    (htop : (MvPolynomial.optionEquivLeft ℂ σ Q).coeff d =
+      MvPolynomial.C c) (hc : c ≠ 0) :
+    MvUpperHalfPlaneStable (homogeneousOddStep Q) := by
+  apply MvUpperHalfPlaneStable.rename
+  exact (hstable.homogeneousAdjoinFactor).homogeneousFactorDerivative
+    (homogeneousAdjoinFactor_isHomogeneous hhom)
+    (homogeneousAdjoinFactor_top_coeff hhom htop) hc
+
 end
 
 
