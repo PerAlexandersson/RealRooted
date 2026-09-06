@@ -84,7 +84,8 @@ private theorem case_1111 {s t : ℝ} (hs : 0 < s) :
 /-- **The marker-one `2 × 2` entry property.**  For thresholds `t₁ ≤ t₂` and
 columns `j₁ ≤ j₂`, the four marker-one threshold entries satisfy the affine
 `2 × 2` interlacing condition. -/
-theorem has2x2_thresholdEntry_one {t₁ t₂ j₁ j₂ : ℕ} (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂) :
+theorem has2x2_thresholdEntry_one {t₁ t₂ j₁ j₂ : ℕ}
+    (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂) :
     Has2x2InterlacingProperty0
       (thresholdEntry t₁ (1 : ℝ[X]) j₁) (thresholdEntry t₁ (1 : ℝ[X]) j₂)
       (thresholdEntry t₂ (1 : ℝ[X]) j₁) (thresholdEntry t₂ (1 : ℝ[X]) j₂) := by
