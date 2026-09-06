@@ -1,3 +1,4 @@
+import RealRooted.EulerOperator.Shift
 import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 
 /-!
@@ -16,14 +17,15 @@ namespace RealRooted
 namespace ParkingFunctions
 namespace ToricContribution
 
-/-- The shifted Euler operator `(X D + a)`. -/
-def eulerShiftOperator (a : ℝ) (f : ℝ[X]) : ℝ[X] :=
-  X * f.derivative + C a * f
+/-- Compatibility alias for the canonical shifted Euler operator. -/
+abbrev eulerShiftOperator (a : ℝ) (f : ℝ[X]) : ℝ[X] :=
+  RealRooted.eulerShift a f
 
 /-- Successive shifted Euler operators with parameters `c, c+1, ...`. -/
 def risingEulerOperator (c : ℝ) : ℕ → ℝ[X] → ℝ[X]
   | 0, f => f
-  | t + 1, f => eulerShiftOperator (c + t) (risingEulerOperator c t f)
+  | t + 1, f =>
+      RealRooted.eulerShift (c + t) (risingEulerOperator c t f)
 
 /-- Coefficients of the Euler-transformed terminating `₂F₁`. -/
 def eulerTransformedCoeff (m ε d k : ℕ) : ℝ :=
@@ -338,14 +340,7 @@ theorem one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq
 /-- A shifted Euler operator multiplies coefficient `k` by `k+a`. -/
 theorem coeff_eulerShiftOperator (a : ℝ) (f : ℝ[X]) (k : ℕ) :
     (eulerShiftOperator a f).coeff k = (k + a) * f.coeff k := by
-  simp only [eulerShiftOperator, coeff_add, coeff_C_mul]
-  cases k with
-  | zero =>
-      simp
-  | succ k =>
-      rw [coeff_X_mul, coeff_derivative]
-      push_cast
-      ring
+  exact RealRooted.coeff_eulerShift a f k
 
 /-- Successive shifted Euler operators multiply coefficient `k` by the rising
 factorial `(c+k)_t`. -/
@@ -420,7 +415,7 @@ Euler operator. -/
 theorem one_sub_X_pow_mul_insertionOperator (a : ℝ) (r : ℕ) (f : ℝ[X]) :
     (1 - X) ^ r * insertionOperator a (a + (r + 1)) f =
       eulerShiftOperator a ((1 - X) ^ (r + 1) * f) := by
-  simp only [eulerShiftOperator, insertionOperator, intervalWeight,
+  simp only [eulerShiftOperator, eulerShift, insertionOperator, intervalWeight,
     derivative_mul, derivative_pow_succ, derivative_sub, derivative_one,
     derivative_X, zero_sub, map_add, map_one, map_natCast]
   ring
