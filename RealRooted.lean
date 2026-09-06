@@ -259,8 +259,11 @@ import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+import RealRooted.Graph.IndependencePolynomial.Multivariate
 import RealRooted.Graph.IndependencePolynomial.Recurrence
+import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial
+import RealRooted.Graph.MatchingPolynomial.Multivariate
 import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
@@ -632,6 +635,7 @@ import RealRooted.SameDegreeDerivative
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SamePhaseStability
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
