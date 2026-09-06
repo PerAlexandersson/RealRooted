@@ -110,4 +110,71 @@ theorem isTotallyNonneg_lowerBidiagonal (d s : ℕ → R)
           rw [det_succ_row_zero S]
           simp_all
 
+/-- An upper-bidiagonal matrix with diagonal `d` and superdiagonal `s`. -/
+def upperBidiagonal (d s : ℕ → R) : Matrix ℕ ℕ R :=
+  (lowerBidiagonal d s)ᵀ
+
+omit [PartialOrder R] [IsStrictOrderedRing R] in
+@[simp] lemma upperBidiagonal_apply (d s : ℕ → R) (i j : ℕ) :
+    upperBidiagonal d s i j =
+      if i = j then d i else if j = i + 1 then s i else 0 := by
+  simp only [upperBidiagonal, transpose_apply, lowerBidiagonal_apply]
+  by_cases hij : i = j
+  · subst j
+    simp
+  · simp [hij, Ne.symm hij]
+
+/-- Every variable upper-bidiagonal matrix with nonnegative entries is totally
+nonnegative. -/
+theorem isTotallyNonneg_upperBidiagonal (d s : ℕ → R)
+    (hd : ∀ i, 0 ≤ d i) (hs : ∀ i, 0 ≤ s i) :
+    (upperBidiagonal d s).IsTotallyNonneg := by
+  exact (isTotallyNonneg_lowerBidiagonal d s hd hs).toRect.transpose.toSquare
+
+/-- The leading finite truncation of a variable lower-bidiagonal matrix. -/
+def lowerBidiagonalFin (n : ℕ) (d s : ℕ → R) : Matrix (Fin n) (Fin n) R :=
+  (lowerBidiagonal d s).submatrix Fin.val Fin.val
+
+omit [PartialOrder R] [IsStrictOrderedRing R] in
+@[simp] lemma lowerBidiagonalFin_apply (n : ℕ) (d s : ℕ → R) (i j : Fin n) :
+    lowerBidiagonalFin n d s i j =
+      if i = j then d i else if i.val = j.val + 1 then s j else 0 := by
+  simp only [lowerBidiagonalFin, submatrix_apply, lowerBidiagonal_apply]
+  by_cases hij : i = j
+  · subst i
+    simp
+  · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
+    simp [hij, hval]
+
+/-- Leading finite truncations of variable lower-bidiagonal totally
+nonnegative matrices are totally nonnegative. -/
+theorem isTotallyNonneg_lowerBidiagonalFin (n : ℕ) (d s : ℕ → R)
+    (hd : ∀ i, 0 ≤ d i) (hs : ∀ i, 0 ≤ s i) :
+    (lowerBidiagonalFin n d s).IsTotallyNonneg :=
+  (isTotallyNonneg_lowerBidiagonal d s hd hs).submatrix
+    Fin.val_strictMono Fin.val_strictMono
+
+/-- The leading finite truncation of a variable upper-bidiagonal matrix. -/
+def upperBidiagonalFin (n : ℕ) (d s : ℕ → R) : Matrix (Fin n) (Fin n) R :=
+  (upperBidiagonal d s).submatrix Fin.val Fin.val
+
+omit [PartialOrder R] [IsStrictOrderedRing R] in
+@[simp] lemma upperBidiagonalFin_apply (n : ℕ) (d s : ℕ → R) (i j : Fin n) :
+    upperBidiagonalFin n d s i j =
+      if i = j then d i else if j.val = i.val + 1 then s i else 0 := by
+  simp only [upperBidiagonalFin, submatrix_apply, upperBidiagonal_apply]
+  by_cases hij : i = j
+  · subst i
+    simp
+  · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
+    simp [hij, hval]
+
+/-- Leading finite truncations of variable upper-bidiagonal totally
+nonnegative matrices are totally nonnegative. -/
+theorem isTotallyNonneg_upperBidiagonalFin (n : ℕ) (d s : ℕ → R)
+    (hd : ∀ i, 0 ≤ d i) (hs : ∀ i, 0 ≤ s i) :
+    (upperBidiagonalFin n d s).IsTotallyNonneg :=
+  (isTotallyNonneg_upperBidiagonal d s hd hs).submatrix
+    Fin.val_strictMono Fin.val_strictMono
+
 end Matrix
