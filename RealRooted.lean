@@ -205,6 +205,7 @@ import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar
+import RealRooted.EulerOperator.Polar.MultiplierSequence
 import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.EulerOperator.ScaledPolar
