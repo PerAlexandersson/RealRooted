@@ -429,6 +429,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating

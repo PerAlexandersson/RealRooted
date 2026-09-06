@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.Equiv
+import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
@@ -9,6 +10,19 @@ This file contains Mathlib-shaped compatibility lemmas for
 -/
 
 namespace MvPolynomial
+
+/-- Viewing `none` as the univariate variable turns its partial derivative
+into the ordinary polynomial derivative. -/
+theorem optionEquivLeft_pderiv_none
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial (Option σ) R) :
+    optionEquivLeft R σ (pderiv none p) =
+      (optionEquivLeft R σ p).derivative := by
+  classical
+  induction p using MvPolynomial.induction_on with
+  | C r => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+      cases i <;> simp [hp, Polynomial.derivative_mul] <;> ac_rfl
 
 /-- The degree in the unique variable after converting a univariate polynomial
 to an `MvPolynomial` is its natural degree. -/

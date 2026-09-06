@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Ordinary homogenization of multivariate polynomials
@@ -25,6 +26,33 @@ def ordinaryHomogenization {σ R : Type*} [CommSemiring R]
 def dehomogenize {σ R : Type*} [CommSemiring R] :
     MvPolynomial (Option σ) R →ₐ[R] MvPolynomial σ R :=
   aeval fun o => Option.elim o 1 X
+
+@[simp] theorem dehomogenize_X_none {σ R : Type*} [CommSemiring R] :
+    dehomogenize (X (none : Option σ) : MvPolynomial (Option σ) R) = 1 := by
+  simp [dehomogenize]
+
+@[simp] theorem dehomogenize_X_some {σ R : Type*} [CommSemiring R]
+    (i : σ) :
+    dehomogenize (X (some i) : MvPolynomial (Option σ) R) = X i := by
+  simp [dehomogenize]
+
+/-- Dehomogenization commutes with differentiation in an original variable. -/
+theorem dehomogenize_pderiv_some {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial (Option σ) R) (i : σ) :
+    dehomogenize (pderiv (some i) p) =
+      pderiv i (dehomogenize p) := by
+  classical
+  induction p using MvPolynomial.induction_on with
+  | C r => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p j hp =>
+      cases j with
+      | none => simp [hp]
+      | some j =>
+          by_cases hij : i = j
+          · subst j
+            simp [hp]
+          · simp [hp, hij]
 
 /-- Ordinary homogenization is homogeneous of the requested total degree. -/
 theorem ordinaryHomogenization_isHomogeneous
@@ -65,6 +93,41 @@ theorem HasNonnegCoeffs.ordinaryHomogenization {σ : Type*}
   exact (HasNonnegCoeffs.X (none : Option σ)).pow (d - k) |>.mul
     ((hp.homogeneousComponent k).rename_of_injective
       (Option.some_injective σ))
+
+/-- Raising the requested homogenization degree only adds a power of the
+distinguished variable. -/
+theorem ordinaryHomogenization_eq_X_pow_mul
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) :
+    ordinaryHomogenization p d =
+      X none ^ (d - p.totalDegree) *
+        ordinaryHomogenization p p.totalDegree := by
+  classical
+  rw [ordinaryHomogenization, ordinaryHomogenization, Finset.mul_sum]
+  calc
+    _ = ∑ k ∈ Finset.range (p.totalDegree + 1),
+        X none ^ (d - k) * rename some (homogeneousComponent k p) := by
+      symm
+      apply Finset.sum_subset
+        (Finset.range_mono (Nat.add_le_add_right hdeg 1))
+      intro k _ hk
+      rw [homogeneousComponent_eq_zero]
+      · simp
+      · simp only [Finset.mem_range, Nat.not_lt] at hk
+        exact lt_of_lt_of_le (Nat.lt_succ_self p.totalDegree) hk
+    _ = ∑ k ∈ Finset.range (p.totalDegree + 1),
+        X none ^ (d - p.totalDegree) *
+          (X none ^ (p.totalDegree - k) *
+            rename some (homogeneousComponent k p)) := by
+      apply Finset.sum_congr rfl
+      intro k hk
+      have hk' : k ≤ p.totalDegree :=
+        Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+      have hexp :
+          d - p.totalDegree + (p.totalDegree - k) = d - k := by
+        rw [← Nat.add_sub_assoc hk', Nat.sub_add_cancel hdeg]
+      rw [← mul_assoc, ← pow_add, hexp]
+    _ = _ := rfl
 
 /-- Dehomogenizing an ordinary homogenization whose requested degree is at
 least the total degree recovers the source polynomial. -/
