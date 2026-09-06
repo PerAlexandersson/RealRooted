@@ -118,6 +118,13 @@ import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
+import RealRooted.CombinatorialExamples.PeakValues
+import RealRooted.CombinatorialExamples.PeakValues.Insertion
+import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+import RealRooted.CombinatorialExamples.PeakValues.Stability
+import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -290,6 +297,7 @@ import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermitePoulain
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
+import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingConeBounds
@@ -425,6 +433,9 @@ import RealRooted.MaoWangMatrixProduct
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
@@ -504,6 +515,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
@@ -637,6 +649,7 @@ import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SamePhaseStability
+import RealRooted.SamePhaseInterlacing
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma

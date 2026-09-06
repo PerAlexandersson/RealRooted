@@ -1258,6 +1258,19 @@ remove or temporarily re-export the duplicate. A consumer proof is not evidence
 that an upstream-shaped restatement compiles; both repositories need their own
 focused verification.
 
+Weighted common-phase interleaving has a theory/application boundary:
+
+- `SamePhaseInterlacing` owns coefficient positivity under common-phase
+  restriction, the multiaffine affine-pencil decomposition, and the reusable
+  Hermite--Biehler proper-position consequence; and
+- `CombinatorialExamples.PeakValues.WeightedInterleaving` specializes that
+  framework to the peak-value recurrence and its positive weighted diagonals.
+
+The peak-value stability application itself is split between the translated
+insertion recurrence and its parity-dependent homogeneous stable lift. The
+general derivative and dehomogenization closures remain in
+`HomogeneousStability`.
+
 ## Import checks
 
 Run the architecture check with:

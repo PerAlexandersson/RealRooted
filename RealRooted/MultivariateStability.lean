@@ -391,6 +391,65 @@ theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
   rw [MvPolynomial.eval_rename]
   exact hP (z ∘ f) fun i => hz (f i)
 
+/-- Translating each variable by a real constant preserves upper-half-plane
+stability. -/
+theorem MvUpperHalfPlaneStable.translate_add_real {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
+    (a : sigma → ℝ) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.aeval
+        (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) := by
+  intro z hz
+  change MvPolynomial.aeval z
+      (MvPolynomial.aeval
+        (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0
+  rw [MvPolynomial.comp_aeval_apply]
+  have hsub :
+      (fun i => MvPolynomial.aeval z
+        (MvPolynomial.C (a i : ℂ) + MvPolynomial.X i)) =
+        fun i => (a i : ℂ) + z i := by
+    funext i
+    simp
+  rw [hsub]
+  exact hP (fun i => (a i : ℂ) + z i) fun i => by
+    simpa using hz i
+
+/-- Stability of a real translate implies stability of the original
+polynomial. -/
+theorem MvUpperHalfPlaneStable.of_translate_add_real {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (a : sigma → ℝ)
+    (hP : MvUpperHalfPlaneStable
+      (MvPolynomial.aeval
+        (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P)) :
+    MvUpperHalfPlaneStable P := by
+  intro z hz
+  have htranslated :
+      MvPolynomial.aeval (fun i => z i - (a i : ℂ))
+        (MvPolynomial.aeval
+          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 := by
+    exact hP (fun i => z i - (a i : ℂ)) (by
+      intro i
+      simpa using hz i)
+  rw [MvPolynomial.comp_aeval_apply] at htranslated
+  have hsub :
+      (fun i => MvPolynomial.aeval (fun j => z j - (a j : ℂ))
+        (MvPolynomial.C (a i : ℂ) + MvPolynomial.X i)) = z := by
+    funext i
+    simp
+  rw [hsub] at htranslated
+  exact htranslated
+
+/-- Real coordinate translation preserves upper-half-plane stability in both
+directions. -/
+theorem mvUpperHalfPlaneStable_translate_add_real_iff {sigma : Type*}
+    (P : MvPolynomial sigma ℂ) (a : sigma → ℝ) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.aeval
+        (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ↔
+      MvUpperHalfPlaneStable P :=
+  ⟨MvUpperHalfPlaneStable.of_translate_add_real a,
+    fun hP => hP.translate_add_real a⟩
+
 /-- Renaming variables preserves weak stability. -/
 theorem MvUpperHalfPlaneStableOrZero.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
