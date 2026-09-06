@@ -77,4 +77,17 @@ theorem prec_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
     prec_add_of_prec_right_of_posLeadingCoeff hcf hgg hpos_cf hpos_g
   grind
 
+/-- A polynomial PF member lies to the left of its Euler derivative. -/
+theorem prec_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hdeg : 2 ≤ p.natDegree) : Prec p (theta p) := by
+  have hp_ne : p ≠ 0 := by
+    intro hzero
+    simp_all
+  have hp_splits : p.Splits := (hp.ne_zero_and_splits hp_ne).2
+  have hder : Prec p.derivative p :=
+    (derivative_interlaces hp_splits hdeg).toPrec
+  have hmul := prec_mul_X_of_prec_of_nonneg
+    hder hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
+  simpa [theta] using hmul
+
 end RealRooted

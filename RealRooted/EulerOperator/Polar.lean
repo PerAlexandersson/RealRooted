@@ -15,6 +15,22 @@ noncomputable section
 
 namespace RealRooted
 
+/-- The polar-theta operator is conjugate to the Euler operator by a
+degree-padded reciprocal shift. -/
+theorem polarTheta_eq_reciprocalShift_theta_reciprocalShift
+    (N : ℕ) (p : ℝ[X]) (hdeg : p.natDegree ≤ N) :
+    polarTheta N p = reciprocalShift N (theta (reciprocalShift N p)) := by
+  ext k
+  rw [coeff_polarTheta, coeff_reciprocalShift, coeff_theta,
+    coeff_reciprocalShift, Polynomial.revAt_invol]
+  by_cases hk : k ≤ N
+  · simp_all
+  · have hNk : N < k := lt_of_not_ge hk
+    rw [Polynomial.revAt_eq_self_of_lt hNk]
+    have hpk : p.coeff k = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNk)
+    simp_all
+
 /-- The reciprocal shift preserves ordinary splitness in a finite degree box. -/
 theorem reciprocalShift_splits {D : ℕ} {p : ℝ[X]}
     (hp : p.Splits) (hdeg : p.natDegree ≤ D) :

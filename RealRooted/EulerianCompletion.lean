@@ -290,20 +290,6 @@ theorem eulerInsertionStep_one_prec
     (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
       (by rw [hpout.1]; lia)
 
-/-- A polynomial PF member lies to the left of its Euler derivative. -/
-theorem prec_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
-    (hdeg : 2 ≤ p.natDegree) : Prec p (theta p) := by
-  have hp_ne : p ≠ 0 := by
-    intro hz
-    rw [hz] at hdeg
-    simp at hdeg
-  have hp_splits : p.Splits := (hp.ne_zero_and_splits hp_ne).2
-  have hder : Prec p.derivative p :=
-    (derivative_interlaces hp_splits hdeg).toPrec
-  have hmul := prec_mul_X_of_prec_of_nonneg
-    hder hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
-  simpa [theta] using hmul
-
 theorem loweringEulerStep_theta_eq
     {M : ℕ} (hM : 2 ≤ M) (p : ℝ[X]) :
     loweringEulerStep M (theta p) =
@@ -348,8 +334,13 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
       (derivative_ne_zero_of_natDegree_ne_zero (by lia)), natDegree_X,
       p.natDegree_derivative, hpdeg]
     lia
-  have hbase : Prec p (theta p) :=
-    prec_self_theta hp (by rw [hpdeg]; exact hD)
+  have hbase : Prec p (theta p) := by
+    have hder : Prec p.derivative p :=
+      (derivative_interlaces (hp.ne_zero_and_splits hp_ne).2
+        (by rw [hpdeg]; exact hD)).toPrec
+    simpa [theta] using
+      prec_mul_X_of_prec_of_nonneg hder
+        hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   have hlower : Prec (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=
     loweringEulerStep_prec (by lia) hM hp htheta hpdeg htheta_deg hbase
