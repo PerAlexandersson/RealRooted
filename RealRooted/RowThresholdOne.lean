@@ -120,6 +120,56 @@ theorem thresholdOneRows_marker_nonneg {n : ℕ} :
   obtain ⟨k, -, rfl⟩ := hp
   simpa using isNonnegLinearForm_hasNonnegCoeffs isNonnegLinearForm_one
 
+/-- Acting by a single marker-one threshold row gives the corresponding
+staircase sum. -/
+theorem thresholdRow_one_action_eq_staircaseSum (fs : List ℝ[X]) (k : ℕ) :
+    ((thresholdRow fs.length k (1 : ℝ[X])).zipWith (· * ·) fs).sum =
+      staircaseSum fs k := by
+  induction fs generalizing k with
+  | nil => simp [staircaseSum]
+  | cons f fs ih =>
+      cases k with
+      | zero =>
+          rw [thresholdRow]
+          simp only [List.length_cons]
+          rw [List.range_succ_eq_map]
+          simp only [List.map_cons, List.map_map, List.zipWith_cons_cons,
+            List.sum_cons]
+          rw [show thresholdEntry 0 1 0 = 1 by simp [thresholdEntry]]
+          have htail :
+              List.map (thresholdEntry 0 (1 : ℝ[X]) ∘ Nat.succ)
+                  (List.range fs.length) = thresholdRow fs.length 0 1 := by
+            apply List.map_congr_left
+            intro j hj
+            simp [thresholdEntry]
+          rw [htail, ih]
+          simp [staircaseSum]
+      | succ k =>
+          rw [thresholdRow]
+          simp only [List.length_cons]
+          rw [List.range_succ_eq_map]
+          simp only [List.map_cons, List.map_map, List.zipWith_cons_cons,
+            List.sum_cons]
+          rw [show thresholdEntry (k + 1) 1 0 = X by simp [thresholdEntry]]
+          have htail :
+              List.map (thresholdEntry (k + 1) (1 : ℝ[X]) ∘ Nat.succ)
+                  (List.range fs.length) = thresholdRow fs.length k 1 := by
+            apply List.map_congr_left
+            intro j hj
+            simp only [Function.comp_apply]
+            simp [thresholdEntry]
+          rw [htail, ih]
+          simp [staircaseSum]
+          ring
+
+/-- The marker-one threshold matrix action is the list of staircase sums at
+the listed thresholds. -/
+theorem matPolyAction_thresholdOne_eq_staircaseSums (fs : List ℝ[X]) (n : ℕ) :
+    matPolyAction (thresholdMatrix fs.length (thresholdOneRows n)) fs =
+      (List.range n).map (staircaseSum fs) := by
+  simp [matPolyAction, thresholdMatrix, thresholdOneRows,
+    thresholdRow_one_action_eq_staircaseSum]
+
 /-- **Marker-one threshold matrices preserve interlacing sequences.**  This is
 the specialization of Branden's Corollary 8.7 used by Branden--Saud Leite for
 their Lemma 3.1(2): acting by the matrix whose `k`-th row is `X` before column
@@ -131,6 +181,19 @@ theorem thresholdOneMatrix_preserves_interlacing {q n : ℕ}
       (matPolyAction (thresholdMatrix q (thresholdOneRows n)) fs) := by
   refine thresholdMatrix_preserves_interlacing_seq0_of_entry
     (thresholdOneRows n) thresholdOneRows_marker_nonneg ?_ fs hfs_len hfs
+  intro i₁ i₂ j₁ j₂ hi hj
+  rw [get_thresholdOneRows, get_thresholdOneRows]
+  exact has2x2_thresholdEntry_one hi hj
+
+/-- Zero-aware marker-one preservation, retaining real-rootedness for every
+nonzero output.  This is the form needed when some input weights vanish. -/
+theorem thresholdOneMatrix_preserves_interlacing_weak {q n : ℕ}
+    (fs : List ℝ[X]) (hfs_len : fs.length = q)
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    IsInterlacingSeq0NonnegRealRooted
+      (matPolyAction (thresholdMatrix q (thresholdOneRows n)) fs) := by
+  refine thresholdMatrix_preserves_interlacing_seq0_of_entry_weak
+    (thresholdOneRows n) thresholdOneRows_marker_nonneg ?_ fs hfs_len hfs.1 hfs.2
   intro i₁ i₂ j₁ j₂ hi hj
   rw [get_thresholdOneRows, get_thresholdOneRows]
   exact has2x2_thresholdEntry_one hi hj
