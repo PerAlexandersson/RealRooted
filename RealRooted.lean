@@ -541,6 +541,7 @@ import RealRooted.NarayanaTransformation
 import RealRooted.NarayanaTransformation.Basis
 import RealRooted.NarayanaTransformation.Basis.Stirling
 import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.NarayanaTransformation.Composition
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
 import RealRooted.NarayanaTransformation.Gamma
