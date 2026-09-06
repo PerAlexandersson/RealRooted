@@ -119,6 +119,7 @@ import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.PeakValues
+import RealRooted.CombinatorialExamples.PeakValues.Insertion
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -507,6 +508,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
