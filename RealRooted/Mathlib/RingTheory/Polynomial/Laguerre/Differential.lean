@@ -6,6 +6,13 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
+
+import Mathlib.Tactic.Algebra.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Differential identities for generalized Laguerre polynomials
@@ -150,6 +157,17 @@ theorem laguerreDifferentialOperator_X_pow (α : R) (n : ℕ) :
           push_cast
           simp only [map_add, map_mul, map_one]
           ring
+
+/-- The Laguerre differential operator on a coefficient-weighted monomial. -/
+theorem laguerreDifferentialOperator_monomial (α a : R) (n : ℕ) :
+    laguerreDifferentialOperator α (monomial n a) =
+      monomial (n - 1) (a * n * (n + α)) + monomial n (a * n) := by
+  rw [← C_mul_X_pow_eq_monomial,
+    laguerreDifferentialOperator_C_mul,
+    laguerreDifferentialOperator_X_pow]
+  simp only [← C_mul_X_pow_eq_monomial]
+  simp only [map_mul]
+  ring
 
 /-- Coefficients of the Laguerre differential operator. -/
 theorem coeff_laguerreDifferentialOperator (α : R) (p : R[X]) (k : ℕ) :

@@ -321,6 +321,10 @@ import RealRooted.JacobiParameterInterlacing
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
 import RealRooted.Kurtz
+import RealRooted.Laguerre
+import RealRooted.Laguerre.Orthogonality
+import RealRooted.Laguerre.Orthogonality.Integral
+import RealRooted.Laguerre.Roots
 import RealRooted.LiebSokal
 import RealRooted.LiebSokalOperator
 import RealRooted.LiebSokalOperator.Linearity
@@ -527,6 +531,10 @@ import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.MatrixInterlacing
 import RealRooted.Multiaffine

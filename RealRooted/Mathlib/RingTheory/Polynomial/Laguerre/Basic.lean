@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.RingTheory.Polynomial.Pochhammer
-public import Mathlib.Tactic
+
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 # Generalized Laguerre polynomials
@@ -72,6 +74,13 @@ theorem coeff_generalizedLaguerre (n k : ℕ) (α : R) :
         simp [coeff_generalizedLaguerre, coeff_add, Polynomial.coeff_one,
           Polynomial.coeff_X]
 
+@[simp] theorem generalizedLaguerre_two (α : R) :
+    generalizedLaguerre 2 α =
+      X ^ 2 + C (2 * (α + 2)) * X + C ((α + 1) * (α + 2)) := by
+  norm_num [generalizedLaguerre, Finset.sum_range_succ, ascPochhammer]
+  simp only [map_ofNat]
+  ring
+
 /-- Generalized Laguerre polynomials have no coefficients above their index. -/
 theorem natDegree_generalizedLaguerre_le (n : ℕ) (α : R) :
     (generalizedLaguerre n α).natDegree ≤ n := by
@@ -84,7 +93,7 @@ theorem natDegree_generalizedLaguerre_le (n : ℕ) (α : R) :
   simp [coeff_generalizedLaguerre]
 
 /-- Evaluation at zero is the rising factorial of the shifted parameter. -/
-@[simp] theorem eval_zero_generalizedLaguerre (n : ℕ) (α : R) :
+@[simp] theorem generalizedLaguerre_eval_zero (n : ℕ) (α : R) :
     (generalizedLaguerre n α).eval 0 =
       (ascPochhammer R n).eval (α + 1) := by
   rw [← coeff_zero_eq_eval_zero, coeff_generalizedLaguerre,
@@ -114,15 +123,6 @@ section Map
 
 variable {S : Type v} [CommSemiring R] [CommSemiring S]
 
-private theorem map_ascPochhammer_eval (f : R →+* S) (m : ℕ) (x : R) :
-    f ((ascPochhammer R m).eval x) =
-      (ascPochhammer S m).eval (f x) := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-      rw [ascPochhammer_succ_eval, ascPochhammer_succ_eval, map_mul, ih,
-        map_add, map_natCast]
-
 /-- Generalized Laguerre polynomials commute with coefficient-ring maps. -/
 @[simp] theorem map_generalizedLaguerre (f : R →+* S) (n : ℕ) (α : R) :
     (generalizedLaguerre n α).map f = generalizedLaguerre n (f α) := by
@@ -130,7 +130,7 @@ private theorem map_ascPochhammer_eval (f : R →+* S) (m : ℕ) (x : R) :
   rw [coeff_map, coeff_generalizedLaguerre, coeff_generalizedLaguerre]
   by_cases hk : k ≤ n
   · simp only [hk, if_pos, map_mul, map_natCast]
-    rw [map_ascPochhammer_eval]
+    rw [← eval_map_apply, ascPochhammer_map]
     simp
   · simp [hk]
 

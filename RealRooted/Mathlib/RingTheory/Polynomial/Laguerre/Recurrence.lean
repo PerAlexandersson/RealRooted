@@ -7,6 +7,10 @@ module
 
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
+
 /-!
 # Recurrences for generalized Laguerre polynomials
 
