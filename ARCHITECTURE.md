@@ -901,6 +901,14 @@ layers, and the historical insertion operator is only a compatibility alias
 for the neutral Darboux operator. The toric model definitions and finite-offset
 assembly remain in the application layer.
 
+Shifted-Jacobi orthogonality has a finite/analytic boundary. The coefficient-
+ring self-adjointness criterion lives in the Jacobi moment shim; the Gamma-
+moment specialization and finite spectral argument live in
+`Jacobi.Orthogonality`. `Jacobi.Orthogonality.Integral` alone imports the real
+beta-integral bridge and identifies the pairing with integration against
+`x ^ α * (1 - x) ^ β`. The historical beta-zero and beta-one modules remain
+source-compatible specializations; they do not sit below the generic layer.
+
 The exceptional offset is itself layered behind its historical compatibility
 facade. `BaseAndMoments` owns the Euler-inverse coefficients, endpoint product,
 and Jacobi moment identities; `PencilSplitting` proves real-rootedness of every

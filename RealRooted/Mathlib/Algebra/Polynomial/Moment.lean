@@ -90,6 +90,40 @@ theorem momentPairing_comm (μ : ℕ → R) (p q : R[X]) :
   simp only [momentPairing_add_left]
   rw [momentPairing_comm μ q p, momentPairing_comm μ s p]
 
+section CommRing
+
+variable {S : Type*} [CommRing S]
+
+@[simp] theorem momentFunctional_neg (μ : ℕ → S) (p : S[X]) :
+    momentFunctional μ (-p) = -momentFunctional μ p := by
+  have h := momentFunctional_C_mul μ (-1) p
+  simpa using h
+
+@[simp] theorem momentFunctional_sub (μ : ℕ → S) (p q : S[X]) :
+    momentFunctional μ (p - q) =
+      momentFunctional μ p - momentFunctional μ q := by
+  simp [sub_eq_add_neg]
+
+@[simp] theorem momentPairing_neg_left (μ : ℕ → S) (p q : S[X]) :
+    momentPairing μ (-p) q = -momentPairing μ p q := by
+  simp [momentPairing]
+
+@[simp] theorem momentPairing_neg_right (μ : ℕ → S) (p q : S[X]) :
+    momentPairing μ p (-q) = -momentPairing μ p q := by
+  simp [momentPairing]
+
+@[simp] theorem momentPairing_sub_left (μ : ℕ → S) (p q s : S[X]) :
+    momentPairing μ (p - q) s =
+      momentPairing μ p s - momentPairing μ q s := by
+  simp [sub_eq_add_neg]
+
+@[simp] theorem momentPairing_sub_right (μ : ℕ → S) (p q s : S[X]) :
+    momentPairing μ p (q - s) =
+      momentPairing μ p q - momentPairing μ p s := by
+  simp [sub_eq_add_neg]
+
+end CommRing
+
 @[simp] theorem momentPairing_sum_right {ι : Type*} (μ : ℕ → R)
     (p : R[X]) (s : Finset ι) (q : ι → R[X]) :
     momentPairing μ p (∑ i ∈ s, q i) =

@@ -1,5 +1,4 @@
-import RealRooted.Jacobi
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
+import RealRooted.Jacobi.Orthogonality
 
 /-!
 # Algebraic orthogonality for shifted Jacobi polynomials
@@ -19,6 +18,14 @@ namespace RealRooted
 /-- The `k`th moment of `x ^ α * (1 - x)` on the unit interval. -/
 def jacobiBetaOneMoment (α : ℝ) (k : ℕ) : ℝ :=
   (((α + k + 1) * (α + k + 2))⁻¹ : ℝ)
+
+/-- The legacy rational beta-one moments agree with the general shifted
+Jacobi moments in the classical parameter range. -/
+theorem jacobiBetaOneMoment_eq_shiftedJacobiMoment
+    {α : ℝ} (hα : -1 < α) (k : ℕ) :
+    jacobiBetaOneMoment α k = shiftedJacobiMoment α 1 k := by
+  symm
+  simpa only [jacobiBetaOneMoment] using shiftedJacobiMoment_beta_one hα k
 
 /-- The beta-one Jacobi moment functional on real polynomials. -/
 def jacobiBetaOneFunctional (α : ℝ) (p : ℝ[X]) : ℝ :=
@@ -119,6 +126,27 @@ theorem jacobiBetaOneInner_monomial (α a b : ℝ) (i j : ℕ) :
       a * b * jacobiBetaOneMoment α (i + j) := by
   simp [jacobiBetaOneInner, monomial_mul_monomial, mul_assoc]
 
+/-- The legacy beta-one functional is the specialization of the general
+shifted Jacobi functional in the classical parameter range. -/
+theorem jacobiBetaOneFunctional_eq_shiftedJacobiFunctional
+    {α : ℝ} (hα : -1 < α) (p : ℝ[X]) :
+    jacobiBetaOneFunctional α p = shiftedJacobiFunctional α 1 p := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq => simp [hp, hq]
+  | monomial n c =>
+      rw [jacobiBetaOneFunctional_monomial,
+        shiftedJacobiFunctional_monomial,
+        jacobiBetaOneMoment_eq_shiftedJacobiMoment hα]
+
+/-- The legacy beta-one pairing is the specialization of the general shifted
+Jacobi pairing in the classical parameter range. -/
+theorem jacobiBetaOneInner_eq_shiftedJacobiInner
+    {α : ℝ} (hα : -1 < α) (p q : ℝ[X]) :
+    jacobiBetaOneInner α p q = shiftedJacobiInner α 1 p q := by
+  change jacobiBetaOneFunctional α (p * q) =
+    shiftedJacobiFunctional α 1 (p * q)
+  exact jacobiBetaOneFunctional_eq_shiftedJacobiFunctional hα _
+
 /-- The differential part of the beta-one shifted Jacobi operator. -/
 abbrev jacobiBetaOneOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
   jacobiDifferentialOperator (α + 1) (α + 3) p
@@ -145,88 +173,23 @@ theorem jacobiBetaOneOperator_monomial (α a : ℝ) (n : ℕ) :
     sub_eq_add_neg, ← monomial_neg]
   congr 2 <;> ring
 
-private theorem left_mul_pair_inv_eq_right {a b c : ℝ}
-    (ha : a ≠ 0) (hc : c ≠ 0) :
-    a * (a * b)⁻¹ = c * (b * c)⁻¹ := by
-  rw [mul_inv, mul_inv, ← mul_assoc, mul_inv_cancel₀ ha, one_mul]
-  calc
-    b⁻¹ = b⁻¹ * (c * c⁻¹) := by rw [mul_inv_cancel₀ hc, mul_one]
-    _ = c * (b⁻¹ * c⁻¹) := by ring
-
-private theorem jacobiBetaOneMoment_recurrence {α : ℝ} (hα : -1 < α)
-    (k : ℕ) (hk : 0 < k) :
-    (α + k) * jacobiBetaOneMoment α (k - 1) =
-      (α + k + 2) * jacobiBetaOneMoment α k := by
-  cases k with
-  | zero => simp at hk
-  | succ k =>
-      have hu : 0 < α + (k : ℝ) + 1 := by
-        linarith [show (0 : ℝ) ≤ k by positivity]
-      simp only [Nat.succ_sub_one, Nat.cast_succ, jacobiBetaOneMoment]
-      have h := left_mul_pair_inv_eq_right
-        (a := α + (k : ℝ) + 1) (b := α + (k : ℝ) + 2)
-        (c := α + (k : ℝ) + 3) hu.ne' (by linarith)
-      convert h using 1 <;> ring
-
-private theorem jacobiBetaOneOperator_inner_monomial_symm
-    {α : ℝ} (hα : -1 < α) (a b : ℝ) (i j : ℕ) :
-    jacobiBetaOneInner α (jacobiBetaOneOperator α (monomial i a))
-        (monomial j b) =
-      jacobiBetaOneInner α (monomial i a)
-        (jacobiBetaOneOperator α (monomial j b)) := by
-  rw [jacobiBetaOneOperator_monomial,
-    jacobiBetaOneOperator_monomial]
-  cases i with
-  | zero =>
-      cases j with
-      | zero => simp
-      | succ j =>
-          simp only [jacobiBetaOneInner_add_left,
-            jacobiBetaOneInner_add_right,
-            jacobiBetaOneInner_monomial, Nat.zero_sub, Nat.cast_zero,
-            Nat.succ_sub_one, zero_add]
-          have hrec := jacobiBetaOneMoment_recurrence hα (j + 1) (by lia)
-          push_cast at hrec
-          push_cast
-          linear_combination -a * b * (j + 1 : ℝ) * hrec
-  | succ i =>
-      cases j with
-      | zero =>
-          simp only [jacobiBetaOneInner_add_left,
-            jacobiBetaOneInner_add_right,
-            jacobiBetaOneInner_monomial, Nat.zero_sub, Nat.cast_zero,
-            Nat.succ_sub_one, zero_add, add_zero]
-          have hrec := jacobiBetaOneMoment_recurrence hα (i + 1) (by lia)
-          push_cast at hrec
-          push_cast
-          linear_combination a * b * (i + 1 : ℝ) * hrec
-      | succ j =>
-          simp only [jacobiBetaOneInner_add_left,
-            jacobiBetaOneInner_add_right,
-            jacobiBetaOneInner_monomial]
-          simp only [Nat.succ_sub_one, Nat.cast_add, Nat.cast_one]
-          simp only [Nat.add_comm, Nat.add_left_comm]
-          have hrec := jacobiBetaOneMoment_recurrence hα (i + j + 2)
-            (by lia)
-          simp only [Nat.cast_add] at hrec
-          push_cast at hrec
-          push_cast
-          linear_combination
-            a * b * ((i : ℝ) - (j : ℝ)) * hrec
-
 /-- The differential part of the beta-one shifted Jacobi operator is
 self-adjoint for its moment pairing. -/
 theorem jacobiBetaOneOperator_inner_symm {α : ℝ} (hα : -1 < α)
     (p q : ℝ[X]) :
     jacobiBetaOneInner α (jacobiBetaOneOperator α p) q =
       jacobiBetaOneInner α p (jacobiBetaOneOperator α q) := by
-  induction p using Polynomial.induction_on' with
-  | add p s hp hs => simp [hp, hs]
-  | monomial i a =>
-      induction q using Polynomial.induction_on' with
-      | add q s hq hs => simp [hq, hs]
-      | monomial j b =>
-          exact jacobiBetaOneOperator_inner_monomial_symm hα a b i j
+  calc
+    _ = shiftedJacobiInner α 1 (jacobiBetaOneOperator α p) q :=
+      jacobiBetaOneInner_eq_shiftedJacobiInner hα _ _
+    _ = shiftedJacobiInner α 1 p (jacobiBetaOneOperator α q) := by
+      change shiftedJacobiInner α 1
+        (jacobiDifferentialOperator (α + 1) (α + 3) p) q =
+          shiftedJacobiInner α 1 p
+            (jacobiDifferentialOperator (α + 1) (α + 3) q)
+      convert shiftedJacobiInner_operator_symm (β := 1) hα (by norm_num) p q
+        using 1 <;> ring_nf
+    _ = _ := (jacobiBetaOneInner_eq_shiftedJacobiInner hα _ _).symm
 
 /-- A shifted Jacobi polynomial with beta parameter one is an eigenvector of
 the beta-one differential operator. -/
@@ -261,57 +224,15 @@ monomial. -/
 theorem shiftedJacobi_betaOneInner_X_pow_eq_zero {α : ℝ} (hα : -1 < α)
     {n j : ℕ} (hj : j < n) :
     jacobiBetaOneInner α (shiftedJacobi n α 1) (X ^ j) = 0 := by
-  induction j with
-  | zero =>
-      have hs := jacobiBetaOneOperator_inner_symm hα
-        (shiftedJacobi n α 1) (X ^ 0)
-      rw [jacobiBetaOneOperator_shiftedJacobi,
-        jacobiBetaOneOperator_X_pow] at hs
-      simp only [jacobiBetaOneInner_C_mul_left,
-        Nat.cast_zero, zero_mul, neg_zero, map_zero,
-        jacobiBetaOneInner_zero_right, add_zero, pow_zero] at hs
-      have hn : 0 < (n : ℝ) := by exact_mod_cast (show 0 < n by lia)
-      have hfactor : 0 < (n : ℝ) + α + 2 := by linarith
-      have hcoeff : -(n * (n + α + 2) : ℝ) ≠ 0 :=
-        neg_ne_zero.mpr (mul_ne_zero hn.ne' hfactor.ne')
-      exact (mul_eq_zero.mp hs).resolve_left hcoeff
-  | succ j ih =>
-      have hj' : j < n := by lia
-      have hih := ih hj'
-      have hs := jacobiBetaOneOperator_inner_symm hα
-        (shiftedJacobi n α 1) (X ^ (j + 1))
-      rw [jacobiBetaOneOperator_shiftedJacobi,
-        jacobiBetaOneOperator_X_pow] at hs
-      simp only [jacobiBetaOneInner_C_mul_left,
-        jacobiBetaOneInner_add_right,
-        jacobiBetaOneInner_C_mul_right, Nat.succ_sub_one] at hs
-      rw [hih, mul_zero, zero_add] at hs
-      have hjn : (j + 1 : ℝ) < n := by exact_mod_cast hj
-      have hn0 : 0 ≤ (n : ℝ) := by positivity
-      have hj0 : 0 ≤ (j + 1 : ℝ) := by positivity
-      have hsum : 0 < (n : ℝ) + (j + 1 : ℝ) + α + 2 := by
-        linarith
-      have hdiff : 0 < (n : ℝ) * (n + α + 2) -
-          (j + 1 : ℝ) * (j + 1 + α + 2) := by
-        nlinarith [mul_pos (sub_pos.mpr hjn) hsum]
-      have hproduct : ((j + 1 : ℝ) * (j + 1 + α + 2) -
-          (n : ℝ) * (n + α + 2)) *
-          jacobiBetaOneInner α (shiftedJacobi n α 1) (X ^ (j + 1)) = 0 := by
-        push_cast at hs ⊢
-        linear_combination hs
-      exact (mul_eq_zero.mp hproduct).resolve_left (by linarith)
+  rw [jacobiBetaOneInner_eq_shiftedJacobiInner hα]
+  exact shiftedJacobiInner_X_pow_eq_zero hα (by norm_num) hj
 
 /-- Beta-one shifted Jacobi polynomials are orthogonal to every polynomial of
 strictly smaller degree. -/
 theorem shiftedJacobi_betaOneInner_eq_zero {α : ℝ} (hα : -1 < α)
     {n : ℕ} (q : ℝ[X]) (hq : q.natDegree < n) :
     jacobiBetaOneInner α (shiftedJacobi n α 1) q = 0 := by
-  classical
-  rw [q.as_sum_range_C_mul_X_pow' hq, jacobiBetaOneInner_sum_right]
-  apply Finset.sum_eq_zero
-  intro i hi
-  rw [jacobiBetaOneInner_C_mul_right,
-    shiftedJacobi_betaOneInner_X_pow_eq_zero hα (Finset.mem_range.mp hi),
-    mul_zero]
+  rw [jacobiBetaOneInner_eq_shiftedJacobiInner hα]
+  exact shiftedJacobiInner_eq_zero hα (by norm_num) q hq
 
 end RealRooted

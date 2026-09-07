@@ -318,6 +318,8 @@ import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
 import RealRooted.Jacobi.DifferentialOperator
+import RealRooted.Jacobi.Orthogonality
+import RealRooted.Jacobi.Orthogonality.Integral
 import RealRooted.JacobiBetaZeroOrthogonality
 import RealRooted.JacobiMarkoff
 import RealRooted.JacobiOrthogonality
@@ -479,6 +481,7 @@ import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
@@ -538,6 +541,7 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential

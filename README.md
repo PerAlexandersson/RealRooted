@@ -126,6 +126,12 @@ emulation. These scripts complement `lake build`; they do not replace it.
   Jacobi ODE identities. The family-neutral simple-root and derivative-
   elimination lemmas live in
   `RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/SecondOrder.lean`.
+- `RealRooted/Jacobi/Orthogonality.lean` proves full two-parameter shifted-
+  Jacobi orthogonality from Gamma moments and a coefficient-ring moment-
+  recurrence API. Its `Orthogonality/Integral.lean` child identifies that
+  pairing with the beta-weighted integral, keeping analytic imports out of the
+  finite Jacobi family and root theory. The beta-zero and beta-one modules
+  retain their historical rational APIs as compatibility specializations.
 - `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
   foundation, `RootDeletion.lean` contains the general cofactor and
   largest-root deletion API, and `PositiveSplitRootCount.lean` packages the
