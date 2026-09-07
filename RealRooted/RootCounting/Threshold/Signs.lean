@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.RootCounting.SignChanges
 import RealRooted.RootCounting.Threshold.Basic
 
@@ -57,9 +58,8 @@ theorem sign_near_zero_of_pos_coeffs {p : K[X]}
     0 < p.eval (-s) := by
   classical
   have hsum1 : p.eval 1 =
-      ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k := by
-    rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_self _)]
-    simp
+      ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k :=
+    p.eval_one_eq_sum_range' (Nat.lt_succ_self _)
   have hbound :
       ∑ k ∈ (Finset.range (p.natDegree + 1)).erase 0,
           |p.coeff k| * s ^ k ≤ s * p.eval 1 := by
@@ -103,10 +103,9 @@ theorem sign_at_far_left_of_eval_one_lt {p : K[X]}
     (hbig : p.eval 1 < p.coeff p.natDegree * R) :
     0 < (-1 : K) ^ p.natDegree * p.eval (-R) := by
   have heval1 : p.eval 1 =
-      ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k := by
-    rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_self _)]
-    simp
-  have hlc : 0 < p.coeff p.natDegree := hpos _ le_rfl
+      ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k :=
+    p.eval_one_eq_sum_range' (Nat.lt_succ_self _)
+  have hlead : 0 < p.coeff p.natDegree := hpos _ le_rfl
   have hsum :
       ∑ k ∈ Finset.range p.natDegree, p.coeff k <
         p.coeff p.natDegree * R := by

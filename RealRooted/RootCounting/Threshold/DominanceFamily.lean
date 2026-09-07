@@ -16,9 +16,11 @@ open Polynomial
 
 noncomputable section
 
+/-- The lower magnitude at which coefficient `j` is made dominant. -/
 private def lowerDominanceRadius (p : ℝ[X]) (c : ℝ) (j : ℕ) : ℝ :=
   c * p.coeff (j - 1) / p.coeff j
 
+/-- The upper magnitude at which coefficient `j` is made dominant. -/
 private def upperDominanceRadius (p : ℝ[X]) (c : ℝ) (j : ℕ) : ℝ :=
   p.coeff j / (c * p.coeff (j + 1))
 
@@ -68,8 +70,7 @@ private theorem lowerDominanceRadius_sign {p : ℝ[X]} {N j : ℕ} {c theta : �
     rw [lowerDominanceRadius]
     field_simp
   refine sign_of_dominant_logConcave_of_adjacent_bounds hdegree hpos
-    hlog_concave j hj hnext hradius ?_ ?_
-  · nlinarith [hid, mul_pos (by linarith : (0 : ℝ) < c - 3) h1]
+    hlog_concave j hj hnext hradius (hupper := ?_) (hlower := ?_)
   · have hexp : 3 * p.coeff (j + 1) * lowerDominanceRadius p c j =
         3 * p.coeff (j + 1) * (c * p.coeff (j - 1)) / p.coeff j := by
       rw [lowerDominanceRadius]
@@ -80,6 +81,7 @@ private theorem lowerDominanceRadius_sign {p : ℝ[X]} {N j : ℕ} {c theta : �
         (by linarith : (0 : ℝ) < c)) (mul_pos h1 h3),
       mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ theta - 1)
         (by positivity : (0 : ℝ) ≤ c ^ 2)) (le_of_lt (mul_pos h1 h3))]
+  · nlinarith [hid, mul_pos (by linarith : (0 : ℝ) < c - 3) h1]
 
 private theorem upperDominanceRadius_sign {p : ℝ[X]} {N j : ℕ} {c theta : ℝ}
     (hc : 3 < c) (htheta : 1 < theta) (hdegree : p.natDegree = N)
@@ -100,7 +102,8 @@ private theorem upperDominanceRadius_sign {p : ℝ[X]} {N j : ℕ} {c theta : �
     rw [upperDominanceRadius]
     field_simp
   refine sign_of_dominant_logConcave_of_adjacent_bounds hdegree hpos
-    hlog_concave j hj hnext hradius ?_ ?_
+    hlog_concave j hj hnext hradius (hupper := ?_) (hlower := ?_)
+  · nlinarith [hid, mul_pos (by linarith : (0 : ℝ) < c - 3) h2]
   · have hexp : p.coeff j * upperDominanceRadius p c j =
         p.coeff j * p.coeff j / (c * p.coeff (j + 1)) := by
       rw [upperDominanceRadius]
@@ -111,7 +114,21 @@ private theorem upperDominanceRadius_sign {p : ℝ[X]} {N j : ℕ} {c theta : �
         (by linarith : (0 : ℝ) < c)) (mul_pos h1 h3),
       mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ theta - 1)
         (by positivity : (0 : ℝ) ≤ c ^ 2)) (le_of_lt (mul_pos h1 h3))]
-  · nlinarith [hid, mul_pos (by linarith : (0 : ℝ) < c - 3) h2]
+
+private theorem eval_one_pos_of_coeff_pos {p : ℝ[X]} {N : ℕ}
+    (hdegree : p.natDegree = N)
+    (hpos : ∀ i, i ≤ N → 0 < p.coeff i) :
+    0 < p.eval 1 := by
+  apply eval_pos_of_hasNonnegCoeffs ?_ ?_ one_pos
+  · intro i
+    by_cases hi : i ≤ N
+    · exact (hpos i hi).le
+    · rw [Polynomial.coeff_eq_zero_of_natDegree_lt]
+      rw [hdegree]
+      lia
+  · intro hp
+    subst p
+    simpa using hpos 0 (Nat.zero_le N)
 
 private theorem upperDominanceRadius_lt_lowerDominanceRadius_succ
     {p : ℝ[X]} {N j : ℕ} {c : ℝ}
@@ -162,11 +179,7 @@ theorem exists_outer_geometric_root_family_of_logConcave
       theta * lowerDominanceRadius p c j ≤ upperDominanceRadius p c j := by
     intro j hj hjJ
     exact dominanceRadii_separated hc0 hpos hj (by lia) (hstrong j hj hjJ)
-  have heval1 : 0 < p.eval 1 := by
-    rw [Polynomial.eval_eq_sum_range' (n := N + 1) (by rw [hdegree]; lia)]
-    refine Finset.sum_pos (fun k hk => ?_) ⟨0, Finset.mem_range.mpr (by lia)⟩
-    rw [Finset.mem_range] at hk
-    simpa using hpos k (by lia)
+  have heval1 : 0 < p.eval 1 := eval_one_pos_of_coeff_pos hdegree hpos
   set s0 : ℝ := min (lowerDominanceRadius p c 1 / 2)
     (min 1 (p.coeff 0 / (2 * p.eval 1))) with hs0
   have hradius1 : 0 < lowerDominanceRadius p c 1 :=
@@ -271,11 +284,7 @@ theorem exists_top_geometric_root_family_of_logConcave
       theta * lowerDominanceRadius p c k ≤ upperDominanceRadius p c k := by
     intro k hk hj hnext
     exact dominanceRadii_separated hc0 hpos hj hnext (hstrong k hk hnext)
-  have heval1 : 0 < p.eval 1 := by
-    rw [Polynomial.eval_eq_sum_range' (n := N + 1) (by rw [hdegree]; lia)]
-    refine Finset.sum_pos (fun k hk => ?_) ⟨0, Finset.mem_range.mpr (by lia)⟩
-    rw [Finset.mem_range] at hk
-    simpa using hpos k (by lia)
+  have heval1 : 0 < p.eval 1 := eval_one_pos_of_coeff_pos hdegree hpos
   have hcoeffN : 0 < p.coeff N := hpos N le_rfl
   set sinf : ℝ := max (1 + p.eval 1 / p.coeff N)
     (1 + upperDominanceRadius p c (N - 1)) with hsinf

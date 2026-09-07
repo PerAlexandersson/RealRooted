@@ -76,8 +76,8 @@ theorem sign_of_dominant_logConcave_of_adjacent_bounds
       p.coeff (i - 1) * p.coeff (i + 1) ≤ (p.coeff i) ^ 2)
     (j : ℕ) (hj : 1 ≤ j) (hnext : j + 1 ≤ N)
     {s : ℝ} (hs : 0 < s)
-    (hlower : 3 * p.coeff (j - 1) < p.coeff j * s)
-    (hupper : 3 * p.coeff (j + 1) * s < p.coeff j) :
+    (hupper : 3 * p.coeff (j + 1) * s < p.coeff j)
+    (hlower : 3 * p.coeff (j - 1) < p.coeff j * s) :
     0 < (-1 : ℝ) ^ j * p.eval (-s) := by
   have hpositive_j : 0 < p.coeff j := hpositive j (by lia)
   have hden : (0 : ℝ) < p.coeff j * s ^ j := by positivity

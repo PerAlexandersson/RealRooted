@@ -457,6 +457,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
