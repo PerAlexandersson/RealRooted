@@ -103,8 +103,8 @@ theorem generalizedLaguerreInner_eq_integral
     generalizedLaguerreInner α p q =
       ∫ x in Ioi 0,
         p.eval (-x) * q.eval (-x) * x ^ α * Real.exp (-x) := by
-  rw [generalizedLaguerreInner,
-    generalizedLaguerreFunctional_eq_integral hα]
+  change generalizedLaguerreFunctional α (p * q) = _
+  rw [generalizedLaguerreFunctional_eq_integral hα]
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   simp [generalizedLaguerreIntegrand]

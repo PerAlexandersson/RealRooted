@@ -339,6 +339,8 @@ established tactic import.
 The generalized Laguerre package keeps algebra and analysis on separate
 dependency layers:
 
+- `Mathlib.Algebra.Polynomial.Moment` owns the semiring-level moment functional
+  and symmetric pairing algebra shared by classical orthogonal families;
 - `Mathlib.RingTheory.Polynomial.Laguerre.Basic`, `.Differential`, and
   `.Recurrence` define the division-free monic sign-reversed family over the
   weakest natural coefficient structures;
@@ -350,7 +352,7 @@ dependency layers:
   bridge without adding analysis imports to the polynomial definition.
 
 `Laguerre.lean` is the full family facade. The root import budget rises by
-eight modules for that facade and its focused children.
+nine modules for the shared moment layer, that facade, and its focused children.
 
 The root-count tactic follows the same theorem/frontend boundary:
 

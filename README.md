@@ -139,6 +139,9 @@ emulation. These scripts complement `lake build`; they do not replace it.
   modules.
 - `RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/` defines the canonical
   monic sign-reversed generalized Laguerre family and its algebraic identities.
+  `RealRooted/Mathlib/Algebra/Polynomial/Moment.lean` provides the reusable
+  moment-functional and pairing algebra for its orthogonality theory and other
+  classical polynomial families.
   `RealRooted/Laguerre/` separately packages roots/interlacing and algebraic or
   integral orthogonality; `RealRooted/Laguerre.lean` is the family facade.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces

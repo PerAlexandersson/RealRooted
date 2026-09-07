@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Moment
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 
 import Mathlib.Tactic.Algebra.Basic
@@ -36,13 +37,13 @@ def generalizedLaguerreMoment (α : ℝ) (k : ℕ) : ℝ :=
 
 /-- The generalized Laguerre moment functional on real polynomials. -/
 def generalizedLaguerreFunctional (α : ℝ) (p : ℝ[X]) : ℝ :=
-  p.sum fun k c => c * generalizedLaguerreMoment α k
+  Polynomial.momentFunctional (generalizedLaguerreMoment α) p
 
 /-- The symmetric generalized Laguerre moment pairing.
 
 This is an unbundled bilinear pairing, not an `InnerProduct` instance. -/
 def generalizedLaguerreInner (α : ℝ) (p q : ℝ[X]) : ℝ :=
-  generalizedLaguerreFunctional α (p * q)
+  Polynomial.momentPairing (generalizedLaguerreMoment α) p q
 
 @[simp] theorem generalizedLaguerreFunctional_zero (α : ℝ) :
     generalizedLaguerreFunctional α 0 = 0 := by
@@ -51,25 +52,18 @@ def generalizedLaguerreInner (α : ℝ) (p q : ℝ[X]) : ℝ :=
 @[simp] theorem generalizedLaguerreFunctional_add (α : ℝ) (p q : ℝ[X]) :
     generalizedLaguerreFunctional α (p + q) =
       generalizedLaguerreFunctional α p + generalizedLaguerreFunctional α q := by
-  simp only [generalizedLaguerreFunctional]
-  apply Polynomial.sum_add_index <;> simp [add_mul]
+  simp [generalizedLaguerreFunctional]
 
 @[simp] theorem generalizedLaguerreFunctional_sum {ι : Type*} (α : ℝ)
     (s : Finset ι) (p : ι → ℝ[X]) :
     generalizedLaguerreFunctional α (∑ i ∈ s, p i) =
       ∑ i ∈ s, generalizedLaguerreFunctional α (p i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi hs => simp [hi, hs]
+  simp [generalizedLaguerreFunctional]
 
 @[simp] theorem generalizedLaguerreFunctional_C_mul (α c : ℝ) (p : ℝ[X]) :
     generalizedLaguerreFunctional α (C c * p) =
       c * generalizedLaguerreFunctional α p := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq => simp [mul_add, hp, hq, mul_add]
-  | monomial n a =>
-      simp [generalizedLaguerreFunctional, C_mul_monomial, mul_assoc]
+  simp [generalizedLaguerreFunctional]
 
 @[simp] theorem generalizedLaguerreFunctional_monomial (α c : ℝ) (k : ℕ) :
     generalizedLaguerreFunctional α (monomial k c) =
@@ -79,12 +73,11 @@ def generalizedLaguerreInner (α : ℝ) (p q : ℝ[X]) : ℝ :=
 @[simp] theorem generalizedLaguerreFunctional_X_pow (α : ℝ) (k : ℕ) :
     generalizedLaguerreFunctional α (X ^ k) =
       generalizedLaguerreMoment α k := by
-  rw [X_pow_eq_monomial, generalizedLaguerreFunctional_monomial]
-  simp
+  simp [generalizedLaguerreFunctional]
 
 theorem generalizedLaguerreInner_comm (α : ℝ) (p q : ℝ[X]) :
     generalizedLaguerreInner α p q = generalizedLaguerreInner α q p := by
-  simp [generalizedLaguerreInner, mul_comm]
+  exact Polynomial.momentPairing_comm _ _ _
 
 @[simp] theorem generalizedLaguerreInner_zero_left (α : ℝ) (p : ℝ[X]) :
     generalizedLaguerreInner α 0 p = 0 := by
@@ -98,45 +91,37 @@ theorem generalizedLaguerreInner_comm (α : ℝ) (p q : ℝ[X]) :
     (α : ℝ) (p q s : ℝ[X]) :
     generalizedLaguerreInner α (p + q) s =
       generalizedLaguerreInner α p s + generalizedLaguerreInner α q s := by
-  simp [generalizedLaguerreInner, add_mul]
+  simp [generalizedLaguerreInner]
 
 @[simp] theorem generalizedLaguerreInner_add_right
     (α : ℝ) (p q s : ℝ[X]) :
     generalizedLaguerreInner α p (q + s) =
       generalizedLaguerreInner α p q + generalizedLaguerreInner α p s := by
-  rw [generalizedLaguerreInner_comm]
-  simp only [generalizedLaguerreInner_add_left]
-  rw [generalizedLaguerreInner_comm α q p,
-    generalizedLaguerreInner_comm α s p]
+  simp [generalizedLaguerreInner]
 
 @[simp] theorem generalizedLaguerreInner_sum_right {ι : Type*}
     (α : ℝ) (p : ℝ[X]) (s : Finset ι) (q : ι → ℝ[X]) :
     generalizedLaguerreInner α p (∑ i ∈ s, q i) =
       ∑ i ∈ s, generalizedLaguerreInner α p (q i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi hs => simp [hi, hs]
+  simp [generalizedLaguerreInner]
 
 @[simp] theorem generalizedLaguerreInner_C_mul_left
     (α c : ℝ) (p q : ℝ[X]) :
     generalizedLaguerreInner α (C c * p) q =
       c * generalizedLaguerreInner α p q := by
-  simp [generalizedLaguerreInner, mul_assoc]
+  simp [generalizedLaguerreInner]
 
 @[simp] theorem generalizedLaguerreInner_C_mul_right
     (α c : ℝ) (p q : ℝ[X]) :
     generalizedLaguerreInner α p (C c * q) =
       c * generalizedLaguerreInner α p q := by
-  rw [generalizedLaguerreInner_comm]
-  simp only [generalizedLaguerreInner_C_mul_left]
-  rw [generalizedLaguerreInner_comm]
+  simp [generalizedLaguerreInner]
 
 @[simp] theorem generalizedLaguerreInner_monomial
     (α a b : ℝ) (i j : ℕ) :
     generalizedLaguerreInner α (monomial i a) (monomial j b) =
       a * b * generalizedLaguerreMoment α (i + j) := by
-  simp [generalizedLaguerreInner, monomial_mul_monomial, mul_assoc]
+  simp [generalizedLaguerreInner]
 
 /-- Consecutive signed Gamma moments satisfy the integration-by-parts
 recurrence. -/

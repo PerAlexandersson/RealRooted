@@ -2,16 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 920
+      "max_modules": 921
     },
     "RealRooted.Laguerre": {
-      "max_modules": 45
+      "max_modules": 46
     },
     "RealRooted.Laguerre.Orthogonality": {
-      "max_modules": 3
+      "max_modules": 4
     },
     "RealRooted.Laguerre.Orthogonality.Integral": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.Laguerre.Roots": {
       "max_modules": 41
@@ -27,6 +27,9 @@
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence": {
       "max_modules": 3
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Moment": {
+      "max_modules": 1
     },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -1282,6 +1285,7 @@
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence",
+    "RealRooted.Mathlib.Algebra.Polynomial.Moment",
     "RealRooted.Analysis.PowerTail",
     "RealRooted.Analysis.PowerTail.Bernoulli",
     "RealRooted.Analysis.PowerTail.Quadratic",
