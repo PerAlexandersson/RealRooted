@@ -5,10 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.RingTheory.Binomial
 public import Mathlib.Tactic
 public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 
 /-!
 # Shifted Jacobi polynomials
@@ -736,25 +736,10 @@ private lemma coeff_jacobiOperator (p : ℝ[X]) (α β l : ℝ) (k : ℕ) :
       C l * p).coeff k =
       (k + 1 : ℝ) * (k + α + 1) * p.coeff (k + 1) +
         (l - k * (k + α + β + 1)) * p.coeff k := by
-  rw [show X * (1 - X) * p.derivative.derivative +
-      (C (α + 1) - C (α + β + 2) * X) * p.derivative + C l * p =
-    X * p.derivative.derivative - X * (X * p.derivative.derivative) +
-      C (α + 1) * p.derivative - C (α + β + 2) * (X * p.derivative) +
-      C l * p by ring]
-  cases k with
-  | zero =>
-      simp [coeff_derivative]
-  | succ k =>
-      simp only [coeff_add, coeff_sub, coeff_C_mul]
-      rw [coeff_X_mul, coeff_X_mul, coeff_X_mul]
-      cases k with
-      | zero =>
-          simp [coeff_derivative]
-          ring
-      | succ k =>
-          rw [coeff_X_mul]
-          simp [coeff_derivative]
-          ring
+  change (jacobiDifferentialOperator (α + 1) (α + β + 2) p +
+    C l * p).coeff k = _
+  rw [coeff_jacobiDifferentialOperator_add_C_mul]
+  ring
 
 /-- The shifted Jacobi differential equation
 `X(1-X)y'' + (α+1-(α+β+2)X)y' + n(n+α+β+1)y = 0`. -/
@@ -779,6 +764,19 @@ theorem shiftedJacobi_differential_equation (n : ℕ) (α β : ℝ) :
     rw [if_neg (Nat.not_le.mpr (hk.trans_le (Nat.le_succ k))),
       if_neg (Nat.not_le.mpr hk)]
     simp
+
+/-- The shifted Jacobi polynomial is an eigenvector of its differential
+operator. -/
+theorem jacobiDifferentialOperator_shiftedJacobi (n : ℕ) (α β : ℝ) :
+    jacobiDifferentialOperator (α + 1) (α + β + 2)
+        (shiftedJacobi n α β) =
+      C (-(n * (n + α + β + 1))) * shiftedJacobi n α β := by
+  calc
+    _ = -(C (n * (n + α + β + 1)) * shiftedJacobi n α β) := by
+      rw [eq_neg_iff_add_eq_zero]
+      simpa [jacobiDifferentialOperator] using
+        shiftedJacobi_differential_equation n α β
+    _ = _ := by simp
 
 /-- Two degree-at-most-`n` solutions of the shifted Jacobi differential
 equation agree if their constant coefficients agree. -/

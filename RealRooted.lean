@@ -204,6 +204,9 @@ import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
 import RealRooted.EulerOperator
+import RealRooted.EulerOperator.Darboux
+import RealRooted.EulerOperator.Darboux.Basic
+import RealRooted.EulerOperator.Darboux.Interlacing
 import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar
 import RealRooted.EulerOperator.Polar.MultiplierSequence
@@ -314,6 +317,7 @@ import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
+import RealRooted.Jacobi.DifferentialOperator
 import RealRooted.JacobiBetaZeroOrthogonality
 import RealRooted.JacobiMarkoff
 import RealRooted.JacobiOrthogonality
@@ -460,6 +464,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
@@ -532,6 +537,7 @@ import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential

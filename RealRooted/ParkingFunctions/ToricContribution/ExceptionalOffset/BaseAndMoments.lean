@@ -184,7 +184,7 @@ theorem exceptionalBasePolynomial_eq_C_mul_shiftedJacobi (m ε : ℕ) :
       if_pos (Nat.zero_le m)]
     simp [scale, hchoose.ne']
   · have hbase := exceptionalBasePolynomial_differentialEquation m ε
-    dsimp only [insertionOperator, intervalWeight] at hbase ⊢
+    dsimp only [insertionOperator, darbouxOperator, intervalWeight] at hbase ⊢
     dsimp only [α]
     ring_nf at hbase ⊢
     exact hbase

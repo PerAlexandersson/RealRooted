@@ -201,9 +201,9 @@ theorem one_sub_X_pow_succ_gauge_differentialEquation
           ((1 - X : ℝ[X]) ^ (0 + 1) * f).derivative.derivative =
             (1 - X) * f.derivative.derivative - 2 * f.derivative := by
         simpa using hsecond
-      simp only [insertionOperator]
+      simp only [insertionOperator, darbouxOperator]
       rw [hsecondPow, hfirstPow]
-      simp only [intervalWeight, Nat.cast_zero, zero_add, pow_one, map_add,
+      simp only [Nat.cast_zero, zero_add, pow_one, map_add,
         map_sub, map_one]
       apply Polynomial.funext
       intro x
@@ -220,9 +220,9 @@ theorem one_sub_X_pow_succ_gauge_differentialEquation
                 C (((r : ℝ) + 2) * (r + 1)) * (1 - X) ^ r * f := by
         rw [show r + 1 + 1 = r + 2 by lia]
         exact hsecond
-      simp only [insertionOperator]
+      simp only [insertionOperator, darbouxOperator]
       rw [hsecond', hfirst]
-      simp only [intervalWeight, Nat.cast_add, Nat.cast_one, map_add, map_sub,
+      simp only [Nat.cast_add, Nat.cast_one, map_add, map_sub,
         map_one]
       have hpowOne : (1 - X : ℝ[X]) ^ (r + 1) = (1 - X) ^ r * (1 - X) := by
         rw [pow_succ]
@@ -327,13 +327,14 @@ theorem one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq
   · have hp :=
       one_sub_X_pow_mul_iterate_derivative_jPolynomial_differentialEquation
         m ε d hm
-    simp only [insertionOperator, intervalWeight] at hp ⊢
+    simp only [insertionOperator, darbouxOperator] at hp ⊢
     ring_nf at hp ⊢
     exact hp
   · have hE := eulerTransformedPolynomial_differentialEquation m ε d
     have hscaled := congrArg (C scale * ·) hE
     dsimp only [scale] at hscaled ⊢
-    simp only [mul_zero, derivative_C_mul, insertionOperator, intervalWeight] at hscaled ⊢
+    simp only [mul_zero, derivative_C_mul, insertionOperator,
+      darbouxOperator] at hscaled ⊢
     ring_nf at hscaled ⊢
     exact hscaled
 
@@ -415,10 +416,8 @@ Euler operator. -/
 theorem one_sub_X_pow_mul_insertionOperator (a : ℝ) (r : ℕ) (f : ℝ[X]) :
     (1 - X) ^ r * insertionOperator a (a + (r + 1)) f =
       eulerShiftOperator a ((1 - X) ^ (r + 1) * f) := by
-  simp only [eulerShiftOperator, eulerShift, insertionOperator, intervalWeight,
-    derivative_mul, derivative_pow_succ, derivative_sub, derivative_one,
-    derivative_X, zero_sub, map_add, map_one, map_natCast]
-  ring
+  simpa only [eulerShiftOperator, insertionOperator, Nat.cast_add, Nat.cast_one,
+    add_assoc] using (eulerShift_one_sub_X_pow a r f).symm
 
 /-- The horizontal triangle recursion telescopes to successive Euler
 operators after multiplication by the corresponding power of `1-X`. -/

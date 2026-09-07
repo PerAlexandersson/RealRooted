@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.Derivative
+import RealRooted.EulerOperator.Darboux.Basic
 
 /-!
 # Algebra for the A390883 toric-contribution family
@@ -248,35 +249,20 @@ theorem jPolynomial_eval_zero (m ε : ℕ) (hm : 0 < m) :
 def intervalWeight : ℝ[X] :=
   X * (1 - X)
 
-/-- The first-order operator `M_{a,b} f = z(1-z)f' + (a-bz)f`. -/
-def insertionOperator (a b : ℝ) (f : ℝ[X]) : ℝ[X] :=
-  intervalWeight * f.derivative + (C a - C b * X) * f
+/-- Compatibility alias for the neutral unit-interval Darboux operator. -/
+abbrev insertionOperator (a b : ℝ) (f : ℝ[X]) : ℝ[X] :=
+  darbouxOperator a b f
 
 @[simp]
 theorem insertionOperator_eval_zero (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).eval 0 = a * f.eval 0 := by
-  simp [insertionOperator, intervalWeight]
+  simpa only [insertionOperator] using darbouxOperator_eval_zero a b f
 
 theorem coeff_insertionOperator_succ (a b : ℝ) (f : ℝ[X]) (k : ℕ) :
     (insertionOperator a b f).coeff (k + 1) =
       (k + 1 + a) * f.coeff (k + 1) - (k + b) * f.coeff k := by
-  have hform :
-      insertionOperator a b f =
-        X * f.derivative - X * (X * f.derivative) +
-          C a * f - C b * (X * f) := by
-    simp only [insertionOperator, intervalWeight]
-    ring
-  rw [hform, coeff_sub, coeff_add, coeff_sub, coeff_X_mul,
-    coeff_C_mul, coeff_C_mul, coeff_X_mul, coeff_derivative]
-  cases k with
-  | zero =>
-      simp
-      ring
-  | succ k =>
-      rw [coeff_X_mul, coeff_derivative,
-        show k + 1 + 1 = (k + 1) + 1 by rfl, coeff_X_mul]
-      push_cast
-      ring
+  simpa only [insertionOperator, Nat.cast_add, Nat.cast_one] using
+    coeff_darbouxOperator_succ a b f k
 
 /-- The triangular differential family beginning with the `d`th derivative
 of `J` and applying the horizontal insertion operators successively. -/
@@ -315,14 +301,8 @@ theorem insertionOperator_comp_commute
     (a b A B : ℝ) (h : B - A = b - a + 1) (f : ℝ[X]) :
     insertionOperator a b (insertionOperator A B f) =
       insertionOperator A (B - 1) (insertionOperator a (b + 1) f) := by
-  have hB : B = A + b - a + 1 := by linarith
-  rw [hB]
-  apply Polynomial.funext
-  intro x
-  simp only [insertionOperator, intervalWeight, derivative_add, derivative_sub,
-    derivative_mul, derivative_C, derivative_X, derivative_one, zero_mul, one_mul,
-    eval_add, eval_sub, eval_mul, eval_C, eval_X, eval_one]
-  ring
+  simpa only [insertionOperator] using
+    darbouxOperator_comp_commute a b A B h f
 
 /-- The Darboux square specialized to the triangular A390883 parameters. -/
 theorem triangle_insertionOperator_comp_commute
