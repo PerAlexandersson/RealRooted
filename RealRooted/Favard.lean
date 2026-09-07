@@ -19,9 +19,10 @@ def SatisfiesFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop 
     P (n + 2) =
       (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n
 
-/-- Planning stub for Favard's theorem in the form most useful to this project:
-strictly positive recurrence coefficients should force a Sturm/interlacing
-sequence, and hence real-rootedness of every `P n`. -/
+/-- The proposition form of Favard's theorem used in this project: strictly
+positive recurrence coefficients force a Sturm/interlacing sequence, and
+hence real-rootedness of every `P n`. The theorem `favardInterlacing` below is
+a checked witness. -/
 def favardInterlacingStatement : Prop :=
   ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
     SatisfiesFavardRecurrence P α β →
