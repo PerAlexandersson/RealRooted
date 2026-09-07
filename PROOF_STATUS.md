@@ -18,7 +18,6 @@ theorem, refutation, or production caller. They contain no admission.
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
 | `iterateThetaPlusOneSelfPrec0Statement` | Unused open proper-position target for iterates of `theta + 1` |
-| `polarThetaPreservesPrec0Statement` | Unused open proper-position target for the bounded-degree polar-theta operator |
 
 The Hoster--Stump challenge module also retains the abstract, unproved targets
 `RefinedBaseRowStatement`, `RefinedRecurrenceStatement`,
@@ -45,6 +44,7 @@ a production caller.
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
+| Bounded-degree polar-theta proper-position preservation | `polarTheta_preserves_prec0` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_prec` |
 
