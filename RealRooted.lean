@@ -539,6 +539,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
@@ -546,6 +547,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
+import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.MatrixInterlacing
 import RealRooted.Multiaffine
@@ -672,6 +674,7 @@ import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge
 import RealRooted.RootSumBounds
 import RealRooted.RootVieta
+import RealRooted.RootVieta.Newton
 import RealRooted.RowThreshold
 import RealRooted.RowThresholdOne
 import RealRooted.SameDegreeCountFromAnalytic

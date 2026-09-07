@@ -266,10 +266,13 @@ layer that directly imports coefficient dominance. The real-specialized
 `Threshold.DominanceFamily` leaf builds on it and on signed-evaluation IVT
 chaining, while the raw ordered-field core remains separate.
 
-`RootVieta` contains reciprocal-root power-sum formulas and the corresponding
-factorization by `1 + x_i X`. It currently states the consumer's real version
-with a one-module local closure; generalization to characteristic-zero fields
-is the next step before proposing it as a Mathlib shim.
+`RootVieta` retains the historical real reciprocal-root formulas and the
+factorization by `1 + x_i X`. Its independent `RootVieta.Newton` child is
+field-generic: it combines Mathlib-shaped multiset Newton and polynomial Vieta
+shims with the degree-drop reversal toolkit to give an all-index coefficient
+identity and an all-order reciprocal-root power-sum recurrence. The multiset
+layer uses occurrence types, so repeated roots are never collapsed to a
+finset. Fixed-order expansions remain downstream.
 
 `SortedRoots` contains the reusable bridge from a polynomial's root multiset
 to the increasing list and indexed sequence of negated roots. Its `Exhibited`
