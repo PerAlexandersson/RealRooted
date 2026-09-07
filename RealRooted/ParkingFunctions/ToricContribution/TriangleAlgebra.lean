@@ -36,29 +36,24 @@ the scalar correction `-b`. -/
 theorem derivative_insertionOperator (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).derivative =
       insertionOperator (a + 1) (b + 2) f.derivative - C b * f := by
-  simp only [insertionOperator, intervalWeight, derivative_sub,
-    derivative_mul, derivative_C, derivative_X, derivative_one, zero_mul,
-    one_mul, map_add, map_one, map_ofNat]
-  ring
+  simpa only [insertionOperator] using derivative_darbouxOperator a b f
 
 theorem insertionOperator_add (a b : ℝ) (f g : ℝ[X]) :
     insertionOperator a b (f + g) =
       insertionOperator a b f + insertionOperator a b g := by
-  simp only [insertionOperator, derivative_add]
-  ring
+  simpa only [insertionOperator] using darbouxOperator_add a b f g
 
 /-- Shifting both insertion parameters by the same scalar adds a multiple of
 `(1-X)f`. -/
 theorem insertionOperator_add_parameters (a b s : ℝ) (f : ℝ[X]) :
     insertionOperator (a + s) (b + s) f =
       insertionOperator a b f + C s * (1 - X) * f := by
-  simp only [insertionOperator, map_add]
-  ring
+  simpa only [insertionOperator] using darbouxOperator_add_parameters a b s f
 
 @[simp]
 theorem insertionOperator_zero (a b : ℝ) :
     insertionOperator a b 0 = 0 := by
-  simp only [insertionOperator, derivative_zero, mul_zero, add_zero]
+  simpa only [insertionOperator] using darbouxOperator_zero a b
 
 /-- The Jacobi degree-raising identity in the notation of the finite-offset
 triangle. -/
@@ -67,7 +62,7 @@ theorem insertionOperator_shiftedJacobi_degree_add_one_beta_sub_one
     insertionOperator (n + α + 1) (n + α + β + 1)
         (shiftedJacobi n α β) =
       C ((n + 1 : ℕ) : ℝ) * shiftedJacobi (n + 1) α (β - 1) := by
-  simpa only [insertionOperator, intervalWeight] using
+  simpa only [insertionOperator, darbouxOperator, intervalWeight] using
     shiftedJacobi_degree_add_one_beta_sub_one n α β
 
 /-- Starting a triangle row from a constant produces a shifted Jacobi
@@ -217,7 +212,7 @@ theorem C_mul_jPolynomial_eq_shiftedJacobi (m ε : ℕ) (hm : 0 < m) :
     simp only [mul_zero] at hscaled
     simp only [derivative_C_mul]
     dsimp only [scale] at hscaled ⊢
-    simp only [insertionOperator, intervalWeight] at hscaled
+    simp only [insertionOperator, darbouxOperator] at hscaled
     have ha : (ε : ℝ) + 1 + 1 = (ε : ℝ) + 2 := by ring
     have hb : (ε : ℝ) + 2 + 2 = (ε : ℝ) + 4 := by ring
     have heigen :

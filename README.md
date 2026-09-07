@@ -117,6 +117,15 @@ emulation. These scripts complement `lake build`; they do not replace it.
   backend from shifted-Jacobi and interval-insertion infrastructure through
   the finite and exceptional offsets, coefficient reversal, fixed-row
   pairwise interlacing, and the common-interlacer weighted-sum endpoint.
+- `RealRooted/EulerOperator/Darboux/` provides the coefficient-ring algebra of
+  the unit-interval Darboux operator and a separate ordered interlacing layer;
+  the toric insertion operator is a compatibility alias for this API.
+- `RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/DifferentialOperator.lean`
+  owns the generic shifted-Jacobi differential operator, while
+  `RealRooted/Jacobi/DifferentialOperator.lean` supplies its shifted-Euler and
+  Jacobi ODE identities. The family-neutral simple-root and derivative-
+  elimination lemmas live in
+  `RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/SecondOrder.lean`.
 - `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
   foundation, `RootDeletion.lean` contains the general cofactor and
   largest-root deletion API, and `PositiveSplitRootCount.lean` packages the

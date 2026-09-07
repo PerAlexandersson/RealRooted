@@ -131,61 +131,30 @@ theorem jacobiBetaZeroInner_monomial
   simp [jacobiBetaZeroInner, monomial_mul_monomial, mul_assoc]
 
 /-- The differential part of the beta-zero shifted Jacobi operator. -/
-def jacobiBetaZeroOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  X * (1 - X) * p.derivative.derivative +
-    (C (α + 1) - C (α + 2) * X) * p.derivative
+abbrev jacobiBetaZeroOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
+  jacobiDifferentialOperator (α + 1) (α + 2) p
 
 @[simp]
 theorem jacobiBetaZeroOperator_add (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaZeroOperator α (p + q) =
       jacobiBetaZeroOperator α p + jacobiBetaZeroOperator α q := by
-  simp only [jacobiBetaZeroOperator, derivative_add]
-  ring
+  simpa only [jacobiBetaZeroOperator] using
+    jacobiDifferentialOperator_add (α + 1) (α + 2) p q
 
 @[simp]
 theorem jacobiBetaZeroOperator_C_mul (α c : ℝ) (p : ℝ[X]) :
     jacobiBetaZeroOperator α (C c * p) =
       C c * jacobiBetaZeroOperator α p := by
-  simp only [jacobiBetaZeroOperator, derivative_mul, derivative_C,
-    zero_mul, zero_add]
-  ring
+  simpa only [jacobiBetaZeroOperator] using
+    jacobiDifferentialOperator_C_mul (α + 1) (α + 2) c p
 
 theorem jacobiBetaZeroOperator_monomial (α a : ℝ) (n : ℕ) :
     jacobiBetaZeroOperator α (monomial n a) =
       monomial (n - 1) (a * n * (n + α)) +
         monomial n (-a * n * (n + α + 1)) := by
-  rw [← C_mul_X_pow_eq_monomial, jacobiBetaZeroOperator_C_mul]
-  have hC1 : C (1 : ℝ) = (1 : ℝ[X]) := map_one C
-  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) := Polynomial.C_ofNat 2
-  cases n with
-  | zero => simp [jacobiBetaZeroOperator]
-  | succ n =>
-      cases n with
-      | zero =>
-          rw [jacobiBetaZeroOperator]
-          norm_num [← C_mul_X_pow_eq_monomial, C_eq_natCast,
-            map_add, map_mul, map_neg, map_natCast]
-          rw [hC2]
-          ring
-      | succ n =>
-          have hfirst : derivative (X ^ (n + 2) : ℝ[X]) =
-              C (n + 2 : ℝ) * X ^ (n + 1) := by
-            rw [show n + 2 = (n + 1) + 1 by lia]
-            convert derivative_X_pow_succ (R := ℝ) (n + 1) using 1
-            push_cast
-            ring_nf
-          have hsecond : derivative (derivative (X ^ (n + 2) : ℝ[X])) =
-              C (n + 2 : ℝ) * C (n + 1 : ℝ) * X ^ n := by
-            rw [hfirst, derivative_mul, derivative_C, zero_mul, zero_add,
-              derivative_X_pow_succ]
-            ring
-          rw [jacobiBetaZeroOperator, hsecond, hfirst]
-          simp only [← C_mul_X_pow_eq_monomial, Nat.cast_add,
-            Nat.cast_one, Nat.succ_sub_one]
-          rw [pow_succ X n, pow_succ X (n + 1)]
-          simp only [map_add, map_mul, map_neg, map_natCast]
-          rw [hC1, hC2]
-          ring
+  rw [jacobiBetaZeroOperator, jacobiDifferentialOperator_monomial,
+    sub_eq_add_neg, ← monomial_neg]
+  congr 2 <;> ring
 
 private theorem jacobiBetaZeroMoment_recurrence
     {α : ℝ} (hα : -1 < α) (k : ℕ) (hk : 0 < k) :
@@ -265,13 +234,12 @@ differential operator. -/
 theorem jacobiBetaZeroOperator_shiftedJacobi (n : ℕ) (α : ℝ) :
     jacobiBetaZeroOperator α (shiftedJacobi n α 0) =
       C (-(n * (n + α + 1))) * shiftedJacobi n α 0 := by
-  have h := shiftedJacobi_differential_equation n α 0
-  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) := Polynomial.C_ofNat 2
-  simp only [jacobiBetaZeroOperator, map_add, map_mul, map_neg,
-    map_natCast] at *
-  simp only [hC2] at *
+  change jacobiDifferentialOperator (α + 1) (α + 2)
+    (shiftedJacobi n α 0) = _
+  have h := jacobiDifferentialOperator_shiftedJacobi n α 0
+  simp only [map_add, map_mul, map_neg, map_natCast] at h ⊢
   norm_num at h ⊢
-  linear_combination h
+  convert h using 1
 
 theorem jacobiBetaZeroOperator_X_pow (α : ℝ) (n : ℕ) :
     jacobiBetaZeroOperator α (X ^ n) =

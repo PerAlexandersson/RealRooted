@@ -633,6 +633,9 @@ The Euler-operator package also now isolates two different theorem duties:
 
 - `EulerOperator` owns the operator definitions, coefficient formulae, and
   elementary operator algebra, including the polar/Euler commutation law;
+- `EulerOperator.Darboux.Basic` owns the commutative-ring algebra of the
+  unit-interval Darboux operator, while its `Interlacing` child alone imports
+  the ordered Ma--Wang root theory;
 - `EulerOperator.Pencil` owns proper-position comparisons for positive
   `theta + c` shifts;
 - `EulerOperator.Polar` proves finite-degree preservation of ordinary
@@ -892,8 +895,11 @@ The A390883 application has a one-directional
 `IntervalInsertion` feed the triangular invariant and algebra, followed by the
 diagonal collapse, finite offsets, exceptional offset, common-interlacer
 package, and final contribution reversal. Generic shifted-Jacobi comparison
-stays in `JacobiParameterInterlacing`; the toric model definitions and
-finite-offset assembly remain in the application layer.
+stays in `JacobiParameterInterlacing`. The neutral Jacobi differential
+operator and second-order ODE algebra live below the family and application
+layers, and the historical insertion operator is only a compatibility alias
+for the neutral Darboux operator. The toric model definitions and finite-offset
+assembly remain in the application layer.
 
 The exceptional offset is itself layered behind its historical compatibility
 facade. `BaseAndMoments` owns the Euler-inverse coefficients, endpoint product,

@@ -22,21 +22,17 @@ namespace ToricContribution
 @[simp]
 theorem insertionOperator_eval_one (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).eval 1 = (a - b) * f.eval 1 := by
-  simp [insertionOperator, intervalWeight]
+  simpa only [insertionOperator] using darbouxOperator_eval_one a b f
 
 theorem insertionOperator_eval_isRoot
     (a b : ℝ) {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
     (insertionOperator a b f).eval r = r * (1 - r) * f.derivative.eval r := by
-  simp only [insertionOperator, intervalWeight, eval_add, eval_mul, eval_sub,
-    eval_X, eval_one, eval_C]
-  rw [show f.eval r = 0 from hr]
-  ring
+  simpa only [insertionOperator] using darbouxOperator_eval_isRoot a b hr
 
 @[simp]
 theorem insertionOperator_neg (a b : ℝ) (f : ℝ[X]) :
     insertionOperator a b (-f) = -insertionOperator a b f := by
-  simp only [insertionOperator, derivative_neg]
-  ring
+  simpa only [insertionOperator] using darbouxOperator_neg a b f
 
 theorem coeff_neg_insertionOperator_succ_natDegree
     (a b : ℝ) {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) :
@@ -46,7 +42,7 @@ theorem coeff_neg_insertionOperator_succ_natDegree
       -insertionOperator a b f =
         X * (X * f.derivative) - X * f.derivative +
           C b * (X * f) - C a * f := by
-    simp only [insertionOperator, intervalWeight]
+    simp only [insertionOperator, darbouxOperator]
     ring
   rw [hform, coeff_sub, coeff_add, coeff_sub, coeff_X_mul, coeff_X_mul,
     show f.natDegree = (f.natDegree - 1) + 1 by lia, coeff_X_mul,
@@ -65,7 +61,7 @@ theorem natDegree_neg_insertionOperator
       -insertionOperator a b f =
         X * (X * f.derivative) - X * f.derivative +
           C b * (X * f) - C a * f := by
-    simp only [insertionOperator, intervalWeight]
+    simp only [insertionOperator, darbouxOperator]
     ring
   have hXX : (X * (X * f.derivative)).natDegree ≤ f.natDegree + 1 := by
     calc
@@ -129,7 +125,7 @@ theorem prec_neg_insertionOperator
   let u := -(C a - C b * X)
   let v := -intervalWeight
   have hform : u * f + v * f.derivative = -insertionOperator a b f := by
-    simp only [u, v, insertionOperator]
+    simp only [u, v, insertionOperator, darbouxOperator, intervalWeight]
     ring
   rw [← hform]
   apply prec_ma_wang_succ hf hdeg
@@ -203,9 +199,10 @@ theorem roots_neg_insertionOperator_mem_Ioo
     have := hroots 1 h1
     simp at this
   have hF0_eval : F.eval 0 = -a * f.eval 0 := by
-    simp [F, insertionOperator_eval_zero]
+    simp only [F, eval_neg, insertionOperator_eval_zero]
+    ring
   have hF1_eval : F.eval 1 = (b - a) * f.eval 1 := by
-    simp [F, insertionOperator_eval_one]
+    simp only [F, eval_neg, insertionOperator_eval_one]
     ring
   have hF0_not_root : ¬F.IsRoot 0 := by
     rw [IsRoot.def, hF0_eval]
@@ -464,7 +461,7 @@ theorem insertionOperator_eq_C_mul_X_sub_C_of_natDegree_zero
   conv_lhs => rw [hfC]
   apply Polynomial.funext
   intro x
-  simp [insertionOperator, intervalWeight]
+  simp [insertionOperator, darbouxOperator]
   field_simp
   ring
 
@@ -515,8 +512,7 @@ theorem insertionOperator_eval_derivative_ne_zero_of_natDegree_zero
 @[simp]
 theorem insertionOperator_C_mul (a b k : ℝ) (f : ℝ[X]) :
     insertionOperator a b (C k * f) = C k * insertionOperator a b f := by
-  simp only [insertionOperator, derivative_mul, derivative_C, zero_mul, zero_add]
-  ring
+  simpa only [insertionOperator] using darbouxOperator_C_mul a b k f
 
 /-- The complete interval-insertion conclusion for the monic linear input.
 This is the low-degree bridge needed after inserting into a constant. -/
@@ -540,11 +536,11 @@ theorem insertionOperator_X_sub_C_data
     intro hzero
     simp [hzero] at hFdeg
   have hF0 : F.eval 0 = a * u := by
-    simp [F, f, insertionOperator, intervalWeight]
+    simp [F, f, insertionOperator, darbouxOperator]
   have hFu : F.eval u = -u * (1 - u) := by
-    simp [F, f, insertionOperator, intervalWeight]
+    simp [F, f, insertionOperator, darbouxOperator]
   have hF1 : F.eval 1 = (b - a) * (1 - u) := by
-    simp [F, f, insertionOperator, intervalWeight]
+    simp [F, f, insertionOperator, darbouxOperator]
     ring
   have hsign_left : F.eval 0 * F.eval u < 0 := by
     rw [hF0, hFu]

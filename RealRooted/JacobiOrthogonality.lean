@@ -120,65 +120,30 @@ theorem jacobiBetaOneInner_monomial (α a b : ℝ) (i j : ℕ) :
   simp [jacobiBetaOneInner, monomial_mul_monomial, mul_assoc]
 
 /-- The differential part of the beta-one shifted Jacobi operator. -/
-def jacobiBetaOneOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  X * (1 - X) * p.derivative.derivative +
-    (C (α + 1) - C (α + 3) * X) * p.derivative
+abbrev jacobiBetaOneOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
+  jacobiDifferentialOperator (α + 1) (α + 3) p
 
 @[simp]
 theorem jacobiBetaOneOperator_add (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneOperator α (p + q) =
       jacobiBetaOneOperator α p + jacobiBetaOneOperator α q := by
-  simp only [jacobiBetaOneOperator, derivative_add]
-  ring
+  simpa only [jacobiBetaOneOperator] using
+    jacobiDifferentialOperator_add (α + 1) (α + 3) p q
 
 @[simp]
 theorem jacobiBetaOneOperator_C_mul (α c : ℝ) (p : ℝ[X]) :
     jacobiBetaOneOperator α (C c * p) =
       C c * jacobiBetaOneOperator α p := by
-  simp only [jacobiBetaOneOperator, derivative_mul, derivative_C, zero_mul,
-    zero_add]
-  ring
+  simpa only [jacobiBetaOneOperator] using
+    jacobiDifferentialOperator_C_mul (α + 1) (α + 3) c p
 
 theorem jacobiBetaOneOperator_monomial (α a : ℝ) (n : ℕ) :
     jacobiBetaOneOperator α (monomial n a) =
       monomial (n - 1) (a * n * (n + α)) +
         monomial n (-a * n * (n + α + 2)) := by
-  rw [← C_mul_X_pow_eq_monomial, jacobiBetaOneOperator_C_mul]
-  have hC1 : C (1 : ℝ) = (1 : ℝ[X]) :=
-    map_one (C : ℝ →+* ℝ[X])
-  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) :=
-    Polynomial.C_ofNat (R := ℝ) 2
-  have hC3 : C (3 : ℝ) = (3 : ℝ[X]) :=
-    Polynomial.C_ofNat (R := ℝ) 3
-  cases n with
-  | zero => simp [jacobiBetaOneOperator]
-  | succ n =>
-      cases n with
-      | zero =>
-          rw [jacobiBetaOneOperator]
-          norm_num [← C_mul_X_pow_eq_monomial, C_eq_natCast,
-            map_add, map_mul, map_neg, map_natCast]
-          rw [hC2, hC3]
-          ring
-      | succ n =>
-          have hfirst : derivative (X ^ (n + 2) : ℝ[X]) =
-              C (n + 2 : ℝ) * X ^ (n + 1) := by
-            rw [show n + 2 = (n + 1) + 1 by lia]
-            convert derivative_X_pow_succ (R := ℝ) (n + 1) using 1
-            push_cast
-            ring
-          have hsecond : derivative (derivative (X ^ (n + 2) : ℝ[X])) =
-              C (n + 2 : ℝ) * C (n + 1 : ℝ) * X ^ n := by
-            rw [hfirst, derivative_mul, derivative_C, zero_mul, zero_add,
-              derivative_X_pow_succ]
-            ring
-          rw [jacobiBetaOneOperator, hsecond, hfirst]
-          simp only [← C_mul_X_pow_eq_monomial, Nat.cast_add, Nat.cast_one,
-            Nat.succ_sub_one]
-          rw [pow_succ X n, pow_succ X (n + 1)]
-          simp only [map_add, map_mul, map_neg, map_natCast]
-          rw [hC1, hC2, hC3]
-          ring
+  rw [jacobiBetaOneOperator, jacobiDifferentialOperator_monomial,
+    sub_eq_add_neg, ← monomial_neg]
+  congr 2 <;> ring
 
 private theorem left_mul_pair_inv_eq_right {a b c : ℝ}
     (ha : a ≠ 0) (hc : c ≠ 0) :
@@ -268,16 +233,14 @@ the beta-one differential operator. -/
 theorem jacobiBetaOneOperator_shiftedJacobi (n : ℕ) (α : ℝ) :
     jacobiBetaOneOperator α (shiftedJacobi n α 1) =
       C (-(n * (n + α + 2))) * shiftedJacobi n α 1 := by
-  have h := shiftedJacobi_differential_equation n α 1
-  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) :=
-    Polynomial.C_ofNat (R := ℝ) 2
-  have hC3 : C (3 : ℝ) = (3 : ℝ[X]) :=
-    Polynomial.C_ofNat (R := ℝ) 3
-  simp only [jacobiBetaOneOperator, map_add, map_mul, map_neg,
-    map_natCast] at *
-  simp only [hC2, hC3] at *
+  change jacobiDifferentialOperator (α + 1) (α + 3)
+    (shiftedJacobi n α 1) = _
+  have h := jacobiDifferentialOperator_shiftedJacobi n α 1
+  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) := Polynomial.C_ofNat 2
+  simp only [map_add, map_mul, map_neg, map_natCast] at h ⊢
+  simp only [hC2] at h ⊢
   norm_num at h ⊢
-  linear_combination h
+  convert h using 1 <;> ring
 
 theorem jacobiBetaOneOperator_X_pow (α : ℝ) (n : ℕ) :
     jacobiBetaOneOperator α (X ^ n) =
