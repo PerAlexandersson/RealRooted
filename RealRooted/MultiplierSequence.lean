@@ -517,74 +517,6 @@ theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
     IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) :=
   isFinitePFMultiplierSequence_const_sequence (n := n) (a := 0) le_rfl
 
-/-- An infinite multiplier sequence is one whose diagonal operator preserves
-real-rootedness in every finite degree.  The definition deliberately stays in
-the polynomial layer; the analytic Pólya--Schur classification belongs in a
-separate development. -/
-def IsMultiplierSequence (gamma : ℕ → ℝ) : Prop :=
-  ∀ n : ℕ, IsFiniteMultiplierSequence n gamma
-
-/-- The PF analogue of `IsMultiplierSequence`, with the finite degree bound
-made explicit in the same way as `IsFinitePFMultiplierSequence`. -/
-def IsPFMultiplierSequence (gamma : ℕ → ℝ) : Prop :=
-  ∀ n : ℕ, IsFinitePFMultiplierSequence n gamma
-
-theorem IsMultiplierSequence.finite {gamma : ℕ → ℝ}
-    (hgamma : IsMultiplierSequence gamma) (n : ℕ) :
-    IsFiniteMultiplierSequence n gamma :=
-  hgamma n
-
-theorem IsPFMultiplierSequence.finite {gamma : ℕ → ℝ}
-    (hgamma : IsPFMultiplierSequence gamma) (n : ℕ) :
-    IsFinitePFMultiplierSequence n gamma :=
-  hgamma n
-
-theorem IsMultiplierSequence.mul {gamma delta : ℕ → ℝ}
-    (hgamma : IsMultiplierSequence gamma)
-    (hdelta : IsMultiplierSequence delta) :
-    IsMultiplierSequence (fun k => gamma k * delta k) := by
-  intro n
-  exact IsFiniteMultiplierSequence.mul (hgamma n) (hdelta n)
-
-theorem IsPFMultiplierSequence.mul {gamma delta : ℕ → ℝ}
-    (hgamma : IsPFMultiplierSequence gamma)
-    (hdelta : IsPFMultiplierSequence delta) :
-    IsPFMultiplierSequence (fun k => gamma k * delta k) := by
-  intro n
-  exact IsFinitePFMultiplierSequence.mul (hgamma n) (hdelta n)
-
-theorem isMultiplierSequence_const_sequence (a : ℝ) :
-    IsMultiplierSequence (fun _ => a) := by
-  intro n
-  exact isFiniteMultiplierSequence_const_sequence n a
-
-theorem isMultiplierSequence_one_sequence :
-    IsMultiplierSequence (fun _ => (1 : ℝ)) :=
-  isMultiplierSequence_const_sequence 1
-
-theorem isMultiplierSequence_zero_sequence :
-    IsMultiplierSequence (fun _ => (0 : ℝ)) :=
-  isMultiplierSequence_const_sequence 0
-
-theorem isPFMultiplierSequence_const_sequence {a : ℝ} (ha : 0 ≤ a) :
-    IsPFMultiplierSequence (fun _ => a) := by
-  intro n
-  exact isFinitePFMultiplierSequence_const_sequence ha
-
-theorem isPFMultiplierSequence_one_sequence :
-    IsPFMultiplierSequence (fun _ => (1 : ℝ)) :=
-  isPFMultiplierSequence_const_sequence zero_le_one
-
-theorem isPFMultiplierSequence_zero_sequence :
-    IsPFMultiplierSequence (fun _ => (0 : ℝ)) :=
-  isPFMultiplierSequence_const_sequence le_rfl
-
-theorem IsMultiplierSequence.diagonalOperator_splits
-    {gamma : ℕ → ℝ} (hgamma : IsMultiplierSequence gamma)
-    {p : ℝ[X]} (hsplits : p.Splits) :
-    diagonalOperator gamma p = 0 ∨ (diagonalOperator gamma p).Splits :=
-  hgamma p.natDegree le_rfl hsplits
-
 /-- In degrees at most one, every diagonal sequence is a finite multiplier
 sequence: after applying the diagonal operator, the output is either zero or a
 nonzero polynomial of degree at most one, hence split over `ℝ`. -/
@@ -825,18 +757,6 @@ theorem isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
     IsPFPolynomial (jensenPolynomial n gamma) :=
   (jensenPolynomial_eq_diagonalOperator_X_add_one_pow n gamma).symm ▸
     hmult (isPFPolynomial_X_add_one.pow n) (natDegree_X_add_one_pow_le n)
-
-theorem isPFPolynomial_jensenPolynomial_of_multiplierSequence
-    {gamma : ℕ → ℝ} (hgamma_nonneg : ∀ k, 0 ≤ gamma k)
-    (hgamma : IsMultiplierSequence gamma) (n : ℕ) :
-    IsPFPolynomial (jensenPolynomial n gamma) :=
-  isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
-    hgamma_nonneg (hgamma n)
-
-theorem isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence
-    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) (n : ℕ) :
-    IsPFPolynomial (jensenPolynomial n gamma) :=
-  isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence (hgamma n)
 
 /-- A nonnegative finite multiplier sequence through degree three satisfies
 the two adjacent cubic log-concavity inequalities. -/
