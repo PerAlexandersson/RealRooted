@@ -1,6 +1,7 @@
 import RealRooted.Derivative
-import RealRooted.PFPolynomial
+import RealRooted.BasisTransform
 import RealRooted.Transforms.BrandenE.Basic
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Binomial-basis images under Brändén's E transform
@@ -32,12 +33,6 @@ def brandenBinomialBasis (n k : ℕ) : R[X] :=
 def brandenBasisImage (n k : ℕ) : R[X] :=
   brandenE (brandenBinomialBasis n k)
 
-end Semiring
-
-section CommSemiring
-
-variable [CommSemiring R]
-
 /-- The first-order Euler step governing the binomial-basis images. -/
 def brandenEulerStep (r : R) (p : R[X]) : R[X] :=
   (X + C r) * p + X * (1 + X) * p.derivative
@@ -48,6 +43,36 @@ def brandenEulerStep (r : R) (p : R[X]) : R[X] :=
   simp only [pow_zero, Nat.zero_sub, mul_one]
   rw [show (1 : R[X]) = X ^ 0 by simp, brandenE_X_pow]
   rfl
+
+@[simp] theorem brandenBasisImage_self (n : ℕ) :
+    brandenBasisImage (R := R) n n = orderedBellPolynomial n := by
+  simp [brandenBasisImage, brandenBinomialBasis]
+
+end Semiring
+
+section CommSemiring
+
+variable [CommSemiring R]
+
+/-- Coefficients of the Euler step form a lower-bidiagonal transform. -/
+theorem coeff_brandenEulerStep (r : R) (p : R[X]) (k : ℕ) :
+    (brandenEulerStep r p).coeff k =
+      (r + k) * p.coeff k + k * p.coeff (k - 1) := by
+  have hform : brandenEulerStep r p =
+      C r * p + X * p + X * p.derivative + X ^ 2 * p.derivative := by
+    simp [brandenEulerStep]
+    ring
+  rw [hform]
+  cases k with
+  | zero => simp
+  | succ k =>
+      cases k with
+      | zero =>
+          simp [Polynomial.coeff_derivative, Polynomial.coeff_X_pow_mul']
+          ring
+      | succ k =>
+          simp [Polynomial.coeff_derivative, Polynomial.coeff_X_pow_mul']
+          ring
 
 theorem brandenBasisImage_succ_zero (n : ℕ) :
     brandenBasisImage (R := R) (n + 1) 0 =
@@ -156,10 +181,9 @@ theorem brandenEulerStep_nonneg {r : ℝ} {p : ℝ[X]}
   · simpa [add_comm] using
       ((hasNonnegCoeffs_X.mul hasNonnegCoeffs_X_add_one).mul hp.derivative)
 
-/-- A nonnegative Euler step raises the exact degree and preserves positivity
-of the leading coefficient. -/
+/-- Every Euler step raises the exact degree of a positive-leading input and
+preserves positivity of its leading coefficient. -/
 theorem brandenEulerStep_degree_pos {r : ℝ} {p : ℝ[X]} {n : ℕ}
-    (hr : 0 ≤ r) (hp_nonneg : HasNonnegCoeffs p)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : p.natDegree = n) :
     (brandenEulerStep r p).natDegree = n + 1 ∧
       HasPosLeadingCoeff (brandenEulerStep r p) := by
@@ -186,30 +210,20 @@ theorem brandenEulerStep_degree_pos {r : ℝ} {p : ℝ[X]} {n : ℕ}
             · compute_degree
             · rw [p.natDegree_derivative, hdeg]
           _ = n + 1 := by lia
-  have hrest_nonneg :
-      HasNonnegCoeffs (C r * p + X * (1 + X) * p.derivative) :=
-    ((hasNonnegCoeffs_C hr).mul hp_nonneg).add (by
-      simpa [add_comm] using
-        ((hasNonnegCoeffs_X.mul hasNonnegCoeffs_X_add_one).mul hp_nonneg.derivative))
-  have hform :
-      brandenEulerStep r p =
-        X * p + (C r * p + X * (1 + X) * p.derivative) := by
-    rw [brandenEulerStep]
-    ring
   have hp_top : 0 < p.coeff n := by
     rw [← hdeg]
     exact hp_pos
+  have hp_above : p.coeff (n + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (by rw [hdeg]; lia)
   have hcoeff : 0 < (brandenEulerStep r p).coeff (n + 1) := by
-    rw [hform, coeff_add, coeff_X_mul]
-    nlinarith [hrest_nonneg (n + 1)]
+    rw [coeff_brandenEulerStep, hp_above]
+    norm_num
+    positivity
   have hdegree : (brandenEulerStep r p).natDegree = n + 1 :=
     natDegree_eq_of_le_of_coeff_ne_zero hupper hcoeff.ne'
   refine ⟨hdegree, ?_⟩
-  exact (brandenEulerStep_nonneg hr hp_nonneg).pos_leadingCoeff
-    (by
-      intro hzero
-      rw [hzero] at hcoeff
-      simp at hcoeff)
+  rw [HasPosLeadingCoeff, leadingCoeff, hdegree]
+  exact hcoeff
 
 /-- Exact degree and positive leading coefficient of every in-range basis
 image. -/
@@ -230,13 +244,13 @@ theorem brandenBasisImage_degree_pos :
       cases k with
       | zero =>
           rw [brandenBasisImage_succ_zero]
-          exact brandenEulerStep_degree_pos (r := 1) (by norm_num)
-            (brandenBasisImage_nonneg n 0) (ih 0 (by lia)).2 (ih 0 (by lia)).1
+          exact brandenEulerStep_degree_pos (r := 1)
+            (ih 0 (by lia)).2 (ih 0 (by lia)).1
       | succ k =>
           have hkn : k ≤ n := by lia
           rw [brandenBasisImage_succ_succ]
-          exact brandenEulerStep_degree_pos (r := 0) (by norm_num)
-            (brandenBasisImage_nonneg n k) (ih k hkn).2 (ih k hkn).1
+          exact brandenEulerStep_degree_pos (r := 0)
+            (ih k hkn).2 (ih k hkn).1
 
 theorem brandenBasisImage_roots_nonpos (n k : ℕ) :
     ∀ r ∈ (brandenBasisImage (R := ℝ) n k).roots, r ≤ 0 :=

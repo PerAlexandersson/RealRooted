@@ -6,7 +6,8 @@ import RealRooted.Transforms.BrandenE.Basic
 
 Mathlib's descending Pochhammer polynomials provide the inverse basis to the
 ordered Bell basis.  The unnormalized image identity is ring-generic; the
-normalized inverse requires characteristic zero so that factorials are units.
+normalized inverse requires a characteristic-zero field so that nonzero
+factorials are units.
 -/
 
 open Polynomial

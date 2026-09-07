@@ -959,16 +959,16 @@
       "max_modules": 102
    },
     "RealRooted.Transforms.BrandenE.OrderedBell": {
-      "max_modules": 8
+      "max_modules": 6
    },
     "RealRooted.Transforms.BrandenE.Basic": {
-      "max_modules": 9
+      "max_modules": 8
    },
     "RealRooted.Transforms.BrandenE.Inverse": {
-      "max_modules": 10
+      "max_modules": 9
    },
     "RealRooted.Transforms.BrandenE.BasisImage": {
-      "max_modules": 79
+      "max_modules": 15
    },
     "RealRooted.Transforms.BrandenE.ProperPosition": {
       "max_modules": 85

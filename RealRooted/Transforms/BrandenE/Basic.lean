@@ -42,6 +42,11 @@ theorem brandenE_C_mul (a : R) (p : R[X]) :
     brandenE (C a * p) = C a * brandenE p := by
   rw [Polynomial.C_mul', brandenE_smul]
 
+/-- Brändén's transform distributes over finite polynomial sums. -/
+theorem brandenE_finset_sum {ι : Type*} (s : Finset ι) (f : ι → R[X]) :
+    brandenE (∑ i ∈ s, f i) = ∑ i ∈ s, brandenE (f i) :=
+  Polynomial.basisTransform_finset_sum _ s f
+
 @[simp] theorem brandenE_X_pow (n : ℕ) :
     brandenE (X ^ n : R[X]) = orderedBellPolynomial n :=
   Polynomial.basisTransform_X_pow _ n
@@ -69,6 +74,15 @@ theorem brandenE_mul_X_add_C (r : R) (p : R[X]) :
   Polynomial.basisTransform_mul_X_add_C_of_succ_derivative
     (orderedBellPolynomial (R := R)) X (X * (1 + X))
     orderedBellPolynomial_succ r p
+
+/-- Reciprocal affine-factor form of `brandenE_X_mul`. -/
+theorem brandenE_one_add_C_mul_X (a : R) (p : R[X]) :
+    brandenE ((1 + C a * X) * p) =
+      (1 + C a * X) * brandenE p +
+        C a * X * (1 + X) * (brandenE p).derivative := by
+  rw [show (1 + C a * X) * p = p + C a * (X * p) by ring,
+    brandenE_add, brandenE_C_mul, brandenE_X_mul]
+  ring
 
 end CommSemiring
 

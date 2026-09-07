@@ -1,6 +1,7 @@
 import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.DegreeDropDivXPrec
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.PFPolynomial
 import RealRooted.Transforms.BrandenE.BasisImage
 
 /-!
@@ -81,15 +82,15 @@ private theorem brandenBasisImage_small_splits
 /-- The Euler step places a split polynomial properly before its image when
 all roots lie in `[-1, 0]`. -/
 theorem brandenEulerStep_prec {r : ℝ} {p : ℝ[X]} {n : ℕ}
-    (hr : 0 ≤ r)
-    (hp_splits : p.Splits) (hp_nonneg : HasNonnegCoeffs p)
-    (hp_pos : HasPosLeadingCoeff p) (hdeg : p.natDegree = n)
-    (hn : 2 ≤ n)
-    (hroot_lo : ∀ x ∈ p.roots, -1 ≤ x) :
+    (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : p.natDegree = n)
+    (hn : 1 ≤ n)
+    (hroot_lo : ∀ x ∈ p.roots, -1 ≤ x)
+    (hroot_hi : ∀ x ∈ p.roots, x ≤ 0) :
     Prec p (brandenEulerStep r p) := by
-  have hstep := brandenEulerStep_degree_pos hr hp_nonneg hp_pos hdeg
-  apply prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
-      (u := X + C r) hp_splits
+  have hstep := brandenEulerStep_degree_pos (r := r) hp_pos hdeg
+  apply prec_mw_derivative_of_nonpos_of_pos_natDegree
+      (u := X + C r) (v := X * (1 + X)) hp_splits
   · simpa [hdeg] using hn
   · change p.natDegree ≤ (brandenEulerStep r p).natDegree
     rw [hdeg, hstep.1]
@@ -100,10 +101,9 @@ theorem brandenEulerStep_prec {r : ℝ} {p : ℝ[X]} {n : ℕ}
     exact hstep.2
   · exact hp_pos
   · intro x hx
-    exact hroot_lo x ((mem_roots hp_pos.ne_zero).mpr hx)
-  · intro x hx
-    exact roots_nonpos_of_hasNonnegCoeffs hp_nonneg x
-      ((mem_roots hp_pos.ne_zero).mpr hx)
+    exact eval_X_mul_one_add_X_nonpos_of_mem_Icc
+      (hroot_lo x ((mem_roots hp_pos.ne_zero).mpr hx))
+      (hroot_hi x ((mem_roots hp_pos.ne_zero).mpr hx))
 
 /-- Every in-range Brändén binomial-basis image splits over the reals. -/
 theorem brandenBasisImage_splits :
@@ -121,25 +121,37 @@ theorem brandenBasisImage_splits :
         cases k with
         | zero =>
             rw [brandenBasisImage_succ_zero]
-            exact (brandenEulerStep_prec (r := 1) (by norm_num)
-              (ih 0 (by lia)) (brandenBasisImage_nonneg n 0)
+            exact (brandenEulerStep_prec (r := 1) (ih 0 (by lia))
               (brandenBasisImage_degree_pos n 0 (by lia)).2
-              (brandenBasisImage_degree_pos n 0 (by lia)).1 hn2
-              (brandenBasisImage_roots_ge_neg_one n 0 (by lia))).2.1.2
+              (brandenBasisImage_degree_pos n 0 (by lia)).1 (by lia)
+              (brandenBasisImage_roots_ge_neg_one n 0 (by lia))
+              (brandenBasisImage_roots_nonpos n 0)).2.1.2
         | succ k =>
             have hkn : k ≤ n := by lia
             rw [brandenBasisImage_succ_succ]
-            exact (brandenEulerStep_prec (r := 0) (by norm_num)
-              (ih k hkn) (brandenBasisImage_nonneg n k)
+            exact (brandenEulerStep_prec (r := 0) (ih k hkn)
               (brandenBasisImage_degree_pos n k hkn).2
-              (brandenBasisImage_degree_pos n k hkn).1 hn2
-              (brandenBasisImage_roots_ge_neg_one n k hkn)).2.1.2
+              (brandenBasisImage_degree_pos n k hkn).1 (by lia)
+              (brandenBasisImage_roots_ge_neg_one n k hkn)
+              (brandenBasisImage_roots_nonpos n k)).2.1.2
 
 /-- Every in-range basis image is a Pólya-frequency polynomial. -/
 theorem brandenBasisImage_isPFPolynomial (n k : ℕ) (hk : k ≤ n) :
     IsPFPolynomial (brandenBasisImage (R := ℝ) n k) :=
   IsPFPolynomial.of_realRooted_nonneg
     (brandenBasisImage_nonneg n k) (brandenBasisImage_splits n k hk)
+
+/-- Every ordered Bell polynomial splits over the reals. -/
+theorem orderedBellPolynomial_splits (n : ℕ) :
+    (orderedBellPolynomial (R := ℝ) n).Splits := by
+  rw [← brandenBasisImage_self]
+  exact brandenBasisImage_splits n n le_rfl
+
+/-- Every ordered Bell polynomial is a Pólya-frequency polynomial. -/
+theorem orderedBellPolynomial_isPFPolynomial (n : ℕ) :
+    IsPFPolynomial (orderedBellPolynomial (R := ℝ) n) := by
+  rw [← brandenBasisImage_self]
+  exact brandenBasisImage_isPFPolynomial n n le_rfl
 
 /-- The two endpoint images differ by exchanging the factors `X` and
 `X + 1`. -/
@@ -208,19 +220,18 @@ theorem brandenBasisImage_adjacent_prec
   let q := brandenBasisImage (R := ℝ) (n - 1) k
   have hkq : k ≤ n - 1 := by lia
   have hqnext : Prec q (brandenEulerStep 0 q) :=
-    brandenEulerStep_prec (r := 0) (by norm_num)
+    brandenEulerStep_prec (r := 0)
       (brandenBasisImage_splits (n - 1) k hkq)
-      (brandenBasisImage_nonneg (n - 1) k)
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
       (brandenBasisImage_degree_pos (n - 1) k hkq).1 (by lia)
       (brandenBasisImage_roots_ge_neg_one (n - 1) k hkq)
+      (brandenBasisImage_roots_nonpos (n - 1) k)
   have hnext_refl : Prec (brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     prec_refl hqnext.2.1.1 hqnext.2.1.2
   have hsum : Prec (q + brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     prec_add_of_prec_right_of_posLeadingCoeff hqnext hnext_refl
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
-      (brandenEulerStep_degree_pos (r := 0) (by norm_num)
-        (brandenBasisImage_nonneg (n - 1) k)
+      (brandenEulerStep_degree_pos (r := 0)
         (brandenBasisImage_degree_pos (n - 1) k hkq).2
         (brandenBasisImage_degree_pos (n - 1) k hkq).1).2
   have hleft : brandenBasisImage (R := ℝ) n k = q + brandenEulerStep 0 q := by

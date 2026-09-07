@@ -1,4 +1,6 @@
 import RealRooted.CommonInterleaver.FamilyUpgrade
+import RealRooted.Linear
+import RealRooted.PosCombo
 import RealRooted.Transforms.BrandenE.ProperPosition
 
 /-!
@@ -33,9 +35,9 @@ def brandenBasisWeightedInput (n : ℕ) (s : Finset ℕ) (a : ℕ → R) : R[X] 
 
 end Semiring
 
-section CommSemiring
+section Transform
 
-variable [CommSemiring R]
+variable [Semiring R]
 
 theorem brandenE_basisWeightedInput
     (n : ℕ) (s : Finset ℕ) (a : ℕ → R) :
@@ -50,7 +52,7 @@ theorem brandenE_basisWeightedInput
     Polynomial.basisTransform_smul]
   rfl
 
-end CommSemiring
+end Transform
 
 section Real
 
