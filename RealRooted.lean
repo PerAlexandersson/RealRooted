@@ -209,6 +209,7 @@ import RealRooted.EulerOperator.Polar.MultiplierSequence
 import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.EulerOperator.ScaledPolar
+import RealRooted.EulerOperator.Shift
 import RealRooted.EulerianCompletion
 import RealRooted.EulerianMixedCompatibility
 import RealRooted.EulerianMixedCompatibility.Insertion
