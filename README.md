@@ -132,6 +132,10 @@ emulation. These scripts complement `lake build`; they do not replace it.
   pairing with the beta-weighted integral, keeping analytic imports out of the
   finite Jacobi family and root theory. The beta-zero and beta-one modules
   retain their historical rational APIs as compatibility specializations.
+- `RealRooted/RootVieta/Newton.lean` exposes Newton recurrences for multisets,
+  ordinary polynomial roots, and reversed polynomial roots. Its Mathlib-shaped shims evaluate
+  multivariate power sums and orient Vieta formulas for direct reuse; no
+  degree-specific power identities are stored in the library.
 - `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
   foundation, `RootDeletion.lean` contains the general cofactor and
   largest-root deletion API, and `PositiveSplitRootCount.lean` packages the

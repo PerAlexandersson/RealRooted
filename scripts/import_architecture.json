@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 931
+      "max_modules": 934
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -913,6 +913,15 @@
     "RealRooted.RootVieta": {
       "max_modules": 5
     },
+    "RealRooted.RootVieta.Newton": {
+      "max_modules": 4
+    },
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.RingTheory.Polynomial.Vieta": {
+      "max_modules": 1
+    },
     "RealRooted.ScalarNormalization": {
       "max_modules": 2
     },
@@ -1540,6 +1549,9 @@
     "RealRooted.RootAmplitude.SumSquares",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
+    "RealRooted.RootVieta.Newton",
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities",
+    "RealRooted.Mathlib.RingTheory.Polynomial.Vieta",
     "RealRooted.SimpleRoots",
     "RealRooted.GarloffWagner.Algebra",
     "RealRooted.GarloffWagner.Iterated",
