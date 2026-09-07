@@ -67,4 +67,31 @@ theorem sign_of_dominant_logConcave {p : ℝ[X]} {N : ℕ} (hdegree : p.natDegre
     _ < t j := hdominates
     _ = |p.coeff j| * s ^ j := by rw [ht, abs_of_pos hpositive_j]
 
+/-- Division-free adjacent-term bounds imply the hypotheses of
+`sign_of_dominant_logConcave`. -/
+theorem sign_of_dominant_logConcave_of_adjacent_bounds
+    {p : ℝ[X]} {N : ℕ} (hdegree : p.natDegree = N)
+    (hpositive : ∀ i, i ≤ N → 0 < p.coeff i)
+    (hlog_concave : ∀ i, 0 < i → i < N →
+      p.coeff (i - 1) * p.coeff (i + 1) ≤ (p.coeff i) ^ 2)
+    (j : ℕ) (hj : 1 ≤ j) (hnext : j + 1 ≤ N)
+    {s : ℝ} (hs : 0 < s)
+    (hlower : 3 * p.coeff (j - 1) < p.coeff j * s)
+    (hupper : 3 * p.coeff (j + 1) * s < p.coeff j) :
+    0 < (-1 : ℝ) ^ j * p.eval (-s) := by
+  have hpositive_j : 0 < p.coeff j := hpositive j (by lia)
+  have hden : (0 : ℝ) < p.coeff j * s ^ j := by positivity
+  refine sign_of_dominant_logConcave hdegree hpositive hlog_concave hs j hj hnext ?_ ?_
+  · rw [div_lt_div_iff₀ hden (by norm_num)]
+    have hpow : s ^ (j + 1) = s ^ j * s := by ring
+    rw [hpow]
+    nlinarith [hupper, pow_pos hs j, hpositive_j]
+  · rw [div_lt_div_iff₀ hden (by norm_num)]
+    have hpow : s ^ j = s ^ (j - 1) * s := by
+      rw [← pow_succ]
+      congr 1
+      lia
+    rw [hpow]
+    nlinarith [hlower, pow_pos hs (j - 1), hpositive_j]
+
 end RealRooted.RootCounting

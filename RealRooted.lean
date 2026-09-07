@@ -641,6 +641,7 @@ import RealRooted.RootCounting.Threshold
 import RealRooted.RootCounting.Threshold.Anchor
 import RealRooted.RootCounting.Threshold.Basic
 import RealRooted.RootCounting.Threshold.Derivative
+import RealRooted.RootCounting.Threshold.DominanceFamily
 import RealRooted.RootCounting.Threshold.LogConcavity
 import RealRooted.RootCounting.Threshold.Signs
 import RealRooted.RootCounting.Threshold.Sorted
