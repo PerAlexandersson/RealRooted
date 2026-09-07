@@ -130,8 +130,11 @@ emulation. These scripts complement `lake build`; they do not replace it.
   Jacobi orthogonality from Gamma moments and a coefficient-ring moment-
   recurrence API. Its `Orthogonality/Integral.lean` child identifies that
   pairing with the beta-weighted integral, keeping analytic imports out of the
-  finite Jacobi family and root theory. The beta-zero and beta-one modules
-  retain their historical rational APIs as compatibility specializations.
+  finite Jacobi family and root theory. `Jacobi/Favard.lean` owns the monic
+  three-term recurrence certificate, and the orthogonality layer identifies
+  its concrete moment pairing with the normalized Favard pairing. The
+  beta-zero and beta-one modules retain their historical rational APIs as
+  compatibility specializations.
 - `RealRooted/RootVieta/Newton.lean` exposes Newton recurrences for multisets,
   ordinary polynomial roots, and reversed polynomial roots. Its Mathlib-shaped shims evaluate
   multivariate power sums and orient Vieta formulas for direct reuse; no
@@ -155,14 +158,20 @@ emulation. These scripts complement `lake build`; they do not replace it.
   scalar-denominator normalizations, and row-sign normalizations; its parent
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
   is the compatible frontend façade over its focused syntax and macro-rule
-  modules.
+  modules. `Favard/Recurrence.lean` owns the ring-generic monic recurrence and
+  polynomial-basis API. `Favard/Orthogonality.lean` constructs its normalized
+  functional and product pairing, proving basis orthogonality, the norm
+  recurrence, nondegeneracy, positive definiteness, and uniqueness up to
+  scaling.
 - `RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/` defines the canonical
   monic sign-reversed generalized Laguerre family and its algebraic identities.
   `RealRooted/Mathlib/Algebra/Polynomial/Moment.lean` provides the reusable
   moment-functional and pairing algebra for its orthogonality theory and other
   classical polynomial families.
-  `RealRooted/Laguerre/` separately packages roots/interlacing and algebraic or
-  integral orthogonality; `RealRooted/Laguerre.lean` is the family facade.
+  `RealRooted/Laguerre/Favard.lean` owns the three-term recurrence certificate;
+  the family separately packages roots/interlacing and algebraic or integral
+  orthogonality, including the bridge from the concrete moment pairing to the
+  normalized Favard pairing. `RealRooted/Laguerre.lean` is the family facade.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
@@ -303,6 +312,10 @@ re-exports both APIs.
   criteria for interlacing recurrences and weighted sums.
 - `favardInterlacing` and `isRealRooted_of_favard`: a Favard recurrence
   interface for orthogonal-polynomial style Sturm sequences.
+- `SatisfiesFavardRecurrence.pairing_iIsOrtho`,
+  `SatisfiesFavardRecurrence.pairing_nondegenerate`, and
+  `SatisfiesFavardRecurrence.pairing_posDef`: the normalized algebraic Favard
+  functional and pairing, with orthogonality, nondegeneracy, and positivity.
 - `generalizedLaguerre_splits`, `generalizedLaguerre_hasSimpleRoots`, and
   `generalizedLaguerre_integral_orthogonal`: the root, Sturm, and classical
   orthogonality package for the canonical generalized Laguerre family.

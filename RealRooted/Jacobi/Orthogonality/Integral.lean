@@ -107,6 +107,27 @@ theorem shiftedJacobiInner_eq_integral
   intro x hx
   simp [shiftedJacobiIntegrand]
 
+/-- The normalized Favard functional for the monic shifted Jacobi family has
+the beta-weighted unit-interval realization, scaled by its total mass. -/
+theorem shiftedJacobiMonic_favardFunctional_integral
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p : ℝ[X]) :
+    shiftedJacobiMoment α β 0 *
+        (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).functional p =
+      ∫ x : ℝ in 0..1, shiftedJacobiIntegrand α β p x := by
+  rw [← shiftedJacobiFunctional_eq_favardFunctional hα hβ,
+    shiftedJacobiFunctional_eq_integral hα hβ]
+
+/-- The normalized Favard pairing for the monic shifted Jacobi family has the
+beta-weighted unit-interval realization, scaled by its total mass. -/
+theorem shiftedJacobiMonic_favardPairing_integral
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p q : ℝ[X]) :
+    shiftedJacobiMoment α β 0 *
+        (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing p q =
+      ∫ x : ℝ in 0..1,
+        p.eval x * q.eval x * shiftedJacobiWeight α β x := by
+  rw [← shiftedJacobiInner_eq_favardPairing hα hβ,
+    shiftedJacobiInner_eq_integral hα hβ]
+
 /-- A shifted Jacobi polynomial is beta-weight orthogonal to every polynomial
 of strictly smaller degree. -/
 theorem shiftedJacobi_integral_orthogonal

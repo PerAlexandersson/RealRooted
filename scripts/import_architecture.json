@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 934
+      "max_modules": 938
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -925,41 +925,53 @@
     "RealRooted.ScalarNormalization": {
       "max_modules": 2
     },
+    "RealRooted.Favard.Recurrence": {
+      "max_modules": 1
+    },
+    "RealRooted.Favard.Orthogonality": {
+      "max_modules": 2
+    },
+    "RealRooted.Jacobi.Favard": {
+      "max_modules": 4
+    },
+    "RealRooted.Laguerre.Favard": {
+      "max_modules": 5
+    },
     "RealRooted.Favard.Affine.Basic": {
-      "max_modules": 35
+      "max_modules": 36
     },
     "RealRooted.Favard.Affine.Denominator": {
-      "max_modules": 37
+      "max_modules": 38
     },
     "RealRooted.Favard.Affine.RowSign": {
-      "max_modules": 37
+      "max_modules": 38
     },
     "RealRooted.Favard.Affine": {
-      "max_modules": 39
+      "max_modules": 40
     },
     "RealRooted.Tactic.Favard": {
-      "max_modules": 56
+      "max_modules": 57
     },
     "RealRooted.Tactic.Favard.Basic": {
-      "max_modules": 49
-    },
-    "RealRooted.Tactic.Favard.DirectSyntax": {
       "max_modules": 50
     },
-    "RealRooted.Tactic.Favard.DenominatorSyntax": {
+    "RealRooted.Tactic.Favard.DirectSyntax": {
       "max_modules": 51
     },
-    "RealRooted.Tactic.Favard.RowSignSyntax": {
+    "RealRooted.Tactic.Favard.DenominatorSyntax": {
       "max_modules": 52
     },
-    "RealRooted.Tactic.Favard.Direct": {
+    "RealRooted.Tactic.Favard.RowSignSyntax": {
       "max_modules": 53
     },
-    "RealRooted.Tactic.Favard.Denominator": {
+    "RealRooted.Tactic.Favard.Direct": {
       "max_modules": 54
     },
-    "RealRooted.Tactic.Favard.RowSign": {
+    "RealRooted.Tactic.Favard.Denominator": {
       "max_modules": 55
+    },
+    "RealRooted.Tactic.Favard.RowSign": {
+      "max_modules": 56
     },
     "RealRooted.Tactic.OEIS.Basic": {
       "max_modules": 20
@@ -986,7 +998,7 @@
       "max_modules": 97
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 430
+      "max_modules": 431
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1076,7 +1088,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 458
+      "max_modules": 459
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 167
@@ -1561,6 +1573,10 @@
     "RealRooted.GarloffWagner.Hadamard",
     "RealRooted.GarloffWagner",
     "RealRooted.ScalarNormalization",
+    "RealRooted.Favard.Recurrence",
+    "RealRooted.Favard.Orthogonality",
+    "RealRooted.Jacobi.Favard",
+    "RealRooted.Laguerre.Favard",
     "RealRooted.Favard.Affine.Basic",
     "RealRooted.Favard.Affine.Denominator",
     "RealRooted.Favard.Affine.RowSign",

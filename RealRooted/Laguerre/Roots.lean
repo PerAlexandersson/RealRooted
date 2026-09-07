@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.Favard
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
+import RealRooted.Laguerre.Favard
 import RealRooted.SimpleRoots
 
 import Mathlib.Tactic.Algebra.Basic
@@ -111,27 +111,6 @@ theorem generalizedLaguerre_roots_neg (n : ℕ) {α : ℝ} (hα : -1 < α) :
     have hpos := ascPochhammer_pos n (α + 1) (by linarith)
     linarith
   exact lt_of_le_of_ne hr_le hr_ne
-
-/-- The generalized Laguerre family satisfies its monic Favard recurrence. -/
-theorem generalizedLaguerre_satisfiesFavardRecurrence (α : ℝ) :
-    SatisfiesFavardRecurrence
-      (fun n => generalizedLaguerre n α)
-      (fun n => generalizedLaguerreDiag n α)
-      (fun n => generalizedLaguerreSubdiag n α) := by
-  refine ⟨generalizedLaguerre_zero α, ?_, ?_⟩
-  · simp [generalizedLaguerreDiag]
-    ring
-  · exact fun n => generalizedLaguerre_three_term n α
-
-/-- Favard's subdiagonal coefficient is positive in the open classical
-parameter range. -/
-theorem generalizedLaguerreSubdiag_pos (n : ℕ) {α : ℝ} (hn : n ≠ 0)
-    (hα : -1 < α) : 0 < generalizedLaguerreSubdiag n α := by
-  rw [generalizedLaguerreSubdiag]
-  have hn_pos : 0 < (n : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn
-  have hn_one : (1 : ℝ) ≤ n := by
-    exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
-  exact mul_pos hn_pos (by nlinarith)
 
 /-- Consecutive polynomials have no common root in the open parameter range. -/
 theorem generalizedLaguerre_noCommonRoot_succ (n : ℕ) {α : ℝ}

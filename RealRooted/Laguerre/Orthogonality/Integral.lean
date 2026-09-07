@@ -109,6 +109,29 @@ theorem generalizedLaguerreInner_eq_integral
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   simp [generalizedLaguerreIntegrand]
 
+/-- The normalized Favard functional has the classical positive-half-line
+integral realization after the sign reversal `x ↦ -x`, scaled by its total
+mass. -/
+theorem generalizedLaguerre_favardFunctional_integral
+    {α : ℝ} (hα : -1 < α) (p : ℝ[X]) :
+    generalizedLaguerreMoment α 0 *
+        (generalizedLaguerre_satisfiesFavardRecurrence α).functional p =
+      ∫ x in Ioi 0, generalizedLaguerreIntegrand α p x := by
+  rw [← generalizedLaguerreFunctional_eq_favardFunctional hα,
+    generalizedLaguerreFunctional_eq_integral hα]
+
+/-- The normalized Favard pairing has the classical positive-half-line
+integral realization after the sign reversal `x ↦ -x`, scaled by its total
+mass. -/
+theorem generalizedLaguerre_favardPairing_integral
+    {α : ℝ} (hα : -1 < α) (p q : ℝ[X]) :
+    generalizedLaguerreMoment α 0 *
+        (generalizedLaguerre_satisfiesFavardRecurrence α).pairing p q =
+      ∫ x in Ioi 0,
+        p.eval (-x) * q.eval (-x) * x ^ α * Real.exp (-x) := by
+  rw [← generalizedLaguerreInner_eq_favardPairing hα,
+    generalizedLaguerreInner_eq_integral hα]
+
 /-- Distinct generalized Laguerre polynomials satisfy the classical integral
 orthogonality relation. -/
 theorem generalizedLaguerre_integral_orthogonal
