@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 897
+      "max_modules": 899
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -318,6 +318,9 @@
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance": {
       "max_modules": 5
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating": {
       "max_modules": 2
@@ -773,13 +776,13 @@
       "max_modules": 86
     },
     "RealRooted.RootCounting": {
-      "max_modules": 49
+      "max_modules": 51
     },
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold": {
-      "max_modules": 48
+      "max_modules": 50
     },
     "RealRooted.RootCounting.Threshold.Anchor": {
       "max_modules": 5
@@ -790,11 +793,14 @@
     "RealRooted.RootCounting.Threshold.Derivative": {
       "max_modules": 10
     },
+    "RealRooted.RootCounting.Threshold.DominanceFamily": {
+      "max_modules": 39
+    },
     "RealRooted.RootCounting.Threshold.LogConcavity": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.Signs": {
-      "max_modules": 33
+      "max_modules": 34
     },
     "RealRooted.RootCounting.Threshold.Sorted": {
       "max_modules": 5
@@ -1282,6 +1288,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.BasisTransform",
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse",
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
+    "RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
     "RealRooted.EulerOperator.Polar",
     "RealRooted.EulerOperator.Polar.ProperPosition",
@@ -1397,6 +1404,7 @@
     "RealRooted.RootCounting.Threshold.Anchor",
     "RealRooted.RootCounting.Threshold.Basic",
     "RealRooted.RootCounting.Threshold.Derivative",
+    "RealRooted.RootCounting.Threshold.DominanceFamily",
     "RealRooted.RootCounting.Threshold.LogConcavity",
     "RealRooted.RootCounting.Threshold.Signs",
     "RealRooted.RootCounting.Threshold.Sorted",

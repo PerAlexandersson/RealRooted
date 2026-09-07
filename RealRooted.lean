@@ -457,6 +457,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
@@ -641,6 +642,7 @@ import RealRooted.RootCounting.Threshold
 import RealRooted.RootCounting.Threshold.Anchor
 import RealRooted.RootCounting.Threshold.Basic
 import RealRooted.RootCounting.Threshold.Derivative
+import RealRooted.RootCounting.Threshold.DominanceFamily
 import RealRooted.RootCounting.Threshold.LogConcavity
 import RealRooted.RootCounting.Threshold.Signs
 import RealRooted.RootCounting.Threshold.Sorted
