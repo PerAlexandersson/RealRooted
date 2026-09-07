@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 899
+      "max_modules": 904
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -940,6 +940,21 @@
     "RealRooted.PFPolynomial": {
       "max_modules": 74
    },
+    "RealRooted.PFPolynomial.LinearFactor": {
+      "max_modules": 75
+   },
+    "RealRooted.Transforms.ReverseHermite.Basic": {
+      "max_modules": 2
+   },
+    "RealRooted.Transforms.ReverseHermite.Derivative": {
+      "max_modules": 3
+   },
+    "RealRooted.Transforms.ReverseHermite.Preservation": {
+      "max_modules": 100
+   },
+    "RealRooted.Transforms.ReverseHermite": {
+      "max_modules": 102
+   },
     "RealRooted.GarloffWagner.Theorem12": {
       "max_modules": 96
    },
@@ -1479,6 +1494,11 @@
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
     "RealRooted.PFPolynomial",
+    "RealRooted.PFPolynomial.LinearFactor",
+    "RealRooted.Transforms.ReverseHermite.Basic",
+    "RealRooted.Transforms.ReverseHermite.Derivative",
+    "RealRooted.Transforms.ReverseHermite.Preservation",
+    "RealRooted.Transforms.ReverseHermite",
     "RealRooted.GarloffWagner.Theorem12",
     "RealRooted.VeroneseMatrix",
     "RealRooted.ThresholdMatrix.Basic",

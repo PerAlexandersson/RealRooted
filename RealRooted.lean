@@ -586,6 +586,7 @@ import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
@@ -870,6 +871,10 @@ import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus
 import RealRooted.ThresholdMatrix.HaglundZhang
 import RealRooted.Touchard
+import RealRooted.Transforms.ReverseHermite
+import RealRooted.Transforms.ReverseHermite.Basic
+import RealRooted.Transforms.ReverseHermite.Derivative
+import RealRooted.Transforms.ReverseHermite.Preservation
 import RealRooted.TridiagonalDet
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
