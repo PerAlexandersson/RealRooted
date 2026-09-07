@@ -172,6 +172,15 @@ emulation. These scripts complement `lake build`; they do not replace it.
   the family separately packages roots/interlacing and algebraic or integral
   orthogonality, including the bridge from the concrete moment pairing to the
   normalized Favard pairing. `RealRooted/Laguerre.lean` is the family facade.
+- `RealRooted/Mathlib/RingTheory/Polynomial/Hermite.lean` extends Mathlib's
+  canonical probabilists' Hermite family with the lowering identity and monic
+  three-term recurrence. `RealRooted/Hermite/Favard.lean` maps that family to
+  arbitrary coefficient rings and supplies the real Favard certificate;
+  `Hermite/Roots.lean` packages real-rootedness, consecutive interlacing,
+  simple roots, and Sturm sequences. `Hermite/Orthogonality.lean` owns the
+  normalized algebraic pairing with squared norms `n!`, while its `Integral`
+  child alone imports analysis and identifies that pairing with the Gaussian
+  weight `exp (-(x² / 2))`. `RealRooted/Hermite.lean` is the family facade.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem

@@ -142,17 +142,29 @@ theorem roots_nodup_of_favard
   · have hmult : (P n).rootMultiplicity r = 0 := by simp_all
     lia
 
+/-- Reversed finite prefixes of a positive Favard family are Sturm
+sequences. -/
+theorem isSturmSeq_reverse_range_map_of_favard
+    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, IsSturmSeq ((List.range (n + 1)).reverse.map P) :=
+  fun n ↦ by
+  induction n with
+  | zero => simp [IsSturmSeq]
+  | succ n ih =>
+      have hdeg : (P n).natDegree + 1 = (P (n + 1)).natDegree := by
+        simp only [hrec.natDegree_eq]
+      have hinter := (favardInterlacing hrec hβ n).toInterlaces hdeg
+      simpa [IsSturmSeq, List.range_succ] using And.intro hinter ih
+
+/-- Reversed finite prefixes of a positive Favard family are generalized
+Sturm sequences. -/
 theorem isGeneralizedSturmSeq_reverse_range_map_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hβ : ∀ n : Nat, 0 < β (n + 1)) :
     ∀ n : Nat, IsGeneralizedSturmSeq ((List.range (n + 1)).reverse.map P) :=
-  fun n => by
-  induction n with
-  | zero =>
-      simp [IsGeneralizedSturmSeq]
-  | succ n ih =>
-      have hprec : Prec (P n) (P (n + 1)) := favardInterlacing hrec hβ n
-      simpa [IsGeneralizedSturmSeq, List.range_succ] using And.intro hprec ih
+  fun n ↦ (isSturmSeq_reverse_range_map_of_favard hrec hβ n).toGeneralizedSturmSeq
 
 end RealRooted

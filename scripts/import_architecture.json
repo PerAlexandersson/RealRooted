@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 938
+      "max_modules": 946
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -45,6 +45,30 @@
     },
     "RealRooted.Laguerre.Roots": {
       "max_modules": 41
+    },
+    "RealRooted.Hermite": {
+      "max_modules": 41
+    },
+    "RealRooted.Hermite.Basic": {
+      "max_modules": 2
+    },
+    "RealRooted.Hermite.Favard": {
+      "max_modules": 4
+    },
+    "RealRooted.Hermite.Orthogonality": {
+      "max_modules": 6
+    },
+    "RealRooted.Hermite.Orthogonality.Integral": {
+      "max_modules": 8
+    },
+    "RealRooted.Hermite.Roots": {
+      "max_modules": 36
+    },
+    "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.RingTheory.Polynomial.Hermite": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre": {
       "max_modules": 4
@@ -1342,6 +1366,14 @@
     "RealRooted.Laguerre.Orthogonality",
     "RealRooted.Laguerre.Orthogonality.Integral",
     "RealRooted.Laguerre.Roots",
+    "RealRooted.Hermite",
+    "RealRooted.Hermite.Basic",
+    "RealRooted.Hermite.Favard",
+    "RealRooted.Hermite.Orthogonality",
+    "RealRooted.Hermite.Orthogonality.Integral",
+    "RealRooted.Hermite.Roots",
+    "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+    "RealRooted.Mathlib.RingTheory.Polynomial.Hermite",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential",

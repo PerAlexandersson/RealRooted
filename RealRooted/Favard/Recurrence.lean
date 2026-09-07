@@ -41,6 +41,17 @@ namespace SatisfiesFavardRecurrence
 variable {R : Type*} [Ring R]
 variable {P : Nat → R[X]} {α β : Nat → R}
 
+/-- Map a Favard recurrence along a ring homomorphism. -/
+theorem map {S : Type*} [Ring S]
+    (hrec : SatisfiesFavardRecurrence P α β) (f : R →+* S) :
+    SatisfiesFavardRecurrence
+      (fun n ↦ (P n).map f) (fun n ↦ f (α n)) (fun n ↦ f (β n)) := by
+  refine ⟨?_, ?_, ?_⟩
+  · simp [hrec.1]
+  · simp [hrec.2.1]
+  · intro n
+    simp [hrec.2.2 n]
+
 /-- Multiplication by `X` on the degree-zero member of a Favard family. -/
 theorem X_mul_zero (hrec : SatisfiesFavardRecurrence P α β) :
     X * P 0 = P 1 + α 0 • P 0 := by

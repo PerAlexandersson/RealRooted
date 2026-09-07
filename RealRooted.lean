@@ -296,6 +296,12 @@ import RealRooted.Hadamard.Hurwitz
 import RealRooted.Hadamard.Consequences
 import RealRooted.HadamardProduct
 import RealRooted.HeilmannLieb
+import RealRooted.Hermite
+import RealRooted.Hermite.Basic
+import RealRooted.Hermite.Favard
+import RealRooted.Hermite.Orthogonality
+import RealRooted.Hermite.Orthogonality.Integral
+import RealRooted.Hermite.Roots
 import RealRooted.HermiteBiehler
 import RealRooted.HermiteBiehler.Basic
 import RealRooted.HermiteBiehler.Converse
@@ -485,6 +491,7 @@ import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
@@ -547,6 +554,7 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
+import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
