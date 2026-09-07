@@ -94,9 +94,12 @@ of the RealRooted interlacing library.
   upstream candidate; its sharp Eisenstein-tail majorant remains consumer-side.
 - `Mathlib.Algebra.Polynomial.BasisTransform` contains the coefficientwise
   polynomial basis transform and the injectivity theorem for degree-triangular
-  nonzero bases. These were the sequence-independent part of
-  `ProofsOeis.BrandenBinomialTransform`; the named ordered-Bell basis,
-  transform identities, and model applications remain consumer-side.
+  nonzero bases. `BasisTransform` adds the real coefficient-nonnegativity
+  bridge, while `Transforms.BrandenE` now owns the sequence-independent
+  ordered-Bell basis, named transform, inverse, root-window, PF,
+  proper-position, and weighted-cone theory from
+  `ProofsOeis.BrandenBinomialTransform`. Delannoy, even-binomial/type-D, and
+  generalized-Eulerian model applications remain consumer-side.
 - `Mathlib.Algebra.Polynomial.Reverse` contains the field-general root formula
   for a reversed split polynomial, including its zero roots. This is the
   generic algebraic core of the reciprocal-shift portion of
@@ -158,19 +161,21 @@ only after both repositories build against the same RealRooted checkpoint.
 ### Named basis transforms
 
 The generic coefficientwise basis-transform API and its triangular injectivity
-criterion are now in `Mathlib.Algebra.Polynomial.BasisTransform`. The remaining
-`BrandenBinomialTransform` source is not a monolithic extraction candidate:
-its `brandenE` basis is defined through the consumer-owned ordered-Bell family
-and its later sections mix that named basis with Delannoy, Eulerian, and type-D
-applications. Its sequence-independent first-order differential core is now
-also extracted: `basisTransform_X_mul_of_succ_derivative` and its affine-factor
-companion transport a successor-basis recurrence to the corresponding
-transform identity over any commutative semiring. Their semiring-generic
-parent `basisTransform_X_mul_of_succ` handles an arbitrary polynomial linear
-map, including the OEIS higher-derivative cases. The Touchard transform uses
-both first-order lemmas directly, while the Brändén and type-B recurrences are
-instances. No named `brandenE` definition should be exported as a generic
-library primitive.
+criterion are in `Mathlib.Algebra.Polynomial.BasisTransform`. Its
+`basisTransform_X_mul_of_succ_derivative` and affine-factor companion transport
+a successor-basis recurrence to the corresponding transform identity over any
+commutative semiring. Their semiring-generic parent
+`basisTransform_X_mul_of_succ` handles an arbitrary polynomial linear map,
+including the OEIS higher-derivative cases.
+
+The named sequence-independent package is now extracted as
+`Transforms.BrandenE`: `OrderedBell` owns the ordered-Bell basis and factorial
+triangularity, `Basic` and `Inverse` own the transform and normalized
+descending-Pochhammer inverse, and `BasisImage`, `ProperPosition`, and
+`WeightedSum` own the root-window, PF, adjacent-proper-position, and positive
+cone results. The Touchard transform continues to use the generic first-order
+transport lemmas directly. Delannoy, Eulerian, even-binomial, and type-D
+applications are not part of the named transform API.
 
 ### Euler pencils and Wronskian converses
 
@@ -282,10 +287,10 @@ project-level compatibility interface.
 - Boundary cases and finite initial-row computations should remain adjacent to
   the generated sequence theorem that uses them.
 - `LogBounds` is a collection of numerical certificates for one perturbative
-  inequality, not a reusable logarithm API. `EvenBinomial` and the 1,192-line
-  `BrandenBinomialTransform` mix a named basis/model with generic fragments;
-  those consumer files need internal responsibility splits before another
-  library transfer.
+  inequality, not a reusable logarithm API. `EvenBinomial` and the remaining
+  Delannoy, generalized-Eulerian, even-binomial, and type-D sections of
+  `BrandenBinomialTransform` are model applications rather than general
+  transform infrastructure.
 - `EisensteinCriticalLine` is a modular-form argument: its bilateral
   Eisenstein sum, critical-line conjugation, and cotangent tail estimate are
   tied to the Eulerian nome/root identification. The general integer-tail
