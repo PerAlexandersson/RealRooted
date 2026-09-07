@@ -36,6 +36,7 @@ import RealRooted.ArrayPolynomialDeterminantRecurrence
 import RealRooted.ArrayPolynomialSchur
 import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
+import RealRooted.BasisTransform
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Bezoutian
 import RealRooted.Bezoutian.ComplexRoots
@@ -871,6 +872,13 @@ import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus
 import RealRooted.ThresholdMatrix.HaglundZhang
 import RealRooted.Touchard
+import RealRooted.Transforms.BrandenE
+import RealRooted.Transforms.BrandenE.Basic
+import RealRooted.Transforms.BrandenE.BasisImage
+import RealRooted.Transforms.BrandenE.Inverse
+import RealRooted.Transforms.BrandenE.OrderedBell
+import RealRooted.Transforms.BrandenE.ProperPosition
+import RealRooted.Transforms.BrandenE.WeightedSum
 import RealRooted.Transforms.ReverseHermite
 import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.Transforms.ReverseHermite.Derivative

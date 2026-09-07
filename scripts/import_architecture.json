@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 904
+      "max_modules": 912
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -310,6 +310,9 @@
     "RealRooted.Mathlib.Algebra.Polynomial.BasisTransform": {
       "max_modules": 2
     },
+    "RealRooted.BasisTransform": {
+      "max_modules": 7
+    },
     "RealRooted.Mathlib.Algebra.Polynomial.Bezoutian": {
       "max_modules": 2
     },
@@ -446,49 +449,49 @@
       "max_modules": 146
    },
     "RealRooted.NarayanaTransformation.Basis": {
-      "max_modules": 147
+      "max_modules": 148
    },
     "RealRooted.NarayanaTransformation.Basis.Stirling": {
-      "max_modules": 148
-   },
-    "RealRooted.NarayanaTransformation.Falling": {
-      "max_modules": 148
-   },
-    "RealRooted.NarayanaTransformation.Rising": {
       "max_modules": 149
    },
-    "RealRooted.NarayanaTransformation.Coefficients": {
+    "RealRooted.NarayanaTransformation.Falling": {
+      "max_modules": 149
+   },
+    "RealRooted.NarayanaTransformation.Rising": {
       "max_modules": 150
    },
-    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
+    "RealRooted.NarayanaTransformation.Coefficients": {
       "max_modules": 151
    },
-    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
+    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
       "max_modules": 152
    },
-    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
+    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
       "max_modules": 153
    },
-    "RealRooted.NarayanaTransformation.Rectangular": {
+    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
       "max_modules": 154
    },
-    "RealRooted.NarayanaTransformation.Recurrences": {
-      "max_modules": 157
-   },
-    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+    "RealRooted.NarayanaTransformation.Rectangular": {
       "max_modules": 155
    },
-    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
-      "max_modules": 156
-   },
-    "RealRooted.NarayanaTransformation.Gamma": {
+    "RealRooted.NarayanaTransformation.Recurrences": {
       "max_modules": 158
    },
-    "RealRooted.NarayanaTransformation.Endpoints": {
+    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+      "max_modules": 156
+   },
+    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
+      "max_modules": 157
+   },
+    "RealRooted.NarayanaTransformation.Gamma": {
       "max_modules": 159
    },
+    "RealRooted.NarayanaTransformation.Endpoints": {
+      "max_modules": 160
+   },
     "RealRooted.NarayanaTransformation": {
-      "max_modules": 161
+      "max_modules": 162
    },
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 79
@@ -917,7 +920,7 @@
       "max_modules": 97
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 429
+      "max_modules": 430
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -955,6 +958,27 @@
     "RealRooted.Transforms.ReverseHermite": {
       "max_modules": 102
    },
+    "RealRooted.Transforms.BrandenE.OrderedBell": {
+      "max_modules": 6
+   },
+    "RealRooted.Transforms.BrandenE.Basic": {
+      "max_modules": 8
+   },
+    "RealRooted.Transforms.BrandenE.Inverse": {
+      "max_modules": 9
+   },
+    "RealRooted.Transforms.BrandenE.BasisImage": {
+      "max_modules": 15
+   },
+    "RealRooted.Transforms.BrandenE.ProperPosition": {
+      "max_modules": 85
+   },
+    "RealRooted.Transforms.BrandenE.WeightedSum": {
+      "max_modules": 92
+   },
+    "RealRooted.Transforms.BrandenE": {
+      "max_modules": 94
+   },
     "RealRooted.GarloffWagner.Theorem12": {
       "max_modules": 96
    },
@@ -986,7 +1010,7 @@
       "max_modules": 89
     },
     "RealRooted.Tactic": {
-      "max_modules": 457
+      "max_modules": 458
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 167
@@ -1301,6 +1325,7 @@
     "RealRooted.CoefficientDominance.Symmetric.Tail",
     "RealRooted.CoefficientDominance.Symmetric.Upper",
     "RealRooted.Mathlib.Algebra.Polynomial.BasisTransform",
+    "RealRooted.BasisTransform",
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse",
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree",
@@ -1495,6 +1520,13 @@
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
     "RealRooted.PFPolynomial",
     "RealRooted.PFPolynomial.LinearFactor",
+    "RealRooted.Transforms.BrandenE.OrderedBell",
+    "RealRooted.Transforms.BrandenE.Basic",
+    "RealRooted.Transforms.BrandenE.Inverse",
+    "RealRooted.Transforms.BrandenE.BasisImage",
+    "RealRooted.Transforms.BrandenE.ProperPosition",
+    "RealRooted.Transforms.BrandenE.WeightedSum",
+    "RealRooted.Transforms.BrandenE",
     "RealRooted.Transforms.ReverseHermite.Basic",
     "RealRooted.Transforms.ReverseHermite.Derivative",
     "RealRooted.Transforms.ReverseHermite.Preservation",
