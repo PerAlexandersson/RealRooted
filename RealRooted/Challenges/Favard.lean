@@ -9,9 +9,10 @@ https://www.symmetricfunctions.com/realRootedInterlacing.htm#favardInterlacing
 Original publication: J. Favard, "Sur les polynomes de Tchebicheff",
 C. R. Acad. Sci. Paris 200 (1935), 2052--2053.
 
-This module exposes the checked root-theoretic Favard recurrence theorem.  The
-measure-theoretic orthogonality conclusion is intentionally outside the current
-scope of this Lean project.
+This module exposes the checked root-theoretic Favard recurrence theorem. The
+ring-generic normalized functional and orthogonality theory live in
+`RealRooted.Favard.Orthogonality`; concrete integral realizations remain in
+analytic classical-family child modules.
 -/
 
 open Polynomial

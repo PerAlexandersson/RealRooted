@@ -222,6 +222,8 @@ import RealRooted.Favard.Affine
 import RealRooted.Favard.Affine.Basic
 import RealRooted.Favard.Affine.Denominator
 import RealRooted.Favard.Affine.RowSign
+import RealRooted.Favard.Orthogonality
+import RealRooted.Favard.Recurrence
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
@@ -318,6 +320,7 @@ import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
 import RealRooted.Jacobi.DifferentialOperator
+import RealRooted.Jacobi.Favard
 import RealRooted.Jacobi.Orthogonality
 import RealRooted.Jacobi.Orthogonality.Integral
 import RealRooted.JacobiBetaZeroOrthogonality
@@ -328,6 +331,7 @@ import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
 import RealRooted.Kurtz
 import RealRooted.Laguerre
+import RealRooted.Laguerre.Favard
 import RealRooted.Laguerre.Orthogonality
 import RealRooted.Laguerre.Orthogonality.Integral
 import RealRooted.Laguerre.Roots

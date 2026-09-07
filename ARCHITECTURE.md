@@ -321,6 +321,19 @@ recurrence backends from importing the scalar-denominator tactic frontend.
 Its split-recurrence cancellation lemma is shared by the affine Favard
 normalizers as well, rather than remaining a private tactic helper.
 
+The core Favard theory is split by mathematical responsibility:
+
+- `Favard.Recurrence` owns the ring-generic monic three-term recurrence,
+  degree consequences, polynomial sequence, and basis;
+- `Favard` retains the real root/interlacing theorem without importing
+  orthogonality or analysis; and
+- `Favard.Orthogonality` constructs the normalized coordinate functional and
+  product pairing, with diagonal norms, orthogonality, nondegeneracy, positive
+  definiteness, and uniqueness up to scaling.
+
+Representing integrals stay in classical-family analytic children, so the
+algebraic recurrence and root layers do not acquire measure-theory imports.
+
 The affine Favard recurrence APIs are likewise now theorem-only:
 
 - `Favard.Affine.Basic` owns the direct monic and positive-slope coefficient
@@ -347,15 +360,19 @@ dependency layers:
 - `Mathlib.RingTheory.Polynomial.Laguerre.Basic`, `.Differential`, and
   `.Recurrence` define the division-free monic sign-reversed family over the
   weakest natural coefficient structures;
-- `Laguerre.Roots` instantiates the derivative-recurrence and Favard backends,
-  including the `α = -1` boundary factorization and simple-root argument;
-- `Laguerre.Orthogonality` proves algebraic signed-Gamma-moment orthogonality;
-  and
+- `Laguerre.Favard` supplies the recurrence certificate and coefficient
+  positivity independently of root or analytic theory;
+- `Laguerre.Roots` instantiates the derivative-recurrence and root-theoretic
+  Favard backends, including the `α = -1` boundary factorization and
+  simple-root argument;
+- `Laguerre.Orthogonality` proves algebraic signed-Gamma-moment orthogonality
+  and identifies its bundled moment pairing with the normalized Favard
+  pairing; and
 - `Laguerre.Orthogonality.Integral` supplies the positive-half-line integral
-  bridge without adding analysis imports to the polynomial definition.
+  bridge after the sign reversal `x ↦ -x`, without adding analysis imports to
+  the polynomial definition.
 
-`Laguerre.lean` is the full family facade. The root import budget rises by
-nine modules for the shared moment layer, that facade, and its focused children.
+`Laguerre.lean` is the full family facade.
 
 The root-count tactic follows the same theorem/frontend boundary:
 
@@ -904,13 +921,16 @@ layers, and the historical insertion operator is only a compatibility alias
 for the neutral Darboux operator. The toric model definitions and finite-offset
 assembly remain in the application layer.
 
-Shifted-Jacobi orthogonality has a finite/analytic boundary. The coefficient-
-ring self-adjointness criterion lives in the Jacobi moment shim; the Gamma-
-moment specialization and finite spectral argument live in
-`Jacobi.Orthogonality`. `Jacobi.Orthogonality.Integral` alone imports the real
-beta-integral bridge and identifies the pairing with integration against
-`x ^ α * (1 - x) ^ β`. The historical beta-zero and beta-one modules remain
-source-compatible specializations; they do not sit below the generic layer.
+Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
+owns the monic recurrence certificate without importing roots or analysis.
+The coefficient-ring self-adjointness criterion lives in the Jacobi moment
+shim; the Gamma-moment specialization and finite spectral argument live in
+`Jacobi.Orthogonality`, which identifies its bundled moment pairing with the
+normalized Favard pairing. `Jacobi.Orthogonality.Integral` alone imports the
+real beta-integral bridge and identifies the Favard pairing with integration
+against `x ^ α * (1 - x) ^ β` on the unit interval, up to its positive total
+mass. The historical beta-zero and beta-one modules remain source-compatible
+specializations; they do not sit below the generic layer.
 
 The exceptional offset is itself layered behind its historical compatibility
 facade. `BaseAndMoments` owns the Euler-inverse coefficients, endpoint product,

@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.Algebra.Algebra.Bilinear
 public import Mathlib.Algebra.Polynomial.Basic
 
 import Mathlib.Algebra.Polynomial.Inductions
@@ -65,6 +66,31 @@ noncomputable def momentPairing (μ : ℕ → R) (p q : R[X]) : R :=
     momentFunctional μ (X ^ k) = μ k := by
   rw [X_pow_eq_monomial, momentFunctional_monomial]
   simp
+
+@[simp] theorem momentFunctional_one (μ : ℕ → R) :
+    momentFunctional μ 1 = μ 0 := by
+  simpa using momentFunctional_monomial μ 1 0
+
+/-- The bundled linear map associated to a prescribed sequence of moments. -/
+def momentFunctionalLinearMap (μ : ℕ → R) : R[X] →ₗ[R] R where
+  toFun := momentFunctional μ
+  map_add' := momentFunctional_add μ
+  map_smul' c p := by
+    simp only [Polynomial.smul_eq_C_mul, smul_eq_mul,
+      momentFunctional_C_mul, RingHom.id_apply]
+
+@[simp] theorem momentFunctionalLinearMap_apply (μ : ℕ → R) (p : R[X]) :
+    momentFunctionalLinearMap μ p = momentFunctional μ p :=
+  rfl
+
+/-- The bundled bilinear form induced by a prescribed sequence of moments. -/
+noncomputable def momentPairingBilinForm (μ : ℕ → R) : LinearMap.BilinForm R R[X] :=
+  (LinearMap.mul R R[X]).compr₂ (momentFunctionalLinearMap μ)
+
+@[simp] theorem momentPairingBilinForm_apply
+    (μ : ℕ → R) (p q : R[X]) :
+    momentPairingBilinForm μ p q = momentPairing μ p q :=
+  rfl
 
 theorem momentPairing_comm (μ : ℕ → R) (p q : R[X]) :
     momentPairing μ p q = momentPairing μ q p := by

@@ -1,3 +1,4 @@
+import RealRooted.Favard.Recurrence
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.MaWang
 
@@ -6,18 +7,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-
-/-- A three-term recurrence in the Favard shape.
-
-We record only the recurrence data relevant for the real-rooted/interlacing
-applications: the measure-theoretic orthogonality conclusion can be added later
-once the root-theoretic statement is formalized. -/
-def SatisfiesFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
-  P 0 = 1 ∧
-  P 1 = X - C (α 0) ∧
-  ∀ n : Nat,
-    P (n + 2) =
-      (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n
 
 /-- The proposition form of Favard's theorem used in this project: strictly
 positive recurrence coefficients force a Sturm/interlacing sequence, and

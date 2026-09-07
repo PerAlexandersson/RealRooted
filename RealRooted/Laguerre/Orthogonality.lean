@@ -6,6 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import RealRooted.Favard.Orthogonality
+public import RealRooted.Laguerre.Favard
 public import RealRooted.Mathlib.Algebra.Polynomial.Moment
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 
@@ -250,5 +252,86 @@ theorem generalizedLaguerre_pairwise_orthogonal
   · rw [generalizedLaguerreInner_comm]
     exact generalizedLaguerreInner_eq_zero hα _ (by simpa using hmn)
   · exact generalizedLaguerreInner_eq_zero hα _ (by simpa using hnm)
+
+/-- The generic Favard pairing makes the generalized Laguerre family
+orthogonal. -/
+theorem generalizedLaguerre_favardPairing_iIsOrtho (α : ℝ) :
+    (generalizedLaguerre_satisfiesFavardRecurrence α).pairing.iIsOrtho
+      (fun n ↦ generalizedLaguerre n α) :=
+  (generalizedLaguerre_satisfiesFavardRecurrence α).pairing_iIsOrtho
+
+/-- The generic Favard pairing for generalized Laguerre polynomials is
+positive definite in the open classical parameter range. -/
+theorem generalizedLaguerre_favardPairing_posDef
+    {α : ℝ} (hα : -1 < α) :
+    (generalizedLaguerre_satisfiesFavardRecurrence α).pairing.toQuadraticMap.PosDef := by
+  apply (generalizedLaguerre_satisfiesFavardRecurrence α).pairing_posDef
+  intro n
+  exact generalizedLaguerreSubdiag_pos (n + 1) (by simp) hα
+
+/-- The total mass of the generalized Laguerre moment functional is
+positive. -/
+theorem generalizedLaguerreMoment_zero_pos
+    {α : ℝ} (hα : -1 < α) :
+    0 < generalizedLaguerreMoment α 0 := by
+  simpa [generalizedLaguerreMoment] using
+    Real.Gamma_pos_of_pos (show 0 < α + 1 by linarith)
+
+/-- The classical generalized Laguerre moment functional is its total mass
+times the normalized Favard functional. -/
+theorem generalizedLaguerreFunctional_eq_favardFunctional
+    {α : ℝ} (hα : -1 < α) (p : ℝ[X]) :
+    generalizedLaguerreFunctional α p =
+      generalizedLaguerreMoment α 0 *
+        (generalizedLaguerre_satisfiesFavardRecurrence α).functional p := by
+  have hvanish : ∀ n, n ≠ 0 →
+      Polynomial.momentFunctionalLinearMap
+        (generalizedLaguerreMoment α) (generalizedLaguerre n α) = 0 := by
+    intro n hn
+    have h := generalizedLaguerreInner_eq_zero hα (n := n) 1 (by
+      simpa using Nat.pos_of_ne_zero hn)
+    simpa [generalizedLaguerreInner, generalizedLaguerreFunctional,
+      Polynomial.momentPairing] using h
+  have hmap :=
+    (generalizedLaguerre_satisfiesFavardRecurrence α).linearMap_eq_smul_functional
+      (Polynomial.momentFunctionalLinearMap (generalizedLaguerreMoment α)) hvanish
+  have hp := LinearMap.congr_fun hmap p
+  simpa [generalizedLaguerreFunctional, smul_eq_mul] using hp
+
+/-- The classical generalized Laguerre moment pairing is its total mass times
+the normalized Favard pairing. -/
+theorem generalizedLaguerreInner_eq_favardPairing
+    {α : ℝ} (hα : -1 < α) (p q : ℝ[X]) :
+    generalizedLaguerreInner α p q =
+      generalizedLaguerreMoment α 0 *
+        (generalizedLaguerre_satisfiesFavardRecurrence α).pairing p q := by
+  simpa [generalizedLaguerreInner, generalizedLaguerreFunctional,
+    Polynomial.momentPairing] using
+    generalizedLaguerreFunctional_eq_favardFunctional hα (p * q)
+
+/-- The bundled classical moment pairing is a positive scalar multiple of the
+normalized Favard pairing. -/
+theorem generalizedLaguerreMomentPairingBilinForm_eq_smul_favardPairing
+    {α : ℝ} (hα : -1 < α) :
+    Polynomial.momentPairingBilinForm (generalizedLaguerreMoment α) =
+      generalizedLaguerreMoment α 0 •
+        (generalizedLaguerre_satisfiesFavardRecurrence α).pairing := by
+  apply LinearMap.ext₂
+  intro p q
+  simpa only [Polynomial.momentPairingBilinForm_apply,
+    generalizedLaguerreInner, LinearMap.smul_apply, RingHom.id_apply,
+    smul_eq_mul] using
+    generalizedLaguerreInner_eq_favardPairing hα p q
+
+/-- The bundled classical generalized Laguerre moment pairing is positive
+definite. -/
+theorem generalizedLaguerreMomentPairingBilinForm_posDef
+    {α : ℝ} (hα : -1 < α) :
+    (Polynomial.momentPairingBilinForm
+      (generalizedLaguerreMoment α)).toQuadraticMap.PosDef := by
+  rw [generalizedLaguerreMomentPairingBilinForm_eq_smul_favardPairing hα]
+  simpa only [LinearMap.BilinMap.toQuadraticMap_smul] using
+    (generalizedLaguerre_favardPairing_posDef hα).smul
+      (generalizedLaguerreMoment_zero_pos hα)
 
 end RealRooted

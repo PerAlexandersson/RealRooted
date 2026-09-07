@@ -6,6 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+public import RealRooted.Favard.Orthogonality
+public import RealRooted.Jacobi.Favard
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
 
@@ -268,5 +270,95 @@ theorem shiftedJacobi_pairwise_orthogonal
   · apply shiftedJacobiInner_eq_zero hα hβ
     rw [natDegree_shiftedJacobi n hα hβ]
     exact hnm
+
+/-- The generic Favard pairing makes the monic shifted Jacobi family
+orthogonal. -/
+theorem shiftedJacobiMonic_favardPairing_iIsOrtho
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing.iIsOrtho
+      (fun n ↦ shiftedJacobiMonic n α β) :=
+  (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing_iIsOrtho
+
+/-- The generic Favard pairing for monic shifted Jacobi polynomials is
+positive definite in the open classical parameter range. -/
+theorem shiftedJacobiMonic_favardPairing_posDef
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing.toQuadraticMap.PosDef := by
+  apply (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing_posDef
+  intro n
+  exact shiftedJacobiSubdiag_pos (n + 1) (by lia) hα hβ
+
+/-- The total mass of the shifted Jacobi moment functional is positive. -/
+theorem shiftedJacobiMoment_zero_pos
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    0 < shiftedJacobiMoment α β 0 := by
+  have hα' := Real.Gamma_pos_of_pos (by linarith : 0 < α + 1)
+  have hβ' := Real.Gamma_pos_of_pos (by linarith : 0 < β + 1)
+  have hαβ := Real.Gamma_pos_of_pos (by linarith : 0 < α + β + 2)
+  simpa [shiftedJacobiMoment] using div_pos (mul_pos hα' hβ') hαβ
+
+/-- The classical shifted Jacobi moment functional is its total mass times
+the normalized Favard functional for the monic family. -/
+theorem shiftedJacobiFunctional_eq_favardFunctional
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p : ℝ[X]) :
+    shiftedJacobiFunctional α β p =
+      shiftedJacobiMoment α β 0 *
+        (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).functional p := by
+  have hvanish : ∀ n, n ≠ 0 →
+      Polynomial.momentFunctionalLinearMap
+        (shiftedJacobiMoment α β) (shiftedJacobiMonic n α β) = 0 := by
+    intro n hn
+    have hbase : shiftedJacobiFunctional α β (shiftedJacobi n α β) = 0 := by
+      have h := shiftedJacobiInner_eq_zero hα hβ (n := n) 1 (by
+        simpa using Nat.pos_of_ne_zero hn)
+      simpa [shiftedJacobiInner, shiftedJacobiFunctional,
+        Polynomial.momentPairing] using h
+    change shiftedJacobiFunctional α β (shiftedJacobiMonic n α β) = 0
+    rw [shiftedJacobiMonic]
+    change Polynomial.momentFunctional (shiftedJacobiMoment α β)
+      (C _ * shiftedJacobi n α β) = 0
+    rw [Polynomial.momentFunctional_C_mul]
+    change _ * shiftedJacobiFunctional α β (shiftedJacobi n α β) = 0
+    rw [hbase, mul_zero]
+  have hmap :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).linearMap_eq_smul_functional
+      (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) hvanish
+  have hp := LinearMap.congr_fun hmap p
+  simpa [shiftedJacobiFunctional, smul_eq_mul] using hp
+
+/-- The classical shifted Jacobi moment pairing is its total mass times the
+normalized Favard pairing for the monic family. -/
+theorem shiftedJacobiInner_eq_favardPairing
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p q : ℝ[X]) :
+    shiftedJacobiInner α β p q =
+      shiftedJacobiMoment α β 0 *
+        (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing p q := by
+  simpa [shiftedJacobiInner, shiftedJacobiFunctional,
+    Polynomial.momentPairing] using
+    shiftedJacobiFunctional_eq_favardFunctional hα hβ (p * q)
+
+/-- The bundled classical moment pairing is a positive scalar multiple of the
+normalized Favard pairing for the monic shifted Jacobi family. -/
+theorem shiftedJacobiMomentPairingBilinForm_eq_smul_favardPairing
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    Polynomial.momentPairingBilinForm (shiftedJacobiMoment α β) =
+      shiftedJacobiMoment α β 0 •
+        (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).pairing := by
+  apply LinearMap.ext₂
+  intro p q
+  simpa only [Polynomial.momentPairingBilinForm_apply, shiftedJacobiInner,
+    LinearMap.smul_apply, RingHom.id_apply, smul_eq_mul] using
+    shiftedJacobiInner_eq_favardPairing hα hβ p q
+
+/-- The bundled classical shifted Jacobi moment pairing is positive
+definite. -/
+theorem shiftedJacobiMomentPairingBilinForm_posDef
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
+    (Polynomial.momentPairingBilinForm
+      (shiftedJacobiMoment α β)).toQuadraticMap.PosDef := by
+  rw [shiftedJacobiMomentPairingBilinForm_eq_smul_favardPairing hα hβ]
+  simpa only [LinearMap.BilinMap.toQuadraticMap_smul] using
+    (shiftedJacobiMonic_favardPairing_posDef hα hβ).smul
+      (shiftedJacobiMoment_zero_pos hα hβ)
 
 end RealRooted
