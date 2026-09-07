@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 927
+      "max_modules": 931
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -20,6 +20,18 @@
       "max_modules": 1
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta": {
+      "max_modules": 1
+    },
+    "RealRooted.Jacobi.Orthogonality": {
+      "max_modules": 1
+    },
+    "RealRooted.Jacobi.Orthogonality.Integral": {
       "max_modules": 1
     },
     "RealRooted.Laguerre": {
@@ -1299,8 +1311,12 @@
     "RealRooted.EulerOperator.Darboux.Basic",
     "RealRooted.EulerOperator.Darboux.Interlacing",
     "RealRooted.Jacobi.DifferentialOperator",
+    "RealRooted.Jacobi.Orthogonality",
+    "RealRooted.Jacobi.Orthogonality.Integral",
+    "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
     "RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder",
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator",
+    "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment",
     "RealRooted.Laguerre",
     "RealRooted.Laguerre.Orthogonality",
     "RealRooted.Laguerre.Orthogonality.Integral",

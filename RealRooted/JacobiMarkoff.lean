@@ -1,5 +1,7 @@
 import RealRooted.JacobiOrthogonality
+import RealRooted.Jacobi
 import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.ImplicitContDiff
