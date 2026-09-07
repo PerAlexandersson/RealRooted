@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 895
+      "max_modules": 897
    },
     "RealRooted.Analysis.PowerTail": {
       "max_modules": 5
@@ -352,6 +352,9 @@
     "RealRooted.EulerOperator.Polar": {
       "max_modules": 88
     },
+    "RealRooted.EulerOperator.Polar.MultiplierSequence": {
+      "max_modules": 103
+    },
     "RealRooted.EulerOperator.Polar.ProperPosition": {
       "max_modules": 96
     },
@@ -429,6 +432,12 @@
     },
     "RealRooted.MultiplierSequence": {
       "max_modules": 78
+    },
+    "RealRooted.MultiplierSequence.Infinite": {
+      "max_modules": 81
+    },
+    "RealRooted.MultiplierSequence.PolyaSchur": {
+      "max_modules": 94
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
       "max_modules": 146

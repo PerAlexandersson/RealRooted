@@ -1,5 +1,6 @@
 import RealRooted.EulerOperator
 import RealRooted.Hadamard.Grace
+import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Finite multiplier sequences for polar Euler operators
@@ -65,6 +66,73 @@ theorem polarThetaMultiplier_isFiniteMultiplierSequence (N : ℕ) :
   · exact (isPFPolynomial_X_add_one.pow (N - 1)).const_mul
       (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN))
 
+/-- The polar-theta diagonal also preserves the PF cone on its natural degree
+box. This is a finite certificate; it is not asserted to be an infinite
+multiplier sequence. -/
+theorem polarThetaMultiplier_isFinitePFMultiplierSequence (N : ℕ) :
+    IsFinitePFMultiplierSequence N (polarThetaMultiplier N) :=
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence
+    (polarThetaMultiplier_nonneg N)
+    (polarThetaMultiplier_isFiniteMultiplierSequence N)
+
+/-- The natural finite polar multiplier is not generally an infinite
+multiplier sequence. At `N = 3`, applying it to `(X + 1) ^ 4` produces the
+non-real-rooted quadratic `6 X² + 8 X + 3`. -/
+theorem not_isMultiplierSequence_polarThetaMultiplier_three :
+    ¬ IsMultiplierSequence (polarThetaMultiplier 3) := by
+  intro hgamma
+  have hout := hgamma.diagonalOperator_eq_zero_or_splits
+    (splits_X_add_one_pow 4)
+  have heq :
+      diagonalOperator (polarThetaMultiplier 3) ((X + 1) ^ 4) =
+        C 6 * X ^ 2 + C 8 * X + C 3 := by
+    have hpow :
+        (X + 1 : ℝ[X]) ^ 4 =
+          X ^ 4 + C 4 * X ^ 3 + C 6 * X ^ 2 + C 4 * X + 1 := by
+      norm_num [C_ofNat]
+      ring
+    rw [hpow]
+    ext k
+    by_cases hk : k ≤ 4
+    · interval_cases k <;>
+        norm_num [coeff_diagonalOperator, coeff_add, coeff_C_mul,
+          coeff_X_pow, coeff_X, coeff_one, coeff_C,
+          polarThetaMultiplier]
+    · have h0 : k ≠ 0 := by lia
+      have h1 : k ≠ 1 := by lia
+      have h2 : k ≠ 2 := by lia
+      have h3 : k ≠ 3 := by lia
+      have h4 : k ≠ 4 := by lia
+      simp [coeff_diagonalOperator, coeff_add, coeff_C_mul,
+        coeff_X_pow, coeff_X, coeff_one, coeff_C,
+        polarThetaMultiplier, h0, Ne.symm h1, h2, h3, h4]
+  rw [heq] at hout
+  rcases hout with hzero | hsplits
+  · have := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
+    norm_num at this
+  · have hdeg :
+        (C 6 * X ^ 2 + C 8 * X + C 3 : ℝ[X]).natDegree = 2 := by
+      compute_degree <;> norm_num
+    have hdisc :=
+      four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
+        hdeg hsplits
+    norm_num [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C] at hdisc
+
+/-- Compose an infinite multiplier sequence with the finite polar-theta
+certificate on its natural degree box. -/
+theorem IsMultiplierSequence.mul_polarThetaMultiplier
+    {gamma : ℕ → ℝ} (hgamma : IsMultiplierSequence gamma) (N : ℕ) :
+    IsFiniteMultiplierSequence N
+      (fun k => gamma k * polarThetaMultiplier N k) :=
+  hgamma.mul_finite (polarThetaMultiplier_isFiniteMultiplierSequence N)
+
+/-- PF version of `IsMultiplierSequence.mul_polarThetaMultiplier`. -/
+theorem IsPFMultiplierSequence.mul_polarThetaMultiplier
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) (N : ℕ) :
+    IsFinitePFMultiplierSequence N
+      (fun k => gamma k * polarThetaMultiplier N k) :=
+  hgamma.mul_finite (polarThetaMultiplier_isFinitePFMultiplierSequence N)
+
 /-- The globally nonnegative diagonal sequence for
 `thetaPlusOne ∘ polarTheta N`. -/
 def thetaPlusOnePolarThetaMultiplier (N k : ℕ) : ℝ :=
@@ -107,20 +175,38 @@ theorem jensenPolynomial_thetaPlusOnePolarThetaMultiplier
 natural degree box. -/
 theorem thetaPlusOnePolarThetaMultiplier_isFiniteMultiplierSequence (N : ℕ) :
     IsFiniteMultiplierSequence N (thetaPlusOnePolarThetaMultiplier N) := by
-  by_cases hN : N ≤ 1
-  · exact isFiniteMultiplierSequence_of_natDegree_le_one hN _
-  · have hN2 : 2 ≤ N := by lia
-    apply
-      (finitePolyaSchur_nonneg
-        (thetaPlusOnePolarThetaMultiplier_nonneg N)).2
-    rw [jensenPolynomial_thetaPlusOnePolarThetaMultiplier hN2]
-    have hlinear : IsPFPolynomial (1 + C (N : ℝ) * X) := by
-      have hNpos : (0 : ℝ) < N := by positivity
-      simpa [add_comm] using
-        (IsPFPolynomial.C_mul_X_add_C_sub_C hNpos zero_le_one le_rfl)
-    simpa [mul_assoc] using
-      (((isPFPolynomial_X_add_one.pow (N - 2)).mul hlinear).const_mul
-        (Nat.cast_pos.mpr (Nat.zero_lt_of_lt hN2)))
+  change IsFiniteMultiplierSequence N
+    (fun k => ((k : ℝ) + 1) * polarThetaMultiplier N k)
+  exact isMultiplierSequence_natCast_add_one.mul_finite
+    (polarThetaMultiplier_isFiniteMultiplierSequence N)
+
+/-- The composite polar-theta diagonal preserves the PF cone on its natural
+degree box. -/
+theorem thetaPlusOnePolarThetaMultiplier_isFinitePFMultiplierSequence
+    (N : ℕ) :
+    IsFinitePFMultiplierSequence N
+      (thetaPlusOnePolarThetaMultiplier N) :=
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence
+    (thetaPlusOnePolarThetaMultiplier_nonneg N)
+    (thetaPlusOnePolarThetaMultiplier_isFiniteMultiplierSequence N)
+
+/-- Compose an infinite multiplier sequence with the finite
+`thetaPlusOne ∘ polarTheta` certificate. -/
+theorem IsMultiplierSequence.mul_thetaPlusOnePolarThetaMultiplier
+    {gamma : ℕ → ℝ} (hgamma : IsMultiplierSequence gamma) (N : ℕ) :
+    IsFiniteMultiplierSequence N
+      (fun k => gamma k * thetaPlusOnePolarThetaMultiplier N k) :=
+  hgamma.mul_finite
+    (thetaPlusOnePolarThetaMultiplier_isFiniteMultiplierSequence N)
+
+/-- PF version of
+`IsMultiplierSequence.mul_thetaPlusOnePolarThetaMultiplier`. -/
+theorem IsPFMultiplierSequence.mul_thetaPlusOnePolarThetaMultiplier
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) (N : ℕ) :
+    IsFinitePFMultiplierSequence N
+      (fun k => gamma k * thetaPlusOnePolarThetaMultiplier N k) :=
+  hgamma.mul_finite
+    (thetaPlusOnePolarThetaMultiplier_isFinitePFMultiplierSequence N)
 
 /-- On polynomials of degree at most `N`, the polar-theta multiplier realizes
 the existing polar Euler operator. -/
