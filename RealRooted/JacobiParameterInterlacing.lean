@@ -18,24 +18,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem shiftedJacobi_eq_leading_mul_monic (n : ℕ) {α β : ℝ}
-    (hα : -1 < α) (hβ : -1 < β) :
-    shiftedJacobi n α β =
-      C ((-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n) *
-        shiftedJacobiMonic n α β := by
-  have hchoose : 0 < Ring.choose (n + α + β + n) n := by
-    cases n with
-    | zero => simp
-    | succ n =>
-        apply Polynomial.ring_choose_pos
-        push_cast
-        linarith
-  have hscale : (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 :=
-    mul_ne_zero (pow_ne_zero n (by norm_num)) hchoose.ne'
-  symm
-  rw [shiftedJacobiMonic, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hscale,
-    C_1, one_mul]
-
 /-- A shifted Jacobi polynomial has an increasing enumeration of all its
 roots, and every enumerated root lies in the open unit interval. -/
 theorem exists_shiftedJacobi_orderedRoots (n : ℕ) {α β : ℝ}

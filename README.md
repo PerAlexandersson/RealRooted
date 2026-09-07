@@ -181,6 +181,15 @@ emulation. These scripts complement `lake build`; they do not replace it.
   normalized algebraic pairing with squared norms `n!`, while its `Integral`
   child alone imports analysis and identifies that pairing with the Gaussian
   weight `exp (-(x² / 2))`. `RealRooted/Hermite.lean` is the family facade.
+- `RealRooted/Mathlib/RingTheory/Polynomial/ShiftedLegendre.lean` identifies
+  Mathlib's integer shifted Legendre family with the zero-parameter shifted
+  Jacobi family after mapping to the reals. `Legendre/Basic.lean` exposes that
+  canonical map and its reflection through the origin, while
+  `Legendre/Roots.lean` packages degree, root-location, simple-root, and
+  consecutive-interlacing theory in both orientations. The reflected family
+  is the reusable positive-leading normalization behind the A080721 auxiliary
+  Legendre polynomials; the actual OEIS family remains a distinct local
+  quasi-Legendre combination. `RealRooted/Legendre.lean` is the family facade.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem

@@ -393,6 +393,22 @@ directly and keeps the same algebra/analysis separation:
 `Hermite.lean` is the full family facade. This package is independent of the
 distinct positive-recurrence reverse-Hermite transform package.
 
+The shifted Legendre package is a thin specialization of canonical Mathlib
+and shifted-Jacobi theory:
+
+- `Mathlib.RingTheory.Polynomial.ShiftedLegendre` proves the exact
+  coefficientwise identity between `shiftedJacobi n 0 0` and Mathlib's
+  integer shifted Legendre polynomial mapped to `ℝ`;
+- `Legendre.Basic` owns the transparent real alias and the reflection
+  `Pₙ(1 - 2X) ↦ Pₙ(1 + 2X)` used by positive-leading applications; and
+- `Legendre.Roots` specializes the Jacobi root interval, simple-root, and
+  consecutive-interlacing theory, then transports it through reflection.
+
+`Legendre.lean` is the family facade. The OEIS-specific degree-gap-two
+quasi-Legendre combination is intentionally not part of this package. Counting
+both `import` and `public import`, the facade has a 43-module local closure;
+the root layer has 42, while the algebraic map layer has four.
+
 The root-count tactic follows the same theorem/frontend boundary:
 
 - `Tactic.RootCount.SequenceCore` owns the pointwise sequence transports for
