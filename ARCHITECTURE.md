@@ -374,6 +374,25 @@ dependency layers:
 
 `Laguerre.lean` is the full family facade.
 
+The probabilists' Hermite package uses Mathlib's `Polynomial.hermite`
+directly and keeps the same algebra/analysis separation:
+
+- `Mathlib.RingTheory.Polynomial.Hermite` adds only upstream-shaped lowering
+  and three-term recurrence identities to Mathlib's integer family;
+- `Hermite.Basic` is the canonical map to `ℝ[X]`, and `Hermite.Favard`
+  transports the integer recurrence to arbitrary coefficient rings;
+- `Hermite.Roots` is a thin real specialization of the generic Favard root,
+  interlacing, simple-root, and Sturm APIs;
+- `Hermite.Orthogonality` specializes the normalized algebraic Favard pairing,
+  including the factorial squared norms; and
+- `Hermite.Orthogonality.Integral` alone imports Gaussian analysis. It uses
+  the reusable polynomial-times-Gaussian integrability shim and the whole-line
+  fundamental theorem of calculus to identify the integral functional with
+  `√(2π)` times the normalized Favard functional.
+
+`Hermite.lean` is the full family facade. This package is independent of the
+distinct positive-recurrence reverse-Hermite transform package.
+
 The root-count tactic follows the same theorem/frontend boundary:
 
 - `Tactic.RootCount.SequenceCore` owns the pointwise sequence transports for

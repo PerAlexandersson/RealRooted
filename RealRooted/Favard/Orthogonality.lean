@@ -14,6 +14,7 @@ import Mathlib.Algebra.Algebra.Bilinear
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Polynomial.Inductions
 import Mathlib.Data.Finsupp.Order
+import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.LinearAlgebra.Basis.Bilinear
 import Mathlib.Tactic.Linarith
 
@@ -50,6 +51,15 @@ def favardNormSq {R : Type*} [CommMonoid R] (β : Nat → R) (n : Nat) : R :=
     favardNormSq β (n + 1) = favardNormSq β n * β (n + 1) := by
   unfold favardNormSq
   rw [Finset.prod_range_succ]
+
+/-- The Favard squared norm for the natural-number subdiagonal is a
+factorial. -/
+@[simp] theorem favardNormSq_natCast {R : Type*} [CommSemiring R] (n : Nat) :
+    favardNormSq (fun k : Nat ↦ (k : R)) n = (n.factorial : R) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      simp [favardNormSq_succ, ih, Nat.factorial_succ, mul_comm]
 
 /-- A product of nonzero Favard subdiagonal coefficients is nonzero. -/
 theorem favardNormSq_ne_zero {R : Type*} [CommRing R] [IsDomain R]
