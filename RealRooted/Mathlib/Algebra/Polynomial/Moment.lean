@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Inductions
+public import Mathlib.Algebra.Polynomial.Basic
+
+import Mathlib.Algebra.Polynomial.Inductions
 
 /-!
 # Polynomial moment functionals
