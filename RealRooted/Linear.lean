@@ -315,6 +315,17 @@ lemma isRealRooted_comp_X_add_C
   rw [roots_comp_X_add_C r, Multiset.card_map, natDegree_comp, natDegree_X_add_C,
     card_roots_of_splits hp_splits, mul_one]
 
+/-- Rescaling the variable by a nonzero real preserves real-rootedness. -/
+lemma isRealRooted_comp_C_mul_X
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    {a : ℝ} (ha : a ≠ 0) :
+    p.comp (C a * X) ≠ 0 ∧ (p.comp (C a * X)).Splits := by
+  refine ⟨?_, hp_splits.comp_of_natDegree_le_one (by simp [ha])⟩
+  have hdeg : (C a * X : ℝ[X]).natDegree ≠ 0 := by simp [ha]
+  exact leadingCoeff_ne_zero.mp (by
+    rw [leadingCoeff_comp hdeg]
+    simp [ha, hp_ne])
+
 private lemma listAlternates_reverse_map_one_sub {ss rs : List ℝ}
     (hlen : ss.length = rs.length) (halt : ListAlternates ss rs) :
     ListAlternates (rs.reverse.map (1 - ·)) (ss.reverse.map (1 - ·)) := by
@@ -395,6 +406,76 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
   · exact hcase.elim
       (fun h => Or.inl ⟨by simp_all, listInterlaces_map_sub_const h.2 r⟩)
       (fun h => Or.inr ⟨by simp_all, listAlternates_map_sub_const h.2 r⟩)
+
+/-- Positive rescaling of the variable preserves `Prec`: each root is divided
+by the same positive scalar, so its relative order is unchanged. -/
+lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : Prec f g)
+    {a : ℝ} (ha : 0 < a) :
+    Prec (f.comp (C a * X)) (g.comp (C a * X)) := by
+  rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hcase⟩
+  have ha_ne : a ≠ 0 := ne_of_gt ha
+  have ha_unit : IsUnit a := isUnit_iff_ne_zero.mpr ha_ne
+  have hainv : 0 ≤ a⁻¹ := inv_nonneg.mpr ha.le
+  have hmono : ∀ {x y : ℝ}, x ≤ y → a⁻¹ * x ≤ a⁻¹ * y := by
+    intro x y hxy
+    exact mul_le_mul_of_nonneg_left hxy hainv
+  have hroots_f :
+      (↑(ss.map (a⁻¹ * ·)) : Multiset ℝ) =
+        (f.comp (C a * X)).roots := by
+    calc
+      (↑(ss.map (a⁻¹ * ·)) : Multiset ℝ) =
+          (↑ss : Multiset ℝ).map (a⁻¹ * ·) := rfl
+      _ = f.roots.map (a⁻¹ * ·) := by rw [hss_eq]
+      _ = (f.comp (C a * X)).roots := by
+        simpa using
+          (Polynomial.roots_comp_C_mul_X_add_C f a 0 ha_unit).symm
+  have hroots_g :
+      (↑(rs.map (a⁻¹ * ·)) : Multiset ℝ) =
+        (g.comp (C a * X)).roots := by
+    calc
+      (↑(rs.map (a⁻¹ * ·)) : Multiset ℝ) =
+          (↑rs : Multiset ℝ).map (a⁻¹ * ·) := rfl
+      _ = g.roots.map (a⁻¹ * ·) := by rw [hrs_eq]
+      _ = (g.comp (C a * X)).roots := by
+        simpa using
+          (Polynomial.roots_comp_C_mul_X_add_C g a 0 ha_unit).symm
+  rcases hcase with ⟨hlen, hinterlaces⟩ | ⟨hlen, halternates⟩
+  · have hinter :
+        List.Interleaves (fun x y : ℝ => x ≤ y)
+          (ss.map (a⁻¹ * ·)) (rs.map (a⁻¹ * ·)) :=
+      (interleaves_of_listInterlaces_of_length hlen hinterlaces).map
+        (a⁻¹ * ·) @hmono
+    refine ⟨isRealRooted_comp_C_mul_X hf.1 hf.2 ha_ne,
+      isRealRooted_comp_C_mul_X hg.1 hg.2 ha_ne,
+      ss.map (a⁻¹ * ·), rs.map (a⁻¹ * ·),
+      hinter.pairwise_left, hinter.pairwise_right, hroots_f, hroots_g,
+      Or.inl ⟨by simpa using hlen, ?_⟩⟩
+    exact listInterlaces_of_interleaves_of_length (by simpa using hlen) hinter
+  · have hinter :
+        List.Interleaves (fun x y : ℝ => x ≤ y)
+          (rs.map (a⁻¹ * ·)) (ss.map (a⁻¹ * ·)) :=
+      (interleaves_of_listAlternates_of_length hlen halternates).map
+        (a⁻¹ * ·) @hmono
+    refine ⟨isRealRooted_comp_C_mul_X hf.1 hf.2 ha_ne,
+      isRealRooted_comp_C_mul_X hg.1 hg.2 ha_ne,
+      ss.map (a⁻¹ * ·), rs.map (a⁻¹ * ·),
+      hinter.pairwise_right, hinter.pairwise_left, hroots_f, hroots_g,
+      Or.inr ⟨by simpa using hlen, ?_⟩⟩
+    exact listAlternates_of_interleaves_of_length (by simpa using hlen) hinter
+
+/-- Positive variable rescaling is an equivalence on `Prec`. -/
+lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
+    Prec (f.comp (C a * X)) (g.comp (C a * X)) ↔ Prec f g := by
+  constructor
+  · intro h
+    have h' := prec_comp_C_mul_X h (inv_pos.mpr ha)
+    have hscale :
+        (C a * X : ℝ[X]).comp (C a⁻¹ * X) = X := by
+      simp only [mul_comp, C_comp, X_comp]
+      rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', map_one,
+        one_mul]
+    simpa [Polynomial.comp_assoc, hscale] using h'
+  · exact fun h => prec_comp_C_mul_X h ha
 
 /-- Reflection through the origin reverses same-degree proper position. -/
 lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}

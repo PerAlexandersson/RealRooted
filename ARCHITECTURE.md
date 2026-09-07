@@ -500,6 +500,18 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`Transforms.ReverseHermite` is a focused package for the positive-recurrence
+reverse-Hermite basis and its coefficientwise transform. `Basic` contains only
+the semiring-level basis and algebraic transform laws; `Derivative` contains
+the division-free derivative identity and its characteristic-zero normalized
+form; and `Preservation` contains the real PF and zero-aware proper-position
+theorems. The preservation layer depends on the neutral nonnegative
+linear-factor step in `PFPolynomial.LinearFactor`, while neither it nor the
+derivative layer is pulled into `Basic`. Positive variable rescaling of `Prec`
+belongs to `Linear`, independently of this named transform. This separation
+lets OEIS applications reuse the transform without importing their sequence
+models or making Mathlib's distinct Hermite recurrence part of the API.
+
 `Mathlib.Algebra.MvPolynomial.EvalOnVars` is the corresponding support-local
 evaluation shim. Its semiring-generic `MvPolynomial.eval_eq_of_eq_on_vars`
 states that evaluation depends only on coordinates in the polynomial's finite
