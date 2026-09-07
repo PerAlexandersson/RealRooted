@@ -1,3 +1,4 @@
+import RealRooted.BasisTransform
 import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
@@ -9,15 +10,6 @@ open Polynomial Finset
 noncomputable section
 
 namespace RealRooted
-
-/-- Basis transforms preserve coefficientwise nonnegativity. -/
-theorem HasNonnegCoeffs.basisTransform {P : ℕ → ℝ[X]} {p : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hP : ∀ k, HasNonnegCoeffs (P k)) :
-    HasNonnegCoeffs (basisTransform P p) := by
-  intro j
-  rw [coeff_basisTransform]
-  simpa only [Polynomial.sum] using
-    Finset.sum_nonneg fun k _ => mul_nonneg (hp k) (hP k j)
 
 /-- Falling factorial `⟨x⟩_k = x (x - 1) ... (x - k + 1)`. -/
 def fallingFactorialPolynomial (k : ℕ) : ℝ[X] :=

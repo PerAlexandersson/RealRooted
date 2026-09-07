@@ -500,6 +500,18 @@ general triangular-basis argument out of the consumer's Brändén transform and
 out of the Narayana transformation implementation, while leaving named bases
 and preservation arguments at their owning application layer.
 
+`BasisTransform` connects that coefficient-generic shim to the real-polynomial
+`HasNonnegCoeffs` API. `Transforms.BrandenE` then layers Brändén's transform
+without any OEIS dependency: `OrderedBell` owns the semiring-generic ordered
+Bell basis and its direct factorial triangularity proof; `Basic` owns the
+generic transform and Euler differential laws; `Inverse` uses Mathlib's
+`Polynomial.descPochhammer` for the characteristic-zero two-sided inverse;
+`BasisImage` owns the ambient-degree binomial basis, Euler step, and root
+window; `ProperPosition` proves splitting, PF, endpoint, adjacent, and chain
+relations; and `WeightedSum` packages the strict and zero-aware positive cones.
+The Delannoy, even-binomial/type-D, and generalized-Eulerian applications stay
+in the OEIS project.
+
 `Transforms.ReverseHermite` is a focused package for the positive-recurrence
 reverse-Hermite basis and its coefficientwise transform. `Basic` contains only
 the semiring-level basis and algebraic transform laws; `Derivative` contains
