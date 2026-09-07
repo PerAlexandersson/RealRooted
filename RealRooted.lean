@@ -341,6 +341,9 @@ import RealRooted.Laguerre.Favard
 import RealRooted.Laguerre.Orthogonality
 import RealRooted.Laguerre.Orthogonality.Integral
 import RealRooted.Laguerre.Roots
+import RealRooted.Legendre
+import RealRooted.Legendre.Basic
+import RealRooted.Legendre.Roots
 import RealRooted.LiebSokal
 import RealRooted.LiebSokalOperator
 import RealRooted.LiebSokalOperator.Linearity
@@ -559,6 +562,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
+import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
 import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.MatrixInterlacing

@@ -1,5 +1,6 @@
 import RealRooted.Favard
 import RealRooted.Jacobi.Favard
+import RealRooted.SimpleRoots
 
 /-!
 # Real-rootedness of shifted Jacobi polynomials
@@ -48,12 +49,55 @@ theorem shiftedJacobiMonic_roots_nodup (n : ℕ) {α β : ℝ}
   intro k
   exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
 
-private theorem shiftedJacobi_leadingScale_ne_zero (n : ℕ) {α β : ℝ}
+/-- A monic shifted Jacobi polynomial has only simple real roots when both
+parameters exceed `-1`. -/
+theorem shiftedJacobiMonic_hasSimpleRoots (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    HasSimpleRoots (shiftedJacobiMonic n α β) :=
+  HasSimpleRoots.of_roots_nodup
+    (shiftedJacobiMonic_ne_zero n hα hβ)
+    (shiftedJacobiMonic_roots_nodup n hα hβ)
+
+/-- The leading normalization factor of a shifted Jacobi polynomial is
+nonzero when both parameters exceed `-1`. -/
+theorem shiftedJacobi_leadingScale_ne_zero (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n ≠ 0 := by
   intro hscale
   apply (monic_shiftedJacobiMonic n hα hβ).ne_zero
   simp [shiftedJacobiMonic, hscale]
+
+/-- Recover a shifted Jacobi polynomial from its monic normalization. -/
+theorem shiftedJacobi_eq_leading_mul_monic (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    shiftedJacobi n α β =
+      C ((-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n) *
+        shiftedJacobiMonic n α β := by
+  symm
+  rw [shiftedJacobiMonic, ← mul_assoc, ← C_mul,
+    mul_inv_cancel₀ (shiftedJacobi_leadingScale_ne_zero n hα hβ),
+    C_1, one_mul]
+
+/-- Consecutive shifted Jacobi polynomials satisfy the project's
+scalar-invariant `Prec` relation when both parameters exceed `-1`. -/
+theorem shiftedJacobi_prec_succ (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    Prec (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
+  rw [shiftedJacobi_eq_leading_mul_monic n hα hβ,
+    shiftedJacobi_eq_leading_mul_monic (n + 1) hα hβ]
+  exact
+    ((shiftedJacobiMonic_prec_succ n hα hβ).C_mul_left
+      (shiftedJacobi_leadingScale_ne_zero n hα hβ)).C_mul_right
+      (shiftedJacobi_leadingScale_ne_zero (n + 1) hα hβ)
+
+/-- Consecutive shifted Jacobi polynomials interlace when both parameters
+exceed `-1`. -/
+theorem shiftedJacobi_interlaces_succ (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    Interlaces (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
+  apply (shiftedJacobi_prec_succ n hα hβ).toInterlaces
+  rw [Polynomial.natDegree_shiftedJacobi n hα hβ,
+    Polynomial.natDegree_shiftedJacobi (n + 1) hα hβ]
 
 /-- A shifted Jacobi polynomial is nonzero when both parameters exceed
 `-1`. -/
@@ -77,20 +121,22 @@ theorem shiftedJacobi_roots_nodup (n : ℕ) {α β : ℝ}
   rw [← hroots]
   exact shiftedJacobiMonic_roots_nodup n hα hβ
 
+/-- A shifted Jacobi polynomial has only simple real roots when both
+parameters exceed `-1`. -/
+theorem shiftedJacobi_hasSimpleRoots (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    HasSimpleRoots (shiftedJacobi n α β) :=
+  HasSimpleRoots.of_roots_nodup
+    (shiftedJacobi_ne_zero n hα hβ)
+    (shiftedJacobi_roots_nodup n hα hβ)
+
 /-- A shifted Jacobi polynomial splits over `ℝ` when both parameters exceed
 `-1`. -/
 theorem shiftedJacobi_splits (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     (shiftedJacobi n α β).Splits := by
   let c : ℝ := (-1 : ℝ) ^ n * Ring.choose (n + α + β + n) n
-  have hc : c ≠ 0 := by
-    exact shiftedJacobi_leadingScale_ne_zero n hα hβ
-  have hrecover :
-      shiftedJacobi n α β = C c * shiftedJacobiMonic n α β := by
-    change shiftedJacobi n α β = C c * (C c⁻¹ * shiftedJacobi n α β)
-    rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hc]
-    simp
-  rw [hrecover]
+  rw [shiftedJacobi_eq_leading_mul_monic n hα hβ]
   exact (shiftedJacobiMonic_splits n hα hβ).C_mul c
 
 /-- After negating the variable, a shifted Jacobi polynomial has nonnegative

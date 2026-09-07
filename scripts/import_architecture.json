@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 946
+      "max_modules": 950
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -64,6 +64,15 @@
     "RealRooted.Hermite.Roots": {
       "max_modules": 36
     },
+    "RealRooted.Legendre": {
+      "max_modules": 43
+    },
+    "RealRooted.Legendre.Basic": {
+      "max_modules": 4
+    },
+    "RealRooted.Legendre.Roots": {
+      "max_modules": 42
+    },
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral": {
       "max_modules": 1
     },
@@ -80,6 +89,9 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence": {
+      "max_modules": 3
+    },
+    "RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre": {
       "max_modules": 3
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Moment": {
@@ -1372,12 +1384,16 @@
     "RealRooted.Hermite.Orthogonality",
     "RealRooted.Hermite.Orthogonality.Integral",
     "RealRooted.Hermite.Roots",
+    "RealRooted.Legendre",
+    "RealRooted.Legendre.Basic",
+    "RealRooted.Legendre.Roots",
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
     "RealRooted.Mathlib.RingTheory.Polynomial.Hermite",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential",
     "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence",
+    "RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre",
     "RealRooted.Mathlib.Algebra.Polynomial.Moment",
     "RealRooted.Analysis.PowerTail",
     "RealRooted.Analysis.PowerTail.Bernoulli",
