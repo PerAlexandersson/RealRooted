@@ -137,6 +137,13 @@ emulation. These scripts complement `lake build`; they do not replace it.
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
   is the compatible frontend façade over its focused syntax and macro-rule
   modules.
+- `RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/` defines the canonical
+  monic sign-reversed generalized Laguerre family and its algebraic identities.
+  `RealRooted/Mathlib/Algebra/Polynomial/Moment.lean` provides the reusable
+  moment-functional and pairing algebra for its orthogonality theory and other
+  classical polynomial families.
+  `RealRooted/Laguerre/` separately packages roots/interlacing and algebraic or
+  integral orthogonality; `RealRooted/Laguerre.lean` is the family facade.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
@@ -277,6 +284,9 @@ re-exports both APIs.
   criteria for interlacing recurrences and weighted sums.
 - `favardInterlacing` and `isRealRooted_of_favard`: a Favard recurrence
   interface for orthogonal-polynomial style Sturm sequences.
+- `generalizedLaguerre_splits`, `generalizedLaguerre_hasSimpleRoots`, and
+  `generalizedLaguerre_integral_orthogonal`: the root, Sturm, and classical
+  orthogonality package for the canonical generalized Laguerre family.
 - `matrix_preserves_interlacing_seq` and
   `matrix_preserves_interlacing_seq0_of_2x2`: matrix preservers from finite
   two-by-two interlacing checks.

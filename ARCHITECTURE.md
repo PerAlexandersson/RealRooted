@@ -336,6 +336,24 @@ macro-rule families. This separates parser declarations from elaboration and
 keeps the largest frontend source unit at 825 lines without changing the
 established tactic import.
 
+The generalized Laguerre package keeps algebra and analysis on separate
+dependency layers:
+
+- `Mathlib.Algebra.Polynomial.Moment` owns the semiring-level moment functional
+  and symmetric pairing algebra shared by classical orthogonal families;
+- `Mathlib.RingTheory.Polynomial.Laguerre.Basic`, `.Differential`, and
+  `.Recurrence` define the division-free monic sign-reversed family over the
+  weakest natural coefficient structures;
+- `Laguerre.Roots` instantiates the derivative-recurrence and Favard backends,
+  including the `α = -1` boundary factorization and simple-root argument;
+- `Laguerre.Orthogonality` proves algebraic signed-Gamma-moment orthogonality;
+  and
+- `Laguerre.Orthogonality.Integral` supplies the positive-half-line integral
+  bridge without adding analysis imports to the polynomial definition.
+
+`Laguerre.lean` is the full family facade. The root import budget rises by
+nine modules for the shared moment layer, that facade, and its focused children.
+
 The root-count tactic follows the same theorem/frontend boundary:
 
 - `Tactic.RootCount.SequenceCore` owns the pointwise sequence transports for
