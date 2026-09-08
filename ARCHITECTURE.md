@@ -206,6 +206,8 @@ endpoint:
 - `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing` packages a
   Hermitian model for nonsingular totally nonnegative matrices while remaining
   independent of the RealRooted polynomial theorem library;
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation` proves that a
+  nonnegative northwest-corner update preserves total nonnegativity;
 - `TotallyNonnegInterlacing` combines that model with polynomial Cauchy
   interlacing to obtain weak leading- and trailing-principal endpoints without
   irreducibility; and
