@@ -1,6 +1,7 @@
 import RealRooted.MaWang
 import RealRooted.Linear
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
@@ -431,76 +432,6 @@ lemma interlaces_liuWangRec_one_two (d : Nat) :
   simpa [add_comm] using
     (Polynomial.natDegree_linear (a := (2 : ℝ)) (b := (d : ℝ)) (by simp))
 
-private lemma list_prod_pos_of_forall_pos :
-    ∀ {l : List ℝ}, (∀ x ∈ l, 0 < x) → 0 < l.prod
-  | [], _ => by simp
-  | x :: xs, h => by
-      have hx : 0 < x := h x (by simp)
-      have hxs : 0 < xs.prod := list_prod_pos_of_forall_pos (fun y hy => h y (by simp [hy]))
-      simp_all
-
-private lemma listInterlaces_dropLast_lt_zero_of_forall_lt_zero :
-    ∀ {ss rs : List ℝ},
-      ListInterlaces ss rs →
-      (∀ s ∈ ss, s < 0) →
-      ∀ r ∈ rs.dropLast, r < 0
-  | [], [], _, _, _, hr => by simp at hr
-  | [], [_], _, _, _, hr => by simp at hr
-  | s :: ss, r₁ :: r₂ :: rs, hint, hss, r, hr => by
-      obtain ⟨hr₁s, _, htail⟩ := hint
-      rw [List.dropLast_cons_cons] at hr
-      rcases List.mem_cons.mp hr with rfl | hr'
-      · exact lt_of_le_of_lt hr₁s (hss s (by simp))
-      · exact listInterlaces_dropLast_lt_zero_of_forall_lt_zero htail
-          (fun x hx => hss x (by simp [hx])) r hr'
-  | [], _ :: _ :: _, hint, _, _, _ => by simp [ListInterlaces] at hint
-  | _ :: _, [], hint, _, _, _ => by simp [ListInterlaces] at hint
-  | _ :: _, [_], hint, _, _, _ => by simp [ListInterlaces] at hint
-
-private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hf_zero : 0 < f.eval 0)
-    (hg_neg : ∀ r, g.IsRoot r → r < 0) :
-    ∀ r, f.IsRoot r → r < 0 := by
-  obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
-  have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
-  have hrs_ne : rs ≠ [] := by grind
-  have hss_neg : ∀ s ∈ ss, s < 0 := by
-    intro s hs
-    have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
-      simpa [hss_eq] using Multiset.mem_coe.mpr hs
-    simp_all
-  have hrs_drop_neg : ∀ r ∈ rs.dropLast, r < 0 :=
-    listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
-  have h_eval :
-      f.eval 0 = f.leadingCoeff * (rs.map (0 - ·)).prod := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0, ← hrs_eq]
-    simp
-  have hrs_drop_prod_pos : 0 < (rs.dropLast.map (0 - ·)).prod :=
-    list_prod_pos_of_forall_pos (by grind)
-  have hlast_neg : rs.getLast hrs_ne < 0 := by
-    have hf_zero' := hf_zero
-    rw [h_eval, ← List.dropLast_append_getLast hrs_ne, List.map_append,
-      List.prod_append] at hf_zero'
-    simp only [List.map] at hf_zero'
-    simp only [List.prod_singleton] at hf_zero'
-    have hmid :
-        0 < (rs.dropLast.map (0 - ·)).prod * (0 - rs.getLast hrs_ne) :=
-      (mul_pos_iff_of_pos_left hf_pos).mp hf_zero'
-    have hfactor :
-        0 < 0 - rs.getLast hrs_ne :=
-      (mul_pos_iff_of_pos_left hrs_drop_prod_pos).mp hmid
-    linarith
-  intro r hr
-  have hr_mem : r ∈ rs := Multiset.mem_coe.mp (by simp_all)
-  by_cases hr_last : r = rs.getLast hrs_ne
-  · lia
-  · have hr_drop : r ∈ rs.dropLast :=
-      List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
-    simp_all
-
 private lemma eval_liuWangRec_mul_prev_of_isRoot {d n : Nat} {r : ℝ}
     (hr : (liuWangRec d (n + 1)).IsRoot r) :
     (liuWangRec d (n + 2)).eval r * (liuWangRec d n).eval r =
@@ -598,95 +529,6 @@ lemma roots_neg_liuWangRec_of_lt_threshold (d n : Nat)
       | succ n =>
           simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
             (strictData_liuWangRec d (n + 1) (by lia) hnd).2.2
-
-private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hzero : f.IsRoot 0)
-    (hg_neg : ∀ r, g.IsRoot r → r < 0) :
-    ∀ r, f.IsRoot r → r ≤ 0 := by
-  obtain ⟨hf, hg, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ := hgf
-  have hzero_mem : 0 ∈ rs := Multiset.mem_coe.mp (by simp_all)
-  have hrs_ne : rs ≠ [] := by grind
-  have hss_neg : ∀ s ∈ ss, s < 0 := by
-    intro s hs
-    have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
-      simpa [hss_eq] using Multiset.mem_coe.mpr hs
-    simp_all
-  have hrs_drop_neg : ∀ r ∈ rs.dropLast, r < 0 :=
-    listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
-  have hlast_zero : rs.getLast hrs_ne = 0 := by
-    by_contra hlast_ne
-    have hzero_drop : 0 ∈ rs.dropLast :=
-      List.mem_dropLast_of_mem_of_ne_getLast hzero_mem (by lia)
-    grind
-  intro r hr
-  have hr_mem : r ∈ rs := Multiset.mem_coe.mp (by simp_all)
-  by_cases hr_last : r = rs.getLast hrs_ne
-  · simp [hr_last, hlast_zero]
-  · have hr_drop : r ∈ rs.dropLast :=
-      List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
-    grind
-
-private lemma listInterlaces_left_lt_of_right_lt :
-    ∀ {ss rs : List ℝ},
-      ListInterlaces ss rs →
-      (∀ r ∈ rs, r < 0) →
-      ∀ s ∈ ss, s < 0
-  | [], [], _, _, _, hs => by simp at hs
-  | [], [_], _, _, _, hs => by simp at hs
-  | s :: ss, r₁ :: r₂ :: rs, hint, hrs_neg, t, ht => by
-      obtain ⟨_, hs_r₂, htail⟩ := hint
-      rcases List.mem_cons.mp ht with rfl | ht'
-      · exact lt_of_le_of_lt hs_r₂ (hrs_neg r₂ (by simp))
-      · exact listInterlaces_left_lt_of_right_lt htail
-          (fun u hu => hrs_neg u (by simp [hu])) t ht'
-  | [], _ :: _ :: _, hint, _, _, _ => by
-      simp_all
-  | _ :: _, [], hint, _, _, _ => by
-      cases hint
-  | _ :: _, [_], hint, _, _, _ => by
-      cases hint
-
-private lemma listAlternates_left_lt_of_right_lt :
-    ∀ {ss rs : List ℝ},
-      ListAlternates ss rs →
-      (∀ r ∈ rs, r < 0) →
-      ∀ s ∈ ss, s < 0
-  | [], [], _, _, _, hs => by simp at hs
-  | s :: ss, r :: rs, halt, hrs_neg, t, ht => by
-      obtain ⟨hsr, hint⟩ := halt
-      rcases List.mem_cons.mp ht with rfl | ht'
-      · exact lt_of_le_of_lt hsr (hrs_neg r (by simp))
-      · exact listInterlaces_left_lt_of_right_lt hint
-          (fun u hu => hrs_neg u (by lia)) t ht'
-  | [], _ :: _, halt, _, _, _ => by
-      simp_all
-  | _ :: _, [], halt, _, _, _ => by
-      cases halt
-
-private lemma roots_neg_of_prec_same_of_roots_neg {g f : ℝ[X]}
-    (hgf : Prec g f)
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_neg : ∀ r, f.IsRoot r → r < 0) :
-    ∀ r, g.IsRoot r → r < 0 := by
-  obtain ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hgf
-  have hss_len : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
-  have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
-  rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
-  · lia
-  · have hrs_neg : ∀ s ∈ rs, s < 0 := by
-      intro s hs
-      apply hf_neg s
-      apply (mem_roots hf.1).mp
-      simpa [hrs_eq] using Multiset.mem_coe.mpr hs
-    have hss_neg : ∀ s ∈ ss, s < 0 :=
-      listAlternates_left_lt_of_right_lt halt hrs_neg
-    intro r hr
-    apply hss_neg r
-    apply Multiset.mem_coe.mp
-    simp_all
 
 lemma interlaces_liuWangRec_threshold (d : Nat) :
     Interlaces (liuWangRec d (d + 1)) (liuWangRec d (d + 2)) := by
@@ -855,7 +697,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
   have hneg :
       ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 :=
     roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
-  exact roots_neg_of_prec_same_of_roots_neg hPrec hdeg hneg
+  exact roots_neg_of_prec_sameDegree_of_roots_neg hPrec hdeg hneg
 
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/

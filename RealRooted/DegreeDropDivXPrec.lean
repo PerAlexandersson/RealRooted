@@ -224,6 +224,106 @@ lemma listAlternates_dropLast_of_listInterlaces {ss rs : List ℝ}
   rw [hsplit]
   grind
 
+/-- Dropping the rightmost entry from the right row of an equal-length
+alternation leaves a differ-by-one interlacing into the left row. -/
+lemma listInterlaces_dropLast_right_of_listAlternates :
+    ∀ {ss rs : List ℝ}, ListAlternates ss rs →
+      ListInterlaces rs.dropLast ss
+  | [], [], _ => by simp [ListInterlaces]
+  | s :: ss, r :: rs, halt => by
+      obtain ⟨hsr, hint⟩ := halt
+      cases rs with
+      | nil =>
+          cases ss with
+          | nil => simp [ListInterlaces]
+          | cons _ _ => simp [ListInterlaces] at hint
+      | cons r₂ rs' =>
+          cases ss with
+          | nil => simp [ListInterlaces] at hint
+          | cons s₂ ss' =>
+              obtain ⟨hrs₂, hs₂r₂, htail⟩ := hint
+              rw [List.dropLast_cons_cons]
+              exact ⟨hsr, hrs₂,
+                listInterlaces_dropLast_right_of_listAlternates
+                  ⟨hs₂r₂, htail⟩⟩
+  | [], _ :: _, halt => by simp [ListAlternates] at halt
+  | _ :: _, [], halt => by simp [ListAlternates] at halt
+
+/-- Same-degree right-zero reduction at the `Prec` level.
+
+If `f` and `g` have the same degree, `g` has nonnegative coefficients and
+zero constant coefficient, then removing the rightmost zero root from a
+same-degree `Prec f g` pair produces the differ-by-one pair
+`Prec g.divX f`. -/
+theorem prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero
+    {f g : ℝ[X]}
+    (hprec : Prec f g)
+    (hroots : ∀ r ∈ g.roots, r ≤ 0)
+    (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree) :
+    Prec g.divX f := by
+  obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq,
+    hshape⟩ := hprec
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hAlt : ListAlternates ss rs := by
+    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
+    · lia
+    · exact halt
+  have h0_root : (0 : ℝ) ∈ g.roots := by
+    rw [Polynomial.mem_roots']
+    refine ⟨hg.1, ?_⟩
+    rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
+    exact hg0
+  have h0_mem : (0 : ℝ) ∈ rs := by
+    apply Multiset.mem_coe.mp
+    simpa [hrs_eq] using h0_root
+  have hrs_ne : rs ≠ [] := by
+    intro hrs0
+    subst rs
+    simp at h0_mem
+  set m := rs.getLast hrs_ne with hm
+  have hm_mem : m ∈ rs := List.getLast_mem hrs_ne
+  have hm_root : m ∈ g.roots := by
+    rw [← hrs_eq]
+    exact Multiset.mem_coe.mpr hm_mem
+  have hm_nonpos : m ≤ 0 := hroots m hm_root
+  have h0_le_m : (0 : ℝ) ≤ m := by
+    exact List.Pairwise.rel_getLast hrs_sorted h0_mem
+  have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
+  have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
+    divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne
+      (hm.symm.trans hm0)
+  have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
+    List.Pairwise.sublist (List.dropLast_sublist rs) hrs_sorted
+  have hdivX_ne : g.divX ≠ 0 := by
+    intro hz
+    have hgX : g = X * g.divX :=
+      DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hg0
+    grind
+  have hdivX_split : g.divX.Splits :=
+    (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).1 hg.2
+  have hlen : (rs.dropLast).length + 1 = ss.length := by
+    rw [List.length_dropLast]
+    grind
+  exact ⟨⟨hdivX_ne, hdivX_split⟩, hf, rs.dropLast, ss, hdrop_sorted,
+    hss_sorted, hdivX_roots, hss_eq,
+    Or.inl ⟨hlen, listInterlaces_dropLast_right_of_listAlternates hAlt⟩⟩
+
+/-- Nonnegative-coefficient wrapper for
+`prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero`. -/
+theorem prec_divX_left_of_prec_sameDegree_of_hasNonnegCoeffs_coeff_zero
+    {f g : ℝ[X]}
+    (hprec : Prec f g)
+    (hgnn : HasNonnegCoeffs g)
+    (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree) :
+    Prec g.divX f :=
+  prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero hprec
+    (fun r hr => roots_nonpos_of_hasNonnegCoeffs hgnn r hr) hg0 hdeg
+
 /-- Right-zero degree-drop reduction at the `Prec` level.
 
 In the succ-degree configuration `g.natDegree = f.natDegree + 1`, if `g` has

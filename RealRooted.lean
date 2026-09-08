@@ -90,6 +90,7 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
 import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
 import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
 import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
@@ -334,6 +335,7 @@ import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi

@@ -181,8 +181,12 @@ The Hurwitz-matrix conventions are intentionally separated:
   original parity inputs; and
 - its `Stability.Rotation` child transports strict stability to closed-upper-
   half-plane exclusion under `X \mapsto -iX`; and
-- its `Stability.Routh` child records the rotated recurrence and degree and
-  leading-coefficient transport for stable Routh reduction; and
+- its `Stability.Routh` child records the rotated recurrence, source proper
+  position, and degree, leading-coefficient, and even-shape coefficient
+  transport for stable Routh reduction; and
+- its `Stability.Routh.ProperPosition` child completes odd-shape proper
+  position and proves strict stability after one Routh step in both parity
+  shapes, including the terminal constant case; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
@@ -1109,6 +1113,9 @@ The reusable derivative region formerly embedded in `Tactic.MaWang` is now the
 `Interlacing.Multiplicity` isolates the list-interlacing fact that a repeated
 root in either row forces a common root. `Interlacing.Residue` owns the adjacent
 simple-root sign, residue, interpolation, and common-factor transport APIs.
+`Interlacing.NegativeRoots` centralizes strict-negative and nonpositive root
+transport through `Interlaces` and same-degree `Prec`; the Liu--Wang benchmark
+and stable Routh descent share this API instead of maintaining private copies.
 The canonical multiplicity-one derivative nonvanishing lemma lives in
 `Derivative`; the residue API keeps its established spelling as a thin wrapper,
 and the parking-function insertion package reuses the canonical declaration.
