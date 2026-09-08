@@ -34,6 +34,87 @@ theorem leadingCoeff_hurwitzRotatedOddPart (p : ℝ[X]) :
   · simp
   · simp
 
+/-- Composition with `-X²` preserves nonzeroness. -/
+theorem comp_neg_X_sq_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
+    p.comp (-(X ^ 2)) ≠ 0 := by
+  apply Polynomial.leadingCoeff_ne_zero.mp
+  rw [Polynomial.leadingCoeff_comp]
+  · exact mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hp)
+      (pow_ne_zero _ (by norm_num))
+  · simp
+
+@[simp]
+theorem natDegree_hurwitzRotatedEvenPart (p : ℝ[X]) :
+    (hurwitzRotatedEvenPart p).natDegree = 2 * p.natDegree := by
+  rw [hurwitzRotatedEvenPart, Polynomial.natDegree_comp]
+  simp
+  ring
+
+theorem natDegree_hurwitzRotatedOddPart {p : ℝ[X]} (hp : p ≠ 0) :
+    (hurwitzRotatedOddPart p).natDegree = 2 * p.natDegree + 1 := by
+  rw [hurwitzRotatedOddPart,
+    Polynomial.natDegree_mul (by simp) (comp_neg_X_sq_ne_zero hp),
+    natDegree_neg, natDegree_X, Polynomial.natDegree_comp]
+  simp
+  ring
+
+/-- If `p(-X²)` splits over the reals, then `p` itself splits. -/
+theorem Polynomial.Splits.of_comp_neg_X_sq {p : ℝ[X]}
+    (h : (p.comp (-(X ^ 2))).Splits) : p.Splits := by
+  by_cases hp0 : p = 0
+  · simp [hp0]
+  apply Polynomial.splits_of_all_roots_real
+  intro z hz
+  obtain ⟨w, hw⟩ := Complex.isSquare (-z)
+  have hzw : z = -(w ^ 2) := by
+    rw [pow_two, ← hw]
+    simp
+  have hcomp0 : p.comp (-(X ^ 2)) ≠ 0 := comp_neg_X_sq_ne_zero hp0
+  have hstable :=
+    Polynomial.Splits.isUpperHalfPlaneStable_complexify h hcomp0
+  have hwroot :
+      (complexify (p.comp (-(X ^ 2)))).eval w = 0 := by
+    simp only [complexify, Polynomial.map_comp, Polynomial.map_neg,
+      Polynomial.map_pow, Polynomial.map_X, Polynomial.eval_comp,
+      Polynomial.eval_neg, Polynomial.eval_pow, Polynomial.eval_X]
+    rw [← hzw]
+    exact hz
+  have hwim : w.im = 0 := by
+    rcases lt_trichotomy w.im 0 with hwneg | hwzero | hwpos
+    · have hnegroot :
+          (complexify (p.comp (-(X ^ 2)))).eval (-w) = 0 := by
+        simp only [complexify, Polynomial.map_comp, Polynomial.map_neg,
+          Polynomial.map_pow, Polynomial.map_X, Polynomial.eval_comp,
+          Polynomial.eval_neg, Polynomial.eval_pow, Polynomial.eval_X,
+          neg_sq]
+        rw [← hzw]
+        exact hz
+      exact False.elim (hstable (-w) (by simp [hwneg]) hnegroot)
+    · exact hwzero
+    · exact False.elim (hstable w hwpos hwroot)
+  rw [hzw]
+  rw [pow_two, Complex.neg_im, Complex.mul_im, hwim]
+  ring
+
+/-- Splitness of a rotated even part descends to the original polynomial. -/
+theorem Polynomial.Splits.of_hurwitzRotatedEvenPart {p : ℝ[X]}
+    (h : (hurwitzRotatedEvenPart p).Splits) : p.Splits :=
+  Polynomial.Splits.of_comp_neg_X_sq (by
+    simpa only [hurwitzRotatedEvenPart] using h)
+
+/-- Splitness of a rotated odd part descends through both its factor `X` and
+the substitution `X ↦ -X²`. -/
+theorem Polynomial.Splits.of_hurwitzRotatedOddPart {p : ℝ[X]}
+    (h : (hurwitzRotatedOddPart p).Splits) : p.Splits := by
+  have hproduct : (X * p.comp (-(X ^ 2))).Splits := by
+    rw [← Polynomial.splits_neg_iff]
+    simpa only [hurwitzRotatedOddPart, neg_mul]
+      using h
+  have hcomp : (p.comp (-(X ^ 2))).Splits :=
+    (Polynomial.splits_X_sub_C_mul_iff (a := 0)).mp (by
+      simpa using hproduct)
+  exact Polynomial.Splits.of_comp_neg_X_sq hcomp
+
 /-- The parity sign normalizes the leading coefficient of the rotated even
 part back to the leading coefficient of the original polynomial. -/
 theorem hasPosLeadingCoeff_sign_mul_hurwitzRotatedEvenPart {p : ℝ[X]}
@@ -223,5 +304,31 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_oddShape
       (hurwitzRotatedEvenPart even) (-hurwitzRotatedOddPart odd) := by
     simpa [← mul_assoc, ← Polynomial.C_mul, hsquare] using hscaled
   simpa using hneg.C_mul_right (a := -1) (by norm_num)
+
+/-- The parity inputs of an even-shape strictly stable polynomial are both
+real-rooted. -/
+theorem IsStrictlyHurwitzStable.splits_parts_of_evenShape
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hdegree : even.natDegree = odd.natDegree + 1) :
+    odd.Splits ∧ even.Splits := by
+  have hprec := h.prec_rotatedParts_of_evenShape hodd heven hdegree
+  exact
+    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.1.2,
+      Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.2.1.2⟩
+
+/-- The parity inputs of an odd-shape strictly stable polynomial are both
+real-rooted. -/
+theorem IsStrictlyHurwitzStable.splits_parts_of_oddShape
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hdegree : even.natDegree = odd.natDegree) :
+    odd.Splits ∧ even.Splits := by
+  have hprec := h.prec_rotatedParts_of_oddShape hodd heven hdegree
+  exact
+    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.2.1.2,
+      Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.1.2⟩
 
 end RealRooted
