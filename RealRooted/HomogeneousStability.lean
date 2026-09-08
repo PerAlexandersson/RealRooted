@@ -18,14 +18,8 @@ the common scalar to the homogeneous degree. -/
 theorem IsHomogeneous.eval_const_mul
     {R σ : Type*} [CommSemiring R] {P : MvPolynomial σ R} {d : ℕ}
     (hP : P.IsHomogeneous d) (c : R) (z : σ → R) :
-    eval (fun i => c * z i) P = c ^ d * eval z P := by
-  classical
-  rw [eval_eq, eval_eq, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m hm
-  simp_rw [mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
-  rw [← hP.degree_eq_sum_deg_support hm]
-  ac_rfl
+    eval (fun i => c * z i) P = c ^ d * eval z P :=
+  hP.eval_smul c z
 
 /-- For a homogeneous polynomial, dehomogenizing the derivative in the
 homogenizing variable equals degree times dehomogenization minus its Euler
@@ -58,6 +52,105 @@ open Complex Metric
 open Polynomial
 
 noncomputable section
+
+/-- Non-vanishing on tuples that one upper-half-plane multiplier carries
+coordinatewise into the upper half-plane. -/
+def MvCommonRotationStable {σ : Type*} (P : MvPolynomial σ ℂ) : Prop :=
+  ∀ z : σ → ℂ,
+    (∃ c : ℂ, 0 < c.im ∧ ∀ i, 0 < (c * z i).im) →
+      MvPolynomial.eval z P ≠ 0
+
+/-- Ordinary homogenization is upper-half-plane stable exactly when its
+source is non-vanishing on the common-rotation region. -/
+theorem mvUpperHalfPlaneStable_ordinaryHomogenization_iff
+    {σ : Type*} {p : MvPolynomial σ ℂ} {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) :
+    MvUpperHalfPlaneStable (MvPolynomial.ordinaryHomogenization p d) ↔
+      MvCommonRotationStable p := by
+  constructor
+  · intro hstable z hz
+    obtain ⟨c, hc, hcz⟩ := hz
+    have hc0 : c ≠ 0 := by
+      intro hzero
+      rw [hzero] at hc
+      simp at hc
+    have heval := hstable
+      (fun o => Option.elim o c (fun i => c * z i)) (by
+        intro o
+        cases o with
+        | none => exact hc
+        | some i => exact hcz i)
+    rw [MvPolynomial.eval_ordinaryHomogenization_eq_pow_mul_eval_div
+      p hdeg hc0] at heval
+    have hdiv : (fun i => c * z i / c) = z := by
+      funext i
+      rw [div_eq_mul_inv, mul_comm c (z i), mul_assoc,
+        mul_inv_cancel₀ hc0, mul_one]
+    rw [hdiv] at heval
+    intro hpzero
+    exact heval (by rw [hpzero, mul_zero])
+  · intro hrotation w hw
+    let c : ℂ := w none
+    let z : σ → ℂ := fun i => w (some i) / c
+    have hc : 0 < c.im := hw none
+    have hc0 : c ≠ 0 := by
+      intro hzero
+      rw [hzero] at hc
+      simp at hc
+    have hcz : ∀ i, 0 < (c * z i).im := by
+      intro i
+      have heq : c * z i = w (some i) := by
+        dsimp only [z]
+        rw [div_eq_mul_inv, ← mul_assoc, mul_comm c (w (some i)),
+          mul_assoc, mul_inv_cancel₀ hc0, mul_one]
+      rw [heq]
+      exact hw (some i)
+    have hp := hrotation z ⟨c, hc, hcz⟩
+    have hw_eq :
+        w = fun o => Option.elim o c (fun i => w (some i)) := by
+      funext o
+      cases o <;> rfl
+    rw [hw_eq,
+      MvPolynomial.eval_ordinaryHomogenization_eq_pow_mul_eval_div
+        p hdeg hc0]
+    have hz : (fun i => w (some i) / c) = z := rfl
+    rw [hz]
+    exact mul_ne_zero (pow_ne_zero d hc0) hp
+
+/-- Stability of ordinary homogenization is independent of the chosen
+admissible homogenizing degree. -/
+theorem mvUpperHalfPlaneStable_ordinaryHomogenization_congr_degree
+    {σ : Type*} {p : MvPolynomial σ ℂ} {d d' : ℕ}
+    (hd : p.totalDegree ≤ d) (hd' : p.totalDegree ≤ d') :
+    MvUpperHalfPlaneStable (MvPolynomial.ordinaryHomogenization p d) ↔
+      MvUpperHalfPlaneStable
+        (MvPolynomial.ordinaryHomogenization p d') := by
+  rw [mvUpperHalfPlaneStable_ordinaryHomogenization_iff hd,
+    mvUpperHalfPlaneStable_ordinaryHomogenization_iff hd']
+
+/-- Weak stability of ordinary homogenization is exactly the zero-aware form
+of common-rotation stability of its source. -/
+theorem mvUpperHalfPlaneStableOrZero_ordinaryHomogenization_iff
+    {σ : Type*} {p : MvPolynomial σ ℂ} {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) :
+    MvUpperHalfPlaneStableOrZero
+        (MvPolynomial.ordinaryHomogenization p d) ↔
+      p = 0 ∨ MvCommonRotationStable p := by
+  constructor
+  · rintro (hzero | hstable)
+    · exact Or.inl
+        ((MvPolynomial.ordinaryHomogenization_eq_zero_iff_of_totalDegree_le
+          p hdeg).mp hzero)
+    · exact Or.inr
+        ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mp
+          hstable)
+  · rintro (hzero | hrotation)
+    · exact Or.inl
+        ((MvPolynomial.ordinaryHomogenization_eq_zero_iff_of_totalDegree_le
+          p hdeg).mpr hzero)
+    · exact Or.inr
+        ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mpr
+          hrotation)
 
 /-- Differentiating a stable polynomial in a distinguished variable preserves
 stability when its degree is positive and its leading coefficient in that
@@ -152,6 +245,27 @@ theorem exists_common_upperHalfPlane_multiplier
   refine ⟨c, ?_, hball hcball⟩
   dsimp [c]
   simp [hδ]
+
+/-- On a finite coordinate type, common-rotation stability implies ordinary
+upper-half-plane stability. -/
+theorem MvCommonRotationStable.mvUpperHalfPlaneStable
+    {σ : Type*} [Finite σ] {P : MvPolynomial σ ℂ}
+    (hP : MvCommonRotationStable P) :
+    MvUpperHalfPlaneStable P := by
+  intro z hz
+  obtain ⟨c, hc, hcz⟩ := exists_common_upperHalfPlane_multiplier z hz
+  exact hP z ⟨c, hc, hcz⟩
+
+/-- Stability of a valid ordinary homogenization implies stability of its
+source polynomial. -/
+theorem MvUpperHalfPlaneStable.of_ordinaryHomogenization
+    {σ : Type*} [Finite σ] {p : MvPolynomial σ ℂ} {d : ℕ}
+    (hstable : MvUpperHalfPlaneStable
+      (MvPolynomial.ordinaryHomogenization p d))
+    (hdeg : p.totalDegree ≤ d) :
+    MvUpperHalfPlaneStable p := by
+  exact ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mp
+    hstable).mvUpperHalfPlaneStable
 
 /-- Dehomogenizing a homogeneous stable polynomial at the positive real value
 one preserves upper-half-plane stability. -/
