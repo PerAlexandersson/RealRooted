@@ -80,6 +80,7 @@ import RealRooted.BoundarySpecializationRight
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.ClassicalHurwitzMatrix
+import RealRooted.ClassicalHurwitzMatrix.Routh
 import RealRooted.ClassicalHurwitzMatrix.Stability
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney

@@ -162,6 +162,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   formulas without burdening entry-only consumers;
 - `ClassicalHurwitzMatrix` connects its even and odd rows to the polynomial
   decomposition and records exact orientation regressions; and
+- `ClassicalHurwitzMatrix.Routh` owns the algebraic odd-part reduction and its
+  row-finite `J(c)` Hurwitz-matrix expansion; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
   location from the coefficient-normalized closed-half-plane predicate; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
