@@ -21,6 +21,7 @@ import RealRooted.AffineFamily.LowDegree
 import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AffineFamily.Wronskian
+import RealRooted.AffineLineRestriction
 import RealRooted.AffineProperPosition
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
