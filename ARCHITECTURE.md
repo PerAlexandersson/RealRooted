@@ -164,6 +164,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   decomposition and records exact orientation regressions; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
   location from the coefficient-normalized closed-half-plane predicate; and
+- `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
+  the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
   its uses, and the checked counterexamples to treating that matrix as the
   classical criterion.

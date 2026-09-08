@@ -81,6 +81,7 @@ import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Stability
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.BrandenSolus
