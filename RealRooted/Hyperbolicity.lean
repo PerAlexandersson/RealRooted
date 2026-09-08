@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Convex.PathConnected
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
@@ -36,6 +37,39 @@ theorem MvPolynomial.IsHomogeneous.affineLineRestriction_zero
     Polynomial.eval_pow, Polynomial.eval_X]
   simpa [mul_comm] using hP.eval_smul t e
 
+/-- The linear-plane restriction of a homogeneous polynomial is the
+bivariate homogenization of its affine-line restriction through `u` in
+direction `e`. -/
+theorem MvPolynomial.IsHomogeneous.linearPlaneRestriction_eq_homogenize
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
+    (hP : P.IsHomogeneous d) (e u : σ → ℝ) :
+    MvPolynomial.linearPlaneRestriction e u P =
+      homogenizeBivariate d
+        (MvPolynomial.affineLineRestriction u e P) := by
+  have hplane :
+      (MvPolynomial.linearPlaneRestriction e u P).IsHomogeneous d := by
+    unfold MvPolynomial.linearPlaneRestriction
+    simpa using hP.aeval
+      (fun i => MvPolynomial.C (e i) * MvPolynomial.X 0 +
+        MvPolynomial.C (u i) * MvPolynomial.X 1)
+      (fun i => (MvPolynomial.isHomogeneous_C_mul_X (e i) 0).add
+        (MvPolynomial.isHomogeneous_C_mul_X (u i) 1))
+  apply Eq.symm
+  rw [BorceaBranden.homogenizeBivariate_eq_homogenize]
+  apply Polynomial.homogenize_eq_of_isHomogeneous hplane
+  unfold MvPolynomial.linearPlaneRestriction
+  change MvPolynomial.aeval ![Polynomial.X, 1]
+      (MvPolynomial.aeval
+        (fun i => MvPolynomial.C (e i) * MvPolynomial.X 0 +
+          MvPolynomial.C (u i) * MvPolynomial.X 1) P) = _
+  rw [MvPolynomial.comp_aeval_apply]
+  unfold MvPolynomial.affineLineRestriction
+  apply MvPolynomial.eval₂Hom_congr rfl
+  · funext i
+    simp
+    ring
+  · rfl
+
 /-- For a homogeneous polynomial, hyperbolicity gives split and nonzero
 affine-line restrictions in the hyperbolic direction. -/
 theorem MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
@@ -51,6 +85,34 @@ theorem MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
   apply hP.1
   rw [realAffineLineRestriction_eq_affineLineRestriction, hzero] at hcoeff
   simpa using hcoeff.symm
+
+/-- If the roots seen from one hyperbolic direction are nonpositive, then the
+homogeneous restriction to that direction and the base vector is bivariate
+real stable. -/
+theorem MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ} {e u : σ → ℝ}
+    (he : P.HyperbolicAt e) (hhom : P.IsHomogeneous d)
+    (hroots : ∀ r ∈ (MvPolynomial.affineLineRestriction u e P).roots,
+      r ≤ 0) :
+    MvRealStable (MvPolynomial.linearPlaneRestriction e u P) := by
+  let q := MvPolynomial.affineLineRestriction u e P
+  have hq0 : q ≠ 0 :=
+    (MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
+      he hhom u).2
+  have hqle : q.natDegree ≤ d := by
+    simpa [q, realAffineLineRestriction_eq_affineLineRestriction] using
+      MvPolynomial.IsHomogeneous.natDegree_realAffineLineRestriction_le
+        hhom u e
+  have hqcoeff : q.coeff d = MvPolynomial.eval e P := by
+    simpa [q, realAffineLineRestriction_eq_affineLineRestriction] using
+      MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction hhom u e
+  have hqd : q.natDegree = d :=
+    Polynomial.natDegree_eq_of_le_of_coeff_ne_zero hqle
+      (hqcoeff.trans_ne he.1)
+  rw [MvPolynomial.IsHomogeneous.linearPlaneRestriction_eq_homogenize
+    hhom e u, ← hqd]
+  exact BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
+    hq0 (he.2 u) hroots
 
 /-- A homogeneous real stable polynomial is hyperbolic in every strictly
 positive direction. -/

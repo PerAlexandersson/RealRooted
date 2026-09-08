@@ -38,6 +38,34 @@ def affineLineRestriction {σ R : Type*} [CommSemiring R]
   rw [hC]
   rfl
 
+/-- Restrict a multivariate polynomial to the linear plane spanned by `e` and
+`u`, with plane coordinates indexed by `Fin 2`. -/
+def linearPlaneRestriction {σ R : Type*} [CommSemiring R]
+    (e u : σ → R) (P : MvPolynomial σ R) : MvPolynomial (Fin 2) R :=
+  MvPolynomial.aeval
+    (fun i => MvPolynomial.C (e i) * MvPolynomial.X 0 +
+      MvPolynomial.C (u i) * MvPolynomial.X 1) P
+
+@[simp] theorem eval_linearPlaneRestriction
+    {σ R : Type*} [CommSemiring R] (e u : σ → R)
+    (P : MvPolynomial σ R) (z : Fin 2 → R) :
+    MvPolynomial.eval z (linearPlaneRestriction e u P) =
+      MvPolynomial.eval (fun i => e i * z 0 + u i * z 1) P := by
+  unfold linearPlaneRestriction
+  change MvPolynomial.eval₂Hom (RingHom.id R) z
+      (eval₂Hom MvPolynomial.C
+        (fun i => MvPolynomial.C (e i) * MvPolynomial.X 0 +
+          MvPolynomial.C (u i) * MvPolynomial.X 1) P) = _
+  rw [MvPolynomial.map_eval₂Hom]
+  have hC : (MvPolynomial.eval₂Hom (RingHom.id R) z).comp
+      MvPolynomial.C = RingHom.id R := by
+    ext c
+    simp
+  rw [hC]
+  apply MvPolynomial.eval₂_congr _ _
+  intro i _ _ _
+  simp
+
 /-- A polynomial is hyperbolic at `e` when it does not vanish there and every
 affine-line restriction in direction `e` splits over the coefficient semiring.
 For the standard notion, use this predicate with a homogeneity hypothesis. -/
