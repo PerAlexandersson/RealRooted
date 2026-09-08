@@ -495,6 +495,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
