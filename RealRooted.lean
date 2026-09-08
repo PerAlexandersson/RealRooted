@@ -93,6 +93,7 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
 import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
 import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
+import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden

@@ -194,6 +194,9 @@ The Hurwitz-matrix conventions are intentionally separated:
   positivity of every leading classical Hurwitz determinant through the
   polynomial degree and total nonnegativity of the infinite classical matrix;
   and
+- its `Stability.Vieta` child extracts strict positivity of the
+  next-to-leading coefficient of a nonconstant strictly stable polynomial
+  with positive leading coefficient; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
