@@ -137,11 +137,16 @@ The strict route is now checked:
 10. `Matrix.hurwitz_isTotallyNonneg_of_hurwitzStable` takes the one-sided
     limit and proves the forward quasi-stable criterion, including zero
     constant terms and imaginary-axis roots.
+11. `Matrix.hurwitz_tail_of_zero`,
+    `Matrix.IsTotallyNonneg.hurwitz_divX_of_coeff_zero`, and
+    `RealRooted.isHurwitzStable_iff_divX_of_coeff_zero` remove a zero root
+    while descending matrix total nonnegativity and preserving stability.
 
 The converse from total nonnegativity to quasi-stability remains a separate
-future boundary problem, including the zero-pivot degeneracies excluded by
-strict Routh descent. Total nonnegativity alone is intentionally not reported
-as a strict converse.
+future boundary problem after the checked zero-root degree reduction. Its
+remaining internal zero-pivot degeneracies are excluded by strict Routh
+descent. Total nonnegativity alone is intentionally not reported as a strict
+converse.
 
 The existing false Lace-oriented statements and their checked negations remain
 unchanged throughout this route.

@@ -180,7 +180,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   nonnegativity of the corrected infinite Hurwitz matrix; and
 - its `Stability.Closure` child extends that forward criterion to the project's
   coefficient-normalized closed-half-plane predicate by positive translation
-  and closure of every finite matrix minor; and
+  and closure of every finite matrix minor, and supplies the zero-root `divX`
+  reduction shared by the matrix and stability predicates; and
 - its `Stability.Extraction` child proves that Mathlib contraction recovers
   both parity inputs and canonically reconstructs every real polynomial; and
 - its `Stability.HermiteBiehler` child imports the full converse theory and

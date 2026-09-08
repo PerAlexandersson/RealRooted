@@ -29,6 +29,23 @@ theorem hurwitz_one_row_succ_apply (c : ℕ → R) (j : ℕ) :
   rw [hurwitz_apply, if_pos (by lia)]
   congr 1
 
+/-- If the initial coefficient vanishes, deleting the first row and column of
+the classical Hurwitz matrix shifts the coefficient sequence by one. -/
+theorem hurwitz_tail_of_zero {c : ℕ → R} (h0 : c 0 = 0) :
+    hurwitz (fun n ↦ c (n + 1)) =
+      (hurwitz c).submatrix (fun i ↦ i + 1) (fun j ↦ j + 1) := by
+  ext i j
+  simp only [hurwitz_apply, submatrix_apply]
+  by_cases hij : i ≤ 2 * j
+  · rw [if_pos hij, if_pos (by lia)]
+    congr 1
+    lia
+  · rw [if_neg hij]
+    by_cases hborder : i = 2 * j + 1
+    · rw [hborder, if_pos (by lia)]
+      rw [show 2 * (j + 1) - (2 * j + 1 + 1) = 0 by lia, h0]
+    · rw [if_neg (by lia)]
+
 end Entries
 
 variable {R : Type*} [CommRing R] [PartialOrder R]
@@ -56,6 +73,28 @@ theorem IsTotallyNonneg.hurwitzLeadingPrincipal_det_nonneg {c : ℕ → R}
   simpa [Matrix.hurwitzLeadingPrincipal] using
     h (rows := fun i : Fin n => i) (cols := fun i : Fin n => i)
       Fin.val_strictMono Fin.val_strictMono
+
+/-- A zero-headed coefficient tail inherits total nonnegativity from the
+classical Hurwitz matrix. -/
+protected theorem IsTotallyNonneg.hurwitz_tail_of_zero {c : ℕ → R}
+    (h : (hurwitz c).IsTotallyNonneg) (h0 : c 0 = 0) :
+    (hurwitz fun n ↦ c (n + 1)).IsTotallyNonneg := by
+  have hsucc : StrictMono (fun n : ℕ ↦ n + 1) := by
+    intro i j hij
+    lia
+  rw [hurwitz_tail_of_zero h0]
+  exact h.submatrix hsucc hsucc
+
+/-- Removing a zero constant coefficient shifts the classical Hurwitz matrix
+to a totally nonnegative submatrix. -/
+protected theorem IsTotallyNonneg.hurwitz_divX_of_coeff_zero
+    {p : Polynomial R} (h : (hurwitz p.coeff).IsTotallyNonneg)
+    (h0 : p.coeff 0 = 0) :
+    (hurwitz p.divX.coeff).IsTotallyNonneg := by
+  rw [show p.divX.coeff = fun n ↦ p.coeff (n + 1) by
+    funext n
+    exact Polynomial.coeff_divX]
+  exact h.hurwitz_tail_of_zero h0
 
 section Real
 
