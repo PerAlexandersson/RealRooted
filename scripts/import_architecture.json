@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 950
+      "max_modules": 957
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -420,6 +420,9 @@
     },
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.Data.List.Interleave.Padding": {
       "max_modules": 5
@@ -917,7 +920,7 @@
       "max_modules": 15
     },
     "RealRooted.RootAmplitude": {
-      "max_modules": 10
+      "max_modules": 20
     },
     "RealRooted.RootAmplitude.Convex": {
       "max_modules": 5
@@ -938,6 +941,24 @@
       "max_modules": 8
     },
     "RealRooted.RootAmplitude.Polynomial": {
+      "max_modules": 5
+    },
+    "RealRooted.RootAmplitude.Separation": {
+      "max_modules": 10
+    },
+    "RealRooted.RootAmplitude.Separation.Euler": {
+      "max_modules": 3
+    },
+    "RealRooted.RootAmplitude.Separation.Finite": {
+      "max_modules": 2
+    },
+    "RealRooted.RootAmplitude.Separation.Polynomial": {
+      "max_modules": 9
+    },
+    "RealRooted.RootAmplitude.Separation.Roots": {
+      "max_modules": 4
+    },
+    "RealRooted.RootAmplitude.SmallestRoot": {
       "max_modules": 5
     },
     "RealRooted.RootAmplitude.SumSquares": {
@@ -1475,6 +1496,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
+    "RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset",
     "RealRooted.EulerOperator.Polar",
     "RealRooted.EulerOperator.Polar.ProperPosition",
     "RealRooted.EulerOperator.Pencil",
@@ -1606,6 +1628,12 @@
     "RealRooted.RootAmplitude.Finite",
     "RealRooted.RootAmplitude.Minimum",
     "RealRooted.RootAmplitude.Polynomial",
+    "RealRooted.RootAmplitude.Separation",
+    "RealRooted.RootAmplitude.Separation.Euler",
+    "RealRooted.RootAmplitude.Separation.Finite",
+    "RealRooted.RootAmplitude.Separation.Polynomial",
+    "RealRooted.RootAmplitude.Separation.Roots",
+    "RealRooted.RootAmplitude.SmallestRoot",
     "RealRooted.RootAmplitude.SumSquares",
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",

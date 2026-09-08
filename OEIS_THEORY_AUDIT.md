@@ -144,7 +144,12 @@ of the RealRooted interlacing library.
   `Extreme`, and `SumSquares` layers contain generic finite-sequence amplitude
   theory, finite continuation, log-gap density, extreme-ratio, and square-sum
   criteria formerly in `ProofsOeis.AmplitudeMonotone`, `SequenceExtension`,
-  `RootConvexity`, `ExtremeGap`, and `SumOfSquaresAmplitude`.
+  `RootConvexity`, `ExtremeGap`, and `SumOfSquaresAmplitude`. The nested
+  `Separation` package adds ordered-field multiplicative separation,
+  root-magnitude amplitude bridges on the canonical `SortedRoots` API, an
+  isolated Euler/Basel leaf, and the resulting polynomial derivative bound.
+  `SmallestRoot` derives the independent one-fifth estimate from the canonical
+  `RootVieta` identities instead of copying the local `qprod` encoding.
 - The A390883 extraction separates generic shifted-Jacobi root comparison in
   `JacobiParameterInterlacing` from the model-specific
   `ParkingFunctions.ToricContribution` stack. The public application proves
@@ -222,9 +227,11 @@ named OEIS models.
 
 ### Separation-specific amplitude applications
 
-The finite-extension and density-criterion layers now live in
-`RootAmplitude`. The separation-specific helper still depends on
-consumer-owned staircase theory.
+The finite-extension, density-criterion, multiplicative-separation, and
+staircase layers now live in `RootAmplitude`. The analytic Euler/Basel bound is
+isolated from the ordered-field algebra, and both the separated-root derivative
+estimate and the coefficient-based smallest-root estimate use the canonical
+`RootAmplitude.amp` and `RootVieta` APIs. Model constants remain consumer-owned.
 
 ### Affine finite symbols and legacy interlacing
 

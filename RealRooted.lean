@@ -469,6 +469,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
@@ -668,6 +669,12 @@ import RealRooted.RootAmplitude.Extreme
 import RealRooted.RootAmplitude.Finite
 import RealRooted.RootAmplitude.Minimum
 import RealRooted.RootAmplitude.Polynomial
+import RealRooted.RootAmplitude.Separation
+import RealRooted.RootAmplitude.Separation.Euler
+import RealRooted.RootAmplitude.Separation.Finite
+import RealRooted.RootAmplitude.Separation.Polynomial
+import RealRooted.RootAmplitude.Separation.Roots
+import RealRooted.RootAmplitude.SmallestRoot
 import RealRooted.RootAmplitude.SumSquares
 import RealRooted.RootBounds
 import RealRooted.RootContinuity
