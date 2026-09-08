@@ -3365,20 +3365,29 @@ theorem geometricSymmetrization_isHermitian {n : Type*} [DecidableEq n]
   · rw [geometricSymmetrization_apply_of_ne A hij,
       geometricSymmetrization_apply_of_ne A (Ne.symm hij), mul_comm]
 
+/-- Taking a submatrix along an injective index map commutes with
+geometric-mean symmetrization. -/
+theorem geometricSymmetrization_submatrix {m n : Type*}
+    [DecidableEq m] [DecidableEq n] (A : Matrix n n ℝ)
+    (e : m → n) (he : Function.Injective e) :
+    (geometricSymmetrization A).submatrix e e =
+      geometricSymmetrization (A.submatrix e e) := by
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp
+  · rw [Matrix.submatrix_apply, geometricSymmetrization_apply_of_ne A
+        (fun h ↦ hij (he h)),
+      geometricSymmetrization_apply_of_ne _ hij]
+    rfl
+
 /-- Taking the trailing principal submatrix commutes with geometric-mean
 symmetrization. -/
 theorem geometricSymmetrization_submatrix_succ {N : ℕ}
     (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
     (geometricSymmetrization T).submatrix Fin.succ Fin.succ =
-      geometricSymmetrization (T.submatrix Fin.succ Fin.succ) := by
-  ext i j
-  by_cases hij : i = j
-  · subst j
-    simp
-  · rw [Matrix.submatrix_apply, geometricSymmetrization_apply_of_ne T
-        (fun h ↦ hij (Fin.ext (by simpa using congrArg Fin.val h))),
-      geometricSymmetrization_apply_of_ne _ hij]
-    rfl
+      geometricSymmetrization (T.submatrix Fin.succ Fin.succ) :=
+  geometricSymmetrization_submatrix T Fin.succ (Fin.succ_injective N)
 
 /-- Geometric-mean symmetrization preserves the full and trailing
 characteristic polynomials of a tridiagonal matrix whose paired adjacent
@@ -3537,5 +3546,26 @@ theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) ℝ}
   rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
   exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
     (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
+
+/-- Reversing both indices sends the trailing principal submatrix to the
+reversal of the leading principal submatrix. -/
+theorem reindex_finRev_submatrix_succ {R : Type*} {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    (Matrix.reindex Fin.revPerm Fin.revPerm A).submatrix Fin.succ Fin.succ =
+      Matrix.reindex Fin.revPerm Fin.revPerm
+        (A.submatrix Fin.castSucc Fin.castSucc) := by
+  ext i j
+  simp [Matrix.submatrix, Matrix.reindex_apply, Fin.rev_succ]
+
+/-- The trailing principal characteristic polynomial after reversing both
+indices is the leading principal characteristic polynomial of the original
+matrix. -/
+theorem charpoly_reindex_finRev_submatrix_succ {R : Type*} [CommRing R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    ((Matrix.reindex Fin.revPerm Fin.revPerm A).submatrix
+      Fin.succ Fin.succ).charpoly =
+        (A.submatrix Fin.castSucc Fin.castSucc).charpoly := by
+  rw [reindex_finRev_submatrix_succ]
+  exact Matrix.charpoly_reindex Fin.revPerm _
 
 end Matrix

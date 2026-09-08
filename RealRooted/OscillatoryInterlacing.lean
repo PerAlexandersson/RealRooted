@@ -122,12 +122,7 @@ theorem IsTotallyNonneg.leading_charpoly_strictInterlaces {N : ℕ}
     simpa [B] using Matrix.charpoly_reindex Fin.revPerm A
   have hBtail : (B.submatrix Fin.succ Fin.succ).charpoly =
       (A.submatrix Fin.castSucc Fin.castSucc).charpoly := by
-    rw [← Matrix.charpoly_reindex Fin.revPerm
-      (A.submatrix Fin.castSucc Fin.castSucc)]
-    congr 1
-    ext i j
-    simp [B, Matrix.submatrix, Matrix.reindex_apply,
-      Fin.rev_succ]
+    simpa only [B] using Matrix.charpoly_reindex_finRev_submatrix_succ A
   simpa only [hBchar, hBtail] using hstrict
 
 end Matrix
