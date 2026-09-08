@@ -1,4 +1,6 @@
 import RealRooted.CauchyInterlacing.Polynomial
+import RealRooted.MatrixInterlacingClosure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 
 /-!
@@ -6,11 +8,12 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacin
 
 This module combines matrix-only Whitney reduction and geometric-mean
 symmetrization with polynomial Cauchy interlacing. It proves weak interlacing
-for nonsingular totally nonnegative matrices without irreducibility or
-positive-adjacent-entry hypotheses. Singular tridiagonal matrices are covered
-directly; extending the general theorem to singular matrices requires a
-separate density result.
+without irreducibility or positive-adjacent-entry hypotheses. Singular matrices
+are obtained by a constructive nonsingular-TN approximation and coefficientwise
+closure of weak interlacing.
 -/
+
+open Filter Topology
 
 namespace Matrix
 
@@ -99,6 +102,50 @@ theorem IsTotallyNonneg.leading_charpoly_interlaces_of_det_ne_zero {N : ℕ}
   have hBdet : B.det ≠ 0 := by
     simpa [B] using hdet
   have hInterlaces := hB.trailing_charpoly_interlaces_of_det_ne_zero hBdet
+  have hBchar : B.charpoly = A.charpoly := by
+    simpa [B] using Matrix.charpoly_reindex Fin.revPerm A
+  have hBtail : (B.submatrix Fin.succ Fin.succ).charpoly =
+      (A.submatrix Fin.castSucc Fin.castSucc).charpoly := by
+    simpa only [B] using Matrix.charpoly_reindex_finRev_submatrix_succ A
+  simpa only [hBchar, hBtail] using hInterlaces
+
+/-- Every totally nonnegative real matrix has weak trailing-principal
+characteristic-polynomial interlacing, without a nonsingularity hypothesis. -/
+theorem IsTotallyNonneg.trailing_charpoly_interlaces {N : ℕ}
+    {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) :
+    RealRooted.Interlaces
+      (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly := by
+  let Q : ℕ → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+    Matrix.nonsingularTNApprox A
+  let P : ℕ → Matrix (Fin N) (Fin N) ℝ := fun k =>
+    (Q k).submatrix Fin.succ Fin.succ
+  have hQall : Tendsto Q Filter.atTop (nhds A) := by
+    simpa [Q] using Matrix.tendsto_nonsingularTNApprox A
+  have hQ : ∀ i j, Tendsto (fun k => Q k i j) Filter.atTop (nhds (A i j)) := by
+    intro i j
+    exact tendsto_pi_nhds.mp (tendsto_pi_nhds.mp hQall i) j
+  have hP : ∀ i j, Tendsto (fun k => P k i j) Filter.atTop
+      (nhds ((A.submatrix Fin.succ Fin.succ) i j)) := by
+    intro i j
+    simpa [P, Matrix.submatrix_apply] using hQ i.succ j.succ
+  apply charpoly_interlaces_of_tendsto hP hQ
+  intro k
+  simpa [P, Q] using
+    (hA.nonsingularTNApprox (k := k)).trailing_charpoly_interlaces_of_det_ne_zero
+      (hA.det_nonsingularTNApprox_ne_zero (k := k))
+
+/-- Every totally nonnegative real matrix has weak leading-principal
+characteristic-polynomial interlacing, without a nonsingularity hypothesis. -/
+theorem IsTotallyNonneg.leading_charpoly_interlaces {N : ℕ}
+    {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) :
+    RealRooted.Interlaces
+      (A.submatrix Fin.castSucc Fin.castSucc).charpoly A.charpoly := by
+  let B : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
+    Matrix.reindex Fin.revPerm Fin.revPerm A
+  have hB : B.IsTotallyNonneg := hA.finRev
+  have hInterlaces := hB.trailing_charpoly_interlaces
   have hBchar : B.charpoly = A.charpoly := by
     simpa [B] using Matrix.charpoly_reindex Fin.revPerm A
   have hBtail : (B.submatrix Fin.succ Fin.succ).charpoly =

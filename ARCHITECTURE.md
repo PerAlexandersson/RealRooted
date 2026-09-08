@@ -210,9 +210,12 @@ endpoint:
   independent of the RealRooted polynomial theorem library;
 - `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation` proves that a
   nonnegative northwest-corner update preserves total nonnegativity;
-- `TotallyNonnegInterlacing` combines that model with polynomial Cauchy
-  interlacing to obtain weak leading- and trailing-principal endpoints without
-  irreducibility; and
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density` iterates asymptotically
+  trivial rank-raising updates to approximate every finite TN matrix by
+  nonsingular TN matrices;
+- `TotallyNonnegInterlacing` combines that model with nonsingular-TN density,
+  polynomial Cauchy interlacing, and coefficient-limit closure to obtain weak
+  leading- and trailing-principal endpoints for every finite TN matrix; and
 - `OscillatoryInterlacing` retains the stronger simple-root, root-disjoint,
   strictly positive, adjacent-entry endpoint for oscillatory matrices.
 
