@@ -162,6 +162,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   formulas without burdening entry-only consumers;
 - `ClassicalHurwitzMatrix` connects its even and odd rows to the polynomial
   decomposition and records exact orientation regressions; and
+- `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
+  location from the coefficient-normalized closed-half-plane predicate; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
   its uses, and the checked counterexamples to treating that matrix as the
   classical criterion.
