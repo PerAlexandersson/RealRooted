@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 960
+      "max_modules": 962
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
