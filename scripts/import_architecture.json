@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 969
+      "max_modules": 970
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -201,6 +201,9 @@
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler": {
       "max_modules": 152
+    },
+    "RealRooted.ClassicalHurwitzMatrix.Stability.Parity": {
+      "max_modules": 153
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Rotation": {
       "max_modules": 16

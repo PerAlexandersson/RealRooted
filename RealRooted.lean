@@ -87,6 +87,7 @@ import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability
 import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
 import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney

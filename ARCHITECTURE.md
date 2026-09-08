@@ -176,6 +176,8 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Stability.HermiteBiehler` child imports the full converse theory and
   turns strict stability into proper position for either explicit rotated-part
   sign normalization; and
+- its `Stability.Parity` child converts the descended split/nonpositive-root
+  data into coefficient nonnegativity for the original parity inputs; and
 - its `Stability.Rotation` child transports strict stability to closed-upper-
   half-plane exclusion under `X \mapsto -iX`; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
@@ -184,8 +186,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   its uses, and the checked counterexamples to treating that matrix as the
   classical criterion.
 
-The eleven focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
-137-, 138-, 152-, nine-, and 140-module local closures, respectively. The
+The twelve focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
+137-, 138-, 152-, 153-, nine-, and 140-module local closures, respectively. The
 compatibility module retains its historical import path, so existing consumers
 remain compatible while root-geometry-only consumers can avoid its 141-module
 closure.
