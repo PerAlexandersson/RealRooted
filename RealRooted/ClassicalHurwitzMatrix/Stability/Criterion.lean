@@ -19,11 +19,7 @@ private theorem natDegree_contract_two_of_coeff_ne_zero {p : ℝ[X]} {n : ℕ}
     (hdegree : p.natDegree ≤ 2 * n + 1) (hcoeff : p.coeff (2 * n) ≠ 0) :
     (Polynomial.contract 2 p).natDegree = n := by
   apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-    intro m hm
-    rw [Polynomial.coeff_contract (by decide)]
-    apply Polynomial.coeff_eq_zero_of_natDegree_lt
-    lia
+  · exact natDegree_contract_two_le_of_natDegree_le hdegree
   · rw [Polynomial.coeff_contract (by decide), Nat.mul_comm n 2]
     exact hcoeff
 
@@ -32,11 +28,7 @@ private theorem natDegree_contract_two_divX_of_coeff_ne_zero
     (hcoeff : p.coeff (2 * n + 1) ≠ 0) :
     (Polynomial.contract 2 p.divX).natDegree = n := by
   apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-    intro m hm
-    rw [Polynomial.coeff_contract (by decide), Polynomial.coeff_divX]
-    apply Polynomial.coeff_eq_zero_of_natDegree_lt
-    lia
+  · exact natDegree_contract_two_divX_le_of_natDegree_le hdegree
   · rw [Polynomial.coeff_contract (by decide), Polynomial.coeff_divX,
       Nat.mul_comm n 2]
     exact hcoeff

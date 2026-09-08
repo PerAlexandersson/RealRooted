@@ -173,6 +173,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   finite minor when its coefficient is nonnegative; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
   location from the coefficient-normalized closed-half-plane predicate; and
+- its `Stability.Converse` child proves the determinant-positive converse by
+  strong induction along the canonical Routh reduction; and
 - its `Stability.Criterion` child proves the polynomial-level forward
   criterion: strict stability and positive leading coefficient force total
   nonnegativity of the corrected infinite Hurwitz matrix; and

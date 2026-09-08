@@ -28,6 +28,28 @@ theorem contract_two_divX_oddEvenPolynomial (odd even : ℝ[X]) :
   rw [Polynomial.coeff_contract (by decide), Polynomial.coeff_divX,
     mul_comm, coeff_oddEvenPolynomial_odd]
 
+/-- Contraction by two has degree at most `n` when the source has degree at
+most `2 * n + 1`. -/
+theorem natDegree_contract_two_le_of_natDegree_le {p : ℝ[X]} {n : ℕ}
+    (hdegree : p.natDegree ≤ 2 * n + 1) :
+    (Polynomial.contract 2 p).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro m hm
+  rw [Polynomial.coeff_contract (by decide)]
+  apply Polynomial.coeff_eq_zero_of_natDegree_lt
+  lia
+
+/-- The odd-coefficient contraction has degree at most `n` when the source
+has degree at most `2 * n + 2`. -/
+theorem natDegree_contract_two_divX_le_of_natDegree_le
+    {p : ℝ[X]} {n : ℕ} (hdegree : p.natDegree ≤ 2 * n + 2) :
+    (Polynomial.contract 2 p.divX).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro m hm
+  rw [Polynomial.coeff_contract (by decide), Polynomial.coeff_divX]
+  apply Polynomial.coeff_eq_zero_of_natDegree_lt
+  lia
+
 /-- Every real polynomial is the odd/even polynomial built from its canonical
 odd and even coefficient contractions. -/
 theorem oddEvenPolynomial_contract_divX_contract (p : ℝ[X]) :
