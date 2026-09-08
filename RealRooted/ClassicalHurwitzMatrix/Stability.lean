@@ -124,6 +124,21 @@ theorem not_X : ¬ IsStrictlyHurwitzStable (X : ℝ[X]) := by
   intro h
   exact h.coeff_zero_ne (by simp)
 
+/-- The monic linear base case fixes the sign direction for strict Hurwitz
+stability. -/
+theorem X_add_C (a : ℝ) :
+    IsStrictlyHurwitzStable (X + Polynomial.C a) ↔ 0 < a := by
+  constructor
+  · intro h
+    have hroot : (complexify (X + Polynomial.C a)).eval (-(a : ℂ)) = 0 := by
+      simp [complexify]
+    simpa using h (-(a : ℂ)) hroot
+  · intro ha z hroot
+    have hz : z + (a : ℂ) = 0 := by
+      simpa [complexify] using hroot
+    rw [eq_neg_of_add_eq_zero_left hz]
+    simpa using ha
+
 end IsStrictlyHurwitzStable
 
 end RealRooted
