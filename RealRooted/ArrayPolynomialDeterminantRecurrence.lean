@@ -1,5 +1,6 @@
 import RealRooted.ArrayPolynomialDeterminant
 import RealRooted.ArrayPolynomialWeights
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
 
 open Matrix
 
@@ -24,6 +25,13 @@ def lowerHessenbergTwo {R : Type*} [CommRing R]
     else if i.val = j.val + 1 then -a (i.val + 1)
     else if i.val = j.val + 2 then b (i.val + 1)
     else 0
+
+theorem lowerHessenbergTwo_eq_bandedLowerHessenberg
+    {R : Type*} [CommRing R] (a b : ℕ → R) (x : R) (n : ℕ) :
+    lowerHessenbergTwo a b x n =
+      Matrix.bandedLowerHessenberg
+        (fun _ : ℕ => 1) (fun i => -a (i + 1))
+        (fun i => b (i + 1)) x n := rfl
 
 @[simp] lemma lowerHessenbergTwo_apply {R : Type*} [CommRing R]
     (a b : ℕ → R) (x : R) (n : ℕ) (i j : Fin n) :
@@ -193,80 +201,10 @@ theorem lowerHessenbergTwo_det_recurrence {R : Type*} [CommRing R]
       (lowerHessenbergTwo a b x (n + 2)).det +
         a (n + 3) * x * (lowerHessenbergTwo a b x (n + 1)).det +
           b (n + 3) * x ^ 2 * (lowerHessenbergTwo a b x n).det := by
-  have hdet := Matrix.det_succ_row (lowerHessenbergTwo a b x (n + 3))
-    (Fin.last (n + 2))
-  rw [Fin.sum_univ_succAbove _ (Fin.last (n + 2))] at hdet
-  simp only [Fin.succAbove_last] at hdet
-  rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc] at hdet
-  have hzero :
-      (∑ i : Fin n,
-        (-1 : R) ^ ((Fin.last (n + 2) : ℕ) +
-            (i.castSucc.castSucc.castSucc : ℕ)) *
-          lowerHessenbergTwo a b x (n + 3) (Fin.last (n + 2))
-            i.castSucc.castSucc.castSucc *
-          ((lowerHessenbergTwo a b x (n + 3)).submatrix Fin.castSucc
-            i.castSucc.castSucc.castSucc.succAbove).det) = 0 := by
-    apply Finset.sum_eq_zero
-    intro i hi
-    have hil := i.isLt
-    rw [show lowerHessenbergTwo a b x (n + 3) (Fin.last (n + 2))
-        i.castSucc.castSucc.castSucc = 0 by
-      simp [lowerHessenbergTwo]
-      lia]
-    ring
-  rw [hzero, zero_add] at hdet
-  have hsignLast :
-      (-1 : R) ^ ((Fin.last (n + 2) : ℕ) + (Fin.last (n + 2) : ℕ)) = 1 := by
-    rw [show (Fin.last (n + 2) : ℕ) + (Fin.last (n + 2) : ℕ) =
-        2 * (n + 2) by simp [two_mul], pow_mul]
-    simp
-  have hsignAnte :
-      (-1 : R) ^ ((Fin.last (n + 2) : ℕ) +
-        ((Fin.last n).castSucc.castSucc : ℕ)) = 1 := by
-    rw [show (Fin.last (n + 2) : ℕ) +
-        ((Fin.last n).castSucc.castSucc : ℕ) =
-          2 * (n + 1) by simp [two_mul]; omega, pow_mul]
-    simp
-  have hsignPen :
-      (-1 : R) ^ ((Fin.last (n + 2) : ℕ) +
-        ((Fin.last (n + 1)).castSucc : ℕ)) = -1 := by
-    rw [show (Fin.last (n + 2) : ℕ) +
-        ((Fin.last (n + 1)).castSucc : ℕ) =
-          2 * (n + 1) + 1 by simp [two_mul]; omega, pow_succ, pow_mul]
-    simp
-  have hentryLast :
-      lowerHessenbergTwo a b x (n + 3) (Fin.last (n + 2))
-        (Fin.last (n + 2)) = 1 := by
-    simp [lowerHessenbergTwo]
-  have hentryAnte :
-      lowerHessenbergTwo a b x (n + 3) (Fin.last (n + 2))
-        (Fin.last n).castSucc.castSucc = b (n + 3) := by
-    simp [lowerHessenbergTwo]
-    lia
-  have hentryPen :
-      lowerHessenbergTwo a b x (n + 3) (Fin.last (n + 2))
-        (Fin.last (n + 1)).castSucc = -a (n + 3) := by
-    simp [lowerHessenbergTwo]
-  have hcofactorLast :
-      ((lowerHessenbergTwo a b x (n + 3)).submatrix
-        Fin.castSucc Fin.castSucc).det =
-          (lowerHessenbergTwo a b x (n + 2)).det := by
-    congr 1
-  have hcofactorAnte :
-      ((lowerHessenbergTwo a b x (n + 3)).submatrix Fin.castSucc
-        (Fin.last n).castSucc.castSucc.succAbove).det =
-          x ^ 2 * (lowerHessenbergTwo a b x n).det := by
-    change (lowerHessenbergTwoAntepenultimateCofactor a b x n).det = _
-    exact lowerHessenbergTwoAntepenultimateCofactor_det a b x n
-  have hcofactorPen :
-      ((lowerHessenbergTwo a b x (n + 3)).submatrix Fin.castSucc
-        (Fin.last (n + 1)).castSucc.succAbove).det =
-          x * (lowerHessenbergTwo a b x (n + 1)).det := by
-    change (lowerHessenbergTwoPenultimateCofactor a b x n).det = _
-    exact lowerHessenbergTwoPenultimateCofactor_det a b x n
-  rw [hsignLast, hentryLast, hcofactorLast, hsignAnte, hentryAnte,
-    hcofactorAnte, hsignPen, hentryPen, hcofactorPen] at hdet
-  ring_nf at hdet ⊢
-  exact hdet
+  simpa only [lowerHessenbergTwo_eq_bandedLowerHessenberg,
+    Nat.add_assoc, one_mul, neg_mul, sub_neg_eq_add] using
+    (Matrix.det_bandedLowerHessenberg_add_three
+      (fun _ : ℕ => (1 : R)) (fun i => -a (i + 1))
+      (fun i => b (i + 1)) x n)
 
 end RealRooted
