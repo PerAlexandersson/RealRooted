@@ -177,9 +177,12 @@ The Hurwitz-matrix conventions are intentionally separated:
   turns strict stability into proper position for either explicit rotated-part
   sign normalization; and
 - its `Stability.Parity` child converts the descended split/nonpositive-root
-  data into coefficient nonnegativity for the original parity inputs; and
+  data into coefficient nonnegativity and first-pivot positivity for the
+  original parity inputs; and
 - its `Stability.Rotation` child transports strict stability to closed-upper-
   half-plane exclusion under `X \mapsto -iX`; and
+- its `Stability.Routh` child records the rotated recurrence and degree and
+  leading-coefficient transport for stable Routh reduction; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
