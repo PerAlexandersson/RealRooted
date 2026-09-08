@@ -1,8 +1,8 @@
 # Classical Hurwitz-Matrix Criterion Audit
 
-This note records the theorem shape fixed for issue #551 before the stability
-criterion is formalized. It distinguishes the classical matrix from the
-lower-triangular Lace matrix historically called `RealRooted.hurwitz`.
+This note records the theorem shape and checked strict criterion for issue
+#551. It distinguishes the classical matrix from the lower-triangular Lace
+matrix historically called `RealRooted.hurwitz`.
 
 ## Primary sources
 
@@ -110,17 +110,29 @@ Holtz's strict predicate. Therefore:
 
 ## Formalization route
 
-1. Keep the generic entry definition, finite sections, parity formulas, and
-   low-order determinants independent of stability theory.
-2. Add a strict root-location predicate and prove its relation to the existing
-   closed-half-plane predicate, coefficient signs, reversal, and multiplication
-   by powers of `X`.
-3. Formalize the Routh reduction and its finite leading-determinant recurrence.
-4. Derive the strict criterion and matrix factorization with every positivity
-   and degree hypothesis explicit.
-5. Obtain quasi-stable total nonnegativity by a checked approximation/closure
-   argument, then prove the converse only after the required R-function or
-   equivalent root-location machinery is formalized.
+The strict route is now checked:
+
+1. `Matrix.hurwitz` and `Matrix.hurwitzLeadingPrincipal` fix the corrected
+   convention independently of stability theory.
+2. `RealRooted.IsStrictlyHurwitzStable` records strict left-half-plane root
+   location, while `oddEvenPolynomial_contract_divX_contract` gives the
+   canonical parity representation of every real polynomial.
+3. The Routh modules prove the matrix factorization, determinant recurrence,
+   one-step forward and reverse stability theorems, and their finite
+   iteration.
+4. `Matrix.hurwitz_isTotallyNonneg_of_strictlyStable` proves the
+   polynomial-level total-nonnegativity direction.
+5. `Matrix.strictlyHurwitzStable_of_hurwitzLeadingPrincipal_det_pos` proves
+   the determinant-positive converse by exact degree descent.
+6. `Matrix.strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos` is the
+   strict Routh--Hurwitz equivalence under positive leading coefficient.
+7. `Matrix.strictlyHurwitzStable_iff_hurwitz_isTotallyNonneg_and_det_pos`
+   packages the exact strict matrix endpoint: total nonnegativity is paired
+   with strict leading-determinant positivity.
+
+The quasi-stable equivalence for boundary cases remains a separate future
+closure problem. Total nonnegativity alone is intentionally not reported as a
+strict converse.
 
 The existing false Lace-oriented statements and their checked negations remain
 unchanged throughout this route.
