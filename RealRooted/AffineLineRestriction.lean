@@ -1,5 +1,6 @@
 import RealRooted.MultivariateStability
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 import RealRooted.RootContinuity
 
 /-!
@@ -72,54 +73,6 @@ def realAffineLineRestriction {σ : Type*} (a b : σ → ℝ)
   rw [← Polynomial.eval_map]
   exact eval_complexify_realAffineLineRestriction a b P t
 
-private theorem coeff_prod_affine_pow_total
-    {σ : Type*} (s : Finset σ) (a b : σ → ℝ) (e : σ → ℕ) :
-    (∏ i ∈ s,
-      (Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X) ^ e i).coeff
-        (∑ i ∈ s, e i) =
-      ∏ i ∈ s, b i ^ e i := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-      let g : σ → ℝ[X] := fun j =>
-        Polynomial.C (a j) + Polynomial.C (b j) * Polynomial.X
-      have hlin (j : σ) : (g j).natDegree ≤ 1 := by
-        apply (Polynomial.natDegree_add_le _ _).trans
-        exact max_le (by simp)
-          ((Polynomial.natDegree_C_mul_le (b j) Polynomial.X).trans
-            Polynomial.natDegree_X_le)
-      have hpow (j : σ) : ((g j) ^ e j).natDegree ≤ e j := by
-        simpa using Polynomial.natDegree_pow_le_of_le (e j) (hlin j)
-      have hrest :
-          (∏ j ∈ s, (g j) ^ e j).natDegree ≤ ∑ j ∈ s, e j :=
-        (Polynomial.natDegree_prod_le s fun j => (g j) ^ e j).trans
-          (Finset.sum_le_sum fun j hj => hpow j)
-      have hcoeff : ((g i) ^ e i).coeff (e i) = b i ^ e i := by
-        simpa [g] using
-          Polynomial.coeff_pow_of_natDegree_le (m := e i) (hlin i)
-      simp only [Finset.prod_insert hi, Finset.sum_insert hi]
-      rw [Polynomial.coeff_mul_add_eq_of_natDegree_le (hpow i) hrest,
-        hcoeff, ih]
-
-private theorem natDegree_prod_affine_pow_le_total
-    {σ : Type*} (s : Finset σ) (a b : σ → ℝ) (e : σ → ℕ) :
-    (∏ i ∈ s,
-      (Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X) ^ e i).natDegree ≤
-      ∑ i ∈ s, e i := by
-  classical
-  apply (Polynomial.natDegree_prod_le s fun i =>
-    (Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X) ^ e i).trans
-  apply Finset.sum_le_sum
-  intro i hi
-  have hlin :
-      (Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X).natDegree ≤ 1 := by
-    apply (Polynomial.natDegree_add_le _ _).trans
-    exact max_le (by simp)
-      ((Polynomial.natDegree_C_mul_le (b i) Polynomial.X).trans
-        Polynomial.natDegree_X_le)
-  simpa using Polynomial.natDegree_pow_le_of_le (e i) hlin
-
 /-- The top coefficient of an affine-line restriction of a homogeneous
 polynomial is its evaluation on the direction vector. -/
 theorem MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
@@ -127,16 +80,7 @@ theorem MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
     (hH : H.IsHomogeneous d) (a b : σ → ℝ) :
     (realAffineLineRestriction a b H).coeff d =
       MvPolynomial.eval b H := by
-  classical
-  unfold realAffineLineRestriction
-  change (MvPolynomial.eval₂ Polynomial.C
-    (fun i => Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X) H).coeff d = _
-  rw [MvPolynomial.eval₂_eq, Polynomial.finsetSum_coeff,
-    MvPolynomial.eval_eq]
-  apply Finset.sum_congr rfl
-  intro m hm
-  rw [hH.degree_eq_sum_deg_support hm, Polynomial.coeff_C_mul,
-    coeff_prod_affine_pow_total]
+  exact hH.coeff_affineLineRestriction a b
 
 /-- An affine-line restriction of a degree-`d` homogeneous polynomial has
 univariate degree at most `d`. -/
@@ -144,16 +88,7 @@ theorem MvPolynomial.IsHomogeneous.natDegree_realAffineLineRestriction_le
     {σ : Type*} {H : MvPolynomial σ ℝ} {d : ℕ}
     (hH : H.IsHomogeneous d) (a b : σ → ℝ) :
     (realAffineLineRestriction a b H).natDegree ≤ d := by
-  classical
-  unfold realAffineLineRestriction
-  change (MvPolynomial.eval₂ Polynomial.C
-    (fun i => Polynomial.C (a i) + Polynomial.C (b i) * Polynomial.X) H).natDegree ≤ d
-  rw [MvPolynomial.eval₂_eq]
-  apply Polynomial.natDegree_sum_le_of_forall_le
-  intro m hm
-  apply (Polynomial.natDegree_C_mul_le _ _).trans
-  rw [hH.degree_eq_sum_deg_support hm]
-  exact natDegree_prod_affine_pow_le_total m.support a b m
+  exact hH.natDegree_affineLineRestriction_le a b
 
 /-- Every positive-direction real affine restriction of a real stable
 multivariate polynomial is nonzero and real-rooted. -/
