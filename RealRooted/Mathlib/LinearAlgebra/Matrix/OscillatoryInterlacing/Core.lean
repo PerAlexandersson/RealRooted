@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import Mathlib.Data.Fin.Rev
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Transvection
@@ -3277,19 +3278,6 @@ private theorem det_tridiagonal_first_rec {R : Type*} [CommRing R] {N : ℕ}
   rw [Matrix.submatrix_submatrix]
   ring
 
-private theorem charmatrix_trailing {R : Type*} [CommRing R] {N : ℕ}
-    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
-    A.charmatrix.submatrix Fin.succ Fin.succ =
-      (A.submatrix Fin.succ Fin.succ).charmatrix := by
-  ext i j
-  by_cases hij : i = j
-  · subst j
-    simp only [Matrix.submatrix_apply, Matrix.charmatrix_apply_eq]
-  · rw [Matrix.submatrix_apply,
-      Matrix.charmatrix_apply_ne _ _ _
-        (fun h ↦ hij (Fin.ext (by simpa using congrArg Fin.val h))),
-      Matrix.charmatrix_apply_ne _ _ _ hij, Matrix.submatrix_apply]
-
 /-- The characteristic polynomial of a tridiagonal matrix satisfies the
 continuant recurrence obtained by deleting its first row and column. -/
 theorem charpoly_tridiagonal_rec {R : Type*} [CommRing R] {N : ℕ}
@@ -3325,8 +3313,9 @@ theorem charpoly_tridiagonal_rec {R : Type*} [CommRing R] {N : ℕ}
       neg_zero]
   rw [Matrix.charpoly, det_tridiagonal_first_rec M hcol hrow]
   dsimp only [M]
-  rw [charmatrix_trailing T,
-    charmatrix_trailing (T.submatrix Fin.succ Fin.succ)]
+  rw [charmatrix_submatrix_self T Fin.succ (Fin.succ_injective (N + 1)),
+    charmatrix_submatrix_self (T.submatrix Fin.succ Fin.succ) Fin.succ
+      (Fin.succ_injective N)]
   rw [Matrix.charmatrix_apply_eq,
     Matrix.charmatrix_apply_ne T 1 0 one_ne_zero,
     Matrix.charmatrix_apply_ne T 0 1 zero_ne_one]

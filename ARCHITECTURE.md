@@ -196,6 +196,8 @@ The only shared proof helpers are explicitly package-internal, under
 Cauchy and oscillatory matrix interlacing now meet at a narrow polynomial
 endpoint:
 
+- `Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix` owns the general injective
+  principal-submatrix/charmatrix compatibility lemma;
 - `CauchyInterlacing` owns the ordered-eigenvalue theorem;
 - `CauchyInterlacing.Polynomial` transports it to characteristic-polynomial
   `Interlaces` without importing a challenge module;

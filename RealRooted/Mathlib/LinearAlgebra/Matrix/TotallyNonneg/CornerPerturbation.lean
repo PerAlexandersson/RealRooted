@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
@@ -9,6 +10,8 @@ as a general commutative-ring identity.
 -/
 
 namespace Matrix
+
+open Polynomial
 
 /-- Adding `t` to the northwest corner changes the determinant by `t` times the
 complementary southeast principal minor. -/
@@ -33,6 +36,29 @@ theorem det_add_single_zero_zero {R : Type*} [CommRing R] {n : ℕ}
   simp only [Fin.val_zero, pow_zero, one_mul, add_apply, Matrix.single_apply,
     add_mul]
   simp [hzero, Fin.succAbove_zero]
+  ring
+
+/-- Adding `t` to the northwest corner subtracts `C t` times the complementary
+southeast principal characteristic polynomial from the characteristic
+polynomial. -/
+theorem charpoly_add_single_zero_zero {R : Type*} [CommRing R] {n : ℕ}
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R) (t : R) :
+    (A + Matrix.single 0 0 t).charpoly =
+      A.charpoly - C t * (A.submatrix Fin.succ Fin.succ).charpoly := by
+  have hcharmatrix :
+      (A + Matrix.single 0 0 t).charmatrix =
+        A.charmatrix + Matrix.single 0 0 (-C t) := by
+    apply Matrix.ext
+    intro i j
+    by_cases h : 0 = i ∧ 0 = j
+    · rcases h with ⟨rfl, rfl⟩
+      simp
+      ring
+    · simp [Matrix.charmatrix_apply, h]
+  rw [Matrix.charpoly, hcharmatrix, det_add_single_zero_zero,
+    charmatrix_submatrix_self A Fin.succ (Fin.succ_injective n)]
+  change A.charmatrix.det + -C t * _ =
+    A.charmatrix.det - C t * (A.submatrix Fin.succ Fin.succ).charmatrix.det
   ring
 
 /-- Adding a nonnegative scalar to the northwest corner of a totally
