@@ -318,6 +318,7 @@ import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
+import RealRooted.InterlacingClosure
 import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic

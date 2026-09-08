@@ -66,6 +66,12 @@ Curated entry points may be introduced for stable families, but each entry
 point needs an import budget so that it does not silently become another full
 umbrella.
 
+`InterlacingClosure` is the focused coefficientwise-limit layer for monic,
+fixed-degree weakly interlacing polynomial pairs. It depends on polynomial root
+continuity and the Obreschkoff equivalence, but not on matrix theory; matrix
+approximation arguments should consume this endpoint rather than duplicate its
+limit proof.
+
 Tactic examples and other regression-only modules should eventually move to a
 separate test umbrella. The root-import checker will continue to require every
 current library module until that test surface exists and the checker has an
