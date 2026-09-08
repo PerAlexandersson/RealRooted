@@ -248,4 +248,21 @@ theorem strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos
     intro n hn hnDegree
     exact h n hnDegree
 
+/-- Strict stability is exactly corrected infinite Hurwitz total
+nonnegativity together with strict positivity of the leading determinants. -/
+theorem strictlyHurwitzStable_iff_hurwitz_isTotallyNonneg_and_det_pos
+    {p : ℝ[X]} (hlead : HasPosLeadingCoeff p) :
+    IsStrictlyHurwitzStable p ↔
+      (hurwitz p.coeff).IsTotallyNonneg ∧
+        ∀ n, n ≤ p.natDegree →
+          0 < (hurwitzLeadingPrincipal p.coeff n).det := by
+  constructor
+  · intro h
+    exact
+      ⟨hurwitz_isTotallyNonneg_of_strictlyStable h hlead,
+        hurwitzLeadingPrincipal_det_pos_of_strictlyStable h hlead⟩
+  · intro h
+    exact (strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos hlead).2
+      h.2
+
 end Matrix
