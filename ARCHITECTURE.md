@@ -167,6 +167,8 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Routh.Determinant` child proves the leading-determinant recurrence; and
 - its `Routh.Sequence` child iterates the reduction and identifies every
   leading determinant with its finite product of Routh pivots; and
+- its `Routh.Sequence.TotallyNonnegative` child transports total
+  nonnegativity backward through any finite admissible Routh chain; and
 - its `Routh.TotallyNonnegative` child proves that expansion preserves every
   finite minor when its coefficient is nonnegative; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
