@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Convex.PathConnected
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.HomogeneousComponentStability
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
 /-!
@@ -22,6 +23,60 @@ theorem realAffineLineRestriction_eq_affineLineRestriction
     {σ : Type*} (x e : σ → ℝ) (P : MvPolynomial σ ℝ) :
     realAffineLineRestriction x e P =
       MvPolynomial.affineLineRestriction x e P := rfl
+
+/-- Coefficients of an affine-line restriction vary continuously when its
+base point varies continuously. -/
+theorem continuous_coeff_affineLineRestriction_comp
+    {T σ K : Type*} [TopologicalSpace T] [NormedField K]
+    (P : MvPolynomial σ K) (a : T → σ → K)
+    (ha : ∀ i, Continuous fun t => a t i) (b : σ → K) (k : ℕ) :
+    Continuous fun t =>
+      (MvPolynomial.affineLineRestriction (a t) b P).coeff k := by
+  induction P using MvPolynomial.induction_on generalizing k with
+  | C r =>
+      simpa [MvPolynomial.affineLineRestriction] using
+        (continuous_const : Continuous fun _ : T =>
+          (Polynomial.C r).coeff k)
+  | add P Q hP hQ =>
+      have hP' : Continuous fun t =>
+          ((MvPolynomial.eval₂Hom Polynomial.C
+            (fun i => Polynomial.C (a t i) +
+              Polynomial.C (b i) * Polynomial.X) P)).coeff k := by
+        simpa [MvPolynomial.affineLineRestriction] using hP k
+      have hQ' : Continuous fun t =>
+          ((MvPolynomial.eval₂Hom Polynomial.C
+            (fun i => Polynomial.C (a t i) +
+              Polynomial.C (b i) * Polynomial.X) Q)).coeff k := by
+        simpa [MvPolynomial.affineLineRestriction] using hQ k
+      change Continuous fun t =>
+        ((MvPolynomial.eval₂Hom Polynomial.C
+          (fun i => Polynomial.C (a t i) +
+            Polynomial.C (b i) * Polynomial.X) (P + Q))).coeff k
+      simp_rw [map_add, coeff_add]
+      fun_prop
+  | mul_X P i hP =>
+      have hP' (j : ℕ) : Continuous fun t =>
+          ((MvPolynomial.eval₂Hom Polynomial.C
+            (fun i => Polynomial.C (a t i) +
+              Polynomial.C (b i) * Polynomial.X) P)).coeff j := by
+        simpa [MvPolynomial.affineLineRestriction] using hP j
+      change Continuous fun t =>
+        ((MvPolynomial.eval₂Hom Polynomial.C
+          (fun j => Polynomial.C (a t j) +
+            Polynomial.C (b j) * Polynomial.X)
+          (P * MvPolynomial.X i))).coeff k
+      simp_rw [map_mul, MvPolynomial.eval₂Hom_X',
+        Polynomial.coeff_mul, coeff_add, coeff_C, coeff_C_mul_X]
+      apply continuous_finsetSum
+      intro x hx
+      by_cases hx0 : x.2 = 0
+      · simp only [hx0, if_pos, Nat.zero_ne_one, if_false, add_zero]
+        exact (hP' x.1).mul (ha i)
+      · by_cases hx1 : x.2 = 1
+        · simp only [hx1, Nat.one_ne_zero, if_false, if_pos, zero_add]
+          exact (hP' x.1).mul continuous_const
+        · simp only [hx0, hx1, if_false, zero_add, mul_zero]
+          exact continuous_const
 
 /-- Restricting a homogeneous polynomial to a line through zero produces a
 monomial whose coefficient is its value at the direction vector. -/
@@ -86,6 +141,100 @@ theorem MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
   rw [realAffineLineRestriction_eq_affineLineRestriction, hzero] at hcoeff
   simpa using hcoeff.symm
 
+/-- Along a path in the nonvanishing locus from a hyperbolic direction, the
+roots of the affine restriction in that direction stay strictly negative. -/
+theorem MvPolynomial.HyperbolicAt.affineLineRestriction_isRoot_neg_of_joinedIn
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ} {e u : σ → ℝ}
+    (he : P.HyperbolicAt e) (hhom : P.IsHomogeneous d) (hd : d ≠ 0)
+    (hjoin : JoinedIn {x | MvPolynomial.eval x P ≠ 0} e u) :
+    ∀ r, (MvPolynomial.affineLineRestriction u e P).IsRoot r → r < 0 := by
+  let γ : Path e u := hjoin.somePath
+  let c : ℝ := (MvPolynomial.eval e P)⁻¹
+  let q : unitInterval → ℝ[X] := fun t => Polynomial.C c *
+    MvPolynomial.affineLineRestriction (γ t) e P
+  have hrestrictionDegree (t : unitInterval) :
+      (MvPolynomial.affineLineRestriction (γ t) e P).natDegree = d := by
+    apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    · simpa [← realAffineLineRestriction_eq_affineLineRestriction] using
+        MvPolynomial.IsHomogeneous.natDegree_realAffineLineRestriction_le
+          hhom (γ t) e
+    · simpa [← realAffineLineRestriction_eq_affineLineRestriction] using
+        (MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
+          hhom (γ t) e).trans_ne he.1
+  have hdegree (t : unitInterval) : (q t).natDegree = d := by
+    rw [show q t = Polynomial.C c *
+      MvPolynomial.affineLineRestriction (γ t) e P by rfl,
+      Polynomial.natDegree_C_mul (inv_ne_zero he.1),
+      hrestrictionDegree]
+  have hmonic (t : unitInterval) : (q t).Monic := by
+    apply Polynomial.monic_C_mul_of_mul_leadingCoeff_eq_one
+    rw [Polynomial.leadingCoeff, hrestrictionDegree]
+    simp only [c]
+    rw [show (MvPolynomial.affineLineRestriction (γ t) e P).coeff d =
+        MvPolynomial.eval e P by
+      simpa [← realAffineLineRestriction_eq_affineLineRestriction] using
+        MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
+          hhom (γ t) e]
+    exact inv_mul_cancel₀ he.1
+  have hsplits (t : unitInterval) : (q t).Splits := by
+    exact (he.2 (γ t)).C_mul c
+  have hcoeff (k : ℕ) : Continuous fun t => (q t).coeff k := by
+    have hγi (i : σ) : Continuous fun t => γ t i :=
+      (continuous_apply i).comp γ.continuous
+    have hrestriction := continuous_coeff_affineLineRestriction_comp
+      P γ hγi e k
+    simpa [q, c, Polynomial.coeff_C_mul] using
+      hrestriction.const_mul c
+  have hcover (t : unitInterval) (r : ℝ) (hr : (q t).IsRoot r) :
+      r ∈ Set.Iio 0 ∪ Set.Ioi 0 := by
+    have hqzero : (q t).eval 0 ≠ 0 := by
+      have hpath : MvPolynomial.eval (γ t) P ≠ 0 := hjoin.somePath_mem t
+      dsimp only [q]
+      rw [Polynomial.eval_mul, Polynomial.eval_C,
+        MvPolynomial.eval_affineLineRestriction]
+      simpa [c] using mul_ne_zero (inv_ne_zero he.1) hpath
+    have hr0 : r ≠ 0 := by
+      intro hrzero
+      subst r
+      exact hqzero hr
+    exact lt_or_gt_of_ne hr0
+  have hstart : ∀ r, (q (0 : unitInterval)).IsRoot r → r ∈ Set.Iio 0 := by
+    intro r hr
+    have hγ0 : γ (0 : unitInterval) = e := γ.source'
+    have hrpow : (1 + r) ^ d = 0 := by
+      have hreval :
+          MvPolynomial.eval (fun i => e i + e i * r) P = 0 := by
+        simpa [q, c, hγ0, Polynomial.IsRoot, he.1] using hr
+      have hvec : (fun i => e i + e i * r) = fun i => (1 + r) * e i := by
+        funext i
+        ring
+      rw [hvec, hhom.eval_smul] at hreval
+      exact (mul_eq_zero.mp hreval).resolve_right he.1
+    have hrneg : r = -1 := by
+      have : 1 + r = 0 := (pow_eq_zero_iff hd).mp hrpow
+      linarith
+    rw [hrneg]
+    norm_num
+  have htransport : ∀ r, (q (1 : unitInterval)).IsRoot r → r ∈ Set.Iio 0 := by
+    apply Polynomial.forall_isRoot_mem_of_isPreconnected
+      q hmonic hdegree hd hcoeff hsplits isOpen_Iio isOpen_Ioi
+    · exact Set.disjoint_left.mpr (by
+        intro r hrneg hrpos
+        change r < 0 at hrneg
+        change 0 < r at hrpos
+        exact (not_lt_of_ge hrpos.le) hrneg)
+    · exact hcover
+    · exact isPreconnected_univ
+    · exact Set.mem_univ (0 : unitInterval)
+    · exact Set.mem_univ (1 : unitInterval)
+    · exact hstart
+  intro r hr
+  apply htransport r
+  have hγ1 : γ (1 : unitInterval) = u := γ.target'
+  dsimp only [q]
+  rw [hγ1, Polynomial.IsRoot, Polynomial.eval_mul,
+    Polynomial.eval_C, hr, mul_zero]
+
 /-- If the roots seen from one hyperbolic direction are nonpositive, then the
 homogeneous restriction to that direction and the base vector is bivariate
 real stable. -/
@@ -113,6 +262,22 @@ theorem MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable
     hhom e u, ← hqd]
   exact BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
     hq0 (he.2 u) hroots
+
+/-- Directions joined inside the nonvanishing locus to a positive-degree
+hyperbolic direction span a bivariate real-stable restriction with it. -/
+theorem MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable_of_joinedIn
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ} {e u : σ → ℝ}
+    (he : P.HyperbolicAt e) (hhom : P.IsHomogeneous d) (hd : d ≠ 0)
+    (hjoin : JoinedIn {x | MvPolynomial.eval x P ≠ 0} e u) :
+    MvRealStable (MvPolynomial.linearPlaneRestriction e u P) := by
+  apply MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable
+    he hhom
+  intro r hr
+  apply (MvPolynomial.HyperbolicAt.affineLineRestriction_isRoot_neg_of_joinedIn
+    he hhom hd hjoin r ?_).le
+  exact (Polynomial.mem_roots
+    (MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
+      he hhom u).2).mp hr
 
 /-- A homogeneous real stable polynomial is hyperbolic in every strictly
 positive direction. -/
