@@ -178,6 +178,9 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Stability.Criterion` child proves the polynomial-level forward
   criterion: strict stability and positive leading coefficient force total
   nonnegativity of the corrected infinite Hurwitz matrix; and
+- its `Stability.Closure` child extends that forward criterion to the project's
+  coefficient-normalized closed-half-plane predicate by positive translation
+  and closure of every finite matrix minor; and
 - its `Stability.Extraction` child proves that Mathlib contraction recovers
   both parity inputs and canonically reconstructs every real polynomial; and
 - its `Stability.HermiteBiehler` child imports the full converse theory and
@@ -209,6 +212,12 @@ The Hurwitz-matrix conventions are intentionally separated:
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
   its uses, and the checked counterexamples to treating that matrix as the
   classical criterion.
+
+The boundary argument keeps its two reusable continuity inputs below the
+Hurwitz package: `Mathlib.Topology.Algebra.Polynomial` owns coefficient
+continuity under real translation, while
+`Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure` owns closure of total
+nonnegativity along continuous real matrix curves.
 
 The twelve focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
 137-, 138-, 152-, 153-, nine-, and 140-module local closures, respectively. The

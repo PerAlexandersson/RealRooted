@@ -1,4 +1,5 @@
 import RealRooted.JensenPencilPositiveContraction
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
 import RealRooted.RootContinuity
 
 /-!
@@ -29,20 +30,12 @@ theorem IsPFPolynomial.comp_X_add_C_and_coeff_zero_pos
   · simpa [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_comp] using
       eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hp0 heps
 
-/-- Every coefficient of a translated polynomial varies continuously with the
-translation parameter. -/
+/-- Deprecated compatibility name for
+`Polynomial.continuous_coeff_comp_X_add_C`. -/
+@[deprecated Polynomial.continuous_coeff_comp_X_add_C (since := "2026-09-08")]
 theorem continuous_coeff_comp_X_add_C (p : ℝ[X]) (i : ℕ) :
-    Continuous fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i := by
-  rw [show (fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i) =
-      fun eps : ℝ ↦ ∑ n ∈ p.support,
-        (C (p.coeff n) * (X + C eps) ^ n).coeff i by
-    funext eps
-    rw [Polynomial.comp_eq_sum_left, Polynomial.sum_def,
-      Polynomial.finsetSum_coeff]]
-  apply continuous_finsetSum p.support
-  intro n _hn
-  simp only [Polynomial.coeff_C_mul, Polynomial.coeff_X_add_C_pow]
-  fun_prop
+    Continuous fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i :=
+  p.continuous_coeff_comp_X_add_C i
 
 /-- A coefficientwise continuous curve of PF sequences for positive parameters
 has a PF value at zero. -/
@@ -107,8 +100,8 @@ private theorem continuous_coeff_jensenTranslateCombination
           (p.comp (X + C eps))).coeff k := by
     simp only [coeff_schurSzegoComp]
     split
-    · exact ((continuous_coeff_comp_X_add_C f k).mul
-        (continuous_coeff_comp_X_add_C p k)).div_const _
+    · exact ((f.continuous_coeff_comp_X_add_C k).mul
+        (p.continuous_coeff_comp_X_add_C k)).div_const _
     · change Continuous (fun _ : ℝ ↦ (0 : ℝ))
       exact continuous_const
   simp only [jensenTranslateCombination, coeff_add, coeff_C_mul]

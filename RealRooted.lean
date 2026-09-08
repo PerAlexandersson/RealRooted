@@ -86,6 +86,7 @@ import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
 import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability
+import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
 import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
 import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
@@ -514,6 +515,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
@@ -569,6 +571,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize

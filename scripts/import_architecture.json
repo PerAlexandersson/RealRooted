@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 979
+      "max_modules": 982
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -201,6 +201,9 @@
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Converse": {
       "max_modules": 184
+    },
+    "RealRooted.ClassicalHurwitzMatrix.Stability.Closure": {
+      "max_modules": 174
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Criterion": {
       "max_modules": 171
@@ -665,13 +668,13 @@
       "max_modules": 90
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 197
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 198
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
       "max_modules": 199
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+      "max_modules": 200
    },
     "RealRooted.Hadamard.Basic": {
       "max_modules": 85
@@ -792,6 +795,12 @@
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
       "max_modules": 5
+    },
+    "RealRooted.Mathlib.Topology.Algebra.Polynomial": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure": {
+      "max_modules": 3
     },
     "RealRooted.LiuWang": {
       "max_modules": 43
@@ -1121,7 +1130,7 @@
       "max_modules": 101
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 435
+      "max_modules": 436
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1211,7 +1220,7 @@
       "max_modules": 93
     },
     "RealRooted.Tactic": {
-      "max_modules": 463
+      "max_modules": 464
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 171

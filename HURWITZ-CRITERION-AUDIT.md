@@ -129,10 +129,19 @@ The strict route is now checked:
 7. `Matrix.strictlyHurwitzStable_iff_hurwitz_isTotallyNonneg_and_det_pos`
    packages the exact strict matrix endpoint: total nonnegativity is paired
    with strict leading-determinant positivity.
+8. `Polynomial.continuous_coeff_comp_X_add_C` and
+   `Matrix.IsTotallyNonneg.of_continuous_curve` provide reusable
+   coefficientwise and finite-minor closure lemmas.
+9. `RealRooted.IsHurwitzStable.strictlyStable_comp_X_add_C` proves that every
+   positive translation of a quasi-stable polynomial is strictly stable.
+10. `Matrix.hurwitz_isTotallyNonneg_of_hurwitzStable` takes the one-sided
+    limit and proves the forward quasi-stable criterion, including zero
+    constant terms and imaginary-axis roots.
 
-The quasi-stable equivalence for boundary cases remains a separate future
-closure problem. Total nonnegativity alone is intentionally not reported as a
-strict converse.
+The converse from total nonnegativity to quasi-stability remains a separate
+future boundary problem, including the zero-pivot degeneracies excluded by
+strict Routh descent. Total nonnegativity alone is intentionally not reported
+as a strict converse.
 
 The existing false Lace-oriented statements and their checked negations remain
 unchanged throughout this route.
