@@ -154,6 +154,18 @@ Hermite--Biehler now has a foundational dependency boundary:
   and right-half-plane stability endpoint; and
 - `HermiteBiehler` is the historical compatibility import for the package.
 
+The Hurwitz-matrix conventions are intentionally separated:
+
+- `Mathlib.LinearAlgebra.Matrix.Hurwitz` defines the classical infinite
+  coefficient matrix in the constant-term-first convention;
+- its `Hurwitz.Determinant` child owns finite leading-principal determinant
+  formulas without burdening entry-only consumers;
+- `ClassicalHurwitzMatrix` connects its even and odd rows to the polynomial
+  decomposition and records exact orientation regressions; and
+- `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
+  its uses, and the checked counterexamples to treating that matrix as the
+  classical criterion.
+
 The ten focused modules have one-, eight-, nine-, nineteen-, 133-, 134-, 137-,
 138-, nine-, and 140-module local closures, respectively. The compatibility
 module retains its historical import path, so existing consumers remain

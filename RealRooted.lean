@@ -79,6 +79,7 @@ import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 import RealRooted.BoundarySpecializationRight
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
+import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.BrandenSolus
@@ -520,6 +521,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
 import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
 import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing
