@@ -67,6 +67,34 @@ theorem eval_rotateLeftHalfPlaneToUpper_oddEvenPolynomial
   rw [hsquare]
   ring
 
+/-- The real part of the rotated odd/even polynomial. -/
+noncomputable def hurwitzRotatedEvenPart (even : ℝ[X]) : ℝ[X] :=
+  even.comp (-(X ^ 2))
+
+/-- The imaginary part of the rotated odd/even polynomial. -/
+noncomputable def hurwitzRotatedOddPart (odd : ℝ[X]) : ℝ[X] :=
+  -X * odd.comp (-(X ^ 2))
+
+/-- After `X ↦ -iX`, an odd/even polynomial is exactly a
+Hermite--Biehler polynomial with explicit real and imaginary parts. -/
+theorem rotateLeftHalfPlaneToUpper_oddEvenPolynomial
+    (odd even : ℝ[X]) :
+    rotateLeftHalfPlaneToUpper (oddEvenPolynomial odd even) =
+      hermiteBiehlerPolynomial
+        (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd) := by
+  have hcomp (p : ℝ[X]) :
+      ((p.map Complex.ofRealHom).comp (X ^ 2)).comp (-(C Complex.I * X)) =
+        (p.map Complex.ofRealHom).comp (-(X ^ 2)) := by
+    rw [Polynomial.comp_assoc]
+    congr 1
+    simp only [pow_comp, X_comp, even_two, Even.neg_pow]
+    rw [mul_pow, ← C_pow, Complex.I_sq]
+    simp
+  simp [rotateLeftHalfPlaneToUpper, hurwitzRotatedEvenPart,
+    hurwitzRotatedOddPart, hermiteBiehlerPolynomial, complexify,
+    oddEvenPolynomial, Polynomial.map_comp, hcomp]
+  ring
+
 /-- Strict left-half-plane stability is exactly closed-upper-half-plane
 exclusion after the substitution `X ↦ -iX`. -/
 theorem isClosedUpperHalfPlaneStable_rotateLeftHalfPlaneToUpper_iff
@@ -93,5 +121,27 @@ theorem isClosedUpperHalfPlaneStable_rotateLeftHalfPlaneToUpper_iff
       simp [Complex.mul_re]
     rw [hre] at hlt
     exact (not_lt_of_ge hzim) hlt
+
+/-- Strict Hurwitz stability gives closed-upper-half-plane exclusion for the
+Hermite--Biehler polynomial formed by the rotated parity parts. -/
+theorem IsStrictlyHurwitzStable.closedUpperHalfPlaneStable_rotatedParts
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even)) :
+    IsClosedUpperHalfPlaneStable
+      (hermiteBiehlerPolynomial
+        (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd)) := by
+  rw [← rotateLeftHalfPlaneToUpper_oddEvenPolynomial]
+  exact
+    (isClosedUpperHalfPlaneStable_rotateLeftHalfPlaneToUpper_iff _).mpr h
+
+/-- Open-upper-half-plane form consumable by the existing Hermite--Biehler
+converse API. -/
+theorem IsStrictlyHurwitzStable.upperHalfPlaneStable_rotatedParts
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even)) :
+    IsUpperHalfPlaneStable
+      (hermiteBiehlerPolynomial
+        (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd)) :=
+  h.closedUpperHalfPlaneStable_rotatedParts.upperHalfPlaneStable
 
 end RealRooted
