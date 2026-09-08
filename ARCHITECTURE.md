@@ -72,6 +72,10 @@ continuity and the Obreschkoff equivalence, but not on matrix theory; matrix
 approximation arguments should consume this endpoint rather than duplicate its
 limit proof.
 
+`MatrixInterlacingClosure` supplies the corresponding entrywise matrix-limit
+adapter using characteristic-polynomial coefficient continuity from the
+Mathlib-shaped `Matrix.SpectrumClosed` shim.
+
 Tactic examples and other regression-only modules should eventually move to a
 separate test umbrella. The root-import checker will continue to require every
 current library module until that test surface exists and the checker has an

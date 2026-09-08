@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 
 /-!
@@ -23,15 +24,51 @@ open Polynomial Filter Topology Finset
 
 namespace Matrix
 
-variable {n : ℕ}
-
 /-- The determinant is continuous along entrywise-converging sequences. -/
-theorem tendsto_det {M : ℕ → Matrix (Fin n) (Fin n) ℂ} {M₀ : Matrix (Fin n) (Fin n) ℂ}
+theorem tendsto_det {R n : Type*} [TopologicalSpace R] [CommRing R]
+    [IsTopologicalRing R] [Fintype n] [DecidableEq n]
+    {M : ℕ → Matrix n n R} {M₀ : Matrix n n R}
     (h : ∀ i j, Tendsto (fun k => M k i j) atTop (𝓝 (M₀ i j))) :
     Tendsto (fun k => (M k).det) atTop (𝓝 M₀.det) := by
   simp only [Matrix.det_apply]
   refine tendsto_finsetSum _ fun σ _ => ?_
   exact Tendsto.const_smul (tendsto_finsetProd _ fun i _ => h (σ i) i) _
+
+/-- Characteristic-polynomial coefficients vary continuously along an
+entrywise-convergent sequence of real square matrices. -/
+theorem tendsto_charpoly_coeff {n : ℕ}
+    {M : ℕ → Matrix (Fin n) (Fin n) ℝ} {M₀ : Matrix (Fin n) (Fin n) ℝ}
+    (h : ∀ i j, Tendsto (fun k => M k i j) atTop (𝓝 (M₀ i j))) (i : ℕ) :
+    Tendsto (fun k => (M k).charpoly.coeff i) atTop (𝓝 (M₀.charpoly.coeff i)) := by
+  by_cases hi : i ≤ n
+  · let d := n - i
+    have hd : d ≤ n := Nat.sub_le n i
+    have hindex : n - d = i := Nat.sub_sub_self hi
+    simp_rw [show ∀ A : Matrix (Fin n) (Fin n) ℝ,
+        A.charpoly.coeff i =
+          (-1 : ℝ) ^ d * ∑ s ∈ Finset.univ.powersetCard d,
+            (A.submatrix (Subtype.val : s → Fin n) Subtype.val).det by
+      intro A
+      simpa [Fintype.card_fin, hindex] using
+        A.charpoly_coeff_eq_sum_minors d (by simpa using hd)]
+    apply Tendsto.const_mul
+    apply tendsto_finsetSum
+    intro s hs
+    apply tendsto_det
+    intro a b
+    simpa only [Matrix.submatrix_apply] using h (a : Fin n) (b : Fin n)
+  · have hni : n < i := Nat.lt_of_not_ge hi
+    have hzero : ∀ A : Matrix (Fin n) (Fin n) ℝ, A.charpoly.coeff i = 0 := by
+      intro A
+      apply Polynomial.coeff_eq_zero_of_natDegree_lt
+      have hdeg : A.charpoly.natDegree = n := by
+        simpa only [Fintype.card_fin] using A.charpoly_natDegree_eq_dim
+      rw [hdeg]
+      exact hni
+    simp_rw [hzero]
+    exact tendsto_const_nhds
+
+variable {n : ℕ}
 
 /-- Linear factors avoiding a ball around `μ` keep the evaluation there large. -/
 private lemma le_norm_eval_multiset (μ : ℂ) {ε : ℝ} (hε : 0 ≤ ε) :

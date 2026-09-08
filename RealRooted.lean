@@ -569,6 +569,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
 import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.MatrixInterlacing
+import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiaffineReciprocalRight

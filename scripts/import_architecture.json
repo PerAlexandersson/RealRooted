@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 960
+      "max_modules": 961
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -531,6 +531,9 @@
     },
     "RealRooted.InterlacingClosure": {
       "max_modules": 90
+    },
+    "RealRooted.MatrixInterlacingClosure": {
+      "max_modules": 92
     },
     "RealRooted.TotallyNonnegInterlacing": {
       "max_modules": 33
