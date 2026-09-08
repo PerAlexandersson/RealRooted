@@ -189,7 +189,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   shapes, including the terminal constant case; and
 - its `Stability.Routh.Sequence` child iterates that stable reduction to prove
   positivity of every leading classical Hurwitz determinant through the
-  polynomial degree; and
+  polynomial degree and total nonnegativity of the infinite classical matrix;
+  and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,

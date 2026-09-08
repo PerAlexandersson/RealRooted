@@ -1,5 +1,7 @@
 import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
+import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 
 /-!
 # Stable Routh sequences and leading Hurwitz determinants
@@ -127,5 +129,99 @@ theorem hurwitzLeadingPrincipal_oddEvenPolynomial_det_pos_of_strictlyStable
             (routhReducedPolynomial
               (routhCoefficient odd even) odd even).natDegree
           lia
+
+/-- Strict Hurwitz stability and the natural positive-leading parity shape
+force total nonnegativity of the infinite classical Hurwitz matrix. -/
+theorem hurwitz_oddEvenPolynomial_isTotallyNonneg_of_strictlyStable
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hshape : even.natDegree = odd.natDegree + 1 ∨
+      even.natDegree = odd.natDegree) :
+    (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg := by
+  rcases hshape with hevenShape | hoddShape
+  · obtain ⟨hodd0, heven0⟩ :=
+      h.coeff_zero_pos_parts_of_evenShape hodd heven hevenShape
+    obtain ⟨hredPrec, hrednn⟩ :=
+      h.prec_routhReducedOddPart_of_evenShape hodd heven hevenShape
+    have hredPos : HasPosLeadingCoeff
+        (routhReducedOddPart (routhCoefficient odd even) odd even) :=
+      hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hrednn hredPrec.1.1
+    have hredStable :=
+      h.routhReducedPolynomial_of_evenShape hodd heven hevenShape
+    have hredShape : odd.natDegree =
+        (routhReducedOddPart
+          (routhCoefficient odd even) odd even).natDegree := by
+      rw [natDegree_routhReducedOddPart_of_evenShape _ hevenShape]
+    have htail :=
+      hurwitz_oddEvenPolynomial_isTotallyNonneg_of_strictlyStable
+        hredStable hredPos hodd (Or.inr hredShape)
+    exact htail.hurwitz_oddEvenPolynomial_of_routhReduced_of_pos hodd0 heven0
+  · obtain ⟨hodd0, heven0⟩ :=
+      h.coeff_zero_pos_parts_of_oddShape hodd heven hoddShape
+    by_cases hdegreeZero : odd.natDegree = 0
+    · have hevenDegreeZero : even.natDegree = 0 :=
+        hoddShape.trans hdegreeZero
+      have hredZero :
+          routhReducedOddPart (routhCoefficient odd even) odd even = 0 := by
+        ext n
+        rw [coeff_routhReducedOddPart]
+        have hoddCoeff : odd.coeff (n + 1) = 0 :=
+          Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
+        have hevenCoeff : even.coeff (n + 1) = 0 :=
+          Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
+        rw [hoddCoeff, hevenCoeff]
+        simp
+      have hoddC := Polynomial.eq_C_of_natDegree_eq_zero hdegreeZero
+      have hredPolynomial :
+          routhReducedPolynomial (routhCoefficient odd even) odd even =
+            Polynomial.C (odd.coeff 0) := by
+        rw [routhReducedPolynomial, hredZero, oddEvenPolynomial, hoddC]
+        simp
+      have htail :
+          (hurwitz
+            (routhReducedPolynomial
+              (routhCoefficient odd even) odd even).coeff).IsTotallyNonneg := by
+        rw [hredPolynomial]
+        exact hurwitz_C_isTotallyNonneg _ hodd0.le
+      exact htail.hurwitz_oddEvenPolynomial_of_routhReduced_of_pos
+        hodd0 heven0
+    · have hdegreePos : 0 < odd.natDegree :=
+        Nat.pos_of_ne_zero hdegreeZero
+      obtain ⟨hredPrec, hrednn⟩ :=
+        h.prec_routhReducedOddPart_of_oddShape
+          hodd heven hoddShape hdegreePos
+      have hredPos : HasPosLeadingCoeff
+          (routhReducedOddPart (routhCoefficient odd even) odd even) :=
+        hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero
+          hrednn hredPrec.1.1
+      have hredStable :=
+        h.routhReducedPolynomial_of_oddShape hodd heven hoddShape
+      have hredShape :=
+        h.natDegree_routhReducedOddPart_add_one_of_oddShape
+          hodd heven hoddShape hdegreePos
+      have htail :=
+        hurwitz_oddEvenPolynomial_isTotallyNonneg_of_strictlyStable
+          hredStable hredPos hodd (Or.inl hredShape.symm)
+      exact htail.hurwitz_oddEvenPolynomial_of_routhReduced_of_pos
+        hodd0 heven0
+termination_by (oddEvenPolynomial odd even).natDegree
+decreasing_by
+  · have hdegreeDrop :=
+      natDegree_routhReducedPolynomial_add_one_of_evenShape
+        (routhCoefficient odd even) hodd heven hevenShape
+    change
+      (routhReducedPolynomial
+        (routhCoefficient odd even) odd even).natDegree <
+        (oddEvenPolynomial odd even).natDegree
+    lia
+  · have hdegreeDrop :=
+      h.natDegree_routhReducedPolynomial_add_one_of_oddShape
+        hodd heven hoddShape hdegreePos
+    change
+      (routhReducedPolynomial
+        (routhCoefficient odd even) odd even).natDegree <
+        (oddEvenPolynomial odd even).natDegree
+    lia
 
 end Matrix
