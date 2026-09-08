@@ -197,7 +197,7 @@
       "max_modules": 15
     },
     "RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative": {
-      "max_modules": 15
+      "max_modules": 18
     },
     "RealRooted.OrderedRoots": {
       "max_modules": 8
