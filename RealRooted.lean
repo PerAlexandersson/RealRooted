@@ -314,6 +314,7 @@ import RealRooted.HermiteBiehler.Hurwitz
 import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermitePoulain
+import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
