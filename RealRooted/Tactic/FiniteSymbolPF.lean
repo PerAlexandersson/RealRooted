@@ -77,23 +77,21 @@ theorem secondDerivativeBidiagonalForm_eq_bidiagonalOperator
       bidiagonalOperator
         (secondDerivativeAlpha a0 b1 c2)
         (secondDerivativeBeta a1 b2) p := by
-  ext m
-  cases m with
-  | zero =>
-      simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-        secondDerivativeAlpha, secondDerivativeBeta]
-  | succ m =>
-      cases m with
-      | zero =>
-          simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-            secondDerivativeAlpha, secondDerivativeBeta, Polynomial.coeff_X_mul,
-            Polynomial.coeff_derivative]
-          ring_nf
-      | succ m =>
-          simp [secondDerivativeBidiagonalForm, bidiagonalOperator,
-            secondDerivativeAlpha, secondDerivativeBeta, Polynomial.coeff_X_mul,
-            Polynomial.coeff_derivative]
-          ring_nf
+  have halpha :
+      secondDerivativeAlpha a0 b1 c2 =
+        fun k => RealRooted.secondDerivativeQuadraticCoeff a0 b1 c2 k := by
+    funext k
+    simp [secondDerivativeAlpha, RealRooted.secondDerivativeQuadraticCoeff]
+  have hbeta :
+      secondDerivativeBeta a1 b2 =
+        fun k => RealRooted.secondDerivativeQuadraticCoeff a1 b2 0 k := by
+    funext k
+    simp [secondDerivativeBeta, RealRooted.secondDerivativeQuadraticCoeff]
+  rw [halpha, hbeta]
+  simpa [secondDerivativeBidiagonalForm,
+    RealRooted.secondDerivativeBidiagonalForm] using
+    (RealRooted.secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+      a0 a1 b1 b2 c2 0 p)
 
 /-- The normalized internal second-derivative form agrees with the recurrence
 shape generated in the OEIS files. -/
@@ -146,30 +144,23 @@ theorem shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
       bidiagonalOperator
         (shiftedSecondDerivativeAlpha a0 b1)
         (shiftedSecondDerivativeBeta a1 b2 c3) p := by
-  ext m
-  cases m with
-  | zero =>
-      simp [shiftedSecondDerivativeBidiagonalForm, bidiagonalOperator,
-        shiftedSecondDerivativeAlpha, shiftedSecondDerivativeBeta]
-  | succ m =>
-      cases m with
-      | zero =>
-          simp [shiftedSecondDerivativeBidiagonalForm, bidiagonalOperator,
-            shiftedSecondDerivativeAlpha, shiftedSecondDerivativeBeta,
-            Polynomial.coeff_X_mul, Polynomial.coeff_derivative]
-          ring_nf
-      | succ m =>
-          cases m with
-          | zero =>
-              simp [shiftedSecondDerivativeBidiagonalForm, bidiagonalOperator,
-                shiftedSecondDerivativeAlpha, shiftedSecondDerivativeBeta,
-                Polynomial.coeff_X_mul, Polynomial.coeff_derivative]
-              ring_nf
-          | succ m =>
-              simp [shiftedSecondDerivativeBidiagonalForm, bidiagonalOperator,
-                shiftedSecondDerivativeAlpha, shiftedSecondDerivativeBeta,
-                Polynomial.coeff_X_mul, Polynomial.coeff_derivative]
-              ring_nf
+  have halpha :
+      shiftedSecondDerivativeAlpha a0 b1 =
+        fun k => RealRooted.secondDerivativeQuadraticCoeff a0 b1 0 k := by
+    funext k
+    simp [shiftedSecondDerivativeAlpha,
+      RealRooted.secondDerivativeQuadraticCoeff]
+  have hbeta :
+      shiftedSecondDerivativeBeta a1 b2 c3 =
+        fun k => RealRooted.secondDerivativeQuadraticCoeff a1 b2 c3 k := by
+    funext k
+    simp [shiftedSecondDerivativeBeta,
+      RealRooted.secondDerivativeQuadraticCoeff]
+  rw [halpha, hbeta]
+  simpa [shiftedSecondDerivativeBidiagonalForm,
+    RealRooted.secondDerivativeBidiagonalForm] using
+    (RealRooted.secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+      a0 a1 b1 b2 0 c3 p)
 
 /-- The normalized shifted second-derivative form agrees with the recurrence
 shape generated in the OEIS files. -/
