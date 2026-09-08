@@ -831,16 +831,21 @@ theorem MvRealStable.ordinaryHomogenization_of_totalDegree_le
 the complexification is either zero or upper-half-plane stable. -/
 theorem mvUpperHalfPlaneStableOrZero_complexify_ordinaryHomogenization
     {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
-    (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P)
+    (hst : P = 0 ∨ MvRealStable P)
+    (hnn : MvPolynomial.HasNonnegCoeffs P)
     (hdeg : P.totalDegree ≤ d) :
     MvUpperHalfPlaneStableOrZero
       (complexifyMv (MvPolynomial.ordinaryHomogenization P d)) := by
-  by_cases hP : P = 0
+  rcases hst with hzero | hst
   · left
-    rw [hP]
+    rw [hzero]
     simp [complexifyMv, MvPolynomial.ordinaryHomogenization]
-  · right
-    exact hst.ordinaryHomogenization_of_totalDegree_le hnn hP hdeg
+  · have hP : P ≠ 0 := by
+      intro hzero
+      subst P
+      have h := hst (fun _ => Complex.I) (fun _ => by simp)
+      exact h (by simp [complexifyMv])
+    exact Or.inr (hst.ordinaryHomogenization_of_totalDegree_le hnn hP hdeg)
 
 end
 
