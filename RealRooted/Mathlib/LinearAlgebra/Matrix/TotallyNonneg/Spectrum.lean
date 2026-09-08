@@ -2,6 +2,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
@@ -564,6 +565,24 @@ theorem IsTotallyNonneg.charpoly_factorization_nonneg
   exact ⟨μ, hμ_nonneg,
     Polynomial.map_injective (algebraMap ℝ ℂ)
       (algebraMap ℝ ℂ).injective hmapped⟩
+
+/-- The characteristic polynomial of a totally nonnegative real matrix splits
+over the reals. -/
+theorem IsTotallyNonneg.charpoly_splits
+    {A : Matrix (Fin n) (Fin n) ℝ} (hA : A.IsTotallyNonneg) :
+    A.charpoly.Splits := by
+  obtain ⟨μ, -, hfactor⟩ := hA.charpoly_factorization_nonneg
+  rw [hfactor]
+  exact Splits.prod fun i _ => Splits.X_sub_C (μ i)
+
+/-- Every nonnegative northwest-corner pencil of a totally nonnegative matrix
+has a real-split characteristic polynomial. -/
+theorem IsTotallyNonneg.charpoly_sub_C_mul_trailing_charpoly_splits
+    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) {t : ℝ} (ht : 0 ≤ t) :
+    (A.charpoly - C t * (A.submatrix Fin.succ Fin.succ).charpoly).Splits := by
+  rw [← charpoly_add_single_zero_zero]
+  exact (hA.add_single_zero_zero ht).charpoly_splits
 
 /-- The complex spectrum of a totally nonnegative real matrix is contained in
 the nonnegative real axis. -/
