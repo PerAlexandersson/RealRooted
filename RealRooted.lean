@@ -554,6 +554,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
