@@ -66,6 +66,41 @@ theorem hurwitz_apply_eq_zero_of_two_mul_lt (c : ℕ → R) {i j : ℕ}
     (h : 2 * j < i) : hurwitz c i j = 0 := by
   simp [hurwitz, show ¬ i ≤ 2 * j by lia]
 
+/-- Deleting the first two rows and first column recovers the same infinite
+Hurwitz matrix. -/
+@[simp]
+theorem hurwitz_add_two_add_one (c : ℕ → R) (i j : ℕ) :
+    hurwitz c (i + 2) (j + 1) = hurwitz c i j := by
+  simp only [hurwitz_apply]
+  split_ifs with h₁ h₂
+  · congr 1
+    lia
+  · lia
+  · lia
+  · rfl
+
+theorem hurwitz_submatrix_add_two_add_one (c : ℕ → R) :
+    (hurwitz c).submatrix (fun i => i + 2) (fun j => j + 1) = hurwitz c := by
+  ext i j
+  exact hurwitz_add_two_add_one c i j
+
+/-- The two-row/one-column self-similarity iterated by an arbitrary offset. -/
+@[simp]
+theorem hurwitz_add_two_mul_add (c : ℕ → R) (i j k : ℕ) :
+    hurwitz c (i + 2 * k) (j + k) = hurwitz c i j := by
+  simp only [hurwitz_apply]
+  split_ifs with h₁ h₂
+  · congr 1
+    lia
+  · lia
+  · lia
+  · rfl
+
+theorem hurwitz_submatrix_add_two_mul_add (c : ℕ → R) (k : ℕ) :
+    (hurwitz c).submatrix (fun i => i + 2 * k) (fun j => j + k) = hurwitz c := by
+  ext i j
+  exact hurwitz_add_two_mul_add c i j k
+
 /-- The finite leading principal section of the infinite classical Hurwitz
 matrix. -/
 def hurwitzLeadingPrincipal (c : ℕ → R) (n : ℕ) : Matrix (Fin n) (Fin n) R :=
