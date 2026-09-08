@@ -190,14 +190,23 @@ endpoint:
 - `CauchyInterlacing.Polynomial` transports it to characteristic-polynomial
   `Interlaces` without importing a challenge module;
 - `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core` owns Whitney
-  reduction, tridiagonal symmetrization, continuant arguments, and finite
-  reversal without importing the RealRooted theorem library; and
-- `OscillatoryInterlacing` combines those two layers to obtain the strict
-  leading- and trailing-principal characteristic-polynomial endpoints.
+  reduction, positive and zero-tolerant geometric-mean tridiagonal
+  symmetrization, continuant arguments, and finite reversal without importing
+  the RealRooted theorem library;
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing` packages a
+  Hermitian model for nonsingular totally nonnegative matrices while remaining
+  independent of the RealRooted polynomial theorem library;
+- `TotallyNonnegInterlacing` combines that model with polynomial Cauchy
+  interlacing to obtain weak leading- and trailing-principal endpoints without
+  irreducibility; and
+- `OscillatoryInterlacing` retains the stronger simple-root, root-disjoint,
+  strictly positive, adjacent-entry endpoint for oscillatory matrices.
 
 The old Mathlib-shaped oscillatory import remains as a compatibility facade;
-new theorem consumers should import `OscillatoryInterlacing`, while consumers
-of matrix-only infrastructure should import the `Core` module directly.
+new weak-interlacing consumers should import `TotallyNonnegInterlacing`, strict
+oscillatory consumers should import `OscillatoryInterlacing`, and consumers of
+matrix-only infrastructure should import the focused `PrincipalInterlacing` or
+`Core` module directly.
 
 Derivative recurrence results have a focused package entry point:
 

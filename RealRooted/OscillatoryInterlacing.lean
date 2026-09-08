@@ -86,16 +86,7 @@ theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
   intro x hx
   have hxRoot : A.charpoly.IsRoot x :=
     (Polynomial.mem_roots A.charpoly_monic.ne_zero).mp hx
-  have hxNonneg : 0 ≤ x := hA.nonneg_of_isRoot_charpoly hxRoot
-  have hxNe : x ≠ 0 := by
-    intro hxZero
-    subst x
-    have hcoeff : A.charpoly.coeff 0 = 0 := by
-      rw [Polynomial.coeff_zero_eq_eval_zero]
-      exact hxRoot.eq_zero
-    apply hdet
-    rw [Matrix.det_eq_sign_charpoly_coeff, hcoeff, mul_zero]
-  exact lt_of_le_of_ne hxNonneg (Ne.symm hxNe)
+  exact hA.pos_of_isRoot_charpoly_of_det_ne_zero hdet hxRoot
 
 /-- Strict leading-principal interlacing for the classical oscillatory
 criterion. This is the leading-section orientation of

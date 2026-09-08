@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 957
+      "max_modules": 959
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 36
@@ -525,6 +525,12 @@
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core": {
       "max_modules": 24
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing": {
+      "max_modules": 25
+    },
+    "RealRooted.TotallyNonnegInterlacing": {
+      "max_modules": 33
     },
     "RealRooted.OscillatoryInterlacing": {
       "max_modules": 32

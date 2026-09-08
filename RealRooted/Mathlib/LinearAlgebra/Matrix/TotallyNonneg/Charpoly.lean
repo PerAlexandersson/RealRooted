@@ -102,4 +102,20 @@ theorem IsTotallyNonneg.nonneg_of_isRoot_charpoly
     (h : A.charpoly.IsRoot t) : 0 ≤ t :=
   not_lt.mp fun ht => hA.eval_charpoly_ne_zero_of_neg ht h
 
+/-- Every real eigenvalue of a nonsingular totally nonnegative matrix is
+strictly positive. -/
+theorem IsTotallyNonneg.pos_of_isRoot_charpoly_of_det_ne_zero
+    {A : Matrix m m ℝ} (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0)
+    {t : ℝ} (h : A.charpoly.IsRoot t) : 0 < t := by
+  have htNonneg : 0 ≤ t := hA.nonneg_of_isRoot_charpoly h
+  have htNe : t ≠ 0 := by
+    intro htZero
+    subst t
+    have hcoeff : A.charpoly.coeff 0 = 0 := by
+      rw [Polynomial.coeff_zero_eq_eval_zero]
+      exact h.eq_zero
+    apply hdet
+    rw [Matrix.det_eq_sign_charpoly_coeff, hcoeff, mul_zero]
+  exact lt_of_le_of_ne htNonneg htNe.symm
+
 end Matrix

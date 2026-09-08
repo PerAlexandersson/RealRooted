@@ -548,6 +548,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
@@ -916,6 +917,7 @@ import RealRooted.ThresholdMatrix
 import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus
 import RealRooted.ThresholdMatrix.HaglundZhang
+import RealRooted.TotallyNonnegInterlacing
 import RealRooted.Touchard
 import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.Basic
