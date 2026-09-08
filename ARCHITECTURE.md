@@ -936,14 +936,37 @@ responsibility:
 - `RootAmplitude.Extreme` owns the finite-family power-sum extreme-gap
   criterion and its numerical threshold;
 - `RootAmplitude.Minimum` owns propagation from the smallest amplitude and the
-  alternative reciprocal-distance-sum criterion; and
-- `RootAmplitude.Polynomial` owns the separate split-polynomial bridge; and
+  alternative reciprocal-distance-sum criterion;
+- `RootAmplitude.Polynomial` owns the basic split-polynomial bridge;
+- `RootAmplitude.Separation.Finite` owns multiplicative separation and the
+  geometric staircase algebra over ordered fields;
+- `RootAmplitude.Separation.Roots` connects the canonical `SortedRoots`
+  magnitudes to finite amplitudes without an analytic dependency;
+- `RootAmplitude.Separation.Euler` is the only separation layer that imports
+  logarithms and the Basel sum;
+- `RootAmplitude.Separation.Polynomial` joins those three layers to obtain the
+  separated-negative-root derivative estimate;
+- `RootAmplitude.SmallestRoot` derives a separate coefficient-based
+  one-fifth estimate through `RootVieta`, using the upstream-shaped
+  `Multiset.one_sub_sum_le_prod_one_sub` shim; and
 - `RootAmplitude.SumSquares` owns the scalar square-sum-to-uniform-amplitude
   reduction.
 
-The eight layers are re-exported by `RootAmplitude`; this keeps every source unit
-below 250 lines and lets consumers import a finite-sequence theorem without a
-polynomial dependency.
+The ten top-level layers are re-exported by `RootAmplitude`. The exact
+separation flow is `RootAmplitude.Finite -> {Separation.Finite,
+Separation.Roots}`, `Separation.Finite -> Separation.Euler`, and
+`{RootAmplitude.Polynomial, Separation.Euler, Separation.Roots} ->
+Separation.Polynomial`. Elementary consumers can stop before the analytic or
+polynomial leaves. All polynomial corollaries use the single canonical
+`RootAmplitude.amp` from `Finite`.
+
+Two independent downstream OEIS proof paths justify the public surface. The
+A366159 migration targets `A366159TailCoeff.A366159C_amplitude` and
+`InductionStep.succ_sign_at_root` through the separation/derivative route; the
+A157012 migration target uses the `RootVieta`-based smallest-root route. These
+consumer adapters are intentionally separate follow-up changes. Decimal
+thresholds, packet constants, and model-specific coefficient identities remain
+consumer-owned.
 
 The A390883 application has a one-directional
 `ParkingFunctions.ToricContribution` stack. `Definitions` and
