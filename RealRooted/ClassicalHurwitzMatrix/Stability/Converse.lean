@@ -217,4 +217,35 @@ theorem strictlyHurwitzStable_of_hurwitzLeadingPrincipal_det_pos
 termination_by p.natDegree
 decreasing_by lia
 
+/-- Strict stability with positive leading coefficient makes every leading
+Hurwitz determinant through the polynomial degree positive. -/
+theorem hurwitzLeadingPrincipal_det_pos_of_strictlyStable {p : ℝ[X]}
+    (h : IsStrictlyHurwitzStable p) (hlead : HasPosLeadingCoeff p) :
+    ∀ n, n ≤ p.natDegree →
+      0 < (hurwitzLeadingPrincipal p.coeff n).det := by
+  by_cases hdegree : p.natDegree = 0
+  · intro n hn
+    have hnZero : n = 0 := by lia
+    subst n
+    simp
+  · obtain ⟨hodd, heven, hshape⟩ := h.canonicalParityData hlead hdegree
+    rw [← oddEvenPolynomial_contract_divX_contract p] at h ⊢
+    exact hurwitzLeadingPrincipal_oddEvenPolynomial_det_pos_of_strictlyStable
+      h hodd heven hshape
+
+/-- The strict Routh--Hurwitz criterion in the constant-term-first matrix
+convention. -/
+theorem strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos
+    {p : ℝ[X]} (hlead : HasPosLeadingCoeff p) :
+    IsStrictlyHurwitzStable p ↔
+      ∀ n, n ≤ p.natDegree →
+        0 < (hurwitzLeadingPrincipal p.coeff n).det := by
+  constructor
+  · intro h
+    exact hurwitzLeadingPrincipal_det_pos_of_strictlyStable h hlead
+  · intro h
+    apply strictlyHurwitzStable_of_hurwitzLeadingPrincipal_det_pos hlead
+    intro n hn hnDegree
+    exact h n hnDegree
+
 end Matrix
