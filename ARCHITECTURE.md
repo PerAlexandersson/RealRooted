@@ -165,6 +165,8 @@ The Hurwitz-matrix conventions are intentionally separated:
 - `ClassicalHurwitzMatrix.Routh` owns the algebraic odd-part reduction and its
   row-finite `J(c)` Hurwitz-matrix expansion; and
 - its `Routh.Determinant` child proves the leading-determinant recurrence; and
+- its `Routh.Sequence` child iterates the reduction and identifies every
+  leading determinant with its finite product of Routh pivots; and
 - its `Routh.TotallyNonnegative` child proves that expansion preserves every
   finite minor when its coefficient is nonnegative; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root

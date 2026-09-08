@@ -82,6 +82,7 @@ import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Routh
 import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
 import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
