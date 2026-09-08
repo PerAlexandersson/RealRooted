@@ -18,6 +18,32 @@ def HasNonnegCoeffs {σ : Type*} (P : MvPolynomial σ ℝ) : Prop :=
 
 namespace HasNonnegCoeffs
 
+theorem eval_nonneg {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : HasNonnegCoeffs P) {z : σ → ℝ} (hz : ∀ i, 0 ≤ z i) :
+    0 ≤ MvPolynomial.eval z P := by
+  classical
+  rw [MvPolynomial.eval_eq]
+  apply Finset.sum_nonneg
+  intro m hm
+  exact mul_nonneg (hP m)
+    (Finset.prod_nonneg fun i hi => pow_nonneg (hz i) _)
+
+theorem eval_pos {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : HasNonnegCoeffs P) (hP0 : P ≠ 0)
+    {z : σ → ℝ} (hz : ∀ i, 0 < z i) :
+    0 < MvPolynomial.eval z P := by
+  classical
+  rw [MvPolynomial.eval_eq]
+  apply Finset.sum_pos'
+  · intro m hm
+    exact mul_nonneg (hP m)
+      (Finset.prod_nonneg fun i hi => pow_nonneg (hz i).le _)
+  · obtain ⟨m, hm⟩ := MvPolynomial.support_nonempty.mpr hP0
+    refine ⟨m, hm, mul_pos ?_ ?_⟩
+    · exact lt_of_le_of_ne (hP m)
+        (Ne.symm (MvPolynomial.mem_support_iff.mp hm))
+    · exact Finset.prod_pos fun i hi => pow_pos (hz i) _
+
 theorem zero {σ : Type*} : HasNonnegCoeffs (0 : MvPolynomial σ ℝ) := by
   intro m
   simp
