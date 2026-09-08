@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Convex.PathConnected
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.HomogeneousComponentStability
+import RealRooted.HomogeneousStability
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
@@ -787,6 +788,59 @@ theorem MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_po
         exact add_pos_of_nonneg_of_pos
           (mul_nonneg (sub_nonneg.mpr ht1) (hb i).le)
           (mul_pos htpos (hu (some i)))
+
+/-- The exact total-degree ordinary homogenization of a nonzero real-stable
+polynomial with nonnegative coefficients is real stable. -/
+theorem MvRealStable.ordinaryHomogenization
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0) :
+    MvRealStable
+      (MvPolynomial.ordinaryHomogenization P P.totalDegree) := by
+  let H := MvPolynomial.ordinaryHomogenization P P.totalDegree
+  have hhom : H.IsHomogeneous P.totalDegree :=
+    MvPolynomial.ordinaryHomogenization_isHomogeneous P P.totalDegree
+  apply mvRealStable_of_forall_hyperbolicAt_pos hhom
+  intro u hu
+  let b : σ → ℝ := fun i => u (some i)
+  have hb : ∀ i, 0 < b i := fun i => hu (some i)
+  have he : H.HyperbolicAt (fun o => Option.elim o 0 b) := by
+    exact hst.ordinaryHomogenization_hyperbolicAt_boundary hnn hP b hb
+  apply MvPolynomial.HyperbolicAt.of_joinedIn he hhom
+  exact MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_positive
+    hnn hP b hb u hu
+
+/-- Ordinary homogenization in any degree at least the total degree preserves
+real stability for nonzero polynomials with nonnegative coefficients. -/
+theorem MvRealStable.ordinaryHomogenization_of_totalDegree_le
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
+    (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P)
+    (hP : P ≠ 0) (hdeg : P.totalDegree ≤ d) :
+    MvRealStable (MvPolynomial.ordinaryHomogenization P d) := by
+  have hexact := hst.ordinaryHomogenization hnn hP
+  unfold MvRealStable complexifyMv at hexact ⊢
+  rw [MvPolynomial.map_ordinaryHomogenization] at hexact ⊢
+  have htotal : (MvPolynomial.map Complex.ofRealHom P).totalDegree =
+      P.totalDegree := by
+    unfold MvPolynomial.totalDegree
+    rw [MvPolynomial.support_map_of_injective _ Complex.ofRealHom.injective]
+  exact (mvUpperHalfPlaneStable_ordinaryHomogenization_congr_degree
+    (p := MvPolynomial.map Complex.ofRealHom P)
+    (by rw [htotal]) (by rw [htotal]; exact hdeg)).mp hexact
+
+/-- Zero-aware ordinary homogenization theorem: in every admissible degree,
+the complexification is either zero or upper-half-plane stable. -/
+theorem mvUpperHalfPlaneStableOrZero_complexify_ordinaryHomogenization
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
+    (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P)
+    (hdeg : P.totalDegree ≤ d) :
+    MvUpperHalfPlaneStableOrZero
+      (complexifyMv (MvPolynomial.ordinaryHomogenization P d)) := by
+  by_cases hP : P = 0
+  · left
+    rw [hP]
+    simp [complexifyMv, MvPolynomial.ordinaryHomogenization]
+  · right
+    exact hst.ordinaryHomogenization_of_totalDegree_le hnn hP hdeg
 
 end
 
