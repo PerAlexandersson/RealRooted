@@ -96,24 +96,73 @@ theorem Polynomial.Splits.of_comp_neg_X_sq {p : ℝ[X]}
   rw [pow_two, Complex.neg_im, Complex.mul_im, hwim]
   ring
 
+/-- If `p(-X²)` splits over the reals, every root of `p` is nonpositive. -/
+theorem roots_nonpos_of_splits_comp_neg_X_sq {p : ℝ[X]}
+    (h : (p.comp (-(X ^ 2))).Splits) :
+    ∀ r ∈ p.roots, r ≤ 0 := by
+  intro r hr
+  by_contra hr0
+  have hrpos : 0 < r := lt_of_not_ge hr0
+  have hp0 : p ≠ 0 := Polynomial.ne_zero_of_mem_roots hr
+  have hrroot : p.IsRoot r := (Polynomial.mem_roots hp0).mp hr
+  let w : ℂ := Complex.I * (Real.sqrt r : ℂ)
+  have hwim : 0 < w.im := by
+    simp [w, Real.sqrt_pos.2 hrpos]
+  have hwsquare : -(w ^ 2) = (r : ℂ) := by
+    dsimp [w]
+    rw [mul_pow, Complex.I_sq]
+    norm_num
+    exact_mod_cast Real.sq_sqrt hrpos.le
+  have hwroot :
+      (complexify (p.comp (-(X ^ 2)))).eval w = 0 := by
+    simp only [complexify, Polynomial.map_comp, Polynomial.map_neg,
+      Polynomial.map_pow, Polynomial.map_X, Polynomial.eval_comp,
+      Polynomial.eval_neg, Polynomial.eval_pow, Polynomial.eval_X]
+    rw [hwsquare]
+    rw [← complexify, eval_complexify_ofReal]
+    exact_mod_cast hrroot
+  exact
+    (Polynomial.Splits.isUpperHalfPlaneStable_complexify h
+      (comp_neg_X_sq_ne_zero hp0)) w hwim hwroot
+
 /-- Splitness of a rotated even part descends to the original polynomial. -/
 theorem Polynomial.Splits.of_hurwitzRotatedEvenPart {p : ℝ[X]}
     (h : (hurwitzRotatedEvenPart p).Splits) : p.Splits :=
   Polynomial.Splits.of_comp_neg_X_sq (by
     simpa only [hurwitzRotatedEvenPart] using h)
 
-/-- Splitness of a rotated odd part descends through both its factor `X` and
-the substitution `X ↦ -X²`. -/
-theorem Polynomial.Splits.of_hurwitzRotatedOddPart {p : ℝ[X]}
-    (h : (hurwitzRotatedOddPart p).Splits) : p.Splits := by
+/-- Removing the rotated odd part's factor `X` preserves splitness of the
+remaining composition. -/
+theorem Polynomial.Splits.comp_neg_X_sq_of_hurwitzRotatedOddPart
+    {p : ℝ[X]} (h : (hurwitzRotatedOddPart p).Splits) :
+    (p.comp (-(X ^ 2))).Splits := by
   have hproduct : (X * p.comp (-(X ^ 2))).Splits := by
     rw [← Polynomial.splits_neg_iff]
     simpa only [hurwitzRotatedOddPart, neg_mul]
       using h
-  have hcomp : (p.comp (-(X ^ 2))).Splits :=
-    (Polynomial.splits_X_sub_C_mul_iff (a := 0)).mp (by
-      simpa using hproduct)
-  exact Polynomial.Splits.of_comp_neg_X_sq hcomp
+  exact (Polynomial.splits_X_sub_C_mul_iff (a := 0)).mp (by
+    simpa using hproduct)
+
+/-- Splitness of a rotated odd part descends through both its factor `X` and
+the substitution `X ↦ -X²`. -/
+theorem Polynomial.Splits.of_hurwitzRotatedOddPart {p : ℝ[X]}
+    (h : (hurwitzRotatedOddPart p).Splits) : p.Splits :=
+  Polynomial.Splits.of_comp_neg_X_sq
+    (Polynomial.Splits.comp_neg_X_sq_of_hurwitzRotatedOddPart h)
+
+/-- Roots of the source of a split rotated even part are nonpositive. -/
+theorem roots_nonpos_of_splits_hurwitzRotatedEvenPart {p : ℝ[X]}
+    (h : (hurwitzRotatedEvenPart p).Splits) :
+    ∀ r ∈ p.roots, r ≤ 0 :=
+  roots_nonpos_of_splits_comp_neg_X_sq (by
+    simpa only [hurwitzRotatedEvenPart] using h)
+
+/-- Roots of the source of a split rotated odd part are nonpositive. -/
+theorem roots_nonpos_of_splits_hurwitzRotatedOddPart {p : ℝ[X]}
+    (h : (hurwitzRotatedOddPart p).Splits) :
+    ∀ r ∈ p.roots, r ≤ 0 :=
+  roots_nonpos_of_splits_comp_neg_X_sq
+    (Polynomial.Splits.comp_neg_X_sq_of_hurwitzRotatedOddPart h)
 
 /-- The parity sign normalizes the leading coefficient of the rotated even
 part back to the leading coefficient of the original polynomial. -/
