@@ -173,6 +173,8 @@ The Hurwitz-matrix conventions are intentionally separated:
   finite minor when its coefficient is nonnegative; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
   location from the coefficient-normalized closed-half-plane predicate; and
+- its `Stability.Rotation` child transports strict stability to closed-upper-
+  half-plane exclusion under `X \mapsto -iX`; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
