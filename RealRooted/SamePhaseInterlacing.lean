@@ -100,18 +100,8 @@ strictly positive point. -/
 theorem mv_eval_pos_of_hasNonnegCoeffs {σ : Type*}
     {P : MvPolynomial σ ℝ} (hP : MvPolynomial.HasNonnegCoeffs P)
     (hP0 : P ≠ 0) (wt : σ → ℝ) (hwt : ∀ i, 0 < wt i) :
-    0 < MvPolynomial.eval wt P := by
-  classical
-  rw [MvPolynomial.as_sum P, map_sum]
-  apply Finset.sum_pos
-  · intro d hd
-    rw [MvPolynomial.eval_monomial]
-    apply mul_pos
-    · exact lt_of_le_of_ne (hP d)
-        (Ne.symm (MvPolynomial.mem_support_iff.mp hd))
-    · unfold Finsupp.prod
-      exact Finset.prod_pos fun i _ => pow_pos (hwt i) _
-  · exact MvPolynomial.support_nonempty.mpr hP0
+    0 < MvPolynomial.eval wt P :=
+  hP.eval_pos hP0 hwt
 
 /-- A positive common-phase restriction of a nonzero polynomial with
 nonnegative coefficients is nonzero. -/
