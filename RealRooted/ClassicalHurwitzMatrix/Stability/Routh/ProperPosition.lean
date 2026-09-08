@@ -214,6 +214,25 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
   change Prec q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredPrec, hdivnn⟩
 
+/-- A nonterminal odd-shape Routh step lowers the parity degree by exactly
+one. -/
+theorem IsStrictlyHurwitzStable.natDegree_routhReducedOddPart_add_one_of_oddShape
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hdegree : even.natDegree = odd.natDegree)
+    (hdegreePos : 0 < odd.natDegree) :
+    (routhReducedOddPart (routhCoefficient odd even) odd even).natDegree + 1 =
+      odd.natDegree := by
+  have hprec :=
+    (h.prec_routhReducedOddPart_of_oddShape
+      hodd heven hdegree hdegreePos).1
+  have hle := natDegree_routhReducedOddPart_le_pred_of_oddShape
+    (routhCoefficient odd even) hdegree
+  rcases hprec.natDegree_eq_or_eq_succ with hsame | hsucc
+  · lia
+  · exact hsucc.symm
+
 /-- A stable Routh remainder and the old odd input have no common real root.
 Otherwise the defining recurrence would give a common root of both original
 parity inputs. -/

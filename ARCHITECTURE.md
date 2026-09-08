@@ -187,6 +187,9 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Stability.Routh.ProperPosition` child completes odd-shape proper
   position and proves strict stability after one Routh step in both parity
   shapes, including the terminal constant case; and
+- its `Stability.Routh.Sequence` child iterates that stable reduction to prove
+  positivity of every leading classical Hurwitz determinant through the
+  polynomial degree; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
