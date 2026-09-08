@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Convex.PathConnected
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
@@ -193,6 +194,49 @@ theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
     · exact ((hst.realAffineLineRestriction_splits_ne_zero
         (fun i => x (some i) / x none) (fun i => b i / x none)
         (fun i => div_pos (hb i) hxpos)).1).C_mul _
+
+/-- Every positive original-coordinate boundary direction is joined to every
+strictly positive direction inside the nonvanishing locus of a nonzero
+ordinary homogenization with nonnegative coefficients. -/
+theorem MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_positive
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i)
+    (u : Option σ → ℝ) (hu : ∀ o, 0 < u o) :
+    JoinedIn
+      {x | MvPolynomial.eval x
+        (MvPolynomial.ordinaryHomogenization P P.totalDegree) ≠ 0}
+      (fun o => Option.elim o 0 b) u := by
+  let Q := MvPolynomial.ordinaryHomogenization P P.totalDegree
+  let e : Option σ → ℝ := fun o => Option.elim o 0 b
+  let Htop := MvPolynomial.homogeneousComponent P.totalDegree P
+  have hQnn : MvPolynomial.HasNonnegCoeffs Q := by
+    exact hnn.ordinaryHomogenization P.totalDegree
+  have hQne : Q ≠ 0 := MvPolynomial.ordinaryHomogenization_ne_zero hP
+  have hHtopNe : Htop ≠ 0 :=
+    MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
+  have hboundaryPos : 0 < MvPolynomial.eval e Q := by
+    rw [show MvPolynomial.eval e Q = MvPolynomial.eval b Htop by
+      simpa [e, Q, Htop] using
+        MvPolynomial.eval_ordinaryHomogenization_zero P P.totalDegree b]
+    exact (hnn.homogeneousComponent P.totalDegree).eval_pos hHtopNe hb
+  apply JoinedIn.of_segment_subset
+  rw [segment_eq_image]
+  rintro x ⟨t, ht, rfl⟩
+  rcases ht with ⟨ht0, ht1⟩
+  by_cases htzero : t = 0
+  · subst t
+    simpa [e] using hboundaryPos.ne'
+  · apply (hQnn.eval_pos hQne ?_).ne'
+    intro o
+    have htpos : 0 < t := lt_of_le_of_ne ht0 (Ne.symm htzero)
+    cases o with
+    | none =>
+        simpa [e] using mul_pos htpos (hu none)
+    | some i =>
+        exact add_pos_of_nonneg_of_pos
+          (mul_nonneg (sub_nonneg.mpr ht1) (hb i).le)
+          (mul_pos htpos (hu (some i)))
 
 end
 
