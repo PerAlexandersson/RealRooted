@@ -173,6 +173,9 @@ The Hurwitz-matrix conventions are intentionally separated:
   finite minor when its coefficient is nonnegative; and
 - `ClassicalHurwitzMatrix.Stability` isolates strict left-half-plane root
   location from the coefficient-normalized closed-half-plane predicate; and
+- its `Stability.HermiteBiehler` child imports the full converse theory and
+  turns strict stability into proper position for either explicit rotated-part
+  sign normalization; and
 - its `Stability.Rotation` child transports strict stability to closed-upper-
   half-plane exclusion under `X \mapsto -iX`; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
@@ -181,10 +184,11 @@ The Hurwitz-matrix conventions are intentionally separated:
   its uses, and the checked counterexamples to treating that matrix as the
   classical criterion.
 
-The ten focused modules have one-, eight-, nine-, nineteen-, 133-, 134-, 137-,
-138-, nine-, and 140-module local closures, respectively. The compatibility
-module retains its historical import path, so existing consumers remain
-compatible while root-geometry-only consumers can avoid its 141-module closure.
+The eleven focused modules have one-, eight-, nine-, nineteen-, 133-, 134-,
+137-, 138-, 152-, nine-, and 140-module local closures, respectively. The
+compatibility module retains its historical import path, so existing consumers
+remain compatible while root-geometry-only consumers can avoid its 141-module
+closure.
 
 `Interlacing.Residue` now owns the general derivative-at-root signs, residue
 positivity, Lagrange interpolation, degree cancellation, and common-root
