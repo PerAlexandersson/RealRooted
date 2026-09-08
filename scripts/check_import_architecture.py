@@ -20,7 +20,9 @@ from dataclasses import dataclass
 from typing import Any
 
 
-IMPORT_RE = re.compile(r"^\s*import\s+([A-Za-z0-9_.']+)\s*$")
+IMPORT_RE = re.compile(
+    r"^\s*(?:(?:public|private)\s+)?import\s+([A-Za-z0-9_.']+)\s*$"
+)
 
 
 @dataclass(frozen=True)
@@ -246,10 +248,11 @@ def run_self_test() -> int:
         )
         (root / "TestLib").mkdir()
         (root / "TestLib.lean").write_text(
-            "import TestLib.Basic\nimport TestLib.Mathlib.Good\n", encoding="utf-8"
+            "import TestLib.Basic\npublic import TestLib.Mathlib.Good\n",
+            encoding="utf-8",
         )
         (root / "TestLib" / "Basic.lean").write_text(
-            "import Mathlib.Data.Nat.Basic\n", encoding="utf-8"
+            "private import Mathlib.Data.Nat.Basic\n", encoding="utf-8"
         )
         mathlib_dir = root / "TestLib" / "Mathlib"
         mathlib_dir.mkdir()
@@ -285,7 +288,7 @@ def run_self_test() -> int:
         }
         assert not check_graph(graph, source_rule)
 
-        good_path.write_text("import TestLib.Basic\n", encoding="utf-8")
+        good_path.write_text("private import TestLib.Basic\n", encoding="utf-8")
         graph = ImportGraph.from_repo(root)
         errors = check_graph(graph, config)
         assert any("imports TestLib.Basic" in error for error in errors)
@@ -293,13 +296,13 @@ def run_self_test() -> int:
         assert any("imports TestLib.Basic" in error for error in errors)
 
         (root / "TestLib" / "Basic.lean").write_text(
-            "import TestLib.Mathlib.Good\n", encoding="utf-8"
+            "public import TestLib.Mathlib.Good\n", encoding="utf-8"
         )
         graph = ImportGraph.from_repo(root)
         errors = check_graph(graph, config)
         assert any("local import cycle" in error for error in errors)
 
-        good_path.write_text("import TestLib.Missing\n", encoding="utf-8")
+        good_path.write_text("private import TestLib.Missing\n", encoding="utf-8")
         (root / "TestLib" / "Basic.lean").write_text(
             "import Mathlib.Data.Nat.Basic\n", encoding="utf-8"
         )
