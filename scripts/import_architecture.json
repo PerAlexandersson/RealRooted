@@ -209,7 +209,7 @@
       "max_modules": 27
     },
     "RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative": {
-      "max_modules": 21
+      "max_modules": 23
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability": {
       "max_modules": 20
@@ -248,7 +248,7 @@
       "max_modules": 177
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Terminal": {
-      "max_modules": 72
+      "max_modules": 74
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Vieta": {
       "max_modules": 21
@@ -257,7 +257,7 @@
       "max_modules": 18
     },
     "RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative": {
-      "max_modules": 23
+      "max_modules": 25
     },
     "RealRooted.OrderedRoots": {
       "max_modules": 11

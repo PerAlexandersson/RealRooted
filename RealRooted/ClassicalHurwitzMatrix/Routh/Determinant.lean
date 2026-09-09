@@ -15,6 +15,54 @@ open RealRooted
 
 noncomputable section
 
+/-- A predecessor-closed row minor of a Hurwitz matrix is unchanged by one
+reverse Routh row operation. -/
+theorem hurwitz_submatrix_det_eq_routhExpand_of_predecessor_closed
+    {R : Type*} [CommRing R] (c : R) (a : ℕ → R) {n : ℕ}
+    (rows cols : Fin (n + 1) → ℕ)
+    (hfirst : Even (rows 0))
+    (hpred : ∀ i : Fin n, Odd (rows i.succ) →
+      rows i.succ = rows i.castSucc + 1) :
+    ((hurwitz a).submatrix rows cols).det =
+      ((routhExpand c (hurwitz a)).submatrix
+        (fun i => rows i + 1) (fun j => cols j + 1)).det := by
+  let A : Matrix (Fin (n + 1)) (Fin (n + 1)) R :=
+    (hurwitz a).submatrix (fun i => rows i + 2) (fun j => cols j + 1)
+  let B : Matrix (Fin (n + 1)) (Fin (n + 1)) R :=
+    (routhExpand c (hurwitz a)).submatrix
+      (fun i => rows i + 1) (fun j => cols j + 1)
+  have horiginal : (hurwitz a).submatrix rows cols = A := by
+    ext i j
+    exact (hurwitz_add_two_add_one a (rows i) (cols j)).symm
+  rw [horiginal]
+  apply det_eq_of_forall_row_eq_smul_add_pred
+    (fun i : Fin n => if Odd (rows i.succ) then -c else 0)
+  · intro j
+    rcases hfirst with ⟨k, hk⟩
+    simp only [A, submatrix_apply]
+    rw [hk]
+    simpa only [Nat.two_mul] using
+      (routhExpand_odd_apply c (hurwitz a) k (cols j + 1)).symm
+  · intro i j
+    simp only [A, submatrix_apply]
+    rcases Nat.even_or_odd (rows i.succ) with ⟨k, hk⟩ | ⟨k, hk⟩
+    · have hnot : ¬Odd (rows i.succ) := by
+        intro hodd
+        rcases hodd with ⟨m, hm⟩
+        lia
+      rw [if_neg hnot]
+      rw [hk, show k + k + 1 = 2 * k + 1 by lia,
+        show k + k + 2 = 2 * k + 2 by lia]
+      simp
+    · have hodd : Odd (rows i.succ) := ⟨k, hk⟩
+      rw [if_pos hodd]
+      have hp := hpred i hodd
+      have hprev : rows i.castSucc = 2 * k := by lia
+      rw [show rows i.succ + 2 = 2 * (k + 1) + 1 by lia,
+        show rows i.succ + 1 = 2 * (k + 1) by lia, hprev]
+      simp only [routhExpand_even_apply]
+      ring_nf
+
 private def routhTail (odd even : ℝ[X]) (n : ℕ) :
     Matrix (Fin n) (Fin n) ℝ :=
   (hurwitzLeadingPrincipal (oddEvenPolynomial odd even).coeff (n + 1)).submatrix
