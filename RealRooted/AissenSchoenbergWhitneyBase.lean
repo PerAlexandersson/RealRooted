@@ -71,6 +71,47 @@ theorem fwdDiff_iter_polynomialValueSeq_degree_add_one_eq_zero (p : ℝ[X]) :
     (fwdDiff (1 : ℕ))^[p.natDegree + 1] (polynomialValueSeq p) = 0 :=
   fwdDiff_iter_polynomialValueSeq_eq_zero_of_natDegree_lt (Nat.lt_succ_self _)
 
+/-- Gregory--Newton expansion of a polynomial value at a nonnegative integer. -/
+theorem polynomialValueSeq_eq_sum_choose_fwdDiff (p : ℝ[X]) (n : ℕ) :
+    polynomialValueSeq p n =
+      ∑ k ∈ Finset.range (n + 1),
+        n.choose k • ((fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p)) 0 := by
+  simpa using shift_eq_sum_fwdDiff_iter (1 : ℕ) (polynomialValueSeq p) n 0
+
+/-- The Gregory--Newton expansion of a polynomial-value sequence truncates at
+the polynomial's degree. -/
+theorem polynomialValueSeq_eq_sum_choose_fwdDiff_upto_natDegree
+    (p : ℝ[X]) (n : ℕ) :
+    polynomialValueSeq p n =
+      ∑ k ∈ Finset.range (p.natDegree + 1),
+        n.choose k • ((fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p)) 0 := by
+  rw [polynomialValueSeq_eq_sum_choose_fwdDiff]
+  by_cases hnd : n ≤ p.natDegree
+  · apply Finset.sum_subset (Finset.range_mono (Nat.succ_le_succ hnd))
+    intro k hkDegree hkN
+    have hnk : n < k := by
+      simp only [Finset.mem_range, not_lt] at hkDegree hkN
+      lia
+    simp [Nat.choose_eq_zero_of_lt hnk]
+  · symm
+    have hdn : p.natDegree ≤ n := by lia
+    apply Finset.sum_subset (Finset.range_mono (Nat.succ_le_succ hdn))
+    intro k hkN hkDegree
+    have hdk : p.natDegree < k := by
+      simp only [Finset.mem_range, not_lt] at hkN hkDegree
+      lia
+    rw [congr_fun (fwdDiff_iter_polynomialValueSeq_eq_zero_of_natDegree_lt hdk) 0]
+    simp
+
+/-- The top forward difference of a polynomial-value sequence is the constant
+sequence given by the leading coefficient times the degree factorial. -/
+theorem fwdDiff_iter_polynomialValueSeq_natDegree_eq_factorial (p : ℝ[X]) :
+    (fwdDiff (1 : ℕ))^[p.natDegree] (polynomialValueSeq p) =
+      fun _ => p.leadingCoeff * p.natDegree.factorial := by
+  rw [fwdDiff_iter_polynomialValueSeq]
+  ext n
+  simpa using congr_fun p.fwdDiff_iter_degree_eq_factorial (n : ℝ)
+
 @[simp]
 theorem polynomialValueSeq_mul (p q : ℝ[X]) :
     polynomialValueSeq (p * q) = polynomialValueSeq p * polynomialValueSeq q := by
