@@ -1,6 +1,7 @@
 import RealRooted.ObreschkoffConverse
 import RealRooted.SequenceClosure
 import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
 
@@ -17,7 +18,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Eulerian differential polynomials with a positive real dilation parameter. -/
+/-- Eulerian differential polynomials with a real dilation parameter. -/
 def generalizedEulerian (c : ℝ) : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
@@ -29,6 +30,48 @@ lemma generalizedEulerian_succ (c : ℝ) (n : ℕ) :
       (1 + C (c * (n : ℝ) + 1) * X) * generalizedEulerian c n
         + C c * X * (1 - X) * (generalizedEulerian c n).derivative :=
   rfl
+
+/-- Generalized Eulerian polynomials have their expected degree and are monic
+for every real parameter. -/
+theorem generalizedEulerian_degree_and_monic (c : ℝ) (n : ℕ) :
+    (generalizedEulerian c n).natDegree = n ∧
+      (generalizedEulerian c n).Monic := by
+  have hrec : ∀ k, generalizedEulerian c (k + 1) =
+      (C c * X + C (-c) * X ^ 2) * (generalizedEulerian c k).derivative +
+        (C 1 + C (c * (k : ℝ) + 1) * X) * generalizedEulerian c k + 0 := by
+    intro k
+    rw [generalizedEulerian_succ]
+    simp only [map_neg, map_one]
+    ring
+  have hseed : generalizedEulerian c 0 ≠ 0 := by
+    simp [generalizedEulerian]
+  have hrem : ∀ k, (0 : ℝ[X]).natDegree ≤
+      (generalizedEulerian c 0).natDegree + k := by
+    intro k
+    simp
+  have hfactor : ∀ k,
+      (-c) * (((generalizedEulerian c 0).natDegree + k : ℕ) : ℝ) +
+          (c * (k : ℝ) + 1) ≠ 0 := by
+    intro k
+    simp [generalizedEulerian]
+  have hresult :=
+    Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_recurrence_of_ne_zero
+      (generalizedEulerian c) (fun _ => 0) (fun _ => c) (fun _ => -c)
+        (fun _ => 1) (fun k => c * (k : ℝ) + 1) hrec hseed hrem hfactor n
+  constructor
+  · simpa [generalizedEulerian] using hresult.1
+  · change (generalizedEulerian c n).leadingCoeff = 1
+    simpa [generalizedEulerian] using hresult.2
+
+/-- Degree of a generalized Eulerian polynomial, for every real parameter. -/
+theorem generalizedEulerian_natDegree (c : ℝ) (n : ℕ) :
+    (generalizedEulerian c n).natDegree = n :=
+  (generalizedEulerian_degree_and_monic c n).1
+
+/-- Monicity of a generalized Eulerian polynomial, for every real parameter. -/
+theorem generalizedEulerian_monic (c : ℝ) (n : ℕ) :
+    (generalizedEulerian c n).Monic :=
+  (generalizedEulerian_degree_and_monic c n).2
 
 @[simp] lemma coeff_zero_generalizedEulerian (c : ℝ) (n : ℕ) :
     (generalizedEulerian c n).coeff 0 = 1 := by
@@ -89,21 +132,8 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
           intro hz
           have hz0 := coeff_zero_generalizedEulerian c n
           simp_all)
-      have hdeg_next : (generalizedEulerian c (n + 1)).natDegree = n + 1 := by
-        apply natDegree_eq_of_le_of_coeff_ne_zero
-        · rw [natDegree_le_iff_coeff_eq_zero]
-          intro k hk
-          obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by lia⟩
-          rw [coeff_generalizedEulerian_succ]
-          have hzero : (generalizedEulerian c n).coeff (j + 1) = 0 :=
-            coeff_eq_zero_of_natDegree_lt (by lia)
-          have hzero' : (generalizedEulerian c n).coeff j = 0 :=
-            coeff_eq_zero_of_natDegree_lt (by lia)
-          simp_all
-        · rw [coeff_generalizedEulerian_succ]
-          have hzero : (generalizedEulerian c n).coeff (n + 1) = 0 :=
-            coeff_eq_zero_of_natDegree_lt (by lia)
-          grind
+      have hdeg_next : (generalizedEulerian c (n + 1)).natDegree = n + 1 :=
+        generalizedEulerian_natDegree c (n + 1)
       have hnn_next : HasNonnegCoeffs (generalizedEulerian c (n + 1)) := by
         intro k
         cases k with
@@ -174,18 +204,11 @@ theorem generalizedEulerian_splits (hc : 0 < c) (n : ℕ) :
 theorem coeff_top_generalizedEulerian_one : ∀ n : ℕ,
     (generalizedEulerian 1 n).coeff n = 1 := by
   intro n
-  induction n with
-  | zero =>
-      simp [generalizedEulerian]
-  | succ n ih =>
-      have hdeg : (generalizedEulerian 1 n).natDegree = n :=
-        (generalizedEulerian_invariants one_pos n).1
-      have hzero : (generalizedEulerian 1 n).coeff (n + 1) = 0 :=
-        coeff_eq_zero_of_natDegree_lt (by lia)
-      have hcoeff := coeff_generalizedEulerian_succ 1 n n
-      rw [hzero, ih] at hcoeff
-      rw [hcoeff]
-      ring
+  have hdeg := generalizedEulerian_natDegree 1 n
+  rw [show (generalizedEulerian 1 n).coeff n =
+    (generalizedEulerian 1 n).leadingCoeff by
+      rw [leadingCoeff, hdeg]]
+  exact generalizedEulerian_monic 1 n
 
 /-- The coefficients of an ordinary Eulerian polynomial are palindromic. -/
 theorem coeff_symm_generalizedEulerian_one : ∀ n i j : ℕ, i + j = n →
@@ -250,7 +273,7 @@ theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
       x ^ n * (generalizedEulerian 1 n).eval (1 / x) := by
   letI : Invertible x := invertibleOfNonzero hx
   have hdeg : (generalizedEulerian 1 n).natDegree ≤ n :=
-    (generalizedEulerian_invariants one_pos n).1.le
+    (generalizedEulerian_natDegree 1 n).le
   have heval := Polynomial.eval₂_reflect_mul_pow
     (i := RingHom.id ℝ) (x := x) n (generalizedEulerian 1 n) hdeg
   rw [generalizedEulerian_one_reflect] at heval
