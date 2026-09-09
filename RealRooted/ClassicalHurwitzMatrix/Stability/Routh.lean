@@ -83,26 +83,6 @@ theorem IsStrictlyHurwitzStable.noCommonRoot_parts_of_hasNonnegCoeffs
     rw [hw_sq, hoddRoot]
     ring
 
-private theorem hasSimpleRoots_pair_of_prec_of_noCommon
-    {f g : ℝ[X]} (hprec : Prec f g)
-    (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
-    HasSimpleRoots f ∧ HasSimpleRoots g := by
-  constructor
-  · intro r hroot
-    have hother : ¬ g.IsRoot r := fun hr ↦ hno r ⟨hroot, hr⟩
-    have hotherMult : g.rootMultiplicity r = 0 := by simp_all
-    have hpos : 0 < f.rootMultiplicity r :=
-      (Polynomial.rootMultiplicity_pos hprec.1.1).mpr hroot
-    have hbound := (rootMultiplicity_bounds_of_prec hprec r).1
-    lia
-  · intro r hroot
-    have hother : ¬ f.IsRoot r := fun hr ↦ hno r ⟨hr, hroot⟩
-    have hotherMult : f.rootMultiplicity r = 0 := by simp_all
-    have hpos : 0 < g.rootMultiplicity r :=
-      (Polynomial.rootMultiplicity_pos hprec.2.1.1).mpr hroot
-    have hbound := (rootMultiplicity_bounds_of_prec hprec r).2
-    lia
-
 /-- A simple product `-X * p` can only have simple roots coming from `p`. -/
 theorem hasSimpleRoots_of_neg_X_mul {p : ℝ[X]}
     (h : HasSimpleRoots (-X * p)) : HasSimpleRoots p := by
@@ -159,8 +139,7 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_rotatedParts_of_evenShape
     (hdegree : even.natDegree = odd.natDegree + 1) :
     HasSimpleRoots (hurwitzRotatedOddPart odd) ∧
       HasSimpleRoots (hurwitzRotatedEvenPart even) := by
-  exact hasSimpleRoots_pair_of_prec_of_noCommon
-    (h.prec_rotatedParts_of_evenShape hodd heven hdegree)
+  exact (h.prec_rotatedParts_of_evenShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
     (fun r hr ↦ h.noCommonRoot_rotatedParts r ⟨hr.2, hr.1⟩)
 
 /-- In the odd-degree parity shape, both rotated parts of a strictly stable
@@ -172,8 +151,7 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_rotatedParts_of_oddShape
     (hdegree : even.natDegree = odd.natDegree) :
     HasSimpleRoots (hurwitzRotatedEvenPart even) ∧
       HasSimpleRoots (hurwitzRotatedOddPart odd) := by
-  exact hasSimpleRoots_pair_of_prec_of_noCommon
-    (h.prec_rotatedParts_of_oddShape hodd heven hdegree)
+  exact (h.prec_rotatedParts_of_oddShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
     h.noCommonRoot_rotatedParts
 
 /-- In the even-degree parity shape, both unrotated parity inputs of a

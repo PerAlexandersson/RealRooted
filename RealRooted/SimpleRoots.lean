@@ -31,6 +31,27 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
   rintro rfl
   simp at hp
 
+/-- A proper-position pair with no common real root has simple real roots in
+both entries. -/
+theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : Prec f g)
+    (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
+    HasSimpleRoots f ∧ HasSimpleRoots g := by
+  constructor
+  · intro r hroot
+    have hother : ¬ g.IsRoot r := fun hr ↦ hno r ⟨hroot, hr⟩
+    have hotherMult : g.rootMultiplicity r = 0 := by simp_all
+    have hpos : 0 < f.rootMultiplicity r :=
+      (Polynomial.rootMultiplicity_pos hprec.1.1).mpr hroot
+    have hbound := (rootMultiplicity_bounds_of_prec hprec r).1
+    lia
+  · intro r hroot
+    have hother : ¬ f.IsRoot r := fun hr ↦ hno r ⟨hr, hroot⟩
+    have hotherMult : f.rootMultiplicity r = 0 := by simp_all
+    have hpos : 0 < g.rootMultiplicity r :=
+      (Polynomial.rootMultiplicity_pos hprec.2.1.1).mpr hroot
+    have hbound := (rootMultiplicity_bounds_of_prec hprec r).2
+    lia
+
 lemma HasSimpleRoots.hasSimpleRootsExcept (hp : HasSimpleRoots p) (a : ℝ) :
     HasSimpleRootsExcept p a :=
   fun r _ hr => hp r hr
