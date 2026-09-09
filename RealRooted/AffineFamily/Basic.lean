@@ -67,70 +67,18 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
 
 lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
-    Prec f (X * f) := by
-  have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf_ne
-  have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf_ne hf_splits
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_splits hfnn
-  have hXf_nonpos : ∀ r ∈ (X * f).roots, r ≤ 0 := by simp_all
-  have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
-  have hdeg : f.natDegree + 1 = (X * f).natDegree := by simp_all
-  have hself : Prec (X * f) (X * f) := prec_refl hXf.1 hXf.2
-  exact
-    (prec_iff_prec_mul_X_of_roots_nonpos
-      (f := f) (g := X * f) hf_splits hXf.2 hf_pos hXf_pos hf_nonpos hXf_nonpos hdeg).mpr hself
+    Prec f (X * f) :=
+  prec_self_X_mul_of_nonneg hf_ne hf_splits hfnn
 
 lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
     (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
-  have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg.2 hgnn
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
-  · have hdeg : f.natDegree + 1 = g.natDegree := by lia
-    exact
-      (prec_iff_prec_mul_X_of_roots_nonpos
-        (f := f) (g := g)
-        hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1) (hgnn.pos_leadingCoeff hg.1)
-        hf_nonpos hg_nonpos hdeg).mp
-        ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨hlen, by lia⟩⟩
-  · have hdeg : f.natDegree = g.natDegree := by lia
-    exact
-      prec_sameDegree_to_prec_mul_X_of_roots_nonpos
-        ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by lia⟩⟩
-        hdeg hf_nonpos hg_nonpos
+    Prec g (X * f) :=
+  prec_to_X_mul_of_nonneg h hfnn hgnn
 
 lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
     (h : Prec g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec f g := by
-  have hprec := h
-  have hg : (g ≠ 0 ∧ g.Splits) := h.1
-  have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := h.2.1
-  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf.1 hXf.2
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
-  rcases hprec with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
-  · have hss_len : ss.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
-    have hrs_len : rs.length = (X * f).natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
-    have hdeg : f.natDegree = g.natDegree := by simp_all
-    exact
-      prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
-        h hdeg hf_nonpos
-  · have hss_len : ss.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
-    have hrs_len : rs.length = (X * f).natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
-    have hdeg : f.natDegree + 1 = g.natDegree := by simp_all
-    exact
-      (prec_iff_prec_mul_X_of_roots_nonpos
-        (f := f) (g := g)
-        hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1) (hgnn.pos_leadingCoeff hg.1)
-        hf_nonpos (roots_nonpos_of_nonneg_coeffs hg.2 hgnn) hdeg).mpr h
+    Prec f g :=
+  prec_of_prec_X_mul_of_nonneg h hfnn hgnn
 
 theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)

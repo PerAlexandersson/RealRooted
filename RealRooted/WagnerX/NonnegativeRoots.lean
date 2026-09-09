@@ -391,6 +391,38 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inr ⟨hlen', listAlternates_of_append_zero_both ss_f rs_g hlen' halt⟩⟩
 
+/-! ## Wagner `X`-multiplication proper-position bridges -/
+
+/- The canonical names below are kept in this lower dependency layer so that
+the affine-family API can reuse them without importing derivative results. -/
+
+/-- A split polynomial with nonnegative coefficients precedes its product with
+`X`. -/
+lemma prec_self_X_mul_of_nonneg {f : ℝ[X]}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
+    Prec f (X * f) :=
+  prec_mul_X_of_prec_of_nonneg (prec_refl hf_ne hf_splits) hfnn hfnn
+
+/-- If `f` precedes `g`, then nonnegative coefficients transport the relation
+to `g` and `X * f`. -/
+lemma prec_to_X_mul_of_nonneg {f g : ℝ[X]}
+    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Prec g (X * f) :=
+  prec_mul_X_of_prec_of_nonneg h hfnn hgnn
+
+/-- The reverse Wagner transport recovers `Prec f g` from `Prec g (X * f)`
+when both polynomials have nonnegative coefficients. -/
+lemma prec_of_prec_X_mul_of_nonneg {f g : ℝ[X]}
+    (h : Prec g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Prec f g := by
+  have hf : f ≠ 0 ∧ f.Splits :=
+    isRealRooted_of_X_mul h.2.1.1 h.2.1.2
+  exact
+    prec_of_prec_mul_X_both_of_roots_nonpos
+      (prec_mul_X_of_prec_of_nonneg h hgnn hfnn.X_mul)
+      (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
+      (roots_nonpos_of_nonneg_coeffs h.1.2 hgnn)
+
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
 theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
     (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
