@@ -20,11 +20,10 @@ from __future__ import annotations
 
 import argparse
 import pathlib
-import re
 import sys
 from collections.abc import Iterable
 
-IMPORT_RE = re.compile(r"^\s*import\s+([A-Za-z0-9_.']+)\s*$")
+from lean_imports import ImportDirective, parse_import_line
 
 
 def parse_args() -> argparse.Namespace:
@@ -96,7 +95,8 @@ def discover_modules(lib_name: str, repo_root: pathlib.Path) -> list[str]:
 
 def parse_imports(root_module_file: pathlib.Path) -> list[str]:
     lines = read_text(root_module_file).splitlines()
-    return [m.group(1) for line in lines if (m := IMPORT_RE.match(line))]
+    return [directive.module for line in lines
+            if (directive := parse_import_line(line))]
 
 
 def find_missing_modules(expected: Iterable[str], imported: Iterable[str]) -> list[str]:
@@ -106,22 +106,56 @@ def find_missing_modules(expected: Iterable[str], imported: Iterable[str]) -> li
 def append_missing_imports(
     root_module_file: pathlib.Path, missing_modules: list[str]
 ) -> None:
-    content = read_text(root_module_file)
-    lines = content.splitlines()
+    lines = read_text(root_module_file).splitlines()
 
-    existing_imports = [m.group(1) for line in lines if (m := IMPORT_RE.match(line))]
-    non_import_lines = [line for line in lines if not IMPORT_RE.match(line)]
+    directives = [
+        (index, directive)
+        for index, line in enumerate(lines)
+        if (directive := parse_import_line(line))
+    ]
+    existing_modules = {directive.module for _, directive in directives}
+    missing = sorted(set(missing_modules) - existing_modules)
+    if not missing:
+        return
 
-    all_imports = sorted(set(existing_imports + missing_modules))
-    import_block = "\n".join(f"import {module}" for module in all_imports)
-
-    non_import_content = "\n".join(non_import_lines).lstrip("\n")
-    if non_import_content:
-        updated = f"{import_block}\n\n{non_import_content}\n"
+    new_directives = [ImportDirective(None, module) for module in missing]
+    if directives:
+        updated_lines = lines[:]
+        insertion = directives[-1][0] + 1
+        updated_lines[insertion:insertion] = [
+            directive.format() for directive in new_directives
+        ]
     else:
-        updated = f"{import_block}\n"
+        insertion = _prologue_end(lines)
+        if insertion is None:
+            raise RuntimeError(
+                "could not locate a safe import position in the root module"
+            )
+        updated_lines = lines[:insertion]
+        updated_lines.extend(directive.format() for directive in new_directives)
+        updated_lines.extend(lines[insertion:])
+    updated = "\n".join(updated_lines) + "\n"
 
     write_text(root_module_file, updated)
+
+
+def _prologue_end(lines: list[str]) -> int | None:
+    """Keep simple headers, including a literal module declaration."""
+
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("--"):
+            continue
+        if stripped.startswith("/-") and stripped.endswith("-/"):
+            continue
+        if stripped.startswith("/-"):
+            return None
+        if stripped == "module" or (
+            stripped.startswith("module ") and len(stripped.split()) == 2
+        ):
+            return index + 1
+        return None
+    return len(lines)
 
 
 def main() -> int:
@@ -159,7 +193,7 @@ def main() -> int:
         print(
             f"error: {root_module_file.relative_to(repo_root)} is missing "
             f"imports for {len(missing_modules)} module(s). "
-            f"Run with --fix to automatically add and sort imports.",
+            f"Run with --fix to append the missing imports.",
             file=sys.stderr,
         )
         return 1
@@ -170,7 +204,7 @@ def main() -> int:
         return fail(str(exc))
 
     print(
-        f"fixed: added and sorted imports in {root_module_file.relative_to(repo_root)}",
+        f"fixed: appended missing imports in {root_module_file.relative_to(repo_root)}",
         file=sys.stderr,
     )
     return 0
