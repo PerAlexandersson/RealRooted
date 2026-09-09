@@ -17,10 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-@[simp] lemma length_matPolyAction (G : List (List ℝ[X])) (fs : List ℝ[X]) :
-    (matPolyAction G fs).length = G.length := by
-  simp [matPolyAction]
-
 /-! ## Generic threshold rows -/
 
 /-- A threshold entry: `X` before the threshold, the marker `α` at the

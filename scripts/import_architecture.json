@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 992
+      "max_modules": 997
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 45
@@ -128,7 +128,7 @@
       "max_modules": 5
     },
     "RealRooted.BrandenLeite.ChainPolynomial": {
-      "max_modules": 188
+      "max_modules": 193
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 89
@@ -1160,7 +1160,7 @@
       "max_modules": 110
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 445
+      "max_modules": 450
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1175,10 +1175,10 @@
       "max_modules": 16
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 163
+      "max_modules": 168
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 164
+      "max_modules": 169
    },
     "RealRooted.PFPolynomial": {
       "max_modules": 87
@@ -1223,34 +1223,34 @@
       "max_modules": 109
    },
     "RealRooted.VeroneseMatrix": {
-      "max_modules": 162
+      "max_modules": 167
    },
     "RealRooted.ThresholdMatrix.Basic": {
-      "max_modules": 123
+      "max_modules": 128
    },
     "RealRooted.ThresholdMatrix.HaglundZhang": {
-      "max_modules": 124
+      "max_modules": 129
    },
     "RealRooted.ThresholdMatrix.GustafssonSolus": {
-      "max_modules": 124
+      "max_modules": 129
    },
     "RealRooted.ThresholdMatrix": {
-      "max_modules": 126
+      "max_modules": 131
    },
     "RealRooted.RowThresholdOne": {
-      "max_modules": 166
+      "max_modules": 171
    },
     "RealRooted.OEIS.A046802": {
-      "max_modules": 125
+      "max_modules": 130
    },
     "RealRooted.GustafssonSolus": {
-      "max_modules": 125
+      "max_modules": 130
    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 102
     },
     "RealRooted.Tactic": {
-      "max_modules": 473
+      "max_modules": 478
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 180
