@@ -316,12 +316,8 @@ theorem firstColumnRatio_zero_succ
 theorem coeff_rowPolynomial
     {R : LowerTriangularMatrix ℝ} (hR : LowerTriangularMatrix.IsLowerTriangular R)
     (n k : ℕ) :
-    (LowerTriangularMatrix.rowPolynomial R n).coeff k = R n k := by
-  by_cases hkn : k ≤ n
-  · exact LowerTriangularMatrix.coeff_rowPolynomial_of_le R hkn
-  · have hnk : n < k := Nat.lt_of_not_ge hkn
-    rw [LowerTriangularMatrix.coeff_rowPolynomial_of_gt R hnk,
-      hR hnk]
+    (LowerTriangularMatrix.rowPolynomial R n).coeff k = R n k :=
+  LowerTriangularMatrix.coeff_rowPolynomial hR n k
 
 theorem rowPolynomial_monic
     {R : LowerTriangularMatrix ℝ}

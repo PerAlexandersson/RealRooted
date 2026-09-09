@@ -218,6 +218,16 @@ theorem coeff_rowPolynomial_of_gt (A : LowerTriangularMatrix ℝ) {i j : ℕ}
   have hbi : b ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
   exact (not_le_of_gt hij) (hbj ▸ hbi)
 
+/-- Coefficients of a row polynomial recover every entry of a lower-triangular
+matrix, including the zero entries above the diagonal. -/
+theorem coeff_rowPolynomial {A : LowerTriangularMatrix ℝ}
+    (hA : IsLowerTriangular A) (i j : ℕ) :
+    (rowPolynomial A i).coeff j = A i j := by
+  by_cases hji : j ≤ i
+  · exact coeff_rowPolynomial_of_le A hji
+  · have hij : i < j := Nat.lt_of_not_ge hji
+    rw [coeff_rowPolynomial_of_gt A hij, hA hij]
+
 theorem natDegree_rowPolynomial_le (A : LowerTriangularMatrix ℝ) (i : ℕ) :
     (rowPolynomial A i).natDegree ≤ i := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]

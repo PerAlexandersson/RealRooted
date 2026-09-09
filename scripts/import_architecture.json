@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1039
+      "max_modules": 1040
     },
     "RealRooted.WangYeh.Affine": {
       "max_modules": 150
@@ -12,6 +12,9 @@
     },
     "RealRooted.WangYeh.TriangularArray": {
       "max_modules": 160
+    },
+    "RealRooted.WangYeh.TriangularMatrix": {
+      "max_modules": 162
     },
     "RealRooted.CommonInterleaver.RootSelection": {
       "max_modules": 99

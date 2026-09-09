@@ -1025,6 +1025,7 @@ import RealRooted.WagnerX.ProperPosition
 import RealRooted.WangYeh.Affine
 import RealRooted.WangYeh.PF
 import RealRooted.WangYeh.TriangularArray
+import RealRooted.WangYeh.TriangularMatrix
 import RealRooted.WeightedSum
 import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra
