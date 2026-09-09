@@ -190,6 +190,18 @@ theorem IsTotallyNonneg.hurwitz_contract_two_isPolyaFreqSeq
   funext n
   rw [Polynomial.coeff_contract (by decide), Nat.mul_comm]
 
+/-- The odd contraction of a polynomial inherits a Pólya-frequency coefficient
+sequence from total nonnegativity of its classical Hurwitz matrix. -/
+theorem IsTotallyNonneg.hurwitz_contract_two_divX_isPolyaFreqSeq
+    {p : Polynomial ℝ} (h : (hurwitz p.coeff).IsTotallyNonneg) :
+    RealRooted.IsPolyaFreqSeq (Polynomial.contract 2 p.divX).coeff := by
+  have hpf := h.hurwitz_odd_isPolyaFreqSeq
+  convert hpf using 1
+  funext n
+  rw [Polynomial.coeff_contract (by decide), Polynomial.coeff_divX]
+  congr 1
+  lia
+
 /-- The classical Hurwitz matrix of a nonnegative constant polynomial is
 totally nonnegative. -/
 theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
