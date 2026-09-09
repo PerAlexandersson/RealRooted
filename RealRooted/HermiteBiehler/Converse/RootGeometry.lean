@@ -78,9 +78,9 @@ lemma roots_real_of_stable_norm_eq {p : ℂ[X]} (hp : p ≠ 0)
   rw [eval_eq_prod_roots_complex p, eval_eq_prod_roots_complex p, norm_mul, norm_mul] at heq
   simp_all
 
-lemma no_upper_root_left_of_stable {f g : ℝ[X]}
+lemma no_upper_root_left_of_stable_of_ne_zero {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
-    (hf : HasPosLeadingCoeff f)
+    (hf : f ≠ 0)
     {z : ℂ} (hz : 0 < z.im) (hroot : (complexify f).eval z = 0) : False := by
   set h := hermiteBiehlerPolynomial f g with hh
   have hzim : z.im ≠ 0 := hz.ne'
@@ -125,6 +125,14 @@ lemma no_upper_root_left_of_stable {f g : ℝ[X]}
   rw [hh] at hmapneg
   have hf₀ : f = 0 := f_eq_zero_of_hermiteBiehler_map_conj_neg hmapneg
   simp_all
+
+/-- Backward-compatible positive-leading form of
+`no_upper_root_left_of_stable_of_ne_zero`. -/
+lemma no_upper_root_left_of_stable {f g : ℝ[X]}
+    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
+    (hf : HasPosLeadingCoeff f)
+    {z : ℂ} (hz : 0 < z.im) (hroot : (complexify f).eval z = 0) : False :=
+  no_upper_root_left_of_stable_of_ne_zero hstab hf.ne_zero hz hroot
 
 lemma no_upper_root_right_of_stable {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
@@ -191,5 +199,21 @@ theorem splits_of_stable {f g : ℝ[X]}
     rcases lt_or_gt_of_ne him with hlt | hgt
     · exact no_upper_root_right_of_stable hstab hg (by simp [*]) (complexify_conj_root hz)
     · exact no_upper_root_right_of_stable hstab hg hgt hz
+
+/-- The real component of a stable Hermite--Biehler polynomial is either zero
+or split over the reals. No leading-sign hypothesis is needed. -/
+theorem IsUpperHalfPlaneStable.left_eq_zero_or_splits {f g : ℝ[X]}
+    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    f = 0 ∨ f.Splits := by
+  by_cases hf : f = 0
+  · exact Or.inl hf
+  · right
+    apply Polynomial.splits_of_all_roots_real
+    intro z hz
+    by_contra him
+    rcases lt_or_gt_of_ne him with hlt | hgt
+    · exact no_upper_root_left_of_stable_of_ne_zero hstab hf
+        (by simpa using hlt) (complexify_conj_root hz)
+    · exact no_upper_root_left_of_stable_of_ne_zero hstab hf hgt hz
 
 end RealRooted
