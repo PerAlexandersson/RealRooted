@@ -639,6 +639,7 @@ import RealRooted.MatrixInterlacing.Action
 import RealRooted.MatrixInterlacing.AffinePair
 import RealRooted.MatrixInterlacing.Converse
 import RealRooted.MatrixInterlacing.Preservation
+import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
 import RealRooted.MatrixInterlacing.SparseTests
 import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
