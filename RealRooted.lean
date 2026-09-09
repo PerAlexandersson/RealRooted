@@ -29,6 +29,8 @@ import RealRooted.Apolarity
 import RealRooted.Applications.EulerianVariations
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
+import RealRooted.Applications.EulerianVariations.TernaryRuns
+import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic

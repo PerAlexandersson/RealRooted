@@ -2,10 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1019
+      "max_modules": 1021
     },
     "RealRooted.Applications.EulerianVariations": {
-      "max_modules": 231
+      "max_modules": 235
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 46

@@ -1,5 +1,6 @@
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
+import RealRooted.Applications.EulerianVariations.TernaryRuns
 
 /-!
 # Applications from the Eulerian variations paper
