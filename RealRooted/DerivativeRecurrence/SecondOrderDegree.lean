@@ -1,4 +1,9 @@
-import RealRooted.Basic
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 open Polynomial
 
@@ -17,22 +22,10 @@ lemma second_order_derivative_coeff_succ_succ
       (a * ((k : ℝ) + 1) + 1) * coeff (P (n + 1)) (k + 1) +
         (b n - a * (k : ℝ)) * coeff (P (n + 1)) k + c * coeff (P n) k := by
   rw [hrec n]
-  rw [show (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative =
-      C a * (X * (P (n + 1)).derivative) +
-        C (-a) * (X ^ 2 * (P (n + 1)).derivative) by ring]
-  rw [show (C 1 + C (b n) * X) * P (n + 1) =
-      P (n + 1) + C (b n) * (X * P (n + 1)) by grind]
+  rw [coeff_add, Polynomial.coeff_quadratic_derivative_add_linear_mul_succ]
   rw [show (C c * X) * P n = C c * (X * P n) by ring]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
-  by_cases hk : 1 ≤ k
-  · rw [if_pos (by lia : 2 ≤ k + 1)]
-    have hkidx : k + 1 - 2 + 1 = k := by lia
-    have hkcast : ((k + 1 - 2 : ℕ) : ℝ) + 1 = (k : ℝ) := by simp_all
-    grind
-  · rw [if_neg (by lia : ¬ 2 ≤ k + 1)]
-    have hk0 : k = 0 := by lia
-    subst k
-    grind
+  simp only [coeff_C_mul, coeff_X_mul]
+  ring
 
 /-- The top coefficient is positive and all coefficients above it vanish for
 the stated second-order recurrence. -/

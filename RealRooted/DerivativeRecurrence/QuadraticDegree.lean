@@ -1,4 +1,9 @@
-import RealRooted.Basic
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Degree of quadratic-coefficient derivative recurrences
@@ -23,21 +28,8 @@ lemma quadratic_derivative_linear_coeff_succ
       (a * ((k : ℝ) + 1) + c) * Polynomial.coeff (P n) (k + 1) +
         (s + t * (n : ℝ) - b * (k : ℝ)) * Polynomial.coeff (P n) k := by
   rw [hrec n]
-  rw [show (C a * X + C (-b) * X ^ 2) * (P n).derivative =
-      C a * (X * (P n).derivative) + C (-b) * (X ^ 2 * (P n).derivative) by ring]
-  rw [show (C c + C (s + t * (n : ℝ)) * X) * P n =
-      C c * P n + C (s + t * (n : ℝ)) * (X * P n) by ring]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
-  by_cases hk : 1 ≤ k
-  · rw [if_pos (by lia : 2 ≤ k + 1)]
-    push_cast
-    have hkidx : k - 1 + 1 = k := by lia
-    have hkcast : ((k - 1 : ℕ) : ℝ) + 1 = (k : ℝ) := by simp_all
-    grind
-  · rw [if_neg (by lia : ¬ 2 ≤ k + 1)]
-    have hk0 : k = 0 := by lia
-    subst k
-    grind
+  rw [Polynomial.coeff_quadratic_derivative_add_linear_mul_succ]
+  ring
 
 lemma quadratic_derivative_linear_top_and_above
     (P : ℕ → ℝ[X]) (a b c s t : ℝ)
@@ -160,21 +152,8 @@ lemma quadratic_derivative_bilinear_coeff_succ
       (a * ((k : ℝ) + 1) + c + u * (n : ℝ)) * Polynomial.coeff (P n) (k + 1) +
         (s + t * (n : ℝ) - b * (k : ℝ)) * Polynomial.coeff (P n) k := by
   rw [hrec n]
-  rw [show (C a * X + C (-b) * X ^ 2) * (P n).derivative =
-      C a * (X * (P n).derivative) + C (-b) * (X ^ 2 * (P n).derivative) by ring]
-  rw [show (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n =
-      C (c + u * (n : ℝ)) * P n + C (s + t * (n : ℝ)) * (X * P n) by ring]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
-  by_cases hk : 1 ≤ k
-  · rw [if_pos (by lia : 2 ≤ k + 1)]
-    push_cast
-    have hkidx : k - 1 + 1 = k := by lia
-    have hkcast : ((k - 1 : ℕ) : ℝ) + 1 = (k : ℝ) := by simp_all
-    grind
-  · rw [if_neg (by lia : ¬ 2 ≤ k + 1)]
-    have hk0 : k = 0 := by lia
-    subst k
-    grind
+  rw [Polynomial.coeff_quadratic_derivative_add_linear_mul_succ]
+  ring
 
 lemma quadratic_derivative_bilinear_top_and_above
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)

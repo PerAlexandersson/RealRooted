@@ -27,6 +27,22 @@ lemma coeff_X_sub_X_sq_mul_derivative (p : R[X]) (k : ℕ) :
   rw [sub_mul, coeff_sub, one_mul, coeff_derivative, coeff_X_mul_derivative]
   ring
 
+/-- The coefficient at `k + 1` after multiplying `p'` by a quadratic with no
+constant term and `p` by a linear polynomial. -/
+lemma coeff_quadratic_derivative_add_linear_mul_succ
+    (p : R[X]) (a b c d : R) (k : ℕ) :
+    (((C a * X + C b * X ^ 2) * p.derivative +
+      (C c + C d * X) * p).coeff (k + 1)) =
+      (a * ((k : R) + 1) + c) * p.coeff (k + 1) +
+        (b * (k : R) + d) * p.coeff k := by
+  rw [show (C a * X + C b * X ^ 2) * p.derivative =
+      C a * (X * p.derivative) + C b * (X * (X * p.derivative)) by ring]
+  rw [show (C c + C d * X) * p = C c * p + C d * (X * p) by ring]
+  simp only [coeff_add, coeff_C_mul]
+  rw [coeff_X_mul_derivative, coeff_X_mul, coeff_X_mul_derivative, coeff_X_mul]
+  push_cast
+  ring
+
 section AddTorsionFree
 
 variable [IsAddTorsionFree R]

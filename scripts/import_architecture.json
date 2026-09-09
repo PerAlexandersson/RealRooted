@@ -35,7 +35,7 @@
       "max_modules": 10
     },
     "RealRooted.Laguerre": {
-      "max_modules": 59
+      "max_modules": 60
     },
     "RealRooted.Laguerre.Orthogonality": {
       "max_modules": 8
@@ -44,7 +44,7 @@
       "max_modules": 9
     },
     "RealRooted.Laguerre.Roots": {
-      "max_modules": 53
+      "max_modules": 54
     },
     "RealRooted.Hermite": {
       "max_modules": 53
@@ -809,7 +809,7 @@
       "max_modules": 165
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 52
+      "max_modules": 53
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
@@ -821,7 +821,7 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
-      "max_modules": 42
+      "max_modules": 43
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
       "max_modules": 5
