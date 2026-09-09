@@ -56,4 +56,30 @@ theorem polynomialValueEulerNumerator_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
   apply hprod
   simpa [hzero] using (polynomialValueEulerNumerator_eval_one p).symm
 
+@[simp]
+theorem polynomialValueEulerNumerator_zero :
+    polynomialValueEulerNumerator (0 : ℝ[X]) = 0 := by
+  simp [polynomialValueEulerNumerator, finiteEulerNumerator, polynomialValueSeq]
+
+@[simp]
+theorem polynomialValueEulerNumerator_one :
+    polynomialValueEulerNumerator (1 : ℝ[X]) = 1 := by
+  simp [polynomialValueEulerNumerator, finiteEulerNumerator, polynomialValueSeq]
+
+@[simp]
+theorem polynomialValueEulerNumerator_X :
+    polynomialValueEulerNumerator (X : ℝ[X]) = X := by
+  rw [polynomialValueEulerNumerator, natDegree_X]
+  norm_num [finiteEulerNumerator, Finset.sum_range_succ,
+    polynomialValueSeq, fwdDiff, Function.iterate_succ_apply']
+
+@[simp]
+theorem polynomialValueEulerNumerator_X_add_one :
+    polynomialValueEulerNumerator (X + 1 : ℝ[X]) = 1 := by
+  rw [polynomialValueEulerNumerator,
+    show (X + 1 : ℝ[X]).natDegree = 1 by
+      simp [show (X + 1 : ℝ[X]) = X + C (1 : ℝ) by simp]]
+  norm_num [finiteEulerNumerator, Finset.sum_range_succ,
+    polynomialValueSeq, fwdDiff, Function.iterate_succ_apply']
+
 end RealRooted
