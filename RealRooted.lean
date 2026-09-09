@@ -87,6 +87,7 @@ import RealRooted.BorceaBranden.FiniteSymbolReciprocal
 import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+import RealRooted.BoundarySpecializationGeneral
 import RealRooted.BoundarySpecializationRight
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
