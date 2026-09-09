@@ -119,12 +119,7 @@ private lemma prec0_gs_affine_affine_add_X
 private lemma prec0_gs_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    prec0_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
+  exact prec0_affine_add_one_affine_add_X hs ht
 
 private lemma prec0_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
     Prec0 (C s * X + C t + 1) (C s * X + C t) := by
