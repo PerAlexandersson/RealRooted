@@ -2,7 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1027
+      "max_modules": 1030
+    },
+    "RealRooted.InterlacingSequence.NonnegativeShift": {
+      "max_modules": 18
+    },
+    "RealRooted.MatrixInterlacing.TotallyNonnegative": {
+      "max_modules": 125
+    },
+    "RealRooted.MatrixInterlacing.TotallyNonnegativeExamples": {
+      "max_modules": 127
     },
     "RealRooted.Applications.EulerianVariations": {
       "max_modules": 235
@@ -131,7 +140,7 @@
       "max_modules": 5
     },
     "RealRooted.BrandenLeite.ChainPolynomial": {
-      "max_modules": 195
+      "max_modules": 197
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 91
@@ -1184,7 +1193,7 @@
       "max_modules": 112
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 452
+      "max_modules": 455
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1199,10 +1208,10 @@
       "max_modules": 16
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 170
+      "max_modules": 172
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 171
+      "max_modules": 173
    },
     "RealRooted.PFPolynomial": {
       "max_modules": 89
@@ -1247,34 +1256,34 @@
       "max_modules": 111
    },
     "RealRooted.VeroneseMatrix": {
-      "max_modules": 169
+      "max_modules": 171
    },
     "RealRooted.ThresholdMatrix.Basic": {
-      "max_modules": 130
+      "max_modules": 132
    },
     "RealRooted.ThresholdMatrix.HaglundZhang": {
-      "max_modules": 131
-   },
-    "RealRooted.ThresholdMatrix.GustafssonSolus": {
-      "max_modules": 131
-   },
-    "RealRooted.ThresholdMatrix": {
       "max_modules": 133
    },
+    "RealRooted.ThresholdMatrix.GustafssonSolus": {
+      "max_modules": 133
+   },
+    "RealRooted.ThresholdMatrix": {
+      "max_modules": 135
+   },
     "RealRooted.RowThresholdOne": {
-      "max_modules": 173
+      "max_modules": 175
    },
     "RealRooted.OEIS.A046802": {
-      "max_modules": 132
+      "max_modules": 134
    },
     "RealRooted.GustafssonSolus": {
-      "max_modules": 132
+      "max_modules": 134
    },
     "RealRooted.Wronskian.Algebra": {
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 483
+      "max_modules": 486
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182

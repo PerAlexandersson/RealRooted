@@ -148,37 +148,6 @@ lemma zipWith_mul_oneSupportSeq_left_sum_eq_get
 
 /-! ## Elementary affine interlacing helpers -/
 
-lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
-    Prec0 (C c : ℝ[X]) (C u * X + C v) := by
-  by_cases hc : c = 0
-  · left
-    simp [hc]
-  right
-  right
-  have hC : (C c : ℝ[X]) ≠ 0 := C_ne_zero.mpr hc
-  have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := u) (t := v) hu
-  have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
-  have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
-    lia
-  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hC (by simp)
-  refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
-  · simp
-  · simpa [hlin_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hlin_deg).symm
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
-
-lemma prec0_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
-    (h : Prec0 p' q') : Prec0 p q := by
-  lia
-
-lemma affine_mul_C_add_C (s t b d : ℝ) :
-    ((C s * X + C t) * C b + C d : ℝ[X]) =
-      C (s * b) * X + C (t * b + d) := by
-  grind
-
 lemma affine_mul_C_add_X (s t b : ℝ) :
     ((C s * X + C t) * C b + X : ℝ[X]) =
       C (s * b + 1) * X + C (t * b) := by
@@ -195,46 +164,6 @@ lemma affine_mul_C_add_same_eq (s t a : ℝ) :
     ((C s * X + C t) * C a + C a : ℝ[X]) =
       C a * (C s * X + C (t + 1)) := by
   grind
-
-lemma prec0_const_entries_affine_of_det_nonneg
-    {A b c d s t : ℝ}
-    (hA : 0 ≤ A) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d)
-    (hs : 0 < s) (hdet : b * c ≤ A * d) :
-    Prec0 ((C s * X + C t) * C b + C d)
-      ((C s * X + C t) * C A + C c) := by
-  by_cases hb0 : b = 0
-  · by_cases hA0 : A = 0
-    · refine
-        prec0_congr (p' := C d) (q' := C c) ?_ ?_
-          (prec0_C_C d c)
-      · simp [hb0]
-      · simp [hA0]
-    · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
-      refine
-        prec0_congr (p' := C d)
-          (q' := C (s * A) * X + C (t * A + c)) ?_ ?_ ?_
-      · simp [hb0]
-      · grind
-      · exact
-          prec0_C_affine_linear (c := d) (u := s * A) (v := t * A + c)
-            (by simp_all)
-  · have hbpos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
-    by_cases hA0 : A = 0
-    · have hc0 : c = 0 := by nlinarith [hdet, hbpos, hc]
-      refine prec0_congr (q' := 0) rfl ?_ (prec0_zero_right _)
-      simp_all
-    · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
-      have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by nlinarith [hdet, hs]
-      refine
-        prec0_congr
-          (p' := C (b * s) * X + C (b * t + d))
-          (q' := C (A * s) * X + C (A * t + c)) ?_ ?_ ?_
-      · grind
-      · grind
-      · exact
-          prec0_affine_linear_affine_linear_of_cross
-            (u := b * s) (v := b * t + d) (U := A * s) (V := A * t + c)
-            (by simp_all) (by simp_all) hcross
 
 lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
     {A b d s t : ℝ}

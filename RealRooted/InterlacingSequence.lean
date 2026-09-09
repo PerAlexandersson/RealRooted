@@ -1,4 +1,5 @@
 import RealRooted.InterlacingSequenceBasic
+import RealRooted.InterlacingSequence.NonnegativeShift
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
 import RealRooted.ProductFamily
@@ -11,6 +12,8 @@ import RealRooted.MatrixInterlacing
 This is the re-export shim for the split interlacing-sequence modules:
 
 - `InterlacingSequenceBasic`: sequence predicates and basic list-level facts;
+- `InterlacingSequence.NonnegativeShift`: simultaneous finite-family
+  translation to nonnegative coefficients;
 - `CommonInterleaverSeq`: root-slot intervals, Chudnovsky-Seymour, and common
   interleavers;
 - `CommonInterleaverTwo`: compatibility/common-interleaver bridge targets;

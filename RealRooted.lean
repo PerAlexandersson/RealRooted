@@ -368,6 +368,7 @@ import RealRooted.InterlacingClosure
 import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
+import RealRooted.InterlacingSequence.NonnegativeShift
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Interlacing.Residue
@@ -632,6 +633,8 @@ import RealRooted.MatrixInterlacing.AffinePair
 import RealRooted.MatrixInterlacing.Converse
 import RealRooted.MatrixInterlacing.Preservation
 import RealRooted.MatrixInterlacing.SparseTests
+import RealRooted.MatrixInterlacing.TotallyNonnegative
+import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
