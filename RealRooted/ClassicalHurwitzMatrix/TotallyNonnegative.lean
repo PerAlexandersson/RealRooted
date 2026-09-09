@@ -188,6 +188,62 @@ theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
 
 open RealRooted
 
+/-- Total nonnegativity of the original Hurwitz matrix makes every coefficient
+of the canonical Routh-reduced odd part nonnegative. -/
+theorem IsTotallyNonneg.hurwitz_routhReducedOddPart_coeff_nonneg
+    {odd even : ℝ[X]}
+    (h : (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg)
+    (hodd : 0 < odd.coeff 0) (n : ℕ) :
+    0 ≤ (routhReducedOddPart (routhCoefficient odd even) odd even).coeff n := by
+  have hrows : StrictMono (![1, 2] : Fin 2 → ℕ) := by decide
+  have hcols : StrictMono (![1, n + 2] : Fin 2 → ℕ) := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp_all
+  have hminor := h hrows hcols
+  simp only [submatrix_cons_row, hurwitz_apply, Order.lt_two_iff, zero_le,
+    le_mul_iff_one_le_right, submatrix_empty, Matrix.det_fin_two, Fin.isValue,
+    cons_val', cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
+    Nat.add_one_sub_one, Std.le_refl, tsub_self, cons_val_fin_one,
+    cons_val_one, Nat.reduceLeDiff] at hminor
+  rw [if_pos (by lia : 1 ≤ 2 * (n + 2))] at hminor
+  rw [show 2 * (n + 2) - 1 = 2 * (n + 1) + 1 by lia,
+    show 2 * (n + 2) - 2 = 2 * (n + 1) by lia] at hminor
+  rw [show (0 : ℕ) = 2 * 0 by rfl,
+    coeff_oddEvenPolynomial_even,
+    show (1 : ℕ) = 2 * 0 + 1 by rfl,
+    coeff_oddEvenPolynomial_odd] at hminor
+  have hzero : (oddEvenPolynomial odd even).coeff 0 = even.coeff 0 := by
+    simpa using coeff_oddEvenPolynomial_even odd even 0
+  rw [hzero] at hminor
+  have hdet :
+      0 ≤ odd.coeff 0 * even.coeff (n + 1) -
+        odd.coeff (n + 1) * even.coeff 0 := by
+    simpa [Matrix.det_fin_two, Matrix.hurwitz,
+      coeff_oddEvenPolynomial_even, coeff_oddEvenPolynomial_odd] using hminor
+  rw [coeff_routhReducedOddPart, routhCoefficient]
+  rw [show even.coeff (n + 1) - even.coeff 0 / odd.coeff 0 * odd.coeff (n + 1) =
+      (odd.coeff 0 * even.coeff (n + 1) -
+        odd.coeff (n + 1) * even.coeff 0) / odd.coeff 0 by
+    field_simp]
+  exact div_nonneg hdet hodd.le
+
+/-- Under the same positive-pivot hypothesis, the canonical Routh-reduced
+polynomial has nonnegative coefficients. -/
+theorem IsTotallyNonneg.hurwitz_routhReducedPolynomial_hasNonnegCoeffs
+    {odd even : ℝ[X]}
+    (h : (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg)
+    (hodd : 0 < odd.coeff 0) :
+    HasNonnegCoeffs
+      (routhReducedPolynomial (routhCoefficient odd even) odd even) := by
+  intro n
+  rcases Nat.even_or_odd n with ⟨k, rfl⟩ | ⟨k, rfl⟩
+  · rw [show k + k = 2 * k by lia, routhReducedPolynomial,
+      coeff_oddEvenPolynomial_even]
+    have hcoeff := h.hurwitz_coeff_nonneg (2 * k + 1)
+    simpa [coeff_oddEvenPolynomial_odd] using hcoeff
+  · rw [routhReducedPolynomial, coeff_oddEvenPolynomial_odd]
+    exact h.hurwitz_routhReducedOddPart_coeff_nonneg hodd k
+
 /-- The classical Hurwitz matrix of `X + a` is totally nonnegative for every
 nonnegative `a`. -/
 theorem hurwitz_X_add_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
