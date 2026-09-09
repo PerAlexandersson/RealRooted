@@ -92,6 +92,7 @@ import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
 import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability
+import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
 import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
 import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
