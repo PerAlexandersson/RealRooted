@@ -356,6 +356,7 @@ import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
+import RealRooted.InterlacingClosure
 import RealRooted.InterlacingConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
@@ -555,6 +556,7 @@ import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
@@ -591,7 +593,10 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
@@ -616,6 +621,7 @@ import RealRooted.MatrixInterlacing.AffinePair
 import RealRooted.MatrixInterlacing.Converse
 import RealRooted.MatrixInterlacing.Preservation
 import RealRooted.MatrixInterlacing.SparseTests
+import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
 import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiaffineReciprocalRight
@@ -966,6 +972,7 @@ import RealRooted.ThresholdMatrix
 import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus
 import RealRooted.ThresholdMatrix.HaglundZhang
+import RealRooted.TotallyNonnegInterlacing
 import RealRooted.Touchard
 import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.Basic

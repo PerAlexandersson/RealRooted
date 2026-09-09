@@ -2,6 +2,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
@@ -445,6 +446,53 @@ theorem IsTotallyNonneg.det_gaussianSandwich_pos_of_le_rank
     · exact det_gaussianMatrix_submatrix_pos a
         (powersetEnum colSet) cols ha (strictMono_powersetEnum colSet) hcols
 
+/-- Gaussian smoothing followed by a positive northwest-corner update strictly
+raises the rank of a rank-deficient totally nonnegative square matrix. -/
+theorem IsTotallyNonneg.rank_lt_rank_gaussianSandwich_add_single_zero_zero
+    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hrank : A.rank < n + 1)
+    {a t : ℝ} (ha : 0 < a) (ht : 0 < t) :
+    A.rank <
+      (Matrix.gaussianSandwich A a + Matrix.single 0 0 t).rank := by
+  let B := Matrix.gaussianSandwich A a
+  let selected : Fin (A.rank + 1) → Fin (n + 1) :=
+    Fin.castLE (Nat.succ_le_of_lt hrank)
+  have hselected : StrictMono selected :=
+    Fin.strictMono_castLE (Nat.succ_le_of_lt hrank)
+  have hmatrix :
+      (B + Matrix.single 0 0 t).submatrix selected selected =
+        B.submatrix selected selected + Matrix.single 0 0 t := by
+    ext i j
+    simp only [Matrix.submatrix_apply, Matrix.add_apply, Matrix.single_apply]
+    have hselected_zero (k : Fin (A.rank + 1)) :
+        0 = selected k ↔ 0 = k := by
+      constructor
+      · intro hk
+        exact hselected.injective (by simpa [selected] using hk)
+      · rintro rfl
+        rfl
+    simp only [hselected_zero]
+  have hminor_pos :
+      0 < ((B + Matrix.single 0 0 t).submatrix selected selected).det := by
+    rw [hmatrix, det_add_single_zero_zero, Matrix.submatrix_submatrix]
+    exact add_pos_of_nonneg_of_pos
+      ((hA.gaussianSandwich_isTotallyNonneg ha) hselected hselected)
+      (mul_pos ht <| hA.det_gaussianSandwich_pos_of_le_rank ha le_rfl
+        (hselected.comp Fin.strictMono_succ)
+        (hselected.comp Fin.strictMono_succ))
+  have hunit :
+      IsUnit ((B + Matrix.single 0 0 t).submatrix selected selected) := by
+    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+    exact ne_of_gt hminor_pos
+  have hminor_rank :
+      ((B + Matrix.single 0 0 t).submatrix selected selected).rank =
+        A.rank + 1 := by
+    simpa using Matrix.rank_of_isUnit _ hunit
+  have hle := Matrix.rank_submatrix_le
+    (B + Matrix.single 0 0 t) selected selected
+  rw [hminor_rank] at hle
+  exact lt_of_lt_of_le (Nat.lt_succ_self _) hle
+
 /-- Every compound through the rank of a Gaussian-smoothed totally
 nonnegative matrix is primitive. -/
 theorem IsTotallyNonneg.compound_gaussianSandwich_isPrimitive
@@ -564,6 +612,24 @@ theorem IsTotallyNonneg.charpoly_factorization_nonneg
   exact ⟨μ, hμ_nonneg,
     Polynomial.map_injective (algebraMap ℝ ℂ)
       (algebraMap ℝ ℂ).injective hmapped⟩
+
+/-- The characteristic polynomial of a totally nonnegative real matrix splits
+over the reals. -/
+theorem IsTotallyNonneg.charpoly_splits
+    {A : Matrix (Fin n) (Fin n) ℝ} (hA : A.IsTotallyNonneg) :
+    A.charpoly.Splits := by
+  obtain ⟨μ, -, hfactor⟩ := hA.charpoly_factorization_nonneg
+  rw [hfactor]
+  exact Splits.prod fun i _ => Splits.X_sub_C (μ i)
+
+/-- Every nonnegative northwest-corner pencil of a totally nonnegative matrix
+has a real-split characteristic polynomial. -/
+theorem IsTotallyNonneg.charpoly_sub_C_mul_trailing_charpoly_splits
+    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) {t : ℝ} (ht : 0 ≤ t) :
+    (A.charpoly - C t * (A.submatrix Fin.succ Fin.succ).charpoly).Splits := by
+  rw [← charpoly_add_single_zero_zero]
+  exact (hA.add_single_zero_zero ht).charpoly_splits
 
 /-- The complex spectrum of a totally nonnegative real matrix is contained in
 the nonnegative real axis. -/

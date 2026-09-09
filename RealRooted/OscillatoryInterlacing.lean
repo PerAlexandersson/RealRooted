@@ -86,16 +86,7 @@ theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
   intro x hx
   have hxRoot : A.charpoly.IsRoot x :=
     (Polynomial.mem_roots A.charpoly_monic.ne_zero).mp hx
-  have hxNonneg : 0 ≤ x := hA.nonneg_of_isRoot_charpoly hxRoot
-  have hxNe : x ≠ 0 := by
-    intro hxZero
-    subst x
-    have hcoeff : A.charpoly.coeff 0 = 0 := by
-      rw [Polynomial.coeff_zero_eq_eval_zero]
-      exact hxRoot.eq_zero
-    apply hdet
-    rw [Matrix.det_eq_sign_charpoly_coeff, hcoeff, mul_zero]
-  exact lt_of_le_of_ne hxNonneg (Ne.symm hxNe)
+  exact hA.pos_of_isRoot_charpoly_of_det_ne_zero hdet hxRoot
 
 /-- Strict leading-principal interlacing for the classical oscillatory
 criterion. This is the leading-section orientation of
@@ -131,12 +122,7 @@ theorem IsTotallyNonneg.leading_charpoly_strictInterlaces {N : ℕ}
     simpa [B] using Matrix.charpoly_reindex Fin.revPerm A
   have hBtail : (B.submatrix Fin.succ Fin.succ).charpoly =
       (A.submatrix Fin.castSucc Fin.castSucc).charpoly := by
-    rw [← Matrix.charpoly_reindex Fin.revPerm
-      (A.submatrix Fin.castSucc Fin.castSucc)]
-    congr 1
-    ext i j
-    simp [B, Matrix.submatrix, Matrix.reindex_apply,
-      Fin.rev_succ]
+    simpa only [B] using Matrix.charpoly_reindex_finRev_submatrix_succ A
   simpa only [hBchar, hBtail] using hstrict
 
 end Matrix

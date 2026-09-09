@@ -251,6 +251,12 @@ the checked or challenge-facing highlights are:
   while `RealRooted.OscillatoryInterlacing` combines that core with Cauchy
   interlacing to prove strict interlacing of consecutive principal-section
   characteristic polynomials.
+- Totally nonnegative principal interlacing: every finite real totally
+  nonnegative matrix has weak leading- and trailing-principal characteristic-
+  polynomial interlacing, including singular matrices. See
+  `Matrix.IsTotallyNonneg.leading_charpoly_interlaces` and
+  `Matrix.IsTotallyNonneg.trailing_charpoly_interlaces` in
+  `RealRooted.TotallyNonnegInterlacing`.
 - Wagner's lemma: for real-rooted polynomials with nonpositive roots and
   positive leading coefficients, common interlacers are closed under addition,
   and multiplication by `X` shifts the interlacing relation in the expected

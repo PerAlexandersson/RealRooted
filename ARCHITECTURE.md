@@ -66,6 +66,16 @@ Curated entry points may be introduced for stable families, but each entry
 point needs an import budget so that it does not silently become another full
 umbrella.
 
+`InterlacingClosure` is the focused coefficientwise-limit layer for monic,
+fixed-degree weakly interlacing polynomial pairs. It depends on polynomial root
+continuity and the Obreschkoff equivalence, but not on matrix theory; matrix
+approximation arguments should consume this endpoint rather than duplicate its
+limit proof.
+
+`MatrixInterlacingClosure` supplies the corresponding entrywise matrix-limit
+adapter using characteristic-polynomial coefficient continuity from the
+Mathlib-shaped `Matrix.SpectrumClosed` shim.
+
 Tactic examples and other regression-only modules should eventually move to a
 separate test umbrella. The root-import checker will continue to require every
 current library module until that test surface exists and the checker has an
@@ -253,18 +263,34 @@ The only shared proof helpers are explicitly package-internal, under
 Cauchy and oscillatory matrix interlacing now meet at a narrow polynomial
 endpoint:
 
+- `Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix` owns the general injective
+  principal-submatrix/charmatrix compatibility lemma;
 - `CauchyInterlacing` owns the ordered-eigenvalue theorem;
 - `CauchyInterlacing.Polynomial` transports it to characteristic-polynomial
   `Interlaces` without importing a challenge module;
 - `Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core` owns Whitney
-  reduction, tridiagonal symmetrization, continuant arguments, and finite
-  reversal without importing the RealRooted theorem library; and
-- `OscillatoryInterlacing` combines those two layers to obtain the strict
-  leading- and trailing-principal characteristic-polynomial endpoints.
+  reduction, positive and zero-tolerant geometric-mean tridiagonal
+  symmetrization, continuant arguments, and finite reversal without importing
+  the RealRooted theorem library;
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing` packages a
+  Hermitian model for nonsingular totally nonnegative matrices while remaining
+  independent of the RealRooted polynomial theorem library;
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation` proves that a
+  nonnegative northwest-corner update preserves total nonnegativity;
+- `Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density` iterates asymptotically
+  trivial rank-raising updates to approximate every finite TN matrix by
+  nonsingular TN matrices;
+- `TotallyNonnegInterlacing` combines that model with nonsingular-TN density,
+  polynomial Cauchy interlacing, and coefficient-limit closure to obtain weak
+  leading- and trailing-principal endpoints for every finite TN matrix; and
+- `OscillatoryInterlacing` retains the stronger simple-root, root-disjoint,
+  strictly positive, adjacent-entry endpoint for oscillatory matrices.
 
 The old Mathlib-shaped oscillatory import remains as a compatibility facade;
-new theorem consumers should import `OscillatoryInterlacing`, while consumers
-of matrix-only infrastructure should import the `Core` module directly.
+new weak-interlacing consumers should import `TotallyNonnegInterlacing`, strict
+oscillatory consumers should import `OscillatoryInterlacing`, and consumers of
+matrix-only infrastructure should import the focused `PrincipalInterlacing` or
+`Core` module directly.
 
 Derivative recurrence results have a focused package entry point:
 

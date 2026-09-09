@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import Mathlib.Data.Fin.Rev
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Transvection
@@ -11,8 +12,9 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 
 This file develops the matrix-theoretic core of the all-rank
 Gantmacher--Krein oscillation theorem. It contains Whitney reduction,
-tridiagonal symmetrization, continuant identities, and finite-index reversal,
-without importing the RealRooted polynomial theorem library.
+positive and zero-tolerant geometric-mean tridiagonal symmetrizations,
+continuant identities, and finite-index reversal, without importing the
+RealRooted polynomial theorem library.
 -/
 
 namespace Matrix
@@ -3276,21 +3278,10 @@ private theorem det_tridiagonal_first_rec {R : Type*} [CommRing R] {N : ℕ}
   rw [Matrix.submatrix_submatrix]
   ring
 
-private theorem charmatrix_trailing {R : Type*} [CommRing R] {N : ℕ}
-    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
-    A.charmatrix.submatrix Fin.succ Fin.succ =
-      (A.submatrix Fin.succ Fin.succ).charmatrix := by
-  ext i j
-  by_cases hij : i = j
-  · subst j
-    simp only [Matrix.submatrix_apply, Matrix.charmatrix_apply_eq]
-  · rw [Matrix.submatrix_apply,
-      Matrix.charmatrix_apply_ne _ _ _
-        (fun h ↦ hij (Fin.ext (by simpa using congrArg Fin.val h))),
-      Matrix.charmatrix_apply_ne _ _ _ hij, Matrix.submatrix_apply]
-
-private theorem charpoly_tridiagonal_rec {N : ℕ}
-    (T : Matrix (Fin (N + 2)) (Fin (N + 2)) ℝ)
+/-- The characteristic polynomial of a tridiagonal matrix satisfies the
+continuant recurrence obtained by deleting its first row and column. -/
+theorem charpoly_tridiagonal_rec {R : Type*} [CommRing R] {N : ℕ}
+    (T : Matrix (Fin (N + 2)) (Fin (N + 2)) R)
     (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
     (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0) :
     T.charpoly =
@@ -3322,13 +3313,146 @@ private theorem charpoly_tridiagonal_rec {N : ℕ}
       neg_zero]
   rw [Matrix.charpoly, det_tridiagonal_first_rec M hcol hrow]
   dsimp only [M]
-  rw [charmatrix_trailing T,
-    charmatrix_trailing (T.submatrix Fin.succ Fin.succ)]
+  rw [charmatrix_submatrix_self T Fin.succ (Fin.succ_injective (N + 1)),
+    charmatrix_submatrix_self (T.submatrix Fin.succ Fin.succ) Fin.succ
+      (Fin.succ_injective N)]
   rw [Matrix.charmatrix_apply_eq,
     Matrix.charmatrix_apply_ne T 1 0 one_ne_zero,
     Matrix.charmatrix_apply_ne T 0 1 zero_ne_one]
   simp only [Matrix.charpoly, map_mul]
   ring
+
+/-! ### Geometric-mean symmetrization -/
+
+/-- Replace each off-diagonal pair of a real matrix by the square root of its
+product. The diagonal is unchanged. This is useful when the paired products
+are nonnegative but one of the two entries may vanish, so diagonal similarity
+cannot be used to symmetrize the matrix. -/
+noncomputable def geometricSymmetrization {n : Type*} [DecidableEq n]
+    (A : Matrix n n ℝ) : Matrix n n ℝ :=
+  fun i j ↦ if i = j then A i i else Real.sqrt (A i j * A j i)
+
+@[simp] theorem geometricSymmetrization_apply_self {n : Type*}
+    [DecidableEq n] (A : Matrix n n ℝ) (i : n) :
+    geometricSymmetrization A i i = A i i := by
+  simp [geometricSymmetrization]
+
+theorem geometricSymmetrization_apply_of_ne {n : Type*} [DecidableEq n]
+    (A : Matrix n n ℝ) {i j : n} (hij : i ≠ j) :
+    geometricSymmetrization A i j = Real.sqrt (A i j * A j i) := by
+  simp [geometricSymmetrization, hij]
+
+/-- Geometric-mean symmetrization is Hermitian over the reals. -/
+theorem geometricSymmetrization_isHermitian {n : Type*} [DecidableEq n]
+    (A : Matrix n n ℝ) : (geometricSymmetrization A).IsHermitian := by
+  apply Matrix.IsHermitian.ext
+  intro i j
+  simp only [star_trivial]
+  by_cases hij : i = j
+  · subst j
+    rfl
+  · rw [geometricSymmetrization_apply_of_ne A hij,
+      geometricSymmetrization_apply_of_ne A (Ne.symm hij), mul_comm]
+
+/-- Taking a submatrix along an injective index map commutes with
+geometric-mean symmetrization. -/
+theorem geometricSymmetrization_submatrix {m n : Type*}
+    [DecidableEq m] [DecidableEq n] (A : Matrix n n ℝ)
+    (e : m → n) (he : Function.Injective e) :
+    (geometricSymmetrization A).submatrix e e =
+      geometricSymmetrization (A.submatrix e e) := by
+  ext i j
+  by_cases hij : i = j
+  · subst j
+    simp
+  · rw [Matrix.submatrix_apply, geometricSymmetrization_apply_of_ne A
+        (fun h ↦ hij (he h)),
+      geometricSymmetrization_apply_of_ne _ hij]
+    rfl
+
+/-- Taking the trailing principal submatrix commutes with geometric-mean
+symmetrization. -/
+theorem geometricSymmetrization_submatrix_succ {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
+    (geometricSymmetrization T).submatrix Fin.succ Fin.succ =
+      geometricSymmetrization (T.submatrix Fin.succ Fin.succ) :=
+  geometricSymmetrization_submatrix T Fin.succ (Fin.succ_injective N)
+
+/-- Geometric-mean symmetrization preserves the full and trailing
+characteristic polynomials of a tridiagonal matrix whose paired adjacent
+entries have nonnegative product. -/
+theorem geometricSymmetrization_charpoly_eq_and_trailing {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
+    (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0)
+    (hprod : ∀ i : Fin N,
+      0 ≤ T i.castSucc i.succ * T i.succ i.castSucc) :
+    (geometricSymmetrization T).charpoly = T.charpoly ∧
+      ((geometricSymmetrization T).submatrix Fin.succ Fin.succ).charpoly =
+        (T.submatrix Fin.succ Fin.succ).charpoly := by
+  induction N with
+  | zero =>
+      have hmatrix : geometricSymmetrization T = T := by
+        ext i j
+        have hij : i = j := by rw [Fin.eq_zero i, Fin.eq_zero j]
+        subst j
+        simp
+      simp [hmatrix]
+  | succ N ih =>
+      let U := T.submatrix Fin.succ Fin.succ
+      have hUlower : ∀ r k, k.val + 1 < r.val → U r k = 0 := by
+        intro r k hrk
+        exact hlower r.succ k.succ (by simpa [U] using hrk)
+      have hUupper : ∀ i j, i.val + 1 < j.val → U i j = 0 := by
+        intro i j hij
+        exact hupper i.succ j.succ (by simpa [U] using hij)
+      have hUprod : ∀ i : Fin N,
+          0 ≤ U i.castSucc i.succ * U i.succ i.castSucc := by
+        intro i
+        simpa [U, Matrix.submatrix] using hprod i.succ
+      have htail := ih U hUlower hUupper hUprod
+      have hgeomLower : ∀ r k, k.val + 1 < r.val →
+          geometricSymmetrization T r k = 0 := by
+        intro r k hrk
+        rw [geometricSymmetrization_apply_of_ne T (by lia),
+          hlower r k hrk, zero_mul, Real.sqrt_zero]
+      have hgeomUpper : ∀ i j, i.val + 1 < j.val →
+          geometricSymmetrization T i j = 0 := by
+        intro i j hij
+        rw [geometricSymmetrization_apply_of_ne T (by lia),
+          hupper i j hij, zero_mul, Real.sqrt_zero]
+      have hadj : geometricSymmetrization T 0 1 *
+          geometricSymmetrization T 1 0 = T 0 1 * T 1 0 := by
+        have hprod0 : 0 ≤ T 0 1 * T 1 0 := by
+          simpa using hprod 0
+        rw [geometricSymmetrization_apply_of_ne T zero_ne_one,
+          geometricSymmetrization_apply_of_ne T one_ne_zero]
+        rw [mul_comm (T 1 0) (T 0 1)]
+        exact Real.mul_self_sqrt hprod0
+      have htailGeom := geometricSymmetrization_submatrix_succ T
+      constructor
+      · rw [charpoly_tridiagonal_rec _ hgeomLower hgeomUpper,
+          charpoly_tridiagonal_rec T hlower hupper,
+          geometricSymmetrization_apply_self, hadj, htailGeom,
+          htail.1, htail.2]
+      · rw [htailGeom]
+        exact htail.1
+
+/-- A real tridiagonal matrix with nonnegative paired adjacent products has a
+Hermitian model with the same full and trailing characteristic polynomials. -/
+theorem exists_hermitianModel_of_tridiagonal_of_nonneg_product {N : ℕ}
+    (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hlower : ∀ r k, k.val + 1 < r.val → T r k = 0)
+    (hupper : ∀ i j, i.val + 1 < j.val → T i j = 0)
+    (hprod : ∀ i : Fin N,
+      0 ≤ T i.castSucc i.succ * T i.succ i.castSucc) :
+    ∃ S : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ,
+      S.IsHermitian ∧ S.charpoly = T.charpoly ∧
+        (S.submatrix Fin.succ Fin.succ).charpoly =
+          (T.submatrix Fin.succ Fin.succ).charpoly := by
+  exact ⟨geometricSymmetrization T,
+    geometricSymmetrization_isHermitian T,
+    geometricSymmetrization_charpoly_eq_and_trailing T hlower hupper hprod⟩
 
 private theorem charpoly_tridiagonal_no_common_root {N : ℕ}
     (T : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
@@ -3411,5 +3535,26 @@ theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) ℝ}
   rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
   exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
     (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
+
+/-- Reversing both indices sends the trailing principal submatrix to the
+reversal of the leading principal submatrix. -/
+theorem reindex_finRev_submatrix_succ {R : Type*} {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    (Matrix.reindex Fin.revPerm Fin.revPerm A).submatrix Fin.succ Fin.succ =
+      Matrix.reindex Fin.revPerm Fin.revPerm
+        (A.submatrix Fin.castSucc Fin.castSucc) := by
+  ext i j
+  simp [Matrix.submatrix, Matrix.reindex_apply, Fin.rev_succ]
+
+/-- The trailing principal characteristic polynomial after reversing both
+indices is the leading principal characteristic polynomial of the original
+matrix. -/
+theorem charpoly_reindex_finRev_submatrix_succ {R : Type*} [CommRing R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    ((Matrix.reindex Fin.revPerm Fin.revPerm A).submatrix
+      Fin.succ Fin.succ).charpoly =
+        (A.submatrix Fin.castSucc Fin.castSucc).charpoly := by
+  rw [reindex_finRev_submatrix_succ]
+  exact Matrix.charpoly_reindex Fin.revPerm _
 
 end Matrix
