@@ -26,6 +26,8 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
 import RealRooted.Apolarity
+import RealRooted.Applications.EulerianVariations
+import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
