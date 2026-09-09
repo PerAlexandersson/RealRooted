@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Algebra.Polynomial.Derivative
 
 public section
@@ -42,6 +43,137 @@ lemma coeff_quadratic_derivative_add_linear_mul_succ
   rw [coeff_X_mul_derivative, coeff_X_mul, coeff_X_mul_derivative, coeff_X_mul]
   push_cast
   ring
+
+/-- A quadratic-derivative plus linear-multiple step, with a bounded remainder,
+has degree at most one more than the input. -/
+lemma natDegree_quadratic_derivative_add_linear_mul_add_le
+    (p r : R[X]) (a b c d : R) (hr : r.natDegree ≤ p.natDegree) :
+    ((C a * X + C b * X ^ 2) * p.derivative +
+      (C c + C d * X) * p + r).natDegree ≤ p.natDegree + 1 := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro n hn
+  cases n with
+  | zero => lia
+  | succ k =>
+      have hk : p.natDegree < k := by lia
+      have hksucc : p.natDegree < k + 1 := by lia
+      have hrzero : r.coeff (k + 1) = 0 :=
+        coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hr hksucc)
+      rw [coeff_add, coeff_quadratic_derivative_add_linear_mul_succ,
+        coeff_eq_zero_of_natDegree_lt hk, coeff_eq_zero_of_natDegree_lt hksucc,
+        hrzero]
+      ring
+
+/-- The prospective top coefficient of a quadratic-derivative plus
+linear-multiple step; a bounded remainder does not contribute there. -/
+lemma coeff_quadratic_derivative_add_linear_mul_add_natDegree_succ
+    (p r : R[X]) (a b c d : R) (hr : r.natDegree ≤ p.natDegree) :
+    ((C a * X + C b * X ^ 2) * p.derivative +
+      (C c + C d * X) * p + r).coeff (p.natDegree + 1) =
+      (b * (p.natDegree : R) + d) * p.leadingCoeff := by
+  have hpzero : p.coeff (p.natDegree + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_self p.natDegree)
+  have hrzero : r.coeff (p.natDegree + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hr (Nat.lt_succ_self p.natDegree))
+  rw [coeff_add, coeff_quadratic_derivative_add_linear_mul_succ, hpzero,
+    hrzero, coeff_natDegree]
+  ring
+
+/-- A nonzero prospective top coefficient gives both the exact degree and
+leading coefficient of a quadratic-derivative plus linear-multiple step. -/
+lemma natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
+    (p r : R[X]) (a b c d : R) (hr : r.natDegree ≤ p.natDegree)
+    (htop : (b * (p.natDegree : R) + d) * p.leadingCoeff ≠ 0) :
+    let q := (C a * X + C b * X ^ 2) * p.derivative +
+      (C c + C d * X) * p + r
+    q.natDegree = p.natDegree + 1 ∧
+      q.leadingCoeff = (b * (p.natDegree : R) + d) * p.leadingCoeff := by
+  dsimp only
+  have hle := natDegree_quadratic_derivative_add_linear_mul_add_le p r a b c d hr
+  have hcoeff :=
+    coeff_quadratic_derivative_add_linear_mul_add_natDegree_succ p r a b c d hr
+  have hcoeff_ne :
+      ((C a * X + C b * X ^ 2) * p.derivative +
+        (C c + C d * X) * p + r).coeff (p.natDegree + 1) ≠ 0 := by
+    rw [hcoeff]
+    exact htop
+  have hdegree := natDegree_eq_of_le_of_coeff_ne_zero hle hcoeff_ne
+  refine ⟨hdegree, ?_⟩
+  rw [← coeff_natDegree, hdegree, hcoeff]
+
+/-- Iterating noncancelling quadratic-derivative steps raises the degree once
+per step and multiplies the leading coefficient by the prospective top factors. -/
+theorem natDegree_and_leadingCoeff_quadratic_derivative_recurrence
+    (P r : ℕ → R[X]) (a b c d : ℕ → R)
+    (hrec : ∀ n, P (n + 1) =
+      (C (a n) * X + C (b n) * X ^ 2) * (P n).derivative +
+        (C (c n) + C (d n) * X) * P n + r n)
+    (hr : ∀ n, (r n).natDegree ≤ (P n).natDegree)
+    (htop : ∀ n, (b n * ((P n).natDegree : R) + d n) * (P n).leadingCoeff ≠ 0)
+    (n : ℕ) :
+    (P n).natDegree = (P 0).natDegree + n ∧
+      (P n).leadingCoeff =
+        (Finset.range n).prod (fun k =>
+          b k * (((P 0).natDegree + k : ℕ) : R) + d k) * (P 0).leadingCoeff := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      have hstep := natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
+        (P n) (r n) (a n) (b n) (c n) (d n) (hr n) (htop n)
+      constructor
+      · rw [hrec n, hstep.1, ih.1]
+        simp [Nat.add_assoc]
+      · rw [hrec n, hstep.2, ih.1, Finset.prod_range_succ, ih.2]
+        ring
+
+/-- Over a ring without zero divisors, nonzero scalar top factors and a
+nonzero seed give the checkable hypotheses needed for exact recurrence degree
+and leading-coefficient propagation. -/
+theorem natDegree_and_leadingCoeff_quadratic_derivative_recurrence_of_ne_zero
+    [NoZeroDivisors R] (P r : ℕ → R[X]) (a b c d : ℕ → R)
+    (hrec : ∀ n, P (n + 1) =
+      (C (a n) * X + C (b n) * X ^ 2) * (P n).derivative +
+        (C (c n) + C (d n) * X) * P n + r n)
+    (hP0 : P 0 ≠ 0)
+    (hr : ∀ n, (r n).natDegree ≤ (P 0).natDegree + n)
+    (hfactor : ∀ n, b n * (((P 0).natDegree + n : ℕ) : R) + d n ≠ 0)
+    (n : ℕ) :
+    (P n).natDegree = (P 0).natDegree + n ∧
+      (P n).leadingCoeff =
+        (Finset.range n).prod (fun k =>
+          b k * (((P 0).natDegree + k : ℕ) : R) + d k) * (P 0).leadingCoeff := by
+  have hseed : (P 0).leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hP0
+  have hstrong : ∀ n,
+      (P n).natDegree = (P 0).natDegree + n ∧
+        (P n).leadingCoeff =
+          (Finset.range n).prod (fun k =>
+            b k * (((P 0).natDegree + k : ℕ) : R) + d k) * (P 0).leadingCoeff ∧
+        (P n).leadingCoeff ≠ 0 := by
+    intro m
+    induction m with
+    | zero => exact ⟨rfl, by simp, hseed⟩
+    | succ m ih =>
+        have hrm : (r m).natDegree ≤ (P m).natDegree := by
+          rw [ih.1]
+          exact hr m
+        have hfactor_m : b m * ((P m).natDegree : R) + d m ≠ 0 := by
+          rw [ih.1]
+          exact hfactor m
+        have htop :
+            (b m * ((P m).natDegree : R) + d m) * (P m).leadingCoeff ≠ 0 :=
+          mul_ne_zero hfactor_m ih.2.2
+        have hstep :=
+          natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
+            (P m) (r m) (a m) (b m) (c m) (d m) hrm htop
+        constructor
+        · rw [hrec m, hstep.1, ih.1]
+          simp [Nat.add_assoc]
+        constructor
+        · rw [hrec m, hstep.2, ih.1, Finset.prod_range_succ, ih.2.1]
+          ring
+        · rw [hrec m, hstep.2]
+          exact htop
+  exact ⟨(hstrong n).1, (hstrong n).2.1⟩
 
 section AddTorsionFree
 

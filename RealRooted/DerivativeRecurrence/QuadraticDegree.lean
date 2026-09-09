@@ -1,4 +1,3 @@
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
