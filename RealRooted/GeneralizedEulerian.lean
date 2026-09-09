@@ -1,6 +1,7 @@
 import RealRooted.ObreschkoffConverse
 import RealRooted.SequenceClosure
 import RealRooted.WagnerX.NonnegativeRoots
+import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
 
 /-!
@@ -168,5 +169,91 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
 theorem generalizedEulerian_splits (hc : 0 < c) (n : ℕ) :
     (generalizedEulerian c n).Splits :=
   (generalizedEulerian_invariants hc n).2.2
+
+/-- The leading coefficient of an ordinary Eulerian polynomial is one. -/
+theorem coeff_top_generalizedEulerian_one : ∀ n : ℕ,
+    (generalizedEulerian 1 n).coeff n = 1 := by
+  intro n
+  induction n with
+  | zero =>
+      simp [generalizedEulerian]
+  | succ n ih =>
+      have hdeg : (generalizedEulerian 1 n).natDegree = n :=
+        (generalizedEulerian_invariants one_pos n).1
+      have hzero : (generalizedEulerian 1 n).coeff (n + 1) = 0 :=
+        coeff_eq_zero_of_natDegree_lt (by lia)
+      have hcoeff := coeff_generalizedEulerian_succ 1 n n
+      rw [hzero, ih] at hcoeff
+      rw [hcoeff]
+      ring
+
+/-- The coefficients of an ordinary Eulerian polynomial are palindromic. -/
+theorem coeff_symm_generalizedEulerian_one : ∀ n i j : ℕ, i + j = n →
+    (generalizedEulerian 1 n).coeff i = (generalizedEulerian 1 n).coeff j := by
+  intro n
+  induction n with
+  | zero =>
+      intro i j hij
+      have hi : i = 0 := by lia
+      have hj : j = 0 := by lia
+      rw [hi, hj]
+  | succ n ih =>
+      intro i j hij
+      match i, j with
+      | 0, j =>
+          have hj : j = n + 1 := by lia
+          rw [hj, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian_one]
+      | i, 0 =>
+          have hi : i = n + 1 := by lia
+          rw [hi, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian_one]
+      | i' + 1, j' + 1 =>
+          have hn : 1 ≤ n := by lia
+          have hsum : i' + j' = n - 1 := by lia
+          have hleft := coeff_generalizedEulerian_succ 1 n i'
+          have hright := coeff_generalizedEulerian_succ 1 n j'
+          have hcross_left :
+              (generalizedEulerian 1 n).coeff (i' + 1) =
+                (generalizedEulerian 1 n).coeff j' :=
+            ih (i' + 1) j' (by lia)
+          have hcross_right :
+              (generalizedEulerian 1 n).coeff i' =
+                (generalizedEulerian 1 n).coeff (j' + 1) :=
+            ih i' (j' + 1) (by lia)
+          rw [hleft, hright, hcross_left, hcross_right]
+          have hcast : (i' : ℝ) + (j' : ℝ) = (n : ℝ) - 1 := by
+            have hcast' : ((i' + j' : ℕ) : ℝ) = ((n - 1 : ℕ) : ℝ) := by
+              exact_mod_cast hsum
+            push_cast [Nat.cast_sub hn] at hcast'
+            linarith
+          have hfactor_left :
+              (1 : ℝ) + 1 * ((i' : ℝ) + 1) = 1 + 1 * ((n : ℝ) - (j' : ℝ)) := by
+            linarith
+          have hfactor_right :
+              (1 : ℝ) + 1 * ((n : ℝ) - (i' : ℝ)) = 1 + 1 * ((j' : ℝ) + 1) := by
+            linarith
+          rw [hfactor_left, hfactor_right]
+          ring
+
+/-- Reflection through the degree fixes every ordinary Eulerian polynomial. -/
+theorem generalizedEulerian_one_reflect (n : ℕ) :
+    Polynomial.reflect n (generalizedEulerian 1 n) = generalizedEulerian 1 n := by
+  ext i
+  rw [coeff_reflect]
+  by_cases hi : i ≤ n
+  · rw [revAt_le hi]
+    exact coeff_symm_generalizedEulerian_one n (n - i) i (Nat.sub_add_cancel hi)
+  · rw [revAt_eq_self_of_lt (Nat.lt_of_not_ge hi)]
+
+/-- Reciprocal evaluation identity for ordinary Eulerian polynomials. -/
+theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
+    (generalizedEulerian 1 n).eval x =
+      x ^ n * (generalizedEulerian 1 n).eval (1 / x) := by
+  letI : Invertible x := invertibleOfNonzero hx
+  have hdeg : (generalizedEulerian 1 n).natDegree ≤ n :=
+    (generalizedEulerian_invariants one_pos n).1.le
+  have heval := Polynomial.eval₂_reflect_mul_pow
+    (i := RingHom.id ℝ) (x := x) n (generalizedEulerian 1 n) hdeg
+  rw [generalizedEulerian_one_reflect] at heval
+  simpa [Polynomial.eval₂_id, invOf_eq_inv, one_div, mul_comm] using heval.symm
 
 end RealRooted
