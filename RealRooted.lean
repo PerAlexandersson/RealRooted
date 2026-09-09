@@ -212,7 +212,11 @@ import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
+import RealRooted.Derivative.Algebra
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.LinearCombination
+import RealRooted.Derivative.RootCounting
 import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.Linear
 import RealRooted.DerivativeRecurrence.QuadraticDegree
