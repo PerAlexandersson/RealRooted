@@ -114,6 +114,52 @@ lemma hasPosLeadingCoeff_weightedSum :
         simpa [weightedSum_cons] using
           hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
 
+/-- A nonnegative weighted sum of same-degree positive-leading polynomials
+keeps that degree as soon as one weight is positive. -/
+lemma natDegree_weightedSum_eq_of_nonneg_of_sameDegree :
+    ∀ {l : List (ℝ × ℝ[X])} {d : ℕ},
+      (∀ ap ∈ l, 0 ≤ ap.1) →
+      (∀ ap ∈ l, ap.2.natDegree = d) →
+      (∀ ap ∈ l, HasPosLeadingCoeff ap.2) →
+      (∃ ap ∈ l, 0 < ap.1) →
+      (weightedSum l).natDegree = d
+  | [], _, _, _, _, hex => by simp_all
+  | (a, p) :: l, d, hnonneg, hdeg, hpos, hex => by
+      have ha_nonneg : 0 ≤ a := hnonneg (a, p) (by simp)
+      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
+        List.forall_mem_of_forall_mem_cons hnonneg
+      have hdeg_p : p.natDegree = d := hdeg (a, p) (by simp)
+      have hdeg_tail : ∀ ap ∈ l, ap.2.natDegree = d :=
+        List.forall_mem_of_forall_mem_cons hdeg
+      have hpos_p : HasPosLeadingCoeff p := hpos (a, p) (by simp)
+      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
+        List.forall_mem_of_forall_mem_cons hpos
+      rcases eq_or_lt_of_le ha_nonneg with rfl | ha_pos
+      · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
+        simpa [weightedSum_cons] using
+          natDegree_weightedSum_eq_of_nonneg_of_sameDegree
+            hnonneg_tail hdeg_tail hpos_tail htail
+      · by_cases htail : ∃ ap ∈ l, 0 < ap.1
+        · have hscaled_deg : (C a * p).natDegree = d := by
+            rw [Polynomial.natDegree_C_mul ha_pos.ne', hdeg_p]
+          have hweighted_deg : (weightedSum l).natDegree = d :=
+            natDegree_weightedSum_eq_of_nonneg_of_sameDegree
+              hnonneg_tail hdeg_tail hpos_tail htail
+          have hscaled_pos : HasPosLeadingCoeff (C a * p) :=
+            hasPosLeadingCoeff_C_mul ha_pos hpos_p
+          have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
+            hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
+          simpa [weightedSum_cons] using
+            (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
+              (hscaled_deg.trans hweighted_deg.symm) hscaled_pos hweighted_pos).trans
+                hscaled_deg
+        · have hzero : weightedSum l = 0 :=
+            weightedSum_eq_zero_of_forall_coeff_zero l
+              (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
+                hnonneg_tail htail)
+          simp [weightedSum_cons, hzero,
+            Polynomial.natDegree_C_mul ha_pos.ne', hdeg_p]
+
 /-- Recursive compatibility data for building a common-left weighted sum using
 Wagner (2). Zero-weight terms may be skipped, while a positive-weight head term
 must be compatible with the weighted tail. -/

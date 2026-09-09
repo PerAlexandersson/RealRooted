@@ -154,6 +154,34 @@ theorem prec_weightedSum_left_of_common_left
       prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le r hweighted_right hdeg
         hpos hweighted_pos hh_le hweighted_le
 
+/-- Sign-normalized weighted left cone: the common left polynomial need only
+be nonzero; its leading-coefficient sign is normalized internally. -/
+theorem prec_weightedSum_left_of_common_left_signed
+    (l : List (ℝ × ℝ[X])) (h : ℝ[X])
+    (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
+    (hprec : ∀ ap ∈ l, Prec h ap.2)
+    (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
+    (hex : ∃ ap ∈ l, 0 < ap.1) :
+    Prec h (weightedSum l) := by
+  rcases hex with ⟨ap0, hap0, ha0_pos⟩
+  have hh : h ≠ 0 ∧ h.Splits := (hprec ap0 hap0).1
+  have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
+  rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
+  · let h' : ℝ[X] := C (-1 : ℝ) * h
+    have hprec' : ∀ ap ∈ l, Prec h' ap.2 :=
+      fun ap hap => prec_C_mul_left (hprec ap hap) (by simp)
+    have h'_pos : HasPosLeadingCoeff h' := by
+      unfold h' HasPosLeadingCoeff
+      simp_all
+    have hsum' : Prec h' (weightedSum l) :=
+      prec_weightedSum_left_of_common_left
+        l h' hnonneg hprec' h'_pos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
+    have hback : Prec (C (-1 : ℝ) * h') (weightedSum l) :=
+      prec_C_mul_left hsum' (by simp)
+    grind
+  · exact prec_weightedSum_left_of_common_left
+      l h hnonneg hprec hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
+
 /-- Unweighted left-cone corollary. -/
 theorem prec_sum_left_of_common_left
     (l : List ℝ[X]) (h : ℝ[X])
@@ -184,22 +212,13 @@ theorem prec_sum_left_of_common_left_signed
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
     Prec h l.sum := by
-  rcases List.exists_mem_of_ne_nil l hne with ⟨p0, hp0⟩
-  have hh : (h ≠ 0 ∧ h.Splits) := (hprec p0 hp0).1
-  have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
-  rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
-  · let h' : ℝ[X] := C (-1 : ℝ) * h
-    have hprec' : ∀ p ∈ l, Prec h' p :=
-      fun p hp => prec_C_mul_left (hprec p hp) (by simp)
-    have h'_pos : HasPosLeadingCoeff h' := by
-      unfold h' HasPosLeadingCoeff
-      simp_all
-    have hsum' : Prec h' l.sum :=
-      prec_sum_left_of_common_left l h' hprec' h'_pos hpoly_pos hne
-    have hback : Prec (C (-1 : ℝ) * h') l.sum :=
-      prec_C_mul_left hsum' (by simp)
-    grind
-  · exact prec_sum_left_of_common_left l h hprec hpos hpoly_pos hne
+  rw [← weightedSum_map_one l]
+  apply prec_weightedSum_left_of_common_left_signed
+  · simp
+  · simp_all
+  · simp_all
+  · rcases List.exists_mem_of_ne_nil l hne with ⟨p, hp⟩
+    exact ⟨(1, p), by simp [hp]⟩
 
 @[simp] lemma sum_filter_ne_zero (l : List ℝ[X]) :
     (l.filter (· ≠ 0)).sum = l.sum := by

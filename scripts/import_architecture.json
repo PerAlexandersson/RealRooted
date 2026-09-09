@@ -2,7 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1033
+      "max_modules": 1036
+    },
+    "RealRooted.CommonInterleaver.RootSelection": {
+      "max_modules": 99
+    },
+    "RealRooted.CommonInterleaver.RootSelectionTree": {
+      "max_modules": 100
+    },
+    "RealRooted.CommonInterleaver.RootSelectionExamples": {
+      "max_modules": 101
     },
     "RealRooted.BoundarySpecializationGeneral": {
       "max_modules": 12

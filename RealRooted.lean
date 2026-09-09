@@ -200,6 +200,9 @@ import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
 import RealRooted.CommonInterleaver.RightPencil
 import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.CommonInterleaver.RootSelection
+import RealRooted.CommonInterleaver.RootSelectionExamples
+import RealRooted.CommonInterleaver.RootSelectionTree
 import RealRooted.CommonInterleaver.RootSlots
 import RealRooted.CommonInterleaver.RootSlots.Basic
 import RealRooted.CommonInterleaver.Sequence
