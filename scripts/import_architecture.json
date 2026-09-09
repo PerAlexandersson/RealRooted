@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 997
+      "max_modules": 1000
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 45
@@ -1250,7 +1250,7 @@
       "max_modules": 102
     },
     "RealRooted.Tactic": {
-      "max_modules": 478
+      "max_modules": 481
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 180

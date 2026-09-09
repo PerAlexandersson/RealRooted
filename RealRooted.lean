@@ -233,6 +233,9 @@ import RealRooted.DerivativeShiftSequence
 import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
+import RealRooted.EndpointDerivative
+import RealRooted.EndpointDerivative.Basic
+import RealRooted.EndpointDerivative.Sequence
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
