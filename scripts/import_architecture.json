@@ -2,10 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1031
+      "max_modules": 1033
     },
     "RealRooted.BoundarySpecializationGeneral": {
-      "max_modules": 11
+      "max_modules": 12
+    },
+    "RealRooted.LiebSokalBoundary": {
+      "max_modules": 13
+    },
+    "RealRooted.Mathlib.Algebra.MvPolynomial.Specialize": {
+      "max_modules": 1
     },
     "RealRooted.InterlacingSequence.NonnegativeShift": {
       "max_modules": 18

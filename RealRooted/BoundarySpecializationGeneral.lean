@@ -1,5 +1,6 @@
 import RealRooted.BorceaBranden.BoundarySpecialization
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 import Mathlib.Topology.Algebra.MvPolynomial
@@ -8,8 +9,8 @@ import Mathlib.Topology.Algebra.MvPolynomial
 # General boundary specialization
 
 This module proves that specializing finitely many coordinates of a stable
-polynomial to zero preserves upper-half-plane stability up to the zero
-polynomial, without coordinate-degree restrictions.
+polynomial to real boundary values preserves upper-half-plane stability up to
+the zero polynomial, without coordinate-degree restrictions.
 -/
 
 open Complex
@@ -148,6 +149,68 @@ theorem MvUpperHalfPlaneStable.specializeZeroList_zero_or_general
       · simpa [specializeZeroList_cons, hzero] using
           (MvUpperHalfPlaneStableOrZero.zero (sigma := alpha))
       · exact ih hstable
+
+/-- Specializing after translating one coordinate by a real scalar is direct
+specialization at that scalar. -/
+theorem _root_.MvPolynomial.specializeZero_translate_single_eq_specializeAt_real
+    {alpha : Type*} [DecidableEq alpha]
+    (P : MvPolynomial alpha ℂ) (i : alpha) (c : ℝ) :
+    MvPolynomial.specializeZero i
+        (MvPolynomial.aeval
+          (fun j => MvPolynomial.C
+            ((Function.update (0 : alpha → ℝ) i c j : ℝ) : ℂ) +
+            MvPolynomial.X j) P) =
+      MvPolynomial.specializeAt i (c : ℂ) P := by
+  classical
+  apply MvPolynomial.funext
+  intro z
+  simp only [MvPolynomial.eval_specializeZero,
+    MvPolynomial.eval_specializeAt, ← MvPolynomial.aeval_eq_eval,
+    MvPolynomial.comp_aeval_apply]
+  congr 1
+  ext j
+  by_cases hji : j = i
+  · subst j
+    simp
+  · simp [hji]
+
+/-- Specializing one coordinate at a real boundary value preserves
+upper-half-plane stability up to the zero polynomial, with no coordinate-degree
+restriction. -/
+theorem MvUpperHalfPlaneStable.specializeAt_real_zero_or_general
+    {alpha : Type*} {P : MvPolynomial alpha ℂ}
+    (hP : MvUpperHalfPlaneStable P) (i : alpha) (c : ℝ) :
+    MvUpperHalfPlaneStableOrZero
+      (MvPolynomial.specializeAt i (c : ℂ) P) := by
+  classical
+  let a : alpha → ℝ := Function.update 0 i c
+  have htranslated := (hP.translate_add_real a).specializeZero_zero_or_general i
+  simpa only [a,
+    MvPolynomial.specializeZero_translate_single_eq_specializeAt_real] using
+      htranslated
+
+/-- Weak stability is preserved when one coordinate is specialized at a real
+boundary value. -/
+theorem MvUpperHalfPlaneStableOrZero.specializeAt_real_general
+    {alpha : Type*} {P : MvPolynomial alpha ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P) (i : alpha) (c : ℝ) :
+    MvUpperHalfPlaneStableOrZero
+      (MvPolynomial.specializeAt i (c : ℂ) P) := by
+  rcases hP with rfl | hP
+  · simpa using (MvUpperHalfPlaneStableOrZero.zero (sigma := alpha))
+  · exact hP.specializeAt_real_zero_or_general i c
+
+/-- Repeated specialization at real boundary values preserves weak stability.
+Coordinates are processed in list order and may be repeated. -/
+theorem MvUpperHalfPlaneStableOrZero.specializeAtList_real_general
+    {alpha : Type*} {P : MvPolynomial alpha ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P) (c : alpha → ℝ) (l : List alpha) :
+    MvUpperHalfPlaneStableOrZero
+      (MvPolynomial.specializeAtList (fun i => (c i : ℂ)) l P) := by
+  induction l generalizing P with
+  | nil => exact hP
+  | cons i l ih => exact ih (hP.specializeAt_real_general i (c i))
+
 /-- Specializing an entire finite right block at zero preserves
 upper-half-plane stability up to the zero polynomial, with no coordinate-degree
 restriction. The left block may have arbitrary cardinality and degrees. -/
