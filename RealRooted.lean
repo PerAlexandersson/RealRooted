@@ -21,6 +21,7 @@ import RealRooted.AffineFamily.LowDegree
 import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AffineFamily.Wronskian
+import RealRooted.AffineLineRestriction
 import RealRooted.AffineProperPosition
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
@@ -356,9 +357,11 @@ import RealRooted.HermiteBiehler.Hurwitz
 import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermitePoulain
+import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
+import RealRooted.Hyperbolicity
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.InterlacingClosure
@@ -538,6 +541,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
@@ -607,6 +611,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi

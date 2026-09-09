@@ -13,17 +13,20 @@ open Polynomial
 
 namespace RealRooted.BorceaBranden
 
+/-- The project's explicit bivariate homogenization agrees with Mathlib's
+polynomial homogenization. -/
+theorem homogenizeBivariate_eq_homogenize (d : ℕ) (p : Polynomial ℝ) :
+    homogenizeBivariate d p = p.homogenize d := by
+  unfold homogenizeBivariate Polynomial.homogenize
+  rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp [MvPolynomial.monomial_eq, mul_assoc]
+
 /-- A nonzero split polynomial with nonpositive roots has stable bivariate homogenization. -/
 theorem homogenizeBivariate_stable_of_splits_nonpos {p : Polynomial ℝ}
     (hp0 : p ≠ 0) (hpSplits : p.Splits) (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     IsBivariateUpperStable (complexifyMv (homogenizeBivariate p.natDegree p)) := by
-  have hbridge :
-      homogenizeBivariate p.natDegree p = p.homogenize p.natDegree := by
-    unfold homogenizeBivariate Polynomial.homogenize
-    rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
-    apply Finset.sum_congr rfl
-    intro k hk
-    simp [MvPolynomial.monomial_eq, mul_assoc]
   have hhomogenized := congrArg
     (fun q : Polynomial ℝ => q.homogenize p.natDegree)
     hpSplits.eq_prod_roots
@@ -32,7 +35,8 @@ theorem homogenizeBivariate_stable_of_splits_nonpos {p : Polynomial ℝ}
         MvPolynomial.C (p.leadingCoeff : ℂ) *
           (p.roots.map (fun r : ℝ =>
             MvPolynomial.X 0 - MvPolynomial.C (r : ℂ) * MvPolynomial.X 1)).prod := by
-    rw [hbridge, hhomogenized, Polynomial.homogenize_C_mul,
+    rw [homogenizeBivariate_eq_homogenize, hhomogenized,
+      Polynomial.homogenize_C_mul,
       hpSplits.natDegree_eq_card_roots, Polynomial.homogenize_rootFactorProduct]
     unfold complexifyMv
     rw [map_mul, map_multiset_prod]

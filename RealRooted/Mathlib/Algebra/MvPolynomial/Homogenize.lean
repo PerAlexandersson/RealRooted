@@ -27,6 +27,49 @@ def dehomogenize {σ R : Type*} [CommSemiring R] :
     MvPolynomial (Option σ) R →ₐ[R] MvPolynomial σ R :=
   aeval fun o => Option.elim o 1 X
 
+/-- Evaluating a homogeneous polynomial after scaling every variable scales
+the value by the corresponding power. -/
+theorem IsHomogeneous.eval_smul {σ R : Type*} [CommSemiring R]
+    {p : MvPolynomial σ R} {d : ℕ} (hp : p.IsHomogeneous d)
+    (a : R) (z : σ → R) :
+    eval (fun i => a * z i) p = a ^ d * eval z p := by
+  classical
+  rw [eval_eq, eval_eq, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro m hm
+  have hmdeg : ∑ i ∈ m.support, m i = d := by
+    simpa [Finsupp.degree] using (hp.degree_eq_sum_deg_support hm).symm
+  simp only [mul_pow, Finset.prod_mul_distrib]
+  rw [Finset.prod_pow_eq_pow_sum, hmdeg]
+  ring
+
+/-- Evaluation of ordinary homogenization as a sum of evaluated homogeneous
+components. -/
+theorem eval_ordinaryHomogenization {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial σ R) (d : ℕ) (y : R) (z : σ → R) :
+    eval (fun o => Option.elim o y z) (ordinaryHomogenization p d) =
+      ∑ k ∈ Finset.range (d + 1),
+        y ^ (d - k) * eval z (homogeneousComponent k p) := by
+  have h : (fun o => Option.elim o y z) ∘ some = z := by
+    funext i
+    rfl
+  simp [ordinaryHomogenization, eval_rename, h]
+
+/-- Setting the distinguished variable of an ordinary homogenization to zero
+extracts the requested homogeneous component. -/
+theorem eval_ordinaryHomogenization_zero {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial σ R) (d : ℕ) (z : σ → R) :
+    eval (fun o => Option.elim o 0 z) (ordinaryHomogenization p d) =
+      eval z (homogeneousComponent d p) := by
+  rw [eval_ordinaryHomogenization, Finset.sum_eq_single d]
+  · simp
+  · intro k hk hkd
+    have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    have hsub : d - k ≠ 0 :=
+      Nat.sub_ne_zero_iff_lt.mpr (lt_of_le_of_ne hk_le hkd)
+    simp [hsub]
+  · simp
+
 @[simp] theorem eval_dehomogenize {σ R : Type*} [CommSemiring R]
     (p : MvPolynomial (Option σ) R) (z : σ → R) :
     eval z (dehomogenize p) =
@@ -162,6 +205,52 @@ theorem ordinaryHomogenization_isHomogeneous
     (homogeneousComponent_isHomogeneous k p).rename_isHomogeneous using 1
   exact (Nat.sub_add_cancel hk').symm
 
+/-- The coefficient of a power of the distinguished variable in an ordinary
+homogenization is the complementary homogeneous component of the source. -/
+theorem optionEquivLeft_ordinaryHomogenization_coeff
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) (d i : ℕ) :
+    (optionEquivLeft R σ (ordinaryHomogenization p d)).coeff i =
+      if i ≤ d then homogeneousComponent (d - i) p else 0 := by
+  classical
+  have hrename (q : MvPolynomial σ R) :
+      optionEquivLeft R σ (rename some q) = Polynomial.C q := by
+    induction q using MvPolynomial.induction_on with
+    | C r => simp
+    | add q r hq hr => simp [hq, hr]
+    | mul_X q j hq => simp [hq]
+  simp only [ordinaryHomogenization, map_sum, map_mul, map_pow,
+    optionEquivLeft_X_none]
+  simp_rw [hrename]
+  rw [← Polynomial.lcoeff_apply, map_sum]
+  simp only [Polynomial.lcoeff_apply]
+  by_cases hi : i ≤ d
+  · rw [if_pos hi]
+    rw [Finset.sum_eq_single (d - i)]
+    · rw [Nat.sub_sub_self hi]
+      simp
+    · intro k hk hki
+      have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+      have hne : i ≠ d - k := by
+        intro h
+        apply hki
+        lia
+      simp [hne]
+    · simp
+  · rw [if_neg hi]
+    apply Finset.sum_eq_zero
+    intro k hk
+    have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    have hne : i ≠ d - k := by lia
+    simp [hne]
+
+/-- The constant term in the distinguished variable is the requested top
+homogeneous component of the source. -/
+@[simp] theorem optionEquivLeft_ordinaryHomogenization_coeff_zero
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) (d : ℕ) :
+    (optionEquivLeft R σ (ordinaryHomogenization p d)).coeff 0 =
+      homogeneousComponent d p := by
+  simpa using optionEquivLeft_ordinaryHomogenization_coeff p d 0
+
 /-- Taking a homogeneous component commutes with a coefficient map. -/
 theorem map_homogeneousComponent {σ R S : Type*}
     [CommSemiring R] [CommSemiring S] (f : R →+* S)
@@ -189,6 +278,24 @@ theorem HasNonnegCoeffs.ordinaryHomogenization {σ : Type*}
   exact (HasNonnegCoeffs.X (none : Option σ)).pow (d - k) |>.mul
     ((hp.homogeneousComponent k).rename_of_injective
       (Option.some_injective σ))
+
+/-- Summing homogeneous components through any upper bound on the total
+degree recovers the polynomial. -/
+theorem sum_homogeneousComponent_range_of_totalDegree_le
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) :
+    (∑ k ∈ Finset.range (d + 1), homogeneousComponent k p) = p := by
+  calc
+    _ = ∑ k ∈ Finset.range (p.totalDegree + 1),
+        homogeneousComponent k p := by
+      symm
+      apply Finset.sum_subset
+        (Finset.range_mono (Nat.add_le_add_right hdeg 1))
+      intro k _ hk
+      rw [homogeneousComponent_eq_zero]
+      simp only [Finset.mem_range, Nat.not_lt] at hk
+      exact lt_of_lt_of_le (Nat.lt_succ_self p.totalDegree) hk
+    _ = p := sum_homogeneousComponent p
 
 /-- Raising the requested homogenization degree only adds a power of the
 distinguished variable. -/
@@ -235,25 +342,36 @@ theorem dehomogenize_ordinaryHomogenization_of_totalDegree_le
   simp only [dehomogenize, map_mul, map_pow, aeval_X, Option.elim, one_pow,
     one_mul, aeval_rename]
   rw [← map_sum]
-  have hsum :
-      (∑ k ∈ Finset.range (d + 1), homogeneousComponent k p) = p := by
-    calc
-      _ = ∑ k ∈ Finset.range (p.totalDegree + 1), homogeneousComponent k p := by
-        symm
-        apply Finset.sum_subset
-          (Finset.range_mono (Nat.add_le_add_right hdeg 1))
-        intro k _ hk
-        rw [homogeneousComponent_eq_zero]
-        simp only [Finset.mem_range, Nat.not_lt] at hk
-        exact lt_of_lt_of_le (Nat.lt_succ_self p.totalDegree) hk
-      _ = p := sum_homogeneousComponent p
-  rw [hsum]
+  rw [sum_homogeneousComponent_range_of_totalDegree_le p hdeg]
   change aeval X p = p
   have h : aeval X = AlgHom.id R (MvPolynomial σ R) := by
     apply algHom_ext
     simp
   rw [h]
   rfl
+
+/-- Away from zero in the distinguished coordinate, ordinary homogenization
+is the usual scaled evaluation of the source polynomial. -/
+theorem eval_ordinaryHomogenization_eq_pow_mul_eval_div
+    {σ K : Type*} [Field K] (p : MvPolynomial σ K) {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) {y : K} (hy : y ≠ 0) (z : σ → K) :
+    eval (fun o => Option.elim o y z) (ordinaryHomogenization p d) =
+      y ^ d * eval (fun i => z i / y) p := by
+  rw [eval_ordinaryHomogenization]
+  conv_rhs =>
+    rw [← sum_homogeneousComponent_range_of_totalDegree_le p hdeg]
+  rw [eval_sum, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  have hscale := (homogeneousComponent_isHomogeneous k p).eval_smul
+    y (fun i => z i / y)
+  have hfun : (fun i => y * (z i / y)) = z := by
+    funext i
+    rw [div_eq_mul_inv, ← mul_assoc, mul_comm y (z i), mul_assoc,
+      mul_inv_cancel₀ hy, mul_one]
+  rw [hfun] at hscale
+  rw [hscale, ← mul_assoc, ← pow_add, Nat.sub_add_cancel hk_le]
 
 /-- Dehomogenizing the exact total-degree homogenization recovers the source
 polynomial. -/
@@ -272,11 +390,31 @@ theorem ordinaryHomogenization_ne_zero_of_totalDegree_le
   rw [← dehomogenize_ordinaryHomogenization_of_totalDegree_le p hdeg, h,
     map_zero]
 
+/-- Ordinary homogenization in a valid degree is zero exactly when the source
+polynomial is zero. -/
+theorem ordinaryHomogenization_eq_zero_iff_of_totalDegree_le
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) {d : ℕ}
+    (hdeg : p.totalDegree ≤ d) :
+    ordinaryHomogenization p d = 0 ↔ p = 0 := by
+  constructor
+  · intro hzero
+    by_contra hp
+    exact (ordinaryHomogenization_ne_zero_of_totalDegree_le hp hdeg) hzero
+  · rintro rfl
+    simp [ordinaryHomogenization]
+
 /-- Exact total-degree homogenization preserves nonzeroness. -/
 theorem ordinaryHomogenization_ne_zero
     {σ R : Type*} [CommSemiring R] {p : MvPolynomial σ R} (hp : p ≠ 0) :
     ordinaryHomogenization p p.totalDegree ≠ 0 :=
   ordinaryHomogenization_ne_zero_of_totalDegree_le hp le_rfl
+
+/-- Exact total-degree homogenization is zero exactly when its source is
+zero. -/
+@[simp] theorem ordinaryHomogenization_eq_zero_iff
+    {σ R : Type*} [CommSemiring R] (p : MvPolynomial σ R) :
+    ordinaryHomogenization p p.totalDegree = 0 ↔ p = 0 :=
+  ordinaryHomogenization_eq_zero_iff_of_totalDegree_le p le_rfl
 
 end
 

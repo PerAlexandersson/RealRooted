@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1021
+      "max_modules": 1027
     },
     "RealRooted.Applications.EulerianVariations": {
       "max_modules": 235
