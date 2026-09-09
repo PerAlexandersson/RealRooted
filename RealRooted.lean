@@ -1023,6 +1023,7 @@ import RealRooted.WagnerX.ListInterlacing
 import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.WagnerX.ProperPosition
 import RealRooted.WangYeh.Affine
+import RealRooted.WangYeh.Examples
 import RealRooted.WangYeh.PF
 import RealRooted.WangYeh.TriangularArray
 import RealRooted.WangYeh.TriangularMatrix
