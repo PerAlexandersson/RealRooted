@@ -89,6 +89,24 @@ private theorem natDegree_prod_affine_pow_le_total
         Polynomial.natDegree_X_le)
   simpa using Polynomial.natDegree_pow_le_of_le (e i) hlin
 
+/-- An affine-line restriction has univariate degree at most the total degree
+of the multivariate polynomial. -/
+theorem natDegree_affineLineRestriction_le
+    {σ R : Type*} [CommSemiring R] (a b : σ → R)
+    (P : MvPolynomial σ R) :
+    (affineLineRestriction a b P).natDegree ≤ P.totalDegree := by
+  classical
+  unfold affineLineRestriction
+  change (MvPolynomial.eval₂ Polynomial.C
+    (fun i => Polynomial.C (a i) +
+      Polynomial.C (b i) * Polynomial.X) P).natDegree ≤ P.totalDegree
+  rw [MvPolynomial.eval₂_eq]
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro m hm
+  apply (Polynomial.natDegree_C_mul_le _ _).trans
+  exact (natDegree_prod_affine_pow_le_total m.support a b m).trans
+    (MvPolynomial.le_totalDegree hm)
+
 /-- The top coefficient of an affine-line restriction of a homogeneous
 polynomial is its evaluation on the direction vector. -/
 theorem IsHomogeneous.coeff_affineLineRestriction
