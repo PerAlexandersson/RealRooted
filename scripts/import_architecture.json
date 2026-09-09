@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1043
+      "max_modules": 1044
+    },
+    "RealRooted.PolynomialValueEulerNumerator": {
+      "max_modules": 14
     },
     "RealRooted.MatrixInterlacing.PrincipalInterlacingExamples": {
       "max_modules": 136
