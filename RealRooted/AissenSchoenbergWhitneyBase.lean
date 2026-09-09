@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Pólya-frequency sequences
@@ -34,6 +35,41 @@ def polynomialValueSeq (p : ℝ[X]) : ℕ → ℝ :=
 lemma polynomialValueSeq_apply (p : ℝ[X]) (n : ℕ) :
     polynomialValueSeq p n = p.eval (n : ℝ) :=
   rfl
+
+/-- Forward difference commutes with restricting polynomial evaluation to the
+nonnegative integers. -/
+theorem fwdDiff_polynomialValueSeq (p : ℝ[X]) :
+    fwdDiff 1 (polynomialValueSeq p) =
+      fun (n : ℕ) => fwdDiff 1 p.eval (n : ℝ) := by
+  ext n
+  simp [fwdDiff, polynomialValueSeq]
+
+/-- Iterated forward differences commute with restricting polynomial
+evaluation to the nonnegative integers. -/
+theorem fwdDiff_iter_polynomialValueSeq (p : ℝ[X]) (k : ℕ) :
+    (fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p) =
+      fun (n : ℕ) => (fwdDiff (1 : ℝ))^[k] p.eval (n : ℝ) := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+      ext n
+      simp [fwdDiff, ih]
+
+/-- Forward differences of a polynomial-value sequence vanish above the
+polynomial's degree. -/
+theorem fwdDiff_iter_polynomialValueSeq_eq_zero_of_natDegree_lt
+    {p : ℝ[X]} {k : ℕ} (hpk : p.natDegree < k) :
+    (fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p) = 0 := by
+  rw [fwdDiff_iter_polynomialValueSeq]
+  ext n
+  simpa using congr_fun (Polynomial.fwdDiff_iter_eq_zero_of_degree_lt hpk) (n : ℝ)
+
+/-- The `(natDegree + 1)`-st forward difference of a polynomial-value sequence
+vanishes. -/
+theorem fwdDiff_iter_polynomialValueSeq_degree_add_one_eq_zero (p : ℝ[X]) :
+    (fwdDiff (1 : ℕ))^[p.natDegree + 1] (polynomialValueSeq p) = 0 :=
+  fwdDiff_iter_polynomialValueSeq_eq_zero_of_natDegree_lt (Nat.lt_succ_self _)
 
 @[simp]
 theorem polynomialValueSeq_mul (p q : ℝ[X]) :
