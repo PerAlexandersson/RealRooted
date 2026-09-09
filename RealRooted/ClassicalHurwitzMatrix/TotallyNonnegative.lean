@@ -98,6 +98,69 @@ protected theorem IsTotallyNonneg.hurwitz_divX_of_coeff_zero
 
 section Real
 
+/-- If the constant coefficient is positive but the linear coefficient
+vanishes, total nonnegativity forces every odd-indexed coefficient to vanish. -/
+theorem IsTotallyNonneg.hurwitz_odd_coeff_eq_zero_of_coeff_one_eq_zero
+    {c : ℕ → ℝ} (h : (hurwitz c).IsTotallyNonneg)
+    (h0 : 0 < c 0) (h1 : c 1 = 0) (n : ℕ) :
+    c (2 * n + 1) = 0 := by
+  cases n with
+  | zero => simpa using h1
+  | succ n =>
+      have hrows : StrictMono (![1, 2] : Fin 2 → ℕ) := by decide
+      have hcols : StrictMono (![1, n + 2] : Fin 2 → ℕ) := by
+        intro i j hij
+        fin_cases i <;> fin_cases j <;> simp_all
+      have hminor := h hrows hcols
+      have hcoeff : 0 ≤ c (2 * (n + 1) + 1) :=
+        h.hurwitz_coeff_nonneg _
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, submatrix_cons_row,
+        hurwitz_apply, Order.lt_two_iff, zero_le, le_mul_iff_one_le_right,
+        submatrix_empty, Matrix.det_fin_two, Fin.isValue, cons_val',
+        cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
+        Nat.add_one_sub_one, h1, Std.le_refl, tsub_self, cons_val_fin_one,
+        cons_val_one, Nat.reduceLeDiff, zero_mul, ite_mul, zero_sub,
+        Left.nonneg_neg_iff] at hminor
+      rw [if_pos (by lia : 1 ≤ 2 * (n + 2))] at hminor
+      rw [show 2 * (n + 2) - 1 = 2 * (n + 1) + 1 by lia] at hminor
+      nlinarith
+
+/-- The even rows of the classical Hurwitz matrix form the transpose of the
+Toeplitz matrix of the even-indexed coefficient subsequence. -/
+theorem hurwitz_even_submatrix_eq_toeplitz_transpose (c : ℕ → ℝ) :
+    (hurwitz c).submatrix (fun i => 2 * i) id =
+      (RealRooted.toeplitz fun n => c (2 * n)).transpose := by
+  ext i j
+  simp only [submatrix_apply, id_eq, transpose_apply,
+    hurwitz_apply, RealRooted.toeplitz_apply]
+  by_cases hij : i ≤ j
+  · rw [if_pos hij, if_pos (by lia)]
+    congr 1
+    lia
+  · rw [if_neg hij, if_neg (by lia)]
+
+/-- Total nonnegativity of a classical Hurwitz matrix makes its even-indexed
+coefficient subsequence Pólya-frequency. -/
+theorem IsTotallyNonneg.hurwitz_even_isPolyaFreqSeq
+    {c : ℕ → ℝ} (h : (hurwitz c).IsTotallyNonneg) :
+    RealRooted.IsPolyaFreqSeq (fun n => c (2 * n)) := by
+  have hrows : StrictMono (fun i : ℕ => 2 * i) := by
+    intro i j hij
+    lia
+  have hsub := h.submatrix hrows strictMono_id
+  rw [hurwitz_even_submatrix_eq_toeplitz_transpose] at hsub
+  simpa [RealRooted.IsPolyaFreqSeq] using hsub.toRect.transpose.toSquare
+
+/-- The even contraction of a polynomial inherits a Pólya-frequency
+coefficient sequence from total nonnegativity of its classical Hurwitz matrix. -/
+theorem IsTotallyNonneg.hurwitz_contract_two_isPolyaFreqSeq
+    {p : Polynomial ℝ} (h : (hurwitz p.coeff).IsTotallyNonneg) :
+    RealRooted.IsPolyaFreqSeq (Polynomial.contract 2 p).coeff := by
+  have hpf := h.hurwitz_even_isPolyaFreqSeq
+  convert hpf using 1
+  funext n
+  rw [Polynomial.coeff_contract (by decide), Nat.mul_comm]
+
 /-- The classical Hurwitz matrix of a nonnegative constant polynomial is
 totally nonnegative. -/
 theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
