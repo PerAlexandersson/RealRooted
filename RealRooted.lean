@@ -987,6 +987,7 @@ import RealRooted.Wagner
 import RealRooted.Wagner.NonpositiveRoots
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
+import RealRooted.WagnerRightSum.Sign
 import RealRooted.WagnerX
 import RealRooted.WagnerX.AffineFactors
 import RealRooted.WagnerX.ListInterlacing
