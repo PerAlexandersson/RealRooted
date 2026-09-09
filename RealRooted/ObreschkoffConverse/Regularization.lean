@@ -220,24 +220,6 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
   intro lam μ hlam hμ
   exact ⟨(hasPosLeadingCoeff_pos_combo_of_natDegree_le_right hdeg hf_pos hg_pos hlam hμ).ne_zero,
     hall lam μ⟩
-/-- `AllComboRealRooted` is preserved by any linear change of basis in the
-`(f, g)`-plane. No invertibility is needed for the forward direction: every
-linear combination of the new pair is visibly a linear combination of the old
-pair. -/
-private lemma allComboRealRooted_linear_change
-    {f g p q : ℝ[X]} {a b c d : ℝ}
-    (hp : p = C a * f + C b * g)
-    (hq : q = C c * f + C d * g)
-    (hall : AllComboRealRooted f g) :
-    AllComboRealRooted p q := by
-  intro α β
-  have hrewrite :
-      C α * p + C β * q =
-        C (α * a + β * c) * f + C (α * b + β * d) * g := by
-    grind
-  rw [hrewrite]
-  exact hall (α * a + β * c) (α * b + β * d)
-
 /-- No-common-roots is preserved by an invertible linear change of basis in the
 `(f, g)`-plane. This is the algebraic bridge needed for the "pick a special
 combination and a complementary combination" strategy. -/
@@ -398,7 +380,7 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
   · have hfx_ne : f.eval x ≠ 0 := fun hfx0 => by simp_all
     refine ⟨p, f, rfl, Or.inl ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hfx_ne⟩
     · exact
-        allComboRealRooted_linear_change
+        allComboRealRooted_linear_recombination
           (p := p) (q := f)
           (a := g.eval x) (b := -f.eval x) (c := 1) (d := 0)
           (by lia) (by simp)
@@ -412,7 +394,7 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
           hno
   · refine ⟨p, g, rfl, Or.inr ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hgx0⟩
     · exact
-        allComboRealRooted_linear_change
+        allComboRealRooted_linear_recombination
           (p := p) (q := g)
           (a := g.eval x) (b := -f.eval x) (c := 0) (d := 1)
           (by lia) (by simp)
