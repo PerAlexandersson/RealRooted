@@ -151,6 +151,35 @@ theorem IsTotallyNonneg.hurwitz_even_isPolyaFreqSeq
   rw [hurwitz_even_submatrix_eq_toeplitz_transpose] at hsub
   simpa [RealRooted.IsPolyaFreqSeq] using hsub.toRect.transpose.toSquare
 
+/-- The shifted odd rows of the classical Hurwitz matrix form the transpose of
+the Toeplitz matrix of the odd-indexed coefficient subsequence. -/
+theorem hurwitz_odd_submatrix_eq_toeplitz_transpose (c : ℕ → ℝ) :
+    (hurwitz c).submatrix (fun i => 2 * i + 1) (fun j => j + 1) =
+      (RealRooted.toeplitz fun n => c (2 * n + 1)).transpose := by
+  ext i j
+  simp only [submatrix_apply, transpose_apply, hurwitz_apply,
+    RealRooted.toeplitz_apply]
+  by_cases hij : i ≤ j
+  · rw [if_pos hij, if_pos (by lia)]
+    congr 1
+    lia
+  · rw [if_neg hij, if_neg (by lia)]
+
+/-- Total nonnegativity of a classical Hurwitz matrix makes its odd-indexed
+coefficient subsequence Pólya-frequency. -/
+theorem IsTotallyNonneg.hurwitz_odd_isPolyaFreqSeq
+    {c : ℕ → ℝ} (h : (hurwitz c).IsTotallyNonneg) :
+    RealRooted.IsPolyaFreqSeq (fun n => c (2 * n + 1)) := by
+  have hrows : StrictMono (fun i : ℕ => 2 * i + 1) := by
+    intro i j hij
+    lia
+  have hcols : StrictMono (fun j : ℕ => j + 1) := by
+    intro i j hij
+    lia
+  have hsub := h.submatrix hrows hcols
+  rw [hurwitz_odd_submatrix_eq_toeplitz_transpose] at hsub
+  simpa [RealRooted.IsPolyaFreqSeq] using hsub.toRect.transpose.toSquare
+
 /-- The even contraction of a polynomial inherits a Pólya-frequency
 coefficient sequence from total nonnegativity of its classical Hurwitz matrix. -/
 theorem IsTotallyNonneg.hurwitz_contract_two_isPolyaFreqSeq
