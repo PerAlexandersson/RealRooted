@@ -1,6 +1,7 @@
 import Mathlib.Algebra.MvPolynomial.Eval
 import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.MvPolynomial.Rename
 import Mathlib.Algebra.Polynomial.Eval.Coeff
 import Mathlib.Algebra.Polynomial.Eval.Degree
@@ -18,6 +19,22 @@ Lemma 2.5.
 -/
 
 open Polynomial
+
+namespace Complex
+
+/-- The reciprocal of a complex difference has negative imaginary part when
+the first argument lies strictly above the second. -/
+theorem one_div_sub_im_neg {w r : ℂ} (h : r.im < w.im) :
+    (1 / (w - r)).im < 0 := by
+  have hne : w - r ≠ 0 := by
+    intro hzero
+    have him := congrArg Complex.im hzero
+    simp at him
+    linarith
+  rw [one_div, Complex.inv_im, Complex.sub_im]
+  exact div_neg_of_neg_of_pos (by linarith) (Complex.normSq_pos.mpr hne)
+
+end Complex
 
 namespace RealRooted
 
@@ -247,6 +264,58 @@ def affineLineRestriction {sigma : Type*} (z v : sigma → ℂ)
     simp
   rw [hC]
   rfl
+
+/-- Evaluating the affine-line restriction in a coordinate direction replaces
+that coordinate by the univariate argument. -/
+@[simp] theorem eval_affineLineRestriction_coordinate
+    {sigma : Type*} [DecidableEq sigma] (z : sigma → ℂ) (i : sigma)
+    (P : MvPolynomial sigma ℂ) (t : ℂ) :
+    (affineLineRestriction (Function.update z i 0)
+      (Function.update (0 : sigma → ℂ) i 1) P).eval t =
+      MvPolynomial.eval (Function.update z i t) P := by
+  rw [eval_affineLineRestriction]
+  apply congrArg (fun w : sigma → ℂ => MvPolynomial.eval w P)
+  funext j
+  by_cases hji : j = i
+  · subst j
+    simp
+  · simp [hji]
+
+/-- Differentiating the slice along one coordinate is the slice of the
+corresponding partial derivative. -/
+theorem affineLineRestriction_derivative_coordinate
+    {sigma : Type*} [DecidableEq sigma] (z : sigma → ℂ) (i : sigma)
+    (P : MvPolynomial sigma ℂ) :
+    (affineLineRestriction (Function.update z i 0)
+      (Function.update (0 : sigma → ℂ) i 1) P).derivative =
+      affineLineRestriction (Function.update z i 0)
+        (Function.update (0 : sigma → ℂ) i 1)
+          (MvPolynomial.pderiv i P) := by
+  let phi : MvPolynomial sigma ℂ →+* Polynomial ℂ :=
+    MvPolynomial.eval₂Hom Polynomial.C
+      (fun j => Polynomial.C (Function.update z i 0 j) +
+        Polynomial.C (Function.update (0 : sigma → ℂ) i 1 j) * Polynomial.X)
+  change (phi P).derivative = phi (MvPolynomial.pderiv i P)
+  induction P using MvPolynomial.induction_on with
+  | C c => simp [phi]
+  | add P Q hP hQ =>
+      simpa only [map_add, MvPolynomial.eval₂_add, Polynomial.derivative_add] using
+        congrArg₂ (· + ·) hP hQ
+  | mul_X P j hP =>
+      by_cases hji : j = i
+      · subst j
+        have hphiX : phi (MvPolynomial.X i) = Polynomial.X := by
+          simp [phi]
+        rw [MvPolynomial.pderiv_mul]
+        simp only [map_mul, map_add, Polynomial.derivative_mul, hP]
+        rw [hphiX, MvPolynomial.pderiv_X_self, map_one,
+          Polynomial.derivative_X]
+      · have hphiX : phi (MvPolynomial.X j) = Polynomial.C (z j) := by
+          simp [phi, hji]
+        rw [MvPolynomial.pderiv_mul]
+        simp only [map_mul, map_add, Polynomial.derivative_mul, hP]
+        rw [hphiX, MvPolynomial.pderiv_X_of_ne hji, map_zero,
+          Polynomial.derivative_C]
 
 theorem MvUpperHalfPlaneStable.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)

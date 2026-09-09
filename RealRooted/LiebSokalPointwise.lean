@@ -48,6 +48,53 @@ theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomia
   simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
   linarith
 
+/-- Subtracting the derivative preserves absence of roots in the open upper
+half-plane. -/
+theorem _root_.Polynomial.sub_derivative_upperHalfPlaneStable
+    (p : Polynomial ℂ) (hp : ∀ z : ℂ, 0 < z.im → p.eval z ≠ 0) :
+    ∀ z : ℂ, 0 < z.im → (p - p.derivative).eval z ≠ 0 := by
+  intro z hz
+  have hpz : p.eval z ≠ 0 := hp z hz
+  have hpne : p ≠ 0 := by
+    intro hzero
+    simp [hzero] at hpz
+  by_cases hdegree : p.natDegree = 0
+  · rw [Polynomial.derivative_of_natDegree_zero hdegree]
+    simpa using hpz
+  have hsplits : p.Splits := IsAlgClosed.splits p
+  have hroots_ne : p.roots ≠ 0 := hsplits.roots_ne_zero hdegree
+  have hroots_im : ∀ r ∈ p.roots, r.im ≤ 0 := by
+    intro r hr
+    exact le_of_not_gt fun hrpos =>
+      hp r hrpos ((Polynomial.mem_roots hpne).mp hr)
+  let S : Multiset ℂ := p.roots.map fun r => 1 / (z - r)
+  have hS_ne : S ≠ 0 := by simp [S, hroots_ne]
+  have hS_im (u : ℂ) (hu : u ∈ S) : u.im < 0 := by
+    dsimp [S] at hu
+    rw [Multiset.mem_map] at hu
+    obtain ⟨r, hr, rfl⟩ := hu
+    exact Complex.one_div_sub_im_neg ((hroots_im r hr).trans_lt hz)
+  have hsum_im : S.sum.im < 0 := by
+    have hmap : S.sum.im = (S.map fun u => u.im).sum := by
+      simpa using map_multiset_sum Complex.imAddGroupHom S
+    rw [hmap]
+    have hlt : (S.map fun u => u.im).sum <
+        (S.map fun _ : ℂ => (0 : ℝ)).sum :=
+      Multiset.sum_lt_sum_of_nonempty hS_ne hS_im
+    simpa using hlt
+  have hlog := hsplits.eval_derivative_div_eval_of_ne_zero hpz
+  have hratio_im : (p.derivative.eval z / p.eval z).im < 0 := by
+    rw [hlog]
+    exact hsum_im
+  intro hzero
+  have heval : p.eval z = p.derivative.eval z := by
+    apply sub_eq_zero.mp
+    simpa only [Polynomial.eval_sub] using hzero
+  have hratio : p.derivative.eval z / p.eval z = 1 :=
+    (div_eq_one_iff_eq hpz).mpr heval.symm
+  rw [hratio] at hratio_im
+  simp at hratio_im
+
 /-- A partial derivative of a coordinatewise affine stable polynomial is zero
 or stable. -/
 theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
@@ -373,6 +420,103 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil
         MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0) :
     MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) := by
   exact hF.sub_pderiv_of_stable_pencil_of_degreeOf_le_one hG i (hGma i) hFG
+
+/-! ## The one-minus-partial-derivative operator -/
+
+/-- Apply `1 - ∂ᵢ` to a multivariate polynomial. -/
+noncomputable def oneSubPderiv {R sigma : Type*} [CommRing R] (i : sigma)
+    (P : MvPolynomial sigma R) : MvPolynomial sigma R :=
+  P - MvPolynomial.pderiv i P
+
+/-- Apply an ordered list of one-minus-partial-derivative operators. -/
+noncomputable def oneSubPderivList {R sigma : Type*} [CommRing R] (l : List sigma)
+    (P : MvPolynomial sigma R) : MvPolynomial sigma R :=
+  l.foldl (fun Q i => oneSubPderiv i Q) P
+
+@[simp] theorem oneSubPderivList_nil {R sigma : Type*} [CommRing R]
+    (P : MvPolynomial sigma R) : oneSubPderivList [] P = P :=
+  rfl
+
+@[simp] theorem oneSubPderivList_cons {R sigma : Type*} [CommRing R]
+    (i : sigma) (l : List sigma) (P : MvPolynomial sigma R) :
+    oneSubPderivList (i :: l) P = oneSubPderivList l (oneSubPderiv i P) :=
+  rfl
+
+/-- Applying `1 - ∂ᵢ` preserves multiaffineness. -/
+theorem _root_.MvPolynomial.IsMultiaffine.oneSubPderiv
+    {R sigma : Type*} [CommRing R] {P : MvPolynomial sigma R}
+    (hP : P.IsMultiaffine) (i : sigma) :
+    (oneSubPderiv i P).IsMultiaffine :=
+  hP.sub (hP.pderiv i)
+
+/-- Iterating `1 - ∂ᵢ` along a finite ordered list preserves multiaffineness. -/
+theorem _root_.MvPolynomial.IsMultiaffine.oneSubPderivList
+    {R sigma : Type*} [CommRing R] {P : MvPolynomial sigma R}
+    (hP : P.IsMultiaffine) (l : List sigma) :
+    (oneSubPderivList l P).IsMultiaffine := by
+  induction l generalizing P with
+  | nil => exact hP
+  | cons i l ih => exact ih (hP.oneSubPderiv i)
+
+/-- Applying `1 - ∂ᵢ` preserves upper-half-plane stability in arbitrary
+coordinate degree. -/
+theorem MvUpperHalfPlaneStable.oneSubPderiv
+    {sigma : Type*} {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P) (i : sigma) :
+    MvUpperHalfPlaneStable (oneSubPderiv i P) := by
+  classical
+  intro z hz
+  let q : Polynomial ℂ :=
+    affineLineRestriction (Function.update z i 0)
+      (Function.update (0 : sigma → ℂ) i 1) P
+  have hqstable : ∀ w : ℂ, 0 < w.im → q.eval w ≠ 0 := by
+    intro w hw
+    rw [show q.eval w = MvPolynomial.eval (Function.update z i w) P by
+      exact eval_affineLineRestriction_coordinate z i P w]
+    apply hP
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa using hw
+    · rw [Function.update_of_ne hji]
+      exact hz j
+  have hq := Polynomial.sub_derivative_upperHalfPlaneStable q hqstable (z i) (hz i)
+  have hqeval : q.eval (z i) = MvPolynomial.eval z P := by
+    rw [show q.eval (z i) = MvPolynomial.eval (Function.update z i (z i)) P by
+      exact eval_affineLineRestriction_coordinate z i P (z i)]
+    simp
+  have hqderiv : q.derivative.eval (z i) =
+      MvPolynomial.eval z (MvPolynomial.pderiv i P) := by
+    have hderiv := congrArg (fun p : Polynomial ℂ => p.eval (z i))
+      (affineLineRestriction_derivative_coordinate z i P)
+    change q.derivative.eval (z i) = _
+    rw [hderiv, eval_affineLineRestriction_coordinate]
+    simp
+  change MvPolynomial.eval z (P - MvPolynomial.pderiv i P) ≠ 0
+  rw [MvPolynomial.eval_sub]
+  simpa only [Polynomial.eval_sub, hqeval, hqderiv] using hq
+
+/-- Applying `1 - ∂ᵢ` preserves weak upper-half-plane stability in arbitrary
+coordinate degree. -/
+theorem MvUpperHalfPlaneStableOrZero.oneSubPderiv
+    {sigma : Type*} {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P) (i : sigma) :
+    MvUpperHalfPlaneStableOrZero (oneSubPderiv i P) := by
+  rcases hP with rfl | hP
+  · simpa [_root_.RealRooted.oneSubPderiv] using
+      (MvUpperHalfPlaneStableOrZero.zero (sigma := sigma))
+  exact (hP.oneSubPderiv i).orZero
+
+/-- Iterating `1 - ∂ᵢ` along a finite ordered list preserves weak
+upper-half-plane stability in arbitrary coordinate degrees. -/
+theorem MvUpperHalfPlaneStableOrZero.oneSubPderivList
+    {sigma : Type*} {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStableOrZero P)
+    (l : List sigma) :
+    MvUpperHalfPlaneStableOrZero (oneSubPderivList l P) := by
+  induction l generalizing P with
+  | nil => exact hP
+  | cons i l ih => exact ih (hP.oneSubPderiv i)
 
 /-- The polynomial `F(z) + w * G(z)` with `w` represented by one additional
 variable. -/
