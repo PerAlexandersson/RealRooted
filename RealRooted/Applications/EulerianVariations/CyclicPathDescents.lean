@@ -130,18 +130,15 @@ theorem cyclicPathDescentPolynomial_hasSimpleRoots (n : ℕ) (hn : 0 < n) :
   have hq0 : ¬ q.IsRoot 0 := by
     exact narayanaPolynomial_derivative_eval_zero_ne_zero n hn
   have hscale : 2 / (n : ℝ) ≠ 0 := by positivity
-  have hXq : X * q ≠ 0 := mul_ne_zero Polynomial.X_ne_zero hqSimple.ne_zero
+  have hXqSimple : HasSimpleRoots (X * q) := hqSimple.X_mul hq0
+  have hXq : X * q ≠ 0 := hXqSimple.ne_zero
   have hpoly : C (2 / (n : ℝ)) * (X * q) ≠ 0 :=
     mul_ne_zero (Polynomial.C_ne_zero.mpr hscale) hXq
   rw [cyclicPathDescentPolynomial_eq_derivative n hn,
     show C (2 / (n : ℝ)) * X * q = C (2 / (n : ℝ)) * (X * q) by ring]
   apply HasSimpleRoots.of_roots_nodup hpoly
-  rw [Polynomial.roots_C_mul _ hscale, Polynomial.roots_mul hXq,
-    Polynomial.roots_X]
-  refine Multiset.nodup_add.mpr ⟨by simp, hqSimple.roots_nodup, ?_⟩
-  rw [Multiset.singleton_disjoint]
-  intro hzero
-  exact hq0 ((Polynomial.mem_roots hqSimple.ne_zero).mp hzero)
+  rw [Polynomial.roots_C_mul _ hscale]
+  exact hXqSimple.roots_nodup
 
 /-- Paper theorem `thm:cyclicDescents`: after removing its simple zero at the
 origin, the cyclic-path polynomial has exactly `n - 1` roots, all negative. -/

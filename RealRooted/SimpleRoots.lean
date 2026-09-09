@@ -100,6 +100,19 @@ lemma HasSimpleRoots.of_roots_nodup {p : ℝ[X]}
     exact Multiset.nodup_iff_count_le_one.mp hnd r
   lia
 
+/-- Multiplying by `X` preserves simple real roots when zero was not already a
+root. -/
+lemma HasSimpleRoots.X_mul (hsimple : HasSimpleRoots p)
+    (hzero : ¬ p.IsRoot 0) :
+    HasSimpleRoots (X * p) := by
+  have hXp : X * p ≠ 0 := mul_ne_zero Polynomial.X_ne_zero hsimple.ne_zero
+  apply HasSimpleRoots.of_roots_nodup hXp
+  rw [Polynomial.roots_mul hXp, Polynomial.roots_X]
+  refine Multiset.nodup_add.mpr ⟨by simp, hsimple.roots_nodup, ?_⟩
+  rw [Multiset.singleton_disjoint]
+  intro hzeroRoot
+  exact hzero ((Polynomial.mem_roots hsimple.ne_zero).mp hzeroRoot)
+
 /-- At a simple real root the root multiset carries exactly one copy. -/
 lemma HasSimpleRoots.roots_count_eq_one (hsimple : HasSimpleRoots p)
     {c : ℝ} (hc : p.IsRoot c) :
