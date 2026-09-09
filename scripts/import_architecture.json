@@ -2,16 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 983
+      "max_modules": 992
     },
     "RealRooted.EulerOperator.Darboux": {
-      "max_modules": 36
+      "max_modules": 45
     },
     "RealRooted.EulerOperator.Darboux.Basic": {
       "max_modules": 2
     },
     "RealRooted.EulerOperator.Darboux.Interlacing": {
-      "max_modules": 35
+      "max_modules": 44
     },
     "RealRooted.Jacobi.DifferentialOperator": {
       "max_modules": 4
@@ -35,7 +35,7 @@
       "max_modules": 10
     },
     "RealRooted.Laguerre": {
-      "max_modules": 49
+      "max_modules": 58
     },
     "RealRooted.Laguerre.Orthogonality": {
       "max_modules": 8
@@ -44,10 +44,10 @@
       "max_modules": 9
     },
     "RealRooted.Laguerre.Roots": {
-      "max_modules": 43
+      "max_modules": 52
     },
     "RealRooted.Hermite": {
-      "max_modules": 43
+      "max_modules": 52
     },
     "RealRooted.Hermite.Basic": {
       "max_modules": 2
@@ -62,16 +62,16 @@
       "max_modules": 8
     },
     "RealRooted.Hermite.Roots": {
-      "max_modules": 38
+      "max_modules": 47
     },
     "RealRooted.Legendre": {
-      "max_modules": 43
+      "max_modules": 52
     },
     "RealRooted.Legendre.Basic": {
       "max_modules": 4
     },
     "RealRooted.Legendre.Roots": {
-      "max_modules": 42
+      "max_modules": 51
     },
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral": {
       "max_modules": 1
@@ -112,65 +112,80 @@
     "RealRooted.Basic": {
       "max_modules": 10
     },
+    "RealRooted.Basic.Coefficients": {
+      "max_modules": 5
+    },
+    "RealRooted.Basic.IntervalInequalities": {
+      "max_modules": 5
+    },
+    "RealRooted.Basic.PolynomialFacts": {
+      "max_modules": 5
+    },
+    "RealRooted.Basic.ProperPosition": {
+      "max_modules": 7
+    },
+    "RealRooted.Basic.RootLists": {
+      "max_modules": 5
+    },
     "RealRooted.BrandenLeite.ChainPolynomial": {
-      "max_modules": 179
+      "max_modules": 188
     },
     "RealRooted.BrandenLeite.Resolvable": {
-      "max_modules": 80
+      "max_modules": 89
     },
     "RealRooted.Bezoutian": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.Bezoutian.ComplexRoots": {
-      "max_modules": 13
+      "max_modules": 18
     },
     "RealRooted.Bezoutian.LowDegree": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.Bezoutian.MatrixBasics": {
-      "max_modules": 10
+      "max_modules": 15
     },
     "RealRooted.Bezoutian.RootEvaluation": {
-      "max_modules": 11
+      "max_modules": 16
     },
     "RealRooted.Bezoutian.StrictInterleaving": {
-      "max_modules": 8
+      "max_modules": 13
     },
     "RealRooted.Bezoutian.WronskianConverse": {
-      "max_modules": 14
+      "max_modules": 19
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex": {
       "max_modules": 1
     },
     "RealRooted.HermiteBiehler.Basic": {
-      "max_modules": 8
+      "max_modules": 13
     },
     "RealRooted.HermiteBiehler.ConverseLowDegree": {
-      "max_modules": 137
-    },
-    "RealRooted.HermiteBiehler.Converse": {
       "max_modules": 146
     },
+    "RealRooted.HermiteBiehler.Converse": {
+      "max_modules": 155
+    },
     "RealRooted.HermiteBiehler.Converse.RootGeometry": {
-      "max_modules": 138
+      "max_modules": 147
     },
     "RealRooted.HermiteBiehler.Converse.Wronskian": {
-      "max_modules": 145
+      "max_modules": 154
     },
     "RealRooted.HermiteBiehler.Forward": {
-      "max_modules": 19
+      "max_modules": 28
     },
     "RealRooted.HermiteBiehler.Hurwitz": {
-      "max_modules": 148
+      "max_modules": 157
     },
     "RealRooted.HermiteBiehler.LogDerivative": {
-      "max_modules": 9
+      "max_modules": 14
     },
     "RealRooted.HermiteBiehler.OddEven": {
-      "max_modules": 9
+      "max_modules": 14
     },
     "RealRooted.HermiteBiehler": {
-      "max_modules": 149
+      "max_modules": 158
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz": {
       "max_modules": 1
@@ -179,73 +194,73 @@
       "max_modules": 2
     },
     "RealRooted.ClassicalHurwitzMatrix": {
-      "max_modules": 14
+      "max_modules": 19
     },
     "RealRooted.ClassicalHurwitzMatrix.Routh": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.ClassicalHurwitzMatrix.Routh.Determinant": {
-      "max_modules": 17
-    },
-    "RealRooted.ClassicalHurwitzMatrix.Routh.Sequence": {
-      "max_modules": 18
-    },
-    "RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative": {
       "max_modules": 22
     },
+    "RealRooted.ClassicalHurwitzMatrix.Routh.Sequence": {
+      "max_modules": 23
+    },
+    "RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative": {
+      "max_modules": 27
+    },
     "RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Converse": {
-      "max_modules": 184
+      "max_modules": 193
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Closure": {
-      "max_modules": 174
+      "max_modules": 183
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Criterion": {
-      "max_modules": 171
+      "max_modules": 180
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Extraction": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler": {
-      "max_modules": 152
+      "max_modules": 161
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Parity": {
-      "max_modules": 154
+      "max_modules": 163
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Rotation": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh": {
-      "max_modules": 160
+      "max_modules": 169
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition": {
-      "max_modules": 162
+      "max_modules": 171
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse": {
-      "max_modules": 174
+      "max_modules": 183
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence": {
-      "max_modules": 168
+      "max_modules": 177
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Terminal": {
       "max_modules": 67
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Vieta": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.Interlacing.NegativeRoots": {
-      "max_modules": 13
-    },
-    "RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative": {
       "max_modules": 18
     },
+    "RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative": {
+      "max_modules": 23
+    },
     "RealRooted.OrderedRoots": {
-      "max_modules": 8
+      "max_modules": 11
     },
     "RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars": {
       "max_modules": 1
@@ -254,169 +269,181 @@
       "max_modules": 5
     },
     "RealRooted.ObreschkoffContinuity": {
-      "max_modules": 11
+      "max_modules": 16
     },
     "RealRooted.PosCombo": {
-      "max_modules": 77
+      "max_modules": 86
     },
     "RealRooted.AllCombo": {
-      "max_modules": 35
+      "max_modules": 44
     },
     "RealRooted.Compatibility.Pair": {
-      "max_modules": 6
+      "max_modules": 11
     },
     "RealRooted.Graph.IndependencePolynomial.Basic": {
-      "max_modules": 7
+      "max_modules": 12
     },
     "RealRooted.Graph.IndependencePolynomial.CliqueDeletion": {
-      "max_modules": 19
+      "max_modules": 24
     },
     "RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility": {
-      "max_modules": 176
+      "max_modules": 185
     },
     "RealRooted.Graph.IndependencePolynomial.ClawFree": {
-      "max_modules": 177
+      "max_modules": 186
     },
     "RealRooted.Graph.IndependencePolynomial.Recurrence": {
-      "max_modules": 9
+      "max_modules": 14
     },
     "RealRooted.Graph.ClawFree": {
       "max_modules": 1
     },
     "RealRooted.Graph.MatchingPolynomial": {
-      "max_modules": 10
-    },
-    "RealRooted.Compatibility.Basic": {
-      "max_modules": 110
-    },
-    "RealRooted.EulerianMixedCompatibility.Insertion": {
-      "max_modules": 29
-    },
-    "RealRooted.EulerianMixedCompatibility": {
-      "max_modules": 108
-    },
-    "RealRooted.EulerianCompletion": {
-      "max_modules": 194
-    },
-    "RealRooted.Basic.AffineInterlacing": {
-      "max_modules": 10
-    },
-    "RealRooted.AffineProperPosition": {
-      "max_modules": 109
-    },
-    "RealRooted.CauchyInterlacing.Polynomial": {
-      "max_modules": 7
-    },
-    "RealRooted.AffineFamily.Basic": {
       "max_modules": 15
     },
-    "RealRooted.AffineFamily.Boundary": {
-      "max_modules": 104
+    "RealRooted.Compatibility.Basic": {
+      "max_modules": 119
     },
-    "RealRooted.AffineFamily.LowDegree": {
-      "max_modules": 105
-    },
-    "RealRooted.AffineFamily.PositiveFamily": {
-      "max_modules": 18
-    },
-    "RealRooted.AffineFamily.RootCrossing": {
-      "max_modules": 105
-    },
-    "RealRooted.AffineFamily.Wronskian": {
-      "max_modules": 106
-    },
-    "RealRooted.BorceaBranden.Applications.AffineFiniteSymbol": {
-      "max_modules": 191
-    },
-    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
-      "max_modules": 116
-    },
-    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
-      "max_modules": 190
-   },
-    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
-      "max_modules": 191
-   },
-    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 40
-   },
-    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
-      "max_modules": 183
-   },
-    "RealRooted.BorceaBranden.UnivariateFiniteSymbol": {
-      "max_modules": 7
-    },
-    "RealRooted.BorceaBranden.FiniteSymbolClassification": {
-      "max_modules": 36
-    },
-    "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
-      "max_modules": 16
-    },
-    "RealRooted.BorceaBranden.Applications.ComplexClassification": {
-      "max_modules": 37
-    },
-    "RealRooted.Challenges.BorceaBranden": {
+    "RealRooted.EulerianMixedCompatibility.Insertion": {
       "max_modules": 38
     },
+    "RealRooted.EulerianMixedCompatibility": {
+      "max_modules": 117
+    },
+    "RealRooted.EulerianCompletion": {
+      "max_modules": 203
+    },
+    "RealRooted.Basic.AffineInterlacing": {
+      "max_modules": 13
+    },
+    "RealRooted.AffineProperPosition": {
+      "max_modules": 118
+    },
+    "RealRooted.CauchyInterlacing.Polynomial": {
+      "max_modules": 12
+    },
+    "RealRooted.AffineFamily.Basic": {
+      "max_modules": 18
+    },
+    "RealRooted.AffineFamily.Boundary": {
+      "max_modules": 113
+    },
+    "RealRooted.AffineFamily.LowDegree": {
+      "max_modules": 114
+    },
+    "RealRooted.AffineFamily.PositiveFamily": {
+      "max_modules": 23
+    },
+    "RealRooted.AffineFamily.RootCrossing": {
+      "max_modules": 114
+    },
+    "RealRooted.AffineFamily.Wronskian": {
+      "max_modules": 115
+    },
+    "RealRooted.BorceaBranden.Applications.AffineFiniteSymbol": {
+      "max_modules": 200
+    },
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol": {
+      "max_modules": 125
+    },
+    "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences": {
+      "max_modules": 199
+   },
+    "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol": {
+      "max_modules": 200
+   },
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
+      "max_modules": 45
+   },
+    "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
+      "max_modules": 192
+   },
+    "RealRooted.BorceaBranden.UnivariateFiniteSymbol": {
+      "max_modules": 12
+    },
+    "RealRooted.BorceaBranden.FiniteSymbolClassification": {
+      "max_modules": 41
+    },
+    "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
+      "max_modules": 21
+    },
+    "RealRooted.BorceaBranden.Applications.ComplexClassification": {
+      "max_modules": 42
+    },
+    "RealRooted.Challenges.BorceaBranden": {
+      "max_modules": 43
+    },
     "RealRooted.Derivative": {
+      "max_modules": 15
+    },
+    "RealRooted.Derivative.Algebra": {
+      "max_modules": 11
+    },
+    "RealRooted.Derivative.FamilyClosure": {
+      "max_modules": 14
+    },
+    "RealRooted.Derivative.Interlacing": {
+      "max_modules": 13
+    },
+    "RealRooted.Derivative.RootCounting": {
       "max_modules": 12
     },
     "RealRooted.Derivative.LinearCombination": {
-      "max_modules": 80
-    },
-    "RealRooted.GammaTransform.Basic": {
-      "max_modules": 115
-    },
-    "RealRooted.GammaTransform.RootMap": {
-      "max_modules": 116
-    },
-    "RealRooted.GammaTransform.RootLists": {
-      "max_modules": 117
-    },
-    "RealRooted.GammaTransform.Preservation": {
-      "max_modules": 117
-    },
-    "RealRooted.GammaTransform.ProperPosition": {
-      "max_modules": 119
-    },
-    "RealRooted.GammaTransform": {
-      "max_modules": 120
-    },
-    "RealRooted.GeneralizedEulerian": {
-      "max_modules": 91
-    },
-    "RealRooted.ObreschkoffConverse": {
       "max_modules": 89
     },
+    "RealRooted.GammaTransform.Basic": {
+      "max_modules": 124
+    },
+    "RealRooted.GammaTransform.RootMap": {
+      "max_modules": 125
+    },
+    "RealRooted.GammaTransform.RootLists": {
+      "max_modules": 126
+    },
+    "RealRooted.GammaTransform.Preservation": {
+      "max_modules": 126
+    },
+    "RealRooted.GammaTransform.ProperPosition": {
+      "max_modules": 128
+    },
+    "RealRooted.GammaTransform": {
+      "max_modules": 129
+    },
+    "RealRooted.GeneralizedEulerian": {
+      "max_modules": 100
+    },
+    "RealRooted.ObreschkoffConverse": {
+      "max_modules": 98
+    },
     "RealRooted.ObreschkoffConverse.Converse": {
-      "max_modules": 86
+      "max_modules": 95
     },
     "RealRooted.ObreschkoffConverse.DegreeGap": {
       "max_modules": 80
     },
     "RealRooted.ObreschkoffConverse.Derivative": {
-      "max_modules": 88
-    },
-    "RealRooted.ObreschkoffConverse.Forward": {
-      "max_modules": 87
-    },
-    "RealRooted.ObreschkoffConverse.Regularization": {
-      "max_modules": 85
-    },
-    "RealRooted.GarloffWagner.Algebra": {
-      "max_modules": 96
-    },
-    "RealRooted.GarloffWagner.Iterated": {
       "max_modules": 97
     },
-    "RealRooted.GarloffWagner.KreinData": {
-      "max_modules": 100
+    "RealRooted.ObreschkoffConverse.Forward": {
+      "max_modules": 96
     },
-    "RealRooted.GarloffWagner.KreinExpansion": {
+    "RealRooted.ObreschkoffConverse.Regularization": {
+      "max_modules": 94
+    },
+    "RealRooted.GarloffWagner.Algebra": {
       "max_modules": 105
     },
+    "RealRooted.GarloffWagner.Iterated": {
+      "max_modules": 106
+    },
+    "RealRooted.GarloffWagner.KreinData": {
+      "max_modules": 107
+    },
+    "RealRooted.GarloffWagner.KreinExpansion": {
+      "max_modules": 108
+    },
     "RealRooted.GarloffWagner.Theorem12": {
-      "max_modules": 110
+      "max_modules": 109
     },
     "RealRooted.GarloffWagner.Hadamard": {
       "max_modules": 115
@@ -428,19 +455,19 @@
       "max_modules": 15
     },
     "RealRooted.SymmetricDecomposition.FPolynomial": {
-      "max_modules": 92
+      "max_modules": 101
     },
     "RealRooted.SymmetricDecomposition.FPolynomialInterlacing": {
-      "max_modules": 111
+      "max_modules": 120
     },
     "RealRooted.SymmetricDecomposition.Decomposition": {
-      "max_modules": 112
+      "max_modules": 121
     },
     "RealRooted.SymmetricDecomposition.Theorem26": {
-      "max_modules": 113
+      "max_modules": 122
     },
     "RealRooted.SymmetricDecomposition": {
-      "max_modules": 115
+      "max_modules": 123
     },
     "RealRooted.CoefficientDominance": {
       "max_modules": 15
@@ -476,7 +503,7 @@
       "max_modules": 2
     },
     "RealRooted.BasisTransform": {
-      "max_modules": 7
+      "max_modules": 12
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Bezoutian": {
       "max_modules": 2
@@ -503,43 +530,43 @@
       "max_modules": 5
     },
     "RealRooted.RankTwoMatching.Transform": {
-      "max_modules": 187
+      "max_modules": 196
    },
     "RealRooted.RankTwoMatching.Basic": {
-      "max_modules": 181
+      "max_modules": 190
    },
     "RealRooted.RankTwoMatching.Orientation": {
-      "max_modules": 182
+      "max_modules": 191
    },
     "RealRooted.RankTwoMatching.DisjointEquiv": {
-      "max_modules": 183
+      "max_modules": 192
    },
     "RealRooted.RankTwoMatching.Enumeration": {
-      "max_modules": 184
+      "max_modules": 193
    },
     "RealRooted.RankTwoMatching.Endpoint": {
-      "max_modules": 185
+      "max_modules": 194
    },
     "RealRooted.RankTwoMatching": {
-      "max_modules": 186
+      "max_modules": 195
    },
     "RealRooted.EulerOperator.Polar": {
-      "max_modules": 92
+      "max_modules": 101
     },
     "RealRooted.EulerOperator.Polar.MultiplierSequence": {
-      "max_modules": 107
+      "max_modules": 116
     },
     "RealRooted.EulerOperator.Polar.ProperPosition": {
-      "max_modules": 100
+      "max_modules": 109
     },
     "RealRooted.EulerOperator.Pencil": {
-      "max_modules": 93
+      "max_modules": 102
     },
     "RealRooted.EulerOperator.ScaledPolar": {
-      "max_modules": 93
+      "max_modules": 102
     },
     "RealRooted.WagnerX.ProperPosition": {
-      "max_modules": 15
+      "max_modules": 22
     },
     "RealRooted.WagnerX.ListInterlacing": {
       "max_modules": 15
@@ -551,37 +578,37 @@
       "max_modules": 15
     },
     "RealRooted.WagnerX": {
-      "max_modules": 15
+      "max_modules": 16
     },
     "RealRooted.Wagner.NonpositiveRoots": {
-      "max_modules": 78
+      "max_modules": 87
     },
     "RealRooted.Kurtz": {
-      "max_modules": 32
+      "max_modules": 41
     },
     "RealRooted.HermitePoulain": {
-      "max_modules": 81
+      "max_modules": 90
     },
     "RealRooted.Challenges.HermitePoulain": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.Tactic.HermitePoulain": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.Tactic.SecondDerivative": {
-      "max_modules": 110
+      "max_modules": 119
     },
     "RealRooted.Challenges.Kurtz": {
-      "max_modules": 33
+      "max_modules": 42
     },
     "RealRooted.Tactic.Kurtz": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.Challenges.Wagner": {
-      "max_modules": 79
+      "max_modules": 88
     },
     "RealRooted.Tactic.Wagner": {
-      "max_modules": 81
+      "max_modules": 90
     },
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform": {
       "max_modules": 10
@@ -599,193 +626,193 @@
       "max_modules": 24
     },
     "RealRooted.OscillatoryInterlacing": {
-      "max_modules": 32
+      "max_modules": 37
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing": {
-      "max_modules": 33
+      "max_modules": 38
     },
     "RealRooted.MultiplierSequence": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.MultiplierSequence.Infinite": {
-      "max_modules": 85
+      "max_modules": 94
     },
     "RealRooted.MultiplierSequence.PolyaSchur": {
-      "max_modules": 98
+      "max_modules": 107
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
-      "max_modules": 150
-   },
-    "RealRooted.NarayanaTransformation.Basis": {
-      "max_modules": 152
-   },
-    "RealRooted.NarayanaTransformation.Basis.Stirling": {
-      "max_modules": 153
-   },
-    "RealRooted.NarayanaTransformation.Falling": {
-      "max_modules": 153
-   },
-    "RealRooted.NarayanaTransformation.Rising": {
-      "max_modules": 154
-   },
-    "RealRooted.NarayanaTransformation.Coefficients": {
-      "max_modules": 155
-   },
-    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
-      "max_modules": 156
-   },
-    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
-      "max_modules": 157
-   },
-    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
-      "max_modules": 158
-   },
-    "RealRooted.NarayanaTransformation.Rectangular": {
       "max_modules": 159
    },
-    "RealRooted.NarayanaTransformation.Recurrences": {
-      "max_modules": 162
-   },
-    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
-      "max_modules": 160
-   },
-    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
+    "RealRooted.NarayanaTransformation.Basis": {
       "max_modules": 161
    },
-    "RealRooted.NarayanaTransformation.Gamma": {
+    "RealRooted.NarayanaTransformation.Basis.Stirling": {
+      "max_modules": 162
+   },
+    "RealRooted.NarayanaTransformation.Falling": {
+      "max_modules": 162
+   },
+    "RealRooted.NarayanaTransformation.Rising": {
       "max_modules": 163
    },
-    "RealRooted.NarayanaTransformation.Endpoints": {
+    "RealRooted.NarayanaTransformation.Coefficients": {
       "max_modules": 164
    },
-    "RealRooted.NarayanaTransformation": {
+    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
+      "max_modules": 165
+   },
+    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
       "max_modules": 166
    },
-    "RealRooted.MultiplierSequence.Bidiagonal": {
-      "max_modules": 83
-    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
-      "max_modules": 89
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 90
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
-      "max_modules": 198
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
-      "max_modules": 199
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
-      "max_modules": 200
-   },
-    "RealRooted.Hadamard.Basic": {
-      "max_modules": 85
-   },
-    "RealRooted.Hadamard.Finite": {
-      "max_modules": 86
-   },
-    "RealRooted.Hadamard.Newton": {
-      "max_modules": 87
-   },
-    "RealRooted.Hadamard.Cubic": {
-      "max_modules": 88
-   },
-    "RealRooted.Hadamard.Grace": {
-      "max_modules": 95
-   },
-    "RealRooted.Hadamard.GarloffWagner": {
-      "max_modules": 107
-   },
-    "RealRooted.Hadamard.Hurwitz": {
-      "max_modules": 166
-   },
-    "RealRooted.Hadamard.Consequences": {
+    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
       "max_modules": 167
    },
-    "RealRooted.Hadamard": {
+    "RealRooted.NarayanaTransformation.Rectangular": {
+      "max_modules": 168
+   },
+    "RealRooted.NarayanaTransformation.Recurrences": {
+      "max_modules": 171
+   },
+    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+      "max_modules": 169
+   },
+    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
+      "max_modules": 170
+   },
+    "RealRooted.NarayanaTransformation.Gamma": {
+      "max_modules": 172
+   },
+    "RealRooted.NarayanaTransformation.Endpoints": {
+      "max_modules": 173
+   },
+    "RealRooted.NarayanaTransformation": {
       "max_modules": 175
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal": {
+      "max_modules": 92
+    },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
+      "max_modules": 98
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
+      "max_modules": 99
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
+      "max_modules": 207
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual": {
+      "max_modules": 208
+   },
+    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic": {
+      "max_modules": 209
+   },
+    "RealRooted.Hadamard.Basic": {
+      "max_modules": 94
+   },
+    "RealRooted.Hadamard.Finite": {
+      "max_modules": 95
+   },
+    "RealRooted.Hadamard.Newton": {
+      "max_modules": 96
+   },
+    "RealRooted.Hadamard.Cubic": {
+      "max_modules": 97
+   },
+    "RealRooted.Hadamard.Grace": {
+      "max_modules": 104
+   },
+    "RealRooted.Hadamard.GarloffWagner": {
+      "max_modules": 116
+   },
+    "RealRooted.Hadamard.Hurwitz": {
+      "max_modules": 175
+   },
+    "RealRooted.Hadamard.Consequences": {
+      "max_modules": 176
+   },
+    "RealRooted.Hadamard": {
+      "max_modules": 184
     },
     "RealRooted.FiniteFreeMultiplicative": {
-      "max_modules": 86
+      "max_modules": 95
     },
     "RealRooted.FiniteFreeRootCount": {
-      "max_modules": 191
+      "max_modules": 200
     },
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
-      "max_modules": 84
+      "max_modules": 93
     },
     "RealRooted.CommonInterleaverFamilySum": {
-      "max_modules": 87
+      "max_modules": 96
     },
     "RealRooted.CommonInterleaver.RootDesc": {
-      "max_modules": 79
+      "max_modules": 88
     },
     "RealRooted.CommonInterleaver.RootSlots": {
-      "max_modules": 81
+      "max_modules": 90
     },
     "RealRooted.CommonInterleaver.RootSlots.Basic": {
-      "max_modules": 80
+      "max_modules": 89
     },
     "RealRooted.CommonInterleaver.DescPolynomial": {
-      "max_modules": 84
+      "max_modules": 93
     },
     "RealRooted.CommonInterleaver.FamilyUpgrade": {
-      "max_modules": 85
+      "max_modules": 94
     },
     "RealRooted.CommonInterleaver.Finite": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.CommonInterleaver.Sequence": {
-      "max_modules": 83
+      "max_modules": 92
     },
     "RealRooted.CommonInterleaver.PairBridge.Forward": {
-      "max_modules": 142
+      "max_modules": 151
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
-      "max_modules": 146
+      "max_modules": 155
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount": {
-      "max_modules": 143
+      "max_modules": 152
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment": {
-      "max_modules": 144
-   },
-    "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing": {
-      "max_modules": 144
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot": {
-      "max_modules": 78
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.Basic": {
-      "max_modules": 149
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver": {
-      "max_modules": 150
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo": {
-      "max_modules": 150
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction": {
-      "max_modules": 152
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
-      "max_modules": 152
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift": {
       "max_modules": 153
    },
+    "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing": {
+      "max_modules": 153
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot": {
+      "max_modules": 87
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction.Basic": {
+      "max_modules": 158
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver": {
+      "max_modules": 159
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo": {
+      "max_modules": 159
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Reduction": {
+      "max_modules": 161
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
+      "max_modules": 161
+   },
+    "RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift": {
+      "max_modules": 162
+   },
     "RealRooted.CommonInterleaverSeq": {
-      "max_modules": 86
+      "max_modules": 95
     },
     "RealRooted.CommonInterleaver.PairBridge": {
-      "max_modules": 154
+      "max_modules": 163
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 40
+      "max_modules": 49
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
-      "max_modules": 6
+      "max_modules": 11
     },
     "RealRooted.DerivativeRecurrence.QuadraticDegree": {
       "max_modules": 12
@@ -794,7 +821,7 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
-      "max_modules": 32
+      "max_modules": 41
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
       "max_modules": 5
@@ -806,28 +833,28 @@
       "max_modules": 3
     },
     "RealRooted.LiuWang": {
-      "max_modules": 43
+      "max_modules": 52
     },
     "RealRooted.LiuWang.OneAddXPositive": {
-      "max_modules": 42
+      "max_modules": 51
     },
     "RealRooted.LiuWang.Step": {
-      "max_modules": 34
+      "max_modules": 43
     },
     "RealRooted.LiuOppositeSigns.RootCount": {
-      "max_modules": 12
+      "max_modules": 17
     },
     "RealRooted.LiuOppositeSigns.RootDeletion": {
-      "max_modules": 13
+      "max_modules": 18
     },
     "RealRooted.LiuOppositeSigns.PositiveSplitRootCount": {
-      "max_modules": 14
+      "max_modules": 19
     },
     "RealRooted.LiuOppositeSigns": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.LiuOppositeSigns.RootCountRelStability": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters": {
       "max_modules": 164
@@ -857,25 +884,25 @@
       "max_modules": 172
    },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements": {
-      "max_modules": 141
+      "max_modules": 150
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight": {
-      "max_modules": 142
+      "max_modules": 151
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic": {
-      "max_modules": 142
+      "max_modules": 151
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft": {
-      "max_modules": 143
+      "max_modules": 152
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero": {
-      "max_modules": 145
+      "max_modules": 154
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly": {
-      "max_modules": 146
+      "max_modules": 155
     },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary": {
-      "max_modules": 147
+      "max_modules": 156
     },
     "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic": {
       "max_modules": 160
@@ -905,61 +932,61 @@
       "max_modules": 173
    },
     "RealRooted.Wronskian": {
-      "max_modules": 109
+      "max_modules": 118
     },
     "RealRooted.Wronskian.Forward": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.Wronskian.Converse": {
       "max_modules": 15
     },
     "RealRooted.Wronskian.Successor": {
-      "max_modules": 19
+      "max_modules": 24
     },
     "RealRooted.Wronskian.Successor.Gap": {
-      "max_modules": 15
+      "max_modules": 20
     },
     "RealRooted.Wronskian.Successor.Interlacing": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.Wronskian.Successor.Signs": {
-      "max_modules": 16
+      "max_modules": 21
     },
     "RealRooted.Wronskian.Successor.Splits": {
-      "max_modules": 17
+      "max_modules": 22
     },
     "RealRooted.ProductSequence": {
-      "max_modules": 85
+      "max_modules": 94
     },
     "RealRooted.ProductSequence.Factors": {
-      "max_modules": 10
+      "max_modules": 15
     },
     "RealRooted.ProductSequence.Core": {
-      "max_modules": 11
+      "max_modules": 16
     },
     "RealRooted.ProductSequence.Lifts": {
-      "max_modules": 12
+      "max_modules": 17
     },
     "RealRooted.ProductSequence.EndpointPair": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.ProductSequence.FactorFamilies": {
-      "max_modules": 12
+      "max_modules": 17
     },
     "RealRooted.ProductSequence.ScalarFamilies": {
-      "max_modules": 13
+      "max_modules": 18
     },
     "RealRooted.ProductOrientation": {
-      "max_modules": 90
+      "max_modules": 99
     },
     "RealRooted.RootCounting": {
-      "max_modules": 51
+      "max_modules": 60
     },
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold": {
-      "max_modules": 50
+      "max_modules": 59
     },
     "RealRooted.RootCounting.Threshold.Anchor": {
       "max_modules": 5
@@ -971,31 +998,31 @@
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.DominanceFamily": {
-      "max_modules": 39
+      "max_modules": 48
     },
     "RealRooted.RootCounting.Threshold.LogConcavity": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.Signs": {
-      "max_modules": 34
+      "max_modules": 43
     },
     "RealRooted.RootCounting.Threshold.Sorted": {
       "max_modules": 5
     },
     "RealRooted.ReciprocalShift.Roots": {
-      "max_modules": 80
+      "max_modules": 89
     },
     "RealRooted.ReciprocalShift.Interlacing": {
-      "max_modules": 81
+      "max_modules": 90
     },
     "RealRooted.ReciprocalShift.Interlacing.Inversion": {
-      "max_modules": 82
+      "max_modules": 91
     },
     "RealRooted.ReciprocalShift.ProperPosition": {
-      "max_modules": 85
+      "max_modules": 94
     },
     "RealRooted.RootBounds": {
-      "max_modules": 15
+      "max_modules": 23
     },
     "RealRooted.RootAmplitude": {
       "max_modules": 20
@@ -1073,91 +1100,91 @@
       "max_modules": 5
     },
     "RealRooted.Favard.Affine.Basic": {
-      "max_modules": 36
+      "max_modules": 45
     },
     "RealRooted.Favard.Affine.Denominator": {
-      "max_modules": 38
+      "max_modules": 47
     },
     "RealRooted.Favard.Affine.RowSign": {
-      "max_modules": 38
+      "max_modules": 47
     },
     "RealRooted.Favard.Affine": {
-      "max_modules": 40
+      "max_modules": 49
     },
     "RealRooted.Tactic.Favard": {
-      "max_modules": 57
+      "max_modules": 66
     },
     "RealRooted.Tactic.Favard.Basic": {
-      "max_modules": 50
+      "max_modules": 59
     },
     "RealRooted.Tactic.Favard.DirectSyntax": {
-      "max_modules": 51
+      "max_modules": 60
     },
     "RealRooted.Tactic.Favard.DenominatorSyntax": {
-      "max_modules": 52
+      "max_modules": 61
     },
     "RealRooted.Tactic.Favard.RowSignSyntax": {
-      "max_modules": 53
+      "max_modules": 62
     },
     "RealRooted.Tactic.Favard.Direct": {
-      "max_modules": 54
+      "max_modules": 63
     },
     "RealRooted.Tactic.Favard.Denominator": {
-      "max_modules": 55
+      "max_modules": 64
     },
     "RealRooted.Tactic.Favard.RowSign": {
-      "max_modules": 56
+      "max_modules": 65
     },
     "RealRooted.Tactic.OEIS.Basic": {
-      "max_modules": 20
+      "max_modules": 26
     },
     "RealRooted.Tactic.OEIS.DerivativeLag": {
-      "max_modules": 147
+      "max_modules": 156
     },
     "RealRooted.Tactic.OEIS.PositiveLag": {
-      "max_modules": 139
+      "max_modules": 148
     },
     "RealRooted.Tactic.OEIS.NegativeLag": {
-      "max_modules": 57
+      "max_modules": 66
     },
     "RealRooted.Tactic.OEIS.ProductExit": {
-      "max_modules": 101
+      "max_modules": 110
     },
     "RealRooted.Tactic.OEIS.ProductFactor": {
-      "max_modules": 106
+      "max_modules": 115
     },
     "RealRooted.Tactic.OEIS.ProductLift": {
-      "max_modules": 101
+      "max_modules": 110
     },
     "RealRooted.Tactic.OEIS.ProductParity": {
-      "max_modules": 101
+      "max_modules": 110
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 436
+      "max_modules": 445
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
     },
     "RealRooted.SignEvaluation": {
-      "max_modules": 10
+      "max_modules": 11
     },
     "RealRooted.SortedRoots": {
       "max_modules": 5
     },
     "RealRooted.SortedRoots.Exhibited": {
-      "max_modules": 12
+      "max_modules": 16
     },
     "RealRooted.VeroneseSectionPair": {
-      "max_modules": 154
+      "max_modules": 163
    },
     "RealRooted.VeroneseSectionPair.HermiteBiehler": {
-      "max_modules": 155
+      "max_modules": 164
    },
     "RealRooted.PFPolynomial": {
-      "max_modules": 78
+      "max_modules": 87
    },
     "RealRooted.PFPolynomial.LinearFactor": {
-      "max_modules": 79
+      "max_modules": 88
    },
     "RealRooted.Transforms.ReverseHermite.Basic": {
       "max_modules": 2
@@ -1166,262 +1193,262 @@
       "max_modules": 3
    },
     "RealRooted.Transforms.ReverseHermite.Preservation": {
-      "max_modules": 104
+      "max_modules": 113
    },
     "RealRooted.Transforms.ReverseHermite": {
-      "max_modules": 106
+      "max_modules": 115
    },
     "RealRooted.Transforms.BrandenE.OrderedBell": {
-      "max_modules": 6
+      "max_modules": 11
    },
     "RealRooted.Transforms.BrandenE.Basic": {
-      "max_modules": 8
+      "max_modules": 13
    },
     "RealRooted.Transforms.BrandenE.Inverse": {
-      "max_modules": 9
+      "max_modules": 14
    },
     "RealRooted.Transforms.BrandenE.BasisImage": {
-      "max_modules": 15
+      "max_modules": 24
    },
     "RealRooted.Transforms.BrandenE.ProperPosition": {
-      "max_modules": 89
-   },
-    "RealRooted.Transforms.BrandenE.WeightedSum": {
-      "max_modules": 96
-   },
-    "RealRooted.Transforms.BrandenE": {
       "max_modules": 98
    },
+    "RealRooted.Transforms.BrandenE.WeightedSum": {
+      "max_modules": 105
+   },
+    "RealRooted.Transforms.BrandenE": {
+      "max_modules": 107
+   },
     "RealRooted.GarloffWagner.Theorem12": {
-      "max_modules": 100
+      "max_modules": 109
    },
     "RealRooted.VeroneseMatrix": {
-      "max_modules": 153
+      "max_modules": 162
    },
     "RealRooted.ThresholdMatrix.Basic": {
-      "max_modules": 114
+      "max_modules": 123
    },
     "RealRooted.ThresholdMatrix.HaglundZhang": {
-      "max_modules": 115
+      "max_modules": 124
    },
     "RealRooted.ThresholdMatrix.GustafssonSolus": {
-      "max_modules": 115
+      "max_modules": 124
    },
     "RealRooted.ThresholdMatrix": {
-      "max_modules": 117
+      "max_modules": 126
    },
     "RealRooted.RowThresholdOne": {
-      "max_modules": 157
+      "max_modules": 166
    },
     "RealRooted.OEIS.A046802": {
-      "max_modules": 116
+      "max_modules": 125
    },
     "RealRooted.GustafssonSolus": {
-      "max_modules": 116
+      "max_modules": 125
    },
     "RealRooted.Wronskian.Algebra": {
-      "max_modules": 93
+      "max_modules": 102
     },
     "RealRooted.Tactic": {
-      "max_modules": 464
+      "max_modules": 473
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
-      "max_modules": 171
-    },
-    "RealRooted.Tactic.CommonInterleaver.BasicSyntax": {
-      "max_modules": 172
-    },
-    "RealRooted.Tactic.CommonInterleaver.BasicRules": {
-      "max_modules": 173
-    },
-    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax": {
-      "max_modules": 173
-    },
-    "RealRooted.Tactic.CommonInterleaver.AnalyticRules": {
-      "max_modules": 175
-    },
-    "RealRooted.Tactic.CommonInterleaver.FamilySyntax": {
-      "max_modules": 174
-    },
-    "RealRooted.Tactic.CommonInterleaver.FamilyRules": {
-      "max_modules": 177
-    },
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax": {
-      "max_modules": 175
-    },
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules": {
-      "max_modules": 179
-    },
-    "RealRooted.Tactic.CommonInterleaver": {
       "max_modules": 180
     },
+    "RealRooted.Tactic.CommonInterleaver.BasicSyntax": {
+      "max_modules": 181
+    },
+    "RealRooted.Tactic.CommonInterleaver.BasicRules": {
+      "max_modules": 182
+    },
+    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax": {
+      "max_modules": 182
+    },
+    "RealRooted.Tactic.CommonInterleaver.AnalyticRules": {
+      "max_modules": 184
+    },
+    "RealRooted.Tactic.CommonInterleaver.FamilySyntax": {
+      "max_modules": 183
+    },
+    "RealRooted.Tactic.CommonInterleaver.FamilyRules": {
+      "max_modules": 186
+    },
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax": {
+      "max_modules": 184
+    },
+    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules": {
+      "max_modules": 188
+    },
+    "RealRooted.Tactic.CommonInterleaver": {
+      "max_modules": 189
+    },
     "RealRooted.Tactic.RootCount.SequenceCore": {
-      "max_modules": 87
+      "max_modules": 96
     },
     "RealRooted.Tactic.RootCount.LowDegree": {
-      "max_modules": 140
+      "max_modules": 149
     },
     "RealRooted.Tactic.RootCount.CoreSyntax": {
-      "max_modules": 88
+      "max_modules": 97
     },
     "RealRooted.Tactic.RootCount.LowDegreeSyntax": {
-      "max_modules": 142
+      "max_modules": 151
     },
     "RealRooted.Tactic.RootCount.CoreRules": {
-      "max_modules": 92
+      "max_modules": 101
     },
     "RealRooted.Tactic.RootCount.LowDegreeRules": {
-      "max_modules": 147
+      "max_modules": 156
     },
     "RealRooted.Tactic.RootCount": {
-      "max_modules": 148
+      "max_modules": 157
     },
     "RealRooted.Tactic.WagnerX.Core": {
-      "max_modules": 118
+      "max_modules": 127
     },
     "RealRooted.Tactic.WagnerX.Obstructions": {
-      "max_modules": 119
+      "max_modules": 128
     },
     "RealRooted.Tactic.WagnerX.PositiveLag": {
-      "max_modules": 119
+      "max_modules": 128
     },
     "RealRooted.Tactic.WagnerX.TranslatedLag": {
-      "max_modules": 120
+      "max_modules": 129
     },
     "RealRooted.Tactic.WagnerX.Syntax": {
-      "max_modules": 121
+      "max_modules": 130
     },
     "RealRooted.Tactic.WagnerX.Frontend": {
-      "max_modules": 122
+      "max_modules": 131
     },
     "RealRooted.Tactic.WagnerX": {
-      "max_modules": 124
+      "max_modules": 133
     },
     "RealRooted.Tactic.LiuWang": {
-      "max_modules": 59
+      "max_modules": 68
     },
     "RealRooted.Tactic.LiuWang.Step": {
-      "max_modules": 53
+      "max_modules": 62
     },
     "RealRooted.Tactic.LiuWang.SequenceIntervals": {
-      "max_modules": 55
+      "max_modules": 64
     },
     "RealRooted.Tactic.LiuWang.SequenceNonpositive": {
-      "max_modules": 54
+      "max_modules": 63
     },
     "RealRooted.Tactic.LiuWang.SequenceProducts": {
-      "max_modules": 54
+      "max_modules": 63
     },
     "RealRooted.MaWang": {
-      "max_modules": 30
+      "max_modules": 39
     },
     "RealRooted.MaWang.CountBounds": {
-      "max_modules": 19
-    },
-    "RealRooted.MaWang.StrictSigns.RootSigns": {
-      "max_modules": 20
-    },
-    "RealRooted.MaWang.StrictSigns.Assembly": {
-      "max_modules": 21
-    },
-    "RealRooted.MaWang.StrictSigns": {
-      "max_modules": 22
-    },
-    "RealRooted.MaWang.Strong": {
-      "max_modules": 23
-    },
-    "RealRooted.MaWang.Weak.Regularization": {
-      "max_modules": 24
-    },
-    "RealRooted.MaWang.Weak.SameDegree": {
-      "max_modules": 25
-    },
-    "RealRooted.MaWang.Weak.Successor": {
-      "max_modules": 26
-    },
-    "RealRooted.MaWang.Weak.Endpoint": {
-      "max_modules": 27
-    },
-    "RealRooted.MaWang.Weak": {
       "max_modules": 28
     },
-    "RealRooted.MaWang.DerivativeCore": {
+    "RealRooted.MaWang.StrictSigns.RootSigns": {
       "max_modules": 29
     },
-    "RealRooted.MaWang.DerivativeStep": {
+    "RealRooted.MaWang.StrictSigns.Assembly": {
+      "max_modules": 30
+    },
+    "RealRooted.MaWang.StrictSigns": {
+      "max_modules": 31
+    },
+    "RealRooted.MaWang.Strong": {
       "max_modules": 32
     },
-    "RealRooted.MaWang.DerivativeSequence": {
-      "max_modules": 38
-    },
-    "RealRooted.MaWang.DerivativeDenominator": {
-      "max_modules": 40
-    },
-    "RealRooted.MaWang.Derivative": {
-      "max_modules": 41
-    },
-    "RealRooted.MaWang.StrictStep": {
+    "RealRooted.MaWang.Weak.Regularization": {
       "max_modules": 33
     },
+    "RealRooted.MaWang.Weak.SameDegree": {
+      "max_modules": 34
+    },
+    "RealRooted.MaWang.Weak.Successor": {
+      "max_modules": 35
+    },
+    "RealRooted.MaWang.Weak.Endpoint": {
+      "max_modules": 36
+    },
+    "RealRooted.MaWang.Weak": {
+      "max_modules": 37
+    },
+    "RealRooted.MaWang.DerivativeCore": {
+      "max_modules": 38
+    },
+    "RealRooted.MaWang.DerivativeStep": {
+      "max_modules": 41
+    },
+    "RealRooted.MaWang.DerivativeSequence": {
+      "max_modules": 47
+    },
+    "RealRooted.MaWang.DerivativeDenominator": {
+      "max_modules": 49
+    },
+    "RealRooted.MaWang.Derivative": {
+      "max_modules": 50
+    },
+    "RealRooted.MaWang.StrictStep": {
+      "max_modules": 42
+    },
     "RealRooted.SimpleRoots": {
-      "max_modules": 10
+      "max_modules": 11
     },
     "RealRooted.Interlacing.Multiplicity": {
-      "max_modules": 10
+      "max_modules": 11
     },
     "RealRooted.Interlacing.Residue": {
-      "max_modules": 13
+      "max_modules": 22
     },
     "RealRooted.Tactic.MaWang.Basic": {
-      "max_modules": 51
-    },
-    "RealRooted.Tactic.MaWang.StepSyntax": {
-      "max_modules": 52
-    },
-    "RealRooted.Tactic.MaWang.SequenceSyntax": {
-      "max_modules": 53
-    },
-    "RealRooted.Tactic.MaWang.DenominatorSyntax": {
-      "max_modules": 54
-    },
-    "RealRooted.Tactic.MaWang.FactorSyntax": {
-      "max_modules": 55
-    },
-    "RealRooted.Tactic.MaWang.Steps": {
-      "max_modules": 56
-    },
-    "RealRooted.Tactic.MaWang.Sequences": {
-      "max_modules": 57
-    },
-    "RealRooted.Tactic.MaWang.Denominator": {
-      "max_modules": 58
-    },
-    "RealRooted.Tactic.MaWang.Factors": {
-      "max_modules": 59
-    },
-    "RealRooted.Tactic.MaWang": {
       "max_modules": 60
     },
+    "RealRooted.Tactic.MaWang.StepSyntax": {
+      "max_modules": 61
+    },
+    "RealRooted.Tactic.MaWang.SequenceSyntax": {
+      "max_modules": 62
+    },
+    "RealRooted.Tactic.MaWang.DenominatorSyntax": {
+      "max_modules": 63
+    },
+    "RealRooted.Tactic.MaWang.FactorSyntax": {
+      "max_modules": 64
+    },
+    "RealRooted.Tactic.MaWang.Steps": {
+      "max_modules": 65
+    },
+    "RealRooted.Tactic.MaWang.Sequences": {
+      "max_modules": 66
+    },
+    "RealRooted.Tactic.MaWang.Denominator": {
+      "max_modules": 67
+    },
+    "RealRooted.Tactic.MaWang.Factors": {
+      "max_modules": 68
+    },
+    "RealRooted.Tactic.MaWang": {
+      "max_modules": 69
+    },
     "RealRooted.Tactic.Product": {
-      "max_modules": 100
+      "max_modules": 109
     },
     "RealRooted.Tactic.Product.Rules": {
-      "max_modules": 99
+      "max_modules": 108
     },
     "RealRooted.Tactic.Product.Syntax": {
-      "max_modules": 27
+      "max_modules": 36
     },
     "RealRooted.Tactic.Product.Syntax.Basic": {
-      "max_modules": 23
+      "max_modules": 32
     },
     "RealRooted.Tactic.Product.Syntax.EndpointPair": {
-      "max_modules": 23
+      "max_modules": 32
     },
     "RealRooted.Tactic.Product.Syntax.Families": {
-      "max_modules": 23
+      "max_modules": 32
     },
     "RealRooted.Tactic.Product.Syntax.Lifts": {
-      "max_modules": 23
+      "max_modules": 32
     }
   },
   "forbidden_imports": [

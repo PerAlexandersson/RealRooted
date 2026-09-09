@@ -12,17 +12,13 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
-import re
 import sys
 import tempfile
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-
-IMPORT_RE = re.compile(
-    r"^\s*(?:(?:public|private)\s+)?import\s+([A-Za-z0-9_.']+)\s*$"
-)
+from lean_imports import parse_import_line
 
 
 @dataclass(frozen=True)
@@ -72,9 +68,9 @@ class ImportGraph:
         for module, path in module_paths.items():
             text = path.read_text(encoding="utf-8")
             imported = {
-                match.group(1)
+                directive.module
                 for line in text.splitlines()
-                if (match := IMPORT_RE.match(line))
+                if (directive := parse_import_line(line))
             }
             imports[module] = imported & module_paths.keys()
             line_counts[module] = len(text.splitlines())
