@@ -36,8 +36,13 @@ import RealRooted.ArrayPolynomialDeterminantRecurrence
 import RealRooted.ArrayPolynomialSchur
 import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
-import RealRooted.BasisTransform
 import RealRooted.Basic.AffineInterlacing
+import RealRooted.Basic.Coefficients
+import RealRooted.Basic.IntervalInequalities
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.RootLists
+import RealRooted.BasisTransform
 import RealRooted.Bezoutian
 import RealRooted.Bezoutian.ComplexRoots
 import RealRooted.Bezoutian.LowDegree
