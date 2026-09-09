@@ -40,33 +40,6 @@ def bandedLowerHessenberg {R : Type*} [CommRing R]
       else 0 :=
   rfl
 
-private theorem det_eq_last_apply_mul_det_castSucc_of_above_eq_zero
-    {R : Type*} [CommRing R] {n : ℕ}
-    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R)
-    (hzero : ∀ i : Fin n, A i.castSucc (Fin.last n) = 0) :
-    A.det = A (Fin.last n) (Fin.last n) *
-      (A.submatrix Fin.castSucc Fin.castSucc).det := by
-  have hdet := Matrix.det_succ_column A (Fin.last n)
-  rw [Fin.sum_univ_succAbove _ (Fin.last n)] at hdet
-  simp only [Fin.succAbove_last] at hdet
-  have hsum :
-      (∑ i : Fin n,
-        (-1 : R) ^ ((i.castSucc : Fin (n + 1)) + (Fin.last n : ℕ)) *
-          A i.castSucc (Fin.last n) *
-            (A.submatrix i.castSucc.succAbove Fin.castSucc).det) = 0 := by
-    apply Finset.sum_eq_zero
-    intro i hi
-    rw [hzero i]
-    ring
-  rw [hsum, add_zero] at hdet
-  have heven :
-      (-1 : R) ^ ((Fin.last n : ℕ) + (Fin.last n : ℕ)) = 1 := by
-    rw [show (Fin.last n : ℕ) + (Fin.last n : ℕ) = n + n by simp,
-      ← two_mul n, pow_mul]
-    simp
-  rw [heven, one_mul] at hdet
-  exact hdet
-
 private def bandedLowerHessenbergPenultimateCofactor
     {R : Type*} [CommRing R] (d a b : ℕ → R) (x : R) (n : ℕ) :
     Matrix (Fin (n + 2)) (Fin (n + 2)) R :=
