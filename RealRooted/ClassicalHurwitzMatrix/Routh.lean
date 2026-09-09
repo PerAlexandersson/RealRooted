@@ -64,6 +64,27 @@ the new even part. -/
 def routhReducedPolynomial (c : ℝ) (odd even : ℝ[X]) : ℝ[X] :=
   oddEvenPolynomial (routhReducedOddPart c odd even) odd
 
+/-- One Routh reduction reconstructs the original odd/even polynomial by an
+explicit linear identity. -/
+theorem oddEvenPolynomial_eq_X_mul_routhReducedPolynomial_add
+    (c : ℝ) (odd even : ℝ[X])
+    (h0 : even.coeff 0 = c * odd.coeff 0) :
+    oddEvenPolynomial odd even =
+      X * routhReducedPolynomial c odd even +
+        C c * odd.comp (X ^ 2) := by
+  let red := routhReducedOddPart c odd even
+  have heven : even = C c * odd + X * red :=
+    even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0
+  calc
+    oddEvenPolynomial odd even =
+        oddEvenPolynomial odd (C c * odd + X * red) := by rw [heven]
+    _ = X * oddEvenPolynomial red odd + C c * odd.comp (X ^ 2) := by
+      simp only [oddEvenPolynomial, add_comp, mul_comp, C_comp, X_comp]
+      ring
+    _ = X * routhReducedPolynomial c odd even +
+        C c * odd.comp (X ^ 2) := by
+      rfl
+
 end
 
 end RealRooted
