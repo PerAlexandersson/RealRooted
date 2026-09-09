@@ -38,6 +38,32 @@ def bidiagonalOperator (alpha beta : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
       alpha (n + 1) * p.coeff (n + 1) + beta n * p.coeff n := by
   simp [bidiagonalOperator]
 
+/-- An affine coefficient-bidiagonal operator is a pencil in a polynomial and
+its Euler derivative. The parameter order agrees with the coefficient formula
+`(b + d*k) p_k + (a + c*(k-1)) p_(k-1)`. -/
+theorem bidiagonalOperator_affine_weights (p : ℝ[X]) (a b c d : ℝ) :
+    bidiagonalOperator (fun k => b + d * (k : ℝ))
+        (fun k => a + c * (k : ℝ)) p =
+      (C a * X + C b) * p + (C c * X + C d) * (X * p.derivative) := by
+  have hform :
+      (C a * X + C b) * p + (C c * X + C d) * (X * p.derivative) =
+        C b * p + C a * (X * p) + C d * (X * p.derivative) +
+          C c * (X ^ 2 * p.derivative) := by
+    ring
+  rw [hform]
+  ext (_ | k)
+  · simp
+  · cases k with
+    | zero =>
+        simp [coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
+        ring
+    | succ k =>
+        simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative,
+          coeff_X_pow_mul', coeff_bidiagonalOperator_succ]
+        rw [if_pos (by lia : 2 ≤ k + 1 + 1)]
+        push_cast
+        ring
+
 /-- The bidiagonal operator raises degree by at most one. -/
 theorem natDegree_bidiagonalOperator_le
     (alpha beta : ℕ → ℝ) (p : ℝ[X]) :

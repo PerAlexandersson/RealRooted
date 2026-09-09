@@ -2,10 +2,13 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1037
+      "max_modules": 1038
     },
     "RealRooted.WangYeh.Affine": {
       "max_modules": 150
+    },
+    "RealRooted.WangYeh.PF": {
+      "max_modules": 159
     },
     "RealRooted.CommonInterleaver.RootSelection": {
       "max_modules": 99
