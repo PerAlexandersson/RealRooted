@@ -1,3 +1,4 @@
+import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
 
 /-!

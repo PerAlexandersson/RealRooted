@@ -27,6 +27,7 @@ import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
 import RealRooted.Apolarity
 import RealRooted.Applications.EulerianVariations
+import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
@@ -656,6 +657,7 @@ import RealRooted.NarayanaTransformation.Recurrences.Identities
 import RealRooted.NarayanaTransformation.Recurrences.Interlacing
 import RealRooted.NarayanaTransformation.Rising
 import RealRooted.NarayanaTransformation.RootGeometry
+import RealRooted.NarayanaTransformation.SimpleRoots
 import RealRooted.NewtonAux
 import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity
