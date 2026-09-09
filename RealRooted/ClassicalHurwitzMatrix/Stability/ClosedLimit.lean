@@ -1,5 +1,5 @@
 import RealRooted.ClassicalHurwitzMatrix.Stability
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 
 /-!
 # Closed limits of Hurwitz-stable polynomials
@@ -25,7 +25,7 @@ theorem isRightHalfPlaneStable_of_monic_tendsto_eval
   intro z hz hroot
   have hzroots : z ∈ p₀.roots := mem_roots'.mpr ⟨hp₀, hroot⟩
   have hzclosed : z ∈ {w : ℂ | w.re ≤ 0} := by
-    apply Matrix.roots_mem_of_tendsto_eval (N := N)
+    apply Polynomial.roots_mem_of_tendsto_eval (N := N)
       (isClosed_le Complex.continuous_re continuous_const) hm hdegree
       (fun k w hw => ?_) heval z hzroots
     exact le_of_not_gt fun hwre => hstable k w hwre (mem_roots'.mp hw).2
