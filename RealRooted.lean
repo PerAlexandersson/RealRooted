@@ -680,6 +680,7 @@ import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PosCombo
+import RealRooted.PosCombo.Degree
 import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.ProductFamily
 import RealRooted.ProductOrientation
