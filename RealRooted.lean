@@ -934,6 +934,13 @@ import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 import RealRooted.Tactic.Examples.OEIS.SecondDerivative
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
+import RealRooted.Tactic.Examples.OEISTestbed.Favard
+import RealRooted.Tactic.Examples.OEISTestbed.LiuWangMixed
+import RealRooted.Tactic.Examples.OEISTestbed.MaWangSequences
+import RealRooted.Tactic.Examples.OEISTestbed.MaWangSteps
+import RealRooted.Tactic.Examples.OEISTestbed.MixedDenominator
+import RealRooted.Tactic.Examples.OEISTestbed.NegativeSquare
+import RealRooted.Tactic.Examples.OEISTestbed.PromotedMixed
 import RealRooted.Tactic.Examples.OEISTestbedLS4
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal

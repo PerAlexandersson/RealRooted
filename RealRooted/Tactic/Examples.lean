@@ -109,6 +109,13 @@ import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.OEISTestbed
+import RealRooted.Tactic.Examples.OEISTestbed.Favard
+import RealRooted.Tactic.Examples.OEISTestbed.LiuWangMixed
+import RealRooted.Tactic.Examples.OEISTestbed.MaWangSequences
+import RealRooted.Tactic.Examples.OEISTestbed.MaWangSteps
+import RealRooted.Tactic.Examples.OEISTestbed.MixedDenominator
+import RealRooted.Tactic.Examples.OEISTestbed.NegativeSquare
+import RealRooted.Tactic.Examples.OEISTestbed.PromotedMixed
 import RealRooted.Tactic.Examples.OEISTestbedLS4
 
 /-!
