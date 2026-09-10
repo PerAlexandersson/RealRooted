@@ -120,4 +120,40 @@ theorem HasNonnegInitialColumnMinors.pivot_pos_and_trailing_det_ne_zero
     simpa using hA (m := 1) (by simp) ![0] (by simp)
   exact ⟨lt_of_le_of_ne hnonneg (Ne.symm hpivot), htrailing⟩
 
+/-- If the trailing block is totally nonnegative, then every ordered minor
+whose selected columns all avoid column zero is nonnegative. -/
+theorem nonneg_of_isTotallyNonneg_trailing
+    {R : Type*} [CommRing R] [PartialOrder R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (hzero : ∀ j : Fin N, A 0 j.succ = 0)
+    (hB : (A.submatrix Fin.succ Fin.succ).IsTotallyNonneg)
+    {n : ℕ} (rows : Fin n → Fin (N + 1)) (cols : Fin n → Fin N)
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ (A.submatrix rows (fun j => (cols j).succ)).det := by
+  cases n with
+  | zero =>
+    simpa using hB (rows := cols) (cols := cols) hcols hcols
+  | succ n =>
+    by_cases hfirst : rows 0 = 0
+    · have hrow : ∀ j : Fin (n + 1),
+          (A.submatrix rows (fun j => (cols j).succ)) 0 j = 0 := by
+        intro j
+        simpa [hfirst] using hzero (cols j)
+      rw [det_eq_zero_of_row_eq_zero (0 : Fin (n + 1)) hrow]
+    · have hrows_ne_zero : ∀ i, rows i ≠ 0 := by
+        intro i hzeroi
+        apply hfirst
+        apply Fin.le_zero_iff.mp
+        simpa [hzeroi] using hrows.monotone (Fin.zero_le i)
+      let rows' : Fin (n + 1) → Fin N := fun i => (rows i).pred (hrows_ne_zero i)
+      have hrows' : StrictMono rows' := by
+        intro i j hij
+        exact Fin.pred_lt_pred_iff.mpr (hrows hij)
+      have heq : A.submatrix rows (fun j => (cols j).succ) =
+          (A.submatrix Fin.succ Fin.succ).submatrix rows' cols := by
+        ext i j
+        simp [rows']
+      rw [heq]
+      exact hB hrows' hcols
+
 end Matrix
