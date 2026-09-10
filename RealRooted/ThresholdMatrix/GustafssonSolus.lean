@@ -84,22 +84,16 @@ private lemma prec0_gs_affine_add_one_X
       hs zero_lt_one (by nlinarith [ht])
 
 private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    prec0_refl_of_realRooted
-      (isRealRooted_affine_factor (s := s + 1) (t := t) (by positivity))
+    Prec0 (C s * X + C t + X) (C s * X + C t + X) :=
+  prec0_affine_add_X_self hs
 
 private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
     Prec0 (C s * X + C t) (C s * X + C t) :=
   prec0_refl_of_realRooted (isRealRooted_affine_factor (s := s) (t := t) hs)
 
 private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact
-    prec0_refl_of_realRooted
-      (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
+    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) :=
+  prec0_affine_add_one_self hs
 
 private lemma prec0_gs_X_X : Prec0 (X : ℝ[X]) X :=
   prec0_refl_of_realRooted isRealRooted_X

@@ -224,10 +224,8 @@ private lemma prec0_hz_linear_to_quadratic_of_eval_nonpos
       (by lia) (by lia) hno hroot).toPrec0
 
 private lemma prec0_hz_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact prec0_refl_of_realRooted
-    (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
+    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) :=
+  prec0_affine_add_one_self hs
 
 private lemma prec0_hz_affine_add_one_affine_add_one_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -264,10 +262,8 @@ private lemma prec0_hz_affine_add_one_add_X_affine_add_X
       (by positivity) (by positivity) (by nlinarith)
 
 private lemma prec0_hz_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact prec0_refl_of_realRooted
-    (isRealRooted_affine_factor (s := s + 1) (t := t) (by positivity))
+    Prec0 (C s * X + C t + X) (C s * X + C t + X) :=
+  prec0_affine_add_X_self hs
 
 private lemma prec0_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :

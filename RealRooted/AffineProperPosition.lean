@@ -176,4 +176,15 @@ lemma prec0_affine_add_one_affine_add_X
       (u := s) (v := t + 1) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [hs, ht])
 
+lemma prec0_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
+    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact prec0_affine_linear_affine_linear_of_cross
+    (by positivity) (by positivity) le_rfl
+
+lemma prec0_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
+    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  exact prec0_affine_linear_affine_linear_of_cross hs hs le_rfl
+
 end RealRooted
