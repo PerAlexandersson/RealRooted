@@ -1368,6 +1368,82 @@ noncomputable def blockwisePolarizationDegreeBoxGeneral
           (isMultiaffine_blockwisePolarizationBasis κ m)⟩ := by
   simp [blockwisePolarizationDegreeBoxGeneral]
 
+private theorem rename_blockwisePolarizationBasis_sigmaCongrRight
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i})
+    (e : ∀ i, Equiv.Perm (Fin (κ i))) :
+    MvPolynomial.rename (Equiv.Perm.sigmaCongrRight e)
+        (blockwisePolarizationBasis κ m) =
+      blockwisePolarizationBasis κ m := by
+  classical
+  unfold blockwisePolarizationBasis
+  simp only [map_prod, MvPolynomial.rename_rename]
+  apply Finset.prod_congr rfl
+  intro i _
+  have hcomp :
+      (Equiv.Perm.sigmaCongrRight e : PolarizedSource κ → PolarizedSource κ) ∘
+          blockEmbedding κ i =
+        blockEmbedding κ i ∘ e i := by
+    funext j
+    rfl
+  rw [hcomp, ← MvPolynomial.rename_rename,
+    _root_.RealRooted.isSymmetric_polarization (κ i) (Polynomial.X ^ m.1 i) (e i)]
+
+/-- General blockwise polarization is invariant under independent
+permutations within each source block. -/
+theorem rename_blockwisePolarizationDegreeBoxGeneral_sigmaCongrRight
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℂ κ)
+    (e : ∀ i, Equiv.Perm (Fin (κ i))) :
+    MvPolynomial.rename (Equiv.Perm.sigmaCongrRight e)
+        (blockwisePolarizationDegreeBoxGeneral κ p).1 =
+      (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
+  have hmaps :
+      (MvPolynomial.renameEquiv ℂ
+          (Equiv.Perm.sigmaCongrRight e)).toLinearMap.comp
+          ((Submodule.subtype
+            (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
+              (blockwisePolarizationDegreeBoxGeneral κ)) =
+        (Submodule.subtype
+          (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
+            (blockwisePolarizationDegreeBoxGeneral κ) := by
+    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+    intro m
+    simp only [LinearMap.comp_apply,
+      blockwisePolarizationDegreeBoxGeneral_basis]
+    exact rename_blockwisePolarizationBasis_sigmaCongrRight κ m e
+  exact LinearMap.congr_fun hmaps p
+
+/-- For a polynomial invariant under permutations within every source block,
+all clone derivatives in one block agree after diagonal renaming. -/
+theorem rename_pderiv_block_clone_eq
+    {σ : Type*} (κ : σ → ℕ)
+    (Q : MvPolynomial (PolarizedSource κ) ℂ)
+    (hsym : ∀ e : ∀ i, Equiv.Perm (Fin (κ i)),
+      MvPolynomial.rename (Equiv.Perm.sigmaCongrRight e) Q = Q)
+    (i : σ) (j k : Fin (κ i)) :
+    MvPolynomial.rename Sigma.fst (MvPolynomial.pderiv ⟨i, j⟩ Q) =
+      MvPolynomial.rename Sigma.fst (MvPolynomial.pderiv ⟨i, k⟩ Q) := by
+  classical
+  let e : ∀ a, Equiv.Perm (Fin (κ a)) :=
+    Function.update (fun a => Equiv.refl (Fin (κ a))) i (Equiv.swap j k)
+  let E : Equiv.Perm (PolarizedSource κ) := Equiv.Perm.sigmaCongrRight e
+  have hE_j : E ⟨i, j⟩ = ⟨i, k⟩ := by
+    simp [E, e]
+  have hfst : Sigma.fst ∘ E = Sigma.fst := by
+    funext x
+    rfl
+  have hderiv :
+      MvPolynomial.pderiv ⟨i, k⟩ Q =
+        MvPolynomial.rename E (MvPolynomial.pderiv ⟨i, j⟩ Q) := by
+    calc
+      MvPolynomial.pderiv ⟨i, k⟩ Q =
+          MvPolynomial.pderiv (E ⟨i, j⟩) (MvPolynomial.rename E Q) := by
+            rw [hE_j, hsym e]
+      _ = MvPolynomial.rename E (MvPolynomial.pderiv ⟨i, j⟩ Q) :=
+        MvPolynomial.pderiv_rename E.injective ⟨i, j⟩ Q
+  rw [hderiv, MvPolynomial.rename_rename, hfst]
+
 /-- The final partial stage is the direct full blockwise polarization. -/
 theorem rename_partialBlockwisePolarizationDegreeBox_univ
     {σ : Type*} [Fintype σ] [DecidableEq σ]
