@@ -33,6 +33,47 @@ theorem causalFwdDiffPolynomial_iter_zero (k : ℕ) :
   | succ k ih => simp only [Function.iterate_succ_apply', ih,
       causalFwdDiffPolynomial_zero]
 
+/-- Iterating the polynomial causal transform agrees with ordinary forward
+differences after the corresponding evaluation shift. -/
+theorem eval_causalFwdDiffPolynomial_iter_add (p : ℝ[X]) (k : ℕ) (x : ℝ) :
+    ((causalFwdDiffPolynomial^[k]) p).eval (x + (k : ℝ)) =
+      ((fwdDiff 1)^[k] p.eval) x := by
+  induction k generalizing x with
+  | zero => simp
+  | succ k ih =>
+    rw [Function.iterate_succ_apply']
+    rw [causalFwdDiffPolynomial, eval_sub, eval_comp]
+    have hsucc : x + ((k + 1 : ℕ) : ℝ) = (x + 1) + (k : ℝ) := by
+      push_cast
+      ring
+    have hsub : (X - C 1 : ℝ[X]).eval ((x + 1) + (k : ℝ)) = x + (k : ℝ) := by
+      simp only [eval_sub, eval_X, eval_C]
+      ring
+    rw [hsucc, hsub]
+    rw [ih (x + 1), ih x]
+    simp only [Function.iterate_succ_apply', fwdDiff]
+
+/-- Before exceeding the natural degree of a nonzero polynomial, iterating
+the polynomial causal transform cannot produce zero. -/
+theorem causalFwdDiffPolynomial_iter_ne_zero_of_le_natDegree
+    {p : ℝ[X]} (hp : p ≠ 0) {k : ℕ} (hk : k ≤ p.natDegree) :
+    (causalFwdDiffPolynomial^[k]) p ≠ 0 := by
+  intro hzero
+  have hkzero : (fwdDiff 1)^[k] p.eval = 0 := by
+    ext x
+    simpa [hzero] using (eval_causalFwdDiffPolynomial_iter_add p k x).symm
+  have hdzero : (fwdDiff 1)^[p.natDegree] p.eval = 0 := by
+    rw [← Nat.sub_add_cancel hk, Function.iterate_add_apply, hkzero]
+    apply Function.iterate_fixed
+    ext x
+    simp [fwdDiff]
+  have htop := congr_fun p.fwdDiff_iter_degree_eq_factorial (0 : ℝ)
+  rw [hdzero] at htop
+  have hcoeff : p.leadingCoeff * (p.natDegree.factorial : ℝ) = 0 := by
+    simpa [Pi.smul_apply, smul_eq_mul] using htop.symm
+  exact (mul_ne_zero (leadingCoeff_ne_zero.mpr hp)
+    (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _))) hcoeff
+
 /-- An eventual polynomial-evaluation tail remains an eventual evaluation
 tail after a fixed natural-number shift. -/
 theorem eventually_eq_eval_nat_add {a : ℕ → ℝ} {p : ℝ[X]}
