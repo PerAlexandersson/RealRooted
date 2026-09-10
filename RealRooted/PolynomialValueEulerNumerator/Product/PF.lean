@@ -7,9 +7,9 @@ import RealRooted.PolynomialValueEulerNumerator.Product
 This file applies the BFJ construction to the canonical Euler numerators and
 records the resulting PF certificate for polynomial-value sequences.
 
-The input PF hypotheses here concern the canonical numerators themselves, not
-only their polynomial-value sequences. Deriving numerator certificates from
-sequence PF hypotheses is the separate converse still tracked by issue #591.
+The direct product theorem below takes canonical-numerator certificates. The
+opt-in `Product.PF.Causal` child derives those certificates from
+polynomial-value PF hypotheses with nonzero eventual polynomial tails.
 -/
 
 open Polynomial

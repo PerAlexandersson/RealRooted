@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1132
+      "max_modules": 1134
     },
     "RealRooted.Production": {
-      "max_modules": 1011
+      "max_modules": 1013
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -77,6 +77,12 @@
     },
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix": {
       "max_modules": 73
+    },
+    "RealRooted.PolynomialValueEulerNumerator.PF.Causal": {
+      "max_modules": 110
+    },
+    "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal": {
+      "max_modules": 167
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
@@ -1814,6 +1820,8 @@
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure",
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix",
+    "RealRooted.PolynomialValueEulerNumerator.PF.Causal",
+    "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal",
     "RealRooted.RankTwoMatching.Basic",
     "RealRooted.RankTwoMatching.Orientation",
     "RealRooted.RankTwoMatching.DisjointEquiv",
