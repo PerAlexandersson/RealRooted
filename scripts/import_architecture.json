@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1045
+      "max_modules": 1046
+    },
+    "RealRooted.PolyaFrequencyConvolution.Basic": {
+      "max_modules": 17
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation": {
       "max_modules": 3

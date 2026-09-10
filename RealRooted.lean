@@ -709,6 +709,7 @@ import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
 import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PolyaFrequencyConvolution.Basic
 import RealRooted.PolynomialValueEulerNumerator
 import RealRooted.PosCombo
 import RealRooted.PosCombo.Degree
