@@ -591,6 +591,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
