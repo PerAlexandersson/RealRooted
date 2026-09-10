@@ -170,15 +170,18 @@ private theorem nanjundiah_aux
       congr 1
       lia
 
-private theorem reindex_shifted_choose_sum
-    (a b k l t : ℕ) (hk : k ≤ a) (hl : l ≤ b) :
+/-! ### A weighted support reindexing -/
+
+/-- Reindex a product of shifted binomial coefficients on its exact support. -/
+theorem sum_range_shifted_choose_reindex
+    {R : Type*} [CommSemiring R] (a b k l : ℕ)
+    (hk : k ≤ a) (hl : l ≤ b) (F : ℕ → R) :
     (∑ j ∈ Finset.range (b + 1),
-      Nat.choose (b - l + k) j * Nat.choose (a - k + l) (b - j) *
-        Nat.choose (t + a - k + j) (a + b)) =
+      (Nat.choose (b - l + k) j : R) *
+        (Nat.choose (a - k + l) (b - j) : R) * F (b + k - j)) =
       ∑ i ∈ Finset.Icc (max k l) (min (a + l) (b + k)),
-        Nat.choose (a - k + l) (i - k) *
-          Nat.choose (b - l + k) (i - l) *
-            Nat.choose (t + a + b - i) (a + b) := by
+        (Nat.choose (a - k + l) (i - k) : R) *
+          (Nat.choose (b - l + k) (i - l) : R) * F i := by
   apply Finset.sum_bij_ne_zero (fun j _ _ => b + k - j)
   · intro j hj hne
     have hjb : j ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
@@ -217,15 +220,13 @@ private theorem reindex_shifted_choose_sum
     have hbjA : b - j ≤ a - k + l := by dsimp [j]; lia
     have hmap : b + k - j = i := by dsimp [j]; lia
     have hterm :
-        Nat.choose (b - l + k) j * Nat.choose (a - k + l) (b - j) *
-            Nat.choose (t + a - k + j) (a + b) =
-          Nat.choose (a - k + l) (i - k) *
-            Nat.choose (b - l + k) (i - l) *
-              Nat.choose (t + a + b - i) (a + b) := by
+        (Nat.choose (b - l + k) j : R) *
+              (Nat.choose (a - k + l) (b - j) : R) * F (b + k - j) =
+          (Nat.choose (a - k + l) (i - k) : R) *
+            (Nat.choose (b - l + k) (i - l) : R) * F i := by
       have h1 : i - k = b - j := by dsimp [j]; lia
       have h2 : i - l = b - l + k - j := by dsimp [j]; lia
-      have h3 : t + a + b - i = t + a - k + j := by dsimp [j]; lia
-      rw [h1, h2, h3, Nat.choose_symm hjB]
+      rw [h1, h2, hmap, Nat.choose_symm hjB]
       ring
     refine ⟨j, Finset.mem_range.mpr (Nat.lt_succ_of_le hjb), ?_, hmap⟩
     intro hz
@@ -248,9 +249,39 @@ private theorem reindex_shifted_choose_sum
       simp
     have h1 : b + k - j - k = b - j := by lia
     have h2 : b + k - j - l = b - l + k - j := by lia
-    have h3 : t + a + b - (b + k - j) = t + a - k + j := by lia
-    rw [h1, h2, h3, Nat.choose_symm hjB]
+    rw [h1, h2, Nat.choose_symm hjB]
     ring
+
+private theorem reindex_shifted_choose_sum
+    (a b k l t : ℕ) (hk : k ≤ a) (hl : l ≤ b) :
+    (∑ j ∈ Finset.range (b + 1),
+      Nat.choose (b - l + k) j * Nat.choose (a - k + l) (b - j) *
+        Nat.choose (t + a - k + j) (a + b)) =
+      ∑ i ∈ Finset.Icc (max k l) (min (a + l) (b + k)),
+        Nat.choose (a - k + l) (i - k) *
+          Nat.choose (b - l + k) (i - l) *
+            Nat.choose (t + a + b - i) (a + b) := by
+  let F : ℕ → ℕ := fun i => Nat.choose (t + a + b - i) (a + b)
+  calc
+    (∑ j ∈ Finset.range (b + 1),
+        Nat.choose (b - l + k) j * Nat.choose (a - k + l) (b - j) *
+          Nat.choose (t + a - k + j) (a + b)) =
+        ∑ j ∈ Finset.range (b + 1),
+          Nat.choose (b - l + k) j * Nat.choose (a - k + l) (b - j) *
+            F (b + k - j) := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      have hjb : j ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
+      have h3 : t + a + b - (b + k - j) = t + a - k + j := by lia
+      simp only [F, h3]
+    _ = ∑ i ∈ Finset.Icc (max k l) (min (a + l) (b + k)),
+        Nat.choose (a - k + l) (i - k) *
+          Nat.choose (b - l + k) (i - l) * F i :=
+      sum_range_shifted_choose_reindex a b k l hk hl F
+    _ = ∑ i ∈ Finset.Icc (max k l) (min (a + l) (b + k)),
+        Nat.choose (a - k + l) (i - k) *
+          Nat.choose (b - l + k) (i - l) *
+            Nat.choose (t + a + b - i) (a + b) := by rfl
 
 /-- A guarded form of Nanjundiah's binomial identity. -/
 theorem shifted_choose_mul_eq_sum
