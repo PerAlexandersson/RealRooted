@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1140
+      "max_modules": 1141
     },
     "RealRooted.Production": {
-      "max_modules": 1019
+      "max_modules": 1020
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -32,6 +32,9 @@
     },
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real": {
+      "max_modules": 3
     },
     "RealRooted.Applications.OEIS.A272471.Recurrence": {
       "max_modules": 2
@@ -1717,6 +1720,7 @@
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale",
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real",
     "RealRooted.Applications.OEIS.A272471.Recurrence",
     "RealRooted.TridiagonalDet.Recurrence",
     "RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder",

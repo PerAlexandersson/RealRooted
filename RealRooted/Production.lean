@@ -540,6 +540,7 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
 import RealRooted.Applications.OEIS.A272471.Recurrence
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
