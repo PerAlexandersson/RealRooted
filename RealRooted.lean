@@ -1128,3 +1128,4 @@ import RealRooted.Production
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
 import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
+import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
