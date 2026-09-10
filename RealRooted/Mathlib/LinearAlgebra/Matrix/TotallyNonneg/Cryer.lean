@@ -159,6 +159,30 @@ theorem HasNonnegInitialColumnMinors.pivot_pos_and_trailing_det_ne_zero
     simpa using hA (m := 1) (by simp) ![0] (by simp)
   exact ⟨lt_of_le_of_ne hnonneg (Ne.symm hpivot), htrailing⟩
 
+/-- Upper-zero shape, nonnegative initial-column flag minors, and a nonzero
+determinant force every diagonal entry to be positive. -/
+theorem HasNonnegInitialColumnMinors.diagonal_pos_of_upper_zero_of_det_ne_zero
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] :
+    ∀ {N : ℕ} (A : Matrix (Fin N) (Fin N) R),
+      A.HasNonnegInitialColumnMinors →
+      (∀ i j, i < j → A i j = 0) → A.det ≠ 0 → ∀ i, 0 < A i i := by
+  intro N
+  induction N with
+  | zero =>
+    intro A _ _ _ i
+    exact Fin.elim0 i
+  | succ N ih =>
+    intro A hA hupper hdet i
+    have hzero : ∀ j : Fin N, A 0 j.succ = 0 := fun j =>
+      hupper 0 j.succ (by simp)
+    obtain ⟨hpivot, hdetB⟩ :=
+      hA.pivot_pos_and_trailing_det_ne_zero A hzero hdet
+    have hB := hA.trailing A hzero hpivot
+    rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨j, rfl⟩
+    · exact hpivot
+    · exact ih (A.submatrix Fin.succ Fin.succ) hB
+        (fun k l hkl => hupper k.succ l.succ (Fin.succ_lt_succ_iff.mpr hkl)) hdetB j
+
 /-- If the trailing block is totally nonnegative, then every ordered minor
 whose selected columns all avoid column zero is nonnegative. -/
 theorem nonneg_of_isTotallyNonneg_trailing
