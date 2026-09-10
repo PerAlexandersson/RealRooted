@@ -908,8 +908,11 @@ import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+import RealRooted.Tactic.Examples.OEIS.NegativeLag
+import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
 import RealRooted.Tactic.Examples.OEIS.PositiveLag
 import RealRooted.Tactic.Examples.OEIS.ProductLift
+import RealRooted.Tactic.Examples.OEIS.ProductRouters
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.OEISTestbedLS4
