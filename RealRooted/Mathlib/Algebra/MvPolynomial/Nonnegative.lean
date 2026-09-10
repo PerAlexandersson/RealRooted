@@ -132,6 +132,28 @@ theorem prod {σ ι : Type*} {s : Finset ι}
       exact mul (hP i (Finset.mem_insert_self i s))
         (ih fun j hj => hP j (Finset.mem_insert_of_mem hj))
 
+/-- Substitution by polynomials with nonnegative coefficients preserves
+coefficientwise nonnegativity. -/
+theorem aeval {σ τ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : HasNonnegCoeffs P) {f : σ → MvPolynomial τ ℝ}
+    (hf : ∀ i, HasNonnegCoeffs (f i)) :
+    HasNonnegCoeffs (MvPolynomial.aeval f P) := by
+  classical
+  rw [P.as_sum, map_sum]
+  apply sum
+  intro m hm
+  rw [MvPolynomial.aeval_monomial]
+  exact mul (C (hP m)) (prod fun i hi => pow (hf i) _)
+
+/-- Taking a coefficient in one distinguished variable preserves
+coefficientwise nonnegativity. -/
+theorem optionEquivLeft_coeff {σ : Type*} {P : MvPolynomial (Option σ) ℝ}
+    (hP : HasNonnegCoeffs P) (k : ℕ) :
+    HasNonnegCoeffs ((MvPolynomial.optionEquivLeft ℝ σ P).coeff k) := by
+  intro m
+  rw [MvPolynomial.optionEquivLeft_coeff_coeff]
+  exact hP _
+
 end HasNonnegCoeffs
 
 end MvPolynomial
