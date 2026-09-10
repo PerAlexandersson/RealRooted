@@ -652,6 +652,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 import RealRooted.MatrixInterlacing
 import RealRooted.MatrixInterlacing.Action
 import RealRooted.MatrixInterlacing.AffinePair

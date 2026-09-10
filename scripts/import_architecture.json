@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1124
+      "max_modules": 1125
     },
     "RealRooted.Production": {
-      "max_modules": 1003
+      "max_modules": 1004
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -82,7 +82,7 @@
       "max_modules": 16
     },
     "RealRooted.MatrixInterlacing.PrincipalInterlacingExamples": {
-      "max_modules": 136
+      "max_modules": 137
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank": {
       "max_modules": 1
@@ -775,16 +775,16 @@
       "max_modules": 4
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density": {
-      "max_modules": 42
+      "max_modules": 43
     },
     "RealRooted.InterlacingClosure": {
       "max_modules": 101
     },
     "RealRooted.MatrixInterlacingClosure": {
-      "max_modules": 104
+      "max_modules": 105
     },
     "RealRooted.TotallyNonnegInterlacing": {
-      "max_modules": 133
+      "max_modules": 134
     },
     "RealRooted.OscillatoryInterlacing": {
       "max_modules": 38
@@ -986,6 +986,9 @@
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
       "max_modules": 5
+    },
+    "RealRooted.Mathlib.Topology.Instances.Matrix.Determinant": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.Topology.Algebra.Polynomial": {
       "max_modules": 1
@@ -1781,6 +1784,7 @@
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference",
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
+    "RealRooted.Mathlib.Topology.Instances.Matrix.Determinant",
     "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
     "RealRooted.RankTwoMatching.Basic",

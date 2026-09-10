@@ -567,6 +567,7 @@ import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
