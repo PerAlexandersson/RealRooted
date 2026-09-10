@@ -9,6 +9,16 @@ natural arguments.
 
 open Filter
 
+namespace Function
+
+/-- The forward difference with its initial value retained. This is the
+causal difference convention for sequences indexed by `ℕ`. -/
+def causalFwdDiff {R : Type*} [Sub R] (a : ℕ → R) : ℕ → R
+  | 0 => a 0
+  | n + 1 => a (n + 1) - a n
+
+end Function
+
 namespace Polynomial
 
 /-- Evaluations of a nonzero real polynomial at two fixed translates of the
@@ -61,5 +71,36 @@ theorem eventually_pos_of_eventually_nonneg_of_eventually_eq_eval_nat
   apply lt_of_le_of_ne hnonneg
   rw [han]
   exact Ne.symm (by simpa [IsRoot] using hn)
+
+/-- Causal forward differences preserve an eventual polynomial evaluation
+tail. The exceptional initial value is immaterial at `atTop`. -/
+theorem eventually_eq_eval_causalFwdDiff {a : ℕ → ℝ} {p : ℝ[X]}
+    (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) :
+    ∀ᶠ n in atTop, Function.causalFwdDiff a n =
+      (p - p.comp (X - C 1)).eval (n : ℝ) := by
+  filter_upwards [hap, (tendsto_sub_atTop_nat 1).eventually hap,
+    eventually_gt_atTop 0] with n hn hprev hpos
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hpos.ne'
+  have hm : a m = p.eval (m : ℝ) := by simpa using hprev
+  simp [Function.causalFwdDiff, hn, hm, eval_sub, eval_comp]
+
+/-- The eventual polynomial tail of a causal forward difference has lower
+degree whenever the original polynomial is nonconstant. -/
+theorem natDegree_sub_comp_X_sub_C_lt {p : ℝ[X]} (hp : p.natDegree ≠ 0) :
+    (p - p.comp (X - C 1)).natDegree < p.natDegree := by
+  have hp0 : p ≠ 0 := by
+    intro h
+    apply hp
+    simp [h]
+  by_cases hq : p - p.comp (X - C 1) = 0
+  · rw [hq, natDegree_zero]
+    exact Nat.pos_of_ne_zero hp
+  rw [natDegree_lt_natDegree_iff hq]
+  apply degree_sub_lt
+  · symm
+    rw [degree_comp (by rw [degree_X_sub_C]; decide), degree_X_sub_C, mul_one]
+  · exact hp0
+  · rw [leadingCoeff_comp (by rw [natDegree_X_sub_C]; decide),
+      leadingCoeff_X_sub_C, one_pow, mul_one]
 
 end Polynomial
