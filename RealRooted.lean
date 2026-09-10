@@ -542,6 +542,7 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
 import RealRooted.Applications.OEIS.A272471.Recurrence

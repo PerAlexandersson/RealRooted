@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1147
+      "max_modules": 1148
     },
     "RealRooted.Production": {
-      "max_modules": 1026
+      "max_modules": 1027
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -38,6 +38,9 @@
     },
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm": {
       "max_modules": 3
+    },
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real": {
+      "max_modules": 4
     },
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors": {
       "max_modules": 3
@@ -1741,6 +1744,7 @@
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm",
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real",
     "RealRooted.Applications.OEIS.A272471.Recurrence",
