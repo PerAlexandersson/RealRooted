@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1050
+      "max_modules": 1051
+    },
+    "RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah": {
+      "max_modules": 1
     },
     "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction": {
       "max_modules": 39

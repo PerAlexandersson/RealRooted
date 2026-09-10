@@ -572,6 +572,7 @@ import RealRooted.Mathlib.Data.Multiset.Card
 import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
+import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
