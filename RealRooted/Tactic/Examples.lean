@@ -24,9 +24,15 @@ import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.GeneralizedLaguerre
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.MaWang.AtomicWindows
 import RealRooted.Tactic.Examples.MaWang.DirectSteps
+import RealRooted.Tactic.Examples.MaWang.FactorWindows
 import RealRooted.Tactic.Examples.MaWang.LiuWang
+import RealRooted.Tactic.Examples.MaWang.NonnegativeDenominator
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences
+import RealRooted.Tactic.Examples.MaWang.ScalarWindows
 import RealRooted.Tactic.Examples.MaWang.WeakSequences
+import RealRooted.Tactic.Examples.MaWang.XFactorSequences
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Linear

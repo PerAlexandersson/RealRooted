@@ -899,9 +899,15 @@ import RealRooted.Tactic.Examples.LiuWang.StrictProducts
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.MaWang.AtomicWindows
 import RealRooted.Tactic.Examples.MaWang.DirectSteps
+import RealRooted.Tactic.Examples.MaWang.FactorWindows
 import RealRooted.Tactic.Examples.MaWang.LiuWang
+import RealRooted.Tactic.Examples.MaWang.NonnegativeDenominator
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences
+import RealRooted.Tactic.Examples.MaWang.ScalarWindows
 import RealRooted.Tactic.Examples.MaWang.WeakSequences
+import RealRooted.Tactic.Examples.MaWang.XFactorSequences
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
