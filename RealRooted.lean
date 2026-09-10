@@ -881,6 +881,7 @@ import RealRooted.Tactic.Examples.Kurtz
 import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
+import RealRooted.Tactic.Examples.LiuWang.Step
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang

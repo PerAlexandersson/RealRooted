@@ -31,6 +31,7 @@ import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
+import RealRooted.Tactic.Examples.LiuWang.Step
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.RecurrenceIdentification
