@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1125
+      "max_modules": 1126
     },
     "RealRooted.Production": {
-      "max_modules": 1004
+      "max_modules": 1005
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -76,6 +76,9 @@
       "max_modules": 17
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation": {
+      "max_modules": 3
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer": {
       "max_modules": 3
     },
     "RealRooted.PolynomialValueEulerNumerator": {
