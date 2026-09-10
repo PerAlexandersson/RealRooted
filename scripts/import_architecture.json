@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1135
+      "max_modules": 1136
     },
     "RealRooted.Production": {
-      "max_modules": 1014
+      "max_modules": 1015
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -23,6 +23,9 @@
     },
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator": {
       "max_modules": 1
+    },
+    "RealRooted.TridiagonalDet.Recurrence": {
+      "max_modules": 3
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize": {
       "max_modules": 141
@@ -1699,6 +1702,7 @@
     "RealRooted.Jacobi.Orthogonality.Integral",
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
+    "RealRooted.TridiagonalDet.Recurrence",
     "RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder",
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator",
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment",

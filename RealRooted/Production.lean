@@ -974,6 +974,7 @@ import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.Transforms.ReverseHermite.Derivative
 import RealRooted.Transforms.ReverseHermite.Preservation
 import RealRooted.TridiagonalDet
+import RealRooted.TridiagonalDet.Recurrence
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
 import RealRooted.VeroneseSection
