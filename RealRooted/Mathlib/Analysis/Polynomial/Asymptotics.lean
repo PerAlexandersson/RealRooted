@@ -21,6 +21,11 @@ end Function
 
 namespace Polynomial
 
+/-- The polynomial transform describing the eventual tail of a causal forward
+difference. -/
+noncomputable def causalFwdDiffPolynomial (p : ℝ[X]) : ℝ[X] :=
+  p - p.comp (X - C 1)
+
 /-- Evaluations of a nonzero real polynomial at two fixed translates of the
 natural numbers have ratio tending to one. -/
 theorem tendsto_eval_nat_add_div {p : ℝ[X]} (hp : p ≠ 0) (u v : ℝ) :
@@ -77,17 +82,33 @@ tail. The exceptional initial value is immaterial at `atTop`. -/
 theorem eventually_eq_eval_causalFwdDiff {a : ℕ → ℝ} {p : ℝ[X]}
     (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) :
     ∀ᶠ n in atTop, Function.causalFwdDiff a n =
-      (p - p.comp (X - C 1)).eval (n : ℝ) := by
+      (causalFwdDiffPolynomial p).eval (n : ℝ) := by
   filter_upwards [hap, (tendsto_sub_atTop_nat 1).eventually hap,
     eventually_gt_atTop 0] with n hn hprev hpos
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hpos.ne'
   have hm : a m = p.eval (m : ℝ) := by simpa using hprev
-  simp [Function.causalFwdDiff, hn, hm, eval_sub, eval_comp]
+  simp [causalFwdDiffPolynomial, Function.causalFwdDiff, hn, hm, eval_sub,
+    eval_comp]
+
+/-- Iterating causal forward differences preserves an eventual polynomial
+evaluation tail, while allowing arbitrary finite initial data. -/
+theorem eventually_eq_eval_causalFwdDiff_iter {a : ℕ → ℝ} {p : ℝ[X]}
+    (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) (k : ℕ) :
+    ∀ᶠ n in atTop, (Function.causalFwdDiff^[k]) a n =
+      ((causalFwdDiffPolynomial^[k]) p).eval (n : ℝ) := by
+  induction k with
+  | zero =>
+    change ∀ᶠ n in atTop, a n = p.eval (n : ℝ)
+    exact hap
+  | succ k ih =>
+    simpa only [Function.iterate_succ_apply'] using
+      eventually_eq_eval_causalFwdDiff ih
 
 /-- The eventual polynomial tail of a causal forward difference has lower
 degree whenever the original polynomial is nonconstant. -/
 theorem natDegree_sub_comp_X_sub_C_lt {p : ℝ[X]} (hp : p.natDegree ≠ 0) :
-    (p - p.comp (X - C 1)).natDegree < p.natDegree := by
+    (causalFwdDiffPolynomial p).natDegree < p.natDegree := by
+  change (p - p.comp (X - C 1)).natDegree < p.natDegree
   have hp0 : p ≠ 0 := by
     intro h
     apply hp
