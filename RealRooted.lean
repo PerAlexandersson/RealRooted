@@ -44,6 +44,7 @@ import RealRooted.ArrayPolynomialWeights
 import RealRooted.Basic
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Basic.Coefficients
+import RealRooted.Basic.Coefficients.Multivariate
 import RealRooted.Basic.IntervalInequalities
 import RealRooted.Basic.PolynomialFacts
 import RealRooted.Basic.ProperPosition
@@ -75,6 +76,7 @@ import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Deriva
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
