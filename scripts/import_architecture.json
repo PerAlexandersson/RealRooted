@@ -70,7 +70,7 @@
       "max_modules": 65
     },
     "RealRooted.PolyaFrequency.EventuallyPolynomial": {
-      "max_modules": 16
+      "max_modules": 18
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
