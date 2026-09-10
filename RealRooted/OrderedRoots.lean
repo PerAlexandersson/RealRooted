@@ -1,4 +1,4 @@
-import RealRooted.Basic
+import RealRooted.Basic.ProperPosition
 
 /-!
 # Canonically ordered polynomial roots
