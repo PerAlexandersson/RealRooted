@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1044
+      "max_modules": 1045
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation": {
+      "max_modules": 3
     },
     "RealRooted.PolynomialValueEulerNumerator": {
       "max_modules": 14
@@ -800,13 +803,13 @@
       "max_modules": 118
    },
     "RealRooted.Hadamard.Hurwitz": {
-      "max_modules": 177
-   },
-    "RealRooted.Hadamard.Consequences": {
       "max_modules": 178
    },
+    "RealRooted.Hadamard.Consequences": {
+      "max_modules": 179
+   },
     "RealRooted.Hadamard": {
-      "max_modules": 186
+      "max_modules": 187
     },
     "RealRooted.FiniteFreeMultiplicative": {
       "max_modules": 97
@@ -1235,7 +1238,7 @@
       "max_modules": 112
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 455
+      "max_modules": 456
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1325,7 +1328,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 486
+      "max_modules": 487
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182

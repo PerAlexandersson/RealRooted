@@ -1,4 +1,5 @@
 import RealRooted.AissenSchoenbergWhitney
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 
 open Matrix
 
@@ -190,30 +191,8 @@ theorem prefixRowStage_isTotallyNonneg {N s : ℕ} (hs : s ≤ N)
 theorem isTotallyNonneg_of_fin_truncations (M : Matrix ℕ ℕ ℝ)
     (Mfin : (N : ℕ) → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
     (hentry : ∀ (N : ℕ) (i j : Fin (N + 1)), Mfin N i j = M i.val j.val)
-    (hfin : ∀ N, (Mfin N).IsTotallyNonneg) : M.IsTotallyNonneg := by
-  intro n rows cols hrows hcols
-  cases n with
-  | zero => simp
-  | succ n =>
-      let B := max (rows (Fin.last n)) (cols (Fin.last n))
-      let rows' : Fin (n + 1) → Fin (B + 1) := fun i =>
-        ⟨rows i, Nat.lt_succ_of_le <|
-          le_trans (hrows.monotone (Fin.le_last i)) (le_max_left _ _)⟩
-      let cols' : Fin (n + 1) → Fin (B + 1) := fun i =>
-        ⟨cols i, Nat.lt_succ_of_le <|
-          le_trans (hcols.monotone (Fin.le_last i)) (le_max_right _ _)⟩
-      have hrows' : StrictMono rows' := by
-        intro i j hij
-        exact Fin.lt_def.mpr (hrows hij)
-      have hcols' : StrictMono cols' := by
-        intro i j hij
-        exact Fin.lt_def.mpr (hcols hij)
-      have hminor : M.submatrix rows cols = (Mfin B).submatrix rows' cols' := by
-        ext i j
-        symm
-        exact hentry B (rows' i) (cols' j)
-      rw [hminor]
-      exact hfin B hrows' hcols'
+    (hfin : ∀ N, (Mfin N).IsTotallyNonneg) : M.IsTotallyNonneg :=
+  Matrix.IsTotallyNonneg.of_fin_truncations M Mfin hentry hfin
 
 /-- The finite lower-triangular matrix whose nonzero entries are all one. -/
 def lowerOnesFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
