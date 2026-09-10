@@ -26,6 +26,22 @@ difference. -/
 noncomputable def causalFwdDiffPolynomial (p : ℝ[X]) : ℝ[X] :=
   p - p.comp (X - C 1)
 
+@[simp]
+theorem causalFwdDiffPolynomial_zero : causalFwdDiffPolynomial (0 : ℝ[X]) = 0 := by
+  simp [causalFwdDiffPolynomial]
+
+@[simp]
+theorem causalFwdDiffPolynomial_C (r : ℝ) : causalFwdDiffPolynomial (C r) = 0 := by
+  simp [causalFwdDiffPolynomial]
+
+@[simp]
+theorem causalFwdDiffPolynomial_iter_zero (k : ℕ) :
+    (causalFwdDiffPolynomial^[k]) (0 : ℝ[X]) = 0 := by
+  induction k with
+  | zero => rfl
+  | succ k ih => simp only [Function.iterate_succ_apply', ih,
+      causalFwdDiffPolynomial_zero]
+
 /-- Evaluations of a nonzero real polynomial at two fixed translates of the
 natural numbers have ratio tending to one. -/
 theorem tendsto_eval_nat_add_div {p : ℝ[X]} (hp : p ≠ 0) (u v : ℝ) :
@@ -123,5 +139,27 @@ theorem natDegree_sub_comp_X_sub_C_lt {p : ℝ[X]} (hp : p.natDegree ≠ 0) :
   · exact hp0
   · rw [leadingCoeff_comp (by rw [natDegree_X_sub_C]; decide),
       leadingCoeff_X_sub_C, one_pow, mul_one]
+
+/-- Iterating the polynomial causal-difference transform more often than the
+natural degree produces the zero polynomial. -/
+theorem causalFwdDiffPolynomial_iter_eq_zero_of_natDegree_lt (p : ℝ[X])
+    {k : ℕ} (hk : p.natDegree < k) :
+    (causalFwdDiffPolynomial^[k]) p = 0 := by
+  induction k generalizing p with
+  | zero => exact (Nat.not_lt_zero _ hk).elim
+  | succ k ih =>
+    rw [Function.iterate_succ_apply]
+    by_cases hp : p.natDegree = 0
+    · have hpC : p = C (p.coeff 0) := by
+        apply eq_C_of_degree_le_zero
+        exact (natDegree_le_iff_degree_le).mp (le_of_eq hp)
+      have hT : causalFwdDiffPolynomial p = 0 := by
+        rw [hpC]
+        exact causalFwdDiffPolynomial_C _
+      rw [hT]
+      exact causalFwdDiffPolynomial_iter_zero k
+    · exact ih (causalFwdDiffPolynomial p)
+        (lt_of_lt_of_le (natDegree_sub_comp_X_sub_C_lt hp)
+          (Nat.le_of_lt_succ hk))
 
 end Polynomial
