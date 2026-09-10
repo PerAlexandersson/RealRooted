@@ -25,6 +25,11 @@ Original publications include:
 This module exposes the main theorem interfaces.  The reduction graph,
 Hurwitz-matrix routes, and low-degree support lemmas remain in
 `RealRooted.Hadamard`.
+
+The polynomial-value PF product theorem below is restricted to sequences of
+the form `n ↦ p(n)`; it is not a closure theorem for arbitrary PF sequences.
+Its PF convention includes the zero polynomial and permits nonpositive, rather
+than strictly negative, roots.
 -/
 
 open Polynomial
@@ -84,7 +89,7 @@ theorem polynomialValueProductPolyaFrequency
     {f g : ℝ[X]} (hf : IsPolyaFreqSeq (polynomialValueSeq f))
     (hg : IsPolyaFreqSeq (polynomialValueSeq g)) :
     IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
-  RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq hf hg
+  hf.pointwise_mul_of_polynomialValue hg
 
 end Hadamard
 end Challenges
