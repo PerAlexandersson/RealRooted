@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1046
+      "max_modules": 1047
+    },
+    "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
+      "max_modules": 65
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
