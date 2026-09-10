@@ -1,8 +1,22 @@
 {
   "version": 1,
+  "module_partition": {
+    "compatibility_owner": "RealRooted",
+    "production_owner": "RealRooted.Production",
+    "regression_owner": "RealRooted.Tactic.Examples",
+    "regression_prefixes": [
+      "RealRooted.Tactic.Examples."
+    ]
+  },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1065
+      "max_modules": 1066
+    },
+    "RealRooted.Production": {
+      "max_modules": 1000
+    },
+    "RealRooted.Tactic.Examples": {
+      "max_modules": 578
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
@@ -1605,7 +1619,8 @@
       "source_prefix": "RealRooted",
       "target_prefix": "RealRooted.Tactic.",
       "allowed_sources": [
-        "RealRooted"
+        "RealRooted",
+        "RealRooted.Production"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges.",
@@ -1618,7 +1633,8 @@
       "source_prefix": "RealRooted",
       "target_prefix": "RealRooted.Challenges.",
       "allowed_sources": [
-        "RealRooted"
+        "RealRooted",
+        "RealRooted.Production"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges."
@@ -1628,6 +1644,8 @@
   ],
   "report_modules": [
     "RealRooted",
+    "RealRooted.Production",
+    "RealRooted.Tactic.Examples",
     "RealRooted.EulerOperator.Darboux",
     "RealRooted.EulerOperator.Darboux.Basic",
     "RealRooted.EulerOperator.Darboux.Interlacing",

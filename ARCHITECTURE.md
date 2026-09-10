@@ -61,6 +61,20 @@ in the same checkpoint.
 full integration build, documentation, and exploratory work, but it is not a
 prelude for downstream generated files.
 
+`RealRooted.Production` is the production-only umbrella. It directly imports
+every library module except `RealRooted.Tactic.Examples` and its regression
+leaves. `RealRooted.Tactic.Examples` remains the regression umbrella and
+directly imports all 64 historical example leaves. A default Lake build checks
+all three entry points, so separating production dependencies does not make the
+regression suite optional.
+
+At the production-boundary checkpoint, the preceding broad root had a closure
+of 1,065 local modules / 349,731 local lines. The new production entry point has
+1,000 / 317,062; the broad compatibility entry point has 1,066 / 350,739 after
+registering the new umbrella. `RealRooted.Tactic` remains 487 / 174,416 and the
+regression umbrella remains 578 / 214,138. These are source-graph diagnostics,
+not build-time measurements or repository deletions.
+
 New consumers should import the smallest theorem or tactic modules they use.
 Curated entry points may be introduced for stable families, but each entry
 point needs an import budget so that it does not silently become another full
@@ -76,10 +90,10 @@ limit proof.
 adapter using characteristic-polynomial coefficient continuity from the
 Mathlib-shaped `Matrix.SpectrumClosed` shim.
 
-Tactic examples and other regression-only modules should eventually move to a
-separate test umbrella. The root-import checker will continue to require every
-current library module until that test surface exists and the checker has an
-explicit production/test distinction.
+The import and architecture guards enforce direct completeness of all three
+umbrellas. They also reject any direct or transitive path from the production
+entry point into the regression set. Regression modules may import production
+modules, and the broad compatibility root intentionally imports both sets.
 
 The first frontend/backend split keeps the existing tactic imports compatible:
 
@@ -1521,6 +1535,8 @@ The check currently enforces:
 - no unresolved imports in the `RealRooted` namespace;
 - the strict dependency boundary for `RealRooted.Mathlib` shims; and
 - no new theorem-to-tactic or library-to-challenge dependency edges; and
+- complete, disjoint production/regression ownership and a regression-free
+  production closure; and
 - conservative closure-size budgets for important entry points.
 
 It also prints local source-line and transitive-user counts for planning. These
@@ -1528,8 +1544,9 @@ are diagnostics rather than hard line-count limits.
 
 ## Near-term roadmap
 
-1. Separate tactic examples from the production tactic umbrella, building on
-   the completed Finish/Product, Ma--Wang, and Favard backend splits.
+1. Split the largest tactic regression files by the frontend families they
+   exercise, preserving distinct syntax variants and their historical import
+   paths behind the mandatory regression umbrella.
 2. Keep the `Tactic.OEIS` compatibility facade bounded; extract a future
    certificate family only after a dependency and responsibility audit.
 3. Apply the same theorem-cluster inventory to a further X-subtraction

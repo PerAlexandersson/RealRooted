@@ -2,7 +2,7 @@ name = "RealRooted"
 version = "0.1.0"
 license = "Apache-2.0"
 keywords = ["math"]
-defaultTargets = ["RealRooted"]
+defaultTargets = ["RealRooted", "RealRooted.Production", "RealRooted.Tactic.Examples"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`

@@ -165,12 +165,140 @@ def has_prefix(module: str, prefix: str) -> bool:
     return module == prefix.rstrip(".") or module.startswith(prefix)
 
 
+def partition_sets(
+    graph: ImportGraph, partition: dict[str, Any]
+) -> tuple[str, str, str, set[str], set[str]]:
+    compatibility_owner = partition["compatibility_owner"]
+    production_owner = partition["production_owner"]
+    regression_owner = partition["regression_owner"]
+    prefixes = partition["regression_prefixes"]
+    if not all(
+        isinstance(owner, str) and owner
+        for owner in [compatibility_owner, production_owner, regression_owner]
+    ):
+        raise ValueError("module_partition owners must be nonempty strings")
+    if len({compatibility_owner, production_owner, regression_owner}) != 3:
+        raise ValueError("module_partition owners must be distinct")
+    if compatibility_owner != graph.library:
+        raise ValueError(
+            "module_partition.compatibility_owner must equal the lean_lib name"
+        )
+    if not isinstance(prefixes, list) or not prefixes or not all(
+        isinstance(prefix, str) and prefix for prefix in prefixes
+    ):
+        raise ValueError(
+            "module_partition.regression_prefixes must be a nonempty string list"
+        )
+    regression_namespace = f"{regression_owner}."
+    if prefixes != [regression_namespace]:
+        raise ValueError(
+            "module_partition.regression_prefixes must contain exactly the "
+            "dotted regression-owner namespace"
+        )
+    if any(
+        owner.startswith(prefix)
+        for owner in [compatibility_owner, production_owner, regression_owner]
+        for prefix in prefixes
+    ):
+        raise ValueError("module_partition prefixes must not contain an owner")
+    for owner in [compatibility_owner, production_owner, regression_owner]:
+        graph.require_module(owner)
+
+    child_modules = set(graph.module_paths) - {compatibility_owner}
+    regression_members_by_prefix = {
+        prefix: {
+            module
+            for module in child_modules
+            if module != regression_owner and module.startswith(prefix)
+        }
+        for prefix in prefixes
+    }
+    unmatched_prefixes = sorted(
+        prefix
+        for prefix, members in regression_members_by_prefix.items()
+        if not members
+    )
+    if unmatched_prefixes:
+        raise ValueError(
+            "module_partition regression prefix(es) match no modules: "
+            + ", ".join(unmatched_prefixes)
+        )
+    regression_members = set().union(*regression_members_by_prefix.values())
+    regression_boundary = regression_members | {regression_owner}
+    production_members = child_modules - regression_boundary - {production_owner}
+    return (
+        compatibility_owner,
+        production_owner,
+        regression_owner,
+        production_members,
+        regression_members,
+    )
+
+
+def check_module_partition(
+    graph: ImportGraph, partition: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        (
+            compatibility_owner,
+            production_owner,
+            regression_owner,
+            production_members,
+            regression_members,
+        ) = partition_sets(graph, partition)
+    except (KeyError, ValueError) as error:
+        return [f"invalid module_partition: {error}"]
+
+    expected_by_owner = {
+        compatibility_owner: set(graph.module_paths) - {compatibility_owner},
+        production_owner: production_members,
+        regression_owner: regression_members,
+    }
+    for owner, expected in expected_by_owner.items():
+        missing = sorted(expected - graph.imports[owner])
+        if missing:
+            errors.append(
+                f"{owner}: missing {len(missing)} owned direct import(s): "
+                + ", ".join(missing)
+            )
+
+    regression_boundary = regression_members | {regression_owner}
+    production_sources = production_members | {production_owner}
+    for source in sorted(production_sources):
+        forbidden = sorted(
+            graph.imports[source] & (regression_boundary | {compatibility_owner})
+        )
+        for target in forbidden:
+            errors.append(
+                f"{source}: production module imports regression/compatibility "
+                f"module {target}"
+            )
+
+    contamination = sorted(
+        graph.closure(production_owner) & regression_boundary
+    )
+    if contamination:
+        errors.append(
+            f"{production_owner}: production closure contains regression module(s): "
+            + ", ".join(contamination)
+        )
+    return errors
+
+
 def check_graph(graph: ImportGraph, config: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     for source, target in graph.unresolved_local_imports:
         errors.append(f"{source}: unresolved local import {target}")
     for cycle in graph.cycles():
         errors.append(f"local import cycle: {' -> '.join(cycle)}")
+
+    partition = config.get("module_partition")
+    if partition is not None:
+        if isinstance(partition, dict):
+            errors.extend(check_module_partition(graph, partition))
+        else:
+            errors.append("module_partition must be a JSON object")
 
     for module, budget in config.get("budgets", {}).items():
         try:
@@ -305,6 +433,86 @@ def run_self_test() -> int:
         graph = ImportGraph.from_repo(root)
         errors = check_graph(graph, config)
         assert any("unresolved local import TestLib.Missing" in error for error in errors)
+
+    with tempfile.TemporaryDirectory() as directory:
+        root = pathlib.Path(directory)
+        (root / "lakefile.toml").write_text(
+            '[[lean_lib]]\nname = "TestLib"\n', encoding="utf-8"
+        )
+        library_dir = root / "TestLib"
+        production_dir = library_dir / "Production"
+        regression_dir = library_dir / "Regression"
+        production_dir.mkdir(parents=True)
+        regression_dir.mkdir()
+        (root / "TestLib.lean").write_text(
+            "\n".join(
+                [
+                    "import TestLib.Production",
+                    "import TestLib.Production.Bridge",
+                    "import TestLib.Production.Core",
+                    "import TestLib.Regression",
+                    "import TestLib.Regression.Leaf",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        (library_dir / "Production.lean").write_text(
+            "public import TestLib.Production.Bridge\n"
+            "import TestLib.Production.Core\n",
+            encoding="utf-8",
+        )
+        bridge_path = production_dir / "Bridge.lean"
+        bridge_path.write_text("", encoding="utf-8")
+        (production_dir / "Core.lean").write_text("", encoding="utf-8")
+        (library_dir / "Regression.lean").write_text(
+            "private import TestLib.Regression.Leaf\n", encoding="utf-8"
+        )
+        (regression_dir / "Leaf.lean").write_text("", encoding="utf-8")
+        partition_config = {
+            "budgets": {},
+            "forbidden_imports": [],
+            "module_partition": {
+                "compatibility_owner": "TestLib",
+                "production_owner": "TestLib.Production",
+                "regression_owner": "TestLib.Regression",
+                "regression_prefixes": ["TestLib.Regression."],
+            },
+        }
+        graph = ImportGraph.from_repo(root)
+        assert not check_graph(graph, partition_config)
+
+        (library_dir / "Production.lean").write_text(
+            "public import TestLib.Production.Bridge\n", encoding="utf-8"
+        )
+        graph = ImportGraph.from_repo(root)
+        errors = check_graph(graph, partition_config)
+        assert any("TestLib.Production.Core" in error for error in errors)
+        (library_dir / "Production.lean").write_text(
+            "public import TestLib.Production.Bridge\n"
+            "import TestLib.Production.Core\n",
+            encoding="utf-8",
+        )
+
+        (library_dir / "Regression.lean").write_text("", encoding="utf-8")
+        graph = ImportGraph.from_repo(root)
+        errors = check_graph(graph, partition_config)
+        assert any("TestLib.Regression.Leaf" in error for error in errors)
+
+        (library_dir / "Regression.lean").write_text(
+            "private import TestLib.Regression.Leaf\n", encoding="utf-8"
+        )
+        bridge_path.write_text(
+            "private import TestLib.Regression.Leaf\n", encoding="utf-8"
+        )
+        graph = ImportGraph.from_repo(root)
+        errors = check_graph(graph, partition_config)
+        assert any(
+            "TestLib.Production.Bridge" in error
+            and "TestLib.Regression.Leaf" in error
+            for error in errors
+        )
+        assert any("production closure contains" in error for error in errors)
     print("ok: import-architecture self-test passed")
     return 0
 

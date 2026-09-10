@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import pathlib
 import subprocess
 import sys
@@ -173,6 +174,203 @@ namespace TestLib
             )
             self.assertEqual(result.returncode, 1)
             self.assertEqual(umbrella.read_text(encoding="utf-8"), original)
+
+    def test_partition_guards_and_scoped_fix(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            (root / "lakefile.toml").write_text(
+                '[[lean_lib]]\nname = "TestLib"\n', encoding="utf-8"
+            )
+            library_dir = root / "TestLib"
+            production_dir = library_dir / "Production"
+            regression_dir = library_dir / "Regression"
+            production_dir.mkdir(parents=True)
+            regression_dir.mkdir()
+            compatibility = root / "TestLib.lean"
+            production = library_dir / "Production.lean"
+            regression = library_dir / "Regression.lean"
+            compatibility.write_text(
+                "\n".join(
+                    [
+                        "import TestLib.Production",
+                        "public import TestLib.Production.Bridge",
+                        "import TestLib.Production.Core",
+                        "import TestLib.RegressionExtra",
+                        "private import TestLib.Regression",
+                        "import TestLib.Regression.Leaf",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            production.write_text(
+                "public import TestLib.Production.Bridge\n",
+                encoding="utf-8",
+            )
+            bridge = production_dir / "Bridge.lean"
+            bridge.write_text("", encoding="utf-8")
+            (production_dir / "Core.lean").write_text("", encoding="utf-8")
+            (library_dir / "RegressionExtra.lean").write_text("", encoding="utf-8")
+            regression.write_text(
+                "private import TestLib.Regression.Leaf\n", encoding="utf-8"
+            )
+            regression_leaf = regression_dir / "Leaf.lean"
+            regression_leaf.write_text("", encoding="utf-8")
+            config_path = root / "architecture.json"
+            partition_config = {
+                "version": 1,
+                "budgets": {},
+                "forbidden_imports": [],
+                "report_modules": [],
+                "module_partition": {
+                    "compatibility_owner": "TestLib",
+                    "production_owner": "TestLib.Production",
+                    "regression_owner": "TestLib.Regression",
+                    "regression_prefixes": ["TestLib.Regression."],
+                },
+            }
+            config_path.write_text(json.dumps(partition_config), encoding="utf-8")
+            command = [
+                sys.executable,
+                str(ROOT_GUARD),
+                "--repo-root",
+                str(root),
+                "--config",
+                str(config_path),
+            ]
+            missing = subprocess.run(
+                command, cwd=directory, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(missing.returncode, 1)
+            self.assertIn("TestLib.Production.Core", missing.stderr)
+
+            subprocess.run([*command, "--fix"], cwd=directory, check=True)
+            fixed = production.read_text(encoding="utf-8")
+            self.assertIn("import TestLib.Production.Core", fixed)
+            self.assertIn("import TestLib.RegressionExtra", fixed)
+            self.assertNotIn("import TestLib.Regression\n", fixed)
+            self.assertNotIn("import TestLib.Regression.Leaf", fixed)
+            subprocess.run([*command, "--fix"], cwd=directory, check=True)
+            self.assertEqual(production.read_text(encoding="utf-8"), fixed)
+
+            regression.write_text("", encoding="utf-8")
+            missing = subprocess.run(
+                command, cwd=directory, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(missing.returncode, 1)
+            self.assertIn("TestLib.Regression.Leaf", missing.stderr)
+
+            subprocess.run([*command, "--fix"], cwd=directory, check=True)
+            bad_prefix = json.loads(json.dumps(partition_config))
+            bad_prefix["module_partition"]["regression_prefixes"] = [
+                "TestLib.Regression"
+            ]
+            config_path.write_text(json.dumps(bad_prefix), encoding="utf-8")
+            invalid = subprocess.run(
+                command, cwd=directory, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(invalid.returncode, 1)
+            self.assertIn("dotted regression-owner namespace", invalid.stderr)
+
+            bad_prefix["module_partition"]["regression_prefixes"] = [
+                "TestLib.Regression.Missing."
+            ]
+            config_path.write_text(json.dumps(bad_prefix), encoding="utf-8")
+            invalid = subprocess.run(
+                command, cwd=directory, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(invalid.returncode, 1)
+            self.assertIn("dotted regression-owner namespace", invalid.stderr)
+            config_path.write_text(json.dumps(partition_config), encoding="utf-8")
+
+            regression_leaf.unlink()
+            invalid = subprocess.run(
+                command, cwd=directory, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(invalid.returncode, 1)
+            self.assertIn("match no modules", invalid.stderr)
+            regression_leaf.write_text("", encoding="utf-8")
+
+            bridge.write_text(
+                "private import TestLib.Regression.Leaf\n", encoding="utf-8"
+            )
+            architecture = subprocess.run(
+                [
+                    sys.executable,
+                    str(ARCHITECTURE_GUARD),
+                    "--repo-root",
+                    str(root),
+                    "--config",
+                    str(config_path),
+                ],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(architecture.returncode, 1)
+            self.assertIn("TestLib.Production.Bridge", architecture.stderr)
+            self.assertIn("TestLib.Regression.Leaf", architecture.stderr)
+
+            bridge.write_text("", encoding="utf-8")
+            production.write_text(
+                fixed + "public import TestLib.Regression.Leaf\n", encoding="utf-8"
+            )
+            architecture = subprocess.run(
+                [
+                    sys.executable,
+                    str(ARCHITECTURE_GUARD),
+                    "--repo-root",
+                    str(root),
+                    "--config",
+                    str(config_path),
+                ],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(architecture.returncode, 1)
+            self.assertIn("TestLib.Production", architecture.stderr)
+            self.assertIn("TestLib.Regression.Leaf", architecture.stderr)
+
+            production.write_text(fixed, encoding="utf-8")
+            bridge.write_text("private import TestLib\n", encoding="utf-8")
+            architecture = subprocess.run(
+                [
+                    sys.executable,
+                    str(ARCHITECTURE_GUARD),
+                    "--repo-root",
+                    str(root),
+                    "--config",
+                    str(config_path),
+                ],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(architecture.returncode, 1)
+            self.assertIn("compatibility module TestLib", architecture.stderr)
+
+            bridge.write_text("", encoding="utf-8")
+            regression.write_text(
+                "private import TestLib.Regression.Leaf\n"
+                "public import TestLib.Production.Core\n",
+                encoding="utf-8",
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ARCHITECTURE_GUARD),
+                    "--repo-root",
+                    str(root),
+                    "--config",
+                    str(config_path),
+                ],
+                cwd=directory,
+                check=True,
+            )
 
     def test_direct_guards(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

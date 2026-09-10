@@ -33,6 +33,15 @@ lake exe cache get
 lake build
 ```
 
+The default build checks the historical broad umbrella together with the
+production-only and tactic-regression entry points. They can also be checked
+individually:
+
+```bash
+lake build RealRooted.Production
+lake build RealRooted.Tactic.Examples
+```
+
 Useful focused checks for recent theorem areas are:
 
 ```bash
@@ -56,7 +65,12 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) records the intended dependency layers,
   import budgets, module-splitting rules, and consumer-to-library extraction
   workflow.
-- `RealRooted.lean` is the umbrella import for the public development.
+- `RealRooted.lean` is the broad compatibility umbrella for the full public
+  development.
+- `RealRooted/Production.lean` imports every non-regression module and excludes
+  `RealRooted.Tactic.Examples` and its leaves.
+- `RealRooted/Tactic/Examples.lean` is the mandatory regression umbrella and
+  retains every historical example import path.
 - `RealRooted/Basic.lean`, `Derivative.lean`, `Wagner*.lean`, and
   `InterlacingSequence*.lean` contain the core interlacing API.
 - `RealRooted/Wronskian/` separates polynomial Wronskian algebra, forward and
@@ -485,12 +499,12 @@ reduction through such an interface must expose it as an explicit hypothesis
 and document that the route is uninhabited.
 
 New Lean code should follow the Lean community style guidelines and Mathlib
-naming conventions where practical.  In particular, keep declarations explicit,
-prefer small reusable lemmas, keep top-level declarations flush-left, and make
-sure public modules are imported by `RealRooted.lean`. To help with this, a CI check
-enforces that all library modules are imported in `RealRooted.lean`. You can run
-`python3 scripts/check_root_imports.py --fix` to automatically append and sort any
-missing imports.
+naming conventions where practical. In particular, keep declarations explicit,
+prefer small reusable lemmas, and keep top-level declarations flush-left. The CI
+import guards check the broad, production, and regression umbrellas separately
+and reject production closures containing tactic examples. Run
+`python3 scripts/check_root_imports.py --fix` to append a new module only to its
+owning umbrellas; existing qualified imports and comments are preserved.
 
 Proof-surface CI is checked separately with:
 
