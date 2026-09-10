@@ -1,4 +1,5 @@
 import RealRooted.AissenSchoenbergWhitneyBase
+import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Euler numerators of polynomial-value sequences
@@ -13,15 +14,72 @@ open Polynomial
 
 namespace RealRooted
 
+private theorem coeff_X_pow_mul_invOneSubPow (k n : ℕ) :
+    PowerSeries.coeff n
+        (PowerSeries.X ^ k * (PowerSeries.invOneSubPow ℝ (k + 1)).val) =
+      (n.choose k : ℝ) := by
+  rw [PowerSeries.coeff_X_pow_mul']
+  split_ifs with hkn
+  · rw [PowerSeries.invOneSubPow_val_succ_eq_mk_add_choose,
+      PowerSeries.coeff_mk, Nat.add_sub_of_le hkn]
+  · simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hkn)]
+
+private theorem eulerBasis_mul_invOneSubPow (d k : ℕ) (hk : k ≤ d) :
+    PowerSeries.X ^ k * (1 - PowerSeries.X) ^ (d - k) *
+        (PowerSeries.invOneSubPow ℝ (d + 1)).val =
+      PowerSeries.X ^ k * (PowerSeries.invOneSubPow ℝ (k + 1)).val := by
+  rw [mul_assoc]
+  have hadd : k + 1 + (d - k) = d + 1 := by lia
+  rw [← hadd,
+    PowerSeries.one_sub_pow_mul_invOneSubPow_val_add_eq_invOneSubPow_val]
+
 /-- The degree-`d` Euler numerator with Newton coefficients `a`. -/
 noncomputable def finiteEulerNumerator (d : ℕ) (a : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (d + 1),
     C (a k) * X ^ k * (1 - X) ^ (d - k)
 
+private theorem finiteEulerNumerator_mul_invOneSubPow (d : ℕ) (a : ℕ → ℝ) :
+    (finiteEulerNumerator d a : PowerSeries ℝ) *
+        (PowerSeries.invOneSubPow ℝ (d + 1)).val =
+      ∑ k ∈ Finset.range (d + 1),
+        PowerSeries.C (a k) *
+          (PowerSeries.X ^ k * (PowerSeries.invOneSubPow ℝ (k + 1)).val) := by
+  classical
+  rw [finiteEulerNumerator]
+  change Polynomial.coeToPowerSeries.ringHom
+      (∑ k ∈ Finset.range (d + 1),
+        C (a k) * X ^ k * (1 - X) ^ (d - k)) * _ = _
+  rw [map_sum, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hkd : k ≤ d := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  simp only [map_mul, map_pow, Polynomial.coeToPowerSeries.ringHom_apply,
+    Polynomial.coe_C, Polynomial.coe_X, map_sub, map_one]
+  rw [mul_assoc (PowerSeries.C (a k)), mul_assoc (PowerSeries.C (a k))]
+  congr 1
+  exact eulerBasis_mul_invOneSubPow d k hkd
+
 /-- The canonical Euler numerator of a polynomial-value sequence. -/
 noncomputable def polynomialValueEulerNumerator (p : ℝ[X]) : ℝ[X] :=
   finiteEulerNumerator p.natDegree fun k =>
     ((fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p)) 0
+
+/-- The generating series of a polynomial-value sequence is its canonical
+Euler numerator divided by `(1 - X)^(natDegree + 1)`. -/
+theorem polynomialValueSeries_eq_eulerNumerator_mul_invOneSubPow (p : ℝ[X]) :
+    PowerSeries.mk (polynomialValueSeq p) =
+      (polynomialValueEulerNumerator p : PowerSeries ℝ) *
+        (PowerSeries.invOneSubPow ℝ (p.natDegree + 1)).val := by
+  ext n
+  rw [PowerSeries.coeff_mk,
+    polynomialValueSeq_eq_sum_choose_fwdDiff_upto_natDegree]
+  rw [polynomialValueEulerNumerator,
+    finiteEulerNumerator_mul_invOneSubPow]
+  simp only [map_sum, PowerSeries.coeff_C_mul,
+    coeff_X_pow_mul_invOneSubPow, nsmul_eq_mul]
+  apply Finset.sum_congr rfl
+  intro k _
+  ring
 
 /-- Evaluation at `1` selects the top Newton coefficient. -/
 theorem finiteEulerNumerator_eval_one (d : ℕ) (a : ℕ → ℝ) :
