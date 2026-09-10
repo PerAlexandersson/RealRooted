@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1048
+      "max_modules": 1049
+    },
+    "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative": {
+      "max_modules": 34
     },
     "RealRooted.PolynomialValueEulerNumerator.PF": {
       "max_modules": 96
