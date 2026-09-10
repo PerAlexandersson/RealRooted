@@ -548,6 +548,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse

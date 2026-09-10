@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1058
+      "max_modules": 1059
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
+      "max_modules": 1
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency": {
       "max_modules": 138
@@ -1717,6 +1720,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse",
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance",
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree",
+    "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating",
     "RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset",
     "RealRooted.EulerOperator.Polar",
