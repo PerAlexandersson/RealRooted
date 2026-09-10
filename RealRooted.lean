@@ -72,6 +72,7 @@ import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
