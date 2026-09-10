@@ -537,6 +537,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
