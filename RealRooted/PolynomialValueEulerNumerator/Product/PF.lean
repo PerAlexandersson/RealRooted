@@ -9,7 +9,9 @@ records the resulting PF certificate for polynomial-value sequences.
 
 The direct product theorem below takes canonical-numerator certificates. The
 opt-in `Product.PF.Causal` child derives those certificates from
-polynomial-value PF hypotheses with nonzero eventual polynomial tails.
+polynomial-value PF hypotheses, using the eventual-tail route for nonzero
+inputs and handling zero separately. This does not assert a converse for
+arbitrary PF sequences outside the polynomial-value setting.
 -/
 
 open Polynomial

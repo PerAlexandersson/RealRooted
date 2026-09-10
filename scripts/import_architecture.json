@@ -84,6 +84,9 @@
     "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal": {
       "max_modules": 167
     },
+    "RealRooted.Challenges.Hadamard": {
+      "max_modules": 259
+    },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
     },
@@ -1822,6 +1825,7 @@
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix",
     "RealRooted.PolynomialValueEulerNumerator.PF.Causal",
     "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal",
+    "RealRooted.Challenges.Hadamard",
     "RealRooted.RankTwoMatching.Basic",
     "RealRooted.RankTwoMatching.Orientation",
     "RealRooted.RankTwoMatching.DisjointEquiv",

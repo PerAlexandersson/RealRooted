@@ -1,4 +1,5 @@
 import RealRooted.Hadamard
+import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 /-!
 # Hadamard challenge entry point
@@ -75,6 +76,15 @@ theorem garloffWagnerHadamardNonnegPrec :
   fun hfg hpq =>
     RealRooted.garloffWagnerHadamardNonnegPrec
       hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
+
+/-- Polynomial-value PF sequences are closed under polynomial multiplication.
+This includes zero inputs; for nonzero inputs the proof derives the canonical
+Euler-numerator certificates through causal differences. -/
+theorem polynomialValueProductPolyaFrequency
+    {f g : ℝ[X]} (hf : IsPolyaFreqSeq (polynomialValueSeq f))
+    (hg : IsPolyaFreqSeq (polynomialValueSeq g)) :
+    IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
+  RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq hf hg
 
 end Hadamard
 end Challenges
