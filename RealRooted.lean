@@ -78,6 +78,7 @@ import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol

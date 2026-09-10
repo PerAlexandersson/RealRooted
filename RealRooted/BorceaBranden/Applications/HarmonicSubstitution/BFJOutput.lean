@@ -70,6 +70,51 @@ theorem map_bfjOutput {R S : Type*} [CommSemiring R] [CommSemiring S]
   · intro i
     fin_cases i <;> simp
 
+/-- The BFJ output is additive in its first input. -/
+theorem bfjOutput_add_left {R : Type*} [CommSemiring R]
+    (P P' Q : MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput (P + P') Q b = bfjOutput P Q b + bfjOutput P' Q b := by
+  simp [bfjOutput, bfjCoefficient, bfjAuxiliary, addAuxiliary, add_mul]
+
+/-- The BFJ output is additive in its second input. -/
+theorem bfjOutput_add_right {R : Type*} [CommSemiring R]
+    (P Q Q' : MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput P (Q + Q') b = bfjOutput P Q b + bfjOutput P Q' b := by
+  simp [bfjOutput, bfjCoefficient, bfjAuxiliary, harmonicClear, mul_add]
+
+/-- The BFJ output commutes with a scalar factor in its first input. -/
+theorem bfjOutput_C_mul_left {R : Type*} [CommSemiring R]
+    (c : R) (P Q : MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput (C c * P) Q b = Polynomial.C c * bfjOutput P Q b := by
+  simp [bfjOutput, bfjCoefficient, bfjAuxiliary, addAuxiliary, mul_assoc]
+
+/-- The BFJ output commutes with a scalar factor in its second input. -/
+theorem bfjOutput_C_mul_right {R : Type*} [CommSemiring R]
+    (c : R) (P Q : MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput P (C c * Q) b = Polynomial.C c * bfjOutput P Q b := by
+  simp [bfjOutput, bfjCoefficient, bfjAuxiliary, harmonicClear, mul_assoc,
+    mul_comm, mul_left_comm]
+
+/-- The BFJ output distributes over a finite sum in its first input. -/
+theorem bfjOutput_finsetSum_left {R ι : Type*} [CommSemiring R]
+    (s : Finset ι) (P : ι → MvPolynomial (Fin 2) R)
+    (Q : MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput (∑ i ∈ s, P i) Q b = ∑ i ∈ s, bfjOutput (P i) Q b := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp [bfjOutput, bfjCoefficient, bfjAuxiliary, addAuxiliary]
+  | @insert i s hi ih => simp [hi, ih, bfjOutput_add_left]
+
+/-- The BFJ output distributes over a finite sum in its second input. -/
+theorem bfjOutput_finsetSum_right {R ι : Type*} [CommSemiring R]
+    (s : Finset ι) (P : MvPolynomial (Fin 2) R)
+    (Q : ι → MvPolynomial (Fin 2) R) (b : ℕ) :
+    bfjOutput P (∑ i ∈ s, Q i) b = ∑ i ∈ s, bfjOutput P (Q i) b := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp [bfjOutput, bfjCoefficient, bfjAuxiliary, harmonicClear]
+  | @insert i s hi ih => simp [hi, ih, bfjOutput_add_right]
+
 /-- Homogeneous input degrees bound the degree of the dehomogenized BFJ
 output. -/
 theorem natDegree_bfjOutput_le {R : Type*} [CommSemiring R]

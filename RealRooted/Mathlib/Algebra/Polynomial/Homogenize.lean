@@ -3,7 +3,8 @@ import Mathlib.Algebra.Polynomial.Homogenize
 /-!
 # Polynomial homogenization compatibility lemmas
 
-This file supplies root-factor formulas for `Polynomial.homogenize`.
+This file supplies root-factor and finite coefficient-sum formulas for
+`Polynomial.homogenize`.
 -/
 
 open Polynomial
@@ -54,5 +55,23 @@ theorem homogenize_eq_homogenize_natDegree_mul_X_one_pow
   have hmul := homogenize_mul p (1 : R[X])
     (m := p.natDegree) (n := n - p.natDegree) le_rfl (by simp)
   simp_all
+
+/-- A bounded-degree polynomial homogenizes to the corresponding finite sum
+of homogeneous coefficient monomials. -/
+theorem homogenize_eq_sum_range_C_mul_X_pow
+    {R : Type*} [CommSemiring R] {p : R[X]} {n : ℕ}
+    (hdeg : p.natDegree ≤ n) :
+    p.homogenize n =
+      ∑ k ∈ Finset.range (n + 1),
+        MvPolynomial.C (p.coeff k) *
+          (MvPolynomial.X 0 ^ k * MvPolynomial.X 1 ^ (n - k)) := by
+  have hp := p.as_sum_range_C_mul_X_pow' (n := n + 1) (by lia)
+  conv_lhs => rw [hp]
+  rw [Polynomial.homogenize_finsetSum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [Polynomial.homogenize_C_mul, Polynomial.homogenize_X_pow]
+  rw [Finset.mem_range] at hk
+  lia
 
 end Polynomial
