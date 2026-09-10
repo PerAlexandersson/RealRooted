@@ -760,7 +760,7 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference": {
-      "max_modules": 1
+      "max_modules": 2
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core": {
       "max_modules": 25
