@@ -70,6 +70,7 @@ import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
