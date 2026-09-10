@@ -551,6 +551,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
+import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
@@ -562,6 +563,7 @@ import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta

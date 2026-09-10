@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1121
+      "max_modules": 1123
     },
     "RealRooted.Production": {
-      "max_modules": 1000
+      "max_modules": 1002
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -58,19 +58,19 @@
       "max_modules": 34
     },
     "RealRooted.PolynomialValueEulerNumerator.PF": {
-      "max_modules": 96
+      "max_modules": 98
     },
     "RealRooted.PolynomialValueEulerNumerator.Product": {
-      "max_modules": 145
+      "max_modules": 147
     },
     "RealRooted.PolynomialValueEulerNumerator.Product.PF": {
-      "max_modules": 152
+      "max_modules": 154
     },
     "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
       "max_modules": 65
     },
     "RealRooted.PolyaFrequency.EventuallyPolynomial": {
-      "max_modules": 15
+      "max_modules": 16
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
@@ -79,7 +79,7 @@
       "max_modules": 3
     },
     "RealRooted.PolynomialValueEulerNumerator": {
-      "max_modules": 14
+      "max_modules": 16
     },
     "RealRooted.MatrixInterlacing.PrincipalInterlacingExamples": {
       "max_modules": 136
@@ -748,7 +748,13 @@
       "max_modules": 10
     },
     "RealRooted.Mathlib.Analysis.Polynomial.Asymptotics": {
+      "max_modules": 2
+    },
+    "RealRooted.Mathlib.Algebra.Group.ForwardDiff": {
       "max_modules": 1
+    },
+    "RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff": {
+      "max_modules": 2
     },
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure": {
       "max_modules": 2
@@ -1767,6 +1773,8 @@
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic",
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
     "RealRooted.Mathlib.Analysis.Polynomial.Asymptotics",
+    "RealRooted.Mathlib.Algebra.Group.ForwardDiff",
+    "RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
     "RealRooted.Mathlib.Data.List.Interleave.Padding",

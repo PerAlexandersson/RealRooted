@@ -1,4 +1,5 @@
 import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
@@ -112,6 +113,31 @@ theorem polynomialValueSeries_eq_eulerNumerator_mul_invOneSubPow (p : ℝ[X]) :
   apply Finset.sum_congr rfl
   intro k _
   ring
+
+/-- Iterating causal forward differences through the actual degree of a
+polynomial-value sequence gives the coefficients of its canonical Euler
+numerator. -/
+theorem causalFwdDiff_iter_polynomialValueSeq_eq_eulerNumerator_coeff (p : ℝ[X]) :
+    (Function.causalFwdDiff^[p.natDegree + 1]) (polynomialValueSeq p) =
+      fun n => (polynomialValueEulerNumerator p).coeff n := by
+  have hseries :
+      PowerSeries.mk ((Function.causalFwdDiff^[p.natDegree + 1])
+        (polynomialValueSeq p)) = (polynomialValueEulerNumerator p : PowerSeries ℝ) := by
+    rw [PowerSeries.mk_causalFwdDiff_iter,
+      polynomialValueSeries_eq_eulerNumerator_mul_invOneSubPow,
+      ← PowerSeries.invOneSubPow_inv_eq_one_sub_pow]
+    calc
+      (PowerSeries.invOneSubPow ℝ (p.natDegree + 1)).inv *
+          ((polynomialValueEulerNumerator p : PowerSeries ℝ) *
+            (PowerSeries.invOneSubPow ℝ (p.natDegree + 1)).val) =
+          (polynomialValueEulerNumerator p : PowerSeries ℝ) *
+            ((PowerSeries.invOneSubPow ℝ (p.natDegree + 1)).inv *
+              (PowerSeries.invOneSubPow ℝ (p.natDegree + 1)).val) := by
+        ring
+      _ = (polynomialValueEulerNumerator p : PowerSeries ℝ) := by
+        rw [Units.inv_val, mul_one]
+  funext n
+  simpa using congrArg (PowerSeries.coeff n) hseries
 
 /-- Evaluation at `1` selects the top Newton coefficient. -/
 theorem finiteEulerNumerator_eval_one (d : ℕ) (a : ℕ → ℝ) :

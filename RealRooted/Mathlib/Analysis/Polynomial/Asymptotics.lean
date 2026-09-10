@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Asymptotics of polynomial evaluations
@@ -8,16 +9,6 @@ natural arguments.
 -/
 
 open Filter
-
-namespace Function
-
-/-- The forward difference with its initial value retained. This is the
-causal difference convention for sequences indexed by `ℕ`. -/
-def causalFwdDiff {R : Type*} [Sub R] (a : ℕ → R) : ℕ → R
-  | 0 => a 0
-  | n + 1 => a (n + 1) - a n
-
-end Function
 
 namespace Polynomial
 
