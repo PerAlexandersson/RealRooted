@@ -2,6 +2,7 @@ import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import Mathlib.Algebra.BigOperators.Intervals
+import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Cauchy convolution of Pólya-frequency sequences
@@ -18,6 +19,17 @@ namespace RealRooted
 /-- Cauchy convolution of two sequences indexed by the natural numbers. -/
 def natCauchyConvolution (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
   ∑ k ∈ Finset.range (n + 1), a k * b (n - k)
+
+/-- Coefficients of a product of power series are the Cauchy convolution of
+their coefficient sequences. -/
+theorem coeff_mul_eq_natCauchyConvolution (F G : PowerSeries ℝ) (n : ℕ) :
+    PowerSeries.coeff n (F * G) =
+      natCauchyConvolution (fun k => PowerSeries.coeff k F)
+        (fun k => PowerSeries.coeff k G) n := by
+  rw [PowerSeries.coeff_mul]
+  simpa [natCauchyConvolution] using
+    Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk
+      (fun p => PowerSeries.coeff p.1 F * PowerSeries.coeff p.2 G) n
 
 /-- The finite principal truncation of a lower-Toeplitz matrix. -/
 def toeplitzFin (a : ℕ → ℝ) (N : ℕ) :

@@ -712,6 +712,7 @@ import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PolyaFrequencyConvolution.Basic
 import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 import RealRooted.PolynomialValueEulerNumerator
+import RealRooted.PolynomialValueEulerNumerator.PF
 import RealRooted.PosCombo
 import RealRooted.PosCombo.Degree
 import RealRooted.PositiveParameterLocalLowerCount

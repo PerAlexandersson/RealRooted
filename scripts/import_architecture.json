@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1047
+      "max_modules": 1048
+    },
+    "RealRooted.PolynomialValueEulerNumerator.PF": {
+      "max_modules": 96
     },
     "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
       "max_modules": 65
