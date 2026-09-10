@@ -56,4 +56,39 @@ theorem homogenizeBivariate_stableOrZero_of_splits_nonpos {p : Polynomial ℝ}
       (MvUpperHalfPlaneStableOrZero.zero (sigma := Fin 2))
   · exact (homogenizeBivariate_stable_of_splits_nonpos hp0 hpSplits hroots).orZero
 
+/-- Padding a nonzero split polynomial with nonpositive roots to any larger
+homogeneous degree preserves strict bivariate stability. -/
+theorem homogenize_stable_of_splits_nonpos_of_natDegree_le
+    {p : Polynomial ℝ} {d : ℕ} (hdegree : p.natDegree ≤ d)
+    (hp0 : p ≠ 0) (hpSplits : p.Splits)
+    (hroots : ∀ r ∈ p.roots, r ≤ 0) :
+    MvUpperHalfPlaneStable (complexifyMv (p.homogenize d)) := by
+  rw [Polynomial.homogenize_eq_homogenize_natDegree_mul_X_one_pow hdegree]
+  change MvUpperHalfPlaneStable
+    (MvPolynomial.map Complex.ofRealHom
+      (p.homogenize p.natDegree * MvPolynomial.X 1 ^ (d - p.natDegree)))
+  rw [map_mul, map_pow, MvPolynomial.map_X]
+  apply MvUpperHalfPlaneStable.mul
+  · rw [← homogenizeBivariate_eq_homogenize]
+    exact homogenizeBivariate_stable_of_splits_nonpos hp0 hpSplits hroots
+  · intro z hz
+    rw [MvPolynomial.eval_pow, MvPolynomial.eval_X]
+    apply pow_ne_zero
+    intro hz0
+    have hz1 := hz 1
+    simp [hz0] at hz1
+
+/-- Padding a split polynomial with nonpositive roots to any larger homogeneous
+degree preserves weak bivariate stability, including the zero polynomial. -/
+theorem homogenize_stableOrZero_of_splits_nonpos_of_natDegree_le
+    {p : Polynomial ℝ} {d : ℕ} (hdegree : p.natDegree ≤ d)
+    (hpSplits : p.Splits) (hroots : ∀ r ∈ p.roots, r ≤ 0) :
+    MvUpperHalfPlaneStableOrZero (complexifyMv (p.homogenize d)) := by
+  by_cases hp0 : p = 0
+  · subst p
+    simpa [complexifyMv] using
+      (MvUpperHalfPlaneStableOrZero.zero (sigma := Fin 2))
+  · exact (homogenize_stable_of_splits_nonpos_of_natDegree_le
+      hdegree hp0 hpSplits hroots).orZero
+
 end RealRooted.BorceaBranden
