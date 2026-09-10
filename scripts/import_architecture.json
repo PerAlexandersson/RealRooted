@@ -2,16 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1062
+      "max_modules": 1063
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
     },
+    "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize": {
+      "max_modules": 141
+    },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency": {
       "max_modules": 138
-    },
-    "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency.Homogenize": {
-      "max_modules": 141
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product": {
       "max_modules": 52
@@ -48,6 +48,9 @@
     },
     "RealRooted.PolynomialValueEulerNumerator.Product": {
       "max_modules": 145
+    },
+    "RealRooted.PolynomialValueEulerNumerator.Product.PF": {
+      "max_modules": 152
     },
     "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
       "max_modules": 65

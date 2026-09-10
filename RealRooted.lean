@@ -77,8 +77,8 @@ import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency.Homogenize
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
@@ -727,6 +727,7 @@ import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 import RealRooted.PolynomialValueEulerNumerator
 import RealRooted.PolynomialValueEulerNumerator.PF
 import RealRooted.PolynomialValueEulerNumerator.Product
+import RealRooted.PolynomialValueEulerNumerator.Product.PF
 import RealRooted.PosCombo
 import RealRooted.PosCombo.Degree
 import RealRooted.PositiveParameterLocalLowerCount
