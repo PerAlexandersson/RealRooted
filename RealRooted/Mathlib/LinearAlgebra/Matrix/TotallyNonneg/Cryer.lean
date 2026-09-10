@@ -106,6 +106,45 @@ theorem det_eq_firstEntry_mul_det_trailing
     _ = A 0 0 * (A.submatrix Fin.succ Fin.succ).det := by
       congr 1
 
+/-- Bordering a trailing minor with row and column zero factors its determinant
+when the first row is zero away from the pivot. -/
+theorem det_zero_succRows_succCols_eq
+    {R : Type*} [CommRing R] {N m : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (rows cols : Fin m → Fin N) (hzero : ∀ j : Fin N, A 0 j.succ = 0) :
+    (A.submatrix (Fin.cases 0 fun i => (rows i).succ)
+      (Fin.cases 0 fun j => (cols j).succ)).det =
+      A 0 0 * ((A.submatrix Fin.succ Fin.succ).submatrix rows cols).det := by
+  let M := A.submatrix (Fin.cases 0 fun i => (rows i).succ)
+    (Fin.cases 0 fun j => (cols j).succ)
+  have hzeroM : ∀ j : Fin m, M 0 j.succ = 0 := by
+    intro j
+    dsimp [M]
+    exact hzero (cols j)
+  rw [show A.submatrix (Fin.cases 0 fun i => (rows i).succ)
+      (Fin.cases 0 fun j => (cols j).succ) = M from rfl]
+  rw [det_eq_firstEntry_mul_det_trailing M hzeroM]
+  have htrailing : M.submatrix Fin.succ Fin.succ =
+      (A.submatrix Fin.succ Fin.succ).submatrix rows cols := by
+    ext i j
+    simp [M]
+  rw [htrailing]
+  simp [M]
+
+/-- A nonnegative first pivot and trailing total nonnegativity give
+nonnegativity of every minor whose selected first row and column are zero. -/
+theorem nonneg_of_isTotallyNonneg_trailing_zero_zero
+    {R : Type*} [CommRing R] [PartialOrder R] [IsOrderedRing R]
+    {N m : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (rows cols : Fin m → Fin N) (hzero : ∀ j : Fin N, A 0 j.succ = 0)
+    (hdiag : 0 ≤ A 0 0)
+    (hB : (A.submatrix Fin.succ Fin.succ).IsTotallyNonneg)
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ (A.submatrix (Fin.cases 0 fun i => (rows i).succ)
+      (Fin.cases 0 fun j => (cols j).succ)).det := by
+  rw [det_zero_succRows_succCols_eq A rows cols hzero]
+  exact mul_nonneg hdiag (hB hrows hcols)
+
 /-- A nonzero determinant and nonnegative initial-column flag minors force a
 positive first pivot and a nonzero trailing determinant. -/
 theorem HasNonnegInitialColumnMinors.pivot_pos_and_trailing_det_ne_zero
