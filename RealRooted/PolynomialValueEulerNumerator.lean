@@ -38,6 +38,32 @@ noncomputable def finiteEulerNumerator (d : ℕ) (a : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (d + 1),
     C (a k) * X ^ k * (1 - X) ^ (d - k)
 
+/-- The degree-`d` Euler numerator has degree at most `d`, including when top
+Newton coefficients cancel. -/
+theorem natDegree_finiteEulerNumerator_le (d : ℕ) (a : ℕ → ℝ) :
+    (finiteEulerNumerator d a).natDegree ≤ d := by
+  classical
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro k hk
+  have hkd : k ≤ d := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  calc
+    (C (a k) * X ^ k * (1 - X) ^ (d - k)).natDegree ≤
+        (C (a k) * X ^ k).natDegree +
+          ((1 - X : ℝ[X]) ^ (d - k)).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ k + (d - k) := by
+      apply Nat.add_le_add
+      · exact (Polynomial.natDegree_C_mul_le (a k) (X ^ k)).trans_eq
+          (Polynomial.natDegree_X_pow k)
+      · calc
+          ((1 - X) ^ (d - k) : ℝ[X]).natDegree ≤
+              (d - k) * (1 - X : ℝ[X]).natDegree :=
+            Polynomial.natDegree_pow_le
+          _ ≤ (d - k) * 1 := Nat.mul_le_mul_left _ (by
+            simpa using Polynomial.natDegree_sub_le (1 : ℝ[X]) X)
+          _ = d - k := by simp
+    _ = d := Nat.add_sub_of_le hkd
+
 private theorem finiteEulerNumerator_mul_invOneSubPow (d : ℕ) (a : ℕ → ℝ) :
     (finiteEulerNumerator d a : PowerSeries ℝ) *
         (PowerSeries.invOneSubPow ℝ (d + 1)).val =
@@ -63,6 +89,12 @@ private theorem finiteEulerNumerator_mul_invOneSubPow (d : ℕ) (a : ℕ → ℝ
 noncomputable def polynomialValueEulerNumerator (p : ℝ[X]) : ℝ[X] :=
   finiteEulerNumerator p.natDegree fun k =>
     ((fwdDiff (1 : ℕ))^[k] (polynomialValueSeq p)) 0
+
+/-- The canonical numerator uses the source polynomial's actual degree as its
+degree cap. -/
+theorem natDegree_polynomialValueEulerNumerator_le (p : ℝ[X]) :
+    (polynomialValueEulerNumerator p).natDegree ≤ p.natDegree := by
+  exact natDegree_finiteEulerNumerator_le p.natDegree _
 
 /-- The generating series of a polynomial-value sequence is its canonical
 Euler numerator divided by `(1 - X)^(natDegree + 1)`. -/
