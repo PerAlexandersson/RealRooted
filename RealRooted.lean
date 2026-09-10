@@ -899,7 +899,9 @@ import RealRooted.Tactic.Examples.LiuWang.StrictProducts
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.MaWang.DirectSteps
 import RealRooted.Tactic.Examples.MaWang.LiuWang
+import RealRooted.Tactic.Examples.MaWang.WeakSequences
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
