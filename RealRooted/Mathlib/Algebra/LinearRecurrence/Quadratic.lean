@@ -37,6 +37,30 @@ section CommRing
 
 variable [CommRing R]
 
+/-- The binary quadratic form associated to `quadratic p q`. -/
+def quadraticForm (p q a b : R) : R :=
+  a ^ 2 - p * a * b - q * b ^ 2
+
+/-- One recurrence step multiplies the associated quadratic form by `-q`. -/
+theorem quadratic_invariant_step {p q : R} {S : ℕ → R}
+    (hS : (quadratic p q).IsSolution S) (k : ℕ) :
+    quadraticForm p q (S (k + 2)) (S (k + 1)) =
+      (-q) * quadraticForm p q (S (k + 1)) (S k) := by
+  unfold quadraticForm
+  rw [quadratic_isSolution_iff p q S |>.mp hS k]
+  ring
+
+/-- The quadratic form of a recurrence solution evolves geometrically. -/
+theorem quadratic_invariant {p q : R} {S : ℕ → R}
+    (hS : (quadratic p q).IsSolution S) (k : ℕ) :
+    quadraticForm p q (S (k + 1)) (S k) =
+      (-q) ^ k * quadraticForm p q (S 1) (S 0) := by
+  induction k with
+  | zero => simp [quadraticForm]
+  | succ k ih =>
+      rw [quadratic_invariant_step hS k, ih]
+      ring
+
 /-- A factor of the characteristic quadratic telescopes a solution without
 dividing by the difference of its two roots. -/
 theorem quadratic_telescope {p q β₁ β₂ : R} {S : ℕ → R}
