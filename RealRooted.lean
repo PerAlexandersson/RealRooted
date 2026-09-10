@@ -1125,3 +1125,4 @@ import RealRooted.Wronskian.Successor.Interlacing
 import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
 import RealRooted.Production
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict

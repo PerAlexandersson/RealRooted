@@ -1004,6 +1004,7 @@ import RealRooted.Wronskian.Successor.Gap
 import RealRooted.Wronskian.Successor.Interlacing
 import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
 
 /-!
 # RealRooted production umbrella
