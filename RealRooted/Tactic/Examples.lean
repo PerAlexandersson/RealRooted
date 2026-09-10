@@ -24,6 +24,7 @@ import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.GeneralizedLaguerre
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.MaWang.LiuWang
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Linear
