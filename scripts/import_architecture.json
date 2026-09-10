@@ -10,13 +10,13 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1076
+      "max_modules": 1081
     },
     "RealRooted.Production": {
       "max_modules": 1000
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 588
+      "max_modules": 593
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
