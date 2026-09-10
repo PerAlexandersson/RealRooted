@@ -34,4 +34,21 @@ theorem pderiv_finsetProd_X {R σ : Type*} [CommSemiring R] [DecidableEq σ]
             exact (h (Or.inr trivial)).elim
         · simp [ha, hax, hxa, hxt, ih]
 
+open scoped Classical in
+/-- The partial derivative of a possibly noninjective renaming is the sum of
+the renamed partial derivatives over the corresponding source fiber. -/
+theorem pderiv_rename_eq_sum_fiber {R σ τ : Type*} [CommSemiring R] [Fintype σ]
+    (f : σ → τ) (j : τ) (P : MvPolynomial σ R) :
+    pderiv j (rename f P) =
+      ∑ i ∈ Finset.univ.filter (fun i => f i = j), rename f (pderiv i P) := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C a => simp
+  | add P Q hP hQ => simp [hP, hQ, Finset.sum_add_distrib]
+  | mul_X P x hP =>
+      simp only [map_mul, rename_X, pderiv_mul, hP, map_add, pderiv_X,
+        Pi.single_apply]
+      by_cases hx : f x = j <;>
+        simp [hx, Finset.sum_add_distrib, Finset.sum_mul]
+
 end MvPolynomial
