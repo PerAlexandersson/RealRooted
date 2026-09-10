@@ -429,12 +429,6 @@ theorem isResolvable_of_isTotallyNonneg
     (hR : Matrix.IsTotallyNonneg R) : IsResolvable R :=
   ⟨resolutionOfTotallyNonneg R hunit hR⟩
 
-/-- The paper's normalization condition for resolution weights. -/
-def Resolution.IsNormalized {R : LowerTriangularMatrix ℝ}
-    (resolution : Resolution R) : Prop :=
-  ∀ n k, k ≤ n → resolution.lambda n k = 0 →
-    resolution.lambda (n + 1) k = 0
-
 theorem resolutionOfTotallyNonneg_isNormalized
     {R : LowerTriangularMatrix ℝ}
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)

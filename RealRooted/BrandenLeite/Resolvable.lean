@@ -61,6 +61,10 @@ namespace Resolution
 
 variable {R : LowerTriangularMatrix ℝ} (resolution : Resolution R)
 
+/-- The paper's normalization condition for resolution weights. -/
+def IsNormalized : Prop :=
+  ∀ n k, k ≤ n → resolution.lambda n k = 0 → resolution.lambda (n + 1) k = 0
+
 /-- Telescoping Definition 2.2 gives equation (2.4). -/
 theorem polynomial_eq_pow_add_sum {n k : ℕ} (hk : k ≤ n + 1) :
     resolution.polynomial (n + 1) k =
