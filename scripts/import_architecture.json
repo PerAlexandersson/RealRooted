@@ -2,13 +2,16 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1061
+      "max_modules": 1062
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency": {
       "max_modules": 138
+    },
+    "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency.Homogenize": {
+      "max_modules": 141
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product": {
       "max_modules": 52
