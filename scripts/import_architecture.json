@@ -2,7 +2,10 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1053
+      "max_modules": 1054
+    },
+    "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous": {
+      "max_modules": 44
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary": {
       "max_modules": 43

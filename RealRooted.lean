@@ -74,6 +74,7 @@ import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Coeffi
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
