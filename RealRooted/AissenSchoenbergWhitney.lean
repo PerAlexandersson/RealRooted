@@ -71,6 +71,27 @@ protected theorem IsPolyaFreqSeq.tail_of_zeros {a : ℕ → ℝ}
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
         ih htail htail_zero
 
+/-- Inserting a finite prefix of zeroes preserves the Pólya-frequency
+property. -/
+protected theorem IsPolyaFreqSeq.prefix_zeros {a : ℕ → ℝ}
+    (hpf : IsPolyaFreqSeq a) (s : ℕ) :
+    IsPolyaFreqSeq (fun n => if s ≤ n then a (n - s) else 0) := by
+  rw [IsPolyaFreqSeq]
+  have htoeplitz : toeplitz (fun n => if s ≤ n then a (n - s) else 0) =
+      (toeplitz a).submatrix id (fun j => j + s) := by
+    ext i j
+    simp only [toeplitz_apply, submatrix_apply, id_eq]
+    by_cases hji : j ≤ i
+    · rw [if_pos hji]
+      have hsub : s ≤ i - j ↔ j + s ≤ i := by lia
+      simp [hsub]
+      congr 1
+      lia
+    · have hshift : ¬ j + s ≤ i := fun h => hji (le_trans (Nat.le_add_right _ _) h)
+      simp [hji, hshift]
+  rw [htoeplitz]
+  exact hpf.submatrix strictMono_id (fun _ _ h => by lia)
+
 /-- If a PF polynomial has zero constant coefficient, dividing by `X`
 preserves the PF property of its coefficient sequence. -/
 protected theorem IsPolyaFreqSeq.divX_coeff {p : ℝ[X]}

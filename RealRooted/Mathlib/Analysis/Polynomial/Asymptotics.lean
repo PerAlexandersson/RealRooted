@@ -33,6 +33,15 @@ theorem causalFwdDiffPolynomial_iter_zero (k : ℕ) :
   | succ k ih => simp only [Function.iterate_succ_apply', ih,
       causalFwdDiffPolynomial_zero]
 
+/-- An eventual polynomial-evaluation tail remains an eventual evaluation
+tail after a fixed natural-number shift. -/
+theorem eventually_eq_eval_nat_add {a : ℕ → ℝ} {p : ℝ[X]}
+    (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) (s : ℕ) :
+    ∀ᶠ n in atTop, a (n + s) =
+      (p.comp (X + C (s : ℝ))).eval (n : ℝ) := by
+  filter_upwards [(tendsto_add_atTop_nat s).eventually hap] with n hn
+  simpa [eval_comp, Nat.cast_add] using hn
+
 /-- Evaluations of a nonzero real polynomial at two fixed translates of the
 natural numbers have ratio tending to one. -/
 theorem tendsto_eval_nat_add_div {p : ℝ[X]} (hp : p ≠ 0) (u v : ℝ) :
