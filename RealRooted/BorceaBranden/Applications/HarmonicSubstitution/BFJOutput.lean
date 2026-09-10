@@ -37,6 +37,18 @@ theorem bfjOutput_eq_affineLineRestriction
   funext i
   fin_cases i <;> simp
 
+/-- Evaluation of the BFJ output is evaluation of its bivariate coefficient
+at `(z, 1)`. -/
+@[simp] theorem eval_bfjOutput
+    {R : Type*} [CommSemiring R]
+    (P Q : MvPolynomial (Fin 2) R) (b : ℕ) (z : R) :
+    (bfjOutput P Q b).eval z =
+      MvPolynomial.eval ![z, 1] (bfjCoefficient P Q b) := by
+  rw [bfjOutput_eq_affineLineRestriction, eval_affineLineRestriction]
+  apply congrArg (fun w : Fin 2 → R => MvPolynomial.eval w (bfjCoefficient P Q b))
+  funext i
+  fin_cases i <;> simp
+
 /-- Mapping coefficients commutes with the dehomogenized BFJ output. -/
 theorem map_bfjOutput {R S : Type*} [CommSemiring R] [CommSemiring S]
     (f : R →+* S) (P Q : MvPolynomial (Fin 2) R) (b : ℕ) :
