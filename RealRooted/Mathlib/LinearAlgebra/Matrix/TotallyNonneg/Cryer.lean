@@ -10,6 +10,14 @@ leading pivot; the full criterion remains separate.
 
 namespace Matrix
 
+/-- A square matrix has nonnegative initial-column flag minors when every
+minor with arbitrary ordered rows and the first consecutive columns has
+nonnegative determinant. -/
+def HasNonnegInitialColumnMinors {R : Type*} [CommRing R] [PartialOrder R]
+    {N : ℕ} (A : Matrix (Fin N) (Fin N) R) : Prop :=
+  ∀ ⦃m : ℕ⦄ (hm : m ≤ N) (rows : Fin m → Fin N), StrictMono rows →
+    0 ≤ (A.submatrix rows (Fin.castLE hm)).det
+
 /-- Bordering a trailing initial-column minor with row and column zero factors
 its determinant when the first row is zero away from the pivot. -/
 theorem det_zero_succRows_initialColumns_eq
@@ -58,5 +66,58 @@ theorem nonneg_trailing_initialColumns_of_nonneg_zero_succRows
     0 ≤ ((A.submatrix Fin.succ Fin.succ).submatrix rows (Fin.castLE hm)).det := by
   rw [det_zero_succRows_initialColumns_eq A hm rows hzero] at hflag
   exact nonneg_of_mul_nonneg_right hflag hdiag
+
+/-- Initial-column flag minors are inherited by the trailing block after a
+positive first-row pivot. -/
+theorem HasNonnegInitialColumnMinors.trailing
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (hA : A.HasNonnegInitialColumnMinors)
+    (hzero : ∀ j : Fin N, A 0 j.succ = 0) (hdiag : 0 < A 0 0) :
+    (A.submatrix Fin.succ Fin.succ).HasNonnegInitialColumnMinors := by
+  intro m hm rows hrows
+  apply nonneg_trailing_initialColumns_of_nonneg_zero_succRows A hm rows hzero hdiag
+  apply hA (Nat.succ_le_succ hm) (Fin.cases 0 fun i => (rows i).succ)
+  intro i j hij
+  rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨i, rfl⟩
+  · rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨j, rfl⟩
+    · exact (lt_irrefl _ hij).elim
+    · simp
+  · rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨j, rfl⟩
+    · simp at hij
+    · exact Fin.succ_lt_succ_iff.mpr (hrows (Fin.succ_lt_succ_iff.mp hij))
+
+/-- A first row which vanishes away from its pivot gives the corresponding
+trailing determinant factorization. -/
+theorem det_eq_firstEntry_mul_det_trailing
+    {R : Type*} [CommRing R] {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (hzero : ∀ j : Fin N, A 0 j.succ = 0) :
+    A.det = A 0 0 * (A.submatrix Fin.succ Fin.succ).det := by
+  have h := det_zero_succRows_initialColumns_eq A (Nat.le_refl N) (fun i => i) hzero
+  calc
+    A.det = (A.submatrix (Fin.cases 0 fun i : Fin N => i.succ)
+        (Fin.castLE (Nat.succ_le_succ (Nat.le_refl N)))).det := by
+      congr 1
+      ext i j
+      rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨k, rfl⟩ <;> rfl
+    _ = A 0 0 * ((A.submatrix Fin.succ Fin.succ).submatrix (fun i => i)
+        (Fin.castLE (Nat.le_refl N))).det := h
+    _ = A 0 0 * (A.submatrix Fin.succ Fin.succ).det := by
+      congr 1
+
+/-- A nonzero determinant and nonnegative initial-column flag minors force a
+positive first pivot and a nonzero trailing determinant. -/
+theorem HasNonnegInitialColumnMinors.pivot_pos_and_trailing_det_ne_zero
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (hA : A.HasNonnegInitialColumnMinors)
+    (hzero : ∀ j : Fin N, A 0 j.succ = 0) (hdet : A.det ≠ 0) :
+    0 < A 0 0 ∧ (A.submatrix Fin.succ Fin.succ).det ≠ 0 := by
+  rw [det_eq_firstEntry_mul_det_trailing A hzero] at hdet
+  obtain ⟨hpivot, htrailing⟩ := mul_ne_zero_iff.mp hdet
+  have hnonneg : 0 ≤ A 0 0 := by
+    simpa using hA (m := 1) (by simp) ![0] (by simp)
+  exact ⟨lt_of_le_of_ne hnonneg (Ne.symm hpivot), htrailing⟩
 
 end Matrix
