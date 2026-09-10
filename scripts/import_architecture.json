@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1127
+      "max_modules": 1128
     },
     "RealRooted.Production": {
-      "max_modules": 1006
+      "max_modules": 1007
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -83,6 +83,9 @@
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.Order.Fin.Tuple": {
+      "max_modules": 1
     },
     "RealRooted.PolynomialValueEulerNumerator": {
       "max_modules": 16
@@ -1792,6 +1795,7 @@
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
     "RealRooted.Mathlib.Topology.Instances.Matrix.Determinant",
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker",
+    "RealRooted.Mathlib.Order.Fin.Tuple",
     "RealRooted.Mathlib.Data.List.Interleave.Padding",
     "RealRooted.Mathlib.Data.List.Sort.Endpoint",
     "RealRooted.RankTwoMatching.Basic",

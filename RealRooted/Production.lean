@@ -572,6 +572,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.Fin.Basic
+import RealRooted.Mathlib.Order.Fin.Tuple
 import RealRooted.Mathlib.Data.List.Basic
 import RealRooted.Mathlib.Data.List.Destutter
 import RealRooted.Mathlib.Data.List.Interleave
