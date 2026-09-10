@@ -62,6 +62,7 @@ import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.OEISTestbed
+import RealRooted.Tactic.Examples.OEISTestbedLS4
 
 /-!
 # RealRooted tactic examples

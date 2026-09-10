@@ -891,6 +891,7 @@ import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
+import RealRooted.Tactic.Examples.OEISTestbedLS4
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PFPolynomial
