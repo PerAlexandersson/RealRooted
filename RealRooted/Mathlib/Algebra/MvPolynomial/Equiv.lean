@@ -37,6 +37,16 @@ theorem optionEquivLeft_rename_option_map
   | mul_X p i hp =>
       cases i <;> simp [hp]
 
+/-- Mapping scalars commutes with taking a coefficient in the distinguished
+variable. -/
+theorem map_optionEquivLeft_coeff
+    {R S σ : Type*} [CommSemiring R] [CommSemiring S]
+    (f : R →+* S) (p : MvPolynomial (Option σ) R) (k : ℕ) :
+    map f ((optionEquivLeft R σ p).coeff k) =
+      (optionEquivLeft S σ (map f p)).coeff k := by
+  ext m
+  simp only [coeff_map, optionEquivLeft_coeff_coeff]
+
 /-- Multiplying by the distinguished variable plus one coefficient variable
 shifts a known scalar leading coefficient by one degree. -/
 theorem optionEquivLeft_coeff_succ_mul_X_none_add_new

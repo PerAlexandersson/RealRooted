@@ -34,6 +34,38 @@ theorem one_div_sub_im_neg {w r : ℂ} (h : r.im < w.im) :
   rw [one_div, Complex.inv_im, Complex.sub_im]
   exact div_neg_of_neg_of_pos (by linarith) (Complex.normSq_pos.mpr hne)
 
+/-- The harmonic sum of two points in the open upper half-plane remains in
+the open upper half-plane. -/
+theorem mul_div_add_im_pos {x y : ℂ} (hx : 0 < x.im) (hy : 0 < y.im) :
+    0 < (x * y / (x + y)).im := by
+  have hx0 : x ≠ 0 := by
+    intro h
+    have hi : x.im = 0 := by
+      simpa using congrArg Complex.im h
+    linarith
+  have hy0 : y ≠ 0 := by
+    intro h
+    have hi : y.im = 0 := by
+      simpa using congrArg Complex.im h
+    linarith
+  have hsum0 : x + y ≠ 0 := by
+    intro h
+    have hi : x.im + y.im = 0 := by
+      simpa using congrArg Complex.im h
+    linarith
+  have hnx : 0 < Complex.normSq x := Complex.normSq_pos.mpr hx0
+  have hny : 0 < Complex.normSq y := Complex.normSq_pos.mpr hy0
+  have hnsum : 0 < Complex.normSq (x + y) :=
+    Complex.normSq_pos.mpr hsum0
+  have hnum :
+      (x * y).im * (x + y).re - (x * y).re * (x + y).im =
+        y.im * Complex.normSq x + x.im * Complex.normSq y := by
+    simp only [Complex.mul_im, Complex.mul_re, Complex.add_im,
+      Complex.add_re, Complex.normSq_apply]
+    ring
+  rw [Complex.div_im, ← sub_div, hnum]
+  exact div_pos (add_pos (mul_pos hy hnx) (mul_pos hx hny)) hnsum
+
 end Complex
 
 namespace RealRooted
