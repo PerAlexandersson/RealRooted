@@ -16,8 +16,8 @@ variable (R : Type*) [CommRing R]
 noncomputable def catalanMap : R⟦X⟧ :=
   map (Nat.castRingHom R) catalanSeries
 
-/-- Substituting a zero-constant-term series into `catalanMap` preserves the
-Catalan quadratic equation. -/
+/-- Substituting a series satisfying `HasSubst` into `catalanMap` preserves
+the Catalan quadratic equation. -/
 theorem catalanMap_subst_eq (q : R⟦X⟧) (hq : HasSubst q) :
     (catalanMap R).subst q = 1 + q * ((catalanMap R).subst q) ^ 2 := by
   have hcat : catalanMap R ^ 2 * X + 1 = catalanMap R := by
