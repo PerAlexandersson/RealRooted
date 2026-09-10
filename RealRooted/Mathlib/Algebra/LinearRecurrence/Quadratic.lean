@@ -37,6 +37,30 @@ section CommRing
 
 variable [CommRing R]
 
+/-- The characteristic polynomial of `quadratic p q`. -/
+theorem quadratic_charPoly (p q : R) :
+    (quadratic p q).charPoly = Polynomial.X ^ 2 - Polynomial.C p * Polynomial.X -
+      Polynomial.C q := by
+  unfold quadratic LinearRecurrence.charPoly
+  rw [Fin.sum_univ_two]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.vecEmpty]
+  simp [Polynomial.monomial_one_right_eq_X_pow, ← Polynomial.C_mul_X_eq_monomial]
+  ring
+
+/-- The characteristic quadratic factors when its two root data satisfy the
+Vieta sum and product relations. -/
+theorem quadratic_charPoly_eq_mul {p q β₁ β₂ : R} (hsum : β₁ + β₂ = p)
+    (hprod : β₁ * β₂ = -q) :
+    (quadratic p q).charPoly =
+      (Polynomial.X - Polynomial.C β₁) * (Polynomial.X - Polynomial.C β₂) := by
+  have hq : q = -(β₁ * β₂) := by
+    calc
+      q = -(-q) := by ring
+      _ = -(β₁ * β₂) := by rw [hprod]
+  rw [quadratic_charPoly, ← hsum, hq]
+  simp only [map_add, map_neg, map_mul]
+  ring
+
 /-- The binary quadratic form associated to `quadratic p q`. -/
 def quadraticForm (p q a b : R) : R :=
   a ^ 2 - p * a * b - q * b ^ 2
