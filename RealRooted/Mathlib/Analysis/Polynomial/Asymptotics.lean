@@ -37,6 +37,17 @@ theorem tendsto_eval_nat_sub_div {p : ℝ[X]} (hp : p ≠ 0) (c d : ℕ) :
   rw [Nat.cast_sub hcn, Nat.cast_sub hdn]
   congr 1
 
+/-- An eventual equality with evaluations of a nonzero polynomial transports
+the ratio limit at two fixed natural-number offsets. -/
+theorem tendsto_nat_sub_div_of_eventually_eq_eval {a : ℕ → ℝ}
+    {p : ℝ[X]} (hp : p ≠ 0)
+    (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) (c d : ℕ) :
+    Tendsto (fun n : ℕ => a (n - c) / a (n - d)) atTop (nhds 1) := by
+  apply (tendsto_eval_nat_sub_div hp c d).congr'
+  filter_upwards [(tendsto_sub_atTop_nat c).eventually hap,
+    (tendsto_sub_atTop_nat d).eventually hap] with n hc hd
+  rw [hc, hd]
+
 /-- A sequence which is eventually nonnegative and eventually agrees with
 evaluations of a nonzero real polynomial is eventually positive. -/
 theorem eventually_pos_of_eventually_nonneg_of_eventually_eq_eval_nat
