@@ -219,4 +219,79 @@ theorem nonneg_of_isTotallyNonneg_trailing
       rw [heq]
       exact hB hrows' hcols
 
+/-- Upper-zero shape, nonnegative initial-column flag minors, and a nonzero
+determinant give nonnegative ordered minors on every consecutive interval of
+columns. The remaining Cryer reduction from consecutive to arbitrary selected
+columns is separate. -/
+theorem HasNonnegInitialColumnMinors.consecutiveColumnMinor_nonneg
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] :
+    ∀ {N : ℕ} (A : Matrix (Fin N) (Fin N) R),
+      A.HasNonnegInitialColumnMinors →
+      (∀ i j, i < j → A i j = 0) → A.det ≠ 0 →
+      ∀ {c m : ℕ} (hcm : c + m ≤ N) (rows : Fin m → Fin N), StrictMono rows →
+        0 ≤ (A.submatrix rows (fun j => Fin.castLE hcm (Fin.natAdd c j))).det := by
+  intro N
+  induction N with
+  | zero =>
+    intro A hA _ _ c m hcm rows hrows
+    have hm : m = 0 := by lia
+    have hc : c = 0 := by lia
+    subst m
+    subst c
+    simp only [Fin.natAdd_zero]
+    exact hA (m := 0) (by simp) rows hrows
+  | succ N ih =>
+    intro A hA hupper hdet c m hcm rows hrows
+    cases c with
+    | zero =>
+      have hm : m ≤ N + 1 := by simpa using hcm
+      have hcols : (fun j : Fin m => Fin.castLE hcm (Fin.natAdd 0 j)) =
+          Fin.castLE hm := by
+        funext j
+        apply Fin.ext
+        simp [Fin.natAdd]
+      rw [hcols]
+      exact hA hm rows hrows
+    | succ c =>
+      have hcm' : c + m ≤ N := by lia
+      have hzero : ∀ j : Fin N, A 0 j.succ = 0 := fun j =>
+        hupper 0 j.succ (by simp)
+      obtain ⟨hpivot, hdetB⟩ :=
+        hA.pivot_pos_and_trailing_det_ne_zero A hzero hdet
+      have hB := hA.trailing A hzero hpivot
+      have hupperB : ∀ i j, i < j →
+          (A.submatrix Fin.succ Fin.succ) i j = 0 := by
+        intro i j hij
+        exact hupper i.succ j.succ (Fin.succ_lt_succ_iff.mpr hij)
+      by_cases hrow : ∃ i, rows i = 0
+      · obtain ⟨i, hi⟩ := hrow
+        have hrowzero : ∀ j : Fin m,
+            (A.submatrix rows (fun j => Fin.castLE hcm (Fin.natAdd (c + 1) j))) i j = 0 := by
+          intro j
+          simpa [hi] using
+            hupper 0 (Fin.castLE hcm (Fin.natAdd (c + 1) j)) (by
+              change 0 < c + 1 + j.val
+              lia)
+        rw [det_eq_zero_of_row_eq_zero i hrowzero]
+      · have hrows_ne_zero : ∀ i, rows i ≠ 0 := fun i hi => hrow ⟨i, hi⟩
+        let rows' : Fin m → Fin N := fun i => (rows i).pred (hrows_ne_zero i)
+        have hrows' : StrictMono rows' := by
+          intro i j hij
+          exact Fin.pred_lt_pred_iff.mpr (hrows hij)
+        have heq : A.submatrix rows (fun j => Fin.castLE hcm (Fin.natAdd (c + 1) j)) =
+            (A.submatrix Fin.succ Fin.succ).submatrix rows'
+              (fun j => Fin.castLE hcm' (Fin.natAdd c j)) := by
+          ext i j
+          change A (rows i) (Fin.castLE hcm (Fin.natAdd (c + 1) j)) =
+            A (rows' i).succ (Fin.castLE hcm' (Fin.natAdd c j)).succ
+          have hrow' : (rows' i).succ = rows i := by
+            simp [rows']
+          rw [hrow']
+          apply congrArg (A (rows i))
+          apply Fin.ext
+          simp [Fin.natAdd]
+          lia
+        rw [heq]
+        exact ih (A.submatrix Fin.succ Fin.succ) hB hupperB hdetB hcm' rows' hrows'
+
 end Matrix
