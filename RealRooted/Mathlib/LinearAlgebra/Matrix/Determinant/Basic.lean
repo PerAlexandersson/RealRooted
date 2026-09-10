@@ -103,4 +103,188 @@ theorem det_eq_last_apply_mul_det_castSucc_of_above_eq_zero
   rw [heven, one_mul] at hdet
   exact hdet
 
+section BorderedDeterminants
+
+variable {R : Type*} [CommRing R]
+
+open scoped BigOperators
+
+/-- Adjoin a final column and a final row to a square matrix. -/
+def border {q : ℕ} (A : Matrix (Fin q) (Fin q) R)
+    (b x : Fin q → R) (a : R) : Matrix (Fin (q + 1)) (Fin (q + 1)) R :=
+  fun i j ↦ Fin.lastCases (motive := fun _ ↦ Fin (q + 1) → R)
+    (Fin.snoc x a) (fun k ↦ Fin.snoc (A k) (b k)) i j
+
+omit [CommRing R] in
+@[simp] lemma border_castSucc_castSucc {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (b x : Fin q → R) (a : R)
+    (i j : Fin q) :
+    border A b x a i.castSucc j.castSucc = A i j := by
+  simp [border]
+
+omit [CommRing R] in
+@[simp] lemma border_castSucc_last {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (b x : Fin q → R) (a : R)
+    (i : Fin q) :
+    border A b x a i.castSucc (Fin.last q) = b i := by
+  simp [border]
+
+omit [CommRing R] in
+@[simp] lemma border_last_castSucc {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (b x : Fin q → R) (a : R)
+    (j : Fin q) :
+    border A b x a (Fin.last q) j.castSucc = x j := by
+  simp [border]
+
+omit [CommRing R] in
+@[simp] lemma border_last_last {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (b x : Fin q → R) (a : R) :
+    border A b x a (Fin.last q) (Fin.last q) = a := by
+  simp [border]
+
+/-- A bordered determinant when the new row is given in the old row basis. -/
+private theorem det_border_of_vecMul_eq {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (b x c : Fin q → R) (a : R)
+    (hx : c ᵥ* A = x) :
+    (border A b x a).det = A.det * (a - dotProduct c b) := by
+  let E := border A b 0 1
+  let d : Fin (q + 1) → R := Fin.snoc c (a - dotProduct c b)
+  have hrow : ∑ k, d k • E k = Fin.snoc x a := by
+    funext j
+    refine Fin.lastCases ?_ (fun j ↦ ?_) j
+    · rw [Fin.sum_univ_castSucc]
+      simp [d, E, dotProduct]
+    · rw [Fin.sum_univ_castSucc]
+      simpa [d, E, Matrix.vecMul, dotProduct] using congrFun hx j
+  have hupdate : E.updateRow (Fin.last q) (∑ k, d k • E k) = border A b x a := by
+    ext i j
+    by_cases hi : i = Fin.last q
+    · subst i
+      simp [hrow, E, border]
+    · obtain ⟨i, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
+      simp [E, border]
+  have hdetE : E.det = A.det := by
+    have hminor : E.submatrix Fin.castSucc Fin.castSucc = A := by
+      ext i j
+      simp [E]
+    rw [Matrix.det_succ_row E (Fin.last q), Fin.sum_univ_castSucc]
+    simp [E, Fin.succAbove_last, hminor]
+  rw [← hupdate, Matrix.det_updateRow_sum, hdetE, smul_eq_mul]
+  simp [d]
+  ring
+
+/-- Replacing an old row of a bordered matrix by the new coordinate row
+extracts the corresponding coefficient of the adjoined row. -/
+private theorem det_border_update_old_row {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (r0 : Fin q)
+    (b y d : Fin q → R) (beta : R) (hy : d ᵥ* A = y) :
+    ((border A b y beta).updateRow r0.castSucc
+      (Fin.snoc 0 1)).det = -d r0 * A.det := by
+  let E := border A b 0 1
+  let r : Fin (q + 1) := r0.castSucc
+  let z : Fin (q + 1) := Fin.last q
+  let sigma : Equiv.Perm (Fin (q + 1)) := Equiv.swap r z
+  let coeff : Fin (q + 1) → R :=
+    Fin.snoc d (beta - dotProduct d b)
+  let H := E.submatrix sigma id
+  let f : Fin (q + 1) → R := coeff ∘ sigma
+  have hcoeff : ∑ k, coeff k • E k = Fin.snoc y beta := by
+    funext j
+    refine Fin.lastCases ?_ (fun j ↦ ?_) j
+    · rw [Fin.sum_univ_castSucc]
+      simp [coeff, E, dotProduct]
+    · rw [Fin.sum_univ_castSucc]
+      simpa [coeff, E, Matrix.vecMul, dotProduct] using congrFun hy j
+  have hrow : ∑ k, f k • H k = Fin.snoc y beta := by
+    calc
+      ∑ k, f k • H k = ∑ k, coeff (sigma k) • E (sigma k) := by
+        rfl
+      _ = ∑ k, coeff k • E k :=
+        Equiv.sum_comp sigma (fun k ↦ coeff k • E k)
+      _ = Fin.snoc y beta := hcoeff
+  have hrz : r ≠ z := by
+    exact Fin.castSucc_ne_last r0
+  have hupdate : H.updateRow z (∑ k, f k • H k) =
+      (border A b y beta).updateRow r (Fin.snoc 0 1) := by
+    ext i j
+    by_cases hi : i = z
+    · subst i
+      rw [Matrix.updateRow_self, Matrix.updateRow_ne hrz.symm, hrow]
+      simp [z, border]
+    · by_cases hir : i = r
+      · subst i
+        rw [Matrix.updateRow_ne hrz, Matrix.updateRow_self]
+        simp [H, sigma, E, border, z]
+      · have hsigma : sigma i = i := by
+          exact Equiv.swap_apply_of_ne_of_ne hir hi
+        rw [Matrix.updateRow_ne hi, Matrix.updateRow_ne hir]
+        change E (sigma i) j = border A b y beta i j
+        rw [hsigma]
+        obtain ⟨k, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
+        simp [E, border]
+  have hdetE : E.det = A.det := by
+    simpa [E] using
+      det_border_of_vecMul_eq A b (0 : Fin q → R) 0 1 (by simp)
+  have hdetH : H.det = -A.det := by
+    change (E.submatrix sigma id).det = -A.det
+    rw [Matrix.det_permute sigma E, Equiv.Perm.sign_swap hrz, hdetE]
+    simp
+  rw [← hupdate, Matrix.det_updateRow_sum, smul_eq_mul, hdetH]
+  simp [f, coeff, sigma, r, z]
+
+/-- The three-term bordered-minor identity used in Whitney elimination. -/
+theorem det_border_plucker {q : ℕ}
+    (A : Matrix (Fin q) (Fin q) R) (r0 : Fin q)
+    (b x y c d : Fin q → R) (alpha beta : R)
+    (hx : c ᵥ* A = x) (hy : d ᵥ* A = y) :
+    A.det *
+        ((border A b y beta).updateRow r0.castSucc
+          (Fin.snoc x alpha)).det =
+      (A.updateRow r0 x).det * (border A b y beta).det -
+        (A.updateRow r0 y).det * (border A b x alpha).det := by
+  let r : Fin (q + 1) := r0.castSucc
+  let u : Fin (q + 1) → R := Fin.snoc c 0
+  let e : Fin (q + 1) → R := Fin.snoc 0 1
+  let By := border A b y beta
+  have hlinear : ∑ k, u k • By k = Fin.snoc x (dotProduct c b) := by
+    funext j
+    refine Fin.lastCases ?_ (fun j ↦ ?_) j
+    · rw [Fin.sum_univ_castSucc]
+      simp [u, By, dotProduct]
+    · rw [Fin.sum_univ_castSucc]
+      simpa [u, By, Matrix.vecMul, dotProduct] using congrFun hx j
+  have hrow : (∑ k, u k • By k) +
+      (alpha - dotProduct c b) • e = Fin.snoc x alpha := by
+    rw [hlinear]
+    ext j
+    refine Fin.lastCases ?_ (fun j ↦ ?_) j <;>
+      simp [e]
+  have hupdate : By.updateRow r ((∑ k, u k • By k) +
+      (alpha - dotProduct c b) • e) =
+      By.updateRow r (Fin.snoc x alpha) := by
+    rw [hrow]
+  have hfirst : (By.updateRow r (∑ k, u k • By k)).det =
+      c r0 * By.det := by
+    rw [Matrix.det_updateRow_sum, smul_eq_mul]
+    simp [u, r]
+  have hsecond : (By.updateRow r e).det =
+      -d r0 * A.det := by
+    exact det_border_update_old_row A r0 b y d beta hy
+  have hAx : (A.updateRow r0 x).det = c r0 * A.det := by
+    have hsum : ∑ k, c k • A k = x := by
+      rw [← Matrix.vecMul_eq_sum]
+      exact hx
+    rw [← hsum, Matrix.det_updateRow_sum, smul_eq_mul]
+  have hAy : (A.updateRow r0 y).det = d r0 * A.det := by
+    have hsum : ∑ k, d k • A k = y := by
+      rw [← Matrix.vecMul_eq_sum]
+      exact hy
+    rw [← hsum, Matrix.det_updateRow_sum, smul_eq_mul]
+  have hBx := det_border_of_vecMul_eq A b x c alpha hx
+  rw [← hupdate, Matrix.det_updateRow_add, Matrix.det_updateRow_smul,
+    hfirst, hsecond, hAx, hAy, hBx]
+  ring
+
+end BorderedDeterminants
+
 end Matrix
