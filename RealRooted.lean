@@ -722,6 +722,7 @@ import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
 import RealRooted.Polarization
+import RealRooted.PolyaFrequency.EventuallyPolynomial
 import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PolyaFrequencyConvolution.Basic
 import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow

@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1064
+      "max_modules": 1065
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
@@ -54,6 +54,9 @@
     },
     "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
       "max_modules": 65
+    },
+    "RealRooted.PolyaFrequency.EventuallyPolynomial": {
+      "max_modules": 15
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17

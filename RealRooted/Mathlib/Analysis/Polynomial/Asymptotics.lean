@@ -37,4 +37,18 @@ theorem tendsto_eval_nat_sub_div {p : ℝ[X]} (hp : p ≠ 0) (c d : ℕ) :
   rw [Nat.cast_sub hcn, Nat.cast_sub hdn]
   congr 1
 
+/-- A sequence which is eventually nonnegative and eventually agrees with
+evaluations of a nonzero real polynomial is eventually positive. -/
+theorem eventually_pos_of_eventually_nonneg_of_eventually_eq_eval_nat
+    {a : ℕ → ℝ} {p : ℝ[X]} (hp : p ≠ 0)
+    (ha : ∀ᶠ n in atTop, 0 ≤ a n)
+    (hap : ∀ᶠ n in atTop, a n = p.eval (n : ℝ)) :
+    ∀ᶠ n in atTop, 0 < a n := by
+  have hroot := tendsto_natCast_atTop_atTop.eventually
+    (p.eventually_atTop_not_isRoot hp)
+  filter_upwards [ha, hap, hroot] with n hnonneg han hn
+  apply lt_of_le_of_ne hnonneg
+  rw [han]
+  exact Ne.symm (by simpa [IsRoot] using hn)
+
 end Polynomial
