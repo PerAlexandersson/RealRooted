@@ -74,6 +74,8 @@ import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
 import RealRooted.Tactic.Examples.OEIS
+import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+import RealRooted.Tactic.Examples.OEIS.PositiveLag
 import RealRooted.Tactic.Examples.OEIS.ProductLift
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
