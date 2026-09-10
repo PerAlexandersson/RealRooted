@@ -2,7 +2,7 @@
   "version": 1,
   "budgets": {
     "RealRooted": {
-      "max_modules": 1060
+      "max_modules": 1061
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
@@ -42,6 +42,9 @@
     },
     "RealRooted.PolynomialValueEulerNumerator.PF": {
       "max_modules": 96
+    },
+    "RealRooted.PolynomialValueEulerNumerator.Product": {
+      "max_modules": 145
     },
     "RealRooted.PolyaFrequencyConvolution.InverseOneSubPow": {
       "max_modules": 65
