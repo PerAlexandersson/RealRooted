@@ -7,7 +7,7 @@ import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 # The nonsingular finite Cryer closure
 
 This leaf turns nonnegative initial-column minors of a nonsingular
-upper-triangular matrix into total nonnegativity.  The proof strictifies the
+lower-triangular matrix into total nonnegativity. The proof strictifies the
 consecutive minors by Gaussian multiplication, applies the strict
 consecutive-column criterion, and passes to the Gaussian limit.
 -/
@@ -16,7 +16,7 @@ open Filter Topology
 
 namespace Matrix
 
-/-- A nonsingular upper-triangular real matrix with nonnegative initial-column
+/-- A nonsingular lower-triangular real matrix with nonnegative initial-column
 minors is totally nonnegative. -/
 theorem HasNonnegInitialColumnMinors.isTotallyNonneg_of_upper_zero_of_det_ne_zero
     {N : Nat} (A : Matrix (Fin N) (Fin N) ℝ)
