@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1142
+      "max_modules": 1144
     },
     "RealRooted.Production": {
-      "max_modules": 1021
+      "max_modules": 1023
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -30,6 +30,9 @@
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev": {
       "max_modules": 2
     },
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm": {
+      "max_modules": 3
+    },
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors": {
       "max_modules": 3
     },
@@ -41,6 +44,9 @@
     },
     "RealRooted.Applications.OEIS.A272471.Recurrence": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.Analysis.Normed.Ring.Power": {
+      "max_modules": 1
     },
     "RealRooted.TridiagonalDet.Recurrence": {
       "max_modules": 3
@@ -1719,10 +1725,12 @@
     "RealRooted.Jacobi.Orthogonality",
     "RealRooted.Jacobi.Orthogonality.Integral",
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
+    "RealRooted.Mathlib.Analysis.Normed.Ring.Power",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors",
+    "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real",
     "RealRooted.Applications.OEIS.A272471.Recurrence",

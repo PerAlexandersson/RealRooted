@@ -540,6 +540,7 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
 import RealRooted.Applications.OEIS.A272471.Recurrence
@@ -574,6 +575,7 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
