@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1145
+      "max_modules": 1146
     },
     "RealRooted.Production": {
-      "max_modules": 1024
+      "max_modules": 1025
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -818,6 +818,9 @@
     },
     "RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff": {
       "max_modules": 2
+    },
+    "RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure": {
       "max_modules": 2
@@ -1854,6 +1857,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots",
     "RealRooted.Mathlib.Analysis.Polynomial.Asymptotics",
     "RealRooted.Mathlib.Algebra.Group.ForwardDiff",
+    "RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic",
     "RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference",
