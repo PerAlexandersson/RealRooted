@@ -74,12 +74,17 @@ import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
 import RealRooted.Tactic.Examples.OEIS
+import RealRooted.Tactic.Examples.OEIS.CompatCommon
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+import RealRooted.Tactic.Examples.OEIS.Favard
+import RealRooted.Tactic.Examples.OEIS.Foundation
+import RealRooted.Tactic.Examples.OEIS.GammaVeronese
 import RealRooted.Tactic.Examples.OEIS.NegativeLag
 import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
 import RealRooted.Tactic.Examples.OEIS.PositiveLag
 import RealRooted.Tactic.Examples.OEIS.ProductLift
 import RealRooted.Tactic.Examples.OEIS.ProductRouters
+import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
