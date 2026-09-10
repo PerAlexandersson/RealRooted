@@ -1,5 +1,6 @@
 import Mathlib.Algebra.LinearRecurrence
 import Mathlib.Algebra.Polynomial.Module.AEval
+import Mathlib.RingTheory.Polynomial.Basic
 
 /-!
 # Annihilators for linear recurrences
@@ -65,6 +66,23 @@ theorem isSolution_iff_aeval_charPoly_eq_zero (E : LinearRecurrence R) (u : ℕ 
     have := congr_fun h n
     rw [hcalc] at this
     exact sub_eq_zero.mp this
+
+/-- If a recurrence's characteristic polynomial is a product of coprime
+factors, each solution is a sum of sequences annihilated by the two factors
+under the forward shift. -/
+theorem exists_add_of_isSolution_of_charPoly_eq_mul (E : LinearRecurrence R)
+    (u : ℕ → R) {p q : R[X]} (hpq : IsCoprime p q) (hchar : E.charPoly = p * q)
+    (hu : E.IsSolution u) :
+    ∃ up uq : ℕ → R, u = up + uq ∧
+      Polynomial.aeval forwardShift p up = 0 ∧ Polynomial.aeval forwardShift q uq = 0 := by
+  have hann : Polynomial.aeval forwardShift (p * q) u = 0 := by
+    rw [← hchar]
+    exact E.isSolution_iff_aeval_charPoly_eq_zero u |>.mp hu
+  have hmem : u ∈ LinearMap.ker (Polynomial.aeval forwardShift (p * q)) :=
+    LinearMap.mem_ker.mpr hann
+  rw [← Polynomial.sup_ker_aeval_eq_ker_aeval_mul_of_coprime forwardShift hpq] at hmem
+  rcases Submodule.mem_sup.mp hmem with ⟨up, hup, uq, huq, hsum⟩
+  exact ⟨up, uq, hsum.symm, LinearMap.mem_ker.mp hup, LinearMap.mem_ker.mp huq⟩
 
 end CommRing
 
