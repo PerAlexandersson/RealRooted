@@ -35,6 +35,7 @@ import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWang.Step
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.Product.Basic
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing

@@ -901,6 +901,7 @@ import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.Product.Basic
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RootBounds
