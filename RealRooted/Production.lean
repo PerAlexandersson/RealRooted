@@ -539,6 +539,7 @@ import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
