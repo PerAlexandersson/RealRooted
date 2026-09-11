@@ -118,6 +118,47 @@ theorem finiteFreeAdditiveConvolution_comm (d : ℕ) (p q : ℝ[X]) :
     rw [coeff_finiteFreeAdditiveConvolution_of_gt d p q hj',
       coeff_finiteFreeAdditiveConvolution_of_gt d q p hj']
 
+/-- The even lift used by the finite-free additive-convolution parity
+reduction. -/
+def finiteFreeAdditiveEvenLift (p : ℝ[X]) : ℝ[X] :=
+  Polynomial.expand ℝ 2 p
+
+/-- The odd lift used by the finite-free additive-convolution parity
+reduction. -/
+def finiteFreeAdditiveOddLift (p : ℝ[X]) : ℝ[X] :=
+  X * finiteFreeAdditiveEvenLift p
+
+/-- The even lift preserves coefficients in even degree. -/
+theorem coeff_finiteFreeAdditiveEvenLift_two_mul (p : ℝ[X]) (n : ℕ) :
+    (finiteFreeAdditiveEvenLift p).coeff (2 * n) = p.coeff n := by
+  simp [finiteFreeAdditiveEvenLift]
+
+/-- The even lift has no coefficients in odd degree. -/
+theorem coeff_finiteFreeAdditiveEvenLift_two_mul_add_one (p : ℝ[X]) (n : ℕ) :
+    (finiteFreeAdditiveEvenLift p).coeff (2 * n + 1) = 0 := by
+  rw [finiteFreeAdditiveEvenLift, Polynomial.coeff_expand (by norm_num)]
+  simp
+
+/-- The odd lift has zero constant coefficient. -/
+theorem coeff_finiteFreeAdditiveOddLift_zero (p : ℝ[X]) :
+    (finiteFreeAdditiveOddLift p).coeff 0 = 0 := by
+  simp [finiteFreeAdditiveOddLift]
+
+/-- The odd lift has no coefficients in positive even degree. -/
+theorem coeff_finiteFreeAdditiveOddLift_two_mul_add_two (p : ℝ[X]) (n : ℕ) :
+    (finiteFreeAdditiveOddLift p).coeff (2 * n + 2) = 0 := by
+  rw [finiteFreeAdditiveOddLift]
+  rw [show 2 * n + 2 = (2 * n + 1) + 1 by lia,
+    Polynomial.coeff_X_mul]
+  exact coeff_finiteFreeAdditiveEvenLift_two_mul_add_one p n
+
+/-- The odd lift preserves coefficients in odd degree. -/
+theorem coeff_finiteFreeAdditiveOddLift_two_mul_add_one (p : ℝ[X]) (n : ℕ) :
+    (finiteFreeAdditiveOddLift p).coeff (2 * n + 1) = p.coeff n := by
+  rw [finiteFreeAdditiveOddLift]
+  rw [show 2 * n + 1 = 2 * n + 1 by rfl, Polynomial.coeff_X_mul]
+  exact coeff_finiteFreeAdditiveEvenLift_two_mul p n
+
 end
 
 end RealRooted
