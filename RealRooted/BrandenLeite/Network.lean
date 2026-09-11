@@ -462,6 +462,36 @@ theorem networkPathSum_self {R : Type*} [CommSemiring R]
   unfold networkPathWeight
   simp
 
+/-- The first-column path counts satisfy the vertical-edge recurrence. -/
+theorem networkPathSum_succ_zero {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n : ℕ) :
+    networkPathSum weights (n + 1) 0 = weights n 0 * networkPathSum weights n 0 := by
+  rw [← networkPathSumFrom_zero_eq weights (n := n + 1) (j := 0) (Nat.zero_le _)]
+  rw [← networkPathSumFrom_zero_eq weights (n := n) (j := 0) (Nat.zero_le _)]
+  rw [networkPathSumFrom_step weights (Nat.zero_le n) 0]
+  rw [networkPathSumFrom_eq_zero_of_lt_left weights (by simp : 0 < 1)]
+  simp
+
+/-- Under the network normalization condition, a vanishing first-column path
+count forces the corresponding vertical weight to vanish. -/
+theorem networkPathSum_zero_implies_weight_zero_of_normalized
+    {R : Type*} [CommSemiring R] [NoZeroDivisors R] [Nontrivial R]
+    (weights : ℕ → ℕ → R)
+    (hnormalized : ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0) :
+    ∀ n, networkPathSum weights n 0 = 0 → weights n 0 = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      rw [networkPathSum_self weights 0]
+      intro hzero
+      exact (one_ne_zero hzero).elim
+  | succ n ih =>
+      rw [networkPathSum_succ_zero]
+      intro hzero
+      rcases mul_eq_zero.mp hzero with hweight | hpath
+      · exact hnormalized n 0 (Nat.zero_le n) hweight
+      · exact hnormalized n 0 (Nat.zero_le n) (ih hpath)
+
 /-- The only path from `(n, n)` to the diagonal is the empty path. -/
 theorem networkPathSumFrom_self {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) (n : ℕ) :

@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1159
+      "max_modules": 1160
     },
     "RealRooted.Production": {
-      "max_modules": 1038
+      "max_modules": 1039
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -341,6 +341,9 @@
     },
     "RealRooted.BrandenLeite.NetworkTotallyNonneg": {
       "max_modules": 117
+    },
+    "RealRooted.BrandenLeite.NetworkWhitney": {
+      "max_modules": 116
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 91
