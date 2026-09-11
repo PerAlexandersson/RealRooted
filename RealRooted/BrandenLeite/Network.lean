@@ -574,6 +574,14 @@ theorem isResolvable_networkMatrix (weights : ℕ → ℕ → ℝ)
     IsResolvable (networkMatrix weights) :=
   ⟨networkResolution weights hweights⟩
 
+/-- The paper's zero-propagation normalization for literal network weights is
+exactly normalization of the associated resolution. -/
+theorem networkResolution_isNormalized_iff (weights : ℕ → ℕ → ℝ)
+    (hweights : ∀ n k, 0 ≤ weights n k) :
+    (networkResolution weights hweights).IsNormalized ↔
+      ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0 :=
+  Iff.rfl
+
 /-- Nonnegative edge weights give nonnegative weighted path counts. -/
 theorem networkPathSum_nonneg {R : Type*} [CommSemiring R] [PartialOrder R]
     [IsOrderedRing R]
