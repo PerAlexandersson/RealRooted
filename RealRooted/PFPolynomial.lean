@@ -542,8 +542,8 @@ def reciprocalShift (D : ℕ) (p : ℝ[X]) : ℝ[X] :=
 theorem HasNonnegCoeffs.reciprocalShift {D : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (reciprocalShift D p) := by
-  intro n
-  simpa using hp (Polynomial.revAt D n)
+  change HasNonnegCoeffs (p.reflect D)
+  exact hp.reflect D
 
 /-- Standard reciprocal-polynomial input: shifted reciprocals preserve the PF
 cone when the shift bounds the degree. -/
