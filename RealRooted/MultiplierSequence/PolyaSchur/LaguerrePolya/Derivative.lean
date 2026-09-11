@@ -3,13 +3,13 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
-# Derivatives of Laguerre--Pólya limits
+# Holomorphic Laguerre--Pólya limits
 
-This opt-in analytic leaf proves derivative closure of the zero-aware
-Laguerre--Pólya class.  It combines derivative closure for real-splitting
-polynomials with Mathlib's locally uniform convergence theorem for complex
-derivatives.  It does not prove analytic root closure of arbitrary locally
-uniform limits.
+This opt-in analytic leaf proves that zero-aware Laguerre--Pólya limits are
+holomorphic, and that the class is closed under the complex derivative.  It
+combines derivative closure for real-splitting polynomials with Mathlib's
+locally uniform convergence theorems for complex holomorphic functions.  It
+does not prove analytic root closure of arbitrary locally uniform limits.
 -/
 
 open Filter Polynomial Topology
@@ -17,6 +17,22 @@ open Filter Polynomial Topology
 noncomputable section
 
 namespace RealRooted
+
+/-- A zero-aware Laguerre--Pólya limit is complex differentiable everywhere. -/
+theorem IsLaguerrePolya.differentiable {f : ℂ → ℂ} (hf : IsLaguerrePolya f) :
+    Differentiable ℂ f := by
+  rcases hf with ⟨p, hp, hptend⟩
+  have hdifferentiable := (tendstoLocallyUniformlyOn_univ.mpr hptend).differentiableOn
+    (Eventually.of_forall fun n =>
+      (Polynomial.differentiable ((p n).map Complex.ofRealHom)).differentiableOn)
+    isOpen_univ
+  exact differentiableOn_univ.mp hdifferentiable
+
+/-- A zero-aware Laguerre--Pólya limit is analytic on the whole complex plane. -/
+theorem IsLaguerrePolya.analyticOnNhd {f : ℂ → ℂ} (hf : IsLaguerrePolya f) :
+    AnalyticOnNhd ℂ f Set.univ := by
+  intro z _
+  exact hf.differentiable.analyticAt z
 
 /-- The zero-aware Laguerre--Pólya class is closed under the complex derivative. -/
 theorem IsLaguerrePolya.deriv {f : ℂ → ℂ} (hf : IsLaguerrePolya f) :
