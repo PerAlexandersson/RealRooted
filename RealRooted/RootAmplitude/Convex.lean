@@ -15,16 +15,20 @@ open Finset
 
 noncomputable section
 
-variable (g : ℕ → ℝ)
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
+variable (g : ℕ → K)
 
 /-- The consecutive-gap sequence. -/
-def gap (i : ℕ) : ℝ :=
+def gap (i : ℕ) : K :=
   g (i + 1) - g i
 
+omit [IsStrictOrderedRing K] in
 /-- Convexity on consecutive gaps makes the gap sequence monotone. -/
 theorem monotone_gap (hconv : ∀ i, gap g i ≤ gap g (i + 1)) : Monotone (gap g) :=
   monotone_nat_of_le_succ hconv
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- A finite block of consecutive gaps telescopes. -/
 theorem sum_gap (a j : ℕ) :
     ∑ t ∈ range j, gap g (a + t) = g (a + j) - g a := by
@@ -54,7 +58,7 @@ theorem dist_below_le_dist_above (hconv : ∀ i, gap g i ≤ gap g (i + 1))
   exact hmono (by lia)
 
 /-- Each positive-distance factor is at least one. -/
-theorem one_le_one_add_div {D x : ℝ} (hD : 0 ≤ D) (hx : 0 < x) :
+theorem one_le_one_add_div {D x : K} (hD : 0 ≤ D) (hx : 0 < x) :
     1 ≤ 1 + D / x := by
   have hdivision : 0 ≤ D / x := div_nonneg hD (le_of_lt hx)
   linarith
@@ -62,7 +66,7 @@ theorem one_le_one_add_div {D x : ℝ} (hD : 0 ≤ D) (hx : 0 < x) :
 /-- If positive denominator families admit an injective distance-decreasing
 matching, their normalized-distance products are ordered in the same direction. -/
 theorem prod_one_add_div_le_of_inj {ι κ : Type*}
-    {D : ℝ} (hD : 0 ≤ D) (A : Finset κ) (B : Finset ι) (a : κ → ℝ) (b : ι → ℝ)
+    {D : K} (hD : 0 ≤ D) (A : Finset κ) (B : Finset ι) (a : κ → K) (b : ι → K)
     (hb : ∀ y ∈ B, 0 < b y) (ha : ∀ x ∈ A, 0 < a x)
     (φ : κ → ι) (hmaps : ∀ x ∈ A, φ x ∈ B)
     (hinjective : ∀ x ∈ A, ∀ y ∈ A, φ x = φ y → x = y)
@@ -87,20 +91,27 @@ theorem prod_one_add_div_le_of_inj {ι κ : Type*}
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hy
     exact hmaps x hx
   have hrest : ∏ y ∈ A.image φ, (1 + D / b y) ≤ ∏ y ∈ B, (1 + D / b y) := by
-    have hone : (1 : ℝ) ≤ ∏ y ∈ B \ A.image φ, (1 + D / b y) := by
+    have hone : (1 : K) ≤ ∏ y ∈ B \ A.image φ, (1 + D / b y) := by
       calc
-        (1 : ℝ) = ∏ _y ∈ B \ A.image φ, (1 : ℝ) := by simp
+        (1 : K) = ∏ _y ∈ B \ A.image φ, (1 : K) := by simp
         _ ≤ ∏ y ∈ B \ A.image φ, (1 + D / b y) := by
             refine Finset.prod_le_prod (fun _ _ => zero_le_one) ?_
             intro y hy
             exact one_le_one_add_div hD (hb y (Finset.mem_sdiff.mp hy).1)
-    have hnonnegative : (0 : ℝ) ≤ ∏ y ∈ A.image φ, (1 + D / b y) := by
+    have hnonnegative : (0 : K) ≤ ∏ y ∈ A.image φ, (1 + D / b y) := by
       refine Finset.prod_nonneg ?_
       intro y hy
       have hone := one_le_one_add_div hD (hb y (hsubset hy))
       linarith
     rw [← Finset.prod_sdiff hsubset]
-    nlinarith [hone, hnonnegative]
+    calc
+      ∏ y ∈ A.image φ, (1 + D / b y) =
+          (∏ y ∈ A.image φ, (1 + D / b y)) * 1 := (mul_one _).symm
+      _ ≤ (∏ y ∈ A.image φ, (1 + D / b y)) *
+          ∏ y ∈ B \ A.image φ, (1 + D / b y) :=
+        mul_le_mul_of_nonneg_left hone hnonnegative
+      _ = (∏ y ∈ B \ A.image φ, (1 + D / b y)) *
+          ∏ y ∈ A.image φ, (1 + D / b y) := by ring
   rw [himage] at hstep
   exact le_trans hstep hrest
 
@@ -112,7 +123,7 @@ theorem amp_le_amp_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     amp g n k ≤ amp g n (k + 1) := by
   classical
   refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
-  have hDpos : (0 : ℝ) ≤ g (k + 1) - g k :=
+  have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
   have hb : ∀ y ∈ range k, 0 < g k - g y := by
     intro y hy
@@ -142,14 +153,19 @@ theorem amp_le_amp_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
       rw [hindex]
       exact dist_below_le_dist_above g hconv htk
   have hRbelow_positive :
-      (0 : ℝ) < ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) := by
+      (0 : K) < ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) := by
     refine Finset.prod_pos ?_
     intro j hj
     have hone := one_le_one_add_div hDpos (hb j hj)
     linarith
-  have hone : (1 : ℝ) ≤ 1 + (g (k + 1) - g k) / g k :=
+  have hone : (1 : K) ≤ 1 + (g (k + 1) - g k) / g k :=
     one_le_one_add_div hDpos (hpos k)
-  nlinarith [hmain, hRbelow_positive, hone]
+  calc
+    _ ≤ ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) := hmain
+    _ = 1 * ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) := by ring
+    _ ≤ (1 + (g (k + 1) - g k) / g k) *
+        ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) :=
+      mul_le_mul_of_nonneg_right hone hRbelow_positive.le
 
 /-- Amplitude monotonicity from convexity with an explicit bound for the
 unpaired upper tail. -/
@@ -163,7 +179,7 @@ theorem amp_le_amp_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
   rcases le_or_gt n (2 * k + 2) with hle | hgt
   · exact amp_le_amp_of_convex g hpos hsm hconv n k hk1 hle
   refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
-  have hDpos : (0 : ℝ) ≤ g (k + 1) - g k :=
+  have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
   have hb : ∀ y ∈ range k, 0 < g k - g y := by
     intro y hy
@@ -199,19 +215,19 @@ theorem amp_le_amp_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
       have hindex : 2 * k + 1 - (k + 1 + t) = k - t := by lia
       rw [hindex]
       exact dist_below_le_dist_above g hconv htk
-  have hpaired_nonnegative : (0 : ℝ) ≤ ∏ j ∈ Ico (k + 2) (2 * k + 2),
+  have hpaired_nonnegative : (0 : K) ≤ ∏ j ∈ Ico (k + 2) (2 * k + 2),
       (1 + (g (k + 1) - g k) / (g j - g (k + 1))) := by
     refine Finset.prod_nonneg ?_
     intro j hj
     have hone := one_le_one_add_div hDpos (ha j (by rw [Finset.mem_Ico] at hj ⊢; lia))
     linarith
-  have htail_nonnegative : (0 : ℝ) ≤ ∏ j ∈ Ico (2 * k + 2) n,
+  have htail_nonnegative : (0 : K) ≤ ∏ j ∈ Ico (2 * k + 2) n,
       (1 + (g (k + 1) - g k) / (g j - g (k + 1))) := by
     refine Finset.prod_nonneg ?_
     intro j hj
     have hone := one_le_one_add_div hDpos (ha j (by rw [Finset.mem_Ico] at hj ⊢; lia))
     linarith
-  have horigin_nonnegative : (0 : ℝ) ≤ 1 + (g (k + 1) - g k) / g k := by
+  have horigin_nonnegative : (0 : K) ≤ 1 + (g (k + 1) - g k) / g k := by
     have hone := one_le_one_add_div hDpos (hpos k)
     linarith
   rw [hsplit]

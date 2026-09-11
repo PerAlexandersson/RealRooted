@@ -169,7 +169,7 @@ theorem prod_sub_one_eq_staircaseProd {L : Type*} [Field L]
 
 /-- The amplitude product splits into its lower and upper factors along a
 positive strictly increasing finite sequence. -/
-theorem amp_eq_lower_mul_upper (g : ℕ → ℝ) (n k : ℕ) (hk : k < n)
+theorem amp_eq_lower_mul_upper (g : ℕ → K) (n k : ℕ) (hk : k < n)
     (hpos : ∀ i, i < n → 0 < g i)
     (hstrict : ∀ i j, i < j → j < n → g i < g j) :
     amp g n k

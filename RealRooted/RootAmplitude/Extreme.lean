@@ -14,8 +14,10 @@ namespace RealRooted.RootAmplitude
 
 noncomputable section
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- Power-sum bounds imply a square-ratio bound for two distinguished entries. -/
-theorem sq_ratio_ge {x0 x1 s1 s2 : ℝ} (hs2 : 0 ≤ s2)
+theorem sq_ratio_ge {x0 x1 s1 s2 : K} (hs2 : 0 ≤ s2)
     (hdom : s2 ≤ x0 * s1) (hsum : x0 ^ 2 + x1 ^ 2 ≤ s2) :
     s2 * x1 ^ 2 ≤ (s1 ^ 2 - s2) * x0 ^ 2 := by
   have h1 : s2 * x1 ^ 2 ≤ s2 * (s2 - x0 ^ 2) := by nlinarith
@@ -23,7 +25,7 @@ theorem sq_ratio_ge {x0 x1 s1 s2 : ℝ} (hs2 : 0 ≤ s2)
   nlinarith
 
 /-- A square-ratio bound with a positive denominator gives a ratio lower bound. -/
-theorem ratio_sq_ge {x0 x1 s1 s2 c : ℝ} (hx1 : 0 < x1) (hs2 : 0 ≤ s2)
+theorem ratio_sq_ge {x0 x1 s1 s2 c : K} (hx1 : 0 < x1) (hs2 : 0 ≤ s2)
     (hdom : s2 ≤ x0 * s1) (hsum : x0 ^ 2 + x1 ^ 2 ≤ s2)
     (hc : 0 < s1 ^ 2 - s2) (hcbound : c * (s1 ^ 2 - s2) ≤ s2) :
     c ≤ (x0 / x1) ^ 2 := by
@@ -33,7 +35,7 @@ theorem ratio_sq_ge {x0 x1 s1 s2 c : ℝ} (hx1 : 0 < x1) (hs2 : 0 ≤ s2)
   nlinarith [hkey, hcbound, hx1sq]
 
 /-- The coefficient-coordinate form of the square-ratio criterion. -/
-theorem ratio_sq_ge_of_coeffs {x0 x1 a0 a1 a2 c : ℝ} (hx1 : 0 < x1)
+theorem ratio_sq_ge_of_coeffs {x0 x1 a0 a1 a2 c : K} (hx1 : 0 < x1)
     (hs2 : 0 ≤ (a1 / a0) ^ 2 - 2 * (a2 / a0))
     (hdom : (a1 / a0) ^ 2 - 2 * (a2 / a0) ≤ x0 * (a1 / a0))
     (hsum : x0 ^ 2 + x1 ^ 2 ≤ (a1 / a0) ^ 2 - 2 * (a2 / a0))
@@ -62,9 +64,11 @@ theorem two_le_log_of_sq_ratio {r : ℝ} (hr : 0 < r)
 
 open Finset
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- The sum of squares of a nonnegative finite family is bounded by its
 largest entry times its sum. -/
-theorem sum_sq_le_max_mul_sum {ι : Type*} (s : Finset ι) (x : ι → ℝ)
+theorem sum_sq_le_max_mul_sum {ι : Type*} (s : Finset ι) (x : ι → K)
     (hnn : ∀ i ∈ s, 0 ≤ x i) {i0 : ι} (hmax : ∀ i ∈ s, x i ≤ x i0) :
     ∑ i ∈ s, (x i) ^ 2 ≤ x i0 * ∑ i ∈ s, x i := by
   rw [Finset.mul_sum]
@@ -75,7 +79,7 @@ theorem sum_sq_le_max_mul_sum {ι : Type*} (s : Finset ι) (x : ι → ℝ)
   nlinarith
 
 /-- Two distinct members contribute at most the full square sum. -/
-theorem two_sq_le_sum_sq {ι : Type*} (s : Finset ι) (x : ι → ℝ)
+theorem two_sq_le_sum_sq {ι : Type*} (s : Finset ι) (x : ι → K)
     {i0 i1 : ι} (h0 : i0 ∈ s) (h1 : i1 ∈ s) (hne : i0 ≠ i1) :
     (x i0) ^ 2 + (x i1) ^ 2 ≤ ∑ i ∈ s, (x i) ^ 2 := by
   classical
@@ -93,9 +97,9 @@ theorem two_sq_le_sum_sq {ι : Type*} (s : Finset ι) (x : ι → ℝ)
   positivity
 
 /-- The extreme-ratio bound for a finite nonnegative family. -/
-theorem ratio_sq_ge_of_family {ι : Type*} (s : Finset ι) (x : ι → ℝ)
+theorem ratio_sq_ge_of_family {ι : Type*} (s : Finset ι) (x : ι → K)
     (hnn : ∀ i ∈ s, 0 ≤ x i) {i0 i1 : ι} (h0 : i0 ∈ s) (h1 : i1 ∈ s) (hne : i0 ≠ i1)
-    (hmax : ∀ i ∈ s, x i ≤ x i0) (hx1 : 0 < x i1) {c : ℝ}
+    (hmax : ∀ i ∈ s, x i ≤ x i0) (hx1 : 0 < x i1) {c : K}
     (hlt : 0 < (∑ i ∈ s, x i) ^ 2 - ∑ i ∈ s, (x i) ^ 2)
     (hc : c * ((∑ i ∈ s, x i) ^ 2 - ∑ i ∈ s, (x i) ^ 2) ≤ ∑ i ∈ s, (x i) ^ 2) :
     c ≤ (x i0 / x i1) ^ 2 := by
@@ -107,21 +111,21 @@ theorem ratio_sq_ge_of_family {ι : Type*} (s : Finset ι) (x : ι → ℝ)
   positivity
 
 /-- `K n 3^n ≤ 4^n` propagates upward from any index at least three. -/
-theorem mul_three_pow_le_four_pow (K : ℝ) (hK : 0 ≤ K) (N : ℕ) (hN : 3 ≤ N)
-    (hbase : K * (N : ℝ) * 3 ^ N ≤ 4 ^ N) :
-    ∀ n : ℕ, N ≤ n → K * (n : ℝ) * 3 ^ n ≤ 4 ^ n := by
+theorem mul_three_pow_le_four_pow (C : K) (hC : 0 ≤ C) (N : ℕ) (hN : 3 ≤ N)
+    (hbase : C * (N : K) * 3 ^ N ≤ 4 ^ N) :
+    ∀ n : ℕ, N ≤ n → C * (n : K) * 3 ^ n ≤ 4 ^ n := by
   intro n hn
   induction n, hn using Nat.le_induction with
   | base => exact hbase
   | succ k hk ih =>
-      have hk3 : (3 : ℝ) ≤ (k : ℝ) := by
+      have hk3 : (3 : K) ≤ (k : K) := by
         have hkk : (3 : ℕ) ≤ k := le_trans hN hk
         exact_mod_cast hkk
-      have h3 : (3 : ℝ) ^ (k + 1) = 3 * 3 ^ k := by ring
-      have h4 : (4 : ℝ) ^ (k + 1) = 4 * 4 ^ k := by ring
-      have hp : (0 : ℝ) < 3 ^ k := by positivity
-      have hslack : (0 : ℝ) ≤ K * 3 ^ k * ((k : ℝ) - 3) :=
-        mul_nonneg (mul_nonneg hK (le_of_lt hp)) (by linarith)
+      have h3 : (3 : K) ^ (k + 1) = 3 * 3 ^ k := by ring
+      have h4 : (4 : K) ^ (k + 1) = 4 * 4 ^ k := by ring
+      have hp : (0 : K) < 3 ^ k := by positivity
+      have hslack : (0 : K) ≤ C * 3 ^ k * ((k : K) - 3) :=
+        mul_nonneg (mul_nonneg hC (le_of_lt hp)) (by linarith)
       push_cast
       rw [h3, h4]
       nlinarith [ih, hslack]

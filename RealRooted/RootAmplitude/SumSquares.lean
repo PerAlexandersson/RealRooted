@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
@@ -15,9 +15,11 @@ namespace RealRooted.RootAmplitude
 
 open Finset
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- A single absolute value is bounded by a strict finite square-sum bound. -/
-theorem abs_lt_of_sum_sq_lt {ι : Type*} (s : Finset ι) (f : ι → ℝ)
-    (c : ℝ) (hc : 0 < c) (hsum : ∑ j ∈ s, f j ^ 2 < c ^ 2) {k : ι} (hk : k ∈ s) :
+theorem abs_lt_of_sum_sq_lt {ι : Type*} (s : Finset ι) (f : ι → K)
+    (c : K) (hc : 0 < c) (hsum : ∑ j ∈ s, f j ^ 2 < c ^ 2) {k : ι} (hk : k ∈ s) :
     |f k| < c := by
   have h1 : f k ^ 2 ≤ ∑ j ∈ s, f j ^ 2 :=
     Finset.single_le_sum (fun j _ => sq_nonneg (f j)) hk
@@ -28,11 +30,11 @@ theorem abs_lt_of_sum_sq_lt {ι : Type*} (s : Finset ι) (f : ι → ℝ)
 
 /-- If reciprocal amplitudes have square sum below `(1 / N)²`, every amplitude
 exceeds `N`. -/
-theorem lt_abs_of_sum_sq_lt {ι : Type*} (s : Finset ι) (a : ι → ℝ) (N : ℝ)
+theorem lt_abs_of_sum_sq_lt {ι : Type*} (s : Finset ι) (a : ι → K) (N : K)
     (hN : 0 < N) (hne : ∀ j ∈ s, a j ≠ 0)
     (hsum : ∑ j ∈ s, (1 / a j) ^ 2 < (1 / N) ^ 2) {k : ι} (hk : k ∈ s) :
     N < |a k| := by
-  have hpos : (0 : ℝ) < 1 / N := by positivity
+  have hpos : (0 : K) < 1 / N := by positivity
   have h := abs_lt_of_sum_sq_lt s (fun j => 1 / a j) (1 / N) hpos hsum hk
   simp only [abs_div, abs_one] at h
   have hak : 0 < |a k| := abs_pos.mpr (hne k hk)
@@ -41,17 +43,17 @@ theorem lt_abs_of_sum_sq_lt {ι : Type*} (s : Finset ι) (a : ι → ℝ) (N : �
 
 /-- Multiplication by `1 - ξ` can only enlarge an absolute amplitude when
 `ξ < 0`. -/
-theorem lt_abs_mul_of_lt_abs {ξ w N : ℝ} (hξ : ξ < 0) (h : N < |ξ * w|) :
+theorem lt_abs_mul_of_lt_abs {ξ w N : K} (hξ : ξ < 0) (h : N < |ξ * w|) :
     N < |ξ * (1 - ξ) * w| := by
-  have h1 : (1 : ℝ) ≤ 1 - ξ := by linarith
+  have h1 : (1 : K) ≤ 1 - ξ := by linarith
   have hrw : ξ * (1 - ξ) * w = (1 - ξ) * (ξ * w) := by ring
-  rw [hrw, abs_mul (1 - ξ), abs_of_pos (by linarith : (0 : ℝ) < 1 - ξ)]
+  rw [hrw, abs_mul (1 - ξ), abs_of_pos (by linarith : (0 : K) < 1 - ξ)]
   nlinarith [abs_nonneg (ξ * w), h, h1]
 
 /-- A square-sum bound on reciprocal root amplitudes gives the corresponding
 bound after the negative-root factor. -/
-theorem amplitude_of_sum_sq {ι : Type*} (s : Finset ι) (ξ : ι → ℝ) (w : ι → ℝ)
-    (N : ℝ) (hN : 0 < N) (hneg : ∀ j ∈ s, ξ j < 0)
+theorem amplitude_of_sum_sq {ι : Type*} (s : Finset ι) (ξ : ι → K) (w : ι → K)
+    (N : K) (hN : 0 < N) (hneg : ∀ j ∈ s, ξ j < 0)
     (hne : ∀ j ∈ s, ξ j * w j ≠ 0)
     (hsum : ∑ j ∈ s, (1 / (ξ j * w j)) ^ 2 < (1 / N) ^ 2)
     {k : ι} (hk : k ∈ s) :

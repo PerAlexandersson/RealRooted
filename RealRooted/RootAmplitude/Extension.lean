@@ -14,28 +14,33 @@ open Finset
 
 noncomputable section
 
-variable (g : ℕ → ℝ) (n : ℕ)
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+variable (g : ℕ → K) (n : ℕ)
 
 /-- The final gap of the finite part. -/
-def lastGap : ℝ := g (n - 1) - g (n - 2)
+def lastGap : K := g (n - 1) - g (n - 2)
 
 /-- Continue `g` past `n - 1` by repeating its final gap. -/
-def extend : ℕ → ℝ :=
-  fun j => if j < n then g j else g (n - 1) + ((j - (n - 1) : ℕ) : ℝ) * lastGap g n
+def extend : ℕ → K :=
+  fun j => if j < n then g j else g (n - 1) + ((j - (n - 1) : ℕ) : K) * lastGap g n
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 @[simp] theorem extend_of_lt {j : ℕ} (h : j < n) : extend g n j = g j := by
   simp [extend, h]
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 theorem extend_of_ge {j : ℕ} (h : n ≤ j) :
-    extend g n j = g (n - 1) + ((j - (n - 1) : ℕ) : ℝ) * lastGap g n := by
+    extend g n j = g (n - 1) + ((j - (n - 1) : ℕ) : K) * lastGap g n := by
   simp [extend, Nat.not_lt.mpr h]
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- The extension's gap at `i`, for `i + 1 < n`, is the original gap. -/
 theorem gap_extend_of_lt {i : ℕ} (h : i + 1 < n) :
     gap (extend g n) i = gap g i := by
   unfold gap
   rw [extend_of_lt g n h, extend_of_lt g n (by lia)]
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- At and beyond `i = n - 1` every gap is the final gap. -/
 theorem gap_extend_of_ge (hn : 2 ≤ n) {i : ℕ} (h : n - 1 ≤ i) :
     gap (extend g n) i = lastGap g n := by
@@ -43,18 +48,20 @@ theorem gap_extend_of_ge (hn : 2 ≤ n) {i : ℕ} (h : n - 1 ≤ i) :
   rcases Nat.lt_or_ge i n with hi | hi
   · have hieq : i = n - 1 := by lia
     subst hieq
-    rw [extend_of_ge g n (by lia : n ≤ n - 1 + 1),
-      extend_of_lt g n (by lia : n - 1 < n)]
+    rw [extend_of_ge (g := g) (n := n) (by lia : n ≤ n - 1 + 1),
+      extend_of_lt (g := g) (n := n) (by lia : n - 1 < n)]
     have h1 : (n - 1 + 1 - (n - 1) : ℕ) = 1 := by lia
     rw [h1]
     push_cast
     ring
-  · rw [extend_of_ge g n (by lia : n ≤ i + 1), extend_of_ge g n hi]
+  · rw [extend_of_ge (g := g) (n := n) (by lia : n ≤ i + 1),
+      extend_of_ge (g := g) (n := n) hi]
     have h1 : (i + 1 - (n - 1) : ℕ) = (i - (n - 1)) + 1 := by lia
     rw [h1]
     push_cast
     ring
 
+omit [IsStrictOrderedRing K] in
 /-- Convexity is preserved because the new gaps equal the final old gap. -/
 theorem gap_mono_extend (hn : 2 ≤ n)
     (hconv : ∀ i, i + 2 < n → gap g i ≤ gap g (i + 1)) :
@@ -104,10 +111,11 @@ theorem extend_pos (hn : 2 ≤ n) (hpos : ∀ i, i < n → 0 < g i)
     exact hpos j h
   · have h0 : 0 < g (n - 1) := hpos (n - 1) (by lia)
     have hL := lastGap_pos g n hn hsm
-    have hcast : (0 : ℝ) ≤ ((j - (n - 1) : ℕ) : ℝ) := Nat.cast_nonneg _
-    rw [extend_of_ge g n h]
+    have hcast : (0 : K) ≤ ((j - (n - 1) : ℕ) : K) := Nat.cast_nonneg _
+    rw [extend_of_ge (g := g) (n := n) h]
     nlinarith
 
+omit [IsStrictOrderedRing K] in
 /-- The amplitude is unchanged because it only reads indices below `n`. -/
 theorem amp_extend {k : ℕ} (hk : k < n) :
     amp (extend g n) n k = amp g n k := by
@@ -116,6 +124,12 @@ theorem amp_extend {k : ℕ} (hk : k < n) :
   intro j hj
   have hjn : j < n := Finset.mem_range.mp (Finset.mem_of_mem_erase hj)
   rw [extend_of_lt g n hk, extend_of_lt g n hjn]
+
+end
+
+noncomputable section
+
+variable (g : ℕ → ℝ) (n : ℕ)
 
 /-- A reciprocal-distance-sum criterion on a finite increasing sequence makes
 its smallest amplitude a lower bound for all of its amplitudes. -/

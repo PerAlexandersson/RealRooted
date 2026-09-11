@@ -14,7 +14,9 @@ open Finset
 
 noncomputable section
 
-variable (g : ℕ → ℝ)
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
+variable (g : ℕ → K)
 
 /-- For a positive strictly increasing convex sequence, every amplitude is at
 least the amplitude at its smallest index, under the supplied tail estimates. -/
@@ -31,6 +33,12 @@ theorem amp_zero_le (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
       intro hm
       exact le_trans (ih (by lia))
         (amp_le_amp_of_convex_tail g hpos hsm hconv n m (by lia) (htail m (by lia)))
+
+end
+
+variable (g : ℕ → ℝ)
+
+noncomputable section
 
 /-- `exp (z / (1 + z)) ≤ 1 + z` for nonnegative `z`. -/
 theorem exp_div_le_one_add {z : ℝ} (hz : 0 ≤ z) :

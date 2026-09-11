@@ -1,7 +1,7 @@
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -19,14 +19,16 @@ open Finset
 
 noncomputable section
 
-variable (g : ℕ → ℝ)
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
+variable (g : ℕ → K)
 
 /-- The normalized amplitude at the `k`-th member of a finite positive sequence. -/
-def amp (n k : ℕ) : ℝ :=
+def amp (n k : ℕ) : K :=
   ∏ j ∈ (range n).erase k, |1 - g k / g j|
 
 /-- The product of distances from the `k`-th member to the others. -/
-def gapProd (n k : ℕ) : ℝ :=
+def gapProd (n k : ℕ) : K :=
   ∏ j ∈ (range n).erase k, |g k - g j|
 
 /-- Clearing denominators turns the amplitude product into the distance product. -/
@@ -42,6 +44,7 @@ theorem amp_mul_prod (n k : ℕ) (hpositive : ∀ i, 0 < g i) :
   rw [hrewrite, hdivision]
   exact abs_sub_comm _ _
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- The product over `range n` with one factor removed. -/
 theorem prod_erase (n k : ℕ) (hindex : k < n) :
     (∏ j ∈ (range n).erase k, g j) * g k = ∏ j ∈ range n, g j := by
@@ -99,6 +102,7 @@ theorem gapProd_split (hstrict : StrictMono g) (n k : ℕ) (hindex : k < n) :
     rw [abs_sub_comm]
     exact abs_of_pos (by linarith)
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- Splits off the shared nearest-neighbor factor on the low side. -/
 theorem prod_range_succ_split (k : ℕ) :
     ∏ j ∈ range (k + 1), (g (k + 1) - g j)
@@ -106,6 +110,7 @@ theorem prod_range_succ_split (k : ℕ) :
   rw [Finset.prod_range_succ]
   ring
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
 /-- Splits off the shared nearest-neighbor factor on the high side. -/
 theorem prod_Ico_split (n k : ℕ) (hnext : k + 1 < n) :
     ∏ j ∈ Ico (k + 1) n, (g j - g k)
@@ -124,12 +129,12 @@ theorem amp_le_amp_of_core (hpositive : ∀ i, 0 < g i) (hstrict : StrictMono g)
           * ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j))) :
     amp g n k ≤ amp g n (k + 1) := by
   have hindex : k < n := by lia
-  set D : ℝ := g (k + 1) - g k with hDdef
+  set D : K := g (k + 1) - g k with hDdef
   have hD_positive : 0 < D := sub_pos.mpr (hstrict (Nat.lt_succ_self k))
-  set Pbelow : ℝ := ∏ j ∈ range k, (g k - g j) with hPbelow
-  set Pabove : ℝ := ∏ j ∈ Ico (k + 2) n, (g j - g (k + 1)) with hPabove
-  set Rbelow : ℝ := ∏ j ∈ range k, (1 + D / (g k - g j)) with hRbelow
-  set Rabove : ℝ := ∏ j ∈ Ico (k + 2) n, (1 + D / (g j - g (k + 1))) with hRabove
+  set Pbelow : K := ∏ j ∈ range k, (g k - g j) with hPbelow
+  set Pabove : K := ∏ j ∈ Ico (k + 2) n, (g j - g (k + 1)) with hPabove
+  set Rbelow : K := ∏ j ∈ range k, (1 + D / (g k - g j)) with hRbelow
+  set Rabove : K := ∏ j ∈ Ico (k + 2) n, (1 + D / (g j - g (k + 1))) with hRabove
   have hbelow_positive : ∀ j ∈ range k, 0 < g k - g j := by
     intro j hj
     exact sub_pos.mpr (hstrict (Finset.mem_range.mp hj))
