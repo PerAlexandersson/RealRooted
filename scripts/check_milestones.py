@@ -28,6 +28,8 @@ STATUS_LABELS = {
 
 
 def validate_catalog(data: dict, root: Path = ROOT) -> None:
+    if not isinstance(data, dict):
+        raise ValueError("catalog must be an object")
     if data.get("schema_version") != 1:
         raise ValueError("unsupported catalog schema_version")
     entries = data.get("milestones")
@@ -35,6 +37,8 @@ def validate_catalog(data: dict, root: Path = ROOT) -> None:
         raise ValueError("milestones must be a nonempty list")
     ids: set[str] = set()
     for item in entries:
+        if not isinstance(item, dict):
+            raise ValueError("milestone entries must be objects")
         for field in ("id", "title", "summary", "scope", "status"):
             if not isinstance(item.get(field), str) or not item[field].strip():
                 raise ValueError(f"missing nonempty {field}")
@@ -59,6 +63,8 @@ def validate_catalog(data: dict, root: Path = ROOT) -> None:
             raise ValueError(f"non-open milestone needs a theorem witness: {ident}")
         seen: set[str] = set()
         for witness in item["witnesses"]:
+            if not isinstance(witness, dict):
+                raise ValueError(f"witness entries must be objects: {ident}")
             module, theorem = witness.get("module"), witness.get("declaration")
             if not isinstance(module, str) or not NAME.fullmatch(module):
                 raise ValueError(f"invalid module: {ident}")
@@ -66,6 +72,11 @@ def validate_catalog(data: dict, root: Path = ROOT) -> None:
                 raise ValueError(f"witness must use a challenge entry point: {ident}")
             if not isinstance(theorem, str) or not NAME.fullmatch(theorem):
                 raise ValueError(f"invalid declaration: {ident}")
+            # This bounds the catalog metadata to the named challenge facade.
+            # It does not prove the declaration is physically defined in that
+            # file; imported declarations remain a separate Lean-level concern.
+            if not theorem.startswith(module + "."):
+                raise ValueError(f"declaration must be in listed challenge module: {ident}")
             if theorem in seen:
                 raise ValueError(f"duplicate witness: {ident}")
             seen.add(theorem)
@@ -95,7 +106,10 @@ def audit_source(data: dict) -> str:
 
 def parse_axioms(output: str, expected: list[str]) -> dict[str, list[str]]:
     pattern = re.compile(
-        r"'(?P<name>[^'\n]+)' (?:depends on axioms:\s*\[(?P<axioms>[^]]*)\]"
+        # Lean wraps the rendered declaration name in apostrophes. Names may
+        # themselves contain apostrophes, so terminate at the apostrophe before
+        # the fixed ` depends`/` does` suffix rather than at the first one.
+        r"'(?P<name>[^\n]+?)' (?:depends on axioms:\s*\[(?P<axioms>[^]]*)\]"
         r"|does not depend on any axioms)", re.MULTILINE
     )
     found: dict[str, list[str]] = {}
