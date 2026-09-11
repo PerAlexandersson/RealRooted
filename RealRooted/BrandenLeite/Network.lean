@@ -587,15 +587,16 @@ theorem networkPathSumFrom_top {R : Type*} [CommSemiring R]
     exact (hnot (Finset.mem_powersetCard.mpr
       ⟨Finset.subset_univ _, Finset.card_fin _⟩)).elim
 
-/-- Over the reals, every weighted triangular-network path matrix is lower
-unitriangular. -/
-theorem isLowerUnitriangular_networkMatrix (weights : ℕ → ℕ → ℝ) :
+/-- Every weighted triangular-network path matrix is lower unitriangular. -/
+theorem isLowerUnitriangular_networkMatrix {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) :
     LowerTriangularMatrix.IsLowerUnitriangular (networkMatrix weights) :=
   ⟨isLowerTriangular_networkMatrix weights, networkPathSum_self weights⟩
 
 /-- The path polynomial in column zero is the row-generating polynomial of the
 associated path matrix. -/
-theorem networkResolvingPolynomial_zero (weights : ℕ → ℕ → ℝ) (n : ℕ) :
+theorem networkResolvingPolynomial_zero {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n : ℕ) :
     networkResolvingPolynomial weights n 0 =
       LowerTriangularMatrix.rowPolynomial (networkMatrix weights) n := by
   unfold networkResolvingPolynomial LowerTriangularMatrix.rowPolynomial networkMatrix
@@ -604,7 +605,8 @@ theorem networkResolvingPolynomial_zero (weights : ℕ → ℕ → ℝ) (n : ℕ
   rw [networkPathSumFrom_zero_eq weights (Nat.le_of_lt_succ (Finset.mem_range.mp hj))]
 
 /-- The diagonal path polynomial is `X ^ n`. -/
-theorem networkResolvingPolynomial_self (weights : ℕ → ℕ → ℝ) (n : ℕ) :
+theorem networkResolvingPolynomial_self {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n : ℕ) :
     networkResolvingPolynomial weights n n = X ^ n := by
   unfold networkResolvingPolynomial
   rw [Finset.sum_eq_single n]
@@ -617,7 +619,8 @@ theorem networkResolvingPolynomial_self (weights : ℕ → ℕ → ℝ) (n : ℕ
   · simp
 
 /-- Every path polynomial from `(n, k)` is divisible by `X ^ k`. -/
-theorem X_pow_dvd_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ)
+theorem X_pow_dvd_networkResolvingPolynomial {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R)
     (n k : ℕ) :
     X ^ k ∣ networkResolvingPolynomial weights n k := by
   unfold networkResolvingPolynomial
@@ -628,7 +631,8 @@ theorem X_pow_dvd_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ)
   · rw [networkPathSumFrom_eq_zero_of_lt_left weights (Nat.lt_of_not_ge hkj)]
     simp
 
-private theorem natDegree_networkResolvingPolynomial_le (weights : ℕ → ℕ → ℝ)
+private theorem natDegree_networkResolvingPolynomial_le {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R)
     (n k : ℕ) : (networkResolvingPolynomial weights n k).natDegree ≤ n := by
   unfold networkResolvingPolynomial
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ ?_
@@ -636,7 +640,8 @@ private theorem natDegree_networkResolvingPolynomial_le (weights : ℕ → ℕ �
   exact (Polynomial.natDegree_C_mul_X_pow_le _ j).trans
     (Nat.le_of_lt_succ (Finset.mem_range.mp hj))
 
-private theorem coeff_networkResolvingPolynomial_top (weights : ℕ → ℕ → ℝ)
+private theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R)
     {n k : ℕ} (hkn : k ≤ n) :
     (networkResolvingPolynomial weights n k).coeff n = 1 := by
   unfold networkResolvingPolynomial
