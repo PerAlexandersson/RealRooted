@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1178
+      "max_modules": 1179
     },
     "RealRooted.Production": {
-      "max_modules": 1057
+      "max_modules": 1058
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -938,6 +938,9 @@
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative": {
       "max_modules": 100
+    },
+    "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros": {
+      "max_modules": 101
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples": {
       "max_modules": 100
