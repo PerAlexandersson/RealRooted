@@ -214,6 +214,22 @@ theorem tendstoUniformlyOn_eval_rescaledJensenPolynomial_of_summable
     · refine ((norm_tsum_le_tsum_norm (hsumb.subtype _)).trans ?_).trans_lt htail
       exact (hsumb.subtype _).tsum_le_tsum (fun k => hlimbound k) (hsum.subtype _)
 
+/-- Summability of the exponential-generating majorant at every nonnegative
+radius upgrades the rescaled Jensen limit to local uniform convergence. -/
+theorem tendstoLocallyUniformly_eval_rescaledJensenPolynomial_of_summable
+    (gamma : ℕ → ℝ)
+    (hsum : ∀ R : ℝ, 0 ≤ R → Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial)) :
+    TendstoLocallyUniformly (fun n (x : ℝ) => (rescaledJensenPolynomial n gamma).eval x)
+      (fun x => ∑' k, (gamma k / k.factorial) * x ^ k) atTop := by
+  intro u hu x
+  let R : ℝ := ‖x‖ + 1
+  have hR : 0 ≤ R := by dsimp [R]; positivity
+  have hx : x ∈ Metric.ball 0 R := by
+    simpa only [Metric.mem_ball, dist_zero_right] using lt_add_one ‖x‖
+  have hU := tendstoUniformlyOn_eval_rescaledJensenPolynomial_of_summable gamma R hR
+    (hsum R hR)
+  exact ⟨Metric.closedBall 0 R, Metric.closedBall_mem_nhds_of_mem hx, hU u hu⟩
+
 /-- Under absolute summability at `x`, the rescaled Jensen polynomials
 converge pointwise to the exponential-generating series of `gamma`. -/
 theorem tendsto_eval_rescaledJensenPolynomial_of_summable
