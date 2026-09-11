@@ -56,6 +56,20 @@ theorem sortedLT_map_sortAlong_of_nodup {n : ℕ} (l : List (Fin n)) (hl : l.Nod
     exact hpair.sortedLE
   exact hsorted.sortedLT_of_nodup ((List.mergeSort_perm _ _).nodup_iff.mpr hvalues)
 
+/-- Sorting an already weakly increasing chain leaves the word unchanged. -/
+theorem sortAlong_eq_self_of_pairwise {n : ℕ} (l : List (Fin n))
+    (f : Fin n → Fin (n + 1)) (hmono : (l.map f).Pairwise (· ≤ ·)) :
+    sortAlong l f = f := by
+  funext i
+  by_cases hi : i ∈ l
+  · simp only [sortAlong, if_pos hi]
+    rw [List.mergeSort_eq_self (r := (· ≤ ·)) hmono]
+    rw [List.getD_eq_getElem]
+    · rw [List.getElem_map]
+      rw [List.getElem_idxOf (l.idxOf_lt_length_of_mem hi)]
+    · simpa using l.idxOf_lt_length_of_mem hi
+  · simp [sortAlong, hi]
+
 /-- Sorting a chain preserves the full multiset of word values. -/
 theorem map_sortAlong_univ {n : ℕ} (l : List (Fin n)) (hl : l.Nodup)
     (f : Fin n → Fin (n + 1)) :
@@ -87,6 +101,20 @@ theorem map_sortAlong_univ {n : ℕ} (l : List (Fin n)) (hl : l.Nodup)
 def sortChains {n : ℕ} (L : List (List (Fin n)))
     (f : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
   L.foldl (fun g l => sortAlong l g) f
+
+/-- Sorting a list of chains already weakly increasing on each chain is the
+identity. -/
+theorem sortChains_eq_self_of_pairwise {n : ℕ} : ∀ (L : List (List (Fin n)))
+    (f : Fin n → Fin (n + 1)),
+    (∀ l ∈ L, (l.map f).Pairwise (· ≤ ·)) → sortChains L f = f := by
+  intro L
+  induction L with
+  | nil => intro f _; rfl
+  | cons l L ih =>
+    intro f hL
+    change sortChains L (sortAlong l f) = f
+    rw [sortAlong_eq_self_of_pairwise l f (hL l List.mem_cons_self)]
+    exact ih f (fun l' hl' => hL l' (List.mem_cons_of_mem _ hl'))
 
 /-- Successive chain sorting preserves the full multiset of word values. -/
 theorem map_sortChains_univ {n : ℕ} : ∀ (L : List (List (Fin n)))
