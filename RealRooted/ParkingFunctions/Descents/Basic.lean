@@ -86,10 +86,47 @@ theorem mem_descentSet_snoc_last_iff {n : ℕ} {α : Type*} [LT α]
   simp only [mem_descentSet_iff]
   simp
 
+/-- The descent set after appending a final letter consists of the embedded
+old descent set and, optionally, the new final position. -/
+theorem descentSet_snoc {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α) :
+    descentSet (Fin.snoc w x) =
+      (descentSet w).map Fin.castSuccEmb ∪
+        if x < w (Fin.last n) then {Fin.last n} else ∅ := by
+  ext j
+  refine Fin.lastCases ?_ (fun i => ?_) j
+  · simp only [mem_descentSet_snoc_last_iff]
+    by_cases h : x < w (Fin.last n)
+    · simp [h]
+    · simp [h]
+  · simp only [mem_descentSet_snoc_castSucc_iff]
+    by_cases h : x < w (Fin.last n)
+    · simp [h]
+    · simp [h]
+
 /-- Number of descents of a finite word. -/
 def descentNumber {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) : ℕ :=
   (descentSet w).card
+
+/-- Appending a final letter increments the descent number precisely when it
+is smaller than the old final letter. -/
+theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α) :
+    descentNumber (Fin.snoc w x) =
+      descentNumber w + if x < w (Fin.last n) then 1 else 0 := by
+  unfold descentNumber
+  rw [descentSet_snoc]
+  by_cases h : x < w (Fin.last n)
+  · rw [if_pos h]
+    have hdisjoint : Disjoint ((descentSet w).map Fin.castSuccEmb) {Fin.last n} := by
+      rw [Finset.disjoint_singleton_right]
+      simp
+    rw [Finset.card_union_of_disjoint hdisjoint, Finset.card_map,
+      Finset.card_singleton]
+    simp [h]
+  · rw [if_neg h]
+    simp [h]
 
 theorem descentNumber_le {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) :
