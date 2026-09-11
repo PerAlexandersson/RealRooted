@@ -71,10 +71,9 @@ private theorem rowPolynomial_sub_top
     LowerTriangularMatrix.rowPolynomial A (n + 1) - X ^ (n + 1) =
       ∑ k : Fin (n + 1), C (A (n + 1) k) * X ^ (k : ℕ) := by
   unfold LowerTriangularMatrix.rowPolynomial
-  rw [Finset.sum_range_succ, hA.diagonal]
-  simp only [map_one, one_mul, add_sub_cancel_right]
-  exact (Fin.sum_univ_eq_sum_range
-    (fun k : ℕ => C (A (n + 1) k) * X ^ k) (n + 1)).symm
+  rw [LowerTriangularMatrix.sum_C_mul_range_succ_eq_fin_sum_add A
+    (hA.diagonal (n + 1)) (fun k => X ^ k)]
+  exact add_sub_cancel_right _ _
 
 /-- Alternative recursion (3.2) for the subdivision operator. -/
 theorem subdivisionOperator_X_pow_succ_eq

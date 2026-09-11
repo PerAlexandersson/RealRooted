@@ -101,15 +101,6 @@ theorem reflect_chowDerangement (A : LowerTriangularMatrix R) :
       reflect_mul _ _ (by exact natDegree_X_le) (natDegree_chowS_le n P hPdegree)]
     simp [reflect_chowS n P hPdegree]
 
-private theorem row_sum_succ_eq_fin_sum_add
-    (A : LowerTriangularMatrix R) (hdiag : ∀ n, A n n = 1)
-    (d : ℕ → R[X]) (n : ℕ) :
-    (∑ k ∈ Finset.range (n + 2), C (A (n + 1) k) * d k) =
-      (∑ k : Fin (n + 1), C (A (n + 1) k) * d k) + d (n + 1) := by
-  rw [show n + 2 = (n + 1) + 1 by lia, Finset.sum_range_succ]
-  rw [← Fin.sum_univ_eq_sum_range (fun k => C (A (n + 1) k) * d k) (n + 1)]
-  simp [hdiag]
-
 /-- Under the unit-diagonal condition, the positive-index Chow polynomial
 `Hₙ` has the Corollary 3.1 reflection relation `Iₙ(Hₙ) = X * Hₙ`. -/
 theorem reflect_chowPolynomial_succ (A : LowerTriangularMatrix R)
@@ -121,7 +112,9 @@ theorem reflect_chowPolynomial_succ (A : LowerTriangularMatrix R)
   have hH : chowPolynomial A (n + 1) = P + chowDerangement A (n + 1) := by
     change (∑ k ∈ Finset.range (n + 2),
       C (A (n + 1) k) * chowDerangement A k) = P + chowDerangement A (n + 1)
-    simpa [P] using row_sum_succ_eq_fin_sum_add A hdiag (chowDerangement A) n
+    simpa [P] using
+      LowerTriangularMatrix.sum_C_mul_range_succ_eq_fin_sum_add A (hdiag (n + 1))
+        (chowDerangement A)
   have hd : chowDerangement A (n + 1) = X * S := by
     rw [chowDerangement_succ]
   have hS : (X - 1) * S = P.reflect n - P := by
@@ -164,7 +157,8 @@ private theorem chowDerangement_succ_eq_of_reflection_data
     exact (hdegree k).trans (Nat.lt_succ_iff.mp k.isLt)
   have hH : H (n + 1) = P + d (n + 1) := by
     rw [hrow]
-    simpa [P] using row_sum_succ_eq_fin_sum_add A hdiag d n
+    simpa [P] using
+      LowerTriangularMatrix.sum_C_mul_range_succ_eq_fin_sum_add A (hdiag (n + 1)) d
   have hPshift : P.reflect (n + 1) = P.reflect n * X := by
     simpa [Nat.add_comm] using
       (reflect_mul P (1 : R[X]) (F := n) (G := 1) hPdegree (by simp))

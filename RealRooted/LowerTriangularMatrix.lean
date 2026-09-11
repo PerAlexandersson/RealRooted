@@ -249,6 +249,18 @@ theorem mul_assoc [Semiring R] (A B C : LowerTriangularMatrix R) :
 def rowPolynomial [Semiring R] (A : LowerTriangularMatrix R) (i : ℕ) : R[X] :=
   ∑ j ∈ Finset.range (i + 1), C (A i j) * X ^ j
 
+/-- Splitting a unit-diagonal row sum into its entries strictly before the
+diagonal and its final term.  The target sequence is polynomial-valued so this
+can be shared by row-generating and recursively defined polynomial families. -/
+theorem sum_C_mul_range_succ_eq_fin_sum_add [Semiring R]
+    (A : LowerTriangularMatrix R) {n : ℕ} (hdiag : A (n + 1) (n + 1) = 1)
+    (p : ℕ → R[X]) :
+    (∑ k ∈ Finset.range (n + 2), C (A (n + 1) k) * p k) =
+      (∑ k : Fin (n + 1), C (A (n + 1) k) * p k) + p (n + 1) := by
+  rw [show n + 2 = (n + 1) + 1 by lia, Finset.sum_range_succ]
+  rw [← Fin.sum_univ_eq_sum_range (fun k => C (A (n + 1) k) * p k) (n + 1)]
+  simp [hdiag]
+
 theorem coeff_rowPolynomial_of_le [Semiring R] (A : LowerTriangularMatrix R) {i j : ℕ}
     (hij : j ≤ i) :
     (rowPolynomial A i).coeff j = A i j := by
