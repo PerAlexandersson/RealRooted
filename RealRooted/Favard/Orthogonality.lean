@@ -13,6 +13,7 @@ public import Mathlib.LinearAlgebra.QuadraticForm.Basic
 import Mathlib.Algebra.Algebra.Bilinear
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Polynomial.Inductions
+public import Mathlib.Algebra.Ring.SumsOfSquares
 import Mathlib.Data.Finsupp.Order
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.LinearAlgebra.Basis.Bilinear
@@ -378,6 +379,17 @@ theorem functional_mul_self_nonneg
     0 ≤ hrec.functional (p * p) := by
   simpa only [← pairing_apply, LinearMap.BilinMap.toQuadraticMap_apply] using
     (hrec.pairing_posDef hβ).nonneg p
+
+/-- Positive Favard subdiagonal coefficients make the normalized functional
+nonnegative on every polynomial sum of squares. -/
+theorem functional_nonneg_of_isSumSq
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n, 0 < β (n + 1)) {p : R[X]} (hp : IsSumSq p) :
+    0 ≤ hrec.functional p := by
+  induction hp with
+  | zero => simp
+  | sq_add q _ ih =>
+      simpa using add_nonneg (hrec.functional_mul_self_nonneg hβ q) ih
 
 end SatisfiesFavardRecurrence
 
