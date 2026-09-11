@@ -284,6 +284,7 @@ import RealRooted.Favard.Affine.RowSign
 import RealRooted.Favard.Orthogonality
 import RealRooted.Favard.Recurrence
 import RealRooted.FiniteFreeAdditive
+import RealRooted.FiniteFreeAdditive.HalfInteger
 import RealRooted.FiniteFreeAdditiveIdentity
 import RealRooted.FiniteFreeAdditivePreservation
 import RealRooted.FiniteFreeMultiplicative
