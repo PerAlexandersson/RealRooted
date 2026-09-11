@@ -117,6 +117,12 @@ def sortChains {n : ℕ} (L : List (List (Fin n)))
     (f : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
   L.foldl (fun g l => sortAlong l g) f
 
+/-- A word is chain-sorted when its values are weakly increasing along every
+listed chain. -/
+def IsChainSorted {n : ℕ} (L : List (List (Fin n)))
+    (f : Fin n → Fin (n + 1)) : Prop :=
+  ∀ l ∈ L, (l.map f).Pairwise (· ≤ ·)
+
 /-- Sorting chains disjoint from a fixed chain leaves its value list unchanged. -/
 theorem map_sortChains_eq_of_forall_not_mem {n : ℕ} : ∀ (L : List (List (Fin n)))
     (l : List (Fin n))
@@ -132,6 +138,45 @@ theorem map_sortChains_eq_of_forall_not_mem {n : ℕ} : ∀ (L : List (List (Fin
       hdisj l'' (List.mem_cons_of_mem _ hl''))]
     exact map_sortAlong_eq_of_forall_not_mem l' l f
       (fun i hi => hdisj l' List.mem_cons_self i hi)
+
+/-- Sorting a nodup pairwise-disjoint family makes every chain weakly
+increasing. -/
+theorem sorted_map_sortChains_of_disjoint {n : ℕ} : ∀ (L : List (List (Fin n))),
+    L.Nodup →
+    (∀ l ∈ L, l.Nodup) →
+    (∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂) →
+    ∀ f : Fin n → Fin (n + 1),
+      ∀ l ∈ L, (l.map (sortChains L f)).Pairwise (· ≤ ·) := by
+  intro L
+  induction L with
+  | nil =>
+    intro _ _ _ f l hl
+    simp at hl
+  | cons head L ih =>
+    intro hLnodup hnodup hdisj f l' hl'
+    obtain ⟨hnotmem, hLnodup⟩ := List.nodup_cons.mp hLnodup
+    change (l'.map (sortChains L (sortAlong head f))).Pairwise (· ≤ ·)
+    by_cases hEq : l' = head
+    · subst l'
+      rw [map_sortChains_eq_of_forall_not_mem L head (sortAlong head f) (fun l'' hl'' i hi =>
+        hdisj head List.mem_cons_self l'' (List.mem_cons_of_mem _ hl'')
+          (fun hEq => hnotmem (hEq ▸ hl'')) i hi)]
+      exact sorted_map_sortAlong head (hnodup head List.mem_cons_self) f
+    · exact ih
+        hLnodup
+        (fun l'' hl'' => hnodup l'' (List.mem_cons_of_mem _ hl''))
+        (fun l₁ hl₁ l₂ hl₂ hne' =>
+          hdisj l₁ (List.mem_cons_of_mem _ hl₁) l₂ (List.mem_cons_of_mem _ hl₂) hne')
+        (sortAlong head f)
+        l' ((List.mem_cons.mp hl').resolve_left hEq)
+
+/-- Sorting a nodup pairwise-disjoint family yields a chain-sorted word. -/
+theorem isChainSorted_sortChains_of_disjoint {n : ℕ} (L : List (List (Fin n)))
+    (hLnodup : L.Nodup) (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (f : Fin n → Fin (n + 1)) :
+    IsChainSorted L (sortChains L f) :=
+  sorted_map_sortChains_of_disjoint L hLnodup hnodup hdisj f
 
 /-- Sorting a pairwise-disjoint family of chains with distinct chain values
 makes every chain strictly increasing. -/
@@ -184,6 +229,12 @@ theorem sortChains_eq_self_of_pairwise {n : ℕ} : ∀ (L : List (List (Fin n)))
     change sortChains L (sortAlong l f) = f
     rw [sortAlong_eq_self_of_pairwise l f (hL l List.mem_cons_self)]
     exact ih f (fun l' hl' => hL l' (List.mem_cons_of_mem _ hl'))
+
+/-- Sorting fixes an already chain-sorted word. -/
+theorem sortChains_eq_self_of_isChainSorted {n : ℕ} (L : List (List (Fin n)))
+    (f : Fin n → Fin (n + 1)) (h : IsChainSorted L f) :
+    sortChains L f = f :=
+  sortChains_eq_self_of_pairwise L f h
 
 /-- Successive chain sorting preserves the full multiset of word values. -/
 theorem map_sortChains_univ {n : ℕ} : ∀ (L : List (List (Fin n)))

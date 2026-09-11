@@ -296,6 +296,15 @@ theorem existsUnique_isParkingWord_cyclicSortChains {n : ℕ} (L : List (List (F
   intro c' hc'
   exact hunique c' ((isParkingWord_cyclicSortChains_iff L hL c' w).mp hc')
 
+/-- The shift-and-sort action lands in the weakly chain-sorted normal form. -/
+theorem isChainSorted_cyclicSortChains_of_disjoint {n : ℕ}
+    (L : List (List (Fin n))) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) (w : Fin n → Fin (n + 1)) :
+    IsChainSorted L (cyclicSortChains L c w) :=
+  isChainSorted_sortChains_of_disjoint L hLnodup hnodup hdisj _
+
 /-- A cyclic value shift preserves distinct values read along any chain. -/
 theorem nodup_map_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
     (l : List (Fin n)) (w : Fin n → Fin (n + 1)) (h : (l.map w).Nodup) :
