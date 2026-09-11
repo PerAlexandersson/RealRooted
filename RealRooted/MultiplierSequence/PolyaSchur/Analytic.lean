@@ -65,6 +65,25 @@ theorem tendsto_coeff_rescaledJensenPolynomial (gamma : ℕ → ℝ) (k : ℕ) :
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
     (tendsto_choose_mul_inv_pow_atTop k).mul_const (gamma k)
 
+/-- The rescaled Jensen coefficient has the summable majorant supplied by
+the exponential-generating coefficient of `gamma`. -/
+theorem norm_coeff_rescaledJensenPolynomial_le (n k : ℕ) (gamma : ℕ → ℝ) :
+    ‖(rescaledJensenPolynomial n gamma).coeff k‖ ≤ ‖gamma k‖ / k.factorial := by
+  rw [coeff_rescaledJensenPolynomial]
+  split
+  · calc
+      ‖(n.choose k : ℝ) * gamma k * ((n : ℝ)⁻¹) ^ k‖ =
+          ‖(n.choose k : ℝ) * ((n : ℝ)⁻¹) ^ k‖ * ‖gamma k‖ := by
+        have hreorder : (n.choose k : ℝ) * gamma k * ((n : ℝ)⁻¹) ^ k =
+            ((n.choose k : ℝ) * ((n : ℝ)⁻¹) ^ k) * gamma k := by
+          ring
+        rw [hreorder, norm_mul]
+      _ ≤ (1 / (k.factorial : ℝ)) * ‖gamma k‖ :=
+        mul_le_mul_of_nonneg_right (norm_choose_mul_inv_pow_le n k) (norm_nonneg _)
+      _ = ‖gamma k‖ / k.factorial := by ring
+  · simp only [norm_zero]
+    exact div_nonneg (norm_nonneg _) (by positivity)
+
 /-- Rescaled Jensen polynomials converge coefficientwise to the exponential
 generating coefficients of `gamma`. -/
 theorem tendsto_rescaledJensenPolynomial_coeffwise (gamma : ℕ → ℝ) :
