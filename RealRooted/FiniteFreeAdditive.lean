@@ -33,6 +33,24 @@ theorem finiteFreeAdditiveConvolutionGamma_symm (d i j : ℕ) :
   rw [Nat.sub_right_comm d i j]
   ring
 
+/-- The factorial kernel agrees with the binomial ratio arising from the
+elementary-differential calculation inside the ambient degree box. -/
+theorem finiteFreeAdditiveConvolutionGamma_eq_choose_ratio (d i j : ℕ)
+    (hij : i + j ≤ d) :
+    finiteFreeAdditiveConvolutionGamma d i j =
+      ((i + j).choose j : ℝ) * (d.choose (i + j) : ℝ) /
+        ((d.choose i : ℝ) * (d.choose j : ℝ)) := by
+  unfold finiteFreeAdditiveConvolutionGamma
+  have hi : i ≤ d := by lia
+  have hj : j ≤ d := by lia
+  have hji : j ≤ i + j := Nat.le_add_left _ _
+  rw [Nat.cast_choose ℝ hi, Nat.cast_choose ℝ hj,
+    Nat.cast_choose ℝ hij, Nat.cast_choose ℝ hji]
+  have hcancel : i + j - j = i := by lia
+  rw [hcancel]
+  field_simp
+  rw [Nat.sub_sub]
+
 /-- The coefficient in degree-boxed finite-free additive convolution. -/
 def finiteFreeAdditiveConvolutionCoeff (d : ℕ) (p q : ℝ[X]) (k : ℕ) : ℝ :=
   ∑ i ∈ Finset.range (k + 1),
