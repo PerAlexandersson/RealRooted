@@ -99,6 +99,29 @@ theorem rowPolynomial_eq_pow_add_sum (n : ℕ) :
     resolution.polynomial_eq_pow_add_sum (k := 0) (by lia)]
   simp
 
+/-- The recurrence determines the resolving polynomials on the triangular
+range once the weight array is fixed.  This does not recover the weights from
+the matrix; normalized weight uniqueness is the separate network theorem. -/
+theorem polynomial_eq_of_lambda_eq {R : LowerTriangularMatrix ℝ}
+    (left right : Resolution R)
+    (hlambda : ∀ n k, k ≤ n → left.lambda n k = right.lambda n k) :
+    ∀ n k, k ≤ n → left.polynomial n k = right.polynomial n k := by
+  intro n
+  induction n with
+  | zero =>
+      intro k hk
+      have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+      subst k
+      rw [left.diagonal, right.diagonal]
+  | succ n ih =>
+      intro k hk
+      induction hk using Nat.decreasingInduction with
+      | self => rw [left.diagonal, right.diagonal]
+      | of_succ k hk ihk =>
+          have hkn : k ≤ n := Nat.le_of_lt_succ hk
+          rw [left.recurrence n k hkn, right.recurrence n k hkn,
+            ihk, ih k hkn, hlambda n k hkn]
+
 end Resolution
 
 end BrandenLeite
