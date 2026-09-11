@@ -717,6 +717,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultiplierSequence.PolyaSchur.Growth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultivariateHeilmannLieb
