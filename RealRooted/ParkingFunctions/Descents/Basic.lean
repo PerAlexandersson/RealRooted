@@ -70,6 +70,28 @@ theorem mem_descentSet_iff {n : ℕ} {α : Type*} [LT α]
     i ∈ descentSet w ↔ w i.succ < w i.castSucc := by
   simp [descentSet]
 
+/-- The condition that every adjacent position in `S` is a descent of a word. -/
+def HasDescentsAt {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (S : Finset (Fin n))
+    (w : Fin (n + 1) → α) : Prop :=
+  S ⊆ descentSet w
+
+/-- A descent-subset condition is exactly the corresponding family of strict
+adjacent inequalities. -/
+theorem hasDescentsAt_iff {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (S : Finset (Fin n))
+    (w : Fin (n + 1) → α) :
+    HasDescentsAt S w ↔ ∀ i ∈ S, w i.succ < w i.castSucc := by
+  simp only [HasDescentsAt, Finset.subset_iff, mem_descentSet_iff]
+
+/-- Requiring descents at more positions implies every weaker descent-subset
+condition. -/
+theorem HasDescentsAt.mono {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] {S T : Finset (Fin n)}
+    {w : Fin (n + 1) → α} (hST : S ⊆ T) (hT : HasDescentsAt T w) :
+    HasDescentsAt S w :=
+  hST.trans hT
+
 /-- Appending a final letter preserves every earlier descent. -/
 theorem mem_descentSet_snoc_castSucc_iff {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α)
