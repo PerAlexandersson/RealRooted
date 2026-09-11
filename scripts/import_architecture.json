@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1180
+      "max_modules": 1181
     },
     "RealRooted.Production": {
-      "max_modules": 1059
+      "max_modules": 1060
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -926,6 +926,9 @@
     },
     "RealRooted.EulerOperator.OrderNumerator.Basic": {
       "max_modules": 2
+    },
+    "RealRooted.EulerOperator.OrderNumerator.Preservation": {
+      "max_modules": 135
     },
     "RealRooted.MultiplierSequence.Infinite": {
       "max_modules": 96
