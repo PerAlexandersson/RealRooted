@@ -360,6 +360,27 @@ theorem cyclicSortChains_injective_of_chainSorted {n : ℕ}
     _ = v.val :=
       sortChains_unshift_cyclicSortChains L hcover hLnodup hnodup hdisj c v.val v.prop
 
+/-- A fixed cyclic shift-and-sort is a permutation of a finite covering
+disjoint-chain normal-form family. -/
+noncomputable def cyclicSortChainsEquiv {n : ℕ}
+    (L : List (List (Fin n))) (hcover : ChainsCover L) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) :
+    {w : Fin n → Fin (n + 1) // IsChainSorted L w} ≃
+      {w : Fin n → Fin (n + 1) // IsChainSorted L w} := by
+  let F : {w : Fin n → Fin (n + 1) // IsChainSorted L w} →
+      {w : Fin n → Fin (n + 1) // IsChainSorted L w} :=
+    fun w => ⟨cyclicSortChains L c w, isChainSorted_cyclicSortChains_of_disjoint
+      L hLnodup hnodup hdisj c w⟩
+  have hinj : Function.Injective F := by
+    intro w v h
+    apply cyclicSortChains_injective_of_chainSorted L hcover hLnodup hnodup hdisj c
+    have hval := congrArg Subtype.val h
+    change cyclicSortChains L c w.val = cyclicSortChains L c v.val at hval
+    exact hval
+  exact Equiv.ofBijective F ⟨hinj, Finite.surjective_of_injective hinj⟩
+
 /-- A cyclic value shift preserves distinct values read along any chain. -/
 theorem nodup_map_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
     (l : List (Fin n)) (w : Fin n → Fin (n + 1)) (h : (l.map w).Nodup) :
