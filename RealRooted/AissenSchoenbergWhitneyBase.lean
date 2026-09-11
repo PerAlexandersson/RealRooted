@@ -15,14 +15,12 @@ open Matrix Polynomial
 
 namespace RealRooted
 
-variable {a : ℕ → ℝ}
-
 /-- Entry of the Toeplitz matrix attached to a sequence `a₀, a₁, ...`. -/
-def toeplitz (a : ℕ → ℝ) : Matrix ℕ ℕ ℝ :=
+def toeplitz {R : Type*} [Zero R] (a : ℕ → R) : Matrix ℕ ℕ R :=
   .of fun i j ↦ if j ≤ i then a (i - j) else 0
 
 @[simp]
-lemma toeplitz_apply (a : ℕ → ℝ) (i j : ℕ) :
+lemma toeplitz_apply {R : Type*} [Zero R] (a : ℕ → R) (i j : ℕ) :
     toeplitz a i j = if j ≤ i then a (i - j) else 0 :=
   rfl
 
@@ -137,7 +135,7 @@ theorem toeplitz_polynomialValueSeq_mul (p q : ℝ[X]) :
     toeplitz_pointwise_mul (polynomialValueSeq p) (polynomialValueSeq q)
 
 @[to_fun (attr := simp)]
-lemma toeplitz_zero : toeplitz 0 = 0 := by
+lemma toeplitz_zero {R : Type*} [Zero R] : toeplitz (0 : ℕ → R) = 0 := by
   ext
   simp [toeplitz]
 

@@ -28,15 +28,15 @@ noncomputable section
 namespace RealRooted
 
 /-- The shifted contiguous `n × n` Toeplitz matrix with row shift `shift`. -/
-def aswShiftedToeplitzMatrix (u : ℕ → ℝ) (shift n : ℕ) :
-    Matrix (Fin n) (Fin n) ℝ :=
+def aswShiftedToeplitzMatrix {R : Type*} [Zero R] (u : ℕ → R) (shift n : ℕ) :
+    Matrix (Fin n) (Fin n) R :=
   (toeplitz u).submatrix
     (fun i : Fin n => (i : ℕ) + shift)
     (fun j : Fin n => (j : ℕ))
 
 /-- Determinant of the shifted contiguous Toeplitz matrix. The cubic argument
 uses shifts one and two, conventionally denoted `A n` and `E n`. -/
-def aswShiftedToeplitzMinor (u : ℕ → ℝ) (shift n : ℕ) : ℝ :=
+def aswShiftedToeplitzMinor {R : Type*} [CommRing R] (u : ℕ → R) (shift n : ℕ) : R :=
   (aswShiftedToeplitzMatrix u shift n).det
 
 /-- The increasing row map `1, ..., n - 1, n + 1`, which skips row `n`. -/
@@ -52,13 +52,13 @@ lemma strictMono_aswGapRow (n : ℕ) : StrictMono (aswGapRow n) := by
 
 /-- The `n × n` Toeplitz matrix with rows `1, ..., n - 1, n + 1` and
 columns `0, ..., n - 1`. -/
-def aswGapToeplitzMatrix (u : ℕ → ℝ) (n : ℕ) :
-    Matrix (Fin n) (Fin n) ℝ :=
+def aswGapToeplitzMatrix {R : Type*} [Zero R] (u : ℕ → R) (n : ℕ) :
+    Matrix (Fin n) (Fin n) R :=
   (toeplitz u).submatrix (aswGapRow n) (fun j : Fin n => (j : ℕ))
 
 /-- Determinant of the single-row-gap Toeplitz matrix, conventionally
 denoted `G n` in the cubic argument. -/
-def aswGapToeplitzMinor (u : ℕ → ℝ) (n : ℕ) : ℝ :=
+def aswGapToeplitzMinor {R : Type*} [CommRing R] (u : ℕ → R) (n : ℕ) : R :=
   (aswGapToeplitzMatrix u n).det
 
 /-- Every shifted contiguous minor of a Pólya-frequency sequence is
@@ -75,38 +75,38 @@ lemma IsPolyaFreqSeq.aswGapToeplitzMinor_nonneg {u : ℕ → ℝ}
   hpf (strictMono_aswGapRow n) Fin.val_strictMono
 
 @[simp]
-lemma aswShiftedToeplitzMinor_zero (u : ℕ → ℝ) (shift : ℕ) :
+lemma aswShiftedToeplitzMinor_zero {R : Type*} [CommRing R] (u : ℕ → R) (shift : ℕ) :
     aswShiftedToeplitzMinor u shift 0 = 1 := by
   simp [aswShiftedToeplitzMinor, aswShiftedToeplitzMatrix]
 
 @[simp]
-lemma aswShiftedToeplitzMinor_one (u : ℕ → ℝ) (shift : ℕ) :
+lemma aswShiftedToeplitzMinor_one {R : Type*} [CommRing R] (u : ℕ → R) (shift : ℕ) :
     aswShiftedToeplitzMinor u shift 1 = u shift := by
   simp [aswShiftedToeplitzMinor, aswShiftedToeplitzMatrix, toeplitz]
 
-lemma aswShiftedToeplitzMinor_one_two (u : ℕ → ℝ) :
+lemma aswShiftedToeplitzMinor_one_two {R : Type*} [CommRing R] (u : ℕ → R) :
     aswShiftedToeplitzMinor u 1 2 = u 1 ^ 2 - u 0 * u 2 := by
   norm_num [aswShiftedToeplitzMinor, aswShiftedToeplitzMatrix, toeplitz,
     Matrix.det_fin_two]
   ring
 
-lemma aswShiftedToeplitzMinor_two_two (u : ℕ → ℝ) :
+lemma aswShiftedToeplitzMinor_two_two {R : Type*} [CommRing R] (u : ℕ → R) :
     aswShiftedToeplitzMinor u 2 2 = u 2 ^ 2 - u 1 * u 3 := by
   norm_num [aswShiftedToeplitzMinor, aswShiftedToeplitzMatrix, toeplitz,
     Matrix.det_fin_two]
   ring
 
 @[simp]
-lemma aswGapToeplitzMinor_zero (u : ℕ → ℝ) :
+lemma aswGapToeplitzMinor_zero {R : Type*} [CommRing R] (u : ℕ → R) :
     aswGapToeplitzMinor u 0 = 1 := by
   simp [aswGapToeplitzMinor, aswGapToeplitzMatrix]
 
 @[simp]
-lemma aswGapToeplitzMinor_one (u : ℕ → ℝ) :
+lemma aswGapToeplitzMinor_one {R : Type*} [CommRing R] (u : ℕ → R) :
     aswGapToeplitzMinor u 1 = u 2 := by
   norm_num [aswGapToeplitzMinor, aswGapToeplitzMatrix, aswGapRow, toeplitz]
 
-lemma aswGapToeplitzMinor_two (u : ℕ → ℝ) :
+lemma aswGapToeplitzMinor_two {R : Type*} [CommRing R] (u : ℕ → R) :
     aswGapToeplitzMinor u 2 = u 1 * u 2 - u 0 * u 3 := by
   norm_num [aswGapToeplitzMinor, aswGapToeplitzMatrix, aswGapRow, toeplitz,
     Matrix.det_fin_two]
@@ -131,14 +131,14 @@ private lemma penultimate_succAbove_add_one (k : ℕ) (i : Fin (k + 1)) :
     rw [Fin.succAbove_castSucc_of_lt _ _ hilt]
     rfl
 
-private lemma aswA_last_cofactor (u : ℕ → ℝ) (k : ℕ) :
+private lemma aswA_last_cofactor {R : Type*} [CommRing R] (u : ℕ → R) (k : ℕ) :
     (aswShiftedToeplitzMatrix u 1 (k + 2)).submatrix
         Fin.castSucc Fin.castSucc =
       aswShiftedToeplitzMatrix u 1 (k + 1) := by
   ext i j
   simp [aswShiftedToeplitzMatrix, Matrix.submatrix]
 
-private lemma aswA_penultimate_cofactor (u : ℕ → ℝ) (k : ℕ) :
+private lemma aswA_penultimate_cofactor {R : Type*} [CommRing R] (u : ℕ → R) (k : ℕ) :
     (aswShiftedToeplitzMatrix u 1 (k + 2)).submatrix
         (Fin.last k).castSucc.succAbove Fin.castSucc =
       aswGapToeplitzMatrix u (k + 1) := by
@@ -147,7 +147,7 @@ private lemma aswA_penultimate_cofactor (u : ℕ → ℝ) (k : ℕ) :
     Matrix.submatrix_apply, Fin.val_castSucc]
   rw [penultimate_succAbove_add_one]
 
-private lemma aswA_lastColumn_apply (u : ℕ → ℝ) (k : ℕ)
+private lemma aswA_lastColumn_apply {R : Type*} [CommRing R] (u : ℕ → R) (k : ℕ)
     (i : Fin (k + 2)) :
     aswShiftedToeplitzMatrix u 1 (k + 2) i (Fin.last (k + 1)) =
       if i = (Fin.last k).castSucc then u 0
@@ -180,7 +180,7 @@ private lemma aswA_lastColumn_apply (u : ℕ → ℝ) (k : ℕ)
 /-- The key relation between the shift-one contiguous minors and the
 single-row-gap minors. It follows by expanding the `(k + 2) × (k + 2)`
 shift-one matrix along its last column. -/
-theorem aswGapToeplitzMinor_identity (u : ℕ → ℝ) (k : ℕ) :
+theorem aswGapToeplitzMinor_identity {R : Type*} [CommRing R] (u : ℕ → R) (k : ℕ) :
     u 0 * aswGapToeplitzMinor u (k + 1) =
       u 1 * aswShiftedToeplitzMinor u 1 (k + 1) -
         aswShiftedToeplitzMinor u 1 (k + 2) := by
@@ -190,7 +190,7 @@ theorem aswGapToeplitzMinor_identity (u : ℕ → ℝ) (k : ℕ) :
   simp only [Fin.succAbove_last] at hdet
   have hsum :
       (∑ i : Fin (k + 1),
-        (-1 : ℝ) ^ ((i.castSucc : Fin (k + 2)) + (Fin.last (k + 1) : ℕ)) *
+        (-1 : R) ^ ((i.castSucc : Fin (k + 2)) + (Fin.last (k + 1) : ℕ)) *
           aswShiftedToeplitzMatrix u 1 (k + 2) i.castSucc (Fin.last (k + 1)) *
             ((aswShiftedToeplitzMatrix u 1 (k + 2)).submatrix
               i.castSucc.succAbove Fin.castSucc).det) =
@@ -199,7 +199,7 @@ theorem aswGapToeplitzMinor_identity (u : ℕ → ℝ) (k : ℕ) :
     · simp only [aswA_lastColumn_apply, ↓reduceIte,
         aswA_penultimate_cofactor, aswGapToeplitzMinor, Fin.val_castSucc,
         Fin.val_last]
-      rw [show (-1 : ℝ) ^ (k + (k + 1)) = -1 by
+      rw [show (-1 : R) ^ (k + (k + 1)) = -1 by
         rw [show k + (k + 1) = 2 * k + 1 by lia, pow_add]
         simp [pow_mul]]
       ring
@@ -212,7 +212,7 @@ theorem aswGapToeplitzMinor_identity (u : ℕ → ℝ) (k : ℕ) :
     (Fin.castSucc_ne_last _).symm
   simp only [aswA_lastColumn_apply, if_neg hlastne, if_pos,
     aswA_last_cofactor, Fin.val_last] at hdet
-  have heven : (-1 : ℝ) ^ ((k + 1) + (k + 1)) = 1 := by
+  have heven : (-1 : R) ^ ((k + 1) + (k + 1)) = 1 := by
     rw [show (k + 1) + (k + 1) = 2 * (k + 1) by lia]
     simp [pow_mul]
   rw [heven, one_mul] at hdet

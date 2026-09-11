@@ -63,7 +63,8 @@ theorem aswShiftedToeplitzMinor_one_eq_closedForm
     (hpairs : (r : ℂ) * z + (r : ℂ) * starRingEnd ℂ z +
       z * starRingEnd ℂ z = u 0 * u 2)
     (hprod : (r : ℂ) * z * starRingEnd ℂ z = u 0 ^ 2 * u 3) :
-    (fun n ↦ (aswShiftedToeplitzMinor u 1 n : ℂ)) = aswCubicClosedForm r z := by
+    (fun n ↦ (aswShiftedToeplitzMinor (R := ℝ) u 1 n : ℂ)) =
+      aswCubicClosedForm r z := by
   apply eq_aswCubicClosedForm_of_recurrence _ r hz
   · simp
   · simpa using hsum.symm
@@ -78,4 +79,3 @@ theorem aswShiftedToeplitzMinor_one_eq_closedForm
     exact hrec
 
 end RealRooted
-

@@ -114,7 +114,7 @@ theorem aswShiftedToeplitzMinor_two_eq_closedForm
     (hpairs : (r : ℂ) * z + (r : ℂ) * conj z + z * conj z = a * u 2)
     (hprod : (r : ℂ) * z * conj z = a ^ 2 * u 3)
     (ha0 : u 0 = a) :
-    (fun n ↦ (aswShiftedToeplitzMinor u 2 n : ℂ)) =
+    (fun n ↦ (aswShiftedToeplitzMinor (R := ℝ) u 2 n : ℂ)) =
       aswCubicClosedForm (aswCubicShiftTwoRealRoot a z)
         (aswCubicShiftTwoComplexRoot a r z) := by
   have hroots := aswCubicShiftTwo_roots_from_shiftOne

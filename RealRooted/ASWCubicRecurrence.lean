@@ -18,12 +18,12 @@ noncomputable section
 
 namespace RealRooted
 
-private def aswGapPenultimateCofactor (u : ℕ → ℝ) (k : ℕ) :
-    Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ :=
+private def aswGapPenultimateCofactor {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ) :
+    Matrix (Fin (k + 1)) (Fin (k + 1)) R :=
   (aswGapToeplitzMatrix u (k + 2)).submatrix
     (Fin.last k).castSucc.succAbove Fin.castSucc
 
-private lemma aswGapPenultimateCofactor_lastRow_apply (u : ℕ → ℝ)
+private lemma aswGapPenultimateCofactor_lastRow_apply {R : Type*} [Zero R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (k : ℕ) (j : Fin (k + 1)) :
     aswGapPenultimateCofactor u k (Fin.last k) j =
       if j = Fin.last k then u 3 else 0 := by
@@ -53,7 +53,7 @@ private lemma aswGapPenultimateCofactor_lastRow_apply (u : ℕ → ℝ)
     rw [if_pos (by lia)]
     exact hu _ (by lia)
 
-private lemma aswGapPenultimateCofactor_lastCofactor (u : ℕ → ℝ) (k : ℕ) :
+private lemma aswGapPenultimateCofactor_lastCofactor {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ) :
     (aswGapPenultimateCofactor u k).submatrix Fin.castSucc Fin.castSucc =
       aswShiftedToeplitzMatrix u 1 k := by
   ext i j
@@ -65,7 +65,7 @@ private lemma aswGapPenultimateCofactor_lastCofactor (u : ℕ → ℝ) (k : ℕ)
       rw [if_neg (by have := i.isLt; lia)]]
   · simp
 
-private lemma aswGapPenultimateCofactor_det (u : ℕ → ℝ)
+private lemma aswGapPenultimateCofactor_det {R : Type*} [CommRing R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (k : ℕ) :
     (aswGapPenultimateCofactor u k).det =
       u 3 * aswShiftedToeplitzMinor u 1 k := by
@@ -75,7 +75,7 @@ private lemma aswGapPenultimateCofactor_det (u : ℕ → ℝ)
   simp only [Fin.succAbove_last] at hdet
   have hsum :
       (∑ j : Fin k,
-        (-1 : ℝ) ^ ((Fin.last k : ℕ) + (j.castSucc : Fin (k + 1))) *
+        (-1 : R) ^ ((Fin.last k : ℕ) + (j.castSucc : Fin (k + 1))) *
           aswGapPenultimateCofactor u k (Fin.last k) j.castSucc *
             ((aswGapPenultimateCofactor u k).submatrix
               Fin.castSucc j.castSucc.succAbove).det) = 0 := by
@@ -86,13 +86,13 @@ private lemma aswGapPenultimateCofactor_det (u : ℕ → ℝ)
   rw [hsum, add_zero] at hdet
   simp only [aswGapPenultimateCofactor_lastRow_apply u hu, if_pos,
     aswGapPenultimateCofactor_lastCofactor, Fin.val_last] at hdet
-  have heven : (-1 : ℝ) ^ (k + k) = 1 := by
+  have heven : (-1 : R) ^ (k + k) = 1 := by
     rw [show k + k = 2 * k by lia]
     simp [pow_mul]
   rw [heven, one_mul] at hdet
   exact hdet
 
-private lemma aswGap_last_cofactor (u : ℕ → ℝ) (k : ℕ) :
+private lemma aswGap_last_cofactor {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ) :
     (aswGapToeplitzMatrix u (k + 2)).submatrix Fin.castSucc Fin.castSucc =
       aswShiftedToeplitzMatrix u 1 (k + 1) := by
   ext i j
@@ -102,7 +102,7 @@ private lemma aswGap_last_cofactor (u : ℕ → ℝ) (k : ℕ) :
     simp only [aswGapRow, Fin.val_castSucc]
     rw [if_neg (by have := i.isLt; lia)]]
 
-private lemma aswGap_lastColumn_apply (u : ℕ → ℝ) (k : ℕ)
+private lemma aswGap_lastColumn_apply {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ)
     (i : Fin (k + 2)) :
     aswGapToeplitzMatrix u (k + 2) i (Fin.last (k + 1)) =
       if i = (Fin.last k).castSucc then u 0
@@ -138,7 +138,7 @@ private lemma aswGap_lastColumn_apply (u : ℕ → ℝ) (k : ℕ)
 
 /-- Under cubic support, the gap minors are a two-term combination of
 shift-one contiguous minors. -/
-lemma aswGapToeplitzMinor_cubic (u : ℕ → ℝ)
+lemma aswGapToeplitzMinor_cubic {R : Type*} [CommRing R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (k : ℕ) :
     aswGapToeplitzMinor u (k + 2) =
       u 2 * aswShiftedToeplitzMinor u 1 (k + 1) -
@@ -149,14 +149,14 @@ lemma aswGapToeplitzMinor_cubic (u : ℕ → ℝ)
   simp only [Fin.succAbove_last] at hdet
   have hsum :
       (∑ i : Fin (k + 1),
-        (-1 : ℝ) ^ ((i.castSucc : Fin (k + 2)) + (Fin.last (k + 1) : ℕ)) *
+        (-1 : R) ^ ((i.castSucc : Fin (k + 2)) + (Fin.last (k + 1) : ℕ)) *
           aswGapToeplitzMatrix u (k + 2) i.castSucc (Fin.last (k + 1)) *
             ((aswGapToeplitzMatrix u (k + 2)).submatrix
               i.castSucc.succAbove Fin.castSucc).det) =
         -u 0 * u 3 * aswShiftedToeplitzMinor u 1 k := by
     rw [Finset.sum_eq_single (Fin.last k)]
     · simp only [aswGap_lastColumn_apply, if_pos, Fin.val_castSucc, Fin.val_last]
-      rw [show (-1 : ℝ) ^ (k + (k + 1)) = -1 by
+      rw [show (-1 : R) ^ (k + (k + 1)) = -1 by
         rw [show k + (k + 1) = 2 * k + 1 by lia, pow_add]
         simp [pow_mul]]
       change -1 * u 0 * (aswGapPenultimateCofactor u k).det =
@@ -172,7 +172,7 @@ lemma aswGapToeplitzMinor_cubic (u : ℕ → ℝ)
     (Fin.castSucc_ne_last _).symm
   simp only [aswGap_lastColumn_apply, if_neg hlastne, if_pos,
     aswGap_last_cofactor, Fin.val_last] at hdet
-  have heven : (-1 : ℝ) ^ ((k + 1) + (k + 1)) = 1 := by
+  have heven : (-1 : R) ^ ((k + 1) + (k + 1)) = 1 := by
     rw [show (k + 1) + (k + 1) = 2 * (k + 1) by lia]
     simp [pow_mul]
   rw [heven, one_mul] at hdet
@@ -183,7 +183,7 @@ lemma aswGapToeplitzMinor_cubic (u : ℕ → ℝ)
 
 /-- The order-three recurrence for shift-one Toeplitz minors of a cubic
 coefficient sequence. -/
-theorem aswShiftedToeplitzMinor_one_cubic_rec (u : ℕ → ℝ)
+theorem aswShiftedToeplitzMinor_one_cubic_rec {R : Type*} [CommRing R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (k : ℕ) :
     aswShiftedToeplitzMinor u 1 (k + 3) =
       u 1 * aswShiftedToeplitzMinor u 1 (k + 2) -
@@ -194,26 +194,30 @@ theorem aswShiftedToeplitzMinor_one_cubic_rec (u : ℕ → ℝ)
   linear_combination hgap - u 0 * hcubic
 
 /-- Coefficient reversal through degree three, extended by zero. -/
-def aswCubicReverse (u : ℕ → ℝ) (j : ℕ) : ℝ :=
+def aswCubicReverse {R : Type*} [Zero R] (u : ℕ → R) (j : ℕ) : R :=
   if j ≤ 3 then u (3 - j) else 0
 
 @[simp]
-lemma aswCubicReverse_zero (u : ℕ → ℝ) : aswCubicReverse u 0 = u 3 := by simp [aswCubicReverse]
+lemma aswCubicReverse_zero {R : Type*} [Zero R] (u : ℕ → R) :
+    aswCubicReverse u 0 = u 3 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_one (u : ℕ → ℝ) : aswCubicReverse u 1 = u 2 := by simp [aswCubicReverse]
+lemma aswCubicReverse_one {R : Type*} [Zero R] (u : ℕ → R) :
+    aswCubicReverse u 1 = u 2 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_two (u : ℕ → ℝ) : aswCubicReverse u 2 = u 1 := by simp [aswCubicReverse]
+lemma aswCubicReverse_two {R : Type*} [Zero R] (u : ℕ → R) :
+    aswCubicReverse u 2 = u 1 := by simp [aswCubicReverse]
 
 @[simp]
-lemma aswCubicReverse_three (u : ℕ → ℝ) : aswCubicReverse u 3 = u 0 := by simp [aswCubicReverse]
+lemma aswCubicReverse_three {R : Type*} [Zero R] (u : ℕ → R) :
+    aswCubicReverse u 3 = u 0 := by simp [aswCubicReverse]
 
-lemma aswCubicReverse_eq_zero (u : ℕ → ℝ) {j : ℕ} (hj : 4 ≤ j) :
+lemma aswCubicReverse_eq_zero {R : Type*} [Zero R] (u : ℕ → R) {j : ℕ} (hj : 4 ≤ j) :
     aswCubicReverse u j = 0 := by
   simp [aswCubicReverse, show ¬j ≤ 3 by lia]
 
-private lemma aswCubicReverse_sub_eq (u : ℕ → ℝ) (i j : ℕ)
+private lemma aswCubicReverse_sub_eq {R : Type*} [Zero R] (u : ℕ → R) (i j : ℕ)
     (hji : j ≤ i + 2) (hij : i ≤ j + 1) :
     aswCubicReverse u (j + 1 - i) = u (i + 2 - j) := by
   rw [aswCubicReverse, if_pos (by lia)]
@@ -222,7 +226,8 @@ private lemma aswCubicReverse_sub_eq (u : ℕ → ℝ) (i j : ℕ)
 
 /-- For a cubic-supported sequence, the shift-two Toeplitz matrix is the
 transpose of the shift-one matrix for the reversed coefficients. -/
-lemma aswShiftedToeplitzMatrix_two_eq_cubicReverse_transpose (u : ℕ → ℝ)
+lemma aswShiftedToeplitzMatrix_two_eq_cubicReverse_transpose
+    {R : Type*} [Zero R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (n : ℕ) :
     aswShiftedToeplitzMatrix u 2 n =
       (aswShiftedToeplitzMatrix (aswCubicReverse u) 1 n)ᵀ := by
@@ -240,7 +245,8 @@ lemma aswShiftedToeplitzMatrix_two_eq_cubicReverse_transpose (u : ℕ → ℝ)
     rw [if_pos (by lia)]
     exact (aswCubicReverse_eq_zero u (by lia)).symm
 
-lemma aswShiftedToeplitzMinor_two_eq_cubicReverse_one (u : ℕ → ℝ)
+lemma aswShiftedToeplitzMinor_two_eq_cubicReverse_one
+    {R : Type*} [CommRing R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (n : ℕ) :
     aswShiftedToeplitzMinor u 2 n =
       aswShiftedToeplitzMinor (aswCubicReverse u) 1 n := by
@@ -249,7 +255,7 @@ lemma aswShiftedToeplitzMinor_two_eq_cubicReverse_one (u : ℕ → ℝ)
 
 /-- The order-three recurrence for shift-two Toeplitz minors of a cubic
 coefficient sequence. -/
-theorem aswShiftedToeplitzMinor_two_cubic_rec (u : ℕ → ℝ)
+theorem aswShiftedToeplitzMinor_two_cubic_rec {R : Type*} [CommRing R] (u : ℕ → R)
     (hu : ∀ j, 4 ≤ j → u j = 0) (k : ℕ) :
     aswShiftedToeplitzMinor u 2 (k + 3) =
       u 2 * aswShiftedToeplitzMinor u 2 (k + 2) -
@@ -269,4 +275,3 @@ theorem aswShiftedToeplitzMinor_two_cubic_rec (u : ℕ → ℝ)
   linear_combination hrec
 
 end RealRooted
-
