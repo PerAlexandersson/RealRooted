@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.MultiplierSequence
+import Mathlib.Analysis.Analytic.OfScalars
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 
@@ -9,8 +10,9 @@ import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 This explicitly analytic leaf proves coefficientwise and summable pointwise
 convergence for rescaled Jensen polynomials, together with uniform convergence
 on real intervals and complex closed disks under an explicit summable majorant.
-It does not define an entire-function class, prove a Laguerre--Pólya limit
-theorem, or establish a Pólya--Schur classification direction.
+The same all-radius majorant gives an entire complex exponential-generating
+function. This leaf does not prove a Laguerre--Pólya limit theorem or establish
+a Pólya--Schur classification direction.
 -/
 
 open Filter Polynomial Topology
@@ -361,6 +363,54 @@ theorem tendstoLocallyUniformly_eval_complex_rescaledJensenPolynomial_of_summabl
   have hU := tendstoUniformlyOn_eval_complex_rescaledJensenPolynomial_of_summable
     gamma R hR (hsum R hR)
   exact ⟨Metric.closedBall 0 R, Metric.closedBall_mem_nhds_of_mem hz, hU u hu⟩
+
+/-- The complex exponential-generating function of a real sequence. -/
+def complexExpGeneratingFunction (gamma : ℕ → ℝ) : ℂ → ℂ :=
+  FormalMultilinearSeries.ofScalarsSum (E := ℂ)
+    (fun k => ((gamma k / k.factorial : ℝ) : ℂ))
+
+/-- The formal-series definition of the complex exponential-generating
+function agrees with its coefficientwise `tsum` expression. -/
+theorem complexExpGeneratingFunction_eq_tsum (gamma : ℕ → ℝ) :
+    complexExpGeneratingFunction gamma =
+      fun z => ∑' k : ℕ, ((gamma k / k.factorial : ℝ) : ℂ) * z ^ k := by
+  simpa only [complexExpGeneratingFunction, smul_eq_mul] using
+    (FormalMultilinearSeries.ofScalarsSum_eq_tsum (E := ℂ)
+      (fun k => ((gamma k / k.factorial : ℝ) : ℂ)))
+
+/-- An all-radius exponential-generating majorant makes the complex
+exponential-generating function entire. -/
+theorem analyticOnNhd_complexExpGeneratingFunction_of_summable (gamma : ℕ → ℝ)
+    (hsum : ∀ R : ℝ, 0 ≤ R → Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial)) :
+    AnalyticOnNhd ℂ (complexExpGeneratingFunction gamma) Set.univ := by
+  let c : ℕ → ℂ := fun k => ((gamma k / k.factorial : ℝ) : ℂ)
+  let p : FormalMultilinearSeries ℂ ℂ ℂ := FormalMultilinearSeries.ofScalars ℂ c
+  have hp : p.radius = ⊤ := by
+    apply FormalMultilinearSeries.radius_eq_top_of_summable_norm p
+    intro r
+    dsimp only [p]
+    simp_rw [FormalMultilinearSeries.ofScalars_norm ℂ c]
+    convert hsum (r : ℝ) r.coe_nonneg using 1
+    ext n
+    simp only [Complex.norm_real, c, norm_div, Real.norm_natCast]
+    ring
+  have hball : Metric.eball (0 : ℂ) p.radius = Set.univ := by
+    simp [hp]
+  rw [← hball]
+  simpa only [complexExpGeneratingFunction, p,
+    FormalMultilinearSeries.ofScalarsSum] using p.analyticOnNhd
+
+/-- Under the all-radius majorant, the complexified rescaled Jensen
+polynomials converge locally uniformly to the entire exponential-generating
+function. -/
+theorem tendstoLocallyUniformly_complexExpGeneratingFunction_of_summable
+    (gamma : ℕ → ℝ)
+    (hsum : ∀ R : ℝ, 0 ≤ R → Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial)) :
+    TendstoLocallyUniformly
+      (fun n (z : ℂ) => (rescaledJensenPolynomial n gamma).map Complex.ofRealHom |>.eval z)
+      (complexExpGeneratingFunction gamma) atTop := by
+  rw [complexExpGeneratingFunction_eq_tsum]
+  exact tendstoLocallyUniformly_eval_complex_rescaledJensenPolynomial_of_summable gamma hsum
 
 /-- Summability of the exponential-generating majorant at every nonnegative
 radius upgrades the rescaled Jensen limit to local uniform convergence. -/
