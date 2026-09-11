@@ -666,6 +666,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
+import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
 import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
