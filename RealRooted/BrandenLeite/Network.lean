@@ -235,6 +235,43 @@ private theorem horizontalBefore_le {n : ℕ} (s : Finset (Fin n)) (t : Fin n) :
   intro i hi
   simpa using (Finset.mem_filter.mp hi).2
 
+/-- A path weight in row `n` only uses the triangular weights with first
+index strictly below `n`. -/
+theorem networkPathWeight_congr_of_le_lt {R : Type*} [CommSemiring R]
+    (weights weights' : ℕ → ℕ → R) {n : ℕ} (s : Finset (Fin n))
+    (h : ∀ i k, k ≤ i → i < n → weights i k = weights' i k) :
+    networkPathWeight weights s = networkPathWeight weights' s := by
+  unfold networkPathWeight
+  apply Finset.prod_congr rfl
+  intro t _
+  by_cases ht : t ∈ s
+  · simp [ht]
+  · rw [if_neg ht, if_neg ht]
+    have hbefore := horizontalBefore_le s t
+    exact h _ _ (by lia) (by lia)
+
+/-- A path sum in row `n` only depends on the triangular weights with first
+index strictly below `n`. -/
+theorem networkPathSum_congr_of_le_lt {R : Type*} [CommSemiring R]
+    (weights weights' : ℕ → ℕ → R) (n k : ℕ)
+    (h : ∀ i j, j ≤ i → i < n → weights i j = weights' i j) :
+    networkPathSum weights n k = networkPathSum weights' n k := by
+  classical
+  unfold networkPathSum
+  apply Finset.sum_congr rfl
+  intro s _
+  exact networkPathWeight_congr_of_le_lt weights weights' s h
+
+/-- The principal rows below `N` of two network matrices agree when their
+weights agree on the corresponding finite triangular region. -/
+theorem networkMatrix_apply_eq_of_le_lt {R : Type*} [CommSemiring R]
+    (weights weights' : ℕ → ℕ → R) {N n k : ℕ}
+    (h : ∀ i j, j ≤ i → i < N → weights i j = weights' i j)
+    (hn : n < N) :
+    networkMatrix weights n k = networkMatrix weights' n k :=
+  networkPathSum_congr_of_le_lt weights weights' n k fun i j hji hi =>
+    h i j hji (hi.trans hn)
+
 /-- Reindexing a path starting in column one gives a path for the shifted
 weight array. -/
 theorem networkPathWeightFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
