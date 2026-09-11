@@ -60,6 +60,23 @@ elementary symmetric polynomial is `p.coeff k / choose n k`. -/
 def polarization (n : ℕ) (p : ℂ[X]) : MvPolynomial (Fin n) ℂ :=
   reducedPolarization n (binomialUnlift n p)
 
+/-- Polarization expanded in the elementary-symmetric basis. -/
+theorem polarization_eq_sum (n : ℕ) (p : ℂ[X]) :
+    polarization n p =
+      ∑ k ∈ Finset.range (n + 1),
+        MvPolynomial.C (p.coeff k / (n.choose k : ℂ)) *
+          MvPolynomial.esymm (Fin n) ℂ k := by
+  unfold polarization reducedPolarization binomialUnlift
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
+  · simp
+  · intro j hj hjk
+    rw [Polynomial.coeff_monomial]
+    simp [hjk]
+  · intro hkn
+    exact (hkn (by simpa [Finset.mem_range] using hk)).elim
+
 /-- The polarization of a bounded monomial is its normalized elementary
 symmetric polynomial. -/
 theorem polarization_X_pow {n r : ℕ} (hr : r ≤ n) :
