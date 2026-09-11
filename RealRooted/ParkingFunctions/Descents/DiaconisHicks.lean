@@ -1,4 +1,5 @@
 import RealRooted.ParkingFunctions.Descents.Basic
+import RealRooted.ParkingFunctions.Descents.ChainSort
 import RealRooted.Mathlib.Data.List.OfFn
 import Mathlib.Logic.Equiv.Fin.Rotate
 import Mathlib.Data.List.Sort
@@ -30,6 +31,20 @@ def cyclicValueShift {n : ℕ} (c : Fin (n + 1))
 def IsParkingWord {n : ℕ} (w : Fin n → Fin (n + 1)) : Prop :=
   ∀ k : ℕ, k ≤ n →
     k ≤ (Finset.univ.filter fun i => (w i).val < k).card
+
+private theorem card_filter_eq_multiset_countP {n : ℕ} (w : Fin n → Fin (n + 1)) (k : ℕ) :
+    (Finset.univ.filter fun i => (w i).val < k).card =
+      Multiset.countP (fun v : Fin (n + 1) => (v : ℕ) < k)
+        (Multiset.map w Finset.univ.val) := by
+  rw [Multiset.countP_map]
+  rfl
+
+/-- The extra-alphabet parking condition depends only on the value multiset. -/
+theorem isParkingWord_iff_of_multiset_eq {n : ℕ} {w v : Fin n → Fin (n + 1)}
+    (h : Multiset.map w Finset.univ.val = Multiset.map v Finset.univ.val) :
+    IsParkingWord w ↔ IsParkingWord v := by
+  unfold IsParkingWord
+  simp only [card_filter_eq_multiset_countP, h]
 
 /-- A periodic integer height function with a drop of one has a unique cyclic
 minimum. -/
@@ -252,6 +267,13 @@ theorem isParkingWord_iff_of_ofFn_perm {n : ℕ} {w v : Fin n → Fin (n + 1)}
     exact hw k hk
   · rw [card_lt_eq_of_ofFn_perm h k]
     exact hw k hk
+
+/-- Sorting along any list of duplicate-free chains preserves the extra-alphabet
+parking condition. -/
+theorem isParkingWord_sortChains_iff {n : ℕ} (L : List (List (Fin n)))
+    (hL : ∀ l ∈ L, l.Nodup) (w : Fin n → Fin (n + 1)) :
+    IsParkingWord (sortChains L w) ↔ IsParkingWord w :=
+  isParkingWord_iff_of_multiset_eq (map_sortChains_univ L hL w)
 
 @[simp]
 theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
