@@ -1,5 +1,6 @@
 import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.PolyaSchur.Analytic
+import Mathlib.Analysis.RCLike.Lemmas
 
 /-!
 # Laguerre--Pólya limits of Jensen polynomials
@@ -36,6 +37,27 @@ theorem IsLaguerrePolya.zero : IsLaguerrePolya 0 := by
   filter_upwards [] with n y
   intro _
   simpa using (refl_mem_uniformity hu : ((0 : ℂ), 0) ∈ u)
+
+/-- A Laguerre--Pólya limit of real-coefficient polynomials commutes with
+complex conjugation. -/
+theorem IsLaguerrePolya.conj {f : ℂ → ℂ} (hf : IsLaguerrePolya f) (z : ℂ) :
+    f (star z) = star (f z) := by
+  rcases hf with ⟨p, hp, hptend⟩
+  have hleft : Tendsto (fun n => ((p n).map Complex.ofRealHom).eval (star z)) atTop
+      (𝓝 (f (star z))) :=
+    hptend.tendstoLocallyUniformlyOn.tendsto_at (Set.mem_univ _)
+  have hright : Tendsto (fun n => star (((p n).map Complex.ofRealHom).eval z)) atTop
+      (𝓝 (star (f z))) :=
+    continuous_star.tendsto (f z) |>.comp
+      (hptend.tendstoLocallyUniformlyOn.tendsto_at (Set.mem_univ _))
+  apply tendsto_nhds_unique hleft
+  convert hright using 1
+  ext n
+  have hmap : Complex.ofRealHom = algebraMap ℝ ℂ := by
+    ext x
+    rfl
+  rw [hmap, Polynomial.eval_map, Polynomial.eval_map]
+  simpa only [Polynomial.aeval_def, starRingEnd_apply] using (aeval_conj (p n) z)
 
 /-- The zero-aware Laguerre--Pólya class is closed under products. -/
 theorem IsLaguerrePolya.mul {f g : ℂ → ℂ}
