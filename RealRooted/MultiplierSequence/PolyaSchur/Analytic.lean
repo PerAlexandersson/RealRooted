@@ -1,13 +1,16 @@
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.MultiplierSequence
 import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 
 /-!
 # Fixed-coefficient rescaled Jensen limits
 
-This explicitly analytic leaf proves only coefficientwise convergence for
-rescaled Jensen polynomials. It does not assert locally uniform convergence,
-an entire-function classification, or a Laguerre--Pólya limit theorem.
+This explicitly analytic leaf proves coefficientwise and summable pointwise
+convergence for rescaled Jensen polynomials, together with uniform convergence
+of the limiting exponential-generating series on closed balls. It does not
+assert locally uniform convergence of the rescaled Jensen family, an entire-
+function classification, or a Laguerre--Pólya limit theorem.
 -/
 
 open Filter Polynomial Topology
@@ -94,6 +97,27 @@ theorem norm_coeff_rescaledJensenPolynomial_le (n k : ℕ) (gamma : ℕ → ℝ)
       _ = ‖gamma k‖ / k.factorial := by ring
   · simp only [norm_zero]
     exact div_nonneg (norm_nonneg _) (by positivity)
+
+/-- A summable exponential-generating majorant gives uniform convergence of
+the limiting series on the indicated closed ball. -/
+theorem hasSumUniformlyOn_expGeneratingSeries (gamma : ℕ → ℝ) (R : ℝ)
+    (hsum : Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial)) :
+    HasSumUniformlyOn
+      (fun k (x : ℝ) => (gamma k / k.factorial) * x ^ k)
+      (fun x => ∑' k, (gamma k / k.factorial) * x ^ k)
+      (Metric.closedBall 0 R) := by
+  apply HasSumUniformlyOn.of_norm_le_summable hsum
+  intro k x hx
+  have hxR : ‖x‖ ≤ R := by
+    simpa only [Metric.mem_closedBall, dist_zero_right] using hx
+  calc
+    ‖(gamma k / k.factorial) * x ^ k‖ =
+        (‖gamma k‖ / k.factorial) * ‖x‖ ^ k := by
+      rw [norm_mul, norm_div, Real.norm_natCast, norm_pow]
+    _ ≤ (‖gamma k‖ / k.factorial) * R ^ k :=
+      mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (norm_nonneg x) hxR _) (by positivity)
+    _ = ‖gamma k‖ * R ^ k / k.factorial := by ring
 
 /-- Under absolute summability at `x`, the rescaled Jensen polynomials
 converge pointwise to the exponential-generating series of `gamma`. -/
