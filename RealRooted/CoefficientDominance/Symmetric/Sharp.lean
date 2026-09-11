@@ -1,5 +1,5 @@
 import RealRooted.CoefficientDominance.Symmetric.Finite
-import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Order.Field.Basic
 
 /-!
 # Sharpened elementary-symmetric bounds
@@ -12,10 +12,12 @@ namespace RealRooted.CoefficientDominance.Symmetric
 
 open Finset
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- In the generating expansion, all nondistinguished terms can be retained to
 their leading-product lower bound. -/
-theorem esym_mul_pow_le_sharp (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ}
-    (hj : j ≤ n) {t : ℝ} (ht : 0 ≤ t) :
+theorem esym_mul_pow_le_sharp (x : ℕ → K) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ}
+    (hj : j ≤ n) {t : K} (ht : 0 ≤ t) :
     esym x n j * t ^ j ≤ (∏ i ∈ range n, (1 + x i * t))
       - ∑ k ∈ (range (n + 1)).erase j, topProd x k * t ^ k := by
   have hjmem : j ∈ range (n + 1) := mem_range.mpr (by lia)
@@ -35,8 +37,8 @@ theorem esym_mul_pow_le_sharp (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : 
 
 /-- The sharpened generating-function bound after division by the positive
 evaluation monomial. -/
-theorem esym_le_sharp (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ}
-    (hj : j ≤ n) {t : ℝ} (ht : 0 < t) :
+theorem esym_le_sharp (x : ℕ → K) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ}
+    (hj : j ≤ n) {t : K} (ht : 0 < t) :
     esym x n j ≤ ((∏ i ∈ range n, (1 + x i * t))
       - ∑ k ∈ (range (n + 1)).erase j, topProd x k * t ^ k) / t ^ j := by
   rw [le_div_iff₀ (by positivity)]

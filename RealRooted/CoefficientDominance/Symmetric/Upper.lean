@@ -57,8 +57,10 @@ theorem log_ratio_ge {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) {n j : ℕ} (hj :
   rw [Real.log_mul (ne_of_gt hxr) (Real.exp_ne_zero _), Real.log_exp] at hlog
   linarith
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- Evaluating the generating product bounds one elementary symmetric term. -/
-theorem esym_mul_pow_le (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ} {t : ℝ}
+theorem esym_mul_pow_le (x : ℕ → K) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ} {t : K}
     (ht : 0 ≤ t) :
     esym x n j * t ^ j ≤ ∏ i ∈ range n, (1 + x i * t) := by
   have hexp : ∏ i ∈ range n, (x i * t + 1)
@@ -91,11 +93,11 @@ theorem esym_mul_pow_le (x : ℕ → ℝ) (hnn : ∀ i, 0 ≤ x i) {n j : ℕ} {
 
 /-- The upper half of the elementary-symmetric sandwich, split into head and
 tail factors. -/
-theorem esym_le_topProd_mul (x : ℕ → ℝ) (hpos : ∀ i, 0 < x i) {n j : ℕ}
+theorem esym_le_topProd_mul (x : ℕ → K) (hpos : ∀ i, 0 < x i) {n j : ℕ}
     (hjn : j ≤ n) :
     esym x n j ≤ topProd x j * (∏ i ∈ range j, (1 + x (j - 1) / x i))
       * ∏ l ∈ Ico j n, (1 + x l / x (j - 1)) := by
-  set c : ℝ := x (j - 1) with hc
+  set c : K := x (j - 1) with hc
   have hcpos : 0 < c := hpos _
   have hkey := esym_mul_pow_le x (fun i => (hpos i).le) (n := n) (j := j)
     (t := 1 / c) (by positivity)
@@ -109,14 +111,14 @@ theorem esym_le_topProd_mul (x : ℕ → ℝ) (hpos : ∀ i, 0 < x i) {n j : ℕ
           exact Finset.Ico_disjoint_Ico_consecutive 0 j n] at hkey
   have hhead : (∏ i ∈ range j, (1 + x i * (1 / c))) * c ^ j
       = topProd x j * ∏ i ∈ range j, (1 + c / x i) := by
-    rw [show (c : ℝ) ^ j = ∏ _i ∈ range j, c by
+    rw [show (c : K) ^ j = ∏ _i ∈ range j, c by
       rw [Finset.prod_const, card_range]]
     rw [← Finset.prod_mul_distrib, topProd, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl (fun i _ => ?_)
     have hxi : x i ≠ 0 := ne_of_gt (hpos i)
     field_simp
     ring
-  have hcj : (0 : ℝ) < c ^ j := by positivity
+  have hcj : (0 : K) < c ^ j := by positivity
   rw [div_pow, one_pow, mul_one_div, div_le_iff₀ hcj] at hkey
   calc
     esym x n j
@@ -142,11 +144,11 @@ theorem prod_one_add_le_exp {s : Finset ℕ} (u : ℕ → ℝ) (hu : ∀ i ∈ s
   exact Real.add_one_le_exp _
 
 /-- The correction sum above a distinguished index. -/
-noncomputable def headSum (x : ℕ → ℝ) (j : ℕ) : ℝ :=
+noncomputable def headSum (x : ℕ → K) (j : ℕ) : K :=
   ∑ i ∈ range j, x (j - 1) / x i
 
 /-- The correction sum below a distinguished index. -/
-noncomputable def tailSum (x : ℕ → ℝ) (n j : ℕ) : ℝ :=
+noncomputable def tailSum (x : ℕ → K) (n j : ℕ) : K :=
   ∑ l ∈ Ico j n, x l / x (j - 1)
 
 /-- The exponential form of the elementary-symmetric sandwich. -/
