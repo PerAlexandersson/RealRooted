@@ -20,6 +20,21 @@ def sortAlong {n : ℕ} (l : List (Fin n))
     (f : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) := fun i =>
   if i ∈ l then ((l.map f).mergeSort (fun a b => a ≤ b)).getD (l.idxOf i) (f i) else f i
 
+/-- Sorting a chain does not change positions outside that chain. -/
+@[simp]
+theorem sortAlong_apply_of_not_mem {n : ℕ} (l : List (Fin n))
+    (f : Fin n → Fin (n + 1)) {i : Fin n} (hi : i ∉ l) :
+    sortAlong l f i = f i := by
+  simp [sortAlong, hi]
+
+/-- Sorting one chain leaves the value list on a disjoint chain unchanged. -/
+theorem map_sortAlong_eq_of_forall_not_mem {n : ℕ} (l l' : List (Fin n))
+    (f : Fin n → Fin (n + 1)) (hdisj : ∀ i ∈ l', i ∉ l) :
+    l'.map (sortAlong l f) = l'.map f := by
+  apply List.map_congr_left
+  intro i hi
+  exact sortAlong_apply_of_not_mem l f (hdisj i hi)
+
 /-- Sorting a chain places its values in weakly increasing chain order. -/
 theorem map_sortAlong_chain {n : ℕ} (l : List (Fin n)) (hl : l.Nodup)
     (f : Fin n → Fin (n + 1)) :
@@ -101,6 +116,60 @@ theorem map_sortAlong_univ {n : ℕ} (l : List (Fin n)) (hl : l.Nodup)
 def sortChains {n : ℕ} (L : List (List (Fin n)))
     (f : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
   L.foldl (fun g l => sortAlong l g) f
+
+/-- Sorting chains disjoint from a fixed chain leaves its value list unchanged. -/
+theorem map_sortChains_eq_of_forall_not_mem {n : ℕ} : ∀ (L : List (List (Fin n)))
+    (l : List (Fin n))
+    (f : Fin n → Fin (n + 1)),
+    (∀ l' ∈ L, ∀ i ∈ l, i ∉ l') → l.map (sortChains L f) = l.map f := by
+  intro L
+  induction L with
+  | nil => intro l f _; rfl
+  | cons l' L ih =>
+    intro l f hdisj
+    change l.map (sortChains L (sortAlong l' f)) = l.map f
+    rw [ih l (sortAlong l' f) (fun l'' hl'' =>
+      hdisj l'' (List.mem_cons_of_mem _ hl''))]
+    exact map_sortAlong_eq_of_forall_not_mem l' l f
+      (fun i hi => hdisj l' List.mem_cons_self i hi)
+
+/-- Sorting a pairwise-disjoint family of chains with distinct chain values
+makes every chain strictly increasing. -/
+theorem sortedLT_map_sortChains_of_disjoint {n : ℕ} : ∀ (L : List (List (Fin n))),
+    L.Nodup →
+    (∀ l ∈ L, l.Nodup) →
+    (∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂) →
+    ∀ f : Fin n → Fin (n + 1),
+      (∀ l ∈ L, (l.map f).Nodup) →
+      ∀ l ∈ L, (l.map (sortChains L f)).SortedLT := by
+  intro L
+  induction L with
+  | nil =>
+    intro _ _ _ f _ l hl
+    simp at hl
+  | cons head L ih =>
+    intro hLnodup hnodup hdisj f hvalues l' hl'
+    obtain ⟨hnotmem, hLnodup⟩ := List.nodup_cons.mp hLnodup
+    change (l'.map (sortChains L (sortAlong head f))).SortedLT
+    by_cases hEq : l' = head
+    · subst l'
+      rw [map_sortChains_eq_of_forall_not_mem L head (sortAlong head f) (fun l'' hl'' i hi =>
+        hdisj head List.mem_cons_self l'' (List.mem_cons_of_mem _ hl'')
+          (fun hEq => hnotmem (hEq ▸ hl'')) i hi)]
+      exact sortedLT_map_sortAlong_of_nodup head (hnodup head List.mem_cons_self) f
+        (hvalues head List.mem_cons_self)
+    · exact ih
+        hLnodup
+        (fun l'' hl'' => hnodup l'' (List.mem_cons_of_mem _ hl''))
+        (fun l₁ hl₁ l₂ hl₂ hne' =>
+          hdisj l₁ (List.mem_cons_of_mem _ hl₁) l₂ (List.mem_cons_of_mem _ hl₂) hne')
+        (sortAlong head f)
+        (fun l'' hl'' => by
+          rw [map_sortAlong_eq_of_forall_not_mem head l'' f (fun i hi =>
+            hdisj l'' (List.mem_cons_of_mem _ hl'') head List.mem_cons_self
+              (fun hEq => hnotmem (hEq ▸ hl'')) i hi)]
+          exact hvalues l'' (List.mem_cons_of_mem _ hl''))
+        l' ((List.mem_cons.mp hl').resolve_left hEq)
 
 /-- Sorting a list of chains already weakly increasing on each chain is the
 identity. -/
