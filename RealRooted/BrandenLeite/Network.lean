@@ -74,6 +74,18 @@ def networkMatrix {R : Type*} [CommSemiring R] (weights : ℕ → ℕ → R) :
 def networkShift {R : Type*} (weights : ℕ → ℕ → R) (n k : ℕ) : R :=
   weights (n + 1) (k + 1)
 
+/-- Iterating a triangular-network shift discards the corresponding initial
+square block of its weight array. -/
+theorem networkShift_iterate_apply {R : Type*}
+    (weights : ℕ → ℕ → R) (r n k : ℕ) :
+    (networkShift^[r]) weights n k = weights (n + r) (k + r) := by
+  induction r generalizing n k with
+  | zero => rfl
+  | succ r ih =>
+      rw [Function.iterate_succ_apply']
+      change (networkShift^[r]) weights (n + 1) (k + 1) = _
+      simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih (n + 1) (k + 1)
+
 /-- The resolving polynomial obtained from weighted paths starting at `(n, k)`. -/
 def networkResolvingPolynomial (weights : ℕ → ℕ → ℝ) (n k : ℕ) : ℝ[X] :=
   ∑ j ∈ Finset.range (n + 1), C (networkPathSumFrom weights n k j) * X ^ j
