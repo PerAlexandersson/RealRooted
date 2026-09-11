@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1160
+      "max_modules": 1161
     },
     "RealRooted.Production": {
-      "max_modules": 1039
+      "max_modules": 1040
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -724,6 +724,9 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse": {
+      "max_modules": 2
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Chow": {
       "max_modules": 2
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Dominance": {

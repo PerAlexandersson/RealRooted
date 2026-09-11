@@ -563,6 +563,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
+import RealRooted.Mathlib.Algebra.Polynomial.Chow
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
