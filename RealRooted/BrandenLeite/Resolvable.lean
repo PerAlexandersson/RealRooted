@@ -17,23 +17,6 @@ namespace RealRooted
 
 namespace LowerTriangularMatrix
 
-/-- An infinite matrix is lower unitriangular when it is lower triangular and
-has diagonal entries equal to one. -/
-def IsLowerUnitriangular (R : LowerTriangularMatrix ℝ) : Prop :=
-  IsLowerTriangular R ∧ ∀ n, R n n = 1
-
-namespace IsLowerUnitriangular
-
-theorem lower {R : LowerTriangularMatrix ℝ} (hR : IsLowerUnitriangular R) :
-    IsLowerTriangular R :=
-  hR.1
-
-theorem diagonal {R : LowerTriangularMatrix ℝ} (hR : IsLowerUnitriangular R)
-    (n : ℕ) : R n n = 1 :=
-  hR.2 n
-
-end IsLowerUnitriangular
-
 end LowerTriangularMatrix
 
 namespace BrandenLeite

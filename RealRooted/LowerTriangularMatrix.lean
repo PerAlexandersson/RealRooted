@@ -29,6 +29,24 @@ triangular. -/
 def IsLowerTriangular [Zero R] (A : LowerTriangularMatrix R) : Prop :=
   ∀ {i j : ℕ}, i < j → A i j = 0
 
+/-- An infinite matrix is lower unitriangular when it is lower triangular and
+has diagonal entries equal to one. -/
+def IsLowerUnitriangular [Zero R] [One R] (A : LowerTriangularMatrix R) : Prop :=
+  IsLowerTriangular A ∧ ∀ n, A n n = 1
+
+namespace IsLowerUnitriangular
+
+theorem lower [Zero R] [One R] {A : LowerTriangularMatrix R}
+    (hA : IsLowerUnitriangular A) :
+    IsLowerTriangular A :=
+  hA.1
+
+theorem diagonal [Zero R] [One R] {A : LowerTriangularMatrix R}
+    (hA : IsLowerUnitriangular A) (n : ℕ) : A n n = 1 :=
+  hA.2 n
+
+end IsLowerUnitriangular
+
 /-- Identity lower-triangular matrix. -/
 def identity [Zero R] [One R] : LowerTriangularMatrix R :=
   fun i j => if i = j then 1 else 0
