@@ -110,6 +110,28 @@ theorem IsLowerTriangular.mul [Semiring R] {A B : LowerTriangularMatrix R}
   have hik : i < k := lt_of_lt_of_le hij hjk
   rw [hA hik, zero_mul]
 
+protected theorem IsLowerUnitriangular.identity [Semiring R] :
+    IsLowerUnitriangular (identity (R := R)) := by
+  constructor
+  · exact IsLowerTriangular.identity
+  · intro n
+    simp [identity]
+
+theorem IsLowerUnitriangular.mul [Semiring R] {A B : LowerTriangularMatrix R}
+    (hA : IsLowerUnitriangular A) (hB : IsLowerUnitriangular B) :
+    IsLowerUnitriangular (mul A B) := by
+  constructor
+  · exact IsLowerTriangular.mul hA.1 hB.1
+  · intro n
+    simp [mul_apply, hA.diagonal n, hB.diagonal n]
+
+theorem IsLowerUnitriangular.pow [Semiring R] {A : LowerTriangularMatrix R}
+    (hA : IsLowerUnitriangular A) (r : ℕ) :
+    IsLowerUnitriangular (pow A r) := by
+  induction r with
+  | zero => exact IsLowerUnitriangular.identity
+  | succ r ih => exact ih.mul hA
+
 theorem IsLowerTriangular.pow [Semiring R] {A : LowerTriangularMatrix R}
     (hA : IsLowerTriangular A) (r : ℕ) :
     IsLowerTriangular (pow A r) := by
