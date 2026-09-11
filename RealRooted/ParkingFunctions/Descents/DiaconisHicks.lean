@@ -330,6 +330,51 @@ alphabet with one additional letter. -/
 def embeddedParkingFunctions (n : ℕ) : Finset (Fin (n + 1) → Fin (n + 2)) :=
   (parkingFunctions (n + 1)).image parkingWordEmbed
 
+/-- The extra-alphabet parking condition characterizes the embedded parking
+family. -/
+theorem mem_embeddedParkingFunctions_iff_isParkingWord {n : ℕ}
+    {w : Fin (n + 1) → Fin (n + 2)} :
+    w ∈ embeddedParkingFunctions n ↔ IsParkingWord w := by
+  constructor
+  · rw [embeddedParkingFunctions, Finset.mem_image]
+    rintro ⟨p, hp, rfl⟩
+    exact (isParkingWord_parkingWordEmbed_iff p).mpr (mem_parkingFunctions_iff.mp hp)
+  · intro hw
+    let s := Finset.univ.filter fun i : Fin (n + 1) => (w i).val < n + 1
+    have hs_subset : s ⊆ Finset.univ := by
+      intro i _
+      simp
+    have hsle : s.card ≤ n + 1 := by
+      simpa using Finset.card_le_card hs_subset
+    have hsge : n + 1 ≤ s.card := by
+      simpa [s] using hw (n + 1) le_rfl
+    have hseq : s = Finset.univ :=
+      Finset.eq_of_subset_of_card_le hs_subset (by simpa using hsge)
+    have hlt : ∀ i : Fin (n + 1), (w i).val < n + 1 := by
+      intro i
+      have hi : i ∈ s := by rw [hseq]; simp
+      exact (Finset.mem_filter.mp hi).2
+    let p : Fin (n + 1) → Fin (n + 1) := fun i =>
+      Fin.castPred (w i) (by
+        intro hlast
+        have hlt' := hlt i
+        simp [hlast] at hlt')
+    have hpw : parkingWordEmbed p = w := by
+      funext i
+      apply Fin.ext
+      simp [parkingWordEmbed, p, Fin.castPred]
+    rw [embeddedParkingFunctions, Finset.mem_image]
+    refine ⟨p, mem_parkingFunctions_iff.mpr ?_, hpw⟩
+    apply (isParkingWord_parkingWordEmbed_iff p).mp
+    simpa [hpw] using hw
+
+/-- Every word has exactly one cyclic shift in the embedded parking family. -/
+theorem existsUnique_cyclicValueShift_mem_embeddedParkingFunctions {n : ℕ}
+    (w : Fin (n + 1) → Fin (n + 2)) :
+    ∃! c : Fin (n + 2), cyclicValueShift c w ∈ embeddedParkingFunctions n := by
+  simpa only [mem_embeddedParkingFunctions_iff_isParkingWord] using
+    (existsUnique_isParkingWord_cyclicValueShift w)
+
 /-- The parking descent polynomial is the descent-generating polynomial of its
 embedded finite word family. -/
 theorem parkingDescentPolynomial_succ_eq_descentGeneratingPolynomial_embedded
