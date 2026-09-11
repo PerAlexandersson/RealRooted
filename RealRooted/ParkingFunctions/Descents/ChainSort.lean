@@ -123,6 +123,39 @@ def IsChainSorted {n : ℕ} (L : List (List (Fin n)))
     (f : Fin n → Fin (n + 1)) : Prop :=
   ∀ l ∈ L, (l.map f).Pairwise (· ≤ ·)
 
+/-- Every position belongs to one of the listed chains. -/
+def ChainsCover {n : ℕ} (L : List (List (Fin n))) : Prop :=
+  ∀ i, ∃ l ∈ L, i ∈ l
+
+/-- Two weakly sorted value lists with the same multiset are equal. -/
+theorem map_eq_of_perm_of_pairwise {n : ℕ} (l : List (Fin n))
+    (f g : Fin n → Fin (n + 1))
+    (hperm : List.Perm (l.map f) (l.map g))
+    (hf : (l.map f).Pairwise (· ≤ ·))
+    (hg : (l.map g).Pairwise (· ≤ ·)) :
+    l.map f = l.map g :=
+  hperm.eq_of_sortedLE hf.sortedLE hg.sortedLE
+
+/-- A chain-sorted word is determined by the value multisets on a covering
+family of chains. -/
+theorem eq_of_isChainSorted_of_forall_perm {n : ℕ} (L : List (List (Fin n)))
+    (hcover : ChainsCover L) (f g : Fin n → Fin (n + 1))
+    (hf : IsChainSorted L f) (hg : IsChainSorted L g)
+    (hperm : ∀ l ∈ L, List.Perm (l.map f) (l.map g)) :
+    f = g := by
+  funext i
+  obtain ⟨l, hlL, hmem⟩ := hcover i
+  have hmap : l.map f = l.map g :=
+    map_eq_of_perm_of_pairwise l f g (hperm l hlL) (hf l hlL) (hg l hlL)
+  have hidx : l.idxOf i < l.length := l.idxOf_lt_length_of_mem hmem
+  have hidxf : l.idxOf i < (l.map f).length := by simpa using hidx
+  have hidxg : l.idxOf i < (l.map g).length := by
+    rw [← hmap]
+    exact hidxf
+  have hget := congrArg (fun v => v.getD (l.idxOf i) (f i)) hmap
+  rw [List.getD_eq_getElem _ _ hidxf, List.getD_eq_getElem _ _ hidxg] at hget
+  simpa only [List.getElem_map, List.getElem_idxOf hidx] using hget
+
 /-- Sorting chains disjoint from a fixed chain leaves its value list unchanged. -/
 theorem map_sortChains_eq_of_forall_not_mem {n : ℕ} : ∀ (L : List (List (Fin n)))
     (l : List (Fin n))

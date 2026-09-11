@@ -27,6 +27,18 @@ def cyclicValueShift {n : ℕ} (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
   cyclicValueShiftEquiv n c w
 
+/-- Undo a fixed cyclic value shift on every value of a word. -/
+def cyclicValueUnshift {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
+  fun i => (finCycle c).symm (w i)
+
+@[simp]
+theorem cyclicValueUnshift_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) :
+    cyclicValueUnshift c (cyclicValueShift c w) = w := by
+  funext i
+  exact (finCycle c).symm_apply_apply (w i)
+
 /-- The parking condition for a word on an alphabet with one extra letter. -/
 def IsParkingWord {n : ℕ} (w : Fin n → Fin (n + 1)) : Prop :=
   ∀ k : ℕ, k ≤ n →
@@ -304,6 +316,49 @@ theorem isChainSorted_cyclicSortChains_of_disjoint {n : ℕ}
     (c : Fin (n + 1)) (w : Fin n → Fin (n + 1)) :
     IsChainSorted L (cyclicSortChains L c w) :=
   isChainSorted_sortChains_of_disjoint L hLnodup hnodup hdisj _
+
+/-- On a covering disjoint chain family, unshifting and re-sorting a cyclic
+sort recovers every already chain-sorted word. -/
+theorem sortChains_unshift_cyclicSortChains {n : ℕ} (L : List (List (Fin n)))
+    (hcover : ChainsCover L) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) (w : Fin n → Fin (n + 1))
+    (hw : IsChainSorted L w) :
+    sortChains L (cyclicValueUnshift c (cyclicSortChains L c w)) = w := by
+  apply eq_of_isChainSorted_of_forall_perm L hcover
+  · exact isChainSorted_sortChains_of_disjoint L hLnodup hnodup hdisj _
+  · exact hw
+  · intro l hl
+    have hsorted := perm_map_sortChains_of_disjoint L hLnodup hnodup hdisj
+      (cyclicValueShift c w) l hl
+    have hunshift : List.Perm
+        (l.map (cyclicValueUnshift c (cyclicSortChains L c w))) (l.map w) := by
+      change List.Perm
+        (l.map ((finCycle c).symm ∘ sortChains L (cyclicValueShift c w))) (l.map w)
+      have hundo : (finCycle c).symm ∘ cyclicValueShift c w = w := by
+        exact cyclicValueUnshift_cyclicValueShift c w
+      simpa only [List.map_map, hundo] using hsorted.map (finCycle c).symm
+    exact (perm_map_sortChains_of_disjoint L hLnodup hnodup hdisj
+      (cyclicValueUnshift c (cyclicSortChains L c w)) l hl).trans hunshift
+
+/-- For a fixed cyclic shift, sorting is injective on chain-sorted words. -/
+theorem cyclicSortChains_injective_of_chainSorted {n : ℕ}
+    (L : List (List (Fin n))) (hcover : ChainsCover L) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) :
+    Function.Injective (fun w : {w : Fin n → Fin (n + 1) // IsChainSorted L w} =>
+      cyclicSortChains L c w) := by
+  intro w v h
+  apply Subtype.ext
+  have hunshift := congrArg (fun u => sortChains L (cyclicValueUnshift c u)) h
+  calc
+    w.val = sortChains L (cyclicValueUnshift c (cyclicSortChains L c w.val)) :=
+      (sortChains_unshift_cyclicSortChains L hcover hLnodup hnodup hdisj c w.val w.prop).symm
+    _ = sortChains L (cyclicValueUnshift c (cyclicSortChains L c v.val)) := hunshift
+    _ = v.val :=
+      sortChains_unshift_cyclicSortChains L hcover hLnodup hnodup hdisj c v.val v.prop
 
 /-- A cyclic value shift preserves distinct values read along any chain. -/
 theorem nodup_map_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
