@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1177
+      "max_modules": 1178
     },
     "RealRooted.Production": {
-      "max_modules": 1056
+      "max_modules": 1057
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -401,6 +401,9 @@
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex": {
       "max_modules": 1
+    },
+    "RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real": {
+      "max_modules": 3
     },
     "RealRooted.HermiteBiehler.Basic": {
       "max_modules": 13

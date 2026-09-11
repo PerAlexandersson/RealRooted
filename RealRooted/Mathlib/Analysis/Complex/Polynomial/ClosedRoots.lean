@@ -1,6 +1,10 @@
-import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+
+public section
 
 /-!
 # Closed conditions on roots of polynomial limits
