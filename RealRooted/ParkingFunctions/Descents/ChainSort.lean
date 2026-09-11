@@ -123,6 +123,19 @@ def IsChainSorted {n : ℕ} (L : List (List (Fin n)))
     (f : Fin n → Fin (n + 1)) : Prop :=
   ∀ l ∈ L, (l.map f).Pairwise (· ≤ ·)
 
+/-- A word is strictly chain-sorted when its values strictly increase along
+every listed chain. -/
+def IsStrictChainSorted {n : ℕ} (L : List (List (Fin n)))
+    (f : Fin n → Fin (n + 1)) : Prop :=
+  ∀ l ∈ L, (l.map f).SortedLT
+
+/-- Strict chain sorting implies weak chain sorting. -/
+theorem isChainSorted_of_isStrictChainSorted {n : ℕ} (L : List (List (Fin n)))
+    (f : Fin n → Fin (n + 1)) (h : IsStrictChainSorted L f) :
+    IsChainSorted L f := by
+  intro l hl
+  exact (h l hl).pairwise.imp fun hij => hij.le
+
 /-- Every position belongs to one of the listed chains. -/
 def ChainsCover {n : ℕ} (L : List (List (Fin n))) : Prop :=
   ∀ i, ∃ l ∈ L, i ∈ l

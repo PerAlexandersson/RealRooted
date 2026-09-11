@@ -460,6 +460,58 @@ theorem sortedLT_map_cyclicSortChains_of_disjoint {n : ℕ}
     (cyclicValueShift c w) (fun l hl =>
       nodup_map_cyclicValueShift c l w (hvalues l hl))
 
+/-- A fixed cyclic shift-and-sort is a permutation of the strictly
+chain-sorted normal-form family. -/
+noncomputable def cyclicSortChainsStrictEquiv {n : ℕ}
+    (L : List (List (Fin n))) (hcover : ChainsCover L) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) :
+    {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} ≃
+      {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} := by
+  let F : {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} →
+      {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} :=
+    fun w => ⟨cyclicSortChains L c w,
+      sortedLT_map_cyclicSortChains_of_disjoint L hLnodup hnodup hdisj c w
+        (fun l hl => (w.prop l hl).pairwise.nodup)⟩
+  have hinj : Function.Injective F := by
+    intro w v h
+    have hval := congrArg Subtype.val h
+    change cyclicSortChains L c w.val = cyclicSortChains L c v.val at hval
+    apply Subtype.ext
+    let wWeak : {w : Fin n → Fin (n + 1) // IsChainSorted L w} :=
+      ⟨w.val, isChainSorted_of_isStrictChainSorted L w.val w.prop⟩
+    let vWeak : {w : Fin n → Fin (n + 1) // IsChainSorted L w} :=
+      ⟨v.val, isChainSorted_of_isStrictChainSorted L v.val v.prop⟩
+    have hweak : wWeak = vWeak :=
+      cyclicSortChains_injective_of_chainSorted L hcover hLnodup hnodup hdisj c hval
+    simpa only [wWeak, vWeak] using congrArg Subtype.val hweak
+  exact Equiv.ofBijective F ⟨hinj, Finite.surjective_of_injective hinj⟩
+
+/-- Among strictly chain-sorted words, the cyclic shift-and-sort action has
+one parking word per orbit. -/
+theorem card_strictChainSortedWords_eq_succ_mul_card_parking {n : ℕ}
+    (L : List (List (Fin n))) (hcover : ChainsCover L) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    [DecidablePred (IsStrictChainSorted L)]
+    [DecidablePred (fun w : {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} =>
+      IsParkingWord w.val)] :
+    Fintype.card {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} =
+      (n + 1) * Fintype.card
+        {w : {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w} // IsParkingWord w.val} := by
+  classical
+  let X := {w : Fin n → Fin (n + 1) // IsStrictChainSorted L w}
+  let act : Fin (n + 1) → X ≃ X :=
+    cyclicSortChainsStrictEquiv L hcover hLnodup hnodup hdisj
+  have hunique : ∀ w : X, ∃! c : Fin (n + 1), IsParkingWord (act c w).val := by
+    intro w
+    change ∃! c : Fin (n + 1), IsParkingWord (cyclicSortChains L c w.val)
+    exact existsUnique_isParkingWord_cyclicSortChains L hnodup w.val
+  simpa only [X, act, Fintype.card_fin] using
+    card_eq_card_mul_card_of_existsUnique_action X (Fin (n + 1)) act
+      (fun w => IsParkingWord w.val) hunique
+
 @[simp]
 theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) (i : Fin n) :
