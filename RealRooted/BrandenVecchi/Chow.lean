@@ -180,6 +180,17 @@ theorem chowPolynomial_eq (A : LowerTriangularMatrix R) (n : ℕ) :
     chowPolynomial A n = ∑ k ∈ Finset.range (n + 1), C (A n k) * chowDerangement A k :=
   rfl
 
+/-- The Chow polynomial in row `n` has degree at most `n`, including when it
+vanishes. -/
+theorem natDegree_chowPolynomial_le (A : LowerTriangularMatrix R) (n : ℕ) :
+    (chowPolynomial A n).natDegree ≤ n := by
+  rw [chowPolynomial_eq]
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ ?_
+  intro k hk
+  refine (natDegree_C_mul_le _ _).trans ?_
+  exact (natDegree_chowDerangement_le A k).trans
+    (Nat.lt_succ_iff.mp (Finset.mem_range.mp hk))
+
 /-- The bounded reflection data in Corollary 3.1 uniquely determine the
 Chow-derangement and Chow-polynomial sequences of a unit-diagonal matrix. -/
 theorem chowDerangement_chowPolynomial_unique (A : LowerTriangularMatrix R)
