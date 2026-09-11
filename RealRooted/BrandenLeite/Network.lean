@@ -87,7 +87,8 @@ theorem networkShift_iterate_apply {R : Type*}
       simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih (n + 1) (k + 1)
 
 /-- The resolving polynomial obtained from weighted paths starting at `(n, k)`. -/
-def networkResolvingPolynomial (weights : ℕ → ℕ → ℝ) (n k : ℕ) : ℝ[X] :=
+def networkResolvingPolynomial {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n k : ℕ) : R[X] :=
   ∑ j ∈ Finset.range (n + 1), C (networkPathSumFrom weights n k j) * X ^ j
 
 private theorem networkPath_card_le {n k : ℕ} {horizontalSteps : Finset (Fin n)}
@@ -455,7 +456,8 @@ theorem networkPathSumFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
   · rw [networkPathSumFrom_eq_zero_of_lt_right weights (by lia)]
     rw [networkPathSum_eq_zero_of_lt (networkShift weights) (by lia)]
 
-private theorem coeff_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ) (n k j : ℕ)
+private theorem coeff_networkResolvingPolynomial {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n k j : ℕ)
     (hj : j ≤ n) :
     (networkResolvingPolynomial weights n k).coeff j = networkPathSumFrom weights n k j := by
   unfold networkResolvingPolynomial
@@ -468,7 +470,8 @@ private theorem coeff_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ)
     · rfl
   · simp [hj]
 
-private theorem coeff_networkResolvingPolynomial_eq_zero (weights : ℕ → ℕ → ℝ)
+private theorem coeff_networkResolvingPolynomial_eq_zero {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R)
     (n k j : ℕ) (hj : n < j) :
     (networkResolvingPolynomial weights n k).coeff j = 0 := by
   unfold networkResolvingPolynomial
@@ -483,7 +486,8 @@ private theorem coeff_networkResolvingPolynomial_eq_zero (weights : ℕ → ℕ 
 
 /-- The literal path polynomials satisfy the Brändén--Saud Leite resolution
 recurrence. -/
-theorem networkResolvingPolynomial_step (weights : ℕ → ℕ → ℝ) {n k : ℕ}
+theorem networkResolvingPolynomial_step {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) {n k : ℕ}
     (hkn : k ≤ n) :
     networkResolvingPolynomial weights (n + 1) k =
       networkResolvingPolynomial weights (n + 1) (k + 1) +
