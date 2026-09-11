@@ -65,4 +65,13 @@ theorem tendsto_coeff_rescaledJensenPolynomial (gamma : ℕ → ℝ) (k : ℕ) :
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
     (tendsto_choose_mul_inv_pow_atTop k).mul_const (gamma k)
 
+/-- Rescaled Jensen polynomials converge coefficientwise to the exponential
+generating coefficients of `gamma`. -/
+theorem tendsto_rescaledJensenPolynomial_coeffwise (gamma : ℕ → ℝ) :
+    Tendsto (fun n k => (rescaledJensenPolynomial n gamma).coeff k) atTop
+      (𝓝 fun k => gamma k / k.factorial) := by
+  rw [tendsto_pi_nhds]
+  intro k
+  exact tendsto_coeff_rescaledJensenPolynomial gamma k
+
 end RealRooted
