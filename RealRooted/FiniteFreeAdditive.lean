@@ -33,6 +33,14 @@ theorem finiteFreeAdditiveConvolutionGamma_symm (d i j : ℕ) :
   rw [Nat.sub_right_comm d i j]
   ring
 
+/-- The top finite-free additive-convolution weight is one. -/
+theorem finiteFreeAdditiveConvolutionGamma_zero_zero (d : ℕ) :
+    finiteFreeAdditiveConvolutionGamma d 0 0 = 1 := by
+  unfold finiteFreeAdditiveConvolutionGamma
+  have hfac : (d.factorial : ℝ) ≠ 0 := by positivity
+  simp only [Nat.sub_zero]
+  field_simp
+
 /-- The factorial kernel agrees with the binomial ratio arising from the
 elementary-differential calculation inside the ambient degree box. -/
 theorem finiteFreeAdditiveConvolutionGamma_eq_choose_ratio (d i j : ℕ)
@@ -106,6 +114,50 @@ theorem natDegree_finiteFreeAdditiveConvolution_le (d : ℕ) (p q : ℝ[X]) :
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro j hj
   exact coeff_finiteFreeAdditiveConvolution_of_gt d p q hj
+
+/-- The top coefficient of finite-free additive convolution is the product of
+the top input coefficients. -/
+theorem coeff_finiteFreeAdditiveConvolution_top (d : ℕ) (p q : ℝ[X]) :
+    (finiteFreeAdditiveConvolution d p q).coeff d = p.coeff d * q.coeff d := by
+  rw [coeff_finiteFreeAdditiveConvolution_of_le d p q le_rfl, Nat.sub_self]
+  unfold finiteFreeAdditiveConvolutionCoeff
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
+    Nat.sub_zero]
+  rw [finiteFreeAdditiveConvolutionGamma_zero_zero]
+  ring
+
+/-- Exact-degree nonzero inputs give nonzero finite-free additive convolution. -/
+theorem finiteFreeAdditiveConvolution_ne_zero_of_natDegree_eq (d : ℕ) {p q : ℝ[X]}
+    (hpdeg : p.natDegree = d) (hqdeg : q.natDegree = d)
+    (hp0 : p ≠ 0) (hq0 : q ≠ 0) :
+    finiteFreeAdditiveConvolution d p q ≠ 0 := by
+  intro hzero
+  have hcoeff := congrArg (fun r : ℝ[X] => r.coeff d) hzero
+  rw [coeff_finiteFreeAdditiveConvolution_top, Polynomial.coeff_zero] at hcoeff
+  have hpcoeff : p.coeff d ≠ 0 := by
+    rw [← hpdeg, Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+  have hqcoeff : q.coeff d ≠ 0 := by
+    rw [← hqdeg, Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hq0
+  exact mul_ne_zero hpcoeff hqcoeff hcoeff
+
+/-- Exact-degree nonzero inputs give finite-free additive convolution of the
+same degree. -/
+theorem natDegree_finiteFreeAdditiveConvolution_eq (d : ℕ) {p q : ℝ[X]}
+    (hpdeg : p.natDegree = d) (hqdeg : q.natDegree = d)
+    (hp0 : p ≠ 0) (hq0 : q ≠ 0) :
+    (finiteFreeAdditiveConvolution d p q).natDegree = d := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_finiteFreeAdditiveConvolution_le d p q)
+  rw [coeff_finiteFreeAdditiveConvolution_top]
+  have hpcoeff : p.coeff d ≠ 0 := by
+    rw [← hpdeg, Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+  have hqcoeff : q.coeff d ≠ 0 := by
+    rw [← hqdeg, Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hq0
+  exact mul_ne_zero hpcoeff hqcoeff
 
 /-- The coefficient kernel of finite-free additive convolution is
 commutative. -/
