@@ -517,7 +517,8 @@ The guard rejects `sorry`, `admit`, and source `axiom` commands, and reports
 low-use theorem-shaped propositions that still need an explicit status in
 `PROOF_STATUS.md`.
 
-All committed code must build without warnings.
+All code accepted into the default branch must build without warnings. Draft
+branches may use the CI-first verification workflow below.
 
 To maintain clean and reliable build verification, the use of `set_option` is
 forbidden in the codebase. All warnings, lint errors, or resource limits should
@@ -539,9 +540,29 @@ Please keep repository configuration files (like `lakefile.toml` and
 
 ### CI and PR Policy
 
-To keep the repository stable for all developers, please never merge a pull
-request or push any change that would cause the CI build to fail. If a change
-introduces a CI failure, it must be investigated and fixed immediately.
+Small, independently owned changes may use a **CI-first draft PR**: run the
+applicable source checks, commit to a feature branch, and push a draft PR for
+GitHub-hosted compilation. A local full build is not a prerequisite for that
+draft checkpoint. State clearly which checks have and have not run; a draft
+commit is not a verified theorem milestone.
+
+Parallel workers must use isolated branches/worktrees and disjoint file
+ownership. Keep builds against a shared local Lake cache serialized; isolated
+GitHub-hosted runners can validate PRs independently. One integrator reviews
+the theorem statements, assumptions, source changes, and verification results.
+
+Before merging, require successful proof validation of the exact candidate
+revision: all source guards, the ordinary default build (including Production
+and tactic regressions), and applicable transitive-axiom checks. The separate
+Comparator audit covers only its explicitly listed theorem surface. After a
+rebase or integration change, rerun the relevant checks; never treat cancelled,
+skipped, stale, or missing checks as success. Fix failed draft checks before
+marking the work ready. Do not push unverified changes directly to the default
+branch or enable automatic merging merely to bypass review.
+
+Documentation publication is separate from proof validation and restricted to
+validated default-branch revisions. A documentation failure does not establish
+a proof failure, and a successful website deployment is not proof verification.
 
 ### Repository Cleanliness
 

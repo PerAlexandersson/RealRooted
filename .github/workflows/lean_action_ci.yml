@@ -8,19 +8,23 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read # Read access to repository contents
-  pages: write # Write access to GitHub Pages
-  id-token: write # Write access to ID tokens
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   build:
+    name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      # PRs are keyed by number so a new revision supersedes the old merge
+      # ref. Pushes are keyed by ref. For main, cancel-in-progress=false
+      # deliberately retains the active run and lets the newest pending
+      # checkpoint replace older pending work. This bounds the queue while
+      # making that default-branch policy explicit, without making validation
+      # wait for documentation or publishing.
+      group: ${{ github.workflow }}-validation-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
     steps:
       - uses: actions/checkout@v5
@@ -46,4 +50,111 @@ jobs:
           sudo apt-get clean || true
           df -h /
       - uses: leanprover/lean-action@v1
-      - uses: leanprover-community/docgen-action@v1
+        with:
+          # Keep the required check an explicit ordinary `lake build`, even
+          # if future Lake metadata changes lean-action auto-detection.
+          build: true
+          build-args: ""
+
+  docs:
+    name: docs
+    needs: build
+    # Documentation is built only for the trusted default branch.  This job
+    # has no Pages credentials; PRs (including fork PRs) never enter it.
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    concurrency:
+      # Only main reaches this job, but cancel a superseded in-progress docs
+      # build to avoid an unbounded documentation runner backlog.
+      group: ${{ github.workflow }}-docs-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout validated revision
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Install Lean for documentation generation
+        uses: leanprover/lean-action@v1
+        with:
+          # docgen-action expects elan/lake from an earlier lean-action step;
+          # do not run another project build in this documentation job.
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+
+      - name: Build documentation without publishing
+        # v1 predates the deploy=false input and would publish from this job;
+        # use the current upstream revision whose action.yml documents dry-run
+        # generation, pinned for reproducibility.
+        uses: leanprover-community/docgen-action@56023ee2a4b3630c1071825be5bafdb43f540bbd # main, 2026-09-11
+        with:
+          # docgen-action documents deploy=false as its dry-run mode.  It still
+          # builds the API docs; upload/deploy remain explicit below.
+          deploy: false
+          build-page: false
+
+      - name: Save documentation for the matching revision
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-${{ github.sha }}
+          path: docs
+          retention-days: 1
+          if-no-files-found: error
+
+  publish:
+    name: publish
+    needs: [build, docs]
+    # Only code pushed to the trusted default branch may receive Pages
+    # credentials, and only after the proof and docs jobs succeed.
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.build.result == 'success' && needs.docs.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    # Serialize only the publishing stage.  Do not cancel an in-flight
+    # deployment: the SHA check below makes an older queued run fail instead
+    # of publishing after a newer main revision.
+    concurrency:
+      group: pages-production
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout validated revision
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Restore documentation for the matching revision
+        uses: actions/download-artifact@v4
+        with:
+          name: pages-${{ github.sha }}
+          path: docs
+
+      - name: Confirm this is still the current main revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          actual_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "$actual_sha" != "$EXPECTED_SHA" ]]; then
+            echo "Refusing to publish stale revision $EXPECTED_SHA; current main is $actual_sha." >&2
+            exit 1
+          fi
+
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy documentation
+        uses: actions/deploy-pages@v4
