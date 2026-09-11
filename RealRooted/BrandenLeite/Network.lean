@@ -657,7 +657,8 @@ private theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R
 
 /-- Nonnegative triangular-network weights give a resolution of their path
 matrix. -/
-noncomputable def networkResolution (weights : ℕ → ℕ → ℝ)
+noncomputable def networkResolution {R : Type*} [CommSemiring R] [LE R]
+    (weights : ℕ → ℕ → R)
     (hweights : ∀ n k, 0 ≤ weights n k) : Resolution (networkMatrix weights) where
   lowerUnitriangular := isLowerUnitriangular_networkMatrix weights
   lambda := weights
@@ -673,14 +674,15 @@ noncomputable def networkResolution (weights : ℕ → ℕ → ℝ)
   recurrence := fun _ _ hkn => networkResolvingPolynomial_step weights hkn
 
 /-- Every nonnegative weighted triangular-network path matrix is resolvable. -/
-theorem isResolvable_networkMatrix (weights : ℕ → ℕ → ℝ)
-    (hweights : ∀ n k, 0 ≤ weights n k) :
+theorem isResolvable_networkMatrix {R : Type*} [CommSemiring R] [LE R]
+    (weights : ℕ → ℕ → R) (hweights : ∀ n k, 0 ≤ weights n k) :
     IsResolvable (networkMatrix weights) :=
   ⟨networkResolution weights hweights⟩
 
 /-- The paper's zero-propagation normalization for literal network weights is
 exactly normalization of the associated resolution. -/
-theorem networkResolution_isNormalized_iff (weights : ℕ → ℕ → ℝ)
+theorem networkResolution_isNormalized_iff {R : Type*} [CommSemiring R] [LE R]
+    (weights : ℕ → ℕ → R)
     (hweights : ∀ n k, 0 ≤ weights n k) :
     (networkResolution weights hweights).IsNormalized ↔
       ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0 :=
@@ -689,7 +691,8 @@ theorem networkResolution_isNormalized_iff (weights : ℕ → ℕ → ℝ)
 /-- The path resolving polynomials agree with the polynomials of any
 resolution having the same triangular weight array. -/
 theorem networkResolvingPolynomial_eq_resolution
-    {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) :
+    {S : Type*} [CommSemiring S] [LE S]
+    {R : LowerTriangularMatrix S} (resolution : Resolution R) :
     ∀ n k, k ≤ n →
       networkResolvingPolynomial resolution.lambda n k = resolution.polynomial n k := by
   intro n
@@ -713,7 +716,8 @@ theorem networkResolvingPolynomial_eq_resolution
 network path matrix.  Only the triangular entries of `resolution.lambda` are
 used by the network. -/
 theorem networkMatrix_eq_of_resolution
-    {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) :
+    {S : Type*} [CommSemiring S] [LE S]
+    {R : LowerTriangularMatrix S} (resolution : Resolution R) :
     networkMatrix resolution.lambda = R := by
   ext n k
   have hpol : LowerTriangularMatrix.rowPolynomial (networkMatrix resolution.lambda) n =
