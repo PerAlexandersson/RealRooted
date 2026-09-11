@@ -97,6 +97,7 @@ import RealRooted.BoundarySpecializationGeneral
 import RealRooted.BoundarySpecializationRight
 import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.Network
+import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37

@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1158
+      "max_modules": 1159
     },
     "RealRooted.Production": {
-      "max_modules": 1037
+      "max_modules": 1038
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -338,6 +338,9 @@
     },
     "RealRooted.BrandenLeite.Network": {
       "max_modules": 92
+    },
+    "RealRooted.BrandenLeite.NetworkTotallyNonneg": {
+      "max_modules": 117
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 91
@@ -1778,6 +1781,7 @@
     "RealRooted.FiniteFreeAdditiveIdentity",
     "RealRooted.FiniteFreeAdditivePreservation",
     "RealRooted.BrandenLeite.Network",
+    "RealRooted.BrandenLeite.NetworkTotallyNonneg",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev",
