@@ -119,6 +119,101 @@ theorem hasSumUniformlyOn_expGeneratingSeries (gamma : ℕ → ℝ) (R : ℝ)
         (pow_le_pow_left₀ (norm_nonneg x) hxR _) (by positivity)
     _ = ‖gamma k‖ * R ^ k / k.factorial := by ring
 
+private theorem tendstoUniformlyOn_rescaledJensenPolynomial_finset
+    (gamma : ℕ → ℝ) (R : ℝ) (hR : 0 ≤ R) (t : Finset ℕ) :
+    TendstoUniformlyOn
+      (fun n (x : ℝ) => ∑ k ∈ t, (rescaledJensenPolynomial n gamma).coeff k * x ^ k)
+      (fun x => ∑ k ∈ t, (gamma k / k.factorial) * x ^ k) atTop (Metric.closedBall 0 R) := by
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hterm (k : ℕ) : Tendsto
+      (fun n => ‖(rescaledJensenPolynomial n gamma).coeff k - gamma k / k.factorial‖ * R ^ k)
+      atTop (𝓝 0) := by
+    have hzero : Tendsto
+        (fun n => ‖(rescaledJensenPolynomial n gamma).coeff k - gamma k / k.factorial‖)
+        atTop (𝓝 0) := by simpa only [Function.comp_def, sub_self, norm_zero] using
+          (tendsto_norm.comp ((tendsto_coeff_rescaledJensenPolynomial gamma k).sub
+            (tendsto_const_nhds : Tendsto (fun _ : ℕ => gamma k / k.factorial) atTop
+              (𝓝 (gamma k / k.factorial)))))
+    simpa using hzero.mul_const (R ^ k)
+  have hsum : Tendsto (fun n => ∑ k ∈ t,
+      ‖(rescaledJensenPolynomial n gamma).coeff k - gamma k / k.factorial‖ * R ^ k)
+      atTop (𝓝 0) := by simpa using tendsto_finsetSum t fun k _ => hterm k
+  rw [Metric.tendsto_nhds] at hsum
+  filter_upwards [hsum ε hε] with n hn x hx
+  have hxR : ‖x‖ ≤ R := by simpa only [Metric.mem_closedBall, dist_zero_right] using hx
+  rw [dist_eq_norm, ← Finset.sum_sub_distrib]
+  calc
+    _ ≤ ∑ k ∈ t, ‖(gamma k / k.factorial) * x ^ k -
+        (rescaledJensenPolynomial n gamma).coeff k * x ^ k‖ := norm_sum_le _ _
+    _ ≤ ∑ k ∈ t, ‖(rescaledJensenPolynomial n gamma).coeff k - gamma k / k.factorial‖ * R ^ k := by
+      gcongr with k hk
+      rw [show (gamma k / k.factorial) * x ^ k -
+          (rescaledJensenPolynomial n gamma).coeff k * x ^ k =
+          (gamma k / k.factorial - (rescaledJensenPolynomial n gamma).coeff k) * x ^ k by ring,
+        norm_mul, norm_sub_rev]
+      exact mul_le_mul_of_nonneg_left
+        (by simpa only [norm_pow] using pow_le_pow_left₀ (norm_nonneg x) hxR k) (norm_nonneg _)
+    _ < ε := by rw [dist_zero_right, Real.norm_of_nonneg (by positivity)] at hn; exact hn
+
+/-- On every closed ball with a summable exponential-generating majorant, the
+rescaled Jensen polynomials converge uniformly to their limiting series. -/
+theorem tendstoUniformlyOn_eval_rescaledJensenPolynomial_of_summable
+    (gamma : ℕ → ℝ) (R : ℝ) (hR : 0 ≤ R)
+    (hsum : Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial)) :
+    TendstoUniformlyOn (fun n (x : ℝ) => (rescaledJensenPolynomial n gamma).eval x)
+      (fun x => ∑' k, (gamma k / k.factorial) * x ^ k) atTop (Metric.closedBall 0 R) := by
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  let ⟨S, hS⟩ := hsum
+  obtain ⟨T, hT⟩ : ∃ (T : Finset ℕ),
+      dist (∑ k ∈ T, ‖gamma k‖ * R ^ k / k.factorial) S < ε / 3 := by
+    rw [HasSum, Metric.tendsto_nhds] at hS
+    classical exact Eventually.exists <| hS _ (by positivity)
+  have htail : ∑' (k : (Tᶜ : Set ℕ)), ‖gamma k.1‖ * R ^ k.1 / k.1.factorial < ε / 3 := by
+    calc _ ≤ ‖∑' (k : (Tᶜ : Set ℕ)), ‖gamma k.1‖ * R ^ k.1 / k.1.factorial‖ := Real.le_norm_self _
+         _ = ‖S - ∑ k ∈ T, ‖gamma k‖ * R ^ k / k.factorial‖ := congrArg _ (by
+           simpa only [hsum.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hS.tsum_eq)
+         _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+  have hfinite := tendstoUniformlyOn_rescaledJensenPolynomial_finset gamma R hR T
+  rw [Metric.tendstoUniformlyOn_iff] at hfinite
+  filter_upwards [hfinite (ε / 3) (by positivity)] with n hn x hx
+  have hxR : ‖x‖ ≤ R := by simpa only [Metric.mem_closedBall, dist_zero_right] using hx
+  have hbound (k : ℕ) : ‖(rescaledJensenPolynomial n gamma).coeff k * x ^ k‖ ≤
+      ‖gamma k‖ * R ^ k / k.factorial := by
+    calc
+      _ = ‖(rescaledJensenPolynomial n gamma).coeff k‖ * ‖x‖ ^ k := by rw [norm_mul, norm_pow]
+      _ ≤ (‖gamma k‖ / k.factorial) * ‖x‖ ^ k := mul_le_mul_of_nonneg_right
+        (norm_coeff_rescaledJensenPolynomial_le n k gamma) (pow_nonneg (norm_nonneg _) _)
+      _ ≤ (‖gamma k‖ / k.factorial) * R ^ k := mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (norm_nonneg x) hxR _) (by positivity)
+      _ = _ := by ring
+  have hlimbound (k : ℕ) : ‖(gamma k / k.factorial) * x ^ k‖ ≤
+      ‖gamma k‖ * R ^ k / k.factorial := by
+    calc
+      _ = (‖gamma k‖ / k.factorial) * ‖x‖ ^ k := by
+        rw [norm_mul, norm_div, Real.norm_natCast, norm_pow]
+      _ ≤ (‖gamma k‖ / k.factorial) * R ^ k := mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (norm_nonneg x) hxR _) (by positivity)
+      _ = _ := by ring
+  have hsuma : Summable (fun k => ‖(rescaledJensenPolynomial n gamma).coeff k * x ^ k‖) :=
+    hsum.of_norm_bounded (by simpa only [norm_norm] using hbound)
+  have hsumb : Summable (fun k => ‖(gamma k / k.factorial) * x ^ k‖) :=
+    hsum.of_norm_bounded (by simpa only [norm_norm] using hlimbound)
+  rw [← tsum_coeff_mul_pow_eq_eval, dist_eq_norm, norm_sub_rev,
+    ← hsuma.of_norm.tsum_sub hsumb.of_norm,
+    ← (hsuma.of_norm.sub hsumb.of_norm).sum_add_tsum_subtype_compl (s := T),
+    (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+  refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+  · rw [Finset.sum_sub_distrib, norm_sub_rev]
+    simpa only [dist_eq_norm] using hn x hx
+  · rw [(hsuma.subtype _).of_norm.tsum_sub (hsumb.subtype _).of_norm]
+    refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · refine ((norm_tsum_le_tsum_norm (hsuma.subtype _)).trans ?_).trans_lt htail
+      exact (hsuma.subtype _).tsum_le_tsum (fun k => hbound k) (hsum.subtype _)
+    · refine ((norm_tsum_le_tsum_norm (hsumb.subtype _)).trans ?_).trans_lt htail
+      exact (hsumb.subtype _).tsum_le_tsum (fun k => hlimbound k) (hsum.subtype _)
+
 /-- Under absolute summability at `x`, the rescaled Jensen polynomials
 converge pointwise to the exponential-generating series of `gamma`. -/
 theorem tendsto_eval_rescaledJensenPolynomial_of_summable
