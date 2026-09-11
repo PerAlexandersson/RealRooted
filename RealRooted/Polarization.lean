@@ -1,6 +1,7 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
 import RealRooted.PartialSymmetrization
@@ -246,6 +247,28 @@ noncomputable def diagonalProjection (n : ℕ) :
       (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q)
   map_add' q r := by simp
   map_smul' c q := by simp [MvPolynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
+
+/-- Diagonal projection sends the degree-`r` elementary symmetric polynomial
+on `n` variables to its binomial multiple of `X ^ r`. -/
+theorem diagonalProjection_esymm (n r : ℕ) :
+    diagonalProjection n (MvPolynomial.esymm (Fin n) ℂ r) =
+      Polynomial.C (n.choose r : ℂ) * Polynomial.X ^ r := by
+  change MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1))
+      (MvPolynomial.esymm (Fin n) ℂ r)) = _
+  rw [MvPolynomial.rename_esymm_const]
+  simp [MvPolynomial.uniqueAlgEquiv]
+
+/-- Evaluating a diagonal projection evaluates the original multivariate
+polynomial at the corresponding constant tuple. -/
+theorem eval_diagonalProjection (n : ℕ) (q : MvPolynomial (Fin n) ℂ) (z : ℂ) :
+    (diagonalProjection n q).eval z = MvPolynomial.eval (fun _ => z) q := by
+  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+    (MvPolynomial.rename (fun _ : Fin n => (0 : Fin 1)) q)).eval₂
+      (RingHom.id ℂ) z = q.eval₂ (RingHom.id ℂ) (fun _ => z)
+  rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
+  rw [MvPolynomial.eval₂_rename]
+  rfl
 
 /-- Diagonal projection of an all-ones degree-box polynomial has degree at
 most the size of its polarization block. -/

@@ -1,5 +1,6 @@
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 import RealRooted.RectangularConvolution
 import RealRooted.RectangularPolarizationComplement
 
@@ -82,25 +83,6 @@ private theorem triangle_reindex
       Nat.lt_succ_iff.mp (Finset.mem_range.mp hx.1.2)
     simp [Nat.sub_sub_self hx2le]
 
-private theorem rename_esymm_const
-    {R tau : Type*} [CommSemiring R] (N j : ℕ) (v : tau) :
-    MvPolynomial.rename (fun _ : Fin N => v)
-        (MvPolynomial.esymm (Fin N) R j) =
-      Nat.choose N j • MvPolynomial.X v ^ j := by
-  rw [MvPolynomial.esymm]
-  simp only [map_sum, map_prod, MvPolynomial.rename_X]
-  calc
-    ∑ t ∈ Finset.univ.powersetCard j,
-        ∏ _x ∈ t, MvPolynomial.X v =
-      ∑ _t ∈ Finset.univ.powersetCard j,
-        MvPolynomial.X v ^ j := by
-          apply Finset.sum_congr rfl
-          intro t ht
-          rw [Finset.prod_const, (Finset.mem_powersetCard.mp ht).2]
-    _ = _ := by
-      rw [Finset.sum_const, Finset.card_powersetCard,
-        Finset.card_univ, Fintype.card_fin]
-
 private theorem rectangularDifferentialTerm
     (m n i k : ℕ) (hi : i ≤ k) (a b : ℂ) :
     applyNegDifferential
@@ -176,7 +158,8 @@ private theorem rectangularDifferentialTerm_diagonal
           (Sum.inr : Fin (m + n) → Sum (Fin n) (Fin (m + n))) =
         fun _ => (1 : Fin 2) := rfl
   rw [hinl, hinr]
-  rw [rename_esymm_const, rename_esymm_const]
+  rw [MvPolynomial.rename_esymm_const, MvPolynomial.rename_esymm_const]
+  simp only [Fintype.card_fin]
 
 private theorem collect_nsmul
     {sigma : Type*} (a b s : ℂ) (D L U : ℕ)

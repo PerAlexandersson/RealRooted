@@ -17,6 +17,24 @@ noncomputable local instance {σ : Type*} [Fintype σ] :
     Fintype (Equiv.Perm σ) :=
   Fintype.ofFinite _
 
+/-- Renaming every variable in an elementary symmetric polynomial to one
+variable gives the corresponding binomial multiple of its power. -/
+theorem rename_esymm_const
+    {R sigma tau : Type*} [CommSemiring R] [Fintype sigma] (r : ℕ) (v : tau) :
+    rename (fun _ : sigma => v) (esymm sigma R r) =
+      Nat.choose (Fintype.card sigma) r • X v ^ r := by
+  rw [esymm]
+  simp only [map_sum, map_prod, rename_X]
+  calc
+    ∑ t ∈ Finset.univ.powersetCard r,
+        ∏ _x ∈ t, X v =
+      ∑ _t ∈ Finset.univ.powersetCard r, X v ^ r := by
+          apply Finset.sum_congr rfl
+          intro t ht
+          rw [Finset.prod_const, (Finset.mem_powersetCard.mp ht).2]
+    _ = _ := by
+      rw [Finset.sum_const, Finset.card_powersetCard, Finset.card_univ]
+
 /-- Sum all variable permutations of a multivariate polynomial. -/
 noncomputable def symmetrizationSum
     {σ R : Type*} [Fintype σ] [CommSemiring R]
