@@ -285,6 +285,7 @@ import RealRooted.Favard.Orthogonality
 import RealRooted.Favard.Recurrence
 import RealRooted.FiniteFreeAdditive
 import RealRooted.FiniteFreeAdditiveIdentity
+import RealRooted.FiniteFreeAdditivePreservation
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
