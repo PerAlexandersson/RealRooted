@@ -5,8 +5,8 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 # Exponential growth of Pólya--Schur multiplier sequences
 
 This analytic-side child derives an all-radius exponential-generating majorant
-from the PF multiplier convention when the zeroth coefficient is positive.
-Initial-zero and signed conventions remain separate boundaries.
+from the PF multiplier convention and transports the resulting
+Laguerre--Pólya witness through the classical alternating-sign convention.
 -/
 
 open Polynomial
@@ -172,5 +172,27 @@ theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction
   have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hgamma).1
   exact hmult.isLaguerrePolya_complexExpGeneratingFunction
     (fun R hR => hgamma.summable_expGenerating_majorant R hR)
+
+/-- Alternating the signs of a PF multiplier sequence corresponds to
+precomposition of its complex EGF by `z ↦ -z`. -/
+theorem complexExpGeneratingFunction_alternating (gamma : ℕ → ℝ) :
+    complexExpGeneratingFunction (fun k => (-1 : ℝ) ^ k * gamma k) =
+      fun z => complexExpGeneratingFunction gamma (-z) := by
+  rw [complexExpGeneratingFunction_eq_tsum, complexExpGeneratingFunction_eq_tsum]
+  ext z
+  apply tsum_congr
+  intro k
+  push_cast
+  rw [neg_pow]
+  ring
+
+/-- The alternating-sign convention for a PF multiplier sequence also has a
+Laguerre--Pólya complex EGF. -/
+theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction_alternating
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) :
+    IsLaguerrePolya
+      (complexExpGeneratingFunction (fun k => (-1 : ℝ) ^ k * gamma k)) := by
+  rw [complexExpGeneratingFunction_alternating]
+  simpa using hgamma.isLaguerrePolya_complexExpGeneratingFunction.comp_affine_real (-1) 0
 
 end RealRooted
