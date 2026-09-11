@@ -594,6 +594,7 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
@@ -709,6 +710,7 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation

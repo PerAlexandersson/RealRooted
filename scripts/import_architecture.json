@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1172
+      "max_modules": 1174
     },
     "RealRooted.Production": {
-      "max_modules": 1051
+      "max_modules": 1053
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -37,6 +37,9 @@
       "max_modules": 6
     },
     "RealRooted.Mathlib.Data.List.SplitBy": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.Analysis.SpecialFunctions.Choose": {
       "max_modules": 1
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
@@ -923,6 +926,9 @@
     },
     "RealRooted.MultiplierSequence.PolyaSchur": {
       "max_modules": 109
+    },
+    "RealRooted.MultiplierSequence.PolyaSchur.Analytic": {
+      "max_modules": 95
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
       "max_modules": 162
