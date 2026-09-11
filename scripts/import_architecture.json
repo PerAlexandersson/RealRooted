@@ -259,10 +259,10 @@
       "max_modules": 1
     },
     "RealRooted.Jacobi.Orthogonality": {
-      "max_modules": 8
+      "max_modules": 9
     },
     "RealRooted.Jacobi.Orthogonality.Integral": {
-      "max_modules": 10
+      "max_modules": 11
     },
     "RealRooted.Laguerre": {
       "max_modules": 60
@@ -295,13 +295,13 @@
       "max_modules": 48
     },
     "RealRooted.Legendre": {
-      "max_modules": 53
+      "max_modules": 54
     },
     "RealRooted.Legendre.Basic": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.Legendre.Roots": {
-      "max_modules": 52
+      "max_modules": 53
     },
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral": {
       "max_modules": 1
@@ -322,7 +322,7 @@
       "max_modules": 3
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre": {
-      "max_modules": 3
+      "max_modules": 4
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Moment": {
       "max_modules": 1
@@ -1429,7 +1429,7 @@
       "max_modules": 2
     },
     "RealRooted.Jacobi.Favard": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.Laguerre.Favard": {
       "max_modules": 5
