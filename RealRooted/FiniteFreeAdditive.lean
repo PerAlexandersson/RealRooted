@@ -291,7 +291,8 @@ private theorem coeff_finiteFreeAdditiveEvenLift_of_odd (p : ℝ[X]) {n : ℕ}
   rw [hr]
   exact coeff_finiteFreeAdditiveEvenLift_two_mul_add_one p r
 
-private theorem coeff_finiteFreeAdditiveOddLift_of_even (p : ℝ[X]) {n : ℕ}
+/-- An odd lift has zero coefficient in every even degree. -/
+theorem coeff_finiteFreeAdditiveOddLift_of_even (p : ℝ[X]) {n : ℕ}
     (hn : Even n) :
     (finiteFreeAdditiveOddLift p).coeff n = 0 := by
   rcases hn with ⟨r, hr⟩

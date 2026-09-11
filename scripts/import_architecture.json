@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1153
+      "max_modules": 1154
     },
     "RealRooted.Production": {
-      "max_modules": 1032
+      "max_modules": 1033
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -978,6 +978,9 @@
     "RealRooted.FiniteFreeAdditive.HalfInteger": {
       "max_modules": 4
     },
+    "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution": {
+      "max_modules": 5
+    },
     "RealRooted.FiniteFreeAdditiveIdentity": {
       "max_modules": 19
     },
@@ -1756,6 +1759,7 @@
     "RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer",
     "RealRooted.FiniteFreeAdditive",
     "RealRooted.FiniteFreeAdditive.HalfInteger",
+    "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution",
     "RealRooted.FiniteFreeAdditiveIdentity",
     "RealRooted.FiniteFreeAdditivePreservation",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
