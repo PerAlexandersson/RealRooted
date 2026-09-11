@@ -296,6 +296,26 @@ theorem existsUnique_isParkingWord_cyclicSortChains {n : ℕ} (L : List (List (F
   intro c' hc'
   exact hunique c' ((isParkingWord_cyclicSortChains_iff L hL c' w).mp hc')
 
+/-- A cyclic value shift preserves distinct values read along any chain. -/
+theorem nodup_map_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
+    (l : List (Fin n)) (w : Fin n → Fin (n + 1)) (h : (l.map w).Nodup) :
+    (l.map (cyclicValueShift c w)).Nodup := by
+  change (l.map ((finCycle c) ∘ w)).Nodup
+  simpa only [List.map_map] using h.map (finCycle c).injective
+
+/-- The shift-and-sort action makes every disjoint chain strictly increasing
+when its input values are distinct on that chain. -/
+theorem sortedLT_map_cyclicSortChains_of_disjoint {n : ℕ}
+    (L : List (List (Fin n))) (hLnodup : L.Nodup)
+    (hnodup : ∀ l ∈ L, l.Nodup)
+    (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
+    (c : Fin (n + 1)) (w : Fin n → Fin (n + 1))
+    (hvalues : ∀ l ∈ L, (l.map w).Nodup) :
+    ∀ l ∈ L, (l.map (cyclicSortChains L c w)).SortedLT := by
+  exact sortedLT_map_sortChains_of_disjoint L hLnodup hnodup hdisj
+    (cyclicValueShift c w) (fun l hl =>
+      nodup_map_cyclicValueShift c l w (hvalues l hl))
+
 @[simp]
 theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) (i : Fin n) :
