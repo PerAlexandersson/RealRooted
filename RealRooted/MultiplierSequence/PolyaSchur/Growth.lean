@@ -195,4 +195,13 @@ theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction_alte
   rw [complexExpGeneratingFunction_alternating]
   simpa using hgamma.isLaguerrePolya_complexExpGeneratingFunction.comp_affine_real (-1) 0
 
+/-- Every real global scale of the alternating-sign PF convention has a
+Laguerre--Pólya complex EGF. -/
+theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction_const_mul_alternating
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) (a : ℝ) :
+    IsLaguerrePolya
+  (complexExpGeneratingFunction (fun k => a * ((-1 : ℝ) ^ k * gamma k))) := by
+  rw [complexExpGeneratingFunction_const_mul]
+  simpa using hgamma.isLaguerrePolya_complexExpGeneratingFunction_alternating.const_mul_real a
+
 end RealRooted

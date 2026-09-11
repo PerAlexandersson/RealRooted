@@ -81,6 +81,34 @@ theorem IsLaguerrePolya.mul {f g : ℂ → ℂ}
     · ext n z
       simp only [Pi.mul_apply, Polynomial.map_mul, Polynomial.eval_mul]
 
+/-- Multiplication by a real scalar preserves the zero-aware
+Laguerre--Pólya class. -/
+theorem IsLaguerrePolya.const_mul_real {f : ℂ → ℂ}
+    (hf : IsLaguerrePolya f) (a : ℝ) :
+    IsLaguerrePolya (fun z => (a : ℂ) * f z) := by
+  rcases hf with ⟨p, hp, hptend⟩
+  refine ⟨fun n => C a * p n, ?_, ?_⟩
+  · intro n
+    rcases hp n with hpzero | hpsplit
+    · simp [hpzero]
+    · exact Or.inr (hpsplit.C_mul a)
+  · have hconst : TendstoLocallyUniformly
+        (fun _ : ℕ => fun _ : ℂ => (a : ℂ)) (fun _ : ℂ => (a : ℂ)) atTop := by
+      intro u hu x
+      refine ⟨Set.univ, univ_mem, ?_⟩
+      filter_upwards [] with n y
+      intro _
+      exact refl_mem_uniformity hu
+    let hmul := hconst.mul₀ hptend continuous_const
+      (hptend.continuous <| Filter.Frequently.of_forall fun n =>
+        Polynomial.continuous ((p n).map Complex.ofRealHom))
+    convert hmul using 1
+    · ext n z
+      simp only [Pi.mul_apply, Polynomial.map_mul, Polynomial.map_C,
+        Polynomial.eval_mul, Polynomial.eval_C]
+      rfl
+    · rfl
+
 /-- Precomposition by a real affine map preserves the zero-aware
 Laguerre--Pólya class. -/
 theorem IsLaguerrePolya.comp_affine_real {f : ℂ → ℂ}

@@ -378,6 +378,19 @@ theorem complexExpGeneratingFunction_eq_tsum (gamma : ℕ → ℝ) :
     (FormalMultilinearSeries.ofScalarsSum_eq_tsum (E := ℂ)
       (fun k => ((gamma k / k.factorial : ℝ) : ℂ)))
 
+/-- Multiplying every coefficient sequence entry by a real scalar multiplies
+the complex exponential-generating function by the corresponding scalar. -/
+theorem complexExpGeneratingFunction_const_mul (a : ℝ) (gamma : ℕ → ℝ) :
+    complexExpGeneratingFunction (fun k => a * gamma k) =
+      fun z => (a : ℂ) * complexExpGeneratingFunction gamma z := by
+  rw [complexExpGeneratingFunction_eq_tsum, complexExpGeneratingFunction_eq_tsum]
+  ext z
+  rw [← tsum_mul_left]
+  apply tsum_congr
+  intro k
+  push_cast
+  ring
+
 /-- An all-radius exponential-generating majorant makes the complex
 exponential-generating function entire. -/
 theorem analyticOnNhd_complexExpGeneratingFunction_of_summable (gamma : ℕ → ℝ)
