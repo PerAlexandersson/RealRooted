@@ -132,6 +132,19 @@ theorem IsLowerUnitriangular.pow [Semiring R] {A : LowerTriangularMatrix R}
   | zero => exact IsLowerUnitriangular.identity
   | succ r ih => exact ih.mul hA
 
+theorem IsLowerUnitriangular.listProduct [Semiring R]
+    {As : List (LowerTriangularMatrix R)}
+    (hAs : ∀ A ∈ As, IsLowerUnitriangular A) :
+    IsLowerUnitriangular (listProduct As) := by
+  induction As with
+  | nil => exact IsLowerUnitriangular.identity
+  | cons A As ih =>
+      apply IsLowerUnitriangular.mul
+      · exact hAs A (by simp)
+      · apply ih
+        intro B hB
+        exact hAs B (by simp [hB])
+
 theorem IsLowerTriangular.pow [Semiring R] {A : LowerTriangularMatrix R}
     (hA : IsLowerTriangular A) (r : ℕ) :
     IsLowerTriangular (pow A r) := by
