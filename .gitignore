@@ -9,6 +9,7 @@
 !LEAN_GOLF.md
 !OEIS_THEORY_AUDIT.md
 !PROOF_STATUS.md
+!MILESTONES.md
 !RealRooted/Tactic/PLAN.md
 !RealRooted/Tactic/OEIS_COVERAGE.md
 
@@ -19,6 +20,7 @@ SuperEulerian/.lake/
 SuperEulerian/.lake
 
 # Generated/local artifacts.
+milestone-audit.json
 realrooted-interlacing-seminar-handout.html
 .DS_Store
 *~

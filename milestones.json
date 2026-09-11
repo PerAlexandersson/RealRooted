@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "milestones": [
+    {
+      "id": "cauchy-interlacing",
+      "title": "Cauchy eigenvalue interlacing",
+      "summary": "Delete one row and the matching column from a real symmetric or complex Hermitian matrix. The smaller matrix's eigenvalues lie between those of the original.",
+      "scope": "All finite sizes, under the Hermitian hypothesis; the formal statement uses ordered eigenvalues.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.CauchyInterlacing",
+          "declaration": "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "favard-roots",
+      "title": "Favard recurrences produce real roots",
+      "summary": "A monic three-term recurrence with positive Favard coefficients produces nonzero polynomials with only real roots.",
+      "scope": "The standard recurrence and positive coefficients are mathematical hypotheses. This entry covers roots, not existence of an orthogonality measure.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.Favard",
+          "declaration": "RealRooted.Challenges.Favard.realRooted"
+        },
+        {
+          "module": "RealRooted.Challenges.Favard",
+          "declaration": "RealRooted.Challenges.Favard.interlacing"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "asw",
+      "title": "Aissen–Schoenberg–Whitney: roots and total positivity",
+      "summary": "The finite-polynomial correspondence connects nonpositive real roots with nonnegativity of every minor of the coefficient Toeplitz matrix.",
+      "scope": "The reverse direction assumes nonnegative coefficients; both directions use the repository's real-rooted/zero conventions. This is a polynomial theorem, not the classification of arbitrary infinite generating functions.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.AissenSchoenbergWhitney",
+          "declaration": "RealRooted.Challenges.AissenSchoenbergWhitney.forwardTheorem"
+        },
+        {
+          "module": "RealRooted.Challenges.AissenSchoenbergWhitney",
+          "declaration": "RealRooted.Challenges.AissenSchoenbergWhitney.reverseTheorem"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "obreschkoff",
+      "title": "Obreschkoff: interlacing and real polynomial pencils",
+      "summary": "Interlacing guarantees that every real linear combination has only real roots or is zero. Conversely, this pencil property forces interlacing up to orientation.",
+      "scope": "The converse witness explicitly assumes nonzero split inputs and equal or consecutive degrees. The catalog does not omit these degree and orientation conventions.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.Obreschkoff",
+          "declaration": "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
+        },
+        {
+          "module": "RealRooted.Challenges.Obreschkoff",
+          "declaration": "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinationsRealRooted"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "claw-free-graphs",
+      "title": "Claw-free graph independence polynomials",
+      "summary": "For every finite claw-free graph, the polynomial counting independent vertex sets by size has only real roots.",
+      "scope": "The graph must be claw-free: no induced vertex with three pairwise nonadjacent neighbors. The graph and its independence polynomial are formalized objects.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.ChudnovskySeymour",
+          "declaration": "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "ordinary-homogenization",
+      "title": "Ordinary homogenization preserves stability",
+      "summary": "Adding one variable to make all monomials have the same total degree preserves multivariate real stability when coefficients are nonnegative.",
+      "scope": "Stability means nonvanishing when every variable has positive imaginary part. The strict result assumes a nonzero stable input; a separate witness includes zero. Padding to a larger homogenizing degree is also covered.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.Homogenization",
+          "declaration": "RealRooted.Challenges.Homogenization.ordinaryHomogenization_stable"
+        },
+        {
+          "module": "RealRooted.Challenges.Homogenization",
+          "declaration": "RealRooted.Challenges.Homogenization.ordinaryHomogenization_stable_of_totalDegree_le"
+        },
+        {
+          "module": "RealRooted.Challenges.Homogenization",
+          "declaration": "RealRooted.Challenges.Homogenization.ordinaryHomogenization_stableOrZero"
+        }
+      ],
+      "issues": [
+        "https://github.com/PerAlexandersson/RealRooted/issues/550"
+      ]
+    },
+    {
+      "id": "tn-principal-interlacing",
+      "title": "Totally nonnegative matrix principal interlacing",
+      "summary": "For a finite real matrix whose every minor is nonnegative, the characteristic polynomial of its leading or trailing principal section interlaces that of the matrix.",
+      "scope": "Includes singular and reducible matrices. Interlacing is weak (coincident roots are allowed), and the sections remove the first or last index; this entry does not claim arbitrary principal deletion.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.TotallyNonnegative",
+          "declaration": "RealRooted.Challenges.TotallyNonnegative.leadingPrincipal_charpoly_interlaces"
+        },
+        {
+          "module": "RealRooted.Challenges.TotallyNonnegative",
+          "declaration": "RealRooted.Challenges.TotallyNonnegative.trailingPrincipal_charpoly_interlaces"
+        }
+      ],
+      "issues": [
+        "https://github.com/PerAlexandersson/RealRooted/issues/552"
+      ]
+    },
+    {
+      "id": "pf-multiplier-egf",
+      "title": "Pólya–Schur milestone: PF multipliers give real-zero entire functions",
+      "summary": "A PF multiplier sequence has an exponential generating function in the Laguerre–Pólya class: a locally uniform limit of real-rooted real polynomials. Unless identically zero, its zeros are real.",
+      "scope": "The PF multiplier condition is stronger than coefficient nonnegativity alone. Zero sequences and initial zero coefficients are included. Alternating the coefficient signs reflects the function. This is a proved forward branch, not the full classification.",
+      "status": "proved",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.PolyaSchur",
+          "declaration": "RealRooted.Challenges.PolyaSchur.pfMultiplier_egf_isLaguerrePolya"
+        },
+        {
+          "module": "RealRooted.Challenges.PolyaSchur",
+          "declaration": "RealRooted.Challenges.PolyaSchur.pfMultiplier_egf_real_zero"
+        },
+        {
+          "module": "RealRooted.Challenges.PolyaSchur",
+          "declaration": "RealRooted.Challenges.PolyaSchur.pfMultiplier_alternating_egf_isLaguerrePolya"
+        }
+      ],
+      "issues": [
+        "https://github.com/PerAlexandersson/RealRooted/issues/563"
+      ]
+    },
+    {
+      "id": "braun-jal-model",
+      "title": "Braun–Jal generalized snake rook polynomials",
+      "summary": "The formalized recurrence and interlacing machinery yields the generalized-snake rook-polynomial theorem from explicit board-model inputs.",
+      "scope": "Conditional: the theorem still takes the auxiliary recurrence, board-difference nonnegativity, snake recurrence, degree identity and constant-board identification as inputs. A theorem with these hypotheses is not an unconditional proof of the complete combinatorial model.",
+      "status": "conditional",
+      "witnesses": [
+        {
+          "module": "RealRooted.Challenges.BraunJal",
+          "declaration": "RealRooted.Challenges.BraunJal.generalizedSnakeRookModel_theorem41"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "polya-schur-classification",
+      "title": "Full analytic Pólya–Schur classification",
+      "summary": "Complete the analytic classification of real-rootedness-preserving multiplier sequences, including the remaining converse and product-description bridges.",
+      "scope": "Open at this catalog checkpoint. The proved PF forward branch is listed separately above; a green build or a closed subtask does not settle this larger target.",
+      "status": "open",
+      "witnesses": [],
+      "issues": [
+        "https://github.com/PerAlexandersson/RealRooted/issues/563"
+      ]
+    }
+  ]
+}
