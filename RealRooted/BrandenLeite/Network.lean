@@ -471,6 +471,23 @@ theorem networkPathSumFrom_self {R : Type*} [CommSemiring R]
   unfold networkPathWeightFrom
   simp
 
+/-- The path from `(n, k)` to `(n, n)` is uniquely all horizontal. -/
+theorem networkPathSumFrom_top {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) {n k : ℕ} (hkn : k ≤ n) :
+    networkPathSumFrom weights n k n = 1 := by
+  unfold networkPathSumFrom networkPathsFrom
+  rw [if_pos ⟨hkn, le_rfl⟩]
+  rw [← Finset.powersetCard_eq_filter]
+  rw [Finset.sum_eq_single (Finset.univ : Finset (Fin (n - k)))]
+  · unfold networkPathWeightFrom
+    simp
+  · intro horizontalSteps hsteps hne
+    exact (hne ((Finset.card_eq_iff_eq_univ _).mp
+      (by simpa using (Finset.mem_powersetCard.mp hsteps).2))).elim
+  · intro hnot
+    exact (hnot (Finset.mem_powersetCard.mpr
+      ⟨Finset.subset_univ _, Finset.card_fin _⟩)).elim
+
 /-- Over the reals, every weighted triangular-network path matrix is lower
 unitriangular. -/
 theorem isLowerUnitriangular_networkMatrix (weights : ℕ → ℕ → ℝ) :
@@ -511,6 +528,51 @@ theorem X_pow_dvd_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ)
   · exact (pow_dvd_pow X hkj).mul_left _
   · rw [networkPathSumFrom_eq_zero_of_lt_left weights (Nat.lt_of_not_ge hkj)]
     simp
+
+private theorem natDegree_networkResolvingPolynomial_le (weights : ℕ → ℕ → ℝ)
+    (n k : ℕ) : (networkResolvingPolynomial weights n k).natDegree ≤ n := by
+  unfold networkResolvingPolynomial
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ ?_
+  intro j hj
+  exact (Polynomial.natDegree_C_mul_X_pow_le _ j).trans
+    (Nat.le_of_lt_succ (Finset.mem_range.mp hj))
+
+private theorem coeff_networkResolvingPolynomial_top (weights : ℕ → ℕ → ℝ)
+    {n k : ℕ} (hkn : k ≤ n) :
+    (networkResolvingPolynomial weights n k).coeff n = 1 := by
+  unfold networkResolvingPolynomial
+  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single n]
+  · simpa using networkPathSumFrom_top weights hkn
+  · intro j hj hjne
+    simp only [coeff_C_mul, coeff_X_pow]
+    split_ifs with h
+    · exact (hjne h.symm).elim
+    · simp
+  · intro hnot
+    exact (hnot (Finset.mem_range.mpr (Nat.lt_succ_self n))).elim
+
+/-- Nonnegative triangular-network weights give a resolution of their path
+matrix. -/
+noncomputable def networkResolution (weights : ℕ → ℕ → ℝ)
+    (hweights : ∀ n k, 0 ≤ weights n k) : Resolution (networkMatrix weights) where
+  lowerUnitriangular := isLowerUnitriangular_networkMatrix weights
+  lambda := weights
+  polynomial := networkResolvingPolynomial weights
+  lambda_nonneg := fun _ _ _ => hweights _ _
+  monic := fun n k hkn =>
+    Polynomial.monic_of_natDegree_le_of_coeff_eq_one n
+      (natDegree_networkResolvingPolynomial_le weights n k)
+      (coeff_networkResolvingPolynomial_top weights hkn)
+  row_zero := networkResolvingPolynomial_zero weights
+  diagonal := networkResolvingPolynomial_self weights
+  dvd_X_pow := fun n k _ => X_pow_dvd_networkResolvingPolynomial weights n k
+  recurrence := fun _ _ hkn => networkResolvingPolynomial_step weights hkn
+
+/-- Every nonnegative weighted triangular-network path matrix is resolvable. -/
+theorem isResolvable_networkMatrix (weights : ℕ → ℕ → ℝ)
+    (hweights : ∀ n k, 0 ≤ weights n k) :
+    IsResolvable (networkMatrix weights) :=
+  ⟨networkResolution weights hweights⟩
 
 /-- Nonnegative edge weights give nonnegative weighted path counts. -/
 theorem networkPathSum_nonneg {R : Type*} [CommSemiring R] [PartialOrder R]
