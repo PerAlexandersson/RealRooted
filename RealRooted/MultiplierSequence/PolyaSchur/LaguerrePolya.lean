@@ -8,8 +8,9 @@ This analytic leaf defines the zero-aware Laguerre--Pólya class as locally
 uniform limits of real-coefficient splitting polynomials. It proves the
 forward bridge from an infinite multiplier sequence to its complex
 exponential-generating function under the explicit all-radius summability
-majorant. It does not prove an analytic root-closure theorem or either
-Pólya--Schur classification direction.
+majorant, together with closure of this class under products. It does not
+prove an analytic root-closure theorem or either Pólya--Schur classification
+direction.
 -/
 
 open Filter Polynomial Topology
@@ -25,6 +26,38 @@ def IsLaguerrePolya (f : ℂ → ℂ) : Prop :=
     (∀ n, p n = 0 ∨ (p n).Splits) ∧
       TendstoLocallyUniformly
         (fun n (z : ℂ) => (p n).map Complex.ofRealHom |>.eval z) f atTop
+
+/-- The zero function belongs to the zero-aware Laguerre--Pólya class. -/
+@[simp]
+theorem IsLaguerrePolya.zero : IsLaguerrePolya 0 := by
+  refine ⟨fun _ => 0, fun _ => Or.inl rfl, ?_⟩
+  intro u hu x
+  refine ⟨Set.univ, univ_mem, ?_⟩
+  filter_upwards [] with n y
+  intro _
+  simpa using (refl_mem_uniformity hu : ((0 : ℂ), 0) ∈ u)
+
+/-- The zero-aware Laguerre--Pólya class is closed under products. -/
+theorem IsLaguerrePolya.mul {f g : ℂ → ℂ}
+    (hf : IsLaguerrePolya f) (hg : IsLaguerrePolya g) :
+    IsLaguerrePolya (f * g) := by
+  rcases hf with ⟨p, hp, hptend⟩
+  rcases hg with ⟨q, hq, hqtend⟩
+  refine ⟨fun n => p n * q n, ?_, ?_⟩
+  · intro n
+    rcases hp n with hpzero | hpsplit
+    · simp [hpzero]
+    rcases hq n with hqzero | hqsplit
+    · simp [hqzero]
+    · exact Or.inr (hpsplit.mul hqsplit)
+  · let hmul := hptend.mul₀ hqtend
+        (hptend.continuous <| Filter.Frequently.of_forall fun n =>
+          Polynomial.continuous ((p n).map Complex.ofRealHom))
+        (hqtend.continuous <| Filter.Frequently.of_forall fun n =>
+          Polynomial.continuous ((q n).map Complex.ofRealHom))
+    convert hmul using 1
+    · ext n z
+      simp only [Pi.mul_apply, Polynomial.map_mul, Polynomial.eval_mul]
 
 /-- The rescaled Jensen polynomial of an infinite multiplier sequence is
 zero or splits over the reals. -/
