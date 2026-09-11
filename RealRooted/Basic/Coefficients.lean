@@ -72,6 +72,12 @@ protected lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
   | n + 1 => by
       simpa [pow_succ] using (hp.pow n).mul hp
 
+/-- Reflection at an arbitrary degree preserves nonnegative coefficients. -/
+lemma HasNonnegCoeffs.reflect {p : ℝ[X]} (hp : HasNonnegCoeffs p) (n : ℕ) :
+    HasNonnegCoeffs (reflect n p) := by
+  intro k
+  simpa [Polynomial.coeff_reflect] using hp (revAt n k)
+
 /-- Positive leading coefficient. -/
 def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff
 

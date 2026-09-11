@@ -362,9 +362,7 @@ private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     unfold HasPosLeadingCoeff
     rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hfN hf0]
     exact hf0_pos
-  have hg_ref_nonneg : HasNonnegCoeffs (reflect N g) := by
-    intro n
-    simpa [Polynomial.coeff_reflect] using hgnn (revAt N n)
+  have hg_ref_nonneg : HasNonnegCoeffs (reflect N g) := hgnn.reflect N
   have hg_ref_ne : reflect N g ≠ 0 := by
     intro hzero
     exact hg_pos.ne_zero (Polynomial.reflect_eq_zero_iff.mp hzero)
