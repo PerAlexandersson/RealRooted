@@ -59,6 +59,34 @@ theorem IsLaguerrePolya.mul {f g : ℂ → ℂ}
     · ext n z
       simp only [Pi.mul_apply, Polynomial.map_mul, Polynomial.eval_mul]
 
+/-- Precomposition by a real affine map preserves the zero-aware
+Laguerre--Pólya class. -/
+theorem IsLaguerrePolya.comp_affine_real {f : ℂ → ℂ}
+    (hf : IsLaguerrePolya f) (a b : ℝ) :
+    IsLaguerrePolya (fun z => f ((a : ℂ) * z + b)) := by
+  rcases hf with ⟨p, hp, hptend⟩
+  refine ⟨fun n => (p n).comp (C a * X + C b), ?_, ?_⟩
+  · intro n
+    rcases hp n with hpzero | hpsplit
+    · simp [hpzero]
+    · right
+      apply hpsplit.comp_of_natDegree_le_one
+      exact (natDegree_add_le _ _).trans <|
+        max_le (by simpa using natDegree_C_mul_X_pow_le a 1) (by simp)
+  · have hcomp := hptend.comp (fun z : ℂ => (a : ℂ) * z + b)
+      ((continuous_const.mul continuous_id).add continuous_const)
+    convert hcomp using 1
+    · ext n z
+      simp only [Function.comp_apply, Polynomial.map_comp, Polynomial.map_add,
+        Polynomial.map_mul, Polynomial.map_C, Polynomial.map_X,
+        Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_mul,
+        Polynomial.eval_C, Polynomial.eval_X]
+      change ((p n).map Complex.ofRealHom).eval ((a : ℂ) * z + b) =
+        ((p n).map Complex.ofRealHom).eval ((a : ℂ) * z + b)
+      rfl
+    · ext z
+      rfl
+
 /-- The rescaled Jensen polynomial of an infinite multiplier sequence is
 zero or splits over the reals. -/
 theorem IsMultiplierSequence.rescaledJensenPolynomial_eq_zero_or_splits
