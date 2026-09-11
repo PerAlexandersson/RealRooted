@@ -712,6 +712,7 @@ import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
 import RealRooted.NarayanaTransformation
