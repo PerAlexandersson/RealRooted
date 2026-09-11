@@ -6,8 +6,9 @@ import RealRooted.Mathlib.Algebra.Polynomial.Chow
 
 This module gives the literal recursive matrix construction in Corollary 3.1
 of Brändén--Vecchi, *Chow polynomials of totally nonnegative matrices and
-posets* (2025).  The characterization by reflection, and its total-nonnegative
-real-rootedness consequences, are intentionally separate later layers.
+posets* (2025), together with its finite reflection characterization under a
+unit-diagonal hypothesis.  Its total-nonnegative real-rootedness consequences
+are intentionally separate later layers.
 -/
 
 open Polynomial BigOperators
@@ -97,6 +98,40 @@ theorem reflect_chowDerangement (R : LowerTriangularMatrix ℝ) :
     rw [show n + 1 = 1 + n by lia,
       reflect_mul _ _ (by exact natDegree_X_le) (natDegree_chowS_le n P hPdegree)]
     simp [reflect_chowS n P hPdegree]
+
+/-- Under the unit-diagonal condition, the positive-index Chow polynomial
+`Hₙ` has the Corollary 3.1 reflection relation `Iₙ(Hₙ) = X * Hₙ`. -/
+theorem reflect_chowPolynomial_succ (R : LowerTriangularMatrix ℝ)
+    (hdiag : ∀ n, R n n = 1) (n : ℕ) :
+    (chowPolynomial R (n + 1)).reflect (n + 1) = X * chowPolynomial R (n + 1) := by
+  let P : ℝ[X] := ∑ k : Fin (n + 1), C (R (n + 1) k) * chowDerangement R k
+  let S : ℝ[X] := chowS n P
+  have hPdegree : P.natDegree ≤ n := natDegree_chowDerangement_input_le R n
+  have hH : chowPolynomial R (n + 1) = P + chowDerangement R (n + 1) := by
+    change (∑ k ∈ Finset.range (n + 2),
+      C (R (n + 1) k) * chowDerangement R k) = P + chowDerangement R (n + 1)
+    rw [show n + 2 = (n + 1) + 1 by lia, Finset.sum_range_succ]
+    have hsum :
+        (∑ k ∈ Finset.range (n + 1), C (R (n + 1) k) * chowDerangement R k) = P := by
+      exact (Fin.sum_univ_eq_sum_range (fun k =>
+        C (R (n + 1) k) * chowDerangement R k) (n + 1)).symm
+    rw [hsum]
+    simp [hdiag]
+  have hd : chowDerangement R (n + 1) = X * S := by
+    rw [chowDerangement_succ]
+  have hS : (X - 1) * S = P.reflect n - P := by
+    exact X_sub_one_mul_chowS n P hPdegree
+  have hreflectP : P.reflect n = P + (X - 1) * S := by
+    calc
+      P.reflect n = (P.reflect n - P) + P := by ring
+      _ = (X - 1) * S + P := by rw [← hS]
+      _ = P + (X - 1) * S := by ring
+  have hPshift : P.reflect (n + 1) = P.reflect n * X := by
+    simpa [Nat.add_comm] using
+      (reflect_mul P (1 : ℝ[X]) (F := n) (G := 1) hPdegree (by simp))
+  rw [hH, reflect_add, reflect_chowDerangement R]
+  rw [hPshift, hreflectP, hd]
+  ring
 
 /-- The defining row expansion for the Chow polynomial. -/
 theorem chowPolynomial_eq (R : LowerTriangularMatrix ℝ) (n : ℕ) :
