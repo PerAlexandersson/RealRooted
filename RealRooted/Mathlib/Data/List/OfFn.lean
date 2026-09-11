@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Data.List.OfFn
+public import Mathlib.Algebra.BigOperators.Fin
 public import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
@@ -13,6 +14,23 @@ This file contains compatibility lemmas intended for upstreaming to
 public section
 
 namespace List
+
+/-- Count the entries of a finite function satisfying a Boolean predicate. -/
+theorem countP_ofFn {n : ℕ} {α : Type*} (f : Fin n → α) (p : α → Bool) :
+    List.countP p (List.ofFn f) = ∑ i, if p (f i) then 1 else 0 := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [List.ofFn_succ, Fin.sum_univ_succ]
+    simp only [List.countP_cons]
+    rw [ih (fun i => f i.succ)]
+    simp [Nat.add_comm]
+
+/-- The cardinality of a filtered finite domain is the corresponding list count. -/
+theorem card_filter_univ_eq_countP_ofFn {n : ℕ} {α : Type*}
+    (f : Fin n → α) (p : α → Bool) :
+    (Finset.univ.filter fun i => p (f i)).card = List.countP p (List.ofFn f) := by
+  simp only [Finset.card_filter, countP_ofFn]
 
 /-- Removing a finite-function coordinate agrees with erasing that list index. -/
 theorem ofFn_succAbove_eq_eraseIdx
