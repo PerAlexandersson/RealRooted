@@ -117,6 +117,44 @@ theorem IsPFMultiplierSequence.summable_expGenerating_majorant_of_coeff_zero_pos
   · simpa only [mul_div_assoc] using
       (Real.summable_pow_div_factorial (r * R)).mul_left (gamma 0)
 
+/-- Every PF multiplier sequence satisfies the all-radius EGF summability
+hypothesis.  A finite initial zero prefix is removed before applying the
+positive-initial-coefficient estimate. -/
+theorem IsPFMultiplierSequence.summable_expGenerating_majorant
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma)
+    (R : ℝ) (hR : 0 ≤ R) :
+    Summable (fun k => ‖gamma k‖ * R ^ k / k.factorial) := by
+  by_cases hzero : gamma = 0
+  · simp [hzero]
+  have hexists : ∃ n : ℕ, gamma n ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hzero (funext h)
+  let s := Nat.find hexists
+  have hsne : gamma s ≠ 0 := Nat.find_spec hexists
+  have hspos : 0 < gamma s :=
+    lt_of_le_of_ne (hgamma.nonneg s) (Ne.symm hsne)
+  have hshift := hgamma.shift s
+  have hspos' : 0 < (fun k => gamma (k + s)) 0 := by simpa using hspos
+  have hsum := hshift.summable_expGenerating_majorant_of_coeff_zero_pos hspos' R hR
+  apply (summable_nat_add_iff s).mp
+  refine Summable.of_nonneg_of_le
+    (f := fun n => R ^ s * (‖gamma (n + s)‖ * R ^ n / n.factorial))
+    (fun n => by positivity) (fun n => ?_) (hsum.mul_left (R ^ s))
+  rw [Real.norm_of_nonneg (hgamma.nonneg (n + s))]
+  have hnum : 0 ≤ gamma (n + s) * (R ^ n * R ^ s) :=
+    mul_nonneg (hgamma.nonneg _) (mul_nonneg (pow_nonneg hR _) (pow_nonneg hR _))
+  have hfacpos : 0 < (n.factorial : ℝ) := by positivity
+  have hfacle : (n.factorial : ℝ) ≤ ((n + s).factorial : ℝ) := by
+    exact_mod_cast Nat.factorial_le (Nat.le_add_right n s)
+  calc
+    gamma (n + s) * R ^ (n + s) / ((n + s).factorial : ℝ) =
+        (gamma (n + s) * (R ^ n * R ^ s)) / ((n + s).factorial : ℝ) := by
+      rw [pow_add]
+    _ ≤ (gamma (n + s) * (R ^ n * R ^ s)) / (n.factorial : ℝ) :=
+      div_le_div_of_nonneg_left hnum hfacpos hfacle
+    _ = R ^ s * (gamma (n + s) * R ^ n / (n.factorial : ℝ)) := by ring
+
 /-- A PF multiplier sequence with positive zeroth coefficient has a
 Laguerre--Pólya complex exponential-generating function. -/
 theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction_of_coeff_zero_pos
@@ -126,5 +164,13 @@ theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction_of_c
   have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hgamma).1
   exact hmult.isLaguerrePolya_complexExpGeneratingFunction
     (fun R hR => hgamma.summable_expGenerating_majorant_of_coeff_zero_pos hzero R hR)
+
+/-- The complex EGF of every PF multiplier sequence is Laguerre--Pólya. -/
+theorem IsPFMultiplierSequence.isLaguerrePolya_complexExpGeneratingFunction
+    {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) :
+    IsLaguerrePolya (complexExpGeneratingFunction gamma) := by
+  have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hgamma).1
+  exact hmult.isLaguerrePolya_complexExpGeneratingFunction
+    (fun R hR => hgamma.summable_expGenerating_majorant R hR)
 
 end RealRooted
