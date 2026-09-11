@@ -741,6 +741,7 @@ import RealRooted.OscillatoryInterlacing
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.Descents.Basic
+import RealRooted.ParkingFunctions.Descents.Words
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 import RealRooted.ParkingFunctions.ToricContribution.Definitions
