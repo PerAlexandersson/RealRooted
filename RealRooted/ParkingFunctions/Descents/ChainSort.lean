@@ -139,6 +139,43 @@ theorem map_sortChains_eq_of_forall_not_mem {n : ℕ} : ∀ (L : List (List (Fin
     exact map_sortAlong_eq_of_forall_not_mem l' l f
       (fun i hi => hdisj l' List.mem_cons_self i hi)
 
+/-- Sorting a nodup pairwise-disjoint family preserves the value permutation
+on every individual chain. -/
+theorem perm_map_sortChains_of_disjoint {n : ℕ} : ∀ (L : List (List (Fin n))),
+    L.Nodup →
+    (∀ l ∈ L, l.Nodup) →
+    (∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂) →
+    ∀ f : Fin n → Fin (n + 1),
+      ∀ l ∈ L, List.Perm (l.map (sortChains L f)) (l.map f) := by
+  intro L
+  induction L with
+  | nil =>
+    intro _ _ _ f l hl
+    simp at hl
+  | cons head L ih =>
+    intro hLnodup hnodup hdisj f l' hl'
+    obtain ⟨hnotmem, hLnodup⟩ := List.nodup_cons.mp hLnodup
+    change List.Perm (l'.map (sortChains L (sortAlong head f))) (l'.map f)
+    by_cases hEq : l' = head
+    · subst l'
+      rw [map_sortChains_eq_of_forall_not_mem L head (sortAlong head f) (fun l'' hl'' i hi =>
+        hdisj head List.mem_cons_self l'' (List.mem_cons_of_mem _ hl'')
+          (fun hEq => hnotmem (hEq ▸ hl'')) i hi)]
+      rw [map_sortAlong_chain head (hnodup head List.mem_cons_self) f]
+      exact List.mergeSort_perm _ _
+    · have h := ih
+        hLnodup
+        (fun l'' hl'' => hnodup l'' (List.mem_cons_of_mem _ hl''))
+        (fun l₁ hl₁ l₂ hl₂ hne' =>
+          hdisj l₁ (List.mem_cons_of_mem _ hl₁) l₂ (List.mem_cons_of_mem _ hl₂) hne')
+        (sortAlong head f)
+        l' ((List.mem_cons.mp hl').resolve_left hEq)
+      rw [map_sortAlong_eq_of_forall_not_mem head l' f (fun i hi =>
+        hdisj l' (List.mem_cons_of_mem _ ((List.mem_cons.mp hl').resolve_left hEq))
+          head List.mem_cons_self (fun hchain => hnotmem (hchain ▸
+            ((List.mem_cons.mp hl').resolve_left hEq))) i hi)] at h
+      exact h
+
 /-- Sorting a nodup pairwise-disjoint family makes every chain weakly
 increasing. -/
 theorem sorted_map_sortChains_of_disjoint {n : ℕ} : ∀ (L : List (List (Fin n))),
