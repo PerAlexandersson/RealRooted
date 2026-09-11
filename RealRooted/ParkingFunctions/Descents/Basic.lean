@@ -128,6 +128,18 @@ theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
   · rw [if_neg h]
     simp [h]
 
+/-- Appending a letter multiplies the descent monomial by `X` precisely when
+it creates the new final descent. -/
+theorem descentWeight_snoc {R : Type*} [Semiring R] {n : ℕ}
+    (w : Fin (n + 1) → Fin m) (x : Fin m) :
+    (X : R[X]) ^ descentNumber (Fin.snoc w x) =
+      (if x < w (Fin.last n) then X else 1) * X ^ descentNumber w := by
+  rw [descentNumber_snoc]
+  by_cases h : x < w (Fin.last n)
+  · simp only [if_pos h, pow_succ]
+    rw [Polynomial.X_mul]
+  · simp [h]
+
 theorem descentNumber_le {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) :
     descentNumber w ≤ n := by
