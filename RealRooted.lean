@@ -59,6 +59,7 @@ import RealRooted.Bezoutian.StrictInterleaving
 import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.BivariateOpenMapping
 import RealRooted.BrandenLeite.ChainPolynomial
+import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney

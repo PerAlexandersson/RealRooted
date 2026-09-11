@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1162
+      "max_modules": 1163
     },
     "RealRooted.Production": {
-      "max_modules": 1041
+      "max_modules": 1042
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -334,7 +334,10 @@
       "max_modules": 5
     },
     "RealRooted.BrandenLeite.ChainPolynomial": {
-      "max_modules": 197
+      "max_modules": 198
+    },
+    "RealRooted.BrandenLeite.ChainPolynomial.Algebra": {
+      "max_modules": 92
     },
     "RealRooted.BrandenLeite.Network": {
       "max_modules": 92

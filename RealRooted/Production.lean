@@ -96,6 +96,7 @@ import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 import RealRooted.BoundarySpecializationGeneral
 import RealRooted.BoundarySpecializationRight
 import RealRooted.BrandenLeite.ChainPolynomial
+import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
