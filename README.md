@@ -3,6 +3,12 @@
 Proof assumptions and refuted legacy interfaces are summarized in
 [`PROOF_STATUS.md`](PROOF_STATUS.md).
 
+For a non-Lean overview of major results, see the curated
+[formalization milestones](MILESTONES.md). Each entry names its mathematical
+scope, an explicit theorem witness, and any remaining external assumptions.
+The machine-readable [catalog](milestones.json) can feed a public progress
+page; a per-revision CI audit checks its theorem witnesses and transitive axioms.
+
 `RealRooted` is an experimental Lean 4 library for real-rooted univariate
 polynomials, interlacing, compatibility, Polya-frequency sequences, and related
 combinatorial applications.
@@ -209,6 +215,14 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
   statements, each linking the Lean-facing declaration to human catalog
   statements and references.
+- `milestones.json` selects high-level challenge witnesses for a public-facing
+  catalog. `MILESTONES.md` is its generated readable view. Source checks run via
+  `python3 scripts/check_milestones.py`; regenerate with `--write`. After a
+  fresh full build, `--audit` checks that every witness is a theorem and uses
+  only the standard permitted axioms. CI uploads the result as
+  `milestone-audit`, stamped with the exact audited revision. Neither source
+  metadata nor this audit automatically verifies the English interpretation;
+  maintainers review that correspondence and every assumption boundary.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for

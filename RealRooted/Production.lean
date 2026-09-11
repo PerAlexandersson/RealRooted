@@ -1058,6 +1058,9 @@ import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
 import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
 import RealRooted.PolynomialValueEulerNumerator.PF.Causal
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+import RealRooted.Challenges.Homogenization
+import RealRooted.Challenges.PolyaSchur
+import RealRooted.Challenges.TotallyNonnegative
 
 /-!
 # RealRooted production umbrella

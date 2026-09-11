@@ -42,6 +42,10 @@ jobs:
         run: |
           python3 scripts/check_proof_status.py --self-test
           python3 scripts/check_proof_status.py
+      - name: Check milestone catalog sources
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_milestones.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_milestones.py
       - name: Free up disk space
         run: |
           df -h /
@@ -55,6 +59,17 @@ jobs:
           # if future Lake metadata changes lean-action auto-detection.
           build: true
           build-args: ""
+      - name: Audit milestone theorem witnesses
+        run: python3 scripts/check_milestones.py --audit --report milestone-audit.json
+      - name: Upload revision-specific milestone evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: milestone-audit
+          path: |
+            milestone-audit.json
+            MILESTONES.md
+          if-no-files-found: error
+          retention-days: 30
 
   docs:
     name: docs
