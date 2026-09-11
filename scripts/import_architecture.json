@@ -933,6 +933,9 @@
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya": {
       "max_modules": 99
     },
+    "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative": {
+      "max_modules": 100
+    },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples": {
       "max_modules": 100
     },
