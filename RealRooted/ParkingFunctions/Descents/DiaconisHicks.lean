@@ -1,5 +1,6 @@
 import RealRooted.ParkingFunctions.Descents.Basic
 import Mathlib.Logic.Equiv.Fin.Rotate
+import Mathlib.Data.List.Sort
 
 /-!
 # Cyclic value action for parking-function descents
@@ -23,6 +24,27 @@ def cyclicValueShiftEquiv (n : ℕ) (c : Fin (n + 1)) :
 def cyclicValueShift {n : ℕ} (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
   cyclicValueShiftEquiv n c w
+
+/-- Sort the values of a word along its `Fin n` chain of positions. -/
+def chainSortedWord {n m : ℕ} (w : Fin n → Fin m) : Fin n → Fin m :=
+  fun i => (List.insertionSort (· ≤ ·) (List.ofFn w)).get ⟨i, by simp⟩
+
+/-- Sorting a word along one chain makes it monotone. -/
+theorem chainSortedWord_monotone {n m : ℕ} (w : Fin n → Fin m) :
+    Monotone (chainSortedWord w) := by
+  intro i j hij
+  exact (List.pairwise_insertionSort (r := (· ≤ ·)) (List.ofFn w)).sortedLE.monotone_get hij
+
+/-- Sorting a word along one chain preserves its value multiset. -/
+theorem chainSortedWord_perm {n m : ℕ} (w : Fin n → Fin m) :
+    List.Perm (List.ofFn (chainSortedWord w)) (List.ofFn w) := by
+  rw [show List.ofFn (chainSortedWord w) =
+      List.insertionSort (· ≤ ·) (List.ofFn w) by
+    apply List.ext_get
+    · simp
+    · intro i hi₁ hi₂
+      simp [chainSortedWord]]
+  exact List.perm_insertionSort _ _
 
 @[simp]
 theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
