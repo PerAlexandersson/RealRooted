@@ -246,10 +246,10 @@ theorem mul_assoc [Semiring R] (A B C : LowerTriangularMatrix R) :
       rw [_root_.mul_assoc]
 
 /-- Row-generating polynomial of row `i`, truncated at the diagonal. -/
-def rowPolynomial (A : LowerTriangularMatrix ℝ) (i : ℕ) : ℝ[X] :=
+def rowPolynomial [Semiring R] (A : LowerTriangularMatrix R) (i : ℕ) : R[X] :=
   ∑ j ∈ Finset.range (i + 1), C (A i j) * X ^ j
 
-theorem coeff_rowPolynomial_of_le (A : LowerTriangularMatrix ℝ) {i j : ℕ}
+theorem coeff_rowPolynomial_of_le [Semiring R] (A : LowerTriangularMatrix R) {i j : ℕ}
     (hij : j ≤ i) :
     (rowPolynomial A i).coeff j = A i j := by
   rw [rowPolynomial, Polynomial.finsetSum_coeff]
@@ -260,7 +260,7 @@ theorem coeff_rowPolynomial_of_le (A : LowerTriangularMatrix ℝ) {i j : ℕ}
   · intro hj
     exact (hj (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hij))).elim
 
-theorem coeff_rowPolynomial_of_gt (A : LowerTriangularMatrix ℝ) {i j : ℕ}
+theorem coeff_rowPolynomial_of_gt [Semiring R] (A : LowerTriangularMatrix R) {i j : ℕ}
     (hij : i < j) :
     (rowPolynomial A i).coeff j = 0 := by
   rw [rowPolynomial, Polynomial.finsetSum_coeff]
@@ -273,7 +273,7 @@ theorem coeff_rowPolynomial_of_gt (A : LowerTriangularMatrix ℝ) {i j : ℕ}
 
 /-- Coefficients of a row polynomial recover every entry of a lower-triangular
 matrix, including the zero entries above the diagonal. -/
-theorem coeff_rowPolynomial {A : LowerTriangularMatrix ℝ}
+theorem coeff_rowPolynomial [Semiring R] {A : LowerTriangularMatrix R}
     (hA : IsLowerTriangular A) (i j : ℕ) :
     (rowPolynomial A i).coeff j = A i j := by
   by_cases hji : j ≤ i
@@ -281,20 +281,20 @@ theorem coeff_rowPolynomial {A : LowerTriangularMatrix ℝ}
   · have hij : i < j := Nat.lt_of_not_ge hji
     rw [coeff_rowPolynomial_of_gt A hij, hA hij]
 
-theorem natDegree_rowPolynomial_le (A : LowerTriangularMatrix ℝ) (i : ℕ) :
+theorem natDegree_rowPolynomial_le [Semiring R] (A : LowerTriangularMatrix R) (i : ℕ) :
     (rowPolynomial A i).natDegree ≤ i := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro j hj
   exact coeff_rowPolynomial_of_gt A hj
 
 theorem coeff_rowPolynomial_mul_of_le
-    (A B : LowerTriangularMatrix ℝ) {i j : ℕ} (hij : j ≤ i) :
+    [Semiring R] (A B : LowerTriangularMatrix R) {i j : ℕ} (hij : j ≤ i) :
     (rowPolynomial (mul A B) i).coeff j =
       ∑ k ∈ Finset.Icc j i, A i k * B k j := by
   rw [coeff_rowPolynomial_of_le _ hij, mul_apply]
 
 @[simp] theorem rowPolynomial_mul_identity
-    (A : LowerTriangularMatrix ℝ) (i : ℕ) :
+    [Semiring R] (A : LowerTriangularMatrix R) (i : ℕ) :
     rowPolynomial (mul A identity) i = rowPolynomial A i := by
   ext j
   by_cases hji : j ≤ i
