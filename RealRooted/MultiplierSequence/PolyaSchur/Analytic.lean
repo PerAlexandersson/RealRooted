@@ -42,6 +42,16 @@ theorem coeff_rescaledJensenPolynomial (n k : ℕ) (gamma : ℕ → ℝ) :
       have hbk : b ≠ k := Ne.symm hne
       simp [Polynomial.coeff_monomial, hbk]
 
+/-- The coefficient-form rescaling agrees with substitution by `X / n`. -/
+theorem rescaledJensenPolynomial_eq_jensenPolynomial_comp (n : ℕ)
+    (gamma : ℕ → ℝ) :
+    rescaledJensenPolynomial n gamma =
+      (jensenPolynomial n gamma).comp (C ((n : ℝ)⁻¹) * X) := by
+  ext k
+  rw [coeff_rescaledJensenPolynomial, Polynomial.comp_C_mul_X_coeff,
+    coeff_jensenPolynomial]
+  split <;> simp_all [mul_left_comm, mul_comm]
+
 /-- Each fixed coefficient of the rescaled Jensen polynomials converges to
 the corresponding exponential-generating-function coefficient. -/
 theorem tendsto_coeff_rescaledJensenPolynomial (gamma : ℕ → ℝ) (k : ℕ) :
