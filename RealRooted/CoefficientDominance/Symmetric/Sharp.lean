@@ -1,4 +1,5 @@
 import RealRooted.CoefficientDominance.Symmetric.Finite
+import Mathlib.Data.Real.Basic
 
 /-!
 # Sharpened elementary-symmetric bounds

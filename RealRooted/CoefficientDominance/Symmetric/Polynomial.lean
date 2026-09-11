@@ -9,9 +9,11 @@ namespace RealRooted.CoefficientDominance.Symmetric
 
 open Finset
 
+variable {K : Type*} [CommSemiring K]
+
 /-- The coefficients of `∏ (1 + x i X)` are the finite elementary symmetric
 functions of the entries. -/
-theorem coeff_prod_one_add (x : ℕ → ℝ) (n j : ℕ) :
+theorem coeff_prod_one_add (x : ℕ → K) (n j : ℕ) :
     (∏ i ∈ range n, (1 + Polynomial.C (x i) * Polynomial.X)).coeff j = esym x n j := by
   induction n generalizing j with
   | zero =>
@@ -25,7 +27,7 @@ theorem coeff_prod_one_add (x : ℕ → ℝ) (n j : ℕ) :
           simp
   | succ n ih =>
       rw [Finset.prod_range_succ]
-      set q : Polynomial ℝ := ∏ i ∈ range n, (1 + Polynomial.C (x i) * Polynomial.X) with hq
+      set q : Polynomial K := ∏ i ∈ range n, (1 + Polynomial.C (x i) * Polynomial.X) with hq
       have hexp : q * (1 + Polynomial.C (x n) * Polynomial.X)
           = q + Polynomial.C (x n) * (q * Polynomial.X) := by ring
       rw [hexp, Polynomial.coeff_add, Polynomial.coeff_C_mul]

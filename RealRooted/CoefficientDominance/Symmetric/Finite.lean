@@ -1,5 +1,4 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Data.Real.Basic
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
@@ -16,27 +15,33 @@ namespace RealRooted.CoefficientDominance.Symmetric
 
 open Finset
 
+variable {K : Type*} [CommSemiring K]
+
 /-- The `j`-th elementary symmetric function of `x 0, ..., x (n - 1)`,
 expressed through Mathlib's canonical `Multiset.esymm`. -/
-noncomputable def esym (x : ℕ → ℝ) (n j : ℕ) : ℝ :=
+noncomputable def esym (x : ℕ → K) (n j : ℕ) : K :=
   ((range n).val.map x).esymm j
 
 /-- The initial-segment elementary symmetric function as an explicit finite
 sum. This is Mathlib's `Finset.esymm_map_val` at `Finset.range`. -/
-theorem esym_eq_sum (x : ℕ → ℝ) (n j : ℕ) :
+theorem esym_eq_sum (x : ℕ → K) (n j : ℕ) :
     esym x n j = ∑ S ∈ (range n).powersetCard j, ∏ i ∈ S, x i :=
   Finset.esymm_map_val x (range n) j
 
 /-- The leading partial product `x 0 ⋯ x (j - 1)`. -/
-noncomputable def topProd (x : ℕ → ℝ) (j : ℕ) : ℝ := ∏ i ∈ range j, x i
+noncomputable def topProd (x : ℕ → K) (j : ℕ) : K := ∏ i ∈ range j, x i
 
-theorem topProd_pos {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) (j : ℕ) :
+section Ordered
+
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
+theorem topProd_pos {x : ℕ → K} (hpos : ∀ i, 0 < x i) (j : ℕ) :
     0 < topProd x j :=
   prod_pos (fun i _ => hpos i)
 
 /-- The leading product is one nonnegative summand of the elementary symmetric
 function. -/
-theorem topProd_le_esym {x : ℕ → ℝ} (hx : ∀ i, 0 ≤ x i) {n j : ℕ} (hj : j ≤ n) :
+theorem topProd_le_esym {x : ℕ → K} (hx : ∀ i, 0 ≤ x i) {n j : ℕ} (hj : j ≤ n) :
     topProd x j ≤ esym x n j := by
   rw [esym_eq_sum]
   refine single_le_sum (f := fun S => ∏ i ∈ S, x i)
@@ -47,15 +52,16 @@ theorem topProd_le_esym {x : ℕ → ℝ} (hx : ∀ i, 0 ≤ x i) {n j : ℕ} (h
   simp only [mem_range] at hi ⊢
   lia
 
-theorem esym_pos {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) {n j : ℕ} (hj : j ≤ n) :
+theorem esym_pos {x : ℕ → K} (hpos : ∀ i, 0 < x i) {n j : ℕ} (hj : j ≤ n) :
     0 < esym x n j := by
   have h1 : 0 < topProd x j := topProd_pos hpos j
   have h2 : topProd x j ≤ esym x n j :=
     topProd_le_esym (x := x) (fun i => (hpos i).le) hj
   linarith
 
+omit [IsStrictOrderedRing K] in
 /-- The second difference of leading products records a consecutive ratio. -/
-theorem topProd_sq {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) (j : ℕ) :
+theorem topProd_sq {x : ℕ → K} (hpos : ∀ i, 0 < x i) (j : ℕ) :
     (topProd x (j + 1)) ^ 2
       = topProd x j * topProd x (j + 2) * (x j / x (j + 1)) := by
   have h1 : topProd x (j + 1) = topProd x j * x j := by
@@ -66,9 +72,11 @@ theorem topProd_sq {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) (j : ℕ) :
   have hne : x (j + 1) ≠ 0 := ne_of_gt (hpos (j + 1))
   field_simp
 
+end Ordered
+
 /-- The elementary symmetric functions satisfy the usual add-one-variable
 recurrence. -/
-theorem esym_succ (x : ℕ → ℝ) (n j : ℕ) :
+theorem esym_succ (x : ℕ → K) (n j : ℕ) :
     esym x (n + 1) (j + 1) = esym x n (j + 1) + x n * esym x n j := by
   classical
   have hins : range (n + 1) = insert n (range n) := by
@@ -100,12 +108,12 @@ theorem esym_succ (x : ℕ → ℝ) (n j : ℕ) :
   have hnS : n ∉ S := fun h => hnot (hS.1 h)
   rw [Finset.prod_insert hnS]
 
-@[simp] theorem esym_zero (x : ℕ → ℝ) (n : ℕ) : esym x n 0 = 1 := by
+@[simp] theorem esym_zero (x : ℕ → K) (n : ℕ) : esym x n 0 = 1 := by
   rw [esym_eq_sum, Finset.powersetCard_zero]
   simp
 
 /-- The generating-function expansion of finite elementary symmetric values. -/
-theorem prod_one_add_eq_sum (x : ℕ → ℝ) (n : ℕ) (t : ℝ) :
+theorem prod_one_add_eq_sum (x : ℕ → K) (n : ℕ) (t : K) :
     ∏ i ∈ range n, (1 + x i * t) = ∑ k ∈ range (n + 1), esym x n k * t ^ k := by
   have h1 : ∏ i ∈ range n, (1 + x i * t)
       = ∑ U ∈ (range n).powerset, ∏ i ∈ U, (x i * t) := by

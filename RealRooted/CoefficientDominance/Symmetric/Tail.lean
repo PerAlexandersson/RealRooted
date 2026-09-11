@@ -1,4 +1,5 @@
 import RealRooted.CoefficientDominance.Symmetric.Finite
+import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Order.Interval.Finset.Nat
 
 /-!
@@ -9,9 +10,11 @@ namespace RealRooted.CoefficientDominance.Symmetric
 
 open Finset
 
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
 /-- The leading product times the remaining tail sum is one positive part of
 the next elementary symmetric function. -/
-theorem topProd_mul_tail_le {x : ℕ → ℝ} (hpos : ∀ i, 0 < x i) {n j : ℕ} :
+theorem topProd_mul_tail_le {x : ℕ → K} (hpos : ∀ i, 0 < x i) {n j : ℕ} :
     topProd x (j + 1) * (∑ l ∈ Ico (j + 1) n, x l) ≤ esym x n (j + 2) := by
   classical
   have hmem : ∀ l ∈ Ico (j + 1) n, insert l (range (j + 1)) ∈
