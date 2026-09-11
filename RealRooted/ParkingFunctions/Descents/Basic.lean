@@ -21,6 +21,26 @@ def IsParkingFunction {n : ℕ} (w : Fin n → Fin n) : Prop :=
   ∀ k : ℕ, k ≤ n →
     k ≤ (Finset.univ.filter fun i => (w i).val < k).card
 
+/-- The all-zero word, defined uniformly even at length zero. -/
+def zeroParkingWord (n : ℕ) : Fin n → Fin n := fun i =>
+  ⟨0, Nat.zero_lt_of_lt i.isLt⟩
+
+/-- The all-zero word is a parking function. -/
+theorem zeroParkingWord_isParkingFunction (n : ℕ) :
+    IsParkingFunction (zeroParkingWord n) := by
+  intro k hk
+  by_cases hk0 : k = 0
+  · simp [hk0]
+  · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+    have hfilter :
+        (Finset.univ.filter fun i : Fin n => (zeroParkingWord n i).val < k) =
+          Finset.univ := by
+      apply Finset.filter_eq_self.mpr
+      intro i _
+      simpa [zeroParkingWord] using hkpos
+    rw [hfilter, Finset.card_univ]
+    simpa using hk
+
 /-- The finite set of zero-based parking-function words of length `n`. -/
 noncomputable def parkingFunctions (n : ℕ) : Finset (Fin n → Fin n) := by
   classical
@@ -30,6 +50,13 @@ noncomputable def parkingFunctions (n : ℕ) : Finset (Fin n → Fin n) := by
 theorem mem_parkingFunctions_iff {n : ℕ} {w : Fin n → Fin n} :
     w ∈ parkingFunctions n ↔ IsParkingFunction w := by
   simp [parkingFunctions]
+
+theorem zeroParkingWord_mem_parkingFunctions (n : ℕ) :
+    zeroParkingWord n ∈ parkingFunctions n :=
+  mem_parkingFunctions_iff.mpr (zeroParkingWord_isParkingFunction n)
+
+theorem parkingFunctions_nonempty (n : ℕ) : (parkingFunctions n).Nonempty :=
+  ⟨zeroParkingWord n, zeroParkingWord_mem_parkingFunctions n⟩
 
 /-- The descent set of a word of length `n + 1`, indexed by its adjacent
 positions. -/
