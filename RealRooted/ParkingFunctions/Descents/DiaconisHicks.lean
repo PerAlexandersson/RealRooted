@@ -12,6 +12,8 @@ chains and selecting the unique parking representative are later work.
 
 namespace RealRooted.ParkingFunctions
 
+noncomputable section
+
 /-- Cyclically shift every value of a word on `Fin (n + 1)`. -/
 def cyclicValueShiftEquiv (n : ℕ) (c : Fin (n + 1)) :
     (Fin n → Fin (n + 1)) ≃ (Fin n → Fin (n + 1)) :=
@@ -55,5 +57,57 @@ theorem card_cyclicValueShift_orbit {n : ℕ} (hn : 0 < n)
     (Finset.univ.image fun c => cyclicValueShift c w).card = n + 1 := by
   rw [Finset.card_image_of_injective _ (cyclicValueShift_injective_in_shift hn w)]
   simp
+
+/-- Regard a parking word as a word on the alphabet with one additional
+letter. -/
+def parkingWordEmbed {n : ℕ} (w : Fin n → Fin n) : Fin n → Fin (n + 1) :=
+  fun i => (w i).castSucc
+
+@[simp]
+theorem parkingWordEmbed_apply {n : ℕ} (w : Fin n → Fin n) (i : Fin n) :
+    parkingWordEmbed w i = (w i).castSucc := rfl
+
+/-- The alphabet embedding of parking words is injective. -/
+theorem parkingWordEmbed_injective {n : ℕ} :
+    Function.Injective (parkingWordEmbed :
+      (Fin n → Fin n) → Fin n → Fin (n + 1)) := by
+  intro w v h
+  funext i
+  apply Fin.castSucc_injective
+  exact congrFun h i
+
+/-- Embedding the alphabet of a nonempty parking word preserves its descent
+set. -/
+theorem descentSet_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
+    descentSet (parkingWordEmbed w) = descentSet w := by
+  ext i
+  simp [mem_descentSet_iff, parkingWordEmbed]
+
+/-- Embedding the alphabet of a nonempty parking word preserves its descent
+number. -/
+theorem descentNumber_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
+    descentNumber (parkingWordEmbed w) = descentNumber w := by
+  rw [descentNumber, descentNumber, descentSet_parkingWordEmbed]
+
+/-- The embedded parking functions form a literal subfamily of words over the
+alphabet with one additional letter. -/
+def embeddedParkingFunctions (n : ℕ) : Finset (Fin (n + 1) → Fin (n + 2)) :=
+  (parkingFunctions (n + 1)).image parkingWordEmbed
+
+/-- The parking descent polynomial is the descent-generating polynomial of its
+embedded finite word family. -/
+theorem parkingDescentPolynomial_succ_eq_descentGeneratingPolynomial_embedded
+    (n : ℕ) :
+    parkingDescentPolynomial (n + 1) =
+      descentGeneratingPolynomial (R := ℝ) (embeddedParkingFunctions n) := by
+  unfold parkingDescentPolynomial descentGeneratingPolynomial embeddedParkingFunctions
+  rw [Finset.sum_image]
+  · apply Finset.sum_congr rfl
+    intro w hw
+    rw [descentNumber_parkingWordEmbed]
+  · intro w hw v hv hwv
+    exact parkingWordEmbed_injective hwv
+
+end
 
 end RealRooted.ParkingFunctions
