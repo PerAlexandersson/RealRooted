@@ -70,6 +70,22 @@ theorem mem_descentSet_iff {n : ℕ} {α : Type*} [LT α]
     i ∈ descentSet w ↔ w i.succ < w i.castSucc := by
   simp [descentSet]
 
+/-- Appending a final letter preserves every earlier descent. -/
+theorem mem_descentSet_snoc_castSucc_iff {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α)
+    (i : Fin n) :
+    i.castSucc ∈ descentSet (Fin.snoc w x) ↔ i ∈ descentSet w := by
+  simp only [mem_descentSet_iff]
+  simp only [Fin.succ_castSucc, Fin.snoc_castSucc]
+
+/-- The new final position after appending a letter is a descent exactly when
+the appended letter is smaller than the old final letter. -/
+theorem mem_descentSet_snoc_last_iff {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α) :
+    Fin.last n ∈ descentSet (Fin.snoc w x) ↔ x < w (Fin.last n) := by
+  simp only [mem_descentSet_iff]
+  simp
+
 /-- Number of descents of a finite word. -/
 def descentNumber {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) : ℕ :=
