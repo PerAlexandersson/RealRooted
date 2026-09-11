@@ -127,4 +127,25 @@ theorem networkMatrix_resolutionLambda_eq
   simpa [resolutionOfTotallyNonneg] using
     networkMatrix_eq_of_resolution (resolutionOfTotallyNonneg R hunit hR)
 
+/-- The canonical Whitney weights of a lower-unitriangular totally nonnegative
+matrix are nonnegative on their triangular domain. -/
+theorem resolutionLambda_nonneg
+    (R : LowerTriangularMatrix ℝ)
+    (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
+    (hR : Matrix.IsTotallyNonneg R)
+    (n k : ℕ) (hkn : k ≤ n) :
+    0 ≤ resolutionLambda R n k := by
+  simpa [resolutionOfTotallyNonneg] using
+    (resolutionOfTotallyNonneg R hunit hR).lambda_nonneg n k hkn
+
+/-- The canonical Whitney weights of a lower-unitriangular totally nonnegative
+matrix satisfy the normalized triangular-network zero condition. -/
+theorem resolutionLambda_normalized
+    (R : LowerTriangularMatrix ℝ)
+    (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
+    (hR : Matrix.IsTotallyNonneg R) :
+    ∀ n k, k ≤ n → resolutionLambda R n k = 0 → resolutionLambda R (n + 1) k = 0 := by
+  intro n k hkn hzero
+  exact resolutionOfTotallyNonneg_isNormalized hunit hR n k hkn hzero
+
 end RealRooted.BrandenLeite
