@@ -59,6 +59,42 @@ theorem finiteFreeAdditiveConvolutionGamma_eq_choose_ratio (d i j : ℕ)
   field_simp
   rw [Nat.sub_sub]
 
+/-- Inside the ambient degree box, the finite-free additive kernel is the
+ratio of descending factorials. -/
+theorem finiteFreeAdditiveConvolutionGamma_eq_descFactorial_ratio (d i j : ℕ)
+    (hij : i + j ≤ d) :
+    finiteFreeAdditiveConvolutionGamma d i j =
+      (d.descFactorial (i + j) : ℝ) /
+        ((d.descFactorial i : ℝ) * d.descFactorial j) := by
+  unfold finiteFreeAdditiveConvolutionGamma
+  have hi : i ≤ d := by lia
+  have hj : j ≤ d := by lia
+  have hdesc_i : (d.descFactorial i : ℝ) ≠ 0 := by
+    exact_mod_cast Nat.ne_of_gt (Nat.descFactorial_pos.mpr hi)
+  have hdesc_j : (d.descFactorial j : ℝ) ≠ 0 := by
+    exact_mod_cast Nat.ne_of_gt (Nat.descFactorial_pos.mpr hj)
+  have hdesc_ij : (d.descFactorial (i + j) : ℝ) ≠ 0 := by
+    exact_mod_cast Nat.ne_of_gt (Nat.descFactorial_pos.mpr hij)
+  have hi' := congrArg (fun n : ℕ => (n : ℝ))
+    (Nat.factorial_mul_descFactorial hi)
+  have hj' := congrArg (fun n : ℕ => (n : ℝ))
+    (Nat.factorial_mul_descFactorial hj)
+  have hij' := congrArg (fun n : ℕ => (n : ℝ))
+    (Nat.factorial_mul_descFactorial hij)
+  push_cast at hi' hj' hij'
+  field_simp
+  rw [Nat.sub_sub]
+  have hfactor : ((d - j).factorial : ℝ) * d.descFactorial j =
+      ((d - (i + j)).factorial : ℝ) * d.descFactorial (i + j) :=
+    hj'.trans hij'.symm
+  calc
+    _ = ((d - i).factorial : ℝ) * d.descFactorial i *
+        (((d - j).factorial : ℝ) * d.descFactorial j) := by ring
+    _ = ((d - i).factorial : ℝ) * d.descFactorial i *
+        (((d - (i + j)).factorial : ℝ) * d.descFactorial (i + j)) := by
+      rw [hfactor]
+    _ = _ := by rw [hi']; ring
+
 /-- The coefficient in degree-boxed finite-free additive convolution. -/
 def finiteFreeAdditiveConvolutionCoeff (d : ℕ) (p q : ℝ[X]) (k : ℕ) : ℝ :=
   ∑ i ∈ Finset.range (k + 1),
