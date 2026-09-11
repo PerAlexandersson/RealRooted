@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1168
+      "max_modules": 1169
     },
     "RealRooted.Production": {
-      "max_modules": 1047
+      "max_modules": 1048
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -26,6 +26,9 @@
     },
     "RealRooted.ParkingFunctions.Descents.LiteralRecurrence": {
       "max_modules": 139
+    },
+    "RealRooted.ParkingFunctions.Descents.DiaconisHicks": {
+      "max_modules": 2
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
@@ -2143,6 +2146,7 @@
     "RealRooted.PFPolynomial",
     "RealRooted.PFPolynomial.LinearFactor",
     "RealRooted.ParkingFunctions.Descents.Literal",
+    "RealRooted.ParkingFunctions.Descents.DiaconisHicks",
     "RealRooted.ParkingFunctions.Descents.LiteralRecurrence",
     "RealRooted.ParkingFunctions.Descents.Words",
     "RealRooted.Transforms.BrandenE.OrderedBell",

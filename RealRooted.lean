@@ -741,6 +741,7 @@ import RealRooted.OscillatoryInterlacing
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.Descents.Basic
+import RealRooted.ParkingFunctions.Descents.DiaconisHicks
 import RealRooted.ParkingFunctions.Descents.Literal
 import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
 import RealRooted.ParkingFunctions.Descents.Words
