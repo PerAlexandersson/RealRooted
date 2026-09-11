@@ -133,10 +133,80 @@ theorem reflect_chowPolynomial_succ (R : LowerTriangularMatrix ℝ)
   rw [hPshift, hreflectP, hd]
   ring
 
+private theorem chowDerangement_succ_eq_of_reflection_data
+    (R : LowerTriangularMatrix ℝ) (hdiag : ∀ n, R n n = 1)
+    (d H : ℕ → ℝ[X]) (n : ℕ)
+    (hdreflect : ∀ n, (d n).reflect n = d n)
+    (hHreflect : ∀ n, (H (n + 1)).reflect (n + 1) = X * H (n + 1))
+    (hrow : ∀ n, H n = ∑ k ∈ Finset.range (n + 1), C (R n k) * d k)
+    (hdegree : ∀ n, (d n).natDegree ≤ n) :
+    d (n + 1) = X * chowS n (∑ k : Fin (n + 1), C (R (n + 1) k) * d k) := by
+  let P : ℝ[X] := ∑ k : Fin (n + 1), C (R (n + 1) k) * d k
+  let S : ℝ[X] := chowS n P
+  have hPdegree : P.natDegree ≤ n := by
+    refine Polynomial.natDegree_sum_le_of_forall_le Finset.univ
+      (fun k : Fin (n + 1) => C (R (n + 1) k) * d k) ?_
+    intro k _
+    refine (natDegree_C_mul_le _ _).trans ?_
+    exact (hdegree k).trans (Nat.lt_succ_iff.mp k.isLt)
+  have hH : H (n + 1) = P + d (n + 1) := by
+    rw [hrow, Finset.sum_range_succ]
+    have hsum :
+        (∑ k ∈ Finset.range (n + 1), C (R (n + 1) k) * d k) = P := by
+      exact (Fin.sum_univ_eq_sum_range (fun k => C (R (n + 1) k) * d k) (n + 1)).symm
+    rw [hsum]
+    simp [hdiag]
+  have hPshift : P.reflect (n + 1) = P.reflect n * X := by
+    simpa [Nat.add_comm] using
+      (reflect_mul P (1 : ℝ[X]) (F := n) (G := 1) hPdegree (by simp))
+  have hreflection := hHreflect n
+  rw [hH, reflect_add, hPshift, hdreflect] at hreflection
+  have hS : (X - 1) * S = P.reflect n - P := X_sub_one_mul_chowS n P hPdegree
+  have hmul : (X - 1) * d (n + 1) = X * ((X - 1) * S) := by
+    calc
+      (X - 1) * d (n + 1) = X * (P.reflect n - P) := by
+        linear_combination -hreflection
+      _ = X * ((X - 1) * S) := by rw [hS]
+  apply (monic_X_sub_C (1 : ℝ)).isRegular.left
+  calc
+    (X - 1) * d (n + 1) = X * ((X - 1) * S) := hmul
+    _ = (X - 1) * (X * S) := by ring
+
 /-- The defining row expansion for the Chow polynomial. -/
 theorem chowPolynomial_eq (R : LowerTriangularMatrix ℝ) (n : ℕ) :
     chowPolynomial R n = ∑ k ∈ Finset.range (n + 1), C (R n k) * chowDerangement R k :=
   rfl
+
+/-- The bounded reflection data in Corollary 3.1 uniquely determine the
+Chow-derangement and Chow-polynomial sequences of a unit-diagonal matrix. -/
+theorem chowDerangement_chowPolynomial_unique (R : LowerTriangularMatrix ℝ)
+    (hdiag : ∀ n, R n n = 1) (d H : ℕ → ℝ[X])
+    (hdzero : d 0 = 1)
+    (hdreflect : ∀ n, (d n).reflect n = d n)
+    (hHreflect : ∀ n, (H (n + 1)).reflect (n + 1) = X * H (n + 1))
+    (hrow : ∀ n, H n = ∑ k ∈ Finset.range (n + 1), C (R n k) * d k)
+    (hdegree : ∀ n, (d n).natDegree ≤ n) :
+    d = chowDerangement R ∧ H = chowPolynomial R := by
+  have hd : ∀ n, d n = chowDerangement R n := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+      cases n with
+      | zero => simpa using hdzero
+      | succ n =>
+        rw [chowDerangement_succ_eq_of_reflection_data R hdiag d H n hdreflect hHreflect hrow
+          hdegree, chowDerangement_succ]
+        apply congrArg (fun P : ℝ[X] => X * chowS n P)
+        apply Finset.sum_congr rfl
+        intro k _
+        rw [ih k k.isLt]
+  constructor
+  · exact funext hd
+  · funext n
+    rw [hrow, chowPolynomial_eq]
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [hd]
 
 /-- A unit entry at the initial diagonal position gives the expected initial
 Chow polynomial. -/
