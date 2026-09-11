@@ -215,30 +215,22 @@ theorem loweringEulerStep_degree_pos
     (hpdeg : p.natDegree = D) (hpPos : HasPosLeadingCoeff p) :
     (loweringEulerStep M p).natDegree = D ∧
       HasPosLeadingCoeff (loweringEulerStep M p) := by
-  have hupper : (loweringEulerStep M p).natDegree ≤ D := by
-    rw [natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    rw [coeff_loweringEulerStep]
-    have hpk : p.coeff k = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by lia)
-    have hpks : p.coeff (k + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by lia)
-    simp [hpk, hpks]
-  have hpD1 : p.coeff (D + 1) = 0 :=
-    coeff_eq_zero_of_natDegree_lt (by lia)
-  have htop : p.coeff D = p.leadingCoeff := by
-    simpa [hpdeg] using p.coeff_natDegree
   have hweight : 0 < (M : ℝ) - (D : ℝ) := by
     have hcast : (D : ℝ) + 1 ≤ (M : ℝ) := by exact_mod_cast hM
     linarith
-  have hcoeff : 0 < (loweringEulerStep M p).coeff D := by
-    rw [coeff_loweringEulerStep, hpD1, htop]
-    simp only [mul_zero, add_zero]
-    exact mul_pos hweight hpPos
-  have houtdeg := natDegree_eq_of_le_of_coeff_ne_zero hupper hcoeff.ne'
-  refine ⟨houtdeg, ?_⟩
-  rw [HasPosLeadingCoeff, leadingCoeff, houtdeg]
-  exact hcoeff
+  have htop : ((M : ℝ) + (-1 : ℝ) * (p.natDegree : ℝ)) * p.leadingCoeff ≠ 0 := by
+    rw [hpdeg, show (M : ℝ) + (-1 : ℝ) * (D : ℝ) = (M : ℝ) - (D : ℝ) by ring]
+    exact (mul_pos hweight hpPos).ne'
+  have hstep := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+    p (M : ℝ) 1 (-1) htop
+  have hlower : loweringEulerStep M p =
+      C (M : ℝ) * p + (C 1 + C (-1 : ℝ) * X) * p.derivative := by
+    simp only [loweringEulerStep, map_one, map_neg]
+    ring
+  rw [hlower]
+  refine ⟨by simpa [hpdeg] using hstep.1, ?_⟩
+  rw [HasPosLeadingCoeff, hstep.2, hpdeg]
+  simpa only [sub_eq_add_neg, neg_one_mul] using mul_pos hweight hpPos
 
 /-- A lowering Euler operator preserves an oriented PF interlacing pair on
 the top degree of a fixed finite-symbol box. -/

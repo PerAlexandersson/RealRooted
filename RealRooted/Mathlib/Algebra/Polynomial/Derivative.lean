@@ -19,6 +19,54 @@ lemma coeff_X_mul_derivative (p : R[X]) (k : ℕ) :
     push_cast
     ring
 
+/-- The coefficient of an affine Euler derivative step. -/
+lemma coeff_C_mul_add_affine_mul_derivative
+    (p : R[X]) (u v w : R) (k : ℕ) :
+    (C u * p + (C v + C w * X) * p.derivative).coeff k =
+      (u + w * (k : R)) * p.coeff k +
+        v * ((k : R) + 1) * p.coeff (k + 1) := by
+  rw [show (C v + C w * X) * p.derivative =
+      C v * p.derivative + C w * (X * p.derivative) by ring]
+  simp only [coeff_add, coeff_C_mul]
+  rw [coeff_derivative, coeff_X_mul_derivative]
+  ring
+
+/-- An affine Euler derivative step cannot raise degree. -/
+lemma natDegree_C_mul_add_affine_mul_derivative_le
+    (p : R[X]) (u v w : R) :
+    (C u * p + (C v + C w * X) * p.derivative).natDegree ≤ p.natDegree := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_C_mul_add_affine_mul_derivative]
+  have hpk : p.coeff k = 0 := coeff_eq_zero_of_natDegree_lt hk
+  have hpks : p.coeff (k + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (by lia)
+  simp [hpk, hpks]
+
+/-- The prospective top coefficient of an affine Euler derivative step. -/
+lemma coeff_C_mul_add_affine_mul_derivative_natDegree
+    (p : R[X]) (u v w : R) :
+    (C u * p + (C v + C w * X) * p.derivative).coeff p.natDegree =
+      (u + w * (p.natDegree : R)) * p.leadingCoeff := by
+  rw [coeff_C_mul_add_affine_mul_derivative,
+    coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_self p.natDegree), coeff_natDegree]
+  ring
+
+/-- A nonzero prospective top coefficient gives the exact degree and leading
+coefficient of an affine Euler derivative step. -/
+lemma natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+    (p : R[X]) (u v w : R)
+    (htop : (u + w * (p.natDegree : R)) * p.leadingCoeff ≠ 0) :
+    let q := C u * p + (C v + C w * X) * p.derivative
+    q.natDegree = p.natDegree ∧
+      q.leadingCoeff = (u + w * (p.natDegree : R)) * p.leadingCoeff := by
+  dsimp only
+  have hle := natDegree_C_mul_add_affine_mul_derivative_le p u v w
+  have hcoeff := coeff_C_mul_add_affine_mul_derivative_natDegree p u v w
+  have hdegree := natDegree_eq_of_le_of_coeff_ne_zero hle (by rw [hcoeff]; exact htop)
+  refine ⟨hdegree, ?_⟩
+  rw [← coeff_natDegree, hdegree, hcoeff]
+
 /-- The coefficient of `X * (1 - X) * p'` at `k + 1`. -/
 lemma coeff_X_sub_X_sq_mul_derivative (p : R[X]) (k : ℕ) :
     ((X - X ^ 2) * p.derivative).coeff (k + 1) =

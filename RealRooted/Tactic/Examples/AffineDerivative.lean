@@ -1,9 +1,44 @@
 import RealRooted.Tactic.AffineDerivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 open Polynomial
 
 namespace RealRooted
 namespace Tactic
+
+/-- Regression coverage for the zero, constant, cancellation, and nonzero-top
+boundaries of the generic affine Euler degree API. -/
+example :
+    (C (3 : ℤ) * (0 : ℤ[X]) +
+      (C 2 + C (-1 : ℤ) * X) * (0 : ℤ[X]).derivative).natDegree ≤
+      (0 : ℤ[X]).natDegree := by
+  exact Polynomial.natDegree_C_mul_add_affine_mul_derivative_le
+    (0 : ℤ[X]) 3 2 (-1)
+
+example :
+    (C (3 : ℤ) * (1 : ℤ[X]) +
+      (C 2 + C (-1 : ℤ) * X) * (1 : ℤ[X]).derivative).natDegree = 0 ∧
+      (C (3 : ℤ) * (1 : ℤ[X]) +
+        (C 2 + C (-1 : ℤ) * X) * (1 : ℤ[X]).derivative).leadingCoeff = 3 := by
+  simpa using
+    (Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+      (1 : ℤ[X]) 3 2 (-1) (by norm_num))
+
+example :
+    (C (1 : ℤ) * X +
+      (C 0 + C (-1 : ℤ) * X) * X.derivative : ℤ[X]).coeff 1 = 0 := by
+  have h := Polynomial.coeff_C_mul_add_affine_mul_derivative
+    (X : ℤ[X]) 1 0 (-1) 1
+  norm_num at h ⊢
+
+example :
+    (C (2 : ℤ) * X +
+      (C 0 + C (-1 : ℤ) * X) * X.derivative : ℤ[X]).natDegree = 1 ∧
+      (C (2 : ℤ) * X +
+        (C 0 + C (-1 : ℤ) * X) * X.derivative).leadingCoeff = 1 := by
+  simpa using
+    (Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+      (X : ℤ[X]) 2 0 (-1) (by norm_num))
 
 example {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ) :
     (C c * f + (1 - X) * f.derivative).eval r =

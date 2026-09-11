@@ -179,14 +179,27 @@ theorem prec_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
     intro hzero
     simp_all
   have hpolar0 : polarTheta M p ≠ 0 := by
-    have hlead : p.coeff p.natDegree ≠ 0 := by simp_all
     have hfactor : ((M : ℝ) - (p.natDegree : ℝ)) ≠ 0 := by
       have : (p.natDegree : ℝ) < M := by exact_mod_cast hpM
       positivity
+    have htop : ((M : ℝ) + (-1 : ℝ) * (p.natDegree : ℝ)) * p.leadingCoeff ≠ 0 := by
+      rw [show (M : ℝ) + (-1 : ℝ) * (p.natDegree : ℝ) =
+        (M : ℝ) - (p.natDegree : ℝ) by ring]
+      exact mul_ne_zero hfactor (p.leadingCoeff_ne_zero.mpr hp0)
+    have hstep := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+      p (M : ℝ) 0 (-1) htop
+    rw [show polarTheta M p =
+      C (M : ℝ) * p + (C 0 + C (-1 : ℝ) * X) * p.derivative by
+        unfold polarTheta theta
+        simp only [map_zero, map_neg, map_one]
+        ring]
     intro hzero
-    have hcoeff := coeff_polarTheta M p p.natDegree
-    rw [hzero] at hcoeff
-    simp_all
+    have hlead :
+        (C (M : ℝ) * p + (C 0 + C (-1 : ℝ) * X) * p.derivative).leadingCoeff = 0 := by
+      rw [hzero]
+      simp
+    rw [hstep.2] at hlead
+    exact htop hlead
   exact prec_derivative_polarTheta_of_le hp hpdeg (le_of_lt hpM)
     hpolar0 hpolar_p
 
