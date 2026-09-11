@@ -275,6 +275,27 @@ theorem isParkingWord_sortChains_iff {n : ℕ} (L : List (List (Fin n)))
     IsParkingWord (sortChains L w) ↔ IsParkingWord w :=
   isParkingWord_iff_of_multiset_eq (map_sortChains_univ L hL w)
 
+/-- The Diaconis--Hicks value action followed by sorting along a chain family. -/
+def cyclicSortChains {n : ℕ} (L : List (List (Fin n))) (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
+  sortChains L (cyclicValueShift c w)
+
+/-- Chain sorting does not affect whether a cyclic value shift is a parking word. -/
+theorem isParkingWord_cyclicSortChains_iff {n : ℕ} (L : List (List (Fin n)))
+    (hL : ∀ l ∈ L, l.Nodup) (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) :
+    IsParkingWord (cyclicSortChains L c w) ↔ IsParkingWord (cyclicValueShift c w) := by
+  exact isParkingWord_sortChains_iff L hL _
+
+/-- Every cyclic-shift-and-sort orbit has a unique parking-word representative. -/
+theorem existsUnique_isParkingWord_cyclicSortChains {n : ℕ} (L : List (List (Fin n)))
+    (hL : ∀ l ∈ L, l.Nodup) (w : Fin n → Fin (n + 1)) :
+    ∃! c : Fin (n + 1), IsParkingWord (cyclicSortChains L c w) := by
+  obtain ⟨c, hc, hunique⟩ := existsUnique_isParkingWord_cyclicValueShift w
+  refine ⟨c, (isParkingWord_cyclicSortChains_iff L hL c w).mpr hc, ?_⟩
+  intro c' hc'
+  exact hunique c' ((isParkingWord_cyclicSortChains_iff L hL c' w).mp hc')
+
 @[simp]
 theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) (i : Fin n) :
@@ -396,6 +417,15 @@ theorem existsUnique_cyclicValueShift_mem_embeddedParkingFunctions {n : ℕ}
     ∃! c : Fin (n + 2), cyclicValueShift c w ∈ embeddedParkingFunctions n := by
   simpa only [mem_embeddedParkingFunctions_iff_isParkingWord] using
     (existsUnique_isParkingWord_cyclicValueShift w)
+
+/-- Sorting along duplicate-free chains preserves the unique cyclic parking
+representative in the embedded finite family. -/
+theorem existsUnique_cyclicSortChains_mem_embeddedParkingFunctions {n : ℕ}
+    (L : List (List (Fin (n + 1)))) (hL : ∀ l ∈ L, l.Nodup)
+    (w : Fin (n + 1) → Fin (n + 2)) :
+    ∃! c : Fin (n + 2), cyclicSortChains L c w ∈ embeddedParkingFunctions n := by
+  simpa only [mem_embeddedParkingFunctions_iff_isParkingWord] using
+    (existsUnique_isParkingWord_cyclicSortChains L hL w)
 
 /-- The parking descent polynomial is the descent-generating polynomial of its
 embedded finite word family. -/
