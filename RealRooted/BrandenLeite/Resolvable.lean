@@ -23,10 +23,11 @@ namespace BrandenLeite
 
 /-- Data witnessing that a lower unitriangular matrix is resolvable in the
 sense of Brändén--Saud Leite, Definition 2.2. -/
-structure Resolution (R : LowerTriangularMatrix ℝ) where
+structure Resolution {S : Type*} [CommSemiring S] [LE S]
+    (R : LowerTriangularMatrix S) where
   lowerUnitriangular : LowerTriangularMatrix.IsLowerUnitriangular R
-  lambda : ℕ → ℕ → ℝ
-  polynomial : ℕ → ℕ → ℝ[X]
+  lambda : ℕ → ℕ → S
+  polynomial : ℕ → ℕ → S[X]
   lambda_nonneg : ∀ n k, k ≤ n → 0 ≤ lambda n k
   monic : ∀ n k, k ≤ n → (polynomial n k).Monic
   row_zero : ∀ n, polynomial n 0 = LowerTriangularMatrix.rowPolynomial R n
@@ -37,12 +38,14 @@ structure Resolution (R : LowerTriangularMatrix ℝ) where
       polynomial (n + 1) (k + 1) + C (lambda n k) * polynomial n k
 
 /-- A matrix is resolvable when it admits resolution data. -/
-def IsResolvable (R : LowerTriangularMatrix ℝ) : Prop :=
+def IsResolvable {S : Type*} [CommSemiring S] [LE S]
+    (R : LowerTriangularMatrix S) : Prop :=
   Nonempty (Resolution R)
 
 namespace Resolution
 
-variable {R : LowerTriangularMatrix ℝ} (resolution : Resolution R)
+variable {S : Type*} [CommSemiring S] [LE S]
+  {R : LowerTriangularMatrix S} (resolution : Resolution R)
 
 /-- The paper's normalization condition for resolution weights. -/
 def IsNormalized : Prop :=
@@ -85,7 +88,8 @@ theorem rowPolynomial_eq_pow_add_sum (n : ℕ) :
 /-- The recurrence determines the resolving polynomials on the triangular
 range once the weight array is fixed.  This does not recover the weights from
 the matrix; normalized weight uniqueness is the separate network theorem. -/
-theorem polynomial_eq_of_lambda_eq {R : LowerTriangularMatrix ℝ}
+theorem polynomial_eq_of_lambda_eq {S : Type*} [CommSemiring S] [LE S]
+    {R : LowerTriangularMatrix S}
     (left right : Resolution R)
     (hlambda : ∀ n k, k ≤ n → left.lambda n k = right.lambda n k) :
     ∀ n k, k ≤ n → left.polynomial n k = right.polynomial n k := by
