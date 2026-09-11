@@ -159,6 +159,99 @@ theorem coeff_finiteFreeAdditiveOddLift_two_mul_add_one (p : ℝ[X]) (n : ℕ) :
   rw [show 2 * n + 1 = 2 * n + 1 by rfl, Polynomial.coeff_X_mul]
   exact coeff_finiteFreeAdditiveEvenLift_two_mul p n
 
+/-- An odd raw deficit forces a vanishing finite-free additive-convolution
+coefficient when both inputs vanish at every odd deficit in the ambient box. -/
+theorem finiteFreeAdditiveConvolutionCoeff_eq_zero_of_odd (d k : ℕ) (p q : ℝ[X])
+    (hk : k ≤ d) (hp : ∀ r ≤ d, Odd r → p.coeff (d - r) = 0)
+    (hq : ∀ r ≤ d, Odd r → q.coeff (d - r) = 0) (hodd : Odd k) :
+    finiteFreeAdditiveConvolutionCoeff d p q k = 0 := by
+  unfold finiteFreeAdditiveConvolutionCoeff
+  apply Finset.sum_eq_zero
+  intro i hi
+  have hi_le : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  rcases Nat.even_or_odd i with hi_even | hi_odd
+  · have hki_odd : Odd (k - i) := by
+      apply (Nat.odd_sub hi_le).mpr
+      exact iff_of_true hodd hi_even
+    rw [hq (k - i) ((Nat.sub_le k i).trans hk) hki_odd]
+    ring
+  · rw [hp i (hi_le.trans hk) hi_odd]
+    ring
+
+private theorem coeff_finiteFreeAdditiveEvenLift_of_odd (p : ℝ[X]) {n : ℕ}
+    (hn : Odd n) :
+    (finiteFreeAdditiveEvenLift p).coeff n = 0 := by
+  rcases hn with ⟨r, hr⟩
+  rw [hr]
+  exact coeff_finiteFreeAdditiveEvenLift_two_mul_add_one p r
+
+private theorem coeff_finiteFreeAdditiveOddLift_of_even (p : ℝ[X]) {n : ℕ}
+    (hn : Even n) :
+    (finiteFreeAdditiveOddLift p).coeff n = 0 := by
+  rcases hn with ⟨r, hr⟩
+  rw [hr, show r + r = 2 * r by ring]
+  cases r with
+  | zero => exact coeff_finiteFreeAdditiveOddLift_zero p
+  | succ r =>
+    rw [show 2 * (r + 1) = 2 * r + 2 by ring]
+    exact coeff_finiteFreeAdditiveOddLift_two_mul_add_two p r
+
+private theorem coeff_finiteFreeAdditiveEvenLift_descending_odd (m : ℕ) (p : ℝ[X])
+    {r : ℕ} (hr : r ≤ 2 * m) (hodd : Odd r) :
+    (finiteFreeAdditiveEvenLift p).coeff (2 * m - r) = 0 := by
+  apply coeff_finiteFreeAdditiveEvenLift_of_odd
+  apply (Nat.odd_sub hr).mpr
+  exact iff_of_false
+    (Nat.not_odd_iff_even.mpr (even_two_mul m))
+    (Nat.not_even_iff_odd.mpr hodd)
+
+private theorem coeff_finiteFreeAdditiveOddLift_descending_odd (m : ℕ) (p : ℝ[X])
+    {r : ℕ} (hr : r ≤ 2 * m + 1) (hodd : Odd r) :
+    (finiteFreeAdditiveOddLift p).coeff (2 * m + 1 - r) = 0 := by
+  apply coeff_finiteFreeAdditiveOddLift_of_even
+  apply (Nat.even_sub hr).mpr
+  exact iff_of_false
+    (Nat.not_even_iff_odd.mpr (odd_two_mul_add_one m))
+    (Nat.not_even_iff_odd.mpr hodd)
+
+/-- In an even ambient degree, finite-free additive convolution of two even
+lifts has no odd-degree coefficients. -/
+theorem coeff_finiteFreeAdditiveConvolution_evenLift_even (m n : ℕ) (p q : ℝ[X]) :
+    (finiteFreeAdditiveConvolution (2 * m)
+      (finiteFreeAdditiveEvenLift p) (finiteFreeAdditiveEvenLift q)).coeff
+      (2 * n + 1) = 0 := by
+  by_cases hle : 2 * n + 1 ≤ 2 * m
+  · rw [coeff_finiteFreeAdditiveConvolution_of_le _ _ _ hle]
+    apply finiteFreeAdditiveConvolutionCoeff_eq_zero_of_odd
+    · exact Nat.sub_le _ _
+    · intro r hr hodd
+      exact coeff_finiteFreeAdditiveEvenLift_descending_odd m p hr hodd
+    · intro r hr hodd
+      exact coeff_finiteFreeAdditiveEvenLift_descending_odd m q hr hodd
+    · apply (Nat.odd_sub hle).mpr
+      exact iff_of_false
+        (Nat.not_odd_iff_even.mpr (even_two_mul m))
+        (Nat.not_even_iff_odd.mpr (odd_two_mul_add_one n))
+  · exact coeff_finiteFreeAdditiveConvolution_of_gt _ _ _ (Nat.lt_of_not_ge hle)
+
+/-- In an odd ambient degree, finite-free additive convolution of two odd
+lifts has no even-degree coefficients. -/
+theorem coeff_finiteFreeAdditiveConvolution_oddLift_odd (m n : ℕ) (p q : ℝ[X]) :
+    (finiteFreeAdditiveConvolution (2 * m + 1)
+      (finiteFreeAdditiveOddLift p) (finiteFreeAdditiveOddLift q)).coeff
+      (2 * n) = 0 := by
+  by_cases hle : 2 * n ≤ 2 * m + 1
+  · rw [coeff_finiteFreeAdditiveConvolution_of_le _ _ _ hle]
+    apply finiteFreeAdditiveConvolutionCoeff_eq_zero_of_odd
+    · exact Nat.sub_le _ _
+    · intro r hr hodd
+      exact coeff_finiteFreeAdditiveOddLift_descending_odd m p hr hodd
+    · intro r hr hodd
+      exact coeff_finiteFreeAdditiveOddLift_descending_odd m q hr hodd
+    · apply (Nat.odd_sub hle).mpr
+      exact iff_of_true (odd_two_mul_add_one m) (even_two_mul n)
+  · exact coeff_finiteFreeAdditiveConvolution_of_gt _ _ _ (Nat.lt_of_not_ge hle)
+
 end
 
 end RealRooted
