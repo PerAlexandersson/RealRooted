@@ -42,4 +42,13 @@ strict descent along the original word positions. -/
 def descentChains {n : ℕ} (S : Finset (Fin n)) : List (List (Fin (n + 1))) :=
   (descentRuns S).map List.reverse
 
+/-- Consecutive positions in a reversed descent chain read a selected edge in
+the descent direction. -/
+theorem isChain_of_mem_descentChains {n : ℕ} (S : Finset (Fin n))
+    {l : List (Fin (n + 1))} (hl : l ∈ descentChains S) :
+    l.IsChain fun i j => isDescentStep S j i := by
+  rw [descentChains, List.mem_map] at hl
+  obtain ⟨run, hrun, rfl⟩ := hl
+  exact List.isChain_reverse.mpr (isChain_of_mem_descentRuns S hrun)
+
 end RealRooted.ParkingFunctions
