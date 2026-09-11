@@ -70,6 +70,10 @@ def networkMatrix {R : Type*} [CommSemiring R] (weights : ℕ → ℕ → R) :
     LowerTriangularMatrix R :=
   networkPathSum weights
 
+/-- Delete the first row and column of a triangular-network weight array. -/
+def networkShift {R : Type*} (weights : ℕ → ℕ → R) (n k : ℕ) : R :=
+  weights (n + 1) (k + 1)
+
 /-- The resolving polynomial obtained from weighted paths starting at `(n, k)`. -/
 def networkResolvingPolynomial (weights : ℕ → ℕ → ℝ) (n k : ℕ) : ℝ[X] :=
   ∑ j ∈ Finset.range (n + 1), C (networkPathSumFrom weights n k j) * X ^ j
@@ -142,6 +146,16 @@ theorem networkPathSumFrom_zero_eq {R : Type*} [CommSemiring R]
     networkPathWeightFrom networkPathWeight
   simp only [Nat.zero_le, true_and, if_pos hj, Nat.sub_zero, zero_add]
 
+/-- Starting in column zero recovers the ordinary path count, including when
+the target lies beyond its row and both sides vanish. -/
+theorem networkPathSumFrom_zero_eq_all {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n j : ℕ) :
+    networkPathSumFrom weights n 0 j = networkPathSum weights n j := by
+  by_cases hj : j ≤ n
+  · exact networkPathSumFrom_zero_eq weights hj
+  · rw [networkPathSumFrom_eq_zero_of_lt_right weights (by lia)]
+    rw [networkPathSum_eq_zero_of_lt weights (by lia)]
+
 private theorem sum_powersetCard_succ_insert {α M : Type*} [DecidableEq α]
     [AddCommMonoid M] {x : α} {s : Finset α} (hx : x ∉ s) (r : ℕ)
     (f : Finset α → M) :
@@ -207,6 +221,29 @@ private theorem horizontalBefore_le {n : ℕ} (s : Finset (Fin n)) (t : Fin n) :
   apply Finset.card_le_card
   intro i hi
   simpa using (Finset.mem_filter.mp hi).2
+
+/-- Reindexing a path starting in column one gives a path for the shifted
+weight array. -/
+theorem networkPathWeightFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n : ℕ) (s : Finset (Fin n)) :
+    networkPathWeightFrom weights (n + 1) 1 s =
+      networkPathWeight (networkShift weights) s := by
+  unfold networkPathWeightFrom networkPathWeight
+  apply Finset.prod_congr rfl
+  intro t _
+  by_cases ht : t ∈ s
+  · simp [ht]
+  · rw [if_neg ht, if_neg ht]
+    have hbefore : horizontalBefore s t ≤ t.val := horizontalBefore_le s t
+    have hsub : t.val - horizontalBefore s t ≤ n := by
+      exact (Nat.sub_le _ _).trans (Nat.le_of_lt t.isLt)
+    have hpos : 0 < n - (t.val - horizontalBefore s t) := by
+      apply Nat.sub_pos_of_lt
+      exact (Nat.sub_le _ _).trans_lt t.isLt
+    rw [Nat.succ_sub hsub]
+    simp only [networkShift, Nat.succ_sub_one]
+    rw [Nat.sub_add_cancel (Nat.succ_le_iff.mpr hpos)]
+    simp [Nat.add_comm]
 
 private theorem networkPathWeightFrom_succ_map {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) (n k : ℕ) {length : ℕ} (s : Finset (Fin length)) :
@@ -389,6 +426,22 @@ theorem networkPathSumFrom_step {R : Type*} [CommSemiring R]
   cases r with
   | zero => simp at hkj
   | succ r => simpa [Nat.add_assoc] using networkPathSumFrom_succ_target weights hkn r
+
+/-- Reindexing the path sum from column one gives the path sum of the shifted
+triangular network. -/
+theorem networkPathSumFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
+    (weights : ℕ → ℕ → R) (n k : ℕ) :
+    networkPathSumFrom weights (n + 1) 1 (k + 1) =
+      networkPathSum (networkShift weights) n k := by
+  by_cases hkn : k ≤ n
+  · unfold networkPathSumFrom networkPathsFrom networkPathSum networkPaths
+    simp only [Nat.succ_sub_one]
+    rw [if_pos ⟨Nat.succ_le_succ (Nat.zero_le k), Nat.succ_le_succ hkn⟩]
+    apply Finset.sum_congr rfl
+    intro s hs
+    rw [networkPathWeightFrom_one_eq_networkShift]
+  · rw [networkPathSumFrom_eq_zero_of_lt_right weights (by lia)]
+    rw [networkPathSum_eq_zero_of_lt (networkShift weights) (by lia)]
 
 private theorem coeff_networkResolvingPolynomial (weights : ℕ → ℕ → ℝ) (n k j : ℕ)
     (hj : j ≤ n) :

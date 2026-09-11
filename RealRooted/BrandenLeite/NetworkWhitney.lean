@@ -28,4 +28,28 @@ theorem firstColumnRatio_networkMatrix
     simp
   · exact mul_div_cancel_right₀ _ hzero
 
+/-- One Whitney reduction of a normalized literal-network path matrix is the
+path matrix of the shifted network. -/
+theorem whitneyReduce_networkMatrix_eq_networkShift
+    (weights : ℕ → ℕ → ℝ)
+    (hnormalized : ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0) :
+    whitneyReduce (networkMatrix weights) = networkMatrix (networkShift weights) := by
+  ext n k
+  unfold whitneyReduce
+  rw [firstColumnRatio_networkMatrix weights hnormalized]
+  change networkPathSum weights (n + 1) (k + 1) -
+      weights n 0 * networkPathSum weights n (k + 1) =
+    networkPathSum (networkShift weights) n k
+  by_cases hkn : k ≤ n
+  · have hstep := networkPathSumFrom_step weights (n := n) (k := 0)
+      (Nat.zero_le n) (k + 1)
+    rw [networkPathSumFrom_zero_eq_all] at hstep
+    rw [networkPathSumFrom_zero_eq_all] at hstep
+    rw [networkPathSumFrom_one_eq_networkShift] at hstep
+    exact sub_eq_iff_eq_add.mpr (by simpa [add_comm] using hstep)
+  · rw [networkPathSum_eq_zero_of_lt weights (by lia)]
+    rw [networkPathSum_eq_zero_of_lt weights (by lia)]
+    rw [networkPathSum_eq_zero_of_lt (networkShift weights) (by lia)]
+    simp
+
 end RealRooted.BrandenLeite
