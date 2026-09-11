@@ -286,6 +286,7 @@ import RealRooted.Favard.Recurrence
 import RealRooted.FiniteFreeAdditive
 import RealRooted.FiniteFreeAdditive.HalfInteger
 import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
 import RealRooted.FiniteFreeAdditiveIdentity
 import RealRooted.FiniteFreeAdditivePreservation
 import RealRooted.FiniteFreeMultiplicative
@@ -564,6 +565,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
 import RealRooted.Mathlib.Algebra.Polynomial.Dominance
+import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Scale
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree

@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1155
+      "max_modules": 1157
     },
     "RealRooted.Production": {
-      "max_modules": 1034
+      "max_modules": 1036
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -23,6 +23,9 @@
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Coeff": {
       "max_modules": 1
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits": {
+      "max_modules": 2
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer": {
       "max_modules": 1
@@ -984,6 +987,9 @@
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution": {
       "max_modules": 7
     },
+    "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation": {
+      "max_modules": 41
+    },
     "RealRooted.FiniteFreeAdditiveIdentity": {
       "max_modules": 21
     },
@@ -1761,9 +1767,11 @@
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power",
     "RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer",
     "RealRooted.Mathlib.Algebra.Polynomial.Coeff",
+    "RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits",
     "RealRooted.FiniteFreeAdditive",
     "RealRooted.FiniteFreeAdditive.HalfInteger",
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution",
+    "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation",
     "RealRooted.FiniteFreeAdditiveIdentity",
     "RealRooted.FiniteFreeAdditivePreservation",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
