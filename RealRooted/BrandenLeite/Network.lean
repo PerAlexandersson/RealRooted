@@ -677,6 +677,50 @@ theorem networkResolution_isNormalized_iff (weights : ℕ → ℕ → ℝ)
       ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0 :=
   Iff.rfl
 
+/-- The path resolving polynomials agree with the polynomials of any
+resolution having the same triangular weight array. -/
+theorem networkResolvingPolynomial_eq_resolution
+    {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) :
+    ∀ n k, k ≤ n →
+      networkResolvingPolynomial resolution.lambda n k = resolution.polynomial n k := by
+  intro n
+  induction n with
+  | zero =>
+      intro k hk
+      have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+      subst k
+      rw [networkResolvingPolynomial_self, resolution.diagonal]
+  | succ n ih =>
+      intro k hk
+      induction hk using Nat.decreasingInduction with
+      | self =>
+          rw [networkResolvingPolynomial_self, resolution.diagonal]
+      | of_succ k hk ihk =>
+          have hkn : k ≤ n := Nat.le_of_lt_succ hk
+          rw [networkResolvingPolynomial_step _ hkn, resolution.recurrence _ _ hkn,
+            ihk, ih k hkn]
+
+/-- Every resolvable lower unitriangular matrix is its literal triangular
+network path matrix.  Only the triangular entries of `resolution.lambda` are
+used by the network. -/
+theorem networkMatrix_eq_of_resolution
+    {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) :
+    networkMatrix resolution.lambda = R := by
+  ext n k
+  have hpol : LowerTriangularMatrix.rowPolynomial (networkMatrix resolution.lambda) n =
+      LowerTriangularMatrix.rowPolynomial R n := by
+    rw [← networkResolvingPolynomial_zero resolution.lambda n]
+    rw [networkResolvingPolynomial_eq_resolution resolution n 0 (Nat.zero_le n)]
+    exact resolution.row_zero n
+  calc
+    networkMatrix resolution.lambda n k =
+        (LowerTriangularMatrix.rowPolynomial (networkMatrix resolution.lambda) n).coeff k :=
+      (LowerTriangularMatrix.coeff_rowPolynomial
+        (isLowerTriangular_networkMatrix resolution.lambda) n k).symm
+    _ = (LowerTriangularMatrix.rowPolynomial R n).coeff k := congrArg (·.coeff k) hpol
+    _ = R n k := LowerTriangularMatrix.coeff_rowPolynomial
+      resolution.lowerUnitriangular.lower n k
+
 /-- Nonnegative edge weights give nonnegative weighted path counts. -/
 theorem networkPathSum_nonneg {R : Type*} [CommSemiring R] [PartialOrder R]
     [IsOrderedRing R]

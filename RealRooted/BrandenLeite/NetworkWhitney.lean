@@ -117,4 +117,14 @@ theorem normalized_network_weights_unique
     _ = resolutionLambda (networkMatrix other) n k := by rw [hmatrix]
     _ = other n k := resolutionLambda_networkMatrix_eq_weight other hother n k hkn
 
+/-- Every lower-unitriangular totally nonnegative matrix is the literal
+triangular-network path matrix of its canonical Whitney weights. -/
+theorem networkMatrix_resolutionLambda_eq
+    (R : LowerTriangularMatrix ℝ)
+    (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
+    (hR : Matrix.IsTotallyNonneg R) :
+    networkMatrix (resolutionLambda R) = R := by
+  simpa [resolutionOfTotallyNonneg] using
+    networkMatrix_eq_of_resolution (resolutionOfTotallyNonneg R hunit hR)
+
 end RealRooted.BrandenLeite
