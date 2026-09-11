@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.MultiplierSequence
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Fixed-coefficient rescaled Jensen limits
@@ -14,6 +15,16 @@ open Filter Polynomial Topology
 noncomputable section
 
 namespace RealRooted
+
+private theorem tsum_coeff_mul_pow_eq_eval (p : ℝ[X]) (x : ℝ) :
+    (∑' k : ℕ, p.coeff k * x ^ k) = p.eval x := by
+  rw [tsum_eq_sum (s := p.support) (fun k hk => by
+    have hzero : p.coeff k = 0 := by
+      apply Classical.by_contradiction
+      intro hne
+      exact hk (Finsupp.mem_support_iff.mpr hne)
+    simp [hzero]), p.eval_eq_sum]
+  rfl
 
 /-- The degree-`n` Jensen polynomial after the variable rescaling `X ↦ X / n`.
 The convention at `n = 0` uses Lean's zero inverse. -/
@@ -83,6 +94,26 @@ theorem norm_coeff_rescaledJensenPolynomial_le (n k : ℕ) (gamma : ℕ → ℝ)
       _ = ‖gamma k‖ / k.factorial := by ring
   · simp only [norm_zero]
     exact div_nonneg (norm_nonneg _) (by positivity)
+
+/-- Under absolute summability at `x`, the rescaled Jensen polynomials
+converge pointwise to the exponential-generating series of `gamma`. -/
+theorem tendsto_eval_rescaledJensenPolynomial_of_summable
+    (gamma : ℕ → ℝ) (x : ℝ)
+    (hsum : Summable (fun k => ‖gamma k‖ * ‖x‖ ^ k / k.factorial)) :
+    Tendsto (fun n => (rescaledJensenPolynomial n gamma).eval x) atTop
+      (𝓝 (∑' k, (gamma k / k.factorial) * x ^ k)) := by
+  have hlim := tendsto_tsum_of_dominated_convergence hsum
+    (fun k => (tendsto_coeff_rescaledJensenPolynomial gamma k).mul_const (x ^ k))
+    (Filter.Eventually.of_forall fun n k => by
+      calc
+        ‖(rescaledJensenPolynomial n gamma).coeff k * x ^ k‖ =
+            ‖(rescaledJensenPolynomial n gamma).coeff k‖ * ‖x‖ ^ k := by
+          rw [norm_mul, norm_pow]
+        _ ≤ (‖gamma k‖ / k.factorial) * ‖x‖ ^ k :=
+          mul_le_mul_of_nonneg_right (norm_coeff_rescaledJensenPolynomial_le n k gamma)
+            (pow_nonneg (norm_nonneg _) _)
+        _ = ‖gamma k‖ * ‖x‖ ^ k / k.factorial := by ring)
+  simpa only [tsum_coeff_mul_pow_eq_eval] using hlim
 
 /-- Rescaled Jensen polynomials converge coefficientwise to the exponential
 generating coefficients of `gamma`. -/
