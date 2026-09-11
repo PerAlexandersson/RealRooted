@@ -283,6 +283,7 @@ import RealRooted.Favard.Affine.Denominator
 import RealRooted.Favard.Affine.RowSign
 import RealRooted.Favard.Orthogonality
 import RealRooted.Favard.Recurrence
+import RealRooted.FiniteFreeAdditive
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma

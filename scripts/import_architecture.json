@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1148
+      "max_modules": 1149
     },
     "RealRooted.Production": {
-      "max_modules": 1027
+      "max_modules": 1028
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 632
@@ -969,6 +969,9 @@
     "RealRooted.FiniteFreeMultiplicative": {
       "max_modules": 97
     },
+    "RealRooted.FiniteFreeAdditive": {
+      "max_modules": 1
+    },
     "RealRooted.FiniteFreeRootCount": {
       "max_modules": 202
     },
@@ -1738,6 +1741,7 @@
     "RealRooted.Jacobi.Orthogonality.Integral",
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power",
+    "RealRooted.FiniteFreeAdditive",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev",
