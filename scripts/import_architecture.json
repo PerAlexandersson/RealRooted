@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1171
+      "max_modules": 1172
     },
     "RealRooted.Production": {
-      "max_modules": 1050
+      "max_modules": 1051
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -34,7 +34,10 @@
       "max_modules": 3
     },
     "RealRooted.ParkingFunctions.Descents.DescentChains": {
-      "max_modules": 3
+      "max_modules": 6
+    },
+    "RealRooted.Mathlib.Data.List.SplitBy": {
+      "max_modules": 1
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
       "max_modules": 1
