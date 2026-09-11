@@ -742,6 +742,7 @@ import RealRooted.OrderedRoots
 import RealRooted.OscillatoryInterlacing
 import RealRooted.PFPolynomial
 import RealRooted.PFPolynomial.LinearFactor
+import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 import RealRooted.ParkingFunctions.ToricContribution.Definitions
