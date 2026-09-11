@@ -1,4 +1,6 @@
 import RealRooted.FiniteFreeAdditive.HalfInteger
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Generalized half-integer additive convolution
@@ -118,34 +120,23 @@ theorem coeff_generalizedRectangularAdditiveConvolution_of_le (α : ℝ) (n : �
     (generalizedRectangularAdditiveConvolution α n p q).coeff j =
       generalizedRectangularConvolutionCoeff α n p q (n - j) := by
   unfold generalizedRectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single_of_mem (n - j)
-      (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le n j)))]
-  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      Nat.sub_sub_self hj, if_pos rfl, mul_one]
-  · intro k hk hkne
-    have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      if_neg (fun h => hkne (by lia)), mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [hj]
 
 /-- Coefficients outside the generalized convolution's degree box vanish. -/
 theorem coeff_generalizedRectangularAdditiveConvolution_of_gt (α : ℝ) (n : ℕ)
     (p q : ℝ[X]) {j : ℕ} (hj : n < j) :
     (generalizedRectangularAdditiveConvolution α n p q).coeff j = 0 := by
   unfold generalizedRectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-    if_neg (fun h => by lia), mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [Nat.not_le.mpr hj]
 
 /-- Generalized rectangular additive convolution stays in its degree box. -/
 theorem natDegree_generalizedRectangularAdditiveConvolution_le (α : ℝ) (n : ℕ)
     (p q : ℝ[X]) :
     (generalizedRectangularAdditiveConvolution α n p q).natDegree ≤ n := by
-  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  exact coeff_generalizedRectangularAdditiveConvolution_of_gt α n p q hj
+  unfold generalizedRectangularAdditiveConvolution
+  exact Polynomial.natDegree_sum_range_C_mul_X_pow_sub_le _ _
 
 /-- At natural parameters, generalized rectangular additive convolution is the
 existing rectangular additive convolution. -/

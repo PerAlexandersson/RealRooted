@@ -10,15 +10,18 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1154
+      "max_modules": 1155
     },
     "RealRooted.Production": {
-      "max_modules": 1033
+      "max_modules": 1034
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 632
+      "max_modules": 633
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose": {
+      "max_modules": 1
+    },
+    "RealRooted.Mathlib.Algebra.Polynomial.Coeff": {
       "max_modules": 1
     },
     "RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer": {
@@ -202,7 +205,7 @@
       "max_modules": 127
     },
     "RealRooted.Applications.EulerianVariations": {
-      "max_modules": 235
+      "max_modules": 236
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 46
@@ -877,52 +880,52 @@
       "max_modules": 109
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
-      "max_modules": 161
+      "max_modules": 162
    },
     "RealRooted.NarayanaTransformation.Basis": {
-      "max_modules": 163
+      "max_modules": 164
    },
     "RealRooted.NarayanaTransformation.Basis.Stirling": {
-      "max_modules": 164
-   },
-    "RealRooted.NarayanaTransformation.Falling": {
-      "max_modules": 164
-   },
-    "RealRooted.NarayanaTransformation.Rising": {
       "max_modules": 165
    },
-    "RealRooted.NarayanaTransformation.Coefficients": {
+    "RealRooted.NarayanaTransformation.Falling": {
+      "max_modules": 165
+   },
+    "RealRooted.NarayanaTransformation.Rising": {
       "max_modules": 166
    },
-    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
+    "RealRooted.NarayanaTransformation.Coefficients": {
       "max_modules": 167
    },
-    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
+    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
       "max_modules": 168
    },
-    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
+    "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
       "max_modules": 169
    },
-    "RealRooted.NarayanaTransformation.Rectangular": {
+    "RealRooted.NarayanaTransformation.Rectangular.Preservation": {
       "max_modules": 170
    },
-    "RealRooted.NarayanaTransformation.Recurrences": {
-      "max_modules": 173
-   },
-    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+    "RealRooted.NarayanaTransformation.Rectangular": {
       "max_modules": 171
    },
-    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
-      "max_modules": 172
-   },
-    "RealRooted.NarayanaTransformation.Gamma": {
+    "RealRooted.NarayanaTransformation.Recurrences": {
       "max_modules": 174
    },
-    "RealRooted.NarayanaTransformation.Endpoints": {
+    "RealRooted.NarayanaTransformation.Recurrences.Identities": {
+      "max_modules": 172
+   },
+    "RealRooted.NarayanaTransformation.Recurrences.Interlacing": {
+      "max_modules": 173
+   },
+    "RealRooted.NarayanaTransformation.Gamma": {
       "max_modules": 175
    },
+    "RealRooted.NarayanaTransformation.Endpoints": {
+      "max_modules": 176
+   },
     "RealRooted.NarayanaTransformation": {
-      "max_modules": 177
+      "max_modules": 178
    },
     "RealRooted.MultiplierSequence.Bidiagonal": {
       "max_modules": 94
@@ -973,19 +976,19 @@
       "max_modules": 97
     },
     "RealRooted.FiniteFreeAdditive": {
-      "max_modules": 1
+      "max_modules": 3
     },
     "RealRooted.FiniteFreeAdditive.HalfInteger": {
-      "max_modules": 4
+      "max_modules": 6
     },
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution": {
-      "max_modules": 5
+      "max_modules": 7
     },
     "RealRooted.FiniteFreeAdditiveIdentity": {
-      "max_modules": 19
+      "max_modules": 21
     },
     "RealRooted.FiniteFreeAdditivePreservation": {
-      "max_modules": 33
+      "max_modules": 35
     },
     "RealRooted.FiniteFreeRootCount": {
       "max_modules": 202
@@ -1414,7 +1417,7 @@
       "max_modules": 112
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 456
+      "max_modules": 457
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 12
@@ -1504,7 +1507,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 487
+      "max_modules": 488
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182
@@ -1757,6 +1760,7 @@
     "RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power",
     "RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer",
+    "RealRooted.Mathlib.Algebra.Polynomial.Coeff",
     "RealRooted.FiniteFreeAdditive",
     "RealRooted.FiniteFreeAdditive.HalfInteger",
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution",

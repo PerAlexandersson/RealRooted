@@ -3,10 +3,22 @@ module
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Algebra.Polynomial.BigOperators
 
 public section
 
+open BigOperators
+
 namespace Polynomial
+
+/-- A degree-box sum with descending exponents has degree at most its box
+bound. -/
+theorem natDegree_sum_range_C_mul_X_pow_sub_le {R : Type*} [Semiring R]
+    (a : ℕ → R) (n : ℕ) :
+    (∑ k ∈ Finset.range (n + 1), C (a k) * X ^ (n - k)).natDegree ≤ n := by
+  refine natDegree_sum_le_of_forall_le _ _ ?_
+  intro k _
+  exact (natDegree_C_mul_X_pow_le (a k) (n - k)).trans (Nat.sub_le _ _)
 
 /-- Dividing by a monic linear factor lowers natural degree by one. -/
 theorem natDegree_divByMonic_X_sub_C {R : Type*} [Ring R] [Nontrivial R]

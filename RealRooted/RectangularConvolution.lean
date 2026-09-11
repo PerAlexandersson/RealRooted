@@ -1,5 +1,8 @@
 import Mathlib.Tactic
 
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+
 /-!
 # Rectangular additive convolution
 
@@ -45,33 +48,22 @@ theorem coeff_rectangularAdditiveConvolution_of_le (m n : ℕ) (f g : ℝ[X])
     (rectangularAdditiveConvolution m n f g).coeff j =
       rectangularConvolutionCoeff m n f g (n - j) := by
   unfold rectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single_of_mem (n - j)
-      (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le n j)))]
-  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Nat.sub_sub_self hj,
-      if_pos rfl, mul_one]
-  · intro k hk hkne
-    have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      if_neg (fun hjk => hkne (by lia)), mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [hj]
 
 /-- The rectangular additive convolution has no coefficients above degree `n`. -/
 theorem coeff_rectangularAdditiveConvolution_of_gt (m n : ℕ) (f g : ℝ[X])
     {j : ℕ} (hj : n < j) :
     (rectangularAdditiveConvolution m n f g).coeff j = 0 := by
   unfold rectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (fun hjk => by lia),
-    mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [Nat.not_le.mpr hj]
 
 /-- The rectangular additive convolution has degree at most `n`. -/
 theorem natDegree_rectangularAdditiveConvolution_le (m n : ℕ) (f g : ℝ[X]) :
     (rectangularAdditiveConvolution m n f g).natDegree ≤ n := by
-  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-  intro k hk
-  exact coeff_rectangularAdditiveConvolution_of_gt m n f g hk
+  unfold rectangularAdditiveConvolution
+  exact Polynomial.natDegree_sum_range_C_mul_X_pow_sub_le _ _
 
 end
 

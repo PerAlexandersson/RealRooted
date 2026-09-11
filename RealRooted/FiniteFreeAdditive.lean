@@ -1,5 +1,8 @@
 import Mathlib.Tactic
 
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+
 /-!
 # Finite-free additive convolution
 
@@ -114,42 +117,30 @@ theorem coeff_finiteFreeAdditiveConvolution_of_le (d : ℕ) (p q : ℝ[X])
     (finiteFreeAdditiveConvolution d p q).coeff j =
       finiteFreeAdditiveConvolutionCoeff d p q (d - j) := by
   unfold finiteFreeAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single_of_mem (d - j)
-      (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le d j)))]
-  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      Nat.sub_sub_self hj, if_pos rfl, mul_one]
-  · intro k hk hkne
-    have hk' : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      if_neg (fun h => hkne (by lia)), mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [hj]
 
 /-- Coefficients outside the degree box vanish. -/
 theorem coeff_finiteFreeAdditiveConvolution_of_gt (d : ℕ) (p q : ℝ[X])
     {j : ℕ} (hj : d < j) :
     (finiteFreeAdditiveConvolution d p q).coeff j = 0 := by
   unfold finiteFreeAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-    if_neg (fun h => by lia), mul_zero]
+  rw [Polynomial.coeff_sum_range_C_mul_X_pow_sub]
+  simp [Nat.not_le.mpr hj]
 
 /-- Coefficients of finite-free additive convolution, with the ambient-degree
 box made explicit. -/
 theorem coeff_finiteFreeAdditiveConvolution (d j : ℕ) (p q : ℝ[X]) :
     (finiteFreeAdditiveConvolution d p q).coeff j =
       if j ≤ d then finiteFreeAdditiveConvolutionCoeff d p q (d - j) else 0 := by
-  by_cases hj : j ≤ d
-  · simp [hj, coeff_finiteFreeAdditiveConvolution_of_le d p q hj]
-  · simp [hj, coeff_finiteFreeAdditiveConvolution_of_gt d p q (Nat.lt_of_not_ge hj)]
+  unfold finiteFreeAdditiveConvolution
+  exact Polynomial.coeff_sum_range_C_mul_X_pow_sub _ _ _
 
 /-- Finite-free additive convolution stays in its ambient degree box. -/
 theorem natDegree_finiteFreeAdditiveConvolution_le (d : ℕ) (p q : ℝ[X]) :
     (finiteFreeAdditiveConvolution d p q).natDegree ≤ d := by
-  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  exact coeff_finiteFreeAdditiveConvolution_of_gt d p q hj
+  unfold finiteFreeAdditiveConvolution
+  exact Polynomial.natDegree_sum_range_C_mul_X_pow_sub_le _ _
 
 /-- The top coefficient of finite-free additive convolution is the product of
 the top input coefficients. -/
