@@ -107,6 +107,9 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `MultiplierSequence/PolyaSchur/Factorial.lean` identifies factorial-weighted
   coefficient Jensen polynomials with Garloff--Wagner Schur products, while
   `Limit.lean` proves pointwise closure of PF multiplier sequences.
+  `MultiplierSequence/Sign.lean` proves the zero-safe parity sign constraint
+  and the four classical PF sign normalizations for arbitrary multiplier
+  sequences.
   `LaguerrePolya/TypeIReverse.lean` combines these facts with locally uniform
   derivative convergence to prove the reverse Type-I Pólya--Schur bridge from
   Taylor data, and the exponential-generating-function classification under
@@ -408,6 +411,9 @@ re-exports both APIs.
 - `isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`:
   the Type-I Pólya--Schur classification for exponential generating series
   with positive radius of convergence.
+- `IsMultiplierSequence.exists_pf_sign_normalization`: every multiplier
+  sequence is PF after identity, global negation, alternation, or negated
+  alternation, including arbitrary internal zero gaps.
 - `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
   direction.
 - `IsPolyaFreqSeq.veroneseSectionSeq` and

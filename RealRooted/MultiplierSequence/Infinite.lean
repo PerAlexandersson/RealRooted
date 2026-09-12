@@ -135,6 +135,34 @@ theorem IsMultiplierSequence.const_mul {gamma : ℕ → ℝ}
     IsMultiplierSequence (fun k => a * gamma k) :=
   (isMultiplierSequence_const_sequence a).mul hgamma
 
+/-- Alternating the signs of a diagonal sequence corresponds to composing
+the output polynomial with `-X`. -/
+theorem diagonalOperator_alternating (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun k => (-1 : ℝ) ^ k * gamma k) p =
+      (diagonalOperator gamma p).comp (-X) := by
+  ext n
+  rw [coeff_diagonalOperator, show (-X : ℝ[X]) = C (-1) * X by simp,
+    Polynomial.comp_C_mul_X_coeff, coeff_diagonalOperator]
+  ring
+
+/-- Alternating all signs preserves the finite multiplier-sequence property. -/
+theorem IsFiniteMultiplierSequence.alternating {gamma : ℕ → ℝ} {n : ℕ}
+    (hgamma : IsFiniteMultiplierSequence n gamma) :
+    IsFiniteMultiplierSequence n (fun k => (-1 : ℝ) ^ k * gamma k) := by
+  intro p hp hsplits
+  rw [diagonalOperator_alternating]
+  rcases hgamma hp hsplits with hzero | hsplits
+  · left
+    simp [hzero]
+  · exact Or.inr hsplits.comp_neg_X
+
+/-- Alternating all signs preserves the infinite multiplier-sequence
+property. -/
+theorem IsMultiplierSequence.alternating {gamma : ℕ → ℝ}
+    (hgamma : IsMultiplierSequence gamma) :
+    IsMultiplierSequence (fun k => (-1 : ℝ) ^ k * gamma k) :=
+  fun n => IsFiniteMultiplierSequence.alternating (hgamma.finite n)
+
 /-- Nonnegative scalar multiplication of a PF multiplier sequence. -/
 theorem IsPFMultiplierSequence.const_mul {gamma : ℕ → ℝ}
     (hgamma : IsPFMultiplierSequence gamma) {a : ℝ} (ha : 0 ≤ a) :

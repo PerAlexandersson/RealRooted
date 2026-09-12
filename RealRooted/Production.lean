@@ -712,6 +712,7 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultiplierSequence.Infinite
+import RealRooted.MultiplierSequence.Sign
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultiplierSequence.PolyaSchur.Factorial
