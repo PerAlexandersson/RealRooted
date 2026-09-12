@@ -102,6 +102,7 @@ import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenVecchi.Chow
+import RealRooted.BrandenVecchi.ChowInterlacing
 import RealRooted.BrandenVecchi.ChowInterlacingQuotient
 import RealRooted.BrandenVecchi.ChowInterlacingSign
 import RealRooted.BrandenVecchi.ReflectionInterlacing
