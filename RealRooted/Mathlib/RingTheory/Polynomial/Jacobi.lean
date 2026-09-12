@@ -8,6 +8,7 @@ module
 public import Mathlib.RingTheory.Binomial
 public import Mathlib.Tactic
 public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 
 /-!
@@ -979,15 +980,6 @@ private lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
     _ = (x - k) * Ring.choose x k := by
       convert hright.symm using 1 <;> ring
 
-private lemma coeff_X_mul_derivative_eq (f : ℝ[X]) (k : ℕ) :
-    (X * f.derivative).coeff k = k * f.coeff k := by
-  cases k with
-  | zero => simp
-  | succ k =>
-      rw [coeff_X_mul, coeff_derivative]
-      push_cast
-      ring
-
 /-- Raising the degree while lowering the second Jacobi parameter is a
 first-order differential operation. -/
 theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
@@ -1018,7 +1010,7 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
       convert hchoose.symm using 1 <;> ring
   | succ k =>
       simp only [coeff_sub, coeff_add, coeff_X_mul, coeff_C_mul,
-        coeff_derivative, coeff_X_mul_derivative_eq]
+        coeff_derivative, coeff_X_mul_derivative]
       push_cast
       dsimp only [f, g]
       by_cases hk : k + 1 ≤ n
