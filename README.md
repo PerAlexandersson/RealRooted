@@ -414,6 +414,10 @@ re-exports both APIs.
 - `IsMultiplierSequence.exists_pf_sign_normalization`: every multiplier
   sequence is PF after identity, global negation, alternation, or negated
   alternation, including arbitrary internal zero gaps.
+- `isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction`:
+  the full signed Type-I classification under the necessary positive-radius
+  hypothesis; `isLaguerrePolyaTypeISigned_neg_exp` is a concrete signed
+  specialization.
 - `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
   direction.
 - `IsPolyaFreqSeq.veroneseSectionSeq` and

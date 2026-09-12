@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1187
+      "max_modules": 1188
     },
     "RealRooted.Production": {
-      "max_modules": 1066
+      "max_modules": 1067
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -961,7 +961,7 @@
       "max_modules": 101
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples": {
-      "max_modules": 134
+      "max_modules": 137
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
       "max_modules": 162
