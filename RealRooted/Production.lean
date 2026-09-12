@@ -397,6 +397,7 @@ import RealRooted.HurwitzMatrix
 import RealRooted.Hyperbolicity
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.NegativeRoots
+import RealRooted.Interlacing.OuterDifference
 import RealRooted.Interlacing.Residue
 import RealRooted.InterlacingClosure
 import RealRooted.InterlacingConeBounds

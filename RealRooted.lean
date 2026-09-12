@@ -402,6 +402,7 @@ import RealRooted.InterlacingSequenceBasic
 import RealRooted.InterlacingSequence.NonnegativeShift
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.NegativeRoots
+import RealRooted.Interlacing.OuterDifference
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
