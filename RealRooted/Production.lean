@@ -108,6 +108,7 @@ import RealRooted.BrandenVecchi.ChowInterlacingSign
 import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 import RealRooted.BrandenVecchi.ChowRowTransform
+import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
