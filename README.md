@@ -104,6 +104,16 @@ emulation. These scripts complement `lake build`; they do not replace it.
   degree-three reductions. `Hadamard/Grace.lean` owns the apolar/Grace proof,
   followed by `GarloffWagner.lean`, `Hurwitz.lean`, and `Consequences.lean`
   for the endpoint interfaces. `Hadamard.lean` is their compatibility import.
+- `MultiplierSequence/PolyaSchur/Factorial.lean` identifies factorial-weighted
+  coefficient Jensen polynomials with Garloff--Wagner Schur products, while
+  `Limit.lean` proves pointwise closure of PF multiplier sequences.
+  `MultiplierSequence/Sign.lean` proves the zero-safe parity sign constraint
+  and the four classical PF sign normalizations for arbitrary multiplier
+  sequences.
+  `LaguerrePolya/TypeIReverse.lean` combines these facts with locally uniform
+  derivative convergence to prove the reverse Type-I Pólya--Schur bridge from
+  Taylor data, and the exponential-generating-function classification under
+  its necessary positive-radius hypothesis.
 - `BorceaBranden/Applications/BidiagonalSymbol.lean` computes genuine affine
   finite symbols for coefficient-bidiagonal operators; its
   `RealConsequences` child supplies their real preservation consequences, and
@@ -398,6 +408,16 @@ re-exports both APIs.
 - `aissenSchoenbergWhitney_reverse`: the reverse Aissen-Schoenberg-Whitney
   direction, from real-rooted nonpositive roots and nonnegative coefficients to
   a Polya-frequency coefficient sequence.
+- `isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`:
+  the Type-I Pólya--Schur classification for exponential generating series
+  with positive radius of convergence.
+- `IsMultiplierSequence.exists_pf_sign_normalization`: every multiplier
+  sequence is PF after identity, global negation, alternation, or negated
+  alternation, including arbitrary internal zero gaps.
+- `isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction`:
+  the full signed Type-I classification under the necessary positive-radius
+  hypothesis; `isLaguerrePolyaTypeISigned_neg_exp` is a concrete signed
+  specialization.
 - `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
   direction.
 - `IsPolyaFreqSeq.veroneseSectionSeq` and
