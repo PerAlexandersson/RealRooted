@@ -348,6 +348,7 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.Graph.ClawFree
 import RealRooted.Graph.AcyclicOrientation
+import RealRooted.Graph.AllOrientationSink
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
@@ -357,6 +358,7 @@ import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial
 import RealRooted.Graph.MatchingPolynomial.Multivariate
+import RealRooted.Graph.MinimaPolynomial
 import RealRooted.GraceHalfPlane
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
