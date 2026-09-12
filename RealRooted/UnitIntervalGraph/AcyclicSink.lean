@@ -54,6 +54,18 @@ theorem ext {a b : Data n} (hleft : a.left = b.left) : a = b := by
 def width (i : Fin n) : ℕ :=
   i.val - a.left i
 
+/-- Vertices lying in the first `k` positions. -/
+def prefixSupport (_a : Data n) (k : ℕ) : Finset (Fin n) :=
+  Finset.univ.filter fun i ↦ i.val < k
+
+/-- Product of q-integer normalizing factors over the first `k` vertices. -/
+def prefixNormalization (q : ℝ) (k : ℕ) : ℝ :=
+  ∏ i ∈ a.prefixSupport k, qNat q (a.width i + 1)
+
+/-- Product of proper-insertion q-integers over the suffix beginning at `k`. -/
+def suffixFactor (k : ℕ) (q : ℝ) : ℝ :=
+  ∏ i : Fin n, if k ≤ i.val then qNat q (a.width i) else 1
+
 /-- The natural unit interval graph represented by the left endpoints. -/
 def graph : _root_.SimpleGraph (Fin n) where
   Adj i j :=
@@ -115,6 +127,22 @@ theorem take_self : a.take n le_rfl = a := by
   funext i
   rfl
 
+theorem take_take {k l : ℕ} (hk : k ≤ n) (hl : l ≤ k) :
+    (a.take k hk).take l hl = a.take l (hl.trans hk) := by
+  apply Data.ext
+  funext i
+  rfl
+
+@[simp]
+theorem take_width {k : ℕ} (hk : k ≤ n) (i : Fin k) :
+    (a.take k hk).width i = a.width (a.prefixEmbedding hk i) := by
+  rfl
+
+/-- Product of the proper-insertion q-integers between the left endpoint of
+`i` and `i`. -/
+def insertionNumerator (q : ℝ) (i : Fin n) : ℝ :=
+  (a.take i.val (Nat.le_of_lt i.isLt)).suffixFactor (a.left i) q
+
 @[simp]
 theorem prefix_left {k : ℕ} (hk : k ≤ n) (i : Fin k) :
     (a.take k hk).left i = a.left (a.prefixEmbedding hk i) :=
@@ -145,6 +173,12 @@ theorem restrictPrefix_isAcyclic {k : ℕ} (hk : k ≤ n)
 def init {m : ℕ} (a : Data (m + 1)) : Data m :=
   a.take m (Nat.le_succ m)
 
+theorem take_succ_init {k : ℕ} (hk : k + 1 ≤ n) :
+    (a.take (k + 1) hk).init = a.take k (Nat.le_trans (Nat.le_succ k) hk) := by
+  apply Data.ext
+  funext i
+  rfl
+
 @[simp]
 theorem init_width {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
     a.init.width i = a.width i.castSucc := by
@@ -154,6 +188,12 @@ theorem init_take {m k : ℕ} (a : Data (m + 1)) (hk : k ≤ m) :
     a.init.take k hk = a.take k (hk.trans (Nat.le_succ m)) := by
   apply Data.ext
   funext i
+  rfl
+
+@[simp]
+theorem insertionNumerator_last {m : ℕ} (a : Data (m + 1)) (q : ℝ) :
+    a.insertionNumerator q (Fin.last m) =
+      a.init.suffixFactor (a.left (Fin.last m)) q := by
   rfl
 
 /-- Restrict an orientation after deleting the final vertex. -/
@@ -1224,11 +1264,6 @@ def noSinkFromPolynomial {n : ℕ} (a : Data n) (k : ℕ) (q : ℝ) : ℝ[X] :=
     exact ∑ O : Graph.Orientation.AcyclicOrientation a.graph,
       if a.NoSinkFrom O.1 k then Graph.orientationMonomial q O.1 else 0
 
-/-- Product of the proper-insertion q-integers over the suffix beginning at
-`k`. -/
-def suffixFactor {n : ℕ} (a : Data n) (k : ℕ) (q : ℝ) : ℝ :=
-  ∏ i : Fin n, if k ≤ i.val then qNat q (a.width i) else 1
-
 theorem suffixFactor_succ_of_le {m k : ℕ} (a : Data (m + 1))
     (hk : k ≤ m) (q : ℝ) :
     a.suffixFactor k q =
@@ -1433,6 +1468,73 @@ theorem graph_clawFree : Graph.ClawFree a.graph := by
   · exact hnxy (a.adj_same_right hvx hvy hvx' hvy' hxy)
   · exact hnxy (a.adj_same_right hvx hvy hvx' hvy' hxy)
 
+@[simp]
+theorem prefixSupport_zero : a.prefixSupport 0 = ∅ := by
+  ext i
+  simp [prefixSupport]
+
+theorem prefixSupport_succ {k : ℕ} (hk : k < n) :
+    a.prefixSupport (k + 1) =
+      insert (⟨k, hk⟩ : Fin n) (a.prefixSupport k) := by
+  ext i
+  simp only [prefixSupport, Finset.mem_filter, Finset.mem_univ, true_and,
+    Finset.mem_insert]
+  constructor
+  · intro hi
+    have hik : i.val ≤ k := Nat.lt_succ_iff.mp hi
+    rcases lt_or_eq_of_le hik with hlt | heq
+    · exact Or.inr hlt
+    · exact Or.inl (Fin.ext heq)
+  · rintro (rfl | hi)
+    · exact Nat.lt_succ_self k
+    · exact lt_trans hi (Nat.lt_succ_self k)
+
+@[simp]
+theorem prefixSupport_card : a.prefixSupport n = Finset.univ := by
+  ext i
+  simp [prefixSupport]
+
+theorem prefixSupport_filter_not_adj {k : ℕ} (hk : k < n) :
+    (a.prefixSupport k).filter
+        (fun w ↦ ¬a.graph.Adj (⟨k, hk⟩ : Fin n) w) =
+      a.prefixSupport (a.left ⟨k, hk⟩) := by
+  ext w
+  simp only [prefixSupport, Finset.mem_filter, Finset.mem_univ, true_and]
+  have hwv : w < (⟨k, hk⟩ : Fin n) ↔ w.val < k := Iff.rfl
+  by_cases hwk : w.val < k
+  · have hadj :
+        a.graph.Adj (⟨k, hk⟩ : Fin n) w ↔
+          a.left ⟨k, hk⟩ ≤ w.val := by
+      rw [SimpleGraph.adj_comm]
+      exact a.graph_adj_of_lt (hwv.2 hwk)
+    rw [hadj]
+    have hleft := a.left_le (⟨k, hk⟩ : Fin n)
+    lia
+  · have hleft := a.left_le (⟨k, hk⟩ : Fin n)
+    constructor
+    · exact fun h ↦ False.elim (hwk h.1)
+    · intro hwleft
+      exact False.elim (hwk (lt_of_lt_of_le hwleft hleft))
+
+/-- Weighted independence-polynomial deletion recurrence along the natural
+prefix path. -/
+theorem weightedIndepPolyOn_prefix_succ {k : ℕ} (hk : k < n)
+    (wt : Fin n → ℝ) :
+    Graph.weightedIndepPolyOn a.graph (a.prefixSupport (k + 1)) wt =
+      Graph.weightedIndepPolyOn a.graph (a.prefixSupport k) wt +
+        C (wt ⟨k, hk⟩) * X *
+          Graph.weightedIndepPolyOn a.graph
+            (a.prefixSupport (a.left ⟨k, hk⟩)) wt := by
+  rw [a.prefixSupport_succ hk,
+    Graph.weightedIndepPolyOn_insert a.graph wt (by simp [prefixSupport]),
+    a.prefixSupport_filter_not_adj hk]
+
+theorem weightedIndepPoly_eq_prefix (wt : Fin n → ℝ) :
+    Graph.weightedIndepPoly a.graph wt =
+      Graph.weightedIndepPolyOn a.graph (a.prefixSupport n) wt := by
+  rw [a.prefixSupport_card]
+  rfl
+
 end Data
 
 theorem qNat_nonneg {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
@@ -1453,28 +1555,122 @@ variable {n : ℕ}
 
 /-- The normalization factor for the first n vertices. -/
 def normalization (a : Data n) (q : ℝ) : ℝ :=
-  ∏ i : Fin n, qNat q (a.width i + 1)
+  a.prefixNormalization q n
 
 /-- The vertex weights in the normalized weighted-independence identity. -/
 def weight (a : Data n) (q : ℝ) (i : Fin n) : ℝ :=
-  q ^ a.width i / qNat q (a.width i + 1) *
-    ∏ j ∈ Finset.univ.filter (fun j : Fin n =>
-      a.left i ≤ j.val ∧ j < i),
-      qNat q (a.width j) / qNat q (a.width j + 1)
+  q ^ a.width i * a.insertionNumerator q i *
+    a.prefixNormalization q (a.left i) /
+      a.prefixNormalization q (i.val + 1)
 
-theorem normalization_pos (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
-    0 < normalization a q := by
+theorem prefixNormalization_pos (a : Data n) {q : ℝ} (hq : 0 ≤ q)
+    (k : ℕ) : 0 < a.prefixNormalization q k := by
   apply Finset.prod_pos
   intro i hi
   exact qNat_succ_pos hq (a.width i)
 
+theorem prefixNormalization_succ (a : Data n) {k : ℕ} (hk : k < n)
+    (q : ℝ) :
+    a.prefixNormalization q (k + 1) =
+      qNat q (a.width ⟨k, hk⟩ + 1) *
+        a.prefixNormalization q k := by
+  rw [Data.prefixNormalization, a.prefixSupport_succ hk,
+    Finset.prod_insert]
+  · rfl
+  · simp [Data.prefixSupport]
+
+theorem prefixNormalization_mul_weight (a : Data n) {q : ℝ}
+    (hq : 0 ≤ q) (i : Fin n) :
+    a.prefixNormalization q (i.val + 1) * weight a q i =
+      q ^ a.width i * a.insertionNumerator q i *
+        a.prefixNormalization q (a.left i) := by
+  rw [weight]
+  field_simp [ne_of_gt (prefixNormalization_pos a hq (i.val + 1))]
+
+theorem normalization_pos (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
+    0 < normalization a q := by
+  exact prefixNormalization_pos a hq n
+
 theorem weight_nonneg (a : Data n) {q : ℝ} (hq : 0 ≤ q) (i : Fin n) :
     0 ≤ weight a q i := by
-  apply mul_nonneg
-  · exact div_nonneg (by positivity) (qNat_nonneg hq _)
-  · apply Finset.prod_nonneg
-    intro j hj
-    exact div_nonneg (qNat_nonneg hq _) (qNat_nonneg hq _)
+  apply div_nonneg
+  · apply mul_nonneg
+    · apply mul_nonneg
+      · positivity
+      · unfold Data.insertionNumerator Data.suffixFactor
+        apply Finset.prod_nonneg
+        intro j hj
+        split
+        · exact qNat_nonneg hq _
+        · positivity
+    · exact (prefixNormalization_pos a hq _).le
+  · exact (prefixNormalization_pos a hq _).le
+
+/-- Prefix form of the normalized weighted-independence identity. Keeping all
+prefix supports in the ambient graph avoids any relabelling quotient. -/
+theorem acyclicSinkPolynomial_take_comp_X_add_one {q : ℝ} (hq : 0 ≤ q)
+    (a : Data n) (k : ℕ) (hk : k ≤ n) :
+    (Graph.acyclicSinkPolynomial (a.take k hk).graph q).comp (X + 1) =
+      C (a.prefixNormalization q k) *
+        Graph.weightedIndepPolyOn a.graph (a.prefixSupport k) (weight a q) := by
+  induction k using Nat.strong_induction_on with
+  | h k ih =>
+      cases k with
+      | zero =>
+          simp [Data.prefixNormalization, Data.prefixSupport,
+            Graph.weightedIndepPolyOn_empty]
+      | succ k =>
+          have hkN : k < n := Nat.lt_of_succ_le hk
+          have hkLe : k ≤ n := Nat.le_of_lt hkN
+          let v : Fin n := ⟨k, hkN⟩
+          let b : Data (k + 1) := a.take (k + 1) hk
+          have hbinit : b.init = a.take k hkLe := by
+            exact a.take_succ_init hk
+          have hleftN : a.left v ≤ n :=
+            (a.left_le v).trans (Nat.le_of_lt hkN)
+          have hleftK : a.left v ≤ k := a.left_le v
+          have hleftLt : a.left v < k + 1 :=
+            lt_of_le_of_lt (a.left_le v) (Nat.lt_succ_self k)
+          have hbtake : (a.take k hkLe).take (a.left v) hleftK =
+              a.take (a.left v) hleftN := by
+            apply Data.ext
+            funext i
+            rfl
+          have hwidth : b.width (Fin.last k) = a.width v := by rfl
+          have hleftEq : b.left (Fin.last k) = a.left v := by rfl
+          have hnumerator :
+              (a.take k hkLe).suffixFactor (a.left v) q =
+                a.insertionNumerator q v := by
+            rfl
+          have ihK := ih k (Nat.lt_succ_self k) hkLe
+          have ihLeft := ih (a.left v) hleftLt hleftN
+          rw [b.acyclicSinkPolynomial_succ q]
+          rw [hleftEq]
+          rw [b.init.noSinkFromPolynomial_eq_suffixFactor_mul hleftK q]
+          simp only [Polynomial.add_comp, Polynomial.mul_comp,
+            Polynomial.C_comp]
+          have hshift : (X - 1 : ℝ[X]).comp (X + 1) = X := by simp
+          rw [hshift, hbinit, hwidth, hbtake, ihK, ihLeft, hnumerator]
+          rw [a.weightedIndepPolyOn_prefix_succ hkN (weight a q)]
+          dsimp only [v] at *
+          have hnorm := prefixNormalization_succ a hkN q
+          have hbalance := prefixNormalization_mul_weight a hq v
+          dsimp only [v] at hbalance
+          have hcoeffScalar :
+              qNat q (a.width ⟨k, hkN⟩ + 1) *
+                  a.prefixNormalization q k * weight a q ⟨k, hkN⟩ =
+                q ^ a.width ⟨k, hkN⟩ *
+                  a.insertionNumerator q ⟨k, hkN⟩ *
+                    a.prefixNormalization q (a.left ⟨k, hkN⟩) := by
+            rw [← hnorm]
+            exact hbalance
+          have hnormC := congrArg Polynomial.C hnorm
+          have hcoeffC := congrArg Polynomial.C hcoeffScalar
+          simp only [map_mul] at hnormC hcoeffC
+          rw [hnormC]
+          linear_combination
+            -(X * Graph.weightedIndepPolyOn a.graph
+              (a.prefixSupport (a.left ⟨k, hkN⟩)) (weight a q)) * hcoeffC
 
 /-- The weighted-independence closed form for the refined sink polynomial,
 written in the original sink variable. -/
@@ -1489,6 +1685,22 @@ theorem acyclicSinkClosedForm_comp_X_add_one (a : Data n) (q : ℝ) :
       C (normalization a q) *
         Graph.weightedIndepPoly a.graph (weight a q) := by
   simp [acyclicSinkClosedForm, Polynomial.comp_assoc]
+
+/-- The ascent-refined acyclic sink polynomial is the weighted-independence
+closed form. -/
+theorem acyclicSinkPolynomial_eq_closedForm
+    (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
+    Graph.acyclicSinkPolynomial a.graph q = acyclicSinkClosedForm a q := by
+  have hactual :=
+    acyclicSinkPolynomial_take_comp_X_add_one hq a n (le_refl n)
+  rw [a.take_self, ← a.weightedIndepPoly_eq_prefix (weight a q)] at hactual
+  have hclosed := acyclicSinkClosedForm_comp_X_add_one a q
+  have heq :
+      (Graph.acyclicSinkPolynomial a.graph q).comp (X + 1) =
+        (acyclicSinkClosedForm a q).comp (X + 1) :=
+    hactual.trans hclosed.symm
+  have hinverse := congrArg (fun p : ℝ[X] ↦ p.comp (X - 1)) heq
+  simpa [Polynomial.comp_assoc] using hinverse
 
 /-- The weighted-independence closed form splits for every q ≥ 0. -/
 theorem acyclicSinkClosedForm_splits
@@ -1518,6 +1730,14 @@ theorem acyclicSinkPolynomial_splits_of_eq_closedForm
         acyclicSinkClosedForm a q) :
     (Graph.acyclicSinkPolynomial a.graph q).Splits := by
   rw [hidentity]
+  exact acyclicSinkClosedForm_splits a hq
+
+/-- The ascent-refined acyclic sink polynomial of every natural unit interval
+graph is real-rooted when q ≥ 0. -/
+theorem acyclicSinkPolynomial_splits
+    (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
+    (Graph.acyclicSinkPolynomial a.graph q).Splits := by
+  rw [acyclicSinkPolynomial_eq_closedForm a hq]
   exact acyclicSinkClosedForm_splits a hq
 
 end UnitIntervalGraph

@@ -172,6 +172,29 @@ def acyclicSinkPolynomial (G : _root_.SimpleGraph V) (q : ℝ) : ℝ[X] := by
   exact ∑ O : Orientation.AcyclicOrientation G,
     orientationMonomial q O.1
 
+@[simp]
+theorem acyclicSinkPolynomial_fin_zero
+    (G : _root_.SimpleGraph (Fin 0)) (q : ℝ) :
+    acyclicSinkPolynomial G q = 1 := by
+  classical
+  let O : Orientation G :=
+    { dir := fun i ↦ Fin.elim0 i
+      dir_ne_of_adj := by intro i; exact Fin.elim0 i
+      dir_eq_false_of_not_adj := by intro i; exact Fin.elim0 i }
+  let Q : Orientation.AcyclicOrientation G :=
+    ⟨O, ⟨fun i ↦ Fin.elim0 i, by intro i; exact Fin.elim0 i⟩⟩
+  letI : Unique (Orientation.AcyclicOrientation G) :=
+    { default := Q
+      uniq := by
+        intro R
+        apply Subtype.ext
+        apply Orientation.ext
+        funext i
+        exact Fin.elim0 i }
+  rw [acyclicSinkPolynomial, Fintype.sum_unique]
+  simp [orientationMonomial, Orientation.ascentCount,
+    Orientation.sinkCount, Orientation.sinks]
+
 end Polynomial
 
 end Graph
