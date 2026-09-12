@@ -102,6 +102,7 @@ import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenVecchi.Chow
+import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
