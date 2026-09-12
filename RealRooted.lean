@@ -76,6 +76,7 @@ import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
+import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
 import RealRooted.BrandenVecchi.SignedWords
 import RealRooted.BrandenVecchi.SupersymmetricCoefficients
