@@ -19,6 +19,16 @@ noncomputable section
 namespace RealRooted
 namespace UnitIntervalGraph
 
+/-- The q-integer [m]_q. -/
+def qNat (q : ℝ) (m : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range m, q ^ k
+
+@[simp] theorem qNat_zero (q : ℝ) : qNat q 0 = 0 := by
+  simp [qNat]
+
+@[simp] theorem qNat_one (q : ℝ) : qNat q 1 = 1 := by
+  simp [qNat]
+
 /-- Left-endpoint data for a natural unit interval graph on Fin n.
 The condition left i ≤ i makes every interval nonempty. -/
 structure Data (n : ℕ) where
@@ -151,6 +161,26 @@ theorem mem_lastEarlierNeighbors_iff {m : ℕ} (a : Data (m + 1))
     change i.val < m
     exact i.isLt)]
   simp [prefixEmbedding]
+
+@[simp]
+theorem card_lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) :
+    a.lastEarlierNeighbors.card = a.width (Fin.last m) := by
+  let lower := a.left (Fin.last m)
+  have hcard :
+      (Finset.univ.filter fun i : Fin m ↦ lower ≤ i.val).card =
+        (Finset.Ico lower m).card := by
+    apply Finset.card_bij (fun i _ ↦ i.val)
+    · intro i hi
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+      exact Finset.mem_Ico.mpr ⟨hi, i.isLt⟩
+    · intro i₁ hi₁ i₂ hi₂ heq
+      exact Fin.ext heq
+    · intro k hk
+      rw [Finset.mem_Ico] at hk
+      refine ⟨⟨k, hk.2⟩, ?_, rfl⟩
+      simp [hk.1]
+  rw [lastEarlierNeighbors, hcard]
+  simp [width, lower]
 
 /-- The earlier neighbors of the final vertex form a clique. -/
 theorem lastEarlierNeighbors_isClique {m : ℕ} (a : Data (m + 1)) :
@@ -691,6 +721,290 @@ noncomputable def insertionCutEquivFin {m : ℕ} (a : Data (m + 1))
       apply Fin.ext
       exact hcard⟩
 
+noncomputable instance insertionCutFintype {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) :
+    Fintype (InsertionCut a O.1) :=
+  Fintype.ofEquiv (Fin (a.lastEarlierNeighbors.card + 1))
+    (a.insertionCutEquivFin O).symm
+
+/-- The ascent weights of all proper insertion cuts form the q-integer of
+the final-neighbor clique size. -/
+theorem sum_properInsertionCuts {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) (q : ℝ) :
+    (∑ cut : InsertionCut a O.1,
+        if cut.lower ≠ a.lastEarlierNeighbors then
+          q ^ cut.lower.card else 0) =
+      qNat q a.lastEarlierNeighbors.card := by
+  change _ = ∑ k ∈ Finset.range a.lastEarlierNeighbors.card, q ^ k
+  let e := a.insertionCutEquivFin O
+  rw [← e.symm.sum_comp]
+  have hcard (k : Fin (a.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower.card = k.val := by
+    exact congrArg Fin.val (e.apply_symm_apply k)
+  have hfull (k : Fin (a.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower = a.lastEarlierNeighbors ↔
+        k.val = a.lastEarlierNeighbors.card := by
+    constructor
+    · intro h
+      calc
+        k.val = (e.symm k).lower.card := (hcard k).symm
+        _ = a.lastEarlierNeighbors.card := congrArg Finset.card h
+    · intro h
+      apply Finset.eq_of_subset_of_card_le (e.symm k).lower_subset
+      rw [hcard, h]
+  simp_rw [hcard]
+  simp only [ne_eq, hfull]
+  rw [Fin.sum_univ_castSucc]
+  simp only [Fin.val_castSucc, Fin.val_last]
+  rw [Finset.sum_fin_eq_sum_range]
+  simp only [not_true_eq_false, if_false, add_zero]
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hklt : k < a.width (Fin.last m) := by
+    simpa using Finset.mem_range.mp hk
+  simp [hklt, Nat.ne_of_lt hklt]
+
+/-- Inserting the final, largest-labelled vertex adds one ascent for each
+earlier neighbor below the insertion cut. -/
+theorem extendOrientation_ascentCount {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) :
+    (a.extendOrientation O cut).ascentCount =
+      O.ascentCount + cut.lower.card := by
+  simp only [Graph.Orientation.ascentCount, Fin.sum_univ_castSucc]
+  congr 1
+  · apply Finset.sum_congr rfl
+    intro v hv
+    symm
+    apply Finset.card_bij (fun u _ ↦ u.castSucc)
+    · intro u hu
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hu ⊢
+      exact ⟨hu.1, (a.extendOrientation_directed_prefix O cut u v).2 hu.2⟩
+    · intro u₁ hu₁ u₂ hu₂ heq
+      exact Fin.castSucc_inj.mp heq
+    · intro w hw
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hw
+      let u : Fin m := ⟨w.val, lt_trans hw.1 v.isLt⟩
+      refine ⟨u, ?_, ?_⟩
+      · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+        exact ⟨hw.1,
+          (a.extendOrientation_directed_prefix O cut u v).1 (by
+            convert hw.2 using 1 <;> apply Fin.ext <;> rfl)⟩
+      · apply Fin.ext
+        rfl
+  · symm
+    apply Finset.card_bij (fun u _ ↦ u.castSucc)
+    · intro u hu
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      refine ⟨?_, ?_⟩
+      · change u.val < m
+        exact u.isLt
+      · rw [← a.prefixEmbedding_succ_apply u]
+        exact (a.extendOrientation_directed_to_last O cut u).2 hu
+    · intro u₁ hu₁ u₂ hu₂ heq
+      exact Fin.castSucc_inj.mp heq
+    · intro w hw
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hw
+      have hwne : w ≠ Fin.last m := ne_of_lt hw.1
+      let u : Fin m := w.castPred hwne
+      refine ⟨u, ?_, ?_⟩
+      · exact (a.extendOrientation_directed_to_last O cut u).1 (by
+          convert hw.2 using 1
+          exact (Fin.castSucc_castPred w hwne).symm)
+      · exact Fin.castSucc_castPred w hwne
+
+/-- A prefix vertex remains a sink exactly when it was a sink and is not
+directed toward the inserted final vertex. -/
+theorem extendOrientation_isSink_prefix {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
+    (x : Fin m) :
+    (a.extendOrientation O cut).IsSink x.castSucc ↔
+      O.IsSink x ∧ x ∉ cut.lower := by
+  constructor
+  · intro hsink
+    refine ⟨?_, ?_⟩
+    · intro y hxy
+      exact hsink y.castSucc
+        ((a.extendOrientation_directed_prefix O cut x y).2 hxy)
+    · intro hx
+      exact hsink (Fin.last m)
+        ((a.extendOrientation_directed_to_last O cut x).2 hx)
+  · rintro ⟨hsink, hxLower⟩ v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · intro hxlast
+      exact hxLower ((a.extendOrientation_directed_to_last O cut x).1 hxlast)
+    · intro hxy
+      exact hsink y ((a.extendOrientation_directed_prefix O cut x y).1 hxy)
+
+/-- The inserted final vertex is a sink exactly for the full cut. -/
+theorem extendOrientation_isSink_last {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) :
+    (a.extendOrientation O cut).IsSink (Fin.last m) ↔
+      cut.lower = a.lastEarlierNeighbors := by
+  constructor
+  · intro hsink
+    apply Finset.Subset.antisymm cut.lower_subset
+    intro y hyK
+    by_contra hyLower
+    exact hsink y.castSucc
+      ((a.extendOrientation_directed_from_last O cut y).2 ⟨hyK, hyLower⟩)
+  · intro hfull v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · exact (a.extendOrientation O cut).not_directed_self (Fin.last m)
+    · intro hlasty
+      obtain ⟨hyK, hyLower⟩ :=
+        (a.extendOrientation_directed_from_last O cut y).1 hlasty
+      exact hyLower (hfull.symm ▸ hyK)
+
+/-- A proper insertion cut contains no sink of the prefix orientation. -/
+theorem not_isSink_of_mem_properCut {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
+    (hproper : cut.lower ≠ a.lastEarlierNeighbors)
+    {x : Fin m} (hx : x ∈ cut.lower) : ¬O.IsSink x := by
+  have hnsubset : ¬a.lastEarlierNeighbors ⊆ cut.lower := by
+    intro hsubset
+    exact hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
+  obtain ⟨y, hyK, hyLower⟩ := Finset.not_subset.mp hnsubset
+  intro hsink
+  exact hsink y (cut.directed_across hx hyK hyLower)
+
+/-- Every nonfinal sink is preserved by a proper insertion cut, and the final
+vertex is then not a sink, so the total sink count is unchanged. -/
+theorem extendOrientation_sinkCount_of_properCut {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O)
+    (hproper : cut.lower ≠ a.lastEarlierNeighbors) :
+    (a.extendOrientation O cut).sinkCount = O.sinkCount := by
+  classical
+  simp only [Graph.Orientation.sinkCount]
+  symm
+  apply Finset.card_bij (fun x _ ↦ x.castSucc)
+  · intro x hx
+    rw [Graph.Orientation.mem_sinks] at hx ⊢
+    exact (a.extendOrientation_isSink_prefix O cut x).2
+      ⟨hx, fun hxLower ↦ a.not_isSink_of_mem_properCut O cut hproper hxLower hx⟩
+  · intro x₁ hx₁ x₂ hx₂ heq
+    exact Fin.castSucc_inj.mp heq
+  · intro v hv
+    rw [Graph.Orientation.mem_sinks] at hv
+    revert hv
+    refine Fin.lastCases ?_ (fun x ↦ ?_) v
+    · intro hv
+      exact False.elim (hproper ((a.extendOrientation_isSink_last O cut).1 hv))
+    · intro hv
+      obtain ⟨hxSink, hxLower⟩ :=
+        (a.extendOrientation_isSink_prefix O cut x).1 hv
+      exact ⟨x, by simpa using hxSink, rfl⟩
+
+/-- For the full cut, the new sinks are the old sinks outside the final
+neighbor clique, together with the final vertex. -/
+theorem extendOrientation_sinks_of_fullCut {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O)
+    (hfull : cut.lower = a.lastEarlierNeighbors) :
+    (a.extendOrientation O cut).sinks =
+      (O.sinks.filter fun x ↦ x ∉ a.lastEarlierNeighbors).map
+        Fin.castSuccEmb ∪ {Fin.last m} := by
+  classical
+  ext v
+  refine Fin.lastCases ?_ (fun x ↦ ?_) v
+  · simp [Graph.Orientation.mem_sinks,
+      a.extendOrientation_isSink_last O cut, hfull]
+  · rw [Graph.Orientation.mem_sinks,
+      a.extendOrientation_isSink_prefix O cut]
+    simp [hfull]
+
+theorem extendOrientation_sinkCount_of_fullCut {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O)
+    (hfull : cut.lower = a.lastEarlierNeighbors) :
+    (a.extendOrientation O cut).sinkCount =
+      (O.sinks.filter fun x ↦ x ∉ a.lastEarlierNeighbors).card + 1 := by
+  classical
+  rw [Graph.Orientation.sinkCount,
+    a.extendOrientation_sinks_of_fullCut O cut hfull]
+  rw [Finset.card_union_of_disjoint]
+  · simp
+  · rw [Finset.disjoint_left]
+    intro v hv hlast
+    rw [Finset.mem_singleton] at hlast
+    subst v
+    rcases Finset.mem_map.mp hv with ⟨x, hx, hxeq⟩
+    have hval := congrArg Fin.val hxeq
+    exact (Nat.ne_of_lt x.isLt) hval
+
+/-- If the prefix orientation has no sink in the final-neighbor clique, the
+full cut adds exactly one sink. -/
+theorem extendOrientation_sinkCount_of_fullCut_of_noSink {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O)
+    (hfull : cut.lower = a.lastEarlierNeighbors)
+    (hnoSink : ∀ x ∈ a.lastEarlierNeighbors, ¬O.IsSink x) :
+    (a.extendOrientation O cut).sinkCount = O.sinkCount + 1 := by
+  rw [a.extendOrientation_sinkCount_of_fullCut O cut hfull]
+  congr 1
+  rw [Graph.Orientation.sinkCount]
+  congr 1
+  ext x
+  simp only [Finset.mem_filter, Graph.Orientation.mem_sinks]
+  exact ⟨fun h ↦ h.1, fun hxSink ↦
+    ⟨hxSink, fun hxK ↦ hnoSink x hxK hxSink⟩⟩
+
+/-- A clique contains at most one sink of the ambient orientation. -/
+theorem isSink_eq_of_mem_lastEarlierNeighbors {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    {x y : Fin m} (hxK : x ∈ a.lastEarlierNeighbors)
+    (hyK : y ∈ a.lastEarlierNeighbors)
+    (hxSink : O.IsSink x) (hySink : O.IsSink y) : x = y := by
+  by_contra hxy
+  have hadj : a.init.graph.Adj x y :=
+    a.lastEarlierNeighbors_isClique hxK hyK hxy
+  by_cases hdir : O.Directed x y
+  · exact hxSink y hdir
+  · exact hySink x
+      ((O.directed_of_adj_iff_not_directed_reverse hadj.symm).2 hdir)
+
+/-- If the prefix orientation has a sink in the final-neighbor clique, the
+full cut replaces that unique sink by the final vertex. -/
+theorem extendOrientation_sinkCount_of_fullCut_of_hasSink {m : ℕ}
+    (a : Data (m + 1)) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O)
+    (hfull : cut.lower = a.lastEarlierNeighbors)
+    (hhasSink : ∃ x ∈ a.lastEarlierNeighbors, O.IsSink x) :
+    (a.extendOrientation O cut).sinkCount = O.sinkCount := by
+  classical
+  obtain ⟨x, hxK, hxSink⟩ := hhasSink
+  rw [a.extendOrientation_sinkCount_of_fullCut O cut hfull,
+    Graph.Orientation.sinkCount]
+  have hsinks :
+      O.sinks =
+        (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x} := by
+    ext y
+    rw [Graph.Orientation.mem_sinks]
+    simp only [Finset.mem_union, Finset.mem_filter,
+      Graph.Orientation.mem_sinks, Finset.mem_singleton]
+    constructor
+    · intro hySink
+      by_cases hyK : y ∈ a.lastEarlierNeighbors
+      · exact Or.inr (a.isSink_eq_of_mem_lastEarlierNeighbors O
+          hyK hxK hySink hxSink)
+      · exact Or.inl ⟨hySink, hyK⟩
+    · rintro (⟨hySink, hyK⟩ | rfl)
+      · exact hySink
+      · exact hxSink
+  have hdisjoint :
+      Disjoint (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) {x} := by
+    rw [Finset.disjoint_singleton_right]
+    simp [hxK]
+  have hcardSinks :
+      O.sinks.card =
+        (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors).card + 1 := by
+    calc
+      O.sinks.card =
+          ((O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x}).card := by
+        exact congrArg Finset.card hsinks
+      _ = _ := by rw [Finset.card_union_of_disjoint hdisjoint]; simp
+  exact hcardSinks.symm
+
 private theorem adj_same_left {v x y : Fin n}
     (hx : a.graph.Adj v x) (hy : a.graph.Adj v y)
     (hxv : x < v) (hyv : y < v) (hxy : x ≠ y) :
@@ -751,16 +1065,6 @@ theorem graph_clawFree : Graph.ClawFree a.graph := by
   · exact hnxy (a.adj_same_right hvx hvy hvx' hvy' hxy)
 
 end Data
-
-/-- The q-integer [m]_q. -/
-def qNat (q : ℝ) (m : ℕ) : ℝ :=
-  ∑ k ∈ Finset.range m, q ^ k
-
-@[simp] theorem qNat_zero (q : ℝ) : qNat q 0 = 0 := by
-  simp [qNat]
-
-@[simp] theorem qNat_one (q : ℝ) : qNat q 1 = 1 := by
-  simp [qNat]
 
 theorem qNat_nonneg {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
     0 ≤ qNat q m := by

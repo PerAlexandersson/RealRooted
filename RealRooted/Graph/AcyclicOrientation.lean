@@ -1,6 +1,7 @@
 import Mathlib.Combinatorics.Digraph.Orientation
 import Mathlib.Data.Fintype.Order
 import Mathlib.Algebra.Polynomial.Basic
+import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Real.Basic
 
 /-!
@@ -129,17 +130,27 @@ def IsSink (O : Orientation G) (v : V) : Prop :=
 
 variable [Fintype V] [DecidableEq V]
 
-/-- Number of sinks in a finite orientation. -/
-def sinkCount (O : Orientation G) : ℕ := by
+/-- The finite set of sinks of an orientation. -/
+def sinks (O : Orientation G) : Finset V := by
   classical
-  exact (Finset.univ.filter O.IsSink).card
+  exact Finset.univ.filter O.IsSink
+
+omit [DecidableEq V] in
+@[simp] theorem mem_sinks (O : Orientation G) (v : V) :
+    v ∈ O.sinks ↔ O.IsSink v := by
+  classical
+  simp [sinks]
+
+/-- Number of sinks in a finite orientation. -/
+def sinkCount (O : Orientation G) : ℕ :=
+  O.sinks.card
 
 variable [LinearOrder V]
 
 /-- Number of naturally labelled ascents in a finite orientation. -/
 def ascentCount (O : Orientation G) : ℕ :=
-  ((Finset.univ ×ˢ Finset.univ).filter fun e : V × V =>
-    e.1 < e.2 ∧ O.Directed e.1 e.2).card
+  ∑ v : V, (Finset.univ.filter fun u : V =>
+    u < v ∧ O.Directed u v).card
 
 end Orientation
 
