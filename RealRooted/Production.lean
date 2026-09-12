@@ -1067,6 +1067,7 @@ import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 import RealRooted.GammaPencil.Basic
 import RealRooted.GammaPencil.Invariants
 import RealRooted.GammaPencil.Symbol
+import RealRooted.GammaPencil.SymbolStability
 
 /-!
 # RealRooted production umbrella

@@ -1181,6 +1181,7 @@ import RealRooted.Wronskian.Successor.Splits
 import RealRooted.GammaPencil.Basic
 import RealRooted.GammaPencil.Invariants
 import RealRooted.GammaPencil.Symbol
+import RealRooted.GammaPencil.SymbolStability
 import RealRooted.Production
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
