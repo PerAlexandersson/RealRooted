@@ -60,6 +60,270 @@ theorem graph_adj_of_lt {i j : Fin n} (hij : i < j) :
   · intro hleft
     exact ⟨ne_of_lt hij, le_trans (a.left_le i) (Nat.le_of_lt hij), hleft⟩
 
+/-- The order embedding of an initial vertex interval. -/
+def prefixEmbedding (_a : Data n) {k : ℕ} (hk : k ≤ n) : Fin k ↪o Fin n where
+  toFun i := ⟨i.val, lt_of_lt_of_le i.isLt hk⟩
+  inj' := by
+    intro i j h
+    apply Fin.ext
+    exact congrArg (fun x : Fin n ↦ x.val) h
+  map_rel_iff' := Iff.rfl
+
+@[simp]
+theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
+    a.prefixEmbedding hk i = ⟨i.val, lt_of_lt_of_le i.isLt hk⟩ :=
+  rfl
+
+@[simp]
+theorem prefixEmbedding_succ_apply {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
+    a.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
+  apply Fin.ext
+  rfl
+
+/-- Restriction of left-endpoint data to its first k vertices. -/
+def take (k : ℕ) (hk : k ≤ n) : Data k where
+  left i := a.left (a.prefixEmbedding hk i)
+  left_le i := a.left_le (a.prefixEmbedding hk i)
+  monotone_left := by
+    intro i j hij
+    exact a.monotone_left ((a.prefixEmbedding hk).monotone hij)
+
+@[simp]
+theorem prefix_left {k : ℕ} (hk : k ≤ n) (i : Fin k) :
+    (a.take k hk).left i = a.left (a.prefixEmbedding hk i) :=
+  rfl
+
+theorem prefix_graph_adj {k : ℕ} (hk : k ≤ n) (i j : Fin k) :
+    (a.take k hk).graph.Adj i j ↔
+      a.graph.Adj (a.prefixEmbedding hk i) (a.prefixEmbedding hk j) := by
+  simp only [graph_adj, prefix_left, prefixEmbedding]
+  constructor
+  · rintro ⟨hne, hi, hj⟩
+    exact ⟨fun h ↦ hne ((a.prefixEmbedding hk).injective h), hi, hj⟩
+  · rintro ⟨hne, hi, hj⟩
+    exact ⟨fun h ↦ hne (congrArg (a.prefixEmbedding hk) h), hi, hj⟩
+
+/-- Restriction of an orientation to an initial vertex interval. -/
+def restrictPrefix {k : ℕ} (hk : k ≤ n)
+    (O : Graph.Orientation a.graph) :
+    Graph.Orientation (a.take k hk).graph :=
+  O.comap (a.prefixEmbedding hk) (a.prefix_graph_adj hk)
+
+theorem restrictPrefix_isAcyclic {k : ℕ} (hk : k ≤ n)
+    {O : Graph.Orientation a.graph} (hO : O.IsAcyclic) :
+    (a.restrictPrefix hk O).IsAcyclic :=
+  hO.comap (a.prefixEmbedding hk) (a.prefix_graph_adj hk)
+
+/-- Delete the final vertex from natural unit interval data. -/
+def init {m : ℕ} (a : Data (m + 1)) : Data m :=
+  a.take m (Nat.le_succ m)
+
+/-- Earlier neighbors of the final vertex, represented in the initial graph. -/
+def lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) : Finset (Fin m) :=
+  Finset.univ.filter fun i =>
+    a.left (Fin.last m) ≤ i.val
+
+theorem mem_lastEarlierNeighbors_iff {m : ℕ} (a : Data (m + 1))
+    (i : Fin m) :
+    i ∈ a.lastEarlierNeighbors ↔
+      a.graph.Adj (a.prefixEmbedding (Nat.le_succ m) i) (Fin.last m) := by
+  simp only [lastEarlierNeighbors, Finset.mem_filter, Finset.mem_univ, true_and]
+  rw [a.graph_adj_of_lt (by
+    change i.val < m
+    exact i.isLt)]
+  simp [prefixEmbedding]
+
+/-- The earlier neighbors of the final vertex form a clique. -/
+theorem lastEarlierNeighbors_isClique {m : ℕ} (a : Data (m + 1)) :
+    (a.init).graph.IsClique (a.lastEarlierNeighbors : Set (Fin m)) := by
+  intro x hx y hy hxy
+  rw [Finset.mem_coe, mem_lastEarlierNeighbors_iff] at hx hy
+  rcases lt_or_gt_of_ne hxy with hxy' | hyx'
+  · rw [a.init.graph_adj_of_lt hxy']
+    exact le_trans
+      (a.monotone_left (Nat.le_of_lt
+        (show a.prefixEmbedding (Nat.le_succ m) y < Fin.last m by
+          change y.val < m
+          exact y.isLt)))
+      (a.graph_adj.mp hx).2.2
+  · apply SimpleGraph.Adj.symm
+    rw [a.init.graph_adj_of_lt hyx']
+    exact le_trans
+      (a.monotone_left (Nat.le_of_lt
+        (show a.prefixEmbedding (Nat.le_succ m) x < Fin.last m by
+          change x.val < m
+          exact x.isLt)))
+      (a.graph_adj.mp hy).2.2
+
+/-- An initial segment of the clique order on the earlier neighbors of the
+final vertex. -/
+structure InsertionCut {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) where
+  lower : Finset (Fin m)
+  lower_subset : lower ⊆ a.lastEarlierNeighbors
+  directed_across :
+    ∀ ⦃x⦄, x ∈ lower →
+      ∀ ⦃y⦄, y ∈ a.lastEarlierNeighbors → y ∉ lower →
+        O.Directed x y
+
+/-- Extend an orientation across the final simplicial vertex according to a
+cut in its oriented earlier-neighbor clique. -/
+def extendOrientation {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) :
+    Graph.Orientation a.graph where
+  dir :=
+    Fin.lastCases
+      (Fin.lastCases false fun y =>
+        decide (y ∈ a.lastEarlierNeighbors ∧ y ∉ cut.lower))
+      (fun x =>
+        Fin.lastCases (decide (x ∈ cut.lower)) fun y => O.dir x y)
+  dir_ne_of_adj := by
+    intro u
+    refine Fin.lastCases ?_ (fun x ↦ ?_) u
+    · intro v
+      refine Fin.lastCases ?_ (fun y ↦ ?_) v
+      · intro huv
+        exact False.elim ((a.graph.ne_of_adj huv) rfl)
+      · intro huv
+        have hyK : y ∈ a.lastEarlierNeighbors :=
+          (a.mem_lastEarlierNeighbors_iff y).mpr huv.symm
+        by_cases hyB : y ∈ cut.lower
+        · simp [hyB, hyK]
+        · simp [hyB, hyK]
+    · intro v
+      refine Fin.lastCases ?_ (fun y ↦ ?_) v
+      · intro huv
+        have hxK : x ∈ a.lastEarlierNeighbors :=
+          (a.mem_lastEarlierNeighbors_iff x).mpr huv
+        by_cases hxB : x ∈ cut.lower
+        · simp [hxB, hxK]
+        · simp [hxB, hxK]
+      · intro huv
+        simpa using
+          O.dir_ne_of_adj ((a.prefix_graph_adj (Nat.le_succ m) x y).mpr huv)
+  dir_eq_false_of_not_adj := by
+    intro u
+    refine Fin.lastCases ?_ (fun x ↦ ?_) u
+    · intro v
+      refine Fin.lastCases ?_ (fun y ↦ ?_) v
+      · intro huv
+        simp
+      · intro huv
+        have hyK : y ∉ a.lastEarlierNeighbors := by
+          intro hyK
+          exact huv ((a.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
+        have hyB : y ∉ cut.lower :=
+          fun hy ↦ hyK (cut.lower_subset hy)
+        simp [hyK, hyB]
+    · intro v
+      refine Fin.lastCases ?_ (fun y ↦ ?_) v
+      · intro huv
+        have hxK : x ∉ a.lastEarlierNeighbors := by
+          intro hxK
+          exact huv ((a.mem_lastEarlierNeighbors_iff x).mp hxK)
+        have hxB : x ∉ cut.lower :=
+          fun hx ↦ hxK (cut.lower_subset hx)
+        simp [hxB]
+      · intro huv
+        simp only [Fin.lastCases_castSucc]
+        apply O.dir_eq_false_of_not_adj
+        exact fun h ↦ huv ((a.prefix_graph_adj (Nat.le_succ m) x y).mp h)
+
+@[simp]
+theorem extendOrientation_directed_prefix {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
+    (x y : Fin m) :
+    (a.extendOrientation O cut).Directed
+        (a.prefixEmbedding (Nat.le_succ m) x)
+        (a.prefixEmbedding (Nat.le_succ m) y) ↔
+      O.Directed x y := by
+  rw [a.prefixEmbedding_succ_apply x, a.prefixEmbedding_succ_apply y]
+  simp [Graph.Orientation.Directed, extendOrientation]
+
+@[simp]
+theorem extendOrientation_directed_to_last {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
+    (x : Fin m) :
+    (a.extendOrientation O cut).Directed
+        (a.prefixEmbedding (Nat.le_succ m) x) (Fin.last m) ↔
+      x ∈ cut.lower := by
+  rw [a.prefixEmbedding_succ_apply x]
+  simp [Graph.Orientation.Directed, extendOrientation]
+
+@[simp]
+theorem extendOrientation_directed_from_last {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
+    (y : Fin m) :
+    (a.extendOrientation O cut).Directed
+        (Fin.last m) (a.prefixEmbedding (Nat.le_succ m) y) ↔
+      y ∈ a.lastEarlierNeighbors ∧ y ∉ cut.lower := by
+  rw [a.prefixEmbedding_succ_apply y]
+  simp [Graph.Orientation.Directed, extendOrientation]
+
+/-- Inserting a simplicial final vertex at a directed cut preserves
+acyclicity. -/
+theorem extendOrientation_isAcyclic {m : ℕ} (a : Data (m + 1))
+    {O : Graph.Orientation a.init.graph} (hO : O.IsAcyclic)
+    (cut : InsertionCut a O) :
+    (a.extendOrientation O cut).IsAcyclic := by
+  obtain ⟨rank, hrank⟩ := hO
+  let lowerRank : ℕ := cut.lower.sup rank
+  let fullRank : Fin (m + 1) → ℕ :=
+    if cut.lower.Nonempty then
+      Fin.lastCases (2 * lowerRank + 1) (fun x ↦ 2 * rank x)
+    else
+      Fin.lastCases 0 (fun x ↦ rank x + 1)
+  refine ⟨fullRank, ?_⟩
+  intro u
+  refine Fin.lastCases ?_ (fun x ↦ ?_) u
+  · intro v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · intro huv
+      exact False.elim ((a.extendOrientation O cut).not_directed_self _ huv)
+    · intro huv
+      have hyK : y ∈ a.lastEarlierNeighbors :=
+        (a.extendOrientation_directed_from_last O cut y).mp huv |>.1
+      have hyB : y ∉ cut.lower :=
+        (a.extendOrientation_directed_from_last O cut y).mp huv |>.2
+      change fullRank (Fin.last m) < fullRank y.castSucc
+      by_cases hne : cut.lower.Nonempty
+      · obtain ⟨x, hx⟩ := hne
+        have hne' : cut.lower.Nonempty := ⟨x, hx⟩
+        have hxy : rank x < rank y :=
+          hrank (cut.directed_across hx hyK hyB)
+        have hlower : lowerRank < rank y := by
+          apply (Finset.sup_lt_iff (lt_of_le_of_lt (Nat.zero_le _) hxy)).2
+          intro z hz
+          exact hrank (cut.directed_across hz hyK hyB)
+        simp only [fullRank, if_pos hne', Fin.lastCases_last,
+          Fin.lastCases_castSucc]
+        dsimp [lowerRank] at hlower ⊢
+        lia
+      · simp only [fullRank, if_neg hne, Fin.lastCases_last,
+          Fin.lastCases_castSucc]
+        exact Nat.zero_lt_succ _
+  · intro v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · intro huv
+      have hxB : x ∈ cut.lower :=
+        (a.extendOrientation_directed_to_last O cut x).mp huv
+      have hxle : rank x ≤ lowerRank := Finset.le_sup hxB
+      change fullRank x.castSucc < fullRank (Fin.last m)
+      have hne : cut.lower.Nonempty := ⟨x, hxB⟩
+      simp only [fullRank, if_pos hne, Fin.lastCases_castSucc,
+        Fin.lastCases_last]
+      dsimp [lowerRank] at hxle ⊢
+      lia
+    · intro huv
+      have hxy : rank x < rank y :=
+        hrank ((a.extendOrientation_directed_prefix O cut x y).mp huv)
+      change fullRank x.castSucc < fullRank y.castSucc
+      by_cases hne : cut.lower.Nonempty
+      · simp only [fullRank, if_pos hne, Fin.lastCases_castSucc]
+        exact (Nat.mul_lt_mul_left (by norm_num : 0 < 2)).2 hxy
+      · simp only [fullRank, if_neg hne, Fin.lastCases_castSucc]
+        exact Nat.add_lt_add_right hxy 1
+
 private theorem adj_same_left {v x y : Fin n}
     (hx : a.graph.Adj v x) (hy : a.graph.Adj v y)
     (hxv : x < v) (hyv : y < v) (hxy : x ≠ y) :
@@ -177,6 +441,14 @@ written in the original sink variable. -/
 def acyclicSinkClosedForm (a : Data n) (q : ℝ) : ℝ[X] :=
   C (normalization a q) *
     (Graph.weightedIndepPoly a.graph (weight a q)).comp (X - 1)
+
+/-- Shifting the sink variable exposes the normalized weighted independence
+polynomial exactly. -/
+theorem acyclicSinkClosedForm_comp_X_add_one (a : Data n) (q : ℝ) :
+    (acyclicSinkClosedForm a q).comp (X + 1) =
+      C (normalization a q) *
+        Graph.weightedIndepPoly a.graph (weight a q) := by
+  simp [acyclicSinkClosedForm, Polynomial.comp_assoc]
 
 /-- The weighted-independence closed form splits for every q ≥ 0. -/
 theorem acyclicSinkClosedForm_splits

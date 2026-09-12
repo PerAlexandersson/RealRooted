@@ -64,10 +64,48 @@ lemma not_directed_self (O : Orientation G) (v : V) : ¬O.Directed v v := by
   intro hv
   exact (G.ne_of_adj (O.directed_adj hv)) rfl
 
+/-- Restrict an orientation along an adjacency-reflecting map. -/
+def comap {W : Type*} {H : _root_.SimpleGraph W}
+    (O : Orientation G) (f : W → V)
+    (hadj : ∀ u v, H.Adj u v ↔ G.Adj (f u) (f v)) :
+    Orientation H where
+  dir u v := O.dir (f u) (f v)
+  dir_ne_of_adj := by
+    intro u v huv
+    exact O.dir_ne_of_adj ((hadj u v).mp huv)
+  dir_eq_false_of_not_adj := by
+    intro u v huv
+    apply O.dir_eq_false_of_not_adj
+    exact fun h ↦ huv ((hadj u v).mpr h)
+
+@[simp]
+theorem comap_directed {W : Type*} {H : _root_.SimpleGraph W}
+    (O : Orientation G) (f : W → V)
+    (hadj : ∀ u v, H.Adj u v ↔ G.Adj (f u) (f v))
+    (u v : W) :
+    (O.comap f hadj).Directed u v ↔ O.Directed (f u) (f v) :=
+  Iff.rfl
+
 /-- A finite orientation is acyclic when its directed relation has a
 topological ranking. -/
 def IsAcyclic (O : Orientation G) : Prop :=
   ∃ rank : V → ℕ, ∀ ⦃u v⦄, O.Directed u v → rank u < rank v
+
+theorem IsAcyclic.comap {W : Type*} {H : _root_.SimpleGraph W}
+    {O : Orientation G} (hO : O.IsAcyclic) (f : W → V)
+    (hadj : ∀ u v, H.Adj u v ↔ G.Adj (f u) (f v)) :
+    (O.comap f hadj).IsAcyclic := by
+  obtain ⟨rank, hrank⟩ := hO
+  refine ⟨rank ∘ f, ?_⟩
+  intro u v huv
+  exact hrank huv
+
+/-- Acyclic orientations as a finite subtype. -/
+def AcyclicOrientation (G : _root_.SimpleGraph V) :=
+  {O : Orientation G // O.IsAcyclic}
+
+instance [Finite V] : Finite (AcyclicOrientation G) :=
+  inferInstanceAs (Finite {O : Orientation G // O.IsAcyclic})
 
 /-- A vertex is a sink when it has no outgoing directed edge. -/
 def IsSink (O : Orientation G) (v : V) : Prop :=
@@ -96,9 +134,10 @@ variable {V : Type u} [Fintype V] [DecidableEq V] [LinearOrder V]
 /-- The natural-order ascent-refined acyclic-orientation sink polynomial. -/
 def acyclicSinkPolynomial (G : _root_.SimpleGraph V) (q : ℝ) : ℝ[X] := by
   classical
-  letI : Fintype (Orientation G) := Fintype.ofFinite (Orientation G)
-  exact ∑ O : Orientation G,
-    if O.IsAcyclic then C (q ^ O.ascentCount) * X ^ O.sinkCount else 0
+  letI : Fintype (Orientation.AcyclicOrientation G) :=
+    Fintype.ofFinite (Orientation.AcyclicOrientation G)
+  exact ∑ O : Orientation.AcyclicOrientation G,
+    C (q ^ O.1.ascentCount) * X ^ O.1.sinkCount
 
 end Polynomial
 
