@@ -6,7 +6,11 @@ public import Mathlib.Algebra.Polynomial.Derivative
 public section
 
 namespace Polynomial
-variable {R : Type*} [CommRing R] {p : R[X]}
+variable {R : Type*}
+
+section
+
+variable [Semiring R] {p : R[X]}
 
 /-- The coefficient of `X * p'` at `k` is `k` times the coefficient of `p`
 at `k`. -/
@@ -16,8 +20,11 @@ lemma coeff_X_mul_derivative (p : R[X]) (k : ℕ) :
   | zero => simp
   | succ k =>
     rw [coeff_X_mul, coeff_derivative]
-    push_cast
-    ring
+    simpa using (Nat.cast_comm (α := R) (k + 1) (p.coeff (k + 1))).symm
+
+end
+
+variable [CommRing R] {p : R[X]}
 
 /-- The coefficient of an affine Euler derivative step. -/
 lemma coeff_C_mul_add_affine_mul_derivative
