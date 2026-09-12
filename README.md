@@ -119,6 +119,9 @@ emulation. These scripts complement `lake build`; they do not replace it.
   `RealConsequences` child supplies their real preservation consequences, and
   `EulerFiniteSymbol.lean` packages the stable Euler-family specialization with
   diagonal constant `c ≥ 1`.
+- `RealRooted/GammaPencil/` develops the A16634x gamma operator from its
+  coefficient recurrence and exact finite symbol through degree-box
+  preservation and the all-rank oriented gamma-pencil theorem.
 - `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
   definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
   2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
@@ -429,6 +432,9 @@ re-exports both APIs.
 - `not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one`: a checked
   counterexample documenting why the Hermite-Biehler forward route is exposed
   only in sign-normalized form.
+- `gammaU_prec_gammaV` and `gammaU_add_C_mul_gammaV_splits`: the directed
+  proper-position and all-real-parameter splitness endpoints for the A16634x
+  gamma pencil in every rank at least two.
 
 ### Combinatorial Examples
 
@@ -488,6 +494,8 @@ The finite complex Borcea--Branden classification is checked using the
 multivariate stability and polarization infrastructure in this repository,
 with applications importing its reusable theorem modules rather than the
 challenge facade.
+The A16634x gamma-pencil roadmap is complete through its exact parity symbol,
+finite degree-box preserver, and all-rank oriented proper-position theorem.
 Further stability work may revisit the correctly oriented classical Hurwitz
 matrix and its stability criterion; both directions proposed for the current
 row-oriented matrix are formally refuted.

@@ -1183,6 +1183,7 @@ import RealRooted.GammaPencil.Invariants
 import RealRooted.GammaPencil.Preserver
 import RealRooted.GammaPencil.Symbol
 import RealRooted.GammaPencil.SymbolStability
+import RealRooted.GammaPencil.Theorem
 import RealRooted.Production
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
