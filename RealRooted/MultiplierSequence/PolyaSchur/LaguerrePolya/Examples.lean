@@ -1,4 +1,4 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
@@ -6,8 +6,8 @@ import Mathlib.Analysis.SpecialFunctions.Exponential
 
 This opt-in leaf identifies the exponential as the complex
 exponential-generating function of the constant-one multiplier sequence and
-therefore supplies its checked Laguerre--Pólya witness. It uses only the
-forward limit bridge; it does not establish a Pólya--Schur classification.
+therefore supplies checked Laguerre--Pólya and Type-I witnesses.  It also
+instantiates the reverse Pólya--Schur classification at this classical example.
 -/
 
 open Filter Polynomial Topology
@@ -35,5 +35,20 @@ theorem isLaguerrePolya_exp : IsLaguerrePolya Complex.exp := by
   apply isMultiplierSequence_one_sequence.isLaguerrePolya_complexExpGeneratingFunction
   intro R _
   simpa using Real.summable_pow_div_factorial R
+
+/-- The complex exponential is Type-I Laguerre--Pólya. -/
+theorem isLaguerrePolyaTypeI_exp : IsLaguerrePolyaTypeI Complex.exp := by
+  rw [← complexExpGeneratingFunction_one]
+  exact isPFMultiplierSequence_one_sequence.isLaguerrePolyaTypeI_complexExpGeneratingFunction
+
+/-- The Type-I Pólya--Schur classification specialized to the complex
+exponential and the constant-one sequence. -/
+theorem isPFMultiplierSequence_one_iff_isLaguerrePolyaTypeI_exp :
+    IsPFMultiplierSequence (fun _ => (1 : ℝ)) ↔
+      IsLaguerrePolyaTypeI Complex.exp := by
+  rw [← complexExpGeneratingFunction_one]
+  apply isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+  refine ⟨1, zero_lt_one, ?_⟩
+  simpa using Real.summable_pow_div_factorial (1 : ℝ)
 
 end RealRooted

@@ -961,7 +961,7 @@
       "max_modules": 101
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples": {
-      "max_modules": 100
+      "max_modules": 134
     },
     "RealRooted.NarayanaTransformation.RootGeometry": {
       "max_modules": 162
