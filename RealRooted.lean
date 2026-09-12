@@ -73,6 +73,7 @@ import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 import RealRooted.BrandenVecchi.ChowRowTransform
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
+import RealRooted.BrandenVecchi.SupersymmetricCoefficients
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
