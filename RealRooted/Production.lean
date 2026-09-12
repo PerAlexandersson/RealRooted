@@ -794,6 +794,7 @@ import RealRooted.Polarization
 import RealRooted.PolyaFrequency.EventuallyPolynomial
 import RealRooted.PolyaFrequencyConvolution
 import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.PolyaFrequencyConvolution.GeometricScaling
 import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 import RealRooted.PolynomialValueEulerNumerator
 import RealRooted.PolynomialValueEulerNumerator.PF
