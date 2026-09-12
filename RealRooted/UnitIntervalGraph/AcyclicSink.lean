@@ -1,6 +1,7 @@
 import RealRooted.Graph.AcyclicOrientation
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Linear
+import Mathlib.Data.Finset.Sort
 
 /-!
 # Acyclic sink polynomials of unit interval graphs
@@ -118,6 +119,24 @@ theorem restrictPrefix_isAcyclic {k : ℕ} (hk : k ≤ n)
 def init {m : ℕ} (a : Data (m + 1)) : Data m :=
   a.take m (Nat.le_succ m)
 
+/-- Restrict an orientation after deleting the final vertex. -/
+def restrictInit {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.graph) :
+    Graph.Orientation a.init.graph :=
+  a.restrictPrefix (Nat.le_succ m) O
+
+@[simp]
+theorem restrictInit_directed {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.graph) (x y : Fin m) :
+    (a.restrictInit O).Directed x y ↔
+      O.Directed x.castSucc y.castSucc := by
+  rfl
+
+theorem restrictInit_isAcyclic {m : ℕ} (a : Data (m + 1))
+    {O : Graph.Orientation a.graph} (hO : O.IsAcyclic) :
+    (a.restrictInit O).IsAcyclic :=
+  a.restrictPrefix_isAcyclic (Nat.le_succ m) hO
+
 /-- Earlier neighbors of the final vertex, represented in the initial graph. -/
 def lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) : Finset (Fin m) :=
   Finset.univ.filter fun i =>
@@ -165,6 +184,54 @@ structure InsertionCut {m : ℕ} (a : Data (m + 1))
     ∀ ⦃x⦄, x ∈ lower →
       ∀ ⦃y⦄, y ∈ a.lastEarlierNeighbors → y ∉ lower →
         O.Directed x y
+
+@[ext]
+theorem InsertionCut.ext {m : ℕ} {a : Data (m + 1)}
+    {O : Graph.Orientation a.init.graph} {c d : InsertionCut a O}
+    (hlower : c.lower = d.lower) : c = d := by
+  cases c
+  cases d
+  simp_all
+
+/-- The cut seen by a full acyclic orientation at its final vertex. -/
+def cutOfAcyclicOrientation {m : ℕ} (a : Data (m + 1))
+    (Q : Graph.Orientation.AcyclicOrientation a.graph) :
+    InsertionCut a (a.restrictInit Q.1) where
+  lower := Finset.univ.filter fun x : Fin m ↦
+    Q.1.Directed x.castSucc (Fin.last m)
+  lower_subset := by
+    intro x hx
+    rw [Finset.mem_filter] at hx
+    exact (a.mem_lastEarlierNeighbors_iff x).mpr
+      (Q.1.directed_adj hx.2)
+  directed_across := by
+    intro x hx y hyK hyB
+    rw [Finset.mem_filter] at hx
+    have hxlast : Q.1.Directed x.castSucc (Fin.last m) := hx.2
+    have hxK : x ∈ a.lastEarlierNeighbors :=
+      (a.mem_lastEarlierNeighbors_iff x).mpr (Q.1.directed_adj hxlast)
+    have hynotlast : ¬Q.1.Directed y.castSucc (Fin.last m) := by
+      intro hylast
+      apply hyB
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ y, hylast⟩
+    have hlasty : Q.1.Directed (Fin.last m) y.castSucc :=
+      (Q.1.directed_of_adj_iff_not_directed_reverse
+        ((a.mem_lastEarlierNeighbors_iff y).mp hyK).symm).2 hynotlast
+    have hxyInit : a.init.graph.Adj x y :=
+      a.lastEarlierNeighbors_isClique
+        hxK hyK (by
+          intro hxy
+          subst y
+          exact hynotlast hxlast)
+    have hxy : a.graph.Adj x.castSucc y.castSucc :=
+      (a.prefix_graph_adj (Nat.le_succ m) x y).1 hxyInit
+    change Q.1.Directed x.castSucc y.castSucc
+    by_contra hnxy
+    have hyx : Q.1.Directed y.castSucc x.castSucc :=
+      (Q.1.directed_of_adj_iff_not_directed_reverse hxy.symm).2 hnxy
+    obtain ⟨rank, hrank⟩ := Q.2
+    exact (Nat.lt_asymm (lt_trans (hrank hxlast) (hrank hlasty))
+      (hrank hyx))
 
 /-- Extend an orientation across the final simplicial vertex according to a
 cut in its oriented earlier-neighbor clique. -/
@@ -323,6 +390,306 @@ theorem extendOrientation_isAcyclic {m : ℕ} (a : Data (m + 1))
         exact (Nat.mul_lt_mul_left (by norm_num : 0 < 2)).2 hxy
       · simp only [fullRank, if_neg hne, Fin.lastCases_castSucc]
         exact Nat.add_lt_add_right hxy 1
+
+@[simp]
+theorem mem_cutOfAcyclicOrientation_lower {m : ℕ} (a : Data (m + 1))
+    (Q : Graph.Orientation.AcyclicOrientation a.graph) (x : Fin m) :
+    x ∈ (a.cutOfAcyclicOrientation Q).lower ↔
+      Q.1.Directed x.castSucc (Fin.last m) := by
+  simp [cutOfAcyclicOrientation]
+
+/-- Restricting an inserted orientation recovers its prefix orientation. -/
+theorem restrictInit_extendOrientation {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) :
+    a.restrictInit (a.extendOrientation O cut) = O := by
+  apply Graph.Orientation.ext
+  funext x y
+  apply Bool.eq_iff_iff.mpr
+  exact a.extendOrientation_directed_prefix O cut x y
+
+/-- Extracting the cut from an inserted acyclic orientation recovers the
+inserted cut. -/
+theorem cutOfAcyclicOrientation_extendOrientation {m : ℕ}
+    (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) (hO : O.IsAcyclic)
+    (cut : InsertionCut a O) :
+    (a.cutOfAcyclicOrientation
+      ⟨a.extendOrientation O cut, a.extendOrientation_isAcyclic hO cut⟩).lower =
+      cut.lower := by
+  ext x
+  rw [a.mem_cutOfAcyclicOrientation_lower]
+  exact a.extendOrientation_directed_to_last O cut x
+
+/-- Re-extending the restriction and extracted cut recovers a full acyclic
+orientation. -/
+theorem extendOrientation_cutOfAcyclicOrientation {m : ℕ}
+    (a : Data (m + 1))
+    (Q : Graph.Orientation.AcyclicOrientation a.graph) :
+    a.extendOrientation (a.restrictInit Q.1)
+        (a.cutOfAcyclicOrientation Q) = Q.1 := by
+  apply Graph.Orientation.ext
+  funext u v
+  apply Bool.eq_iff_iff.mpr
+  refine Fin.lastCases ?_ (fun x ↦ ?_) u
+  · refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · have hleft := (a.extendOrientation (a.restrictInit Q.1)
+          (a.cutOfAcyclicOrientation Q)).dir_eq_false_of_not_adj
+          (a.graph.loopless.irrefl (Fin.last m))
+      have hright := Q.1.dir_eq_false_of_not_adj
+        (a.graph.loopless.irrefl (Fin.last m))
+      rw [hleft, hright]
+    · exact a.extendOrientation_directed_from_last
+        (a.restrictInit Q.1) (a.cutOfAcyclicOrientation Q) y |>.trans <| by
+          constructor
+          · rintro ⟨hyK, hynot⟩
+            have hadj := (a.mem_lastEarlierNeighbors_iff y).mp hyK
+            rw [a.prefixEmbedding_succ_apply] at hadj
+            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) := by
+              intro hylast
+              exact hynot ((a.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
+            exact (Q.1.directed_of_adj_iff_not_directed_reverse
+              hadj.symm).2 hynot'
+          · intro hlasty
+            have hadj : a.graph.Adj y.castSucc (Fin.last m) :=
+              (Q.1.directed_adj hlasty).symm
+            have hadj' := hadj
+            rw [← a.prefixEmbedding_succ_apply y] at hadj'
+            refine ⟨(a.mem_lastEarlierNeighbors_iff y).mpr hadj', ?_⟩
+            intro hyLower
+            have hylast : Q.1.Directed y.castSucc (Fin.last m) :=
+              (a.mem_cutOfAcyclicOrientation_lower Q y).1 hyLower
+            exact (Q.1.directed_of_adj_iff_not_directed_reverse
+              hadj.symm).1 hlasty hylast
+  · refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · exact a.extendOrientation_directed_to_last
+        (a.restrictInit Q.1) (a.cutOfAcyclicOrientation Q) x |>.trans <|
+          a.mem_cutOfAcyclicOrientation_lower Q x
+    · exact a.extendOrientation_directed_prefix
+        (a.restrictInit Q.1) (a.cutOfAcyclicOrientation Q) x y
+
+/-- An acyclic orientation together with one insertion cut for the final
+vertex. The nondependent packaging keeps later finite-sum reindexing simple. -/
+structure ExtensionData {m : ℕ} (a : Data (m + 1)) where
+  orientation : Graph.Orientation a.init.graph
+  isAcyclic : orientation.IsAcyclic
+  lower : Finset (Fin m)
+  lower_subset : lower ⊆ a.lastEarlierNeighbors
+  directed_across :
+    ∀ ⦃x⦄, x ∈ lower →
+      ∀ ⦃y⦄, y ∈ a.lastEarlierNeighbors → y ∉ lower →
+        orientation.Directed x y
+
+namespace ExtensionData
+
+def cut {m : ℕ} {a : Data (m + 1)} (data : ExtensionData a) :
+    InsertionCut a data.orientation where
+  lower := data.lower
+  lower_subset := data.lower_subset
+  directed_across := data.directed_across
+
+@[ext]
+theorem ext {m : ℕ} {a : Data (m + 1)} {x y : ExtensionData a}
+    (horientation : x.orientation = y.orientation)
+    (hlower : x.lower = y.lower) : x = y := by
+  cases x
+  cases y
+  simp_all
+
+end ExtensionData
+
+/-- Acyclic orientations of the enlarged graph are equivalent to an acyclic
+prefix orientation together with a directed insertion cut. -/
+def acyclicOrientationEquivExtensionData {m : ℕ} (a : Data (m + 1)) :
+    Graph.Orientation.AcyclicOrientation a.graph ≃ ExtensionData a where
+  toFun Q :=
+    { orientation := a.restrictInit Q.1
+      isAcyclic := a.restrictInit_isAcyclic Q.2
+      lower := (a.cutOfAcyclicOrientation Q).lower
+      lower_subset := (a.cutOfAcyclicOrientation Q).lower_subset
+      directed_across := (a.cutOfAcyclicOrientation Q).directed_across }
+  invFun data :=
+    ⟨a.extendOrientation data.orientation data.cut,
+      a.extendOrientation_isAcyclic data.isAcyclic data.cut⟩
+  left_inv Q := by
+    apply Subtype.ext
+    exact a.extendOrientation_cutOfAcyclicOrientation Q
+  right_inv := by
+    intro data
+    apply ExtensionData.ext
+    · exact a.restrictInit_extendOrientation data.orientation data.cut
+    · exact a.cutOfAcyclicOrientation_extendOrientation
+        data.orientation data.isAcyclic data.cut
+
+/-- A copy of the final-neighbor clique carrying the topological order induced
+by an acyclic orientation. -/
+structure RankedNeighbor {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) where
+  val : Fin m
+  mem_neighbors : val ∈ a.lastEarlierNeighbors
+
+namespace RankedNeighbor
+
+variable {m : ℕ} {a : Data (m + 1)}
+  {O : Graph.Orientation.AcyclicOrientation a.init.graph}
+
+@[ext]
+theorem ext {x y : RankedNeighbor a O} (hval : x.val = y.val) : x = y := by
+  cases x
+  cases y
+  simp_all
+
+def equivSubtype : RankedNeighbor a O ≃ {x // x ∈ a.lastEarlierNeighbors} where
+  toFun x := ⟨x.val, x.mem_neighbors⟩
+  invFun x := ⟨x.1, x.2⟩
+  left_inv x := by cases x; rfl
+  right_inv x := by cases x; rfl
+
+instance : Fintype (RankedNeighbor a O) :=
+  Fintype.ofEquiv {x // x ∈ a.lastEarlierNeighbors} equivSubtype.symm
+
+instance : DecidableEq (RankedNeighbor a O) :=
+  fun x y ↦ decidable_of_iff (x.val = y.val) ⟨ext, congrArg val⟩
+
+instance : LinearOrder (RankedNeighbor a O) :=
+  LinearOrder.lift' (fun x ↦ O.topologicalRank x.val) <| by
+    intro x y hrank
+    apply ext
+    by_contra hxy
+    have hadj : a.init.graph.Adj x.val y.val :=
+      a.lastEarlierNeighbors_isClique x.mem_neighbors y.mem_neighbors hxy
+    by_cases hdir : O.1.Directed x.val y.val
+    · exact (Nat.ne_of_lt (O.directed_topologicalRank_lt hdir)) hrank
+    · have hrev : O.1.Directed y.val x.val :=
+        (O.1.directed_of_adj_iff_not_directed_reverse hadj.symm).2 hdir
+      exact (Nat.ne_of_gt (O.directed_topologicalRank_lt hrev)) hrank
+
+end RankedNeighbor
+
+/-- Every cardinality from zero through the final-neighbor clique size occurs
+as an insertion cut. -/
+theorem exists_insertionCut_card {m k : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph)
+    (hk : k ≤ a.lastEarlierNeighbors.card) :
+    ∃ cut : InsertionCut a O.1, cut.lower.card = k := by
+  let S : Finset (RankedNeighbor a O) := Finset.univ
+  have hcard : S.card = a.lastEarlierNeighbors.card := by
+    rw [Finset.card_univ]
+    calc
+      Fintype.card (RankedNeighbor a O) =
+          Fintype.card {x // x ∈ a.lastEarlierNeighbors} :=
+        Fintype.card_congr RankedNeighbor.equivSubtype
+      _ = a.lastEarlierNeighbors.card := Fintype.card_coe _
+  let e : Fin a.lastEarlierNeighbors.card ≃o {x // x ∈ S} :=
+    S.orderIsoOfFin hcard
+  let indices : Finset (Fin a.lastEarlierNeighbors.card) :=
+    Finset.univ.map (Fin.castLEEmb hk)
+  let lower : Finset (Fin m) :=
+    indices.image fun i ↦ (e i).1.val
+  have hlowerSubset : lower ⊆ a.lastEarlierNeighbors := by
+    intro x hx
+    rcases Finset.mem_image.mp hx with ⟨i, hi, rfl⟩
+    exact (e i).1.mem_neighbors
+  have hdirected :
+      ∀ ⦃x⦄, x ∈ lower →
+        ∀ ⦃y⦄, y ∈ a.lastEarlierNeighbors → y ∉ lower →
+          O.1.Directed x y := by
+    intro x hx y hyK hyLower
+    rcases Finset.mem_image.mp hx with ⟨i, hi, rfl⟩
+    let yR : RankedNeighbor a O := ⟨y, hyK⟩
+    let yS : {z // z ∈ S} := ⟨yR, Finset.mem_univ _⟩
+    let j : Fin a.lastEarlierNeighbors.card := e.symm yS
+    have hej : (e j).1.val = y := by
+      exact congrArg (fun z ↦ z.val) (congrArg Subtype.val (e.apply_symm_apply yS))
+    have hjnot : j ∉ indices := by
+      intro hj
+      apply hyLower
+      exact Finset.mem_image.mpr ⟨j, hj, hej⟩
+    have hiVal : i.val < k := by
+      rcases Finset.mem_map.mp hi with ⟨i₀, hi₀, hiEq⟩
+      rw [← hiEq]
+      exact i₀.isLt
+    have hkVal : k ≤ j.val := by
+      by_contra hjlt
+      apply hjnot
+      apply Finset.mem_map.mpr
+      refine ⟨⟨j.val, Nat.lt_of_not_ge hjlt⟩, Finset.mem_univ _, ?_⟩
+      apply Fin.ext
+      rfl
+    have hij : i < j := by
+      have hijVal : i.val < j.val := lt_of_lt_of_le hiVal hkVal
+      exact hijVal
+    have hrank :
+        O.topologicalRank (e i).1.val < O.topologicalRank (e j).1.val := by
+      exact e.lt_iff_lt.mpr hij
+    have hne : (e i).1.val ≠ y := by
+      rw [← hej]
+      exact fun h ↦ ne_of_lt hij (e.injective (Subtype.ext (RankedNeighbor.ext h)))
+    have hadj : a.init.graph.Adj (e i).1.val y :=
+      a.lastEarlierNeighbors_isClique (e i).1.mem_neighbors hyK hne
+    by_contra hnot
+    have hrev : O.1.Directed y (e i).1.val :=
+      (O.1.directed_of_adj_iff_not_directed_reverse hadj.symm).2 hnot
+    have hreverseRank := O.directed_topologicalRank_lt hrev
+    rw [← hej] at hreverseRank
+    exact Nat.lt_asymm hrank hreverseRank
+  refine ⟨{
+    lower := lower
+    lower_subset := hlowerSubset
+    directed_across := hdirected }, ?_⟩
+  have hcardIndices : indices.card = k := by
+    simp [indices]
+  rw [show lower.card = indices.card by
+    exact Finset.card_image_iff.mpr fun i _ j _ hij ↦ by
+      apply e.injective
+      apply Subtype.ext
+      exact RankedNeighbor.ext hij]
+  exact hcardIndices
+
+/-- Two directed cuts in the same oriented clique are nested. -/
+theorem insertionCut_comparable {m : ℕ} (a : Data (m + 1))
+    {O : Graph.Orientation a.init.graph} (c d : InsertionCut a O) :
+    c.lower ⊆ d.lower ∨ d.lower ⊆ c.lower := by
+  by_contra hcomparable
+  have hncd : ¬c.lower ⊆ d.lower :=
+    fun h ↦ hcomparable (Or.inl h)
+  have hndc : ¬d.lower ⊆ c.lower :=
+    fun h ↦ hcomparable (Or.inr h)
+  obtain ⟨x, hxc, hxd⟩ := Finset.not_subset.mp hncd
+  obtain ⟨y, hyd, hyc⟩ := Finset.not_subset.mp hndc
+  have hxK := c.lower_subset hxc
+  have hyK := d.lower_subset hyd
+  have hxy : O.Directed x y := c.directed_across hxc hyK hyc
+  have hyx : O.Directed y x := d.directed_across hyd hxK hxd
+  exact (O.directed_of_adj_iff_not_directed_reverse
+    (O.directed_adj hxy)).1 hxy hyx
+
+/-- Directed insertion cuts are determined by their cardinality. -/
+theorem insertionCut_eq_of_card_eq {m : ℕ} (a : Data (m + 1))
+    {O : Graph.Orientation a.init.graph} {c d : InsertionCut a O}
+    (hcard : c.lower.card = d.lower.card) : c = d := by
+  apply InsertionCut.ext
+  rcases a.insertionCut_comparable c d with hcd | hdc
+  · exact Finset.eq_of_subset_of_card_le hcd (Nat.le_of_eq hcard.symm)
+  · exact (Finset.eq_of_subset_of_card_le hdc (Nat.le_of_eq hcard)).symm
+
+/-- The cardinality bijection between directed cuts and insertion positions. -/
+noncomputable def insertionCutEquivFin {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) :
+    InsertionCut a O.1 ≃ Fin (a.lastEarlierNeighbors.card + 1) :=
+  Equiv.ofBijective
+    (fun cut ↦ ⟨cut.lower.card,
+      Nat.lt_succ_of_le (Finset.card_le_card cut.lower_subset)⟩)
+    ⟨by
+      intro c d h
+      apply a.insertionCut_eq_of_card_eq
+      exact Fin.ext_iff.mp h,
+    by
+      intro k
+      obtain ⟨cut, hcard⟩ :=
+        a.exists_insertionCut_card O (Nat.le_of_lt_succ k.isLt)
+      refine ⟨cut, ?_⟩
+      apply Fin.ext
+      exact hcard⟩
 
 private theorem adj_same_left {v x y : Fin n}
     (hx : a.graph.Adj v x) (hy : a.graph.Adj v y)

@@ -40,6 +40,12 @@ namespace Orientation
 
 variable {V : Type u} {G : _root_.SimpleGraph V}
 
+@[ext]
+theorem ext {O P : Orientation G} (hdir : O.dir = P.dir) : O = P := by
+  cases O
+  cases P
+  simp_all
+
 /-- The directed edge relation selected by an orientation. -/
 def Directed (O : Orientation G) (u v : V) : Prop :=
   O.dir u v = true
@@ -106,6 +112,16 @@ def AcyclicOrientation (G : _root_.SimpleGraph V) :=
 
 instance [Finite V] : Finite (AcyclicOrientation G) :=
   inferInstanceAs (Finite {O : Orientation G // O.IsAcyclic})
+
+/-- A chosen topological rank for a finite acyclic orientation. -/
+noncomputable def AcyclicOrientation.topologicalRank
+    (O : AcyclicOrientation G) : V → ℕ := by
+  exact Classical.choose O.2
+
+theorem AcyclicOrientation.directed_topologicalRank_lt
+    (O : AcyclicOrientation G) {u v : V} (huv : O.1.Directed u v) :
+    O.topologicalRank u < O.topologicalRank v :=
+  Classical.choose_spec O.2 huv
 
 /-- A vertex is a sink when it has no outgoing directed edge. -/
 def IsSink (O : Orientation G) (v : V) : Prop :=
