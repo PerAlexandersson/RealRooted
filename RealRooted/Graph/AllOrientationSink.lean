@@ -1,6 +1,5 @@
 import RealRooted.Graph.AcyclicOrientation
 import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.Graph.MatchingPolynomial
 
 /-!
 # All-orientation sink-polynomial model
@@ -20,11 +19,8 @@ faithful formalization requires a separate finite-product cardinality proof.
 The right-hand side is nevertheless defined exactly, and its splitting (and
 therefore the splitting of its affine pullback) is proved here.
 
-The standard line-graph identification of weighted independent sets with
-weighted matchings is left as an external boundary here.  The direct
-real-rootedness endpoint for line graphs follows from their claw-freeness,
-independently of both this identification and the orientation-counting
-identity.
+The natural scope is the full family of claw-free graphs.  Line graphs require
+no separate treatment here: they are merely one claw-free subfamily.
 -/
 
 open Polynomial Finset
@@ -40,8 +36,7 @@ variable {V : Type u} [Fintype V] [DecidableEq V]
 
 /- The finite-cardinality degree used by the all-orientation model.  Using
 `Nat.card` rather than `SimpleGraph.degree` keeps the public definitions free
-of an adjacency-decision instance and makes their line-graph specializations
-definitionally stable. -/
+of an adjacency-decision instance. -/
 def allOrientationDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
   Nat.card (G.neighborSet v)
 
@@ -51,8 +46,8 @@ def allOrientationEdgeCount (G : _root_.SimpleGraph V) : ℕ :=
 
 /- A stable finite enumeration for edge subtypes.  The standard edge-set
 instance depends on an adjacency decision, so use the finite subtype directly
-to keep line-graph expressions independent of whichever classical decision is
-available at a call site. -/
+to keep expressions independent of whichever classical decision is available
+at a call site. -/
 noncomputable local instance allOrientationEdgeSetFintype
     (G : _root_.SimpleGraph V) :
     Fintype G.edgeSet := Fintype.ofFinite G.edgeSet
@@ -173,13 +168,6 @@ theorem allOrientationSinkPolynomial_splits_of_clawFree_of_indicatorIdentity
       (by simpa using (Polynomial.natDegree_X_add_C (x := (1 : ℝ))))).mpr
   rw [hidentity]
   exact allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG
-
-/-- Every line-graph all-orientation sink model is split. -/
-theorem allOrientationSinkPolynomialModel_lineGraph_splits
-    (G : _root_.SimpleGraph V) :
-    (allOrientationSinkPolynomialModel G.lineGraph).Splits := by
-  exact allOrientationSinkPolynomialModel_splits_of_clawFree G.lineGraph
-    (lineGraph_clawFree G)
 
 end Graph
 end RealRooted
