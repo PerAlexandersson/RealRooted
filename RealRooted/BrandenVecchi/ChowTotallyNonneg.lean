@@ -66,17 +66,6 @@ private theorem reflectionInterlacing_pair_of_relations
     · exact hpref_pf.ne_zero_and_splits hrzero
     · exact hqref_pf.ne_zero_and_splits hrzero
 
-private theorem reflect_finset_sum_C_mul
-    {ι : Type*} (s : Finset ι) (a : ι → ℝ)
-    (f : ι → ℝ[X]) (n : ℕ) :
-    (∑ i ∈ s, C (a i) * f i).reflect n =
-      ∑ i ∈ s, C (a i) * (f i).reflect n := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-      simp [hi, ih, Polynomial.reflect_add, Polynomial.reflect_C_mul]
-
 private theorem resolvedChowWeightSum_endpoint_pairs
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) (n : ℕ) :

@@ -15,6 +15,30 @@ namespace Polynomial
 
 noncomputable section
 
+/-- Reflection distributes through a finite sum with constant scalar
+coefficients. -/
+theorem reflect_finset_sum_C_mul {R ι : Type*} [Semiring R]
+    (s : Finset ι) (a : ι → R) (f : ι → R[X]) (n : ℕ) :
+    (∑ i ∈ s, C (a i) * f i).reflect n =
+      ∑ i ∈ s, C (a i) * (f i).reflect n := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert i s hi ih =>
+      simp [hi, ih, reflect_add, reflect_C_mul]
+
+/-- Increasing the reflection bound of a polynomial already fixed at its
+degree bound appends the corresponding power of `X`. -/
+theorem reflect_add_right_of_reflect {R : Type*} [Semiring R]
+    {p : R[X]} {n : ℕ} (k : ℕ) (hdegree : p.natDegree ≤ n)
+    (hreflect : p.reflect n = p) :
+    p.reflect (n + k) = p * X ^ k := by
+  calc
+    p.reflect (n + k) = (p * 1).reflect (n + k) := by rw [mul_one]
+    _ = p.reflect n * (1 : R[X]).reflect k :=
+      reflect_mul p 1 hdegree (by simp)
+    _ = p * X ^ k := by rw [hreflect, reflect_one]
+
 /-- The Chow operator `Sₙ(p) = (reflect n p - p) / (X - 1)`.
 
 For `p.natDegree ≤ n`, the numerator vanishes at one, so the quotient is exact;

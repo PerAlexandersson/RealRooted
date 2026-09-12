@@ -72,8 +72,10 @@ import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 import RealRooted.BrandenVecchi.ChowRowTransform
 import RealRooted.BrandenVecchi.ChowSupersymmetric
+import RealRooted.BrandenVecchi.ChowToeplitz
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
+import RealRooted.BrandenVecchi.SmirnovChow
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
 import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
@@ -611,6 +613,7 @@ import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
 import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
