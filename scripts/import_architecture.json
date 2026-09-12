@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1183
+      "max_modules": 1186
     },
     "RealRooted.Production": {
-      "max_modules": 1062
+      "max_modules": 1065
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -936,6 +936,12 @@
     "RealRooted.MultiplierSequence.PolyaSchur": {
       "max_modules": 109
     },
+    "RealRooted.MultiplierSequence.PolyaSchur.Factorial": {
+      "max_modules": 123
+    },
+    "RealRooted.MultiplierSequence.PolyaSchur.Limit": {
+      "max_modules": 112
+    },
     "RealRooted.MultiplierSequence.PolyaSchur.Analytic": {
       "max_modules": 95
     },
@@ -947,6 +953,9 @@
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative": {
       "max_modules": 100
+    },
+    "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse": {
+      "max_modules": 133
     },
     "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros": {
       "max_modules": 101
