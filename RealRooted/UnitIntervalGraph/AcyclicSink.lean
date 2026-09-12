@@ -29,6 +29,10 @@ def qNat (q : ℝ) (m : ℕ) : ℝ :=
 @[simp] theorem qNat_one (q : ℝ) : qNat q 1 = 1 := by
   simp [qNat]
 
+theorem qNat_succ (q : ℝ) (m : ℕ) :
+    qNat q (m + 1) = qNat q m + q ^ m := by
+  simp [qNat, Finset.sum_range_succ]
+
 /-- Left-endpoint data for a natural unit interval graph on Fin n.
 The condition left i ≤ i makes every interval nonempty. -/
 structure Data (n : ℕ) where
@@ -39,6 +43,12 @@ structure Data (n : ℕ) where
 namespace Data
 
 variable {n : ℕ} (a : Data n)
+
+@[ext]
+theorem ext {a b : Data n} (hleft : a.left = b.left) : a = b := by
+  cases a
+  cases b
+  simp_all
 
 /-- The area-sequence entry, in zero-based indexing. -/
 def width (i : Fin n) : ℕ :=
@@ -100,6 +110,12 @@ def take (k : ℕ) (hk : k ≤ n) : Data k where
     exact a.monotone_left ((a.prefixEmbedding hk).monotone hij)
 
 @[simp]
+theorem take_self : a.take n le_rfl = a := by
+  apply Data.ext
+  funext i
+  rfl
+
+@[simp]
 theorem prefix_left {k : ℕ} (hk : k ≤ n) (i : Fin k) :
     (a.take k hk).left i = a.left (a.prefixEmbedding hk i) :=
   rfl
@@ -128,6 +144,17 @@ theorem restrictPrefix_isAcyclic {k : ℕ} (hk : k ≤ n)
 /-- Delete the final vertex from natural unit interval data. -/
 def init {m : ℕ} (a : Data (m + 1)) : Data m :=
   a.take m (Nat.le_succ m)
+
+@[simp]
+theorem init_width {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
+    a.init.width i = a.width i.castSucc := by
+  rfl
+
+theorem init_take {m k : ℕ} (a : Data (m + 1)) (hk : k ≤ m) :
+    a.init.take k hk = a.take k (hk.trans (Nat.le_succ m)) := by
+  apply Data.ext
+  funext i
+  rfl
 
 /-- Restrict an orientation after deleting the final vertex. -/
 def restrictInit {m : ℕ} (a : Data (m + 1))
@@ -727,6 +754,33 @@ noncomputable instance insertionCutFintype {m : ℕ} (a : Data (m + 1))
   Fintype.ofEquiv (Fin (a.lastEarlierNeighbors.card + 1))
     (a.insertionCutEquivFin O).symm
 
+/-- Unpack extension data into the dependent pair used for iterated sums. -/
+def extensionDataEquivSigma {m : ℕ} (a : Data (m + 1)) :
+    ExtensionData a ≃
+      Σ O : Graph.Orientation.AcyclicOrientation a.init.graph,
+        InsertionCut a O.1 where
+  toFun data := ⟨⟨data.orientation, data.isAcyclic⟩, data.cut⟩
+  invFun data :=
+    { orientation := data.1.1
+      isAcyclic := data.1.2
+      lower := data.2.lower
+      lower_subset := data.2.lower_subset
+      directed_across := data.2.directed_across }
+  left_inv data := by
+    apply ExtensionData.ext <;> rfl
+  right_inv data := by
+    apply Sigma.ext rfl
+    exact HEq.rfl
+
+/-- The insertion equivalence in dependent-pair form. -/
+noncomputable def acyclicOrientationEquivSigma {m : ℕ}
+    (a : Data (m + 1)) :
+    Graph.Orientation.AcyclicOrientation a.graph ≃
+      Σ O : Graph.Orientation.AcyclicOrientation a.init.graph,
+        InsertionCut a O.1 :=
+  (a.acyclicOrientationEquivExtensionData).trans
+    (a.extensionDataEquivSigma)
+
 /-- The ascent weights of all proper insertion cuts form the q-integer of
 the final-neighbor clique size. -/
 theorem sum_properInsertionCuts {m : ℕ} (a : Data (m + 1))
@@ -1004,6 +1058,321 @@ theorem extendOrientation_sinkCount_of_fullCut_of_hasSink {m : ℕ}
         exact congrArg Finset.card hsinks
       _ = _ := by rw [Finset.card_union_of_disjoint hdisjoint]; simp
   exact hcardSinks.symm
+
+/-- The full-cut correction above one prefix orientation. -/
+def insertionCorrection {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) (q : ℝ) : ℝ[X] := by
+  classical
+  exact if (∀ x ∈ a.lastEarlierNeighbors, ¬O.1.IsSink x) then
+    C (q ^ a.width (Fin.last m)) * (X - 1) *
+      Graph.orientationMonomial q O.1
+    else 0
+
+/-- Sum of the weighted monomials over all insertion positions above one
+prefix orientation. The correction term occurs precisely when the final
+neighbor clique contains no old sink. -/
+theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation.AcyclicOrientation a.init.graph) (q : ℝ) :
+    (∑ cut : InsertionCut a O.1,
+      Graph.orientationMonomial q (a.extendOrientation O.1 cut)) =
+      C (qNat q (a.width (Fin.last m) + 1)) *
+          Graph.orientationMonomial q O.1 +
+        a.insertionCorrection O q := by
+  classical
+  unfold insertionCorrection
+  let e := a.insertionCutEquivFin O
+  have hcard (k : Fin (a.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower.card = k.val :=
+    congrArg Fin.val (e.apply_symm_apply k)
+  have hfull (k : Fin (a.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower = a.lastEarlierNeighbors ↔
+        k.val = a.lastEarlierNeighbors.card := by
+    constructor
+    · intro h
+      calc
+        k.val = (e.symm k).lower.card := (hcard k).symm
+        _ = a.lastEarlierNeighbors.card := congrArg Finset.card h
+    · intro h
+      apply Finset.eq_of_subset_of_card_le (e.symm k).lower_subset
+      rw [hcard, h]
+  have hqsum :
+      (∑ i : Fin a.lastEarlierNeighbors.card, q ^ i.val) =
+        qNat q a.lastEarlierNeighbors.card := by
+    rw [qNat, Finset.sum_fin_eq_sum_range]
+    apply Finset.sum_congr rfl
+    intro k hk
+    have hklt : k < a.width (Fin.last m) := by
+      simpa using Finset.mem_range.mp hk
+    simp [hklt]
+  rw [← e.symm.sum_comp, Fin.sum_univ_castSucc]
+  have hproperSum :
+      (∑ i : Fin a.lastEarlierNeighbors.card,
+        Graph.orientationMonomial q
+          (a.extendOrientation O.1 (e.symm i.castSucc))) =
+        C (qNat q a.lastEarlierNeighbors.card) *
+          Graph.orientationMonomial q O.1 := by
+    calc
+      (∑ i : Fin a.lastEarlierNeighbors.card,
+          Graph.orientationMonomial q
+            (a.extendOrientation O.1 (e.symm i.castSucc))) =
+          ∑ i : Fin a.lastEarlierNeighbors.card,
+            C (q ^ i.val) * Graph.orientationMonomial q O.1 := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        have hproper :
+            (e.symm i.castSucc).lower ≠ a.lastEarlierNeighbors := by
+          intro h
+          have hcardEq := (hfull i.castSucc).1 h
+          exact (Nat.ne_of_lt i.isLt) hcardEq
+        rw [Graph.orientationMonomial, Graph.orientationMonomial,
+          a.extendOrientation_ascentCount,
+          a.extendOrientation_sinkCount_of_properCut O.1 _ hproper,
+          hcard, pow_add, map_mul]
+        simp only [Fin.val_castSucc]
+        ring
+      _ = C (∑ i : Fin a.lastEarlierNeighbors.card, q ^ i.val) *
+          Graph.orientationMonomial q O.1 := by
+        rw [map_sum, Finset.sum_mul]
+      _ = C (qNat q a.lastEarlierNeighbors.card) *
+          Graph.orientationMonomial q O.1 := by rw [hqsum]
+  rw [hproperSum]
+  let fullCut := e.symm (Fin.last a.lastEarlierNeighbors.card)
+  have hfullCut : fullCut.lower = a.lastEarlierNeighbors := by
+    apply (hfull (Fin.last a.lastEarlierNeighbors.card)).2
+    rfl
+  have hfullCard : fullCut.lower.card = a.lastEarlierNeighbors.card := by
+    rw [hcard]
+    rfl
+  rw [show e.symm (Fin.last a.lastEarlierNeighbors.card) = fullCut from rfl]
+  by_cases hnoSink : ∀ x ∈ a.lastEarlierNeighbors, ¬O.1.IsSink x
+  · have hfullTerm :
+        Graph.orientationMonomial q (a.extendOrientation O.1 fullCut) =
+          C (q ^ (O.1.ascentCount + a.lastEarlierNeighbors.card)) *
+            X ^ (O.1.sinkCount + 1) := by
+        rw [Graph.orientationMonomial,
+          a.extendOrientation_ascentCount,
+          a.extendOrientation_sinkCount_of_fullCut_of_noSink O.1 fullCut
+            hfullCut hnoSink,
+          hfullCard]
+    rw [if_pos hnoSink, hfullTerm, Graph.orientationMonomial,
+      a.card_lastEarlierNeighbors, qNat_succ, pow_add, map_mul, map_add,
+      pow_succ]
+    ring
+  · have hhasSink : ∃ x ∈ a.lastEarlierNeighbors, O.1.IsSink x := by
+      by_contra hnone
+      apply hnoSink
+      intro x hxK hxSink
+      exact hnone ⟨x, hxK, hxSink⟩
+    have hfullTerm :
+        Graph.orientationMonomial q (a.extendOrientation O.1 fullCut) =
+          C (q ^ (O.1.ascentCount + a.lastEarlierNeighbors.card)) *
+            X ^ O.1.sinkCount := by
+        rw [Graph.orientationMonomial,
+          a.extendOrientation_ascentCount,
+          a.extendOrientation_sinkCount_of_fullCut_of_hasSink O.1 fullCut
+            hfullCut hhasSink,
+          hfullCard]
+    rw [if_neg hnoSink, add_zero, hfullTerm, Graph.orientationMonomial,
+      a.card_lastEarlierNeighbors, qNat_succ, pow_add, map_mul, map_add]
+    ring
+
+/-- No vertex at or after `k` is a sink. -/
+def NoSinkFrom {n : ℕ} (a : Data n) (O : Graph.Orientation a.graph)
+    (k : ℕ) : Prop :=
+  ∀ v, k ≤ v.val → ¬O.IsSink v
+
+theorem noSinkFrom_left_iff {m : ℕ} (a : Data (m + 1))
+    (O : Graph.Orientation a.init.graph) :
+    a.init.NoSinkFrom O (a.left (Fin.last m)) ↔
+      ∀ x ∈ a.lastEarlierNeighbors, ¬O.IsSink x := by
+  simp only [NoSinkFrom, lastEarlierNeighbors, Finset.mem_filter,
+    Finset.mem_univ, true_and]
+
+/-- Under insertion, absence of sinks in a suffix is equivalent to a proper
+cut and absence of sinks in the old suffix. -/
+theorem extendOrientation_noSinkFrom_iff {m k : ℕ} (a : Data (m + 1))
+    (hk : k ≤ m) (O : Graph.Orientation a.init.graph)
+    (cut : InsertionCut a O) :
+    a.NoSinkFrom (a.extendOrientation O cut) k ↔
+      cut.lower ≠ a.lastEarlierNeighbors ∧ a.init.NoSinkFrom O k := by
+  constructor
+  · intro hno
+    have hproper : cut.lower ≠ a.lastEarlierNeighbors := by
+      intro hfull
+      exact hno (Fin.last m) hk
+        ((a.extendOrientation_isSink_last O cut).2 hfull)
+    refine ⟨hproper, ?_⟩
+    intro x hxk hxSink
+    have hxLower : x ∉ cut.lower := by
+      intro hx
+      exact a.not_isSink_of_mem_properCut O cut hproper hx hxSink
+    exact hno x.castSucc hxk
+      ((a.extendOrientation_isSink_prefix O cut x).2 ⟨hxSink, hxLower⟩)
+  · rintro ⟨hproper, hno⟩ v hvk
+    revert hvk
+    refine Fin.lastCases ?_ (fun x ↦ ?_) v
+    · intro hkLast hlastSink
+      exact hproper ((a.extendOrientation_isSink_last O cut).1 hlastSink)
+    · intro hxk hxSink
+      exact hno x hxk ((a.extendOrientation_isSink_prefix O cut x).1 hxSink).1
+
+/-- The ascent-refined sink polynomial restricted to orientations having no
+sink at or after `k`. -/
+def noSinkFromPolynomial {n : ℕ} (a : Data n) (k : ℕ) (q : ℝ) : ℝ[X] :=
+  by
+    classical
+    exact ∑ O : Graph.Orientation.AcyclicOrientation a.graph,
+      if a.NoSinkFrom O.1 k then Graph.orientationMonomial q O.1 else 0
+
+/-- Product of the proper-insertion q-integers over the suffix beginning at
+`k`. -/
+def suffixFactor {n : ℕ} (a : Data n) (k : ℕ) (q : ℝ) : ℝ :=
+  ∏ i : Fin n, if k ≤ i.val then qNat q (a.width i) else 1
+
+theorem suffixFactor_succ_of_le {m k : ℕ} (a : Data (m + 1))
+    (hk : k ≤ m) (q : ℝ) :
+    a.suffixFactor k q =
+      qNat q (a.width (Fin.last m)) * a.init.suffixFactor k q := by
+  rw [suffixFactor, Fin.prod_univ_castSucc, suffixFactor]
+  simp only [Fin.val_castSucc, a.init_width, Fin.val_last, hk, if_true]
+  ac_rfl
+
+theorem noSinkFrom_card {n : ℕ} (a : Data n)
+    (O : Graph.Orientation a.graph) : a.NoSinkFrom O n := by
+  intro v hnv
+  exact False.elim ((Nat.not_le_of_gt v.isLt) hnv)
+
+theorem noSinkFromPolynomial_card {n : ℕ} (a : Data n) (q : ℝ) :
+    a.noSinkFromPolynomial n q = Graph.acyclicSinkPolynomial a.graph q := by
+  classical
+  unfold noSinkFromPolynomial Graph.acyclicSinkPolynomial
+  apply Finset.sum_congr rfl
+  intro O hO
+  rw [if_pos (a.noSinkFrom_card O.1)]
+
+/-- Extending a suffix with the condition that it remain sink-free contributes
+the q-integer of the new vertex width. -/
+theorem noSinkFromPolynomial_succ {m k : ℕ} (a : Data (m + 1))
+    (hk : k ≤ m) (q : ℝ) :
+    a.noSinkFromPolynomial k q =
+      C (qNat q (a.width (Fin.last m))) *
+        a.init.noSinkFromPolynomial k q := by
+  classical
+  let e := a.acyclicOrientationEquivSigma
+  unfold noSinkFromPolynomial
+  rw [← e.symm.sum_comp]
+  rw [Fintype.sum_sigma]
+  change (∑ O : Graph.Orientation.AcyclicOrientation a.init.graph,
+      ∑ cut : InsertionCut a O.1,
+        if a.NoSinkFrom (a.extendOrientation O.1 cut) k then
+          Graph.orientationMonomial q (a.extendOrientation O.1 cut) else 0) = _
+  simp_rw [a.extendOrientation_noSinkFrom_iff hk]
+  change _ = C (qNat q (a.width (Fin.last m))) *
+    ∑ O : Graph.Orientation.AcyclicOrientation a.init.graph,
+      if a.init.NoSinkFrom O.1 k then Graph.orientationMonomial q O.1 else 0
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro O hO
+  by_cases hno : a.init.NoSinkFrom O.1 k
+  · simp only [hno, and_true]
+    calc
+      (∑ cut : InsertionCut a O.1,
+          if cut.lower ≠ a.lastEarlierNeighbors then
+            Graph.orientationMonomial q (a.extendOrientation O.1 cut) else 0) =
+          ∑ cut : InsertionCut a O.1,
+            Graph.orientationMonomial q O.1 *
+              C (if cut.lower ≠ a.lastEarlierNeighbors then
+                q ^ cut.lower.card else 0) := by
+        apply Finset.sum_congr rfl
+        intro cut hcut
+        by_cases hproper : cut.lower ≠ a.lastEarlierNeighbors
+        · rw [if_pos hproper, if_pos hproper]
+          rw [Graph.orientationMonomial, Graph.orientationMonomial,
+            a.extendOrientation_ascentCount,
+            a.extendOrientation_sinkCount_of_properCut O.1 cut hproper,
+            pow_add, map_mul]
+          ring
+        · simp [hproper]
+      _ = Graph.orientationMonomial q O.1 *
+          C (∑ cut : InsertionCut a O.1,
+            if cut.lower ≠ a.lastEarlierNeighbors then
+              q ^ cut.lower.card else 0) := by
+        rw [map_sum, Finset.mul_sum]
+      _ = Graph.orientationMonomial q O.1 *
+          C (qNat q a.lastEarlierNeighbors.card) := by
+        rw [a.sum_properInsertionCuts O q]
+      _ = C (qNat q (a.width (Fin.last m))) *
+          Graph.orientationMonomial q O.1 := by
+        rw [a.card_lastEarlierNeighbors]
+        ring
+  · simp [hno]
+
+/-- Iterating the proper-cut recurrence factors a suffix sink-avoidance sum
+into its q-integers and the unrestricted polynomial of the preceding prefix. -/
+theorem noSinkFromPolynomial_eq_suffixFactor_mul {n k : ℕ}
+    (a : Data n) (hk : k ≤ n) (q : ℝ) :
+    a.noSinkFromPolynomial k q =
+      C (a.suffixFactor k q) *
+        Graph.acyclicSinkPolynomial (a.take k hk).graph q := by
+  induction n generalizing k with
+  | zero =>
+      have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+      subst k
+      rw [a.noSinkFromPolynomial_card]
+      have htake : a.take 0 hk = a := by
+        apply Data.ext
+        funext i
+        exact Fin.elim0 i
+      rw [htake]
+      simp [suffixFactor]
+  | succ m ih =>
+      by_cases htop : k = m + 1
+      · subst k
+        rw [a.noSinkFromPolynomial_card]
+        have htake : a.take (m + 1) hk = a := by
+          apply Data.ext
+          funext i
+          rfl
+        have hfactor : a.suffixFactor (m + 1) q = 1 := by
+          apply Finset.prod_eq_one
+          intro i hi
+          rw [if_neg]
+          exact Nat.not_le_of_gt i.isLt
+        rw [htake, hfactor]
+        simp
+      · have hkM : k ≤ m := Nat.le_of_lt_succ (lt_of_le_of_ne hk htop)
+        rw [a.noSinkFromPolynomial_succ hkM q,
+          ih a.init hkM,
+          a.suffixFactor_succ_of_le hkM q,
+          a.init_take hkM]
+        simp only [map_mul]
+        ring
+
+/-- Exact simplicial-insertion recurrence for the actual acyclic-orientation
+sink polynomial. -/
+theorem acyclicSinkPolynomial_succ {m : ℕ} (a : Data (m + 1)) (q : ℝ) :
+    Graph.acyclicSinkPolynomial a.graph q =
+      C (qNat q (a.width (Fin.last m) + 1)) *
+          Graph.acyclicSinkPolynomial a.init.graph q +
+        C (q ^ a.width (Fin.last m)) * (X - 1) *
+          a.init.noSinkFromPolynomial (a.left (Fin.last m)) q := by
+  classical
+  let e := a.acyclicOrientationEquivSigma
+  unfold Graph.acyclicSinkPolynomial
+  rw [← e.symm.sum_comp, Fintype.sum_sigma]
+  change (∑ O : Graph.Orientation.AcyclicOrientation a.init.graph,
+      ∑ cut : InsertionCut a O.1,
+        Graph.orientationMonomial q (a.extendOrientation O.1 cut)) = _
+  simp_rw [a.sum_extensionMonomials]
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum]
+  congr 1
+  unfold insertionCorrection noSinkFromPolynomial
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro O hO
+  rw [a.noSinkFrom_left_iff]
+  by_cases hno : ∀ x ∈ a.lastEarlierNeighbors, ¬O.1.IsSink x <;>
+    simp [hno]
 
 private theorem adj_same_left {v x y : Fin n}
     (hx : a.graph.Adj v x) (hy : a.graph.Adj v y)

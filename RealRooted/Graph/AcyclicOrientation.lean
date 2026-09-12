@@ -114,6 +114,9 @@ def AcyclicOrientation (G : _root_.SimpleGraph V) :=
 instance [Finite V] : Finite (AcyclicOrientation G) :=
   inferInstanceAs (Finite {O : Orientation G // O.IsAcyclic})
 
+noncomputable instance [Finite V] : Fintype (AcyclicOrientation G) :=
+  Fintype.ofFinite (AcyclicOrientation G)
+
 /-- A chosen topological rank for a finite acyclic orientation. -/
 noncomputable def AcyclicOrientation.topologicalRank
     (O : AcyclicOrientation G) : V → ℕ := by
@@ -156,15 +159,18 @@ end Orientation
 
 section Polynomial
 
-variable {V : Type u} [Fintype V] [DecidableEq V] [LinearOrder V]
+variable {V : Type u} {G : _root_.SimpleGraph V}
+  [Fintype V] [DecidableEq V] [LinearOrder V]
+
+/-- The ascent- and sink-weighted monomial of one orientation. -/
+def orientationMonomial (q : ℝ) (O : Orientation G) : ℝ[X] :=
+  C (q ^ O.ascentCount) * X ^ O.sinkCount
 
 /-- The natural-order ascent-refined acyclic-orientation sink polynomial. -/
 def acyclicSinkPolynomial (G : _root_.SimpleGraph V) (q : ℝ) : ℝ[X] := by
   classical
-  letI : Fintype (Orientation.AcyclicOrientation G) :=
-    Fintype.ofFinite (Orientation.AcyclicOrientation G)
   exact ∑ O : Orientation.AcyclicOrientation G,
-    C (q ^ O.1.ascentCount) * X ^ O.1.sinkCount
+    orientationMonomial q O.1
 
 end Polynomial
 
