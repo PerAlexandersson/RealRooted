@@ -1,4 +1,6 @@
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # A standard-basis source border for totally nonnegative matrices
@@ -9,6 +11,37 @@ row, producing the source-step matrix used in bordered chain recurrences.
 -/
 
 namespace Matrix
+
+/-- The product of two matrices which vanish strictly above the diagonal also
+vanishes strictly above the diagonal. -/
+theorem mul_apply_eq_zero_of_lt_of_upper_zero
+    {R ι : Type*} [Semiring R] [Fintype ι] [LinearOrder ι]
+    (A B : Matrix ι ι R)
+    (hA : ∀ i j, i < j → A i j = 0)
+    (hB : ∀ i j, i < j → B i j = 0)
+    {i j : ι} (hij : i < j) :
+    (A * B) i j = 0 := by
+  rw [mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  by_cases hik : i < k
+  · rw [hA i k hik, zero_mul]
+  · rw [hB k j (lt_of_le_of_lt (le_of_not_gt hik) hij), mul_zero]
+
+/-- On the diagonal, the product of two matrices which vanish strictly above
+the diagonal is the product of their diagonal entries. -/
+theorem mul_apply_self_of_upper_zero
+    {R ι : Type*} [Semiring R] [Fintype ι] [LinearOrder ι]
+    (A B : Matrix ι ι R)
+    (hA : ∀ i j, i < j → A i j = 0)
+    (hB : ∀ i j, i < j → B i j = 0) (i : ι) :
+    (A * B) i i = A i i * B i i := by
+  rw [mul_apply, Finset.sum_eq_single i]
+  · intro k _ hki
+    rcases lt_or_gt_of_ne hki with hki | hik
+    · rw [hB k i hki, mul_zero]
+    · rw [hA i k hik, zero_mul]
+  · simp
 
 /-- Prepend the first standard-basis column to a nonempty square matrix. -/
 def prependFirstBasisColumn {R : Type*} [Zero R] [One R] {N : ℕ}
@@ -147,6 +180,60 @@ theorem sourceStep_succ_succ {R : Type*} [Zero R] [One R] {N : ℕ} (δ : R)
     (H : Matrix (Fin (N + 1)) (Fin (N + 1)) R) (i j : Fin (N + 1)) :
     sourceStep δ H i.succ j.succ = H i j :=
   rfl
+
+/-- Adjoin an isolated first coordinate with value one to a square matrix. -/
+def isolateFirstCoordinate {R : Type*} [Zero R] [One R] {N : ℕ}
+    (G : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    Matrix (Fin (N + 2)) (Fin (N + 2)) R :=
+  Fin.cases (Fin.cases 1 fun _ => 0)
+    (fun i => Fin.cases 0 (G i))
+
+@[simp]
+theorem isolateFirstCoordinate_zero_zero {R : Type*} [Zero R] [One R]
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
+    isolateFirstCoordinate G 0 0 = 1 :=
+  rfl
+
+@[simp]
+theorem isolateFirstCoordinate_zero_succ {R : Type*} [Zero R] [One R]
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (j : Fin (N + 1)) :
+    isolateFirstCoordinate G 0 j.succ = 0 :=
+  rfl
+
+@[simp]
+theorem isolateFirstCoordinate_succ_zero {R : Type*} [Zero R] [One R]
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (i : Fin (N + 1)) :
+    isolateFirstCoordinate G i.succ 0 = 0 :=
+  rfl
+
+@[simp]
+theorem isolateFirstCoordinate_succ_succ {R : Type*} [Zero R] [One R]
+    {N : ℕ} (G : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (i j : Fin (N + 1)) :
+    isolateFirstCoordinate G i.succ j.succ = G i j :=
+  rfl
+
+/-- Isolating a first coordinate with value one preserves total
+nonnegativity. -/
+protected theorem IsTotallyNonneg.isolateFirstCoordinate
+    {R : Type*} [CommRing R] [PartialOrder R] [IsOrderedRing R]
+    {N : ℕ} {G : Matrix (Fin (N + 1)) (Fin (N + 1)) R}
+    (hG : G.IsTotallyNonneg) :
+    (isolateFirstCoordinate G).IsTotallyNonneg := by
+  apply IsTotallyNonneg.of_zero_border (isolateFirstCoordinate G)
+  · intro j
+    rfl
+  · intro i
+    rfl
+  · simp
+  · have htrail :
+        (isolateFirstCoordinate G).submatrix Fin.succ Fin.succ = G := by
+      ext i j
+      rfl
+    rw [htrail]
+    exact hG
 
 /-- A nonnegative scalar source step over a nonempty totally nonnegative
 matrix is totally nonnegative. -/
