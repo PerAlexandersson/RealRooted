@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1262
+      "max_modules": 1264
     },
     "RealRooted.Production": {
-      "max_modules": 1141
+      "max_modules": 1143
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -98,6 +98,9 @@
     },
     "RealRooted.Applications.OEIS.A144438.Gamma": {
       "max_modules": 139
+    },
+    "RealRooted.Applications.OEIS.A144438.DecoratedCycle": {
+      "max_modules": 48
     },
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power": {
       "max_modules": 1
@@ -1174,7 +1177,7 @@
       "max_modules": 165
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 54
+      "max_modules": 55
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
@@ -1186,6 +1189,9 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
+      "max_modules": 43
+    },
+    "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
       "max_modules": 43
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
@@ -2080,6 +2086,7 @@
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
     "RealRooted.DerivativeRecurrence.SecondDerivativeDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
+    "RealRooted.DerivativeRecurrence.QuadraticLagStrict",
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",

@@ -307,6 +307,7 @@ import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.DerivativeRecurrence.Linear
 import RealRooted.DerivativeRecurrence.QuadraticDegree
 import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 import RealRooted.DerivativeRecurrence.QuadraticSeed
 import RealRooted.DerivativeRecurrence.QuadraticShift
 import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
@@ -1137,6 +1138,7 @@ import RealRooted.BrandenVecchi.SupersymmetricLimits
 import RealRooted.Applications.OEIS.A144438
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
+import RealRooted.Applications.OEIS.A144438.DecoratedCycle
 import RealRooted.GammaPencil.Intertwining
 
 /-!
