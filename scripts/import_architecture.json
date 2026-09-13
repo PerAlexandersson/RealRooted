@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1252
+      "max_modules": 1253
     },
     "RealRooted.Production": {
-      "max_modules": 1131
+      "max_modules": 1132
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -734,6 +734,9 @@
     },
     "RealRooted.CoefficientDominance.Symmetric.Finite": {
       "max_modules": 3
+    },
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKind": {
+      "max_modules": 2
     },
     "RealRooted.CoefficientDominance.Symmetric.Polynomial": {
       "max_modules": 3
@@ -1965,6 +1968,7 @@
     "RealRooted.CoefficientDominance.Sequence",
     "RealRooted.CoefficientDominance.Symmetric",
     "RealRooted.CoefficientDominance.Symmetric.Finite",
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKind",
     "RealRooted.CoefficientDominance.Symmetric.Polynomial",
     "RealRooted.CoefficientDominance.Symmetric.Sharp",
     "RealRooted.CoefficientDominance.Symmetric.Tail",
