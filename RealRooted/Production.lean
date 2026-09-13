@@ -131,6 +131,7 @@ import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
 import RealRooted.BrandenLeite.ToeplitzComposition
 import RealRooted.BrandenLeite.WhitneyReduction
+import RealRooted.BrandenLeite.ZeroConstant
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.Challenges.AissenSchoenbergWhitney
