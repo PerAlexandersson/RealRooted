@@ -665,6 +665,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Order.Fin.Tuple
+import RealRooted.Mathlib.Data.Fintype.Card
 import RealRooted.Mathlib.Data.List.Basic
 import RealRooted.Mathlib.Data.List.Destutter
 import RealRooted.Mathlib.Data.List.Interleave
@@ -822,6 +823,7 @@ import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.Descents.ChainSort
+import RealRooted.ParkingFunctions.Descents.ContentOrbit
 import RealRooted.ParkingFunctions.Descents.DescentChains
 import RealRooted.ParkingFunctions.Descents.DiaconisHicks
 import RealRooted.ParkingFunctions.Descents.Literal

@@ -1,6 +1,7 @@
 import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.Descents.ChainSort
 import RealRooted.Mathlib.Data.List.OfFn
+import RealRooted.Mathlib.Data.Fintype.Card
 import Mathlib.Logic.Equiv.Fin.Rotate
 import Mathlib.Data.List.Sort
 
@@ -360,41 +361,6 @@ theorem cyclicSortChains_injective_of_chainSorted {n : ℕ}
     _ = v.val :=
       sortChains_unshift_cyclicSortChains L hcover hLnodup hnodup hdisj c v.val v.prop
 
-private theorem card_eq_card_mul_card_of_existsUnique_action
-    (X C : Type*) [Fintype X] [Fintype C] (act : C → X ≃ X)
-    (P : X → Prop) [DecidablePred P]
-    (h : ∀ x : X, ∃! c : C, P (act c x)) :
-    Fintype.card X = Fintype.card C * Fintype.card {x : X // P x} := by
-  let A := Σ x : X, {c : C // P (act c x)}
-  let eAX : A ≃ X := by
-    let eFiber : ∀ x : X, {c : C // P (act c x)} ≃ Unit := fun x =>
-      { toFun := fun _ => Unit.unit
-        invFun := fun _ => ⟨Classical.choose (h x), (Classical.choose_spec (h x)).1⟩
-        left_inv := by
-          intro z
-          apply Subtype.ext
-          exact (h x).unique (Classical.choose_spec (h x)).1 z.prop
-        right_inv := by
-          intro z
-          exact Unit.ext _ _ }
-    exact (Equiv.sigmaEquivProdOfEquiv eFiber).trans
-      { toFun := Prod.fst
-        invFun := fun x => (x, Unit.unit)
-        left_inv := by rintro ⟨x, u⟩; cases u; rfl
-        right_inv := fun _ => rfl }
-  let eSwap : A ≃ Σ c : C, {x : X // P (act c x)} :=
-    { toFun := fun z => ⟨z.2.val, z.1, z.2.prop⟩
-      invFun := fun z => ⟨z.2.val, z.1, z.2.prop⟩
-      left_inv := by rintro ⟨x, c, hc⟩; rfl
-      right_inv := by rintro ⟨c, x, hx⟩; rfl }
-  let eAB : A ≃ C × {x : X // P x} :=
-    eSwap.trans <| (Equiv.sigmaCongrRight fun c => (act c).subtypeEquivOfSubtype)
-      |>.trans (Equiv.sigmaEquivProd C {x : X // P x})
-  calc
-    Fintype.card X = Fintype.card A := (Fintype.card_congr eAX).symm
-    _ = Fintype.card (C × {x : X // P x}) := Fintype.card_congr eAB
-    _ = Fintype.card C * Fintype.card {x : X // P x} := by simp
-
 /-- A fixed cyclic shift-and-sort is a permutation of a finite covering
 disjoint-chain normal-form family. -/
 noncomputable def cyclicSortChainsEquiv {n : ℕ}
@@ -437,7 +403,8 @@ theorem card_chainSortedWords_eq_succ_mul_card_parking {n : ℕ}
     change ∃! c : Fin (n + 1), IsParkingWord (cyclicSortChains L c w.val)
     exact existsUnique_isParkingWord_cyclicSortChains L hnodup w.val
   simpa only [X, act, Fintype.card_fin] using
-    card_eq_card_mul_card_of_existsUnique_action X (Fin (n + 1)) act
+    Fintype.card_eq_card_mul_card_subtype_of_existsUnique_equiv
+      X (Fin (n + 1)) act
       (fun w => IsParkingWord w.val) hunique
 
 /-- A cyclic value shift preserves distinct values read along any chain. -/
@@ -509,7 +476,8 @@ theorem card_strictChainSortedWords_eq_succ_mul_card_parking {n : ℕ}
     change ∃! c : Fin (n + 1), IsParkingWord (cyclicSortChains L c w.val)
     exact existsUnique_isParkingWord_cyclicSortChains L hnodup w.val
   simpa only [X, act, Fintype.card_fin] using
-    card_eq_card_mul_card_of_existsUnique_action X (Fin (n + 1)) act
+    Fintype.card_eq_card_mul_card_subtype_of_existsUnique_equiv
+      X (Fin (n + 1)) act
       (fun w => IsParkingWord w.val) hunique
 
 @[simp]
