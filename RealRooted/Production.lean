@@ -828,6 +828,7 @@ import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.Descents.ChainSort
+import RealRooted.ParkingFunctions.Descents.CompositionBlocks
 import RealRooted.ParkingFunctions.Descents.ContentOrbit
 import RealRooted.ParkingFunctions.Descents.ContentSymmetry
 import RealRooted.ParkingFunctions.Descents.DescentChains
