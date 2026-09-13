@@ -834,6 +834,7 @@ import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
 import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
 import RealRooted.ParkingFunctions.Descents.Pollak
 import RealRooted.ParkingFunctions.Descents.PollakTransfer
+import RealRooted.ParkingFunctions.Descents.StrictBlock
 import RealRooted.ParkingFunctions.Descents.Tieless
 import RealRooted.ParkingFunctions.Descents.TielessTransfer
 import RealRooted.ParkingFunctions.Descents.WordContent
