@@ -77,6 +77,7 @@ import RealRooted.BrandenVecchi.ChowToeplitz
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SmirnovChow
+import RealRooted.BrandenVecchi.SmirnovSpecialization
 import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
