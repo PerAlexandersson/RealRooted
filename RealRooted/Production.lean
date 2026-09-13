@@ -101,6 +101,7 @@ import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 import RealRooted.BrandenLeite.CompositionRow
 import RealRooted.BrandenLeite.CompositionRowClosure
 import RealRooted.BrandenLeite.ConstantDiagonal
+import RealRooted.BrandenLeite.KernelRow
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
@@ -686,6 +687,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
