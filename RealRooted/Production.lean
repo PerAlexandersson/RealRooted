@@ -124,6 +124,7 @@ import RealRooted.BrandenVecchi.ChowSignedWords
 import RealRooted.BrandenVecchi.ChowSupersymmetric
 import RealRooted.BrandenVecchi.ChowToeplitz
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
+import RealRooted.BrandenVecchi.ChowZeroPrefix
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SmirnovChow
 import RealRooted.BrandenVecchi.SmirnovInterlacing
