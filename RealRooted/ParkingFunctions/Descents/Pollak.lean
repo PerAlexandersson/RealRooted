@@ -1,0 +1,366 @@
+import RealRooted.ParkingFunctions.Descents.Basic
+import Mathlib.Logic.Equiv.Fin.Rotate
+
+/-!
+# Pollak's cyclic action for parking words
+
+This neutral foundation module defines the cyclic alphabet action on words,
+the extra-alphabet parking condition, Pollak's unique successful shift, and
+the literal embedding of ordinary parking functions.  Results involving
+chain sorting belong to the downstream `DiaconisHicks` module.
+-/
+
+namespace RealRooted.ParkingFunctions
+
+noncomputable section
+
+/-- Cyclically shift every value of a word on `Fin (n + 1)`. -/
+def cyclicValueShiftEquiv (n : ℕ) (c : Fin (n + 1)) :
+    (Fin n → Fin (n + 1)) ≃ (Fin n → Fin (n + 1)) :=
+  Equiv.piCongrRight fun _ => finCycle c
+
+/-- The word obtained by cyclically shifting all values by `c`. -/
+def cyclicValueShift {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
+  cyclicValueShiftEquiv n c w
+
+/-- Undo a fixed cyclic value shift on every value of a word. -/
+def cyclicValueUnshift {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) : Fin n → Fin (n + 1) :=
+  fun i => (finCycle c).symm (w i)
+
+@[simp]
+theorem cyclicValueUnshift_cyclicValueShift {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) :
+    cyclicValueUnshift c (cyclicValueShift c w) = w := by
+  funext i
+  exact (finCycle c).symm_apply_apply (w i)
+
+/-- The parking condition for a word on an alphabet with one extra letter. -/
+def IsParkingWord {n : ℕ} (w : Fin n → Fin (n + 1)) : Prop :=
+  ∀ k : ℕ, k ≤ n →
+    k ≤ (Finset.univ.filter fun i => (w i).val < k).card
+
+private theorem card_filter_eq_multiset_countP {n : ℕ} (w : Fin n → Fin (n + 1)) (k : ℕ) :
+    (Finset.univ.filter fun i => (w i).val < k).card =
+      Multiset.countP (fun v : Fin (n + 1) => (v : ℕ) < k)
+        (Multiset.map w Finset.univ.val) := by
+  rw [Multiset.countP_map]
+  rfl
+
+/-- The extra-alphabet parking condition depends only on the value multiset. -/
+theorem isParkingWord_iff_of_multiset_eq {n : ℕ} {w v : Fin n → Fin (n + 1)}
+    (h : Multiset.map w Finset.univ.val = Multiset.map v Finset.univ.val) :
+    IsParkingWord w ↔ IsParkingWord v := by
+  unfold IsParkingWord
+  simp only [card_filter_eq_multiset_countP, h]
+
+/-- A periodic integer height function with a drop of one has a unique cyclic
+minimum. -/
+theorem existsUnique_cycle_minimum (N : ℕ) (hN : 0 < N) (S : ℕ → ℤ)
+    (hS : ∀ m, S (m + N) = S m - 1) :
+    ∃! s : ℕ, s < N ∧ ∀ k < N, S s ≤ S (s + k) := by
+  classical
+  have hex : ∃ s, s < N ∧ ∀ t < N, S s ≤ S t := by
+    obtain ⟨s, hs, hmin⟩ := Finset.exists_min_image (Finset.range N) S ⟨0, by simp [hN]⟩
+    exact ⟨s, Finset.mem_range.1 hs, fun t ht => hmin t (Finset.mem_range.2 ht)⟩
+  set m0 := Nat.find hex with hm0def
+  obtain ⟨hm0N, hm0min⟩ : m0 < N ∧ ∀ t < N, S m0 ≤ S t := Nat.find_spec hex
+  have hfirst : ∀ r < m0, S m0 < S r := by
+    intro r hr
+    have hnot := Nat.find_min hex hr
+    push Not at hnot
+    obtain ⟨t, htN, ht⟩ := hnot (by lia)
+    exact lt_of_le_of_lt (hm0min t htN) ht
+  refine ⟨m0, ⟨hm0N, ?_⟩, ?_⟩
+  · intro k hk
+    rcases lt_or_ge (m0 + k) N with h | h
+    · exact hm0min _ h
+    · rw [show m0 + k = (m0 + k - N) + N by lia, hS]
+      have := hfirst (m0 + k - N) (by lia)
+      lia
+  · rintro s ⟨hsN, hs⟩
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with h | h
+    · have h1 := hs (m0 - s) (by lia)
+      rw [show s + (m0 - s) = m0 by lia] at h1
+      have h2 := hfirst s h
+      lia
+    · have h1 := hs (m0 + N - s) (by lia)
+      rw [show s + (m0 + N - s) = m0 + N by lia, hS] at h1
+      have h2 := hm0min s hsN
+      lia
+
+variable {n : ℕ} (w : Fin n → Fin (n + 1))
+
+/-- Count the periodic lifts of the values of a word below a natural bound. -/
+def parkingPointCount (m : ℕ) : ℕ :=
+  ∑ i, (m + n - (w i : ℕ)) / (n + 1)
+
+/-- The height function used in Pollak's cyclic-minimum argument. -/
+def parkingHeight (m : ℕ) : ℤ :=
+  (parkingPointCount w m : ℤ) - m
+
+theorem parkingPointCount_add_period (m : ℕ) :
+    parkingPointCount w (m + (n + 1)) = parkingPointCount w m + n := by
+  have h : ∀ i : Fin n, (m + (n + 1) + n - (w i : ℕ)) / (n + 1)
+      = (m + n - (w i : ℕ)) / (n + 1) + 1 := by
+    intro i
+    have hi := (w i).isLt
+    rw [show m + (n + 1) + n - (w i : ℕ) =
+        (m + n - (w i : ℕ)) + (n + 1) by lia,
+      Nat.add_div_right _ (by lia)]
+  simp only [parkingPointCount, h, Finset.sum_add_distrib, Finset.sum_const,
+    Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one]
+
+theorem parkingHeight_add_period (m : ℕ) :
+    parkingHeight w (m + (n + 1)) = parkingHeight w m - 1 := by
+  simp only [parkingHeight, parkingPointCount_add_period, Nat.cast_add]
+  push_cast
+  ring
+
+private theorem parking_point_div (v s k r : ℕ) (hv : v ≤ n) (hs : s ≤ n)
+    (hk : k ≤ n + 1)
+    (hr : (s ≤ v ∧ r = v - s) ∨ (v < s ∧ r + s = v + n + 1)) :
+    (s + k + n - v) / (n + 1) =
+      (s + n - v) / (n + 1) + (if r < k then 1 else 0) := by
+  have h1 : (s + n - v) / (n + 1) = if v < s then 1 else 0 := by
+    split <;> [exact Nat.div_eq_of_lt_le (by lia) (by lia);
+               exact Nat.div_eq_of_lt_le (by lia) (by lia)]
+  rw [h1]
+  rcases hr with ⟨h, hrv⟩ | ⟨h, hrv⟩ <;> split <;> split <;>
+    first
+      | lia
+      | (refine Nat.div_eq_of_lt_le ?_ ?_ <;> lia)
+
+private theorem parking_shift_residue_cases (v s c : ℕ) (hv : v ≤ n) (hc : c ≤ n)
+    (hsc : s + c = 0 ∨ s + c = n + 1) :
+    (s ≤ v ∧ (v + c) % (n + 1) = v - s) ∨
+      (v < s ∧ (v + c) % (n + 1) + s = v + n + 1) := by
+  rcases hsc with h | h
+  · exact Or.inl ⟨by lia, by rw [Nat.mod_eq_of_lt (by lia)]; lia⟩
+  · rcases Nat.lt_or_ge v s with hsv | hsv
+    · exact Or.inr ⟨hsv, by rw [Nat.mod_eq_of_lt (by lia)]; lia⟩
+    · refine Or.inl ⟨hsv, ?_⟩
+      rw [show v + c = (v - s) + (n + 1) by lia, Nat.add_mod_right,
+        Nat.mod_eq_of_lt (by lia)]
+
+private theorem card_filter_cyclicValueShift (c : Fin (n + 1)) (s k : ℕ) (hs : s ≤ n)
+    (hk : k ≤ n + 1) (hsc : s + (c : ℕ) = 0 ∨ s + (c : ℕ) = n + 1) :
+    (Finset.univ.filter fun i => (cyclicValueShift c w i).val < k).card +
+      parkingPointCount w s = parkingPointCount w (s + k) := by
+  rw [Finset.card_filter]
+  simp only [parkingPointCount, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hv : (w i : ℕ) ≤ n := by have := (w i).isLt; lia
+  have hc : (c : ℕ) ≤ n := by have := c.isLt; lia
+  change (if (finCycle c (w i)).val < k then 1 else 0) +
+    (s + n - (w i : ℕ)) / (n + 1) = _
+  rw [finCycle_apply]
+  have hval : ((w i + c : Fin (n + 1)) : ℕ) =
+      ((w i : ℕ) + (c : ℕ)) % (n + 1) := Fin.val_add _ _
+  rw [hval, parking_point_div (w i : ℕ) s k _ hv hs hk
+    (parking_shift_residue_cases (w i : ℕ) s (c : ℕ) hv hc hsc)]
+  lia
+
+private theorem isParkingWord_cyclicValueShift_iff (c : Fin (n + 1)) (s : ℕ) (hs : s ≤ n)
+    (hsc : s + (c : ℕ) = 0 ∨ s + (c : ℕ) = n + 1) :
+    IsParkingWord (cyclicValueShift c w) ↔
+      ∀ k < n + 1, parkingHeight w s ≤ parkingHeight w (s + k) := by
+  unfold IsParkingWord parkingHeight
+  constructor
+  · intro h k hk
+    have hc := card_filter_cyclicValueShift w c s k hs (by lia) hsc
+    have h1 := h k (by lia)
+    push_cast
+    lia
+  · intro h k hk
+    have hc := card_filter_cyclicValueShift w c s k hs (by lia) hsc
+    have h1 := h k (by lia)
+    push_cast at h1
+    lia
+
+private def parkingShiftStart (n c : ℕ) : ℕ :=
+  if c = 0 then 0 else n + 1 - c
+
+private theorem parkingShiftStart_le (c : ℕ) (_hc : c ≤ n) : parkingShiftStart n c ≤ n := by
+  unfold parkingShiftStart
+  split <;> lia
+
+private theorem parkingShiftStart_add (c : ℕ) (hc : c ≤ n) :
+    parkingShiftStart n c + c = 0 ∨ parkingShiftStart n c + c = n + 1 := by
+  unfold parkingShiftStart
+  split <;> lia
+
+private theorem parkingShiftStart_involutive (c : ℕ) (hc : c ≤ n) :
+    parkingShiftStart n (parkingShiftStart n c) = c := by
+  unfold parkingShiftStart
+  split <;> split <;> lia
+
+/-- **Pollak's cycle lemma for parking words.**  Every word has exactly one
+cyclic value shift satisfying the extra-alphabet parking condition. -/
+theorem existsUnique_isParkingWord_cyclicValueShift :
+    ∃! c : Fin (n + 1), IsParkingWord (cyclicValueShift c w) := by
+  obtain ⟨s₀, ⟨hs₀lt, hs₀⟩, huniq⟩ :=
+    existsUnique_cycle_minimum (n + 1) (Nat.succ_pos n) (parkingHeight w)
+      (parkingHeight_add_period w)
+  have hs₀le : s₀ ≤ n := by lia
+  refine ⟨⟨parkingShiftStart n s₀, by
+    have := parkingShiftStart_le s₀ hs₀le
+    lia⟩, ?_, ?_⟩
+  · dsimp only
+    rw [isParkingWord_cyclicValueShift_iff w _ s₀ hs₀le ?_]
+    · exact hs₀
+    · simpa [add_comm] using parkingShiftStart_add (n := n) s₀ hs₀le
+  · intro c hc
+    have hcle : (c : ℕ) ≤ n := by have := c.isLt; lia
+    have hstart := parkingShiftStart_add (n := n) (c : ℕ) hcle
+    rw [isParkingWord_cyclicValueShift_iff w c (parkingShiftStart n (c : ℕ))
+      (parkingShiftStart_le _ hcle) hstart] at hc
+    have : parkingShiftStart n (c : ℕ) = s₀ :=
+      huniq _ ⟨by
+        have := parkingShiftStart_le (n := n) (c : ℕ) hcle
+        lia, hc⟩
+    apply Fin.ext
+    simp only
+    rw [← this, parkingShiftStart_involutive _ hcle]
+
+@[simp]
+theorem cyclicValueShift_apply {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) (i : Fin n) :
+    cyclicValueShift c w i = finCycle c (w i) := rfl
+
+/-- Every fixed cyclic value shift is a bijection on words. -/
+theorem cyclicValueShift_bijective {n : ℕ} (c : Fin (n + 1)) :
+    Function.Bijective (cyclicValueShift c :
+      (Fin n → Fin (n + 1)) → Fin n → Fin (n + 1)) :=
+  (cyclicValueShiftEquiv n c).bijective
+
+/-- Cyclic value shifts preserve equality relations between positions. -/
+theorem cyclicValueShift_eq_iff {n : ℕ} (c : Fin (n + 1))
+    (w : Fin n → Fin (n + 1)) (i j : Fin n) :
+    cyclicValueShift c w i = cyclicValueShift c w j ↔ w i = w j := by
+  change finCycle c (w i) = finCycle c (w j) ↔ w i = w j
+  exact (finCycle c).injective.eq_iff
+
+/-- For a nonempty word, distinct cyclic shifts produce distinct words. -/
+theorem cyclicValueShift_injective_in_shift {n : ℕ} (hn : 0 < n)
+    (w : Fin n → Fin (n + 1)) :
+    Function.Injective (fun c : Fin (n + 1) => cyclicValueShift c w) := by
+  intro c d h
+  have hzero := congrFun h ⟨0, hn⟩
+  change w ⟨0, hn⟩ + c = w ⟨0, hn⟩ + d at hzero
+  exact add_left_cancel hzero
+
+/-- The cyclic value orbit of a nonempty word has the full alphabet size. -/
+theorem card_cyclicValueShift_orbit {n : ℕ} (hn : 0 < n)
+    (w : Fin n → Fin (n + 1)) :
+    (Finset.univ.image fun c => cyclicValueShift c w).card = n + 1 := by
+  rw [Finset.card_image_of_injective _ (cyclicValueShift_injective_in_shift hn w)]
+  simp
+
+/-- Regard a parking word as a word on the alphabet with one additional
+letter. -/
+def parkingWordEmbed {n : ℕ} (w : Fin n → Fin n) : Fin n → Fin (n + 1) :=
+  fun i => (w i).castSucc
+
+@[simp]
+theorem parkingWordEmbed_apply {n : ℕ} (w : Fin n → Fin n) (i : Fin n) :
+    parkingWordEmbed w i = (w i).castSucc := rfl
+
+/-- The embedded-word and ordinary parking conditions agree. -/
+theorem isParkingWord_parkingWordEmbed_iff {n : ℕ} (w : Fin n → Fin n) :
+    IsParkingWord (parkingWordEmbed w) ↔ IsParkingFunction w := by
+  constructor <;> intro hw k hk
+  · simpa [IsParkingWord, parkingWordEmbed] using hw k hk
+  · simpa [IsParkingWord, parkingWordEmbed] using hw k hk
+
+/-- The alphabet embedding of parking words is injective. -/
+theorem parkingWordEmbed_injective {n : ℕ} :
+    Function.Injective (parkingWordEmbed :
+      (Fin n → Fin n) → Fin n → Fin (n + 1)) := by
+  intro w v h
+  funext i
+  apply Fin.castSucc_injective
+  exact congrFun h i
+
+/-- Embedding the alphabet of a nonempty parking word preserves its descent
+set. -/
+theorem descentSet_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
+    descentSet (parkingWordEmbed w) = descentSet w := by
+  ext i
+  simp [mem_descentSet_iff, parkingWordEmbed]
+
+/-- Embedding the alphabet of a nonempty parking word preserves its descent
+number. -/
+theorem descentNumber_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
+    descentNumber (parkingWordEmbed w) = descentNumber w := by
+  rw [descentNumber, descentNumber, descentSet_parkingWordEmbed]
+
+/-- The embedded parking functions form a literal subfamily of words over the
+alphabet with one additional letter. -/
+def embeddedParkingFunctions (n : ℕ) : Finset (Fin (n + 1) → Fin (n + 2)) :=
+  (parkingFunctions (n + 1)).image parkingWordEmbed
+
+/-- The extra-alphabet parking condition characterizes the embedded parking
+family. -/
+theorem mem_embeddedParkingFunctions_iff_isParkingWord {n : ℕ}
+    {w : Fin (n + 1) → Fin (n + 2)} :
+    w ∈ embeddedParkingFunctions n ↔ IsParkingWord w := by
+  constructor
+  · rw [embeddedParkingFunctions, Finset.mem_image]
+    rintro ⟨p, hp, rfl⟩
+    exact (isParkingWord_parkingWordEmbed_iff p).mpr (mem_parkingFunctions_iff.mp hp)
+  · intro hw
+    let s := Finset.univ.filter fun i : Fin (n + 1) => (w i).val < n + 1
+    have hs_subset : s ⊆ Finset.univ := by
+      intro i _
+      simp
+    have hsle : s.card ≤ n + 1 := by
+      simpa using Finset.card_le_card hs_subset
+    have hsge : n + 1 ≤ s.card := by
+      simpa [s] using hw (n + 1) le_rfl
+    have hseq : s = Finset.univ :=
+      Finset.eq_of_subset_of_card_le hs_subset (by simpa using hsge)
+    have hlt : ∀ i : Fin (n + 1), (w i).val < n + 1 := by
+      intro i
+      have hi : i ∈ s := by rw [hseq]; simp
+      exact (Finset.mem_filter.mp hi).2
+    let p : Fin (n + 1) → Fin (n + 1) := fun i =>
+      Fin.castPred (w i) (by
+        intro hlast
+        have hlt' := hlt i
+        simp [hlast] at hlt')
+    have hpw : parkingWordEmbed p = w := by
+      funext i
+      apply Fin.ext
+      simp [parkingWordEmbed, p, Fin.castPred]
+    rw [embeddedParkingFunctions, Finset.mem_image]
+    refine ⟨p, mem_parkingFunctions_iff.mpr ?_, hpw⟩
+    apply (isParkingWord_parkingWordEmbed_iff p).mp
+    simpa [hpw] using hw
+
+/-- Every word has exactly one cyclic shift in the embedded parking family. -/
+theorem existsUnique_cyclicValueShift_mem_embeddedParkingFunctions {n : ℕ}
+    (w : Fin (n + 1) → Fin (n + 2)) :
+    ∃! c : Fin (n + 2), cyclicValueShift c w ∈ embeddedParkingFunctions n := by
+  simpa only [mem_embeddedParkingFunctions_iff_isParkingWord] using
+    (existsUnique_isParkingWord_cyclicValueShift w)
+
+/-- The parking descent polynomial is the descent-generating polynomial of its
+embedded finite word family. -/
+theorem parkingDescentPolynomial_succ_eq_descentGeneratingPolynomial_embedded
+    (n : ℕ) :
+    parkingDescentPolynomial (n + 1) =
+      descentGeneratingPolynomial (R := ℝ) (embeddedParkingFunctions n) := by
+  unfold parkingDescentPolynomial descentGeneratingPolynomial embeddedParkingFunctions
+  rw [Finset.sum_image]
+  · apply Finset.sum_congr rfl
+    intro w hw
+    rw [descentNumber_parkingWordEmbed]
+  · intro w hw v hv hwv
+    exact parkingWordEmbed_injective hwv
+
+end
+
+end RealRooted.ParkingFunctions

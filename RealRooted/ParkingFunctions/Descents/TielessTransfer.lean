@@ -1,5 +1,6 @@
 import RealRooted.BrandenVecchi.SmirnovInterlacing
 import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+import RealRooted.ParkingFunctions.Descents.Pollak
 
 /-!
 # Integral tieless parking-to-Smirnov transfer

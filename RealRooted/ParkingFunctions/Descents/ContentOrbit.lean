@@ -1,3 +1,5 @@
+import RealRooted.Mathlib.Data.Fintype.Card
+import RealRooted.ParkingFunctions.Descents.Pollak
 import RealRooted.ParkingFunctions.Descents.Tieless
 
 /-!

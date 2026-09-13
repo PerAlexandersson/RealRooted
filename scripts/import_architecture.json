@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1273
+      "max_modules": 1274
     },
     "RealRooted.Production": {
-      "max_modules": 1152
+      "max_modules": 1153
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -28,7 +28,7 @@
       "max_modules": 139
     },
     "RealRooted.ParkingFunctions.Descents.DiaconisHicks": {
-      "max_modules": 6
+      "max_modules": 7
     },
     "RealRooted.ParkingFunctions.Descents.ChainSort": {
       "max_modules": 3

@@ -1,5 +1,5 @@
 import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.ParkingFunctions.Descents.DiaconisHicks
+import RealRooted.ParkingFunctions.Descents.Pollak
 
 /-!
 # Tieless parking-function descents
