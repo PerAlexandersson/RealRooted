@@ -826,6 +826,7 @@ import RealRooted.ParkingFunctions.Descents.DescentChains
 import RealRooted.ParkingFunctions.Descents.DiaconisHicks
 import RealRooted.ParkingFunctions.Descents.Literal
 import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
+import RealRooted.ParkingFunctions.Descents.Tieless
 import RealRooted.ParkingFunctions.Descents.Words
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
