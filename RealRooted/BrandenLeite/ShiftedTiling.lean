@@ -78,6 +78,57 @@ theorem twoSeedRecurrenceCoefficient_hasNonnegCoeffs
   · rw [hj.neg_one_pow]
     nlinarith [mul_nonneg hγ ha]
 
+/-- A finite even-lag bound implies coefficientwise nonnegativity at every
+lag at least two; beyond the finite range, the second seed vanishes. -/
+theorem twoSeedRecurrenceCoefficient_hasNonnegCoeffs_of_finite_even_bound
+    {a b : ℕ → ℝ} {γ : ℝ} {m k : ℕ}
+    (ha : ∀ i, 0 ≤ a i) (hb : ∀ i, 0 ≤ b i) (hγ : 0 ≤ γ)
+    (hb_tail : ∀ j, m < j → b j = 0)
+    (hbound : ∀ j, 2 ≤ j → j ≤ m → Even j →
+      b j ≤ γ * a (j - 2)) :
+    HasNonnegCoeffs
+      (twoSeedRecurrenceCoefficient (a k) (b (k + 2)) γ (k + 2)) := by
+  apply twoSeedRecurrenceCoefficient_hasNonnegCoeffs
+    (ha k) (hb (k + 2)) hγ (k + 2)
+  intro heven
+  by_cases hle : k + 2 ≤ m
+  · exact hbound (k + 2) (by lia) hle heven
+  · rw [hb_tail (k + 2) (Nat.lt_of_not_ge hle)]
+    exact mul_nonneg hγ (ha k)
+
+/-- The finite even-lag bound for factored seed polynomials makes every
+positive-lag coefficient in the guarded recurrence nonnegative. -/
+theorem twoSeedFactorRecurrenceCoefficient_hasNonnegCoeffs
+    {ys xs : List ℝ} (hys : ∀ y ∈ ys, 0 ≤ y)
+    {c γ : ℝ} (hc : 0 < c) (hxs : ∀ x ∈ xs, 0 ≤ x) (hγ : 0 ≤ γ)
+    (hbound : ∀ j, 2 ≤ j → j ≤ ys.length → Even j →
+      (optionalRisePolynomial 1 ys).coeff j ≤
+        γ * (optionalRisePolynomial c xs).coeff (j - 2))
+    {j : ℕ} (hj : 1 ≤ j) :
+    HasNonnegCoeffs
+      (twoSeedRecurrenceCoefficient
+        (if 2 ≤ j then (optionalRisePolynomial c xs).coeff (j - 2)
+          else 0)
+        ((optionalRisePolynomial 1 ys).coeff j) γ j) := by
+  have ha : ∀ i, 0 ≤ (optionalRisePolynomial c xs).coeff i :=
+    (optionalRisePolynomial_isPFPolynomial hc hxs).hasNonnegCoeffs
+  have hb : ∀ i, 0 ≤ (optionalRisePolynomial 1 ys).coeff i :=
+    (optionalRisePolynomial_isPFPolynomial (by norm_num) hys).hasNonnegCoeffs
+  by_cases hj2 : 2 ≤ j
+  · rw [if_pos hj2]
+    have hfinite :=
+      twoSeedRecurrenceCoefficient_hasNonnegCoeffs_of_finite_even_bound
+        (a := fun i => (optionalRisePolynomial c xs).coeff i)
+        (b := fun i => (optionalRisePolynomial 1 ys).coeff i)
+        (γ := γ) (m := ys.length) (k := j - 2) ha hb hγ
+        (fun i hi =>
+          coeff_optionalRisePolynomial_eq_zero_of_length_lt 1 ys hi)
+        hbound
+    simpa [Nat.sub_add_cancel hj2] using hfinite
+  · have hj1 : j = 1 := by lia
+    subst j
+    simpa [twoSeedRecurrenceCoefficient] using hasNonnegCoeffs_C (hb 1)
+
 /-- Nonnegative translation preserves PF rows and consecutive zero-aware
 proper position. -/
 theorem shiftedRationalRodRows_pf_and_prec0

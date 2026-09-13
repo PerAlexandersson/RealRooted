@@ -57,6 +57,33 @@ theorem optionalRisePolynomial_isPFPolynomial
         simpa using hfactor.mul (ih htail)
   simpa [optionalRisePolynomial] using hproduct.const_mul hc
 
+/-- The degree of an optional-rise product is bounded by the number of
+factors, without any nonvanishing assumptions. -/
+theorem natDegree_optionalRisePolynomial_le_length
+    (c : ℝ) (xs : List ℝ) :
+    (optionalRisePolynomial c xs).natDegree ≤ xs.length := by
+  rw [optionalRisePolynomial]
+  apply (Polynomial.natDegree_C_mul_le _ _).trans
+  induction xs with
+  | nil => simp
+  | cons x xs ih =>
+      rw [List.map_cons, List.prod_cons, List.length_cons]
+      apply Polynomial.natDegree_mul_le.trans
+      have hfactor : (1 + C x * X : ℝ[X]).natDegree ≤ 1 := by
+        apply (Polynomial.natDegree_add_le _ _).trans
+        apply max_le
+        · simp
+        · exact (Polynomial.natDegree_C_mul_le x X).trans (by simp)
+      simpa [Nat.add_comm] using Nat.add_le_add hfactor ih
+
+/-- Optional-rise coefficients vanish beyond the number of factors. -/
+theorem coeff_optionalRisePolynomial_eq_zero_of_length_lt
+    (c : ℝ) (xs : List ℝ) {j : ℕ} (hj : xs.length < j) :
+    (optionalRisePolynomial c xs).coeff j = 0 :=
+  Polynomial.coeff_eq_zero_of_natDegree_lt
+    (lt_of_le_of_lt
+      (natDegree_optionalRisePolynomial_le_length c xs) hj)
+
 /-- Coefficients of a finite product of nonnegative geometric factors are
 Pólya-frequency. -/
 theorem rationalBackgroundSeries_coeff_isPolyaFreqSeq
