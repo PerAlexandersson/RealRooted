@@ -136,4 +136,76 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
           ihno x hx.2 hx.1).2
       exact (hsimple.eval_derivative_ne_zero hr1 hderiv_zero).elim
 
+/-- A quadratic derivative recurrence whose degree stays fixed or rises by
+one has strict adjacent proper position.  This version uses the derivative as
+the strict Liu--Wang interlacer, so the lag polynomial may have the same degree
+as the current row. -/
+theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
+    (P : ℕ → ℝ[X]) (a b c : ℝ) (Q : ℕ → ℝ[X])
+    (ha : 0 < a) (hb : 0 ≤ b) (hc : 0 ≤ c)
+    (hstep : ∀ n, (P (n + 1)).natDegree = (P n).natDegree ∨
+      (P (n + 1)).natDegree = (P n).natDegree + 1)
+    (hdegreePos : ∀ n, 0 < (P (n + 1)).natDegree)
+    (hpos : ∀ n, HasPosLeadingCoeff (P n))
+    (hroot : ∀ n r, (P n).IsRoot r → r < 0)
+    (hbase : Prec (P 0) (P 1))
+    (hbaseNo : ∀ r, (P 1).IsRoot r → ¬ (P 0).IsRoot r)
+    (hrec : ∀ n, P (n + 2) =
+      (C a * X + C (-b) * X ^ 2) * (P (n + 1)).derivative +
+        Q n * P (n + 1) + (C c * X) * P n) :
+    ∀ n, Prec (P n) (P (n + 1)) ∧
+      ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
+  intro n
+  induction n with
+  | zero => exact ⟨hbase, hbaseNo⟩
+  | succ n ih =>
+      obtain ⟨ihprec, ihno⟩ := ih
+      have hsimple : HasSimpleRoots (P (n + 1)) :=
+        (ihprec.hasSimpleRoots_of_no_common_root fun x hx =>
+          ihno x hx.2 hx.1).2
+      have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
+        interlaces_derivative_of_pos_natDegree (hpos (n + 1)).ne_zero
+          ihprec.2.1.2 (hpos (n + 1)) (hdegreePos n)
+      have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
+        (hpos (n + 1)).derivative (by exact (hdegreePos n).ne')
+      have hrootSign : ∀ r, (P (n + 1)).IsRoot r →
+          eval r (P (n + 2)) * eval r ((P (n + 1)).derivative) < 0 := by
+        intro r hr
+        have hrneg := hroot (n + 1) r hr
+        have hprevDeriv :
+            0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
+          eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toPrec
+            (hpos n) hderiv_pos hr
+        have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
+          hsimple.eval_derivative_ne_zero hr
+        have hpref : 0 < a - b * r := by nlinarith
+        have hpositive :
+            0 < (a - b * r) * eval r ((P (n + 1)).derivative) ^ 2 +
+              c * (eval r (P n) * eval r ((P (n + 1)).derivative)) := by
+          have hsquare : 0 < eval r ((P (n + 1)).derivative) ^ 2 := sq_pos_of_ne_zero hderivNe
+          nlinarith [mul_nonneg hc hprevDeriv]
+        have heval :
+            eval r (P (n + 2)) =
+              r * ((a - b * r) * eval r ((P (n + 1)).derivative) +
+                c * eval r (P n)) := by
+          rw [hrec n]
+          rw [Polynomial.IsRoot.def] at hr
+          simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow]
+          rw [hr]
+          ring
+        rw [heval]
+        nlinarith
+      have hprec : Prec (P (n + 1)) (P (n + 2)) := by
+        rcases hstep (n + 1) with hsame | hsucc
+        · exact prec_of_interlaces_eval_mul_neg_same
+            hderiv_inter hderiv_pos (hpos (n + 2)) hsame hrootSign
+        · exact prec_of_interlaces_eval_mul_neg_succ
+            hderiv_inter hderiv_pos (hpos (n + 2)) hsucc hrootSign
+      refine ⟨hprec, ?_⟩
+      intro r hr2 hr1
+      have hsign := hrootSign r hr1
+      rw [Polynomial.IsRoot.def] at hr2
+      rw [hr2, zero_mul] at hsign
+      exact (lt_irrefl 0 hsign).elim
+
 end RealRooted

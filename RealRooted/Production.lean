@@ -1139,6 +1139,7 @@ import RealRooted.Applications.OEIS.A144438
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
 import RealRooted.Applications.OEIS.A144438.DecoratedCycle
+import RealRooted.Applications.OEIS.InversePeaks
 import RealRooted.GammaPencil.Intertwining
 
 /-!
