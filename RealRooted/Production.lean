@@ -349,6 +349,7 @@ import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.GraceHalfPlane
 import RealRooted.Graph.ClawFree
 import RealRooted.Graph.AcyclicOrientation
+import RealRooted.Graph.ChordalAcyclicSink
 import RealRooted.Graph.AllOrientationSink
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
