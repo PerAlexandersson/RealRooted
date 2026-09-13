@@ -595,6 +595,7 @@ import RealRooted.MaWang.Weak.SameDegree
 import RealRooted.MaWang.Weak.Successor
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
+import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
@@ -832,6 +833,7 @@ import RealRooted.ParkingFunctions.Descents.Literal
 import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
 import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
 import RealRooted.ParkingFunctions.Descents.Pollak
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
 import RealRooted.ParkingFunctions.Descents.Tieless
 import RealRooted.ParkingFunctions.Descents.TielessTransfer
 import RealRooted.ParkingFunctions.Descents.WordContent

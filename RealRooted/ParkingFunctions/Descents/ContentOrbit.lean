@@ -1,7 +1,6 @@
 import RealRooted.Mathlib.Data.Fintype.Card
-import RealRooted.ParkingFunctions.Descents.Pollak
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
 import RealRooted.ParkingFunctions.Descents.Tieless
-import RealRooted.ParkingFunctions.Descents.WordContent
 
 /-!
 # Content orbits for parking and Smirnov words
@@ -36,11 +35,6 @@ theorem isSmirnovWord_relabelWord_iff {n m : ℕ}
   | succ n =>
       simp only [BrandenVecchi.IsSmirnovWord, ne_eq,
         relabelWord_eq_iff]
-
-/-- Cyclic value shift is the corresponding alphabet relabeling. -/
-theorem cyclicValueShift_eq_relabelWord {n : ℕ} (c : Fin (n + 1))
-    (w : Fin n → Fin (n + 1)) :
-    cyclicValueShift c w = relabelWord (finCycle c) w := rfl
 
 /-- Cyclic value shift rotates the literal labeled content. -/
 theorem wordContent_cyclicValueShift {n : ℕ} (c : Fin (n + 1))

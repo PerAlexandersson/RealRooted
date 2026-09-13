@@ -1,7 +1,7 @@
 import RealRooted.BrandenVecchi.SmirnovInterlacing
 import RealRooted.ParkingFunctions.Descents.ContentOrbit
 import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.Pollak
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral tieless parking-to-Smirnov transfer
@@ -195,49 +195,18 @@ theorem smirnovDescentSum_eq_succ_nsmul_parkingSmirnovDescentSum
       (n + 1) • ∑ w ∈ parkingSmirnovWords n,
         X ^ BrandenVecchi.smirnovDescentNumber w := by
   classical
-  have hone (w : Fin n → Fin (n + 1)) :
-      (∑ c : Fin (n + 1),
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w else 0) =
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
-    have hu : ∃! c : Fin (n + 1),
-        IsParkingWord (relabelWord (finCycle c) w) := by
-      simpa only [← cyclicValueShift_eq_relabelWord] using
-        existsUnique_isParkingWord_cyclicValueShift w
-    obtain ⟨c, hc, hunique⟩ := hu
-    rw [Finset.sum_eq_single c]
-    · simp [hc]
-    · intro d hd hdc
-      have hn : ¬IsParkingWord (relabelWord (finCycle d) w) := by
-        intro hdparking
-        exact hdc (hunique d hdparking)
-      simp [hn]
-    · simp
-  calc
-    (∑ w ∈ BrandenVecchi.smirnovWords (n + 1) n,
-        (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) =
-      ∑ w ∈ BrandenVecchi.smirnovWords (n + 1) n,
-        ∑ c : Fin (n + 1),
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            X ^ BrandenVecchi.smirnovDescentNumber w else 0 := by
-      apply Finset.sum_congr rfl
-      intro w hw
-      exact (hone w).symm
-    _ = ∑ c : Fin (n + 1),
-        ∑ w ∈ BrandenVecchi.smirnovWords (n + 1) n,
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            X ^ BrandenVecchi.smirnovDescentNumber w else 0 := by
-      rw [Finset.sum_comm]
-    _ = ∑ c : Fin (n + 1),
-        ∑ w ∈ parkingSmirnovWords n,
-          X ^ BrandenVecchi.smirnovDescentNumber w := by
-      apply Finset.sum_congr rfl
-      intro c hc
-      rw [← Finset.sum_filter]
-      exact sum_smirnovWords_filter_isParkingWord_relabelWord (finCycle c)
-    _ = (n + 1) • ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
-      simp
+  apply sum_eq_succ_nsmul_of_cyclicValueShift_filter_sum
+    (BrandenVecchi.smirnovWords (n + 1) n)
+    (fun w => (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w)
+    (∑ w ∈ parkingSmirnovWords n,
+      X ^ BrandenVecchi.smirnovDescentNumber w)
+  intro c
+  unfold cyclicParkingPreimage
+  change
+    (∑ w ∈ (BrandenVecchi.smirnovWords (n + 1) n).filter
+        (fun w => IsParkingWord (relabelWord (finCycle c) w)),
+      (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) = _
+  exact sum_smirnovWords_filter_isParkingWord_relabelWord (finCycle c)
 
 /-- The embedded parking Smirnov sum is exactly the literal tieless parking
 descent polynomial, including the empty-word boundary. -/

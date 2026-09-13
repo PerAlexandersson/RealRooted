@@ -1,6 +1,6 @@
 import RealRooted.ParkingFunctions.Descents.ContentSymmetry
 import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
-import RealRooted.ParkingFunctions.Descents.Pollak
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral ordinary parking-function transfer
@@ -17,16 +17,6 @@ open Polynomial
 namespace RealRooted.ParkingFunctions
 
 noncomputable section
-
-/-- The extra-alphabet parking words of length `n`. -/
-def parkingWords (n : ℕ) : Finset (Fin n → Fin (n + 1)) := by
-  classical
-  exact Finset.univ.filter IsParkingWord
-
-@[simp]
-theorem mem_parkingWords_iff {n : ℕ} {w : Fin n → Fin (n + 1)} :
-    w ∈ parkingWords n ↔ IsParkingWord w := by
-  simp [parkingWords]
 
 /-- Integral descent enumerator of ordinary parking functions. -/
 noncomputable def parkingDescentPolynomialInt : ℕ → ℤ[X]
@@ -191,47 +181,17 @@ theorem wordDescentSum_succ_eq_succ_nsmul_parkingWordDescentSum (n : ℕ) :
       (n + 2) •
         ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
   classical
-  have hone (w : Fin (n + 1) → Fin (n + 2)) :
-      (∑ c : Fin (n + 2),
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            (X : ℤ[X]) ^ descentNumber w else 0) =
-        (X : ℤ[X]) ^ descentNumber w := by
-    have hu : ∃! c : Fin (n + 2),
-        IsParkingWord (relabelWord (finCycle c) w) := by
-      change ∃! c : Fin (n + 2), IsParkingWord (cyclicValueShift c w)
-      exact existsUnique_isParkingWord_cyclicValueShift w
-    obtain ⟨c, hc, hunique⟩ := hu
-    rw [Finset.sum_eq_single c]
-    · simp [hc]
-    · intro d _ hdc
-      have hn : ¬IsParkingWord (relabelWord (finCycle d) w) := by
-        intro hdparking
-        exact hdc (hunique d hdparking)
-      simp [hn]
-    · simp
-  calc
-    (∑ w : Fin (n + 1) → Fin (n + 2), (X : ℤ[X]) ^ descentNumber w) =
-      ∑ w : Fin (n + 1) → Fin (n + 2),
-        ∑ c : Fin (n + 2),
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            (X : ℤ[X]) ^ descentNumber w else 0 := by
-      apply Finset.sum_congr rfl
-      intro w _
-      exact (hone w).symm
-    _ = ∑ c : Fin (n + 2),
-        ∑ w : Fin (n + 1) → Fin (n + 2),
-          if IsParkingWord (relabelWord (finCycle c) w) then
-            (X : ℤ[X]) ^ descentNumber w else 0 := by
-      rw [Finset.sum_comm]
-    _ = ∑ c : Fin (n + 2),
-        ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
-      apply Finset.sum_congr rfl
-      intro c _
-      rw [← Finset.sum_filter]
-      exact sum_words_filter_isParkingWord_relabelWord n (finCycle c)
-    _ = (n + 2) •
-        ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
-      simp
+  apply sum_eq_succ_nsmul_of_cyclicValueShift_filter_sum
+    (Finset.univ : Finset (Fin (n + 1) → Fin (n + 2)))
+    (fun w => (X : ℤ[X]) ^ descentNumber w)
+    (∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w)
+  intro c
+  unfold cyclicParkingPreimage
+  change
+    (∑ w ∈ (Finset.univ : Finset (Fin (n + 1) → Fin (n + 2))).filter
+        (fun w => IsParkingWord (relabelWord (finCycle c) w)),
+      (X : ℤ[X]) ^ descentNumber w) = _
+  exact sum_words_filter_isParkingWord_relabelWord n (finCycle c)
 
 /-- The extra-alphabet parking-word descent sum is the ordinary integral
 parking-function enumerator in positive length. -/
