@@ -63,6 +63,7 @@ import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 import RealRooted.BrandenLeite.CompositionRow
+import RealRooted.BrandenLeite.CompositionFamilies
 import RealRooted.BrandenLeite.CompositionRowClosure
 import RealRooted.BrandenLeite.ConstantDiagonal
 import RealRooted.BrandenLeite.DiagonalTail
