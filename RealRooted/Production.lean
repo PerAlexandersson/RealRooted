@@ -1141,6 +1141,7 @@ import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
 import RealRooted.Applications.OEIS.A144438.DecoratedCycle
 import RealRooted.Applications.OEIS.InversePeaks
+import RealRooted.Applications.OEIS.InversePeaksTypeB
 import RealRooted.Applications.OEIS.LowerReentrantCorner
 import RealRooted.GammaPencil.Intertwining
 

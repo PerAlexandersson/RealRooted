@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1267
+      "max_modules": 1268
     },
     "RealRooted.Production": {
-      "max_modules": 1146
+      "max_modules": 1147
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -104,6 +104,9 @@
     },
     "RealRooted.Applications.OEIS.InversePeaks": {
       "max_modules": 45
+    },
+    "RealRooted.Applications.OEIS.InversePeaksTypeB": {
+      "max_modules": 139
     },
     "RealRooted.Applications.OEIS.LowerReentrantCorner": {
       "max_modules": 44
