@@ -85,8 +85,8 @@ theorem descentMonomial_parkingWordEmbed {R : Type*} [Semiring R]
     {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
     (X : R[X]) ^ BrandenVecchi.smirnovDescentNumber (parkingWordEmbed w) =
       X ^ descentNumber w := by
-  simp only [BrandenVecchi.smirnovDescentNumber,
-    descentNumber_parkingWordEmbed]
+  change X ^ descentNumber (parkingWordEmbed w) = X ^ descentNumber w
+  rw [descentNumber_parkingWordEmbed]
 
 /-- The integral descent enumerator of tieless parking functions. -/
 def tielessParkingDescentPolynomial : ℕ → ℤ[X]

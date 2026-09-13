@@ -547,7 +547,8 @@ theorem smirnovDescentNumber_eq_listDescentNumber {q p k : ℕ}
   cases k with
   | zero => simp [listDescentNumber]
   | succ k =>
-      simpa [smirnovDescentNumber, signedDescentNumber] using
+      change RealRooted.ParkingFunctions.descentNumber word = _
+      simpa [signedDescentNumber] using
         (listDescentNumber_ofFn word).symm
 
 /-- One fixed skeleton length specializes exactly to the signed-run summand. -/

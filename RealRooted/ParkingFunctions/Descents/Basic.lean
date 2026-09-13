@@ -131,6 +131,25 @@ def descentNumber {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) : ℕ :=
   (descentSet w).card
 
+/-- Number of descents of a finite word, including the empty word. -/
+def wordDescentNumber {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] :
+    {n : ℕ} → (Fin n → α) → ℕ
+  | 0, _ => 0
+  | _ + 1, word => descentNumber word
+
+@[simp]
+theorem wordDescentNumber_zero {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (word : Fin 0 → α) :
+    wordDescentNumber word = 0 := by
+  simp [wordDescentNumber]
+
+@[simp]
+theorem wordDescentNumber_one {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (word : Fin 1 → α) :
+    wordDescentNumber word = 0 := by
+  simp [wordDescentNumber, descentNumber, descentSet]
+
 /-- Appending a final letter increments the descent number precisely when it
 is smaller than the old final letter. -/
 theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
@@ -149,6 +168,15 @@ theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
     simp [h]
   · rw [if_neg h]
     simp [h]
+
+@[simp]
+theorem wordDescentNumber_snoc {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)]
+    (word : Fin (n + 1) → α) (x : α) :
+    wordDescentNumber (Fin.snoc word x) =
+      wordDescentNumber word +
+        if x < word (Fin.last n) then 1 else 0 := by
+  simpa only [wordDescentNumber] using descentNumber_snoc word x
 
 /-- Appending a letter multiplies the descent monomial by `X` precisely when
 it creates the new final descent. -/

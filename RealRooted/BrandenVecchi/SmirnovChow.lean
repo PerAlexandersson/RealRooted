@@ -166,23 +166,20 @@ theorem smirnovWordWeight_eq_zero_of_exists {m n : ℕ}
     smirnovWordWeight weight word = 0 := by
   exact Finset.prod_eq_zero (Finset.mem_univ i) hi
 
-/-- The descent number, extended to the empty word. -/
-def smirnovDescentNumber {m : ℕ} :
-    {n : ℕ} → (Fin n → Fin m) → ℕ
-  | 0, _ => 0
-  | _ + 1, word => RealRooted.ParkingFunctions.descentNumber word
+/-- Compatibility name for the descent number of a possibly empty word. -/
+abbrev smirnovDescentNumber {m : ℕ} :
+    {n : ℕ} → (Fin n → Fin m) → ℕ :=
+  RealRooted.ParkingFunctions.wordDescentNumber
 
 @[simp]
 theorem smirnovDescentNumber_zero {m : ℕ} (word : Fin 0 → Fin m) :
     smirnovDescentNumber word = 0 := by
-  simp [smirnovDescentNumber]
+  exact RealRooted.ParkingFunctions.wordDescentNumber_zero word
 
 @[simp]
 theorem smirnovDescentNumber_one {m : ℕ} (word : Fin 1 → Fin m) :
     smirnovDescentNumber word = 0 := by
-  simp [smirnovDescentNumber,
-    RealRooted.ParkingFunctions.descentNumber,
-    RealRooted.ParkingFunctions.descentSet]
+  exact RealRooted.ParkingFunctions.wordDescentNumber_one word
 
 @[simp]
 theorem smirnovDescentNumber_snoc {m n : ℕ}
@@ -190,8 +187,7 @@ theorem smirnovDescentNumber_snoc {m n : ℕ}
     smirnovDescentNumber (Fin.snoc word i) =
       smirnovDescentNumber word +
         if i < word (Fin.last n) then 1 else 0 := by
-  simpa only [smirnovDescentNumber] using
-    RealRooted.ParkingFunctions.descentNumber_snoc word i
+  exact RealRooted.ParkingFunctions.wordDescentNumber_snoc word i
 
 /-- Literal weighted descent enumerator of length-`n` Smirnov words. -/
 def weightedSmirnovPolynomial {m : ℕ} (weight : Fin m → R)

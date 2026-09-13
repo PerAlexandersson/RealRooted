@@ -1,4 +1,5 @@
-import RealRooted.ParkingFunctions.Descents.ContentOrbit
+import RealRooted.BrandenVecchi.SmirnovChow
+import RealRooted.ParkingFunctions.Descents.WordContent
 import Mathlib.Algebra.MvPolynomial.Rename
 
 /-!
