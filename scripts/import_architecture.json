@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1265
+      "max_modules": 1267
     },
     "RealRooted.Production": {
-      "max_modules": 1144
+      "max_modules": 1146
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -104,6 +104,9 @@
     },
     "RealRooted.Applications.OEIS.InversePeaks": {
       "max_modules": 45
+    },
+    "RealRooted.Applications.OEIS.LowerReentrantCorner": {
+      "max_modules": 44
     },
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power": {
       "max_modules": 1
@@ -1180,7 +1183,7 @@
       "max_modules": 165
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 55
+      "max_modules": 56
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
@@ -1195,6 +1198,9 @@
       "max_modules": 43
     },
     "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
+      "max_modules": 43
+    },
+    "RealRooted.DerivativeRecurrence.AffineLagStrict": {
       "max_modules": 43
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
@@ -2090,6 +2096,7 @@
     "RealRooted.DerivativeRecurrence.SecondDerivativeDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
     "RealRooted.DerivativeRecurrence.QuadraticLagStrict",
+    "RealRooted.DerivativeRecurrence.AffineLagStrict",
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",
