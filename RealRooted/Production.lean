@@ -105,6 +105,7 @@ import RealRooted.BrandenLeite.ConstantDiagonal
 import RealRooted.BrandenLeite.DiagonalTail
 import RealRooted.BrandenLeite.KernelClosure
 import RealRooted.BrandenLeite.KernelRow
+import RealRooted.BrandenLeite.MarkedShift
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
