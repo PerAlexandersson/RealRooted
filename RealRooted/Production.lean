@@ -221,6 +221,7 @@ import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
