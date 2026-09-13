@@ -828,6 +828,7 @@ import RealRooted.ParkingFunctions.Descents.ChainSort
 import RealRooted.ParkingFunctions.Descents.CompositionBlocks
 import RealRooted.ParkingFunctions.Descents.ContentOrbit
 import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+import RealRooted.ParkingFunctions.Descents.DescentContainment
 import RealRooted.ParkingFunctions.Descents.DescentChains
 import RealRooted.ParkingFunctions.Descents.DiaconisHicks
 import RealRooted.ParkingFunctions.Descents.Literal
