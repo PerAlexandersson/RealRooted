@@ -224,6 +224,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
 import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
+import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.OneDescentGamma
@@ -717,6 +718,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
