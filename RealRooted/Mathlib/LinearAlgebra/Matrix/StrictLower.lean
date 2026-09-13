@@ -16,6 +16,46 @@ namespace Matrix
 
 noncomputable section
 
+/-- Retain precisely the entries strictly below the diagonal. -/
+def strictLowerPart {R ι : Type*} [Zero R] [LinearOrder ι]
+    (A : Matrix ι ι R) : Matrix ι ι R :=
+  fun i j => if j < i then A i j else 0
+
+@[simp]
+theorem strictLowerPart_apply_of_lt {R ι : Type*} [Zero R] [LinearOrder ι]
+    (A : Matrix ι ι R) {i j : ι} (hji : j < i) :
+    strictLowerPart A i j = A i j := by
+  simp [strictLowerPart, hji]
+
+@[simp]
+theorem strictLowerPart_apply_of_not_lt
+    {R ι : Type*} [Zero R] [LinearOrder ι]
+    (A : Matrix ι ι R) {i j : ι} (hji : ¬j < i) :
+    strictLowerPart A i j = 0 := by
+  simp [strictLowerPart, hji]
+
+/-- The strict-lower part is strictly lower triangular without assumptions on
+the original matrix. -/
+theorem strictLowerPart_apply_eq_zero_of_le
+    {R ι : Type*} [Zero R] [LinearOrder ι]
+    (A : Matrix ι ι R) {i j : ι} (hij : i ≤ j) :
+    strictLowerPart A i j = 0 := by
+  exact strictLowerPart_apply_of_not_lt A (not_lt_of_ge hij)
+
+/-- A lower triangular matrix with zero diagonal equals its strict-lower
+part. -/
+theorem strictLowerPart_eq_self_of_lower_diagonal_zero
+    {R ι : Type*} [Zero R] [LinearOrder ι]
+    (A : Matrix ι ι R)
+    (hA : ∀ i j, i < j → A i j = 0)
+    (hdiag : ∀ i, A i i = 0) :
+    strictLowerPart A = A := by
+  ext i j
+  rcases lt_trichotomy j i with hji | rfl | hij
+  · exact strictLowerPart_apply_of_lt A hji
+  · simp [strictLowerPart, hdiag]
+  · simp [strictLowerPart, hA i j hij, not_lt_of_ge hij.le]
+
 /-- The `q`th power of a strictly lower triangular matrix vanishes at `(i, j)`
 whenever `i < j + q`. -/
 theorem pow_apply_eq_zero_of_lt_add_of_strictLower
@@ -118,6 +158,25 @@ theorem mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
   · have hkj : k.val < j.val + q := by
       exact lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
     rw [pow_apply_eq_zero_of_lt_add_of_strictLower K hK hkj, mul_zero]
+
+/-- A power of a strictly lower triangular matrix followed by a lower
+triangular matrix has the same sharp support shift as that power. -/
+theorem pow_mul_apply_eq_zero_of_lt_add_of_strictLower_lower
+    {R : Type*} [Semiring R] {N q : ℕ}
+    (K G : Matrix (Fin N) (Fin N) R)
+    (hK : ∀ i j, i.val ≤ j.val → K i j = 0)
+    (hG : ∀ i j, i < j → G i j = 0)
+    {i j : Fin N} (hij : i.val < j.val + q) :
+    (K ^ q * G) i j = 0 := by
+  rw [mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  by_cases hkj : k < j
+  · rw [hG k j hkj, mul_zero]
+  · have hik : i.val < k.val + q := by
+      have hjk : j.val ≤ k.val := Fin.mk_le_mk.mp (le_of_not_gt hkj)
+      exact lt_of_lt_of_le hij (Nat.add_le_add_right hjk q)
+    rw [pow_apply_eq_zero_of_lt_add_of_strictLower K hK hik, zero_mul]
 
 /-- Moving the terminal factor through a power interchanges the two possible
 orders of a matrix product. -/
