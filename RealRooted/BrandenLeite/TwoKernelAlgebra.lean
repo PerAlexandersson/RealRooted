@@ -222,8 +222,26 @@ theorem natDegree_twoKernelRow_le {R : Type*} [CommSemiring R]
   exact (Polynomial.natDegree_C_mul_X_pow_le _ k).trans
     (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
 
-/-- A literal two-kernel row is the last row of the corresponding finite
-Toeplitz kernel construction. -/
+/-- A literal two-kernel row is the corresponding row of every finite Toeplitz
+kernel construction containing that row. -/
+theorem twoKernelRow_eq_kernelRow_fin {R : Type*} [CommSemiring R]
+    {g h : PowerSeries R} (hzero : PowerSeries.constantCoeff h = 0)
+    {N : ℕ} (i : Fin (N + 1)) :
+    twoKernelRow g h i.val =
+      kernelRow
+        (finiteToeplitz (fun m => PowerSeries.coeff m g) N)
+        (finiteToeplitz (fun m => PowerSeries.coeff m h) N) i := by
+  ext k
+  rw [coeff_twoKernelRow hzero, coeff_kernelRow]
+  by_cases hk : k < N + 1
+  · rw [if_pos hk]
+    symm
+    exact finiteToeplitz_kernelProduct_apply_zero g h k i
+  · rw [if_neg hk]
+    exact coeff_twoKernelTerm_eq_zero_of_lt hzero (by lia)
+
+/-- A literal two-kernel row is the last row of its smallest finite Toeplitz
+kernel construction. -/
 theorem twoKernelRow_eq_kernelRow {R : Type*} [CommSemiring R]
     {g h : PowerSeries R} (hzero : PowerSeries.constantCoeff h = 0)
     (n : ℕ) :
@@ -232,14 +250,7 @@ theorem twoKernelRow_eq_kernelRow {R : Type*} [CommSemiring R]
         (finiteToeplitz (fun m => PowerSeries.coeff m g) n)
         (finiteToeplitz (fun m => PowerSeries.coeff m h) n)
         (Fin.last n) := by
-  ext k
-  rw [coeff_twoKernelRow hzero, coeff_kernelRow]
-  by_cases hk : k < n + 1
-  · rw [if_pos hk]
-    symm
-    exact finiteToeplitz_kernelProduct_apply_zero g h k (Fin.last n)
-  · rw [if_neg hk]
-    exact coeff_twoKernelTerm_eq_zero_of_lt hzero (by lia)
+  exact twoKernelRow_eq_kernelRow_fin hzero (Fin.last n)
 
 /-- For each polynomial column, the generating series of literal row
 coefficients is exactly the corresponding geometric-series term.  This is a

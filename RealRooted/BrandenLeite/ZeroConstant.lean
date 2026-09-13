@@ -47,6 +47,90 @@ theorem positivePartSeries_eq_mk_of_zero
     simp [hf0]
   · simp [hn]
 
+/-- Every nonzero PF sequence is a coefficientwise limit of PF sequences with
+positive zeroth coefficient.  The construction removes the finite initial
+zero block and regularizes it by the coefficients of `(X + ε)^r`. -/
+theorem exists_pf_pos_zero_approximation
+    {f : ℕ → ℝ} (hf : IsPolyaFreqSeq f) (hfn : f ≠ 0) :
+    ∃ a : ℕ → ℕ → ℝ,
+      (∀ k, IsPolyaFreqSeq (a k)) ∧
+      (∀ k, 0 < a k 0) ∧
+      ∀ n, Tendsto (fun k => a k n) atTop (𝓝 (f n)) := by
+  have hexists : ∃ n, f n ≠ 0 := by
+    by_contra h
+    apply hfn
+    funext n
+    exact not_ne_iff.mp ((not_exists.mp h) n)
+  let r : ℕ := Nat.find hexists
+  let u : ℕ → ℝ := fun n => f (n + r)
+  let ε : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+  let a : ℕ → ℕ → ℝ := fun k => regularizedSequence r u (ε k)
+  have hrne : f r ≠ 0 := Nat.find_spec hexists
+  have hrpos : 0 < f r :=
+    lt_of_le_of_ne (hf.nonneg r) (Ne.symm hrne)
+  have hzero : ∀ k < r, f k = 0 := by
+    intro k hk
+    by_contra hk0
+    exact (Nat.not_lt_of_ge (Nat.find_min' hexists hk0)) hk
+  have hu_pf : IsPolyaFreqSeq u := hf.tail_of_zeros r hzero
+  have hu0pos : 0 < u 0 := by
+    simpa [u] using hrpos
+  have hf_eq : f = fun n => if r ≤ n then u (n - r) else 0 := by
+    funext n
+    by_cases hrn : r ≤ n
+    · rw [if_pos hrn]
+      simp [u, Nat.sub_add_cancel hrn]
+    · rw [if_neg hrn]
+      exact hzero n (Nat.lt_of_not_ge hrn)
+  have hεpos : ∀ k, 0 < ε k := by
+    intro k
+    dsimp [ε]
+    positivity
+  have hεlim : Tendsto ε atTop (𝓝 0) := by
+    simpa [ε] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have ha_pf : ∀ k, IsPolyaFreqSeq (a k) := by
+    intro k
+    exact regularizedSequence_isPolyaFreqSeq hu_pf r (le_of_lt (hεpos k))
+  have ha0pos : ∀ k, 0 < a k 0 := by
+    intro k
+    exact regularizedSequence_zero_pos (hεpos k) hu0pos
+  have halim : ∀ n, Tendsto (fun k => a k n) atTop (𝓝 (f n)) := by
+    intro n
+    rw [hf_eq]
+    simpa [a] using tendsto_regularizedSequence hεlim r u n
+  exact ⟨a, ha_pf, ha0pos, halim⟩
+
+/-- Every PF sequence, including the zero sequence, is a coefficientwise limit
+of PF sequences with positive zeroth coefficient. -/
+theorem exists_pf_pos_zero_approximation_of_pf
+    {f : ℕ → ℝ} (hf : IsPolyaFreqSeq f) :
+    ∃ a : ℕ → ℕ → ℝ,
+      (∀ k, IsPolyaFreqSeq (a k)) ∧
+      (∀ k, 0 < a k 0) ∧
+      ∀ n, Tendsto (fun k => a k n) atTop (𝓝 (f n)) := by
+  by_cases hfn : f = 0
+  · subst f
+    let ε : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+    let a : ℕ → ℕ → ℝ := fun k => (C (ε k) : ℝ[X]).coeff
+    have hεpos : ∀ k, 0 < ε k := by
+      intro k
+      dsimp [ε]
+      positivity
+    have hεlim : Tendsto ε atTop (𝓝 0) := by
+      simpa [ε] using
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+    refine ⟨a, ?_, ?_, ?_⟩
+    · intro k
+      exact (IsPFPolynomial.of_C_nonneg (hεpos k).le).to_sequence
+    · intro k
+      simpa [a] using hεpos k
+    · intro n
+      cases n with
+      | zero => simpa [a] using hεlim
+      | succ n => simp [a]
+  · exact exists_pf_pos_zero_approximation hf hfn
+
 /-- Composition rows of the positive-order part of any PF sequence are PF,
 and consecutive rows are in zero-aware proper position. -/
 theorem compositionRows_positivePartSeries_pf_and_prec0
@@ -68,49 +152,8 @@ theorem compositionRows_positivePartSeries_pf_and_prec0
       rw [positivePartSeries_zero,
         compositionRow_zero_series_of_ne_zero (Nat.succ_ne_zero n)]
       exact prec0_zero_right _
-  · have hexists : ∃ n, f n ≠ 0 := by
-      by_contra h
-      apply hfn
-      funext n
-      exact not_ne_iff.mp ((not_exists.mp h) n)
-    let r : ℕ := Nat.find hexists
-    let u : ℕ → ℝ := fun n => f (n + r)
-    let ε : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
-    let a : ℕ → ℕ → ℝ := fun k => regularizedSequence r u (ε k)
-    have hrne : f r ≠ 0 := Nat.find_spec hexists
-    have hrpos : 0 < f r :=
-      lt_of_le_of_ne (hf.nonneg r) (Ne.symm hrne)
-    have hzero : ∀ k < r, f k = 0 := by
-      intro k hk
-      by_contra hk0
-      exact (Nat.not_lt_of_ge (Nat.find_min' hexists hk0)) hk
-    have hu_pf : IsPolyaFreqSeq u := hf.tail_of_zeros r hzero
-    have hu0pos : 0 < u 0 := by
-      simpa [u] using hrpos
-    have hf_eq : f = fun n => if r ≤ n then u (n - r) else 0 := by
-      funext n
-      by_cases hrn : r ≤ n
-      · rw [if_pos hrn]
-        simp [u, Nat.sub_add_cancel hrn]
-      · rw [if_neg hrn]
-        exact hzero n (Nat.lt_of_not_ge hrn)
-    have hεpos : ∀ k, 0 < ε k := by
-      intro k
-      dsimp [ε]
-      positivity
-    have hεlim : Tendsto ε atTop (𝓝 0) := by
-      simpa [ε] using
-        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
-    have ha_pf : ∀ k, IsPolyaFreqSeq (a k) := by
-      intro k
-      exact regularizedSequence_isPolyaFreqSeq hu_pf r (le_of_lt (hεpos k))
-    have ha0pos : ∀ k, 0 < a k 0 := by
-      intro k
-      exact regularizedSequence_zero_pos (hεpos k) hu0pos
-    have halim : ∀ n, Tendsto (fun k => a k n) atTop (𝓝 (f n)) := by
-      intro n
-      rw [hf_eq]
-      simpa [a] using tendsto_regularizedSequence hεlim r u n
+  · obtain ⟨a, ha_pf, ha0pos, halim⟩ :=
+      exists_pf_pos_zero_approximation hf hfn
     constructor
     · intro n
       apply IsPFPolynomial.of_coeff_tendsto
