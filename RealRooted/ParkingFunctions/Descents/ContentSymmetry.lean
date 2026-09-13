@@ -37,41 +37,6 @@ def fixedContentSmirnovPolynomial {n m : ℕ}
   ∑ w ∈ fixedContentSmirnovWords (n := n) μ,
     X ^ BrandenVecchi.smirnovDescentNumber w
 
-/-- The exponent vector recording the multiplicity of every letter in a
-word. -/
-def wordExponent {n m : ℕ} (w : Fin n → Fin m) : Fin m →₀ ℕ :=
-  ∑ i, Finsupp.single (w i) 1
-
-@[simp]
-theorem card_wordContent {n m : ℕ} (w : Fin n → Fin m) :
-    (wordContent w).card = n := by
-  simp [wordContent]
-
-/-- The exponent vector and value-multiset presentations of content agree. -/
-theorem wordExponent_eq_toFinsupp_wordContent {n m : ℕ}
-    (w : Fin n → Fin m) :
-    wordExponent w = (wordContent w).toFinsupp := by
-  classical
-  ext a
-  unfold wordExponent wordContent
-  simp only [Multiset.toFinsupp_apply]
-  rw [Multiset.count_map]
-  have hfilter :
-      Multiset.filter (fun i => a = w i) Finset.univ.val =
-        (Finset.univ.filter fun i => a = w i).val := rfl
-  rw [hfilter]
-  change (∑ i, Finsupp.single (w i) 1) a =
-    (Finset.univ.filter fun i => a = w i).card
-  rw [Finset.card_filter]
-  change (Finsupp.applyAddHom a) (∑ i, Finsupp.single (w i) 1) = _
-  rw [map_sum]
-  apply Finset.sum_congr rfl
-  intro i _
-  by_cases h : w i = a
-  · subst a
-    simp
-  · simp [Ne.symm h]
-
 /-- The universal monomial weight of a word is the monomial of its content
 exponent. -/
 theorem smirnovWordWeight_X_eq_monomial {n m : ℕ}
