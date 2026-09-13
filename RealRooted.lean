@@ -87,6 +87,7 @@ import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
 import RealRooted.BrandenVecchi.SignedWords
 import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+import RealRooted.BrandenLeite.Regularization
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
