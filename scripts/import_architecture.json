@@ -1162,7 +1162,7 @@
       "max_modules": 165
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 53
+      "max_modules": 54
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
