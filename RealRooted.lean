@@ -90,6 +90,7 @@ import RealRooted.BrandenVecchi.SupersymmetricCoefficients
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.ToeplitzComposition
 import RealRooted.BrandenLeite.WhitneyReduction
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
