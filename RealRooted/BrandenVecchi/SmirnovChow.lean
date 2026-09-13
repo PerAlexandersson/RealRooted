@@ -713,6 +713,39 @@ theorem weightedSmirnovPolynomial_eq_chowPolynomial {m : ℕ}
   have hcoeff := congrArg (PowerSeries.coeff n) hseries
   simpa [finiteElementaryToeplitz] using hcoeff
 
+/-- Permuting a finite alphabet does not change its elementary-product
+series. -/
+theorem finiteElementarySeries_comp_equiv {m : ℕ}
+    (weight : Fin m → R) (e : Equiv.Perm (Fin m)) :
+    finiteElementarySeries (weight ∘ e) = finiteElementarySeries weight := by
+  unfold finiteElementarySeries
+  exact Fintype.prod_equiv e
+    (fun i => 1 + PowerSeries.X * PowerSeries.C (weight (e i)))
+    (fun i => 1 + PowerSeries.X * PowerSeries.C (weight i))
+    (fun _ => rfl)
+
+/-- Permuting a finite alphabet does not change its elementary-product
+Toeplitz coefficients. -/
+theorem finiteElementaryCoefficient_comp_equiv {m : ℕ}
+    (weight : Fin m → R) (e : Equiv.Perm (Fin m)) :
+    finiteElementaryCoefficient (weight ∘ e) =
+      finiteElementaryCoefficient weight := by
+  funext n
+  exact congrArg (PowerSeries.coeff n)
+    (finiteElementarySeries_comp_equiv weight e)
+
+/-- The weighted Smirnov descent enumerator is symmetric in the alphabet
+weights, although an alphabet permutation need not preserve descents
+word-by-word. -/
+theorem weightedSmirnovPolynomial_comp_equiv {m : ℕ}
+    (weight : Fin m → R) (e : Equiv.Perm (Fin m)) (n : ℕ) :
+    weightedSmirnovPolynomial (weight ∘ e) n =
+      weightedSmirnovPolynomial weight n := by
+  rw [weightedSmirnovPolynomial_eq_chowPolynomial,
+    weightedSmirnovPolynomial_eq_chowPolynomial]
+  unfold finiteElementaryToeplitz
+  rw [finiteElementaryCoefficient_comp_equiv]
+
 /-- Literal weighted Smirnov polynomials commute with change of coefficient
 ring. -/
 theorem map_weightedSmirnovPolynomial
