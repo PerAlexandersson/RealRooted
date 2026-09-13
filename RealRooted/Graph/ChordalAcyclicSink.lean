@@ -1405,8 +1405,6 @@ theorem markedAcyclicSinkShift_succ {m : ℕ}
 
 /-! ## The weighted independence-polynomial model -/
 
-set_option maxHeartbeats 800000 in
--- The induction elaborates two symbolic weighted-polynomial recurrences.
 /-- Every ordered chordal graph has one nonnegative weighted independence
 model which simultaneously counts marked sinks on every vertex support. -/
 theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
