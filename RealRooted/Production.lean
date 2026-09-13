@@ -781,6 +781,7 @@ import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.OscillatoryInterlacing
 import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.Descents.ChainSort

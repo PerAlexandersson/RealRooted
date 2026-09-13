@@ -801,6 +801,7 @@ import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
