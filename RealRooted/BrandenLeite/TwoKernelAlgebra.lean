@@ -276,6 +276,38 @@ theorem coeff_polynomialLift {R : Type*} [Semiring R]
     PowerSeries.coeff n (polynomialLift f) = C (PowerSeries.coeff n f) := by
   simp [polynomialLift]
 
+@[simp]
+theorem polynomialLift_zero {R : Type*} [Semiring R] :
+    polynomialLift (0 : PowerSeries R) = 0 := by
+  ext n
+  simp
+
+@[simp]
+theorem polynomialLift_one {R : Type*} [Semiring R] :
+    polynomialLift (1 : PowerSeries R) = 1 := by
+  ext n
+  cases n <;> simp
+
+@[simp]
+theorem polynomialLift_add {R : Type*} [Semiring R]
+    (f g : PowerSeries R) :
+    polynomialLift (f + g) = polynomialLift f + polynomialLift g := by
+  ext n
+  simp
+
+theorem polynomialLift_mul {R : Type*} [CommSemiring R]
+    (f g : PowerSeries R) :
+    polynomialLift (f * g) = polynomialLift f * polynomialLift g := by
+  ext n
+  simp [PowerSeries.coeff_mul, map_sum]
+
+@[simp]
+theorem polynomialLift_sub {R : Type*} [Ring R]
+    (f g : PowerSeries R) :
+    polynomialLift (f - g) = polynomialLift f - polynomialLift g := by
+  ext n
+  simp
+
 /-- The formal generating series whose `n`th coefficient is the literal
 two-kernel row. -/
 def twoKernelGeneratingSeries {R : Type*} [CommSemiring R]

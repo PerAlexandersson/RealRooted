@@ -133,6 +133,13 @@ theorem rationalBackgroundSeries_nil :
   simp [rationalBackgroundSeries,
     BrandenVecchi.finiteSupersymmetricSeries]
 
+@[simp]
+theorem coeff_rationalBackgroundSeries_singleton (b : ℝ) (n : ℕ) :
+    PowerSeries.coeff n (rationalBackgroundSeries [b]) = b ^ n := by
+  simp [rationalBackgroundSeries,
+    BrandenVecchi.finiteSupersymmetricSeries,
+    BrandenVecchi.coeff_supersymmetricDenominatorFactor]
+
 end
 
 end RealRooted.BrandenLeite
