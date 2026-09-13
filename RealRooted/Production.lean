@@ -99,6 +99,7 @@ import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 import RealRooted.BrandenLeite.CompositionRow
+import RealRooted.BrandenLeite.CompositionRowClosure
 import RealRooted.BrandenLeite.ConstantDiagonal
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
@@ -619,6 +620,7 @@ import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
 import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
