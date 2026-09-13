@@ -17,7 +17,8 @@ noncomputable section
 
 variable {R : Type*} [CommRing R]
 
-private theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
+/-- Splitting a finite sum at the next natural cut. -/
+theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∑ i, if i.val < k + 1 then f i else 0) =
       (∑ i, if i.val < k then f i else 0) + f ⟨k, hk⟩ := by
@@ -44,7 +45,8 @@ private theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
         exact Fin.ext (le_antisymm hle hge)
       simp [hik, hieq, hisucc]
 
-private theorem sum_fin_succ_le_val {A : Type*} [AddCommMonoid A]
+/-- Splitting the complementary finite sum at the next natural cut. -/
+theorem sum_fin_succ_le_val {A : Type*} [AddCommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∑ i, if k ≤ i.val then f i else 0) =
       f ⟨k, hk⟩ + ∑ i, if k + 1 ≤ i.val then f i else 0 := by
@@ -72,7 +74,8 @@ private theorem sum_fin_succ_le_val {A : Type*} [AddCommMonoid A]
         exact hieq (Fin.ext heq)
       simp [hik, hieq, hki]
 
-private theorem prod_fin_val_lt_succ {A : Type*} [CommMonoid A]
+/-- Splitting a finite product at the next natural cut. -/
+theorem prod_fin_val_lt_succ {A : Type*} [CommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∏ i, if i.val < k + 1 then f i else 1) =
       (∏ i, if i.val < k then f i else 1) * f ⟨k, hk⟩ := by
