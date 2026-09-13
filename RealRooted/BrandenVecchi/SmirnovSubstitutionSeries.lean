@@ -1,5 +1,6 @@
 import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 import RealRooted.BrandenVecchi.SmirnovChow
+import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 import Mathlib.RingTheory.PowerSeries.Order
 import Mathlib.RingTheory.PowerSeries.PiTopology
 
@@ -510,6 +511,83 @@ theorem smirnovSubstitutionSeries_product_identity {m : ℕ}
     (PowerSeries.C t) weight
     (smirnovSubstitutionEndingSeries t weight)
     (smirnovSubstitutionEndingSeries_eq t weight hweight)
+
+/-- The finite-product equation uniquely determines the locally finite
+Smirnov substitution series when its scalar denominator is regular. -/
+theorem eq_smirnovSubstitutionSeries_of_product_identity {m : ℕ}
+    (t : A) (weight : Fin m → PowerSeries A)
+    (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0)
+    (ht : IsRegular (1 - t)) (series : PowerSeries A)
+    (hseries :
+      (∏ i : Fin m, (1 + PowerSeries.C t * weight i)) * series =
+        (∏ i : Fin m, (1 + weight i)) *
+          (1 - PowerSeries.C t + PowerSeries.C t * series)) :
+    series = smirnovSubstitutionSeries t weight := by
+  let rescaledProduct :=
+    ∏ i : Fin m, (1 + PowerSeries.C t * weight i)
+  let product := ∏ i : Fin m, (1 + weight i)
+  let denominator := rescaledProduct - product * PowerSeries.C t
+  have hseriesDenominator :
+      denominator * series = product * (1 - PowerSeries.C t) := by
+    dsimp only [denominator, rescaledProduct, product]
+    linear_combination hseries
+  have htarget :=
+    smirnovSubstitutionSeries_product_identity t weight hweight
+  have htargetDenominator :
+      denominator * smirnovSubstitutionSeries t weight =
+        product * (1 - PowerSeries.C t) := by
+    dsimp only [denominator, rescaledProduct, product]
+    linear_combination htarget
+  have hconstant : PowerSeries.constantCoeff denominator = 1 - t := by
+    simp [denominator, rescaledProduct, product, hweight]
+  apply (PowerSeries.isRegular_of_isRegular_constantCoeff
+    (hconstant ▸ ht)).left
+  exact hseriesDenominator.trans htargetDenominator.symm
+
+/-- Permuting the alphabet weights leaves the substituted Smirnov series
+unchanged when the scalar denominator is regular. -/
+theorem smirnovSubstitutionSeries_comp_equiv {m : ℕ}
+    (t : A) (weight : Fin m → PowerSeries A)
+    (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0)
+    (ht : IsRegular (1 - t)) (e : Equiv.Perm (Fin m)) :
+    smirnovSubstitutionSeries t (weight ∘ e) =
+      smirnovSubstitutionSeries t weight := by
+  let rescaledProduct :=
+    ∏ i : Fin m, (1 + PowerSeries.C t * weight i)
+  let product := ∏ i : Fin m, (1 + weight i)
+  let denominator := rescaledProduct - product * PowerSeries.C t
+  have hrescaled :
+      (∏ i : Fin m,
+          (1 + PowerSeries.C t * (weight ∘ e) i)) =
+        rescaledProduct := by
+    exact Fintype.prod_equiv e
+      (fun i => 1 + PowerSeries.C t * (weight ∘ e) i)
+      (fun i => 1 + PowerSeries.C t * weight i) (fun _ => rfl)
+  have hproduct :
+      (∏ i : Fin m, (1 + (weight ∘ e) i)) = product := by
+    exact Fintype.prod_equiv e
+      (fun i => 1 + (weight ∘ e) i)
+      (fun i => 1 + weight i) (fun _ => rfl)
+  have hpermuted := smirnovSubstitutionSeries_product_identity
+    t (weight ∘ e) (fun i => hweight (e i))
+  rw [hrescaled, hproduct] at hpermuted
+  have horiginal :=
+    smirnovSubstitutionSeries_product_identity t weight hweight
+  have hpermutedDenominator :
+      denominator * smirnovSubstitutionSeries t (weight ∘ e) =
+        product * (1 - PowerSeries.C t) := by
+    dsimp only [denominator]
+    linear_combination hpermuted
+  have horiginalDenominator :
+      denominator * smirnovSubstitutionSeries t weight =
+        product * (1 - PowerSeries.C t) := by
+    dsimp only [denominator]
+    linear_combination horiginal
+  have hconstant : PowerSeries.constantCoeff denominator = 1 - t := by
+    simp [denominator, rescaledProduct, product, hweight]
+  apply (PowerSeries.isRegular_of_isRegular_constantCoeff
+    (hconstant ▸ ht)).left
+  exact hpermutedDenominator.trans horiginalDenominator.symm
 
 /-! ## Signed-run specialization -/
 
