@@ -1,5 +1,6 @@
 import RealRooted.BrandenVecchi.SmirnovChow
 import RealRooted.BrandenVecchi.OrdinaryWordSeries
+import RealRooted.ParkingFunctions.Descents.ExactDescent
 import RealRooted.ParkingFunctions.Descents.WordContent
 import Mathlib.Algebra.MvPolynomial.Rename
 
@@ -93,14 +94,6 @@ theorem map_universalWeightedSmirnovPolynomial {n m : ℕ}
   simpa [Function.comp_def] using
     (BrandenVecchi.weightedSmirnovPolynomial_comp_equiv
       (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X e n)
-
-/-- Mapping a multiset by an alphabet permutation maps its multiplicity
-vector along the same permutation. -/
-theorem toFinsupp_map_equiv {m : ℕ} (μ : Multiset (Fin m))
-    (e : Equiv.Perm (Fin m)) :
-    (μ.map e).toFinsupp = Finsupp.mapDomain e μ.toFinsupp := by
-  apply Multiset.toFinsupp_eq_iff.mpr
-  simpa using Finsupp.toMultiset_map μ.toFinsupp e
 
 /-- Coefficients of the universal weighted Smirnov polynomial are invariant
 under simultaneous permutation of their exponent vector. -/
@@ -300,6 +293,17 @@ theorem fixedContentWordDescentPolynomial_eq_zero_of_card_ne
   apply hμ
   rw [← hc]
   exact card_wordContent w
+
+/-- The number of fixed-content words with a prescribed exact descent set
+depends only on the multiplicity type of the content. -/
+theorem card_fixedContentWords_descentSet_map_equiv {n m : ℕ}
+    (μ : Multiset (Fin m)) (e : Equiv.Perm (Fin m))
+    (S : Finset (Fin n)) :
+    ((fixedContentWords (n := n + 1) (μ.map e)).filter fun w =>
+      descentSet w = S).card =
+    ((fixedContentWords (n := n + 1) μ).filter fun w =>
+      descentSet w = S).card := by
+  exact card_contentFiber_descentSet_map_equiv μ e S
 
 @[simp]
 theorem fixedContentWordDescentPolynomial_zero (m : ℕ) :

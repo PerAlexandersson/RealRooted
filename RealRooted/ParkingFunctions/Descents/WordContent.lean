@@ -63,6 +63,14 @@ theorem wordContent_relabelWord {n m : ℕ} (e : Equiv.Perm (Fin m))
     wordContent (relabelWord e w) = (wordContent w).map e := by
   simp [wordContent, relabelWord, Function.comp_def]
 
+/-- Mapping a word-content multiset by an alphabet permutation maps its
+multiplicity vector along the same permutation. -/
+theorem toFinsupp_map_equiv {m : ℕ} (μ : Multiset (Fin m))
+    (e : Equiv.Perm (Fin m)) :
+    (μ.map e).toFinsupp = Finsupp.mapDomain e μ.toFinsupp := by
+  apply Multiset.toFinsupp_eq_iff.mpr
+  simpa using Finsupp.toMultiset_map μ.toFinsupp e
+
 @[simp]
 theorem relabelWord_symm_relabelWord {n m : ℕ} (e : Equiv.Perm (Fin m))
     (w : Fin n → Fin m) :
