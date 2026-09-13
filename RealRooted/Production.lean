@@ -348,6 +348,8 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 import RealRooted.GeneralizedSnakePosetsNarayana
 import RealRooted.GraceHalfPlane
 import RealRooted.Graph.ClawFree
+import RealRooted.Graph.AcyclicOrientation
+import RealRooted.Graph.AllOrientationSink
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
@@ -357,6 +359,7 @@ import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial
 import RealRooted.Graph.MatchingPolynomial.Multivariate
+import RealRooted.Graph.MinimaPolynomial
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
 import RealRooted.Hadamard.Basic
@@ -1001,6 +1004,7 @@ import RealRooted.Tactic.Targets
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.Wagner
 import RealRooted.Tactic.WagnerX
+import RealRooted.UnitIntervalGraph.AcyclicSink
 import RealRooted.Tactic.WagnerX.Core
 import RealRooted.Tactic.WagnerX.Frontend
 import RealRooted.Tactic.WagnerX.Obstructions
