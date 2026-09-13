@@ -108,6 +108,7 @@ import RealRooted.BrandenVecchi.ChowInterlacingSign
 import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 import RealRooted.BrandenVecchi.ChowRowTransform
+import RealRooted.BrandenVecchi.ChowSignedWords
 import RealRooted.BrandenVecchi.ChowSupersymmetric
 import RealRooted.BrandenVecchi.ChowToeplitz
 import RealRooted.BrandenVecchi.ChowTotallyNonneg

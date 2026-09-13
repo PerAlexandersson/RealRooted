@@ -184,6 +184,57 @@ theorem rescale_mul_toeplitzChowSeries
                 toeplitzChowDerangementSeries a)) := by
       rw [h]
 
+/-- Uniqueness form of the Toeplitz Chow product equation. Any formal series
+satisfying the same marked/unmarked equation is the Chow series. -/
+theorem eq_toeplitzChowSeries_of_rescale_mul
+    (a : ℕ → R) (ha0 : a 0 = 1) (F : PowerSeries R[X])
+    (hF :
+      PowerSeries.rescale X (toeplitzCoefficientSeries a) * F =
+        toeplitzCoefficientSeries a *
+          (1 - PowerSeries.C X + PowerSeries.C X * F)) :
+    F = toeplitzChowSeries a := by
+  let denominator :=
+    PowerSeries.rescale X (toeplitzCoefficientSeries a) -
+      PowerSeries.C X * toeplitzCoefficientSeries a
+  have hFdenominator :
+      denominator * F =
+        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
+    dsimp only [denominator]
+    linear_combination hF
+  have hchowDenominator :
+      denominator * toeplitzChowSeries a =
+        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
+    exact toeplitzChowSeries_mul_denominator a ha0
+  have hconstantCoefficient :
+      PowerSeries.constantCoeff (toeplitzCoefficientSeries a) = 1 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
+    simp [ha0]
+  have hconstantRescale :
+      PowerSeries.constantCoeff
+          (PowerSeries.rescale X (toeplitzCoefficientSeries a)) = 1 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
+    simp [ha0]
+  have hconstant :
+      PowerSeries.constantCoeff denominator = 1 - X := by
+    simp [denominator, hconstantCoefficient, hconstantRescale]
+  have hregularConstant : IsRegular (1 - X : R[X]) := by
+    have hleft : IsLeftRegular (1 - X : R[X]) := by
+      intro p q hpq
+      apply (monic_X_sub_C (1 : R)).isRegular.left
+      calc
+        (X - C 1) * p = -((1 - X) * p) := by
+          simp only [C_1]
+          ring
+        _ = -((1 - X) * q) := congrArg Neg.neg hpq
+        _ = (X - C 1) * q := by
+          simp only [C_1]
+          ring
+    exact ⟨hleft, fun p q hpq => hleft (by simpa [mul_comm] using hpq)⟩
+  apply (PowerSeries.isRegular_of_isRegular_constantCoeff
+    (hconstant ▸ hregularConstant)).left
+  change denominator * F = denominator * toeplitzChowSeries a
+  exact hFdenominator.trans hchowDenominator.symm
+
 end
 
 end RealRooted.BrandenVecchi

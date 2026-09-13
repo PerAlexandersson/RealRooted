@@ -695,53 +695,13 @@ theorem weightedSmirnovSeries_eq_toeplitzChowSeries {m : ℕ}
     (weight : Fin m → R) :
     weightedSmirnovSeries weight =
       toeplitzChowSeries (finiteElementaryCoefficient weight) := by
-  let a := finiteElementaryCoefficient weight
-  let denominator :=
-    PowerSeries.rescale X (toeplitzCoefficientSeries a) -
-      PowerSeries.C X * toeplitzCoefficientSeries a
   have hsmirnov := weightedSmirnovSeries_product_identity weight
   rw [← rescale_toeplitzCoefficientSeries_finiteElementaryCoefficient,
     ← toeplitzCoefficientSeries_finiteElementaryCoefficient] at hsmirnov
-  have hsmirnovDenominator :
-      denominator * weightedSmirnovSeries weight =
-        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
-    dsimp only [denominator, a]
-    linear_combination hsmirnov
-  have hchowDenominator :
-      denominator * toeplitzChowSeries a =
-        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
-    exact toeplitzChowSeries_mul_denominator a
-      (finiteElementaryCoefficient_zero weight)
-  have hconstantCoefficient :
-      PowerSeries.constantCoeff (toeplitzCoefficientSeries a) = 1 := by
-    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
-    simp [a]
-  have hconstantRescale :
-      PowerSeries.constantCoeff
-          (PowerSeries.rescale X (toeplitzCoefficientSeries a)) = 1 := by
-    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
-    simp [a]
-  have hconstant :
-      PowerSeries.constantCoeff denominator = 1 - X := by
-    simp [denominator, hconstantCoefficient, hconstantRescale]
-  have hregularConstant : IsRegular (1 - X : R[X]) := by
-    have hleft : IsLeftRegular (1 - X : R[X]) := by
-      intro p q hpq
-      apply (monic_X_sub_C (1 : R)).isRegular.left
-      calc
-        (X - C 1) * p = -((1 - X) * p) := by
-          simp only [C_1]
-          ring
-        _ = -((1 - X) * q) := congrArg Neg.neg hpq
-        _ = (X - C 1) * q := by
-          simp only [C_1]
-          ring
-    exact ⟨hleft, fun p q hpq => hleft (by simpa [mul_comm] using hpq)⟩
-  apply (PowerSeries.isRegular_of_isRegular_constantCoeff
-    (hconstant ▸ hregularConstant)).left
-  change denominator * weightedSmirnovSeries weight =
-    denominator * toeplitzChowSeries a
-  exact hsmirnovDenominator.trans hchowDenominator.symm
+  exact eq_toeplitzChowSeries_of_rescale_mul
+    (finiteElementaryCoefficient weight)
+    (finiteElementaryCoefficient_zero weight)
+    (weightedSmirnovSeries weight) hsmirnov
 
 /-- Finite weighted Stanley identity: the literal Smirnov descent enumerator
 is the Chow polynomial of the elementary-product Toeplitz matrix. -/
