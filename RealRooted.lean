@@ -75,6 +75,7 @@ import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenLeite.OptionalRiseMatrix
 import RealRooted.BrandenVecchi.Chow
+import RealRooted.BrandenVecchi.ChowContinuity
 import RealRooted.BrandenVecchi.ChowInterlacing
 import RealRooted.BrandenVecchi.ChowInterlacingQuotient
 import RealRooted.BrandenVecchi.ChowInterlacingSign
