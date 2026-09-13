@@ -824,6 +824,275 @@ noncomputable def acyclicOrientationEquivSigma {m : ℕ}
         InsertionCut P O.1 :=
   P.acyclicOrientationEquivExtensionData.trans P.extensionDataEquivSigma
 
+/-! ## Sink transport under simplicial insertion -/
+
+/-- A prefix vertex remains a sink exactly when it was a sink and its edge to
+the inserted vertex is not directed outward. -/
+theorem extendOrientation_isSink_prefix {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (cut : InsertionCut P O)
+    (x : Fin m) :
+    (P.extendOrientation O cut).IsSink x.castSucc ↔
+      O.IsSink x ∧ x ∉ cut.lower := by
+  constructor
+  · intro hsink
+    refine ⟨?_, ?_⟩
+    · intro y hxy
+      exact hsink y.castSucc
+        ((P.extendOrientation_directed_prefix O cut x y).2 hxy)
+    · intro hx
+      exact hsink (Fin.last m)
+        ((P.extendOrientation_directed_to_last O cut x).2 hx)
+  · rintro ⟨hsink, hxLower⟩ v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · intro hxlast
+      exact hxLower ((P.extendOrientation_directed_to_last O cut x).1 hxlast)
+    · intro hxy
+      exact hsink y ((P.extendOrientation_directed_prefix O cut x y).1 hxy)
+
+/-- The inserted final vertex is a sink exactly for the full cut. -/
+theorem extendOrientation_isSink_last {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (cut : InsertionCut P O) :
+    (P.extendOrientation O cut).IsSink (Fin.last m) ↔
+      cut.lower = P.lastEarlierNeighbors := by
+  constructor
+  · intro hsink
+    apply Finset.Subset.antisymm cut.lower_subset
+    intro y hyK
+    by_contra hyLower
+    exact hsink y.castSucc
+      ((P.extendOrientation_directed_from_last O cut y).2 ⟨hyK, hyLower⟩)
+  · intro hfull v
+    refine Fin.lastCases ?_ (fun y ↦ ?_) v
+    · exact (P.extendOrientation O cut).not_directed_self (Fin.last m)
+    · intro hlasty
+      obtain ⟨hyK, hyLower⟩ :=
+        (P.extendOrientation_directed_from_last O cut y).1 hlasty
+      exact hyLower (hfull.symm ▸ hyK)
+
+/-- A proper insertion cut contains no sink of the prefix orientation. -/
+theorem not_isSink_of_mem_properCut {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (cut : InsertionCut P O)
+    (hproper : cut.lower ≠ P.lastEarlierNeighbors)
+    {x : Fin m} (hx : x ∈ cut.lower) : ¬O.IsSink x := by
+  have hnsubset : ¬P.lastEarlierNeighbors ⊆ cut.lower := by
+    intro hsubset
+    exact hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
+  obtain ⟨y, hyK, hyLower⟩ := Finset.not_subset.mp hnsubset
+  intro hsink
+  exact hsink y (cut.directed_across hx hyK hyLower)
+
+/-- A proper cut preserves the prefix sink set. -/
+theorem extendOrientation_sinks_of_properCut {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (cut : InsertionCut P O)
+    (hproper : cut.lower ≠ P.lastEarlierNeighbors) :
+    (P.extendOrientation O cut).sinks = O.sinks.map Fin.castSuccEmb := by
+  classical
+  ext v
+  refine Fin.lastCases ?_ (fun x ↦ ?_) v
+  · rw [Orientation.mem_sinks, P.extendOrientation_isSink_last]
+    simp [hproper]
+  · rw [Orientation.mem_sinks, P.extendOrientation_isSink_prefix]
+    constructor
+    · rintro ⟨hxSink, hxLower⟩
+      exact Finset.mem_map.mpr ⟨x, by simpa using hxSink, rfl⟩
+    · intro hx
+      rcases Finset.mem_map.mp hx with ⟨y, hySink, hyx⟩
+      have hyx' : y = x := Fin.castSucc_inj.mp hyx
+      subst y
+      rw [Orientation.mem_sinks] at hySink
+      exact ⟨hySink, fun hxLower ↦
+        P.not_isSink_of_mem_properCut O cut hproper hxLower hySink⟩
+
+/-- For the full cut, the new sinks are the old sinks outside the final
+neighbor clique, together with the final vertex. -/
+theorem extendOrientation_sinks_of_fullCut {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (cut : InsertionCut P O)
+    (hfull : cut.lower = P.lastEarlierNeighbors) :
+    (P.extendOrientation O cut).sinks =
+      (O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
+        Fin.castSuccEmb ∪ {Fin.last m} := by
+  classical
+  ext v
+  refine Fin.lastCases ?_ (fun x ↦ ?_) v
+  · simp [Orientation.mem_sinks,
+      P.extendOrientation_isSink_last O cut, hfull]
+  · rw [Orientation.mem_sinks, P.extendOrientation_isSink_prefix]
+    simp [hfull]
+
+/-! ## Marked sink polynomials -/
+
+/-- The prefix part of a support on `Fin (m + 1)`. -/
+def prefixSupport {m : ℕ} (_P : FinReversePerfectEliminationOrder (m + 1))
+    (S : Finset (Fin (m + 1))) : Finset (Fin m) :=
+  Finset.univ.filter fun x ↦ x.castSucc ∈ S
+
+@[simp]
+theorem mem_prefixSupport {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (S : Finset (Fin (m + 1))) (x : Fin m) :
+    x ∈ P.prefixSupport S ↔ x.castSucc ∈ S := by
+  simp [prefixSupport]
+
+/-- Relabeling a prefix finset by `Fin.castSucc` commutes with intersecting a
+support, at the level of cardinality. -/
+theorem card_map_castSucc_inter {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (A : Finset (Fin m)) (S : Finset (Fin (m + 1))) :
+    ((A.map Fin.castSuccEmb) ∩ S).card =
+      (A ∩ P.prefixSupport S).card := by
+  classical
+  symm
+  apply Finset.card_bij (fun x _ ↦ x.castSucc)
+  · intro x hx
+    simp only [Finset.mem_inter] at hx ⊢
+    exact ⟨Finset.mem_map.mpr ⟨x, hx.1, rfl⟩,
+      (P.mem_prefixSupport S x).mp hx.2⟩
+  · intro x hx y hy hxy
+    exact Fin.castSucc_inj.mp hxy
+  · intro y hy
+    rcases Finset.mem_inter.mp hy with ⟨hyA, hyS⟩
+    rcases Finset.mem_map.mp hyA with ⟨x, hxA, rfl⟩
+    exact ⟨x, Finset.mem_inter.mpr
+      ⟨hxA, (P.mem_prefixSupport S x).mpr hyS⟩, rfl⟩
+
+/-- Mark only sinks in `S`, and translate the sink variable by one. -/
+def markedAcyclicSinkShift {n : ℕ}
+    (P : FinReversePerfectEliminationOrder n) (S : Finset (Fin n)) : ℝ[X] := by
+  classical
+  exact ∑ O : Orientation.AcyclicOrientation P.graph,
+    (X + C 1) ^ (O.1.sinks ∩ S).card
+
+/-- The unmarked outside-neighbor sinks and the new final sink give the
+expected marked exponent for a full cut. -/
+theorem card_fullCut_sinks_inter {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation P.init.graph) (S : Finset (Fin (m + 1))) :
+    (((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
+        Fin.castSuccEmb ∪ {Fin.last m}) ∩ S).card =
+      (O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).card +
+        if Fin.last m ∈ S then 1 else 0 := by
+  classical
+  by_cases hlast : Fin.last m ∈ S
+  · have hset :
+        ((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
+            Fin.castSuccEmb ∪ {Fin.last m}) ∩ S =
+          ((O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).map
+            Fin.castSuccEmb) ∪ {Fin.last m} := by
+      ext v
+      refine Fin.lastCases ?_ (fun x ↦ ?_) v
+      · simp [hlast]
+      · simp [P.mem_prefixSupport, Fin.castSucc_inj, and_assoc, and_comm]
+    rw [hset, Finset.card_union_of_disjoint]
+    · simp [hlast]
+    · rw [Finset.disjoint_singleton_right]
+      simp
+  · have hset :
+        ((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
+            Fin.castSuccEmb ∪ {Fin.last m}) ∩ S =
+          (O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).map
+            Fin.castSuccEmb := by
+      ext v
+      refine Fin.lastCases ?_ (fun x ↦ ?_) v
+      · simp [hlast]
+      · simp [P.mem_prefixSupport, Fin.castSucc_inj, and_assoc, and_comm]
+    rw [hset]
+    simp [hlast]
+
+/-- The marked contribution of all insertion cuts above one prefix
+orientation. -/
+theorem sum_markedSinkShift_extensions {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (O : Orientation.AcyclicOrientation P.init.graph)
+    (S : Finset (Fin (m + 1))) :
+    (∑ cut : InsertionCut P O.1,
+        (X + C 1) ^
+          ((P.extendOrientation O.1 cut).sinks ∩ S).card) =
+      C (P.lastEarlierNeighbors.card : ℝ) *
+          (X + C 1) ^ (O.1.sinks ∩ P.prefixSupport S).card +
+        (if Fin.last m ∈ S then X + C 1 else 1) *
+          (X + C 1) ^
+            (O.1.sinks ∩
+              (P.prefixSupport S \ P.lastEarlierNeighbors)).card := by
+  classical
+  let e := P.insertionCutEquivFin O
+  have hcard (k : Fin (P.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower.card = k.val :=
+    congrArg Fin.val (e.apply_symm_apply k)
+  have hfull (k : Fin (P.lastEarlierNeighbors.card + 1)) :
+      (e.symm k).lower = P.lastEarlierNeighbors ↔
+        k.val = P.lastEarlierNeighbors.card := by
+    constructor
+    · intro h
+      calc
+        k.val = (e.symm k).lower.card := (hcard k).symm
+        _ = P.lastEarlierNeighbors.card := congrArg Finset.card h
+    · intro h
+      apply Finset.eq_of_subset_of_card_le (e.symm k).lower_subset
+      rw [hcard, h]
+  rw [← e.symm.sum_comp, Fin.sum_univ_castSucc]
+  have hproperSum :
+      (∑ i : Fin P.lastEarlierNeighbors.card,
+        (X + C 1) ^
+          ((P.extendOrientation O.1 (e.symm i.castSucc)).sinks ∩ S).card) =
+        C (P.lastEarlierNeighbors.card : ℝ) *
+          (X + C 1) ^ (O.1.sinks ∩ P.prefixSupport S).card := by
+    calc
+      (∑ i : Fin P.lastEarlierNeighbors.card,
+          (X + C 1) ^
+            ((P.extendOrientation O.1 (e.symm i.castSucc)).sinks ∩ S).card) =
+          ∑ _i : Fin P.lastEarlierNeighbors.card,
+            (X + C 1) ^ (O.1.sinks ∩ P.prefixSupport S).card := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        have hproper :
+            (e.symm i.castSucc).lower ≠ P.lastEarlierNeighbors := by
+          intro h
+          have hcardEq := (hfull i.castSucc).1 h
+          exact (Nat.ne_of_lt i.isLt) hcardEq
+        rw [P.extendOrientation_sinks_of_properCut O.1 _ hproper,
+          P.card_map_castSucc_inter]
+      _ = C (P.lastEarlierNeighbors.card : ℝ) *
+          (X + C 1) ^ (O.1.sinks ∩ P.prefixSupport S).card := by
+        simp
+  rw [hproperSum]
+  let fullCut := e.symm (Fin.last P.lastEarlierNeighbors.card)
+  have hfullCut : fullCut.lower = P.lastEarlierNeighbors := by
+    apply (hfull (Fin.last P.lastEarlierNeighbors.card)).2
+    rfl
+  rw [show e.symm (Fin.last P.lastEarlierNeighbors.card) = fullCut from rfl,
+    P.extendOrientation_sinks_of_fullCut O.1 fullCut hfullCut,
+    P.card_fullCut_sinks_inter]
+  by_cases hlast : Fin.last m ∈ S
+  · simp only [hlast, if_true, pow_succ]
+    ring
+  · simp [hlast]
+
+/-- Exact simplicial-insertion recurrence for the actual marked sink sum. -/
+theorem markedAcyclicSinkShift_succ {m : ℕ}
+    (P : FinReversePerfectEliminationOrder (m + 1))
+    (S : Finset (Fin (m + 1))) :
+    P.markedAcyclicSinkShift S =
+      C (P.lastEarlierNeighbors.card : ℝ) *
+          P.init.markedAcyclicSinkShift (P.prefixSupport S) +
+        (if Fin.last m ∈ S then X + C 1 else 1) *
+          P.init.markedAcyclicSinkShift
+            (P.prefixSupport S \ P.lastEarlierNeighbors) := by
+  classical
+  let e := P.acyclicOrientationEquivSigma
+  unfold markedAcyclicSinkShift
+  rw [← e.symm.sum_comp, Fintype.sum_sigma]
+  change (∑ O : Orientation.AcyclicOrientation P.init.graph,
+      ∑ cut : InsertionCut P O.1,
+        (X + C 1) ^
+          ((P.extendOrientation O.1 cut).sinks ∩ S).card) = _
+  simp_rw [P.sum_markedSinkShift_extensions]
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+
 end FinReversePerfectEliminationOrder
 
 end Graph
