@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1251
+      "max_modules": 1252
     },
     "RealRooted.Production": {
-      "max_modules": 1130
+      "max_modules": 1131
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -1422,6 +1422,9 @@
     "RealRooted.RootVieta.Newton": {
       "max_modules": 4
     },
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
+      "max_modules": 1
+    },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities": {
       "max_modules": 1
     },
@@ -2131,6 +2134,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
     "RealRooted.RootVieta.Newton",
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous",
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities",
     "RealRooted.Mathlib.RingTheory.Polynomial.Vieta",
     "RealRooted.SimpleRoots",
