@@ -61,6 +61,7 @@ import RealRooted.BivariateOpenMapping
 import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.ChainPolynomial.Resolution
+import RealRooted.BrandenLeite.CompositionRow
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
