@@ -664,6 +664,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Order.Fin.Tuple
