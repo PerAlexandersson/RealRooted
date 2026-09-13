@@ -308,23 +308,9 @@ theorem inversePeakEulerian_odd_alternates (j : ℕ) :
         (↑ss : Multiset ℝ) = (inversePeakEulerian (2 * j + 1)).roots ∧
         (↑rs : Multiset ℝ) = (inversePeakEulerian (2 * j + 2)).roots ∧
         ListAlternates ss rs := by
-  obtain ⟨hleft, hright, ss, rs, hss, hrs, hssRoots, hrsRoots, hshape⟩ :=
-    inversePeakEulerian_prec (2 * j + 1)
-  refine ⟨ss, rs, hss, hrs, hssRoots, hrsRoots, ?_⟩
-  rcases hshape with hdiff | hsame
-  · have hssLength : ss.length = (inversePeakEulerian (2 * j + 1)).natDegree := by
-      rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hleft.2]
-    have hrsLength : rs.length = (inversePeakEulerian (2 * j + 2)).natDegree := by
-      rw [← Multiset.coe_card, hrsRoots, card_roots_of_splits hright.2]
-    have hdegreeLeft : (2 * j + 1 + 1) / 2 = j + 1 := by
-      exact half_two_mul_add_two j
-    have hdegreeRight : (2 * j + 2 + 1) / 2 = j + 1 := by
-      exact half_two_mul_add_three j
-    simp only [inversePeakEulerian_natDegree] at hssLength hrsLength
-    rw [hdegreeLeft] at hssLength
-    rw [hdegreeRight] at hrsLength
-    lia
-  · exact hsame.2
+  apply (inversePeakEulerian_prec (2 * j + 1)).exists_listAlternates_of_natDegree_eq
+  rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
+    half_two_mul_add_two, half_two_mul_add_three]
 
 /-- Even-indexed transitions are degree-rise strict interlacing steps. -/
 theorem inversePeakEulerian_even_interlaces (j : ℕ) :

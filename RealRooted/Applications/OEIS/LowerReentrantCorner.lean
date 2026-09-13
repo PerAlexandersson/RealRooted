@@ -345,20 +345,9 @@ theorem lowerReentrantCorner_even_alternates (j : ℕ) :
         (↑ss : Multiset ℝ) = (lowerReentrantCorner (2 * j)).roots ∧
         (↑rs : Multiset ℝ) = (lowerReentrantCorner (2 * j + 1)).roots ∧
         ListAlternates ss rs := by
-  obtain ⟨hleft, hright, ss, rs, hss, hrs, hssRoots, hrsRoots, hshape⟩ :=
-    lowerReentrantCorner_prec (2 * j)
-  refine ⟨ss, rs, hss, hrs, hssRoots, hrsRoots, ?_⟩
-  rcases hshape with hdiff | hsame
-  · have hssLength : ss.length = (lowerReentrantCorner (2 * j)).natDegree := by
-      rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hleft.2]
-    have hrsLength :
-        rs.length = (lowerReentrantCorner (2 * j + 1)).natDegree := by
-      rw [← Multiset.coe_card, hrsRoots, card_roots_of_splits hright.2]
-    simp only [lowerReentrantCorner_natDegree] at hssLength hrsLength
-    rw [half_two_mul] at hssLength
-    rw [half_two_mul_add_one] at hrsLength
-    lia
-  · exact hsame.2
+  apply (lowerReentrantCorner_prec (2 * j)).exists_listAlternates_of_natDegree_eq
+  rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
+    half_two_mul, half_two_mul_add_one]
 
 /-- Odd-indexed transitions are degree-rise strict interlacing steps. -/
 theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
