@@ -64,6 +64,7 @@ import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 import RealRooted.BrandenLeite.CompositionRow
 import RealRooted.BrandenLeite.CompositionRowClosure
 import RealRooted.BrandenLeite.ConstantDiagonal
+import RealRooted.BrandenLeite.DiagonalTail
 import RealRooted.BrandenLeite.KernelRow
 import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
@@ -694,6 +695,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal

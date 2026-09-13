@@ -110,4 +110,38 @@ theorem IsTotallyNonneg.of_zero_border
           rw [heq]
           exact htrail hrows' hcols'
 
+/-- A totally nonnegative leading block and a nonnegative isolated last
+coordinate give a totally nonnegative matrix. -/
+theorem IsTotallyNonneg.of_zero_last_border
+    {R : Type*} [CommRing R] [PartialOrder R] [IsOrderedRing R]
+    {N : ℕ} (A : Matrix (Fin (N + 1)) (Fin (N + 1)) R)
+    (hrow : ∀ j : Fin N, A (Fin.last N) j.castSucc = 0)
+    (hcol : ∀ i : Fin N, A i.castSucc (Fin.last N) = 0)
+    (hpivot : 0 ≤ A (Fin.last N) (Fin.last N))
+    (hlead : (A.submatrix Fin.castSucc Fin.castSucc).IsTotallyNonneg) :
+    A.IsTotallyNonneg := by
+  let B := Matrix.reindex Fin.revPerm Fin.revPerm A
+  have hB : B.IsTotallyNonneg := by
+    apply IsTotallyNonneg.of_zero_border B
+    · intro j
+      simpa [B, Matrix.reindex_apply, Fin.rev_zero, Fin.rev_succ] using
+        hrow j.rev
+    · intro i
+      simpa [B, Matrix.reindex_apply, Fin.rev_zero, Fin.rev_succ] using
+        hcol i.rev
+    · simpa [B, Matrix.reindex_apply, Fin.rev_zero] using hpivot
+    · have htrail : B.submatrix Fin.succ Fin.succ =
+          Matrix.reindex Fin.revPerm Fin.revPerm
+            (A.submatrix Fin.castSucc Fin.castSucc) := by
+        ext i j
+        simp [B, Matrix.reindex_apply, Fin.rev_succ]
+      rw [htrail]
+      exact hlead.finRev
+  have hrev := hB.finRev
+  have hBB : Matrix.reindex Fin.revPerm Fin.revPerm B = A := by
+    ext i j
+    simp [B, Matrix.reindex_apply]
+  rw [hBB] at hrev
+  exact hrev
+
 end Matrix

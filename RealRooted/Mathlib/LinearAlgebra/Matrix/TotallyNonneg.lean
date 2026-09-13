@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Data.Fin.Rev
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 public section
@@ -49,6 +50,16 @@ protected lemma IsTotallyNonnegRect.transpose {M : Matrix ι κ R}
 protected lemma IsTotallyNonneg.submatrix (hM : M.IsTotallyNonneg) (hf : StrictMono f)
     (hg : StrictMono g) : (M.submatrix f g).IsTotallyNonneg :=
   fun n rows cols hrows hcols ↦ by simpa using hM (hf.comp hrows) (hg.comp hcols)
+
+/-- Simultaneously reversing the rows and columns of a finite totally
+nonnegative matrix preserves total nonnegativity. -/
+theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) R}
+    (hA : A.IsTotallyNonneg) :
+    (Matrix.reindex Fin.revPerm Fin.revPerm A).IsTotallyNonneg := by
+  intro n rows cols hrows hcols
+  rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
+  exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
+    (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
 
 lemma IsTotallyNonneg.nonneg (hM : M.IsTotallyNonneg) (i j : ι) : 0 ≤ M i j := by
   simpa using hM (rows := ![i]) (cols := ![j])
