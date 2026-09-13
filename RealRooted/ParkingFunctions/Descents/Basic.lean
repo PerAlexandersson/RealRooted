@@ -131,6 +131,23 @@ def descentNumber {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) : ℕ :=
   (descentSet w).card
 
+/-- The descent set of a finite word, including the empty word. -/
+def wordDescentSet {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] :
+    {n : ℕ} → (Fin n → α) → Finset (Fin (n - 1))
+  | 0, _ => ∅
+  | _ + 1, word => descentSet word
+
+@[simp]
+theorem wordDescentSet_zero {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (word : Fin 0 → α) :
+    wordDescentSet word = ∅ := rfl
+
+@[simp]
+theorem wordDescentSet_succ {n : ℕ} {α : Type*} [LT α]
+    [DecidableRel (fun a b : α => a < b)] (word : Fin (n + 1) → α) :
+    wordDescentSet word = descentSet word := rfl
+
 /-- Number of descents of a finite word, including the empty word. -/
 def wordDescentNumber {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] :
