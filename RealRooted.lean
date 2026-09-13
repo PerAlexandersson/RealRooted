@@ -104,6 +104,7 @@ import RealRooted.BrandenLeite.TilingFactors
 import RealRooted.BrandenLeite.ToeplitzComposition
 import RealRooted.BrandenLeite.TwoKernel
 import RealRooted.BrandenLeite.TwoKernelAlgebra
+import RealRooted.BrandenLeite.WeightedShift
 import RealRooted.BrandenLeite.WhitneyReduction
 import RealRooted.BrandenLeite.ZeroConstant
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
