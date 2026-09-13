@@ -87,6 +87,7 @@ import RealRooted.BrandenVecchi.ChowToeplitz
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SmirnovChow
+import RealRooted.BrandenVecchi.SmirnovInterlacing
 import RealRooted.BrandenVecchi.SmirnovRecurrence
 import RealRooted.BrandenVecchi.SmirnovSpecialization
 import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
