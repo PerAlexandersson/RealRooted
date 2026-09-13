@@ -97,6 +97,7 @@ import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.SourceBorder
 import RealRooted.BrandenLeite.SourceBorderKernel
 import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.TilingFactors
 import RealRooted.BrandenLeite.ToeplitzComposition
 import RealRooted.BrandenLeite.TwoKernel
 import RealRooted.BrandenLeite.TwoKernelAlgebra
