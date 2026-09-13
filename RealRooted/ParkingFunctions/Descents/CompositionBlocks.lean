@@ -34,6 +34,24 @@ theorem wordEquivCompositionBlocks_apply {N m : ℕ} (c : Composition N)
     (j : Fin (c.blocksFun i)) :
     wordEquivCompositionBlocks c m w i j = w (c.embedding i j) := rfl
 
+/-- The `i`-th canonical split of the ordered positions is the list of
+positions in the `i`-th composition embedding. -/
+theorem getElem_splitWrtComposition_ofFn {N : ℕ} (c : Composition N)
+    (i : Fin c.length) :
+    ((List.ofFn (id : Fin N → Fin N)).splitWrtComposition c)[i.val]'(by
+      rw [List.length_splitWrtComposition]
+      exact i.isLt) = List.ofFn (c.embedding i) := by
+  rw [List.getElem_splitWrtComposition]
+  apply List.ext_getElem
+  · have hle : c.sizeUpTo (i + 1) ≤ N := c.sizeUpTo_le (i + 1)
+    simp only [List.length_drop, List.length_take, List.length_ofFn]
+    rw [Nat.min_eq_left hle, c.sizeUpTo_succ' i,
+      Nat.add_sub_cancel_left]
+  · intro j hj₁ hj₂
+    simp only [List.getElem_drop, List.getElem_take, List.getElem_ofFn]
+    apply Fin.ext
+    simp [Composition.coe_embedding]
+
 /-- Restriction to composition blocks identifies a blockwise strict word
 with a dependent family of strictly decreasing words. -/
 def blockwiseStrictWordEquiv {N m : ℕ} (c : Composition N) :

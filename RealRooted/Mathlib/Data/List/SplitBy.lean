@@ -127,4 +127,18 @@ theorem exists_infix_splitBy_of_rel_of_infix {α : Type*} (r : α → α → Boo
   rw [append_assoc]
   exact exists_infix_splitBy_of_rel_of_append r pre suffix a b h
 
+/-- Splitting by an everywhere-false relation produces the singleton blocks. -/
+theorem splitBy_eq_map_singleton_of_forall_eq_false {α : Type*}
+    (r : α → α → Bool) (hfalse : ∀ a b, r a b = false) (l : List α) :
+    l.splitBy r = l.map fun a => [a] := by
+  induction l with
+  | nil => simp
+  | cons a l ih =>
+      rw [show a :: l = [a] ++ l by rfl,
+        List.splitBy_append (l := [a]) (m := l)]
+      · rw [List.splitBy_of_isChain (by simp) (by simp), ih]
+        rfl
+      · intro x _ y _
+        exact hfalse x y
+
 end List
