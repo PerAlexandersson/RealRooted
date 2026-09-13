@@ -160,6 +160,18 @@ theorem rationalRodRow_zero
     rationalRodRow ys c r xs 0 = 1 := by
   simp [rationalRodRow, twoKernelRow]
 
+/-- The unmarked coefficient of a rational rod row is the corresponding
+background-series coefficient. -/
+theorem coeff_zero_rationalRodRow
+    (ys : List ℝ) (c : ℝ) {r : ℕ} (hr : r ≠ 0)
+    (xs : List ℝ) (n : ℕ) :
+    (rationalRodRow ys c r xs n).coeff 0 =
+      PowerSeries.coeff n (rationalBackgroundSeries ys) := by
+  have hzero : PowerSeries.constantCoeff (markedFactorSeries c r xs) = 0 :=
+    constantCoeff_markedFactorSeries c hr xs
+  rw [rationalRodRow, coeff_twoKernelRow hzero]
+  simp
+
 /-- Stationary rod rows with a single monomer background of weight `b`. -/
 def monomerRodRow (b c : ℝ) (r : ℕ) (xs : List ℝ) (n : ℕ) : ℝ[X] :=
   rationalRodRow [b] c r xs n
@@ -195,10 +207,7 @@ theorem coeff_rationalRodDenominatorSeries_singleton_succ
 theorem coeff_zero_monomerRodRow
     (b c : ℝ) {r : ℕ} (hr : r ≠ 0) (xs : List ℝ) (n : ℕ) :
     (monomerRodRow b c r xs n).coeff 0 = b ^ n := by
-  have hzero : PowerSeries.constantCoeff (markedFactorSeries c r xs) = 0 :=
-    constantCoeff_markedFactorSeries c hr xs
-  rw [monomerRodRow, rationalRodRow, coeff_twoKernelRow hzero]
-  simp
+  simpa [monomerRodRow] using coeff_zero_rationalRodRow [b] c hr xs n
 
 /-- The exact guarded stationary rod recurrence with one monomer species. -/
 theorem monomerRodRow_succ

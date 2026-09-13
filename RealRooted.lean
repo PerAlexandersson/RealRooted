@@ -96,6 +96,7 @@ import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.SourceBorder
 import RealRooted.BrandenLeite.SourceBorderKernel
+import RealRooted.BrandenLeite.ShiftedTiling
 import RealRooted.BrandenLeite.StationaryTiling
 import RealRooted.BrandenLeite.Theorem37
 import RealRooted.BrandenLeite.TilingFactors
