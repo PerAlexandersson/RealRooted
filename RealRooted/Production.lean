@@ -1135,6 +1135,7 @@ import RealRooted.GammaPencil.SymbolStability
 import RealRooted.GammaPencil.Theorem
 import RealRooted.BrandenVecchi.SupersymmetricLimits
 import RealRooted.Applications.OEIS.A144438
+import RealRooted.Applications.OEIS.A144438.Weighted
 
 /-!
 # RealRooted production umbrella
