@@ -24,6 +24,27 @@ noncomputable section
 `some i` represents `u_(i+1)`. -/
 abbrev DecoLayerCoord (n : ℕ) := Option (Fin n)
 
+/-- Embed the ordinary coordinate `u_(i+1)` into its positive integer label. -/
+def decoLayerBottomEmbedding (n : Nat) : Fin n ↪ Nat where
+  toFun i := i.1 + 1
+  inj' := by
+    intro i j hij
+    apply Fin.ext
+    lia
+
+@[simp] theorem decoLayerBottomEmbedding_apply {n : Nat} (i : Fin n) :
+    decoLayerBottomEmbedding n i = i.1 + 1 := rfl
+
+@[simp] theorem decoLayerBottomEmbedding_succ {n : Nat} (i : Fin n) :
+    decoLayerBottomEmbedding (n + 1) i.succ =
+      decoLayerBottomEmbedding n i + 1 := by
+  rfl
+
+@[simp] theorem decoLayerBottomEmbedding_succ_succ {n : Nat} (i : Fin n) :
+    decoLayerBottomEmbedding (n + 2) i.succ.succ =
+      decoLayerBottomEmbedding n i + 2 := by
+  rfl
+
 /-- Relabel the old bottom variables upward by one in a normal step. -/
 def decoNormalRename {n : ℕ} : DecoLayerCoord n → DecoLayerCoord (n + 1)
   | none => none
@@ -86,6 +107,51 @@ def decoExceptionalLayerStep {R : Type*} [CommSemiring R] {n : ℕ}
     MvPolynomial (DecoLayerCoord (n + 2)) R :=
   MvPolynomial.X none * MvPolynomial.X (some 1) *
     MvPolynomial.rename decoExceptionalRename P
+
+/-- Dehomogenizing the normal layer step gives the ordinary-variable Euler
+derivative recurrence. -/
+theorem dehomogenize_decoNormalLayerStep {R : Type*} [CommRing R] {n : Nat}
+    {P : MvPolynomial (DecoLayerCoord n) R}
+    (hP : P.IsHomogeneous (n + 1)) :
+    MvPolynomial.dehomogenize (decoNormalLayerStep P) =
+      MvPolynomial.rename Fin.succ (MvPolynomial.dehomogenize P) +
+        MvPolynomial.X 0 * MvPolynomial.rename Fin.succ
+          (MvPolynomial.C (n + 1 : R) * MvPolynomial.dehomogenize P -
+            MvPolynomial.eulerOperator (MvPolynomial.dehomogenize P) +
+            ∑ i : Fin n,
+              MvPolynomial.pderiv i (MvPolynomial.dehomogenize P)) := by
+  have hnormal :
+      (decoNormalRename : DecoLayerCoord n → DecoLayerCoord (n + 1)) =
+        Option.map Fin.succ := by
+    funext i
+    cases i <;> rfl
+  rw [decoNormalLayerStep, map_mul, MvPolynomial.dehomogenize_X_none,
+    one_mul, map_add, map_mul, MvPolynomial.dehomogenize_X_some,
+    hnormal, MvPolynomial.dehomogenize_rename_option_map, map_sum,
+    Fintype.sum_option, map_add]
+  simp_rw [MvPolynomial.dehomogenize_rename_option_map]
+  rw [hP.dehomogenize_pderiv_none, map_sum]
+  simp_rw [MvPolynomial.dehomogenize_rename_option_map,
+    MvPolynomial.dehomogenize_pderiv_some]
+  simp
+
+/-- Dehomogenizing the exceptional layer step shifts the old ordinary
+variables by two and adjoins the new bottom variable `u₂`. -/
+theorem dehomogenize_decoExceptionalLayerStep {R : Type*} [CommSemiring R]
+    {n : Nat} (P : MvPolynomial (DecoLayerCoord n) R) :
+    MvPolynomial.dehomogenize (decoExceptionalLayerStep P) =
+      MvPolynomial.X 1 *
+        MvPolynomial.rename (fun i => i.succ.succ)
+          (MvPolynomial.dehomogenize P) := by
+  have hexceptional :
+      (decoExceptionalRename : DecoLayerCoord n → DecoLayerCoord (n + 2)) =
+        Option.map (fun i => i.succ.succ) := by
+    funext i
+    cases i <;> rfl
+  rw [decoExceptionalLayerStep, map_mul, map_mul,
+    MvPolynomial.dehomogenize_X_none, one_mul,
+    MvPolynomial.dehomogenize_X_some, hexceptional,
+    MvPolynomial.dehomogenize_rename_option_map]
 
 /-- A normal step raises the homogeneous degree by one. -/
 theorem decoNormalLayerStep_isHomogeneous {R : Type*}
