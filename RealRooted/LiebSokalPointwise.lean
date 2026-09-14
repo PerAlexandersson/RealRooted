@@ -15,7 +15,54 @@ of the one-variable Lieb--Sokal argument.
 namespace RealRooted
 
 open Filter Metric
-open scoped Topology
+open scoped BigOperators Topology
+
+/-- The logarithmic derivative of a nonconstant polynomial with no roots in
+the open upper half-plane has strictly negative imaginary part there. -/
+theorem _root_.Polynomial.derivative_eval_div_eval_im_neg
+    (p : Polynomial ℂ)
+    (hp : ∀ z : ℂ, 0 < z.im → p.eval z ≠ 0)
+    (hdegree : p.natDegree ≠ 0) {z : ℂ} (hz : 0 < z.im) :
+    (p.derivative.eval z / p.eval z).im < 0 := by
+  have hpz : p.eval z ≠ 0 := hp z hz
+  have hpne : p ≠ 0 := by
+    intro hzero
+    simp [hzero] at hpz
+  have hsplits : p.Splits := IsAlgClosed.splits p
+  have hroots_ne : p.roots ≠ 0 := hsplits.roots_ne_zero hdegree
+  have hroots_im : ∀ r ∈ p.roots, r.im ≤ 0 := by
+    intro r hr
+    exact le_of_not_gt fun hrpos =>
+      hp r hrpos ((Polynomial.mem_roots hpne).mp hr)
+  let S : Multiset ℂ := p.roots.map fun r => 1 / (z - r)
+  have hS_ne : S ≠ 0 := by simp [S, hroots_ne]
+  have hS_im (u : ℂ) (hu : u ∈ S) : u.im < 0 := by
+    dsimp [S] at hu
+    rw [Multiset.mem_map] at hu
+    obtain ⟨r, hr, rfl⟩ := hu
+    exact Complex.one_div_sub_im_neg ((hroots_im r hr).trans_lt hz)
+  have hsum_im : S.sum.im < 0 := by
+    have hmap : S.sum.im = (S.map fun u => u.im).sum := by
+      simpa using map_multiset_sum Complex.imAddGroupHom S
+    rw [hmap]
+    have hlt : (S.map fun u => u.im).sum <
+        (S.map fun _ : ℂ => (0 : ℝ)).sum :=
+      Multiset.sum_lt_sum_of_nonempty hS_ne hS_im
+    simpa using hlt
+  rw [hsplits.eval_derivative_div_eval_of_ne_zero hpz]
+  exact hsum_im
+
+/-- The logarithmic derivative of a polynomial with no roots in the open
+upper half-plane has nonpositive imaginary part there. -/
+theorem _root_.Polynomial.derivative_eval_div_eval_im_nonpos
+    (p : Polynomial ℂ)
+    (hp : ∀ z : ℂ, 0 < z.im → p.eval z ≠ 0)
+    {z : ℂ} (hz : 0 < z.im) :
+    (p.derivative.eval z / p.eval z).im ≤ 0 := by
+  by_cases hdegree : p.natDegree = 0
+  · rw [Polynomial.derivative_of_natDegree_zero hdegree]
+    simp
+  exact (p.derivative_eval_div_eval_im_neg hp hdegree hz).le
 
 /-- A complex polynomial with no roots in the open upper half-plane has zero
 derivative or a derivative with the same property. -/
@@ -55,37 +102,10 @@ theorem _root_.Polynomial.sub_derivative_upperHalfPlaneStable
     ∀ z : ℂ, 0 < z.im → (p - p.derivative).eval z ≠ 0 := by
   intro z hz
   have hpz : p.eval z ≠ 0 := hp z hz
-  have hpne : p ≠ 0 := by
-    intro hzero
-    simp [hzero] at hpz
   by_cases hdegree : p.natDegree = 0
   · rw [Polynomial.derivative_of_natDegree_zero hdegree]
     simpa using hpz
-  have hsplits : p.Splits := IsAlgClosed.splits p
-  have hroots_ne : p.roots ≠ 0 := hsplits.roots_ne_zero hdegree
-  have hroots_im : ∀ r ∈ p.roots, r.im ≤ 0 := by
-    intro r hr
-    exact le_of_not_gt fun hrpos =>
-      hp r hrpos ((Polynomial.mem_roots hpne).mp hr)
-  let S : Multiset ℂ := p.roots.map fun r => 1 / (z - r)
-  have hS_ne : S ≠ 0 := by simp [S, hroots_ne]
-  have hS_im (u : ℂ) (hu : u ∈ S) : u.im < 0 := by
-    dsimp [S] at hu
-    rw [Multiset.mem_map] at hu
-    obtain ⟨r, hr, rfl⟩ := hu
-    exact Complex.one_div_sub_im_neg ((hroots_im r hr).trans_lt hz)
-  have hsum_im : S.sum.im < 0 := by
-    have hmap : S.sum.im = (S.map fun u => u.im).sum := by
-      simpa using map_multiset_sum Complex.imAddGroupHom S
-    rw [hmap]
-    have hlt : (S.map fun u => u.im).sum <
-        (S.map fun _ : ℂ => (0 : ℝ)).sum :=
-      Multiset.sum_lt_sum_of_nonempty hS_ne hS_im
-    simpa using hlt
-  have hlog := hsplits.eval_derivative_div_eval_of_ne_zero hpz
-  have hratio_im : (p.derivative.eval z / p.eval z).im < 0 := by
-    rw [hlog]
-    exact hsum_im
+  have hratio_im := p.derivative_eval_div_eval_im_neg hp hdegree hz
   intro hzero
   have heval : p.eval z = p.derivative.eval z := by
     apply sub_eq_zero.mp
@@ -94,6 +114,133 @@ theorem _root_.Polynomial.sub_derivative_upperHalfPlaneStable
     (div_eq_one_iff_eq hpz).mpr heval.symm
   rw [hratio] at hratio_im
   simp at hratio_im
+
+/-- Each coordinate logarithmic derivative of a stable multivariate
+polynomial has nonpositive imaginary part in the upper half-plane. -/
+theorem MvUpperHalfPlaneStable.eval_pderiv_div_eval_im_nonpos
+    {σ : Type*} {P : MvPolynomial σ ℂ}
+    (hP : MvUpperHalfPlaneStable P) (i : σ)
+    (z : σ → ℂ) (hz : ∀ j, 0 < (z j).im) :
+    (MvPolynomial.eval z (MvPolynomial.pderiv i P) /
+      MvPolynomial.eval z P).im ≤ 0 := by
+  classical
+  let p : Polynomial ℂ := affineLineRestriction
+    (Function.update z i 0) (Function.update (0 : σ → ℂ) i 1) P
+  have hp (t : ℂ) (ht : 0 < t.im) : p.eval t ≠ 0 := by
+    dsimp [p]
+    rw [eval_affineLineRestriction_coordinate]
+    apply hP
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa using ht
+    · simp [hji, hz j]
+  have hratio := Polynomial.derivative_eval_div_eval_im_nonpos p hp (hz i)
+  dsimp [p] at hratio
+  rw [affineLineRestriction_derivative_coordinate,
+    eval_affineLineRestriction_coordinate,
+    eval_affineLineRestriction_coordinate] at hratio
+  simpa using hratio
+
+/-- The weighted sum of all partial derivatives. -/
+noncomputable def directionalPDeriv {σ R : Type*} [Fintype σ] [CommSemiring R]
+    (c : σ → R) (P : MvPolynomial σ R) : MvPolynomial σ R :=
+  ∑ i : σ, MvPolynomial.C (c i) * MvPolynomial.pderiv i P
+
+/-- Adjoining a fresh variable times a nonnegative real directional derivative
+preserves upper-half-plane stability. -/
+theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil
+    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
+    (hP : MvUpperHalfPlaneStable P) (c : σ → ℝ)
+    (hc : ∀ i, 0 ≤ c i) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some
+          (directionalPDeriv (fun i => (c i : ℂ)) P)) := by
+  classical
+  intro z hz
+  let x : σ → ℂ := fun i => z (some i)
+  let q : ℂ := MvPolynomial.eval x P
+  let d : ℂ := ∑ i : σ,
+    (c i : ℂ) * MvPolynomial.eval x (MvPolynomial.pderiv i P)
+  have hq : q ≠ 0 := hP x fun i => hz (some i)
+  have hratio : (d / q).im ≤ 0 := by
+    have heq : d / q = ∑ i : σ, (c i : ℂ) *
+        (MvPolynomial.eval x (MvPolynomial.pderiv i P) / q) := by
+      simp only [d]
+      rw [div_eq_mul_inv, Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i _
+      ring
+    rw [heq, Complex.im_sum]
+    apply Finset.sum_nonpos
+    intro i _
+    rw [Complex.mul_im]
+    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
+    exact mul_nonpos_of_nonneg_of_nonpos (hc i)
+      (hP.eval_pderiv_div_eval_im_nonpos i x fun j => hz (some j))
+  have hw : 0 < (-1 / z none).im := by
+    have hzne : z none ≠ 0 := by
+      intro h
+      have him : (z none).im = 0 := by
+        simpa only [Complex.zero_im] using congrArg Complex.im h
+      exact (ne_of_gt (hz none)) him
+    rw [neg_div, one_div, Complex.neg_im, Complex.inv_im]
+    exact neg_pos.mpr (div_neg_of_neg_of_pos (neg_neg_of_pos (hz none))
+      (Complex.normSq_pos.mpr hzne))
+  simp only [MvPolynomial.eval_add, MvPolynomial.eval_mul,
+    MvPolynomial.eval_X, MvPolynomial.eval_rename, directionalPDeriv,
+    map_sum, MvPolynomial.eval_C]
+  change q + z none * d ≠ 0
+  intro hzero
+  have hzne : z none ≠ 0 := by
+    intro h
+    have him : (z none).im = 0 := by
+      simpa only [Complex.zero_im] using congrArg Complex.im h
+    exact (ne_of_gt (hz none)) him
+  have heq : d / q = -1 / z none := by
+    apply (div_eq_iff hq).2
+    rw [div_mul_eq_mul_div]
+    apply (eq_div_iff hzne).2
+    calc
+      d * z none = z none * d := mul_comm _ _
+      _ = -q := eq_neg_of_add_eq_zero_right hzero
+      _ = -1 * q := by ring
+  rw [heq] at hratio
+  linarith
+
+/-- The all-ones directional-derivative pencil is stable. -/
+theorem MvUpperHalfPlaneStable.sum_pderiv_pencil
+    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
+    (hP : MvUpperHalfPlaneStable P) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some (∑ i : σ, MvPolynomial.pderiv i P)) := by
+  simpa [directionalPDeriv] using
+    hP.directionalPDeriv_pencil (fun _ => (1 : ℝ)) fun _ => zero_le_one
+
+/-- A nonnegative directional-derivative pencil over a real stable polynomial
+is real stable. -/
+theorem MvRealStable.directionalPDeriv_pencil
+    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) (c : σ → ℝ) (hc : ∀ i, 0 ≤ c i) :
+    MvRealStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some (directionalPDeriv c P)) := by
+  unfold MvRealStable at hP ⊢
+  have h := hP.directionalPDeriv_pencil c hc
+  simpa [complexifyMv, directionalPDeriv, MvPolynomial.map_rename,
+    MvPolynomial.pderiv_map] using h
+
+/-- The real all-ones directional-derivative pencil is stable. -/
+theorem MvRealStable.sum_pderiv_pencil
+    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) :
+    MvRealStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some (∑ i : σ, MvPolynomial.pderiv i P)) := by
+  simpa [directionalPDeriv] using
+    hP.directionalPDeriv_pencil (fun _ => (1 : ℝ)) fun _ => zero_le_one
 
 /-- A partial derivative of a coordinatewise affine stable polynomial is zero
 or stable. -/
