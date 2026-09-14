@@ -286,6 +286,7 @@ import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
 import RealRooted.Compatibility.Basic
 import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.Compatibility.Leander
 import RealRooted.Compatibility.LeanderTransform
 import RealRooted.Compatibility.LeanderOutput
 import RealRooted.Compatibility.LeanderXOutput
