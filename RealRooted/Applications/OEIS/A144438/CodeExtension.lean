@@ -57,10 +57,32 @@ def snocEquiv (h : Nat) : DecoCode (h + 1) ≃ DecoCode h × Fin (h + 1) where
   left_inv := snoc_init_last
   right_inv cr := by simp
 
+/-- The final entry of an admissible code cannot start an exceptional pair. -/
+theorem last_ne_one_of_isAdmissible {h : Nat} {c : DecoCode (h + 1)}
+    (hc : c.IsAdmissible) : c (Fin.last h) ≠ 1 := by
+  intro hlast
+  obtain ⟨_, hnext, _⟩ := hc (Fin.last h) hlast
+  rw [Fin.val_last] at hnext
+  exact (Nat.lt_irrefl (h + 1)) hnext
+
 /-- Append the exceptional pair `(1, 0)`. -/
 def exceptionalExtension {h : Nat} (c : DecoCode h) (hh : 0 < h) :
     DecoCode (h + 2) :=
   (c.snoc ⟨1, by lia⟩).snoc 0
+
+/-- A code whose final two entries are `(1, 0)` is recovered by exceptional
+extension of its twice-truncated prefix. -/
+theorem exceptionalExtension_init_init {h : Nat} (c : DecoCode (h + 2))
+    (hh : 0 < h) (hpenultimate : c (Fin.last h).castSucc = 1)
+    (hlast : c (Fin.last (h + 1)) = 0) :
+    c.init.init.exceptionalExtension hh = c := by
+  ext j
+  cases j using Fin.lastCases with
+  | last => simpa [exceptionalExtension] using hlast.symm
+  | cast i =>
+    cases i using Fin.lastCases with
+    | last => simpa [exceptionalExtension] using hpenultimate.symm
+    | cast k => simp [exceptionalExtension]
 
 @[simp] theorem entryList_snoc {h : Nat} (c : DecoCode h)
     (r : Fin (h + 1)) :

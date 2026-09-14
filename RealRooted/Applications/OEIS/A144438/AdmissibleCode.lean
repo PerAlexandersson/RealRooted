@@ -88,6 +88,21 @@ def exceptionalHistory {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible)
     (c.exceptionalHistory hc hh).starts =
       c.exceptionalStarts.map exceptionalStartHeightEmbedding := rfl
 
+@[simp] theorem mem_exceptionalHistory_starts_iff {h : Nat} (c : DecoCode h)
+    (hc : c.IsAdmissible) (hh : 2 ≤ h) (j : Fin h) :
+    j.1 + 1 ∈ (c.exceptionalHistory hc hh).starts ↔ c j = 1 := by
+  rw [exceptionalHistory_starts, Finset.mem_map]
+  constructor
+  · rintro ⟨i, hi, hij⟩
+    have hfin : i = j := by
+      apply Fin.ext
+      change i.1 + 1 = j.1 + 1 at hij
+      lia
+    subst i
+    exact (mem_exceptionalStarts c j).mp hi
+  · intro hj
+    exact ⟨j, (mem_exceptionalStarts c j).mpr hj, rfl⟩
+
 end DecoCode
 
 namespace DecoNormalizedCode
