@@ -890,6 +890,15 @@ direct model-transfer frontends for common fixed-lag shapes:
 - `rr_identify_lag_two_sequence` and `rr_model_lag_two_sequence`;
 - `rr_identify_lag_three_sequence` and `rr_model_lag_three_sequence`.
 
+The stronger #760 frontends
+`rr_model_lag_{one,two,three}_pf_prec0_sequence` use the same recurrence
+certificates but preserve the complete model conclusion: every row remains an
+`IsPFPolynomial`, and consecutive rows remain in zero-aware `Prec0`. Their
+explicit and inferred forms also project directly to either half of that
+certificate. This is the preferred route for recurrence-defined clients of the
+Brändén--Leite composition-row and two-kernel models, since it does not discard
+coefficient nonnegativity or interlacing after identification.
+
 Each tactic also has a certificate-inferred form. The caller supplies the
 common update function; the tactic reuses exact local initial equalities and
 target and model recurrence facts, with only definitional and natural-number
