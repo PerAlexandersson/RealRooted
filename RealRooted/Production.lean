@@ -288,6 +288,7 @@ import RealRooted.Compatibility.Basic
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.LeanderTransform
 import RealRooted.Compatibility.LeanderOutput
+import RealRooted.Compatibility.LeanderXOutput
 import RealRooted.Compatibility.Pair
 import RealRooted.Compatibility.Three
 import RealRooted.ComplexCesaro
