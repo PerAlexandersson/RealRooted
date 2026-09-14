@@ -8,7 +8,8 @@ import Mathlib.Data.Finset.Powerset
 
 The active part of a Boolean orbit under disjoint variable swaps chooses one
 endpoint from every pair.  Its subset sum factors as a fixed squarefree
-monomial times a product of linear forms `X x + X y`.
+monomial times a product of linear forms `X x + X y`.  The weighted API also
+retains the scalar weight sums contributed by inactive pairs.
 -/
 
 namespace RealRooted
@@ -145,59 +146,71 @@ theorem booleanSwapOrbitNormalForm_mvRealStable {σ ι : Type*}
   exact pow_ne_zero inactive (by norm_num)
 
 /-- A Boolean swap-orbit normal form with independent weights on the two
-choices at every active pair.  Inactive swaps retain their ordinary
-power-of-two multiplicity. -/
+choices at every pair.  An inactive pair contributes the sum of its weights,
+while an active pair contributes the corresponding weighted linear form. -/
 def weightedBooleanSwapOrbitNormalForm
     {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
-    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
     (left right : ι → σ) (leftWeight rightWeight : ι → R) :
     MvPolynomial σ R :=
-  MvPolynomial.C ((2 : R) ^ inactive) *
-    weightedBooleanVariableChoiceSum fixed s left right
+  MvPolynomial.C (∏ i ∈ inactive, (leftWeight i + rightWeight i)) *
+    weightedBooleanVariableChoiceSum fixed active left right
       leftWeight rightWeight
 
-/-- The weighted orbit normal form factors into its inactive multiplicity,
+/-- The weighted orbit normal form factors into its inactive scalar factors,
 fixed monomial, and weighted active linear factors. -/
 theorem weightedBooleanSwapOrbitNormalForm_eq
     {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
-    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
     (left right : ι → σ) (leftWeight rightWeight : ι → R) :
-    weightedBooleanSwapOrbitNormalForm inactive fixed s left right
+    weightedBooleanSwapOrbitNormalForm inactive fixed active left right
         leftWeight rightWeight =
-      MvPolynomial.C ((2 : R) ^ inactive) *
+      MvPolynomial.C (∏ i ∈ inactive, (leftWeight i + rightWeight i)) *
         MvPolynomial.finsetMonomial fixed *
-          ∏ i ∈ s,
+          ∏ i ∈ active,
             (MvPolynomial.C (leftWeight i) * MvPolynomial.X (left i) +
               MvPolynomial.C (rightWeight i) * MvPolynomial.X (right i)) := by
   rw [weightedBooleanSwapOrbitNormalForm,
     weightedBooleanVariableChoiceSum_eq, mul_assoc]
 
-/-- Unit active-pair weights recover the ordinary Boolean swap-orbit normal
-form. -/
+/-- Unit pair weights recover the ordinary Boolean swap-orbit normal form. -/
 theorem weightedBooleanSwapOrbitNormalForm_one
     {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
-    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
     (left right : ι → σ) :
-    weightedBooleanSwapOrbitNormalForm inactive fixed s left right
+    weightedBooleanSwapOrbitNormalForm inactive fixed active left right
         (fun _ => 1) (fun _ => 1) =
-      booleanSwapOrbitNormalForm (R := R) inactive fixed s left right := by
+      booleanSwapOrbitNormalForm (R := R) inactive.card fixed active
+        left right := by
   rw [weightedBooleanSwapOrbitNormalForm, booleanSwapOrbitNormalForm,
     weightedBooleanVariableChoiceSum_one]
+  apply congrArg (fun q : MvPolynomial σ R =>
+    q * booleanVariableChoiceSum fixed active left right)
+  apply congrArg MvPolynomial.C
+  norm_num
 
-/-- Nonnegative, nontrivial active-pair weights preserve multivariate real
+/-- Nonnegative, nontrivial pair weights preserve multivariate real
 stability of the Boolean swap-orbit normal form. -/
 theorem weightedBooleanSwapOrbitNormalForm_mvRealStable
     {σ ι : Type*} [DecidableEq ι]
-    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
     (left right : ι → σ) (leftWeight rightWeight : ι → Real)
-    (hleft : ∀ i ∈ s, 0 ≤ leftWeight i)
-    (hright : ∀ i ∈ s, 0 ≤ rightWeight i)
-    (hpos : ∀ i ∈ s, 0 < leftWeight i ∨ 0 < rightWeight i) :
-    MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed s
+    (hleft : ∀ i ∈ inactive ∪ active, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ inactive ∪ active, 0 ≤ rightWeight i)
+    (hpos : ∀ i ∈ inactive ∪ active,
+      0 < leftWeight i ∨ 0 < rightWeight i) :
+    MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed active
       left right leftWeight rightWeight) := by
-  apply (weightedBooleanVariableChoiceSum_mvRealStable fixed s left right
-    leftWeight rightWeight hleft hright hpos).C_mul
-  exact pow_ne_zero inactive (by norm_num)
+  apply (weightedBooleanVariableChoiceSum_mvRealStable fixed active left right
+    leftWeight rightWeight (fun i hi => hleft i (by simp [hi]))
+      (fun i hi => hright i (by simp [hi]))
+        (fun i hi => hpos i (by simp [hi]))).C_mul
+  apply Finset.prod_ne_zero_iff.mpr
+  intro i hi
+  have hiunion : i ∈ inactive ∪ active := by simp [hi]
+  rcases hpos i hiunion with hli | hri
+  · exact ne_of_gt (add_pos_of_pos_of_nonneg hli (hright i hiunion))
+  · exact ne_of_gt (add_pos_of_nonneg_of_pos (hleft i hiunion) hri)
 
 end
 
