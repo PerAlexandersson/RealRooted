@@ -70,15 +70,8 @@ theorem IsInterlacingSeqNonneg.basisTransform_bernsteinExpansion_isPF
     rw [List.mem_ofFn] at hap
     rcases hap with ⟨k, rfl⟩
     exact hq k
-  have hpolys : ∀ ap ∈ ws, HasNonnegCoeffs ap.2 := by
-    intro ap hap
-    exact (hrow.1 ap.2 (hmem ap hap)).2
-  have hnn : HasNonnegCoeffs (weightedSum ws) :=
-    hasNonnegCoeffs_weightedSum ws hweights hpolys
-  have hsplit := hrow.familyCompatible ws hmem hweights
-  rw [weightedSum_bernsteinBasisImageWeights] at hnn hsplit
-  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnn <|
-    hsplit.imp_right And.right
+  rw [← weightedSum_bernsteinBasisImageWeights]
+  exact hrow.weightedSum_isPFPolynomial ws hmem hweights
 
 /-- A positive-leading polynomial rooted in `[-1, 0]` is sent to a PF
 polynomial when its ambient Bernstein-image row is nonnegatively

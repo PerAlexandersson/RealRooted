@@ -213,9 +213,9 @@ theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
   simpa [mul_assoc, mul_left_comm, mul_comm] using hcommon
 
 /-- Consecutive basis images are in proper position in ambient degree at
-least three. -/
+least two. -/
 theorem brandenBasisImage_adjacent_prec
-    (n k : ℕ) (hn : 3 ≤ n) (hk : k < n) :
+    (n k : ℕ) (hn : 2 ≤ n) (hk : k < n) :
     Prec (brandenBasisImage (R := ℝ) n k) (brandenBasisImage n (k + 1)) := by
   let q := brandenBasisImage (R := ℝ) (n - 1) k
   have hkq : k ≤ n - 1 := by lia
@@ -246,14 +246,67 @@ theorem brandenBasisImage_adjacent_prec
     rw [show n = (n - 1) + 1 by lia, brandenBasisImage_succ_succ]
   rwa [hleft, hright]
 
+/-- Every earlier in-range Brändén basis image is in proper position
+before every later one. The endpoint relation supplies the non-transitive
+closure of the adjacent chain. -/
+theorem brandenBasisImage_prec
+    (n i j : ℕ) (hij : i ≤ j) (hj : j ≤ n) :
+    Prec (brandenBasisImage (R := ℝ) n i) (brandenBasisImage n j) := by
+  by_cases heq : i = j
+  · subst j
+    have hi : i ≤ n := hij.trans hj
+    exact prec_refl (brandenBasisImage_degree_pos n i hi).2.ne_zero
+      (brandenBasisImage_splits n i hi)
+  by_cases hn : n < 2
+  · have hn_cases : n = 0 ∨ n = 1 := by lia
+    rcases hn_cases with rfl | rfl
+    · exact (heq (by lia)).elim
+    · have hi : i = 0 := by lia
+      have hj' : j = 1 := by lia
+      subst i
+      subst j
+      exact brandenBasisImage_endpoint_prec 1 (by norm_num)
+  · exact prec_chain_of_consecutive_of_endpoint
+      (fun k ↦ brandenBasisImage (R := ℝ) n k) 0 n
+      (fun k _ hk ↦ brandenBasisImage_adjacent_prec n k (by lia) hk)
+      (brandenBasisImage_endpoint_prec n (by lia)) i j (by lia) hij hj
+
+/-- The first basis image precedes every in-range image, without a lower
+bound on the ambient degree. -/
+theorem brandenBasisImage_zero_prec
+    (n k : ℕ) (hk : k ≤ n) :
+    Prec (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
+  brandenBasisImage_prec n 0 k (by lia) hk
+
 /-- The first basis image is in proper position before every in-range image
 in ambient degree at least three. -/
 theorem brandenBasisImage_first_prec
-    (n k : ℕ) (hn : 3 ≤ n) (hk : k ≤ n) :
+    (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :
     Prec (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
-  prec_chain_of_consecutive_of_endpoint
-    (fun i => brandenBasisImage (R := ℝ) n i) 0 n
-    (fun i _ hi => brandenBasisImage_adjacent_prec n i hn hi)
-    (brandenBasisImage_endpoint_prec n (by lia)) 0 k (by lia) (by lia) hk
+  brandenBasisImage_zero_prec n k hk
+
+/-- The ordered ambient-degree row of Brändén basis images. -/
+def brandenBasisImageRow (n : ℕ) : List ℝ[X] :=
+  List.ofFn fun k : Fin (n + 1) ↦ brandenBasisImage n k
+
+/-- Every Brändén basis-image row is an interlacing sequence with
+nonnegative coefficients. -/
+theorem brandenBasisImageRow_isInterlacingSeqNonneg (n : ℕ) :
+    IsInterlacingSeqNonneg (brandenBasisImageRow n) := by
+  refine ⟨?_, ?_⟩
+  · intro p hp
+    rw [brandenBasisImageRow, List.mem_ofFn] at hp
+    rcases hp with ⟨k, rfl⟩
+    have hk : k.val ≤ n := by lia
+    exact ⟨⟨(brandenBasisImage_degree_pos n k hk).2.ne_zero,
+      brandenBasisImage_splits n k hk⟩,
+      brandenBasisImage_nonneg n k⟩
+  · rw [isInterlacingSeq_iff_pairwise, List.pairwise_iff_get]
+    intro i j hij
+    have hjlt : j.val < n + 1 := by
+      simpa [brandenBasisImageRow] using j.isLt
+    have hj : j.val ≤ n := by lia
+    simp only [brandenBasisImageRow, List.get_ofFn]
+    exact brandenBasisImage_prec n i j hij.le hj
 
 end RealRooted

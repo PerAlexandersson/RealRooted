@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1323
+      "max_modules": 1324
     },
     "RealRooted.Production": {
-      "max_modules": 1202
+      "max_modules": 1203
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -1596,6 +1596,9 @@
     "RealRooted.Transforms.BrandenE.Inverse": {
       "max_modules": 14
    },
+    "RealRooted.Transforms.BrandenE.IntervalPreserver": {
+      "max_modules": 198
+   },
     "RealRooted.Transforms.BrandenE.BasisImage": {
       "max_modules": 24
    },
@@ -2254,6 +2257,7 @@
     "RealRooted.Transforms.BrandenE.OrderedBell",
     "RealRooted.Transforms.BrandenE.Basic",
     "RealRooted.Transforms.BrandenE.Inverse",
+    "RealRooted.Transforms.BrandenE.IntervalPreserver",
     "RealRooted.Transforms.BrandenE.BasisImage",
     "RealRooted.Transforms.BrandenE.ProperPosition",
     "RealRooted.Transforms.BrandenE.WeightedSum",

@@ -1258,6 +1258,7 @@ import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.Basic
 import RealRooted.Transforms.BrandenE.BasisImage
 import RealRooted.Transforms.BrandenE.Inverse
+import RealRooted.Transforms.BrandenE.IntervalPreserver
 import RealRooted.Transforms.BrandenE.OrderedBell
 import RealRooted.Transforms.BrandenE.ProperPosition
 import RealRooted.Transforms.BrandenE.WeightedSum

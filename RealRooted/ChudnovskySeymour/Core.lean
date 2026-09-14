@@ -132,6 +132,20 @@ theorem IsInterlacingSeqNonneg.familyCompatible
   intro i j hij
   exact Compatible.of_prec (hprec i j hij)
 
+/-- Every nonnegative weighted sum drawn from a nonnegative interlacing
+sequence is a Pólya-frequency polynomial. -/
+theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
+    {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs)
+    (ws : List (ℝ × ℝ[X]))
+    (hmem : ∀ ap ∈ ws, ap.2 ∈ fs)
+    (hweights : ∀ ap ∈ ws, 0 ≤ ap.1) :
+    IsPFPolynomial (weightedSum ws) := by
+  have hnonneg : HasNonnegCoeffs (weightedSum ws) :=
+    hasNonnegCoeffs_weightedSum ws hweights fun ap hap ↦
+      (hfs.1 ap.2 (hmem ap hap)).2
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg <|
+    (hfs.familyCompatible ws hmem hweights).imp_right And.right
+
 private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
     (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
