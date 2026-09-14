@@ -43,6 +43,18 @@ theorem weightedSum_eq_sum_map (l : List (ℝ × ℝ[X])) :
       rcases ap with ⟨a, p⟩
       simp [ih]
 
+/-- A weighted sum of nonnegative-coefficient polynomials with nonnegative
+weights has nonnegative coefficients. -/
+theorem hasNonnegCoeffs_weightedSum (l : List (ℝ × ℝ[X]))
+    (hweights : ∀ ap ∈ l, 0 ≤ ap.1)
+    (hpolys : ∀ ap ∈ l, HasNonnegCoeffs ap.2) :
+    HasNonnegCoeffs (weightedSum l) := by
+  rw [weightedSum_eq_sum_map]
+  apply hasNonnegCoeffs_sum
+  intro p hp
+  rcases List.mem_map.mp hp with ⟨ap, hap, rfl⟩
+  exact nonnegCoeffs_C_mul (hweights ap hap) (hpolys ap hap)
+
 /-- Finite-function form of `weightedSum_eq_sum_map`. -/
 theorem weightedSum_ofFn {n : ℕ} (w : Fin n → ℝ × ℝ[X]) :
     weightedSum (List.ofFn w) = ∑ i, C (w i).1 * (w i).2 := by
