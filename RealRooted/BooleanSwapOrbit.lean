@@ -189,9 +189,26 @@ theorem weightedBooleanSwapOrbitNormalForm_one
   apply congrArg MvPolynomial.C
   norm_num
 
-/-- Nonnegative, nontrivial pair weights preserve multivariate real
-stability of the Boolean swap-orbit normal form. -/
+/-- The weighted Boolean orbit is stable when every inactive scalar factor is
+nonzero and every active linear factor has nonnegative, nontrivial weights. -/
 theorem weightedBooleanSwapOrbitNormalForm_mvRealStable
+    {σ ι : Type*} [DecidableEq ι]
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → Real)
+    (hinactive : ∀ i ∈ inactive, leftWeight i + rightWeight i ≠ 0)
+    (hleft : ∀ i ∈ active, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ active, 0 ≤ rightWeight i)
+    (hpos : ∀ i ∈ active,
+      0 < leftWeight i ∨ 0 < rightWeight i) :
+    MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed active
+      left right leftWeight rightWeight) := by
+  apply (weightedBooleanVariableChoiceSum_mvRealStable fixed active left right
+    leftWeight rightWeight hleft hright hpos).C_mul
+  exact Finset.prod_ne_zero_iff.mpr hinactive
+
+/-- Nonnegative, nontrivial weights at every pair satisfy the precise
+hypotheses of weighted Boolean-orbit stability. -/
+theorem weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
     {σ ι : Type*} [DecidableEq ι]
     (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
     (left right : ι → σ) (leftWeight rightWeight : ι → Real)
@@ -201,16 +218,19 @@ theorem weightedBooleanSwapOrbitNormalForm_mvRealStable
       0 < leftWeight i ∨ 0 < rightWeight i) :
     MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed active
       left right leftWeight rightWeight) := by
-  apply (weightedBooleanVariableChoiceSum_mvRealStable fixed active left right
-    leftWeight rightWeight (fun i hi => hleft i (by simp [hi]))
-      (fun i hi => hright i (by simp [hi]))
-        (fun i hi => hpos i (by simp [hi]))).C_mul
-  apply Finset.prod_ne_zero_iff.mpr
-  intro i hi
-  have hiunion : i ∈ inactive ∪ active := by simp [hi]
-  rcases hpos i hiunion with hli | hri
-  · exact ne_of_gt (add_pos_of_pos_of_nonneg hli (hright i hiunion))
-  · exact ne_of_gt (add_pos_of_nonneg_of_pos (hleft i hiunion) hri)
+  apply weightedBooleanSwapOrbitNormalForm_mvRealStable inactive fixed active
+    left right leftWeight rightWeight
+  · intro i hi
+    have hiunion : i ∈ inactive ∪ active := by simp [hi]
+    rcases hpos i hiunion with hli | hri
+    · exact ne_of_gt (add_pos_of_pos_of_nonneg hli (hright i hiunion))
+    · exact ne_of_gt (add_pos_of_nonneg_of_pos (hleft i hiunion) hri)
+  · intro i hi
+    exact hleft i (by simp [hi])
+  · intro i hi
+    exact hright i (by simp [hi])
+  · intro i hi
+    exact hpos i (by simp [hi])
 
 end
 

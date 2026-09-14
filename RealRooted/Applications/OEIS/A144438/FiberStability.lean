@@ -406,7 +406,7 @@ theorem weightedFiberNormalForm_mvRealStable {h : Nat}
     (hright : ∀ j, 0 ≤ rightWeight j)
     (hpos : ∀ j, 0 < leftWeight j ∨ 0 < rightWeight j) :
     MvRealStable (weightedFiberNormalForm c leftWeight rightWeight) := by
-  exact RealRooted.weightedBooleanSwapOrbitNormalForm_mvRealStable
+  exact RealRooted.weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
     c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
         leftWeight rightWeight (fun j _ => hleft j)
