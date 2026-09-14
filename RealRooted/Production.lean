@@ -863,6 +863,7 @@ import RealRooted.ParkingFunctions.Descents.WordContent
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence

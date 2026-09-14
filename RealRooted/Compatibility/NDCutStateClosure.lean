@@ -16,6 +16,43 @@ noncomputable section
 
 namespace RealRooted
 
+/-- Ordered P/Q compatibility recovers the strict interlacing order encoded by
+the interface: the `P` block is read in reverse and the `Q` block forward. -/
+theorem OrderedCutCompatible.pqInterlacing {m : ℕ}
+    {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q) :
+    IsInterlacingSeqNonneg ((List.ofFn P).reverse ++ List.ofFn Q) := by
+  refine ⟨?_, ?_⟩
+  · intro p hp
+    rcases List.mem_append.mp hp with hp | hp
+    · rw [List.mem_reverse, List.mem_ofFn] at hp
+      rcases hp with ⟨i, rfl⟩
+      exact ⟨h.p_splits i, h.p_nonneg i⟩
+    · rw [List.mem_ofFn] at hp
+      rcases hp with ⟨i, rfl⟩
+      exact ⟨h.q_splits i, h.q_nonneg i⟩
+  · rw [isInterlacingSeq_iff_pairwise, List.pairwise_append]
+    refine ⟨?_, ?_, ?_⟩
+    · rw [List.pairwise_reverse, List.pairwise_ofFn]
+      intro i j hij
+      exact prec_of_compatible_and_X_mul_left
+        (h.p_pos j).ne_zero (h.p_pos i).ne_zero
+        (h.p_nonneg j) (h.p_nonneg i)
+        (h.pp_reverse hij.le) (h.xpp_reverse hij.le)
+    · rw [List.pairwise_ofFn]
+      intro i j hij
+      exact prec_of_compatible_and_X_mul_left
+        (h.q_pos i).ne_zero (h.q_pos j).ne_zero
+        (h.q_nonneg i) (h.q_nonneg j)
+        (h.qq_forward hij.le) (h.xqq_forward hij.le)
+    · intro p hp q hq
+      rw [List.mem_reverse, List.mem_ofFn] at hp
+      rw [List.mem_ofFn] at hq
+      rcases hp with ⟨i, rfl⟩
+      rcases hq with ⟨j, rfl⟩
+      exact prec_of_compatible_and_X_mul_left
+        (h.p_pos i).ne_zero (h.q_pos j).ne_zero
+        (h.p_nonneg i) (h.q_nonneg j) (h.pq i j) (h.xpq i j)
+
 private def cutPrefixWeights {m : ℕ} (P : Fin m → ℝ[X])
     (j : Fin m) : List (ℝ × ℝ[X]) :=
   List.ofFn fun i ↦ (if i ≤ j then 1 else 0, P i)
