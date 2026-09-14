@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.InverseWord
 import Mathlib.Data.Finset.Insert
+import Mathlib.Data.Fintype.Powerset
 
 /-!
 # Finite decoration swap orbits
@@ -37,6 +38,11 @@ namespace RealRooted.Applications.OEIS.DecoNormalizedCode
 /-- An eligible start bundled with its eligibility proof. -/
 abbrev EligibleStart {h : Nat} (c : DecoNormalizedCode h) :=
   {j : Fin h // c.Eligible j}
+
+noncomputable instance instFintypeEligibleStart {h : Nat}
+    (c : DecoNormalizedCode h) : Fintype (EligibleStart c) := by
+  classical
+  exact Fintype.ofFinite (EligibleStart c)
 
 /-- The final adjacent-label swap associated with a chronological start. -/
 def finalSwap (h : Nat) (j : Fin h) : Equiv.Perm Nat :=
@@ -391,6 +397,27 @@ noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
       apply (mem_eligibleFinset D j).mpr
       exact hk
     exact ⟨j, hj, rfl⟩
+
+@[simp] theorem eligibleFinset_ofEligibleFinset {h : Nat}
+    {c : DecoNormalizedCode h} (s : Finset (EligibleStart c)) :
+    (ofEligibleFinset s).eligibleFinset = s := by
+  ext j
+  rw [mem_eligibleFinset, mem_ofEligibleFinset_starts]
+
+/-- Decorations are canonically equivalent to finite subsets of the bundled
+eligible starts. -/
+noncomputable def equivEligibleFinset {h : Nat} (c : DecoNormalizedCode h) :
+    Decoration c ≃ Finset (EligibleStart c) where
+  toFun := eligibleFinset
+  invFun := ofEligibleFinset
+  left_inv := ofEligibleFinset_eligibleFinset
+  right_inv := eligibleFinset_ofEligibleFinset
+
+noncomputable instance instFintype {h : Nat} (c : DecoNormalizedCode h) :
+    Fintype (Decoration c) := by
+  classical
+  exact Fintype.ofEquiv (Finset (EligibleStart c))
+    (equivEligibleFinset c).symm
 
 /-- Apply all final-label swaps selected by a decoration. -/
 noncomputable def swapOrbit {h : Nat} {c : DecoNormalizedCode h}
