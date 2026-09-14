@@ -64,6 +64,7 @@ import RealRooted.Bezoutian.MatrixBasics
 import RealRooted.Bezoutian.RootEvaluation
 import RealRooted.Bezoutian.StrictInterleaving
 import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.BooleanSwapOrbit
 import RealRooted.BivariateOpenMapping
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
@@ -767,6 +768,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic

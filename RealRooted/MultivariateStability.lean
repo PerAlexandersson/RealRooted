@@ -508,12 +508,52 @@ theorem MvRealStable.mul {sigma : Type*}
   rw [map_mul]
   exact hP.mul hQ
 
+/-- The real constant polynomial one is multivariate real stable. -/
+theorem MvRealStable.one {sigma : Type*} :
+    MvRealStable (1 : MvPolynomial sigma ℝ) := by
+  unfold MvRealStable complexifyMv
+  rw [map_one]
+  exact MvUpperHalfPlaneStable.one
+
+/-- Multiplication by a nonzero real constant preserves multivariate real
+stability. -/
+theorem MvRealStable.C_mul {sigma : Type*}
+    {P : MvPolynomial sigma ℝ} (hP : MvRealStable P)
+    {c : ℝ} (hc : c ≠ 0) :
+    MvRealStable (MvPolynomial.C c * P) := by
+  unfold MvRealStable complexifyMv at hP ⊢
+  rw [map_mul, MvPolynomial.map_C]
+  exact hP.C_mul (Complex.ofReal_ne_zero.mpr hc)
+
+/-- A finite product of multivariate real-stable polynomials is real stable. -/
+theorem MvRealStable.finset_prod {sigma ι : Type*}
+    (s : Finset ι) (P : ι → MvPolynomial sigma ℝ)
+    (hP : ∀ i ∈ s, MvRealStable (P i)) :
+    MvRealStable (∏ i ∈ s, P i) := by
+  classical
+  induction s using Finset.induction with
+  | empty => simpa using (MvRealStable.one (sigma := sigma))
+  | @insert a s ha ih =>
+      rw [Finset.prod_insert ha]
+      apply (hP a (by simp)).mul
+      apply ih
+      intro i hi
+      exact hP i (by simp [hi])
+
 /-- Each real coordinate variable is multivariate real stable. -/
 theorem MvRealStable.X {sigma : Type*} (i : sigma) :
     MvRealStable (MvPolynomial.X i : MvPolynomial sigma ℝ) := by
   unfold MvRealStable complexifyMv
   rw [MvPolynomial.map_X]
   exact MvUpperHalfPlaneStable.X i
+
+/-- The sum of two real coordinate variables is multivariate real stable. -/
+theorem MvRealStable.X_add_X {sigma : Type*} (i j : sigma) :
+    MvRealStable
+      (MvPolynomial.X i + MvPolynomial.X j : MvPolynomial sigma ℝ) := by
+  unfold MvRealStable complexifyMv
+  rw [map_add, MvPolynomial.map_X, MvPolynomial.map_X]
+  exact MvUpperHalfPlaneStable.X_add_X i j
 
 /-- Renaming variables preserves multivariate real stability. -/
 theorem MvRealStable.rename
