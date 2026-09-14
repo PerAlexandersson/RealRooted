@@ -634,6 +634,7 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
+import RealRooted.Applications.OEIS.A144696.Basic
 import RealRooted.Applications.OEIS.A272471.Recurrence
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
