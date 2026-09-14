@@ -355,6 +355,57 @@ theorem fiberPolynomial_mvRealStable {h : Nat} (c : DecoNormalizedCode h) :
     c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
 
+/-- The factorized normalized-fiber form with independent weights on the two
+choices at every active eligible start.  This is an algebraic definition; a
+weighted combinatorial interpretation may be supplied separately. -/
+noncomputable def weightedFiberNormalForm {R : Type*} [CommSemiring R]
+    {h : Nat} (c : DecoNormalizedCode h)
+    (leftWeight rightWeight : EligibleStart c → R) : MvPolynomial Nat R :=
+  RealRooted.weightedBooleanSwapOrbitNormalForm
+    c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
+      (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+        leftWeight rightWeight
+
+/-- Unit weights recover the normalized decoration fiber polynomial. -/
+theorem weightedFiberNormalForm_one {R : Type*} [CommSemiring R]
+    {h : Nat} (c : DecoNormalizedCode h) :
+    weightedFiberNormalForm (R := R) c (fun _ => 1) (fun _ => 1) =
+      fiberPolynomial (R := R) c := by
+  rw [weightedFiberNormalForm,
+    RealRooted.weightedBooleanSwapOrbitNormalForm_one]
+  exact (fiberPolynomial_eq_fiberNormalForm c).symm
+
+/-- Exact product factorization of the independently weighted normalized
+fiber form. -/
+theorem weightedFiberNormalForm_eq_product
+    {R : Type*} [CommSemiring R] {h : Nat} (c : DecoNormalizedCode h)
+    (leftWeight rightWeight : EligibleStart c → R) :
+    weightedFiberNormalForm c leftWeight rightWeight =
+      MvPolynomial.C ((2 : R) ^ c.inactiveEligibleStarts.card) *
+        MvPolynomial.finsetMonomial c.fixedBottomSupport *
+          ∏ j ∈ c.activeEligibleStarts,
+            (MvPolynomial.C (leftWeight j) *
+                MvPolynomial.X (leftLabel h j.1) +
+              MvPolynomial.C (rightWeight j) *
+                MvPolynomial.X (rightLabel h j.1)) := by
+  rw [weightedFiberNormalForm,
+    RealRooted.weightedBooleanSwapOrbitNormalForm_eq]
+
+/-- Independent nonnegative, nontrivial active-pair weights preserve
+multivariate real stability of the normalized-fiber form. -/
+theorem weightedFiberNormalForm_mvRealStable {h : Nat}
+    (c : DecoNormalizedCode h)
+    (leftWeight rightWeight : EligibleStart c → Real)
+    (hleft : ∀ j ∈ c.activeEligibleStarts, 0 ≤ leftWeight j)
+    (hright : ∀ j ∈ c.activeEligibleStarts, 0 ≤ rightWeight j)
+    (hpos : ∀ j ∈ c.activeEligibleStarts,
+      0 < leftWeight j ∨ 0 < rightWeight j) :
+    MvRealStable (weightedFiberNormalForm c leftWeight rightWeight) := by
+  exact RealRooted.weightedBooleanSwapOrbitNormalForm_mvRealStable
+    c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
+      (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+        leftWeight rightWeight hleft hright hpos
+
 end
 
 end RealRooted.Applications.OEIS.DecoNormalizedCode

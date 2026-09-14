@@ -144,6 +144,61 @@ theorem booleanSwapOrbitNormalForm_mvRealStable {σ ι : Type*}
   apply (booleanVariableChoiceSum_mvRealStable fixed s left right).C_mul
   exact pow_ne_zero inactive (by norm_num)
 
+/-- A Boolean swap-orbit normal form with independent weights on the two
+choices at every active pair.  Inactive swaps retain their ordinary
+power-of-two multiplicity. -/
+def weightedBooleanSwapOrbitNormalForm
+    {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
+    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → R) :
+    MvPolynomial σ R :=
+  MvPolynomial.C ((2 : R) ^ inactive) *
+    weightedBooleanVariableChoiceSum fixed s left right
+      leftWeight rightWeight
+
+/-- The weighted orbit normal form factors into its inactive multiplicity,
+fixed monomial, and weighted active linear factors. -/
+theorem weightedBooleanSwapOrbitNormalForm_eq
+    {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
+    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → R) :
+    weightedBooleanSwapOrbitNormalForm inactive fixed s left right
+        leftWeight rightWeight =
+      MvPolynomial.C ((2 : R) ^ inactive) *
+        MvPolynomial.finsetMonomial fixed *
+          ∏ i ∈ s,
+            (MvPolynomial.C (leftWeight i) * MvPolynomial.X (left i) +
+              MvPolynomial.C (rightWeight i) * MvPolynomial.X (right i)) := by
+  rw [weightedBooleanSwapOrbitNormalForm,
+    weightedBooleanVariableChoiceSum_eq, mul_assoc]
+
+/-- Unit active-pair weights recover the ordinary Boolean swap-orbit normal
+form. -/
+theorem weightedBooleanSwapOrbitNormalForm_one
+    {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
+    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) :
+    weightedBooleanSwapOrbitNormalForm inactive fixed s left right
+        (fun _ => 1) (fun _ => 1) =
+      booleanSwapOrbitNormalForm (R := R) inactive fixed s left right := by
+  rw [weightedBooleanSwapOrbitNormalForm, booleanSwapOrbitNormalForm,
+    weightedBooleanVariableChoiceSum_one]
+
+/-- Nonnegative, nontrivial active-pair weights preserve multivariate real
+stability of the Boolean swap-orbit normal form. -/
+theorem weightedBooleanSwapOrbitNormalForm_mvRealStable
+    {σ ι : Type*} [DecidableEq ι]
+    (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → Real)
+    (hleft : ∀ i ∈ s, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ s, 0 ≤ rightWeight i)
+    (hpos : ∀ i ∈ s, 0 < leftWeight i ∨ 0 < rightWeight i) :
+    MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed s
+      left right leftWeight rightWeight) := by
+  apply (weightedBooleanVariableChoiceSum_mvRealStable fixed s left right
+    leftWeight rightWeight hleft hright hpos).C_mul
+  exact pow_ne_zero inactive (by norm_num)
+
 end
 
 end RealRooted
