@@ -292,6 +292,7 @@ import RealRooted.Compatibility.CutTransformClosure
 import RealRooted.Compatibility.CutTransformObstruction
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.NDCutInvariant
+import RealRooted.Compatibility.NDCutPreservation
 import RealRooted.Compatibility.NDCutStaircase
 import RealRooted.Compatibility.NDCutStateClosure
 import RealRooted.Compatibility.NDCutThresholdClosure
@@ -862,6 +863,7 @@ import RealRooted.ParkingFunctions.Descents.WordContent
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
 import RealRooted.ParkingFunctions.Descents.Words
