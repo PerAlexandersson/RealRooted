@@ -284,6 +284,7 @@ import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverFamilySum
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
+import RealRooted.Compatibility.Affine
 import RealRooted.Compatibility.Basic
 import RealRooted.Compatibility.ConicImage
 import RealRooted.Compatibility.CutTransform
@@ -855,6 +856,7 @@ import RealRooted.ParkingFunctions.Descents.WordContent
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
 import RealRooted.ParkingFunctions.Descents.Words
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
