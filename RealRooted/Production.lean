@@ -288,6 +288,7 @@ import RealRooted.Compatibility.Affine
 import RealRooted.Compatibility.Basic
 import RealRooted.Compatibility.ConicImage
 import RealRooted.Compatibility.CutTransform
+import RealRooted.Compatibility.CutTransformObstruction
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.Leander
 import RealRooted.Compatibility.LeanderTransform
