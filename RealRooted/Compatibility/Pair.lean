@@ -63,6 +63,20 @@ theorem X_mul {f g : ℝ[X]} (h : Compatible f g) :
     ring
   rcases h α β hα hβ with hzero | hrr <;> simp_all
 
+/-- Multiplying both members by one splitting factor preserves
+compatibility. -/
+theorem mul_common_factor {d f g : ℝ[X]} (h : Compatible f g)
+    (hd : d.Splits) : Compatible (d * f) (d * g) := by
+  intro α β hα hβ
+  have hfactor :
+      C α * (d * f) + C β * (d * g) = d * (C α * f + C β * g) := by
+    ring
+  rcases h α β hα hβ with hzero | hrr
+  · exact Or.inl (by rw [hfactor, hzero, mul_zero])
+  · by_cases hprod_zero : C α * (d * f) + C β * (d * g) = 0
+    · exact Or.inl hprod_zero
+    · exact Or.inr ⟨hprod_zero, by rw [hfactor]; exact hd.mul hrr.2⟩
+
 /-- A nonzero sum of compatible polynomials splits. -/
 theorem splits_add {p q : ℝ[X]} (h : Compatible p q)
     (hadd : p + q ≠ 0) : (p + q).Splits := by
