@@ -41,6 +41,43 @@ def ValidFrom : Nat → List Nat → Prop
   | _, [] => True
   | n, r :: code => r ≤ n ∧ ValidFrom (n + 1) code
 
+/-- A code suffix is valid exactly when its indexed positions satisfy the
+corresponding running length bounds. -/
+theorem validFrom_iff_get (n : Nat) (code : List Nat) :
+    ValidFrom n code ↔
+      ∀ i : Fin code.length, code.get i ≤ n + i.1 := by
+  induction code generalizing n with
+  | nil => simp [ValidFrom]
+  | cons r code ih =>
+      rw [ValidFrom, ih]
+      constructor
+      · rintro ⟨hr, hcode⟩ i
+        refine Fin.cases ?_ (fun j => ?_) i
+        · simpa using hr
+        · change code.get j ≤ n + (j.1 + 1)
+          have hj := hcode j
+          lia
+      · intro h
+        constructor
+        · simpa using h ⟨0, by simp⟩
+        · intro i
+          have hi := h i.succ
+          change code.get i ≤ n + (i.1 + 1) at hi
+          lia
+
+/-- Every prefix of a valid insertion code is valid. -/
+theorem ValidFrom.take {n : Nat} {code : List Nat}
+    (hcode : ValidFrom n code) (k : Nat) :
+    ValidFrom n (code.take k) := by
+  induction code generalizing n k with
+  | nil => simp [ValidFrom]
+  | cons r code ih =>
+      cases k with
+      | zero => simp [ValidFrom]
+      | succ k =>
+          simp only [List.take_succ_cons, ValidFrom]
+          exact ⟨hcode.1, ih hcode.2 k⟩
+
 @[simp] theorem step_zero (w : List Nat) :
     step 0 w = 1 :: raise w := by
   rfl
