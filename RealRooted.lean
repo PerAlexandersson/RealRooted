@@ -285,6 +285,7 @@ import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
 import RealRooted.Compatibility.Basic
+import RealRooted.Compatibility.ConicImage
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.Leander
 import RealRooted.Compatibility.LeanderTransform
