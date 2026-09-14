@@ -17,16 +17,16 @@ namespace RealRooted
 namespace Compatible
 
 /-- If `a`, `b`, and `c` are pairwise compatible positive-leading
-nonnegative-coefficient split polynomials, then replacing `a` by
-`a + r * b` for `r ≥ 0` preserves compatibility with `c`. -/
-theorem add_C_mul_left_of_pairwise_three
-    {a b c : ℝ[X]} {r : ℝ} (hr : 0 ≤ r)
+nonnegative-coefficient split polynomials, then every nonnegative conic
+recombination of `a` and `b` remains compatible with `c`. -/
+theorem C_mul_add_C_mul_left_of_pairwise_three
+    {a b c : ℝ[X]} {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
     (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
     (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
     (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
     (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
     (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
-    Compatible (a + C r * b) c := by
+    Compatible (C s * a + C t * b) c := by
   let fs : List ℝ[X] := [a, b, c]
   have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
     intro f hf
@@ -64,7 +64,7 @@ theorem add_C_mul_left_of_pairwise_three
     (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
       (fs := fs) hrr hpos hnn).1 hpair
   intro α β hα hβ
-  let ws : List (ℝ × ℝ[X]) := [(α, a), (α * r, b), (β, c)]
+  let ws : List (ℝ × ℝ[X]) := [(α * s, a), (α * t, b), (β, c)]
   have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
     intro ap hap
     simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
@@ -73,14 +73,30 @@ theorem add_C_mul_left_of_pairwise_three
     intro ap hap
     simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
     rcases hap with rfl | rfl | rfl
-    · exact hα
-    · exact mul_nonneg hα hr
+    · exact mul_nonneg hα hs
+    · exact mul_nonneg hα ht
     · exact hβ
-  have hsum : weightedSum ws = C α * (a + C r * b) + C β * c := by
+  have hsum :
+      weightedSum ws = C α * (C s * a + C t * b) + C β * c := by
     simp only [ws, weightedSum_cons, weightedSum_nil]
-    rw [map_mul]
+    rw [map_mul, map_mul]
     ring
   simpa [hsum] using hfam ws hmem hnonneg
+
+/-- If `a`, `b`, and `c` are pairwise compatible positive-leading
+nonnegative-coefficient split polynomials, then replacing `a` by
+`a + r * b` for `r ≥ 0` preserves compatibility with `c`. -/
+theorem add_C_mul_left_of_pairwise_three
+    {a b c : ℝ[X]} {r : ℝ} (hr : 0 ≤ r)
+    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
+    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
+    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
+    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
+    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
+    Compatible (a + C r * b) c := by
+  simpa using C_mul_add_C_mul_left_of_pairwise_three
+    (s := 1) (t := r) zero_le_one hr ha hb hc hapos hbpos hcpos
+      hann hbnn hcnn hab hac hbc
 
 /-- Unscaled specialization of `Compatible.add_C_mul_left_of_pairwise_three`. -/
 theorem add_left_of_pairwise_three {a b c : ℝ[X]}
