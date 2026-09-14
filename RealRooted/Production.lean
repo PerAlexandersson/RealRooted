@@ -253,6 +253,7 @@ import RealRooted.CombinatorialExamples.StirlingPermutations
 import RealRooted.CombinatorialExamples.SturmDerangementsExc
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
+import RealRooted.Combinatorics.ComparisonBottom
 import RealRooted.Combinatorics.MinimumInsertionWord
 import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.CommonInterleaver.AffineBoundary
