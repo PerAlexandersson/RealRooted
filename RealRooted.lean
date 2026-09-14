@@ -292,6 +292,7 @@ import RealRooted.Compatibility.CutTransformClosure
 import RealRooted.Compatibility.CutTransformObstruction
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.NDCutInvariant
+import RealRooted.Compatibility.NDCutStaircase
 import RealRooted.Compatibility.Leander
 import RealRooted.Compatibility.LeanderTransform
 import RealRooted.Compatibility.LeanderOutput
