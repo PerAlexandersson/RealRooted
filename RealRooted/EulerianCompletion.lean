@@ -54,6 +54,49 @@ theorem loweringEulerStep_nonneg
   rw [hshape]
   exact (hp.polarTheta hpdeg).add hp.derivative
 
+/-- At the tight degree boundary, the lowering Euler step drops the ambient
+degree by at least one. -/
+theorem natDegree_loweringEulerStep_le_pred {M : ℕ} {p : ℝ[X]}
+    (hM : 1 ≤ M) (hpdeg : p.natDegree ≤ M) :
+    (loweringEulerStep M p).natDegree ≤ M - 1 := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_loweringEulerStep]
+  have hkM : M ≤ k := by lia
+  have hnext : p.coeff (k + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (by lia))
+  rw [hnext, mul_zero, add_zero]
+  rcases hkM.eq_or_lt with rfl | hklt
+  · simp
+  · rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg hklt), mul_zero]
+
+/-- A polynomial fixed by reflection in ambient degree `M` is sent by the
+tight lowering Euler step to one fixed by reflection in degree `M - 1`. -/
+theorem reflect_loweringEulerStep_of_reflect {M : ℕ} {p : ℝ[X]}
+    (hM : 1 ≤ M) (hsym : p.reflect M = p) :
+    (loweringEulerStep M p).reflect (M - 1) = loweringEulerStep M p := by
+  ext i
+  rw [coeff_reflect]
+  by_cases hi : i ≤ M - 1
+  · rw [revAt_le hi, coeff_loweringEulerStep, coeff_loweringEulerStep]
+    have hleft : p.coeff (M - 1 - i) = p.coeff (i + 1) := by
+      have h := congrArg (fun q : ℝ[X] ↦ q.coeff (i + 1)) hsym
+      rw [coeff_reflect, revAt_le (by lia : i + 1 ≤ M)] at h
+      convert h using 1
+      lia
+    have hright : p.coeff (M - 1 - i + 1) = p.coeff i := by
+      have h := congrArg (fun q : ℝ[X] ↦ q.coeff i) hsym
+      rw [coeff_reflect, revAt_le (by lia : i ≤ M)] at h
+      have hindex : M - 1 - i + 1 = M - i := by lia
+      rw [hindex]
+      exact h
+    have hcast : ((M - 1 - i : ℕ) : ℝ) = (M : ℝ) - 1 - i := by
+      rw [Nat.cast_sub hi, Nat.cast_sub hM]
+      norm_num
+    rw [hleft, hright, hcast]
+    ring
+  · rw [revAt_eq_self_of_lt (by lia)]
+
 namespace BorceaBranden
 
 /-- The lowering Euler operator as a real-linear map. -/

@@ -1,5 +1,6 @@
 import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CommonInterleaverTwo
+import RealRooted.InterlacingSequenceBasic
 import RealRooted.SameDegreeCountFromAnalytic
 
 noncomputable section
@@ -115,6 +116,21 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_pairBridgePos hrr hpos
     chudnovskySeymour_compatiblePairHasCommonInterleaver
+
+/-- An interlacing sequence with nonnegative coefficients is compatible under
+all nonnegative weighted sums. -/
+theorem IsInterlacingSeqNonneg.familyCompatible
+    {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) :
+    FamilyCompatible fs := by
+  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := fun f hf ↦ (hfs.1 f hf).1
+  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
+    intro f hf
+    exact (hfs.1 f hf).2.pos_leadingCoeff (hfs.1 f hf).1.1
+  apply (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos).mp
+  have hprec := isInterlacingSeq_iff_pairwise.mp hfs.2
+  rw [List.pairwise_iff_get] at hprec
+  intro i j hij
+  exact Compatible.of_prec (hprec i j hij)
 
 private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
@@ -634,4 +650,3 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs :
 
 
 end RealRooted
-

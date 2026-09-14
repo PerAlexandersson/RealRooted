@@ -32,7 +32,9 @@ import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
 import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+import RealRooted.Applications.OEIS.A144696.Endpoints
 import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Applications.OEIS.A144696.IntervalPreserver
 import RealRooted.Applications.OEIS.A144696.StrictInterlacing
 import RealRooted.Analysis.FactorialTail
 import RealRooted.Analysis.PowerTail
@@ -358,6 +360,7 @@ import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.EulerOperator.ScaledPolar
 import RealRooted.EulerOperator.Shift
 import RealRooted.EulerianCompletion
+import RealRooted.EulerianCompletion.ProperPosition
 import RealRooted.EulerianMixedCompatibility
 import RealRooted.EulerianMixedCompatibility.Insertion
 import RealRooted.Favard
@@ -647,6 +650,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Chow
