@@ -65,6 +65,22 @@ theorem X_sub_one_mul_chowS {R : Type*} [CommRing R]
       rw [hmod, zero_add]
     _ = p.reflect n - p := modByMonic_add_div _ _
 
+/-- The Chow operator commutes with multiplication by a constant when its
+input lies in the stated degree slice. -/
+theorem chowS_C_mul {R : Type*} [CommRing R]
+    (n : ℕ) (c : R) (p : R[X]) (hp : p.natDegree ≤ n) :
+    chowS n (C c * p) = C c * chowS n p := by
+  apply (monic_X_sub_C (1 : R)).isRegular.left
+  change (X - 1) * chowS n (C c * p) =
+    (X - 1) * (C c * chowS n p)
+  rw [X_sub_one_mul_chowS n (C c * p)
+    ((natDegree_C_mul_le c p).trans hp), reflect_C_mul]
+  calc
+    C c * p.reflect n - C c * p = C c * (p.reflect n - p) := by ring
+    _ = C c * ((X - 1) * chowS n p) := by
+      rw [X_sub_one_mul_chowS n p hp]
+    _ = (X - 1) * (C c * chowS n p) := by ring
+
 /-- The Chow operator at a degree bound has degree at most that bound. -/
 theorem natDegree_chowS_le {R : Type*} [CommRing R]
     (n : ℕ) (p : R[X]) (hdegree : p.natDegree ≤ n) :

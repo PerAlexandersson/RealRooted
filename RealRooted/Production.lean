@@ -113,6 +113,7 @@ import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenLeite.OptionalRiseMatrix
 import RealRooted.BrandenVecchi.Chow
 import RealRooted.BrandenVecchi.ChowContinuity
+import RealRooted.BrandenVecchi.ChowGeometricScaling
 import RealRooted.BrandenVecchi.ChowInfinitePF
 import RealRooted.BrandenVecchi.ChowInterlacing
 import RealRooted.BrandenVecchi.ChowInterlacingQuotient
@@ -667,6 +668,7 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+import RealRooted.Mathlib.RingTheory.PowerSeries.ZeroPrefix
 import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
