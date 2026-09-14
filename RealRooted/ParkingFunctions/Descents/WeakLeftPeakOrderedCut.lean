@@ -1,4 +1,5 @@
 import RealRooted.Compatibility.Affine
+import RealRooted.Compatibility.NDCutInvariant
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 
 /-!
@@ -171,6 +172,30 @@ theorem terminalPairMixReal_orderedCutCompatible_zero (m : ℕ) :
     exact compatible_X_mul_affine_affine_of_cross
       (by positivity) (by positivity) (by positivity) (by positivity)
       (base_cross hij)
+
+/-- The rank-zero N/D states satisfy the structural cut invariant.  The final
+descent coordinate is allowed to be zero by the zero-aware state order. -/
+theorem terminalND_orderedNDCutCompatible_zero (m : ℕ) :
+    OrderedNDCutCompatible (terminalNonDescentReal m 0)
+      (terminalDescentReal m 0) := by
+  refine ⟨?_, ?_⟩
+  · change OrderedCutCompatible (terminalPairMixReal m 0)
+      (terminalXPairMixReal m 0)
+    exact terminalPairMixReal_orderedCutCompatible_zero m
+  · apply isInterlacingSeq0NonnegRealRooted_of_mem_C_nonneg
+    intro p hp
+    rcases List.mem_append.mp hp with hp | hp
+    · have hp' :
+        p ∈ List.ofFn (terminalNonDescentReal m 0) := by
+        simpa [ndCutStateOrder] using hp
+      simp only [List.mem_ofFn] at hp'
+      rcases hp' with ⟨j, rfl⟩
+      refine ⟨((j.val + 1 : ℕ) : ℝ), by positivity, ?_⟩
+      exact terminalNonDescentReal_zero_closed m j
+    · simp only [List.mem_ofFn] at hp
+      rcases hp with ⟨j, rfl⟩
+      refine ⟨((m - (j.val + 1) : ℕ) : ℝ), by positivity, ?_⟩
+      exact terminalDescentReal_zero_closed m j
 
 end
 
