@@ -110,3 +110,218 @@ theorem inverseWord_eq_decodeFrom_take_pair_drop {h : Nat} (c : DecoCode h)
     MinimumInsertionWord.decodeFrom_nil]
 
 end RealRooted.Applications.OEIS.DecoCode
+
+namespace RealRooted.Applications.OEIS.DecoNormalizedCode.Decoration
+
+/-- The decoration selecting one eligible normal pair. -/
+noncomputable def singleton {h : Nat} {c : DecoNormalizedCode h}
+    (j : Fin h) (hj : c.Eligible j) : Decoration c where
+  starts := {j}
+  starts_subset := by
+    intro i hi
+    simp only [Finset.mem_singleton] at hi
+    subst i
+    exact DecoNormalizedCode.mem_eligibleStarts.mpr hj
+
+@[simp] theorem singleton_starts {h : Nat} {c : DecoNormalizedCode h}
+    (j : Fin h) (hj : c.Eligible j) :
+    (singleton j hj).starts = {j} := rfl
+
+@[simp] theorem singleton_exceptionalize_apply {h : Nat}
+    {c : DecoNormalizedCode h} (j : Fin h) (hj : c.Eligible j)
+    (k : Fin h) :
+    (singleton j hj).exceptionalize k =
+      if k = j then 1 else if j.1 + 1 = k.1 then 0 else c k := by
+  simp [singleton, exceptionalize]
+
+end RealRooted.Applications.OEIS.DecoNormalizedCode.Decoration
+
+namespace RealRooted.Applications.OEIS
+
+open DecoNormalizedCode
+
+/-- A singleton decoration does not change entries before its selected pair. -/
+theorem singleton_entryList_take_eq {h : Nat} {c : DecoNormalizedCode h}
+    (j : Fin h) (hj : c.Eligible j) :
+    (Decoration.singleton j hj).exceptionalize.entryList.take j.1 =
+      c.toDecoCode.entryList.take j.1 := by
+  apply List.ext_get
+  · simp [DecoCode.length_entryList]
+  · intro k hkLeft hkRight
+    simp only [List.get_eq_getElem, List.getElem_take]
+    simp only [DecoCode.entryList, List.getElem_ofFn]
+    have hk : k < j.1 := by simpa using hkLeft
+    let kFin : Fin h := ⟨k, hk.trans j.2⟩
+    change (Decoration.singleton j hj).exceptionalize kFin = c kFin
+    rw [Decoration.singleton_exceptionalize_apply]
+    have hkj : kFin ≠ j := by
+      intro heq
+      exact (Nat.ne_of_lt hk) (congrArg Fin.val heq)
+    have hpred : j.1 + 1 ≠ kFin.1 := by simp [kFin]; lia
+    simp [hkj, hpred]
+
+/-- A singleton decoration does not change entries after its selected pair. -/
+theorem singleton_entryList_drop_eq {h : Nat} {c : DecoNormalizedCode h}
+    (j : Fin h) (hj : c.Eligible j) :
+    (Decoration.singleton j hj).exceptionalize.entryList.drop (j.1 + 2) =
+      c.toDecoCode.entryList.drop (j.1 + 2) := by
+  apply List.ext_get
+  · simp [DecoCode.length_entryList]
+  · intro k hkLeft hkRight
+    simp only [List.get_eq_getElem, List.getElem_drop]
+    simp only [DecoCode.entryList, List.getElem_ofFn]
+    have hjBound : j.1 + 1 < h := hj.2.choose
+    have hk : k < h - (j.1 + 2) := by
+      simpa [DecoCode.length_entryList] using hkLeft
+    let kFin : Fin h := ⟨j.1 + 2 + k, by lia⟩
+    change (Decoration.singleton j hj).exceptionalize kFin = c kFin
+    rw [Decoration.singleton_exceptionalize_apply]
+    have hkj : kFin ≠ j := by
+      intro heq
+      have := congrArg Fin.val heq
+      simp only [kFin] at this
+      lia
+    have hpred : j.1 + 1 ≠ kFin.1 := by
+      change j.1 + 1 ≠ j.1 + 2 + k
+      lia
+    simp [hkj, hpred]
+
+/-- Replacing one eligible `(0,2)` pair by `(1,0)` swaps the corresponding
+final adjacent labels. The one-based start is `j.1 + 1`. -/
+theorem singleton_inverseWord_eq_map_swap {h : Nat}
+    {c : DecoNormalizedCode h} (j : Fin h) (hj : c.Eligible j) :
+    (Decoration.singleton j hj).exceptionalize.inverseWord =
+      c.toDecoCode.inverseWord.map
+        (Equiv.swap (h - (j.1 + 1)) (h - j.1)) := by
+  rcases hj with ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  let E := Decoration.singleton j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hprefix : E.exceptionalize.entryList.take j.1 =
+      c.toDecoCode.entryList.take j.1 :=
+    singleton_entryList_take_eq j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hsuffix : E.exceptionalize.entryList.drop (j.1 + 2) =
+      c.toDecoCode.entryList.drop (j.1 + 2) :=
+    singleton_entryList_drop_eq j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hprefixLength : j.1 ≤ h := by lia
+  have hprefixNonempty : c.toDecoCode.inverseWordPrefix j.1 ≠ [] := by
+    intro hnil
+    have hlength := c.toDecoCode.length_inverseWordPrefix hprefixLength
+    rw [hnil] at hlength
+    simp only [List.length_nil] at hlength
+    lia
+  obtain ⟨a, w, hpref⟩ := List.exists_cons_of_ne_nil hprefixNonempty
+  have ha : 0 < a := by
+    have hpos := c.toDecoCode.inverseWordPrefix_isPositive j.1
+    rw [hpref] at hpos
+    exact hpos a (by simp)
+  have hw : ∀ x ∈ w, 0 < x := by
+    have hpos := c.toDecoCode.inverseWordPrefix_isPositive j.1
+    rw [hpref] at hpos
+    intro x hx
+    exact hpos x (by simp [hx])
+  have hsuccNe : (⟨j.1 + 1, hjBound⟩ : Fin h) ≠ j := by
+    intro heq
+    have heqVal := congrArg Fin.val heq
+    simp only at heqVal
+    lia
+  have hEJ : E.exceptionalize ⟨j.1, by lia⟩ = 1 := by
+    rw [Decoration.singleton_exceptionalize_apply]
+    simp
+  have hESucc : E.exceptionalize ⟨j.1 + 1, hjBound⟩ = 0 := by
+    rw [Decoration.singleton_exceptionalize_apply]
+    simp [hsuccNe]
+  rw [DecoCode.inverseWord_eq_decodeFrom_take_pair_drop
+      E.exceptionalize j.1 hjBound,
+    DecoCode.inverseWord_eq_decodeFrom_take_pair_drop
+      c.toDecoCode j.1 hjBound]
+  rw [hEJ, hESucc, hjZero, hjTwo]
+  rw [show E.exceptionalize.inverseWordPrefix j.1 =
+      c.toDecoCode.inverseWordPrefix j.1 by
+        simp only [DecoCode.inverseWordPrefix]
+        rw [hprefix], hpref, hsuffix]
+  rw [MinimumInsertionWord.decodeFrom_exceptional_pair_eq_map_swap
+    (c.toDecoCode.entryList.drop (j.1 + 2)) a w ha hw]
+  have hsuffixLength :
+      (c.toDecoCode.entryList.drop (j.1 + 2)).length =
+        h - (j.1 + 2) := by simp [DecoCode.length_entryList]
+  have hleft :
+      1 + (c.toDecoCode.entryList.drop (j.1 + 2)).length =
+        h - (j.1 + 1) := by rw [hsuffixLength]; lia
+  have hright :
+      2 + (c.toDecoCode.entryList.drop (j.1 + 2)).length =
+        h - j.1 := by rw [hsuffixLength]; lia
+  rw [hleft, hright]
+
+/-- Exceptionalizing one eligible pair preserves the ascent/descent word of
+the decoded inverse word. -/
+theorem singleton_inverseWord_comparisonWord_eq {h : Nat}
+    {c : DecoNormalizedCode h} (j : Fin h) (hj : c.Eligible j) :
+    MinimumInsertionWord.comparisonWord
+        ((Decoration.singleton j hj).exceptionalize.inverseWord) =
+      MinimumInsertionWord.comparisonWord c.toDecoCode.inverseWord := by
+  rcases hj with ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  let E := Decoration.singleton j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hprefix : E.exceptionalize.entryList.take j.1 =
+      c.toDecoCode.entryList.take j.1 :=
+    singleton_entryList_take_eq j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hsuffix : E.exceptionalize.entryList.drop (j.1 + 2) =
+      c.toDecoCode.entryList.drop (j.1 + 2) :=
+    singleton_entryList_drop_eq j ⟨hjLower, hjBound, hjZero, hjTwo⟩
+  have hprefixLength : j.1 ≤ h := by lia
+  have hprefixNonempty : c.toDecoCode.inverseWordPrefix j.1 ≠ [] := by
+    intro hnil
+    have hlength := c.toDecoCode.length_inverseWordPrefix hprefixLength
+    rw [hnil] at hlength
+    simp only [List.length_nil] at hlength
+    lia
+  obtain ⟨a, w, hpref⟩ := List.exists_cons_of_ne_nil hprefixNonempty
+  have ha : 0 < a := by
+    have hpos := c.toDecoCode.inverseWordPrefix_isPositive j.1
+    rw [hpref] at hpos
+    exact hpos a (by simp)
+  have hw : ∀ x ∈ w, 0 < x := by
+    have hpos := c.toDecoCode.inverseWordPrefix_isPositive j.1
+    rw [hpref] at hpos
+    intro x hx
+    exact hpos x (by simp [hx])
+  have hprefLength : (a :: w).length = j.1 := by
+    rw [← hpref]
+    exact c.toDecoCode.length_inverseWordPrefix hprefixLength
+  have hsuccNe : (⟨j.1 + 1, hjBound⟩ : Fin h) ≠ j := by
+    intro heq
+    have heqVal := congrArg Fin.val heq
+    simp only at heqVal
+    lia
+  have hEJ : E.exceptionalize ⟨j.1, by lia⟩ = 1 := by
+    rw [Decoration.singleton_exceptionalize_apply]
+    simp
+  have hESucc : E.exceptionalize ⟨j.1 + 1, hjBound⟩ = 0 := by
+    rw [Decoration.singleton_exceptionalize_apply]
+    simp [hsuccNe]
+  rw [DecoCode.inverseWord_eq_decodeFrom_take_pair_drop
+      E.exceptionalize j.1 hjBound,
+    DecoCode.inverseWord_eq_decodeFrom_take_pair_drop
+      c.toDecoCode j.1 hjBound]
+  rw [hEJ, hESucc, hjZero, hjTwo]
+  have hprefixWord : E.exceptionalize.inverseWordPrefix j.1 =
+      c.toDecoCode.inverseWordPrefix j.1 := by
+    simp only [DecoCode.inverseWordPrefix]
+    rw [hprefix]
+  rw [hprefixWord, hpref, hsuffix]
+  apply MinimumInsertionWord.comparisonWord_decodeFrom_congr
+  · exact MinimumInsertionWord.isPositive_step 0
+      (MinimumInsertionWord.step 1 (a :: w))
+  · exact MinimumInsertionWord.isPositive_step 2
+      (MinimumInsertionWord.step 0 (a :: w))
+  · rw [MinimumInsertionWord.step_exceptional_pair,
+      MinimumInsertionWord.step_normal_pair]
+    simp
+  · exact MinimumInsertionWord.comparisonWord_step_pair a w ha hw
+  · have hsuffixValid := c.toDecoCode.validFrom_entryList.drop
+        (k := j.1 + 2) (by simp [DecoCode.length_entryList]; lia)
+    rw [MinimumInsertionWord.step_exceptional_pair]
+    simp only [List.length_cons, List.length_map]
+    have hwLength : w.length + 1 = j.1 := by simpa using hprefLength
+    rw [show w.length + 1 + 1 + 1 = 0 + (j.1 + 2) by lia]
+    exact hsuffixValid
+
+end RealRooted.Applications.OEIS

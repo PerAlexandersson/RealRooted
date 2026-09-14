@@ -78,6 +78,24 @@ theorem ValidFrom.take {n : Nat} {code : List Nat}
           simp only [List.take_succ_cons, ValidFrom]
           exact ⟨hcode.1, ih hcode.2 k⟩
 
+/-- Dropping `k` entries from a valid code advances the running length by
+`k`. -/
+theorem ValidFrom.drop {n : Nat} {code : List Nat}
+    (hcode : ValidFrom n code) {k : Nat} (hk : k ≤ code.length) :
+    ValidFrom (n + k) (code.drop k) := by
+  induction k generalizing n code with
+  | zero => simpa
+  | succ k ih =>
+      cases code with
+      | nil => simp at hk
+      | cons r code =>
+          simp only [List.drop_succ_cons]
+          have hkTail : k ≤ code.length := by simpa using hk
+          have htail := ih hcode.2 hkTail
+          have hadd : n + Nat.succ k = n + 1 + k := by lia
+          rw [hadd]
+          exact htail
+
 @[simp] theorem step_zero (w : List Nat) :
     step 0 w = 1 :: raise w := by
   rfl
@@ -229,5 +247,161 @@ theorem decodeFrom_exceptional_pair_eq_map_swap
   rw [step_exceptional_pair_eq_map_swap a w ha hw]
   exact decodeFrom_map_swap code (step 2 (step 0 (a :: w))) 1 2
     Nat.zero_lt_one (by decide)
+
+/-- The ascent/descent comparison word, with `true` for an ascent. -/
+def comparisonWord : List Nat → List Bool
+  | a :: b :: w => decide (a < b) :: comparisonWord (b :: w)
+  | _ => []
+
+/-- Raising every label preserves the complete comparison word. -/
+theorem comparisonWord_raise (w : List Nat) :
+    comparisonWord (raise w) = comparisonWord w := by
+  induction w with
+  | nil => rfl
+  | cons a w ih =>
+      cases w with
+      | nil => rfl
+      | cons b w =>
+          simp only [raise, List.map_cons, comparisonWord,
+            Nat.succ_lt_succ_iff]
+          change decide (a < b) :: comparisonWord (raise (b :: w)) =
+            decide (a < b) :: comparisonWord (b :: w)
+          rw [ih]
+
+/-- The comparison word after insertion at the front. -/
+theorem comparisonWord_step_zero {w : List Nat} (hw : IsPositive w) :
+    comparisonWord (step 0 w) =
+      if w = [] then [] else true :: comparisonWord w := by
+  cases w with
+  | nil => rfl
+  | cons a w =>
+      have ha := hw a (by simp)
+      simp only [step, raise, List.map_cons, List.insertIdx_zero,
+        comparisonWord]
+      rw [if_neg (List.cons_ne_nil a w)]
+      change decide (1 < a.succ) :: comparisonWord (raise (a :: w)) =
+        true :: comparisonWord (a :: w)
+      rw [comparisonWord_raise]
+      simp [ha]
+
+/-- Insertion past a head recurses on the tail. -/
+theorem step_succ (r a : Nat) (w : List Nat) :
+    step (r + 1) (a :: w) = (a + 1) :: step r w := by
+  rfl
+
+/-- Applying the same valid minimum insertion to positive words with the same
+comparison word preserves comparison-word equality. -/
+theorem comparisonWord_step_congr {w v : List Nat}
+    (hw : IsPositive w) (hv : IsPositive v)
+    (hlen : w.length = v.length)
+    (hcomp : comparisonWord w = comparisonWord v)
+    {r : Nat} (hr : r ≤ w.length) :
+    comparisonWord (step r w) = comparisonWord (step r v) := by
+  induction r generalizing w v with
+  | zero =>
+      rw [comparisonWord_step_zero hw, comparisonWord_step_zero hv]
+      cases w <;> cases v <;> simp_all
+  | succ r ih =>
+      cases w with
+      | nil => simp at hr
+      | cons a w =>
+          cases v with
+          | nil => simp at hlen
+          | cons b v =>
+              rw [step_succ, step_succ]
+              have hwTail : IsPositive w := by
+                intro x hx
+                exact hw x (by simp [hx])
+              have hvTail : IsPositive v := by
+                intro x hx
+                exact hv x (by simp [hx])
+              have hlenTail : w.length = v.length := by simpa using hlen
+              have hrTail : r ≤ w.length := by simpa using hr
+              have hcompTail : comparisonWord w = comparisonWord v := by
+                cases w with
+                | nil =>
+                    have hvNil : v = [] :=
+                      List.eq_nil_of_length_eq_zero hlenTail.symm
+                    subst v
+                    rfl
+                | cons c w =>
+                    cases v with
+                    | nil => simp at hlenTail
+                    | cons d v =>
+                        simp only [comparisonWord] at hcomp
+                        exact List.cons.inj hcomp |>.2
+              have hstep := ih hwTail hvTail hlenTail hcompTail hrTail
+              cases r with
+              | zero =>
+                  cases w with
+                  | nil =>
+                      have hvNil : v = [] :=
+                        List.eq_nil_of_length_eq_zero hlenTail.symm
+                      subst v
+                      rfl
+                  | cons c w =>
+                      cases v with
+                      | nil => simp at hlenTail
+                      | cons d v =>
+                          have hc := hwTail c (by simp)
+                          have hd := hvTail d (by simp)
+                          simp only [step, raise, List.map_cons,
+                            List.insertIdx_zero, comparisonWord]
+                          have hraise : comparisonWord (raise (c :: w)) =
+                              comparisonWord (raise (d :: v)) := by
+                            rw [comparisonWord_raise, comparisonWord_raise]
+                            exact hcompTail
+                          simpa [raise, hc, hd] using
+                            congrArg (fun z => false :: true :: z) hraise
+              | succ r =>
+                  cases w with
+                  | nil => simp at hrTail
+                  | cons c w =>
+                      cases v with
+                      | nil => simp at hlenTail
+                      | cons d v =>
+                          simp only [step_succ, comparisonWord,
+                            Nat.add_lt_add_iff_right]
+                          simp only [comparisonWord] at hcomp
+                          exact congrArg₂ List.cons (List.cons.inj hcomp |>.1)
+                            hstep
+
+/-- The local normal and exceptional two-step words have the same complete
+comparison word. -/
+theorem comparisonWord_step_pair (a : Nat) (w : List Nat)
+    (ha : 0 < a) (hw : ∀ x ∈ w, 0 < x) :
+    comparisonWord (step 0 (step 1 (a :: w))) =
+      comparisonWord (step 2 (step 0 (a :: w))) := by
+  rw [step_exceptional_pair, step_normal_pair]
+  cases w with
+  | nil => simp [comparisonWord, ha]
+  | cons b w =>
+      have hb := hw b (by simp)
+      simp [comparisonWord, ha, hb]
+
+/-- A common valid suffix preserves equality of comparison words. -/
+theorem comparisonWord_decodeFrom_congr {w v code : List Nat}
+    (hw : IsPositive w) (hv : IsPositive v)
+    (hlen : w.length = v.length)
+    (hcomp : comparisonWord w = comparisonWord v)
+    (hcode : ValidFrom w.length code) :
+    comparisonWord (decodeFrom w code) =
+      comparisonWord (decodeFrom v code) := by
+  induction code generalizing w v with
+  | nil => exact hcomp
+  | cons r code ih =>
+      rw [decodeFrom_cons, decodeFrom_cons]
+      have hrW : r ≤ w.length := hcode.1
+      have hstep := comparisonWord_step_congr hw hv hlen hcomp hrW
+      have hlengthW := length_step hrW
+      have hrV : r ≤ v.length := by simpa [hlen] using hrW
+      have hlengthV := length_step hrV
+      have htail : ValidFrom (step r w).length code := by
+        rw [hlengthW]
+        exact hcode.2
+      apply ih (isPositive_step r w) (isPositive_step r v)
+      · rw [hlengthW, hlengthV, hlen]
+      · exact hstep
+      · exact htail
 
 end RealRooted.MinimumInsertionWord
