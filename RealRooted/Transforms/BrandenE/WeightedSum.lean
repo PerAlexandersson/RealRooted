@@ -67,11 +67,11 @@ theorem brandenBasisWeightedSum_nonneg
   exact nonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
 
 /-- Strictly positive combinations of in-range basis images are nonzero and
-split over the reals. -/
-theorem brandenBasisWeightedSum_ne_zero_and_splits
+split over the reals in every ambient degree. -/
+theorem brandenBasisWeightedSum_ne_zero_and_splits_of_pos
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hs : s.Nonempty)
-    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 < a k) :
+    (hs : s.Nonempty) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 < a k) :
     brandenBasisWeightedSum n s a ≠ 0 ∧
       (brandenBasisWeightedSum n s a).Splits := by
   classical
@@ -85,7 +85,7 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits
     simp only [fs, Finset.mem_toList, List.mem_map] at hp
     rcases hp with ⟨k, hk, rfl⟩
     exact prec_C_mul_right
-      (brandenBasisImage_first_prec n k hn (hkn k hk)) (ha k hk).ne'
+      (brandenBasisImage_zero_prec n k (hkn k hk)) (ha k hk).ne'
   have hpos : ∀ p ∈ fs, HasPosLeadingCoeff p := by
     intro p hp
     simp only [fs, Finset.mem_toList, List.mem_map] at hp
@@ -97,19 +97,34 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits
   rw [← hfs_sum]
   exact isRealRooted_sum_of_commonLeftInterleaver hcommon hpos hne
 
+/-- Compatibility wrapper retaining the former ambient-degree hypothesis. -/
+theorem brandenBasisWeightedSum_ne_zero_and_splits
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (_hn : 3 ≤ n) (hs : s.Nonempty)
+    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 < a k) :
+    brandenBasisWeightedSum n s a ≠ 0 ∧
+      (brandenBasisWeightedSum n s a).Splits :=
+  brandenBasisWeightedSum_ne_zero_and_splits_of_pos n s a hs hkn ha
+
+theorem brandenBasisWeightedSum_splits_of_pos
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (hs : s.Nonempty) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 < a k) :
+    (brandenBasisWeightedSum n s a).Splits :=
+  (brandenBasisWeightedSum_ne_zero_and_splits_of_pos n s a hs hkn ha).2
+
 theorem brandenBasisWeightedSum_splits
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hs : s.Nonempty)
+    (_hn : 3 ≤ n) (hs : s.Nonempty)
     (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 < a k) :
     (brandenBasisWeightedSum n s a).Splits :=
-  (brandenBasisWeightedSum_ne_zero_and_splits n s a hn hs hkn ha).2
+  brandenBasisWeightedSum_splits_of_pos n s a hs hkn ha
 
 /-- A nonnegative combination with at least one positive weight is nonzero
-and split. -/
-theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg
+and split in every ambient degree. -/
+theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
-    (ha : ∀ k ∈ s, 0 ≤ a k)
+    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 ≤ a k)
     (hpos : ∃ k ∈ s, 0 < a k) :
     brandenBasisWeightedSum n s a ≠ 0 ∧
       (brandenBasisWeightedSum n s a).Splits := by
@@ -133,58 +148,94 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg
         le_antisymm (le_of_not_gt hk_nonpos) (ha k hks)
       simp [hkzero]
   rw [hsum]
-  apply brandenBasisWeightedSum_ne_zero_and_splits n t a hn ht
+  apply brandenBasisWeightedSum_ne_zero_and_splits_of_pos n t a ht
   · intro k hkt
     exact hkn k (Finset.filter_subset _ _ hkt)
   · intro k hkt
     exact (Finset.mem_filter.mp hkt).2
 
+/-- Compatibility wrapper retaining the former ambient-degree hypothesis. -/
+theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 ≤ a k)
+    (hpos : ∃ k ∈ s, 0 < a k) :
+    brandenBasisWeightedSum n s a ≠ 0 ∧
+      (brandenBasisWeightedSum n s a).Splits :=
+  brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
+    n s a hkn ha hpos
+
+theorem brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 ≤ a k)
+    (hpos : ∃ k ∈ s, 0 < a k) :
+    (brandenBasisWeightedSum n s a).Splits :=
+  (brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
+    n s a hkn ha hpos).2
+
 theorem brandenBasisWeightedSum_splits_of_nonneg
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
     (ha : ∀ k ∈ s, 0 ≤ a k)
     (hpos : ∃ k ∈ s, 0 < a k) :
     (brandenBasisWeightedSum n s a).Splits :=
-  (brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg
-    n s a hn hkn ha hpos).2
+  brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos n s a hkn ha hpos
 
 /-- The first basis image weakly precedes every nonnegative combination. -/
-theorem brandenBasisWeightedSum_prec0
+theorem brandenBasisWeightedSum_prec0_of_le
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (hkn : ∀ k ∈ s, k ≤ n)
     (ha : ∀ k ∈ s, 0 ≤ a k) :
     Prec0 (brandenBasisImage n 0) (brandenBasisWeightedSum n s a) := by
   rw [brandenBasisWeightedSum]
   apply prec0_finsetSum_left_of_nonneg
   · intro k hk
     exact prec0_C_mul_right_of_nonneg
-      (brandenBasisImage_first_prec n k hn (hkn k hk)).toPrec0 (ha k hk)
+      (brandenBasisImage_zero_prec n k (hkn k hk)).toPrec0 (ha k hk)
   · intro k hk
     exact nonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
 
-/-- With at least one positive weight, the weak cone relation is strict. -/
-theorem brandenBasisWeightedSum_prec
+/-- Compatibility wrapper retaining the former ambient-degree hypothesis. -/
+theorem brandenBasisWeightedSum_prec0
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
-    (ha : ∀ k ∈ s, 0 ≤ a k)
+    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 ≤ a k) :
+    Prec0 (brandenBasisImage n 0) (brandenBasisWeightedSum n s a) :=
+  brandenBasisWeightedSum_prec0_of_le n s a hkn ha
+
+/-- With at least one positive weight, the weak cone relation is strict. -/
+theorem brandenBasisWeightedSum_prec_of_le
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 ≤ a k)
     (hpos : ∃ k ∈ s, 0 < a k) :
     Prec (brandenBasisImage n 0) (brandenBasisWeightedSum n s a) := by
-  apply (brandenBasisWeightedSum_prec0 n s a hn hkn ha).toPrec_of_ne
+  apply (brandenBasisWeightedSum_prec0_of_le n s a hkn ha).toPrec_of_ne
   · exact (brandenBasisImage_degree_pos n 0 (by lia)).2.ne_zero
-  · exact (brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg
-      n s a hn hkn ha hpos).1
+  · exact
+      (brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
+        n s a hkn ha hpos).1
 
-/-- The closed nonnegative cone generated by the in-range basis images
-consists of Pólya-frequency polynomials, including the zero polynomial. -/
-theorem brandenBasisWeightedSum_isPFPolynomial
+/-- Compatibility wrapper retaining the former ambient-degree hypothesis. -/
+theorem brandenBasisWeightedSum_prec
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
-    (ha : ∀ k ∈ s, 0 ≤ a k) :
+    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 ≤ a k)
+    (hpos : ∃ k ∈ s, 0 < a k) :
+    Prec (brandenBasisImage n 0) (brandenBasisWeightedSum n s a) :=
+  brandenBasisWeightedSum_prec_of_le n s a hkn ha hpos
+
+/-- In every ambient degree, the closed nonnegative cone generated by the
+in-range basis images consists of Pólya-frequency polynomials, including the
+zero polynomial. -/
+theorem brandenBasisWeightedSum_isPFPolynomial_of_le
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 ≤ a k) :
     IsPFPolynomial (brandenBasisWeightedSum n s a) := by
   by_cases hpos : ∃ k ∈ s, 0 < a k
   · exact IsPFPolynomial.of_realRooted_nonneg
       (brandenBasisWeightedSum_nonneg n s a ha)
-      (brandenBasisWeightedSum_splits_of_nonneg n s a hn hkn ha hpos)
+      (brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos
+        n s a hkn ha hpos)
   · have hzero : brandenBasisWeightedSum n s a = 0 := by
       rw [brandenBasisWeightedSum]
       apply Finset.sum_eq_zero
@@ -195,6 +246,14 @@ theorem brandenBasisWeightedSum_isPFPolynomial
       simp [hkzero]
     rw [hzero]
     exact IsPFPolynomial.zero
+
+/-- Compatibility wrapper retaining the former ambient-degree hypothesis. -/
+theorem brandenBasisWeightedSum_isPFPolynomial
+    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
+    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
+    (ha : ∀ k ∈ s, 0 ≤ a k) :
+    IsPFPolynomial (brandenBasisWeightedSum n s a) :=
+  brandenBasisWeightedSum_isPFPolynomial_of_le n s a hkn ha
 
 end Real
 
