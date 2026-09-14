@@ -12,56 +12,6 @@ equivariance under injective relabelings that preserve every comparison.
 
 namespace RealRooted.MinimumInsertionWord
 
-theorem nodup_insertIdx {a : Nat} {w : List Nat} (hw : w.Nodup)
-    (ha : a ∉ w) {r : Nat} (hr : r ≤ w.length) :
-    (w.insertIdx r a).Nodup := by
-  induction r generalizing w with
-  | zero => simpa using List.nodup_cons.mpr ⟨ha, hw⟩
-  | succ r ih =>
-      cases w with
-      | nil => simp at hr
-      | cons b w =>
-          rw [List.nodup_cons] at hw
-          have haTail : a ∉ w := fun hmem => ha (by simp [hmem])
-          have hrTail : r ≤ w.length := by simpa using hr
-          simp only [List.insertIdx_succ_cons, List.nodup_cons]
-          refine ⟨?_, ih hw.2 haTail hrTail⟩
-          intro hb
-          rcases List.eq_or_mem_of_mem_insertIdx hb with hba | hbTail
-          · exact ha (by simp [hba])
-          · exact hw.1 hbTail
-
-theorem nodup_raise {w : List Nat} (hw : w.Nodup) : (raise w).Nodup := by
-  exact hw.map Nat.succ_injective
-
-theorem nodup_step {w : List Nat} (hw : w.Nodup) (hpos : IsPositive w)
-    {r : Nat}
-    (hr : r ≤ w.length) : (step r w).Nodup := by
-  apply nodup_insertIdx (nodup_raise hw)
-  · intro hone
-    rw [raise, List.mem_map] at hone
-    obtain ⟨a, ha, hsucc⟩ := hone
-    have hapos := hpos a ha
-    lia
-  · simpa [raise] using hr
-
-theorem Nodup.decodeFrom {w code : List Nat} (hw : w.Nodup)
-    (hpos : IsPositive w)
-    (hcode : ValidFrom w.length code) : (decodeFrom w code).Nodup := by
-  induction code generalizing w with
-  | nil => exact hw
-  | cons r code ih =>
-      have hstep := nodup_step hw hpos hcode.1
-      have hlength := length_step hcode.1
-      rw [decodeFrom_cons]
-      apply ih hstep (isPositive_step r w)
-      rw [hlength]
-      exact hcode.2
-
-theorem Nodup.decode {code : List Nat} (hcode : ValidFrom 0 code) :
-    (decode code).Nodup := by
-  exact Nodup.decodeFrom (by simp) (by simp [IsPositive]) hcode
-
 /-- Values following a non-ascent, represented as a finite support. On a
 nodup word these are exactly its descent bottoms. -/
 def comparisonBottomSupport : List Nat → Finset Nat

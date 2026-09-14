@@ -40,6 +40,52 @@ theorem isPositive_step (r : Nat) (w : List Nat) : IsPositive (step r w) := by
   · exact Nat.zero_lt_one
   · exact isPositive_raise w x hx
 
+/-- Inserting a fresh value into a nodup list preserves nodupness. -/
+theorem nodup_insertIdx {a : Nat} {w : List Nat} (hw : w.Nodup)
+    (ha : a ∉ w) {r : Nat} (hr : r ≤ w.length) :
+    (w.insertIdx r a).Nodup := by
+  induction r generalizing w with
+  | zero => simpa using List.nodup_cons.mpr ⟨ha, hw⟩
+  | succ r ih =>
+      cases w with
+      | nil => simp at hr
+      | cons b w =>
+          rw [List.nodup_cons] at hw
+          have haTail : a ∉ w := fun hmem => ha (by simp [hmem])
+          have hrTail : r ≤ w.length := by simpa using hr
+          simp only [List.insertIdx_succ_cons, List.nodup_cons]
+          refine ⟨?_, ih hw.2 haTail hrTail⟩
+          intro hb
+          rcases List.eq_or_mem_of_mem_insertIdx hb with hba | hbTail
+          · exact ha (by simp [hba])
+          · exact hw.1 hbTail
+
+/-- Raising every entry preserves nodupness. -/
+theorem nodup_raise {w : List Nat} (hw : w.Nodup) : (raise w).Nodup := by
+  induction w with
+  | nil => simp [raise]
+  | cons a w ih =>
+      rw [List.nodup_cons] at hw
+      rw [raise, List.map_cons, List.nodup_cons]
+      constructor
+      · intro ha
+        rw [List.mem_map] at ha
+        obtain ⟨b, hb, hab⟩ := ha
+        have hba : b = a := Nat.succ.inj hab
+        exact hw.1 (hba ▸ hb)
+      · exact ih hw.2
+
+/-- A valid minimum insertion into a positive nodup word remains nodup. -/
+theorem nodup_step {w : List Nat} (hw : w.Nodup) (hpos : IsPositive w)
+    {r : Nat} (hr : r ≤ w.length) : (step r w).Nodup := by
+  apply nodup_insertIdx (nodup_raise hw)
+  · intro hone
+    rw [raise, List.mem_map] at hone
+    obtain ⟨a, ha, hsucc⟩ := hone
+    have hapos := hpos a ha
+    lia
+  · simpa [raise] using hr
+
 /-- Validity of a suffix of insertion positions beginning with a word of
 length `n`. -/
 def ValidFrom : Nat → List Nat → Prop
@@ -228,6 +274,25 @@ theorem length_decodeFrom {w code : List Nat}
 theorem length_decode {code : List Nat} (hcode : ValidFrom 0 code) :
     (decode code).length = code.length := by
   simpa [decode] using length_decodeFrom (w := []) (code := code) hcode
+
+/-- Decoding a valid suffix from a positive nodup word preserves nodupness. -/
+theorem Nodup.decodeFrom {w code : List Nat} (hw : w.Nodup)
+    (hpos : IsPositive w) (hcode : ValidFrom w.length code) :
+    (decodeFrom w code).Nodup := by
+  induction code generalizing w with
+  | nil => exact hw
+  | cons r code ih =>
+      have hstep := nodup_step hw hpos hcode.1
+      have hlength := length_step hcode.1
+      rw [decodeFrom_cons]
+      apply ih hstep (isPositive_step r w)
+      rw [hlength]
+      exact hcode.2
+
+/-- Decoding a valid insertion code produces a nodup word. -/
+theorem Nodup.decode {code : List Nat} (hcode : ValidFrom 0 code) :
+    (decode code).Nodup := by
+  exact Nodup.decodeFrom (by simp) (by simp [IsPositive]) hcode
 
 /-- A common suffix transports a swap by the length of that suffix. -/
 theorem decodeFrom_map_swap (code w : List Nat) (a b : Nat)

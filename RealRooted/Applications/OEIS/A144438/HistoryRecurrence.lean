@@ -14,8 +14,82 @@ minimum-insertion identities remain in the combinatorics namespace.
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
+open MinimumInsertionWord
 
 noncomputable section
+
+/-- A normal history step is the shifted old fiber polynomial plus the
+shifted insertion core summed over the old fiber. -/
+theorem historyFiberPolynomial_normal_core
+    {R : Type*} [CommRing R] {n : Nat}
+    (H : DecoExceptionalHistory (n + 2)) :
+    historyFiberPolynomial (R := R) (DecoExceptionalHistory.normal H) =
+      MvPolynomial.rename MinimumInsertionWord.succEmbedding
+          (historyFiberPolynomial (R := R) H) +
+        MvPolynomial.X 1 *
+          MvPolynomial.rename MinimumInsertionWord.succEmbedding
+            (∑ c : DecoHistoryFiber H,
+              MinimumInsertionWord.comparisonBottomInsertionCore
+                (R := R) c.1.1.inverseWord.tail) := by
+  unfold historyFiberPolynomial
+  calc
+    (∑ c : DecoHistoryFiber (DecoExceptionalHistory.normal H),
+        MinimumInsertionWord.comparisonBottomMonomial c.1.1.inverseWord) =
+        ∑ p : DecoNormalHistoryExtension H,
+          MinimumInsertionWord.comparisonBottomMonomial
+            (normalHistoryExtension H p).1.1.inverseWord := by
+      apply Fintype.sum_equiv (normalHistoryExtensionEquiv H).symm
+      intro c
+      have hc := (normalHistoryExtensionEquiv H).apply_symm_apply c
+      change normalHistoryExtension H
+        ((normalHistoryExtensionEquiv H).symm c) = c at hc
+      rw [hc]
+    _ = ∑ p : Σ _c : DecoHistoryFiber H,
+          {r : Fin (n + 3) // (r : Nat) ≠ 1},
+          MinimumInsertionWord.comparisonBottomMonomial
+            (normalHistoryExtension H
+              ((normalHistoryExtensionSigmaEquiv H).symm p)).1.1.inverseWord := by
+      apply Fintype.sum_equiv (normalHistoryExtensionSigmaEquiv H)
+      intro p
+      have hp := (normalHistoryExtensionSigmaEquiv H).symm_apply_apply p
+      rw [hp]
+    _ = ∑ c : DecoHistoryFiber H,
+          ∑ r : {r : Fin (n + 3) // (r : Nat) ≠ 1},
+            MinimumInsertionWord.comparisonBottomMonomial
+              (MinimumInsertionWord.step r.1 c.1.1.inverseWord) := by
+      rw [Fintype.sum_sigma]
+      apply Finset.sum_congr rfl
+      intro c hc
+      apply Finset.sum_congr rfl
+      intro r hr
+      simp [normalHistoryExtensionSigmaEquiv, normalHistoryExtension]
+    _ = ∑ c : DecoHistoryFiber H,
+          (MvPolynomial.rename MinimumInsertionWord.succEmbedding
+              (MinimumInsertionWord.comparisonBottomMonomial
+                c.1.1.inverseWord) +
+            MvPolynomial.X 1 *
+              MvPolynomial.rename MinimumInsertionWord.succEmbedding
+                (MinimumInsertionWord.comparisonBottomInsertionCore
+                  (R := R) c.1.1.inverseWord.tail)) := by
+      apply Finset.sum_congr rfl
+      intro c hc
+      have hlength := c.1.1.length_inverseWord
+      have hsum :=
+        sum_val_ne_one_comparisonBottomMonomial_step_of_startsWithAscent
+          (R := R) c.1.1.inverseWord_isPositive c.1.1.inverseWord_nodup
+            (c.1.1.inverseWord_startsWithAscent c.1.2 (by lia))
+      rw [hlength] at hsum
+      simpa only [Nat.add_assoc] using hsum
+    _ = MvPolynomial.rename MinimumInsertionWord.succEmbedding
+          (∑ c : DecoHistoryFiber H,
+            MinimumInsertionWord.comparisonBottomMonomial
+              c.1.1.inverseWord) +
+        MvPolynomial.X 1 *
+          MvPolynomial.rename MinimumInsertionWord.succEmbedding
+            (∑ c : DecoHistoryFiber H,
+              MinimumInsertionWord.comparisonBottomInsertionCore
+                (R := R) c.1.1.inverseWord.tail) := by
+      rw [Finset.sum_add_distrib, map_sum, map_sum, Finset.mul_sum]
 
 /-- An exceptional history step shifts every old bottom variable by two and
 adjoins the new bottom variable `X 2`. -/

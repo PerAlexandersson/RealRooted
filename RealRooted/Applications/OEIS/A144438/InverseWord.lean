@@ -52,6 +52,11 @@ theorem inverseWord_isPositive {h : Nat} (c : DecoCode h) :
     MinimumInsertionWord.IsPositive c.inverseWord := by
   exact MinimumInsertionWord.IsPositive.decode c.entryList
 
+/-- Every decoded chronological word has distinct labels. -/
+theorem inverseWord_nodup {h : Nat} (c : DecoCode h) :
+    c.inverseWord.Nodup := by
+  exact RealRooted.MinimumInsertionWord.Nodup.decode c.validFrom_entryList
+
 @[simp] theorem length_inverseWordPrefix {h : Nat} (c : DecoCode h)
     {j : Nat} (hj : j ≤ h) :
     (c.inverseWordPrefix j).length = j := by

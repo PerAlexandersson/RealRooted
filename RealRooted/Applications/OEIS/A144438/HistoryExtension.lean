@@ -119,6 +119,18 @@ abbrev DecoNormalHistoryExtension {n : Nat}
     (H : DecoExceptionalHistory (n + 2)) :=
   {p : DecoHistoryFiber H × Fin (n + 3) // (p.2 : Nat) ≠ 1}
 
+/-- Separate a normal history extension into its old fiber element and its
+bounded nonexceptional final entry. -/
+def normalHistoryExtensionSigmaEquiv {n : Nat}
+    (H : DecoExceptionalHistory (n + 2)) :
+    DecoNormalHistoryExtension H ≃
+      Σ _c : DecoHistoryFiber H,
+        {r : Fin (n + 3) // (r : Nat) ≠ 1} where
+  toFun p := ⟨p.1.1, ⟨p.1.2, p.2⟩⟩
+  invFun p := ⟨⟨p.1, p.2.1⟩, p.2.2⟩
+  left_inv p := by cases p; rfl
+  right_inv p := by cases p; rfl
+
 noncomputable instance {n : Nat} (H : DecoExceptionalHistory (n + 2)) :
     Fintype (DecoNormalHistoryExtension H) := by
   classical
