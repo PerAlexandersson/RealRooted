@@ -34,6 +34,21 @@ def weightedSum : List (ℝ × ℝ[X]) → ℝ[X]
 @[simp] lemma weightedSum_cons (a : ℝ) (p : ℝ[X]) (l : List (ℝ × ℝ[X])) :
     weightedSum ((a, p) :: l) = C a * p + weightedSum l := rfl
 
+/-- A weighted sum is the ordinary sum of its scalar-multiplied entries. -/
+theorem weightedSum_eq_sum_map (l : List (ℝ × ℝ[X])) :
+    weightedSum l = (l.map fun ap => C ap.1 * ap.2).sum := by
+  induction l with
+  | nil => rfl
+  | cons ap l ih =>
+      rcases ap with ⟨a, p⟩
+      simp [ih]
+
+/-- Finite-function form of `weightedSum_eq_sum_map`. -/
+theorem weightedSum_ofFn {n : ℕ} (w : Fin n → ℝ × ℝ[X]) :
+    weightedSum (List.ofFn w) = ∑ i, C (w i).1 * (w i).2 := by
+  rw [weightedSum_eq_sum_map]
+  rw [← List.ofFn_comp', List.sum_ofFn]
+
 @[simp] lemma weightedSum_map_one (l : List ℝ[X]) :
     weightedSum (l.map (fun p => ((1 : ℝ), p))) = l.sum := by
   induction l <;> simp [weightedSum_cons, *]
