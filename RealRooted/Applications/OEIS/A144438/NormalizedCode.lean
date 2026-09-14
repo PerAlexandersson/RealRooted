@@ -34,6 +34,13 @@ instance {h : ℕ} : CoeFun (DecoCode h) fun _ => Fin h → ℕ :=
           funext j
           exact hentry j
 
+/-- The canonical chronological code of height two. -/
+def seed : DecoCode 2 where
+  entry := fun _ => 0
+  entry_lt := fun j => Nat.zero_lt_succ j.1
+
+@[simp] theorem seed_apply (j : Fin 2) : seed j = 0 := rfl
+
 end DecoCode
 
 /-- A normalized chronological code has no entry equal to one. -/

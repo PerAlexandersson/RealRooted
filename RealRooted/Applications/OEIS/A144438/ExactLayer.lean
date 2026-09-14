@@ -45,6 +45,17 @@ def decoLayerBottomEmbedding (n : Nat) : Fin n ↪ Nat where
       decoLayerBottomEmbedding n i + 2 := by
   rfl
 
+/-- The ordinary-label form of the Euler/partial-derivative bracket in a
+normal exact-layer step. -/
+def decoNormalBottomCore {R : Type*} [CommRing R] (n : Nat)
+    (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
+  MvPolynomial.C (n + 1 : R) * Q -
+      ∑ i : Fin n,
+        MvPolynomial.X (decoLayerBottomEmbedding n i) *
+          MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q +
+    ∑ i : Fin n,
+      MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q
+
 /-- Relabel the old bottom variables upward by one in a normal step. -/
 def decoNormalRename {n : ℕ} : DecoLayerCoord n → DecoLayerCoord (n + 1)
   | none => none
@@ -134,6 +145,44 @@ theorem dehomogenize_decoNormalLayerStep {R : Type*} [CommRing R] {n : Nat}
   simp_rw [MvPolynomial.dehomogenize_rename_option_map,
     MvPolynomial.dehomogenize_pderiv_some]
   simp
+
+/-- Embedding ordinary layer coordinates into positive natural labels
+commutes with a normal step. -/
+theorem rename_decoLayerBottomEmbedding_dehomogenize_normal
+    {R : Type*} [CommRing R] {n : Nat}
+    {P : MvPolynomial (DecoLayerCoord n) R}
+    (hP : P.IsHomogeneous (n + 1)) :
+    MvPolynomial.rename (decoLayerBottomEmbedding (n + 1))
+        (MvPolynomial.dehomogenize (decoNormalLayerStep P)) =
+      MvPolynomial.rename (fun i : Nat => i + 1)
+          (MvPolynomial.rename (decoLayerBottomEmbedding n)
+            (MvPolynomial.dehomogenize P)) +
+        MvPolynomial.X 1 *
+          MvPolynomial.rename (fun i : Nat => i + 1)
+            (decoNormalBottomCore n
+              (MvPolynomial.rename (decoLayerBottomEmbedding n)
+                (MvPolynomial.dehomogenize P))) := by
+  rw [dehomogenize_decoNormalLayerStep hP]
+  unfold decoNormalBottomCore MvPolynomial.eulerOperator
+  simp only [map_add, map_mul, map_sub, map_sum,
+    MvPolynomial.rename_X, MvPolynomial.rename_rename]
+  have hcomp :
+      (decoLayerBottomEmbedding (n + 1) : Fin (n + 1) → Nat) ∘ Fin.succ =
+        (fun i : Nat => i + 1) ∘
+          (decoLayerBottomEmbedding n : Fin n → Nat) := by
+    funext i
+    rfl
+  rw [hcomp]
+  simp_rw [MvPolynomial.pderiv_rename
+    (decoLayerBottomEmbedding n).injective]
+  simp only [MvPolynomial.rename_rename]
+  have hlabel (i : Fin n) :
+      decoLayerBottomEmbedding n i + 1 =
+        decoLayerBottomEmbedding (n + 1) i.succ := by
+    rfl
+  simp_rw [hlabel]
+  simp only [decoLayerBottomEmbedding_apply,
+    map_natCast, map_one, Fin.val_zero, Nat.zero_add]
 
 /-- Dehomogenizing the exceptional layer step shifts the old ordinary
 variables by two and adjoins the new bottom variable `u₂`. -/

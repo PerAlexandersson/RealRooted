@@ -88,6 +88,16 @@ theorem mem_bounds {h j : ℕ} (H : DecoExceptionalHistory h)
     (hj : j ∈ H.starts) : 3 ≤ j ∧ j < h :=
   ⟨(H.admissible.2 j hj).1, (H.admissible.2 j hj).2.1⟩
 
+/-- Every height-two history is the seed history. -/
+theorem eq_seed (H : DecoExceptionalHistory 2) : H = seed := by
+  apply DecoExceptionalHistory.ext
+  ext j
+  constructor
+  · intro hj
+    have := H.mem_bounds hj
+    lia
+  · simp
+
 theorem succ_not_mem {h j : ℕ} (H : DecoExceptionalHistory h)
     (hj : j ∈ H.starts) : j + 1 ∉ H.starts :=
   (H.admissible.2 j hj).2.2

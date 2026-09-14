@@ -61,6 +61,43 @@ theorem card_comparisonBottomSupport_le_length {w : List Nat}
       Finset.card_le_card (comparisonBottomSupport_subset_toFinset w)
     _ = w.length := List.toFinset_card_of_nodup hw
 
+/-- Removing the first entry of an initial-ascent word preserves its
+comparison-bottom support. -/
+theorem comparisonBottomSupport_tail_eq_of_startsWithAscent
+    {w : List Nat} (hw : StartsWithAscent w) :
+    comparisonBottomSupport w.tail = comparisonBottomSupport w := by
+  cases w with
+  | nil => simp [StartsWithAscent] at hw
+  | cons a w =>
+      cases w with
+      | nil => simp [StartsWithAscent] at hw
+      | cons b w =>
+          change a < b at hw
+          simp [comparisonBottomSupport, hw]
+
+/-- A bounded old support remains bounded after one valid insertion. -/
+theorem mem_comparisonBottomSupport_step_bounds {w : List Nat}
+    (hpos : IsPositive w) {r n x : Nat} (hr : r ≤ w.length)
+    (hbound : ∀ y ∈ comparisonBottomSupport w, y ≤ n)
+    (hx : x ∈ comparisonBottomSupport (step r w)) :
+    1 ≤ x ∧ x ≤ n + 1 := by
+  have hxpos : 0 < x := by
+    apply Nat.pos_of_ne_zero
+    intro hxzero
+    subst x
+    exact zero_not_mem_comparisonBottomSupport (isPositive_step r w) hx
+  constructor
+  · exact hxpos
+  · by_cases hxone : x = 1
+    · lia
+    · have hxgt : 1 < x := by lia
+      have hmem : x - 1 ∈ comparisonBottomSupport w := by
+        apply succ_mem_comparisonBottomSupport_step_imp hpos hr (by lia)
+        rw [Nat.sub_add_cancel (by lia)]
+        exact hx
+      have := hbound (x - 1) hmem
+      lia
+
 /-- Insertion in the front only shifts the old comparison bottoms. -/
 theorem comparisonBottomSupport_step_zero {w : List Nat}
     (hpos : IsPositive w) :
@@ -534,6 +571,23 @@ theorem comparisonBottomSupport_exceptional_pair {w : List Nat}
         (comparisonBottomSupport ((b :: w).map (fun x => x + 2))) = _
       rw [hmap, comparisonBottomSupport_raise,
         comparisonBottomSupport_raise, Finset.map_map]
+
+/-- The exceptional pair shifts a bounded support by two and adds bottom two. -/
+theorem mem_comparisonBottomSupport_exceptional_pair_bounds
+    {w : List Nat} (hw : StartsWithAscent w) {n x : Nat}
+    (hbound : ∀ y ∈ comparisonBottomSupport w, y ≤ n)
+    (hx : x ∈ comparisonBottomSupport (step 0 (step 1 w))) :
+    1 ≤ x ∧ x ≤ n + 2 := by
+  rw [comparisonBottomSupport_exceptional_pair hw,
+    Finset.mem_insert] at hx
+  rcases hx with rfl | hx
+  · lia
+  · rw [Finset.mem_map] at hx
+    obtain ⟨y, hy, hxy⟩ := hx
+    change y + 2 = x at hxy
+    subst x
+    have := hbound y hy
+    constructor <;> lia
 
 /-- The comparison-bottom monomial of an exceptional pair is the shifted old
 monomial times the new bottom variable `X 2`. -/

@@ -30,11 +30,34 @@ noncomputable instance {n : Nat} (H : DecoExceptionalHistory (n + 2)) :
   classical
   exact Fintype.ofFinite (DecoHistoryFiber H)
 
+/-- The canonical element of the seed history fiber. -/
+def seedHistoryFiberCode : DecoHistoryFiber DecoExceptionalHistory.seed :=
+  ⟨⟨DecoCode.seed, DecoCode.seed_isAdmissible⟩, by
+    exact DecoCode.exceptionalHistory_seed⟩
+
+/-- The seed history fiber contains only its canonical height-two code. -/
+theorem eq_seedHistoryFiberCode
+    (c : DecoHistoryFiber DecoExceptionalHistory.seed) :
+    c = seedHistoryFiberCode := by
+  apply Subtype.ext
+  apply Subtype.ext
+  exact DecoCode.eq_seed_of_isAdmissible c.1.1 c.1.2
+
 /-- The comparison-bottom enumerator of one exact exceptional-history fiber. -/
 def historyFiberPolynomial {R : Type*} [CommSemiring R] {n : Nat}
     (H : DecoExceptionalHistory (n + 2)) : MvPolynomial Nat R :=
   ∑ c : DecoHistoryFiber H,
     MinimumInsertionWord.comparisonBottomMonomial c.1.1.inverseWord
+
+@[simp] theorem historyFiberPolynomial_seed
+    {R : Type*} [CommSemiring R] :
+    historyFiberPolynomial (R := R) DecoExceptionalHistory.seed = 1 := by
+  unfold historyFiberPolynomial
+  rw [Fintype.sum_eq_single seedHistoryFiberCode]
+  · simp [seedHistoryFiberCode, MinimumInsertionWord.comparisonBottomMonomial,
+      MinimumInsertionWord.comparisonBottomSupport]
+  · intro c hc
+    exact (hc (eq_seedHistoryFiberCode c)).elim
 
 /-- The admissible-code enumerator is the sum of its exact-history fibers. -/
 theorem admissibleCodePolynomial_eq_sum_historyFiberPolynomial

@@ -38,6 +38,11 @@ theorem validFrom_entryList {h : Nat} (c : DecoCode h) :
 def inverseWord {h : Nat} (c : DecoCode h) : List Nat :=
   MinimumInsertionWord.decode c.entryList
 
+@[simp] theorem inverseWord_seed : seed.inverseWord = [1, 2] := by
+  simp [inverseWord, entryList, seed, MinimumInsertionWord.decode,
+    MinimumInsertionWord.decodeFrom, MinimumInsertionWord.step,
+    MinimumInsertionWord.raise]
+
 /-- The inverse word after only the first `j` chronological entries. -/
 def inverseWordPrefix {h : Nat} (c : DecoCode h) (j : Nat) : List Nat :=
   MinimumInsertionWord.decode (c.entryList.take j)

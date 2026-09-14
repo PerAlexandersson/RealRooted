@@ -40,6 +40,24 @@ def IsAdmissible {h : Nat} (c : DecoCode h) : Prop :=
   ∀ j, c j = 1 →
     2 ≤ j.1 ∧ ∃ hj : j.1 + 1 < h, c ⟨j.1 + 1, hj⟩ = 0
 
+theorem seed_isAdmissible : seed.IsAdmissible := by
+  intro j hj
+  simp at hj
+
+/-- Every admissible height-two code is the seed code. -/
+theorem eq_seed_of_isAdmissible (c : DecoCode 2) (hc : c.IsAdmissible) :
+    c = seed := by
+  ext j
+  have hjlt := c.entry_lt j
+  have hjval : j.1 = 0 ∨ j.1 = 1 := by lia
+  rw [seed_apply]
+  rcases hjval with hjzero | hjone
+  · lia
+  · by_contra hcne
+    have hcone : c j = 1 := by lia
+    have := (hc j hcone).1
+    lia
+
 /-- The zero-based starts of the exceptional pairs in a chronological code. -/
 def exceptionalStarts {h : Nat} (c : DecoCode h) : Finset (Fin h) :=
   Finset.univ.filter fun j => c j = 1
@@ -102,6 +120,12 @@ def exceptionalHistory {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible)
     exact (mem_exceptionalStarts c j).mp hi
   · intro hj
     exact ⟨j, (mem_exceptionalStarts c j).mpr hj, rfl⟩
+
+@[simp] theorem exceptionalHistory_seed :
+    seed.exceptionalHistory seed_isAdmissible (by lia) =
+      DecoExceptionalHistory.seed := by
+  apply DecoExceptionalHistory.ext
+  simp [DecoCode.exceptionalHistory_starts, exceptionalStarts, seed]
 
 end DecoCode
 
