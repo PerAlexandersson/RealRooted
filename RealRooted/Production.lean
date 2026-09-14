@@ -50,6 +50,7 @@ import RealRooted.Basic.PolynomialFacts
 import RealRooted.Basic.ProperPosition
 import RealRooted.Basic.RootLists
 import RealRooted.BasisTransform
+import RealRooted.BernsteinCone
 import RealRooted.Bezoutian
 import RealRooted.Bezoutian.ComplexRoots
 import RealRooted.Bezoutian.LowDegree
@@ -640,6 +641,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Chow
