@@ -242,6 +242,59 @@ theorem MvRealStable.sum_pderiv_pencil
   simpa [directionalPDeriv] using
     hP.directionalPDeriv_pencil (fun _ => (1 : ℝ)) fun _ => zero_le_one
 
+/-- Renaming a nonnegative directional-derivative pencil into any target
+coordinates preserves upper-half-plane stability. Coordinate identification is
+allowed; neither injectivity nor freshness is needed. -/
+theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil_rename
+    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
+    (hP : MvUpperHalfPlaneStable P) (c : σ → ℝ)
+    (hc : ∀ i, 0 ≤ c i) (f : σ → τ) (z : τ) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.rename f P + MvPolynomial.X z *
+        MvPolynomial.rename f
+          (directionalPDeriv (fun i => (c i : ℂ)) P)) := by
+  let g : Option σ → τ := fun o => o.elim z f
+  have h := (hP.directionalPDeriv_pencil c hc).rename (f := g)
+  simpa [g, MvPolynomial.rename_rename, Function.comp_def] using h
+
+/-- The target-coordinate version of the all-ones directional-derivative
+pencil. -/
+theorem MvUpperHalfPlaneStable.sum_pderiv_pencil_rename
+    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
+    (hP : MvUpperHalfPlaneStable P) (f : σ → τ) (z : τ) :
+    MvUpperHalfPlaneStable
+      (MvPolynomial.rename f P + MvPolynomial.X z *
+        MvPolynomial.rename f (∑ i : σ, MvPolynomial.pderiv i P)) := by
+  simpa [directionalPDeriv] using
+    hP.directionalPDeriv_pencil_rename (fun _ => (1 : ℝ))
+      (fun _ => zero_le_one) f z
+
+/-- The real target-coordinate version of a nonnegative
+directional-derivative pencil. -/
+theorem MvRealStable.directionalPDeriv_pencil_rename
+    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) (c : σ → ℝ) (hc : ∀ i, 0 ≤ c i)
+    (f : σ → τ) (z : τ) :
+    MvRealStable
+      (MvPolynomial.rename f P + MvPolynomial.X z *
+        MvPolynomial.rename f (directionalPDeriv c P)) := by
+  unfold MvRealStable at hP ⊢
+  have h := hP.directionalPDeriv_pencil_rename c hc f z
+  simpa [complexifyMv, directionalPDeriv, MvPolynomial.map_rename,
+    MvPolynomial.pderiv_map] using h
+
+/-- The real target-coordinate version of the all-ones
+directional-derivative pencil. -/
+theorem MvRealStable.sum_pderiv_pencil_rename
+    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) (f : σ → τ) (z : τ) :
+    MvRealStable
+      (MvPolynomial.rename f P + MvPolynomial.X z *
+        MvPolynomial.rename f (∑ i : σ, MvPolynomial.pderiv i P)) := by
+  simpa [directionalPDeriv] using
+    hP.directionalPDeriv_pencil_rename (fun _ => (1 : ℝ))
+      (fun _ => zero_le_one) f z
+
 /-- A partial derivative of a coordinatewise affine stable polynomial is zero
 or stable. -/
 theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
