@@ -1325,6 +1325,7 @@ import RealRooted.Applications.OEIS.A144438.DecorationOrbit
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.Applications.OEIS.A144438.FiberStability
 import RealRooted.Applications.OEIS.A144438.FiberPartition
+import RealRooted.Applications.OEIS.A144438.HistoryPartition
 import RealRooted.Applications.OEIS.A144438.InverseWord
 import RealRooted.Applications.OEIS.A144438.NormalizedCode
 import RealRooted.Applications.OEIS.A144438.Weighted

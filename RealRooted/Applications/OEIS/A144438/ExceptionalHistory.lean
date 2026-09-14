@@ -1,4 +1,5 @@
 import Mathlib.Tactic
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # Exceptional histories for the deco construction
@@ -90,6 +91,31 @@ theorem mem_bounds {h j : ℕ} (H : DecoExceptionalHistory h)
 theorem succ_not_mem {h j : ℕ} (H : DecoExceptionalHistory h)
     (hj : j ∈ H.starts) : j + 1 ∉ H.starts :=
   (H.admissible.2 j hj).2.2
+
+/-- Encode a history by membership of its bounded possible starts. -/
+def membershipCode {h : Nat} (H : DecoExceptionalHistory h) : Fin h → Bool :=
+  fun j => decide (j.1 ∈ H.starts)
+
+theorem membershipCode_injective {h : Nat} :
+    Function.Injective
+      (membershipCode : DecoExceptionalHistory h → Fin h → Bool) := by
+  intro H K hcode
+  apply ext
+  ext r
+  constructor
+  · intro hr
+    have hrBound := (mem_bounds H hr).2
+    have hvalue := congrFun hcode (⟨r, hrBound⟩ : Fin h)
+    simpa [membershipCode, hr] using hvalue
+  · intro hr
+    have hrBound := (mem_bounds K hr).2
+    have hvalue := congrFun hcode (⟨r, hrBound⟩ : Fin h)
+    simpa [membershipCode, hr] using hvalue.symm
+
+noncomputable instance instFintype (h : Nat) :
+    Fintype (DecoExceptionalHistory h) := by
+  classical
+  exact Fintype.ofInjective membershipCode membershipCode_injective
 
 theorem last_not_mem_normal {h : ℕ} (H : DecoExceptionalHistory h) :
     h ∉ (normal H).starts := by
