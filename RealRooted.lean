@@ -76,6 +76,7 @@ import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenLeite.OptionalRiseMatrix
 import RealRooted.BrandenVecchi.Chow
 import RealRooted.BrandenVecchi.ChowContinuity
+import RealRooted.BrandenVecchi.ChowFullProjective
 import RealRooted.BrandenVecchi.ChowGeometricScaling
 import RealRooted.BrandenVecchi.ChowInfinitePF
 import RealRooted.BrandenVecchi.ChowInterlacing
