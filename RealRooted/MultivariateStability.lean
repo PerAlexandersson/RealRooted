@@ -371,6 +371,14 @@ theorem MvUpperHalfPlaneStable.one {sigma : Type*} :
   intro z hz
   simp
 
+/-- Each coordinate variable is upper-half-plane stable. -/
+theorem MvUpperHalfPlaneStable.X {sigma : Type*} (i : sigma) :
+    MvUpperHalfPlaneStable (MvPolynomial.X i : MvPolynomial sigma ℂ) := by
+  intro z hz hzero
+  have him := congrArg Complex.im hzero
+  simp only [MvPolynomial.eval_X, Complex.zero_im] at him
+  exact (ne_of_gt (hz i)) him
+
 /-- Arbitrary scalar multiplication preserves weak stability. -/
 theorem MvUpperHalfPlaneStableOrZero.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
@@ -491,6 +499,30 @@ theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
   intro z hz
   rw [MvPolynomial.eval_rename]
   exact hP (z ∘ f) fun i => hz (f i)
+
+/-- Multiplication preserves multivariate real stability. -/
+theorem MvRealStable.mul {sigma : Type*}
+    {P Q : MvPolynomial sigma ℝ} (hP : MvRealStable P)
+    (hQ : MvRealStable Q) : MvRealStable (P * Q) := by
+  unfold MvRealStable complexifyMv at hP hQ ⊢
+  rw [map_mul]
+  exact hP.mul hQ
+
+/-- Each real coordinate variable is multivariate real stable. -/
+theorem MvRealStable.X {sigma : Type*} (i : sigma) :
+    MvRealStable (MvPolynomial.X i : MvPolynomial sigma ℝ) := by
+  unfold MvRealStable complexifyMv
+  rw [MvPolynomial.map_X]
+  exact MvUpperHalfPlaneStable.X i
+
+/-- Renaming variables preserves multivariate real stability. -/
+theorem MvRealStable.rename
+    {sigma tau : Type*} {P : MvPolynomial sigma ℝ}
+    (hP : MvRealStable P) (f : sigma → tau) :
+    MvRealStable (MvPolynomial.rename f P) := by
+  unfold MvRealStable complexifyMv at hP ⊢
+  rw [MvPolynomial.map_rename]
+  exact hP.rename
 
 /-- Translating each variable by a real constant preserves upper-half-plane
 stability. -/

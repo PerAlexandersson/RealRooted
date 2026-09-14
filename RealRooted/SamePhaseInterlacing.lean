@@ -116,15 +116,6 @@ theorem commonPhaseRestriction_ne_zero {σ : Type*}
   have hpos := mv_eval_pos_of_hasNonnegCoeffs hP hP0 wt hwt
   linarith
 
-/-- Renaming variables preserves multivariate real stability. -/
-theorem MvRealStable.rename
-    {σ τ : Type*} {P : MvPolynomial σ ℝ}
-    (hP : MvRealStable P) (f : σ → τ) :
-    MvRealStable (MvPolynomial.rename f P) := by
-  unfold MvRealStable complexifyMv at hP ⊢
-  rw [MvPolynomial.map_rename]
-  exact hP.rename
-
 @[simp] theorem eval_complexify_commonPhaseRestriction
     {σ : Type*} (wt : σ → ℝ) (P : MvPolynomial σ ℝ) (z : ℂ) :
     (complexify (commonPhaseRestriction wt P)).eval z =

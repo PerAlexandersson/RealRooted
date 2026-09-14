@@ -292,6 +292,31 @@ theorem MvUpperHalfPlaneStable.dehomogenize
     simpa [base] using hzero
   exact hne (by rw [hscale, hbase, mul_zero])
 
+/-- Complexification commutes with setting the distinguished homogenizing
+variable to one. -/
+@[simp] theorem complexifyMv_dehomogenize {sigma : Type*}
+    (P : MvPolynomial (Option sigma) ℝ) :
+    complexifyMv (MvPolynomial.dehomogenize P) =
+      MvPolynomial.dehomogenize (complexifyMv P) := by
+  unfold complexifyMv
+  induction P using MvPolynomial.induction_on with
+  | C r => simp
+  | add P Q hP hQ => simp only [map_add, hP, hQ]
+  | mul_X P i hP =>
+      cases i <;> simp only [map_mul, MvPolynomial.map_X,
+        MvPolynomial.dehomogenize_X_none,
+        MvPolynomial.dehomogenize_X_some, hP, mul_one]
+
+/-- Dehomogenizing a homogeneous multivariate real-stable polynomial at one
+preserves real stability. -/
+theorem MvRealStable.dehomogenize {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial (Option sigma) ℝ} {d : ℕ}
+    (hP : MvRealStable P) (hhom : P.IsHomogeneous d) :
+    MvRealStable (MvPolynomial.dehomogenize P) := by
+  unfold MvRealStable at hP ⊢
+  rw [complexifyMv_dehomogenize]
+  exact hP.dehomogenize (hhom.map Complex.ofRealHom)
+
 /-- Adjoin a new coefficient variable through the stable linear factor formed
 with the distinguished homogenizing variable. -/
 def homogeneousAdjoinFactor {σ R : Type*} [CommSemiring R]
