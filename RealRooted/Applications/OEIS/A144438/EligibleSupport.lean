@@ -18,6 +18,56 @@ def leftLabel (h : Nat) (j : Fin h) : Nat := h - (j.1 + 1)
 /-- The larger final label attached to an eligible chronological pair. -/
 def rightLabel (h : Nat) (j : Fin h) : Nat := h - j.1
 
+/-- The two final labels attached to an eligible start are distinct. -/
+theorem Eligible.leftLabel_ne_rightLabel {h : Nat}
+    {c : DecoNormalizedCode h} {j : Fin h} (hj : c.Eligible j) :
+    leftLabel h j ≠ rightLabel h j := by
+  rcases hj with ⟨_, hjBound, _, _⟩
+  simp [leftLabel, rightLabel]
+  lia
+
+@[simp] theorem Eligible.finalSwap_leftLabel {h : Nat}
+    {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
+    Equiv.swap (leftLabel h j) (rightLabel h j) (leftLabel h j) =
+      rightLabel h j := by
+  exact Equiv.swap_apply_left _ _
+
+@[simp] theorem Eligible.finalSwap_rightLabel {h : Nat}
+    {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
+    Equiv.swap (leftLabel h j) (rightLabel h j) (rightLabel h j) =
+      leftLabel h j := by
+  exact Equiv.swap_apply_right _ _
+
+/-- The final-label swap at one eligible start fixes the left label of every
+other eligible start. -/
+theorem finalSwap_leftLabel_of_ne {h : Nat} {c : DecoNormalizedCode h}
+    (i j : EligibleStart c) (hij : i ≠ j) :
+    Equiv.swap (leftLabel h j.1) (rightLabel h j.1) (leftLabel h i.1) =
+      leftLabel h i.1 := by
+  have hji : j.1 ≠ i.1 := fun h => hij (Subtype.ext h.symm)
+  rcases finalSwap_support_disjoint j.2 i.2 hji with
+    ⟨hll, _, hrl, _⟩
+  have hll' : leftLabel h i.1 ≠ leftLabel h j.1 := by
+    simpa [leftLabel] using hll.symm
+  have hrl' : leftLabel h i.1 ≠ rightLabel h j.1 := by
+    simpa [leftLabel, rightLabel] using hrl.symm
+  rw [Equiv.swap_apply_of_ne_of_ne hll' hrl']
+
+/-- The final-label swap at one eligible start fixes the right label of every
+other eligible start. -/
+theorem finalSwap_rightLabel_of_ne {h : Nat} {c : DecoNormalizedCode h}
+    (i j : EligibleStart c) (hij : i ≠ j) :
+    Equiv.swap (leftLabel h j.1) (rightLabel h j.1) (rightLabel h i.1) =
+      rightLabel h i.1 := by
+  have hji : j.1 ≠ i.1 := fun h => hij (Subtype.ext h.symm)
+  rcases finalSwap_support_disjoint j.2 i.2 hji with
+    ⟨_, hlr, _, hrr⟩
+  have hlr' : rightLabel h i.1 ≠ leftLabel h j.1 := by
+    simpa [leftLabel, rightLabel] using hlr.symm
+  have hrr' : rightLabel h i.1 ≠ rightLabel h j.1 := by
+    simpa [rightLabel] using hrr.symm
+  rw [Equiv.swap_apply_of_ne_of_ne hlr' hrr']
+
 /-- The right endpoint of an eligible swap is never a normalized comparison
 bottom. -/
 theorem Eligible.rightLabel_not_mem_comparisonBottomSupport {h : Nat}
@@ -164,6 +214,30 @@ noncomputable def fixedBottomSupport {h : Nat}
     (c : DecoNormalizedCode h) : Finset Nat :=
   MinimumInsertionWord.comparisonBottomSupport c.toDecoCode.inverseWord \
     c.eligibleEndpointSupport
+
+/-- An eligible left endpoint is absent from the support fixed by every
+eligible swap. -/
+theorem Eligible.leftLabel_not_mem_fixedBottomSupport {h : Nat}
+    {c : DecoNormalizedCode h} {j : Fin h} (hj : c.Eligible j) :
+    leftLabel h j ∉ c.fixedBottomSupport := by
+  intro hmem
+  have hendpoint : leftLabel h j ∈ c.eligibleEndpointSupport := by
+    rw [eligibleEndpointSupport, Finset.mem_biUnion]
+    let i : EligibleStart c := ⟨j, hj⟩
+    exact ⟨i, mem_allEligibleStarts c i, by simp [i]⟩
+  exact (Finset.mem_sdiff.mp hmem).2 hendpoint
+
+/-- An eligible right endpoint is absent from the support fixed by every
+eligible swap. -/
+theorem Eligible.rightLabel_not_mem_fixedBottomSupport {h : Nat}
+    {c : DecoNormalizedCode h} {j : Fin h} (hj : c.Eligible j) :
+    rightLabel h j ∉ c.fixedBottomSupport := by
+  intro hmem
+  have hendpoint : rightLabel h j ∈ c.eligibleEndpointSupport := by
+    rw [eligibleEndpointSupport, Finset.mem_biUnion]
+    let i : EligibleStart c := ⟨j, hj⟩
+    exact ⟨i, mem_allEligibleStarts c i, by simp [i]⟩
+  exact (Finset.mem_sdiff.mp hmem).2 hendpoint
 
 /-- The normalized comparison-bottom support is the union of its fixed part
 and the left labels of the active eligible starts. -/
