@@ -111,4 +111,38 @@ theorem add_left_of_pairwise_three {a b c : ℝ[X]}
 
 end Compatible
 
+/-- If both `f` and its `X`-multiple are compatible with `g`, then the
+nonnegative-coefficient pair is directed as `f ≪ g`.
+
+The three pairwise compatibilities among `X * f`, `f`, and `g` give the
+positive affine family required by `prec_of_affine_family_nonneg`. -/
+theorem prec_of_compatible_and_X_mul_left
+    {f g : ℝ[X]}
+    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g)
+    (hfg : Compatible f g) (hXfg : Compatible (X * f) g) :
+    Prec f g := by
+  have hf_pos : HasPosLeadingCoeff f := hf_nonneg.pos_leadingCoeff hf0
+  have hg_pos : HasPosLeadingCoeff g := hg_nonneg.pos_leadingCoeff hg0
+  have hf_rr : f ≠ 0 ∧ f.Splits := hfg.isRealRooted_left hf_pos
+  have hg_rr : g ≠ 0 ∧ g.Splits := hfg.isRealRooted_right hg_pos
+  have hXf_rr : X * f ≠ 0 ∧ (X * f).Splits :=
+    hXfg.isRealRooted_left hf_pos.X_mul
+  apply prec_of_affine_family_nonneg hf0 hg0 hf_nonneg hg_nonneg
+  intro s t hs ht
+  have hcompat : Compatible (C s * (X * f) + C t * f) g :=
+    Compatible.C_mul_add_C_mul_left_of_pairwise_three
+      hs.le ht.le hXf_rr hf_rr hg_rr hf_pos.X_mul hf_pos hg_pos
+      hf_nonneg.X_mul hf_nonneg hg_nonneg
+      (Compatible.self_X_mul_of_splits hf_rr.2).comm hXfg hfg
+  have hrewrite :
+      C s * (X * f) + C t * f = (C s * X + C t) * f := by
+    ring
+  have hne : (C s * (X * f) + C t * f) + g ≠ 0 := by
+    rw [hrewrite]
+    exact add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+      (hasNonnegCoeffs_affine_mul hs.le ht.le hf_nonneg) hg_nonneg hg_rr.1
+  exact ⟨by simpa [hrewrite] using hne,
+    by simpa [hrewrite] using hcompat.splits_add hne⟩
+
 end RealRooted
