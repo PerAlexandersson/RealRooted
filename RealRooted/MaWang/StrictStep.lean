@@ -14,6 +14,69 @@ noncomputable section
 
 namespace RealRooted
 
+/-- If `q` has the derivative's sign at each root of `f`, then multiplying it
+by a coefficient which is negative there gives the strict successor sign for
+`F = u * f + v * q`. -/
+theorem eval_mul_derivative_neg_of_auxiliary_sign
+    {f q F u v : ℝ[X]}
+    (hrec : F = u * f + v * q)
+    (hq_sign : ∀ r, f.IsRoot r →
+      0 < q.eval r * f.derivative.eval r)
+    (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0)
+    {r : ℝ} (hr : f.IsRoot r) :
+    F.eval r * f.derivative.eval r < 0 := by
+  have hfeval : f.eval r = 0 := hr
+  calc
+    F.eval r * f.derivative.eval r =
+        (u * f + v * q).eval r * f.derivative.eval r := by rw [hrec]
+    _ = v.eval r * (q.eval r * f.derivative.eval r) := by
+      rw [eval_add, eval_mul, eval_mul, hfeval, mul_zero, zero_add]
+      ring
+    _ < 0 := mul_neg_of_neg_of_pos (hv_neg r hr) (hq_sign r hr)
+
+/-- The strict auxiliary sign also prevents `f` and its successor `F` from
+sharing a real root. -/
+theorem noCommonRoot_of_auxiliary_sign
+    {f q F u v : ℝ[X]}
+    (hrec : F = u * f + v * q)
+    (hq_sign : ∀ r, f.IsRoot r →
+      0 < q.eval r * f.derivative.eval r)
+    (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0) :
+    ∀ r, f.IsRoot r → ¬ F.IsRoot r := by
+  intro r hfr hFr
+  have hsign :=
+    eval_mul_derivative_neg_of_auxiliary_sign hrec hq_sign hv_neg hfr
+  have hFzero : F.eval r = 0 := hFr
+  rw [hFzero, zero_mul] at hsign
+  exact (lt_irrefl 0) hsign
+
+/-- A degree-raising recurrence through a derivative-sign auxiliary puts `f`
+in proper position with `F` and gives `F` simple roots. -/
+theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ
+    {f q F u v : ℝ[X]}
+    (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hF_pos : HasPosLeadingCoeff F) (hdegf : 1 ≤ f.natDegree)
+    (hdeg : F.natDegree = f.natDegree + 1)
+    (hrec : F = u * f + v * q)
+    (hq_sign : ∀ r, f.IsRoot r →
+      0 < q.eval r * f.derivative.eval r)
+    (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0) :
+    Prec f F ∧ HasSimpleRoots F := by
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
+  have hder_pos : HasPosLeadingCoeff f.derivative :=
+    hf_pos.derivative (by lia)
+  have hroot_sign : ∀ r, f.IsRoot r →
+      F.eval r * f.derivative.eval r < 0 :=
+    fun _ hr ↦
+      eval_mul_derivative_neg_of_auxiliary_sign hrec hq_sign hv_neg hr
+  have hprec : Prec f F :=
+    prec_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
+  have hnoRoot := noCommonRoot_of_auxiliary_sign hrec hq_sign hv_neg
+  have hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ F.IsRoot r) :=
+    fun r h ↦ hnoRoot r h.1 h.2
+  exact ⟨hprec, (hprec.hasSimpleRoots_of_no_common_root hno).2⟩
+
 /-- A strict differ-by-one Ma--Wang step puts `f` in proper position with `F`
 and propagates simple real roots. -/
 theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X]}

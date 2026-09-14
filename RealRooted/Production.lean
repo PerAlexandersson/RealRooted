@@ -27,6 +27,7 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
 import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Applications.OEIS.A144696.StrictInterlacing
 import RealRooted.Analysis.FactorialTail
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli

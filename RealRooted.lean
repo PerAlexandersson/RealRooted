@@ -33,6 +33,7 @@ import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
 import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
 import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Applications.OEIS.A144696.StrictInterlacing
 import RealRooted.Analysis.FactorialTail
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
