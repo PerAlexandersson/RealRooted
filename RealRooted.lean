@@ -254,6 +254,7 @@ import RealRooted.CombinatorialExamples.SturmDerangementsExc
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.Combinatorics.ComparisonBottom
+import RealRooted.Combinatorics.ComparisonBottomInsertion
 import RealRooted.Combinatorics.MinimumInsertionWord
 import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
 import RealRooted.CommonInterleaver.AffineBoundary
@@ -1328,6 +1329,7 @@ import RealRooted.Applications.OEIS.A144438.FiberStability
 import RealRooted.Applications.OEIS.A144438.FiberPartition
 import RealRooted.Applications.OEIS.A144438.HistoryPartition
 import RealRooted.Applications.OEIS.A144438.HistoryExtension
+import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
 import RealRooted.Applications.OEIS.A144438.InverseWord
 import RealRooted.Applications.OEIS.A144438.NormalizedCode
 import RealRooted.Applications.OEIS.A144438.Weighted

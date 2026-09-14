@@ -65,6 +65,30 @@ theorem last_ne_one_of_isAdmissible {h : Nat} {c : DecoCode (h + 1)}
   rw [Fin.val_last] at hnext
   exact (Nat.lt_irrefl (h + 1)) hnext
 
+/-- Removing a nonzero final entry preserves admissibility. -/
+theorem init_isAdmissible_of_last_ne_zero {h : Nat}
+    {c : DecoCode (h + 1)} (hc : c.IsAdmissible)
+    (hlast : c (Fin.last h) ≠ 0) : c.init.IsAdmissible := by
+  intro j hj
+  have hjOne : c j.castSucc = 1 := hj
+  rcases hc j.castSucc hjOne with ⟨hjLower, hjBound, hjZero⟩
+  have hjPrefixBound : j.1 + 1 < h := by
+    by_contra hnot
+    have heq : j.1 + 1 = h := by lia
+    have hindex : (⟨j.castSucc.1 + 1, hjBound⟩ : Fin (h + 1)) =
+        Fin.last h := by
+      apply Fin.ext
+      simpa using heq
+    rw [hindex] at hjZero
+    exact hlast hjZero
+  refine ⟨hjLower, ⟨hjPrefixBound, ?_⟩⟩
+  have hindex :
+      (⟨j.castSucc.1 + 1, hjBound⟩ : Fin (h + 1)) =
+        (⟨j.1 + 1, hjPrefixBound⟩ : Fin h).castSucc := by
+    apply Fin.ext
+    rfl
+  rw [init_apply, ← hindex, hjZero]
+
 /-- Append the exceptional pair `(1, 0)`. -/
 def exceptionalExtension {h : Nat} (c : DecoCode h) (hh : 0 < h) :
     DecoCode (h + 2) :=
@@ -95,6 +119,43 @@ theorem exceptionalExtension_init_init {h : Nat} (c : DecoCode (h + 2))
     (c.snoc r).inverseWord = MinimumInsertionWord.step r c.inverseWord := by
   simp [inverseWord, entryList_snoc, MinimumInsertionWord.decode,
     MinimumInsertionWord.decodeFrom_append]
+
+/-- Every admissible inverse word of length at least two begins with an
+ascent. -/
+theorem inverseWord_startsWithAscent {h : Nat} (c : DecoCode h)
+    (hc : c.IsAdmissible) (hh : 2 ≤ h) :
+    MinimumInsertionWord.StartsWithAscent c.inverseWord := by
+  induction h using Nat.strong_induction_on with
+  | h h ih =>
+      cases h with
+      | zero => simp at hh
+      | succ h =>
+          let r : Fin (h + 1) :=
+            ⟨c (Fin.last h), c.entry_lt (Fin.last h)⟩
+          have hrOne : (r : Nat) ≠ 1 := by
+            exact last_ne_one_of_isAdmissible hc
+          have hcode : c.init.snoc r = c := snoc_init_last c
+          rw [← hcode, inverseWord_snoc]
+          by_cases hrZero : (r : Nat) = 0
+          · have hword : c.init.inverseWord ≠ [] := by
+              intro hempty
+              have hlength := c.init.length_inverseWord
+              rw [hempty] at hlength
+              simp at hlength
+              lia
+            simpa [hrZero] using
+              (MinimumInsertionWord.StartsWithAscent.step_zero hword
+                c.init.inverseWord_isPositive)
+          · have hrLower : 2 ≤ (r : Nat) := by lia
+            have hhPrefix : 2 ≤ h := by
+              have := r.isLt
+              lia
+            have hprefix := ih h (by lia) c.init
+              (init_isAdmissible_of_last_ne_zero hc hrZero) hhPrefix
+            obtain ⟨k, hk⟩ : ∃ k, (r : Nat) = k + 2 := by
+              exact ⟨(r : Nat) - 2, by lia⟩
+            rw [hk]
+            exact hprefix.step_add_two k
 
 /-- Appending an entry other than one preserves admissibility. -/
 theorem snoc_isAdmissible {h : Nat} {c : DecoCode h}

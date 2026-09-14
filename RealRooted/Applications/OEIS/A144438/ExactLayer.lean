@@ -153,6 +153,22 @@ theorem dehomogenize_decoExceptionalLayerStep {R : Type*} [CommSemiring R]
     MvPolynomial.dehomogenize_X_some, hexceptional,
     MvPolynomial.dehomogenize_rename_option_map]
 
+/-- Embedding ordinary layer coordinates into positive natural labels
+commutes with an exceptional step. -/
+theorem rename_decoLayerBottomEmbedding_dehomogenize_exceptional
+    {R : Type*} [CommSemiring R] {n : Nat}
+    (P : MvPolynomial (DecoLayerCoord n) R) :
+    MvPolynomial.rename (decoLayerBottomEmbedding (n + 2))
+        (MvPolynomial.dehomogenize (decoExceptionalLayerStep P)) =
+      MvPolynomial.X 2 *
+        MvPolynomial.rename (fun i : Nat => i + 2)
+          (MvPolynomial.rename (decoLayerBottomEmbedding n)
+            (MvPolynomial.dehomogenize P)) := by
+  rw [dehomogenize_decoExceptionalLayerStep, map_mul,
+    MvPolynomial.rename_X, MvPolynomial.rename_rename,
+    MvPolynomial.rename_rename]
+  congr 1
+
 /-- A normal step raises the homogeneous degree by one. -/
 theorem decoNormalLayerStep_isHomogeneous {R : Type*}
     [CommSemiring R] {n : ℕ} {P : MvPolynomial (DecoLayerCoord n) R}

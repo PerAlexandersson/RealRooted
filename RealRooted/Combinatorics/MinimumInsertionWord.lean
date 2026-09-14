@@ -21,6 +21,11 @@ def step (r : Nat) (w : List Nat) : List Nat :=
 /-- Every label in the word is strictly positive. -/
 def IsPositive (w : List Nat) : Prop := ∀ x ∈ w, 0 < x
 
+/-- The first two entries of a word form a strict ascent. -/
+def StartsWithAscent : List Nat → Prop
+  | a :: b :: _ => a < b
+  | _ => False
+
 /-- Raising a word makes all its labels positive. -/
 theorem isPositive_raise (w : List Nat) : IsPositive (raise w) := by
   intro x hx
@@ -106,6 +111,28 @@ theorem length_step {r : Nat} {w : List Nat} (hr : r ≤ w.length) :
   rw [step, List.length_insertIdx_of_le_length]
   · simp [raise]
   · simpa [raise] using hr
+
+/-- Inserting a new minimum at the beginning produces an initial ascent when
+the old word is positive and nonempty. -/
+theorem StartsWithAscent.step_zero {w : List Nat} (hw : w ≠ [])
+    (hpos : IsPositive w) : StartsWithAscent (step 0 w) := by
+  cases w with
+  | nil => contradiction
+  | cons a w =>
+    have ha := hpos a (by simp)
+    simp [raise, StartsWithAscent, ha]
+
+/-- Insertion after the first two positions preserves the initial ascent. -/
+theorem StartsWithAscent.step_add_two {w : List Nat}
+    (hw : StartsWithAscent w) (r : Nat) :
+    StartsWithAscent (step (r + 2) w) := by
+  cases w with
+  | nil => simp [StartsWithAscent] at hw
+  | cons a w =>
+    cases w with
+    | nil => simp [StartsWithAscent] at hw
+    | cons b w =>
+      simpa [step, raise, StartsWithAscent] using hw
 
 /-- The displayed inverse-word form of a normal `(0,2)` extension. -/
 @[simp] theorem step_normal_pair (a : Nat) (w : List Nat) :
