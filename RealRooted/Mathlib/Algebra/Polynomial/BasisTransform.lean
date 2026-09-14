@@ -115,6 +115,38 @@ theorem basisTransform_X_mul_of_succ_derivative
   intro n
   exact hsucc n
 
+/-- A basis transform transports multiplication by `X` when the successor
+recurrence also contains the basis index. The indexed term is represented on
+the input side by `X * p.derivative`. -/
+theorem basisTransform_X_mul_of_succ_index_derivative
+    (B : ℕ → R[X]) (A E D : R[X])
+    (hsucc : ∀ n, B (n + 1) =
+      A * B n + E * (C (n : R) * B n) + D * (B n).derivative)
+    (p : R[X]) :
+    basisTransform B (X * p) =
+      A * basisTransform B p +
+        E * basisTransform B (X * p.derivative) +
+        D * (basisTransform B p).derivative := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [mul_add, derivative_add, basisTransform_add, hp, hq]
+      ring
+  | monomial n a =>
+      cases n with
+      | zero =>
+          rw [Polynomial.X_mul_monomial, basisTransform_monomial, hsucc,
+            basisTransform_monomial]
+          simp
+          ring
+      | succ n =>
+          rw [Polynomial.X_mul_monomial, basisTransform_monomial, hsucc,
+            basisTransform_monomial]
+          simp only [derivative_monomial, Polynomial.X_mul_monomial,
+            basisTransform_monomial, derivative_mul, derivative_C, zero_mul,
+            zero_add]
+          simp [map_natCast]
+          ring
+
 /-- The affine factor version of
 `basisTransform_X_mul_of_succ_derivative`. -/
 theorem basisTransform_mul_X_add_C_of_succ_derivative
