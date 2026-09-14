@@ -1193,6 +1193,7 @@ import RealRooted.GammaPencil.SymbolStability
 import RealRooted.GammaPencil.Theorem
 import RealRooted.BrandenVecchi.SupersymmetricLimits
 import RealRooted.Applications.OEIS.A144438
+import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
 import RealRooted.Applications.OEIS.A144438.DecoratedCycle
