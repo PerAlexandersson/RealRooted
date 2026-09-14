@@ -1,5 +1,5 @@
 import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
-import RealRooted.MultivariateStability
+import RealRooted.MultivariateStability.LinearForm
 import Mathlib.Data.Finset.BooleanAlgebra
 import Mathlib.Data.Finset.Powerset
 
@@ -58,6 +58,61 @@ theorem booleanVariableChoiceSum_mvRealStable {σ ι : Type*}
   apply MvRealStable.finset_prod
   intro i hi
   exact MvRealStable.X_add_X (left i) (right i)
+
+/-- The independently weighted subset expansion choosing a left or right
+variable from every pair. -/
+def weightedBooleanVariableChoiceSum {σ ι R : Type*} [CommSemiring R]
+    [DecidableEq ι] (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → R) :
+    MvPolynomial σ R :=
+  ∑ t ∈ s.powerset,
+    MvPolynomial.finsetMonomial fixed *
+      ((∏ i ∈ t,
+          MvPolynomial.C (leftWeight i) * MvPolynomial.X (left i)) *
+        ∏ i ∈ s \ t,
+          MvPolynomial.C (rightWeight i) * MvPolynomial.X (right i))
+
+/-- The weighted Boolean choice sum factors into independently weighted
+homogeneous linear forms. -/
+theorem weightedBooleanVariableChoiceSum_eq
+    {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
+    (fixed : Finset σ) (s : Finset ι) (left right : ι → σ)
+    (leftWeight rightWeight : ι → R) :
+    weightedBooleanVariableChoiceSum fixed s left right
+        leftWeight rightWeight =
+      MvPolynomial.finsetMonomial fixed *
+        ∏ i ∈ s,
+          (MvPolynomial.C (leftWeight i) * MvPolynomial.X (left i) +
+            MvPolynomial.C (rightWeight i) * MvPolynomial.X (right i)) := by
+  rw [weightedBooleanVariableChoiceSum, ← Finset.mul_sum,
+    ← Finset.prod_add]
+
+/-- Unit weights recover the unweighted Boolean choice sum. -/
+theorem weightedBooleanVariableChoiceSum_one
+    {σ ι R : Type*} [CommSemiring R] [DecidableEq ι]
+    (fixed : Finset σ) (s : Finset ι) (left right : ι → σ) :
+    weightedBooleanVariableChoiceSum fixed s left right
+        (fun _ => 1) (fun _ => 1) =
+      booleanVariableChoiceSum (R := R) fixed s left right := by
+  simp [weightedBooleanVariableChoiceSum, booleanVariableChoiceSum]
+
+/-- Nonnegative, nontrivial independent weights preserve multivariate real
+stability of the Boolean variable-choice sum. -/
+theorem weightedBooleanVariableChoiceSum_mvRealStable
+    {σ ι : Type*} [DecidableEq ι]
+    (fixed : Finset σ) (s : Finset ι) (left right : ι → σ)
+    (leftWeight rightWeight : ι → Real)
+    (hleft : ∀ i ∈ s, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ s, 0 ≤ rightWeight i)
+    (hpos : ∀ i ∈ s, 0 < leftWeight i ∨ 0 < rightWeight i) :
+    MvRealStable (weightedBooleanVariableChoiceSum fixed s left right
+      leftWeight rightWeight) := by
+  rw [weightedBooleanVariableChoiceSum_eq]
+  apply (mvRealStable_finsetMonomial fixed).mul
+  apply MvRealStable.finset_prod
+  intro i hi
+  exact MvRealStable.C_mul_X_add_C_mul_X (left i) (right i)
+    (hleft i hi) (hright i hi) (hpos i hi)
 
 /-- The standard normal form for a Boolean swap orbit: inactive swaps
 contribute a power of two and active swaps contribute independent choices. -/

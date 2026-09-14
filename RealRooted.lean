@@ -830,6 +830,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultiplierSequence.PolyaSchur.Limit
 import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
+import RealRooted.MultivariateStability.LinearForm
 import RealRooted.NarayanaTransformation
 import RealRooted.NarayanaTransformation.Basis
 import RealRooted.NarayanaTransformation.Basis.Stirling
