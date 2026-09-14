@@ -32,6 +32,8 @@ import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
 import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Analysis.FactorialTail
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
@@ -703,6 +705,7 @@ import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+import RealRooted.Mathlib.Data.Nat.Factorial.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank

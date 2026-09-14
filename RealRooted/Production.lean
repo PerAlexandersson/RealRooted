@@ -26,6 +26,8 @@ import RealRooted.AffineProperPosition
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.AllCombo
+import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Analysis.FactorialTail
 import RealRooted.Analysis.PowerTail
 import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
@@ -700,6 +702,7 @@ import RealRooted.Mathlib.Data.Multiset.Rel
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+import RealRooted.Mathlib.Data.Nat.Factorial.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
