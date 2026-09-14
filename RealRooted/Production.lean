@@ -847,6 +847,7 @@ import RealRooted.ParkingFunctions.Descents.Tieless
 import RealRooted.ParkingFunctions.Descents.TielessTransfer
 import RealRooted.ParkingFunctions.Descents.WordContent
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
 import RealRooted.ParkingFunctions.Descents.Words
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
