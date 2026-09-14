@@ -229,6 +229,50 @@ theorem exists_last_step {n : ℕ} (H : DecoExceptionalHistory (n + 3)) :
   · exact Or.inr (exists_exceptional_of_last_mem H hlast)
   · exact Or.inl (exists_normal_of_last_not_mem H hlast)
 
+/-- Every height-three history is the normal extension of the seed. -/
+theorem eq_normal_seed (H : DecoExceptionalHistory 3) : H = normal seed := by
+  rcases H.exists_last_step with ⟨H', hH⟩ | ⟨H', _⟩
+  · rw [H'.eq_seed] at hH
+    exact hH.symm
+  · have := H'.admissible.1
+    lia
+
+/-- Apply the final normal or exceptional step selected by a sum index. -/
+def lastStep (n : Nat) :
+    DecoExceptionalHistory (n + 2) ⊕ DecoExceptionalHistory (n + 1) →
+      DecoExceptionalHistory (n + 3)
+  | Sum.inl H => normal H
+  | Sum.inr H => exceptional H
+
+theorem lastStep_injective (n : Nat) : Function.Injective (lastStep n) := by
+  intro H K hHK
+  rcases H with H | H <;> rcases K with K | K
+  · exact congrArg Sum.inl (normal_injective hHK)
+  · exact (normal_ne_exceptional H K hHK).elim
+  · exact (normal_ne_exceptional K H hHK.symm).elim
+  · exact congrArg Sum.inr (exceptional_injective hHK)
+
+theorem lastStep_surjective (n : Nat) : Function.Surjective (lastStep n) := by
+  intro H
+  rcases H.exists_last_step with ⟨H', rfl⟩ | ⟨H', rfl⟩
+  · exact ⟨Sum.inl H', rfl⟩
+  · exact ⟨Sum.inr H', rfl⟩
+
+/-- Histories above the seed are canonically partitioned by their unique
+normal or exceptional final step. -/
+noncomputable def lastStepEquiv (n : Nat) :
+    DecoExceptionalHistory (n + 2) ⊕ DecoExceptionalHistory (n + 1) ≃
+      DecoExceptionalHistory (n + 3) :=
+  Equiv.ofBijective (lastStep n) ⟨lastStep_injective n, lastStep_surjective n⟩
+
+@[simp] theorem lastStepEquiv_inl (n : Nat)
+    (H : DecoExceptionalHistory (n + 2)) :
+    lastStepEquiv n (Sum.inl H) = normal H := rfl
+
+@[simp] theorem lastStepEquiv_inr (n : Nat)
+    (H : DecoExceptionalHistory (n + 1)) :
+    lastStepEquiv n (Sum.inr H) = exceptional H := rfl
+
 end DecoExceptionalHistory
 
 end RealRooted.Applications.OEIS

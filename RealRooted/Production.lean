@@ -1202,6 +1202,7 @@ import RealRooted.Applications.OEIS.A144438.AdmissibleCode
 import RealRooted.Applications.OEIS.A144438.CodeExtension
 import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
 import RealRooted.Applications.OEIS.A144438.ExactLayer
+import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.DecorationOrbit
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.Applications.OEIS.A144438.FiberStability
