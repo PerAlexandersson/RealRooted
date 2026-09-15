@@ -1,4 +1,4 @@
-import RealRooted.Multiaffine.Rayleigh
+import RealRooted.Multiaffine.CoordinateWronskian
 
 /-!
 # Rayleigh criteria for affine coordinate extensions
@@ -61,10 +61,11 @@ theorem rayleighDifference_add_X_mul_fresh {R σ : Type*} [CommRing R]
     (P Q : MvPolynomial σ R) (k i : σ) (hik : i ≠ k)
     (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars) :
     rayleighDifference (P + X k * Q) k i =
-      Q * pderiv i P - P * pderiv i Q := by
+      coordinateWronskian Q P i := by
   have hPk : pderiv k P = 0 := pderiv_eq_zero_of_notMem_vars hkP
   have hQk : pderiv k Q = 0 := pderiv_eq_zero_of_notMem_vars hkQ
-  simp only [rayleighDifference, map_add, pderiv_mul, pderiv_X_self,
+  simp only [rayleighDifference, coordinateWronskian, map_add, pderiv_mul,
+    pderiv_X_self,
     pderiv_X_of_ne (Ne.symm hik), pderiv_comm k i, hPk, hQk, map_zero,
     zero_mul, mul_zero, zero_add, one_mul]
   ring
@@ -84,7 +85,7 @@ theorem IsRayleigh.add_X_mul_of_fresh
     (hP : IsRayleigh P) (hQ : IsRayleigh Q)
     (hPma : IsMultiaffine P) (hQma : IsMultiaffine Q)
     (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars)
-    (hcross : ∀ i x, 0 ≤ eval x (Q * pderiv i P - P * pderiv i Q))
+    (hcross : ∀ i x, 0 ≤ eval x (coordinateWronskian Q P i))
     (hdisc : ∀ i j x, i ≠ k → j ≠ k →
       eval x (affineRayleighDiscriminant P Q i j) ≤ 0) :
     IsRayleigh (P + X k * Q) := by
