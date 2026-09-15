@@ -1344,6 +1344,7 @@ import RealRooted.Applications.OEIS.A144438.HistoryExtension
 import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
 import RealRooted.Applications.OEIS.A144438.InverseWord
 import RealRooted.Applications.OEIS.A144438.NormalizedCode
+import RealRooted.Applications.OEIS.A144438.PolyaFrequency
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
 import RealRooted.Applications.OEIS.A144438.DecoratedCycle

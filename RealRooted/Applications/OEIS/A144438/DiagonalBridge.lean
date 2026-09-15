@@ -1,4 +1,6 @@
 import RealRooted.Applications.OEIS.A144438
+import RealRooted.Applications.OEIS.A144438.ExactLayerStability
+import RealRooted.Applications.OEIS.A144438.PolyaFrequency
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.MultivariateStability.Diagonal
 
@@ -109,6 +111,45 @@ theorem diagonal_decoExactLayerDehomogenized_splits {n : Nat}
     (H : DecoExceptionalHistory (n + 2)) :
     (MvPolynomial.diagonal (decoExactLayerDehomogenized H)).Splits :=
   (decoExactLayerDehomogenized_mvRealStable H).diagonal_splits
+
+/-- Every individual normalization fiber is Pólya-frequency after diagonal
+restriction. -/
+theorem diagonal_fiberPolynomial_isPFPolynomial {h : Nat}
+    (c : DecoNormalizedCode h) :
+    IsPFPolynomial
+      (MvPolynomial.diagonal
+        (DecoNormalizedCode.fiberPolynomial (R := Real) c)) := by
+  simpa only [commonPhaseRestriction_one_eq_diagonal] using
+    DecoNormalizedCode.commonPhaseRestriction_fiberPolynomial_isPFPolynomial
+      c (fun _ => 1) (fun _ => zero_le_one)
+
+/-- Every dehomogenized exact-history layer is Pólya-frequency after diagonal
+restriction. -/
+theorem diagonal_decoExactLayerDehomogenized_isPFPolynomial {n : Nat}
+    (H : DecoExceptionalHistory (n + 2)) :
+    IsPFPolynomial
+      (MvPolynomial.diagonal (decoExactLayerDehomogenized H)) := by
+  simpa only [commonPhaseRestriction_one_eq_diagonal] using
+    commonPhaseRestriction_decoExactLayerDehomogenized_isPFPolynomial
+      H (fun _ => 1) (fun _ => zero_le_one)
+
+/-- The diagonalized admissible-code enumerator is Pólya-frequency. -/
+theorem diagonal_admissibleCodePolynomial_isPFPolynomial (n : Nat) :
+    IsPFPolynomial
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 2))) := by
+  rw [diagonal_admissibleCodePolynomial_eq_A144438]
+  exact A144438_isPFPolynomial n
+
+/-- The diagonalized normalized-fiber enumerator is Pólya-frequency.  This is
+a univariate conclusion and does not assert stability of the multivariate
+outer sum. -/
+theorem diagonal_normalizedFiberPolynomial_isPFPolynomial (n : Nat) :
+    IsPFPolynomial
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 2))) := by
+  rw [diagonal_normalizedFiberPolynomial_eq_A144438]
+  exact A144438_isPFPolynomial n
 
 /-- The diagonalized normalized-fiber enumerator is real-rooted.  This is a
 univariate conclusion and does not claim stability of the multivariate sum. -/
