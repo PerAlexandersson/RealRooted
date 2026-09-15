@@ -19,6 +19,61 @@ def IsUpperHalfPlaneStablePencil (f g : ℝ[X]) : Prop :=
   ∀ z w : ℂ, 0 < z.im → 0 < w.im →
     (complexify f).eval z + w * (complexify g).eval z ≠ 0
 
+/-- Swapping a stable pencil and negating its old base preserves stability.
+The parameter change is the upper-half-plane involution `w ↦ -w⁻¹`. -/
+theorem IsUpperHalfPlaneStablePencil.swap_neg {f g : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil f g) :
+    IsUpperHalfPlaneStablePencil g (-f) := by
+  intro z w hz hw hzero
+  have hw0 : w ≠ 0 := by
+    intro hwzero
+    simp [hwzero] at hw
+  have hu : 0 < (-w⁻¹).im := by
+    rw [Complex.neg_im, Complex.inv_im]
+    have hnorm : 0 < Complex.normSq w := Complex.normSq_pos.mpr hw0
+    have hquot : 0 < w.im / Complex.normSq w := div_pos hw hnorm
+    rw [neg_div, neg_neg]
+    exact hquot
+  have hzero' : (complexify g).eval z +
+      w * -(complexify f).eval z = 0 := by
+    simpa [complexify] using hzero
+  apply h z (-w⁻¹) hz hu
+  calc
+    (complexify f).eval z + -w⁻¹ * (complexify g).eval z =
+        -w⁻¹ * ((complexify g).eval z +
+          w * -(complexify f).eval z) := by
+            field_simp
+            ring
+    _ = 0 := by rw [hzero', mul_zero]
+
+/-- Simultaneously negating both members of a pencil preserves stability. -/
+theorem IsUpperHalfPlaneStablePencil.neg_neg {f g : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil f g) :
+    IsUpperHalfPlaneStablePencil (-f) (-g) := by
+  intro z w hz hw
+  have hne := h z w hz hw
+  simpa [complexify, ← neg_mul, add_comm] using neg_ne_zero.mpr hne
+
+/-- A nonzero splitting base polynomial gives a stable pencil with zero
+direction. -/
+theorem isUpperHalfPlaneStablePencil_zero_right
+    {f : ℝ[X]} (hf0 : f ≠ 0) (hf : f.Splits) :
+    IsUpperHalfPlaneStablePencil f 0 := by
+  intro z w hz hw
+  simpa using eval_complexify_ne_zero_of_splits_of_im_pos hf hf0 hz
+
+/-- A nonzero splitting direction polynomial gives a stable pencil with zero
+base. -/
+theorem isUpperHalfPlaneStablePencil_zero_left
+    {g : ℝ[X]} (hg0 : g ≠ 0) (hg : g.Splits) :
+    IsUpperHalfPlaneStablePencil 0 g := by
+  intro z w hz hw
+  have hw0 : w ≠ 0 := by
+    intro hzero
+    simp [hzero] at hw
+  simpa using mul_ne_zero hw0
+    (eval_complexify_ne_zero_of_splits_of_im_pos hg hg0 hz)
+
 /-- Positive-leading-coefficient proper position orients the corresponding
 nonconstant polynomial pencil away from the product of upper half-planes. -/
 theorem isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos
