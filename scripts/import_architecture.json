@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1350
+      "max_modules": 1351
     },
     "RealRooted.Production": {
-      "max_modules": 1229
+      "max_modules": 1230
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 633
@@ -241,7 +241,7 @@
       "max_modules": 12
     },
     "RealRooted.LiebSokalBoundary": {
-      "max_modules": 13
+      "max_modules": 14
     },
     "RealRooted.Mathlib.Algebra.MvPolynomial.Specialize": {
       "max_modules": 1

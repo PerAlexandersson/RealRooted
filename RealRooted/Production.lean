@@ -834,6 +834,7 @@ import RealRooted.MultivariateStability
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.Specialization
 import RealRooted.NarayanaTransformation
 import RealRooted.NarayanaTransformation.Basis
 import RealRooted.NarayanaTransformation.Basis.Stirling
