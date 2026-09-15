@@ -813,6 +813,7 @@ import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
 import RealRooted.Multiaffine.AffineCoordinateCriterion
 import RealRooted.Multiaffine.AffineCoordinateExtension
+import RealRooted.Multiaffine.AffineEulerCore
 import RealRooted.Multiaffine.AffineLineRestriction
 import RealRooted.Multiaffine.CoordinateWronskian
 import RealRooted.Multiaffine.Rayleigh
@@ -1232,6 +1233,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineObstruction
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence

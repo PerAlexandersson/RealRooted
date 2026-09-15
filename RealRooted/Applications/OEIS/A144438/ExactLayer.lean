@@ -1,5 +1,6 @@
 import RealRooted.HomogeneousStability
 import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
+import RealRooted.Multiaffine.AffineEulerCore
 
 /-!
 # Exact stable layers for the deco construction
@@ -56,6 +57,14 @@ def decoNormalBottomCore {R : Type*} [CommRing R] (n : Nat)
     ∑ i : Fin n,
       MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q
 
+/-- The Deco normal core is the generic affine Euler core on its ordinary
+positive-coordinate embedding. -/
+theorem decoNormalBottomCore_eq_affineEulerCore
+    {R : Type*} [CommRing R] (n : Nat) (Q : MvPolynomial Nat R) :
+    decoNormalBottomCore n Q =
+      MvPolynomial.affineEulerCore (decoLayerBottomEmbedding n)
+        (n + 1 : R) Q := rfl
+
 /-- The ordinary positive-label form of one normal layer step. -/
 def decoNormalBottomStep {R : Type*} [CommRing R] (n : Nat)
     (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
@@ -74,22 +83,8 @@ theorem decoNormalBottomCore_isMultiaffine
     {R : Type*} [CommRing R] [Nontrivial R] {n : Nat}
     {Q : MvPolynomial Nat R} (hQ : MvPolynomial.IsMultiaffine Q) :
     MvPolynomial.IsMultiaffine (decoNormalBottomCore n Q) := by
-  unfold decoNormalBottomCore
-  have hweighted : MvPolynomial.IsMultiaffine
-      (∑ i : Fin n,
-        MvPolynomial.X (decoLayerBottomEmbedding n i) *
-          MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) := by
-    apply MvPolynomial.IsMultiaffine.sum
-    intro i hi
-    exact (hQ.pderiv (decoLayerBottomEmbedding n i)).X_mul_of_notMem_vars
-      (hQ.notMem_vars_pderiv_self (decoLayerBottomEmbedding n i))
-  have hderivs : MvPolynomial.IsMultiaffine
-      (∑ i : Fin n,
-        MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) := by
-    apply MvPolynomial.IsMultiaffine.sum
-    intro i hi
-    exact hQ.pderiv (decoLayerBottomEmbedding n i)
-  exact ((hQ.C_mul (n + 1 : R)).sub hweighted).add hderivs
+  rw [decoNormalBottomCore_eq_affineEulerCore]
+  exact hQ.affineEulerCore (decoLayerBottomEmbedding n) (n + 1 : R)
 
 /-- If all variables of `Q` use the ordinary labels `1, ..., n`, then the
 normal core introduces no variables outside the same interval. -/

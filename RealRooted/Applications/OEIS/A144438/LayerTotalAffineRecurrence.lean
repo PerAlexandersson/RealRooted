@@ -54,39 +54,10 @@ theorem coordinateWronskian_decoNormalBottomCore
             MvPolynomial.rayleighDifference Q
               (decoLayerBottomEmbedding n i)
               (decoLayerBottomEmbedding n j) := by
-  classical
-  have hderiv := MvPolynomial.coordinateWronskian_sum_pderiv_left
-    (decoLayerBottomEmbedding n) (fun _ : Fin n => (1 : R)) Q
-      (decoLayerBottomEmbedding n i)
-  simp only [map_one, one_mul] at hderiv
-  have heuler := MvPolynomial.coordinateWronskian_sum_X_mul_pderiv_left
-    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective Q i
-  have hsum :
-      (∑ j : Fin n,
-          (1 - MvPolynomial.X (decoLayerBottomEmbedding n j)) *
-            MvPolynomial.rayleighDifference Q
-              (decoLayerBottomEmbedding n i)
-              (decoLayerBottomEmbedding n j)) =
-        (∑ j : Fin n,
-          MvPolynomial.rayleighDifference Q
-            (decoLayerBottomEmbedding n i)
-            (decoLayerBottomEmbedding n j)) -
-          ∑ j : Fin n,
-            MvPolynomial.X (decoLayerBottomEmbedding n j) *
-              MvPolynomial.rayleighDifference Q
-                (decoLayerBottomEmbedding n i)
-                (decoLayerBottomEmbedding n j) := by
-    rw [← Finset.sum_sub_distrib]
-    apply Finset.sum_congr rfl
-    intro j hj
-    ring
-  unfold decoNormalBottomCore
-  rw [MvPolynomial.coordinateWronskian_add_left,
-    MvPolynomial.coordinateWronskian_sub_left,
-    MvPolynomial.coordinateWronskian_C_mul_left,
-    MvPolynomial.coordinateWronskian_self, mul_zero, zero_sub,
-    heuler, hderiv, hsum]
-  ring
+  rw [decoNormalBottomCore_eq_affineEulerCore]
+  exact MvPolynomial.coordinateWronskian_affineEulerCore
+    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
+      (n + 1 : R) Q i
 
 /-- Relabeling transports the normal core Wronskian to the corresponding
 normal affine base and slope. -/

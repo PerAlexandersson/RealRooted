@@ -1,4 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -245,6 +246,59 @@ theorem coordinateWronskian_companionSlope_companion_eq_core_add_correction
     MvPolynomial.coordinateWronskian_self,
     MvPolynomial.coordinateWronskian_X_mul_right]
   by_cases hi : i = 1 <;> simp [hi] <;> ring
+
+/-- The complete successor Wronskian in coordinate `i + 2` is a quadratic in
+`X 1` over three lower unshifted Wronskians. -/
+theorem coordinateWronskian_companionSlope_companion_succ_add_two_eq_split
+    (n i : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope (n + 1))
+        (decoBottomTotalWronskianCompanion (n + 1)) (i + 2) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalCompanionExtensionCore n)
+            (decoBottomTotalCompanionSuccessorExtension n) (i + 1)) +
+        MvPolynomial.X 1 *
+          (MvPolynomial.rename (fun j : Nat => j + 1)
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalWronskianCompanion n)
+                (decoBottomTotal (n + 1)) (i + 1)) +
+            MvPolynomial.X 1 *
+              MvPolynomial.rename (fun j : Nat => j + 1)
+                (MvPolynomial.coordinateWronskian
+                  (decoBottomTotalCompanionCore n)
+                  (decoBottomTotal (n + 1)) (i + 1))) := by
+  rw [coordinateWronskian_companionSlope_companion_eq_core_add_correction,
+    coordinateWronskian_companionCore_companion_succ_add_two,
+    decoBottomTotalCompanionWronskianCorrection_succ_add_two_eq_split]
+
+/-- Evaluation gives the lower three-Wronskian quadratic under the shifted
+assignment. -/
+theorem eval_coordinateWronskian_companionSlope_companion_succ_add_two_eq_split
+    (n i : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSlope (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) (i + 2)) =
+      MvPolynomial.eval (fun j => x (j + 1))
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalCompanionExtensionCore n)
+            (decoBottomTotalCompanionSuccessorExtension n) (i + 1)) +
+        x 1 *
+          (MvPolynomial.eval (fun j => x (j + 1))
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalWronskianCompanion n)
+                (decoBottomTotal (n + 1)) (i + 1)) +
+            x 1 * MvPolynomial.eval (fun j => x (j + 1))
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalCompanionCore n)
+                (decoBottomTotal (n + 1)) (i + 1))) := by
+  rw [coordinateWronskian_companionSlope_companion_succ_add_two_eq_split,
+    MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_rename, MvPolynomial.eval_rename,
+    MvPolynomial.eval_rename]
+  rfl
 
 /-- The coordinate-`1` successor Wronskian is independent of its own
 coordinate, as exposed by the multiaffine affine-determinant formula. -/
