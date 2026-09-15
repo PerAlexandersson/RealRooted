@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.BooleanSwapOrbit
+import RealRooted.MultivariateStability.PolyaFrequency
 
 /-!
 # Stable normalized decoration fibers
@@ -358,6 +359,32 @@ theorem fiberPolynomial_mvRealStable {h : Nat} (c : DecoNormalizedCode h) :
   exact RealRooted.booleanSwapOrbitNormalForm_mvRealStable
     c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+
+/-- Every normalized decoration fiber has nonnegative coefficients. -/
+theorem fiberPolynomial_hasNonnegCoeffs {h : Nat} (c : DecoNormalizedCode h) :
+    MvPolynomial.HasNonnegCoeffs (fiberPolynomial (R := Real) c) := by
+  rw [fiberPolynomial_eq_product]
+  apply MvPolynomial.HasNonnegCoeffs.mul
+  · apply MvPolynomial.HasNonnegCoeffs.mul
+    · exact MvPolynomial.HasNonnegCoeffs.C (by positivity)
+    · unfold MvPolynomial.finsetMonomial
+      apply MvPolynomial.HasNonnegCoeffs.prod
+      intro i hi
+      exact MvPolynomial.HasNonnegCoeffs.X i
+  · apply MvPolynomial.HasNonnegCoeffs.prod
+    intro j hj
+    exact (MvPolynomial.HasNonnegCoeffs.X (leftLabel h j.1)).add
+      (MvPolynomial.HasNonnegCoeffs.X (rightLabel h j.1))
+
+/-- Every nonnegative common-phase restriction of a normalized decoration
+fiber is a Pólya-frequency polynomial. -/
+theorem commonPhaseRestriction_fiberPolynomial_isPFPolynomial {h : Nat}
+    (c : DecoNormalizedCode h) (wt : Nat → Real)
+    (hwt : ∀ i, 0 ≤ wt i) :
+    IsPFPolynomial
+      (commonPhaseRestriction wt (fiberPolynomial (R := Real) c)) :=
+  (fiberPolynomial_mvRealStable c).commonPhaseRestriction_isPFPolynomial
+    (fiberPolynomial_hasNonnegCoeffs c) wt hwt
 
 /-- The factorized normalized-fiber form with independent weights on the two
 choices at every eligible start.  This is an algebraic definition; a

@@ -833,6 +833,7 @@ import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.SamePhase
 import RealRooted.MultivariateStability.Specialization
 import RealRooted.NarayanaTransformation
@@ -1000,6 +1001,7 @@ import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SamePhaseInterlacing
 import RealRooted.SamePhaseStability
+import RealRooted.SamePhaseStability.Nonnegative
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma

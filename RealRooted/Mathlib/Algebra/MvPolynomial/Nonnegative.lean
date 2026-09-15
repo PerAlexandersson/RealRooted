@@ -1,3 +1,4 @@
+import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Data.Real.Basic
 import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
@@ -131,6 +132,25 @@ theorem prod {σ ι : Type*} {s : Finset ι}
       rw [Finset.prod_insert hi]
       exact mul (hP i (Finset.mem_insert_self i s))
         (ih fun j hj => hP j (Finset.mem_insert_of_mem hj))
+
+private theorem monomial_pderiv {σ : Type*} (d : σ →₀ ℕ)
+    {c : ℝ} (hc : 0 ≤ c) (i : σ) :
+    HasNonnegCoeffs (MvPolynomial.pderiv i (MvPolynomial.monomial d c)) := by
+  classical
+  rw [MvPolynomial.pderiv_monomial]
+  intro e
+  rw [MvPolynomial.coeff_monomial]
+  split <;> simp_all [mul_nonneg]
+
+/-- Partial differentiation preserves coefficientwise nonnegativity. -/
+theorem pderiv {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : HasNonnegCoeffs P) (i : σ) :
+    HasNonnegCoeffs (MvPolynomial.pderiv i P) := by
+  classical
+  rw [MvPolynomial.as_sum P, map_sum]
+  apply sum
+  intro d hd
+  exact monomial_pderiv d (hP d) i
 
 /-- Substitution by polynomials with nonnegative coefficients preserves
 coefficientwise nonnegativity. -/
