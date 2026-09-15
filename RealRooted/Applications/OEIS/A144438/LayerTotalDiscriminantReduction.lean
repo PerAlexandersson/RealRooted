@@ -1,4 +1,4 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 
 /-!
 # Two-rank discriminant reduction for the Deco layer total
@@ -13,47 +13,6 @@ data is preserved at every rank.
 namespace RealRooted.Applications.OEIS
 
 noncomputable section
-
-/-- The companion uses only the ordinary labels `1, ..., n+1`. -/
-theorem vars_decoBottomTotalWronskianCompanion_subset_Icc (n : Nat) :
-    (decoBottomTotalWronskianCompanion n).vars ⊆
-      Finset.Icc 1 (n + 1) := by
-  classical
-  intro x hx
-  unfold decoBottomTotalWronskianCompanion at hx
-  have hxadd := MvPolynomial.vars_add_subset _ _ hx
-  rcases Finset.mem_union.mp hxadd with htotal | hproduct
-  · exact vars_decoBottomTotal_subset_Icc (n + 1) htotal
-  · have hmul := MvPolynomial.vars_mul _ _ hproduct
-    rcases Finset.mem_union.mp hmul with hX | hrename
-    · rw [MvPolynomial.vars_X] at hX
-      simp only [Finset.mem_singleton] at hX
-      subst x
-      exact Finset.mem_Icc.mpr ⟨le_rfl, by lia⟩
-    · obtain ⟨i, hi, hix⟩ := MvPolynomial.mem_vars_rename
-        (fun i : Nat => i + 1) (decoBottomTotal n) hrename
-      have hibounds := vars_decoBottomTotal_subset_Icc n hi
-      rw [Finset.mem_Icc] at hibounds ⊢
-      rw [← hix]
-      constructor <;> lia
-
-/-- Coordinate `0` is absent from the two-rank companion. -/
-theorem zero_notMem_vars_decoBottomTotalWronskianCompanion (n : Nat) :
-    0 ∉ (decoBottomTotalWronskianCompanion n).vars := by
-  intro h
-  have hbounds := vars_decoBottomTotalWronskianCompanion_subset_Icc n h
-  rw [Finset.mem_Icc] at hbounds
-  lia
-
-/-- Coordinate `0` is absent from the preceding normal core. -/
-theorem zero_notMem_vars_decoBottomTotalWronskianCore (n : Nat) :
-    0 ∉ (decoNormalBottomCore (n + 1)
-      (decoBottomTotal (n + 1))).vars := by
-  intro h
-  have hbounds := vars_decoNormalBottomCore_subset_Icc
-    (vars_decoBottomTotal_subset_Icc (n + 1)) h
-  rw [Finset.mem_Icc] at hbounds
-  lia
 
 /-- Coordinate `0` is absent from the shifted affine base. -/
 theorem zero_notMem_vars_decoBottomTotalAffineBase (n : Nat) :
@@ -81,7 +40,7 @@ theorem affineRayleighDiscriminant_affineBase_slope_succ
       MvPolynomial.rename (fun k : Nat => k + 1)
         (MvPolynomial.affineRayleighDiscriminant
           (decoBottomTotalWronskianCompanion n)
-          (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1))) i j) := by
+          (decoBottomTotalCompanionCore n) i j) := by
   rw [decoBottomTotalAffineBase_eq_rename_wronskianCompanion]
   unfold decoBottomTotalAffineSlope
   exact MvPolynomial.affineRayleighDiscriminant_rename
@@ -98,7 +57,7 @@ theorem eval_affineRayleighDiscriminant_affineBase_slope_succ
       MvPolynomial.eval (fun k => x (k + 1))
         (MvPolynomial.affineRayleighDiscriminant
           (decoBottomTotalWronskianCompanion n)
-          (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1))) i j) := by
+          (decoBottomTotalCompanionCore n) i j) := by
   rw [affineRayleighDiscriminant_affineBase_slope_succ,
     MvPolynomial.eval_rename]
   rfl
@@ -113,7 +72,7 @@ theorem eval_affineRayleighDiscriminant_nonpos_iff_companion (n : Nat) :
       ∀ i j x, MvPolynomial.eval x
         (MvPolynomial.affineRayleighDiscriminant
           (decoBottomTotalWronskianCompanion n)
-          (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1))) i j) ≤ 0 := by
+          (decoBottomTotalCompanionCore n) i j) ≤ 0 := by
   constructor
   · intro h i j x
     by_cases hi : i = 0
@@ -121,7 +80,7 @@ theorem eval_affineRayleighDiscriminant_nonpos_iff_companion (n : Nat) :
       rw [MvPolynomial.affineRayleighDiscriminant_eq_zero_of_notMem_vars
         _ _ 0 j
         (zero_notMem_vars_decoBottomTotalWronskianCompanion n)
-        (zero_notMem_vars_decoBottomTotalWronskianCore n)]
+        (zero_notMem_vars_decoBottomTotalCompanionCore n)]
       simp
     · by_cases hj : j = 0
       · subst j
@@ -129,7 +88,7 @@ theorem eval_affineRayleighDiscriminant_nonpos_iff_companion (n : Nat) :
         rw [MvPolynomial.affineRayleighDiscriminant_eq_zero_of_notMem_vars
           _ _ 0 i
           (zero_notMem_vars_decoBottomTotalWronskianCompanion n)
-          (zero_notMem_vars_decoBottomTotalWronskianCore n)]
+          (zero_notMem_vars_decoBottomTotalCompanionCore n)]
         simp
       · let y : Nat → Real := fun k => match k with
           | 0 => 0
@@ -167,12 +126,12 @@ structure DecoBottomTotalCompanionRayleighData (n : Nat) : Prop where
     (decoBottomTotalWronskianCompanion n)
   coordinateWronskian_nonneg : ∀ i x, 0 ≤ MvPolynomial.eval x
     (MvPolynomial.coordinateWronskian
-      (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
+      (decoBottomTotalCompanionCore n)
       (decoBottomTotalWronskianCompanion n) i)
   affineDiscriminant_nonpos : ∀ i j x, MvPolynomial.eval x
     (MvPolynomial.affineRayleighDiscriminant
       (decoBottomTotalWronskianCompanion n)
-      (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1))) i j) ≤ 0
+      (decoBottomTotalCompanionCore n) i j) ≤ 0
 
 end
 
