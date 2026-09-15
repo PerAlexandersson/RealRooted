@@ -45,6 +45,25 @@ theorem decoBottomTotal_isMultiaffine (n : Nat) :
   rw [← admissibleCodePolynomial_eq_decoBottomTotal]
   exact admissibleCodePolynomial_isMultiaffine (n + 2)
 
+/-- Stability of the homogeneous finite-coordinate layer total is exactly
+common-rotation stability of its multiaffine ordinary-coordinate
+dehomogenization. -/
+theorem decoLayerTotal_mvRealStable_iff_commonRotation_bottomTotal (n : Nat) :
+    MvRealStable (decoLayerTotal n) ↔
+      MvCommonRotationStable (complexifyMv (decoBottomTotal n)) := by
+  have hrename :
+      MvPolynomial.rename (decoLayerBottomEmbedding n)
+          (complexifyMv (MvPolynomial.dehomogenize (decoLayerTotal n))) =
+        complexifyMv (decoBottomTotal n) := by
+    have h := congrArg complexifyMv
+      (rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal n)
+    simpa [complexifyMv, MvPolynomial.map_rename] using h
+  rw [← hrename,
+    mvCommonRotationStable_rename_iff
+      (decoLayerBottomEmbedding n).injective]
+  exact mvRealStable_iff_commonRotation_dehomogenize
+    (decoLayerTotal_isHomogeneous n)
+
 end
 
 end RealRooted.Applications.OEIS
