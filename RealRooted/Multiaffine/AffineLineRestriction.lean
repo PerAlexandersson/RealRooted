@@ -1,4 +1,5 @@
 import RealRooted.AffineLineRestriction
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.Multiaffine.Rayleigh
 
 /-!
@@ -109,6 +110,43 @@ theorem eval_derivative_sq_sub_realAffineLineRestriction
   simpa only [Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_mul, eval_realAffineLineRestriction,
     map_sum, MvPolynomial.eval_mul, MvPolynomial.eval_C] using h
+
+/-- The Wronskian between a partial derivative and the original polynomial,
+after affine-line restriction, is a weighted row sum of Rayleigh differences. -/
+theorem wronskian_realAffineLineRestriction_pderiv
+    {σ : Type*} [Fintype σ] (a b : σ → ℝ)
+    (P : MvPolynomial σ ℝ) (i : σ) :
+    Polynomial.wronskian
+        (realAffineLineRestriction a b (MvPolynomial.pderiv i P))
+        (realAffineLineRestriction a b P) =
+      realAffineLineRestriction a b
+        (∑ j, MvPolynomial.C (b j) *
+          MvPolynomial.rayleighDifference P i j) := by
+  rw [Polynomial.wronskian, derivative_realAffineLineRestriction,
+    derivative_realAffineLineRestriction]
+  unfold realAffineLineRestriction
+  rw [← map_mul, ← map_mul, ← map_sub]
+  congr 1
+  rw [mul_comm (directionalPDeriv b (MvPolynomial.pderiv i P)) P,
+    MvPolynomial.pderiv_mul_directionalPDeriv_sub]
+
+/-- Rayleigh nonnegativity orients every affine-line Wronskian between a
+coordinate derivative and the original polynomial. -/
+theorem MvPolynomial.IsRayleigh.wronskian_eval_realAffineLineRestriction_pderiv_nonneg
+    {σ : Type*} [Finite σ] {P : MvPolynomial σ ℝ}
+    (hP : P.IsRayleigh) (a b : σ → ℝ) (hb : ∀ j, 0 ≤ b j)
+    (i : σ) (t : ℝ) :
+    0 ≤ (Polynomial.wronskian
+      (realAffineLineRestriction a b (MvPolynomial.pderiv i P))
+      (realAffineLineRestriction a b P)).eval t := by
+  classical
+  letI := Fintype.ofFinite σ
+  rw [wronskian_realAffineLineRestriction_pderiv,
+    eval_realAffineLineRestriction, map_sum]
+  apply Finset.sum_nonneg
+  intro j hj
+  rw [MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  exact mul_nonneg (hb j) (hP i j fun k => a k + b k * t)
 
 /-- Every nonnegative-direction affine restriction of a Rayleigh polynomial
 satisfies Laguerre's differential inequality. -/

@@ -28,6 +28,22 @@ theorem rayleighDifference_comm {R σ : Type*} [CommRing R]
   rw [rayleighDifference, rayleighDifference, pderiv_comm]
   ring
 
+/-- A partial derivative paired with a directional derivative is the weighted
+sum of the corresponding row of Rayleigh differences. -/
+theorem pderiv_mul_directionalPDeriv_sub
+    {R σ : Type*} [CommRing R] [Fintype σ]
+    (b : σ → R) (P : MvPolynomial σ R) (i : σ) :
+    pderiv i P * RealRooted.directionalPDeriv b P -
+        P * RealRooted.directionalPDeriv b (pderiv i P) =
+      ∑ j, C (b j) * rayleighDifference P i j := by
+  classical
+  simp only [RealRooted.directionalPDeriv, Finset.mul_sum]
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [rayleighDifference, pderiv_comm j i]
+  ring
+
 /-- Rayleigh differences commute with coefficient maps. -/
 theorem rayleighDifference_map {R S σ : Type*} [CommRing R] [CommRing S]
     (f : R →+* S) (P : MvPolynomial σ R) (i j : σ) :
