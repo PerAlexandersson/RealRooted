@@ -127,6 +127,49 @@ theorem rename_affineEulerCore
   simp only [affineEulerCore, map_add, map_sub, map_mul, map_sum,
     rename_C, rename_X, pderiv_rename hg, Function.comp_apply]
 
+/-- Specialization at one commutes with an affine Euler core in any selected
+coordinate. -/
+theorem specializeAt_one_affineEulerCore
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (he : Function.Injective e) (c : R)
+    (P : MvPolynomial σ R) (i : ι) :
+    specializeAt (e i) 1 (affineEulerCore e c P) =
+      affineEulerCore e c (specializeAt (e i) 1 P) := by
+  classical
+  have hweighted :
+      specializeAt (e i) 1
+          (∑ j : ι, X (e j) * pderiv (e j) P) =
+        (∑ j : ι, X (e j) *
+          pderiv (e j) (specializeAt (e i) 1 P)) +
+          specializeAt (e i) 1 (pderiv (e i) P) := by
+    rw [specializeAt_sum, ← Finset.sum_erase_add _ _ (Finset.mem_univ i),
+      ← Finset.sum_erase_add _ _ (Finset.mem_univ i)]
+    simp only [specializeAt_mul, specializeAt_X,
+      pderiv_specializeAt_self, mul_zero, add_zero]
+    simp only [if_true, map_one, one_mul]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j hj
+    have hji : j ≠ i := Finset.ne_of_mem_erase hj
+    have heji : e j ≠ e i := fun h => hji (he h)
+    rw [if_neg heji, pderiv_specializeAt_of_ne heji]
+  have hderivs :
+      specializeAt (e i) 1 (∑ j : ι, pderiv (e j) P) =
+        (∑ j : ι, pderiv (e j) (specializeAt (e i) 1 P)) +
+          specializeAt (e i) 1 (pderiv (e i) P) := by
+    rw [specializeAt_sum, ← Finset.sum_erase_add _ _ (Finset.mem_univ i),
+      ← Finset.sum_erase_add _ _ (Finset.mem_univ i)]
+    simp only [pderiv_specializeAt_self, add_zero]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j hj
+    have hji : j ≠ i := Finset.ne_of_mem_erase hj
+    exact (pderiv_specializeAt_of_ne (fun h => hji (he h)) 1 P).symm
+  unfold affineEulerCore
+  simp only [specializeAt_add, specializeAt_sub, specializeAt_mul,
+    specializeAt_C, hweighted, hderivs]
+  ring
+
 /-- Affine Euler cores preserve multiaffineness. -/
 theorem IsMultiaffine.affineEulerCore
     {R σ ι : Type*} [CommRing R] [Nontrivial R] [Fintype ι]

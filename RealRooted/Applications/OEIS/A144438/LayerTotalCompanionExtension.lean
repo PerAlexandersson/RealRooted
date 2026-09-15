@@ -213,6 +213,34 @@ theorem decoBottomTotalCompanionSuccessorExtension_isMultiaffine (n : Nat) :
     ((decoBottomTotalCompanionSlope_isMultiaffine n).X_mul_of_notMem_vars
       (zero_notMem_vars_decoBottomTotalCompanionSlope n))
 
+/-- A positive-coordinate value-one section of the total extension splits
+over its companion base and fresh-coordinate core term. -/
+theorem specializeAt_one_decoBottomTotalCompanionTotalExtension_add_one
+    (n i : Nat) :
+    MvPolynomial.specializeAt (i + 1) 1
+        (decoBottomTotalCompanionTotalExtension n) =
+      MvPolynomial.specializeAt (i + 1) 1
+          (decoBottomTotalWronskianCompanion n) +
+        MvPolynomial.X 0 *
+          MvPolynomial.specializeAt (i + 1) 1
+            (decoBottomTotalCompanionCore n) := by
+  unfold decoBottomTotalCompanionTotalExtension
+  simp
+
+/-- A positive-coordinate derivative of the total extension splits over its
+companion base and fresh-coordinate core term. -/
+theorem pderiv_decoBottomTotalCompanionTotalExtension_add_one
+    (n i : Nat) :
+    MvPolynomial.pderiv (i + 1)
+        (decoBottomTotalCompanionTotalExtension n) =
+      MvPolynomial.pderiv (i + 1)
+          (decoBottomTotalWronskianCompanion n) +
+        MvPolynomial.X 0 *
+          MvPolynomial.pderiv (i + 1)
+            (decoBottomTotalCompanionCore n) := by
+  unfold decoBottomTotalCompanionTotalExtension
+  simp
+
 /-- Specializing the normal affine step at its fresh coordinate to one gives
 the positive-coordinate rename of the companion successor slope. -/
 theorem specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope

@@ -149,6 +149,104 @@ theorem decoBottomTotalCompanionCore_succ_eq_rename_extensionCore (n : Nat) :
   push_cast
   ring
 
+/-- Value-one specialization commutes with the affine Euler core defining the
+unshifted next companion core. -/
+theorem specializeAt_one_decoBottomTotalCompanionExtensionCore
+    (n : Nat) (i : Fin (n + 2)) :
+    MvPolynomial.specializeAt (i : Nat) 1
+        (decoBottomTotalCompanionExtensionCore n) =
+      MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+        (MvPolynomial.specializeAt (i : Nat) 1
+          (decoBottomTotalCompanionTotalExtension n)) := by
+  unfold decoBottomTotalCompanionExtensionCore
+  exact MvPolynomial.specializeAt_one_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+      (n + 3 : Real) (decoBottomTotalCompanionTotalExtension n) i
+
+/-- Differentiating the unshifted next companion core lowers its affine Euler
+coefficient by one. -/
+theorem pderiv_decoBottomTotalCompanionExtensionCore
+    (n : Nat) (i : Fin (n + 2)) :
+    MvPolynomial.pderiv (i : Nat)
+        (decoBottomTotalCompanionExtensionCore n) =
+      MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+        (MvPolynomial.pderiv (i : Nat)
+          (decoBottomTotalCompanionTotalExtension n)) := by
+  unfold decoBottomTotalCompanionExtensionCore
+  have h := MvPolynomial.pderiv_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+      (n + 3 : Real) (decoBottomTotalCompanionTotalExtension n) i
+  have hc : (n + 3 : Real) - 1 = (n + 2 : Real) := by
+    ring
+  rw [hc] at h
+  simpa only [Fin.valEmbedding_apply] using h
+
+/-- Every noninitial value-one section of the next companion core is the
+positive-coordinate shift of the corresponding unshifted core section. -/
+theorem specializeAt_one_decoBottomTotalCompanionCore_succ_add_two
+    (n i : Nat) :
+    MvPolynomial.specializeAt (i + 2) 1
+        (decoBottomTotalCompanionCore (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.specializeAt (i + 1) 1
+          (decoBottomTotalCompanionExtensionCore n)) := by
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore]
+  simpa only [Nat.add_assoc] using
+    MvPolynomial.specializeAt_rename (fun j : Nat => j + 1)
+      (by intro j k h; lia) (i + 1) 1
+        (decoBottomTotalCompanionExtensionCore n)
+
+/-- Every noninitial derivative of the next companion core is the
+positive-coordinate shift of the corresponding unshifted core derivative. -/
+theorem pderiv_decoBottomTotalCompanionCore_succ_add_two
+    (n i : Nat) :
+    MvPolynomial.pderiv (i + 2)
+        (decoBottomTotalCompanionCore (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.pderiv (i + 1)
+          (decoBottomTotalCompanionExtensionCore n)) := by
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore]
+  simpa only [Nat.add_assoc] using
+    MvPolynomial.pderiv_rename (R := Real)
+      (f := fun j : Nat => j + 1) (by intro j k h; lia) (i + 1)
+        (decoBottomTotalCompanionExtensionCore n)
+
+/-- At each occupied noninitial coordinate, a value-one section of the next
+companion core is the shift of an affine Euler core of the corresponding
+total-extension section. -/
+theorem specializeAt_one_decoBottomTotalCompanionCore_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.specializeAt (i + 2 : Nat) 1
+        (decoBottomTotalCompanionCore (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+          (MvPolynomial.specializeAt (i + 1 : Nat) 1
+            (decoBottomTotalCompanionTotalExtension n))) := by
+  rw [specializeAt_one_decoBottomTotalCompanionCore_succ_add_two]
+  congr 1
+  simpa only [Fin.val_succ] using
+    specializeAt_one_decoBottomTotalCompanionExtensionCore n i.succ
+
+/-- At each occupied noninitial coordinate, a derivative of the next
+companion core is the shift of a lowered-coefficient affine Euler core of the
+corresponding total-extension derivative. -/
+theorem pderiv_decoBottomTotalCompanionCore_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.pderiv (i + 2 : Nat)
+        (decoBottomTotalCompanionCore (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+          (MvPolynomial.pderiv (i + 1 : Nat)
+            (decoBottomTotalCompanionTotalExtension n))) := by
+  rw [pderiv_decoBottomTotalCompanionCore_succ_add_two]
+  congr 1
+  simpa only [Fin.val_succ] using
+    pderiv_decoBottomTotalCompanionExtensionCore n i.succ
+
 /-- Every coordinate-`i + 2` Wronskian of the next core and companion is the
 shift of the corresponding unshifted successor-extension Wronskian. -/
 theorem coordinateWronskian_companionCore_companion_succ_add_two

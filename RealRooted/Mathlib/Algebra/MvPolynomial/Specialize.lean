@@ -56,6 +56,13 @@ noncomputable def specializeAt {σ R : Type*} [CommSemiring R]
     specializeAt i c (P ^ n) = specializeAt i c P ^ n := by
   simp [specializeAt]
 
+@[simp] theorem specializeAt_sum {σ R ι : Type*} [CommSemiring R]
+    (i : σ) (c : R) (s : Finset ι) (P : ι → MvPolynomial σ R) :
+    specializeAt i c (∑ j ∈ s, P j) =
+      ∑ j ∈ s, specializeAt i c (P j) := by
+  classical
+  simp [specializeAt]
+
 /-- Evaluation after scalar specialization is evaluation at the updated
 assignment. -/
 @[simp] theorem eval_specializeAt {σ R : Type*} [CommSemiring R]
