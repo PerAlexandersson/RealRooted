@@ -132,6 +132,35 @@ def decoExceptionalLayerStep {R : Type*} [CommSemiring R] {n : ℕ}
   MvPolynomial.X none * MvPolynomial.X (some 1) *
     MvPolynomial.rename decoExceptionalRename P
 
+/-- The normal exact-layer operator preserves coefficientwise
+nonnegativity. -/
+theorem decoNormalLayerStep_hasNonnegCoeffs {n : ℕ}
+    {P : MvPolynomial (DecoLayerCoord n) ℝ}
+    (hP : MvPolynomial.HasNonnegCoeffs P) :
+    MvPolynomial.HasNonnegCoeffs (decoNormalLayerStep P) := by
+  unfold decoNormalLayerStep
+  apply MvPolynomial.HasNonnegCoeffs.mul (MvPolynomial.HasNonnegCoeffs.X none)
+  apply MvPolynomial.HasNonnegCoeffs.add
+  · exact hP.rename_of_injective decoNormalRename_injective
+  · apply MvPolynomial.HasNonnegCoeffs.mul
+      (MvPolynomial.HasNonnegCoeffs.X (some 0))
+    apply MvPolynomial.HasNonnegCoeffs.rename_of_injective
+      _ decoNormalRename_injective
+    apply MvPolynomial.HasNonnegCoeffs.sum
+    intro i hi
+    exact hP.pderiv i
+
+/-- The exceptional exact-layer operator preserves coefficientwise
+nonnegativity. -/
+theorem decoExceptionalLayerStep_hasNonnegCoeffs {n : ℕ}
+    {P : MvPolynomial (DecoLayerCoord n) ℝ}
+    (hP : MvPolynomial.HasNonnegCoeffs P) :
+    MvPolynomial.HasNonnegCoeffs (decoExceptionalLayerStep P) := by
+  unfold decoExceptionalLayerStep
+  exact ((MvPolynomial.HasNonnegCoeffs.X none).mul
+    (MvPolynomial.HasNonnegCoeffs.X (some 1))).mul
+      (hP.rename_of_injective decoExceptionalRename_injective)
+
 /-- Dehomogenizing the normal layer step gives the ordinary-variable Euler
 derivative recurrence. -/
 theorem dehomogenize_decoNormalLayerStep {R : Type*} [CommRing R] {n : Nat}
@@ -403,6 +432,23 @@ theorem decoExactLayerFromStarts_mvRealStable (n : ℕ) (R : Finset ℕ) :
       · exact decoExceptionalLayerStep_mvRealStable (ih0 _)
       · exact decoNormalLayerStep_mvRealStable (ih1 _)
 
+/-- Every proposed exceptional-start set generates a polynomial with
+nonnegative coefficients. -/
+theorem decoExactLayerFromStarts_hasNonnegCoeffs (n : ℕ) (R : Finset ℕ) :
+    MvPolynomial.HasNonnegCoeffs (decoExactLayerFromStarts n R) := by
+  induction n using Nat.twoStepInduction generalizing R with
+  | zero => simpa [decoExactLayerFromStarts] using
+      (MvPolynomial.HasNonnegCoeffs.X (none : DecoLayerCoord 0))
+  | one =>
+      simpa [decoExactLayerFromStarts] using
+        decoNormalLayerStep_hasNonnegCoeffs
+          (MvPolynomial.HasNonnegCoeffs.X (none : DecoLayerCoord 0))
+  | more n ih0 ih1 =>
+      rw [decoExactLayerFromStarts]
+      split
+      · exact decoExceptionalLayerStep_hasNonnegCoeffs (ih0 _)
+      · exact decoNormalLayerStep_hasNonnegCoeffs (ih1 _)
+
 /-- Every history-indexed exact layer has homogeneous degree `n+1`. -/
 theorem decoExactLayer_isHomogeneous {n : ℕ}
     (H : DecoExceptionalHistory (n + 2)) :
@@ -414,6 +460,12 @@ theorem decoExactLayer_mvRealStable {n : ℕ}
     (H : DecoExceptionalHistory (n + 2)) :
     MvRealStable (decoExactLayer H) :=
   decoExactLayerFromStarts_mvRealStable n H.starts
+
+/-- Every history-indexed exact layer has nonnegative coefficients. -/
+theorem decoExactLayer_hasNonnegCoeffs {n : ℕ}
+    (H : DecoExceptionalHistory (n + 2)) :
+    MvPolynomial.HasNonnegCoeffs (decoExactLayer H) :=
+  decoExactLayerFromStarts_hasNonnegCoeffs n H.starts
 
 /-- Set the homogenizing coordinate `s` to one and remove it from the
 coordinate type. -/
@@ -427,6 +479,12 @@ theorem decoExactLayerDehomogenized_mvRealStable {n : ℕ}
     MvRealStable (decoExactLayerDehomogenized H) := by
   exact (decoExactLayer_mvRealStable H).dehomogenize
     (decoExactLayer_isHomogeneous H)
+
+/-- Every dehomogenized exact layer has nonnegative coefficients. -/
+theorem decoExactLayerDehomogenized_hasNonnegCoeffs {n : ℕ}
+    (H : DecoExceptionalHistory (n + 2)) :
+    MvPolynomial.HasNonnegCoeffs (decoExactLayerDehomogenized H) :=
+  (decoExactLayer_hasNonnegCoeffs H).dehomogenize
 
 end
 
