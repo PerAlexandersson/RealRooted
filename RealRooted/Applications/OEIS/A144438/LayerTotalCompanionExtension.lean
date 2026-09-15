@@ -136,6 +136,48 @@ theorem decoBottomTotalCompanionSlope_isMultiaffine (n : Nat) :
   exact (decoBottomTotal_isMultiaffine (n + 1)).add
     (decoBottomTotalCompanionCore_isMultiaffine n)
 
+/-- The coordinate-`1` zero-section of the companion is the zero-section of
+the latest bottom total. -/
+theorem specializeZero_one_decoBottomTotalWronskianCompanion (n : Nat) :
+    MvPolynomial.specializeZero 1
+        (decoBottomTotalWronskianCompanion n) =
+      MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) := by
+  unfold decoBottomTotalWronskianCompanion
+  rw [MvPolynomial.specializeZero_add, MvPolynomial.specializeZero_mul,
+    MvPolynomial.specializeZero_X_self]
+  simp
+
+/-- The coordinate-`1` slope of the companion is the latest slope plus the
+shifted preceding total. -/
+theorem pderiv_one_decoBottomTotalWronskianCompanion (n : Nat) :
+    MvPolynomial.pderiv 1 (decoBottomTotalWronskianCompanion n) =
+      MvPolynomial.pderiv 1 (decoBottomTotal (n + 1)) +
+        MvPolynomial.rename (fun i : Nat => i + 1)
+          (decoBottomTotal n) := by
+  unfold decoBottomTotalWronskianCompanion
+  rw [map_add, MvPolynomial.pderiv_mul,
+    MvPolynomial.pderiv_X_self,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars
+      (one_notMem_vars_rename_succ_decoBottomTotal n)]
+  ring
+
+/-- Zero-specializing the companion slope distributes over its two summands. -/
+theorem specializeZero_one_decoBottomTotalCompanionSlope (n : Nat) :
+    MvPolynomial.specializeZero 1 (decoBottomTotalCompanionSlope n) =
+      MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) +
+        MvPolynomial.specializeZero 1
+          (decoBottomTotalCompanionCore n) := by
+  unfold decoBottomTotalCompanionSlope
+  rw [MvPolynomial.specializeZero_add]
+
+/-- Differentiating the companion slope distributes over its two summands. -/
+theorem pderiv_one_decoBottomTotalCompanionSlope (n : Nat) :
+    MvPolynomial.pderiv 1 (decoBottomTotalCompanionSlope n) =
+      MvPolynomial.pderiv 1 (decoBottomTotal (n + 1)) +
+        MvPolynomial.pderiv 1 (decoBottomTotalCompanionCore n) := by
+  unfold decoBottomTotalCompanionSlope
+  rw [map_add]
+
 /-- The unshifted extension producing the next bottom total is
 multiaffine. -/
 theorem decoBottomTotalCompanionTotalExtension_isMultiaffine (n : Nat) :

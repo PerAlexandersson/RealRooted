@@ -153,6 +153,70 @@ theorem one_notMem_vars_coordinateWronskian_companionSlope_companion
     (decoBottomTotalCompanionSlope_isMultiaffine n)
     (decoBottomTotalWronskianCompanion_isMultiaffine n) 1
 
+/-- In coordinate `1`, the complete successor Wronskian is the determinant of
+the explicit zero-sections and slopes of the two companion endpoints. -/
+theorem coordinateWronskian_companionSlope_companion_one_eq_sections
+    (n : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope n)
+        (decoBottomTotalWronskianCompanion n) 1 =
+      (MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) +
+          MvPolynomial.specializeZero 1
+            (decoBottomTotalCompanionCore n)) *
+        (MvPolynomial.pderiv 1 (decoBottomTotal (n + 1)) +
+          MvPolynomial.rename (fun i : Nat => i + 1)
+            (decoBottomTotal n)) -
+      (MvPolynomial.pderiv 1 (decoBottomTotal (n + 1)) +
+          MvPolynomial.pderiv 1 (decoBottomTotalCompanionCore n)) *
+        MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) := by
+  rw [MvPolynomial.IsMultiaffine.coordinateWronskian_eq_specializeZero
+      (decoBottomTotalCompanionSlope_isMultiaffine n)
+      (decoBottomTotalWronskianCompanion_isMultiaffine n) 1,
+    specializeZero_one_decoBottomTotalCompanionSlope,
+    pderiv_one_decoBottomTotalWronskianCompanion,
+    pderiv_one_decoBottomTotalCompanionSlope,
+    specializeZero_one_decoBottomTotalWronskianCompanion]
+
+/-- The core/latest-total Wronskian in coordinate `1` is the distinguished
+row sum of Rayleigh differences supplied by the normal-core operator. -/
+theorem coordinateWronskian_companionCore_total_one_eq_rayleighRow
+    (n : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionCore n)
+        (decoBottomTotal (n + 1)) 1 =
+      decoBottomTotal (n + 1) *
+          MvPolynomial.pderiv 1 (decoBottomTotal (n + 1)) +
+        ∑ j : Fin (n + 1),
+          (1 - MvPolynomial.X (decoLayerBottomEmbedding (n + 1) j)) *
+            MvPolynomial.rayleighDifference (decoBottomTotal (n + 1)) 1
+              (decoLayerBottomEmbedding (n + 1) j) := by
+  let i : Fin (n + 1) := ⟨0, by lia⟩
+  have h := coordinateWronskian_decoNormalBottomCore
+    (n + 1) (decoBottomTotal (n + 1)) i
+  simpa [decoBottomTotalCompanionCore, i] using h
+
+/-- Equivalently, the coordinate-`1` successor Wronskian is the core/latest
+Wronskian plus the shifted preceding total times the successor zero-section.
+Every term is independent of coordinate `1`. -/
+theorem coordinateWronskian_companionSlope_companion_one_eq_core_add_section
+    (n : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope n)
+        (decoBottomTotalWronskianCompanion n) 1 =
+      MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore n)
+          (decoBottomTotal (n + 1)) 1 +
+        MvPolynomial.rename (fun i : Nat => i + 1)
+            (decoBottomTotal n) *
+          MvPolynomial.specializeZero 1
+            (decoBottomTotalCompanionSlope n) := by
+  rw [coordinateWronskian_companionSlope_companion_one_eq_sections,
+    MvPolynomial.IsMultiaffine.coordinateWronskian_eq_specializeZero
+      (decoBottomTotalCompanionCore_isMultiaffine n)
+      (decoBottomTotal_isMultiaffine (n + 1)) 1,
+    specializeZero_one_decoBottomTotalCompanionSlope]
+  ring
+
 /-- Nonnegativity of every successor-slope/companion Wronskian is exactly the
 condition that its explicit correction stay above the negative current-data
 Wronskian margin. -/
