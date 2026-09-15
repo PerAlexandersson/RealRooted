@@ -45,6 +45,38 @@ theorem decoBottomTotal_isMultiaffine (n : Nat) :
   rw [← admissibleCodePolynomial_eq_decoBottomTotal]
   exact admissibleCodePolynomial_isMultiaffine (n + 2)
 
+/-- The recurrence-defined rank-`n` total uses only the ordinary labels
+`1, ..., n`. -/
+theorem vars_decoBottomTotal_subset_Icc (n : Nat) :
+    (decoBottomTotal n).vars ⊆ Finset.Icc 1 n := by
+  rw [← admissibleCodePolynomial_eq_decoBottomTotal,
+    admissibleCodePolynomial_eq_sum_historyFiberPolynomial]
+  intro x hx
+  have houter := (_root_.MvPolynomial.vars_sum_subset Finset.univ
+    (fun H : DecoExceptionalHistory (n + 2) =>
+      historyFiberPolynomial (R := Real) H)) hx
+  simp only [Finset.mem_biUnion, Finset.mem_univ, true_and] at houter
+  obtain ⟨H, hxH⟩ := houter
+  unfold historyFiberPolynomial at hxH
+  have hinner := (_root_.MvPolynomial.vars_sum_subset Finset.univ
+    (fun c : DecoHistoryFiber H =>
+      MinimumInsertionWord.comparisonBottomMonomial
+        (R := Real) c.1.1.inverseWord)) hxH
+  simp only [Finset.mem_biUnion, Finset.mem_univ, true_and] at hinner
+  obtain ⟨c, hxc⟩ := hinner
+  unfold MinimumInsertionWord.comparisonBottomMonomial at hxc
+  unfold MvPolynomial.finsetMonomial at hxc
+  have hprod := (_root_.MvPolynomial.vars_prod
+    (s := MinimumInsertionWord.comparisonBottomSupport c.1.1.inverseWord)
+    (fun y : Nat => (MvPolynomial.X y : MvPolynomial Nat Real))) hxc
+  simp only [Finset.mem_biUnion] at hprod
+  obtain ⟨y, hy, hxy⟩ := hprod
+  rw [_root_.MvPolynomial.vars_X] at hxy
+  simp only [Finset.mem_singleton] at hxy
+  subst x
+  exact Finset.mem_Icc.mpr
+    (mem_comparisonBottomSupport_inverseWord_bounds H c hy)
+
 /-- The recurrence-defined ordinary-coordinate total has nonnegative
 coefficients. -/
 theorem decoBottomTotal_hasNonnegCoeffs (n : Nat) :

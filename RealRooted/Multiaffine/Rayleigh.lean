@@ -239,6 +239,28 @@ theorem IsMultiaffine.eval_rayleighDifference_self_nonneg
   rw [hP.rayleighDifference_self, map_pow]
   positivity
 
+/-- To prove that a multiaffine polynomial is Rayleigh, it suffices to check
+distinct coordinate pairs in any finite set containing all its variables. -/
+theorem IsMultiaffine.isRayleigh_of_vars_subset
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : IsMultiaffine P) (s : Finset σ) (hvars : P.vars ⊆ s)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ∀ x : σ → ℝ,
+      0 ≤ eval x (rayleighDifference P i j)) :
+    IsRayleigh P := by
+  classical
+  intro i j x
+  by_cases hij : i = j
+  · subst j
+    exact hP.eval_rayleighDifference_self_nonneg i x
+  by_cases hi : i ∈ P.vars
+  · by_cases hj : j ∈ P.vars
+    · exact hpair i (hvars hi) j (hvars hj) hij x
+    · rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hj]
+      simp
+  · rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
+      pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
+    simp
+
 end
 
 end MvPolynomial

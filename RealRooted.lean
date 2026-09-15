@@ -1350,6 +1350,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotalStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+import RealRooted.Applications.OEIS.A144438.LayerTotalRankFour
 import RealRooted.Applications.OEIS.A144438.BottomTotal
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.Applications.OEIS.A144438.DiagonalBridge
