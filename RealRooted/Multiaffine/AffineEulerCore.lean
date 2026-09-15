@@ -21,6 +21,88 @@ def affineEulerCore {R σ ι : Type*} [CommRing R] [Fintype ι]
   C c * P - ∑ i : ι, X (e i) * pderiv (e i) P +
     ∑ i : ι, pderiv (e i) P
 
+private theorem affineEulerCore_X_mul_identity
+    {S : Type*} [CommRing S] (c x b w d : S) :
+    b + x * ((c - 1) * b - w + d) =
+      c * (x * b) - (x * b + x * w) + (b + x * d) := by
+  ring
+
+/-- The affine Euler core is additive in its polynomial argument. -/
+theorem affineEulerCore_add
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (c : R) (A B : MvPolynomial σ R) :
+    affineEulerCore e c (A + B) =
+      affineEulerCore e c A + affineEulerCore e c B := by
+  classical
+  simp only [affineEulerCore, mul_add, map_add,
+    Finset.sum_add_distrib]
+  ring_nf
+
+/-- Adjoining a selected coordinate as a factor lowers the affine Euler
+coefficient on the remaining factor by one. -/
+theorem affineEulerCore_X_mul
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (he : Function.Injective e) (c : R)
+    (B : MvPolynomial σ R) (i : ι) :
+    affineEulerCore e c (X (e i) * B) =
+      B + X (e i) * affineEulerCore e (c - 1) B := by
+  classical
+  have hsum : (∑ x : ι, (if i = x then 1 else 0) * B) = B := by
+    simp
+  have hweighted :
+      (∑ x : ι, X (e x) *
+        ((if i = x then 1 else 0) * B +
+          X (e i) * pderiv (e x) B)) =
+        X (e i) * B +
+          X (e i) * (∑ x : ι, X (e x) * pderiv (e x) B) := by
+    have hfirst : (∑ x : ι,
+        X (e x) * (if i = x then 1 else 0) * B) =
+        X (e i) * B := by
+      simp
+    have hsecond : (∑ x : ι,
+        X (e x) * (X (e i) * pderiv (e x) B)) =
+        X (e i) * ∑ x : ι, X (e x) * pderiv (e x) B := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro x hx
+      ring
+    calc
+      _ = ∑ x : ι, (X (e x) * (if i = x then 1 else 0) * B +
+          X (e x) * (X (e i) * pderiv (e x) B)) := by
+            apply Finset.sum_congr rfl
+            intro x hx
+            ring
+      _ = _ := by rw [Finset.sum_add_distrib, hfirst, hsecond]
+  have hderivs :
+      (∑ x : ι, ((if i = x then 1 else 0) * B +
+        X (e i) * pderiv (e x) B)) =
+        B + X (e i) * ∑ x : ι, pderiv (e x) B := by
+    rw [Finset.sum_add_distrib, hsum, Finset.mul_sum]
+  have hC : C (c - 1) = (C c - 1 : MvPolynomial σ R) := by
+    simp
+  have hpderiv (x : ι) :
+      pderiv (e x) (X (e i) * B) =
+        (if i = x then 1 else 0) * B +
+          X (e i) * pderiv (e x) B := by
+    simp [pderiv_X, Pi.single_apply, he.eq_iff, eq_comm]
+    ring
+  unfold affineEulerCore
+  simp_rw [hpderiv]
+  rw [hweighted, hderivs, hC]
+  exact (affineEulerCore_X_mul_identity _ _ _ _ _).symm
+
+/-- The affine Euler core of an affine extension splits into its base core,
+its slope, and the lowered-coefficient slope core. -/
+theorem affineEulerCore_add_X_mul
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (he : Function.Injective e) (c : R)
+    (A B : MvPolynomial σ R) (i : ι) :
+    affineEulerCore e c (A + X (e i) * B) =
+      affineEulerCore e c A + B +
+        X (e i) * affineEulerCore e (c - 1) B := by
+  rw [affineEulerCore_add, affineEulerCore_X_mul e he c B i]
+  ring
+
 /-- Affine Euler cores commute with injective variable renaming. -/
 theorem rename_affineEulerCore
     {R σ τ ι : Type*} [CommRing R] [Fintype ι]
@@ -52,6 +134,18 @@ theorem IsMultiaffine.affineEulerCore
     intro i hi
     exact hP.pderiv (e i)
   exact ((hP.C_mul c).sub hweighted).add hderivs
+
+/-- Partial differentiation lowers the affine Euler coefficient by one. -/
+theorem pderiv_affineEulerCore
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (he : Function.Injective e) (c : R)
+    (P : MvPolynomial σ R) (i : ι) :
+    pderiv (e i) (affineEulerCore e c P) =
+      affineEulerCore e (c - 1) (pderiv (e i) P) := by
+  classical
+  simp [affineEulerCore, pderiv_comm, Pi.single_apply, he.eq_iff,
+    eq_comm, Finset.sum_add_distrib]
+  ring
 
 /-- The Wronskian of an affine Euler core against its source is the source
 derivative plus an affine-weighted row of Rayleigh differences. -/

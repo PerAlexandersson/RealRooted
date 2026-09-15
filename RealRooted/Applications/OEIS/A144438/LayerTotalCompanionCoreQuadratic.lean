@@ -25,6 +25,69 @@ def decoBottomTotalCompanionExtensionCoreSlope (n : Nat) :
     MvPolynomial Nat Real :=
   MvPolynomial.pderiv 0 (decoBottomTotalCompanionExtensionCore n)
 
+/-- The fresh-coordinate derivative of the total extension is its companion
+core. -/
+theorem pderiv_zero_decoBottomTotalCompanionTotalExtension (n : Nat) :
+    MvPolynomial.pderiv 0
+        (decoBottomTotalCompanionTotalExtension n) =
+      decoBottomTotalCompanionCore n := by
+  unfold decoBottomTotalCompanionTotalExtension
+  rw [map_add, MvPolynomial.pderiv_eq_zero_of_notMem_vars
+    (zero_notMem_vars_decoBottomTotalWronskianCompanion n),
+    MvPolynomial.pderiv_mul, MvPolynomial.pderiv_X_self,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars
+      (zero_notMem_vars_decoBottomTotalCompanionCore n)]
+  ring
+
+/-- The fresh-coordinate slope of the extension core is the affine Euler core
+of the preceding companion core, with coefficient lowered by one. -/
+theorem decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore
+    (n : Nat) :
+    decoBottomTotalCompanionExtensionCoreSlope n =
+      MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+          (decoBottomTotalCompanionCore n) := by
+  unfold decoBottomTotalCompanionExtensionCoreSlope
+    decoBottomTotalCompanionExtensionCore
+  let i : Fin (n + 2) := ⟨0, by lia⟩
+  have hderiv : MvPolynomial.pderiv 0
+        (MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+            (decoBottomTotalCompanionTotalExtension n)) =
+      MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) ((n + 3 : Real) - 1)
+          (MvPolynomial.pderiv 0
+            (decoBottomTotalCompanionTotalExtension n)) := by
+    simpa [i] using MvPolynomial.pderiv_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+        (n + 3 : Real) (decoBottomTotalCompanionTotalExtension n) i
+  rw [hderiv, pderiv_zero_decoBottomTotalCompanionTotalExtension]
+  congr 2
+  ring
+
+/-- The extension core splits into the affine Euler core of the companion,
+the preceding companion core, and the fresh-coordinate slope. -/
+theorem decoBottomTotalCompanionExtensionCore_eq_base_add_X_mul_slope
+    (n : Nat) :
+    decoBottomTotalCompanionExtensionCore n =
+      MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+          (decoBottomTotalWronskianCompanion n) +
+        decoBottomTotalCompanionCore n +
+        MvPolynomial.X 0 *
+          decoBottomTotalCompanionExtensionCoreSlope n := by
+  rw [decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore]
+  unfold decoBottomTotalCompanionExtensionCore
+    decoBottomTotalCompanionTotalExtension
+  let i : Fin (n + 2) := ⟨0, by lia⟩
+  have h := MvPolynomial.affineEulerCore_add_X_mul
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+      (n + 3 : Real) (decoBottomTotalWronskianCompanion n)
+        (decoBottomTotalCompanionCore n) i
+  have hc : (n + 3 : Real) - 1 = (n + 2 : Real) := by ring
+  rw [hc] at h
+  simpa [i] using h
+
 /-- The constant coefficient of a successor core row in the fresh
 coordinate. -/
 def decoBottomTotalCompanionSuccessorCoreRowConstant
@@ -69,6 +132,57 @@ theorem decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope
           decoBottomTotalCompanionExtensionCoreSlope n := by
   exact MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
     (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0
+
+/-- The zero-section of the extension core is the companion affine Euler
+core plus the preceding companion core. -/
+theorem decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add
+    (n : Nat) :
+    decoBottomTotalCompanionExtensionCoreZero n =
+      MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+          (decoBottomTotalWronskianCompanion n) +
+        decoBottomTotalCompanionCore n := by
+  have h :=
+    decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope n
+  rw [decoBottomTotalCompanionExtensionCore_eq_base_add_X_mul_slope] at h
+  exact (add_right_cancel h).symm
+
+/-- The constant row coefficient splits into an affine Euler row of the
+companion and the current companion-data Wronskian. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowConstant n i =
+      MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+            (decoBottomTotalWronskianCompanion n))
+          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) +
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore n)
+          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowConstant
+  rw [decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add,
+    MvPolynomial.coordinateWronskian_add_left]
+
+/-- The quadratic row coefficient splits into a mixed core/total row and an
+affine Euler row of the preceding companion core. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic n i =
+      MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+            (decoBottomTotalCompanionCore n))
+          (decoBottomTotal (n + 1)) (i + 1 : Nat) +
+        MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+            (decoBottomTotalCompanionCore n))
+          (decoBottomTotalCompanionCore n) (i + 1 : Nat) := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowQuadratic
+    decoBottomTotalCompanionSlope
+  rw [decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
+    MvPolynomial.coordinateWronskian_add_right]
 
 /-- Each successor core row is exactly quadratic in the remaining fresh
 coordinate, with the three named endpoint-Wronskian coefficients. -/
