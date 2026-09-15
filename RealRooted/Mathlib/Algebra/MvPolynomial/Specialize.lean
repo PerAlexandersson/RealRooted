@@ -1,4 +1,4 @@
-import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # Specializing one variable of a multivariate polynomial
@@ -71,6 +71,30 @@ assignment. -/
       · subst j
         simp [hP]
       · simp [hP, hji]
+
+/-- Specializing a coordinate absent from a polynomial leaves the polynomial
+unchanged. -/
+theorem specializeAt_eq_of_notMem_vars {σ R : Type*} [CommSemiring R]
+    {P : MvPolynomial σ R} {i : σ} (hi : i ∉ P.vars) (c : R) :
+    specializeAt i c P = P := by
+  classical
+  unfold specializeAt
+  let f : MvPolynomial σ R →+* MvPolynomial σ R :=
+    (MvPolynomial.aeval (R := R)
+      (Function.update MvPolynomial.X i (MvPolynomial.C c))).toRingHom
+  have hC : f.comp MvPolynomial.C =
+      (RingHom.id (MvPolynomial σ R)).comp MvPolynomial.C := by
+    ext r
+    simp [f]
+  have hX : ∀ j, j ∈ P.vars → j ∈ P.vars →
+      f (MvPolynomial.X j) = RingHom.id _ (MvPolynomial.X j) := by
+    intro j hj _
+    have hji : j ≠ i := by
+      intro h
+      subst j
+      exact hi hj
+    simp [f, hji]
+  simpa [f] using hom_congr_vars hC hX (rfl : P = P)
 
 /-- Scalar specialization commutes with mapping coefficients. -/
 theorem map_specializeAt {σ R S : Type*} [CommSemiring R] [CommSemiring S]

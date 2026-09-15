@@ -151,6 +151,26 @@ theorem decoBottomTotalCompanionSuccessorExtension_isMultiaffine (n : Nat) :
     ((decoBottomTotalCompanionSlope_isMultiaffine n).X_mul_of_notMem_vars
       (zero_notMem_vars_decoBottomTotalCompanionSlope n))
 
+/-- Specializing the normal affine step at its fresh coordinate to one gives
+the positive-coordinate rename of the companion successor slope. -/
+theorem specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope
+    (n : Nat) :
+    MvPolynomial.specializeAt 1 1
+        (decoBottomTotalAffineNormalBase n + MvPolynomial.X 1 *
+          decoBottomTotalAffineSlope n) =
+      MvPolynomial.rename (fun i : Nat => i + 1)
+        (decoBottomTotalCompanionSlope n) := by
+  rw [MvPolynomial.specializeAt_add,
+    MvPolynomial.specializeAt_eq_of_notMem_vars
+      (one_notMem_vars_decoBottomTotalAffineNormalBase n),
+    MvPolynomial.specializeAt_mul, MvPolynomial.specializeAt_X,
+    MvPolynomial.specializeAt_eq_of_notMem_vars
+      (one_notMem_vars_decoBottomTotalAffineSlope n)]
+  simp only [ite_true]
+  unfold decoBottomTotalAffineNormalBase decoBottomTotalAffineSlope
+    decoBottomTotalCompanionSlope decoBottomTotalCompanionCore
+  simp only [map_add, map_one, one_mul]
+
 /-- The next bottom total is the positive-coordinate rename of the unshifted
 companion/core affine extension. -/
 theorem decoBottomTotal_add_two_eq_rename_companionTotalExtension (n : Nat) :
@@ -211,14 +231,13 @@ theorem decoBottomTotalWronskianCompanion_succ_isRayleigh_iff_affine
         (MvPolynomial.coordinateWronskian
           (decoBottomTotalCompanionSlope n)
           (decoBottomTotalWronskianCompanion n) i)) ∧
-      (∀ i j x, i ≠ 0 → j ≠ 0 →
-        MvPolynomial.eval x
-          (MvPolynomial.affineRayleighDiscriminant
-            (decoBottomTotalWronskianCompanion n)
-            (decoBottomTotalCompanionSlope n) i j) ≤ 0) := by
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) := by
   rw [decoBottomTotalWronskianCompanion_succ_isRayleigh_iff_extension]
   unfold decoBottomTotalCompanionSuccessorExtension
-  exact MvPolynomial.isRayleigh_add_X_mul_iff_of_fresh
+  exact MvPolynomial.isRayleigh_add_X_mul_iff_of_fresh_all_discriminants
     (decoBottomTotalWronskianCompanion_isMultiaffine n)
     (decoBottomTotalCompanionSlope_isMultiaffine n)
     (zero_notMem_vars_decoBottomTotalWronskianCompanion n)

@@ -146,6 +146,36 @@ theorem isRayleigh_add_X_mul_iff_of_fresh
   · rintro ⟨hP, hQ, hcross, hdisc⟩
     exact hP.add_X_mul_of_fresh hQ hPma hQma hkP hkQ hcross hdisc
 
+/-- The exact fresh-coordinate criterion with the vacuous discriminants at
+the fresh coordinate included in the quantified family. -/
+theorem isRayleigh_add_X_mul_iff_of_fresh_all_discriminants
+    {σ : Type*} {P Q : MvPolynomial σ ℝ} {k : σ}
+    (hPma : IsMultiaffine P) (hQma : IsMultiaffine Q)
+    (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars) :
+    IsRayleigh (P + X k * Q) ↔
+      IsRayleigh P ∧ IsRayleigh Q ∧
+        (∀ i x, 0 ≤ eval x (coordinateWronskian Q P i)) ∧
+        (∀ i j x, eval x (affineRayleighDiscriminant P Q i j) ≤ 0) := by
+  rw [isRayleigh_add_X_mul_iff_of_fresh hPma hQma hkP hkQ]
+  constructor
+  · rintro ⟨hP, hQ, hcross, hdisc⟩
+    refine ⟨hP, hQ, hcross, ?_⟩
+    intro i j x
+    by_cases hik : i = k
+    · subst i
+      rw [affineRayleighDiscriminant_eq_zero_of_notMem_vars
+        P Q k j hkP hkQ]
+      simp
+    · by_cases hjk : j = k
+      · subst j
+        rw [affineRayleighDiscriminant_comm_coord]
+        rw [affineRayleighDiscriminant_eq_zero_of_notMem_vars
+          P Q k i hkP hkQ]
+        simp
+      · exact hdisc i j x hik hjk
+  · rintro ⟨hP, hQ, hcross, hdisc⟩
+    exact ⟨hP, hQ, hcross, fun i j x _ _ => hdisc i j x⟩
+
 end
 
 end MvPolynomial

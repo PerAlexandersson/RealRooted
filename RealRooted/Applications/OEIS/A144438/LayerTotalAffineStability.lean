@@ -90,6 +90,17 @@ theorem decoBottomTotalAffineSlope_isRayleigh (n : Nat)
     pderiv_one_decoNormalBottomStep_total] at h
   exact h
 
+/-- Under preceding-rank stability, specializing the normal step at one shows
+that the companion successor slope is Rayleigh. -/
+theorem decoBottomTotalCompanionSlope_isRayleigh (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvPolynomial.IsRayleigh (decoBottomTotalCompanionSlope n) := by
+  have hspecialize :=
+    (decoNormalBottomStep_total_isRayleigh n hstable).specializeAt 1 1
+  rw [specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope] at hspecialize
+  exact (MvPolynomial.isRayleigh_rename_iff
+    (by intro i j h; lia)).1 hspecialize
+
 /-- Under preceding-rank stability, every coordinate Wronskian between the
 normal affine slope and base is nonnegative. -/
 theorem eval_coordinateWronskian_affineSlope_normalBase_nonneg
