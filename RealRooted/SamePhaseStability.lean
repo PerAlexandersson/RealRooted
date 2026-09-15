@@ -27,6 +27,17 @@ nonnegative common-phase restriction is real-rooted. -/
 def SamePhaseStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   ∀ wt : sigma → ℝ, (∀ i, 0 ≤ wt i) → (commonPhaseRestriction wt P).Splits
 
+@[simp] theorem commonPhaseRestriction_zero {sigma : Type*}
+    (wt : sigma → ℝ) :
+    commonPhaseRestriction wt (0 : MvPolynomial sigma ℝ) = 0 := by
+  simp [commonPhaseRestriction]
+
+/-- The zero polynomial is same-phase stable. -/
+theorem samePhaseStable_zero {sigma : Type*} :
+    SamePhaseStable (0 : MvPolynomial sigma ℝ) := by
+  intro wt hwt
+  simp
+
 /-- Scale each variable of a multivariate polynomial by a real scalar. -/
 def coordinateScale {sigma : Type*} (a : sigma → ℝ)
     (P : MvPolynomial sigma ℝ) : MvPolynomial sigma ℝ :=

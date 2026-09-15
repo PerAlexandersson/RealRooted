@@ -456,17 +456,16 @@ theorem commonPhaseRestriction_weightedFiberNormalForm_isPFPolynomial
     IsPFPolynomial
       (commonPhaseRestriction wt
         (weightedFiberNormalForm c leftWeight rightWeight)) := by
-  rcases RealRooted.weightedBooleanSwapOrbitNormalForm_eq_zero_or_mvRealStable
-      c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
-        (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
-          leftWeight rightWeight (fun j _ => hleft j)
-            (fun j _ => hright j) with hzero | hstable
-  · have hzero' : weightedFiberNormalForm c leftWeight rightWeight = 0 :=
-      hzero
-    simpa [hzero', commonPhaseRestriction] using IsPFPolynomial.zero
-  · exact hstable.commonPhaseRestriction_isPFPolynomial
-      (weightedFiberNormalForm_hasNonnegCoeffs c leftWeight rightWeight
-        hleft hright) wt hwt
+  apply commonPhaseRestriction_isPFPolynomial_of_eq_zero_or_mvRealStable
+  · exact
+      RealRooted.weightedBooleanSwapOrbitNormalForm_eq_zero_or_mvRealStable
+        c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
+          (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+            leftWeight rightWeight (fun j _ => hleft j)
+              (fun j _ => hright j)
+  · exact weightedFiberNormalForm_hasNonnegCoeffs c leftWeight rightWeight
+      hleft hright
+  · exact hwt
 
 end
 

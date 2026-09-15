@@ -35,6 +35,17 @@ theorem MvRealStable.commonPhaseRestriction_isPFPolynomial
   hstable.samePhaseStable.commonPhaseRestriction_isPFPolynomial
     hnonneg wt hwt
 
+/-- A nonnegative common-phase restriction is Pólya-frequency when the source
+polynomial is zero or multivariate real stable. -/
+theorem commonPhaseRestriction_isPFPolynomial_of_eq_zero_or_mvRealStable
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hstable : P = 0 ∨ MvRealStable P)
+    (hnonneg : MvPolynomial.HasNonnegCoeffs P)
+    (wt : σ → ℝ) (hwt : ∀ i, 0 ≤ wt i) :
+    IsPFPolynomial (commonPhaseRestriction wt P) :=
+  SamePhaseStable.commonPhaseRestriction_isPFPolynomial
+    (samePhaseStable_of_eq_zero_or_mvRealStable hstable) hnonneg wt hwt
+
 end
 
 end RealRooted

@@ -74,6 +74,16 @@ theorem MvRealStable.samePhaseStable {σ : Type*}
     exact Polynomial.Splits.zero
   · exact hsplits
 
+/-- A polynomial that is zero or multivariate real stable is same-phase
+stable.  This packages the zero boundary explicitly because `MvRealStable`
+itself excludes the zero polynomial. -/
+theorem samePhaseStable_of_eq_zero_or_mvRealStable {σ : Type*}
+    {P : MvPolynomial σ ℝ} (hP : P = 0 ∨ MvRealStable P) :
+    SamePhaseStable P := by
+  rcases hP with rfl | hstable
+  · exact samePhaseStable_zero
+  · exact hstable.samePhaseStable
+
 end
 
 end RealRooted
