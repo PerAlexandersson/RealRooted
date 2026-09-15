@@ -1,6 +1,5 @@
-import RealRooted.HermiteBiehler.Basic
 import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
-import RealRooted.MultivariateStability
+import RealRooted.MultivariateStability.SamePhase
 
 /-!
 # Real stability and diagonal restriction
@@ -11,18 +10,21 @@ variables are identified with one univariate coordinate.
 
 namespace RealRooted
 
+/-- Identifying every variable is the unit-weight common-phase restriction. -/
+@[simp] theorem commonPhaseRestriction_one_eq_diagonal {σ : Type*}
+    (P : MvPolynomial σ ℝ) :
+    commonPhaseRestriction (fun _ => 1) P = MvPolynomial.diagonal P := by
+  unfold commonPhaseRestriction MvPolynomial.diagonal
+  apply MvPolynomial.eval₂Hom_congr rfl ?_ rfl
+  funext i
+  simp
+
 /-- The diagonal restriction of a multivariate real-stable polynomial splits
 over the reals. -/
 theorem MvRealStable.diagonal_splits {σ : Type*}
     {P : MvPolynomial σ ℝ} (hP : MvRealStable P) :
     (MvPolynomial.diagonal P).Splits := by
-  apply IsUpperHalfPlaneStable.splits_complexify
-  intro z hz
-  unfold MvRealStable at hP
-  have hstable := hP (fun _ : σ => z) (fun _ => hz)
-  change Polynomial.eval z
-    (Polynomial.map Complex.ofRealHom (MvPolynomial.diagonal P)) ≠ 0
-  rw [← MvPolynomial.diagonal_map, MvPolynomial.eval_diagonal]
-  exact hstable
+  rw [← commonPhaseRestriction_one_eq_diagonal]
+  exact hP.samePhaseStable (fun _ => 1) fun _ => zero_le_one
 
 end RealRooted

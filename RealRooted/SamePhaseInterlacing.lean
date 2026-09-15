@@ -120,22 +120,7 @@ theorem commonPhaseRestriction_ne_zero {σ : Type*}
     {σ : Type*} (wt : σ → ℝ) (P : MvPolynomial σ ℝ) (z : ℂ) :
     (complexify (commonPhaseRestriction wt P)).eval z =
       MvPolynomial.eval (fun i => (wt i : ℂ) * z) (complexifyMv P) := by
-  unfold complexify commonPhaseRestriction complexifyMv
-  rw [Polynomial.eval_map]
-  change (Polynomial.eval₂RingHom Complex.ofRealHom z)
-      (MvPolynomial.eval₂Hom Polynomial.C
-        (fun i => Polynomial.C (wt i) * Polynomial.X) P) = _
-  rw [MvPolynomial.map_eval₂Hom]
-  have hC :
-      (Polynomial.eval₂RingHom Complex.ofRealHom z).comp Polynomial.C =
-        Complex.ofRealHom := by
-    ext r
-    simp
-  rw [hC]
-  rw [MvPolynomial.eval_map]
-  apply MvPolynomial.eval₂Hom_congr rfl ?_ rfl
-  funext i
-  simp
+  simp [complexify]
 
 /-- Hermite--Biehler stability gives proper position, including the
 constant-degree boundary case. -/
