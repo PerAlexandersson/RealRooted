@@ -272,6 +272,54 @@ theorem coordinateWronskian_companionSlope_companion_succ_add_two_eq_split
     coordinateWronskian_companionCore_companion_succ_add_two,
     decoBottomTotalCompanionWronskianCorrection_succ_add_two_eq_split]
 
+/-- On every occupied positive coordinate, the constant coefficient in the
+successor quadratic is the named lower affine-Euler core row. -/
+theorem coordinateWronskian_companionSlope_companion_succ_fin_eq_split
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope (n + 1))
+        (decoBottomTotalWronskianCompanion (n + 1)) (i + 2 : Nat) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+          (decoBottomTotalCompanionSuccessorCoreRow n i) +
+        MvPolynomial.X 1 *
+          (MvPolynomial.rename (fun j : Nat => j + 1)
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalWronskianCompanion n)
+                (decoBottomTotal (n + 1)) (i + 1 : Nat)) +
+            MvPolynomial.X 1 *
+              MvPolynomial.rename (fun j : Nat => j + 1)
+                (MvPolynomial.coordinateWronskian
+                  (decoBottomTotalCompanionCore n)
+                  (decoBottomTotal (n + 1)) (i + 1 : Nat))) := by
+  rw [coordinateWronskian_companionSlope_companion_succ_add_two_eq_split,
+    coordinateWronskian_companionExtensionCore_successorExtension]
+
+/-- Evaluation of the bounded successor split exposes the lower core row and
+the two remaining Wronskians under the shifted assignment. -/
+theorem eval_coordinateWronskian_companionSlope_companion_succ_fin_eq_split
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSlope (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) (i + 2 : Nat)) =
+      MvPolynomial.eval (fun j => x (j + 1))
+          (decoBottomTotalCompanionSuccessorCoreRow n i) +
+        x 1 *
+          (MvPolynomial.eval (fun j => x (j + 1))
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalWronskianCompanion n)
+                (decoBottomTotal (n + 1)) (i + 1 : Nat)) +
+            x 1 * MvPolynomial.eval (fun j => x (j + 1))
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalCompanionCore n)
+                (decoBottomTotal (n + 1)) (i + 1 : Nat))) := by
+  rw [coordinateWronskian_companionSlope_companion_succ_fin_eq_split,
+    MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_rename, MvPolynomial.eval_rename,
+    MvPolynomial.eval_rename]
+  rfl
+
 /-- Evaluation gives the lower three-Wronskian quadratic under the shifted
 assignment. -/
 theorem eval_coordinateWronskian_companionSlope_companion_succ_add_two_eq_split
@@ -502,6 +550,37 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
   have hslope := decoBottomTotalCompanionSlope_isRayleigh n hstable
   simpa only [hslope, true_and] using
     decoBottomTotalCompanionRayleighData_succ_iff_of_companion n hcompanion
+
+/-- Under preceding-rank stability, the next companion-data criterion can use
+the distinguished coordinate-`1` Wronskian and the finite successor core rows
+in place of an unbounded family of next core/companion Wronskians. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreRows
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n)) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSlope n)
+          (decoBottomTotalWronskianCompanion n) i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        ∀ i : Fin (n + 1), ∀ x,
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRow n i)) ∧
+      ∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
+    n hstable hcompanion,
+    eval_coordinateWronskian_companionCore_companion_succ_nonneg_iff]
 
 /-- Compensation form of the exact next-data criterion under preceding-rank
 stability.  The first condition uses precisely the nonnegative margin already
