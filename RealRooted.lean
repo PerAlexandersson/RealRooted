@@ -1351,6 +1351,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineObstruction
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction

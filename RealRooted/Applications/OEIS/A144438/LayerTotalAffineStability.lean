@@ -1,5 +1,5 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
 
 /-!
 # Stability consequences for the affine Deco recurrence
@@ -140,6 +140,25 @@ theorem eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation
       MvPolynomial.coordinateWronskian_add_right, map_add]
     linarith [h i x]
 
+/-- The quantitative normal/exceptional compensation condition is exactly
+nonnegativity of the lower two-rank companion Wronskians. -/
+theorem eval_affineWronskian_compensation_iff_companion (n : Nat) :
+    (∀ i x,
+      -MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalAffineSlope n)
+            (decoBottomTotalAffineNormalBase n) i) ≤
+        MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalAffineSlope n)
+            (decoBottomTotalAffineExceptionalBase n) i)) ↔
+      ∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
+          (decoBottomTotalWronskianCompanion n) i) :=
+  (eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).symm.trans
+    (eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion n)
+
 /-- Preceding-rank stability discharges the slope endpoint and normal
 Wronskians in the affine Rayleigh criterion. The remaining assumptions are
 exactly stability compatibility of the summed base, quantitative compensation
@@ -164,6 +183,26 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     (decoBottomTotalAffineSlope_isRayleigh n hstable)
     ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
       hcomp) hdisc
+
+/-- Companion form of the stability-assisted affine criterion. It replaces
+the shifted affine-base endpoint and split normal/exceptional Wronskian
+bookkeeping by two exact conditions on one lower two-rank companion. -/
+theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine_companion
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hbase : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n))
+    (hcompanion : ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
+        (decoBottomTotalWronskianCompanion n) i))
+    (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
+      (MvPolynomial.affineRayleighDiscriminant
+        (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
+  exact decoBottomTotal_add_two_isRayleigh_of_stable_affine n hstable
+    ((decoBottomTotalAffineBase_isRayleigh_iff_companion n).mpr hbase)
+    ((eval_affineWronskian_compensation_iff_companion n).mpr hcompanion)
+    hdisc
 
 end
 

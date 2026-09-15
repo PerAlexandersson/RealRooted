@@ -176,9 +176,38 @@ theorem IsRayleigh.C_mul {σ : Type*} {P : MvPolynomial σ ℝ}
   rw [rayleighDifference_C_mul, eval_mul, eval_C]
   exact mul_nonneg (sq_nonneg c) (hP i j x)
 
+/-- An injective variable renaming preserves the Rayleigh property. -/
+theorem IsRayleigh.rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : IsRayleigh P) (f : σ → τ) (hf : Function.Injective f) :
+    IsRayleigh (MvPolynomial.rename f P) := by
+  classical
+  have hnotMem_of_not_range {i : τ} (hi : i ∉ Set.range f) :
+      i ∉ (MvPolynomial.rename f P).vars := by
+    intro hivars
+    obtain ⟨j, hj, hji⟩ := mem_vars_rename f P hivars
+    exact hi ⟨j, hji⟩
+  have hdiff_zero {i : τ}
+      (hi : i ∉ (MvPolynomial.rename f P).vars) (j : τ) :
+      rayleighDifference (MvPolynomial.rename f P) i j = 0 := by
+    rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
+      pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
+    simp
+  intro i j x
+  by_cases hi : i ∈ Set.range f
+  · obtain ⟨a, rfl⟩ := hi
+    by_cases hj : j ∈ Set.range f
+    · obtain ⟨b, rfl⟩ := hj
+      rw [rayleighDifference_rename f hf, eval_rename]
+      exact hP a b _
+    · rw [rayleighDifference_comm,
+        hdiff_zero (hnotMem_of_not_range hj)]
+      simp
+  · rw [hdiff_zero (hnotMem_of_not_range hi)]
+    simp
+
 /-- The Rayleigh property is reflected by an injective variable renaming. -/
 theorem IsRayleigh.of_rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
-    {f : σ → τ} (hP : IsRayleigh (rename f P))
+    {f : σ → τ} (hP : IsRayleigh (MvPolynomial.rename f P))
     (hf : Function.Injective f) : IsRayleigh P := by
   classical
   intro i j x
@@ -187,6 +216,13 @@ theorem IsRayleigh.of_rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
   have h := hP (f i) (f j) z
   rw [rayleighDifference_rename f hf, eval_rename, hz] at h
   exact h
+
+/-- An injective variable renaming preserves and reflects the Rayleigh
+property. -/
+theorem isRayleigh_rename_iff {σ τ : Type*} {P : MvPolynomial σ ℝ}
+    {f : σ → τ} (hf : Function.Injective f) :
+    IsRayleigh (MvPolynomial.rename f P) ↔ IsRayleigh P :=
+  ⟨fun h => h.of_rename hf, fun h => h.rename f hf⟩
 
 /-- Real scalar specialization preserves the Rayleigh property. -/
 theorem IsRayleigh.specializeAt {σ : Type*} {P : MvPolynomial σ ℝ}
