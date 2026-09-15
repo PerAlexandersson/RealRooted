@@ -940,6 +940,81 @@ theorem
     decoBottomTotalCompanionSuccessorCoreRowConstant_succ_eq_recurrenceAt,
     map_sub, map_pow, map_mul, map_mul, MvPolynomial.rename_C]
 
+/-- The next companion's fresh-affine cross-Wronskian is the
+positive-coordinate rename of the companion cross recurrence. -/
+theorem coordinateWronskian_companionSlope_companion_succ_eq_crossRecurrenceAt
+    (n : Nat) (i : Fin (n + 2)) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope (n + 1))
+        (decoBottomTotalWronskianCompanion (n + 1)) (i + 1 : Nat) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+          n (i : Nat)) := by
+  rw [decoBottomTotalCompanionSlope_succ_eq_rename,
+    decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt]
+    using MvPolynomial.coordinateWronskian_rename
+      (fun j : Nat => j + 1) (by intro j k h; lia)
+      (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
+      (decoBottomTotalCompanionSuccessorExtension n) (i : Nat)
+
+/-- The next extension core's fresh-affine cross-Wronskian is the
+positive-coordinate rename of the core cross recurrence. -/
+theorem coordinateWronskian_extensionCoreSlope_zero_succ_eq_crossRecurrenceAt
+    (n : Nat) (i : Fin (n + 2)) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreSlope (n + 1))
+        (decoBottomTotalCompanionExtensionCoreZero (n + 1)) (i + 1 : Nat) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+          n (i : Nat)) := by
+  rw [decoBottomTotalCompanionExtensionCoreSlope_succ_eq_rename,
+    decoBottomTotalCompanionExtensionCoreZero_succ_eq_rename]
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt]
+    using MvPolynomial.coordinateWronskian_rename
+      (fun j : Nat => j + 1) (by intro j k h; lia)
+      (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+      (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n) (i : Nat)
+
+/-- Universal nonnegativity of a next companion cross-Wronskian is exactly
+universal nonnegativity of its unshifted recurrence. -/
+theorem eval_companionCross_succ_nonneg_iff_recurrenceAt
+    (n : Nat) (i : Fin (n + 2)) :
+    (∀ x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope (n + 1))
+        (decoBottomTotalWronskianCompanion (n + 1)) (i + 1 : Nat))) ↔
+      ∀ x, 0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+          n (i : Nat)) := by
+  rw [coordinateWronskian_companionSlope_companion_succ_eq_crossRecurrenceAt]
+  exact MvPolynomial.forall_eval_rename_iff
+    (fun j : Nat => j + 1) (by intro j k h; lia)
+    (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+      n (i : Nat))
+    (fun y : Real => 0 ≤ y)
+
+/-- Universal nonnegativity of a next extension-core cross-Wronskian is
+exactly universal nonnegativity of its unshifted recurrence. -/
+theorem eval_extensionCoreCross_succ_nonneg_iff_recurrenceAt
+    (n : Nat) (i : Fin (n + 2)) :
+    (∀ x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreSlope (n + 1))
+        (decoBottomTotalCompanionExtensionCoreZero (n + 1))
+        (i + 1 : Nat))) ↔
+      ∀ x, 0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+          n (i : Nat)) := by
+  rw [coordinateWronskian_extensionCoreSlope_zero_succ_eq_crossRecurrenceAt]
+  exact MvPolynomial.forall_eval_rename_iff
+    (fun j : Nat => j + 1) (by intro j k h; lia)
+    (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+      n (i : Nat))
+    (fun y : Real => 0 ≤ y)
+
 /-- Universal nonnegativity of any next-rank constant coefficient is exactly
 universal nonnegativity of its arbitrary-coordinate recurrence. -/
 theorem
@@ -1203,6 +1278,69 @@ theorem zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope
     0 ∉ (decoBottomTotalCompanionExtensionCoreSlope n).vars := by
   exact MvPolynomial.IsMultiaffine.notMem_vars_pderiv_self
     (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0
+
+/-- Exact fresh-coordinate Rayleigh criterion for the companion extension
+core.  Its cross premise has the orientation named by the core cross
+recurrence above. -/
+theorem decoBottomTotalCompanionExtensionCore_isRayleigh_iff_affine
+    (n : Nat) :
+    MvPolynomial.IsRayleigh (decoBottomTotalCompanionExtensionCore n) ↔
+      MvPolynomial.IsRayleigh
+          (decoBottomTotalCompanionExtensionCoreZero n) ∧
+        MvPolynomial.IsRayleigh
+          (decoBottomTotalCompanionExtensionCoreSlope n) ∧
+        (∀ i x, 0 ≤ MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalCompanionExtensionCoreSlope n)
+            (decoBottomTotalCompanionExtensionCoreZero n) i)) ∧
+        (∀ i j x, MvPolynomial.eval x
+          (MvPolynomial.affineRayleighDiscriminant
+            (decoBottomTotalCompanionExtensionCoreZero n)
+            (decoBottomTotalCompanionExtensionCoreSlope n) i j) ≤ 0) := by
+  rw [decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope]
+  exact MvPolynomial.isRayleigh_add_X_mul_iff_of_fresh_all_discriminants
+    (MvPolynomial.IsMultiaffine.specializeZero_preserves
+      (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0)
+    (MvPolynomial.IsMultiaffine.pderiv
+      (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0)
+    (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreZero n)
+    (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope n)
+
+/-- Rayleighness of the next extension core supplies nonnegativity of every
+core cross recurrence in the complete next-row coordinate range. -/
+theorem coreCrossRecurrence_nonneg_of_extensionCore_succ_isRayleigh
+    (n : Nat)
+    (hcore : MvPolynomial.IsRayleigh
+      (decoBottomTotalCompanionExtensionCore (n + 1))) :
+    ∀ i : Fin (n + 2), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+        n (i : Nat)) := by
+  have hcriterion :=
+    (decoBottomTotalCompanionExtensionCore_isRayleigh_iff_affine
+      (n + 1)).mp hcore
+  intro i
+  exact (eval_extensionCoreCross_succ_nonneg_iff_recurrenceAt n i).mp
+    (hcriterion.2.2.1 (i + 1 : Nat))
+
+/-- Rayleighness of the companion two ranks ahead supplies nonnegativity of
+every companion cross recurrence.  Thus this sign is a premise of the next
+companion step, not data inherited from the current companion alone. -/
+theorem companionCrossRecurrence_nonneg_of_add_two_isRayleigh
+    (n : Nat)
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion (n + 2))) :
+    ∀ i : Fin (n + 2), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+        n (i : Nat)) := by
+  have hnext : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion ((n + 1) + 1)) := by
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using hcompanion
+  have hcriterion :=
+    (decoBottomTotalWronskianCompanion_succ_isRayleigh_iff_affine
+      (n + 1)).mp hnext
+  intro i
+  exact (eval_companionCross_succ_nonneg_iff_recurrenceAt n i).mp
+    (hcriterion.2.2.1 (i + 1 : Nat))
 
 /-- The constant row coefficient is independent of the fresh coordinate. -/
 theorem zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant
