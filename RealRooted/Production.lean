@@ -680,6 +680,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real

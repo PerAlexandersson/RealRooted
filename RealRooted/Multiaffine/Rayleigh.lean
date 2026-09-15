@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import RealRooted.Multiaffine
 import Mathlib.Data.Real.Basic
 
@@ -97,6 +98,46 @@ theorem IsMultiaffine.rayleighDifference_self {R σ : Type*} [CommRing R]
   rw [rayleighDifference, hP.pderiv_pderiv_self_eq_zero]
   ring
 
+/-- Along any one coordinate, a Rayleigh difference of a multiaffine
+polynomial is quadratic, with leading coefficient the corresponding Rayleigh
+difference of the partial derivative. -/
+theorem IsMultiaffine.exists_eval_update_rayleighDifference_quadratic
+    {R σ : Type*} [CommRing R] [DecidableEq σ]
+    {P : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (i j k : σ) (x : σ → R) :
+    ∃ b c : R, ∀ t : R,
+      eval (Function.update x k t) (rayleighDifference P i j) =
+        eval x (rayleighDifference (MvPolynomial.pderiv k P) i j) * t ^ 2 +
+          b * t + c := by
+  classical
+  let Q := MvPolynomial.pderiv k P
+  let b :=
+    eval x (MvPolynomial.pderiv i Q) *
+          eval (Function.update x k 0) (MvPolynomial.pderiv j P) +
+      eval (Function.update x k 0) (MvPolynomial.pderiv i P) *
+          eval x (MvPolynomial.pderiv j Q) -
+      (eval x Q *
+          eval (Function.update x k 0)
+            (MvPolynomial.pderiv i (MvPolynomial.pderiv j P)) +
+        eval (Function.update x k 0) P *
+          eval x (MvPolynomial.pderiv i (MvPolynomial.pderiv j Q)))
+  let c :=
+    eval (Function.update x k 0) (MvPolynomial.pderiv i P) *
+          eval (Function.update x k 0) (MvPolynomial.pderiv j P) -
+      eval (Function.update x k 0) P *
+        eval (Function.update x k 0)
+          (MvPolynomial.pderiv i (MvPolynomial.pderiv j P))
+  refine ⟨b, c, fun t => ?_⟩
+  rw [eval_rayleighDifference,
+    hP.eval_update_eq_eval_pderiv_mul_add,
+    (hP.pderiv i).eval_update_eq_eval_pderiv_mul_add,
+    (hP.pderiv j).eval_update_eq_eval_pderiv_mul_add,
+    ((hP.pderiv j).pderiv i).eval_update_eq_eval_pderiv_mul_add]
+  dsimp only [b, c, Q]
+  rw [eval_rayleighDifference]
+  simp only [pderiv_comm]
+  ring
+
 /-- A real polynomial is Rayleigh when every Rayleigh difference is
 nonnegative at every real point. -/
 def IsRayleigh {σ : Type*} (P : MvPolynomial σ ℝ) : Prop :=
@@ -128,6 +169,21 @@ theorem IsRayleigh.specializeAtList {σ : Type*} {P : MvPolynomial σ ℝ}
   | cons i l ih =>
       rw [MvPolynomial.specializeAtList_cons]
       exact ih (hP.specializeAt i (c i))
+
+/-- Partial differentiation preserves the Rayleigh property for multiaffine
+real polynomials. -/
+theorem IsRayleigh.pderiv_of_isMultiaffine {σ : Type*}
+    {P : MvPolynomial σ ℝ} (hP : IsRayleigh P)
+    (hPma : IsMultiaffine P) (k : σ) :
+    IsRayleigh (MvPolynomial.pderiv k P) := by
+  classical
+  intro i j x
+  obtain ⟨b, c, hquad⟩ :=
+    hPma.exists_eval_update_rayleighDifference_quadratic i j k x
+  apply quadratic_leadingCoeff_nonneg (b := b) (c := c)
+  intro t
+  rw [← pow_two, ← hquad]
+  exact hP i j (Function.update x k t)
 
 /-- Same-coordinate Rayleigh inequalities hold automatically for a
 multiaffine real polynomial. -/
