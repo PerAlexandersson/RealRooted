@@ -195,25 +195,13 @@ theorem weightedDecoEulerian_ne_zero (w : ℝ) (n : ℕ) :
 
 /-- Every nonnegative-weight polynomial splits over the reals. -/
 theorem weightedDecoEulerian_splits {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
-    (weightedDecoEulerian w n).Splits := by
-  have hpair := prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-    (weightedDecoEulerian w) 1 w (by norm_num) hw
-      (weightedDecoEulerian_zero w) (weightedDecoEulerian_one w) (by
-        intro m
-        simpa only [one_mul, one_add_one_eq_two] using
-          weightedDecoEulerian_affine_recurrence w m) n
-  exact hpair.1.1.2
+    (weightedDecoEulerian w n).Splits :=
+  (weightedDecoEulerian_certificate hw n).splits
 
 /-- Consecutive ranks at a nonnegative weight are in proper position. -/
 theorem weightedDecoEulerian_prec {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
-    Prec (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) := by
-  have hpair := prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-    (weightedDecoEulerian w) 1 w (by norm_num) hw
-      (weightedDecoEulerian_zero w) (weightedDecoEulerian_one w) (by
-        intro m
-        simpa only [one_mul, one_add_one_eq_two] using
-          weightedDecoEulerian_affine_recurrence w m) n
-  exact hpair.1
+    Prec (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) :=
+  (weightedDecoEulerian_certificate hw n).prec_succ
 
 /-- Consecutive ranks at a nonnegative weight strictly interlace. -/
 theorem weightedDecoEulerian_interlaces {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :

@@ -356,6 +356,18 @@ structure AffineLagSecondOrderCertificate (P : ℕ → ℝ[X]) (n : ℕ) : Prop 
   noCommonRoot_succ : ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r
   simpleRoots : HasSimpleRoots (P n)
 
+/-- Consecutive members of a certified rankwise recurrence are in proper
+position. -/
+theorem AffineLagSecondOrderCertificate.prec_succ {P : ℕ → ℝ[X]} {n : ℕ}
+    (h : AffineLagSecondOrderCertificate P n) : Prec (P n) (P (n + 1)) :=
+  h.interlaces_succ.toPrec
+
+/-- The current member of a certified rankwise recurrence splits over the
+reals. -/
+theorem AffineLagSecondOrderCertificate.splits {P : ℕ → ℝ[X]} {n : ℕ}
+    (h : AffineLagSecondOrderCertificate P n) : (P n).Splits :=
+  h.prec_succ.1.2
+
 /-- The reusable rankwise package for an independent nonnegative lag. -/
 theorem affine_lag_second_order_derivative_certificate_of_nonneg_lag
     (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)

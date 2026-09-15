@@ -156,18 +156,18 @@ common real root. -/
 theorem decoEulerian_prec_and_noCommonRoot (n : ℕ) :
     Prec (decoEulerian n) (decoEulerian (n + 1)) ∧
       ∀ r : ℝ, (decoEulerian (n + 1)).IsRoot r →
-        ¬ (decoEulerian n).IsRoot r := by
-  exact prec_and_noCommonRoot_of_unit_affine_unit_lag decoEulerian
-    decoEulerian_zero decoEulerian_one decoEulerian_recurrence n
+        ¬ (decoEulerian n).IsRoot r :=
+  ⟨(decoEulerian_certificate n).prec_succ,
+    (decoEulerian_certificate n).noCommonRoot_succ⟩
 
 /-- Every deco Eulerian polynomial splits over the reals. -/
 theorem decoEulerian_splits (n : ℕ) : (decoEulerian n).Splits :=
-  (decoEulerian_prec_and_noCommonRoot n).1.1.2
+  (decoEulerian_certificate n).splits
 
 /-- Consecutive deco Eulerian polynomials are in proper position. -/
 theorem decoEulerian_prec (n : ℕ) :
     Prec (decoEulerian n) (decoEulerian (n + 1)) :=
-  (decoEulerian_prec_and_noCommonRoot n).1
+  (decoEulerian_certificate n).prec_succ
 
 /-- Consecutive deco Eulerian polynomials interlace with degree difference
 one. -/
