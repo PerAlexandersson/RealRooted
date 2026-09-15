@@ -89,6 +89,25 @@ theorem coordinateWronskian_add_right {R σ : Type*} [CommRing R]
   simp only [coordinateWronskian, map_add]
   ring
 
+/-- Multiplying the left argument by a coordinate gives a coordinate-scaled
+Wronskian minus the derivative of that coordinate. -/
+theorem coordinateWronskian_X_mul_left
+    {R σ : Type*} [CommRing R] [DecidableEq σ]
+    (P Q : MvPolynomial σ R) (i k : σ) :
+    coordinateWronskian (X k * P) Q i =
+      X k * coordinateWronskian P Q i -
+        if i = k then P * Q else 0 := by
+  classical
+  by_cases hik : i = k
+  · subst k
+    simp only [coordinateWronskian, pderiv_mul, pderiv_X_self,
+      one_mul, if_pos]
+    ring
+  · simp only [coordinateWronskian, pderiv_mul,
+      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, if_neg hik,
+      sub_zero]
+    ring
+
 /-- Multiplying the right argument by a coordinate gives a coordinate-scaled
 Wronskian plus the derivative of that coordinate. -/
 theorem coordinateWronskian_X_mul_right

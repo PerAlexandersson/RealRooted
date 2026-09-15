@@ -116,6 +116,66 @@ theorem eval_decoBottomTotalCompanionWronskianCorrection_succ_add_two
     MvPolynomial.eval_rename]
   rfl
 
+/-- The lower Wronskian governing coordinate `i + 2` splits along the fresh
+coordinate-`0` companion-total extension. -/
+theorem coordinateWronskian_companionTotalExtension_total_succ_add_one
+    (n i : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionTotalExtension n)
+        (decoBottomTotal (n + 1)) (i + 1) =
+      MvPolynomial.coordinateWronskian
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotal (n + 1)) (i + 1) +
+        MvPolynomial.X 0 * MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore n)
+          (decoBottomTotal (n + 1)) (i + 1) := by
+  unfold decoBottomTotalCompanionTotalExtension
+  rw [MvPolynomial.coordinateWronskian_add_left,
+    MvPolynomial.coordinateWronskian_X_mul_left]
+  simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte,
+    sub_zero]
+
+/-- Consequently, a positive-rank coordinate-`i + 2` correction is a
+quadratic in `X 1` whose coefficients are lower companion/total and
+core/total Wronskians. -/
+theorem decoBottomTotalCompanionWronskianCorrection_succ_add_two_eq_split
+    (n i : Nat) :
+    decoBottomTotalCompanionWronskianCorrection (n + 1) (i + 2) =
+      MvPolynomial.X 1 *
+        (MvPolynomial.rename (fun j : Nat => j + 1)
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalWronskianCompanion n)
+              (decoBottomTotal (n + 1)) (i + 1)) +
+          MvPolynomial.X 1 *
+            MvPolynomial.rename (fun j : Nat => j + 1)
+              (MvPolynomial.coordinateWronskian
+                (decoBottomTotalCompanionCore n)
+                (decoBottomTotal (n + 1)) (i + 1))) := by
+  rw [decoBottomTotalCompanionWronskianCorrection_succ_add_two,
+    coordinateWronskian_companionTotalExtension_total_succ_add_one]
+  simp only [map_add, map_mul, MvPolynomial.rename_X, zero_add]
+
+/-- Evaluation exposes the same correction as `x 1` times an affine function
+of `x 1`, with both coefficients evaluated at the shifted assignment. -/
+theorem eval_decoBottomTotalCompanionWronskianCorrection_succ_add_two_eq_split
+    (n i : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionWronskianCorrection (n + 1) (i + 2)) =
+      x 1 *
+        (MvPolynomial.eval (fun j => x (j + 1))
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalWronskianCompanion n)
+              (decoBottomTotal (n + 1)) (i + 1)) +
+          x 1 * MvPolynomial.eval (fun j => x (j + 1))
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionCore n)
+              (decoBottomTotal (n + 1)) (i + 1))) := by
+  rw [decoBottomTotalCompanionWronskianCorrection_succ_add_two_eq_split,
+    MvPolynomial.eval_mul, MvPolynomial.eval_X, MvPolynomial.eval_add,
+    MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_rename, MvPolynomial.eval_rename]
+  rfl
+
 /-- The correction vanishes outside the ordinary support interval of the
 latest total and companion. -/
 theorem decoBottomTotalCompanionWronskianCorrection_eq_zero_of_notMem_Icc
