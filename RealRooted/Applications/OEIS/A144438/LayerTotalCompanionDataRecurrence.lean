@@ -32,24 +32,34 @@ theorem decoBottomTotalCompanionWronskianCorrection_one (n : Nat) :
       MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n) *
         MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) := by
   let R := MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n)
-  let T := decoBottomTotal (n + 1)
   have hR : 1 ∉ R.vars := one_notMem_vars_rename_succ_decoBottomTotal n
-  have hT : T = MvPolynomial.specializeZero 1 T +
-      MvPolynomial.X 1 * MvPolynomial.pderiv 1 T := by
-    exact MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+  have hRma : R.IsMultiaffine :=
+    (decoBottomTotal_isMultiaffine n).rename
+      (f := fun j : Nat => j + 1) (by intro i j hij; lia)
+  have hTdecomp :=
+    MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
       (decoBottomTotal_isMultiaffine (n + 1)) 1
-  have hsection : T - MvPolynomial.X 1 * MvPolynomial.pderiv 1 T =
-      MvPolynomial.specializeZero 1 T := by
-    linear_combination hT
   unfold decoBottomTotalCompanionWronskianCorrection
   simp only [if_pos]
-  rw [MvPolynomial.coordinateWronskian,
-    MvPolynomial.pderiv_eq_zero_of_notMem_vars hR]
-  change MvPolynomial.X 1 * (T * 0 - MvPolynomial.pderiv 1 T * R) +
-      T * R = R * MvPolynomial.specializeZero 1 T
-  calc
-    _ = R * (T - MvPolynomial.X 1 * MvPolynomial.pderiv 1 T) := by ring
-    _ = R * MvPolynomial.specializeZero 1 T := by rw [hsection]
+  rw [MvPolynomial.IsMultiaffine.coordinateWronskian_eq_specializeZero
+      (decoBottomTotal_isMultiaffine (n + 1)) hRma 1,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars hR,
+    MvPolynomial.specializeZero_eq_self_of_notMem_vars 1 R hR]
+  simp only [mul_zero, zero_sub, mul_neg]
+  linear_combination R * hTdecomp
+
+/-- The coordinate-`1` correction is itself independent of coordinate `1`. -/
+theorem one_notMem_vars_decoBottomTotalCompanionWronskianCorrection
+    (n : Nat) :
+    1 ∉ (decoBottomTotalCompanionWronskianCorrection n 1).vars := by
+  rw [decoBottomTotalCompanionWronskianCorrection_one]
+  intro hi
+  rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hi) with
+    hiRename | hiSection
+  · exact one_notMem_vars_rename_succ_decoBottomTotal n hiRename
+  · have hiErase := MvPolynomial.vars_specializeZero_subset_erase
+      (decoBottomTotal (n + 1)) 1 hiSection
+    exact (Finset.mem_erase.mp hiErase).1 rfl
 
 /-- Away from coordinate `1`, the correction is the coordinate variable times
 the Wronskian of the latest total against the shifted prior total. -/
@@ -131,6 +141,17 @@ theorem coordinateWronskian_companionSlope_companion_eq_core_add_correction
     MvPolynomial.coordinateWronskian_self,
     MvPolynomial.coordinateWronskian_X_mul_right]
   by_cases hi : i = 1 <;> simp [hi] <;> ring
+
+/-- The coordinate-`1` successor Wronskian is independent of its own
+coordinate, as exposed by the multiaffine affine-determinant formula. -/
+theorem one_notMem_vars_coordinateWronskian_companionSlope_companion
+    (n : Nat) :
+    1 ∉ (MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionSlope n)
+      (decoBottomTotalWronskianCompanion n) 1).vars :=
+  MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+    (decoBottomTotalCompanionSlope_isMultiaffine n)
+    (decoBottomTotalWronskianCompanion_isMultiaffine n) 1
 
 /-- Nonnegativity of every successor-slope/companion Wronskian is exactly the
 condition that its explicit correction stay above the negative current-data
