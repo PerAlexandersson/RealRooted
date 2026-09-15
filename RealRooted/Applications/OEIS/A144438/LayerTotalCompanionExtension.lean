@@ -76,6 +76,18 @@ theorem vars_decoBottomTotalCompanionSlope_subset_Icc (n : Nat) :
   · exact vars_decoBottomTotal_subset_Icc (n + 1) htotal
   · exact vars_decoBottomTotalCompanionCore_subset_Icc n hcore
 
+/-- Coordinate `1` is absent from a positive-coordinate shift of the prior
+bottom total. -/
+theorem one_notMem_vars_rename_succ_decoBottomTotal (n : Nat) :
+    1 ∉ (MvPolynomial.rename (fun i : Nat => i + 1)
+      (decoBottomTotal n)).vars := by
+  intro h
+  obtain ⟨i, hi, hix⟩ := MvPolynomial.mem_vars_rename
+    (fun i : Nat => i + 1) (decoBottomTotal n) h
+  have hibounds := vars_decoBottomTotal_subset_Icc n hi
+  rw [Finset.mem_Icc] at hibounds
+  lia
+
 /-- Coordinate `0` is absent from the two-rank companion. -/
 theorem zero_notMem_vars_decoBottomTotalWronskianCompanion (n : Nat) :
     0 ∉ (decoBottomTotalWronskianCompanion n).vars := by
@@ -105,18 +117,10 @@ theorem decoBottomTotalWronskianCompanion_isMultiaffine (n : Nat) :
     MvPolynomial.IsMultiaffine (decoBottomTotalWronskianCompanion n) := by
   have hrename := (decoBottomTotal_isMultiaffine n).rename
     (f := fun i : Nat => i + 1) (by intro i j h; lia)
-  have hfresh : 1 ∉
-      (MvPolynomial.rename (fun i : Nat => i + 1)
-        (decoBottomTotal n)).vars := by
-    intro h
-    obtain ⟨i, hi, hix⟩ := MvPolynomial.mem_vars_rename
-      (fun i : Nat => i + 1) (decoBottomTotal n) h
-    have hibounds := vars_decoBottomTotal_subset_Icc n hi
-    rw [Finset.mem_Icc] at hibounds
-    lia
   unfold decoBottomTotalWronskianCompanion
   exact (decoBottomTotal_isMultiaffine (n + 1)).add
-    (hrename.X_mul_of_notMem_vars hfresh)
+    (hrename.X_mul_of_notMem_vars
+      (one_notMem_vars_rename_succ_decoBottomTotal n))
 
 /-- The companion core is multiaffine. -/
 theorem decoBottomTotalCompanionCore_isMultiaffine (n : Nat) :

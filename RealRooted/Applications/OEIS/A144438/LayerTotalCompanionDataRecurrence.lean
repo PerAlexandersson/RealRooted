@@ -25,6 +25,66 @@ def decoBottomTotalCompanionWronskianCorrection (n i : Nat) :
         MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n)
     else 0
 
+/-- At coordinate `1`, the Wronskian correction factors as the shifted prior
+total times the zero-section of the latest total. -/
+theorem decoBottomTotalCompanionWronskianCorrection_one (n : Nat) :
+    decoBottomTotalCompanionWronskianCorrection n 1 =
+      MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n) *
+        MvPolynomial.specializeZero 1 (decoBottomTotal (n + 1)) := by
+  let R := MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n)
+  let T := decoBottomTotal (n + 1)
+  have hR : 1 ∉ R.vars := one_notMem_vars_rename_succ_decoBottomTotal n
+  have hT : T = MvPolynomial.specializeZero 1 T +
+      MvPolynomial.X 1 * MvPolynomial.pderiv 1 T := by
+    exact MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+      (decoBottomTotal_isMultiaffine (n + 1)) 1
+  have hsection : T - MvPolynomial.X 1 * MvPolynomial.pderiv 1 T =
+      MvPolynomial.specializeZero 1 T := by
+    linear_combination hT
+  unfold decoBottomTotalCompanionWronskianCorrection
+  simp only [if_pos]
+  rw [MvPolynomial.coordinateWronskian,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars hR]
+  change MvPolynomial.X 1 * (T * 0 - MvPolynomial.pderiv 1 T * R) +
+      T * R = R * MvPolynomial.specializeZero 1 T
+  calc
+    _ = R * (T - MvPolynomial.X 1 * MvPolynomial.pderiv 1 T) := by ring
+    _ = R * MvPolynomial.specializeZero 1 T := by rw [hsection]
+
+/-- Away from coordinate `1`, the correction is the coordinate variable times
+the Wronskian of the latest total against the shifted prior total. -/
+theorem decoBottomTotalCompanionWronskianCorrection_of_ne_one
+    (n i : Nat) (hi : i ≠ 1) :
+    decoBottomTotalCompanionWronskianCorrection n i =
+      MvPolynomial.X 1 * MvPolynomial.coordinateWronskian
+        (decoBottomTotal (n + 1))
+        (MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n)) i := by
+  unfold decoBottomTotalCompanionWronskianCorrection
+  simp only [if_neg hi, add_zero]
+
+/-- At positive recurrence rank, the coordinate-`1` correction is the shift
+of the product of the latest total and the preceding companion. -/
+theorem decoBottomTotalCompanionWronskianCorrection_succ_one (n : Nat) :
+    decoBottomTotalCompanionWronskianCorrection (n + 1) 1 =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotal (n + 1) *
+          decoBottomTotalWronskianCompanion n) := by
+  rw [decoBottomTotalCompanionWronskianCorrection_one]
+  rw [show n + 1 + 1 = n + 2 by lia,
+    specializeZero_one_decoBottomTotal_add_two,
+    decoBottomTotalAffineBase_eq_rename_wronskianCompanion,
+    map_mul]
+
+/-- The initial coordinate-`1` correction is one. -/
+@[simp] theorem decoBottomTotalCompanionWronskianCorrection_zero_one :
+    decoBottomTotalCompanionWronskianCorrection 0 1 = 1 := by
+  rw [decoBottomTotalCompanionWronskianCorrection_one]
+  rw [show 0 + 1 = 1 by rfl]
+  rw [decoBottomTotal_zero, map_one, decoBottomTotal_one, one_mul,
+    MvPolynomial.specializeZero_add,
+    MvPolynomial.specializeZero_eq_self_of_notMem_vars 1 1 (by simp)]
+  simp
+
 /-- The successor-slope/companion Wronskian is the current data Wronskian
 plus an explicit correction from the latest total and shifted prior total. -/
 theorem coordinateWronskian_companionSlope_companion_eq_core_add_correction
