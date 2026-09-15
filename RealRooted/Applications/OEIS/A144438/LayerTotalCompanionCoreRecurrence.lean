@@ -91,6 +91,18 @@ theorem coordinateWronskian_companionExtensionCore_totalExtension
     (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
       (n + 3 : Real) (decoBottomTotalCompanionTotalExtension n) i.succ
 
+/-- A companion-extension affine-Euler row is independent of its own positive
+coordinate. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionExtensionRayleighRow
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉
+      (decoBottomTotalCompanionExtensionRayleighRow n i).vars := by
+  unfold decoBottomTotalCompanionExtensionRayleighRow
+  simpa using MvPolynomial.IsMultiaffine.notMem_vars_affineEulerRayleighRow
+    (decoBottomTotalCompanionTotalExtension_isMultiaffine n)
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+    Fin.valEmbedding.injective i.succ
+
 /-- The bounded core/successor Wronskian is an affine Euler Rayleigh row plus
 one fresh-coordinate multiple of a lower core/total Wronskian. -/
 theorem coordinateWronskian_companionExtensionCore_successorExtension
@@ -102,6 +114,17 @@ theorem coordinateWronskian_companionExtensionCore_successorExtension
   unfold decoBottomTotalCompanionSuccessorCoreRow
   rw [coordinateWronskian_companionExtensionCore_successorExtension_add_one,
     coordinateWronskian_companionExtensionCore_totalExtension]
+
+/-- Each successor core row is independent of the positive coordinate in
+which its defining Wronskian is taken. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRow
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉ (decoBottomTotalCompanionSuccessorCoreRow n i).vars := by
+  rw [← coordinateWronskian_companionExtensionCore_successorExtension]
+  exact MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+    (decoBottomTotalCompanionExtensionCore_isMultiaffine n)
+    (decoBottomTotalCompanionSuccessorExtension_isMultiaffine n)
+    (i + 1 : Nat)
 
 /-- The next companion core is the positive-coordinate rename of its
 unshifted affine Euler core. -/

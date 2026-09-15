@@ -278,6 +278,75 @@ theorem zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic
     (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope n)
     (zero_notMem_vars_decoBottomTotalCompanionSlope n) (i + 1 : Nat)
 
+/-- The constant row coefficient is independent of the row coordinate. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉
+      (decoBottomTotalCompanionSuccessorCoreRowConstant n i).vars := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowConstant
+  exact MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+    (MvPolynomial.IsMultiaffine.specializeZero_preserves
+      (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0)
+    (decoBottomTotalWronskianCompanion_isMultiaffine n) (i + 1 : Nat)
+
+/-- The linear row coefficient is independent of the row coordinate. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowLinear
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉
+      (decoBottomTotalCompanionSuccessorCoreRowLinear n i).vars := by
+  have hleft :=
+    MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+      (MvPolynomial.IsMultiaffine.specializeZero_preserves
+        (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0)
+      (decoBottomTotalCompanionSlope_isMultiaffine n) (i + 1 : Nat)
+  have hright :=
+    MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+      ((decoBottomTotalCompanionExtensionCore_isMultiaffine n).pderiv 0)
+      (decoBottomTotalWronskianCompanion_isMultiaffine n) (i + 1 : Nat)
+  unfold decoBottomTotalCompanionSuccessorCoreRowLinear
+  intro h
+  exact (Finset.mem_union.mp (MvPolynomial.vars_add_subset _ _ h)).elim
+    hleft hright
+
+/-- The quadratic row coefficient is independent of the row coordinate. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉
+      (decoBottomTotalCompanionSuccessorCoreRowQuadratic n i).vars := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowQuadratic
+  exact MvPolynomial.IsMultiaffine.notMem_vars_coordinateWronskian
+    ((decoBottomTotalCompanionExtensionCore_isMultiaffine n).pderiv 0)
+    (decoBottomTotalCompanionSlope_isMultiaffine n) (i + 1 : Nat)
+
+/-- The row discriminant is independent of the row coordinate. -/
+theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    (n : Nat) (i : Fin (n + 1)) :
+    (i + 1 : Nat) ∉
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i).vars := by
+  have hlinear :=
+    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowLinear n i
+  have hquadratic :=
+    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i
+  have hconstant :=
+    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i
+  intro h
+  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminant at h
+  rcases Finset.mem_union.mp
+      (MvPolynomial.vars_sub_subset
+        (p := decoBottomTotalCompanionSuccessorCoreRowLinear n i ^ 2)
+        (q := MvPolynomial.C 4 *
+          decoBottomTotalCompanionSuccessorCoreRowQuadratic n i *
+            decoBottomTotalCompanionSuccessorCoreRowConstant n i) h) with
+    hleft | hright
+  · exact hlinear (MvPolynomial.vars_pow _ 2 hleft)
+  · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hright) with
+      hproduct | hconstantMem
+    · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hproduct) with
+        hfour | hquadraticMem
+      · simp at hfour
+      · exact hquadratic hquadraticMem
+    · exact hconstant hconstantMem
+
 /-- Global nonnegativity of a successor core row is exactly nonnegativity of
 its leading and constant coefficients together with nonpositivity of its
 fresh-coordinate discriminant. -/
