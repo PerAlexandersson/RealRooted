@@ -363,18 +363,10 @@ theorem fiberPolynomial_mvRealStable {h : Nat} (c : DecoNormalizedCode h) :
 /-- Every normalized decoration fiber has nonnegative coefficients. -/
 theorem fiberPolynomial_hasNonnegCoeffs {h : Nat} (c : DecoNormalizedCode h) :
     MvPolynomial.HasNonnegCoeffs (fiberPolynomial (R := Real) c) := by
-  rw [fiberPolynomial_eq_product]
-  apply MvPolynomial.HasNonnegCoeffs.mul
-  · apply MvPolynomial.HasNonnegCoeffs.mul
-    · exact MvPolynomial.HasNonnegCoeffs.C (by positivity)
-    · unfold MvPolynomial.finsetMonomial
-      apply MvPolynomial.HasNonnegCoeffs.prod
-      intro i hi
-      exact MvPolynomial.HasNonnegCoeffs.X i
-  · apply MvPolynomial.HasNonnegCoeffs.prod
-    intro j hj
-    exact (MvPolynomial.HasNonnegCoeffs.X (leftLabel h j.1)).add
-      (MvPolynomial.HasNonnegCoeffs.X (rightLabel h j.1))
+  rw [fiberPolynomial_eq_fiberNormalForm]
+  exact RealRooted.booleanSwapOrbitNormalForm_hasNonnegCoeffs
+    c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
+      (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
 
 /-- Every nonnegative common-phase restriction of a normalized decoration
 fiber is a Pólya-frequency polynomial. -/
@@ -438,6 +430,37 @@ theorem weightedFiberNormalForm_mvRealStable {h : Nat}
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
         leftWeight rightWeight (fun j _ => hleft j)
           (fun j _ => hright j) (fun j _ => hpos j)
+
+/-- Independent nonnegative eligible-pair weights give the normalized-fiber
+form nonnegative coefficients. -/
+theorem weightedFiberNormalForm_hasNonnegCoeffs {h : Nat}
+    (c : DecoNormalizedCode h)
+    (leftWeight rightWeight : EligibleStart c → Real)
+    (hleft : ∀ j, 0 ≤ leftWeight j)
+    (hright : ∀ j, 0 ≤ rightWeight j) :
+    MvPolynomial.HasNonnegCoeffs
+      (weightedFiberNormalForm c leftWeight rightWeight) := by
+  exact RealRooted.weightedBooleanSwapOrbitNormalForm_hasNonnegCoeffs
+    c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
+      (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+        leftWeight rightWeight (fun j _ => hleft j) (fun j _ => hright j)
+
+/-- Every common-phase restriction of a nonnegatively and nontrivially
+weighted normalized-fiber form is a Pólya-frequency polynomial. -/
+theorem commonPhaseRestriction_weightedFiberNormalForm_isPFPolynomial
+    {h : Nat} (c : DecoNormalizedCode h)
+    (leftWeight rightWeight : EligibleStart c → Real)
+    (hleft : ∀ j, 0 ≤ leftWeight j)
+    (hright : ∀ j, 0 ≤ rightWeight j)
+    (hpos : ∀ j, 0 < leftWeight j ∨ 0 < rightWeight j)
+    (wt : Nat → Real) (hwt : ∀ i, 0 ≤ wt i) :
+    IsPFPolynomial
+      (commonPhaseRestriction wt
+        (weightedFiberNormalForm c leftWeight rightWeight)) :=
+  (weightedFiberNormalForm_mvRealStable c leftWeight rightWeight
+      hleft hright hpos).commonPhaseRestriction_isPFPolynomial
+    (weightedFiberNormalForm_hasNonnegCoeffs c leftWeight rightWeight
+      hleft hright) wt hwt
 
 end
 

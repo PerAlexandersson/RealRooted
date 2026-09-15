@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
+import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import RealRooted.MultivariateStability.LinearForm
 import Mathlib.Data.Finset.BooleanAlgebra
 import Mathlib.Data.Finset.Powerset
@@ -60,6 +61,23 @@ theorem booleanVariableChoiceSum_mvRealStable {σ ι : Type*}
   intro i hi
   exact MvRealStable.X_add_X (left i) (right i)
 
+/-- Every real Boolean variable-choice sum has nonnegative coefficients. -/
+theorem booleanVariableChoiceSum_hasNonnegCoeffs {σ ι : Type*}
+    [DecidableEq ι] (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) :
+    MvPolynomial.HasNonnegCoeffs
+      (booleanVariableChoiceSum fixed s left right : MvPolynomial σ ℝ) := by
+  rw [booleanVariableChoiceSum_eq]
+  apply MvPolynomial.HasNonnegCoeffs.mul
+  · unfold MvPolynomial.finsetMonomial
+    apply MvPolynomial.HasNonnegCoeffs.prod
+    intro i hi
+    exact MvPolynomial.HasNonnegCoeffs.X i
+  · apply MvPolynomial.HasNonnegCoeffs.prod
+    intro i hi
+    exact (MvPolynomial.HasNonnegCoeffs.X (left i)).add
+      (MvPolynomial.HasNonnegCoeffs.X (right i))
+
 /-- The independently weighted subset expansion choosing a left or right
 variable from every pair. -/
 def weightedBooleanVariableChoiceSum {σ ι R : Type*} [CommSemiring R]
@@ -96,6 +114,30 @@ theorem weightedBooleanVariableChoiceSum_one
         (fun _ => 1) (fun _ => 1) =
       booleanVariableChoiceSum (R := R) fixed s left right := by
   simp [weightedBooleanVariableChoiceSum, booleanVariableChoiceSum]
+
+/-- Nonnegative independent weights give the weighted Boolean choice sum
+nonnegative coefficients. -/
+theorem weightedBooleanVariableChoiceSum_hasNonnegCoeffs
+    {σ ι : Type*} [DecidableEq ι]
+    (fixed : Finset σ) (s : Finset ι) (left right : ι → σ)
+    (leftWeight rightWeight : ι → Real)
+    (hleft : ∀ i ∈ s, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ s, 0 ≤ rightWeight i) :
+    MvPolynomial.HasNonnegCoeffs
+      (weightedBooleanVariableChoiceSum fixed s left right
+        leftWeight rightWeight) := by
+  rw [weightedBooleanVariableChoiceSum_eq]
+  apply MvPolynomial.HasNonnegCoeffs.mul
+  · unfold MvPolynomial.finsetMonomial
+    apply MvPolynomial.HasNonnegCoeffs.prod
+    intro i hi
+    exact MvPolynomial.HasNonnegCoeffs.X i
+  · apply MvPolynomial.HasNonnegCoeffs.prod
+    intro i hi
+    exact ((MvPolynomial.HasNonnegCoeffs.C (hleft i hi)).mul
+      (MvPolynomial.HasNonnegCoeffs.X (left i))).add
+        ((MvPolynomial.HasNonnegCoeffs.C (hright i hi)).mul
+          (MvPolynomial.HasNonnegCoeffs.X (right i)))
 
 /-- Nonnegative, nontrivial independent weights preserve multivariate real
 stability of the Boolean variable-choice sum. -/
@@ -145,6 +187,18 @@ theorem booleanSwapOrbitNormalForm_mvRealStable {σ ι : Type*}
   apply (booleanVariableChoiceSum_mvRealStable fixed s left right).C_mul
   exact pow_ne_zero inactive (by norm_num)
 
+/-- Every real Boolean swap-orbit normal form has nonnegative
+coefficients. -/
+theorem booleanSwapOrbitNormalForm_hasNonnegCoeffs {σ ι : Type*}
+    [DecidableEq ι] (inactive : ℕ) (fixed : Finset σ) (s : Finset ι)
+    (left right : ι → σ) :
+    MvPolynomial.HasNonnegCoeffs
+      (booleanSwapOrbitNormalForm inactive fixed s left right :
+        MvPolynomial σ ℝ) := by
+  unfold booleanSwapOrbitNormalForm
+  exact (MvPolynomial.HasNonnegCoeffs.C (by positivity)).mul
+    (booleanVariableChoiceSum_hasNonnegCoeffs fixed s left right)
+
 /-- A Boolean swap-orbit normal form with independent weights on the two
 choices at every pair.  An inactive pair contributes the sum of its weights,
 while an active pair contributes the corresponding weighted linear form. -/
@@ -188,6 +242,29 @@ theorem weightedBooleanSwapOrbitNormalForm_one
     q * booleanVariableChoiceSum fixed active left right)
   apply congrArg MvPolynomial.C
   norm_num
+
+/-- Nonnegative independent pair weights give the weighted Boolean orbit
+normal form nonnegative coefficients. -/
+theorem weightedBooleanSwapOrbitNormalForm_hasNonnegCoeffs
+    {σ ι : Type*} [DecidableEq ι]
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → Real)
+    (hleft : ∀ i ∈ inactive ∪ active, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ inactive ∪ active, 0 ≤ rightWeight i) :
+    MvPolynomial.HasNonnegCoeffs
+      (weightedBooleanSwapOrbitNormalForm inactive fixed active
+        left right leftWeight rightWeight) := by
+  unfold weightedBooleanSwapOrbitNormalForm
+  apply MvPolynomial.HasNonnegCoeffs.mul
+  · apply MvPolynomial.HasNonnegCoeffs.C
+    apply Finset.prod_nonneg
+    intro i hi
+    exact add_nonneg (hleft i (by simp [hi])) (hright i (by simp [hi]))
+  · apply weightedBooleanVariableChoiceSum_hasNonnegCoeffs
+    · intro i hi
+      exact hleft i (by simp [hi])
+    · intro i hi
+      exact hright i (by simp [hi])
 
 /-- The weighted Boolean orbit is stable when every inactive scalar factor is
 nonzero and every active linear factor has nonnegative, nontrivial weights. -/
