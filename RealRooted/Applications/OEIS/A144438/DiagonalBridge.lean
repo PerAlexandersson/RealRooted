@@ -1,6 +1,4 @@
 import RealRooted.Applications.OEIS.A144438
-import RealRooted.Applications.OEIS.A144438.ExactLayerStability
-import RealRooted.Applications.OEIS.A144438.PolyaFrequency
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.MultivariateStability.Diagonal
 
@@ -10,7 +8,9 @@ import RealRooted.MultivariateStability.Diagonal
 This file identifies the univariate diagonal of the recurrence-defined Deco
 layer total with `decoEulerian`.  Combining that algebraic recurrence theorem
 with the checked total-decomposition bridge proves real-rootedness of the
-diagonalized admissible-code and normalized-fiber enumerators.
+diagonalized admissible-code and normalized-fiber enumerators.  It also
+transports proper position, interlacing, strict root negativity, and root
+simplicity from the recurrence family to both total models.
 
 This does not assert multivariate stability of the outer fiber sum.
 -/
@@ -97,6 +97,52 @@ theorem diagonal_normalizedFiberPolynomial_eq_A144438 (n : Nat) :
   rw [normalizedFiberPolynomial_eq_decoBottomTotal,
     diagonal_decoBottomTotal_eq_decoEulerian]
 
+/-- Consecutive diagonalized admissible-code enumerators are in proper
+position. -/
+theorem diagonal_admissibleCodePolynomial_prec (n : Nat) :
+    Prec
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 2)))
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 3))) := by
+  rw [diagonal_admissibleCodePolynomial_eq_A144438 n,
+    diagonal_admissibleCodePolynomial_eq_A144438 (n + 1)]
+  exact A144438_prec n
+
+/-- Consecutive diagonalized normalized-fiber enumerators are in proper
+position. -/
+theorem diagonal_normalizedFiberPolynomial_prec (n : Nat) :
+    Prec
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 2)))
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 3))) := by
+  rw [diagonal_normalizedFiberPolynomial_eq_A144438 n,
+    diagonal_normalizedFiberPolynomial_eq_A144438 (n + 1)]
+  exact A144438_prec n
+
+/-- Consecutive diagonalized admissible-code enumerators interlace. -/
+theorem diagonal_admissibleCodePolynomial_interlaces (n : Nat) :
+    Interlaces
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 2)))
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 3))) := by
+  rw [diagonal_admissibleCodePolynomial_eq_A144438 n,
+    diagonal_admissibleCodePolynomial_eq_A144438 (n + 1)]
+  exact A144438_interlaces n
+
+/-- Consecutive diagonalized normalized-fiber enumerators interlace. -/
+theorem diagonal_normalizedFiberPolynomial_interlaces (n : Nat) :
+    Interlaces
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 2)))
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 3))) := by
+  rw [diagonal_normalizedFiberPolynomial_eq_A144438 n,
+    diagonal_normalizedFiberPolynomial_eq_A144438 (n + 1)]
+  exact A144438_interlaces n
+
 /-- Every individual normalization fiber remains real-rooted after diagonal
 restriction. -/
 theorem diagonal_fiberPolynomial_splits {h : Nat}
@@ -112,44 +158,12 @@ theorem diagonal_decoExactLayerDehomogenized_splits {n : Nat}
     (MvPolynomial.diagonal (decoExactLayerDehomogenized H)).Splits :=
   (decoExactLayerDehomogenized_mvRealStable H).diagonal_splits
 
-/-- Every individual normalization fiber is Pólya-frequency after diagonal
-restriction. -/
-theorem diagonal_fiberPolynomial_isPFPolynomial {h : Nat}
-    (c : DecoNormalizedCode h) :
-    IsPFPolynomial
-      (MvPolynomial.diagonal
-        (DecoNormalizedCode.fiberPolynomial (R := Real) c)) := by
-  simpa only [commonPhaseRestriction_one_eq_diagonal] using
-    DecoNormalizedCode.commonPhaseRestriction_fiberPolynomial_isPFPolynomial
-      c (fun _ => 1) (fun _ => zero_le_one)
-
-/-- Every dehomogenized exact-history layer is Pólya-frequency after diagonal
-restriction. -/
-theorem diagonal_decoExactLayerDehomogenized_isPFPolynomial {n : Nat}
-    (H : DecoExceptionalHistory (n + 2)) :
-    IsPFPolynomial
-      (MvPolynomial.diagonal (decoExactLayerDehomogenized H)) := by
-  simpa only [commonPhaseRestriction_one_eq_diagonal] using
-    commonPhaseRestriction_decoExactLayerDehomogenized_isPFPolynomial
-      H (fun _ => 1) (fun _ => zero_le_one)
-
-/-- The diagonalized admissible-code enumerator is Pólya-frequency. -/
-theorem diagonal_admissibleCodePolynomial_isPFPolynomial (n : Nat) :
-    IsPFPolynomial
-      (MvPolynomial.diagonal
-        (admissibleCodePolynomial (R := Real) (n + 2))) := by
+/-- The diagonalized admissible-code enumerator is real-rooted. -/
+theorem diagonal_admissibleCodePolynomial_splits (n : Nat) :
+    (MvPolynomial.diagonal
+      (admissibleCodePolynomial (R := Real) (n + 2))).Splits := by
   rw [diagonal_admissibleCodePolynomial_eq_A144438]
-  exact A144438_isPFPolynomial n
-
-/-- The diagonalized normalized-fiber enumerator is Pólya-frequency.  This is
-a univariate conclusion and does not assert stability of the multivariate
-outer sum. -/
-theorem diagonal_normalizedFiberPolynomial_isPFPolynomial (n : Nat) :
-    IsPFPolynomial
-      (MvPolynomial.diagonal
-        (normalizedFiberPolynomial (R := Real) (n + 2))) := by
-  rw [diagonal_normalizedFiberPolynomial_eq_A144438]
-  exact A144438_isPFPolynomial n
+  exact A144438_splits n
 
 /-- The diagonalized normalized-fiber enumerator is real-rooted.  This is a
 univariate conclusion and does not claim stability of the multivariate sum. -/
@@ -158,6 +172,40 @@ theorem diagonal_normalizedFiberPolynomial_splits (n : Nat) :
       (normalizedFiberPolynomial (R := Real) (n + 2))).Splits := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
   exact A144438_splits n
+
+/-- Every root of a diagonalized admissible-code enumerator is strictly
+negative. -/
+theorem diagonal_admissibleCodePolynomial_root_neg (n : Nat) {r : Real}
+    (hr : (MvPolynomial.diagonal
+      (admissibleCodePolynomial (R := Real) (n + 2))).IsRoot r) :
+    r < 0 := by
+  rw [diagonal_admissibleCodePolynomial_eq_A144438] at hr
+  exact decoEulerian_root_neg n hr
+
+/-- Every root of a diagonalized normalized-fiber enumerator is strictly
+negative. -/
+theorem diagonal_normalizedFiberPolynomial_root_neg (n : Nat) {r : Real}
+    (hr : (MvPolynomial.diagonal
+      (normalizedFiberPolynomial (R := Real) (n + 2))).IsRoot r) :
+    r < 0 := by
+  rw [diagonal_normalizedFiberPolynomial_eq_A144438] at hr
+  exact decoEulerian_root_neg n hr
+
+/-- Every diagonalized admissible-code enumerator has simple roots. -/
+theorem diagonal_admissibleCodePolynomial_hasSimpleRoots (n : Nat) :
+    HasSimpleRoots
+      (MvPolynomial.diagonal
+        (admissibleCodePolynomial (R := Real) (n + 2))) := by
+  rw [diagonal_admissibleCodePolynomial_eq_A144438]
+  exact decoEulerian_hasSimpleRoots n
+
+/-- Every diagonalized normalized-fiber enumerator has simple roots. -/
+theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
+    HasSimpleRoots
+      (MvPolynomial.diagonal
+        (normalizedFiberPolynomial (R := Real) (n + 2))) := by
+  rw [diagonal_normalizedFiberPolynomial_eq_A144438]
+  exact decoEulerian_hasSimpleRoots n
 
 end
 

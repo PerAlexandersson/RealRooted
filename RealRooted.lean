@@ -1335,6 +1335,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.BottomTotal
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.Applications.OEIS.A144438.DiagonalBridge
+import RealRooted.Applications.OEIS.A144438.DiagonalPolyaFrequency
 import RealRooted.Applications.OEIS.A144438.DecorationOrbit
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.Applications.OEIS.A144438.FiberStability
