@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
 
 /-!
 # Stability consequences for the affine Deco recurrence
@@ -177,6 +177,45 @@ theorem decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
     decoBottomTotalAffineBase_isRayleigh_iff_companion,
     eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion]
   simp only [decoBottomTotalAffineSlope_isRayleigh n hstable, true_and]
+
+/-- Under preceding-rank stability, the next total is Rayleigh exactly when
+the lower two-rank companion data holds.  All shifted affine coordinates have
+been removed from this interface. -/
+theorem decoBottomTotal_add_two_isRayleigh_iff_stable_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) ↔
+      DecoBottomTotalCompanionRayleighData n := by
+  constructor
+  · intro hnext
+    obtain ⟨hcompanion, hcross, hdisc⟩ :=
+      (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
+        n hstable).1 hnext
+    exact ⟨hcompanion, hcross,
+      (eval_affineRayleighDiscriminant_nonpos_iff_companion n).1 hdisc⟩
+  · intro hdata
+    exact (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
+      n hstable).2 ⟨hdata.companion_isRayleigh,
+        hdata.coordinateWronskian_nonneg,
+        (eval_affineRayleighDiscriminant_nonpos_iff_companion n).2
+          hdata.affineDiscriminant_nonpos⟩
+
+/-- The initial lower two-rank companion data follows from the checked
+rank-one and rank-two stability base cases. -/
+theorem decoBottomTotalCompanionRayleighData_zero :
+    DecoBottomTotalCompanionRayleighData 0 := by
+  have hnext : MvPolynomial.IsRayleigh (decoBottomTotal 2) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh 2).1
+      decoLayerTotal_two_mvRealStable
+  exact (decoBottomTotal_add_two_isRayleigh_iff_stable_companionData
+    0 decoLayerTotal_one_mvRealStable).1 (by simpa using hnext)
+
+/-- The lower companion data is a complete one-step Rayleigh certificate once
+the preceding homogeneous rank is stable. -/
+theorem decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
+  (decoBottomTotal_add_two_isRayleigh_iff_stable_companionData n hstable).2 hdata
 
 /-- Preceding-rank stability discharges the slope endpoint and normal
 Wronskians in the affine Rayleigh criterion. The remaining assumptions are

@@ -33,6 +33,15 @@ theorem mixedRayleighDifference_comm_coord {R σ : Type*} [CommRing R]
   simp only [mixedRayleighDifference, pderiv_comm]
   ring
 
+/-- Mixed Rayleigh differences commute with injective variable renamings. -/
+theorem mixedRayleighDifference_rename {R σ τ : Type*} [CommRing R]
+    (f : σ → τ) (hf : Function.Injective f)
+    (P Q : MvPolynomial σ R) (i j : σ) :
+    mixedRayleighDifference (rename f P) (rename f Q) (f i) (f j) =
+      rename f (mixedRayleighDifference P Q i j) := by
+  simp only [mixedRayleighDifference, pderiv_rename hf, map_add, map_mul,
+    map_sub]
+
 /-- Rayleigh differences polarize into two pure terms and one mixed term. -/
 theorem rayleighDifference_add {R σ : Type*} [CommRing R]
     (P Q : MvPolynomial σ R) (i j : σ) :
@@ -76,6 +85,41 @@ def affineRayleighDiscriminant {R σ : Type*} [CommRing R]
     (P Q : MvPolynomial σ R) (i j : σ) : MvPolynomial σ R :=
   mixedRayleighDifference P Q i j ^ 2 -
     C 4 * rayleighDifference Q i j * rayleighDifference P i j
+
+/-- The affine Rayleigh discriminant is symmetric in its two coordinates. -/
+theorem affineRayleighDiscriminant_comm_coord
+    {R σ : Type*} [CommRing R] (P Q : MvPolynomial σ R) (i j : σ) :
+    affineRayleighDiscriminant P Q i j =
+      affineRayleighDiscriminant P Q j i := by
+  rw [affineRayleighDiscriminant, affineRayleighDiscriminant,
+    mixedRayleighDifference_comm_coord, rayleighDifference_comm P i j,
+    rayleighDifference_comm Q i j]
+
+/-- Affine Rayleigh discriminants commute with injective variable
+renamings. -/
+theorem affineRayleighDiscriminant_rename {R σ τ : Type*} [CommRing R]
+    (f : σ → τ) (hf : Function.Injective f)
+    (P Q : MvPolynomial σ R) (i j : σ) :
+    affineRayleighDiscriminant (rename f P) (rename f Q) (f i) (f j) =
+      rename f (affineRayleighDiscriminant P Q i j) := by
+  simp only [affineRayleighDiscriminant,
+    mixedRayleighDifference_rename f hf P Q i j,
+    rayleighDifference_rename f hf Q i j,
+    rayleighDifference_rename f hf P i j, map_pow, map_sub, map_mul,
+    rename_C]
+
+/-- If one coordinate is absent from both endpoints, the corresponding
+affine Rayleigh discriminant vanishes. -/
+theorem affineRayleighDiscriminant_eq_zero_of_notMem_vars
+    {R σ : Type*} [CommRing R] (P Q : MvPolynomial σ R) (k j : σ)
+    (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars) :
+    affineRayleighDiscriminant P Q k j = 0 := by
+  have hPk : pderiv k P = 0 := pderiv_eq_zero_of_notMem_vars hkP
+  have hQk : pderiv k Q = 0 := pderiv_eq_zero_of_notMem_vars hkQ
+  simp only [affineRayleighDiscriminant, mixedRayleighDifference,
+    rayleighDifference, hPk, hQk, pderiv_comm k j, map_zero, zero_mul,
+    mul_zero, add_zero, sub_zero]
+  ring
 
 /-- A fresh affine coordinate extension is Rayleigh when its two endpoint
 polynomials are Rayleigh, its fresh-coordinate Wronskians are nonnegative,
