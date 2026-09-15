@@ -1335,6 +1335,7 @@ import RealRooted.Applications.OEIS.A144438.ExactLayer
 import RealRooted.Applications.OEIS.A144438.ExactLayerStability
 import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.LayerTotalStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
 import RealRooted.Applications.OEIS.A144438.BottomTotal
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.Applications.OEIS.A144438.DiagonalBridge
