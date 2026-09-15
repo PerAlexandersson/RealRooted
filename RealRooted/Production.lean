@@ -806,6 +806,7 @@ import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
+import RealRooted.Multiaffine.Rayleigh
 import RealRooted.MultiaffineReciprocal
 import RealRooted.MultiaffineReciprocalRight
 import RealRooted.MultiplierSequence
@@ -835,6 +836,7 @@ import RealRooted.MultivariateStability
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.PolyaFrequency
+import RealRooted.MultivariateStability.Rayleigh
 import RealRooted.MultivariateStability.SamePhase
 import RealRooted.MultivariateStability.Specialization
 import RealRooted.NarayanaTransformation

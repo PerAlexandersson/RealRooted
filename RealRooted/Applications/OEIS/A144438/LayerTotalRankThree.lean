@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.PartialSymmetrization
+import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rank-three stability of the Deco layer total
@@ -28,11 +28,32 @@ theorem decoBottomTotal_three :
         MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 := by
   norm_num [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore,
     decoExceptionalBottomStep, decoLayerBottomEmbedding, Fin.sum_univ_succ,
-    map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one]
-  have htwo : (2 : MvPolynomial ℕ ℝ) = MvPolynomial.C 2 :=
-    (map_ofNat (MvPolynomial.C : ℝ →+* MvPolynomial ℕ ℝ) 2).symm
-  simp only [htwo, MvPolynomial.pderiv_C, map_zero]
-  simp only [← htwo]
+    map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
+    MvPolynomial.pderiv_ofNat]
+  ring
+
+/-- The rank-three Rayleigh difference in the first two coordinates. -/
+theorem decoBottomTotal_three_rayleighDifference_one_two :
+    MvPolynomial.rayleighDifference (decoBottomTotal 3) 1 2 =
+      25 + 21 * MvPolynomial.X 3 + 8 * MvPolynomial.X 3 ^ 2 := by
+  rw [decoBottomTotal_three]
+  norm_num [MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
+  ring
+
+/-- The rank-three Rayleigh difference in the first and third coordinates. -/
+theorem decoBottomTotal_three_rayleighDifference_one_three :
+    MvPolynomial.rayleighDifference (decoBottomTotal 3) 1 3 =
+      11 + 9 * MvPolynomial.X 2 + 10 * MvPolynomial.X 2 ^ 2 := by
+  rw [decoBottomTotal_three]
+  norm_num [MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
+  ring
+
+/-- The rank-three Rayleigh difference in the last two coordinates. -/
+theorem decoBottomTotal_three_rayleighDifference_two_three :
+    MvPolynomial.rayleighDifference (decoBottomTotal 3) 2 3 =
+      6 + 17 * MvPolynomial.X 1 + 27 * MvPolynomial.X 1 ^ 2 := by
+  rw [decoBottomTotal_three]
+  norm_num [MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
   ring
 
 /-- The recurrence-defined ordinary-coordinate total at rank three is real
