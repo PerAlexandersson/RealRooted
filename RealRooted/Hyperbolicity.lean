@@ -809,6 +809,20 @@ theorem MvRealStable.ordinaryHomogenization
   exact MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_positive
     hnn hP b hb u hu
 
+/-- A real-stable polynomial with nonnegative coefficients is nonvanishing
+on the common-rotation region after complexification. -/
+theorem MvRealStable.commonRotationStable_complexify_of_hasNonnegCoeffs
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (hnn : MvPolynomial.HasNonnegCoeffs P) :
+    MvCommonRotationStable (complexifyMv P) := by
+  have hhomogenized := hst.ordinaryHomogenization hnn hst.ne_zero
+  have hrotation :=
+    (mvRealStable_iff_commonRotation_dehomogenize
+      (MvPolynomial.ordinaryHomogenization_isHomogeneous P P.totalDegree)).mp
+      hhomogenized
+  rw [MvPolynomial.dehomogenize_ordinaryHomogenization] at hrotation
+  exact hrotation
+
 /-- Ordinary homogenization in any degree at least the total degree preserves
 real stability for nonzero polynomials with nonnegative coefficients. -/
 theorem MvRealStable.ordinaryHomogenization_of_totalDegree_le

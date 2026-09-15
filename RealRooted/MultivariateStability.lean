@@ -247,6 +247,21 @@ evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   MvUpperHalfPlaneStable (complexifyMv P)
 
+/-- An upper-half-plane stable polynomial is nonzero. -/
+theorem MvUpperHalfPlaneStable.ne_zero {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P) : P ≠ 0 := by
+  intro hzero
+  have h := hP (fun _ => Complex.I) (by intro i; norm_num)
+  rw [hzero] at h
+  simp at h
+
+/-- A multivariate real-stable polynomial is nonzero. -/
+theorem MvRealStable.ne_zero {sigma : Type*}
+    {P : MvPolynomial sigma ℝ} (hP : MvRealStable P) : P ≠ 0 := by
+  intro hzero
+  apply MvUpperHalfPlaneStable.ne_zero hP
+  simp [complexifyMv, hzero]
+
 /-- A nonzero multivariate polynomial has a nonzero evaluation in any
 coordinate-wise family of infinite regions. -/
 theorem exists_stableIn_eval_ne_zero {sigma : Type*}

@@ -45,6 +45,14 @@ theorem decoBottomTotal_isMultiaffine (n : Nat) :
   rw [← admissibleCodePolynomial_eq_decoBottomTotal]
   exact admissibleCodePolynomial_isMultiaffine (n + 2)
 
+/-- The recurrence-defined ordinary-coordinate total has nonnegative
+coefficients. -/
+theorem decoBottomTotal_hasNonnegCoeffs (n : Nat) :
+    MvPolynomial.HasNonnegCoeffs (decoBottomTotal n) := by
+  rw [← rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
+  exact ((decoLayerTotal_hasNonnegCoeffs n).dehomogenize).rename_of_injective
+    (decoLayerBottomEmbedding n).injective
+
 /-- Stability of the homogeneous finite-coordinate layer total is exactly
 common-rotation stability of its multiaffine ordinary-coordinate
 dehomogenization. -/
