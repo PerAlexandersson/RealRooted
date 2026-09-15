@@ -28,6 +28,25 @@ theorem rayleighDifference_comm {R σ : Type*} [CommRing R]
   rw [rayleighDifference, rayleighDifference, pderiv_comm]
   ring
 
+/-- A Rayleigh difference vanishes when its left coordinate is absent from
+the polynomial. -/
+theorem rayleighDifference_eq_zero_of_notMem_vars_left
+    {R σ : Type*} [CommRing R] (P : MvPolynomial σ R)
+    {i : σ} (hi : i ∉ P.vars) (j : σ) :
+    rayleighDifference P i j = 0 := by
+  rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
+    pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
+  simp
+
+/-- A Rayleigh difference vanishes when its right coordinate is absent from
+the polynomial. -/
+theorem rayleighDifference_eq_zero_of_notMem_vars_right
+    {R σ : Type*} [CommRing R] (P : MvPolynomial σ R)
+    {j : σ} (hj : j ∉ P.vars) (i : σ) :
+    rayleighDifference P i j = 0 := by
+  rw [rayleighDifference_comm]
+  exact rayleighDifference_eq_zero_of_notMem_vars_left P hj i
+
 /-- A partial derivative paired with a directional derivative is the weighted
 sum of the corresponding row of Rayleigh differences. -/
 theorem pderiv_mul_directionalPDeriv_sub
@@ -188,10 +207,8 @@ theorem IsRayleigh.rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
     exact hi ⟨j, hji⟩
   have hdiff_zero {i : τ}
       (hi : i ∉ (MvPolynomial.rename f P).vars) (j : τ) :
-      rayleighDifference (MvPolynomial.rename f P) i j = 0 := by
-    rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
-      pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
-    simp
+      rayleighDifference (MvPolynomial.rename f P) i j = 0 :=
+    rayleighDifference_eq_zero_of_notMem_vars_left _ hi j
   intro i j x
   by_cases hi : i ∈ Set.range f
   · obtain ⟨a, rfl⟩ := hi

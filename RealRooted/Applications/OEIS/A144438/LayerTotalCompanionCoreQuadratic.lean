@@ -286,6 +286,56 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_specializeAt_one_re
     MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
       (decoBottomTotalCompanionCore_isMultiaffine n) (i + 1 : Nat)]
 
+/-- Away from the distinguished first row, the next constant endpoint is the
+shift of the successor-extension affine-Euler row plus the current successor
+core row. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowConstant_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowConstant (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerRayleighRow
+            (Fin.valEmbedding : Fin (n + 2) → Nat)
+            (decoBottomTotalCompanionSuccessorExtension n) i.succ +
+          decoBottomTotalCompanionSuccessorCoreRow n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add,
+    affineEulerRayleighRow_companion_succ_fin]
+  have hcoord :=
+    coordinateWronskian_companionCore_companion_succ_fin n i
+  rw [show MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionCore (n + 1))
+      (decoBottomTotalWronskianCompanion (n + 1))
+      ((i.succ : Fin (n + 2)) + 1 : Nat) =
+        MvPolynomial.rename (fun j : Nat => j + 1)
+          (decoBottomTotalCompanionSuccessorCoreRow n i) by
+    simpa only [Fin.val_succ, Nat.add_assoc] using hcoord,
+    map_add]
+
+/-- Away from the distinguished first row, the next quadratic endpoint is
+the shift of the mixed total-extension Wronskian plus the affine-Euler row of
+the current extension core. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.coordinateWronskian
+            (MvPolynomial.affineEulerCore
+              (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+              (decoBottomTotalCompanionExtensionCore n))
+            (decoBottomTotalCompanionTotalExtension n) (i + 1 : Nat) +
+          MvPolynomial.affineEulerRayleighRow
+            (Fin.valEmbedding : Fin (n + 2) → Nat)
+            (decoBottomTotalCompanionExtensionCore n) i.succ) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add]
+  have hc : ((n + 1 : Nat) : Real) + 2 = (n : Real) + 3 := by
+    push_cast
+    ring
+  have hmixed :=
+    coordinateWronskian_affineEulerCore_companionCore_succ_total_add_two
+      n (i : Nat)
+  have hrow := affineEulerRayleighRow_companionCore_succ_fin n i
+  have hsum := congrArg₂ (· + ·) hmixed hrow
+  simpa only [hc, Nat.add_assoc, Fin.val_succ, map_add] using hsum
+
 /-- Each successor core row is exactly quadratic in the remaining fresh
 coordinate, with the three named endpoint-Wronskian coefficients. -/
 theorem decoBottomTotalCompanionSuccessorCoreRow_eq_quadratic

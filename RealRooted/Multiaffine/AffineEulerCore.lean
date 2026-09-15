@@ -127,6 +127,142 @@ theorem rename_affineEulerCore
   simp only [affineEulerCore, map_add, map_sub, map_mul, map_sum,
     rename_C, rename_X, pderiv_rename hg, Function.comp_apply]
 
+/-- Adding a fresh coordinate before a successor rename does not change an
+affine Euler core. -/
+theorem affineEulerCore_rename_succ
+    {R : Type*} [CommRing R] (P : MvPolynomial Nat R)
+    (m : Nat) (c : R) :
+    affineEulerCore (Fin.valEmbedding : Fin (m + 1) → Nat) c
+        (rename (fun j : Nat => j + 1) P) =
+      rename (fun j : Nat => j + 1)
+        (affineEulerCore (Fin.valEmbedding : Fin m → Nat) c P) := by
+  classical
+  have h0 : 0 ∉ (rename (fun j : Nat => j + 1) P).vars := by
+    intro h
+    obtain ⟨j, hj, hj0⟩ := mem_vars_rename
+      (fun k : Nat => k + 1) P h
+    lia
+  have hderivZero :
+      pderiv 0 (rename (fun j : Nat => j + 1) P) = 0 :=
+    pderiv_eq_zero_of_notMem_vars h0
+  have hderivSucc (j : Fin m) :
+      pderiv (j.succ : Nat) (rename (fun k : Nat => k + 1) P) =
+        rename (fun k : Nat => k + 1) (pderiv (j : Nat) P) := by
+    simpa only [Fin.val_succ] using
+      pderiv_rename (R := R) (f := fun k : Nat => k + 1)
+        (by intro a b h; lia) (j : Nat) P
+  have hweighted :
+      (∑ j : Fin (m + 1), X (j : Nat) *
+          pderiv (j : Nat) (rename (fun k : Nat => k + 1) P)) =
+        rename (fun k : Nat => k + 1)
+          (∑ j : Fin m, X (j : Nat) * pderiv (j : Nat) P) := by
+    rw [Fin.sum_univ_succ]
+    change X 0 * pderiv 0 (rename (fun k : Nat => k + 1) P) + _ = _
+    rw [hderivZero, mul_zero, zero_add]
+    simp_rw [hderivSucc]
+    rw [map_sum]
+    simp only [map_mul, rename_X, Fin.val_succ]
+  have hderivs :
+      (∑ j : Fin (m + 1),
+          pderiv (j : Nat) (rename (fun k : Nat => k + 1) P)) =
+        rename (fun k : Nat => k + 1)
+          (∑ j : Fin m, pderiv (j : Nat) P) := by
+    rw [Fin.sum_univ_succ]
+    change pderiv 0 (rename (fun k : Nat => k + 1) P) + _ = _
+    rw [hderivZero, zero_add]
+    simp_rw [hderivSucc]
+    rw [map_sum]
+  unfold affineEulerCore
+  simp only [Fin.valEmbedding_apply]
+  rw [hweighted, hderivs]
+  simp only [map_add, map_sub, map_mul, rename_C]
+
+/-- Affine Euler Rayleigh rows commute with injective variable renaming. -/
+theorem affineEulerRayleighRow_rename
+    {R σ τ ι : Type*} [CommRing R] [Fintype ι]
+    (g : σ → τ) (hg : Function.Injective g) (e : ι → σ)
+    (P : MvPolynomial σ R) (i : ι) :
+    rename g (affineEulerRayleighRow e P i) =
+      affineEulerRayleighRow (g ∘ e) (rename g P) i := by
+  classical
+  unfold affineEulerRayleighRow
+  simp only [map_add, map_mul, map_sum, map_sub, map_one, rename_X,
+    pderiv_rename hg, rayleighDifference_rename g hg,
+    Function.comp_apply]
+
+/-- Affine Euler Rayleigh remainders commute with injective variable
+renaming. -/
+theorem affineEulerRayleighRemainder_rename
+    {R σ τ ι : Type*} [CommRing R] [Fintype ι] [DecidableEq ι]
+    (g : σ → τ) (hg : Function.Injective g) (e : ι → σ)
+    (P : MvPolynomial σ R) (i : ι) :
+    rename g (affineEulerRayleighRemainder e P i) =
+      affineEulerRayleighRemainder (g ∘ e) (rename g P) i := by
+  classical
+  unfold affineEulerRayleighRemainder
+  simp only [map_sum, map_mul, map_sub, map_one, rename_X,
+    rayleighDifference_rename g hg, Function.comp_apply]
+
+/-- An affine Euler Rayleigh remainder is unchanged when a fresh coordinate
+is added before a successor rename. -/
+theorem affineEulerRayleighRemainder_rename_succ
+    {R : Type*} [CommRing R] (P : MvPolynomial Nat R)
+    (m : Nat) (i : Fin m) :
+    affineEulerRayleighRemainder
+        (Fin.valEmbedding : Fin (m + 1) → Nat)
+        (rename (fun j : Nat => j + 1) P) i.succ =
+      rename (fun j : Nat => j + 1)
+        (affineEulerRayleighRemainder
+          (Fin.valEmbedding : Fin m → Nat) P i) := by
+  classical
+  let oldTerm (j : Fin m) :=
+    (1 - X (j : Nat)) * rayleighDifference P (i : Nat) (j : Nat)
+  let newTerm (j : Fin (m + 1)) :=
+    (1 - X (j : Nat)) * rayleighDifference
+      (rename (fun k : Nat => k + 1) P) (i.succ : Nat) (j : Nat)
+  have hzero : newTerm 0 = 0 := by
+    have h0 : 0 ∉ (rename (fun k : Nat => k + 1) P).vars := by
+      intro h
+      obtain ⟨j, hj, hj0⟩ := mem_vars_rename
+        (fun k : Nat => k + 1) P h
+      lia
+    rw [show newTerm 0 =
+      (1 - X 0) * rayleighDifference
+        (rename (fun k : Nat => k + 1) P) (i.succ : Nat) 0 by rfl,
+      rayleighDifference_comm,
+      rayleighDifference_eq_zero_of_notMem_vars_left _ h0]
+    simp
+  have hsucc (j : Fin m) :
+      newTerm j.succ = rename (fun k : Nat => k + 1) (oldTerm j) := by
+    simp only [newTerm, oldTerm, Fin.val_succ, map_mul, map_sub, map_one,
+      rename_X]
+    rw [rayleighDifference_rename (fun k : Nat => k + 1)
+      (by intro a b h; lia)]
+  have hfull : (∑ j : Fin (m + 1), newTerm j) =
+      rename (fun k : Nat => k + 1) (∑ j : Fin m, oldTerm j) := by
+    rw [Fin.sum_univ_succ, hzero, zero_add]
+    simp_rw [hsucc]
+    rw [map_sum]
+  have hselected : newTerm i.succ =
+      rename (fun k : Nat => k + 1) (oldTerm i) := hsucc i
+  have hnewErase :
+      (∑ j ∈ (Finset.univ : Finset (Fin (m + 1))).erase i.succ,
+          newTerm j) =
+        (∑ j : Fin (m + 1), newTerm j) - newTerm i.succ := by
+    apply eq_sub_of_add_eq
+    exact Finset.sum_erase_add _ _ (Finset.mem_univ i.succ)
+  have holdErase :
+      (∑ j ∈ (Finset.univ : Finset (Fin m)).erase i,
+          oldTerm j) =
+        (∑ j : Fin m, oldTerm j) - oldTerm i := by
+    apply eq_sub_of_add_eq
+    exact Finset.sum_erase_add _ _ (Finset.mem_univ i)
+  unfold affineEulerRayleighRemainder
+  change (∑ j ∈ (Finset.univ : Finset (Fin (m + 1))).erase i.succ,
+      newTerm j) = rename (fun j : Nat => j + 1)
+        (∑ j ∈ (Finset.univ : Finset (Fin m)).erase i, oldTerm j)
+  rw [hnewErase, holdErase, hfull, hselected, map_sub]
+
 /-- Specialization at one commutes with an affine Euler core in any selected
 coordinate. -/
 theorem specializeAt_one_affineEulerCore
@@ -243,6 +379,45 @@ theorem coordinateWronskian_affineEulerCore
     coordinateWronskian_C_mul_left, coordinateWronskian_self, mul_zero,
     zero_sub, heuler, hderiv, hsum]
   ring
+
+/-- An affine Euler Rayleigh row is unchanged when a fresh coordinate is
+added before a successor rename. -/
+theorem affineEulerRayleighRow_rename_succ
+    {R : Type*} [CommRing R] (P : MvPolynomial Nat R)
+    (m : Nat) (i : Fin m) :
+    affineEulerRayleighRow
+        (Fin.valEmbedding : Fin (m + 1) → Nat)
+        (rename (fun j : Nat => j + 1) P) i.succ =
+      rename (fun j : Nat => j + 1)
+        (affineEulerRayleighRow
+          (Fin.valEmbedding : Fin m → Nat) P i) := by
+  calc
+    _ = coordinateWronskian
+        (affineEulerCore (Fin.valEmbedding : Fin (m + 1) → Nat) 0
+          (rename (fun j : Nat => j + 1) P))
+        (rename (fun j : Nat => j + 1) P) (i.succ : Nat) :=
+      (coordinateWronskian_affineEulerCore
+        (Fin.valEmbedding : Fin (m + 1) ↪ Nat)
+        Fin.valEmbedding.injective 0
+        (rename (fun j : Nat => j + 1) P) i.succ).symm
+    _ = coordinateWronskian
+        (rename (fun j : Nat => j + 1)
+          (affineEulerCore (Fin.valEmbedding : Fin m → Nat) 0 P))
+        (rename (fun j : Nat => j + 1) P) ((i : Nat) + 1) := by
+      rw [affineEulerCore_rename_succ]
+      rfl
+    _ = rename (fun j : Nat => j + 1)
+        (coordinateWronskian
+          (affineEulerCore (Fin.valEmbedding : Fin m → Nat) 0 P)
+          P (i : Nat)) := by
+      rw [coordinateWronskian_rename (fun j : Nat => j + 1)
+        (by intro j k h; lia)]
+    _ = _ := by
+      congr 1
+      simpa only [Fin.valEmbedding_apply] using
+        coordinateWronskian_affineEulerCore
+          (Fin.valEmbedding : Fin m ↪ Nat) Fin.valEmbedding.injective
+          0 P i
 
 /-- The affine-Euler Rayleigh row separates into its endpoint derivative
 product and the Rayleigh terms away from the selected index. -/

@@ -268,6 +268,92 @@ theorem specializeAt_one_mul_pderiv_decoBottomTotalCompanionCore_succ_fin
   rw [specializeAt_one_decoBottomTotalCompanionCore_succ_fin,
     pderiv_decoBottomTotalCompanionCore_succ_fin, map_mul]
 
+/-- Every noninitial affine-Euler remainder of the next companion is the
+shift of the corresponding remainder of its unshifted successor extension. -/
+theorem affineEulerRayleighRemainder_companion_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.affineEulerRayleighRemainder
+        (Fin.valEmbedding : Fin (n + 3) → Nat)
+        (decoBottomTotalWronskianCompanion (n + 1)) i.succ.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerRayleighRemainder
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionSuccessorExtension n) i.succ) := by
+  rw [decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  exact MvPolynomial.affineEulerRayleighRemainder_rename_succ
+    (decoBottomTotalCompanionSuccessorExtension n) (n + 2) i.succ
+
+/-- Every noninitial affine-Euler row of the next companion is the shift of
+the corresponding row of its unshifted successor extension. -/
+theorem affineEulerRayleighRow_companion_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.affineEulerRayleighRow
+        (Fin.valEmbedding : Fin (n + 3) → Nat)
+        (decoBottomTotalWronskianCompanion (n + 1)) i.succ.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionSuccessorExtension n) i.succ) := by
+  rw [decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  exact MvPolynomial.affineEulerRayleighRow_rename_succ
+    (decoBottomTotalCompanionSuccessorExtension n) (n + 2) i.succ
+
+/-- Every noninitial affine-Euler remainder of the next companion core is the
+shift of the corresponding remainder of its unshifted affine Euler core. -/
+theorem affineEulerRayleighRemainder_companionCore_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.affineEulerRayleighRemainder
+        (Fin.valEmbedding : Fin (n + 3) → Nat)
+        (decoBottomTotalCompanionCore (n + 1)) i.succ.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerRayleighRemainder
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionExtensionCore n) i.succ) := by
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore]
+  exact MvPolynomial.affineEulerRayleighRemainder_rename_succ
+    (decoBottomTotalCompanionExtensionCore n) (n + 2) i.succ
+
+/-- Every noninitial affine-Euler row of the next companion core is the shift
+of the corresponding row of its unshifted affine Euler core. -/
+theorem affineEulerRayleighRow_companionCore_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.affineEulerRayleighRow
+        (Fin.valEmbedding : Fin (n + 3) → Nat)
+        (decoBottomTotalCompanionCore (n + 1)) i.succ.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionExtensionCore n) i.succ) := by
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore]
+  exact MvPolynomial.affineEulerRayleighRow_rename_succ
+    (decoBottomTotalCompanionExtensionCore n) (n + 2) i.succ
+
+/-- The mixed affine-Euler-core/latest-total Wronskian at a noninitial next
+coordinate is the shift of its unshifted total-extension counterpart. -/
+theorem coordinateWronskian_affineEulerCore_companionCore_succ_total_add_two
+    (n i : Nat) :
+    MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 3) → Nat) (n + 3 : Real)
+          (decoBottomTotalCompanionCore (n + 1)))
+        (decoBottomTotal (n + 2)) (i + 2) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+            (decoBottomTotalCompanionExtensionCore n))
+          (decoBottomTotalCompanionTotalExtension n) (i + 1)) := by
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+    MvPolynomial.affineEulerCore_rename_succ,
+    decoBottomTotal_add_two_eq_rename_companionTotalExtension]
+  simpa only [Nat.add_assoc] using
+    MvPolynomial.coordinateWronskian_rename (fun j : Nat => j + 1)
+      (by intro j k h; lia)
+      (MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+        (decoBottomTotalCompanionExtensionCore n))
+      (decoBottomTotalCompanionTotalExtension n) (i + 1)
+
 /-- Every coordinate-`i + 2` Wronskian of the next core and companion is the
 shift of the corresponding unshifted successor-extension Wronskian. -/
 theorem coordinateWronskian_companionCore_companion_succ_add_two
