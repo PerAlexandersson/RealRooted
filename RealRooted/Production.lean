@@ -470,6 +470,7 @@ import RealRooted.HermiteBiehler.Forward
 import RealRooted.HermiteBiehler.Hurwitz
 import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
+import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.HermiteBiehler.StablePencil
 import RealRooted.HermitePoulain
 import RealRooted.HomogeneousComponentStability
