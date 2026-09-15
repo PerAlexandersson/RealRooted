@@ -343,6 +343,7 @@ import RealRooted.DerivativeRecurrence.QuadraticShift
 import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
 import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 import RealRooted.DerivativeShiftRootMatching
 import RealRooted.DerivativeShiftSequence
 import RealRooted.DeterminantalStability

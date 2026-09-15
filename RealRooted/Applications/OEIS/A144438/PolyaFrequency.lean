@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.Weighted
-import RealRooted.PFPolynomial
+import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 
 /-!
 # Pólya-frequency packaging for the A144438 recurrence
@@ -17,21 +17,17 @@ noncomputable section
 Pólya-frequency. -/
 theorem weightedDecoEulerian_isPFPolynomial {w : Real} (hw : 0 ≤ w) (n : Nat) :
     IsPFPolynomial (weightedDecoEulerian w n) :=
-  IsPFPolynomial.of_realRooted_nonneg
-    (weightedDecoEulerian_hasNonnegCoeffs hw n)
-    (weightedDecoEulerian_splits hw n)
+  (weightedDecoEulerian_certificate hw n).isPFPolynomial
 
 /-- Every recurrence-defined Deco Eulerian polynomial is Pólya-frequency. -/
 theorem decoEulerian_isPFPolynomial (n : Nat) :
-    IsPFPolynomial (decoEulerian n) := by
-  rw [← weightedDecoEulerian_one_weight n]
-  exact weightedDecoEulerian_isPFPolynomial (by norm_num) n
+    IsPFPolynomial (decoEulerian n) :=
+  (decoEulerian_certificate n).isPFPolynomial
 
 /-- The algebraic A144438 facade is Pólya-frequency at every rank. -/
 theorem A144438_isPFPolynomial (n : Nat) :
     IsPFPolynomial (A144438 n) :=
-  IsPFPolynomial.of_realRooted_nonneg
-    (A144438_hasNonnegCoeffs n) (A144438_splits n)
+  (A144438_certificate n).isPFPolynomial
 
 end
 
