@@ -309,6 +309,52 @@ theorem weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
   · intro i hi
     exact hpos i (by simp [hi])
 
+/-- With nonnegative pair weights, a weighted Boolean orbit is either zero or
+multivariate real stable.  The zero case occurs when some pair has both
+weights equal to zero. -/
+theorem weightedBooleanSwapOrbitNormalForm_eq_zero_or_mvRealStable
+    {σ ι : Type*} [DecidableEq ι]
+    (inactive : Finset ι) (fixed : Finset σ) (active : Finset ι)
+    (left right : ι → σ) (leftWeight rightWeight : ι → Real)
+    (hleft : ∀ i ∈ inactive ∪ active, 0 ≤ leftWeight i)
+    (hright : ∀ i ∈ inactive ∪ active, 0 ≤ rightWeight i) :
+    weightedBooleanSwapOrbitNormalForm inactive fixed active left right
+        leftWeight rightWeight = 0 ∨
+      MvRealStable (weightedBooleanSwapOrbitNormalForm inactive fixed active
+        left right leftWeight rightWeight) := by
+  by_cases hpos : ∀ i ∈ inactive ∪ active,
+      0 < leftWeight i ∨ 0 < rightWeight i
+  · exact Or.inr
+      (weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
+        inactive fixed active left right leftWeight rightWeight
+          hleft hright hpos)
+  · push Not at hpos
+    obtain ⟨i, hi, hli, hri⟩ := hpos
+    have hleft_zero : leftWeight i = 0 :=
+      le_antisymm hli (hleft i hi)
+    have hright_zero : rightWeight i = 0 :=
+      le_antisymm hri (hright i hi)
+    apply Or.inl
+    rw [weightedBooleanSwapOrbitNormalForm_eq]
+    rcases Finset.mem_union.mp hi with hinactive | hactive
+    · have hscalar : ∏ j ∈ inactive,
+          (leftWeight j + rightWeight j) = 0 := by
+        apply Finset.prod_eq_zero hinactive
+        simp [hleft_zero, hright_zero]
+      simp [hscalar]
+    · have hlinear :
+          MvPolynomial.C (leftWeight i) * MvPolynomial.X (left i) +
+            MvPolynomial.C (rightWeight i) * MvPolynomial.X (right i) =
+              (0 : MvPolynomial σ ℝ) := by
+        simp [hleft_zero, hright_zero]
+      have hproduct : ∏ j ∈ active,
+          (MvPolynomial.C (leftWeight j) * MvPolynomial.X (left j) +
+            MvPolynomial.C (rightWeight j) * MvPolynomial.X (right j)) =
+              (0 : MvPolynomial σ ℝ) := by
+        apply Finset.prod_eq_zero hactive
+        exact hlinear
+      simp [hproduct]
+
 end
 
 end RealRooted
