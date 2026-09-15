@@ -53,6 +53,24 @@ theorem MvRealStable.specializeAt_zero_or_general
       MvRealStable (MvPolynomial.specializeAt i c P) := by
   simpa using hP.specializeAtList_zero_or_general (fun _ => c) [i]
 
+/-- Weak real stability is preserved by specializing an ordered list of
+coordinates at real values. -/
+theorem MvRealStableOrZero.specializeAtList_general
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hP : MvRealStableOrZero P)
+    (c : σ → ℝ) (l : List σ) :
+    MvRealStableOrZero (MvPolynomial.specializeAtList c l P) := by
+  rcases hP with rfl | hP
+  · simpa using (MvRealStableOrZero.zero (sigma := σ))
+  · exact hP.specializeAtList_zero_or_general c l
+
+/-- Weak real stability is preserved by specializing one coordinate at a real
+value. -/
+theorem MvRealStableOrZero.specializeAt_general
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hP : MvRealStableOrZero P)
+    (i : σ) (c : ℝ) :
+    MvRealStableOrZero (MvPolynomial.specializeAt i c P) := by
+  simpa using hP.specializeAtList_general (fun _ => c) [i]
+
 end
 
 end RealRooted

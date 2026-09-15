@@ -247,6 +247,10 @@ evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   MvUpperHalfPlaneStable (complexifyMv P)
 
+/-- Weak real stability: the polynomial is either zero or real stable. -/
+def MvRealStableOrZero {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
+  P = 0 ∨ MvRealStable P
+
 /-- An upper-half-plane stable polynomial is nonzero. -/
 theorem MvUpperHalfPlaneStable.ne_zero {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P) : P ≠ 0 := by
@@ -261,6 +265,33 @@ theorem MvRealStable.ne_zero {sigma : Type*}
   intro hzero
   apply MvUpperHalfPlaneStable.ne_zero hP
   simp [complexifyMv, hzero]
+
+/-- The zero real polynomial is weakly real stable. -/
+theorem MvRealStableOrZero.zero {sigma : Type*} :
+    MvRealStableOrZero (0 : MvPolynomial sigma ℝ) :=
+  Or.inl rfl
+
+/-- A real-stable polynomial is weakly real stable. -/
+theorem MvRealStable.orZero {sigma : Type*}
+    {P : MvPolynomial sigma ℝ} (hP : MvRealStable P) :
+    MvRealStableOrZero P :=
+  Or.inr hP
+
+/-- Weak real stability agrees with weak upper-half-plane stability after
+complexifying coefficients. -/
+theorem mvRealStableOrZero_iff_complexifyMv {sigma : Type*}
+    {P : MvPolynomial sigma ℝ} :
+    MvRealStableOrZero P ↔
+      MvUpperHalfPlaneStableOrZero (complexifyMv P) := by
+  constructor
+  · rintro (rfl | hP)
+    · exact Or.inl (by simp [complexifyMv])
+    · exact Or.inr hP
+  · rintro (hP | hP)
+    · left
+      exact MvPolynomial.map_injective Complex.ofRealHom
+        Complex.ofRealHom.injective hP
+    · exact Or.inr hP
 
 /-- A nonzero multivariate polynomial has a nonzero evaluation in any
 coordinate-wise family of infinite regions. -/
@@ -539,6 +570,16 @@ theorem MvRealStable.C_mul {sigma : Type*}
   unfold MvRealStable complexifyMv at hP ⊢
   rw [map_mul, MvPolynomial.map_C]
   exact hP.C_mul (Complex.ofReal_ne_zero.mpr hc)
+
+/-- Arbitrary real scalar multiplication preserves weak real stability. -/
+theorem MvRealStableOrZero.C_mul {sigma : Type*}
+    {P : MvPolynomial sigma ℝ} (hP : MvRealStableOrZero P) (c : ℝ) :
+    MvRealStableOrZero (MvPolynomial.C c * P) := by
+  rcases hP with rfl | hP
+  · simpa using (MvRealStableOrZero.zero (sigma := sigma))
+  · by_cases hc : c = 0
+    · simpa [hc] using (MvRealStableOrZero.zero (sigma := sigma))
+    · exact (hP.C_mul hc).orZero
 
 /-- A finite product of multivariate real-stable polynomials is real stable. -/
 theorem MvRealStable.finset_prod {sigma ι : Type*}
