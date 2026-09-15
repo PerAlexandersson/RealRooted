@@ -294,6 +294,20 @@ theorem coordinateWronskian_quadratic_discriminant
       rw [coordinateWronskian_plucker P Q A B i]
     _ = _ := by ring
 
+/-- Pointwise nonpositivity of the coordinate-Wronskian quadratic
+discriminant is exactly its Plücker square-versus-product inequality. -/
+theorem eval_coordinateWronskian_quadratic_discriminant_nonpos_iff
+    (P Q A B : MvPolynomial σ Real) (i : σ) (x : σ → Real) :
+    eval x
+        ((coordinateWronskian P B i + coordinateWronskian Q A i) ^ 2 -
+          4 * coordinateWronskian Q B i * coordinateWronskian P A i) ≤ 0 ↔
+      eval x (coordinateWronskian P B i - coordinateWronskian Q A i) ^ 2 ≤
+        4 * eval x (coordinateWronskian P Q i) *
+          eval x (coordinateWronskian A B i) := by
+  rw [coordinateWronskian_quadratic_discriminant]
+  simp only [eval_sub, eval_pow, eval_mul, map_ofNat]
+  constructor <;> intro h <;> linarith
+
 /-- At the adjoined coordinate, a fresh right factor exposes the exact
 coordinate-reduced remainder of the left argument. -/
 theorem coordinateWronskian_X_mul_right_self

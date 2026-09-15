@@ -37,4 +37,25 @@ theorem forall_eval_iff_forall_eval_update_update_of_notMem_vars
   simp only [eval_update_eq_of_notMem_vars hi,
     eval_update_eq_of_notMem_vars hj]
 
+/-- A universal condition on evaluations is unchanged by an injective
+variable renaming. -/
+theorem forall_eval_rename_iff
+    {R σ τ : Type*} [CommSemiring R]
+    (f : σ → τ) (hf : Function.Injective f) (P : MvPolynomial σ R)
+    (q : R → Prop) :
+    (∀ y : τ → R, q (eval y (rename f P))) ↔
+      ∀ x : σ → R, q (eval x P) := by
+  constructor
+  · intro h x
+    let y : τ → R := Function.extend f x (fun _ => 0)
+    have hy := h y
+    rw [eval_rename] at hy
+    have hext : y ∘ f = x := by
+      funext i
+      exact hf.extend_apply x (fun _ => 0) i
+    rwa [hext] at hy
+  · intro h y
+    rw [eval_rename]
+    exact h (y ∘ f)
+
 end MvPolynomial
