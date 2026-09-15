@@ -626,6 +626,7 @@ import RealRooted.MaWang.Weak.Successor
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct
 import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
+import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
@@ -1206,6 +1207,7 @@ import RealRooted.Applications.OEIS.A144438.ExactLayer
 import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.BottomTotal
 import RealRooted.Applications.OEIS.A144438.TotalBridge
+import RealRooted.Applications.OEIS.A144438.DiagonalBridge
 import RealRooted.Applications.OEIS.A144438.DecorationOrbit
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.Applications.OEIS.A144438.FiberStability
