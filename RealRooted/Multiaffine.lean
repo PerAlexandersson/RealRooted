@@ -527,6 +527,17 @@ theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hi)
     simpa [hpzero] using hq i
 
+/-- Multiplication by a fresh variable preserves multiaffineness. -/
+theorem X_mul_of_notMem_vars [Nontrivial R] {p : MvPolynomial σ R}
+    (hp : IsMultiaffine p) {i : σ} (hi : i ∉ p.vars) :
+    IsMultiaffine (MvPolynomial.X i * p) := by
+  apply (IsMultiaffine.X i).mul_of_disjoint_vars hp
+  rw [Finset.disjoint_left]
+  intro j hjX hjp
+  have hji : j = i := by simpa using hjX
+  subst j
+  exact hi hjp
+
 theorem prod_X [Nontrivial R] (s : Finset σ) :
     IsMultiaffine (∏ i ∈ s, (MvPolynomial.X i : MvPolynomial σ R)) := by
   classical

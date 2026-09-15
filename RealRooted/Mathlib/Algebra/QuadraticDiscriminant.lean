@@ -38,6 +38,20 @@ theorem quadratic_nonneg_of_pos_of_discrim_nonpos
   have hsquare := sq_nonneg (2 * a * x + b)
   nlinarith
 
+/-- A quadratic with nonnegative leading and constant coefficients and
+nonpositive discriminant is nonnegative on the whole ordered field. -/
+theorem quadratic_nonneg_of_nonneg_of_discrim_nonpos
+    {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+    {a b c : K} (ha : 0 ≤ a) (hc : 0 ≤ c)
+    (hdisc : discrim a b c ≤ 0) (x : K) :
+    0 ≤ a * (x * x) + b * x + c := by
+  rcases ha.eq_or_lt with ha | ha
+  · subst a
+    rw [discrim] at hdisc
+    have hb : b = 0 := by nlinarith [sq_nonneg b]
+    simp [hb, hc]
+  · exact quadratic_nonneg_of_pos_of_discrim_nonpos ha hdisc x
+
 /-- A quadratic with positive leading coefficient and negative discriminant
 is positive on the whole ordered field. -/
 theorem quadratic_pos_of_pos_of_discrim_neg

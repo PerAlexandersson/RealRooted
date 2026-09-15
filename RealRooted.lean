@@ -810,6 +810,7 @@ import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
+import RealRooted.Multiaffine.AffineCoordinateExtension
 import RealRooted.Multiaffine.AffineLineRestriction
 import RealRooted.Multiaffine.Rayleigh
 import RealRooted.Multiaffine.TwoCoordinateSlice
