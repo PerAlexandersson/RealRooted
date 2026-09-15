@@ -1233,6 +1233,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotal
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineObstruction
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction

@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -581,6 +581,34 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreRows
   rw [decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
     n hstable hcompanion,
     eval_coordinateWronskian_companionCore_companion_succ_nonneg_iff]
+
+/-- The exact successor-data criterion can equivalently replace its finite
+successor core rows by their leading, constant, and discriminant conditions. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreQuadraticData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n)) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSlope n)
+          (decoBottomTotalWronskianCompanion n) i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        DecoBottomTotalCompanionSuccessorCoreQuadraticData n) ∧
+      ∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_successorCoreRows
+    n hstable hcompanion,
+    eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff]
 
 /-- Compensation form of the exact next-data criterion under preceding-rank
 stability.  The first condition uses precisely the nonnegative margin already

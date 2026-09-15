@@ -40,6 +40,28 @@ theorem coordinateWronskian_eq_zero_of_notMem_vars
     pderiv_eq_zero_of_notMem_vars hiQ]
   ring
 
+/-- A variable absent from both inputs is absent from their coordinate
+Wronskian, regardless of the coordinate in which it is taken. -/
+theorem notMem_vars_coordinateWronskian_of_notMem_vars
+    {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R} {k : σ}
+    (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars) (i : σ) :
+    k ∉ (coordinateWronskian P Q i).vars := by
+  classical
+  have hkPi : k ∉ (pderiv i P).vars :=
+    fun h => hkP (vars_pderiv_subset P i h)
+  have hkQi : k ∉ (pderiv i Q).vars :=
+    fun h => hkQ (vars_pderiv_subset Q i h)
+  intro h
+  unfold coordinateWronskian at h
+  rcases Finset.mem_union.mp
+      (vars_sub_subset
+        (p := P * pderiv i Q) (q := pderiv i P * Q) h) with
+    hleft | hright
+  · exact (Finset.mem_union.mp (vars_mul P (pderiv i Q) hleft)).elim
+      hkP hkQi
+  · exact (Finset.mem_union.mp (vars_mul (pderiv i P) Q hright)).elim
+      hkPi hkQ
+
 /-- When both inputs are supported on `s`, global coordinate-Wronskian
 nonnegativity is equivalent to checking only the coordinates in `s`. -/
 theorem eval_coordinateWronskian_nonneg_iff_finset
@@ -144,6 +166,25 @@ theorem coordinateWronskian_X_mul_right
   · simp only [coordinateWronskian, pderiv_mul,
       pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, if_neg hik]
     ring
+
+/-- Away from the adjoined coordinate, the coordinate Wronskian of two
+affine extensions is a quadratic whose coefficients are the four endpoint
+Wronskians. -/
+theorem coordinateWronskian_add_X_mul_add_X_mul_of_ne
+    {R σ : Type*} [CommRing R]
+    (P Q A B : MvPolynomial σ R) (i k : σ) (hik : i ≠ k) :
+    coordinateWronskian (P + X k * Q) (A + X k * B) i =
+      coordinateWronskian P A i +
+        X k * (coordinateWronskian P B i +
+          coordinateWronskian Q A i) +
+        X k ^ 2 * coordinateWronskian Q B i := by
+  classical
+  rw [coordinateWronskian_add_left, coordinateWronskian_add_right,
+    coordinateWronskian_add_right, coordinateWronskian_X_mul_right,
+    coordinateWronskian_X_mul_left, coordinateWronskian_X_mul_left,
+    coordinateWronskian_X_mul_right]
+  simp only [if_neg hik]
+  ring
 
 /-- At the adjoined coordinate, a fresh right factor exposes the exact
 coordinate-reduced remainder of the left argument. -/
