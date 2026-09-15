@@ -193,48 +193,50 @@ theorem eval_coordinateWronskian_companionCore_companion_succ_nonneg_iff
       ∀ i : Fin (n + 1), ∀ x,
         0 ≤ MvPolynomial.eval x
           (decoBottomTotalCompanionSuccessorCoreRow n i) := by
+  have hCore : (decoBottomTotalCompanionCore (n + 1)).vars ⊆
+      Finset.Icc 1 (n + 2) := by
+    intro k hk
+    have hbounds :=
+      vars_decoBottomTotalCompanionCore_subset_Icc (n + 1) hk
+    rw [Finset.mem_Icc] at hbounds ⊢
+    constructor <;> lia
+  have hCompanion : (decoBottomTotalWronskianCompanion (n + 1)).vars ⊆
+      Finset.Icc 1 (n + 2) := by
+    intro k hk
+    have hbounds :=
+      vars_decoBottomTotalWronskianCompanion_subset_Icc (n + 1) hk
+    rw [Finset.mem_Icc] at hbounds ⊢
+    constructor <;> lia
+  rw [MvPolynomial.eval_coordinateWronskian_nonneg_iff_finset
+    _ _ (Finset.Icc 1 (n + 2)) hCore hCompanion]
   constructor
   · intro h
-    refine ⟨h 1, ?_⟩
+    refine ⟨h 1 (Finset.mem_Icc.mpr ⟨le_rfl, by lia⟩), ?_⟩
     intro i x
     let y : Nat → Real
       | 0 => 0
       | k + 1 => x k
-    have hrow := h (i + 2 : Nat) y
+    have hi : (i + 2 : Nat) ∈ Finset.Icc 1 (n + 2) := by
+      rw [Finset.mem_Icc]
+      constructor
+      · lia
+      · exact Nat.add_le_add_right i.isLt 1
+    have hrow := h (i + 2 : Nat) hi y
     rw [eval_coordinateWronskian_companionCore_companion_succ_fin] at hrow
     simpa [y] using hrow
-  · rintro ⟨hone, hrows⟩ k x
-    by_cases hk : k ∈ Finset.Icc 1 (n + 2)
-    · rw [Finset.mem_Icc] at hk
-      by_cases hk1 : k = 1
-      · subst k
-        exact hone x
-      · have hk2 : 2 ≤ k := by lia
-        let i : Fin (n + 1) := ⟨k - 2, by lia⟩
-        have hik : (i + 2 : Nat) = k := by
-          simp only [i]
-          lia
-        rw [← hik,
-          eval_coordinateWronskian_companionCore_companion_succ_fin]
-        exact hrows i (fun j => x (j + 1))
-    · have hkCore :
-          k ∉ (decoBottomTotalCompanionCore (n + 1)).vars := by
-        intro hkVars
-        apply hk
-        have hbounds :=
-          vars_decoBottomTotalCompanionCore_subset_Icc (n + 1) hkVars
-        rw [Finset.mem_Icc] at hbounds ⊢
-        constructor <;> lia
-      have hkCompanion :
-          k ∉ (decoBottomTotalWronskianCompanion (n + 1)).vars := by
-        intro hkVars
-        apply hk
-        have hbounds :=
-          vars_decoBottomTotalWronskianCompanion_subset_Icc (n + 1) hkVars
-        rw [Finset.mem_Icc] at hbounds ⊢
-        constructor <;> lia
-      rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
-        hkCore hkCompanion, map_zero]
+  · rintro ⟨hone, hrows⟩ k hk x
+    rw [Finset.mem_Icc] at hk
+    by_cases hk1 : k = 1
+    · subst k
+      exact hone x
+    · have hk2 : 2 ≤ k := by lia
+      let i : Fin (n + 1) := ⟨k - 2, by lia⟩
+      have hik : (i + 2 : Nat) = k := by
+        simp only [i]
+        lia
+      rw [← hik,
+        eval_coordinateWronskian_companionCore_companion_succ_fin]
+      exact hrows i (fun j => x (j + 1))
 
 /-- Evaluation of the shifted successor core/companion Wronskian uses the
 shifted assignment and the unshifted extensions. -/

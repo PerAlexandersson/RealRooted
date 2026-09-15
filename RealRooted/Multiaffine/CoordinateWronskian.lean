@@ -40,6 +40,25 @@ theorem coordinateWronskian_eq_zero_of_notMem_vars
     pderiv_eq_zero_of_notMem_vars hiQ]
   ring
 
+/-- When both inputs are supported on `s`, global coordinate-Wronskian
+nonnegativity is equivalent to checking only the coordinates in `s`. -/
+theorem eval_coordinateWronskian_nonneg_iff_finset
+    {R σ : Type*} [CommRing R] [Preorder R]
+    (P Q : MvPolynomial σ R) (s : Finset σ)
+    (hP : P.vars ⊆ s) (hQ : Q.vars ⊆ s) :
+    (∀ i x, 0 ≤ eval x (coordinateWronskian P Q i)) ↔
+      ∀ i ∈ s, ∀ x, 0 ≤ eval x (coordinateWronskian P Q i) := by
+  classical
+  constructor
+  · intro h i hi x
+    exact h i x
+  · intro h i x
+    by_cases hi : i ∈ s
+    · exact h i hi x
+    · have hiP : i ∉ P.vars := fun hiVars => hi (hP hiVars)
+      have hiQ : i ∉ Q.vars := fun hiVars => hi (hQ hiVars)
+      rw [coordinateWronskian_eq_zero_of_notMem_vars hiP hiQ, map_zero]
+
 /-- Coordinate Wronskians commute with injective variable renamings. -/
 theorem coordinateWronskian_rename
     {R σ τ : Type*} [CommRing R] (f : σ → τ)
