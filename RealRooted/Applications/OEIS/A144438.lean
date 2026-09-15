@@ -220,20 +220,71 @@ theorem A144438_recurrence (n : ℕ) :
         (C 1 + C ((2 : ℝ) + n) * X) * A144438 (n + 1) + X * A144438 n :=
   decoEulerian_recurrence n
 
+/-- The full recurrence certificate exposed through the algebraic A144438
+facade. -/
+theorem A144438_certificate (n : ℕ) :
+    AffineLagSecondOrderCertificate A144438 n :=
+  decoEulerian_certificate n
+
+/-- The A144438 polynomial at local rank `n` has degree `n`. -/
 theorem A144438_natDegree (n : ℕ) : (A144438 n).natDegree = n :=
   decoEulerian_natDegree n
 
+/-- Every A144438 polynomial is monic. -/
+theorem A144438_monic (n : ℕ) : (A144438 n).Monic :=
+  decoEulerian_monic n
+
+/-- Every A144438 polynomial has nonnegative coefficients. -/
+theorem A144438_hasNonnegCoeffs (n : ℕ) :
+    HasNonnegCoeffs (A144438 n) :=
+  decoEulerian_hasNonnegCoeffs n
+
+/-- Every A144438 polynomial has constant coefficient one. -/
+@[simp]
+theorem A144438_coeff_zero (n : ℕ) : (A144438 n).coeff 0 = 1 :=
+  decoEulerian_coeff_zero n
+
+/-- Coefficients inside the degree support are strictly positive. -/
+theorem A144438_coeff_pos_of_le (n k : ℕ) (hk : k ≤ n) :
+    0 < (A144438 n).coeff k :=
+  decoEulerian_coeff_pos_of_le n k hk
+
+/-- A coefficient is positive exactly when its index lies in the degree
+support. -/
+theorem A144438_coeff_pos_iff (n k : ℕ) :
+    0 < (A144438 n).coeff k ↔ k ≤ n :=
+  decoEulerian_coeff_pos_iff n k
+
+/-- Every A144438 polynomial is nonzero. -/
 theorem A144438_ne_zero (n : ℕ) : A144438 n ≠ 0 :=
   decoEulerian_ne_zero n
 
+/-- Every A144438 polynomial splits over the reals. -/
 theorem A144438_splits (n : ℕ) : (A144438 n).Splits :=
   decoEulerian_splits n
 
+/-- Consecutive A144438 polynomials are in proper position. -/
 theorem A144438_prec (n : ℕ) : Prec (A144438 n) (A144438 (n + 1)) :=
   decoEulerian_prec n
 
+/-- Consecutive A144438 polynomials interlace. -/
 theorem A144438_interlaces (n : ℕ) :
     Interlaces (A144438 n) (A144438 (n + 1)) :=
   decoEulerian_interlaces n
+
+/-- Consecutive A144438 polynomials have no common real root. -/
+theorem A144438_noCommonRoot (n : ℕ) (r : ℝ)
+    (hr : (A144438 (n + 1)).IsRoot r) :
+    ¬ (A144438 n).IsRoot r :=
+  decoEulerian_noCommonRoot n r hr
+
+/-- Every real root of an A144438 polynomial is strictly negative. -/
+theorem A144438_root_neg (n : ℕ) {r : ℝ}
+    (hr : (A144438 n).IsRoot r) : r < 0 :=
+  decoEulerian_root_neg n hr
+
+/-- Every A144438 polynomial has simple roots. -/
+theorem A144438_hasSimpleRoots (n : ℕ) : HasSimpleRoots (A144438 n) :=
+  decoEulerian_hasSimpleRoots n
 
 end RealRooted.Applications.OEIS

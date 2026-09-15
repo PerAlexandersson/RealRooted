@@ -180,7 +180,7 @@ theorem diagonal_admissibleCodePolynomial_root_neg (n : Nat) {r : Real}
       (admissibleCodePolynomial (R := Real) (n + 2))).IsRoot r) :
     r < 0 := by
   rw [diagonal_admissibleCodePolynomial_eq_A144438] at hr
-  exact decoEulerian_root_neg n hr
+  exact A144438_root_neg n hr
 
 /-- Every root of a diagonalized normalized-fiber enumerator is strictly
 negative. -/
@@ -189,7 +189,7 @@ theorem diagonal_normalizedFiberPolynomial_root_neg (n : Nat) {r : Real}
       (normalizedFiberPolynomial (R := Real) (n + 2))).IsRoot r) :
     r < 0 := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438] at hr
-  exact decoEulerian_root_neg n hr
+  exact A144438_root_neg n hr
 
 /-- Every diagonalized admissible-code enumerator has simple roots. -/
 theorem diagonal_admissibleCodePolynomial_hasSimpleRoots (n : Nat) :
@@ -197,7 +197,7 @@ theorem diagonal_admissibleCodePolynomial_hasSimpleRoots (n : Nat) :
       (MvPolynomial.diagonal
         (admissibleCodePolynomial (R := Real) (n + 2))) := by
   rw [diagonal_admissibleCodePolynomial_eq_A144438]
-  exact decoEulerian_hasSimpleRoots n
+  exact A144438_hasSimpleRoots n
 
 /-- Every diagonalized normalized-fiber enumerator has simple roots. -/
 theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
@@ -205,7 +205,7 @@ theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
       (MvPolynomial.diagonal
         (normalizedFiberPolynomial (R := Real) (n + 2))) := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
-  exact decoEulerian_hasSimpleRoots n
+  exact A144438_hasSimpleRoots n
 
 end
 

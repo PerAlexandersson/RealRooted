@@ -30,7 +30,8 @@ theorem decoEulerian_isPFPolynomial (n : Nat) :
 /-- The algebraic A144438 facade is Pólya-frequency at every rank. -/
 theorem A144438_isPFPolynomial (n : Nat) :
     IsPFPolynomial (A144438 n) :=
-  decoEulerian_isPFPolynomial n
+  IsPFPolynomial.of_realRooted_nonneg
+    (A144438_hasNonnegCoeffs n) (A144438_splits n)
 
 end
 
