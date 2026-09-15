@@ -31,6 +31,15 @@ theorem coordinateWronskian_swap {R σ : Type*} [CommRing R]
   simp only [coordinateWronskian]
   ring
 
+/-- A coordinate absent from both inputs has zero coordinate Wronskian. -/
+theorem coordinateWronskian_eq_zero_of_notMem_vars
+    {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R} {i : σ}
+    (hiP : i ∉ P.vars) (hiQ : i ∉ Q.vars) :
+    coordinateWronskian P Q i = 0 := by
+  rw [coordinateWronskian, pderiv_eq_zero_of_notMem_vars hiP,
+    pderiv_eq_zero_of_notMem_vars hiQ]
+  ring
+
 /-- Coordinate Wronskians commute with injective variable renamings. -/
 theorem coordinateWronskian_rename
     {R σ τ : Type*} [CommRing R] (f : σ → τ)

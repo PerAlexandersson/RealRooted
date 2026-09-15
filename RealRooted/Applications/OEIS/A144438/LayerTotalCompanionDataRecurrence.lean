@@ -62,6 +62,32 @@ theorem decoBottomTotalCompanionWronskianCorrection_of_ne_one
   unfold decoBottomTotalCompanionWronskianCorrection
   simp only [if_neg hi, add_zero]
 
+/-- The correction vanishes outside the ordinary support interval of the
+latest total and companion. -/
+theorem decoBottomTotalCompanionWronskianCorrection_eq_zero_of_notMem_Icc
+    (n i : Nat) (hi : i ∉ Finset.Icc 1 (n + 1)) :
+    decoBottomTotalCompanionWronskianCorrection n i = 0 := by
+  have hi1 : i ≠ 1 := by
+    intro hiEq
+    subst i
+    exact hi (Finset.mem_Icc.mpr ⟨le_rfl, by lia⟩)
+  rw [decoBottomTotalCompanionWronskianCorrection_of_ne_one n i hi1]
+  have hiTotal : i ∉ (decoBottomTotal (n + 1)).vars := by
+    intro hiVars
+    exact hi (vars_decoBottomTotal_subset_Icc (n + 1) hiVars)
+  have hiRename : i ∉ (MvPolynomial.rename (fun j : Nat => j + 1)
+      (decoBottomTotal n)).vars := by
+    intro hiVars
+    obtain ⟨j, hj, hji⟩ := MvPolynomial.mem_vars_rename
+      (fun j : Nat => j + 1) (decoBottomTotal n) hiVars
+    have hjBounds := vars_decoBottomTotal_subset_Icc n hj
+    rw [Finset.mem_Icc] at hjBounds
+    apply hi
+    rw [Finset.mem_Icc, ← hji]
+    constructor <;> lia
+  rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
+    hiTotal hiRename, mul_zero]
+
 /-- At positive recurrence rank, the coordinate-`1` correction is the shift
 of the product of the latest total and the preceding companion. -/
 theorem decoBottomTotalCompanionWronskianCorrection_succ_one (n : Nat) :
@@ -130,6 +156,43 @@ theorem eval_coordinateWronskian_companionSlope_companion_nonneg_iff_compensatio
   · rw [coordinateWronskian_companionSlope_companion_eq_core_add_correction,
       map_add]
     linarith [h i x]
+
+/-- The compensation obligation only needs the finite ordinary support
+interval `1, ..., n + 1`; every other coordinate gives `0 ≤ 0`. -/
+theorem eval_companionWronskian_compensation_iff_Icc (n : Nat) :
+    (∀ i x,
+      -MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalCompanionCore n)
+            (decoBottomTotalWronskianCompanion n) i) ≤
+        MvPolynomial.eval x
+          (decoBottomTotalCompanionWronskianCorrection n i)) ↔
+      ∀ i ∈ Finset.Icc 1 (n + 1), ∀ x,
+        -MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionCore n)
+              (decoBottomTotalWronskianCompanion n) i) ≤
+          MvPolynomial.eval x
+            (decoBottomTotalCompanionWronskianCorrection n i) := by
+  constructor
+  · intro h i hi x
+    exact h i x
+  · intro h i x
+    by_cases hi : i ∈ Finset.Icc 1 (n + 1)
+    · exact h i hi x
+    · have hiCore : i ∉ (decoBottomTotalCompanionCore n).vars := by
+        intro hiVars
+        exact hi (vars_decoBottomTotalCompanionCore_subset_Icc n hiVars)
+      have hiCompanion :
+          i ∉ (decoBottomTotalWronskianCompanion n).vars := by
+        intro hiVars
+        exact hi
+          (vars_decoBottomTotalWronskianCompanion_subset_Icc n hiVars)
+      rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
+        hiCore hiCompanion,
+        decoBottomTotalCompanionWronskianCorrection_eq_zero_of_notMem_Icc
+          n i hi]
+      simp
 
 /-- Given Rayleighness of the current companion, the next companion data is
 equivalent to the slope endpoint, the affine-extension Wronskians and
