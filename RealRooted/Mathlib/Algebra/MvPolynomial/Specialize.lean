@@ -108,6 +108,23 @@ theorem map_specializeAt {σ R S : Type*} [CommSemiring R] [CommSemiring S]
   | mul_X P j hP =>
       by_cases hji : j = i <;> simp [hji, hP]
 
+/-- Scalar specialization commutes with an injective renaming of variables. -/
+theorem specializeAt_rename {σ τ R : Type*} [CommSemiring R]
+    (f : σ → τ) (hf : Function.Injective f) (i : σ) (c : R)
+    (P : MvPolynomial σ R) :
+    specializeAt (f i) c (rename f P) =
+      rename f (specializeAt i c P) := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C r => simp
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P j hP =>
+      by_cases hji : j = i
+      · subst j
+        simp [hP]
+      · have hfji : f j ≠ f i := fun h => hji (hf h)
+        simp [hP, hji, hfji]
+
 /-- Specialize the coordinates in an ordered list at values supplied by `c`.
 Repeated coordinates are allowed and are processed in list order. -/
 noncomputable def specializeAtList {σ R : Type*} [CommSemiring R]

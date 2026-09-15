@@ -161,6 +161,22 @@ theorem pderiv_one_decoBottomTotalWronskianCompanion (n : Nat) :
       (one_notMem_vars_rename_succ_decoBottomTotal n)]
   ring
 
+/-- The value-one section of the companion is the corresponding section of
+the latest total plus the shifted preceding total. -/
+theorem specializeAt_one_decoBottomTotalWronskianCompanion (n : Nat) :
+    MvPolynomial.specializeAt 1 1
+        (decoBottomTotalWronskianCompanion n) =
+      MvPolynomial.specializeAt 1 1 (decoBottomTotal (n + 1)) +
+        MvPolynomial.rename (fun i : Nat => i + 1)
+          (decoBottomTotal n) := by
+  rw [MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
+      (decoBottomTotalWronskianCompanion_isMultiaffine n) 1,
+    MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
+      (decoBottomTotal_isMultiaffine (n + 1)) 1,
+    specializeZero_one_decoBottomTotalWronskianCompanion,
+    pderiv_one_decoBottomTotalWronskianCompanion]
+  ring
+
 /-- Zero-specializing the companion slope distributes over its two summands. -/
 theorem specializeZero_one_decoBottomTotalCompanionSlope (n : Nat) :
     MvPolynomial.specializeZero 1 (decoBottomTotalCompanionSlope n) =
@@ -247,6 +263,36 @@ theorem decoBottomTotalWronskianCompanion_succ_eq_rename_extension (n : Nat) :
     decoBottomTotalWronskianCompanion
   simp only [map_add, map_mul, MvPolynomial.rename_X, hrename]
   ring
+
+/-- Every noninitial value-one section of the next companion is the shifted
+section of its unshifted affine extension. -/
+theorem specializeAt_one_decoBottomTotalWronskianCompanion_succ_add_two
+    (n i : Nat) :
+    MvPolynomial.specializeAt (i + 2) 1
+        (decoBottomTotalWronskianCompanion (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.specializeAt (i + 1) 1
+          (decoBottomTotalCompanionSuccessorExtension n)) := by
+  rw [decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  simpa only [Nat.add_assoc] using
+    MvPolynomial.specializeAt_rename (fun j : Nat => j + 1)
+      (by intro j k h; lia) (i + 1) 1
+        (decoBottomTotalCompanionSuccessorExtension n)
+
+/-- Every noninitial derivative of the next companion is the shifted
+derivative of its unshifted affine extension. -/
+theorem pderiv_decoBottomTotalWronskianCompanion_succ_add_two
+    (n i : Nat) :
+    MvPolynomial.pderiv (i + 2)
+        (decoBottomTotalWronskianCompanion (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.pderiv (i + 1)
+          (decoBottomTotalCompanionSuccessorExtension n)) := by
+  rw [decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  simpa only [Nat.add_assoc] using
+    MvPolynomial.pderiv_rename (R := Real)
+      (f := fun j : Nat => j + 1) (by intro j k h; lia) (i + 1)
+        (decoBottomTotalCompanionSuccessorExtension n)
 
 /-- Rayleighness of the next bottom total is exactly Rayleighness of its
 unshifted companion/core affine extension. -/

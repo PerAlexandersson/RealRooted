@@ -219,6 +219,26 @@ theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_endpoint_remainder
       (Fin.valEmbedding : Fin (n + 2) → Nat) i.succ]
   simp only [Fin.valEmbedding_apply, Fin.val_succ]
 
+/-- The constant row coefficient uses the canonical value-one section of the
+companion, its derivative, the off-row remainder, and the current data
+Wronskian. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_specializeAt_one_remainder
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowConstant n i =
+      (MvPolynomial.specializeAt (i + 1 : Nat) 1
+          (decoBottomTotalWronskianCompanion n) *
+        MvPolynomial.pderiv (i + 1 : Nat)
+          (decoBottomTotalWronskianCompanion n) +
+        MvPolynomial.affineEulerRayleighRemainder
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalWronskianCompanion n) i.succ) +
+      MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionCore n)
+        (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowConstant_eq_endpoint_remainder,
+    MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
+      (decoBottomTotalWronskianCompanion_isMultiaffine n) (i + 1 : Nat)]
+
 /-- The quadratic row coefficient is its mixed endpoint Wronskian plus the
 core value-one endpoint product and off-row affine-Euler remainder. -/
 theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_endpoint_remainder
@@ -243,6 +263,28 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_endpoint_remainder
       (decoBottomTotalCompanionCore_isMultiaffine n)
       (Fin.valEmbedding : Fin (n + 2) → Nat) i.succ]
   simp only [Fin.valEmbedding_apply, Fin.val_succ]
+
+/-- The quadratic row coefficient uses the canonical value-one section of the
+companion core, its derivative, the off-row remainder, and the mixed
+core/latest-total Wronskian. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_specializeAt_one_remainder
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic n i =
+      MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 2 : Real)
+            (decoBottomTotalCompanionCore n))
+          (decoBottomTotal (n + 1)) (i + 1 : Nat) +
+        (MvPolynomial.specializeAt (i + 1 : Nat) 1
+            (decoBottomTotalCompanionCore n) *
+          MvPolynomial.pderiv (i + 1 : Nat)
+            (decoBottomTotalCompanionCore n) +
+          MvPolynomial.affineEulerRayleighRemainder
+            (Fin.valEmbedding : Fin (n + 2) → Nat)
+            (decoBottomTotalCompanionCore n) i.succ) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_endpoint_remainder,
+    MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
+      (decoBottomTotalCompanionCore_isMultiaffine n) (i + 1 : Nat)]
 
 /-- Each successor core row is exactly quadratic in the remaining fresh
 coordinate, with the three named endpoint-Wronskian coefficients. -/
