@@ -128,6 +128,61 @@ theorem decoLayerTotal_two_mvRealStable :
   exact (MvRealStable.X none).mul
     decoLayerTotalTwoPencil_mvRealStable
 
+/-- The pencil that independently weights the normal and exceptional branches
+of the total recurrence.  Specializing its last coordinate to one recovers
+the next total. -/
+def decoLayerTotalBranchPencil (n : Nat) :
+    MvPolynomial (Sum (DecoLayerCoord (n + 2)) Unit) Real :=
+  mvPencil
+    (decoNormalLayerStep (decoLayerTotal (n + 1)))
+    (decoExceptionalLayerStep (decoLayerTotal n))
+
+/-- Setting the branch selector to one recovers the next total recurrence
+step. -/
+@[simp] theorem eval_decoLayerTotalBranchPencil_one (n : Nat)
+    (z : DecoLayerCoord (n + 2) → Real) :
+    MvPolynomial.eval (Sum.elim z fun _ => 1)
+        (decoLayerTotalBranchPencil n) =
+      MvPolynomial.eval z (decoLayerTotal (n + 2)) := by
+  rw [decoLayerTotalBranchPencil, eval_mvPencil,
+    decoLayerTotal_recurrence, map_add]
+  ring
+
+/-- Independent positive weighting of the two recurrence branches is not a
+valid general stability mechanism: the branch pencil already fails at the
+first exceptional step.  The checked witness uses upper-half-plane values
+`s = u₁ = i`, `u₂ = -3 + i/4`, and selector
+`-306/145 + (192/145)i`. -/
+theorem decoLayerTotalBranchPencil_zero_not_mvRealStable :
+    ¬ MvRealStable (decoLayerTotalBranchPencil 0) := by
+  have hdefault : (default : DecoLayerCoord 0) = none := rfl
+  have hsome : (some 0 : DecoLayerCoord 1) ≠ none := by simp
+  have hnone : (none : DecoLayerCoord 1) ≠ some 0 := by simp
+  let z : DecoLayerCoord 2 → Complex
+    | none => Complex.I
+    | some i => if i = 0 then Complex.I else -3 + Complex.I / 4
+  let selector : Complex := -306 / 145 + (192 / 145) * Complex.I
+  let point : Sum (DecoLayerCoord 2) Unit → Complex :=
+    Sum.elim z fun _ => selector
+  intro hstable
+  apply hstable point
+  · intro i
+    cases i with
+    | inl i =>
+        cases i with
+        | none => norm_num [point, z]
+        | some i => fin_cases i <;> norm_num [point, z]
+    | inr i =>
+        cases i
+        norm_num [point, selector]
+  · norm_num [point, z, selector, decoLayerTotalBranchPencil, mvPencil,
+      MvRealStable, complexifyMv, decoLayerTotal, decoNormalLayerStep,
+      decoExceptionalLayerStep, decoNormalRename, decoExceptionalRename,
+      directionalPDeriv, Fin.sum_univ_succ, MvPolynomial.map_rename,
+      MvPolynomial.eval_rename, MvPolynomial.eval_map, Pi.single_apply,
+      hdefault, hsome, hnone]
+    apply Complex.ext <;> norm_num
+
 end
 
 end RealRooted.Applications.OEIS
