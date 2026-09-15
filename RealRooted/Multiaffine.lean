@@ -12,6 +12,16 @@ multiaffine Lieb--Sokal theorem.
 
 open BigOperators
 
+namespace RealRooted
+
+/-- The weighted sum of all partial derivatives. -/
+noncomputable def directionalPDeriv
+    {σ R : Type*} [Fintype σ] [CommSemiring R]
+    (c : σ → R) (P : MvPolynomial σ R) : MvPolynomial σ R :=
+  ∑ i : σ, MvPolynomial.C (c i) * MvPolynomial.pderiv i P
+
+end RealRooted
+
 namespace MvPolynomial
 
 /-- A multivariate polynomial has degree at most one in every variable. -/

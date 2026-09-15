@@ -142,11 +142,6 @@ theorem MvUpperHalfPlaneStable.eval_pderiv_div_eval_im_nonpos
     eval_affineLineRestriction_coordinate] at hratio
   simpa using hratio
 
-/-- The weighted sum of all partial derivatives. -/
-noncomputable def directionalPDeriv {σ R : Type*} [Fintype σ] [CommSemiring R]
-    (c : σ → R) (P : MvPolynomial σ R) : MvPolynomial σ R :=
-  ∑ i : σ, MvPolynomial.C (c i) * MvPolynomial.pderiv i P
-
 /-- Adjoining a fresh variable times a nonnegative real directional derivative
 preserves upper-half-plane stability. -/
 theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil
