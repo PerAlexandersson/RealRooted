@@ -322,6 +322,22 @@ theorem pderiv_decoBottomTotalWronskianCompanion_succ_add_two
       (f := fun j : Nat => j + 1) (by intro j k h; lia) (i + 1)
         (decoBottomTotalCompanionSuccessorExtension n)
 
+/-- Every noninitial value-one-section/derivative product of the next
+companion is the shift of the corresponding successor-extension product. -/
+theorem specializeAt_one_mul_pderiv_decoBottomTotalWronskianCompanion_succ_add_two
+    (n i : Nat) :
+    MvPolynomial.specializeAt (i + 2) 1
+          (decoBottomTotalWronskianCompanion (n + 1)) *
+        MvPolynomial.pderiv (i + 2)
+          (decoBottomTotalWronskianCompanion (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.specializeAt (i + 1) 1
+            (decoBottomTotalCompanionSuccessorExtension n) *
+          MvPolynomial.pderiv (i + 1)
+            (decoBottomTotalCompanionSuccessorExtension n)) := by
+  rw [specializeAt_one_decoBottomTotalWronskianCompanion_succ_add_two,
+    pderiv_decoBottomTotalWronskianCompanion_succ_add_two, map_mul]
+
 /-- Rayleighness of the next bottom total is exactly Rayleighness of its
 unshifted companion/core affine extension. -/
 theorem decoBottomTotal_add_two_isRayleigh_iff_companionTotalExtension

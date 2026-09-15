@@ -247,6 +247,27 @@ theorem pderiv_decoBottomTotalCompanionCore_succ_fin
   simpa only [Fin.val_succ] using
     pderiv_decoBottomTotalCompanionExtensionCore n i.succ
 
+/-- At each occupied noninitial coordinate, the endpoint factor of the next
+companion core is the shift of the product of the corresponding affine Euler
+section and derivative cores. -/
+theorem specializeAt_one_mul_pderiv_decoBottomTotalCompanionCore_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.specializeAt (i + 2 : Nat) 1
+          (decoBottomTotalCompanionCore (n + 1)) *
+        MvPolynomial.pderiv (i + 2 : Nat)
+          (decoBottomTotalCompanionCore (n + 1)) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+            (MvPolynomial.specializeAt (i + 1 : Nat) 1
+              (decoBottomTotalCompanionTotalExtension n)) *
+          MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+            (MvPolynomial.pderiv (i + 1 : Nat)
+              (decoBottomTotalCompanionTotalExtension n))) := by
+  rw [specializeAt_one_decoBottomTotalCompanionCore_succ_fin,
+    pderiv_decoBottomTotalCompanionCore_succ_fin, map_mul]
+
 /-- Every coordinate-`i + 2` Wronskian of the next core and companion is the
 shift of the corresponding unshifted successor-extension Wronskian. -/
 theorem coordinateWronskian_companionCore_companion_succ_add_two

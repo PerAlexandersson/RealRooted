@@ -203,6 +203,20 @@ theorem pderiv_affineEulerCore
     eq_comm, Finset.sum_add_distrib]
   ring
 
+/-- The value-one-section/derivative product of an affine Euler core is the
+product of the corresponding affine Euler cores of the source section and
+source derivative. -/
+theorem specializeAt_one_mul_pderiv_affineEulerCore
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (he : Function.Injective e) (c : R)
+    (P : MvPolynomial σ R) (i : ι) :
+    specializeAt (e i) 1 (affineEulerCore e c P) *
+        pderiv (e i) (affineEulerCore e c P) =
+      affineEulerCore e c (specializeAt (e i) 1 P) *
+        affineEulerCore e (c - 1) (pderiv (e i) P) := by
+  rw [specializeAt_one_affineEulerCore e he c P i,
+    pderiv_affineEulerCore e he c P i]
+
 /-- The Wronskian of an affine Euler core against its source is the source
 derivative plus an affine-weighted row of Rayleigh differences. -/
 theorem coordinateWronskian_affineEulerCore
