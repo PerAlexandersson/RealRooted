@@ -159,6 +159,25 @@ theorem eval_affineWronskian_compensation_iff_companion (n : Nat) :
   (eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).symm.trans
     (eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion n)
 
+/-- Under preceding-rank stability, Rayleighness of the next total is exactly
+the companion endpoint, companion Wronskian, and old-coordinate discriminant
+package. The slope endpoint has already been discharged by stability. -/
+theorem decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) ↔
+      MvPolynomial.IsRayleigh (decoBottomTotalWronskianCompanion n) ∧
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
+          (decoBottomTotalWronskianCompanion n) i)) ∧
+      (∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) := by
+  rw [decoBottomTotal_add_two_isRayleigh_iff_affine,
+    decoBottomTotalAffineBase_isRayleigh_iff_companion,
+    eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion]
+  simp only [decoBottomTotalAffineSlope_isRayleigh n hstable, true_and]
+
 /-- Preceding-rank stability discharges the slope endpoint and normal
 Wronskians in the affine Rayleigh criterion. The remaining assumptions are
 exactly stability compatibility of the summed base, quantitative compensation
@@ -199,10 +218,8 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine_companion
       (MvPolynomial.affineRayleighDiscriminant
         (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
     MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
-  exact decoBottomTotal_add_two_isRayleigh_of_stable_affine n hstable
-    ((decoBottomTotalAffineBase_isRayleigh_iff_companion n).mpr hbase)
-    ((eval_affineWronskian_compensation_iff_companion n).mpr hcompanion)
-    hdisc
+  exact (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
+    n hstable).2 ⟨hbase, hcompanion, hdisc⟩
 
 end
 

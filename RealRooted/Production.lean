@@ -632,6 +632,7 @@ import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
 import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
 import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
@@ -810,6 +811,7 @@ import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 import RealRooted.MatrixInterlacingClosure
 import RealRooted.Multiaffine
+import RealRooted.Multiaffine.AffineCoordinateCriterion
 import RealRooted.Multiaffine.AffineCoordinateExtension
 import RealRooted.Multiaffine.AffineLineRestriction
 import RealRooted.Multiaffine.CoordinateWronskian

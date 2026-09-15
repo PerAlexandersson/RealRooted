@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-import RealRooted.Multiaffine.AffineCoordinateExtension
+import RealRooted.Multiaffine.AffineCoordinateCriterion
 
 /-!
 # Affine-coordinate recurrence for the Deco layer total
@@ -377,6 +377,25 @@ theorem decoBottomTotalAffineSlope_isMultiaffine (n : Nat) :
   · intro i j h
     lia
 
+/-- The Rayleigh property of one Deco recurrence step is equivalent to its
+exact affine-coordinate endpoint, Wronskian, and discriminant conditions. -/
+theorem decoBottomTotal_add_two_isRayleigh_iff_affine (n : Nat) :
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) ↔
+      MvPolynomial.IsRayleigh (decoBottomTotalAffineBase n) ∧
+      MvPolynomial.IsRayleigh (decoBottomTotalAffineSlope n) ∧
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalAffineSlope n) (decoBottomTotalAffineBase n) i)) ∧
+      (∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) := by
+  rw [decoBottomTotal_recurrence_affine]
+  exact MvPolynomial.isRayleigh_add_X_mul_iff_of_fresh
+    (decoBottomTotalAffineBase_isMultiaffine n)
+    (decoBottomTotalAffineSlope_isMultiaffine n)
+    (one_notMem_vars_decoBottomTotalAffineBase n)
+    (one_notMem_vars_decoBottomTotalAffineSlope n)
+
 /-- One Deco recurrence step is Rayleigh once its exact affine-coordinate
 endpoint, Wronskian, and discriminant conditions are established. -/
 theorem decoBottomTotal_add_two_isRayleigh_of_affine
@@ -389,13 +408,9 @@ theorem decoBottomTotal_add_two_isRayleigh_of_affine
     (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
       (MvPolynomial.affineRayleighDiscriminant
         (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
-    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
-  rw [decoBottomTotal_recurrence_affine]
-  exact hbase.add_X_mul_of_fresh hslope
-    (decoBottomTotalAffineBase_isMultiaffine n)
-    (decoBottomTotalAffineSlope_isMultiaffine n)
-    (one_notMem_vars_decoBottomTotalAffineBase n)
-    (one_notMem_vars_decoBottomTotalAffineSlope n) hcross hdisc
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
+  (decoBottomTotal_add_two_isRayleigh_iff_affine n).2
+    ⟨hbase, hslope, hcross, hdisc⟩
 
 end
 
