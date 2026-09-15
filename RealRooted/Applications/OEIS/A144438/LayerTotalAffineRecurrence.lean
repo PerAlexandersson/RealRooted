@@ -20,10 +20,15 @@ noncomputable section
 def decoBottomTotalAffineNormalBase (n : Nat) : MvPolynomial Nat Real :=
   MvPolynomial.rename (fun i : Nat => i + 1) (decoBottomTotal (n + 1))
 
+/-- The shifted earlier-rank total underlying the exceptional recurrence
+branch. -/
+def decoBottomTotalAffineExceptionalCore (n : Nat) : MvPolynomial Nat Real :=
+  MvPolynomial.rename (fun i : Nat => i + 2) (decoBottomTotal n)
+
 /-- The constant-in-`1` part contributed by the exceptional recurrence
 branch. -/
 def decoBottomTotalAffineExceptionalBase (n : Nat) : MvPolynomial Nat Real :=
-  decoExceptionalBottomStep (decoBottomTotal n)
+  MvPolynomial.X 2 * decoBottomTotalAffineExceptionalCore n
 
 /-- The part of the rank-`n+2` recurrence independent of its new coordinate
 `1`. -/
@@ -113,6 +118,22 @@ theorem coordinateWronskian_affineSlope_base (n i : Nat) :
     MvPolynomial.coordinateWronskian_add_right,
     coordinateWronskian_affineSlope_normalBase]
 
+/-- The exceptional cross Wronskian is affine in the distinguished
+exceptional coordinate `2`. -/
+theorem coordinateWronskian_affineSlope_exceptionalBase (n i : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalAffineSlope n)
+        (decoBottomTotalAffineExceptionalBase n) i =
+      MvPolynomial.X 2 * MvPolynomial.coordinateWronskian
+          (decoBottomTotalAffineSlope n)
+          (decoBottomTotalAffineExceptionalCore n) i +
+        if i = 2 then
+          decoBottomTotalAffineSlope n *
+            decoBottomTotalAffineExceptionalCore n
+        else 0 := by
+  unfold decoBottomTotalAffineExceptionalBase
+  exact MvPolynomial.coordinateWronskian_X_mul_right _ _ i 2
+
 /-- The normal recurrence branch is itself the affine extension formed by the
 normal base and slope. -/
 theorem decoNormalBottomStep_total_eq_affine (n : Nat) :
@@ -131,6 +152,7 @@ theorem decoBottomTotal_recurrence_affine (n : Nat) :
   rw [decoBottomTotal_recurrence]
   simp only [decoNormalBottomStep, decoBottomTotalAffineBase,
     decoBottomTotalAffineNormalBase, decoBottomTotalAffineExceptionalBase,
+    decoBottomTotalAffineExceptionalCore, decoExceptionalBottomStep,
     decoBottomTotalAffineSlope]
   ring
 
@@ -140,7 +162,8 @@ theorem vars_decoBottomTotalAffineBase_subset_Icc (n : Nat) :
   classical
   intro x hx
   unfold decoBottomTotalAffineBase decoBottomTotalAffineNormalBase
-    decoBottomTotalAffineExceptionalBase at hx
+    decoBottomTotalAffineExceptionalBase
+    decoBottomTotalAffineExceptionalCore at hx
   have hxadd := MvPolynomial.vars_add_subset _ _ hx
   rcases Finset.mem_union.mp hxadd with hxnormal | hxexceptional
   · obtain ⟨y, hy, hyx⟩ := MvPolynomial.mem_vars_rename
@@ -149,8 +172,7 @@ theorem vars_decoBottomTotalAffineBase_subset_Icc (n : Nat) :
     rw [Finset.mem_Icc] at hybounds ⊢
     rw [← hyx]
     constructor <;> lia
-  · unfold decoExceptionalBottomStep at hxexceptional
-    have hxmul := MvPolynomial.vars_mul _ _ hxexceptional
+  · have hxmul := MvPolynomial.vars_mul _ _ hxexceptional
     rcases Finset.mem_union.mp hxmul with hxX | hxrename
     · rw [MvPolynomial.vars_X] at hxX
       simp only [Finset.mem_singleton] at hxX
@@ -192,7 +214,8 @@ theorem one_notMem_vars_decoBottomTotalAffineNormalBase (n : Nat) :
 theorem one_notMem_vars_decoBottomTotalAffineExceptionalBase (n : Nat) :
     1 ∉ (decoBottomTotalAffineExceptionalBase n).vars := by
   intro h
-  unfold decoBottomTotalAffineExceptionalBase decoExceptionalBottomStep at h
+  unfold decoBottomTotalAffineExceptionalBase
+    decoBottomTotalAffineExceptionalCore at h
   have hmul := MvPolynomial.vars_mul _ _ h
   rcases Finset.mem_union.mp hmul with hX | hrename
   · rw [MvPolynomial.vars_X] at hX
@@ -200,6 +223,43 @@ theorem one_notMem_vars_decoBottomTotalAffineExceptionalBase (n : Nat) :
   · obtain ⟨i, hi, hone⟩ := MvPolynomial.mem_vars_rename
       (fun i : Nat => i + 2) (decoBottomTotal n) hrename
     lia
+
+/-- The exceptional coordinate `2` is fresh in the shifted earlier-rank
+core. -/
+theorem two_notMem_vars_decoBottomTotalAffineExceptionalCore (n : Nat) :
+    2 ∉ (decoBottomTotalAffineExceptionalCore n).vars := by
+  intro h
+  unfold decoBottomTotalAffineExceptionalCore at h
+  obtain ⟨i, hi, htwo⟩ := MvPolynomial.mem_vars_rename
+    (fun i : Nat => i + 2) (decoBottomTotal n) h
+  have hibounds := vars_decoBottomTotal_subset_Icc n hi
+  rw [Finset.mem_Icc] at hibounds
+  lia
+
+/-- At coordinate `2`, the exceptional cross Wronskian is a product with the
+affine constant part of the slope. -/
+theorem coordinateWronskian_affineSlope_exceptionalBase_two (n : Nat) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalAffineSlope n)
+        (decoBottomTotalAffineExceptionalBase n) 2 =
+      decoBottomTotalAffineExceptionalCore n *
+        (decoBottomTotalAffineSlope n - MvPolynomial.X 2 *
+          MvPolynomial.pderiv 2 (decoBottomTotalAffineSlope n)) := by
+  unfold decoBottomTotalAffineExceptionalBase
+  exact MvPolynomial.coordinateWronskian_X_mul_right_self _
+    (two_notMem_vars_decoBottomTotalAffineExceptionalCore n)
+
+/-- Away from coordinate `2`, the exceptional cross Wronskian factors out
+the exceptional coordinate. -/
+theorem coordinateWronskian_affineSlope_exceptionalBase_of_ne
+    (n i : Nat) (hi : i ≠ 2) :
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalAffineSlope n)
+        (decoBottomTotalAffineExceptionalBase n) i =
+      MvPolynomial.X 2 * MvPolynomial.coordinateWronskian
+        (decoBottomTotalAffineSlope n)
+        (decoBottomTotalAffineExceptionalCore n) i := by
+  rw [coordinateWronskian_affineSlope_exceptionalBase, if_neg hi, add_zero]
 
 /-- The new coordinate does not occur in the affine base. -/
 theorem one_notMem_vars_decoBottomTotalAffineBase (n : Nat) :
@@ -296,7 +356,8 @@ theorem decoBottomTotalAffineExceptionalBase_isMultiaffine (n : Nat) :
     have hibounds := vars_decoBottomTotal_subset_Icc n hi
     rw [Finset.mem_Icc] at hibounds
     lia
-  unfold decoBottomTotalAffineExceptionalBase decoExceptionalBottomStep
+  unfold decoBottomTotalAffineExceptionalBase
+    decoBottomTotalAffineExceptionalCore
   exact hrename.X_mul_of_notMem_vars hfresh
 
 /-- The affine base is multiaffine. -/

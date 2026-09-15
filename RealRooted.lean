@@ -1348,6 +1348,7 @@ import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
 import RealRooted.Applications.OEIS.A144438.ExactLayer
 import RealRooted.Applications.OEIS.A144438.ExactLayerStability
 import RealRooted.Applications.OEIS.A144438.LayerTotal
+import RealRooted.Applications.OEIS.A144438.LayerTotalAffineObstruction
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalStability

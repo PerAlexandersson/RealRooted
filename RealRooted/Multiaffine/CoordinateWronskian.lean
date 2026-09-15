@@ -80,6 +80,37 @@ theorem coordinateWronskian_add_right {R σ : Type*} [CommRing R]
   simp only [coordinateWronskian, map_add]
   ring
 
+/-- Multiplying the right argument by a coordinate gives a coordinate-scaled
+Wronskian plus the derivative of that coordinate. -/
+theorem coordinateWronskian_X_mul_right
+    {R σ : Type*} [CommRing R] [DecidableEq σ]
+    (P Q : MvPolynomial σ R) (i k : σ) :
+    coordinateWronskian P (X k * Q) i =
+      X k * coordinateWronskian P Q i +
+        if i = k then P * Q else 0 := by
+  classical
+  by_cases hik : i = k
+  · subst k
+    simp only [coordinateWronskian, pderiv_mul, pderiv_X_self,
+      one_mul, if_pos]
+    ring
+  · simp only [coordinateWronskian, pderiv_mul,
+      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, if_neg hik]
+    ring
+
+/-- At the adjoined coordinate, a fresh right factor exposes the exact
+coordinate-reduced remainder of the left argument. -/
+theorem coordinateWronskian_X_mul_right_self
+    {R σ : Type*} [CommRing R]
+    (P : MvPolynomial σ R) {Q : MvPolynomial σ R}
+    {k : σ} (hkQ : k ∉ Q.vars) :
+    coordinateWronskian P (X k * Q) k =
+      Q * (P - X k * pderiv k P) := by
+  classical
+  rw [coordinateWronskian_X_mul_right, if_pos rfl, coordinateWronskian,
+    pderiv_eq_zero_of_notMem_vars hkQ]
+  ring
+
 /-- Partial differentiation commutes with a constant-coefficient directional
 derivative. -/
 theorem pderiv_directionalPDeriv {R σ : Type*} [CommRing R] [Fintype σ]

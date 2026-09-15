@@ -71,8 +71,9 @@ theorem decoBottomTotalAffineExceptionalBase_isRayleigh (n : Nat)
     (hstable : MvRealStable (decoLayerTotal n)) :
     MvPolynomial.IsRayleigh (decoBottomTotalAffineExceptionalBase n) := by
   apply MvRealStable.isRayleigh_of_isMultiaffine
-  · unfold decoBottomTotalAffineExceptionalBase
-    exact decoExceptionalBottomStep_total_mvRealStable n hstable
+  · simpa [decoBottomTotalAffineExceptionalBase,
+      decoBottomTotalAffineExceptionalCore, decoExceptionalBottomStep] using
+        decoExceptionalBottomStep_total_mvRealStable n hstable
   · exact decoBottomTotalAffineExceptionalBase_isMultiaffine n
 
 /-- Under preceding-rank stability, the partial-derivative slope of the normal
@@ -114,43 +115,55 @@ theorem eval_coordinateWronskian_affineSlope_normalBase_nonneg
       (one_notMem_vars_decoBottomTotalAffineSlope n)] at h
     exact h
 
-/-- Once preceding-rank stability supplies the normal contribution, proving
-the full affine Wronskians reduces to the exceptional cross term alone. -/
-theorem eval_coordinateWronskian_affineSlope_base_nonneg_of_exceptional
-    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
-    (hexceptional : ∀ i x, 0 ≤ MvPolynomial.eval x
+/-- The full affine Wronskians are nonnegative exactly when the exceptional
+cross term does not exceed the available normal Wronskian margin. -/
+theorem eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation
+    (n : Nat) :
+    (∀ i x, 0 ≤ MvPolynomial.eval x
       (MvPolynomial.coordinateWronskian
-        (decoBottomTotalAffineSlope n)
-        (decoBottomTotalAffineExceptionalBase n) i)) :
-    ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian
-        (decoBottomTotalAffineSlope n) (decoBottomTotalAffineBase n) i) := by
-  intro i x
-  rw [decoBottomTotalAffineBase,
-    MvPolynomial.coordinateWronskian_add_right, map_add]
-  exact add_nonneg
-    (eval_coordinateWronskian_affineSlope_normalBase_nonneg n hstable i x)
-    (hexceptional i x)
+        (decoBottomTotalAffineSlope n) (decoBottomTotalAffineBase n) i)) ↔
+      ∀ i x,
+        -MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalAffineSlope n)
+              (decoBottomTotalAffineNormalBase n) i) ≤
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalAffineSlope n)
+              (decoBottomTotalAffineExceptionalBase n) i) := by
+  constructor <;> intro h i x
+  · have hbase := h i x
+    rw [decoBottomTotalAffineBase,
+      MvPolynomial.coordinateWronskian_add_right, map_add] at hbase
+    linarith
+  · rw [decoBottomTotalAffineBase,
+      MvPolynomial.coordinateWronskian_add_right, map_add]
+    linarith [h i x]
 
 /-- Preceding-rank stability discharges the slope endpoint and normal
 Wronskians in the affine Rayleigh criterion. The remaining assumptions are
-exactly stability compatibility of the summed base, the exceptional cross
-term, and the old-coordinate discriminants. -/
+exactly stability compatibility of the summed base, quantitative compensation
+of the exceptional cross term, and the old-coordinate discriminants. -/
 theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
     (hbase : MvPolynomial.IsRayleigh (decoBottomTotalAffineBase n))
-    (hexceptional : ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian
-        (decoBottomTotalAffineSlope n)
-        (decoBottomTotalAffineExceptionalBase n) i))
+    (hcomp : ∀ i x,
+      -MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalAffineSlope n)
+            (decoBottomTotalAffineNormalBase n) i) ≤
+        MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (decoBottomTotalAffineSlope n)
+            (decoBottomTotalAffineExceptionalBase n) i))
     (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
       (MvPolynomial.affineRayleighDiscriminant
         (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
     MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
   exact decoBottomTotal_add_two_isRayleigh_of_affine n hbase
     (decoBottomTotalAffineSlope_isRayleigh n hstable)
-    (eval_coordinateWronskian_affineSlope_base_nonneg_of_exceptional
-      n hstable hexceptional) hdisc
+    ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
+      hcomp) hdisc
 
 end
 
