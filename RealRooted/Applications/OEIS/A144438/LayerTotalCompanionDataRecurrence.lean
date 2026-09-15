@@ -610,6 +610,35 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreQuadraticData
     n hstable hcompanion,
     eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff]
 
+/-- The exact successor-data criterion with the finite core rows expanded into
+their current-data compensation, genuinely new quadratic endpoint, and
+discriminant conditions. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreEndpointData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n)) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSlope n)
+          (decoBottomTotalWronskianCompanion n) i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        DecoBottomTotalCompanionSuccessorCoreEndpointData n) ∧
+      ∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_successorCoreQuadraticData
+    n hstable hcompanion,
+    decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData]
+
 /-- Compensation form of the exact next-data criterion under preceding-rank
 stability.  The first condition uses precisely the nonnegative margin already
 recorded in the current companion data. -/

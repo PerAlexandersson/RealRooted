@@ -21,6 +21,12 @@ def affineEulerCore {R σ ι : Type*} [CommRing R] [Fintype ι]
   C c * P - ∑ i : ι, X (e i) * pderiv (e i) P +
     ∑ i : ι, pderiv (e i) P
 
+/-- The Rayleigh row naturally paired with a finite-index affine Euler core. -/
+def affineEulerRayleighRow {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (P : MvPolynomial σ R) (i : ι) : MvPolynomial σ R :=
+  P * pderiv (e i) P +
+    ∑ j : ι, (1 - X (e j)) * rayleighDifference P (e i) (e j)
+
 private theorem affineEulerCore_X_mul_identity
     {S : Type*} [CommRing S] (c x b w d : S) :
     b + x * ((c - 1) * b - w + d) =
@@ -154,8 +160,7 @@ theorem coordinateWronskian_affineEulerCore
     (e : ι → σ) (he : Function.Injective e) (c : R)
     (P : MvPolynomial σ R) (i : ι) :
     coordinateWronskian (affineEulerCore e c P) P (e i) =
-      P * pderiv (e i) P +
-        ∑ j : ι, (1 - X (e j)) * rayleighDifference P (e i) (e j) := by
+      affineEulerRayleighRow e P i := by
   classical
   have hderiv := coordinateWronskian_sum_pderiv_left
     e (fun _ : ι => (1 : R)) P (e i)
@@ -169,7 +174,7 @@ theorem coordinateWronskian_affineEulerCore
     apply Finset.sum_congr rfl
     intro j hj
     ring
-  unfold affineEulerCore
+  unfold affineEulerCore affineEulerRayleighRow
   rw [coordinateWronskian_add_left, coordinateWronskian_sub_left,
     coordinateWronskian_C_mul_left, coordinateWronskian_self, mul_zero,
     zero_sub, heuler, hderiv, hsum]

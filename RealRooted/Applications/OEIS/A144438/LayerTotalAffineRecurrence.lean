@@ -55,9 +55,10 @@ theorem coordinateWronskian_decoNormalBottomCore
               (decoLayerBottomEmbedding n i)
               (decoLayerBottomEmbedding n j) := by
   rw [decoNormalBottomCore_eq_affineEulerCore]
-  exact MvPolynomial.coordinateWronskian_affineEulerCore
-    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
-      (n + 1 : R) Q i
+  simpa [MvPolynomial.affineEulerRayleighRow] using
+    MvPolynomial.coordinateWronskian_affineEulerCore
+      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
+        (n + 1 : R) Q i
 
 /-- Relabeling transports the normal core Wronskian to the corresponding
 normal affine base and slope. -/

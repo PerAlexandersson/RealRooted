@@ -23,14 +23,9 @@ def decoBottomTotalCompanionExtensionCore (n : Nat) :
 positive coordinate indexed by `i`. -/
 def decoBottomTotalCompanionExtensionRayleighRow
     (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
-  decoBottomTotalCompanionTotalExtension n *
-      MvPolynomial.pderiv (i + 1 : Nat)
-        (decoBottomTotalCompanionTotalExtension n) +
-    ∑ j : Fin (n + 2),
-      (1 - MvPolynomial.X (j : Nat)) *
-        MvPolynomial.rayleighDifference
-          (decoBottomTotalCompanionTotalExtension n)
-          (i + 1 : Nat) (j : Nat)
+  MvPolynomial.affineEulerRayleighRow
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+      (decoBottomTotalCompanionTotalExtension n) i.succ
 
 /-- The full lower coefficient obtained after adjoining the successor's fresh
 copy of the latest total to the affine Euler Rayleigh row. -/

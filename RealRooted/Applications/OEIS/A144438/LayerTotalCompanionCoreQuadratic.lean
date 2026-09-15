@@ -152,17 +152,23 @@ companion and the current companion-data Wronskian. -/
 theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add
     (n : Nat) (i : Fin (n + 1)) :
     decoBottomTotalCompanionSuccessorCoreRowConstant n i =
-      MvPolynomial.coordinateWronskian
-          (MvPolynomial.affineEulerCore
-            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
-            (decoBottomTotalWronskianCompanion n))
-          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) +
+      MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+          (decoBottomTotalWronskianCompanion n) i.succ +
         MvPolynomial.coordinateWronskian
           (decoBottomTotalCompanionCore n)
           (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) := by
+  have hrow := MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+      (n + 3 : Real) (decoBottomTotalWronskianCompanion n) i.succ
+  change MvPolynomial.coordinateWronskian
+      (MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 3 : Real)
+        (decoBottomTotalWronskianCompanion n))
+      (decoBottomTotalWronskianCompanion n) (i + 1 : Nat) = _ at hrow
   unfold decoBottomTotalCompanionSuccessorCoreRowConstant
   rw [decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add,
-    MvPolynomial.coordinateWronskian_add_left]
+    MvPolynomial.coordinateWronskian_add_left, hrow]
 
 /-- The quadratic row coefficient splits into a mixed core/total row and an
 affine Euler row of the preceding companion core. -/
@@ -174,15 +180,21 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add
             (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
             (decoBottomTotalCompanionCore n))
           (decoBottomTotal (n + 1)) (i + 1 : Nat) +
-        MvPolynomial.coordinateWronskian
-          (MvPolynomial.affineEulerCore
-            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
-            (decoBottomTotalCompanionCore n))
-          (decoBottomTotalCompanionCore n) (i + 1 : Nat) := by
+        MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+          (decoBottomTotalCompanionCore n) i.succ := by
+  have hrow := MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Fin.valEmbedding.injective
+      (n + 2 : Real) (decoBottomTotalCompanionCore n) i.succ
+  change MvPolynomial.coordinateWronskian
+      (MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+        (decoBottomTotalCompanionCore n))
+      (decoBottomTotalCompanionCore n) (i + 1 : Nat) = _ at hrow
   unfold decoBottomTotalCompanionSuccessorCoreRowQuadratic
     decoBottomTotalCompanionSlope
   rw [decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
-    MvPolynomial.coordinateWronskian_add_right]
+    MvPolynomial.coordinateWronskian_add_right, hrow]
 
 /-- Each successor core row is exactly quadratic in the remaining fresh
 coordinate, with the three named endpoint-Wronskian coefficients. -/
@@ -342,6 +354,66 @@ structure DecoBottomTotalCompanionSuccessorCoreQuadraticData
   discriminant_nonpos : ∀ i : Fin (n + 1), ∀ x,
     MvPolynomial.eval x
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
+
+/-- The same finite endpoint conditions with the constant coefficient written
+as compensation against the current companion-data Wronskian and the
+quadratic coefficient expanded into its genuinely new two summands. -/
+structure DecoBottomTotalCompanionSuccessorCoreEndpointData
+    (n : Nat) : Prop where
+  quadratic_nonneg : ∀ i : Fin (n + 1), ∀ x,
+    0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) ↪ Nat) (n + 2 : Real)
+            (decoBottomTotalCompanionCore n))
+          (decoBottomTotal (n + 1)) (i + 1 : Nat)) +
+      MvPolynomial.eval x
+        (MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+          (decoBottomTotalCompanionCore n) i.succ)
+  constant_compensation : ∀ i : Fin (n + 1), ∀ x,
+    -MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore n)
+          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)) ≤
+      MvPolynomial.eval x
+        (MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+          (decoBottomTotalWronskianCompanion n) i.succ)
+  discriminant_nonpos : ∀ i : Fin (n + 1), ∀ x,
+    MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
+
+/-- Quadratic coefficient data is exactly the expanded endpoint package; in
+particular, the constant condition is a compensation inequality rather than a
+stronger separate sign requirement. -/
+theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreQuadraticData n ↔
+      DecoBottomTotalCompanionSuccessorCoreEndpointData n := by
+  constructor
+  · intro h
+    refine ⟨?_, ?_, h.discriminant_nonpos⟩
+    · intro i x
+      rw [← MvPolynomial.eval_add,
+        ← decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add]
+      exact h.quadratic_nonneg i x
+    · intro i x
+      have hconstant := h.constant_nonneg i x
+      rw [decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add,
+        MvPolynomial.eval_add] at hconstant
+      linarith
+  · intro h
+    refine ⟨?_, ?_, h.discriminant_nonpos⟩
+    · intro i x
+      rw [decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add,
+        MvPolynomial.eval_add]
+      exact h.quadratic_nonneg i x
+    · intro i x
+      have hconstant := h.constant_compensation i x
+      rw [decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add,
+        MvPolynomial.eval_add]
+      linarith
 
 /-- The finite successor core rows are nonnegative exactly when their bundled
 quadratic coefficient data holds. -/
