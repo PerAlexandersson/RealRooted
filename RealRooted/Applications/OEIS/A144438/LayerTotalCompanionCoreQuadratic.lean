@@ -441,22 +441,22 @@ structure DecoBottomTotalCompanionSuccessorCoreQuadraticData
     MvPolynomial.eval x
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
 
-/-- The exact successor-row coefficient conditions after fixing the fresh and
-row coordinates, which are absent from all three coefficient polynomials.
+/-- The exact successor-row coefficient conditions on the canonical slice
+where the absent fresh coordinate is `0` and the absent row coordinate is `1`.
 This packages proof obligations and does not assert that they hold. -/
 structure DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData
     (n : Nat) : Prop where
   quadratic_nonneg : ∀ i : Fin (n + 1), ∀ x,
     0 ≤ MvPolynomial.eval
-      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 1)
       (decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
   constant_nonneg : ∀ i : Fin (n + 1), ∀ x,
     0 ≤ MvPolynomial.eval
-      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 1)
       (decoBottomTotalCompanionSuccessorCoreRowConstant n i)
   discriminant_nonpos : ∀ i : Fin (n + 1), ∀ x,
     MvPolynomial.eval
-      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 1)
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
 
 /-- The successor-row coefficient conditions are unchanged after fixing the
@@ -472,34 +472,34 @@ theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
-        0 0 (fun y : Real ↦ 0 ≤ y)).mp (h.quadratic_nonneg i)
+        0 1 (fun y : Real ↦ 0 ≤ y)).mp (h.quadratic_nonneg i)
     · intro i
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
-        0 0 (fun y : Real ↦ 0 ≤ y)).mp (h.constant_nonneg i)
+        0 1 (fun y : Real ↦ 0 ≤ y)).mp (h.constant_nonneg i)
     · intro i
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
-        0 0 (fun y : Real ↦ y ≤ 0)).mp (h.discriminant_nonpos i)
+        0 1 (fun y : Real ↦ y ≤ 0)).mp (h.discriminant_nonpos i)
   · intro h
     refine ⟨?_, ?_, ?_⟩
     · intro i
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
-        0 0 (fun y : Real ↦ 0 ≤ y)).mpr (h.quadratic_nonneg i)
+        0 1 (fun y : Real ↦ 0 ≤ y)).mpr (h.quadratic_nonneg i)
     · intro i
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
-        0 0 (fun y : Real ↦ 0 ≤ y)).mpr (h.constant_nonneg i)
+        0 1 (fun y : Real ↦ 0 ≤ y)).mpr (h.constant_nonneg i)
     · intro i
       exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
         (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
-        0 0 (fun y : Real ↦ y ≤ 0)).mpr (h.discriminant_nonpos i)
+        0 1 (fun y : Real ↦ y ≤ 0)).mpr (h.discriminant_nonpos i)
 
 /-- The same finite endpoint conditions with the constant coefficient written
 as compensation against the current companion-data Wronskian and the

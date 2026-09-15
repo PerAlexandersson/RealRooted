@@ -180,6 +180,25 @@ theorem coordinateWronskian_affineEulerCore
     zero_sub, heuler, hderiv, hsum]
   ring
 
+/-- The affine-Euler Rayleigh row separates into its endpoint derivative
+product and the Rayleigh terms away from the selected index. -/
+theorem IsMultiaffine.affineEulerRayleighRow_eq_erase
+    {R σ ι : Type*} [CommRing R] [Fintype ι] [DecidableEq ι]
+    {P : MvPolynomial σ R} (hP : IsMultiaffine P)
+    (e : ι → σ) (i : ι) :
+    affineEulerRayleighRow e P i =
+      (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
+        MvPolynomial.pderiv (e i) P +
+        ∑ j ∈ Finset.univ.erase i,
+          (1 - MvPolynomial.X (e j)) *
+            rayleighDifference P (e i) (e j) := by
+  classical
+  have hdecomp := hP.eq_specializeZero_add_X_mul_pderiv (e i)
+  unfold affineEulerRayleighRow
+  rw [← Finset.sum_erase_add Finset.univ _ (Finset.mem_univ i),
+    hP.rayleighDifference_self]
+  linear_combination MvPolynomial.pderiv (e i) P * hdecomp
+
 /-- A multiaffine affine-Euler Rayleigh row is independent of its own row
 coordinate. -/
 theorem IsMultiaffine.notMem_vars_affineEulerRayleighRow
