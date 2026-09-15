@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
 import RealRooted.Multiaffine
 import Mathlib.Data.Real.Basic
 
@@ -40,6 +41,16 @@ theorem rayleighDifference_rename {R σ τ : Type*} [CommRing R]
     rayleighDifference (rename f P) (f i) (f j) =
       rename f (rayleighDifference P i j) := by
   simp only [rayleighDifference, pderiv_rename hf, map_mul, map_sub]
+
+/-- Rayleigh differences commute with specialization away from their two
+active coordinates. -/
+theorem rayleighDifference_specializeAt_of_ne {R σ : Type*} [CommRing R]
+    {i j k : σ} (hik : i ≠ k) (hjk : j ≠ k) (c : R)
+    (P : MvPolynomial σ R) :
+    rayleighDifference (specializeAt k c P) i j =
+      specializeAt k c (rayleighDifference P i j) := by
+  simp only [rayleighDifference, pderiv_specializeAt_of_ne hik,
+    pderiv_specializeAt_of_ne hjk, specializeAt_mul, specializeAt_sub]
 
 /-- Evaluation of a Rayleigh difference is the corresponding scalar
 determinant. -/
@@ -90,6 +101,33 @@ theorem IsMultiaffine.rayleighDifference_self {R σ : Type*} [CommRing R]
 nonnegative at every real point. -/
 def IsRayleigh {σ : Type*} (P : MvPolynomial σ ℝ) : Prop :=
   ∀ i j x, 0 ≤ eval x (rayleighDifference P i j)
+
+/-- Real scalar specialization preserves the Rayleigh property. -/
+theorem IsRayleigh.specializeAt {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : IsRayleigh P) (k : σ) (c : ℝ) :
+    IsRayleigh (MvPolynomial.specializeAt k c P) := by
+  classical
+  intro i j x
+  by_cases hik : i = k
+  · subst i
+    rw [rayleighDifference, pderiv_comm k j]
+    simp
+  · by_cases hjk : j = k
+    · subst j
+      simp [rayleighDifference]
+    · rw [rayleighDifference_specializeAt_of_ne hik hjk,
+        eval_specializeAt]
+      exact hP i j (Function.update x k c)
+
+/-- Iterated real scalar specialization preserves the Rayleigh property. -/
+theorem IsRayleigh.specializeAtList {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : IsRayleigh P) (c : σ → ℝ) (l : List σ) :
+    IsRayleigh (MvPolynomial.specializeAtList c l P) := by
+  induction l generalizing P with
+  | nil => simpa using hP
+  | cons i l ih =>
+      rw [MvPolynomial.specializeAtList_cons]
+      exact ih (hP.specializeAt i (c i))
 
 /-- Same-coordinate Rayleigh inequalities hold automatically for a
 multiaffine real polynomial. -/
