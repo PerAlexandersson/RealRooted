@@ -501,6 +501,14 @@ theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hj)
     simp [hzero]
 
+/-- Multiaffineness is reflected by an injective variable renaming. -/
+theorem of_rename {p : MvPolynomial σ R} {f : σ → τ}
+    (hp : IsMultiaffine (MvPolynomial.rename f p))
+    (hf : Function.Injective f) : IsMultiaffine p := by
+  intro i
+  rw [← MvPolynomial.degreeOf_rename_of_injective hf]
+  exact hp (f i)
+
 /-- A product of multiaffine polynomials in disjoint variable sets is
 multiaffine. -/
 theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}

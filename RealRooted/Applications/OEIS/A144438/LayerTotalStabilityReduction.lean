@@ -1,6 +1,7 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
 import RealRooted.Applications.OEIS.A144438.LayerTotalStability
 import RealRooted.Hyperbolicity
+import RealRooted.MultivariateStability.RayleighConverse
 
 /-!
 # Stability reduction for the Deco layer total
@@ -30,6 +31,23 @@ theorem decoLayerTotal_mvRealStable_iff_bottomTotal (n : Nat) :
     rw [decoLayerTotal_mvRealStable_iff_commonRotation_bottomTotal]
     exact hstable.commonRotationStable_complexify_of_hasNonnegCoeffs
       (decoBottomTotal_hasNonnegCoeffs n)
+
+/-- Stability of the multiaffine bottom total is exactly its Rayleigh
+property. -/
+theorem decoBottomTotal_mvRealStable_iff_isRayleigh (n : Nat) :
+    MvRealStable (decoBottomTotal n) ↔
+      MvPolynomial.IsRayleigh (decoBottomTotal n) := by
+  rw [RealRooted.MvPolynomial.IsMultiaffine.mvRealStable_iff_isRayleigh_and_ne_zero
+    (decoBottomTotal_isMultiaffine n)]
+  simp [decoBottomTotal_ne_zero]
+
+/-- Stability of the homogeneous layer total is exactly the Rayleigh property
+of its recurrence-defined ordinary-coordinate form. -/
+theorem decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n : Nat) :
+    MvRealStable (decoLayerTotal n) ↔
+      MvPolynomial.IsRayleigh (decoBottomTotal n) := by
+  rw [decoLayerTotal_mvRealStable_iff_bottomTotal,
+    decoBottomTotal_mvRealStable_iff_isRayleigh]
 
 /-- The rank-zero ordinary-coordinate total is real stable. -/
 theorem decoBottomTotal_zero_mvRealStable :

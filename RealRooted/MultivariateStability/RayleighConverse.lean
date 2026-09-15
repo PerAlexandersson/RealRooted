@@ -4,10 +4,11 @@ import RealRooted.MultivariateStability.RayleighPencil
 /-!
 # The multiaffine Rayleigh converse
 
-This module proves the finite-variable converse to the Rayleigh criterion by
-induction on the variables that actually occur.  The one-coordinate analytic
-step lives in `RayleighPencil`; this file owns only the finite-support
-induction and its algebraic closure facts.
+This module proves the converse to the multiaffine Rayleigh criterion by
+reducing to a finite variable presentation and inducting on the variables
+that actually occur.  The one-coordinate analytic step lives in
+`RayleighPencil`; this file owns only the finite-support induction, injective
+rename reflection, and algebraic closure facts.
 -/
 
 namespace RealRooted
@@ -54,7 +55,7 @@ theorem MvPolynomial.IsMultiaffine.vars_combo_specializeZero_pderiv_subset_erase
 
 /-- For finite variable types, every multiaffine Rayleigh polynomial is zero
 or multivariate real stable. -/
-theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine
+theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine_finite
     {σ : Type*} [Finite σ] {P : MvPolynomial σ ℝ}
     (hP : P.IsRayleigh) (hma : P.IsMultiaffine) :
     MvRealStableOrZero P := by
@@ -97,10 +98,25 @@ theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine
               ((hQma.pderiv i).C_mul β)
   exact hmain P.vars.card P rfl hP hma
 
-/-- Finite-variable multiaffine real stability is equivalent to nontrivial
-Rayleighness. -/
+/-- Every multiaffine Rayleigh polynomial, over an arbitrary coordinate type,
+is zero or multivariate real stable. -/
+theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : P.IsRayleigh) (hma : P.IsMultiaffine) :
+    MvRealStableOrZero P := by
+  obtain ⟨n, f, hf, Q, rfl⟩ := MvPolynomial.exists_fin_rename P
+  have hQrayleigh : Q.IsRayleigh := hP.of_rename hf
+  have hQma : Q.IsMultiaffine := hma.of_rename hf
+  rcases
+      MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine_finite
+        hQrayleigh hQma with hzero | hstable
+  · left
+    simp [hzero]
+  · exact (hstable.rename f).orZero
+
+/-- Multiaffine real stability is equivalent to nontrivial Rayleighness. -/
 theorem MvPolynomial.IsMultiaffine.mvRealStable_iff_isRayleigh_and_ne_zero
-    {σ : Type*} [Finite σ] {P : MvPolynomial σ ℝ} (hma : P.IsMultiaffine) :
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hma : P.IsMultiaffine) :
     MvRealStable P ↔ P.IsRayleigh ∧ P ≠ 0 := by
   constructor
   · intro hstable

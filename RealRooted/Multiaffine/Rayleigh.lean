@@ -176,6 +176,18 @@ theorem IsRayleigh.C_mul {σ : Type*} {P : MvPolynomial σ ℝ}
   rw [rayleighDifference_C_mul, eval_mul, eval_C]
   exact mul_nonneg (sq_nonneg c) (hP i j x)
 
+/-- The Rayleigh property is reflected by an injective variable renaming. -/
+theorem IsRayleigh.of_rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
+    {f : σ → τ} (hP : IsRayleigh (rename f P))
+    (hf : Function.Injective f) : IsRayleigh P := by
+  classical
+  intro i j x
+  let z : τ → ℝ := Function.extend f x 0
+  have hz : z ∘ f = x := Function.extend_comp hf x 0
+  have h := hP (f i) (f j) z
+  rw [rayleighDifference_rename f hf, eval_rename, hz] at h
+  exact h
+
 /-- Real scalar specialization preserves the Rayleigh property. -/
 theorem IsRayleigh.specializeAt {σ : Type*} {P : MvPolynomial σ ℝ}
     (hP : IsRayleigh P) (k : σ) (c : ℝ) :

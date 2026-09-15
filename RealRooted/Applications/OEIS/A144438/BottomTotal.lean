@@ -36,6 +36,25 @@ theorem decoBottomTotal_recurrence (n : Nat) :
       decoNormalBottomStep (n + 1) (decoBottomTotal (n + 1)) +
         decoExceptionalBottomStep (decoBottomTotal n) := rfl
 
+/-- Every recurrence-defined bottom total has constant coefficient one. -/
+@[simp] theorem constantCoeff_decoBottomTotal : ∀ n : Nat,
+    MvPolynomial.constantCoeff (decoBottomTotal n) = 1 := by
+  intro n
+  induction n using Nat.twoStepInduction with
+  | zero => simp
+  | one => simp
+  | more n ih0 ih1 =>
+      rw [decoBottomTotal_recurrence, map_add,
+        constantCoeff_decoNormalBottomStep,
+        constantCoeff_decoExceptionalBottomStep, ih1]
+      simp
+
+/-- The recurrence-defined bottom total is never the zero polynomial. -/
+theorem decoBottomTotal_ne_zero (n : Nat) : decoBottomTotal n ≠ 0 := by
+  intro hzero
+  have h := congrArg MvPolynomial.constantCoeff hzero
+  simp at h
+
 /-- Dehomogenizing the finite-coordinate layer total and embedding its
 ordinary coordinates as positive labels recovers the directly recursive
 ordinary-coordinate total. -/

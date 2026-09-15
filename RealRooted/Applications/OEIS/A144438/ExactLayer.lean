@@ -69,6 +69,19 @@ def decoExceptionalBottomStep {R : Type*} [CommSemiring R]
     (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
   MvPolynomial.X 2 * MvPolynomial.rename (fun i : Nat => i + 2) Q
 
+/-- A normal bottom step preserves the constant coefficient. -/
+@[simp] theorem constantCoeff_decoNormalBottomStep
+    {R : Type*} [CommRing R] (n : Nat) (Q : MvPolynomial Nat R) :
+    MvPolynomial.constantCoeff (decoNormalBottomStep n Q) =
+      MvPolynomial.constantCoeff Q := by
+  simp [decoNormalBottomStep]
+
+/-- An exceptional bottom step has zero constant coefficient. -/
+@[simp] theorem constantCoeff_decoExceptionalBottomStep
+    {R : Type*} [CommSemiring R] (Q : MvPolynomial Nat R) :
+    MvPolynomial.constantCoeff (decoExceptionalBottomStep Q) = 0 := by
+  simp [decoExceptionalBottomStep]
+
 /-- Relabel the old bottom variables upward by one in a normal step. -/
 def decoNormalRename {n : ℕ} : DecoLayerCoord n → DecoLayerCoord (n + 1)
   | none => none
