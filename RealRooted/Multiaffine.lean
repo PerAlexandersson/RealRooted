@@ -45,6 +45,17 @@ theorem degreeOf_pderiv_le {R σ : Type*} [CommSemiring R]
     exact (Nat.sub_le _ _).trans
       (MvPolynomial.degreeOf_le_iff.mp le_rfl d hd)
 
+/-- Partial differentiation introduces no new variables. -/
+theorem vars_pderiv_subset {R σ : Type*} [CommSemiring R]
+    (p : MvPolynomial σ R) (i : σ) :
+    (MvPolynomial.pderiv i p).vars ⊆ p.vars := by
+  intro j hj
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hj ⊢
+  intro hpj
+  apply hj
+  exact Nat.eq_zero_of_le_zero (by
+    simpa [hpj] using MvPolynomial.degreeOf_pderiv_le p i j)
+
 namespace IsMultiaffine
 
 variable {R σ τ : Type*} [CommSemiring R]
@@ -111,6 +122,41 @@ theorem pderiv_pderiv_self_eq_zero {p : MvPolynomial σ R}
   have hdi : d i ≤ 1 := MvPolynomial.degreeOf_le_iff.mp (hp i) d hd
   have hcases : d i = 0 ∨ d i = 1 := by lia
   rcases hcases with h | h <;> simp [h]
+
+/-- A partial derivative of a multiaffine polynomial no longer uses the
+differentiated coordinate. -/
+theorem notMem_vars_pderiv_self {p : MvPolynomial σ R}
+    (hp : IsMultiaffine p) (i : σ) :
+    i ∉ (MvPolynomial.pderiv i p).vars := by
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero, not_ne_iff]
+  apply Nat.eq_zero_of_le_zero
+  conv_lhs => rw [MvPolynomial.as_sum p]
+  simp only [map_sum]
+  refine (MvPolynomial.degreeOf_sum_le i p.support fun d =>
+    MvPolynomial.pderiv i (MvPolynomial.monomial d (p.coeff d))).trans ?_
+  apply Finset.sup_le
+  intro d hd
+  rw [MvPolynomial.pderiv_monomial]
+  by_cases hc : p.coeff d * d i = 0
+  · simp [hc]
+  · rw [MvPolynomial.degreeOf_monomial_eq _ i hc]
+    have hdi : d i ≤ (Finsupp.single i 1) i := by
+      simpa using MvPolynomial.degreeOf_le_iff.mp (hp i) d hd
+    exact Nat.le_of_eq (Nat.sub_eq_zero_of_le hdi)
+
+/-- The variables of a partial derivative of a multiaffine polynomial lie in
+the old variable set with the differentiated coordinate removed. -/
+theorem vars_pderiv_subset_erase [DecidableEq σ]
+    {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
+    (MvPolynomial.pderiv i p).vars ⊆ p.vars.erase i := by
+  classical
+  intro j hj
+  apply Finset.mem_erase.mpr
+  constructor
+  · intro hji
+    subst j
+    exact hp.notMem_vars_pderiv_self i hj
+  · exact MvPolynomial.vars_pderiv_subset p i hj
 
 private theorem eval_update_monomial_affine
     {S : Type*} [CommRing S] [DecidableEq σ]
@@ -401,6 +447,33 @@ theorem degreeOf_specializeZero_le
   have hc : p.coeff d ≠ 0 := by simpa [Finsupp.mem_support_iff] using hd.1
   rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
   exact MvPolynomial.degreeOf_le_iff.mp le_rfl d hd.1
+
+/-- Zero-specializing a coordinate removes it without introducing any new
+variables. -/
+theorem vars_specializeZero_subset_erase
+    {S σ : Type*} [CommRing S] [DecidableEq σ]
+    (p : MvPolynomial σ S) (i : σ) :
+    (MvPolynomial.specializeZero i p).vars ⊆ p.vars.erase i := by
+  classical
+  intro j hj
+  apply Finset.mem_erase.mpr
+  constructor
+  · intro hji
+    subst j
+    rw [MvPolynomial.mem_vars_iff_mem_support] at hj
+    obtain ⟨d, hd, hdi⟩ := hj
+    have hcoeff : MvPolynomial.coeff d
+        (MvPolynomial.specializeZero i p) ≠ 0 := by
+      simpa [MvPolynomial.mem_support_iff] using hd
+    rw [MvPolynomial.coeff_specializeZero] at hcoeff
+    split at hcoeff
+    · exact (Finsupp.mem_support_iff.mp hdi) ‹d i = 0›
+    · exact hcoeff rfl
+  · rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hj ⊢
+    intro hpj
+    apply hj
+    exact Nat.eq_zero_of_le_zero (by
+      simpa [hpj] using MvPolynomial.degreeOf_specializeZero_le p i j)
 
 namespace IsMultiaffine
 

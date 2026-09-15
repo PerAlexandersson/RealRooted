@@ -159,6 +159,23 @@ nonnegative at every real point. -/
 def IsRayleigh {σ : Type*} (P : MvPolynomial σ ℝ) : Prop :=
   ∀ i j x, 0 ≤ eval x (rayleighDifference P i j)
 
+/-- Scaling a polynomial scales every Rayleigh difference by the square of
+the scalar. -/
+theorem rayleighDifference_C_mul {σ : Type*}
+    (c : ℝ) (P : MvPolynomial σ ℝ) (i j : σ) :
+    rayleighDifference (C c * P) i j = C (c ^ 2) * rayleighDifference P i j := by
+  simp only [rayleighDifference, pderiv_C_mul]
+  rw [map_pow]
+  ring
+
+/-- Real scalar multiplication preserves the Rayleigh property, including at
+the zero scalar. -/
+theorem IsRayleigh.C_mul {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : IsRayleigh P) (c : ℝ) : IsRayleigh (C c * P) := by
+  intro i j x
+  rw [rayleighDifference_C_mul, eval_mul, eval_C]
+  exact mul_nonneg (sq_nonneg c) (hP i j x)
+
 /-- Real scalar specialization preserves the Rayleigh property. -/
 theorem IsRayleigh.specializeAt {σ : Type*} {P : MvPolynomial σ ℝ}
     (hP : IsRayleigh P) (k : σ) (c : ℝ) :
