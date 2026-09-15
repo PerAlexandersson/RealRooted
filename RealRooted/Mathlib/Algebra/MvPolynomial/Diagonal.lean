@@ -59,6 +59,33 @@ def diagonal {R σ : Type*} [CommSemiring R]
     diagonal (1 : MvPolynomial σ R) = 1 := by
   simp [diagonal]
 
+/-- Diagonal restriction commutes with a coefficient-ring homomorphism. -/
+@[simp] theorem diagonal_map {R S σ : Type*} [CommSemiring R]
+    [CommSemiring S] (f : R →+* S) (P : MvPolynomial σ R) :
+    diagonal (MvPolynomial.map f P) = Polynomial.map f (diagonal P) := by
+  induction P using MvPolynomial.induction_on with
+  | C a => simp
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P i hP => simp [hP]
+
+/-- Evaluating the diagonal restriction at `x` is the same as evaluating the
+multivariate polynomial with every coordinate equal to `x`. -/
+@[simp] theorem eval_diagonal {R σ : Type*} [CommSemiring R]
+    (P : MvPolynomial σ R) (x : R) :
+    (diagonal P).eval x = MvPolynomial.eval (fun _ : σ => x) P := by
+  unfold diagonal
+  change Polynomial.evalRingHom x
+      (MvPolynomial.eval₂Hom Polynomial.C
+        (fun _ : σ => Polynomial.X) P) = _
+  rw [MvPolynomial.map_eval₂Hom]
+  simp only [Polynomial.coe_evalRingHom, Polynomial.eval_X]
+  have hC : (Polynomial.evalRingHom x).comp Polynomial.C =
+      RingHom.id R := by
+    ext r
+    simp
+  rw [hC]
+  rfl
+
 /-- Diagonal restriction is unchanged by any variable renaming. -/
 @[simp] theorem diagonal_rename {R σ τ : Type*} [CommSemiring R]
     (f : σ → τ) (P : MvPolynomial σ R) :

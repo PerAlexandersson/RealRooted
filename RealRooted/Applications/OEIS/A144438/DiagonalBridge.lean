@@ -1,6 +1,6 @@
 import RealRooted.Applications.OEIS.A144438
 import RealRooted.Applications.OEIS.A144438.TotalBridge
-import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+import RealRooted.MultivariateStability.Diagonal
 
 /-!
 # Diagonal bridge for the Deco total
@@ -94,6 +94,21 @@ theorem diagonal_normalizedFiberPolynomial_eq_A144438 (n : Nat) :
       A144438 n := by
   rw [normalizedFiberPolynomial_eq_decoBottomTotal,
     diagonal_decoBottomTotal_eq_decoEulerian]
+
+/-- Every individual normalization fiber remains real-rooted after diagonal
+restriction. -/
+theorem diagonal_fiberPolynomial_splits {h : Nat}
+    (c : DecoNormalizedCode h) :
+    (MvPolynomial.diagonal
+      (DecoNormalizedCode.fiberPolynomial (R := Real) c)).Splits :=
+  (DecoNormalizedCode.fiberPolynomial_mvRealStable c).diagonal_splits
+
+/-- Every exact-history layer remains real-rooted after dehomogenization and
+diagonal restriction. -/
+theorem diagonal_decoExactLayerDehomogenized_splits {n : Nat}
+    (H : DecoExceptionalHistory (n + 2)) :
+    (MvPolynomial.diagonal (decoExactLayerDehomogenized H)).Splits :=
+  (decoExactLayerDehomogenized_mvRealStable H).diagonal_splits
 
 /-- The diagonalized normalized-fiber enumerator is real-rooted.  This is a
 univariate conclusion and does not claim stability of the multivariate sum. -/
