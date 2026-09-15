@@ -180,6 +180,16 @@ theorem coordinateWronskian_affineEulerCore
     zero_sub, heuler, hderiv, hsum]
   ring
 
+/-- A multiaffine affine-Euler Rayleigh row is independent of its own row
+coordinate. -/
+theorem IsMultiaffine.notMem_vars_affineEulerRayleighRow
+    {R σ ι : Type*} [CommRing R] [Nontrivial R] [Fintype ι]
+    {P : MvPolynomial σ R} (hP : IsMultiaffine P)
+    (e : ι → σ) (he : Function.Injective e) (i : ι) :
+    e i ∉ (affineEulerRayleighRow e P i).vars := by
+  rw [← coordinateWronskian_affineEulerCore e he 0 P i]
+  exact (hP.affineEulerCore e 0).notMem_vars_coordinateWronskian hP (e i)
+
 end
 
 end MvPolynomial

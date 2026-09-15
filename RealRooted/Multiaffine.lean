@@ -366,6 +366,45 @@ theorem specializeZero_add
   simp only [coeff_specializeZero, coeff_add]
   split <;> simp
 
+/-- Zero-specialization commutes with finite sums. -/
+theorem specializeZero_sum
+    {I S : Type*} [CommRing S] (i : σ) (s : Finset I)
+    (p : I → MvPolynomial σ S) :
+    specializeZero i (∑ j ∈ s, p j) =
+      ∑ j ∈ s, specializeZero i (p j) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      rw [Finset.sum_insert ha, specializeZero_add, ih,
+        Finset.sum_insert ha]
+
+/-- A multiaffine polynomial is its zero-specialization in one coordinate
+plus that coordinate times its partial derivative. -/
+theorem IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+    {S : Type*} [CommRing S] {p : MvPolynomial σ S}
+    (hp : IsMultiaffine p) (i : σ) :
+    p = specializeZero i p + MvPolynomial.X i * MvPolynomial.pderiv i p := by
+  classical
+  calc
+    p = ∑ d ∈ p.support, monomial d (coeff d p) := p.as_sum
+    _ = ∑ d ∈ p.support,
+        (specializeZero i (monomial d (coeff d p)) +
+          MvPolynomial.X i *
+            MvPolynomial.pderiv i (monomial d (coeff d p))) := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      have hdi : d i ≤ 1 := degreeOf_le_iff.mp (hp i) d hd
+      have hcases : d i = 0 ∨ d i = 1 := by lia
+      rcases hcases with h | h
+      · simp [specializeZero_monomial, h, pderiv_monomial]
+      · rw [specializeZero_monomial, if_neg (by simp [h])]
+        simp only [zero_add, X_mul_pderiv_monomial, h, one_smul]
+    _ = specializeZero i p +
+        MvPolynomial.X i * MvPolynomial.pderiv i p := by
+      rw [Finset.sum_add_distrib, ← specializeZero_sum,
+        ← Finset.mul_sum, ← map_sum, ← p.as_sum]
+
 theorem specializeZero_mul
     {S : Type*} [CommRing S]
     (i : σ) (p q : MvPolynomial σ S) :

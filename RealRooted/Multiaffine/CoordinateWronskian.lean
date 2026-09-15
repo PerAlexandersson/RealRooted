@@ -31,6 +31,56 @@ theorem coordinateWronskian_swap {R σ : Type*} [CommRing R]
   simp only [coordinateWronskian]
   ring
 
+/-- The coordinate Wronskian of two multiaffine polynomials is the determinant
+of their constant and linear parts in that coordinate. -/
+theorem IsMultiaffine.coordinateWronskian_eq_specializeZero
+    {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (hQ : IsMultiaffine Q) (i : σ) :
+    coordinateWronskian P Q i =
+      specializeZero i P * MvPolynomial.pderiv i Q -
+        MvPolynomial.pderiv i P * specializeZero i Q := by
+  have hPdecomp := hP.eq_specializeZero_add_X_mul_pderiv i
+  have hQdecomp := hQ.eq_specializeZero_add_X_mul_pderiv i
+  rw [coordinateWronskian]
+  linear_combination
+    MvPolynomial.pderiv i Q * hPdecomp -
+      MvPolynomial.pderiv i P * hQdecomp
+
+/-- The coordinate Wronskian of two multiaffine polynomials does not depend
+on the coordinate in which it is taken. -/
+theorem IsMultiaffine.notMem_vars_coordinateWronskian
+    {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (hQ : IsMultiaffine Q) (i : σ) :
+    i ∉ (coordinateWronskian P Q i).vars := by
+  classical
+  have hiP0 : i ∉ (specializeZero i P).vars := by
+    intro hi
+    have hiErase := vars_specializeZero_subset_erase P i hi
+    exact (Finset.mem_erase.mp hiErase).1 rfl
+  have hiQ0 : i ∉ (specializeZero i Q).vars := by
+    intro hi
+    have hiErase := vars_specializeZero_subset_erase Q i hi
+    exact (Finset.mem_erase.mp hiErase).1 rfl
+  have hiPi : i ∉ (MvPolynomial.pderiv i P).vars :=
+    hP.notMem_vars_pderiv_self i
+  have hiQi : i ∉ (MvPolynomial.pderiv i Q).vars :=
+    hQ.notMem_vars_pderiv_self i
+  have hiLeft :
+      i ∉ (specializeZero i P * MvPolynomial.pderiv i Q).vars := by
+    intro hi
+    exact (Finset.mem_union.mp (vars_mul _ _ hi)).elim hiP0 hiQi
+  have hiRight :
+      i ∉ (MvPolynomial.pderiv i P * specializeZero i Q).vars := by
+    intro hi
+    exact (Finset.mem_union.mp (vars_mul _ _ hi)).elim hiPi hiQ0
+  rw [hP.coordinateWronskian_eq_specializeZero hQ i]
+  intro hi
+  exact (Finset.mem_union.mp
+    (vars_sub_subset
+      (p := specializeZero i P * MvPolynomial.pderiv i Q)
+      (q := MvPolynomial.pderiv i P * specializeZero i Q) hi)).elim
+        hiLeft hiRight
+
 /-- A coordinate absent from both inputs has zero coordinate Wronskian. -/
 theorem coordinateWronskian_eq_zero_of_notMem_vars
     {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R} {i : σ}
