@@ -1,18 +1,88 @@
-import RealRooted.Multiaffine.Rayleigh
+import RealRooted.Multiaffine.TwoCoordinateSlice
+import RealRooted.MultivariateStability.Specialization
 import RealRooted.PartialSymmetrization
 
 /-!
-# The bivariate Rayleigh criterion
+# Rayleigh consequences of multivariate stability
 
 For a real multiaffine polynomial in two variables, upper-half-plane
 stability is equivalent to nontriviality and nonnegativity of its Rayleigh
-difference.  This is the two-coordinate base case of the general Rayleigh
-criterion.
+difference.  Finite boundary slices then show that every real-stable
+multiaffine polynomial is Rayleigh, without requiring a finite ambient
+variable type.
 -/
 
 namespace RealRooted
 
 noncomputable section
+
+/-- Restricting a real-stable polynomial to affine motion in two coordinates
+preserves real stability up to the zero polynomial.  Only variables actually
+occurring in the polynomial are specialized, so the ambient variable type
+need not be finite. -/
+theorem MvRealStable.twoCoordinateAffineSlice_zero_or
+    {σ : Type*} [DecidableEq σ] {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) (x : σ → ℝ) (i j : σ) (hij : i ≠ j) :
+    MvPolynomial.twoCoordinateAffineSlice x i j P = 0 ∨
+      MvRealStable (MvPolynomial.twoCoordinateAffineSlice x i j P) := by
+  let l := MvPolynomial.twoCoordinateSpectators P i j
+  let Q := MvPolynomial.specializeAtList x l P
+  have hQcases : Q = 0 ∨ MvRealStable Q := by
+    simpa only [Q, l] using
+      hP.specializeAtList_zero_or_general x
+        (MvPolynomial.twoCoordinateSpectators P i j)
+  rcases hQcases with hQ | hQ
+  · left
+    apply MvPolynomial.funext
+    intro z
+    simp only [map_zero]
+    rw [MvPolynomial.eval_twoCoordinateAffineSlice x i j hij]
+    let w : σ → ℝ := Function.update
+      (Function.update x i (x i + z 0)) j (x j + z 1)
+    have heval := MvPolynomial.eval_specializeAtList_twoCoordinateSpectators
+      x w i j hij P
+    change MvPolynomial.eval w Q = _ at heval
+    rw [hQ, map_zero] at heval
+    simpa [w, hij] using heval.symm
+  · right
+    change MvUpperHalfPlaneStable
+      (complexifyMv (MvPolynomial.twoCoordinateAffineSlice x i j P))
+    rw [complexifyMv, MvPolynomial.map_twoCoordinateAffineSlice]
+    intro z hz
+    rw [MvPolynomial.eval_twoCoordinateAffineSlice
+      (fun k => Complex.ofRealHom (x k)) i j hij]
+    let w : σ → ℂ := fun k =>
+      if k = i then (x i : ℂ) + z 0
+      else if k = j then (x j : ℂ) + z 1
+      else Complex.I
+    have hw : ∀ k, 0 < (w k).im := by
+      intro k
+      by_cases hki : k = i
+      · subst k
+        simpa [w] using hz 0
+      · by_cases hkj : k = j
+        · subst k
+          simpa [w, hki] using hz 1
+        · simp [w, hki, hkj]
+    have hQw : MvPolynomial.eval w (complexifyMv Q) ≠ 0 := hQ w hw
+    have hspectators :
+        MvPolynomial.twoCoordinateSpectators (complexifyMv P) i j =
+          MvPolynomial.twoCoordinateSpectators P i j := by
+      simp [MvPolynomial.twoCoordinateSpectators, complexifyMv,
+        MvPolynomial.vars_map_of_injective P
+          Complex.ofRealHom.injective]
+    simp only [Q, l, complexifyMv_specializeAtList] at hQw
+    rw [← hspectators] at hQw
+    rw [MvPolynomial.eval_specializeAtList_twoCoordinateSpectators
+      (fun k => (x k : ℂ)) w i j hij] at hQw
+    have hwi : w i = (x i : ℂ) + z 0 := by simp [w]
+    have hwj : w j = (x j : ℂ) + z 1 := by simp [w, Ne.symm hij]
+    rw [hwi, hwj] at hQw
+    change MvPolynomial.eval
+      (Function.update
+        (Function.update (fun k => (x k : ℂ)) i ((x i : ℂ) + z 0))
+        j ((x j : ℂ) + z 1)) (complexifyMv P) ≠ 0
+    exact hQw
 
 /-- The imaginary part of a real fractional-linear coefficient quotient is
 controlled by its two-by-two determinant. -/
@@ -212,6 +282,38 @@ theorem mvRealStable_bivariate_iff (a b c d : ℝ) :
             MvPolynomial.C c * MvPolynomial.X 1 +
             MvPolynomial.C d * MvPolynomial.X 0 * MvPolynomial.X 1) := by
   rw [mvRealStable_bivariate_coeff_iff, isRayleigh_bivariate_iff]
+
+/-- Every real-stable multiaffine polynomial is Rayleigh.  The proof reduces
+each inequality to the bivariate criterion through a finite boundary slice. -/
+theorem MvRealStable.isRayleigh_of_isMultiaffine
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : MvRealStable P) (hPma : MvPolynomial.IsMultiaffine P) :
+    MvPolynomial.IsRayleigh P := by
+  classical
+  intro i j x
+  by_cases hij : i = j
+  · subst j
+    exact hPma.eval_rayleighDifference_self_nonneg i x
+  · rcases hP.twoCoordinateAffineSlice_zero_or x i j hij with
+      hzero | hstable
+    · have hdiff :=
+        hPma.rayleighDifference_twoCoordinateAffineSlice x i j hij
+      have heval := congrArg
+        (MvPolynomial.eval (fun _ : Fin 2 => (0 : ℝ))) hdiff
+      have hvalue :
+          MvPolynomial.eval x
+            (MvPolynomial.rayleighDifference P i j) = 0 := by
+        simpa [hzero, MvPolynomial.rayleighDifference] using heval.symm
+      simp [hvalue]
+    · rw [hPma.twoCoordinateAffineSlice_eq x i j hij] at hstable
+      have hdet := (mvRealStable_bivariate_coeff_iff
+        (MvPolynomial.eval x P)
+        (MvPolynomial.eval x (MvPolynomial.pderiv i P))
+        (MvPolynomial.eval x (MvPolynomial.pderiv j P))
+        (MvPolynomial.eval x
+          (MvPolynomial.pderiv i (MvPolynomial.pderiv j P)))).mp hstable
+      rw [MvPolynomial.eval_rayleighDifference]
+      exact hdet.2
 
 end
 

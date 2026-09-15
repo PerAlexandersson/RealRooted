@@ -90,6 +90,49 @@ noncomputable def specializeAtList {σ R : Type*} [CommSemiring R]
     (c : σ → R) (l : List σ) (P : MvPolynomial σ R) : MvPolynomial σ R :=
   l.foldl (fun Q i => specializeAt i (c i) Q) P
 
+/-- The assignment obtained by replacing the coordinates in `l` by the
+values supplied by `c`.  This recursion matches evaluation after
+`specializeAtList`. -/
+def specializeAtListAssignment {σ R : Type*} [DecidableEq σ]
+    (c : σ → R) : List σ → (σ → R) → (σ → R)
+  | [], z => z
+  | i :: l, z => Function.update (specializeAtListAssignment c l z) i (c i)
+
+@[simp] theorem specializeAtListAssignment_nil {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) :
+    specializeAtListAssignment c [] z = z :=
+  rfl
+
+@[simp] theorem specializeAtListAssignment_cons {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) (i : σ) (l : List σ) :
+    specializeAtListAssignment c (i :: l) z =
+      Function.update (specializeAtListAssignment c l z) i (c i) :=
+  rfl
+
+/-- A coordinate outside the specialization list is unchanged. -/
+theorem specializeAtListAssignment_eq_of_not_mem {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) {i : σ} {l : List σ} (hi : i ∉ l) :
+    specializeAtListAssignment c l z i = z i := by
+  induction l with
+  | nil => rfl
+  | cons j l ih =>
+      simp only [List.mem_cons, not_or] at hi
+      simp [specializeAtListAssignment, hi.1, ih hi.2]
+
+/-- A coordinate in the specialization list has its prescribed value. -/
+theorem specializeAtListAssignment_eq_of_mem {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) {i : σ} {l : List σ} (hi : i ∈ l) :
+    specializeAtListAssignment c l z i = c i := by
+  induction l with
+  | nil => simp at hi
+  | cons j l ih =>
+      rcases List.mem_cons.mp hi with rfl | hi
+      · simp [specializeAtListAssignment]
+      · by_cases hij : i = j
+        · subst j
+          simp [specializeAtListAssignment]
+        · simp [specializeAtListAssignment, hij, ih hi]
+
 @[simp] theorem specializeAtList_nil {σ R : Type*} [CommSemiring R]
     (c : σ → R) (P : MvPolynomial σ R) :
     specializeAtList c [] P = P :=
@@ -107,6 +150,19 @@ noncomputable def specializeAtList {σ R : Type*} [CommSemiring R]
   induction l with
   | nil => rfl
   | cons i l ih => simp [specializeAtList_cons, ih]
+
+/-- Evaluation after ordered scalar specialization is evaluation at the
+correspondingly replaced assignment. -/
+@[simp] theorem eval_specializeAtList {σ R : Type*} [CommSemiring R]
+    [DecidableEq σ] (c : σ → R) (l : List σ) (P : MvPolynomial σ R)
+    (z : σ → R) :
+    eval z (specializeAtList c l P) =
+      eval (specializeAtListAssignment c l z) P := by
+  induction l generalizing P with
+  | nil => rfl
+  | cons i l ih =>
+      rw [specializeAtList_cons, ih, eval_specializeAt]
+      rfl
 
 /-- Ordered scalar specialization commutes with mapping coefficients. -/
 theorem map_specializeAtList {σ R S : Type*} [CommSemiring R] [CommSemiring S]

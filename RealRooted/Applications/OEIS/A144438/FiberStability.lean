@@ -1,6 +1,7 @@
 import RealRooted.Applications.OEIS.A144438.EligibleSupport
 import RealRooted.BooleanSwapOrbit
 import RealRooted.MultivariateStability.PolyaFrequency
+import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stable normalized decoration fibers
@@ -352,6 +353,17 @@ theorem fiberPolynomial_eq_product
   rw [fiberPolynomial_eq_fiberNormalForm, fiberNormalForm,
     RealRooted.booleanSwapOrbitNormalForm_eq]
 
+/-- Every normalized decoration fiber is multiaffine. -/
+theorem fiberPolynomial_isMultiaffine {R : Type*} [CommSemiring R]
+    [Nontrivial R] {h : Nat} (c : DecoNormalizedCode h) :
+    MvPolynomial.IsMultiaffine (fiberPolynomial (R := R) c) := by
+  unfold fiberPolynomial subsetFiberPolynomial
+  apply MvPolynomial.IsMultiaffine.sum
+  intro s hs
+  unfold MinimumInsertionWord.comparisonBottomMonomial
+  unfold MvPolynomial.finsetMonomial
+  exact MvPolynomial.IsMultiaffine.prod_X _
+
 /-- Every normalized Deco decoration fiber is multivariate real stable. -/
 theorem fiberPolynomial_mvRealStable {h : Nat} (c : DecoNormalizedCode h) :
     MvRealStable (fiberPolynomial (R := Real) c) := by
@@ -359,6 +371,12 @@ theorem fiberPolynomial_mvRealStable {h : Nat} (c : DecoNormalizedCode h) :
   exact RealRooted.booleanSwapOrbitNormalForm_mvRealStable
     c.inactiveEligibleStarts.card c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
+
+/-- Every normalized decoration fiber satisfies all Rayleigh inequalities. -/
+theorem fiberPolynomial_isRayleigh {h : Nat} (c : DecoNormalizedCode h) :
+    MvPolynomial.IsRayleigh (fiberPolynomial (R := Real) c) :=
+  (fiberPolynomial_mvRealStable c).isRayleigh_of_isMultiaffine
+    (fiberPolynomial_isMultiaffine c)
 
 /-- Every normalized decoration fiber has nonnegative coefficients. -/
 theorem fiberPolynomial_hasNonnegCoeffs {h : Nat} (c : DecoNormalizedCode h) :
