@@ -58,6 +58,23 @@ theorem decoLayerTotal_isHomogeneous :
       exact (decoNormalLayerStep_isHomogeneous ih1).add
         (decoExceptionalLayerStep_isHomogeneous ih0)
 
+/-- The recurrence-defined total has nonnegative coefficients at every
+rank. -/
+theorem decoLayerTotal_hasNonnegCoeffs :
+    ∀ n : Nat, MvPolynomial.HasNonnegCoeffs (decoLayerTotal n) := by
+  intro n
+  induction n using Nat.twoStepInduction with
+  | zero =>
+      simpa using
+        (MvPolynomial.HasNonnegCoeffs.X (none : DecoLayerCoord 0))
+  | one =>
+      exact decoNormalLayerStep_hasNonnegCoeffs
+        (MvPolynomial.HasNonnegCoeffs.X (none : DecoLayerCoord 0))
+  | more n ih0 ih1 =>
+      rw [decoLayerTotal_recurrence]
+      exact (decoNormalLayerStep_hasNonnegCoeffs ih1).add
+        (decoExceptionalLayerStep_hasNonnegCoeffs ih0)
+
 /-- The sum of the operator-defined polynomials over exact histories. -/
 def decoExactLayerSum (n : Nat) : MvPolynomial (DecoLayerCoord n) Real :=
   ∑ H : DecoExceptionalHistory (n + 2), decoExactLayer H
