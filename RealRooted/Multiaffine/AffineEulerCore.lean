@@ -27,6 +27,13 @@ def affineEulerRayleighRow {R σ ι : Type*} [CommRing R] [Fintype ι]
   P * pderiv (e i) P +
     ∑ j : ι, (1 - X (e j)) * rayleighDifference P (e i) (e j)
 
+/-- The affine-Euler Rayleigh terms away from the selected row. -/
+def affineEulerRayleighRemainder
+    {R σ ι : Type*} [CommRing R] [Fintype ι] [DecidableEq ι]
+    (e : ι → σ) (P : MvPolynomial σ R) (i : ι) : MvPolynomial σ R :=
+  ∑ j ∈ Finset.univ.erase i,
+    (1 - X (e j)) * rayleighDifference P (e i) (e j)
+
 private theorem affineEulerCore_X_mul_identity
     {S : Type*} [CommRing S] (c x b w d : S) :
     b + x * ((c - 1) * b - w + d) =
@@ -189,12 +196,10 @@ theorem IsMultiaffine.affineEulerRayleighRow_eq_erase
     affineEulerRayleighRow e P i =
       (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
         MvPolynomial.pderiv (e i) P +
-        ∑ j ∈ Finset.univ.erase i,
-          (1 - MvPolynomial.X (e j)) *
-            rayleighDifference P (e i) (e j) := by
+        affineEulerRayleighRemainder e P i := by
   classical
   have hdecomp := hP.eq_specializeZero_add_X_mul_pderiv (e i)
-  unfold affineEulerRayleighRow
+  unfold affineEulerRayleighRow affineEulerRayleighRemainder
   rw [← Finset.sum_erase_add Finset.univ _ (Finset.mem_univ i),
     hP.rayleighDifference_self]
   linear_combination MvPolynomial.pderiv (e i) P * hdecomp
