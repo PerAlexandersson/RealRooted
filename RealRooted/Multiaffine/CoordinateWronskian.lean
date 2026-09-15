@@ -112,6 +112,32 @@ theorem notMem_vars_coordinateWronskian_of_notMem_vars
   · exact (Finset.mem_union.mp (vars_mul (pderiv i P) Q hright)).elim
       hkPi hkQ
 
+/-- A Rayleigh difference is a coordinate Wronskian of a partial derivative
+against the original polynomial. -/
+theorem rayleighDifference_eq_coordinateWronskian_pderiv
+    {R σ : Type*} [CommRing R] (P : MvPolynomial σ R) (i j : σ) :
+    rayleighDifference P i j = coordinateWronskian (pderiv i P) P j := by
+  simp only [rayleighDifference, coordinateWronskian, pderiv_comm]
+  ring
+
+/-- A Rayleigh difference of a multiaffine polynomial does not depend on its
+second active coordinate. -/
+theorem IsMultiaffine.notMem_vars_rayleighDifference_right
+    {R σ : Type*} [CommRing R] {P : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (i j : σ) :
+    j ∉ (rayleighDifference P i j).vars := by
+  rw [rayleighDifference_eq_coordinateWronskian_pderiv]
+  exact (hP.pderiv i).notMem_vars_coordinateWronskian hP j
+
+/-- A Rayleigh difference of a multiaffine polynomial does not depend on its
+first active coordinate. -/
+theorem IsMultiaffine.notMem_vars_rayleighDifference_left
+    {R σ : Type*} [CommRing R] {P : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (i j : σ) :
+    i ∉ (rayleighDifference P i j).vars := by
+  rw [rayleighDifference_comm]
+  exact hP.notMem_vars_rayleighDifference_right j i
+
 /-- When both inputs are supported on `s`, global coordinate-Wronskian
 nonnegativity is equivalent to checking only the coordinates in `s`. -/
 theorem eval_coordinateWronskian_nonneg_iff_finset
