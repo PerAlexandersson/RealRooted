@@ -1,5 +1,5 @@
 import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
-import RealRooted.Applications.OEIS.A144438.LayerTotal
+import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Bridge from Deco decompositions to the recurrence-defined total
@@ -41,6 +41,20 @@ theorem normalizedFiberPolynomial_eq_dehomogenize_decoLayerTotal (n : Nat) :
         (MvPolynomial.dehomogenize (decoLayerTotal n)) := by
   rw [← admissibleCodePolynomial_eq_normalizedFiberPolynomial]
   exact admissibleCodePolynomial_eq_dehomogenize_decoLayerTotal n
+
+/-- The admissible-code enumerator is the directly recurrence-defined
+ordinary-coordinate total. -/
+theorem admissibleCodePolynomial_eq_decoBottomTotal (n : Nat) :
+    admissibleCodePolynomial (R := Real) (n + 2) = decoBottomTotal n := by
+  rw [admissibleCodePolynomial_eq_dehomogenize_decoLayerTotal,
+    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
+
+/-- The normalized-fiber sum is the directly recurrence-defined
+ordinary-coordinate total.  This does not assert stability of the sum. -/
+theorem normalizedFiberPolynomial_eq_decoBottomTotal (n : Nat) :
+    normalizedFiberPolynomial (R := Real) (n + 2) = decoBottomTotal n := by
+  rw [normalizedFiberPolynomial_eq_dehomogenize_decoLayerTotal,
+    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
 
 end
 

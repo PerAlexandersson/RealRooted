@@ -56,6 +56,19 @@ def decoNormalBottomCore {R : Type*} [CommRing R] (n : Nat)
     ∑ i : Fin n,
       MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q
 
+/-- The ordinary positive-label form of one normal layer step. -/
+def decoNormalBottomStep {R : Type*} [CommRing R] (n : Nat)
+    (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
+  MvPolynomial.rename (fun i : Nat => i + 1) Q +
+    MvPolynomial.X 1 *
+      MvPolynomial.rename (fun i : Nat => i + 1)
+        (decoNormalBottomCore n Q)
+
+/-- The ordinary positive-label form of one exceptional layer step. -/
+def decoExceptionalBottomStep {R : Type*} [CommSemiring R]
+    (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
+  MvPolynomial.X 2 * MvPolynomial.rename (fun i : Nat => i + 2) Q
+
 /-- Relabel the old bottom variables upward by one in a normal step. -/
 def decoNormalRename {n : ℕ} : DecoLayerCoord n → DecoLayerCoord (n + 1)
   | none => none
@@ -217,6 +230,32 @@ theorem rename_decoLayerBottomEmbedding_dehomogenize_exceptional
     MvPolynomial.rename_X, MvPolynomial.rename_rename,
     MvPolynomial.rename_rename]
   congr 1
+
+/-- The finite-coordinate normal layer step becomes
+`decoNormalBottomStep` after dehomogenizing and embedding its coordinates. -/
+theorem rename_dehomogenize_decoNormalLayerStep_eq_decoNormalBottomStep
+    {R : Type*} [CommRing R] {n : Nat}
+    {P : MvPolynomial (DecoLayerCoord n) R}
+    (hP : P.IsHomogeneous (n + 1)) :
+    MvPolynomial.rename (decoLayerBottomEmbedding (n + 1))
+        (MvPolynomial.dehomogenize (decoNormalLayerStep P)) =
+      decoNormalBottomStep n
+        (MvPolynomial.rename (decoLayerBottomEmbedding n)
+          (MvPolynomial.dehomogenize P)) := by
+  exact rename_decoLayerBottomEmbedding_dehomogenize_normal hP
+
+/-- The finite-coordinate exceptional layer step becomes
+`decoExceptionalBottomStep` after dehomogenizing and embedding its
+coordinates. -/
+theorem rename_dehomogenize_decoExceptionalLayerStep_eq_decoExceptionalBottomStep
+    {R : Type*} [CommSemiring R] {n : Nat}
+    (P : MvPolynomial (DecoLayerCoord n) R) :
+    MvPolynomial.rename (decoLayerBottomEmbedding (n + 2))
+        (MvPolynomial.dehomogenize (decoExceptionalLayerStep P)) =
+      decoExceptionalBottomStep
+        (MvPolynomial.rename (decoLayerBottomEmbedding n)
+          (MvPolynomial.dehomogenize P)) := by
+  exact rename_decoLayerBottomEmbedding_dehomogenize_exceptional P
 
 /-- A normal step raises the homogeneous degree by one. -/
 theorem decoNormalLayerStep_isHomogeneous {R : Type*}
