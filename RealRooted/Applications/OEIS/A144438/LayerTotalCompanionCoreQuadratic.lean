@@ -242,6 +242,23 @@ def
     (decoBottomTotalCompanionSuccessorExtension n)
     (decoBottomTotalCompanionSuccessorSlopeRecurrence n) k
 
+/-- The core-pair cross-Wronskian in the orientation required by the fresh
+affine-coordinate Rayleigh criterion. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+    (n k : Nat) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+    (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n) k
+
+/-- The companion-pair cross-Wronskian in the orientation required by the
+fresh affine-coordinate Rayleigh criterion. -/
+def
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+    (n k : Nat) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
+    (decoBottomTotalCompanionSuccessorExtension n) k
+
 /-- The companion-pair factor in the Plücker factorization of an occupied
 positive next-row discriminant. -/
 def
@@ -353,6 +370,89 @@ theorem
     decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_plucker]
   rfl
 
+/-- The named core factor is the negative of the same cross-Wronskian in the
+orientation used by the fresh-coordinate Rayleigh criterion. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt_eq_neg_cross
+    (n k : Nat) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt
+        n k =
+      -decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+        n k := by
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt]
+    using MvPolynomial.coordinateWronskian_swap
+      (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+      (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n) k
+
+/-- The named companion factor is the negative of the same cross-Wronskian in
+the orientation used by the fresh-coordinate Rayleigh criterion. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt_eq_neg_cross
+    (n k : Nat) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt
+        n k =
+      -decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+        n k := by
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt]
+    using MvPolynomial.coordinateWronskian_swap
+      (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
+      (decoBottomTotalCompanionSuccessorExtension n) k
+
+/-- Reversing both endpoint factors puts them in Rayleigh orientation without
+changing their product in the Plücker factorization. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_cross_factors
+    (n k : Nat) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt n k =
+      decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkewRecurrenceAt
+          n k ^ 2 -
+        4 *
+          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+            n k *
+          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+            n k := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_factors,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt_eq_neg_cross,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt_eq_neg_cross]
+  ring
+
+/-- Pointwise nonpositivity of the core factor is exactly nonnegativity of its
+Rayleigh-oriented cross-Wronskian. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreCoreFactorRecurrenceAt_nonpos_iff_cross
+    (n k : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt
+          n k) ≤ 0 ↔
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+          n k) := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrenceAt_eq_neg_cross,
+    MvPolynomial.eval_neg]
+  exact neg_nonpos
+
+/-- Pointwise nonpositivity of the companion factor is exactly nonnegativity
+of its Rayleigh-oriented cross-Wronskian. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreCompanionFactorRecurrenceAt_nonpos_iff_cross
+    (n k : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt
+          n k) ≤ 0 ↔
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+          n k) := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt_eq_neg_cross,
+    MvPolynomial.eval_neg]
+  exact neg_nonpos
+
 /-- In named form, the unshifted next-row discriminant is its skew square
 minus four times its core and companion factors. -/
 theorem
@@ -420,6 +520,59 @@ theorem
   · intro h i x
     exact
       (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff
+        n (i : Nat) x).mpr (h i x)
+
+/-- Pointwise nonpositivity of an arbitrary-coordinate recurrence
+discriminant is the same exact bound with both factors in the orientation used
+by fresh-coordinate Rayleigh criteria. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross
+    (n k : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt n k) ≤
+        0 ↔
+      MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkewRecurrenceAt
+            n k) ^ 2 ≤
+        4 * MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+              n k) *
+          MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+              n k) := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_cross_factors]
+  simp only [MvPolynomial.eval_sub, MvPolynomial.eval_pow,
+    MvPolynomial.eval_mul, map_ofNat]
+  constructor <;> intro h <;> linarith
+
+/-- Uniform nonpositivity over the complete next-row coordinate range is
+exactly the uniform Plücker inequality in Rayleigh cross orientation. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross_all
+    (n : Nat) :
+    (∀ i : Fin (n + 2), ∀ x,
+      MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt
+          n (i : Nat)) ≤ 0) ↔
+      ∀ i : Fin (n + 2), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkewRecurrenceAt
+              n (i : Nat)) ^ 2 ≤
+          4 * MvPolynomial.eval x
+              (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+                n (i : Nat)) *
+            MvPolynomial.eval x
+              (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+                n (i : Nat)) := by
+  constructor
+  · intro h i x
+    exact
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross
+        n (i : Nat) x).mp (h i x)
+  · intro h i x
+    exact
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross
         n (i : Nat) x).mpr (h i x)
 
 /-- Nonpositivity of an unshifted next-row discriminant is exactly the named
@@ -1281,6 +1434,28 @@ structure DecoBottomTotalCompanionSuccessorCoreFullRecurrenceFactorData
           (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt
             n (i : Nat))
 
+/-- The complete unshifted recurrence conditions with both discriminant
+factors oriented as the cross-Wronskians used by fresh-coordinate Rayleigh
+criteria. -/
+structure DecoBottomTotalCompanionSuccessorCoreFullRecurrenceCrossFactorData
+    (n : Nat) : Prop where
+  quadratic_nonneg : ∀ i : Fin (n + 2), ∀ x, 0 ≤ MvPolynomial.eval x
+    (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrenceAt
+      n (i : Nat))
+  constant_nonneg : ∀ i : Fin (n + 2), ∀ x, 0 ≤ MvPolynomial.eval x
+    (decoBottomTotalCompanionSuccessorCoreRowConstantRecurrenceAt
+      n (i : Nat))
+  discriminant_bound : ∀ i : Fin (n + 2), ∀ x,
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkewRecurrenceAt
+          n (i : Nat)) ^ 2 ≤
+      4 * MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCrossRecurrenceAt
+            n (i : Nat)) *
+        MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCrossRecurrenceAt
+            n (i : Nat))
+
 /-- Complete recurrence quadratic data is exactly complete recurrence factor
 data; this changes only the presentation of the discriminant obligation. -/
 theorem
@@ -1297,6 +1472,35 @@ theorem
     exact ⟨h.quadratic_nonneg, h.constant_nonneg,
       (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_all
         n).mpr h.discriminant_bound⟩
+
+/-- Complete recurrence quadratic data is exactly the same data with its
+discriminant factors written in fresh-coordinate Rayleigh orientation. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_crossFactorData
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData n ↔
+      DecoBottomTotalCompanionSuccessorCoreFullRecurrenceCrossFactorData n := by
+  constructor
+  · intro h
+    exact ⟨h.quadratic_nonneg, h.constant_nonneg,
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross_all
+        n).mp h.discriminant_nonpos⟩
+  · intro h
+    exact ⟨h.quadratic_nonneg, h.constant_nonneg,
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross_all
+        n).mpr h.discriminant_bound⟩
+
+/-- The two complete factor packages differ only by reversing both
+coordinate-Wronskian orientations. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreFullRecurrenceFactorData_iff_crossFactorData
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreFullRecurrenceFactorData n ↔
+      DecoBottomTotalCompanionSuccessorCoreFullRecurrenceCrossFactorData n :=
+  (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_factorData
+    n).symm.trans
+      (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_crossFactorData
+        n)
 
 /-- Complete next-rank coefficient data is exactly its uniform unshifted
 all-coordinate recurrence data, including the row formerly treated as a
@@ -1346,6 +1550,18 @@ theorem
   (decoBottomTotalCompanionSuccessorCoreQuadraticData_succ_iff_fullRecurrenceData
     n).trans
       (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_factorData
+        n)
+
+/-- Equivalently, complete next-rank coefficient data is the uniform
+all-coordinate recurrence package in fresh-coordinate Rayleigh orientation. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreQuadraticData_succ_iff_fullRecurrenceCrossFactorData
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreQuadraticData (n + 1) ↔
+      DecoBottomTotalCompanionSuccessorCoreFullRecurrenceCrossFactorData n :=
+  (decoBottomTotalCompanionSuccessorCoreQuadraticData_succ_iff_fullRecurrenceData
+    n).trans
+      (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_crossFactorData
         n)
 
 /-- The coefficient conditions for the distinguished first row at the next
