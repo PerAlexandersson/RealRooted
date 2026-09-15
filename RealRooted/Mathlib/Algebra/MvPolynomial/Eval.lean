@@ -26,4 +26,15 @@ theorem eval_update_eq_of_notMem_vars
     exact hk hi
   simp [hik]
 
+/-- A global condition on evaluations can be checked after fixing two
+coordinates that do not occur in the polynomial. -/
+theorem forall_eval_iff_forall_eval_update_update_of_notMem_vars
+    {R σ : Type*} [CommSemiring R] [DecidableEq σ]
+    {P : MvPolynomial σ R} {i j : σ}
+    (hi : i ∉ P.vars) (hj : j ∉ P.vars) (s t : R) (q : R → Prop) :
+    (∀ x, q (eval x P)) ↔
+      ∀ x, q (eval (Function.update (Function.update x i s) j t) P) := by
+  simp only [eval_update_eq_of_notMem_vars hi,
+    eval_update_eq_of_notMem_vars hj]
+
 end MvPolynomial

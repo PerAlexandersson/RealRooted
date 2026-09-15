@@ -278,6 +278,42 @@ theorem zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic
     (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope n)
     (zero_notMem_vars_decoBottomTotalCompanionSlope n) (i + 1 : Nat)
 
+private theorem notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    {n : Nat} {i : Fin (n + 1)} {k : Nat}
+    (hlinear : k ∉
+      (decoBottomTotalCompanionSuccessorCoreRowLinear n i).vars)
+    (hquadratic : k ∉
+      (decoBottomTotalCompanionSuccessorCoreRowQuadratic n i).vars)
+    (hconstant : k ∉
+      (decoBottomTotalCompanionSuccessorCoreRowConstant n i).vars) :
+    k ∉ (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i).vars := by
+  intro h
+  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminant at h
+  rcases Finset.mem_union.mp
+      (MvPolynomial.vars_sub_subset
+        (p := decoBottomTotalCompanionSuccessorCoreRowLinear n i ^ 2)
+        (q := MvPolynomial.C 4 *
+          decoBottomTotalCompanionSuccessorCoreRowQuadratic n i *
+            decoBottomTotalCompanionSuccessorCoreRowConstant n i) h) with
+    hleft | hright
+  · exact hlinear (MvPolynomial.vars_pow _ 2 hleft)
+  · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hright) with
+      hproduct | hconstantMem
+    · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hproduct) with
+        hfour | hquadraticMem
+      · simp at hfour
+      · exact hquadratic hquadraticMem
+    · exact hconstant hconstantMem
+
+/-- The row discriminant is independent of the fresh coordinate. -/
+theorem zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    (n : Nat) (i : Fin (n + 1)) :
+    0 ∉ (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i).vars :=
+  notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowLinear n i)
+    (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+    (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+
 /-- The constant row coefficient is independent of the row coordinate. -/
 theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant
     (n : Nat) (i : Fin (n + 1)) :
@@ -322,30 +358,11 @@ theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic
 theorem add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
     (n : Nat) (i : Fin (n + 1)) :
     (i + 1 : Nat) ∉
-      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i).vars := by
-  have hlinear :=
-    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowLinear n i
-  have hquadratic :=
-    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i
-  have hconstant :=
-    add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i
-  intro h
-  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminant at h
-  rcases Finset.mem_union.mp
-      (MvPolynomial.vars_sub_subset
-        (p := decoBottomTotalCompanionSuccessorCoreRowLinear n i ^ 2)
-        (q := MvPolynomial.C 4 *
-          decoBottomTotalCompanionSuccessorCoreRowQuadratic n i *
-            decoBottomTotalCompanionSuccessorCoreRowConstant n i) h) with
-    hleft | hright
-  · exact hlinear (MvPolynomial.vars_pow _ 2 hleft)
-  · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hright) with
-      hproduct | hconstantMem
-    · rcases Finset.mem_union.mp (MvPolynomial.vars_mul _ _ hproduct) with
-        hfour | hquadraticMem
-      · simp at hfour
-      · exact hquadratic hquadraticMem
-    · exact hconstant hconstantMem
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i).vars :=
+  notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowLinear n i)
+    (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+    (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
 
 /-- Global nonnegativity of a successor core row is exactly nonnegativity of
 its leading and constant coefficients together with nonpositivity of its
@@ -424,6 +441,66 @@ structure DecoBottomTotalCompanionSuccessorCoreQuadraticData
     MvPolynomial.eval x
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
 
+/-- The exact successor-row coefficient conditions after fixing the fresh and
+row coordinates, which are absent from all three coefficient polynomials.
+This packages proof obligations and does not assert that they hold. -/
+structure DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData
+    (n : Nat) : Prop where
+  quadratic_nonneg : ∀ i : Fin (n + 1), ∀ x,
+    0 ≤ MvPolynomial.eval
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+  constant_nonneg : ∀ i : Fin (n + 1), ∀ x,
+    0 ≤ MvPolynomial.eval
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+  discriminant_nonpos : ∀ i : Fin (n + 1), ∀ x,
+    MvPolynomial.eval
+      (Function.update (Function.update x 0 0) (i + 1 : Nat) 0)
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
+
+/-- The successor-row coefficient conditions are unchanged after fixing the
+two coordinates absent from every coefficient polynomial. -/
+theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreQuadraticData n ↔
+      DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData n := by
+  constructor
+  · intro h
+    refine ⟨?_, ?_, ?_⟩
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+        0 0 (fun y : Real ↦ 0 ≤ y)).mp (h.quadratic_nonneg i)
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+        0 0 (fun y : Real ↦ 0 ≤ y)).mp (h.constant_nonneg i)
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
+        0 0 (fun y : Real ↦ y ≤ 0)).mp (h.discriminant_nonpos i)
+  · intro h
+    refine ⟨?_, ?_, ?_⟩
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic n i)
+        0 0 (fun y : Real ↦ 0 ≤ y)).mpr (h.quadratic_nonneg i)
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+        0 0 (fun y : Real ↦ 0 ≤ y)).mpr (h.constant_nonneg i)
+    · intro i
+      exact (MvPolynomial.forall_eval_iff_forall_eval_update_update_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
+        (add_one_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i)
+        0 0 (fun y : Real ↦ y ≤ 0)).mpr (h.discriminant_nonpos i)
+
 /-- The same finite endpoint conditions with the constant coefficient written
 as compensation against the current companion-data Wronskian and the
 quadratic coefficient expanded into its genuinely new two summands. -/
@@ -484,6 +561,15 @@ theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData
         MvPolynomial.eval_add]
       linarith
 
+/-- The expanded endpoint conditions are exactly the coefficient conditions
+after removing their two inessential coordinates. -/
+theorem decoBottomTotalCompanionSuccessorCoreEndpointData_iff_reduced
+    (n : Nat) :
+    DecoBottomTotalCompanionSuccessorCoreEndpointData n ↔
+      DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData n :=
+  (decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData n).symm.trans
+    (decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced n)
+
 /-- The finite successor core rows are nonnegative exactly when their bundled
 quadratic coefficient data holds. -/
 theorem eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff
@@ -508,6 +594,17 @@ theorem eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff
     exact (eval_decoBottomTotalCompanionSuccessorCoreRow_nonneg_iff
       n i).mpr ⟨h.quadratic_nonneg i, h.constant_nonneg i,
         h.discriminant_nonpos i⟩
+
+/-- Global nonnegativity of all finite successor rows is exactly the reduced
+two-coordinate coefficient package. -/
+theorem eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_reduced
+    (n : Nat) :
+    (∀ i : Fin (n + 1), ∀ x,
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRow n i)) ↔
+      DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData n :=
+  (eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff n).trans
+    (decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced n)
 
 end
 
