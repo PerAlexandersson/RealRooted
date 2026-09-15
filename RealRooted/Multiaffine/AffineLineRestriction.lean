@@ -15,6 +15,69 @@ namespace RealRooted
 
 noncomputable section
 
+/-- A multiaffine polynomial is its zero-specialization in one coordinate
+plus that coordinate times its partial derivative. -/
+theorem MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : P.IsMultiaffine) (i : σ) :
+    P = MvPolynomial.specializeZero i P +
+      MvPolynomial.X i * MvPolynomial.pderiv i P := by
+  classical
+  apply MvPolynomial.funext
+  intro z
+  rw [MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_specializeZero]
+  have h := hP.eval_update_eq_eval_pderiv_mul_add i z (z i)
+  simp only [Function.update_eq_self] at h
+  rw [h]
+  ring
+
+/-- Restricting a zero-specialization to an affine line is the same as first
+zeroing that coordinate in the line. -/
+theorem realAffineLineRestriction_specializeZero
+    {σ : Type*} [DecidableEq σ]
+    (a b : σ → ℝ) (P : MvPolynomial σ ℝ) (i : σ) :
+    realAffineLineRestriction a b (MvPolynomial.specializeZero i P) =
+      realAffineLineRestriction (Function.update a i 0)
+        (Function.update b i 0) P := by
+  classical
+  apply Polynomial.funext
+  intro t
+  simp only [eval_realAffineLineRestriction,
+    MvPolynomial.eval_specializeZero]
+  have hassignment : Function.update (fun j => a j + b j * t) i 0 =
+      fun j => Function.update a i 0 j + Function.update b i 0 j * t := by
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp
+    · simp [hji]
+  rw [hassignment]
+
+/-- The partial derivative of a multiaffine polynomial has the same affine
+restriction after zeroing the differentiated coordinate in the line. -/
+theorem MvPolynomial.IsMultiaffine.realAffineLineRestriction_pderiv_update_zero
+    {σ : Type*} [DecidableEq σ] {P : MvPolynomial σ ℝ}
+    (hP : P.IsMultiaffine) (a b : σ → ℝ) (i : σ) :
+    realAffineLineRestriction a b (MvPolynomial.pderiv i P) =
+      realAffineLineRestriction (Function.update a i 0)
+        (Function.update b i 0) (MvPolynomial.pderiv i P) := by
+  classical
+  apply Polynomial.funext
+  intro t
+  simp only [eval_realAffineLineRestriction]
+  let z : σ → ℝ := fun j => a j + b j * t
+  have hupdate := hP.eval_update_pderiv_eq i z 0
+  rw [← hupdate]
+  have hassignment : Function.update z i 0 =
+      fun j => Function.update a i 0 j + Function.update b i 0 j * t := by
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp [z]
+    · simp [z, hji]
+  rw [hassignment]
+
 /-- The derivative of an affine-line restriction is the restriction of the
 directional derivative. -/
 theorem derivative_realAffineLineRestriction
