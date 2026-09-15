@@ -25,6 +25,23 @@ def decoBottomTotalCompanionExtensionCoreSlope (n : Nat) :
     MvPolynomial Nat Real :=
   MvPolynomial.pderiv 0 (decoBottomTotalCompanionExtensionCore n)
 
+/-- The unshifted recurrence form of the next companion-extension core's
+fresh-coordinate zero-section. -/
+def decoBottomTotalCompanionSuccessorCoreZeroRecurrence (n : Nat) :
+    MvPolynomial Nat Real :=
+  MvPolynomial.affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 4 : Real)
+      (decoBottomTotalCompanionSuccessorExtension n) +
+    decoBottomTotalCompanionExtensionCore n
+
+/-- The unshifted recurrence form of the next companion-extension core's
+fresh-coordinate slope. -/
+def decoBottomTotalCompanionSuccessorCoreSlopeRecurrence (n : Nat) :
+    MvPolynomial Nat Real :=
+  MvPolynomial.affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+    (decoBottomTotalCompanionExtensionCore n)
+
 /-- The fresh-coordinate derivative of the total extension is its companion
 core. -/
 theorem pderiv_zero_decoBottomTotalCompanionTotalExtension (n : Nat) :
@@ -122,6 +139,101 @@ def decoBottomTotalCompanionSuccessorCoreRowDiscriminant
       decoBottomTotalCompanionSuccessorCoreRowQuadratic n i *
         decoBottomTotalCompanionSuccessorCoreRowConstant n i
 
+/-- The unshifted recurrence form of a next constant row coefficient. -/
+def decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+    (decoBottomTotalCompanionSuccessorExtension n) (i + 1 : Nat)
+
+/-- The unshifted recurrence form of a next linear row coefficient. -/
+def decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+      (decoBottomTotalCompanionSuccessorSlopeRecurrence n) (i + 1 : Nat) +
+    MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+      (decoBottomTotalCompanionSuccessorExtension n) (i + 1 : Nat)
+
+/-- The unshifted recurrence form of a next quadratic row coefficient. -/
+def decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+    (decoBottomTotalCompanionSuccessorSlopeRecurrence n) (i + 1 : Nat)
+
+/-- The unshifted recurrence form of a next row discriminant. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence n i ^ 2 -
+    MvPolynomial.C 4 *
+      decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i *
+        decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence n i
+
+/-- The successor-core row discriminant has the generic Plücker
+factorization for the two affine endpoint pairs. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i =
+      (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCoreZero n)
+          (decoBottomTotalCompanionSlope n) (i + 1 : Nat) -
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCoreSlope n)
+          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)) ^ 2 -
+      4 * MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCoreZero n)
+          (decoBottomTotalCompanionExtensionCoreSlope n) (i + 1 : Nat) *
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) (i + 1 : Nat) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant,
+    decoBottomTotalCompanionSuccessorCoreRowLinear,
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic,
+    decoBottomTotalCompanionSuccessorCoreRowConstant,
+    show (MvPolynomial.C (4 : Real) : MvPolynomial Nat Real) = 4 by
+      exact map_ofNat MvPolynomial.C 4]
+  exact MvPolynomial.coordinateWronskian_quadratic_discriminant
+    (decoBottomTotalCompanionExtensionCoreZero n)
+    (decoBottomTotalCompanionExtensionCoreSlope n)
+    (decoBottomTotalWronskianCompanion n)
+    (decoBottomTotalCompanionSlope n) (i + 1 : Nat)
+
+/-- The unshifted next-row discriminant has the same generic Plücker
+factorization. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence_eq_plucker
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence n i =
+      (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+          (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
+          (i + 1 : Nat) -
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+          (decoBottomTotalCompanionSuccessorExtension n)
+          (i + 1 : Nat)) ^ 2 -
+      4 * MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+          (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+          (i + 1 : Nat) *
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionSuccessorExtension n)
+          (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
+          (i + 1 : Nat) := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence
+    decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence
+    decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence
+    decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence
+  rw [show (MvPolynomial.C (4 : Real) : MvPolynomial Nat Real) = 4 by
+    exact map_ofNat MvPolynomial.C 4]
+  exact MvPolynomial.coordinateWronskian_quadratic_discriminant
+    (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+    (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+    (decoBottomTotalCompanionSuccessorExtension n)
+    (decoBottomTotalCompanionSuccessorSlopeRecurrence n) (i + 1 : Nat)
+
 /-- The companion extension core is affine in coordinate `0`, with the named
 zero-section and slope. -/
 theorem decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope
@@ -147,6 +259,37 @@ theorem decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add
   rw [decoBottomTotalCompanionExtensionCore_eq_base_add_X_mul_slope] at h
   exact (add_right_cancel h).symm
 
+/-- The next core zero-section is the positive-coordinate rename of its
+unshifted recurrence form. -/
+theorem decoBottomTotalCompanionExtensionCoreZero_succ_eq_rename
+    (n : Nat) :
+    decoBottomTotalCompanionExtensionCoreZero (n + 1) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n) := by
+  rw [decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add]
+  have hc : ((n + 1 : Nat) : Real) + 3 = (n : Real) + 4 := by
+    push_cast
+    ring
+  unfold decoBottomTotalCompanionSuccessorCoreZeroRecurrence
+  rw [hc, decoBottomTotalWronskianCompanion_succ_eq_rename_extension,
+    MvPolynomial.affineEulerCore_rename_succ,
+    decoBottomTotalCompanionCore_succ_eq_rename_extensionCore, map_add]
+
+/-- The next core slope is the positive-coordinate rename of its unshifted
+recurrence form. -/
+theorem decoBottomTotalCompanionExtensionCoreSlope_succ_eq_rename
+    (n : Nat) :
+    decoBottomTotalCompanionExtensionCoreSlope (n + 1) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n) := by
+  rw [decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore]
+  have hc : ((n + 1 : Nat) : Real) + 2 = (n : Real) + 3 := by
+    push_cast
+    ring
+  unfold decoBottomTotalCompanionSuccessorCoreSlopeRecurrence
+  rw [hc, decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+    MvPolynomial.affineEulerCore_rename_succ]
+
 /-- The constant row coefficient splits into an affine Euler row of the
 companion and the current companion-data Wronskian. -/
 theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add
@@ -169,6 +312,26 @@ theorem decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add
   unfold decoBottomTotalCompanionSuccessorCoreRowConstant
   rw [decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add,
     MvPolynomial.coordinateWronskian_add_left, hrow]
+
+/-- The unshifted constant recurrence is the successor-extension affine-Euler
+row plus the current successor core row. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence_eq_add
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence n i =
+      MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionSuccessorExtension n) i.succ +
+        decoBottomTotalCompanionSuccessorCoreRow n i := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence
+    decoBottomTotalCompanionSuccessorCoreZeroRecurrence
+  rw [MvPolynomial.coordinateWronskian_add_left]
+  have hrow := MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective
+    (n + 4 : Real) (decoBottomTotalCompanionSuccessorExtension n) i.succ
+  have hcore :=
+    coordinateWronskian_companionExtensionCore_successorExtension n i
+  simpa only [Fin.valEmbedding_apply, Fin.val_succ] using
+    congrArg₂ (· + ·) hrow hcore
 
 /-- The quadratic row coefficient splits into a mixed core/total row and an
 affine Euler row of the preceding companion core. -/
@@ -195,6 +358,30 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_add
     decoBottomTotalCompanionSlope
   rw [decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
     MvPolynomial.coordinateWronskian_add_right, hrow]
+
+/-- The unshifted quadratic recurrence is the mixed
+core/total-extension Wronskian plus the current extension-core affine-Euler
+row. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i =
+      MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+            (decoBottomTotalCompanionExtensionCore n))
+          (decoBottomTotalCompanionTotalExtension n) (i + 1 : Nat) +
+        MvPolynomial.affineEulerRayleighRow
+          (Fin.valEmbedding : Fin (n + 2) → Nat)
+          (decoBottomTotalCompanionExtensionCore n) i.succ := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence
+    decoBottomTotalCompanionSuccessorCoreSlopeRecurrence
+    decoBottomTotalCompanionSuccessorSlopeRecurrence
+  rw [MvPolynomial.coordinateWronskian_add_right]
+  have hrow := MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective
+    (n + 3 : Real) (decoBottomTotalCompanionExtensionCore n) i.succ
+  simpa only [Fin.valEmbedding_apply, Fin.val_succ] using
+    congrArg₂ (· + ·) rfl hrow
 
 /-- The constant row coefficient is its companion value-one endpoint product,
 off-row affine-Euler remainder, and current companion-data Wronskian. -/
@@ -336,6 +523,66 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin
   have hsum := congrArg₂ (· + ·) hmixed hrow
   simpa only [hc, Nat.add_assoc, Fin.val_succ, map_add] using hsum
 
+/-- The complete next constant coefficient is the positive-coordinate rename
+of its named unshifted recurrence. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowConstant_succ_fin_eq_recurrence
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowConstant (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowConstant_succ_fin,
+    decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence_eq_add]
+
+/-- The complete next quadratic coefficient is the positive-coordinate
+rename of its named unshifted recurrence. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin_eq_recurrence
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin,
+    decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add]
+
+/-- The complete next linear coefficient is the positive-coordinate rename
+of its named unshifted recurrence. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowLinear_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowLinear (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence n i) := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowLinear
+    decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence
+  rw [decoBottomTotalCompanionExtensionCoreZero_succ_eq_rename,
+    decoBottomTotalCompanionSlope_succ_eq_rename,
+    decoBottomTotalCompanionExtensionCoreSlope_succ_eq_rename,
+    decoBottomTotalWronskianCompanion_succ_eq_rename_extension]
+  have hleft := MvPolynomial.coordinateWronskian_rename
+    (fun j : Nat => j + 1) (by intro j k h; lia)
+    (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
+    (decoBottomTotalCompanionSuccessorSlopeRecurrence n) (i + 1 : Nat)
+  have hright := MvPolynomial.coordinateWronskian_rename
+    (fun j : Nat => j + 1) (by intro j k h; lia)
+    (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+    (decoBottomTotalCompanionSuccessorExtension n) (i + 1 : Nat)
+  have hsum := congrArg₂ (· + ·) hleft hright
+  simpa only [Fin.val_succ, Nat.add_assoc, map_add] using hsum
+
+/-- Every non-distinguished next row discriminant is the
+positive-coordinate rename of its named unshifted recurrence. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_succ_fin
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence n i) := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminant
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence
+  rw [decoBottomTotalCompanionSuccessorCoreRowLinear_succ_fin,
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin_eq_recurrence,
+    decoBottomTotalCompanionSuccessorCoreRowConstant_succ_fin_eq_recurrence,
+    map_sub, map_pow, map_mul, map_mul, MvPolynomial.rename_C]
+
 /-- Each successor core row is exactly quadratic in the remaining fresh
 coordinate, with the three named endpoint-Wronskian coefficients. -/
 theorem decoBottomTotalCompanionSuccessorCoreRow_eq_quadratic
@@ -354,6 +601,25 @@ theorem decoBottomTotalCompanionSuccessorCoreRow_eq_quadratic
     decoBottomTotalCompanionSuccessorCoreRowQuadratic
   exact MvPolynomial.coordinateWronskian_add_X_mul_add_X_mul_of_ne
     _ _ _ _ (i + 1 : Nat) 0 (by lia)
+
+/-- Every non-distinguished next successor-core row is the fresh-coordinate
+quadratic assembled from the three named unshifted coefficient recurrences. -/
+theorem decoBottomTotalCompanionSuccessorCoreRow_succ_fin_eq_recurrence
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRow (n + 1) i.succ =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+          (decoBottomTotalCompanionSuccessorCoreRowConstantRecurrence n i) +
+        MvPolynomial.X 0 *
+          MvPolynomial.rename (fun j : Nat => j + 1)
+            (decoBottomTotalCompanionSuccessorCoreRowLinearRecurrence n i) +
+        MvPolynomial.X 0 ^ 2 *
+          MvPolynomial.rename (fun j : Nat => j + 1)
+            (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence
+              n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRow_eq_quadratic,
+    decoBottomTotalCompanionSuccessorCoreRowConstant_succ_fin_eq_recurrence,
+    decoBottomTotalCompanionSuccessorCoreRowLinear_succ_fin,
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_fin_eq_recurrence]
 
 /-- Evaluation of a successor core row is the corresponding scalar quadratic
 in the fresh coordinate. -/

@@ -262,6 +262,38 @@ theorem coordinateWronskian_add_X_mul_add_X_mul_of_ne
   simp only [if_neg hik]
   ring
 
+/-- The four coordinate Wronskians of four polynomials satisfy the
+two-dimensional Plücker relation. -/
+theorem coordinateWronskian_plucker
+    {R σ : Type*} [CommRing R]
+    (P Q A B : MvPolynomial σ R) (i : σ) :
+    coordinateWronskian P A i * coordinateWronskian Q B i =
+      coordinateWronskian P Q i * coordinateWronskian A B i +
+        coordinateWronskian P B i * coordinateWronskian Q A i := by
+  simp only [coordinateWronskian]
+  ring
+
+/-- The discriminant of the coordinate Wronskian of two affine extensions
+has a difference-of-Wronskians form. -/
+theorem coordinateWronskian_quadratic_discriminant
+    {R σ : Type*} [CommRing R]
+    (P Q A B : MvPolynomial σ R) (i : σ) :
+    (coordinateWronskian P B i + coordinateWronskian Q A i) ^ 2 -
+        4 * coordinateWronskian Q B i * coordinateWronskian P A i =
+      (coordinateWronskian P B i - coordinateWronskian Q A i) ^ 2 -
+        4 * coordinateWronskian P Q i * coordinateWronskian A B i := by
+  calc
+    _ = (coordinateWronskian P B i + coordinateWronskian Q A i) ^ 2 -
+        4 * (coordinateWronskian P A i *
+          coordinateWronskian Q B i) := by ring
+    _ = (coordinateWronskian P B i + coordinateWronskian Q A i) ^ 2 -
+        4 * (coordinateWronskian P Q i *
+          coordinateWronskian A B i +
+            coordinateWronskian P B i *
+              coordinateWronskian Q A i) := by
+      rw [coordinateWronskian_plucker P Q A B i]
+    _ = _ := by ring
+
 /-- At the adjoined coordinate, a fresh right factor exposes the exact
 coordinate-reduced remainder of the left argument. -/
 theorem coordinateWronskian_X_mul_right_self

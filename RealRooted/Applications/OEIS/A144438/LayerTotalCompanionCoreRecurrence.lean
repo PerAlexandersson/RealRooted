@@ -19,6 +19,12 @@ def decoBottomTotalCompanionExtensionCore (n : Nat) :
   MvPolynomial.affineEulerCore (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
     (n + 3 : Real) (decoBottomTotalCompanionTotalExtension n)
 
+/-- The unshifted recurrence form of the next companion slope. -/
+def decoBottomTotalCompanionSuccessorSlopeRecurrence (n : Nat) :
+    MvPolynomial Nat Real :=
+  decoBottomTotalCompanionTotalExtension n +
+    decoBottomTotalCompanionExtensionCore n
+
 /-- The affine Euler Rayleigh row of the companion total extension at the
 positive coordinate indexed by `i`. -/
 def decoBottomTotalCompanionExtensionRayleighRow
@@ -148,6 +154,17 @@ theorem decoBottomTotalCompanionCore_succ_eq_rename_extensionCore (n : Nat) :
   congr 1
   push_cast
   ring
+
+/-- The next companion slope is the positive-coordinate rename of its
+unshifted recurrence form. -/
+theorem decoBottomTotalCompanionSlope_succ_eq_rename (n : Nat) :
+    decoBottomTotalCompanionSlope (n + 1) =
+      MvPolynomial.rename (fun j : Nat => j + 1)
+        (decoBottomTotalCompanionSuccessorSlopeRecurrence n) := by
+  unfold decoBottomTotalCompanionSlope
+    decoBottomTotalCompanionSuccessorSlopeRecurrence
+  rw [decoBottomTotal_add_two_eq_rename_companionTotalExtension,
+    decoBottomTotalCompanionCore_succ_eq_rename_extensionCore, map_add]
 
 /-- Value-one specialization commutes with the affine Euler core defining the
 unshifted next companion core. -/
