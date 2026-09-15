@@ -90,6 +90,16 @@ theorem decoBottomTotalAffineSlope_isRayleigh (n : Nat)
     pderiv_one_decoNormalBottomStep_total] at h
   exact h
 
+/-- Under preceding-rank stability, the unshifted normal core paired with the
+two-rank companion is Rayleigh. -/
+theorem decoBottomTotalCompanionCore_isRayleigh (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvPolynomial.IsRayleigh (decoBottomTotalCompanionCore n) := by
+  have hslope := decoBottomTotalAffineSlope_isRayleigh n hstable
+  unfold decoBottomTotalAffineSlope at hslope
+  exact (MvPolynomial.isRayleigh_rename_iff
+    (by intro i j h; lia)).mp hslope
+
 /-- Under preceding-rank stability, specializing the normal step at one shows
 that the companion successor slope is Rayleigh. -/
 theorem decoBottomTotalCompanionSlope_isRayleigh (n : Nat)

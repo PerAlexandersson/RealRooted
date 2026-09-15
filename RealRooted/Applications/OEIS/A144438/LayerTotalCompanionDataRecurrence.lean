@@ -14,6 +14,68 @@ namespace RealRooted.Applications.OEIS
 
 noncomputable section
 
+/-- Stability of the next homogeneous layer makes the unshifted companion
+extension core Rayleigh. -/
+theorem decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    MvPolynomial.IsRayleigh
+      (decoBottomTotalCompanionExtensionCore n) := by
+  have hcore := decoBottomTotalCompanionCore_isRayleigh (n + 1)
+    (by simpa only [Nat.add_assoc, Nat.reduceAdd] using hstable)
+  rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore] at hcore
+  exact (MvPolynomial.isRayleigh_rename_iff
+    (by intro i j h; lia)).mp hcore
+
+/-- A completed stability/data step makes the next unshifted extension core
+Rayleigh, without adding a new induction hypothesis. -/
+theorem
+    decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    MvPolynomial.IsRayleigh
+      (decoBottomTotalCompanionExtensionCore n) := by
+  have hbottom :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hnextStable : MvRealStable (decoLayerTotal (n + 2)) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n + 2)).mpr
+      hbottom
+  exact decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable
+    n hnextStable
+
+/-- After one completed stability/data step, every current core-pair
+cross-Wronskian has the sign required by the fresh-coordinate Rayleigh
+criterion. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreCoreCross_nonneg_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) := by
+  have hcore :=
+    decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hcriterion :=
+    (decoBottomTotalCompanionExtensionCore_isRayleigh_iff_affine n).mp hcore
+  intro i x
+  exact hcriterion.2.2.1 (i + 1 : Nat) x
+
+/-- Equivalently, after one completed stability/data step every current
+core-pair Plücker factor is nonpositive. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreCoreFactor_nonpos_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor n i) ≤
+        0 := by
+  intro i x
+  exact
+    (eval_decoBottomTotalCompanionSuccessorCoreCoreFactor_nonpos_iff_cross
+      n i x).mpr
+        (eval_decoBottomTotalCompanionSuccessorCoreCoreCross_nonneg_of_companionData
+          n hstable hdata i x)
+
 /-- The part of the successor-slope/companion Wronskian not already present
 in the current companion-data Wronskian. -/
 def decoBottomTotalCompanionWronskianCorrection (n i : Nat) :

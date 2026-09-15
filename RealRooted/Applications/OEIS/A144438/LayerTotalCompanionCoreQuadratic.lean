@@ -267,6 +267,49 @@ def
   decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt
     n (i + 1)
 
+/-- The current skew term in the Plücker factorization of an occupied positive
+next-row discriminant. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionSlope n) (i + 1 : Nat) -
+    MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)
+
+/-- The current core-pair factor in the Plücker factorization of an occupied
+positive next-row discriminant. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionExtensionCoreZero n)
+    (decoBottomTotalCompanionExtensionCoreSlope n) (i + 1 : Nat)
+
+/-- The current companion-pair factor in the Plücker factorization of an
+occupied positive next-row discriminant. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalWronskianCompanion n)
+    (decoBottomTotalCompanionSlope n) (i + 1 : Nat)
+
+/-- The current core-pair cross-Wronskian in fresh-coordinate Rayleigh
+orientation. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionExtensionCoreSlope n)
+    (decoBottomTotalCompanionExtensionCoreZero n) (i + 1 : Nat)
+
+/-- The current companion-pair cross-Wronskian in fresh-coordinate Rayleigh
+orientation. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionSlope n)
+    (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)
+
 /-- The successor-core row discriminant has the generic Plücker
 factorization for the two affine endpoint pairs. -/
 theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker
@@ -295,6 +338,91 @@ theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker
     (decoBottomTotalCompanionExtensionCoreSlope n)
     (decoBottomTotalWronskianCompanion n)
     (decoBottomTotalCompanionSlope n) (i + 1 : Nat)
+
+/-- In named form, the current next-row discriminant is its skew square minus
+four times its two endpoint factors. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_factors
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i =
+      decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i ^ 2 -
+        4 * decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor n i *
+          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
+            n i := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker]
+  rfl
+
+/-- The current core factor is the negative of its cross-Wronskian in
+fresh-coordinate Rayleigh orientation. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor_eq_neg_cross
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor n i =
+      -decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i := by
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross]
+    using MvPolynomial.coordinateWronskian_swap
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalCompanionExtensionCoreZero n) (i + 1 : Nat)
+
+/-- The current companion factor is the negative of its cross-Wronskian in
+fresh-coordinate Rayleigh orientation. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor_eq_neg_cross
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor n i =
+      -decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+        n i := by
+  simpa only [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross]
+    using MvPolynomial.coordinateWronskian_swap
+      (decoBottomTotalCompanionSlope n)
+      (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)
+
+/-- Reversing both current endpoint factors gives the same exact
+discriminant factorization in fresh-coordinate Rayleigh orientation. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i =
+      decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i ^ 2 -
+        4 * decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i *
+          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+            n i := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_factors,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor_eq_neg_cross,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor_eq_neg_cross]
+  ring
+
+/-- Pointwise nonpositivity of the current core factor is exactly
+nonnegativity of its Rayleigh-oriented cross-Wronskian. -/
+theorem eval_decoBottomTotalCompanionSuccessorCoreCoreFactor_nonpos_iff_cross
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor n i) ≤
+        0 ↔
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactor_eq_neg_cross,
+    MvPolynomial.eval_neg]
+  exact neg_nonpos
+
+/-- Pointwise nonpositivity of the current companion factor is exactly
+nonnegativity of its Rayleigh-oriented cross-Wronskian. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
+          n i) ≤ 0 ↔
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+          n i) := by
+  rw [
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor_eq_neg_cross,
+    MvPolynomial.eval_neg]
+  exact neg_nonpos
 
 /-- At every coordinate, the unshifted next-row discriminant has the generic
 Plücker factorization. -/
