@@ -17,9 +17,9 @@ nonnegative coefficients + real-rooted
   => unimodal coefficients.
 ```
 
-The Newton-inequality and no-internal-zero polynomial steps are recorded as
-theorem stubs.  The elementary sequence implications and the Pólya-frequency
-route to log-concavity are formalized here.
+The Newton-inequality and no-internal-zero polynomial steps, elementary
+sequence implications, and Pólya-frequency route to log-concavity are all
+formalized here.
 -/
 
 open Polynomial Matrix

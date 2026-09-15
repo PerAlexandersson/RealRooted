@@ -907,6 +907,7 @@ import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial.CoefficientShape
 import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.PartialSumStep
@@ -1346,6 +1347,7 @@ import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
 import RealRooted.Applications.OEIS.A144438.InverseWord
 import RealRooted.Applications.OEIS.A144438.NormalizedCode
 import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+import RealRooted.Applications.OEIS.A144438.CoefficientShape
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.Applications.OEIS.A144438.Gamma
 import RealRooted.Applications.OEIS.A144438.DecoratedCycle
