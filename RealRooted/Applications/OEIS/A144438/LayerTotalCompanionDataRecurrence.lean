@@ -72,6 +72,50 @@ theorem decoBottomTotalCompanionWronskianCorrection_of_ne_one
   unfold decoBottomTotalCompanionWronskianCorrection
   simp only [if_neg hi, add_zero]
 
+/-- At rank zero, every correction in coordinates `2, 3, ...` vanishes. -/
+@[simp] theorem decoBottomTotalCompanionWronskianCorrection_zero_add_two
+    (i : Nat) :
+    decoBottomTotalCompanionWronskianCorrection 0 (i + 2) = 0 := by
+  rw [decoBottomTotalCompanionWronskianCorrection_of_ne_one 0 (i + 2)
+    (by lia)]
+  simp [decoBottomTotal_zero, decoBottomTotal_one,
+    MvPolynomial.coordinateWronskian]
+
+/-- At positive rank, every coordinate `i + 2` correction is `X 1` times
+the shifted lower Wronskian of the prior companion-total extension against
+the latest total. -/
+theorem decoBottomTotalCompanionWronskianCorrection_succ_add_two
+    (n i : Nat) :
+    decoBottomTotalCompanionWronskianCorrection (n + 1) (i + 2) =
+      MvPolynomial.X 1 * MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionTotalExtension n)
+          (decoBottomTotal (n + 1)) (i + 1)) := by
+  rw [decoBottomTotalCompanionWronskianCorrection_of_ne_one
+    (n + 1) (i + 2) (by lia)]
+  rw [show n + 1 + 1 = n + 2 by lia,
+    decoBottomTotal_add_two_eq_rename_companionTotalExtension]
+  simpa only [Nat.add_assoc] using congrArg (MvPolynomial.X 1 * ·)
+    (MvPolynomial.coordinateWronskian_rename (fun j : Nat => j + 1)
+      (by intro j k hjk; lia)
+      (decoBottomTotalCompanionTotalExtension n)
+      (decoBottomTotal (n + 1)) (i + 1))
+
+/-- Evaluation of a positive-rank coordinate-`i+2` correction is the value of
+`X 1` times the lower Wronskian under the shifted assignment. -/
+theorem eval_decoBottomTotalCompanionWronskianCorrection_succ_add_two
+    (n i : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionWronskianCorrection (n + 1) (i + 2)) =
+      x 1 * MvPolynomial.eval (fun j => x (j + 1))
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionTotalExtension n)
+          (decoBottomTotal (n + 1)) (i + 1)) := by
+  rw [decoBottomTotalCompanionWronskianCorrection_succ_add_two,
+    MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    MvPolynomial.eval_rename]
+  rfl
+
 /-- The correction vanishes outside the ordinary support interval of the
 latest total and companion. -/
 theorem decoBottomTotalCompanionWronskianCorrection_eq_zero_of_notMem_Icc
