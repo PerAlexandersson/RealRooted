@@ -69,6 +69,71 @@ def decoExceptionalBottomStep {R : Type*} [CommSemiring R]
     (Q : MvPolynomial Nat R) : MvPolynomial Nat R :=
   MvPolynomial.X 2 * MvPolynomial.rename (fun i : Nat => i + 2) Q
 
+/-- The ordinary-label normal core preserves multiaffineness. -/
+theorem decoNormalBottomCore_isMultiaffine
+    {R : Type*} [CommRing R] [Nontrivial R] {n : Nat}
+    {Q : MvPolynomial Nat R} (hQ : MvPolynomial.IsMultiaffine Q) :
+    MvPolynomial.IsMultiaffine (decoNormalBottomCore n Q) := by
+  unfold decoNormalBottomCore
+  have hweighted : MvPolynomial.IsMultiaffine
+      (∑ i : Fin n,
+        MvPolynomial.X (decoLayerBottomEmbedding n i) *
+          MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) := by
+    apply MvPolynomial.IsMultiaffine.sum
+    intro i hi
+    exact (hQ.pderiv (decoLayerBottomEmbedding n i)).X_mul_of_notMem_vars
+      (hQ.notMem_vars_pderiv_self (decoLayerBottomEmbedding n i))
+  have hderivs : MvPolynomial.IsMultiaffine
+      (∑ i : Fin n,
+        MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) := by
+    apply MvPolynomial.IsMultiaffine.sum
+    intro i hi
+    exact hQ.pderiv (decoLayerBottomEmbedding n i)
+  exact ((hQ.C_mul (n + 1 : R)).sub hweighted).add hderivs
+
+/-- If all variables of `Q` use the ordinary labels `1, ..., n`, then the
+normal core introduces no variables outside the same interval. -/
+theorem vars_decoNormalBottomCore_subset_Icc
+    {R : Type*} [CommRing R] [Nontrivial R] {n : Nat}
+    {Q : MvPolynomial Nat R} (hQ : Q.vars ⊆ Finset.Icc 1 n) :
+    (decoNormalBottomCore n Q).vars ⊆ Finset.Icc 1 n := by
+  classical
+  intro x hx
+  unfold decoNormalBottomCore at hx
+  have hxadd := MvPolynomial.vars_add_subset _ _ hx
+  rcases Finset.mem_union.mp hxadd with hxleft | hxright
+  · have hxsub := MvPolynomial.vars_sub_subset
+        (p := MvPolynomial.C (n + 1 : R) * Q)
+        (q := ∑ i : Fin n,
+          MvPolynomial.X (decoLayerBottomEmbedding n i) *
+            MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) hxleft
+    rcases Finset.mem_union.mp hxsub with hxCQ | hxsum
+    · have hxmul := MvPolynomial.vars_mul _ _ hxCQ
+      rcases Finset.mem_union.mp hxmul with hxC | hxQ
+      · rw [MvPolynomial.vars_C] at hxC
+        exact (Finset.notMem_empty x hxC).elim
+      · exact hQ hxQ
+    · have hsum := MvPolynomial.vars_sum_subset Finset.univ
+          (fun i : Fin n =>
+            MvPolynomial.X (decoLayerBottomEmbedding n i) *
+              MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) hxsum
+      simp only [Finset.mem_biUnion, Finset.mem_univ, true_and] at hsum
+      obtain ⟨i, hxi⟩ := hsum
+      have hxmul := MvPolynomial.vars_mul _ _ hxi
+      rcases Finset.mem_union.mp hxmul with hxX | hxderiv
+      · rw [MvPolynomial.vars_X] at hxX
+        simp only [Finset.mem_singleton] at hxX
+        subst x
+        rw [Finset.mem_Icc, decoLayerBottomEmbedding_apply]
+        exact ⟨Nat.succ_le_succ (Nat.zero_le _), by lia⟩
+      · exact hQ (MvPolynomial.vars_pderiv_subset Q _ hxderiv)
+  · have hsum := MvPolynomial.vars_sum_subset Finset.univ
+        (fun i : Fin n =>
+          MvPolynomial.pderiv (decoLayerBottomEmbedding n i) Q) hxright
+    simp only [Finset.mem_biUnion, Finset.mem_univ, true_and] at hsum
+    obtain ⟨i, hxi⟩ := hsum
+    exact hQ (MvPolynomial.vars_pderiv_subset Q _ hxi)
+
 /-- A normal bottom step preserves the constant coefficient. -/
 @[simp] theorem constantCoeff_decoNormalBottomStep
     {R : Type*} [CommRing R] (n : Nat) (Q : MvPolynomial Nat R) :

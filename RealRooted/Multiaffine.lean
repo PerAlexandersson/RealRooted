@@ -307,6 +307,25 @@ theorem specializeZero_monomial
   simp only [Finset.sum_filter]
   by_cases hdi : d i = 0 <;> simp [hdi]
 
+/-- Zero-specializing a variable removes that variable polynomial. -/
+@[simp] theorem specializeZero_X_self
+    {S : Type*} [CommRing S] (i : σ) :
+    specializeZero i (X i : MvPolynomial σ S) = 0 := by
+  classical
+  unfold X
+  rw [specializeZero_monomial]
+  simp
+
+/-- Zero-specializing one coordinate leaves every other variable polynomial
+unchanged. -/
+theorem specializeZero_X_of_ne
+    {S : Type*} [CommRing S] {i j : σ} (hij : j ≠ i) :
+    specializeZero i (X j : MvPolynomial σ S) = X j := by
+  classical
+  unfold X
+  rw [specializeZero_monomial]
+  simp [hij]
+
 @[simp] theorem eval_specializeZero
     {S : Type*} [CommRing S] [DecidableEq σ]
     (i : σ) (p : MvPolynomial σ S) (z : σ → S) :
