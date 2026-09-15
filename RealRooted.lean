@@ -838,6 +838,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.Limit
 import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
 import RealRooted.MultivariateStability.AllCombo
+import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.PolyaFrequency
