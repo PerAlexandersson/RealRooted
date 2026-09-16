@@ -22,14 +22,14 @@ theorem derivative_sequence_interlaces
 
 theorem derivative_prec {p : ℝ[X]}
     (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    Prec p.derivative p :=
-  (RealRooted.derivative_interlaces hsplits hdeg).toPrec
+    StrictInterl p.derivative p :=
+  (RealRooted.derivative_interlaces hsplits hdeg).toStrictInterl
 
 theorem derivative_sequence_prec
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
     (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
-    ∀ i : Nat, Prec (P i).derivative (P i) := fun i =>
+    ∀ i : Nat, StrictInterl (P i).derivative (P i) := fun i =>
   RealRooted.Tactic.derivative_prec (hsplits i) (hdeg i)
 
 theorem nonnegCoeffs_sequence_derivative

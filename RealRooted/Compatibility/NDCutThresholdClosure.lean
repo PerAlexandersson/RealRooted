@@ -95,14 +95,14 @@ theorem OrderedNDCutCompatible.cutOutputs_stateInterlacing
 
 private theorem prec_of_prec0_of_pos {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hfg : Prec0 f g) : Prec f g := by
+    (hfg : Interl f g) : StrictInterl f g := by
   rcases hfg with rfl | rfl | hfg
   · exact False.elim (hf.ne_zero rfl)
   · exact False.elim (hg.ne_zero rfl)
   · exact hfg
 
 private theorem compatible_X_left_of_prec_nonneg {f g : ℝ[X]}
-    (hfg : Prec f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
+    (hfg : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     Compatible (X * f) g :=
   (Compatible.of_prec (prec_mul_X_of_prec_of_nonneg hfg hf hg)).comm
 
@@ -139,19 +139,19 @@ theorem orderedCutCompatible_of_stateInterlacing
     fun i ↦ hstate.realRooted (P i) (hP_mem i) (hP_pos i).ne_zero
   have hQ_real : ∀ i, Q i ≠ 0 ∧ (Q i).Splits :=
     fun i ↦ hstate.realRooted (Q i) (hQ_mem i) (hQ_pos i).ne_zero
-  have hPP : ∀ ⦃i j⦄, i ≤ j → Prec (P j) (P i) := by
+  have hPP : ∀ ⦃i j⦄, i ≤ j → StrictInterl (P j) (P i) := by
     intro i j hij
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
       exact prec_refl (hP_real i).1 (hP_real i).2
     · exact prec_of_prec0_of_pos (hP_pos j) (hP_pos i) (hPP0 hij)
-  have hQQ : ∀ ⦃i j⦄, i ≤ j → Prec (Q i) (Q j) := by
+  have hQQ : ∀ ⦃i j⦄, i ≤ j → StrictInterl (Q i) (Q j) := by
     intro i j hij
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
       exact prec_refl (hQ_real i).1 (hQ_real i).2
     · exact prec_of_prec0_of_pos (hQ_pos i) (hQ_pos j) (hQQ0 hij)
-  have hPQ : ∀ i j, Prec (P i) (Q j) := by
+  have hPQ : ∀ i j, StrictInterl (P i) (Q j) := by
     intro i j
     apply prec_of_prec0_of_pos (hP_pos i) (hQ_pos j)
     exact hparts.2.2 (P i) (by rw [List.mem_reverse]; simp) (Q j) (by simp)

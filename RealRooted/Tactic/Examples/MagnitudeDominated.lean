@@ -12,7 +12,7 @@ example {f g1 g2 a b1 b2 : ℝ[X]}
     (hdeg : (a * f + b1 * g1 + b2 * g2).natDegree = f.natDegree + 1)
     (hcert : ∀ r, f.IsRoot r →
       b1.eval r * (g1.eval r) ^ 2 + b2.eval r * (g2.eval r * g1.eval r) < 0) :
-    Prec f (a * f + b1 * g1 + b2 * g2) := by
+    StrictInterl f (a * f + b1 * g1 + b2 * g2) := by
   rr_magnitude_dominated_succ using
     interlaces := hg1f,
     interlacer_pos_lc := hg1_pos,
@@ -31,7 +31,7 @@ example {F G1 G2 A B1 B2 : Nat → ℝ[X]}
     (hcert : ∀ n : Nat, ∀ r, (F n).IsRoot r →
       (B1 n).eval r * ((G1 n).eval r) ^ 2 +
         (B2 n).eval r * ((G2 n).eval r * (G1 n).eval r) < 0) :
-    ∀ n : Nat, Prec (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
+    ∀ n : Nat, StrictInterl (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
   rr_magnitude_dominated_sequence_succ using
     interlaces := hG1F,
     interlacer_pos_lc := hG1_pos,
@@ -46,7 +46,7 @@ example {f g1 g2 a b1 b2 : ℝ[X]}
     (hdeg : (a * f + b1 * g1 + b2 * g2).natDegree = f.natDegree)
     (hcert : ∀ r, f.IsRoot r →
       b1.eval r * (g1.eval r) ^ 2 + b2.eval r * (g2.eval r * g1.eval r) < 0) :
-    Prec f (a * f + b1 * g1 + b2 * g2) := by
+    StrictInterl f (a * f + b1 * g1 + b2 * g2) := by
   rr_magnitude_dominated_same using
     interlaces := hg1f,
     interlacer_pos_lc := hg1_pos,
@@ -65,7 +65,7 @@ example {F G1 G2 A B1 B2 : Nat → ℝ[X]}
     (hcert : ∀ n : Nat, ∀ r, (F n).IsRoot r →
       (B1 n).eval r * ((G1 n).eval r) ^ 2 +
         (B2 n).eval r * ((G2 n).eval r * (G1 n).eval r) < 0) :
-    ∀ n : Nat, Prec (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
+    ∀ n : Nat, StrictInterl (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
   rr_magnitude_dominated_sequence_same using
     interlaces := hG1F,
     interlacer_pos_lc := hG1_pos,
@@ -81,7 +81,7 @@ example {f g1 g2 a b1 b2 : ℝ[X]}
     (hdeg_hi : (a * f + b1 * g1 + b2 * g2).natDegree ≤ f.natDegree + 1)
     (hcert : ∀ r, f.IsRoot r →
       b1.eval r * (g1.eval r) ^ 2 + b2.eval r * (g2.eval r * g1.eval r) < 0) :
-    Prec f (a * f + b1 * g1 + b2 * g2) := by
+    StrictInterl f (a * f + b1 * g1 + b2 * g2) := by
   rr_magnitude_dominated using
     interlaces := hg1f,
     interlacer_pos_lc := hg1_pos,
@@ -103,7 +103,7 @@ example {F G1 G2 A B1 B2 : Nat → ℝ[X]}
     (hcert : ∀ n : Nat, ∀ r, (F n).IsRoot r →
       (B1 n).eval r * ((G1 n).eval r) ^ 2 +
         (B2 n).eval r * ((G2 n).eval r * (G1 n).eval r) < 0) :
-    ∀ n : Nat, Prec (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
+    ∀ n : Nat, StrictInterl (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
   rr_magnitude_dominated_sequence using
     interlaces := hG1F,
     interlacer_pos_lc := hG1_pos,

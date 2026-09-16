@@ -107,16 +107,16 @@ theorem compatible_sequence_of_pos_combo_succ_degree {F G : Nat → ℝ[X]}
     (hfg n) (hfpos n) (hgpos n) (hdeg n) (hfsplits n)
 
 theorem compatible_sequence_of_common_left {F G H : Nat → ℝ[X]}
-    (hHF : ∀ n : Nat, Prec (H n) (F n))
-    (hHG : ∀ n : Nat, Prec (H n) (G n))
+    (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
+    (hHG : ∀ n : Nat, StrictInterl (H n) (G n))
     (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, Compatible (F n) (G n) := fun n =>
   Compatible.of_commonLeftInterleaver (hHF n) (hHG n) (hfpos n) (hgpos n)
 
 theorem compatible_sequence_of_common_right {F G H : Nat → ℝ[X]}
-    (hFH : ∀ n : Nat, Prec (F n) (H n))
-    (hGH : ∀ n : Nat, Prec (G n) (H n))
+    (hFH : ∀ n : Nat, StrictInterl (F n) (H n))
+    (hGH : ∀ n : Nat, StrictInterl (G n) (H n))
     (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, Compatible (F n) (G n) := fun n =>

@@ -286,7 +286,7 @@ theorem aswEdreiChow_prec0_derangement
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Prec0 (aswEdreiChow gamma alpha beta n)
+    Interl (aswEdreiChow gamma alpha beta n)
       (aswEdreiChowDerangement gamma alpha beta n) := by
   apply prec0_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
@@ -315,7 +315,7 @@ theorem aswEdreiChow_prec0_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Prec0 (aswEdreiChow gamma alpha beta n)
+    Interl (aswEdreiChow gamma alpha beta n)
       (aswEdreiChow gamma alpha beta (n + 1)) := by
   apply prec0_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
@@ -343,7 +343,7 @@ theorem aswEdreiChowDerangement_prec0_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Prec0 (aswEdreiChowDerangement gamma alpha beta n)
+    Interl (aswEdreiChowDerangement gamma alpha beta n)
       (aswEdreiChowDerangement gamma alpha beta (n + 1)) := by
   apply prec0_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N =>
@@ -378,7 +378,7 @@ theorem aswEdrei_chow_theorem
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
     IsPFPolynomial (aswEdreiChow gamma alpha beta n) ∧
-      Prec0 (aswEdreiChow gamma alpha beta n)
+      Interl (aswEdreiChow gamma alpha beta n)
         (aswEdreiChow gamma alpha beta (n + 1)) :=
   ⟨aswEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
     aswEdreiChow_prec0_succ hgamma halpha hbeta hsum n⟩

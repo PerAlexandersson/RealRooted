@@ -37,18 +37,18 @@ private lemma ternaryRunPolynomial_succ_eq_linear_add_derivative (n : ℕ) :
 
 /-- Consecutive ternary-run polynomials are in weak proper position. -/
 theorem ternaryRunPolynomial_prec (n : ℕ) :
-    Prec (ternaryRunPolynomial n) (ternaryRunPolynomial (n + 1)) := by
+    StrictInterl (ternaryRunPolynomial n) (ternaryRunPolynomial (n + 1)) := by
   induction n with
   | zero =>
       have hdeg : (ternaryRunPolynomial 1).natDegree = 1 :=
         natDegree_ternaryRunPolynomial 1
-      simpa [ternaryRunPolynomial] using (interlaces_one_linear hdeg).toPrec
+      simpa [ternaryRunPolynomial] using (interlaces_one_linear hdeg).toStrictInterl
   | succ n ih =>
       let m := n + 1
-      change Prec (ternaryRunPolynomial m) (ternaryRunPolynomial (m + 1))
-      have ih' : Prec (ternaryRunPolynomial n) (ternaryRunPolynomial m) := by
+      change StrictInterl (ternaryRunPolynomial m) (ternaryRunPolynomial (m + 1))
+      have ih' : StrictInterl (ternaryRunPolynomial n) (ternaryRunPolynomial m) := by
         simpa [m] using ih
-      have hstep : Prec (ternaryRunPolynomial m)
+      have hstep : StrictInterl (ternaryRunPolynomial m)
           ((C (-(m : ℝ) / ((m : ℝ) + 1)) +
               C ((4 * (m : ℝ) + 3) / ((m : ℝ) + 1)) * X) *
               ternaryRunPolynomial m +

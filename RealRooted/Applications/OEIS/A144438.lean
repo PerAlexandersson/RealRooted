@@ -154,7 +154,7 @@ theorem decoEulerian_ne_zero (n : ℕ) : decoEulerian n ≠ 0 :=
 /-- Consecutive deco Eulerian polynomials are in proper position and have no
 common real root. -/
 theorem decoEulerian_prec_and_noCommonRoot (n : ℕ) :
-    Prec (decoEulerian n) (decoEulerian (n + 1)) ∧
+    StrictInterl (decoEulerian n) (decoEulerian (n + 1)) ∧
       ∀ r : ℝ, (decoEulerian (n + 1)).IsRoot r →
         ¬ (decoEulerian n).IsRoot r :=
   ⟨(decoEulerian_certificate n).prec_succ,
@@ -166,7 +166,7 @@ theorem decoEulerian_splits (n : ℕ) : (decoEulerian n).Splits :=
 
 /-- Consecutive deco Eulerian polynomials are in proper position. -/
 theorem decoEulerian_prec (n : ℕ) :
-    Prec (decoEulerian n) (decoEulerian (n + 1)) :=
+    StrictInterl (decoEulerian n) (decoEulerian (n + 1)) :=
   (decoEulerian_certificate n).prec_succ
 
 /-- Consecutive deco Eulerian polynomials interlace with degree difference
@@ -264,7 +264,7 @@ theorem A144438_splits (n : ℕ) : (A144438 n).Splits :=
   decoEulerian_splits n
 
 /-- Consecutive A144438 polynomials are in proper position. -/
-theorem A144438_prec (n : ℕ) : Prec (A144438 n) (A144438 (n + 1)) :=
+theorem A144438_prec (n : ℕ) : StrictInterl (A144438 n) (A144438 (n + 1)) :=
   decoEulerian_prec n
 
 /-- Consecutive A144438 polynomials interlace. -/

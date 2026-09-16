@@ -488,7 +488,7 @@ namespace PositiveSplitRootCountPair
 
 theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair f g) (hdeg : g.natDegree = f.natDegree) :
-    ∃ h' : ℝ[X], Prec f h' ∧ Prec g h' := by
+    ∃ h' : ℝ[X], StrictInterl f h' ∧ StrictInterl g h' := by
   have hcount : ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) -
           (g.roots.filter (x < ·)).card ≤ 1 ∧
@@ -519,7 +519,7 @@ theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
 theorem pairHasCommonInterleaver_of_succDegree {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
-    ∃ h' : ℝ[X], Prec f h' ∧ Prec g h' := by
+    ∃ h' : ℝ[X], StrictInterl f h' ∧ StrictInterl g h' := by
   have hcount : ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) -
           (g.roots.filter (x < ·)).card ≤ 1 ∧
@@ -555,7 +555,7 @@ orientation. -/
 theorem pairHasCommonInterleaver_of_leftSuccDegree {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair f g)
     (hdeg : f.natDegree = g.natDegree + 1) :
-    ∃ h' : ℝ[X], Prec f h' ∧ Prec g h' := by
+    ∃ h' : ℝ[X], StrictInterl f h' ∧ StrictInterl g h' := by
   obtain ⟨h', hgh, hfh⟩ := h.symm.pairHasCommonInterleaver_of_succDegree hdeg
   exact ⟨h', hfh, hgh⟩
 
@@ -563,7 +563,7 @@ theorem pairHasCommonInterleaver_of_leftSuccDegree {f g : ℝ[X]}
 common interleaver. -/
 theorem pairHasCommonInterleaver {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair f g) :
-    ∃ h' : ℝ[X], Prec f h' ∧ Prec g h' := by
+    ∃ h' : ℝ[X], StrictInterl f h' ∧ StrictInterl g h' := by
   have hgap := h.natDegree_abs_sub_le_one
   have hleft : f.natDegree ≤ g.natDegree + 1 := by
     have hle := (abs_le.mp hgap).2
@@ -590,24 +590,24 @@ theorem compatible {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g) :
   exact Compatible.of_commonInterleaver hfk hgk h.left_pos h.right_pos
 
 /-- A common-right-interleaver witness is unchanged by removing a negation
-from the left endpoint, since `Prec` only depends on the roots. -/
+from the left endpoint, since `StrictInterl` only depends on the roots. -/
 theorem pairHasCommonInterleaver_of_neg_left {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair (-f) g) :
-    ∃ k : ℝ[X], Prec f k ∧ Prec g k := by
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k := by
   obtain ⟨k, hfk, hgk⟩ := h.pairHasCommonInterleaver
   refine ⟨k, ?_, hgk⟩
-  have hscale : Prec (C (-1 : ℝ) * (-f)) k :=
+  have hscale : StrictInterl (C (-1 : ℝ) * (-f)) k :=
     prec_C_mul_left hfk (by norm_num)
   simpa using hscale
 
 /-- A common-right-interleaver witness is unchanged by removing a negation
-from the right endpoint, since `Prec` only depends on the roots. -/
+from the right endpoint, since `StrictInterl` only depends on the roots. -/
 theorem pairHasCommonInterleaver_of_neg_right {f g : ℝ[X]}
     (h : PositiveSplitRootCountPair f (-g)) :
-    ∃ k : ℝ[X], Prec f k ∧ Prec g k := by
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k := by
   obtain ⟨k, hfk, hgk⟩ := h.pairHasCommonInterleaver
   refine ⟨k, hfk, ?_⟩
-  have hscale : Prec (C (-1 : ℝ) * (-g)) k :=
+  have hscale : StrictInterl (C (-1 : ℝ) * (-g)) k :=
     prec_C_mul_left hgk (by norm_num)
   simpa using hscale
 

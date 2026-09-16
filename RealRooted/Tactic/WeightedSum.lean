@@ -28,7 +28,7 @@ theorem weightedSum_sequence_pos_lc
 theorem weightedCompatibleLeft_sequence_singleton
     {H P : Nat → ℝ[X]} {a : Nat → ℝ}
     (ha : ∀ i : Nat, 0 < a i)
-    (hprec : ∀ i : Nat, Prec (H i) (P i))
+    (hprec : ∀ i : Nat, StrictInterl (H i) (P i))
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i)) :
     ∀ i : Nat, WeightedCompatibleLeft (H i) [(a i, P i)] := fun i =>
   RealRooted.WeightedCompatibleLeft.singleton (ha i) (hprec i) (hpos i)
@@ -36,7 +36,7 @@ theorem weightedCompatibleLeft_sequence_singleton
 theorem weightedCompatibleLeft_sequence_cons_zero
     {H P : Nat → ℝ[X]} {a : Nat → ℝ} {L : Nat → List (ℝ × ℝ[X])}
     (ha : ∀ i : Nat, a i = 0)
-    (hprec : ∀ i : Nat, Prec (H i) (P i))
+    (hprec : ∀ i : Nat, StrictInterl (H i) (P i))
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i))
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
     ∀ i : Nat, WeightedCompatibleLeft (H i) ((a i, P i) :: L i) := fun i =>
@@ -45,7 +45,7 @@ theorem weightedCompatibleLeft_sequence_cons_zero
 theorem weightedCompatibleLeft_sequence_cons_pos
     {H P : Nat → ℝ[X]} {a : Nat → ℝ} {L : Nat → List (ℝ × ℝ[X])}
     (ha : ∀ i : Nat, 0 < a i)
-    (hprec : ∀ i : Nat, Prec (H i) (P i))
+    (hprec : ∀ i : Nat, StrictInterl (H i) (P i))
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i))
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i))
     (hne : ∀ i : Nat, C (a i) * P i + weightedSum (L i) ≠ 0)
@@ -58,37 +58,37 @@ theorem weightedCompatibleLeft_sequence_cons_pos
 theorem weightedCompatibleLeft_sequence_prec
     {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
-    ∀ i : Nat, Prec (H i) (weightedSum (L i)) := fun i =>
+    ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
   RealRooted.WeightedCompatibleLeft.prec (hl i)
 
 theorem weightedSum_sequence_left_prec
     {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
-    ∀ i : Nat, Prec (H i) (weightedSum (L i)) := fun i =>
+    ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
   RealRooted.prec_weightedSum_left (hl i)
 
 theorem sum_sequence_left_prec
     {H : Nat → ℝ[X]} {L : Nat → List ℝ[X]}
     (hl : ∀ i : Nat,
       WeightedCompatibleLeft (H i) ((L i).map (fun p => ((1 : ℝ), p)))) :
-    ∀ i : Nat, Prec (H i) (L i).sum := fun i =>
+    ∀ i : Nat, StrictInterl (H i) (L i).sum := fun i =>
   RealRooted.prec_sum_left (hl i)
 
 theorem weightedSum_sequence_right_prec
     {L : Nat → List (ℝ × ℝ[X])} {H : Nat → ℝ[X]}
     (hnonneg : ∀ i : Nat, ∀ ap ∈ L i, 0 ≤ ap.1)
-    (hprec : ∀ i : Nat, ∀ ap ∈ L i, Prec ap.2 (H i))
+    (hprec : ∀ i : Nat, ∀ ap ∈ L i, StrictInterl ap.2 (H i))
     (hpos : ∀ i : Nat, ∀ ap ∈ L i, HasPosLeadingCoeff ap.2)
     (hex : ∀ i : Nat, ∃ ap ∈ L i, 0 < ap.1) :
-    ∀ i : Nat, Prec (weightedSum (L i)) (H i) := fun i =>
+    ∀ i : Nat, StrictInterl (weightedSum (L i)) (H i) := fun i =>
   RealRooted.prec_weightedSum_right _ _ (hnonneg i) (hprec i) (hpos i) (hex i)
 
 theorem sum_sequence_right_prec
     {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
-    (hprec : ∀ i : Nat, ∀ p ∈ L i, Prec p (H i))
+    (hprec : ∀ i : Nat, ∀ p ∈ L i, StrictInterl p (H i))
     (hpos : ∀ i : Nat, ∀ p ∈ L i, HasPosLeadingCoeff p)
     (hne : ∀ i : Nat, L i ≠ []) :
-    ∀ i : Nat, Prec (L i).sum (H i) := fun i =>
+    ∀ i : Nat, StrictInterl (L i).sum (H i) := fun i =>
   RealRooted.prec_sum_right _ _ (hprec i) (hpos i) (hne i)
 
 syntax (name := rr_weighted_sum_zero_named)

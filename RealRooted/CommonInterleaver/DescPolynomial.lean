@@ -4,7 +4,7 @@ import RealRooted.CommonInterleaver.Sequence
 # Common interleavers: descending-root polynomials
 
 Construction of a polynomial from descending prescribed roots, and the
-root-slot arguments which produce right and left `Prec` witnesses.
+root-slot arguments which produce right and left `StrictInterl` witnesses.
 -/
 
 open Polynomial
@@ -73,7 +73,7 @@ private lemma prec_of_slots_polyOfDescRoots
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [hf] using this⟩) :
-    Prec f (polyOfDescRoots xs) := by
+    StrictInterl f (polyOfDescRoots xs) := by
   let ss : List ℝ := (rootSeqDesc f).reverse
   let rs : List ℝ := xs.reverse
   have hss_pair : ss.Pairwise (· ≤ ·) := by
@@ -266,7 +266,7 @@ private lemma prec_left_of_shifted_slots_polyOfDescRoots
         ⟨j + 1, by
           have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    Prec (polyOfDescRoots xs) f := by
+    StrictInterl (polyOfDescRoots xs) f := by
   let ss : List ℝ := xs.reverse
   let rs : List ℝ := (rootSeqDesc f).reverse
   have hss_pair : ss.Pairwise (· ≤ ·) := by grind
@@ -630,7 +630,7 @@ protected lemma CommonInterleaver.prec_of_slots_polyOfDescRoots
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [hf] using this⟩) :
-    Prec f (CommonInterleaver.polyOfDescRoots xs) := by
+    StrictInterl f (CommonInterleaver.polyOfDescRoots xs) := by
   simpa [CommonInterleaver.polyOfDescRoots] using
     prec_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
@@ -645,7 +645,7 @@ protected lemma CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
         ⟨j + 1, by
           have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    Prec (CommonInterleaver.polyOfDescRoots xs) f := by
+    StrictInterl (CommonInterleaver.polyOfDescRoots xs) f := by
   simpa [CommonInterleaver.polyOfDescRoots] using
     prec_left_of_shifted_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 

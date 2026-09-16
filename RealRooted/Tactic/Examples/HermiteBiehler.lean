@@ -19,7 +19,7 @@ example :
 
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hprec : Prec g f) :
+    (hprec : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
   rr_hermite_biehler_forward_pos using
     real_pos_lc := hf,
@@ -29,7 +29,7 @@ example {f g : ℝ[X]}
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    Prec g f ∨ Prec f g := by
+    StrictInterl g f ∨ StrictInterl f g := by
   rr_hermite_biehler_converse using
     real_pos_lc := hf,
     imag_pos_lc := hg,
@@ -48,7 +48,7 @@ example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hdegree : 1 ≤ f.natDegree) :
-    Prec g f := by
+    StrictInterl g f := by
   rr_hermite_biehler_prec using
     real_pos_lc := hf,
     imag_pos_lc := hg,
@@ -76,7 +76,7 @@ example {p q : ℝ[X]}
 example {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
-    (hprec : ∀ n : Nat, Prec (G n) (F n)) :
+    (hprec : ∀ n : Nat, StrictInterl (G n) (F n)) :
     ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)) := by
   rr_hermite_biehler_forward_pos_sequence using
     real_pos_lc := hF,
@@ -88,7 +88,7 @@ example {F G : Nat → ℝ[X]}
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
     (hstable :
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n))) :
-    ∀ n : Nat, Prec (G n) (F n) ∨ Prec (F n) (G n) := by
+    ∀ n : Nat, StrictInterl (G n) (F n) ∨ StrictInterl (F n) (G n) := by
   rr_hermite_biehler_converse_sequence using
     real_pos_lc := hF,
     imag_pos_lc := hG,
@@ -111,7 +111,7 @@ example {F G : Nat → ℝ[X]}
     (hstable :
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
     (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
-    ∀ n : Nat, Prec (G n) (F n) := by
+    ∀ n : Nat, StrictInterl (G n) (F n) := by
   rr_hermite_biehler_prec_sequence using
     real_pos_lc := hF,
     imag_pos_lc := hG,

@@ -133,7 +133,7 @@ lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr :
     mul_nonpos_of_nonneg_of_nonpos (by positivity : 0 ≤ (m : ℝ)) hr
 
 lemma prec_coloredSetPartitions_one_two (c m : Nat) :
-    Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
+    StrictInterl (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
   have hdeg : (coloredSetPartitions c m 1).natDegree = 1 :=
     natDegree_coloredSetPartitions c m 1
   have hInter :
@@ -181,14 +181,14 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
       (b := coloredSetPartitionsCoeffB m)
       hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
-/-- Consecutive colored set-partition polynomials satisfy `Prec`, hence form a
+/-- Consecutive colored set-partition polynomials satisfy `StrictInterl`, hence form a
 Sturm sequence. -/
 theorem prec_coloredSetPartitions_succ (c m : Nat) :
-    ∀ n : Nat, Prec (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1))
-  | 0 => (interlaces_coloredSetPartitions_zero_one c m).toPrec
+    ∀ n : Nat, StrictInterl (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1))
+  | 0 => (interlaces_coloredSetPartitions_zero_one c m).toStrictInterl
   | 1 => prec_coloredSetPartitions_one_two c m
   | n + 2 => by
-      have hprev : Prec (coloredSetPartitions c m (n + 1))
+      have hprev : StrictInterl (coloredSetPartitions c m (n + 1))
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
       have hInter :

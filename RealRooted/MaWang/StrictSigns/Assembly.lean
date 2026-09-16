@@ -377,7 +377,7 @@ theorem prec_same_of_strict_signs_of_right_root
         rs = pre ++ r₁ :: r₂ :: rest →
         F.eval r₁ * F.eval r₂ < 0)
     (hright : ∃ uR, F.IsRoot uR ∧ ∀ r ∈ rs, r < uR) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨uR, huR_root, huR_lt⟩ := hright
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
     exists_roots_strictly_interlacing_of_consecutive_signs (F := F) hrs_sorted hsign
@@ -459,7 +459,7 @@ lemma listInterlaces_with_outer :
       simp only [List.cons_append, ListInterlaces, hL r₁ (by simp), hr₁s, true_and]
       exact listInterlaces_with_outer hrs_tail_ne hrs_tail htail hL_tail hR_tail
 
-/-- Assemble a differ-by-1 `Prec` statement from strict sign changes on a sorted
+/-- Assemble a differ-by-1 `StrictInterl` statement from strict sign changes on a sorted
 root list together with one strict outer root on each side. -/
 theorem prec_of_strict_signs_of_strict_outer_roots
     {f F : ℝ[X]} {rs : List ℝ}
@@ -474,7 +474,7 @@ theorem prec_of_strict_signs_of_strict_outer_roots
         F.eval r₁ * F.eval r₂ < 0)
     (hleft : ∃ uL, F.IsRoot uL ∧ ∀ r ∈ rs, uL < r)
     (hright : ∃ uR, F.IsRoot uR ∧ ∀ r ∈ rs, r < uR) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨uL, huL_root, huL_lt⟩ := hleft
   obtain ⟨uR, huR_root, huR_lt⟩ := hright
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
@@ -594,7 +594,7 @@ theorem prec_of_strict_signs_of_endSigns_even
     (hleft_sign : 0 < F.eval rs.head!)
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
-    Prec f F := by
+    StrictInterl f F := by
   have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hrs_ne : rs ≠ [] := by lia
   have hF_natdeg_pos : 0 < F.natDegree := by lia
@@ -650,7 +650,7 @@ theorem prec_of_strict_signs_of_endSigns_odd
     (hleft_sign : F.eval rs.head! < 0)
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
-    Prec f F := by
+    StrictInterl f F := by
   have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hrs_ne : rs ≠ [] := by lia
   have hF_natdeg_pos : 0 < F.natDegree := by lia

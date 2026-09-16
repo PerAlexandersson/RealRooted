@@ -169,7 +169,7 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
     {A b d s t : ℝ}
     (hA : 0 ≤ A) (hb : 0 ≤ b) (hd : 0 ≤ d)
     (hs : 0 < s) (ht : 0 ≤ t) :
-    Prec0 ((C s * X + C t) * C b + C d)
+    Interl ((C s * X + C t) * C b + C d)
       ((C s * X + C t) * C A + X) := by
   by_cases hb0 : b = 0
   · refine
@@ -197,7 +197,7 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
 
 lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     {a u v : ℝ} (hu : 0 < u) (hv : 0 ≤ v) :
-    Prec0 (C a * (C u * X + C v)) (X * (C u * X + C v)) := by
+    Interl (C a * (C u * X + C v)) (X * (C u * X + C v)) := by
   by_cases ha0 : a = 0
   · left
     simp [ha0]
@@ -205,7 +205,7 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
-  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toPrec0
+  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
 
 /-! ## Matrix action formula -/
 
@@ -340,7 +340,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
         (C s * X + C (t + 1)) * (X + C a) := by
     grind
   simpa [veroneseLinearFactorRowDesc, oneSupportSeq, hfactor] using
-    (prec_refl hrr.1 hrr.2).toPrec0
+    (prec_refl hrr.1 hrr.2).toInterl
 
 def veroneseLinearFactorConstEntry {r : ℕ} (a : ℝ) (i j : Fin r) : ℝ :=
   if j.1 = i.1 then a else if j.1 = i.1 + 1 then 1 else 0
@@ -466,7 +466,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
       let hrr :=
         isRealRooted_affine_mul_C_add_X
           (t := t) (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs
-      exact (prec_refl hrr.1 hrr.2).toPrec0
+      exact (prec_refl hrr.1 hrr.2).toInterl
     · rw [if_pos hj₁0, if_neg hj₂0]
       exact
         prec0_const_entry_affine_plus_const_to_affine_plus_X
@@ -510,7 +510,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
     · rw [if_pos hj₁0, if_pos hj₂0]
       exact
         (prec_refl (isRealRooted_affine_mul_X_add_X hs).1
-          (isRealRooted_affine_mul_X_add_X hs).2).toPrec0
+          (isRealRooted_affine_mul_X_add_X hs).2).toInterl
     · by_cases hj₂last : j₂.1 = r - 1
       · rw [if_pos hj₁0, if_neg hj₂0]
         simp only [veroneseLinearFactorLastConstEntry, hj₂last, if_true]
@@ -519,7 +519,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
           prec0_C_mul_affine_linear_X_mul_affine_linear
             (a := a) (u := s) (v := t + 1) hs (by grind)
       · simp [hj₁0, hj₂0, hj₂last,
-          veroneseLinearFactorLastConstEntry, prec0_zero_left]
+          veroneseLinearFactorLastConstEntry, interl_zero_left]
   · rw [if_neg hj₁0]
     have hj₂0 : ¬ j₂.1 = 0 := by lia
     rw [if_neg hj₂0]
@@ -818,7 +818,7 @@ lemma veroneseSectionPolynomialListDesc_C_mul
     exact veroneseSectionPolynomial_C_mul hr c p
 
 lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
-    (h : Prec0 f g) : Prec0 (C c * f) (C c * g) := by
+    (h : Interl f g) : Interl (C c * f) (C c * g) := by
   rcases h with hf | hg | hprec
   · left
     simp [hf]

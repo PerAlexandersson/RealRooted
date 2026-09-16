@@ -25,7 +25,7 @@ theorem prec_iff_orderedRoot_bounds
     (hpNe : p ≠ 0) (hpSplits : p.Splits)
     (hqNe : q ≠ 0) (hqSplits : q.Splits)
     (hpDegree : p.natDegree = n) (hqDegree : q.natDegree = n) :
-    Prec p q ↔
+    StrictInterl p q ↔
       (∀ i : Fin n, orderedRoot p n i ≤ orderedRoot q n i) ∧
       (∀ (i : Fin n) (hi : i.val + 1 < n),
         orderedRoot q n i ≤ orderedRoot p n ⟨i.val + 1, hi⟩) := by
@@ -79,11 +79,18 @@ theorem prec_iff_orderedRoot_bounds
         simpa only [orderedRoot, ss, rs, k] using hright k (by lia)
 
 /-- Same-degree proper position bounds corresponding increasing roots. -/
-theorem Prec.orderedRoot_le {p q : ℝ[X]} {n : ℕ}
-    (h : Prec p q) (hpDegree : p.natDegree = n) (hqDegree : q.natDegree = n)
+theorem StrictInterl.orderedRoot_le {p q : ℝ[X]} {n : ℕ}
+    (h : StrictInterl p q) (hpDegree : p.natDegree = n) (hqDegree : q.natDegree = n)
     (i : Fin n) :
     orderedRoot p n i ≤ orderedRoot q n i :=
   (prec_iff_orderedRoot_bounds h.1.1 h.1.2 h.2.1.1 h.2.1.2
     hpDegree hqDegree).mp h |>.1 i
+
+@[deprecated StrictInterl.orderedRoot_le (since := "2026-09-16")]
+theorem Prec.orderedRoot_le {p q : ℝ[X]} {n : ℕ}
+    (h : StrictInterl p q) (hpDegree : p.natDegree = n) (hqDegree : q.natDegree = n)
+    (i : Fin n) :
+    orderedRoot p n i ≤ orderedRoot q n i :=
+  StrictInterl.orderedRoot_le h hpDegree hqDegree i
 
 end RealRooted

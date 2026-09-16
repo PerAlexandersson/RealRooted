@@ -50,7 +50,7 @@ of the RealRooted interlacing library.
   present in `Mathlib.Algebra.Polynomial.Splits` and is not duplicated.
 - `LiuWang.OneAddXPositive` contains degree growth and consecutive interlacing
   for positive recurrences with current coefficient `1 + X`.
-- `LiuOppositeSigns.XSub.ProperPosition` bridges a positive-leading `Prec`
+- `LiuOppositeSigns.XSub.ProperPosition` bridges a positive-leading `StrictInterl`
   pair to Liu's `PositiveSplitRootCountPair` certificate, then obtains
   splitness of `X * p - μ * q` for `μ > 0` under nonnegative coefficients.
   It is the sequence-independent core of `ProofsOeis.LiuXSub`.
@@ -68,7 +68,7 @@ of the RealRooted interlacing library.
   `Mathlib.Analysis.Polynomial.MahlerMeasure`.
 - `EulerOperator.Polar` contains finite-degree preservation of ordinary
   splitness by the polar theta operator, and its `Polar.ProperPosition` child
-  proves bounded-degree `Prec0` preservation using the reciprocal-shift bridge.
+  proves bounded-degree `Interl` preservation using the reciprocal-shift bridge.
   `EulerOperator.ScaledPolar` contains the `-X²` composition/descent argument
   and the scale-two PF-preservation theorem.
 - `EulerOperator.Pencil` contains the positive `theta + c` proper-position
@@ -187,7 +187,7 @@ applications are not part of the named transform API.
 `ProofsOeis.EulerPencil` has three distinct reusable layers and should not be
 moved as its 2,073-line monolith. Its strict same-degree bridge is now
 `Wronskian.Converse.strictPrecSameDegree_toPrec`: it turns the output of the
-Bezoutian/Wronskian criterion into the legacy `Prec` predicate required by
+Bezoutian/Wronskian criterion into the general `StrictInterl` predicate required by
 existing recurrence APIs. The successor-degree root-gap core is now
 `Wronskian.Successor.Gap`: a root-local strict Wronskian sign forces a root in
 every consecutive gap, and the global-sign corollary delegates to that
@@ -217,7 +217,7 @@ The remaining work has a fixed responsibility order:
    `Mathlib.Data.List.Interleave.Padding` and the sorted zero-tail
    decomposition is in `Mathlib.Data.List.Sort.Endpoint`.
 2. `ReciprocalShift.ProperPosition` now proves that a degree-bounded reciprocal
-   shift reverses a `Prec` pair.
+   shift reverses a `StrictInterl` pair.
 3. `EulerOperator.Polar.ProperPosition` now supplies the checked witness for
    `polarThetaPreservesPrec0Statement` by composing two reciprocal-shift swaps
    with the existing derivative theorem.

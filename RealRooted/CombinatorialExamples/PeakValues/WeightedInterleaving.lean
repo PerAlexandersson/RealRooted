@@ -179,7 +179,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable
     (n : ℕ) (hn : 2 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j)
     (hstable : MvRealStable (peakValuePolynomial (n + 1))) :
-    Prec
+    StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) := by
   let Q := identifyLast n (peakValuePolynomial (n + 1))
@@ -233,13 +233,13 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable
   have hQstable : MvRealStable Q := by
     exact hstable.rename
       (finSuccEquiv' (Fin.last n))
-  have hDA : Prec D A := by
+  have hDA : StrictInterl D A := by
     exact hQstable.prec_commonPhaseRestriction_pderiv
       (identifyLast_peakValuePolynomial_isMultiaffine n)
       none w hwpos hApos hDpos
-  have hAXD : Prec A (Polynomial.X * D) :=
+  have hAXD : StrictInterl A (Polynomial.X * D) :=
     prec_mul_X_of_prec_of_nonneg hDA hDnn hAnn
-  have hAfull : Prec A (A + Polynomial.X * D) :=
+  have hAfull : StrictInterl A (A + Polynomial.X * D) :=
     prec_add_X_mul_of_prec hAXD hApos hDpos
   have hdecomp :
       commonPhaseRestriction w Q = A + Polynomial.X * D := by
@@ -286,7 +286,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j)
     (hstable : MvRealStable (peakValuePolynomial (n + 1))) :
-    Prec
+    StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) := by
   by_cases hn2 : 2 ≤ n
@@ -307,7 +307,7 @@ enumerators are in proper position. -/
 theorem peakValueWeightedDiagonal_consecutive_prec
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j) :
-    Prec
+    StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) := by
   exact peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks n hn wt hwt

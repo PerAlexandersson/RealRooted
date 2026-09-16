@@ -408,7 +408,7 @@ lemma prec_degree_zero_right_of_degree_one
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
-    Prec f g := by
+    StrictInterl f g := by
   obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
     apply Multiset.card_eq_one.mp
     simpa [hg_deg1] using card_roots_of_splits hg_splits

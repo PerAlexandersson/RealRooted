@@ -15,7 +15,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
     (hdeg : (a * f + b * g).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   let F : ℝ[X] := a * f + b * g
   have hgf' : Interlaces g f := hgf
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
@@ -160,7 +160,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
     (hdeg : (a * f + b * g).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   let F : ℝ[X] := a * f + b * g
   have hgf' : Interlaces g f := hgf
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf

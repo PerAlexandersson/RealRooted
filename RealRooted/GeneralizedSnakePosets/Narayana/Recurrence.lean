@@ -450,7 +450,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
 theorem modifiedNarayanaPolynomial_prec_succ (n : ℕ) :
-    Prec (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
+    StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
   modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 

@@ -15,7 +15,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Any two constant polynomials are in zero-aware proper position. -/
-lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
+lemma prec0_C_C (a b : ℝ) : Interl (C a : ℝ[X]) (C b : ℝ[X]) := by
   by_cases ha : a = 0
   · left
     simp [ha]
@@ -64,7 +64,7 @@ coefficient cross product has the corresponding order. -/
 lemma prec_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : u * V ≤ U * v) :
-    Prec (C u * X + C v) (C U * X + C V) := by
+    StrictInterl (C u * X + C v) (C U * X + C V) := by
   have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
     affineLinear_root_le_of_cross hu hU hcross
   have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
@@ -91,11 +91,11 @@ lemma prec_affine_linear_affine_linear_of_cross
 lemma prec0_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : u * V ≤ U * v) :
-    Prec0 (C u * X + C v) (C U * X + C V) :=
-  (prec_affine_linear_affine_linear_of_cross hu hU hcross).toPrec0
+    Interl (C u * X + C v) (C U * X + C V) :=
+  (prec_affine_linear_affine_linear_of_cross hu hU hcross).toInterl
 
 lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
-    Prec0 (C c : ℝ[X]) (C u * X + C v) := by
+    Interl (C c : ℝ[X]) (C u * X + C v) := by
   by_cases hc : c = 0
   · left
     simp [hc]
@@ -117,7 +117,7 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
 lemma prec0_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
-    (h : Prec0 p' q') : Prec0 p q := by
+    (h : Interl p' q') : Interl p q := by
   lia
 
 lemma affine_mul_C_add_C (s t b d : ℝ) :
@@ -129,7 +129,7 @@ lemma prec0_const_entries_affine_of_det_nonneg
     {A b c d s t : ℝ}
     (hA : 0 ≤ A) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d)
     (hs : 0 < s) (hdet : b * c ≤ A * d) :
-    Prec0 ((C s * X + C t) * C b + C d)
+    Interl ((C s * X + C t) * C b + C d)
       ((C s * X + C t) * C A + C c) := by
   by_cases hb0 : b = 0
   · by_cases hA0 : A = 0
@@ -150,7 +150,7 @@ lemma prec0_const_entries_affine_of_det_nonneg
   · have hbpos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
     by_cases hA0 : A = 0
     · have hc0 : c = 0 := by nlinarith [hdet, hbpos, hc]
-      refine prec0_congr (q' := 0) rfl ?_ (prec0_zero_right _)
+      refine prec0_congr (q' := 0) rfl ?_ (interl_zero_right _)
       simp_all
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
       have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by
@@ -168,7 +168,7 @@ lemma prec0_const_entries_affine_of_det_nonneg
 
 lemma prec0_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
+    Interl (C s * X + C t + 1) (C s * X + C t + X) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
@@ -177,13 +177,13 @@ lemma prec0_affine_add_one_affine_add_X
       hs (by positivity) (by nlinarith [hs, ht])
 
 lemma prec0_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) := by
+    Interl (C s * X + C t + X) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact prec0_affine_linear_affine_linear_of_cross
     (by positivity) (by positivity) le_rfl
 
 lemma prec0_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) := by
+    Interl (C s * X + C t + 1) (C s * X + C t + 1) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact prec0_affine_linear_affine_linear_of_cross hs hs le_rfl
 

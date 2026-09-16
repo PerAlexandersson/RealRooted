@@ -204,7 +204,7 @@ theorem isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
         (C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
           (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative))
     (houter_prec : ∀ n : Nat,
-      Prec (P (n + 1))
+      StrictInterl (P (n + 1))
         (C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
           (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative))
     (hrec : ∀ n : Nat,

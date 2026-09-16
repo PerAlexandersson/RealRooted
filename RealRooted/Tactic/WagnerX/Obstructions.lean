@@ -43,7 +43,7 @@ theorem exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne {g : ℝ[X]}
 theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
     (hgnn : HasNonnegCoeffs g)
     (hgc0 : g.coeff 0 ≠ 0) :
-    ¬ Prec (X ^ 2 * f.derivative) g := by
+    ¬ StrictInterl (X ^ 2 * f.derivative) g := by
   intro h
   have hg0 : g ≠ 0 := right_ne_zero_of_prec h
   have hgs : g.Splits := right_splits_of_prec h
@@ -72,7 +72,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (hdeg : f.natDegree + 1 = g.natDegree)
     (hf2 : 2 ≤ f.natDegree)
     (hgc0 : g.coeff 0 ≠ 0) :
-    ¬ Prec g (X ^ 2 * f.derivative) := by
+    ¬ StrictInterl g (X ^ 2 * f.derivative) := by
   intro h
   have hg0 : g ≠ 0 := left_ne_zero_of_prec h
   have hgs : g.Splits := left_splits_of_prec h
@@ -120,7 +120,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   have hgdeg : 1 ≤ g.natDegree := by lia
   obtain ⟨c, hc_neg, hc_max⟩ :=
     exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne hg0 hgs hgnn hgdeg hgc0
-  have hall : ∀ r ∈ q.roots, r ≤ c := roots_le_of_prec_right hint.toPrec hc_max
+  have hall : ∀ r ∈ q.roots, r ≤ c := roots_le_of_prec_right hint.toStrictInterl hc_max
   have hzc : (0 : ℝ) ≤ c := hall 0 hq_zero_mem
   linarith
 

@@ -74,7 +74,7 @@ their leading coefficients.  The nonzero endpoint hypotheses exclude a zero
 root, so equality of the positive root products is rigid. -/
 theorem leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq
     {f g : ℝ[X]}
-    (hprec : Prec f g) (hdeg : f.natDegree = g.natDegree)
+    (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hf0 : f.eval 0 ≠ 0) (hg0 : g.eval 0 ≠ 0)
     (hcross : g.eval 0 * f.leadingCoeff =
@@ -177,7 +177,7 @@ coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)
     (hfnn : HasNonnegCoeffs f) (hcoeff0 : f.coeff 0 ≠ 0)
-    (hprec : Prec f (f.reflect n)) :
+    (hprec : StrictInterl f (f.reflect n)) :
     Polynomial.chowS n f = 0 ∨ HasPosLeadingCoeff (Polynomial.chowS n f) := by
   let g := f.reflect n
   have hgdegree : g.natDegree = n :=
@@ -330,7 +330,7 @@ nonnegative polynomial in proper position with its degree-bounded reflection,
 the Chow quotient is either zero or has positive leading coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)
-    (hfnn : HasNonnegCoeffs f) (hprec : Prec f (f.reflect n)) :
+    (hfnn : HasNonnegCoeffs f) (hprec : StrictInterl f (f.reflect n)) :
     Polynomial.chowS n f = 0 ∨ HasPosLeadingCoeff (Polynomial.chowS n f) := by
   induction n using Nat.strong_induction_on generalizing f with
   | h n ih =>
@@ -365,9 +365,9 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
       have hdiv_le : f.divX.natDegree ≤ n - 2 := by
         rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]
         lia
-      have hdiv_prec : Prec f.divX (f.divX.reflect (n - 2)) := by
+      have hdiv_prec : StrictInterl f.divX (f.divX.reflect (n - 2)) := by
         apply prec_of_prec_mul_X_sub_C_both 0
-        have hprec' : Prec (X * f.divX) (X * f.divX.reflect (n - 2)) := by
+        have hprec' : StrictInterl (X * f.divX) (X * f.divX.reflect (n - 2)) := by
           rw [← hfactor, ← hreflect]
           exact hprec
         simpa using hprec'

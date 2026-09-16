@@ -16,13 +16,13 @@ namespace Tactic
 /-- Endpoint quotient with `A_{n+1}=A_n+B_n`,
 `B_{n+1}=B_n+X A_{n+1}`. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
-    ∀ n : Nat, Prec (A n) (B n) := by
+    ∀ n : Nat, StrictInterl (A n) (B n) := by
   rr_endpoint_sum_then_X_pair_sequence using
     base := hbase,
     left_nonneg := hA0_nonneg,
@@ -33,7 +33,7 @@ example {A B : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the same sum-then-`X` quotient parity. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
@@ -51,13 +51,13 @@ example {A B : Nat → ℝ[X]}
 /-- Endpoint quotient with the parity reversed:
 `B_{n+1}=B_n+X A_n`, `A_{n+1}=A_n+B_{n+1}`. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
-    ∀ n : Nat, Prec (A n) (B n) := by
+    ∀ n : Nat, StrictInterl (A n) (B n) := by
   rr_endpoint_X_then_sum_pair_sequence using
     base := hbase,
     left_nonneg := hA0_nonneg,
@@ -68,7 +68,7 @@ example {A B : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the reversed endpoint quotient parity. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
@@ -86,7 +86,7 @@ example {A B : Nat → ℝ[X]}
 /-- Single-row endpoint-factor shell: even/odd rows are endpoint powers times
 the sum-then-`X` quotient pair. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
@@ -107,7 +107,7 @@ example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
 
 /-- Single-row endpoint-factor shell for the reversed quotient parity. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
@@ -129,7 +129,7 @@ example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
 /-- Single-row endpoint-factor shell for the reversed quotient parity when
 even rows use the `B` quotient and odd rows use the `A` quotient. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)

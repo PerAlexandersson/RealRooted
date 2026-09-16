@@ -39,7 +39,7 @@ theorem prec_shift_of_interlaces
     (hg_pos : HasPosLeadingCoeff (f + (X - C 1) * h))
     (hdeg_lo : f.natDegree ≤ (f + (X - C 1) * h).natDegree)
     (hdeg_hi : (f + (X - C 1) * h).natDegree ≤ f.natDegree + 1) :
-    Prec f (f + (X - C 1) * h) := by
+    StrictInterl f (f + (X - C 1) * h) := by
   have hrewrite : f + (X - C 1) * h = C 1 * f + (X - C 1) * h := by simp [map_one]
   rw [hrewrite]
   refine prec_of_interlaces_evalCoeff_nonpos hinterl hh_pos (by lia) (by lia) (by lia) ?_
@@ -93,18 +93,18 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
 /-- The shift lemma when `h` and `f` have the same degree. -/
 theorem prec_shift_of_same_degree
     {f h : ℝ[X]}
-    (hprec : Prec h f)
+    (hprec : StrictInterl h f)
     (hdeg : h.natDegree = f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (heval : h.eval 0 ≤ f.eval 0) :
-    Prec f (f + (X - C 1) * h) := by
+    StrictInterl f (f + (X - C 1) * h) := by
   let t : ℝ[X] := (X - C 1) * h
   have hf_le_one : ∀ r ∈ f.roots, r ≤ (1 : ℝ) := by grind
   have hh_le_one : ∀ r ∈ h.roots, r ≤ (1 : ℝ) := by grind
-  have hft : Prec f t := by
+  have hft : StrictInterl f t := by
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
     have hh' : (h' ≠ 0 ∧ h'.Splits) := by
@@ -125,18 +125,18 @@ theorem prec_shift_of_same_degree
       have hdeg_mul :=
         congrArg (fun n => n * (X + C (1 : ℝ)).natDegree) hdeg
       simpa [h', f', natDegree_comp] using hdeg_mul
-    have hprec' : Prec h' f' := by
+    have hprec' : StrictInterl h' f' := by
       simpa [h', f'] using (prec_comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
-    have hfX' : Prec f' (X * h') :=
+    have hfX' : StrictInterl f' (X * h') :=
       prec_sameDegree_to_prec_mul_X_of_roots_nonpos hprec' hdeg' hh'_nonpos hf'_nonpos
-    have htranslated : Prec f' (t.comp (X + C 1)) := by
+    have htranslated : StrictInterl f' (t.comp (X + C 1)) := by
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
     exact (prec_comp_X_add_C_iff (f := f) (g := t) 1).1 <| by
       lia
   have ht_pos : HasPosLeadingCoeff t := by
     simpa [t] using hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
-  have hsum : Prec f ([f, t].sum) := by
+  have hsum : StrictInterl f ([f, t].sum) := by
     apply prec_sum_left_of_common_left_signed
     · intro p hp
       have hp' : p = f ∨ p = t := by simp_all
@@ -162,9 +162,9 @@ theorem prec_shift
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
-    (hprec : Prec h f)
+    (hprec : StrictInterl h f)
     (heval : h.eval 0 ≤ f.eval 0) :
-    Prec f (f + (X - C 1) * h) := by
+    StrictInterl f (f + (X - C 1) * h) := by
   obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hprec
   have hss_len : ss.length = h.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh_splits]
@@ -173,8 +173,9 @@ theorem prec_shift
   rcases hshape with ⟨hdiffby1, hint⟩ | ⟨hsamedeg, halt⟩
   · have hdeg : h.natDegree + 1 = f.natDegree := by lia
     have hinterl : Interlaces h f :=
-      Prec.toInterlaces ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted,
-        hrs_sorted, hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
+      StrictInterl.toInterlaces
+        ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted,
+          hrs_sorted, hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
     obtain ⟨hndeg, hpos⟩ := shift_natDegree_of_interlaces hf_pos hh_pos hdeg hh_ne
     exact prec_shift_of_interlaces hinterl hh_pos hf_nonpos hpos
       (by lia) (by lia)
@@ -191,9 +192,9 @@ theorem prec_shift' {F H : ℝ[X]}
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)
     (hH_pos : HasPosLeadingCoeff H)
-    (hinterl : Prec H F)
+    (hinterl : StrictInterl H F)
     (heval : H.eval 0 ≤ F.eval 0) :
-    Prec F (F + (X - C 1) * H) :=
+    StrictInterl F (F + (X - C 1) * H) :=
   prec_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
 
 end RealRooted

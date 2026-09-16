@@ -100,8 +100,8 @@ proper position. -/
 theorem coeff_zero_ne_of_prec_rotatedParts
     {odd even : ℝ[X]}
     (hprec :
-      Prec (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) ∨
-        Prec (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd))
+      StrictInterl (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) ∨
+        StrictInterl (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd))
     (heven0 : even.coeff 0 ≠ 0) : odd.coeff 0 ≠ 0 := by
   intro hodd0
   have hrotOddNe : hurwitzRotatedOddPart odd ≠ 0 := by

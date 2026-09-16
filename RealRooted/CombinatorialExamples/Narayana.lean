@@ -258,7 +258,7 @@ lemma narayanaQuot_one_two_interlaces :
 private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
     (_hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
-    Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
+    StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
   have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
     narayanaQuot_posLeadingCoeff n hn
   have hF_pos : HasPosLeadingCoeff (narayanaQuot (n + 2)) :=
@@ -295,12 +295,12 @@ weak Liu--Wang induction. -/
 theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      Prec (narayanaQuot n) (narayanaQuot (n + 1))
+      StrictInterl (narayanaQuot n) (narayanaQuot (n + 1))
   | 0, hn, _ => by
       lia
-  | 1, _, _ => narayanaQuot_one_two_interlaces.toPrec
+  | 1, _, _ => narayanaQuot_one_two_interlaces.toStrictInterl
   | n + 2, _, hnonneg => by
-      have hprev : Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
+      have hprev : StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
       have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         hprev.toInterlaces <| by
@@ -331,14 +331,14 @@ the quotient result with the common `X` factor reattached on both sides. -/
 theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
     Interlaces (narayana n) (narayana (n + 1)) := by
-  have hprecQ : Prec (narayanaQuot n) (narayanaQuot (n + 1)) :=
+  have hprecQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
     prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
-  have hmain : Prec (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
+  have hmain : StrictInterl (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
     rr_prec_mul_X_both using
       proper := hprecQ,
       left_nonneg := hnonneg n,
       right_nonneg := hnonneg (n + 1)
-  have hprec : Prec (narayana n) (narayana (n + 1)) := by simpa [narayana] using hmain
+  have hprec : StrictInterl (narayana n) (narayana (n + 1)) := by simpa [narayana] using hmain
   exact hprec.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 

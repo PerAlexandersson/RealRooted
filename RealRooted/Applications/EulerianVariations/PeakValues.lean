@@ -31,7 +31,7 @@ the paper's larger rank equal to `n + 1`. -/
 theorem peakValueWeightedDiagonal_consecutive_prec
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j) :
-    Prec
+    StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) :=
   RealRooted.peakValueWeightedDiagonal_consecutive_prec n hn wt hwt

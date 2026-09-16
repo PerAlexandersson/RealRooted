@@ -182,7 +182,7 @@ private theorem neg_coeff_one_eq_sum_roots_inv
   linarith
 
 private theorem neg_coeff_one_le_of_prec_sameDegree_of_roots_pos
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hdegree : f.natDegree = g.natDegree)
     (hfzero : f.coeff 0 = 1) (hgzero : g.coeff 0 = 1)
     (hfdegree : 0 < f.natDegree)
@@ -245,7 +245,7 @@ theorem exceptionalEulerInverse_prec
     (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
     (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
     (hγ : γ₁ < γ₂) :
-    Prec (exceptionalEulerInverse m ε γ₂)
+    StrictInterl (exceptionalEulerInverse m ε γ₂)
       (exceptionalEulerInverse m ε γ₁) := by
   let R₁ := exceptionalEulerInverse m ε γ₁
   let R₂ := exceptionalEulerInverse m ε γ₂
@@ -275,7 +275,7 @@ theorem exceptionalEulerInverse_prec
         m ε hm hγ₁ hγ₂ hγ
   have hsplit₁ : R₁.Splits := hall.left_splits
   have hsplit₂ : R₂.Splits := hall.right_splits
-  have horient : Prec R₁ R₂ ∨ Prec R₂ R₁ :=
+  have horient : StrictInterl R₁ R₂ ∨ StrictInterl R₂ R₁ :=
     prec_of_allComboRealRooted hR₁ hsplit₁ hR₂ hsplit₂ hall
       (Or.inr (hdeg₁.trans hdeg₂.symm))
   rcases horient with hforward | hreverse
@@ -759,7 +759,7 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
 before the lower endpoint polynomial. -/
 theorem exceptionalEulerInverse_upper_prec_lower
     (m ε : ℕ) (hm : 0 < m) :
-    Prec
+    StrictInterl
       (exceptionalEulerInverse m ε
         ((ε : ℝ) + 1 / 2 + m + 1 / 2))
       (exceptionalEulerInverse m ε
@@ -799,7 +799,7 @@ theorem exceptionalEulerInverse_upper_prec_lower
     simpa only [L, U, A, B] using
       exceptionalEulerInverse_lower_allComboRealRooted
         m ε hm (γ := B) (by dsimp only [B]; linarith)
-  have horient : Prec L U ∨ Prec U L :=
+  have horient : StrictInterl L U ∨ StrictInterl U L :=
     prec_of_allComboRealRooted hL hall.left_splits hU hall.right_splits
       hall (Or.inr (hLdegree.trans hUdegree.symm))
   rcases horient with hwrong | hright
@@ -831,7 +831,7 @@ theorem exceptionalEulerInverse_upper_prec_lower
 /-- The two exceptional toric-contribution polynomials have the required
 weak proper-position orientation. -/
 theorem rPolynomial_exceptional_prec (m ε : ℕ) (hm : 0 < m) :
-    Prec (rPolynomial m ε m) (rPolynomial m ε (m - 1)) := by
+    StrictInterl (rPolynomial m ε m) (rPolynomial m ε (m - 1)) := by
   rw [← exceptionalEulerInverse_upper_eq_rPolynomial m ε,
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
   exact exceptionalEulerInverse_upper_prec_lower m ε hm

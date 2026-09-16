@@ -310,13 +310,13 @@ private theorem prec_of_allComboRealRooted_of_no_common
         AllComboRealRooted f g →
         (f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        Prec f g ∨ Prec g f)
+        StrictInterl f g ∨ StrictInterl g f)
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   refine
     Nat.strong_induction_on
       (p := fun n =>
@@ -325,7 +325,7 @@ private theorem prec_of_allComboRealRooted_of_no_common
           (f ≠ 0 ∧ f.Splits) → (g ≠ 0 ∧ g.Splits) →
           AllComboRealRooted f g →
           (f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) →
-          Prec f g ∨ Prec g f)
+          StrictInterl f g ∨ StrictInterl g f)
       f.natDegree ?_ rfl ⟨hf_ne, hf_splits⟩ ⟨hg_ne, hg_splits⟩ hall hdeg
   intro n ih f g hfdeg hf hg hall hdeg
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
@@ -353,13 +353,13 @@ private theorem prec_of_allComboRealRooted_of_no_common
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : Prec qf qg ∨ Prec qg qf :=
+    have hprec_q : StrictInterl qf qg ∨ StrictInterl qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqf_rr hqg_rr hqhall hqdeg
     rcases hprec_q with hprec_q | hprec_q
-    · have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
+    · have hprec_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
       lia
-    · have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
+    · have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
       lia
 /-- **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace
@@ -373,7 +373,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   refine prec_of_allComboRealRooted_of_no_common ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
   intro f g hf hg hall hdeg hno
   let eps : ℝ := 1
@@ -391,8 +391,8 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
       simple_pair_of_allComboRealRooted_iterateTDeriv hf.1 hg.1 hf.2 hg.2 hall hdeg heps
   rcases hsimple_data with ⟨hall_iter, _, _, hf_simple, hg_simple, _⟩
   have hprec_iter :
-      Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
-        Prec (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
+      StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
+        StrictInterl (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
     simpa [n] using
       ObreschkoffConverseInternal.precOrRevPrecRegularized
         hf.1 hf.2 hg.1 hg.2 hall hdeg heps hno
@@ -410,7 +410,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
     simp
   have hsucc_iter_forced :
       f.natDegree + 1 = g.natDegree →
-        Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
+        StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
     intro hsucc
     simpa [n] using
       ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
@@ -511,12 +511,12 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
           hall hW_ne
   have htransport :
-      (f.natDegree + 1 = g.natDegree → Prec f g) ∧
-        (f.natDegree = g.natDegree → Prec f g ∨ Prec g f) := by
+      (f.natDegree + 1 = g.natDegree → StrictInterl f g) ∧
+        (f.natDegree = g.natDegree → StrictInterl f g ∨ StrictInterl g f) := by
     constructor
     · intro hsucc
       have hprec_or :
-          Prec f g ∨ Prec g f :=
+          StrictInterl f g ∨ StrictInterl g f :=
         ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
       exact prec_forward_of_orientation_of_succDegree hsucc.symm hprec_or

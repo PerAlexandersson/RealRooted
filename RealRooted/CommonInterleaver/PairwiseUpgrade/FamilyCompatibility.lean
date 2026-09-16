@@ -76,7 +76,7 @@ Chudnovsky--Seymour theorem used in `INTERLACING.md`.
 The finite-family left-handed Helly upgrade is now packaged as
 `CommonLeftInterleaverFamilyUpgradeStatement`, so the remaining input is the
 two-polynomial bridge
-`Compatible f g -> ∃ h, Prec h f ∧ Prec h g`. -/
+`Compatible f g -> ∃ h, StrictInterl h f ∧ StrictInterl h g`. -/
 def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement : Prop :=
   ∀ {fs : List ℝ[X]},
     (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →

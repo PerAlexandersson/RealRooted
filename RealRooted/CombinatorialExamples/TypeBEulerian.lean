@@ -181,8 +181,9 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   simp [typeBEulerianCoeffB]
   nlinarith
 
-theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEulerian (n + 1))
-  | 0 => interlaces_typeBEulerian_zero_one.toPrec
+theorem prec_typeBEulerian_succ :
+    ∀ n : Nat, StrictInterl (typeBEulerian n) (typeBEulerian (n + 1))
+  | 0 => interlaces_typeBEulerian_zero_one.toStrictInterl
   | n + 1 => by
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=

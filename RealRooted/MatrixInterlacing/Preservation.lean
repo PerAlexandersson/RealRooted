@@ -47,7 +47,7 @@ theorem matrix_preserves_interlacing_seq
   is real-rooted by Brändén's Lemma 7.8.3: the reversed product-sum of an
   interlacing sequence with an interlacing sequence of non-negative-coefficient
   polynomials is real-rooted. The remaining local gap is to package that
-  Lemma 7.8.3 in this codebase and then route the affine family back to `Prec`
+  Lemma 7.8.3 in this codebase and then route the affine family back to `StrictInterl`
   through the already-developed affine-family machinery above.
   -/
   rcases hfs with ⟨hfs_mem, hfs_int⟩
@@ -77,7 +77,8 @@ theorem matrix_preserves_interlacing_seq
     obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hrow_mem
     let iG : Fin G.length := ⟨i, by lia⟩
     have hself :
-        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get iG).zipWith (· * ·) fs).sum) :=
+        StrictInterl (((G.get iG).zipWith (· * ·) fs).sum)
+          (((G.get iG).zipWith (· * ·) fs).sum) :=
       prec_zipWith_sum_pair_of_2x2
         (n := n)
         (hn := hn)
@@ -101,7 +102,8 @@ theorem matrix_preserves_interlacing_seq
     let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
     have hpair :
-        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get jG).zipWith (· * ·) fs).sum) :=
+        StrictInterl (((G.get iG).zipWith (· * ·) fs).sum)
+          (((G.get jG).zipWith (· * ·) fs).sum) :=
       prec_zipWith_sum_pair_of_2x2
         (n := n)
         (hn := hn)
@@ -149,7 +151,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
     let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
     have hpair :
-        Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
+        Interl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get jG).zipWith (· * ·) fs).sum) :=
       prec0_zipWith_sum_pair_of_2x2
         (n := n)
@@ -199,7 +201,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
       let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
       let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
       have hpair :
-          Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
+          Interl (((G.get iG).zipWith (· * ·) fs).sum)
             (((G.get jG).zipWith (· * ·) fs).sum) :=
         prec0_zipWith_sum_pair_of_2x2_weak
           (n := n)
@@ -228,7 +230,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
     let iG : Fin G.length := i
     have hsum_eq_p : ((G.get iG).zipWith (· * ·) fs).sum = p := by lia
     have hself0 :
-        Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
+        Interl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get iG).zipWith (· * ·) fs).sum) :=
       prec0_zipWith_sum_pair_of_2x2_weak
         (n := n)
@@ -244,7 +246,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
         (hfs := hfs)
         (hfs_real := hfs_real)
     have hp0' : ((G.get iG).zipWith (· * ·) fs).sum ≠ 0 := by lia
-    simpa [← hsum_eq_p] using (hself0.toPrec_of_ne hp0' hp0').1
+    simpa [← hsum_eq_p] using (hself0.toStrictInterl_of_ne hp0' hp0').1
 
 /-- Weak zero-aware forward direction with strict input, retaining the fact that
 each nonzero output entry is real-rooted.  This is the form used when a matrix

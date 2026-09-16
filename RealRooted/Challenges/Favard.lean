@@ -33,7 +33,7 @@ abbrev PositiveFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Pro
 theorem interlacing :
     ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
       PositiveFavardRecurrence P α β →
-      ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+      ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   fun h => RealRooted.favardInterlacing h.1 h.2
 
 /-- Favard recurrence coefficients force real-rootedness of every polynomial

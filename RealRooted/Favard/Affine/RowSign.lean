@@ -40,7 +40,7 @@ theorem favardInterlacing_affine_const_coeff_rowSign
     (hP1 : P 1 = -(C s * X - C α))
     (hstep : ∀ n : Nat,
       P (n + 2) = -(C s * X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   let Q : Nat → ℝ[X] := fun n => C ((-1 : ℝ) ^ n) * P n
   have hQ0 : Q 0 = 1 := by simp [Q, hP0]
   have hQ1 : Q 1 = C s * X - C α := by simp [Q, hP1]
@@ -50,12 +50,12 @@ theorem favardInterlacing_affine_const_coeff_rowSign
     dsimp [Q]
     rw [neg_one_pow_add_two n, neg_one_pow_succ n, hstep n, C_neg]
     ring_nf
-  have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
+  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_const_coeff hs hβ hQ0 hQ1 hQstep
   intro n
   have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
-  have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
+  have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
   have hleft_eq : C ((-1 : ℝ) ^ n) * Q n = P n := by
@@ -109,7 +109,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign
       P (n + 2) =
         -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   let Q : Nat → ℝ[X] := fun n => C ((-1 : ℝ) ^ n) * P n
   have hQ0 : Q 0 = 1 := by simp [Q, hP0]
   have hQ1 : Q 1 = C (s 0) * X - C (α 0) := by simp [Q, hP1]
@@ -121,12 +121,12 @@ theorem favardInterlacing_affine_param_coeff_rowSign
     dsimp [Q]
     rw [neg_one_pow_add_two n, neg_one_pow_succ n, hstep n, C_neg]
     ring_nf
-  have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
+  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_param_coeff hs hβ hQ0 hQ1 hQstep
   intro n
   have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
-  have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
+  have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
   have hleft_eq : C ((-1 : ℝ) ^ n) * Q n = P n := by
@@ -183,7 +183,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den
         C (d n) *
           (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 <|
     fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)
 
@@ -234,7 +234,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den_split
       C (d n) * P (n + 2) =
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 fun n =>
     eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul (hden n) (hraw n)
 
@@ -285,7 +285,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den_split_rev
       C (d n) * P (n + 2) =
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_rowSign_den_split hs hβ hP0 hP1 hden <| by
     intro n
     have hcomm : β (n + 1) * d n = d n * β (n + 1) := by ring
@@ -342,7 +342,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den_raw
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 <| by
     intro n
     have hnorm :
@@ -417,7 +417,7 @@ theorem favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
       C (d n) * P (n + 2) =
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_rowSign_den_raw
     (s := s) (α := α) (β := β) (d := d)
     (araw := fun n => aleft n * aright n)

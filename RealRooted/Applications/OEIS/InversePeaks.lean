@@ -237,10 +237,10 @@ private theorem half_two_mul_add_three (j : ℕ) : (2 * j + 3) / 2 = j + 1 := by
     _ = j + 1 := by simp
 
 private theorem inversePeakEulerian_base_prec :
-    Prec (inversePeakEulerian 0) (inversePeakEulerian 1) := by
+    StrictInterl (inversePeakEulerian 0) (inversePeakEulerian 1) := by
   rw [inversePeakEulerian_zero]
   exact (interlaces_one_linear (p := inversePeakEulerian 1)
-    (inversePeakEulerian_natDegree 1)).toPrec
+    (inversePeakEulerian_natDegree 1)).toStrictInterl
 
 private theorem inversePeakEulerian_base_noCommon :
     ∀ r, (inversePeakEulerian 1).IsRoot r → ¬ (inversePeakEulerian 0).IsRoot r := by
@@ -250,7 +250,7 @@ private theorem inversePeakEulerian_base_noCommon :
 /-- Consecutive inverse-peak rows are in proper position and share no real
 root. -/
 theorem inversePeakEulerian_prec_and_noCommonRoot (n : ℕ) :
-    Prec (inversePeakEulerian n) (inversePeakEulerian (n + 1)) ∧
+    StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) ∧
       ∀ r, (inversePeakEulerian (n + 1)).IsRoot r →
         ¬ (inversePeakEulerian n).IsRoot r := by
   apply prec_and_noCommonRoot_of_quadratic_lag_degree_step
@@ -272,7 +272,7 @@ theorem inversePeakEulerian_prec_and_noCommonRoot (n : ℕ) :
 
 /-- Consecutive inverse-peak rows are in proper position. -/
 theorem inversePeakEulerian_prec (n : ℕ) :
-    Prec (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
+    StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
   (inversePeakEulerian_prec_and_noCommonRoot n).1
 
 /-- Consecutive inverse-peak rows have no common real root. -/

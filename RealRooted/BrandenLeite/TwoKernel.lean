@@ -33,7 +33,7 @@ theorem finiteToeplitz_kernelRows_pf_and_prec0
     (∀ i : Fin (N + 1),
         IsPFPolynomial (kernelRow (finiteToeplitz g N) (finiteToeplitz h N) i)) ∧
       ∀ i : Fin N,
-        Prec0
+        Interl
           (kernelRow (finiteToeplitz g N) (finiteToeplitz h N) i.castSucc)
           (kernelRow (finiteToeplitz g N) (finiteToeplitz h N) i.succ) := by
   obtain ⟨a, ha_pf, ha0pos, halim⟩ :=
@@ -77,7 +77,7 @@ theorem finiteToeplitz_kernelRows_pf_and_prec0
     · simp [H, K, finiteToeplitz_apply, hji]
   change
     (∀ i : Fin (N + 1), IsPFPolynomial (kernelRow G K i)) ∧
-      ∀ i : Fin N, Prec0 (kernelRow G K i.castSucc)
+      ∀ i : Fin N, Interl (kernelRow G K i.castSucc)
         (kernelRow G K i.succ)
   exact kernelRows_pf_and_prec0_of_tendsto hg0 ha0pos hG hH
     hGlower hHlower hKstrict hGdiag hHdiag hlim
@@ -91,7 +91,7 @@ theorem twoKernelRows_pf_and_prec0
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) :
     (∀ n, IsPFPolynomial
         (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)) ∧
-      ∀ n, Prec0
+      ∀ n, Interl
         (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)
         (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) := by
   have hzero : PowerSeries.constantCoeff (PowerSeries.mk h) = 0 := by
@@ -136,7 +136,7 @@ theorem twoKernelRow_isPFPolynomial
 theorem prec0_twoKernelRow_succ
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (n : ℕ) :
-    Prec0
+    Interl
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) :=
   (twoKernelRows_pf_and_prec0 hg hh hg0 hh0).2 n

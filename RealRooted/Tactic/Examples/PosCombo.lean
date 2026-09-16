@@ -6,13 +6,13 @@ namespace RealRooted
 namespace Tactic
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 ≤ a)
     (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b) :
-    Prec (C a * f + C b * g) g := by
+    StrictInterl (C a * f + C b * g) g := by
   rr_pos_combo_nonneg_right_prec using
     prec := hfg,
     left_pos_lc := hf_pos,
@@ -22,13 +22,13 @@ example {f g : ℝ[X]} {a b : ℝ}
     some_coeff_pos := hab
 
 example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 ≤ a i)
     (hb : ∀ i : Nat, 0 ≤ b i)
     (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
-    ∀ i : Nat, Prec (C (a i) * F i + C (b i) * G i) (G i) := by
+    ∀ i : Nat, StrictInterl (C (a i) * F i + C (b i) * G i) (G i) := by
   rr_pos_combo_sequence_nonneg_right_prec using
     prec := hfg,
     left_pos_lc := hF,
@@ -38,7 +38,7 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     some_coeff_pos := hab
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 ≤ a)
@@ -54,7 +54,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     some_coeff_pos := hab
 
 example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 ≤ a i)
@@ -72,7 +72,7 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     some_coeff_pos := hab
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 < a)
@@ -86,7 +86,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     right_coeff_pos := hb
 
 example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 < a i)
@@ -182,7 +182,7 @@ example {F G : Nat → ℝ[X]} {lam : Nat → ℝ}
     parameter_pos := hlam
 
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
@@ -192,7 +192,7 @@ example {f g : ℝ[X]}
     right_pos_lc := hg_pos
 
 example {F G : Nat → ℝ[X]}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := by
@@ -225,8 +225,8 @@ example {f g : ℝ[X]}
   rr_pos_combo_of_add_left using family := hfamily
 
 example {f g h : ℝ[X]}
-    (hhf : Prec h f)
-    (hhg : Prec h g)
+    (hhf : StrictInterl h f)
+    (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
@@ -237,8 +237,8 @@ example {f g h : ℝ[X]}
     right_pos_lc := hg_pos
 
 example {F G H : Nat → ℝ[X]}
-    (hHF : ∀ i : Nat, Prec (H i) (F i))
-    (hHG : ∀ i : Nat, Prec (H i) (G i))
+    (hHF : ∀ i : Nat, StrictInterl (H i) (F i))
+    (hHG : ∀ i : Nat, StrictInterl (H i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := by
@@ -473,12 +473,12 @@ example {f g : ℝ[X]} {r : ℝ}
   rr_pos_combo_mul_X_sub_C using pos_combo := hfg
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 < a)
     (hb : 0 < b) :
-    Prec (C a * f + C b * g) g := by
+    StrictInterl (C a * f + C b * g) g := by
   rr_pos_combo_convex_right_prec using
     prec := hfg,
     left_pos_lc := hf_pos,
@@ -487,7 +487,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     right_coeff_pos := hb
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 ≤ a)
@@ -496,7 +496,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hne : C a * f + C b * g ≠ 0)
     (hsplits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_nonneg_left_prec using
     prec := hfg,
     left_pos_lc := hf_pos,
@@ -509,7 +509,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     coprime := hcop
 
 example {f g : ℝ[X]} {a b : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 < a)
@@ -517,7 +517,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hne : C a * f + C b * g ≠ 0)
     (hsplits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_convex_left_prec using
     prec := hfg,
     left_pos_lc := hf_pos,
@@ -533,7 +533,7 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     (hd_splits : d.Splits)
     (hf_def : f = d * f')
     (hg_def : g = d * g')
-    (hfg : Prec f' g')
+    (hfg : StrictInterl f' g')
     (hf_pos : HasPosLeadingCoeff f')
     (hg_pos : HasPosLeadingCoeff g')
     (ha : 0 < a)
@@ -541,7 +541,7 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     (hne : C a * f' + C b * g' ≠ 0)
     (hsplits : (C a * f' + C b * g').Splits)
     (hcop : IsCoprime (C a * f') (C b * g')) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_convex_left_common_factor_prec using
     factor_ne_zero := hd_ne,
     factor_splits := hd_splits,

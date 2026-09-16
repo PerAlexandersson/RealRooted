@@ -107,7 +107,7 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0)
     (ht_nonpos : ∀ r, f.IsRoot r →
       t.eval r * f.derivative.eval r ≤ 0) :
-    Prec f F ∧ HasSimpleRoots F := by
+    StrictInterl f F ∧ HasSimpleRoots F := by
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hder_pos : HasPosLeadingCoeff f.derivative :=
@@ -117,7 +117,7 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     fun _ hr ↦
       eval_mul_derivative_neg_of_auxiliary_sign_add_tail
         hrec hq_sign hv_neg ht_nonpos hr
-  have hprec : Prec f F :=
+  have hprec : StrictInterl f F :=
     prec_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hnoRoot :=
     noCommonRoot_of_auxiliary_sign_add_tail hrec hq_sign hv_neg ht_nonpos
@@ -136,7 +136,7 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ
     (hq_sign : ∀ r, f.IsRoot r →
       0 < q.eval r * f.derivative.eval r)
     (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0) :
-    Prec f F ∧ HasSimpleRoots F := by
+    StrictInterl f F ∧ HasSimpleRoots F := by
   apply prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     hf hf_pos hF_pos hdegf hdeg (t := 0)
   · simpa using hrec
@@ -152,7 +152,7 @@ theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X
     (hdeg : F.natDegree = f.natDegree + 1)
     (hsimple : HasSimpleRoots f) (hrec : F = u * f + v * f.derivative)
     (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0) :
-    Prec f F ∧ HasSimpleRoots F := by
+    StrictInterl f F ∧ HasSimpleRoots F := by
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hder_pos : HasPosLeadingCoeff f.derivative :=
@@ -172,7 +172,7 @@ theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X
         rw [eval_add, eval_mul, eval_mul, hfeval, mul_zero, zero_add]
         ring
       _ < 0 := hstrict
-  have hprec : Prec f F :=
+  have hprec : StrictInterl f F :=
     prec_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hno : ∀ r, f.IsRoot r → ¬ F.IsRoot r := by
     intro r hfr hFr

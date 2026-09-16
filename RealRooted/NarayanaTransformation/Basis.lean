@@ -108,7 +108,7 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
     · exact hfirst_deg
     · lia
     · exact hfirst_pos
-  have hprec : Prec f ((X + C r) * f + X * f.derivative) := by
+  have hprec : StrictInterl f ((X + C r) * f + X * f.derivative) := by
     apply prec_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
     · rw [hsum_deg]
       lia
@@ -298,9 +298,9 @@ private theorem pairwise_add_le_of_two_listInterlaces (μ : ℝ) :
 spacing invariant after a degree-increasing step. -/
 private theorem prec_comp_X_add_C_of_two_interlacings
     {μ : ℝ} (hμ : 0 ≤ μ) {p q : ℝ[X]}
-    (hpq : Prec p q) (hshiftq : Prec (p.comp (X + C μ)) q)
+    (hpq : StrictInterl p q) (hshiftq : StrictInterl (p.comp (X + C μ)) q)
     (hdeg : p.natDegree + 1 = q.natDegree) :
-    Prec (q.comp (X + C μ)) q := by
+    StrictInterl (q.comp (X + C μ)) q := by
   let ps := p.roots.sort (· ≤ ·)
   let qs := q.roots.sort (· ≤ ·)
   have hpq_int : ListInterlaces ps qs :=
@@ -343,9 +343,9 @@ private theorem prec_comp_X_add_C_of_two_interlacings
 translate-proper-position invariant encoding `μ`-separated roots. -/
 theorem risingFactorialStep_pf_shiftPrec
     {μ r : ℝ} (hμ : 0 ≤ μ) (hr : 0 ≤ r) {f : ℝ[X]}
-    (hf : IsPFPolynomial f) (hshift : Prec (f.comp (X + C μ)) f) :
+    (hf : IsPFPolynomial f) (hshift : StrictInterl (f.comp (X + C μ)) f) :
     let g := X * f.comp (X + C μ) + C r * f
-    IsPFPolynomial g ∧ Prec (g.comp (X + C μ)) g := by
+    IsPFPolynomial g ∧ StrictInterl (g.comp (X + C μ)) g := by
   dsimp
   let fμ := f.comp (X + C μ)
   have hfrr := hshift.2.1
@@ -357,21 +357,21 @@ theorem risingFactorialStep_pf_shiftPrec
       linarith [hf.roots_nonpos s hs]
   have hfμ : IsPFPolynomial fμ :=
     IsPFPolynomial.of_realRooted_nonneg hfμnn hfμrr.2
-  have hf_Xfμ : Prec f (X * fμ) := by
+  have hf_Xfμ : StrictInterl f (X * fμ) := by
     simpa [fμ] using
       prec_mul_X_of_prec_of_nonneg hshift hfμ.hasNonnegCoeffs hf.hasNonnegCoeffs
-  have hfμ_Xfμ : Prec fμ (X * fμ) :=
+  have hfμ_Xfμ : StrictInterl fμ (X * fμ) :=
     prec_mul_X_of_prec_of_nonneg (prec_refl hfμrr.1 hfμrr.2)
       hfμ.hasNonnegCoeffs hfμ.hasNonnegCoeffs
   have hXfμnn : HasNonnegCoeffs (X * fμ) := hfμ.X_mul.hasNonnegCoeffs
   have hrf_nn : HasNonnegCoeffs (C r * f) :=
     nonnegCoeffs_C_mul hr hf.hasNonnegCoeffs
-  have hf_g0 : Prec0 f (X * fμ + C r * f) :=
-    prec0_add_right_of_common_left_of_nonneg hf_Xfμ.toPrec0
+  have hf_g0 : Interl f (X * fμ + C r * f) :=
+    prec0_add_right_of_common_left_of_nonneg hf_Xfμ.toInterl
       (prec0_C_mul_right_of_nonneg hf.prec0_self hr) hXfμnn hrf_nn
-  have hfμ_g0 : Prec0 fμ (X * fμ + C r * f) :=
-    prec0_add_right_of_common_left_of_nonneg hfμ_Xfμ.toPrec0
-      (prec0_C_mul_right_of_nonneg hshift.toPrec0 hr) hXfμnn hrf_nn
+  have hfμ_g0 : Interl fμ (X * fμ + C r * f) :=
+    prec0_add_right_of_common_left_of_nonneg hfμ_Xfμ.toInterl
+      (prec0_C_mul_right_of_nonneg hshift.toInterl hr) hXfμnn hrf_nn
   have hg0 : X * fμ + C r * f ≠ 0 := by
     intro hg
     have hcoeff := congrArg
@@ -384,10 +384,10 @@ theorem risingFactorialStep_pf_shiftPrec
     have hrf_coeff := hrf_nn (X * fμ).natDegree
     simp only [coeff_add, coeff_zero] at hcoeff
     linarith
-  have hfg : Prec f (X * fμ + C r * f) :=
-    hf_g0.toPrec_of_ne hfrr.1 hg0
-  have hfμg : Prec fμ (X * fμ + C r * f) :=
-    hfμ_g0.toPrec_of_ne hfμrr.1 hg0
+  have hfg : StrictInterl f (X * fμ + C r * f) :=
+    hf_g0.toStrictInterl_of_ne hfrr.1 hg0
+  have hfμg : StrictInterl fμ (X * fμ + C r * f) :=
+    hfμ_g0.toStrictInterl_of_ne hfμrr.1 hg0
   have hfμdeg : fμ.natDegree = f.natDegree := by simp [fμ, Polynomial.natDegree_comp]
   have hXfμdeg : (X * fμ).natDegree = f.natDegree + 1 := by
     rw [Polynomial.natDegree_mul X_ne_zero hfμrr.1, Polynomial.natDegree_X, hfμdeg]

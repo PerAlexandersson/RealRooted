@@ -21,25 +21,25 @@ private theorem reflect_reverses_prec0_of_pf
     {n : ℕ} {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
-    (hpq : Prec0 p q) :
-    Prec0 (q.reflect n) (p.reflect n) := by
+    (hpq : Interl p q) :
+    Interl (q.reflect n) (p.reflect n) := by
   rcases hpq with hpzero | hqzero | hpq
   · subst p
-    simpa using prec0_zero_right (q.reflect n)
+    simpa using interl_zero_right (q.reflect n)
   · subst q
-    simpa using prec0_zero_left (p.reflect n)
-  · exact (reciprocalShift_reverses_prec hp hq hpdeg hqdeg hpq).toPrec0
+    simpa using interl_zero_left (p.reflect n)
+  · exact (reciprocalShift_reverses_prec hp hq hpdeg hqdeg hpq).toInterl
 
 private theorem reflectionInterlacing_pair_of_relations
     {n : ℕ} {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
-    (hpq : Prec0 p q)
-    (hpqref : Prec0 p (q.reflect n))
-    (hpref : Prec0 p (p.reflect n))
-    (hqref : Prec0 q (q.reflect n))
-    (hqpref : Prec0 q (p.reflect n))
-    (hqrefpref : Prec0 (q.reflect n) (p.reflect n)) :
+    (hpq : Interl p q)
+    (hpqref : Interl p (q.reflect n))
+    (hpref : Interl p (p.reflect n))
+    (hqref : Interl q (q.reflect n))
+    (hqpref : Interl q (p.reflect n))
+    (hqrefpref : Interl (q.reflect n) (p.reflect n)) :
     IsReflectionInterlacingSeq n [p, q] := by
   have hpref_pf := reciprocalShift_preserves_pf hp hpdeg
   have hqref_pf := reciprocalShift_preserves_pf hq hqdeg
@@ -87,7 +87,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
   have hpairwise :
       (resolvedChowRow resolution n ++
         ((resolvedChowRow resolution n).map fun p => p.reflect n).reverse).Pairwise
-          Prec0 := by
+          Interl := by
     simpa [reflectionClosure] using
       isInterlacingSeq0_iff_pairwise.mp hclosed.interlacingSeq0
   have hdirect := (List.pairwise_append.mp hpairwise).1
@@ -111,10 +111,10 @@ private theorem resolvedChowWeightSum_endpoint_pairs
   have hddeg : ∀ j, j ≤ n → (d j).natDegree ≤ n := by
     intro j hj
     exact hrow.natDegree_le (hmem j hj)
-  have hdself : ∀ j, j ≤ n → Prec0 (d j) (d j) := by
+  have hdself : ∀ j, j ≤ n → Interl (d j) (d j) := by
     intro j hj
     exact (hdpf j hj).prec0_self
-  have hleft : ∀ j, j ≤ n → Prec0 (d 0) (d j) := by
+  have hleft : ∀ j, j ≤ n → Interl (d 0) (d j) := by
     intro j hj
     rcases eq_or_lt_of_le (Nat.zero_le j) with rfl | hjpos
     · exact hdself 0 (Nat.zero_le n)
@@ -124,7 +124,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         ⟨j, by simpa using hj⟩
       simpa [first, current, d, resolvedChowRow] using
         hdirect.rel_get_of_lt (a := first) (b := current) hjpos
-  have hright : ∀ j, j ≤ n → Prec0 (d j) (d n) := by
+  have hright : ∀ j, j ≤ n → Interl (d j) (d n) := by
     intro j hj
     by_cases heq : j = n
     · subst j
@@ -137,16 +137,16 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       simpa [current, last, d, resolvedChowRow] using
         hdirect.rel_get_of_lt (a := current) (b := last) hjlt
   have hdirectReflect : ∀ i, i ≤ n → ∀ j, j ≤ n →
-      Prec0 (d i) ((d j).reflect n) := by
+      Interl (d i) ((d j).reflect n) := by
     intro i hi j hj
     exact hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
   have hreflectLeft : ∀ j, j ≤ n →
-      Prec0 ((d j).reflect n) ((d 0).reflect n) := by
+      Interl ((d j).reflect n) ((d 0).reflect n) := by
     intro j hj
     exact reflect_reverses_prec0_of_pf (hdpf 0 (Nat.zero_le n))
       (hdpf j hj) (hddeg 0 (Nat.zero_le n)) (hddeg j hj) (hleft j hj)
   have hreflectRight : ∀ j, j ≤ n →
-      Prec0 ((d n).reflect n) ((d j).reflect n) := by
+      Interl ((d n).reflect n) ((d j).reflect n) := by
     intro j hj
     exact reflect_reverses_prec0_of_pf (hdpf j hj) (hdpf n le_rfl)
       (hddeg j hj) (hddeg n le_rfl) (hright j hj)
@@ -162,10 +162,10 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       ∑ j ∈ Finset.range (n + 1), C (a j) * (d j).reflect n := by
     simpa [F, a, d, resolvedChowWeightSum] using
       reflect_finset_sum_C_mul (Finset.range (n + 1)) a d n
-  have hFbounds : Prec0 (d 0) F ∧ Prec0 F (d n) := by
+  have hFbounds : Interl (d 0) F ∧ Interl F (d n) := by
     simpa [F, a, d, resolvedChowWeightSum, resolvedChowCombination] using
       resolvedChowCombination_endpoint_prec0 resolution ha
-  have h0refF : Prec0 (d 0) (F.reflect n) := by
+  have h0refF : Interl (d 0) (F.reflect n) := by
     rw [hreflectF]
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
@@ -175,7 +175,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFref0 : Prec0 F ((d 0).reflect n) := by
+  have hFref0 : Interl F ((d 0).reflect n) := by
     dsimp only [F, resolvedChowWeightSum]
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
@@ -185,7 +185,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
-  have hrefFref0 : Prec0 (F.reflect n) ((d 0).reflect n) := by
+  have hrefFref0 : Interl (F.reflect n) ((d 0).reflect n) := by
     rw [hreflectF]
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
@@ -194,7 +194,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFrefn : Prec0 F ((d n).reflect n) := by
+  have hFrefn : Interl F ((d n).reflect n) := by
     dsimp only [F, resolvedChowWeightSum]
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
@@ -204,7 +204,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
-  have hnrefF : Prec0 (d n) (F.reflect n) := by
+  have hnrefF : Interl (d n) (F.reflect n) := by
     rw [hreflectF]
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
@@ -214,7 +214,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hrefnrefF : Prec0 ((d n).reflect n) (F.reflect n) := by
+  have hrefnrefF : Interl ((d n).reflect n) (F.reflect n) := by
     rw [hreflectF]
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
@@ -223,7 +223,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFrefF : Prec0 F (F.reflect n) := by
+  have hFrefF : Interl F (F.reflect n) := by
     rw [hreflectF]
     dsimp only [F, resolvedChowWeightSum]
     apply prec0_finsetSum_pairwise_of_nonneg
@@ -306,12 +306,12 @@ polynomial, with vanishing endpoints allowed. -/
 theorem chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
-    Prec0 (chowPolynomial A n) (chowDerangement A n) := by
+    Interl (chowPolynomial A n) (chowDerangement A n) := by
   let resolution := BrandenLeite.resolutionOfTotallyNonneg A hunit hA
   cases n with
   | zero =>
       rw [chowPolynomial_zero A (hunit.diagonal 0), chowDerangement_zero]
-      exact (prec_refl one_ne_zero Polynomial.Splits.one).toPrec0
+      exact (prec_refl one_ne_zero Polynomial.Splits.one).toInterl
   | succ n =>
       have hrow := resolvedChowRow_reflectionInterlacing resolution (n + 1)
       have hdirect : IsInterlacingSeq0NonnegRealRooted
@@ -332,15 +332,15 @@ theorem chowPolynomial_prec_chowDerangement_of_isTotallyNonneg_of_ne
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hchow : chowPolynomial A n ≠ 0)
     (hderangement : chowDerangement A n ≠ 0) :
-    Prec (chowPolynomial A n) (chowDerangement A n) :=
-  (chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg hunit hA n).toPrec_of_ne
+    StrictInterl (chowPolynomial A n) (chowDerangement A n) :=
+  (chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hchow hderangement
 
 /-- Consecutive Chow polynomials are in zero-aware proper position. -/
 theorem chowPolynomial_prec0_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
-    Prec0 (chowPolynomial A n) (chowPolynomial A (n + 1)) := by
+    Interl (chowPolynomial A n) (chowPolynomial A (n + 1)) := by
   let resolution := BrandenLeite.resolutionOfTotallyNonneg A hunit hA
   have hpairs := resolvedChowWeightSum_endpoint_pairs resolution n
   have hext := hpairs.1.chowSExtension
@@ -374,8 +374,8 @@ theorem chowPolynomial_prec_succ_of_isTotallyNonneg_of_ne
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hn : chowPolynomial A n ≠ 0)
     (hsucc : chowPolynomial A (n + 1) ≠ 0) :
-    Prec (chowPolynomial A n) (chowPolynomial A (n + 1)) :=
-  (chowPolynomial_prec0_succ_of_isTotallyNonneg hunit hA n).toPrec_of_ne
+    StrictInterl (chowPolynomial A n) (chowPolynomial A (n + 1)) :=
+  (chowPolynomial_prec0_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
 
 /-- Consecutive Chow-derangement polynomials are in zero-aware proper
@@ -383,7 +383,7 @@ position. -/
 theorem chowDerangement_prec0_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
-    Prec0 (chowDerangement A n) (chowDerangement A (n + 1)) := by
+    Interl (chowDerangement A n) (chowDerangement A (n + 1)) := by
   let resolution := BrandenLeite.resolutionOfTotallyNonneg A hunit hA
   have hpairs := resolvedChowWeightSum_endpoint_pairs resolution n
   have hext := hpairs.2.chowSExtension
@@ -418,8 +418,8 @@ theorem chowDerangement_prec_succ_of_isTotallyNonneg_of_ne
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hn : chowDerangement A n ≠ 0)
     (hsucc : chowDerangement A (n + 1) ≠ 0) :
-    Prec (chowDerangement A n) (chowDerangement A (n + 1)) :=
-  (chowDerangement_prec0_succ_of_isTotallyNonneg hunit hA n).toPrec_of_ne
+    StrictInterl (chowDerangement A n) (chowDerangement A (n + 1)) :=
+  (chowDerangement_prec0_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
 
 end

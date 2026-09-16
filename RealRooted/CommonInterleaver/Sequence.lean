@@ -137,14 +137,14 @@ theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
   have hj : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
   simpa [leftSlotSetAt, hj] using hmem_slot
 
-/-- Atomic shifted-slot membership input for a left `Prec` relation.
+/-- Atomic shifted-slot membership input for a left `StrictInterl` relation.
 
 This is the direct left-oriented analogue of
 `CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec`:
-if `Prec h f`, then each descending root of the inner polynomial `h` lies in
+if `StrictInterl h f`, then each descending root of the inner polynomial `h` lies in
 the shifted slot of the outer polynomial `f`. -/
 def PrecLeftShiftedSlotStatement : Prop :=
-  ∀ {h f : ℝ[X]} (hhf : Prec h f) (j : Fin h.natDegree),
+  ∀ {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree),
     (rootSeqDesc h).get ⟨j.1, by
       simp [rootSeqDesc_length hhf.1.2, j.2]⟩ ∈
       rootSlotInterval (rootSeqDesc f)
@@ -153,7 +153,7 @@ def PrecLeftShiftedSlotStatement : Prop :=
           have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
           simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
 
-/-- Atomic left `Prec` shifted-slot membership. -/
+/-- Atomic left `StrictInterl` shifted-slot membership. -/
 theorem precLeftShiftedSlot : PrecLeftShiftedSlotStatement := by
   intro h f hhf j
   exact CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec hhf j
@@ -165,8 +165,8 @@ upgrade: if `h` is a common left interleaver of `f` and `g`, then the shifted
 root slots of `f` and `g` meet. -/
 def CommonLeftInterleaverShiftedSlotStatement : Prop :=
   ∀ {h f g : ℝ[X]},
-    Prec h f →
-    Prec h g →
+    StrictInterl h f →
+    StrictInterl h g →
     ∀ j : ℕ,
       ∀ (hjf : j + 1 < (rootSeqDesc f).length + 1)
         (hjg : j + 1 < (rootSeqDesc g).length + 1),
@@ -174,7 +174,7 @@ def CommonLeftInterleaverShiftedSlotStatement : Prop :=
           rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty
 
 /-- The common-left-interleaver shifted-slot statement follows from the atomic
-left `Prec` shifted-slot membership input. -/
+left `StrictInterl` shifted-slot membership input. -/
 theorem commonLeftInterleaverShiftedSlot_of_precLeft
     (hleft : PrecLeftShiftedSlotStatement) :
     CommonLeftInterleaverShiftedSlotStatement := by

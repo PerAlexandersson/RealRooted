@@ -16,7 +16,7 @@ namespace Tactic
 /-- Combined Ma--Wang/Liu--Wang sequence shell with automatic nonnegative-root
 sign side-goals. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -27,7 +27,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (2 : ℝ) - X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -39,7 +39,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Root-upper combined Ma--Wang/Liu--Wang sequence shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
@@ -50,7 +50,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (1 + X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -62,7 +62,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the combined nonnegative-root shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -85,7 +85,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the root-upper combined shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
@@ -108,7 +108,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Root-window combined Ma--Wang/Liu--Wang sequence shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -120,7 +120,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (1 + C (4 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_window_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -133,7 +133,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the root-window combined shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -158,7 +158,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Denominator-normalized combined Ma--Wang/Liu--Wang shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -170,7 +170,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 3) * ((X * (C (2 : ℝ) - X)) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -189,7 +189,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the denominator-normalized combined shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -220,7 +220,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Root-window denominator-normalized combined shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -233,7 +233,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 1) * ((X * (1 + C (4 : ℝ) * X)) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -254,7 +254,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Real-rootedness endpoint for the root-window denominator-normalized
 combined shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)

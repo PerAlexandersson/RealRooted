@@ -19,9 +19,9 @@ degree at most one to interlace. -/
 def SourcePrec (f g : ℝ[X]) : Prop :=
   IsSourceRealRooted f ∧ IsSourceRealRooted g ∧
     (f = 0 ∨ g = 0 ∨
-      (f.natDegree ≤ 1 ∧ g.natDegree ≤ 1) ∨ Prec f g)
+      (f.natDegree ≤ 1 ∧ g.natDegree ≤ 1) ∨ StrictInterl f g)
 
-lemma SourcePrec.of_prec {f g : ℝ[X]} (h : Prec f g) : SourcePrec f g :=
+lemma SourcePrec.of_prec {f g : ℝ[X]} (h : StrictInterl f g) : SourcePrec f g :=
   ⟨Or.inr h.1, Or.inr h.2.1, Or.inr (Or.inr (Or.inr h))⟩
 
 lemma SourcePrec.of_lowDegree {f g : ℝ[X]}
@@ -77,9 +77,9 @@ def lowDegreeCounterexampleMiddle : ℝ[X] := C 2 * (X + C 3)
 def lowDegreeCounterexampleRight : ℝ[X] := (X + C 1) * (X + C 3)
 
 private lemma lowDegreeCounterexample_left_prec_right :
-    Prec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight := by
-  have hbase : Prec (1 : ℝ[X]) (X + C 3) :=
-    (interlaces_one_linear (Polynomial.natDegree_X_add_C (3 : ℝ))).toPrec
+    StrictInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleRight := by
+  have hbase : StrictInterl (1 : ℝ[X]) (X + C 3) :=
+    (interlaces_one_linear (Polynomial.natDegree_X_add_C (3 : ℝ))).toStrictInterl
   have hlinear := isRealRooted_of_degree_one
     (Polynomial.natDegree_X_add_C (1 : ℝ))
   have hcommon := prec_mul_common_factor
@@ -87,9 +87,9 @@ private lemma lowDegreeCounterexample_left_prec_right :
   simpa [lowDegreeCounterexampleLeft, lowDegreeCounterexampleRight] using hcommon
 
 private lemma lowDegreeCounterexample_middle_prec_right :
-    Prec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight := by
-  have hbase : Prec (1 : ℝ[X]) (X + C 1) :=
-    (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toPrec
+    StrictInterl lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight := by
+  have hbase : StrictInterl (1 : ℝ[X]) (X + C 1) :=
+    (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
   have hlinear := isRealRooted_of_degree_one
     (Polynomial.natDegree_X_add_C (3 : ℝ))
   have hcommon := prec_mul_common_factor
@@ -229,20 +229,20 @@ lemma weakQuadratic_not_sourceRealRooted : ¬IsSourceRealRooted weakQuadratic :=
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_not_splits hsplits
 
-lemma weakQuadratic_not_prec0_self : ¬Prec0 weakQuadratic weakQuadratic := by
+lemma weakQuadratic_not_prec0_self : ¬Interl weakQuadratic weakQuadratic := by
   rintro (hzero | hzero | hprec)
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_not_splits hprec.1.2
 
-lemma weakQuadratic_not_prec0_X_mul : ¬Prec0 weakQuadratic (X * weakQuadratic) := by
+lemma weakQuadratic_not_prec0_X_mul : ¬Interl weakQuadratic (X * weakQuadratic) := by
   rintro (hzero | hzero | hprec)
   · exact weakQuadratic_ne_zero hzero
   · exact (mul_ne_zero X_ne_zero weakQuadratic_ne_zero) hzero
   · exact weakQuadratic_not_splits hprec.1.2
 
 private lemma weakInput (fs : List ℝ[X])
-    (hpair : fs.Pairwise Prec0) (hmem : ∀ f ∈ fs, f = 0 ∨ f = weakQuadratic) :
+    (hpair : fs.Pairwise Interl) (hmem : ∀ f ∈ fs, f = 0 ∨ f = weakQuadratic) :
     IsInterlacingSeq0Nonneg fs := by
   constructor
   · exact isInterlacingSeq0_iff_pairwise.mpr hpair
@@ -257,7 +257,7 @@ theorem weak_lowerPartialSums_counterexample :
       ¬IsInterlacingSeq0Nonneg (lowerPartialSums [weakQuadratic, 0]) := by
   constructor
   · apply weakInput
-    · simp [Prec0]
+    · simp [Interl]
     · simp
   · intro h
     have hp := isInterlacingSeq0_iff_pairwise.mp h.1
@@ -265,7 +265,7 @@ theorem weak_lowerPartialSums_counterexample :
         [weakQuadratic, weakQuadratic] := by
       simp [lowerPartialSums]
     rw [hout] at hp
-    have hpair : Prec0 weakQuadratic weakQuadratic := by simpa using hp
+    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
     exact weakQuadratic_not_prec0_self hpair
 
 /-- Checked counterexample for the false weak upper-partial-sum interface. -/
@@ -274,7 +274,7 @@ theorem weak_upperPartialSums_counterexample :
       ¬IsInterlacingSeq0Nonneg (upperPartialSums [0, weakQuadratic]) := by
   constructor
   · apply weakInput
-    · simp [Prec0]
+    · simp [Interl]
     · simp
   · intro h
     have hp := isInterlacingSeq0_iff_pairwise.mp h.1
@@ -282,7 +282,7 @@ theorem weak_upperPartialSums_counterexample :
         [weakQuadratic, weakQuadratic] := by
       simp [upperPartialSums, lowerPartialSums]
     rw [hout] at hp
-    have hpair : Prec0 weakQuadratic weakQuadratic := by simpa using hp
+    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
     exact weakQuadratic_not_prec0_self hpair
 
 /-- Checked counterexample for the false weak moving-window interface. -/
@@ -291,7 +291,7 @@ theorem weak_movingWindowSums_counterexample :
       ¬IsInterlacingSeq0Nonneg (movingWindowSums 1 [0, weakQuadratic, 0]) := by
   constructor
   · apply weakInput
-    · simp [Prec0]
+    · simp [Interl]
     · simp
   · intro h
     have hp := isInterlacingSeq0_iff_pairwise.mp h.1
@@ -299,7 +299,7 @@ theorem weak_movingWindowSums_counterexample :
         [weakQuadratic, weakQuadratic] := by
       norm_num [movingWindowSums, List.range_succ]
     rw [hout] at hp
-    have hpair : Prec0 weakQuadratic weakQuadratic := by simpa using hp
+    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
     exact weakQuadratic_not_prec0_self hpair
 
 /-- Checked counterexample for the false weak shifted-split-sum interface. -/
@@ -314,7 +314,7 @@ theorem weak_xShiftedSplitSums_counterexample :
         [weakQuadratic, X * weakQuadratic] := by
       norm_num [xShiftedSplitSums, List.range_succ]
     rw [hout] at hp
-    have hpair : Prec0 weakQuadratic (X * weakQuadratic) := by simpa using hp
+    have hpair : Interl weakQuadratic (X * weakQuadratic) := by simpa using hp
     exact weakQuadratic_not_prec0_X_mul hpair
 
 /-- A singleton is non-vacuous for the source predicate. -/

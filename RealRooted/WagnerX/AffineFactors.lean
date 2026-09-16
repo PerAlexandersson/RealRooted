@@ -10,13 +10,14 @@ noncomputable section
 
 namespace RealRooted
 
-theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g)
+theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : StrictInterl f g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec ((X - C r) * f) ((X - C r) * g) := by
+    StrictInterl ((X - C r) * f) ((X - C r) * g) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hfg' : Prec f' g' := by simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+  have hfg' : StrictInterl f' g' := by
+    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -27,23 +28,23 @@ theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g
     simp only [g', roots_comp_X_add_C r] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
-  have hX' : Prec (X * f') (X * g') :=
+  have hX' : StrictInterl (X * f') (X * g') :=
     prec_mul_X_both_of_roots_nonpos hfg' hf'_nonpos hg'_nonpos
   have htranslated :
-      Prec (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
+      StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hX'
   exact (prec_comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1 htranslated
 
 theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : Prec ((X - C r) * f) ((X - C r) * g))
+    (h : StrictInterl ((X - C r) * f) ((X - C r) * g))
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec f g := by
+    StrictInterl f g := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have htranslated :
-      Prec (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
+      StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
     simpa using (prec_comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).2 h
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
@@ -55,8 +56,8 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     simp only [g', roots_comp_X_add_C r] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
-  have hfg' : Prec f' g' := by
-    have hX' : Prec (X * f') (X * g') := by
+  have hfg' : StrictInterl f' g' := by
+    have hX' : StrictInterl (X * f') (X * g') := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using htranslated
     exact prec_of_prec_mul_X_both_of_roots_nonpos hX' hf'_nonpos hg'_nonpos
@@ -65,12 +66,12 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
 theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec f g ↔ Prec ((X - C r) * f) ((X - C r) * g) :=
+    StrictInterl f g ↔ StrictInterl ((X - C r) * f) ((X - C r) * g) :=
   ⟨fun h => prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le,
     fun h => prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le⟩
 
-theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
-    Prec ((X - C r) * f) ((X - C r) * g) := by
+theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : StrictInterl f g) :
+    StrictInterl ((X - C r) * f) ((X - C r) * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   refine ⟨isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf.1 hf.2,
     isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg.1 hg.2,
@@ -112,8 +113,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         listAlternates_orderedInsert hlen halt r⟩
 
 theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
-    (h : Prec ((X - C r) * f) ((X - C r) * g)) :
-    Prec f g := by
+    (h : StrictInterl ((X - C r) * f) ((X - C r) * g)) :
+    StrictInterl f g := by
   rcases h with ⟨hXf, hXg, ss_mul, rs_mul, hss_mul, hrs_mul, hss_mul_eq, hrs_mul_eq, hcase⟩
   have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
   have hg0 : g ≠ 0 := right_ne_zero_of_mul hXg.1
@@ -167,9 +168,9 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
 theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
-    (h : Prec f g) :
-    Prec (d * f) (d * g) := by
-  have hprod : Prec (((d.roots.map fun a => X - C a).prod) * f)
+    (h : StrictInterl f g) :
+    StrictInterl (d * f) (d * g) := by
+  have hprod : StrictInterl (((d.roots.map fun a => X - C a).prod) * f)
       (((d.roots.map fun a => X - C a).prod) * g) := by
     induction d.roots using Multiset.induction_on with
     | empty =>
@@ -179,7 +180,7 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d
           prec_mul_X_sub_C_both a ih
   have hlc0 : d.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hd_ne
   have hscaled :
-      Prec ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * f)
+      StrictInterl ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * f)
         ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * g) := by
     have hleft := prec_C_mul_left hprod hlc0
     have hboth := prec_C_mul_right hleft hlc0
@@ -193,7 +194,7 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec f g ↔ Prec g ((X - C r) * f) := by
+    StrictInterl f g ↔ StrictInterl g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have hf' : f' ≠ 0 ∧ f'.Splits := by
@@ -214,24 +215,24 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     simp_all
   have hdeg' : f'.natDegree + 1 = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hshift :
-      Prec f' g' ↔ Prec g' (X * f') :=
+      StrictInterl f' g' ↔ StrictInterl g' (X * f') :=
     prec_iff_prec_mul_X_of_roots_nonpos hf'.2 hg'.2 hf'_pos hg'_pos hf'_nonpos hg'_nonpos hdeg'
   constructor
   · intro hfg
-    have hfg' : Prec f' g' := by
+    have hfg' : StrictInterl f' g' := by
       simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 hfg
-    have hgxf' : Prec g' (X * f') := hshift.mp hfg'
-    have htranslated : Prec g' (((X - C r) * f).comp (X + C r)) := by
+    have hgxf' : StrictInterl g' (X * f') := hshift.mp hfg'
+    have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
     exact (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
   · intro hgf
-    have hgf' : Prec g' (((X - C r) * f).comp (X + C r)) := by
+    have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
       simpa [g'] using (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 hgf
-    have hgxf' : Prec g' (X * f') := by
+    have hgxf' : StrictInterl g' (X * f') := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
-    have hfg' : Prec f' g' := hshift.mpr hgxf'
+    have hfg' : StrictInterl f' g' := hshift.mpr hgxf'
     exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 end RealRooted

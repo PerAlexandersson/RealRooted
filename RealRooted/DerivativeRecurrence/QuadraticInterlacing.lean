@@ -85,7 +85,7 @@ lemma prec_step_of_quadratic_derivative_linear
         (C c + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hs : 0 < s) (hbt : b ≤ t)
     (m : ℕ) (hm : 2 ≤ m) (hsp : (P m).Splits) :
-    Prec (P m) (P (m + 1)) := by
+    StrictInterl (P m) (P (m + 1)) := by
   have hne : P m ≠ 0 := ne_zero_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt m
   have hroots_nonpos : ∀ r, (P m).IsRoot r → r ≤ 0 := fun r hr =>
     roots_nonpos_of_hasNonnegCoeffs
@@ -135,13 +135,13 @@ theorem prec_of_quadratic_derivative_linear
       (C a * X + C (-b) * X ^ 2) * (P n).derivative +
         (C c + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, Prec (P n) (P (n + 1))
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 => by
       have : Interlaces (P 0) (P 1) := by
         rw [h0]
         exact interlaces_one_linear (p := P 1)
           (by rw [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt])
-      exact this.toPrec
+      exact this.toStrictInterl
   | 1 => by
       have hp1 : P 1 = C c + C s * X := by
         simp_all
@@ -260,7 +260,7 @@ lemma prec_step_of_quadratic_derivative_bilinear
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hu : 0 ≤ u)
     (hs : 0 < s) (hbt : b ≤ t)
     (n : ℕ) (hn : 2 ≤ n) (hsp : (P n).Splits) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   have hne : P n ≠ 0 :=
     ne_zero_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt n
   have hroots_nonpos : ∀ r, (P n).IsRoot r → r ≤ 0 := fun r hr =>
@@ -322,14 +322,14 @@ theorem prec_of_quadratic_derivative_bilinear
         (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hu : 0 ≤ u)
     (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, Prec (P n) (P (n + 1))
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 => by
       have : Interlaces (P 0) (P 1) := by
         rw [h0]
         exact interlaces_one_linear (p := P 1)
           (by rw [natDegree_of_quadratic_derivative_bilinear
             P a b c u s t h0 hrec hs hbt])
-      exact this.toPrec
+      exact this.toStrictInterl
   | 1 => by
       have hp1 : P 1 = C c + C s * X := by simp_all
       have hder : (P 1).derivative = C s := by simp_all
@@ -451,7 +451,7 @@ lemma prec_step_of_quadratic_derivative_linear_offset
         (C c + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hsd : 0 < s - b * (d : ℝ))
     (hbt : b ≤ t) (hd : 2 ≤ d) (m : ℕ) (hsp : (P m).Splits) :
-    Prec (P m) (P (m + 1)) := by
+    StrictInterl (P m) (P (m + 1)) := by
   have hne : P m ≠ 0 := ne_zero_of_quadratic_derivative_linear_offset P a b c s t d
     hbase_top hbase_above hrec hsd hbt m
   have hroots_nonpos : ∀ r, (P m).IsRoot r → r ≤ 0 := fun r hr =>
@@ -516,7 +516,7 @@ theorem prec_of_quadratic_derivative_linear_offset
         (C c + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hsd : 0 < s - b * (d : ℝ))
     (hbt : b ≤ t) (hd : 2 ≤ d) :
-    ∀ n : ℕ, Prec (P n) (P (n + 1))
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 =>
       prec_step_of_quadratic_derivative_linear_offset P a b c s t d
         hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt hd 0 hbase_splits

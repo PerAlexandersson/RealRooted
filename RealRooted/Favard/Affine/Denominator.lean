@@ -26,7 +26,7 @@ theorem favardInterlacing_affine_param_coeff_den
         C (d n) *
           ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff hs hβ hP0 hP1 <|
     fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)
 
@@ -79,7 +79,7 @@ theorem favardInterlacing_affine_param_coeff_den_split
       C (d n) * P (n + 2) =
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff hs hβ hP0 hP1 fun n =>
     eq_sub_C_mul_of_C_mul_eq_C_mul_sub_C_mul (hden n) (hraw n)
 
@@ -130,7 +130,7 @@ theorem favardInterlacing_affine_param_coeff_den_split_rev
       C (d n) * P (n + 2) =
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_den_split hs hβ hP0 hP1 hden <| by
     intro n
     have hcomm : β (n + 1) * d n = d n * β (n + 1) := by ring
@@ -225,9 +225,9 @@ theorem favardInterlacing_affine_param_coeff_den_raw
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := fun n =>
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := fun n =>
   (interlaces_of_favard_affine_param_coeff_den_raw
-    hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).toPrec
+    hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).toStrictInterl
 
 /-- Real-rootedness consequence of raw-affine scalar-denominator Favard. -/
 theorem isRealRooted_of_favard_affine_param_coeff_den_raw
@@ -283,7 +283,7 @@ theorem favardInterlacing_affine_param_coeff_den_raw_prod
       C (d n) * P (n + 2) =
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_den_raw
     (s := s) (α := α) (β := β) (d := d)
     (araw := fun n => aleft n * aright n)

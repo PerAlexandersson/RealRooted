@@ -223,11 +223,11 @@ lemma simsun_nonzero (n : Nat) :
 
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
-  have hprec : Prec (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
+  have hprec : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
     (interlaces_one_linear (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))).toPrec
-  have hprecC : Prec (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
+        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))).toStrictInterl
+  have hprecC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     prec_C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     hprecC.toInterlaces (by
@@ -245,7 +245,7 @@ lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} (hrr : (simsun n).Splits) :
   roots_nonpos_of_nonneg_coeffs hrr (simsun_nonnegCoeffs n)
 
 lemma interlaces_simsun_zero_one :
-    Prec (simsun 0) (simsun 1) :=
+    StrictInterl (simsun 0) (simsun 1) :=
   by simpa [simsun_zero, simsun_one] using prec_refl (f := (1 : ℝ[X])) (by simp)
 
 lemma interlaces_simsun_one_two :
@@ -274,10 +274,10 @@ lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   simp [simsunCoeffB]
   nlinarith
 
-/-- Consecutive simsun descent polynomials satisfy `Prec`. -/
-theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
+/-- Consecutive simsun descent polynomials satisfy `StrictInterl`. -/
+theorem prec_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
   | 0 => interlaces_simsun_zero_one
-  | 1 => interlaces_simsun_one_two.toPrec
+  | 1 => interlaces_simsun_one_two.toStrictInterl
   | n + 2 => by
     have hInter :
         Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=

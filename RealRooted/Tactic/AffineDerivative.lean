@@ -18,7 +18,7 @@ theorem prec_affine_derivative_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroots_nonpos : ∀ n : Nat, ∀ r ∈ (P n).roots, r ≤ 0)
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := fun n =>
   prec_affine_derivative' (hsplits n) (hdeg n) (hpos n)
@@ -42,7 +42,7 @@ theorem prec_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat →
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := fun n =>
   prec_affine_derivative_of_nonnegCoeffs (hsplits n) (hdeg n) (hnn n) (hc n)

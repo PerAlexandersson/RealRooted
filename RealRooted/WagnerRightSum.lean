@@ -407,11 +407,11 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
 /-- Wagner (1): If f and g both precede h with positive leading coefficients,
     and f + g is real-rooted, then (f + g) precedes h. -/
 theorem prec_add_of_prec_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg_rr_ne : (f + g) ≠ 0) (hfg_rr_splits : (f + g).Splits)
     (hcop : IsCoprime f g) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
   obtain ⟨hg, _, ss_g, rs_g, hss_g_sorted, hrs_g_sorted, hss_g_eq, hrs_g_eq, hcase_g⟩ := hgh
   rcases hcase_f with ⟨hlen_f, hint_f⟩ | ⟨hlen_f_alt, halt_f⟩
@@ -451,7 +451,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         rw [Multiset.coe_card]
         have h1 := card_roots_of_splits hfg_rr_splits
         lia -- using h1 and hfg_natDeg
-      -- Build the Prec witness
+      -- Build the StrictInterl witness
       exact ⟨⟨hfg_rr_ne, hfg_rr_splits⟩, hh, us, rs_f,
         pairwise_le_of_listInterlaces us rs_f hus_int, hrs_f_sorted, hus_eq, hrs_f_eq,
         Or.inl ⟨by lia, hus_int⟩⟩
@@ -521,7 +521,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
-      -- Combine into Prec witness
+      -- Combine into StrictInterl witness
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
@@ -779,10 +779,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
     right-hand polynomial. If that does not happen, then common factors between
     `f` and `g` do not matter. -/
 theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
   obtain ⟨hg, _, ss_g, rs_g, hss_g_sorted, hrs_g_sorted, hss_g_eq, hrs_g_eq, hcase_g⟩ := hgh
   have hno_rs_f : ∀ r ∈ rs_f, ¬ (f + g).IsRoot r := by
@@ -1210,15 +1210,15 @@ theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
-    (hfh : Prec f' h') (hgh : Prec g' h')
+    (hfh : StrictInterl f' h') (hgh : StrictInterl g' h')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hfg'_rr_ne : (f' + g') ≠ 0) (hfg'_rr_splits : (f' + g').Splits)
     (hcop : IsCoprime f' g') :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
+  have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right hfh hgh hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the no-common-right Wagner theorem. This is the
@@ -1227,14 +1227,14 @@ theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : �
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
-    (hfh : Prec f' h') (hgh : Prec g' h')
+    (hfh : StrictInterl f' h') (hgh : StrictInterl g' h')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hno : ∀ r : ℝ, h'.IsRoot r → ¬ (f' + g').IsRoot r) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
+  have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- Wagner (1) without a coprimeness hypothesis: positive leading coefficients
@@ -1242,20 +1242,20 @@ and a common right-hand interlacing bound already force `f + g` to precede `h`.
 The proof repeatedly cancels any shared root of `h` and `f + g`, then applies
 the sign-based no-common-right theorem to the reduced situation. -/
 theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   have hP :
       ∀ n, ∀ (f g h : ℝ[X]), h.natDegree = n →
-        Prec f h → Prec g h →
+        StrictInterl f h → StrictInterl g h →
         HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-        Prec (f + g) h := by
+        StrictInterl (f + g) h := by
     intro n
     exact Nat.strong_induction_on n (fun n ih =>
       show ∀ (f g h : ℝ[X]), h.natDegree = n →
-        Prec f h → Prec g h →
+        StrictInterl f h → StrictInterl g h →
         HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-        Prec (f + g) h from by
+        StrictInterl (f + g) h from by
         intro f g h hn hfh hgh hf_pos hg_pos
         by_cases hcommon : ∃ r : ℝ, h.IsRoot r ∧ (f + g).IsRoot r
         · rcases hcommon with ⟨r, hrh, hrfg⟩
@@ -1264,10 +1264,10 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
           obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hfrg.1
           obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hfrg.2
           obtain ⟨qh, hqh⟩ := dvd_iff_isRoot.mpr hrh
-          have hfh' : Prec qf qh := by
+          have hfh' : StrictInterl qf qh := by
             apply prec_of_prec_mul_X_sub_C_both r
             lia
-          have hgh' : Prec qg qh := by
+          have hgh' : StrictInterl qg qh := by
             apply prec_of_prec_mul_X_sub_C_both r
             lia
           have hqf_pos : HasPosLeadingCoeff qf := by
@@ -1283,8 +1283,8 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
               rw [hqh, natDegree_mul (X_sub_C_ne_zero r) hqh_ne, natDegree_X_sub_C]
               lia
             lia
-          have hsum' : Prec (qf + qg) qh := by grind
-          have hmul : Prec ((X - C r) * (qf + qg)) ((X - C r) * qh) :=
+          have hsum' : StrictInterl (qf + qg) qh := by grind
+          have hmul : StrictInterl ((X - C r) * (qf + qg)) ((X - C r) * qh) :=
             prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hsum'
           grind
         · have hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r := by grind
@@ -1296,12 +1296,12 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
     `f + g` precedes `h`. This packages the branch needed for the derangement
     recurrence, avoiding a separate `((f + g) ≠ 0 ∧ (f + g).Splits)` hypothesis. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfh_deg : f.natDegree + 1 = h.natDegree)
     (hgh_deg : g.natDegree = h.natDegree)
     (hcop : IsCoprime f g) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
   obtain ⟨hg, _, ss_g, rs_g, hss_g_sorted, hrs_g_sorted, hss_g_eq, hrs_g_eq, hcase_g⟩ := hgh
   rcases hcase_f with ⟨hlen_f, hint_f⟩ | ⟨hlen_f_alt, halt_f⟩
@@ -1411,12 +1411,12 @@ root in common with `h`, then `f + g` also precedes `h`. This removes the
 artificial `IsCoprime f g` restriction from the mixed branch actually used in
 recurrences like the derangement-excedance sequence. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfh_deg : f.natDegree + 1 = h.natDegree)
     (hgh_deg : g.natDegree = h.natDegree)
     (hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
   obtain ⟨hg, _, ss_g, rs_g, hss_g_sorted, hrs_g_sorted, hss_g_eq, hrs_g_eq, hcase_g⟩ := hgh
   have hno_rs_f : ∀ r ∈ rs_f, ¬ (f + g).IsRoot r := by
@@ -1519,16 +1519,16 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : �
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
-    (hfh : Prec f' h') (hgh : Prec g' h')
+    (hfh : StrictInterl f' h') (hgh : StrictInterl g' h')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hfh_deg : f'.natDegree + 1 = h'.natDegree)
     (hgh_deg : g'.natDegree = h'.natDegree)
     (hcop : IsCoprime f' g') :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
+  have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_mixed_of_natDegree hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the mixed-degree no-common-right Wagner theorem. -/
@@ -1537,17 +1537,17 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
-    (hfh : Prec f' h') (hgh : Prec g' h')
+    (hfh : StrictInterl f' h') (hgh : StrictInterl g' h')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hfh_deg : f'.natDegree + 1 = h'.natDegree)
     (hgh_deg : g'.natDegree = h'.natDegree)
     (hno : ∀ r : ℝ, h'.IsRoot r → ¬ (f' + g').IsRoot r) :
-    Prec (f + g) h := by
+    StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
+  have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right
       hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hno
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 end

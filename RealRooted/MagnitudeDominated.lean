@@ -23,7 +23,7 @@ theorem prec_of_magnitude_dominated_succ
     (hdeg : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1)
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
-    Prec f (a * f + b₁ * g₁ + b₂ * g₂) := by
+    StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
   refine prec_of_interlaces_eval_mul_neg_succ hg₁f hg₁_pos hF_pos hdeg ?_
   intro r hr
   have hf0 : f.eval r = 0 := hr
@@ -44,7 +44,7 @@ theorem prec_of_magnitude_dominated_same
     (hdeg : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree)
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
-    Prec f (a * f + b₁ * g₁ + b₂ * g₂) := by
+    StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
   refine prec_of_interlaces_eval_mul_neg_same hg₁f hg₁_pos hF_pos hdeg ?_
   intro r hr
   have hf0 : f.eval r = 0 := hr
@@ -66,7 +66,7 @@ theorem prec_of_magnitude_dominated
     (hdeg_hi : (a * f + b₁ * g₁ + b₂ * g₂).natDegree ≤ f.natDegree + 1)
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
-    Prec f (a * f + b₁ * g₁ + b₂ * g₂) := by
+    StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
   rcases (by
       lia : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree ∨
         (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1) with hsame | hsucc

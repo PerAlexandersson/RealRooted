@@ -118,14 +118,14 @@ lemma motzkin_posLeadingCoeff (n : Nat) :
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
-    Prec f ((X - C r) * f) := by
+    StrictInterl f ((X - C r) * f) := by
   have hXf_pos : HasPosLeadingCoeff ((X - C r) * f) :=
     hasPosLeadingCoeff_X_sub_C_mul hf_pos
   have hXf_le : ∀ s ∈ ((X - C r) * f).roots, s ≤ r := roots_le_X_sub_C_mul hf hf_le
   have hdeg : f.natDegree + 1 = ((X - C r) * f).natDegree := by
     rw [natDegree_mul (X_sub_C_ne_zero r) hf_pos.ne_zero, natDegree_X_sub_C]
     lia
-  have hself : Prec ((X - C r) * f) ((X - C r) * f) :=
+  have hself : StrictInterl ((X - C r) * f) ((X - C r) * f) :=
     prec_refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
   exact (prec_iff_prec_mul_X_sub_C_of_roots_le r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos
     hf_le hXf_le hdeg).mpr hself
@@ -145,31 +145,31 @@ lemma motzkin_bound_one :
   norm_num
 
 lemma prec_motzkin_zero_one :
-    Prec (motzkin 0) (motzkin 1) := by
+    StrictInterl (motzkin 0) (motzkin 1) := by
   simpa [motzkin_zero, motzkin_one, add_comm] using
     (interlaces_one_linear (p := X + C (1 : ℝ))
-      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))).toPrec
+      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))).toStrictInterl
 
 lemma prec_motzkin_shifted_succ {n : Nat}
-    (hprev : Prec (motzkin n) (motzkin (n + 1)))
+    (hprev : StrictInterl (motzkin n) (motzkin (n + 1)))
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
-    Prec (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) := by
+    StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) := by
   have hscalarA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
   have hscalarB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
   have hleft :
-      Prec (C (motzkinCoeffA n) * motzkin (n + 1))
+      StrictInterl (C (motzkinCoeffA n) * motzkin (n + 1))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
     prec_C_mul_left
       (prec_self_mul_X_sub_C_of_roots_le
         hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
       hscalarA_pos.ne'
   have hright_core :
-      Prec ((X - C motzkinShift) * motzkin n)
+      StrictInterl ((X - C motzkinShift) * motzkin n)
         ((X - C motzkinShift) * motzkin (n + 1)) :=
     prec_mul_X_sub_C_both_of_roots_le motzkinShift hprev hle_n hle_succ
   have hright :
-      Prec (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
+      StrictInterl (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
     prec_C_mul_left hright_core hscalarB_pos.ne'
   have hleft_pos :
@@ -181,7 +181,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
     hasPosLeadingCoeff_C_mul hscalarB_pos
       (hasPosLeadingCoeff_X_sub_C_mul (motzkin_posLeadingCoeff n))
   have hsum :
-      Prec
+      StrictInterl
         (C (motzkinCoeffA n) * motzkin (n + 1) +
           C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
@@ -189,10 +189,10 @@ lemma prec_motzkin_shifted_succ {n : Nat}
   simpa [motzkin_succ_succ, add_comm, add_left_comm, add_assoc, mul_assoc] using hsum
 
 lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
-    (hshift : Prec (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
+    (hshift : StrictInterl (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
-    Prec (motzkin n) (motzkin (n + 1)) := by
+    StrictInterl (motzkin n) (motzkin (n + 1)) := by
   have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) :=
     isRealRooted_of_dvd hshift.2.1.1 hshift.2.1.2 (motzkin_nonzero n)
       ⟨X - C motzkinShift, by grind⟩
@@ -205,12 +205,12 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
       hle_n hle_succ hdeg).mpr hshift
 
 lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
-    (hshift : Prec (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
+    (hshift : StrictInterl (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift) :
-    Prec (motzkin n) (motzkin (n + 1)) := by
+    StrictInterl (motzkin n) (motzkin (n + 1)) := by
   set f' := (motzkin n).comp (X + C motzkinShift)
   set g' := (motzkin (n + 1)).comp (X + C motzkinShift)
-  have hshift' : Prec g' (X * f') := by
+  have hshift' : StrictInterl g' (X * f') := by
     have htmp := (prec_comp_X_add_C hshift motzkinShift)
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg, comp_assoc,
       add_assoc, add_left_comm, add_comm, mul_assoc] using htmp
@@ -225,21 +225,21 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
     simp [natDegree_comp, natDegree_motzkin]
     lia
   have hprec' :
-      Prec f' g' :=
+      StrictInterl f' g' :=
     prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos hshift' hdeg' hf'_nonpos
   exact (prec_comp_X_add_C_iff (f := motzkin n) (g := motzkin (n + 1)) motzkinShift).1 hprec'
 
-/-- Consecutive Motzkin polynomials satisfy the generalized interlacing relation `Prec`. -/
+/-- Consecutive Motzkin polynomials satisfy the generalized interlacing relation `StrictInterl`. -/
 theorem prec_motzkin_succ_and_roots_le :
     ∀ n : Nat,
-      Prec (motzkin n) (motzkin (n + 1)) ∧
+      StrictInterl (motzkin n) (motzkin (n + 1)) ∧
       (∀ r ∈ (motzkin n).roots, r ≤ motzkinShift) ∧
       (∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift)
   | 0 => ⟨prec_motzkin_zero_one, motzkin_bound_zero, motzkin_bound_one⟩
   | n + 1 => by
       rcases prec_motzkin_succ_and_roots_le n with ⟨hprev, hle_n, hle_succ⟩
       have hshift :
-          Prec (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) :=
+          StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) :=
         prec_motzkin_shifted_succ hprev hle_n hle_succ
       have hright_le :
           ∀ r ∈ ((X - C motzkinShift) * motzkin (n + 1)).roots, r ≤ motzkinShift :=
@@ -247,14 +247,14 @@ theorem prec_motzkin_succ_and_roots_le :
       have hle_next :
           ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
         roots_le_of_prec_right hshift hright_le
-      have hnext : Prec (motzkin (n + 1)) (motzkin (n + 2)) :=
+      have hnext : StrictInterl (motzkin (n + 1)) (motzkin (n + 2)) :=
         (Nat.mod_two_eq_zero_or_one (n + 1)).elim
           (fun hpar => prec_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next)
           (fun hpar => prec_motzkin_succ_of_shifted_odd hpar hshift hle_succ)
       lia
 
 theorem prec_motzkin_succ (n : Nat) :
-    Prec (motzkin n) (motzkin (n + 1)) :=
+    StrictInterl (motzkin n) (motzkin (n + 1)) :=
   (prec_motzkin_succ_and_roots_le n).1
 
 theorem roots_le_motzkinShift_motzkin (n : Nat) :

@@ -134,7 +134,7 @@ lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde
   roots_nonpos_of_nonneg_coeffs hrr (eulerianTilde_nonnegCoeffs n)
 
 lemma prec_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
-    Prec (affineEulerianTilde n) (eulerianTilde n) := by
+    StrictInterl (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
   exact prec_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
     (eulerianTilde_posLeadingCoeff n)
@@ -169,10 +169,10 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
 /-- Once the affine block is known to precede `P_n`, the outer `X` factor in the
 recurrence gives `P_n ≪ P_{n+1}`. -/
 lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
-    (haff : Prec (affineEulerianTilde n) (eulerianTilde n)) :
-    Prec (eulerianTilde n) (eulerianTilde (n + 1)) := by
+    (haff : StrictInterl (affineEulerianTilde n) (eulerianTilde n)) :
+    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) := by
   have hmain :
-      Prec (eulerianTilde n) (X * affineEulerianTilde n) := by
+      StrictInterl (eulerianTilde n) (X * affineEulerianTilde n) := by
     rr_prec_mul_X using
       proper := haff,
       left_nonneg := affineEulerianTilde_nonnegCoeffs n,
@@ -180,10 +180,10 @@ lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
   simpa [eulerianTilde_succ_eq_X_mul_affineEulerianTilde n] using hmain
 
 /-- Main induction theorem: consecutive Eulerian tilde polynomials interlace in
-the oriented `Prec` sense. The induction hypothesis supplies real-rootedness of
-`P_n` as the right-hand half of `Prec P_{n-1} P_n`. -/
+the oriented `StrictInterl` sense. The induction hypothesis supplies real-rootedness of
+`P_n` as the right-hand half of `StrictInterl P_{n-1} P_n`. -/
 theorem prec_eulerianTilde_succ : ∀ n : Nat,
-    Prec (eulerianTilde n) (eulerianTilde (n + 1))
+    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1))
   | 0 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde <| by simp
   | n + 1 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde
     (prec_eulerianTilde_succ n).2.1.2

@@ -116,14 +116,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three :
-    Prec (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
-  exact lemma33AuxiliaryGInterlaces_modified_three_interlaces.toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
+  exact lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_three
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₃ : n ≤ 3) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
   · exact lemma33AuxiliaryGInterlaces_modified_base
   · exact lemma33AuxiliaryGInterlaces_modified_two
@@ -391,14 +391,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
 /-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_four :
-    Prec (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
-  exact lemma33AuxiliaryGInterlaces_modified_four_interlaces.toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
+  exact lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_four
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
   · exact lemma33AuxiliaryGInterlaces_modified_base
   · exact lemma33AuxiliaryGInterlaces_modified_two
@@ -790,14 +790,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
 /-- The `n = 5` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_five :
-    Prec (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
-  exact lemma33AuxiliaryGInterlaces_modified_five_interlaces.toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
+  exact lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal Lemma 3.3, for
 the concrete modified Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_five
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₅ : n ≤ 5) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
   · exact lemma33AuxiliaryGInterlaces_modified_base
   · exact lemma33AuxiliaryGInterlaces_modified_two
@@ -816,7 +816,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
         a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
         ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r)
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
   · exact lemma33AuxiliaryGInterlaces_modified_base
   · exact lemma33AuxiliaryGInterlaces_modified_two
@@ -830,7 +830,7 @@ Lemma 3.3 from the single `P_6`/`G_6` sign certificate. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate)
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
   lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
     (fun {a b c d e r} hP_roots hab hbc hcd hde her =>
       ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
@@ -843,7 +843,7 @@ Lemma 3.3, for the concrete modified Narayana family and the finite-board
 auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_six
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
   lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate hn₁ hn₆
 

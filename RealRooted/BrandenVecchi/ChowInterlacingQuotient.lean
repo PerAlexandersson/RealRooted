@@ -72,7 +72,7 @@ private lemma listAlternates_right_le_of_left_lt_of_mem
 below a root `c` of the right member, then `c` is an upper bound for all roots
 of the right member. -/
 theorem roots_le_of_prec_of_left_roots_lt_of_right_root
-    {f g : ℝ[X]} {c : ℝ} (hprec : Prec f g)
+    {f g : ℝ[X]} {c : ℝ} (hprec : StrictInterl f g)
     (hleft : ∀ r ∈ f.roots, r < c) (hc : g.IsRoot c) :
     ∀ r ∈ g.roots, r ≤ c := by
   rcases hprec with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
@@ -103,46 +103,46 @@ namespace IsReflectionInterlacingSeq
 two-member sequence. -/
 theorem strictSelfReflect {n : ℕ} {f g : ℝ[X]}
     (h : IsReflectionInterlacingSeq n [f, g]) (hf_ne : f ≠ 0) :
-    Prec f (f.reflect n) := by
+    StrictInterl f (f.reflect n) := by
   have href_ne : f.reflect n ≠ 0 := by
     intro href_zero
     exact hf_ne (Polynomial.reflect_eq_zero_iff.mp href_zero)
   have hclosed := h.closedSequence
-  have hfref0 : Prec0 f (f.reflect n) := by
+  have hfref0 : Interl f (f.reflect n) := by
     simpa [reflectionClosure] using
       hclosed.interlacingSeq0.prec0
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
-  exact hfref0.toPrec_of_ne hf_ne href_ne
+  exact hfref0.toStrictInterl_of_ne hf_ne href_ne
 
 /-- The three strict proper-position relations carried by the two-member
 reflection closure, once its original members are known to be nonzero. -/
 theorem strictTriple {n : ℕ} {f g : ℝ[X]}
     (h : IsReflectionInterlacingSeq n [f, g])
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) :
-    Prec f g ∧ Prec g (f.reflect n) ∧ Prec f (f.reflect n) := by
+    StrictInterl f g ∧ StrictInterl g (f.reflect n) ∧ StrictInterl f (f.reflect n) := by
   have href_ne : f.reflect n ≠ 0 := by
     intro href_zero
     exact hf_ne (Polynomial.reflect_eq_zero_iff.mp href_zero)
   have hclosed := h.closedSequence
-  have hfg0 : Prec0 f g := by
+  have hfg0 : Interl f g := by
     simpa [reflectionClosure] using
       hclosed.interlacingSeq0.prec0
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
-  have hgref0 : Prec0 g (f.reflect n) := by
+  have hgref0 : Interl g (f.reflect n) := by
     simpa [reflectionClosure] using
       hclosed.interlacingSeq0.prec0
         (i := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
-  exact ⟨hfg0.toPrec_of_ne hf_ne hg_ne,
-    hgref0.toPrec_of_ne hg_ne href_ne,
+  exact ⟨hfg0.toStrictInterl_of_ne hf_ne hg_ne,
+    hgref0.toStrictInterl_of_ne hg_ne href_ne,
     h.strictSelfReflect hf_ne⟩
 
 end IsReflectionInterlacingSeq
@@ -153,11 +153,11 @@ member itself as `g`. -/
 theorem chowS_nonnegCoeffs_and_prec_of_triple
     {n : ℕ} {f g : ℝ[X]} (hdegree : f.natDegree ≤ n)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : Prec f g) (hgref : Prec g (f.reflect n))
-    (hfref : Prec f (f.reflect n))
+    (hfg : StrictInterl f g) (hgref : StrictInterl g (f.reflect n))
+    (hfref : StrictInterl f (f.reflect n))
     (hS_ne : Polynomial.chowS n f ≠ 0) :
     HasNonnegCoeffs (Polynomial.chowS n f) ∧
-      Prec (Polynomial.chowS n f) g := by
+      StrictInterl (Polynomial.chowS n f) g := by
   let S : ℝ[X] := Polynomial.chowS n f
   let fr : ℝ[X] := f.reflect n
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hfg.1.1
@@ -171,7 +171,7 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
     rcases hsign with hzero | hpos
     · exact (hS_ne hzero).elim
     · exact hpos
-  have houter : Prec g (fr - f) :=
+  have houter : StrictInterl g (fr - f) :=
     prec_sub_of_prec_triple_of_posLeadingCoeff
       hfg hgref hfref hf_pos hg_pos hfr_pos (by
         have hmul := Polynomial.X_sub_one_mul_chowS n f hdegree
@@ -202,13 +202,13 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
   have hg_le_one : ∀ r ∈ g.roots, r ≤ 1 := by
     intro r hr
     linarith [hg_nonpos r hr]
-  have hfactor_prec : Prec g ((X - C 1) * S) := by
+  have hfactor_prec : StrictInterl g ((X - C 1) * S) := by
     rw [hfactor]
     exact houter
   have hfactor_deg : ((X - C 1) * S).natDegree = S.natDegree + 1 := by
     rw [natDegree_mul (X_sub_C_ne_zero 1) hS_ne, natDegree_X_sub_C]
     lia
-  have hSg : Prec S g := by
+  have hSg : StrictInterl S g := by
     rcases hfactor_prec.natDegree_eq_or_eq_succ with hsame | hsucc
     · have hdeg : S.natDegree + 1 = g.natDegree := by lia
       exact (prec_iff_prec_mul_X_sub_C_of_roots_le
@@ -229,7 +229,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hS_ne : Polynomial.chowS n f ≠ 0) :
     HasNonnegCoeffs (Polynomial.chowS n f) ∧
-      Prec (Polynomial.chowS n f) g := by
+      StrictInterl (Polynomial.chowS n f) g := by
   have htriple := h.strictTriple hf_ne hg_ne
   exact chowS_nonnegCoeffs_and_prec_of_triple
     (h.natDegree_le (by simp))
@@ -260,27 +260,27 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs
 reflection-interlacing sequence. -/
 theorem IsReflectionInterlacingSeq.chowS_prec0
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
-    Prec0 (Polynomial.chowS n f) g := by
+    Interl (Polynomial.chowS n f) g := by
   by_cases hS_ne : Polynomial.chowS n f ≠ 0
   · by_cases hg_ne : g ≠ 0
     · have hf_ne : f ≠ 0 := by
         intro hf_zero
         subst f
         simp [Polynomial.chowS] at hS_ne
-      exact (h.chowS_nonnegCoeffs_and_prec hf_ne hg_ne hS_ne).2.toPrec0
+      exact (h.chowS_nonnegCoeffs_and_prec hf_ne hg_ne hS_ne).2.toInterl
     · have hg_zero : g = 0 := not_ne_iff.mp hg_ne
       rw [hg_zero]
-      exact prec0_zero_right _
+      exact interl_zero_right _
   · have hS_zero : Polynomial.chowS n f = 0 := not_ne_iff.mp hS_ne
     rw [hS_zero]
-    exact prec0_zero_left g
+    exact interl_zero_left g
 
 /-- Complete zero-aware quotient package: the Chow quotient has nonnegative
-coefficients and precedes the second member in `Prec0`. -/
+coefficients and precedes the second member in `Interl`. -/
 theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
     HasNonnegCoeffs (Polynomial.chowS n f) ∧
-      Prec0 (Polynomial.chowS n f) g :=
+      Interl (Polynomial.chowS n f) g :=
   ⟨h.chowS_nonnegCoeffs, h.chowS_prec0⟩
 
 end BrandenVecchi

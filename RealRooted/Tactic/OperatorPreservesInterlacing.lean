@@ -22,16 +22,16 @@ theorem operator_allCombo_sequence {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
 theorem operator_prec0_sequence_of_interlacing_preserver
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesInterlacingPairsUpToOrder0 T)
-    (hfg : ∀ i : Nat, Prec (F i) (G i)) :
-    ∀ i : Nat, Prec0 (T (F i)) (T (G i)) ∨ Prec0 (T (G i)) (T (F i)) :=
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
+    ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) :=
   fun i =>
     hT (hfg i)
 
 theorem operator_prec0_sequence_up_to_order
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
-    (hfg : ∀ i : Nat, Prec (F i) (G i)) :
-    ∀ i : Nat, Prec0 (T (F i)) (T (G i)) ∨ Prec0 (T (G i)) (T (F i)) :=
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
+    ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) :=
   operator_prec0_sequence_of_interlacing_preserver
     (preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT) hfg
 

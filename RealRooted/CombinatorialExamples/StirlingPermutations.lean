@@ -166,7 +166,7 @@ lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) 
   nlinarith
 
 lemma prec_stirlingPermutations_one_two :
-    Prec (stirlingPermutations 1) (stirlingPermutations 2) := by
+    StrictInterl (stirlingPermutations 1) (stirlingPermutations 2) := by
   have hdeg : (stirlingPermutations 1).natDegree = 1 :=
     natDegree_stirlingPermutations 1
   have hf : ((stirlingPermutations 1) ≠ 0 ∧ (stirlingPermutations 1).Splits) :=
@@ -215,8 +215,8 @@ lemma prec_stirlingPermutations_one_two :
       hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem prec_stirlingPermutations_succ :
-    ∀ n : Nat, Prec (stirlingPermutations n) (stirlingPermutations (n + 1))
-  | 0 => interlaces_stirlingPermutations_zero_one.toPrec
+    ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1))
+  | 0 => interlaces_stirlingPermutations_zero_one.toStrictInterl
   | 1 => prec_stirlingPermutations_one_two
   | n + 2 => by
       have hInter :

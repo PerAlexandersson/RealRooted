@@ -87,7 +87,7 @@ theorem brandenEulerStep_prec {r : ℝ} {p : ℝ[X]} {n : ℕ}
     (hn : 1 ≤ n)
     (hroot_lo : ∀ x ∈ p.roots, -1 ≤ x)
     (hroot_hi : ∀ x ∈ p.roots, x ≤ 0) :
-    Prec p (brandenEulerStep r p) := by
+    StrictInterl p (brandenEulerStep r p) := by
   have hstep := brandenEulerStep_degree_pos (r := r) hp_pos hdeg
   apply prec_mw_derivative_of_nonpos_of_pos_natDegree
       (u := X + C r) (v := X * (1 + X)) hp_splits
@@ -180,7 +180,7 @@ theorem brandenBasisImage_endpoint_identity :
         linear_combination X * (X + 1) * hder
 
 theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
-    Prec (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n n) := by
+    StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n n) := by
   let g := brandenBasisImage (R := ℝ) n n
   let h := g.divX
   have hg0 : g.coeff 0 = 0 := by
@@ -204,7 +204,7 @@ theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
     calc
       X * brandenBasisImage (R := ℝ) n 0 = (X + 1) * (X * h) := hid
       _ = X * ((X + 1) * h) := by ring
-  have hlinear : Prec (X + C 1) X := by
+  have hlinear : StrictInterl (X + C 1) X := by
     simpa using (prec_X_add_C_iff (a := 0) (b := 1)).2 (by norm_num)
   have hcommon := prec_mul_common_factor hh_rr.1 hh_rr.2 hlinear
   have hg_factor' : brandenBasisImage (R := ℝ) n n = X * h := by
@@ -216,19 +216,19 @@ theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
 least two. -/
 theorem brandenBasisImage_adjacent_prec
     (n k : ℕ) (hn : 2 ≤ n) (hk : k < n) :
-    Prec (brandenBasisImage (R := ℝ) n k) (brandenBasisImage n (k + 1)) := by
+    StrictInterl (brandenBasisImage (R := ℝ) n k) (brandenBasisImage n (k + 1)) := by
   let q := brandenBasisImage (R := ℝ) (n - 1) k
   have hkq : k ≤ n - 1 := by lia
-  have hqnext : Prec q (brandenEulerStep 0 q) :=
+  have hqnext : StrictInterl q (brandenEulerStep 0 q) :=
     brandenEulerStep_prec (r := 0)
       (brandenBasisImage_splits (n - 1) k hkq)
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
       (brandenBasisImage_degree_pos (n - 1) k hkq).1 (by lia)
       (brandenBasisImage_roots_ge_neg_one (n - 1) k hkq)
       (brandenBasisImage_roots_nonpos (n - 1) k)
-  have hnext_refl : Prec (brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
+  have hnext_refl : StrictInterl (brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     prec_refl hqnext.2.1.1 hqnext.2.1.2
-  have hsum : Prec (q + brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
+  have hsum : StrictInterl (q + brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     prec_add_of_prec_right_of_posLeadingCoeff hqnext hnext_refl
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
       (brandenEulerStep_degree_pos (r := 0)
@@ -251,7 +251,7 @@ before every later one. The endpoint relation supplies the non-transitive
 closure of the adjacent chain. -/
 theorem brandenBasisImage_prec
     (n i j : ℕ) (hij : i ≤ j) (hj : j ≤ n) :
-    Prec (brandenBasisImage (R := ℝ) n i) (brandenBasisImage n j) := by
+    StrictInterl (brandenBasisImage (R := ℝ) n i) (brandenBasisImage n j) := by
   by_cases heq : i = j
   · subst j
     have hi : i ≤ n := hij.trans hj
@@ -275,14 +275,14 @@ theorem brandenBasisImage_prec
 bound on the ambient degree. -/
 theorem brandenBasisImage_zero_prec
     (n k : ℕ) (hk : k ≤ n) :
-    Prec (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
+    StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
   brandenBasisImage_prec n 0 k (by lia) hk
 
 /-- The first basis image is in proper position before every in-range image
 in ambient degree at least three. -/
 theorem brandenBasisImage_first_prec
     (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :
-    Prec (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
+    StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
   brandenBasisImage_zero_prec n k hk
 
 /-- The ordered ambient-degree row of Brändén basis images. -/

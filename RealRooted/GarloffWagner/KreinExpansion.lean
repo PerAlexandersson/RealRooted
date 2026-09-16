@@ -14,7 +14,7 @@ noncomputable section
 namespace RealRooted
 
 theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
-    (hfg : Prec f g) (hgdeg : 0 < g.natDegree) :
+    (hfg : StrictInterl f g) (hgdeg : 0 < g.natDegree) :
     ∃ c : ℝ, ∃ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, ∃ u : ℝ, g = (X - C u) * ap.2) ∧
         (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
@@ -81,7 +81,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
 one real linear factor. -/
 theorem prec_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
     (u : ℝ) :
-    Prec r ((X - C u) * r) := by
+    StrictInterl r ((X - C u) * r) := by
   have hright0 : (X - C u) * r ≠ 0 := mul_ne_zero (X_sub_C_ne_zero u) hr0
   have hright_splits : ((X - C u) * r).Splits :=
     (Polynomial.Splits.X_sub_C u).mul hrs
@@ -111,7 +111,7 @@ theorem prec_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
 as the full root-deleted quotient of `g` at `u`. -/
 theorem kreinCoefficient_eval_div_nonneg
     {f g s r : ℝ[X]} {u : ℝ}
-    (hfg : Prec f g) (hfpos : HasPosLeadingCoeff f)
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f)
     (hgpos : HasPosLeadingCoeff g) (hu : g.IsRoot u)
     (hf_factor : f = (X - C u) ^ (g.rootMultiplicity u - 1) * s)
     (hg_factor : g = (X - C u) ^ (g.rootMultiplicity u) * r)
@@ -130,11 +130,11 @@ theorem kreinCoefficient_eval_div_nonneg
     nth_rw 1 [show m = m - 1 + 1 by exact (Nat.sub_add_cancel hm).symm]
     ring_nf
   have hprec_common :
-      Prec ((X - C u) ^ (m - 1) * s)
+      StrictInterl ((X - C u) ^ (m - 1) * s)
         ((X - C u) ^ (m - 1) * ((X - C u) * r)) := by
     rw [← hf_factor_m, ← hg_common]
     exact hfg
-  have hsr_prec : Prec s ((X - C u) * r) :=
+  have hsr_prec : StrictInterl s ((X - C u) * r) :=
     prec_of_prec_mul_pow_X_sub_C_both u (m - 1) hprec_common
   have hs_pos : HasPosLeadingCoeff s := by
     have hfpos' : HasPosLeadingCoeff ((X - C u) ^ (m - 1) * s) := by
@@ -146,7 +146,7 @@ theorem kreinCoefficient_eval_div_nonneg
       rw [← hg_factor_m]
       exact hgpos
     exact hasPosLeadingCoeff_of_pow_X_sub_C_mul hgpos'
-  have hrr_prec : Prec r ((X - C u) * r) := prec_self_X_sub_C_mul hr0 hrs u
+  have hrr_prec : StrictInterl r ((X - C u) * r) := prec_self_X_sub_C_mul hr0 hrs u
   have hroot_right : ((X - C u) * r).IsRoot u := by
     rw [Polynomial.IsRoot.def, eval_mul, eval_sub, eval_X, eval_C]
     ring
@@ -164,7 +164,7 @@ multiple of `g` contributes one extra factor of `X - C u`, so it does not
 change the quotient evaluation at `u`. -/
 theorem kreinCoefficient_residual_eval_div_nonneg
     {f g q r s : ℝ[X]} {u c : ℝ}
-    (hfg : Prec f g) (hfpos : HasPosLeadingCoeff f)
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f)
     (hgpos : HasPosLeadingCoeff g) (hu : g.IsRoot u)
     (hres : f - C c * g = (X - C u) ^ (g.rootMultiplicity u - 1) * s)
     (hfactor : g = (X - C u) * q)
@@ -207,7 +207,7 @@ theorem kreinCoefficient_residual_eval_div_nonneg
 
 /-- Single-root coefficient package with the sign conclusion included. -/
 theorem exists_kreinCoefficientData_nonneg_of_right_isRoot {f g : ℝ[X]}
-    (hfg : Prec f g) (hfpos : HasPosLeadingCoeff f)
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f)
     (hgpos : HasPosLeadingCoeff g) (hgs : g.Splits) (c : ℝ) {u : ℝ}
     (hu : g.IsRoot u) :
     ∃ a : ℝ, ∃ q : ℝ[X],
@@ -230,7 +230,7 @@ theorem exists_kreinCoefficientData_nonneg_of_right_isRoot {f g : ℝ[X]}
 polynomials have positive leading coefficient, then `f` is a nonnegative
 weighted sum of `g` and the one-root-deleted Krein summands of `g`. -/
 theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]}
-    (hfg : Prec f g) (hfpos : HasPosLeadingCoeff f)
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f)
     (hgpos : HasPosLeadingCoeff g) (hgdeg : 0 < g.natDegree) :
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
@@ -325,10 +325,10 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
   exact ⟨l, hf, hnonneg, hsummand_all, hex⟩
 
 /-- Constant-degree Garloff--Wagner Lemma 7 package.  If `g` is constant, then
-`Prec f g` forces `f` to be constant as well, so `f` is a positive scalar
+`StrictInterl f g` forces `f` to be constant as well, so `f` is a positive scalar
 multiple of the Krein summand `g`. -/
 theorem exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero {f g : ℝ[X]}
-    (hfg : Prec f g) (hfpos : HasPosLeadingCoeff f)
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f)
     (hgpos : HasPosLeadingCoeff g) (hgdeg : g.natDegree = 0) :
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
@@ -382,7 +382,7 @@ theorem gwJL_prec_of_kreinSummandExpansion
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    Prec (gwJL k f) (gwJL k g) :=
+    StrictInterl (gwJL k f) (gwJL k g) :=
   gwJL_prec_of_rightWeightedExpansion hf hnonneg
     (fun ap hap => (hsummand ap hap).gwJL_prec hg0 hgs)
     (fun ap hap => ((hsummand ap hap).hasPosLeadingCoeff hgpos).gwJL k)
@@ -442,7 +442,7 @@ theorem kreinSummandExpansion_of_weightedSum {f g : ℝ[X]} {l : List (ℝ × �
 polynomial to be standard, the left polynomial should expand as a nonnegative
 weighted sum of the right polynomial and its one-root-deleted factors. -/
 def gwTheorem11PrecKreinSummandExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → HasPosLeadingCoeff f → HasPosLeadingCoeff g →
+  ∀ {f g : ℝ[X]}, StrictInterl f g → HasPosLeadingCoeff f → HasPosLeadingCoeff g →
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
@@ -459,7 +459,7 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
   have hg0 : g ≠ 0 := hfg.2.1.1
   have hsf : sf ≠ 0 := inv_ne_zero (leadingCoeff_ne_zero.mpr hf0)
   have hsg : sg ≠ 0 := inv_ne_zero (leadingCoeff_ne_zero.mpr hg0)
-  have hfg_scaled : Prec (C sf * f) (C sg * g) :=
+  have hfg_scaled : StrictInterl (C sf * f) (C sg * g) :=
     prec_C_mul_right (prec_C_mul_left hfg hsf) hsg
   have hsf_pos : HasPosLeadingCoeff (C sf * f) :=
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hf0
@@ -468,12 +468,13 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
   rcases h (f := C sf * f) (g := C sg * g) hfg_scaled hsf_pos hsg_pos with
     ⟨l, hf, hnonneg, hsummand, hex⟩
   have hscaled :
-      Prec (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
+      StrictInterl (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
     gwJL_prec_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
       hsg_pos hnonneg hsummand hex
-  have hscaled' : Prec (C sf * gwJL k f) (C sg * gwJL k g) := by simpa [gwJL_C_mul] using hscaled
+  have hscaled' : StrictInterl (C sf * gwJL k f) (C sg * gwJL k g) := by
+    simpa [gwJL_C_mul] using hscaled
   have hleft :
-      Prec (gwJL k f) (C sg * gwJL k g) := by
+      StrictInterl (gwJL k f) (C sg * gwJL k g) := by
     have htmp := prec_C_mul_left hscaled' (inv_ne_zero hsf)
     have hscale : C sf⁻¹ * (C sf * gwJL k f) = gwJL k f := by
       rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsf, C_1, one_mul]
@@ -494,7 +495,7 @@ theorem gwTheorem11PrecKreinSummandExpansion :
   · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree hfg hfpos
       hgpos (Nat.pos_of_ne_zero hgdeg0)
 
-/-- Garloff--Wagner, Theorem 11(c), in the local `Prec` orientation. -/
+/-- Garloff--Wagner, Theorem 11(c), in the local `StrictInterl` orientation. -/
 theorem gwTheorem11Prec :
     gwTheorem11PrecStatement :=
   gwTheorem11Prec_of_kreinSummandExpansion gwTheorem11PrecKreinSummandExpansion

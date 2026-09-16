@@ -13,18 +13,18 @@ namespace RealRooted
 This is the abstract step behind recurrences such as
 `P_n = P_{n-1} + t P_{n-2}` and `P_n = 2 P_{n-1} + t P_{n-2}`. -/
 theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
-    (h : Prec f g)
+    (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (ha : 0 < a)
     (hc : 0 ≤ c) :
-    Prec g (C a * g + (C c * X) * f) := by
+    StrictInterl g (C a * g + (C c * X) * f) := by
   have hg_pos : HasPosLeadingCoeff g := by rr_pos_lc using nonzero := right_ne_zero_of_prec h
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
     have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
     rr_pos_lc
-  have hX : Prec g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
-  have hself : Prec g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
+  have hX : StrictInterl g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
+  have hself : StrictInterl g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -32,7 +32,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hc
     · cases hap
-  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], Prec g ap.2 := by
+  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl g ap.2 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hself
@@ -48,7 +48,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     · exact hXf_pos
     · cases hap
   have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := ⟨(a, g), by simp, ha⟩
-  have hsum : Prec g (weightedSum [(a, g), (c, X * f)]) :=
+  have hsum : StrictInterl g (weightedSum [(a, g), (c, X * f)]) :=
     prec_weightedSum_left_of_common_left
       [(a, g), (c, X * f)] g hnonneg hprec hg_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
@@ -57,17 +57,17 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
 `X`-lag step.  Together with `prec_pos_X_lag_combo_of_prec_nonneg`, this says
 that both inputs lie on the left of the new polynomial. -/
 theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
-    (h : Prec f g)
+    (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (ha : 0 < a)
     (hc : 0 ≤ c) :
-    Prec f (C a * g + (C c * X) * f) := by
+    StrictInterl f (C a * g + (C c * X) * f) := by
   have hf_pos : HasPosLeadingCoeff f :=
     hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)
   have hg_pos : HasPosLeadingCoeff g :=
     hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
-  have hXf : Prec f (X * f) :=
+  have hXf : StrictInterl f (X * f) :=
     prec_self_mul_X_of_nonneg (left_ne_zero_of_prec h) (left_splits_of_prec h) hfnn
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
@@ -77,7 +77,7 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hc
     · cases hap
-  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], Prec f ap.2 := by
+  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl f ap.2 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
     · exact h
@@ -94,26 +94,26 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     · cases hap
   have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 :=
     ⟨(a, g), by simp, ha⟩
-  have hsum : Prec f (weightedSum [(a, g), (c, X * f)]) :=
+  have hsum : StrictInterl f (weightedSum [(a, g), (c, X * f)]) :=
     prec_weightedSum_left_of_common_left
       [(a, g), (c, X * f)] f hnonneg hprec hf_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
 
 /-- Sequence induction for scalar positive-current plus nonnegative `X`-lag
-recurrences.  This is plateau-safe: it never converts the previous `Prec`
+recurrences.  This is plateau-safe: it never converts the previous `StrictInterl`
 certificate to a differ-by-one `Interlaces` certificate. -/
 theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   refine prec_sequence_of_base_and_step hbase ?_
   intro n hprev
   have hstep :
-      Prec (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
+      StrictInterl (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
     prec_pos_X_lag_combo_of_prec_nonneg
       hprev (hnonneg n) (hnonneg (n + 1)) (ha n) (hc n)
   simpa [← hrec n] using hstep
@@ -250,7 +250,7 @@ theorem natDegree_pos_X_lag_combo_sequence_shifted {P : Nat → ℝ[X]}
 `X`-lag sequence induction. -/
 theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 ≤ c n)

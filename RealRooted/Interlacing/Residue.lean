@@ -166,7 +166,7 @@ theorem countP_eq_alternates_strict :
       (by simp_all) htail x hx hxss'
     simp [*]
 
-theorem prec_countP_eq {f g : ℝ[X]} (hpq : Prec g f)
+theorem prec_countP_eq {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (x : ℝ) (hxf : x ∈ f.roots) (hxg : x ∉ g.roots) :
     f.roots.countP (fun r => x < r) = g.roots.countP (fun r => x < r) := by
@@ -190,7 +190,7 @@ theorem prec_countP_eq {f g : ℝ[X]} (hpq : Prec g f)
 
 /-! ## Residue positivity -/
 
-theorem residue_sign_pos {f g : ℝ[X]} (hpq : Prec g f)
+theorem residue_sign_pos {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (s : ℝ) (hsf : s ∈ f.roots) (hsg : s ∉ g.roots) :
@@ -212,7 +212,7 @@ theorem residue_sign_pos {f g : ℝ[X]} (hpq : Prec g f)
       = g.eval s * f.derivative.eval s * (e * e) := by ring
   rwa [h_eq, he₂, mul_one] at h_pos
 
-theorem residue_nonneg {f g : ℝ[X]} (hpq : Prec g f)
+theorem residue_nonneg {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (s : ℝ) (hsf : s ∈ f.roots) (hsg : s ∉ g.roots) :
@@ -310,8 +310,8 @@ theorem degree_sub_c₀_mul_lt {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0
 /-! ## Common-root cofactor transport -/
 
 theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
-    (hpq : Prec g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
-    Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) := by
+    (hpq : StrictInterl g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
+    StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) := by
   have : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
   have : (X - C r) * (g /ₘ (X - C r)) = g := mul_divByMonic_eq_iff_isRoot.mpr hrg
   apply prec_of_prec_mul_X_sub_C_both r
@@ -319,7 +319,7 @@ theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
 
 theorem prec_of_prec_cofactor {f g : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r)
-    (h : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r))) : Prec g f := by
+    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r))) : StrictInterl g f := by
   have hff : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
   have hgg : (X - C r) * (g /ₘ (X - C r)) = g := mul_divByMonic_eq_iff_isRoot.mpr hrg
   have := prec_mul_X_sub_C_both r h

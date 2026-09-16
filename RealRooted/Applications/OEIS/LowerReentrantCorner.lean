@@ -247,10 +247,10 @@ private theorem lowerReentrantCorner_shifted_recurrence (n : ℕ) :
     lowerReentrantCorner_recurrence (n + 1)
 
 private theorem lowerReentrantCorner_one_prec_two :
-    Prec (lowerReentrantCorner 1) (lowerReentrantCorner 2) := by
+    StrictInterl (lowerReentrantCorner 1) (lowerReentrantCorner 2) := by
   have hlinear : (lowerReentrantCorner 2).natDegree = 1 := by simp
-  have hone : Prec (1 : ℝ[X]) (lowerReentrantCorner 2) :=
-    (interlaces_one_linear hlinear).toPrec
+  have hone : StrictInterl (1 : ℝ[X]) (lowerReentrantCorner 2) :=
+    (interlaces_one_linear hlinear).toStrictInterl
   simpa using hone.C_mul_left (a := 2) (by norm_num)
 
 private theorem lowerReentrantCorner_one_two_noCommon :
@@ -260,7 +260,7 @@ private theorem lowerReentrantCorner_one_two_noCommon :
   simp [Polynomial.IsRoot.def] at hr
 
 private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
-    Prec (lowerReentrantCorner (n + 1)) (lowerReentrantCorner (n + 2)) ∧
+    StrictInterl (lowerReentrantCorner (n + 1)) (lowerReentrantCorner (n + 2)) ∧
       ∀ r, (lowerReentrantCorner (n + 2)).IsRoot r →
         ¬ (lowerReentrantCorner (n + 1)).IsRoot r := by
   apply prec_and_noCommonRoot_of_affine_lag_degree_step
@@ -285,14 +285,14 @@ private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
   · exact lowerReentrantCorner_shifted_recurrence
 
 private theorem lowerReentrantCorner_zero_prec_one :
-    Prec (lowerReentrantCorner 0) (lowerReentrantCorner 1) := by
-  have hone : Prec (1 : ℝ[X]) 1 :=
+    StrictInterl (lowerReentrantCorner 0) (lowerReentrantCorner 1) := by
+  have hone : StrictInterl (1 : ℝ[X]) 1 :=
     prec_refl (by simp) (by simp)
   simpa using hone.C_mul_right (a := 2) (by norm_num)
 
 /-- Consecutive rows are in proper position. -/
 theorem lowerReentrantCorner_prec (n : ℕ) :
-    Prec (lowerReentrantCorner n) (lowerReentrantCorner (n + 1)) := by
+    StrictInterl (lowerReentrantCorner n) (lowerReentrantCorner (n + 1)) := by
   rcases n with _ | n
   · exact lowerReentrantCorner_zero_prec_one
   · simpa [Nat.add_assoc] using

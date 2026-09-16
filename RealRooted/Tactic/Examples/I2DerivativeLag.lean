@@ -9,7 +9,7 @@ open Polynomial
 namespace RealRooted
 
 example {P U V W : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdegree_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
@@ -27,7 +27,7 @@ example {P U V W : Nat → ℝ[X]}
     hbase hpos hdegree_two hrec hderivative_nonpos hlag_nonpos hdeg_succ hno_common
 
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdegree_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)

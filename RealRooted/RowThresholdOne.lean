@@ -49,35 +49,35 @@ theorem isRealRooted_X_mul_affine {s v : ℝ} (hs : 0 < s) :
 /-! ### The six entry patterns -/
 
 private theorem case_XXXX {s t : ℝ} (hs : 0 < s) :
-    Prec0 ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by
+    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by
   rw [show (C s * X + C t) * X + X = X * (C s * X + C (t + 1)) by rw [C_add, C_1]; ring]
   exact prec0_refl_of_realRooted (isRealRooted_X_mul_affine hs)
 
 private theorem case_X1XX {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 ((C s * X + C t) * 1 + X) ((C s * X + C t) * X + X) := by
+    Interl ((C s * X + C t) * 1 + X) ((C s * X + C t) * X + X) := by
   rw [show (C s * X + C t) * 1 + X = C (s + 1) * X + C t by rw [C_add, C_1]; ring,
       show (C s * X + C t) * X + X = X * (C s * X + C (t + 1)) by rw [C_add, C_1]; ring]
   exact prec0_affine_to_X_mul_affine hs (by positivity) (by nlinarith) (by positivity) ht.le
 
 private theorem case_X1X1 {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 ((C s * X + C t) * 1 + 1) ((C s * X + C t) * X + X) := by
+    Interl ((C s * X + C t) * 1 + 1) ((C s * X + C t) * X + X) := by
   rw [show (C s * X + C t) * 1 + 1 = C s * X + C (t + 1) by rw [C_add, C_1]; ring,
       show (C s * X + C t) * X + X = X * (C s * X + C (t + 1)) by rw [C_add, C_1]; ring]
   exact prec0_affine_to_X_mul_affine hs hs le_rfl (by positivity) (by positivity)
 
 private theorem case_11XX {s t : ℝ} (hs : 0 < s) :
-    Prec0 ((C s * X + C t) * 1 + X) ((C s * X + C t) * 1 + X) := by
+    Interl ((C s * X + C t) * 1 + X) ((C s * X + C t) * 1 + X) := by
   rw [show (C s * X + C t) * 1 + X = C (s + 1) * X + C t by rw [C_add, C_1]; ring]
   exact prec0_refl_of_realRooted (isRealRooted_affine_factor (by positivity))
 
 private theorem case_11X1 {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + X) := by
+    Interl ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + X) := by
   rw [show (C s * X + C t) * 1 + 1 = C s * X + C (t + 1) by rw [C_add, C_1]; ring,
       show (C s * X + C t) * 1 + X = C (s + 1) * X + C t by rw [C_add, C_1]; ring]
   exact prec0_affine_linear_affine_linear_of_cross hs (by positivity) (by nlinarith)
 
 private theorem case_1111 {s t : ℝ} (hs : 0 < s) :
-    Prec0 ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + 1) := by
+    Interl ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + 1) := by
   rw [show (C s * X + C t) * 1 + 1 = C s * X + C (t + 1) by rw [C_add, C_1]; ring]
   exact prec0_refl_of_realRooted (isRealRooted_affine_factor hs)
 

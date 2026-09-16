@@ -28,7 +28,7 @@ example {m n : ℕ} :
     degree := n
 
 example {m n : ℕ} :
-    Prec (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
+    StrictInterl (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
   rr_narayana_polynomial_prec_succ using
     parameter := m,
     degree := n

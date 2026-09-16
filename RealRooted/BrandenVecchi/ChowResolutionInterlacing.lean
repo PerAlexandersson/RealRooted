@@ -102,8 +102,8 @@ private theorem resolvedChowRow_zero
 
 private theorem reflectionInterlacing_one :
     IsReflectionInterlacingSeq 0 [(1 : ℝ[X])] := by
-  have hself : Prec0 (1 : ℝ[X]) 1 :=
-    (prec_refl one_ne_zero Polynomial.Splits.one).toPrec0
+  have hself : Interl (1 : ℝ[X]) 1 :=
+    (prec_refl one_ne_zero Polynomial.Splits.one).toInterl
   refine ⟨?_, ?_⟩
   · intro p hp
     have hp_one : p = 1 := by simpa using hp
@@ -260,9 +260,9 @@ theorem resolvedChowCombination_endpoint_prec0
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j) :
-    Prec0 (resolvedChowDerangement resolution n 0)
+    Interl (resolvedChowDerangement resolution n 0)
         (resolvedChowCombination resolution n a) ∧
-      Prec0 (resolvedChowCombination resolution n a)
+      Interl (resolvedChowCombination resolution n a)
         (resolvedChowDerangement resolution n n) := by
   have hrow := resolvedChowRow_reflectionInterlacing resolution n
   have hdirect : IsInterlacingSeq0NonnegRealRooted
@@ -274,14 +274,14 @@ theorem resolvedChowCombination_endpoint_prec0
     intro j hj
     exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
   have hself : ∀ j, j ≤ n →
-      Prec0 (resolvedChowDerangement resolution n j)
+      Interl (resolvedChowDerangement resolution n j)
         (resolvedChowDerangement resolution n j) := by
     intro j hj
     by_cases hzero : resolvedChowDerangement resolution n j = 0
     · exact Or.inl hzero
-    · exact (prec_refl hzero (hdirect.splits (hmem j hj) hzero)).toPrec0
+    · exact (prec_refl hzero (hdirect.splits (hmem j hj) hzero)).toInterl
   have hleft : ∀ j, j ≤ n →
-      Prec0 (resolvedChowDerangement resolution n 0)
+      Interl (resolvedChowDerangement resolution n 0)
         (resolvedChowDerangement resolution n j) := by
     intro j hj
     rcases eq_or_lt_of_le (Nat.zero_le j) with rfl | hjpos
@@ -293,7 +293,7 @@ theorem resolvedChowCombination_endpoint_prec0
       simpa [first, current, resolvedChowRow] using
         hdirect.interlacingSeq0.prec0 (i := first) (j := current) hjpos
   have hright : ∀ j, j ≤ n →
-      Prec0 (resolvedChowDerangement resolution n j)
+      Interl (resolvedChowDerangement resolution n j)
         (resolvedChowDerangement resolution n n) := by
     intro j hj
     by_cases hEq : j = n
@@ -333,13 +333,13 @@ theorem resolvedChowCombination_endpoint_prec_of_ne
     (hfirst : resolvedChowDerangement resolution n 0 ≠ 0)
     (hcombination : resolvedChowCombination resolution n a ≠ 0)
     (hlast : resolvedChowDerangement resolution n n ≠ 0) :
-    Prec (resolvedChowDerangement resolution n 0)
+    StrictInterl (resolvedChowDerangement resolution n 0)
         (resolvedChowCombination resolution n a) ∧
-      Prec (resolvedChowCombination resolution n a)
+      StrictInterl (resolvedChowCombination resolution n a)
         (resolvedChowDerangement resolution n n) := by
   have hprec := resolvedChowCombination_endpoint_prec0 resolution ha
-  exact ⟨hprec.1.toPrec_of_ne hfirst hcombination,
-    hprec.2.toPrec_of_ne hcombination hlast⟩
+  exact ⟨hprec.1.toStrictInterl_of_ne hfirst hcombination,
+    hprec.2.toStrictInterl_of_ne hcombination hlast⟩
 
 /-- Paper-shaped zero-aware endpoint statement for a nonnegative combination
 of the original resolving row. -/
@@ -347,10 +347,10 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_prec0
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j) :
-    Prec0 (chowPolynomial A n)
+    Interl (chowPolynomial A n)
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a)) ∧
-      Prec0
+      Interl
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a))
         (chowDerangement A n) := by
@@ -379,17 +379,17 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_prec_of_ne
       chowDerangedTransform A
         (resolvingRowCombination resolution n a) ≠ 0)
     (hderangement : chowDerangement A n ≠ 0) :
-    Prec (chowPolynomial A n)
+    StrictInterl (chowPolynomial A n)
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a)) ∧
-      Prec
+      StrictInterl
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a))
         (chowDerangement A n) := by
   have hprec :=
     chowPolynomial_resolvingRowCombination_endpoint_prec0 resolution ha
-  exact ⟨hprec.1.toPrec_of_ne hchow hcombination,
-    hprec.2.toPrec_of_ne hcombination hderangement⟩
+  exact ⟨hprec.1.toStrictInterl_of_ne hchow hcombination,
+    hprec.2.toStrictInterl_of_ne hcombination hderangement⟩
 
 end
 

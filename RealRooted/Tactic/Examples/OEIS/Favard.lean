@@ -12,11 +12,11 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-/-- Favard row-family `Prec` exit exposed through the OEIS facade. -/
+/-- Favard row-family `StrictInterl` exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard using hrec, hbeta
 
 /-- Favard unit-lag Chebyshev row-family route exposed through the OEIS facade. -/
@@ -54,7 +54,7 @@ example {P : Nat → ℝ[X]}
                 C (0 : ℝ)) *
               P (n + 1) -
             C ((4 * (n.succ : ℝ)) / ((n.succ : ℝ) + 1)) * P n))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_auto using
     slope := fun m => (4 * (m : ℝ) + 2) / ((m : ℝ) + 1),
     alpha := fun _ => (0 : ℝ),
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]}
         (C (6 - 4 * ((n : ℝ) + 3)) * X +
             C (3 - 2 * ((n : ℝ) + 3))) * P (n + 1) +
           C (-2 + ((n : ℝ) + 3)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_raw_auto using
     slope := fun m => (4 * (m : ℝ) + 2) / ((m : ℝ) + 1),
     alpha := fun m => -((2 * (m : ℝ) + 1) / ((m : ℝ) + 1)),

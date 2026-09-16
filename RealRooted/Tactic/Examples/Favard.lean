@@ -29,7 +29,7 @@ example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard using hrec, hbeta
 
 /-- Exact local inference ignores an unrelated Favard certificate packet. -/
@@ -39,7 +39,7 @@ example {P Q : Nat → ℝ[X]} {α β γ δ : Nat → ℝ}
     (_hbetaDecoy : ∀ n : Nat, 0 < δ (n + 1))
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard
 
 /-- The inferred auto form retains positivity automation. -/
@@ -52,7 +52,7 @@ example {P Q : Nat → ℝ[X]} {γ δ : Nat → ℝ}
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard using
     recurrence := hrec,
     beta_pos := hbeta
@@ -78,7 +78,7 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ} {n : Nat}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard using hrec, hbeta
 
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ} {n : Nat}
@@ -90,7 +90,7 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ} {n : Nat}
 /-- Raw Favard recurrence with automatic positivity for an explicit lag. -/
 example {P : Nat → ℝ[X]}
     (hrec : SatisfiesFavardRecurrence P (fun _ => (0 : ℝ)) (fun _ => (1 : ℝ))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_auto using
     recurrence := hrec
 
@@ -105,7 +105,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_unit using
     alpha := 0,
     base_zero := hP0,
@@ -117,7 +117,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_unit using 0, hP0, hP1, hstep
 
 /-- OEIS shape `A053122`/`A110162`: `P_{n+2}=(t-2)P_{n+1}-P_n`. -/
@@ -125,7 +125,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C 2)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C 2) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_unit using
     alpha := 2,
     base_zero := hP0,
@@ -137,7 +137,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C 1)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C 1) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_unit using
     alpha := 1,
     base_zero := hP0,
@@ -150,7 +150,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C (-2 : ℝ))
     (hstep : ∀ n : Nat, P (n + 2) = (X - C (-2 : ℝ)) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_unit using
     alpha := -2,
     base_zero := hP0,
@@ -163,7 +163,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_const_unit using
     slope := 2,
     alpha := 0,
@@ -176,7 +176,7 @@ example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_const_unit using 2, 0, hP0, hP1, hstep
 
 /-- OEIS shapes `A053124`/`A084930`: `P_{n+2}=(4t-2)P_{n+1}-P_n`. -/
@@ -185,7 +185,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = C (4 : ℝ) * X - C (2 : ℝ))
     (hstep :
       ∀ n : Nat, P (n + 2) = (C (4 : ℝ) * X - C (2 : ℝ)) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_const_unit using
     slope := 4,
     alpha := 2,
@@ -252,7 +252,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       P (n + 2) =
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_unit using (fun m : Nat => (m : ℝ)), hP0, hP1, hstep
 
 /-- The same parameterized unit-lag wrapper also dispatches real-rootedness
@@ -292,7 +292,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       P (n + 2) =
         (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -338,7 +338,7 @@ example {P : Nat → ℝ[X]} {s : Nat → ℝ}
     (hstep : ∀ n : Nat,
       P (n + 2) =
         (C (s (n + 1)) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_unit using
     slope := s,
     alpha := fun m : Nat => (m : ℝ),
@@ -354,7 +354,7 @@ example {P : Nat → ℝ[X]} {α β : ℝ} {n : Nat}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const using
     alpha := α,
     beta := β,
@@ -386,7 +386,7 @@ example {P : Nat → ℝ[X]} {s α β : ℝ} {n : Nat}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_const using
     slope := s,
     alpha := α,
@@ -491,7 +491,7 @@ example {P : Nat → ℝ[X]}
       P (n + 2) =
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_auto using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
@@ -550,7 +550,7 @@ example {P : Nat → ℝ[X]}
       P (n + 2) =
         (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -655,7 +655,7 @@ example {P : Nat → ℝ[X]}
       P (n + 2) =
         (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C ((((n + 1 : Nat) : ℝ) + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_infer using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -705,7 +705,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (d n * (n.succ : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -726,7 +726,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (d n * (n.succ : ℝ)) * P n) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -767,7 +767,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (d n) * C (n.succ : ℝ) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -788,7 +788,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (n.succ : ℝ) * C (d n) * P n) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -879,7 +879,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
       C (d n) * P (n + 2) =
         C (d n) * ((X - C (n.succ : ℝ)) * P (n + 1) -
           C (n.succ : ℝ) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_den_auto using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
@@ -918,7 +918,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1) - P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -937,7 +937,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         C (d n) * ((C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1) - P n)) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -975,7 +975,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
         C (d n) *
           (-(C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1) -
             C (n.succ : ℝ) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1018,7 +1018,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
       C (d n) * P (n + 2) =
         C (d n) * (-(C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (d n) * C (n.succ : ℝ) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1039,7 +1039,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       C (d n) * P (n + 2) =
         C (d n) * (-(C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1)) -
           C (n.succ : ℝ) * C (d n) * P n) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1080,7 +1080,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
       C (d n) * P (n + 2) =
         C (d n) * (-(X - C (n.succ : ℝ)) * P (n + 1) -
           C (n.succ : ℝ) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_row_sign_den_auto using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
@@ -1119,7 +1119,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         C (d n) * (-(C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1) - P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1138,7 +1138,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     (hraw : ∀ n : Nat,
       C (d n) * P (n + 2) =
         C (d n) * (-(C (2 : ℝ) * X - C (n.succ : ℝ)) * P (n + 1) - P n)) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1199,7 +1199,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (-2 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
           C (-(n.succ : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_raw_auto using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1222,7 +1222,7 @@ example {P : Nat → ℝ[X]}
         (C (2 : ℝ) * C ((n : ℝ) + 2) * X + C (-((n : ℝ) + 1))) *
             P (n + 1) +
           C (-1 : ℝ) * C ((n : ℝ) + 2) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_raw_prod_auto using
     slope := fun m : Nat => 2 * ((m : ℝ) + 1),
     alpha := fun m : Nat => (m : ℝ),
@@ -1270,7 +1270,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (1 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
           C (-(n.succ : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_den_raw_auto using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
@@ -1329,7 +1329,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (-1 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
           C (-1 : ℝ) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_row_sign_den_raw_unit using
     alpha := fun m : Nat => (m : ℝ),
     raw_slope := fun _ : Nat => (-1 : ℝ),
@@ -1356,7 +1356,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
           C (-((n : ℝ) + 2)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_raw using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1447,7 +1447,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
           C (-1 : ℝ) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_den_raw_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1486,7 +1486,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = X - C (0 : ℝ))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (0 : ℝ)) * P (n + 1) - C (1 : ℝ) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_const_auto using
     alpha := 0,
     beta := 1,
@@ -1513,7 +1513,7 @@ example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
       P (n + 2) =
         -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign using
     slope := s,
     alpha := α,
@@ -1583,7 +1583,7 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hP1 : P 1 = -(X - C (α 0)))
     (hstep : ∀ n : Nat,
       P (n + 2) = -(X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_row_sign using
     alpha := α,
     beta := β,
@@ -1615,7 +1615,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (-2 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
           C (-(n.succ : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_affine_param_row_sign_den_raw using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
@@ -1684,7 +1684,7 @@ example {P : Nat → ℝ[X]}
       C (1 : ℝ) * P (n + 2) =
         (C (-1 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
           C (-(n.succ : ℝ)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard_param_row_sign_den_raw using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),

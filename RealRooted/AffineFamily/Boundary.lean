@@ -26,7 +26,7 @@ namespace RealRooted
 
 /-- Backward Wagner wrapper used in the affine-family endgame:
 once the right-hand pair `(g, X * f)` is oriented, nonnegative coefficients
-recover the original conclusion `Prec f g`. -/
+recover the original conclusion `StrictInterl f g`. -/
 private lemma affine_family_pair_data {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -442,7 +442,7 @@ protected lemma AffineFamily.posComboRealRooted_right_of_affine_family
 
 /-- Data package for the fixed right-hand pair `(g, X * f)` extracted from the
 affine family after taking the boundary `t → 0`. This is the natural target
-pair for the eventual Wagner step `Prec g (X * f) → Prec f g`. -/
+pair for the eventual Wagner step `StrictInterl g (X * f) → StrictInterl f g`. -/
 protected lemma AffineFamily.affine_family_right_pair_data {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -506,12 +506,12 @@ protected lemma AffineFamily.isRealRooted_iterate_derivative_of_lt_natDegree
           id
 
 /-- Packaged same-degree rightmost-factor reduction for later sign arguments:
-from `Prec f g`, choose the rightmost root of `g`, factor it off, and retain a
+from `StrictInterl f g`, choose the rightmost root of `g`, factor it off, and retain a
 genuine differ-by-1 `Interlaces` witness for the quotient against `f`, together
 with the explicit rightmost-root bound. -/
 theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
     {f g : ℝ[X]}
-    (hprec : Prec f g)
+    (hprec : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree) :
     ∃ uR q,
@@ -519,7 +519,7 @@ theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
       g.IsRoot uR ∧
       (∀ r ∈ g.roots, r ≤ uR) ∧
       Interlaces q f := by
-  have hprec_keep : Prec f g := hprec
+  have hprec_keep : StrictInterl f g := hprec
   obtain ⟨_, hg, _, _, _, _, _, _, _⟩ := hprec
   obtain ⟨uR, huR_root, huR_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg.1 hg.2 hdeg_pos
@@ -642,10 +642,10 @@ the distinguished root `0` of `X * f` sits strictly to the right of all roots
 of `g`. -/
 private lemma prec_right_pair_of_prec_or_revPrec_of_no_common
     {f g : ℝ[X]}
-    (h : Prec g (X * f) ∨ Prec (X * f) g)
+    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   obtain ⟨c, hc_le, hc_lt0⟩ :=
     exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero hg_ne hg_splits hgnn (by
       intro hg0
@@ -660,11 +660,11 @@ private lemma prec_right_pair_of_prec_or_revPrec_of_no_common
 right direction is forced. -/
 private lemma prec_right_pair_of_prec_or_revPrec_of_no_common_fg_of_not_isRoot_zero
     {f g : ℝ[X]}
-    (h : Prec g (X * f) ∨ Prec (X * f) g)
+    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
@@ -674,10 +674,10 @@ pair has no common root, then the distinguished root `0` of `X * f` forces the
 orientation `g ≺ X * f`. -/
 theorem prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
     {f g : ℝ[X]}
-    (h : Prec g (X * f) ∨ Prec (X * f) g)
+    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
 
 end RealRooted

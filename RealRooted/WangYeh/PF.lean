@@ -40,7 +40,7 @@ theorem IsPFPolynomial.wangYeh_bidiagonal
   · have hp_ne : p ≠ 0 := by
       intro hzero
       simp [hzero] at hdeg
-    have hprec : Prec p (theta p) :=
+    have hprec : StrictInterl p (theta p) :=
       prec_self_theta_of_natDegree_ne_zero hp hdeg
     have hp_pos : HasPosLeadingCoeff p :=
       hp.hasNonnegCoeffs.pos_leadingCoeff hp_ne

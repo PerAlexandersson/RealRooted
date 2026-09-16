@@ -77,8 +77,8 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hpair : Prec (f + g) (f + C (2 : ℝ) * g)) :
-    Prec (f + g) g := by
+    (hpair : StrictInterl (f + g) (f + C (2 : ℝ) * g)) :
+    StrictInterl (f + g) g := by
   let F : ℝ[X] := f + g
   let G : ℝ[X] := f + C (2 : ℝ) * g
   rcases
@@ -114,7 +114,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
             ring
   have htarget_eq' : -F + (X - C uR) * q = g := by simp_all
   have hprec :
-      Prec F (C (-1 : ℝ) * F + (X - C uR) * q) :=
+      StrictInterl F (C (-1 : ℝ) * F + (X - C uR) * q) :=
     prec_of_interlaces_evalCoeff_neg_same
       (f := F) (g := q) (a := C (-1 : ℝ)) (b := X - C uR)
       hqF hq_pos
@@ -134,8 +134,8 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hpair : Prec (f + g) (C (2 : ℝ) * f + g)) :
-    Prec (f + g) f := by
+    (hpair : StrictInterl (f + g) (C (2 : ℝ) * f + g)) :
+    StrictInterl (f + g) f := by
   have hno_swap : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by grind
   have hf_deg_pos : 1 ≤ f.natDegree := by lia
   simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc] using
@@ -157,9 +157,9 @@ theorem pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hright : Prec (f + g) (f + C (2 : ℝ) * g))
-    (hleft : Prec (f + g) (C (2 : ℝ) * f + g)) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    (hright : StrictInterl (f + g) (f + C (2 : ℝ) * g))
+    (hleft : StrictInterl (f + g) (C (2 : ℝ) * f + g)) :
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   refine ⟨f + g, ?_, ?_⟩
   · exact
       prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
@@ -179,8 +179,8 @@ theorem compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hright : Prec (f + g) (f + C (2 : ℝ) * g))
-    (hleft : Prec (f + g) (C (2 : ℝ) * f + g)) :
+    (hright : StrictInterl (f + g) (f + C (2 : ℝ) * g))
+    (hleft : StrictInterl (f + g) (C (2 : ℝ) * f + g)) :
     Compatible f g := by
   obtain ⟨h, hhf, hhg⟩ :=
     pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
@@ -198,9 +198,9 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hright : Prec (f + g) (f + C (2 : ℝ) * g))
-    (hleft : Prec (f + g) (C (2 : ℝ) * f + g)) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    (hright : StrictInterl (f + g) (f + C (2 : ℝ) * g))
+    (hleft : StrictInterl (f + g) (C (2 : ℝ) * f + g)) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   htwo hf_pos hg_pos
     (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
       hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft)

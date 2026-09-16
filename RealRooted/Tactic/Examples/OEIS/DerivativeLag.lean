@@ -13,9 +13,9 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-/-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
+/-- Direct Family I2 half-line branch, adjacent-`StrictInterl` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -26,7 +26,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (2 : ℝ) - X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_i2_derivative_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -39,7 +39,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Direct Family I2 half-line branch, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -64,7 +64,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Direct Family I2 half-line branch, Narayana-style zero-lag derivative
 term. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {m : Nat}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -88,16 +88,16 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {m : Nat}
     no_common_roots := hno,
     certificate := directHalfLine
 
-/-- `A358623`-style Wagner gap-lag branch, adjacent-`Prec` endpoint. -/
+/-- `A358623`-style Wagner gap-lag branch, adjacent-`StrictInterl` endpoint. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 < c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_i2_derivative_lag_sequence using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -109,7 +109,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
 
 /-- `A358623`-style Wagner gap-lag branch, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -128,7 +128,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
 
 /-- Denominator-normalized direct Family I2 branch. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -140,7 +140,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 3) * ((X * (C (2 : ℝ) - X)) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_i2_derivative_lag_sequence_den_coeff using
     base := hbase,
     pos_lc := hpos,
@@ -160,7 +160,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Denominator-normalized direct Family I2 branch, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -192,7 +192,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Denominator-normalized Wagner gap-lag branch. -/
 example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -201,7 +201,7 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
     (hrec : ∀ n : Nat,
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_i2_derivative_lag_sequence_den using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -214,7 +214,7 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
 
 /-- Denominator-normalized Wagner gap-lag branch, real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)

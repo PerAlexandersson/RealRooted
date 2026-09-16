@@ -192,22 +192,22 @@ private theorem cutStrictSuffix_eq_cutMiddle_add {m : ℕ}
 private theorem cutPrefix_prec0_reverse {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     {i j : Fin m} (hij : i ≤ j) :
-    Prec0 (cutPrefix P j) (cutPrefix P i) := by
-  have hmid : Prec0 (cutMiddle P i j) (cutPrefix P i) := by
+    Interl (cutPrefix P j) (cutPrefix P i) := by
+  have hmid : Interl (cutMiddle P i j) (cutPrefix P i) := by
     unfold cutMiddle cutPrefix
     apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
     · intro k _ l _
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : l ≤ i
         · simp only [hk, hl, if_true]
-          apply Prec.toPrec0
+          apply StrictInterl.toInterl
           exact prec_of_compatible_and_X_mul_left
             (h.p_pos k).ne_zero (h.p_pos l).ne_zero
             (h.p_nonneg k) (h.p_nonneg l)
             (h.pp_reverse (hl.trans hk.1.le))
             (h.xpp_reverse (hl.trans hk.1.le))
-        · simp [hk, hl, prec0_zero_right]
-      · simp [hk, prec0_zero_left]
+        · simp [hk, hl, interl_zero_right]
+      · simp [hk, interl_zero_left]
     · intro k _
       by_cases hk : i < k ∧ k ≤ j
       · simpa [hk] using h.p_nonneg k
@@ -217,15 +217,15 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
       · simpa [hk] using h.p_nonneg k
       · simp [hk, hasNonnegCoeffs_zero]
   have hpre_rr := cutPrefix_realRooted h i
-  have hself : Prec0 (cutPrefix P i) (cutPrefix P i) :=
-    (prec_refl hpre_rr.1 hpre_rr.2).toPrec0
+  have hself : Interl (cutPrefix P i) (cutPrefix P i) :=
+    (prec_refl hpre_rr.1 hpre_rr.2).toInterl
   rw [cutPrefix_eq_add_cutMiddle P hij]
   exact prec0_add_left_of_common_right_of_nonneg hself hmid
     (cutPrefix_nonneg h.p_nonneg i) (cutMiddle_nonneg h.p_nonneg i j)
 
 private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
-    (i j : Fin m) : Prec0 (cutPrefix P i) (cutStrictSuffix Q j) := by
+    (i j : Fin m) : Interl (cutPrefix P i) (cutStrictSuffix Q j) := by
   unfold cutPrefix cutStrictSuffix
   apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
   · intro k _ l _
@@ -234,9 +234,9 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
       · simp only [hk, hl, if_true]
         exact (prec_of_compatible_and_X_mul_left
           (h.p_pos k).ne_zero (h.q_pos l).ne_zero
-          (h.p_nonneg k) (h.q_nonneg l) (h.pq k l) (h.xpq k l)).toPrec0
-      · simp [hk, hl, prec0_zero_right]
-    · simp [hk, prec0_zero_left]
+          (h.p_nonneg k) (h.q_nonneg l) (h.pq k l) (h.xpq k l)).toInterl
+      · simp [hk, hl, interl_zero_right]
+    · simp [hk, interl_zero_left]
   · intro k _
     by_cases hk : k ≤ i
     · simpa [hk] using h.p_nonneg k
@@ -249,8 +249,8 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
 private theorem cutStrictSuffix_prec0_forward {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     {i j : Fin m} (hij : i ≤ j) :
-    Prec0 (cutStrictSuffix Q i) (cutStrictSuffix Q j) := by
-  have hmid : Prec0 (cutMiddle Q i j) (cutStrictSuffix Q j) := by
+    Interl (cutStrictSuffix Q i) (cutStrictSuffix Q j) := by
+  have hmid : Interl (cutMiddle Q i j) (cutStrictSuffix Q j) := by
     unfold cutMiddle cutStrictSuffix
     apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
     · intro k _ l _
@@ -261,9 +261,9 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
             (h.q_pos k).ne_zero (h.q_pos l).ne_zero
             (h.q_nonneg k) (h.q_nonneg l)
             (h.qq_forward (hk.2.trans hl.le))
-            (h.xqq_forward (hk.2.trans hl.le))).toPrec0
-        · simp [hk, hl, prec0_zero_right]
-      · simp [hk, prec0_zero_left]
+            (h.xqq_forward (hk.2.trans hl.le))).toInterl
+        · simp [hk, hl, interl_zero_right]
+      · simp [hk, interl_zero_left]
     · intro k _
       by_cases hk : i < k ∧ k ≤ j
       · simpa [hk] using h.q_nonneg k
@@ -272,10 +272,10 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
       by_cases hk : j < k
       · simpa [hk] using h.q_nonneg k
       · simp [hk, hasNonnegCoeffs_zero]
-  have hself : Prec0 (cutStrictSuffix Q j) (cutStrictSuffix Q j) := by
+  have hself : Interl (cutStrictSuffix Q j) (cutStrictSuffix Q j) := by
     by_cases hzero : cutStrictSuffix Q j = 0
     · exact Or.inl hzero
-    · exact (prec_refl hzero (cutStrictSuffix_splits_of_ne h j hzero)).toPrec0
+    · exact (prec_refl hzero (cutStrictSuffix_splits_of_ne h j hzero)).toInterl
   rw [cutStrictSuffix_eq_cutMiddle_add Q hij]
   exact prec0_add_left_of_common_right_of_nonneg hmid hself
     (cutMiddle_nonneg h.q_nonneg i j) (cutStrictSuffix_nonneg h.q_nonneg j)

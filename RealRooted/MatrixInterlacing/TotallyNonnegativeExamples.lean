@@ -122,7 +122,7 @@ theorem tnnMixing_lowerJacobi_two :
     rw [isInterlacingSeq_iff_pairwise]
     simpa using
       (interlaces_one_linear (p := X - C (1 : ℝ))
-        (Polynomial.natDegree_X_sub_C 1)).toPrec
+        (Polynomial.natDegree_X_sub_C 1)).toStrictInterl
   have hpres := Matrix.lowerBidiagonalFin_map_interlacingSeq_of_posLeadingCoeff
     (n := 2) (fun _ => (1 : ℝ)) (fun _ => 1)
     (fun _ => zero_le_one) (fun _ => zero_le_one)

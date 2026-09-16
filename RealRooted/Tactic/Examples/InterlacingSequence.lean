@@ -6,11 +6,11 @@ namespace RealRooted
 namespace Tactic
 
 example {fs : List ℝ[X]} :
-    IsInterlacingSeq fs ↔ fs.Pairwise Prec := by
+    IsInterlacingSeq fs ↔ fs.Pairwise StrictInterl := by
   rr_interlacingSeq_iff_pairwise
 
 example {fs : List ℝ[X]} :
-    IsInterlacingSeq0 fs ↔ fs.Pairwise Prec0 := by
+    IsInterlacingSeq0 fs ↔ fs.Pairwise Interl := by
   rr_interlacingSeq0_iff_pairwise
 
 example {fs : List ℝ[X]}
@@ -21,13 +21,13 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]} {i j : Fin fs.length}
     (hfs : IsInterlacingSeq fs)
     (hij : i < j) :
-    Prec (fs.get i) (fs.get j) := by
+    StrictInterl (fs.get i) (fs.get j) := by
   rr_interlacingSeq_prec using interlacing := hfs, index_lt := hij
 
 example {fs : List ℝ[X]} {i j : Fin fs.length}
     (hfs : IsInterlacingSeq0 fs)
     (hij : i < j) :
-    Prec0 (fs.get i) (fs.get j) := by
+    Interl (fs.get i) (fs.get j) := by
   rr_interlacingSeq0_prec0 using interlacing0 := hfs, index_lt := hij
 
 example {fs gs : List ℝ[X]}
@@ -65,7 +65,7 @@ example {fs gs : List ℝ[X]}
 example {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs)
     (hgs : IsInterlacingSeq gs)
-    (hfg : ∀ f ∈ fs, ∀ g ∈ gs, Prec f g) :
+    (hfg : ∀ f ∈ fs, ∀ g ∈ gs, StrictInterl f g) :
     IsInterlacingSeq (fs ++ gs) := by
   rr_interlacingSeq_append using
     left_interlacing := hfs,
@@ -74,18 +74,18 @@ example {fs gs : List ℝ[X]}
 
 example {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs) :
-    fs.reverse.Pairwise (fun f g => Prec g f) := by
+    fs.reverse.Pairwise (fun f g => StrictInterl g f) := by
   rr_interlacingSeq_reverse_pairwise using interlacing := hfs
 
 example {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0 fs) :
-    fs.reverse.Pairwise (fun f g => Prec0 g f) := by
+    fs.reverse.Pairwise (fun f g => Interl g f) := by
   rr_interlacingSeq0_reverse_pairwise using interlacing0 := hfs
 
 example {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
-      fs.reverse.Pairwise (fun f g => Prec g f) := by
+      fs.reverse.Pairwise (fun f g => StrictInterl g f) := by
   rr_interlacingSeqNonneg_reverse_pairwise using interlacing_nonneg := hfs
 
 example {fs : List ℝ[X]}

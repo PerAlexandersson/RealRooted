@@ -92,7 +92,7 @@ lemma interlaces_touchard_zero_one :
   by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
 
 lemma prec_touchard_one_two :
-    Prec (touchard 1) (touchard 2) := by
+    StrictInterl (touchard 1) (touchard 2) := by
   have hInter : Interlaces (touchard 0) (touchard 1) := interlaces_touchard_zero_one
   have h0_pos : HasPosLeadingCoeff (touchard 0) := touchard_posLeadingCoeff 0
   have hF_eq : X * touchard 1 + X * touchard 0 = touchard 2 := by
@@ -120,12 +120,12 @@ lemma prec_touchard_one_two :
       hInter h0_pos (by simpa [← hF_eq] using touchard_posLeadingCoeff 2)
       hdeg_lo hdeg_hi hb_nonpos
 
-/-- Consecutive Touchard polynomials satisfy `Prec`, hence are real-rooted. -/
-theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
-  | 0 => interlaces_touchard_zero_one.toPrec
+/-- Consecutive Touchard polynomials satisfy `StrictInterl`, hence are real-rooted. -/
+theorem prec_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n + 1))
+  | 0 => interlaces_touchard_zero_one.toStrictInterl
   | 1 => prec_touchard_one_two
   | n + 2 => by
-      have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
+      have hprev : StrictInterl (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=

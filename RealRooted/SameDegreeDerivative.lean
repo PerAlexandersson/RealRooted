@@ -53,7 +53,7 @@ theorem roots_derivative_le_of_roots_le {p : ℝ[X]} {c : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ≤ c) :
     ∀ r ∈ p.derivative.roots, r ≤ c :=
-  roots_le_of_prec_right (derivative_interlaces hp hdeg).toPrec h
+  roots_le_of_prec_right (derivative_interlaces hp hdeg).toStrictInterl h
 
 /-- **Derivative root interval preservation.** If every root of a split
 polynomial of degree at least two lies in the closed interval `[u, v]`, then

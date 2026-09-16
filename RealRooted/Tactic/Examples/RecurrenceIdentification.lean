@@ -114,7 +114,7 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
     (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
@@ -242,12 +242,12 @@ example {P Q : Nat → ℝ[X]}
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
     (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
     (∀ n : Nat, IsPFPolynomial (P n)) ∧
-      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+      ∀ n : Nat, Interl (P n) (P (n + 1)) := by
   rr_model_lag_one_pf_prec0_sequence using
     model_pf_prec0 := hmodel,
     update := upd,
@@ -258,7 +258,7 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hone : P 1 = Q 1)
     (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
@@ -271,12 +271,12 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hone : P 1 = Q 1)
     (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
     (hQ : ∀ n : Nat, Q (n + 2) = upd n (Q (n + 1)) (Q n)) :
-    ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+    ∀ n : Nat, Interl (P n) (P (n + 1)) := by
   rr_model_lag_two_pf_prec0_sequence using
     model_pf_prec0 := hmodel,
     update := upd,
@@ -289,7 +289,7 @@ example {P Q : Nat → ℝ[X]}
     {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hone : P 1 = Q 1)
     (htwo : P 2 = Q 2)
@@ -297,7 +297,7 @@ example {P Q : Nat → ℝ[X]}
       P (n + 3) = upd n (P (n + 2)) (P (n + 1)) (P n))
     (hQ : ∀ n : Nat,
       Q (n + 3) = upd n (Q (n + 2)) (Q (n + 1)) (Q n)) :
-    ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+    ∀ n : Nat, Interl (P n) (P (n + 1)) := by
   rr_model_lag_three_pf_prec0_sequence using
     model_pf_prec0 := hmodel,
     update := upd,
@@ -311,7 +311,7 @@ example {P Q : Nat → ℝ[X]}
     {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X] → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 0 = Q 0)
     (hone : P 1 = Q 1)
     (htwo : P 2 = Q 2)
@@ -329,7 +329,7 @@ to an active tail. -/
 example {P Q : Nat → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hzero : P 3 = Q 0)
     (hone : P 4 = Q 1)
     (hP : ∀ n : Nat,
@@ -340,7 +340,7 @@ example {P Q : Nat → ℝ[X]}
       Q (n + 2) =
         X * (C (1 : ℝ) * (Q (n + 1)).derivative +
           C ((n : ℝ) + 4) * Q n)) :
-    ∀ n : Nat, Prec0 (P (n + 3)) (P (n + 4)) := by
+    ∀ n : Nat, Interl (P (n + 3)) (P (n + 4)) := by
   rr_model_lag_two_pf_prec0_sequence using
     model_pf_prec0 := hmodel,
     update := fun n p q =>
@@ -352,11 +352,11 @@ example (P : Nat → ℝ[X])
     (hzero : P 0 = 1)
     (hrec : ∀ n : Nat, P (n + 1) = P n) :
     (∀ n : Nat, IsPFPolynomial (P n)) ∧
-      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+      ∀ n : Nat, Interl (P n) (P (n + 1)) := by
   rr_model_lag_one_pf_prec0_sequence using
     model_pf_prec0 := show
       (∀ n : Nat, IsPFPolynomial ((fun _ => (1 : ℝ[X])) n)) ∧
-        ∀ n : Nat, Prec0 ((fun _ => (1 : ℝ[X])) n)
+        ∀ n : Nat, Interl ((fun _ => (1 : ℝ[X])) n)
           ((fun _ => (1 : ℝ[X])) (n + 1)) from by
       constructor
       · intro n

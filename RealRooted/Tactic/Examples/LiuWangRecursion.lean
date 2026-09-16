@@ -28,7 +28,7 @@ example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
 section ExplicitRootSigns
 
 variable {P U V W : Nat → ℝ[X]}
-variable (hbase : Prec (P 0) (P 1))
+variable (hbase : StrictInterl (P 0) (P 1))
 variable (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
 variable (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
 variable (hrec : ∀ n : Nat,
@@ -41,7 +41,7 @@ variable (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
 variable (hno : ∀ n : Nat, ∀ r : ℝ,
   (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
 
-example : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+example : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_derivative_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -88,7 +88,7 @@ example : ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
 end ExplicitRootSigns
 
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -99,7 +99,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (2 : ℝ) - X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_derivative_lag_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -111,7 +111,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- The Liu--Wang-named wrapper can finish directly to interlacing. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -134,7 +134,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- The Liu--Wang-named real-rooted wrapper projects to splits. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -156,7 +156,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     no_common_roots := hno
 
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -168,7 +168,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (1 + C (4 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_derivative_lag_sequence_window_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -181,7 +181,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- The root-window Liu--Wang wrapper also has an interlacing endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -206,7 +206,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- The root-window real-rooted wrapper projects to nonzero. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -230,7 +230,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     no_common_roots := hno
 
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -264,7 +264,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Denominator-normalized derivative-lag wrapper with automatic scalar and
 sign side-goals. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -276,7 +276,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 3) * ((X * (C (2 : ℝ) - X)) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -296,7 +296,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Denominator-normalized derivative-lag wrapper can finish directly to
 interlacing. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -328,7 +328,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Real-rootedness endpoint for the denominator-normalized derivative-lag
 wrapper with automatic scalar and sign side-goals. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -360,7 +360,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Root-window endpoint for the denominator-normalized derivative-lag
 wrapper. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -373,7 +373,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 1) * ((X * (1 + C (4 : ℝ) * X)) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -394,7 +394,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Root-window denominator-normalized wrapper can finish directly to
 interlacing. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)

@@ -77,12 +77,12 @@ theorem bidiagonalOperator_prec_of_affineSymbol_stable
         (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
           (bidiagonalLinearMap alpha beta))))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec q p)
+    (hpq : StrictInterl q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     (hpout : HasPosLeadingCoeff (bidiagonalOperator alpha beta p))
     (hqout : HasPosLeadingCoeff (bidiagonalOperator alpha beta q))
     (hpoutdeg : 1 ≤ (bidiagonalOperator alpha beta p).natDegree) :
-    Prec (bidiagonalOperator alpha beta q) (bidiagonalOperator alpha beta p) :=
+    StrictInterl (bidiagonalOperator alpha beta q) (bidiagonalOperator alpha beta p) :=
   linearMap_prec_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 

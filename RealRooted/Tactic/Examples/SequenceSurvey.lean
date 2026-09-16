@@ -6,7 +6,7 @@ import RealRooted.Tactic.Finish
 
 Representative checks against the currently formalized combinatorial sequence
 families.  These examples document what the tactic layer can already consume:
-once a family-specific `Prec` or `Interlaces` certificate is available, the
+once a family-specific `StrictInterl` or `Interlaces` certificate is available, the
 short proof tail should be automatic.
 -/
 
@@ -64,7 +64,7 @@ example (n : Nat) (hn : 2 ≤ n) :
 example (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) := by
-  have hprec : Prec (narayanaQuot n) (narayanaQuot (n + 1)) :=
+  have hprec : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
     prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
   have hdeg :
       (narayanaQuot n).natDegree + 1 = (narayanaQuot (n + 1)).natDegree := by

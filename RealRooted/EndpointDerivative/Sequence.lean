@@ -4,7 +4,7 @@ open Polynomial Set
 
 namespace RealRooted
 
-/-- Iterating `(X-a)(X-b)f'` preserves the root interval and gives a `Prec`
+/-- Iterating `(X-a)(X-b)f'` preserves the root interval and gives a `StrictInterl`
 chain. -/
 theorem prec_endpointDerivative_sequence
     {P : ℕ → ℝ[X]} {a b : ℝ}
@@ -15,7 +15,7 @@ theorem prec_endpointDerivative_sequence
     (hdeg : ∀ n, 1 ≤ (P n).natDegree)
     (hrec : ∀ n,
       P (n + 1) = ((X - C a) * (X - C b)) * (P n).derivative) :
-    ∀ n, Prec (P n) (P (n + 1)) := by
+    ∀ n, StrictInterl (P n) (P (n + 1)) := by
   have hinv : ∀ n, (P n).Splits ∧ ∀ r ∈ (P n).roots, r ∈ Icc a b := by
     intro n
     induction n with
@@ -35,7 +35,7 @@ theorem prec_endpointDerivative_sequence
   exact prec_endpointDerivative (hinv n).1 (hdeg n) (hpos n)
     (fun r hr => (hinv n).2 r ((mem_roots (hpos n).ne_zero).mpr hr))
 
-/-- Iterating `((X-a)(X-b)f)'` preserves the root interval and gives a `Prec`
+/-- Iterating `((X-a)(X-b)f)'` preserves the root interval and gives a `StrictInterl`
 chain. -/
 theorem prec_derivative_endpointProduct_sequence
     {P : ℕ → ℝ[X]} {a b : ℝ}
@@ -46,7 +46,7 @@ theorem prec_derivative_endpointProduct_sequence
     (hdeg : ∀ n, 1 ≤ (P n).natDegree)
     (hrec : ∀ n,
       P (n + 1) = (((X - C a) * (X - C b)) * P n).derivative) :
-    ∀ n, Prec (P n) (P (n + 1)) := by
+    ∀ n, StrictInterl (P n) (P (n + 1)) := by
   have hinv : ∀ n, (P n).Splits ∧ ∀ r ∈ (P n).roots, r ∈ Icc a b := by
     intro n
     induction n with

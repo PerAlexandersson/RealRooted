@@ -16,9 +16,9 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A `Prec` witness orients strict upper-tail root counts, independently of
+/-- A `StrictInterl` witness orients strict upper-tail root counts, independently of
 whether its endpoints have equal degrees or degrees differing by one. -/
-theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : Prec p q) :
+theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : StrictInterl p q) :
     ∀ x : ℝ,
       ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
       ((q.roots.filter (x < ·)).card : ℤ) ≤
@@ -62,7 +62,7 @@ namespace LiuOppositeSigns
 /-- A common right interleaver forces Liu root-count compatibility, including
 when the endpoint polynomials have common or repeated roots. -/
 theorem RootCountCompatible.of_commonInterleaver {p q k : ℝ[X]}
-    (hpk : Prec p k) (hqk : Prec q k) :
+    (hpk : StrictInterl p k) (hqk : StrictInterl q k) :
     RootCountCompatible p q := by
   refine RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hpk.1.1 hqk.1.1 ?_

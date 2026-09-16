@@ -151,13 +151,13 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
     (i j : Fin (fs.zipWith (· * ·) gs.reverse).length)
     (hij : i < j) :
     (∃ h : ℝ[X],
-        Prec h ((fs.zipWith (· * ·) gs.reverse).get i) ∧
-          Prec h ((fs.zipWith (· * ·) gs.reverse).get j)) ∧
+        StrictInterl h ((fs.zipWith (· * ·) gs.reverse).get i) ∧
+          StrictInterl h ((fs.zipWith (· * ·) gs.reverse).get j)) ∧
       ∃ h : ℝ[X],
-        Prec ((fs.zipWith (· * ·) gs.reverse).get i) h ∧
-          Prec ((fs.zipWith (· * ·) gs.reverse).get j) h := by
-  have hpair_fs : fs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hfs.2)
-  have hpair_gs : gs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hgs.2)
+        StrictInterl ((fs.zipWith (· * ·) gs.reverse).get i) h ∧
+          StrictInterl ((fs.zipWith (· * ·) gs.reverse).get j) h := by
+  have hpair_fs : fs.Pairwise StrictInterl := (isInterlacingSeq_iff_pairwise.mp hfs.2)
+  have hpair_gs : gs.Pairwise StrictInterl := (isInterlacingSeq_iff_pairwise.mp hgs.2)
   have hzip_len : (fs.zipWith (· * ·) gs.reverse).length = fs.length := by
     simp [List.length_zipWith, hlen, List.length_reverse]
   let i' : Fin fs.length := ⟨i.1, by lia⟩
@@ -182,8 +182,9 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
     simpa [kj, ki] using hrev_idx
   have hgi_eq : gi = gs.get ki := by simp [gi, ki]
   have hgj_eq : gj = gs.get kj := by simp [gj, kj]
-  have hfi_fj : Prec fi fj := by simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
-  have hgj_gi : Prec gj gi := by
+  have hfi_fj : StrictInterl fi fj := by
+    simpa [fi, fj] using List.pairwise_iff_get.mp hpair_fs i' j' hij'
+  have hgj_gi : StrictInterl gj gi := by
     simpa [hgj_eq, hgi_eq] using List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfi_rr : (fi ≠ 0 ∧ fi.Splits) := hfs.realRooted fi (List.get_mem _ _)
   have hfj_rr : (fj ≠ 0 ∧ fj.Splits) := hfs.realRooted fj (List.get_mem _ _)
@@ -191,16 +192,16 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
     simpa [hgi_eq] using hgs.realRooted (gs.get ki) (List.get_mem _ _)
   have hgj_rr : (gj ≠ 0 ∧ gj.Splits) := by
     simpa [hgj_eq] using hgs.realRooted (gs.get kj) (List.get_mem _ _)
-  have hleft_i : Prec (fi * gj) (fi * gi) := by
+  have hleft_i : StrictInterl (fi * gj) (fi * gi) := by
     simpa [fi, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hfi_rr.1 hfi_rr.2 hgj_gi)
-  have hleft_j : Prec (fi * gj) (fj * gj) := by
+  have hleft_j : StrictInterl (fi * gj) (fj * gj) := by
     simpa [fi, fj, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hgj_rr.1 hgj_rr.2 hfi_fj)
-  have hright_i : Prec (fi * gi) (fj * gi) := by
+  have hright_i : StrictInterl (fi * gi) (fj * gi) := by
     simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hgi_rr.1 hgi_rr.2 hfi_fj)
-  have hright_j : Prec (fj * gj) (fj * gi) := by
+  have hright_j : StrictInterl (fj * gj) (fj * gi) := by
     simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hfj_rr.1 hfj_rr.2 hgj_gi)
   refine ⟨⟨fi * gj, ?_, ?_⟩, ⟨fj * gi, ?_, ?_⟩⟩

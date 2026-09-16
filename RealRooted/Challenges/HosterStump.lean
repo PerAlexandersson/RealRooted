@@ -108,7 +108,7 @@ def refinedRow
 
 /-- Hoster--Stump Theorem 3.3, stated as the five checked families of
 interlacing relations from the induction-step criterion, using the project's
-zero-aware `Prec0` convention for the two zero corners. -/
+zero-aware `Interl` convention for the two zero corners. -/
 def Theorem33DiagramStatement (p : RefinedChowFamily) : Prop :=
   ∀ {n : ℕ} {T : Finset ℕ}, 2 ≤ n →
     (T = Finset.Icc 1 n ∨ T = Finset.Icc 1 (n - 1)) →
@@ -119,7 +119,7 @@ def Theorem33DiagramStatement (p : RefinedChowFamily) : Prop :=
         IsInterlacingSeq0Nonneg
           [p n k ∅ (T.erase 1), p n k ∅ T,
             p n k ({1} : Finset ℕ) T]) ∧
-      Prec0 (p n (n - 1) ∅ (T.erase 1))
+      Interl (p n (n - 1) ∅ (T.erase 1))
         (p n 1 ({1} : Finset ℕ) T)
 
 /-- Lower partial sums `[f_0, f_0 + f_1, ...]`. -/
@@ -144,10 +144,10 @@ def xShiftedSplitSums (fs : List ℝ[X]) : List ℝ[X] :=
 
 The source assumes nonnegative coefficients for both polynomials and both
 gamma polynomials, together with nonzero exact degrees. These conditions must
-be explicit because local `Prec` is defined for arbitrary real polynomials and
+be explicit because local `StrictInterl` is defined for arbitrary real polynomials and
 Lean has `natDegree 0 = 0`. Without the gamma coefficient hypotheses the
 statement is false: for `d = 2` and `γ = δ = 1 - X`, the gamma transforms have
-nonnegative coefficients and the required symmetry and degrees, and `Prec γ δ`
+nonnegative coefficients and the required symmetry and degrees, and `StrictInterl γ δ`
 holds, but `gammaTransform 2 γ = X ^ 2 + X + 1` does not split over `ℝ`.
 
 The separate nonzero hypotheses exclude the spurious `d = 0`, `f = 0` case
@@ -168,7 +168,7 @@ theorem GammaAdjacentInterlacingTransferStatement
     (_hgnn : HasNonnegCoeffs g)
     (hγnn : HasNonnegCoeffs γ)
     (hδnn : HasNonnegCoeffs δ) :
-    Prec f g ↔ Prec γ δ := by
+    StrictInterl f g ↔ StrictInterl γ δ := by
   change f = gammaTransform d γ at hfGamma
   change g = gammaTransform (d + 1) δ at hgGamma
   have hγ0 : γ.coeff 0 ≠ 0 := by

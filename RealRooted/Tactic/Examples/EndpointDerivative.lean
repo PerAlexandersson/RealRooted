@@ -23,7 +23,7 @@ variable (hrec : ∀ n,
   P (n + 1) = ((X - C a) * (X - C b)) * (P n).derivative)
 variable (hdeg_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree)
 
-example : ∀ n, Prec (P n) (P (n + 1)) := by
+example : ∀ n, StrictInterl (P n) (P (n + 1)) := by
   rr_endpoint_derivative_sequence using
     lower_le_upper := hab,
     base_splits := hbase_splits,
@@ -65,7 +65,7 @@ variable (hrec : ∀ n,
   P (n + 1) = (((X - C a) * (X - C b)) * P n).derivative)
 variable (hdeg_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree)
 
-example : ∀ n, Prec (P n) (P (n + 1)) := by
+example : ∀ n, StrictInterl (P n) (P (n + 1)) := by
   rr_endpoint_product_derivative_sequence using
     lower_le_upper := hab,
     base_splits := hbase_splits,

@@ -137,7 +137,7 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hall : AllComboRealRooted f g) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
@@ -152,7 +152,7 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
     exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by lia
-    have hprec' : Prec g f ∨ Prec f g :=
+    have hprec' : StrictInterl g f ∨ StrictInterl f g :=
       prec_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         (allComboRealRooted_comm hall) hdeg''
     exact Or.symm hprec'
@@ -169,7 +169,7 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
@@ -238,7 +238,7 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
@@ -283,7 +283,7 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    Prec f g ∨ Prec g f :=
+    StrictInterl f g ∨ StrictInterl g f :=
   posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
     hf_pos hg_pos hfnn hgnn hfg
@@ -306,10 +306,10 @@ theorem
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec_or :
-      Prec f g ∨ Prec g f :=
+      StrictInterl f g ∨ StrictInterl g f :=
     posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary hf_pos hg_pos hfnn hgnn hfg
-  have hprec_fg : Prec f g :=
+  have hprec_fg : StrictInterl f g :=
     prec_forward_of_orientation_of_succDegree hsucc hprec_or
   exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
 

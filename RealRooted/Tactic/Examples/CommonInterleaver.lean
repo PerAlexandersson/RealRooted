@@ -237,8 +237,8 @@ example {F G : Nat → ℝ[X]}
     left_splits := hf_splits
 
 example {f g h : ℝ[X]}
-    (hhf : Prec h f)
-    (hhg : Prec h g)
+    (hhf : StrictInterl h f)
+    (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
     Compatible f g := by
@@ -249,8 +249,8 @@ example {f g h : ℝ[X]}
     right_pos_lc := hg_pos
 
 example {f g h : ℝ[X]}
-    (hfh : Prec f h)
-    (hgh : Prec g h)
+    (hfh : StrictInterl f h)
+    (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
     Compatible f g := by
@@ -345,8 +345,8 @@ example {fs : List ℝ[X]}
     nonempty := hne
 
 example {F G H : Nat → ℝ[X]}
-    (hHF : ∀ n : Nat, Prec (H n) (F n))
-    (hHG : ∀ n : Nat, Prec (H n) (G n))
+    (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
+    (hHG : ∀ n : Nat, StrictInterl (H n) (G n))
     (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, Compatible (F n) (G n) := by
@@ -357,8 +357,8 @@ example {F G H : Nat → ℝ[X]}
     right_pos_lc := hg_pos
 
 example {F G H : Nat → ℝ[X]}
-    (hFH : ∀ n : Nat, Prec (F n) (H n))
-    (hGH : ∀ n : Nat, Prec (G n) (H n))
+    (hFH : ∀ n : Nat, StrictInterl (F n) (H n))
+    (hGH : ∀ n : Nat, StrictInterl (G n) (H n))
     (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, Compatible (F n) (G n) := by
@@ -649,7 +649,7 @@ example
         f.Splits →
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
-        Prec f g) :
+        StrictInterl f g) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
   rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
     orientation := horient
@@ -793,7 +793,7 @@ example :
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hcomp : Compatible f g) :
-    ∃ k : ℝ[X], Prec f k ∧ Prec g k := by
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k := by
   rr_chudnovskySeymour_compatible_pair_common_interleaver using
     left_pos_lc := hf,
     right_pos_lc := hg,
@@ -802,7 +802,7 @@ example {f g : ℝ[X]}
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hcomp : Compatible f g) :
-    ∃ k : ℝ[X], Prec k f ∧ Prec k g := by
+    ∃ k : ℝ[X], StrictInterl k f ∧ StrictInterl k g := by
   rr_chudnovskySeymour_compatible_pair_common_left_interleaver using
     left_pos_lc := hf,
     right_pos_lc := hg,
@@ -1592,7 +1592,7 @@ example {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_posCombo_pair_common_interleaver_degree_le_two using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1608,7 +1608,7 @@ example {f g : ℝ[X]}
     (hfg : Compatible f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_compatible_pair_common_interleaver_degree_le_two using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1621,7 +1621,7 @@ example {f g : ℝ[X]}
     (hg_pos : HasPosLeadingCoeff g)
     (hfdeg : f.natDegree ≤ 1)
     (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_pair_common_interleaver_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1633,7 +1633,7 @@ example {f g : ℝ[X]}
     (hg_pos : HasPosLeadingCoeff g)
     (hfdeg : f.natDegree ≤ 1)
     (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   rr_pair_common_left_interleaver_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1645,7 +1645,7 @@ example {f g : ℝ[X]}
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hfdeg : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_pair_common_interleaver_sameDegree_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1657,7 +1657,7 @@ example {f g : ℝ[X]}
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hfdeg : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   rr_pair_common_left_interleaver_sameDegree_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1670,7 +1670,7 @@ example {f g : ℝ[X]}
     (hfg : Compatible f g)
     (hfdeg : f.natDegree ≤ 1)
     (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_compatible_pair_common_interleaver_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1684,7 +1684,7 @@ example {f g : ℝ[X]}
     (hfg : Compatible f g)
     (hfdeg : f.natDegree ≤ 1)
     (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   rr_compatible_pair_common_left_interleaver_degree_le_one using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
@@ -1817,7 +1817,7 @@ example {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_sameDegree_pair_common_interleaver_cubicInterior using
     below_certificate := hbelow,
     above_certificate := habove,
@@ -1843,7 +1843,7 @@ example {f g : ℝ[X]}
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgdeg : g.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rr_noCommon_pair_common_interleaver_degree_le_three using
     below_certificate := hbelow,
     above_certificate := habove,

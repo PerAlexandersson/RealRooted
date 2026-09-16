@@ -15,7 +15,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg : F.natDegree = f.natDegree + 1)
     (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
@@ -110,7 +110,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg : F.natDegree = f.natDegree)
     (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
@@ -192,7 +192,7 @@ theorem prec_of_interlaces_endpoint_sign_of_no_crossing
       ContinuousOn (fun t ↦ (p t).eval r) (Set.Icc a b))
     (hne : ∀ r, f.IsRoot r → ∀ t ∈ Set.Icc a b, (p t).eval r ≠ 0)
     (hend : ∀ r, f.IsRoot r → (p b).eval r * g.eval r < 0) :
-    Prec f (p a) := by
+    StrictInterl f (p a) := by
   apply prec_of_interlaces_eval_mul_neg_same hgf hg_pos hpa_pos hdeg
   intro r hr
   have hsame : 0 < (p a).eval r * (p b).eval r :=
@@ -258,7 +258,7 @@ theorem prec_of_interlaces_evalCoeff_neg_succ
     (hdeg : (a * f + b * g).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
   exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr (hb_neg r hr) (hno r hr)
@@ -275,7 +275,7 @@ theorem prec_of_interlaces_evalCoeff_neg_same
     (hdeg : (a * f + b * g).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
   exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr (hb_neg r hr) (hno r hr)
@@ -291,7 +291,7 @@ theorem prec_of_interlaces_evalCoeff_neg
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   have hcases :
       (a * f + b * g).natDegree = f.natDegree ∨
         (a * f + b * g).natDegree = f.natDegree + 1 := by
@@ -303,8 +303,8 @@ theorem prec_of_interlaces_evalCoeff_neg
 lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
     (h : Interlaces ((X - C r) * g) ((X - C r) * f)) :
     Interlaces g f := by
-  have hprec : Prec ((X - C r) * g) ((X - C r) * f) := h.toPrec
-  have hprec' : Prec g f := prec_of_prec_mul_X_sub_C_both r hprec
+  have hprec : StrictInterl ((X - C r) * g) ((X - C r) * f) := h.toStrictInterl
+  have hprec' : StrictInterl g f := prec_of_prec_mul_X_sub_C_both r hprec
   obtain ⟨hf_mul, hg_mul, hdeg_mul, _, _, _, _, _, _, _⟩ := h
   have hf0 : f ≠ 0 := right_ne_zero_of_mul hf_mul.1
   have hg0 : g ≠ 0 := right_ne_zero_of_mul hg_mul.1
@@ -324,15 +324,15 @@ lemma add_mul_factor_X_sub_C {a b qf qg : ℝ[X]} {r : ℝ} :
       (X - C r) * (a * qf + b * qg) := by
   ring
 
-/-- If a structured Liu--Wang quotient already satisfies the desired `Prec`
+/-- If a structured Liu--Wang quotient already satisfies the desired `StrictInterl`
 conclusion, multiplying everything by a common linear factor preserves it. This
 is the multiplication-back step for common-root reductions. -/
 lemma prec_mul_X_sub_C_of_linearCombo_quotient
     {qf qg a b : ℝ[X]} {r : ℝ}
-    (hprec : Prec qf (a * qf + b * qg)) :
-    Prec ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
+    (hprec : StrictInterl qf (a * qf + b * qg)) :
+    StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
   have hmul :
-      Prec ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
+      StrictInterl ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
     prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec
   simpa [add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hmul
 

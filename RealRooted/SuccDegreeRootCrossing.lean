@@ -57,7 +57,7 @@ theorem root_le_of_posCombo_deg1
 
 The example is useful because the root `-1 / 2` of `f` lies to the right of
 both roots of `g`; positive-combination real-rootedness alone does not force
-the fixed succ-degree orientation `Prec f g`. -/
+the fixed succ-degree orientation `StrictInterl f g`. -/
 theorem posCombo_deg1_all_splits :
     ∀ lam μ : ℝ, 0 < lam → 0 < μ →
       (C lam * (C 2 * X + C 1) + C μ * ((X + C 1) * (X + C 2))).Splits := by
@@ -101,9 +101,9 @@ private lemma neg_half_mem_roots_two_mul_X_add_one :
     norm_num [Polynomial.coeff_one] at hc
 
 /-- The explicit positive-combination example is not in the fixed succ-degree
-orientation `Prec f g`. -/
+orientation `StrictInterl f g`. -/
 theorem not_prec_deg1_example :
-    ¬ Prec (C 2 * X + C 1 : ℝ[X]) ((X + C 1) * (X + C 2)) := by
+    ¬ StrictInterl (C 2 * X + C 1 : ℝ[X]) ((X + C 1) * (X + C 2)) := by
   intro hprec
   have hle : (-1 / 2 : ℝ) ≤ -1 :=
     roots_le_of_prec_right hprec roots_X_add_one_mul_X_add_two_le_neg_one

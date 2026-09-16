@@ -24,11 +24,11 @@ two-dimensional span, and applies the converse.  In the differ-by-one case the
 degree gap rules out the reversed orientation returned by the unoriented
 converse. -/
 theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
-    (hfg : Prec f g) (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec0 f.derivative g.derivative := by
+    (hfg : StrictInterl f g) (hdeg : f.natDegree + 1 = g.natDegree) :
+    Interl f.derivative g.derivative := by
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.2 with hfzero | hfrr
   · rw [hfzero]
-    exact prec0_zero_left _
+    exact interl_zero_left _
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
@@ -42,18 +42,18 @@ theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
       f.derivative.natDegree = g.derivative.natDegree := Or.inl hfgdeg'
   exact
     (prec_forward_of_orientation_of_succDegree hfgdeg'.symm
-      (prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toPrec0
+      (prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toInterl
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
 derivative pair in proper position up to orientation.  The remaining standard
 input below is exactly the oriented branch selection. -/
 theorem derivative_prec0_or_revPrec0_of_prec_sameDegree {f g : ℝ[X]}
-    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) :
-    Prec0 f.derivative g.derivative ∨ Prec0 g.derivative f.derivative := by
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    Interl f.derivative g.derivative ∨ Interl g.derivative f.derivative := by
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.2 with hfzero | hfrr
   · left
     rw [hfzero]
-    exact prec0_zero_left _
+    exact interl_zero_left _
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
@@ -63,14 +63,14 @@ theorem derivative_prec0_or_revPrec0_of_prec_sameDegree {f g : ℝ[X]}
   have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
     (Or.inr hdeg') with hprec | hrev
-  · exact Or.inl hprec.toPrec0
-  · exact Or.inr hrev.toPrec0
+  · exact Or.inl hprec.toInterl
+  · exact Or.inr hrev.toInterl
 
 /-- For monic same-degree polynomials in proper position, the roots of the
 derivatives have the same forward sum order. -/
 theorem derivative_roots_sum_le_of_prec_sameDegree_monic {f g : ℝ[X]}
     (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree)
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree)
     (hfder_splits : f.derivative.Splits) (hgder_splits : g.derivative.Splits) :
     f.derivative.roots.sum ≤ g.derivative.roots.sum := by
   have hg_two : 2 ≤ g.natDegree := by lia
@@ -107,26 +107,26 @@ theorem derivative_roots_sum_le_of_prec_sameDegree_monic {f g : ℝ[X]}
 /-- Same-degree branch of the standard fact that differentiation preserves
 oriented weak proper position. -/
 def derivativePreservesPrecSameDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree →
-    Prec0 f.derivative g.derivative
+  ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree →
+    Interl f.derivative g.derivative
 
 /-- Scaling both sides by nonzero constants preserves zero-aware proper
 position. -/
 private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
-    {f g : ℝ[X]} (h : Prec0 f g) :
-    Prec0 (C a * f) (C b * g) := by
+    {f g : ℝ[X]} (h : Interl f g) :
+    Interl (C a * f) (C b * g) := by
   rcases h with rfl | rfl | hprec
-  · simp [prec0_zero_left]
-  · simp [prec0_zero_right]
-  · exact (prec_C_mul_right (prec_C_mul_left hprec ha) hb).toPrec0
+  · simp [interl_zero_left]
+  · simp [interl_zero_right]
+  · exact (prec_C_mul_right (prec_C_mul_left hprec ha) hb).toInterl
 
-/-- Degree-zero polynomials satisfy `Prec` in both orientations. -/
+/-- Degree-zero polynomials satisfy `StrictInterl` in both orientations. -/
 lemma prec_degree_zero_degree_zero
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
-    Prec f g := by
+    StrictInterl f g := by
   have hroots_f : f.roots = 0 := by
     apply Multiset.card_eq_zero.mp
     rw [card_roots_of_splits hf_splits, hf_deg0]
@@ -141,29 +141,29 @@ lemma prec_degree_zero_degree_zero
 /-- Degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak proper position. -/
 def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
+  ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+    Interl f.derivative g.derivative
 
 /-- Positive-leading-coefficient form of the degree-at-least-two same-degree
 derivative-preservation branch. -/
 def derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement : Prop :=
   ∀ {f g : ℝ[X]}, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
+    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+    Interl f.derivative g.derivative
 
 /-- Monic form of the degree-at-least-two same-degree derivative-preservation
 branch. -/
 def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement : Prop :=
   ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
+    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+    Interl f.derivative g.derivative
 
-/-- Strict-`Prec` monic form of the degree-at-least-two same-degree
+/-- Nonzero monic form of the degree-at-least-two same-degree
 derivative-preservation branch. -/
 def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement : Prop :=
   ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec f.derivative g.derivative
+    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+    StrictInterl f.derivative g.derivative
 
 /-- Monic degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak proper position. -/
@@ -177,14 +177,14 @@ theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic :
   have hdeg_der : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases derivative_prec0_or_revPrec0_of_prec_sameDegree hfg hdeg with hprec0 | hrev0
   · grind
-  · have hrev : Prec g.derivative f.derivative :=
-      hrev0.toPrec_of_ne hgder_ne hfder_ne
+  · have hrev : StrictInterl g.derivative f.derivative :=
+      hrev0.toStrictInterl_of_ne hgder_ne hfder_ne
     have hsum_der : f.derivative.roots.sum ≤ g.derivative.roots.sum :=
       derivative_roots_sum_le_of_prec_sameDegree_monic hf_monic hg_monic hfg hdeg htwo
         hrev.2.1.2 hrev.1.2
-    exact (prec_of_reverse_prec_of_roots_sum_le hrev hdeg_der hsum_der).toPrec0
+    exact (prec_of_reverse_prec_of_roots_sum_le hrev hdeg_der hsum_der).toInterl
 
-/-- The strict-`Prec` monic branch follows from the zero-aware monic branch,
+/-- The nonzero monic branch follows from the zero-aware monic branch,
 since the degree hypotheses make both derivatives nonzero. -/
 theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
     (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement) :
@@ -196,12 +196,12 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
     Polynomial.derivative_ne_zero.mpr (by lia)
   rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec <;> simp_all
 
-/-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
+/-- The zero-aware monic branch follows from the nonzero monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec
     (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement) :
     derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement :=
   fun {_ _} hf_monic hg_monic hfg hdeg htwo =>
-    (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
+    (hmonic hf_monic hg_monic hfg hdeg htwo).toInterl
 
 /-- The positive-leading-coefficient branch follows from the monic branch by
 normalizing both polynomials by their leading coefficients. -/
@@ -221,7 +221,7 @@ theorem derivativePreservesPrecSameDegree_of_monic
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hfg₀ : Prec f₀ g₀ :=
+  have hfg₀ : StrictInterl f₀ g₀ :=
     prec_C_mul_right (prec_C_mul_left hfg (inv_ne_zero hf_lc_ne))
       (inv_ne_zero hg_lc_ne)
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
@@ -229,14 +229,14 @@ theorem derivativePreservesPrecSameDegree_of_monic
       natDegree_C_mul (inv_ne_zero hg_lc_ne)] using hdeg
   have htwo₀ : 2 ≤ f₀.natDegree := by
     simpa [f₀, natDegree_C_mul (inv_ne_zero hf_lc_ne)] using htwo
-  have hscaled : Prec0 f₀.derivative g₀.derivative :=
+  have hscaled : Interl f₀.derivative g₀.derivative :=
     hmonic hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
   have hscaled' :
-      Prec0 (C f.leadingCoeff⁻¹ * f.derivative)
+      Interl (C f.leadingCoeff⁻¹ * f.derivative)
         (C g.leadingCoeff⁻¹ * g.derivative) := by
     simpa [f₀, g₀, derivative_C_mul] using hscaled
   have hback :
-      Prec0 (C f.leadingCoeff * (C f.leadingCoeff⁻¹ * f.derivative))
+      Interl (C f.leadingCoeff * (C f.leadingCoeff⁻¹ * f.derivative))
         (C g.leadingCoeff * (C g.leadingCoeff⁻¹ * g.derivative)) :=
     prec0_C_mul_left_right hf_lc_ne hg_lc_ne hscaled'
   have hf_inv :
@@ -282,17 +282,17 @@ theorem derivativePreservesPrecSameDegree_of_posLeading
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
     unfold HasPosLeadingCoeff g₀
     simp_all
-  have hfg₀ : Prec f₀ g₀ :=
+  have hfg₀ : StrictInterl f₀ g₀ :=
     prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have htwo₀ : 2 ≤ f₀.natDegree := by simpa [f₀, natDegree_C_mul hsf_ne] using htwo
-  have hscaled : Prec0 f₀.derivative g₀.derivative :=
+  have hscaled : Interl f₀.derivative g₀.derivative :=
     hpos hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
-  have hscaled' : Prec0 (C sf * f.derivative) (C sg * g.derivative) := by
+  have hscaled' : Interl (C sf * f.derivative) (C sg * g.derivative) := by
     simpa [f₀, g₀, derivative_C_mul] using hscaled
   have hback :
-      Prec0 (C sf⁻¹ * (C sf * f.derivative))
+      Interl (C sf⁻¹ * (C sf * f.derivative))
         (C sg⁻¹ * (C sg * g.derivative)) :=
     prec0_C_mul_left_right (inv_ne_zero hsf_ne) (inv_ne_zero hsg_ne) hscaled'
   grind
@@ -313,7 +313,7 @@ theorem derivativePreservesPrecSameDegree_of_two_le_natDegree
       have hgder : g.derivative = 0 :=
         Polynomial.derivative_eq_zero.mpr hgdeg0
       rw [hfder, hgder]
-      exact prec0_zero_zero
+      exact interl_zero_zero
     · have hfdeg1 : f.natDegree = 1 := by lia
       have hgdeg1 : g.natDegree = 1 := by lia
       have hfder_ne : f.derivative ≠ 0 :=
@@ -328,7 +328,7 @@ theorem derivativePreservesPrecSameDegree_of_two_le_natDegree
         isRealRooted_of_deg_zero hgder_ne hgder_deg0
       exact
         (prec_degree_zero_degree_zero hfder_rr.1 hfder_rr.2 hgder_rr.1 hgder_rr.2
-          hfder_deg0 hgder_deg0).toPrec0
+          hfder_deg0 hgder_deg0).toInterl
 
 /-- The full zero-aware derivative-preservation statement follows from the
 same-degree branch.  The differ-by-one branch is
@@ -340,9 +340,9 @@ theorem derivativePreservesPrec0_of_sameDegree
   intro f g hfg
   rcases hfg with hfzero | hgzero | hfg'
   · rw [hfzero, derivative_zero]
-    exact prec0_zero_left _
+    exact interl_zero_left _
   · rw [hgzero, derivative_zero]
-    exact prec0_zero_right _
+    exact interl_zero_right _
   · rcases hfg'.natDegree_eq_or_eq_succ with hsameDegree | hsuccDegree
     · exact hsame hfg' hsameDegree.symm
     · exact derivative_prec0_of_prec_succDegree hfg' hsuccDegree.symm
@@ -368,62 +368,62 @@ common-interleaver routes.
 -/
 
 /-- Zero-aware derivative preservation, applied form of `derivativePreservesPrec0`. -/
-theorem derivative_prec0_of_prec0 {f g : ℝ[X]} (h : Prec0 f g) :
-    Prec0 f.derivative g.derivative :=
+theorem derivative_prec0_of_prec0 {f g : ℝ[X]} (h : Interl f g) :
+    Interl f.derivative g.derivative :=
   derivativePreservesPrec0 h
 
 /-- Explicit-binder variant of `derivative_prec0_of_prec0`. -/
-theorem derivative_prec0_of_prec0' (f g : ℝ[X]) (h : Prec0 f g) :
-    Prec0 f.derivative g.derivative :=
+theorem derivative_prec0_of_prec0' (f g : ℝ[X]) (h : Interl f g) :
+    Interl f.derivative g.derivative :=
   derivativePreservesPrec0 h
 
-/-- A strict `Prec` input yields zero-aware derivative preservation. -/
-theorem derivative_prec0_of_prec {f g : ℝ[X]} (h : Prec f g) :
-    Prec0 f.derivative g.derivative :=
-  derivativePreservesPrec0 h.toPrec0
+/-- A `StrictInterl` input yields zero-aware derivative preservation. -/
+theorem derivative_prec0_of_prec {f g : ℝ[X]} (h : StrictInterl f g) :
+    Interl f.derivative g.derivative :=
+  derivativePreservesPrec0 h.toInterl
 
 /-- Explicit-binder variant of `derivative_prec0_of_prec`. -/
-theorem derivative_prec0_of_prec' (f g : ℝ[X]) (h : Prec f g) :
-    Prec0 f.derivative g.derivative :=
-  derivativePreservesPrec0 h.toPrec0
+theorem derivative_prec0_of_prec' (f g : ℝ[X]) (h : StrictInterl f g) :
+    Interl f.derivative g.derivative :=
+  derivativePreservesPrec0 h.toInterl
 
 /-- Same-degree derivative preservation, applied form of
 `derivativePreservesPrecSameDegree`. -/
-theorem derivative_prec0_of_prec_sameDegree {f g : ℝ[X]} (h : Prec f g)
+theorem derivative_prec0_of_prec_sameDegree {f g : ℝ[X]} (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
-    Prec0 f.derivative g.derivative :=
+    Interl f.derivative g.derivative :=
   derivativePreservesPrecSameDegree h hdeg
 
 /-- Explicit-binder variant of `derivative_prec0_of_prec_sameDegree`. -/
-theorem derivative_prec0_of_prec_sameDegree' (f g : ℝ[X]) (h : Prec f g)
+theorem derivative_prec0_of_prec_sameDegree' (f g : ℝ[X]) (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
-    Prec0 f.derivative g.derivative :=
+    Interl f.derivative g.derivative :=
   derivativePreservesPrecSameDegree h hdeg
 
-/-- Strict `Prec` output in the same-degree case. -/
-theorem derivative_prec_of_prec_sameDegree {f g : ℝ[X]} (h : Prec f g)
+/-- Strict `StrictInterl` output in the same-degree case. -/
+theorem derivative_prec_of_prec_sameDegree {f g : ℝ[X]} (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    Prec f.derivative g.derivative := by
+    StrictInterl f.derivative g.derivative := by
   have hfder_ne : f.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  exact (derivativePreservesPrecSameDegree h hdeg).toPrec_of_ne hfder_ne hgder_ne
+  exact (derivativePreservesPrecSameDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
 
 /-- Explicit-binder variant of `derivative_prec_of_prec_sameDegree`. -/
-theorem derivative_prec_of_prec_sameDegree' (f g : ℝ[X]) (h : Prec f g)
+theorem derivative_prec_of_prec_sameDegree' (f g : ℝ[X]) (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    Prec f.derivative g.derivative :=
+    StrictInterl f.derivative g.derivative :=
   derivative_prec_of_prec_sameDegree h hdeg hpos
 
-/-- Strict `Prec` output in the succ-degree case. -/
-theorem derivative_prec_of_prec_succDegree {f g : ℝ[X]} (h : Prec f g)
+/-- Strict `StrictInterl` output in the succ-degree case. -/
+theorem derivative_prec_of_prec_succDegree {f g : ℝ[X]} (h : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    Prec f.derivative g.derivative := by
+    StrictInterl f.derivative g.derivative := by
   have hfder_ne : f.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  exact (derivative_prec0_of_prec_succDegree h hdeg).toPrec_of_ne hfder_ne hgder_ne
+  exact (derivative_prec0_of_prec_succDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
 end
 end RealRooted

@@ -15,7 +15,7 @@ namespace RealRooted
 /-- Direct derivative-lag Family I route, forwarded to the Liu-Wang backend. -/
 theorem isRealRooted_of_i2_derivative_lag_directHalfLine_sequence
     {P U V W : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdegree_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
@@ -35,7 +35,7 @@ theorem isRealRooted_of_i2_derivative_lag_directHalfLine_sequence
 /-- Wagner gap-lag Family I route with an exterior `X` factor. -/
 theorem isRealRooted_of_i2_derivative_lag_wagnerGap_sequence
     {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdegree_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)

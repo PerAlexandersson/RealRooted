@@ -24,7 +24,7 @@ def gwSchurProductDoubleDeletedKreinStatement : Prop :=
     q ≠ 0 →
     g = (X - C u) * f →
     q = (X - C v) * p →
-    Prec0 (gwSchurProduct f p) (gwSchurProduct g q)
+    Interl (gwSchurProduct f p) (gwSchurProduct g q)
 
 /-- Ordinary-Hadamard version of the double-deleted core in the proof of
 Garloff--Wagner, Theorem 4(b).  This is the statement matching the paragraph
@@ -37,20 +37,20 @@ def gwHadamardProductDoubleDeletedKreinStatement : Prop :=
     q ≠ 0 →
     g = (X - C u) * f →
     q = (X - C v) * p →
-    Prec0 (hadamardProduct f p) (hadamardProduct g q)
+    Interl (hadamardProduct f p) (hadamardProduct g q)
 
 /-- First Schur term in Garloff--Wagner's double-deleted paragraph: the base
 Hadamard product precedes the `X`-shifted term. -/
 theorem gwSchurProduct_firstDoubleDeletedTerm_prec0
     {f p : ℝ[X]} {u : ℝ}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hu : u ≤ 0) :
-    Prec0 (gwSchurProduct f (gwL p))
+    Interl (gwSchurProduct f (gwL p))
       (X * gwSchurProduct f (gwL p - C u * gwD (gwL p))) := by
   have hpL : IsPFPolynomial (gwL p) := gwL_pf hp
   have hT : IsPFPolynomial (gwL p - C u * gwD (gwL p)) :=
     gwL_sub_C_mul_gwD_gwL_pf hp hu
   have hprecT :
-      Prec0 (gwSchurProduct f (gwL p - C u * gwD (gwL p)))
+      Interl (gwSchurProduct f (gwL p - C u * gwD (gwL p)))
         (gwSchurProduct f (gwL p)) :=
     gwSchurProductPrec0_left hf hT hpL
       (gwL_sub_C_mul_gwD_gwL_prec0_self hp hu)
@@ -65,17 +65,17 @@ theorem gwSchurProduct_secondDoubleDeletedTerm_prec0
     {f q p : ℝ[X]} {u : ℝ}
     (hf : IsPFPolynomial f) (hq : IsPFPolynomial q)
     (hq0 : q ≠ 0) (hfactor : q = (X - C u) * p) :
-    Prec0 (gwSchurProduct f (gwL p))
+    Interl (gwSchurProduct f (gwL p))
       (gwSchurProduct f (gwJ (gwL p) - C u * gwL p)) := by
   have hsummand : IsGWKreinSummand q p := Or.inr ⟨u, hfactor⟩
   have hp : IsPFPolynomial p := hsummand.isPFPolynomial hq
   have hpL : IsPFPolynomial (gwL p) := gwL_pf hp
   have hqL : IsPFPolynomial (gwL q) := gwL_pf hq
-  have hpq : Prec0 p q :=
+  have hpq : Interl p q :=
     hsummand.prec0 hq0 (hq.ne_zero_and_splits hq0).2
-  have hLpLq : Prec0 (gwL p) (gwL q) := gwL_prec0 hpq
+  have hLpLq : Interl (gwL p) (gwL q) := gwL_prec0 hpq
   have hSchur :
-      Prec0 (gwSchurProduct f (gwL p)) (gwSchurProduct f (gwL q)) :=
+      Interl (gwSchurProduct f (gwL p)) (gwSchurProduct f (gwL q)) :=
     gwSchurProductPrec0_left hf hpL hqL hLpLq
   simpa [hfactor, gwL_X_sub_C_mul] using hSchur
 
@@ -101,12 +101,12 @@ theorem gwHadamardProductDoubleDeletedKrein :
   let B : ℝ[X] := gwSchurProduct f (gwL p)
   let S₁ : ℝ[X] := gwSchurProduct f (gwL p - C v * gwD (gwL p))
   let S₂ : ℝ[X] := gwSchurProduct f (gwJ (gwL p) - C v * gwL p)
-  have hfirst : Prec0 B (X * S₁) := by
-    change Prec0 (gwSchurProduct f (gwL p))
+  have hfirst : Interl B (X * S₁) := by
+    change Interl (gwSchurProduct f (gwL p))
       (X * gwSchurProduct f (gwL p - C v * gwD (gwL p)))
     exact gwSchurProduct_firstDoubleDeletedTerm_prec0 hf hp hv
-  have hsecond : Prec0 B S₂ := by
-    change Prec0 (gwSchurProduct f (gwL p))
+  have hsecond : Interl B S₂ := by
+    change Interl (gwSchurProduct f (gwL p))
       (gwSchurProduct f (gwJ (gwL p) - C v * gwL p))
     exact gwSchurProduct_secondDoubleDeletedTerm_prec0 hf hq hq0 hqfactor
   have hS₁ : IsPFPolynomial S₁ := by
@@ -117,12 +117,12 @@ theorem gwHadamardProductDoubleDeletedKrein :
     have hqL : IsPFPolynomial (gwL q) := gwL_pf hq
     simpa [hqfactor, gwL_X_sub_C_mul] using gwSchurProductPF hf hqL
   have hcombo :
-      Prec0 B (C (1 : ℝ) * (X * S₁) + C (-u) * S₂) :=
+      Interl B (C (1 : ℝ) * (X * S₁) + C (-u) * S₂) :=
     prec0_nonneg_combo_right_of_common_left_of_nonneg hfirst hsecond
       hS₁.X_mul.hasNonnegCoeffs hS₂.hasNonnegCoeffs zero_le_one (by linarith)
   rw [← gwSchurProduct_gwL_right f p, hgfactor, hqfactor,
     hadamardProduct_X_sub_C_mul_X_sub_C_mul_eq]
-  change Prec0 B (X * S₁ - C u * S₂)
+  change Interl B (X * S₁ - C u * S₂)
   simpa [sub_eq_add_neg, C_neg, neg_mul] using hcombo
 
 namespace IsGWKreinSummand
@@ -130,7 +130,7 @@ namespace IsGWKreinSummand
 /-- Fixed-factor Schur products of a Krein summand precede the parent product. -/
 theorem gwSchurProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
-    Prec0 (gwSchurProduct q p) (gwSchurProduct g p) :=
+    Interl (gwSchurProduct q p) (gwSchurProduct g p) :=
   gwSchurProductPrec0 (h.isPFPolynomial hg) hg hp
     (h.prec0 hg0 (hg.ne_zero_and_splits hg0).2)
 
@@ -141,7 +141,7 @@ theorem gwSchurProduct_prec0_of_doubleDeleted
     (hp : IsGWKreinSummand q p)
     (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
-    Prec0 (gwSchurProduct f p) (gwSchurProduct g q) := by
+    Interl (gwSchurProduct f p) (gwSchurProduct g q) := by
   rcases hf with hfg_self | ⟨u, hfg_factor⟩
   · rw [hfg_self]
     simpa [gwSchurProduct_comm p g, gwSchurProduct_comm q g] using
@@ -156,7 +156,7 @@ theorem gwSchurProduct_prec0_of_doubleDeleted
 parent product. -/
 theorem gwHadamardProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
-    Prec0 (hadamardProduct q p) (hadamardProduct g p) :=
+    Interl (hadamardProduct q p) (hadamardProduct g p) :=
   gwHadamardProductPrec0 (h.isPFPolynomial hg) hg hp
     (h.prec0 hg0 (hg.ne_zero_and_splits hg0).2)
 
@@ -168,7 +168,7 @@ theorem gwHadamardProduct_prec0_of_doubleDeleted
     (hp : IsGWKreinSummand q p)
     (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rcases hf with hfg_self | ⟨u, hfg_factor⟩
   · rw [hfg_self]
     simpa [hadamardProduct_comm p g, hadamardProduct_comm q g] using
@@ -215,7 +215,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansion_left
     (hp : IsGWKreinSummand q p)
     (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rw [hf, hadamardProduct_weightedSum_left]
   apply prec0_weightedSum_right_of_nonneg
   · intro ap hap
@@ -241,7 +241,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansions
     (hpsummand : ∀ ap ∈ lp, IsGWKreinSummand q ap.2)
     (hfPF : IsPFPolynomial f) (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rw [hp, hadamardProduct_weightedSum_right]
   apply prec0_weightedSum_right_of_nonneg
   · intro ap hap
@@ -262,8 +262,8 @@ orientation. -/
 theorem gwHadamardProductPrec0_of_prec {f g p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hfg : Prec f g) (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   have hfpos : HasPosLeadingCoeff f :=
     hf.hasNonnegCoeffs.pos_leadingCoeff hfg.1.1
   have hgpos : HasPosLeadingCoeff g :=
@@ -285,8 +285,8 @@ the `Hadamard` module. -/
 theorem gwHadamardProductNonnegPrec {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g) (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   exact gwHadamardProductPrec0_of_prec
     (IsPFPolynomial.of_realRooted_nonneg hf hfg.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hg hfg.2.1.2)

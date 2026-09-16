@@ -40,7 +40,7 @@ private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
     (hA_ne : aPoly ≠ 0)
     (hBg_le : (bPoly * g).natDegree ≤ g.natDegree)
     (hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0) :
-    Prec f (aPoly * f + bPoly * g) ∧
+    StrictInterl f (aPoly * f + bPoly * g) ∧
       Interlaces f (aPoly * f + bPoly * g) ∧
       HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
   have hdeg_gf : g.natDegree + 1 = f.natDegree := by simpa using natDegree_succ_of_interlaces hInter
@@ -56,7 +56,7 @@ private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
   have hF_deg : (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
     simpa [add_comm, hAf_deg] using
       natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-  have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
+  have hPrec_step : StrictInterl f (aPoly * f + bPoly * g) :=
     prec_of_interlaces_evalCoeff_nonpos
       (f := f) (g := g) (a := aPoly) (b := bPoly)
       hInter hg_pos hF_pos (by lia) (by lia) hb_nonpos
@@ -69,8 +69,8 @@ private def affineFavardChainPackage (P : Nat → ℝ[X]) (n : Nat) : Prop :=
 
 private theorem prec_sequence_of_affineFavardChainPackage {P : Nat → ℝ[X]}
     (hQ : ∀ n : Nat, affineFavardChainPackage P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  fun n => (hQ n).1.toPrec
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+  fun n => (hQ n).1.toStrictInterl
 
 private theorem affineFavardChainPackage_of_param_coeff
     {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
@@ -142,7 +142,7 @@ theorem favardInterlacing_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing
     (P := P) (α := fun _ => α) (β := fun _ => β)
     (satisfiesFavardRecurrence_const_coeff hP0 hP1 hstep)
@@ -178,7 +178,7 @@ theorem favardInterlacing_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hP1 : P 1 = X - C (α 0))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing ⟨hP0, hP1, hstep⟩ hβ
 
 /-- Real-rootedness consequence of the parameterized Favard wrapper. -/
@@ -211,7 +211,7 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_sequence_of_affineFavardChainPackage <|
     affineFavardChainPackage_of_param_coeff
       (P := P) (s := fun _ => s) (α := fun _ => α) (β := fun _ => β)
@@ -269,8 +269,8 @@ theorem favardInterlacing_affine_param_coeff
       P (n + 2) =
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := fun n =>
-  (interlaces_of_favard_affine_param_coeff hs hβ hP0 hP1 hstep n).toPrec
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := fun n =>
+  (interlaces_of_favard_affine_param_coeff hs hβ hP0 hP1 hstep n).toStrictInterl
 
 /-- Real-rootedness consequence of the positive-slope parameterized affine
 Favard wrapper. -/

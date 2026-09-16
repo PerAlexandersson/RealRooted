@@ -31,7 +31,7 @@ theorem narayanaPolynomial_no_common_root (m : ℕ) :
       simp_all
 
 theorem prec_narayanaPolynomial_one_two (m : ℕ) :
-    Prec (narayanaPolynomial m 1) (narayanaPolynomial m 2) := by
+    StrictInterl (narayanaPolynomial m 1) (narayanaPolynomial m 2) := by
   have hm₁ : (0 : ℝ) < (m : ℝ) + 1 := by positivity
   set c : ℝ := 2 * ((m : ℝ) + 2) / ((m : ℝ) + 1) with hcdef
   have hcgt : 2 < c := by
@@ -118,7 +118,7 @@ lemma two_mul_sub_two_mul_sq_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
 position.  This exposes the full Liu--Wang conclusion already constructed by
 the recurrence proof below, rather than retaining only real-rootedness. -/
 theorem prec_narayanaPolynomial_succ (m n : ℕ) :
-    Prec (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
+    StrictInterl (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
   set P : ℕ → ℝ[X] := fun k => narayanaPolynomial m (k + 1) with hP
   have hpos (k : ℕ) : HasPosLeadingCoeff (P k) :=
     hasPosLeadingCoeff_narayanaPolynomial m (k + 1)
@@ -139,7 +139,7 @@ theorem prec_narayanaPolynomial_succ (m n : ℕ) :
             (P (k + 1)).derivative
         + 0 * P k := by
     grind [narayanaPolynomial_deriv_lag_rec m (k + 1)]
-  have hbase : Prec (P 0) (P 1) := prec_narayanaPolynomial_one_two m
+  have hbase : StrictInterl (P 0) (P 1) := prec_narayanaPolynomial_one_two m
   have hV_nonpos (k : ℕ) (r : ℝ) (hr : (P (k + 1)).IsRoot r) :
       (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
         (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)).eval r ≤ 0 := by

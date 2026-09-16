@@ -365,7 +365,7 @@ private theorem pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge
         HasNonnegCoeffs f →
         HasNonnegCoeffs g →
         Compatible f g →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     PairwiseUpgrade.fourWay_of_nonnegPairBridge hrr hpos hnn hbridge

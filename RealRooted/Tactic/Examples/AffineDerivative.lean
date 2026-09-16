@@ -127,7 +127,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rr_prec_affine_derivative_strong using
     splits := hf,
     degree_ge_two := hdeg,
@@ -140,7 +140,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rr_prec_affine_derivative_degree_one using
     splits := hf,
     degree_eq_one := hdeg,
@@ -153,7 +153,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rr_prec_affine_derivative using
     splits := hf,
     degree_ge_one := hdeg,
@@ -165,7 +165,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 1 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rr_prec_affine_derivative_nonneg using
     splits := hf,
     degree_ge_one := hdeg,
@@ -178,7 +178,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroots_nonpos : ∀ n : Nat, ∀ r ∈ (P n).roots, r ≤ 0)
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
   rr_prec_affine_derivative_sequence using
@@ -209,7 +209,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
   rr_prec_affine_derivative_nonneg_sequence using

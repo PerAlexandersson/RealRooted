@@ -91,7 +91,7 @@ theorem a144696_residue_eval_gap {d k : ℕ} (hk : k < d) :
 same strict sign as the derivative at every current-row root. -/
 theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
     {d k : ℕ} (hk : k < d)
-    (hprec : Prec (a144696BernsteinImage (d - 1) k)
+    (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
     (hprevSimple : HasSimpleRoots (a144696BernsteinImage (d - 1) k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k))
@@ -122,7 +122,7 @@ theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
 Bernstein image. -/
 theorem a144696Auxiliary_interlaces_of_prec
     {d k : ℕ} (hk : k < d)
-    (hprec : Prec (a144696BernsteinImage (d - 1) k)
+    (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
     (hprevSimple : HasSimpleRoots (a144696BernsteinImage (d - 1) k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k)) :
@@ -227,7 +227,7 @@ theorem a144696BernsteinImage_shifted_step
     (hauxSign : ∀ r, (a144696BernsteinImage d k).IsRoot r →
       0 < (a144696Auxiliary d k).eval r *
         (a144696BernsteinImage d k).derivative.eval r) :
-    Prec (a144696BernsteinImage d k)
+    StrictInterl (a144696BernsteinImage d k)
         (a144696BernsteinImage (d + 1) (k + 1)) ∧
       (∀ r, (a144696BernsteinImage d k).IsRoot r →
         ¬ (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r) ∧
@@ -272,10 +272,10 @@ private theorem a144696BernsteinImage_one_zero :
   ring
 
 private theorem a144696BernsteinImage_one_horizontal :
-    Prec (a144696BernsteinImage 1 0)
+    StrictInterl (a144696BernsteinImage 1 0)
     (a144696BernsteinImage 1 1) := by
   rw [a144696BernsteinImage_one_zero, a144696BernsteinImage_one_one]
-  have hbase : Prec (X + C 1 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
+  have hbase : StrictInterl (X + C 1 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
     (prec_X_add_C_iff (a := (1 / 2 : ℝ)) (b := 1)).2 (by norm_num)
   have hscaled := prec_C_mul_right
     (prec_C_mul_left hbase (a := 2) (by norm_num)) (a := 2) (by norm_num)
@@ -296,17 +296,17 @@ private structure A144696RowCertificate (d : ℕ) : Prop where
   splits : ∀ k, k ≤ d → (a144696BernsteinImage d k).Splits
   simple : ∀ k, k ≤ d → HasSimpleRoots (a144696BernsteinImage d k)
   horizontal : ∀ k, k < d →
-    Prec (a144696BernsteinImage d k) (a144696BernsteinImage d (k + 1))
+    StrictInterl (a144696BernsteinImage d k) (a144696BernsteinImage d (k + 1))
   horizontalNoCommon : ∀ k, k < d → ∀ r,
     (a144696BernsteinImage d k).IsRoot r →
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r
   vertical : ∀ k, k < d →
-    Prec (a144696BernsteinImage (d - 1) k) (a144696BernsteinImage d k)
+    StrictInterl (a144696BernsteinImage (d - 1) k) (a144696BernsteinImage d k)
   verticalNoCommon : ∀ k, k < d → ∀ r,
     (a144696BernsteinImage (d - 1) k).IsRoot r →
       ¬ (a144696BernsteinImage d k).IsRoot r
   shifted : ∀ k, k < d →
-    Prec (a144696BernsteinImage (d - 1) k)
+    StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d (k + 1))
   shiftedNoCommon : ∀ k, k < d → ∀ r,
     (a144696BernsteinImage (d - 1) k).IsRoot r →
@@ -371,7 +371,7 @@ private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
     subst k
     rw [a144696BernsteinImage_zero_zero]
     exact (interlaces_one_linear
-      (natDegree_a144696BernsteinImage (show 0 ≤ 1 by lia))).toPrec
+      (natDegree_a144696BernsteinImage (show 0 ≤ 1 by lia))).toStrictInterl
   · intro k hk
     have hk0 : k = 0 := by lia
     subst k
@@ -382,7 +382,7 @@ private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
     subst k
     rw [a144696BernsteinImage_zero_zero]
     exact (interlaces_one_linear
-      (natDegree_a144696BernsteinImage (show 1 ≤ 1 by lia))).toPrec
+      (natDegree_a144696BernsteinImage (show 1 ≤ 1 by lia))).toStrictInterl
   · intro k hk
     have hk0 : k = 0 := by lia
     subst k
@@ -401,7 +401,7 @@ private theorem a144696RowCertificate_succ
     {d : ℕ} (hd : 1 ≤ d) (hrow : A144696RowCertificate d) :
     A144696RowCertificate (d + 1) := by
   have hshift : ∀ k, k ≤ d →
-      Prec (a144696BernsteinImage d k)
+      StrictInterl (a144696BernsteinImage d k)
           (a144696BernsteinImage (d + 1) (k + 1)) ∧
         (∀ r, (a144696BernsteinImage d k).IsRoot r →
           ¬ (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r) ∧
@@ -423,7 +423,7 @@ private theorem a144696RowCertificate_succ
     exact a144696BernsteinImage_shifted_step hd hk
       (hrow.splits k hk) hauxSign
   have hvertical : ∀ k, k ≤ d →
-      Prec (a144696BernsteinImage d k)
+      StrictInterl (a144696BernsteinImage d k)
         (a144696BernsteinImage (d + 1) k) := by
     intro k hk
     have hshiftk := (hshift k hk).1
@@ -434,7 +434,7 @@ private theorem a144696RowCertificate_succ
     rw [a144696BernsteinImage_pascal (show k < d + 1 by lia)]
     exact Wagner.commonLeft_add hf hsucc hself hshiftk
   have hhorizontal : ∀ k, k ≤ d →
-      Prec (a144696BernsteinImage (d + 1) k)
+      StrictInterl (a144696BernsteinImage (d + 1) k)
         (a144696BernsteinImage (d + 1) (k + 1)) := by
     intro k hk
     have hshiftk := (hshift k hk).1
@@ -530,7 +530,7 @@ theorem hasSimpleRoots_a144696BernsteinImage {d k : ℕ} (hk : k ≤ d) :
 /-- Adjacent entries within an A144696 Bernstein-image row are in proper
 position. -/
 theorem a144696BernsteinImage_horizontal_prec {d k : ℕ} (hk : k < d) :
-    Prec (a144696BernsteinImage d k)
+    StrictInterl (a144696BernsteinImage d k)
       (a144696BernsteinImage d (k + 1)) :=
   (a144696RowCertificate_all d).horizontal k hk
 
@@ -545,7 +545,7 @@ theorem a144696BernsteinImage_horizontal_noCommonRoot
 /-- Same-index entries in consecutive A144696 Bernstein-image rows are in
 proper position. -/
 theorem a144696BernsteinImage_vertical_prec {d k : ℕ} (hk : k < d) :
-    Prec (a144696BernsteinImage (d - 1) k)
+    StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k) :=
   (a144696RowCertificate_all d).vertical k hk
 
@@ -560,7 +560,7 @@ theorem a144696BernsteinImage_vertical_noCommonRoot
 /-- Shifted entries in consecutive A144696 Bernstein-image rows are in proper
 position. -/
 theorem a144696BernsteinImage_shifted_prec {d k : ℕ} (hk : k < d) :
-    Prec (a144696BernsteinImage (d - 1) k)
+    StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d (k + 1)) :=
   (a144696RowCertificate_all d).shifted k hk
 

@@ -14,7 +14,7 @@ import Mathlib.Tactic.Positivity
 
 The proper-position orientation is
 
-`Prec (hermiteReal n) (hermiteReal (n + 1))`.
+`StrictInterl (hermiteReal n) (hermiteReal (n + 1))`.
 
 Thus the lower-degree polynomial is on the left, and its roots lie
 between consecutive roots of the polynomial on the right.
@@ -35,7 +35,7 @@ theorem hermiteReal_hasPosLeadingCoeff (n : ℕ) :
 /-- Consecutive real probabilists' Hermite polynomials are in proper
 position, with the lower-degree polynomial first. -/
 theorem hermiteReal_prec_succ (n : ℕ) :
-    Prec (hermiteReal n) (hermiteReal (n + 1)) :=
+    StrictInterl (hermiteReal n) (hermiteReal (n + 1)) :=
   favardInterlacing hermiteReal_satisfiesFavardRecurrence
     hermiteReal_subdiag_pos n
 
@@ -101,7 +101,7 @@ theorem hermiteReal_isGeneralizedSturmSeq (n : ℕ) :
   isGeneralizedSturmSeq_reverse_range_map_of_favard
     hermiteReal_satisfiesFavardRecurrence hermiteReal_subdiag_pos n
 
-example : Prec (X : ℝ[X]) (X ^ 2 - 1) := by
+example : StrictInterl (X : ℝ[X]) (X ^ 2 - 1) := by
   simpa using hermiteReal_prec_succ 1
 
 end RealRooted

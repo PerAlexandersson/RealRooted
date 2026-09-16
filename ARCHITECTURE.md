@@ -97,7 +97,7 @@ modules, and the broad compatibility root intentionally imports both sets.
 
 The first frontend/backend split keeps the existing tactic imports compatible:
 
-- `SequenceClosure` contains the induction, `Prec`, splitness, and product
+- `SequenceClosure` contains the induction, `StrictInterl`, splitness, and product
   transport theorems formerly defined in `Tactic.Finish`;
 - `ProductSequence` is the compatibility facade for the product-recurrence
   backend formerly defined in `Tactic.Product`. `ProductSequence.Factors`
@@ -132,7 +132,7 @@ Wronskian results have a focused package entry point:
 - `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and
   Euler-operator Wronskian formulas;
 - `Wronskian.Converse` owns conversion from the strict same-degree
-  Wronskian/Bezoutian conclusion to the legacy `Prec` predicate;
+  Wronskian/Bezoutian conclusion to the general `StrictInterl` predicate;
 - `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
   finite-root-certificate-to-global-positivity bridges;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
@@ -444,7 +444,7 @@ algebraic recurrence and root layers do not acquire measure-theory imports.
 The affine Favard recurrence APIs are likewise now theorem-only:
 
 - `Favard.Affine.Basic` owns the direct monic and positive-slope coefficient
-  forms and their `Prec`, splitness, and nonzero consequences;
+  forms and their `StrictInterl`, splitness, and nonzero consequences;
 - `Favard.Affine.Denominator` owns the scalar-normalized and raw-affine
   positive-slope forms; and
 - `Favard.Affine.RowSign` owns the `(-1)^n` normalization and its
@@ -628,7 +628,7 @@ lower-endpoint predicates; and `DegreeCaseAssembly` packages the final six-case
 factor-return principle.
 
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
-positive-leading `Prec` interface to Liu's positive root-count package. It
+positive-leading `StrictInterl` interface to Liu's positive root-count package. It
 then applies the package's same-degree and successor-degree results to the
 general `X * p - μ * q` splitness corollary under nonnegative coefficients.
 
@@ -699,7 +699,7 @@ the division-free derivative identity and its characteristic-zero normalized
 form; and `Preservation` contains the real PF and zero-aware proper-position
 theorems. The preservation layer depends on the neutral nonnegative
 linear-factor step in `PFPolynomial.LinearFactor`, while neither it nor the
-derivative layer is pulled into `Basic`. Positive variable rescaling of `Prec`
+derivative layer is pulled into `Basic`. Positive variable rescaling of `StrictInterl`
 belongs to `Linear`, independently of this named transform. This separation
 lets OEIS applications reuse the transform without importing their sequence
 models or making Mathlib's distinct Hermite recurrence part of the API.
@@ -742,7 +742,7 @@ commutative-ring coefficient Bezoutian, its finite telescoping identities, and
 the generic Bezoutian matrix and row-polynomial definitions. The real
 positive-definiteness and interlacing argument is layered under
 `RealRooted.Bezoutian/`: `StrictInterleaving` owns the root-list predicates and
-their bridge to `Prec`; `MatrixBasics` owns elementary real matrices and the
+their bridge to `StrictInterl`; `MatrixBasics` owns elementary real matrices and the
 quadratic calculations; `RootEvaluation` owns evaluation on ordered roots;
 `ComplexRoots` excludes nonreal roots; `WronskianConverse` derives strict
 interlacing from Wronskian positivity; and `LowDegree` supplies the degree-zero
@@ -764,7 +764,7 @@ interlacing, rather than part of either root-multiset API.
 `ReciprocalShift.Interlacing` is the next focused layer. It owns inversion on
 negative ordered lists, the sorted inverse-root model, and its root-multiset
 identification. It deliberately leaves zero-padding interlacing and the
-polynomial `Prec` transport to later modules.
+polynomial `StrictInterl` transport to later modules.
 
 `ReciprocalShift.Interlacing.Inversion` is its negative-root child: it owns
 only inverse/reversal transport of equal- and successor-length interleavings.
@@ -803,7 +803,7 @@ The Euler-operator package also now isolates two different theorem duties:
 - `EulerOperator.Polar` proves finite-degree preservation of ordinary
   splitness by the polar-theta operator;
 - `EulerOperator.Polar.ProperPosition` combines the reciprocal-shift swap with
-  derivative preservation to discharge polar-theta `Prec0` preservation; and
+  derivative preservation to discharge polar-theta `Interl` preservation; and
 - `EulerOperator.ScaledPolar` owns the `-X²` composition and descent lemmas,
   then applies the polar bridge to prove the scale-two PF-preservation theorem.
 
@@ -932,9 +932,9 @@ memberwise constructor for `PairwiseCompatible` belongs to
 these public APIs and Mathlib's generalized-Boolean-algebra difference laws
 instead of carrying private copies of sequence-independent arguments.
 
-`Basic` owns the complete natural-degree shape forced by `Prec`: its endpoints
+`Basic` owns the complete natural-degree shape forced by `StrictInterl`: its endpoints
 have equal degree or the right endpoint has successor degree. Higher layers
-branch through `Prec.natDegree_eq_or_eq_succ` instead of reconstructing this
+branch through `StrictInterl.natDegree_eq_or_eq_succ` instead of reconstructing this
 dichotomy from root-list witnesses or paired inequalities.
 
 `Compatibility.Pair` owns pair-level algebra that does not depend on a
@@ -1021,7 +1021,7 @@ focused children remain re-exported by `HermiteBiehler`.
 translation, and reflected-translation transport for the sorted-root
 `Interlaces` predicate. It imports only `Linear`; this keeps old root-list
 applications from rebuilding a transformed witness by hand while new APIs can
-continue to use `Prec`.
+continue to use `StrictInterl`.
 
 `Mathlib.Algebra.Polynomial.Splits.Derivative` supplies the upstream-shaped
 formula for a split polynomial's derivative at a simple root, without requiring
@@ -1181,7 +1181,7 @@ The reusable derivative region formerly embedded in `Tactic.MaWang` is now the
 root in either row forces a common root. `Interlacing.Residue` owns the adjacent
 simple-root sign, residue, interpolation, and common-factor transport APIs.
 `Interlacing.NegativeRoots` centralizes strict-negative and nonpositive root
-transport through `Interlaces` and same-degree `Prec`; the Liu--Wang benchmark
+transport through `Interlaces` and same-degree `StrictInterl`; the Liu--Wang benchmark
 and stable Routh descent share this API instead of maintaining private copies.
 The canonical multiplicity-one derivative nonvanishing lemma lives in
 `Derivative`; the residue API keeps its established spelling as a thin wrapper,
@@ -1224,11 +1224,11 @@ raises the root, OEIS-tactic, and tactic-umbrella closures by exactly one
 module; their explicit budgets record those intentional re-export costs.
 The low `Basic` layer owns both directions between the legacy list-interlacing
 predicates and their coordinate bounds. `OrderedRoots` adds the canonical
-increasing-root accessor and the same-degree `Prec` equivalence without pulling
+increasing-root accessor and the same-degree `StrictInterl` equivalence without pulling
 in the common-interleaver construction stack; orthogonal-polynomial and other
 root-location consumers should import this focused module.
 `RootDesc` owns the common-interleaver predicates, canonical descending root
-sequence, the indexwise `Prec` characterisation, and the consecutive-chain
+sequence, the indexwise `StrictInterl` characterisation, and the consecutive-chain
 lemma. Its two nonemptiness facts are protected members of the
 `CommonInterleaver` namespace because the construction layer needs them; they
 are implementation bridges rather than a second public API.
@@ -1372,7 +1372,7 @@ respectively; these are import-budget adjustments, not new mathematical edges.
 layers. `Definitions` owns the `I_d`/`R_d` transforms, formula components, and
 decomposition predicates; `FPolynomial` owns the coefficient transform and
 its root-coordinate/real-rootedness transport; and `FPolynomialInterlacing`
-owns the resulting `Prec` and positive-combination consequences.
+owns the resulting `StrictInterl` and positive-combination consequences.
 `Decomposition` owns formula, existence, uniqueness, and compatibility results
 for the two symmetric decompositions, while `Theorem26` owns the proper-
 position equivalences, boundary analysis, and ordered-degree bridge. The

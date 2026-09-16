@@ -32,16 +32,16 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) :
-    Prec (fs.get ⟨m, hm⟩) (staircaseSum fs m) := by
+    StrictInterl (fs.get ⟨m, hm⟩) (staircaseSum fs m) := by
   let f : ℝ[X] := fs.get ⟨m, hm⟩
-  have hpair : fs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hfs.2)
+  have hpair : fs.Pairwise StrictInterl := (isInterlacingSeq_iff_pairwise.mp hfs.2)
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hfs.realRooted f (List.get_mem _ _)
   have hf_nonneg : HasNonnegCoeffs f := hfs.nonnegCoeffs f (List.get_mem _ _)
   by_cases hm0 : m = 0
   · subst hm0
     have hfs_eq : fs = f :: fs.drop 1 := by simpa [f] using (List.drop_eq_getElem_cons hm)
     have hf_mem_take : f ∈ fs.take 1 := by grind
-    have hprec : ∀ p ∈ fs, Prec f p := fun p hp => by
+    have hprec : ∀ p ∈ fs, StrictInterl f p := fun p hp => by
       rw [hfs_eq] at hp
       rcases List.mem_cons.mp hp with rfl | hp'
       · simpa [f] using prec_refl hf_rr.1 hf_rr.2
@@ -56,7 +56,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       rw [List.mem_iff_getElem?]
       refine ⟨0, ?_⟩
       grind
-    have hprefix_prec : Prec (fs.take m).sum f :=
+    have hprefix_prec : StrictInterl (fs.take m).sum f :=
       prec_sum_right (fs.take m) f
         (fun _ hp => hpair.rel_of_mem_take_of_mem_drop hp hf_mem_drop)
         (fun p hp => hfs.posLeadingCoeff p (List.mem_of_mem_take hp))
@@ -64,11 +64,11 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hprefix_nonneg : HasNonnegCoeffs (fs.take m).sum :=
       hasNonnegCoeffs_sum (fs.take m)
         (fun p hp => hfs.nonnegCoeffs p (List.mem_of_mem_take hp))
-    have hXprefix_prec : Prec f (X * (fs.take m).sum) :=
+    have hXprefix_prec : StrictInterl f (X * (fs.take m).sum) :=
       prec_mul_X_of_prec_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
     have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by simp [f]
     have hf_mem_take_succ : f ∈ fs.take (m + 1) := by simp_all
-    have hcommon_left : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, Prec f p :=
+    have hcommon_left : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, StrictInterl f p :=
       fun p hp ↦ by
       rcases List.mem_cons.mp hp with rfl | hp
       · grind
@@ -82,7 +82,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · exact (hprefix_nonneg.pos_leadingCoeff
           (right_ne_zero_of_mul hXprefix_prec.2.1.1)).X_mul
       · exact hfs.posLeadingCoeff p (List.mem_of_mem_drop hp)
-    have hsum_prec : Prec f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
+    have hsum_prec : StrictInterl f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
       prec_sum_left_of_common_left_signed
         ((X * (fs.take m).sum) :: fs.drop m) f hcommon_left hpos (by lia)
     simpa [staircaseSum, f, List.sum_cons] using hsum_prec

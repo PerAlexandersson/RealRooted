@@ -20,11 +20,11 @@ namespace GustafssonSolus
 /-! ### Finite-entry shape helpers -/
 
 private lemma prec0_gs_quadratic_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) :=
+    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) :=
   prec0_refl_of_realRooted (isRealRooted_affine_mul_X_add_X hs)
 
 private lemma prec0_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 X ((C s * X + C t) * X + X) := by
+    Interl X ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   simpa using
     prec0_affine_to_X_mul_affine
@@ -33,7 +33,7 @@ private lemma prec0_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 
 private lemma prec0_gs_affine_add_X_quadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + X) ((C s * X + C t) * X + X) := by
+    Interl (C s * X + C t + X) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
@@ -42,7 +42,7 @@ private lemma prec0_gs_affine_add_X_quadratic
       hs (by positivity) (by nlinarith [hs, ht]) (by positivity) ht.le
 
 private lemma prec0_gs_affine_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t) ((C s * X + C t) * X + X) := by
+    Interl (C s * X + C t) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   exact
     prec0_affine_to_X_mul_affine
@@ -51,7 +51,7 @@ private lemma prec0_gs_affine_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 
 private lemma prec0_gs_affine_add_one_quadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) ((C s * X + C t) * X + X) := by
+    Interl (C s * X + C t + 1) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact
@@ -60,7 +60,7 @@ private lemma prec0_gs_affine_add_one_quadratic
       hs hs le_rfl (by nlinarith) (by nlinarith)
 
 private lemma prec0_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + X) X := by
+    Interl (C s * X + C t + X) X := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   simpa using
     prec0_affine_linear_affine_linear_of_cross
@@ -68,7 +68,7 @@ private lemma prec0_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
       (by positivity) zero_lt_one (by nlinarith [ht])
 
 private lemma prec0_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t) X := by
+    Interl (C s * X + C t) X := by
   simpa using
     prec0_affine_linear_affine_linear_of_cross
       (u := s) (v := t) (U := 1) (V := 0)
@@ -76,7 +76,7 @@ private lemma prec0_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 
 private lemma prec0_gs_affine_add_one_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) X := by
+    Interl (C s * X + C t + 1) X := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   simpa using
     prec0_affine_linear_affine_linear_of_cross
@@ -84,26 +84,26 @@ private lemma prec0_gs_affine_add_one_X
       hs zero_lt_one (by nlinarith [ht])
 
 private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + X) (C s * X + C t + X) :=
+    Interl (C s * X + C t + X) (C s * X + C t + X) :=
   prec0_affine_add_X_self hs
 
 private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t) (C s * X + C t) :=
+    Interl (C s * X + C t) (C s * X + C t) :=
   prec0_refl_of_realRooted (isRealRooted_affine_factor (s := s) (t := t) hs)
 
 private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + 1) :=
+    Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
   prec0_affine_add_one_self hs
 
-private lemma prec0_gs_X_X : Prec0 (X : ℝ[X]) X :=
+private lemma prec0_gs_X_X : Interl (X : ℝ[X]) X :=
   prec0_refl_of_realRooted isRealRooted_X
 
-private lemma prec0_gs_one_one : Prec0 (1 : ℝ[X]) 1 := by
+private lemma prec0_gs_one_one : Interl (1 : ℝ[X]) 1 := by
   simpa using prec0_C_C (1 : ℝ) (1 : ℝ)
 
 private lemma prec0_gs_affine_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t) (C s * X + C t + X) := by
+    Interl (C s * X + C t) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
     prec0_affine_linear_affine_linear_of_cross
@@ -112,11 +112,11 @@ private lemma prec0_gs_affine_affine_add_X
 
 private lemma prec0_gs_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t + X) := by
+    Interl (C s * X + C t + 1) (C s * X + C t + X) := by
   exact prec0_affine_add_one_affine_add_X hs ht
 
 private lemma prec0_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
-    Prec0 (C s * X + C t + 1) (C s * X + C t) := by
+    Interl (C s * X + C t + 1) (C s * X + C t) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact
     prec0_affine_linear_affine_linear_of_cross
@@ -151,9 +151,9 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h
   all_goals
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
-  · simpa using prec0_zero_zero
+  · simpa using interl_zero_zero
   · simpa using prec0_gs_X_X
-  · simpa using (prec0_zero_right (C s * X + C t + 1 : ℝ[X]))
+  · simpa using (interl_zero_right (C s * X + C t + 1 : ℝ[X]))
   · simpa using prec0_gs_affine_X hs ht
   · simpa using prec0_gs_affine_add_one_X hs ht
   · simpa using prec0_gs_affine_add_X_X hs ht
@@ -163,7 +163,7 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   · simpa using prec0_gs_affine_affine_add_X hs ht
   · simpa using prec0_gs_affine_add_one_affine_add_X hs ht
   · simpa using prec0_gs_affine_add_X_self hs
-  · simpa using (prec0_zero_left (((C s * X + C t) * X + X : ℝ[X])))
+  · simpa using (interl_zero_left (((C s * X + C t) * X + X : ℝ[X])))
   · simpa using prec0_gs_X_quadratic hs ht
   · simpa using prec0_gs_affine_quadratic hs ht
   · simpa using prec0_gs_affine_add_one_quadratic hs ht

@@ -64,7 +64,7 @@ theorem generalizedLaguerre_hasNonnegCoeffs (n : ℕ) {α : ℝ}
 
 /-- Consecutive generalized Laguerre polynomials are in proper position. -/
 theorem generalizedLaguerre_prec_succ (n : ℕ) {α : ℝ} (hα : -1 ≤ α) :
-    Prec (generalizedLaguerre n α) (generalizedLaguerre (n + 1) α) :=
+    StrictInterl (generalizedLaguerre n α) (generalizedLaguerre (n + 1) α) :=
   prec_of_generalized_laguerre_second_derivative
     (P := fun k => generalizedLaguerre k α) (m := 1) (c := α + 1)
     (generalizedLaguerre_zero α)

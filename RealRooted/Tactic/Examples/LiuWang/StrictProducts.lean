@@ -14,14 +14,14 @@ namespace Tactic
 
 /-- Unit strict-degree Family E lag `t(1-t)`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
       P (n + 2) = A n * P (n + 1) + (X * (1 - X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_X_one_sub_X_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -32,7 +32,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the unit strict-degree lag `t(1-t)`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -50,7 +50,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Strict-degree lag `t(a_n-b_n t)` with explicit nonnegative parameters. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (ha : ∀ n : Nat, 0 ≤ a n)
@@ -60,7 +60,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
         A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_X_C_sub_C_mul_X_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
 
 /-- Automatic parameter side-goals for the strict-degree `t(a_n-b_n t)` lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -82,7 +82,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
           (X * (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_X_C_sub_C_mul_X_lag_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -93,7 +93,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the strict-degree `t(a_n-b_n t)` lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (ha : ∀ n : Nat, 0 ≤ a n)
@@ -116,7 +116,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a b : Nat → ℝ}
 
 /-- Automatic real-rootedness endpoint for `t(a_n-b_n t)` lags. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -136,7 +136,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Scalar strict-degree lag `c_n t(a_n-b_n t)`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -147,7 +147,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
         A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -161,7 +161,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
 
 /-- Automatic parameter side-goals for the scalar strict-degree lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -171,7 +171,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
             (C ((n : ℝ) + 1) - C (1 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -182,7 +182,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the scalar strict-degree lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -207,7 +207,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
 
 /-- Automatic real-rootedness endpoint for scalar `c_n t(a_n-b_n t)` lags. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,

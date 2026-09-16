@@ -30,7 +30,7 @@ abbrev RealPencilRealRooted (f g : ℝ[X]) : Prop :=
 /-- Challenge-facing name for proper position/interlacing in the current
 orientation. -/
 abbrev ProperPosition (f g : ℝ[X]) : Prop :=
-  Prec f g
+  StrictInterl f g
 
 /-- Challenge-facing name for a nonzero real-split polynomial. -/
 abbrev NonzeroSplitPolynomial (p : ℝ[X]) : Prop :=
@@ -43,7 +43,7 @@ theorem allCombinationsRealRooted_of_interlaces :
   RealRooted.allComboRealRooted_of_prec
 
 /-- Converse Obreschkoff theorem in the degree-aware orientation used by
-`Prec`. -/
+`StrictInterl`. -/
 theorem interlaces_or_reverse_of_allCombinationsRealRooted :
     ∀ {f g : ℝ[X]},
       NonzeroSplitPolynomial f →

@@ -375,9 +375,9 @@ example {f g p q : ℝ[X]}
     (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p)
     (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g)
-    (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    (hfg : StrictInterl f g)
+    (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rr_hadamard_prec0 using
     first_left_nonneg := hf,
     first_right_nonneg := hg,
@@ -389,20 +389,20 @@ example {f g p q : ℝ[X]}
 example {f g p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hfg : Prec0 f g) (hpq : Prec0 p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    (hfg : Interl f g) (hpq : Interl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rr_hadamard_pf_prec0
 
 example {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
-    (hfg : Prec0 f g) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g p) := by
+    (hfg : Interl f g) :
+    Interl (hadamardProduct f p) (hadamardProduct g p) := by
   rr_hadamard_pf_prec0
 
 example {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Prec0 p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct f q) := by
+    (hpq : Interl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct f q) := by
   rr_hadamard_pf_prec0
 
 example {F G P Q : Nat → ℝ[X]}
@@ -410,10 +410,10 @@ example {F G P Q : Nat → ℝ[X]}
     (hG : ∀ i : Nat, IsPFPolynomial (G i))
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hFG : ∀ i : Nat, Prec0 (F i) (G i))
-    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
+    (hFG : ∀ i : Nat, Interl (F i) (G i))
+    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ n : Nat,
-      Prec0 (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
+      Interl (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
   intro n
   rr_hadamard_pf_prec0
 
@@ -482,10 +482,10 @@ example {F G P Q : Nat → ℝ[X]}
     (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
     (hQ : ∀ i : Nat, HasNonnegCoeffs (Q i))
-    (hFG : ∀ i : Nat, Prec (F i) (G i))
-    (hPQ : ∀ i : Nat, Prec (P i) (Q i)) :
+    (hFG : ∀ i : Nat, StrictInterl (F i) (G i))
+    (hPQ : ∀ i : Nat, StrictInterl (P i) (Q i)) :
     ∀ i : Nat,
-      Prec0 (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) := by
+      Interl (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) := by
   rr_hadamard_sequence_prec0 using
     first_left_nonneg := hF,
     first_right_nonneg := hG,

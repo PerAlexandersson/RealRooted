@@ -73,7 +73,7 @@ lemma prec_step_of_quadratic_derivative_shift
       (C 1 * X + C (-1) * X ^ 2) * (P n).derivative +
         (C 1 + C (s + (n : ℝ)) * X) * P n)
     (hs : 0 < s) (m : ℕ) (hm : 2 ≤ m) (hsp : (P m).Splits) :
-    Prec (P m) (P (m + 1)) := by
+    StrictInterl (P m) (P (m + 1)) := by
   have hne : P m ≠ 0 := ne_zero_of_quadratic_derivative_shift P s h0 hrec hs m
   have hroots_nonpos : ∀ r, (P m).IsRoot r → r ≤ 0 := fun r hr =>
     roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_of_quadratic_derivative_shift P s h0 hrec hs m)
@@ -123,13 +123,13 @@ theorem prec_of_quadratic_derivative_shift
       (C 1 * X + C (-1) * X ^ 2) * (P n).derivative +
         (C 1 + C (s + (n : ℝ)) * X) * P n)
     (hs : 0 < s) :
-    ∀ n : ℕ, Prec (P n) (P (n + 1))
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 => by
       have : Interlaces (P 0) (P 1) := by
         rw [h0]
         exact interlaces_one_linear (p := P 1)
           (by rw [natDegree_of_quadratic_derivative_shift P s h0 hrec hs])
-      exact this.toPrec
+      exact this.toStrictInterl
   | 1 => by
       have hp1 : P 1 = 1 + C s * X := by
         simp_all

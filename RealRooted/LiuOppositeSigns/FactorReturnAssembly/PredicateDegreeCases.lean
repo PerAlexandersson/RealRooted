@@ -21,10 +21,10 @@ def theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
   ∀ {f g : ℝ[X]} {r s : ℝ},
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       (LeftRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+        (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
           P g.natDegree → Compatible f g) ∧
       (RightRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+        (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
           P f.natDegree → Compatible f g)
 
 /-- Predicate-restricted factor-return principles transport along endpoint

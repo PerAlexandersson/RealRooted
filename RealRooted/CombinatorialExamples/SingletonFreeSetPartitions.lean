@@ -167,12 +167,12 @@ lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
   simp_all
 
 lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
-    (hprev : Prec (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))) :
-    Prec (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
+    (hprev : StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))) :
+    StrictInterl (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
   rw [singletonFreeSetPartitionsCore]
   have hscalar_ne : (n + 1 : ℝ) ≠ 0 := by positivity
   have hlower :
-      Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
+      StrictInterl (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) :=
     prec_C_mul_left hprev hscalar_ne
   have hder :
@@ -192,27 +192,27 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
         lia)
   exact
     prec_add_of_prec_right_of_posLeadingCoeff
-      hlower hder.toPrec hlower_pos hder_pos
+      hlower hder.toStrictInterl hlower_pos hder_pos
 
 lemma prec_singletonFreeSetPartitions_two_three :
-    Prec (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
+    StrictInterl (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
   by simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
     prec_refl (f := X) (by simp)
 
 lemma prec_singletonFreeSetPartitions_three_four :
-    Prec (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
+    StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
     interlaces_one_linear (by
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
-  have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
+  have hprec : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
       nonnegCoeffs_C_mul (by simp) hX_nonneg
     exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hmul :
-      Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
+      StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_prec_mul_X_both using
       proper := hprec,
       left_nonneg := hasNonnegCoeffs_one,
@@ -235,10 +235,10 @@ lemma prec_singletonFreeSetPartitions_three_four :
 
 lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (_hn : 3 ≤ n)
     (hcore :
-      Prec (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1))) :
-    Prec (singletonFreeSetPartitions (n + 1)) (singletonFreeSetPartitions (n + 2)) := by
+      StrictInterl (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1))) :
+    StrictInterl (singletonFreeSetPartitions (n + 1)) (singletonFreeSetPartitions (n + 2)) := by
   have hmain :
-      Prec (singletonFreeSetPartitions (n + 1))
+      StrictInterl (singletonFreeSetPartitions (n + 1))
         (X * singletonFreeSetPartitionsCore n) := by
     rr_prec_mul_X using
       proper := hcore,
@@ -246,10 +246,10 @@ lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (_hn : 3 ≤ n
       right_nonneg := singletonFreeSetPartitions_nonnegCoeffs (n + 1)
   simpa [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] using hmain
 
-/-- Consecutive singleton-free set partition polynomials satisfy `Prec`. -/
+/-- Consecutive singleton-free set partition polynomials satisfy `StrictInterl`. -/
 theorem prec_singletonFreeSetPartitions_succ :
     ∀ n : Nat, 2 ≤ n →
-      Prec (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))
+      StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))
   | 0, hn => by
       lia
   | 1, hn => by
@@ -258,11 +258,11 @@ theorem prec_singletonFreeSetPartitions_succ :
   | 3, _ => prec_singletonFreeSetPartitions_three_four
   | n + 4, _ => by
       have hprev :
-          Prec (singletonFreeSetPartitions (n + 3))
+          StrictInterl (singletonFreeSetPartitions (n + 3))
             (singletonFreeSetPartitions (n + 4)) :=
         prec_singletonFreeSetPartitions_succ (n + 3) (by lia)
       have hcore :
-          Prec (singletonFreeSetPartitionsCore (n + 3))
+          StrictInterl (singletonFreeSetPartitionsCore (n + 3))
             (singletonFreeSetPartitions (n + 4)) :=
         prec_singletonFreeSetPartitionsCore_of_prec (n := n + 3) (by lia) hprev
       exact

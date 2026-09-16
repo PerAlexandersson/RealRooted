@@ -280,7 +280,7 @@ private theorem prec_derivative_of_nonpos_of_pos_natDegree
     (houtputPos : HasPosLeadingCoeff (u * p + v * p.derivative))
     (hpPos : HasPosLeadingCoeff p)
     (hvNonpos : ∀ r, p.IsRoot r → v.eval r ≤ 0) :
-    Prec p (u * p + v * p.derivative) := by
+    StrictInterl p (u * p + v * p.derivative) := by
   have hderivative : Interlaces p.derivative p :=
     interlaces_derivative_of_pos_natDegree hpPos.ne_zero hp hpPos hdegree
   have hderivativePos : HasPosLeadingCoeff p.derivative :=
@@ -293,7 +293,7 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
     (m ε : ℕ) {γ : ℝ} (hm : 0 < m) (hγ : 0 < γ)
     (hγlower : (ε : ℝ) + 1 / 2 + m - 1 < γ)
     (hUsplits : (exceptionalEulerInverse m ε γ).Splits) :
-    Prec (exceptionalBasePolynomial m ε)
+    StrictInterl (exceptionalBasePolynomial m ε)
       (exceptionalEulerInverse m ε γ) := by
   let U := exceptionalEulerInverse m ε γ
   let F := exceptionalBasePolynomial m ε
@@ -383,7 +383,7 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
           -(1 - X) * (-U.derivative.comp (1 - X)) := by ring
   have htargetPos : HasPosLeadingCoeff (C γ * f) :=
     hasPosLeadingCoeff_C_mul hγ hfPos
-  have hprecComp : Prec u (C γ * f) := by
+  have hprecComp : StrictInterl u (C γ * f) := by
     rw [hrec]
     apply prec_derivative_of_nonpos_of_pos_natDegree
     · exact huSplits
@@ -404,7 +404,7 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
           exact (mem_roots hUne).mpr hxU)
       simp only [eval_neg, eval_sub, eval_one, eval_X]
       linarith
-  have hprecComp' : Prec u f := by
+  have hprecComp' : StrictInterl u f := by
     have hscaled := hprecComp.C_mul_right (inv_ne_zero hγ.ne')
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hγ.ne', C_1, one_mul] at hscaled
     exact hscaled
@@ -502,14 +502,14 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
     exact natDegree_exceptionalEulerInverse m ε (by positivity)
   have hRprevDegree :=
     (rPolynomial_rightClosedIntervalRootData m ε (m - 1) hm le_rfl).natDegree_eq
-  have hleftBounds := Prec.orderedRoot_le
+  have hleftBounds := StrictInterl.orderedRoot_le
     (rPolynomial_exceptional_prec m ε hm) hRmDegree hRprevDegree
   let B : ℝ := (ε : ℝ) + 1 / 2 + m + 1 / 2
   have hB : 0 < B := by positivity
   have hBlower : (ε : ℝ) + 1 / 2 + m - 1 < B := by
     dsimp only [B]
     linarith
-  have hbasePrecUpper : Prec (exceptionalBasePolynomial m ε)
+  have hbasePrecUpper : StrictInterl (exceptionalBasePolynomial m ε)
       (rPolynomial m ε m) := by
     rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
     apply exceptionalBasePolynomial_prec_exceptionalEulerInverse
@@ -528,7 +528,7 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
       natDegree_shiftedJacobi m (by
         have hε : 0 ≤ (ε : ℝ) := by positivity
         linarith) (by norm_num)]
-  have hrightBounds := Prec.orderedRoot_le
+  have hrightBounds := StrictInterl.orderedRoot_le
     hbasePrecUpper hbaseDegree hRmDegree
   have hbaseJ := shiftedJacobiMonicRoot_base_interlacing_jacobi
     (m - 1) (α := (ε : ℝ) - 1 / 2) (by
@@ -811,7 +811,7 @@ private theorem finiteRoot_interlacing_jPolynomialRoot
 
 private theorem rPolynomial_finite_prec_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m - 1) :
-    Prec (rPolynomial m ε e) (rPolynomial m ε d) := by
+    StrictInterl (rPolynomial m ε e) (rPolynomial m ε d) := by
   have hd : d ≤ m - 1 := by lia
   have hmTwo : 2 ≤ m := by lia
   have hpData := rPolynomial_rightClosedIntervalRootData m ε e hm he
@@ -853,7 +853,7 @@ private theorem rPolynomial_finite_prec_of_lt
 This is the fixed-row orientation statement behind Xiao's Conjecture 4.2. -/
 theorem rPolynomial_prec_rPolynomial_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
-    Prec (rPolynomial m ε e) (rPolynomial m ε d) := by
+    StrictInterl (rPolynomial m ε e) (rPolynomial m ε d) := by
   by_cases heFinite : e ≤ m - 1
   · exact rPolynomial_finite_prec_of_lt m ε d e hm hde heFinite
   · have heEq : e = m := by lia
@@ -866,7 +866,7 @@ theorem rPolynomial_prec_rPolynomial_of_lt
     have hpDegree : (rPolynomial m ε m).natDegree = m := by
       rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
       exact natDegree_exceptionalEulerInverse m ε (by positivity)
-    have hpPrevBounds := Prec.orderedRoot_le
+    have hpPrevBounds := StrictInterl.orderedRoot_le
       hpPrecPrev hpDegree hprevData.natDegree_eq
     apply (prec_iff_orderedRoot_bounds
       hpPrecPrev.1.1 hpPrecPrev.1.2

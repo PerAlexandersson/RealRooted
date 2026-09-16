@@ -64,7 +64,7 @@ theorem prec_of_upperHalfPlaneStable_hermiteBiehler
     {A D : ℝ[X]}
     (hA : HasPosLeadingCoeff A) (hD : HasPosLeadingCoeff D)
     (hHB : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial A D)) :
-    Prec D A := by
+    StrictInterl D A := by
   by_cases hAdeg : 1 ≤ A.natDegree
   · exact prec_of_stable_general hA hD hHB hAdeg
   · have hA0 : A.natDegree = 0 := by lia
@@ -79,12 +79,12 @@ theorem prec_of_upperHalfPlaneStable_hermiteBiehler
 polynomial to the right. -/
 theorem prec_add_X_mul_of_prec
     {A D : ℝ[X]}
-    (hAD : Prec A (X * D))
+    (hAD : StrictInterl A (X * D))
     (hApos : HasPosLeadingCoeff A)
     (hDpos : HasPosLeadingCoeff D) :
-    Prec A (A + X * D) := by
+    StrictInterl A (A + X * D) := by
   have hXDpos : HasPosLeadingCoeff (X * D) := hDpos.X_mul
-  have hsum : Prec A ([A, X * D].sum) := by
+  have hsum : StrictInterl A ([A, X * D].sum) := by
     apply prec_sum_left_of_common_left_signed
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
@@ -111,7 +111,7 @@ theorem MvRealStable.prec_commonPhaseRestriction_pderiv
     (hD : HasPosLeadingCoeff
       (Polynomial.C (wt i) *
         commonPhaseRestriction wt (MvPolynomial.pderiv i P))) :
-    Prec
+    StrictInterl
       (Polynomial.C (wt i) *
         commonPhaseRestriction wt (MvPolynomial.pderiv i P))
       (commonPhaseRestriction (Function.update wt i 0) P) := by

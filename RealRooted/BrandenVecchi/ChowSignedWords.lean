@@ -508,7 +508,7 @@ proper position for nonnegative parameters. -/
 theorem finiteSignedWordEnumerator_prec0_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    Prec0 (finiteSignedWordEnumerator xs ys n)
+    Interl (finiteSignedWordEnumerator xs ys n)
       (finiteSignedWordEnumerator xs ys (n + 1)) := by
   rw [← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator,
     ← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]

@@ -349,12 +349,12 @@ theorem eulerBidiagonalStepWithConstant_splits
 theorem eulerBidiagonalStepWithConstant_prec
     {c : ℝ} (hc : 1 ≤ c) {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec q p)
+    (hpq : StrictInterl q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     (hpout : HasPosLeadingCoeff (eulerBidiagonalStepWithConstant c d p))
     (hqout : HasPosLeadingCoeff (eulerBidiagonalStepWithConstant c d q))
     (hpoutdeg : 1 ≤ (eulerBidiagonalStepWithConstant c d p).natDegree) :
-    Prec (eulerBidiagonalStepWithConstant c d q)
+    StrictInterl (eulerBidiagonalStepWithConstant c d q)
       (eulerBidiagonalStepWithConstant c d p) := by
   simp only [eulerBidiagonalStepWithConstant_eq_bidiagonalOperator] at hpout hqout hpoutdeg ⊢
   exact bidiagonalOperator_prec_of_affineSymbol_stable
@@ -377,12 +377,12 @@ the degree-box inputs and nonzero output orientations are certified. -/
 theorem eulerBidiagonalStep_prec
     {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec q p)
+    (hpq : StrictInterl q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     (hpout : HasPosLeadingCoeff (eulerBidiagonalStep d p))
     (hqout : HasPosLeadingCoeff (eulerBidiagonalStep d q))
     (hpoutdeg : 1 ≤ (eulerBidiagonalStep d p).natDegree) :
-    Prec (eulerBidiagonalStep d q) (eulerBidiagonalStep d p) := by
+    StrictInterl (eulerBidiagonalStep d q) (eulerBidiagonalStep d p) := by
   simp only [eulerBidiagonalStep_eq_bidiagonalOperator] at hpout hqout hpoutdeg ⊢
   exact bidiagonalOperator_prec_of_affineSymbol_stable
     (eulerAffineBidiagonalSymbol_stable d hd)

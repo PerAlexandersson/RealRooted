@@ -211,7 +211,7 @@ theorem modifiedNarayana_family :
 
 /-- Consecutive modified Narayana polynomials are in proper position. -/
 theorem modifiedNarayana_prec_succ (n : ℕ) :
-    Prec (ModifiedNarayanaPolynomial n) (ModifiedNarayanaPolynomial (n + 1)) :=
+    StrictInterl (ModifiedNarayanaPolynomial n) (ModifiedNarayanaPolynomial (n + 1)) :=
   modifiedNarayanaPolynomial_prec_succ n
 
 /-- Braun--Jal equation (2), checked for the concrete families through `n = 8`. -/
@@ -264,7 +264,7 @@ theorem modifiedNarayana_turan_nonneg_on_nonpos :
 /-- The `lambda = nu = 0` specialization of Braun--Jal Lemma 3.4. -/
 theorem modifiedNarayana_lemma34_zero_zero
     {m : ℕ} (hm : 2 ≤ m) :
-    Prec ((C (0 : ℝ) * X + C (0 : ℝ)) * ModifiedNarayanaPolynomial (m - 1) +
+    StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * ModifiedNarayanaPolynomial (m - 1) +
         ModifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (0 : ℝ)) * ModifiedNarayanaPolynomial m +
         ModifiedNarayanaPolynomial (m + 1)) :=
@@ -273,7 +273,7 @@ theorem modifiedNarayana_lemma34_zero_zero
 /-- The shifted `lambda = 0, mu = 1` specialization of Braun--Jal Lemma 3.4. -/
 theorem modifiedNarayana_lemma34_shifted_zero_one
     {m : ℕ} (hm : 2 ≤ m) :
-    Prec ((C (0 : ℝ) * X + C (1 : ℝ)) * ModifiedNarayanaPolynomial (m - 1) +
+    StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * ModifiedNarayanaPolynomial (m - 1) +
         narayanaDifference ModifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (1 : ℝ)) * ModifiedNarayanaPolynomial m +
         narayanaDifference ModifiedNarayanaPolynomial (m + 1)) :=

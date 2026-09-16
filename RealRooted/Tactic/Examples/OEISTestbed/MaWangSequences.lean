@@ -15,7 +15,7 @@ namespace Tactic
 
 -- `A145901`/`A186695`: inner-window shape `2t(1+t)P'`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -26,7 +26,7 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) * X * (1 + X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto using
     base := hbase,
     pos_lc := hpos,
@@ -38,7 +38,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A284861`: same inner-window proof path, but with `3t(1+t)P'`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -61,7 +61,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A111999`: unscaled inner-window shape `t(1+t)P'`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]}
           (X * (1 + X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_X_one_add_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -85,7 +85,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A194649`: window shape `(1+t)(1+2t)P'`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -97,7 +97,7 @@ example {P : Nat → ℝ[X]}
           ((1 + X) * (1 + C (2 : ℝ) * X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_one_add_two_window_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -109,7 +109,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A102365`: half-line factor `2t-t^2=t(2-t)` with no denominator.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -118,7 +118,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
         U n * P (n + 1) + (X * (C (2 : ℝ) - X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -129,7 +129,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A142963`: half-line factor `t-4t^2=t(1-4t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -139,7 +139,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (1 : ℝ) - C (4 : ℝ) * X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -150,7 +150,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A156920`: half-line factor `t-2t^2=t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -171,7 +171,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A290315`: half-line factor `2t-4t^2=2t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -182,7 +182,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
             (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -193,7 +193,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A290316`: half-line factor `3t-9t^2=3t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -215,7 +215,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A257608`: half-line factor `9t-9t^2=9t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -225,7 +225,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (9 : ℝ) - C (9 : ℝ) * X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -236,7 +236,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A257614`: half-line factor `5t-5t^2=5t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -257,7 +257,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A257621`: half-line factor `4t-4t^2=4t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -267,7 +267,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (C (4 : ℝ) * X * (C (1 : ℝ) - X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -278,7 +278,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A257626`: half-line factor `3t-3t^2=3t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -288,7 +288,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (3 : ℝ) - C (3 : ℝ) * X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -299,7 +299,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A156366`: half-line factor `t-3t^2=t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -324,7 +324,7 @@ example {r : ℝ} (hr : r ≤ 0) :
   rr_sign
 
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -334,7 +334,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (C (3 : ℝ) * X * (C (1 : ℝ) - X)) * (P (n + 1)).derivative)
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -345,7 +345,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A062190`: negative scalar denominator after the active shift.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
@@ -358,7 +358,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
             (C ((n : ℝ) + 1) * X * (1 - X)) * (P (n + 1)).derivative))
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_one_sub_X_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -373,7 +373,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A062196`: quadratic scalar denominator with `t(1-t)P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -384,7 +384,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
             ((X * (1 - X)) * (P (n + 1)).derivative))
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
     base := hbase,
     pos_lc := hpos,
@@ -411,7 +411,7 @@ example {P RHS : Nat → ℝ[X]}
 
 -- `A361893`: split scalar denominator normalizing into `-c_n t^2 P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hraw : ∀ n : Nat,
@@ -420,7 +420,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C (((n : ℝ) + 2) / 2) * (X ^ 2 * (P (n + 1)).derivative))
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   have hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -452,7 +452,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 -- `A375853`: active shift of
 -- `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -475,7 +475,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 -- `A114655`: active shift of
 -- `(n+1)P_n=(3nt+2n-3t+2)P_{n-1}+2t(2-t)P'_{n-1}`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -485,7 +485,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C (2 : ℝ) * ((X * (C (2 : ℝ) - X)) * (P (n + 1)).derivative))
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
     base := hbase,
     pos_lc := hpos,

@@ -43,12 +43,12 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
       by_cases hqj : q' = j
       · have hji : j ≠ i := ne_of_gt hij
         simpa [hpi, hqj, hji] using prec0_one_affine_linear ha
-      · simp [hpi, hqj, hq_ne_i, prec0_zero_right]
+      · simp [hpi, hqj, hq_ne_i, interl_zero_right]
     · by_cases hpj : p' = j
       · have hq_ne_i : q' ≠ i := by lia
         have hq_ne_j : q' ≠ j := by lia
-        simp [hpj, hq_ne_i, hq_ne_j, prec0_zero_right]
-      · simp [hpi, hpj, prec0_zero_left]
+        simp [hpj, hq_ne_i, hq_ne_j, interl_zero_right]
+      · simp [hpi, hpj, interl_zero_left]
   · rw [List.forall_mem_iff_get]
     intro k
     let k' : Fin n := ⟨k, by simpa [length_sparseLinearPairSeq] using k.2⟩
@@ -94,8 +94,8 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
           simpa [q'] using get_oneSupportSeq i q']
     by_cases hpi : p' = i
     · have hqi : q' ≠ i := by lia
-      simp [hpi, hqi, prec0_zero_right]
-    · by_cases hqi : q' = i <;> simp [hpi, hqi, prec0_zero_left]
+      simp [hpi, hqi, interl_zero_right]
+    · by_cases hqi : q' = i <;> simp [hpi, hqi, interl_zero_left]
   · rw [List.forall_mem_iff_get]
     intro k
     let k' : Fin n := ⟨k, by simpa [length_oneSupportSeq] using k.2⟩

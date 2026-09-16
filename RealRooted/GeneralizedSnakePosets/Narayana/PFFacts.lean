@@ -26,7 +26,7 @@ theorem auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one :
 /-- The `n = 2` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_two :
-    Prec (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
   rw [auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one]
   exact (modifiedNarayanaPolynomial_prec_succ 1).C_mul_left (by norm_num)
 
@@ -34,7 +34,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_two :
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_of_le_two
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
-    Prec (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
   · exact lemma33AuxiliaryGInterlaces_modified_base
   · exact lemma33AuxiliaryGInterlaces_modified_two
@@ -44,7 +44,7 @@ modified Narayana family.  This exposes the Lemma 3.4 target shape while using
 the checked consecutive proper-position theorem. -/
 theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
     {m : ℕ} (_hm : 2 ≤ m) :
-    Prec ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+    StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)) := by
@@ -54,7 +54,7 @@ theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
 concrete modified Narayana family. -/
 theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one
     {m : ℕ} (hm : 2 ≤ m) :
-    Prec ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+    StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by

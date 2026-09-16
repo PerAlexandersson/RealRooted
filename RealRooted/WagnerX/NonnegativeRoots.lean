@@ -88,10 +88,10 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
   exact roots_nonpos_of_nonneg_coeffs hp_splits hpnn r ((mem_roots hp_ne).mpr hrp)
 
 theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
-    (h : Prec g (X * f))
+    (h : StrictInterl g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    Prec f g := by
+    StrictInterl f g := by
   rcases h with ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
   have hf : f ≠ 0 ∧ f.Splits := by simp_all
   set rs_f := f.roots.sort (· ≤ ·)
@@ -128,14 +128,14 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hf₀ : f ≠ 0) (hf : f.Splits) (hg₀ : g ≠ 0) (hg : g.Splits)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec f g ↔ Prec g (X * f) := by
+    StrictInterl f g ↔ StrictInterl g (X * f) := by
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf₀), roots_X]
   have hXf_deg : (X * f).natDegree = g.natDegree := by simp_all
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf hfnn
   have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg hgnn
   constructor
-  · -- Forward: Prec f g → Prec g (X * f)
+  · -- Forward: StrictInterl f g → StrictInterl g (X * f)
     intro ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
     rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, _⟩
     · have hrs_nonpos : ∀ r ∈ rs, r ≤ 0 := fun r hr =>
@@ -156,7 +156,7 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
       have : rs.length = g.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg]
       lia
-  · -- Backward: Prec g (X * f) → Prec f g
+  · -- Backward: StrictInterl g (X * f) → StrictInterl f g
     intro ⟨_, _, ss_g, rs_xf, hss_g, hrs_xf, hss_g_eq, hrs_xf_eq, hcase⟩
     rcases hcase with ⟨hlen, _⟩ | ⟨hlen, halt⟩
     · have : ss_g.length = g.natDegree := by
@@ -185,11 +185,11 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
           Or.inl ⟨by lia, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩
 
 theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
-    (h : Prec f g)
+    (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   have hXf_rr : (X * f) ≠ 0 ∧ (X * f).Splits := by simp_all
   have hXf_roots : (X * f).roots = {0} + f.roots := by
@@ -216,10 +216,10 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
 theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
-    (h : Prec g (X * f))
+    (h : StrictInterl g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    Prec f g := by
+    StrictInterl f g := by
   rcases h with
     ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
   have hf : f ≠ 0 ∧ f.Splits := by simp_all
@@ -257,7 +257,7 @@ theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]} (hf : f.Splits) (hg :
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec f g ↔ Prec g (X * f) := by
+    StrictInterl f g ↔ StrictInterl g (X * f) := by
   have ⟨hfnn, hf₀⟩ := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hf).mpr
     ⟨hf_pos, hf_nonpos⟩
   have ⟨hgnn, hg₀⟩ := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hg).mpr
@@ -268,8 +268,8 @@ theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]} (hf : f.Splits) (hg :
 polynomials have nonnegative coefficients, then `g ≪ X * f`. This packages
 the differ-by-1 and same-degree cases under one theorem. -/
 theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) := by
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl g (X * f) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
   have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg.2 hgnn
@@ -296,26 +296,26 @@ theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
 
 /-- Nonzero scalar form of the Wagner `X`-shift bridge. -/
 theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hc : c ≠ 0) :
-    Prec g ((C c * X) * f) := by
+    StrictInterl g ((C c * X) * f) := by
   simpa [mul_assoc] using
     (prec_C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
 
 /-- Zero-aware Wagner (3): if `f ≪₀ g` and both polynomials have nonnegative
 coefficients, then `g ≪₀ X * f`. -/
 theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
-    (h : Prec0 f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec0 g (X * f) := by
+    (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Interl g (X * f) := by
   rcases h with rfl | rfl | hfg
-  · simpa using prec0_zero_right g
-  · exact prec0_zero_left (X * f)
-  · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toPrec0
+  · simpa using interl_zero_right g
+  · exact interl_zero_left (X * f)
+  · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toInterl
 
-theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
+theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Prec (X * f) (X * g) := by
+    StrictInterl (X * f) (X * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   have hXf : (X * f) ≠ 0 ∧ (X * f).Splits := by simp_all
   have hXg : (X * g) ≠ 0 ∧ (X * g).Splits := by simp_all
@@ -345,10 +345,10 @@ theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
         ⟨by simp_all, listAlternates_append_zero_both ss rs hlen halt hrs_nonpos⟩
 
 theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
-    (h : Prec (X * f) (X * g))
+    (h : StrictInterl (X * f) (X * g))
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Prec f g := by
+    StrictInterl f g := by
   rcases h with ⟨hXf, hXg, ss_xf, rs_xg, hss_xf, hrs_xg, hss_xf_eq, hrs_xg_eq, hcase⟩
   have hf : f ≠ 0 ∧ f.Splits := by simp_all
   have hg : g ≠ 0 ∧ g.Splits := by simp_all
@@ -397,21 +397,21 @@ the affine-family API can reuse them without importing derivative results. -/
 `X`. -/
 lemma prec_self_X_mul_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
-    Prec f (X * f) :=
+    StrictInterl f (X * f) :=
   prec_mul_X_of_prec_of_nonneg (prec_refl hf_ne hf_splits) hfnn hfnn
 
 /-- If `f` precedes `g`, then nonnegative coefficients transport the relation
 to `g` and `X * f`. -/
 lemma prec_to_X_mul_of_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) :=
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl g (X * f) :=
   prec_mul_X_of_prec_of_nonneg h hfnn hgnn
 
-/-- The reverse Wagner transport recovers `Prec f g` from `Prec g (X * f)`
+/-- The reverse Wagner transport recovers `StrictInterl f g` from `StrictInterl g (X * f)`
 when both polynomials have nonnegative coefficients. -/
 lemma prec_of_prec_X_mul_of_nonneg {f g : ℝ[X]}
-    (h : Prec g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec f g := by
+    (h : StrictInterl g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl f g := by
   have hf : f ≠ 0 ∧ f.Splits :=
     isRealRooted_of_X_mul h.2.1.1 h.2.1.2
   exact
@@ -422,8 +422,8 @@ lemma prec_of_prec_X_mul_of_nonneg {f g : ℝ[X]}
 
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
 theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) :=
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl (X * f) (X * g) :=
   prec_mul_X_both_of_roots_nonpos h
     (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
     (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
@@ -431,42 +431,42 @@ theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
 theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Prec f g ↔ Prec (X * f) (X * g) :=
+    StrictInterl f g ↔ StrictInterl (X * f) (X * g) :=
   ⟨fun h => prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos,
     fun h => prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos⟩
 
 theorem prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Prec0 f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec0 (X * f) (X * g) := by
+    (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Interl (X * f) (X * g) := by
   rcases h with rfl | rfl | hfg
-  · simpa using prec0_zero_left (X * g)
-  · simpa using prec0_zero_right (X * f)
+  · simpa using interl_zero_left (X * g)
+  · simpa using interl_zero_right (X * f)
   · exact
       (prec_mul_X_both_of_roots_nonpos hfg
         (roots_nonpos_of_nonneg_coeffs hfg.1.2 hfnn)
-        (roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn)).toPrec0
+        (roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn)).toInterl
 
 theorem prec0_of_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Prec0 (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
+    (h : Interl (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec0 f g := by
+    Interl f g := by
   by_cases hf0 : f = 0
-  · simpa [hf0] using prec0_zero_left g
+  · simpa [hf0] using interl_zero_left g
   by_cases hg0 : g = 0
-  · simpa [hg0] using prec0_zero_right f
+  · simpa [hg0] using interl_zero_right f
   have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   have hXg0 : X * g ≠ 0 := mul_ne_zero X_ne_zero hg0
-  have hstrict : Prec (X * f) (X * g) := h.toPrec_of_ne hXf0 hXg0
+  have hstrict : StrictInterl (X * f) (X * g) := h.toStrictInterl_of_ne hXf0 hXg0
   have hf : f ≠ 0 ∧ f.Splits := isRealRooted_of_X_mul hstrict.1.1 hstrict.1.2
   have hg : g ≠ 0 ∧ g.Splits := isRealRooted_of_X_mul hstrict.2.1.1 hstrict.2.1.2
   exact
     (prec_of_prec_mul_X_both_of_roots_nonpos hstrict
       (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
-      (roots_nonpos_of_nonneg_coeffs hg.2 hgnn)).toPrec0
+      (roots_nonpos_of_nonneg_coeffs hg.2 hgnn)).toInterl
 
 theorem prec0_iff_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec0 f g ↔ Prec0 (X * f) (X * g) :=
+    Interl f g ↔ Interl (X * f) (X * g) :=
   ⟨fun h => prec0_mul_X_both_of_nonneg h hfnn hgnn,
     fun h => prec0_of_prec0_mul_X_both_of_nonneg h hfnn hgnn⟩
 

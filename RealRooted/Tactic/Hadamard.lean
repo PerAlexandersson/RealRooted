@@ -215,9 +215,9 @@ theorem hadamardProduct_prec0_of_nonneg_prec {f g p q : ℝ[X]}
     (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p)
     (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g)
-    (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
+    (hfg : StrictInterl f g)
+    (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec hf hg hp hq hfg hpq
 
 theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
@@ -225,10 +225,10 @@ theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
     (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
     (hQ : ∀ i : Nat, HasNonnegCoeffs (Q i))
-    (hFG : ∀ i : Nat, Prec (F i) (G i))
-    (hPQ : ∀ i : Nat, Prec (P i) (Q i)) :
+    (hFG : ∀ i : Nat, StrictInterl (F i) (G i))
+    (hPQ : ∀ i : Nat, StrictInterl (P i) (Q i)) :
     ∀ i : Nat,
-      Prec0 (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) :=
+      Interl (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) :=
   fun i =>
     hadamardProduct_prec0_of_nonneg_prec
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)

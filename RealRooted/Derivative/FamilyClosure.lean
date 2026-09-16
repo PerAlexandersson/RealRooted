@@ -226,11 +226,11 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     rw [hderC]
     simp
   · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact roots_le_of_prec_right (derivative_interlaces hp_splits hdeg2).toPrec hroots
+    exact roots_le_of_prec_right (derivative_interlaces hp_splits hdeg2).toStrictInterl hroots
 
 /-- Standard Rolle--Obreschkoff input: differentiation preserves weak proper
-position in the oriented, zero-aware `Prec0` convention. -/
+position in the oriented, zero-aware `Interl` convention. -/
 def derivativePreservesPrec0Statement : Prop :=
-  ∀ {p q : ℝ[X]}, Prec0 p q → Prec0 p.derivative q.derivative
+  ∀ {p q : ℝ[X]}, Interl p q → Interl p.derivative q.derivative
 
 end RealRooted

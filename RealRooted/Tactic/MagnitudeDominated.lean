@@ -24,7 +24,7 @@ theorem magnitude_dominated_sequence_succ
     (hcert : ∀ i : Nat, ∀ r, (F i).IsRoot r →
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
-    ∀ i : Nat, Prec (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
+    ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
   RealRooted.prec_of_magnitude_dominated_succ
     (hinter i) (hinterpos i) (htargetpos i) (hdeg i) (hcert i)
 
@@ -40,7 +40,7 @@ theorem magnitude_dominated_sequence_same
     (hcert : ∀ i : Nat, ∀ r, (F i).IsRoot r →
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
-    ∀ i : Nat, Prec (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
+    ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
   RealRooted.prec_of_magnitude_dominated_same
     (hinter i) (hinterpos i) (htargetpos i) (hdeg i) (hcert i)
 
@@ -58,7 +58,7 @@ theorem magnitude_dominated_sequence
     (hcert : ∀ i : Nat, ∀ r, (F i).IsRoot r →
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
-    ∀ i : Nat, Prec (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
+    ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
   RealRooted.prec_of_magnitude_dominated
     (hinter i) (hinterpos i) (htargetpos i) (hdeglo i) (hdeghi i) (hcert i)
 

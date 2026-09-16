@@ -102,7 +102,7 @@ theorem compositionRow_positivePartSeries_isPFPolynomial
 zeroth entry are in zero-aware proper position. -/
 theorem prec0_compositionRow_positivePartSeries_succ
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (ha0 : 0 < a 0) (n : ℕ) :
-    Prec0 (compositionRow (positivePartSeries a) n)
+    Interl (compositionRow (positivePartSeries a) n)
       (compositionRow (positivePartSeries a) (n + 1)) := by
   rw [← chainPolynomial_toeplitz_eq_compositionRow,
     ← chainPolynomial_toeplitz_eq_compositionRow]

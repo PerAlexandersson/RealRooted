@@ -24,7 +24,7 @@ theorem staircaseSum_sequence_prec
     {FS : Nat → List ℝ[X]} {M : Nat → Nat}
     (hFS : ∀ i : Nat, IsInterlacingSeqNonneg (FS i))
     (hM : ∀ i : Nat, M i < (FS i).length) :
-    ∀ i : Nat, Prec ((FS i).get ⟨M i, hM i⟩) (staircaseSum (FS i) (M i)) :=
+    ∀ i : Nat, StrictInterl ((FS i).get ⟨M i, hM i⟩) (staircaseSum (FS i) (M i)) :=
   fun i =>
     RealRooted.prec_get_staircaseSum_of_isInterlacingSeqNonneg
       (hFS i) (hM i)

@@ -172,7 +172,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
             have ha : (f.natDegree : ℝ) < a := by
               dsimp only [a]
               simp_all
-            have hgf : Prec g f := by
+            have hgf : StrictInterl g f := by
               exact prec_affine_derivative_of_nonnegCoeffs hsplits
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
@@ -186,7 +186,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
             have hgnn : HasNonnegCoeffs g :=
               ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos
                 (left_splits_of_prec hgf)).mpr ⟨hgpos, hgroots⟩).1
-            have hshift : Prec f (X * g) :=
+            have hshift : StrictInterl f (X * g) :=
               prec_mul_X_of_prec_of_nonneg hgf hgnn hnn
             have hcombo := allComboRealRooted_of_prec hshift (1 : ℝ) c
             have hrewrite :

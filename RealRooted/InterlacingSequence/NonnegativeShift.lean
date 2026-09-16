@@ -45,8 +45,8 @@ theorem exists_comp_X_add_C_hasNonnegCoeffs (fs : List ℝ[X])
 /-- Simultaneous translation is an equivalence for zero-aware proper
 position. -/
 theorem prec0_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
-    Prec0 (f.comp (X + C r)) (g.comp (X + C r)) ↔ Prec0 f g := by
-  simp only [Prec0, Polynomial.comp_X_add_C_eq_zero_iff,
+    Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g := by
+  simp only [Interl, Polynomial.comp_X_add_C_eq_zero_iff,
     prec_comp_X_add_C_iff]
 
 /-- Simultaneous translation is an equivalence for finite interlacing

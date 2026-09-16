@@ -90,19 +90,19 @@ theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
 /- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
 
-This is the `Prec`/`Prec0` wrapper around Garloff--Wagner, Theorem 4(b):
+This is the `StrictInterl`/`Interl` wrapper around Garloff--Wagner, Theorem 4(b):
 if two nonnegative-coefficient real-rooted pairs are in the same
 proper-position relation, then the pair of Hadamard products is again in
 proper position.  The conclusion is zero-aware for the same support reason as
 `garloffWagnerHadamardNonnegRealRootedStatement`.
 
-Orientation audit: in this repository `Prec f g` is the convention `f ≪ g`.
+Orientation audit: in this repository `StrictInterl f g` is the convention `f ≪ g`.
 In the differ-by-one case, `g` has the rightmost root; in the same-degree case,
 each root of `f` is weakly to the left of the corresponding root of `g`.  Thus
-for linear factors we have `Prec (X + C b) (X + C a) ↔ a ≤ b`, because their
+for linear factors we have `StrictInterl (X + C b) (X + C a) ↔ a ≤ b`, because their
 roots are `-b` and `-a`.  Consequently the Garloff--Wagner hypotheses written
-as `g $ f` and `q $ p` are represented here as `Prec f g` and `Prec p q`, and
-the conclusion is `Prec0 (f ⊙ p) (g ⊙ q)`.
+as `g $ f` and `q $ p` are represented here as `StrictInterl f g` and `StrictInterl p q`, and
+the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 
 This statement is proved directly in `RealRooted.GarloffWagner`; the wrapper
 keeps the historical `Hadamard` API used by downstream theorem bundles.
@@ -112,15 +112,15 @@ keeps the historical `Hadamard` API used by downstream theorem bundles.
 theorem garloffWagnerHadamardNonnegPrec {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g) (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   exact gwHadamardProductNonnegPrec hf hg hp hq hfg hpq
 
 
 /-- Linear-factor sanity check for the orientation used in
 `garloffWagnerHadamardNonnegPrec`. -/
 theorem garloffWagnerHadamard_linear_orientation_sanity {a b : ℝ} :
-    Prec (X + C b) (X + C a) ↔ a ≤ b :=
+    StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
   prec_X_add_C_iff
 
 end RealRooted

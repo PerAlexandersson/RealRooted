@@ -257,7 +257,7 @@ protected theorem PairwiseUpgrade.fourWay_of_nonnegPairBridge
         HasNonnegCoeffs f →
         HasNonnegCoeffs g →
         Compatible f g →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     ChudnovskySeymourFourWayPackage fs :=
   PairwiseUpgrade.fourWay_of_pairwiseCommonForward hrr hpos <|
     PairwiseUpgrade.pairwiseHasCommonInterleaver_of_nonnegPairBridge hbridge hpos hnn

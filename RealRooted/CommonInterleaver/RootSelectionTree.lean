@@ -95,7 +95,7 @@ theorem Valid.polynomial_data {d : ℕ} {t : RootSelectionTree}
         exact natDegree_weightedSum_eq_of_nonneg_of_sameDegree
           hw_nonneg hw_deg hw_pos hw_exists
       rcases hcommon with ⟨h, hh_deg, hhprec⟩
-      have hprec : Prec h (children.map polynomial).sum :=
+      have hprec : StrictInterl h (children.map polynomial).sum :=
         prec_sum_left_of_common_left_signed
           (children.map polynomial) h hhprec hpos hchildren_ne
       exact ⟨by simpa [polynomial] using hsum_deg,

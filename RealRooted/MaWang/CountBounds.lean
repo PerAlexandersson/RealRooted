@@ -312,7 +312,7 @@ theorem listAlternates_of_count_bounds
     exact exists_mem_drop_le_of_lt_countP
       (ts := ts) (s := s₂) (k := pre.length) (hle pre hEq)
 
-/-- Build a differ-by-1 `Prec` witness from real-rootedness and root-count
+/-- Build a differ-by-1 `StrictInterl` witness from real-rootedness and root-count
 inequalities against explicit sorted root lists. -/
 theorem prec_of_count_bounds_succ
     {f F : ℝ[X]} {rs ts : List ℝ}
@@ -334,7 +334,7 @@ theorem prec_of_count_bounds_succ
       ∀ (pre : List ℝ) {s₁ s₂ : ℝ} {rest : List ℝ},
         rs = pre ++ s₁ :: s₂ :: rest →
         pre.length + 1 < ts.countP (· ≤ s₂)) :
-    Prec f F := by
+    StrictInterl f F := by
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
   have hts_len : ts.length = F.natDegree := by
@@ -345,7 +345,7 @@ theorem prec_of_count_bounds_succ
       hrs_eq, hts_eq,
       Or.inl ⟨hlen, listInterlaces_of_count_bounds hrs_sorted hts_sorted hlen hhead hlt hle⟩⟩
 
-/-- Build a same-degree `Prec` witness from real-rootedness and root-count
+/-- Build a same-degree `StrictInterl` witness from real-rootedness and root-count
 inequalities against explicit sorted root lists. -/
 theorem prec_of_count_bounds_same
     {f F : ℝ[X]} {rs ts : List ℝ}
@@ -363,7 +363,7 @@ theorem prec_of_count_bounds_same
       ∀ (pre : List ℝ) {s₁ s₂ : ℝ} {rest : List ℝ},
         rs = pre ++ s₁ :: s₂ :: rest →
         pre.length < ts.countP (· ≤ s₂)) :
-    Prec f F := by
+    StrictInterl f F := by
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
   have hts_len : ts.length = F.natDegree := by

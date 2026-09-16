@@ -110,10 +110,10 @@ theorem prec_of_stable_same_degree {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnoreal : ∀ t : ℝ, (hermiteBiehlerPolynomial f g).eval (t : ℂ) ≠ 0)
     {w₀ : ℂ} (hw₀ : w₀ ∈ (hermiteBiehlerPolynomial f g).roots) (hneg : w₀.im < 0)
-    (hdeg : f.natDegree = g.natDegree) : Prec g f := by
+    (hdeg : f.natDegree = g.natDegree) : StrictInterl g f := by
   obtain ⟨hfs, hgs⟩ := splits_of_stable hf hg hstab
   exact (StrictPrecSameDegree.of_wronskian_pos (n := f.natDegree) hg hf hdeg.symm rfl hgs hfs
-    (fun t => wronskian_pos_of_stable hstab hnoreal hw₀ hneg t)).to_prec
+    (fun t => wronskian_pos_of_stable hstab hnoreal hw₀ hneg t)).toStrictInterl
 
 theorem hnoreal_of_no_common_real_root {f g : ℝ[X]}
     (hnc : ¬ ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r) :
@@ -150,7 +150,7 @@ theorem prec_of_stable_same_degree_no_common {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnc : ¬ ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r)
-    (hdeg : f.natDegree = g.natDegree) (hfpos : 0 < f.natDegree) : Prec g f := by
+    (hdeg : f.natDegree = g.natDegree) (hfpos : 0 < f.natDegree) : StrictInterl g f := by
   have hnoreal := hnoreal_of_no_common_real_root hnc
   have hlead : 0 < f.coeff f.natDegree := hf
   have : (hermiteBiehlerPolynomial f g).natDegree = f.natDegree :=
@@ -163,7 +163,7 @@ theorem prec_of_stable_succ_degree {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnc : ¬ ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r)
-    (hdeg : f.natDegree = g.natDegree + 1) : Prec g f := by
+    (hdeg : f.natDegree = g.natDegree + 1) : StrictInterl g f := by
   have hnoreal := hnoreal_of_no_common_real_root hnc
   have : (hermiteBiehlerPolynomial f g).natDegree = f.natDegree :=
     (hermiteBiehler_natDegree_of_left_dominant hf.ne_zero (by simp [*])).1

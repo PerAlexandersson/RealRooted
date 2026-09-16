@@ -27,11 +27,11 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
     (hdegreePos : ∀ n, 0 < (P (n + 1)).natDegree)
     (hnonneg : ∀ n, HasNonnegCoeffs (P n))
     (hpos : ∀ n, HasPosLeadingCoeff (P n))
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hbaseNo : ∀ r, (P 1).IsRoot r → ¬ (P 0).IsRoot r)
     (hrec : ∀ n, P (n + 2) =
       A n * P (n + 1) + (C (a n) * X - C (b n)) * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   intro n
   induction n with
@@ -54,7 +54,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
             (hpos (n + 1)).ne_zero hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderivInter.toPrec
+          eval_mul_eval_nonneg_of_prec_right ihprec hderivInter.toStrictInterl
             (hpos n) hderivPos hr
         have hprevNe : eval r (P n) ≠ 0 := by
           intro hzero
@@ -77,7 +77,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
           ring
         rw [heval]
         nlinarith
-      have hprec : Prec (P (n + 1)) (P (n + 2)) := by
+      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rcases hstep (n + 1) with hsame | hsucc
         · exact prec_of_interlaces_eval_mul_neg_same
             hderivInter hderivPos (hpos (n + 2)) hsame hrootSign

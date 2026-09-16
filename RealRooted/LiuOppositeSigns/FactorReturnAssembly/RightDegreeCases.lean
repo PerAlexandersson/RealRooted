@@ -21,7 +21,7 @@ def theorem21RightFactorReturnRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       RightRootCountBranch f g r s →
         R g.natDegree f.natDegree →
-          (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+          (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
             Compatible f g
 
 /-- Predicate-restricted right-branch factor-return target for an arbitrary
@@ -33,7 +33,7 @@ def theorem21RightFactorReturnPredicateRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       RightRootCountBranch f g r s →
         R g.natDegree f.natDegree →
-          (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+          (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
             P f.natDegree → Compatible f g
 
 /-- Predicate-restricted right factor-return relation targets transport along
@@ -190,13 +190,13 @@ theorem theorem21RightFactorReturn_of_leftDegreeRelation
         p.Splits → q.Splits → OppositeLeadingSigns p q →
           LeftRootCountBranch p q a b →
             R p.natDegree q.natDegree →
-              (∃ k : ℝ[X], Prec (deleteRootFactor p a) k ∧ Prec q k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor p a) k ∧ StrictInterl q k) →
                 Compatible p q)
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : R g.natDegree f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     Compatible f g :=
   (hleft (p := g) (q := f) (a := s) (b := r)
     hg hf hsgn.symm hright.toLeftBranch_symm hdeg
@@ -295,7 +295,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_one
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 1) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegreePredicate_of_left_natDegree_one
@@ -307,7 +307,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 2) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegreePredicate_of_left_natDegree_two
@@ -320,7 +320,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_le_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 2) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegreePredicate_of_left_natDegree_le_two
@@ -334,7 +334,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_three_of_monic
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 3) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegreePredicate_of_left_natDegree_three_of_monic
@@ -346,7 +346,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_three
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 3) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegree_of_left_natDegree_three_of_monic
@@ -360,7 +360,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_le_three_of_monic
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 3) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegreePredicate_of_left_natDegree_le_three_of_monic
@@ -373,7 +373,7 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_le_three
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 3) :
     Compatible f g :=
   theorem21RightFactorReturnSameDegree_of_left_natDegree_le_three_of_monic
@@ -471,7 +471,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_zero
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 0) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_zero
@@ -484,7 +484,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_one
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 1) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_one
@@ -497,7 +497,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_le_one
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 1) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_le_one
@@ -510,7 +510,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 2) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_two
@@ -523,7 +523,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_le_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 2) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_le_two
@@ -536,7 +536,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_three
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 3) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_three
@@ -549,7 +549,7 @@ theorem theorem21RightFactorReturnSuccDegree_of_left_natDegree_le_three
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 3) :
     Compatible f g :=
   theorem21RightFactorReturnSuccDegreePredicate_of_left_natDegree_le_three
@@ -565,13 +565,13 @@ theorem theorem21RightFactorReturnTwoDegree_of_leftPredicate
         p.Splits → q.Splits → OppositeLeadingSigns p q →
           LeftRootCountBranch p q a b →
             p.natDegree = q.natDegree + 2 →
-              (∃ k : ℝ[X], Prec (deleteRootFactor p a) k ∧ Prec q k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor p a) k ∧ StrictInterl q k) →
                 P q.natDegree → Compatible p q)
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : P f.natDegree) :
     Compatible f g :=
   theorem21RightFactorReturn_of_leftDegreeRelation
@@ -690,7 +690,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_zero
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 0) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_zero
@@ -703,7 +703,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_one
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 1) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_one
@@ -716,7 +716,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_le_one
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 1) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_le_one
@@ -729,7 +729,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_le_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree ≤ 2) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_le_two
@@ -743,7 +743,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_two_of_monic
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 2) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_two_of_monic
@@ -756,7 +756,7 @@ theorem theorem21RightFactorReturnTwoDegree_of_left_natDegree_two
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
     (hfdeg : f.natDegree = 2) :
     Compatible f g :=
   theorem21RightFactorReturnTwoDegreePredicate_of_left_natDegree_two

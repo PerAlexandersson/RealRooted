@@ -34,7 +34,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
   change odd.natDegree = red.natDegree + 1 ∨
     odd.natDegree = red.natDegree at hshape
   have hdata :
-      Prec red odd ∧ HasNonnegCoeffs red ∧ HasNonnegCoeffs odd ∧
+      StrictInterl red odd ∧ HasNonnegCoeffs red ∧ HasNonnegCoeffs odd ∧
         0 < red.coeff 0 ∧ 0 < odd.coeff 0 := by
     rcases hshape with hevenShape | hoddShape
     · have hprec :=
@@ -66,16 +66,16 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
   have hevenPos : HasPosLeadingCoeff even :=
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hevennn fun hevenZero =>
       heven0 (by simp [hevenZero])
-  have hoddXred : Prec odd (X * red) :=
+  have hoddXred : StrictInterl odd (X * red) :=
     prec_to_X_mul_of_nonneg hprec hrednn hoddnn
-  have hscaled : Prec (Polynomial.C c * odd) (X * red) :=
+  have hscaled : StrictInterl (Polynomial.C c * odd) (X * red) :=
     hoddXred.C_mul_left hc.ne'
-  have hsum : Prec (Polynomial.C c * odd)
+  have hsum : StrictInterl (Polynomial.C c * odd)
       (Polynomial.C c * odd + X * red) :=
     prec_add_X_mul_of_prec hscaled
       (hasPosLeadingCoeff_C_mul hc hodd) hredPos
   have hunscaled := hsum.C_mul_left (inv_ne_zero hc.ne')
-  have hsourcePrec : Prec odd even := by
+  have hsourcePrec : StrictInterl odd even := by
     simpa only [← mul_assoc, ← Polynomial.C_mul,
       inv_mul_cancel₀ hc.ne', Polynomial.C_1,
       one_mul, ← heq] using hunscaled

@@ -14,7 +14,7 @@ cited by the catalog.
 
 This module exposes the checked Obreschkoff-level theorem: a linear operator
 that preserves real-rootedness up to zero preserves interlacing pairs up to the
-orientation ambiguity of the current `Prec` convention.
+orientation ambiguity of the current `StrictInterl` convention.
 -/
 
 namespace RealRooted
@@ -27,7 +27,7 @@ abbrev RealRootedPreserver (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   RealRooted.PreservesRealRootedOrZero T
 
 /-- Challenge-facing name for preserving interlacing pairs, allowing zero
-images and the orientation ambiguity of `Prec`. -/
+images and the orientation ambiguity of `StrictInterl`. -/
 abbrev InterlacingPreserverUpToOrder (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   RealRooted.PreservesInterlacingPairsUpToOrder0 T
 

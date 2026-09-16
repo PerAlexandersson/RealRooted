@@ -22,7 +22,7 @@ normalization used to make leading coefficients positive. -/
 theorem deletePairHasCommonInterleaver {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
     (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k := by
+    ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k := by
   rcases h.positiveSplitDeletionCount hsgn hf_splits hg_splits with hpos | hpos
   · exact hpos.pairHasCommonInterleaver_of_neg_right
   · exact hpos.pairHasCommonInterleaver_of_neg_left
@@ -60,20 +60,20 @@ pair gives compatibility of the sign-normalized deletion pair. -/
 theorem positiveDeletionPair_compatible_of_commonInterleaver
     {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hcommon : ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) :
+    (hcommon : ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
     Compatible (deleteRootFactor f r) (-g) ∨
       Compatible (-(deleteRootFactor f r)) g := by
   rcases hcommon with ⟨k, hqk, hgk⟩
   rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
   · left
-    have hneg_gk : Prec (-g) k := by
-      have hscale : Prec (C (-1 : ℝ) * g) k :=
+    have hneg_gk : StrictInterl (-g) k := by
+      have hscale : StrictInterl (C (-1 : ℝ) * g) k :=
         prec_C_mul_left hgk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hqk hneg_gk hpos.1 hpos.2
   · right
-    have hneg_qk : Prec (-(deleteRootFactor f r)) k := by
-      have hscale : Prec (C (-1 : ℝ) * deleteRootFactor f r) k :=
+    have hneg_qk : StrictInterl (-(deleteRootFactor f r)) k := by
+      have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor f r) k :=
         prec_C_mul_left hqk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hneg_qk hgk hpos.1 hpos.2
@@ -122,7 +122,7 @@ normalization used to make leading coefficients positive. -/
 theorem deletePairHasCommonInterleaver {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
     (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k := by
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k := by
   rcases h.positiveSplitDeletionCount hsgn hf_splits hg_splits with hpos | hpos
   · exact hpos.pairHasCommonInterleaver_of_neg_right
   · exact hpos.pairHasCommonInterleaver_of_neg_left
@@ -160,20 +160,20 @@ pair gives compatibility of the sign-normalized deletion pair. -/
 theorem positiveDeletionPair_compatible_of_commonInterleaver
     {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     Compatible f (-(deleteRootFactor g s)) ∨
       Compatible (-f) (deleteRootFactor g s) := by
   rcases hcommon with ⟨k, hfk, hqk⟩
   rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
   · left
-    have hneg_qk : Prec (-(deleteRootFactor g s)) k := by
-      have hscale : Prec (C (-1 : ℝ) * deleteRootFactor g s) k :=
+    have hneg_qk : StrictInterl (-(deleteRootFactor g s)) k := by
+      have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor g s) k :=
         prec_C_mul_left hqk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hfk hneg_qk hpos.1 hpos.2
   · right
-    have hneg_fk : Prec (-f) k := by
-      have hscale : Prec (C (-1 : ℝ) * f) k :=
+    have hneg_fk : StrictInterl (-f) k := by
+      have hscale : StrictInterl (C (-1 : ℝ) * f) k :=
         prec_C_mul_left hfk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hneg_fk hqk hpos.1 hpos.2
@@ -220,9 +220,9 @@ certificate that is lost in the fully sign-normalized compatibility package. -/
 def theorem21DeletionPairCommonInterleaverBranches (f g : ℝ[X]) : Prop :=
   ∃ r s,
     (LeftRootCountBranch f g r s ∧
-        ∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) ∨
+        ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) ∨
       (RightRootCountBranch f g r s ∧
-        ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k)
+        ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
 
 /-- Liu root-count branches produce common-right-interleaver witnesses for the
 actual deletion pair in the selected branch. -/

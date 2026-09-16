@@ -69,7 +69,7 @@ private lemma map_gammaRootMap_preferredRoots_pairwise (d : ℕ) (γ : ℝ[X]) :
     strictMonoOn_gammaRootMap.monotoneOn
       (mem_preferredRoots hx) (mem_preferredRoots hy) hxy
 
-private lemma Prec.sorted_roots_shape {f g : ℝ[X]} (h : Prec f g) :
+private lemma StrictInterl.sorted_roots_shape {f g : ℝ[X]} (h : StrictInterl f g) :
     let ss := f.roots.sort (· ≤ ·)
     let rs := g.roots.sort (· ≤ ·)
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
@@ -190,8 +190,8 @@ theorem prec_gammaTransform_succ_iff
     (hδnn : HasNonnegCoeffs δ)
     (hγ0 : γ.coeff 0 ≠ 0)
     (hδ0 : δ.coeff 0 ≠ 0) :
-    Prec (gammaTransform d γ) (gammaTransform (d + 1) δ) ↔
-      Prec γ δ := by
+    StrictInterl (gammaTransform d γ) (gammaTransform (d + 1) δ) ↔
+      StrictInterl γ δ := by
   have hγ : γ ≠ 0 := by
     intro hzero
     apply hγ0

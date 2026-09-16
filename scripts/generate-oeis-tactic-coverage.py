@@ -169,7 +169,7 @@ def render() -> str:
         "sequence formalization:",
         "",
         "- `formalized`: a concrete sequence-facing theorem exists under `RealRooted/OEIS`;",
-        "- `shell`: an executable abstract recurrence shell reaches `Prec` or `Splits`;",
+        "- `shell`: an executable abstract recurrence shell reaches `StrictInterl` or `Splits`;",
         "- `fragment`: only a sign or root-window subcertificate is exercised;",
         "- `documented`: the ID is mentioned, but no executable route was associated.",
         "",

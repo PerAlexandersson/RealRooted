@@ -17,7 +17,7 @@ namespace Tactic
 /-- Positive-combination row-family exit from proper position exposed through
 the OEIS facade. -/
 example {F G : Nat → ℝ[X]}
-    (hfg : ∀ n : Nat, Prec (F n) (G n))
+    (hfg : ∀ n : Nat, StrictInterl (F n) (G n))
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
@@ -37,16 +37,16 @@ example {F G : Nat → ℝ[X]}
 facade. -/
 example {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ n : Nat, WeightedCompatibleLeft (H n) (L n)) :
-    ∀ n : Nat, Prec (H n) (weightedSum (L n)) := by
+    ∀ n : Nat, StrictInterl (H n) (weightedSum (L n)) := by
   rr_weighted_sum_sequence_left_prec using compatible := hl
 
 /-- Unweighted Wagner-sum row-family common-right exit exposed through the OEIS
 facade. -/
 example {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, ∀ p ∈ L n, Prec p (H n))
+    (hprec : ∀ n : Nat, ∀ p ∈ L n, StrictInterl p (H n))
     (hpos : ∀ n : Nat, ∀ p ∈ L n, HasPosLeadingCoeff p)
     (hne : ∀ n : Nat, L n ≠ []) :
-    ∀ n : Nat, Prec (L n).sum (H n) := by
+    ∀ n : Nat, StrictInterl (L n).sum (H n) := by
   rr_sum_sequence_right_prec using
     all_prec := hprec,
     terms_pos_lc := hpos,

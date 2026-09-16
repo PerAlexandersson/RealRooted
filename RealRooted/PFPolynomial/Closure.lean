@@ -10,7 +10,7 @@ import RealRooted.SamePhaseInterlacing
 This file proves coefficientwise sequential closure for Pólya-frequency
 sequences and polynomials.  Its final theorem combines bounded-degree root
 closedness with the sign-normalized Hermite--Biehler correspondence to retain
-the orientation of the zero-aware proper-position relation `Prec0`.
+the orientation of the zero-aware proper-position relation `Interl`.
 -/
 
 open Filter Matrix Polynomial Topology
@@ -91,14 +91,14 @@ theorem prec0_of_pf_coeff_tendsto_of_natDegree_le
     {p q : ℕ → ℝ[X]} {p₀ q₀ : ℝ[X]} {N : ℕ}
     (hp : ∀ k, IsPFPolynomial (p k))
     (hq : ∀ k, IsPFPolynomial (q k))
-    (hprec : ∀ k, Prec0 (p k) (q k))
+    (hprec : ∀ k, Interl (p k) (q k))
     (hpdeg : ∀ k, (p k).natDegree ≤ N)
     (hqdeg : ∀ k, (q k).natDegree ≤ N)
     (hpcoeff : ∀ i, Tendsto (fun k => (p k).coeff i) atTop
       (𝓝 (p₀.coeff i)))
     (hqcoeff : ∀ i, Tendsto (fun k => (q k).coeff i) atTop
       (𝓝 (q₀.coeff i))) :
-    Prec0 p₀ q₀ := by
+    Interl p₀ q₀ := by
   have hp₀pf : IsPFPolynomial p₀ :=
     IsPFPolynomial.of_coeff_tendsto hp hpcoeff
   have hq₀pf : IsPFPolynomial q₀ :=

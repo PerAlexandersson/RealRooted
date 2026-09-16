@@ -33,7 +33,7 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
 
 /-- A proper-position pair with no common real root has simple real roots in
 both entries. -/
-theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : Prec f g)
+theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
     HasSimpleRoots f ∧ HasSimpleRoots g := by
   constructor
@@ -53,7 +53,7 @@ theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : Prec f g)
     lia
 
 /-- A coprime proper-position pair has simple real roots in both entries. -/
-theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : Prec f g)
+theorem StrictInterl.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hcop : IsCoprime f g) :
     HasSimpleRoots f ∧ HasSimpleRoots g :=
   hprec.hasSimpleRoots_of_no_common_root fun _ hr ↦
@@ -151,5 +151,17 @@ lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
     apply Multiset.coe_nodup.mp
     simpa using hsimple.roots_nodup
   exact hsorted.sortedLT_of_nodup hnodup
+
+@[deprecated StrictInterl.hasSimpleRoots_of_no_common_root (since := "2026-09-16")]
+theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : StrictInterl f g)
+    (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
+    HasSimpleRoots f ∧ HasSimpleRoots g :=
+  StrictInterl.hasSimpleRoots_of_no_common_root hprec hno
+
+@[deprecated StrictInterl.hasSimpleRoots_of_isCoprime (since := "2026-09-16")]
+theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : StrictInterl f g)
+    (hcop : IsCoprime f g) :
+    HasSimpleRoots f ∧ HasSimpleRoots g :=
+  StrictInterl.hasSimpleRoots_of_isCoprime hprec hcop
 
 end RealRooted

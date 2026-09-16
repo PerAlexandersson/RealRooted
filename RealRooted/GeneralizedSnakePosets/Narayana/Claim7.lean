@@ -138,7 +138,7 @@ theorem theorem41InductionRoute_modified_of_modelInputs
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1)))
     (hG : ∀ {m : ℕ}, 2 ≤ m →
-      Prec (FiniteSkewBoard.auxiliaryG (m - 1))
+      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
         (FiniteSkewBoard.auxiliaryG m))
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
     (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
@@ -155,12 +155,12 @@ theorem theorem41InductionRoute_modified_of_modelInputs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
 private theorem prec_narayanaPolynomial_two (n : ℕ) :
-    Prec (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
+    StrictInterl (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
   cases n with
   | zero =>
       rw [narayanaPolynomial_one]
       simpa using
-        (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toPrec
+        (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
   | succ n =>
       simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
         prec_narayanaPolynomial_succ 2 n
@@ -177,7 +177,7 @@ theorem auxiliaryG_prec_succ_of_narayanaTwoModel
       FiniteSkewBoard.auxiliaryG n =
         C (n : ℝ) * narayanaPolynomial 2 (n - 1)) :
     ∀ {m : ℕ}, 2 ≤ m →
-      Prec (FiniteSkewBoard.auxiliaryG (m - 1))
+      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
         (FiniteSkewBoard.auxiliaryG m) := by
   intro m hm
   rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
@@ -206,7 +206,7 @@ theorem theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1)))
     (hG : ∀ {m : ℕ}, 2 ≤ m →
-      Prec (FiniteSkewBoard.auxiliaryG (m - 1))
+      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
         (FiniteSkewBoard.auxiliaryG m))
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)

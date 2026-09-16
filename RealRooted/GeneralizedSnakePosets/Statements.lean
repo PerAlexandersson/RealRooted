@@ -80,13 +80,13 @@ def NarayanaAuxiliaryGRecurrenceStatement
 polynomial `P_n`. -/
 def Lemma33AuxiliaryGInterlacesStatement
     (P G : ℕ → ℝ[X]) : Prop :=
-  ∀ {n : ℕ}, 1 ≤ n → Prec (G n) (P n)
+  ∀ {n : ℕ}, 1 ≤ n → StrictInterl (G n) (P n)
 
 /-- Lemma 3.4 statement for the modified Narayana family. -/
 def Lemma34ModifiedNarayanaInterlacingStatement
     (P : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-    Prec ((C lam * X + C nu) * P (m - 1) + P m)
+    StrictInterl ((C lam * X + C nu) * P (m - 1) + P m)
       ((C lam * X + C nu) * P m + P (m + 1))
 
 /-- Difference `Q_n = P_n - P_{n-1}` used in the Theorem 4.1 matrix step. -/
@@ -99,7 +99,7 @@ the nonnegative matrix parameters in the Theorem 4.1 induction step. -/
 def Lemma34ModifiedNarayanaShiftedInterlacingStatement
     (P : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → 0 ≤ lam → 0 ≤ mu →
-    Prec ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
+    StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
       ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
 
 /-- The shifted nonnegative-parameter Lemma 3.4 form implies the paper's
@@ -167,20 +167,20 @@ def NarayanaAuxiliaryGRecurrenceUpToStatement
 /-- Bounded form of Braun--Jal Lemma 3.3. -/
 def Lemma33AuxiliaryGInterlacesUpToStatement
     (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
-  ∀ {n : ℕ}, 1 ≤ n → n ≤ N → Prec (G n) (P n)
+  ∀ {n : ℕ}, 1 ≤ n → n ≤ N → StrictInterl (G n) (P n)
 
 /-- Bounded form of Braun--Jal Lemma 3.4. -/
 def Lemma34ModifiedNarayanaInterlacingUpToStatement
     (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → -1 ≤ nu →
-    Prec ((C lam * X + C nu) * P (m - 1) + P m)
+    StrictInterl ((C lam * X + C nu) * P (m - 1) + P m)
       ((C lam * X + C nu) * P m + P (m + 1))
 
 /-- Bounded shifted nonnegative-parameter form of Braun--Jal Lemma 3.4. -/
 def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
     (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → 0 ≤ mu →
-    Prec ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
+    StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
       ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
 
 /-- The all-`n` recurrence implies every bounded recurrence package. -/
@@ -279,14 +279,14 @@ def auxiliaryDifference (G : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
 def Theorem41MatrixClaimStatement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → 0 ≤ lam → 0 ≤ mu →
-    Prec ((C lam * X + C mu) * G (m - 1) + auxiliaryDifference G m)
+    StrictInterl ((C lam * X + C mu) * G (m - 1) + auxiliaryDifference G m)
       ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
 
 /-- The reindexed claim labeled `(7)` in Braun--Jal's proof of Theorem 4.1. -/
 def Theorem41Claim7Statement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-    Prec ((C lam * X + C nu) * G (m - 1) + G m)
+    StrictInterl ((C lam * X + C nu) * G (m - 1) + G m)
       ((C lam * X + C nu) * P (m - 1) + P m)
 
 /-- Leading-coefficient, degree, and root-location side conditions used by
@@ -446,7 +446,8 @@ theorem theorem41Claim7_of_section3
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
   let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
-  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : StrictInterl U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
@@ -492,7 +493,8 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
   let W : ℝ[X] := (C lam * X + C nu) * P m + P (m + 1)
-  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : StrictInterl U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu

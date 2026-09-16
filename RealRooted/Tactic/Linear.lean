@@ -13,22 +13,22 @@ open Polynomial
 namespace RealRooted
 
 lemma prec_C_mul_left_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hprec : ∀ i : Nat, Prec (F i) (G i))
+    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
-    ∀ i : Nat, Prec (C (a i) * F i) (G i) := fun i =>
+    ∀ i : Nat, StrictInterl (C (a i) * F i) (G i) := fun i =>
   prec_C_mul_left (hprec i) (ha i)
 
 lemma prec_C_mul_right_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hprec : ∀ i : Nat, Prec (F i) (G i))
+    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
-    ∀ i : Nat, Prec (F i) (C (a i) * G i) := fun i =>
+    ∀ i : Nat, StrictInterl (F i) (C (a i) * G i) := fun i =>
   prec_C_mul_right (hprec i) (ha i)
 
 lemma prec_C_mul_both_sequence {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hprec : ∀ i : Nat, Prec (F i) (G i))
+    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0)
     (hb : ∀ i : Nat, b i ≠ 0) :
-    ∀ i : Nat, Prec (C (a i) * F i) (C (b i) * G i) := fun i =>
+    ∀ i : Nat, StrictInterl (C (a i) * F i) (C (b i) * G i) := fun i =>
   prec_C_mul_right (prec_C_mul_left (hprec i) (ha i)) (hb i)
 
 lemma C_mul_realrooted_sequence {P : Nat → ℝ[X]} {a : Nat → ℝ}

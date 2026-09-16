@@ -54,7 +54,7 @@ theorem eval_div_eq_sum_residue_div
 
 /-- A positive evaluation gap bounds every individual nonnegative residue. -/
 theorem mul_residue_lt_sub_of_eval_lt
-    {f g : ℝ[X]} (hgf : Prec g f)
+    {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)
@@ -208,7 +208,7 @@ theorem residueAuxiliary_degree_lt
 /-- A positive-point evaluation gap forces the residue auxiliary to have the
 same sign as `f'` at every root of `f`. -/
 theorem residueAuxiliary_eval_mul_derivative_pos
-    {f g : ℝ[X]} (hgf : Prec g f)
+    {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hgnd : g.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)
@@ -245,7 +245,7 @@ theorem residueAuxiliary_eval_mul_derivative_pos
 /-- Positive residue data at one point makes the degree-dropping auxiliary a
 strict interlacer of `f`. -/
 theorem residueAuxiliary_interlaces
-    {f g : ℝ[X]} (hgf : Prec g f)
+    {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hgnd : g.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)

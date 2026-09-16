@@ -111,7 +111,7 @@ theorem a144696Polynomial_isIdDecomposition (n : ℕ) (hn : 1 ≤ n) :
 
 private theorem a144696Polynomial_reciprocal_prec_of_two_le
     {n : ℕ} (hn : 2 ≤ n) :
-    Prec (reciprocalShift n (a144696Polynomial n))
+    StrictInterl (reciprocalShift n (a144696Polynomial n))
       (a144696Polynomial n) := by
   let E := generalizedEulerian 1 n
   let b := loweringEulerStep n E
@@ -120,12 +120,12 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
   have hEsplits : E.Splits := hEinv.2.2
   have hEpf : IsPFPolynomial E :=
     IsPFPolynomial.of_realRooted_nonneg hEnn hEsplits
-  have hbE : Prec b E := by
+  have hbE : StrictInterl b E := by
     apply loweringEulerStep_prec_self_of_reflect hn hEpf
     · exact generalizedEulerian_natDegree 1 n
     · simp [E]
     · exact generalizedEulerian_one_reflect n
-  have hbA : Prec b (C 2 * E) :=
+  have hbA : StrictInterl b (C 2 * E) :=
     prec_C_mul_right hbE (by norm_num)
   have hbnn : HasNonnegCoeffs b := by
     exact loweringEulerStep_nonneg hEnn
@@ -135,12 +135,12 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
   have hpdeg : (C 2 * a144696Polynomial n).natDegree ≤ n := by
     rw [natDegree_C_mul (by norm_num), natDegree_a144696Polynomial]
   have hendpoint :
-      Prec (IdTransform n (C 2 * a144696Polynomial n))
+      StrictInterl (IdTransform n (C 2 * a144696Polynomial n))
         (C 2 * a144696Polynomial n) :=
     (brandenSolusTheorem26_forward_of_prec_b_a hpdeg
       (a144696Polynomial_isIdDecomposition n (by lia)) hAnn hbnn hbA).2.2
   have hscaled :
-      Prec (C 2 * reciprocalShift n (a144696Polynomial n))
+      StrictInterl (C 2 * reciprocalShift n (a144696Polynomial n))
         (C 2 * a144696Polynomial n) := by
     simpa [IdTransform, reciprocalShift, Polynomial.reflect_C_mul] using hendpoint
   have hleft := prec_C_mul_left hscaled
@@ -156,7 +156,7 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
 /-- The reciprocal of an A144696 row polynomial precedes the polynomial
 itself. This is the endpoint relation for the reflected Bernstein chain. -/
 theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
-    Prec (reciprocalShift n (a144696Polynomial n))
+    StrictInterl (reciprocalShift n (a144696Polynomial n))
       (a144696Polynomial n) := by
   rcases n with _ | n
   · rw [a144696Polynomial_zero]
@@ -183,7 +183,7 @@ theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
           · simp [reciprocalShift]
           · simp [reciprocalShift]
       rw [hreflect]
-      have hbase : Prec (X + C 2 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
+      have hbase : StrictInterl (X + C 2 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
         (prec_X_add_C_iff (a := (1 / 2 : ℝ)) (b := 2)).2 (by norm_num)
       have hright := prec_C_mul_right hbase (a := (2 : ℝ)) (by norm_num)
       have hrewrite : C 2 * (X + C (1 / 2 : ℝ)) = 1 + C 2 * X := by
@@ -326,7 +326,7 @@ the reciprocal row-polynomial endpoint closes Wagner's endpoint-chain
 criterion. -/
 theorem a144696BernsteinImage_prec {d i j : ℕ}
     (hij : i ≤ j) (hj : j ≤ d) :
-    Prec (a144696BernsteinImage d i) (a144696BernsteinImage d j) := by
+    StrictInterl (a144696BernsteinImage d i) (a144696BernsteinImage d j) := by
   let H : ℕ → ℝ[X] := fun t ↦
     if t < d then
       reciprocalShift d (a144696BernsteinImage d (d - t))
@@ -337,7 +337,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
     exact IsPFPolynomial.of_realRooted_nonneg
       (hasNonnegCoeffs_a144696BernsteinImage d k)
       (a144696BernsteinImage_splits hk)
-  have hcons : ∀ k, 0 ≤ k → k < 2 * d → Prec (H k) (H (k + 1)) := by
+  have hcons : ∀ k, 0 ≤ k → k < 2 * d → StrictInterl (H k) (H (k + 1)) := by
     intro k _ hk
     by_cases hkd : k < d
     · have hrange : d - (k + 1) < d := by lia
@@ -357,7 +357,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
       have hrange : k - d < d := by lia
       simpa [H, hkd, show ¬ k + 1 < d by lia, hindex] using
         (a144696BernsteinImage_horizontal_prec hrange)
-  have hend : Prec (H 0) (H (2 * d)) := by
+  have hend : StrictInterl (H 0) (H (2 * d)) := by
     by_cases hd0 : d = 0
     · subst d
       dsimp [H]

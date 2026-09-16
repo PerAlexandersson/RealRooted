@@ -84,7 +84,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree)
     (hdegreePos : 0 < odd.natDegree) :
-    Prec (routhReducedOddPart (routhCoefficient odd even) odd even) odd ∧
+    StrictInterl (routhReducedOddPart (routhCoefficient odd even) odd even) odd ∧
       HasNonnegCoeffs
         (routhReducedOddPart (routhCoefficient odd even) odd even) := by
   obtain ⟨hoddnn, _⟩ :=
@@ -137,7 +137,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
     · have hprecOr := prec_of_allComboRealRooted hqNe hqSplits
           hodd.ne_zero hprec.1.2 (allComboRealRooted_comm hall)
           (Or.inl hsucc)
-      have hqodd : Prec q odd := by
+      have hqodd : StrictInterl q odd := by
         rcases hprecOr with hqodd | hoddq
         · exact hqodd
         · rcases hoddq.natDegree_eq_or_eq_succ with hs | hs <;> lia
@@ -145,7 +145,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
         roots_neg_of_interlaces_of_right_roots_neg
           (hqodd.toInterlaces hsucc) hoddNeg
       exact False.elim ((ne_of_lt (hqNeg 0 hqRoot)) rfl)
-  have hprecQ : Prec odd q := by
+  have hprecQ : StrictInterl odd q := by
     rcases prec_of_allComboRealRooted hodd.ne_zero hprec.1.2
         hqNe hqSplits hall (Or.inr hqDegree.symm) with hoddq | hqodd
     · exact hoddq
@@ -155,7 +155,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
   have hqNonpos : ∀ r, q.IsRoot r → r ≤ 0 :=
     roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
       hprecQ hqDegree.symm hqRoot hoddNeg
-  have hredPrec : Prec q.divX odd :=
+  have hredPrec : StrictInterl q.divX odd :=
     prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero hprecQ
       (fun r hr => hqNonpos r ((Polynomial.mem_roots hqNe).mp hr))
       hq0 hqDegree
@@ -211,7 +211,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
   have hdivnn : HasNonnegCoeffs q.divX :=
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hdivSplits).2
       ⟨hdivPos, hdivRootsNonpos⟩).1
-  change Prec q.divX odd ∧ HasNonnegCoeffs q.divX
+  change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredPrec, hdivnn⟩
 
 /-- A nonterminal odd-shape Routh step lowers the parity degree by exactly

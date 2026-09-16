@@ -976,7 +976,7 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubic
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf_rr : f ≠ 0 ∧ f.Splits :=
     hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
   have hg_rr : g ≠ 0 ∧ g.Splits :=
@@ -1000,7 +1000,7 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_three
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
     hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
 

@@ -15,7 +15,7 @@ abbrev PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
 Obreschkoff-level consequence of preserving real-rootedness for all linear
 combinations. -/
 abbrev PreservesInterlacingPairsUpToOrder0 (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄, Prec f g → Prec0 (T f) (T g) ∨ Prec0 (T g) (T f)
+  ∀ ⦃f g : ℝ[X]⦄, StrictInterl f g → Interl (T f) (T g) ∨ Interl (T g) (T f)
 
 /-- A linear operator preserves the full all-combinations real-rootedness plane
 attached to a pair. -/
@@ -55,30 +55,30 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
     hT (C α * f + C β * g) hrr
 
 /-- Order-insensitive Obreschkoff consequence, with zero polynomials absorbed
-by `Prec0`. -/
+by `Interl`. -/
 theorem prec0_or_revPrec0_of_allComboRealRooted {f g : ℝ[X]}
     (hall : AllComboRealRooted f g) :
-    Prec0 f g ∨ Prec0 g f := by
+    Interl f g ∨ Interl g f := by
   by_cases hf0 : f = 0
-  · exact Or.inl (hf0 ▸ prec0_zero_left g)
+  · exact Or.inl (hf0 ▸ interl_zero_left g)
   by_cases hg0 : g = 0
-  · exact Or.inl (hg0 ▸ prec0_zero_right f)
+  · exact Or.inl (hg0 ▸ interl_zero_right f)
   have hf : f ≠ 0 ∧ f.Splits := hall.isRealRooted_left hf0
   have hg : g ≠ 0 ∧ g.Splits := hall.isRealRooted_right hg0
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hall hf0 hg0 with
     hsame | hsucc | hrevsucc
   · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
-      (Or.inr hsame)).imp (·.toPrec0) (·.toPrec0)
+      (Or.inr hsame)).imp (·.toInterl) (·.toInterl)
   · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
-      (Or.inl hsucc)).imp (·.toPrec0) (·.toPrec0)
+      (Or.inl hsucc)).imp (·.toInterl) (·.toInterl)
   · exact ((prec_of_allComboRealRooted hg.1 hg.2 hf.1 hf.2
       (allComboRealRooted_comm hall) (Or.inl hrevsucc)).imp
-        (·.toPrec0) (·.toPrec0)).symm
+        (·.toInterl) (·.toInterl)).symm
 
 /-- Pencil-local version of the operator-preserver consequence.  If a linear
 map preserves real-rootedness on the pencil spanned by an all-combinations
 real-rooted pair, then the images interlace up to the orientation ambiguity
-encoded by `Prec0`. -/
+encoded by `Interl`. -/
 theorem prec0_or_revPrec0_map_of_pencil
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
@@ -86,13 +86,13 @@ theorem prec0_or_revPrec0_map_of_pencil
       (C α * f + C β * g ≠ 0 ∧ (C α * f + C β * g).Splits) →
         T (C α * f + C β * g) = 0 ∨
           (T (C α * f + C β * g)).Splits) :
-    Prec0 (T f) (T g) ∨ Prec0 (T g) (T f) :=
+    Interl (T f) (T g) ∨ Interl (T g) (T f) :=
   prec0_or_revPrec0_of_allComboRealRooted
     (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
-order ambiguity built into the current oriented `Prec` predicate. Zero images
-are absorbed by `Prec0`. -/
+order ambiguity built into the current oriented `StrictInterl` predicate. Zero images
+are absorbed by `Interl`. -/
 theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     (hT : PreservesRealRootedOrZero T) :

@@ -264,7 +264,7 @@ position orientation. -/
 theorem normalizedReversedContribution_prec_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
     (hde : d < e) (he : e ≤ m) :
-    Prec (normalizedReversedContribution m ε e)
+    StrictInterl (normalizedReversedContribution m ε e)
       (normalizedReversedContribution m ε d) := by
   rw [normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε e hε,
     normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε d hε]
@@ -362,7 +362,7 @@ toric contribution polynomials. -/
 theorem toricContribution_prec_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
     (hde : d < e) (he : e ≤ m) :
-    Prec (toricContribution m ε e) (toricContribution m ε d) := by
+    StrictInterl (toricContribution m ε e) (toricContribution m ε d) := by
   have hrev := normalizedReversedContribution_prec_of_lt
     m ε d e hm hε hde he
   have hdegree :
@@ -373,7 +373,7 @@ theorem toricContribution_prec_of_lt
   have hreflected := prec_comp_neg_X_of_sameDegree hrev hdegree
   have hsign : (-1 : ℝ) ^ m ≠ 0 := pow_ne_zero m (by norm_num)
   have hreciprocal :
-      Prec (reciprocalShift m (shiftedToricContribution m ε d))
+      StrictInterl (reciprocalShift m (shiftedToricContribution m ε d))
         (reciprocalShift m (shiftedToricContribution m ε e)) := by
     rw [reciprocalShift_shiftedToricContribution,
       reciprocalShift_shiftedToricContribution]
@@ -399,7 +399,7 @@ theorem toricContribution_prec_of_lt
   have hshifted := reciprocalShift_reverses_prec
     hdPF hePF hdDegree heDegree hreciprocal
   have hshifted' :
-      Prec (shiftedToricContribution m ε e)
+      StrictInterl (shiftedToricContribution m ε e)
         (shiftedToricContribution m ε d) := by
     simpa [reciprocalShift] using hshifted
   simpa [toricContribution, sub_eq_add_neg] using

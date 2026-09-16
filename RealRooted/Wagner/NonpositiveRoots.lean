@@ -24,17 +24,17 @@ abbrev HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
 theorem commonRight_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (hfh : Prec f h) (hgh : Prec g h) :
-    Prec (f + g) h :=
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
+    StrictInterl (f + g) h :=
   RealRooted.prec_add_of_prec_right_of_posLeadingCoeff hfh hgh hf.2.2 hg.2.2
 
 /-- If `h` interlaces both `f` and `g`, then `h` interlaces `f + g`. -/
 theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (hhf : Prec h f) (hhg : Prec h g) :
-    Prec h (f + g) := by
-  have hprec : Prec h ([f, g].sum) := by
+    (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
+    StrictInterl h (f + g) := by
+  have hprec : StrictInterl h ([f, g].sum) := by
     grind [RealRooted.prec_sum_left_of_common_left_signed]
   grind
 
@@ -42,11 +42,11 @@ theorem commonLeft_add {f g h : ℝ[X]}
 hypotheses. -/
 theorem commonLeft_add_checked :
     ∀ {f g h : ℝ[X]},
-      (hhf : Prec h f) → (hhg : Prec h g) →
+      (hhf : StrictInterl h f) → (hhg : StrictInterl h g) →
       (hf_pos : HasPosLeadingCoeff f) → (hg_pos : HasPosLeadingCoeff g) →
       (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
       (hcop : IsCoprime f g) →
-      Prec h (f + g) :=
+      StrictInterl h (f + g) :=
   RealRooted.prec_add_of_prec_left
 
 /-- `f` interlaces `g` if and only if `g` interlaces `X * f`, provided their
@@ -55,7 +55,7 @@ theorem mulX_iff {f g : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec f g ↔ Prec g (X * f) :=
+    StrictInterl f g ↔ StrictInterl g (X * f) :=
   RealRooted.prec_iff_prec_mul_X_of_roots_nonpos
     hf.1 hg.1 hf.2.2 hg.2.2 hf.2.1 hg.2.1 hdeg
 

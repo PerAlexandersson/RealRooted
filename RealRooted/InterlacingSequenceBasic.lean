@@ -52,7 +52,7 @@ namespace RealRooted
 def IsInterlacingSeq : List ℝ[X] → Prop
   | [] => True
   | [_] => True
-  | fs => ∀ (i j : Fin fs.length), i < j → Prec (fs.get i) (fs.get j)
+  | fs => ∀ (i j : Fin fs.length), i < j → StrictInterl (fs.get i) (fs.get j)
 
 /-- An interlacing sequence in Brändén's `𝓕ₙ⁺`: each member is real-rooted with
 non-negative coefficients, and the list is pairwise interlacing. The
@@ -61,13 +61,13 @@ def IsInterlacingSeqNonneg (fs : List ℝ[X]) : Prop :=
   (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
   IsInterlacingSeq fs
 
-/-- Weak zero-aware version of `IsInterlacingSeq`, using `Prec0` instead of the
-strict nonzero relation `Prec`. This matches the handbook converse setup where
+/-- Weak zero-aware version of `IsInterlacingSeq`, using `Interl` instead of the
+strict nonzero relation `StrictInterl`. This matches the handbook converse setup where
 sparse test families may contain zero polynomials. -/
 def IsInterlacingSeq0 : List ℝ[X] → Prop
   | [] => True
   | [_] => True
-  | fs => ∀ (i j : Fin fs.length), i < j → Prec0 (fs.get i) (fs.get j)
+  | fs => ∀ (i j : Fin fs.length), i < j → Interl (fs.get i) (fs.get j)
 
 /-- Weak zero-aware interlacing sequence with non-negative coefficients. -/
 def IsInterlacingSeq0Nonneg (fs : List ℝ[X]) : Prop :=
@@ -84,9 +84,9 @@ def InterlacingSeq0Nonneg (n : ℕ) :=
 
 /-! ## Basic properties -/
 
-/-- `IsInterlacingSeq` is exactly the pairwise `Prec` relation on a list. -/
+/-- `IsInterlacingSeq` is exactly the pairwise `StrictInterl` relation on a list. -/
 lemma isInterlacingSeq_iff_pairwise {fs : List ℝ[X]} :
-    IsInterlacingSeq fs ↔ fs.Pairwise Prec := by
+    IsInterlacingSeq fs ↔ fs.Pairwise StrictInterl := by
   constructor
   · intro h
     match fs with
@@ -101,9 +101,9 @@ lemma isInterlacingSeq_iff_pairwise {fs : List ℝ[X]} :
     | _ :: _ :: _ =>
         simpa [IsInterlacingSeq] using (List.pairwise_iff_get.1 h)
 
-/-- `IsInterlacingSeq0` is exactly pairwise `Prec0`. -/
+/-- `IsInterlacingSeq0` is exactly pairwise `Interl`. -/
 lemma isInterlacingSeq0_iff_pairwise {fs : List ℝ[X]} :
-    IsInterlacingSeq0 fs ↔ fs.Pairwise Prec0 := by
+    IsInterlacingSeq0 fs ↔ fs.Pairwise Interl := by
   constructor
   · intro h
     match fs with
@@ -118,13 +118,13 @@ lemma isInterlacingSeq0_iff_pairwise {fs : List ℝ[X]} :
     | _ :: _ :: _ =>
         simpa [IsInterlacingSeq0] using (List.pairwise_iff_get.1 h)
 
-/-- A strict interlacing sequence is also interlacing in the weak `Prec0`
+/-- A strict interlacing sequence is also interlacing in the weak `Interl`
 sense. -/
 lemma IsInterlacingSeq.toIsInterlacingSeq0 {fs : List ℝ[X]} (h : IsInterlacingSeq fs) :
     IsInterlacingSeq0 fs := by
   rw [isInterlacingSeq_iff_pairwise] at h
   rw [isInterlacingSeq0_iff_pairwise]
-  exact h.imp Prec.toPrec0
+  exact h.imp StrictInterl.toInterl
 
 /-- A strict nonnegative interlacing sequence is also a weak zero-aware
 nonnegative interlacing sequence. -/
@@ -136,14 +136,14 @@ lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0Nonneg {fs : List ℝ[X]}
 /-- Any pair in an interlacing sequence interlaces. -/
 lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
     {i j : Fin fs.length} (hij : i < j) :
-    Prec (fs.get i) (fs.get j) := by
+    StrictInterl (fs.get i) (fs.get j) := by
   rw [isInterlacingSeq_iff_pairwise] at h
   exact List.pairwise_iff_get.1 h i j hij
 
 /-- Package a family indexed by decreasing offsets as an interlacing
 sequence. -/
 lemma isInterlacingSeq_reverseOffsetRow (m : ℕ) (f : ℕ → ℝ[X])
-    (hpair : ∀ d e, d < e → e ≤ m → Prec (f e) (f d)) :
+    (hpair : ∀ d e, d < e → e ≤ m → StrictInterl (f e) (f d)) :
     IsInterlacingSeq ((List.range (m + 1)).map fun j => f (m - j)) := by
   rw [isInterlacingSeq_iff_pairwise]
   refine List.pairwise_iff_get.2 ?_
@@ -155,10 +155,10 @@ lemma isInterlacingSeq_reverseOffsetRow (m : ℕ) (f : ℕ → ℝ[X])
     Nat.sub_lt_sub_left hiLt hij
   simpa using hpair (m - j.val) (m - i.val) hsub (Nat.sub_le m i.val)
 
-/-- Any pair in a weak zero-aware interlacing sequence satisfies `Prec0`. -/
+/-- Any pair in a weak zero-aware interlacing sequence satisfies `Interl`. -/
 lemma IsInterlacingSeq0.prec0 {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
     {i j : Fin fs.length} (hij : i < j) :
-    Prec0 (fs.get i) (fs.get j) := by
+    Interl (fs.get i) (fs.get j) := by
   rw [isInterlacingSeq0_iff_pairwise] at h
   exact List.pairwise_iff_get.1 h i j hij
 
@@ -193,28 +193,28 @@ lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     refine List.pairwise_iff_get.2 ?_
     intro i j hij
     have hprec0 := hgs0.prec0 (i := i) (j := j) hij
-    exact hprec0.toPrec_of_ne
+    exact hprec0.toStrictInterl_of_ne
       (hne _ (List.get_mem _ _)) (hne _ (List.get_mem _ _))
 
 /-- Concatenating two interlacing sequences that are compatible
     (every element of the first interlaces every element of the second). -/
 lemma IsInterlacingSeq.append {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs) (hgs : IsInterlacingSeq gs)
-    (hfg : ∀ f ∈ fs, ∀ g ∈ gs, Prec f g) :
+    (hfg : ∀ f ∈ fs, ∀ g ∈ gs, StrictInterl f g) :
     IsInterlacingSeq (fs ++ gs) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs hgs ⊢
   grind
 
 /-- Reversing an interlacing sequence preserves pairwise interlacing. -/
 lemma IsInterlacingSeq.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq fs) :
-    fs.reverse.Pairwise (fun f g ↦ Prec g f) := by
+    fs.reverse.Pairwise (fun f g ↦ StrictInterl g f) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs
   grind
 
 /-- Reversing a weak zero-aware interlacing sequence preserves pairwise
 interlacing. -/
 lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) :
-    fs.reverse.Pairwise (fun f g ↦ Prec0 g f) := by
+    fs.reverse.Pairwise (fun f g ↦ Interl g f) := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs
   grind
 
@@ -223,7 +223,7 @@ the same structure. -/
 lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
-      fs.reverse.Pairwise (fun f g => Prec g f) :=
+      fs.reverse.Pairwise (fun f g => StrictInterl g f) :=
   ⟨fun f hf => hfs.1 f (by grind), hfs.2.reverse⟩
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
@@ -252,11 +252,11 @@ lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
     (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeqNonneg (fs.filter (· ≠ 0)) := by
   rcases hfs with ⟨hint0, hnonneg⟩
-  have hpair0 : fs.Pairwise Prec0 := isInterlacingSeq0_iff_pairwise.mp hint0
+  have hpair0 : fs.Pairwise Interl := isInterlacingSeq0_iff_pairwise.mp hint0
   refine ⟨?_, ?_⟩
   · simp_all
   · rw [isInterlacingSeq_iff_pairwise]
-    have hpair_filter0 : (fs.filter (· ≠ 0)).Pairwise Prec0 := hpair0.filter _
+    have hpair_filter0 : (fs.filter (· ≠ 0)).Pairwise Interl := hpair0.filter _
     refine List.pairwise_iff_get.2 ?_
     intro i j hij
     have hfg0 := List.pairwise_iff_get.1 hpair_filter0 i j hij
@@ -268,7 +268,7 @@ lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
       of_decide_eq_true (List.mem_filter.mp hfi_mem).2
     have hgj_ne : (fs.filter (· ≠ 0)).get j ≠ 0 :=
       of_decide_eq_true (List.mem_filter.mp hgj_mem).2
-    exact hfg0.toPrec_of_ne hfi_ne hgj_ne
+    exact hfg0.toStrictInterl_of_ne hfi_ne hgj_ne
 
 /-! ## Zero-aware sequences with elementwise real-rootedness -/
 

@@ -2,7 +2,7 @@
 # Affine-family criterion for interlacing
 
 Has2x2InterlacingProperty definition, affine-family criterion
-(Brändén Lemma 7.8.4), bridge from combo results to Prec.
+(Brändén Lemma 7.8.4), bridge from combo results to StrictInterl.
 The remaining live theorem here is `prec_of_affine_family_nonneg`.
 -/
 import RealRooted.ProductFamily
@@ -87,16 +87,16 @@ private lemma prec_right_pair_of_common_root_factor
     {f g qf qg : ℝ[X]} {r : ℝ}
     (hf : f = (X - C r) * qf)
     (hg : g = (X - C r) * qg)
-    (hprec_q : Prec qg (X * qf)) :
-    Prec g (X * f) := by
-  have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * (X * qf)) :=
+    (hprec_q : StrictInterl qg (X * qf)) :
+    StrictInterl g (X * f) := by
+  have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * (X * qf)) :=
     prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
   grind
 
 
 /-- Repackage the affine family as a one-parameter positive-combination family
 for the shifted pair `(g + X * f, f)`. This is the natural shifted target for
-the affine converse: proving `Prec f (g + X * f)` would reduce the original
+the affine converse: proving `StrictInterl f (g + X * f)` would reduce the original
 statement to the folklore subtraction step. -/
 private lemma posComboRealRooted_shifted_pair_of_affine_family
     {f g : ℝ[X]}
@@ -200,7 +200,7 @@ private lemma no_common_shifted_pair_of_no_common
 private lemma not_revPrec_of_shifted_pair_succDegree
     {f s : ℝ[X]}
     (hdeg : s.natDegree = f.natDegree + 1) :
-    ¬ Prec s f := by
+    ¬ StrictInterl s f := by
   intro h
   rcases h with ⟨hs, hf, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = s.natDegree := by
@@ -211,22 +211,22 @@ private lemma not_revPrec_of_shifted_pair_succDegree
 
 private lemma prec_shifted_pair_of_prec_or_revPrec
     {f g : ℝ[X]}
-    (h : Prec f (g + X * f) ∨ Prec (g + X * f) f)
+    (h : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f)
     (hdeg : (g + X * f).natDegree = f.natDegree + 1) :
-    Prec f (g + X * f) := by
+    StrictInterl f (g + X * f) := by
   rcases h with hfg | hgf
   · lia
   · exact False.elim (not_revPrec_of_shifted_pair_succDegree hdeg hgf)
 
 private lemma prec_of_prec_shifted_pair_sameDegree
     {f g : ℝ[X]}
-    (h : Prec f (g + X * f))
+    (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0)
     (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
-    Prec f g := by
+    StrictInterl f g := by
   have hf : (f ≠ 0 ∧ f.Splits) := h.1
   have hshift : ((g + X * f) ≠ 0 ∧ (g + X * f).Splits) := h.2.1
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
@@ -260,13 +260,13 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     unfold a
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hscaled : Prec (C a * f) (C a * (g + X * f)) :=
+  have hscaled : StrictInterl (C a * f) (C a * (g + X * f)) :=
     prec_C_mul_right (prec_C_mul_left h ha_ne) ha_ne
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
   have hshift_nonpos : ∀ r ∈ (g + X * f).roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hshift.2 hshift_nonneg
   have hprec0 :
-      Prec0 (C a * f) (C a * (g + X * f) - X * (C a * f)) := by
+      Interl (C a * f) (C a * (g + X * f) - X * (C a * f)) := by
     have hdeg_scaled : (C a * f).natDegree + 1 = (C a * (g + X * f)).natDegree := by
       rw [natDegree_C_mul ha_ne, natDegree_C_mul ha_ne, hshift_deg]
     simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, mul_assoc] using
@@ -278,13 +278,13 @@ private lemma prec_of_prec_shifted_pair_sameDegree
         (by
           simp_all)
   have hEq_sub : C a * (g + X * f) - X * (C a * f) = C a * g := by grind
-  have hprec_scaled : Prec (C a * f) (C a * g) := by
+  have hprec_scaled : StrictInterl (C a * f) (C a * g) := by
     rw [hEq_sub] at hprec0
     have hCa_f_ne : C a * f ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha_ne) hf0
     have hCa_g_ne : C a * g ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha_ne) hg0
     rcases hprec0 with hleft0 | hright0 | hprec <;> lia
   have hprec_back :
-      Prec (C a⁻¹ * (C a * f)) (C a⁻¹ * (C a * g)) :=
+      StrictInterl (C a⁻¹ * (C a * f)) (C a⁻¹ * (C a * g)) :=
     prec_C_mul_right
       (prec_C_mul_left hprec_scaled (inv_ne_zero ha_ne))
       (inv_ne_zero ha_ne)
@@ -300,13 +300,13 @@ private lemma prec_of_prec_shifted_pair_sameDegree
 
 private lemma prec_right_pair_of_prec_shifted_pair_sameDegree
     {f g : ℝ[X]}
-    (h : Prec f (g + X * f))
+    (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0)
     (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_to_prec_mul_X_of_nonneg
     (prec_of_prec_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
     hfnn hgnn
@@ -345,7 +345,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   -- Both degree branches (same and succ) reduce to the AllCombo upgrade
   -- `allComboRealRooted_of_affine_family_succDegree`, applied either to
   -- the original pair (succ case) or to the shifted pair (same case).
@@ -375,10 +375,10 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
         hf0 hshift_ne hfnn hshift_nonneg
         (shifted_affine_family_of_affine_family haff)
         hXf_rr hshift_deg hno_shift
-    have hprec_or : Prec f (g + X * f) ∨ Prec (g + X * f) f :=
+    have hprec_or : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f :=
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
         (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
-    have hprec_f_shift : Prec f (g + X * f) :=
+    have hprec_f_shift : StrictInterl f (g + X * f) :=
       prec_forward_of_orientation_of_succDegree hshift_deg hprec_or
     exact
       prec_right_pair_of_prec_shifted_pair_sameDegree
@@ -391,10 +391,10 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     have hall : AllComboRealRooted g f :=
       AffineFamily.allComboRealRooted_of_affine_family_succDegree
         hf0 hg0 hfnn hgnn haff hXf_rr hsucc hno_fg_fun
-    have hprec_or : Prec f g ∨ Prec g f :=
+    have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
-    have hprec_fg : Prec f g :=
+    have hprec_fg : StrictInterl f g :=
       prec_forward_of_orientation_of_succDegree hsucc hprec_or
     exact prec_to_prec_mul_X_of_nonneg hprec_fg hfnn hgnn
 
@@ -411,7 +411,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_remaining
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_right_pair_of_affine_family_high_degree_core
     hf0 hg0 hfnn hgnn haff hno_common_fg
 
@@ -424,7 +424,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf2 : 2 ≤ f.natDegree) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   refine
     Nat.strong_induction_on
       (p := fun n =>
@@ -437,7 +437,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
           (∀ {s t : ℝ}, 0 < s → 0 < t →
             ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) →
           2 ≤ f.natDegree →
-          Prec g (X * f))
+          StrictInterl g (X * f))
       f.natDegree ?_ rfl hf0 hg0 hfnn hgnn haff hdegf2
   intro n ih f g hfdeg hf0 hg0 hfnn hgnn haff hdegf2
   have hXf_rr : ((X * f) ≠ 0 ∧ (X * f).Splits) :=
@@ -484,23 +484,23 @@ private lemma prec_right_pair_of_affine_family_high_degree
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne,
           natDegree_X_sub_C] at hdegf2
         lia
-      -- By induction, the quotient pair satisfies Prec q_shift (X * qf).
-      have hprec_q : Prec q_shift (X * qf) := by
+      -- By induction, the quotient pair satisfies StrictInterl q_shift (X * qf).
+      have hprec_q : StrictInterl q_shift (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
             AffineFamily.prec_right_pair_of_affine_family_degree_one
               hqf_ne hq_shift_ne hqf_nonneg hq_shift_nonneg hq_aff hqf_deg1
         · grind
-      -- Lift: Prec (g + X * f) (X * f) from Prec q_shift (X * qf).
-      have hprec_shift : Prec (g + X * f) (X * f) := by
+      -- Lift: StrictInterl (g + X * f) (X * f) from StrictInterl q_shift (X * qf).
+      have hprec_shift : StrictInterl (g + X * f) (X * f) := by
         have hXf_eq : X * f = (X - C r) * (X * qf) := by grind
         have hshift_eq : g + X * f = (X - C r) * q_shift := hq_shift
         rw [hshift_eq, hXf_eq]
         exact prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
-      -- Step back: Prec f (g + X * f) from Prec (g + X * f) (X * f).
-      have hprec_f_shift : Prec f (g + X * f) :=
+      -- Step back: StrictInterl f (g + X * f) from StrictInterl (g + X * f) (X * f).
+      have hprec_f_shift : StrictInterl f (g + X * f) :=
         prec_of_prec_mul_X_of_nonneg hprec_shift hfnn hshift_nonneg
-      -- Conclude: Prec g (X * f) from the shifted-pair Prec.
+      -- Conclude: StrictInterl g (X * f) from the shifted-pair StrictInterl.
       exact
         prec_right_pair_of_prec_shifted_pair_sameDegree
           hprec_f_shift hf0 hg0 hfnn hgnn hsame
@@ -519,7 +519,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
       have hqf_deg_pos : 1 ≤ qf.natDegree := by
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C] at hdegf2
         lia
-      have hprec_q : Prec qg (X * qf) := by
+      have hprec_q : StrictInterl qg (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
             AffineFamily.prec_right_pair_of_affine_family_degree_one
@@ -544,7 +544,7 @@ theorem prec_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     :
-    Prec f g := by
+    StrictInterl f g := by
   have hdeg_cases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
     AffineFamily.natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff
   have hXf_rr : ((X * f) ≠ 0 ∧ (X * f).Splits) :=
@@ -561,7 +561,7 @@ theorem prec_of_affine_family_nonneg
   by_cases hdegf1 : f.natDegree = 1
   · exact AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1
   have hdegf2 : 2 ≤ f.natDegree := by lia
-  have hprec_pair : Prec g (X * f) :=
+  have hprec_pair : StrictInterl g (X * f) :=
     prec_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
   exact prec_of_prec_mul_X_of_nonneg hprec_pair hfnn hgnn
 
@@ -576,7 +576,7 @@ theorem prec_right_pair_of_affine_family_nonneg
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_to_prec_mul_X_of_nonneg
     (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
@@ -607,7 +607,7 @@ theorem prec_of_affine_segment_endpoints_nonneg
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
   intro s t hs ht
   have hseg :
@@ -644,7 +644,7 @@ theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
   intro s t hs ht
   have hseg :
@@ -688,7 +688,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_segment_endpoints_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn ?_
     hleft hright
   intro s t hs ht
@@ -729,7 +729,7 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
   prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn
     hpencil_ne
     (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
@@ -767,7 +767,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_segment_endpoints_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
     hHβnn ?_ hleft_pos hright_pos hdeg
   intro s t hs ht
@@ -807,7 +807,7 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
+    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
   prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
     hHβnn hpencil_ne
     (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
@@ -862,7 +862,7 @@ theorem prec_shifted_pair_of_affine_family_nonneg
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    Prec f (g + X * f) := by
+    StrictInterl f (g + X * f) := by
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
     hgnn.add hfnn.X_mul
   have hshift_ne : g + X * f ≠ 0 :=
@@ -885,7 +885,7 @@ theorem prec_right_pair_of_affine_family_nonneg_sameDegree
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : g.natDegree = f.natDegree) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_right_pair_of_prec_shifted_pair_sameDegree
     (prec_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
     hf0 hg0 hfnn hgnn hdeg
@@ -896,12 +896,12 @@ already satisfies `f ≺ g`. This packages the internal subtraction step used in
 the affine-family same-degree branch. -/
 theorem prec_of_prec_shifted_pair_sameDegree_nonneg
     {f g : ℝ[X]}
-    (h : Prec f (g + X * f))
+    (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
-    Prec f g :=
+    StrictInterl f g :=
   prec_of_prec_shifted_pair_sameDegree
     h hf0 hg0 hfnn hgnn hdeg
 
@@ -967,10 +967,10 @@ lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
   exact (nonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
 lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) :
-    Prec0 (1 : ℝ[X]) (C a * X + C b) := by
+    Interl (1 : ℝ[X]) (C a * X + C b) := by
   have hInter : Interlaces (1 : ℝ[X]) (C a * X + C b) := by
     refine interlaces_one_linear ?_
     grind
-  exact hInter.toPrec.toPrec0
+  exact hInter.toStrictInterl.toInterl
 
 end RealRooted

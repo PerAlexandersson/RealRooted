@@ -23,10 +23,10 @@ soon as each `gᵢ` has the same right-hand target `f` and each coefficient
 polynomial evaluates nonpositively there. -/
 lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
     {f g₀ : ℝ[X]}
-    (hg₀f : Prec g₀ f)
+    (hg₀f : StrictInterl g₀ f)
     (hg₀_pos : HasPosLeadingCoeff g₀) :
     ∀ {l : List (ℝ[X] × ℝ[X])},
-      (∀ bg ∈ l, Prec bg.2 f) →
+      (∀ bg ∈ l, StrictInterl bg.2 f) →
       (∀ bg ∈ l, HasPosLeadingCoeff bg.2) →
       (∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) →
       ∀ r : ℝ, f.IsRoot r →
@@ -34,7 +34,7 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
   | [], _, _, _, r, hr => by
       simp
   | (b, g) :: l, hprec, hpos, hcoeff, r, hr => by
-      have hgf : Prec g f := hprec (b, g) (by simp)
+      have hgf : StrictInterl g f := hprec (b, g) (by simp)
       have hg_pos : HasPosLeadingCoeff g := hpos (b, g) (by simp)
       have hb_nonpos : b.eval r ≤ 0 := hcoeff (b, g) (by simp) r hr
       have hgg_nonneg : 0 ≤ g.eval r * g₀.eval r :=
@@ -46,7 +46,7 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
                   simp [Polynomial.eval_mul]
                   ring
           _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hb_nonpos hgg_nonneg
-      have htail_prec : ∀ bg ∈ l, Prec bg.2 f :=
+      have htail_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
         List.forall_mem_of_forall_mem_cons hprec
       have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 :=
         List.forall_mem_of_forall_mem_cons hpos
@@ -70,11 +70,11 @@ the remaining terms are only nonpositive there, then the whole weighted sum has
 strictly opposite sign from that distinguished interlacer. -/
 lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
     {f g : ℝ[X]} {b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0)
-    (hl_prec : ∀ bg ∈ l, Prec bg.2 f)
+    (hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f)
     (hl_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2)
     (hl_nonpos : ∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) :
   ∀ r : ℝ, f.IsRoot r →
@@ -113,15 +113,15 @@ theorem prec_generalizedLiuWang_strict_same
     (hdeg : (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
-    fun bg hmem => (hl_inter bg hmem).toPrec
+  have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
+    fun bg hmem => (hl_inter bg hmem).toStrictInterl
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
-      hgf.toPrec hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
+      hgf.toStrictInterl hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
   simp_all
 
 /-- Strict finite-family Liu--Wang theorem in the differ-by-1 case. -/
@@ -136,15 +136,15 @@ theorem prec_generalizedLiuWang_strict_succ
     (hdeg : (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
-    fun bg hmem => (hl_inter bg hmem).toPrec
+  have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
+    fun bg hmem => (hl_inter bg hmem).toStrictInterl
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
-      hgf.toPrec hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
+      hgf.toStrictInterl hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
   simp_all
 
 /-- Degree-bounded strict finite-family Liu--Wang theorem. This is the first
@@ -164,7 +164,7 @@ theorem prec_generalizedLiuWang_strict
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   have hcases :
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree ∨
         (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree + 1 := by
@@ -195,7 +195,7 @@ theorem prec_generalizedLiuWang_of_no_common
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   let F : ℝ[X] := a * f + polynomialWeightedSum ((b, g) :: l)
   have hF_rr : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf
@@ -228,7 +228,7 @@ theorem prec_generalizedLiuWang_of_no_common
         simp
         linarith
       have hprecδ :
-          Prec f (a * f + polynomialWeightedSum (((b - C δ), g) :: l)) :=
+          StrictInterl f (a * f + polynomialWeightedSum (((b - C δ), g) :: l)) :=
         prec_generalizedLiuWang_strict hgf hg_pos hl_inter hl_pos hl_nonpos
           hFδ_pos hFδ_lo hFδ_hi hno hbδ_neg
       have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧
@@ -238,8 +238,9 @@ theorem prec_generalizedLiuWang_of_no_common
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
-    have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f :=
-      List.forall_mem_cons.2 ⟨hgf.toPrec, fun bg hmem => (hl_inter bg hmem).toPrec⟩
+    have hprec_all : ∀ bg ∈ ((b, g) :: l), StrictInterl bg.2 f :=
+      List.forall_mem_cons.2
+        ⟨hgf.toStrictInterl, fun bg hmem => (hl_inter bg hmem).toStrictInterl⟩
     have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 :=
       List.forall_mem_cons.2 ⟨hg_pos, hl_pos⟩
     have hcoeff_all :
@@ -251,7 +252,7 @@ theorem prec_generalizedLiuWang_of_no_common
               simp_all [F, Polynomial.eval_add, Polynomial.eval_mul]
       _ ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
-          hgf.toPrec hg_pos hprec_all hpos_all hcoeff_all r hr
+          hgf.toStrictInterl hg_pos hprec_all hpos_all hcoeff_all r hr
   simpa [F] using
     prec_of_interlaces_eval_mul_nonpos_of_no_common
       hgf hg_pos hF_rr.1 hF_rr.2 hF_pos hdeg_lo hdeg_hi hno hroot_nonpos
@@ -274,7 +275,7 @@ def generalizedLiuWangCriterionStatement : Prop :=
     HasPosLeadingCoeff (a * f + polynomialWeightedSum ((b, g) :: l)) →
     f.natDegree ≤ (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree →
     (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1 →
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l))
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l))
 
 theorem generalizedLiuWangCriterion :
     generalizedLiuWangCriterionStatement := by

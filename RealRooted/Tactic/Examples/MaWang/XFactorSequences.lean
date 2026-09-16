@@ -13,7 +13,7 @@ namespace Tactic
 
 /-- OEIS Family B shell: `P_{n+2}=U_nP_{n+1}+X Q_n P'_{n+1}`. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -23,7 +23,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
         U n * P (n + 1) + (X * Q n) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_X_mul_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -36,7 +36,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the `X Q_n P'` shell. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -59,7 +59,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
 
 /-- Touchard/Bell base shell: `P_{n+2}=U_nP_{n+1}+X P'_{n+1}`. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -67,7 +67,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_X_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -79,7 +79,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -99,14 +99,14 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Strict-degree shortcut for the `X P'` Ma--Wang sequence shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_X_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -117,7 +117,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- The strict-degree Ma--Wang shell feeds the generic interlacing finish. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -125,7 +125,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
     rr_mw_derivative_X_sequence_nonneg using
       base := hbase,
       pos_lc := hpos,
@@ -137,7 +137,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Strict-degree real-rootedness endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -155,7 +155,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Projection endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -176,7 +176,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Positive-constant MW2 shell:
 `P_{n+2}=U_nP_{n+1}+c_n X P'_{n+1}`. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -185,7 +185,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
       P (n + 2) = U n * P (n + 1) + (C (c n) * X) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -198,7 +198,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 
 /-- Positive-constant MW2 shell with automatic scalar positivity. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -207,7 +207,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
         U n * P (n + 1) + (C ((n : ℝ) + 2) * X) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_sequence_nonneg_auto using
     base := hbase,
     pos_lc := hpos,
@@ -219,7 +219,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the positive-constant MW2 shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -241,7 +241,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 
 /-- Automatic real-rootedness endpoint for the positive-constant MW2 shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -262,7 +262,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Projection endpoint for the automatic positive-constant MW2 shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -284,7 +284,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 /-- Scalar Family B shell:
 `P_{n+2}=U_nP_{n+1}+c_n X Q_n P'_{n+1}`. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -295,7 +295,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
         U n * P (n + 1) + (C (c n) * X * Q n) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_mul_sequence_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -310,7 +310,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
 /-- Real-rootedness endpoint for the scalar Family B shell with an explicit
 coefficient-positivity certificate. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -335,7 +335,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
 
 /-- The scalar Family B shell with automatic coefficient positivity. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -346,7 +346,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
           (C ((n : ℝ) + 1) * X * Q n) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_mul_sequence_nonneg_auto using
     base := hbase,
     pos_lc := hpos,
@@ -359,7 +359,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
 
 /-- Automatic real-rootedness endpoint for the scalar Family B shell. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -383,7 +383,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
 
 /-- Projection endpoint for the automatic scalar Family B shell. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -407,7 +407,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
 
 /-- Denominator-fused scalar Family B shell. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -421,7 +421,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
           C (b n) * ((X * Q n) * (P (n + 1)).derivative))
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_nonneg using
     base := hbase,
     pos_lc := hpos,
@@ -439,7 +439,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
 /-- Automatic coefficient side-goal for the denominator-fused scalar
 Family B shell. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -452,7 +452,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b d : Nat → ℝ}
           C (b n) * ((X * Q n) * (P (n + 1)).derivative))
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_nonneg_auto using
     base := hbase,
     pos_lc := hpos,
@@ -469,7 +469,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b d : Nat → ℝ}
 /-- Real-rootedness endpoint for the denominator-fused scalar Family B shell
 with an explicit coefficient certificate. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -500,7 +500,7 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
 
 /-- Automatic denominator-fused scalar Family B endpoint. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)

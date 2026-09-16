@@ -20,10 +20,10 @@ namespace RealRooted
 theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
-    (h : Prec u v)
+    (h : StrictInterl u v)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v) :
-    Prec (fPolynomial d u) (fPolynomial d v) := by
+    StrictInterl (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hu_rr, hv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud : u.natDegree ≤ d := by simp_all
@@ -128,9 +128,9 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
     (hud : u.natDegree = d) (hvd : v.natDegree = d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
-    (h : Prec (fPolynomial d u) (fPolynomial d v))
+    (h : StrictInterl (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    Prec u v := by
+    StrictInterl u v := by
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud_le : u.natDegree ≤ d := by lia
@@ -212,9 +212,9 @@ theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeff
     (hud : u.natDegree + 1 = d) (hvd : v.natDegree = d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
-    (h : Prec (fPolynomial d u) (fPolynomial d v))
+    (h : StrictInterl (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    Prec u v := by
+    StrictInterl u v := by
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud_le : u.natDegree ≤ d := by lia
@@ -339,7 +339,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    ¬ Prec (fPolynomial d u) (fPolynomial d v) := by
+    ¬ StrictInterl (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
   intro h
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
@@ -415,7 +415,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    ¬ Prec (fPolynomial d u) (fPolynomial d v) := by
+    ¬ StrictInterl (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
   intro h
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
@@ -520,9 +520,9 @@ theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     (hd : d = max u.natDegree v.natDegree)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
-    (h : Prec (fPolynomial d u) (fPolynomial d v))
+    (h : StrictInterl (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    Prec u v := by
+    StrictInterl u v := by
   have hud : u.natDegree ≤ d := by simp_all
   have hvd : v.natDegree ≤ d := by simp_all
   by_cases hv_eq : v.natDegree = d
@@ -549,7 +549,7 @@ theorem prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
-    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v) := by
+    (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v) := by
   constructor
   · intro h
     exact prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
@@ -561,7 +561,7 @@ theorem prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
 /-- If `u ≺ v` and both have nonnegative coefficients, then their
 Brändén--Solus `f`-polynomials form a positive-combination real-rooted pair. -/
 theorem posComboRealRooted_fPolynomial_of_prec
-    {d : ℕ} {u v : ℝ[X]} (h : Prec u v)
+    {d : ℕ} {u v : ℝ[X]} (h : StrictInterl u v)
     (hud : u.natDegree ≤ d) (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     PosComboRealRooted (fPolynomial d u) (fPolynomial d v) := by

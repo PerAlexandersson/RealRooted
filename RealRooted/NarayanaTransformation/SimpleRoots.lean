@@ -33,10 +33,10 @@ theorem narayanaPolynomial_derivative_hasSimpleRoots
   rcases n with _ | _ | n
   · simp at hn
   · simp [narayanaPolynomial_one, HasSimpleRoots]
-  · have hprec : Prec (narayanaPolynomial m (n + 2)).derivative
+  · have hprec : StrictInterl (narayanaPolynomial m (n + 2)).derivative
         (narayanaPolynomial m (n + 2)) :=
       (derivative_interlaces (splits_narayanaPolynomial m (n + 2))
-        (by rw [natDegree_narayanaPolynomial]; lia)).toPrec
+        (by rw [natDegree_narayanaPolynomial]; lia)).toStrictInterl
     exact (hprec.hasSimpleRoots_of_no_common_root (fun _ hr ↦
       (narayanaPolynomial_hasSimpleRoots m (n + 2)).eval_derivative_ne_zero hr.2 hr.1)).1
 

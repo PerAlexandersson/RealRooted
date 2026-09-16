@@ -45,7 +45,7 @@ example
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hpos : (bezoutMatrix n q p).PosDef) :
-    Prec p q := by
+    StrictInterl p q := by
   rr_bezout_prec_of_pos_def using
     left_pos_lc := hp_pos,
     right_pos_lc := hq_pos,
@@ -111,7 +111,7 @@ example
     (hP_deg : ∀ i : Nat, (P i).natDegree = d i)
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
-    ∀ i : Nat, Prec (P i) (Q i) := by
+    ∀ i : Nat, StrictInterl (P i) (Q i) := by
   rr_bezout_sequence_prec_of_pos_def using
     left_pos_lc := hP_pos,
     right_pos_lc := hQ_pos,

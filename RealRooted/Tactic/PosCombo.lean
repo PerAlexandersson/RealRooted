@@ -14,18 +14,18 @@ namespace Tactic
 
 theorem posCombo_sequence_nonneg_right_prec
     {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 ≤ a i)
     (hb : ∀ i : Nat, 0 ≤ b i)
     (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
-    ∀ i : Nat, Prec (C (a i) * F i + C (b i) * G i) (G i) := fun i =>
+    ∀ i : Nat, StrictInterl (C (a i) * F i + C (b i) * G i) (G i) := fun i =>
   prec_nonneg_combo_right (hfg i) (hF i) (hG i) (ha i) (hb i) (hab i)
 
 theorem posCombo_sequence_nonneg_realrooted
     {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 ≤ a i)
@@ -39,7 +39,7 @@ theorem posCombo_sequence_nonneg_realrooted
 
 theorem posCombo_sequence_positive_realrooted
     {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
     (ha : ∀ i : Nat, 0 < a i)
@@ -77,15 +77,15 @@ theorem posCombo_sequence_add_left_realrooted
   PosComboRealRooted.isRealRooted_add_left (hfg i) (hlam i)
 
 theorem posCombo_sequence_of_prec {F G : Nat → ℝ[X]}
-    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := fun i =>
   PosComboRealRooted.of_prec (hfg i) (hF i) (hG i)
 
 theorem posCombo_sequence_of_common_left {F G H : Nat → ℝ[X]}
-    (hHF : ∀ i : Nat, Prec (H i) (F i))
-    (hHG : ∀ i : Nat, Prec (H i) (G i))
+    (hHF : ∀ i : Nat, StrictInterl (H i) (F i))
+    (hHG : ∀ i : Nat, StrictInterl (H i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := fun i =>

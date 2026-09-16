@@ -31,7 +31,7 @@ theorem TDeriv_sequence_prec {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ i : Nat, 0 < eps i)
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
-    ∀ i : Nat, Prec (P i) (TDeriv (eps i) (P i)) := fun i =>
+    ∀ i : Nat, StrictInterl (P i) (TDeriv (eps i) (P i)) := fun i =>
   RealRooted.prec_TDeriv (heps i) (hP0 i) (hP i)
 
 theorem iterateTDeriv_sequence_ne_zero
@@ -53,7 +53,7 @@ theorem iterateTDeriv_sequence_prec_succ
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
     ∀ i : Nat,
-      Prec (iterateTDeriv (eps i) (K i) (P i))
+      StrictInterl (iterateTDeriv (eps i) (K i) (P i))
         (iterateTDeriv (eps i) (K i + 1) (P i)) := fun i =>
   RealRooted.prec_iterateTDeriv_succ (heps i) (hP0 i) (hP i)
 

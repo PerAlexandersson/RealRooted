@@ -39,7 +39,7 @@ private theorem eval_complexPolynomialInFirstMv
 
 private theorem gammaSymbol_residual_stable
     {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
-    (hpq : Prec q p) (hdegree : 1 ≤ p.natDegree) :
+    (hpq : StrictInterl q p) (hdegree : 1 ≤ p.natDegree) :
     MvUpperHalfPlaneStable
       (complexifyMv
         (BorceaBranden.polynomialInFirstMv p +
@@ -133,7 +133,7 @@ theorem gammaSymbol_even_root_order (m : ℕ) (hm : 0 < m) :
 
 /-- The even residual factors are in the required directed proper position. -/
 theorem gammaSymbol_even_prec (m : ℕ) (hm : 0 < m) :
-    Prec (gammaSymbolQ (2 * m)) (gammaSymbolP (2 * m) m) := by
+    StrictInterl (gammaSymbolQ (2 * m)) (gammaSymbolP (2 * m) m) := by
   rw [gammaSymbolP_even, gammaSymbolQ_even m hm]
   apply prec_C_mul_right
   · apply prec_C_mul_left
@@ -209,7 +209,7 @@ theorem gammaSymbolQ_odd_isRoot (m : ℕ) :
 
 /-- The odd residual factors are in the required directed proper position. -/
 theorem gammaSymbol_odd_prec (m : ℕ) (hm : 0 < m) :
-    Prec (gammaSymbolQ (2 * m + 1)) (gammaSymbolP (2 * m + 1) m) := by
+    StrictInterl (gammaSymbolQ (2 * m + 1)) (gammaSymbolP (2 * m + 1) m) := by
   rw [gammaSymbolP_odd, gammaSymbolQ_odd]
   apply prec_C_mul_left
   · simpa [sub_eq_add_neg] using
@@ -217,7 +217,7 @@ theorem gammaSymbol_odd_prec (m : ℕ) (hm : 0 < m) :
         (α := -(1 / (4 * (m : ℝ) + 2)))
         (r := -(m + 1 : ℝ) / 2) (s := 0) (c := (2 : ℝ))
         (by norm_num) (gammaSymbol_odd_root_order m hm).1.le
-        (gammaSymbol_odd_root_order m hm).2.le).toPrec
+        (gammaSymbol_odd_root_order m hm).2.le).toStrictInterl
   · positivity
 
 private theorem gammaSymbolP_even_pos (m : ℕ) :

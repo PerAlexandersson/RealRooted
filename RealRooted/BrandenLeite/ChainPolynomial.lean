@@ -23,12 +23,12 @@ namespace RealRooted.BrandenLeite
 theorem prec0_fPolynomial {d : ℕ} {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : Prec0 p q) :
-    Prec0 (fPolynomial d p) (fPolynomial d q) := by
+    (hpq : Interl p q) :
+    Interl (fPolynomial d p) (fPolynomial d q) := by
   rcases hpq with rfl | rfl | hpq
-  · simp [prec0_zero_left]
-  · simp [prec0_zero_right]
-  · exact (precFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toPrec0
+  · simp [interl_zero_left]
+  · simp [interl_zero_right]
+  · exact (precFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
 
 theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     {d : ℕ} {fs : List ℝ[X]}
@@ -153,14 +153,14 @@ private theorem scale_range_interlacing
     IsInterlacingSeq0NonnegRealRooted
       ((List.range q).map fun j => C (a j) * f j) := by
   have scaleLeft : ∀ {p r : ℝ[X]} {c : ℝ},
-      Prec0 p r → 0 ≤ c → Prec0 (C c * p) r := by
+      Interl p r → 0 ≤ c → Interl (C c * p) r := by
     intro p r c hpr hc
     rcases eq_or_lt_of_le hc with rfl | hc_pos
-    · simp [prec0_zero_left]
+    · simp [interl_zero_left]
     rcases hpr with hp | hr | hpr
-    · simp [hp, prec0_zero_left]
-    · simpa [hr] using prec0_zero_right (C c * p)
-    · exact (prec_C_mul_left hpr hc_pos.ne').toPrec0
+    · simp [hp, interl_zero_left]
+    · simpa [hr] using interl_zero_right (C c * p)
+    · exact (prec_C_mul_left hpr hc_pos.ne').toInterl
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_
@@ -355,7 +355,7 @@ correct general statement for nonnegative resolution weights: some weights,
 and hence some chain polynomials, may vanish. -/
 theorem prec0_chainPolynomial_succ
     {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) (n : ℕ) :
-    Prec0 (chainPolynomial R n) (chainPolynomial R (n + 1)) := by
+    Interl (chainPolynomial R n) (chainPolynomial R (n + 1)) := by
   let F : ℕ → ℝ[X] := fun j =>
     subdivisionOperator R (resolution.polynomial n j)
   let S : ℝ[X] := ∑ j ∈ Finset.range (n + 1), C (resolution.lambda n j) * F j
@@ -363,12 +363,12 @@ theorem prec0_chainPolynomial_succ
   have hmem : ∀ j, j ≤ n → F j ∈ subdivisionRow resolution n := by
     intro j hj
     exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
-  have hbase : ∀ j, j ≤ n → Prec0 (F j) (F n) := by
+  have hbase : ∀ j, j ≤ n → Interl (F j) (F n) := by
     intro j hj
     rcases eq_or_lt_of_le hj with hEq | hjn
     · subst j
       by_cases h0 : F n = 0
-      · simp [h0, prec0_zero_left]
+      · simp [h0, interl_zero_left]
       · exact prec0_refl_of_realRooted ⟨h0, hrow.splits (hmem n le_rfl) h0⟩
     · let i : Fin (subdivisionRow resolution n).length := ⟨j, by simp; lia⟩
       let last : Fin (subdivisionRow resolution n).length := ⟨n, by simp⟩
@@ -376,7 +376,7 @@ theorem prec0_chainPolynomial_succ
         change j < n
         exact hjn)
       simpa [F, subdivisionRow, i, last] using hprec
-  have hSprec : Prec0 S (F n) := by
+  have hSprec : Interl S (F n) := by
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -405,7 +405,7 @@ nonzero. -/
 theorem prec_chainPolynomial_succ_of_ne
     {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) (n : ℕ)
     (hn : chainPolynomial R n ≠ 0) (hsucc : chainPolynomial R (n + 1) ≠ 0) :
-    Prec (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
-  (prec0_chainPolynomial_succ resolution n).toPrec_of_ne hn hsucc
+    StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
+  (prec0_chainPolynomial_succ resolution n).toStrictInterl_of_ne hn hsucc
 
 end RealRooted.BrandenLeite

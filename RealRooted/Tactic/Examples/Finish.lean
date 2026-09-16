@@ -4,7 +4,7 @@ import RealRooted.Tactic.Finish
 /-!
 # Finish tactic examples
 
-Abstract smoke tests for tactics that consume `Prec` certificates.
+Abstract smoke tests for tactics that consume `StrictInterl` certificates.
 -/
 
 open Polynomial
@@ -122,11 +122,11 @@ example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
   rr_finish
 
 example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    Prec p.derivative p := by
+    StrictInterl p.derivative p := by
   rr_finish using hp
 
 example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    Prec p.derivative p := by
+    StrictInterl p.derivative p := by
   rr_finish
 
 example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
@@ -437,39 +437,39 @@ example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree = 1) :
     f ≠ 0 ∧ f.Splits := by
   rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_nonzero using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 := by rr_nonzero using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_nonzero
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 := by rr_nonzero
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by rr_finish using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_splits using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g.Splits := by rr_splits using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_splits
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g.Splits := by rr_splits
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 ∧ f.Splits := by rr_realrooted
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g ≠ 0 ∧ g.Splits := by rr_realrooted
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 := by rr_nonzero using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g ≠ 0 := by rr_nonzero using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f.Splits := by rr_splits using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f.Splits := by rr_splits using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : f ≠ 0 ∧ f.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g ≠ 0 ∧ g.Splits := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by rr_finish using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g ≠ 0 ∧ g.Splits := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : g = 0 ∨ g.Splits := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : g = 0 ∨ g.Splits := by rr_finish
 
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
@@ -634,62 +634,62 @@ example {P : Nat → ℝ[X]} {n : Nat}
   rr_finish
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_nonzero using hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 := by
   rr_nonzero using hprec
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, (P n).Splits := by
   rr_splits using hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
   rr_splits using hprec
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
   rr_zero_or_splits using hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 ∧ (P n).Splits := by
   rr_realrooted using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, A n ≠ 0 := by
   rr_nonzero using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, B n ≠ 0 := by
   rr_nonzero using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, (A n).Splits := by
   rr_splits using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, (B n).Splits := by
   rr_splits using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits := by
   rr_realrooted using hprec
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
   rr_finish using hprec
 
@@ -927,42 +927,42 @@ example {A B : Nat → ℝ[X]} {n : Nat}
     A n = 0 ∨ (A n).Splits := by
   rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
   rr_interlaces using hfg, hdeg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
   rr_interlaces using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
   rr_interlaces using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
   rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
   rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
   rr_finish using hfg, hdeg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
   rr_interlaces using hfg, hdeg
 
-example {f g : ℝ[X]} (hfg : Prec f g)
+example {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
   rr_finish
@@ -991,129 +991,129 @@ example {p : ℝ[X]} {d : Nat}
     top_eq := htop,
     above := habove
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_prec0 using hfg
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_finish
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by rr_finish using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_prec using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_prec using hfg
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec using hinter
 
 example {P : Nat → ℝ[X]} {n : Nat}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_prec using hinter
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_finish using hinter
 
 example {P : Nat → ℝ[X]} {n : Nat}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    Prec (P n) (P (n + 1)) := by
+    StrictInterl (P n) (P (n + 1)) := by
   rr_finish using hinter
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by rr_finish
+example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_prec0 using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by rr_finish using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
-    Prec f g := by
+example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
+    StrictInterl f g := by
   rr_prec using hfg, hf, hg
 
-example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
-    Prec f g := by
+example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
+    StrictInterl f g := by
   rr_finish using hfg, hf, hg
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_sequence using
     base := hbase,
     step := hstep
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_finish using hbase, hstep
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_prec_sequence_realrooted using
     base := hbase,
     step := hstep
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_finish using hbase, hstep
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
   rr_prec_sequence_realrooted using
     base := hbase,
     step := hstep
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
   rr_finish_sequence using
     base := hbase,
     step := hstep
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_finish_sequence using
     prec := hprec
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_finish using hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 := by
   rr_finish_sequence using
     prec := hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
   rr_finish using hprec
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
   rr_finish
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish_sequence using
@@ -1121,19 +1121,19 @@ example {P : Nat → ℝ[X]}
     degree := hdegree
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish using hprec, hdegree
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P (n + 1)).natDegree = (P n).natDegree + 1) :
     Interlaces (P n) (P (n + 1)) := by
   rr_finish_sequence using
@@ -1141,21 +1141,21 @@ example {P : Nat → ℝ[X]} {n : Nat}
     degree := hdegree
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P (n + 1)).natDegree = (P n).natDegree + 1) :
     Interlaces (P n) (P (n + 1)) := by
   rr_finish using hprec, hdegree
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_sequence_branches using
     base := hbase,
     degree_branch := hdegree,
@@ -1163,26 +1163,26 @@ example {P : Nat → ℝ[X]}
     successor := hsucc
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_finish using hbase, hdegree, hsame, hsucc
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_prec_sequence_branches_realrooted using
     base := hbase,
@@ -1191,26 +1191,26 @@ example {P : Nat → ℝ[X]}
     successor := hsucc
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
   rr_finish using hbase, hdegree, hsame, hsucc
 
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_finish_sequence_branches using
     base := hbase,
@@ -1219,17 +1219,17 @@ example {P : Nat → ℝ[X]}
     successor := hsucc
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
-    (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
+    (hpq : StrictInterl q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
     IsGeneralizedSturmSeq (p :: q :: rest) := by
   rr_gsturm_cons using hpq, htail
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
-    (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
+    (hpq : StrictInterl q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
     IsGeneralizedSturmSeq (p :: q :: rest) := by
   rr_finish using hpq, htail
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
-    (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
+    (hpq : StrictInterl q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
     IsGeneralizedSturmSeq (p :: q :: rest) := by
   rr_finish
 

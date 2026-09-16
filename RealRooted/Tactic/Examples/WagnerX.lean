@@ -24,47 +24,47 @@ example : 0 < (2 : ℝ) :=
   rr_wagner_pos_term
 
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   rr_prec_mul_X using
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn
 
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   rr_prec_mul_X
 
 /-- Narayana/singleton-free-set-partition style common `X` factor:
 nonnegative coefficients discharge the root-nonpositive side conditions. -/
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) := by
+    StrictInterl (X * f) (X * g) := by
   rr_prec_mul_X_both using
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn
 
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) := by
+    StrictInterl (X * f) (X * g) := by
   rr_prec_mul_X_both
 
 example {f g : ℝ[X]} {c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hc : c ≠ 0) :
-    Prec g ((C c * X) * f) := by
+    StrictInterl g ((C c * X) * f) := by
   rr_prec_C_mul_X using
     proper := hfg,
     left_nonneg := hfnn,
@@ -72,19 +72,19 @@ example {f g : ℝ[X]} {c : ℝ}
     coeff_ne := hc
 
 example {f g : ℝ[X]} {c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hc : c ≠ 0) :
-    Prec g ((C c * X) * f) := by
+    StrictInterl g ((C c * X) * f) := by
   rr_prec_C_mul_X using coeff_ne := hc
 
 example {f g : ℝ[X]} {c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hc : 0 < c) :
-    Prec g ((C c * X) * f) := by
+    StrictInterl g ((C c * X) * f) := by
   rr_prec_C_mul_X using
     proper := hfg,
     left_nonneg := hfnn,
@@ -92,11 +92,11 @@ example {f g : ℝ[X]} {c : ℝ}
     coeff_pos := hc
 
 example {f g : ℝ[X]} {c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hc : 0 < c) :
-    Prec g ((C c * X) * f) := by
+    StrictInterl g ((C c * X) * f) := by
   rr_prec_C_mul_X using coeff_pos := hc
 
 /-- Derivative-lag bridge: a nonnegative real-rooted row gives
@@ -105,7 +105,7 @@ example {f : ℝ[X]}
     (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
-    Prec (X * f.derivative) (X * f) := by
+    StrictInterl (X * f.derivative) (X * f) := by
   rr_prec_X_derivative_X_self using
     splits := hf,
     degree_two := hdeg,
@@ -115,12 +115,12 @@ example {f : ℝ[X]}
     (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
-    Prec (X * f.derivative) (X * f) := by
+    StrictInterl (X * f.derivative) (X * f) := by
   rr_prec_X_derivative_X_self
 
 namespace WagnerXInferenceSmoke
 
-@[rr_base_prec] theorem one_prec_one : Prec (1 : ℝ[X]) 1 :=
+@[rr_base_prec] theorem one_prec_one : StrictInterl (1 : ℝ[X]) 1 :=
   prec_refl (by simp) (by simp)
 
 @[rr_nonneg] theorem one_nonneg : HasNonnegCoeffs (1 : ℝ[X]) :=
@@ -129,35 +129,35 @@ namespace WagnerXInferenceSmoke
 @[rr_nonneg] theorem zero_nonneg : HasNonnegCoeffs (0 : ℝ[X]) :=
   hasNonnegCoeffs_zero
 
-example : Prec (1 : ℝ[X]) (X * 1) := by rr_prec_mul_X
+example : StrictInterl (1 : ℝ[X]) (X * 1) := by rr_prec_mul_X
 
 end WagnerXInferenceSmoke
 
-/-- Plateau sequence bridge: from the adjacent `Prec` invariant on
+/-- Plateau sequence bridge: from the adjacent `StrictInterl` invariant on
 `P_n,P_{n+1}`, the Wagner `X`-shift gives the positive-lag target
 `P_{n+1} ≪ X P_n` without requiring a differ-by-one `Interlaces` certificate. -/
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
-    Prec (P (n + 1)) (X * P n) := by
+    StrictInterl (P (n + 1)) (X * P n) := by
   rr_prec_mul_X using
     proper := hprev,
     left_nonneg := hnonneg n,
     right_nonneg := hnonneg (n + 1)
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
-    Prec (P (n + 1)) (X * P n) := by
+    StrictInterl (P (n + 1)) (X * P n) := by
   rr_prec_mul_X
 
 /-- OEIS-style scalar positive-lag bridge for recurrences with
 `c_n t P_{n-2}`. -/
 example {P : Nat → ℝ[X]} {c : Nat → ℝ} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hc : 0 < c n) :
-    Prec (P (n + 1)) ((C (c n) * X) * P n) := by
+    StrictInterl (P (n + 1)) ((C (c n) * X) * P n) := by
   rr_prec_C_mul_X using
     proper := hprev,
     left_nonneg := hnonneg n,
@@ -167,10 +167,10 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ} {n : Nat}
 /-- OEIS shapes `A052553`/`A061896`/`A169803`:
 `P_n = P_{n-1} + t P_{n-2}`. -/
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec g (g + X * f) := by
+    StrictInterl g (g + X * f) := by
   rr_prec_pos_X_lag_combo using
     proper := hfg,
     left_nonneg := hfnn,
@@ -180,10 +180,10 @@ example {f g : ℝ[X]}
 
 /-- OEIS shape `A201701`: `P_n = 2 P_{n-1} + t P_{n-2}`. -/
 example {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec g (C (2 : ℝ) * g + X * f) := by
+    StrictInterl g (C (2 : ℝ) * g + X * f) := by
   rr_prec_pos_X_lag_combo using
     proper := hfg,
     left_nonneg := hfnn,
@@ -194,11 +194,11 @@ example {f g : ℝ[X]}
 /-- OEIS shape `A106828`: `P_n = n P_{n-1} + n t P_{n-2}` on the
 active range `0 < n`. -/
 example {f g : ℝ[X]} {n : Nat}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hn : 0 < n) :
-    Prec g (C (n : ℝ) * g + (C (n : ℝ) * X) * f) := by
+    StrictInterl g (C (n : ℝ) * g + (C (n : ℝ) * X) * f) := by
   have hn_pos : 0 < (n : ℝ) := by exact_mod_cast hn
   rr_prec_pos_X_lag_combo using
     proper := hfg,
@@ -210,11 +210,11 @@ example {f g : ℝ[X]} {n : Nat}
 /-- Active-range scalar lag: `P_n = P_{n-1} + (c-2)t P_{n-2}` for
 `2 <= c`. -/
 example {f g : ℝ[X]} {c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hc : (2 : ℝ) ≤ c) :
-    Prec g (g + (C (c - 2) * X) * f) := by
+    StrictInterl g (g + (C (c - 2) * X) * f) := by
   have hlag : 0 ≤ c - 2 := sub_nonneg.mpr hc
   rr_prec_pos_X_lag_combo using
     proper := hfg,
@@ -227,11 +227,11 @@ example {f g : ℝ[X]} {c : ℝ}
 for plateau recurrences once the recurrence has been normalized to scalar
 coefficients on `P_{n+1}` and `t P_n`. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (ha : 0 < a n)
     (hc : 0 ≤ c n) :
-    Prec (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) := by
+    StrictInterl (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) := by
   rr_prec_pos_X_lag_combo using
     proper := hprev,
     left_nonneg := hnonneg n,
@@ -242,10 +242,10 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
 /-- Full sequence shell for `A052553`/`A061896`/`A169803`:
 `P_{n+2}=P_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_lag_sequence_auto using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -253,11 +253,11 @@ example {P : Nat → ℝ[X]}
 
 /-- Explicit-coefficient form of the same positive-`X` lag shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_lag_sequence using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -267,7 +267,7 @@ example {P : Nat → ℝ[X]}
 
 /-- A128099 positive-`X` lag with non-unit constant coefficient `2`. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = P (n + 1) + (C (2 : ℝ) * X) * P n) :
@@ -282,11 +282,11 @@ example {P : Nat → ℝ[X]}
 /-- The coefficient-aware auto frontend also discharges a nonconstant
 nonnegative lag, including the zero value at the initial step. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = P (n + 1) + (C (n : ℝ) * X) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_lag_coeff_sequence_auto using
     current_coeff := fun _ => (1 : ℝ),
     lag_coeff := fun n => (n : ℝ),
@@ -296,7 +296,7 @@ example {P : Nat → ℝ[X]}
 
 /-- Real-rootedness corollary for the same `P_{n+2}=P_{n+1}+tP_n` shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
@@ -307,7 +307,7 @@ example {P : Nat → ℝ[X]}
 
 /-- Explicit-coefficient real-rootedness endpoint for the positive-`X` shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
@@ -354,7 +354,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {d : Nat}
     recurrence := hrec
 
 /-! The fixed affine-lag frontends perform the translation internally, while
-retaining the plateau-safe Wagner-X degree and `Prec` backends. -/
+retaining the plateau-safe Wagner-X degree and `StrictInterl` backends. -/
 
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ} {d : Nat}
     (hzero : (P 0).natDegree = d ∧ HasPosLeadingCoeff (P 0))
@@ -390,13 +390,13 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ} {d : Nat}
     recurrence := hrec
 
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_sub_C_lag_sequence using
     shift := r,
     base := hbase,
@@ -406,7 +406,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
     recurrence := hrec
 
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -422,7 +422,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
     recurrence := hrec
 
 example {P : Nat → ℝ[X]} {r : ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
     (hrec : ∀ n : Nat,
       P (n + 2) = C (2 : ℝ) * P (n + 1) + (C (1 : ℝ) * (X - C r)) * P n) :
@@ -435,7 +435,7 @@ example {P : Nat → ℝ[X]} {r : ℝ}
 
 /-- Projection endpoint for the same positive-`X` lag shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 := by
@@ -446,10 +446,10 @@ example {P : Nat → ℝ[X]}
 
 /-- Full sequence shell for `A201701`: `P_{n+2}=2P_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = C (2 : ℝ) * P (n + 1) + X * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_unit_lag_sequence_auto using
     current_coeff := fun _ => (2 : ℝ),
     base := hbase,
@@ -458,7 +458,7 @@ example {P : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the same `A201701` unit-lag shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = C (2 : ℝ) * P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
@@ -471,12 +471,12 @@ example {P : Nat → ℝ[X]}
 /-- Full sequence shell for active scalar families such as
 `P_{n+2}=(n+1)P_{n+1}+(n+1)tP_n`. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = C ((n : ℝ) + 1) * P (n + 1) +
         (C ((n : ℝ) + 1) * X) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_pos_X_same_coeff_sequence_auto using
     shared_coeff := fun n => (n : ℝ) + 1,
     base := hbase,
@@ -485,7 +485,7 @@ example {P : Nat → ℝ[X]}
 
 /-- Real-rootedness endpoint for the active same-coefficient shell. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat,
       P (n + 2) = C ((n : ℝ) + 1) * P (n + 1) +
@@ -507,13 +507,13 @@ variant `d_n P_{n+2} = X * (c_n P'_{n+1} + a_n P_n)`.
 
 /-- Single active Wagner derivative-gap-lag step. -/
 example {f g : ℝ[X]} {a c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : 2 ≤ g.natDegree)
     (ha : 0 < a)
     (hc : 0 < c) :
-    Prec g (X * (C c * g.derivative + C a * f)) := by
+    StrictInterl g (X * (C c * g.derivative + C a * f)) := by
   rr_prec_wagner_derivative_gap_lag using
     proper := hfg,
     left_nonneg := hfnn,
@@ -525,53 +525,53 @@ example {f g : ℝ[X]} {a c : ℝ}
 /-- The same step can infer all certificates once the displayed target fixes
 the two polynomials and both scalar coefficients. -/
 example {f g : ℝ[X]} {a c : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : 2 ≤ g.natDegree)
     (ha : 0 < a)
     (hc : 0 < c) :
-    Prec g (X * (C c * g.derivative + C a * f)) := by
+    StrictInterl g (X * (C c * g.derivative + C a * f)) := by
   rr_prec_wagner_derivative_gap_lag
 
 /-- Indexed local families supply the active step without pointwise aliases. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
     (ha : ∀ k : Nat, 0 < a k)
     (hc : ∀ k : Nat, 0 < c k) :
-    Prec (P (n + 1))
+    StrictInterl (P (n + 1))
       (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) := by
   rr_prec_wagner_derivative_gap_lag
 
 /-- Shifted families may instantiate offset certificate families and mix
 indexed with arithmetic scalar bounds. -/
 example {P : Nat → ℝ[X]} {a : Nat → ℝ} {n : Nat}
-    (hchain : ∀ k : Nat, Prec (P k) (P (k + 1)))
+    (hchain : ∀ k : Nat, StrictInterl (P k) (P (k + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
     (ha : ∀ k : Nat, 0 < a k) :
-    Prec (P (n + 4))
+    StrictInterl (P (n + 4))
       (X * (C ((n : ℝ) + 4) * (P (n + 4)).derivative +
         C (a (n + 3)) * P (n + 3))) := by
   rr_prec_wagner_derivative_gap_lag
 
 /-- A recurrence rewrite exposes the rigid target consumed by the bare step. -/
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : Prec (P n) (P (n + 1)))
+    (hprev : StrictInterl (P n) (P (n + 1)))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
     (hrec : ∀ k : Nat,
       P (k + 2) = X * (C (1 : ℝ) * (P (k + 1)).derivative +
         C ((k : ℝ) + 1) * P k)) :
-    Prec (P (n + 1)) (P (n + 2)) := by
+    StrictInterl (P (n + 1)) (P (n + 2)) := by
   rw [hrec n]
   rr_prec_wagner_derivative_gap_lag
 
 /-- Scalar-left single-step wrapper for unnormalized recurrence certificates. -/
 example {f g p : ℝ[X]} {a c d : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : 2 ≤ g.natDegree)
@@ -579,7 +579,7 @@ example {f g p : ℝ[X]} {a c d : ℝ}
     (hc : 0 < c)
     (hd : 0 < d)
     (hrec : C d * p = X * (C c * g.derivative + C a * f)) :
-    Prec g p := by
+    StrictInterl g p := by
   rr_prec_wagner_derivative_gap_lag_den using
     proper := hfg,
     left_nonneg := hfnn,
@@ -592,14 +592,14 @@ example {f g p : ℝ[X]} {a c d : ℝ}
 
 /-- Active-range sequence shell for normalized Wagner derivative-gap-lag rows. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
     (hc : ∀ n : Nat, 0 < c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_wagner_derivative_gap_lag_sequence using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -610,7 +610,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
 
 /-- Real-rootedness endpoint for the normalized active-range shell. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -628,7 +628,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
 
 /-- Projection endpoint for the normalized derivative-gap shell. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -647,7 +647,7 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
 /-- Active-offset `A358623`/`A124324` shape:
 `P_{n+2}=t(P'_{n+1}+(n+1)P_n)`. -/
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
@@ -664,17 +664,17 @@ example {P : Nat → ℝ[X]}
 
 /-- `A358623`, active offset: the recurrence
 `P_{n+5}=t(P'_{n+4}+(n+4)P_{n+3})` preserves the shifted adjacent
-`Prec` invariant from the base pair `P_3 ≪ P_4`. -/
+`StrictInterl` invariant from the base pair `P_3 ≪ P_4`. -/
 theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
-    (hbase : Prec (P 3) (P 4))
+    (hbase : StrictInterl (P 3) (P 4))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 4)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 5) =
         X * (C (1 : ℝ) * (P (n + 4)).derivative + C ((n : ℝ) + 4) * P (n + 3))) :
-    ∀ n : Nat, Prec (P (n + 3)) (P (n + 4)) := by
+    ∀ n : Nat, StrictInterl (P (n + 3)) (P (n + 4)) := by
   let Q : Nat → ℝ[X] := fun n => P (n + 3)
-  have hQbase : Prec (Q 0) (Q 1) := by simpa [Q] using hbase
+  have hQbase : StrictInterl (Q 0) (Q 1) := by simpa [Q] using hbase
   have hQnonneg : ∀ n : Nat, HasNonnegCoeffs (Q n) := by
     intro n
     simpa [Q] using hnonneg (n + 3)
@@ -686,7 +686,7 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
         X * (C (1 : ℝ) * (Q (n + 1)).derivative + C ((n : ℝ) + 4) * Q n) := by
     intro n
     simpa [Q, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hrec n
-  have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) := by
+  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) := by
     rr_prec_wagner_derivative_gap_lag_sequence using
       base := hQbase,
       nonneg_coeffs := hQnonneg,
@@ -700,7 +700,7 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
 /-- `A358623`, active offset: real-rootedness of all shifted active rows
 `P_{n+3}` from the same base and recurrence certificates. -/
 theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
-    (hbase : Prec (P 3) (P 4))
+    (hbase : StrictInterl (P 3) (P 4))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 4)).natDegree)
     (hrec : ∀ n : Nat,
@@ -708,7 +708,7 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
         X * (C (1 : ℝ) * (P (n + 4)).derivative + C ((n : ℝ) + 4) * P (n + 3))) :
     ∀ n : Nat, P (n + 3) ≠ 0 ∧ (P (n + 3)).Splits := by
   let Q : Nat → ℝ[X] := fun n => P (n + 3)
-  have hQbase : Prec (Q 0) (Q 1) := by simpa [Q] using hbase
+  have hQbase : StrictInterl (Q 0) (Q 1) := by simpa [Q] using hbase
   have hQnonneg : ∀ n : Nat, HasNonnegCoeffs (Q n) := by
     intro n
     simpa [Q] using hnonneg (n + 3)
@@ -754,14 +754,14 @@ lemma a358623Shifted_succ_succ (n : Nat) :
   rfl
 
 /-- Concrete base certificate for the shifted `A358623` active family. -/
-lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
+lemma a358623Shifted_base : StrictInterl (a358623Shifted 0) (a358623Shifted 1) := by
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
     interlaces_one_linear (by
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
-  have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
+  have hprec : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by rr_nonneg_coeffs
-  have hmul : Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
+  have hmul : StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_prec_mul_X_both using
       proper := hprec,
       left_nonneg := hasNonnegCoeffs_one,
@@ -812,10 +812,10 @@ lemma a358623Shifted_degree_two_succ (n : Nat) :
   Polynomial.le_natDegree_of_ne_zero
     (ne_of_gt (a358623Shifted_coeff_two_pos_succ n))
 
-/-- Adjacent `Prec` invariant for the shifted recurrence-defined `A358623`
+/-- Adjacent `StrictInterl` invariant for the shifted recurrence-defined `A358623`
 active family. -/
 theorem a358623Shifted_prec :
-    ∀ n : Nat, Prec (a358623Shifted n) (a358623Shifted (n + 1)) := by
+    ∀ n : Nat, StrictInterl (a358623Shifted n) (a358623Shifted (n + 1)) := by
   rr_prec_wagner_derivative_gap_lag_sequence using
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
@@ -837,7 +837,7 @@ theorem a358623Shifted_realRooted :
 
 /-- Active-range sequence shell with a positive scalar on the left side. -/
 example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -846,7 +846,7 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
     (hrec : ∀ n : Nat,
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_prec_wagner_derivative_gap_lag_sequence_den using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -858,7 +858,7 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
 
 /-- Real-rootedness endpoint for the scalar-left active-range shell. -/
 example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (ha : ∀ n : Nat, 0 < a n)
@@ -889,7 +889,7 @@ obstruction theorems. -/
 example {f g : ℝ[X]}
     (hgnn : HasNonnegCoeffs g)
     (hgc0 : g.coeff 0 ≠ 0) :
-    ¬ Prec (X ^ 2 * f.derivative) g :=
+    ¬ StrictInterl (X ^ 2 * f.derivative) g :=
   not_prec_X_sq_mul_derivative_left hgnn hgc0
 
 /-- Orientation `g ≪ X^2 * f'` is impossible in the degree-matched candidate
@@ -900,7 +900,7 @@ example {f g : ℝ[X]}
     (hdeg : f.natDegree + 1 = g.natDegree)
     (hf2 : 2 ≤ f.natDegree)
     (hgc0 : g.coeff 0 ≠ 0) :
-    ¬ Prec g (X ^ 2 * f.derivative) :=
+    ¬ StrictInterl g (X ^ 2 * f.derivative) :=
   not_prec_X_sq_mul_derivative_right hfnn hgnn hdeg hf2 hgc0
 
 end Tactic

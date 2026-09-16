@@ -192,14 +192,14 @@ Wagner (2). Zero-weight terms may be skipped, while a positive-weight head term
 must be compatible with the weighted tail. -/
 inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
   | singleton {a : ℝ} {p : ℝ[X]}
-      (ha : 0 < a) (hprec : Prec h p) (hpos : HasPosLeadingCoeff p) :
+      (ha : 0 < a) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
       WeightedCompatibleLeft h [(a, p)]
   | cons_zero {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
-      (ha : a = 0) (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
+      (ha : a = 0) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l) :
       WeightedCompatibleLeft h ((a, p) :: l)
   | cons_pos {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
-      (ha : 0 < a) (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
+      (ha : 0 < a) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l)
       (hrr_ne : (C a * p + weightedSum l) ≠ 0)
       (hrr_splits : (C a * p + weightedSum l).Splits)
@@ -252,7 +252,7 @@ lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
   hasPosLeadingCoeff_weightedSum l (nonneg hl) (pos hl) (exists_pos hl)
 
 lemma prec {h : ℝ[X]} :
-    ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → Prec h (weightedSum l)
+    ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → StrictInterl h (weightedSum l)
   | _, singleton ha hprec _ => by
       simpa [weightedSum, weightedSum_cons] using prec_C_mul_right hprec ha.ne'
   | _, cons_zero ha _ _ hl => by
@@ -293,14 +293,14 @@ end WeightedCompatibleLeft
 compatibility of the weighted list. -/
 theorem prec_weightedSum_left {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hl : WeightedCompatibleLeft h l) :
-    Prec h (weightedSum l) :=
+    StrictInterl h (weightedSum l) :=
   hl.prec
 
 /-- Unweighted finite-sum Wagner theorem on the left. The required compatibility
 data is the `WeightedCompatibleLeft` condition on unit weights. -/
 theorem prec_sum_left {h : ℝ[X]} {l : List ℝ[X]}
     (hl : WeightedCompatibleLeft h (l.map (fun p => ((1 : ℝ), p)))) :
-    Prec h l.sum := by
+    StrictInterl h l.sum := by
   simpa using prec_sum_of_compatible_left (WeightedCompatibleLeft.toSumCompatibleLeft_map_one hl)
 
 /-- Finite weighted Wagner theorem on the right: if every polynomial in the list
@@ -310,26 +310,26 @@ also precedes `h`. -/
 theorem prec_weightedSum_right :
     ∀ (l : List (ℝ × ℝ[X])) (h : ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →
-      (∀ ap ∈ l, Prec ap.2 h) →
+      (∀ ap ∈ l, StrictInterl ap.2 h) →
       (∀ ap ∈ l, HasPosLeadingCoeff ap.2) →
       (∃ ap ∈ l, 0 < ap.1) →
-      Prec (weightedSum l) h
+      StrictInterl (weightedSum l) h
   | [], _, _, _, _, hex => by simp_all
   | (a, p) :: l, h, hnonneg, hprec, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
         List.forall_mem_of_forall_mem_cons hnonneg
-      have hprec_tail : ∀ ap ∈ l, Prec ap.2 h :=
+      have hprec_tail : ∀ ap ∈ l, StrictInterl ap.2 h :=
         List.forall_mem_of_forall_mem_cons hprec
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
         List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
-        · have hCp_prec : Prec (C a * p) h :=
+        · have hCp_prec : StrictInterl (C a * p) h :=
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
-          have htail_prec : Prec (weightedSum l) h :=
+          have htail_prec : StrictInterl (weightedSum l) h :=
             prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
@@ -348,10 +348,10 @@ theorem prec_weightedSum_right :
 /-- Unweighted finite-sum Wagner theorem on the right. -/
 theorem prec_sum_right
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Prec p h)
+    (hprec : ∀ p ∈ l, StrictInterl p h)
     (hpos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
-    Prec l.sum h := by
+    StrictInterl l.sum h := by
   rw [← weightedSum_map_one l]
   apply prec_weightedSum_right (l.map (fun p => ((1 : ℝ), p))) h
   · simp

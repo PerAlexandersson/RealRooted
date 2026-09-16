@@ -219,10 +219,10 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
 
 /-! ## Finite-entry shape helpers -/
 
-/-- Reflexivity of `Prec0` on a nonzero real-rooted polynomial. -/
+/-- Reflexivity of `Interl` on a nonzero real-rooted polynomial. -/
 theorem prec0_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    Prec0 p p :=
-  (prec_refl hp.1 hp.2).toPrec0
+    Interl p p :=
+  (prec_refl hp.1 hp.2).toInterl
 
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/
@@ -230,11 +230,11 @@ theorem prec0_affine_to_X_mul_affine
     {u v U V : ℝ}
     (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
     (hv : 0 ≤ v) (hV : 0 ≤ V) :
-    Prec0 (C U * X + C V) (X * (C u * X + C v)) :=
+    Interl (C U * X + C V) (X * (C u * X + C v)) :=
   (prec_to_prec_mul_X_of_nonneg
     (prec_affine_linear_affine_linear_of_cross hu hU hcross)
     (hasNonnegCoeffs_affine_linear hu.le hv)
-    (hasNonnegCoeffs_affine_linear hU.le hV)).toPrec0
+    (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
 
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=

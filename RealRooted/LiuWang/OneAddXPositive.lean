@@ -79,7 +79,7 @@ theorem interlaces_of_one_add_X_positive_coeff_with_base
     (hrec : ∀ n, P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n)
     (hdeg : ∀ n, (P n).natDegree = n)
     (hc_pos : ∀ n, 0 < c n)
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hbase_eval0 : (P 1).eval 0 = 1)
     (hbase_nn : HasNonnegCoeffs (P 1))
     (n : ℕ) :
@@ -141,9 +141,9 @@ theorem interlaces_of_one_add_X_positive_coeff
     (hc_pos : ∀ n, 0 < c n)
     (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
-  have hbase : Prec (P 0) (P 1) := by
+  have hbase : StrictInterl (P 0) (P 1) := by
     rw [h0]
-    apply Interlaces.toPrec
+    apply Interlaces.toStrictInterl
     apply interlaces_one_linear
     rw [h1]
     compute_degree!

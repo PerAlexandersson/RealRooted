@@ -40,12 +40,12 @@ theorem splits_narayanaZeroGammaPolynomial (n : ℕ) :
 /-- Consecutive gamma polynomials of the binomial-square Narayana family are
 in proper position. -/
 theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
-    Prec (narayanaZeroGammaPolynomial n)
+    StrictInterl (narayanaZeroGammaPolynomial n)
       (narayanaZeroGammaPolynomial (n + 1)) := by
   cases n with
   | zero =>
       simpa [narayanaZeroGammaPolynomial] using
-        (prec_refl (by simp) (by simp) : Prec (1 : ℝ[X]) 1)
+        (prec_refl (by simp) (by simp) : StrictInterl (1 : ℝ[X]) 1)
   | succ n =>
       rw [← prec_gammaTransform_succ_iff
         (natDegree_narayanaZeroGammaPolynomial_le (n + 1))

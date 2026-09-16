@@ -496,7 +496,7 @@ lemma xSubCubicQuadraticSplits_of_interlacing_roots {a b c u v μ : ℝ}
   have hcoeff_nonpos : ∀ r, f.IsRoot r → (-C μ).eval r ≤ 0 := by
     intro r _
     simpa only [eval_neg, eval_C, Left.neg_nonpos_iff] using le_of_lt hμ
-  have hprec : Prec f (X * f + (-C μ) * g) :=
+  have hprec : StrictInterl f (X * f + (-C μ) * g) :=
     prec_of_interlaces_evalCoeff_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi
       hcoeff_nonpos
   have hsplits : (X * f + (-C μ) * g).Splits := hprec.2.1.2

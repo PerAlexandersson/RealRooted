@@ -25,7 +25,7 @@ abbrev hermiteBiehlerConverseStatement : Prop :=
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    Prec g f ∨ Prec f g
+    StrictInterl g f ∨ StrictInterl f g
 
 theorem isUpperHalfPlaneStable_cofactor_of_stable {f g : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r)
@@ -39,7 +39,7 @@ theorem isUpperHalfPlaneStable_cofactor_of_stable {f g : ℝ[X]} {r : ℝ}
 theorem hermiteBiehlerConverse_general :
     ∀ (n : ℕ) (f g : ℝ[X]), f.natDegree = n → HasPosLeadingCoeff f →
       HasPosLeadingCoeff g → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-      Prec g f ∨ Prec f g := by
+      StrictInterl g f ∨ StrictInterl f g := by
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
@@ -74,7 +74,7 @@ theorem hermiteBiehlerConverse_general :
 theorem hermiteBiehlerConverse {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    Prec g f ∨ Prec f g :=
+    StrictInterl g f ∨ StrictInterl f g :=
   hermiteBiehlerConverse_general f.natDegree f g rfl hf hg h
 
 theorem ratio_cofactor_eq {f g : ℝ[X]} {r : ℝ} (hrf : f.IsRoot r) (hrg : g.IsRoot r) {z : ℂ}
@@ -92,7 +92,7 @@ theorem ratio_cofactor_eq {f g : ℝ[X]} {r : ℝ} (hrf : f.IsRoot r) (hrg : g.I
   exact sub_ne_zero.mpr hz
 
 theorem im_ratio_nonpos_general {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : Prec g f)
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f)
     (h_deg₁ : 1 ≤ f.natDegree)
     {z : ℂ} (hz : 0 < z.im) :
     ((complexify g).eval z / (complexify f).eval z).im ≤ 0 := by
@@ -106,7 +106,7 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
       have hrgroot : g.IsRoot r := isRoot_of_mem_roots hrg
       have hzr : z ≠ (r : ℂ) := by intro h; simp_all
       rw [← ratio_cofactor_eq hrfroot hrgroot hzr]
-      have hpq₁ : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
+      have hpq₁ : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
         prec_cofactor_of_common_root hpq hrfroot hrgroot
       have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
         hf.divByMonic_X_sub_C hrfroot
@@ -141,7 +141,7 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
 theorem prec_of_stable_general {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
-    (h_deg₁ : 1 ≤ f.natDegree) : Prec g f := by
+    (h_deg₁ : 1 ≤ f.natDegree) : StrictInterl g f := by
   generalize hn : f.natDegree = n
   induction n using Nat.strong_induction_on generalizing f g with
   | _ n ih =>

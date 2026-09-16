@@ -193,7 +193,7 @@ def CompatibleSuccDegreePrecStatement : Prop :=
     HasPosLeadingCoeff g →
     g.natDegree = f.natDegree + 1 →
     f.Splits →
-    Prec f g
+    StrictInterl f g
 
 /-- Exact lower-threshold endpoint-sign comparison expected from the
 left-endpoint/count-stability picture. -/
@@ -954,7 +954,7 @@ theorem compatibleSuccDegreePrec_of_allCombo
     hallTarget hcomp hf_pos hg_pos hdeg hf_split
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
     hall.isRealRooted_right hg_pos.ne_zero
-  have horient : Prec f g ∨ Prec g f :=
+  have horient : StrictInterl f g ∨ StrictInterl g f :=
     prec_of_allComboRealRooted
       hf_pos.ne_zero hf_split hg_rr.1 hg_rr.2 hall (Or.inl hdeg.symm)
   exact prec_forward_of_orientation_of_succDegree hdeg horient
@@ -993,7 +993,7 @@ theorem compatibleSuccDegreePrec_of_noCommonOrientation
   intro f g hcomp hf_pos hg_pos hdeg _hf_split
   have hfg : PosComboRealRooted f g :=
     hcomp.toPosComboRealRooted hf_pos hg_pos
-  have horient : Prec f g ∨ Prec g f :=
+  have horient : StrictInterl f g ∨ StrictInterl g f :=
     PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
       (hstep := fun {f g} hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
         hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
@@ -1411,7 +1411,7 @@ theorem succDegree_even_roots_le_count_sub_iff_eval_mul_neg
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
 
 /-- The compatible succ-degree orientation target implies the exact
-lower-count endpoint comparison.  The oriented `Prec` count bounds leave only
+lower-count endpoint comparison.  The oriented `StrictInterl` count bounds leave only
 the cases `g_le - f_le = 0` and `g_le - f_le = 1`; same-sign endpoint
 evaluations rule out the even zero case by the succ-degree lower-count parity
 bridge. -/
@@ -1419,7 +1419,7 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
     (hprecTarget : CompatibleSuccDegreePrecStatement) :
     CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
-  have hprec : Prec f g :=
+  have hprec : StrictInterl f g :=
     hprecTarget hcomp hf_pos hg_pos hdeg hf_split
   obtain ⟨hfg_le, hgf_le⟩ :=
     succDegreeRootCountLowerOriented_of_prec hprec hdeg x

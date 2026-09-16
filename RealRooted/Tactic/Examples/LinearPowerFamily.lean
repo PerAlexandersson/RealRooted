@@ -11,9 +11,9 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example {f g : ℝ[X]} (hgf : Prec g f)
+example {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) (n : Nat) :
-    Prec (X ^ n * f) (X ^ (n + 1) * g) := by
+    StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
   rr_prec_X_pow_mul_X_pow_succ using
     reverse_prec := hgf,
     left_nonneg := hfnn,
