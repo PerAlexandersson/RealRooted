@@ -122,6 +122,25 @@ theorem
         completeOrientation n
           (by simpa only [Nat.add_assoc, Nat.reduceAdd] using hstable) (i : Nat) x
 
+/-- A completed stability/data step makes every affine-Euler base-row
+discriminant nonpositive, so its negation is an available nonnegative margin. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant_nonpos_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i : Fin (n + 1), ∀ x,
+      MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i) ≤ 0 := by
+  have hbottom :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hnextStable : MvRealStable (decoLayerTotal (n + 2)) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n + 2)).mpr
+      hbottom
+  exact
+    eval_decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant_nonpos_of_stable
+      n hnextStable
+
 /-- A completed stability/data step makes the sum of both adjacent-derivative
 orientation reserves in a next quadratic recurrence nonnegative. -/
 theorem
@@ -269,6 +288,31 @@ theorem
       eval_decoBottomTotalCompanionSuccessorCoreRowQuadratic_nonneg_of_stable
         n hstable,
       hdiscriminant⟩
+
+/-- After the automatic endpoint coefficients are discharged, successor-row
+nonnegativity is exactly the requirement that the latest-bottom-total slope
+correction fit inside the affine-Euler base-discriminant margin. -/
+theorem eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_correction
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    (∀ i : Fin (n + 1), ∀ x,
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRow n i)) ↔
+      ∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+              n i) ≤
+          -MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i) := by
+  rw [eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_discriminant
+    n hstable hdata]
+  constructor <;> intro h i x
+  · exact
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminant_nonpos_iff_correction
+        n i x).mp (h i x)
+  · exact
+      (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminant_nonpos_iff_correction
+        n i x).mpr (h i x)
 
 /-- Under a completed stability/data step, the expanded endpoint package also
 forgets its automatic constant-coefficient condition. -/

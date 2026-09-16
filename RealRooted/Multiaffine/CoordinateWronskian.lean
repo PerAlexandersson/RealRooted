@@ -1,4 +1,6 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import RealRooted.Multiaffine.Rayleigh
 
 /-!
@@ -337,6 +339,57 @@ theorem coordinateWronskian_quadratic_discriminant
               coordinateWronskian Q A i) := by
       rw [coordinateWronskian_plucker P Q A B i]
     _ = _ := by ring
+
+/-- Adding a perturbation to the right slope changes the Plücker-form
+quadratic discriminant by an explicit correction. -/
+theorem coordinateWronskian_quadratic_discriminant_add_right_slope
+    {R σ : Type*} [CommRing R]
+    (P Q A B T : MvPolynomial σ R) (i : σ) :
+    (coordinateWronskian P (B + T) i - coordinateWronskian Q A i) ^ 2 -
+        4 * coordinateWronskian P Q i * coordinateWronskian A (B + T) i =
+      ((coordinateWronskian P B i - coordinateWronskian Q A i) ^ 2 -
+          4 * coordinateWronskian P Q i * coordinateWronskian A B i) +
+        (2 * (coordinateWronskian P B i - coordinateWronskian Q A i) *
+            coordinateWronskian P T i +
+          coordinateWronskian P T i ^ 2 -
+          4 * coordinateWronskian P Q i * coordinateWronskian A T i) := by
+  simp only [coordinateWronskian_add_right]
+  ring
+
+/-- If the coordinate Wronskian of two affine extensions is globally
+nonnegative, then its pointwise quadratic discriminant in the fresh
+coordinate is nonpositive. -/
+theorem eval_coordinateWronskian_affine_extensions_discriminant_nonpos_of_nonneg
+    (P Q A B : MvPolynomial σ Real) (i k : σ) (hik : i ≠ k)
+    (hkP : k ∉ P.vars) (hkQ : k ∉ Q.vars)
+    (hkA : k ∉ A.vars) (hkB : k ∉ B.vars)
+    (h : ∀ x, 0 ≤ eval x
+      (coordinateWronskian (P + X k * Q) (A + X k * B) i)) :
+    ∀ x, eval x
+      ((coordinateWronskian P B i - coordinateWronskian Q A i) ^ 2 -
+        4 * coordinateWronskian P Q i * coordinateWronskian A B i) ≤ 0 := by
+  classical
+  have hkPA := notMem_vars_coordinateWronskian_of_notMem_vars hkP hkA i
+  have hkPB := notMem_vars_coordinateWronskian_of_notMem_vars hkP hkB i
+  have hkQA := notMem_vars_coordinateWronskian_of_notMem_vars hkQ hkA i
+  have hkQB := notMem_vars_coordinateWronskian_of_notMem_vars hkQ hkB i
+  intro x
+  have hquad (t : Real) :
+      0 ≤ eval x (coordinateWronskian Q B i) * (t * t) +
+        eval x (coordinateWronskian P B i + coordinateWronskian Q A i) * t +
+        eval x (coordinateWronskian P A i) := by
+    have ht := h (Function.update x k t)
+    rw [coordinateWronskian_add_X_mul_add_X_mul_of_ne P Q A B i k hik] at ht
+    simp only [map_add, map_mul, map_pow, eval_X, Function.update_self] at ht
+    rw [eval_update_eq_of_notMem_vars hkPA,
+      eval_update_eq_of_notMem_vars hkPB,
+      eval_update_eq_of_notMem_vars hkQA,
+      eval_update_eq_of_notMem_vars hkQB] at ht
+    simpa only [eval_add, pow_two, mul_comm, add_comm, add_left_comm,
+      add_assoc] using ht
+  have hdisc := discrim_le_zero hquad
+  rw [← coordinateWronskian_quadratic_discriminant P Q A B i]
+  simpa [discrim] using hdisc
 
 /-- Pointwise nonpositivity of the coordinate-Wronskian quadratic
 discriminant is exactly its Plücker square-versus-product inequality. -/

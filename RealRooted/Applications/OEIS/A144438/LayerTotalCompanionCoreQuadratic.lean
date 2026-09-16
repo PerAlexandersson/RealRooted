@@ -460,6 +460,47 @@ def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
     (decoBottomTotalWronskianCompanion n)
     (decoBottomTotalCompanionSlope n) (i + 1 : Nat)
 
+/-- The discriminant of the affine-Euler base row before the latest bottom
+total is added to the companion slope. -/
+def decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  (MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionCore n) (i + 1 : Nat) -
+    MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)) ^ 2 -
+    4 * MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreZero n)
+        (decoBottomTotalCompanionExtensionCoreSlope n) (i + 1 : Nat) *
+      MvPolynomial.coordinateWronskian
+        (decoBottomTotalWronskianCompanion n)
+        (decoBottomTotalCompanionCore n) (i + 1 : Nat)
+
+/-- The exact change in the base-row discriminant caused by adding the latest
+bottom total to the companion slope. -/
+def decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  2 *
+      (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCoreZero n)
+          (decoBottomTotalCompanionCore n) (i + 1 : Nat) -
+        MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCoreSlope n)
+          (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)) *
+      MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreZero n)
+        (decoBottomTotal (n + 1)) (i + 1 : Nat) +
+    MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreZero n)
+        (decoBottomTotal (n + 1)) (i + 1 : Nat) ^ 2 -
+    4 * MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCoreZero n)
+        (decoBottomTotalCompanionExtensionCoreSlope n) (i + 1 : Nat) *
+      MvPolynomial.coordinateWronskian
+        (decoBottomTotalWronskianCompanion n)
+        (decoBottomTotal (n + 1)) (i + 1 : Nat)
+
 /-- The current core-pair cross-Wronskian in fresh-coordinate Rayleigh
 orientation. -/
 def decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
@@ -516,6 +557,42 @@ theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_factors
             n i := by
   rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker]
   rfl
+
+/-- The successor-row discriminant is its already-oriented affine-Euler base
+discriminant plus the exact latest-bottom-total slope correction. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_base_add_correction
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i =
+      decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i +
+        decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+          n i := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_plucker]
+  unfold decoBottomTotalCompanionSlope
+    decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+  simpa only [add_comm] using
+    MvPolynomial.coordinateWronskian_quadratic_discriminant_add_right_slope
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n)
+      (decoBottomTotalCompanionCore n)
+      (decoBottomTotal (n + 1)) (i + 1 : Nat)
+
+/-- Pointwise, the full successor-row discriminant is nonpositive exactly
+when its slope correction fits inside the negative base-discriminant margin. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminant_nonpos_iff_correction
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0 ↔
+      MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+            n i) ≤
+        -MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_base_add_correction,
+    map_add]
+  constructor <;> intro h <;> linarith
 
 /-- The current core factor is the negative of its cross-Wronskian in
 fresh-coordinate Rayleigh orientation. -/
@@ -1850,6 +1927,32 @@ theorem zero_notMem_vars_decoBottomTotalCompanionSuccessorCoreRowQuadratic
   exact MvPolynomial.notMem_vars_coordinateWronskian_of_notMem_vars
     (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope n)
     (zero_notMem_vars_decoBottomTotalCompanionSlope n) (i + 1 : Nat)
+
+/-- Stability of the associated homogeneous layer makes the affine-Euler
+base-row discriminant nonpositive at every real specialization. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant_nonpos_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i : Fin (n + 1), ∀ x,
+      MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i) ≤ 0 := by
+  intro i
+  unfold decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant
+  apply
+    MvPolynomial.eval_coordinateWronskian_affine_extensions_discriminant_nonpos_of_nonneg
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n)
+      (decoBottomTotalCompanionCore n) (i + 1 : Nat) 0 (by lia)
+      (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreZero n)
+      (zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope n)
+      (zero_notMem_vars_decoBottomTotalWronskianCompanion n)
+      (zero_notMem_vars_decoBottomTotalCompanionCore n)
+  intro x
+  rw [← decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope]
+  exact
+    eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_stable
+      n hstable (i + 1 : Nat) x
 
 private theorem notMem_vars_decoBottomTotalCompanionSuccessorCoreRowDiscriminant
     {n : Nat} {i : Fin (n + 1)} {k : Nat}
