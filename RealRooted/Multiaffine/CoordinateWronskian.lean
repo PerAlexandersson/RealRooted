@@ -356,6 +356,22 @@ theorem coordinateWronskian_quadratic_discriminant_add_right_slope
   simp only [coordinateWronskian_add_right]
   ring
 
+/-- The correction caused by a right-slope perturbation can be written using
+the unperturbed linear endpoint, the constant endpoint, and the incremental
+quadratic endpoint. -/
+theorem coordinateWronskian_quadratic_discriminant_right_slope_correction
+    {R σ : Type*} [CommRing R]
+    (P Q A B T : MvPolynomial σ R) (i : σ) :
+    2 * (coordinateWronskian P B i - coordinateWronskian Q A i) *
+          coordinateWronskian P T i +
+        coordinateWronskian P T i ^ 2 -
+        4 * coordinateWronskian P Q i * coordinateWronskian A T i =
+      2 * (coordinateWronskian P B i + coordinateWronskian Q A i) *
+          coordinateWronskian P T i +
+        coordinateWronskian P T i ^ 2 -
+        4 * coordinateWronskian P A i * coordinateWronskian Q T i := by
+  linear_combination 4 * coordinateWronskian_plucker P Q A T i
+
 /-- If the coordinate Wronskian of two affine extensions is globally
 nonnegative, then its pointwise quadratic discriminant in the fresh
 coordinate is nonpositive. -/
