@@ -136,6 +136,54 @@ theorem decoBottomTotalCompanionSlope_isMultiaffine (n : Nat) :
   exact (decoBottomTotal_isMultiaffine (n + 1)).add
     (decoBottomTotalCompanionCore_isMultiaffine n)
 
+/-- To prove every affine Rayleigh discriminant between a companion and its
+successor slope nonpositive, it suffices to check distinct coordinates in the
+finite interval actually used by both polynomials. -/
+theorem
+    eval_affineRayleighDiscriminant_companion_slope_nonpos_of_Icc
+    (n : Nat)
+    (hdisc : ∀ i ∈ Finset.Icc 1 (n + 1),
+      ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+        MvPolynomial.eval x
+          (MvPolynomial.affineRayleighDiscriminant
+            (decoBottomTotalWronskianCompanion n)
+            (decoBottomTotalCompanionSlope n) i j) ≤ 0) :
+    ∀ i j x, MvPolynomial.eval x
+      (MvPolynomial.affineRayleighDiscriminant
+        (decoBottomTotalWronskianCompanion n)
+        (decoBottomTotalCompanionSlope n) i j) ≤ 0 := by
+  exact
+    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
+      (decoBottomTotalWronskianCompanion_isMultiaffine n)
+      (decoBottomTotalCompanionSlope_isMultiaffine n)
+      (Finset.Icc 1 (n + 1))
+      (vars_decoBottomTotalWronskianCompanion_subset_Icc n)
+      (vars_decoBottomTotalCompanionSlope_subset_Icc n) hdisc
+
+/-- To prove every affine Rayleigh discriminant between a companion and its
+core nonpositive, it suffices to check distinct coordinates in their common
+finite support interval. -/
+theorem
+    eval_affineRayleighDiscriminant_companion_core_nonpos_of_Icc
+    (n : Nat)
+    (hdisc : ∀ i ∈ Finset.Icc 1 (n + 1),
+      ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+        MvPolynomial.eval x
+          (MvPolynomial.affineRayleighDiscriminant
+            (decoBottomTotalWronskianCompanion n)
+            (decoBottomTotalCompanionCore n) i j) ≤ 0) :
+    ∀ i j x, MvPolynomial.eval x
+      (MvPolynomial.affineRayleighDiscriminant
+        (decoBottomTotalWronskianCompanion n)
+        (decoBottomTotalCompanionCore n) i j) ≤ 0 := by
+  exact
+    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
+      (decoBottomTotalWronskianCompanion_isMultiaffine n)
+      (decoBottomTotalCompanionCore_isMultiaffine n)
+      (Finset.Icc 1 (n + 1))
+      (vars_decoBottomTotalWronskianCompanion_subset_Icc n)
+      (vars_decoBottomTotalCompanionCore_subset_Icc n) hdisc
+
 /-- At the initial rank, every affine Rayleigh discriminant between the
 companion and its successor slope vanishes. -/
 @[simp] theorem

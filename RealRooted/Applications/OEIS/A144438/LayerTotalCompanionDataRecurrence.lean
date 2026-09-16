@@ -918,6 +918,53 @@ theorem
         n).mpr hcrossNamed
     exact ⟨hcross, hdisc, hrows, hnextDisc⟩
 
+/-- Under current stability and companion data, the exact successor
+criterion has only finite distinct-coordinate affine-discriminant families.
+Coordinates outside the displayed intervals and diagonal pairs contribute
+zero automatically. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_finite
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              n i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              n i)) ∧
+      (∀ i ∈ Finset.Icc 1 (n + 1),
+        ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+          MvPolynomial.eval x
+            (MvPolynomial.affineRayleighDiscriminant
+              (decoBottomTotalWronskianCompanion n)
+              (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        DecoBottomTotalCompanionSuccessorCoreEndpointData n) ∧
+      ∀ i ∈ Finset.Icc 1 (n + 2),
+        ∀ j ∈ Finset.Icc 1 (n + 2), i ≠ j → ∀ x,
+          MvPolynomial.eval x
+            (MvPolynomial.affineRayleighDiscriminant
+              (decoBottomTotalWronskianCompanion (n + 1))
+              (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
+    n hstable hdata]
+  constructor
+  · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩
+    exact ⟨hzero, fun i _ j _ _ x => hdisc i j x, hrows,
+      fun i _ j _ _ x => hnextDisc i j x⟩
+  · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩
+    refine ⟨hzero,
+      eval_affineRayleighDiscriminant_companion_slope_nonpos_of_Icc
+        n hdisc,
+      hrows, ?_⟩
+    apply eval_affineRayleighDiscriminant_companion_core_nonpos_of_Icc
+      (n + 1)
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using hnextDisc
+
 /-- The exact lower two-rank companion data at rank one.  This gives the
 first nontrivial checked instance of the successor criterion. -/
 theorem decoBottomTotalCompanionRayleighData_one :
