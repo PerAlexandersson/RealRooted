@@ -1359,6 +1359,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityInduction
 import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
 import RealRooted.Applications.OEIS.A144438.LayerTotalStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
