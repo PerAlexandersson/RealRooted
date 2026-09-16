@@ -47,6 +47,40 @@ theorem
   exact decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable
     n hnextStable
 
+/-- A completed stability/data step orients the next unshifted companion core
+against the total extension from which its affine Euler recurrence is built. -/
+theorem
+    eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCore n)
+        (decoBottomTotalCompanionTotalExtension n) i) := by
+  have hbottom :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hnextStable : MvRealStable (decoLayerTotal (n + 2)) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n + 2)).mpr
+      hbottom
+  exact
+    eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_stable
+      n hnextStable
+
+/-- Thus every affine-Euler row forming the base of a successor core row is
+globally nonnegative; only its fresh-coordinate correction remains to be
+controlled in the full successor Wronskian. -/
+theorem eval_decoBottomTotalCompanionExtensionRayleighRow_nonneg_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionExtensionRayleighRow n i) := by
+  intro i x
+  rw [← coordinateWronskian_companionExtensionCore_totalExtension]
+  exact
+    eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_companionData
+      n hstable hdata (i + 1 : Nat) x
+
 /-- A completed stability/data step places the current companion and its
 affine Euler core in one weakly stable real span. -/
 theorem decoBottomTotalCompanion_allCombo_core_of_stable_companionData

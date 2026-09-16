@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.TotalBridge
 import RealRooted.Multiaffine
+import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Multiaffine structure of the Deco layer total
@@ -84,6 +85,30 @@ theorem decoBottomTotal_hasNonnegCoeffs (n : Nat) :
   rw [← rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
   exact ((decoLayerTotal_hasNonnegCoeffs n).dehomogenize).rename_of_injective
     (decoLayerBottomEmbedding n).injective
+
+/-- Stability of a homogeneous layer total orients its ordinary affine Euler
+core against the bottom total.  This is the general-degree replacement for a
+multiaffine argument at the homogeneous level. -/
+theorem eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal n)) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoNormalBottomCore n (decoBottomTotal n))
+        (decoBottomTotal n) i) := by
+  have hsource :=
+    hstable.eval_coordinateWronskian_affineEulerCore_nonneg_of_nonnegative
+      (decoLayerTotal_hasNonnegCoeffs n)
+      (decoLayerTotal_isHomogeneous n) (by lia)
+  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
+    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
+    (MvPolynomial.affineEulerCore id ((n + 1 : Nat) : Real)
+      (MvPolynomial.dehomogenize (decoLayerTotal n)))
+    (MvPolynomial.dehomogenize (decoLayerTotal n)) hsource
+  rw [MvPolynomial.rename_affineEulerCore
+      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective,
+    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal] at hrename
+  simpa [decoNormalBottomCore_eq_affineEulerCore, Function.comp_def] using
+    hrename
 
 /-- Stability of the homogeneous finite-coordinate layer total is exactly
 common-rotation stability of its multiaffine ordinary-coordinate

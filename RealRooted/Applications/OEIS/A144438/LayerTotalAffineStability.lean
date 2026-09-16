@@ -149,30 +149,6 @@ theorem decoBottomTotalCompanionSlope_isRayleigh (n : Nat)
   exact (MvPolynomial.isRayleigh_rename_iff
     (by intro i j h; lia)).1 hspecialize
 
-/-- Stability of a homogeneous layer total orients its ordinary affine Euler
-core against the bottom total.  This is the general-degree replacement for a
-multiaffine argument at the homogeneous level. -/
-theorem eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
-    (n : Nat) (hstable : MvRealStable (decoLayerTotal n)) :
-    ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian
-        (decoNormalBottomCore n (decoBottomTotal n))
-        (decoBottomTotal n) i) := by
-  have hsource :=
-    hstable.eval_coordinateWronskian_affineEulerCore_nonneg_of_nonnegative
-      (decoLayerTotal_hasNonnegCoeffs n)
-      (decoLayerTotal_isHomogeneous n) (by lia)
-  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
-    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
-    (MvPolynomial.affineEulerCore id ((n + 1 : Nat) : Real)
-      (MvPolynomial.dehomogenize (decoLayerTotal n)))
-    (MvPolynomial.dehomogenize (decoLayerTotal n)) hsource
-  rw [MvPolynomial.rename_affineEulerCore
-      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective,
-    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal] at hrename
-  simpa [decoNormalBottomCore_eq_affineEulerCore, Function.comp_def] using
-    hrename
-
 /-- Under preceding-rank stability, every coordinate Wronskian between the
 normal affine slope and base is nonnegative. -/
 theorem eval_coordinateWronskian_affineSlope_normalBase_nonneg

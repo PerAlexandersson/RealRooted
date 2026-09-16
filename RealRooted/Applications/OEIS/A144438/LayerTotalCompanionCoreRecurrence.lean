@@ -166,6 +166,42 @@ theorem decoBottomTotalCompanionSlope_succ_eq_rename (n : Nat) :
   rw [decoBottomTotal_add_two_eq_rename_companionTotalExtension,
     decoBottomTotalCompanionCore_succ_eq_rename_extensionCore, map_add]
 
+/-- Stability of the next homogeneous layer orients its unshifted affine
+Euler core against the companion total extension in every coordinate. -/
+theorem
+    eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionExtensionCore n)
+        (decoBottomTotalCompanionTotalExtension n) i) := by
+  have hrenamed :=
+    eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
+      (n + 2) hstable
+  intro i
+  have hshifted : ∀ x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionExtensionCore n)
+          (decoBottomTotalCompanionTotalExtension n) i)) := by
+    intro x
+    have h := hrenamed (i + 1) x
+    change 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionCore (n + 1))
+        (decoBottomTotal (n + 2)) (i + 1)) at h
+    rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+      decoBottomTotal_add_two_eq_rename_companionTotalExtension,
+      MvPolynomial.coordinateWronskian_rename (fun j : Nat => j + 1)
+        (by intro j k hjk; lia)] at h
+    exact h
+  exact (MvPolynomial.forall_eval_rename_iff
+    (fun j : Nat => j + 1) (by intro j k hjk; lia)
+    (MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCore n)
+      (decoBottomTotalCompanionTotalExtension n) i)
+    (fun r => 0 ≤ r)).mp hshifted
+
 /-- Value-one specialization commutes with the affine Euler core defining the
 unshifted next companion core. -/
 theorem specializeAt_one_decoBottomTotalCompanionExtensionCore
