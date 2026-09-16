@@ -381,6 +381,155 @@ theorem coeff_wronskian (p q : ℝ[X]) (l : ℕ) :
       intro ij _
       ring
 
+/-- For positive equal degree `n`, the coefficient of `X^(2n-2)` in the
+Wronskian is the cross-difference of the leading two coefficients. -/
+theorem coeff_wronskian_two_mul_sub_two_of_sameDegree
+    (p q : ℝ[X]) (n : ℕ) (hn : 1 ≤ n)
+    (hp : p.natDegree = n) (hq : q.natDegree = n) :
+    (wronskian p q).coeff (2 * n - 2) =
+      p.nextCoeff * q.leadingCoeff - p.leadingCoeff * q.nextCoeff := by
+  rw [coeff_wronskian, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+  let F : ℕ → ℝ := fun i =>
+    (((2 * n - 1 - i : ℕ) : ℝ) - (i : ℝ)) *
+      p.coeff i * q.coeff (2 * n - 1 - i)
+  have htop : 2 * n - 2 + 1 = 2 * n - 1 := by lia
+  have hrange : (2 * n - 1).succ = 2 * n := by lia
+  rw [htop, hrange]
+  change ∑ i ∈ Finset.range (2 * n), F i = _
+  have hsubset : ({n - 1, n} : Finset ℕ) ⊆ Finset.range (2 * n) := by
+    intro i hi
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    rcases hi with rfl | rfl
+    · simp only [Finset.mem_range]
+      lia
+    · simp only [Finset.mem_range]
+      lia
+  have hzero : ∀ i ∈ Finset.range (2 * n),
+      i ∉ ({n - 1, n} : Finset ℕ) → F i = 0 := by
+    intro i hi hnot
+    simp only [Finset.mem_range] at hi
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hnot
+    by_cases hin : i < n
+    · have hi' : i < n - 1 := by lia
+      have hqn : n < 2 * n - 1 - i := by lia
+      dsimp [F]
+      rw [show q.coeff (2 * n - 1 - i) = 0 by
+        apply coeff_eq_zero_of_natDegree_lt
+        rw [hq]
+        exact hqn]
+      simp
+    · have hpn : n < i := by lia
+      dsimp [F]
+      rw [show p.coeff i = 0 by
+        apply coeff_eq_zero_of_natDegree_lt
+        rw [hp]
+        exact hpn]
+      simp
+  have hsum := Finset.sum_subset hsubset hzero
+  rw [← hsum]
+  have hp_pos : 0 < p.natDegree := by rw [hp]; exact hn
+  have hq_pos : 0 < q.natDegree := by rw [hq]; exact hn
+  have hp_next : p.coeff (n - 1) = p.nextCoeff := by
+    rw [nextCoeff_of_natDegree_pos hp_pos, hp]
+  have hq_next : q.coeff (n - 1) = q.nextCoeff := by
+    rw [nextCoeff_of_natDegree_pos hq_pos, hq]
+  have hp_lead : p.coeff n = p.leadingCoeff := by simp [leadingCoeff, hp]
+  have hq_lead : q.coeff n = q.leadingCoeff := by simp [leadingCoeff, hq]
+  have hleft : 2 * n - 1 - (n - 1) = n := by lia
+  have hright : 2 * n - 1 - n = n - 1 := by lia
+  have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub hn]
+    norm_num
+  rw [Finset.sum_insert (by simp; lia), Finset.sum_singleton]
+  simp only [F, hleft, hright, hp_next, hq_next, hp_lead, hq_lead]
+  rw [hcast]
+  ring
+
+/-- The Wronskian of two positive equal-degree polynomials has degree at most
+`2n-2`; the apparent degree-`2n-1` terms cancel. -/
+theorem natDegree_wronskian_le_two_mul_sub_two_of_sameDegree
+    (p q : ℝ[X]) (n : ℕ) (hn : 1 ≤ n)
+    (hp : p.natDegree = n) (hq : q.natDegree = n) :
+    (wronskian p q).natDegree ≤ 2 * n - 2 := by
+  by_cases hW : wronskian p q = 0
+  · simp [hW]
+  have hp0 : p ≠ 0 :=
+    ne_zero_of_natDegree_gt (by rw [hp]; exact hn)
+  have hq0 : q ≠ 0 :=
+    ne_zero_of_natDegree_gt (by rw [hq]; exact hn)
+  have hpder0 : p.derivative ≠ 0 :=
+    (derivative_ne_zero).2 (by rw [hp]; lia)
+  have hqder0 : q.derivative ≠ 0 :=
+    (derivative_ne_zero).2 (by rw [hq]; lia)
+  have hleft0 : p * q.derivative ≠ 0 := mul_ne_zero hp0 hqder0
+  have hright0 : p.derivative * q ≠ 0 := mul_ne_zero hpder0 hq0
+  have hleftdeg : (p * q.derivative).natDegree = 2 * n - 1 := by
+    rw [natDegree_mul hp0 hqder0, q.natDegree_derivative, hp, hq]
+    lia
+  have hrightdeg : (p.derivative * q).natDegree = 2 * n - 1 := by
+    rw [natDegree_mul hpder0 hq0, p.natDegree_derivative, hp, hq]
+    lia
+  have hdegree : (p * q.derivative).degree = (p.derivative * q).degree := by
+    rw [degree_eq_natDegree hleft0, degree_eq_natDegree hright0,
+      hleftdeg, hrightdeg]
+  have hlc : (p * q.derivative).leadingCoeff =
+      (p.derivative * q).leadingCoeff := by
+    rw [leadingCoeff_mul, leadingCoeff_mul, leadingCoeff_derivative,
+      leadingCoeff_derivative, hp, hq]
+    ring
+  have hltdeg := degree_sub_lt hdegree hleft0 hlc
+  have hlt : (wronskian p q).natDegree < 2 * n - 1 := by
+    apply (natDegree_lt_iff_degree_lt hW).2
+    rw [wronskian]
+    rw [degree_eq_natDegree hleft0, hleftdeg] at hltdeg
+    exact hltdeg
+  lia
+
+/-- If the left polynomial has degree one larger, the top Wronskian
+coefficient is the negative product of the leading coefficients. -/
+theorem coeff_wronskian_two_mul_of_natDegree_eq_succ
+    (p q : ℝ[X]) (n : ℕ)
+    (hp : p.natDegree = n + 1) (hq : q.natDegree = n) :
+    (wronskian p q).coeff (2 * n) =
+      -(p.leadingCoeff * q.leadingCoeff) := by
+  rw [coeff_wronskian, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+  let F : ℕ → ℝ := fun i =>
+    (((2 * n + 1 - i : ℕ) : ℝ) - (i : ℝ)) *
+      p.coeff i * q.coeff (2 * n + 1 - i)
+  change ∑ i ∈ Finset.range (2 * n + 1 + 1), F i = _
+  have hsubset : ({n + 1} : Finset ℕ) ⊆ Finset.range (2 * n + 1 + 1) := by
+    simp only [Finset.singleton_subset_iff, Finset.mem_range]
+    lia
+  have hzero : ∀ i ∈ Finset.range (2 * n + 1 + 1),
+      i ∉ ({n + 1} : Finset ℕ) → F i = 0 := by
+    intro i hi hnot
+    simp only [Finset.mem_range] at hi
+    simp only [Finset.mem_singleton] at hnot
+    by_cases hin : i < n + 1
+    · have hqn : n < 2 * n + 1 - i := by lia
+      dsimp [F]
+      rw [show q.coeff (2 * n + 1 - i) = 0 by
+        apply coeff_eq_zero_of_natDegree_lt
+        rw [hq]
+        exact hqn]
+      simp
+    · have hpn : n + 1 < i := by lia
+      dsimp [F]
+      rw [show p.coeff i = 0 by
+        apply coeff_eq_zero_of_natDegree_lt
+        rw [hp]
+        exact hpn]
+      simp
+  have hsum := Finset.sum_subset hsubset hzero
+  rw [← hsum, Finset.sum_singleton]
+  have hidx : 2 * n + 1 - (n + 1) = n := by lia
+  have hp_lead : p.coeff (n + 1) = p.leadingCoeff := by
+    simp [leadingCoeff, hp]
+  have hq_lead : q.coeff n = q.leadingCoeff := by simp [leadingCoeff, hq]
+  simp only [F, hidx, hp_lead, hq_lead]
+  push_cast
+  ring
+
 theorem wronskian_thetaPlusOne_sq_X_mul_eval (p : ℝ[X]) (t : ℝ) :
     (wronskian (thetaPlusOne (thetaPlusOne p)) (X * p)).eval t =
       p.eval t ^ 2 +

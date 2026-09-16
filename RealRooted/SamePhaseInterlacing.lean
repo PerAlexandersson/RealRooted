@@ -1,8 +1,7 @@
 import RealRooted.HermiteBiehler
 import RealRooted.LiebSokalPointwise
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import RealRooted.PosCombo
-import RealRooted.SamePhaseStability
+import RealRooted.SamePhaseStability.Nonnegative
 import RealRooted.WagnerX
 
 /-!
@@ -17,69 +16,6 @@ open Polynomial
 namespace RealRooted
 
 noncomputable section
-
-private theorem mvHasNonnegCoeffs_monomial {σ : Type*}
-    (d : σ →₀ ℕ) {c : ℝ} (hc : 0 ≤ c) :
-    MvPolynomial.HasNonnegCoeffs (MvPolynomial.monomial d c) := by
-  classical
-  intro e
-  rw [MvPolynomial.coeff_monomial]
-  split <;> simp_all
-
-theorem MvPolynomial.HasNonnegCoeffs.pderiv {σ : Type*}
-    {P : MvPolynomial σ ℝ} (hP : MvPolynomial.HasNonnegCoeffs P)
-    (i : σ) :
-    MvPolynomial.HasNonnegCoeffs (MvPolynomial.pderiv i P) := by
-  classical
-  rw [MvPolynomial.as_sum P, map_sum]
-  apply MvPolynomial.HasNonnegCoeffs.sum
-  intro d hd
-  rw [MvPolynomial.pderiv_monomial]
-  apply mvHasNonnegCoeffs_monomial
-  exact mul_nonneg (hP d) (Nat.cast_nonneg _)
-
-private theorem hasNonnegCoeffs_finsetProd {ι : Type*}
-    (s : Finset ι) (f : ι → ℝ[X])
-    (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    HasNonnegCoeffs (∏ i ∈ s, f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using hasNonnegCoeffs_one
-  | @insert i s hi ih =>
-      rw [Finset.prod_insert hi]
-      exact (hf i (Finset.mem_insert_self i s)).mul
-        (ih fun j hj => hf j (Finset.mem_insert_of_mem hj))
-
-private theorem hasNonnegCoeffs_finsetSum' {ι : Type*}
-    (s : Finset ι) (f : ι → ℝ[X])
-    (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    HasNonnegCoeffs (∑ i ∈ s, f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using hasNonnegCoeffs_zero
-  | @insert i s hi ih =>
-      rw [Finset.sum_insert hi]
-      exact (hf i (Finset.mem_insert_self i s)).add
-        (ih fun j hj => hf j (Finset.mem_insert_of_mem hj))
-
-/-- Nonnegative weights and multivariate coefficients give a univariate
-polynomial with nonnegative coefficients. -/
-theorem commonPhaseRestriction_hasNonnegCoeffs {σ : Type*}
-    {P : MvPolynomial σ ℝ} (hP : MvPolynomial.HasNonnegCoeffs P)
-    (wt : σ → ℝ) (hwt : ∀ i, 0 ≤ wt i) :
-    HasNonnegCoeffs (commonPhaseRestriction wt P) := by
-  classical
-  rw [MvPolynomial.as_sum P]
-  unfold commonPhaseRestriction
-  rw [map_sum]
-  apply hasNonnegCoeffs_finsetSum'
-  intro d hd
-  rw [MvPolynomial.eval₂Hom_monomial]
-  apply (hasNonnegCoeffs_C (hP d)).mul
-  unfold Finsupp.prod
-  apply hasNonnegCoeffs_finsetProd
-  intro i hi
-  exact (nonnegCoeffs_C_mul (hwt i) hasNonnegCoeffs_X).pow (d i)
 
 @[simp] theorem commonPhaseRestriction_add {σ : Type*}
     (wt : σ → ℝ) (P Q : MvPolynomial σ ℝ) :
@@ -116,35 +52,11 @@ theorem commonPhaseRestriction_ne_zero {σ : Type*}
   have hpos := mv_eval_pos_of_hasNonnegCoeffs hP hP0 wt hwt
   linarith
 
-/-- Renaming variables preserves multivariate real stability. -/
-theorem MvRealStable.rename
-    {σ τ : Type*} {P : MvPolynomial σ ℝ}
-    (hP : MvRealStable P) (f : σ → τ) :
-    MvRealStable (MvPolynomial.rename f P) := by
-  unfold MvRealStable complexifyMv at hP ⊢
-  rw [MvPolynomial.map_rename]
-  exact hP.rename
-
 @[simp] theorem eval_complexify_commonPhaseRestriction
     {σ : Type*} (wt : σ → ℝ) (P : MvPolynomial σ ℝ) (z : ℂ) :
     (complexify (commonPhaseRestriction wt P)).eval z =
       MvPolynomial.eval (fun i => (wt i : ℂ) * z) (complexifyMv P) := by
-  unfold complexify commonPhaseRestriction complexifyMv
-  rw [Polynomial.eval_map]
-  change (Polynomial.eval₂RingHom Complex.ofRealHom z)
-      (MvPolynomial.eval₂Hom Polynomial.C
-        (fun i => Polynomial.C (wt i) * Polynomial.X) P) = _
-  rw [MvPolynomial.map_eval₂Hom]
-  have hC :
-      (Polynomial.eval₂RingHom Complex.ofRealHom z).comp Polynomial.C =
-        Complex.ofRealHom := by
-    ext r
-    simp
-  rw [hC]
-  rw [MvPolynomial.eval_map]
-  apply MvPolynomial.eval₂Hom_congr rfl ?_ rfl
-  funext i
-  simp
+  simp [complexify]
 
 /-- Hermite--Biehler stability gives proper position, including the
 constant-degree boundary case. -/

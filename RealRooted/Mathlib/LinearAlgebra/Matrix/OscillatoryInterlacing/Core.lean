@@ -3350,16 +3350,6 @@ theorem exists_hermitianModel_of_tridiagonal {N : ℕ}
     symmetrizeTridiagonal_trailing_charpoly T hdne,
     charpoly_tridiagonal_no_common_root T hlower hupper hsuper hsub⟩
 
-/-- Simultaneously reversing the rows and columns of a finite totally
-nonnegative matrix preserves total nonnegativity. -/
-theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) ℝ}
-    (hA : A.IsTotallyNonneg) :
-    (Matrix.reindex Fin.revPerm Fin.revPerm A).IsTotallyNonneg := by
-  intro n rows cols hrows hcols
-  rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
-  exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
-    (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
-
 /-- Reversing both indices sends the trailing principal submatrix to the
 reversal of the leading principal submatrix. -/
 theorem reindex_finRev_submatrix_succ {R : Type*} {N : ℕ}

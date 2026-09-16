@@ -34,6 +34,27 @@ decreasing_by exact k.isLt
       X * ∑ k : Fin (n + 1), C (A (n + 1) k) * chainPolynomial A k := by
   rw [chainPolynomial]
 
+/-- The `n`th chain polynomial depends only on the lower-triangular entries in
+rows at most `n`. -/
+theorem chainPolynomial_congr_le
+    {R : Type*} [Semiring R] {A B : LowerTriangularMatrix R} {n : ℕ}
+    (hAB : ∀ i ≤ n, ∀ j ≤ i, A i j = B i j) :
+    chainPolynomial A n = chainPolynomial B n := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      cases n with
+      | zero => simp
+      | succ n =>
+          rw [chainPolynomial_succ, chainPolynomial_succ]
+          congr 1
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [hAB (n + 1) (le_refl _) k (Nat.le_of_lt k.isLt)]
+          rw [ih k k.isLt]
+          intro i hi j hji
+          exact hAB i
+            ((hi.trans (Nat.le_of_lt_succ k.isLt)).trans (Nat.le_succ n)) j hji
+
 /-- The subdivision operator sending `X ^ n` to the `n`th chain polynomial. -/
 def subdivisionOperator {R : Type*} [Semiring R]
     (A : LowerTriangularMatrix R) : R[X] →ₗ[R] R[X] where

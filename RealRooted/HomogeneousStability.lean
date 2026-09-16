@@ -60,6 +60,120 @@ def MvCommonRotationStable {σ : Type*} (P : MvPolynomial σ ℂ) : Prop :=
     (∃ c : ℂ, 0 < c.im ∧ ∀ i, 0 < (c * z i).im) →
       MvPolynomial.eval z P ≠ 0
 
+/-- Common-rotation stability is preserved when variables are renamed. -/
+theorem MvCommonRotationStable.rename
+    {σ τ : Type*} {P : MvPolynomial σ ℂ}
+    (hP : MvCommonRotationStable P) (f : σ → τ) :
+    MvCommonRotationStable (MvPolynomial.rename f P) := by
+  intro z hz
+  rw [MvPolynomial.eval_rename]
+  apply hP (z ∘ f)
+  obtain ⟨c, hc, hcz⟩ := hz
+  exact ⟨c, hc, fun i => hcz (f i)⟩
+
+/-- Common-rotation stability can be reflected through an injective variable
+renaming. -/
+theorem MvCommonRotationStable.of_rename
+    {σ τ : Type*} {P : MvPolynomial σ ℂ} {f : σ → τ}
+    (hP : MvCommonRotationStable (MvPolynomial.rename f P))
+    (hf : Function.Injective f) : MvCommonRotationStable P := by
+  classical
+  intro z hz
+  obtain ⟨c, hc, hcz⟩ := hz
+  have hc0 : c ≠ 0 := by
+    intro hzero
+    rw [hzero] at hc
+    simp at hc
+  let w : τ → ℂ := fun j =>
+    if hj : ∃ i, f i = j then z (Classical.choose hj) else Complex.I / c
+  have hwf : w ∘ f = z := by
+    funext i
+    dsimp only [Function.comp_apply, w]
+    split
+    next hj =>
+      congr 1
+      exact hf (Classical.choose_spec hj)
+    next hj => exact (hj ⟨i, rfl⟩).elim
+  have hw : ∀ j, 0 < (c * w j).im := by
+    intro j
+    dsimp only [w]
+    split
+    next hj => exact hcz _
+    next hj =>
+      have hmul : c * (Complex.I / c) = Complex.I := by
+        rw [div_eq_mul_inv, mul_comm Complex.I, ← mul_assoc,
+          mul_inv_cancel₀ hc0, one_mul]
+      rw [hmul]
+      norm_num
+  have hne := hP w ⟨c, hc, hw⟩
+  rw [MvPolynomial.eval_rename, hwf] at hne
+  exact hne
+
+/-- Injective variable renaming preserves and reflects common-rotation
+stability. -/
+theorem mvCommonRotationStable_rename_iff
+    {σ τ : Type*} {P : MvPolynomial σ ℂ} {f : σ → τ}
+    (hf : Function.Injective f) :
+    MvCommonRotationStable (MvPolynomial.rename f P) ↔
+      MvCommonRotationStable P :=
+  ⟨fun hP => hP.of_rename hf, fun hP => hP.rename f⟩
+
+/-- A homogeneous polynomial is upper-half-plane stable exactly when its
+dehomogenization is nonvanishing on the common-rotation region. -/
+theorem mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize
+    {σ : Type*} {P : MvPolynomial (Option σ) ℂ} {d : ℕ}
+    (hhom : P.IsHomogeneous d) :
+    MvUpperHalfPlaneStable P ↔
+      MvCommonRotationStable (MvPolynomial.dehomogenize P) := by
+  constructor
+  · intro hP z hz
+    obtain ⟨c, hc, hcz⟩ := hz
+    let base : Option σ → ℂ := fun o => Option.elim o 1 z
+    let scaled : Option σ → ℂ := fun o => c * base o
+    have hscaled : ∀ o, 0 < (scaled o).im := by
+      intro o
+      cases o with
+      | none => simpa [scaled, base] using hc
+      | some i => simpa [scaled, base] using hcz i
+    have hne := hP scaled hscaled
+    rw [MvPolynomial.eval_dehomogenize]
+    intro hzero
+    apply hne
+    rw [hhom.eval_smul c base, hzero, mul_zero]
+  · intro hP w hw
+    let c : ℂ := w none
+    let z : σ → ℂ := fun i => w (some i) / c
+    have hc : 0 < c.im := hw none
+    have hc0 : c ≠ 0 := by
+      intro hzero
+      rw [hzero] at hc
+      simp at hc
+    have hcz : ∀ i, 0 < (c * z i).im := by
+      intro i
+      have heq : c * z i = w (some i) := by
+        dsimp only [z]
+        rw [div_eq_mul_inv, ← mul_assoc, mul_comm c (w (some i)),
+          mul_assoc, mul_inv_cancel₀ hc0, mul_one]
+      rw [heq]
+      exact hw (some i)
+    have hne := hP z ⟨c, hc, hcz⟩
+    intro hzero
+    apply hne
+    rw [MvPolynomial.eval_dehomogenize]
+    let base : Option σ → ℂ := fun o => Option.elim o 1 z
+    have hw_eq : w = fun o => c * base o := by
+      funext o
+      cases o with
+      | none => simp [base, c]
+      | some i =>
+          simp only [base, Option.elim_some]
+          dsimp only [z]
+          rw [div_eq_mul_inv, ← mul_assoc, mul_comm c (w (some i)),
+            mul_assoc, mul_inv_cancel₀ hc0, mul_one]
+    have hscale := hhom.eval_smul c base
+    rw [← hw_eq, hzero] at hscale
+    exact (mul_eq_zero.mp hscale.symm).resolve_left (pow_ne_zero d hc0)
+
 /-- Ordinary homogenization is upper-half-plane stable exactly when its
 source is non-vanishing on the common-rotation region. -/
 theorem mvUpperHalfPlaneStable_ordinaryHomogenization_iff
@@ -291,6 +405,44 @@ theorem MvUpperHalfPlaneStable.dehomogenize
   have hbase : MvPolynomial.eval base Q = 0 := by
     simpa [base] using hzero
   exact hne (by rw [hscale, hbase, mul_zero])
+
+/-- Complexification commutes with setting the distinguished homogenizing
+variable to one. -/
+@[simp] theorem complexifyMv_dehomogenize {sigma : Type*}
+    (P : MvPolynomial (Option sigma) ℝ) :
+    complexifyMv (MvPolynomial.dehomogenize P) =
+      MvPolynomial.dehomogenize (complexifyMv P) := by
+  unfold complexifyMv
+  induction P using MvPolynomial.induction_on with
+  | C r => simp
+  | add P Q hP hQ => simp only [map_add, hP, hQ]
+  | mul_X P i hP =>
+      cases i <;> simp only [map_mul, MvPolynomial.map_X,
+        MvPolynomial.dehomogenize_X_none,
+        MvPolynomial.dehomogenize_X_some, hP, mul_one]
+
+/-- Dehomogenizing a homogeneous multivariate real-stable polynomial at one
+preserves real stability. -/
+theorem MvRealStable.dehomogenize {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial (Option sigma) ℝ} {d : ℕ}
+    (hP : MvRealStable P) (hhom : P.IsHomogeneous d) :
+    MvRealStable (MvPolynomial.dehomogenize P) := by
+  unfold MvRealStable at hP ⊢
+  rw [complexifyMv_dehomogenize]
+  exact hP.dehomogenize (hhom.map Complex.ofRealHom)
+
+/-- A homogeneous real polynomial is real stable exactly when the
+complexification of its dehomogenization is common-rotation stable. -/
+theorem mvRealStable_iff_commonRotation_dehomogenize
+    {σ : Type*} {P : MvPolynomial (Option σ) ℝ} {d : ℕ}
+    (hhom : P.IsHomogeneous d) :
+    MvRealStable P ↔
+      MvCommonRotationStable
+        (complexifyMv (MvPolynomial.dehomogenize P)) := by
+  unfold MvRealStable
+  rw [complexifyMv_dehomogenize]
+  exact mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize
+    (hhom.map Complex.ofRealHom)
 
 /-- Adjoin a new coefficient variable through the stable linear factor formed
 with the distinguished homogenizing variable. -/

@@ -1,4 +1,4 @@
-import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # Specializing one variable of a multivariate polynomial
@@ -56,6 +56,13 @@ noncomputable def specializeAt {σ R : Type*} [CommSemiring R]
     specializeAt i c (P ^ n) = specializeAt i c P ^ n := by
   simp [specializeAt]
 
+@[simp] theorem specializeAt_sum {σ R ι : Type*} [CommSemiring R]
+    (i : σ) (c : R) (s : Finset ι) (P : ι → MvPolynomial σ R) :
+    specializeAt i c (∑ j ∈ s, P j) =
+      ∑ j ∈ s, specializeAt i c (P j) := by
+  classical
+  simp [specializeAt]
+
 /-- Evaluation after scalar specialization is evaluation at the updated
 assignment. -/
 @[simp] theorem eval_specializeAt {σ R : Type*} [CommSemiring R]
@@ -72,6 +79,30 @@ assignment. -/
         simp [hP]
       · simp [hP, hji]
 
+/-- Specializing a coordinate absent from a polynomial leaves the polynomial
+unchanged. -/
+theorem specializeAt_eq_of_notMem_vars {σ R : Type*} [CommSemiring R]
+    {P : MvPolynomial σ R} {i : σ} (hi : i ∉ P.vars) (c : R) :
+    specializeAt i c P = P := by
+  classical
+  unfold specializeAt
+  let f : MvPolynomial σ R →+* MvPolynomial σ R :=
+    (MvPolynomial.aeval (R := R)
+      (Function.update MvPolynomial.X i (MvPolynomial.C c))).toRingHom
+  have hC : f.comp MvPolynomial.C =
+      (RingHom.id (MvPolynomial σ R)).comp MvPolynomial.C := by
+    ext r
+    simp [f]
+  have hX : ∀ j, j ∈ P.vars → j ∈ P.vars →
+      f (MvPolynomial.X j) = RingHom.id _ (MvPolynomial.X j) := by
+    intro j hj _
+    have hji : j ≠ i := by
+      intro h
+      subst j
+      exact hi hj
+    simp [f, hji]
+  simpa [f] using hom_congr_vars hC hX (rfl : P = P)
+
 /-- Scalar specialization commutes with mapping coefficients. -/
 theorem map_specializeAt {σ R S : Type*} [CommSemiring R] [CommSemiring S]
     (f : R →+* S) (i : σ) (c : R) (P : MvPolynomial σ R) :
@@ -84,11 +115,71 @@ theorem map_specializeAt {σ R S : Type*} [CommSemiring R] [CommSemiring S]
   | mul_X P j hP =>
       by_cases hji : j = i <;> simp [hji, hP]
 
+/-- Scalar specialization commutes with an injective renaming of variables. -/
+theorem specializeAt_rename {σ τ R : Type*} [CommSemiring R]
+    (f : σ → τ) (hf : Function.Injective f) (i : σ) (c : R)
+    (P : MvPolynomial σ R) :
+    specializeAt (f i) c (rename f P) =
+      rename f (specializeAt i c P) := by
+  classical
+  induction P using MvPolynomial.induction_on with
+  | C r => simp
+  | add P Q hP hQ => simp [hP, hQ]
+  | mul_X P j hP =>
+      by_cases hji : j = i
+      · subst j
+        simp [hP]
+      · have hfji : f j ≠ f i := fun h => hji (hf h)
+        simp [hP, hji, hfji]
+
 /-- Specialize the coordinates in an ordered list at values supplied by `c`.
 Repeated coordinates are allowed and are processed in list order. -/
 noncomputable def specializeAtList {σ R : Type*} [CommSemiring R]
     (c : σ → R) (l : List σ) (P : MvPolynomial σ R) : MvPolynomial σ R :=
   l.foldl (fun Q i => specializeAt i (c i) Q) P
+
+/-- The assignment obtained by replacing the coordinates in `l` by the
+values supplied by `c`.  This recursion matches evaluation after
+`specializeAtList`. -/
+def specializeAtListAssignment {σ R : Type*} [DecidableEq σ]
+    (c : σ → R) : List σ → (σ → R) → (σ → R)
+  | [], z => z
+  | i :: l, z => Function.update (specializeAtListAssignment c l z) i (c i)
+
+@[simp] theorem specializeAtListAssignment_nil {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) :
+    specializeAtListAssignment c [] z = z :=
+  rfl
+
+@[simp] theorem specializeAtListAssignment_cons {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) (i : σ) (l : List σ) :
+    specializeAtListAssignment c (i :: l) z =
+      Function.update (specializeAtListAssignment c l z) i (c i) :=
+  rfl
+
+/-- A coordinate outside the specialization list is unchanged. -/
+theorem specializeAtListAssignment_eq_of_not_mem {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) {i : σ} {l : List σ} (hi : i ∉ l) :
+    specializeAtListAssignment c l z i = z i := by
+  induction l with
+  | nil => rfl
+  | cons j l ih =>
+      simp only [List.mem_cons, not_or] at hi
+      simp [specializeAtListAssignment, hi.1, ih hi.2]
+
+/-- A coordinate in the specialization list has its prescribed value. -/
+theorem specializeAtListAssignment_eq_of_mem {σ R : Type*}
+    [DecidableEq σ] (c z : σ → R) {i : σ} {l : List σ} (hi : i ∈ l) :
+    specializeAtListAssignment c l z i = c i := by
+  induction l with
+  | nil => simp at hi
+  | cons j l ih =>
+      rcases List.mem_cons.mp hi with rfl | hi
+      · simp [specializeAtListAssignment]
+      · by_cases hij : i = j
+        · subst j
+          simp [specializeAtListAssignment]
+        · simp [specializeAtListAssignment, hij, ih hi]
 
 @[simp] theorem specializeAtList_nil {σ R : Type*} [CommSemiring R]
     (c : σ → R) (P : MvPolynomial σ R) :
@@ -107,6 +198,19 @@ noncomputable def specializeAtList {σ R : Type*} [CommSemiring R]
   induction l with
   | nil => rfl
   | cons i l ih => simp [specializeAtList_cons, ih]
+
+/-- Evaluation after ordered scalar specialization is evaluation at the
+correspondingly replaced assignment. -/
+@[simp] theorem eval_specializeAtList {σ R : Type*} [CommSemiring R]
+    [DecidableEq σ] (c : σ → R) (l : List σ) (P : MvPolynomial σ R)
+    (z : σ → R) :
+    eval z (specializeAtList c l P) =
+      eval (specializeAtListAssignment c l z) P := by
+  induction l generalizing P with
+  | nil => rfl
+  | cons i l ih =>
+      rw [specializeAtList_cons, ih, eval_specializeAt]
+      rfl
 
 /-- Ordered scalar specialization commutes with mapping coefficients. -/
 theorem map_specializeAtList {σ R S : Type*} [CommSemiring R] [CommSemiring S]

@@ -1,5 +1,6 @@
 import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CommonInterleaverTwo
+import RealRooted.InterlacingSequenceBasic
 import RealRooted.SameDegreeCountFromAnalytic
 
 noncomputable section
@@ -115,6 +116,35 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_pairBridgePos hrr hpos
     chudnovskySeymour_compatiblePairHasCommonInterleaver
+
+/-- An interlacing sequence with nonnegative coefficients is compatible under
+all nonnegative weighted sums. -/
+theorem IsInterlacingSeqNonneg.familyCompatible
+    {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) :
+    FamilyCompatible fs := by
+  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := fun f hf ↦ (hfs.1 f hf).1
+  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
+    intro f hf
+    exact (hfs.1 f hf).2.pos_leadingCoeff (hfs.1 f hf).1.1
+  apply (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos).mp
+  have hprec := isInterlacingSeq_iff_pairwise.mp hfs.2
+  rw [List.pairwise_iff_get] at hprec
+  intro i j hij
+  exact Compatible.of_prec (hprec i j hij)
+
+/-- Every nonnegative weighted sum drawn from a nonnegative interlacing
+sequence is a Pólya-frequency polynomial. -/
+theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
+    {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs)
+    (ws : List (ℝ × ℝ[X]))
+    (hmem : ∀ ap ∈ ws, ap.2 ∈ fs)
+    (hweights : ∀ ap ∈ ws, 0 ≤ ap.1) :
+    IsPFPolynomial (weightedSum ws) := by
+  have hnonneg : HasNonnegCoeffs (weightedSum ws) :=
+    hasNonnegCoeffs_weightedSum ws hweights fun ap hap ↦
+      (hfs.1 ap.2 (hmem ap hap)).2
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg <|
+    (hfs.familyCompatible ws hmem hweights).imp_right And.right
 
 private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
@@ -634,4 +664,3 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs :
 
 
 end RealRooted
-

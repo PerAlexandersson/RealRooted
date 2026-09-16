@@ -12,6 +12,41 @@ open Filter
 
 namespace Polynomial
 
+/-- A real polynomial that is nonnegative at every real point has
+nonnegative leading coefficient. -/
+theorem leadingCoeff_nonneg_of_forall_eval_nonneg {p : ℝ[X]}
+    (hp : ∀ x : ℝ, 0 ≤ p.eval x) :
+    0 ≤ p.leadingCoeff := by
+  by_cases hp0 : p = 0
+  · simp [hp0]
+  by_cases hdeg : 0 < p.degree
+  · by_contra hlc
+    have hlc' : p.leadingCoeff ≤ 0 := le_of_not_ge hlc
+    have ht : Tendsto (fun x => p.eval x) atTop atBot :=
+      p.tendsto_atBot_of_leadingCoeff_nonpos hdeg hlc'
+    have hneg : ∀ᶠ x in atTop, p.eval x < 0 :=
+      ht.eventually (Iio_mem_atBot 0)
+    obtain ⟨x, hx⟩ := hneg.exists
+    exact (not_lt_of_ge (hp x)) hx
+  · have hdeg' : p.degree ≤ 0 := le_of_not_gt hdeg
+    have hnat : p.natDegree = 0 :=
+      Nat.le_zero.mp ((natDegree_le_iff_degree_le).2 hdeg')
+    rw [leadingCoeff, hnat]
+    rw [coeff_zero_eq_eval_zero]
+    exact hp 0
+
+/-- Every coefficient at or above the natural degree of a globally
+nonnegative real polynomial is nonnegative.  Above the degree it vanishes;
+at the degree it is the leading coefficient. -/
+theorem coeff_nonneg_of_forall_eval_nonneg_of_natDegree_le
+    {p : ℝ[X]} (hp : ∀ x : ℝ, 0 ≤ p.eval x)
+    {n : ℕ} (hdeg : p.natDegree ≤ n) :
+    0 ≤ p.coeff n := by
+  rcases hdeg.eq_or_lt with rfl | hlt
+  · rw [coeff_natDegree]
+    exact leadingCoeff_nonneg_of_forall_eval_nonneg hp
+  · rw [coeff_eq_zero_of_natDegree_lt hlt]
+
 /-- The polynomial transform describing the eventual tail of a causal forward
 difference. -/
 noncomputable def causalFwdDiffPolynomial (p : ℝ[X]) : ℝ[X] :=

@@ -208,6 +208,24 @@ lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoe
       simpa [mul_assoc] using nonnegCoeffs_C_mul (hγ i) (hasNonnegCoeffs_gammaBasisTerm d i)
     exact hterm.add ih
 
+/-- A positive constant gamma coefficient makes every coefficient in the
+ambient degree box strictly positive. -/
+theorem coeff_gammaTransform_pos_of_nonneg_of_coeff_zero_pos
+    {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoeffs γ) (hγ0 : 0 < γ.coeff 0)
+    {k : ℕ} (hk : k ≤ d) : 0 < (gammaTransform d γ).coeff k := by
+  classical
+  unfold gammaTransform
+  rw [Polynomial.finsetSum_coeff]
+  apply Finset.sum_pos'
+  · intro i hi
+    exact (nonnegCoeffs_C_mul (hγ i)
+      (hasNonnegCoeffs_gammaBasisTerm d i)) k
+  · refine ⟨0, by simp, ?_⟩
+    simp only [gammaBasisTerm_zero, coeff_C_mul]
+    rw [show (X + 1 : ℝ[X]) = 1 + X by ring]
+    rw [Polynomial.coeff_one_add_X_pow]
+    exact mul_pos hγ0 (by exact_mod_cast Nat.choose_pos hk)
+
 lemma isRealRooted_X_add_one_pow : ∀ n : ℕ, ((((X + 1 : ℝ[X]) ^ n)) ≠ 0 ∧
   (((X + 1 : ℝ[X]) ^ n)).Splits)
   | 0 => by simp
@@ -363,6 +381,26 @@ lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
     _ = (X + 1) * gammaTransform (2 * m + 1) γ + C (γ.coeff (m + 1)) * X ^ (m + 1) := by
           rw [hprefix]
           simp [gammaBasisTerm]
+
+/-- Increasing the ambient degree by one factors off one copy of `X + 1`
+when the gamma polynomial fits the old degree box. -/
+lemma gammaTransform_pad_one {d : ℕ} {γ : ℝ[X]}
+    (hγ : γ.natDegree ≤ d / 2) :
+    gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
+  rcases Nat.mod_two_eq_zero_or_one d with heven | hodd
+  · have hd : d = 2 * (d / 2) := by lia
+    rw [hd]
+    exact gammaTransform_odd (d / 2) γ
+  · have hd : d = 2 * (d / 2) + 1 := by lia
+    have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by lia)
+    rw [hd]
+    have hs := gammaTransform_even_succ (d / 2) γ
+    rw [hcoeff] at hs
+    simp only [map_zero, zero_mul, add_zero] at hs
+    have heq : 2 * (d / 2 + 1) = 2 * (d / 2) + 1 + 1 := by lia
+    rw [← heq]
+    exact hs
 
 @[simp] lemma gammaTransform_odd_eval_neg_one (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m + 1) γ).eval (-1) = 0 := by

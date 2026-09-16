@@ -41,7 +41,9 @@ theorem gammaOperator_coeff (n k : ℕ) (p : ℝ[X]) :
 
 /-! ### One-step positivity and degree control -/
 
-private theorem gammaOperator_hasNonnegCoeffs_of_natDegree_le
+/-- The gamma operator preserves coefficient nonnegativity throughout its
+natural degree box. -/
+theorem gammaOperator_hasNonnegCoeffs_of_natDegree_le
     {p : ℝ[X]} (hn : p.natDegree ≤ n / 2) (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (gammaOperator n p) := by
   intro j
@@ -63,7 +65,9 @@ private theorem gammaOperator_hasNonnegCoeffs_of_natDegree_le
           coeff_eq_zero_of_natDegree_lt hkdeg]
         simp
 
-private theorem gammaOperator_natDegree_le_of_natDegree_le
+/-- A gamma-operator step raises the natural degree box from `n / 2` to
+`(n + 1) / 2`. -/
+theorem gammaOperator_natDegree_le_of_natDegree_le
     {p : ℝ[X]} (hn : p.natDegree ≤ n / 2) :
     (gammaOperator n p).natDegree ≤ (n + 1) / 2 := by
   rw [natDegree_le_iff_coeff_eq_zero]

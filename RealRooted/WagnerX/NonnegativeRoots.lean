@@ -20,9 +20,6 @@ lemma hasNonnegCoeffs_X_sub_C {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C 
   · rw [coeff_sub, coeff_X_of_ne_one (by lia), coeff_C_succ]
     simp
 
-lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X_sub_C (r := 0) le_rfl
-
 protected lemma HasNonnegCoeffs.X_mul {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (X * p) :=
   hasNonnegCoeffs_X.mul hp

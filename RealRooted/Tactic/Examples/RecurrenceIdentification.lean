@@ -112,6 +112,18 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     model_recurrence := hQ
 
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
+    (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_model_lag_one_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd
+
+example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hzero : P 0 = Q 0)
     (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
@@ -226,6 +238,135 @@ example {P Q : Nat → ℝ[X]}
   rr_model_lag_one_sequence using
     model_realrooted := hmodel,
     update := fun n p => (X + C (n : ℝ)) * p + p.derivative
+
+example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
+    (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
+    (∀ n : Nat, IsPFPolynomial (P n)) ∧
+      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+  rr_model_lag_one_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd,
+    initial := hzero,
+    target_recurrence := hP,
+    model_recurrence := hQ
+
+example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hone : P 1 = Q 1)
+    (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
+    (hQ : ∀ n : Nat, Q (n + 2) = upd n (Q (n + 1)) (Q n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_model_lag_two_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd
+
+example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hone : P 1 = Q 1)
+    (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
+    (hQ : ∀ n : Nat, Q (n + 2) = upd n (Q (n + 1)) (Q n)) :
+    ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+  rr_model_lag_two_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd,
+    initial_zero := hzero,
+    initial_one := hone,
+    target_recurrence := hP,
+    model_recurrence := hQ
+
+example {P Q : Nat → ℝ[X]}
+    {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hone : P 1 = Q 1)
+    (htwo : P 2 = Q 2)
+    (hP : ∀ n : Nat,
+      P (n + 3) = upd n (P (n + 2)) (P (n + 1)) (P n))
+    (hQ : ∀ n : Nat,
+      Q (n + 3) = upd n (Q (n + 2)) (Q (n + 1)) (Q n)) :
+    ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+  rr_model_lag_three_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd,
+    initial_zero := hzero,
+    initial_one := hone,
+    initial_two := htwo,
+    target_recurrence := hP,
+    model_recurrence := hQ
+
+example {P Q : Nat → ℝ[X]}
+    {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X] → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 0 = Q 0)
+    (hone : P 1 = Q 1)
+    (htwo : P 2 = Q 2)
+    (hP : ∀ n : Nat,
+      P (n + 3) = upd n (P (n + 2)) (P (n + 1)) (P n))
+    (hQ : ∀ n : Nat,
+      Q (n + 3) = upd n (Q (n + 2)) (Q (n + 1)) (Q n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_model_lag_three_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := upd
+
+/-- Conclusion-first unification also transports a PF/interlacing certificate
+to an active tail. -/
+example {P Q : Nat → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hzero : P 3 = Q 0)
+    (hone : P 4 = Q 1)
+    (hP : ∀ n : Nat,
+      P (n + 5) =
+        X * (C (1 : ℝ) * (P (n + 4)).derivative +
+          C ((n : ℝ) + 4) * P (n + 3)))
+    (hQ : ∀ n : Nat,
+      Q (n + 2) =
+        X * (C (1 : ℝ) * (Q (n + 1)).derivative +
+          C ((n : ℝ) + 4) * Q n)) :
+    ∀ n : Nat, Prec0 (P (n + 3)) (P (n + 4)) := by
+  rr_model_lag_two_pf_prec0_sequence using
+    model_pf_prec0 := hmodel,
+    update := fun n p q =>
+      X * (C (1 : ℝ) * p.derivative + C ((n : ℝ) + 4) * q)
+
+/-- A recurrence-defined constant sequence retains its complete concrete PF
+and consecutive-interlacing model certificate. -/
+example (P : Nat → ℝ[X])
+    (hzero : P 0 = 1)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    (∀ n : Nat, IsPFPolynomial (P n)) ∧
+      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+  rr_model_lag_one_pf_prec0_sequence using
+    model_pf_prec0 := show
+      (∀ n : Nat, IsPFPolynomial ((fun _ => (1 : ℝ[X])) n)) ∧
+        ∀ n : Nat, Prec0 ((fun _ => (1 : ℝ[X])) n)
+          ((fun _ => (1 : ℝ[X])) (n + 1)) from by
+      constructor
+      · intro n
+        exact IsPFPolynomial.one
+      · intro n
+        exact IsPFPolynomial.one.prec0_self,
+    update := fun _ p => p,
+    initial := by simpa using hzero,
+    target_recurrence := hrec,
+    model_recurrence := by intro n; rfl
 
 /-- The inferred form refuses to invent a missing initial equality. -/
 example {P Q : Nat → ℝ[X]}

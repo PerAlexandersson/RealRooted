@@ -81,6 +81,37 @@ private theorem isDescentStep_castSucc_succ {n : ℕ} (S : Finset (Fin n))
     isDescentStep S k.castSucc k.succ = true := by
   simp [isDescentStep, hk]
 
+/-- Prescribed descents are exactly strict decrease along every contiguous
+descent run. -/
+theorem hasDescentsAt_iff_forall_mem_descentRuns_sortedGT
+    {n : ℕ} {α : Type*} [LinearOrder α]
+    (S : Finset (Fin n)) (w : Fin (n + 1) → α) :
+    HasDescentsAt S w ↔
+      ∀ run ∈ descentRuns S, (run.map w).SortedGT := by
+  constructor
+  · intro hdesc run hrun
+    apply List.IsChain.sortedGT
+    rw [List.isChain_map]
+    apply (isChain_of_mem_descentRuns S hrun).imp
+    intro i j hij
+    simp only [isDescentStep, decide_eq_true_eq] at hij
+    obtain ⟨k, hk, hi, hj⟩ := hij
+    subst i
+    subst j
+    exact (hasDescentsAt_iff S w).mp hdesc k hk
+  · intro hsorted
+    rw [hasDescentsAt_iff]
+    intro k hk
+    obtain ⟨run, hrun, hinfix⟩ :=
+      List.exists_infix_splitBy_of_rel_of_infix
+        (isDescentStep S) (List.ofFn id)
+        k.castSucc k.succ (infix_adjacent_positions k)
+        (isDescentStep_castSucc_succ S hk)
+    have hpair :
+        ([w k.castSucc, w k.succ] : List α).Pairwise (· > ·) :=
+      (hsorted run hrun).pairwise.sublist (hinfix.map w).sublist
+    simpa using hpair
+
 /-- Strict sorting on the reversed selected runs realizes every prescribed
 descent. -/
 theorem hasDescentsAt_of_isStrictChainSorted_descentChains {n : ℕ}

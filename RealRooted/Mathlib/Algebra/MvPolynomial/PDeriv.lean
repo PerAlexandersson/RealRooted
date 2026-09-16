@@ -8,6 +8,38 @@ open scoped BigOperators
 
 namespace MvPolynomial
 
+/-- Partial derivatives with respect to two coordinates commute. -/
+theorem pderiv_comm {R σ : Type*} [CommSemiring R] (i j : σ)
+    (P : MvPolynomial σ R) :
+    pderiv i (pderiv j P) = pderiv j (pderiv i P) := by
+  classical
+  induction P using MvPolynomial.induction_on' with
+  | monomial d c =>
+      simp only [pderiv_monomial]
+      by_cases hij : i = j
+      · subst j
+        rfl
+      · have hji : j ≠ i := Ne.symm hij
+        have hsub :
+            (d - Finsupp.single j 1) - Finsupp.single i 1 =
+              (d - Finsupp.single i 1) - Finsupp.single j 1 := by
+          ext k
+          by_cases hki : k = i <;> by_cases hkj : k = j <;>
+            simp_all
+        rw [hsub]
+        congr 1
+        simp [hij, hji]
+        ring
+  | add P Q hP hQ =>
+      simp only [map_add, hP, hQ]
+
+/-- The partial derivative of a numeral constant is zero. -/
+@[simp] theorem pderiv_ofNat {R σ : Type*} [CommSemiring R]
+    (i : σ) (n : Nat) [n.AtLeastTwo] :
+    pderiv i (ofNat(n) : MvPolynomial σ R) = 0 := by
+  rw [← map_ofNat (C : R →+* MvPolynomial σ R) n]
+  exact pderiv_C
+
 /-- Differentiate a squarefree monomial presented as a finite product of
 variables. -/
 theorem pderiv_finsetProd_X {R σ : Type*} [CommSemiring R] [DecidableEq σ]

@@ -35,6 +35,55 @@ def FamilyCompatible (fs : List ℝ[X]) : Prop :=
     (∀ ap ∈ l, 0 ≤ ap.1) →
     weightedSum l = 0 ∨ ((weightedSum l) ≠ 0 ∧ (weightedSum l).Splits)
 
+namespace FamilyCompatible
+
+/-- Two nonnegative conic recombinations of the same compatible family are
+compatible. Empty lists and zero weights are allowed. -/
+theorem compatible_weightedSum {fs : List ℝ[X]} (hfs : FamilyCompatible fs)
+    {s t : List (ℝ × ℝ[X])}
+    (hs_mem : ∀ ap ∈ s, ap.2 ∈ fs) (ht_mem : ∀ ap ∈ t, ap.2 ∈ fs)
+    (hs_nonneg : ∀ ap ∈ s, 0 ≤ ap.1) (ht_nonneg : ∀ ap ∈ t, 0 ≤ ap.1) :
+    Compatible (weightedSum s) (weightedSum t) := by
+  intro α β hα hβ
+  let sScaled := s.map fun ap => (α * ap.1, ap.2)
+  let tScaled := t.map fun ap => (β * ap.1, ap.2)
+  have hmem : ∀ ap ∈ sScaled ++ tScaled, ap.2 ∈ fs := by
+    intro ap hap
+    rcases List.mem_append.mp hap with hap | hap
+    · rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+      exact hs_mem bp hbp
+    · rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+      exact ht_mem bp hbp
+  have hnonneg : ∀ ap ∈ sScaled ++ tScaled, 0 ≤ ap.1 := by
+    intro ap hap
+    rcases List.mem_append.mp hap with hap | hap
+    · rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+      exact mul_nonneg hα (hs_nonneg bp hbp)
+    · rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+      exact mul_nonneg hβ (ht_nonneg bp hbp)
+  simpa [sScaled, tScaled, weightedSum_map_mul_left] using
+    hfs (sScaled ++ tScaled) hmem hnonneg
+
+/-- Two ordinary finite sums drawn from the same compatible family are
+compatible. -/
+theorem compatible_sum {fs : List ℝ[X]} (hfs : FamilyCompatible fs)
+    {s t : List ℝ[X]} (hs_mem : ∀ p ∈ s, p ∈ fs)
+    (ht_mem : ∀ p ∈ t, p ∈ fs) : Compatible s.sum t.sum := by
+  have h := hfs.compatible_weightedSum
+    (s := s.map fun p => ((1 : ℝ), p)) (t := t.map fun p => ((1 : ℝ), p))
+    (by
+      intro ap hap
+      rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
+      exact hs_mem p hp)
+    (by
+      intro ap hap
+      rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
+      exact ht_mem p hp)
+    (by simp) (by simp)
+  simpa using h
+
+end FamilyCompatible
+
 namespace Compatible
 
 lemma comp_X_add_C {f g : ℝ[X]} (h : Compatible f g) (r : ℝ) :

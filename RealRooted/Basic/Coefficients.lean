@@ -30,6 +30,11 @@ lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
   · rw [coeff_one]
     simp
 
+lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
+  intro n
+  rw [coeff_X]
+  split <;> simp
+
 lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
   rintro (_ | n) <;> simp [ha]
 
@@ -44,7 +49,7 @@ lemma HasNonnegCoeffs.add {p q : ℝ[X]}
     HasNonnegCoeffs (p + q) := fun n => by
   simpa [coeff_add] using add_nonneg (hp n) (hq n)
 
-lemma hasNonnegCoeffs_finsetSum {ι : Type}
+lemma hasNonnegCoeffs_finsetSum {ι : Type*}
     (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     HasNonnegCoeffs (s.sum f) := by
   classical
@@ -65,6 +70,17 @@ lemma HasNonnegCoeffs.mul {p q : ℝ[X]}
     HasNonnegCoeffs (p * q) := by
   intro n
   simpa [coeff_mul] using Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
+
+lemma hasNonnegCoeffs_finsetProd {ι : Type*}
+    (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
+    HasNonnegCoeffs (s.prod f) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using hasNonnegCoeffs_one
+  | @insert i s hi ih =>
+      rw [Finset.prod_insert hi]
+      exact (hf i (Finset.mem_insert_self i s)).mul
+        (ih fun j hj => hf j (Finset.mem_insert_of_mem hj))
 
 protected lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     ∀ n : ℕ, HasNonnegCoeffs (p ^ n)

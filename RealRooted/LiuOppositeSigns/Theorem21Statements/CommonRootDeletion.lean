@@ -18,16 +18,8 @@ namespace LiuOppositeSigns
 compatibility. -/
 theorem compatible_mul_common_factor {d f g : ℝ[X]}
     (hd : d.Splits) (h : Compatible f g) :
-    Compatible (d * f) (d * g) := by
-  intro α β hα hβ
-  have hfactor :
-      C α * (d * f) + C β * (d * g) = d * (C α * f + C β * g) := by
-    ring
-  rcases h α β hα hβ with hzero | hrr
-  · exact Or.inl (by rw [hfactor, hzero, mul_zero])
-  · by_cases hprod_zero : C α * (d * f) + C β * (d * g) = 0
-    · exact Or.inl hprod_zero
-    · exact Or.inr ⟨hprod_zero, by rw [hfactor]; exact hd.mul hrr.2⟩
+    Compatible (d * f) (d * g) :=
+  h.mul_common_factor hd
 
 /-- If two compatible polynomials have a common root, deleting that shared
 linear factor preserves compatibility. -/

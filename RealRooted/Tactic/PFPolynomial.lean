@@ -1,14 +1,35 @@
 import RealRooted.PFPolynomial
 
 /-!
-# PF-polynomial tactic frontends
+# PF-polynomial tactic frontends and model transport
 
-Thin wrappers for standard closure operations on `IsPFPolynomial`.
+The model transport theorem preserves PF rows and consecutive `Prec0` through
+pointwise sequence identification. The remaining declarations are thin tactic
+wrappers for standard closure operations on `IsPFPolynomial`.
 -/
 
 open Polynomial
 
 namespace RealRooted
+
+/-- Transfer PF rows and consecutive zero-aware proper position from a
+rowwise equal model sequence. -/
+theorem pf_and_prec0_of_model_sequence
+    {P Q : Nat → ℝ[X]}
+    (hmodel :
+      (∀ n : Nat, IsPFPolynomial (Q n)) ∧
+        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+    (hidentify : ∀ n : Nat, P n = Q n) :
+    (∀ n : Nat, IsPFPolynomial (P n)) ∧
+      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+  constructor
+  · intro n
+    rw [hidentify n]
+    exact hmodel.1 n
+  · intro n
+    rw [hidentify n, hidentify (n + 1)]
+    exact hmodel.2 n
+
 namespace Tactic
 
 theorem pf_splits

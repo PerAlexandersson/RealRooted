@@ -1,7 +1,7 @@
-import RealRooted.BoundarySpecializationGeneral
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
+import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Real boundary consequences of the Lieb--Sokal operator
@@ -36,14 +36,6 @@ noncomputable section
       rw [oneSubPderivList_cons, oneSubPderivList_cons, ih,
         complexifyMv_oneSubPderiv]
 
-/-- Complexification commutes with ordered scalar specialization. -/
-@[simp] theorem complexifyMv_specializeAtList {sigma : Type*}
-    (c : sigma → ℝ) (l : List sigma) (P : MvPolynomial sigma ℝ) :
-    complexifyMv (MvPolynomial.specializeAtList c l P) =
-      MvPolynomial.specializeAtList (fun i => (c i : ℂ)) l
-        (complexifyMv P) := by
-  exact MvPolynomial.map_specializeAtList Complex.ofRealHom c l P
-
 /-- Strict upper-half-plane stability is preserved by an ordered list of
 `1 - ∂ᵢ` operators. -/
 theorem MvUpperHalfPlaneStable.oneSubPderivList
@@ -71,22 +63,6 @@ theorem MvRealStable.oneSubPderivList {sigma : Type*}
   unfold MvRealStable at hP ⊢
   rw [complexifyMv_oneSubPderivList]
   exact hP.oneSubPderivList l
-
-/-- Real stability is preserved, up to the zero polynomial, by specializing an
-ordered list of coordinates at real values. -/
-theorem MvRealStable.specializeAtList_zero_or_general
-    {sigma : Type*} {P : MvPolynomial sigma ℝ}
-    (hP : MvRealStable P) (c : sigma → ℝ) (l : List sigma) :
-    MvPolynomial.specializeAtList c l P = 0 ∨
-      MvRealStable (MvPolynomial.specializeAtList c l P) := by
-  unfold MvRealStable at hP ⊢
-  have hcomplex := hP.orZero.specializeAtList_real_general c l
-  rw [← complexifyMv_specializeAtList] at hcomplex
-  rcases hcomplex with hzero | hstable
-  · left
-    exact MvPolynomial.map_injective Complex.ofRealHom
-      Complex.ofRealHom.injective hzero
-  · exact Or.inr hstable
 
 /-- Applying an ordered operator list and then specializing coordinates at
 real values preserves real stability up to the zero polynomial. -/

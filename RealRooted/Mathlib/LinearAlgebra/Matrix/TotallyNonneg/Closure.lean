@@ -12,6 +12,25 @@ namespace Matrix
 
 variable {ι : Type*} [PartialOrder ι]
 
+/-- Entrywise sequential limits of totally nonnegative real matrices are
+totally nonnegative. -/
+theorem IsTotallyNonneg.of_tendsto
+    {A : ℕ → Matrix ι ι ℝ} {A₀ : Matrix ι ι ℝ}
+    (hA : ∀ k, (A k).IsTotallyNonneg)
+    (hlim : ∀ i j, Tendsto (fun k => A k i j) atTop (𝓝 (A₀ i j))) :
+    A₀.IsTotallyNonneg := by
+  intro n rows cols hrows hcols
+  have hmatrix : Tendsto
+      (fun k => (A k).submatrix rows cols) atTop
+      (𝓝 (A₀.submatrix rows cols)) := by
+    exact tendsto_pi_nhds.mpr fun i =>
+      tendsto_pi_nhds.mpr fun j => hlim (rows i) (cols j)
+  have hdet : Tendsto
+      (fun k => ((A k).submatrix rows cols).det) atTop
+      (𝓝 ((A₀.submatrix rows cols).det)) :=
+    continuous_id.matrix_det.continuousAt.tendsto.comp hmatrix
+  exact ge_of_tendsto hdet <| Eventually.of_forall fun k => hA k hrows hcols
+
 /-- A continuous curve of totally nonnegative real matrices for positive
 parameters has a totally nonnegative value at zero. -/
 theorem IsTotallyNonneg.of_continuous_curve

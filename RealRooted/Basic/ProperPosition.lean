@@ -513,6 +513,24 @@ lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
     rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
+/-- Same-degree proper position exposes sorted root lists in its oriented
+`ListAlternates` branch. -/
+lemma Prec.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
+    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    ∃ ss rs : List ℝ,
+      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
+        (↑ss : Multiset ℝ) = f.roots ∧
+        (↑rs : Multiset ℝ) = g.roots ∧ ListAlternates ss rs := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hssRoots, hrsRoots, hshape⟩
+  refine ⟨ss, rs, hss, hrs, hssRoots, hrsRoots, ?_⟩
+  rcases hshape with hdiff | hsame
+  · have hssLength : ss.length = f.natDegree := by
+      rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hf.2]
+    have hrsLength : rs.length = g.natDegree := by
+      rw [← Multiset.coe_card, hrsRoots, card_roots_of_splits hg.2]
+    lia
+  · exact hsame.2
+
 /-- Multiplying the left polynomial in a proper-position relation by a nonzero
 real scalar preserves proper position. -/
 lemma Prec.C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :

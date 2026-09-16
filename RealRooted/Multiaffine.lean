@@ -12,6 +12,16 @@ multiaffine Lieb--Sokal theorem.
 
 open BigOperators
 
+namespace RealRooted
+
+/-- The weighted sum of all partial derivatives. -/
+noncomputable def directionalPDeriv
+    {σ R : Type*} [Fintype σ] [CommSemiring R]
+    (c : σ → R) (P : MvPolynomial σ R) : MvPolynomial σ R :=
+  ∑ i : σ, MvPolynomial.C (c i) * MvPolynomial.pderiv i P
+
+end RealRooted
+
 namespace MvPolynomial
 
 /-- A multivariate polynomial has degree at most one in every variable. -/
@@ -34,6 +44,17 @@ theorem degreeOf_pderiv_le {R σ : Type*} [CommSemiring R]
   · rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
     exact (Nat.sub_le _ _).trans
       (MvPolynomial.degreeOf_le_iff.mp le_rfl d hd)
+
+/-- Partial differentiation introduces no new variables. -/
+theorem vars_pderiv_subset {R σ : Type*} [CommSemiring R]
+    (p : MvPolynomial σ R) (i : σ) :
+    (MvPolynomial.pderiv i p).vars ⊆ p.vars := by
+  intro j hj
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hj ⊢
+  intro hpj
+  apply hj
+  exact Nat.eq_zero_of_le_zero (by
+    simpa [hpj] using MvPolynomial.degreeOf_pderiv_le p i j)
 
 namespace IsMultiaffine
 
@@ -101,6 +122,41 @@ theorem pderiv_pderiv_self_eq_zero {p : MvPolynomial σ R}
   have hdi : d i ≤ 1 := MvPolynomial.degreeOf_le_iff.mp (hp i) d hd
   have hcases : d i = 0 ∨ d i = 1 := by lia
   rcases hcases with h | h <;> simp [h]
+
+/-- A partial derivative of a multiaffine polynomial no longer uses the
+differentiated coordinate. -/
+theorem notMem_vars_pderiv_self {p : MvPolynomial σ R}
+    (hp : IsMultiaffine p) (i : σ) :
+    i ∉ (MvPolynomial.pderiv i p).vars := by
+  rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero, not_ne_iff]
+  apply Nat.eq_zero_of_le_zero
+  conv_lhs => rw [MvPolynomial.as_sum p]
+  simp only [map_sum]
+  refine (MvPolynomial.degreeOf_sum_le i p.support fun d =>
+    MvPolynomial.pderiv i (MvPolynomial.monomial d (p.coeff d))).trans ?_
+  apply Finset.sup_le
+  intro d hd
+  rw [MvPolynomial.pderiv_monomial]
+  by_cases hc : p.coeff d * d i = 0
+  · simp [hc]
+  · rw [MvPolynomial.degreeOf_monomial_eq _ i hc]
+    have hdi : d i ≤ (Finsupp.single i 1) i := by
+      simpa using MvPolynomial.degreeOf_le_iff.mp (hp i) d hd
+    exact Nat.le_of_eq (Nat.sub_eq_zero_of_le hdi)
+
+/-- The variables of a partial derivative of a multiaffine polynomial lie in
+the old variable set with the differentiated coordinate removed. -/
+theorem vars_pderiv_subset_erase [DecidableEq σ]
+    {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
+    (MvPolynomial.pderiv i p).vars ⊆ p.vars.erase i := by
+  classical
+  intro j hj
+  apply Finset.mem_erase.mpr
+  constructor
+  · intro hji
+    subst j
+    exact hp.notMem_vars_pderiv_self i hj
+  · exact MvPolynomial.vars_pderiv_subset p i hj
 
 private theorem eval_update_monomial_affine
     {S : Type*} [CommRing S] [DecidableEq σ]
@@ -251,6 +307,25 @@ theorem specializeZero_monomial
   simp only [Finset.sum_filter]
   by_cases hdi : d i = 0 <;> simp [hdi]
 
+/-- Zero-specializing a variable removes that variable polynomial. -/
+@[simp] theorem specializeZero_X_self
+    {S : Type*} [CommRing S] (i : σ) :
+    specializeZero i (X i : MvPolynomial σ S) = 0 := by
+  classical
+  unfold X
+  rw [specializeZero_monomial]
+  simp
+
+/-- Zero-specializing one coordinate leaves every other variable polynomial
+unchanged. -/
+theorem specializeZero_X_of_ne
+    {S : Type*} [CommRing S] {i j : σ} (hij : j ≠ i) :
+    specializeZero i (X j : MvPolynomial σ S) = X j := by
+  classical
+  unfold X
+  rw [specializeZero_monomial]
+  simp [hij]
+
 @[simp] theorem eval_specializeZero
     {S : Type*} [CommRing S] [DecidableEq σ]
     (i : σ) (p : MvPolynomial σ S) (z : σ → S) :
@@ -290,6 +365,45 @@ theorem specializeZero_add
   ext d
   simp only [coeff_specializeZero, coeff_add]
   split <;> simp
+
+/-- Zero-specialization commutes with finite sums. -/
+theorem specializeZero_sum
+    {I S : Type*} [CommRing S] (i : σ) (s : Finset I)
+    (p : I → MvPolynomial σ S) :
+    specializeZero i (∑ j ∈ s, p j) =
+      ∑ j ∈ s, specializeZero i (p j) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      rw [Finset.sum_insert ha, specializeZero_add, ih,
+        Finset.sum_insert ha]
+
+/-- A multiaffine polynomial is its zero-specialization in one coordinate
+plus that coordinate times its partial derivative. -/
+theorem IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+    {S : Type*} [CommRing S] {p : MvPolynomial σ S}
+    (hp : IsMultiaffine p) (i : σ) :
+    p = specializeZero i p + MvPolynomial.X i * MvPolynomial.pderiv i p := by
+  classical
+  calc
+    p = ∑ d ∈ p.support, monomial d (coeff d p) := p.as_sum
+    _ = ∑ d ∈ p.support,
+        (specializeZero i (monomial d (coeff d p)) +
+          MvPolynomial.X i *
+            MvPolynomial.pderiv i (monomial d (coeff d p))) := by
+      apply Finset.sum_congr rfl
+      intro d hd
+      have hdi : d i ≤ 1 := degreeOf_le_iff.mp (hp i) d hd
+      have hcases : d i = 0 ∨ d i = 1 := by lia
+      rcases hcases with h | h
+      · simp [specializeZero_monomial, h, pderiv_monomial]
+      · rw [specializeZero_monomial, if_neg (by simp [h])]
+        simp only [zero_add, X_mul_pderiv_monomial, h, one_smul]
+    _ = specializeZero i p +
+        MvPolynomial.X i * MvPolynomial.pderiv i p := by
+      rw [Finset.sum_add_distrib, ← specializeZero_sum,
+        ← Finset.mul_sum, ← map_sum, ← p.as_sum]
 
 theorem specializeZero_mul
     {S : Type*} [CommRing S]
@@ -392,6 +506,33 @@ theorem degreeOf_specializeZero_le
   rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
   exact MvPolynomial.degreeOf_le_iff.mp le_rfl d hd.1
 
+/-- Zero-specializing a coordinate removes it without introducing any new
+variables. -/
+theorem vars_specializeZero_subset_erase
+    {S σ : Type*} [CommRing S] [DecidableEq σ]
+    (p : MvPolynomial σ S) (i : σ) :
+    (MvPolynomial.specializeZero i p).vars ⊆ p.vars.erase i := by
+  classical
+  intro j hj
+  apply Finset.mem_erase.mpr
+  constructor
+  · intro hji
+    subst j
+    rw [MvPolynomial.mem_vars_iff_mem_support] at hj
+    obtain ⟨d, hd, hdi⟩ := hj
+    have hcoeff : MvPolynomial.coeff d
+        (MvPolynomial.specializeZero i p) ≠ 0 := by
+      simpa [MvPolynomial.mem_support_iff] using hd
+    rw [MvPolynomial.coeff_specializeZero] at hcoeff
+    split at hcoeff
+    · exact (Finsupp.mem_support_iff.mp hdi) ‹d i = 0›
+    · exact hcoeff rfl
+  · rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero] at hj ⊢
+    intro hpj
+    apply hj
+    exact Nat.eq_zero_of_le_zero (by
+      simpa [hpj] using MvPolynomial.degreeOf_specializeZero_le p i j)
+
 namespace IsMultiaffine
 
 variable {R σ τ : Type*} [CommSemiring R]
@@ -418,6 +559,14 @@ theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hj)
     simp [hzero]
 
+/-- Multiaffineness is reflected by an injective variable renaming. -/
+theorem of_rename {p : MvPolynomial σ R} {f : σ → τ}
+    (hp : IsMultiaffine (MvPolynomial.rename f p))
+    (hf : Function.Injective f) : IsMultiaffine p := by
+  intro i
+  rw [← MvPolynomial.degreeOf_rename_of_injective hf]
+  exact hp (f i)
+
 /-- A product of multiaffine polynomials in disjoint variable sets is
 multiaffine. -/
 theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}
@@ -435,6 +584,17 @@ theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}
       exact not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hi)
     simpa [hpzero] using hq i
+
+/-- Multiplication by a fresh variable preserves multiaffineness. -/
+theorem X_mul_of_notMem_vars [Nontrivial R] {p : MvPolynomial σ R}
+    (hp : IsMultiaffine p) {i : σ} (hi : i ∉ p.vars) :
+    IsMultiaffine (MvPolynomial.X i * p) := by
+  apply (IsMultiaffine.X i).mul_of_disjoint_vars hp
+  rw [Finset.disjoint_left]
+  intro j hjX hjp
+  have hji : j = i := by simpa using hjX
+  subst j
+  exact hi hjp
 
 theorem prod_X [Nontrivial R] (s : Finset σ) :
     IsMultiaffine (∏ i ∈ s, (MvPolynomial.X i : MvPolynomial σ R)) := by

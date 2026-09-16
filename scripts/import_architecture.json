@@ -10,13 +10,13 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1199
+      "max_modules": 1400
     },
     "RealRooted.Production": {
-      "max_modules": 1078
+      "max_modules": 1279
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 633
+      "max_modules": 635
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -28,7 +28,7 @@
       "max_modules": 139
     },
     "RealRooted.ParkingFunctions.Descents.DiaconisHicks": {
-      "max_modules": 5
+      "max_modules": 7
     },
     "RealRooted.ParkingFunctions.Descents.ChainSort": {
       "max_modules": 3
@@ -87,6 +87,30 @@
     "RealRooted.Applications.OEIS.A272471.Recurrence": {
       "max_modules": 2
     },
+    "RealRooted.Applications.OEIS.A144438": {
+      "max_modules": 46
+    },
+    "RealRooted.Applications.OEIS.A144438.Weighted": {
+      "max_modules": 107
+    },
+    "RealRooted.GammaPencil.Intertwining": {
+      "max_modules": 131
+    },
+    "RealRooted.Applications.OEIS.A144438.Gamma": {
+      "max_modules": 139
+    },
+    "RealRooted.Applications.OEIS.A144438.DecoratedCycle": {
+      "max_modules": 48
+    },
+    "RealRooted.Applications.OEIS.InversePeaks": {
+      "max_modules": 45
+    },
+    "RealRooted.Applications.OEIS.InversePeaksTypeB": {
+      "max_modules": 139
+    },
+    "RealRooted.Applications.OEIS.LowerReentrantCorner": {
+      "max_modules": 44
+    },
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power": {
       "max_modules": 1
     },
@@ -118,7 +142,7 @@
       "max_modules": 43
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution": {
-      "max_modules": 5
+      "max_modules": 6
     },
     "RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah": {
       "max_modules": 1
@@ -217,7 +241,7 @@
       "max_modules": 12
     },
     "RealRooted.LiebSokalBoundary": {
-      "max_modules": 13
+      "max_modules": 14
     },
     "RealRooted.Mathlib.Algebra.MvPolynomial.Specialize": {
       "max_modules": 1
@@ -232,7 +256,7 @@
       "max_modules": 127
     },
     "RealRooted.Applications.EulerianVariations": {
-      "max_modules": 236
+      "max_modules": 238
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 46
@@ -463,7 +487,7 @@
       "max_modules": 20
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Converse": {
-      "max_modules": 195
+      "max_modules": 196
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Closure": {
       "max_modules": 185
@@ -490,7 +514,7 @@
       "max_modules": 173
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse": {
-      "max_modules": 185
+      "max_modules": 186
     },
     "RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence": {
       "max_modules": 179
@@ -734,6 +758,18 @@
     },
     "RealRooted.CoefficientDominance.Symmetric.Finite": {
       "max_modules": 3
+    },
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKind": {
+      "max_modules": 2
+    },
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF": {
+      "max_modules": 92
+    },
+    "RealRooted.CombinatorialExamples.JacobiStirling.Inverse": {
+      "max_modules": 5
+    },
+    "RealRooted.CombinatorialExamples.JacobiStirling.SecondKind": {
+      "max_modules": 2
     },
     "RealRooted.CoefficientDominance.Symmetric.Polynomial": {
       "max_modules": 3
@@ -1150,7 +1186,7 @@
       "max_modules": 165
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 53
+      "max_modules": 56
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
@@ -1162,6 +1198,12 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
+      "max_modules": 43
+    },
+    "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
+      "max_modules": 43
+    },
+    "RealRooted.DerivativeRecurrence.AffineLagStrict": {
       "max_modules": 43
     },
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int": {
@@ -1422,6 +1464,9 @@
     "RealRooted.RootVieta.Newton": {
       "max_modules": 4
     },
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
+      "max_modules": 1
+    },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities": {
       "max_modules": 1
     },
@@ -1550,6 +1595,9 @@
    },
     "RealRooted.Transforms.BrandenE.Inverse": {
       "max_modules": 14
+   },
+    "RealRooted.Transforms.BrandenE.IntervalPreserver": {
+      "max_modules": 197
    },
     "RealRooted.Transforms.BrandenE.BasisImage": {
       "max_modules": 24
@@ -1962,6 +2010,10 @@
     "RealRooted.CoefficientDominance.Sequence",
     "RealRooted.CoefficientDominance.Symmetric",
     "RealRooted.CoefficientDominance.Symmetric.Finite",
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKind",
+    "RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF",
+    "RealRooted.CombinatorialExamples.JacobiStirling.Inverse",
+    "RealRooted.CombinatorialExamples.JacobiStirling.SecondKind",
     "RealRooted.CoefficientDominance.Symmetric.Polynomial",
     "RealRooted.CoefficientDominance.Symmetric.Sharp",
     "RealRooted.CoefficientDominance.Symmetric.Tail",
@@ -2049,6 +2101,8 @@
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
     "RealRooted.DerivativeRecurrence.SecondDerivativeDegree",
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing",
+    "RealRooted.DerivativeRecurrence.QuadraticLagStrict",
+    "RealRooted.DerivativeRecurrence.AffineLagStrict",
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
     "RealRooted.LiuWang.Step",
@@ -2131,6 +2185,7 @@
     "RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative",
     "RealRooted.RootVieta",
     "RealRooted.RootVieta.Newton",
+    "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous",
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities",
     "RealRooted.Mathlib.RingTheory.Polynomial.Vieta",
     "RealRooted.SimpleRoots",
@@ -2202,6 +2257,7 @@
     "RealRooted.Transforms.BrandenE.OrderedBell",
     "RealRooted.Transforms.BrandenE.Basic",
     "RealRooted.Transforms.BrandenE.Inverse",
+    "RealRooted.Transforms.BrandenE.IntervalPreserver",
     "RealRooted.Transforms.BrandenE.BasisImage",
     "RealRooted.Transforms.BrandenE.ProperPosition",
     "RealRooted.Transforms.BrandenE.WeightedSum",

@@ -100,6 +100,20 @@ lemma HasSimpleRoots.of_roots_nodup {p : ℝ[X]}
     exact Multiset.nodup_iff_count_le_one.mp hnd r
   lia
 
+/-- Every nonzero polynomial of degree at most one has only simple roots. -/
+theorem hasSimpleRoots_of_natDegree_le_one {p : ℝ[X]}
+    (hp : p ≠ 0) (hdeg : p.natDegree ≤ 1) :
+    HasSimpleRoots p := by
+  intro r hr
+  have hpos : 0 < p.rootMultiplicity r :=
+    (rootMultiplicity_pos hp).mpr hr
+  have hle : p.rootMultiplicity r ≤ p.natDegree := by
+    calc
+      p.rootMultiplicity r = p.roots.count r := (count_roots p).symm
+      _ ≤ p.roots.card := p.roots.count_le_card r
+      _ ≤ p.natDegree := card_roots' p
+  lia
+
 /-- Multiplying by `X` preserves simple real roots when zero was not already a
 root. -/
 lemma HasSimpleRoots.X_mul (hsimple : HasSimpleRoots p)

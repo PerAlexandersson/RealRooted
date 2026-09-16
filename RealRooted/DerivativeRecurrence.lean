@@ -3,6 +3,8 @@ import RealRooted.DerivativeRecurrence.QuadraticDegree
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.DerivativeRecurrence.AffineLagStrict
 import RealRooted.DerivativeRecurrence.QuadraticSeed
 import RealRooted.DerivativeRecurrence.QuadraticShift
 import RealRooted.DerivativeRecurrence.SecondOrderDegree

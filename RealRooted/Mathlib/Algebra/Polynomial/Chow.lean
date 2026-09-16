@@ -15,6 +15,30 @@ namespace Polynomial
 
 noncomputable section
 
+/-- Reflection distributes through a finite sum with constant scalar
+coefficients. -/
+theorem reflect_finset_sum_C_mul {R ι : Type*} [Semiring R]
+    (s : Finset ι) (a : ι → R) (f : ι → R[X]) (n : ℕ) :
+    (∑ i ∈ s, C (a i) * f i).reflect n =
+      ∑ i ∈ s, C (a i) * (f i).reflect n := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert i s hi ih =>
+      simp [hi, ih, reflect_add, reflect_C_mul]
+
+/-- Increasing the reflection bound of a polynomial already fixed at its
+degree bound appends the corresponding power of `X`. -/
+theorem reflect_add_right_of_reflect {R : Type*} [Semiring R]
+    {p : R[X]} {n : ℕ} (k : ℕ) (hdegree : p.natDegree ≤ n)
+    (hreflect : p.reflect n = p) :
+    p.reflect (n + k) = p * X ^ k := by
+  calc
+    p.reflect (n + k) = (p * 1).reflect (n + k) := by rw [mul_one]
+    _ = p.reflect n * (1 : R[X]).reflect k :=
+      reflect_mul p 1 hdegree (by simp)
+    _ = p * X ^ k := by rw [hreflect, reflect_one]
+
 /-- The Chow operator `Sₙ(p) = (reflect n p - p) / (X - 1)`.
 
 For `p.natDegree ≤ n`, the numerator vanishes at one, so the quotient is exact;
@@ -40,6 +64,22 @@ theorem X_sub_one_mul_chowS {R : Type*} [CommRing R]
         (p.reflect n - p) %ₘ (X - 1) + (X - 1) * ((p.reflect n - p) /ₘ (X - 1)) := by
       rw [hmod, zero_add]
     _ = p.reflect n - p := modByMonic_add_div _ _
+
+/-- The Chow operator commutes with multiplication by a constant when its
+input lies in the stated degree slice. -/
+theorem chowS_C_mul {R : Type*} [CommRing R]
+    (n : ℕ) (c : R) (p : R[X]) (hp : p.natDegree ≤ n) :
+    chowS n (C c * p) = C c * chowS n p := by
+  apply (monic_X_sub_C (1 : R)).isRegular.left
+  change (X - 1) * chowS n (C c * p) =
+    (X - 1) * (C c * chowS n p)
+  rw [X_sub_one_mul_chowS n (C c * p)
+    ((natDegree_C_mul_le c p).trans hp), reflect_C_mul]
+  calc
+    C c * p.reflect n - C c * p = C c * (p.reflect n - p) := by ring
+    _ = C c * ((X - 1) * chowS n p) := by
+      rw [X_sub_one_mul_chowS n p hp]
+    _ = (X - 1) * (C c * chowS n p) := by ring
 
 /-- The Chow operator at a degree bound has degree at most that bound. -/
 theorem natDegree_chowS_le {R : Type*} [CommRing R]
