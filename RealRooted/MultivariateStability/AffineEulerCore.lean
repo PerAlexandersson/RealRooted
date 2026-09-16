@@ -148,6 +148,28 @@ theorem MvRealStable.directionalPDeriv_one
   · exact ((hstable.directionalPDeriv_one_ne_zero hnn hhom hd) hzero).elim
   · exact hderiv
 
+/-- A nonzero nonnegative directional derivative of a homogeneous stable
+polynomial is Wronskian-oriented against the polynomial. -/
+theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzero
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (b : σ → Real) (hb : ∀ i, 0 ≤ b i)
+    (hD0 : directionalPDeriv b H ≠ 0) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian (directionalPDeriv b H) H i) := by
+  let D := directionalPDeriv b H
+  have hDhom : D.IsHomogeneous (d - 1) := by
+    apply MvPolynomial.IsHomogeneous.sum
+    intro i hi
+    simpa [D, directionalPDeriv] using (hhom.pderiv (i := i)).C_mul (b i)
+  have hDnn : MvPolynomial.HasNonnegCoeffs D := by
+    apply MvPolynomial.HasNonnegCoeffs.sum
+    intro i hi
+    exact (MvPolynomial.HasNonnegCoeffs.C (hb i)).mul (hnn.pderiv i)
+  have hpencil := hstable.directionalPDeriv_pencil b hb
+  exact hpencil.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtension
+    hhom hDhom hnn hDnn hstable.ne_zero hD0
+
 /-- A positive-degree homogeneous stable polynomial with nonnegative
 coefficients has its all-ones directional derivative Wronskian-oriented
 against it, without any multiaffineness hypothesis. -/
@@ -158,16 +180,9 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
     ∀ i x, 0 ≤ MvPolynomial.eval x
       (MvPolynomial.coordinateWronskian
         (directionalPDeriv (fun _ : σ => (1 : Real)) H) H i) := by
-  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
-  have hDhom : D.IsHomogeneous (d - 1) :=
-    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
-  have hDnn : MvPolynomial.HasNonnegCoeffs D :=
-    MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one hnn
-  have hD0 : D ≠ 0 := hstable.directionalPDeriv_one_ne_zero hnn hhom hd
-  have hpencil := hstable.directionalPDeriv_pencil
-    (fun _ : σ => (1 : Real)) fun _ => zero_le_one
-  exact hpencil.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtension
-    hhom hDhom hnn hDnn hstable.ne_zero hD0
+  exact hstable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzero
+    hnn hhom (fun _ : σ => (1 : Real)) (fun _ => zero_le_one)
+      (hstable.directionalPDeriv_one_ne_zero hnn hhom hd)
 
 /-- Two successive all-ones directional derivatives inherit the same
 Wronskian orientation. -/
