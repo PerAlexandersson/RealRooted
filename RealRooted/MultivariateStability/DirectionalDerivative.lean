@@ -1,4 +1,5 @@
 import RealRooted.LiebSokalPointwise
+import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Directional derivatives of stable polynomials
@@ -112,27 +113,8 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_zero_or
     have hderivPDeriv := MvPolynomial.pderiv_eq_zero_of_notMem_vars hderivVars
     simp [pencil, hbasePDeriv, hderivPDeriv]
   rw [hpderivEq] at hpderiv
-  have hrenamed : MvUpperHalfPlaneStableOrZero
-      (MvPolynomial.rename some D) := hpderiv
-  rcases hrenamed with hzero | hstable
-  · left
-    apply MvPolynomial.rename_injective some (Option.some_injective σ)
-    simpa using hzero
-  · right
-    intro z hz
-    let w : Option σ → ℂ := fun o => o.elim Complex.I z
-    have hw : ∀ o, 0 < (w o).im := by
-      intro o
-      cases o with
-      | none => norm_num [w]
-      | some i => simpa [w] using hz i
-    have hne := hstable w hw
-    rw [MvPolynomial.eval_rename] at hne
-    have hwcomp : w ∘ some = z := by
-      funext i
-      rfl
-    rw [hwcomp] at hne
-    exact hne
+  exact MvUpperHalfPlaneStableOrZero.of_rename hpderiv
+    (Option.some_injective σ)
 
 /-- A nonnegative directional derivative of a real stable polynomial is
 either zero or real stable. -/
@@ -176,6 +158,19 @@ theorem MvRealStable.affineExtension_directionalPDeriv_zero_or
     (fun o : Option σ => o.elim t c) hweights
   rw [directionalPDeriv_add_X_mul_rename_some] at hderiv
   exact hderiv
+
+/-- Every real specialization of a differentiated stable affine extension is
+weakly stable. -/
+theorem MvRealStable.affineExtension_directionalPDeriv_specialize
+    {σ : Type*} [Fintype σ] {P Q : MvPolynomial σ ℝ}
+    (hPQ : MvRealStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some Q))
+    (c : σ → ℝ) (t s : ℝ) (hc : ∀ i, 0 ≤ c i) (ht : 0 ≤ t) :
+    MvRealStableOrZero
+      (directionalPDeriv c P + MvPolynomial.C t * Q +
+        MvPolynomial.C s * directionalPDeriv c Q) := by
+  exact (hPQ.affineExtension_directionalPDeriv_zero_or c t hc ht).affineExtension_specialize s
 
 /-- The affine extension obtained by a nonnegative directional derivative is
 stable whenever it is nonzero. -/

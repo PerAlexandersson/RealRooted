@@ -546,6 +546,38 @@ theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
   rw [MvPolynomial.eval_rename]
   exact hP (z ∘ f) fun i => hz (f i)
 
+/-- Upper-half-plane stability is reflected by an injective variable
+renaming. -/
+theorem MvUpperHalfPlaneStable.of_rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} {f : sigma → tau}
+    (hP : MvUpperHalfPlaneStable (MvPolynomial.rename f P))
+    (hf : Function.Injective f) : MvUpperHalfPlaneStable P := by
+  classical
+  intro z hz
+  let w : tau → ℂ := Function.extend f z (fun _ => Complex.I)
+  have hw : ∀ j, 0 < (w j).im := by
+    intro j
+    by_cases hj : ∃ i, f i = j
+    · obtain ⟨i, rfl⟩ := hj
+      change 0 < (Function.extend f z (fun _ => Complex.I) (f i)).im
+      rw [hf.extend_apply]
+      exact hz i
+    · change 0 < (Function.extend f z (fun _ => Complex.I) j).im
+      rw [Function.extend_apply' z (fun _ => Complex.I) j hj]
+      norm_num
+  have hne := hP w hw
+  rw [MvPolynomial.eval_rename, Function.extend_comp hf] at hne
+  exact hne
+
+/-- Injective variable renaming preserves and reflects upper-half-plane
+stability. -/
+theorem mvUpperHalfPlaneStable_rename_iff {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} {f : sigma → tau}
+    (hf : Function.Injective f) :
+    MvUpperHalfPlaneStable (MvPolynomial.rename f P) ↔
+      MvUpperHalfPlaneStable P :=
+  ⟨fun hP => hP.of_rename hf, fun hP => hP.rename⟩
+
 /-- Multiplication preserves multivariate real stability. -/
 theorem MvRealStable.mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℝ} (hP : MvRealStable P)
@@ -620,6 +652,22 @@ theorem MvRealStable.rename
   rw [MvPolynomial.map_rename]
   exact hP.rename
 
+/-- Real stability is reflected by an injective variable renaming. -/
+theorem MvRealStable.of_rename
+    {sigma tau : Type*} {P : MvPolynomial sigma ℝ} {f : sigma → tau}
+    (hP : MvRealStable (MvPolynomial.rename f P))
+    (hf : Function.Injective f) : MvRealStable P := by
+  unfold MvRealStable complexifyMv at hP ⊢
+  rw [MvPolynomial.map_rename] at hP
+  exact hP.of_rename hf
+
+/-- Injective variable renaming preserves and reflects real stability. -/
+theorem mvRealStable_rename_iff
+    {sigma tau : Type*} {P : MvPolynomial sigma ℝ} {f : sigma → tau}
+    (hf : Function.Injective f) :
+    MvRealStable (MvPolynomial.rename f P) ↔ MvRealStable P :=
+  ⟨fun hP => hP.of_rename hf, fun hP => hP.rename f⟩
+
 /-- Translating each variable by a real constant preserves upper-half-plane
 stability. -/
 theorem MvUpperHalfPlaneStable.translate_add_real {sigma : Type*}
@@ -688,6 +736,53 @@ theorem MvUpperHalfPlaneStableOrZero.rename {sigma tau : Type*}
   · left
     simp
   exact hP.rename.orZero
+
+/-- Weak upper-half-plane stability is reflected by an injective variable
+renaming. -/
+theorem MvUpperHalfPlaneStableOrZero.of_rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} {f : sigma → tau}
+    (hP : MvUpperHalfPlaneStableOrZero (MvPolynomial.rename f P))
+    (hf : Function.Injective f) : MvUpperHalfPlaneStableOrZero P := by
+  rcases hP with hzero | hstable
+  · left
+    exact MvPolynomial.rename_injective f hf hzero
+  · exact (hstable.of_rename hf).orZero
+
+/-- Injective variable renaming preserves and reflects weak
+upper-half-plane stability. -/
+theorem mvUpperHalfPlaneStableOrZero_rename_iff {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} {f : sigma → tau}
+    (hf : Function.Injective f) :
+    MvUpperHalfPlaneStableOrZero (MvPolynomial.rename f P) ↔
+      MvUpperHalfPlaneStableOrZero P :=
+  ⟨fun hP => hP.of_rename hf, fun hP => hP.rename f⟩
+
+/-- Renaming variables preserves weak real stability. -/
+theorem MvRealStableOrZero.rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℝ} (hP : MvRealStableOrZero P)
+    (f : sigma → tau) :
+    MvRealStableOrZero (MvPolynomial.rename f P) := by
+  rcases hP with rfl | hP
+  · simpa using (MvRealStableOrZero.zero (sigma := tau))
+  · exact (hP.rename f).orZero
+
+/-- Weak real stability is reflected by an injective variable renaming. -/
+theorem MvRealStableOrZero.of_rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℝ} {f : sigma → tau}
+    (hP : MvRealStableOrZero (MvPolynomial.rename f P))
+    (hf : Function.Injective f) : MvRealStableOrZero P := by
+  rcases hP with hzero | hstable
+  · left
+    exact MvPolynomial.rename_injective f hf hzero
+  · exact (hstable.of_rename hf).orZero
+
+/-- Injective variable renaming preserves and reflects weak real stability. -/
+theorem mvRealStableOrZero_rename_iff {sigma tau : Type*}
+    {P : MvPolynomial sigma ℝ} {f : sigma → tau}
+    (hf : Function.Injective f) :
+    MvRealStableOrZero (MvPolynomial.rename f P) ↔
+      MvRealStableOrZero P :=
+  ⟨fun hP => hP.of_rename hf, fun hP => hP.rename f⟩
 
 /-- Specialize the right block of variables in a polynomial on a sum type. -/
 def specializeRight {sigma tau : Type*} (y : tau → ℂ)

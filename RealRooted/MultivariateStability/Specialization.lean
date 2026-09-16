@@ -71,6 +71,48 @@ theorem MvRealStableOrZero.specializeAt_general
     MvRealStableOrZero (MvPolynomial.specializeAt i c P) := by
   simpa using hP.specializeAtList_general (fun _ => c) [i]
 
+/-- Specializing the fresh coordinate of an affine extension produces the
+corresponding affine combination of its endpoints. -/
+theorem specializeAt_none_add_X_mul_rename_some
+    {σ R : Type*} [CommSemiring R] (c : R)
+    (P Q : MvPolynomial σ R) :
+    MvPolynomial.specializeAt none c
+        (MvPolynomial.rename some P + MvPolynomial.X none *
+          MvPolynomial.rename some Q) =
+      MvPolynomial.rename some (P + MvPolynomial.C c * Q) := by
+  classical
+  have hrename (S : MvPolynomial σ R) :
+      MvPolynomial.specializeAt none c (MvPolynomial.rename some S) =
+        MvPolynomial.rename some S := by
+    apply MvPolynomial.specializeAt_eq_of_notMem_vars
+    intro hnone
+    obtain ⟨i, _, hi⟩ := MvPolynomial.mem_vars_rename some S hnone
+    exact (Option.some_ne_none i) hi
+  simp [hrename]
+
+/-- Every real specialization of a weakly stable fresh affine-coordinate
+extension is a weakly stable affine combination of its endpoints. -/
+theorem MvRealStableOrZero.affineExtension_specialize
+    {σ : Type*} {P Q : MvPolynomial σ ℝ}
+    (hPQ : MvRealStableOrZero
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some Q))
+    (c : ℝ) : MvRealStableOrZero (P + MvPolynomial.C c * Q) := by
+  have hspecialize := hPQ.specializeAt_general none c
+  rw [specializeAt_none_add_X_mul_rename_some] at hspecialize
+  exact MvRealStableOrZero.of_rename hspecialize
+    (Option.some_injective σ)
+
+/-- Every real specialization of a stable fresh affine-coordinate extension
+is a weakly stable affine combination of its endpoints. -/
+theorem MvRealStable.affineExtension_specialize_zero_or
+    {σ : Type*} {P Q : MvPolynomial σ ℝ}
+    (hPQ : MvRealStable
+      (MvPolynomial.rename some P + MvPolynomial.X none *
+        MvPolynomial.rename some Q))
+    (c : ℝ) : MvRealStableOrZero (P + MvPolynomial.C c * Q) :=
+  hPQ.orZero.affineExtension_specialize c
+
 end
 
 end RealRooted
