@@ -136,6 +136,110 @@ theorem decoBottomTotalCompanionSlope_isMultiaffine (n : Nat) :
   exact (decoBottomTotal_isMultiaffine (n + 1)).add
     (decoBottomTotalCompanionCore_isMultiaffine n)
 
+/-- At the initial rank, every affine Rayleigh discriminant between the
+companion and its successor slope vanishes. -/
+@[simp] theorem
+    affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_zero
+    (i j : Nat) :
+    MvPolynomial.affineRayleighDiscriminant
+      (decoBottomTotalWronskianCompanion 0)
+      (decoBottomTotalCompanionSlope 0) i j = 0 := by
+  classical
+  have habsent (k : Nat) (hk : k ≠ 1) :
+      k ∉ (decoBottomTotalWronskianCompanion 0).vars ∧
+        k ∉ (decoBottomTotalCompanionSlope 0).vars := by
+    constructor
+    · intro hvars
+      have hbounds := vars_decoBottomTotalWronskianCompanion_subset_Icc 0 hvars
+      rw [Finset.mem_Icc] at hbounds
+      exact hk (by lia)
+    · intro hvars
+      have hbounds := vars_decoBottomTotalCompanionSlope_subset_Icc 0 hvars
+      rw [Finset.mem_Icc] at hbounds
+      exact hk (by lia)
+  by_cases hi : i = 1
+  · subst i
+    by_cases hj : j = 1
+    · subst j
+      exact
+        (decoBottomTotalWronskianCompanion_isMultiaffine 0).affineRayleighDiscriminant_self
+          (decoBottomTotalCompanionSlope_isMultiaffine 0) 1
+    · rw [MvPolynomial.affineRayleighDiscriminant_comm_coord]
+      exact MvPolynomial.affineRayleighDiscriminant_eq_zero_of_notMem_vars
+        _ _ j 1 (habsent j hj).1 (habsent j hj).2
+  · exact MvPolynomial.affineRayleighDiscriminant_eq_zero_of_notMem_vars
+      _ _ i j (habsent i hi).1 (habsent i hi).2
+
+/-- The only cross-coordinate affine discriminant between the rank-one
+companion and its core is the negative constant `-359`. -/
+@[simp] theorem
+    affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_core_one_two :
+    MvPolynomial.affineRayleighDiscriminant
+      (decoBottomTotalWronskianCompanion 1)
+      (decoBottomTotalCompanionCore 1) 1 2 = -359 := by
+  simp [MvPolynomial.affineRayleighDiscriminant,
+    MvPolynomial.mixedRayleighDifference,
+    MvPolynomial.rayleighDifference, decoBottomTotalCompanionCore,
+    decoNormalBottomCore, decoBottomTotalWronskianCompanion]
+  ring_nf
+  simp only [map_ofNat]
+  ring
+
+/-- Every affine Rayleigh discriminant between the rank-one companion and
+its core is nonpositive. -/
+theorem
+    eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_core_one_nonpos
+    (i j : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion 1)
+          (decoBottomTotalCompanionCore 1) i j) ≤ 0 := by
+  have hcompanion := decoBottomTotalWronskianCompanion_isMultiaffine 1
+  apply hcompanion.eval_affineRayleighDiscriminant_nonpos_of_vars_subset_pair
+    (a := 1) (b := 2) (decoBottomTotalCompanionCore_isMultiaffine 1)
+  · intro k hk
+    have hbounds := vars_decoBottomTotalWronskianCompanion_subset_Icc 1 hk
+    rw [Finset.mem_Icc] at hbounds
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    by_cases hk1 : k = 1
+    · exact Or.inl hk1
+    · exact Or.inr (by lia)
+  · intro k hk
+    have hbounds := vars_decoBottomTotalCompanionCore_subset_Icc 1 hk
+    rw [Finset.mem_Icc] at hbounds
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    by_cases hk1 : k = 1
+    · exact Or.inl hk1
+    · exact Or.inr (by lia)
+  · intro y
+    rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_core_one_two]
+    simp
+
+/-- The distinguished rank-one core/companion Wronskian is the positive
+quadratic that also appears in the first rank-three Rayleigh difference. -/
+theorem coordinateWronskian_decoBottomTotalCompanionCore_companion_one :
+    MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionCore 1)
+      (decoBottomTotalWronskianCompanion 1) 1 =
+        25 + 21 * MvPolynomial.X 2 + 8 * MvPolynomial.X 2 ^ 2 := by
+  simp [MvPolynomial.coordinateWronskian, decoBottomTotalCompanionCore,
+    decoNormalBottomCore, decoBottomTotalWronskianCompanion]
+  simp only [map_ofNat]
+  ring
+
+/-- The distinguished rank-one core/companion Wronskian is globally
+nonnegative. -/
+theorem
+    eval_coordinateWronskian_decoBottomTotalCompanionCore_companion_one_nonneg
+    (x : Nat → Real) :
+    0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionCore 1)
+        (decoBottomTotalWronskianCompanion 1) 1) := by
+  rw [coordinateWronskian_decoBottomTotalCompanionCore_companion_one]
+  simp
+  nlinarith [sq_nonneg (16 * x 2 + 21)]
+
 /-- The coordinate-`1` zero-section of the companion is the zero-section of
 the latest bottom total. -/
 theorem specializeZero_one_decoBottomTotalWronskianCompanion (n : Nat) :

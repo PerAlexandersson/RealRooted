@@ -30,6 +30,17 @@ def decoBottomTotal : Nat → MvPolynomial Nat Real
     decoBottomTotal 1 = 1 + MvPolynomial.X 1 := by
   simp [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore]
 
+/-- The explicit rank-two ordinary-coordinate total. -/
+@[simp] theorem decoBottomTotal_two :
+    decoBottomTotal 2 =
+      1 + 3 * MvPolynomial.X 1 + 2 * MvPolynomial.X 2 +
+        MvPolynomial.X 1 * MvPolynomial.X 2 := by
+  norm_num [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore,
+    decoExceptionalBottomStep, decoLayerBottomEmbedding, Fin.sum_univ_succ,
+    map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
+    MvPolynomial.pderiv_ofNat]
+  ring
+
 /-- The defining ordinary-coordinate two-step recurrence. -/
 theorem decoBottomTotal_recurrence (n : Nat) :
     decoBottomTotal (n + 2) =

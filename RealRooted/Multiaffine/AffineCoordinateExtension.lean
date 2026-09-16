@@ -95,6 +95,18 @@ theorem affineRayleighDiscriminant_comm_coord
     mixedRayleighDifference_comm_coord, rayleighDifference_comm P i j,
     rayleighDifference_comm Q i j]
 
+/-- For two multiaffine endpoint polynomials, the affine Rayleigh
+discriminant vanishes when both old coordinates coincide. -/
+theorem IsMultiaffine.affineRayleighDiscriminant_self
+    {R σ : Type*} [CommRing R] {P Q : MvPolynomial σ R}
+    (hP : IsMultiaffine P) (hQ : IsMultiaffine Q) (i : σ) :
+    affineRayleighDiscriminant P Q i i = 0 := by
+  rw [affineRayleighDiscriminant, mixedRayleighDifference,
+    hP.pderiv_pderiv_self_eq_zero, hQ.pderiv_pderiv_self_eq_zero,
+    hQ.rayleighDifference_self, hP.rayleighDifference_self]
+  simp only [map_ofNat]
+  ring
+
 /-- Affine Rayleigh discriminants commute with injective variable
 renamings. -/
 theorem affineRayleighDiscriminant_rename {R σ τ : Type*} [CommRing R]
@@ -120,6 +132,53 @@ theorem affineRayleighDiscriminant_eq_zero_of_notMem_vars
     rayleighDifference, hPk, hQk, pderiv_comm k j, map_zero, zero_mul,
     mul_zero, add_zero, sub_zero]
   ring
+
+/-- If two multiaffine polynomials use at most two variables, pointwise
+nonpositivity of their one cross discriminant controls every coordinate
+pair. -/
+theorem IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset_pair
+    {σ : Type*} [DecidableEq σ] {P Q : MvPolynomial σ ℝ} {a b : σ}
+    (hP : IsMultiaffine P) (hQ : IsMultiaffine Q)
+    (hPvars : P.vars ⊆ {a, b}) (hQvars : Q.vars ⊆ {a, b})
+    (hab : ∀ x, eval x (affineRayleighDiscriminant P Q a b) ≤ 0) :
+    ∀ i j x, eval x (affineRayleighDiscriminant P Q i j) ≤ 0 := by
+  have habsent (k : σ) (hk : k ∉ ({a, b} : Finset σ)) :
+      k ∉ P.vars ∧ k ∉ Q.vars :=
+    ⟨fun hkP => hk (hPvars hkP), fun hkQ => hk (hQvars hkQ)⟩
+  intro i j x
+  by_cases hi : i ∈ ({a, b} : Finset σ)
+  · simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+    rcases hi with hi | hi
+    · subst i
+      by_cases hj : j ∈ ({a, b} : Finset σ)
+      · simp only [Finset.mem_insert, Finset.mem_singleton] at hj
+        rcases hj with hj | hj
+        · subst j
+          rw [hP.affineRayleighDiscriminant_self hQ]
+          simp
+        · subst j
+          exact hab x
+      · rw [affineRayleighDiscriminant_comm_coord,
+          affineRayleighDiscriminant_eq_zero_of_notMem_vars
+            P Q j a (habsent j hj).1 (habsent j hj).2]
+        simp
+    · subst i
+      by_cases hj : j ∈ ({a, b} : Finset σ)
+      · simp only [Finset.mem_insert, Finset.mem_singleton] at hj
+        rcases hj with hj | hj
+        · subst j
+          rw [affineRayleighDiscriminant_comm_coord]
+          exact hab x
+        · subst j
+          rw [hP.affineRayleighDiscriminant_self hQ]
+          simp
+      · rw [affineRayleighDiscriminant_comm_coord,
+          affineRayleighDiscriminant_eq_zero_of_notMem_vars
+            P Q j b (habsent j hj).1 (habsent j hj).2]
+        simp
+  · rw [affineRayleighDiscriminant_eq_zero_of_notMem_vars
+        P Q i j (habsent i hi).1 (habsent i hi).2]
+    simp
 
 /-- A fresh affine coordinate extension is Rayleigh when its two endpoint
 polynomials are Rayleigh, its fresh-coordinate Wronskians are nonnegative,

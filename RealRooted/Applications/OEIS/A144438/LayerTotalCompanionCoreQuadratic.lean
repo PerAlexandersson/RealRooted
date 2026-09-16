@@ -437,9 +437,9 @@ theorem
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i) = 0 := by
   rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
     MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
-    MvPolynomial.eval_mul, map_ofNat, hcore] at hdisc
-  nlinarith [sq_nonneg (MvPolynomial.eval x
-    (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i))]
+    MvPolynomial.eval_mul, map_ofNat] at hdisc
+  exact quadratic_linear_eq_zero_of_leading_eq_zero_of_discrim_nonpos
+    hcore (by simpa [discrim] using hdisc)
 
 /-- If the current core cross is nonnegative, the row discriminant bound
 forces the companion cross to be nonnegative away from the zero locus of the
@@ -457,28 +457,12 @@ theorem
       0 ≤ MvPolynomial.eval x
         (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
           n i) := by
-  by_cases hzero : MvPolynomial.eval x
-      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) = 0
-  · exact Or.inl hzero
-  · right
-    rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
-      MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
-      MvPolynomial.eval_mul, map_ofNat] at hdisc
-    have hcorePos : 0 < MvPolynomial.eval x
-        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) :=
-      lt_of_le_of_ne hcore (Ne.symm hzero)
-    by_contra hcompanion
-    have hcompanionNeg : MvPolynomial.eval x
-        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
-          n i) < 0 := lt_of_not_ge hcompanion
-    have hproductNeg : 4 * MvPolynomial.eval x
-          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) *
-        MvPolynomial.eval x
-          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
-            n i) < 0 :=
-      mul_neg_of_pos_of_neg (mul_pos (by norm_num) hcorePos) hcompanionNeg
-    linarith [sq_nonneg (MvPolynomial.eval x
-      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i))]
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
+    MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
+    MvPolynomial.eval_mul, map_ofNat] at hdisc
+  exact
+    quadratic_leading_eq_zero_or_constant_nonneg_of_leading_nonneg_of_discrim_nonpos
+      hcore (by simpa [discrim] using hdisc)
 
 /-- At every coordinate, the unshifted next-row discriminant has the generic
 Plücker factorization. -/
@@ -833,6 +817,106 @@ theorem decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add
     decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope n
   rw [decoBottomTotalCompanionExtensionCore_eq_base_add_X_mul_slope] at h
   exact (add_right_cancel h).symm
+
+/-- The initial successor-core row has constant coefficient `11`. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreRowConstant_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowConstant 0 i = 11 := by
+  fin_cases i
+  rw [decoBottomTotalCompanionSuccessorCoreRowConstant,
+    decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add]
+  simp [decoBottomTotalWronskianCompanion,
+    decoBottomTotalCompanionCore, decoNormalBottomCore,
+    MvPolynomial.affineEulerCore, MvPolynomial.coordinateWronskian]
+  ring_nf
+
+/-- The initial successor-core row has linear coefficient `9`. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreRowLinear_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowLinear 0 i = 9 := by
+  fin_cases i
+  rw [decoBottomTotalCompanionSuccessorCoreRowLinear,
+    decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
+    decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add]
+  simp [decoBottomTotalCompanionSlope,
+    decoBottomTotalWronskianCompanion,
+    decoBottomTotalCompanionCore, decoNormalBottomCore,
+    MvPolynomial.affineEulerCore, MvPolynomial.coordinateWronskian]
+  ring_nf
+  simp only [map_ofNat]
+  ring
+
+/-- The initial successor-core row has quadratic coefficient `10`. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic 0 i = 10 := by
+  fin_cases i
+  simp [decoBottomTotalCompanionSuccessorCoreRowQuadratic,
+    decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
+    decoBottomTotalCompanionSlope, decoBottomTotalCompanionCore,
+    decoNormalBottomCore, MvPolynomial.affineEulerCore,
+    MvPolynomial.coordinateWronskian]
+  ring_nf
+  simp only [map_ofNat]
+  ring
+
+/-- At the initial recurrence rank, the current core cross is the positive
+constant `27`. -/
+@[simp] theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross 0 i = 27 := by
+  fin_cases i
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross,
+    decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
+    decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add]
+  simp [decoBottomTotalWronskianCompanion,
+    decoBottomTotalCompanionCore, decoNormalBottomCore,
+    MvPolynomial.affineEulerCore, MvPolynomial.coordinateWronskian]
+  ring_nf
+  simp only [map_ofNat]
+  ring
+
+/-- At the initial recurrence rank, the current companion cross is the
+positive constant `6`. -/
+@[simp] theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross 0 i =
+      6 := by
+  fin_cases i
+  simp [decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross,
+    decoBottomTotalCompanionSlope, decoBottomTotalCompanionCore,
+    decoBottomTotalWronskianCompanion, decoNormalBottomCore,
+    MvPolynomial.coordinateWronskian]
+  ring_nf
+
+/-- At the initial recurrence rank, the current Plücker skew is the constant
+`-17`. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew 0 i = -17 := by
+  fin_cases i
+  simp [decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew,
+    decoBottomTotalCompanionExtensionCoreSlope_eq_affineEulerCore,
+    decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add,
+    decoBottomTotalCompanionSlope, decoBottomTotalCompanionCore,
+    decoBottomTotalWronskianCompanion, decoNormalBottomCore,
+    MvPolynomial.affineEulerCore, MvPolynomial.coordinateWronskian]
+  ring_nf
+  simp only [map_ofNat]
+  ring
+
+/-- Thus the initial successor-row discriminant is the strictly negative
+constant `-359`. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_zero
+    (i : Fin 1) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant 0 i = -359 := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew_zero,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross_zero,
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross_zero]
+  ring
 
 /-- The next core zero-section is the positive-coordinate rename of its
 unshifted recurrence form. -/
@@ -1721,6 +1805,14 @@ structure DecoBottomTotalCompanionSuccessorCoreQuadraticData
     MvPolynomial.eval x
       (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0
 
+/-- The exact initial successor-core quadratic data. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_zero :
+    DecoBottomTotalCompanionSuccessorCoreQuadraticData 0 := by
+  refine ⟨?_, ?_, ?_⟩ <;> intro i x
+  · simp
+  · simp
+  · simp
+
 /-- The unshifted coefficient conditions over the complete coordinate range
 that produces every row at the next rank. -/
 structure DecoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData
@@ -2140,6 +2232,12 @@ theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData
       rw [decoBottomTotalCompanionSuccessorCoreRowConstant_eq_add,
         MvPolynomial.eval_add]
       linarith
+
+/-- The expanded endpoint presentation of the initial successor-core data. -/
+@[simp] theorem decoBottomTotalCompanionSuccessorCoreEndpointData_zero :
+    DecoBottomTotalCompanionSuccessorCoreEndpointData 0 :=
+  (decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData 0).mp
+    decoBottomTotalCompanionSuccessorCoreQuadraticData_zero
 
 /-- The expanded endpoint conditions are exactly the coefficient conditions
 after removing their two inessential coordinates. -/

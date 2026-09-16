@@ -918,6 +918,28 @@ theorem
         n).mpr hcrossNamed
     exact ⟨hcross, hdisc, hrows, hnextDisc⟩
 
+/-- The exact lower two-rank companion data at rank one.  This gives the
+first nontrivial checked instance of the successor criterion. -/
+theorem decoBottomTotalCompanionRayleighData_one :
+    DecoBottomTotalCompanionRayleighData 1 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
+    0 decoLayerTotal_one_mvRealStable
+      decoBottomTotalCompanionRayleighData_zero]
+  refine ⟨?_, ?_,
+    ⟨?_, decoBottomTotalCompanionSuccessorCoreEndpointData_zero⟩, ?_⟩
+  · intro i x hzero
+    simp
+  · intro i j x
+    rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_zero]
+    simp
+  · intro x
+    exact
+      eval_coordinateWronskian_decoBottomTotalCompanionCore_companion_one_nonneg x
+  · intro i j x
+    exact
+      eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_core_one_nonpos
+        i j x
+
 /-- Compensation form of the exact next-data criterion under preceding-rank
 stability.  The first condition uses precisely the nonnegative margin already
 recorded in the current companion data. -/
