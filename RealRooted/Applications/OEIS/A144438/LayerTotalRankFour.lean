@@ -1,3 +1,5 @@
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 
 /-!
@@ -283,6 +285,13 @@ theorem decoLayerTotal_four_mvRealStable :
     MvRealStable (decoLayerTotal 4) :=
   (decoLayerTotal_mvRealStable_iff_bottomTotal 4).mpr
     decoBottomTotal_four_mvRealStable
+
+/-- The explicit rank-four stability certificate, repackaged as the exact
+lower two-rank companion data at rank two. -/
+theorem decoBottomTotalCompanionRayleighData_two :
+    DecoBottomTotalCompanionRayleighData 2 :=
+  (decoBottomTotal_add_two_isRayleigh_iff_stable_companionData
+    2 decoLayerTotal_three_mvRealStable).mp decoBottomTotal_four_isRayleigh
 
 end
 
