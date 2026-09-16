@@ -96,6 +96,25 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
     eval_mul_eval_nonneg_of_prec_right
       hprec hder_prec hf_pos hgder_pos hr
 
+/-- At a root of the right polynomial in a positive-leading proper-position
+pair with no common real root, the left value and right derivative have
+strictly the same sign. -/
+theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
+    {r : ℝ} (hr : g.IsRoot r) :
+    0 < f.eval r * g.derivative.eval r := by
+  have hnonneg :=
+    eval_mul_derivative_nonneg_of_prec_right_root hprec hf_pos hg_pos hr
+  have hsimple : HasSimpleRoots g :=
+    (hprec.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).2
+  have hfroot : ¬f.IsRoot r := fun hfr ↦ hno r hfr hr
+  have hfeval : f.eval r ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hfroot
+  have hgder : g.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
+  exact lt_of_le_of_ne hnonneg (Ne.symm (mul_ne_zero hfeval hgder))
+
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair, the right value and left derivative have nonpositive product. -/
 theorem eval_mul_derivative_nonpos_of_prec_left_root
@@ -189,6 +208,42 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
     have hfr : f.IsRoot r := (rootMultiplicity_pos hfg.1.1).mp (by lia)
     have hhr : h.IsRoot r := (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
     simp [Polynomial.IsRoot.def.mp hfr, Polynomial.IsRoot.def.mp hhr]
+
+/-- Values of the two outer members of a positive-leading ordered triple have
+strictly opposite signs at every root of the middle member when the adjacent
+pairs have no common real root. -/
+theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
+    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hh_pos : HasPosLeadingCoeff h)
+    (hfg_no : ∀ x, f.IsRoot x → ¬g.IsRoot x)
+    (hgh_no : ∀ x, g.IsRoot x → ¬h.IsRoot x)
+    {r : ℝ} (hr : g.IsRoot r) :
+    f.eval r * h.eval r < 0 := by
+  have hleft : 0 < f.eval r * g.derivative.eval r :=
+    eval_mul_derivative_pos_of_prec_right_root_of_no_common
+      hfg hf_pos hg_pos hfg_no hr
+  have hright : h.eval r * g.derivative.eval r < 0 :=
+    eval_mul_derivative_neg_of_prec_left_root_of_no_common
+      hgh hg_pos hh_pos hgh_no hr
+  have hprod :
+      (f.eval r * g.derivative.eval r) *
+          (h.eval r * g.derivative.eval r) < 0 :=
+    mul_neg_of_pos_of_neg hleft hright
+  have hsquare : 0 < (g.derivative.eval r) ^ 2 := by
+    have hder : g.derivative.eval r ≠ 0 :=
+      (mul_ne_zero_iff.mp hleft.ne').2
+    exact sq_pos_of_ne_zero hder
+  have houter_square :
+      (f.eval r * h.eval r) * (g.derivative.eval r) ^ 2 < 0 := by
+    calc
+      (f.eval r * h.eval r) * (g.derivative.eval r) ^ 2 =
+          (f.eval r * g.derivative.eval r) *
+            (h.eval r * g.derivative.eval r) := by ring
+      _ < 0 := hprod
+  rcases (mul_neg_iff.mp houter_square) with hsquare_neg | houter
+  · exact (not_lt_of_ge hsquare.le hsquare_neg.2).elim
+  · exact houter.1
 
 private theorem natDegree_sub_lower_bound_of_prec_triple
     {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h) (hfh : Prec f h)
