@@ -52,6 +52,13 @@ theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : Prec f g)
     have hbound := (rootMultiplicity_bounds_of_prec hprec r).2
     lia
 
+/-- A coprime proper-position pair has simple real roots in both entries. -/
+theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : Prec f g)
+    (hcop : IsCoprime f g) :
+    HasSimpleRoots f ∧ HasSimpleRoots g :=
+  hprec.hasSimpleRoots_of_no_common_root fun _ hr ↦
+    hcop.not_isRoot_right hr.1 hr.2
+
 lemma HasSimpleRoots.hasSimpleRootsExcept (hp : HasSimpleRoots p) (a : ℝ) :
     HasSimpleRootsExcept p a :=
   fun r _ hr => hp r hr

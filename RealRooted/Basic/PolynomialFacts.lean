@@ -14,6 +14,18 @@ open Polynomial
 
 noncomputable section
 
+variable {R : Type*} [CommSemiring R] [Nontrivial R]
+
+/-- Coprime polynomials cannot vanish at the same point. -/
+theorem IsCoprime.not_isRoot_right {p q : R[X]}
+    (h : IsCoprime p q) {x : R} (hp : p.IsRoot x) :
+    ¬ q.IsRoot x := by
+  intro hq
+  have hzero := h.map (evalRingHom x)
+  change IsCoprime (p.eval x) (q.eval x) at hzero
+  rw [Polynomial.IsRoot.def.mp hp, Polynomial.IsRoot.def.mp hq] at hzero
+  simp [IsCoprime] at hzero
+
 namespace RealRooted
 
 lemma card_roots_of_splits {p : ℝ[X]} (h : p.Splits) : p.roots.card = p.natDegree :=

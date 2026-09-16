@@ -96,6 +96,25 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
     eval_mul_eval_nonneg_of_prec_right
       hprec hder_prec hf_pos hgder_pos hr
 
+/-- At a root of the right polynomial in a positive-leading coprime
+proper-position pair, the left value and right derivative have strictly the
+same sign. -/
+theorem eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hcop : IsCoprime f g)
+    {r : ℝ} (hr : g.IsRoot r) :
+    0 < f.eval r * g.derivative.eval r := by
+  have hnonneg :=
+    eval_mul_derivative_nonneg_of_prec_right_root hprec hf_pos hg_pos hr
+  have hsimple : HasSimpleRoots g :=
+    (hprec.hasSimpleRoots_of_isCoprime hcop).2
+  have hfroot : ¬f.IsRoot r := hcop.symm.not_isRoot_right hr
+  have hfeval : f.eval r ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hfroot
+  have hgder : g.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
+  exact lt_of_le_of_ne hnonneg (Ne.symm (mul_ne_zero hfeval hgder))
+
 /-- At a root of the right polynomial in a positive-leading proper-position
 pair with no common real root, the left value and right derivative have
 strictly the same sign. -/
@@ -105,15 +124,10 @@ theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : g.IsRoot r) :
     0 < f.eval r * g.derivative.eval r := by
-  have hnonneg :=
-    eval_mul_derivative_nonneg_of_prec_right_root hprec hf_pos hg_pos hr
-  have hsimple : HasSimpleRoots g :=
-    (hprec.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).2
-  have hfroot : ¬f.IsRoot r := fun hfr ↦ hno r hfr hr
-  have hfeval : f.eval r ≠ 0 := by
-    simpa [Polynomial.IsRoot.def] using hfroot
-  have hgder : g.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
-  exact lt_of_le_of_ne hnonneg (Ne.symm (mul_ne_zero hfeval hgder))
+  apply eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
+      hprec hf_pos hg_pos ?_ hr
+  exact isCoprime_of_no_common_real_root_of_isRealRooted
+    hprec.1.1 hprec.1.2 hno
 
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair, the right value and left derivative have nonpositive product. -/
@@ -156,6 +170,24 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
   rw [hder_eval] at hsign
   nlinarith
 
+/-- At a root of the left polynomial in a positive-leading coprime
+proper-position pair, the right value and left derivative have strictly
+opposite signs. -/
+theorem eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hcop : IsCoprime f g)
+    {r : ℝ} (hr : f.IsRoot r) :
+    g.eval r * f.derivative.eval r < 0 := by
+  have hnonpos :=
+    eval_mul_derivative_nonpos_of_prec_left_root hprec hf_pos hg_pos hr
+  have hsimple : HasSimpleRoots f :=
+    (hprec.hasSimpleRoots_of_isCoprime hcop).1
+  have hgeval : g.eval r ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hcop.not_isRoot_right hr
+  have hfder : f.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
+  exact lt_of_le_of_ne hnonpos (mul_ne_zero hgeval hfder)
+
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair with no common real root, the right value and left derivative have
 strictly opposite signs. -/
@@ -165,14 +197,10 @@ theorem eval_mul_derivative_neg_of_prec_left_root_of_no_common
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : f.IsRoot r) :
     g.eval r * f.derivative.eval r < 0 := by
-  have hnonpos :=
-    eval_mul_derivative_nonpos_of_prec_left_root hprec hf_pos hg_pos hr
-  have hsimple : HasSimpleRoots f :=
-    (hprec.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).1
-  have hgeval : g.eval r ≠ 0 := by
-    simpa [Polynomial.IsRoot.def] using hno r hr
-  have hfder : f.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
-  exact lt_of_le_of_ne hnonpos (mul_ne_zero hgeval hfder)
+  apply eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
+      hprec hf_pos hg_pos ?_ hr
+  exact isCoprime_of_no_common_real_root_of_isRealRooted
+    hprec.1.1 hprec.1.2 hno
 
 /-- Values of the two outer members of a positive-leading ordered triple have
 opposite-or-zero signs at every root of the middle member. -/
@@ -210,22 +238,21 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
     simp [Polynomial.IsRoot.def.mp hfr, Polynomial.IsRoot.def.mp hhr]
 
 /-- Values of the two outer members of a positive-leading ordered triple have
-strictly opposite signs at every root of the middle member when the adjacent
-pairs have no common real root. -/
-theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
+strictly opposite signs at every root of the middle member when both adjacent
+pairs are coprime. -/
+theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
     {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
-    (hfg_no : ∀ x, f.IsRoot x → ¬g.IsRoot x)
-    (hgh_no : ∀ x, g.IsRoot x → ¬h.IsRoot x)
+    (hfg_cop : IsCoprime f g) (hgh_cop : IsCoprime g h)
     {r : ℝ} (hr : g.IsRoot r) :
     f.eval r * h.eval r < 0 := by
   have hleft : 0 < f.eval r * g.derivative.eval r :=
-    eval_mul_derivative_pos_of_prec_right_root_of_no_common
-      hfg hf_pos hg_pos hfg_no hr
+    eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
+      hfg hf_pos hg_pos hfg_cop hr
   have hright : h.eval r * g.derivative.eval r < 0 :=
-    eval_mul_derivative_neg_of_prec_left_root_of_no_common
-      hgh hg_pos hh_pos hgh_no hr
+    eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
+      hgh hg_pos hh_pos hgh_cop hr
   have hprod :
       (f.eval r * g.derivative.eval r) *
           (h.eval r * g.derivative.eval r) < 0 :=
@@ -244,6 +271,25 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
   rcases (mul_neg_iff.mp houter_square) with hsquare_neg | houter
   · exact (not_lt_of_ge hsquare.le hsquare_neg.2).elim
   · exact houter.1
+
+/-- Values of the two outer members of a positive-leading ordered triple have
+strictly opposite signs at every root of the middle member when the adjacent
+pairs have no common real root. -/
+theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
+    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hh_pos : HasPosLeadingCoeff h)
+    (hfg_no : ∀ x, f.IsRoot x → ¬g.IsRoot x)
+    (hgh_no : ∀ x, g.IsRoot x → ¬h.IsRoot x)
+    {r : ℝ} (hr : g.IsRoot r) :
+    f.eval r * h.eval r < 0 := by
+  apply eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
+      hfg hgh hf_pos hg_pos hh_pos
+  · exact isCoprime_of_no_common_real_root_of_isRealRooted
+      hfg.1.1 hfg.1.2 hfg_no
+  · exact isCoprime_of_no_common_real_root_of_isRealRooted
+      hgh.1.1 hgh.1.2 hgh_no
+  · exact hr
 
 private theorem natDegree_sub_lower_bound_of_prec_triple
     {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h) (hfh : Prec f h)
