@@ -443,6 +443,36 @@ theorem
       MvPolynomial.eval_X]
     nlinarith [companion_slope_quartic_three_pos (y 1)]
 
+/-- After discharging the current companion/slope discriminants, the exact
+rank-two successor criterion consists only of the finite zero-locus package,
+the finite endpoint package, and the six supported next companion/core
+discriminants. -/
+theorem decoBottomTotalCompanionRayleighData_three_iff_finite_core :
+    DecoBottomTotalCompanionRayleighData 3 ↔
+      (∀ i : Fin 3, ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              2 i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              2 i)) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore 3)
+          (decoBottomTotalWronskianCompanion 3) 1)) ∧
+        DecoBottomTotalCompanionSuccessorCoreEndpointData 2) ∧
+      ∀ i ∈ Finset.Icc 1 4, ∀ j ∈ Finset.Icc 1 4, i < j → ∀ x,
+        MvPolynomial.eval x
+          (MvPolynomial.affineRayleighDiscriminant
+            (decoBottomTotalWronskianCompanion 3)
+            (decoBottomTotalCompanionCore 3) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_finite
+    2 decoLayerTotal_three_mvRealStable
+      decoBottomTotalCompanionRayleighData_two]
+  simp only [
+    eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_nonpos,
+    implies_true, true_and]
+
 end
 
 end RealRooted.Applications.OEIS
