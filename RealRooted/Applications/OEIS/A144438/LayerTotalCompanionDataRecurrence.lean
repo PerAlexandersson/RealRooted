@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
+import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -42,6 +43,37 @@ theorem
       hbottom
   exact decoBottomTotalCompanionExtensionCore_isRayleigh_of_stable
     n hnextStable
+
+/-- A completed stability/data step places the current companion and its
+affine Euler core in one weakly stable real span. -/
+theorem decoBottomTotalCompanion_allCombo_core_of_stable_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    AllComboMvRealStableOrZero
+      (decoBottomTotalWronskianCompanion n)
+      (decoBottomTotalCompanionCore n) := by
+  have hbottomRayleigh :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hbottomStable : MvRealStable (decoBottomTotal (n + 2)) :=
+    (decoBottomTotal_mvRealStable_iff_isRayleigh (n + 2)).mpr
+      hbottomRayleigh
+  rw [decoBottomTotal_add_two_eq_rename_companionTotalExtension] at hbottomStable
+  have hextension : MvRealStable
+      (decoBottomTotalCompanionTotalExtension n) :=
+    hbottomStable.of_rename (by intro i j hij; lia)
+  apply allComboMvRealStableOrZero_of_affine
+  · exact decoBottomTotalCompanionCore_mvRealStable_zero_or n hstable
+  · intro t
+    have hspecialize := hextension.specializeAt_zero_or_general 0 t
+    unfold decoBottomTotalCompanionTotalExtension at hspecialize
+    rw [MvPolynomial.specializeAt_add,
+      MvPolynomial.specializeAt_eq_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalWronskianCompanion n),
+      MvPolynomial.specializeAt_mul, MvPolynomial.specializeAt_X,
+      MvPolynomial.specializeAt_eq_of_notMem_vars
+        (zero_notMem_vars_decoBottomTotalCompanionCore n)] at hspecialize
+    exact hspecialize
 
 /-- After one completed stability/data step, every current core-pair
 cross-Wronskian has the sign required by the fresh-coordinate Rayleigh
