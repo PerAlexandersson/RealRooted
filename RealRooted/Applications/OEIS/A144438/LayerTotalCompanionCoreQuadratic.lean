@@ -184,6 +184,26 @@ def decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence
     (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
   decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrenceAt n (i + 1)
 
+/-- The genuinely gap-two mixed Wronskian in a next quadratic recurrence. -/
+def decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (MvPolynomial.affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 2 : Real)
+      (decoBottomTotalCompanionExtensionCore n))
+    (decoBottomTotalCompanionTotalExtension n) (i + 1 : Nat)
+
+/-- The sum of the two adjacent-derivative orientation reserves in a next
+quadratic recurrence. -/
+def decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCore n)
+      (decoBottomTotalCompanionTotalExtension n) (i + 1 : Nat) +
+    MvPolynomial.affineEulerRayleighRow
+      (Fin.valEmbedding : Fin (n + 2) → Nat)
+      (decoBottomTotalCompanionExtensionCore n) i.succ
+
 /-- The unshifted recurrence form of a next row discriminant at an arbitrary
 coordinate. -/
 def decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt
@@ -1068,6 +1088,24 @@ theorem decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add
     (n + 3 : Real) (decoBottomTotalCompanionExtensionCore n) i.succ
   simpa only [Fin.valEmbedding_apply, Fin.val_succ] using
     congrArg₂ (· + ·) rfl hrow
+
+/-- A next quadratic recurrence is its gap-two mixed Wronskian plus the two
+adjacent-derivative orientation reserves. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_mixed_add_reserve
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i =
+      decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence n i +
+        decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
+          n i := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add]
+  unfold decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence
+    decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
+  have hc : (n + 3 : Real) = (n + 2 : Real) + 1 := by
+    ring
+  rw [hc, MvPolynomial.affineEulerCore_add_one,
+    MvPolynomial.coordinateWronskian_add_left]
+  ring
 
 /-- The constant row coefficient is its companion value-one endpoint product,
 off-row affine-Euler remainder, and current companion-data Wronskian. -/

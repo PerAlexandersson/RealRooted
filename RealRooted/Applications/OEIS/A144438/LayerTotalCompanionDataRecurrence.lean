@@ -87,6 +87,50 @@ theorem
     eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_stable
       n hnextStable
 
+/-- A completed stability/data step makes the sum of both adjacent-derivative
+orientation reserves in a next quadratic recurrence nonnegative. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence_nonneg
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
+        n i) := by
+  intro i x
+  rw [decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence,
+    map_add]
+  exact add_nonneg
+    (eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_companionData
+      n hstable hdata (i + 1 : Nat) x)
+    (eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_companionData
+      n hstable hdata i.succ x)
+
+/-- The remaining next leading-coefficient obstruction is exactly whether
+the gap-two mixed Wronskian stays above the negative adjacent-orientation
+reserve. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_nonneg_iff_secondMixed
+    (n : Nat) (i : Fin (n + 1)) :
+    (∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i)) ↔
+      ∀ x,
+        -MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
+              n i) ≤
+          MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence
+              n i) := by
+  constructor <;> intro h x
+  · have hsum := h x
+    rw [
+      decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_mixed_add_reserve,
+      map_add] at hsum
+    linarith
+  · rw [
+      decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_mixed_add_reserve,
+      map_add]
+    linarith [h x]
+
 /-- Nonnegativity of a next quadratic recurrence is exactly the requirement
 that its mixed second-derivative Wronskian not exhaust the affine-Euler row
 reserve. -/

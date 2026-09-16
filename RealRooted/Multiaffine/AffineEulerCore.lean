@@ -51,6 +51,17 @@ theorem affineEulerCore_add
     Finset.sum_add_distrib]
   ring_nf
 
+/-- Raising the affine Euler coefficient by one adds one copy of the source
+polynomial. -/
+theorem affineEulerCore_add_one
+    {R σ ι : Type*} [CommRing R] [Fintype ι]
+    (e : ι → σ) (c : R) (P : MvPolynomial σ R) :
+    affineEulerCore e (c + 1) P = P + affineEulerCore e c P := by
+  classical
+  unfold affineEulerCore
+  simp only [map_add, map_one]
+  ring
+
 /-- Adjoining a selected coordinate as a factor lowers the affine Euler
 coefficient on the remaining factor by one. -/
 theorem affineEulerCore_X_mul
