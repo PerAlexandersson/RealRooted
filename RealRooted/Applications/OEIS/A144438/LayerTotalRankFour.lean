@@ -8,6 +8,8 @@ import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 The recurrence-defined ordinary-coordinate total at rank four is Rayleigh.
 Its six distinct-coordinate Rayleigh differences are bivariate quadratics.
 Three exact positive-quartic certificates control all their discriminants.
+The same rank-four data also makes the three affine discriminants in the
+rank-two companion/successor-slope interface explicitly nonpositive.
 -/
 
 namespace RealRooted.Applications.OEIS
@@ -251,8 +253,7 @@ theorem decoBottomTotal_four_isRayleigh :
     simp only [Finset.mem_Icc] at hi hj
     obtain ⟨hiLower, hiUpper⟩ := hi
     obtain ⟨hjLower, hjUpper⟩ := hj
-    interval_cases i <;> interval_cases j
-    all_goals try norm_num at hij
+    interval_cases i <;> interval_cases j <;> norm_num at hij
     · exact rayleighDifference_one_two_nonneg x
     · exact rayleighDifference_one_three_nonneg x
     · exact rayleighDifference_one_four_nonneg x
@@ -292,6 +293,155 @@ theorem decoBottomTotalCompanionRayleighData_two :
     DecoBottomTotalCompanionRayleighData 2 :=
   (decoBottomTotal_add_two_isRayleigh_iff_stable_companionData
     2 decoLayerTotal_three_mvRealStable).mp decoBottomTotal_four_isRayleigh
+
+/-- The explicit rank-two two-rank companion. -/
+theorem decoBottomTotalWronskianCompanion_two :
+    decoBottomTotalWronskianCompanion 2 =
+      1 + 9 * X 1 + 4 * X 2 + 2 * X 3 +
+        10 * X 1 * X 2 + 7 * X 1 * X 3 + 2 * X 2 * X 3 +
+        2 * X 1 * X 2 * X 3 := by
+  rw [decoBottomTotalWronskianCompanion, decoBottomTotal_three,
+    decoBottomTotal_two]
+  norm_num [MvPolynomial.rename_X, map_ofNat]
+  ring
+
+/-- The explicit successor slope paired with the rank-two companion. -/
+theorem decoBottomTotalCompanionSlope_two :
+    decoBottomTotalCompanionSlope 2 =
+      19 + 44 * X 1 + 25 * X 2 + 15 * X 3 +
+        22 * X 1 * X 2 + 16 * X 1 * X 3 + 7 * X 2 * X 3 +
+        2 * X 1 * X 2 * X 3 := by
+  norm_num [decoBottomTotalCompanionSlope,
+    decoBottomTotalCompanionCore, decoNormalBottomCore,
+    decoBottomTotal_three, Fin.sum_univ_succ, map_ofNat,
+    MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
+    MvPolynomial.pderiv_ofNat, MvPolynomial.pderiv_mul]
+  ring
+
+/-- The first rank-two companion/successor-slope affine discriminant is the
+negative of an explicit positive quartic. -/
+theorem
+    affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_two :
+    MvPolynomial.affineRayleighDiscriminant
+      (decoBottomTotalWronskianCompanion 2)
+      (decoBottomTotalCompanionSlope 2) 1 2 =
+        -(35207 + 41864 * X 3 + 26346 * X 3 ^ 2 +
+          6808 * X 3 ^ 3 + 1071 * X 3 ^ 4) := by
+  rw [decoBottomTotalWronskianCompanion_two,
+    decoBottomTotalCompanionSlope_two]
+  norm_num [MvPolynomial.affineRayleighDiscriminant,
+    MvPolynomial.mixedRayleighDifference,
+    MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
+  simp only [map_ofNat]
+  ring
+
+/-- The second rank-two companion/successor-slope affine discriminant is the
+negative of an explicit positive quartic. -/
+theorem
+    affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_three :
+    MvPolynomial.affineRayleighDiscriminant
+      (decoBottomTotalWronskianCompanion 2)
+      (decoBottomTotalCompanionSlope 2) 1 3 =
+        -(10188 + 10424 * X 2 + 15420 * X 2 ^ 2 +
+          5536 * X 2 ^ 3 + 1856 * X 2 ^ 4) := by
+  rw [decoBottomTotalWronskianCompanion_two,
+    decoBottomTotalCompanionSlope_two]
+  norm_num [MvPolynomial.affineRayleighDiscriminant,
+    MvPolynomial.mixedRayleighDifference,
+    MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
+  simp only [map_ofNat]
+  ring
+
+/-- The third rank-two companion/successor-slope affine discriminant is the
+negative of an explicit positive quartic. -/
+theorem
+    affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_two_three :
+    MvPolynomial.affineRayleighDiscriminant
+      (decoBottomTotalWronskianCompanion 2)
+      (decoBottomTotalCompanionSlope 2) 2 3 =
+        -(1583 + 4860 * X 1 + 14076 * X 1 ^ 2 +
+          8768 * X 1 ^ 3 + 11648 * X 1 ^ 4) := by
+  rw [decoBottomTotalWronskianCompanion_two,
+    decoBottomTotalCompanionSlope_two]
+  norm_num [MvPolynomial.affineRayleighDiscriminant,
+    MvPolynomial.mixedRayleighDifference,
+    MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
+  simp only [map_ofNat]
+  ring
+
+private theorem companion_slope_quartic_one_pos (x : ℝ) :
+    0 < 1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
+      41864 * x + 35207 := by
+  have hprod : 0 < (1071 * 16629350 : ℝ) *
+      (1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
+        41864 * x + 35207) := by
+    rw [show (1071 * 16629350 : ℝ) *
+          (1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
+            41864 * x + 35207) =
+        16629350 * (1071 * x ^ 2 + 3404 * x) ^ 2 +
+          (16629350 * x + 22418172) ^ 2 +
+          1071 * 116212349146 by ring]
+    positivity
+  nlinarith
+
+private theorem companion_slope_quartic_two_pos (x : ℝ) :
+    0 < 1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
+      10424 * x + 10188 := by
+  have hprod : 0 < (1856 * 20957696 : ℝ) *
+      (1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
+        10424 * x + 10188) := by
+    rw [show (1856 * 20957696 : ℝ) *
+          (1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
+            10424 * x + 10188) =
+        20957696 * (1856 * x ^ 2 + 2768 * x) ^ 2 +
+          (20957696 * x + 9673472) ^ 2 +
+          1856 * 163098870784 by ring]
+    positivity
+  nlinarith
+
+private theorem companion_slope_quartic_three_pos (x : ℝ) :
+    0 < 11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
+      4860 * x + 1583 := by
+  have hprod : 0 < (11648 * 144737792 : ℝ) *
+      (11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
+        4860 * x + 1583) := by
+    rw [show (11648 * 144737792 : ℝ) *
+          (11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
+            4860 * x + 1583) =
+        144737792 * (11648 * x ^ 2 + 4384 * x) ^ 2 +
+          (144737792 * x + 28304640) ^ 2 +
+          11648 * 160339649536 by ring]
+    positivity
+  nlinarith
+
+/-- Every affine Rayleigh discriminant between the rank-two companion and
+its successor slope is nonpositive.  The finite-support theorem reduces the
+proof to the three explicit unordered coordinate pairs above. -/
+theorem
+    eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_nonpos
+    (i j : Nat) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion 2)
+          (decoBottomTotalCompanionSlope 2) i j) ≤ 0 := by
+  apply eval_affineRayleighDiscriminant_companion_slope_nonpos_of_Icc 2
+  intro a ha b hb hab y
+  simp only [Finset.mem_Icc, Nat.reduceAdd] at ha hb
+  rcases ha with ⟨haLower, haUpper⟩
+  rcases hb with ⟨hbLower, hbUpper⟩
+  interval_cases a <;> interval_cases b <;> norm_num at hab
+  · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_two]
+    simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
+      MvPolynomial.eval_X]
+    nlinarith [companion_slope_quartic_one_pos (y 3)]
+  · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_three]
+    simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
+      MvPolynomial.eval_X]
+    nlinarith [companion_slope_quartic_two_pos (y 2)]
+  · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_two_three]
+    simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
+      MvPolynomial.eval_X]
+    nlinarith [companion_slope_quartic_three_pos (y 1)]
 
 end
 
