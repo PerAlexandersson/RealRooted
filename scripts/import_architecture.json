@@ -10,13 +10,13 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1392
+      "max_modules": 1393
     },
     "RealRooted.Production": {
-      "max_modules": 1271
+      "max_modules": 1272
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 634
+      "max_modules": 635
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -142,7 +142,7 @@
       "max_modules": 43
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution": {
-      "max_modules": 5
+      "max_modules": 6
     },
     "RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah": {
       "max_modules": 1
@@ -256,7 +256,7 @@
       "max_modules": 127
     },
     "RealRooted.Applications.EulerianVariations": {
-      "max_modules": 237
+      "max_modules": 238
     },
     "RealRooted.EulerOperator.Darboux": {
       "max_modules": 46

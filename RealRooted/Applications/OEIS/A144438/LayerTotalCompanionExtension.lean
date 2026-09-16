@@ -425,6 +425,23 @@ theorem decoBottomTotal_add_two_eq_rename_companionTotalExtension (n : Nat) :
     decoBottomTotalCompanionCore
   simp only [map_add, map_mul, MvPolynomial.rename_X]
 
+/-- The unshifted total extension is the finite-coordinate dehomogenized
+layer total before its positive-coordinate relabeling. -/
+theorem decoBottomTotalCompanionTotalExtension_eq_rename_dehomogenize
+    (n : Nat) :
+    decoBottomTotalCompanionTotalExtension n =
+      MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+        (MvPolynomial.dehomogenize (decoLayerTotal (n + 2))) := by
+  apply MvPolynomial.rename_injective (fun j : Nat => j + 1)
+    (by intro i j hij; lia)
+  rw [← decoBottomTotal_add_two_eq_rename_companionTotalExtension,
+    MvPolynomial.rename_rename]
+  change decoBottomTotal (n + 2) =
+    MvPolynomial.rename (decoLayerBottomEmbedding (n + 2))
+      (MvPolynomial.dehomogenize (decoLayerTotal (n + 2)))
+  exact (rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal
+    (n + 2)).symm
+
 /-- The next two-rank companion is the positive-coordinate rename of a fresh
 affine extension of the current companion. -/
 theorem decoBottomTotalWronskianCompanion_succ_eq_rename_extension (n : Nat) :

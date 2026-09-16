@@ -39,6 +39,31 @@ theorem comm {σ : Type*} {F G : MvPolynomial σ ℝ}
   intro α β
   simpa [add_comm] using hall β α
 
+/-- Renaming variables preserves an all-combinations stability certificate. -/
+theorem rename {σ τ : Type*} {F G : MvPolynomial σ ℝ}
+    (hall : AllComboMvRealStableOrZero F G) (f : σ → τ) :
+    AllComboMvRealStableOrZero
+      (MvPolynomial.rename f F) (MvPolynomial.rename f G) := by
+  intro α β
+  simpa only [map_add, map_mul, MvPolynomial.rename_C] using
+    (hall α β).rename f
+
+/-- An all-combinations stability certificate is reflected through an
+injective variable renaming. -/
+theorem of_rename {σ τ : Type*} {F G : MvPolynomial σ ℝ}
+    {f : σ → τ}
+    (hall : AllComboMvRealStableOrZero
+      (MvPolynomial.rename f F) (MvPolynomial.rename f G))
+    (hf : Function.Injective f) :
+    AllComboMvRealStableOrZero F G := by
+  intro α β
+  have h := hall α β
+  have hrename : MvRealStableOrZero
+      (MvPolynomial.rename f
+        (MvPolynomial.C α * F + MvPolynomial.C β * G)) := by
+    simpa only [map_add, map_mul, MvPolynomial.rename_C] using h
+  exact hrename.of_rename hf
+
 /-- Every linear recombination of a weakly stable span remains in that span. -/
 theorem linearRecombination
     {σ : Type*} {F G P Q : MvPolynomial σ ℝ} {a b c d : ℝ}

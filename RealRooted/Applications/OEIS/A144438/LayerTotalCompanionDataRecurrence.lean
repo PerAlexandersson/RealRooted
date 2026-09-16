@@ -1,5 +1,7 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
 import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.MultivariateStability.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 
 /-!
@@ -74,6 +76,105 @@ theorem decoBottomTotalCompanion_allCombo_core_of_stable_companionData
       MvPolynomial.specializeAt_eq_of_notMem_vars
         (zero_notMem_vars_decoBottomTotalCompanionCore n)] at hspecialize
     exact hspecialize
+
+/-- Stability of the finite homogeneous layer total places its unshifted
+dehomogenized total extension and affine Euler core in one weakly stable
+real span. -/
+theorem decoBottomTotalCompanionTotalExtension_allCombo_extensionCore
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    AllComboMvRealStableOrZero
+      (decoBottomTotalCompanionTotalExtension n)
+      (decoBottomTotalCompanionExtensionCore n) := by
+  let Q := MvPolynomial.dehomogenize (decoLayerTotal (n + 2))
+  have hQstable : MvRealStable Q :=
+    hstable.dehomogenize (decoLayerTotal_isHomogeneous (n + 2))
+  have hQnn : MvPolynomial.HasNonnegCoeffs Q :=
+    (decoLayerTotal_hasNonnegCoeffs (n + 2)).dehomogenize
+  have hQma : MvPolynomial.IsMultiaffine Q := by
+    apply MvPolynomial.IsMultiaffine.of_rename
+      (f := decoLayerBottomEmbedding (n + 2))
+    · rw [rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
+      exact decoBottomTotal_isMultiaffine (n + 2)
+    · exact (decoLayerBottomEmbedding (n + 2)).injective
+  have hQdeg : Q.totalDegree ≤ n + 3 := by
+    calc
+      Q.totalDegree ≤ ∑ i, Q.degreeOf i :=
+        MvPolynomial.totalDegree_le_sum_degreeOf Q
+      _ ≤ ∑ _i : Fin (n + 2), 1 :=
+        Finset.sum_le_sum fun i _ => hQma i
+      _ ≤ n + 3 := by simp
+  have hall := hQstable.allCombo_affineEulerCore hQnn hQdeg
+  have hallRename := hall.rename
+    (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+  rw [← decoBottomTotalCompanionTotalExtension_eq_rename_dehomogenize]
+    at hallRename
+  have hcore :
+      MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+          (MvPolynomial.affineEulerCore id ((n + 3 : Nat) : Real) Q) =
+        MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) ↪ Nat) ((n + 3 : Nat) : Real)
+          (MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) ↪ Nat) Q) := by
+    simpa only [Function.comp_id] using
+      MvPolynomial.rename_affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) ↪ Nat)
+        Fin.valEmbedding.injective id ((n + 3 : Nat) : Real) Q
+  rw [hcore,
+    ← decoBottomTotalCompanionTotalExtension_eq_rename_dehomogenize]
+    at hallRename
+  unfold decoBottomTotalCompanionExtensionCore
+  simpa only [Nat.cast_add, Nat.cast_ofNat] using hallRename
+
+/-- A completed stability/data step transports the stable span through the
+affine Euler operator to the current total extension and the next unshifted
+companion core. -/
+theorem
+    decoBottomTotalCompanionTotalExtension_allCombo_extensionCore_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    AllComboMvRealStableOrZero
+      (decoBottomTotalCompanionTotalExtension n)
+      (decoBottomTotalCompanionExtensionCore n) := by
+  have hbottom :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hnextStable : MvRealStable (decoLayerTotal (n + 2)) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n + 2)).mpr
+      hbottom
+  exact decoBottomTotalCompanionTotalExtension_allCombo_extensionCore
+    n hnextStable
+
+/-- After a completed step, the next unshifted companion core and successor
+slope recurrence lie in the same weakly stable real span. -/
+theorem
+    decoBottomTotalCompanionExtensionCore_allCombo_successorSlope_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    AllComboMvRealStableOrZero
+      (decoBottomTotalCompanionExtensionCore n)
+      (decoBottomTotalCompanionSuccessorSlopeRecurrence n) := by
+  have hall :=
+    decoBottomTotalCompanionTotalExtension_allCombo_extensionCore_of_companionData
+      n hstable hdata
+  apply hall.linearRecombination (a := 0) (b := 1) (c := 1) (d := 1)
+  · simp
+  · unfold decoBottomTotalCompanionSuccessorSlopeRecurrence
+    simp
+
+/-- In the actual positive-coordinate recurrence, a completed step places
+the next companion core and next companion slope in one weakly stable real
+span. -/
+theorem decoBottomTotalCompanionCore_allCombo_slope_succ_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    AllComboMvRealStableOrZero
+      (decoBottomTotalCompanionCore (n + 1))
+      (decoBottomTotalCompanionSlope (n + 1)) := by
+  have hall :=
+    (decoBottomTotalCompanionExtensionCore_allCombo_successorSlope_of_companionData
+      n hstable hdata).rename (fun j : Nat => j + 1)
+  rw [← decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+    ← decoBottomTotalCompanionSlope_succ_eq_rename] at hall
+  exact hall
 
 /-- After one completed stability/data step, every current core-pair
 cross-Wronskian has the sign required by the fresh-coordinate Rayleigh

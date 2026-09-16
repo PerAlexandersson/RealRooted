@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Ordinary homogenization of multivariate polynomials
@@ -26,6 +27,19 @@ def ordinaryHomogenization {σ R : Type*} [CommSemiring R]
 def dehomogenize {σ R : Type*} [CommSemiring R] :
     MvPolynomial (Option σ) R →ₐ[R] MvPolynomial σ R :=
   aeval fun o => Option.elim o 1 X
+
+/-- Specializing the homogenizing coordinate at one is dehomogenization,
+viewed in the original ambient variable type. -/
+theorem specializeAt_none_one_eq_rename_some_dehomogenize
+    {σ R : Type*} [CommSemiring R]
+    (p : MvPolynomial (Option σ) R) :
+    specializeAt none 1 p = rename some (dehomogenize p) := by
+  induction p using MvPolynomial.induction_on with
+  | C r => simp [dehomogenize]
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+      rw [specializeAt_mul, map_mul, hp]
+      cases i <;> simp [specializeAt, dehomogenize]
 
 /-- Setting the distinguished variable to one preserves coefficientwise
 nonnegativity. -/

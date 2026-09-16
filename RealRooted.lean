@@ -844,6 +844,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultiplierSequence.PolyaSchur.Limit
 import RealRooted.MultivariateHeilmannLieb
 import RealRooted.MultivariateStability
+import RealRooted.MultivariateStability.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Diagonal
