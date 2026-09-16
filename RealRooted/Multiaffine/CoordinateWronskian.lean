@@ -19,6 +19,16 @@ def coordinateWronskian {R σ : Type*} [CommRing R]
     (P Q : MvPolynomial σ R) (i : σ) : MvPolynomial σ R :=
   P * pderiv i Q - pderiv i P * Q
 
+/-- Specializing a different coordinate commutes with taking a coordinate
+Wronskian. -/
+theorem specializeAt_coordinateWronskian_of_ne
+    {R σ : Type*} [CommRing R] {i k : σ} (hik : i ≠ k) (c : R)
+    (P Q : MvPolynomial σ R) :
+    specializeAt k c (coordinateWronskian P Q i) =
+      coordinateWronskian (specializeAt k c P) (specializeAt k c Q) i := by
+  simp only [coordinateWronskian, specializeAt_sub, specializeAt_mul,
+    pderiv_specializeAt_of_ne hik]
+
 /-- Dehomogenization commutes with coordinate Wronskians in every ordinary
 coordinate. -/
 theorem dehomogenize_coordinateWronskian_some

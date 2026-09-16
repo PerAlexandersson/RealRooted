@@ -804,6 +804,31 @@ theorem decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope
   exact MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
     (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0
 
+/-- The constant coefficient of a successor core row is the zero-section of
+the corresponding affine-Euler base row. -/
+theorem specializeAt_zero_decoBottomTotalCompanionExtensionRayleighRow
+    (n : Nat) (i : Fin (n + 1)) :
+    MvPolynomial.specializeAt 0 0
+        (decoBottomTotalCompanionExtensionRayleighRow n i) =
+      decoBottomTotalCompanionSuccessorCoreRowConstant n i := by
+  rw [← coordinateWronskian_companionExtensionCore_totalExtension,
+    MvPolynomial.specializeAt_coordinateWronskian_of_ne (by lia)]
+  have hcore :=
+    MvPolynomial.IsMultiaffine.specializeAt_eq_specializeZero_add_C_mul_pderiv
+      (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0 0
+  simp only [map_zero, zero_mul, add_zero] at hcore
+  rw [hcore]
+  unfold decoBottomTotalCompanionTotalExtension
+    decoBottomTotalCompanionSuccessorCoreRowConstant
+  rw [MvPolynomial.specializeAt_add, MvPolynomial.specializeAt_mul,
+    MvPolynomial.specializeAt_X,
+    MvPolynomial.specializeAt_eq_of_notMem_vars
+      (zero_notMem_vars_decoBottomTotalWronskianCompanion n),
+    MvPolynomial.specializeAt_eq_of_notMem_vars
+      (zero_notMem_vars_decoBottomTotalCompanionCore n)]
+  simp
+  rfl
+
 /-- The zero-section of the extension core is the companion affine Euler
 core plus the preceding companion core. -/
 theorem decoBottomTotalCompanionExtensionCoreZero_eq_affineEulerCore_add
