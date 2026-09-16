@@ -43,6 +43,13 @@ theorem wronskian_C_mul_left (a : R) (p q : R[X]) :
   simp only [wronskian, derivative_C_mul]
   ring
 
+/-- Multiplying both arguments by the same polynomial scales their Wronskian
+by its square. -/
+theorem wronskian_mul_both (a p q : R[X]) :
+    wronskian (a * p) (a * q) = a ^ 2 * wronskian p q := by
+  simp only [wronskian, derivative_mul]
+  ring
+
 theorem wronskian_smul_right (a : R) (p q : R[X]) :
     wronskian p (a • q) = a • wronskian p q :=
   (wronskianBilin R p).map_smul a q

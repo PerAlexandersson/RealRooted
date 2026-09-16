@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Stability consequences for the affine Deco recurrence
@@ -148,6 +149,30 @@ theorem decoBottomTotalCompanionSlope_isRayleigh (n : Nat)
   exact (MvPolynomial.isRayleigh_rename_iff
     (by intro i j h; lia)).1 hspecialize
 
+/-- Stability of a homogeneous layer total orients its ordinary affine Euler
+core against the bottom total.  This is the general-degree replacement for a
+multiaffine argument at the homogeneous level. -/
+theorem eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal n)) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoNormalBottomCore n (decoBottomTotal n))
+        (decoBottomTotal n) i) := by
+  have hsource :=
+    hstable.eval_coordinateWronskian_affineEulerCore_nonneg_of_nonnegative
+      (decoLayerTotal_hasNonnegCoeffs n)
+      (decoLayerTotal_isHomogeneous n) (by lia)
+  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
+    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
+    (MvPolynomial.affineEulerCore id ((n + 1 : Nat) : Real)
+      (MvPolynomial.dehomogenize (decoLayerTotal n)))
+    (MvPolynomial.dehomogenize (decoLayerTotal n)) hsource
+  rw [MvPolynomial.rename_affineEulerCore
+      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective,
+    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal] at hrename
+  simpa [decoNormalBottomCore_eq_affineEulerCore, Function.comp_def] using
+    hrename
+
 /-- Under preceding-rank stability, every coordinate Wronskian between the
 normal affine slope and base is nonnegative. -/
 theorem eval_coordinateWronskian_affineSlope_normalBase_nonneg
@@ -157,21 +182,14 @@ theorem eval_coordinateWronskian_affineSlope_normalBase_nonneg
       (MvPolynomial.coordinateWronskian
         (decoBottomTotalAffineSlope n)
         (decoBottomTotalAffineNormalBase n) i) := by
-  by_cases hi : i = 1
-  · subst i
-    rw [MvPolynomial.coordinateWronskian]
-    simp only [MvPolynomial.pderiv_eq_zero_of_notMem_vars
-      (one_notMem_vars_decoBottomTotalAffineSlope n),
-      MvPolynomial.pderiv_eq_zero_of_notMem_vars
-        (one_notMem_vars_decoBottomTotalAffineNormalBase n)]
-    simp
-  · have h := decoNormalBottomStep_total_isRayleigh n hstable 1 i x
-    rw [MvPolynomial.rayleighDifference_add_X_mul_fresh
-      (decoBottomTotalAffineNormalBase n)
-      (decoBottomTotalAffineSlope n) 1 i hi
-      (one_notMem_vars_decoBottomTotalAffineNormalBase n)
-      (one_notMem_vars_decoBottomTotalAffineSlope n)] at h
-    exact h
+  have hsource :=
+    eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
+      (n + 1) hstable
+  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
+    (fun j : Nat => j + 1) (by intro j k h; lia)
+    (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
+    (decoBottomTotal (n + 1)) hsource
+  exact hrename i x
 
 /-- The full affine Wronskians are nonnegative exactly when the exceptional
 cross term does not exceed the available normal Wronskian margin. -/

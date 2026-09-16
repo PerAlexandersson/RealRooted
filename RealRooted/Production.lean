@@ -849,6 +849,7 @@ import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.DirectionalDerivative
+import RealRooted.MultivariateStability.HomogeneousPencilWronskian
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
@@ -1212,6 +1213,7 @@ import RealRooted.Wronskian.Successor.Gap
 import RealRooted.Wronskian.Successor.Interlacing
 import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
+import RealRooted.Wronskian.WeakForward
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
 import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
