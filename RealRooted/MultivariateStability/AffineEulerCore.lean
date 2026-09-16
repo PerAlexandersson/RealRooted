@@ -204,6 +204,85 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
   exact hDstable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
     hDnn hDhom (by lia)
 
+/-- For a positive-degree homogeneous stable polynomial with nonnegative
+coefficients, `D H + D² H` is Wronskian-oriented against `H + D H`, where
+`D` is the all-ones directional derivative. -/
+theorem
+    MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_add_nonneg
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+    let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian (D + E) (H + D) i) := by
+  classical
+  dsimp only
+  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+  let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+  let K : MvPolynomial (Option σ) Real :=
+    MvPolynomial.rename some H + MvPolynomial.X none *
+      MvPolynomial.rename some D
+  let L := directionalPDeriv
+    (fun o : Option σ => o.elim 0 (fun _ => (1 : Real))) K
+  have hDhom : D.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  have hDnn : MvPolynomial.HasNonnegCoeffs D :=
+    MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one hnn
+  have hKhom : K.IsHomogeneous d := by
+    apply hhom.rename_isHomogeneous.add
+    have hmul := (MvPolynomial.isHomogeneous_X Real
+      (none : Option σ)).mul
+        (hDhom.rename_isHomogeneous (f := some))
+    simpa [K, Nat.add_sub_of_le (Nat.one_le_iff_ne_zero.mpr hd)] using hmul
+  have hKnn : MvPolynomial.HasNonnegCoeffs K := by
+    exact (hnn.rename_of_injective (Option.some_injective σ)).add
+      ((MvPolynomial.HasNonnegCoeffs.X none).mul
+        (hDnn.rename_of_injective (Option.some_injective σ)))
+  have hKstable : MvRealStable K := by
+    exact hstable.directionalPDeriv_pencil
+      (fun _ : σ => (1 : Real)) fun _ => zero_le_one
+  have hL : L = MvPolynomial.rename some D + MvPolynomial.X none *
+      MvPolynomial.rename some E := by
+    simpa [K, L, D, E] using directionalPDeriv_add_X_mul_rename_some
+      (fun _ : σ => (1 : Real)) 0 H D
+  have hD0 : D ≠ 0 :=
+    hstable.directionalPDeriv_one_ne_zero hnn hhom hd
+  have hL0 : L ≠ 0 := by
+    intro hzero
+    have hspecialize := congrArg
+      (MvPolynomial.specializeAt (none : Option σ) 0) hzero
+    rw [hL, specializeAt_none_add_X_mul_rename_some] at hspecialize
+    simp only [map_zero, zero_mul, add_zero] at hspecialize
+    exact hD0 (MvPolynomial.rename_injective some
+      (Option.some_injective σ) hspecialize)
+  have hLorient :=
+    hKstable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzero
+      hKnn hKhom
+      (fun o : Option σ => o.elim 0 (fun _ => (1 : Real)))
+      (by intro o; cases o <;> simp) hL0
+  change ∀ i x, 0 ≤ MvPolynomial.eval x
+    (MvPolynomial.coordinateWronskian L K i) at hLorient
+  intro i x
+  let y : Option σ → Real := fun o => o.elim 1 x
+  have hy : Function.update y none 1 = y := by
+    funext o
+    cases o <;> simp [y]
+  have h := hLorient (some i) y
+  have hspecialized :
+      MvPolynomial.specializeAt none 1
+          (MvPolynomial.coordinateWronskian L K (some i)) =
+        MvPolynomial.rename some
+          (MvPolynomial.coordinateWronskian (D + E) (H + D) i) := by
+    rw [MvPolynomial.specializeAt_coordinateWronskian_of_ne
+      (Option.some_ne_none i), hL]
+    simp only [K, specializeAt_none_add_X_mul_rename_some, map_one, one_mul]
+    exact MvPolynomial.coordinateWronskian_rename some
+      (Option.some_injective σ) (D + E) (H + D) i
+  have heval := congrArg (MvPolynomial.eval y) hspecialized
+  rw [MvPolynomial.eval_specializeAt, hy, MvPolynomial.eval_rename] at heval
+  simpa [y] using heval ▸ h
+
 /-- A positive-degree homogeneous stable polynomial with nonnegative
 coefficients gives an oriented affine Euler core after dehomogenization. -/
 theorem MvRealStable.eval_coordinateWronskian_affineEulerCore_nonneg_of_nonnegative
@@ -251,6 +330,53 @@ theorem
     MvPolynomial.eval_dehomogenize]
   exact hstable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
     hnn hhom hd (some i) (fun o => Option.elim o 1 x)
+
+/-- After dehomogenization, the affine Euler core of the first core is
+Wronskian-oriented against the sum of the source and its first core. -/
+theorem
+    MvRealStable.eval_coordinateWronskian_affineEulerCore_add_nonneg_of_nonnegative
+    {σ : Type*} [Fintype σ]
+    {H : MvPolynomial (Option σ) Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    let P := MvPolynomial.dehomogenize H
+    let D := MvPolynomial.affineEulerCore id (d : Real) P
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore id (d : Real) D) (P + D) i) := by
+  dsimp only
+  let G := directionalPDeriv (fun _ : Option σ => (1 : Real)) H
+  let E := directionalPDeriv (fun _ : Option σ => (1 : Real)) G
+  have hGhom : G.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  have hGdehom : MvPolynomial.dehomogenize G =
+      MvPolynomial.affineEulerCore id (d : Real)
+        (MvPolynomial.dehomogenize H) := by
+    simpa [G] using
+      MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hhom
+  have hEdehom : MvPolynomial.dehomogenize E =
+      MvPolynomial.affineEulerCore id ((d - 1 : Nat) : Real)
+        (MvPolynomial.dehomogenize G) := by
+    simpa [E] using
+      MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hGhom
+  have hcoeff : (d : Real) = ((d - 1 : Nat) : Real) + 1 := by
+    exact_mod_cast (Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.mpr hd)).symm
+  intro i x
+  rw [show MvPolynomial.affineEulerCore id (d : Real)
+          (MvPolynomial.affineEulerCore id (d : Real)
+            (MvPolynomial.dehomogenize H)) =
+        MvPolynomial.dehomogenize (G + E) by
+      rw [map_add, hEdehom, hGdehom, hcoeff,
+        MvPolynomial.affineEulerCore_add_one],
+    show MvPolynomial.dehomogenize H +
+          MvPolynomial.affineEulerCore id (d : Real)
+            (MvPolynomial.dehomogenize H) =
+        MvPolynomial.dehomogenize (H + G) by rw [map_add, hGdehom],
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    MvPolynomial.eval_dehomogenize]
+  exact
+    hstable.eval_coordinateWronskian_directionalPDeriv_one_add_nonneg
+      hnn hhom hd (some i) (fun o => Option.elim o 1 x)
 
 /-- Dehomogenization preserves weak real stability without a homogeneity
 hypothesis, since it is boundary specialization at the real value one. -/

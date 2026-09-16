@@ -87,6 +87,41 @@ theorem
     eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_stable
       n hnextStable
 
+/-- Stability of the next homogeneous layer automatically supplies every
+occupied-coordinate quadratic coefficient in the following recurrence. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_nonneg_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i) := by
+  intro i x
+  exact
+    eval_coordinateWronskian_successorCoreSlopeRecurrence_successorSlopeRecurrence_nonneg_of_stable
+      n hstable (i + 1 : Nat) x
+
+/-- Stability of the associated homogeneous layer automatically supplies all
+leading coefficients of the current successor-core row quadratics. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowQuadratic_nonneg_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowQuadratic n i) := by
+  let completeOrientation :=
+    eval_coordinateWronskian_successorCoreSlopeRecurrence_successorSlopeRecurrence_nonneg_of_stable
+  cases n with
+  | zero =>
+      intro i x
+      simp
+  | succ n =>
+      intro i
+      apply
+        (eval_decoBottomTotalCompanionSuccessorCoreRowQuadratic_succ_nonneg_iff_recurrenceAt
+          n i).mpr
+      intro x
+      simpa [decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrenceAt] using
+        completeOrientation n
+          (by simpa only [Nat.add_assoc, Nat.reduceAdd] using hstable) (i : Nat) x
+
 /-- A completed stability/data step makes the sum of both adjacent-derivative
 orientation reserves in a next quadratic recurrence nonnegative. -/
 theorem
@@ -105,9 +140,9 @@ theorem
     (eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_companionData
       n hstable hdata i.succ x)
 
-/-- The remaining next leading-coefficient obstruction is exactly whether
-the gap-two mixed Wronskian stays above the negative adjacent-orientation
-reserve. -/
+/-- Algebraically, nonnegativity of a next quadratic recurrence is equivalent
+to its gap-two mixed Wronskian staying above the negative adjacent-orientation
+reserve.  The stability theorem above supplies this inequality automatically. -/
 theorem
     eval_decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_nonneg_iff_secondMixed
     (n : Nat) (i : Fin (n + 1)) :
@@ -190,9 +225,9 @@ theorem
     specializeAt_zero_decoBottomTotalCompanionExtensionRayleighRow] at hbase
   exact hbase
 
-/-- With current stability and companion data, nonnegativity of every
-successor core row needs only the genuinely new leading-coefficient and
-discriminant conditions; the constant coefficients are automatic. -/
+/-- With current stability and companion data, the endpoint criterion first
+reduces to its quadratic and discriminant conditions; the constant
+coefficients are automatic. -/
 theorem
     eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_quadratic_discriminant
     (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
@@ -214,6 +249,27 @@ theorem
         n hstable hdata,
       hdiscriminant⟩
 
+/-- Stability also supplies the leading coefficients, so nonnegativity of all
+successor core rows is equivalent to the discriminant bounds alone. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_discriminant
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    (∀ i : Fin (n + 1), ∀ x,
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRow n i)) ↔
+      ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0 := by
+  rw [eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_quadratic_discriminant
+    n hstable hdata]
+  constructor
+  · exact And.right
+  · intro hdiscriminant
+    exact ⟨
+      eval_decoBottomTotalCompanionSuccessorCoreRowQuadratic_nonneg_of_stable
+        n hstable,
+      hdiscriminant⟩
+
 /-- Under a completed stability/data step, the expanded endpoint package also
 forgets its automatic constant-coefficient condition. -/
 theorem
@@ -233,6 +289,24 @@ theorem
     exact ⟨hquadratic,
       eval_decoBottomTotalCompanionSuccessorCoreRowConstant_nonneg_of_companionData
         n hstable hdata,
+      hdiscriminant⟩
+
+/-- Under a completed stability/data step, the expanded endpoint package is
+equivalent to the successor-row discriminant bounds alone. -/
+theorem decoBottomTotalCompanionSuccessorCoreEndpointData_iff_discriminant
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    DecoBottomTotalCompanionSuccessorCoreEndpointData n ↔
+      ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0 := by
+  rw [decoBottomTotalCompanionSuccessorCoreEndpointData_iff_quadratic_discriminant
+    n hstable hdata]
+  constructor
+  · exact And.right
+  · intro hdiscriminant
+    exact ⟨
+      eval_decoBottomTotalCompanionSuccessorCoreRowQuadratic_nonneg_of_stable
+        n hstable,
       hdiscriminant⟩
 
 /-- A completed stability/data step places the current companion and its
@@ -1183,8 +1257,7 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreQuadraticData
     eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff]
 
 /-- The exact successor-data criterion with the finite core rows expanded into
-their current-data compensation, genuinely new quadratic endpoint, and
-discriminant conditions. -/
+their current-data compensation and endpoint conditions. -/
 theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreEndpointData
     (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
     (hcompanion : MvPolynomial.IsRayleigh
@@ -1257,9 +1330,9 @@ theorem
         n).mpr hcrossNamed
     exact ⟨hcross, hdisc, hrows, hnextDisc⟩
 
-/-- After removing the automatic constant coefficients, the zero-locus
-successor criterion retains only the leading and discriminant conditions for
-the finite successor rows. -/
+/-- As an intermediate endpoint API, after removing the automatic constant
+coefficients the zero-locus successor criterion retains the leading and
+discriminant conditions for the finite successor rows. -/
 theorem
     decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus_reduced
     (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
@@ -1291,6 +1364,40 @@ theorem
   rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
       n hstable hdata,
     decoBottomTotalCompanionSuccessorCoreEndpointData_iff_quadratic_discriminant
+      n hstable hdata]
+
+/-- Stability supplies both endpoint coefficients in each finite successor
+row, so the zero-locus successor criterion retains only the row discriminants
+from that endpoint package. -/
+theorem
+    decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus_discriminant
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              n i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              n i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0) ∧
+      ∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
+      n hstable hdata,
+    decoBottomTotalCompanionSuccessorCoreEndpointData_iff_discriminant
       n hstable hdata]
 
 /-- Under current stability and companion data, the exact successor
@@ -1326,6 +1433,53 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_finite
               (decoBottomTotalWronskianCompanion (n + 1))
               (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
   rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
+    n hstable hdata]
+  constructor
+  · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩
+    exact ⟨hzero, fun i _ j _ _ x => hdisc i j x, hrows,
+      fun i _ j _ _ x => hnextDisc i j x⟩
+  · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩
+    refine ⟨hzero,
+      eval_affineRayleighDiscriminant_companion_slope_nonpos_of_Icc
+        n hdisc,
+      hrows, ?_⟩
+    apply eval_affineRayleighDiscriminant_companion_core_nonpos_of_Icc
+      (n + 1)
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using hnextDisc
+
+/-- The strongest finite successor criterion currently available: stability
+discharges both endpoint coefficients, leaving only finite affine-discriminant
+families and the companion cross condition on the inherited zero locus. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_finite_discriminant
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              n i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              n i)) ∧
+      (∀ i ∈ Finset.Icc 1 (n + 1),
+        ∀ j ∈ Finset.Icc 1 (n + 1), i < j → ∀ x,
+          MvPolynomial.eval x
+            (MvPolynomial.affineRayleighDiscriminant
+              (decoBottomTotalWronskianCompanion n)
+              (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0) ∧
+      ∀ i ∈ Finset.Icc 1 (n + 2),
+        ∀ j ∈ Finset.Icc 1 (n + 2), i < j → ∀ x,
+          MvPolynomial.eval x
+            (MvPolynomial.affineRayleighDiscriminant
+              (decoBottomTotalWronskianCompanion (n + 1))
+              (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus_discriminant
     n hstable hdata]
   constructor
   · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩

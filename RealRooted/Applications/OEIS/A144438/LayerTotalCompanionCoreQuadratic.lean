@@ -204,6 +204,41 @@ def decoBottomTotalCompanionSuccessorCoreRowOrientationReserveRecurrence
       (Fin.valEmbedding : Fin (n + 2) → Nat)
       (decoBottomTotalCompanionExtensionCore n) i.succ
 
+/-- Stability of the next homogeneous layer orients the complete next
+quadratic-recurrence pair: the affine Euler core of the extension core against
+the sum of the total extension and extension core. -/
+theorem
+    eval_coordinateWronskian_successorCoreSlopeRecurrence_successorSlopeRecurrence_nonneg_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
+        (decoBottomTotalCompanionSuccessorSlopeRecurrence n) i) := by
+  let Q := MvPolynomial.dehomogenize (decoLayerTotal (n + 2))
+  have hsource :=
+    hstable.eval_coordinateWronskian_affineEulerCore_add_nonneg_of_nonnegative
+      (decoLayerTotal_hasNonnegCoeffs (n + 2))
+      (decoLayerTotal_isHomogeneous (n + 2)) (by lia)
+  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
+    (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective
+    (MvPolynomial.affineEulerCore id ((n + 3 : Nat) : Real)
+      (MvPolynomial.affineEulerCore id ((n + 3 : Nat) : Real) Q))
+    (Q + MvPolynomial.affineEulerCore id ((n + 3 : Nat) : Real) Q)
+    hsource
+  rw [MvPolynomial.rename_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+    MvPolynomial.rename_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+    map_add,
+    MvPolynomial.rename_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+    ← decoBottomTotalCompanionTotalExtension_eq_rename_dehomogenize]
+    at hrename
+  unfold decoBottomTotalCompanionSuccessorCoreSlopeRecurrence
+    decoBottomTotalCompanionSuccessorSlopeRecurrence
+    decoBottomTotalCompanionExtensionCore
+  simpa only [Function.comp_id, Nat.cast_add, Nat.cast_ofNat] using hrename
+
 /-- The unshifted recurrence form of a next row discriminant at an arbitrary
 coordinate. -/
 def decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt
@@ -2238,7 +2273,7 @@ theorem decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced
 
 /-- The same finite endpoint conditions with the constant coefficient written
 as compensation against the current companion-data Wronskian and the
-quadratic coefficient expanded into its genuinely new two summands. -/
+quadratic coefficient expanded into its two recurrence summands. -/
 structure DecoBottomTotalCompanionSuccessorCoreEndpointData
     (n : Nat) : Prop where
   quadratic_nonneg : ∀ i : Fin (n + 1), ∀ x,
