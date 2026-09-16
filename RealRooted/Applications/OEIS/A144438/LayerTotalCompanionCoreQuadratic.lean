@@ -686,6 +686,52 @@ theorem
       (decoBottomTotalCompanionCore n)
       (decoBottomTotal (n + 1)) (i + 1 : Nat)
 
+/-- The full row discriminant is the generic simultaneous update of the base
+leading and linear endpoint coefficients. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_endpoint_update
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i =
+      decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i +
+        (2 * decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i *
+            decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i +
+          decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i ^ 2 -
+          4 * decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+              n i *
+            decoBottomTotalCompanionSuccessorCoreRowConstant n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant,
+    show (MvPolynomial.C (4 : Real) : MvPolynomial Nat Real) = 4 by
+      exact map_ofNat MvPolynomial.C 4,
+    decoBottomTotalCompanionSuccessorCoreRowLinear_eq_base_add_increment,
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_base_add_increment,
+    decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant_eq_endpoints]
+  simpa only [discrim] using discrim_add_leading_linear
+    (decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic n i)
+    (decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i)
+    (decoBottomTotalCompanionSuccessorCoreRowConstant n i)
+    (decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement n i)
+    (decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i)
+
+/-- Pointwise, the full successor-row discriminant is nonpositive exactly
+when the endpoint-coefficient update fits inside the base-discriminant
+margin. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminant_nonpos_iff_endpoint_update
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0 ↔
+      MvPolynomial.eval x
+          (2 * decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i *
+              decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i +
+            decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i ^ 2 -
+            4 * decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+                n i *
+              decoBottomTotalCompanionSuccessorCoreRowConstant n i) ≤
+        -MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i) := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_endpoint_update,
+    map_add]
+  constructor <;> intro h <;> linarith
+
 /-- Pointwise, the full successor-row discriminant is nonpositive exactly
 when its slope correction fits inside the negative base-discriminant margin. -/
 theorem
