@@ -2,6 +2,7 @@ import RealRooted.Hyperbolicity
 import RealRooted.Multiaffine.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.DirectionalDerivative
+import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stability of affine Euler cores
@@ -18,6 +19,23 @@ open scoped BigOperators
 
 noncomputable section
 
+/-- Dehomogenizing the all-ones derivative of a homogeneous polynomial gives
+the affine Euler core of its dehomogenization. -/
+theorem MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one
+    {σ R : Type*} [Fintype σ] [CommRing R]
+    {H : MvPolynomial (Option σ) R} {d : Nat}
+    (hH : H.IsHomogeneous d) :
+    MvPolynomial.dehomogenize
+        (directionalPDeriv (fun _ : Option σ => (1 : R)) H) =
+      MvPolynomial.affineEulerCore id (d : R)
+        (MvPolynomial.dehomogenize H) := by
+  rw [directionalPDeriv, Fintype.sum_option, map_add, map_sum]
+  simp_rw [map_mul, map_one, one_mul]
+  rw [hH.dehomogenize_pderiv_none]
+  simp_rw [MvPolynomial.dehomogenize_pderiv_some]
+  unfold MvPolynomial.affineEulerCore MvPolynomial.eulerOperator
+  simp only [id_eq]
+
 /-- Dehomogenizing the all-ones derivative of a degree-`d` ordinary
 homogenization gives the degree-`d` affine Euler core. -/
 theorem dehomogenize_directionalPDeriv_ordinaryHomogenization
@@ -27,17 +45,46 @@ theorem dehomogenize_directionalPDeriv_ordinaryHomogenization
         (directionalPDeriv (fun _ : Option σ => (1 : R))
           (MvPolynomial.ordinaryHomogenization P d)) =
       MvPolynomial.affineEulerCore id (d : R) P := by
-  let H := MvPolynomial.ordinaryHomogenization P d
-  have hhom : H.IsHomogeneous d :=
-    MvPolynomial.ordinaryHomogenization_isHomogeneous P d
-  rw [directionalPDeriv, Fintype.sum_option, map_add, map_sum]
-  simp_rw [map_mul, map_one, one_mul]
-  rw [hhom.dehomogenize_pderiv_none]
-  simp_rw [MvPolynomial.dehomogenize_pderiv_some]
-  rw [MvPolynomial.dehomogenize_ordinaryHomogenization_of_totalDegree_le
-    P hdeg]
-  unfold MvPolynomial.affineEulerCore MvPolynomial.eulerOperator
-  simp only [id_eq]
+  rw [MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one
+    (MvPolynomial.ordinaryHomogenization_isHomogeneous P d),
+    MvPolynomial.dehomogenize_ordinaryHomogenization_of_totalDegree_le
+      P hdeg]
+
+/-- The affine Euler core inherited from a homogeneous Rayleigh polynomial
+has the directional-derivative Wronskian orientation against its
+dehomogenization. -/
+theorem MvPolynomial.IsRayleigh.eval_coordinateWronskian_affineEulerCore_nonneg
+    {σ : Type*} [Fintype σ]
+    {H : MvPolynomial (Option σ) Real} {d : Nat}
+    (hH : H.IsRayleigh) (hhom : H.IsHomogeneous d) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore id (d : Real)
+          (MvPolynomial.dehomogenize H))
+        (MvPolynomial.dehomogenize H) i) := by
+  intro i x
+  rw [← MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hhom,
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    MvPolynomial.eval_dehomogenize]
+  exact hH.eval_coordinateWronskian_directionalPDeriv_nonneg
+    (fun _ : Option σ => (1 : Real)) (fun _ => zero_le_one)
+    (some i) (fun o => Option.elim o 1 x)
+
+/-- For a stable multiaffine homogeneous polynomial, the affine Euler core
+has the directional-derivative Wronskian orientation against its
+dehomogenization. -/
+theorem MvRealStable.eval_coordinateWronskian_affineEulerCore_nonneg
+    {σ : Type*} [Fintype σ]
+    {H : MvPolynomial (Option σ) Real} {d : Nat}
+    (hstable : MvRealStable H) (hma : MvPolynomial.IsMultiaffine H)
+    (hhom : H.IsHomogeneous d) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore id (d : Real)
+          (MvPolynomial.dehomogenize H))
+        (MvPolynomial.dehomogenize H) i) :=
+  MvPolynomial.IsRayleigh.eval_coordinateWronskian_affineEulerCore_nonneg
+    (hstable.isRayleigh_of_isMultiaffine hma) hhom
 
 /-- Dehomogenization preserves weak real stability without a homogeneity
 hypothesis, since it is boundary specialization at the real value one. -/

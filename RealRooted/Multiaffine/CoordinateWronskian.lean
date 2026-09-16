@@ -1,3 +1,4 @@
+import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 import RealRooted.Multiaffine.Rayleigh
 
 /-!
@@ -17,6 +18,16 @@ same orientation as `Polynomial.wronskian`. -/
 def coordinateWronskian {R σ : Type*} [CommRing R]
     (P Q : MvPolynomial σ R) (i : σ) : MvPolynomial σ R :=
   P * pderiv i Q - pderiv i P * Q
+
+/-- Dehomogenization commutes with coordinate Wronskians in every ordinary
+coordinate. -/
+theorem dehomogenize_coordinateWronskian_some
+    {R σ : Type*} [CommRing R]
+    (P Q : MvPolynomial (Option σ) R) (i : σ) :
+    dehomogenize (coordinateWronskian P Q (some i)) =
+      coordinateWronskian (dehomogenize P) (dehomogenize Q) i := by
+  simp only [coordinateWronskian, map_sub, map_mul,
+    dehomogenize_pderiv_some]
 
 /-- The coordinate Wronskian of a polynomial with itself vanishes. -/
 @[simp] theorem coordinateWronskian_self {R σ : Type*} [CommRing R]
@@ -164,6 +175,29 @@ theorem coordinateWronskian_rename
     coordinateWronskian (rename f P) (rename f Q) (f i) =
       rename f (coordinateWronskian P Q i) := by
   simp only [coordinateWronskian, pderiv_rename hf, map_mul, map_sub]
+
+/-- Injectively renaming both polynomials preserves universal nonnegativity of
+their coordinate Wronskians, including coordinates outside the image. -/
+theorem eval_coordinateWronskian_rename_nonneg
+    {R σ τ : Type*} [CommRing R] [Preorder R]
+    (f : σ → τ) (hf : Function.Injective f) (P Q : MvPolynomial σ R)
+    (h : ∀ i x, 0 ≤ eval x (coordinateWronskian P Q i)) :
+    ∀ j y, 0 ≤ eval y (coordinateWronskian (rename f P) (rename f Q) j) := by
+  classical
+  intro j y
+  by_cases hj : j ∈ Set.range f
+  · obtain ⟨i, rfl⟩ := hj
+    rw [coordinateWronskian_rename f hf, eval_rename]
+    exact h i (y ∘ f)
+  · have hjP : j ∉ (rename f P).vars := by
+      intro hjVars
+      obtain ⟨i, _, hi⟩ := mem_vars_rename f P hjVars
+      exact hj ⟨i, hi⟩
+    have hjQ : j ∉ (rename f Q).vars := by
+      intro hjVars
+      obtain ⟨i, _, hi⟩ := mem_vars_rename f Q hjVars
+      exact hj ⟨i, hi⟩
+    rw [coordinateWronskian_eq_zero_of_notMem_vars hjP hjQ, map_zero]
 
 /-- Coordinate Wronskians are additive in their left argument. -/
 theorem coordinateWronskian_add_left {R σ : Type*} [CommRing R]
