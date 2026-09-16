@@ -171,6 +171,24 @@ theorem IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
     simp
   · exact hdisc i hi j hj hij x
 
+/-- Over ordered coordinates, symmetry reduces the finite supported family
+further to strictly increasing coordinate pairs. -/
+theorem
+    IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset_of_lt
+    {σ : Type*} [LinearOrder σ] {P Q : MvPolynomial σ ℝ}
+    (hP : IsMultiaffine P) (hQ : IsMultiaffine Q) (s : Finset σ)
+    (hPvars : P.vars ⊆ s) (hQvars : Q.vars ⊆ s)
+    (hdisc : ∀ i ∈ s, ∀ j ∈ s, i < j → ∀ x,
+      eval x (affineRayleighDiscriminant P Q i j) ≤ 0) :
+    ∀ i j x, eval x (affineRayleighDiscriminant P Q i j) ≤ 0 := by
+  apply hP.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
+    hQ s hPvars hQvars
+  intro i hi j hj hij x
+  rcases lt_or_gt_of_ne hij with hij | hji
+  · exact hdisc i hi j hj hij x
+  · rw [affineRayleighDiscriminant_comm_coord]
+    exact hdisc j hj i hi hji x
+
 /-- If two multiaffine polynomials use at most two variables, pointwise
 nonpositivity of their one cross discriminant controls every coordinate
 pair. -/

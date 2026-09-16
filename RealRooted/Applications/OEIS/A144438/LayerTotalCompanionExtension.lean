@@ -143,7 +143,7 @@ theorem
     eval_affineRayleighDiscriminant_companion_slope_nonpos_of_Icc
     (n : Nat)
     (hdisc : ∀ i ∈ Finset.Icc 1 (n + 1),
-      ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+      ∀ j ∈ Finset.Icc 1 (n + 1), i < j → ∀ x,
         MvPolynomial.eval x
           (MvPolynomial.affineRayleighDiscriminant
             (decoBottomTotalWronskianCompanion n)
@@ -153,7 +153,7 @@ theorem
         (decoBottomTotalWronskianCompanion n)
         (decoBottomTotalCompanionSlope n) i j) ≤ 0 := by
   exact
-    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
+    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset_of_lt
       (decoBottomTotalWronskianCompanion_isMultiaffine n)
       (decoBottomTotalCompanionSlope_isMultiaffine n)
       (Finset.Icc 1 (n + 1))
@@ -167,7 +167,7 @@ theorem
     eval_affineRayleighDiscriminant_companion_core_nonpos_of_Icc
     (n : Nat)
     (hdisc : ∀ i ∈ Finset.Icc 1 (n + 1),
-      ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+      ∀ j ∈ Finset.Icc 1 (n + 1), i < j → ∀ x,
         MvPolynomial.eval x
           (MvPolynomial.affineRayleighDiscriminant
             (decoBottomTotalWronskianCompanion n)
@@ -177,7 +177,7 @@ theorem
         (decoBottomTotalWronskianCompanion n)
         (decoBottomTotalCompanionCore n) i j) ≤ 0 := by
   exact
-    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset
+    MvPolynomial.IsMultiaffine.eval_affineRayleighDiscriminant_nonpos_of_vars_subset_of_lt
       (decoBottomTotalWronskianCompanion_isMultiaffine n)
       (decoBottomTotalCompanionCore_isMultiaffine n)
       (Finset.Icc 1 (n + 1))

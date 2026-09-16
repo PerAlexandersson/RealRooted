@@ -934,7 +934,7 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_finite
             (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
               n i)) ∧
       (∀ i ∈ Finset.Icc 1 (n + 1),
-        ∀ j ∈ Finset.Icc 1 (n + 1), i ≠ j → ∀ x,
+        ∀ j ∈ Finset.Icc 1 (n + 1), i < j → ∀ x,
           MvPolynomial.eval x
             (MvPolynomial.affineRayleighDiscriminant
               (decoBottomTotalWronskianCompanion n)
@@ -945,7 +945,7 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_finite
           (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
         DecoBottomTotalCompanionSuccessorCoreEndpointData n) ∧
       ∀ i ∈ Finset.Icc 1 (n + 2),
-        ∀ j ∈ Finset.Icc 1 (n + 2), i ≠ j → ∀ x,
+        ∀ j ∈ Finset.Icc 1 (n + 2), i < j → ∀ x,
           MvPolynomial.eval x
             (MvPolynomial.affineRayleighDiscriminant
               (decoBottomTotalWronskianCompanion (n + 1))
