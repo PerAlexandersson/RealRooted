@@ -3,6 +3,7 @@ import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
 import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 import RealRooted.MultivariateStability.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
+import RealRooted.MultivariateStability.RayleighPencil
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -175,6 +176,23 @@ theorem decoBottomTotalCompanionCore_allCombo_slope_succ_of_companionData
   rw [← decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
     ← decoBottomTotalCompanionSlope_succ_eq_rename] at hall
   exact hall
+
+/-- The stable next-core/next-slope span automatically discharges all of its
+affine Rayleigh discriminants.  An oriented Wronskian condition is the only
+additional datum needed to glue this pair along a fresh coordinate. -/
+theorem
+    eval_affineRayleighDiscriminant_companionCore_slope_succ_nonpos_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i j x, MvPolynomial.eval x
+      (MvPolynomial.affineRayleighDiscriminant
+        (decoBottomTotalCompanionCore (n + 1))
+        (decoBottomTotalCompanionSlope (n + 1)) i j) ≤ 0 := by
+  exact
+    (decoBottomTotalCompanionCore_allCombo_slope_succ_of_companionData
+      n hstable hdata).eval_affineRayleighDiscriminant_nonpos
+        (decoBottomTotalCompanionCore_isMultiaffine (n + 1))
+        (decoBottomTotalCompanionSlope_isMultiaffine (n + 1))
 
 /-- After one completed stability/data step, every current core-pair
 cross-Wronskian has the sign required by the fresh-coordinate Rayleigh

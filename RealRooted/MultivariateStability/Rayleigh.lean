@@ -315,6 +315,17 @@ theorem MvRealStable.isRayleigh_of_isMultiaffine
       rw [MvPolynomial.eval_rayleighDifference]
       exact hdet.2
 
+/-- A weakly real-stable multiaffine polynomial is Rayleigh, including the
+zero polynomial. -/
+theorem MvRealStableOrZero.isRayleigh_of_isMultiaffine
+    {σ : Type*} {P : MvPolynomial σ ℝ}
+    (hP : MvRealStableOrZero P) (hPma : MvPolynomial.IsMultiaffine P) :
+    MvPolynomial.IsRayleigh P := by
+  rcases hP with rfl | hP
+  · intro i j x
+    simp [MvPolynomial.rayleighDifference]
+  · exact hP.isRayleigh_of_isMultiaffine hPma
+
 end
 
 end RealRooted

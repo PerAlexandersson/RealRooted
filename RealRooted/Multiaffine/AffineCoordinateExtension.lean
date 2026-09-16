@@ -33,6 +33,16 @@ theorem mixedRayleighDifference_comm_coord {R σ : Type*} [CommRing R]
   simp only [mixedRayleighDifference, pderiv_comm]
   ring
 
+/-- Scaling the right polynomial scales the mixed Rayleigh difference by
+the same scalar. -/
+theorem mixedRayleighDifference_C_mul_right
+    {R σ : Type*} [CommRing R]
+    (c : R) (P Q : MvPolynomial σ R) (i j : σ) :
+    mixedRayleighDifference P (C c * Q) i j =
+      C c * mixedRayleighDifference P Q i j := by
+  simp only [mixedRayleighDifference, pderiv_C_mul]
+  ring
+
 /-- Mixed Rayleigh differences commute with injective variable renamings. -/
 theorem mixedRayleighDifference_rename {R σ τ : Type*} [CommRing R]
     (f : σ → τ) (hf : Function.Injective f)

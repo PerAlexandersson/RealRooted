@@ -1,6 +1,8 @@
 import RealRooted.HermiteBiehler.OrientedPencil
+import RealRooted.Multiaffine.AffineCoordinateExtension
 import RealRooted.Multiaffine.AffineLineRestriction
 import RealRooted.MultivariateStability.AllComboAffineLine
+import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rayleigh coordinate pencils
@@ -14,6 +16,39 @@ up to the zero polynomial.
 namespace RealRooted
 
 noncomputable section
+
+/-- An all-combinations stable span of multiaffine polynomials has
+nonpositive affine Rayleigh discriminants.  Thus a fresh-coordinate
+extension of the pair needs only the oriented Wronskian condition in
+addition to the span certificate. -/
+theorem AllComboMvRealStableOrZero.eval_affineRayleighDiscriminant_nonpos
+    {σ : Type*} {F G : MvPolynomial σ ℝ}
+    (hall : AllComboMvRealStableOrZero F G)
+    (hF : MvPolynomial.IsMultiaffine F)
+    (hG : MvPolynomial.IsMultiaffine G) :
+    ∀ i j x, MvPolynomial.eval x
+      (MvPolynomial.affineRayleighDiscriminant F G i j) ≤ 0 := by
+  intro i j x
+  have hquad (t : ℝ) :
+      0 ≤ MvPolynomial.eval x (MvPolynomial.rayleighDifference G i j) *
+          (t * t) +
+        MvPolynomial.eval x
+            (MvPolynomial.mixedRayleighDifference F G i j) * t +
+          MvPolynomial.eval x (MvPolynomial.rayleighDifference F i j) := by
+    have hstable : MvRealStableOrZero
+        (F + MvPolynomial.C t * G) := by
+      simpa using hall 1 t
+    have hrayleigh := hstable.isRayleigh_of_isMultiaffine
+      (hF.add (hG.C_mul t))
+    have h := hrayleigh i j x
+    rw [MvPolynomial.rayleighDifference_add,
+      MvPolynomial.mixedRayleighDifference_C_mul_right,
+      MvPolynomial.rayleighDifference_C_mul] at h
+    simp only [MvPolynomial.eval_add, MvPolynomial.eval_mul,
+      MvPolynomial.eval_C] at h
+    nlinarith
+  simpa [MvPolynomial.affineRayleighDiscriminant, discrim] using
+    (discrim_le_zero hquad)
 
 /-- A multiaffine Rayleigh polynomial is weakly real stable once the span of
 one zero-specialization and the corresponding partial derivative is weakly
@@ -111,6 +146,87 @@ theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_allCombo_specializeZero_pd
       rw [MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv hma i]
         at hzero
       simpa [complexifyMv, F, G] using hzero
+
+/-- For a finite multiaffine stable span, the oriented coordinate-Wronskian
+sign is sufficient to make the corresponding fresh-coordinate affine
+extension weakly real stable. -/
+theorem AllComboMvRealStableOrZero.affineExtension_zero_or_of_wronskian
+    {σ : Type*} [Finite σ] {F G : MvPolynomial σ ℝ}
+    (hall : AllComboMvRealStableOrZero F G)
+    (hF : MvPolynomial.IsMultiaffine F)
+    (hG : MvPolynomial.IsMultiaffine G)
+    (hcross : ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian G F i)) :
+    MvRealStableOrZero
+      (MvPolynomial.rename some F + MvPolynomial.X none *
+        MvPolynomial.rename some G) := by
+  let P := MvPolynomial.rename some F
+  let Q := MvPolynomial.rename some G
+  have hPma : MvPolynomial.IsMultiaffine P :=
+    hF.rename (Option.some_injective σ)
+  have hQma : MvPolynomial.IsMultiaffine Q :=
+    hG.rename (Option.some_injective σ)
+  have hnoneP : none ∉ P.vars := by
+    intro hnone
+    obtain ⟨i, _, hi⟩ := MvPolynomial.mem_vars_rename some F hnone
+    exact (Option.some_ne_none i) hi
+  have hnoneQ : none ∉ Q.vars := by
+    intro hnone
+    obtain ⟨i, _, hi⟩ := MvPolynomial.mem_vars_rename some G hnone
+    exact (Option.some_ne_none i) hi
+  have hPrayleigh : MvPolynomial.IsRayleigh P :=
+    (hall.left.isRayleigh_of_isMultiaffine hF).rename some
+      (Option.some_injective σ)
+  have hQrayleigh : MvPolynomial.IsRayleigh Q :=
+    (hall.right.isRayleigh_of_isMultiaffine hG).rename some
+      (Option.some_injective σ)
+  have hcrossRename : ∀ o x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian Q P o) := by
+    intro o x
+    cases o with
+    | none =>
+        rw [MvPolynomial.coordinateWronskian,
+          MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneP,
+          MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneQ]
+        simp
+    | some i =>
+        rw [MvPolynomial.coordinateWronskian_rename some
+          (Option.some_injective σ), MvPolynomial.eval_rename]
+        exact hcross i (x ∘ some)
+  have hdisc := hall.eval_affineRayleighDiscriminant_nonpos hF hG
+  have hdiscRename : ∀ i j x, i ≠ none → j ≠ none →
+      MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant P Q i j) ≤ 0 := by
+    intro i j x hi hj
+    cases i with
+    | none => exact (hi rfl).elim
+    | some i =>
+        cases j with
+        | none => exact (hj rfl).elim
+        | some j =>
+            rw [MvPolynomial.affineRayleighDiscriminant_rename some
+              (Option.some_injective σ), MvPolynomial.eval_rename]
+            exact hdisc i j (x ∘ some)
+  have hextRayleigh : MvPolynomial.IsRayleigh
+      (P + MvPolynomial.X none * Q) :=
+    hPrayleigh.add_X_mul_of_fresh hQrayleigh hPma hQma
+      hnoneP hnoneQ hcrossRename hdiscRename
+  have hextMa : MvPolynomial.IsMultiaffine
+      (P + MvPolynomial.X none * Q) :=
+    hPma.add (hQma.X_mul_of_notMem_vars hnoneQ)
+  apply MvPolynomial.IsRayleigh.mvRealStableOrZero_of_allCombo_specializeZero_pderiv
+    hextRayleigh hextMa none
+  have hzero : MvPolynomial.specializeZero none
+      (P + MvPolynomial.X none * Q) = P := by
+    rw [MvPolynomial.specializeZero_add, MvPolynomial.specializeZero_mul,
+      MvPolynomial.specializeZero_eq_self_of_notMem_vars none P hnoneP,
+      MvPolynomial.specializeZero_X_self]
+    simp
+  rw [hzero]
+  have hallRename := hall.rename some
+  simpa [P, Q,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneP,
+    MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneQ] using hallRename
 
 end
 
