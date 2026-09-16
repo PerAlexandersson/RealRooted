@@ -125,46 +125,42 @@ theorem residueEulerStep_strict_package
     exact residueAuxiliary_eval_mul_derivative_pos
       hhf hf_pos hh_pos hh_simple.roots_nodup hfdeg hhdeg hf_simple
         ha hroots_lt_one hgap hx
-  have hroot_sign : ∀ x, f.IsRoot x →
-      (residueEulerStep a b f h r).eval x * f.derivative.eval x < 0 := by
+  let tail : ℝ[X] := C b * X * r
+  have hrec :
+      residueEulerStep a b f h r =
+        (1 + X) * f + X * residueAuxiliary 1 a f h + tail := by
+    simpa only [tail] using residueEulerStep_eq a b f h r
+  have hX_neg : ∀ x, f.IsRoot x → X.eval x < 0 := by
+    intro x hx
+    simpa using hf_neg x hx
+  have htail_nonpos : ∀ x, f.IsRoot x →
+      tail.eval x * f.derivative.eval x ≤ 0 := by
     intro x hx
     have hx_neg := hf_neg x hx
     have htail_sign :
         0 ≤ r.eval x * f.derivative.eval x :=
       eval_mul_derivative_nonneg_of_prec_right_root
         hrf.toPrec hr_pos hf_pos hx
-    have hfirst :
-        x * ((residueAuxiliary 1 a f h).eval x * f.derivative.eval x) < 0 :=
-      mul_neg_of_neg_of_pos hx_neg (haux_sign x hx)
-    have htail :
+    have hweighted :
         b * x * (r.eval x * f.derivative.eval x) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg
         (mul_nonpos_of_nonneg_of_nonpos hb hx_neg.le) htail_sign
     have heval :
-        (residueEulerStep a b f h r).eval x * f.derivative.eval x =
-          x * ((residueAuxiliary 1 a f h).eval x * f.derivative.eval x) +
-            b * x * (r.eval x * f.derivative.eval x) := by
-      rw [residueEulerStep_eq]
-      simp only [eval_add, eval_mul, eval_one, eval_X, eval_C,
-        Polynomial.IsRoot.def.mp hx]
+        tail.eval x * f.derivative.eval x =
+          b * x * (r.eval x * f.derivative.eval x) := by
+      simp only [tail, eval_mul, eval_C, eval_X]
       ring
     rw [heval]
-    linarith
-  have hder : Interlaces f.derivative f :=
-    interlaces_derivative_of_pos_natDegree
-      hf_pos.ne_zero hhf.2.1.2 hf_pos hfdeg
-  have hder_pos : HasPosLeadingCoeff f.derivative :=
-    hf_pos.derivative (by lia)
-  have hprec : Prec f (residueEulerStep a b f h r) :=
-    MaWangInternal.prec_of_interlaces_eval_mul_neg_succ
-      hder hder_pos hstep_pos hdegree.1 hroot_sign
+    exact hweighted
+  have hstep := prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+    hhf.2.1.2 hf_pos hstep_pos hfdeg hdegree.1 hrec haux_sign hX_neg
+      htail_nonpos
+  have hprec : Prec f (residueEulerStep a b f h r) := hstep.1
+  have hsimple : HasSimpleRoots (residueEulerStep a b f h r) := hstep.2
   have hno : ∀ x, f.IsRoot x →
-      ¬ (residueEulerStep a b f h r).IsRoot x := by
-    intro x hfx hstepx
-    have hsign := hroot_sign x hfx
-    simp [Polynomial.IsRoot.def.mp hstepx] at hsign
-  have hsimple : HasSimpleRoots (residueEulerStep a b f h r) :=
-    (hprec.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).2
+      ¬ (residueEulerStep a b f h r).IsRoot x :=
+    noCommonRoot_of_auxiliary_sign_add_tail
+      hrec haux_sign hX_neg htail_nonpos
   have hf_zero : 0 < f.eval 0 := by
     apply eval_pos_of_all_roots_lt hf_pos.ne_zero hhf.2.1.2 hf_pos
     intro x hx
