@@ -90,6 +90,43 @@ theorem decoBottomTotalAffineSlope_isRayleigh (n : Nat)
     pderiv_one_decoNormalBottomStep_total] at h
   exact h
 
+/-- Under preceding-rank stability, the normal affine slope is zero or real
+stable. -/
+theorem decoBottomTotalAffineSlope_mvRealStable_zero_or (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvRealStableOrZero (decoBottomTotalAffineSlope n) := by
+  have hma : MvPolynomial.IsMultiaffine
+      (decoNormalBottomStep (n + 1) (decoBottomTotal (n + 1))) := by
+    rw [decoNormalBottomStep_total_eq_affine]
+    exact (decoBottomTotalAffineNormalBase_isMultiaffine n).add
+      ((decoBottomTotalAffineSlope_isMultiaffine n).X_mul_of_notMem_vars
+        (one_notMem_vars_decoBottomTotalAffineSlope n))
+  have h := (decoNormalBottomStep_total_mvRealStable
+    (n + 1) hstable).pderiv_zero_or hma 1
+  rw [pderiv_one_decoNormalBottomStep_total] at h
+  exact h
+
+/-- Under preceding-rank stability, the unshifted affine Euler core is zero
+or real stable. -/
+theorem decoBottomTotalCompanionCore_mvRealStable_zero_or (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvRealStableOrZero (decoBottomTotalCompanionCore n) := by
+  have h := decoBottomTotalAffineSlope_mvRealStable_zero_or n hstable
+  unfold decoBottomTotalAffineSlope at h
+  unfold decoBottomTotalCompanionCore
+  exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
+
+/-- Under preceding-rank stability, specializing the normal affine step at
+one makes the companion successor slope zero or real stable. -/
+theorem decoBottomTotalCompanionSlope_mvRealStable_zero_or (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvRealStableOrZero (decoBottomTotalCompanionSlope n) := by
+  have h := (decoNormalBottomStep_total_mvRealStable
+    (n + 1) hstable).specializeAt_zero_or_general 1 1
+  rw [decoNormalBottomStep_total_eq_affine,
+    specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope] at h
+  exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
+
 /-- Under preceding-rank stability, the unshifted normal core paired with the
 two-rank companion is Rayleigh. -/
 theorem decoBottomTotalCompanionCore_isRayleigh (n : Nat)

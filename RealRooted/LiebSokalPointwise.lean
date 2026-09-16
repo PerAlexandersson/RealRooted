@@ -393,6 +393,35 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or
       MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) := by
   exact hP.pderiv_zero_or_of_degreeOf_le_one i (hPma i)
 
+/-- A partial derivative of a real stable polynomial is either zero or real
+stable when the polynomial is affine in that coordinate. -/
+theorem MvRealStable.pderiv_zero_or_of_degreeOf_le_one
+    {sigma : Type*} {P : MvPolynomial sigma ℝ} (hP : MvRealStable P)
+    (i : sigma) (hi : P.degreeOf i ≤ 1) :
+    MvRealStableOrZero (MvPolynomial.pderiv i P) := by
+  classical
+  rw [mvRealStableOrZero_iff_complexifyMv]
+  unfold MvRealStable at hP
+  have hdegree : (complexifyMv P).degreeOf i = P.degreeOf i := by
+    unfold complexifyMv
+    rw [MvPolynomial.degreeOf_eq_sup, MvPolynomial.degreeOf_eq_sup,
+      MvPolynomial.support_map_of_injective _ Complex.ofRealHom.injective]
+  have h := hP.pderiv_zero_or_of_degreeOf_le_one i (by
+    rw [hdegree]
+    exact hi)
+  change MvUpperHalfPlaneStableOrZero
+    (complexifyMv (MvPolynomial.pderiv i P))
+  rw [complexifyMv, ← MvPolynomial.pderiv_map]
+  exact h
+
+/-- A partial derivative of a multiaffine real stable polynomial is either
+zero or real stable. -/
+theorem MvRealStable.pderiv_zero_or
+    {sigma : Type*} {P : MvPolynomial sigma ℝ} (hP : MvRealStable P)
+    (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
+    MvRealStableOrZero (MvPolynomial.pderiv i P) :=
+  hP.pderiv_zero_or_of_degreeOf_le_one i (hPma i)
+
 /-- Specializing one affine coordinate at zero preserves stability up to zero. -/
 theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
     {sigma : Type*}
