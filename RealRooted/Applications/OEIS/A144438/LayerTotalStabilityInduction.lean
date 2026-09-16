@@ -80,6 +80,21 @@ theorem decoLayerTotal_mvRealStable_of_companionData_preserved
       exact (decoLayerTotal_stable_and_companionData_of_preserved
         hpreserve n).1
 
+/-- Thus all-rank stability is exactly the assertion that the companion
+certificate is preserved by one recurrence step, under the current stability
+and certificate invariants supplied by the induction. -/
+theorem decoLayerTotal_mvRealStable_iff_companionData_preserved :
+    (∀ n, MvRealStable (decoLayerTotal n)) ↔
+      ∀ n, MvRealStable (decoLayerTotal (n + 1)) →
+        DecoBottomTotalCompanionRayleighData n →
+          DecoBottomTotalCompanionRayleighData (n + 1) := by
+  constructor
+  · intro hstable n _ _
+    exact
+      (decoLayerTotal_mvRealStable_iff_forall_companionRayleighData.mp
+        hstable) (n + 1)
+  · exact decoLayerTotal_mvRealStable_of_companionData_preserved
+
 end
 
 end RealRooted.Applications.OEIS
