@@ -87,6 +87,67 @@ theorem MvRealStable.eval_coordinateWronskian_affineEulerCore_nonneg
   MvPolynomial.IsRayleigh.eval_coordinateWronskian_affineEulerCore_nonneg
     (hstable.isRayleigh_of_isMultiaffine hma) hhom
 
+/-- The all-ones directional derivative lowers homogeneous degree by one. -/
+theorem MvPolynomial.IsHomogeneous.directionalPDeriv_one
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hhom : H.IsHomogeneous d) :
+    (directionalPDeriv (fun _ : σ => (1 : Real)) H).IsHomogeneous
+      (d - 1) := by
+  apply MvPolynomial.IsHomogeneous.sum
+  intro i hi
+  simpa [directionalPDeriv] using hhom.pderiv (i := i)
+
+/-- The all-ones directional derivative preserves coefficient
+nonnegativity. -/
+theorem MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real}
+    (hnn : H.HasNonnegCoeffs) :
+    (directionalPDeriv (fun _ : σ => (1 : Real)) H).HasNonnegCoeffs := by
+  apply MvPolynomial.HasNonnegCoeffs.sum
+  intro i hi
+  simpa [directionalPDeriv] using hnn.pderiv i
+
+/-- The all-ones directional derivative of a positive-degree stable
+homogeneous polynomial with nonnegative coefficients is nonzero. -/
+theorem MvRealStable.directionalPDeriv_one_ne_zero
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    directionalPDeriv (fun _ : σ => (1 : Real)) H ≠ 0 := by
+  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+  intro hzero
+  have hD_eval : MvPolynomial.eval (fun _ : σ => (1 : Real)) D = 0 := by
+    rw [show D = 0 by exact hzero]
+    simp
+  have heuler := congrArg
+    (MvPolynomial.eval (fun _ : σ => (1 : Real)))
+    hhom.sum_X_mul_pderiv
+  have hH_eval : 0 < MvPolynomial.eval (fun _ : σ => (1 : Real)) H :=
+    hnn.eval_pos hstable.ne_zero fun _ => zero_lt_one
+  simp only [map_sum, MvPolynomial.eval_mul, MvPolynomial.eval_X,
+    one_mul, map_nsmul] at heuler
+  have hD_eval' : MvPolynomial.eval (fun _ : σ => (1 : Real)) D =
+      ∑ i : σ, MvPolynomial.eval (fun _ : σ => (1 : Real))
+        (MvPolynomial.pderiv i H) := by
+    simp [D, directionalPDeriv]
+  rw [← hD_eval', hD_eval] at heuler
+  have hdpos : 0 < (d : Real) := by
+    exact_mod_cast Nat.pos_of_ne_zero hd
+  simp only [nsmul_eq_mul] at heuler
+  nlinarith
+
+/-- The all-ones directional derivative of a positive-degree stable
+homogeneous polynomial with nonnegative coefficients is stable. -/
+theorem MvRealStable.directionalPDeriv_one
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    MvRealStable (directionalPDeriv (fun _ : σ => (1 : Real)) H) := by
+  rcases hstable.directionalPDeriv_zero_or
+      (fun _ : σ => (1 : Real)) (fun _ => zero_le_one) with hzero | hderiv
+  · exact ((hstable.directionalPDeriv_one_ne_zero hnn hhom hd) hzero).elim
+  · exact hderiv
+
 /-- A positive-degree homogeneous stable polynomial with nonnegative
 coefficients has its all-ones directional derivative Wronskian-oriented
 against it, without any multiaffineness hypothesis. -/
@@ -98,39 +159,35 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
       (MvPolynomial.coordinateWronskian
         (directionalPDeriv (fun _ : σ => (1 : Real)) H) H i) := by
   let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
-  have hDhom : D.IsHomogeneous (d - 1) := by
-    apply MvPolynomial.IsHomogeneous.sum
-    intro i hi
-    simpa [D, directionalPDeriv] using hhom.pderiv (i := i)
-  have hDnn : MvPolynomial.HasNonnegCoeffs D := by
-    apply MvPolynomial.HasNonnegCoeffs.sum
-    intro i hi
-    simpa [D, directionalPDeriv] using hnn.pderiv i
-  have hD0 : D ≠ 0 := by
-    intro hzero
-    have hD_eval : MvPolynomial.eval (fun _ : σ => (1 : Real)) D = 0 := by
-      rw [hzero]
-      simp
-    have heuler := congrArg
-      (MvPolynomial.eval (fun _ : σ => (1 : Real)))
-      hhom.sum_X_mul_pderiv
-    have hH_eval : 0 < MvPolynomial.eval (fun _ : σ => (1 : Real)) H :=
-      hnn.eval_pos hstable.ne_zero fun _ => zero_lt_one
-    simp only [map_sum, MvPolynomial.eval_mul, MvPolynomial.eval_X,
-      one_mul, map_nsmul] at heuler
-    have hD_eval' : MvPolynomial.eval (fun _ : σ => (1 : Real)) D =
-        ∑ i : σ, MvPolynomial.eval (fun _ : σ => (1 : Real))
-          (MvPolynomial.pderiv i H) := by
-      simp [D, directionalPDeriv]
-    rw [← hD_eval', hD_eval] at heuler
-    have hdpos : 0 < (d : Real) := by
-      exact_mod_cast Nat.pos_of_ne_zero hd
-    simp only [nsmul_eq_mul] at heuler
-    nlinarith
+  have hDhom : D.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  have hDnn : MvPolynomial.HasNonnegCoeffs D :=
+    MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one hnn
+  have hD0 : D ≠ 0 := hstable.directionalPDeriv_one_ne_zero hnn hhom hd
   have hpencil := hstable.directionalPDeriv_pencil
     (fun _ : σ => (1 : Real)) fun _ => zero_le_one
   exact hpencil.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtension
     hhom hDhom hnn hDnn hstable.ne_zero hD0
+
+/-- Two successive all-ones directional derivatives inherit the same
+Wronskian orientation. -/
+theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : 1 < d) :
+    let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (directionalPDeriv (fun _ : σ => (1 : Real)) D) D i) := by
+  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+  have hDhom : D.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  have hDnn : MvPolynomial.HasNonnegCoeffs D :=
+    MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one hnn
+  have hDstable : MvRealStable D :=
+    hstable.directionalPDeriv_one hnn hhom (by lia)
+  exact hDstable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
+    hDnn hDhom (by lia)
 
 /-- A positive-degree homogeneous stable polynomial with nonnegative
 coefficients gives an oriented affine Euler core after dehomogenization. -/
@@ -149,6 +206,35 @@ theorem MvRealStable.eval_coordinateWronskian_affineEulerCore_nonneg_of_nonnegat
     ← MvPolynomial.dehomogenize_coordinateWronskian_some,
     MvPolynomial.eval_dehomogenize]
   exact hstable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
+    hnn hhom hd (some i) (fun o => Option.elim o 1 x)
+
+/-- A homogeneous stable polynomial with nonnegative coefficients also
+orients the affine Euler core of its first affine Euler core. -/
+theorem
+    MvRealStable.eval_coordinateWronskian_affineEulerCore_iterate_nonneg_of_nonnegative
+    {σ : Type*} [Fintype σ]
+    {H : MvPolynomial (Option σ) Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : 1 < d) :
+    let P := MvPolynomial.dehomogenize H
+    let D := MvPolynomial.affineEulerCore id (d : Real) P
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore id ((d - 1 : Nat) : Real) D)
+        D i) := by
+  dsimp only
+  let E := directionalPDeriv (fun _ : Option σ => (1 : Real)) H
+  have hEhom : E.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  intro i x
+  rw [show MvPolynomial.affineEulerCore id (d : Real)
+        (MvPolynomial.dehomogenize H) = MvPolynomial.dehomogenize E by
+        simpa [E] using
+          (MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hhom).symm,
+    ← MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hEhom,
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    MvPolynomial.eval_dehomogenize]
+  exact hstable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
     hnn hhom hd (some i) (fun o => Option.elim o 1 x)
 
 /-- Dehomogenization preserves weak real stability without a homogeneity

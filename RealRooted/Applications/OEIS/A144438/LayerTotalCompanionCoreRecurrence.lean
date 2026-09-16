@@ -202,6 +202,63 @@ theorem
       (decoBottomTotalCompanionTotalExtension n) i)
     (fun r => 0 ≤ r)).mp hshifted
 
+/-- Stability of the next homogeneous layer makes every affine-Euler row of
+its unshifted extension core nonnegative. -/
+theorem
+    eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.affineEulerRayleighRow
+        (Fin.valEmbedding : Fin (n + 2) → Nat)
+        (decoBottomTotalCompanionExtensionCore n) i) := by
+  have hnormal :=
+    eval_coordinateWronskian_decoNormalBottomCore_iterate_nonneg
+      (n + 2) (by lia) hstable
+  intro i
+  have houter :
+      MvPolynomial.affineEulerCore (decoLayerBottomEmbedding (n + 2))
+          ((n + 2 : Nat) : Real)
+          (decoBottomTotalCompanionCore (n + 1)) =
+        MvPolynomial.rename (fun j : Nat => j + 1)
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) → Nat) ((n + 2 : Nat) : Real)
+            (decoBottomTotalCompanionExtensionCore n)) := by
+    rw [decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+      MvPolynomial.rename_affineEulerCore
+        (fun j : Nat => j + 1) (by intro j k hjk; lia)]
+    rfl
+  have hshifted : ∀ x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.rename (fun j : Nat => j + 1)
+        (MvPolynomial.coordinateWronskian
+          (MvPolynomial.affineEulerCore
+            (Fin.valEmbedding : Fin (n + 2) → Nat) ((n + 2 : Nat) : Real)
+            (decoBottomTotalCompanionExtensionCore n))
+          (decoBottomTotalCompanionExtensionCore n) (i : Nat))) := by
+    intro x
+    have h := hnormal (i + 1 : Nat) x
+    change 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore (decoLayerBottomEmbedding (n + 2))
+          ((n + 2 : Nat) : Real)
+          (decoBottomTotalCompanionCore (n + 1)))
+        (decoBottomTotalCompanionCore (n + 1)) (i + 1 : Nat)) at h
+    rw [houter, decoBottomTotalCompanionCore_succ_eq_rename_extensionCore,
+      MvPolynomial.coordinateWronskian_rename
+        (fun j : Nat => j + 1) (by intro j k hjk; lia)] at h
+    exact h
+  have hunshifted := (MvPolynomial.forall_eval_rename_iff
+    (fun j : Nat => j + 1) (by intro j k hjk; lia)
+    (MvPolynomial.coordinateWronskian
+      (MvPolynomial.affineEulerCore
+        (Fin.valEmbedding : Fin (n + 2) → Nat) ((n + 2 : Nat) : Real)
+        (decoBottomTotalCompanionExtensionCore n))
+      (decoBottomTotalCompanionExtensionCore n) (i : Nat))
+    (fun r => 0 ≤ r)).mp hshifted
+  rw [← MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective
+    ((n + 2 : Nat) : Real) (decoBottomTotalCompanionExtensionCore n) i]
+  exact hunshifted
+
 /-- Value-one specialization commutes with the affine Euler core defining the
 unshifted next companion core. -/
 theorem specializeAt_one_decoBottomTotalCompanionExtensionCore

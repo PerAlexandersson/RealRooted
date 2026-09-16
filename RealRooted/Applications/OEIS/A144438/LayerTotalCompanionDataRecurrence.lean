@@ -67,6 +67,55 @@ theorem
     eval_coordinateWronskian_companionExtensionCore_totalExtension_nonneg_of_stable
       n hnextStable
 
+/-- A completed stability/data step also supplies the nonnegative
+second-derivative reserve in each next quadratic recurrence. -/
+theorem
+    eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.affineEulerRayleighRow
+        (Fin.valEmbedding : Fin (n + 2) → Nat)
+        (decoBottomTotalCompanionExtensionCore n) i) := by
+  have hbottom :=
+    decoBottomTotal_add_two_isRayleigh_of_stable_companionData
+      n hstable hdata
+  have hnextStable : MvRealStable (decoLayerTotal (n + 2)) :=
+    (decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh (n + 2)).mpr
+      hbottom
+  exact
+    eval_affineEulerRayleighRow_companionExtensionCore_nonneg_of_stable
+      n hnextStable
+
+/-- Nonnegativity of a next quadratic recurrence is exactly the requirement
+that its mixed second-derivative Wronskian not exhaust the affine-Euler row
+reserve. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_nonneg_iff
+    (n : Nat) (i : Fin (n + 1)) :
+    (∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence n i)) ↔
+      ∀ x,
+        -MvPolynomial.eval x
+            (MvPolynomial.affineEulerRayleighRow
+              (Fin.valEmbedding : Fin (n + 2) → Nat)
+              (decoBottomTotalCompanionExtensionCore n) i.succ) ≤
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (MvPolynomial.affineEulerCore
+                (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 3 : Real)
+                (decoBottomTotalCompanionExtensionCore n))
+              (decoBottomTotalCompanionTotalExtension n)
+              (i + 1 : Nat)) := by
+  constructor <;> intro h x
+  · have hsum := h x
+    rw [decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add,
+      map_add] at hsum
+    linarith
+  · rw [decoBottomTotalCompanionSuccessorCoreRowQuadraticRecurrence_eq_add,
+      map_add]
+    linarith [h x]
+
 /-- Thus every affine-Euler row forming the base of a successor core row is
 globally nonnegative; only its fresh-coordinate correction remains to be
 controlled in the full successor Wronskian. -/

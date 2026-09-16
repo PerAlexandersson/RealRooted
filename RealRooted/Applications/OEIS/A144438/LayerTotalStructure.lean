@@ -110,6 +110,34 @@ theorem eval_coordinateWronskian_decoNormalBottomCore_total_nonneg
   simpa [decoNormalBottomCore_eq_affineEulerCore, Function.comp_def] using
     hrename
 
+/-- Stability of a positive-rank homogeneous layer also orients the affine
+Euler core of its ordinary normal core against that normal core. -/
+theorem eval_coordinateWronskian_decoNormalBottomCore_iterate_nonneg
+    (n : Nat) (hn : 0 < n) (hstable : MvRealStable (decoLayerTotal n)) :
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (MvPolynomial.affineEulerCore (decoLayerBottomEmbedding n)
+          (n : Real) (decoNormalBottomCore n (decoBottomTotal n)))
+        (decoNormalBottomCore n (decoBottomTotal n)) i) := by
+  have hsource :=
+    hstable.eval_coordinateWronskian_affineEulerCore_iterate_nonneg_of_nonnegative
+      (decoLayerTotal_hasNonnegCoeffs n)
+      (decoLayerTotal_isHomogeneous n) (by lia)
+  have hrename := MvPolynomial.eval_coordinateWronskian_rename_nonneg
+    (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective
+    (MvPolynomial.affineEulerCore id (n : Real)
+      (MvPolynomial.affineEulerCore id ((n + 1 : Nat) : Real)
+        (MvPolynomial.dehomogenize (decoLayerTotal n))))
+    (MvPolynomial.affineEulerCore id ((n + 1 : Nat) : Real)
+      (MvPolynomial.dehomogenize (decoLayerTotal n))) hsource
+  rw [MvPolynomial.rename_affineEulerCore
+      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective,
+    MvPolynomial.rename_affineEulerCore
+      (decoLayerBottomEmbedding n) (decoLayerBottomEmbedding n).injective,
+    rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal] at hrename
+  simpa [decoNormalBottomCore_eq_affineEulerCore, Function.comp_def] using
+    hrename
+
 /-- Stability of the homogeneous finite-coordinate layer total is exactly
 common-rotation stability of its multiaffine ordinary-coordinate
 dehomogenization. -/
