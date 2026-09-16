@@ -626,6 +626,38 @@ theorem eval_companionFactor_nonpos_iff_compensation_Icc (n : Nat) :
       (eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
         n i x).mpr (h i x)
 
+/-- Once the inherited core-cross sign and the row discriminant bound are
+available, global companion-cross nonnegativity only needs to be checked on
+the zero locus of the core cross. -/
+theorem
+    eval_companionCross_nonneg_iff_on_coreCross_zero_of_companionData
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n)
+    (hdisc : ∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0) :
+    (∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+        n i)) ↔
+      ∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              n i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              n i) := by
+  constructor
+  · intro h i x _
+    exact h i x
+  · intro h i x
+    rcases
+        eval_decoBottomTotalCompanionSuccessorCore_coreCross_eq_zero_or_companionCross_nonneg
+          n i x
+          (eval_decoBottomTotalCompanionSuccessorCoreCoreCross_nonneg_of_companionData
+            n hstable hdata i x)
+          (hdisc i x) with hzero | hnonneg
+    · exact h i x hzero
+    · exact hnonneg
+
 /-- Given Rayleighness of the current companion, the next companion data is
 equivalent to the slope endpoint, the affine-extension Wronskians and
 discriminants, and the next core/companion Wronskians and discriminants. -/
@@ -839,6 +871,52 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_successorCoreEndpointData
   rw [decoBottomTotalCompanionRayleighData_succ_iff_successorCoreQuadraticData
     n hstable hcompanion,
     decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_endpointData]
+
+/-- Given the current companion data, the companion-cross condition in the
+exact successor criterion is needed only on the zero locus of the inherited
+core cross.  Away from that locus, the successor-row discriminant bound
+already forces its sign. -/
+theorem
+    decoBottomTotalCompanionRayleighData_succ_iff_companionCrossZeroLocus
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hdata : DecoBottomTotalCompanionRayleighData n) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x,
+        MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross
+              n i) = 0 →
+          0 ≤ MvPolynomial.eval x
+            (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+              n i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      ((∀ x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) 1)) ∧
+        DecoBottomTotalCompanionSuccessorCoreEndpointData n) ∧
+      ∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0 := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_successorCoreEndpointData
+    n hstable hdata.companion_isRayleigh]
+  constructor
+  · rintro ⟨hcross, hdisc, hrows, hnextDisc⟩
+    have hcrossNamed :=
+      (eval_coordinateWronskian_companionSlope_companion_nonneg_iff_companionCross
+        n).mp hcross
+    exact ⟨fun i x _ => hcrossNamed i x, hdisc, hrows, hnextDisc⟩
+  · rintro ⟨hzero, hdisc, hrows, hnextDisc⟩
+    have hcrossNamed :=
+      (eval_companionCross_nonneg_iff_on_coreCross_zero_of_companionData
+        n hstable hdata hrows.2.discriminant_nonpos).mpr hzero
+    have hcross :=
+      (eval_coordinateWronskian_companionSlope_companion_nonneg_iff_companionCross
+        n).mpr hcrossNamed
+    exact ⟨hcross, hdisc, hrows, hnextDisc⟩
 
 /-- Compensation form of the exact next-data criterion under preceding-rank
 stability.  The first condition uses precisely the nonnegative margin already

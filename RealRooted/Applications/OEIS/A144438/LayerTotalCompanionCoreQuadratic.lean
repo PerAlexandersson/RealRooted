@@ -424,6 +424,62 @@ theorem
     MvPolynomial.eval_neg]
   exact neg_nonpos
 
+/-- On the zero locus of the current core cross, the row discriminant bound
+forces the Plücker skew term to vanish. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCore_skew_eq_zero_of_coreCross_eq_zero
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real)
+    (hcore : MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) = 0)
+    (hdisc : MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0) :
+    MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i) = 0 := by
+  rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
+    MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
+    MvPolynomial.eval_mul, map_ofNat, hcore] at hdisc
+  nlinarith [sq_nonneg (MvPolynomial.eval x
+    (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i))]
+
+/-- If the current core cross is nonnegative, the row discriminant bound
+forces the companion cross to be nonnegative away from the zero locus of the
+core cross. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCore_coreCross_eq_zero_or_companionCross_nonneg
+    (n : Nat) (i : Fin (n + 1)) (x : Nat → Real)
+    (hcore : 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i))
+    (hdisc : MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminant n i) ≤ 0) :
+    MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) =
+        0 ∨
+      0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+          n i) := by
+  by_cases hzero : MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) = 0
+  · exact Or.inl hzero
+  · right
+    rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
+      MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
+      MvPolynomial.eval_mul, map_ofNat] at hdisc
+    have hcorePos : 0 < MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) :=
+      lt_of_le_of_ne hcore (Ne.symm hzero)
+    by_contra hcompanion
+    have hcompanionNeg : MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+          n i) < 0 := lt_of_not_ge hcompanion
+    have hproductNeg : 4 * MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreCross n i) *
+        MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+            n i) < 0 :=
+      mul_neg_of_pos_of_neg (mul_pos (by norm_num) hcorePos) hcompanionNeg
+    linarith [sq_nonneg (MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkew n i))]
+
 /-- At every coordinate, the unshifted next-row discriminant has the generic
 Plücker factorization. -/
 theorem
