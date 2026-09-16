@@ -239,6 +239,117 @@ theorem
     decoBottomTotalCompanionExtensionCore
   simpa only [Function.comp_id, Nat.cast_add, Nat.cast_ofNat] using hrename
 
+/-- Stability of the homogeneous layer also supplies the Plücker bound for
+the first two affine Euler cores of its unshifted total extension. -/
+theorem eval_affineEulerCore_extensionCore_plucker_of_stable
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i : Fin (n + 1), ∀ x,
+      MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (MvPolynomial.affineEulerCore
+              (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 2 : Real)
+              (decoBottomTotalCompanionExtensionCore n))
+            (decoBottomTotalCompanionTotalExtension n) i.succ) ^ 2 ≤
+        4 * MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (MvPolynomial.affineEulerCore
+                (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 2 : Real)
+                (decoBottomTotalCompanionExtensionCore n))
+              (decoBottomTotalCompanionExtensionCore n) i.succ) *
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionExtensionCore n)
+              (decoBottomTotalCompanionTotalExtension n) i.succ) := by
+  let Q := MvPolynomial.dehomogenize (decoLayerTotal (n + 2))
+  let D := MvPolynomial.affineEulerCore id ((n + 2 + 1 : Nat) : Real) Q
+  let E := MvPolynomial.affineEulerCore id
+    ((n + 2 + 1 - 1 : Nat) : Real) D
+  have hsource := hstable.eval_coordinateWronskian_affineEulerCore_plucker
+    (decoLayerTotal_hasNonnegCoeffs (n + 2))
+    (decoLayerTotal_isHomogeneous (n + 2)) (by lia)
+  dsimp only at hsource
+  change ∀ j y,
+      MvPolynomial.eval y (MvPolynomial.coordinateWronskian E Q j) ^ 2 ≤
+        4 * MvPolynomial.eval y
+            (MvPolynomial.coordinateWronskian E D j) *
+          MvPolynomial.eval y
+            (MvPolynomial.coordinateWronskian D Q j) at hsource
+  have hQrename :
+      MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) → Nat) Q =
+        decoBottomTotalCompanionTotalExtension n :=
+    (decoBottomTotalCompanionTotalExtension_eq_rename_dehomogenize n).symm
+  have hDrename :
+      MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) → Nat) D =
+        decoBottomTotalCompanionExtensionCore n := by
+    unfold D decoBottomTotalCompanionExtensionCore
+    rw [MvPolynomial.rename_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+      hQrename]
+    simp only [Function.comp_id]
+    congr 1
+    push_cast
+    ring
+  have hErename :
+      MvPolynomial.rename (Fin.valEmbedding : Fin (n + 2) → Nat) E =
+        MvPolynomial.affineEulerCore
+          (Fin.valEmbedding : Fin (n + 2) → Nat) (n + 2 : Real)
+          (decoBottomTotalCompanionExtensionCore n) := by
+    unfold E
+    rw [MvPolynomial.rename_affineEulerCore
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+      hDrename]
+    simp only [Function.comp_id, Nat.add_sub_cancel]
+    congr 1
+    push_cast
+    ring
+  intro i x
+  have h := hsource i.succ (fun j : Fin (n + 2) => x (j : Nat))
+  have heval (A B : MvPolynomial (Fin (n + 2)) Real) :
+      MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian
+            (MvPolynomial.rename Fin.valEmbedding A)
+            (MvPolynomial.rename Fin.valEmbedding B) (i.succ : Nat)) =
+        MvPolynomial.eval (fun j : Fin (n + 2) => x (j : Nat))
+          (MvPolynomial.coordinateWronskian A B i.succ) := by
+    change MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (MvPolynomial.rename Fin.valEmbedding A)
+          (MvPolynomial.rename Fin.valEmbedding B)
+          (Fin.valEmbedding i.succ)) = _
+    rw [MvPolynomial.coordinateWronskian_rename
+      (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective,
+      MvPolynomial.eval_rename]
+    rfl
+  rw [← hErename, ← hDrename, ← hQrename,
+    heval E Q, heval E D, heval D Q]
+  exact h
+
+/-- In the named quadratic recurrence, the square of the gap-two mixed term
+is bounded by four times the product of the two adjacent orientation
+reserves. -/
+theorem
+    eval_decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence_sq_le
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 2))) :
+    ∀ i : Fin (n + 1), ∀ x,
+      MvPolynomial.eval x
+          (decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence
+            n i) ^ 2 ≤
+        4 * MvPolynomial.eval x
+            (MvPolynomial.affineEulerRayleighRow
+              (Fin.valEmbedding : Fin (n + 2) → Nat)
+              (decoBottomTotalCompanionExtensionCore n) i.succ) *
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionExtensionCore n)
+              (decoBottomTotalCompanionTotalExtension n) (i + 1 : Nat)) := by
+  intro i x
+  unfold decoBottomTotalCompanionSuccessorCoreRowSecondMixedRecurrence
+  rw [← MvPolynomial.coordinateWronskian_affineEulerCore
+    (Fin.valEmbedding : Fin (n + 2) → Nat) Fin.valEmbedding.injective
+    (n + 2 : Real) (decoBottomTotalCompanionExtensionCore n) i.succ]
+  exact eval_affineEulerCore_extensionCore_plucker_of_stable
+    n hstable i x
+
 /-- The unshifted recurrence form of a next row discriminant at an arbitrary
 coordinate. -/
 def decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt

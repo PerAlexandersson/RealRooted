@@ -1,4 +1,5 @@
 import RealRooted.Hyperbolicity
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import RealRooted.Multiaffine.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.DirectionalDerivative
@@ -204,18 +205,23 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
   exact hDstable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
     hDnn hDhom (by lia)
 
-/-- For a positive-degree homogeneous stable polynomial with nonnegative
-coefficients, `D H + D² H` is Wronskian-oriented against `H + D H`, where
-`D` is the all-ones directional derivative. -/
+/-- The first two all-ones derivatives form oriented affine pencils over a
+positive-degree homogeneous stable polynomial with nonnegative coefficients. -/
 theorem
-    MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_add_nonneg
+    MvRealStable.eval_coordinateWronskian_directionalPDeriv_pencils_nonneg
     {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
     (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
     (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
     let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
     let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+    let K : MvPolynomial (Option σ) Real :=
+      MvPolynomial.rename some H + MvPolynomial.X none *
+        MvPolynomial.rename some D
+    let L : MvPolynomial (Option σ) Real :=
+      MvPolynomial.rename some D + MvPolynomial.X none *
+        MvPolynomial.rename some E
     ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian (D + E) (H + D) i) := by
+      (MvPolynomial.coordinateWronskian L K (some i)) := by
   classical
   dsimp only
   let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
@@ -263,25 +269,123 @@ theorem
       (by intro o; cases o <;> simp) hL0
   change ∀ i x, 0 ≤ MvPolynomial.eval x
     (MvPolynomial.coordinateWronskian L K i) at hLorient
+  rw [hL] at hLorient
+  intro i x
+  simpa [K, D, E] using hLorient (some i) x
+
+/-- For a positive-degree homogeneous stable polynomial with nonnegative
+coefficients, `D H + D² H` is Wronskian-oriented against `H + D H`, where
+`D` is the all-ones directional derivative. -/
+theorem
+    MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_add_nonneg
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+    let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+    ∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian (D + E) (H + D) i) := by
+  classical
+  dsimp only
+  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+  let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+  have hpencils :=
+    hstable.eval_coordinateWronskian_directionalPDeriv_pencils_nonneg
+      hnn hhom hd
+  dsimp only at hpencils
   intro i x
   let y : Option σ → Real := fun o => o.elim 1 x
   have hy : Function.update y none 1 = y := by
     funext o
     cases o <;> simp [y]
-  have h := hLorient (some i) y
+  have h := hpencils i y
   have hspecialized :
       MvPolynomial.specializeAt none 1
-          (MvPolynomial.coordinateWronskian L K (some i)) =
+          (MvPolynomial.coordinateWronskian
+            (MvPolynomial.rename some D + MvPolynomial.X none *
+              MvPolynomial.rename some E)
+            (MvPolynomial.rename some H + MvPolynomial.X none *
+              MvPolynomial.rename some D) (some i)) =
         MvPolynomial.rename some
           (MvPolynomial.coordinateWronskian (D + E) (H + D) i) := by
     rw [MvPolynomial.specializeAt_coordinateWronskian_of_ne
-      (Option.some_ne_none i), hL]
-    simp only [K, specializeAt_none_add_X_mul_rename_some, map_one, one_mul]
+      (Option.some_ne_none i)]
+    simp only [specializeAt_none_add_X_mul_rename_some, map_one, one_mul]
     exact MvPolynomial.coordinateWronskian_rename some
       (Option.some_injective σ) (D + E) (H + D) i
   have heval := congrArg (MvPolynomial.eval y) hspecialized
   rw [MvPolynomial.eval_specializeAt, hy, MvPolynomial.eval_rename] at heval
   simpa [y] using heval ▸ h
+
+/-- Three successive levels of a nonnegative homogeneous derivative chain
+satisfy the pointwise Plücker bound forced by the stable derivative pencils. -/
+theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_plucker
+    {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+    let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+    ∀ i x,
+      MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian E H i) ^ 2 ≤
+        4 * MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian E D i) *
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian D H i) := by
+  classical
+  dsimp only
+  let D := directionalPDeriv (fun _ : σ => (1 : Real)) H
+  let E := directionalPDeriv (fun _ : σ => (1 : Real)) D
+  have hpencils :=
+    hstable.eval_coordinateWronskian_directionalPDeriv_pencils_nonneg
+      hnn hhom hd
+  dsimp only at hpencils
+  intro i x
+  have hexpand :
+      MvPolynomial.coordinateWronskian
+          (MvPolynomial.rename some D + MvPolynomial.X none *
+            MvPolynomial.rename some E)
+          (MvPolynomial.rename some H + MvPolynomial.X none *
+            MvPolynomial.rename some D) (some i) =
+        MvPolynomial.rename some
+            (MvPolynomial.coordinateWronskian D H i) +
+          MvPolynomial.X none * MvPolynomial.rename some
+            (MvPolynomial.coordinateWronskian E H i) +
+          MvPolynomial.X none ^ 2 * MvPolynomial.rename some
+            (MvPolynomial.coordinateWronskian E D i) := by
+    rw [MvPolynomial.coordinateWronskian_add_X_mul_add_X_mul_of_ne
+      _ _ _ _ (some i) none (Option.some_ne_none i)]
+    rw [MvPolynomial.coordinateWronskian_rename some
+        (Option.some_injective σ) D H i,
+      MvPolynomial.coordinateWronskian_rename some
+        (Option.some_injective σ) D D i,
+      MvPolynomial.coordinateWronskian_rename some
+        (Option.some_injective σ) E H i,
+      MvPolynomial.coordinateWronskian_rename some
+        (Option.some_injective σ) E D i]
+    simp
+  have hscalar : ∀ t : Real,
+      0 ≤ MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian E D i) * (t * t) +
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian E H i) * t +
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian D H i) := by
+    intro t
+    let y : Option σ → Real := fun o => o.elim t x
+    have ht := hpencils i y
+    rw [hexpand] at ht
+    simp only [MvPolynomial.eval_add, MvPolynomial.eval_mul,
+      MvPolynomial.eval_X, MvPolynomial.eval_pow,
+      MvPolynomial.eval_rename] at ht
+    have hy : y ∘ some = x := by
+      funext j
+      simp [y]
+    have hynone : y none = t := by simp [y]
+    rw [hy, hynone] at ht
+    simpa [pow_two, mul_comm, add_comm, add_left_comm, add_assoc] using ht
+  have hdisc := discrim_le_zero hscalar
+  simpa [discrim] using hdisc
 
 /-- A positive-degree homogeneous stable polynomial with nonnegative
 coefficients gives an oriented affine Euler core after dehomogenization. -/
@@ -329,6 +433,48 @@ theorem
     ← MvPolynomial.dehomogenize_coordinateWronskian_some,
     MvPolynomial.eval_dehomogenize]
   exact hstable.eval_coordinateWronskian_directionalPDeriv_one_twice_nonneg
+    hnn hhom hd (some i) (fun o => Option.elim o 1 x)
+
+/-- Dehomogenization transports the derivative-chain Plücker bound to two
+successive affine Euler cores. -/
+theorem MvRealStable.eval_coordinateWronskian_affineEulerCore_plucker
+    {σ : Type*} [Fintype σ]
+    {H : MvPolynomial (Option σ) Real} {d : Nat}
+    (hstable : MvRealStable H) (hnn : MvPolynomial.HasNonnegCoeffs H)
+    (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
+    let P := MvPolynomial.dehomogenize H
+    let D := MvPolynomial.affineEulerCore id (d : Real) P
+    let E := MvPolynomial.affineEulerCore id ((d - 1 : Nat) : Real) D
+    ∀ i x,
+      MvPolynomial.eval x
+          (MvPolynomial.coordinateWronskian E P i) ^ 2 ≤
+        4 * MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian E D i) *
+          MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian D P i) := by
+  dsimp only
+  let G := directionalPDeriv (fun _ : Option σ => (1 : Real)) H
+  let E := directionalPDeriv (fun _ : Option σ => (1 : Real)) G
+  have hGhom : G.IsHomogeneous (d - 1) :=
+    MvPolynomial.IsHomogeneous.directionalPDeriv_one hhom
+  have hGdehom : MvPolynomial.dehomogenize G =
+      MvPolynomial.affineEulerCore id (d : Real)
+        (MvPolynomial.dehomogenize H) := by
+    simpa [G] using
+      MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hhom
+  have hEdehom : MvPolynomial.dehomogenize E =
+      MvPolynomial.affineEulerCore id ((d - 1 : Nat) : Real)
+        (MvPolynomial.dehomogenize G) := by
+    simpa [E] using
+      MvPolynomial.IsHomogeneous.dehomogenize_directionalPDeriv_one hGhom
+  intro i x
+  rw [← hGdehom, ← hEdehom,
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    ← MvPolynomial.dehomogenize_coordinateWronskian_some,
+    MvPolynomial.eval_dehomogenize, MvPolynomial.eval_dehomogenize,
+    MvPolynomial.eval_dehomogenize]
+  exact hstable.eval_coordinateWronskian_directionalPDeriv_plucker
     hnn hhom hd (some i) (fun o => Option.elim o 1 x)
 
 /-- After dehomogenization, the affine Euler core of the first core is
