@@ -1,4 +1,5 @@
 import Mathlib.Algebra.QuadraticDiscriminant
+import Mathlib.Tactic.Ring
 
 /-!
 # Ordered quadratic inequalities
@@ -9,6 +10,27 @@ discriminant.
 -/
 
 open Filter
+
+/-- Updating the leading and linear coefficients of a quadratic changes its
+discriminant by an explicit correction while the constant coefficient stays
+fixed. -/
+theorem discrim_add_leading_linear
+    {R : Type*} [CommRing R] (a b c da db : R) :
+    discrim (a + da) (b + db) c =
+      discrim a b c + (2 * b * db + db ^ 2 - 4 * da * c) := by
+  simp only [discrim]
+  ring
+
+/-- Nonpositivity after updating the leading and linear coefficients is
+equivalent to fitting the exact correction inside the old discriminant
+margin. -/
+theorem discrim_add_leading_linear_nonpos_iff
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]
+    (a b c da db : R) :
+    discrim (a + da) (b + db) c ≤ 0 ↔
+      2 * b * db + db ^ 2 - 4 * da * c ≤ -discrim a b c := by
+  rw [discrim_add_leading_linear]
+  constructor <;> intro h <;> linarith
 
 /-- The quadratic coefficient is nonnegative when the quadratic is
 nonnegative on the whole ordered field. -/
