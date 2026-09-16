@@ -494,6 +494,7 @@ import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Interlacing.OuterDifference
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
+import RealRooted.Interlacing.ResidueEulerStep
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Jacobi
 import RealRooted.Jacobi.DifferentialOperator
