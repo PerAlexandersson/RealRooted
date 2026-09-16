@@ -477,6 +477,69 @@ def decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant
         (decoBottomTotalWronskianCompanion n)
         (decoBottomTotalCompanionCore n) (i + 1 : Nat)
 
+/-- The linear coefficient of the affine-Euler base row before the latest
+bottom total is added to the companion slope. -/
+def decoBottomTotalCompanionSuccessorCoreRowBaseLinear
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionCore n) (i + 1 : Nat) +
+    MvPolynomial.coordinateWronskian
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n) (i + 1 : Nat)
+
+/-- The quadratic coefficient of the affine-Euler base row before the latest
+bottom total is added to the companion slope. -/
+def decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionExtensionCoreSlope n)
+    (decoBottomTotalCompanionCore n) (i + 1 : Nat)
+
+/-- The increment in the row's linear coefficient caused by the latest
+bottom total. -/
+def decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionExtensionCoreZero n)
+    (decoBottomTotal (n + 1)) (i + 1 : Nat)
+
+/-- The increment in the row's quadratic coefficient caused by the latest
+bottom total. -/
+def decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+    (n : Nat) (i : Fin (n + 1)) : MvPolynomial Nat Real :=
+  MvPolynomial.coordinateWronskian
+    (decoBottomTotalCompanionExtensionCoreSlope n)
+    (decoBottomTotal (n + 1)) (i + 1 : Nat)
+
+/-- The full linear endpoint is the base endpoint plus the latest-bottom-total
+increment. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowLinear_eq_base_add_increment
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowLinear n i =
+      decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i +
+        decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowLinear
+    decoBottomTotalCompanionSuccessorCoreRowBaseLinear
+    decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement
+    decoBottomTotalCompanionSlope
+  rw [MvPolynomial.coordinateWronskian_add_right]
+  ring
+
+/-- The full quadratic endpoint is the base endpoint plus the
+latest-bottom-total increment. -/
+theorem decoBottomTotalCompanionSuccessorCoreRowQuadratic_eq_base_add_increment
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowQuadratic n i =
+      decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic n i +
+        decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement n i := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowQuadratic
+    decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic
+    decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+    decoBottomTotalCompanionSlope
+  rw [MvPolynomial.coordinateWronskian_add_right]
+  ring
+
 /-- The exact change in the base-row discriminant caused by adding the latest
 bottom total to the companion slope. -/
 def decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
@@ -572,6 +635,51 @@ theorem decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_base_add_correct
     decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
   simpa only [add_comm] using
     MvPolynomial.coordinateWronskian_quadratic_discriminant_add_right_slope
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n)
+      (decoBottomTotalCompanionCore n)
+      (decoBottomTotal (n + 1)) (i + 1 : Nat)
+
+/-- The base discriminant has the standard endpoint-coefficient form. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant_eq_endpoints
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant n i =
+      decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i ^ 2 -
+        4 * decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic n i *
+          decoBottomTotalCompanionSuccessorCoreRowConstant n i := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowBaseDiscriminant
+    decoBottomTotalCompanionSuccessorCoreRowBaseLinear
+    decoBottomTotalCompanionSuccessorCoreRowBaseQuadratic
+    decoBottomTotalCompanionSuccessorCoreRowConstant
+  exact
+    (MvPolynomial.coordinateWronskian_quadratic_discriminant
+      (decoBottomTotalCompanionExtensionCoreZero n)
+      (decoBottomTotalCompanionExtensionCoreSlope n)
+      (decoBottomTotalWronskianCompanion n)
+      (decoBottomTotalCompanionCore n) (i + 1 : Nat)).symm
+
+/-- The latest bottom total changes the row discriminant through the
+unperturbed linear endpoint, the constant endpoint, and the incremental
+linear and quadratic endpoints. -/
+theorem
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection_eq_endpoints
+    (n : Nat) (i : Fin (n + 1)) :
+    decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection n i =
+      2 * decoBottomTotalCompanionSuccessorCoreRowBaseLinear n i *
+          decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i +
+        decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement n i ^ 2 -
+        4 * decoBottomTotalCompanionSuccessorCoreRowConstant n i *
+          decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+            n i := by
+  unfold decoBottomTotalCompanionSuccessorCoreRowDiscriminantSlopeCorrection
+    decoBottomTotalCompanionSuccessorCoreRowBaseLinear
+    decoBottomTotalCompanionSuccessorCoreRowSlopeLinearIncrement
+    decoBottomTotalCompanionSuccessorCoreRowSlopeQuadraticIncrement
+    decoBottomTotalCompanionSuccessorCoreRowConstant
+  exact
+    MvPolynomial.coordinateWronskian_quadratic_discriminant_right_slope_correction
       (decoBottomTotalCompanionExtensionCoreZero n)
       (decoBottomTotalCompanionExtensionCoreSlope n)
       (decoBottomTotalWronskianCompanion n)
