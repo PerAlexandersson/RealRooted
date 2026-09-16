@@ -547,6 +547,85 @@ theorem eval_companionWronskian_compensation_iff_Icc (n : Nat) :
           n i hi]
       simp
 
+/-- The unbounded successor-slope/companion cross-sign condition is exactly
+the finite family of named current companion crosses on occupied positive
+coordinates. -/
+theorem
+    eval_coordinateWronskian_companionSlope_companion_nonneg_iff_companionCross
+    (n : Nat) :
+    (∀ i x, 0 ≤ MvPolynomial.eval x
+      (MvPolynomial.coordinateWronskian
+        (decoBottomTotalCompanionSlope n)
+        (decoBottomTotalWronskianCompanion n) i)) ↔
+      ∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+          n i) := by
+  constructor
+  · intro h i x
+    exact h (i + 1 : Nat) x
+  · intro h i x
+    by_cases hi : i ∈ Finset.Icc 1 (n + 1)
+    · have hiLower : 1 ≤ i := (Finset.mem_Icc.mp hi).1
+      have hiUpper : i - 1 < n + 1 := by
+        have := (Finset.mem_Icc.mp hi).2
+        lia
+      let j : Fin (n + 1) := ⟨i - 1, hiUpper⟩
+      have hj := h j x
+      simpa only [
+        decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross,
+        j, Fin.val_mk, Nat.sub_add_cancel hiLower] using hj
+    · have hiSlope : i ∉ (decoBottomTotalCompanionSlope n).vars := by
+        intro hiVars
+        exact hi (vars_decoBottomTotalCompanionSlope_subset_Icc n hiVars)
+      have hiCompanion :
+          i ∉ (decoBottomTotalWronskianCompanion n).vars := by
+        intro hiVars
+        exact hi
+          (vars_decoBottomTotalWronskianCompanion_subset_Icc n hiVars)
+      rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
+        hiSlope hiCompanion]
+      simp
+
+/-- Nonnegativity of the named current companion crosses is exactly the
+finite current-data compensation inequality. -/
+theorem eval_companionCross_nonneg_iff_compensation_Icc (n : Nat) :
+    (∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+        n i)) ↔
+      ∀ i ∈ Finset.Icc 1 (n + 1), ∀ x,
+        -MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionCore n)
+              (decoBottomTotalWronskianCompanion n) i) ≤
+          MvPolynomial.eval x
+            (decoBottomTotalCompanionWronskianCorrection n i) := by
+  rw [← eval_coordinateWronskian_companionSlope_companion_nonneg_iff_companionCross,
+    eval_coordinateWronskian_companionSlope_companion_nonneg_iff_compensation,
+    eval_companionWronskian_compensation_iff_Icc]
+
+/-- Nonpositivity of the named current companion Plücker factors is the same
+finite compensation condition, in the orientation used by the discriminant
+factorization. -/
+theorem eval_companionFactor_nonpos_iff_compensation_Icc (n : Nat) :
+    (∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+      (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
+        n i) ≤ 0) ↔
+      ∀ i ∈ Finset.Icc 1 (n + 1), ∀ x,
+        -MvPolynomial.eval x
+            (MvPolynomial.coordinateWronskian
+              (decoBottomTotalCompanionCore n)
+              (decoBottomTotalWronskianCompanion n) i) ≤
+          MvPolynomial.eval x
+            (decoBottomTotalCompanionWronskianCorrection n i) := by
+  rw [← eval_companionCross_nonneg_iff_compensation_Icc]
+  constructor <;> intro h i x
+  · exact
+      (eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
+        n i x).mp (h i x)
+  · exact
+      (eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
+        n i x).mpr (h i x)
+
 /-- Given Rayleighness of the current companion, the next companion data is
 equivalent to the slope endpoint, the affine-extension Wronskians and
 discriminants, and the next core/companion Wronskians and discriminants. -/
@@ -612,6 +691,66 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
   have hslope := decoBottomTotalCompanionSlope_isRayleigh n hstable
   simpa only [hslope, true_and] using
     decoBottomTotalCompanionRayleighData_succ_iff_of_companion n hcompanion
+
+/-- Under preceding-rank stability, the first remaining successor condition
+is exactly nonnegativity of the finite named companion-cross family that also
+occurs in the current Plücker factorization. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_companionCross
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n)) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x, 0 ≤ MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross
+          n i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0) := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
+    n hstable hcompanion,
+    eval_coordinateWronskian_companionSlope_companion_nonneg_iff_companionCross]
+
+/-- Equivalently, the first remaining successor condition is nonpositivity of
+the finite named companion factors, in the orientation used by the current
+Plücker factorization. -/
+theorem decoBottomTotalCompanionRayleighData_succ_iff_companionFactor
+    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
+    (hcompanion : MvPolynomial.IsRayleigh
+      (decoBottomTotalWronskianCompanion n)) :
+    DecoBottomTotalCompanionRayleighData (n + 1) ↔
+      (∀ i : Fin (n + 1), ∀ x, MvPolynomial.eval x
+        (decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactor
+          n i) ≤ 0) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion n)
+          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
+      (∀ i x, 0 ≤ MvPolynomial.eval x
+        (MvPolynomial.coordinateWronskian
+          (decoBottomTotalCompanionCore (n + 1))
+          (decoBottomTotalWronskianCompanion (n + 1)) i)) ∧
+      (∀ i j x, MvPolynomial.eval x
+        (MvPolynomial.affineRayleighDiscriminant
+          (decoBottomTotalWronskianCompanion (n + 1))
+          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0) := by
+  rw [decoBottomTotalCompanionRayleighData_succ_iff_companionCross
+    n hstable hcompanion]
+  constructor <;> rintro ⟨h, hrest⟩
+  · exact ⟨fun i x =>
+      (eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
+        n i x).mpr (h i x), hrest⟩
+  · exact ⟨fun i x =>
+      (eval_decoBottomTotalCompanionSuccessorCoreCompanionFactor_nonpos_iff_cross
+        n i x).mp (h i x), hrest⟩
 
 /-- Under preceding-rank stability, the next companion-data criterion can use
 the distinguished coordinate-`1` Wronskian and the finite successor core rows
