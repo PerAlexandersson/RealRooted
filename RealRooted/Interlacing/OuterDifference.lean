@@ -137,6 +137,24 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
   rw [hder_eval] at hsign
   nlinarith
 
+/-- At a root of the left polynomial in a positive-leading proper-position
+pair with no common real root, the right value and left derivative have
+strictly opposite signs. -/
+theorem eval_mul_derivative_neg_of_prec_left_root_of_no_common
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
+    {r : ℝ} (hr : f.IsRoot r) :
+    g.eval r * f.derivative.eval r < 0 := by
+  have hnonpos :=
+    eval_mul_derivative_nonpos_of_prec_left_root hprec hf_pos hg_pos hr
+  have hsimple : HasSimpleRoots f :=
+    (hprec.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).1
+  have hgeval : g.eval r ≠ 0 := by
+    simpa [Polynomial.IsRoot.def] using hno r hr
+  have hfder : f.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
+  exact lt_of_le_of_ne hnonpos (mul_ne_zero hgeval hfder)
+
 /-- Values of the two outer members of a positive-leading ordered triple have
 opposite-or-zero signs at every root of the middle member. -/
 theorem eval_mul_eval_nonpos_of_prec_sandwich
