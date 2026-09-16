@@ -1276,6 +1276,7 @@ import RealRooted.Applications.OEIS.InversePeaks
 import RealRooted.Applications.OEIS.InversePeaksTypeB
 import RealRooted.Applications.OEIS.LowerReentrantCorner
 import RealRooted.GammaPencil.Intertwining
+import RealRooted.LGV.Toeplitz
 
 /-!
 # RealRooted production umbrella
