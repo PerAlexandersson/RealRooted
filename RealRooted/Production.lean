@@ -847,6 +847,7 @@ import RealRooted.MultivariateStability
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Diagonal
+import RealRooted.MultivariateStability.DirectionalDerivative
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
