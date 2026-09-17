@@ -116,54 +116,6 @@ theorem mul_residue_lt_sub_of_eval_lt
       _ < 1 := hterm_lt
   exact (div_lt_one hden).1 hterm_lt'
 
-/-- A degree-one-lower polynomial which has the derivative's sign at every
-root is a strict interlacer. -/
-theorem interlaces_of_eval_mul_derivative_pos
-    {f q : ℝ[X]} (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
-    (hfdeg : 1 ≤ f.natDegree) (hsimple : HasSimpleRoots f)
-    (hq_ne : q ≠ 0) (hqdeg : q.natDegree < f.natDegree)
-    (hsign : ∀ r, f.IsRoot r → 0 < q.eval r * f.derivative.eval r) :
-    Interlaces q f := by
-  have hder : Interlaces f.derivative f :=
-    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hfdeg
-  obtain ⟨_, hder_rr, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hder
-  have hrs_sort : rs = f.roots.sort (· ≤ ·) := by
-    apply List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort ..)
-    exact Multiset.coe_eq_coe.mp (hrs_eq.trans (Multiset.sort_eq ..).symm)
-  apply MaWangInternal.interlaces_of_consecutive_signs_of_natDegree_lt
-    hf_pos.ne_zero hf hq_ne hqdeg
-  dsimp only
-  intro pre r₁ r₂ rest hEq
-  have hEq' : rs = pre ++ r₁ :: r₂ :: rest := by simpa [hrs_sort] using hEq
-  have hr₁_mem : r₁ ∈ f.roots := by
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
-  have hr₂_mem : r₂ ∈ f.roots := by
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
-  have hr₁ : f.IsRoot r₁ := isRoot_of_mem_roots hr₁_mem
-  have hr₂ : f.IsRoot r₂ := isRoot_of_mem_roots hr₂_mem
-  have hder_nonpos :
-      f.derivative.eval r₁ * f.derivative.eval r₂ ≤ 0 :=
-    MaWangInternal.eval_mul_eval_nonpos_of_interlacing_consecutive
-      hder_rr.2 hrs_sorted hss_eq hint hEq'
-  have hder₁_ne := hsimple.eval_derivative_ne_zero hr₁
-  have hder₂_ne := hsimple.eval_derivative_ne_zero hr₂
-  have hder_neg :
-      f.derivative.eval r₁ * f.derivative.eval r₂ < 0 :=
-    lt_of_le_of_ne hder_nonpos (mul_ne_zero hder₁_ne hder₂_ne)
-  have hq₁ := hsign r₁ hr₁
-  have hq₂ := hsign r₂ hr₂
-  rcases lt_or_gt_of_ne hder₁_ne with hd₁ | hd₁
-  · have hd₂ : 0 < f.derivative.eval r₂ := by nlinarith
-    have hq₁neg : q.eval r₁ < 0 := by nlinarith
-    have hq₂pos : 0 < q.eval r₂ := by nlinarith
-    exact mul_neg_of_neg_of_pos hq₁neg hq₂pos
-  · have hd₂ : f.derivative.eval r₂ < 0 := by nlinarith
-    have hq₁pos : 0 < q.eval r₁ := by nlinarith
-    have hq₂neg : q.eval r₂ < 0 := by nlinarith
-    exact mul_neg_of_pos_of_neg hq₁pos hq₂neg
-
 /-- The degree-dropping residue auxiliary attached to `f`, `g`, a point `a`,
 and a nonnegative weight `m`. -/
 def residueAuxiliary (a m : ℝ) (f g : ℝ[X]) : ℝ[X] :=
@@ -290,8 +242,7 @@ theorem residueAuxiliary_interlaces
   have hqdeg : (residueAuxiliary a m f g).natDegree < f.natDegree :=
     (natDegree_lt_iff_degree_lt hq_ne).2
       (residueAuxiliary_degree_lt hfdeg hgdeg a m)
-  apply interlaces_of_eval_mul_derivative_pos hgf.2.1.2 hflc hfdeg
-    hsimple hq_ne hqdeg
+  apply interlaces_of_eval_mul_derivative_pos hgf.2.1.2 hflc hqdeg
   exact hq_sign
 
 end RealRooted
