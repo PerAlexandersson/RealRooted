@@ -67,12 +67,6 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     have hnonzero : a ≠ 0 ∧ fs.get ⟨i, hi⟩ ≠ 0 := by simpa using hg_ne
     exact ⟨hg_ne, (hfs.splits (List.get_mem _ _) hnonzero.2).C_mul a⟩
 
-private theorem prec0_self_of_realRootedOrZero {f : ℝ[X]}
-    (hf : f ≠ 0 → f.Splits) : Interl f f := by
-  by_cases hf_zero : f = 0
-  · exact Or.inl hf_zero
-  · exact (StrictInterl.refl hf_zero (hf hf_zero)).toInterl
-
 private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
     (hfg : Interl f g) (hf : HasNonnegCoeffs f)
     (hg : HasNonnegCoeffs g) (hfr : f ≠ 0 → f.Splits)
@@ -103,9 +97,9 @@ private theorem pairwise_insertAdjacentAdd_of_nonneg
       have hfnn : HasNonnegCoeffs f := hnonneg f (by simp)
       have hgnn : HasNonnegCoeffs g := hnonneg g (by simp)
       have hff : Interl f f :=
-        prec0_self_of_realRootedOrZero fun hf => hreal f (by simp) hf
+        Interl.refl fun hf => hreal f (by simp) hf
       have hgg : Interl g g :=
-        prec0_self_of_realRootedOrZero fun hg => hreal g (by simp) hg
+        Interl.refl fun hg => hreal g (by simp) hg
       rw [List.nil_append, List.pairwise_cons] at hpair ⊢
       rcases hpair with ⟨hf_tail, hg_pair⟩
       rw [List.pairwise_cons] at hg_pair

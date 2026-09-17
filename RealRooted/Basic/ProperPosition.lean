@@ -580,6 +580,13 @@ lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
 lemma StrictInterl.toInterl {f g : ℝ[X]} (h : StrictInterl f g) : Interl f g :=
   Or.inr (Or.inr h)
 
+/-- A polynomial that splits whenever it is nonzero is zero-aware interlacing
+with itself. -/
+lemma Interl.refl {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) : Interl f f := by
+  by_cases hf0 : f = 0
+  · exact Or.inl hf0
+  · exact (StrictInterl.refl hf0 (hf hf0)).toInterl
+
 lemma Interl.toStrictInterl_of_ne {f g : ℝ[X]} (h : Interl f g)
     (hf : f ≠ 0) (hg : g ≠ 0) :
     StrictInterl f g := by

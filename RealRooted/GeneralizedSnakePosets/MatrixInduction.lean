@@ -292,7 +292,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
   have hsum0 : Interl (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
     prec0_add_right_of_common_left_of_nonneg
-      (StrictInterl.refl hstep.1.1 hstep.1.2).toInterl hstep.toInterl
+      (Interl.refl fun _ => hstep.1.2) hstep.toInterl
       (hM_nonneg w.deleteFinal) hdiff_nonneg
   have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero

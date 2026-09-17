@@ -51,7 +51,7 @@ private theorem smirnovDescentRefinedList_zero_data (m : ℕ) :
   · constructor
     · rw [isInterlacingSeq0_iff_pairwise]
       have hprec : Interl (1 : ℝ[X]) 1 :=
-        (StrictInterl.refl one_ne_zero Polynomial.Splits.one).toInterl
+        Interl.refl fun _ => Polynomial.Splits.one
       simp [hprec]
     · intro f hf
       simp only [List.mem_replicate] at hf

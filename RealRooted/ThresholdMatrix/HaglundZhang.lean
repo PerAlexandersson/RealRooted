@@ -242,8 +242,8 @@ private lemma prec0_hz_affine_add_one_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + (1 + X)) (C s * X + C t + (1 + X)) := by
   rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
     C (s + 1) * X + C (t + 1) by grind]
-  exact prec0_refl_of_realRooted
-    (isRealRooted_affine_factor (s := s + 1) (t := t + 1) (by positivity))
+  exact Interl.refl fun _ =>
+    (isRealRooted_affine_factor (s := s + 1) (t := t + 1) (by positivity)).2
 
 private lemma prec0_hz_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -432,19 +432,14 @@ private lemma prec0_hz_mul_one_add_X_self
   have hS_rr : ((1 + X : ℝ[X]) ≠ 0 ∧ (1 + X : ℝ[X]).Splits) := by
     rw [show (1 + X : ℝ[X]) = C (1 : ℝ) * X + C 1 by grind]
     exact isRealRooted_affine_factor (s := 1) (t := 1) zero_lt_one
-  exact prec0_refl_of_realRooted
-    (isRealRooted_mul hlin_rr.1 hlin_rr.2 hS_rr.1 hS_rr.2)
+  exact Interl.refl fun _ =>
+    (isRealRooted_mul hlin_rr.1 hlin_rr.2 hS_rr.1 hS_rr.2).2
 
 private lemma prec0_hz_middleQuadratic_self
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl ((C s * X + C t) * (1 + X) + X)
       ((C s * X + C t) * (1 + X) + X) := by
-  have hdeg := hzMiddleQuadratic_natDegree (s := s) (t := t) hs
-  have hne : ((C s * X + C t) * (1 + X) + X : ℝ[X]) ≠ 0 := by
-    intro h
-    rw [h, natDegree_zero] at hdeg
-    norm_num at hdeg
-  exact prec0_refl_of_realRooted ⟨hne, hzMiddleQuadratic_splits hs ht⟩
+  exact Interl.refl fun _ => hzMiddleQuadratic_splits hs ht
 
 private lemma prec0_hz_mul_one_add_X_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) :
@@ -468,12 +463,7 @@ private lemma prec0_hz_mul_one_add_X_XAffineAddOne
 private lemma prec0_hz_XAffineAddOne_self
     {s t : ℝ} (hs : 0 < s) :
     Interl (X * (C s * X + C t + 1)) (X * (C s * X + C t + 1)) := by
-  have hdeg := hzXAffineAddOne_natDegree (s := s) (t := t) hs
-  have hne : (X * (C s * X + C t + 1) : ℝ[X]) ≠ 0 := by
-    intro h
-    rw [h, natDegree_zero] at hdeg
-    norm_num at hdeg
-  exact prec0_refl_of_realRooted ⟨hne, hzXAffineAddOne_splits hs⟩
+  exact Interl.refl fun _ => hzXAffineAddOne_splits hs
 
 private lemma prec0_hz_middleQuadratic_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :

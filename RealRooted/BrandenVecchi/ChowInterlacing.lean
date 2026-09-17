@@ -17,12 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem prec0_refl_of_splits_or_zero {p : ℝ[X]}
-    (hp : p ≠ 0 → p.Splits) : Interl p p := by
-  by_cases hp_zero : p = 0
-  · exact Or.inl hp_zero
-  · exact (StrictInterl.refl hp_zero (hp hp_zero)).toInterl
-
 private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
     {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hq_ne : q ≠ 0) : p + q ≠ 0 := by
@@ -252,11 +246,11 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     exact (natDegree_add_le T gr).trans (max_le hTdegree hgrdegree)
   have hgq0 : Interl g q := by
     have hgXT0 := prec0_mul_X_of_prec0 hTg0 hTnn hgnn
-    have hgg0 := prec0_refl_of_splits_or_zero hgreal
+    have hgg0 := Interl.refl hgreal
     simpa [q] using
       prec0_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
   have hqgr0 : Interl q gr := by
-    have hgrgr0 := prec0_refl_of_splits_or_zero hgrreal
+    have hgrgr0 := Interl.refl hgrreal
     rw [hq_alt]
     exact prec0_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
   have hfrXS0 : Interl fr XS := by
@@ -269,7 +263,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
       exact hS_ne (by simp [S, chowS])
     exact (hSf0.toStrictInterl_of_ne hS_ne hf_ne).1.2
   have hSXS0 : Interl S XS := by
-    have hSS0 := prec0_refl_of_splits_or_zero hSreal
+    have hSS0 := Interl.refl hSreal
     simpa [XS] using prec0_mul_X_of_prec0 hSS0 hSnn hSnn
   have hqreal : q ≠ 0 → q.Splits := by
     intro hq_ne
