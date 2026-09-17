@@ -91,7 +91,7 @@ theorem residueEulerStep_strict_package
     (hf_simple : HasSimpleRoots f)
     (hf_neg : ∀ x, f.IsRoot x → x < 0)
     (hhf : StrictInterl h f) (hh_pos : HasPosLeadingCoeff h)
-    (hh_simple : HasSimpleRoots h) (hhdeg : h.degree < f.natDegree)
+    (hhdeg : h.degree < f.natDegree)
     (hrf : Interlaces r f) (hr_pos : HasPosLeadingCoeff r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hgap : a * h.eval 1 < f.eval 1) :
@@ -117,13 +117,13 @@ theorem residueEulerStep_strict_package
     have hxroot : f.IsRoot x := (mem_roots hf_pos.ne_zero).mp hx
     linarith [hf_neg x hxroot]
   have haux_interlaces : Interlaces (residueAuxiliary 1 a f h) f :=
-    residueAuxiliary_interlaces hhf hf_pos hh_pos hh_simple.roots_nodup
+    residueAuxiliary_interlaces hhf hf_pos hh_pos
       hfdeg hhdeg hf_simple ha hroots_lt_one hgap
   have haux_sign : ∀ x, f.IsRoot x →
       0 < (residueAuxiliary 1 a f h).eval x * f.derivative.eval x := by
     intro x hx
     exact residueAuxiliary_eval_mul_derivative_pos
-      hhf hf_pos hh_pos hh_simple.roots_nodup hfdeg hhdeg hf_simple
+      hhf hf_pos hh_pos hfdeg hhdeg hf_simple
         ha hroots_lt_one hgap hx
   let tail : ℝ[X] := C b * X * r
   have hrec :
