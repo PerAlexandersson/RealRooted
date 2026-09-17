@@ -37,7 +37,7 @@ theorem prec {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     StrictInterl q g := by
   rcases h with hself | ⟨u, hfactor⟩
   · rw [hself]
-    exact prec_refl hg0 hgs
+    exact StrictInterl.refl hg0 hgs
   · obtain ⟨hq0, hqs⟩ :=
       (show IsGWKreinSummand g q from Or.inr ⟨u, hfactor⟩).ne_zero_and_splits
         hg0 hgs
@@ -357,7 +357,7 @@ theorem gwSchurProductPF_of_prec
   have hfs := hf.ne_zero_and_splits hf0
   exact IsPFPolynomial.of_prec0_self
     (hf.hasNonnegCoeffs.gwSchurProduct hp.hasNonnegCoeffs)
-    (h hf hf hp (prec_refl hfs.1 hfs.2))
+    (h hf hf hp (StrictInterl.refl hfs.1 hfs.2))
 
 theorem gwSchurProductPrec0_of_prec
     (h : gwSchurProductPrecStatement) :

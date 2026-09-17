@@ -249,7 +249,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs
         (h.natDegree_le (by simp))
         (h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure]))
         (h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure]))
-        (prec_refl hf_ne hfref.1.2) hfref hfref hS_ne).1
+        (StrictInterl.refl hf_ne hfref.1.2) hfref hfref hS_ne).1
     · rw [not_ne_iff.mp hS_ne]
       exact hasNonnegCoeffs_zero
   · have hf_zero : f = 0 := not_ne_iff.mp hf_ne

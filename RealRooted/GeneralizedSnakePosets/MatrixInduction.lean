@@ -139,12 +139,12 @@ theorem theorem41Step_difference_prec_of_matrixClaim
       fin_cases j₁ <;> fin_cases j₂
       · intro s t hs ht
         have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
-        simpa using prec_refl hcross.2.1.1 hcross.2.1.2
+        simpa using StrictInterl.refl hcross.2.1.1 hcross.2.1.2
       · simpa using theorem41StepMatrix_cross_has2x2_of_matrixClaim hclaim hm
       · simp at hj
       · intro s t hs ht
         have hcross := hclaim (m := m) (lam := s) (mu := t) hm hs.le ht.le
-        simpa using prec_refl hcross.1.1 hcross.1.2)
+        simpa using StrictInterl.refl hcross.1.1 hcross.1.2)
     (hfs_len := by simp)
     (hfs := theorem41InputPair_interlacingSeqNonneg hgf hf_nonneg hg_nonneg)
   simpa [mul_comm, mul_left_comm] using hpair
@@ -292,7 +292,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
   have hsum0 : Interl (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
     prec0_add_right_of_common_left_of_nonneg
-      (prec_refl hstep.1.1 hstep.1.2).toInterl hstep.toInterl
+      (StrictInterl.refl hstep.1.1 hstep.1.2).toInterl hstep.toInterl
       (hM_nonneg w.deleteFinal) hdiff_nonneg
   have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero

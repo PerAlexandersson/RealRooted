@@ -121,7 +121,7 @@ example {f : ℝ[X]}
 namespace WagnerXInferenceSmoke
 
 @[rr_base_prec] theorem one_prec_one : StrictInterl (1 : ℝ[X]) 1 :=
-  prec_refl (by simp) (by simp)
+  StrictInterl.refl (by simp) (by simp)
 
 @[rr_nonneg] theorem one_nonneg : HasNonnegCoeffs (1 : ℝ[X]) :=
   hasNonnegCoeffs_one

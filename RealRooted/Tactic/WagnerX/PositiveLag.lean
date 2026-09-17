@@ -24,7 +24,8 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
     rr_pos_lc
   have hX : StrictInterl g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
-  have hself : StrictInterl g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
+  have hself : StrictInterl g g :=
+    StrictInterl.refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap

@@ -227,7 +227,7 @@ theorem brandenBasisImage_adjacent_prec
       (brandenBasisImage_roots_ge_neg_one (n - 1) k hkq)
       (brandenBasisImage_roots_nonpos (n - 1) k)
   have hnext_refl : StrictInterl (brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
-    prec_refl hqnext.2.1.1 hqnext.2.1.2
+    StrictInterl.refl hqnext.2.1.1 hqnext.2.1.2
   have hsum : StrictInterl (q + brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     prec_add_of_prec_right_of_posLeadingCoeff hqnext hnext_refl
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
@@ -255,7 +255,7 @@ theorem brandenBasisImage_prec
   by_cases heq : i = j
   · subst j
     have hi : i ≤ n := hij.trans hj
-    exact prec_refl (brandenBasisImage_degree_pos n i hi).2.ne_zero
+    exact StrictInterl.refl (brandenBasisImage_degree_pos n i hi).2.ne_zero
       (brandenBasisImage_splits n i hi)
   by_cases hn : n < 2
   · have hn_cases : n = 0 ∨ n = 1 := by lia

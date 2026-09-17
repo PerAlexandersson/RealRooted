@@ -311,7 +311,7 @@ theorem chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
   cases n with
   | zero =>
       rw [chowPolynomial_zero A (hunit.diagonal 0), chowDerangement_zero]
-      exact (prec_refl one_ne_zero Polynomial.Splits.one).toInterl
+      exact (StrictInterl.refl one_ne_zero Polynomial.Splits.one).toInterl
   | succ n =>
       have hrow := resolvedChowRow_reflectionInterlacing resolution (n + 1)
       have hdirect : IsInterlacingSeq0NonnegRealRooted

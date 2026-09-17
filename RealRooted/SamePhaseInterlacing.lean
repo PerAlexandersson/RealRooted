@@ -89,7 +89,7 @@ theorem prec_add_X_mul_of_prec
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl
-      · exact prec_refl hAD.1.1 hAD.1.2
+      · exact StrictInterl.refl hAD.1.1 hAD.1.2
       · exact hAD
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp

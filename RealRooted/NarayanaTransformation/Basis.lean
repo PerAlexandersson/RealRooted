@@ -361,7 +361,7 @@ theorem risingFactorialStep_pf_shiftPrec
     simpa [fμ] using
       prec_mul_X_of_prec_of_nonneg hshift hfμ.hasNonnegCoeffs hf.hasNonnegCoeffs
   have hfμ_Xfμ : StrictInterl fμ (X * fμ) :=
-    prec_mul_X_of_prec_of_nonneg (prec_refl hfμrr.1 hfμrr.2)
+    prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hfμrr.1 hfμrr.2)
       hfμ.hasNonnegCoeffs hfμ.hasNonnegCoeffs
   have hXfμnn : HasNonnegCoeffs (X * fμ) := hfμ.X_mul.hasNonnegCoeffs
   have hrf_nn : HasNonnegCoeffs (C r * f) :=

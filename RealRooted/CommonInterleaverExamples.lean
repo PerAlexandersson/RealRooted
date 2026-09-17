@@ -81,7 +81,7 @@ lemma scaledLinearFamily_commonInterleaver :
   intro f hf
   simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
   rcases hf with rfl | rfl | rfl
-  · exact prec_refl xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
+  · exact StrictInterl.refl xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
   · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
   · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
 

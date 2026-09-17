@@ -297,7 +297,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks
     rw [peakValueWeightedDiagonal_one,
       peakValueWeightedDiagonal_two]
     have hprec := StrictInterl.C_mul_right
-      (prec_refl (by norm_num : (1 : ℝ[X]) ≠ 0)
+      (StrictInterl.refl (by norm_num : (1 : ℝ[X]) ≠ 0)
         (by exact Polynomial.Splits.one))
       (by norm_num : (2 : ℝ) ≠ 0)
     simpa using hprec

@@ -45,7 +45,7 @@ theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
   cases n with
   | zero =>
       simpa [narayanaZeroGammaPolynomial] using
-        (prec_refl (by simp) (by simp) : StrictInterl (1 : ℝ[X]) 1)
+        (StrictInterl.refl (by simp) (by simp) : StrictInterl (1 : ℝ[X]) 1)
   | succ n =>
       rw [← prec_gammaTransform_succ_iff
         (natDegree_narayanaZeroGammaPolynomial_le (n + 1))

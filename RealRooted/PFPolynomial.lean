@@ -320,7 +320,7 @@ theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl p p := by
   by_cases hp0 : p = 0
   · exact Or.inl hp0
-  · grind [StrictInterl.toInterl, prec_refl, IsPFPolynomial.ne_zero_and_splits]
+  · grind [StrictInterl.toInterl, StrictInterl.refl, IsPFPolynomial.ne_zero_and_splits]
 
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Interl p p) :

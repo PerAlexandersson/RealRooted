@@ -93,7 +93,7 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl | rfl
-      · exact StrictInterl.C_mul_left (prec_refl hp0 hpsplits) (by positivity)
+      · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
           ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
       · exact StrictInterl.C_mul_left hpolar_p (by linarith)
@@ -121,7 +121,7 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
-      · exact StrictInterl.C_mul_left (prec_refl hp0 hpsplits) (by positivity)
+      · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
           ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
@@ -147,7 +147,7 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl | rfl
-      · exact StrictInterl.C_mul_left (prec_refl htheta0 htheta_splits) (by linarith)
+      · exact StrictInterl.C_mul_left (StrictInterl.refl htheta0 htheta_splits) (by linarith)
       · exact StrictInterl.C_mul_left hder_theta ht.ne'
       · exact StrictInterl.C_mul_left hp_theta (by positivity)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by

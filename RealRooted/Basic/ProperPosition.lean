@@ -540,6 +540,15 @@ lemma StrictInterl.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
     lia
   · exact hsame.2
 
+/-- A nonzero real-rooted polynomial is in same-degree proper position with
+itself. -/
+lemma StrictInterl.refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f f := by
+  set rs := f.roots.sort (· ≤ ·)
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
+  exact ⟨⟨hf₀, hf⟩, ⟨hf₀, hf⟩, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
+    Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
+
 /-- Multiplying the left polynomial in a proper-position relation by a nonzero
 real scalar preserves proper position. -/
 lemma StrictInterl.C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :

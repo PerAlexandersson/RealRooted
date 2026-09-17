@@ -222,25 +222,6 @@ lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     by simp [ListInterlaces]⟩
   simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
 
-/-- If a list is sorted, then its tail interlaces into it. -/
-lemma listInterlaces_tail_of_pairwise :
-    ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListInterlaces rs.tail rs
-  | [], _ => by simp [ListInterlaces]
-  | [_], _ => by simp [ListInterlaces]
-  | r₁ :: r₂ :: rs, hrs => by
-      have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs (.head _)
-      have htail : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
-      simpa [List.tail, ListInterlaces, hr₁r₂] using
-        listInterlaces_tail_of_pairwise (r₂ :: rs) htail
-
-/-- Any sorted list alternates with itself. -/
-lemma listAlternates_self_of_pairwise :
-    ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListAlternates rs rs
-  | [], _ => by simp [ListAlternates]
-  | r :: rs, hrs => by
-      refine ⟨le_rfl, ?_⟩
-      simpa [List.tail] using listInterlaces_tail_of_pairwise (r :: rs) hrs
-
 lemma pairwise_map_sub_const :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →
       ∀ r : ℝ, (rs.map (· - r)).Pairwise (· ≤ ·)
@@ -493,13 +474,10 @@ lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     simpa [comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h'
   · exact fun h => prec_comp_X_add_C h r
 
-/-- A real-rooted polynomial interlaces with itself in the same-degree sense. -/
-lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f f := by
-  set rs := f.roots.sort (· ≤ ·)
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  exact ⟨⟨hf₀, hf⟩, ⟨hf₀, hf⟩, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
-    Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
+/- Deprecated compatibility alias for `StrictInterl.refl`. -/
+@[deprecated StrictInterl.refl (since := "2026-09-17")]
+lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f f :=
+  StrictInterl.refl hf₀ hf
 
 /- Deprecated compatibility alias for `StrictInterl.C_mul_left`. -/
 @[deprecated StrictInterl.C_mul_left (since := "2026-09-17")]
@@ -538,7 +516,7 @@ lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
 interlaces the original polynomial. -/
 lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
     StrictInterl (C a * f) f :=
-  (prec_refl hf₀ hf).C_mul_left ha
+  (StrictInterl.refl hf₀ hf).C_mul_left ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/

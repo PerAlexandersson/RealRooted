@@ -218,7 +218,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
       · simp [hk, hasNonnegCoeffs_zero]
   have hpre_rr := cutPrefix_realRooted h i
   have hself : Interl (cutPrefix P i) (cutPrefix P i) :=
-    (prec_refl hpre_rr.1 hpre_rr.2).toInterl
+    (StrictInterl.refl hpre_rr.1 hpre_rr.2).toInterl
   rw [cutPrefix_eq_add_cutMiddle P hij]
   exact prec0_add_left_of_common_right_of_nonneg hself hmid
     (cutPrefix_nonneg h.p_nonneg i) (cutMiddle_nonneg h.p_nonneg i j)
@@ -275,7 +275,7 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
   have hself : Interl (cutStrictSuffix Q j) (cutStrictSuffix Q j) := by
     by_cases hzero : cutStrictSuffix Q j = 0
     · exact Or.inl hzero
-    · exact (prec_refl hzero (cutStrictSuffix_splits_of_ne h j hzero)).toInterl
+    · exact (StrictInterl.refl hzero (cutStrictSuffix_splits_of_ne h j hzero)).toInterl
   rw [cutStrictSuffix_eq_cutMiddle_add Q hij]
   exact prec0_add_left_of_common_right_of_nonneg hmid hself
     (cutMiddle_nonneg h.q_nonneg i j) (cutStrictSuffix_nonneg h.q_nonneg j)

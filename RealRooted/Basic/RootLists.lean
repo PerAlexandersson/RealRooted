@@ -35,6 +35,25 @@ def ListAlternates : List ℝ → List ℝ → Prop
   | s :: ss, r :: rs => s ≤ r ∧ ListInterlaces ss (r :: rs)
   | _, _ => False
 
+/-- If a list is sorted, then its tail interlaces into it. -/
+lemma listInterlaces_tail_of_pairwise :
+    ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListInterlaces rs.tail rs
+  | [], _ => by simp [ListInterlaces]
+  | [_], _ => by simp [ListInterlaces]
+  | r₁ :: r₂ :: rs, hrs => by
+      have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs (.head _)
+      have htail : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
+      simpa [List.tail, ListInterlaces, hr₁r₂] using
+        listInterlaces_tail_of_pairwise (r₂ :: rs) htail
+
+/-- Any sorted list alternates with itself. -/
+lemma listAlternates_self_of_pairwise :
+    ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListAlternates rs rs
+  | [], _ => by simp [ListAlternates]
+  | r :: rs, hrs => by
+      refine ⟨le_rfl, ?_⟩
+      simpa [List.tail] using listInterlaces_tail_of_pairwise (r :: rs) hrs
+
 lemma listInterlaces_iff_interleaves_of_length :
     ∀ {ss rs : List ℝ}, ss.length + 1 = rs.length →
       (ListInterlaces ss rs ↔ List.Interleaves (fun x y : ℝ => x ≤ y) ss rs)

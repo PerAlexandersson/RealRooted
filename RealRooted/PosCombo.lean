@@ -356,7 +356,7 @@ theorem prec_sameDegree_shift_left_of_roots_le
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl
-      · exact prec_refl hfg.2.1.1 hfg.2.1.2
+      · exact StrictInterl.refl hfg.2.1.1 hfg.2.1.2
       · lia
     · simp_all
     · lia
@@ -379,7 +379,7 @@ theorem prec_nonneg_combo_right {f g : ℝ[X]}
       · lia
       · rcases List.mem_cons.mp h with h | h
         · cases h
-          exact prec_refl hfg.2.1.1 hfg.2.1.2
+          exact StrictInterl.refl hfg.2.1.1 hfg.2.1.2
         · simp at h
     · simp_all
     · simp_all
@@ -1414,12 +1414,12 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
   rcases hab with ha_pos | hb_pos
   · by_cases hb0 : b = 0
     · simpa [hb0, weightedSum, weightedSum_cons] using
-        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
     · have hb_pos : 0 < b := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
   · by_cases ha0 : a = 0
@@ -1429,7 +1429,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 
@@ -1446,7 +1446,7 @@ theorem prec_convex_left {f g : ℝ[X]}
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
   have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
   exact prec_add_of_prec_left
-    (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha.ne')
+    (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha.ne')
     (StrictInterl.C_mul_right hfg hb.ne')
     hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 

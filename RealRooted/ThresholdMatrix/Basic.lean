@@ -222,7 +222,7 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
 /-- Reflexivity of `Interl` on a nonzero real-rooted polynomial. -/
 theorem prec0_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
-  (prec_refl hp.1 hp.2).toInterl
+  (StrictInterl.refl hp.1 hp.2).toInterl
 
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/

@@ -87,7 +87,7 @@ private theorem generalizedRisingFactorialPreservesPF_shiftPrec {μ : ℝ}
           rw [hpC]
           simp
         rw [hpcomp]
-        exact ⟨hp, prec_refl hp0 (hp.ne_zero_and_splits hp0).2⟩
+        exact ⟨hp, StrictInterl.refl hp0 (hp.ne_zero_and_splits hp0).2⟩
       · have hnpos : 0 < p.natDegree := by lia
         rcases hp.exists_X_sub_C_factor_of_pos_natDegree hnpos with
           ⟨u, q, hu, hfactor, hq, hqdeg⟩

@@ -246,7 +246,7 @@ lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} (hrr : (simsun n).Splits) :
 
 lemma interlaces_simsun_zero_one :
     StrictInterl (simsun 0) (simsun 1) :=
-  by simpa [simsun_zero, simsun_one] using prec_refl (f := (1 : ℝ[X])) (by simp)
+  by simpa [simsun_zero, simsun_one] using StrictInterl.refl (f := (1 : ℝ[X])) (by simp)
 
 lemma interlaces_simsun_one_two :
     Interlaces (simsun 1) (simsun 2) := by

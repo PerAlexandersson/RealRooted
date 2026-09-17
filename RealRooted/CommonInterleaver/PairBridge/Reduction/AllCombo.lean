@@ -311,6 +311,6 @@ theorem
       hboundary hf_pos hg_pos hfnn hgnn hfg
   have hprec_fg : StrictInterl f g :=
     prec_forward_of_orientation_of_succDegree hsucc hprec_or
-  exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
+  exact ⟨g, hprec_fg, StrictInterl.refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
 
 end RealRooted

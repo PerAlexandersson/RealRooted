@@ -116,7 +116,7 @@ theorem has2x2InterlacingProperty_sameColumn_of_prec_nonneg {f g : ℝ[X]}
     Has2x2InterlacingProperty f f g g := by
   intro s t hs ht
   have hrr := isRealRooted_affine_combo_of_prec_nonneg h hfnn hgnn hs ht
-  exact prec_refl hrr.1 hrr.2
+  exact StrictInterl.refl hrr.1 hrr.2
 
 
 end RealRooted

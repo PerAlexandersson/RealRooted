@@ -197,7 +197,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
 lemma prec_singletonFreeSetPartitions_two_three :
     StrictInterl (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
   by simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
-    prec_refl (f := X) (by simp)
+    StrictInterl.refl (f := X) (by simp)
 
 lemma prec_singletonFreeSetPartitions_three_four :
     StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
