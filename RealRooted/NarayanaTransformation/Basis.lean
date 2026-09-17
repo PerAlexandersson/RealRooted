@@ -368,10 +368,10 @@ theorem risingFactorialStep_pf_shiftPrec
     nonnegCoeffs_C_mul hr hf.hasNonnegCoeffs
   have hf_g0 : Interl f (X * fμ + C r * f) :=
     prec0_add_right_of_common_left_of_nonneg hf_Xfμ.toInterl
-      (prec0_C_mul_right_of_nonneg hf.prec0_self hr) hXfμnn hrf_nn
+      (Interl.C_mul_right_of_nonneg hf.prec0_self hr) hXfμnn hrf_nn
   have hfμ_g0 : Interl fμ (X * fμ + C r * f) :=
     prec0_add_right_of_common_left_of_nonneg hfμ_Xfμ.toInterl
-      (prec0_C_mul_right_of_nonneg hshift.toInterl hr) hXfμnn hrf_nn
+      (Interl.C_mul_right_of_nonneg hshift.toInterl hr) hXfμnn hrf_nn
   have hg0 : X * fμ + C r * f ≠ 0 := by
     intro hg
     have hcoeff := congrArg

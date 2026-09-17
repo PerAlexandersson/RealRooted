@@ -594,6 +594,28 @@ lemma interl_zero_right (f : ℝ[X]) : Interl f 0 :=
 lemma interl_zero_zero : Interl (0 : ℝ[X]) 0 :=
   interl_zero_left 0
 
+/-- Multiplying the left polynomial in a zero-aware interlacing relation by a
+nonnegative scalar preserves the relation. -/
+lemma Interl.C_mul_left_of_nonneg {f g : ℝ[X]} (h : Interl f g)
+    {a : ℝ} (ha : 0 ≤ a) : Interl (C a * f) g := by
+  rcases eq_or_lt_of_le ha with rfl | ha_pos
+  · simp [interl_zero_left]
+  rcases h with hf0 | hg0 | hstrict
+  · simp [hf0, interl_zero_left]
+  · simpa [hg0] using interl_zero_right (C a * f)
+  · exact (hstrict.C_mul_left ha_pos.ne').toInterl
+
+/-- Multiplying the right polynomial in a zero-aware interlacing relation by a
+nonnegative scalar preserves the relation. -/
+lemma Interl.C_mul_right_of_nonneg {f g : ℝ[X]} (h : Interl f g)
+    {a : ℝ} (ha : 0 ≤ a) : Interl f (C a * g) := by
+  rcases eq_or_lt_of_le ha with rfl | ha_pos
+  · simp [interl_zero_right]
+  rcases h with hf0 | hg0 | hstrict
+  · simpa [hf0] using interl_zero_left (C a * g)
+  · simp [hg0, interl_zero_right]
+  · exact (hstrict.C_mul_right ha_pos.ne').toInterl
+
 /-! ## Deprecated proper-position names -/
 
 @[deprecated StrictInterl.natDegree_le (since := "2026-09-16")]

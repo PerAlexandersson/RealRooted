@@ -170,7 +170,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_right_of_nonneg
+      exact Interl.C_mul_right_of_nonneg
         (hdirectReflect 0 (Nat.zero_le n) j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -180,7 +180,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_left_of_nonneg
+      exact Interl.C_mul_left_of_nonneg
         (hdirectReflect j hjn 0 (Nat.zero_le n)) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -190,7 +190,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_left_of_nonneg (hreflectLeft j hjn) (ha j hjn)
+      exact Interl.C_mul_left_of_nonneg (hreflectLeft j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
@@ -199,7 +199,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_left_of_nonneg
+      exact Interl.C_mul_left_of_nonneg
         (hdirectReflect j hjn n le_rfl) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -209,7 +209,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_right_of_nonneg
+      exact Interl.C_mul_right_of_nonneg
         (hdirectReflect n le_rfl j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -219,7 +219,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     apply prec0_finsetSum_left_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_right_of_nonneg (hreflectRight j hjn) (ha j hjn)
+      exact Interl.C_mul_right_of_nonneg (hreflectRight j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
@@ -230,8 +230,8 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · intro i hi j hj
       have hin : i ≤ n := by simpa using Finset.mem_range.mp hi
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_right_of_nonneg
-        (prec0_C_mul_left_of_nonneg (hdirectReflect i hin j hjn) (ha i hin))
+      exact Interl.C_mul_right_of_nonneg
+        (Interl.C_mul_left_of_nonneg (hdirectReflect i hin j hjn) (ha i hin))
         (ha j hjn)
     · intro i hi
       have hin : i ≤ n := by simpa using Finset.mem_range.mp hi

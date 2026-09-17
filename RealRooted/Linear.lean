@@ -499,18 +499,12 @@ lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
   have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by simp [hp_deg]
   simpa using hprec.toInterlaces hdeg
 
-/-- Multiplying the right polynomial in a zero-aware `Interl` relation by a
-nonnegative scalar preserves the relation; the zero scalar is handled by the
-zero-aware cases. -/
+/- Deprecated compatibility alias for `Interl.C_mul_right_of_nonneg`. -/
+@[deprecated Interl.C_mul_right_of_nonneg (since := "2026-09-17")]
 lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
     (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
-    Interl f (C a * g) := by
-  rcases eq_or_lt_of_le ha with rfl | ha_pos
-  · simp [interl_zero_right]
-  rcases h with hf0 | hg0 | hprec
-  · simpa [hf0] using interl_zero_left (C a * g)
-  · simp [hg0, interl_zero_right]
-  · exact (hprec.C_mul_right ha_pos.ne').toInterl
+    Interl f (C a * g) :=
+  h.C_mul_right_of_nonneg ha
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
