@@ -121,6 +121,6 @@ theorem garloffWagnerHadamardNonnegPrec {f g p q : ℝ[X]}
 `garloffWagnerHadamardNonnegPrec`. -/
 theorem garloffWagnerHadamard_linear_orientation_sanity {a b : ℝ} :
     StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
-  prec_X_add_C_iff
+  StrictInterl.X_add_C_iff
 
 end RealRooted

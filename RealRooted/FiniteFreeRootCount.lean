@@ -244,7 +244,7 @@ theorem rootPolynomial_splits (s : Multiset ℝ) : (rootPolynomial s).Splits := 
 private theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
     StrictInterl (X - C u) (X - C v) := by
   simpa [sub_eq_add_neg] using
-    (prec_X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
+    (StrictInterl.X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
 
 private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :

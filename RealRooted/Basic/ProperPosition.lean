@@ -569,6 +569,12 @@ lemma StrictInterl.C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (
   · rw [roots_C_mul _ ha]
     exact hrs_eq
 
+/-- A nonzero scalar multiple of a nonzero real-rooted polynomial is in
+same-degree strict proper position with that polynomial. -/
+lemma StrictInterl.C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ}
+    (ha : a ≠ 0) : StrictInterl (C a * f) f :=
+  (StrictInterl.refl hf₀ hf).C_mul_left ha
+
 lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
     IsGeneralizedSturmSeq ps := by
   induction ps with grind [IsGeneralizedSturmSeq, eq_def, Interlaces.toStrictInterl]
@@ -622,6 +628,12 @@ lemma Interl.C_mul_right_of_nonneg {f g : ℝ[X]} (h : Interl f g)
   · simpa [hf0] using interl_zero_left (C a * g)
   · simp [hg0, interl_zero_right]
   · exact (hstrict.C_mul_right ha_pos.ne').toInterl
+
+/-- A nonnegative scalar multiple of a polynomial is in zero-aware proper
+position with that polynomial whenever the polynomial is zero or splits. -/
+lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : ℝ}
+    (ha : 0 ≤ a) : Interl (C a * f) f :=
+  (Interl.refl hf).C_mul_left_of_nonneg ha
 
 /-! ## Deprecated proper-position names -/
 

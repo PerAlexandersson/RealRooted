@@ -184,7 +184,7 @@ theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
           · simp [reciprocalShift]
       rw [hreflect]
       have hbase : StrictInterl (X + C 2 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
-        (prec_X_add_C_iff (a := (1 / 2 : ℝ)) (b := 2)).2 (by norm_num)
+        (StrictInterl.X_add_C_iff (a := (1 / 2 : ℝ)) (b := 2)).2 (by norm_num)
       have hright := StrictInterl.C_mul_right hbase (a := (2 : ℝ)) (by norm_num)
       have hrewrite : C 2 * (X + C (1 / 2 : ℝ)) = 1 + C 2 * X := by
         calc
