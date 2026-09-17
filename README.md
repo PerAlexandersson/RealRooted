@@ -560,9 +560,11 @@ skipped, stale, or missing checks as success. Fix failed draft checks before
 marking the work ready. Do not push unverified changes directly to the default
 branch or enable automatic merging merely to bypass review.
 
-Documentation publication is separate from proof validation and restricted to
-validated default-branch revisions. A documentation failure does not establish
-a proof failure, and a successful website deployment is not proof verification.
+Routine CI does not generate full-library API documentation. High-level public
+documentation is curated through the compact entry points in
+`RealRooted/Challenges/`; detailed proof infrastructure remains searchable in
+its owning theorem modules. Documentation is not a substitute for proof
+validation, and the required `build` check does not depend on publication.
 
 ### Repository Cleanliness
 
