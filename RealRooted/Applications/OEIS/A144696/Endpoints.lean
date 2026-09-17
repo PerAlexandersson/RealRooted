@@ -168,7 +168,7 @@ theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
     rw [hone]
     have hone0 : (1 : ℝ[X]) ≠ 0 := one_ne_zero
     have honesplits : (1 : ℝ[X]).Splits := by simp
-    exact prec_refl hone0 honesplits
+    exact StrictInterl.refl hone0 honesplits
   · rcases n with _ | n
     · have hQ : a144696Polynomial 1 = (1 + C 2 * X : ℝ[X]) := by
         rw [a144696Polynomial_succ]
@@ -368,7 +368,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
       have honesplits : (a144696Polynomial 0).Splits := by
         rw [a144696Polynomial_zero]
         simp
-      exact prec_refl hone0 honesplits
+      exact StrictInterl.refl hone0 honesplits
     · dsimp [H]
       rw [if_pos (Nat.pos_of_ne_zero hd0), if_neg (by lia)]
       rw [show 2 * d - d = d by lia, a144696BernsteinImage_diagonal]

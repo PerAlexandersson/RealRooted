@@ -21,7 +21,7 @@ private theorem prec0_refl_of_splits_or_zero {p : ℝ[X]}
     (hp : p ≠ 0 → p.Splits) : Interl p p := by
   by_cases hp_zero : p = 0
   · exact Or.inl hp_zero
-  · exact (prec_refl hp_zero (hp hp_zero)).toInterl
+  · exact (StrictInterl.refl hp_zero (hp hp_zero)).toInterl
 
 private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
     {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
@@ -129,9 +129,9 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect
         (by simpa [fr] using hfr_zero))
     have hfref : StrictInterl f fr := hfref0.toStrictInterl_of_ne hf_ne hfr_ne
     have hSf := chowS_nonnegCoeffs_and_prec_of_triple hdegree hfnn hfnn
-      (prec_refl hf_ne hfref.1.2) hfref hfref (by simpa [S] using hS_ne)
+      (StrictInterl.refl hf_ne hfref.1.2) hfref hfref (by simpa [S] using hS_ne)
     have hSfr := chowS_nonnegCoeffs_and_prec_of_triple hdegree hfnn hfrnn
-      hfref (prec_refl hfr_ne hfref.2.1.2) hfref (by simpa [S] using hS_ne)
+      hfref (StrictInterl.refl hfr_ne hfref.2.1.2) hfref (by simpa [S] using hS_ne)
     exact ⟨by simpa [S] using hSf.1, hSf.2.toInterl, hSfr.2.toInterl⟩
   · have hS_zero : S = 0 := not_ne_iff.mp hS_ne
     exact ⟨by simpa [S, hS_zero] using hasNonnegCoeffs_zero,
@@ -322,7 +322,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
           exact add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hfg := hfg0.toStrictInterl_of_ne hf_ne hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
-        have hqq := prec_refl hq_ne (hqreal hq_ne)
+        have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
         have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
         have hgrfr := hgrfr0.toStrictInterl_of_ne hgr_ne hfr_ne
         have hffr := hffr0.toStrictInterl_of_ne hf_ne hfr_ne
@@ -428,7 +428,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
         have hq_ne : q ≠ 0 :=
           add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
-        have hqq := prec_refl hq_ne (hqreal hq_ne)
+        have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
         have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
         have hggr := hggr0.toStrictInterl_of_ne hg_ne hgr_ne
         have hmiddle : IsInterlacingSeqNonneg [g, q, q, gr] := by

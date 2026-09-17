@@ -820,7 +820,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       (out.get ⟨out.length - 1, by lia⟩)
       ((out.get ⟨out.length - 1, by lia⟩).reflect (n + 1)) := by
     rw [hlast_fixed]
-    exact prec_refl (hout_ne _ (List.get_mem _ _))
+    exact StrictInterl.refl (hout_ne _ (List.get_mem _ _))
       ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
         (hout_ne _ (List.get_mem _ _))).2
   refine ⟨hout_deg, ?_⟩
@@ -836,7 +836,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
         ∀ (a b : Fin out.length), a ≤ b → StrictInterl (out.get a) (out.get b) := by
       intro a b hab
       rcases hab.eq_or_lt with rfl | hab
-      · exact prec_refl (hout_ne _ (List.get_mem _ _))
+      · exact StrictInterl.refl (hout_ne _ (List.get_mem _ _))
           ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
             (hout_ne _ (List.get_mem _ _))).2
       · exact hdirect.rel_get_of_lt hab
@@ -850,7 +850,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
         rcases List.mem_map.mp ha_out with ⟨r, hr, hr_eq⟩
         rw [← hr_eq]
         have hpf := reciprocalShift_preserves_pf (hout_pf r hr) (hout_deg r hr)
-        exact prec_refl
+        exact StrictInterl.refl
           (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))
           (hpf.ne_zero_and_splits
             (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))).2

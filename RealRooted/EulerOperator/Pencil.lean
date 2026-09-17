@@ -65,7 +65,7 @@ theorem prec_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hcf : StrictInterl (C (a - b) * f) g := StrictInterl.C_mul_left hfg hab0.ne'
   have hg0 : g ≠ 0 := hfg.2.1.1
   have hgs : g.Splits := hfg.2.1.2
-  have hgg : StrictInterl g g := prec_refl hg0 hgs
+  have hgg : StrictInterl g g := StrictInterl.refl hg0 hgs
   have hCab_ne : (C (a - b) : ℝ[X]) ≠ 0 := by grind
   have hCf_ne : C (a - b) * f ≠ 0 := mul_ne_zero hCab_ne hf0
   have hpos_cf : HasPosLeadingCoeff (C (a - b) * f) :=

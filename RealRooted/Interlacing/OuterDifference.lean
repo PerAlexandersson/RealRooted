@@ -504,7 +504,7 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       · have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
         have hdC : h - f = C ((h - f).coeff 0) :=
           eq_C_of_natDegree_eq_zero hsub_zero
-        have hbase : StrictInterl (1 : ℝ[X]) (1 : ℝ[X]) := prec_refl (by simp) (by simp)
+        have hbase : StrictInterl (1 : ℝ[X]) (1 : ℝ[X]) := StrictInterl.refl (by simp) (by simp)
         have hgcoeff : g.coeff 0 ≠ 0 := by
           intro hc
           apply hg_pos.ne_zero

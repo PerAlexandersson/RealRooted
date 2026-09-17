@@ -287,7 +287,7 @@ private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
 private theorem lowerReentrantCorner_zero_prec_one :
     StrictInterl (lowerReentrantCorner 0) (lowerReentrantCorner 1) := by
   have hone : StrictInterl (1 : ℝ[X]) 1 :=
-    prec_refl (by simp) (by simp)
+    StrictInterl.refl (by simp) (by simp)
   simpa using hone.C_mul_right (a := 2) (by norm_num)
 
 /-- Consecutive rows are in proper position. -/

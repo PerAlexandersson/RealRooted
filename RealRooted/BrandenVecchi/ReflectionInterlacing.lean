@@ -81,7 +81,7 @@ private theorem prec0_self_of_realRootedOrZero {f : ℝ[X]}
     (hf : f ≠ 0 → f.Splits) : Interl f f := by
   by_cases hf_zero : f = 0
   · exact Or.inl hf_zero
-  · exact (prec_refl hf_zero (hf hf_zero)).toInterl
+  · exact (StrictInterl.refl hf_zero (hf hf_zero)).toInterl
 
 private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
     (hfg : Interl f g) (hf : HasNonnegCoeffs f)

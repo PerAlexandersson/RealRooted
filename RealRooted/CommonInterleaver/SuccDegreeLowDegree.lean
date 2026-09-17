@@ -102,14 +102,14 @@ right endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_prec
     {f g : ℝ[X]} (hprec : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  ⟨g, hprec, StrictInterl.refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common right interleaver:
 use the left endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_revPrec
     {f g : ℝ[X]} (hprec : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  ⟨f, StrictInterl.refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- A symmetric `StrictInterl` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
@@ -126,14 +126,14 @@ left endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_prec
     {f g : ℝ[X]} (hprec : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  ⟨f, prec_refl hprec.1.1 hprec.1.2, hprec⟩
+  ⟨f, StrictInterl.refl hprec.1.1 hprec.1.2, hprec⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common left interleaver:
 use the right endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_revPrec
     {f g : ℝ[X]} (hprec : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  ⟨g, hprec, prec_refl hprec.1.1 hprec.1.2⟩
+  ⟨g, hprec, StrictInterl.refl hprec.1.1 hprec.1.2⟩
 
 /-- A symmetric `StrictInterl` orientation immediately gives a common left interleaver:
 use the smaller polynomial in the chosen orientation as the witness. -/
@@ -260,13 +260,13 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     · intro j hj
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
-          (prec_refl hprec.2.1.1 hprec.2.1.2) j
+          (StrictInterl.refl hprec.2.1.1 hprec.2.1.2) j
           (by lia)
           (by lia)
     · intro j hj
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver
-          (prec_refl hprec.2.1.1 hprec.2.1.2) hprec
+          (StrictInterl.refl hprec.2.1.1 hprec.2.1.2) hprec
           j
           (by lia)
           (by lia)

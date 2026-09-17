@@ -141,7 +141,7 @@ theorem prec_shift_of_same_degree
     · intro p hp
       have hp' : p = f ∨ p = t := by simp_all
       rcases hp' with rfl | rfl
-      · exact prec_refl hprec.2.1.1 hprec.2.1.2
+      · exact StrictInterl.refl hprec.2.1.1 hprec.2.1.2
       · lia
     · simp_all
     · lia

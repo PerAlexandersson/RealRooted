@@ -398,7 +398,7 @@ the affine-family API can reuse them without importing derivative results. -/
 lemma prec_self_X_mul_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
     StrictInterl f (X * f) :=
-  prec_mul_X_of_prec_of_nonneg (prec_refl hf_ne hf_splits) hfnn hfnn
+  prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hf_ne hf_splits) hfnn hfnn
 
 /-- If `f` precedes `g`, then nonnegative coefficients transport the relation
 to `g` and `X * f`. -/

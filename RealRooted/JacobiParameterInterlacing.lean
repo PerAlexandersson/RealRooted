@@ -204,7 +204,7 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
       (shiftedJacobiMonic n α β) := by
   cases n with
   | zero =>
-      simpa using (prec_refl (f := (1 : ℝ[X])) (by simp) (by simp))
+      simpa using (StrictInterl.refl (f := (1 : ℝ[X])) (by simp) (by simp))
   | succ m =>
       let f := shiftedJacobiMonic (m + 1) α (β + 1)
       let g := shiftedJacobiMonic m α (β + 1)
@@ -435,7 +435,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
       (shiftedJacobiMonic n (α + 2) β) := by
   cases n with
   | zero =>
-      simpa using (prec_refl (f := (1 : ℝ[X])) (by simp) (by simp))
+      simpa using (StrictInterl.refl (f := (1 : ℝ[X])) (by simp) (by simp))
   | succ m =>
       let p₀ := shiftedJacobiMonic (m + 1) α β
       let p₁ := shiftedJacobiMonic (m + 1) (α + 1) β
@@ -873,7 +873,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
       (shiftedJacobiMonic n (α + t) β) := by
   cases n with
   | zero =>
-      simpa using (prec_refl (f := (1 : ℝ[X])) (by simp) (by simp))
+      simpa using (StrictInterl.refl (f := (1 : ℝ[X])) (by simp) (by simp))
   | succ n =>
       let f := shiftedJacobiMonic (n + 1) α β
       let p : ℝ → ℝ[X] := fun s ↦ shiftedJacobiMonic (n + 1) (α + s) β

@@ -126,7 +126,7 @@ lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     rw [natDegree_mul (X_sub_C_ne_zero r) hf_pos.ne_zero, natDegree_X_sub_C]
     lia
   have hself : StrictInterl ((X - C r) * f) ((X - C r) * f) :=
-    prec_refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
+    StrictInterl.refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
   exact (prec_iff_prec_mul_X_sub_C_of_roots_le r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos
     hf_le hXf_le hdeg).mpr hself
 

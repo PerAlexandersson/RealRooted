@@ -55,7 +55,7 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hsum_prec)
   have hXsum_prec : StrictInterl (a + b) (X * (a + b)) :=
     prec_mul_X_of_prec_of_nonneg
-      (prec_refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
+      (StrictInterl.refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
       hsum_nonneg hsum_nonneg
   have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := hsum_pos.X_mul
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
@@ -80,7 +80,7 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
   have hXa_prec : StrictInterl a (X * a) :=
     prec_mul_X_of_prec_of_nonneg
-      (prec_refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
+      (StrictInterl.refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
       ha_nonneg ha_nonneg
   have hXa_pos : HasPosLeadingCoeff (X * a) := ha_pos.X_mul
   have hcombo : PosComboRealRooted b (X * a) :=

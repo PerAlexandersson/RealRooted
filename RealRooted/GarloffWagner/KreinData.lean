@@ -310,7 +310,7 @@ theorem gwJL_prec {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     StrictInterl (gwJL k q) (gwJL k g) := by
   rcases h with hself | ⟨u, hq⟩
   · rw [hself]
-    exact prec_refl ((gwJL_ne_zero_iff k g).2 hg0)
+    exact StrictInterl.refl ((gwJL_ne_zero_iff k g).2 hg0)
       (gwJL_splits_of_splits hg0 hgs k)
   · obtain ⟨hq0, hqs⟩ := ne_zero_and_splits (g := g) (q := q) (Or.inr ⟨u, hq⟩)
       hg0 hgs

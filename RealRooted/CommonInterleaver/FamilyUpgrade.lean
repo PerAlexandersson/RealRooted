@@ -162,7 +162,7 @@ theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
       refine ⟨f, ?_⟩
       intro p hp
       rcases List.mem_singleton.mp hp with rfl
-      simpa using prec_refl (hpos p (by simp)).ne_zero (hrr p (by simp))
+      simpa using StrictInterl.refl (hpos p (by simp)).ne_zero (hrr p (by simp))
     | cons g fs =>
       exact
         hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
@@ -247,7 +247,7 @@ theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
       refine ⟨f, ?_⟩
       intro p hp
       rcases List.mem_singleton.mp hp with rfl
-      simpa using prec_refl (hpos p (by simp)).ne_zero (hrr p (by simp))
+      simpa using StrictInterl.refl (hpos p (by simp)).ne_zero (hrr p (by simp))
     | cons g fs =>
       exact
         hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_two

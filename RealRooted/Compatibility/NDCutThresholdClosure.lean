@@ -143,13 +143,13 @@ theorem orderedCutCompatible_of_stateInterlacing
     intro i j hij
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
-      exact prec_refl (hP_real i).1 (hP_real i).2
+      exact StrictInterl.refl (hP_real i).1 (hP_real i).2
     · exact prec_of_prec0_of_pos (hP_pos j) (hP_pos i) (hPP0 hij)
   have hQQ : ∀ ⦃i j⦄, i ≤ j → StrictInterl (Q i) (Q j) := by
     intro i j hij
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
-      exact prec_refl (hQ_real i).1 (hQ_real i).2
+      exact StrictInterl.refl (hQ_real i).1 (hQ_real i).2
     · exact prec_of_prec0_of_pos (hQ_pos i) (hQ_pos j) (hQQ0 hij)
   have hPQ : ∀ i j, StrictInterl (P i) (Q j) := by
     intro i j

@@ -422,7 +422,7 @@ private theorem a144696RowCertificate_succ
     have hf := a144696BernsteinImage_wagnerData hk (hrow.splits k hk)
     have hsucc := a144696BernsteinImage_wagnerData (show k + 1 ≤ d + 1 by lia)
       hshiftk.2.1.2
-    have hself := prec_refl hf.2.2.ne_zero hf.1
+    have hself := StrictInterl.refl hf.2.2.ne_zero hf.1
     rw [a144696BernsteinImage_pascal (show k < d + 1 by lia)]
     exact Wagner.commonLeft_add hf hsucc hself hshiftk
   have hhorizontal : ∀ k, k ≤ d →
@@ -433,7 +433,7 @@ private theorem a144696RowCertificate_succ
     have hf := a144696BernsteinImage_wagnerData hk (hrow.splits k hk)
     have hsucc := a144696BernsteinImage_wagnerData (show k + 1 ≤ d + 1 by lia)
       hshiftk.2.1.2
-    have hself := prec_refl hsucc.2.2.ne_zero hsucc.1
+    have hself := StrictInterl.refl hsucc.2.2.ne_zero hsucc.1
     rw [a144696BernsteinImage_pascal (show k < d + 1 by lia)]
     exact Wagner.commonRight_add hf hsucc hshiftk hself
   have hverticalNoCommon : ∀ k, k ≤ d → ∀ r,

@@ -44,7 +44,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hprec : ∀ p ∈ fs, StrictInterl f p := fun p hp => by
       rw [hfs_eq] at hp
       rcases List.mem_cons.mp hp with rfl | hp'
-      · simpa [f] using prec_refl hf_rr.1 hf_rr.2
+      · simpa [f] using StrictInterl.refl hf_rr.1 hf_rr.2
       · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take hp'
     have hne : fs ≠ [] := by grind
     simpa [staircaseSum, f] using
@@ -74,7 +74,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · grind
       · rw [List.drop_eq_getElem_cons hm] at hp
         rcases List.mem_cons.mp hp with rfl | hp'
-        · simpa [f] using prec_refl hf_rr.1 hf_rr.2
+        · simpa [f] using StrictInterl.refl hf_rr.1 hf_rr.2
         · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take_succ hp'
     have hpos : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, HasPosLeadingCoeff p :=
       fun p hp => by

@@ -388,7 +388,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ[X]}
     have hcoef_pos : 0 < -eps := neg_pos.mpr heps_neg
     have hT_eq : TDeriv eps p = p + C (-eps) * p.derivative := by simp [TDeriv, sub_eq_add_neg]
     have hscaled_prec : StrictInterl p.derivative (C (-eps) * p.derivative) :=
-      StrictInterl.C_mul_right (prec_refl hder_rr.1 hder_rr.2) hcoef_pos.ne'
+      StrictInterl.C_mul_right (StrictInterl.refl hder_rr.1 hder_rr.2) hcoef_pos.ne'
     have hscaled_pos : HasPosLeadingCoeff (C (-eps) * p.derivative) :=
       hasPosLeadingCoeff_C_mul hcoef_pos (hp_pos.derivative (by lia))
     have hsum_ne : p + C (-eps) * p.derivative ≠ 0 := by
@@ -444,7 +444,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r :
       exact (isRealRooted_of_dvd (TDeriv_ne_zero hp0) hT_splits hsum_ne hsum_dvd).2
     have hrr : r ≠ 0 ∧ r.Splits := hrq.1
     have hscaled_prec : StrictInterl r (C (-eps) * r) :=
-      StrictInterl.C_mul_right (prec_refl hrr.1 hrr.2) hcoef_pos.ne'
+      StrictInterl.C_mul_right (StrictInterl.refl hrr.1 hrr.2) hcoef_pos.ne'
     have hscaled_pos : HasPosLeadingCoeff (C (-eps) * r) :=
       hasPosLeadingCoeff_C_mul hcoef_pos hr_pos
     have hprec :
@@ -894,7 +894,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
     · have hconst : TDeriv eps p = p := by
         rw [eq_C_of_natDegree_eq_zero h0, TDeriv, derivative_C]
         ring
-      simpa [hconst] using prec_refl hp₀ hp
+      simpa [hconst] using StrictInterl.refl hp₀ hp
     · obtain ⟨a, b, hp_eq⟩ := Polynomial.exists_eq_X_add_C_of_natDegree_le_one h1.le
       have ha_ne : a ≠ 0 := by
         intro ha0

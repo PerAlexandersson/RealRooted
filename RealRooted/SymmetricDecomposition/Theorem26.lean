@@ -172,12 +172,12 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
-        · exact (prec_refl ha_rr.1 ha_rr.2).toInterl
+        · exact (StrictInterl.refl ha_rr.1 ha_rr.2).toInterl
         · exact haxb.toInterl
       · simp_all
     exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)
   have hbXb : StrictInterl b (X * b) :=
-    prec_mul_X_of_prec_of_nonneg (prec_refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
+    prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : StrictInterl b p := by
     have hprec0 : Interl b ([a, X * b].sum) := by
       refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
@@ -648,7 +648,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have hbt : StrictInterl b t := by
     dsimp [t]
     exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
-      (prec_refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le_one hb_le_one
+      (StrictInterl.refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le_one hb_le_one
   have hbp_sum : StrictInterl b [h, t].sum := by
     refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
@@ -1082,7 +1082,7 @@ theorem not_brandenSolusTheorem26NaiveStatement :
     hasNonnegCoeffs_zero
   rcases hcase with ⟨hba_iff_hap, -, -, -⟩
   have happ : StrictInterl (1 : ℝ[X]) (1 : ℝ[X]) :=
-    prec_refl (by simp) (by simp)
+    StrictInterl.refl (by simp) (by simp)
   have hnot : ¬ StrictInterl (0 : ℝ[X]) (1 : ℝ[X]) :=
     fun h0 => h0.1.1 rfl
   lia
@@ -1243,7 +1243,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
       hht hh_deg.symm hb_pos hh_pos hb_le hh_le
   have hbt : StrictInterl b t :=
     prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
-      (prec_refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le hb_le
+      (StrictInterl.refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le hb_le
   have hbp_sum : StrictInterl b [h, t].sum := by
     refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
