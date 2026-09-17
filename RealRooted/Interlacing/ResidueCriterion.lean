@@ -1,4 +1,5 @@
 import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.OuterDifference
 import RealRooted.MaWang.StrictSigns
 import RealRooted.SimpleRoots
 
@@ -52,11 +53,31 @@ theorem eval_div_eq_sum_residue_div
       rw [← heval]
       ring
 
+/-- At each simple root of the right polynomial, the residue of a
+positive-leading left interlacer is nonnegative.  The left polynomial need not
+have simple roots or be coprime to the right polynomial; a common root gives a
+zero residue. -/
+theorem residue_nonneg_of_right_nodup
+    {f g : ℝ[X]} (hgf : StrictInterl g f)
+    (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
+    (hfnd : f.roots.Nodup) (s : ℝ) (hsf : s ∈ f.roots) :
+    0 ≤ g.eval s / f.derivative.eval s := by
+  have hsroot : f.IsRoot s := isRoot_of_mem_roots hsf
+  have hprod : 0 ≤ g.eval s * f.derivative.eval s :=
+    eval_mul_derivative_nonneg_of_prec_right_root hgf hglc hflc hsroot
+  have hmult : f.rootMultiplicity s = 1 := by
+    simpa [count_roots] using Multiset.count_eq_one_of_mem hfnd hsf
+  have hder_ne : f.derivative.eval s ≠ 0 :=
+    eval_derivative_ne_zero_of_rootMultiplicity_eq_one hsroot hmult
+  rcases lt_or_gt_of_ne hder_ne with hder_neg | hder_pos
+  · exact div_nonneg_of_nonpos (by nlinarith) hder_neg.le
+  · exact div_nonneg (by nlinarith) hder_pos.le
+
 /-- A positive evaluation gap bounds every individual nonnegative residue. -/
 theorem mul_residue_lt_sub_of_eval_lt
     {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
-    (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
+    (hfnd : f.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)
     {a m : ℝ} (hm : 0 ≤ m)
     (ha : ∀ r ∈ f.roots, r < a) (hgap : m * g.eval a < f.eval a)
@@ -71,11 +92,8 @@ theorem mul_residue_lt_sub_of_eval_lt
     intro s hs
     have hsroots : s ∈ f.roots := Multiset.mem_toFinset.mp hs
     have hden : 0 < a - s := by linarith [ha s hsroots]
-    by_cases hsg : s ∈ g.roots
-    · have hsroot : g.IsRoot s := isRoot_of_mem_roots hsg
-      simp [Polynomial.IsRoot.def.mp hsroot]
-    · exact div_nonneg
-        (residue_nonneg hgf hflc hglc hfnd hgnd s hsroots hsg) hden.le
+    exact div_nonneg
+      (residue_nonneg_of_right_nodup hgf hflc hglc hfnd s hsroots) hden.le
   have hrfin : r ∈ f.roots.toFinset := Multiset.mem_toFinset.mpr hr
   have hle :
       (g.eval r / f.derivative.eval r) / (a - r) ≤
@@ -210,7 +228,6 @@ same sign as `f'` at every root of `f`. -/
 theorem residueAuxiliary_eval_mul_derivative_pos
     {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
-    (hgnd : g.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)
     (hsimple : HasSimpleRoots f)
     {a m : ℝ} (hm : 0 ≤ m)
@@ -222,7 +239,7 @@ theorem residueAuxiliary_eval_mul_derivative_pos
     simp [hfzero] at hflc
   have hrmem : r ∈ f.roots := (mem_roots hf_ne).mpr hr
   have hbound := mul_residue_lt_sub_of_eval_lt hgf hflc hglc
-    hsimple.roots_nodup hgnd hfdeg hgdeg hm ha hgap hrmem
+    hsimple.roots_nodup hfdeg hgdeg hm ha hgap hrmem
   have hder_ne := hsimple.eval_derivative_ne_zero hr
   have hbound' : m * g.eval r / f.derivative.eval r < a - r := by
     calc
@@ -247,7 +264,6 @@ strict interlacer of `f`. -/
 theorem residueAuxiliary_interlaces
     {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
-    (hgnd : g.roots.Nodup)
     (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree)
     (hsimple : HasSimpleRoots f)
     {a m : ℝ} (hm : 0 ≤ m)
@@ -257,7 +273,7 @@ theorem residueAuxiliary_interlaces
       0 < (residueAuxiliary a m f g).eval r * f.derivative.eval r := by
     intro r hr
     exact residueAuxiliary_eval_mul_derivative_pos
-      hgf hflc hglc hgnd hfdeg hgdeg hsimple hm ha hgap hr
+      hgf hflc hglc hfdeg hgdeg hsimple hm ha hgap hr
   have hroots_ne : f.roots ≠ 0 := by
     intro hzero
     have hcard : f.roots.card = f.natDegree :=

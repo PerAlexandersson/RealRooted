@@ -93,7 +93,6 @@ theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
     {d k : ℕ} (hk : k < d)
     (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
-    (hprevSimple : HasSimpleRoots (a144696BernsteinImage (d - 1) k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k))
     {r : ℝ} (hr : (a144696BernsteinImage d k).IsRoot r) :
     0 < (a144696Auxiliary d k).eval r *
@@ -109,7 +108,6 @@ theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
     exact_mod_cast (show d - 1 < d by lia)
   rw [a144696Auxiliary_eq_residueAuxiliary hk]
   apply residueAuxiliary_eval_mul_derivative_pos hprec hcurPos hprevPos
-    hprevSimple.roots_nodup
     (by rw [natDegree_a144696BernsteinImage hk.le]; lia)
     hprevDeg hcurSimple (by rw [← Nat.cast_sub hk.le]; positivity)
   · intro s hs
@@ -124,7 +122,6 @@ theorem a144696Auxiliary_interlaces_of_prec
     {d k : ℕ} (hk : k < d)
     (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
-    (hprevSimple : HasSimpleRoots (a144696BernsteinImage (d - 1) k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k)) :
     Interlaces (a144696Auxiliary d k) (a144696BernsteinImage d k) := by
   have hprevRange : k ≤ d - 1 := by lia
@@ -138,7 +135,7 @@ theorem a144696Auxiliary_interlaces_of_prec
     exact_mod_cast (show d - 1 < d by lia)
   rw [a144696Auxiliary_eq_residueAuxiliary hk]
   apply residueAuxiliary_interlaces hprec hcurPos hprevPos
-    hprevSimple.roots_nodup (by rw [natDegree_a144696BernsteinImage hk.le]; lia)
+    (by rw [natDegree_a144696BernsteinImage hk.le]; lia)
     hprevDeg hcurSimple (by rw [← Nat.cast_sub hk.le]; positivity)
   · intro r hr
     have hneg := roots_neg_a144696BernsteinImage hk.le r hr
@@ -412,12 +409,9 @@ private theorem a144696RowCertificate_succ
         0 < (a144696Auxiliary d k).eval r *
           (a144696BernsteinImage d k).derivative.eval r := by
       rcases lt_or_eq_of_le hk with hlt | rfl
-      · have hpairSimple :=
-          (hrow.vertical k hlt).hasSimpleRoots_of_no_common_root
-            (fun r h ↦ hrow.verticalNoCommon k hlt r h.1 h.2)
-        exact fun _ hr ↦
+      · exact fun _ hr ↦
           a144696Auxiliary_eval_mul_derivative_pos_of_prec hlt
-            (hrow.vertical k hlt) hpairSimple.1 hcurSimple hr
+            (hrow.vertical k hlt) hcurSimple hr
       · exact fun _ hr ↦
           a144696Auxiliary_diagonal_eval_mul_derivative_pos hcurSimple hr
     exact a144696BernsteinImage_shifted_step hd hk
