@@ -1,4 +1,5 @@
 import RealRooted.MaWang
+import RealRooted.MaWang.StrictSigns.Assembly
 import RealRooted.ObreschkoffConverse
 import RealRooted.PosCombo
 import RealRooted.Interlacing.Multiplicity
@@ -128,6 +129,30 @@ theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
       hprec hf_pos hg_pos ?_ hr
   exact isCoprime_of_no_common_real_root_of_isRealRooted
     hprec.1.1 hprec.1.2 hno
+
+/-- For positive-leading polynomials, coprime differ-by-one interlacing is
+equivalent to the left polynomial having the derivative's strict sign at every
+root of the right polynomial. -/
+theorem interlaces_and_isCoprime_iff_eval_mul_derivative_pos
+    {q f : ℝ[X]} (hf : f.Splits)
+    (hq_pos : HasPosLeadingCoeff q) (hf_pos : HasPosLeadingCoeff f)
+    (hqdeg : q.natDegree < f.natDegree) :
+    Interlaces q f ∧ IsCoprime q f ↔
+      ∀ r, f.IsRoot r → 0 < q.eval r * f.derivative.eval r := by
+  constructor
+  · rintro ⟨hinter, hcop⟩ r hr
+    exact eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
+      hinter.toStrictInterl hq_pos hf_pos hcop hr
+  · intro hsign
+    have hinter := interlaces_of_eval_mul_derivative_pos hf hf_pos hqdeg hsign
+    refine ⟨hinter, ?_⟩
+    apply isCoprime_of_no_common_real_root_of_isRealRooted
+      hinter.2.1.1 hinter.2.1.2
+    intro r hqroot hfroot
+    have hpositive := hsign r hfroot
+    have hqeval : q.eval r = 0 := hqroot
+    rw [hqeval, zero_mul] at hpositive
+    exact (lt_irrefl 0) hpositive
 
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair, the right value and left derivative have nonpositive product. -/
