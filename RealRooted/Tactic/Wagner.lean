@@ -20,9 +20,9 @@ theorem wagner_commonRight_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
     (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
-    (hFH : ∀ n : Nat, Prec (F n) (H n))
-    (hGH : ∀ n : Nat, Prec (G n) (H n)) :
-    ∀ n : Nat, Prec (F n + G n) (H n) := fun n => by
+    (hFH : ∀ n : Nat, StrictInterl (F n) (H n))
+    (hGH : ∀ n : Nat, StrictInterl (G n) (H n)) :
+    ∀ n : Nat, StrictInterl (F n + G n) (H n) := fun n => by
   have _ := hH n
   exact Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
 
@@ -30,9 +30,9 @@ theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
     (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
-    (hHF : ∀ n : Nat, Prec (H n) (F n))
-    (hHG : ∀ n : Nat, Prec (H n) (G n)) :
-    ∀ n : Nat, Prec (H n) (F n + G n) := fun n => by
+    (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
+    (hHG : ∀ n : Nat, StrictInterl (H n) (G n)) :
+    ∀ n : Nat, StrictInterl (H n) (F n + G n) := fun n => by
   have _ := hH n
   exact Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
 
@@ -40,7 +40,7 @@ theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
     (hdeg : ∀ n : Nat, (F n).natDegree + 1 = (G n).natDegree) :
-    ∀ n : Nat, Prec (F n) (G n) ↔ Prec (G n) (X * F n) := fun n =>
+    ∀ n : Nat, StrictInterl (F n) (G n) ↔ StrictInterl (G n) (X * F n) := fun n =>
   Wagner.mulX_iff (hF n) (hG n) (hdeg n)
 
 syntax (name := rr_wagner_common_right_add_named)

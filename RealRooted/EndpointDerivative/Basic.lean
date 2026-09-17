@@ -85,13 +85,13 @@ theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
-    Prec f (((X - C a) * (X - C b)) * f.derivative) := by
+    StrictInterl f (((X - C a) * (X - C b)) * f.derivative) := by
   let q : ℝ[X] := (X - C a) * (X - C b)
   have htarget_deg : (q * f.derivative).natDegree = f.natDegree + 1 := by
     exact natDegree_endpointDerivative hdeg
   have htarget_pos : HasPosLeadingCoeff (q * f.derivative) :=
     hasPosLeadingCoeff_endpointDerivative hf_pos hdeg
-  have hprec : Prec f (0 * f + q * f.derivative) :=
+  have hprec : StrictInterl f (0 * f + q * f.derivative) :=
     prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by simp only [zero_mul, zero_add]; rw [htarget_deg]; lia)
       (by simp only [zero_mul, zero_add]; rw [htarget_deg])
@@ -129,7 +129,7 @@ theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
-    Prec f (((X - C a) * (X - C b) * f).derivative) := by
+    StrictInterl f (((X - C a) * (X - C b) * f).derivative) := by
   let q : ℝ[X] := (X - C a) * (X - C b)
   have htarget_eq :
       (q * f).derivative = q.derivative * f + q * f.derivative := by
@@ -142,7 +142,7 @@ theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
       HasPosLeadingCoeff (q.derivative * f + q * f.derivative) := by
     rw [← htarget_eq]
     exact hasPosLeadingCoeff_derivative_endpointProduct hf_pos
-  have hprec : Prec f (q.derivative * f + q * f.derivative) :=
+  have hprec : StrictInterl f (q.derivative * f + q * f.derivative) :=
     prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by rw [htarget_deg]; lia) (by rw [htarget_deg]) htarget_pos hf_pos (by
         intro r hr

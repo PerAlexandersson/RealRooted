@@ -370,12 +370,12 @@ lemma listInterlaces_of_listAlternates_append_right
   simpa [List.map_map, Function.comp, hfun] using
     listInterlaces_map_sub_const hint0 (-uR)
 
-/-- In the same-degree `Prec` case, removing a rightmost root of the right-hand
+/-- In the same-degree `StrictInterl` case, removing a rightmost root of the right-hand
 polynomial turns the quotient into an honest differ-by-1 interlacer for the
 left-hand polynomial. -/
 lemma interlaces_of_prec_sameDegree_rightmost_factor
     {f g q : ℝ[X]} {uR : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hright : ∀ r ∈ g.roots, r ≤ uR)
     (hgq : g = (X - C uR) * q) :

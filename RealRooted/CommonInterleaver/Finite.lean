@@ -268,7 +268,7 @@ interleaver on the right. This is the local input needed for the finite-Helly
 step in the Chudnovsky--Seymour proof. -/
 theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
     {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (j : ℕ)
     (hjf : j < f.natDegree + 1)
     (hjg : j < g.natDegree + 1) :

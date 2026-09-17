@@ -15,19 +15,19 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-/-- Scalar-left `Prec` row-family exit exposed through the OEIS facade. -/
+/-- Scalar-left `StrictInterl` row-family exit exposed through the OEIS facade. -/
 example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
     (ha : ∀ n : Nat, a n ≠ 0) :
-    ∀ n : Nat, Prec (C (a n) * F n) (G n) := by
+    ∀ n : Nat, StrictInterl (C (a n) * F n) (G n) := by
   rr_prec_C_mul_left_sequence using
     prec := hFG,
     scalar_ne := ha
 
-/-- Scalar-both `Prec` row-family exit exposed through the OEIS facade. -/
+/-- Scalar-both `StrictInterl` row-family exit exposed through the OEIS facade. -/
 example {F G : Nat → ℝ[X]}
-    (hFG : ∀ n : Nat, Prec (F n) (G n)) :
-    ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n)) :
+    ∀ n : Nat, StrictInterl (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
   rr_prec_C_mul_both_sequence using
     prec := hFG
 
@@ -66,14 +66,14 @@ example {d : Nat → Nat} {P : Nat → ℝ[X]}
     realrooted := hp,
     nonneg := hpnn
 
-/-- `fPolynomial` row-family `Prec` transport exposed through the OEIS facade. -/
+/-- `fPolynomial` row-family `StrictInterl` transport exposed through the OEIS facade. -/
 example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hud : ∀ n : Nat, (U n).natDegree ≤ d n)
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hprec : ∀ n : Nat, Prec (U n) (V n)) :
-    ∀ n : Nat, Prec (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n)) := by
+    (hprec : ∀ n : Nat, StrictInterl (U n) (V n)) :
+    ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n)) := by
   rr_fPolynomial_sequence_prec using
     left_degree := hud,
     right_degree := hvd,

@@ -24,13 +24,13 @@ example {FS : Nat → List ℝ[X]} :
 example {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) :
-    Prec (fs.get ⟨m, hm⟩) (staircaseSum fs m) := by
+    StrictInterl (fs.get ⟨m, hm⟩) (staircaseSum fs m) := by
   rr_staircaseSum_prec using interlacing_nonneg := hfs, index_lt := hm
 
 example {FS : Nat → List ℝ[X]} {M : Nat → Nat}
     (hFS : ∀ i : Nat, IsInterlacingSeqNonneg (FS i))
     (hM : ∀ i : Nat, M i < (FS i).length) :
-    ∀ i : Nat, Prec ((FS i).get ⟨M i, hM i⟩) (staircaseSum (FS i) (M i)) := by
+    ∀ i : Nat, StrictInterl ((FS i).get ⟨M i, hM i⟩) (staircaseSum (FS i) (M i)) := by
   rr_staircaseSum_sequence_prec using interlacing_nonneg := hFS, index_lt := hM
 
 example {fs : List ℝ[X]} {m : Nat}

@@ -72,7 +72,7 @@ theorem rationalRodRows_pf_and_prec0
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     (hxs : ∀ x ∈ xs, 0 ≤ x) :
     (∀ n, IsPFPolynomial (rationalRodRow ys c r xs n)) ∧
-      ∀ n, Prec0 (rationalRodRow ys c r xs n)
+      ∀ n, Interl (rationalRodRow ys c r xs n)
         (rationalRodRow ys c r xs (n + 1)) := by
   have hg := rationalBackgroundSeries_coeff_isPolyaFreqSeq hys
   have hh := markedFactorSeries_coeff_isPolyaFreqSeq hc r hxs
@@ -181,7 +181,7 @@ theorem monomerRodRows_pf_and_prec0
     {b c : ℝ} (hb : 0 ≤ b) (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     {xs : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x) :
     (∀ n, IsPFPolynomial (monomerRodRow b c r xs n)) ∧
-      ∀ n, Prec0 (monomerRodRow b c r xs n)
+      ∀ n, Interl (monomerRodRow b c r xs n)
         (monomerRodRow b c r xs (n + 1)) := by
   simpa [monomerRodRow] using
     (rationalRodRows_pf_and_prec0 (ys := [b]) (by simpa) hc hr hxs)

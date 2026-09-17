@@ -16,7 +16,7 @@ namespace Tactic
 -- Direct root-sign route for the combined wrapper, independent of
 -- nonnegative-coefficient root bounds.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
@@ -27,7 +27,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (C (2 : ℝ) - X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -39,7 +39,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- Real-rooted projection endpoint for the same direct root-sign route.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
@@ -62,7 +62,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- Root-window route for I2-type derivative-lag recurrences.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -74,7 +74,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (X * (1 + C (4 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_window_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -87,7 +87,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- Denominator-fused root-window route for the same I2 sign pattern.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
@@ -120,7 +120,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A144438`: `P_n=(1-t+nt)P_{n-1}+t(1-t)P'_{n-1}+tP_{n-2}`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -130,7 +130,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           X * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -142,7 +142,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- Scalar-denominator presentation of the `A144438` derivative-lag shape.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -153,7 +153,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           C ((n : ℝ) + 3) * (X * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -173,7 +173,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 -- Reordered raw denominator recurrence with two nontrivial normalized
 -- coefficients.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -203,7 +203,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A144436`: same derivative term with lag coefficient `4t`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -225,7 +225,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A046739`: active shift gives lag coefficient `(n+4)t`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -235,7 +235,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (C ((n : ℝ) + 4) * X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -247,7 +247,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A271697`: the active shift has lag coefficient `nt`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -257,7 +257,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           (C (n : ℝ) * X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_lw_derivative_lag_sequence_sign_auto using
     base := hbase,
     pos_lc := hpos,
@@ -269,7 +269,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A271698`: one further active shift makes the lag coefficient `nt`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -291,7 +291,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 -- `A395454`: active shift gives lag coefficient `2nt`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)

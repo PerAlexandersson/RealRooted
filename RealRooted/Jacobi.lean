@@ -20,7 +20,7 @@ namespace RealRooted
 both parameters exceed `-1`. -/
 theorem shiftedJacobiMonic_prec_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobiMonic n α β) (shiftedJacobiMonic (n + 1) α β) := by
+    StrictInterl (shiftedJacobiMonic n α β) (shiftedJacobiMonic (n + 1) α β) := by
   apply favardInterlacing (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ)
   · intro k
     exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
@@ -79,10 +79,10 @@ theorem shiftedJacobi_eq_leading_mul_monic (n : ℕ) {α β : ℝ}
     C_1, one_mul]
 
 /-- Consecutive shifted Jacobi polynomials satisfy the project's
-scalar-invariant `Prec` relation when both parameters exceed `-1`. -/
+scalar-invariant `StrictInterl` relation when both parameters exceed `-1`. -/
 theorem shiftedJacobi_prec_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
+    StrictInterl (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
   rw [shiftedJacobi_eq_leading_mul_monic n hα hβ,
     shiftedJacobi_eq_leading_mul_monic (n + 1) hα hβ]
   exact

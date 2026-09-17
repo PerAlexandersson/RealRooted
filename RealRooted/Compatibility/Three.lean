@@ -121,7 +121,7 @@ theorem prec_of_compatible_and_X_mul_left
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g)
     (hfg : Compatible f g) (hXfg : Compatible (X * f) g) :
-    Prec f g := by
+    StrictInterl f g := by
   have hf_pos : HasPosLeadingCoeff f := hf_nonneg.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hg_nonneg.pos_leadingCoeff hg0
   have hf_rr : f ≠ 0 ∧ f.Splits := hfg.isRealRooted_left hf_pos

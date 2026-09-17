@@ -60,7 +60,7 @@ theorem alternates_dup_mem {ss rs : List ℝ} (hrs : rs.Pairwise (· ≤ ·))
     obtain ⟨x, h_x_mem, h_x_ss'⟩ := interlaces_dup_mem hrs htail hnd
     exact ⟨x, h_x_mem, List.mem_cons_of_mem s h_x_ss'⟩
 
-theorem exists_common_root_of_not_nodup {f g : ℝ[X]} (hpq : Prec g f)
+theorem exists_common_root_of_not_nodup {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hnd : ¬ f.roots.Nodup) :
     ∃ r, r ∈ f.roots ∧ r ∈ g.roots := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq
@@ -138,7 +138,7 @@ theorem alternates_dup_mem_left {ss rs : List ℝ} (hss : ss.Pairwise (· ≤ ·
       obtain ⟨x, h_x_ss', h_x_rs⟩ := interlaces_dup_mem_left h_ss' htail h_dup'
       exact ⟨x, List.mem_cons_of_mem s h_x_ss', h_x_rs⟩
 
-theorem exists_common_root_of_not_nodup_g {f g : ℝ[X]} (hpq : Prec g f)
+theorem exists_common_root_of_not_nodup_g {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hnd : ¬ g.roots.Nodup) :
     ∃ r, r ∈ f.roots ∧ r ∈ g.roots := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq

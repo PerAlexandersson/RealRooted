@@ -18,7 +18,7 @@ coefficients of the current row.  The lower bound `-1 <= r` and the lag sign
 certificate on the window are supplied by the sequence-specific proof. -/
 theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
     {A B : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -27,7 +27,7 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence_of_inductive_nonpos hbase hpos
     (fun n hsource r hr =>
       hB_nonpos n r hr (hroot_lower n r hr)
@@ -38,7 +38,7 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
 /-- Real-rootedness corollary for the inner-window Liu--Wang induction. -/
 theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -56,7 +56,7 @@ theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
 `[-1,0]`. -/
 theorem prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -64,7 +64,7 @@ theorem prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (X * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi => eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
@@ -73,7 +73,7 @@ theorem prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -90,7 +90,7 @@ theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 `[-1,0]`. -/
 theorem prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -99,7 +99,7 @@ theorem prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
@@ -109,7 +109,7 @@ theorem prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `c_n X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -127,7 +127,7 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 `[-1,0]`. -/
 theorem prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -135,7 +135,7 @@ theorem prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (X * (1 - X) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X * (1 - X) * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi =>
@@ -145,7 +145,7 @@ theorem prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -162,7 +162,7 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
 `[-1,0]`. -/
 theorem prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -172,7 +172,7 @@ theorem prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeff
         A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * X * (1 - X) * (1 + X)) hbase hpos hnonneg
     hroot_lower
@@ -184,7 +184,7 @@ theorem prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeff
 /-- Real-rootedness corollary for the `c_n X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -202,7 +202,7 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_n
 /-- Sequence-level `X-X^3` lag controlled on the inner root window `[-1,0]`. -/
 theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -210,7 +210,7 @@ theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (X - X ^ 3) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X - X ^ 3) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi => eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
@@ -219,7 +219,7 @@ theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `X-X^3` inner-window lag. -/
 theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -236,7 +236,7 @@ theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
 `[-1,0]`. -/
 theorem prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -245,7 +245,7 @@ theorem prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * (X - X ^ 3)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
@@ -255,7 +255,7 @@ theorem prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `c_n (X-X^3)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -273,7 +273,7 @@ theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
 root interval.  This is for windows narrower than the half-line, where both
 bounds have to be supplied by the sequence-specific proof. -/
 theorem prec_lw_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
@@ -282,7 +282,7 @@ theorem prec_lw_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence hbase hpos
     (fun n r hr => hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hrec hdeg_succ hno
@@ -290,7 +290,7 @@ theorem prec_lw_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]
 /-- Real-rootedness corollary for the explicit-interval Liu--Wang induction. -/
 theorem isRealRooted_of_lw_interval_lag_sequence
     {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
@@ -308,7 +308,7 @@ theorem isRealRooted_of_lw_interval_lag_sequence
 `[-1,-1/2]`. -/
 theorem prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
@@ -317,7 +317,7 @@ theorem prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
         A n * P (n + 1) + ((1 + X) * (1 + C (2 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_interval_lag_sequence
     (B := fun _ => (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
     hroot_lower hroot_upper
@@ -328,7 +328,7 @@ theorem prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
 /-- Real-rootedness corollary for the `(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
@@ -346,7 +346,7 @@ theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
 `[-1,-1/2]`. -/
 theorem prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -356,7 +356,7 @@ theorem prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
         A n * P (n + 1) + (C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_interval_lag_sequence
     (B := fun n => C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) hbase hpos
     hroot_lower hroot_upper
@@ -368,7 +368,7 @@ theorem prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
 /-- Real-rootedness corollary for the `c_n(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -387,7 +387,7 @@ theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
 `[-1,0]`, in the common monotone-affine case `0 <= b_n <= a_n`. -/
 theorem prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -399,7 +399,7 @@ theorem prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
         A n * P (n + 1) + (-(C (c n)) * (C (a n) + C (b n) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => -(C (c n)) * (C (a n) + C (b n) * X))
     hbase hpos hnonneg hroot_lower
@@ -411,7 +411,7 @@ theorem prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for inner-window negative affine lags. -/
 theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -431,7 +431,7 @@ theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
 /-- Sequence-level `-c_n(1+X)` lag controlled on `[-1,0]`. -/
 theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -440,7 +440,7 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => -(C (c n)) * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo _ => eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one
@@ -450,7 +450,7 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `-c_n(1+X)` inner-window lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -472,7 +472,7 @@ summand already multiplied by `d_n`, and a raw affine lag coefficient
 negative coefficient. -/
 theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -484,7 +484,7 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
         C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   refine
     prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       (A := A) hbase hpos hnonneg hc hroot_lower ?_ hdeg_succ hno
@@ -506,7 +506,7 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
 /-- Real-rootedness corollary for the denominator-fused `-c_n(1+X)` lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c d : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -527,7 +527,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_
 `[-1/2,0]`. -/
 theorem prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -537,7 +537,7 @@ theorem prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
         A n * P (n + 1) + (-(C (c n)) * (1 + C (2 : ℝ) * X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => -(C (c n)) * (1 + C (2 : ℝ) * X))
     hbase hpos hnonneg
@@ -552,7 +552,7 @@ theorem prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `-c_n(1+2X)` tighter-window lag. -/
 theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -571,7 +571,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_co
 `[-1,0]`. -/
 theorem prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -579,7 +579,7 @@ theorem prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (X ^ 2 - 1) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X ^ 2 - 1) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi => eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
@@ -588,7 +588,7 @@ theorem prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `X^2-1` inner-window lag. -/
 theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -605,7 +605,7 @@ theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
 `[-1,0]`. -/
 theorem prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -614,7 +614,7 @@ theorem prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (C (c n) * (X ^ 2 - 1)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * (X ^ 2 - 1)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
@@ -624,7 +624,7 @@ theorem prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
 /-- Real-rootedness corollary for the `c_n(X^2-1)` inner-window lag. -/
 theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)

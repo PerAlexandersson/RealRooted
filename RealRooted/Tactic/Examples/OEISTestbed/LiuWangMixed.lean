@@ -53,7 +53,7 @@ example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
 
 -- `A154986`: active coefficient `(m-1)(m-2)t`, after the row shift.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -62,7 +62,7 @@ example {P : Nat → ℝ[X]}
           (C (((n : ℝ) + 2) ^ 2 - 3 * ((n : ℝ) + 2) + 2) * X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_current_one_add_X_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A334823`: `P_m=(1+2m)P_{m-1}-t^2P_{m-2}`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -81,7 +81,7 @@ example {P : Nat → ℝ[X]}
           (-(C (1 : ℝ)) * X ^ 2) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_negative_square_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -91,7 +91,7 @@ example {P : Nat → ℝ[X]}
 
 -- `A334824`: same negative-square lag with current factor `3+2m`.
 example {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hrec : ∀ n : Nat,
       P (n + 2) =

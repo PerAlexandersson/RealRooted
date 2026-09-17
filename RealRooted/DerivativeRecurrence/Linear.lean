@@ -120,14 +120,14 @@ theorem interlaces_of_derivative_linear_pos_const
     simp_all
   have hne (n : ℕ) : P n ≠ 0 := (hpos n).ne_zero
   have hP1 : P 1 = (C a + C c * X) * C d := by simp_all
-  have hprec : ∀ n, Prec (P n) (P (n + 1)) := by
+  have hprec : ∀ n, StrictInterl (P n) (P (n + 1)) := by
     intro n
     induction n with
     | zero =>
         have hInter : Interlaces (P 0) (P 1) := by
           rw [h0]
           exact interlaces_C_linear (ne_of_gt hd_pos) (p := P 1) (by grind)
-        exact hInter.toPrec
+        exact hInter.toStrictInterl
     | succ n ih =>
         have hsp : (P (n + 1)).Splits := ih.2.1.2
         have hroots_nonpos : ∀ r, (P (n + 1)).IsRoot r → r ≤ 0 := fun r hr =>

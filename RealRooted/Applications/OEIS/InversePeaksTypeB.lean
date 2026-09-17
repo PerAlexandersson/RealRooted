@@ -198,7 +198,7 @@ private theorem inversePeakTypeB_degree_step (n : ℕ) :
   simp
 
 private theorem inversePeakTypeB_base_prec :
-    Prec (inversePeakTypeB 0) (inversePeakTypeB 1) := by
+    StrictInterl (inversePeakTypeB 0) (inversePeakTypeB 1) := by
   rw [inversePeakTypeB_zero, inversePeakTypeB_one]
   have hpoly : (1 + C 6 * X + X ^ 2 : ℝ[X]) =
       1 + X * C 6 + X ^ 2 := by
@@ -217,7 +217,7 @@ private theorem inversePeakTypeB_base_noCommon :
 
 /-- Consecutive type-B rows are in proper position and share no real root. -/
 theorem inversePeakTypeB_prec_and_noCommonRoot (n : ℕ) :
-    Prec (inversePeakTypeB n) (inversePeakTypeB (n + 1)) ∧
+    StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) ∧
       ∀ r, (inversePeakTypeB (n + 1)).IsRoot r →
         ¬ (inversePeakTypeB n).IsRoot r := by
   apply prec_and_noCommonRoot_of_quadratic_lag_degree_step
@@ -240,7 +240,7 @@ theorem inversePeakTypeB_prec_and_noCommonRoot (n : ℕ) :
 
 /-- Consecutive type-B rows are in proper position. -/
 theorem inversePeakTypeB_prec (n : ℕ) :
-    Prec (inversePeakTypeB n) (inversePeakTypeB (n + 1)) :=
+    StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) :=
   (inversePeakTypeB_prec_and_noCommonRoot n).1
 
 /-- Consecutive type-B rows have no common real root. -/

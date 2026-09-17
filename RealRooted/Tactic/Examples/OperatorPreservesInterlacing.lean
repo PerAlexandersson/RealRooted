@@ -28,21 +28,21 @@ example {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
 
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesInterlacingPairsUpToOrder0 T)
-    (hfg : ∀ i : Nat, Prec (F i) (G i)) :
-    ∀ i : Nat, Prec0 (T (F i)) (T (G i)) ∨ Prec0 (T (G i)) (T (F i)) := by
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
+    ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) := by
   rr_operator_prec0_sequence_of_preserver using
     interlacing_preserver := hT,
     prec := hfg
 
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
-    (hT : PreservesRealRootedOrZero T) (hfg : Prec f g) :
-    Prec0 (T f) (T g) ∨ Prec0 (T g) (T f) := by
+    (hT : PreservesRealRootedOrZero T) (hfg : StrictInterl f g) :
+    Interl (T f) (T g) ∨ Interl (T g) (T f) := by
   rr_operator_prec0_up_to_order using preserves := hT, prec := hfg
 
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
-    (hfg : ∀ i : Nat, Prec (F i) (G i)) :
-    ∀ i : Nat, Prec0 (T (F i)) (T (G i)) ∨ Prec0 (T (G i)) (T (F i)) := by
+    (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
+    ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) := by
   rr_operator_prec0_sequence_up_to_order using preserves := hT, prec := hfg
 
 end Tactic

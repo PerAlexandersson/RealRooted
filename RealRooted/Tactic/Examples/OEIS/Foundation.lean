@@ -49,13 +49,13 @@ example {P : Nat → ℝ[X]}
     realrooted := hrr,
     nonneg := hpnn
 
-/-- Affine-derivative row-family `Prec` exit exposed through the OEIS facade. -/
+/-- Affine-derivative row-family `StrictInterl` exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
   rr_prec_affine_derivative_nonneg_sequence using

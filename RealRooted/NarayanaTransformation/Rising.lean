@@ -70,7 +70,7 @@ private theorem generalizedRisingFactorialPreservesPF_shiftPrec {μ : ℝ}
     (hμ : 0 < μ) :
     ∀ n (p : ℝ[X]), p.natDegree = n → p ≠ 0 → IsPFPolynomial p →
       let q := basisTransform (risingFactorialPolynomial μ) p
-      IsPFPolynomial q ∧ Prec (q.comp (X + C μ)) q := by
+      IsPFPolynomial q ∧ StrictInterl (q.comp (X + C μ)) q := by
   intro n
   induction n using Nat.strong_induction_on with
   | h n ih =>

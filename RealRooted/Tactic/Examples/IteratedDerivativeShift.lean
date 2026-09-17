@@ -35,14 +35,14 @@ example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
 
 example {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp0 : p ≠ 0)
     (hp : p.Splits) :
-    Prec p (TDeriv eps p) := by
+    StrictInterl p (TDeriv eps p) := by
   rr_TDeriv_prec using eps_pos := heps, nonzero := hp0, splits := hp
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ i : Nat, 0 < eps i)
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
-    ∀ i : Nat, Prec (P i) (TDeriv (eps i) (P i)) := by
+    ∀ i : Nat, StrictInterl (P i) (TDeriv (eps i) (P i)) := by
   rr_TDeriv_sequence_prec using
     eps_pos := heps,
     nonzero := hP0,
@@ -72,7 +72,7 @@ example {eps : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ}
 
 example {eps : ℝ} {p : ℝ[X]} {n : ℕ} (heps : 0 < eps) (hp0 : p ≠ 0)
     (hp : p.Splits) :
-    Prec (iterateTDeriv eps n p) (iterateTDeriv eps (n + 1) p) := by
+    StrictInterl (iterateTDeriv eps n p) (iterateTDeriv eps (n + 1) p) := by
   rr_iterateTDeriv_prec_succ using eps_pos := heps, nonzero := hp0, splits := hp
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ}
@@ -80,7 +80,7 @@ example {eps : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ}
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
     ∀ i : Nat,
-      Prec (iterateTDeriv (eps i) (K i) (P i))
+      StrictInterl (iterateTDeriv (eps i) (K i) (P i))
         (iterateTDeriv (eps i) (K i + 1) (P i)) := by
   rr_iterateTDeriv_sequence_prec_succ using
     eps_pos := heps,

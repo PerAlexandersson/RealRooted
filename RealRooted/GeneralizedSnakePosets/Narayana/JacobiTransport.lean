@@ -543,7 +543,7 @@ theorem lemma34ModifiedNarayanaShifted_prev_interlaces_left
     simpa using lemma34ModifiedNarayanaShifted_left_natDegree
       (m := k + 2) (by lia) hlam hmu
   have hprec :
-      Prec (modifiedNarayanaPolynomial (k + 1))
+      StrictInterl (modifiedNarayanaPolynomial (k + 1))
         (a * modifiedNarayanaPolynomial (k + 1) +
           b * modifiedNarayanaPolynomial k) := by
     have hF_pos :

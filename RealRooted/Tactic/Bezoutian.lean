@@ -66,9 +66,9 @@ theorem bezout_sequence_prec_of_posDef
     (hP_deg : ∀ i : Nat, (P i).natDegree = d i)
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
-    ∀ i : Nat, Prec (P i) (Q i) := fun i =>
+    ∀ i : Nat, StrictInterl (P i) (Q i) := fun i =>
   ((strictPrecSameDegree_iff_bezoutMatrix_posDef
-    (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)).to_prec
+    (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)).toStrictInterl
 
 theorem bezout_sequence_realrooted_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
@@ -226,7 +226,7 @@ macro_rules
         pos_def := $hpos:term) =>
       `(tactic|
         exact ((strictPrecSameDegree_iff_bezoutMatrix_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos).to_prec)
+          $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos).toStrictInterl)
   | `(tactic|
       rr_bezout_realrooted_of_pos_def using
         left_pos_lc := $hp_pos:term,

@@ -32,7 +32,7 @@ example {f F u v : ℝ[X]}
     (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos_step using
     splits := hf,
     degree_two := hdegf,
@@ -53,7 +53,7 @@ example {f F u v : ℝ[X]}
     (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos_step using recurrence := hrec
 
 example {f F u v : ℝ[X]}
@@ -65,7 +65,7 @@ example {f F u v : ℝ[X]}
     (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos_step using recurrence :=
     (by simpa [add_comm] using hraw : F = u * f + v * f.derivative)
 
@@ -79,7 +79,7 @@ example {P U V : Nat → ℝ[X]} {n : Nat}
     (hdeg_lo : ∀ k, (P (k + 1)).natDegree ≤ (P (k + 2)).natDegree)
     (hdeg_hi : ∀ k, (P (k + 2)).natDegree ≤ (P (k + 1)).natDegree + 1)
     (hcoeff : ∀ k r, (P (k + 1)).IsRoot r → (V k).eval r ≤ 0) :
-    Prec (P (n + 1))
+    StrictInterl (P (n + 1))
       (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
   rr_mw_derivative_nonpos_step using recurrence := hrec n
 
@@ -92,7 +92,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang using
     hf, hdegf, hdeg_lo, hdeg_hi, hF_pos, hf_pos, hroot_sign
 
@@ -105,7 +105,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang using
     splits := hf,
     degree_two := hdegf,
@@ -123,7 +123,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_same using
     hf, hdegf, hdeg, hF_pos, hf_pos, hroot_sign
 
@@ -135,7 +135,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_same using
     splits := hf,
     degree_two := hdegf,
@@ -152,7 +152,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_succ using
     hf, hdegf, hdeg, hF_pos, hf_pos, hroot_sign
 
@@ -164,7 +164,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_succ using
     splits := hf,
     degree_two := hdegf,
@@ -190,7 +190,7 @@ example {f u v g a b : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang
 
 example {f u v : ℝ[X]}
@@ -201,7 +201,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_same
 
 example {f u v : ℝ[X]}
@@ -212,7 +212,7 @@ example {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign :
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_succ
 
 example {f g a b : ℝ[X]}
@@ -222,7 +222,7 @@ example {f g a b : ℝ[X]}
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_prec_evalCoeff_nonpos using
     interlaces := hgf,
     source_pos_lc := hg_pos,
@@ -237,7 +237,7 @@ example {f g a b : ℝ[X]}
     (hdeg : (a * f + b * g).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_prec_evalCoeff_nonpos using
     interlaces := hgf,
     source_pos_lc := hg_pos,
@@ -253,7 +253,7 @@ example {f u v : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos using
     splits := hf,
     degree_two := hdegf,
@@ -270,7 +270,7 @@ example {f u v : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos using
     splits := hf,
     degree_two := hdegf,
@@ -293,7 +293,7 @@ example {P Q U V : Nat → ℝ[X]} {n : Nat}
       HasPosLeadingCoeff (U k * P k + V k * (P k).derivative))
     (hsource_pos : ∀ k, HasPosLeadingCoeff (P k))
     (hcoeff : ∀ k r, (P k).IsRoot r → (V k).eval r ≤ 0) :
-    Prec (P n) (U n * P n + V n * (P n).derivative) := by
+    StrictInterl (P n) (U n * P n + V n * (P n).derivative) := by
   rr_mw_derivative_nonpos
 
 /-- A successor-degree equality supplies both derivative-step degree bounds. -/
@@ -304,7 +304,7 @@ example {f u v : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos using degree := hdeg
 
 /-- The generic bare form selects the displayed indexed interlacer despite an
@@ -319,7 +319,7 @@ example {P G H A B : Nat → ℝ[X]} {n : Nat}
       (A k * P k + B k * G k).natDegree ≤ (P k).natDegree + 1)
     (htarget_pos : ∀ k, HasPosLeadingCoeff (A k * P k + B k * G k))
     (hcoeff : ∀ k r, (P k).IsRoot r → (B k).eval r ≤ 0) :
-    Prec (P n) (A n * P n + B n * G n) := by
+    StrictInterl (P n) (A n * P n + B n * G n) := by
   rr_prec_evalCoeff_nonpos
 
 /-- A same-degree equality supplies both generic evaluation-step bounds. -/
@@ -329,7 +329,7 @@ example {f g a b : ℝ[X]}
     (hdeg : (a * f + b * g).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_prec_evalCoeff_nonpos using degree := hdeg
 
 

@@ -19,7 +19,7 @@ section
 
 private theorem allComboRealRooted_of_prec_succDegree_pos
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
@@ -72,7 +72,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           have hmix_lo : g.natDegree ≤ (C (-β) * g + C (-α) * f).natDegree := by lia
           have hmix_hi : (C (-β) * g + C (-α) * f).natDegree ≤ g.natDegree + 1 := by lia
           have hprec_mix :
-              Prec g (C (-β) * g + C (-α) * f) :=
+              StrictInterl g (C (-β) * g + C (-α) * f) :=
             prec_of_interlaces_evalCoeff_nonpos
               (f := g) (g := f) (a := C (-β)) (b := C (-α))
               hfg_inter hf_pos hmix_pos
@@ -120,7 +120,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
         have hmix_lo : g.natDegree ≤ (C β * g + C α * f).natDegree := by lia
         have hmix_hi : (C β * g + C α * f).natDegree ≤ g.natDegree + 1 := by lia
         have hprec_mix :
-            Prec g (C β * g + C α * f) :=
+            StrictInterl g (C β * g + C α * f) :=
           prec_of_interlaces_evalCoeff_nonpos
             (f := g) (g := f) (a := C β) (b := C α)
             hfg_inter hf_pos hmix_pos
@@ -133,7 +133,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
 
 private theorem allComboRealRooted_of_prec_succDegree
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     AllComboRealRooted f g := by
   have hf : (f ≠ 0 ∧ f.Splits) := hfg.1
@@ -158,7 +158,7 @@ private theorem allComboRealRooted_of_prec_succDegree
     · grind
   let f₀ : ℝ[X] := C sf * f
   let g₀ : ℝ[X] := C sg * g
-  have hfg₀ : Prec f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
+  have hfg₀ : StrictInterl f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
   have hdeg₀ : f₀.natDegree + 1 = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
@@ -182,12 +182,12 @@ keeps the orientation fixed. -/
 private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
-        Prec f g →
+        StrictInterl f g →
         f.natDegree = g.natDegree →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
         AllComboRealRooted f g)
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
     AllComboRealRooted f g := by
   refine
@@ -195,7 +195,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
       (p := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
-          Prec f g →
+          StrictInterl f g →
           f.natDegree = g.natDegree →
           AllComboRealRooted f g)
       f.natDegree ?_ rfl hfg hdeg
@@ -217,7 +217,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : Prec qf qg := by
+    have hprec_q : StrictInterl qf qg := by
       apply prec_of_prec_mul_X_sub_C_both r
       lia
     have hqhall : AllComboRealRooted qf qg :=
@@ -235,7 +235,7 @@ private lemma no_common_with_right_factor_quotient
 
 private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     {f g : ℝ[X]} {uR : ℝ}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (huR_root : g.IsRoot uR)
     (huR_max : ∀ r ∈ g.roots, r ≤ uR)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
@@ -254,7 +254,7 @@ private lemma prec_of_right_factor_combo_of_natDegree_ge
     (hq_no : ∀ r, f.IsRoot r → ¬ q.IsRoot r)
     (hroot_lt : ∀ r, f.IsRoot r → r < uR)
     (hβ : 0 < β) :
-    Prec f (C α * f + C β * ((X - C uR) * q)) := by
+    StrictInterl f (C α * f + C β * ((X - C uR) * q)) := by
   have hq_ne : q ≠ 0 := hqf.2.1.1
   have hbeta_term_eq :
       C β * ((X - C uR) * q) = (C β * (X - C uR)) * q := by
@@ -284,7 +284,7 @@ private lemma prec_of_right_factor_combo_of_natDegree_ge
   have hF_pos' : HasPosLeadingCoeff (C α * f + (C β * (X - C uR)) * q) := by lia
   have hdeg_lo' : f.natDegree ≤ (C α * f + (C β * (X - C uR)) * q).natDegree := by lia
   have hprec :
-      Prec f (C α * f + (C β * (X - C uR)) * q) :=
+      StrictInterl f (C α * f + (C β * (X - C uR)) * q) :=
     prec_of_interlaces_evalCoeff_neg
       (f := f) (g := q) (a := C α) (b := C β * (X - C uR))
       hqf hq_pos hF_pos' hdeg_lo' (by lia) hq_no hb_neg
@@ -380,7 +380,7 @@ root factorization `g = (X - C uR) * qg` and the helper
 `isRealRooted_of_right_factor_combo_posβ`. -/
 private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -472,13 +472,13 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
             hqg_inter hqg_pos hqg_no hroot_lt hβpos hcomb_pos hdeg_pos).2
 
 /-- Opposite-sign right-factor combinations are real-rooted even when the top
-coefficient does not have the sign needed to orient a `Prec` witness directly.
+coefficient does not have the sign needed to orient a `StrictInterl` witness directly.
 The proof splits into the genuine degree-drop case, where the combination
 becomes a left interlacer of `f`, and the same-degree case, where strict sign
 changes plus one outer root are enough to force real-rootedness. -/
 private theorem allComboRealRooted_of_prec_sameDegree
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
     AllComboRealRooted f g := by
   refine allComboRealRooted_of_prec_sameDegree_of_no_common ?_ hfg hdeg
@@ -505,7 +505,7 @@ private theorem allComboRealRooted_of_prec_sameDegree
     · grind
   let f₀ : ℝ[X] := C sf * f
   let g₀ : ℝ[X] := C sg * g
-  have hfg₀ : Prec f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
+  have hfg₀ : StrictInterl f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
@@ -535,7 +535,7 @@ private theorem allComboRealRooted_of_prec_sameDegree
 /-- Forward direction of Obreschkoff: if `f ≪ g` then all real combinations
 `αf + βg` are real-rooted (or zero). Follows from Wagner addition. -/
 theorem allComboRealRooted_of_prec {f g : ℝ[X]}
-    (hfg : Prec f g) :
+    (hfg : StrictInterl f g) :
     AllComboRealRooted f g := by
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
   · exact allComboRealRooted_of_prec_sameDegree hfg hsame.symm

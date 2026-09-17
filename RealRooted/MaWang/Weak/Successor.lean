@@ -18,7 +18,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
     (hdeg : F.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
@@ -151,7 +151,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
     (hdeg : F.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0) :
-    Prec f F := by
+    StrictInterl f F := by
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
@@ -329,7 +329,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_of_no_common
     (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0) :
-    Prec f F := by
+    StrictInterl f F := by
   have hcases : F.natDegree = f.natDegree ∨ F.natDegree = f.natDegree + 1 := by lia
   rcases hcases with hsame | hsucc
   · exact

@@ -21,13 +21,13 @@ nonnegative coefficients and positive leading coefficients propagate proper
 position through the whole sequence. -/
 theorem prec_positive_euler_lag_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n, HasNonnegCoeffs (P n))
     (hpos : ∀ n, HasPosLeadingCoeff (P n))
     (hc : ∀ n, 0 < c n)
     (hrec : ∀ n,
       P (n + 2) = (X * P (n + 1)).derivative + C (c n) * (X * P n)) :
-    ∀ n, Prec (P n) (P (n + 1)) := by
+    ∀ n, StrictInterl (P n) (P (n + 1)) := by
   intro n
   induction n with
   | zero => exact hbase
@@ -40,17 +40,17 @@ theorem prec_positive_euler_lag_sequence
       have hXnext_degree :
           (X * P (n + 1)).natDegree = 1 + (P (n + 1)).natDegree := by
         rw [natDegree_mul X_ne_zero hnext_ne, natDegree_X]
-      have hderivative : Prec (X * P (n + 1)).derivative (X * P (n + 1)) :=
+      have hderivative : StrictInterl (X * P (n + 1)).derivative (X * P (n + 1)) :=
         (interlaces_derivative_of_pos_natDegree
-          hXnext.1 hXnext.2 hXnext_pos (by lia)).toPrec
+          hXnext.1 hXnext.2 hXnext_pos (by lia)).toStrictInterl
       have hderivative_pos : HasPosLeadingCoeff (X * P (n + 1)).derivative :=
         hXnext_pos.derivative (by lia)
-      have hlag : Prec (C (c n) * (X * P n)) (X * P (n + 1)) :=
+      have hlag : StrictInterl (C (c n) * (X * P n)) (X * P (n + 1)) :=
         (prec_mul_common_factor isRealRooted_X.1 isRealRooted_X.2 ih).C_mul_left
           (hc n).ne'
       have hlag_pos : HasPosLeadingCoeff (C (c n) * (X * P n)) :=
         hasPosLeadingCoeff_C_mul (hc n) (hpos n).X_mul
-      have hsum : Prec (P (n + 2)) (X * P (n + 1)) := by
+      have hsum : StrictInterl (P (n + 2)) (X * P (n + 1)) := by
         rw [hrec n]
         exact
           prec_add_of_prec_right_of_posLeadingCoeff
@@ -64,11 +64,11 @@ theorem isPFPolynomial_iterateThetaPlusOne
     IsPFPolynomial (iterateThetaPlusOne l p) :=
   iterateThetaPlusOne_preserves_pf thetaPlusOne_preserves_pf l hp
 
-/-- Default proved `Prec0` preservation for the `l`-fold iterate of `theta + 1`. -/
+/-- Default proved `Interl` preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem prec0_iterateThetaPlusOne
     (l : ℕ) {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Prec0 p q) :
-    Prec0 (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) :=
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) :=
   iterateThetaPlusOne_preserves_prec0
     thetaPlusOne_preserves_pf thetaPlusOnePreservesPrec0 l hp hq hpq
 
@@ -122,17 +122,17 @@ theorem thetaPlusOne_sequence_prec0
     {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
-    ∀ i : Nat, Prec0 (thetaPlusOne (P i)) (thetaPlusOne (Q i)) := fun i =>
+    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+    ∀ i : Nat, Interl (thetaPlusOne (P i)) (thetaPlusOne (Q i)) := fun i =>
   RealRooted.thetaPlusOnePreservesPrec0 (hP i) (hQ i) (hPQ i)
 
 theorem iterateThetaPlusOne_sequence_prec0
     {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
+    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat,
-      Prec0 (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) :=
+      Interl (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) :=
     fun i =>
   RealRooted.prec0_iterateThetaPlusOne (l i) (hP i) (hQ i) (hPQ i)
 

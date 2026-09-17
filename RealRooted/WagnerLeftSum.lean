@@ -277,11 +277,11 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
 /-- Wagner (2): If h precedes both f and g with positive leading coefficients,
     and f, g are coprime, then h precedes their sum. -/
 theorem prec_add_of_prec_left {f g h : ℝ[X]}
-    (hhf : Prec h f) (hhg : Prec h g)
+    (hhf : StrictInterl h f) (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg_rr_ne : (f + g) ≠ 0) (hfg_rr_splits : (f + g).Splits)
     (hcop : IsCoprime f g) :
-    Prec h (f + g) := by
+    StrictInterl h (f + g) := by
   have hfg_rr : (f + g) ≠ 0 ∧ (f + g).Splits := ⟨hfg_rr_ne, hfg_rr_splits⟩
   -- For now, handle the both differ-by-1 case
   obtain ⟨hh, hf, ss_h, rs_f, hss_h_sorted, hrs_f_sorted, hss_h_eq, hrs_f_eq, hcase_f⟩ := hhf
@@ -690,15 +690,15 @@ theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
-    (hhf : Prec h' f') (hhg : Prec h' g')
+    (hhf : StrictInterl h' f') (hhg : StrictInterl h' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hfg'_rr_ne : (f' + g') ≠ 0) (hfg'_rr_splits : (f' + g').Splits)
     (hcop : IsCoprime f' g') :
-    Prec h (f + g) := by
+    StrictInterl h (f + g) := by
   subst hf_def hg_def hh_def
-  have hsum : Prec h' (f' + g') :=
+  have hsum : StrictInterl h' (f' + g') :=
     prec_add_of_prec_left hhf hhg hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
-  have hmul : Prec (d * h') (d * (f' + g')) := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * h') (d * (f' + g')) := prec_mul_common_factor hd_ne hd_splits hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- Recursive compatibility data for iterating Wagner (2) along a nonempty
@@ -707,10 +707,10 @@ leading coefficient, and satisfy the Wagner-2 compatibility hypotheses with the
 sum of the already-compatible tail. -/
 inductive SumCompatibleLeft (h : ℝ[X]) : List ℝ[X] → Prop
   | singleton {p : ℝ[X]}
-      (hprec : Prec h p) (hpos : HasPosLeadingCoeff p) :
+      (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
       SumCompatibleLeft h [p]
   | cons {p : ℝ[X]} {l : List ℝ[X]}
-      (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
+      (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : SumCompatibleLeft h l)
       (hrr_ne : (p + l.sum) ≠ 0) (hrr_splits : (p + l.sum).Splits)
       (hcop : IsCoprime p l.sum) :
@@ -730,7 +730,7 @@ lemma hasPosLeadingCoeff_sum {h : ℝ[X]} :
       · simpa using hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hpos
 
 lemma prec_sum {h : ℝ[X]} :
-    ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → Prec h l.sum
+    ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → StrictInterl h l.sum
   | _, singleton hprec _ => by
       simp_all
   | _, @cons _ p l hprec hpos hl hrr_ne hrr_splits hcop =>
@@ -744,7 +744,7 @@ assembled one term at a time from the left, is interlaced by the common left
 bound. -/
 theorem prec_sum_of_compatible_left {h : ℝ[X]} {l : List ℝ[X]}
     (hl : SumCompatibleLeft h l) :
-    Prec h l.sum :=
+    StrictInterl h l.sum :=
   hl.prec_sum
 
 end

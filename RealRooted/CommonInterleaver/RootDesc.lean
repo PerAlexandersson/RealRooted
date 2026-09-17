@@ -6,7 +6,7 @@ import RealRooted.PosCombo
 # Common interleavers: descending roots
 
 The common-interleaver predicates, canonical descending root sequences, their
-indexwise characterisation of `Prec`, and the consecutive-chain lemma.
+indexwise characterisation of `StrictInterl`, and the consecutive-chain lemma.
 -/
 
 open Polynomial
@@ -21,25 +21,25 @@ section
 interlace a single polynomial on the right. This is Brändén's "common
 interleaver" language from Handbook §7.8. -/
 def HasCommonInterleaver (fs : List ℝ[X]) : Prop :=
-  ∃ h : ℝ[X], ∀ f ∈ fs, Prec f h
+  ∃ h : ℝ[X], ∀ f ∈ fs, StrictInterl f h
 
 /-- Pairwise common-interleaver condition: every pair in the list admits some
 common right interleaver. This is the hypothesis occurring in the
 Chudnovsky--Seymour theorem. -/
 def PairwiseHasCommonInterleaver (fs : List ℝ[X]) : Prop :=
   ∀ (i j : Fin fs.length), i < j →
-    ∃ h : ℝ[X], Prec (fs.get i) h ∧ Prec (fs.get j) h
+    ∃ h : ℝ[X], StrictInterl (fs.get i) h ∧ StrictInterl (fs.get j) h
 
 /-- Left-oriented common interleaver: all members are interlaced by a single
 polynomial on the left. This is the orientation naturally used by the mixed
 product family in Brändén 7.8.3 and by Wagner's left-sum theorem. -/
 def HasCommonLeftInterleaver (fs : List ℝ[X]) : Prop :=
-  ∃ h : ℝ[X], ∀ f ∈ fs, Prec h f
+  ∃ h : ℝ[X], ∀ f ∈ fs, StrictInterl h f
 
 /-- Pairwise left-oriented common interleaver condition. -/
 def PairwiseHasCommonLeftInterleaver (fs : List ℝ[X]) : Prop :=
   ∀ (i j : Fin fs.length), i < j →
-    ∃ h : ℝ[X], Prec h (fs.get i) ∧ Prec h (fs.get j)
+    ∃ h : ℝ[X], StrictInterl h (fs.get i) ∧ StrictInterl h (fs.get j)
 
 /-- Descending root sequence used in the Chudnovsky--Seymour interval proof. -/
 def rootSeqDesc (f : ℝ[X]) : List ℝ :=
@@ -95,9 +95,9 @@ lemma rootSeqDesc_eq_sort_ge (f : ℝ[X]) :
       (rs := (f.roots.sort (· ≥ ·)).reverse) hpair hroots)
 
 /-!
-### A descending-root index characterisation of `Prec`
+### A descending-root index characterisation of `StrictInterl`
 
-`Prec f g` is defined through *ascending* sorted root lists.  For the chaining
+`StrictInterl f g` is defined through *ascending* sorted root lists.  For the chaining
 argument below it is much more convenient to index roots from the right, i.e.
 by the canonical descending root sequence `rootSeqDesc`.  The two lemmas
 `desc_bounds_of_interlacing_shape` and `interlacing_shape_of_desc_bounds` translate the
@@ -179,12 +179,12 @@ lemma interlacing_shape_of_desc_bounds (ss rs : List ℝ)
         show rs.length - 1 - (ss.length - 1 - i) = i + 1 by lia] at key
       exact key
 
-/-- Descending-root characterisation of `Prec`: writing `f⟨l⟩` for the `l`-th
+/-- Descending-root characterisation of `StrictInterl`: writing `f⟨l⟩` for the `l`-th
 largest root of `f`, `f ≪ g` holds exactly when both are real-rooted, the
 degrees differ by at most one (with `g` the larger), and the descending root
 sequences satisfy `f⟨l⟩ ≤ g⟨l⟩` and `g⟨l+1⟩ ≤ f⟨l⟩`. -/
 theorem prec_iff_rootSeqDesc {f g : ℝ[X]} :
-    Prec f g ↔
+    StrictInterl f g ↔
       (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
         (g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1) ∧
         (∀ l, l < f.natDegree →
@@ -238,9 +238,9 @@ interlacings and additionally the two extremes satisfy `F a ≪ F b`, then every
 pair `F i ≪ F j` with `a ≤ i ≤ j ≤ b` interlaces.  This is the substitute for
 transitivity of `≪`, which fails in general. -/
 theorem prec_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b : ℕ)
-    (hcons : ∀ k, a ≤ k → k < b → Prec (F k) (F (k + 1)))
-    (hext : Prec (F a) (F b)) :
-    ∀ i j, a ≤ i → i ≤ j → j ≤ b → Prec (F i) (F j) := by
+    (hcons : ∀ k, a ≤ k → k < b → StrictInterl (F k) (F (k + 1)))
+    (hext : StrictInterl (F a) (F b)) :
+    ∀ i j, a ≤ i → i ≤ j → j ≤ b → StrictInterl (F i) (F j) := by
   obtain ⟨-, -, hdab, -, hextD⟩ := prec_iff_rootSeqDesc.1 hext
   have hdab' : (F b).natDegree ≤ (F a).natDegree + 1 := by rcases hdab with h | h <;> lia
   have hrr : ∀ k, a ≤ k → k ≤ b → (F k ≠ 0 ∧ (F k).Splits) := by

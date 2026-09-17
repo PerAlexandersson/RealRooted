@@ -174,7 +174,7 @@ lemma IdTransform_X_mul_of_natDegree_le_two_pred {d : ℕ} {p : ℝ[X]}
 
 theorem prec_iff_prec_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec f g ↔ Prec (X * f) (X * g) := by
+    StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
   constructor
   · intro h
     have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.1.2 hfnn

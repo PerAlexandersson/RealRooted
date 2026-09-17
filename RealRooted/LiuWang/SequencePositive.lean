@@ -19,14 +19,14 @@ The sequence-specific file supplies the base interlacing, recurrence identity,
 coefficient/degree certificates, and no-common-root hypothesis. -/
 theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X) hbase hpos
     (fun n hsource r hr =>
@@ -39,7 +39,7 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
 Liu--Wang induction. -/
 theorem isRealRooted_of_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -58,13 +58,13 @@ This is the strict-degree version of recurrences such as
 `(C 1 * X) * P_n`. -/
 theorem prec_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_positive_t_lag_sequence
     (A := A) (c := fun _ => 1) hbase hpos hnonneg (fun _ => by norm_num)
     (fun n => by simpa using hrec n) hdeg_succ hno
@@ -72,7 +72,7 @@ theorem prec_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
 /-- Real-rootedness corollary for sequence-level positive unit-`X` lag. -/
 theorem isRealRooted_of_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + X * P n)
@@ -89,7 +89,7 @@ This packages the Family G6 shape
 nonnegative coefficients, hence all current roots are `<= 0`. -/
 theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -98,7 +98,7 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
       P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X - C (a n)) hbase hpos
     (fun n hsource r hr =>
@@ -111,7 +111,7 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
 /-- Real-rootedness corollary for the affine half-line lag induction. -/
 theorem isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -132,7 +132,7 @@ This packages the shifted-root-location G7 shape
 upper root bound `r <= -a_n` for roots of the current row. -/
 theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
@@ -140,7 +140,7 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
       P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence
     (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
     (fun n r hr =>
@@ -151,7 +151,7 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
 /-- Real-rootedness corollary for the positive affine lag sequence wrapper. -/
 theorem isRealRooted_of_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
@@ -172,7 +172,7 @@ real-rootedness already obtained from the induction prefix, implies that every
 root of `P (n+1)` is at most `-a_n`. -/
 theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hshift_nonneg :
@@ -181,7 +181,7 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
       P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
     (fun n hsource _r hr =>
@@ -194,7 +194,7 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
 lag wrapper. -/
 theorem isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hshift_nonneg :
@@ -211,13 +211,13 @@ theorem isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
 /-- Sequence-level unit affine lag `a_n+t`. -/
 theorem prec_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_positive_affine_lag_sequence
     (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hroot_upper
     (fun n => by simpa using hrec n) hdeg_succ hno
@@ -225,7 +225,7 @@ theorem prec_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
 /-- Real-rootedness corollary for sequence-level unit affine lag `a_n+t`. -/
 theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
@@ -239,14 +239,14 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
 bound. -/
 theorem prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hshift_nonneg :
       ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hshift_nonneg
     (fun n => by simpa using hrec n) hdeg_succ hno
@@ -255,7 +255,7 @@ theorem prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
 automated shifted root bound. -/
 theorem isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hshift_nonneg :
       ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))

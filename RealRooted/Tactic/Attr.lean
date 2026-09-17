@@ -15,7 +15,7 @@ as a convenient fallback once the proof shape is stable.
 - `[rr_pos_lc]` for positive-leading-coefficient lemmas;
 - `[rr_nonneg]` for nonnegative-coefficient lemmas;
 - `[rr_root_bound]` for root-interval lemmas;
-- `[rr_base_prec]` for base `Prec` cases;
+- `[rr_base_prec]` for base `StrictInterl` cases;
 - `[rr_base_interlaces]` for base `Interlaces` cases.
 
 Planned matrix attributes:
@@ -52,7 +52,7 @@ initialize rrRootBoundAttr : Lean.TagAttribute ←
 
 initialize rrBasePrecAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_prec
-    "base Prec cases used by RealRooted recurrence tactics"
+    "base StrictInterl cases used by RealRooted recurrence tactics"
 
 initialize rrBaseInterlacesAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_interlaces

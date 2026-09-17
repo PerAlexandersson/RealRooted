@@ -335,7 +335,7 @@ lemma of_posComboRealRooted_succDegree {f g : ℝ[X]}
 /-- A common left interleaver gives full nonnegative compatibility for a pair,
 not just the strictly positive `PosComboRealRooted` condition. -/
 lemma of_commonLeftInterleaver {f g h : ℝ[X]}
-    (hhf : Prec h f) (hhg : Prec h g)
+    (hhf : StrictInterl h f) (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     Compatible f g :=
   of_posComboRealRooted
@@ -346,7 +346,7 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
 This is the right-oriented Wagner direction used by the list-level
 Chudnovsky--Seymour chain. -/
 lemma of_commonInterleaver {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     Compatible f g :=
   of_posComboRealRooted

@@ -153,8 +153,8 @@ def thetaPreservesPrec0Statement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
-    Prec0 p q →
-    Prec0 (theta p) (theta q)
+    Interl p q →
+    Interl (theta p) (theta q)
 
 theorem thetaPreservesPrec0_of_derivative
     (hderiv : derivativePreservesPrec0Statement) : thetaPreservesPrec0Statement := by
@@ -194,8 +194,8 @@ def thetaPlusOnePreservesPrec0Statement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
-    Prec0 p q →
-    Prec0 (thetaPlusOne p) (thetaPlusOne q)
+    Interl p q →
+    Interl (thetaPlusOne p) (thetaPlusOne q)
 
 theorem thetaPlusOnePreservesPrec0_of_derivative
     (hderiv : derivativePreservesPrec0Statement) :
@@ -214,7 +214,7 @@ each of its iterates under `theta + 1`. -/
 def iterateThetaPlusOneSelfPrec0Statement : Prop :=
   ∀ {p : ℝ[X]} (l : ℕ),
     IsPFPolynomial p →
-    Prec0 p (iterateThetaPlusOne l p)
+    Interl p (iterateThetaPlusOne l p)
 
 /-- Classical polar-derivative input: `N - theta` preserves real-rootedness and
 nonpositive roots for polynomial PF-cone elements of degree at most `N`. -/
@@ -304,8 +304,8 @@ def polarThetaPreservesPrec0Statement : Prop :=
     IsPFPolynomial q →
     p.natDegree ≤ N →
     q.natDegree ≤ N →
-    Prec0 p q →
-    Prec0 (polarTheta N p) (polarTheta N q)
+    Interl p q →
+    Interl (polarTheta N p) (polarTheta N q)
 
 theorem iterateThetaPlusOne_preserves_pf
     (hθ : thetaPlusOnePreservesPFStatement)
@@ -321,8 +321,8 @@ theorem iterateThetaPlusOne_preserves_prec0
     (hθpf : thetaPlusOnePreservesPFStatement)
     (hθprec : thetaPlusOnePreservesPrec0Statement)
     (l : ℕ) {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Prec0 p q) :
-    Prec0 (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
   induction l generalizing p q with
   | zero =>
       simpa using hpq

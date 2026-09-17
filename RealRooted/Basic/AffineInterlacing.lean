@@ -4,7 +4,7 @@ import RealRooted.Linear
 # Affine transformations of legacy interlacing
 
 This module records the elementary translations and reflections of the legacy
-`Interlaces` predicate.  New code should generally prefer `Prec`, but these
+`Interlaces` predicate.  New code should generally prefer `StrictInterl`, but these
 lemmas let existing root-list applications transform an interlacing witness
 without reconstructing its sorted lists.
 -/

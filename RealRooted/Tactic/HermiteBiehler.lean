@@ -22,7 +22,7 @@ theorem hermiteBiehlerOddEven_isHurwitzStable {p q : ℝ[X]}
 theorem hermiteBiehlerForwardPos_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
-    (hprec : ∀ n : Nat, Prec (G n) (F n)) :
+    (hprec : ∀ n : Nat, StrictInterl (G n) (F n)) :
     ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)) :=
   fun n => RealRooted.hermiteBiehlerForwardPos (hF n) (hG n) (hprec n)
 
@@ -31,7 +31,7 @@ theorem hermiteBiehlerConverse_sequence {F G : Nat → ℝ[X]}
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
     (hstable :
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n))) :
-    ∀ n : Nat, Prec (G n) (F n) ∨ Prec (F n) (G n) :=
+    ∀ n : Nat, StrictInterl (G n) (F n) ∨ StrictInterl (F n) (G n) :=
   fun n => RealRooted.hermiteBiehlerConverse (hF n) (hG n) (hstable n)
 
 theorem hermiteBiehlerSplits_sequence {F G : Nat → ℝ[X]}
@@ -48,7 +48,7 @@ theorem hermiteBiehlerPrec_sequence {F G : Nat → ℝ[X]}
     (hstable :
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
     (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
-    ∀ n : Nat, Prec (G n) (F n) :=
+    ∀ n : Nat, StrictInterl (G n) (F n) :=
   fun n => RealRooted.prec_of_stable_general (hF n) (hG n) (hstable n) (hdegree n)
 
 theorem hermiteBiehlerOddEven_rightHalfPlaneStable_sequence {P Q : Nat → ℝ[X]}

@@ -69,7 +69,7 @@ private def isIgnoredPolynomialHead (name : Name) : Bool :=
 
 private def isIgnoredNamedHead (name : Name) : Bool :=
   name == ``Eq || name == ``Ne || name == ``And || name == ``Or || name == ``Iff ||
-    name == ``RealRooted.Interlaces || name == ``RealRooted.Prec ||
+    name == ``RealRooted.Interlaces || name == ``RealRooted.StrictInterl ||
     isIgnoredCoreHead name || name.isPrefixOf ``Polynomial
 
 private def realPolynomialType : TacticM Expr := do

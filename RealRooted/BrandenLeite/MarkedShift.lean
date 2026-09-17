@@ -245,7 +245,7 @@ theorem weightedGreenKernel_markedShiftKernel_pf_and_prec0
     (∀ i, IsPFPolynomial
       (kernelRow (weightedGreenKernel b N) (markedShiftKernel as N r) i)) ∧
     ∀ i : Fin N,
-      Prec0
+      Interl
         (kernelRow (weightedGreenKernel b N) (markedShiftKernel as N r)
           i.castSucc)
         (kernelRow (weightedGreenKernel b N) (markedShiftKernel as N r)

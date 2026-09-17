@@ -18,7 +18,7 @@ theorem prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
     {δ : ℝ} (hδ : 0 < δ) :
-    Prec f ((a * f + b * g) - C δ * g) := by
+    StrictInterl f ((a * f + b * g) - C δ * g) := by
   let F : ℝ[X] := a * f + b * g
   have hdeg_lo' : f.natDegree ≤ F.natDegree := by lia
   have hdeg_hi' : F.natDegree ≤ f.natDegree + 1 := by lia

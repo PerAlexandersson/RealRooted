@@ -56,16 +56,16 @@ theorem shiftedJacobi_interlaces_shift_both (n : ℕ) {α β : ℝ}
         simpa [c, Nat.cast_add, Nat.cast_one] using
           derivative_shiftedJacobi (n + 1) α β
       have hscaled :
-          Prec (C c * shiftedJacobi (n + 1) (α + 1) (β + 1))
+          StrictInterl (C c * shiftedJacobi (n + 1) (α + 1) (β + 1))
             (shiftedJacobi (n + 1 + 1) α β) := by
         rw [← hderivative]
         exact (derivative_interlaces
           (shiftedJacobi_splits (n + 1 + 1) hα hβ) (by
             rw [natDegree_shiftedJacobi (n + 1 + 1) hα hβ]
-            lia)).toPrec
+            lia)).toStrictInterl
       have hunscaled := hscaled.C_mul_left (inv_ne_zero hc)
       have hprec :
-          Prec (shiftedJacobi (n + 1) (α + 1) (β + 1))
+          StrictInterl (shiftedJacobi (n + 1) (α + 1) (β + 1))
             (shiftedJacobi (n + 1 + 1) α β) := by
         rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hc, C_1, one_mul] at hunscaled
         exact hunscaled
@@ -200,7 +200,7 @@ in the shifted variable, with the new polynomial in proper position before the
 old polynomial. -/
 theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobiMonic n α (β + 1))
+    StrictInterl (shiftedJacobiMonic n α (β + 1))
       (shiftedJacobiMonic n α β) := by
   cases n with
   | zero =>
@@ -212,7 +212,7 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
       obtain ⟨a, b, ha, hb, hcombination⟩ :=
         exists_shiftedJacobiMonic_beta_add_one_linearCombination m hα hβ
       change F = C a * f + C b * g at hcombination
-      have hgf_prec : Prec g f := by
+      have hgf_prec : StrictInterl g f := by
         dsimp only [g, f]
         exact shiftedJacobiMonic_prec_succ m (by linarith) (by linarith)
       have hgf : Interlaces g f := by
@@ -243,7 +243,7 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
         have hcommon := noCommonRoot_succ_of_favard hrec hsub m
         intro r hf hg
         exact hcommon r hg hf
-      have hproper : Prec f (C a * f + C b * g) :=
+      have hproper : StrictInterl f (C a * f + C b * g) :=
         prec_of_interlaces_evalCoeff_neg_same hgf hg_pos hsum_pos hsame hno
           (fun _ _ => by simpa using hb)
       rw [← hcombination] at hproper
@@ -279,7 +279,7 @@ theorem shiftedJacobiMonic_noCommonRoot_beta_add_one (n : ℕ) {α β : ℝ}
 in the shifted variable. -/
 theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobiMonic n α β)
+    StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 1) β) := by
   have hbeta := shiftedJacobiMonic_prec_beta_add_one n (α := β) (β := α) hβ hα
   have hreflected := prec_comp_one_sub_X_of_sameDegree hbeta (by
@@ -431,7 +431,7 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos (n : ℕ)
 the corresponding lower-parameter root. -/
 theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobiMonic n α β)
+    StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 2) β) := by
   cases n with
   | zero =>
@@ -520,9 +520,9 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_degree_one
 degree one. -/
 theorem shiftedJacobiMonic_prec_alpha_add_degree_one
     {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
-    Prec (shiftedJacobiMonic 1 α β)
+    StrictInterl (shiftedJacobiMonic 1 α β)
       (shiftedJacobiMonic 1 (α + t) β) :=
-  (shiftedJacobiMonic_strictPrec_alpha_add_degree_one hα hβ ht).to_prec
+  (shiftedJacobiMonic_strictPrec_alpha_add_degree_one hα hβ ht).toStrictInterl
 
 private theorem shiftedJacobiMonic_two_neg_half_one :
     shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
@@ -642,9 +642,9 @@ theorem shiftedJacobiMonic_strictPrec_three_halves_degree_two
 parking-function parity classes. -/
 theorem shiftedJacobiMonic_prec_three_halves_degree_two
     (ε : ℕ) (hε : ε < 2) :
-    Prec (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
+    StrictInterl (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictPrec_three_halves_degree_two ε hε).to_prec
+  (shiftedJacobiMonic_strictPrec_three_halves_degree_two ε hε).toStrictInterl
 
 private theorem shiftedJacobiMonic_three_neg_half_one :
     shiftedJacobiMonic 3 (-(1 / 2) : ℝ) 1 =
@@ -804,9 +804,9 @@ theorem shiftedJacobiMonic_strictPrec_three_halves_degree_three
 two parking-function parity classes. -/
 theorem shiftedJacobiMonic_prec_three_halves_degree_three
     (ε : ℕ) (hε : ε < 2) :
-    Prec (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
+    StrictInterl (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictPrec_three_halves_degree_three ε hε).to_prec
+  (shiftedJacobiMonic_strictPrec_three_halves_degree_three ε hε).toStrictInterl
 
 /-- A beta-one shifted Jacobi polynomial and a positive first-parameter shift
 of at most two have no common root. -/
@@ -869,7 +869,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
     (hno : ∀ r, (shiftedJacobiMonic n α β).IsRoot r →
       ∀ s ∈ Set.Icc t 2,
         ¬(shiftedJacobiMonic n (α + s) β).IsRoot r) :
-    Prec (shiftedJacobiMonic n α β)
+    StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + t) β) := by
   cases n with
   | zero =>
@@ -924,7 +924,7 @@ higher-parameter polynomial. -/
 theorem shiftedJacobiMonic_prec_alpha_add
     (n : ℕ) {α t : ℝ} (hα : -1 < α) (ht_pos : 0 < t)
     (ht_two : t ≤ 2) :
-    Prec (shiftedJacobiMonic n α 1)
+    StrictInterl (shiftedJacobiMonic n α 1)
       (shiftedJacobiMonic n (α + t) 1) := by
   apply shiftedJacobiMonic_prec_alpha_add_of_no_crossing n hα
     (by norm_num) ht_pos ht_two
@@ -935,7 +935,7 @@ theorem shiftedJacobiMonic_prec_alpha_add
 /-- The fractional first-parameter comparison used by the two parity classes
 in the A390883 Jacobi representation. -/
 theorem shiftedJacobiMonic_prec_three_halves (n ε : ℕ) :
-    Prec (shiftedJacobiMonic n ((ε : ℝ) - 1 / 2) 1)
+    StrictInterl (shiftedJacobiMonic n ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic n ((ε : ℝ) + 1) 1) := by
   have hε : 0 ≤ (ε : ℝ) := Nat.cast_nonneg ε
   have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
@@ -1141,8 +1141,8 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
 /-- Proper position form of the adjacent-degree two-unit endpoint. -/
 theorem shiftedJacobiMonic_prec_alpha_add_two_degree_pred (m : ℕ)
     {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
-    Prec (shiftedJacobiMonic m (α + 2) β)
+    StrictInterl (shiftedJacobiMonic m (α + 2) β)
       (shiftedJacobiMonic (m + 1) α β) :=
-  (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toPrec
+  (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toStrictInterl
 
 end RealRooted

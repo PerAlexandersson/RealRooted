@@ -83,7 +83,7 @@ example {f u : ℝ[X]}
       (u * f + (X * (1 + X)) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (X * (1 + X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (X * (1 + X)) * f.derivative) := by
+    StrictInterl f (u * f + (X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_X_one_add_window using
     splits := hf,
     degree_two := hdegf,
@@ -111,7 +111,7 @@ example {f u : ℝ[X]}
     (hdeg_hi : (u * f + (X - X ^ 3) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (X - X ^ 3) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (X - X ^ 3) * f.derivative) := by
+    StrictInterl f (u * f + (X - X ^ 3) * f.derivative) := by
   rr_mw_derivative_sign_window using
     splits := hf,
     degree_two := hdegf,
@@ -140,7 +140,7 @@ example {f u : ℝ[X]}
     (hF_pos :
       HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
+    StrictInterl f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_neg_X_one_add_outer_auto using
     splits := hf,
     degree_two := hdegf,
@@ -160,7 +160,7 @@ example {f u : ℝ[X]}
         f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
+    StrictInterl f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,
@@ -179,7 +179,7 @@ example {f u : ℝ[X]}
         f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
+    StrictInterl f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,

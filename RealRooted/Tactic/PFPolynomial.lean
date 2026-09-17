@@ -3,7 +3,7 @@ import RealRooted.PFPolynomial
 /-!
 # PF-polynomial tactic frontends and model transport
 
-The model transport theorem preserves PF rows and consecutive `Prec0` through
+The model transport theorem preserves PF rows and consecutive `Interl` through
 pointwise sequence identification. The remaining declarations are thin tactic
 wrappers for standard closure operations on `IsPFPolynomial`.
 -/
@@ -18,10 +18,10 @@ theorem pf_and_prec0_of_model_sequence
     {P Q : Nat → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
-        ∀ n : Nat, Prec0 (Q n) (Q (n + 1)))
+        ∀ n : Nat, Interl (Q n) (Q (n + 1)))
     (hidentify : ∀ n : Nat, P n = Q n) :
     (∀ n : Nat, IsPFPolynomial (P n)) ∧
-      ∀ n : Nat, Prec0 (P n) (P (n + 1)) := by
+      ∀ n : Nat, Interl (P n) (P (n + 1)) := by
   constructor
   · intro n
     rw [hidentify n]
@@ -158,15 +158,15 @@ theorem pf_sequence_mul_X_add_one
 theorem pf_sequence_prec0_self
     {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
-    ∀ i : Nat, Prec0 (P i) (P i) := fun i =>
+    ∀ i : Nat, Interl (P i) (P i) := fun i =>
   RealRooted.IsPFPolynomial.prec0_self (hP i)
 
 theorem pf_sequence_prec0_X_mul_both
     {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
-    ∀ i : Nat, Prec0 (X * P i) (X * Q i) := fun i =>
+    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+    ∀ i : Nat, Interl (X * P i) (X * Q i) := fun i =>
   RealRooted.prec0_X_mul_both_of_pf (hP i) (hQ i) (hPQ i)
 
 syntax (name := rr_pf_zero_named) "rr_pf_zero" : tactic

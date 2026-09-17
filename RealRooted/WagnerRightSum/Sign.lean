@@ -28,7 +28,7 @@ These generalize to n summands by induction. -/
 
 If `f ≪ h` with `f` having positive leading coefficient, its evaluations
 at roots of `h` obey the non-strict alternating product signs used below.
-The generic `Prec` predicate allows common roots, so these evaluations may
+The generic `StrictInterl` predicate allows common roots, so these evaluations may
 vanish; nonvanishing is used only with an explicit no-common-root hypothesis.
 
 Thus two polynomials both preceding `h` with positive leading coefficients
@@ -316,7 +316,7 @@ lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
 leading coefficients, then they have the same sign at every root of that common
 right-hand polynomial. -/
 lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
     0 ≤ f.eval r * g.eval r := by
@@ -364,7 +364,7 @@ lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `f`. -/
 lemma eval_add_mul_eval_left_nonneg_of_prec_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
     0 ≤ (f + g).eval r * f.eval r := by
@@ -375,7 +375,7 @@ lemma eval_add_mul_eval_left_nonneg_of_prec_right {f g h : ℝ[X]}
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `g`. -/
 lemma eval_add_mul_eval_right_nonneg_of_prec_right {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
     0 ≤ (f + g).eval r * g.eval r := by
@@ -387,7 +387,7 @@ lemma eval_add_mul_eval_right_nonneg_of_prec_right {f g h : ℝ[X]}
 then both summands already vanish there. This is the key boundary-collision
 reduction for the sign-based Wagner proof. -/
 lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) (hadd : (f + g).IsRoot r) :
     f.IsRoot r ∧ g.IsRoot r := by

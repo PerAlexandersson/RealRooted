@@ -32,7 +32,7 @@ Chudnovsky--Seymour bridge. -/
 theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
-    ∃ k : ℝ[X], Prec f k ∧ Prec g k :=
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k :=
   chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
 
 /-- Pair-level common-left interleaver form of the checked
@@ -40,7 +40,7 @@ Chudnovsky--Seymour bridge. -/
 theorem compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
-    ∃ k : ℝ[X], Prec k f ∧ Prec k g :=
+    ∃ k : ℝ[X], StrictInterl k f ∧ StrictInterl k g :=
   chudnovskySeymour_compatiblePairHasCommonLeftInterleaver hf hg h
 
 /--

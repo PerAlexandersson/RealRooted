@@ -53,10 +53,10 @@ theorem prec0_veroneseSectionPolynomial_sequence_of_prec
     {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veroneseSectionPolynomial (r n) (k n) (P n))
       (veroneseSectionPolynomial (r n) (k n) (Q n)) := fun n =>
   prec0_veroneseSectionPolynomial_of_prec
@@ -66,10 +66,10 @@ theorem prec_veroneseSectionPolynomial_sequence_of_prec
     {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veroneseSectionPolynomial (r n) (k n) (P n))
       (veroneseSectionPolynomial (r n) (k n) (Q n)) := fun n =>
   prec_veroneseSectionPolynomial_of_prec
@@ -79,11 +79,11 @@ theorem prec0_veronesePairSectionPolynomial_sequence_of_prec
     {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
     (hj : ∀ n : Nat, j n < 2 * r n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := fun n =>
   prec0_veronesePairSectionPolynomial_of_prec
@@ -93,11 +93,11 @@ theorem prec_veronesePairSectionPolynomial_sequence_of_prec
     {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
     (hj : ∀ n : Nat, j n < 2 * r n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := fun n =>
   prec_veronesePairSectionPolynomial_of_prec
@@ -107,11 +107,11 @@ theorem prec0_veronesePairSectionPolynomial_fin_sequence_of_prec
     {r : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))
     (hij : ∀ n : Nat, i n < j n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := fun n =>
   prec0_veronesePairSectionPolynomial_fin_of_prec
@@ -121,11 +121,11 @@ theorem prec_veronesePairSectionPolynomial_fin_sequence_of_prec
     {r : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))
     (hij : ∀ n : Nat, i n < j n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := fun n =>
   prec_veronesePairSectionPolynomial_fin_of_prec

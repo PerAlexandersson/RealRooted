@@ -29,8 +29,8 @@ abbrev HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
 theorem commonRight_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (hfh : Prec f h) (hgh : Prec g h) :
-    Prec (f + g) h :=
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
+    StrictInterl (f + g) h :=
   RealRooted.Wagner.commonRight_add hf hg hfh hgh
 
 /-- Wagner (2): if `h` interlaces both `f` and `g`, then `h` interlaces
@@ -43,19 +43,19 @@ clean target. -/
 theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (hhf : Prec h f) (hhg : Prec h g) :
-    Prec h (f + g) :=
+    (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
+    StrictInterl h (f + g) :=
   RealRooted.Wagner.commonLeft_add hf hg hhf hhg
 
 /-- Checked two-summand common-left form currently available in the core
 Wagner module. -/
 theorem commonLeft_add_checked :
     ∀ {f g h : ℝ[X]},
-      (hhf : Prec h f) → (hhg : Prec h g) →
+      (hhf : StrictInterl h f) → (hhg : StrictInterl h g) →
       (hf_pos : HasPosLeadingCoeff f) → (hg_pos : HasPosLeadingCoeff g) →
       (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
       (hcop : IsCoprime f g) →
-      Prec h (f + g) :=
+      StrictInterl h (f + g) :=
   RealRooted.Wagner.commonLeft_add_checked
 
 /-- Wagner (3): `f` interlaces `g` if and only if `g` interlaces `X * f`.
@@ -67,7 +67,7 @@ theorem mulX_iff {f g : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    Prec f g ↔ Prec g (X * f) :=
+    StrictInterl f g ↔ StrictInterl g (X * f) :=
   RealRooted.Wagner.mulX_iff hf hg hdeg
 
 end Wagner

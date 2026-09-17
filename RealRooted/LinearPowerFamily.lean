@@ -17,8 +17,8 @@ open Polynomial
 
 namespace RealRooted
 
-/-- `Prec (X^n) (X^(n+1))`: repeated root at `0`. -/
-theorem prec_X_pow_succ (n : ℕ) : Prec ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
+/-- `StrictInterl (X^n) (X^(n+1))`: repeated root at `0`. -/
+theorem prec_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
   have hne : (X : ℝ[X]) ^ n ≠ 0 := pow_ne_zero _ X_ne_zero
   have hsplits : ((X : ℝ[X]) ^ n).Splits := Polynomial.Splits.X_pow n
   have hnn : HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
@@ -31,9 +31,9 @@ theorem prec_X_pow_succ (n : ℕ) : Prec ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
 /-- Multiplying both members of a nonnegative proper-position pair by the same
 power of `X` preserves proper position. -/
 theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
-    Prec (X ^ n * f) (X ^ n * g) := by
+    StrictInterl (X ^ n * f) (X ^ n * g) := by
   induction n with
   | zero => simpa using h
   | succ n ih =>
@@ -49,18 +49,18 @@ theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
 /-- A reverse proper-position pair with nonnegative coefficients remains in
 proper position after adjoining the consecutive powers `X^n` and `X^(n+1)`. -/
 theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
-    (hgf : Prec g f) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hgf : StrictInterl g f) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
-    Prec (X ^ n * f) (X ^ (n + 1) * g) := by
-  have hbase : Prec f (X * g) :=
+    StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
+  have hbase : StrictInterl f (X * g) :=
     prec_to_prec_mul_X_of_nonneg hgf hgnn hfnn
   have hbase_nonneg : HasNonnegCoeffs (X * g) := hasNonnegCoeffs_X.mul hgnn
   simpa [pow_succ, mul_assoc] using
     prec_X_pow_mul_both_of_prec_nonneg hbase hfnn hbase_nonneg n
 
-/-- `Prec ((X + C r)^n) ((X + C r)^(n+1))` by translating the repeated root. -/
+/-- `StrictInterl ((X + C r)^n) ((X + C r)^(n+1))` by translating the repeated root. -/
 theorem prec_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
-    Prec ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
+    StrictInterl ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
   have hprec := prec_X_pow_succ n
   rw [← prec_comp_X_add_C_iff r] at hprec
   simpa [pow_comp, X_comp] using hprec
@@ -76,7 +76,7 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
   rw [hfac, mul_pow, mul_pow, ← C_pow, ← C_pow]
   have hbase := prec_X_add_C_pow_succ (a / b) n
   have hprec :
-      Prec (C (b ^ n) * (X + C (a / b)) ^ n)
+      StrictInterl (C (b ^ n) * (X + C (a / b)) ^ n)
         (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left hbase (by positivity)) (by positivity)
   have hd₁ : (C (b ^ n) * (X + C (a / b)) ^ n).natDegree = n := by
@@ -92,9 +92,9 @@ theorem interlaces_C_mul_linear_pow_succ (c d a b : ℝ) (hc : c ≠ 0) (hd : d 
     Interlaces (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) := by
   have hbase := interlaces_linear_pow a b hb n
-  have hprec : Prec (C c * (C a + C b * X) ^ n)
+  have hprec : StrictInterl (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) :=
-    prec_C_mul_right (prec_C_mul_left hbase.toPrec hc) hd
+    prec_C_mul_right (prec_C_mul_left hbase.toStrictInterl hc) hd
   have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
     compute_degree!
     exact hb.ne'
@@ -133,7 +133,7 @@ theorem linearPowerScalarStep_interlaces {c d a b : ℝ} (hc : c ≠ 0)
       (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) := by
   exact (prec_C_mul_right
-    (prec_C_mul_left (interlaces_linear_pow a b hb n).toPrec hc) hd).toInterlaces (by
+    (prec_C_mul_left (interlaces_linear_pow a b hb n).toStrictInterl hc) hd).toInterlaces (by
     rw [scalarLinearFactorPow_natDegree hc hb.ne' n,
       scalarLinearFactorPow_natDegree hd hb.ne' (n + 1)])
 
@@ -271,7 +271,8 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
     (hne : f ≠ 0) (hsplits : f.Splits) (_hnn : HasNonnegCoeffs f)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Interlaces f ((C a + C b * X) * f) := by
-  have h1X : Prec (1 : ℝ[X]) X := (interlaces_one_linear (p := X) (by simp)).toPrec
+  have h1X : StrictInterl (1 : ℝ[X]) X :=
+    (interlaces_one_linear (p := X) (by simp)).toStrictInterl
   have hXpos : HasPosLeadingCoeff (X : ℝ[X]) := by
     unfold HasPosLeadingCoeff
     simp
@@ -289,7 +290,7 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
   have hsum_splits : (C a * (1 : ℝ[X]) + C b * X).Splits := by
     apply Polynomial.Splits.of_natDegree_le_one
     compute_degree!
-  have hprec : Prec (f * 1) (C a * (f * 1) + C b * (f * X)) :=
+  have hprec : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
     prec_convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
       hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
       hsum_ne hsum_splits hcop
@@ -452,9 +453,9 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
           h0 h1 hstep (n + 1)
       have hnn :=
         monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
-      have hprecX : Prec (A (n + 1)) (X * A (n + 1)) :=
+      have hprecX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
         prec_self_mul_X_of_nonneg hne hsplits hnn
-      have hprec : Prec (A (n + 1)) ((C u * X) * A (n + 1)) := by
+      have hprec : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
         have hscaled := prec_C_mul_right hprecX hu.ne'
         simpa [mul_assoc] using hscaled
       have htail_ne : (C u * X : ℝ[X]) ≠ 0 :=
@@ -499,10 +500,10 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     (hb : 0 < b) (n : ℕ) :
     Interlaces ((X - C r) ^ m * (C a + C b * X) ^ n)
       ((X - C r) ^ m * (C a + C b * X) ^ (n + 1)) := by
-  have hprec := (interlaces_linear_pow a b hb n).toPrec
+  have hprec := (interlaces_linear_pow a b hb n).toStrictInterl
   have hmul :
       ∀ j,
-        Prec ((X - C r) ^ j * (C a + C b * X) ^ n)
+        StrictInterl ((X - C r) ^ j * (C a + C b * X) ^ n)
           ((X - C r) ^ j * (C a + C b * X) ^ (n + 1)) := by
     intro j
     induction j with
@@ -537,7 +538,7 @@ theorem commonFactorLinearPowerStep_interlaces {fixed : ℝ[X]} {a b : ℝ}
       (fixed * (C a + C b * X) ^ n)
       (fixed * (C a + C b * X) ^ (n + 1)) := by
   exact (prec_mul_common_factor hfixed.1 hfixed.2
-    (interlaces_linear_pow a b hb n).toPrec).toInterlaces (by
+    (interlaces_linear_pow a b hb n).toStrictInterl).toInterlaces (by
     rw [fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' n,
       fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' (n + 1)]
     lia)

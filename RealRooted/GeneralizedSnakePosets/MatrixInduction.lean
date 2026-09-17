@@ -73,7 +73,7 @@ theorem theorem41StepMatrix_action_pair
 /-- The induction hypothesis `g << f` makes `[f, X * g]` a nonnegative
 interlacing input sequence. -/
 theorem theorem41InputPair_interlacingSeqNonneg {f g : ℝ[X]}
-    (hgf : Prec g f) (hf_nonneg : HasNonnegCoeffs f)
+    (hgf : StrictInterl g f) (hf_nonneg : HasNonnegCoeffs f)
     (hg_nonneg : HasNonnegCoeffs g) :
     IsInterlacingSeqNonneg [f, X * g] := by
   refine ⟨?_, ?_⟩
@@ -106,9 +106,9 @@ theorem theorem41Step_difference_prec_of_matrixClaim
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
     (hH_nonneg : HasNonnegCoeffs (auxiliaryDifference G m))
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
-    Prec (f * P (m - 1) + X * g * G (m - 1))
+    StrictInterl (f * P (m - 1) + X * g * G (m - 1))
       (f * narayanaDifference P m + X * g * auxiliaryDifference G m) := by
   have hQ_ne : narayanaDifference P m ≠ 0 := by
     have hzero := hclaim (m := m) (lam := 0) (mu := 0) hm (by norm_num) (by norm_num)
@@ -166,14 +166,14 @@ Lemma 2.6. -/
 theorem theorem41Step_prec_of_claim7
     {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
     (hclaim : Theorem41Claim7Statement P G) (hm : 2 ≤ m)
-    (hP : Prec (P (m - 1)) (P m)) (hG : Prec (G (m - 1)) (G m))
-    (hgf : Prec g f)
+    (hP : StrictInterl (P (m - 1)) (P m)) (hG : StrictInterl (G (m - 1)) (G m))
+    (hgf : StrictInterl g f)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
-    Prec (f * P (m - 1) + X * g * G (m - 1))
+    StrictInterl (f * P (m - 1) + X * g * G (m - 1))
       (f * P m + X * g * G m) := by
-  have hinput : Prec f (X * g) :=
+  have hinput : StrictInterl f (X * g) :=
     prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg
   have hpair := prec_add_mul_pair_of_2x2
     (p₁ := P (m - 1)) (q₁ := G (m - 1)) (p₂ := P m) (q₂ := G m)
@@ -188,20 +188,20 @@ theorem theorem41Step_prec_of_claim7
 If the last-change index survives deleting the final letter, Theorem 3.5
 expresses both `M w` and `M w.deleteFinal` with the same prefix polynomials
 and adjacent suffix parameter.  The matrix step then propagates the induction
-hypothesis on the prefix pair to `Prec (M w.deleteFinal) (M w)`. -/
+hypothesis on the prefix pair to `StrictInterl (M w.deleteFinal) (M w)`. -/
 theorem theorem41NonconstantStep_prec_of_claim7
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
     (hlast : w.IsLastChangeIndex k)
     (hk : k + 1 < w.deleteFinal.length)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
-    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
+    (hprefix : StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
-    Prec (M w.deleteFinal) (M w) := by
+    StrictInterl (M w.deleteFinal) (M w) := by
   let f : ℝ[X] := M (w.takePrefix (k + 1))
   let g : ℝ[X] := M (w.takePrefix k)
   let m : ℕ := w.length - (k + 1)
@@ -247,9 +247,9 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
       HasNonnegCoeffs (narayanaDifference P m))
     (hH_nonneg : ∀ {m : ℕ}, 2 ≤ m →
       HasNonnegCoeffs (auxiliaryDifference G m))
-    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hprefix : StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
     (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
-    Prec (M w.deleteFinal) (M w) := by
+    StrictInterl (M w.deleteFinal) (M w) := by
   let f : ℝ[X] := M (w.takePrefix (k + 1))
   let g : ℝ[X] := M (w.takePrefix k)
   let m : ℕ := w.length - (k + 1)
@@ -283,21 +283,21 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     rw [hrec_diff]
     exact (hf_nonneg.mul (hQ_nonneg hm)).add
       (hg_nonneg.X_mul.mul (hH_nonneg hm))
-  have hstep : Prec (M w.deleteFinal) (M w - M w.deleteFinal) := by
+  have hstep : StrictInterl (M w.deleteFinal) (M w - M w.deleteFinal) := by
     have hstep_raw := theorem41Step_difference_prec_of_matrixClaim
       hclaim hm (hP_ne (m - 1)) hP_nonneg hG_nonneg
       (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
     rw [← hrec_del, ← hrec_diff] at hstep_raw
     exact hstep_raw
-  have hsum0 : Prec0 (M w.deleteFinal)
+  have hsum0 : Interl (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
     prec0_add_right_of_common_left_of_nonneg
-      (prec_refl hstep.1.1 hstep.1.2).toPrec0 hstep.toPrec0
+      (prec_refl hstep.1.1 hstep.1.2).toInterl hstep.toInterl
       (hM_nonneg w.deleteFinal) hdiff_nonneg
   have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
       (hM_nonneg w.deleteFinal) hdiff_nonneg hstep.2.1.1
-  have hfinal := hsum0.toPrec_of_ne hstep.1.1 hsum_ne
+  have hfinal := hsum0.toStrictInterl_of_ne hstep.1.1 hsum_ne
   have hsum_eq : M w.deleteFinal + (M w - M w.deleteFinal) = M w := by ring
   rw [hsum_eq] at hfinal
   exact hfinal
@@ -307,10 +307,10 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
 If `g ≪ f` and both polynomials have nonnegative coefficients, then
 `f ≪ (1 + X) f + X g`. -/
 theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
-    Prec f ((1 + X) * f + X * g) := by
-  have hf_Xg : Prec f (X * g) :=
+    StrictInterl f ((1 + X) * f + X * g) := by
+  have hf_Xg : StrictInterl f (X * g) :=
     prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg
   have hsum_nonneg : HasNonnegCoeffs (f + X * g) :=
     hf_nonneg.add hg_nonneg.X_mul
@@ -345,9 +345,9 @@ theorem theorem41StepOne_prec_of_recurrence
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hlast : w.IsLastChangeIndex k)
     (hsuffix : w.length - (k + 1) = 1)
-    (hprefix : Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
+    (hprefix : StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))))
     (hM_nonneg : ∀ u, HasNonnegCoeffs (M u)) :
-    Prec (M w.deleteFinal) (M w) := by
+    StrictInterl (M w.deleteFinal) (M w) := by
   let f : ℝ[X] := M (w.takePrefix (k + 1))
   let g : ℝ[X] := M (w.takePrefix k)
   have hdel : w.deleteFinal = w.takePrefix (k + 1) :=
@@ -364,14 +364,14 @@ theorem theorem41StepOne_prec_of_recurrence
 /-- Length-induction skeleton for Braun-Jal Theorem 4.1.
 
 If every nonconstant word step turns the prefix induction hypothesis into
-`Prec (M w.deleteFinal) (M w)`, then constant words and the degree bridge
+`StrictInterl (M w.deleteFinal) (M w)`, then constant words and the degree bridge
 finish the full deletion-interlacing statement. -/
 theorem theorem41_of_prec_step
     {M : SnakeWord → ℝ[X]}
     (hstep :
       ∀ {w : SnakeWord} {k : ℕ}, ¬ w.IsConstant → w.IsLastChangeIndex k →
-        Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) →
-          Prec (M w.deleteFinal) (M w))
+        StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) →
+          StrictInterl (M w.deleteFinal) (M w))
     (hdeg :
       ∀ {w : SnakeWord}, 1 ≤ w.length →
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
@@ -401,9 +401,9 @@ theorem theorem41_of_prec_step
             · rw [hlast.takePrefix_succ_length]
               lia
           have hprefix_prec :
-              Prec (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) := by
+              StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) := by
             rw [← SnakeWord.deleteFinal_takePrefix_succ_of_lt hlast.index_lt_length]
-            exact hprefix_result.2.toPrec
+            exact hprefix_result.2.toStrictInterl
           have hprec := hstep hconstw hlast hprefix_prec
           have hinter : Interlaces (M w.deleteFinal) (M w) :=
             hprec.toInterlaces (hdeg hw)
@@ -415,13 +415,13 @@ theorem theorem41_of_prec_step
 
 The remaining hypotheses expose the parts not proved by the matrix step:
 constant words, the infinite `m = 1` final-suffix family, and the degree bridge
-used to turn `Prec` into `Interlaces`. -/
+used to turn `StrictInterl` into `Interlaces`. -/
 theorem theorem41_of_claim7_of_base_cases
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
     (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
@@ -448,7 +448,7 @@ theorem theorem41_of_claim7_of_base_cases
       rw [SnakeWord.length_deleteFinal] at hk
       have hlast_suffix := hlast.succ_lt_length
       lia
-    exact (hstepOne hw hconstw hlast hsuffix).2.toPrec
+    exact (hstepOne hw hconstw hlast hsuffix).2.toStrictInterl
 
 /-- Constant-word branch from a length-model identity.
 
@@ -512,8 +512,8 @@ theorem theorem41_of_claim7_of_constant_cases
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -646,7 +646,7 @@ theorem theorem41_of_claim7_of_constant_matches_length
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
     (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -656,10 +656,10 @@ theorem theorem41_of_claim7_of_constant_matches_length
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
     Theorem41NonNestingRookStatement M := by
-  have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
+  have hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m) := by
     intro m hm
     exact (hP_interlaces (m := m)
-      (Nat.le_trans (by decide : 1 ≤ 2) hm)).toPrec
+      (Nat.le_trans (by decide : 1 ≤ 2) hm)).toStrictInterl
   have hconst :
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
@@ -685,7 +685,7 @@ theorem theorem41_of_claim7_of_constant_matches_succ_length
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
     (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -695,10 +695,10 @@ theorem theorem41_of_claim7_of_constant_matches_succ_length
         (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
     Theorem41NonNestingRookStatement M := by
-  have hP : ∀ {m : ℕ}, 2 ≤ m → Prec (P (m - 1)) (P m) := by
+  have hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m) := by
     intro m hm
     have hm_pos : 1 ≤ m := Nat.le_trans (by decide : 1 ≤ 2) hm
-    simpa [Nat.sub_add_cancel hm_pos] using (hP_interlaces (m - 1)).toPrec
+    simpa [Nat.sub_add_cancel hm_pos] using (hP_interlaces (m - 1)).toStrictInterl
   have hconst :
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
@@ -722,7 +722,7 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_length
         Lemma34ModifiedNarayanaInterlacingStatement P →
           Theorem41Claim7Statement P G)
     (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -750,7 +750,7 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
         Lemma34ModifiedNarayanaInterlacingStatement P →
           Theorem41Claim7Statement P G)
     (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -781,7 +781,7 @@ theorem theorem41InductionRoute_of_section3_of_constant_matches_succ_length
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement P G)
     (hside : Theorem41Claim7SideConditions P G)
     (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
@@ -806,7 +806,7 @@ theorem theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_len
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement P G)
     (hside : Theorem41Claim7RootSumSideConditions P G)
     (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → Prec (G (m - 1)) (G m))
+    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
     (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
     (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))

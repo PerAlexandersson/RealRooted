@@ -26,7 +26,7 @@ example {f g : ℝ[X]} {c : ℝ}
       ((1 + X : ℝ[X]) * f + (C (c - 2) * X) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + (C (c - 2) * X) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + (C (c - 2) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -45,7 +45,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hF_pos : HasPosLeadingCoeff ((1 + X : ℝ[X]) * f + C (2 - c) * g))
     (hdeg : (((1 + X : ℝ[X]) * f + C (2 - c) * g).natDegree = f.natDegree))
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
   have hb_neg : ∀ r, f.IsRoot r → (C (2 - c) : ℝ[X]).eval r < 0 := by
     intro r _hr
     simpa using sub_neg.mpr hactive
@@ -67,7 +67,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hdeg :
       (((1 + X : ℝ[X]) * f + C (2 - c) * g).natDegree = f.natDegree + 1))
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
   have hb_neg : ∀ r, f.IsRoot r → (C (2 - c) : ℝ[X]).eval r < 0 := by
     intro r _hr
     simpa using sub_neg.mpr hactive
@@ -90,7 +90,7 @@ example {f g : ℝ[X]} {c : ℝ}
       (((1 + X : ℝ[X]) * f + C (2 - c) * g).natDegree = f.natDegree) ∨
         (((1 + X : ℝ[X]) * f + C (2 - c) * g).natDegree = f.natDegree + 1))
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + C (2 - c) * g) := by
   have hb_neg : ∀ r, f.IsRoot r → (C (2 - c) : ℝ[X]).eval r < 0 := by
     intro r _hr
     simpa using sub_neg.mpr hactive
@@ -106,23 +106,23 @@ example {f g : ℝ[X]} {c : ℝ}
 strict Liu--Wang same/successor degree dispatcher.
 
 The remaining sequence-specific input is `hinter`: for a concrete plateau
-family, this is where one proves that the previous `Prec` certificate gives
+family, this is where one proves that the previous `StrictInterl` certificate gives
 the interlacer needed by the strict Liu--Wang step. -/
 example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
     (hinter : ∀ n : Nat,
-      Prec (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1)))
+      StrictInterl (P n) (P (n + 1)) → Interlaces (P n) (P (n + 1)))
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
     (hb_neg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r < 0) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   let hsame : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)) := by
     intro n hdeg hprev
     have htarget_pos :
         HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
@@ -135,7 +135,7 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
       left
       simpa [← hrec n] using hdeg
     have hstep :
-        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
+        StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
       rr_liu_wang_two_strict_branch using
         interlacer := hinter n hprev,
         interlacer_pos_lc := hpos n,
@@ -146,7 +146,7 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
     simpa [← hrec n] using hstep
   let hsucc : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
-      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)) := by
+      StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)) := by
     intro n hdeg hprev
     have htarget_pos :
         HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
@@ -159,7 +159,7 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
       right
       simpa [← hrec n] using hdeg
     have hstep :
-        Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
+        StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) := by
       rr_liu_wang_two_strict_branch using
         interlacer := hinter n hprev,
         interlacer_pos_lc := hpos n,
@@ -186,7 +186,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hdeg_hi : ((1 + X : ℝ[X]) * f + (C c * X) * g).natDegree ≤
       f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + (C c * X) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + (C c * X) * g) := by
   rr_lw_positive_t_nonneg_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -206,7 +206,7 @@ example {f g : ℝ[X]} {α c : ℝ}
     (hdeg_lo : f.natDegree ≤ ((X - C α) * f + (-(C c)) * g).natDegree)
     (hdeg_hi : ((X - C α) * f + (-(C c)) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((X - C α) * f + (-(C c)) * g) := by
+    StrictInterl f ((X - C α) * f + (-(C c)) * g) := by
   rr_lw_negative_const using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -226,7 +226,7 @@ example {f g : ℝ[X]} {α : ℝ}
     (hdeg_hi :
       ((X - C α) * f + (-(C (1 : ℝ))) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((X - C α) * f + (-(C (1 : ℝ))) * g) := by
+    StrictInterl f ((X - C α) * f + (-(C (1 : ℝ))) * g) := by
   rr_lw_negative_const_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -243,7 +243,7 @@ example {f g : ℝ[X]} {α : ℝ}
     (hdeg_lo : f.natDegree ≤ ((X - C α) * f + C (-1 : ℝ) * g).natDegree)
     (hdeg_hi : ((X - C α) * f + C (-1 : ℝ) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((X - C α) * f + C (-1 : ℝ) * g) := by
+    StrictInterl f ((X - C α) * f + C (-1 : ℝ) * g) := by
   rr_lw_negative_const_C_neg_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -262,7 +262,7 @@ example {f g a : ℝ[X]} {α c : ℝ}
     (hdeg_hi :
       (a * f + (-(C c) * (X - C α) ^ 2) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C c) * (X - C α) ^ 2) * g) := by
+    StrictInterl f (a * f + (-(C c) * (X - C α) ^ 2) * g) := by
   rr_lw_negative_square using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -284,7 +284,7 @@ example {f g a : ℝ[X]} {α : ℝ}
       (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g) := by
+    StrictInterl f (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g) := by
   rr_lw_negative_square_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -306,7 +306,7 @@ example {f g a : ℝ[X]}
       (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g) := by
+    StrictInterl f (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g) := by
   rr_lw_negative_monic_quadratic using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -329,7 +329,7 @@ example {f g a : ℝ[X]}
       (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g) := by
+    StrictInterl f (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g) := by
   rr_lw_negative_monic_quadratic_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -353,7 +353,7 @@ example {f g a : ℝ[X]}
       (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
+    StrictInterl f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
   rr_lw_negative_quadratic using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -380,7 +380,7 @@ example {f g a : ℝ[X]}
       (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
+    StrictInterl f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
   rr_lw_negative_quadratic_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -400,7 +400,7 @@ example {f g a q : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (a * f + (X * q) * g).natDegree)
     (hdeg_hi : (a * f + (X * q) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (X * q) * g) := by
+    StrictInterl f (a * f + (X * q) * g) := by
   rr_lw_positive_X_mul using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -422,7 +422,7 @@ example {f g a q : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (a * f + (X * q) * g).natDegree)
     (hdeg_hi : (a * f + (X * q) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (X * q) * g) := by
+    StrictInterl f (a * f + (X * q) * g) := by
   rr_lw_positive_X_mul_nonneg using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -444,7 +444,7 @@ example {f g a q : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (a * f + (C c * X * q) * g).natDegree)
     (hdeg_hi : (a * f + (C c * X * q) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C c * X * q) * g) := by
+    StrictInterl f (a * f + (C c * X * q) * g) := by
   rr_lw_positive_C_mul_X_mul_nonneg using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -468,7 +468,7 @@ example {f g a q : ℝ[X]}
     (hdeg_hi :
       (a * f + (C (2 : ℝ) * X * q) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C (2 : ℝ) * X * q) * g) := by
+    StrictInterl f (a * f + (C (2 : ℝ) * X * q) * g) := by
   rr_lw_positive_C_mul_X_mul_nonneg_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,

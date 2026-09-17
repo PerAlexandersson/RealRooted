@@ -13,7 +13,7 @@ noncomputable section
 namespace RealRooted
 
 lemma prec_one_add_X_quadratic_of_two_le (u : ℝ) (hu : 2 ≤ u) :
-    Prec (1 + X : ℝ[X]) (1 + X * C u + X ^ 2) := by
+    StrictInterl (1 + X : ℝ[X]) (1 + X * C u + X ^ 2) := by
   have hInter : Interlaces (1 : ℝ[X]) (1 + X) :=
     interlaces_one_linear (p := 1 + X) (by compute_degree!)
   have hg_pos : HasPosLeadingCoeff (1 : ℝ[X]) := by
@@ -101,12 +101,12 @@ theorem prec_of_quadratic_derivative_linear_quadratic_seed
         (C c + C (s + t * (n : ℝ)) * X) * P (n + 2))
     (hu : 2 ≤ u) (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c)
     (hsd : 0 < s - b * (2 : ℝ)) (hbt : b ≤ t) :
-    ∀ n : ℕ, Prec (P n) (P (n + 1))
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 => by
       have hInter : Interlaces (P 0) (P 1) := by
         rw [h0, h1]
         exact interlaces_one_linear (p := 1 + X) (by compute_degree!)
-      exact hInter.toPrec
+      exact hInter.toStrictInterl
   | 1 => by
       rw [h1, h2]
       exact prec_one_add_X_quadratic_of_two_le u hu

@@ -27,12 +27,12 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
     (hdeg : ∀ n, (P n).natDegree = n)
     (hpos : ∀ n, HasPosLeadingCoeff (P n))
     (hroot : ∀ n r, (P n).IsRoot r → r < 0)
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hbaseNo : ∀ r, (P 1).IsRoot r → ¬ (P 0).IsRoot r)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-b) * X ^ 2) * (P (n + 1)).derivative +
         Q n * P (n + 1) + (C c * X) * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   intro n
   induction n with
@@ -64,7 +64,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
         rw [hrec n]
         simp only [polynomialWeightedSum]
         ring
-      have hprec : Prec (P (n + 1)) (P (n + 2)) := by
+      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
         refine prec_generalizedLiuWang_of_no_common
           hinter (hpos n) ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
@@ -104,7 +104,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot0 => ihno r hr1 hroot0
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toPrec
+        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
           (hpos n) hderiv_pos hr1
       have hpref : 0 < a - b * r := by nlinarith
       have hmul :
@@ -148,12 +148,12 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
     (hdegreePos : ∀ n, 0 < (P (n + 1)).natDegree)
     (hpos : ∀ n, HasPosLeadingCoeff (P n))
     (hroot : ∀ n r, (P n).IsRoot r → r < 0)
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hbaseNo : ∀ r, (P 1).IsRoot r → ¬ (P 0).IsRoot r)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-b) * X ^ 2) * (P (n + 1)).derivative +
         Q n * P (n + 1) + (C c * X) * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   intro n
   induction n with
@@ -174,7 +174,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
         have hrneg := hroot (n + 1) r hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toPrec
+          eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
             (hpos n) hderiv_pos hr
         have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
           hsimple.eval_derivative_ne_zero hr
@@ -195,7 +195,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
           ring
         rw [heval]
         nlinarith
-      have hprec : Prec (P (n + 1)) (P (n + 2)) := by
+      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rcases hstep (n + 1) with hsame | hsucc
         · exact prec_of_interlaces_eval_mul_neg_same
             hderiv_inter hderiv_pos (hpos (n + 2)) hsame hrootSign

@@ -5,7 +5,7 @@ import RealRooted.WagnerRightSum
 # Selecting a same-degree proper-position orientation by an endpoint product
 
 Obreschkoff's converse turns a real-rooted full pencil into the alternative
-`Prec f g ∨ Prec g f`.  For polynomials with nonnegative coefficients, all
+`StrictInterl f g ∨ StrictInterl g f`.  For polynomials with nonnegative coefficients, all
 roots are nonpositive, so the product of the negated roots selects the
 orientation.  Via
 `p.eval 0 = p.leadingCoeff * ∏ r ∈ p.roots, (-r)`, this gives the
@@ -54,7 +54,7 @@ private lemma forall₂_map_zero_sub_rev :
 orders the normalized values at zero. -/
 lemma eval_cross_le_of_prec_sameDegree_of_nonneg
     {f g : ℝ[X]}
-    (hprec : Prec f g) (hdeg : f.natDegree = g.natDegree)
+    (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     g.eval 0 * f.leadingCoeff ≤ f.eval 0 * g.leadingCoeff := by
   rcases hprec with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
@@ -107,7 +107,7 @@ theorem prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
     (hdeg : f.natDegree = g.natDegree)
     (hcross : g.eval 0 * f.leadingCoeff <
       f.eval 0 * g.leadingCoeff) :
-    Prec f g := by
+    StrictInterl f g := by
   rcases prec_of_allComboRealRooted hf0 (hall.isRealRooted_left hf0).2
       hg0 (hall.isRealRooted_right hg0).2 hall (Or.inr hdeg) with hfg | hgf
   · grind

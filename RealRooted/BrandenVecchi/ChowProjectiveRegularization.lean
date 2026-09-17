@@ -258,7 +258,7 @@ position. -/
 theorem projectiveRegularizedChow_prec0_succ
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (ha0 : a 0 = 1)
     {epsilon : ℝ} (hepsilon : 0 ≤ epsilon) (N n : ℕ) :
-    Prec0 (projectiveRegularizedChow N a epsilon n)
+    Interl (projectiveRegularizedChow N a epsilon n)
       (projectiveRegularizedChow N a epsilon (n + 1)) := by
   rw [projectiveRegularizedChow, projectiveRegularizedChow]
   exact chowPolynomial_prec0_succ_of_isTotallyNonneg
@@ -283,7 +283,7 @@ theorem binomialSymbolChow_eq_zero_or_splits (N n : ℕ) :
 /-- Consecutive finite binomial special-fiber rows are in zero-aware proper
 position. -/
 theorem binomialSymbolChow_prec0_succ (N n : ℕ) :
-    Prec0 (binomialSymbolChow N n) (binomialSymbolChow N (n + 1)) := by
+    Interl (binomialSymbolChow N n) (binomialSymbolChow N (n + 1)) := by
   have hone : IsPolyaFreqSeq (fun _ : ℕ => (1 : ℝ)) := by
     simpa using geometric_isPolyaFreqSeq (1 : ℝ) zero_le_one
   have h := projectiveRegularizedChow_prec0_succ

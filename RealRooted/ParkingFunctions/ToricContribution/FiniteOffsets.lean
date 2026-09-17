@@ -98,7 +98,7 @@ hypothesis, using positive orientation at zero to normalize the input. -/
 theorem IntervalRootData.prec_neg_insertionOperator
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0)
     (a b : ℝ) (hb : 0 < b) :
-    Prec p (-ToricContribution.insertionOperator a b p) := by
+    StrictInterl p (-ToricContribution.insertionOperator a b p) := by
   by_cases hn : n = 0
   · have hpDegree : p.natDegree = 0 := hp.natDegree_eq.trans hn
     have hpNe : p ≠ 0 := by
@@ -124,7 +124,7 @@ theorem IntervalRootData.prec_neg_insertionOperator
   have hscaledPos : HasPosLeadingCoeff (C sign * p) := by
     exact hp.hasPosLeadingCoeff_negOnePow_mul hpZero
   have hprec :
-      Prec (C sign * p)
+      StrictInterl (C sign * p)
         (-ToricContribution.insertionOperator a b (C sign * p)) := by
     apply ToricContribution.prec_neg_insertionOperator a b
       hscaledData.splits hscaledPos
@@ -327,7 +327,7 @@ in proper-position order. This is the polynomial form of the directed gap
 comparison in the last Darboux square. -/
 theorem consecutive_signedTriangleFamily_prec
     (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
-    Prec
+    StrictInterl
       (signedTriangleFamily ((ε : ℝ) + 1 / 2)
         (jPolynomial m ε) (d + 1) (d + 1))
       (C ((((m - 1 : ℕ) : ℝ) - d) *
@@ -417,7 +417,7 @@ theorem consecutive_signedTriangleFamily_prec
     intro x
     simp only [eval_neg, eval_mul, eval_C]
     ring
-  have hHBPrec : Prec Hpos Bpos := by
+  have hHBPrec : StrictInterl Hpos Bpos := by
     rw [hBposOperator]
     have hraw := hHData.prec_neg_insertionOperator hHEval a b (by
       dsimp only [b]

@@ -34,13 +34,13 @@ private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[
         grind
 
 lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : Prec f g)
+    (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec g ((X - C r) * f) := by
+    StrictInterl g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have hf' : (f' ≠ 0 ∧
@@ -60,22 +60,23 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
   have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
-  have hfg' : Prec f' g' := by simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
-  have hgxf' : Prec g' (X * f') :=
+  have hfg' : StrictInterl f' g' := by
+    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+  have hgxf' : StrictInterl g' (X * f') :=
     prec_sameDegree_to_prec_mul_X_of_roots_nonpos hfg' hdeg' hf'_nonpos hg'_nonpos
-  have htranslated : Prec g' (((X - C r) * f).comp (X + C r)) := by
+  have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
   exact (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
 
 lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : Prec g ((X - C r) * f))
+    (h : StrictInterl g ((X - C r) * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec f g := by
+    StrictInterl f g := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).Splits) := h.2.1
@@ -98,12 +99,12 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
   have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
-  have hgf' : Prec g' (((X - C r) * f).comp (X + C r)) := by
+  have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
     simpa [g'] using (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
-  have hgxf' : Prec g' (X * f') := by
+  have hgxf' : StrictInterl g' (X * f') := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
-  have hfg' : Prec f' g' :=
+  have hfg' : StrictInterl f' g' :=
     prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
   exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
@@ -115,18 +116,18 @@ interlaced on the left by `h`. -/
 theorem prec_weightedSum_left_of_common_left
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, Prec h ap.2)
+    (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
     (hpos : HasPosLeadingCoeff h)
     (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    Prec h (weightedSum l) := by
+    StrictInterl h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
   have hex0 : ∃ ap ∈ l, 0 < ap.1 := ⟨ap0, hap0, ha0_pos⟩
   have hh : (h ≠ 0 ∧ h.Splits) := (hprec ap0 hap0).1
   rcases exists_common_root_upper_bound h l with ⟨r, hh_le, hl_le⟩
   let H := (X - C r) * h
   have hH_pos : HasPosLeadingCoeff H := hasPosLeadingCoeff_X_sub_C_mul hpos
-  have hprec_right : ∀ ap ∈ l, Prec ap.2 H := by
+  have hprec_right : ∀ ap ∈ l, StrictInterl ap.2 H := by
     intro ap hap
     have hp := hprec ap hap
     have hp_pos := hpoly_pos ap hap
@@ -135,7 +136,7 @@ theorem prec_weightedSum_left_of_common_left
     · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le r hp hdeg.symm hpos hp_pos hh_le hp_le
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
-  have hweighted_right : Prec (weightedSum l) H :=
+  have hweighted_right : StrictInterl (weightedSum l) H :=
     prec_weightedSum_right l H hnonneg hprec_right hpoly_pos hex0
   have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
     hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
@@ -159,24 +160,24 @@ be nonzero; its leading-coefficient sign is normalized internally. -/
 theorem prec_weightedSum_left_of_common_left_signed
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, Prec h ap.2)
+    (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
     (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    Prec h (weightedSum l) := by
+    StrictInterl h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
   have hh : h ≠ 0 ∧ h.Splits := (hprec ap0 hap0).1
   have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
   rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
   · let h' : ℝ[X] := C (-1 : ℝ) * h
-    have hprec' : ∀ ap ∈ l, Prec h' ap.2 :=
+    have hprec' : ∀ ap ∈ l, StrictInterl h' ap.2 :=
       fun ap hap => prec_C_mul_left (hprec ap hap) (by simp)
     have h'_pos : HasPosLeadingCoeff h' := by
       unfold h' HasPosLeadingCoeff
       simp_all
-    have hsum' : Prec h' (weightedSum l) :=
+    have hsum' : StrictInterl h' (weightedSum l) :=
       prec_weightedSum_left_of_common_left
         l h' hnonneg hprec' h'_pos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
-    have hback : Prec (C (-1 : ℝ) * h') (weightedSum l) :=
+    have hback : StrictInterl (C (-1 : ℝ) * h') (weightedSum l) :=
       prec_C_mul_left hsum' (by simp)
     grind
   · exact prec_weightedSum_left_of_common_left
@@ -185,11 +186,11 @@ theorem prec_weightedSum_left_of_common_left_signed
 /-- Unweighted left-cone corollary. -/
 theorem prec_sum_left_of_common_left
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Prec h p)
+    (hprec : ∀ p ∈ l, StrictInterl h p)
     (hpos : HasPosLeadingCoeff h)
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
-    Prec h l.sum := by
+    StrictInterl h l.sum := by
   rw [← weightedSum_map_one l]
   apply prec_weightedSum_left_of_common_left (l.map (fun p => ((1 : ℝ), p))) h
   · simp
@@ -208,10 +209,10 @@ positive leading coefficient, then their sum is interlaced on the left by `h`
 without needing to assume the sign of `h.leadingCoeff` in advance. -/
 theorem prec_sum_left_of_common_left_signed
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Prec h p)
+    (hprec : ∀ p ∈ l, StrictInterl h p)
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
-    Prec h l.sum := by
+    StrictInterl h l.sum := by
   rw [← weightedSum_map_one l]
   apply prec_weightedSum_left_of_common_left_signed
   · simp
@@ -233,17 +234,17 @@ specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand an
 each `f_i` has nonnegative coefficients, then `h ≪₀ ∑ f_i`. -/
 theorem prec0_sum_left_of_common_left_of_nonneg
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Prec0 h p)
+    (hprec : ∀ p ∈ l, Interl h p)
     (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
-    Prec0 h l.sum := by
+    Interl h l.sum := by
   by_cases hh0 : h = 0
-  · simpa [hh0] using prec0_zero_left l.sum
+  · simpa [hh0] using interl_zero_left l.sum
   let l' := l.filter (· ≠ 0)
   have hsum : l'.sum = l.sum := by simpa [l'] using sum_filter_ne_zero l
   by_cases hl' : l' = []
   · have hsum0 : l.sum = 0 := by simp_all
-    simpa [hsum0] using prec0_zero_right h
-  · have hprec' : ∀ p ∈ l', Prec h p := by
+    simpa [hsum0] using interl_zero_right h
+  · have hprec' : ∀ p ∈ l', StrictInterl h p := by
       intro p hp
       have hp_mem : p ∈ l := (List.mem_of_mem_filter hp)
       have hp_ne : p ≠ 0 := by grind
@@ -254,32 +255,32 @@ theorem prec0_sum_left_of_common_left_of_nonneg
       have hp_ne : p ≠ 0 := by grind
       have hp_rr : (p ≠ 0 ∧ p.Splits) := (hprec' p hp).2.1
       exact (hnn p hp_mem).pos_leadingCoeff hp_ne
-    have hstrict : Prec h l'.sum :=
+    have hstrict : StrictInterl h l'.sum :=
       prec_sum_left_of_common_left_signed l' h hprec' hpos' hl'
     exact Or.inr <| Or.inr <| by lia
 
-/-- Right cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
+/-- Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
 lemma prec0_finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ i ∈ s, Prec0 (f i) h)
+    (hprec : ∀ i ∈ s, Interl (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    Prec0 (s.sum f) h := by
+    Interl (s.sum f) h := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-      simpa using prec0_zero_left h
+      simpa using interl_zero_left h
   | @insert a s ha ih =>
-      have hprec_a : Prec0 (f a) h := hprec a (by simp)
-      have hprec_s : ∀ i ∈ s, Prec0 (f i) h := by simp_all
+      have hprec_a : Interl (f a) h := hprec a (by simp)
+      have hprec_s : ∀ i ∈ s, Interl (f i) h := by simp_all
       have hnn_a : HasNonnegCoeffs (f a) := hnn a (by simp)
       have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
-      have ih' : Prec0 (s.sum f) h := ih hprec_s hnn_s
+      have ih' : Interl (s.sum f) h := ih hprec_s hnn_s
       by_cases hfa0 : f a = 0
       · simp_all
       by_cases hs0 : s.sum f = 0
       · simp_all
       by_cases hh0 : h = 0
-      · simpa [Finset.sum_insert, ha, hh0] using prec0_zero_right ((insert a s).sum f)
+      · simpa [Finset.sum_insert, ha, hh0] using interl_zero_right ((insert a s).sum f)
       rcases hprec_a with _ | hh0' | hprec_a_strict
       · lia
       · lia
@@ -289,26 +290,26 @@ lemma prec0_finsetSum_right_of_nonneg {ι : Type}
       have hs_pos : HasPosLeadingCoeff (s.sum f) :=
         (hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0
       have hfa_pos : HasPosLeadingCoeff (f a) := hnn_a.pos_leadingCoeff hfa0
-      have hsum_strict : Prec (f a + s.sum f) h :=
+      have hsum_strict : StrictInterl (f a + s.sum f) h :=
         prec_add_of_prec_right_of_posLeadingCoeff
           hprec_a_strict hprec_s_strict hfa_pos hs_pos
-      simpa [Finset.sum_insert, ha] using hsum_strict.toPrec0
+      simpa [Finset.sum_insert, ha] using hsum_strict.toInterl
 
-/-- Left cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
+/-- Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
 lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
-    (hprec : ∀ i ∈ s, Prec0 h (f i))
+    (hprec : ∀ i ∈ s, Interl h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    Prec0 h (s.sum f) := by
+    Interl h (s.sum f) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-      simpa using prec0_zero_right h
+      simpa using interl_zero_right h
   | @insert a s ha ih =>
-      have hprec_s : ∀ i ∈ s, Prec0 h (f i) := by simp_all
+      have hprec_s : ∀ i ∈ s, Interl h (f i) := by simp_all
       have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
-      have ih' : Prec0 h (s.sum f) := ih hprec_s hnn_s
-      have hpair : Prec0 h ([f a, s.sum f].sum) := by
+      have ih' : Interl h (s.sum f) := ih hprec_s hnn_s
+      have hpair : Interl h ([f a, s.sum f].sum) := by
         apply prec0_sum_left_of_common_left_of_nonneg
         · simp_all
         · intro p hp
@@ -318,18 +319,18 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
           · exact hasNonnegCoeffs_finsetSum s f hnn_s
       simp_all
 
-/-- Pairwise finite row-sum wrapper for `Prec0`: if every selected left
+/-- Pairwise finite row-sum wrapper for `Interl`: if every selected left
 summand precedes every selected right summand, and all selected summands have
-nonnegative coefficients, then the two finite sums are in `Prec0` proper
+nonnegative coefficients, then the two finite sums are in `Interl` proper
 position. -/
 lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
     (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
-    (hprec : ∀ i ∈ s, ∀ j ∈ t, Prec0 (f i) (g j))
+    (hprec : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
     (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
     (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
-    Prec0 (s.sum f) (t.sum g) := by
+    Interl (s.sum f) (t.sum g) := by
   classical
-  have hleft : ∀ i ∈ s, Prec0 (f i) (t.sum g) :=
+  have hleft : ∀ i ∈ s, Interl (f i) (t.sum g) :=
     fun i hi => prec0_finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
   exact prec0_finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
 
@@ -337,20 +338,20 @@ lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
 theorem prec_sameDegree_shift_left_of_roots_le
     (r : ℝ) {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec g (g + (X - C r) * f) := by
+    StrictInterl g (g + (X - C r) * f) := by
   let t : ℝ[X] := (X - C r) * f
-  have hgt : Prec g t := by
+  have hgt : StrictInterl g t := by
     simpa [t] using
       prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le
         (r := r) hfg hdeg hf_pos hg_pos hf_le hg_le
   have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_C_mul hf_pos
-  have hsum : Prec g ([g, t].sum) := by
+  have hsum : StrictInterl g ([g, t].sum) := by
     apply prec_sum_left_of_common_left_signed
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
@@ -363,14 +364,14 @@ theorem prec_sameDegree_shift_left_of_roots_le
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `λ, μ`,
     not both zero, then `λf + μg` interlaces `g` from the left:
-    `Prec (λf + μg) g`. -/
+    `StrictInterl (λf + μg) g`. -/
 theorem prec_nonneg_combo_right {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b) :
-    Prec (C a * f + C b * g) g := by
-  have hweighted : Prec (weightedSum [(a, f), (b, g)]) g := by
+    StrictInterl (C a * f + C b * g) g := by
+  have hweighted : StrictInterl (weightedSum [(a, f), (b, g)]) g := by
     apply prec_weightedSum_right [(a, f), (b, g)] g
     · simp_all
     · intro ap hap
@@ -387,7 +388,7 @@ theorem prec_nonneg_combo_right {f g : ℝ[X]}
 /-- Forward Obreschkoff direction: if `f ⊳ g` with positive leading coefficients,
     then every nontrivial nonnegative linear combination `a f + b g` is real-rooted. -/
 theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b) : ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
@@ -396,7 +397,7 @@ theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
 /-- Forward Obreschkoff direction, positive-coefficient special case:
     if `f ⊳ g`, then `a f + b g` is real-rooted for all `a, b > 0`. -/
 theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
@@ -484,7 +485,7 @@ lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using h hlam zero_lt_one
 
-lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
+lemma of_prec {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g :=
   fun {_ _} hlam hμ =>
@@ -550,16 +551,16 @@ linear combination of `f` and `g` to be real-rooted. This is the forward
 Wagner-2 direction behind the common-interleaver formulation of the
 restricted Obreschkoff theorem. -/
 lemma of_commonLeftInterleaver {f g h : ℝ[X]}
-    (hhf : Prec h f) (hhg : Prec h g)
+    (hhf : StrictInterl h f) (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
-  have hhf' : Prec h (C lam * f) := prec_C_mul_right hhf hlam.ne'
-  have hhg' : Prec h (C μ * g) := prec_C_mul_right hhg hμ.ne'
+  have hhf' : StrictInterl h (C lam * f) := prec_C_mul_right hhf hlam.ne'
+  have hhg' : StrictInterl h (C μ * g) := prec_C_mul_right hhg hμ.ne'
   have hlam_pos : HasPosLeadingCoeff (C lam * f) := hasPosLeadingCoeff_C_mul hlam hf_pos
   have hμ_pos : HasPosLeadingCoeff (C μ * g) := hasPosLeadingCoeff_C_mul hμ hg_pos
   have hprec :
-      Prec h ([C lam * f, C μ * g].sum) := by
+      StrictInterl h ([C lam * f, C μ * g].sum) := by
     apply prec_sum_left_of_common_left_signed
     · simp_all
     · simp_all
@@ -569,11 +570,11 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
 /-- A common right interleaver for `f` and `g` forces every strictly positive
 linear combination of `f` and `g` to be real-rooted. -/
 lemma of_commonInterleaver {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
-  have hprec : Prec (weightedSum [(lam, f), (μ, g)]) h := by
+  have hprec : StrictInterl (weightedSum [(lam, f), (μ, g)]) h := by
     apply prec_weightedSum_right [(lam, f), (μ, g)] h
     · simp [hlam.le, hμ.le]
     · simp [hfh, hgh]
@@ -969,7 +970,7 @@ lemma common_root_reduction_data
 no-common-roots case. Shared roots can be factored out recursively.
 
 In the same-degree case the correct conclusion is the Obreschkoff alternative
-`Prec f g ∨ Prec g f`; the degree-`+1` case remains oriented. -/
+`StrictInterl f g ∨ StrictInterl g f`; the degree-`+1` case remains oriented. -/
 theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
@@ -979,13 +980,13 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
         f.natDegree ≤ g.natDegree →
         g.natDegree ≤ f.natDegree + 1 →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        Prec f g ∨ Prec g f)
+        StrictInterl f g ∨ StrictInterl g f)
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   refine
     Nat.strong_induction_on
       (p := fun n =>
@@ -996,7 +997,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
           HasPosLeadingCoeff g →
           f.natDegree ≤ g.natDegree →
           g.natDegree ≤ f.natDegree + 1 →
-          Prec f g ∨ Prec g f)
+          StrictInterl f g ∨ StrictInterl g f)
       f.natDegree ?_ rfl hfg hf_pos hg_pos hdeg_lo hdeg_hi
   intro n ih f g hfdeg hfg hf_pos hg_pos hdeg_lo hdeg_hi
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
@@ -1010,13 +1011,13 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : Prec qf qg ∨ Prec qg qf :=
+    have hprec_q : StrictInterl qf qg ∨ StrictInterl qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hprec_q with hprec_q | hprec_q
-    · have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
+    · have hprec_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
       lia
-    · have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
+    · have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
       lia
 end PosComboRealRooted
@@ -1276,7 +1277,7 @@ lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
     eval_mul_left_family_one_neg_at_root_two_of_no_common hno,
     eval_mul_left_family_two_neg_at_root_one_of_no_common hno⟩
 
-/-- Same-degree `Prec` can be recovered once one has strict sign changes of `g`
+/-- Same-degree `StrictInterl` can be recovered once one has strict sign changes of `g`
 on consecutive roots of `f` and one root of `g` strictly to the right of all
 roots of `f`. This repackages the final Ma--Wang assembly step in the form
 needed by the same-degree Obreschkoff converse. -/
@@ -1294,7 +1295,7 @@ theorem prec_same_of_root_sign_data
     (hright :
       let rs := f.roots.sort (· ≤ ·)
       ∃ uR, g.IsRoot uR ∧ ∀ r ∈ rs, r < uR) :
-    Prec f g := by
+    StrictInterl f g := by
   let rs := f.roots.sort (· ≤ ·)
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -1313,11 +1314,11 @@ theorem prec_same_of_root_sign_data
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
 theorem prec_of_prec_or_revPrec_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
-    (h : Prec f g ∨ Prec g f)
+    (h : StrictInterl f g ∨ StrictInterl g f)
     (hg_le : ∀ s ∈ g.roots, s ≤ c)
     (hfr : f.IsRoot r)
     (hc_lt : c < r) :
-    Prec g f := by
+    StrictInterl g f := by
   rcases h with hfg | hgf
   · exfalso
     have hfle : r ≤ c := roots_le_of_prec_right hfg hg_le r ((mem_roots hfg.1.1).mpr hfr)
@@ -1328,11 +1329,11 @@ theorem prec_of_prec_or_revPrec_of_root_asymmetry
 alternative. -/
 theorem revPrec_of_prec_or_revPrec_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
-    (h : Prec f g ∨ Prec g f)
+    (h : StrictInterl f g ∨ StrictInterl g f)
     (hf_le : ∀ s ∈ f.roots, s ≤ c)
     (hgr : g.IsRoot r)
     (hc_lt : c < r) :
-    Prec f g :=
+    StrictInterl f g :=
   prec_of_prec_or_revPrec_of_root_asymmetry
     (f := g) (g := f) (c := c) (r := r) (by lia)
     hf_le hgr hc_lt
@@ -1342,7 +1343,7 @@ theorem prec_or_revPrec_of_same_degree_one
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one (by lia)
   obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} :=
@@ -1374,40 +1375,40 @@ end PosComboRealRooted
 
 `PosComboRealRooted f g` (all positive scalar combinations real-rooted) is
 equivalent to `f` and `g` having a **common interlacer** (Ryder/Obreschkoff,
-Theorem 6.3). This is strictly weaker than `Prec f g` (strong interlacing).
+Theorem 6.3). This is strictly weaker than `StrictInterl f g` (strong interlacing).
 
 Counterexample: `f = (x+1)(x+3)`, `g = x(x+4)` satisfies `PosComboRealRooted`
 but roots `{-4, -3, -1, 0}` don't interlace (pattern g, f, f, g).
 
-For strong interlacing `Prec f g`, one needs the **affine family** hypothesis
+For strong interlacing `StrictInterl f g`, one needs the **affine family** hypothesis
 `(λx + μ)f + g` real-rooted for all `λ, μ > 0`, with nonneg coefficients.
 This is Brändén's Lemma 7.8.4, stated as `prec_of_affine_family_nonneg`
 in `InterlacingSequence.lean`.
 
 The correct Obreschkoff converse is: `PosComboRealRooted f g` implies
-`∃ h, Prec h f ∧ Prec h g` (existence of a common interlacer). -/
+`∃ h, StrictInterl h f ∧ StrictInterl h g` (existence of a common interlacer). -/
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `λ, μ`,
-    then `λf + μg` interlaces `g` from the left: `Prec (λf + μg) g`.
+    then `λf + μg` interlaces `g` from the left: `StrictInterl (λf + μg) g`.
     This is the positive-coefficient special case of `prec_nonneg_combo_right`. -/
 theorem prec_convex_right {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    Prec (C a * f + C b * g) g :=
+    StrictInterl (C a * f + C b * g) g :=
   prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `a, b`,
     not both zero, then `f` interlaces `a·f + b·g` from the right provided
     the Wagner 2 hypotheses hold in the genuinely two-term case. -/
 theorem prec_nonneg_combo_left {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b)
     (hfg_rr_ne : (C a * f + C b * g) ≠ 0) (hfg_rr_splits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   have hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits :=
     ⟨hfg_rr_ne, hfg_rr_splits⟩
   rcases hab with ha_pos | hb_pos
@@ -1433,15 +1434,15 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
-    then `f` interlaces `a·f + b·g` from the right: `Prec f (a·f + b·g)`.
+    then `f` interlaces `a·f + b·g` from the right: `StrictInterl f (a·f + b·g)`.
     (Wagner 2 applied to `C a * f` and `C b * g`, both interlaced by `f`.) -/
 theorem prec_convex_left {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hfg_rr_ne : (C a * f + C b * g) ≠ 0) (hfg_rr_splits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
   have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
   exact prec_add_of_prec_left
@@ -1456,16 +1457,16 @@ theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g')
-    (hfg : Prec f' g')
+    (hfg : StrictInterl f' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hfg'_rr_ne : (C a * f' + C b * g') ≠ 0) (hfg'_rr_splits : (C a * f' + C b * g').Splits)
     (hcop : IsCoprime (C a * f') (C b * g')) :
-    Prec f (C a * f + C b * g) := by
+    StrictInterl f (C a * f + C b * g) := by
   subst hf_def hg_def
-  have hbase : Prec f' (C a * f' + C b * g') :=
+  have hbase : StrictInterl f' (C a * f' + C b * g') :=
     prec_convex_left hfg hf'_pos hg'_pos ha hb hfg'_rr_ne hfg'_rr_splits hcop
-  have hmul : Prec (d * f') (d * (C a * f' + C b * g')) :=
+  have hmul : StrictInterl (d * f') (d * (C a * f' + C b * g')) :=
     prec_mul_common_factor hd_ne hd_splits hbase
   grind
 

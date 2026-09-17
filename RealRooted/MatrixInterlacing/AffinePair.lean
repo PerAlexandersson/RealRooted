@@ -80,7 +80,7 @@ lemma isInterlacingSeq0_reverse_rowPairAffineSeq
     IsInterlacingSeq0 (rowPairAffineSeq row₁ row₂ s t).reverse := by
   rw [isInterlacingSeq0_iff_pairwise]
   refine pairwise_reverse_rowPairAffineSeq (n := n) (s := s) (t := t)
-    hrow₁_len hrow₂_len Prec0 (fun j₁ j₂ hj => h2x2 j₁ j₂ hj s t hs ht)
+    hrow₁_len hrow₂_len Interl (fun j₁ j₂ hj => h2x2 j₁ j₂ hj s t hs ht)
 
 lemma isInterlacingSeq_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -96,7 +96,7 @@ lemma isInterlacingSeq_reverse_rowPairAffineSeq
     IsInterlacingSeq (rowPairAffineSeq row₁ row₂ s t).reverse := by
   rw [isInterlacingSeq_iff_pairwise]
   refine pairwise_reverse_rowPairAffineSeq (n := n) (s := s) (t := t)
-    hrow₁_len hrow₂_len Prec (fun j₁ j₂ hj => h2x2 j₁ j₂ hj s t hs ht)
+    hrow₁_len hrow₂_len StrictInterl (fun j₁ j₂ hj => h2x2 j₁ j₂ hj s t hs ht)
 
 lemma isRealRooted_mem_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -117,7 +117,7 @@ lemma isRealRooted_mem_rowPairAffineSeq
   let j₁' : Fin row₁.length := ⟨j', by simp [hrow₁_len]⟩
   let j₂' : Fin row₂.length := ⟨j', by simp [hrow₂_len]⟩
   have hself :
-      Prec
+      StrictInterl
         (((C s * X + C t) * row₁.get j₁') + row₂.get j₂')
         (((C s * X + C t) * row₁.get j₁') + row₂.get j₂') := by
     simpa using h2x2_diag j' s t hs ht
@@ -149,14 +149,14 @@ lemma isRealRooted_mem_rowPairAffineSeq_of_ne
     rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
     lia
   have hself0 :
-      Prec0
+      Interl
         (((C s * X + C t) * row₁.get j₁') + row₂.get j₂')
         (((C s * X + C t) * row₁.get j₁') + row₂.get j₂') := by
     simpa using h2x2_diag j' s t hs ht
-  have hself : Prec
+  have hself : StrictInterl
       (((C s * X + C t) * row₁.get j₁') + row₂.get j₂')
       (((C s * X + C t) * row₁.get j₁') + row₂.get j₂') :=
-    hself0.toPrec_of_ne hentry_ne hentry_ne
+    hself0.toStrictInterl_of_ne hentry_ne hentry_ne
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
   simpa [j₁', j₂'] using hself.1
 
@@ -324,11 +324,11 @@ This is the point where Brändén's proof uses Lemma 7.8.3: from the 2×2
 hypothesis one gets an interlacing auxiliary column family, and the
 corresponding reversed product-sum against `fs` is real-rooted. The affine
 family criterion above should then convert that real-rootedness statement to
-`Prec` for the two row sums.
+`StrictInterl` for the two row sums.
 
 Note: in full generality this statement needs row-wise nondegeneracy input
 (at least enough to exclude zero-row counterexamples). The current proof body
-is the forward derivation up to the final affine-family-to-`Prec` conversion. -/
+is the forward derivation up to the final affine-family-to-`StrictInterl` conversion. -/
 theorem prec_zipWith_sum_pair_of_2x2
     {row₁ row₂ fs : List ℝ[X]}
     (hn : 0 < n)
@@ -346,7 +346,7 @@ theorem prec_zipWith_sum_pair_of_2x2
         (row₂.get ⟨j₂, by lia⟩))
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
-    Prec ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
+    StrictInterl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
   let auxRow := rowPairAffineSeq row₁ row₂
   have hrows : row₁.length = row₂.length := by lia
   /-
@@ -451,7 +451,7 @@ theorem prec_zipWith_sum_pair_of_2x2
       zipWith_mul_sum_ne_zero_of_get_ne_zero
         (hlen := hrow₂_len.trans hfs_len.symm)
         hrow₂_nonneg hfs_nonneg k0 hrow₂_head_ne hfs0_ne
-  have hFG : Prec F G :=
+  have hFG : StrictInterl F G :=
     prec_of_affine_family_nonneg
       (f := F) (g := G) hF_ne hG_ne hF_nonneg hG_nonneg haff
   lia
@@ -464,15 +464,15 @@ two row sums are in proper position.  The cross test is the convention
 `Has2x2InterlacingProperty p₁ q₁ p₂ q₂`, namely the affine combination of
 `q₁, q₂` is in proper position with the affine combination of `p₁, p₂`. -/
 theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
-    (hp : Prec p₁ p₂) (hq : Prec q₁ q₂)
+    (hp : StrictInterl p₁ p₂) (hq : StrictInterl q₁ q₂)
     (hoff : Has2x2InterlacingProperty p₁ q₁ p₂ q₂)
-    (huv : Prec u v)
+    (huv : StrictInterl u v)
     (hp₁nn : HasNonnegCoeffs p₁) (hq₁nn : HasNonnegCoeffs q₁)
     (hp₂nn : HasNonnegCoeffs p₂) (hq₂nn : HasNonnegCoeffs q₂)
     (hunn : HasNonnegCoeffs u) (hvnn : HasNonnegCoeffs v) :
-    Prec (p₁ * u + q₁ * v) (p₂ * u + q₂ * v) := by
+    StrictInterl (p₁ * u + q₁ * v) (p₂ * u + q₂ * v) := by
   have hrows :
-      Prec (([p₁, q₁].zipWith (· * ·) [u, v]).sum)
+      StrictInterl (([p₁, q₁].zipWith (· * ·) [u, v]).sum)
         (([p₂, q₂].zipWith (· * ·) [u, v]).sum) := by
     refine prec_zipWith_sum_pair_of_2x2 (n := 2) (hn := by norm_num)
       (row₁ := [p₁, q₁]) (row₂ := [p₂, q₂]) (fs := [u, v])
@@ -511,7 +511,7 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
   simpa [mul_comm, mul_left_comm] using hrows
 
 /-- Zero-aware fixed-row form of the forward matrix theorem. This weak variant
-uses `Has2x2InterlacingProperty0` and returns `Prec0`, so either output row sum
+uses `Has2x2InterlacingProperty0` and returns `Interl`, so either output row sum
 may vanish. When both sums are nonzero, the proof filters zero auxiliary
 affine-row entries and reuses the strict product-family theorem. -/
 theorem prec0_zipWith_sum_pair_of_2x2
@@ -528,7 +528,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
         (row₂.get ⟨j₂, by lia⟩))
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
-    Prec0 ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
+    Interl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   by_cases hF_zero : F = 0
@@ -598,10 +598,10 @@ theorem prec0_zipWith_sum_pair_of_2x2
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     simp_all
-  have hFG : Prec F G :=
+  have hFG : StrictInterl F G :=
     prec_of_affine_family_nonneg
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
-  simpa [F, G] using hFG.toPrec0
+  simpa [F, G] using hFG.toInterl
 
 /-- Zero-aware fixed-row form with zero-aware input.  Besides weak
 interlacing and nonnegative coefficients, the input sequence is assumed to have
@@ -621,7 +621,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
-    Prec0 ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
+    Interl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   by_cases hF_zero : F = 0
@@ -688,10 +688,10 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     simp_all
-  have hFG : Prec F G :=
+  have hFG : StrictInterl F G :=
     prec_of_affine_family_nonneg
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
-  simpa [F, G] using hFG.toPrec0
+  simpa [F, G] using hFG.toInterl
 
 
 end RealRooted

@@ -231,13 +231,13 @@ example {P Q : Nat → ℝ[X]} {a : Nat → ℝ}
 
 /-- Endpoint-pair router, sum-then-`X` branch. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
-    ∀ n : Nat, Prec (A n) (B n) := by
+    ∀ n : Nat, StrictInterl (A n) (B n) := by
   rr_endpoint_pair_sequence using
     base := hbase,
     left_nonneg := hA0_nonneg,
@@ -249,7 +249,7 @@ example {A B : Nat → ℝ[X]}
 
 /-- Endpoint-pair router, real-rootedness endpoint for the reversed branch. -/
 example {A B : Nat → ℝ[X]}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
@@ -267,7 +267,7 @@ example {A B : Nat → ℝ[X]}
 
 /-- Endpoint-pair lift router, sum-then-`X` branch. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
@@ -289,7 +289,7 @@ example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
 
 /-- Endpoint-pair lift router, reversed branch. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
@@ -311,7 +311,7 @@ example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
 
 /-- Endpoint-pair lift router, reversed branch with swapped row quotient. -/
 example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
-    (hbase : Prec (A 0) (B 0))
+    (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)

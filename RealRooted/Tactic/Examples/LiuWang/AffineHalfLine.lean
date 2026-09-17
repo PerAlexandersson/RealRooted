@@ -17,7 +17,7 @@ namespace Tactic
 The sign side-goal follows from nonnegative row coefficients, which put the
 current roots on the half-line `(-∞, 0]`, together with `c_n,a_n >= 0`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -26,7 +26,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
       P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_C_mul_X_sub_C_lag_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -39,7 +39,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
 
 /-- Real-rootedness endpoint for the same affine half-line lag shell. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hc : ∀ n : Nat, 0 ≤ c n)
@@ -60,9 +60,9 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
     no_common_roots := hno
 
 /-- The same affine half-line lag, with automatic scalar side-goals and the
-`Prec` endpoint. -/
+`StrictInterl` endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -70,7 +70,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
         A n * P (n + 1) + (C ((n : ℝ) + 1) * X - C (1 : ℝ)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_C_mul_X_sub_C_lag_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -82,7 +82,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 /-- The affine half-line lag also has an auto side-goal path for routine
 nonnegative scalar parameters. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,
@@ -101,7 +101,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- Projection endpoint for the auto affine half-line lag shell. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat,

@@ -237,7 +237,7 @@ def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
 
 /-- Equal-degree proper position is strict when the two polynomials have no
 common root. -/
-theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : Prec p q)
+theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInterl p q)
     (hdeg : p.natDegree = q.natDegree)
     (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
     StrictPrecSameDegree p q := by
@@ -294,8 +294,8 @@ lemma StrictPrecSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
 
 /-- Strict same-degree proper position implies the legacy non-strict proper
 position predicate. -/
-theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]}
-    (h : StrictPrecSameDegree p q) : Prec p q := by
+theorem StrictPrecSameDegree.toStrictInterl {p q : ℝ[X]}
+    (h : StrictPrecSameDegree p q) : StrictInterl p q := by
   obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hdeg, h_inter⟩ := h
   have h_len : (p.roots.sort (· ≤ ·)).length = (q.roots.sort (· ≤ ·)).length := by
     simp [card_roots_of_splits, *]
@@ -307,5 +307,10 @@ theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]}
       q.roots.sort (· ≤ ·), Multiset.pairwise_sort .., Multiset.pairwise_sort ..,
       Multiset.sort_eq _ _, Multiset.sort_eq _ _,
       Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
+
+@[deprecated StrictPrecSameDegree.toStrictInterl (since := "2026-09-16")]
+theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]}
+    (h : StrictPrecSameDegree p q) : StrictInterl p q :=
+  StrictPrecSameDegree.toStrictInterl h
 
 end RealRooted

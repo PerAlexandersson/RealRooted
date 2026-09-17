@@ -40,7 +40,7 @@ example {f g F a b : ℝ[X]}
     (hdeg : f.natDegree + 1 = F.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_lw_nonpos_lag_step using
     interlaces := hgf,
     interlacer_pos_lc := hg_pos,
@@ -59,7 +59,7 @@ example {f g F a : ℝ[X]} {c : ℝ}
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg : f.natDegree + 1 = F.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C c * X) * g) := by
+    StrictInterl f (a * f + (C c * X) * g) := by
   rr_lw_positive_t_lag_step using
     interlaces := hgf,
     interlacer_pos_lc := hg_pos,
@@ -82,7 +82,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang using
     hgf, hg_pos, hl_inter, hl_pos, hl_nonpos, hF_pos, hdeg_lo, hdeg_hi, hno,
     hb_nonpos
@@ -99,7 +99,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -124,7 +124,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict using
     hgf, hg_pos, hl_inter, hl_pos, hl_nonpos, hF_pos, hdeg_lo, hdeg_hi, hno,
     hb_neg
@@ -141,7 +141,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -164,7 +164,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hdeg : (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict_same using
     hgf, hg_pos, hl_inter, hl_pos, hl_nonpos, hF_pos, hdeg, hno, hb_neg
 
@@ -178,7 +178,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hdeg : (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict_same using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -201,7 +201,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict_succ using
     hgf, hg_pos, hl_inter, hl_pos, hl_nonpos, hF_pos, hdeg, hno, hb_neg
 
@@ -216,7 +216,7 @@ example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
+    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   rr_liu_wang_strict_succ using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -236,7 +236,7 @@ example {f g a b : ℝ[X]}
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_liu_wang_two using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -254,7 +254,7 @@ example {f g a b : ℝ[X]}
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_liu_wang_two_strict using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -271,7 +271,7 @@ example {f g a b : ℝ[X]}
     (hdeg : (a * f + b * g).natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_liu_wang_two_strict_same using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -287,7 +287,7 @@ example {f g a b : ℝ[X]}
     (hdeg : (a * f + b * g).natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   rr_liu_wang_two_strict_succ using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -307,7 +307,7 @@ example {f g a : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (a * f + (C c * X) * g).natDegree)
     (hdeg_hi : (a * f + (C c * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C c * X) * g) := by
+    StrictInterl f (a * f + (C c * X) * g) := by
   rr_lw_positive_t_nonneg using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -328,7 +328,7 @@ example {f g a : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (a * f + X * g).natDegree)
     (hdeg_hi : (a * f + X * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + X * g) := by
+    StrictInterl f (a * f + X * g) := by
   rr_lw_positive_X using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -349,7 +349,7 @@ example {f g a : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (a * f + X * g).natDegree)
     (hdeg_hi : (a * f + X * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + X * g) := by
+    StrictInterl f (a * f + X * g) := by
   rr_lw_positive_X using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -369,7 +369,7 @@ example {f g a : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (a * f + X * g).natDegree)
     (hdeg_hi : (a * f + X * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + X * g) := by
+    StrictInterl f (a * f + X * g) := by
   rr_lw_positive_X_unit using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -388,7 +388,7 @@ example {f g a q : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (a * f + (-(C c) * q ^ 2) * g).natDegree)
     (hdeg_hi : (a * f + (-(C c) * q ^ 2) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C c) * q ^ 2) * g) := by
+    StrictInterl f (a * f + (-(C c) * q ^ 2) * g) := by
   rr_lw_negative_square using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -407,7 +407,7 @@ example {f g a : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (a * f + (-(C c)) * g).natDegree)
     (hdeg_hi : (a * f + (-(C c)) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C c)) * g) := by
+    StrictInterl f (a * f + (-(C c)) * g) := by
   rr_lw_negative_const using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -427,7 +427,7 @@ example {f g : ℝ[X]} {α c : ℝ}
     (hdeg_lo : f.natDegree ≤ ((X - C α) * f + C (-c) * g).natDegree)
     (hdeg_hi : ((X - C α) * f + C (-c) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((X - C α) * f + C (-c) * g) := by
+    StrictInterl f ((X - C α) * f + C (-c) * g) := by
   rr_lw_negative_const_C_neg using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -451,7 +451,7 @@ example {f g : ℝ[X]}
     (hdeg_hi :
       ((1 : ℝ[X]) * f + (C (1 : ℝ) * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 : ℝ[X]) * f + (C (1 : ℝ) * X) * g) := by
+    StrictInterl f ((1 : ℝ[X]) * f + (C (1 : ℝ) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -475,7 +475,7 @@ example {f g : ℝ[X]}
       ((1 + X : ℝ[X]) * f + (C (1 : ℝ) * X) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + (C (1 : ℝ) * X) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + (C (1 : ℝ) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -495,7 +495,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ ((1 + X) * f + (C c * X) * g).natDegree)
     (hdeg_hi : ((1 + X) * f + (C c * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X) * f + (C c * X) * g) := by
+    StrictInterl f ((1 + X) * f + (C c * X) * g) := by
   rr_lw_positive_t using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -516,7 +516,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (X * f + (C c * X) * g).natDegree)
     (hdeg_hi : (X * f + (C c * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (X * f + (C c * X) * g) := by
+    StrictInterl f (X * f + (C c * X) * g) := by
   rr_lw_positive_t using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -537,7 +537,7 @@ example {f g : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ ((C c * X) * f + (C c * X) * g).natDegree)
     (hdeg_hi : ((C c * X) * f + (C c * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((C c * X) * f + (C c * X) * g) := by
+    StrictInterl f ((C c * X) * f + (C c * X) * g) := by
   rr_lw_positive_t using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -560,7 +560,7 @@ example {f g a q : ℝ[X]} {c : ℝ}
     (hdeg_lo : f.natDegree ≤ (a * f + (C c * X * q) * g).natDegree)
     (hdeg_hi : (a * f + (C c * X * q) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C c * X * q) * g) := by
+    StrictInterl f (a * f + (C c * X * q) * g) := by
   rr_lw_positive_C_mul_X_mul using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -581,7 +581,7 @@ example {f g : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (X * f + (C (1 : ℝ) * X) * g).natDegree)
     (hdeg_hi : (X * f + (C (1 : ℝ) * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (X * f + (C (1 : ℝ) * X) * g) := by
+    StrictInterl f (X * f + (C (1 : ℝ) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -600,7 +600,7 @@ example {f g : ℝ[X]}
     (hdeg_lo : f.natDegree ≤ (X * f + (C (2 : ℝ) * X) * g).natDegree)
     (hdeg_hi : (X * f + (C (2 : ℝ) * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (X * f + (C (2 : ℝ) * X) * g) := by
+    StrictInterl f (X * f + (C (2 : ℝ) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -621,7 +621,7 @@ example {f g : ℝ[X]} {n : Nat}
     (hdeg_hi :
       (C (n : ℝ) * f + (C (n : ℝ) * X) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (C (n : ℝ) * f + (C (n : ℝ) * X) * g) := by
+    StrictInterl f (C (n : ℝ) * f + (C (n : ℝ) * X) * g) := by
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
@@ -646,7 +646,7 @@ example {f g : ℝ[X]} {n : ℝ}
       ((1 + X : ℝ[X]) * f + (C (n ^ 2 + n - 1) * X) * g).natDegree ≤
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f ((1 + X : ℝ[X]) * f + (C (n ^ 2 + n - 1) * X) * g) := by
+    StrictInterl f ((1 + X : ℝ[X]) * f + (C (n ^ 2 + n - 1) * X) * g) := by
   have hc : 0 ≤ n ^ 2 + n - 1 := by nlinarith [sq_nonneg n]
   rr_lw_positive_t_auto using
     interlacer := hgf,

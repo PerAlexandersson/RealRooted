@@ -47,7 +47,7 @@ identity matrix, some chain polynomials vanish. -/
 theorem prec0_chainPolynomial_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) (n : ℕ) :
-    Prec0 (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
+    Interl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   prec0_chainPolynomial_succ (resolutionOfTotallyNonneg R hunit hR) n
 
 theorem prec_chainPolynomial_succ_of_isTotallyNonneg_of_ne
@@ -55,7 +55,7 @@ theorem prec_chainPolynomial_succ_of_isTotallyNonneg_of_ne
     (hR : Matrix.IsTotallyNonneg R) (n : ℕ)
     (hn : chainPolynomial R n ≠ 0)
     (hsucc : chainPolynomial R (n + 1) ≠ 0) :
-    Prec (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
+    StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   prec_chainPolynomial_succ_of_ne
     (resolutionOfTotallyNonneg R hunit hR) n hn hsucc
 

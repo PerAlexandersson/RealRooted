@@ -196,7 +196,8 @@ theorem auxiliaryGPencil_splits_of_section3
   let W : ℝ[X] :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial m +
       modifiedNarayanaPolynomial (m + 1)
-  have hUW : Prec U W := by simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
+  have hUW : StrictInterl U W := by
+    simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
@@ -232,10 +233,10 @@ theorem auxiliaryGPencil_splits_of_section3
   have hmid_eq : W - X * U = U + X * V := by
     rw [hW_eq]
     ring
-  have hpair : Prec U (W - X * U) ∧ Prec (W - X * U) W :=
+  have hpair : StrictInterl U (W - X * U) ∧ StrictInterl (W - X * U) W :=
     prec_sub_X_mul_pair_of_eq_posLeadingCoeff hUW hW_pos hWU_lc hdeg_UW
       hW_nonpos hU_nonpos (by simpa [hmid_eq] using hmid_pos)
-  have hU_mid : Prec U (U + X * V) := by simpa [hmid_eq] using hpair.left
+  have hU_mid : StrictInterl U (U + X * V) := by simpa [hmid_eq] using hpair.left
   have hall_U_mid := allComboRealRooted_of_prec hU_mid
   have hall_U_XV : AllComboRealRooted U (X * V) := by
     intro alpha beta

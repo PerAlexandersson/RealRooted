@@ -409,8 +409,8 @@ macro_rules
   | `(rr_lookup_interlaces_term) =>
       `(by
         first
-          | exact RealRooted.Prec.toInterlaces rr_lookup_term rr_lookup_term
-          | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
+          | exact RealRooted.StrictInterl.toInterlaces rr_lookup_term rr_lookup_term
+          | exact RealRooted.StrictInterl.toInterlaces rr_lookup_term (by
               symm
               rr_lookup))
   | `(tactic| rr_degree_eq_one) =>
@@ -613,8 +613,8 @@ macro_rules
           | (apply pow_ne_zero <;> rr_nonzero)
           | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
           | exact Polynomial.derivative_ne_zero.mpr (by rr_close_side)
-          | (intro hzero; simp_all [RealRooted.Prec, RealRooted.Interlaces])
-          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
+          | (intro hzero; simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
+          | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
         rr_first_exact
@@ -726,7 +726,7 @@ macro_rules
           | (apply Polynomial.Splits.pow <;> rr_splits)
           | simp [add_comm]
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
-          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
+          | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_zero_or_splits using $h:term) =>
       `(tactic|
         rr_first_exact
@@ -849,7 +849,7 @@ macro_rules
           | (apply RealRooted.mul_eq_zero_or_splits <;> rr_zero_or_splits)
           | (apply RealRooted.pow_eq_zero_or_splits <;> rr_zero_or_splits)
           | exact Or.inr (by rr_splits)
-          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
+          | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|
         rr_first_exact
@@ -946,15 +946,15 @@ macro_rules
           | assumption
           | rr_named_realrooted
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
-          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
+          | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
       `(tactic|
         rr_first_exact
-          RealRooted.Prec.toInterlaces $hprec $hdeg,
-          RealRooted.Prec.toInterlaces $hprec ($hdeg).symm)
+          RealRooted.StrictInterl.toInterlaces $hprec $hdeg,
+          RealRooted.StrictInterl.toInterlaces $hprec ($hdeg).symm)
   | `(tactic| rr_interlaces using $hprec:term) =>
       `(tactic|
-        exact RealRooted.Prec.toInterlaces $hprec (by rr_close_side))
+        exact RealRooted.StrictInterl.toInterlaces $hprec (by rr_close_side))
   | `(tactic| rr_interlaces) =>
       `(tactic|
         first
@@ -964,18 +964,18 @@ macro_rules
       `(tactic|
         rr_first_exact
           $hprec,
-          RealRooted.Prec.toPrec0 $hprec,
-          RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec $hprec))
+          RealRooted.StrictInterl.toInterl $hprec,
+          RealRooted.StrictInterl.toInterl (RealRooted.Interlaces.toStrictInterl $hprec))
   | `(tactic| rr_prec using $hinter:term) =>
       `(tactic|
         rr_first_exact
           $hinter,
-          RealRooted.Interlaces.toPrec $hinter,
-          (fun n => RealRooted.Interlaces.toPrec ($hinter n)),
-          (RealRooted.Interlaces.toPrec ($hinter _)))
+          RealRooted.Interlaces.toStrictInterl $hinter,
+          (fun n => RealRooted.Interlaces.toStrictInterl ($hinter n)),
+          (RealRooted.Interlaces.toStrictInterl ($hinter _)))
   | `(tactic| rr_prec using $hprec0:term, $hf:term, $hg:term) =>
       `(tactic|
-        exact RealRooted.Prec0.toPrec_of_ne $hprec0 $hf $hg)
+        exact RealRooted.Interl.toStrictInterl_of_ne $hprec0 $hf $hg)
   | `(tactic| rr_gsturm_cons using $hprec:term, $htail:term) =>
       `(tactic|
         simpa [RealRooted.IsGeneralizedSturmSeq] using And.intro $hprec $htail)
@@ -1092,7 +1092,7 @@ macro_rules
         first
           | exact $h
           | exact RealRooted.derivative_interlaces $h (by rr_close_side)
-          | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toPrec
+          | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toStrictInterl
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.left_isRealRooted_of_prec_sequence $h)
           | rr_exact_realrooted_sequence_or_projection
@@ -1105,12 +1105,12 @@ macro_rules
           | rr_zero_or_splits using $h
           | exact RealRooted.natDegree_succ_of_interlaces $h
           | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
-          | exact RealRooted.Prec.toInterlaces $h (by rr_close_side)
-          | exact RealRooted.Interlaces.toPrec $h
-          | exact fun n => RealRooted.Interlaces.toPrec ($h n)
-          | exact RealRooted.Interlaces.toPrec ($h _)
-          | exact RealRooted.Prec.toPrec0 $h
-          | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec $h)
+          | exact RealRooted.StrictInterl.toInterlaces $h (by rr_close_side)
+          | exact RealRooted.Interlaces.toStrictInterl $h
+          | exact fun n => RealRooted.Interlaces.toStrictInterl ($h n)
+          | exact RealRooted.Interlaces.toStrictInterl ($h _)
+          | exact RealRooted.StrictInterl.toInterl $h
+          | exact RealRooted.StrictInterl.toInterl (RealRooted.Interlaces.toStrictInterl $h)
           | rr_close_side)
   | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
       `(tactic|
@@ -1122,8 +1122,8 @@ macro_rules
               $hprec (fun n => ($hdeg n).symm) _)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_prec_chain_from_step $hprec)
-          | exact RealRooted.Prec.toInterlaces $hprec $hdeg
-          | exact RealRooted.Prec.toInterlaces $hprec ($hdeg).symm
+          | exact RealRooted.StrictInterl.toInterlaces $hprec $hdeg
+          | exact RealRooted.StrictInterl.toInterlaces $hprec ($hdeg).symm
           | exact RealRooted.prec_sequence_of_base_and_step $hprec $hdeg
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_prec_sequence $hprec $hdeg)
@@ -1131,7 +1131,7 @@ macro_rules
               And.intro $hprec $hdeg
           | simpa [RealRooted.IsSturmSeq] using And.intro $hprec $hdeg)
   | `(tactic| rr_finish using $hprec0:term, $hf:term, $hg:term) =>
-      `(tactic| exact RealRooted.Prec0.toPrec_of_ne $hprec0 $hf $hg)
+      `(tactic| exact RealRooted.Interl.toStrictInterl_of_ne $hprec0 $hf $hg)
   | `(tactic| rr_finish using $hbase:term, $hbranch:term, $hsame:term, $hsucc:term) =>
       `(tactic|
         first
@@ -1157,11 +1157,13 @@ macro_rules
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
           | exact RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)
-          | exact (RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)).toPrec
-          | exact RealRooted.Interlaces.toPrec rr_lookup_term
+          | exact (RealRooted.derivative_interlaces (by rr_splits)
+              (by rr_close_side)).toStrictInterl
+          | exact RealRooted.Interlaces.toStrictInterl rr_lookup_term
           | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
-          | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec rr_lookup_term)
+          | exact RealRooted.StrictInterl.toInterl
+              (RealRooted.Interlaces.toStrictInterl rr_lookup_term)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | rr_named_interlaces
           | rr_named_realrooted
@@ -1170,8 +1172,8 @@ macro_rules
           | rr_zero_or_splits
           | rr_sign
           | simp_all [
-              RealRooted.Prec,
-              RealRooted.Prec0,
+              RealRooted.StrictInterl,
+              RealRooted.Interl,
               RealRooted.Interlaces,
               RealRooted.IsSturmSeq,
               RealRooted.IsGeneralizedSturmSeq]

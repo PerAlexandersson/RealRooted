@@ -15,7 +15,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
     (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    Prec f (a * f + b * g) := by
+    StrictInterl f (a * f + b * g) := by
   classical
   refine
     Nat.strong_induction_on
@@ -28,7 +28,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
           f.natDegree ≤ (a * f + b * g).natDegree →
           (a * f + b * g).natDegree ≤ f.natDegree + 1 →
           (∀ r, f.IsRoot r → b.eval r ≤ 0) →
-          Prec f (a * f + b * g))
+          StrictInterl f (a * f + b * g))
       f.natDegree ?_ rfl hgf hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   intro n ih f g a b hfdeg hgf hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
@@ -52,9 +52,9 @@ theorem prec_of_interlaces_evalCoeff_nonpos
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : Prec qf (a * qf + b * qg) := by grind
+    have hprec_q : StrictInterl qf (a * qf + b * qg) := by grind
     have hprec_mul :
-        Prec ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) :=
+        StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) :=
       prec_mul_X_sub_C_of_linearCombo_quotient (a := a) (b := b) (r := r) hprec_q
     lia
 

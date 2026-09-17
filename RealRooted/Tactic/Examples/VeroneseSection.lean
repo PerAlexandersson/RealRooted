@@ -37,8 +37,8 @@ example {r k : ℕ} {p : ℝ[X]}
 example {p q : ℝ[X]} {r k : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
+    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
+    Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
   rr_veronese_section_prec0 using
     prec_to_full := hPrecToFull,
     full_to_prec0 := hFullToPrec0,
@@ -49,8 +49,8 @@ example {p q : ℝ[X]} {r k : ℕ}
 example {p q : ℝ[X]} {r k : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
+    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
+    StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
   rr_veronese_section_prec using
     prec_to_full := hPrecToFull,
     full_to_prec := hFullToPrec,
@@ -61,8 +61,8 @@ example {p q : ℝ[X]} {r k : ℕ}
 example {p q : ℝ[X]} {r i j : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Prec0 (veronesePairSectionPolynomial r p q i)
+    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
+    Interl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
   rr_veronese_pair_prec0 using
     prec_to_full := hPrecToFull,
@@ -75,8 +75,8 @@ example {p q : ℝ[X]} {r i j : ℕ}
 example {p q : ℝ[X]} {r i j : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Prec (veronesePairSectionPolynomial r p q i)
+    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
+    StrictInterl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
   rr_veronese_pair_prec using
     prec_to_full := hPrecToFull,
@@ -89,8 +89,8 @@ example {p q : ℝ[X]} {r i j : ℕ}
 example {p q : ℝ[X]} {r : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec0 (veronesePairSectionPolynomial r p q i)
+    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
+    Interl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
   rr_veronese_pair_fin_prec0 using
     prec_to_full := hPrecToFull,
@@ -104,8 +104,8 @@ example {p q : ℝ[X]} {r : ℕ}
 example {p q : ℝ[X]} {r : ℕ}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec (veronesePairSectionPolynomial r p q i)
+    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
+    StrictInterl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
   rr_veronese_pair_fin_prec using
     prec_to_full := hPrecToFull,
@@ -164,10 +164,10 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
 example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veroneseSectionPolynomial (r n) (k n) (P n))
       (veroneseSectionPolynomial (r n) (k n) (Q n)) := by
   rr_veronese_section_sequence_prec0 using
@@ -180,10 +180,10 @@ example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
 example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veroneseSectionPolynomial (r n) (k n) (P n))
       (veroneseSectionPolynomial (r n) (k n) (Q n)) := by
   rr_veronese_section_sequence_prec using
@@ -196,11 +196,11 @@ example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
     (hj : ∀ n : Nat, j n < 2 * r n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
   rr_veronese_pair_sequence_prec0 using
@@ -214,11 +214,11 @@ example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
     (hj : ∀ n : Nat, j n < 2 * r n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
   rr_veronese_pair_sequence_prec using
@@ -232,11 +232,11 @@ example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
 example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))
     (hij : ∀ n : Nat, i n < j n) :
-    ∀ n : Nat, Prec0
+    ∀ n : Nat, Interl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
   rr_veronese_pair_fin_sequence_prec0 using
@@ -251,11 +251,11 @@ example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
 example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))
     (hij : ∀ n : Nat, i n < j n) :
-    ∀ n : Nat, Prec
+    ∀ n : Nat, StrictInterl
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
       (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
   rr_veronese_pair_fin_sequence_prec using

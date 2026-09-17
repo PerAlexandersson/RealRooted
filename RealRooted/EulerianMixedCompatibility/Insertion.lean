@@ -148,7 +148,7 @@ theorem prec_eulerInsertionStep
     {c : ℝ} {d : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hp_pos : HasPosLeadingCoeff p)
     (hp_splits : p.Splits) (hpdeg : p.natDegree ≤ d) :
-    Prec p (eulerInsertionStep c d p) := by
+    StrictInterl p (eulerInsertionStep c d p) := by
   obtain ⟨hout_deg, hout_pos⟩ :=
     eulerInsertionStep_degree_pos (c := c) hpdeg hp_pos
   by_cases hpdeg0 : p.natDegree = 0

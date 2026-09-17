@@ -38,7 +38,7 @@ theorem normalizedRPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
 position orientation. -/
 theorem normalizedRPolynomial_prec_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
-    Prec (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
+    StrictInterl (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
   exact prec_C_mul_right
     (prec_C_mul_left
       (rPolynomial_prec_rPolynomial_of_lt m ε d e hm hde he)
@@ -76,7 +76,7 @@ theorem normalizedRPolynomialFamily_hasCommonLeftInterleaver
   obtain ⟨d, hd, rfl⟩ := hp
   have hdm : d ≤ m := by simpa using hd
   exact prec_C_mul_right
-    (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toPrec
+    (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toStrictInterl
     (pow_ne_zero m (by norm_num))
 
 /-- The sum of all parity-normalized toric contributions is split. -/
@@ -117,7 +117,7 @@ theorem normalizedRPolynomialFamily_weighted_sum_splits
     have hdm : d ≤ m := by simpa using hd
     exact prec_C_mul_right
       (prec_C_mul_right
-        (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toPrec
+        (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toStrictInterl
         (pow_ne_zero m (by norm_num)))
       (hw d hdm).ne'
   have hpositive : ∀ p ∈ fs, HasPosLeadingCoeff p := by

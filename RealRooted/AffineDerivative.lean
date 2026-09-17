@@ -3,7 +3,7 @@
 
 Main result (`prec_affine_derivative`): if `f` is real-rooted with all roots ≤ 0
 and `c > natDegree f`, then
-  `Prec (C c * f + (1 - X) * f.derivative) f`.
+  `StrictInterl (C c * f + (1 - X) * f.derivative) f`.
 
 ## Proof sketch
 
@@ -19,7 +19,7 @@ Let `g = C c * f + (1 - X) * f'` and `d = natDegree f`.
    With `d - 1` roots and degree `d`, the remaining factor has degree 1,
    giving one more root. So `g` is real-rooted.
 
-4. The roots interlace in the same-degree (`ListAlternates`) sense: `Prec g f`.
+4. The roots interlace in the same-degree (`ListAlternates`) sense: `StrictInterl g f`.
 -/
 import RealRooted.Basic
 import RealRooted.Linear
@@ -818,7 +818,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : 
     (hss_eq : (↑(u :: ss) : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss (r₁ :: rest))
     (hu : u ≤ r₁) :
-    Prec g f := by
+    StrictInterl g f := by
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss (r₁ :: rest) hrs_sorted hint
   have hu_le_all : ∀ s ∈ ss, u ≤ s :=
@@ -832,13 +832,13 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : 
 
 /-- **Affine derivative interlacing**: if `f` is real-rooted with all roots ≤ 0,
 positive leading coefficient, degree ≥ 2, and `c > natDegree f`, then
-`C c * f + (1 - X) * f.derivative` interlaces `f` (same-degree `Prec`). -/
+`C c * f + (1 - X) * f.derivative` interlaces `f` (same-degree `StrictInterl`). -/
 theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hf₀ : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   set g := C c * f + (1 - X) * f.derivative with hg_def
   set d := f.natDegree with hd_def
   have hc_ne : c ≠ (d : ℝ) := ne_of_gt hc
@@ -1089,7 +1089,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     (hf₀ : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   set g := C c * f + (1 - X) * f.derivative with hg_def
   have hc1 : (1 : ℝ) < c := by simp_all
   have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
@@ -1124,7 +1124,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
   have hsr : s ≤ r := by
     have : 0 < r - s := by simp_all
     linarith
-  -- Prec with ListAlternates [s] [r]
+  -- StrictInterl with ListAlternates [s] [r]
   exact ⟨hg_rr, ⟨hf₀.ne_zero, hf⟩, [s], [r], List.pairwise_singleton _ _,
     List.pairwise_singleton _ _, by simp [hs_eq], by simp [hr_eq],
     Or.inr ⟨rfl, hsr, trivial⟩⟩
@@ -1134,7 +1134,7 @@ theorem prec_affine_derivative' {f : ℝ[X]} (hf : f.Splits) (hdeg : 1 ≤ f.nat
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rcases eq_or_lt_of_le hdeg with h | h
   · exact prec_affine_derivative_deg_one hf h.symm hf_pos hroots_nonpos hc
   · exact prec_affine_derivative hf h hf_pos hroots_nonpos hc
@@ -1177,18 +1177,18 @@ nonnegative coefficients. Such polynomials automatically have nonpositive roots
 theorem prec_affine_derivative_of_nonnegCoeffs {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 1 ≤ f.natDegree) (hfnn : HasNonnegCoeffs f)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    Prec (C c * f + (1 - X) * f.derivative) f := by
+    StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   have hf0 : f ≠ 0 := by rintro rfl; simp at hdeg
   exact prec_affine_derivative' hf hdeg (hfnn.pos_leadingCoeff hf0)
     (roots_nonpos_of_hasNonnegCoeffs hfnn) hc
 
 /-- If `f` is split with nonnegative coefficients and degree at least two, then
 the derivative block `(1 - X) * f'` lies on the right of `f` in the oriented
-`Prec` relation. -/
+`StrictInterl` relation. -/
 theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
-    Prec f ((1 - X) * f.derivative) := by
-  have hder : Prec f.derivative f := (derivative_interlaces hf hdeg).toPrec
+    StrictInterl f ((1 - X) * f.derivative) := by
+  have hder : StrictInterl f.derivative f := (derivative_interlaces hf hdeg).toStrictInterl
   have hnn' : HasNonnegCoeffs f.derivative := hnn.derivative
   have hf'_pos : HasPosLeadingCoeff f.derivative := hnn'.pos_leadingCoeff hder.1.1
   have hf_pos : HasPosLeadingCoeff f := hnn.pos_leadingCoeff <| by
@@ -1203,10 +1203,10 @@ theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
   have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
     rw [f.natDegree_derivative]
     lia
-  have hmain : Prec f ((X - C 1) * f.derivative) :=
+  have hmain : StrictInterl f ((X - C 1) * f.derivative) :=
     (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hder.1.2 hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp
       hder
-  have hscaled : Prec f (C (-1) * ((X - C 1) * f.derivative)) :=
+  have hscaled : StrictInterl f (C (-1) * ((X - C 1) * f.derivative)) :=
     prec_C_mul_right hmain (by simp)
   grind
 

@@ -281,8 +281,8 @@ theorem loweringEulerStep_prec
     {M D : ℕ} (hD : 1 ≤ D) (hM : D + 1 ≤ M) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree = D) (hqdeg : q.natDegree = D)
-    (hpq : Prec p q) :
-    Prec (loweringEulerStep M p) (loweringEulerStep M q) := by
+    (hpq : StrictInterl p q) :
+    StrictInterl (loweringEulerStep M p) (loweringEulerStep M q) := by
   have hpPos : HasPosLeadingCoeff p :=
     hp.hasNonnegCoeffs.pos_leadingCoeff hpq.1.1
   have hqPos : HasPosLeadingCoeff q :=
@@ -304,8 +304,8 @@ theorem eulerInsertionStep_one_prec
     {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec q p) :
-    Prec (eulerInsertionStep 1 d q) (eulerInsertionStep 1 d p) := by
+    (hpq : StrictInterl q p) :
+    StrictInterl (eulerInsertionStep 1 d q) (eulerInsertionStep 1 d p) := by
   have hpPos : HasPosLeadingCoeff p :=
     hp.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
   have hqPos : HasPosLeadingCoeff q :=
@@ -353,7 +353,7 @@ theorem X_mul_loweringEulerStep_eq
 theorem eulerInsertionStep_derivative_prec_zeroStep
     {D M : ℕ} (hD : 2 ≤ D) (hM : D + 1 ≤ M) {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = D) :
-    Prec (eulerInsertionStep 1 (M - 2) p.derivative)
+    StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) p) := by
   have hp_ne : p ≠ 0 := by
     intro hz
@@ -369,14 +369,14 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
       (derivative_ne_zero_of_natDegree_ne_zero (by lia)), natDegree_X,
       p.natDegree_derivative, hpdeg]
     lia
-  have hbase : Prec p (theta p) := by
-    have hder : Prec p.derivative p :=
+  have hbase : StrictInterl p (theta p) := by
+    have hder : StrictInterl p.derivative p :=
       (derivative_interlaces (hp.ne_zero_and_splits hp_ne).2
-        (by rw [hpdeg]; exact hD)).toPrec
+        (by rw [hpdeg]; exact hD)).toStrictInterl
     simpa [theta] using
       prec_mul_X_of_prec_of_nonneg hder
         hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
-  have hlower : Prec (loweringEulerStep M p)
+  have hlower : StrictInterl (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=
     loweringEulerStep_prec (by lia) hM hp htheta hpdeg htheta_deg hbase
   have hpM : p.natDegree ≤ M := by rw [hpdeg]; lia
@@ -385,7 +385,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
     loweringEulerStep_nonneg hp.hasNonnegCoeffs hpM
   have hlower_theta_nn : HasNonnegCoeffs (loweringEulerStep M (theta p)) :=
     loweringEulerStep_nonneg htheta.hasNonnegCoeffs hthetaM
-  have hshift : Prec (loweringEulerStep M (theta p))
+  have hshift : StrictInterl (loweringEulerStep M (theta p))
       (X * loweringEulerStep M p) :=
     prec_to_prec_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
   rw [loweringEulerStep_theta_eq (by lia : 2 ≤ M),
@@ -421,27 +421,27 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   have hp_splits : p.Splits := hp.eq_zero_or_splits.resolve_left hp_ne
   have hp1_splits : (p + 1).Splits := hp1.eq_zero_or_splits.resolve_left hp1_ne
   have hderPF : IsPFPolynomial p.derivative := hp.derivative
-  have hder_p : Prec p.derivative p :=
-    (derivative_interlaces hp_splits (by rw [hpdeg]; exact hD)).toPrec
-  have hder_p1 : Prec p.derivative (p + 1) := by
+  have hder_p : StrictInterl p.derivative p :=
+    (derivative_interlaces hp_splits (by rw [hpdeg]; exact hD)).toStrictInterl
+  have hder_p1 : StrictInterl p.derivative (p + 1) := by
     have h := (derivative_interlaces hp1_splits
-      (by rw [hp1deg]; exact hD)).toPrec
+      (by rw [hp1deg]; exact hD)).toStrictInterl
     simpa using h
   have hderdeg : p.derivative.natDegree ≤ M - 2 := by
     rw [p.natDegree_derivative, hpdeg]
     lia
   have hpM : p.natDegree ≤ M - 2 := by rw [hpdeg]; lia
   have hp1M : (p + 1).natDegree ≤ M - 2 := by rw [hp1deg]; lia
-  have hT_p : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
+  have hT_p : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) p) :=
     eulerInsertionStep_one_prec (by lia) hp hderPF hpM hderdeg hder_p
-  have hT_p1 : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
+  have hT_p1 : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) (p + 1)) :=
     eulerInsertionStep_one_prec (by lia) hp1 hderPF hp1M hderdeg hder_p1
-  have hU_p : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
+  have hU_p : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) p) :=
     eulerInsertionStep_derivative_prec_zeroStep hD (by lia) hp hpdeg
-  have hU_p1 : Prec (eulerInsertionStep 1 (M - 2) p.derivative)
+  have hU_p1 : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) (p + 1)) := by
     have h := eulerInsertionStep_derivative_prec_zeroStep
       hD (by lia : D + 1 ≤ M) hp1 hp1deg

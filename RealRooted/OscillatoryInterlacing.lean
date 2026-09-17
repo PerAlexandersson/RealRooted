@@ -53,9 +53,9 @@ theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
       exact hroots.1
     · rw [hTtrailing]
       exact hroots.2
-  have hPrec : RealRooted.Prec
+  have hPrec : RealRooted.StrictInterl
       (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly :=
-    hInter.toPrec
+    hInter.toStrictInterl
   have hFullSimple : ∀ x : ℝ, A.charpoly.IsRoot x →
       A.charpoly.rootMultiplicity x = 1 := by
     intro x hx

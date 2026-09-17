@@ -29,7 +29,7 @@ theorem prec_or_revPrec_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   by_cases hf_deg0 : f.natDegree = 0
@@ -50,11 +50,11 @@ theorem prec_or_revPrec_of_natDegree_le_one
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
 
-/-- A symmetric `Prec` orientation implies all real linear combinations are
+/-- A symmetric `StrictInterl` orientation implies all real linear combinations are
 real-rooted, after commuting the pair in the reversed case. -/
 theorem allComboRealRooted_of_prec_or_revPrec
     {f g : ℝ[X]} :
-    Prec f g ∨ Prec g f →
+    StrictInterl f g ∨ StrictInterl g f →
     AllComboRealRooted f g
   | Or.inl hprec => allComboRealRooted_of_prec hprec
   | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
@@ -71,14 +71,14 @@ lemma of_allComboRealRooted {f g : ℝ[X]}
   · exact Or.inl hzero
   · exact Or.inr ⟨hzero, h α β⟩
 
-/-- A `Prec` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
-lemma of_prec {f g : ℝ[X]} (h : Prec f g) :
+/-- A `StrictInterl` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
+lemma of_prec {f g : ℝ[X]} (h : StrictInterl f g) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_prec h)
 
-/-- Either `Prec` orientation implies Chudnovsky--Seymour nonnegative
+/-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
 compatibility. -/
-lemma of_prec_or_revPrec {f g : ℝ[X]} (h : Prec f g ∨ Prec g f) :
+lemma of_prec_or_revPrec {f g : ℝ[X]} (h : StrictInterl f g ∨ StrictInterl g f) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_prec_or_revPrec h)
 
@@ -97,50 +97,50 @@ theorem allComboRealRooted_of_natDegree_le_one
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- A `Prec` relation immediately gives a common right interleaver: use the
+/-- A `StrictInterl` relation immediately gives a common right interleaver: use the
 right endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_prec
-    {f g : ℝ[X]} (hprec : Prec f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    {f g : ℝ[X]} (hprec : StrictInterl f g) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
 
-/-- A reversed `Prec` relation immediately gives a common right interleaver:
+/-- A reversed `StrictInterl` relation immediately gives a common right interleaver:
 use the left endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_revPrec
-    {f g : ℝ[X]} (hprec : Prec g f) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    {f g : ℝ[X]} (hprec : StrictInterl g f) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
-/-- A symmetric `Prec` orientation immediately gives a common right
+/-- A symmetric `StrictInterl` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
 witness. -/
 theorem pairHasCommonInterleaver_of_prec_or_revPrec
     {f g : ℝ[X]} :
-    Prec f g ∨ Prec g f →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    StrictInterl f g ∨ StrictInterl g f →
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
   | Or.inl hprec => pairHasCommonInterleaver_of_prec hprec
   | Or.inr hprec => pairHasCommonInterleaver_of_revPrec hprec
 
-/-- A `Prec` relation immediately gives a common left interleaver: use the
+/-- A `StrictInterl` relation immediately gives a common left interleaver: use the
 left endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_prec
-    {f g : ℝ[X]} (hprec : Prec f g) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    {f g : ℝ[X]} (hprec : StrictInterl f g) :
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   ⟨f, prec_refl hprec.1.1 hprec.1.2, hprec⟩
 
-/-- A reversed `Prec` relation immediately gives a common left interleaver:
+/-- A reversed `StrictInterl` relation immediately gives a common left interleaver:
 use the right endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_revPrec
-    {f g : ℝ[X]} (hprec : Prec g f) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    {f g : ℝ[X]} (hprec : StrictInterl g f) :
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   ⟨g, hprec, prec_refl hprec.1.1 hprec.1.2⟩
 
-/-- A symmetric `Prec` orientation immediately gives a common left interleaver:
+/-- A symmetric `StrictInterl` orientation immediately gives a common left interleaver:
 use the smaller polynomial in the chosen orientation as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_prec_or_revPrec
     {f g : ℝ[X]} :
-    Prec f g ∨ Prec g f →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+    StrictInterl f g ∨ StrictInterl g f →
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
   | Or.inl hprec => pairHasCommonLeftInterleaver_of_prec hprec
   | Or.inr hprec => pairHasCommonLeftInterleaver_of_revPrec hprec
 
@@ -152,7 +152,7 @@ theorem pairHasCommonInterleaver_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_prec_or_revPrec <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
@@ -164,7 +164,7 @@ theorem pairHasCommonLeftInterleaver_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_prec_or_revPrec <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
@@ -176,7 +176,7 @@ theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
@@ -187,7 +187,7 @@ theorem pairHasCommonLeftInterleaver_of_sameDegree_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
@@ -201,7 +201,7 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
@@ -212,7 +212,7 @@ theorem compatiblePairHasCommonLeftInterleaver_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
@@ -224,7 +224,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    Prec f g ∨ Prec g f :=
+    StrictInterl f g ∨ StrictInterl g f :=
   prec_or_revPrec_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
@@ -235,7 +235,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
-    Prec f g ∨ Prec g f :=
+    StrictInterl f g ∨ StrictInterl g f :=
   PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hf_deg1
 
 /-- The old same-degree orientation alternative, when available, still feeds
@@ -283,7 +283,7 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     hf_pos hg_pos hdeg hf_deg_le_one
 
@@ -316,7 +316,7 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
-    Prec f g := by
+    StrictInterl f g := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
@@ -341,7 +341,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_prec <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
@@ -354,7 +354,7 @@ theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_prec <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
@@ -397,7 +397,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
     (hf_deg1 : f.natDegree = 1)
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
@@ -406,7 +406,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
           (((C s * X + C t) * f) + g).Splits) :=
     fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
-  have hright : Prec g (X * f) :=
+  have hright : StrictInterl g (X * f) :=
     prec_right_pair_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hf_deg1
   exact pairHasCommonInterleaver_of_prec_right_pair_nonneg hright hfnn
@@ -426,7 +426,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
           (((C s * X + C t) * f) + g).Splits) :=
     fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
-  have hright : Prec g (X * f) :=
+  have hright : StrictInterl g (X * f) :=
     prec_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
   exact pairHasCommonInterleaver_of_prec_right_pair_nonneg hright hfnn
@@ -1465,7 +1465,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
     (hdeg : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   obtain ⟨hf_rr, hslot⟩ :=
     succDegreeSlotData_of_posCombo_natDegree_le_one
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
@@ -1484,7 +1484,7 @@ theorem posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hfdeg : f.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   by_cases hle : f.natDegree ≤ 1
   · exact
       posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
@@ -1521,7 +1521,7 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have _hfnn := hfnn
   have _hgnn := hgnn
   have _hno := hno
@@ -1542,7 +1542,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
   · have hsucc : g.natDegree = f.natDegree + 1 := by lia
     have hfdeg : f.natDegree ≤ 1 := by lia
@@ -1569,7 +1569,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicI
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgdeg : g.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
   · have hsucc_deg : g.natDegree = f.natDegree + 1 := by lia
     exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
@@ -1593,7 +1593,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succD
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgdeg : g.natDegree ≤ 3) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
     hbelow habove hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
 end RealRooted

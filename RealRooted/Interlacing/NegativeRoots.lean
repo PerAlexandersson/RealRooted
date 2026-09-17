@@ -4,7 +4,7 @@ import RealRooted.WagnerRightSum
 # Negative-root consequences of interlacing
 
 This module centralizes list and polynomial lemmas for transporting strict
-negative-root bounds through `Interlaces` and same-degree `Prec` relations.
+negative-root bounds through `Interlaces` and same-degree `StrictInterl` relations.
 -/
 
 open Polynomial
@@ -204,7 +204,7 @@ polynomial must be its rightmost root when every root of the left polynomial
 is strictly negative; hence all right roots are nonpositive. -/
 theorem roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
     {f g : ℝ[X]}
-    (hfg : Prec f g)
+    (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hzero : g.IsRoot 0)
     (hf_neg : ∀ r, f.IsRoot r → r < 0) :
@@ -242,7 +242,7 @@ theorem roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
 /-- In a same-degree proper-position pair, strict negativity of every root of
 the right polynomial implies strict negativity of every root of the left. -/
 theorem roots_neg_of_prec_sameDegree_of_roots_neg {g f : ℝ[X]}
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hdeg : g.natDegree = f.natDegree)
     (hf_neg : ∀ r, f.IsRoot r → r < 0) :
     ∀ r, g.IsRoot r → r < 0 := by

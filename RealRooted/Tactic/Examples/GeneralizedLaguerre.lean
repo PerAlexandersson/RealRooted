@@ -26,7 +26,7 @@ example {P : ℕ → ℝ[X]} (hzero : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (C 2 + X) * P n + (C 4 + C 4 * X) * (P n).derivative +
         C 4 * X * (P n).derivative.derivative) :
-    ∀ n, Prec (P n) (P (n + 1)) := by
+    ∀ n, StrictInterl (P n) (P (n + 1)) := by
   rr_generalized_laguerre_second_derivative_sequence using
     scale := (2 : ℝ),
     parameter := (2 : ℝ),

@@ -954,8 +954,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
           (↑[a, b, c, d, e, r] : Multiset ℝ) →
         a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
         ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
-    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
-  exact (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
+  exact (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
 
 /-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from the
 `P_6`/`G_6` sign certificate. -/
@@ -972,8 +972,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
 `P_6`/`G_6` sign certificate. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
-    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs hsign).toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs hsign).toStrictInterl
 
 /-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
@@ -983,8 +983,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
 
 /-- The checked `n = 6` Braun--Jal Lemma 3.3 proper-position case. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six :
-    Prec (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  lemma33AuxiliaryGInterlaces_modified_six_interlaces.toPrec
+    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  lemma33AuxiliaryGInterlaces_modified_six_interlaces.toStrictInterl
 
 end GeneralizedSnakePosets
 end RealRooted

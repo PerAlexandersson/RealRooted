@@ -34,14 +34,14 @@ theorem reflect {f g : ℝ[X]} (h : IsNonnegScalarMultiple f g) (n : ℕ) :
 end IsNonnegScalarMultiple
 
 private theorem prec0_C_mul_left_of_nonneg_local {f g : ℝ[X]}
-    (h : Prec0 f g) {a : ℝ} (ha : 0 ≤ a) :
-    Prec0 (C a * f) g := by
+    (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
+    Interl (C a * f) g := by
   rcases eq_or_lt_of_le ha with rfl | ha_pos
-  · simp [prec0_zero_left]
+  · simp [interl_zero_left]
   rcases h with hf | hg | hfg
-  · simp [hf, prec0_zero_left]
-  · simpa [hg] using prec0_zero_right (C a * f)
-  · exact (prec_C_mul_left hfg ha_pos.ne').toPrec0
+  · simp [hf, interl_zero_left]
+  · simpa [hg] using interl_zero_right (C a * f)
+  · exact (prec_C_mul_left hfg ha_pos.ne').toInterl
 
 /-- Pointwise replacement by arbitrary nonnegative scalar multiples preserves
 a zero-aware nonnegative real-rooted interlacing sequence. -/
@@ -78,13 +78,13 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     exact ⟨hg_ne, (hfs.splits (List.get_mem _ _) hnonzero.2).C_mul a⟩
 
 private theorem prec0_self_of_realRootedOrZero {f : ℝ[X]}
-    (hf : f ≠ 0 → f.Splits) : Prec0 f f := by
+    (hf : f ≠ 0 → f.Splits) : Interl f f := by
   by_cases hf_zero : f = 0
   · exact Or.inl hf_zero
-  · exact (prec_refl hf_zero (hf hf_zero)).toPrec0
+  · exact (prec_refl hf_zero (hf hf_zero)).toInterl
 
 private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
-    (hfg : Prec0 f g) (hf : HasNonnegCoeffs f)
+    (hfg : Interl f g) (hf : HasNonnegCoeffs f)
     (hg : HasNonnegCoeffs g) (hfr : f ≠ 0 → f.Splits)
     (hgr : g ≠ 0 → g.Splits) (hsum : f + g ≠ 0) :
     (f + g).Splits := by
@@ -105,22 +105,22 @@ private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
 private theorem pairwise_insertAdjacentAdd_of_nonneg
     {f g : ℝ[X]} {right : List ℝ[X]} :
     ∀ left : List ℝ[X],
-      (left ++ f :: g :: right).Pairwise Prec0 →
+      (left ++ f :: g :: right).Pairwise Interl →
       (∀ p ∈ left ++ f :: g :: right, HasNonnegCoeffs p) →
       (∀ p ∈ left ++ f :: g :: right, p ≠ 0 → p.Splits) →
-      (left ++ f :: (f + g) :: g :: right).Pairwise Prec0
+      (left ++ f :: (f + g) :: g :: right).Pairwise Interl
   | [], hpair, hnonneg, hreal => by
       have hfnn : HasNonnegCoeffs f := hnonneg f (by simp)
       have hgnn : HasNonnegCoeffs g := hnonneg g (by simp)
-      have hff : Prec0 f f :=
+      have hff : Interl f f :=
         prec0_self_of_realRootedOrZero fun hf => hreal f (by simp) hf
-      have hgg : Prec0 g g :=
+      have hgg : Interl g g :=
         prec0_self_of_realRootedOrZero fun hg => hreal g (by simp) hg
       rw [List.nil_append, List.pairwise_cons] at hpair ⊢
       rcases hpair with ⟨hf_tail, hg_pair⟩
       rw [List.pairwise_cons] at hg_pair
       rcases hg_pair with ⟨hg_right, hright⟩
-      have hfg : Prec0 f g := hf_tail g (by simp)
+      have hfg : Interl f g := hf_tail g (by simp)
       refine ⟨?_, ?_⟩
       · intro p hp
         simp only [List.mem_cons] at hp
@@ -161,9 +161,9 @@ theorem IsInterlacingSeq0NonnegRealRooted.insertAdjacentAdd
     (h : IsInterlacingSeq0NonnegRealRooted (left ++ f :: g :: right)) :
     IsInterlacingSeq0NonnegRealRooted
       (left ++ f :: (f + g) :: g :: right) := by
-  have hpair : (left ++ f :: g :: right).Pairwise Prec0 :=
+  have hpair : (left ++ f :: g :: right).Pairwise Interl :=
     isInterlacingSeq0_iff_pairwise.mp h.interlacingSeq0
-  have hfg : Prec0 f g :=
+  have hfg : Interl f g :=
     (List.pairwise_cons.mp (List.pairwise_append.mp hpair).2.1).1 g (by simp)
   have hfnn : HasNonnegCoeffs f := h.nonnegCoeffs f (by simp)
   have hgnn : HasNonnegCoeffs g := h.nonnegCoeffs g (by simp)

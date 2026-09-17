@@ -88,14 +88,14 @@ theorem prec0_regularizedKernelRow_succ
     (hHlower : ∀ i j, i < j → H i j = 0)
     (hGdiag : ∀ i, G i i = g) (hHdiag : ∀ i, H i i = η)
     (i : Fin N) :
-    Prec0 (regularizedKernelRow G H i.castSucc)
+    Interl (regularizedKernelRow G H i.castSucc)
       (regularizedKernelRow G H i.succ) := by
   have hcert := sourceBorder_certificate hg hη hG hH hGlower hHlower
     hGdiag hHdiag
   have hchain := prec0_chainPolynomial_toLowerTriangularMatrix_succ
     (n := i.val + 1) (mul_pos hg hη) hcert.1 hcert.2.1 hcert.2.2
     (show i.val + 1 + 1 < N + 2 by lia)
-  change Prec0
+  change Interl
     (chainPolynomial (sourceBorderLowerTriangularMatrix (g * η) G H)
       (i.castSucc.val + 1))
     (chainPolynomial (sourceBorderLowerTriangularMatrix (g * η) G H)
@@ -125,7 +125,7 @@ theorem kernelRows_pf_and_prec0_of_tendsto
     (hGdiag : ∀ i, G i i = g) (hHdiag : ∀ m i, H m i i = η m)
     (hlim : ∀ i j, Tendsto (fun m => H m i j) atTop (𝓝 (K i j))) :
     (∀ i, IsPFPolynomial (kernelRow G K i)) ∧
-      ∀ i : Fin N, Prec0 (kernelRow G K i.castSucc)
+      ∀ i : Fin N, Interl (kernelRow G K i.castSucc)
         (kernelRow G K i.succ) := by
   have hKlower : ∀ i j, i < j → K i j = 0 := by
     intro i j hij

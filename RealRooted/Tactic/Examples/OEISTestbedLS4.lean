@@ -62,7 +62,7 @@ example {P : Nat → ℝ[X]}
           ((X - C (1 : ℝ)) * P (n + 1) +
             X * (P (n + 1)).derivative).derivative))
     (houter_prec : ∀ n : Nat,
-      Prec (P (n + 1))
+      StrictInterl (P (n + 1))
         (C (1 : ℝ) *
             ((X - C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
           ((X - C (1 : ℝ)) * P (n + 1) +
@@ -131,7 +131,7 @@ example {P : Nat → ℝ[X]}
           ((X + C (1 : ℝ)) * P (n + 1) +
             X * (P (n + 1)).derivative).derivative))
     (houter_prec : ∀ n : Nat,
-      Prec (P (n + 1))
+      StrictInterl (P (n + 1))
         (C (1 : ℝ) *
             ((X + C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
           ((X + C (1 : ℝ)) * P (n + 1) +

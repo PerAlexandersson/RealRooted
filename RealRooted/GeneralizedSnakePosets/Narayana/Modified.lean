@@ -78,7 +78,7 @@ theorem modifiedNarayanaFamily_narayana :
 family, inherited from the existing Narayana formalization. -/
 theorem modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs
     (n : ℕ) (hnonneg : ∀ m : ℕ, HasNonnegCoeffs (narayanaQuot m)) :
-    Prec (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) := by
+    StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) := by
   simpa [modifiedNarayanaPolynomial] using
     (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
 
@@ -102,13 +102,13 @@ theorem modifiedNarayanaPolynomial_zero_interlaces_one :
 /-- Base proper-position relation between the first two modified Narayana
 polynomials. -/
 theorem modifiedNarayanaPolynomial_zero_prec_one :
-    Prec (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) :=
-  modifiedNarayanaPolynomial_zero_interlaces_one.toPrec
+    StrictInterl (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) :=
+  modifiedNarayanaPolynomial_zero_interlaces_one.toStrictInterl
 
 /-- The `n = 1` base case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_base :
-    Prec (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
+    StrictInterl (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
   simpa [FiniteSkewBoard.auxiliaryG_one] using
     modifiedNarayanaPolynomial_zero_prec_one
 
@@ -327,7 +327,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
-    Prec (modifiedNarayanaCoeffPolynomial 1)
+    StrictInterl (modifiedNarayanaCoeffPolynomial 1)
       (modifiedNarayanaCoeffPolynomial 2) := by
   simpa [modifiedNarayanaCoeffPolynomial] using
     (prec_narayanaPolynomial_one_two 1)

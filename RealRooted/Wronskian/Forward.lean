@@ -14,7 +14,7 @@ This file provides the missing global forward bridge:
   interlacing same-degree pair (positive leading coefficients, degree at least
   one), the Wronskian `q' * p - q * p'` is positive everywhere on `ℝ`.
 * `RealRooted.wronskian_pos_of_prec_succ`: for a strict differ-by-one pair
-  (`Prec q p`, `deg p = deg q + 1`, simple roots, no common root), the
+  (`StrictInterl q p`, `deg p = deg q + 1`, simple roots, no common root), the
   Wronskian `p' * q - p * q'` is positive everywhere on `ℝ`.
 
 The same-degree case follows from the Bezoutian characterization
@@ -97,13 +97,13 @@ lemma listInterlaces_getElem_le {ss rs : List ℝ}
         simpa using ih htail hlen' k hk'
 
 /-- **Global forward Wronskian bridge, degree gap one.**  If `q` strictly
-interlaces `p` in the differ-by-one sense (`Prec q p` with
+interlaces `p` in the differ-by-one sense (`StrictInterl q p` with
 `deg p = deg q + 1`, all roots simple and no common root), then the Wronskian
 `p' * q - p * q'` is positive everywhere. -/
 theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg_succ : p.natDegree = q.natDegree + 1)
-    (hprec : Prec q p)
+    (hprec : StrictInterl q p)
     (hp_nodup : p.roots.Nodup) (hq_nodup : q.roots.Nodup)
     (hdisj : ∀ x : ℝ, p.IsRoot x → ¬ q.IsRoot x)
     (t : ℝ) :

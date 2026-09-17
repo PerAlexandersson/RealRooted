@@ -26,25 +26,25 @@ for a 2×2 submatrix `[[a, b], [c, d]]`, the weighted sums interlace. -/
     (Handbook of Enumerative Combinatorics, §7.8, book p. 460 / PDF p. 485). -/
 def Has2x2InterlacingProperty (a b c d : ℝ[X]) : Prop :=
   ∀ (s t : ℝ), 0 < s → 0 < t →
-    Prec ((C s * X + C t) * b + d) ((C s * X + C t) * a + c)
+    StrictInterl ((C s * X + C t) * b + d) ((C s * X + C t) * a + c)
 
 /-- Weak zero-aware 2×2 interlacing condition. This is the same affine
-2×2 test as `Has2x2InterlacingProperty`, but with `Prec0`, so affine test
+2×2 test as `Has2x2InterlacingProperty`, but with `Interl`, so affine test
 members that vanish identically are accepted. -/
 def Has2x2InterlacingProperty0 (a b c d : ℝ[X]) : Prop :=
   ∀ (s t : ℝ), 0 < s → 0 < t →
-    Prec0 ((C s * X + C t) * b + d) ((C s * X + C t) * a + c)
+    Interl ((C s * X + C t) * b + d) ((C s * X + C t) * a + c)
 
 lemma Has2x2InterlacingProperty.toHas2x2InterlacingProperty0
     {a b c d : ℝ[X]} (h : Has2x2InterlacingProperty a b c d) :
     Has2x2InterlacingProperty0 a b c d :=
-  fun s t hs ht => (h s t hs ht).toPrec0
+  fun s t hs ht => (h s t hs ht).toInterl
 
 lemma ne_zero_of_self_2x2 (p : ℝ[X])
     (hdiag : Has2x2InterlacingProperty p p p p) :
     p ≠ 0 := by
   have hself :
-      Prec
+      StrictInterl
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p)
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) :=
     hdiag 1 1 zero_lt_one zero_lt_one
@@ -53,7 +53,7 @@ lemma ne_zero_of_self_2x2 (p : ℝ[X])
 lemma isRealRooted_of_self_2x2 (p : ℝ[X])
     (hdiag : Has2x2InterlacingProperty p p p p) : (p ≠ 0 ∧ p.Splits) := by
   have hself :
-      Prec
+      StrictInterl
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p)
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) :=
     hdiag 1 1 zero_lt_one zero_lt_one
@@ -67,30 +67,30 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
 
 lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
-    Prec f (X * f) :=
+    StrictInterl f (X * f) :=
   prec_self_X_mul_of_nonneg hf_ne hf_splits hfnn
 
 lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec g (X * f) :=
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl g (X * f) :=
   prec_to_X_mul_of_nonneg h hfnn hgnn
 
 lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
-    (h : Prec g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Prec f g :=
+    (h : StrictInterl g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl f g :=
   prec_of_prec_X_mul_of_nonneg h hfnn hgnn
 
 theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
   have hf : (f ≠ 0 ∧ f.Splits) := h.1
   have hg : (g ≠ 0 ∧ g.Splits) := h.2.1
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf.1 hf.2
-  have hg_Xf : Prec g (X * f) := prec_to_prec_mul_X_of_nonneg h hfnn hgnn
-  have hf_Xf : Prec f (X * f) := prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn
-  have hsXf : Prec (C s * (X * f)) (X * f) := prec_C_mul_self hXf.1 hXf.2 hs.ne'
-  have htf : Prec (C t * f) (X * f) := prec_C_mul_left hf_Xf ht.ne'
+  have hg_Xf : StrictInterl g (X * f) := prec_to_prec_mul_X_of_nonneg h hfnn hgnn
+  have hf_Xf : StrictInterl f (X * f) := prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn
+  have hsXf : StrictInterl (C s * (X * f)) (X * f) := prec_C_mul_self hXf.1 hXf.2 hs.ne'
+  have htf : StrictInterl (C t * f) (X * f) := prec_C_mul_left hf_Xf ht.ne'
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg.1
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
     (hfnn.pos_leadingCoeff hf.1).X_mul
@@ -98,21 +98,21 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     hasPosLeadingCoeff_C_mul hs hXf_pos
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hf.1)
-  have hmid : Prec (g + C s * (X * f)) (X * f) :=
+  have hmid : StrictInterl (g + C s * (X * f)) (X * f) :=
     prec_add_of_prec_right_of_posLeadingCoeff hg_Xf hsXf hg_pos hsXf_pos
   have hmid_nonneg : HasNonnegCoeffs (g + C s * (X * f)) := by
     refine hgnn.add ?_
     exact (nonnegCoeffs_C_mul hs.le hfnn.X_mul)
   have hmid_pos : HasPosLeadingCoeff (g + C s * (X * f)) :=
     hmid_nonneg.pos_leadingCoeff hmid.1.1
-  have hsum : Prec (C t * f + (g + C s * (X * f))) (X * f) :=
+  have hsum : StrictInterl (C t * f + (g + C s * (X * f))) (X * f) :=
     prec_add_of_prec_right_of_posLeadingCoeff htf hmid htf_pos hmid_pos
   simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm, add_comm] using hsum.1
 
 /-- The repeated-column `2 x 2` affine test follows from proper position and
 nonnegative coefficients. -/
 theorem has2x2InterlacingProperty_sameColumn_of_prec_nonneg {f g : ℝ[X]}
-    (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     Has2x2InterlacingProperty f f g g := by
   intro s t hs ht
   have hrr := isRealRooted_affine_combo_of_prec_nonneg h hfnn hgnn hs ht

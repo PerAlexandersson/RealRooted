@@ -22,7 +22,7 @@ recursively; after they are exhausted, the existing strict same-degree and
 successor-degree Wronskian theorems apply. -/
 theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
-    (hprec : Prec q p) (t : ℝ) :
+    (hprec : StrictInterl q p) (t : ℝ) :
     0 ≤ (Polynomial.wronskian q p).eval t := by
   generalize hn : p.natDegree = n
   induction n using Nat.strong_induction_on generalizing p q with
@@ -36,7 +36,7 @@ theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
           hp_pos.divByMonic_X_sub_C hrp
         have hq₁_pos : HasPosLeadingCoeff q₁ :=
           hq_pos.divByMonic_X_sub_C hrq
-        have hprec₁ : Prec q₁ p₁ :=
+        have hprec₁ : StrictInterl q₁ p₁ :=
           prec_cofactor_of_common_root hprec hrp hrq
         have hp₁_deg : p₁.natDegree < p.natDegree := by
           simp only [p₁]

@@ -408,7 +408,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates
     simpa [hj] using mem_rootSlotInterval_reverse_of_listAlternates_zero hss hrs hlen halt hrs_ne
   · exact mem_rootSlotInterval_reverse_of_listAlternates_interior hlen halt h0
 
-/-- Slot transport from an ascending `Prec` witness to the descending
+/-- Slot transport from an ascending `StrictInterl` witness to the descending
 Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
 private lemma mem_rootSlotInterval_of_prec_witness
@@ -426,7 +426,7 @@ private lemma mem_rootSlotInterval_of_prec_witness
   · simpa using mem_rootSlotInterval_reverse_of_listAlternates hss hrs hlen halt j
 
 protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec
-    {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
+    {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
       simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
@@ -653,7 +653,7 @@ private lemma mem_shifted_rootSlotInterval_reverse_of_listAlternates
     exact ⟨hlow', hup⟩
 
 protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec
-    {h f : ℝ[X]} (hhf : Prec h f) (j : Fin h.natDegree) :
+    {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree) :
     (rootSeqDesc h).get ⟨j.1, by
       rcases hhf with ⟨hh, _, _, _, _, _, _, _, _⟩
       simp [rootSeqDesc, card_roots_of_splits hh.2]⟩ ∈

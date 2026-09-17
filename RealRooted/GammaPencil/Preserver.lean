@@ -55,9 +55,9 @@ theorem gammaOperator_prec0_or_revPrec0
     {n : ℕ} (hn : 2 ≤ n) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ n / 2)
     (hqdeg : q.natDegree ≤ n / 2)
-    (hpq : Prec p q) :
-    Prec0 (gammaOperator n p) (gammaOperator n q) ∨
-      Prec0 (gammaOperator n q) (gammaOperator n p) := by
+    (hpq : StrictInterl p q) :
+    Interl (gammaOperator n p) (gammaOperator n q) ∨
+      Interl (gammaOperator n q) (gammaOperator n p) := by
   apply BorceaBranden.linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
   · exact finiteAlgebraicSymbol_gammaOperator_stable n hn
   · exact hpdeg

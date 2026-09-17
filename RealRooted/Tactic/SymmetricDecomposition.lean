@@ -29,26 +29,26 @@ theorem isRealRooted_of_fPolynomial_isRealRooted_cert
     p ≠ 0 ∧ p.Splits :=
   isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hpdeg hfp.1 hfp.2 hpnn
 
-/-- Forward `Prec` transport through `fPolynomial` in any ambient degree. -/
+/-- Forward `StrictInterl` transport through `fPolynomial` in any ambient degree. -/
 theorem prec_fPolynomial_of_prec
     {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
     (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v)
-    (h : Prec u v) :
-    Prec (fPolynomial d u) (fPolynomial d v) :=
+    (h : StrictInterl u v) :
+    StrictInterl (fPolynomial d u) (fPolynomial d v) :=
   (precFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mpr h
 
-/-- Backward `Prec` transport through `fPolynomial` in any ambient degree. -/
+/-- Backward `StrictInterl` transport through `fPolynomial` in any ambient degree. -/
 theorem prec_of_prec_fPolynomial
     {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
     (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v)
-    (h : Prec (fPolynomial d u) (fPolynomial d v)) :
-    Prec u v :=
+    (h : StrictInterl (fPolynomial d u) (fPolynomial d v)) :
+    StrictInterl u v :=
   (precFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mp h
 
 theorem isRealRooted_fPolynomial_sequence_of_isRealRooted_cert
@@ -75,8 +75,8 @@ theorem prec_fPolynomial_sequence_of_prec
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i))
-    (hprec : ∀ i : Nat, Prec (U i) (V i)) :
-    ∀ i : Nat, Prec (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i)) :=
+    (hprec : ∀ i : Nat, StrictInterl (U i) (V i)) :
+    ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i)) :=
   fun i => prec_fPolynomial_of_prec (hud i) (hvd i)
     (hu_nonneg i) (hv_nonneg i) (hprec i)
 
@@ -86,14 +86,14 @@ theorem prec_of_prec_fPolynomial_sequence
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i))
-    (hprec : ∀ i : Nat, Prec (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
-    ∀ i : Nat, Prec (U i) (V i) := fun i =>
+    (hprec : ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
+    ∀ i : Nat, StrictInterl (U i) (V i) := fun i =>
   prec_of_prec_fPolynomial (hud i) (hvd i)
     (hu_nonneg i) (hv_nonneg i) (hprec i)
 
 theorem posComboRealRooted_fPolynomial_sequence_of_prec
     {d : Nat → Nat} {U V : Nat → ℝ[X]}
-    (hprec : ∀ i : Nat, Prec (U i) (V i))
+    (hprec : ∀ i : Nat, StrictInterl (U i) (V i))
     (hud : ∀ i : Nat, (U i).natDegree ≤ d i)
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))

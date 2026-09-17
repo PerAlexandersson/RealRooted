@@ -684,7 +684,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     (hdeg : g.natDegree = f.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf_simple :
       HasSimpleRoots f :=
     hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left hf_ne hcombo
@@ -845,7 +845,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f g := by
+    StrictInterl f g := by
   by_cases hdeg0 : f.natDegree = 0
   · have hgdeg1 : g.natDegree = 1 := by lia
     exact prec_degree_zero_right_of_degree_one hf_ne hf_splits hg_ne hg_splits hdeg0 hgdeg1
@@ -916,7 +916,7 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf_lc_ne : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf_ne
   have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hg_ne
   let sf : ℝ := if 0 < f.leadingCoeff then 1 else -1
@@ -965,7 +965,7 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
         simpa [g₀, Polynomial.IsRoot.def] using hrg₀
       simp_all
     simp_all
-  have hprec₀ : Prec f₀ g₀ ∨ Prec g₀ f₀ := by
+  have hprec₀ : StrictInterl f₀ g₀ ∨ StrictInterl g₀ f₀ := by
     rcases hdeg₀ with hsucc | hsame
     · left
       exact
@@ -979,10 +979,10 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
   have hf_scale : C sf⁻¹ * f₀ = f := by grind
   have hg_scale : C sg⁻¹ * g₀ = g := by grind
   rcases hprec₀ with hfg₀ | hgf₀
-  · have hscaled : Prec (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
+  · have hscaled : StrictInterl (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
       prec_C_mul_right (prec_C_mul_left hfg₀ hsf_inv_ne) hsg_inv_ne
     lia
-  · have hscaled : Prec (C sg⁻¹ * g₀) (C sf⁻¹ * f₀) :=
+  · have hscaled : StrictInterl (C sg⁻¹ * g₀) (C sf⁻¹ * f₀) :=
       prec_C_mul_right (prec_C_mul_left hgf₀ hsg_inv_ne) hsf_inv_ne
     lia
 /-- Regularized no-common-root converse step for the `iterateTDeriv` pair.
@@ -999,8 +999,8 @@ theorem ObreschkoffConverseInternal.precOrRevPrecRegularized
     {eps : ℝ} (heps : 0 < eps)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     let n := max f.natDegree g.natDegree
-    Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
-      Prec (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
+    StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
+      StrictInterl (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
   dsimp
   have hsimple_data :
       AllComboRealRooted (iterateTDeriv eps (max f.natDegree g.natDegree) f)
@@ -1056,11 +1056,11 @@ theorem ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_suc
     {eps : ℝ} (heps : 0 < eps)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     let n := max f.natDegree g.natDegree
-    Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
+    StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
   have hprec_iter :
-      Prec (iterateTDeriv eps (max f.natDegree g.natDegree) f)
+      StrictInterl (iterateTDeriv eps (max f.natDegree g.natDegree) f)
           (iterateTDeriv eps (max f.natDegree g.natDegree) g) ∨
-        Prec (iterateTDeriv eps (max f.natDegree g.natDegree) g)
+        StrictInterl (iterateTDeriv eps (max f.natDegree g.natDegree) g)
           (iterateTDeriv eps (max f.natDegree g.natDegree) f) :=
     precOrRevPrecRegularized
       hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc) heps hno

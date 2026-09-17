@@ -22,7 +22,7 @@ theorem isRealRooted_of_linear_tail_sequence
     (hstep : ∀ n, A (n + 2) = (C u + C v * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits :=
   isRealRooted_of_prec_chain_from_step <| fun n =>
-    (linear_tail_sequence_interlaces hc ha hb hu hv h0 h1 hstep n).toPrec
+    (linear_tail_sequence_interlaces hc ha hb hu hv h0 h1 hstep n).toStrictInterl
 
 /-- Real-rootedness consequence of the fixed positive monomial-tail sequence
 interlacing wrapper. -/
@@ -33,7 +33,7 @@ theorem isRealRooted_of_monomial_tail_sequence
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits :=
   isRealRooted_of_prec_chain_from_step <| fun n =>
-    (monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep n).toPrec
+    (monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep n).toStrictInterl
 
 namespace Tactic
 

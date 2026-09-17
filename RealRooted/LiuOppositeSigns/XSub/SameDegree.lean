@@ -97,12 +97,12 @@ def positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
 
 /-- Degree guardrail for the translated x-subtraction endpoint: in the
 left-successor case, `g.comp (X + C r)` and `X * f.comp (X + C r)` differ by
-two degrees, so this endpoint cannot be proved by a direct `Prec` witness. -/
+two degrees, so this endpoint cannot be proved by a direct `StrictInterl` witness. -/
 theorem not_positiveSplitLeftSuccDegreeTranslatedXPrec
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hdeg : f.natDegree = g.natDegree + 1) :
-    ¬ Prec (g.comp (X + C r)) (X * f.comp (X + C r)) := by
+    ¬ StrictInterl (g.comp (X + C r)) (X * f.comp (X + C r)) := by
   intro hprec
   have hF_ne : f.comp (X + C r) ≠ 0 :=
     (hpair.left_pos.comp_X_add_C r).ne_zero

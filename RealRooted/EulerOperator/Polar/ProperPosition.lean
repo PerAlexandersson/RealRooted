@@ -27,7 +27,7 @@ theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
     left
     rw [hqzero]
     simp [polarTheta, theta]
-  · have hstep₁ : Prec (reciprocalShift N q) (reciprocalShift N p) :=
+  · have hstep₁ : StrictInterl (reciprocalShift N q) (reciprocalShift N p) :=
       reciprocalShift_reverses_prec hp hq hpd hqd hpq
     have hsp : IsPFPolynomial (reciprocalShift N p) :=
       reciprocalShift_preserves_pf hp hpd
@@ -39,8 +39,8 @@ theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
     have hsqd : (reciprocalShift N q).natDegree ≤ N := by
       unfold reciprocalShift
       exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hqd)
-    have hstep₂ : Prec0 (reciprocalShift N q).derivative (reciprocalShift N p).derivative :=
-      derivativePreservesPrec0 hstep₁.toPrec0
+    have hstep₂ : Interl (reciprocalShift N q).derivative (reciprocalShift N p).derivative :=
+      derivativePreservesPrec0 hstep₁.toInterl
     have hdq : IsPFPolynomial (reciprocalShift N q).derivative := hsq.derivative
     have hdp : IsPFPolynomial (reciprocalShift N p).derivative := hsp.derivative
     have hdqd : (reciprocalShift N q).derivative.natDegree ≤ N - 1 :=
@@ -55,11 +55,11 @@ theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
     · left
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hpd, hzero]
       simp [reciprocalShift]
-    · have hstep₃ : Prec (reciprocalShift (N - 1) ((reciprocalShift N p).derivative))
+    · have hstep₃ : StrictInterl (reciprocalShift (N - 1) ((reciprocalShift N p).derivative))
           (reciprocalShift (N - 1) ((reciprocalShift N q).derivative)) :=
         reciprocalShift_reverses_prec hdq hdp hdqd hdpd hprec
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hpd,
         polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd]
-      exact hstep₃.toPrec0
+      exact hstep₃.toInterl
 
 end RealRooted

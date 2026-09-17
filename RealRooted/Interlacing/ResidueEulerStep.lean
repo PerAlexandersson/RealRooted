@@ -90,13 +90,13 @@ theorem residueEulerStep_strict_package
     (hf_pos : HasPosLeadingCoeff f) (hfdeg : 1 ≤ f.natDegree)
     (hf_simple : HasSimpleRoots f)
     (hf_neg : ∀ x, f.IsRoot x → x < 0)
-    (hhf : Prec h f) (hh_pos : HasPosLeadingCoeff h)
+    (hhf : StrictInterl h f) (hh_pos : HasPosLeadingCoeff h)
     (hh_simple : HasSimpleRoots h) (hhdeg : h.degree < f.natDegree)
     (hrf : Interlaces r f) (hr_pos : HasPosLeadingCoeff r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hgap : a * h.eval 1 < f.eval 1) :
     Interlaces (residueAuxiliary 1 a f h) f ∧
-      Prec f (residueEulerStep a b f h r) ∧
+      StrictInterl f (residueEulerStep a b f h r) ∧
       (∀ x, f.IsRoot x → ¬ (residueEulerStep a b f h r).IsRoot x) ∧
       HasSimpleRoots (residueEulerStep a b f h r) ∧
       ∀ x, (residueEulerStep a b f h r).IsRoot x → x < 0 := by
@@ -140,7 +140,7 @@ theorem residueEulerStep_strict_package
     have htail_sign :
         0 ≤ r.eval x * f.derivative.eval x :=
       eval_mul_derivative_nonneg_of_prec_right_root
-        hrf.toPrec hr_pos hf_pos hx
+        hrf.toStrictInterl hr_pos hf_pos hx
     have hweighted :
         b * x * (r.eval x * f.derivative.eval x) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg
@@ -155,7 +155,7 @@ theorem residueEulerStep_strict_package
   have hstep := prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     hhf.2.1.2 hf_pos hstep_pos hfdeg hdegree.1 hrec haux_sign hX_neg
       htail_nonpos
-  have hprec : Prec f (residueEulerStep a b f h r) := hstep.1
+  have hprec : StrictInterl f (residueEulerStep a b f h r) := hstep.1
   have hsimple : HasSimpleRoots (residueEulerStep a b f h r) := hstep.2
   have hno : ∀ x, f.IsRoot x →
       ¬ (residueEulerStep a b f h r).IsRoot x :=

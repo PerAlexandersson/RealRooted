@@ -5,7 +5,7 @@ import RealRooted.ReciprocalShift.Roots
 
 This module contains the inverse-root ordering and root-list model behind the
 proper-position transport for degree-padded reciprocal shifts. Padding
-interlacing and the polynomial-level `Prec` swap live in later modules.
+interlacing and the polynomial-level `StrictInterl` swap live in later modules.
 -/
 
 open Polynomial

@@ -103,10 +103,10 @@ example {F G P Q : Nat → ℝ[X]}
     (hG : ∀ n : Nat, HasNonnegCoeffs (G n))
     (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hQ : ∀ n : Nat, HasNonnegCoeffs (Q n))
-    (hFG : ∀ n : Nat, Prec (F n) (G n))
-    (hPQ : ∀ n : Nat, Prec (P n) (Q n)) :
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
+    (hPQ : ∀ n : Nat, StrictInterl (P n) (Q n)) :
     ∀ n : Nat,
-      Prec0 (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
+      Interl (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
   rr_hadamard_sequence_prec0 using
     first_left_nonneg := hF,
     first_right_nonneg := hG,

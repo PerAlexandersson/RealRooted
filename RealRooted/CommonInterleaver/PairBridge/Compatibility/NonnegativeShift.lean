@@ -17,9 +17,9 @@ namespace RealRooted
 theorem pairHasCommonInterleaver_comp_X_add_C_iff
     {f g : ℝ[X]} (r : ℝ) :
     (∃ h : ℝ[X],
-      Prec (f.comp (X + C r)) h ∧
-        Prec (g.comp (X + C r)) h) ↔
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+      StrictInterl (f.comp (X + C r)) h ∧
+        StrictInterl (g.comp (X + C r)) h) ↔
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   constructor
   · rintro ⟨h, hf, hg⟩
     have key : (h.comp (X + C (-r))).comp (X + C r) = h := by
@@ -45,8 +45,8 @@ private theorem posComboPairHasCommonInterleaver_via_nonnegShift
         HasNonnegCoeffs F →
         HasNonnegCoeffs G →
         PosComboRealRooted F G →
-        ∃ h : ℝ[X], Prec F h ∧ Prec G h) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+        ∃ h : ℝ[X], StrictInterl F h ∧ StrictInterl G h) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
   obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
@@ -84,7 +84,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via
         g.natDegree ≤ f.natDegree + 1 →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
         g.natDegree ≤ N →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -93,7 +93,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ N)
     (hgdeg : g.natDegree ≤ N) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
   obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
@@ -134,7 +134,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
     (N := 2)
     (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
@@ -151,7 +151,7 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_two
     (hfg : Compatible f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_natDegree_le_two hf_pos hg_pos
     (hfg.isRealRooted_left hf_pos).2
     (hfg.isRealRooted_right hg_pos).2
@@ -170,7 +170,7 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_via_nonnegShift
     _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
     (fun {F G} hF_pos hG_pos hFnn hGnn hFG =>
@@ -190,7 +190,7 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
     hsucc _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
@@ -205,7 +205,7 @@ private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
         PosComboRealRooted f g →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hfg.isRealRooted_left hf_pos
@@ -403,7 +403,7 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_non
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
       hboundary)

@@ -108,13 +108,13 @@ lemma splits_of_divX_splits_of_coeff_zero {p : ℝ[X]}
 
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by simp
 
-/-- Orientation sanity check for the local `Prec` convention on linear factors.
+/-- Orientation sanity check for the local `StrictInterl` convention on linear factors.
 
-The root of `X + C a` is `-a`; hence `Prec (X + C b) (X + C a)` means that
+The root of `X + C a` is `-a`; hence `StrictInterl (X + C b) (X + C a)` means that
 the root of the left polynomial is weakly to the left of the root of the right
 polynomial, equivalently `a ≤ b`. -/
 lemma prec_X_add_C_iff {a b : ℝ} :
-    Prec (X + C b) (X + C a) ↔ a ≤ b := by
+    StrictInterl (X + C b) (X + C a) ↔ a ≤ b := by
   constructor
   · intro h
     have hsum := roots_sum_le_of_prec_sameDegree h (by simp)
@@ -362,8 +362,8 @@ lemma isRealRooted_comp_one_sub_X
 
 /-- Reflection about `1 / 2` reverses same-degree proper position. -/
 lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
-    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
-    Prec (g.comp (1 - X)) (f.comp (1 - X)) := by
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    StrictInterl (g.comp (1 - X)) (f.comp (1 - X)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
@@ -386,10 +386,10 @@ lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
     simp
   · simp [hlen]
 
-/-- Translation by `r` preserves `Prec`: roots are shifted left by `r`,
+/-- Translation by `r` preserves `StrictInterl`: roots are shifted left by `r`,
 so the relative order is unchanged. -/
-lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
-    Prec (f.comp (X + C r)) (g.comp (X + C r)) := by
+lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
+    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   refine ⟨isRealRooted_comp_X_add_C hf.1 hf.2 r, isRealRooted_comp_X_add_C hg.1 hg.2 r,
     ss.map (· - r), rs.map (· - r), ?_, ?_, ?_, ?_, ?_⟩
@@ -407,11 +407,11 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
       (fun h => Or.inl ⟨by simp_all, listInterlaces_map_sub_const h.2 r⟩)
       (fun h => Or.inr ⟨by simp_all, listAlternates_map_sub_const h.2 r⟩)
 
-/-- Positive rescaling of the variable preserves `Prec`: each root is divided
+/-- Positive rescaling of the variable preserves `StrictInterl`: each root is divided
 by the same positive scalar, so its relative order is unchanged. -/
-lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : Prec f g)
+lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
     {a : ℝ} (ha : 0 < a) :
-    Prec (f.comp (C a * X)) (g.comp (C a * X)) := by
+    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hcase⟩
   have ha_ne : a ≠ 0 := ne_of_gt ha
   have ha_unit : IsUnit a := isUnit_iff_ne_zero.mpr ha_ne
@@ -463,9 +463,9 @@ lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : Prec f g)
       Or.inr ⟨by simpa using hlen, ?_⟩⟩
     exact listAlternates_of_interleaves_of_length (by simpa using hlen) hinter
 
-/-- Positive variable rescaling is an equivalence on `Prec`. -/
+/-- Positive variable rescaling is an equivalence on `StrictInterl`. -/
 lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
-    Prec (f.comp (C a * X)) (g.comp (C a * X)) ↔ Prec f g := by
+    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) ↔ StrictInterl f g := by
   constructor
   · intro h
     have h' := prec_comp_C_mul_X h (inv_pos.mpr ha)
@@ -479,14 +479,14 @@ lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
 
 /-- Reflection through the origin reverses same-degree proper position. -/
 lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}
-    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
-    Prec (g.comp (-X)) (f.comp (-X)) := by
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    StrictInterl (g.comp (-X)) (f.comp (-X)) := by
   have hreflected := prec_comp_one_sub_X_of_sameDegree h hdeg
   simpa [Polynomial.comp_assoc] using prec_comp_X_add_C hreflected 1
 
-/-- Translation by `r` is an equivalence on `Prec`. -/
+/-- Translation by `r` is an equivalence on `StrictInterl`. -/
 lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
-    Prec (f.comp (X + C r)) (g.comp (X + C r)) ↔ Prec f g := by
+    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) ↔ StrictInterl f g := by
   constructor
   · intro h
     have h' := prec_comp_X_add_C h (-r)
@@ -494,52 +494,52 @@ lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
   · exact fun h => prec_comp_X_add_C h r
 
 /-- A real-rooted polynomial interlaces with itself in the same-degree sense. -/
-lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : Prec f f := by
+lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f f := by
   set rs := f.roots.sort (· ≤ ·)
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   exact ⟨⟨hf₀, hf⟩, ⟨hf₀, hf⟩, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
     Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
 
-/-- Multiplying the left polynomial in a `Prec` relation by a nonzero scalar
+/-- Multiplying the left polynomial in a `StrictInterl` relation by a nonzero scalar
 preserves interlacing, since it does not change the roots. -/
-lemma prec_C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
-    Prec (C a * f) g := by
+lemma prec_C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl (C a * f) g := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨by simp_all, hg, ss, rs, hss, hrs, by simp_all, hrs_eq, hcase⟩
 
-/-- Multiplying the right polynomial in a `Prec` relation by a nonzero scalar
+/-- Multiplying the right polynomial in a `StrictInterl` relation by a nonzero scalar
 preserves interlacing, since it does not change the roots. -/
-lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
-    Prec f (C a * g) := by
+lemma prec_C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl f (C a * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨hf, by simp_all, ss, rs, hss, hrs, hss_eq, by simp_all, hcase⟩
 
 lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     (hp_deg : p.natDegree = 1) :
     Interlaces (C c) p := by
-  have hprec : Prec (C c * (1 : ℝ[X])) p :=
-    prec_C_mul_left (interlaces_one_linear hp_deg).toPrec hc
+  have hprec : StrictInterl (C c * (1 : ℝ[X])) p :=
+    prec_C_mul_left (interlaces_one_linear hp_deg).toStrictInterl hc
   have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by simp [hp_deg]
   simpa using hprec.toInterlaces hdeg
 
-/-- Multiplying the right polynomial in a zero-aware `Prec0` relation by a
+/-- Multiplying the right polynomial in a zero-aware `Interl` relation by a
 nonnegative scalar preserves the relation; the zero scalar is handled by the
 zero-aware cases. -/
 lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
-    (h : Prec0 f g) {a : ℝ} (ha : 0 ≤ a) :
-    Prec0 f (C a * g) := by
+    (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
+    Interl f (C a * g) := by
   rcases eq_or_lt_of_le ha with rfl | ha_pos
-  · simp [prec0_zero_right]
+  · simp [interl_zero_right]
   rcases h with hf0 | hg0 | hprec
-  · simpa [hf0] using prec0_zero_left (C a * g)
-  · simp [hg0, prec0_zero_right]
-  · exact (prec_C_mul_right hprec ha_pos.ne').toPrec0
+  · simpa [hf0] using interl_zero_left (C a * g)
+  · simp [hg0, interl_zero_right]
+  · exact (prec_C_mul_right hprec ha_pos.ne').toInterl
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
 lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
-    Prec (C a * f) f :=
+    StrictInterl (C a * f) f :=
   prec_C_mul_left (prec_refl hf₀ hf) ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,

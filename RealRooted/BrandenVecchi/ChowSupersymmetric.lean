@@ -94,7 +94,7 @@ Chow-derangement endpoint, with zeros allowed. -/
 theorem finiteSupersymmetricChow_prec0_derangement
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    Prec0 (finiteSupersymmetricChow xs ys n)
+    Interl (finiteSupersymmetricChow xs ys n)
       (finiteSupersymmetricChowDerangement xs ys n) := by
   exact chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
@@ -105,7 +105,7 @@ proper position. -/
 theorem finiteSupersymmetricChow_prec0_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    Prec0 (finiteSupersymmetricChow xs ys n)
+    Interl (finiteSupersymmetricChow xs ys n)
       (finiteSupersymmetricChow xs ys (n + 1)) := by
   exact chowPolynomial_prec0_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
@@ -116,7 +116,7 @@ zero-aware proper position. -/
 theorem finiteSupersymmetricChowDerangement_prec0_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    Prec0 (finiteSupersymmetricChowDerangement xs ys n)
+    Interl (finiteSupersymmetricChowDerangement xs ys n)
       (finiteSupersymmetricChowDerangement xs ys (n + 1)) := by
   exact chowDerangement_prec0_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)

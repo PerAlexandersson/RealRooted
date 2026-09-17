@@ -173,7 +173,7 @@ if `p` is nonconstant and real-rooted, then `p'` precedes `p - ε p'` for
 every real `ε`. -/
 theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
     (hp0 : p ≠ 0) (hp : p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    Prec p.derivative (TDeriv eps p) := by
+    StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
   · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
@@ -202,8 +202,8 @@ theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
     rw [natDegree_TDeriv, p.natDegree_derivative]
     lia
   have hprec_or :
-      Prec p.derivative (TDeriv eps p) ∨
-        Prec (TDeriv eps p) p.derivative :=
+      StrictInterl p.derivative (TDeriv eps p) ∨
+        StrictInterl (TDeriv eps p) p.derivative :=
     prec_of_allComboRealRooted hder_rr.1 hder_rr.2 hT_rr.1 hT_rr.2 hall
       (Or.inl hsucc.symm)
   exact prec_forward_of_orientation_of_succDegree hsucc hprec_or
@@ -216,7 +216,7 @@ theorem gwJL_factor_prec_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hfpos : HasPosLeadingCoeff f)
     (hcop : u < 0 →
       IsCoprime (gwJL (k + 1) f) (C (-u) * (gwJL (k + 1) f).derivative)) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
@@ -241,10 +241,10 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor {k : ℕ} {u : ℝ} {f d q r
     (hF_def : gwJL (k + 1) f = d * q)
     (hFder_def : (gwJL (k + 1) f).derivative = d * r)
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
-    (hrq : Prec r q) (hq_pos : HasPosLeadingCoeff q)
+    (hrq : StrictInterl r q) (hq_pos : HasPosLeadingCoeff q)
     (hr_pos : HasPosLeadingCoeff r)
     (hcop : u < 0 → IsCoprime q (C (-u) * r)) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
@@ -266,10 +266,10 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor_no_common
     (hF_def : gwJL (k + 1) f = d * q)
     (hFder_def : (gwJL (k + 1) f).derivative = d * r)
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
-    (hrq : Prec r q) (hq_pos : HasPosLeadingCoeff q)
+    (hrq : StrictInterl r q) (hq_pos : HasPosLeadingCoeff q)
     (hr_pos : HasPosLeadingCoeff r)
     (hno : ∀ x : ℝ, q.IsRoot x → ¬ r.IsRoot x) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
@@ -294,7 +294,7 @@ theorem gwJL_factor_prec_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     (hdeg : 2 ≤ (gwJL (k + 1) f).natDegree)
     (hm : 1 ≤ m) (hF_factor : gwJL (k + 1) f = (X - C a) ^ m * q)
     (hq_nodvd : ¬ (X - C a) ∣ q) (hq_simple : HasSimpleRoots q) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
@@ -317,7 +317,7 @@ theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
       gwJL (k + 1) f =
         (X - C a) ^ (gwJL (k + 1) f).rootMultiplicity a * q →
       ¬ (X - C a) ∣ q → HasSimpleRoots q) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
@@ -338,7 +338,7 @@ theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExce
     (hdeg : 2 ≤ (gwJL (k + 1) f).natDegree)
     (hm : 1 ≤ (gwJL (k + 1) f).rootMultiplicity a)
     (hsimple : HasSimpleRootsExcept (gwJL (k + 1) f) a) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
@@ -431,7 +431,7 @@ theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
 /-- All-real Garloff--Wagner formula (3), in the local `J^k L` notation. -/
 theorem gwJL_factor_prec_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFs : (gwJL (k + 1) f).Splits :=
     gwJL_splits_of_splits hf0 hfs (k + 1)
@@ -621,7 +621,7 @@ theorem gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   obtain ⟨hFs, hFpos, _hFroots, hFsimple⟩ :=
     gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
@@ -644,14 +644,14 @@ theorem gwJL_factor_prec_of_nonpos
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
-    Prec (gwJL k f) (gwJL k ((X - C u) * f)) :=
+    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) :=
   gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
     hu hf0 hfs hfpos hfroots hfsimple
 
 /-- Theorem 11(c), in the local orientation:
-Garloff--Wagner's `g $ f` is represented by `Prec f g`. -/
+Garloff--Wagner's `g $ f` is represented by `StrictInterl f g`. -/
 def gwTheorem11PrecStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → ∀ k, Prec (gwJL k f) (gwJL k g)
+  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k f) (gwJL k g)
 
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
@@ -663,14 +663,14 @@ theorem gwJL_prec_of_weightedCompatibleExpansion
     (hcomp :
       WeightedCompatibleLeft (gwJL k f)
         (l.map fun ap => (ap.1, gwJL k ap.2))) :
-    Prec (gwJL k f) (gwJL k g) := by
+    StrictInterl (gwJL k f) (gwJL k g) := by
   rw [hg, gwJL_weightedSum]
   exact prec_weightedSum_left hcomp
 
 /-- Interface isolating the remaining Krein-expansion and Wagner-compatibility
 work for Garloff--Wagner, Theorem 11(c). -/
 def gwTheorem11PrecWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
+  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     g = weightedSum l ∧
       WeightedCompatibleLeft (gwJL k f)
         (l.map fun ap => (ap.1, gwJL k ap.2))
@@ -690,10 +690,10 @@ theorem gwJL_weightedExpansion_prec_right
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, Prec (gwJL k ap.2) (gwJL k f))
+    (hprec : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f))
     (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    Prec (gwJL k g) (gwJL k f) := by
+    StrictInterl (gwJL k g) (gwJL k f) := by
   rw [hg, gwJL_weightedSum]
   exact
     prec_weightedSum_right
@@ -718,16 +718,16 @@ theorem gwJL_weightedExpansion_prec_right
 This is not the final Theorem 11(c) orientation by itself; see
 `gwTheorem11PrecRightWeightedExpansionStatement` for the forward package. -/
 def gwTheorem11RightWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
+  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     g = weightedSum l ∧
       (∀ ap ∈ l, 0 ≤ ap.1) ∧
-      (∀ ap ∈ l, Prec (gwJL k ap.2) (gwJL k f)) ∧
+      (∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f)) ∧
       (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
       ∃ ap ∈ l, 0 < ap.1
 
 theorem gwTheorem11RevPrec_of_rightWeightedExpansion
     (h : gwTheorem11RightWeightedExpansionStatement) :
-    ∀ {f g : ℝ[X]}, Prec f g → ∀ k, Prec (gwJL k g) (gwJL k f) := by
+    ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k g) (gwJL k f) := by
   intro f g hfg k
   rcases h hfg k with ⟨l, hg, hnonneg, hprec, hpos, hex⟩
   exact gwJL_weightedExpansion_prec_right hg hnonneg hprec hpos hex
@@ -740,10 +740,10 @@ theorem gwJL_prec_of_rightWeightedExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, Prec (gwJL k ap.2) (gwJL k g))
+    (hprec : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g))
     (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    Prec (gwJL k f) (gwJL k g) := by
+    StrictInterl (gwJL k f) (gwJL k g) := by
   rw [hf, gwJL_weightedSum]
   exact
     prec_weightedSum_right
@@ -765,13 +765,13 @@ theorem gwJL_prec_of_rightWeightedExpansion
         exact ⟨(ap.1, gwJL k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
 
 /-- Forward Theorem 11(c) interface for the common-right Krein expansion:
-given `Prec f g`, write the left input `f` as a nonnegative weighted sum of
+given `StrictInterl f g`, write the left input `f` as a nonnegative weighted sum of
 summands whose `J^k L` images precede `J^k L g`. -/
 def gwTheorem11PrecRightWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
+  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     f = weightedSum l ∧
       (∀ ap ∈ l, 0 ≤ ap.1) ∧
-      (∀ ap ∈ l, Prec (gwJL k ap.2) (gwJL k g)) ∧
+      (∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g)) ∧
       (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
       ∃ ap ∈ l, 0 < ap.1
 

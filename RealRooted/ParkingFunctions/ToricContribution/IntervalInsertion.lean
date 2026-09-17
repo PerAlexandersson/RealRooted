@@ -121,7 +121,7 @@ theorem prec_neg_insertionOperator
     (hroots : ∀ r, f.IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1)
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) :
-    Prec f (-insertionOperator a b f) := by
+    StrictInterl f (-insertionOperator a b f) := by
   let u := -(C a - C b * X)
   let v := -intervalWeight
   have hform : u * f + v * f.derivative = -insertionOperator a b f := by
@@ -166,7 +166,7 @@ theorem roots_neg_insertionOperator_mem_Ioo
     ∀ r ∈ (-insertionOperator a b f).roots, r ∈ Set.Ioo (0 : ℝ) 1 := by
   let F := -insertionOperator a b f
   have hb : 0 < b := by linarith
-  have hprec : Prec f F := by
+  have hprec : StrictInterl f F := by
     simpa [F] using prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
   have hFdeg : F.natDegree = f.natDegree + 1 := by
     simpa [F] using natDegree_neg_insertionOperator a b hf_pos.ne_zero (by lia) hb

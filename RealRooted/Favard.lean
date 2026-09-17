@@ -16,7 +16,7 @@ def favardInterlacingStatement : Prop :=
   ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
     SatisfiesFavardRecurrence P α β →
     (∀ n : Nat, 0 < β (n + 1)) →
-    ∀ n : Nat, Prec (P n) (P (n + 1))
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1))
 
 theorem favardInterlacing :
     favardInterlacingStatement :=
@@ -60,7 +60,7 @@ theorem favardInterlacing :
             natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 :=
           fun _ _ => by simpa [bPoly] using neg_nonpos.mpr (hβ n).le
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
+        have hPrec_step : StrictInterl f (aPoly * f + bPoly * g) :=
           prec_of_interlaces_evalCoeff_nonpos
             (f := f) (g := g) (a := aPoly) (b := bPoly)
             hInter hPos_n hF_pos (by lia) (by lia) hb_nonpos
@@ -68,7 +68,7 @@ theorem favardInterlacing :
         · simpa [f, g, aPoly, bPoly, sub_eq_add_neg, hstep n] using
             hPrec_step.toInterlaces (by lia)
         · grind
-  exact fun n ↦ (hQ n).1.toPrec
+  exact fun n ↦ (hQ n).1.toStrictInterl
 
 theorem isRealRooted_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}

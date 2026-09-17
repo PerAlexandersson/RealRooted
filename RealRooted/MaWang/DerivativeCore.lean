@@ -15,7 +15,7 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
@@ -33,7 +33,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
@@ -51,7 +51,7 @@ theorem prec_ma_wang {f u v : ℝ[X]} (hf : f.Splits)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
-    Prec f (u * f + v * f.derivative) := by
+    StrictInterl f (u * f + v * f.derivative) := by
   have hcases :
       (u * f + v * f.derivative).natDegree = f.natDegree ∨
         (u * f + v * f.derivative).natDegree = f.natDegree + 1 := by

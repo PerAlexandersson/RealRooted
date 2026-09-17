@@ -100,7 +100,7 @@ theorem diagonal_normalizedFiberPolynomial_eq_A144438 (n : Nat) :
 /-- Consecutive diagonalized admissible-code enumerators are in proper
 position. -/
 theorem diagonal_admissibleCodePolynomial_prec (n : Nat) :
-    Prec
+    StrictInterl
       (MvPolynomial.diagonal
         (admissibleCodePolynomial (R := Real) (n + 2)))
       (MvPolynomial.diagonal
@@ -112,7 +112,7 @@ theorem diagonal_admissibleCodePolynomial_prec (n : Nat) :
 /-- Consecutive diagonalized normalized-fiber enumerators are in proper
 position. -/
 theorem diagonal_normalizedFiberPolynomial_prec (n : Nat) :
-    Prec
+    StrictInterl
       (MvPolynomial.diagonal
         (normalizedFiberPolynomial (R := Real) (n + 2)))
       (MvPolynomial.diagonal

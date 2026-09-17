@@ -20,18 +20,23 @@ namespace RealRooted
 
 /-! ## Polynomial interlacing -/
 
-/-- `f ≪ g` (**f is interlaced by g**): both real-rooted, `g` has the rightmost root,
-    and either:
+/-- `StrictInterl f g` (`f ≪ g`, **f is interlaced by g**): both polynomials are
+    nonzero and real-rooted, `g` has the rightmost root, and either:
     - **differ-by-1**: `deg f + 1 = deg g`, roots satisfy `ListInterlaces`
     - **same-degree**: `deg f = deg g`, roots satisfy `ListAlternates`
 
-    Notation: we write `Prec f g` for `f ≪ g`. -/
-def Prec (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
+    Here `Strict` excludes the zero-polynomial degeneracy; the root comparisons
+    remain weak, so repeated and shared roots are allowed. -/
+def StrictInterl (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
   ∃ (ss rs : List ℝ),
     ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
     (↑ss : Multiset ℝ) = f.roots ∧ (↑rs : Multiset ℝ) = g.roots ∧
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs))
+
+/-- Deprecated compatibility name for `StrictInterl`. -/
+@[deprecated StrictInterl (since := "2026-09-16")]
+abbrev Prec := StrictInterl
 
 private lemma listInterlaces_right_tail_ge :
     ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ rs, r ≤ x
@@ -212,7 +217,7 @@ private lemma listAlternates_count_bounds (u : ℝ) :
 
 /-- In proper position, the multiplicities of every real root differ by at
 most one. -/
-theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : Prec f g) (u : ℝ) :
+theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : StrictInterl f g) (u : ℝ) :
     f.rootMultiplicity u - 1 ≤ g.rootMultiplicity u ∧
       g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
   rcases h with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -230,7 +235,7 @@ theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : Prec f g) (u : ℝ) 
   rw [hss_count, hrs_count] at hcount
   lia
 
-lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
+lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
   rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩
   have hss_len : ss.length = f.natDegree := by
@@ -239,54 +244,54 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   lia
 
-/-- The proper-position relation respects degree: `Prec f g` forces
+/-- The proper-position relation respects degree: `StrictInterl f g` forces
 `f.natDegree ≤ g.natDegree`. -/
-theorem Prec.natDegree_le {f g : ℝ[X]} (h : Prec f g) :
+theorem StrictInterl.natDegree_le {f g : ℝ[X]} (h : StrictInterl f g) :
     f.natDegree ≤ g.natDegree :=
   (natDegree_bounds_of_prec h).1
 
-/-- The right endpoint in `Prec f g` has degree at most one more than the left
+/-- The right endpoint in `StrictInterl f g` has degree at most one more than the left
 endpoint. -/
-theorem Prec.natDegree_le_succ {f g : ℝ[X]} (h : Prec f g) :
+theorem StrictInterl.natDegree_le_succ {f g : ℝ[X]} (h : StrictInterl f g) :
     g.natDegree ≤ f.natDegree + 1 :=
   (natDegree_bounds_of_prec h).2
 
 /-- Proper position forces equal natural degrees or a one-degree increase. -/
-theorem Prec.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : Prec f g) :
+theorem StrictInterl.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f g) :
     g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
   have hle := h.natDegree_le
   have hle_succ := h.natDegree_le_succ
   lia
 
-/-- A polynomial cannot be in `Prec` with a right endpoint of strictly lower
+/-- A polynomial cannot be in `StrictInterl` with a right endpoint of strictly lower
 degree. -/
 theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}
     (hdeg : g.natDegree < f.natDegree) :
-    ¬ Prec f g := by
+    ¬ StrictInterl f g := by
   intro hprec
   exact (not_le_of_gt hdeg) hprec.natDegree_le
 
-/-- A polynomial cannot be in `Prec` with a right endpoint whose degree is more
+/-- A polynomial cannot be in `StrictInterl` with a right endpoint whose degree is more
 than one larger. -/
 theorem not_prec_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
     (hdeg : f.natDegree + 1 < g.natDegree) :
-    ¬ Prec f g := by
+    ¬ StrictInterl f g := by
   intro hprec
   exact (not_le_of_gt hdeg) hprec.natDegree_le_succ
 
 lemma prec_forward_of_orientation_of_succDegree
     {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1)
-    (hprec_or : Prec f g ∨ Prec g f) :
-    Prec f g := by
+    (hprec_or : StrictInterl f g ∨ StrictInterl g f) :
+    StrictInterl f g := by
   rcases hprec_or with hprec | hprec
   · exact hprec
   · exact (not_prec_of_right_natDegree_lt_left (by lia) hprec).elim
 
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
-for the roots of the right-hand polynomial in a `Prec` witness. -/
+for the roots of the right-hand polynomial in a `StrictInterl` witness. -/
 theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g)
+    (h : StrictInterl f g)
     (hg_le : ∀ r ∈ g.roots, r ≤ c) :
     ∀ r ∈ f.roots, r ≤ c := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -300,9 +305,9 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
   · exact listInterlaces_left_le_of_right_le hint hrs_le r hr'
   · exact listAlternates_left_le_of_right_le halt hrs_le r hr'
 
-/-- In the same-degree case, `Prec f g` orders the sums of the roots. -/
+/-- In the same-degree case, `StrictInterl f g` orders the sums of the roots. -/
 theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
-    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     f.roots.sum ≤ g.roots.sum := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
@@ -321,7 +326,7 @@ theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
 coefficients are ordered opposite to the root sums. -/
 theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
     (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     g.nextCoeff ≤ f.nextCoeff := by
   have hsum : f.roots.sum ≤ g.roots.sum :=
     roots_sum_le_of_prec_sameDegree h hdeg
@@ -331,12 +336,12 @@ theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
     h.2.1.2.nextCoeff_eq_neg_sum_roots_of_monic hg_monic
   linarith
 
-/-- In the same-degree case, a reverse `Prec g f` can be flipped back to
-`Prec f g` once the root sums have the forward order. -/
+/-- In the same-degree case, a reverse `StrictInterl g f` can be flipped back to
+`StrictInterl f g` once the root sums have the forward order. -/
 theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
-    (hgf : Prec g f) (hdeg : f.natDegree = g.natDegree)
+    (hgf : StrictInterl g f) (hdeg : f.natDegree = g.natDegree)
     (hsum : f.roots.sum ≤ g.roots.sum) :
-    Prec f g := by
+    StrictInterl f g := by
   rcases hgf with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = g.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
@@ -353,10 +358,14 @@ theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
       linarith
 
 /-- Relaxed interlacing convention used in some recursive arguments:
-`Prec0 f g` holds if either side is zero, or if `Prec f g` holds in the
+`Interl f g` holds if either side is zero, or if `StrictInterl f g` holds in the
 strict nonzero sense. -/
-def Prec0 (f g : ℝ[X]) : Prop :=
-  f = 0 ∨ g = 0 ∨ Prec f g
+def Interl (f g : ℝ[X]) : Prop :=
+  f = 0 ∨ g = 0 ∨ StrictInterl f g
+
+/-- Deprecated compatibility name for the zero-aware relation `Interl`. -/
+@[deprecated Interl (since := "2026-09-16")]
+abbrev Prec0 := Interl
 
 /-- Backward-compatible alias: differ-by-1 interlacing. -/
 def Interlaces (g f : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
@@ -483,18 +492,18 @@ def IsSturmSeq : List ℝ[X] → Prop
   | p :: q :: rest => Interlaces q p ∧ IsSturmSeq (q :: rest)
 
 /-- A **generalized Sturm sequence** is a list of polynomials where each
-    consecutive pair satisfies the weak interlacing relation `≪`, i.e. `Prec`.
+    consecutive pair satisfies the weak interlacing relation `≪`, i.e. `StrictInterl`.
 
     This allows either differ-by-1 interlacing or same-degree alternation at
     each step. -/
 def IsGeneralizedSturmSeq : List ℝ[X] → Prop
   | [] => True
   | [_] => True
-  | p :: q :: rest => Prec q p ∧ IsGeneralizedSturmSeq (q :: rest)
+  | p :: q :: rest => StrictInterl q p ∧ IsGeneralizedSturmSeq (q :: rest)
 
-/-! ## Interlaces → Prec -/
+/-! ## Interlaces → StrictInterl -/
 
-lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : Prec g f := by
+lemma Interlaces.toStrictInterl {g f : ℝ[X]} (h : Interlaces g f) : StrictInterl g f := by
   obtain ⟨hf, hg, _, rs, ss, hrs, hss, hrs_eq, hss_eq, hint⟩ := h
   refine ⟨hg, hf, _, _, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨?_, hint⟩⟩
   have : ss.length = g.natDegree := by
@@ -503,7 +512,7 @@ lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : Prec g f := by
     rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
-lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
+lemma StrictInterl.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
     (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f := by
   rcases h with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, _⟩
   refine ⟨hf, hg, hdeg, _, _, hrs, hss, hrs_eq, hss_eq, ?_⟩
@@ -515,8 +524,8 @@ lemma Prec.toInterlaces {g f : ℝ[X]} (h : Prec g f)
 
 /-- Same-degree proper position exposes sorted root lists in its oriented
 `ListAlternates` branch. -/
-lemma Prec.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
-    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+lemma StrictInterl.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     ∃ ss rs : List ℝ,
       ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
         (↑ss : Multiset ℝ) = f.roots ∧
@@ -533,8 +542,8 @@ lemma Prec.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
 
 /-- Multiplying the left polynomial in a proper-position relation by a nonzero
 real scalar preserves proper position. -/
-lemma Prec.C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
-    Prec (C a * f) g := by
+lemma StrictInterl.C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl (C a * f) g := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   refine ⟨?_, hg, ss, rs, hss, hrs, ?_, hrs_eq, hshape⟩
   · exact ⟨mul_ne_zero (C_ne_zero.mpr ha) hf.1, hf.2.C_mul a⟩
@@ -543,8 +552,8 @@ lemma Prec.C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
 
 /-- Multiplying the right polynomial in a proper-position relation by a nonzero
 real scalar preserves proper position. -/
-lemma Prec.C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
-    Prec f (C a * g) := by
+lemma StrictInterl.C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl f (C a * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   refine ⟨hf, ?_, ss, rs, hss, hrs, hss_eq, ?_, hshape⟩
   · exact ⟨mul_ne_zero (C_ne_zero.mpr ha) hg.1, hg.2.C_mul a⟩
@@ -553,26 +562,92 @@ lemma Prec.C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
 
 lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
     IsGeneralizedSturmSeq ps := by
-  induction ps with grind [IsGeneralizedSturmSeq, eq_def, Interlaces.toPrec]
+  induction ps with grind [IsGeneralizedSturmSeq, eq_def, Interlaces.toStrictInterl]
 
 -- ============================================================
 -- Basic lemmas
 -- ============================================================
 
-lemma Prec.toPrec0 {f g : ℝ[X]} (h : Prec f g) : Prec0 f g :=
+lemma StrictInterl.toInterl {f g : ℝ[X]} (h : StrictInterl f g) : Interl f g :=
   Or.inr (Or.inr h)
 
-lemma Prec0.toPrec_of_ne {f g : ℝ[X]} (h : Prec0 f g)
+lemma Interl.toStrictInterl_of_ne {f g : ℝ[X]} (h : Interl f g)
     (hf : f ≠ 0) (hg : g ≠ 0) :
-    Prec f g := by
-  grind [Prec0]
+    StrictInterl f g := by
+  grind [Interl]
 
-lemma prec0_zero_left (f : ℝ[X]) : Prec0 0 f :=
+lemma interl_zero_left (f : ℝ[X]) : Interl 0 f :=
   Or.inl rfl
 
-lemma prec0_zero_right (f : ℝ[X]) : Prec0 f 0 :=
+lemma interl_zero_right (f : ℝ[X]) : Interl f 0 :=
   Or.inr (Or.inl rfl)
 
-lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
-  prec0_zero_left 0
+lemma interl_zero_zero : Interl (0 : ℝ[X]) 0 :=
+  interl_zero_left 0
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated StrictInterl.natDegree_le (since := "2026-09-16")]
+theorem Prec.natDegree_le {f g : ℝ[X]} (h : StrictInterl f g) :
+    f.natDegree ≤ g.natDegree :=
+  StrictInterl.natDegree_le h
+
+@[deprecated StrictInterl.natDegree_le_succ (since := "2026-09-16")]
+theorem Prec.natDegree_le_succ {f g : ℝ[X]} (h : StrictInterl f g) :
+    g.natDegree ≤ f.natDegree + 1 :=
+  StrictInterl.natDegree_le_succ h
+
+@[deprecated StrictInterl.natDegree_eq_or_eq_succ (since := "2026-09-16")]
+theorem Prec.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f g) :
+    g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
+  StrictInterl.natDegree_eq_or_eq_succ h
+
+@[deprecated Interlaces.toStrictInterl (since := "2026-09-16")]
+lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : StrictInterl g f :=
+  Interlaces.toStrictInterl h
+
+@[deprecated StrictInterl.toInterlaces (since := "2026-09-16")]
+lemma Prec.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
+    (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f :=
+  StrictInterl.toInterlaces h hdeg
+
+@[deprecated StrictInterl.exists_listAlternates_of_natDegree_eq (since := "2026-09-16")]
+lemma Prec.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    ∃ ss rs : List ℝ,
+      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
+        (↑ss : Multiset ℝ) = f.roots ∧
+        (↑rs : Multiset ℝ) = g.roots ∧ ListAlternates ss rs :=
+  StrictInterl.exists_listAlternates_of_natDegree_eq h hdeg
+
+@[deprecated StrictInterl.C_mul_left (since := "2026-09-16")]
+lemma Prec.C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl (C a * f) g :=
+  StrictInterl.C_mul_left h ha
+
+@[deprecated StrictInterl.C_mul_right (since := "2026-09-16")]
+lemma Prec.C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
+    StrictInterl f (C a * g) :=
+  StrictInterl.C_mul_right h ha
+
+@[deprecated StrictInterl.toInterl (since := "2026-09-16")]
+lemma Prec.toPrec0 {f g : ℝ[X]} (h : StrictInterl f g) : Interl f g :=
+  StrictInterl.toInterl h
+
+@[deprecated Interl.toStrictInterl_of_ne (since := "2026-09-16")]
+lemma Prec0.toPrec_of_ne {f g : ℝ[X]} (h : Interl f g)
+    (hf : f ≠ 0) (hg : g ≠ 0) : StrictInterl f g :=
+  Interl.toStrictInterl_of_ne h hf hg
+
+@[deprecated interl_zero_left (since := "2026-09-16")]
+lemma prec0_zero_left (f : ℝ[X]) : Interl 0 f :=
+  interl_zero_left f
+
+@[deprecated interl_zero_right (since := "2026-09-16")]
+lemma prec0_zero_right (f : ℝ[X]) : Interl f 0 :=
+  interl_zero_right f
+
+@[deprecated interl_zero_zero (since := "2026-09-16")]
+lemma prec0_zero_zero : Interl (0 : ℝ[X]) 0 :=
+  interl_zero_zero
 end RealRooted

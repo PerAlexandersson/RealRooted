@@ -49,7 +49,7 @@ coefficients positive. If `b * c ≤ a * d`, then
 The four affine coefficients have no sign assumptions. -/
 theorem wangYehAffine_eq_zero_or_splits
     {f g : ℝ[X]} {a b c d : ℝ}
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdet : b * c ≤ a * d) :
     (C b * X + C a) * f + (C d * X + C c) * g = 0 ∨

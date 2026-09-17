@@ -78,7 +78,7 @@ theorem isUpperHalfPlaneStablePencil_zero_left
 nonconstant polynomial pencil away from the product of upper half-planes. -/
 theorem isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
-    (hg : HasPosLeadingCoeff g) (hgf : Prec g f)
+    (hg : HasPosLeadingCoeff g) (hgf : StrictInterl g f)
     (hfdeg : 1 ≤ f.natDegree) :
     IsUpperHalfPlaneStablePencil f g := by
   intro z w hz hw hzero
@@ -112,7 +112,7 @@ theorem isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos
 degrees, including the constant boundary case. -/
 theorem isUpperHalfPlaneStablePencil_of_prec
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
-    (hg : HasPosLeadingCoeff g) (hgf : Prec g f) :
+    (hg : HasPosLeadingCoeff g) (hgf : StrictInterl g f) :
     IsUpperHalfPlaneStablePencil f g := by
   by_cases hfdeg : 1 ≤ f.natDegree
   · exact isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos hf hg hgf hfdeg

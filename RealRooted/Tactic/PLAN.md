@@ -88,7 +88,7 @@ The repeated structure is:
 2. prove the recurrence, often by `rfl` or a short rewrite;
 3. prove coefficient, degree, nonzero, and leading-coefficient facts;
 4. prove nonnegative coefficients or an explicit root bound;
-5. prove the induction step `Prec (P n) (P (n+1))`;
+5. prove the induction step `StrictInterl (P n) (P (n+1))`;
 6. derive `Interlaces`, `Splits`, and a prefix Sturm-sequence theorem.
 
 The tactic should automate steps 5 and 6 first.  Steps 1-4 should remain
@@ -140,7 +140,7 @@ The first certificate-driven layer is implemented.
   local hypotheses first and unique tagged certificates second.  It also
   supports attribute-restricted forms such as `rr_lookup [rr_nonzero]`.
 - `SideGoals.lean` defines `rr_side`, a conservative side-goal closer.
-- `Finish.lean` defines small proof-tail dispatchers that consume `Prec`
+- `Finish.lean` defines small proof-tail dispatchers that consume `StrictInterl`
   certificates.
 - `MaWang.lean` defines dispatchers for `prec_ma_wang`,
   `prec_ma_wang_same`, and `prec_ma_wang_succ`.
@@ -265,7 +265,7 @@ P_{n+1} = u_n * P_n + v_n * derivative(P_n).
 Target goals:
 
 ```lean
-Prec (P n) (P (n + 1))
+StrictInterl (P n) (P (n + 1))
 Interlaces (P n) (P (n + 1))
 P n != 0 /\ (P n).Splits
 forall n, P n != 0 /\ (P n).Splits
@@ -273,10 +273,10 @@ IsSturmSeq (P_prefix n)
 ```
 
 Recommended first version:
-only support a goal that is already a `Prec` step, e.g.
+only support a goal that is already a `StrictInterl` step, e.g.
 
 ```lean
-theorem prec_P_succ : forall n, Prec (P n) (P (n + 1)) := by
+theorem prec_P_succ : forall n, StrictInterl (P n) (P (n + 1)) := by
   intro n
   rr_ma_wang
 ```
@@ -284,8 +284,8 @@ theorem prec_P_succ : forall n, Prec (P n) (P (n + 1)) := by
 The tactic should:
 
 1. split base cases if requested or if the family starts at small indices;
-2. find the previous `Prec` hypothesis in the induction step;
-3. derive `P n` real-rooted from the previous `Prec`;
+2. find the previous `StrictInterl` hypothesis in the induction step;
+3. derive `P n` real-rooted from the previous `StrictInterl`;
 4. derive `Interlaces (P n).derivative (P n)` by `derivative_interlaces`;
 5. rewrite the recurrence target into `u * f + v * f.derivative`;
 6. apply `prec_ma_wang` or `prec_of_interlaces_evalCoeff_nonpos`;
@@ -334,7 +334,7 @@ parallel theorem name first, not rewrite the existing examples immediately.
 ## Tactic 3: `rr_finish_sequence`
 
 Purpose:
-derive standard corollaries once the consecutive `Prec` theorem is proved.
+derive standard corollaries once the consecutive `StrictInterl` theorem is proved.
 
 Target goals:
 
@@ -358,7 +358,7 @@ Suggested syntax:
 rr_finish_sequence using prec_P_succ, degree := natDegree_P
 ```
 
-The tactic should probably require the `Prec` theorem explicitly.  Attribute
+The tactic should probably require the `StrictInterl` theorem explicitly.  Attribute
 lookup can be added later.
 
 ## Tactic 4: `rr_favard`
@@ -514,7 +514,7 @@ def P : Nat -> R[X] := ...
 @[rr_nonneg] lemma P_nonnegCoeffs ...
 @[rr_root_bound] lemma roots_nonpos_P_of_isRealRooted ...
 
-theorem prec_P_succ : forall n, Prec (P n) (P (n + 1)) := by
+theorem prec_P_succ : forall n, StrictInterl (P n) (P (n + 1)) := by
   rr_oeis ma_wang
 
 theorem isRealRooted_P : forall n, P n != 0 /\ (P n).Splits := by
@@ -601,7 +601,7 @@ Each generated family file should contain:
 2. definitions of parametric families, not only singleton IDs;
 3. recurrence lemmas;
 4. certificate lemmas tagged for tactics;
-5. theorem statements for `Prec`, `Interlaces`, `Splits`, and prefixes;
+5. theorem statements for `StrictInterl`, `Interlaces`, `Splits`, and prefixes;
 6. comments linking back to the OEIS workbench generator or recurrence
    evidence.
 
@@ -639,7 +639,7 @@ lake build RealRooted.Tactic.SideGoals
 
 ### Phase 2: Ma-Wang tactic
 
-Implement `rr_ma_wang` for a theorem whose goal is already a `Prec` step.
+Implement `rr_ma_wang` for a theorem whose goal is already a `StrictInterl` step.
 
 Do not make it handle all final corollaries yet.
 
@@ -647,7 +647,7 @@ Tests:
 
 - create a new small file under `RealRooted/Tactic/Examples/MaWang.lean`, or
   a temporary theorem in the tactic test file;
-- prove a `Prec` theorem for Touchard-like recurrence;
+- prove a `StrictInterl` theorem for Touchard-like recurrence;
 - prove a colored-set-partition-like recurrence with parameters.
 
 Build:
@@ -791,7 +791,7 @@ The demo theorem should be parallel to the existing Touchard theorem, e.g.
 
 ```lean
 theorem prec_touchard_succ_by_tactic :
-    forall n : Nat, Prec (touchard n) (touchard (n + 1)) := by
+    forall n : Nat, StrictInterl (touchard n) (touchard (n + 1)) := by
   -- explicit base cases if needed
   rr_ma_wang
 ```
@@ -840,7 +840,7 @@ that the OEIS ledgers repeat:
 
 ```text
 LwSturmState P n:
-  Prec (P n) (P (n+1))
+  StrictInterl (P n) (P (n+1))
   HasPosLeadingCoeff (P n)
   HasPosLeadingCoeff (P (n+1))
   HasNonnegCoeffs (P n) or an explicit root interval for P (n+1)
@@ -893,7 +893,7 @@ direct model-transfer frontends for common fixed-lag shapes:
 The stronger #760 frontends
 `rr_model_lag_{one,two,three}_pf_prec0_sequence` use the same recurrence
 certificates but preserve the complete model conclusion: every row remains an
-`IsPFPolynomial`, and consecutive rows remain in zero-aware `Prec0`. Their
+`IsPFPolynomial`, and consecutive rows remain in zero-aware `Interl`. Their
 explicit and inferred forms also project directly to either half of that
 certificate. This is the preferred route for recurrence-defined clients of the
 Brändén--Leite composition-row and two-kernel models, since it does not discard

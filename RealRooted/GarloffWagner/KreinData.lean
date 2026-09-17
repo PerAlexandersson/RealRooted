@@ -13,7 +13,7 @@ noncomputable section
 
 namespace RealRooted
 
-theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : Prec f g)
+theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : StrictInterl f g)
     (u : ℝ) :
     g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
   exact (rootMultiplicity_bounds_of_prec h u).2
@@ -21,7 +21,7 @@ theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : Prec f g)
 /-- If `f ≪ g` and `u` is a root of `g`, then `f` is divisible by all but
 one copy of the `u`-factor of `g`.  This is the quotient of the left input
 used before defining the Krein coefficient at `u`. -/
-theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : Prec f g)
+theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : StrictInterl f g)
     {u : ℝ} (hu : g.IsRoot u) :
     ∃ s : ℝ[X],
       f = (X - C u) ^ (g.rootMultiplicity u - 1) * s ∧
@@ -47,7 +47,7 @@ theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : Prec f g)
 /-- For the coefficient construction, every residual `f - c g` is divisible by
 the same one-less-than-full `u`-factor measured from the right input `g`. -/
 theorem exists_precResidual_factor_of_right_rootMultiplicity {f g : ℝ[X]}
-    (h : Prec f g) (u : ℝ) (c : ℝ) :
+    (h : StrictInterl f g) (u : ℝ) (c : ℝ) :
     ∃ s : ℝ[X],
       f - C c * g = (X - C u) ^ (g.rootMultiplicity u - 1) * s := by
   let d : ℝ[X] := (X - C u) ^ (g.rootMultiplicity u - 1)
@@ -102,7 +102,7 @@ orientation.  After factoring a residual and a deleted-root summand by the
 same one-less-than-full right-root power, subtracting the evaluation coefficient
 makes the new residual divisible by the full right-root power. -/
 theorem kreinCoefficient_sub_dvd_rightRootMultiplicity
-    {f g q r s : ℝ[X]} (hfg : Prec f g) {u c : ℝ} (hu : g.IsRoot u)
+    {f g q r s : ℝ[X]} (hfg : StrictInterl f g) {u c : ℝ} (hu : g.IsRoot u)
     (hres : f - C c * g = (X - C u) ^ (g.rootMultiplicity u - 1) * s)
     (hq : q = (X - C u) ^ (g.rootMultiplicity u - 1) * r)
     (hr : r.eval u ≠ 0) :
@@ -307,7 +307,7 @@ theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsGWKreinSummand g q)
 
 theorem gwJL_prec {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
-    Prec (gwJL k q) (gwJL k g) := by
+    StrictInterl (gwJL k q) (gwJL k g) := by
   rcases h with hself | ⟨u, hq⟩
   · rw [hself]
     exact prec_refl ((gwJL_ne_zero_iff k g).2 hg0)
@@ -365,7 +365,7 @@ theorem exists_kreinSummand_factor_of_isRoot {g : ℝ[X]} (hg0 : g ≠ 0)
 construction.  For a root `u` of the right polynomial, this chooses the
 deleted-root summand and the coefficient that gains the full `u`-root power. -/
 theorem exists_kreinCoefficientData_of_right_isRoot {f g : ℝ[X]}
-    (hfg : Prec f g) (hgs : g.Splits) (c : ℝ) {u : ℝ}
+    (hfg : StrictInterl f g) (hgs : g.Splits) (c : ℝ) {u : ℝ}
     (hu : g.IsRoot u) :
     ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
@@ -383,7 +383,7 @@ theorem exists_kreinCoefficientData_of_right_isRoot {f g : ℝ[X]}
 residual divisible by `g`.  This is the identity-side part of the
 Garloff--Wagner Lemma 7 expansion, before the final degree and sign arguments. -/
 theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
-    (hfg : Prec f g) (c : ℝ) :
+    (hfg : StrictInterl f g) (c : ℝ) :
     ∃ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
         g ∣ f - C c * g - weightedSum l := by

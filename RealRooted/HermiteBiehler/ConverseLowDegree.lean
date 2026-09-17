@@ -311,7 +311,7 @@ lemma hermiteBiehler_vieta_two {f g : ℝ[X]}
 theorem prec_of_stable_monic_two {f g : ℝ[X]}
     (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    Prec g f := by
+    StrictInterl g f := by
   obtain ⟨hfs, hgs⟩ := splits_of_stable_monic_two hf hg hf₂ hg₂ hstab
   obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, hcf, hcg⟩ :=
     hermiteBiehler_vieta_two hf hg hf₂ hg₂ hstab
@@ -586,7 +586,7 @@ theorem prec_of_stable_two {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    Prec g f := by
+    StrictInterl g f := by
   obtain ⟨hfs, hgs⟩ := splits_of_stable_two hf hg hf₂ hg₂ hstab
   have ha : 0 < f.coeff 2 := by
     rw [← hf₂]
@@ -969,7 +969,7 @@ lemma hermiteBiehler_vieta_two_one {f g : ℝ[X]}
 theorem prec_of_stable_two_one {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₁ : g.natDegree = 1)
-    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) : Prec g f := by
+    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) : StrictInterl g f := by
   have ha : 0 < f.coeff 2 := by
     rw [← hf₂]
     exact hf
@@ -1037,7 +1037,7 @@ theorem hermiteBiehlerConverse_of_natDegree_le_two {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hdeg : f.natDegree ≤ 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    Prec g f ∨ Prec f g := by
+    StrictInterl g f ∨ StrictInterl f g := by
   obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
   rcases Nat.lt_or_ge f.natDegree 2 with hflt | hfge
   · exact prec_or_revPrec_of_natDegree_le_one hg hf (by lia) (by lia)

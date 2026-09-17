@@ -36,7 +36,7 @@ example (n : Nat) :
 
 /-- Raw scalar-denominator recurrences can feed the Ma--Wang sequence wrapper. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
@@ -47,7 +47,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
             (C ((n : ℝ) + 1) * X * (1 - X)) * (P (n + 1)).derivative))
     (hdeg : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_C_mul_X_one_sub_X_sequence_auto using
     base := hbase,
     pos_lc := hpos,
@@ -68,7 +68,7 @@ example {f u : ℝ[X]}
     (hdeg_hi : (u * f + X * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + X * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + X * f.derivative) := by
+    StrictInterl f (u * f + X * f.derivative) := by
   rr_mw_derivative_sign_roots_nonpos using
     splits := hf,
     degree_two := hdegf,
@@ -86,7 +86,7 @@ example {f u : ℝ[X]}
     (hdeg_hi : (u * f + X * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + X * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + X * f.derivative) := by
+    StrictInterl f (u * f + X * f.derivative) := by
   rr_mw_derivative_sign_nonneg_coeffs using
     realrooted := hf_rr,
     nonneg := hf_nn,
@@ -107,7 +107,7 @@ example {f u : ℝ[X]} {c : ℝ}
         f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (C c * X * (1 - X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (C c * X * (1 - X)) * f.derivative) := by
+    StrictInterl f (u * f + (C c * X * (1 - X)) * f.derivative) := by
   rr_mw_derivative_sign_roots_nonpos using
     splits := hf,
     degree_two := hdegf,
@@ -126,7 +126,7 @@ example {f u q : ℝ[X]}
     (hdeg_hi : (u * f + (X * q) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (X * q) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (X * q) * f.derivative) := by
+    StrictInterl f (u * f + (X * q) * f.derivative) := by
   rr_mw_derivative_X_mul using
     splits := hf,
     degree_two := hdegf,
@@ -146,7 +146,7 @@ example {f u q : ℝ[X]}
     (hdeg_hi : (u * f + (X * q) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (X * q) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (X * q) * f.derivative) := by
+    StrictInterl f (u * f + (X * q) * f.derivative) := by
   rr_mw_derivative_sign_nonneg_factor using
     realrooted := hf_rr,
     nonneg := hf_nn,
@@ -168,7 +168,7 @@ example {f u q : ℝ[X]} {c : ℝ}
       (u * f + (C c * X * q) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (C c * X * q) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (C c * X * q) * f.derivative) := by
+    StrictInterl f (u * f + (C c * X * q) * f.derivative) := by
   rr_mw_derivative_C_mul_X_mul using
     splits := hf,
     degree_two := hdegf,
@@ -190,7 +190,7 @@ example {f u : ℝ[X]}
       (u * f + (X * (1 + X)) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (X * (1 + X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (X * (1 + X)) * f.derivative) := by
+    StrictInterl f (u * f + (X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_X_one_add_window using
     splits := hf,
     degree_two := hdegf,
@@ -216,7 +216,7 @@ example {f u : ℝ[X]}
       HasPosLeadingCoeff
         (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) := by
+    StrictInterl f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) := by
   rr_mw_derivative_one_add_two_window using
     splits := hf,
     degree_two := hdegf,
@@ -229,7 +229,7 @@ example {f u : ℝ[X]}
 
 /-- Sequence endpoint for the `(1+X)(1+2X)P'` window shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lo : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -240,7 +240,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
           ((1 + X) * (1 + C (2 : ℝ) * X)) * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_mw_derivative_one_add_two_window_sequence using
     base := hbase,
     pos_lc := hpos,
@@ -253,7 +253,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 
 /-- Projection endpoint for the `(1+X)(1+2X)P'` sequence shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lo : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
@@ -283,7 +283,7 @@ example {f u : ℝ[X]} {c : ℝ}
     (hdeg_hi : (u * f + C (-c) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + C (-c) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + C (-c) * f.derivative) := by
+    StrictInterl f (u * f + C (-c) * f.derivative) := by
   rr_mw_derivative_neg_const using
     splits := hf,
     degree_two := hdegf,
@@ -305,7 +305,7 @@ example {f u : ℝ[X]}
         f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + C (-((3 : ℝ) + 1)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + C (-((3 : ℝ) + 1)) * f.derivative) := by
+    StrictInterl f (u * f + C (-((3 : ℝ) + 1)) * f.derivative) := by
   rr_mw_derivative_neg_const_auto using
     splits := hf,
     degree_two := hdegf,
@@ -324,7 +324,7 @@ example {f u : ℝ[X]} {c : ℝ}
       (u * f + (-(C c) * X ^ 2) * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C c) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (-(C c) * X ^ 2) * f.derivative) := by
+    StrictInterl f (u * f + (-(C c) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq using
     splits := hf,
     degree_two := hdegf,
@@ -346,7 +346,7 @@ example {f u : ℝ[X]}
     (hF_pos :
       HasPosLeadingCoeff (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
-    Prec f (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative) := by
+    StrictInterl f (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,

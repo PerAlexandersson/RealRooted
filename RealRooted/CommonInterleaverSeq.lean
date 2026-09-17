@@ -132,10 +132,10 @@ private lemma pairwise_ge_of_shifted_rootSlot_points
       (by simpa using hj_slot)
       hxi hxj
 
-/-- In a `Prec` witness, the `j`th descending root of the right polynomial lies
+/-- In a `StrictInterl` witness, the `j`th descending root of the right polynomial lies
 in the `j`th admissible slot of the left polynomial. -/
 theorem mem_rootSlotInterval_of_prec_desc
-    {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
+    {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
       simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
@@ -151,7 +151,7 @@ root of the common right interleaver; the final lower-tail slots meet
 automatically. -/
 theorem shiftedSlotIntersections_of_commonInterleaver
     {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h) :
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
     ∀ j : ℕ,
       ∀ (hjf : j + 1 < (rootSeqDesc f).length + 1)
         (hjg : j + 1 < (rootSeqDesc g).length + 1),
@@ -205,7 +205,7 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     rw [hslot_f, hslot_g]
     exact ⟨min af ag, min_le_left af ag, min_le_right af ag⟩
 
-/-- Slot data against `rootSeqDesc f` reconstructs a `Prec` witness with the
+/-- Slot data against `rootSeqDesc f` reconstructs a `StrictInterl` witness with the
 descending-root polynomial built from those slot choices. -/
 theorem prec_of_slots_polyOfDescRootsDesc
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
@@ -217,11 +217,11 @@ theorem prec_of_slots_polyOfDescRootsDesc
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [hf] using this⟩) :
-    Prec f (polyOfDescRootsDesc xs) := by
+    StrictInterl f (polyOfDescRootsDesc xs) := by
   simpa [polyOfDescRootsDesc] using
     CommonInterleaver.prec_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
-/-- Shifted slot data against `rootSeqDesc f` reconstructs a left `Prec` witness
+/-- Shifted slot data against `rootSeqDesc f` reconstructs a left `StrictInterl` witness
 with the descending-root polynomial built from those slot choices. -/
 theorem prec_left_of_shifted_slots_polyOfDescRootsDesc
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
@@ -233,7 +233,7 @@ theorem prec_left_of_shifted_slots_polyOfDescRootsDesc
         ⟨j + 1, by
           have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    Prec (polyOfDescRootsDesc xs) f := by
+    StrictInterl (polyOfDescRootsDesc xs) f := by
   simpa [polyOfDescRootsDesc] using
     CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
@@ -249,7 +249,7 @@ private lemma prec_polyOfDescRootsDesc_of_ofFn_slots
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [rootSeqDesc_length hf] using this⟩) :
-    Prec f (polyOfDescRootsDesc (List.ofFn x)) := by
+    StrictInterl f (polyOfDescRootsDesc (List.ofFn x)) := by
   refine
     prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs
       (by simpa using hdeg_lo)
@@ -272,7 +272,7 @@ theorem pairHasCommonInterleaver_of_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   classical
   let n : ℕ := f.natDegree + 1
   let x : Fin n → ℝ := fun j =>
@@ -313,7 +313,7 @@ theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
             ⟨j + 1, by
               have : j < g.natDegree := lt_of_lt_of_le hj hdeg_lo
               simpa [rootSeqDesc_length hg] using Nat.succ_lt_succ this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   classical
   let n : ℕ := f.natDegree
   let x : Fin n → ℝ := fun j =>
@@ -345,10 +345,10 @@ theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
 interleaver. -/
 theorem pairHasCommonLeftInterleaver_of_commonInterleaver
     {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
+    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ l : ℝ[X], Prec l f ∧ Prec l g :=
+    ∃ l : ℝ[X], StrictInterl l f ∧ StrictInterl l g :=
   pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
     hfh.1.1 hgh.1.1 hfh.1.2 hgh.1.2 hdeg_lo hdeg_hi <|
     fun j hj => by
@@ -373,7 +373,7 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_slotIntersections hf₀ hg₀ hf hg
     hdeg.ge (by lia) hslot
 
@@ -391,7 +391,7 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_slotIntersections hf₀ hg₀ hf hg
     (by lia) hdeg.le hslot
 
@@ -407,7 +407,7 @@ theorem pairHasCommonInterleaver_of_natDegree_succ_eq_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_succDegree_slotIntersections
     hf₀ hg₀ hf hg hdeg.symm hslot
 
@@ -423,7 +423,7 @@ theorem pairHasCommonInterleaver_of_natDegree_eq_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_sameDegree_slotIntersections hf₀ hg₀ hf hg hdeg.symm hslot
 
 /-- Succ-degree slot-intersection constructor taking the endpoint-reduction
@@ -437,7 +437,7 @@ theorem pairHasCommonInterleaver_of_natDegree_succ_eq_slotData
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_natDegree_succ_eq_slotIntersections
     hf₀ hg₀ hf hg hdeg (fun j hj => hslot j hj _ _)
 
@@ -452,7 +452,7 @@ theorem pairHasCommonInterleaver_of_natDegree_eq_slotData
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_natDegree_eq_slotIntersections
     hf₀ hg₀ hf hg hdeg (fun j hj => hslot j hj _ _)
 
@@ -468,7 +468,7 @@ theorem pairHasCommonInterleaver_of_succDegree_slotData
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_succDegree_slotIntersections
     hf₀ hg₀ hf hg hdeg (fun j hj => hslot j hj _ _)
 
@@ -483,7 +483,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by rcases hdeg with hdeg | hdeg <;> lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_slotIntersections hf₀ hg₀ hf hg
     (by rcases hdeg with hdeg | hdeg <;> lia)
     (by rcases hdeg with hdeg | hdeg <;> lia)
@@ -499,7 +499,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_slotData
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_degreeGap_slotIntersections
     hf₀ hg₀ hf hg hdeg (fun j hj => hslot j hj _ _)
 
@@ -611,7 +611,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotData
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   exact pairHasCommonInterleaver_of_degreeGap_slotData
     hf₀ hg₀ hf hg hdeg hslot
@@ -627,7 +627,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotData_and
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_degreeGap_le_slotData
     hf₀ hg₀ hf hg hdeg.1 hdeg.2 hslot
 
@@ -693,7 +693,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   exact pairHasCommonInterleaver_of_degreeGap_slotIntersections
     hf₀ hg₀ hf hg hdeg hslot
@@ -710,7 +710,7 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_degreeGap_le_slotIntersections
     hf₀ hg₀ hf hg hdeg.1 hdeg.2 hslot
 
@@ -769,7 +769,7 @@ theorem hasCommonInterleaver_pair_of_degreeGap_le_slotIntersections
 theorem pairHasCommonInterleaver_of_natDegree_eq_zero
     {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
     (hfdeg : f.natDegree = 0) (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   refine pairHasCommonInterleaver_of_slotIntersections hf₀ hg₀ hf hg
     (by lia) (by lia) ?_
   intro j hj
@@ -782,7 +782,7 @@ theorem pairHasCommonInterleaver_of_natDegree_eq_zero
 /-- `HasCommonInterleaver [f, g]` is exactly the existence of a common right
 interleaver for the pair `f`, `g`. -/
 theorem hasCommonInterleaver_pair {f g : ℝ[X]} :
-    HasCommonInterleaver [f, g] ↔ ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    HasCommonInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   constructor
   · rintro ⟨h, hh⟩
     exact ⟨h, hh f (by simp), hh g (by simp)⟩
@@ -797,7 +797,7 @@ theorem hasCommonInterleaver_pair {f g : ℝ[X]} :
 /-- `HasCommonLeftInterleaver [f, g]` is exactly the existence of a common
 left interleaver for the pair `f`, `g`. -/
 theorem hasCommonLeftInterleaver_pair {f g : ℝ[X]} :
-    HasCommonLeftInterleaver [f, g] ↔ ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    HasCommonLeftInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   constructor
   · rintro ⟨h, hh⟩
     exact ⟨h, hh f (by simp), hh g (by simp)⟩
@@ -813,7 +813,7 @@ theorem hasCommonLeftInterleaver_pair {f g : ℝ[X]} :
 to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonInterleaver [f, g] ↔
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   constructor
   · intro H
     obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
@@ -833,7 +833,7 @@ theorem pairwiseHasCommonInterleaver_pair {f g : ℝ[X]} :
 reduces to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonLeftInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonLeftInterleaver [f, g] ↔
-      ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+      ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   constructor
   · intro H
     obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
@@ -853,63 +853,63 @@ theorem pairwiseHasCommonLeftInterleaver_pair {f g : ℝ[X]} :
 
 /-- Swap the two polynomials in a right common-interleaver existential. -/
 theorem pairHasCommonInterleaver_symm {f g : ℝ[X]}
-    (h : ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
-    ∃ h : ℝ[X], Prec g h ∧ Prec f h := by
+    (h : ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
+    ∃ h : ℝ[X], StrictInterl g h ∧ StrictInterl f h := by
   obtain ⟨w, hf, hg⟩ := h
   exact ⟨w, hg, hf⟩
 
 /-- Swap the two polynomials in a left common-interleaver existential. -/
 theorem pairHasCommonLeftInterleaver_symm {f g : ℝ[X]}
-    (h : ∃ h : ℝ[X], Prec h f ∧ Prec h g) :
-    ∃ h : ℝ[X], Prec h g ∧ Prec h f := by
+    (h : ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g) :
+    ∃ h : ℝ[X], StrictInterl h g ∧ StrictInterl h f := by
   obtain ⟨w, hf, hg⟩ := h
   exact ⟨w, hg, hf⟩
 
 /-- Extract the pair existential from `HasCommonInterleaver [f, g]`. -/
 theorem pairHasCommonInterleaver_of_hasCommonInterleaver_pair {f g : ℝ[X]}
     (h : HasCommonInterleaver [f, g]) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   hasCommonInterleaver_pair.1 h
 
 /-- Package the pair existential as `HasCommonInterleaver [f, g]`. -/
 theorem hasCommonInterleaver_pair_of_pairHasCommonInterleaver {f g : ℝ[X]}
-    (h : ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    (h : ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     HasCommonInterleaver [f, g] :=
   hasCommonInterleaver_pair.2 h
 
 /-- Extract the left pair existential from `HasCommonLeftInterleaver [f, g]`. -/
 theorem pairHasCommonLeftInterleaver_of_hasCommonLeftInterleaver_pair
     {f g : ℝ[X]} (h : HasCommonLeftInterleaver [f, g]) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   hasCommonLeftInterleaver_pair.1 h
 
 /-- Package the left pair existential as `HasCommonLeftInterleaver [f, g]`. -/
 theorem hasCommonLeftInterleaver_pair_of_pairHasCommonLeftInterleaver
-    {f g : ℝ[X]} (h : ∃ h : ℝ[X], Prec h f ∧ Prec h g) :
+    {f g : ℝ[X]} (h : ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g) :
     HasCommonLeftInterleaver [f, g] :=
   hasCommonLeftInterleaver_pair.2 h
 
 /-- Extract the pair existential from `PairwiseHasCommonInterleaver [f, g]`. -/
 theorem pairHasCommonInterleaver_of_pairwiseHasCommonInterleaver_pair
     {f g : ℝ[X]} (h : PairwiseHasCommonInterleaver [f, g]) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairwiseHasCommonInterleaver_pair.1 h
 
 /-- Package the pair existential as `PairwiseHasCommonInterleaver [f, g]`. -/
 theorem pairwiseHasCommonInterleaver_pair_of_pairHasCommonInterleaver
-    {f g : ℝ[X]} (h : ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    {f g : ℝ[X]} (h : ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     PairwiseHasCommonInterleaver [f, g] :=
   pairwiseHasCommonInterleaver_pair.2 h
 
 /-- Extract the left pair existential from pairwise left common-interleavers. -/
 theorem pairHasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_pair
     {f g : ℝ[X]} (h : PairwiseHasCommonLeftInterleaver [f, g]) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairwiseHasCommonLeftInterleaver_pair.1 h
 
 /-- Package the left pair existential as pairwise left common-interleavers. -/
 theorem pairwiseHasCommonLeftInterleaver_pair_of_pairHasCommonLeftInterleaver
-    {f g : ℝ[X]} (h : ∃ h : ℝ[X], Prec h f ∧ Prec h g) :
+    {f g : ℝ[X]} (h : ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g) :
     PairwiseHasCommonLeftInterleaver [f, g] :=
   pairwiseHasCommonLeftInterleaver_pair.2 h
 
@@ -929,7 +929,7 @@ theorem hasCommonLeftInterleaver_pair_iff_pairwiseHasCommonLeftInterleaver_pair
 coefficients preserves the same structure. -/
 lemma IsInterlacingSeq0Nonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0Nonneg fs) :
-    fs.reverse.Pairwise (fun f g => Prec0 g f) ∧
+    fs.reverse.Pairwise (fun f g => Interl g f) ∧
     ∀ f ∈ fs.reverse, HasNonnegCoeffs f :=
   ⟨hfs.1.reverse, fun f hf => hfs.2 f (by simpa using hf)⟩
 

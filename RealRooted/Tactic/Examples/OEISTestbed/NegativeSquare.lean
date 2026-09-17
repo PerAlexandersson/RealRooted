@@ -20,7 +20,7 @@ example {n : Nat} {r : ℝ} :
 
 -- `A001263`: denominator-fused Narayana lag after the active row shift.
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hraw : ∀ n : Nat,
       C ((n : ℝ) + 5) * P (n + 2) =
@@ -28,7 +28,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
           C ((n : ℝ) + 2) * (-((1 - X : ℝ[X]) ^ 2) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_negative_square_sequence_den_coeff_auto_split using
     base := hbase,
     pos_lc := hpos,
@@ -64,7 +64,7 @@ example {r : ℝ} :
 
 -- `A090181`: denominator-fused Narayana variant with half-scaled denominator.
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hraw : ∀ n : Nat,
       C (((n : ℝ) + 4) / 2) * P (n + 2) =
@@ -72,7 +72,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
           C (((n : ℝ) + 4) / 2) * (A n * P (n + 1)))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_negative_square_sequence_den_coeff_auto_split using
     base := hbase,
     pos_lc := hpos,
@@ -92,7 +92,7 @@ example {n : Nat} {r : ℝ} :
 -- `A145596`: denominator-fused generalized Narayana lag.  The active left
 -- denominator and raw lag coefficient are both negative.
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hraw : ∀ n : Nat,
       C (-(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3)) * P (n + 2) =
@@ -101,7 +101,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
             (-((1 - X : ℝ[X]) ^ 2) * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_lw_negative_square_sequence_den_coeff_auto_split using
     base := hbase,
     pos_lc := hpos,
@@ -120,7 +120,7 @@ example {n : Nat} (hn : 2 ≤ n) {r : ℝ} :
 
 -- `A178343`: denominator-fused beta-binomial lag after the active row shift.
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
+    (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hraw : ∀ n : Nat,
       C (((n : ℝ) + 1) ^ 2) * P (n + 2) =

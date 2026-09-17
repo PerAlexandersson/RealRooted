@@ -66,7 +66,7 @@ lemma isRealRooted_X_pow :
 
 lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
-    Prec (X + C a) (X * (X + C b)) := by
+    StrictInterl (X + C a) (X * (X + C b)) := by
   have hdeg_a : (X + C a).natDegree = 1 :=
     Polynomial.natDegree_X_add_C (x := a)
   have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
@@ -93,7 +93,7 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (show Interlaces (X + C a) (X * (X + C b)) by
       refine ⟨hrr_q, hrr_a, ?_, ?_⟩
       · lia
-      · grind).toPrec
+      · grind).toStrictInterl
 
 lemma oneDescentGammaTerm_succ
     (d m j r : Nat) (hjr : j < r) :
@@ -197,8 +197,8 @@ lemma oneDescentQ_one_succ (m : Nat) :
   grind
 
 lemma prec_one_X_add_C (a : ℝ) :
-    Prec (1 : ℝ[X]) (X + C a) :=
-  (interlaces_one_linear (p := X + C a) (by simp)).toPrec
+    StrictInterl (1 : ℝ[X]) (X + C a) :=
+  (interlaces_one_linear (p := X + C a) (by simp)).toStrictInterl
 
 lemma oneDescentQ_one (m : Nat) (hm : 0 < m) :
     oneDescentQ 1 m = X ^ (m - 1) * (X + C ((m - 1 : Nat) : ℝ)) := by
@@ -222,7 +222,7 @@ lemma oneDescentGamma_adjacent_linearShift_le
   nlinarith [hstep, hsucc]
 
 lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
-    Prec (oneDescentGamma 1 m m) (oneDescentGamma 1 m (m - 1)) := by
+    StrictInterl (oneDescentGamma 1 m m) (oneDescentGamma 1 m (m - 1)) := by
   have hpred_lt : m - 1 < m := by lia
   rw [oneDescentGamma_diag, oneDescentGamma_one m (m - 1) hpred_lt]
   have hpow0 : m - (m - 1) - 1 = 0 := by lia
@@ -237,7 +237,7 @@ lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
 
 lemma oneDescent_prec_gamma_one_adjacent
     (m j : Nat) (hj : j + 1 < m) :
-    Prec (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
+    StrictInterl (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   have hjm : j < m := by lia
   have hsub_left : m - (j + 1) - 1 = m - j - 2 := by lia
   have hpow : (X : ℝ[X]) ^ (m - j - 1) = X ^ (m - j - 2) * X := by
@@ -251,14 +251,14 @@ lemma oneDescent_prec_gamma_one_adjacent
     dsimp [a, b]
     simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.cast_add, Nat.cast_one] using
       oneDescentGamma_adjacent_linearShift_le m j hj
-  have hbase : Prec (X + C a) (X * (X + C b)) :=
+  have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
     prec_X_add_C_to_X_mul_X_add_C ha hab
   have hleft_ne : (((Nat.choose m (j + 1) : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hj)
   have hright_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hjm)
   have hscaled :
-      Prec
+      StrictInterl
         (C ((Nat.choose m (j + 1) : Nat) : ℝ) * (X + C a))
         (C ((Nat.choose m j : Nat) : ℝ) * (X * (X + C b))) :=
     prec_C_mul_right (prec_C_mul_left hbase hleft_ne) hright_ne
@@ -269,19 +269,19 @@ lemma oneDescent_prec_gamma_one_adjacent
     (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
 
 lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
-    Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
+    StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2) * X := by
     rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
   let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
   let b : ℝ := ((m - 1 : Nat) : ℝ)
   have ha : 0 ≤ a := oneDescentGamma_linearShift_nonneg m 1
   have hab : a ≤ b := by grind
-  have hbase : Prec (X + C a) (X * (X + C b)) :=
+  have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
     prec_X_add_C_to_X_mul_X_add_C ha hab
   have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (show 1 ≤ m by lia)
   have hscaled :
-      Prec
+      StrictInterl
         (C ((Nat.choose m 1 : Nat) : ℝ) * (X + C a))
         (X * (X + C b)) :=
     prec_C_mul_left hbase hchoose_ne
@@ -295,7 +295,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
 `Γ_{1,j+1}^{(m)} ≪ Γ_{1,j}^{(m)}` for every admissible `j`. -/
 theorem oneDescent_prec_gamma_one_adjacent_chain
     (m j : Nat) (hj : j < m) :
-    Prec (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
+    StrictInterl (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   by_cases htop : j + 1 = m
   · rw [htop, show j = m - 1 by lia]
     exact oneDescent_prec_gamma_one_top m (by lia)
@@ -306,7 +306,7 @@ theorem oneDescent_prec_gamma_one_adjacent_chain
 `Γ_{1,1}^{(m)} ≪ Q_1^{(m)}`. -/
 theorem oneDescent_prec_gamma_one_terminal_chain
     (m : Nat) (hm : 0 < m) :
-    Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
+    StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   by_cases hm_large : 1 < m
   · exact oneDescent_prec_gamma_one_terminal m hm_large
   · have hm_eq : m = 1 := by lia

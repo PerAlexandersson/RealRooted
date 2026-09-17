@@ -317,13 +317,13 @@ theorem to_sequence
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
 theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    Prec0 p p := by
+    Interl p p := by
   by_cases hp0 : p = 0
   · exact Or.inl hp0
-  · grind [Prec.toPrec0, prec_refl, IsPFPolynomial.ne_zero_and_splits]
+  · grind [StrictInterl.toInterl, prec_refl, IsPFPolynomial.ne_zero_and_splits]
 
 theorem of_prec0_self {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hpp : Prec0 p p) :
+    (hpnn : HasNonnegCoeffs p) (hpp : Interl p p) :
     IsPFPolynomial p := by
   rcases hpp with rfl | rfl | hpp'
   · exact IsPFPolynomial.zero
@@ -472,20 +472,20 @@ theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
 
 theorem prec0_X_mul_both_of_pf {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Prec0 p q) :
-    Prec0 (X * p) (X * q) := by
+    (hpq : Interl p q) :
+    Interl (X * p) (X * q) := by
   rcases hpq with hp0 | hq0 | hpq'
-  · simpa [hp0] using prec0_zero_left (X * q)
-  · simpa [hq0] using prec0_zero_right (X * p)
-  · exact (prec_mul_X_both_of_roots_nonpos hpq' hp.roots_nonpos hq.roots_nonpos).toPrec0
+  · simpa [hp0] using interl_zero_left (X * q)
+  · simpa [hq0] using interl_zero_right (X * p)
+  · exact (prec_mul_X_both_of_roots_nonpos hpq' hp.roots_nonpos hq.roots_nonpos).toInterl
 
 /-- Fixed-left cone closure in the two-summand form used downstream:
 if a polynomial is a common left interleaver for two nonnegative-coefficient
 summands, it is also a common left interleaver for their sum. -/
 theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
-    (hpq : Prec0 p q) (hpr : Prec0 p r)
+    (hpq : Interl p q) (hpr : Interl p r)
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r) :
-    Prec0 p (q + r) := by
+    Interl p (q + r) := by
   simpa using
     prec0_sum_left_of_common_left_of_nonneg [q, r] p
       (by
@@ -497,9 +497,9 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
 if two nonnegative-coefficient summands have a common right interleaver, their
 sum has that same right interleaver. -/
 theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
-    (hph : Prec0 p h) (hqh : Prec0 q h)
+    (hph : Interl p h) (hqh : Interl q h)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
-    Prec0 (p + q) h := by
+    Interl (p + q) h := by
   classical
   have hsum : Finset.univ.sum (fun b : Bool ↦ cond b p q) = p + q := by
     simp
@@ -512,10 +512,10 @@ theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
 
 /-- Fixed-left cone closure for two nonnegative scalar multiples. -/
 theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
-    (hpq : Prec0 p q) (hpr : Prec0 p r)
+    (hpq : Interl p q) (hpr : Interl p r)
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    Prec0 p (C a * q + C b * r) :=
+    Interl p (C a * q + C b * r) :=
   prec0_add_right_of_common_left_of_nonneg
     (prec0_C_mul_right_of_nonneg hpq ha)
     (prec0_C_mul_right_of_nonneg hpr hb)
@@ -523,10 +523,10 @@ theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
 
 /-- Fixed-left cone closure in the polynomial PF notation. -/
 theorem prec0_nonneg_combo_right_of_common_left_of_pf {p q r : ℝ[X]}
-    (hpq : Prec0 p q) (hpr : Prec0 p r)
+    (hpq : Interl p q) (hpr : Interl p r)
     (hq : IsPFPolynomial q) (hr : IsPFPolynomial r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    Prec0 p (C a * q + C b * r) :=
+    Interl p (C a * q + C b * r) :=
   prec0_nonneg_combo_right_of_common_left_of_nonneg hpq hpr
     hq.hasNonnegCoeffs hr.hasNonnegCoeffs ha hb
 

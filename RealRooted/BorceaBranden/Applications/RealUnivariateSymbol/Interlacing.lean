@@ -45,14 +45,14 @@ theorem linearMap_allComboRealRooted_of_finiteSymbol_stable
   · exact hab.2
 
 /-- A stable finite symbol preserves an interlacing pair up to the order and
-zero ambiguities recorded by `Prec0`. -/
+zero ambiguities recorded by `Interl`. -/
 theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec p q) :
-    Prec0 (T p) (T q) ∨ Prec0 (T q) (T p) := by
+    (hpq : StrictInterl p q) :
+    Interl (T p) (T q) ∨ Interl (T q) (T p) := by
   apply prec0_or_revPrec0_of_allComboRealRooted
   exact linearMap_allComboRealRooted_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg (allComboRealRooted_of_prec hpq)
@@ -105,12 +105,12 @@ theorem linearMap_prec_of_finiteSymbol_stable
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
-    (hpq : Prec q p)
+    (hpq : StrictInterl q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     (hpout : HasPosLeadingCoeff (T p))
     (hqout : HasPosLeadingCoeff (T q))
     (hpoutdeg : 1 ≤ (T p).natDegree) :
-    Prec (T q) (T p) := by
+    StrictInterl (T q) (T p) := by
   let f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) :=
     ⟨(MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
         (hermiteBiehlerPolynomial p q), by

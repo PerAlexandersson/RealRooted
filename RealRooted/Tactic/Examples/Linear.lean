@@ -55,78 +55,78 @@ example :
   rr_interlaces_C_linear using
     scalar_ne := rr_side_ne_term
 
-example {f g : ℝ[X]} {a : ℝ} (hfg : Prec f g) (ha : a ≠ 0) :
-    Prec (C a * f) g := by
+example {f g : ℝ[X]} {a : ℝ} (hfg : StrictInterl f g) (ha : a ≠ 0) :
+    StrictInterl (C a * f) g := by
   rr_prec_C_mul_left using
     prec := hfg,
     scalar_ne := ha
 
-example {f g : ℝ[X]} {a : ℝ} (hfg : Prec f g) (ha : a ≠ 0) :
-    Prec f (C a * g) := by
+example {f g : ℝ[X]} {a : ℝ} (hfg : StrictInterl f g) (ha : a ≠ 0) :
+    StrictInterl f (C a * g) := by
   rr_prec_C_mul_right using
     prec := hfg,
     scalar_ne := ha
 
-example {f g : ℝ[X]} {a b : ℝ} (hfg : Prec f g) (ha : a ≠ 0) (hb : b ≠ 0) :
-    Prec (C a * f) (C b * g) := by
+example {f g : ℝ[X]} {a b : ℝ} (hfg : StrictInterl f g) (ha : a ≠ 0) (hb : b ≠ 0) :
+    StrictInterl (C a * f) (C b * g) := by
   rr_prec_C_mul_both using
     prec := hfg,
     left_ne := ha,
     right_ne := hb
 
-example {f g : ℝ[X]} {n : Nat} (hfg : Prec f g) :
-    Prec (C ((n : ℝ) + 1) * f) g := by
+example {f g : ℝ[X]} {n : Nat} (hfg : StrictInterl f g) :
+    StrictInterl (C ((n : ℝ) + 1) * f) g := by
   rr_prec_C_mul_left using
     prec := hfg
 
-example {f g : ℝ[X]} {n : Nat} (hfg : Prec f g) :
-    Prec (C ((n : ℝ) + 1) * f) (C ((n : ℝ) + 2) * g) := by
+example {f g : ℝ[X]} {n : Nat} (hfg : StrictInterl f g) :
+    StrictInterl (C ((n : ℝ) + 1) * f) (C ((n : ℝ) + 2) * g) := by
   rr_prec_C_mul_both using
     prec := hfg
 
 example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
     (ha : ∀ n : Nat, a n ≠ 0) :
-    ∀ n : Nat, Prec (C (a n) * F n) (G n) := by
+    ∀ n : Nat, StrictInterl (C (a n) * F n) (G n) := by
   rr_prec_C_mul_left_sequence using
     prec := hFG,
     scalar_ne := ha
 
 example {F G : Nat → ℝ[X]} :
-    (∀ n : Nat, Prec (F n) (G n)) →
-      ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (G n) := by
+    (∀ n : Nat, StrictInterl (F n) (G n)) →
+      ∀ n : Nat, StrictInterl (C ((n : ℝ) + 1) * F n) (G n) := by
   intro hFG
   rr_prec_C_mul_left_sequence using
     prec := hFG
 
 example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
     (ha : ∀ n : Nat, a n ≠ 0) :
-    ∀ n : Nat, Prec (F n) (C (a n) * G n) := by
+    ∀ n : Nat, StrictInterl (F n) (C (a n) * G n) := by
   rr_prec_C_mul_right_sequence using
     prec := hFG,
     scalar_ne := ha
 
 example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
     (ha : ∀ n : Nat, a n ≠ 0)
     (hb : ∀ n : Nat, b n ≠ 0) :
-    ∀ n : Nat, Prec (C (a n) * F n) (C (b n) * G n) := by
+    ∀ n : Nat, StrictInterl (C (a n) * F n) (C (b n) * G n) := by
   rr_prec_C_mul_both_sequence using
     prec := hFG,
     left_ne := ha,
     right_ne := hb
 
 example {F G : Nat → ℝ[X]}
-    (hFG : ∀ n : Nat, Prec (F n) (G n)) :
-    ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
+    (hFG : ∀ n : Nat, StrictInterl (F n) (G n)) :
+    ∀ n : Nat, StrictInterl (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
   rr_prec_C_mul_both_sequence using
     prec := hFG
 
-example {f g : ℝ[X]} {a b : ℝ} (hfg : Prec f g) (ha : a ≠ 0) (hb : b ≠ 0)
+example {f g : ℝ[X]} {a b : ℝ} (hfg : StrictInterl f g) (ha : a ≠ 0) (hb : b ≠ 0)
     (hdeg : (C a * f).natDegree + 1 = (C b * g).natDegree) :
     Interlaces (C a * f) (C b * g) := by
-  have hscaled : Prec (C a * f) (C b * g) := by
+  have hscaled : StrictInterl (C a * f) (C b * g) := by
     rr_prec_C_mul_both using
       prec := hfg,
       left_ne := ha,

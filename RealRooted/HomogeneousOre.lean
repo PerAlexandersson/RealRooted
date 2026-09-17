@@ -632,7 +632,7 @@ theorem homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq
     hbase (homogeneousInducedConeRowsAlong_scalar_id r s P Q)
     hQstate hQnext hR hR0
 
-/-- Unoriented `Prec0` consequence of sequence-level pencil transport.
+/-- Unoriented `Interl` consequence of sequence-level pencil transport.
 
 The conclusion is intentionally orientation-free.  Homogeneous Ore row chains
 will need a later degree and leading-coefficient layer to choose a branch. -/
@@ -642,11 +642,11 @@ theorem prec0_or_revPrec0_sequence_of_pencil
     (hT : PreservesRealRootedOnPencilsAlong T P Q)
     (hP : ∀ j : ℕ, P (j + 1) = T j (P j))
     (hQ : ∀ j : ℕ, Q (j + 1) = T j (Q j)) :
-    ∀ j : ℕ, Prec0 (P j) (Q j) ∨ Prec0 (Q j) (P j) := fun j =>
+    ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   prec0_or_revPrec0_of_allComboRealRooted
     (allComboRealRooted_sequence_of_pencil hbase hT hP hQ j)
 
-/-- Unoriented `Prec0` consequence of sequence-level pencil transport with a
+/-- Unoriented `Interl` consequence of sequence-level pencil transport with a
 post-map two-coordinate linear change at each step. -/
 theorem prec0_or_revPrec0_sequence_linear_change_of_pencil
     {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {P Q : ℕ → ℝ[X]}
@@ -657,11 +657,11 @@ theorem prec0_or_revPrec0_sequence_linear_change_of_pencil
       P (j + 1) = C (a j) * T j (P j) + C (b j) * T j (Q j))
     (hQ : ∀ j : ℕ,
       Q (j + 1) = C (c j) * T j (P j) + C (d j) * T j (Q j)) :
-    ∀ j : ℕ, Prec0 (P j) (Q j) ∨ Prec0 (Q j) (P j) := fun j =>
+    ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   prec0_or_revPrec0_of_allComboRealRooted
     (allComboRealRooted_sequence_linear_change_of_pencil hbase hT hP hQ j)
 
-/-- Unoriented `Prec0` consequence of triangular Ore-shaped state transport. -/
+/-- Unoriented `Interl` consequence of triangular Ore-shaped state transport. -/
 theorem prec0_or_revPrec0_triangular_sequence_of_pencil
     {T A K : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {P Q : ℕ → ℝ[X]}
     {a b c d : ℕ → ℝ}
@@ -675,19 +675,19 @@ theorem prec0_or_revPrec0_triangular_sequence_of_pencil
     (hQimage : ∀ j : ℕ,
       K j (Q j) =
         C (c j) * T j (P j) + C (d j) * T j (Q j)) :
-    ∀ j : ℕ, Prec0 (P j) (Q j) ∨ Prec0 (Q j) (P j) := fun j =>
+    ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   prec0_or_revPrec0_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_pencil
       hbase hT hP hQ hPimage hQimage j)
 
-/-- Unoriented `Prec0` consequence of triangular row-certificate transport. -/
+/-- Unoriented `Interl` consequence of triangular row-certificate transport. -/
 theorem prec0_or_revPrec0_triangular_sequence_of_certificates
     {T A K : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {P Q : ℕ → ℝ[X]}
     (hbase : AllComboRealRooted (P 0) (Q 0))
     (hrow : HomogeneousOreTriangularRowsAlong T A K P Q)
     (hP : ∀ j : ℕ, P (j + 1) = A j (P j) + Q j)
     (hQ : ∀ j : ℕ, Q (j + 1) = K j (Q j)) :
-    ∀ j : ℕ, Prec0 (P j) (Q j) ∨ Prec0 (Q j) (P j) := fun j =>
+    ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   prec0_or_revPrec0_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_certificates
       hbase hrow hP hQ j)

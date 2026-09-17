@@ -52,9 +52,9 @@ private theorem schurSzegoComp_prec0_or_revPrec0
     {d : ℕ} {f g p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hfdeg : f.natDegree ≤ d) (hgdeg : g.natDegree ≤ d)
-    (hfg : Prec f g) :
-    Prec0 (schurSzegoComp d f p) (schurSzegoComp d g p) ∨
-      Prec0 (schurSzegoComp d g p) (schurSzegoComp d f p) := by
+    (hfg : StrictInterl f g) :
+    Interl (schurSzegoComp d f p) (schurSzegoComp d g p) ∨
+      Interl (schurSzegoComp d g p) (schurSzegoComp d f p) := by
   apply prec0_or_revPrec0_map_of_pencil (T := schurSzegoRightLinearMap d p)
     (allComboRealRooted_of_prec hfg)
   intro a b hab
@@ -134,8 +134,8 @@ private theorem schurSzegoComp_prec_of_pred_coeff_pos
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = d)
     (hp_pred : 0 < p.coeff (d - 1))
     (hfdeg : f.natDegree = d) (hgdeg : g.natDegree = d)
-    (hfg : Prec f g) :
-    Prec (schurSzegoComp d f p) (schurSzegoComp d g p) := by
+    (hfg : StrictInterl f g) :
+    StrictInterl (schurSzegoComp d f p) (schurSzegoComp d g p) := by
   have hp0 : p ≠ 0 := by
     intro hp_zero
     subst p
@@ -205,8 +205,8 @@ private theorem schurSzegoComp_prec_of_reflect_pf_factor
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hp0 : p.coeff 0 ≠ 0) (hp1 : 0 < p.coeff 1)
     (hfdeg : f.natDegree = d) (hgdeg : g.natDegree = d)
-    (hfg : Prec f g) :
-    Prec (schurSzegoComp d f (reflect d p))
+    (hfg : StrictInterl f g) :
+    StrictInterl (schurSzegoComp d f (reflect d p))
       (schurSzegoComp d g (reflect d p)) := by
   have hrefdeg : (reflect d p).natDegree = d :=
     DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hpdeg hp0
@@ -242,13 +242,13 @@ theorem rootPolynomial_splits (s : Multiset ℝ) : (rootPolynomial s).Splits := 
   rw [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
 
 private theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
-    Prec (X - C u) (X - C v) := by
+    StrictInterl (X - C u) (X - C v) := by
   simpa [sub_eq_add_neg] using
     (prec_X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
 
 private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :
-    Prec (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
+    StrictInterl (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
   have h := prec_mul_common_factor (rootPolynomial_monic s).ne_zero
     (rootPolynomial_splits s) (prec_linear_root_move huv)
   simpa [rootPolynomial, mul_comm] using h
@@ -257,7 +257,7 @@ private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
 def PreservesFullDegreeRootMoves (d : ℕ) (T : ℝ[X] → ℝ[X]) : Prop :=
   (∀ {f : ℝ[X]}, f.natDegree = d → (T f).natDegree = d) ∧
     ∀ {f g : ℝ[X]}, f.natDegree = d → g.natDegree = d →
-      Prec f g → Prec (T f) (T g)
+      StrictInterl f g → StrictInterl (T f) (T g)
 
 /-- Coordinatewise order on increasingly sorted root lists. -/
 def RootwiseLE (p q : ℝ[X]) : Prop :=
@@ -282,7 +282,7 @@ theorem RootwiseLE.trans {p q r : ℝ[X]}
 
 /-- Proper position between equal-degree polynomials induces coordinatewise
 order on their increasingly sorted roots. -/
-theorem RootwiseLE.of_prec_sameDegree {p q : ℝ[X]} (hpq : Prec p q)
+theorem RootwiseLE.of_prec_sameDegree {p q : ℝ[X]} (hpq : StrictInterl p q)
     (hdeg : p.natDegree = q.natDegree) : RootwiseLE p q := by
   rcases hpq with ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hlen : ss.length = rs.length := by
@@ -447,7 +447,7 @@ private theorem rootwiseLE_map_rootPolynomial_of_forall₂
         rw [natDegree_rootPolynomial]
         simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
       have hprec :
-          Prec (rootPolynomial (x ::ₘ s)) (rootPolynomial (y ::ₘ s)) :=
+          StrictInterl (rootPolynomial (x ::ₘ s)) (rootPolynomial (y ::ₘ s)) :=
         prec_rootPolynomial_cons_move s hxy
       have hTprec := hT.2 hdegx hdegy hprec
       have hstep :

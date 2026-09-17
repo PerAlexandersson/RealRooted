@@ -58,10 +58,10 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
     add_assoc, add_left_comm, add_comm, ofNat_def] using sturmDerangementsExc_recurrence k
 
 /-- If `f` is real-rooted with nonnegative coefficients, then the derivative term
-`(1 - X) * f'` sits on the "right" of `f` in the oriented `Prec` relation. -/
+`(1 - X) * f'` sits on the "right" of `f` in the oriented `StrictInterl` relation. -/
 lemma prec_one_sub_X_derivative_right {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hnn : HasNonnegCoeffs f) :
-    Prec f ((1 - X) * f.derivative) :=
+    StrictInterl f ((1 - X) * f.derivative) :=
   prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs hf hdeg hnn
 
 /-- Every derangement excedance polynomial has `X` as a factor. In the original variable,
@@ -330,13 +330,13 @@ lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
   roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
-    (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
+    (hprec : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
+    StrictInterl (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
   prec_C_mul_left hprec (by positivity)
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) := by
+    StrictInterl (affineSturmDerangementsExc n) (sturmDerangementsExc n) := by
   apply prec_affine_derivative'
   · lia
   · rw [natDegree_sturmDerangementsExc hn]
@@ -447,7 +447,7 @@ lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
 
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (sturmDerangementsExc n) (X * affineSturmDerangementsExc n) :=
+    StrictInterl (sturmDerangementsExc n) (X * affineSturmDerangementsExc n) :=
   prec_mul_X_of_prec_of_nonneg
     (prec_affine_sturmDerangementsExc hn hrr)
     (affine_sturmDerangementsExc_nonnegCoeffs hn)
@@ -455,17 +455,17 @@ lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
+    StrictInterl (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
   prec_mul_X_both_of_prec_of_nonneg
     (prec_affine_sturmDerangementsExc hn hrr)
     (affine_sturmDerangementsExc_nonnegCoeffs hn)
     (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
-    (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    Prec (X * (C (n : ℝ) * sturmDerangementsExc (n - 1)))
+    (hprec : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
+    StrictInterl (X * (C (n : ℝ) * sturmDerangementsExc (n - 1)))
       (X * sturmDerangementsExc n) := by
-  have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1))
+  have hlower : StrictInterl (C (n : ℝ) * sturmDerangementsExc (n - 1))
       (sturmDerangementsExc n) :=
     prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   have hlower_nonneg :
@@ -477,9 +477,9 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/
 lemma prec_X_mul_recurrenceSummands_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
-    (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    Prec (X * (C (n : ℝ) * sturmDerangementsExc (n - 1))) (X * sturmDerangementsExc n) ∧
-      Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
+    (hprec : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
+    StrictInterl (X * (C (n : ℝ) * sturmDerangementsExc (n - 1))) (X * sturmDerangementsExc n) ∧
+      StrictInterl (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
   ⟨prec_X_mul_lowerTerm_sturmDerangementsExc hn hprec,
     prec_X_mul_affine_sturmDerangementsExc (by lia) hprec.2.1.2⟩
 
@@ -487,12 +487,13 @@ lemma prec_X_mul_recurrenceSummands_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n
 `n * P_{n-1} + (n * P_n + (1 - X) P'_n)` precedes `P_n` once `P_{n-1} ≪ P_n`.
 This is the inner addition step in the human proof of Sturm interlacing. -/
 lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
-    (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    Prec (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n) := by
+    (hprec : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
+    StrictInterl (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n) := by
   rw [recurrenceCoreSturmDerangementsExc]
-  have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
+  have hlower :
+      StrictInterl (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
     prec_lowerTerm_sturmDerangementsExc (by lia) hprec
-  have haff : Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
+  have haff : StrictInterl (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
     prec_affine_sturmDerangementsExc (by lia) hprec.2.1.2
   have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
     hasPosLeadingCoeff_C_mul (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
@@ -503,19 +504,19 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
 /-- Once the recurrence core is known to precede `P_n`, the actual Sturm step
 `P_n ≪ P_{n+1}` follows immediately from the outer `X` factor in the recurrence. -/
 lemma prec_sturmDerangementsExc_succ_of_prec_recurrenceCore {n : Nat} (hn : 2 ≤ n)
-    (hcore : Prec (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n)) :
-    Prec (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
+    (hcore : StrictInterl (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n)) :
+    StrictInterl (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
   have hmain :
-      Prec (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) :=
+      StrictInterl (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) :=
     prec_mul_X_of_prec_of_nonneg hcore
       (recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn)
       (sturmDerangementsExc_nonnegCoeffs n)
   simpa [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] using hmain
 
 /-- Consecutive derangement excedance polynomials interlace in the oriented
-`Prec` sense: `P_n ≪ P_{n+1}` for every `n ≥ 2`. -/
+`StrictInterl` sense: `P_n ≪ P_{n+1}` for every `n ≥ 2`. -/
 theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
-    Prec (sturmDerangementsExc n) (sturmDerangementsExc (n + 1))
+    StrictInterl (sturmDerangementsExc n) (sturmDerangementsExc (n + 1))
   | 0, hn => by lia
   | 1, hn => by lia
   | 2, _ => by
@@ -523,9 +524,9 @@ theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
         simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc]
           using prec_affine_sturmDerangementsExc (n := 2) (by lia) (by simp)
   | n + 3, _ => by
-      have hprev : Prec (sturmDerangementsExc (n + 2)) (sturmDerangementsExc (n + 3)) :=
+      have hprev : StrictInterl (sturmDerangementsExc (n + 2)) (sturmDerangementsExc (n + 3)) :=
         prec_sturmDerangementsExc_succ (n + 2) (by lia)
-      have hcore : Prec (recurrenceCoreSturmDerangementsExc (n + 3))
+      have hcore : StrictInterl (recurrenceCoreSturmDerangementsExc (n + 3))
           (sturmDerangementsExc (n + 3)) :=
         prec_recurrenceCoreSturmDerangementsExc (n := n + 3) (by lia) hprev
       exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := n + 3) (by lia) hcore
@@ -540,7 +541,7 @@ theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →
   | n + 3, _ => (prec_sturmDerangementsExc_succ (n + 2) (by lia)).2.1
 
 /-- Consecutive derangement excedance polynomials form a genuine differ-by-1
-interlacing pair, not just an abstract `Prec` pair. -/
+interlacing pair, not just an abstract `StrictInterl` pair. -/
 theorem interlaces_sturmDerangementsExc_succ {n : Nat} (hn : 2 ≤ n) :
     Interlaces (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) :=
   (prec_sturmDerangementsExc_succ n hn).toInterlaces <| by

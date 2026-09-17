@@ -222,24 +222,24 @@ example {P : Nat → ℝ[X]}
   rr_pf_sequence_mul_X_add_one using pf := hP
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    Prec0 p p := by
+    Interl p p := by
   rr_pf_prec0_self using pf := hp
 
 example {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
-    ∀ i : Nat, Prec0 (P i) (P i) := by
+    ∀ i : Nat, Interl (P i) (P i) := by
   rr_pf_sequence_prec0_self using pf := hP
 
 example {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Prec0 p q) :
-    Prec0 (X * p) (X * q) := by
+    (hpq : Interl p q) :
+    Interl (X * p) (X * q) := by
   rr_pf_prec0_X_mul_both using left_pf := hp, right_pf := hq, prec0 := hpq
 
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Prec0 (P i) (Q i)) :
-    ∀ i : Nat, Prec0 (X * P i) (X * Q i) := by
+    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+    ∀ i : Nat, Interl (X * P i) (X * Q i) := by
   rr_pf_sequence_prec0_X_mul_both using
     left_pf := hP,
     right_pf := hQ,

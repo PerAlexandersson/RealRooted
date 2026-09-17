@@ -72,7 +72,7 @@ theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
     (∀ n, IsPFPolynomial
       (compositionRow
         (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)) ∧
-      ∀ n, Prec0
+      ∀ n, Interl
         (compositionRow
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)
         (compositionRow
@@ -240,7 +240,7 @@ proper position. -/
 theorem binomialCompositionRows_pf_and_prec0 (d : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow (PowerSeries.mk (binomialCompositionKernel d)) n)) ∧
-      ∀ n, Prec0
+      ∀ n, Interl
         (compositionRow (PowerSeries.mk (binomialCompositionKernel d)) n)
         (compositionRow
           (PowerSeries.mk (binomialCompositionKernel d)) (n + 1)) := by
@@ -369,7 +369,7 @@ theorem inversePowerCompositionRows_pf_and_prec0 (e : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow
         (PowerSeries.mk (inversePowerCompositionKernel e)) n)) ∧
-      ∀ n, Prec0
+      ∀ n, Interl
         (compositionRow
           (PowerSeries.mk (inversePowerCompositionKernel e)) n)
         (compositionRow
@@ -424,7 +424,7 @@ def a207327Row (n : ℕ) : ℝ[X] :=
 position. -/
 theorem a207327Rows_pf_and_prec0 :
     (∀ n, IsPFPolynomial (a207327Row n)) ∧
-      ∀ n, Prec0 (a207327Row n) (a207327Row (n + 1)) := by
+      ∀ n, Interl (a207327Row n) (a207327Row (n + 1)) := by
   simpa [a207327Row, a207327Kernel] using
     (shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
       (xs := [1, 1]) (ys := [1]) (by simp) (by simp))
@@ -684,7 +684,7 @@ theorem a116088Row_eq_sum_choose (n : ℕ) :
 /-- A116088 rows are PF and consecutively in zero-aware proper position. -/
 theorem a116088Rows_pf_and_prec0 :
     (∀ n, IsPFPolynomial (a116088Row n)) ∧
-      ∀ n, Prec0 (a116088Row n) (a116088Row (n + 1)) := by
+      ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) := by
   exact binomialCompositionRows_pf_and_prec0 2
 
 /-- The zero root of a positive A116088 row has multiplicity
@@ -715,7 +715,7 @@ theorem a116089Row_eq_sum_choose (n : ℕ) :
 /-- A116089 rows are PF and consecutively in zero-aware proper position. -/
 theorem a116089Rows_pf_and_prec0 :
     (∀ n, IsPFPolynomial (a116089Row n)) ∧
-      ∀ n, Prec0 (a116089Row n) (a116089Row (n + 1)) := by
+      ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) := by
   exact binomialCompositionRows_pf_and_prec0 3
 
 /-- The zero root of a positive A116089 row has multiplicity
@@ -746,7 +746,7 @@ theorem a206294Row_eq_sum_choose (n : ℕ) :
 /-- A206294 rows are PF and consecutively in zero-aware proper position. -/
 theorem a206294Rows_pf_and_prec0 :
     (∀ n, IsPFPolynomial (a206294Row n)) ∧
-      ∀ n, Prec0 (a206294Row n) (a206294Row (n + 1)) := by
+      ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) := by
   exact inversePowerCompositionRows_pf_and_prec0 3
 
 /-- Every positive-index A206294 row has a simple zero. -/

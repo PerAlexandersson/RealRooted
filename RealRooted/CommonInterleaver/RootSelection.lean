@@ -34,8 +34,8 @@ private lemma forall_lt_of_forall₂_le {l₁ l₂ : List ℝ} {x : ℝ}
 /-- In the degree-one-gap case, a point above every root of the left
 interlacer but below some root of the right polynomial has negative
 evaluation. -/
-theorem Prec.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
-    (hhp : Prec h p) (hdeg : h.natDegree + 1 = p.natDegree)
+theorem StrictInterl.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
+    (hhp : StrictInterl h p) (hdeg : h.natDegree + 1 = p.natDegree)
     (hp_pos : HasPosLeadingCoeff p)
     (hh_lt : ∀ r ∈ h.roots, r < x)
     (hp_above : ∃ r, p.IsRoot r ∧ x < r) :
@@ -119,7 +119,7 @@ end LiuOppositeSigns.IsLargestRoot
 degree is one below the common family degree. -/
 theorem exists_largestRoot_le_of_common_left_pair
     {h f g : ℝ[X]} {d : ℕ}
-    (hfh : Prec h f) (hgh : Prec h g)
+    (hfh : StrictInterl h f) (hgh : StrictInterl h g)
     (hh_deg : h.natDegree + 1 = d)
     (hf_deg : f.natDegree = d) (hg_deg : g.natDegree = d)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
@@ -129,7 +129,7 @@ theorem exists_largestRoot_le_of_common_left_pair
   have hfg_deg : f.natDegree = g.natDegree := hf_deg.trans hg_deg.symm
   have hsum_pos : HasPosLeadingCoeff (f + g) :=
     hasPosLeadingCoeff_add_of_same_natDegree hfg_deg hf_pos hg_pos
-  have hsum_prec : Prec h (f + g) := by
+  have hsum_prec : StrictInterl h (f + g) := by
     simpa using prec_sum_left_of_common_left_signed [f, g] h
       (by simp [hfh, hgh]) (by simp [hf_pos, hg_pos]) (by simp)
   have hd_pos : 0 < d := by lia
@@ -181,7 +181,7 @@ theorem exists_largestRoot_le_of_common_left_pair
 
 /-- A common left interlacer with the degree gap required by MSS. -/
 def HasCommonLeftInterlacerOfDegree (fs : List ℝ[X]) (d : ℕ) : Prop :=
-  ∃ h : ℝ[X], h.natDegree + 1 = d ∧ ∀ p ∈ fs, Prec h p
+  ∃ h : ℝ[X], h.natDegree + 1 = d ∧ ∀ p ∈ fs, StrictInterl h p
 
 /-- Finite nonnegative-weight MSS selection. The selected member is required
 to have strictly positive weight. -/
@@ -189,7 +189,7 @@ theorem exists_mem_largestRoot_le_weightedSum :
     ∀ {l : List (ℝ × ℝ[X])} {h : ℝ[X]} {d : ℕ},
       h.natDegree + 1 = d →
       (∀ ap ∈ l, 0 ≤ ap.1) →
-      (∀ ap ∈ l, Prec h ap.2) →
+      (∀ ap ∈ l, StrictInterl h ap.2) →
       (∀ ap ∈ l, ap.2.natDegree = d) →
       (∀ ap ∈ l, HasPosLeadingCoeff ap.2) →
       (∃ ap ∈ l, 0 < ap.1) →
@@ -199,12 +199,12 @@ theorem exists_mem_largestRoot_le_weightedSum :
   | [], _, _, _, _, _, _, _, hex => by simp_all
   | (a, p) :: l, h, d, hh_deg, hnonneg, hprec, hdeg, hpos, hex => by
       have ha_nonneg : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp_prec : Prec h p := hprec (a, p) (by simp)
+      have hp_prec : StrictInterl h p := hprec (a, p) (by simp)
       have hp_deg : p.natDegree = d := hdeg (a, p) (by simp)
       have hp_pos : HasPosLeadingCoeff p := hpos (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
         List.forall_mem_of_forall_mem_cons hnonneg
-      have hprec_tail : ∀ ap ∈ l, Prec h ap.2 :=
+      have hprec_tail : ∀ ap ∈ l, StrictInterl h ap.2 :=
         List.forall_mem_of_forall_mem_cons hprec
       have hdeg_tail : ∀ ap ∈ l, ap.2.natDegree = d :=
         List.forall_mem_of_forall_mem_cons hdeg
@@ -219,7 +219,7 @@ theorem exists_mem_largestRoot_le_weightedSum :
         · obtain ⟨ap, hap, hap_pos, rp, rtail, hrp, hrtail, hrp_le⟩ :=
             exists_mem_largestRoot_le_weightedSum hh_deg hnonneg_tail
               hprec_tail hdeg_tail hpos_tail htail
-          have htail_prec : Prec h (weightedSum l) :=
+          have htail_prec : StrictInterl h (weightedSum l) :=
             prec_weightedSum_left_of_common_left_signed
               l h hnonneg_tail hprec_tail hpos_tail htail
           have htail_deg : (weightedSum l).natDegree = d :=
@@ -227,7 +227,7 @@ theorem exists_mem_largestRoot_le_weightedSum :
               hnonneg_tail hdeg_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
-          have hscaled_prec : Prec h (C a * p) :=
+          have hscaled_prec : StrictInterl h (C a * p) :=
             prec_C_mul_right hp_prec ha_pos.ne'
           have hscaled_deg : (C a * p).natDegree = d := by
             rw [Polynomial.natDegree_C_mul ha_pos.ne', hp_deg]
@@ -277,5 +277,14 @@ theorem exists_mem_largestRoot_le_sum
         exact ⟨(1, p), by simp [hp]⟩)
   rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
   exact ⟨p, hp, rp, rsum, hrp, by simpa using hrsum, hle⟩
+
+@[deprecated StrictInterl.eval_neg_of_left_top_gap (since := "2026-09-16")]
+theorem Prec.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
+    (hhp : StrictInterl h p) (hdeg : h.natDegree + 1 = p.natDegree)
+    (hp_pos : HasPosLeadingCoeff p)
+    (hh_lt : ∀ r ∈ h.roots, r < x)
+    (hp_above : ∃ r, p.IsRoot r ∧ x < r) :
+    p.eval x < 0 :=
+  StrictInterl.eval_neg_of_left_top_gap hhp hdeg hp_pos hh_lt hp_above
 
 end RealRooted

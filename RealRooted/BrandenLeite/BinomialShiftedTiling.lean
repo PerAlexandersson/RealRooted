@@ -118,7 +118,7 @@ def binomialShiftedRodRow (m n : ℕ) : ℝ[X] :=
 proper position. -/
 theorem binomialShiftedRodRows_pf_and_prec0 (m : ℕ) :
     (∀ n, IsPFPolynomial (binomialShiftedRodRow m n)) ∧
-      ∀ n, Prec0 (binomialShiftedRodRow m n)
+      ∀ n, Interl (binomialShiftedRodRow m n)
         (binomialShiftedRodRow m (n + 1)) := by
   simpa [binomialShiftedRodRow] using
     (shiftedRationalRodRows_pf_and_prec0

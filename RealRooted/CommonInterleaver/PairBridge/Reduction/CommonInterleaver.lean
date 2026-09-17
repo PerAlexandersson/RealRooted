@@ -27,7 +27,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   rcases hdeg with hsame_deg | hsucc_deg
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
@@ -49,7 +49,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
     hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
@@ -69,7 +69,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFam
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
@@ -86,7 +86,7 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
         f.natDegree ≤ g.natDegree →
         g.natDegree ≤ f.natDegree + 1 →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -95,9 +95,9 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   PosComboRealRooted.induction_on_common_roots_nonneg
-    (motive := fun f g => ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    (motive := fun f g => ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     hterminal
     (fun {r f g} _ _ hfg => by
       obtain ⟨h, hf_prec, hg_prec⟩ := hfg
@@ -128,7 +128,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
         g.natDegree ≤ f.natDegree + 1 →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
         g.natDegree ≤ N →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -138,9 +138,10 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hgdeg : g.natDegree ≤ N) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   PosComboRealRooted.induction_on_common_roots_nonneg
-    (motive := fun f g => g.natDegree ≤ N → ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    (motive := fun f g => g.natDegree ≤ N →
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
       hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
     (fun {r f g} _ hg_pos ih hmul_deg => by
@@ -175,7 +176,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
         g.natDegree ≤ f.natDegree + 1 →
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
         g.natDegree ≤ N →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -184,7 +185,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ N)
     (hgdeg : g.natDegree ≤ N) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   obtain ⟨hclose_left, hclose_right⟩ :=
     natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
       hfg hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn
@@ -213,7 +214,7 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_natDegree_le_reduction
     (N := 2)
     (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
@@ -232,7 +233,7 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
     (N := 2)
     (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
@@ -251,7 +252,7 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
       posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
@@ -272,7 +273,7 @@ protected theorem
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
       posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs

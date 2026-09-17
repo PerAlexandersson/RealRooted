@@ -141,7 +141,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
             have : j < p.natDegree + 1 := lt_of_lt_of_le hj hp_deg_hi
             simpa [rootSeqDesc_length hp_rr] using this⟩ := by
     grind
-  have hp_prec : Prec p (CommonInterleaver.polyOfDescRoots xlist) :=
+  have hp_prec : StrictInterl p (CommonInterleaver.polyOfDescRoots xlist) :=
     CommonInterleaver.prec_of_slots_polyOfDescRoots
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
@@ -226,7 +226,7 @@ private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_
             have : j < p.natDegree := lt_of_lt_of_le hj hp_deg_lo
             simpa [rootSeqDesc_length hp_rr] using Nat.succ_lt_succ this⟩ := by
     grind
-  have hp_prec : Prec (CommonInterleaver.polyOfDescRoots xlist) p :=
+  have hp_prec : StrictInterl (CommonInterleaver.polyOfDescRoots xlist) p :=
     CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia

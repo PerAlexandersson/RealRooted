@@ -200,7 +200,7 @@ theorem weightedDecoEulerian_splits {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
 
 /-- Consecutive ranks at a nonnegative weight are in proper position. -/
 theorem weightedDecoEulerian_prec {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
-    Prec (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) :=
+    StrictInterl (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) :=
   (weightedDecoEulerian_certificate hw n).prec_succ
 
 /-- Consecutive ranks at a nonnegative weight strictly interlace. -/

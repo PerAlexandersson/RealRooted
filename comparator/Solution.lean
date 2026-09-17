@@ -19,7 +19,7 @@ def HasPosLeadingCoeff (p : ℝ[X]) : Prop :=
   RealRooted.HasPosLeadingCoeff p
 
 def Prec (f g : ℝ[X]) : Prop :=
-  RealRooted.Prec f g
+  RealRooted.StrictInterl f g
 
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
   RealRooted.StrictPrecSameDegree p q

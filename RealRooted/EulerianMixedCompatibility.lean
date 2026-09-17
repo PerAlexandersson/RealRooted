@@ -68,7 +68,7 @@ private theorem eval_ratio_eq_sum_residues
 /-- Every nonnegative residue term is bounded by the full positive-axis
 ratio.  This is the exact quantitative input in the mixed Euler argument. -/
 private theorem residue_div_sub_le_eval_ratio
-    {h g : ℝ[X]} (hgh : Prec g h)
+    {h g : ℝ[X]} (hgh : StrictInterl g h)
     (hh : HasNonnegCoeffs h) (hh_pos : HasPosLeadingCoeff h)
     (hg_pos : HasPosLeadingCoeff g)
     (hh_nodup : h.roots.Nodup) (hg_nodup : g.roots.Nodup)
@@ -154,7 +154,7 @@ private theorem residue_div_sub_le_eval_ratio
 /-- If the right polynomial has at least two roots, every individual residue
 term is strictly smaller than the full ratio at zero. -/
 private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
-    {h g : ℝ[X]} (hgh : Prec g h)
+    {h g : ℝ[X]} (hgh : StrictInterl g h)
     (hh : HasNonnegCoeffs h) (hh_pos : HasPosLeadingCoeff h)
     (hg_pos : HasPosLeadingCoeff g)
     (hh_nodup : h.roots.Nodup) (hg_nodup : g.roots.Nodup)
@@ -310,14 +310,14 @@ The latter follows because every nonzero regularized linear combination is
 simple: a shared root would produce a nonzero combination with a double root.
 -/
 private theorem regularized_prec_no_common
-    {f g : ℝ[X]} (hgf : Prec g f)
+    {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree + 1 = f.natDegree)
     {eps : ℝ} (heps : 0 < eps) :
     let k := f.natDegree
     let fε := iterateTDeriv (-eps) k f
     let gε := iterateTDeriv (-eps) k g
-    Prec gε fε ∧ (∀ r, fε.IsRoot r → ¬gε.IsRoot r) := by
+    StrictInterl gε fε ∧ (∀ r, fε.IsRoot r → ¬gε.IsRoot r) := by
   dsimp
   let k := f.natDegree
   let fε : ℝ[X] := iterateTDeriv (-eps) k f
@@ -337,7 +337,7 @@ private theorem regularized_prec_no_common
   have hdegε : gε.natDegree + 1 = fε.natDegree := by
     dsimp [fε, gε]
     simpa using hdeg
-  have hprecε : Prec gε fε := by
+  have hprecε : StrictInterl gε fε := by
     rcases prec_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
         hallε (Or.inl hdegε) with hforward | hreverse
     · exact hforward
@@ -490,7 +490,7 @@ is positive. -/
 private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
     {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
     (hlam : 0 < lam)
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hg_splits : g.Splits)
@@ -498,7 +498,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
     (hfdeg : f.natDegree ≤ n + 1)
     (hno : ∀ r, f.IsRoot r → ¬g.IsRoot r)
     (hfboundary : 0 < f.coeff 0 ∨ 2 ≤ f.natDegree) :
-    Prec (f + C lam * g)
+    StrictInterl (f + C lam * g)
       (eulerInsertionStep 0 (n + 1) f +
         C lam * eulerInsertionStep 1 n g) := by
   let h : ℝ[X] := f + C lam * g
@@ -554,7 +554,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
     isCoprime_of_no_common_real_root_of_isRealRooted
       (hasPosLeadingCoeff_C_mul hlam hg_pos).ne_zero
       (hg_splits.C_mul lam) hscaled_no
-  have hgh : Prec g h := by
+  have hgh : StrictInterl g h := by
     have hprec := prec_convex_left hgf hg_pos hf_pos hlam zero_lt_one
       (by simpa [h, add_comm] using hh_ne)
       (by simpa [h, add_comm] using hh_splits) (by simpa using hcop)
@@ -733,14 +733,14 @@ boundary where the mixed output has the input sum as an exact factor. -/
 private theorem mixedEulerStep_prec_of_no_common
     {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
     (hlam : 0 < lam)
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hg_splits : g.Splits)
     (hdeg : g.natDegree + 1 = f.natDegree)
     (hfdeg : f.natDegree ≤ n + 1)
     (hno : ∀ r, f.IsRoot r → ¬g.IsRoot r) :
-    Prec (f + C lam * g)
+    StrictInterl (f + C lam * g)
       (eulerInsertionStep 0 (n + 1) f +
         C lam * eulerInsertionStep 1 n g) := by
   by_cases hfzero_pos : 0 < f.coeff 0
@@ -810,9 +810,9 @@ private theorem mixedEulerStep_prec_of_no_common
   have hPfactor : P = C c * ((X - C u) * h) := by
     rw [hPfactor0, hlinear]
     ring
-  have hbase : Prec h ((X - C u) * h) :=
+  have hbase : StrictInterl h ((X - C u) * h) :=
     prec_self_X_sub_C_mul hh_ne hh_splits u
-  have hscaled : Prec h (C c * ((X - C u) * h)) :=
+  have hscaled : StrictInterl h (C c * ((X - C u) * h)) :=
     prec_C_mul_right hbase hc_pos.ne'
   rw [← hPfactor] at hscaled
   exact hscaled
@@ -826,7 +826,7 @@ genericity hypothesis remains in the statement. -/
 theorem mixedEulerStep_splits
     {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
     (hlam : 0 < lam)
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -942,7 +942,7 @@ the paper's mixed `T/U` lemma in the exact succ-degree regime used by the
 derangement induction. -/
 theorem compatible_eulerInsertionStep_one_zero_succ
     {n : ℕ} {f g : ℝ[X]}
-    (hgf : Prec g f)
+    (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree + 1 = f.natDegree)

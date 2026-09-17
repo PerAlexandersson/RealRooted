@@ -40,7 +40,7 @@ together with equality of leading coefficients, forces equality of the
 polynomials. -/
 theorem eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     {f g : ℝ[X]}
-    (hprec : Prec f g) (hdeg : f.natDegree = g.natDegree)
+    (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hlc : f.leadingCoeff = g.leadingCoeff)
     (hsum : f.roots.sum = g.roots.sum) :
     f = g := by
@@ -62,7 +62,7 @@ theorem eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
 /-- At a root of the right polynomial in a positive-leading proper-position
 pair, the left value and right derivative have nonnegative product. -/
 theorem eval_mul_derivative_nonneg_of_prec_right_root
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : g.IsRoot r) :
     0 ≤ f.eval r * g.derivative.eval r := by
@@ -76,10 +76,10 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
     rwa [card_roots_of_splits hprec.2.1.2] at hcard_pos
   have hgder_pos : HasPosLeadingCoeff g.derivative :=
     hg_pos.derivative (by lia)
-  have hder_prec : Prec g.derivative g := by
+  have hder_prec : StrictInterl g.derivative g := by
     rcases eq_or_lt_of_le (show 1 ≤ g.natDegree by lia) with hdeg_one | hdeg_two
-    · have hbase : Prec (1 : ℝ[X]) g :=
-        (interlaces_one_linear (by lia)).toPrec
+    · have hbase : StrictInterl (1 : ℝ[X]) g :=
+        (interlaces_one_linear (by lia)).toStrictInterl
       have hder_deg : g.derivative.natDegree = 0 := by
         rw [g.natDegree_derivative]
         lia
@@ -91,7 +91,7 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
         exact hgder_pos
       rw [hder_C]
       simpa using prec_C_mul_left hbase (ne_of_gt hcoeff_pos)
-    · exact (derivative_interlaces hprec.2.1.2 (by lia)).toPrec
+    · exact (derivative_interlaces hprec.2.1.2 (by lia)).toStrictInterl
   exact
     eval_mul_eval_nonneg_of_prec_right
       hprec hder_prec hf_pos hgder_pos hr
@@ -100,7 +100,7 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
 proper-position pair, the left value and right derivative have strictly the
 same sign. -/
 theorem eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     {r : ℝ} (hr : g.IsRoot r) :
@@ -119,7 +119,7 @@ theorem eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
 pair with no common real root, the left value and right derivative have
 strictly the same sign. -/
 theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : g.IsRoot r) :
@@ -132,7 +132,7 @@ theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair, the right value and left derivative have nonpositive product. -/
 theorem eval_mul_derivative_nonpos_of_prec_left_root
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : f.IsRoot r) :
     g.eval r * f.derivative.eval r ≤ 0 := by
@@ -150,7 +150,7 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
     have := hbf r hr_mem
     dsimp [b]
     linarith [le_max_left bf bg]
-  have hpad : Prec g ((X - C b) * f) := by
+  have hpad : StrictInterl g ((X - C b) * f) := by
     rcases hprec.natDegree_eq_or_eq_succ with hsame | hsucc
     · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le
         b hprec hsame.symm hf_pos hg_pos hf_le hg_le
@@ -174,7 +174,7 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
 proper-position pair, the right value and left derivative have strictly
 opposite signs. -/
 theorem eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     {r : ℝ} (hr : f.IsRoot r) :
@@ -192,7 +192,7 @@ theorem eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
 pair with no common real root, the right value and left derivative have
 strictly opposite signs. -/
 theorem eval_mul_derivative_neg_of_prec_left_root_of_no_common
-    {f g : ℝ[X]} (hprec : Prec f g)
+    {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : f.IsRoot r) :
@@ -205,7 +205,7 @@ theorem eval_mul_derivative_neg_of_prec_left_root_of_no_common
 /-- Values of the two outer members of a positive-leading ordered triple have
 opposite-or-zero signs at every root of the middle member. -/
 theorem eval_mul_eval_nonpos_of_prec_sandwich
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
     {r : ℝ} (hr : g.IsRoot r) :
@@ -241,7 +241,7 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
 strictly opposite signs at every root of the middle member when both adjacent
 pairs are coprime. -/
 theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
     (hfg_cop : IsCoprime f g) (hgh_cop : IsCoprime g h)
@@ -276,7 +276,7 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
 strictly opposite signs at every root of the middle member when the adjacent
 pairs have no common real root. -/
 theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h)
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
     (hfg_no : ∀ x, f.IsRoot x → ¬g.IsRoot x)
@@ -292,7 +292,7 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
   · exact hr
 
 private theorem natDegree_sub_lower_bound_of_prec_triple
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h) (hfh : Prec f h)
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) (hfh : StrictInterl f h)
     (hf_pos : HasPosLeadingCoeff f) (hh_pos : HasPosLeadingCoeff h)
     (hsub_pos : HasPosLeadingCoeff (h - f)) :
     g.natDegree ≤ (h - f).natDegree := by
@@ -385,7 +385,7 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
     lia
 
 private theorem natDegree_sub_upper_bound_of_prec_triple
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h) :
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) :
     (h - f).natDegree ≤ g.natDegree + 1 := by
   have hf_le : f.natDegree ≤ g.natDegree := (natDegree_bounds_of_prec hfg).1
   have hh_le : h.natDegree ≤ g.natDegree + 1 := (natDegree_bounds_of_prec hgh).2
@@ -401,17 +401,17 @@ Obreschkoff pencil.  Repeated roots of the middle polynomial are removed
 recursively; in the simple-root case, derivative interlacing and the two
 endpoint sign lemmas give the Liu--Wang root certificate. -/
 theorem prec_sub_of_prec_triple_of_posLeadingCoeff
-    {f g h : ℝ[X]} (hfg : Prec f g) (hgh : Prec g h) (hfh : Prec f h)
+    {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) (hfh : StrictInterl f h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
     (hsub_pos : HasPosLeadingCoeff (h - f)) :
-    Prec g (h - f) := by
+    StrictInterl g (h - f) := by
   classical
   refine Nat.strong_induction_on
     (p := fun n => ∀ {f g h : ℝ[X]}, g.natDegree = n →
-      Prec f g → Prec g h → Prec f h →
+      StrictInterl f g → StrictInterl g h → StrictInterl f h →
       HasPosLeadingCoeff f → HasPosLeadingCoeff g → HasPosLeadingCoeff h →
-      HasPosLeadingCoeff (h - f) → Prec g (h - f))
+      HasPosLeadingCoeff (h - f) → StrictInterl g (h - f))
     g.natDegree ?_ rfl hfg hgh hfh hf_pos hg_pos hh_pos hsub_pos
   intro n ih f g h hgdeg hfg hgh hfh hf_pos hg_pos hh_pos hsub_pos
   by_cases hdup : ¬g.roots.Nodup
@@ -441,9 +441,9 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       exact (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
     have hhfactor : h = (X - C r) * qh := by
       exact (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
-    have hqfg : Prec qf qg := prec_cofactor_of_common_root hfg hrg' hrf'
-    have hqgh : Prec qg qh := prec_cofactor_of_common_root hgh hrh' hrg'
-    have hqfh : Prec qf qh := prec_cofactor_of_common_root hfh hrh' hrf'
+    have hqfg : StrictInterl qf qg := prec_cofactor_of_common_root hfg hrg' hrf'
+    have hqgh : StrictInterl qg qh := prec_cofactor_of_common_root hgh hrh' hrg'
+    have hqfh : StrictInterl qf qh := prec_cofactor_of_common_root hfh hrh' hrf'
     have hqf_pos : HasPosLeadingCoeff qf := hf_pos.divByMonic_X_sub_C hrf'
     have hqg_pos : HasPosLeadingCoeff qg := hg_pos.divByMonic_X_sub_C hrg'
     have hqh_pos : HasPosLeadingCoeff qh := hh_pos.divByMonic_X_sub_C hrh'
@@ -457,7 +457,7 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       rw [hgfactor, natDegree_mul (X_sub_C_ne_zero r) hqg_pos.ne_zero,
         natDegree_X_sub_C]
       lia
-    have hqprec : Prec qg (qh - qf) :=
+    have hqprec : StrictInterl qg (qh - qf) :=
       ih qg.natDegree (by lia) rfl hqfg hqgh hqfh
         hqf_pos hqg_pos hqh_pos hqsub_pos
     have hmul :=
@@ -479,7 +479,7 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       · have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
         have hdC : h - f = C ((h - f).coeff 0) :=
           eq_C_of_natDegree_eq_zero hsub_zero
-        have hbase : Prec (1 : ℝ[X]) (1 : ℝ[X]) := prec_refl (by simp) (by simp)
+        have hbase : StrictInterl (1 : ℝ[X]) (1 : ℝ[X]) := prec_refl (by simp) (by simp)
         have hgcoeff : g.coeff 0 ≠ 0 := by
           intro hc
           apply hg_pos.ne_zero
@@ -493,8 +493,8 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
         rw [hgC, hdC]
         simpa only [mul_one] using
           prec_C_mul_right (prec_C_mul_left hbase hgcoeff) hdcoeff
-      · have hbase : Prec (1 : ℝ[X]) (h - f) :=
-          (interlaces_one_linear hsub_one).toPrec
+      · have hbase : StrictInterl (1 : ℝ[X]) (h - f) :=
+          (interlaces_one_linear hsub_one).toStrictInterl
         have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
         have hgcoeff : g.coeff 0 ≠ 0 := by
           intro hc

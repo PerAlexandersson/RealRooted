@@ -50,8 +50,8 @@ private theorem smirnovDescentRefinedList_zero_data (m : ℕ) :
   constructor
   · constructor
     · rw [isInterlacingSeq0_iff_pairwise]
-      have hprec : Prec0 (1 : ℝ[X]) 1 :=
-        (prec_refl one_ne_zero Polynomial.Splits.one).toPrec0
+      have hprec : Interl (1 : ℝ[X]) 1 :=
+        (prec_refl one_ne_zero Polynomial.Splits.one).toInterl
       simp [hprec]
     · intro f hf
       simp only [List.mem_replicate] at hf
@@ -94,7 +94,7 @@ theorem smirnovDescentRefined_interlacing (m r : ℕ) :
 position. -/
 theorem smirnovDescentRefined_prec0 (m r : ℕ) (i j : Fin m)
     (hij : i < j) :
-    Prec0 (smirnovDescentRefined m r i)
+    Interl (smirnovDescentRefined m r i)
       (smirnovDescentRefined m r j) := by
   let i' : Fin (smirnovDescentRefinedList m r).length :=
     ⟨i, by simp⟩

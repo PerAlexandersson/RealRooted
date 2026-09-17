@@ -25,7 +25,7 @@ theorem orderNumeratorStep_isPF_strict
     IsPFPolynomial (orderNumeratorStep c D p) := by
   let a := (D : ℝ) + 1 - c
   have hp0 : p ≠ 0 := fun h => hpzero (by simp [h])
-  have hcore : Prec (C a * p + (1 - X) * p.derivative) p := by
+  have hcore : StrictInterl (C a * p + (1 - X) * p.derivative) p := by
     apply prec_affine_derivative_of_nonnegCoeffs
     · exact (hp.ne_zero_and_splits hp0).2
     · simpa [hpdeg] using hm
@@ -43,7 +43,7 @@ theorem orderNumeratorStep_isPF_strict
       simp [polarTheta, theta]
       ring
     rwa [heq] at hsum
-  have hshift : Prec p (X * (C a * p + (1 - X) * p.derivative)) :=
+  have hshift : StrictInterl p (X * (C a * p + (1 - X) * p.derivative)) :=
     prec_mul_X_of_prec_of_nonneg hcore hcoreNN hp.hasNonnegCoeffs
   have hsplits : (orderNumeratorStep c D p).Splits := by
     have hcombo := allComboRealRooted_of_prec hshift c 1
@@ -69,15 +69,15 @@ theorem orderNumeratorStep_isPF_tight
     have htop : (reciprocalShift m p).coeff m ≠ 0 := by
       simp [hpzero]
     exact hm.trans (le_natDegree_of_ne_zero htop)
-  have hpolar : Prec (polarTheta m p) p :=
+  have hpolar : StrictInterl (polarTheta m p) p :=
     prec_polarTheta_self hp hpdeg.le hreflect
-  have hderiv : Prec p.derivative p :=
-    (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toPrec
+  have hderiv : StrictInterl p.derivative p :=
+    (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toStrictInterl
   have hpolarPos : HasPosLeadingCoeff (polarTheta m p) :=
     (polarTheta_preserves_pf hp hpdeg.le).hasNonnegCoeffs.pos_leadingCoeff hpolar.1.1
   have hderivPos : HasPosLeadingCoeff p.derivative :=
     (hp.hasNonnegCoeffs.pos_leadingCoeff hp0).derivative (by lia)
-  have hcore : Prec (polarTheta m p + p.derivative) p :=
+  have hcore : StrictInterl (polarTheta m p + p.derivative) p :=
     prec_add_of_prec_right_of_posLeadingCoeff hpolar hderiv hpolarPos hderivPos
   have hcoreEq : polarTheta m p + p.derivative =
       C (m : ℝ) * p + (1 - X) * p.derivative := by
@@ -87,7 +87,7 @@ theorem orderNumeratorStep_isPF_tight
   have hcoreNN : HasNonnegCoeffs (C (m : ℝ) * p + (1 - X) * p.derivative) := by
     have hsum := (hp.hasNonnegCoeffs.polarTheta hpdeg.le).add hp.hasNonnegCoeffs.derivative
     rwa [hcoreEq] at hsum
-  have hshift : Prec p (X * (C (m : ℝ) * p + (1 - X) * p.derivative)) :=
+  have hshift : StrictInterl p (X * (C (m : ℝ) * p + (1 - X) * p.derivative)) :=
     prec_mul_X_of_prec_of_nonneg hcore hcoreNN hp.hasNonnegCoeffs
   have hsplits : (orderNumeratorStep c D p).Splits := by
     have hcombo := allComboRealRooted_of_prec hshift c 1

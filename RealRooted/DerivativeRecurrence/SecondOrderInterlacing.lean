@@ -205,7 +205,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
         (C c * X) * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   intro n
   induction n with
@@ -213,7 +213,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
       constructor
       · rw [h0]
         exact (interlaces_one_linear (by
-          rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec])).toPrec
+          rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec])).toStrictInterl
       · intro r _ hr0
         rw [Polynomial.IsRoot.def, h0] at hr0
         simp at hr0
@@ -248,7 +248,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
         rw [hrec n]
         simp only [polynomialWeightedSum]
         ring
-      have hprec : Prec (P (n + 1)) (P (n + 2)) := by
+      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
         refine prec_generalizedLiuWang_of_no_common
           hinter (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
@@ -295,7 +295,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toPrec
+        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
           (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n) hderiv_pos hr1
       have hmul :
           0 ≤ a * (1 - r) *
@@ -339,7 +339,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
         (C a * X) * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r :=
   prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P a a ha ha.le h0 h1 hrec
@@ -359,8 +359,8 @@ structure AffineLagSecondOrderCertificate (P : ℕ → ℝ[X]) (n : ℕ) : Prop 
 /-- Consecutive members of a certified rankwise recurrence are in proper
 position. -/
 theorem AffineLagSecondOrderCertificate.prec_succ {P : ℕ → ℝ[X]} {n : ℕ}
-    (h : AffineLagSecondOrderCertificate P n) : Prec (P n) (P (n + 1)) :=
-  h.interlaces_succ.toPrec
+    (h : AffineLagSecondOrderCertificate P n) : StrictInterl (P n) (P (n + 1)) :=
+  h.interlaces_succ.toStrictInterl
 
 /-- The current member of a certified rankwise recurrence splits over the
 reals. -/
@@ -458,7 +458,7 @@ theorem prec_and_noCommonRoot_of_unit_affine_zero_lag
     (hrec : ∀ n, P (n + 2) =
       (X - X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1)) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   apply prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P 1 0 (by norm_num) (by norm_num) h0 h1
@@ -473,7 +473,7 @@ theorem prec_and_noCommonRoot_of_unit_affine_unit_lag
     (hrec : ∀ n, P (n + 2) =
       (X - X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1) + X * P n) :
-    ∀ n, Prec (P n) (P (n + 1)) ∧
+    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
   apply prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P 1 1 (by norm_num) (by norm_num) h0 h1

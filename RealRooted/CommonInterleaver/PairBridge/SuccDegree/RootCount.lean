@@ -53,7 +53,7 @@ def PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement : Prop :=
     g.natDegree = f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     f.Splits →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
 
 /-- The fixed-orientation succ-degree endpoint supplies the common-left
 interleaver formulation by using `f` as the witness. -/
@@ -230,10 +230,10 @@ theorem
         hf_split hdiv_split hdiv_deg x).mp
         (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x))
 
-/-- `Prec`/`divX` reduction of the right-zero lead branch.
+/-- `StrictInterl`/`divX` reduction of the right-zero lead branch.
 
 When `g.coeff 0 = 0`, `g.divX` has the same degree as `f`, so a same-degree
-interlacing orientation `Prec (g.divX) f` supplies exactly the oriented
+interlacing orientation `StrictInterl (g.divX) f` supplies exactly the oriented
 lower-threshold count comparison needed by
 `posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount`.
 This packages the whole right-zero lead branch from a checked orientation. -/
@@ -243,7 +243,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
   apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
-  have hprec : Prec (g.divX) f :=
+  have hprec : StrictInterl (g.divX) f :=
     horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   have hgdivX : g.divX.natDegree = g.natDegree - 1 :=
     Polynomial.natDegree_divX_eq_natDegree_tsub_one

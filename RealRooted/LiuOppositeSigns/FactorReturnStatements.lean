@@ -23,10 +23,10 @@ def theorem21DeletionPairCommonInterleaverFactorReturnStatement : Prop :=
   ∀ {f g : ℝ[X]} {r s : ℝ},
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       (LeftRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+        (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
           Compatible f g) ∧
       (RightRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+        (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
           Compatible f g)
 
 /-- The factor-return principle proves the branch-retaining
@@ -94,10 +94,10 @@ def theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement :
   ∀ {f g : ℝ[X]} {r s : ℝ},
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       (LeftRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+        (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
           AllComboRealRooted f g) ∧
       (RightRootCountBranch f g r s →
-        (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+        (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
           AllComboRealRooted f g)
 
 /-- The all-real-combination factor-return target implies the existing
@@ -158,8 +158,8 @@ theorem
 
 /-- Swap the common-right-interleaver witness in a right deletion pair. -/
 theorem rightDeletionPairCommonInterleaver_symm {f g : ℝ[X]} {s : ℝ}
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) :
-    ∃ k : ℝ[X], Prec (deleteRootFactor g s) k ∧ Prec f k := by
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
+    ∃ k : ℝ[X], StrictInterl (deleteRootFactor g s) k ∧ StrictInterl f k := by
   rcases hcommon with ⟨k, hfk, hgk⟩
   exact ⟨k, hgk, hfk⟩
 
@@ -171,7 +171,7 @@ def theorem21LeftFactorReturnAllComboRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             AllComboRealRooted f g
 
 /-- Same-degree left-branch all-combinations factor-return target. -/
@@ -205,7 +205,7 @@ def theorem21RightFactorReturnAllComboRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       RightRootCountBranch f g r s →
         R g.natDegree f.natDegree →
-          (∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) →
+          (∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) →
             AllComboRealRooted f g
 
 /-- Same-degree right-branch all-combinations factor-return target. -/
@@ -239,7 +239,7 @@ theorem theorem21RightFactorReturnAllCombo_of_leftDegreeRelation
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hright : RightRootCountBranch f g r s)
     (hdeg : R g.natDegree f.natDegree)
-    (hcommon : ∃ k : ℝ[X], Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     AllComboRealRooted f g :=
   allComboRealRooted_comm <|
     hleft (f := g) (g := f) (r := s) (s := r)
@@ -374,7 +374,7 @@ def theorem21LeftFactorReturnRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             Compatible f g
 
 /-- Predicate-restricted left-branch factor-return target for an arbitrary
@@ -386,7 +386,7 @@ def theorem21LeftFactorReturnPredicateRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             P g.natDegree → Compatible f g
 
 /-- Predicate-restricted left factor-return relation targets transport along
@@ -525,7 +525,7 @@ def theorem21LeftFactorReturnTranslatedCompatibleRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             Compatible
               (X * (deleteRootFactor f r).comp (X + C r))
               (g.comp (X + C r))
@@ -539,7 +539,7 @@ def theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             P g.natDegree →
               Compatible
                 (X * (deleteRootFactor f r).comp (X + C r))
@@ -602,7 +602,7 @@ theorem theorem21LeftFactorReturn_of_translatedCompatibleRelation
         f.Splits → g.Splits → OppositeLeadingSigns f g →
           LeftRootCountBranch f g r s →
             R f.natDegree g.natDegree →
-              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
                 Compatible
                   (X * (deleteRootFactor f r).comp (X + C r))
                   (g.comp (X + C r))) :
@@ -610,7 +610,7 @@ theorem theorem21LeftFactorReturn_of_translatedCompatibleRelation
       f.Splits → g.Splits → OppositeLeadingSigns f g →
         LeftRootCountBranch f g r s →
           R f.natDegree g.natDegree →
-            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
               Compatible f g := by
   intro f g r s hf hg hsgn hleft hdeg hcommon
   exact theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft
@@ -625,7 +625,7 @@ theorem theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
         f.Splits → g.Splits → OppositeLeadingSigns f g →
           LeftRootCountBranch f g r s →
             R f.natDegree g.natDegree →
-              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
                 P g.natDegree →
                   Compatible
                     (X * (deleteRootFactor f r).comp (X + C r))
@@ -634,7 +634,7 @@ theorem theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
       f.Splits → g.Splits → OppositeLeadingSigns f g →
         LeftRootCountBranch f g r s →
           R f.natDegree g.natDegree →
-            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
               P g.natDegree → Compatible f g := by
   intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
   exact theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft
@@ -701,7 +701,7 @@ def theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             ∀ μ : ℝ, 0 < μ →
               (X * (deleteRootFactor f r).comp (X + C r) +
                   C μ * g.comp (X + C r)).Splits
@@ -715,7 +715,7 @@ def theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       LeftRootCountBranch f g r s →
         R f.natDegree g.natDegree →
-          (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+          (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             P g.natDegree →
               ∀ μ : ℝ, 0 < μ →
                 (X * (deleteRootFactor f r).comp (X + C r) +
@@ -794,7 +794,7 @@ theorem theorem21LeftFactorReturnTranslatedCompatible_of_rightFamilyRelation
         f.Splits → g.Splits → OppositeLeadingSigns f g →
           LeftRootCountBranch f g r s →
             R f.natDegree g.natDegree →
-              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
                 ∀ μ : ℝ, 0 < μ →
                   (X * (deleteRootFactor f r).comp (X + C r) +
                       C μ * g.comp (X + C r)).Splits) :
@@ -802,7 +802,7 @@ theorem theorem21LeftFactorReturnTranslatedCompatible_of_rightFamilyRelation
       f.Splits → g.Splits → OppositeLeadingSigns f g →
         LeftRootCountBranch f g r s →
           R f.natDegree g.natDegree →
-            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
               Compatible
                 (X * (deleteRootFactor f r).comp (X + C r))
                 (g.comp (X + C r)) := by
@@ -820,7 +820,7 @@ theorem theorem21LeftFactorReturnTranslatedCompatible_of_rightPredicateRelation
         f.Splits → g.Splits → OppositeLeadingSigns f g →
           LeftRootCountBranch f g r s →
             R f.natDegree g.natDegree →
-              (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+              (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
                 P g.natDegree →
                   ∀ μ : ℝ, 0 < μ →
                     (X * (deleteRootFactor f r).comp (X + C r) +
@@ -829,7 +829,7 @@ theorem theorem21LeftFactorReturnTranslatedCompatible_of_rightPredicateRelation
       f.Splits → g.Splits → OppositeLeadingSigns f g →
         LeftRootCountBranch f g r s →
           R f.natDegree g.natDegree →
-            (∃ k : ℝ[X], Prec (deleteRootFactor f r) k ∧ Prec g k) →
+            (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
               P g.natDegree →
                 Compatible
                   (X * (deleteRootFactor f r).comp (X + C r))

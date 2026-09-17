@@ -32,7 +32,7 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
       Theorem41Claim7SideConditions
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hG : ∀ {m : ℕ}, 2 ≤ m →
-      Prec (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
+      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
     (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
     (hdeg :
       ∀ {w : SnakeWord}, 1 ≤ w.length →
@@ -60,7 +60,7 @@ theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches
       Theorem41Claim7RootSumSideConditions
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hG : ∀ {m : ℕ}, 2 ≤ m →
-      Prec (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
+      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
     (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
     (hdeg :
       ∀ {w : SnakeWord}, 1 ≤ w.length →

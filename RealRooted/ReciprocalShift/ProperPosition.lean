@@ -20,8 +20,8 @@ namespace RealRooted
 of PF polynomials. -/
 theorem reciprocalShift_reverses_prec
     {D : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpd : p.natDegree ≤ D) (hqd : q.natDegree ≤ D) (hpq : Prec p q) :
-    Prec (reciprocalShift D q) (reciprocalShift D p) := by
+    (hpd : p.natDegree ≤ D) (hqd : q.natDegree ≤ D) (hpq : StrictInterl p q) :
+    StrictInterl (reciprocalShift D q) (reciprocalShift D p) := by
   obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, ss, rs, hss_sorted, hrs_sorted,
     hss_roots, hrs_roots, hshape⟩ := hpq
   have hss_nonpos : ∀ x ∈ ss, x ≤ 0 := by

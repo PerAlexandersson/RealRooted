@@ -18,8 +18,8 @@ namespace Tactic
 /-- Operator-preserver row-family exit exposed through the OEIS facade. -/
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
-    (hfg : ∀ n : Nat, Prec (F n) (G n)) :
-    ∀ n : Nat, Prec0 (T (F n)) (T (G n)) ∨ Prec0 (T (G n)) (T (F n)) := by
+    (hfg : ∀ n : Nat, StrictInterl (F n) (G n)) :
+    ∀ n : Nat, Interl (T (F n)) (T (G n)) ∨ Interl (T (G n)) (T (F n)) := by
   rr_operator_prec0_sequence_up_to_order using
     preserves := hT,
     prec := hfg
@@ -36,7 +36,7 @@ facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree) :
-    ∀ n : Nat, Prec (P n).derivative (P n) := by
+    ∀ n : Nat, StrictInterl (P n).derivative (P n) := by
   rr_derivative_sequence_prec using
     splits := hP,
     degree_two := hdeg
@@ -63,7 +63,7 @@ example {F G1 G2 A B1 B2 : Nat → ℝ[X]}
     (hcert : ∀ n : Nat, ∀ r, (F n).IsRoot r →
       (B1 n).eval r * ((G1 n).eval r) ^ 2 +
         (B2 n).eval r * ((G2 n).eval r * (G1 n).eval r) < 0) :
-    ∀ n : Nat, Prec (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
+    ∀ n : Nat, StrictInterl (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
   rr_magnitude_dominated_sequence using
     interlaces := hG1F,
     interlacer_pos_lc := hG1_pos,

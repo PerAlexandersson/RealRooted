@@ -59,7 +59,7 @@ theorem prec0_chainPolynomial_toLowerTriangularMatrix_succ
     (hδ : 0 < δ) (hA : A.IsTotallyNonneg)
     (hlower : ∀ i j, i < j → A i j = 0)
     (hdiag : ∀ i, A i i = δ) (hn : n + 1 < N) :
-    Prec0 (chainPolynomial (Matrix.toLowerTriangularMatrix A) n)
+    Interl (chainPolynomial (Matrix.toLowerTriangularMatrix A) n)
       (chainPolynomial (Matrix.toLowerTriangularMatrix A) (n + 1)) := by
   rw [← chainPolynomial_diagonalTail_eq_toLowerTriangularMatrix δ A
       (lt_trans (Nat.lt_succ_self n) hn),

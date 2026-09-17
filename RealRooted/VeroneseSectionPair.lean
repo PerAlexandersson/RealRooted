@@ -25,7 +25,7 @@ theorem prec_veroneseSectionPolynomial_of_residue_lt
     (hps : p.Splits)
     (hj0 : veroneseSectionPolynomial r j p ≠ 0)
     (hk0 : veroneseSectionPolynomial r k p ≠ 0) :
-    Prec (veroneseSectionPolynomial r k p)
+    StrictInterl (veroneseSectionPolynomial r k p)
       (veroneseSectionPolynomial r j p) := by
   let fs := veroneseSectionPolynomialListDesc r p
   have hpkg :=
@@ -38,7 +38,7 @@ theorem prec_veroneseSectionPolynomial_of_residue_lt
   have hiq : i < q := by
     simp [i, q, ir, qr]
     lia
-  have hprec0 : Prec0 (fs.get i) (fs.get q) := by
+  have hprec0 : Interl (fs.get i) (fs.get q) := by
     exact (isInterlacingSeq0_iff_pairwise.mp hpkg.1.1).rel_get_of_lt hiq
   have hi : fs.get i = veroneseSectionPolynomial r k p := by
     rw [show fs.get i = veroneseSectionPolynomial r (r - 1 - ir.1) p by
@@ -53,6 +53,6 @@ theorem prec_veroneseSectionPolynomial_of_residue_lt
     congr 1
     lia
   rw [hi, hq] at hprec0
-  exact hprec0.toPrec_of_ne hk0 hj0
+  exact hprec0.toStrictInterl_of_ne hk0 hj0
 
 end RealRooted

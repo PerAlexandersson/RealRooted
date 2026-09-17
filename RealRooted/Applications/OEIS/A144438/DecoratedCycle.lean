@@ -197,11 +197,11 @@ theorem normalizedDecoratedCycleEulerian_root_neg {q : ℝ} (hq : 0 < q)
   exact (pow_pos hq n).ne' hr
 
 private theorem normalizedDecoratedCycleEulerian_base_prec (q : ℝ) :
-    Prec (normalizedDecoratedCycleEulerian q 0)
+    StrictInterl (normalizedDecoratedCycleEulerian q 0)
       (normalizedDecoratedCycleEulerian q 1) := by
   rw [normalizedDecoratedCycleEulerian_zero]
   exact (interlaces_one_linear (p := normalizedDecoratedCycleEulerian q 1)
-    (normalizedDecoratedCycleEulerian_natDegree q 1)).toPrec
+    (normalizedDecoratedCycleEulerian_natDegree q 1)).toStrictInterl
 
 private theorem normalizedDecoratedCycleEulerian_base_noCommon {q : ℝ} :
     ∀ r, (normalizedDecoratedCycleEulerian q 1).IsRoot r →
@@ -213,7 +213,7 @@ private theorem normalizedDecoratedCycleEulerian_base_noCommon {q : ℝ} :
 family. -/
 theorem normalizedDecoratedCycleEulerian_prec_and_noCommonRoot
     {q : ℝ} (hq : 0 < q) (n : ℕ) :
-    Prec (normalizedDecoratedCycleEulerian q n)
+    StrictInterl (normalizedDecoratedCycleEulerian q n)
         (normalizedDecoratedCycleEulerian q (n + 1)) ∧
       ∀ r : ℝ, (normalizedDecoratedCycleEulerian q (n + 1)).IsRoot r →
         ¬ (normalizedDecoratedCycleEulerian q n).IsRoot r := by
@@ -300,7 +300,7 @@ theorem decoratedCycleEulerian_hasNonnegCoeffs {q : ℝ} (hq : 0 < q) (n : ℕ) 
 
 /-- Consecutive positive ranks are in proper position for positive `q`. -/
 theorem decoratedCycleEulerian_prec {q : ℝ} (hq : 0 < q) (n : ℕ) :
-    Prec (decoratedCycleEulerian q (n + 1))
+    StrictInterl (decoratedCycleEulerian q (n + 1))
       (decoratedCycleEulerian q (n + 2)) := by
   simpa only [decoratedCycleEulerian] using
     (normalizedDecoratedCycleEulerian_prec_and_noCommonRoot hq n).1.C_mul_left

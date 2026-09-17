@@ -52,7 +52,7 @@ abbrev PolyaFrequencyPolynomial (p : ℝ[X]) : Prop :=
 
 /-- Challenge-facing name for a nonnegative-coefficient proper-position pair. -/
 abbrev NonnegativeProperPositionPair (f g : ℝ[X]) : Prop :=
-  HasNonnegCoeffs f ∧ HasNonnegCoeffs g ∧ Prec f g
+  HasNonnegCoeffs f ∧ HasNonnegCoeffs g ∧ StrictInterl f g
 
 /-- Fixed-degree Schur--Szego composition theorem. -/
 theorem finiteSchurSzegoComposition :
@@ -77,7 +77,7 @@ theorem garloffWagnerHadamardNonnegPrec :
     ∀ {f g p q : ℝ[X]},
       NonnegativeProperPositionPair f g →
       NonnegativeProperPositionPair p q →
-      Prec0 (HadamardProduct f p) (HadamardProduct g q) :=
+      Interl (HadamardProduct f p) (HadamardProduct g q) :=
   fun hfg hpq =>
     RealRooted.garloffWagnerHadamardNonnegPrec
       hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2

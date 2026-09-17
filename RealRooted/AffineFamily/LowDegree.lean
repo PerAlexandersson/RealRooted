@@ -416,7 +416,7 @@ private lemma prec_right_pair_sameDegree_of_sign_data
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
         (X * f).eval r₁ * (X * f).eval r₂ < 0) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   have hright :
       let rs := g.roots.sort (· ≤ ·)
       ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
@@ -439,7 +439,7 @@ private lemma prec_right_pair_succDegree_no_common_of_sign_data
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
         (X * f).eval r₁ * (X * f).eval r₂ < 0) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   have hdeg : (X * f).natDegree = g.natDegree := by simp_all
   have hdeg_pos : 1 ≤ g.natDegree := by lia
   exact
@@ -470,7 +470,7 @@ private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
       (Odd g.natDegree ∧
         let rs := g.roots.sort (· ≤ ·)
         (X * f).eval rs.head! < 0)) :
-    Prec g (X * f) := by
+    StrictInterl g (X * f) := by
   let rs := g.roots.sort (· ≤ ·)
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = g.roots := Multiset.sort_eq ..
@@ -681,7 +681,7 @@ protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
-    Prec f g := by
+    StrictInterl f g := by
   have hdeg_cases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
     AffineFamily.natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff
   have hInter : Interlaces (1 : ℝ[X]) f := interlaces_one_linear hdegf1
@@ -710,7 +710,7 @@ protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
       congrArg (fun p : ℝ[X] => p.eval r) (EuclideanDomain.div_add_mod' g f)
     simp_all
   have hprec_lin :
-      Prec f (((g / f) * f) + (g % f) * (1 : ℝ[X])) :=
+      StrictInterl f (((g / f) * f) + (g % f) * (1 : ℝ[X])) :=
     prec_of_interlaces_evalCoeff_nonpos
       (f := f) (g := (1 : ℝ[X])) (a := g / f) (b := g % f)
       hInter h1_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
@@ -727,7 +727,7 @@ protected lemma AffineFamily.prec_right_pair_of_affine_family_degree_one
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   prec_to_prec_mul_X_of_nonneg
     (AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn
@@ -744,7 +744,7 @@ theorem prec_right_pair_of_affine_family_nonneg_degree_one
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
-    Prec g (X * f) :=
+    StrictInterl g (X * f) :=
   AffineFamily.prec_right_pair_of_affine_family_degree_one
     hf0 hg0 hfnn hgnn haff hdegf1
 
@@ -754,9 +754,9 @@ factor `X`. -/
 private lemma prec_right_pair_of_root_zero_factor
     {f g qg : ℝ[X]}
     (hg : g = X * qg)
-    (hprec_q : Prec qg f) :
-    Prec g (X * f) := by
-  have hprec_mul : Prec (X * qg) (X * f) :=
+    (hprec_q : StrictInterl qg f) :
+    StrictInterl g (X * f) := by
+  have hprec_mul : StrictInterl (X * qg) (X * f) :=
     prec_mul_common_factor isRealRooted_X.1 isRealRooted_X.2 hprec_q
   lia
 

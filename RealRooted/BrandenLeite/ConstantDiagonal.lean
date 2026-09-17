@@ -128,13 +128,13 @@ theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
     {δ : ℝ} {A : LowerTriangularMatrix ℝ} (hδ : 0 < δ)
     (hlower : LowerTriangularMatrix.IsLowerTriangular A)
     (hdiag : ∀ n, A n n = δ) (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
-    Prec0 (chainPolynomial A n) (chainPolynomial A (n + 1)) := by
+    Interl (chainPolynomial A n) (chainPolynomial A (n + 1)) := by
   let B := normalizeConstantDiagonal δ A
   have hunit : LowerTriangularMatrix.IsLowerUnitriangular B :=
     normalizeConstantDiagonal_unit hδ.ne' hlower hdiag
   have hB : Matrix.IsTotallyNonneg B :=
     normalizeConstantDiagonal_isTotallyNonneg hδ hA
-  have hprec : Prec0 (chainPolynomial B n)
+  have hprec : Interl (chainPolynomial B n)
       (chainPolynomial B (n + 1)) :=
     prec0_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
   rw [chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' n,

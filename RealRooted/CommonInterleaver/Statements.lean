@@ -19,7 +19,7 @@ def PosComboPairHasCommonInterleaverStatement : Prop :=
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     PosComboRealRooted f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 /-- Degree-closeness bridge for positive-combination pairs. This is the
 remaining degree-only ingredient needed to pass from the no-common-roots
@@ -41,7 +41,7 @@ def PosComboNoCommonOrientationStatement : Prop :=
     f.natDegree ≤ g.natDegree →
     g.natDegree ≤ f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g ∨ Prec g f
+    StrictInterl f g ∨ StrictInterl g f
 
 /-- Bridge statement: in the no-common, close-degree setup, positive-combination
 real-rootedness upgrades to full all-combinations real-rootedness. -/
@@ -87,7 +87,7 @@ def PosComboNoCommonBoundaryRightPairOrientationStatement : Prop :=
     g.natDegree ≤ f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     ∀ ⦃t : ℝ⦄, 0 < t →
-      Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)
+      StrictInterl (C t * f + g) (X * f) ∨ StrictInterl (X * f) (C t * f + g)
 
 /-- Strong shifted-pair formulation for the same-degree no-common branch after
 the affine/boundary counterexample.  It remains a named conditional hypothesis;
@@ -102,7 +102,7 @@ def PosComboNoCommonSameDegreeShiftedPairOrientationStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f (g + X * f)
+    StrictInterl f (g + X * f)
 
 /-- Legacy fixed-orientation same-degree target in the nonnegative no-common
 regime.  It is retained for older reductions, but the repaired bridge no
@@ -116,7 +116,7 @@ def PosComboNoCommonSameDegreeOrientationNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g
+    StrictInterl f g
 
 /-- Strong same-degree no-common alternative in the nonnegative regime.  This
 weakens the fixed orientation, but it is still stronger than the repaired
@@ -130,7 +130,7 @@ def PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g ∨ Prec g f
+    StrictInterl f g ∨ StrictInterl g f
 
 /-- Repaired same-degree no-common target in the nonnegative regime. The
 orientation alternative is too strong in degree `2`; for the
@@ -145,7 +145,7 @@ def PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 /-- Fixed-orientation succ-degree target in the nonnegative no-common regime.
 This is stronger than what the Chudnovsky--Seymour bridge needs; the repaired
@@ -159,7 +159,7 @@ def PosComboNoCommonSuccDegreeOrientationNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g
+    StrictInterl f g
 
 /-- Repaired succ-degree no-common target for the Chudnovsky--Seymour bridge
 in the nonnegative regime: when the right degree is exactly one larger, the
@@ -174,6 +174,6 @@ def PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 end RealRooted

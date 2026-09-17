@@ -136,7 +136,7 @@ theorem shiftedRationalRodRows_pf_and_prec0
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     (hxs : ∀ x ∈ xs, 0 ≤ x) {γ : ℝ} (hγ : 0 ≤ γ) :
     (∀ n, IsPFPolynomial (shiftedRationalRodRow ys c r xs γ n)) ∧
-      ∀ n, Prec0 (shiftedRationalRodRow ys c r xs γ n)
+      ∀ n, Interl (shiftedRationalRodRow ys c r xs γ n)
         (shiftedRationalRodRow ys c r xs γ (n + 1)) := by
   obtain ⟨hpf, hprec⟩ := rationalRodRows_pf_and_prec0 hys hc hr hxs
   constructor

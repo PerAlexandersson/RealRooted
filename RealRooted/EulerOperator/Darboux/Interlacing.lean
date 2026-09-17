@@ -31,7 +31,7 @@ theorem prec_neg_darbouxOperator_of_roots_mem_Icc
     (hdeg_lo : p.natDegree ≤ (-darbouxOperator a b p).natDegree)
     (hdeg_hi : (-darbouxOperator a b p).natDegree ≤ p.natDegree + 1)
     (hroots : ∀ r ∈ p.roots, 0 ≤ r ∧ r ≤ 1) :
-    Prec p (-darbouxOperator a b p) := by
+    StrictInterl p (-darbouxOperator a b p) := by
   have hrecur :
       -darbouxOperator a b p =
         (C (-a) + C b * X) * p + (-X * (1 - X)) * p.derivative := by
@@ -58,11 +58,11 @@ theorem darbouxOperator_interlaces_of_roots_mem_Icc
     (hdeg : (darbouxOperator a b p).natDegree = p.natDegree + 1)
     (hroots : ∀ r ∈ p.roots, 0 ≤ r ∧ r ≤ 1) :
     Interlaces p (darbouxOperator a b p) := by
-  have hprec_neg : Prec p (-darbouxOperator a b p) :=
+  have hprec_neg : StrictInterl p (-darbouxOperator a b p) :=
     prec_neg_darbouxOperator_of_roots_mem_Icc hp hdegp hp_pos houtput_pos
       (by rw [natDegree_neg, hdeg]; lia)
       (by rw [natDegree_neg, hdeg]) hroots
-  have hprec : Prec p (darbouxOperator a b p) := by
+  have hprec : StrictInterl p (darbouxOperator a b p) := by
     simpa using prec_C_mul_right hprec_neg (a := (-1 : ℝ)) (by norm_num)
   exact hprec.toInterlaces (by rw [hdeg])
 
@@ -78,7 +78,7 @@ theorem darbouxOperator_shift_prec
     (hdeg : (darbouxOperator a b p).natDegree =
       (darbouxOperator (a + s) (b + s) p).natDegree)
     (hroots : ∀ r ∈ (darbouxOperator (a + s) (b + s) p).roots, r ≤ 1) :
-    Prec (darbouxOperator (a + s) (b + s) p) (darbouxOperator a b p) := by
+    StrictInterl (darbouxOperator (a + s) (b + s) p) (darbouxOperator a b p) := by
   let shifted := darbouxOperator (a + s) (b + s) p
   let base := darbouxOperator a b p
   have hrecur : base = C 1 * shifted + (C s * (X - C 1)) * p := by
@@ -86,7 +86,7 @@ theorem darbouxOperator_shift_prec
     intro x
     simp [shifted, base, darbouxOperator]
     ring
-  change Prec shifted base
+  change StrictInterl shifted base
   rw [hrecur]
   apply prec_of_interlaces_evalCoeff_nonpos
   · exact hinter

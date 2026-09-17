@@ -88,14 +88,14 @@ theorem aswEdreiFullProjectiveChow_theorem
     (hepsilon : 0 ≤ epsilon) (n : ℕ) :
     IsPFPolynomial
         (aswEdreiFullProjectiveChow outer N gamma alpha beta epsilon n) ∧
-      Prec0
+      Interl
         (aswEdreiFullProjectiveChow outer N gamma alpha beta epsilon n)
         (aswEdreiFullProjectiveChow outer N gamma alpha beta epsilon
           (n + 1)) := by
   rcases eq_or_lt_of_le houter with rfl | houter_pos
   · constructor
     · simpa using IsPFPolynomial.zero
-    · simpa using prec0_zero_zero
+    · simpa using interl_zero_zero
   · have houter_ne : outer ≠ 0 := ne_of_gt houter_pos
     rw [aswEdreiFullProjectiveChow_of_ne houter_ne,
       aswEdreiFullProjectiveChow_of_ne houter_ne]

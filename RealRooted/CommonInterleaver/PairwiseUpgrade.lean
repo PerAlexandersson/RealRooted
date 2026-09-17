@@ -22,7 +22,7 @@ protected theorem PairwiseUpgrade.nonnegPairBridge_of_noCommonOrientation
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
       hstep hf_pos hg_pos hfnn hgnn hfg
@@ -37,7 +37,7 @@ protected theorem PairwiseUpgrade.nonnegPairBridge_of_pairDegreeSplit
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
@@ -51,7 +51,7 @@ protected theorem PairwiseUpgrade.nonnegPairBridge_of_affineFamilyBridge
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
@@ -326,7 +326,7 @@ protected theorem PairwiseUpgrade.pairwiseHasCommonInterleaver_of_nonnegPairBrid
         HasNonnegCoeffs f →
         HasNonnegCoeffs g →
         Compatible f g →
-        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :

@@ -124,7 +124,7 @@ private theorem im_ratio_deg1_deg0 (f g : ℝ[X]) (z : ℂ) (hz : 0 < z.im)
   refine im_real_mul_nonpos _ _ ?_ (le_of_lt (inv_sub_real_im_neg s hz))
   exact le_of_lt (div_pos hlg hlf)
 
-private theorem prec_roots_deg1 (f g : ℝ[X]) (hpq : Prec g f) (hd : f.natDegree = 1) :
+private theorem prec_roots_deg1 (f g : ℝ[X]) (hpq : StrictInterl g f) (hd : f.natDegree = 1) :
     g.roots = 0 ∨ ∃ r s, f.roots = {s} ∧ g.roots = {r} ∧ r ≤ s := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq
   have hfcard : f.roots.card = 1 := by rw [card_roots_of_splits hfs, hd]
@@ -144,7 +144,7 @@ private theorem prec_roots_deg1 (f g : ℝ[X]) (hpq : Prec g f) (hd : f.natDegre
     simp [*]
 
 theorem hermiteBiehlerForwardPos_of_natDegree_le_one {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : Prec g f)
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f)
     (hd : f.natDegree ≤ 1) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, _⟩ := id hpq
@@ -239,7 +239,7 @@ theorem complexify_ratio_eq_partialfraction {f g : ℝ[X]} (hfs : f.Splits) (hnd
   rw [eval_complexify_divByMonic h_s_root h_zs]
   field_simp [hfz, h_zs]
 
-theorem im_ratio_nonpos_of_distinct {f g : ℝ[X]} (hpq : Prec g f)
+theorem im_ratio_nonpos_of_distinct {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (hno_common : ∀ s ∈ f.roots, s ∉ g.roots)
@@ -253,7 +253,7 @@ theorem im_ratio_nonpos_of_distinct {f g : ℝ[X]} (hpq : Prec g f)
   · rw [complexify_ratio_eq_partialfraction hfs hfnd h_deg₁ hgdeg hz]
     simp
 
-theorem im_ratio_nonpos_of_distinct_eqdeg {f g : ℝ[X]} (hpq : Prec g f)
+theorem im_ratio_nonpos_of_distinct_eqdeg {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (hno_common : ∀ s ∈ f.roots, s ∉ g.roots)
@@ -285,7 +285,7 @@ theorem im_ratio_nonpos_of_distinct_eqdeg {f g : ℝ[X]} (hpq : Prec g f)
   exact im_partialfraction_nonpos z hz c₀ (fun s => g.eval s / f.derivative.eval s)
     (fun s hsf => residue_nonneg hpq hflc hglc hfnd hgnd s hsf (hno_common s hsf)) hid
 
-theorem im_ratio_nonpos {f g : ℝ[X]} (hpq : Prec g f)
+theorem im_ratio_nonpos {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hflc : 0 < f.leadingCoeff) (hglc : 0 < g.leadingCoeff)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (hno_common : ∀ s ∈ f.roots, s ∉ g.roots)
@@ -309,7 +309,7 @@ theorem im_ratio_nonpos {f g : ℝ[X]} (hpq : Prec g f)
     exact im_ratio_nonpos_of_distinct_eqdeg hpq hflc hglc hfnd hgnd hno_common h_deg₁ heq hz
 
 theorem hermiteBiehlerForwardPos_of_distinct {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : Prec g f)
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (hno_common : ∀ s ∈ f.roots, s ∉ g.roots) (h_deg₁ : 1 ≤ f.natDegree) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
@@ -358,11 +358,11 @@ abbrev hermiteBiehlerForwardPosStatement : Prop :=
   ∀ {f g : ℝ[X]},
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
-    Prec g f →
+    StrictInterl g f →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
 
 theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : Prec g f) :
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
   generalize hn : f.natDegree = n
   induction n using Nat.strong_induction_on generalizing f g with
@@ -380,7 +380,7 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
         have hf₁deg : (f /ₘ (X - C r)).natDegree < f.natDegree := by
           rw [natDegree_divByMonic_X_sub_C]
           lia
-        have hpq₁ : Prec (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
+        have hpq₁ : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
           prec_cofactor_of_common_root hpq hrfroot hrgroot
         have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
           hf.divByMonic_X_sub_C hrfroot
@@ -400,7 +400,7 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
           (fun s hsf hsg ↦ hcom s hsf hsg) h_deg₁
 
 theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Prec g f) :
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
   hermiteBiehlerForwardPos_general hf hg h
 

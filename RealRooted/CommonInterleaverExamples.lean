@@ -203,7 +203,7 @@ private lemma xSq_add_fiveX_add_six_roots :
   grind
 
 private lemma xAddFiveHalves_prec_xAddOne :
-    Prec (X + C (5 / 2 : ℝ) : ℝ[X]) (X + 1) := by
+    StrictInterl (X + C (5 / 2 : ℝ) : ℝ[X]) (X + 1) := by
   refine
     ⟨xAddFiveHalves_isRealRooted, xAddOne_isRealRooted, [(-(5 / 2 : ℝ))], [(-1 : ℝ)],
       List.pairwise_singleton _ _, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
@@ -212,7 +212,7 @@ private lemma xAddFiveHalves_prec_xAddOne :
   · exact Or.inr ⟨by simp, by norm_num [ListAlternates, ListInterlaces]⟩
 
 private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
-    Prec (X + C (5 / 2 : ℝ) : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
+    StrictInterl (X + C (5 / 2 : ℝ) : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
   refine
     ⟨xAddFiveHalves_isRealRooted, xSq_add_fiveX_add_six_isRealRooted, [(-(5 / 2 : ℝ))],
       [(-3 : ℝ), (-2 : ℝ)], List.pairwise_singleton _ _, ?_, ?_, ?_, ?_⟩
@@ -225,7 +225,7 @@ private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
 /-- A concrete common left interleaver for the linear / quadratic counterexample
 to the naive succ-degree orientation target. -/
 lemma xAddOne_xSq_add_fiveX_add_six_commonLeftInterleaver :
-    ∃ h : ℝ[X], Prec h (X + 1) ∧ Prec h (((X + 2) * (X + 3)) : ℝ[X]) :=
+    ∃ h : ℝ[X], StrictInterl h (X + 1) ∧ StrictInterl h (((X + 2) * (X + 3)) : ℝ[X]) :=
   ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_prec_xAddOne,
     xAddFiveHalves_prec_xSq_add_fiveX_add_six⟩
 
@@ -247,7 +247,7 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
   grind
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
-    ¬ Prec (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
+    ¬ StrictInterl (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
@@ -442,7 +442,7 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
   norm_num [discrim] at hdisc_nonneg
 
 private lemma xAddOne_xAddTwo_not_prec :
-    ¬ Prec (X + 1 : ℝ[X]) (X + 2) := by
+    ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
@@ -524,7 +524,7 @@ lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
 lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
     ¬ PosComboNoCommonSameDegreeShiftedPairOrientationStatement := by
   intro hshift
-  have hprec : Prec (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
+  have hprec : StrictInterl (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
       hshift
         xAddOne_hasPosLeadingCoeff
         xAddTwo_hasPosLeadingCoeff
@@ -539,7 +539,7 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
   exact xSq_add_twoX_add_two_not_isRealRooted hrr
 
 /-- The fixed-order same-degree orientation target is false as well: on the
-same linear example, the correct orientation is not `Prec (X + 1) (X + 2)`. -/
+same linear example, the correct orientation is not `StrictInterl (X + 1) (X + 2)`. -/
 lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
     ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement :=
   fun hsame =>
@@ -556,7 +556,7 @@ lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
 /-- The honest succ-degree orientation target is false as well: the pair
 `X + 1, (X + 2)(X + 3)` satisfies the positive-combo/no-common hypotheses and
 even has a concrete common interleaver `X + 5/2`, but both quadratic roots lie
-strictly to the left of `-1`, so `Prec (X + 1) ((X + 2)(X + 3))` fails. -/
+strictly to the left of `-1`, so `StrictInterl (X + 1) ((X + 2)(X + 3))` fails. -/
 lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
     ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
   fun hsucc =>
@@ -646,7 +646,7 @@ lemma not_compatibleSuccDegreeAllComboStatement :
     not_compatibleSuccDegreeNegativeRightFamilyStatement
       (compatibleSuccDegreeNegativeRightFamily_of_allCombo hall)
 
-/-- The forced compatible succ-degree `Prec` shortcut is false.  The same
+/-- The forced compatible succ-degree `StrictInterl` shortcut is false.  The same
 linear/quadratic pair is compatible, but both quadratic roots lie to the left
 of the linear root. -/
 lemma not_compatibleSuccDegreePrecStatement :
@@ -668,7 +668,7 @@ lemma not_compatibleSuccDegreePrecStatement :
 /-! ### The general no-common orientation statement is false
 
 The named `PosComboNoCommonOrientationStatement` (with the weaker conclusion
-`Prec f g ∨ Prec g f`, and no nonnegative-coefficient hypothesis) is also
+`StrictInterl f g ∨ StrictInterl g f`, and no nonnegative-coefficient hypothesis) is also
 false.  Witnesses: `f = (X - 1)(X + 1) = X^2 - 1` and
 `g = (X - 2)(X + 2) = X^2 - 4`.  Every positive combination
 `lambda * f + mu * g = (lambda + mu) * X^2 - (lambda + 4 * mu)` is
@@ -771,7 +771,7 @@ private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
     simp [hne] at hcount
 
 private lemma orientCex_not_prec :
-    ¬ (Prec orientCexF orientCexG ∨ Prec orientCexG orientCexF) := by
+    ¬ (StrictInterl orientCexF orientCexG ∨ StrictInterl orientCexG orientCexF) := by
   rintro (h | h)
   · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
     rw [orientCexF_roots] at hss_eq
@@ -818,7 +818,7 @@ The residual branch of the succ-degree no-common orientation problem
 assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
 `g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
-the right of both roots of `g`, so `Prec X g` fails. -/
+the right of both roots of `g`, so `StrictInterl X g` fails. -/
 
 private lemma X_isRealRooted : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) :=
   isRealRooted_X
@@ -864,7 +864,7 @@ private lemma xAddThreeHalves_isRealRooted :
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(3 / 2 : ℝ))
 
 private lemma xAddThreeHalves_prec_X :
-    Prec (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
+    StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
   refine
     ⟨xAddThreeHalves_isRealRooted, X_isRealRooted, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
       List.pairwise_singleton _ _, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
@@ -873,7 +873,7 @@ private lemma xAddThreeHalves_prec_X :
   · exact Or.inr ⟨by simp, by norm_num [ListAlternates, ListInterlaces]⟩
 
 private lemma xAddThreeHalves_prec_xAddOne_xAddTwo :
-    Prec (X + C (3 / 2 : ℝ) : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
+    StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
   refine
     ⟨xAddThreeHalves_isRealRooted, xAddOne_xAddTwo_isRealRooted,
       [(-(3 / 2 : ℝ))], [(-2 : ℝ), (-1 : ℝ)],
@@ -896,7 +896,7 @@ private lemma X_xAddOne_xAddTwo_noCommon :
     ∀ r, (X : ℝ[X]).IsRoot r → ¬ (((X + 1) * (X + 2)) : ℝ[X]).IsRoot r := by simp
 
 private lemma X_not_prec_xAddOne_xAddTwo :
-    ¬ Prec (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
+    ¬ StrictInterl (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
   intro hprec
   have hg_le : ∀ r ∈ (((X + 1) * (X + 2)) : ℝ[X]).roots, r ≤ (-1 : ℝ) := by
     intro r hr

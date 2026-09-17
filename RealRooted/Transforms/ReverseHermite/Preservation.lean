@@ -34,11 +34,11 @@ private theorem reverseHermiteTransform_prec0_of_weightedSum_right
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hprec : ∀ ap ∈ l,
-      Prec0 (reverseHermiteTransform ap.2)
+      Interl (reverseHermiteTransform ap.2)
         (reverseHermiteTransform g))
     (hnn : ∀ ap ∈ l,
       HasNonnegCoeffs (reverseHermiteTransform ap.2)) :
-    Prec0 (reverseHermiteTransform f)
+    Interl (reverseHermiteTransform f)
       (reverseHermiteTransform g) := by
   rw [hf, reverseHermiteTransform_weightedSum]
   apply prec0_weightedSum_right_of_nonneg
@@ -50,16 +50,16 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
     (∀ {p : ℝ[X]}, IsPFPolynomial p →
       IsPFPolynomial (reverseHermiteTransform p)) ∧
     (∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
-      Prec0 f g →
-      Prec0 (reverseHermiteTransform f)
+      Interl f g →
+      Interl (reverseHermiteTransform f)
         (reverseHermiteTransform g)) := by
   classical
   let P : ℕ → Prop := fun n =>
     (∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree = n →
       IsPFPolynomial (reverseHermiteTransform p)) ∧
     (∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
-      Prec0 f g → g.natDegree = n →
-      Prec0 (reverseHermiteTransform f)
+      Interl f g → g.natDegree = n →
+      Interl (reverseHermiteTransform f)
         (reverseHermiteTransform g))
   have hP : ∀ n, P n := by
     intro n
@@ -89,7 +89,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
               have := natDegree_derivative_le q
               lia)).1 hqder rfl
           have hprec :
-              Prec0 (reverseHermiteTransform q.derivative)
+              Interl (reverseHermiteTransform q.derivative)
                 (reverseHermiteTransform q) := by
             exact (ih q.natDegree (by lia)).2 hqder hq
               hq.derivative_prec0_self rfl
@@ -101,15 +101,15 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
               hprec hqderT hqT
         have hPrec0 :
             ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
-              Prec0 f g → g.natDegree = n →
-              Prec0 (reverseHermiteTransform f)
+              Interl f g → g.natDegree = n →
+              Interl (reverseHermiteTransform f)
                 (reverseHermiteTransform g) := by
           intro f g hf hg hfg hgdeg
           rcases hfg with hf0 | hg0 | hstrict
           · rw [hf0, reverseHermiteTransform_zero]
-            exact prec0_zero_left _
+            exact interl_zero_left _
           · rw [hg0, reverseHermiteTransform_zero]
-            exact prec0_zero_right _
+            exact interl_zero_right _
           by_cases hgdeg0 : g.natDegree = 0
           · have hfdeg0 : f.natDegree = 0 := by
               have := hstrict.natDegree_le
@@ -118,7 +118,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
             have hgC := Polynomial.eq_C_of_natDegree_eq_zero hgdeg0
             rw [hfC, hgC] at hstrict ⊢
             simpa [reverseHermiteTransform, reverseHermiteBasis] using
-              hstrict.toPrec0
+              hstrict.toInterl
           have hfpos : HasPosLeadingCoeff f :=
             hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
           have hgpos : HasPosLeadingCoeff g :=
@@ -151,7 +151,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
                   have := natDegree_derivative_le ap.2
                   lia)).1 hqder rfl
               have hder :
-                  Prec0 (reverseHermiteTransform ap.2.derivative)
+                  Interl (reverseHermiteTransform ap.2.derivative)
                     (reverseHermiteTransform ap.2) :=
                 (ih ap.2.natDegree (by lia)).2 hqder hq
                   hq.derivative_prec0_self rfl
@@ -195,16 +195,16 @@ theorem reverseHermiteTransform_preserves_pf {p : ℝ[X]}
 PF polynomials. -/
 theorem reverseHermiteTransform_preserves_prec0 {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
-    (hfg : Prec0 f g) :
-    Prec0 (reverseHermiteTransform f) (reverseHermiteTransform g) :=
+    (hfg : Interl f g) :
+    Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
   reverseHermiteTransform_preserves_pf_and_prec0.2 hf hg hfg
 
 /-- Strict proper position between PF polynomials is transported to the
 zero-aware relation by the reverse-Hermite transform. -/
 theorem reverseHermiteTransform_prec_to_prec0 {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
-    (hfg : Prec f g) :
-    Prec0 (reverseHermiteTransform f) (reverseHermiteTransform g) :=
-  reverseHermiteTransform_preserves_prec0 hf hg hfg.toPrec0
+    (hfg : StrictInterl f g) :
+    Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
+  reverseHermiteTransform_preserves_prec0 hf hg hfg.toInterl
 
 end RealRooted

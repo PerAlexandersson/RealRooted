@@ -28,7 +28,7 @@ theorem posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   rcases hdeg with hsame_deg | hsucc_deg
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
@@ -151,7 +151,7 @@ protected lemma CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRoot
     (hall : AllComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
@@ -173,7 +173,7 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f g ∨ Prec g f := by
+    StrictInterl f g ∨ StrictInterl g f := by
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno

@@ -18,9 +18,9 @@ namespace RealRooted
 open LiuOppositeSigns
 
 private theorem prec_X_X_mul_X_sub_C (r : ℝ) :
-    Prec X (X * (X - C r) : ℝ[X]) := by
-  have hbase : Prec (1 : ℝ[X]) (X - C r) :=
-    (interlaces_one_linear (by simp)).toPrec
+    StrictInterl X (X * (X - C r) : ℝ[X]) := by
+  have hbase : StrictInterl (1 : ℝ[X]) (X - C r) :=
+    (interlaces_one_linear (by simp)).toStrictInterl
   simpa using prec_mul_X_sub_C_both (0 : ℝ) hbase
 
 private theorem natDegree_X_mul_X_sub_C (r : ℝ) :

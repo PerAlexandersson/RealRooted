@@ -74,13 +74,13 @@ def CompatiblePairHasCommonInterleaverStatement : Prop :=
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 private theorem compatiblePairHasCommonInterleaver_core
     (hbridge : CompatiblePairHasCommonInterleaverStatement)
     {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   hbridge hf hg h
 
 /-- Two-polynomial common-left bridge, parameterized by the corresponding
@@ -90,7 +90,7 @@ theorem compatiblePairHasCommonLeftInterleaver
     (hbridge : CompatiblePairHasCommonInterleaverStatement)
     {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   have hclose := h.natDegree_close hf hg
   by_cases hdeg : f.natDegree ≤ g.natDegree
   · obtain ⟨k, hfk, hgk⟩ := compatiblePairHasCommonInterleaver_core hbridge hf hg h
@@ -110,7 +110,7 @@ def CompatiblePairHasCommonLeftInterleaverPosStatement : Prop :=
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     Compatible f g →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
 
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
@@ -186,7 +186,7 @@ def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 /-- Natural two-polynomial bridge: compatibility plus positive leading
 coefficients implies a common right interleaver. -/
@@ -194,7 +194,7 @@ theorem compatiblePairHasCommonInterleaver
     (hbridge : CompatiblePairHasCommonInterleaverStatement)
     {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   compatiblePairHasCommonInterleaver_core hbridge hf hg h
 
 /-- Once the two-polynomial common-right-interleaver converse is available, the
@@ -221,7 +221,7 @@ def CompatibleSameDegreePairHasCommonInterleaverStatement : Prop :=
     HasPosLeadingCoeff g →
     Compatible f g →
     g.natDegree = f.natDegree →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 /-- Succ-degree branch of the positive-leading compatibility bridge. Since
 `Compatible.natDegree_close` already rules out larger degree gaps, this and
@@ -232,7 +232,7 @@ def CompatibleSuccDegreePairHasCommonInterleaverStatement : Prop :=
     HasPosLeadingCoeff g →
     Compatible f g →
     g.natDegree = f.natDegree + 1 →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
 
 /-- Since `Compatible.natDegree_close` limits the degree gap to at most one,
 the full positive-leading compatibility bridge reduces to the same-degree and

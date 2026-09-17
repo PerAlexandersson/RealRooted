@@ -24,7 +24,7 @@ latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
   (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
   coefficientwise product is nonzero);
 * `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
-  from proper position `Prec f g` of nonnegative-coefficient polynomials to
+  from proper position `StrictInterl f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
 * `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
   Hurwitz-to-Lace bridge, now known false as a general theorem; and
@@ -51,12 +51,13 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
-      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+      StrictInterl f g → StrictInterl p q →
+        Interl (hadamardProduct f p) (hadamardProduct g q) := by
   intro f g p q hf hg hp hq hfg hpq
   by_cases hfp0 : hadamardProduct f p = 0
-  · simpa [hfp0] using prec0_zero_left (hadamardProduct g q)
+  · simpa [hfp0] using interl_zero_left (hadamardProduct g q)
   by_cases hgq0 : hadamardProduct g q = 0
-  · simpa [hgq0] using prec0_zero_right (hadamardProduct f p)
+  · simpa [hgq0] using interl_zero_right (hadamardProduct f p)
   have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hPrecToHurwitz hf hg hfg
   have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hPrecToHurwitz hp hq hpq
   have hOEprod0 :
@@ -74,9 +75,9 @@ def garloffWagnerHadamardPFPrecStatement : Prop :=
     IsPFPolynomial g →
     IsPFPolynomial p →
     IsPFPolynomial q →
-    Prec f g →
-    Prec p q →
-    Prec0 (hadamardProduct f p) (hadamardProduct g q)
+    StrictInterl f g →
+    StrictInterl p q →
+    Interl (hadamardProduct f p) (hadamardProduct g q)
 
 theorem garloffWagnerHadamardPFPrec_of_nonnegPrec :
     garloffWagnerHadamardPFPrecStatement :=
@@ -92,20 +93,20 @@ def garloffWagnerHadamardPFPrec0Statement : Prop :=
     IsPFPolynomial g →
     IsPFPolynomial p →
     IsPFPolynomial q →
-    Prec0 f g →
-    Prec0 p q →
-    Prec0 (hadamardProduct f p) (hadamardProduct g q)
+    Interl f g →
+    Interl p q →
+    Interl (hadamardProduct f p) (hadamardProduct g q)
 
 theorem garloffWagnerHadamardPFPrec0_of_prec
     (hGW : garloffWagnerHadamardPFPrecStatement) :
     garloffWagnerHadamardPFPrec0Statement := by
   intro f g p q hf hg hp hq hfg hpq
   rcases hfg with rfl | rfl | hfg'
-  · simpa using prec0_zero_left (hadamardProduct g q)
-  · simpa using prec0_zero_right (hadamardProduct f p)
+  · simpa using interl_zero_left (hadamardProduct g q)
+  · simpa using interl_zero_right (hadamardProduct f p)
   rcases hpq with rfl | rfl | hpq'
-  · simpa using prec0_zero_left (hadamardProduct g q)
-  · simpa using prec0_zero_right (hadamardProduct f p)
+  · simpa using interl_zero_left (hadamardProduct g q)
+  · simpa using interl_zero_right (hadamardProduct f p)
   exact hGW hf hg hp hq hfg' hpq'
 
 theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec :
@@ -167,8 +168,8 @@ theorem hadamardProduct_preserves_prec0_right
     (hGW : garloffWagnerHadamardPFPrec0Statement)
     {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
-    (hfg : Prec0 f g) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g p) :=
+    (hfg : Interl f g) :
+    Interl (hadamardProduct f p) (hadamardProduct g p) :=
   hGW hf hg hp hp hfg hp.prec0_self
 
 /-- Fixed-left Hadamard multiplication preserves zero-aware proper position
@@ -177,8 +178,8 @@ theorem hadamardProduct_preserves_prec0_left
     (hGW : garloffWagnerHadamardPFPrec0Statement)
     {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Prec0 p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct f q) := by
+    (hpq : Interl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm] using
     hadamardProduct_preserves_prec0_right hGW hp hq hf hpq
 
@@ -193,9 +194,9 @@ def hadamardReciprocalConeClosureStatement : Prop :=
   ∀ {D : ℕ} {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
-    Prec p (reciprocalShift D p) →
-    Prec q (reciprocalShift D q) →
-    Prec0 (hadamardProduct p q)
+    StrictInterl p (reciprocalShift D p) →
+    StrictInterl q (reciprocalShift D q) →
+    Interl (hadamardProduct p q)
       (reciprocalShift D (hadamardProduct p q))
 
 /-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
@@ -209,7 +210,7 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
   have hq_shift : IsPFPolynomial (reciprocalShift D q) :=
     IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hprec_q.2.1.2
   simpa [reciprocalShift_hadamardProduct] using
-    hGW hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
+    hGW hp hp_shift hq hq_shift hprec_p.toInterl hprec_q.toInterl
 
 theorem hadamardReciprocalConeClosure_of_garloffWagner_prec
     (hGW : garloffWagnerHadamardPFPrecStatement) :

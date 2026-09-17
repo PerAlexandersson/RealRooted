@@ -12,7 +12,7 @@ Original publication: P. Branden and L. Solus, "Symmetric decompositions and
 real-rootedness", International Mathematics Research Notices 2021 (2019),
 7764--7798.
 
-This module exposes the completed nondegenerate `Prec` form of the
+This module exposes the completed nondegenerate `StrictInterl` form of the
 Branden--Solus symmetric-decomposition theorem.  The decomposition API and
 boundary-case proof remain in `RealRooted.SymmetricDecomposition`.
 -/

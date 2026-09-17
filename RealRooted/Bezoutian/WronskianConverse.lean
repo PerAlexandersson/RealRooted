@@ -600,7 +600,7 @@ lemma prec_of_wronskian_pos_succ {n : ℕ}
     (hp_deg : p.natDegree = n + 1) (hq_deg : q.natDegree = n)
     (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hW : ∀ t : ℝ, 0 < p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t) :
-    Prec q p := by
+    StrictInterl q p := by
   have hp_ne : p ≠ 0 := leadingCoeff_ne_zero.mp hp_pos.ne'
   have hq_ne : q ≠ 0 := leadingCoeff_ne_zero.mp hq_pos.ne'
   have hpq_nodup := Polynomial.roots_nodup_of_wronskian_pos hW

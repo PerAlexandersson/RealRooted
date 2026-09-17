@@ -75,7 +75,7 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
 
 A common right interleaver `h` for the succ-degree pair `(f, g)` recovers both
 pieces bundled by `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`:
-real-rootedness of `f` is the left component of `Prec f h`, and each root-slot
+real-rootedness of `f` is the left component of `StrictInterl f h`, and each root-slot
 intersection is witnessed by the corresponding root of `h` through
 `rootSlotInterval_inter_nonempty_of_commonInterleaver`.
 
@@ -664,7 +664,7 @@ def PosComboNoCommonSuccDegreeRootCountResidualPrecStatement : Prop :=
     f.Splits →
     f.coeff 0 = 0 →
     g.coeff 0 ≠ 0 →
-    Prec f g
+    StrictInterl f g
 
 /-- Nonzero constant-term branch of the lower-threshold succ-degree no-common
 root-count statement.  This is the root-count analogue of the reflection route
@@ -735,10 +735,10 @@ def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
     f.Splits →
     f.coeff 0 ≠ 0 →
     g.coeff 0 = 0 →
-    Prec (g.divX) f
+    StrictInterl (g.divX) f
 
 /-- The right-zero `divX` orientation target follows from proving the original
-succ-degree orientation `Prec f g` on this branch.  The degree-drop step is
+succ-degree orientation `StrictInterl f g` on this branch.  The degree-drop step is
 isolated in `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero`. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
     (hprecFG :
@@ -753,15 +753,15 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
         f.Splits →
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
-        Prec f g) :
+        StrictInterl f g) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
 
 /-- Converse of `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG`:
-the sharper succ-degree orientation `Prec f g` on the right-zero lead branch
-follows from the `divX` orientation target `Prec (g.divX) f`.  The degree-drop
+the sharper succ-degree orientation `StrictInterl f g` on the right-zero lead branch
+follows from the `divX` orientation target `StrictInterl (g.divX) f`.  The degree-drop
 reconstruction is isolated in
 `prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero`.
 
@@ -781,13 +781,13 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
       f.Splits →
       f.coeff 0 ≠ 0 →
       g.coeff 0 = 0 →
-      Prec f g := by
+      StrictInterl f g := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     (hdivX hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hfnn hgnn hg0 hdeg
 
 /-- On the right-zero lead branch, the sharper succ-degree orientation
-`Prec f g` is equivalent to the `divX` orientation target `Prec (g.divX) f`. -/
+`StrictInterl f g` is equivalent to the `divX` orientation target `StrictInterl (g.divX) f`. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
@@ -800,7 +800,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
         f.Splits →
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
-        Prec f g) ↔
+        StrictInterl f g) ↔
       PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
   exact ⟨posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG,
     posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX⟩

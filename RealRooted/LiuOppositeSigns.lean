@@ -855,7 +855,7 @@ theorem commonInterleaver_natDegree_eq_of_sameDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0)
     (hdeg : f.natDegree = g.natDegree)
-    (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
+    (hcommon : StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
     k.natDegree = g.natDegree := by
   have hdelete_succ :=
     h.delete_natDegree_add_one_eq_of_sameDegree hf_ne hdeg
@@ -867,7 +867,7 @@ theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0)
     (hdeg : f.natDegree = g.natDegree + 1)
-    (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
+    (hcommon : StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
     k.natDegree = g.natDegree ∨ k.natDegree = g.natDegree + 1 := by
   have hdelete := h.delete_natDegree_eq_of_succDegree hf_ne hdeg
   have hupper := hcommon.1.natDegree_le_succ
@@ -881,7 +881,7 @@ theorem commonInterleaver_natDegree_eq_delete_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0)
     (hdeg : f.natDegree = g.natDegree + 2)
-    (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
+    (hcommon : StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
     k.natDegree = (deleteRootFactor f r).natDegree := by
   have hdelete := h.delete_natDegree_eq_succ_of_twoDegree hf_ne hdeg
   have hlower := hcommon.1.natDegree_le
@@ -892,7 +892,7 @@ theorem commonInterleaver_natDegree_eq_succ_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0)
     (hdeg : f.natDegree = g.natDegree + 2)
-    (hcommon : Prec (deleteRootFactor f r) k ∧ Prec g k) :
+    (hcommon : StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
     k.natDegree = g.natDegree + 1 := by
   rw [h.commonInterleaver_natDegree_eq_delete_of_twoDegree hf_ne hdeg hcommon]
   exact h.delete_natDegree_eq_succ_of_twoDegree hf_ne hdeg
@@ -1127,7 +1127,7 @@ theorem commonInterleaver_natDegree_eq_of_sameDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree)
-    (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     k.natDegree = f.natDegree :=
   h.toLeftBranch_symm.commonInterleaver_natDegree_eq_of_sameDegree
     hg_ne hdeg hcommon.symm
@@ -1136,7 +1136,7 @@ theorem commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     k.natDegree = f.natDegree ∨ k.natDegree = f.natDegree + 1 :=
   h.toLeftBranch_symm.commonInterleaver_natDegree_eq_or_eq_succ_of_succDegree
     hg_ne hdeg hcommon.symm
@@ -1145,7 +1145,7 @@ theorem commonInterleaver_natDegree_eq_delete_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     k.natDegree = (deleteRootFactor g s).natDegree :=
   h.toLeftBranch_symm.commonInterleaver_natDegree_eq_delete_of_twoDegree
     hg_ne hdeg hcommon.symm
@@ -1154,7 +1154,7 @@ theorem commonInterleaver_natDegree_eq_succ_of_twoDegree
     {f g k : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
     (hdeg : g.natDegree = f.natDegree + 2)
-    (hcommon : Prec f k ∧ Prec (deleteRootFactor g s) k) :
+    (hcommon : StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
     k.natDegree = f.natDegree + 1 :=
   h.toLeftBranch_symm.commonInterleaver_natDegree_eq_succ_of_twoDegree
     hg_ne hdeg hcommon.symm

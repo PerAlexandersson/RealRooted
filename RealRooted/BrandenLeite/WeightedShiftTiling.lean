@@ -107,7 +107,7 @@ theorem prec0_weightedShiftTilingRow_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
-    Prec0 (weightedShiftTilingRow b as N r i.castSucc)
+    Interl (weightedShiftTilingRow b as N r i.castSucc)
       (weightedShiftTilingRow b as N r i.succ) := by
   exact (weightedGreenKernel_markedShiftKernel_pf_and_prec0
     hb has N hr).2 i
@@ -369,7 +369,7 @@ theorem prec0_weightedShiftTilingRow_separated_succ
     {alphas : List ℝ} (halphas : ∀ a ∈ alphas, 0 ≤ a)
     {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
-    Prec0
+    Interl
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n)
         N r i.castSucc)
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n)

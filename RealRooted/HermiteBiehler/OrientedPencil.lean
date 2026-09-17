@@ -18,17 +18,17 @@ namespace RealRooted
 noncomputable section
 
 /-- If every real combination of two positive-leading-coefficient polynomials
-splits or vanishes, nonnegativity of `W(g,f)` selects `Prec g f`. -/
+splits or vanishes, nonnegativity of `W(g,f)` selects `StrictInterl g f`. -/
 theorem prec_of_allComboRealRooted_of_wronskian_nonneg
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
     (hg : HasPosLeadingCoeff g) (hall : AllComboRealRooted f g)
     (hW : ∀ x : ℝ, 0 ≤ (wronskian g f).eval x) :
-    Prec g f := by
+    StrictInterl g f := by
   have hfrr : f ≠ 0 ∧ f.Splits := hall.isRealRooted_left hf.ne_zero
   have hgrr : g ≠ 0 ∧ g.Splits := hall.isRealRooted_right hg.ne_zero
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted
       hall hf.ne_zero hg.ne_zero with hsame | hfsucc | hgsucc
-  · have horient : Prec g f ∨ Prec f g :=
+  · have horient : StrictInterl g f ∨ StrictInterl f g :=
       prec_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
         (allComboRealRooted_comm hall) (Or.inr hsame.symm)
     rcases horient with hgf | hfg

@@ -41,7 +41,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
     (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n)
     (hi : i₁ < i₂) (hj : j₁ < j₂)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    Prec0
+    Interl
       (((G.get i₁).get ⟨j₁, by simp_all⟩
           + (C a * X + C b)
             * ((G.get i₁).get ⟨j₂, by simp_all⟩)))
@@ -59,7 +59,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
   let jG : Fin (matPolyAction G fs).length := ⟨i₂, by simp [matPolyAction]⟩
   let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by simp_all⟩
   let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by simp_all⟩
-  have hpair : Prec0 ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) :=
+  have hpair : Interl ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) :=
     himage.1.prec0 (i := iG) (j := jG) (by grind)
   have hleft :
       (matPolyAction G fs).get iG
@@ -79,7 +79,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
 
 /-- Weak handbook-style converse package: a matrix preserving the zero-aware
 family `𝓕ₙ⁰⁺` must have entrywise nonnegative coefficients, and its 2×2 affine
-sparse test images satisfy the corresponding weak `Prec0` relation. -/
+sparse test images satisfy the corresponding weak `Interl` relation. -/
 theorem matrix_preserves_interlacing_seq0_necessary_conditions
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -89,7 +89,7 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
     (∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ < i₂ → j₁ < j₂ →
       ∀ {a b : ℝ}, 0 < a → 0 < b →
-      Prec0
+      Interl
         (((G.get i₁).get ⟨j₁, by
             simp_all⟩)
           + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by
