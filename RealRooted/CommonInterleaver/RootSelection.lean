@@ -165,7 +165,7 @@ theorem exists_largestRoot_le_of_common_left_pair
     linarith
   have hh_lt : ∀ s ∈ h.roots, s < x := by
     intro s hs
-    have hs_le_r : s ≤ r := roots_le_of_prec_right hsum_prec hr.roots_le s hs
+    have hs_le_r : s ≤ r := hsum_prec.roots_le_of_right hr.roots_le s hs
     exact hs_le_r.trans_lt hr_lt_x
   have hf_neg : f.eval x < 0 :=
     hfh.eval_neg_of_left_top_gap (by lia) hf_pos hh_lt

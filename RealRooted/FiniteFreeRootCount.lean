@@ -177,7 +177,7 @@ private theorem schurSzegoComp_prec_of_pred_coeff_pos
     · apply prec_of_reverse_prec_of_roots_sum_le hprec
         (hTfdeg.trans hTgdeg.symm)
       have hinput_sum : f.roots.sum ≤ g.roots.sum :=
-        roots_sum_le_of_prec_sameDegree hfg (hfdeg.trans hgdeg.symm)
+        hfg.roots_sum_le_of_sameDegree (hfdeg.trans hgdeg.symm)
       have hscaled_input :=
         mul_le_mul_of_nonneg_left hinput_sum hp_pred.le
       have hscale_f := roots_sum_schurSzegoComp_scaled

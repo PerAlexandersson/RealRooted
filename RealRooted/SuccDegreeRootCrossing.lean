@@ -106,7 +106,7 @@ theorem not_prec_deg1_example :
     ¬ StrictInterl (C 2 * X + C 1 : ℝ[X]) ((X + C 1) * (X + C 2)) := by
   intro hprec
   have hle : (-1 / 2 : ℝ) ≤ -1 :=
-    roots_le_of_prec_right hprec roots_X_add_one_mul_X_add_two_le_neg_one
+    hprec.roots_le_of_right roots_X_add_one_mul_X_add_two_le_neg_one
       (-1 / 2) neg_half_mem_roots_two_mul_X_add_one
   linarith
 

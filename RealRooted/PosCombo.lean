@@ -147,7 +147,7 @@ theorem prec_weightedSum_left_of_common_left
     lia
   have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hprec ap0 hap0).1.2 hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
-    roots_le_of_prec_right hweighted_right hH_le
+    hweighted_right.roots_le_of_right hH_le
   rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
     exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
@@ -1323,7 +1323,7 @@ theorem prec_of_prec_or_revPrec_of_root_asymmetry
     StrictInterl g f := by
   rcases h with hfg | hgf
   · exfalso
-    have hfle : r ≤ c := roots_le_of_prec_right hfg hg_le r ((mem_roots hfg.1.1).mpr hfr)
+    have hfle : r ≤ c := hfg.roots_le_of_right hg_le r ((mem_roots hfg.1.1).mpr hfr)
     grind
   · lia
 

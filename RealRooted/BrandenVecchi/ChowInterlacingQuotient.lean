@@ -218,7 +218,7 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
       exact prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le
         1 hfactor_prec hdeg hS_pos hg_pos hS_le_one hg_le_one
   have hS_nonpos : ∀ r ∈ S.roots, r ≤ 0 :=
-    roots_le_of_prec_right hSg hg_nonpos
+    hSg.roots_le_of_right hg_nonpos
   exact ⟨((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hS_rr.2).2
     ⟨hS_pos, hS_nonpos⟩).1, hSg⟩
 

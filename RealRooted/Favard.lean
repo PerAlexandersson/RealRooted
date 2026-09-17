@@ -121,7 +121,7 @@ theorem rootMultiplicity_eq_one_of_favard
   have hnext_not_root := noCommonRoot_succ_of_favard hrec hβ n r hr
   have hnext_mult : (P (n + 1)).rootMultiplicity r = 0 := by
     simp_all
-  have hbound := (rootMultiplicity_bounds_of_prec hprec r).1
+  have hbound := (hprec.rootMultiplicity_bounds r).1
   have hpos : 0 < (P n).rootMultiplicity r :=
     (rootMultiplicity_pos hprec.1.1).mpr hr
   lia

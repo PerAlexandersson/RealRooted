@@ -327,7 +327,7 @@ theorem rootMultiplicity_neg_insertionOperator_eq_one
     exact insertionOperator_no_common_root a b hroots hsimple r hfr (by
       simpa [IsRoot.def] using hr)
   have hfmult : f.rootMultiplicity r = 0 := rootMultiplicity_eq_zero hnot
-  have hbound := (rootMultiplicity_bounds_of_prec hprec r).2
+  have hbound := (hprec.rootMultiplicity_bounds r).2
   have hpos : 0 < (-insertionOperator a b f).rootMultiplicity r :=
     (rootMultiplicity_pos hprec.2.1.1).mpr hr
   lia

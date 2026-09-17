@@ -253,10 +253,10 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
       have hpos := (rootMultiplicity_pos hfg.2.1.1).mpr hr
       lia
     have hf_mult : 1 ≤ f.rootMultiplicity r := by
-      have := (rootMultiplicity_bounds_of_prec hfg r).2
+      have := (hfg.rootMultiplicity_bounds r).2
       lia
     have hh_mult : 1 ≤ h.rootMultiplicity r := by
-      have := (rootMultiplicity_bounds_of_prec hgh r).1
+      have := (hgh.rootMultiplicity_bounds r).1
       lia
     have hfr : f.IsRoot r := (rootMultiplicity_pos hfg.1.1).mp (by lia)
     have hhr : h.IsRoot r := (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
@@ -330,7 +330,7 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
       by_contra hnot
       have hlc_le : h.leadingCoeff ≤ f.leadingCoeff := le_of_not_gt hnot
       rcases eq_or_lt_of_le hlc_le with hlc_eq | hlc_lt
-      · have hroots_le := roots_sum_le_of_prec_sameDegree hfh hdeg
+      · have hroots_le := hfh.roots_sum_le_of_sameDegree hdeg
         rcases eq_or_lt_of_le hroots_le with hroots_eq | hroots_lt
         · have hEq :=
             eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
@@ -452,12 +452,12 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
     have hrg' : g.IsRoot r :=
       (rootMultiplicity_pos hfg.2.1.1).mp (by lia)
     have hf_mult : 1 ≤ f.rootMultiplicity r := by
-      have := (rootMultiplicity_bounds_of_prec hfg r).2
+      have := (hfg.rootMultiplicity_bounds r).2
       lia
     have hrf' : f.IsRoot r :=
       (rootMultiplicity_pos hfg.1.1).mp (by lia)
     have hh_mult : 1 ≤ h.rootMultiplicity r := by
-      have := (rootMultiplicity_bounds_of_prec hgh r).1
+      have := (hgh.rootMultiplicity_bounds r).1
       lia
     have hrh' : h.IsRoot r := (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
     have hffactor : f = (X - C r) * qf := by

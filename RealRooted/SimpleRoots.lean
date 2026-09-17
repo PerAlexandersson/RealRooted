@@ -42,14 +42,14 @@ theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : St
     have hotherMult : g.rootMultiplicity r = 0 := by simp_all
     have hpos : 0 < f.rootMultiplicity r :=
       (Polynomial.rootMultiplicity_pos hprec.1.1).mpr hroot
-    have hbound := (rootMultiplicity_bounds_of_prec hprec r).1
+    have hbound := (hprec.rootMultiplicity_bounds r).1
     lia
   · intro r hroot
     have hother : ¬ f.IsRoot r := fun hr ↦ hno r ⟨hr, hroot⟩
     have hotherMult : f.rootMultiplicity r = 0 := by simp_all
     have hpos : 0 < g.rootMultiplicity r :=
       (Polynomial.rootMultiplicity_pos hprec.2.1.1).mpr hroot
-    have hbound := (rootMultiplicity_bounds_of_prec hprec r).2
+    have hbound := (hprec.rootMultiplicity_bounds r).2
     lia
 
 /-- A coprime proper-position pair has simple real roots in both entries. -/

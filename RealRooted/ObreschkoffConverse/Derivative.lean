@@ -75,7 +75,7 @@ theorem derivative_roots_sum_le_of_prec_sameDegree_monic {f g : ℝ[X]}
     f.derivative.roots.sum ≤ g.derivative.roots.sum := by
   have hg_two : 2 ≤ g.natDegree := by lia
   have hnext : g.nextCoeff ≤ f.nextCoeff :=
-    nextCoeff_le_of_prec_sameDegree_monic hf_monic hg_monic hfg hdeg
+    hfg.nextCoeff_le_of_sameDegree_monic hf_monic hg_monic hdeg
   have hf_next_der :
       f.derivative.nextCoeff = (f.natDegree - 1 : ℝ) * f.nextCoeff :=
     Polynomial.nextCoeff_derivative_of_two_le_natDegree f htwo

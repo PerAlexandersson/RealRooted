@@ -200,7 +200,7 @@ theorem source_lowerPartialSums_counterexample :
         change (-1 : ℝ) ∈ (X + C 1 : ℝ[X]).roots
         rw [roots_X_add_C]
         simp
-      have := roots_le_of_prec_right hprec hbound (-1) hleftRoot
+      have := hprec.roots_le_of_right hbound (-1) hleftRoot
       norm_num at this
 
 /-- The non-real-rooted polynomial used to check that the old weak sequence

@@ -137,8 +137,8 @@ theorem coeff_zero_ne_of_prec_rotatedParts
       (hurwitzRotatedOddPart odd).rootMultiplicity 0 - 1 ≤
         (hurwitzRotatedEvenPart even).rootMultiplicity 0 := by
     rcases hprec with hprec | hprec
-    · exact (rootMultiplicity_bounds_of_prec hprec 0).1
-    · exact (rootMultiplicity_bounds_of_prec hprec 0).2
+    · exact (hprec.rootMultiplicity_bounds 0).1
+    · exact (hprec.rootMultiplicity_bounds 0).2
   rw [hrotEvenMult] at hmultBound
   lia
 

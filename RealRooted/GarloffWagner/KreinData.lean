@@ -16,7 +16,7 @@ namespace RealRooted
 theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : StrictInterl f g)
     (u : ℝ) :
     g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
-  exact (rootMultiplicity_bounds_of_prec h u).2
+  exact (h.rootMultiplicity_bounds u).2
 
 /-- If `f ≪ g` and `u` is a root of `g`, then `f` is divisible by all but
 one copy of the `u`-factor of `g`.  This is the quotient of the left input

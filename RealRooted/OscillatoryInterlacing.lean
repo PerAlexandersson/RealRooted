@@ -66,7 +66,7 @@ theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
     have hTrailingMult :
         (A.submatrix Fin.succ Fin.succ).charpoly.rootMultiplicity x = 0 :=
       Polynomial.rootMultiplicity_eq_zero hTrailingNotRoot
-    have hbound := (RealRooted.rootMultiplicity_bounds_of_prec hPrec x).2
+    have hbound := (hPrec.rootMultiplicity_bounds x).2
     have hpos := (Polynomial.rootMultiplicity_pos A.charpoly_monic.ne_zero).2 hx
     lia
   have hTrailingSimple : ∀ x : ℝ,
@@ -78,7 +78,7 @@ theorem IsTotallyNonneg.trailing_charpoly_strictInterlaces {N : ℕ}
       exact hNoCommon x ⟨hxFull, hx⟩
     have hFullMult : A.charpoly.rootMultiplicity x = 0 :=
       Polynomial.rootMultiplicity_eq_zero hFullNotRoot
-    have hbound := (RealRooted.rootMultiplicity_bounds_of_prec hPrec x).1
+    have hbound := (hPrec.rootMultiplicity_bounds x).1
     have hpos := (Polynomial.rootMultiplicity_pos
       (A.submatrix Fin.succ Fin.succ).charpoly_monic.ne_zero).2 hx
     lia

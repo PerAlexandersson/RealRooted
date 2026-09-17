@@ -17,7 +17,7 @@ namespace RealRooted
 by `c`, then all roots of its derivative are bounded below by `c`.
 
 This is the lower-bound counterpart to the common upper-bound use of
-`roots_le_of_prec_right` together with `derivative_interlaces`. -/
+`StrictInterl.roots_le_of_right` together with `derivative_interlaces`. -/
 theorem le_roots_derivative_of_le_roots {p : ℝ[X]} {c : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, c ≤ r) :
@@ -48,12 +48,12 @@ theorem le_roots_derivative_of_le_roots {p : ℝ[X]} {c : ℝ}
 by `c`, then all roots of its derivative are bounded above by `c`.
 
 This is the upper-bound counterpart to `le_roots_derivative_of_le_roots`,
-obtained from `roots_le_of_prec_right` applied to the interlacing witness. -/
+obtained from `StrictInterl.roots_le_of_right` applied to the interlacing witness. -/
 theorem roots_derivative_le_of_roots_le {p : ℝ[X]} {c : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ≤ c) :
     ∀ r ∈ p.derivative.roots, r ≤ c :=
-  roots_le_of_prec_right (derivative_interlaces hp hdeg).toStrictInterl h
+  (derivative_interlaces hp hdeg).toStrictInterl.roots_le_of_right h
 
 /-- **Derivative root interval preservation.** If every root of a split
 polynomial of degree at least two lies in the closed interval `[u, v]`, then

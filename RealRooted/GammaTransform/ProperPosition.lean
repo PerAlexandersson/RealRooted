@@ -232,7 +232,7 @@ theorem prec_gammaTransform_succ_iff
     have hrslen : rs.length = δ.natDegree := by
       exact length_preferredRoots hδdeg hδ hδrr.1.2
         (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0)
-    have hmult := rootMultiplicity_bounds_of_prec hTprec (-1)
+    have hmult := hTprec.rootMultiplicity_bounds (-1)
     rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
       rootMultiplicity_neg_one_gammaTransform hδdeg hδ] at hmult
     have hdegcases : γ.natDegree = δ.natDegree ∨
