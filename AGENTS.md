@@ -108,7 +108,7 @@ theorem-shape suggestions, or proof repairs:
 - Test isolated snippets and candidate proof steps within the assistant's
   scratch environment first.
 - All suggested results are advisory; every proof modification must be fully
-  validated locally using Lake.
+  validated using Lake, locally or in the README's CI-first draft-PR workflow.
 
 ## Proof Status and Assumption Boundaries
 
@@ -133,6 +133,10 @@ theorem-shape suggestions, or proof repairs:
 
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
   conflicting with the intended API direction.
-- Run focused Lake builds for touched Lean modules to verify changes quickly.
-- Run a full Lake build and check for warnings before pushing or committing
-  Lean changes.
+- Prefer focused Lake builds for touched Lean modules when a local build owner
+  is available; never contend for a shared build cache.
+- Follow README's CI-first draft-PR policy: source-checked feature-branch
+  commits may precede remote compilation, but must be labeled unverified until
+  the exact revision passes the full default build and applicable axiom audits.
+- Keep parallel workers on disjoint files and isolated branches. One integrator
+  reviews and merges verified work; a draft checkpoint is not proof completion.

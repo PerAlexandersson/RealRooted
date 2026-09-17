@@ -5,22 +5,27 @@ env:
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read # Read access to repository contents
-  pages: write # Write access to GitHub Pages
-  id-token: write # Write access to ID tokens
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   build:
+    name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      # PRs are keyed by number so a new revision supersedes the old merge
+      # ref. Pushes are keyed by ref. For main, cancel-in-progress=false
+      # deliberately retains the active run and lets the newest pending
+      # checkpoint replace older pending work. This bounds the queue while
+      # making that default-branch policy explicit, without making validation
+      # wait for documentation or publishing.
+      group: ${{ github.workflow }}-validation-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
     steps:
       - uses: actions/checkout@v5
@@ -46,4 +51,8 @@ jobs:
           sudo apt-get clean || true
           df -h /
       - uses: leanprover/lean-action@v1
-      - uses: leanprover-community/docgen-action@v1
+        with:
+          # Keep the required check an explicit ordinary `lake build`, even
+          # if future Lake metadata changes lean-action auto-detection.
+          build: true
+          build-args: ""
