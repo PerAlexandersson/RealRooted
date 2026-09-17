@@ -104,6 +104,72 @@ theorem interlaces_of_consecutive_signs_of_natDegree_lt
     ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted,
       hus_pw.imp le_of_lt, hrs_eq, hus_eq, hus_int⟩
 
+/-- A lower-degree polynomial which has the derivative's strict sign at every
+root is a strict interlacer.  The degree inequality and strict signs already
+force the lower polynomial to be nonzero and the right polynomial to have
+positive degree and simple roots. -/
+theorem interlaces_of_eval_mul_derivative_pos
+    {f q : ℝ[X]} (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hqdeg : q.natDegree < f.natDegree)
+    (hsign : ∀ r, f.IsRoot r → 0 < q.eval r * f.derivative.eval r) :
+    Interlaces q f := by
+  have hfdeg : 1 ≤ f.natDegree := by lia
+  have hroots_ne : f.roots ≠ 0 := by
+    intro hzero
+    have hcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+    rw [hzero] at hcard
+    simp at hcard
+    lia
+  obtain ⟨r, hrmem⟩ := Multiset.exists_mem_of_ne_zero hroots_ne
+  have hrroot : f.IsRoot r := isRoot_of_mem_roots hrmem
+  have hq_ne : q ≠ 0 := by
+    intro hzero
+    have hpositive := hsign r hrroot
+    simp [hzero] at hpositive
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hfdeg
+  obtain ⟨_, hder_rr, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hder
+  have hrs_sort : rs = f.roots.sort (· ≤ ·) := by
+    apply List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort ..)
+    exact Multiset.coe_eq_coe.mp (hrs_eq.trans (Multiset.sort_eq ..).symm)
+  apply interlaces_of_consecutive_signs_of_natDegree_lt
+    hf_pos.ne_zero hf hq_ne hqdeg
+  dsimp only
+  intro pre r₁ r₂ rest hEq
+  have hEq' : rs = pre ++ r₁ :: r₂ :: rest := by simpa [hrs_sort] using hEq
+  have hr₁_mem : r₁ ∈ f.roots := by
+    rw [← hrs_eq]
+    exact Multiset.mem_coe.mpr (by simp_all)
+  have hr₂_mem : r₂ ∈ f.roots := by
+    rw [← hrs_eq]
+    exact Multiset.mem_coe.mpr (by simp_all)
+  have hr₁ : f.IsRoot r₁ := isRoot_of_mem_roots hr₁_mem
+  have hr₂ : f.IsRoot r₂ := isRoot_of_mem_roots hr₂_mem
+  have hder_nonpos :
+      f.derivative.eval r₁ * f.derivative.eval r₂ ≤ 0 :=
+    eval_mul_eval_nonpos_of_interlacing_consecutive
+      hder_rr.2 hrs_sorted hss_eq hint hEq'
+  have hq₁ := hsign r₁ hr₁
+  have hq₂ := hsign r₂ hr₂
+  have hder₁_ne : f.derivative.eval r₁ ≠ 0 := by
+    intro hzero
+    simp [hzero] at hq₁
+  have hder₂_ne : f.derivative.eval r₂ ≠ 0 := by
+    intro hzero
+    simp [hzero] at hq₂
+  have hder_neg :
+      f.derivative.eval r₁ * f.derivative.eval r₂ < 0 :=
+    lt_of_le_of_ne hder_nonpos (mul_ne_zero hder₁_ne hder₂_ne)
+  rcases lt_or_gt_of_ne hder₁_ne with hd₁ | hd₁
+  · have hd₂ : 0 < f.derivative.eval r₂ := by nlinarith
+    have hq₁neg : q.eval r₁ < 0 := by nlinarith
+    have hq₂pos : 0 < q.eval r₂ := by nlinarith
+    exact mul_neg_of_neg_of_pos hq₁neg hq₂pos
+  · have hd₂ : f.derivative.eval r₂ < 0 := by nlinarith
+    have hq₁pos : 0 < q.eval r₁ := by nlinarith
+    have hq₂neg : q.eval r₂ < 0 := by nlinarith
+    exact mul_neg_of_pos_of_neg hq₁pos hq₂neg
+
 /-- If every element of the right-hand list is strictly above `a`, then so is
 every element of the interlacing left-hand list. -/
 lemma listInterlaces_all_gt_of_lowerBound :
@@ -692,6 +758,7 @@ namespace RealRooted
 export MaWangInternal
   (exists_roots_strictly_interlacing_of_consecutive_signs
     interlaces_of_consecutive_signs_of_natDegree_lt
+    interlaces_of_eval_mul_derivative_pos
     mul_neg_of_mul_neg_of_mul_neg
     prec_same_of_strict_signs_of_right_root
     prec_of_strict_signs_of_strict_outer_roots

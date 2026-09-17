@@ -212,9 +212,7 @@ theorem a144696Auxiliary_diagonal_interlaces
     simp [hzero] at hsign
   have hqdeg : (a144696Auxiliary d d).natDegree < f.natDegree :=
     (natDegree_lt_iff_degree_lt hqne).2 hdegree
-  have hfdegpos : 1 ≤ f.natDegree := by rw [hfdeg]; exact hd
-  exact interlaces_of_eval_mul_derivative_pos hsplitsF hfpos hfdegpos
-    hsimpleF hqne hqdeg hrootSign
+  exact interlaces_of_eval_mul_derivative_pos hsplitsF hfpos hqdeg hrootSign
 
 /-- One strict shifted vertical step from an auxiliary derivative-sign
 certificate. -/
