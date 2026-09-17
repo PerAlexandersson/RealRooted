@@ -1,4 +1,6 @@
-import RealRooted
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.Bezoutian.LowDegree
+import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Solution: bridge from Challenge to the RealRooted library
