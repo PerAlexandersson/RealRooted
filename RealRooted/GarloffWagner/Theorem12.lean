@@ -147,17 +147,12 @@ theorem gwSchurProduct_pf_right_linearFactor_of_derivative_prec0
     · simpa [hright0] using IsPFPolynomial.zero
     · exact IsPFPolynomial.of_realRooted_nonneg htarget_nn hstrict.2.1.2
 
-/-- Multiplying the left polynomial in a zero-aware `Interl` relation by a
-nonnegative scalar preserves the relation. -/
+/- Deprecated compatibility alias for `Interl.C_mul_left_of_nonneg`. -/
+@[deprecated Interl.C_mul_left_of_nonneg (since := "2026-09-17")]
 theorem prec0_C_mul_left_of_nonneg {f g : ℝ[X]}
     (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
-    Interl (C a * f) g := by
-  rcases eq_or_lt_of_le ha with rfl | ha_pos
-  · simp [interl_zero_left]
-  rcases h with hf0 | hg0 | hprec
-  · simp [hf0, interl_zero_left]
-  · simpa [hg0] using interl_zero_right (C a * f)
-  · exact (StrictInterl.C_mul_left hprec ha_pos.ne').toInterl
+    Interl (C a * f) g :=
+  h.C_mul_left_of_nonneg ha
 
 theorem HasNonnegCoeffs.weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
@@ -198,7 +193,7 @@ theorem prec0_weightedSum_right_of_nonneg :
       have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
         fun ap hap => hnn ap (by simp [hap])
       have hhead_prec : Interl (C a * p) h :=
-        prec0_C_mul_left_of_nonneg hp_prec ha
+        Interl.C_mul_left_of_nonneg hp_prec ha
       have htail_prec_sum : Interl (weightedSum l) h :=
         prec0_weightedSum_right_of_nonneg l h htail_nonneg htail_prec htail_nn
       have hhead_nn : HasNonnegCoeffs (C a * p) :=
@@ -296,7 +291,7 @@ theorem gwL_sub_C_mul_gwD_gwL_prec0_self {p : ℝ[X]} {u : ℝ}
     simpa [gwD] using hpL.derivative_prec0_self
   have hscaled :
       Interl (C (-u) * gwD (gwL p)) (gwL p) :=
-    prec0_C_mul_left_of_nonneg hder (by linarith)
+    Interl.C_mul_left_of_nonneg hder (by linarith)
   have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
   have hscaled_nn :
       HasNonnegCoeffs (C (-u) * gwD (gwL p)) :=

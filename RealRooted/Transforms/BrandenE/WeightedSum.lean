@@ -190,7 +190,7 @@ theorem brandenBasisWeightedSum_prec0_of_le
   rw [brandenBasisWeightedSum]
   apply prec0_finsetSum_left_of_nonneg
   · intro k hk
-    exact prec0_C_mul_right_of_nonneg
+    exact Interl.C_mul_right_of_nonneg
       (brandenBasisImage_zero_prec n k (hkn k hk)).toInterl (ha k hk)
   · intro k hk
     exact nonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)

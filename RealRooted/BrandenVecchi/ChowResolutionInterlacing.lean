@@ -310,7 +310,7 @@ theorem resolvedChowCombination_endpoint_prec0
   · apply prec0_finsetSum_left_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_right_of_nonneg (hleft j hjn) (ha j hjn)
+      exact Interl.C_mul_right_of_nonneg (hleft j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn)
@@ -318,7 +318,7 @@ theorem resolvedChowCombination_endpoint_prec0
   · apply prec0_finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact prec0_C_mul_left_of_nonneg (hright j hjn) (ha j hjn)
+      exact Interl.C_mul_left_of_nonneg (hright j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn)

@@ -517,8 +517,8 @@ theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Interl p (C a * q + C b * r) :=
   prec0_add_right_of_common_left_of_nonneg
-    (prec0_C_mul_right_of_nonneg hpq ha)
-    (prec0_C_mul_right_of_nonneg hpr hb)
+    (Interl.C_mul_right_of_nonneg hpq ha)
+    (Interl.C_mul_right_of_nonneg hpr hb)
     (nonnegCoeffs_C_mul ha hq) (nonnegCoeffs_C_mul hb hr)
 
 /-- Fixed-left cone closure in the polynomial PF notation. -/

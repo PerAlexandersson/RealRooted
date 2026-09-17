@@ -33,16 +33,6 @@ theorem reflect {f g : ℝ[X]} (h : IsNonnegScalarMultiple f g) (n : ℕ) :
 
 end IsNonnegScalarMultiple
 
-private theorem prec0_C_mul_left_of_nonneg_local {f g : ℝ[X]}
-    (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
-    Interl (C a * f) g := by
-  rcases eq_or_lt_of_le ha with rfl | ha_pos
-  · simp [interl_zero_left]
-  rcases h with hf | hg | hfg
-  · simp [hf, interl_zero_left]
-  · simpa [hg] using interl_zero_right (C a * f)
-  · exact (StrictInterl.C_mul_left hfg ha_pos.ne').toInterl
-
 /-- Pointwise replacement by arbitrary nonnegative scalar multiples preserves
 a zero-aware nonnegative real-rooted interlacing sequence. -/
 theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
@@ -60,8 +50,8 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     have hbase := hfs.interlacingSeq0.prec0
       (i := ⟨i, hi⟩) (j := ⟨j, hj⟩) hij
     rw [hia, hjb]
-    exact prec0_C_mul_right_of_nonneg
-      (prec0_C_mul_left_of_nonneg_local hbase ha) hb
+    exact Interl.C_mul_right_of_nonneg
+      (Interl.C_mul_left_of_nonneg hbase ha) hb
   · intro g hg
     rcases List.get_of_mem hg with ⟨i, rfl⟩
     have hi : i.val < fs.length := by simp [hlen]
