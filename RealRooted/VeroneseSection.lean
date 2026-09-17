@@ -630,7 +630,7 @@ private theorem not_fullyInterlacingPair_X_add_C_two_one :
     at hminor
 
 private theorem prec_X_add_C_two_one : StrictInterl (X + C (2 : ℝ)) (X + C (1 : ℝ)) := by
-  rw [prec_X_add_C_iff]
+  rw [StrictInterl.X_add_C_iff]
   norm_num
 
 /-- `LegacyNonnegPrecToFullyInterlacingPairStatement` is false as stated. -/

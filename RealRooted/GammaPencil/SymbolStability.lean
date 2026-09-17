@@ -138,7 +138,7 @@ theorem gammaSymbol_even_prec (m : ℕ) (hm : 0 < m) :
   apply StrictInterl.C_mul_right
   · apply StrictInterl.C_mul_left
     · simpa using
-        (prec_X_add_C_iff (a := (0 : ℝ)) (b := 1 / (4 * (m : ℝ))).mpr
+        (StrictInterl.X_add_C_iff (a := (0 : ℝ)) (b := 1 / (4 * (m : ℝ))).mpr
           (by positivity))
     · positivity
   · positivity

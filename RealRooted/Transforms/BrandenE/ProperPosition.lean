@@ -205,7 +205,7 @@ theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
       X * brandenBasisImage (R := ℝ) n 0 = (X + 1) * (X * h) := hid
       _ = X * ((X + 1) * h) := by ring
   have hlinear : StrictInterl (X + C 1) X := by
-    simpa using (prec_X_add_C_iff (a := 0) (b := 1)).2 (by norm_num)
+    simpa using (StrictInterl.X_add_C_iff (a := 0) (b := 1)).2 (by norm_num)
   have hcommon := prec_mul_common_factor hh_rr.1 hh_rr.2 hlinear
   have hg_factor' : brandenBasisImage (R := ℝ) n n = X * h := by
     simpa [g] using hg_factor

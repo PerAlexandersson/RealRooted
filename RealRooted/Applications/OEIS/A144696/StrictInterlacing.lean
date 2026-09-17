@@ -271,7 +271,7 @@ private theorem a144696BernsteinImage_one_horizontal :
     (a144696BernsteinImage 1 1) := by
   rw [a144696BernsteinImage_one_zero, a144696BernsteinImage_one_one]
   have hbase : StrictInterl (X + C 1 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
-    (prec_X_add_C_iff (a := (1 / 2 : ℝ)) (b := 1)).2 (by norm_num)
+    (StrictInterl.X_add_C_iff (a := (1 / 2 : ℝ)) (b := 1)).2 (by norm_num)
   have hscaled := StrictInterl.C_mul_right
     (StrictInterl.C_mul_left hbase (a := 2) (by norm_num)) (a := 2) (by norm_num)
   have htwo : (2 : ℝ[X]) = C 2 := by

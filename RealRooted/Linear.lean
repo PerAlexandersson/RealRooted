@@ -113,7 +113,7 @@ lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by simp
 The root of `X + C a` is `-a`; hence `StrictInterl (X + C b) (X + C a)` means that
 the root of the left polynomial is weakly to the left of the root of the right
 polynomial, equivalently `a ≤ b`. -/
-lemma prec_X_add_C_iff {a b : ℝ} :
+lemma StrictInterl.X_add_C_iff {a b : ℝ} :
     StrictInterl (X + C b) (X + C a) ↔ a ≤ b := by
   constructor
   · intro h
@@ -124,6 +124,22 @@ lemma prec_X_add_C_iff {a b : ℝ} :
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
     · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
     · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hab⟩
+
+/-- Orientation criterion for zero-aware proper position of linear factors. -/
+lemma Interl.X_add_C_iff {a b : ℝ} :
+    Interl (X + C b) (X + C a) ↔ a ≤ b := by
+  constructor
+  · intro h
+    exact (StrictInterl.X_add_C_iff.mp
+      (h.toStrictInterl_of_ne (X_add_C_ne_zero b) (X_add_C_ne_zero a)))
+  · intro hab
+    exact (StrictInterl.X_add_C_iff.mpr hab).toInterl
+
+/- Deprecated compatibility alias for `StrictInterl.X_add_C_iff`. -/
+@[deprecated StrictInterl.X_add_C_iff (since := "2026-09-17")]
+lemma prec_X_add_C_iff {a b : ℝ} :
+    StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
+  StrictInterl.X_add_C_iff
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
@@ -605,11 +621,11 @@ lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
     Interl f (C a * g) :=
   h.C_mul_right_of_nonneg ha
 
-/-- In particular, a nonzero scalar multiple of a real-rooted polynomial
-interlaces the original polynomial. -/
+/- Deprecated compatibility alias for `StrictInterl.C_mul_self`. -/
+@[deprecated StrictInterl.C_mul_self (since := "2026-09-17")]
 lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
     StrictInterl (C a * f) f :=
-  (StrictInterl.refl hf₀ hf).C_mul_left ha
+  StrictInterl.C_mul_self hf₀ hf ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/
