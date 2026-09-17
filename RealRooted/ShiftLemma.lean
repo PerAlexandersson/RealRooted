@@ -126,13 +126,14 @@ theorem prec_shift_of_same_degree
         congrArg (fun n => n * (X + C (1 : ℝ)).natDegree) hdeg
       simpa [h', f', natDegree_comp] using hdeg_mul
     have hprec' : StrictInterl h' f' := by
-      simpa [h', f'] using (prec_comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
+      simpa [h', f'] using
+        (StrictInterl.comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
     have hfX' : StrictInterl f' (X * h') :=
       prec_sameDegree_to_prec_mul_X_of_roots_nonpos hprec' hdeg' hh'_nonpos hf'_nonpos
     have htranslated : StrictInterl f' (t.comp (X + C 1)) := by
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
-    exact (prec_comp_X_add_C_iff (f := f) (g := t) 1).1 <| by
+    exact (StrictInterl.comp_X_add_C_iff (f := f) (g := t) 1).1 <| by
       lia
   have ht_pos : HasPosLeadingCoeff t := by
     simpa [t] using hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos

@@ -211,7 +211,7 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
   set f' := (motzkin n).comp (X + C motzkinShift)
   set g' := (motzkin (n + 1)).comp (X + C motzkinShift)
   have hshift' : StrictInterl g' (X * f') := by
-    have htmp := (prec_comp_X_add_C hshift motzkinShift)
+    have htmp := hshift.comp_X_add_C motzkinShift
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg, comp_assoc,
       add_assoc, add_left_comm, add_comm, mul_assoc] using htmp
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
@@ -227,7 +227,9 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
   have hprec' :
       StrictInterl f' g' :=
     prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos hshift' hdeg' hf'_nonpos
-  exact (prec_comp_X_add_C_iff (f := motzkin n) (g := motzkin (n + 1)) motzkinShift).1 hprec'
+  exact
+    (StrictInterl.comp_X_add_C_iff (f := motzkin n) (g := motzkin (n + 1))
+      motzkinShift).1 hprec'
 
 /-- Consecutive Motzkin polynomials satisfy the generalized interlacing relation `StrictInterl`. -/
 theorem prec_motzkin_succ_and_roots_le :

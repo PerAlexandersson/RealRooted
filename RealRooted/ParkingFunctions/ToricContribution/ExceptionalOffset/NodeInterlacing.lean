@@ -408,7 +408,7 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
     have hscaled := hprecComp.C_mul_right (inv_ne_zero hγ.ne')
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hγ.ne', C_1, one_mul] at hscaled
     exact hscaled
-  have hreflect := prec_comp_one_sub_X_of_sameDegree hprecComp'
+  have hreflect := hprecComp'.comp_one_sub_X_of_natDegree_eq
     (by rw [huDegree, hfDegree])
   have hinvolution : (1 - X : ℝ[X]).comp (1 - X) = X := by
     simp

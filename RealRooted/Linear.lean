@@ -342,7 +342,7 @@ lemma isRealRooted_comp_one_sub_X
   rwa [heq] at htranslated
 
 /-- Reflection about `1 / 2` reverses same-degree proper position. -/
-lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
+lemma StrictInterl.comp_one_sub_X_of_natDegree_eq {f g : ℝ[X]}
     (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     StrictInterl (g.comp (1 - X)) (f.comp (1 - X)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -369,7 +369,7 @@ lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
 
 /-- Translation by `r` preserves `StrictInterl`: roots are shifted left by `r`,
 so the relative order is unchanged. -/
-lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
+lemma StrictInterl.comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
     StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   refine ⟨isRealRooted_comp_X_add_C hf.1 hf.2 r, isRealRooted_comp_X_add_C hg.1 hg.2 r,
@@ -390,7 +390,7 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
 
 /-- Positive rescaling of the variable preserves `StrictInterl`: each root is divided
 by the same positive scalar, so its relative order is unchanged. -/
-lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
+lemma StrictInterl.comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
     {a : ℝ} (ha : 0 < a) :
     StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hcase⟩
@@ -445,34 +445,133 @@ lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
     exact listAlternates_of_interleaves_of_length (by simpa using hlen) hinter
 
 /-- Positive variable rescaling is an equivalence on `StrictInterl`. -/
-lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
+lemma StrictInterl.comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
     StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) ↔ StrictInterl f g := by
   constructor
   · intro h
-    have h' := prec_comp_C_mul_X h (inv_pos.mpr ha)
+    have h' := h.comp_C_mul_X (inv_pos.mpr ha)
     have hscale :
         (C a * X : ℝ[X]).comp (C a⁻¹ * X) = X := by
       simp only [mul_comp, C_comp, X_comp]
       rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', map_one,
         one_mul]
     simpa [Polynomial.comp_assoc, hscale] using h'
-  · exact fun h => prec_comp_C_mul_X h ha
+  · exact fun h => h.comp_C_mul_X ha
 
 /-- Reflection through the origin reverses same-degree proper position. -/
-lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}
+lemma StrictInterl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]}
     (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     StrictInterl (g.comp (-X)) (f.comp (-X)) := by
-  have hreflected := prec_comp_one_sub_X_of_sameDegree h hdeg
-  simpa [Polynomial.comp_assoc] using prec_comp_X_add_C hreflected 1
+  have hreflected := h.comp_one_sub_X_of_natDegree_eq hdeg
+  simpa [Polynomial.comp_assoc] using hreflected.comp_X_add_C 1
 
 /-- Translation by `r` is an equivalence on `StrictInterl`. -/
-lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
+lemma StrictInterl.comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) ↔ StrictInterl f g := by
   constructor
   · intro h
-    have h' := prec_comp_X_add_C h (-r)
+    have h' := h.comp_X_add_C (-r)
     simpa [comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h'
-  · exact fun h => prec_comp_X_add_C h r
+  · exact fun h => h.comp_X_add_C r
+
+/-- Translation by `r` preserves zero-aware proper position. -/
+lemma Interl.comp_X_add_C {f g : ℝ[X]} (h : Interl f g) (r : ℝ) :
+    Interl (f.comp (X + C r)) (g.comp (X + C r)) := by
+  rcases h with hf | hg | hstrict
+  · subst f
+    simpa using interl_zero_left (g.comp (X + C r))
+  · subst g
+    simpa using interl_zero_right (f.comp (X + C r))
+  · exact (hstrict.comp_X_add_C r).toInterl
+
+/-- Translation by `r` is an equivalence on zero-aware proper position. -/
+lemma Interl.comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
+    Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g := by
+  constructor
+  · intro h
+    have h' := h.comp_X_add_C (-r)
+    simpa [comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h'
+  · exact fun h => h.comp_X_add_C r
+
+/-- Positive rescaling of the variable preserves zero-aware proper position. -/
+lemma Interl.comp_C_mul_X {f g : ℝ[X]} (h : Interl f g) {a : ℝ} (ha : 0 < a) :
+    Interl (f.comp (C a * X)) (g.comp (C a * X)) := by
+  rcases h with hf | hg | hstrict
+  · subst f
+    simpa using interl_zero_left (g.comp (C a * X))
+  · subst g
+    simpa using interl_zero_right (f.comp (C a * X))
+  · exact (hstrict.comp_C_mul_X ha).toInterl
+
+/-- Positive variable rescaling is an equivalence on zero-aware proper position. -/
+lemma Interl.comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
+    Interl (f.comp (C a * X)) (g.comp (C a * X)) ↔ Interl f g := by
+  constructor
+  · intro h
+    have h' := h.comp_C_mul_X (inv_pos.mpr ha)
+    have hscale : (C a * X : ℝ[X]).comp (C a⁻¹ * X) = X := by
+      simp only [mul_comp, C_comp, X_comp]
+      rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', map_one, one_mul]
+    simpa [Polynomial.comp_assoc, hscale] using h'
+  · exact fun h => h.comp_C_mul_X ha
+
+/-- Reflection about `1 / 2` reverses same-degree zero-aware proper position. -/
+lemma Interl.comp_one_sub_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
+    (hdeg : f.natDegree = g.natDegree) :
+    Interl (g.comp (1 - X)) (f.comp (1 - X)) := by
+  rcases h with hf | hg | hstrict
+  · subst f
+    simpa using interl_zero_right (g.comp (1 - X))
+  · subst g
+    simpa using interl_zero_left (f.comp (1 - X))
+  · exact (hstrict.comp_one_sub_X_of_natDegree_eq hdeg).toInterl
+
+/-- Reflection through the origin reverses same-degree zero-aware proper position. -/
+lemma Interl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
+    (hdeg : f.natDegree = g.natDegree) :
+    Interl (g.comp (-X)) (f.comp (-X)) := by
+  have hreflected := h.comp_one_sub_X_of_natDegree_eq hdeg
+  simpa [Polynomial.comp_assoc] using hreflected.comp_X_add_C 1
+
+/- Deprecated compatibility alias for
+`StrictInterl.comp_one_sub_X_of_natDegree_eq`. -/
+@[deprecated StrictInterl.comp_one_sub_X_of_natDegree_eq (since := "2026-09-17")]
+lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    StrictInterl (g.comp (1 - X)) (f.comp (1 - X)) :=
+  h.comp_one_sub_X_of_natDegree_eq hdeg
+
+/- Deprecated compatibility alias for `StrictInterl.comp_X_add_C`. -/
+@[deprecated StrictInterl.comp_X_add_C (since := "2026-09-17")]
+lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
+    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) :=
+  h.comp_X_add_C r
+
+/- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X`. -/
+@[deprecated StrictInterl.comp_C_mul_X (since := "2026-09-17")]
+lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
+    {a : ℝ} (ha : 0 < a) :
+    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) :=
+  h.comp_C_mul_X ha
+
+/- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X_iff`. -/
+@[deprecated StrictInterl.comp_C_mul_X_iff (since := "2026-09-17")]
+lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
+    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) ↔ StrictInterl f g :=
+  StrictInterl.comp_C_mul_X_iff ha
+
+/- Deprecated compatibility alias for `StrictInterl.comp_neg_X_of_natDegree_eq`. -/
+@[deprecated StrictInterl.comp_neg_X_of_natDegree_eq (since := "2026-09-17")]
+lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    StrictInterl (g.comp (-X)) (f.comp (-X)) :=
+  h.comp_neg_X_of_natDegree_eq hdeg
+
+/- Deprecated compatibility alias for `StrictInterl.comp_X_add_C_iff`. -/
+@[deprecated StrictInterl.comp_X_add_C_iff (since := "2026-09-17")]
+lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
+    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) ↔ StrictInterl f g :=
+  StrictInterl.comp_X_add_C_iff r
 
 /- Deprecated compatibility alias for `StrictInterl.refl`. -/
 @[deprecated StrictInterl.refl (since := "2026-09-17")]

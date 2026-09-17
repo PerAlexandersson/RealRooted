@@ -144,7 +144,7 @@ theorem shiftedRationalRodRows_pf_and_prec0
     simpa [shiftedRationalRodRow] using
       (hpf n).comp_C_mul_X_add_C (a := 1) (d := γ) zero_lt_one hγ
   · intro n
-    exact (prec0_comp_X_add_C_iff γ).2 (hprec n)
+    exact (Interl.comp_X_add_C_iff γ).2 (hprec n)
 
 /-- The translated one-monomer specialization. -/
 def shiftedMonomerRodRow (b c : ℝ) (r : ℕ) (xs : List ℝ)

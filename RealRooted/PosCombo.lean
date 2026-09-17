@@ -61,13 +61,14 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     simp_all
   have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hfg' : StrictInterl f' g' := by
-    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+    simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hgxf' : StrictInterl g' (X * f') :=
     prec_sameDegree_to_prec_mul_X_of_roots_nonpos hfg' hdeg' hf'_nonpos hg'_nonpos
   have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
-  exact (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
+  exact
+    (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
 
 lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (h : StrictInterl g ((X - C r) * f))
@@ -100,13 +101,14 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     simp_all
   have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
-    simpa [g'] using (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
+    simpa [g'] using
+      (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
   have hgxf' : StrictInterl g' (X * f') := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
   have hfg' : StrictInterl f' g' :=
     prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
-  exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
+  exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
 if every polynomial in the family is interlaced on the left by the same `h`,

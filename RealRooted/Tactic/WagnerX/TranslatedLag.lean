@@ -48,7 +48,7 @@ theorem prec_pos_X_sub_C_lag_combo_sequence
   let Q : Nat → ℝ[X] := fun n => (P n).comp (X + C r)
   have hQbase : StrictInterl (Q 0) (Q 1) := by
     simpa [Q] using
-      (prec_comp_X_add_C_iff (f := P 0) (g := P 1) r).2 hbase
+      (StrictInterl.comp_X_add_C_iff (f := P 0) (g := P 1) r).2 hbase
   have hQrec : ∀ n : Nat,
       Q (n + 2) = C (a n) * Q (n + 1) + (C (c n) * X) * Q n := by
     simpa [Q] using comp_pos_X_sub_C_lag_recurrence hrec
@@ -57,7 +57,7 @@ theorem prec_pos_X_sub_C_lag_combo_sequence
       (by simpa [Q] using hshift_nonneg) ha hc hQrec
   intro n
   exact
-    (prec_comp_X_add_C_iff (f := P n) (g := P (n + 1)) r).1
+    (StrictInterl.comp_X_add_C_iff (f := P n) (g := P (n + 1)) r).1
       (hQprec n)
 
 /-- Equal-base degree profile for a fixed translated affine lag. -/

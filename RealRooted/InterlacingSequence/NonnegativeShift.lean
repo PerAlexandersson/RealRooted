@@ -42,12 +42,11 @@ theorem exists_comp_X_add_C_hasNonnegCoeffs (fs : List ℝ[X])
   exact hasNonnegCoeffs_comp_X_add_C_of_roots_le
     (hfs p hp).1 (hfs p hp).2 (hr p hp)
 
-/-- Simultaneous translation is an equivalence for zero-aware proper
-position. -/
+/- Deprecated compatibility alias for `Interl.comp_X_add_C_iff`. -/
+@[deprecated Interl.comp_X_add_C_iff (since := "2026-09-17")]
 theorem prec0_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
-    Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g := by
-  simp only [Interl, Polynomial.comp_X_add_C_eq_zero_iff,
-    prec_comp_X_add_C_iff]
+    Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g :=
+  Interl.comp_X_add_C_iff r
 
 /-- Simultaneous translation is an equivalence for finite interlacing
 sequences. -/
@@ -56,7 +55,7 @@ theorem isInterlacingSeq_map_comp_X_add_C_iff (fs : List ℝ[X]) (r : ℝ) :
       IsInterlacingSeq fs := by
   rw [isInterlacingSeq_iff_pairwise, isInterlacingSeq_iff_pairwise,
     List.pairwise_map]
-  simp only [prec_comp_X_add_C_iff]
+  simp only [StrictInterl.comp_X_add_C_iff]
 
 /-- Filtering out zero polynomials commutes with simultaneous translation. -/
 theorem filter_map_comp_X_add_C_ne_zero (fs : List ℝ[X]) (r : ℝ) :
