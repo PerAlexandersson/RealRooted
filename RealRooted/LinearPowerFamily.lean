@@ -78,7 +78,7 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
   have hprec :
       StrictInterl (C (b ^ n) * (X + C (a / b)) ^ n)
         (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)) :=
-    prec_C_mul_right (prec_C_mul_left hbase (by positivity)) (by positivity)
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase (by positivity)) (by positivity)
   have hd₁ : (C (b ^ n) * (X + C (a / b)) ^ n).natDegree = n := by
     rw [natDegree_C_mul (by positivity), natDegree_pow, natDegree_X_add_C, mul_one]
   have hd₂ : (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)).natDegree = n + 1 := by
@@ -94,7 +94,7 @@ theorem interlaces_C_mul_linear_pow_succ (c d a b : ℝ) (hc : c ≠ 0) (hd : d 
   have hbase := interlaces_linear_pow a b hb n
   have hprec : StrictInterl (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) :=
-    prec_C_mul_right (prec_C_mul_left hbase.toStrictInterl hc) hd
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase.toStrictInterl hc) hd
   have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
     compute_degree!
     exact hb.ne'
@@ -132,8 +132,9 @@ theorem linearPowerScalarStep_interlaces {c d a b : ℝ} (hc : c ≠ 0)
     Interlaces
       (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) := by
-  exact (prec_C_mul_right
-    (prec_C_mul_left (interlaces_linear_pow a b hb n).toStrictInterl hc) hd).toInterlaces (by
+  have hscaled :=
+    ((interlaces_linear_pow a b hb n).toStrictInterl.C_mul_left hc).C_mul_right hd
+  exact hscaled.toInterlaces (by
     rw [scalarLinearFactorPow_natDegree hc hb.ne' n,
       scalarLinearFactorPow_natDegree hd hb.ne' (n + 1)])
 
@@ -456,7 +457,7 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
       have hprecX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
         prec_self_mul_X_of_nonneg hne hsplits hnn
       have hprec : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
-        have hscaled := prec_C_mul_right hprecX hu.ne'
+        have hscaled := StrictInterl.C_mul_right hprecX hu.ne'
         simpa [mul_assoc] using hscaled
       have htail_ne : (C u * X : ℝ[X]) ≠ 0 :=
         mul_ne_zero (C_ne_zero.mpr hu.ne') X_ne_zero

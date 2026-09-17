@@ -126,7 +126,7 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
     · simp [E]
     · exact generalizedEulerian_one_reflect n
   have hbA : StrictInterl b (C 2 * E) :=
-    prec_C_mul_right hbE (by norm_num)
+    StrictInterl.C_mul_right hbE (by norm_num)
   have hbnn : HasNonnegCoeffs b := by
     exact loweringEulerStep_nonneg hEnn
       (generalizedEulerian_natDegree 1 n).le
@@ -143,9 +143,9 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
       StrictInterl (C 2 * reciprocalShift n (a144696Polynomial n))
         (C 2 * a144696Polynomial n) := by
     simpa [IdTransform, reciprocalShift, Polynomial.reflect_C_mul] using hendpoint
-  have hleft := prec_C_mul_left hscaled
+  have hleft := StrictInterl.C_mul_left hscaled
     (a := (2 : ℝ)⁻¹) (by norm_num)
-  have hboth := prec_C_mul_right hleft
+  have hboth := StrictInterl.C_mul_right hleft
     (a := (2 : ℝ)⁻¹) (by norm_num)
   have hcancel (p : ℝ[X]) : C (2 : ℝ)⁻¹ * (C 2 * p) = p := by
     rw [← mul_assoc, ← map_mul]
@@ -185,7 +185,7 @@ theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
       rw [hreflect]
       have hbase : StrictInterl (X + C 2 : ℝ[X]) (X + C (1 / 2 : ℝ)) :=
         (prec_X_add_C_iff (a := (1 / 2 : ℝ)) (b := 2)).2 (by norm_num)
-      have hright := prec_C_mul_right hbase (a := (2 : ℝ)) (by norm_num)
+      have hright := StrictInterl.C_mul_right hbase (a := (2 : ℝ)) (by norm_num)
       have hrewrite : C 2 * (X + C (1 / 2 : ℝ)) = 1 + C 2 * X := by
         calc
           C 2 * (X + C (1 / 2 : ℝ)) =

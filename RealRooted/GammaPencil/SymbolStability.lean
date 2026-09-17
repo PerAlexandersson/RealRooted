@@ -135,8 +135,8 @@ theorem gammaSymbol_even_root_order (m : ℕ) (hm : 0 < m) :
 theorem gammaSymbol_even_prec (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m)) (gammaSymbolP (2 * m) m) := by
   rw [gammaSymbolP_even, gammaSymbolQ_even m hm]
-  apply prec_C_mul_right
-  · apply prec_C_mul_left
+  apply StrictInterl.C_mul_right
+  · apply StrictInterl.C_mul_left
     · simpa using
         (prec_X_add_C_iff (a := (0 : ℝ)) (b := 1 / (4 * (m : ℝ))).mpr
           (by positivity))
@@ -211,7 +211,7 @@ theorem gammaSymbolQ_odd_isRoot (m : ℕ) :
 theorem gammaSymbol_odd_prec (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m + 1)) (gammaSymbolP (2 * m + 1) m) := by
   rw [gammaSymbolP_odd, gammaSymbolQ_odd]
-  apply prec_C_mul_left
+  apply StrictInterl.C_mul_left
   · simpa [sub_eq_add_neg] using
       (interlaces_linear_quadratic_of_roots_between
         (α := -(1 / (4 * (m : ℝ) + 2)))

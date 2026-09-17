@@ -39,8 +39,8 @@ position orientation. -/
 theorem normalizedRPolynomial_prec_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
     StrictInterl (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
-  exact prec_C_mul_right
-    (prec_C_mul_left
+  exact StrictInterl.C_mul_right
+    (StrictInterl.C_mul_left
       (rPolynomial_prec_rPolynomial_of_lt m ε d e hm hde he)
       (pow_ne_zero m (by norm_num)))
     (pow_ne_zero m (by norm_num))
@@ -75,7 +75,7 @@ theorem normalizedRPolynomialFamily_hasCommonLeftInterleaver
     List.mem_map] at hp
   obtain ⟨d, hd, rfl⟩ := hp
   have hdm : d ≤ m := by simpa using hd
-  exact prec_C_mul_right
+  exact StrictInterl.C_mul_right
     (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toStrictInterl
     (pow_ne_zero m (by norm_num))
 
@@ -115,8 +115,8 @@ theorem normalizedRPolynomialFamily_weighted_sum_splits
       Finset.mem_toList, List.mem_map] at hp
     obtain ⟨d, hd, rfl⟩ := hp
     have hdm : d ≤ m := by simpa using hd
-    exact prec_C_mul_right
-      (prec_C_mul_right
+    exact StrictInterl.C_mul_right
+      (StrictInterl.C_mul_right
         (jPolynomial_interlaces_rPolynomial m ε d hm hdm).toStrictInterl
         (pow_ne_zero m (by norm_num)))
       (hw d hdm).ne'

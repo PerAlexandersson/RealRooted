@@ -105,7 +105,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
   have hscaled : StrictInterl (C c * b) (C c * p) :=
-    prec_C_mul_right (prec_C_mul_left hbp hc_ne) hc_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hbp hc_ne) hc_ne
   have hp_nonpos : ∀ r ∈ p.roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hbp.2.1.2 hp_nonneg
   have hb_nonpos : ∀ r ∈ b.roots, r ≤ 0 :=
@@ -130,8 +130,8 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     prec_of_prec0_of_ne_zero hCb0 hCa0 hprec0
   have hback :
       StrictInterl (C c⁻¹ * (C c * b)) (C c⁻¹ * (C c * a)) :=
-    prec_C_mul_right
-      (prec_C_mul_left hscaled_prec (inv_ne_zero hc_ne))
+    StrictInterl.C_mul_right
+      (StrictInterl.C_mul_left hscaled_prec (inv_ne_zero hc_ne))
       (inv_ne_zero hc_ne)
   have hcancel_b : C c⁻¹ * (C c * b) = b := by
     calc

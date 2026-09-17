@@ -93,10 +93,10 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl | rfl
-      · exact prec_C_mul_left (prec_refl hp0 hpsplits) (by positivity)
-      · exact prec_C_mul_left
+      · exact StrictInterl.C_mul_left (prec_refl hp0 hpsplits) (by positivity)
+      · exact StrictInterl.C_mul_left
           ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
-      · exact prec_C_mul_left hpolar_p (by linarith)
+      · exact StrictInterl.C_mul_left hpolar_p (by linarith)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
@@ -121,8 +121,8 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
-      · exact prec_C_mul_left (prec_refl hp0 hpsplits) (by positivity)
-      · exact prec_C_mul_left
+      · exact StrictInterl.C_mul_left (prec_refl hp0 hpsplits) (by positivity)
+      · exact StrictInterl.C_mul_left
           ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
       intro q hq
@@ -147,9 +147,9 @@ private theorem prec_derivative_polarTheta_of_le
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl | rfl
-      · exact prec_C_mul_left (prec_refl htheta0 htheta_splits) (by linarith)
-      · exact prec_C_mul_left hder_theta ht.ne'
-      · exact prec_C_mul_left hp_theta (by positivity)
+      · exact StrictInterl.C_mul_left (prec_refl htheta0 htheta_splits) (by linarith)
+      · exact StrictInterl.C_mul_left hder_theta ht.ne'
+      · exact StrictInterl.C_mul_left hp_theta (by positivity)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
@@ -337,7 +337,7 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
     simpa [theta] using
       prec_mul_common_factor Polynomial.X_ne_zero Polynomial.Splits.X hder_polar
   have hbtheta_right : StrictInterl (C b * theta p) (X * polarTheta N p) :=
-    prec_C_mul_left htheta_right hb.ne'
+    StrictInterl.C_mul_left htheta_right hb.ne'
   have hp_pos : HasPosLeadingCoeff p :=
     hp.hasNonnegCoeffs.pos_leadingCoeff hp0
   have htheta0 : theta p ≠ 0 := by

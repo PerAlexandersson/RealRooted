@@ -261,7 +261,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
   have hscaled : StrictInterl (C a * f) (C a * (g + X * f)) :=
-    prec_C_mul_right (prec_C_mul_left h ha_ne) ha_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left h ha_ne) ha_ne
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
   have hshift_nonpos : ∀ r ∈ (g + X * f).roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hshift.2 hshift_nonneg
@@ -285,8 +285,8 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     rcases hprec0 with hleft0 | hright0 | hprec <;> lia
   have hprec_back :
       StrictInterl (C a⁻¹ * (C a * f)) (C a⁻¹ * (C a * g)) :=
-    prec_C_mul_right
-      (prec_C_mul_left hprec_scaled (inv_ne_zero ha_ne))
+    StrictInterl.C_mul_right
+      (StrictInterl.C_mul_left hprec_scaled (inv_ne_zero ha_ne))
       (inv_ne_zero ha_ne)
   have hcancel_f : C a⁻¹ * (C a * f) = f := by
     calc

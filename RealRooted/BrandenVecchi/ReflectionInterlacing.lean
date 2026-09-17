@@ -41,7 +41,7 @@ private theorem prec0_C_mul_left_of_nonneg_local {f g : ℝ[X]}
   rcases h with hf | hg | hfg
   · simp [hf, interl_zero_left]
   · simpa [hg] using interl_zero_right (C a * f)
-  · exact (prec_C_mul_left hfg ha_pos.ne').toInterl
+  · exact (StrictInterl.C_mul_left hfg ha_pos.ne').toInterl
 
 /-- Pointwise replacement by arbitrary nonnegative scalar multiples preserves
 a zero-aware nonnegative real-rooted interlacing sequence. -/

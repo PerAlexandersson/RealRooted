@@ -94,7 +94,7 @@ private lemma lowDegreeCounterexample_middle_prec_right :
     (Polynomial.natDegree_X_add_C (3 : ℝ))
   have hcommon := prec_mul_common_factor
     (d := X + C 3) (f := 1) (g := X + C 1) hlinear.1 hlinear.2 hbase
-  have hscaled := prec_C_mul_left hcommon (by norm_num : (2 : ℝ) ≠ 0)
+  have hscaled := StrictInterl.C_mul_left hcommon (by norm_num : (2 : ℝ) ≠ 0)
   simpa [lowDegreeCounterexampleMiddle, lowDegreeCounterexampleRight, mul_comm]
     using hscaled
 

@@ -99,7 +99,7 @@ theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
     prec_wagner_derivative_gap_lag_step h hfnn hgnn hdeg ha hc
   have hscaled : StrictInterl g (C d * p) := by simpa [hrec] using hstep
   have hscaled' : StrictInterl g (C d⁻¹ * (C d * p)) :=
-    prec_C_mul_right hscaled (inv_ne_zero hd.ne')
+    StrictInterl.C_mul_right hscaled (inv_ne_zero hd.ne')
   have hnormalize : C d⁻¹ * (C d * p) = p := by
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hd.ne']
     simp

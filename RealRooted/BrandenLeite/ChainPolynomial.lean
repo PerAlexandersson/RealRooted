@@ -160,7 +160,7 @@ private theorem scale_range_interlacing
     rcases hpr with hp | hr | hpr
     · simp [hp, interl_zero_left]
     · simpa [hr] using interl_zero_right (C c * p)
-    · exact (prec_C_mul_left hpr hc_pos.ne').toInterl
+    · exact (StrictInterl.C_mul_left hpr hc_pos.ne').toInterl
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_

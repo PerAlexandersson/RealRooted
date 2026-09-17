@@ -182,8 +182,8 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d
   have hscaled :
       StrictInterl ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * f)
         ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * g) := by
-    have hleft := prec_C_mul_left hprod hlc0
-    have hboth := prec_C_mul_right hleft hlc0
+    have hleft := StrictInterl.C_mul_left hprod hlc0
+    have hboth := StrictInterl.C_mul_right hleft hlc0
     simpa [mul_assoc, mul_left_comm, mul_comm] using hboth
   simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hd_splits), mul_assoc]
     using hscaled

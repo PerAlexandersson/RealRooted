@@ -170,7 +170,7 @@ theorem prec_weightedSum_left_of_common_left_signed
   rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
   · let h' : ℝ[X] := C (-1 : ℝ) * h
     have hprec' : ∀ ap ∈ l, StrictInterl h' ap.2 :=
-      fun ap hap => prec_C_mul_left (hprec ap hap) (by simp)
+      fun ap hap => StrictInterl.C_mul_left (hprec ap hap) (by simp)
     have h'_pos : HasPosLeadingCoeff h' := by
       unfold h' HasPosLeadingCoeff
       simp_all
@@ -178,7 +178,7 @@ theorem prec_weightedSum_left_of_common_left_signed
       prec_weightedSum_left_of_common_left
         l h' hnonneg hprec' h'_pos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
     have hback : StrictInterl (C (-1 : ℝ) * h') (weightedSum l) :=
-      prec_C_mul_left hsum' (by simp)
+      StrictInterl.C_mul_left hsum' (by simp)
     grind
   · exact prec_weightedSum_left_of_common_left
       l h hnonneg hprec hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
@@ -555,8 +555,8 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
-  have hhf' : StrictInterl h (C lam * f) := prec_C_mul_right hhf hlam.ne'
-  have hhg' : StrictInterl h (C μ * g) := prec_C_mul_right hhg hμ.ne'
+  have hhf' : StrictInterl h (C lam * f) := StrictInterl.C_mul_right hhf hlam.ne'
+  have hhg' : StrictInterl h (C μ * g) := StrictInterl.C_mul_right hhg hμ.ne'
   have hlam_pos : HasPosLeadingCoeff (C lam * f) := hasPosLeadingCoeff_C_mul hlam hf_pos
   have hμ_pos : HasPosLeadingCoeff (C μ * g) := hasPosLeadingCoeff_C_mul hμ hg_pos
   have hprec :
@@ -1414,23 +1414,23 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
   rcases hab with ha_pos | hb_pos
   · by_cases hb0 : b = 0
     · simpa [hb0, weightedSum, weightedSum_cons] using
-        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
     · have hb_pos : 0 < b := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
-        (prec_C_mul_right hfg hb_pos.ne')
+        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
   · by_cases ha0 : a = 0
     · simpa [ha0, weightedSum, weightedSum_cons] using
-        (prec_C_mul_right hfg hb_pos.ne')
+        (StrictInterl.C_mul_right hfg hb_pos.ne')
     · have ha_pos : 0 < a := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
-        (prec_C_mul_right hfg hb_pos.ne')
+        (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
+        (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
@@ -1446,8 +1446,8 @@ theorem prec_convex_left {f g : ℝ[X]}
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
   have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
   exact prec_add_of_prec_left
-    (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha.ne')
-    (prec_C_mul_right hfg hb.ne')
+    (StrictInterl.C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha.ne')
+    (StrictInterl.C_mul_right hfg hb.ne')
     hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 
 /-- A common-factor version of `prec_convex_left`. If `f` and `g` share a

@@ -84,7 +84,7 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits_of_pos
     intro p hp
     simp only [fs, Finset.mem_toList, List.mem_map] at hp
     rcases hp with ⟨k, hk, rfl⟩
-    exact prec_C_mul_right
+    exact StrictInterl.C_mul_right
       (brandenBasisImage_zero_prec n k (hkn k hk)) (ha k hk).ne'
   have hpos : ∀ p ∈ fs, HasPosLeadingCoeff p := by
     intro p hp
