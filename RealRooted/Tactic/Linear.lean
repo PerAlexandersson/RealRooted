@@ -16,20 +16,20 @@ lemma prec_C_mul_left_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
     (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
     ∀ i : Nat, StrictInterl (C (a i) * F i) (G i) := fun i =>
-  prec_C_mul_left (hprec i) (ha i)
+  StrictInterl.C_mul_left (hprec i) (ha i)
 
 lemma prec_C_mul_right_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
     (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
     ∀ i : Nat, StrictInterl (F i) (C (a i) * G i) := fun i =>
-  prec_C_mul_right (hprec i) (ha i)
+  StrictInterl.C_mul_right (hprec i) (ha i)
 
 lemma prec_C_mul_both_sequence {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0)
     (hb : ∀ i : Nat, b i ≠ 0) :
     ∀ i : Nat, StrictInterl (C (a i) * F i) (C (b i) * G i) := fun i =>
-  prec_C_mul_right (prec_C_mul_left (hprec i) (ha i)) (hb i)
+  StrictInterl.C_mul_right (StrictInterl.C_mul_left (hprec i) (ha i)) (hb i)
 
 lemma C_mul_realrooted_sequence {P : Nat → ℝ[X]} {a : Nat → ℝ}
     (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
@@ -224,11 +224,11 @@ macro_rules
       rr_prec_C_mul_left using
         prec := $hprec:term,
         scalar_ne := $ha:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_left $hprec $ha)
+      `(tactic| exact RealRooted.StrictInterl.C_mul_left $hprec $ha)
   | `(tactic|
       rr_prec_C_mul_left using
         prec := $hprec:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_left $hprec (by rr_side_ne))
+      `(tactic| exact RealRooted.StrictInterl.C_mul_left $hprec (by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_left_sequence using
         prec := $hprec:term,
@@ -243,11 +243,11 @@ macro_rules
       rr_prec_C_mul_right using
         prec := $hprec:term,
         scalar_ne := $ha:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_right $hprec $ha)
+      `(tactic| exact RealRooted.StrictInterl.C_mul_right $hprec $ha)
   | `(tactic|
       rr_prec_C_mul_right using
         prec := $hprec:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_right $hprec (by rr_side_ne))
+      `(tactic| exact RealRooted.StrictInterl.C_mul_right $hprec (by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_right_sequence using
         prec := $hprec:term,
@@ -264,14 +264,14 @@ macro_rules
         left_ne := $hleft:term,
         right_ne := $hright:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_right
-          (RealRooted.prec_C_mul_left $hprec $hleft) $hright)
+        exact RealRooted.StrictInterl.C_mul_right
+          (RealRooted.StrictInterl.C_mul_left $hprec $hleft) $hright)
   | `(tactic|
       rr_prec_C_mul_both using
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_right
-          (RealRooted.prec_C_mul_left $hprec (by rr_side_ne)) (by rr_side_ne))
+        exact RealRooted.StrictInterl.C_mul_right
+          (RealRooted.StrictInterl.C_mul_left $hprec (by rr_side_ne)) (by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_both_sequence using
         prec := $hprec:term,

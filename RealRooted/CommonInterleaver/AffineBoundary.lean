@@ -46,7 +46,7 @@ theorem prec_boundary_right_pair_of_prec_nonneg
     StrictInterl (C t * f + g) (X * f) := by
   have hgfX : StrictInterl g (X * f) := prec_to_prec_mul_X_of_nonneg hprec hfnn hgnn
   have hfX : StrictInterl f (X * f) := prec_self_mul_X_of_nonneg hprec.1.1 hprec.1.2 hfnn
-  have htfX : StrictInterl (C t * f) (X * f) := prec_C_mul_left hfX ht.ne'
+  have htfX : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hfX ht.ne'
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hprec.1.1)
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hprec.2.1.1

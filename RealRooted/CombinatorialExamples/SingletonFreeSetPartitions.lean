@@ -174,7 +174,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
   have hlower :
       StrictInterl (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) :=
-    prec_C_mul_left hprev hscalar_ne
+    StrictInterl.C_mul_left hprev hscalar_ne
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
         (singletonFreeSetPartitions (n + 1)) :=

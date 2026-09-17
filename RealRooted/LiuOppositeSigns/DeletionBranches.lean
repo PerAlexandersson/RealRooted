@@ -68,13 +68,13 @@ theorem positiveDeletionPair_compatible_of_commonInterleaver
   · left
     have hneg_gk : StrictInterl (-g) k := by
       have hscale : StrictInterl (C (-1 : ℝ) * g) k :=
-        prec_C_mul_left hgk (by norm_num)
+        StrictInterl.C_mul_left hgk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hqk hneg_gk hpos.1 hpos.2
   · right
     have hneg_qk : StrictInterl (-(deleteRootFactor f r)) k := by
       have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor f r) k :=
-        prec_C_mul_left hqk (by norm_num)
+        StrictInterl.C_mul_left hqk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hneg_qk hgk hpos.1 hpos.2
 
@@ -168,13 +168,13 @@ theorem positiveDeletionPair_compatible_of_commonInterleaver
   · left
     have hneg_qk : StrictInterl (-(deleteRootFactor g s)) k := by
       have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor g s) k :=
-        prec_C_mul_left hqk (by norm_num)
+        StrictInterl.C_mul_left hqk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hfk hneg_qk hpos.1 hpos.2
   · right
     have hneg_fk : StrictInterl (-f) k := by
       have hscale : StrictInterl (C (-1 : ℝ) * f) k :=
-        prec_C_mul_left hfk (by norm_num)
+        StrictInterl.C_mul_left hfk (by norm_num)
       simpa using hscale
     exact Compatible.of_commonInterleaver hneg_fk hqk hpos.1 hpos.2
 

@@ -980,10 +980,10 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
   have hg_scale : C sg⁻¹ * g₀ = g := by grind
   rcases hprec₀ with hfg₀ | hgf₀
   · have hscaled : StrictInterl (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
-      prec_C_mul_right (prec_C_mul_left hfg₀ hsf_inv_ne) hsg_inv_ne
+      StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg₀ hsf_inv_ne) hsg_inv_ne
     lia
   · have hscaled : StrictInterl (C sg⁻¹ * g₀) (C sf⁻¹ * f₀) :=
-      prec_C_mul_right (prec_C_mul_left hgf₀ hsg_inv_ne) hsf_inv_ne
+      StrictInterl.C_mul_right (StrictInterl.C_mul_left hgf₀ hsg_inv_ne) hsf_inv_ne
     lia
 /-- Regularized no-common-root converse step for the `iterateTDeriv` pair.
 

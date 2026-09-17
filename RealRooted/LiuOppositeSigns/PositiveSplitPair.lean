@@ -597,7 +597,7 @@ theorem pairHasCommonInterleaver_of_neg_left {f g : ℝ[X]}
   obtain ⟨k, hfk, hgk⟩ := h.pairHasCommonInterleaver
   refine ⟨k, ?_, hgk⟩
   have hscale : StrictInterl (C (-1 : ℝ) * (-f)) k :=
-    prec_C_mul_left hfk (by norm_num)
+    StrictInterl.C_mul_left hfk (by norm_num)
   simpa using hscale
 
 /-- A common-right-interleaver witness is unchanged by removing a negation
@@ -608,7 +608,7 @@ theorem pairHasCommonInterleaver_of_neg_right {f g : ℝ[X]}
   obtain ⟨k, hfk, hgk⟩ := h.pairHasCommonInterleaver
   refine ⟨k, hfk, ?_⟩
   have hscale : StrictInterl (C (-1 : ℝ) * (-g)) k :=
-    prec_C_mul_left hgk (by norm_num)
+    StrictInterl.C_mul_left hgk (by norm_num)
   simpa using hscale
 
 end PositiveSplitRootCountPair

@@ -228,7 +228,7 @@ lemma interlaces_derivative_simsun_three :
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))).toStrictInterl
   have hprecC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    prec_C_mul_left hprec (by simp)
+    StrictInterl.C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     hprecC.toInterlaces (by
       simpa [add_comm] using

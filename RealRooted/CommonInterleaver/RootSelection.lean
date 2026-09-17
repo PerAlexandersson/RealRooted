@@ -228,7 +228,7 @@ theorem exists_mem_largestRoot_le_weightedSum :
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           have hscaled_prec : StrictInterl h (C a * p) :=
-            prec_C_mul_right hp_prec ha_pos.ne'
+            StrictInterl.C_mul_right hp_prec ha_pos.ne'
           have hscaled_deg : (C a * p).natDegree = d := by
             rw [Polynomial.natDegree_C_mul ha_pos.ne', hp_deg]
           have hscaled_pos : HasPosLeadingCoeff (C a * p) :=

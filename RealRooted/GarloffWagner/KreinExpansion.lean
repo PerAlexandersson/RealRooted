@@ -460,7 +460,7 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
   have hsf : sf ≠ 0 := inv_ne_zero (leadingCoeff_ne_zero.mpr hf0)
   have hsg : sg ≠ 0 := inv_ne_zero (leadingCoeff_ne_zero.mpr hg0)
   have hfg_scaled : StrictInterl (C sf * f) (C sg * g) :=
-    prec_C_mul_right (prec_C_mul_left hfg hsf) hsg
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg hsf) hsg
   have hsf_pos : HasPosLeadingCoeff (C sf * f) :=
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hf0
   have hsg_pos : HasPosLeadingCoeff (C sg * g) :=
@@ -475,11 +475,11 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
     simpa [gwJL_C_mul] using hscaled
   have hleft :
       StrictInterl (gwJL k f) (C sg * gwJL k g) := by
-    have htmp := prec_C_mul_left hscaled' (inv_ne_zero hsf)
+    have htmp := StrictInterl.C_mul_left hscaled' (inv_ne_zero hsf)
     have hscale : C sf⁻¹ * (C sf * gwJL k f) = gwJL k f := by
       rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsf, C_1, one_mul]
     simpa [hscale] using htmp
-  have hright := prec_C_mul_right hleft (inv_ne_zero hsg)
+  have hright := StrictInterl.C_mul_right hleft (inv_ne_zero hsg)
   have hscale : C sg⁻¹ * (C sg * gwJL k g) = gwJL k g := by
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsg, C_1, one_mul]
   simpa [hscale] using hright

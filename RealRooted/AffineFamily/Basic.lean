@@ -90,7 +90,7 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
   have hg_Xf : StrictInterl g (X * f) := prec_to_prec_mul_X_of_nonneg h hfnn hgnn
   have hf_Xf : StrictInterl f (X * f) := prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn
   have hsXf : StrictInterl (C s * (X * f)) (X * f) := prec_C_mul_self hXf.1 hXf.2 hs.ne'
-  have htf : StrictInterl (C t * f) (X * f) := prec_C_mul_left hf_Xf ht.ne'
+  have htf : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hf_Xf ht.ne'
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg.1
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
     (hfnn.pos_leadingCoeff hf.1).X_mul

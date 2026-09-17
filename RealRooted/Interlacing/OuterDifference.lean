@@ -91,7 +91,7 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
         rw [leadingCoeff, hder_deg] at hgder_pos
         exact hgder_pos
       rw [hder_C]
-      simpa using prec_C_mul_left hbase (ne_of_gt hcoeff_pos)
+      simpa using StrictInterl.C_mul_left hbase (ne_of_gt hcoeff_pos)
     · exact (derivative_interlaces hprec.2.1.2 (by lia)).toStrictInterl
   exact
     eval_mul_eval_nonneg_of_prec_right
@@ -517,7 +517,7 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
           simp
         rw [hgC, hdC]
         simpa only [mul_one] using
-          prec_C_mul_right (prec_C_mul_left hbase hgcoeff) hdcoeff
+          StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase hgcoeff) hdcoeff
       · have hbase : StrictInterl (1 : ℝ[X]) (h - f) :=
           (interlaces_one_linear hsub_one).toStrictInterl
         have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
@@ -527,7 +527,7 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
           rw [hgC, hc]
           simp
         rw [hgC]
-        simpa only [mul_one] using prec_C_mul_left hbase hgcoeff
+        simpa only [mul_one] using StrictInterl.C_mul_left hbase hgcoeff
     · have hgdeg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgzero
       have hgder_pos : HasPosLeadingCoeff g.derivative :=
         hg_pos.derivative hgzero

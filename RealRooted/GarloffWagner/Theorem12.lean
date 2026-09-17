@@ -157,7 +157,7 @@ theorem prec0_C_mul_left_of_nonneg {f g : ℝ[X]}
   rcases h with hf0 | hg0 | hprec
   · simp [hf0, interl_zero_left]
   · simpa [hg0] using interl_zero_right (C a * f)
-  · exact (prec_C_mul_left hprec ha_pos.ne').toInterl
+  · exact (StrictInterl.C_mul_left hprec ha_pos.ne').toInterl
 
 theorem HasNonnegCoeffs.weightedSum :
     ∀ l : List (ℝ × ℝ[X]),

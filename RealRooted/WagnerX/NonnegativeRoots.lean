@@ -300,7 +300,7 @@ theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
     (hc : c ≠ 0) :
     StrictInterl g ((C c * X) * f) := by
   simpa [mul_assoc] using
-    (prec_C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
+    (StrictInterl.C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
 
 /-- Zero-aware Wagner (3): if `f ≪₀ g` and both polynomials have nonnegative
 coefficients, then `g ≪₀ X * f`. -/

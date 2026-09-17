@@ -205,7 +205,7 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
-  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
+  exact (StrictInterl.C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
 
 /-! ## Matrix action formula -/
 
@@ -824,7 +824,7 @@ lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
     simp [hf]
   · right
     simp_all
-  · exact Or.inr (Or.inr (prec_C_mul_right (prec_C_mul_left hprec hc) hc))
+  · exact Or.inr (Or.inr (StrictInterl.C_mul_right (StrictInterl.C_mul_left hprec hc) hc))
 
 lemma isInterlacingSeq0Nonneg_map_C_mul
     {c : ℝ} (hc_nonneg : 0 ≤ c) (hc : c ≠ 0) {fs : List ℝ[X]}

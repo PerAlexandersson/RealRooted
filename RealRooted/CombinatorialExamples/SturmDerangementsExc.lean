@@ -332,7 +332,7 @@ lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
 lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hprec : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     StrictInterl (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
-  prec_C_mul_left hprec (by positivity)
+  StrictInterl.C_mul_left hprec (by positivity)
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :

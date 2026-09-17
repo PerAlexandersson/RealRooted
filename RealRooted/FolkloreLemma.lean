@@ -214,7 +214,7 @@ theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
     rw [← hlc]
     simp [hf_lc_ne]
   have hscaled : StrictInterl (C c * g) (C c * f) :=
-    prec_C_mul_right (prec_C_mul_left hgf hc_ne) hc_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hgf hc_ne) hc_ne
   have hdeg_scaled : (C c * g).natDegree + 1 = (C c * f).natDegree := by
     rw [natDegree_C_mul hc_ne, natDegree_C_mul hc_ne, hdeg]
   have hf_scaled_nonpos : ∀ r ∈ (C c * f).roots, r ≤ 0 := by
@@ -249,13 +249,13 @@ theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
       _ = f - X * g := by simp [c, hf_lc_ne]
   constructor
   · have hback :=
-      prec_C_mul_right
-        (prec_C_mul_left hright_scaled (inv_ne_zero hc_ne))
+      StrictInterl.C_mul_right
+        (StrictInterl.C_mul_left hright_scaled (inv_ne_zero hc_ne))
         (inv_ne_zero hc_ne)
     simpa [hcancel_g, hcancel_sub] using hback
   · have hback :=
-      prec_C_mul_right
-        (prec_C_mul_left hleft_scaled (inv_ne_zero hc_ne))
+      StrictInterl.C_mul_right
+        (StrictInterl.C_mul_left hleft_scaled (inv_ne_zero hc_ne))
         (inv_ne_zero hc_ne)
     simpa [hcancel_f, hcancel_sub] using hback
 
@@ -278,14 +278,14 @@ theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
     StrictInterl g (f - X * g) := by
   have hc_pos : 0 < c := lt_trans zero_lt_one hc
   have hc_ne : c ≠ 0 := ne_of_gt hc_pos
-  have hscaled : StrictInterl (C c * g) f := prec_C_mul_left hgf hc_ne
+  have hscaled : StrictInterl (C c * g) f := StrictInterl.C_mul_left hgf hc_ne
   have hdeg_scaled : (C c * g).natDegree + 1 = f.natDegree := by rw [natDegree_C_mul hc_ne, hdeg]
   have hg_scaled_nonpos : ∀ r ∈ (C c * g).roots, r ≤ 0 := by
     simpa [roots_C_mul _ hc_ne] using hg_nonpos
   have hpair := prec_sub_X_mul_pair_of_eq_posLeadingCoeff
     hscaled hf_pos hlc hdeg_scaled hf_nonpos hg_scaled_nonpos hcancel_pos
   have hleft_scaled : StrictInterl (C c⁻¹ * (C c * g)) (f - X * (C c * g)) :=
-    prec_C_mul_left hpair.1 (inv_ne_zero hc_ne)
+    StrictInterl.C_mul_left hpair.1 (inv_ne_zero hc_ne)
   have hcancel_left : C c⁻¹ * (C c * g) = g := by
     calc
       C c⁻¹ * (C c * g) = C (c⁻¹ * c) * g := by grind
@@ -296,9 +296,9 @@ theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
     rw [sub_pos, inv_lt_one₀ hc_pos]
     exact hc
   have hfirst : StrictInterl g (C (1 - c⁻¹) * f) :=
-    prec_C_mul_right hgf (ne_of_gt hone_sub_inv_pos)
+    StrictInterl.C_mul_right hgf (ne_of_gt hone_sub_inv_pos)
   have hsecond : StrictInterl g (C c⁻¹ * (f - X * (C c * g))) :=
-    prec_C_mul_right hleft (ne_of_gt hinv_pos)
+    StrictInterl.C_mul_right hleft (ne_of_gt hinv_pos)
   have hsum : StrictInterl g
       ([C (1 - c⁻¹) * f, C c⁻¹ * (f - X * (C c * g))] : List ℝ[X]).sum := by
     apply prec_sum_left_of_common_left_signed

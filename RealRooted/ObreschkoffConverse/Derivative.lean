@@ -118,7 +118,7 @@ private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
   rcases h with rfl | rfl | hprec
   · simp [interl_zero_left]
   · simp [interl_zero_right]
-  · exact (prec_C_mul_right (prec_C_mul_left hprec ha) hb).toInterl
+  · exact (StrictInterl.C_mul_right (StrictInterl.C_mul_left hprec ha) hb).toInterl
 
 /-- Degree-zero polynomials satisfy `StrictInterl` in both orientations. -/
 lemma prec_degree_zero_degree_zero
@@ -222,7 +222,7 @@ theorem derivativePreservesPrecSameDegree_of_monic
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
   have hfg₀ : StrictInterl f₀ g₀ :=
-    prec_C_mul_right (prec_C_mul_left hfg (inv_ne_zero hf_lc_ne))
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg (inv_ne_zero hf_lc_ne))
       (inv_ne_zero hg_lc_ne)
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul (inv_ne_zero hf_lc_ne),
@@ -283,7 +283,7 @@ theorem derivativePreservesPrecSameDegree_of_posLeading
     unfold HasPosLeadingCoeff g₀
     simp_all
   have hfg₀ : StrictInterl f₀ g₀ :=
-    prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg hsf_ne) hsg_ne
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have htwo₀ : 2 ≤ f₀.natDegree := by simpa [f₀, natDegree_C_mul hsf_ne] using htwo

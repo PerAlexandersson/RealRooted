@@ -158,7 +158,8 @@ private theorem allComboRealRooted_of_prec_succDegree
     · grind
   let f₀ : ℝ[X] := C sf * f
   let g₀ : ℝ[X] := C sg * g
-  have hfg₀ : StrictInterl f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
+  have hfg₀ : StrictInterl f₀ g₀ :=
+    (hfg.C_mul_left hsf_ne).C_mul_right hsg_ne
   have hdeg₀ : f₀.natDegree + 1 = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
@@ -505,7 +506,8 @@ private theorem allComboRealRooted_of_prec_sameDegree
     · grind
   let f₀ : ℝ[X] := C sf * f
   let g₀ : ℝ[X] := C sg * g
-  have hfg₀ : StrictInterl f₀ g₀ := prec_C_mul_right (prec_C_mul_left hfg hsf_ne) hsg_ne
+  have hfg₀ : StrictInterl f₀ g₀ :=
+    (hfg.C_mul_left hsf_ne).C_mul_right hsg_ne
   have hdeg₀ : f₀.natDegree = g₀.natDegree := by
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have hf₀_pos : HasPosLeadingCoeff f₀ := by

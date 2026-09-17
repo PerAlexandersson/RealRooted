@@ -160,7 +160,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
   have hleft :
       StrictInterl (C (motzkinCoeffA n) * motzkin (n + 1))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
-    prec_C_mul_left
+    StrictInterl.C_mul_left
       (prec_self_mul_X_sub_C_of_roots_le
         hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
       hscalarA_pos.ne'
@@ -171,7 +171,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
   have hright :
       StrictInterl (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
-    prec_C_mul_left hright_core hscalarB_pos.ne'
+    StrictInterl.C_mul_left hright_core hscalarB_pos.ne'
   have hleft_pos :
       HasPosLeadingCoeff (C (motzkinCoeffA n) * motzkin (n + 1)) :=
     hasPosLeadingCoeff_C_mul hscalarA_pos (motzkin_posLeadingCoeff (n + 1))

@@ -63,7 +63,7 @@ theorem darbouxOperator_interlaces_of_roots_mem_Icc
       (by rw [natDegree_neg, hdeg]; lia)
       (by rw [natDegree_neg, hdeg]) hroots
   have hprec : StrictInterl p (darbouxOperator a b p) := by
-    simpa using prec_C_mul_right hprec_neg (a := (-1 : ℝ)) (by norm_num)
+    simpa using StrictInterl.C_mul_right hprec_neg (a := (-1 : ℝ)) (by norm_num)
   exact hprec.toInterlaces (by rw [hdeg])
 
 /-- Moving both Darboux parameters by a nonnegative shift orients the two

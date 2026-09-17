@@ -254,13 +254,13 @@ lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
 lemma prec {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → StrictInterl h (weightedSum l)
   | _, singleton ha hprec _ => by
-      simpa [weightedSum, weightedSum_cons] using prec_C_mul_right hprec ha.ne'
+      simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hprec ha.ne'
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using prec hl
   | _, @cons_pos _ a p l ha hprec hpos hl hrr_ne hrr_splits hcop => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact prec_add_of_prec_left
-        (prec_C_mul_right hprec ha.ne')
+        (StrictInterl.C_mul_right hprec ha.ne')
         (prec hl)
         hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
 
@@ -326,7 +326,7 @@ theorem prec_weightedSum_right :
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_prec : StrictInterl (C a * p) h :=
-            prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
+            StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
           have htail_prec : StrictInterl (weightedSum l) h :=
@@ -340,7 +340,7 @@ theorem prec_weightedSum_right :
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
                 hnonneg_tail htail)
           simpa [weightedSum_cons, hzero_tail] using
-            prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
+            StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
           prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail

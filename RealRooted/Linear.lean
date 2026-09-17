@@ -501,25 +501,23 @@ lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f 
   exact ⟨⟨hf₀, hf⟩, ⟨hf₀, hf⟩, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
     Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
 
-/-- Multiplying the left polynomial in a `StrictInterl` relation by a nonzero scalar
-preserves interlacing, since it does not change the roots. -/
+/- Deprecated compatibility alias for `StrictInterl.C_mul_left`. -/
+@[deprecated StrictInterl.C_mul_left (since := "2026-09-17")]
 lemma prec_C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl (C a * f) g := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  exact ⟨by simp_all, hg, ss, rs, hss, hrs, by simp_all, hrs_eq, hcase⟩
+    StrictInterl (C a * f) g :=
+  h.C_mul_left ha
 
-/-- Multiplying the right polynomial in a `StrictInterl` relation by a nonzero scalar
-preserves interlacing, since it does not change the roots. -/
+/- Deprecated compatibility alias for `StrictInterl.C_mul_right`. -/
+@[deprecated StrictInterl.C_mul_right (since := "2026-09-17")]
 lemma prec_C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl f (C a * g) := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  exact ⟨hf, by simp_all, ss, rs, hss, hrs, hss_eq, by simp_all, hcase⟩
+    StrictInterl f (C a * g) :=
+  h.C_mul_right ha
 
 lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     (hp_deg : p.natDegree = 1) :
     Interlaces (C c) p := by
   have hprec : StrictInterl (C c * (1 : ℝ[X])) p :=
-    prec_C_mul_left (interlaces_one_linear hp_deg).toStrictInterl hc
+    (interlaces_one_linear hp_deg).toStrictInterl.C_mul_left hc
   have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by simp [hp_deg]
   simpa using hprec.toInterlaces hdeg
 
@@ -534,13 +532,13 @@ lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
   rcases h with hf0 | hg0 | hprec
   · simpa [hf0] using interl_zero_left (C a * g)
   · simp [hg0, interl_zero_right]
-  · exact (prec_C_mul_right hprec ha_pos.ne').toInterl
+  · exact (hprec.C_mul_right ha_pos.ne').toInterl
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
 lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
     StrictInterl (C a * f) f :=
-  prec_C_mul_left (prec_refl hf₀ hf) ha
+  (prec_refl hf₀ hf).C_mul_left ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/

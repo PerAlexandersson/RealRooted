@@ -138,10 +138,10 @@ theorem IntervalRootData.prec_neg_insertionOperator
     rw [insertionOperator_C_mul]
     ring
   rw [hoperator] at hprec
-  have hleft := prec_C_mul_left hprec (inv_ne_zero hsign)
+  have hleft := StrictInterl.C_mul_left hprec (inv_ne_zero hsign)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
     one_mul] at hleft
-  have hboth := prec_C_mul_right hleft (inv_ne_zero hsign)
+  have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsign)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
     one_mul] at hboth
   exact hboth
@@ -422,8 +422,8 @@ theorem consecutive_signedTriangleFamily_prec
     have hraw := hHData.prec_neg_insertionOperator hHEval a b (by
       dsimp only [b]
       positivity)
-    have hleft := prec_C_mul_left hraw hsignH
-    have hboth := prec_C_mul_right hleft hsignH
+    have hleft := StrictInterl.C_mul_left hraw hsignH
+    have hboth := StrictInterl.C_mul_right hleft hsignH
     dsimp only [Hpos]
     rw [insertionOperator_C_mul]
     simpa only [mul_neg] using hboth
@@ -471,10 +471,10 @@ theorem consecutive_signedTriangleFamily_prec
     hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
     hnoCommon hcoefficientNeg
   rw [← hcombination] at hprecPos
-  have hleft := prec_C_mul_left hprecPos (inv_ne_zero hsignAB)
+  have hleft := StrictInterl.C_mul_left hprecPos (inv_ne_zero hsignAB)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
     C_1, one_mul] at hleft
-  have hboth := prec_C_mul_right hleft (inv_ne_zero hsignAB)
+  have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsignAB)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
     C_1, one_mul] at hboth
   exact hboth

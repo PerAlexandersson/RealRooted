@@ -268,8 +268,8 @@ theorem normalizedReversedContribution_prec_of_lt
       (normalizedReversedContribution m ε d) := by
   rw [normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε e hε,
     normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε d hε]
-  exact prec_C_mul_right
-    (prec_C_mul_left
+  exact StrictInterl.C_mul_right
+    (StrictInterl.C_mul_left
       (normalizedRPolynomial_prec_of_lt m ε d e hm hde he)
       (reversedContribution_scale_pos m ε e).ne')
     (reversedContribution_scale_pos m ε d).ne'
@@ -377,7 +377,7 @@ theorem toricContribution_prec_of_lt
         (reciprocalShift m (shiftedToricContribution m ε e)) := by
     rw [reciprocalShift_shiftedToricContribution,
       reciprocalShift_shiftedToricContribution]
-    exact prec_C_mul_right (prec_C_mul_left hreflected hsign) hsign
+    exact StrictInterl.C_mul_right (StrictInterl.C_mul_left hreflected hsign) hsign
   have hdPF : IsPFPolynomial
       (reciprocalShift m (shiftedToricContribution m ε d)) :=
     IsPFPolynomial.of_realRooted_nonneg

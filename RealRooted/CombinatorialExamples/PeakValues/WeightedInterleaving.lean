@@ -250,7 +250,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable
     exact commonPhaseRestriction_identifyLast n wt
       (peakValuePolynomial (n + 1))
   rw [← hdecomp, hfull, hAeq] at hAfull
-  have hscaled := prec_C_mul_left hAfull (by norm_num : (2 : ℝ)⁻¹ ≠ 0)
+  have hscaled := StrictInterl.C_mul_left hAfull (by norm_num : (2 : ℝ)⁻¹ ≠ 0)
   simpa only [← mul_assoc, ← Polynomial.C_mul,
     inv_mul_cancel₀ (by norm_num : (2 : ℝ) ≠ 0), Polynomial.C_1,
     one_mul] using hscaled
@@ -296,7 +296,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks
     subst n
     rw [peakValueWeightedDiagonal_one,
       peakValueWeightedDiagonal_two]
-    have hprec := prec_C_mul_right
+    have hprec := StrictInterl.C_mul_right
       (prec_refl (by norm_num : (1 : ℝ[X]) ≠ 0)
         (by exact Polynomial.Splits.one))
       (by norm_num : (2 : ℝ) ≠ 0)
