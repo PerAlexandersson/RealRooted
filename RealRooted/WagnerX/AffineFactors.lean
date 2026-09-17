@@ -17,7 +17,7 @@ theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : StrictIn
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have hfg' : StrictInterl f' g' := by
-    simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 h
+    simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -34,7 +34,9 @@ theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : StrictIn
       StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hX'
-  exact (prec_comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1 htranslated
+  exact
+    (StrictInterl.comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1
+      htranslated
 
 theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (h : StrictInterl ((X - C r) * f) ((X - C r) * g))
@@ -45,7 +47,8 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
   set g' := g.comp (X + C r)
   have htranslated :
       StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
-    simpa using (prec_comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).2 h
+    simpa using
+      (StrictInterl.comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).2 h
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -61,7 +64,7 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using htranslated
     exact prec_of_prec_mul_X_both_of_roots_nonpos hX' hf'_nonpos hg'_nonpos
-  exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
+  exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
@@ -220,19 +223,21 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   constructor
   · intro hfg
     have hfg' : StrictInterl f' g' := by
-      simpa [f', g'] using (prec_comp_X_add_C_iff (f := f) (g := g) r).2 hfg
+      simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 hfg
     have hgxf' : StrictInterl g' (X * f') := hshift.mp hfg'
     have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
-    exact (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
+    exact
+      (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
   · intro hgf
     have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
-      simpa [g'] using (prec_comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 hgf
+      simpa [g'] using
+        (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 hgf
     have hgxf' : StrictInterl g' (X * f') := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
     have hfg' : StrictInterl f' g' := hshift.mpr hgxf'
-    exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
+    exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 end RealRooted

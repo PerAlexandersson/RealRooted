@@ -370,7 +370,7 @@ theorem toricContribution_prec_of_lt
         (normalizedReversedContribution m ε d).natDegree := by
     rw [normalizedReversedContribution_natDegree m ε e hε,
       normalizedReversedContribution_natDegree m ε d hε]
-  have hreflected := prec_comp_neg_X_of_sameDegree hrev hdegree
+  have hreflected := hrev.comp_neg_X_of_natDegree_eq hdegree
   have hsign : (-1 : ℝ) ^ m ≠ 0 := pow_ne_zero m (by norm_num)
   have hreciprocal :
       StrictInterl (reciprocalShift m (shiftedToricContribution m ε d))
@@ -403,7 +403,7 @@ theorem toricContribution_prec_of_lt
         (shiftedToricContribution m ε d) := by
     simpa [reciprocalShift] using hshifted
   simpa [toricContribution, sub_eq_add_neg] using
-    prec_comp_X_add_C hshifted' (-1)
+    hshifted'.comp_X_add_C (-1)
 
 /-- The fixed row `(g_(n,0), ..., g_(n,floor (n/2)))`, parametrized by
 `n = 2m+ε`. -/

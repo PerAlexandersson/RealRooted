@@ -282,7 +282,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
     StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 1) β) := by
   have hbeta := shiftedJacobiMonic_prec_beta_add_one n (α := β) (β := α) hβ hα
-  have hreflected := prec_comp_one_sub_X_of_sameDegree hbeta (by
+  have hreflected := hbeta.comp_one_sub_X_of_natDegree_eq (by
     rw [natDegree_shiftedJacobiMonic n (by linarith) hα,
       natDegree_shiftedJacobiMonic n hβ (by linarith)])
   have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero n (by norm_num)

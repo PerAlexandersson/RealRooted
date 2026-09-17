@@ -62,7 +62,7 @@ theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
 theorem prec_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
     StrictInterl ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
   have hprec := prec_X_pow_succ n
-  rw [← prec_comp_X_add_C_iff r] at hprec
+  rw [← StrictInterl.comp_X_add_C_iff r] at hprec
   simpa [pow_comp, X_comp] using hprec
 
 /-- Confluent interlacing for a positive linear factor `a + bX`, with `b > 0`. -/

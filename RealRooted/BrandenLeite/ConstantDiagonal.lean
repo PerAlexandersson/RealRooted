@@ -153,6 +153,6 @@ theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
     rw [hzero', zero_comp]
   · right
     right
-    exact prec_comp_C_mul_X hprec hδ
+    exact hprec.comp_C_mul_X hδ
 
 end RealRooted.BrandenLeite

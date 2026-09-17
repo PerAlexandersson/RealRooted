@@ -26,10 +26,10 @@ theorem pairHasCommonInterleaver_comp_X_add_C_iff
       rw [comp_assoc]
       simp
     exact ⟨h.comp (X + C (-r)),
-      (prec_comp_X_add_C_iff r).mp (by rw [key]; exact hf),
-      (prec_comp_X_add_C_iff r).mp (by rw [key]; exact hg)⟩
+      (StrictInterl.comp_X_add_C_iff r).mp (by rw [key]; exact hf),
+      (StrictInterl.comp_X_add_C_iff r).mp (by rw [key]; exact hg)⟩
   · rintro ⟨h, hf, hg⟩
-    exact ⟨h.comp (X + C r), prec_comp_X_add_C hf r, prec_comp_X_add_C hg r⟩
+    exact ⟨h.comp (X + C r), hf.comp_X_add_C r, hg.comp_X_add_C r⟩
 
 private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     {f g : ℝ[X]}
