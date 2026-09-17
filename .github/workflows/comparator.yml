@@ -66,10 +66,13 @@ jobs:
             lake-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
             lake-
 
-      - name: Build library (warms oleans for comparator)
+      - name: Build challenge theorem dependencies
         run: |
           lake exe cache get
-          lake build
+          lake build \
+            RealRooted.AissenSchoenbergWhitney \
+            RealRooted.Bezoutian.LowDegree \
+            RealRooted.SymmetricDecomposition.Theorem26
 
       - name: Install landrun
         run: |
