@@ -172,7 +172,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
-        · exact (StrictInterl.refl ha_rr.1 ha_rr.2).toInterl
+        · exact Interl.refl fun _ => ha_rr.2
         · exact haxb.toInterl
       · simp_all
     exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)

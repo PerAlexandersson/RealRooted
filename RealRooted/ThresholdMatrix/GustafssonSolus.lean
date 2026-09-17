@@ -21,7 +21,7 @@ namespace GustafssonSolus
 
 private lemma prec0_gs_quadratic_self {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) :=
-  prec0_refl_of_realRooted (isRealRooted_affine_mul_X_add_X hs)
+  Interl.refl fun _ => (isRealRooted_affine_mul_X_add_X hs).2
 
 private lemma prec0_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl X ((C s * X + C t) * X + X) := by
@@ -89,14 +89,14 @@ private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
 
 private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t) (C s * X + C t) :=
-  prec0_refl_of_realRooted (isRealRooted_affine_factor (s := s) (t := t) hs)
+  Interl.refl fun _ => (isRealRooted_affine_factor (s := s) (t := t) hs).2
 
 private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
   prec0_affine_add_one_self hs
 
 private lemma prec0_gs_X_X : Interl (X : ℝ[X]) X :=
-  prec0_refl_of_realRooted isRealRooted_X
+  Interl.refl fun _ => isRealRooted_X.2
 
 private lemma prec0_gs_one_one : Interl (1 : ℝ[X]) 1 := by
   simpa using prec0_C_C (1 : ℝ) (1 : ℝ)

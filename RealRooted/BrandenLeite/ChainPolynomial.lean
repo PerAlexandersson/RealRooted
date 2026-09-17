@@ -367,9 +367,7 @@ theorem prec0_chainPolynomial_succ
     intro j hj
     rcases eq_or_lt_of_le hj with hEq | hjn
     · subst j
-      by_cases h0 : F n = 0
-      · simp [h0, interl_zero_left]
-      · exact prec0_refl_of_realRooted ⟨h0, hrow.splits (hmem n le_rfl) h0⟩
+      exact Interl.refl (hrow.splits (hmem n le_rfl))
     · let i : Fin (subdivisionRow resolution n).length := ⟨j, by simp; lia⟩
       let last : Fin (subdivisionRow resolution n).length := ⟨n, by simp⟩
       have hprec := hrow.interlacingSeq0.prec0 (i := i) (j := last) (by

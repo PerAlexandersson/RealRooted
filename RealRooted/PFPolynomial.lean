@@ -317,10 +317,8 @@ theorem to_sequence
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
 theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    Interl p p := by
-  by_cases hp0 : p = 0
-  · exact Or.inl hp0
-  · grind [StrictInterl.toInterl, StrictInterl.refl, IsPFPolynomial.ne_zero_and_splits]
+    Interl p p :=
+  Interl.refl fun hp0 => (hp.ne_zero_and_splits hp0).2
 
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Interl p p) :

@@ -51,7 +51,7 @@ theorem isRealRooted_X_mul_affine {s v : ℝ} (hs : 0 < s) :
 private theorem case_XXXX {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by
   rw [show (C s * X + C t) * X + X = X * (C s * X + C (t + 1)) by rw [C_add, C_1]; ring]
-  exact prec0_refl_of_realRooted (isRealRooted_X_mul_affine hs)
+  exact Interl.refl fun _ => (isRealRooted_X_mul_affine hs).2
 
 private theorem case_X1XX {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl ((C s * X + C t) * 1 + X) ((C s * X + C t) * X + X) := by
@@ -68,7 +68,7 @@ private theorem case_X1X1 {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 private theorem case_11XX {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * 1 + X) ((C s * X + C t) * 1 + X) := by
   rw [show (C s * X + C t) * 1 + X = C (s + 1) * X + C t by rw [C_add, C_1]; ring]
-  exact prec0_refl_of_realRooted (isRealRooted_affine_factor (by positivity))
+  exact Interl.refl fun _ => (isRealRooted_affine_factor (by positivity)).2
 
 private theorem case_11X1 {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + X) := by
@@ -79,7 +79,7 @@ private theorem case_11X1 {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
 private theorem case_1111 {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * 1 + 1) ((C s * X + C t) * 1 + 1) := by
   rw [show (C s * X + C t) * 1 + 1 = C s * X + C (t + 1) by rw [C_add, C_1]; ring]
-  exact prec0_refl_of_realRooted (isRealRooted_affine_factor hs)
+  exact Interl.refl fun _ => (isRealRooted_affine_factor hs).2
 
 /-- **The marker-one `2 × 2` entry property.**  For thresholds `t₁ ≤ t₂` and
 columns `j₁ ≤ j₂`, the four marker-one threshold entries satisfy the affine

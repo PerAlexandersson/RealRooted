@@ -340,7 +340,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
         (C s * X + C (t + 1)) * (X + C a) := by
     grind
   simpa [veroneseLinearFactorRowDesc, oneSupportSeq, hfactor] using
-    (StrictInterl.refl hrr.1 hrr.2).toInterl
+    (Interl.refl fun _ => hrr.2)
 
 def veroneseLinearFactorConstEntry {r : ℕ} (a : ℝ) (i j : Fin r) : ℝ :=
   if j.1 = i.1 then a else if j.1 = i.1 + 1 then 1 else 0
@@ -466,7 +466,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
       let hrr :=
         isRealRooted_affine_mul_C_add_X
           (t := t) (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs
-      exact (StrictInterl.refl hrr.1 hrr.2).toInterl
+      exact Interl.refl fun _ => hrr.2
     · rw [if_pos hj₁0, if_neg hj₂0]
       exact
         prec0_const_entry_affine_plus_const_to_affine_plus_X
@@ -508,9 +508,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
     · rw [if_pos hj₁0, if_pos hj₂0]
-      exact
-        (StrictInterl.refl (isRealRooted_affine_mul_X_add_X hs).1
-          (isRealRooted_affine_mul_X_add_X hs).2).toInterl
+      exact Interl.refl fun _ => (isRealRooted_affine_mul_X_add_X hs).2
     · by_cases hj₂last : j₂.1 = r - 1
       · rw [if_pos hj₁0, if_neg hj₂0]
         simp only [veroneseLinearFactorLastConstEntry, hj₂last, if_true]

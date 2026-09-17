@@ -219,10 +219,11 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
 
 /-! ## Finite-entry shape helpers -/
 
-/-- Reflexivity of `Interl` on a nonzero real-rooted polynomial. -/
+/- Deprecated compatibility alias for `Interl.refl`. -/
+@[deprecated Interl.refl (since := "2026-09-17")]
 theorem prec0_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
-  (StrictInterl.refl hp.1 hp.2).toInterl
+  Interl.refl fun _ => hp.2
 
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/

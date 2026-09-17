@@ -103,7 +103,7 @@ private theorem resolvedChowRow_zero
 private theorem reflectionInterlacing_one :
     IsReflectionInterlacingSeq 0 [(1 : ℝ[X])] := by
   have hself : Interl (1 : ℝ[X]) 1 :=
-    (StrictInterl.refl one_ne_zero Polynomial.Splits.one).toInterl
+    Interl.refl fun _ => Polynomial.Splits.one
   refine ⟨?_, ?_⟩
   · intro p hp
     have hp_one : p = 1 := by simpa using hp
@@ -277,9 +277,7 @@ theorem resolvedChowCombination_endpoint_prec0
       Interl (resolvedChowDerangement resolution n j)
         (resolvedChowDerangement resolution n j) := by
     intro j hj
-    by_cases hzero : resolvedChowDerangement resolution n j = 0
-    · exact Or.inl hzero
-    · exact (StrictInterl.refl hzero (hdirect.splits (hmem j hj) hzero)).toInterl
+    exact Interl.refl (hdirect.splits (hmem j hj))
   have hleft : ∀ j, j ≤ n →
       Interl (resolvedChowDerangement resolution n 0)
         (resolvedChowDerangement resolution n j) := by
