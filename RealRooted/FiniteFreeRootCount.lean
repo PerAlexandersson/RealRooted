@@ -249,8 +249,8 @@ private theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
 private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :
     StrictInterl (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
-  have h := prec_mul_common_factor (rootPolynomial_monic s).ne_zero
-    (rootPolynomial_splits s) (prec_linear_root_move huv)
+  have h := (prec_linear_root_move huv).mul_common_factor
+    (rootPolynomial_monic s).ne_zero (rootPolynomial_splits s)
   simpa [rootPolynomial, mul_comm] using h
 
 /-- The operator property needed by the finite root-replacement proof. -/

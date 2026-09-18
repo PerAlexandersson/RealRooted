@@ -418,7 +418,7 @@ private lemma prec0_hz_affine_add_one_mul_one_add_X
       simpa [show (1 + X : ℝ[X]) = X + C (1 : ℝ) by grind] using
         (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
     exact (interlaces_one_linear (p := (1 + X : ℝ[X])) hdeg).toStrictInterl
-  have hmul := prec_mul_common_factor hd_rr.1 hd_rr.2 hbase
+  have hmul := hbase.mul_common_factor hd_rr.1 hd_rr.2
   simpa using hmul.toInterl
 
 private lemma prec0_hz_mul_one_add_X_self
@@ -455,7 +455,7 @@ private lemma prec0_hz_mul_one_add_X_XAffineAddOne
       prec_affine_linear_affine_linear_of_cross
         (u := 1) (v := 1) (U := 1) (V := 0)
         zero_lt_one zero_lt_one (by norm_num)
-  have hmul := prec_mul_common_factor hd_rr.1 hd_rr.2 hbase
+  have hmul := hbase.mul_common_factor hd_rr.1 hd_rr.2
   rw [show (X * (C s * X + C t + 1) : ℝ[X]) =
     (C s * X + C t + 1) * X by ring]
   simpa using hmul.toInterl

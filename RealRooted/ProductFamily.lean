@@ -194,16 +194,16 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
     simpa [hgj_eq] using hgs.realRooted (gs.get kj) (List.get_mem _ _)
   have hleft_i : StrictInterl (fi * gj) (fi * gi) := by
     simpa [fi, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hfi_rr.1 hfi_rr.2 hgj_gi)
+      (hgj_gi.mul_common_factor hfi_rr.1 hfi_rr.2)
   have hleft_j : StrictInterl (fi * gj) (fj * gj) := by
     simpa [fi, fj, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hgj_rr.1 hgj_rr.2 hfi_fj)
+      (hfi_fj.mul_common_factor hgj_rr.1 hgj_rr.2)
   have hright_i : StrictInterl (fi * gi) (fj * gi) := by
     simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hgi_rr.1 hgi_rr.2 hfi_fj)
+      (hfi_fj.mul_common_factor hgi_rr.1 hgi_rr.2)
   have hright_j : StrictInterl (fj * gj) (fj * gi) := by
     simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hfj_rr.1 hfj_rr.2 hgj_gi)
+      (hgj_gi.mul_common_factor hfj_rr.1 hfj_rr.2)
   refine ⟨⟨fi * gj, ?_, ?_⟩, ⟨fj * gi, ?_, ?_⟩⟩
   · simpa [List.get_eq_getElem, fi, gi, gj, i', hzip_len] using hleft_i
   · simpa [List.get_eq_getElem, fi, fj, gj, j', hzip_len] using hleft_j

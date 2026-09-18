@@ -1052,10 +1052,12 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hprec_q with hprec_q | hprec_q
     · have hprec_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+        hprec_q.mul_common_factor
+          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
     · have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+        hprec_q.mul_common_factor
+          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
 end PosComboRealRooted
 
@@ -1504,7 +1506,7 @@ theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
   have hbase : StrictInterl f' (C a * f' + C b * g') :=
     prec_convex_left hfg hf'_pos hg'_pos ha hb hfg'_rr_ne hfg'_rr_splits hcop
   have hmul : StrictInterl (d * f') (d * (C a * f' + C b * g')) :=
-    prec_mul_common_factor hd_ne hd_splits hbase
+    hbase.mul_common_factor hd_ne hd_splits
   grind
 
 end RealRooted

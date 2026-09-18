@@ -266,7 +266,7 @@ lemma oneDescent_prec_gamma_one_adjacent
     isRealRooted_X_pow (m - j - 2)
   rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j hjm, hsub_left, hpow]
   simpa [a, b, mul_assoc, mul_left_comm, mul_comm] using
-    (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
+    (hscaled.mul_common_factor hpow_rr.1 hpow_rr.2)
 
 lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
@@ -289,7 +289,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     isRealRooted_X_pow (m - 2)
   rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m (by lia), hpow]
   simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm, tsub_tsub] using
-    (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
+    (hscaled.mul_common_factor hpow_rr.1 hpow_rr.2)
 
 /-- Uniform adjacent comparison in the base `d = 1` Gamma chain:
 `Γ_{1,j+1}^{(m)} ≪ Γ_{1,j}^{(m)}` for every admissible `j`. -/

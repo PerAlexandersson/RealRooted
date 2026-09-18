@@ -1218,7 +1218,8 @@ theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right hfh hgh hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
-  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') :=
+    hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the no-common-right Wagner theorem. This is the
@@ -1234,7 +1235,8 @@ theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : �
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno
-  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') :=
+    hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- Wagner (1) without a coprimeness hypothesis: positive leading coefficients
@@ -1285,7 +1287,8 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
             lia
           have hsum' : StrictInterl (qf + qg) qh := by grind
           have hmul : StrictInterl ((X - C r) * (qf + qg)) ((X - C r) * qh) :=
-            prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hsum'
+            hsum'.mul_common_factor
+              (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
           grind
         · have hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r := by grind
           exact prec_add_of_prec_right_of_no_common_right hfh hgh hf_pos hg_pos hno)
@@ -1528,7 +1531,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : �
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_mixed_of_natDegree hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop
-  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') :=
+    hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the mixed-degree no-common-right Wagner theorem. -/
@@ -1547,7 +1551,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_
   have hsum : StrictInterl (f' + g') h' :=
     prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right
       hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hno
-  have hmul : StrictInterl (d * (f' + g')) (d * h') := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * (f' + g')) (d * h') :=
+    hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 end

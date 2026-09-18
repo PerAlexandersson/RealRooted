@@ -485,9 +485,8 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
     have hqprec : StrictInterl qg (qh - qf) :=
       ih qg.natDegree (by lia) rfl hqfg hqgh hqfh
         hqf_pos hqg_pos hqh_pos hqsub_pos
-    have hmul :=
-      prec_mul_common_factor
-        (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqprec
+    have hmul := hqprec.mul_common_factor
+      (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
     simpa [hgfactor, hsub_factor] using hmul
   · have hg_nodup : g.roots.Nodup := not_not.mp hdup
     have hsub_splits : (h - f).Splits := by

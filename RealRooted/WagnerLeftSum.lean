@@ -698,7 +698,8 @@ theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
   subst hf_def hg_def hh_def
   have hsum : StrictInterl h' (f' + g') :=
     prec_add_of_prec_left hhf hhg hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
-  have hmul : StrictInterl (d * h') (d * (f' + g')) := prec_mul_common_factor hd_ne hd_splits hsum
+  have hmul : StrictInterl (d * h') (d * (f' + g')) :=
+    hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- Recursive compatibility data for iterating Wagner (2) along a nonempty

@@ -538,8 +538,8 @@ theorem commonFactorLinearPowerStep_interlaces {fixed : ℝ[X]} {a b : ℝ}
     Interlaces
       (fixed * (C a + C b * X) ^ n)
       (fixed * (C a + C b * X) ^ (n + 1)) := by
-  exact (prec_mul_common_factor hfixed.1 hfixed.2
-    (interlaces_linear_pow a b hb n).toStrictInterl).toInterlaces (by
+  exact ((interlaces_linear_pow a b hb n).toStrictInterl.mul_common_factor
+    hfixed.1 hfixed.2).toInterlaces (by
     rw [fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' n,
       fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' (n + 1)]
     lia)

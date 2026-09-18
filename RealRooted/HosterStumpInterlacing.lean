@@ -82,8 +82,8 @@ private lemma lowDegreeCounterexample_left_prec_right :
     (interlaces_one_linear (Polynomial.natDegree_X_add_C (3 : ℝ))).toStrictInterl
   have hlinear := isRealRooted_of_degree_one
     (Polynomial.natDegree_X_add_C (1 : ℝ))
-  have hcommon := prec_mul_common_factor
-    (d := X + C 1) (f := 1) (g := X + C 3) hlinear.1 hlinear.2 hbase
+  have hcommon := hbase.mul_common_factor
+    (d := X + C 1) hlinear.1 hlinear.2
   simpa [lowDegreeCounterexampleLeft, lowDegreeCounterexampleRight] using hcommon
 
 private lemma lowDegreeCounterexample_middle_prec_right :
@@ -92,8 +92,8 @@ private lemma lowDegreeCounterexample_middle_prec_right :
     (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
   have hlinear := isRealRooted_of_degree_one
     (Polynomial.natDegree_X_add_C (3 : ℝ))
-  have hcommon := prec_mul_common_factor
-    (d := X + C 3) (f := 1) (g := X + C 1) hlinear.1 hlinear.2 hbase
+  have hcommon := hbase.mul_common_factor
+    (d := X + C 3) hlinear.1 hlinear.2
   have hscaled := StrictInterl.C_mul_left hcommon (by norm_num : (2 : ℝ) ≠ 0)
   simpa [lowDegreeCounterexampleMiddle, lowDegreeCounterexampleRight, mul_comm]
     using hscaled

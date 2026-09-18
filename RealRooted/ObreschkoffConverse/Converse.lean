@@ -357,10 +357,12 @@ private theorem prec_of_allComboRealRooted_of_no_common
       ih qf.natDegree hqf_deg_lt rfl hqf_rr hqg_rr hqhall hqdeg
     rcases hprec_q with hprec_q | hprec_q
     · have hprec_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+        hprec_q.mul_common_factor
+          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
     · have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+        hprec_q.mul_common_factor
+          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
 /-- **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace
 if and only if every polynomial in the real linear span `{αf + βg : α, β ∈ ℝ}`

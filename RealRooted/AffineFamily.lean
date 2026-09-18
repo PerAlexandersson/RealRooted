@@ -90,7 +90,8 @@ private lemma prec_right_pair_of_common_root_factor
     (hprec_q : StrictInterl qg (X * qf)) :
     StrictInterl g (X * f) := by
   have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * (X * qf)) :=
-    prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+    hprec_q.mul_common_factor
+      (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   grind
 
 
@@ -496,7 +497,8 @@ private lemma prec_right_pair_of_affine_family_high_degree
         have hXf_eq : X * f = (X - C r) * (X * qf) := by grind
         have hshift_eq : g + X * f = (X - C r) * q_shift := hq_shift
         rw [hshift_eq, hXf_eq]
-        exact prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
+        exact hprec_q.mul_common_factor
+          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       -- Step back: StrictInterl f (g + X * f) from StrictInterl (g + X * f) (X * f).
       have hprec_f_shift : StrictInterl f (g + X * f) :=
         prec_of_prec_mul_X_of_nonneg hprec_shift hfnn hshift_nonneg
