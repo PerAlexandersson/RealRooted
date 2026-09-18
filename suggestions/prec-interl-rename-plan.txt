@@ -1,0 +1,120 @@
+Prec / Prec0 identifier migration plan
+Date: 2026-09-18
+Tracking: GitHub issues #530 and #850
+
+Inventory
+
+The exhaustive machine-readable ledger is:
+
+  suggestions/prec-interl-rename-inventory.tsv
+
+It contains every ASCII Lean identifier or source word containing Prec, Prec0,
+prec, or prec0 in RealRooted.lean and RealRooted/**/*.lean.  The audited scan
+contains 1,534 unique identifiers, 7,005 occurrences, and 429 files.
+
+Each row records an old identifier, proposed identifier, occurrence count,
+file count, category, migration action, and top-level source clusters.
+
+Disposition counts
+
+  764  Lean declarations requiring semantic review
+  267  tactic declarations requiring an alias-first migration
+  277  tactic references migrated with their owning tactic
+   93  local hypotheses reserved for a later style-only pass
+   39  statement scaffolds requiring proof-status-preserving renames
+   36  deprecated compatibility identifiers with canonical targets
+   34  other references or locals migrated with their owning declaration
+   24  lexical false positives kept unchanged
+
+Naming rules
+
+  Prec0 / prec0        -> Interl / interl
+  Prec / prec          -> StrictInterl / strictInterl
+  prec0_or_revPrec0    -> interl_or_reverse
+  prec_or_revPrec      -> strictInterl_or_reverse
+  standalone revPrec0  -> reverseInterl
+  standalone revPrec   -> reverseStrictInterl
+  StrictPrecSameDegree -> StrictInterlSameDegree
+  SourcePrec           -> SourceInterl
+  rr_prec0             -> rr_interl
+  rr_prec              -> rr_strict_interl
+  rr_base_prec         -> rr_base_strict_interl
+
+`StrictInterlSameDegree` is a deliberate new name for the distinct strong
+same-degree root-interleaving predicate, not an alias for `StrictInterl` plus a
+degree equation.  Likewise, `SourceInterl` remains the source-faithful
+Hoster--Stump relation with its zero and low-degree cases; it is not collapsed
+into the project-wide `Interl` relation.  Reverse names describe argument
+orientation in theorem names and do not introduce new reverse predicates.
+
+Compound `strictPrec` / `strict_prec` names belonging to the strong
+same-degree predicate become `strictInterlSameDegree` /
+`strict_interl_same_degree`; they never acquire a second `strict`.  Names with
+`NonnegPrec` are decided from the declaration's result type.  In particular,
+the two Garloff--Wagner Hadamard declarations concluding `Interl` become
+`garloffWagnerHadamardNonnegInterl_of_oddEven` and
+`gwHadamardProductNonnegInterl`.
+
+The TSV applies exact existing canonical targets to deprecated wrappers.  It
+keeps English or unrelated lexical matches unchanged, including deprecated,
+IsPreconnected, preconnected, preceding, precise, precision, precomposition,
+and precursor families.
+
+One proposed-name collision is intentional: the deprecated wrapper
+strictPrecSameDegree_toPrec and its current canonical target
+strictPrecSameDegree_toStrictInterl converge on
+strictInterlSameDegree_toStrictInterl.  During migration the deprecated wrapper
+keeps its old name and signature, so only the canonical declaration receives
+the new name.  The wrapper is removed only after the deprecation window.
+
+Execution order
+
+1. Rename vocabulary-defining predicates and structures:
+   StrictPrecSameDegree, SourcePrec, and relation-bearing Statement scaffolds.
+   Preserve proof-status language and add compatibility aliases where public.
+
+2. Migrate generic foundational declaration families in bounded modules:
+   WagnerX affine/common-factor transports, nonnegative-root X transports,
+   Wagner left/right sums, residue count APIs, and remaining generic
+   StrictInterl/Interl receiver methods.  Keep deprecated wrappers with exact
+   old signatures.
+
+3. Migrate concentrated zero-aware domain APIs by owner:
+   BrandenLeite, BrandenVecchi, PF-polynomial, matrix, and sequence families.
+
+4. Migrate specialized theorem families by module:
+   Jacobi, Ma-Wang, Liu-Wang, Garloff-Wagner, CommonInterleaver, parking
+   functions, classical Hurwitz, symmetric decomposition, Veronese, and OEIS
+   applications.  Do not infer orientation from spelling alone.
+
+5. Add tactic aliases before changing tactic clients:
+   rr_interl, rr_strict_interl, and rr_base_strict_interl first; then quoted
+   declarations, elaborator patterns, syntax fields, generated names, examples,
+   and coverage tables in the same verified batch.
+
+6. Perform local-variable and prose cleanup only after API owners migrate.
+   Names such as hprec are changed according to their actual type, not by a
+   repository-wide textual rule.
+
+7. Remove deprecated wrappers only in a later compatibility-removal issue.
+
+Replacement protocol
+
+- Use the TSV as an exact whole-identifier map; never replace substrings.
+- For rows marked manual_semantic_rename, inspect the theorem result and
+  argument orientation before editing.  Prefer namespaced receiver APIs where
+  the relation witness is a natural receiver.
+- For statement scaffolds, rename both statement and witness references without
+  changing whether the target is proved, conditional, or still open.
+- For every batch, migrate declarations and all owned callers together, retain
+  compatibility wrappers where required, then run focused, affected,
+  Production, full-root, source-guard, residual-name, and axiom checks.
+- Keep local Lake builds serialized.
+
+Validation of this ledger
+
+- The TSV has seven fields on every row.
+- Every non-false-positive proposal is free of Prec/Prec0/prec/prec0 fragments.
+- No accidental proposed-name collisions remain beyond the documented
+  deprecated-wrapper convergence.
+- The 24 false-positive rows map exactly to themselves.
