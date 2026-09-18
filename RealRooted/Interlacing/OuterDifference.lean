@@ -466,9 +466,9 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       exact (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
     have hhfactor : h = (X - C r) * qh := by
       exact (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
-    have hqfg : StrictInterl qf qg := prec_cofactor_of_common_root hfg hrg' hrf'
-    have hqgh : StrictInterl qg qh := prec_cofactor_of_common_root hgh hrh' hrg'
-    have hqfh : StrictInterl qf qh := prec_cofactor_of_common_root hfh hrh' hrf'
+    have hqfg : StrictInterl qf qg := hfg.cofactor_of_common_root hrg' hrf'
+    have hqgh : StrictInterl qg qh := hgh.cofactor_of_common_root hrh' hrg'
+    have hqfh : StrictInterl qf qh := hfh.cofactor_of_common_root hrh' hrf'
     have hqf_pos : HasPosLeadingCoeff qf := hf_pos.divByMonic_X_sub_C hrf'
     have hqg_pos : HasPosLeadingCoeff qg := hg_pos.divByMonic_X_sub_C hrg'
     have hqh_pos : HasPosLeadingCoeff qh := hh_pos.divByMonic_X_sub_C hrh'

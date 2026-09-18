@@ -381,7 +381,7 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
           rw [natDegree_divByMonic_X_sub_C]
           lia
         have hpq₁ : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
-          prec_cofactor_of_common_root hpq hrfroot hrgroot
+          hpq.cofactor_of_common_root hrfroot hrgroot
         have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
           hf.divByMonic_X_sub_C hrfroot
         have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
