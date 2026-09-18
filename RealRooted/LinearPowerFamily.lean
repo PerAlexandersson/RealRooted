@@ -511,7 +511,7 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     | zero =>
         simpa using hprec
     | succ j ihj =>
-        have hnext := prec_mul_X_sub_C_both r ihj
+        have hnext := ihj.mul_X_sub_C_both r
         rw [show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ n) =
               (X - C r) ^ (j + 1) * (C a + C b * X) ^ n by ring,
             show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ (n + 1)) =

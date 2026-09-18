@@ -536,7 +536,7 @@ lemma prec_of_prec_mul_pow_X_sub_C_both (a : ℝ) :
         simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using h
       exact
         prec_of_prec_mul_pow_X_sub_C_both a n
-          (prec_of_prec_mul_X_sub_C_both a hlin)
+          hlin.of_mul_X_sub_C_both
 
 /-- Rolle's theorem for `p = (X - C a)^m q`, after removing the shared
 factor `(X - C a)^(m-1)` from `p' ≪ p`. -/

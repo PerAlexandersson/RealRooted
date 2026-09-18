@@ -167,7 +167,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
   have hright_core :
       StrictInterl ((X - C motzkinShift) * motzkin n)
         ((X - C motzkinShift) * motzkin (n + 1)) :=
-    prec_mul_X_sub_C_both_of_roots_le motzkinShift hprev hle_n hle_succ
+    hprev.mul_X_sub_C_both_of_roots_le motzkinShift hle_n hle_succ
   have hright :
       StrictInterl (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
