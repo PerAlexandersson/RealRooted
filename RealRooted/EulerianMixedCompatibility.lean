@@ -341,7 +341,7 @@ private theorem regularized_prec_no_common
     rcases prec_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
         hallε (Or.inl hdegε) with hforward | hreverse
     · exact hforward
-    · exact False.elim <| not_prec_of_right_natDegree_lt_left (by lia) hreverse
+    · exact False.elim <| hreverse.not_of_right_natDegree_lt_left (by lia)
   refine ⟨hprecε, ?_⟩
   have hfε_simple : HasSimpleRoots fε := by
     dsimp [fε, k]

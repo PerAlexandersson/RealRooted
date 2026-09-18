@@ -29,7 +29,7 @@ theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
   fun {_ _} hf_pos hg_pos _ _ hfg hsucc hno =>
-    prec_forward_of_orientation_of_succDegree hsucc <|
+    StrictInterl.forward_of_orientation_of_succDegree hsucc <|
       hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- Consequently, any proof of the older no-common orientation core can be fed

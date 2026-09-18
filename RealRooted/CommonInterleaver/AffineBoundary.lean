@@ -80,7 +80,7 @@ theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
   have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
     horient hfg hf_pos hg_pos (by lia) (by lia) hno
   have hprec_fg : StrictInterl f g :=
-    prec_forward_of_orientation_of_succDegree hsucc hprec_or
+    StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
   exact prec_boundary_right_pair_of_prec_nonneg hprec_fg hfnn hgnn ht
 
 /-- Orienting each boundary pair `(C t * f + g, X * f)` is already enough to

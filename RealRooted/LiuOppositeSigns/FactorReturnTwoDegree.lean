@@ -18,8 +18,9 @@ namespace LiuOppositeSigns
 degree.  This guards against a tempting but degree-impossible #64 route. -/
 theorem not_prec_of_natDegree_eq_succ_left {f g : ℝ[X]}
     (hdeg : f.natDegree = g.natDegree + 1) :
-    ¬ StrictInterl f g :=
-  not_prec_of_right_natDegree_lt_left (by lia)
+    ¬ StrictInterl f g := by
+  intro h
+  exact h.not_of_right_natDegree_lt_left (by lia)
 
 /-- In the two-degree Liu left branch, orienting the translated deletion pair
 as `deleteRootFactor f r ≺ g` is degree-impossible. -/
@@ -76,7 +77,8 @@ theorem LeftRootCountBranch.not_translatedBoundaryPrec_of_twoDegree
         (X * (deleteRootFactor f r).comp (X + C r)).natDegree := by
     rw [hrestored_deg]
     lia
-  exact not_prec_of_left_natDegree_succ_lt_right hgap
+  intro hprec
+  exact hprec.not_of_left_natDegree_succ_lt_right hgap
 
 /-- A `P := True` translated right-family predicate target gives the
 unrestricted translated right-family target. -/

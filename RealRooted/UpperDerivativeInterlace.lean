@@ -79,6 +79,6 @@ theorem interlaces_of_allComboRealRooted_succDegree
   have hg_splits : g.Splits := (hall.isRealRooted_right hg_ne).2
   have hor : StrictInterl f g ∨ StrictInterl g f :=
     prec_of_allComboRealRooted hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc.symm)
-  exact (prec_forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
+  exact (StrictInterl.forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
 
 end RealRooted

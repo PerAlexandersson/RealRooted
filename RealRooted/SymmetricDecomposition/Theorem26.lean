@@ -277,7 +277,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
     prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inl hdeg_aXb)
   have hprec_aXb : StrictInterl a (X * b) :=
-    prec_forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
+    StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
   exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
@@ -1237,7 +1237,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     prec_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht
       (Or.inl ht_deg)
   have hht : StrictInterl h t :=
-    prec_forward_of_orientation_of_succDegree ht_deg.symm hht_or
+    StrictInterl.forward_of_orientation_of_succDegree ht_deg.symm hht_or
   have hbh : StrictInterl b h :=
     prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le (1 : ℝ)
       hht hh_deg.symm hb_pos hh_pos hb_le hh_le

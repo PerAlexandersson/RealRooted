@@ -1068,7 +1068,7 @@ theorem ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_suc
       (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =
         (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by simp_all
   dsimp
-  exact prec_forward_of_orientation_of_succDegree hdeg_iter_succ.symm hprec_iter
+  exact StrictInterl.forward_of_orientation_of_succDegree hdeg_iter_succ.symm hprec_iter
 
 
 end

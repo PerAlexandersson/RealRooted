@@ -41,7 +41,7 @@ theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
   have hdeg' : f.derivative.natDegree + 1 = g.derivative.natDegree ∨
       f.derivative.natDegree = g.derivative.natDegree := Or.inl hfgdeg'
   exact
-    (prec_forward_of_orientation_of_succDegree hfgdeg'.symm
+    (StrictInterl.forward_of_orientation_of_succDegree hfgdeg'.symm
       (prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toInterl
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
@@ -182,7 +182,7 @@ theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic :
     have hsum_der : f.derivative.roots.sum ≤ g.derivative.roots.sum :=
       derivative_roots_sum_le_of_prec_sameDegree_monic hf_monic hg_monic hfg hdeg htwo
         hrev.2.1.2 hrev.1.2
-    exact (prec_of_reverse_prec_of_roots_sum_le hrev hdeg_der hsum_der).toInterl
+    exact (hrev.of_reverse_of_roots_sum_le hdeg_der hsum_der).toInterl
 
 /-- The nonzero monic branch follows from the zero-aware monic branch,
 since the degree hypotheses make both derivatives nonzero. -/

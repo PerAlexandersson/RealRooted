@@ -91,6 +91,6 @@ theorem interlaces_of_monic_of_coeff_tendsto
   have hor : StrictInterl p₀ q₀ ∨ StrictInterl q₀ p₀ :=
     prec_of_allComboRealRooted hp₀Monic.ne_zero hp₀Splits
       hq₀Monic.ne_zero hAll.right_splits hAll (Or.inl hsucc.symm)
-  exact (prec_forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
+  exact (StrictInterl.forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
 
 end RealRooted

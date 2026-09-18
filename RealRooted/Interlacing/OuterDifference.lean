@@ -321,9 +321,9 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
     (hf_pos : HasPosLeadingCoeff f) (hh_pos : HasPosLeadingCoeff h)
     (hsub_pos : HasPosLeadingCoeff (h - f)) :
     g.natDegree ≤ (h - f).natDegree := by
-  have hfg_bounds := natDegree_bounds_of_prec hfg
-  have hgh_bounds := natDegree_bounds_of_prec hgh
-  have hfh_bounds := natDegree_bounds_of_prec hfh
+  have hfg_bounds := hfg.natDegree_bounds
+  have hgh_bounds := hgh.natDegree_bounds
+  have hfh_bounds := hfh.natDegree_bounds
   rcases hfh.natDegree_eq_or_eq_succ with hsame | hsucc
   · have hdeg : f.natDegree = h.natDegree := hsame.symm
     have hlc_gt : f.leadingCoeff < h.leadingCoeff := by
@@ -412,8 +412,8 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
 private theorem natDegree_sub_upper_bound_of_prec_triple
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) :
     (h - f).natDegree ≤ g.natDegree + 1 := by
-  have hf_le : f.natDegree ≤ g.natDegree := (natDegree_bounds_of_prec hfg).1
-  have hh_le : h.natDegree ≤ g.natDegree + 1 := (natDegree_bounds_of_prec hgh).2
+  have hf_le : f.natDegree ≤ g.natDegree := hfg.natDegree_bounds.1
+  have hh_le : h.natDegree ≤ g.natDegree + 1 := hgh.natDegree_bounds.2
   exact (natDegree_sub_le h f).trans
     (max_le hh_le (hf_le.trans (Nat.le_succ _)))
 

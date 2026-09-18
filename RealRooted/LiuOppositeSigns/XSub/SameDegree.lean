@@ -117,7 +117,7 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXPrec
         (X * f.comp (X + C r)).natDegree := by
     rw [hXF_deg, hF_deg, hG_deg]
     lia
-  exact not_prec_of_left_natDegree_succ_lt_right hgap hprec
+  exact hprec.not_of_left_natDegree_succ_lt_right hgap
 
 /-- Quadratic terminal case for the x-subtraction pencil with two degree-one
 endpoints and a nonnegative constant term on the right endpoint. -/

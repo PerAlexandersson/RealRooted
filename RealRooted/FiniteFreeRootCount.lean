@@ -174,7 +174,7 @@ private theorem schurSzegoComp_prec_of_pred_coeff_pos
   · rcases hreverse with hzero | hzero | hprec
     · exact (hTg0 hzero).elim
     · exact (hTf0 hzero).elim
-    · apply prec_of_reverse_prec_of_roots_sum_le hprec
+    · apply hprec.of_reverse_of_roots_sum_le
         (hTfdeg.trans hTgdeg.symm)
       have hinput_sum : f.roots.sum ≤ g.roots.sum :=
         hfg.roots_sum_le_of_sameDegree (hfdeg.trans hgdeg.symm)

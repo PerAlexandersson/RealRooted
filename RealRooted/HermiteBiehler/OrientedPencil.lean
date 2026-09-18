@@ -33,7 +33,7 @@ theorem prec_of_allComboRealRooted_of_wronskian_nonneg
         (allComboRealRooted_comm hall) (Or.inr hsame.symm)
     rcases horient with hgf | hfg
     · exact hgf
-    · apply prec_of_reverse_prec_of_roots_sum_le hfg hsame.symm
+    · apply hfg.of_reverse_of_roots_sum_le hsame.symm
       by_cases hdeg0 : f.natDegree = 0
       · have hfroots : f.roots = 0 := by
           apply Multiset.card_eq_zero.mp
@@ -78,7 +78,7 @@ theorem prec_of_allComboRealRooted_of_wronskian_nonneg
       Polynomial.coeff_nonneg_of_forall_eval_nonneg_of_natDegree_le hW hWdeg
     rw [hWcoeff] at hcoeff
     nlinarith [mul_pos hg hf]
-  · apply prec_forward_of_orientation_of_succDegree hgsucc.symm
+  · apply StrictInterl.forward_of_orientation_of_succDegree hgsucc.symm
     exact prec_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
       (allComboRealRooted_comm hall) (Or.inl hgsucc)
 
