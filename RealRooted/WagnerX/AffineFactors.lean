@@ -170,8 +170,10 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
       lia
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
-theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
-    (h : StrictInterl f g) :
+/-- Multiplication by a common nonzero real-rooted factor preserves strict
+interlacing. -/
+theorem StrictInterl.mul_common_factor {d f g : ℝ[X]} (h : StrictInterl f g)
+    (hd_ne : d ≠ 0) (hd_splits : d.Splits) :
     StrictInterl (d * f) (d * g) := by
   have hprod : StrictInterl (((d.roots.map fun a => X - C a).prod) * f)
       (((d.roots.map fun a => X - C a).prod) * g) := by
@@ -190,6 +192,12 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d
     simpa [mul_assoc, mul_left_comm, mul_comm] using hboth
   simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hd_splits), mul_assoc]
     using hscaled
+
+@[deprecated StrictInterl.mul_common_factor (since := "2026-09-18")]
+theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
+    (h : StrictInterl f g) :
+    StrictInterl (d * f) (d * g) :=
+  h.mul_common_factor hd_ne hd_splits
 
 theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf : f.Splits) (hg : g.Splits)

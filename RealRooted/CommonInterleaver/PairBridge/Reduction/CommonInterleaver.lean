@@ -103,10 +103,10 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
       obtain ⟨h, hf_prec, hg_prec⟩ := hfg
       exact
         ⟨(X - C r) * h,
-          prec_mul_common_factor
-            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf_prec,
-          prec_mul_common_factor
-            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg_prec⟩)
+          hf_prec.mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2,
+          hg_prec.mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2⟩)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 /-- Degree-bounded common-root reduction for the nonnegative
@@ -152,10 +152,10 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
       obtain ⟨h, hf_prec, hg_prec⟩ := ih hgdeg
       exact
         ⟨(X - C r) * h,
-          prec_mul_common_factor
-            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf_prec,
-          prec_mul_common_factor
-            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg_prec⟩)
+          hf_prec.mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2,
+          hg_prec.mul_common_factor
+            (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2⟩)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
 
 /-- Unordered degree-bounded common-root reduction for the nonnegative

@@ -215,11 +215,11 @@ macro_rules
         factor_splits := $hd_splits:term,
         base_interlacing := $h:term) =>
       `(tactic|
-        exact RealRooted.prec_mul_common_factor $hd_ne $hd_splits $h)
+        exact RealRooted.StrictInterl.mul_common_factor $h $hd_ne $hd_splits)
   | `(tactic| rr_prec_mul_common_factor) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_mul_common_factor
+          apply RealRooted.StrictInterl.mul_common_factor
           case hd_ne => rr_lookup [rr_nonzero]
           case hd_splits => assumption
           case h => rr_lookup [rr_base_prec]))

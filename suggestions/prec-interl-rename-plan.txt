@@ -17,8 +17,8 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  764  Lean declarations requiring semantic review
-  267  tactic declarations requiring an alias-first migration
+  765  Lean declarations requiring semantic review
+  266  tactic declarations requiring an alias-first migration
   277  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames

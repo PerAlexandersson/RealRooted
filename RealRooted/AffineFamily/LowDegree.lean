@@ -757,7 +757,7 @@ private lemma prec_right_pair_of_root_zero_factor
     (hprec_q : StrictInterl qg f) :
     StrictInterl g (X * f) := by
   have hprec_mul : StrictInterl (X * qg) (X * f) :=
-    prec_mul_common_factor isRealRooted_X.1 isRealRooted_X.2 hprec_q
+    hprec_q.mul_common_factor isRealRooted_X.1 isRealRooted_X.2
   lia
 
 /-- A second boundary closure hidden in the affine family: after rescaling the

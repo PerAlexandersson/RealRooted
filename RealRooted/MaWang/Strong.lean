@@ -333,7 +333,8 @@ lemma prec_mul_X_sub_C_of_linearCombo_quotient
     StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
   have hmul :
       StrictInterl ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
-    prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec
+    hprec.mul_common_factor
+      (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   simpa [add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hmul
 
 lemma common_root_reduction_data

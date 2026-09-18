@@ -335,7 +335,7 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
       (le_of_eq hpdeg) hpolar0 hpolar_p
   have htheta_right : StrictInterl (theta p) (X * polarTheta N p) := by
     simpa [theta] using
-      prec_mul_common_factor Polynomial.X_ne_zero Polynomial.Splits.X hder_polar
+      hder_polar.mul_common_factor Polynomial.X_ne_zero Polynomial.Splits.X
   have hbtheta_right : StrictInterl (C b * theta p) (X * polarTheta N p) :=
     StrictInterl.C_mul_left htheta_right hb.ne'
   have hp_pos : HasPosLeadingCoeff p :=

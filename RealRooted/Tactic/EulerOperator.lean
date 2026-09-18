@@ -46,7 +46,7 @@ theorem prec_positive_euler_lag_sequence
       have hderivative_pos : HasPosLeadingCoeff (X * P (n + 1)).derivative :=
         hXnext_pos.derivative (by lia)
       have hlag : StrictInterl (C (c n) * (X * P n)) (X * P (n + 1)) :=
-        (prec_mul_common_factor isRealRooted_X.1 isRealRooted_X.2 ih).C_mul_left
+        (ih.mul_common_factor isRealRooted_X.1 isRealRooted_X.2).C_mul_left
           (hc n).ne'
       have hlag_pos : HasPosLeadingCoeff (C (c n) * (X * P n)) :=
         hasPosLeadingCoeff_C_mul (hc n) (hpos n).X_mul
