@@ -97,12 +97,12 @@ theorem gammaU_prec_gammaV (n : ℕ) (hn : 2 ≤ n) :
   · rcases prec_of_allComboRealRooted hUne hUsplits hVne hVsplits hall
         (Or.inl hsucc) with hprec | hreverse
     · exact hprec
-    · exact (not_prec_of_right_natDegree_lt_left (by lia) hreverse).elim
+    · exact (hreverse.not_of_right_natDegree_lt_left (by lia)).elim
   · have hreverse : StrictInterl (gammaV n) (gammaU n) := by
       rcases prec_of_allComboRealRooted hVne hVsplits hUne hUsplits
           (allComboRealRooted_comm hall) (Or.inl hrevsucc) with hprec | hprec
       · exact hprec
-      · exact (not_prec_of_right_natDegree_lt_left (by lia) hprec).elim
+      · exact (hprec.not_of_right_natDegree_lt_left (by lia)).elim
     have hVneg : ∀ r, (gammaV n).IsRoot r → r < 0 :=
       roots_neg_of_interlaces_of_right_roots_neg
         (hreverse.toInterlaces hrevsucc) (gammaU_roots_neg n hn)

@@ -957,7 +957,7 @@ theorem compatibleSuccDegreePrec_of_allCombo
   have horient : StrictInterl f g ∨ StrictInterl g f :=
     prec_of_allComboRealRooted
       hf_pos.ne_zero hf_split hg_rr.1 hg_rr.2 hall (Or.inl hdeg.symm)
-  exact prec_forward_of_orientation_of_succDegree hdeg horient
+  exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
 
 /-- The signed right-pencil target implies the forced succ-degree
 orientation. -/
@@ -998,7 +998,7 @@ theorem compatibleSuccDegreePrec_of_noCommonOrientation
       (hstep := fun {f g} hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
         hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
       hfg hf_pos hg_pos (by lia) (by lia)
-  exact prec_forward_of_orientation_of_succDegree hdeg horient
+  exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
 
 /-- The exact lower-count endpoint comparison implies the lower-threshold
 endpoint-sign exact gap obstruction. -/

@@ -519,7 +519,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           StrictInterl f g ∨ StrictInterl g f :=
         ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
-      exact prec_forward_of_orientation_of_succDegree hsucc.symm hprec_or
+      exact StrictInterl.forward_of_orientation_of_succDegree hsucc.symm hprec_or
     · intro hsame
       exact
         ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common

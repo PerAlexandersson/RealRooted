@@ -236,9 +236,9 @@ theorem StrictInterl.rootMultiplicity_bounds {f g : ℝ[X]} (h : StrictInterl f 
   rw [hss_count, hrs_count] at hcount
   lia
 
-lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem StrictInterl.natDegree_bounds {f g : ℝ[X]} (h : StrictInterl f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
-  rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩
+  rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
@@ -249,13 +249,13 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
 `f.natDegree ≤ g.natDegree`. -/
 theorem StrictInterl.natDegree_le {f g : ℝ[X]} (h : StrictInterl f g) :
     f.natDegree ≤ g.natDegree :=
-  (natDegree_bounds_of_prec h).1
+  h.natDegree_bounds.1
 
 /-- The right endpoint in `StrictInterl f g` has degree at most one more than the left
 endpoint. -/
 theorem StrictInterl.natDegree_le_succ {f g : ℝ[X]} (h : StrictInterl f g) :
     g.natDegree ≤ f.natDegree + 1 :=
-  (natDegree_bounds_of_prec h).2
+  h.natDegree_bounds.2
 
 /-- Proper position forces equal natural degrees or a one-degree increase. -/
 theorem StrictInterl.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f g) :
@@ -266,28 +266,24 @@ theorem StrictInterl.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f 
 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint of strictly lower
 degree. -/
-theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}
-    (hdeg : g.natDegree < f.natDegree) :
-    ¬ StrictInterl f g := by
-  intro hprec
-  exact (not_le_of_gt hdeg) hprec.natDegree_le
+theorem StrictInterl.not_of_right_natDegree_lt_left {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : g.natDegree < f.natDegree) : False := by
+  exact (not_le_of_gt hdeg) h.natDegree_le
 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint whose degree is more
 than one larger. -/
-theorem not_prec_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
-    (hdeg : f.natDegree + 1 < g.natDegree) :
-    ¬ StrictInterl f g := by
-  intro hprec
-  exact (not_le_of_gt hdeg) hprec.natDegree_le_succ
+theorem StrictInterl.not_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree + 1 < g.natDegree) : False := by
+  exact (not_le_of_gt hdeg) h.natDegree_le_succ
 
-lemma prec_forward_of_orientation_of_succDegree
+lemma StrictInterl.forward_of_orientation_of_succDegree
     {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1)
     (hprec_or : StrictInterl f g ∨ StrictInterl g f) :
     StrictInterl f g := by
   rcases hprec_or with hprec | hprec
   · exact hprec
-  · exact (not_prec_of_right_natDegree_lt_left (by lia) hprec).elim
+  · exact (hprec.not_of_right_natDegree_lt_left (by lia)).elim
 
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `StrictInterl` witness. -/
@@ -339,7 +335,7 @@ theorem StrictInterl.nextCoeff_le_of_sameDegree_monic {f g : ℝ[X]}
 
 /-- In the same-degree case, a reverse `StrictInterl g f` can be flipped back to
 `StrictInterl f g` once the root sums have the forward order. -/
-theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
+theorem StrictInterl.of_reverse_of_roots_sum_le {f g : ℝ[X]}
     (hgf : StrictInterl g f) (hdeg : f.natDegree = g.natDegree)
     (hsum : f.roots.sum ≤ g.roots.sum) :
     StrictInterl f g := by
@@ -637,6 +633,40 @@ lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : 
   (Interl.refl hf).C_mul_left_of_nonneg ha
 
 /-! ## Deprecated proper-position names -/
+
+@[deprecated StrictInterl.natDegree_bounds (since := "2026-09-18")]
+lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+    f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 :=
+  StrictInterl.natDegree_bounds hfg
+
+@[deprecated StrictInterl.not_of_right_natDegree_lt_left (since := "2026-09-18")]
+theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}
+    (hdeg : g.natDegree < f.natDegree) :
+    ¬ StrictInterl f g := by
+  intro hprec
+  exact hprec.not_of_right_natDegree_lt_left hdeg
+
+@[deprecated StrictInterl.not_of_left_natDegree_succ_lt_right (since := "2026-09-18")]
+theorem not_prec_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
+    (hdeg : f.natDegree + 1 < g.natDegree) :
+    ¬ StrictInterl f g := by
+  intro hprec
+  exact hprec.not_of_left_natDegree_succ_lt_right hdeg
+
+@[deprecated StrictInterl.forward_of_orientation_of_succDegree (since := "2026-09-18")]
+lemma prec_forward_of_orientation_of_succDegree
+    {f g : ℝ[X]}
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hprec_or : StrictInterl f g ∨ StrictInterl g f) :
+    StrictInterl f g :=
+  StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
+
+@[deprecated StrictInterl.of_reverse_of_roots_sum_le (since := "2026-09-18")]
+theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
+    (hgf : StrictInterl g f) (hdeg : f.natDegree = g.natDegree)
+    (hsum : f.roots.sum ≤ g.roots.sum) :
+    StrictInterl f g :=
+  StrictInterl.of_reverse_of_roots_sum_le hgf hdeg hsum
 
 @[deprecated StrictInterl.rootMultiplicity_bounds (since := "2026-09-17")]
 theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : StrictInterl f g)

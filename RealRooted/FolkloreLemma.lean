@@ -395,7 +395,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
   have hU_XV : StrictInterl U (X * V) := by
     rcases hprec_or with hU_XV | hXV_U
     · exact hU_XV
-    · exact prec_of_reverse_prec_of_roots_sum_le hXV_U hsame hsum_U_XV
+    · exact hXV_U.of_reverse_of_roots_sum_le hsame hsum_U_XV
   have hU_pos : HasPosLeadingCoeff U := by simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
   exact
     prec_component_of_prec_mul_X_of_roots_nonpos
