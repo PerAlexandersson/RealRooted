@@ -195,7 +195,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
     Interl (cutPrefix P j) (cutPrefix P i) := by
   have hmid : Interl (cutMiddle P i j) (cutPrefix P i) := by
     unfold cutMiddle cutPrefix
-    apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
+    apply Interl.finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
     · intro k _ l _
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : l ≤ i
@@ -227,7 +227,7 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     (i j : Fin m) : Interl (cutPrefix P i) (cutStrictSuffix Q j) := by
   unfold cutPrefix cutStrictSuffix
-  apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
+  apply Interl.finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
   · intro k _ l _
     by_cases hk : k ≤ i
     · by_cases hl : j < l
@@ -252,7 +252,7 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
     Interl (cutStrictSuffix Q i) (cutStrictSuffix Q j) := by
   have hmid : Interl (cutMiddle Q i j) (cutStrictSuffix Q j) := by
     unfold cutMiddle cutStrictSuffix
-    apply prec0_finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
+    apply Interl.finsetSum_pairwise_of_nonneg Finset.univ Finset.univ
     · intro k _ l _
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : j < l

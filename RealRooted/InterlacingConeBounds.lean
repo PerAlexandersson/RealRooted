@@ -19,8 +19,8 @@ are nonnegative, then
 f 0  ≺  ∑ i, lam i * f i  ≺  f n.
 ```
 
-The two halves are the Finset cone lemmas `prec0_finsetSum_left_of_nonneg` and
-`prec0_finsetSum_right_of_nonneg`, combined with the existing scaling lemmas
+The two halves are the Finset cone lemmas `Interl.finsetSum_left_of_nonneg` and
+`Interl.finsetSum_right_of_nonneg`, combined with the existing scaling lemmas
 `Interl.C_mul_left_of_nonneg` and `Interl.C_mul_right_of_nonneg`.  `Interl` rather
 than `StrictInterl` is the right relation here: a vanishing weight kills a summand, and
 the zero-aware convention absorbs it, so no positivity of the weights is
@@ -52,14 +52,14 @@ theorem prec0_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ
     intro i hi
     exact nonnegCoeffs_C_mul (hlam i) (hnn i (hmem i hi))
   refine ⟨?_, ?_⟩
-  · refine prec0_finsetSum_left_of_nonneg _ _ _ ?_ hnn'
+  · refine Interl.finsetSum_left_of_nonneg _ _ _ ?_ hnn'
     intro i hi
     have hbase : Interl (f 0) (f i) := by
       rcases Nat.eq_zero_or_pos i with rfl | hpos
       · exact Interl.refl fun _ => (hrr 0 (Nat.zero_le n)).2
       · exact (hprec 0 i hpos (hmem i hi)).toInterl
     exact Interl.C_mul_right_of_nonneg hbase (hlam i)
-  · refine prec0_finsetSum_right_of_nonneg _ _ _ ?_ hnn'
+  · refine Interl.finsetSum_right_of_nonneg _ _ _ ?_ hnn'
     intro i hi
     have hbase : Interl (f i) (f n) := by
       rcases eq_or_lt_of_le (hmem i hi) with rfl | hlt
