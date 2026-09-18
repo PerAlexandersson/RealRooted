@@ -219,7 +219,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
     have hprec_q : StrictInterl qf qg := by
-      apply prec_of_prec_mul_X_sub_C_both r
+      apply StrictInterl.of_mul_X_sub_C_both (r := r)
       lia
     have hqhall : AllComboRealRooted qf qg :=
       ih qf.natDegree hqf_deg_lt rfl hprec_q hqdeg

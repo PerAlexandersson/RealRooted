@@ -201,13 +201,14 @@ macro_rules
       rr_prec_cancel_common_linear_factor using
         root := $r:term,
         multiplied_interlacing := $h:term) =>
-      `(tactic| exact RealRooted.prec_of_prec_mul_X_sub_C_both $r $h)
+      `(tactic|
+        exact RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r) $h)
   | `(tactic|
       rr_prec_cancel_common_linear_factor using
         root := $r:term) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_of_prec_mul_X_sub_C_both $r
+          apply RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r)
           rr_lookup [rr_base_prec]))
   | `(tactic|
       rr_prec_mul_common_factor using

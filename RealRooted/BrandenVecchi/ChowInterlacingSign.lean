@@ -366,7 +366,7 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
         rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]
         lia
       have hdiv_prec : StrictInterl f.divX (f.divX.reflect (n - 2)) := by
-        apply prec_of_prec_mul_X_sub_C_both 0
+        apply StrictInterl.of_mul_X_sub_C_both (r := 0)
         have hprec' : StrictInterl (X * f.divX) (X * f.divX.reflect (n - 2)) := by
           rw [← hfactor, ← hreflect]
           exact hprec
