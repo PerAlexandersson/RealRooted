@@ -176,7 +176,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
               exact prec_affine_derivative_of_nonnegCoeffs hsplits
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
-              roots_le_of_prec_right hgf
+              hgf.roots_le_of_right
                 (roots_nonpos_of_nonneg_coeffs hsplits hnn)
             have hgpos : HasPosLeadingCoeff g := by
               unfold HasPosLeadingCoeff

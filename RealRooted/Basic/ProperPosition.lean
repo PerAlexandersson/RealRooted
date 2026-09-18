@@ -217,7 +217,8 @@ private lemma listAlternates_count_bounds (u : ℝ) :
 
 /-- In proper position, the multiplicities of every real root differ by at
 most one. -/
-theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : StrictInterl f g) (u : ℝ) :
+theorem StrictInterl.rootMultiplicity_bounds {f g : ℝ[X]} (h : StrictInterl f g)
+    (u : ℝ) :
     f.rootMultiplicity u - 1 ≤ g.rootMultiplicity u ∧
       g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
   rcases h with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -290,7 +291,7 @@ lemma prec_forward_of_orientation_of_succDegree
 
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `StrictInterl` witness. -/
-theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
+theorem StrictInterl.roots_le_of_right {f g : ℝ[X]} {c : ℝ}
     (h : StrictInterl f g)
     (hg_le : ∀ r ∈ g.roots, r ≤ c) :
     ∀ r ∈ f.roots, r ≤ c := by
@@ -306,7 +307,7 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
   · exact listAlternates_left_le_of_right_le halt hrs_le r hr'
 
 /-- In the same-degree case, `StrictInterl f g` orders the sums of the roots. -/
-theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
+theorem StrictInterl.roots_sum_le_of_sameDegree {f g : ℝ[X]}
     (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     f.roots.sum ≤ g.roots.sum := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -324,12 +325,12 @@ theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
 
 /-- For monic polynomials in same-degree proper position, the next
 coefficients are ordered opposite to the root sums. -/
-theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+theorem StrictInterl.nextCoeff_le_of_sameDegree_monic {f g : ℝ[X]}
+    (h : StrictInterl f g) (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : f.natDegree = g.natDegree) :
     g.nextCoeff ≤ f.nextCoeff := by
   have hsum : f.roots.sum ≤ g.roots.sum :=
-    roots_sum_le_of_prec_sameDegree h hdeg
+    h.roots_sum_le_of_sameDegree hdeg
   have hf_next : f.nextCoeff = -f.roots.sum :=
     h.1.2.nextCoeff_eq_neg_sum_roots_of_monic hf_monic
   have hg_next : g.nextCoeff = -g.roots.sum :=
@@ -636,6 +637,33 @@ lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : 
   (Interl.refl hf).C_mul_left_of_nonneg ha
 
 /-! ## Deprecated proper-position names -/
+
+@[deprecated StrictInterl.rootMultiplicity_bounds (since := "2026-09-17")]
+theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : StrictInterl f g)
+    (u : ℝ) :
+    f.rootMultiplicity u - 1 ≤ g.rootMultiplicity u ∧
+      g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u :=
+  StrictInterl.rootMultiplicity_bounds h u
+
+@[deprecated StrictInterl.roots_le_of_right (since := "2026-09-17")]
+theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
+    (h : StrictInterl f g)
+    (hg_le : ∀ r ∈ g.roots, r ≤ c) :
+    ∀ r ∈ f.roots, r ≤ c :=
+  StrictInterl.roots_le_of_right h hg_le
+
+@[deprecated StrictInterl.roots_sum_le_of_sameDegree (since := "2026-09-17")]
+theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    f.roots.sum ≤ g.roots.sum :=
+  StrictInterl.roots_sum_le_of_sameDegree h hdeg
+
+@[deprecated StrictInterl.nextCoeff_le_of_sameDegree_monic (since := "2026-09-17")]
+theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    g.nextCoeff ≤ f.nextCoeff :=
+  StrictInterl.nextCoeff_le_of_sameDegree_monic h hf_monic hg_monic hdeg
 
 @[deprecated StrictInterl.natDegree_le (since := "2026-09-16")]
 theorem Prec.natDegree_le {f g : ℝ[X]} (h : StrictInterl f g) :

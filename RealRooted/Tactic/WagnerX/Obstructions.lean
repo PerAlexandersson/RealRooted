@@ -57,7 +57,7 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
   obtain ⟨c, hc_neg, hc_max⟩ :=
     exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne hg0 hgs hgnn hgdeg hgc0
   have hall : ∀ r ∈ (X ^ 2 * f.derivative).roots, r ≤ c :=
-    roots_le_of_prec_right h hc_max
+    h.roots_le_of_right hc_max
   have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by simp [IsRoot]
   have hzero_mem : (0 : ℝ) ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr hzero_root
@@ -120,7 +120,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   have hgdeg : 1 ≤ g.natDegree := by lia
   obtain ⟨c, hc_neg, hc_max⟩ :=
     exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne hg0 hgs hgnn hgdeg hgc0
-  have hall : ∀ r ∈ q.roots, r ≤ c := roots_le_of_prec_right hint.toStrictInterl hc_max
+  have hall : ∀ r ∈ q.roots, r ≤ c := hint.toStrictInterl.roots_le_of_right hc_max
   have hzc : (0 : ℝ) ≤ c := hall 0 hq_zero_mem
   linarith
 

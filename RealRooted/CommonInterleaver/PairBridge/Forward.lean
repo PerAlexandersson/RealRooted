@@ -101,7 +101,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
   have hroot_lt : ∀ r, F.IsRoot r → r < uR := by
     intro r hFr
     have hr_le : r ≤ uR :=
-      roots_le_of_prec_right hpair huR_max r ((mem_roots hpair.1.1).mpr hFr)
+      hpair.roots_le_of_right huR_max r ((mem_roots hpair.1.1).mpr hFr)
     grind
   have htarget_eq : C (-1 : ℝ) * F + (X - C uR) * q = g := by
     dsimp [F, G] at hGq ⊢

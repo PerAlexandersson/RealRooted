@@ -243,7 +243,7 @@ private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     ∀ r, f.IsRoot r → r < uR := by
   intro r hr
   have hr_le : r ≤ uR :=
-    roots_le_of_prec_right hfg huR_max r ((mem_roots hfg.1.1).mpr hr)
+    hfg.roots_le_of_right huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
 
 private lemma prec_of_right_factor_combo_of_natDegree_ge

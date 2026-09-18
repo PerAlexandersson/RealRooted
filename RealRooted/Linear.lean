@@ -117,7 +117,7 @@ lemma StrictInterl.X_add_C_iff {a b : ℝ} :
     StrictInterl (X + C b) (X + C a) ↔ a ≤ b := by
   constructor
   · intro h
-    have hsum := roots_sum_le_of_prec_sameDegree h (by simp)
+    have hsum := h.roots_sum_le_of_sameDegree (by simp)
     simpa using hsum
   · intro hab
     refine ⟨?_, ?_, [(-b)], [(-a)], by simp, by simp, by simp, by simp, ?_⟩

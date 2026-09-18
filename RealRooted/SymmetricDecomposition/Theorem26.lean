@@ -756,7 +756,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
     have hnot_th : ¬ StrictInterl t h := by
       intro hth
       have h1_le : (1 : ℝ) ≤ 0 :=
-        roots_le_of_prec_right hth hh_nonpos 1 ((mem_roots hth.1.1).mpr ht_root1)
+        hth.roots_le_of_right hh_nonpos 1 ((mem_roots hth.1.1).mpr ht_root1)
       linarith
     rcases hprec_or with hth | hht
     · lia

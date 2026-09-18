@@ -903,7 +903,7 @@ private lemma X_not_prec_xAddOne_xAddTwo :
     rw [xAddOne_xAddTwo_roots] at hr
     simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
     grind
-  have hf_le := roots_le_of_prec_right hprec hg_le
+  have hf_le := hprec.roots_le_of_right hg_le
   have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by simp
   grind
 
