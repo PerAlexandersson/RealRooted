@@ -60,8 +60,8 @@ theorem hermiteBiehlerConverse_general :
           isUpperHalfPlaneStable_cofactor_of_stable hrf hrg hstab
         have h_lt₁ : f₁.natDegree < n := by rw [h_f_drop, h_fn]; lia
         rcases ih f₁.natDegree h_lt₁ f₁ g₁ rfl h_f₁_pos h_g₁_pos h_stab₁ with h | h
-        · exact Or.inl (prec_of_prec_cofactor hrf hrg h)
-        · exact Or.inr (prec_of_prec_cofactor hrg hrf h)
+        · exact Or.inl (h.of_cofactor_of_common_root hrf hrg)
+        · exact Or.inr (h.of_cofactor_of_common_root hrg hrf)
       · push Not at hc
         obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
         rcases Nat.lt_or_ge g.natDegree f.natDegree with h_g_lt | h_g_ge
@@ -107,7 +107,7 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
       have hzr : z ≠ (r : ℂ) := by intro h; simp_all
       rw [← ratio_cofactor_eq hrfroot hrgroot hzr]
       have hpq₁ : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
-        prec_cofactor_of_common_root hpq hrfroot hrgroot
+        hpq.cofactor_of_common_root hrfroot hrgroot
       have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
         hf.divByMonic_X_sub_C hrfroot
       have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
@@ -157,7 +157,7 @@ theorem prec_of_stable_general {f g : ℝ[X]}
         rw [natDegree_divByMonic_X_sub_C]
         lia
       by_cases hd₁ : 1 ≤ (f /ₘ (X - C r)).natDegree
-      · exact prec_of_prec_cofactor hrf hrg (ih _ hf₁deg hf₁ hg₁ hstab₁ hd₁ rfl)
+      · exact (ih _ hf₁deg hf₁ hg₁ hstab₁ hd₁ rfl).of_cofactor_of_common_root hrf hrg
       · push Not at hd₁
         have hf₁d₀ : (f /ₘ (X - C r)).natDegree = 0 := by lia
         have hfd₁ : f.natDegree = 1 := by
@@ -167,13 +167,14 @@ theorem prec_of_stable_general {f g : ℝ[X]}
         have hg₁d₀ : (g /ₘ (X - C r)).natDegree = 0 := by
           rw [natDegree_divByMonic_X_sub_C]
           lia
-        refine prec_of_prec_cofactor hrf hrg ?_
-        obtain ⟨⟨hg₁₀, hg₁s⟩, ⟨hf₁₀, hf₁s⟩⟩ :
-            ((g /ₘ (X - C r)) ≠ 0 ∧ (g /ₘ (X - C r)).Splits) ∧
-              ((f /ₘ (X - C r)) ≠ 0 ∧ (f /ₘ (X - C r)).Splits) :=
-          ⟨isRealRooted_of_deg_zero hg₁.ne_zero hg₁d₀,
-            isRealRooted_of_deg_zero hf₁.ne_zero hf₁d₀⟩
-        exact prec_degree_zero_degree_zero hg₁₀ hg₁s hf₁₀ hf₁s hg₁d₀ hf₁d₀
+        have hcofactor : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) := by
+          obtain ⟨⟨hg₁₀, hg₁s⟩, ⟨hf₁₀, hf₁s⟩⟩ :
+              ((g /ₘ (X - C r)) ≠ 0 ∧ (g /ₘ (X - C r)).Splits) ∧
+                ((f /ₘ (X - C r)) ≠ 0 ∧ (f /ₘ (X - C r)).Splits) :=
+            ⟨isRealRooted_of_deg_zero hg₁.ne_zero hg₁d₀,
+              isRealRooted_of_deg_zero hf₁.ne_zero hf₁d₀⟩
+          exact prec_degree_zero_degree_zero hg₁₀ hg₁s hf₁₀ hf₁s hg₁d₀ hf₁d₀
+        exact hcofactor.of_cofactor_of_common_root hrf hrg
     · push Not at hcom
       obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
       rcases Nat.lt_or_ge g.natDegree f.natDegree with hglt | hgge

@@ -37,7 +37,7 @@ theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
         have hq₁_pos : HasPosLeadingCoeff q₁ :=
           hq_pos.divByMonic_X_sub_C hrq
         have hprec₁ : StrictInterl q₁ p₁ :=
-          prec_cofactor_of_common_root hprec hrp hrq
+          hprec.cofactor_of_common_root hrp hrq
         have hp₁_deg : p₁.natDegree < p.natDegree := by
           simp only [p₁]
           rw [natDegree_divByMonic_X_sub_C]

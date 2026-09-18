@@ -309,7 +309,7 @@ theorem degree_sub_c₀_mul_lt {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0
 
 /-! ## Common-root cofactor transport -/
 
-theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
+theorem StrictInterl.cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
     (hpq : StrictInterl g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
     StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) := by
   have : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
@@ -317,9 +317,9 @@ theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
   apply prec_of_prec_mul_X_sub_C_both r
   simp [*]
 
-theorem prec_of_prec_cofactor {f g : ℝ[X]} {r : ℝ}
-    (hrf : f.IsRoot r) (hrg : g.IsRoot r)
-    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r))) : StrictInterl g f := by
+theorem StrictInterl.of_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
+    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)))
+    (hrf : f.IsRoot r) (hrg : g.IsRoot r) : StrictInterl g f := by
   have hff : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
   have hgg : (X - C r) * (g /ₘ (X - C r)) = g := mul_divByMonic_eq_iff_isRoot.mpr hrg
   have := prec_mul_X_sub_C_both r h
@@ -337,5 +337,19 @@ lemma HasPosLeadingCoeff.divByMonic_X_sub_C {f : ℝ[X]}
     (hf : HasPosLeadingCoeff f) {r : ℝ} (hr : f.IsRoot r) :
     HasPosLeadingCoeff (f /ₘ (X - C r)) := by
   simpa only [HasPosLeadingCoeff, leadingCoeff_divByMonic_X_sub_C hr] using hf
+
+/-! ## Deprecated common-root cofactor names -/
+
+@[deprecated StrictInterl.cofactor_of_common_root (since := "2026-09-18")]
+theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
+    (hpq : StrictInterl g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
+    StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
+  hpq.cofactor_of_common_root hrf hrg
+
+@[deprecated StrictInterl.of_cofactor_of_common_root (since := "2026-09-18")]
+theorem prec_of_prec_cofactor {f g : ℝ[X]} {r : ℝ}
+    (hrf : f.IsRoot r) (hrg : g.IsRoot r)
+    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r))) : StrictInterl g f :=
+  h.of_cofactor_of_common_root hrf hrg
 
 end RealRooted
