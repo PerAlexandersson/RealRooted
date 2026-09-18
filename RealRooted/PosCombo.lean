@@ -234,7 +234,7 @@ theorem prec_sum_left_of_common_left_signed
 /-- Borcea--Brändén left-cone lemma in the nonnegative-coefficients
 specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand and
 each `f_i` has nonnegative coefficients, then `h ≪₀ ∑ f_i`. -/
-theorem prec0_sum_left_of_common_left_of_nonneg
+theorem Interl.sum_left_of_common_left_of_nonneg
     (l : List ℝ[X]) (h : ℝ[X])
     (hprec : ∀ p ∈ l, Interl h p)
     (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
@@ -262,7 +262,7 @@ theorem prec0_sum_left_of_common_left_of_nonneg
     exact Or.inr <| Or.inr <| by lia
 
 /-- Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finsetSum_right_of_nonneg {ι : Type}
+lemma Interl.finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
     (hprec : ∀ i ∈ s, Interl (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -298,7 +298,7 @@ lemma prec0_finsetSum_right_of_nonneg {ι : Type}
       simpa [Finset.sum_insert, ha] using hsum_strict.toInterl
 
 /-- Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finsetSum_left_of_nonneg {ι : Type}
+lemma Interl.finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
     (hprec : ∀ i ∈ s, Interl h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -312,7 +312,7 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
       have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
       have ih' : Interl h (s.sum f) := ih hprec_s hnn_s
       have hpair : Interl h ([f a, s.sum f].sum) := by
-        apply prec0_sum_left_of_common_left_of_nonneg
+        apply Interl.sum_left_of_common_left_of_nonneg
         · simp_all
         · intro p hp
           simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
@@ -325,7 +325,7 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
 summand precedes every selected right summand, and all selected summands have
 nonnegative coefficients, then the two finite sums are in `Interl` proper
 position. -/
-lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
+lemma Interl.finsetSum_pairwise_of_nonneg {ι κ : Type}
     (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
     (hprec : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
     (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
@@ -333,8 +333,43 @@ lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
     Interl (s.sum f) (t.sum g) := by
   classical
   have hleft : ∀ i ∈ s, Interl (f i) (t.sum g) :=
-    fun i hi => prec0_finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
-  exact prec0_finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
+    fun i hi => Interl.finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
+  exact Interl.finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
+
+/-! ## Deprecated zero-aware cone-sum names -/
+
+@[deprecated Interl.sum_left_of_common_left_of_nonneg (since := "2026-09-18")]
+theorem prec0_sum_left_of_common_left_of_nonneg
+    (l : List ℝ[X]) (h : ℝ[X])
+    (hprec : ∀ p ∈ l, Interl h p)
+    (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
+    Interl h l.sum :=
+  Interl.sum_left_of_common_left_of_nonneg l h hprec hnn
+
+@[deprecated Interl.finsetSum_right_of_nonneg (since := "2026-09-18")]
+lemma prec0_finsetSum_right_of_nonneg {ι : Type}
+    (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
+    (hprec : ∀ i ∈ s, Interl (f i) h)
+    (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
+    Interl (s.sum f) h :=
+  Interl.finsetSum_right_of_nonneg s f h hprec hnn
+
+@[deprecated Interl.finsetSum_left_of_nonneg (since := "2026-09-18")]
+lemma prec0_finsetSum_left_of_nonneg {ι : Type}
+    (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
+    (hprec : ∀ i ∈ s, Interl h (f i))
+    (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
+    Interl h (s.sum f) :=
+  Interl.finsetSum_left_of_nonneg h s f hprec hnn
+
+@[deprecated Interl.finsetSum_pairwise_of_nonneg (since := "2026-09-18")]
+lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
+    (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
+    (hprec : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
+    (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
+    (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
+    Interl (s.sum f) (t.sum g) :=
+  Interl.finsetSum_pairwise_of_nonneg s t f g hprec hfnn hgnn
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/

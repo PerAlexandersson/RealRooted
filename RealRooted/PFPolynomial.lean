@@ -485,7 +485,7 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r) :
     Interl p (q + r) := by
   simpa using
-    prec0_sum_left_of_common_left_of_nonneg [q, r] p
+    Interl.sum_left_of_common_left_of_nonneg [q, r] p
       (by
         simp_all)
       (by
@@ -502,7 +502,7 @@ theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
   have hsum : Finset.univ.sum (fun b : Bool ↦ cond b p q) = p + q := by
     simp
   rw [← hsum]
-  apply prec0_finsetSum_right_of_nonneg
+  apply Interl.finsetSum_right_of_nonneg
   · intro b _
     cases b <;> simp [hph, hqh]
   · intro b _

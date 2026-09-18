@@ -375,7 +375,7 @@ theorem prec0_chainPolynomial_succ
         exact hjn)
       simpa [F, subdivisionRow, i, last] using hprec
   have hSprec : Interl S (F n) := by
-    apply prec0_finsetSum_right_of_nonneg
+    apply Interl.finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact Interl.C_mul_left_of_nonneg (hbase j hjn)

@@ -305,7 +305,7 @@ theorem resolvedChowCombination_endpoint_prec0
       simpa [current, last, resolvedChowRow] using
         hdirect.interlacingSeq0.prec0 (i := current) (j := last) hjlt
   constructor
-  · apply prec0_finsetSum_left_of_nonneg
+  · apply Interl.finsetSum_left_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact Interl.C_mul_right_of_nonneg (hleft j hjn) (ha j hjn)
@@ -313,7 +313,7 @@ theorem resolvedChowCombination_endpoint_prec0
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact nonnegCoeffs_C_mul (ha j hjn)
         (hdirect.nonnegCoeffs _ (hmem j hjn))
-  · apply prec0_finsetSum_right_of_nonneg
+  · apply Interl.finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
       exact Interl.C_mul_left_of_nonneg (hright j hjn) (ha j hjn)

@@ -318,7 +318,7 @@ theorem chowRowTransform_prec0_of_lt
           (X * chowS n h₂ + h₂)) := by
     have hsum : Interl h₁
         [X * chowS n h₀, X * chowS n h₁, X * chowS n h₂ + h₂].sum := by
-      apply prec0_sum_left_of_common_left_of_nonneg
+      apply Interl.sum_left_of_common_left_of_nonneg
       · intro p hp
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
         rcases hp with rfl | rfl | rfl

@@ -168,7 +168,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have hp0 : p ≠ 0 := by simpa [hp_eq] using hp_right.1.1
   have hap : StrictInterl a p := by
     have hprec0 : Interl a ([a, X * b].sum) := by
-      refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] a ?_ ?_
+      refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] a ?_ ?_
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
@@ -180,7 +180,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
     prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : StrictInterl b p := by
     have hprec0 : Interl b ([a, X * b].sum) := by
-      refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
+      refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
@@ -195,7 +195,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         (Or.inl (by simp)))
   have hIdp : StrictInterl (IdTransform d p) p := by
     have hprec0 : Interl (∑ t ∈ (Finset.univ : Finset Bool), cond t b a) p := by
-      refine prec0_finsetSum_right_of_nonneg (s := (Finset.univ : Finset Bool))
+      refine Interl.finsetSum_right_of_nonneg (s := (Finset.univ : Finset Bool))
         (f := fun t => cond t b a) (h := p) ?_ ?_
       · intro t ht
         cases t <;> simp [hap.toInterl, hbp.toInterl]

@@ -188,7 +188,7 @@ theorem brandenBasisWeightedSum_prec0_of_le
     (ha : ∀ k ∈ s, 0 ≤ a k) :
     Interl (brandenBasisImage n 0) (brandenBasisWeightedSum n s a) := by
   rw [brandenBasisWeightedSum]
-  apply prec0_finsetSum_left_of_nonneg
+  apply Interl.finsetSum_left_of_nonneg
   · intro k hk
     exact Interl.C_mul_right_of_nonneg
       (brandenBasisImage_zero_prec n k (hkn k hk)).toInterl (ha k hk)
