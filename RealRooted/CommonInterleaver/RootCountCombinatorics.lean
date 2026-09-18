@@ -739,18 +739,10 @@ theorem succDegreeRootCountAbove_of_prec
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  obtain ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hlen : ss.length + 1 = rs.length := by rw [hss_len, hrs_len, hdeg]
-  have hint : ListInterlaces ss rs := by
-    rcases hshape with ⟨_, hi⟩ | ⟨hbad, _⟩
-    · exact hi
-    · exfalso
-      rw [hss_len, hrs_len, hdeg] at hbad
-      lia
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
+    hprec.exists_interleaves_of_succDegree hdeg
+  have hint : ListInterlaces ss rs :=
+    listInterlaces_of_interleaves_of_length hlen hinter
   intro x
   obtain ⟨B1, B2⟩ := interlaces_filter_gt_length_bounds ss rs x hss hrs hlen hint
   have hfcard : (f.roots.filter (x < ·)).card =
@@ -819,18 +811,10 @@ theorem succDegreeRootCountLowerOriented_of_prec
       ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card ∧
       ((q.roots.filter (· ≤ x)).card : ℤ) ≤
         (p.roots.filter (· ≤ x)).card + 1 := by
-  obtain ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
-  have hss_len : ss.length = p.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
-  have hrs_len : rs.length = q.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-  have hlen : ss.length + 1 = rs.length := by rw [hss_len, hrs_len, hdeg]
-  have hint : ListInterlaces ss rs := by
-    rcases hshape with ⟨_, hi⟩ | ⟨hbad, _⟩
-    · exact hi
-    · exfalso
-      rw [hss_len, hrs_len, hdeg] at hbad
-      lia
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
+    hprec.exists_interleaves_of_succDegree hdeg
+  have hint : ListInterlaces ss rs :=
+    listInterlaces_of_interleaves_of_length hlen hinter
   intro x
   obtain ⟨B1, B2⟩ := interlaces_filter_le_length_bounds ss rs x hss hrs hlen hint
   have hpcard : (p.roots.filter (· ≤ x)).card =
@@ -985,18 +969,10 @@ theorem sameDegreeRootCountOriented_of_prec
     ∀ x : ℝ,
       ((q.roots.filter (· ≤ x)).card : ℤ) ≤ (p.roots.filter (· ≤ x)).card ∧
       ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card + 1 := by
-  obtain ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
-  have hss_len : ss.length = p.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
-  have hrs_len : rs.length = q.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-  have hlen : ss.length = rs.length := by rw [hss_len, hrs_len, hdeg]
-  have halt : ListAlternates ss rs := by
-    rcases hshape with ⟨hbad, _⟩ | ⟨_, ha⟩
-    · exfalso
-      rw [hss_len, hrs_len, hdeg] at hbad
-      lia
-    · exact ha
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
+    hprec.exists_interleaves_of_natDegree_eq hdeg.symm
+  have halt : ListAlternates ss rs :=
+    listAlternates_of_interleaves_of_length hlen hinter
   intro x
   obtain ⟨B1, B2⟩ := alternates_filter_le_length_bounds ss rs x hss hrs hlen halt
   have hpcard : (p.roots.filter (· ≤ x)).card =
