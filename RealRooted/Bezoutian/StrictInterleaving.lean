@@ -241,15 +241,10 @@ theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInte
     (hdeg : p.natDegree = q.natDegree)
     (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
     StrictPrecSameDegree p q := by
-  obtain ⟨hp, hq, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := h
-  have hss_len : ss.length = p.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
-  have hrs_len : rs.length = q.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-  obtain ⟨_, halt⟩ := hshape.resolve_left (by intro hbad; lia)
-  have hlen : ss.length = rs.length := by lia
-  have hinter : List.Interleaves (· ≤ ·) rs ss :=
-    interleaves_of_listAlternates_of_length hlen halt
+  have hp : p ≠ 0 ∧ p.Splits := h.1
+  have hq : q ≠ 0 ∧ q.Splits := h.2.1
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss_sorted, hrs_sorted, hss_eq, hrs_eq,
+    hinter⟩ := h.exists_interleaves_of_natDegree_eq hdeg
   have hne : ∀ r ∈ rs, ∀ s ∈ ss, r ≠ s := by
     intro r hr s hs heq
     subst r

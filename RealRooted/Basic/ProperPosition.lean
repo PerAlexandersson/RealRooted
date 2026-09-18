@@ -519,6 +519,52 @@ lemma StrictInterl.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
     rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
   lia
 
+/-! ## Canonical root-list interleavings -/
+
+lemma StrictInterl.exists_interleaves_of_succDegree {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : g.natDegree = f.natDegree + 1) :
+    ∃ ss rs : List ℝ,
+      ss.length = f.natDegree ∧
+      rs.length = g.natDegree ∧
+      ss.length + 1 = rs.length ∧
+      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
+      (↑ss : Multiset ℝ) = f.roots ∧
+      (↑rs : Multiset ℝ) = g.roots ∧
+      List.Interleaves (fun x y : ℝ => x ≤ y) ss rs := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  refine ⟨ss, rs, hss_len, hrs_len, ?_⟩
+  rcases hshape with hdiff | hsame
+  · exact ⟨hdiff.1, hss, hrs, hss_eq, hrs_eq,
+      interleaves_of_listInterlaces_of_length hdiff.1 hdiff.2⟩
+  · exfalso
+    lia
+
+lemma StrictInterl.exists_interleaves_of_natDegree_eq {f g : ℝ[X]}
+    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    ∃ ss rs : List ℝ,
+      ss.length = f.natDegree ∧
+      rs.length = g.natDegree ∧
+      ss.length = rs.length ∧
+      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
+      (↑ss : Multiset ℝ) = f.roots ∧
+      (↑rs : Multiset ℝ) = g.roots ∧
+      List.Interleaves (fun x y : ℝ => x ≤ y) rs ss := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  refine ⟨ss, rs, hss_len, hrs_len, ?_⟩
+  rcases hshape with hdiff | hsame
+  · exfalso
+    lia
+  · exact ⟨hsame.1, hss, hrs, hss_eq, hrs_eq,
+      interleaves_of_listAlternates_of_length hsame.1 hsame.2⟩
+
 /-- Same-degree proper position exposes sorted root lists in its oriented
 `ListAlternates` branch. -/
 lemma StrictInterl.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
