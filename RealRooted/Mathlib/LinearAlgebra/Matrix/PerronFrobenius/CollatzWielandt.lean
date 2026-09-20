@@ -100,7 +100,7 @@ lemma collatzWielandtFn_eq_inf' (A : Matrix n n ℝ) {x : n → ℝ}
     collatzWielandtFn A x =
       ({i | 0 < x i}.toFinset).inf' hx (fun i => (A *ᵥ x) i / x i) := by
   dsimp [collatzWielandtFn]
-  rw [dif_pos hx]
+  rw [dite_eq_left hx]
 
 omit [Nonempty n] in
 private def posSupportNeighborhood (x : n → ℝ) : Set (n → ℝ) :=
@@ -323,7 +323,7 @@ lemma collatzWielandtFn_smul [DecidableEq n] {c : ℝ} (hc : 0 < c)
   have h_supp_eq : {i | 0 < (c • x) i}.toFinset = S := by
     ext i
     simp [S, smul_eq_mul, mul_pos_iff_of_pos_left hc]
-  rw [dif_pos (h_supp_eq.symm ▸ hS_nonempty), dif_pos hS_nonempty]
+  rw [dite_eq_left (h_supp_eq.symm ▸ hS_nonempty), dite_eq_left hS_nonempty]
   refine inf'_congr (Eq.symm h_supp_eq ▸ hS_nonempty) h_supp_eq ?_
   intro i hi
   simp only [mulVec_smul, smul_eq_mul, Pi.smul_apply]
@@ -667,7 +667,7 @@ theorem le_of_subinvariant [DecidableEq n]
   obtain ⟨i, hi⟩ := exists_pos_of_ne_zero hw_nonneg hw_ne_zero
   let S := {j | 0 < w j}.toFinset
   have hS_nonempty : S.Nonempty := ⟨i, by simp [S]; exact hi⟩
-  rw [collatzWielandtFn, dif_pos hS_nonempty]
+  rw [collatzWielandtFn, dite_eq_left hS_nonempty]
   apply Finset.le_inf'
   intro j hj
   have hw_j_pos : 0 < w j := by simpa [S] using hj
@@ -687,7 +687,7 @@ lemma collatzWielandtFn_of_ones_is_pos [DecidableEq n]
     obtain ⟨i⟩ := ‹Nonempty n›
     exact ⟨i, by simp [x_ones]⟩
   dsimp [collatzWielandtFn]
-  rw [dif_pos h_supp_nonempty]
+  rw [dite_eq_left h_supp_nonempty]
   have h_supp_ones : {i | 0 < x_ones i}.toFinset = Finset.univ := by
     ext a; simp [x_ones, zero_lt_one]
   have h_inf_eq : ({i | 0 < x_ones i}.toFinset.inf' h_supp_nonempty fun i ↦ (A *ᵥ x_ones) i / x_ones i) =

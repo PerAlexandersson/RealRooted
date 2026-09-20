@@ -36,7 +36,7 @@ lemma sum_fin_shifted_window {R : Type*} [Semiring R]
       (∑ x ∈ Finset.range s, if s ≤ x then u (x - s) * f x else 0) = 0 := by
     apply Finset.sum_eq_zero
     intro x hx
-    rw [if_neg]
+    rw [ite_eq_right]
     exact Nat.not_le_of_lt (Finset.mem_range.mp hx)
   have hfirst :
       (∑ x ∈ Finset.range (s + (d + 1)),

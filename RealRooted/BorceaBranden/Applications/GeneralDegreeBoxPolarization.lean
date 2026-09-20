@@ -55,7 +55,7 @@ def sourcePolarizationStageIsolateEquiv
     · rfl
     · dsimp
       by_cases hji : j.1 = i
-      · simp only [dif_pos hji]
+      · simp only [dite_eq_left hji]
         change (Sum.inr ⟨i, hi⟩ :
           SourcePolarizationStageVars κ S) = Sum.inr j
         congr 1
@@ -134,7 +134,7 @@ def sourcePolarizationStageInstallEquiv
     sourcePolarizationStageIsolateEquiv κ S i hi (Sum.inr ⟨j, hj⟩) =
       Sum.inl (Sum.inr ⟨j, hj, hji⟩) := by
   simp only [sourcePolarizationStageIsolateEquiv, Equiv.coe_fn_mk,
-    dif_neg hji]
+    dite_eq_right hji]
   congr 3
 
 @[simp] theorem sourcePolarizationStageInstallEquiv_symm_processed
@@ -281,7 +281,7 @@ theorem degreeOf_sourcePolarizationStageStep_raw_le
       (Sum.inl (Sum.inr rj))
   have hisolateMap : isolate (Sum.inr oldj) = Sum.inl (Sum.inr rj) := by
     dsimp [isolate, sourcePolarizationStageIsolateEquiv]
-    rw [dif_neg hji]
+    rw [dite_eq_right hji]
     apply congrArg (fun x => Sum.inl (Sum.inr x))
     exact Subtype.ext rfl
   have hisolate :
@@ -530,7 +530,7 @@ theorem sourceCoefficientGeneral_algebraicSymbol
     sourceCoefficientGeneral_sum]
   rw [Finset.sum_eq_single (boxComplementIndex κ r)]
   · rw [sourceCoefficientGeneral_symbolTerm]
-    simp only [boxComplementIndex_involution, if_pos]
+    simp only [boxComplementIndex_involution, ite_eq_left]
     rw [boxChoose_boxComplementIndex]
   · intro m _hm hm
     rw [sourceCoefficientGeneral_symbolTerm]
@@ -925,7 +925,7 @@ private theorem prod_blockSupport_compl_eq
   · have hle := b.2 ⟨i, j⟩
     have hb0 : b.1 ⟨i, j⟩ = 0 := by lia
     simp only [exponentBlockSupports, Finset.mem_filter, Finset.mem_univ,
-      true_and, hb0, zero_ne_one, not_false_eq_true, if_true]
+      true_and, hb0, zero_ne_one, not_false_eq_true, ite_true]
 
 /-- The blockwise complement monomial is the product of a variable exactly at
 the zero entries of the exponent. -/

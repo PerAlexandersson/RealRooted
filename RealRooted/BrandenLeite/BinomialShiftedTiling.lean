@@ -66,7 +66,7 @@ theorem binomialShiftedRecurrenceCoefficient_eq
         C (((Nat.choose j 2 : ℝ) - (-1 : ℝ) ^ j) *
           (Nat.choose m j : ℝ)) := by
   rw [binomialShiftedRecurrenceCoefficient,
-    twoSeedRecurrenceCoefficient_eq, if_pos hj]
+    twoSeedRecurrenceCoefficient_eq, ite_eq_left hj]
   have hchoose :
       (Nat.choose m 2 : ℝ) * (Nat.choose (m - 2) (j - 2) : ℝ) =
         (Nat.choose j 2 : ℝ) * (Nat.choose m j : ℝ) := by

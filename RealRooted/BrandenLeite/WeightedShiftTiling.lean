@@ -53,17 +53,17 @@ theorem markedShiftKernel_apply
   rw [markedShiftKernel, Matrix.mul_apply]
   by_cases h : j.val + r < N + 1
   · let k : Fin (N + 1) := ⟨j.val + r, h⟩
-    rw [dif_pos h, Finset.sum_eq_single k]
-    · rw [lowerShift_pow_apply, if_pos (by rfl), mul_one]
+    rw [dite_eq_left h, Finset.sum_eq_single k]
+    · rw [lowerShift_pow_apply, ite_eq_left (by rfl), mul_one]
     · intro k' _ hk'
-      rw [lowerShift_pow_apply, if_neg, mul_zero]
+      rw [lowerShift_pow_apply, ite_eq_right, mul_zero]
       intro heq
       exact hk' (Fin.ext heq)
     · simp
-  · rw [dif_neg h]
+  · rw [dite_eq_right h]
     apply Finset.sum_eq_zero
     intro k _
-    rw [lowerShift_pow_apply, if_neg, mul_zero]
+    rw [lowerShift_pow_apply, ite_eq_right, mul_zero]
     intro heq
     exact h (heq ▸ k.isLt)
 
@@ -78,13 +78,13 @@ theorem markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient
   rw [markedShiftKernel_apply]
   by_cases hji : j.val + r ≤ i.val
   · have hbound : j.val + r < N + 1 := hji.trans_lt i.isLt
-    rw [dif_pos hbound, if_pos hji, optionalRiseMatrix_apply]
+    rw [dite_eq_left hbound, ite_eq_left hji, optionalRiseMatrix_apply]
     simp [hji]
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     by_cases hbound : j.val + r < N + 1
-    · rw [dif_pos hbound, optionalRiseMatrix_apply]
+    · rw [dite_eq_left hbound, optionalRiseMatrix_apply]
       simp [hji]
-    · rw [dif_neg hbound]
+    · rw [dite_eq_right hbound]
 
 /-- The finite nonstationary tiling row with background weights `b`, ordered
 optional-rise weights `as`, and marked shift order `r`. -/
@@ -315,7 +315,7 @@ theorem orderedOptionalRiseCoefficient_map_mul
       | succ j =>
           have hn : 0 < n := by lia
           rw [List.map_cons, orderedOptionalRiseCoefficient,
-            if_pos hn, constantOptionalRiseCoefficient,
+            ite_eq_left hn, constantOptionalRiseCoefficient,
             ih hj, ih (show j ≤ n - 1 by lia),
             descendingWeightProduct_succ w (show j < n by lia)]
           ring
@@ -344,10 +344,10 @@ theorem weightedShiftTilingRow_succ_eq_separated
   apply Finset.sum_congr rfl
   intro j _
   by_cases hj : j.val + r ≤ s.succ.val
-  · rw [if_pos hj, if_pos hj,
+  · rw [ite_eq_left hj, ite_eq_left hj,
       orderedOptionalRiseCoefficient_map_mul alphas w
         (Nat.sub_le s.succ.val (j.val + r))]
-  · rw [if_neg hj, if_neg hj]
+  · rw [ite_eq_right hj, ite_eq_right hj]
 
 /-- Nonnegative separated data give PF polynomial rows. -/
 theorem weightedShiftTilingRow_separated_isPFPolynomial
@@ -387,7 +387,7 @@ theorem markedShiftKernel_pair_apply_displacement
     (hij : j.val + r = i.val) :
     markedShiftKernel [u, v] N r i j = 1 := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
-    if_pos hij.le]
+    ite_eq_left hij.le]
   simp [hij]
 
 /-- With two optional-rise factors, the first extra lag has coefficient
@@ -397,10 +397,10 @@ theorem markedShiftKernel_pair_apply_first_lag
     (hij : j.val + r + 1 = i.val) :
     markedShiftKernel [u, v] N r i j = u i.val + v i.val := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
-    if_pos (show j.val + r ≤ i.val by lia)]
+    ite_eq_left (show j.val + r ≤ i.val by lia)]
   have hlag : i.val - (j.val + r) = 1 := by lia
   rw [hlag, orderedOptionalRiseCoefficient_pair_one,
-    if_pos (show 0 < i.val by lia)]
+    ite_eq_left (show 0 < i.val by lia)]
 
 /-- With two optional-rise factors, the second extra lag has the ordered
 coefficient `u n * v (n - 1)`. -/
@@ -409,7 +409,7 @@ theorem markedShiftKernel_pair_apply_second_lag
     (hij : j.val + r + 2 = i.val) :
     markedShiftKernel [u, v] N r i j = u i.val * v (i.val - 1) := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
-    if_pos (show j.val + r ≤ i.val by lia)]
+    ite_eq_left (show j.val + r ≤ i.val by lia)]
   have hlag : i.val - (j.val + r) = 2 := by lia
   rw [hlag]
   exact orderedOptionalRiseCoefficient_pair_two u v
@@ -421,7 +421,7 @@ theorem markedShiftKernel_pair_apply_eq_zero_of_second_lag_lt
     (hij : j.val + r + 2 < i.val) :
     markedShiftKernel [u, v] N r i j = 0 := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
-    if_pos (show j.val + r ≤ i.val by lia)]
+    ite_eq_left (show j.val + r ≤ i.val by lia)]
   exact orderedOptionalRiseCoefficient_eq_zero_of_length_lt [u, v]
     (show [u, v].length < i.val - (j.val + r) by simp; lia)
 
@@ -438,7 +438,7 @@ theorem markedShiftKernel_eq_lowerShift_pow_of_weights_eq_zero
       simp
     · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
       by_cases hji : j.val ≤ i.val
-      · rw [if_pos hji,
+      · rw [ite_eq_left hji,
           orderedOptionalRiseCoefficient_eq_zero_of_weights as has
             (show 0 < i.val - j.val by lia)]
         simp [hij]
@@ -499,7 +499,7 @@ theorem sum_markedShiftKernel_pair
         rw [markedShiftKernel_pair_apply_eq_zero_of_second_lag_lt
           u v N r i j hlt, map_zero, zero_mul]
       · rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
-          if_neg hle, map_zero, zero_mul]
+          ite_eq_right hle, map_zero, zero_mul]
     _ = P j0 + C (u i.val + v i.val) * P j1 +
         C (u i.val * v (i.val - 1)) * P j2 := by
       simp [h01, h02, h12,

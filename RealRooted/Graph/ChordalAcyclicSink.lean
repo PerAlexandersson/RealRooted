@@ -636,11 +636,11 @@ theorem extendOrientation_isAcyclic {m : ℕ}
           apply (Finset.sup_lt_iff (lt_of_le_of_lt (Nat.zero_le _) hxy)).2
           intro z hz
           exact hrank (cut.directed_across hz hyK hyB)
-        simp only [fullRank, if_pos hne', Fin.lastCases_last,
+        simp only [fullRank, ite_eq_left hne', Fin.lastCases_last,
           Fin.lastCases_castSucc]
         dsimp [lowerRank] at hlower ⊢
         lia
-      · simp only [fullRank, if_neg hne, Fin.lastCases_last,
+      · simp only [fullRank, ite_eq_right hne, Fin.lastCases_last,
           Fin.lastCases_castSucc]
         exact Nat.zero_lt_succ _
   · intro v
@@ -651,7 +651,7 @@ theorem extendOrientation_isAcyclic {m : ℕ}
       have hxle : rank x ≤ lowerRank := Finset.le_sup hxB
       change fullRank x.castSucc < fullRank (Fin.last m)
       have hne : cut.lower.Nonempty := ⟨x, hxB⟩
-      simp only [fullRank, if_pos hne, Fin.lastCases_castSucc,
+      simp only [fullRank, ite_eq_left hne, Fin.lastCases_castSucc,
         Fin.lastCases_last]
       dsimp [lowerRank] at hxle ⊢
       lia
@@ -660,9 +660,9 @@ theorem extendOrientation_isAcyclic {m : ℕ}
         hrank ((P.extendOrientation_directed_prefix O cut x y).mp huv)
       change fullRank x.castSucc < fullRank y.castSucc
       by_cases hne : cut.lower.Nonempty
-      · simp only [fullRank, if_pos hne, Fin.lastCases_castSucc]
+      · simp only [fullRank, ite_eq_left hne, Fin.lastCases_castSucc]
         exact (Nat.mul_lt_mul_left (by norm_num : 0 < 2)).2 hxy
-      · simp only [fullRank, if_neg hne, Fin.lastCases_castSucc]
+      · simp only [fullRank, ite_eq_right hne, Fin.lastCases_castSucc]
         exact Nat.add_lt_add_right hxy 1
 
 @[simp]
@@ -1378,7 +1378,7 @@ theorem sum_markedSinkShift_extensions {m : ℕ}
     P.extendOrientation_sinks_of_fullCut O.1 fullCut hfullCut,
     P.card_fullCut_sinks_inter]
   by_cases hlast : Fin.last m ∈ S
-  · simp only [hlast, if_true, pow_succ]
+  · simp only [hlast, ite_true, pow_succ]
     ring
   · simp [hlast]
 
@@ -1515,7 +1515,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         change _ = C (c * D) *
           (E + (if Fin.last m ∈ S then C (1 / c) * X else 0) * B)
         by_cases hlast : Fin.last m ∈ S
-        · simp only [hlast, if_true]
+        · simp only [hlast, ite_true]
           rw [map_mul]
           have hC1 : C (1 : ℝ) = (1 : ℝ[X]) := by simp
           rw [hC1]
@@ -1528,7 +1528,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
               rw [hcoef]
               ring
             _ = (C c * C D) * (E + C (1 / c) * X * B) := by ring
-        · simp only [hlast, if_false, zero_mul, add_zero]
+        · simp only [hlast, ite_false, zero_mul, add_zero]
           rw [map_mul]
           calc
             C d * (C D * A) + 1 * (C D * B) =

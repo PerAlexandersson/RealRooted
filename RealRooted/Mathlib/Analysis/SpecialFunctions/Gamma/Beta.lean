@@ -73,7 +73,8 @@ theorem integral_rpow_mul_one_sub_rpow_zero_one
       exact betaWeight_eq_re_betaIntegrand hx
     _ = (Complex.betaIntegral (a + 1) (b + 1)).re := by
       rw [Complex.betaIntegral]
-      convert intervalIntegral_re hcomplex using 1 <;> norm_num
+      convert intervalIntegral_re hcomplex using 1
+      norm_num
     _ = Real.Gamma (a + 1) * Real.Gamma (b + 1) /
         Real.Gamma (a + b + 2) := by
       rw [Complex.betaIntegral_eq_Gamma_mul_div _ _

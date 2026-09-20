@@ -535,7 +535,7 @@ private theorem shiftedJacobiMonic_two_neg_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -553,7 +553,7 @@ private theorem shiftedJacobiMonic_two_one_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -571,7 +571,7 @@ private theorem shiftedJacobiMonic_two_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -589,7 +589,7 @@ private theorem shiftedJacobiMonic_two_two_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -658,7 +658,7 @@ private theorem shiftedJacobiMonic_three_neg_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -678,7 +678,7 @@ private theorem shiftedJacobiMonic_three_one_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -698,7 +698,7 @@ private theorem shiftedJacobiMonic_three_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia
@@ -718,7 +718,7 @@ private theorem shiftedJacobiMonic_three_two_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk0 : k ≠ 0 := by lia
     have hk1 : 1 ≠ k := by lia
     have hk2 : k ≠ 2 := by lia

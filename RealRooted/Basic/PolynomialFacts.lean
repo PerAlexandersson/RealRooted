@@ -5,7 +5,7 @@ import Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Data.List.Sort
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Data.List.Interleave
@@ -55,7 +55,7 @@ lemma natDegree_X_add_one_pow_le (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
   have hX1 : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
     rw [show (X + 1 : ℝ[X]) = X + C (1 : ℝ) by simp, Polynomial.natDegree_X_add_C]
-  simpa [one_mul] using Polynomial.natDegree_pow_le_of_le n hX1
+  simpa only [mul_one] using Polynomial.natDegree_pow_le_of_le n hX1
 
 lemma support_X_add_one_pow_eq_range (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).support = Finset.range (n + 1) := by

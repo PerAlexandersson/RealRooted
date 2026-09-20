@@ -36,7 +36,7 @@ theorem mem_comparisonBottomSupport_iff {w : List Nat} (hw : w.Nodup)
           have habNe : a ≠ b := fun hab => hw.1 (by simp [hab])
           by_cases hab : a < b
           · have hnba : ¬ b < a := by lia
-            rw [comparisonBottomSupport, if_pos hab]
+            rw [comparisonBottomSupport, ite_eq_left hab]
             constructor
             · intro hx
               rw [ih htail] at hx
@@ -59,7 +59,7 @@ theorem mem_comparisonBottomSupport_iff {w : List Nat} (hw : w.Nodup)
                 rw [ih htail]
                 exact ⟨z, hrest, hzx⟩
           · have hba : b < a := by lia
-            rw [comparisonBottomSupport, if_neg hab]
+            rw [comparisonBottomSupport, ite_eq_right hab]
             constructor
             · intro hx
               rw [Finset.mem_insert] at hx
@@ -113,8 +113,8 @@ theorem comparisonBottomSupport_map (f : Nat ↪ Nat) (w : List Nat)
               by_contra hn
               simp [hab, hn] at hdecide
             simp only [List.map_cons]
-            rw [comparisonBottomSupport, if_pos hfab,
-              comparisonBottomSupport, if_pos hab]
+            rw [comparisonBottomSupport, ite_eq_left hfab,
+              comparisonBottomSupport, ite_eq_left hab]
             change comparisonBottomSupport ((b :: w).map f) =
               (comparisonBottomSupport (b :: w)).map f
             exact ih htail
@@ -122,8 +122,8 @@ theorem comparisonBottomSupport_map (f : Nat ↪ Nat) (w : List Nat)
               intro hf
               simp [hab, hf] at hdecide
             simp only [List.map_cons]
-            rw [comparisonBottomSupport, if_neg hfab,
-              comparisonBottomSupport, if_neg hab, Finset.map_insert]
+            rw [comparisonBottomSupport, ite_eq_right hfab,
+              comparisonBottomSupport, ite_eq_right hab, Finset.map_insert]
             congr 1
             change comparisonBottomSupport ((b :: w).map f) =
               (comparisonBottomSupport (b :: w)).map f
@@ -165,7 +165,7 @@ theorem succ_mem_comparisonBottomSupport_step_imp {w : List Nat}
           have ha := hpos a (by simp)
           rw [step_zero] at hmem
           simp only [raise, List.map_cons] at hmem
-          rw [comparisonBottomSupport, if_pos (by lia)] at hmem
+          rw [comparisonBottomSupport, ite_eq_left (by lia)] at hmem
           apply (succ_mem_comparisonBottomSupport_raise_iff (a :: w) x).mp
           simpa [raise] using hmem
   | succ r ih =>
@@ -188,8 +188,8 @@ theorem succ_mem_comparisonBottomSupport_step_imp {w : List Nat}
                   have hb := hposTail b (by simp)
                   rw [step_succ, step_zero] at hmem
                   simp only [raise, List.map_cons] at hmem
-                  rw [comparisonBottomSupport, if_neg (by lia),
-                    comparisonBottomSupport, if_pos (by lia),
+                  rw [comparisonBottomSupport, ite_eq_right (by lia),
+                    comparisonBottomSupport, ite_eq_left (by lia),
                     Finset.mem_insert] at hmem
                   rcases hmem with hOne | hmem
                   · lia
@@ -207,12 +207,12 @@ theorem succ_mem_comparisonBottomSupport_step_imp {w : List Nat}
                   rw [step_succ, step_succ] at hmem
                   rw [comparisonBottomSupport] at hmem ⊢
                   by_cases hab : a < b
-                  · rw [if_pos (by lia)] at hmem
-                    rw [if_pos hab]
+                  · rw [ite_eq_left (by lia)] at hmem
+                    rw [ite_eq_left hab]
                     apply ih hposTail hrTail
                     simpa [step_succ] using hmem
-                  · rw [if_neg (by lia)] at hmem
-                    rw [if_neg hab]
+                  · rw [ite_eq_right (by lia)] at hmem
+                    rw [ite_eq_right hab]
                     rw [Finset.mem_insert] at hmem ⊢
                     rcases hmem with hxb | hmem
                     · left
@@ -252,7 +252,7 @@ theorem one_not_mem_comparisonBottomSupport_step_zero {w : List Nat}
   | cons a w =>
       have ha := hpos a (by simp)
       simp only [raise, List.map_cons]
-      rw [comparisonBottomSupport, if_pos (by lia)]
+      rw [comparisonBottomSupport, ite_eq_left (by lia)]
       change 1 ∉ comparisonBottomSupport (raise (a :: w))
       rw [comparisonBottomSupport_raise]
       simpa [succEmbedding] using zero_not_mem_comparisonBottomSupport hpos

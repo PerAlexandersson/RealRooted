@@ -234,7 +234,7 @@ theorem BidiagonalJensenPencilCertificate.alpha_nonneg_of_le
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) (hk : k ≤ d) :
     0 ≤ alpha k := by
   have hcoeff := hcert.1.hasNonnegCoeffs k
-  rw [coeff_jensenPolynomial, if_pos hk] at hcoeff
+  rw [coeff_jensenPolynomial, ite_eq_left hk] at hcoeff
   have hchoose : (0 : ℝ) < Nat.choose d k := by exact_mod_cast Nat.choose_pos hk
   nlinarith
 

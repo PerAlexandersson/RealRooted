@@ -57,7 +57,7 @@ theorem weightedDecoGammaCoeff_succ_succ (n j : ℕ)
         C (2 * (n + 1 - 2 * j)) * weightedDecoGammaCoeff (n + 1) j +
           X * weightedDecoGammaCoeff n j := by
   rw [weightedDecoGammaCoeff]
-  rw [if_pos hj]
+  rw [ite_eq_left hj]
 
 /-- Gamma coefficients vanish above half the ambient degree. -/
 theorem weightedDecoGammaCoeff_eq_zero_of_half_lt (n j : ℕ)
@@ -73,7 +73,7 @@ theorem weightedDecoGammaCoeff_eq_zero_of_half_lt (n j : ℕ)
     · rcases j with _ | j
       · simp at hj
       · rw [weightedDecoGammaCoeff]
-        rw [if_neg (by lia : ¬j + 1 ≤ (n + 2) / 2)]
+        rw [ite_eq_right (by lia : ¬j + 1 ≤ (n + 2) / 2)]
 
 /-- Every formal weight coefficient is a natural number. -/
 theorem weightedDecoGammaCoeff_coeff_nonneg (n j k : ℕ) :

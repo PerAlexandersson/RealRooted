@@ -168,7 +168,7 @@ theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : �
       · dsimp only
         have h_sub : n - (N - f.natDegree) = f.natDegree - (N - n) := by lia
         rw [h_sub, Polynomial.coeff_reverse, revAt_le (by lia), Nat.sub_sub_self (by lia),
-          Polynomial.coeff_X_pow, if_pos rfl, one_mul]
+          Polynomial.coeff_X_pow, ite_eq_left rfl, one_mul]
       · intro x hx hx_ne
         have : x.1 ≠ N - f.natDegree := by
           intro h_eq
@@ -177,7 +177,7 @@ theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : �
           · exact h_eq
           · have := Finset.mem_antidiagonal.mp hx
             lia
-        rw [Polynomial.coeff_X_pow, if_neg this, zero_mul]
+        rw [Polynomial.coeff_X_pow, ite_eq_right this, zero_mul]
       · intro h
         exfalso
         apply h
@@ -190,7 +190,7 @@ theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : �
         have h_eq : x.1 ≠ N - f.natDegree := by
           have := Finset.mem_antidiagonal.mp hx
           lia
-        rw [Polynomial.coeff_X_pow, if_neg h_eq, zero_mul])
+        rw [Polynomial.coeff_X_pow, ite_eq_right h_eq, zero_mul])
   · rw [coeff_reflect, revAt_eq_self_of_lt (by lia),
       Polynomial.coeff_eq_zero_of_natDegree_lt (by lia), Polynomial.coeff_mul]
     exact Eq.symm (Finset.sum_eq_zero fun x hx => by
@@ -201,7 +201,7 @@ theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : �
           lia
         have : f.reverse.natDegree ≤ f.natDegree := Polynomial.reverse_natDegree_le _
         rw [Polynomial.coeff_eq_zero_of_natDegree_lt (p := f.reverse) (by lia), mul_zero]
-      · rw [Polynomial.coeff_X_pow, if_neg hx1, zero_mul])
+      · rw [Polynomial.coeff_X_pow, ite_eq_right hx1, zero_mul])
 
 /-- Root-count accounting for reflection at a degree bound: reflecting at `N`
 splits the roots into the `N - natDegree` padding zeros contributed by the

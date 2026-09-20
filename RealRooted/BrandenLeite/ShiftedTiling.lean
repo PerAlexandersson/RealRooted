@@ -115,7 +115,7 @@ theorem twoSeedFactorRecurrenceCoefficient_hasNonnegCoeffs
   have hb : ∀ i, 0 ≤ (optionalRisePolynomial 1 ys).coeff i :=
     (optionalRisePolynomial_isPFPolynomial (by norm_num) hys).hasNonnegCoeffs
   by_cases hj2 : 2 ≤ j
-  · rw [if_pos hj2]
+  · rw [ite_eq_left hj2]
     have hfinite :=
       twoSeedRecurrenceCoefficient_hasNonnegCoeffs_of_finite_even_bound
         (a := fun i => (optionalRisePolynomial c xs).coeff i)

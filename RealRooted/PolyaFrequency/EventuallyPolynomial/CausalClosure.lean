@@ -41,7 +41,7 @@ theorem IsPolyaFreqSeq.causalFwdDiff_of_eventually_polynomial_of_pos_zero
     · have hlower : B.BlockTriangular OrderDual.toDual := by
         intro i j hij
         simp only [B, Matrix.submatrix_apply, toeplitz_apply]
-        exact if_neg (Nat.not_le_of_gt (Fin.lt_def.mp hij))
+        exact ite_eq_right (Nat.not_le_of_gt (Fin.lt_def.mp hij))
       rw [Matrix.det_of_lowerTriangular B hlower]
       rw [Finset.prod_ne_zero_iff]
       intro i _

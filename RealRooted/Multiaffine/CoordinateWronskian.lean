@@ -264,10 +264,10 @@ theorem coordinateWronskian_X_mul_left
   by_cases hik : i = k
   · subst k
     simp only [coordinateWronskian, pderiv_mul, pderiv_X_self,
-      one_mul, if_pos]
+      one_mul, ite_eq_left]
     ring
   · simp only [coordinateWronskian, pderiv_mul,
-      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, if_neg hik,
+      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, ite_eq_right hik,
       sub_zero]
     ring
 
@@ -283,10 +283,10 @@ theorem coordinateWronskian_X_mul_right
   by_cases hik : i = k
   · subst k
     simp only [coordinateWronskian, pderiv_mul, pderiv_X_self,
-      one_mul, if_pos]
+      one_mul, ite_eq_left]
     ring
   · simp only [coordinateWronskian, pderiv_mul,
-      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, if_neg hik]
+      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, ite_eq_right hik]
     ring
 
 /-- Away from the adjoined coordinate, the coordinate Wronskian of two
@@ -305,7 +305,7 @@ theorem coordinateWronskian_add_X_mul_add_X_mul_of_ne
     coordinateWronskian_add_right, coordinateWronskian_X_mul_right,
     coordinateWronskian_X_mul_left, coordinateWronskian_X_mul_left,
     coordinateWronskian_X_mul_right]
-  simp only [if_neg hik]
+  simp only [ite_eq_right hik]
   ring
 
 /-- The four coordinate Wronskians of four polynomials satisfy the
@@ -430,7 +430,7 @@ theorem coordinateWronskian_X_mul_right_self
     coordinateWronskian P (X k * Q) k =
       Q * (P - X k * pderiv k P) := by
   classical
-  rw [coordinateWronskian_X_mul_right, if_pos rfl, coordinateWronskian,
+  rw [coordinateWronskian_X_mul_right, ite_eq_left rfl, coordinateWronskian,
     pderiv_eq_zero_of_notMem_vars hkQ]
   ring
 
@@ -485,10 +485,10 @@ theorem coordinateWronskian_X_mul_pderiv_left
   by_cases hij : i = j
   · subst j
     simp only [coordinateWronskian, rayleighDifference, pderiv_mul,
-      pderiv_X_self, one_mul, if_pos]
+      pderiv_X_self, one_mul, ite_eq_left]
     ring
   · simp only [coordinateWronskian, rayleighDifference, pderiv_mul,
-      pderiv_X_of_ne (Ne.symm hij), zero_mul, zero_add, if_neg hij,
+      pderiv_X_of_ne (Ne.symm hij), zero_mul, zero_add, ite_eq_right hij,
       sub_zero, pderiv_comm i]
     ring
 

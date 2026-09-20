@@ -50,7 +50,7 @@ theorem toeplitzFin_mul (a b : ℕ → ℝ) (N : ℕ) :
   rw [Matrix.mul_apply]
   simp_rw [toeplitzFin_apply]
   by_cases hji : j.val ≤ i.val
-  · rw [if_pos (Fin.le_def.mpr hji)]
+  · rw [ite_eq_left (Fin.le_def.mpr hji)]
     unfold natCauchyConvolution
     calc
       (∑ l : Fin (N + 1),
@@ -102,9 +102,9 @@ theorem toeplitzFin_mul (a b : ℕ → ℝ) (N : ℕ) :
           have hl' := Finset.mem_Icc.mp hl
           have hjl : j.val ≤ l.val := Fin.le_def.mp hl'.1
           have hli : l.val ≤ i.val := Fin.le_def.mp hl'.2
-          rw [if_pos hl'.2, if_pos hl'.1]
+          rw [ite_eq_left hl'.2, ite_eq_left hl'.1]
           rw [show i.val - j.val - (i.val - l.val) = l.val - j.val by lia]
-  · rw [if_neg (fun h => hji (Fin.le_def.mp h))]
+  · rw [ite_eq_right (fun h => hji (Fin.le_def.mp h))]
     apply Finset.sum_eq_zero
     intro l _
     by_cases hli : l ≤ i

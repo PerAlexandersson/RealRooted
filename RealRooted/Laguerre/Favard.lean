@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Data.Real.Basic
+public import Mathlib.Basic.Real.Basic
 public import RealRooted.Favard.Recurrence
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
 

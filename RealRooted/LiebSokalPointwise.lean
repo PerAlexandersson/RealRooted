@@ -87,12 +87,12 @@ theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomia
     apply convexHull_min
     · intro w hw
       rw [Polynomial.mem_rootSet] at hw
-      simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk]
+      simp only [Set.mem_ofPred_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk]
       by_contra hcon
       exact hp w (not_le.mp hcon) (by simpa using hw.2)
     · exact convex_halfSpace_le Complex.imLm.isLinear 0
   have hmem := hconv hsub
-  simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
+  simp only [Set.mem_ofPred_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
   linarith
 
 /-- Subtracting the derivative preserves absence of roots in the open upper

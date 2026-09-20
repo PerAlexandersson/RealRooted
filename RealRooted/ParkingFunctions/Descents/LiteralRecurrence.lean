@@ -30,7 +30,7 @@ private theorem staircaseSum_ofFn (m : ℕ) (f : Fin m → ℝ[X]) (i : Fin m) :
           Fin.sum_univ_succ]
         simp only [Fin.succ_lt_succ_iff]
         rw [← ih (fun j => f j.succ) i]
-        rw [if_pos i.succ_pos]
+        rw [ite_eq_left i.succ_pos]
         unfold staircaseSum
         ring
 

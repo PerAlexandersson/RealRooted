@@ -177,7 +177,7 @@ private theorem weightedSum_leanderXOutputRegion {n : ℕ}
         · have hnle : ¬h ≤ j := by
             intro hle
             exact hEqJ (le_antisymm hle (le_of_not_gt hhj))
-          simp only [leanderXOutputWeight, hhi, hEqI, hhj, hEqJ, if_false,
+          simp only [leanderXOutputWeight, hhi, hEqI, hhj, hEqJ, ite_false,
             leanderXOutputRegion, hnle, map_one, one_mul, leanderAffineFactor]
           ring
 

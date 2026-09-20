@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.PDeriv
+import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 

@@ -49,11 +49,11 @@ theorem finiteToeplitz_kernelRows_pf_and_prec0
   have hGlower : ∀ i j, i < j → G i j = 0 := by
     intro i j hij
     change finiteToeplitz g N i j = 0
-    rw [finiteToeplitz_apply, if_neg (not_le_of_gt hij)]
+    rw [finiteToeplitz_apply, ite_eq_right (not_le_of_gt hij)]
   have hHlower : ∀ m i j, i < j → H m i j = 0 := by
     intro m i j hij
     change finiteToeplitz (a m) N i j = 0
-    rw [finiteToeplitz_apply, if_neg (not_le_of_gt hij)]
+    rw [finiteToeplitz_apply, ite_eq_right (not_le_of_gt hij)]
   have hKstrict : ∀ i j, i.val ≤ j.val → K i j = 0 := by
     intro i j hij
     change finiteToeplitz h N i j = 0

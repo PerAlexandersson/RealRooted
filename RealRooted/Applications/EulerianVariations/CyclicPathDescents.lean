@@ -39,12 +39,12 @@ def cyclicPathDescentPolynomial (n : ℕ) : ℝ[X] :=
       else 0 := by
   rw [cyclicPathDescentPolynomial, Polynomial.finsetSum_coeff]
   by_cases hk : k ∈ Finset.Icc 1 n
-  · rw [if_pos hk, Finset.sum_eq_single k]
+  · rw [ite_eq_left hk, Finset.sum_eq_single k]
     · simp
     · intro b hb hbk
       simp [Polynomial.coeff_monomial, hbk]
     · exact fun h ↦ (h hk).elim
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     apply Finset.sum_eq_zero
     intro b hb
     have hbk : b ≠ k := by
@@ -65,7 +65,7 @@ theorem cyclicPathDescentPolynomial_eq_derivative (n : ℕ) (hn : 0 < n) :
       · have hchoose := Nat.choose_mul (n := n) (k := k + 1) (s := 1) (by lia)
         have hchooseReal := congrArg (fun x : ℕ ↦ (x : ℝ)) hchoose
         simp only [Nat.cast_mul] at hchooseReal
-        rw [coeff_cyclicPathDescentPolynomial, if_pos (by simp [hk]),
+        rw [coeff_cyclicPathDescentPolynomial, ite_eq_left (by simp [hk]),
           show C (2 / (n : ℝ)) * X * (narayanaPolynomial 0 n).derivative =
             C (2 / (n : ℝ)) * (X * (narayanaPolynomial 0 n).derivative) by ring,
           Polynomial.coeff_C_mul, Polynomial.coeff_X_mul,
@@ -78,7 +78,7 @@ theorem cyclicPathDescentPolynomial_eq_derivative (n : ℕ) (hn : 0 < n) :
         nlinarith
       · have hkn : n < k + 1 := Nat.lt_of_not_ge hk
         rw [coeff_cyclicPathDescentPolynomial,
-          if_neg (by
+          ite_eq_right (by
             intro hmem
             rw [Finset.mem_Icc] at hmem
             exact hk hmem.2),

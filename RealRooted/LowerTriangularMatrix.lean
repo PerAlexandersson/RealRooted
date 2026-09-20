@@ -268,7 +268,7 @@ theorem coeff_rowPolynomial_of_le [Semiring R] (A : LowerTriangularMatrix R) {i 
   rw [Finset.sum_eq_single j]
   · simp
   · intro b hb hbj
-    rw [coeff_C_mul, coeff_X_pow, if_neg hbj.symm, mul_zero]
+    rw [coeff_C_mul, coeff_X_pow, ite_eq_right hbj.symm, mul_zero]
   · intro hj
     exact (hj (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hij))).elim
 
@@ -278,7 +278,7 @@ theorem coeff_rowPolynomial_of_gt [Semiring R] (A : LowerTriangularMatrix R) {i 
   rw [rowPolynomial, Polynomial.finsetSum_coeff]
   apply Finset.sum_eq_zero
   intro b hb
-  rw [coeff_C_mul, coeff_X_pow, if_neg, mul_zero]
+  rw [coeff_C_mul, coeff_X_pow, ite_eq_right, mul_zero]
   intro hbj
   have hbi : b ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
   exact (not_le_of_gt hij) (hbj ▸ hbi)

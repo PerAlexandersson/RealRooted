@@ -430,14 +430,14 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
     · haveI : Nonempty (Set.powersetCard (Fin n) q) :=
         ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
       have hBprim := hprim q hq1 hqn
-      simp only [hR, if_neg hq1.ne']
+      simp only [hR, ite_eq_right hq1.ne']
       exact perronRoot_pos_of_irreducible hBprim.isIrreducible hBprim.nonneg
   have hprodR : ∀ q, q ≤ n → ∏ i ∈ topFinset n q, μc i = ((R q : ℝ) : ℂ) := by
     intro q hqn
     rcases Nat.eq_zero_or_pos q with rfl | hq1
     · simp [topFinset_zero, hR]
     · rw [hkey q hq1 hqn]
-      simp [hR, if_neg hq1.ne']
+      simp [hR, ite_eq_right hq1.ne']
   set μr : Fin n → ℝ := fun i => R ((i : ℕ) + 1) / R (i : ℕ) with hμr
   have hμr_pos : ∀ i, 0 < μr i := fun i =>
     div_pos (hRpos _ (Nat.succ_le_of_lt i.isLt)) (hRpos _ (le_of_lt i.isLt))

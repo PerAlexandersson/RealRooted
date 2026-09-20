@@ -30,8 +30,8 @@ theorem rootsAbove_le (p : K[X]) {s s' : K} (h : s ≤ s') :
   refine Multiset.le_iff_count.mpr (fun ξ => ?_)
   by_cases h₁ : -s < ξ
   · have h₂ : -s' < ξ := by linarith
-    rw [Multiset.count_filter, Multiset.count_filter, if_pos h₁, if_pos h₂]
-  · rw [Multiset.count_filter, if_neg h₁]
+    rw [Multiset.count_filter, Multiset.count_filter, ite_eq_left h₁, ite_eq_left h₂]
+  · rw [Multiset.count_filter, ite_eq_right h₁]
     exact Nat.zero_le _
 
 /-- The cardinality of `rootsAbove` is monotone in its threshold. -/
@@ -53,11 +53,11 @@ theorem prod_sign {m : Multiset K} {s : K} (h : ∀ ξ ∈ m, ξ ≠ -s) :
       rw [Multiset.map_cons, Multiset.prod_cons, Multiset.filter_cons]
       rcases lt_or_gt_of_ne hane with hlt | hgt
       · have hnot : ¬ (-s < a) := by linarith
-        rw [if_neg hnot]
+        rw [ite_eq_right hnot]
         simp only [zero_add]
         have hfac : (0 : K) < -s - a := by linarith
         nlinarith [hIH, hfac]
-      · rw [if_pos hgt]
+      · rw [ite_eq_left hgt]
         rw [Multiset.card_add, Multiset.card_singleton]
         have hfac : (-s - a) < 0 := by linarith
         have hpow : (-1 : K) ^ (1 + Multiset.card (t.filter (fun ξ => -s < ξ)))

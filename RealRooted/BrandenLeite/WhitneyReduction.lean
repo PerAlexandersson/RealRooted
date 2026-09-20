@@ -29,11 +29,11 @@ theorem whitneyClearFirstAux_apply_of_le {N : ℕ}
       have htN : t < N := by lia
       let s : Fin N := ⟨N - (t + 1), by lia⟩
       let B := whitneyClearFirstAux A t
-      rw [whitneyClearFirstAux, dif_pos htN]
+      rw [whitneyClearFirstAux, dite_eq_left htN]
       by_cases hzero : B s.succ 0 = 0
-      · rw [if_pos hzero]
+      · rw [ite_eq_left hzero]
         exact ih htN.le i j (by lia)
-      · rw [if_neg hzero]
+      · rw [ite_eq_right hzero]
         have his : i ≠ s.succ := by
           intro his
           have hval : i.val = N - t := by
@@ -44,7 +44,7 @@ theorem whitneyClearFirstAux_apply_of_le {N : ℕ}
         have his' : i ≠ (⟨N - (t + 1), by lia⟩ : Fin N).succ := by
           simpa only [s] using his
         simp only [whitneyEliminateFirst, whitneyEliminateAt,
-          Matrix.updateRow_apply, his', if_false]
+          Matrix.updateRow_apply, his', ite_false]
         exact ih htN.le i j (by lia)
 
 theorem whitneyClearFirstAux_succ_apply_of_ne {N : ℕ}
@@ -54,10 +54,10 @@ theorem whitneyClearFirstAux_succ_apply_of_ne {N : ℕ}
     whitneyClearFirstAux A (t + 1) i j =
       whitneyClearFirstAux A t i j := by
   let s : Fin N := ⟨N - (t + 1), by lia⟩
-  rw [whitneyClearFirstAux, dif_pos ht]
+  rw [whitneyClearFirstAux, dite_eq_left ht]
   by_cases hzero : whitneyClearFirstAux A t s.succ 0 = 0
-  · rw [if_pos hzero]
-  · rw [if_neg hzero]
+  · rw [ite_eq_left hzero]
+  · rw [ite_eq_right hzero]
     have his : i ≠ s.succ := by
       intro his
       apply hi
@@ -67,7 +67,7 @@ theorem whitneyClearFirstAux_succ_apply_of_ne {N : ℕ}
     have his' : i ≠ (⟨N - (t + 1), by lia⟩ : Fin N).succ := by
       simpa only [s] using his
     simp only [whitneyEliminateFirst, whitneyEliminateAt,
-      Matrix.updateRow_apply, his', if_false]
+      Matrix.updateRow_apply, his', ite_false]
 
 theorem whitneyClearFirstAux_apply_eq_final_of_lt {N : ℕ}
     (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
@@ -122,18 +122,18 @@ theorem whitneyClearFirstAux_apply_succ {N : ℕ}
   have hstage : whitneyClearFirstAux A (t + 1) i.succ j.succ =
       A i.succ j.succ -
         (A i.succ 0 / A i.castSucc 0) * A i.castSucc j.succ := by
-    rw [whitneyClearFirstAux, dif_pos htN]
+    rw [whitneyClearFirstAux, dite_eq_left htN]
     by_cases hzero : whitneyClearFirstAux A t s.succ 0 = 0
-    · rw [if_pos hzero]
+    · rw [ite_eq_left hzero]
       rw [hs] at hzero
       rw [htarget] at hzero
       rw [htargetj]
       simp [hzero]
-    · rw [if_neg hzero]
+    · rw [ite_eq_right hzero]
       have hs' : (⟨N - (t + 1), by lia⟩ : Fin N) = i := by
         simpa only [s] using hs
       simp only [whitneyEliminateFirst, whitneyEliminateAt,
-        Matrix.updateRow_apply, hs', if_pos]
+        Matrix.updateRow_apply, hs', ite_eq_left]
       rw [htargetj, htarget, hpivot, hpivotj]
   have hstable := whitneyClearFirstAux_apply_eq_final_of_lt
     A (t + 1) ht1N i.succ j.succ (by

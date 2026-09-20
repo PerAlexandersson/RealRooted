@@ -290,14 +290,14 @@ theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
       if i ≤ n then (-1 : R) ^ i * (Nat.choose n i : R) * a * g.coeff (n - i) else 0 := by
   classical
   by_cases hi : i ≤ n
-  · rw [if_pos hi, apolarPairing]
+  · rw [ite_eq_left hi, apolarPairing]
     have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (Nat.lt_succ_of_le hi)
     rw [Finset.sum_eq_single_of_mem i hmem]
     · simp only [coeff_monomial_same]
     · intro k _ hki
       have hik : i ≠ k := fun h => hki h.symm
       simp [coeff_monomial, hik]
-  · rw [if_neg hi, apolarPairing]
+  · rw [ite_eq_right hi, apolarPairing]
     refine Finset.sum_eq_zero ?_
     intro k hk
     have hki : k ≠ i := by
@@ -315,7 +315,7 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
       else 0 := by
   classical
   by_cases hj : j ≤ n
-  · rw [if_pos hj, apolarPairing]
+  · rw [ite_eq_left hj, apolarPairing]
     have hmem : n - j ∈ Finset.range (n + 1) :=
       Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.sub_le n j))
     rw [Finset.sum_eq_single_of_mem (n - j) hmem]
@@ -328,7 +328,7 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
         apply hk_ne
         lia
       simp [coeff_monomial, hneq]
-  · rw [if_neg hj, apolarPairing]
+  · rw [ite_eq_right hj, apolarPairing]
     refine Finset.sum_eq_zero ?_
     intro k hk
     have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
@@ -346,20 +346,20 @@ theorem apolarPairing_monomial_monomial {R : Type*} [CommRing R]
       if i + j = n then (-1 : R) ^ i * (Nat.choose n i : R) * a * b else 0 := by
   rw [apolarPairing_monomial_left]
   by_cases hsum : i + j = n
-  · rw [if_pos hsum]
+  · rw [ite_eq_left hsum]
     have hi : i ≤ n := by lia
-    rw [if_pos hi]
+    rw [ite_eq_left hi]
     have hsub : n - i = j := by lia
     simp [hsub]
-  · rw [if_neg hsum]
+  · rw [ite_eq_right hsum]
     by_cases hi : i ≤ n
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       have hneq : j ≠ n - i := by
         intro h
         apply hsum
         lia
       simp [coeff_monomial, hneq]
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
 
 /-- Pairing with a power of `X` on the left, obtained from
 `apolarPairing_monomial_left` since `X ^ i = monomial i 1`. -/
@@ -409,7 +409,7 @@ theorem apolarPairing_eq_sum_antidiagonal {R : Type*} [CommRing R]
 theorem areApolar_monomial_monomial_of_add_ne {R : Type*} [CommRing R]
     {n i j : Nat} (a b : R) (h : i + j ≠ n) :
     AreApolar n (monomial i a) (monomial j b) := by
-  rw [AreApolar, apolarPairing_monomial_monomial, if_neg h]
+  rw [AreApolar, apolarPairing_monomial_monomial, ite_eq_right h]
 
 /-- Over `ℂ`, two monomials are apolar in degree `n` exactly when their degrees
 fail to sum to `n`, or one of the coefficients vanishes. -/
@@ -418,7 +418,7 @@ theorem areApolar_monomial_monomial_iff_complex
     AreApolar n (monomial i a) (monomial j b) ↔ i + j ≠ n ∨ a = 0 ∨ b = 0 := by
   rw [AreApolar, apolarPairing_monomial_monomial]
   by_cases hsum : i + j = n
-  · rw [if_pos hsum]
+  · rw [ite_eq_left hsum]
     have hi : i ≤ n := by lia
     have hchoose : (Nat.choose n i : ℂ) ≠ 0 :=
       Nat.cast_choose_ne_zero (R := ℂ) hi
@@ -437,7 +437,7 @@ theorem areApolar_monomial_monomial_iff_complex
       · exact absurd hsum hne
       · simp [ha]
       · simp [hb]
-  · rw [if_neg hsum]
+  · rw [ite_eq_right hsum]
     simp [hsum]
 
 /-- Symmetric companion of a Grace-type apolarity statement: since apolarity is
@@ -512,7 +512,7 @@ theorem apolarPairing_coApolarPoint {R : Type*} [CommRing R]
   refine Finset.sum_congr rfl fun k hk => ?_
   have hk' : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
   simp only [Nat.add_sub_cancel]
-  rw [apolarPairing_monomial_right, if_pos hk', neg_pow z (n - k)]
+  rw [apolarPairing_monomial_right, ite_eq_left hk', neg_pow z (n - k)]
   have h1 : (-1 : R) ^ (n - k) * (-1 : R) ^ (n - k) = 1 := by
     rw [← mul_pow]
     norm_num
@@ -645,7 +645,7 @@ theorem exists_binomialLift_eq {n : Nat} (Q : ℂ[X]) (hQ : Q.natDegree ≤ n) :
   ext k
   rw [coeff_binomialLift]
   by_cases hk : k ≤ n
-  · rw [if_pos hk, Polynomial.finsetSum_coeff]
+  · rw [ite_eq_left hk, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_single k]
     · simp only [coeff_monomial_same]
       rw [mul_div_cancel₀ _ (Nat.cast_choose_ne_zero (R := ℂ) hk)]
@@ -653,7 +653,7 @@ theorem exists_binomialLift_eq {n : Nat} (Q : ℂ[X]) (hQ : Q.natDegree ≤ n) :
       simp [Polynomial.coeff_monomial, hbk]
     · intro hknot
       exact (hknot (by simpa [Finset.mem_range, Nat.lt_succ_iff] using hk)).elim
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     exact (Polynomial.coeff_eq_zero_of_natDegree_lt (by
       exact Nat.lt_of_le_of_lt hQ (Nat.lt_of_not_ge hk))
     ).symm
@@ -715,7 +715,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         Complex.normSq α * Complex.normSq u - r^2 * Complex.normSq u := by
       dsimp [A]
       ring
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     linarith [hz_reciprocal, h_normSq_identity2, h_expand]
   -- By definition of $S$, we know that $1 / (w - ζ) \in S$.
   have h_reciprocal_in_S_ζ :
@@ -727,7 +727,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         rw [show {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} =
             Metric.closedBall ((starRingEnd ℂ α) / A) (r / A) by
           ext
-          simp only [Complex.mul_re, Set.mem_setOf_eq, Metric.mem_closedBall]
+          simp only [Complex.mul_re, Set.mem_ofPred_eq, Metric.mem_closedBall]
           rw [dist_eq_norm, Complex.norm_def]
           simp +decide [Complex.normSq, Complex.div_re, Complex.div_im]
           ring_nf
@@ -756,12 +756,12 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
     rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring_nf ; aesop;
   by_cases h : w - ζ = 0
   · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
-      inv_zero, mul_zero, one_mul, Complex.mul_re, Set.mem_setOf_eq, map_inv₀,
+      inv_zero, mul_zero, one_mul, Complex.mul_re, Set.mem_ofPred_eq, map_inv₀,
       Complex.inv_re, Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub,
       neg_mul, mul_neg, sub_neg_eq_add, ge_iff_le]
     norm_num [ ← hζ ] at *
   · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
-      one_mul, Complex.mul_re, Set.mem_setOf_eq, map_inv₀, Complex.inv_re,
+      one_mul, Complex.mul_re, Set.mem_ofPred_eq, map_inv₀, Complex.inv_re,
       Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub, ge_iff_le]
     simp_all +decide only [dist_eq_norm, Complex.norm_def, Complex.normSq,
       MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, Complex.sub_re, Complex.sub_im]
@@ -1002,7 +1002,7 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   obtain ⟨ m, rfl ⟩ := Nat.exists_eq_add_of_le hn;
   rw [ apolarPairing_eq_sum_binomialLift, apolarPairing_eq_sum_binomialLift ];
   simp +decide only [← hdefl, add_tsub_cancel_left, mul_comm, mul_sub,
-    coeff_sub, coeff_mul_C, mul_assoc, mul_left_comm, Finset.sum_sub_distrib,
+    coeff_sub, coeff_mul_C, mul_left_comm, Finset.sum_sub_distrib,
     Finset.sum_range_succ', pow_zero, tsub_zero, one_mul, coeff_polarShift,
     zero_add]
   rw [ add_comm 1 m, Finset.sum_range_succ ] ;
@@ -1188,7 +1188,7 @@ theorem apolarPairing_apolarTwist {R : Type*} [CommRing R]
   refine Finset.sum_congr rfl fun j hj => ?_
   have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
   simp only [Nat.add_sub_cancel]
-  rw [apolarPairing_monomial_right, if_pos hj']
+  rw [apolarPairing_monomial_right, ite_eq_left hj']
   have h1 : (-1 : R) ^ (n - j) * (-1 : R) ^ (n - j) = 1 := by
     rw [← mul_pow]
     norm_num

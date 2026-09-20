@@ -347,7 +347,7 @@ theorem gwSchurProduct_X_sub_C_mul_right (f p : ℝ[X]) (u : ℝ) :
   | succ n =>
       rw [coeff_gwSchurProduct, coeff_X_sub_C_mul, coeff_sub, coeff_X_mul,
         coeff_C_mul, coeff_gwSchurProduct, coeff_gwD, coeff_gwSchurProduct]
-      rw [if_neg (Nat.succ_ne_zero n), Nat.succ_sub_one, Nat.factorial_succ]
+      rw [ite_eq_right (Nat.succ_ne_zero n), Nat.succ_sub_one, Nat.factorial_succ]
       norm_num only [Nat.cast_add, Nat.cast_mul]
       ring_nf
 

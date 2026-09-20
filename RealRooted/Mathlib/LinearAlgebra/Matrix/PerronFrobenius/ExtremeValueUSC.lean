@@ -60,9 +60,7 @@ theorem bddAbove_image_of_upperSemicontinuousOn (hK : IsCompact K)
     have hf_restrict : UpperSemicontinuous (K.restrict f) :=
       (upperSemicontinuousOn_iff_upperSemicontinuous).mp hf
     rw [upperSemicontinuous_iff_isOpen_preimage] at hf_restrict
-    convert hf_restrict n using 1
-    ext x
-    simp [U]
+    exact hf_restrict n
   -- If `f` is unbounded on `K`, then the collection `{U n}` covers `K` (i.e., `univ` in `Set K`).
   have hU_covers_univ : (univ : Set K) ⊆ ⋃ n, U n := by
     intro x _
@@ -133,7 +131,7 @@ theorem exists_isMaxOn_of_upperSemicontinuousOn (hK : IsCompact K) (hK_nonempty 
     have hf_restrict : UpperSemicontinuous (K.restrict f) :=
       (upperSemicontinuousOn_iff_upperSemicontinuous).mp hf
     have : C n = K.restrict f ⁻¹' (Ici (s - 1 / (↑n + 1))) := by
-      ext x; simp_all only [one_div, tsub_le_iff_right, mem_setOf_eq, mem_preimage, restrict_apply, mem_Ici, C, s]
+      rfl
     rw [this]
     exact UpperSemicontinuous.isClosed_preimage hf_restrict (s - 1 / (↑n + 1))
   have hC_compact : ∀ n, IsCompact (C n) := fun n => (hC_closed n).isCompact

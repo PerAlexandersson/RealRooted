@@ -81,7 +81,7 @@ theorem coordinateWronskian_companionExtensionCore_successorExtension_add_one
   have hi : i + 1 ≠ 0 := by lia
   rw [decoBottomTotalCompanionSuccessorExtension_eq_totalExtension_add,
     MvPolynomial.coordinateWronskian_add_right,
-    MvPolynomial.coordinateWronskian_X_mul_right, if_neg hi, add_zero]
+    MvPolynomial.coordinateWronskian_X_mul_right, ite_eq_right hi, add_zero]
 
 /-- The core/total-extension Wronskian in each occupied positive coordinate
 is the corresponding affine Euler Rayleigh row. -/

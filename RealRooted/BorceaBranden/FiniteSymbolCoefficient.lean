@@ -69,7 +69,7 @@ private theorem foldl_pderiv_indicator_monomial
       have hempty : t \ (∅ : Finset sigma) = t := by
         ext i
         simp
-      rw [List.toFinset_nil, hempty, if_pos (by simp)]
+      rw [List.toFinset_nil, hempty, ite_eq_left (by simp)]
       rfl
   | cons x l ih =>
       have hxl : x ∉ l := List.nodup_cons.mp hl |>.1
@@ -103,11 +103,11 @@ private theorem foldl_pderiv_indicator_monomial
           ext i
           simp [and_assoc, and_left_comm]
         by_cases hlt : l.toFinset ⊆ t.erase x
-        · rw [if_pos hlt, if_pos (hsubset.mp hlt), hset]
-        · rw [if_neg hlt, if_neg (fun h => hlt (hsubset.mpr h))]
+        · rw [ite_eq_left hlt, ite_eq_left (hsubset.mp hlt), hset]
+        · rw [ite_eq_right hlt, ite_eq_right (fun h => hlt (hsubset.mpr h))]
       · rw [Finsupp.indicator_of_notMem hxt, Nat.cast_zero, mul_zero,
           MvPolynomial.monomial_zero, foldl_zero]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hxt (h (by simp))
 
@@ -167,7 +167,7 @@ theorem specializeRight_zero_monomial
   by_cases ht : t = 0
   · subst t
     simp [specializeRight_zero_eq_killCompl]
-  · rw [if_neg ht, specializeRight_zero_eq_killCompl]
+  · rw [ite_eq_right ht, specializeRight_zero_eq_killCompl]
     have hsupport : t.support ≠ ∅ := by simpa using ht
     obtain ⟨j, hj⟩ := Finset.nonempty_iff_ne_empty.mpr hsupport
     exact MvPolynomial.killCompl_monomial_eq_zero_of_notMem_range
@@ -254,16 +254,16 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
   rw [applyMonomialDifferential_indicator_monomial]
   by_cases hmn : m = n
   · subst n
-    rw [if_pos (hsubset.mpr (by simp)), hsdiff, hindicator,
+    rw [ite_eq_left (hsubset.mpr (by simp)), hsdiff, hindicator,
       specializeRight_zero_monomial]
     have hzero :
         Finsupp.indicator (m \ m) (fun _ _ => 1) = 0 := by
       ext j
       simp
-    rw [if_pos hzero, if_pos rfl]
-  · rw [if_neg hmn]
+    rw [ite_eq_left hzero, ite_eq_left rfl]
+  · rw [ite_eq_right hmn]
     by_cases hsub : m ⊆ n
-    · rw [if_pos (hsubset.mpr hsub), hsdiff, hindicator,
+    · rw [ite_eq_left (hsubset.mpr hsub), hsdiff, hindicator,
         specializeRight_zero_monomial]
       have hdiff : n \ m ≠ ∅ := by
         intro hdiff
@@ -275,8 +275,8 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
         intro hzero
         have hvalue := congrArg (fun d : tau →₀ ℕ => d j) hzero
         simp [Finsupp.indicator_of_mem hj] at hvalue
-      rw [if_neg hindicator_ne]
-    · rw [if_neg (fun h => hsub (hsubset.mp h))]
+      rw [ite_eq_right hindicator_ne]
+    · rw [ite_eq_right (fun h => hsub (hsubset.mp h))]
       simp [specializeRight]
 
 end

@@ -125,7 +125,7 @@ theorem hurwitz_oddEvenPolynomial_eq_routhExpand
     simp only [routhExpand_even_apply, hurwitz_oddEvenPolynomial_even_row,
       hurwitz_oddEvenPolynomial_odd_row, routhReducedPolynomial]
     by_cases hkj : k < j
-    · rw [if_pos hkj, if_pos (by lia), if_pos (by lia)]
+    · rw [ite_eq_left hkj, ite_eq_left (by lia), ite_eq_left (by lia)]
       rw [coeff_routhReducedOddPart]
       have hindex : j - (k + 1) + 1 = j - k := by lia
       rw [hindex]

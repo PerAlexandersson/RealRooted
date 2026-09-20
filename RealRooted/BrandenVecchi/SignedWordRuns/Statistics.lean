@@ -72,7 +72,7 @@ theorem adjacentCount_replicate_succ_append {α : Type*}
           adjacentCount relation (List.replicate (n + 1) a ++ tail) = _
       rw [adjacentCount_replicate_succ_append relation a n tail]
       by_cases hself : relation a a
-      · simp only [if_pos hself, mul_one]
+      · simp only [ite_eq_left hself, mul_one]
         ac_rfl
       · simp [hself]
 
@@ -140,7 +140,7 @@ theorem adjacentCount_eq_of_isChain_ne {α : Type*} [DecidableEq α]
       | nil => rfl
       | cons b rest =>
           rw [List.isChain_cons_cons] at hword
-          rw [adjacentCount_cons_cons, if_neg hword.1]
+          rw [adjacentCount_cons_cons, ite_eq_right hword.1]
           simpa using ih hword.2
 
 /-! ## Run-length expressions -/

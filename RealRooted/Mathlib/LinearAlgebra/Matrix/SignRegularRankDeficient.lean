@@ -679,7 +679,7 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
       ∏ i, weight (rows i)
     else 0
   by_cases hdiag : ∀ i, block (rows i) = cols i
-  · rw [if_pos hdiag]
+  · rw [ite_eq_left hdiag]
     have hmatrix :
         W.submatrix rows cols =
           Matrix.diagonal (fun i => weight (rows i)) := by
@@ -694,7 +694,7 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
           hij (hcols.injective h)
         simp [hc, hij]
     rw [hmatrix, Matrix.det_diagonal]
-  · rw [if_neg hdiag, Matrix.det_apply']
+  · rw [ite_eq_right hdiag, Matrix.det_apply']
     apply Finset.sum_eq_zero
     intro sigma hsigma
     by_cases hterm : ∀ i, block (rows (sigma i)) = cols i
@@ -720,7 +720,7 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
         apply Finset.prod_eq_zero (Finset.mem_univ i)
         simp only [Matrix.submatrix_apply, W,
           Matrix.weightedIncidence_apply]
-        rw [if_neg hi]
+        rw [ite_eq_right hi]
       rw [hprod, mul_zero]
 
 /-- A monotone weighted incidence matrix is totally nonnegative when its weights are

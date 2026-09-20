@@ -204,7 +204,7 @@ private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
   rw [coeff_zero_liuWangPoly, coeff_zero_liuWangPoly]
   have hn1 : 0 < n + 1 := by lia
   have hn2 : 0 < n + 2 := by lia
-  rw [if_pos hn2, if_pos hn1]
+  rw [ite_eq_left hn2, ite_eq_left hn1]
   by_cases hnd : n ≤ d
   · have hchoose :
         ((Nat.choose d (n + 1) : ℕ) : ℝ) * (n + 1 : ℝ) =
@@ -220,7 +220,7 @@ lemma coeff_zero_liuWangPoly_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) 
     0 < coeff (liuWangPoly d n) 0 := by
   rw [coeff_zero_liuWangPoly]
   have hn' : 0 < n := by lia
-  rw [if_pos hn']
+  rw [ite_eq_left hn']
   have hchoose_pos : 0 < Nat.choose d (n - 1) := Nat.choose_pos (by lia)
   simp_all
 

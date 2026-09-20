@@ -250,7 +250,7 @@ theorem optionEquivLeft_ordinaryHomogenization_coeff
   rw [← Polynomial.lcoeff_apply, map_sum]
   simp only [Polynomial.lcoeff_apply]
   by_cases hi : i ≤ d
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     rw [Finset.sum_eq_single (d - i)]
     · rw [Nat.sub_sub_self hi]
       simp
@@ -262,7 +262,7 @@ theorem optionEquivLeft_ordinaryHomogenization_coeff
         lia
       simp [hne]
     · simp
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     apply Finset.sum_eq_zero
     intro k hk
     have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)

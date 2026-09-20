@@ -95,7 +95,7 @@ lemma eigenvector_is_positive_of_irreducible_aux [Fintype n]
     (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
     ∀ i, 0 < v i := by
   by_contra h_has_zero
-  push_neg at h_has_zero
+  push Not at h_has_zero
   obtain ⟨i₀, hi₀_zero⟩ := h_has_zero
   have hi₀_eq_zero : v i₀ = 0 := le_antisymm hi₀_zero (hv_nonneg i₀)
   obtain ⟨j, i, vj_zero, vi_pos, h_Aji_pos⟩ :=

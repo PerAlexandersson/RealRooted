@@ -23,13 +23,13 @@ theorem card_add_le {K : Type*} [Field K] [LinearOrder K] {p : K[X]} (hp : p ≠
     refine Multiset.le_iff_count.mpr (fun x => ?_)
     rw [Multiset.count_add, rootsAbove, Multiset.count_filter]
     by_cases hx : -s < x
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       have hxS : x ∉ S.val := by
         intro hmem
         exact hdisj x (by simpa using hmem) hx
       rw [Multiset.count_eq_zero_of_notMem hxS]
       lia
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       by_cases hxS : x ∈ S
       · have h₁ : Multiset.count x S.val = 1 :=
           Multiset.count_eq_one_of_mem S.nodup (by simpa using hxS)

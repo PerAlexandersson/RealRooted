@@ -128,21 +128,21 @@ theorem tendsto_coeff_inv_of_constantCoeff_one
                   PowerSeries.coeff x.1 (f a) *
                     PowerSeries.coeff x.2 (f a)⁻¹
                 else 0 := by
-            rw [PowerSeries.coeff_inv, if_neg (Nat.succ_ne_zero d), hf a]
+            rw [PowerSeries.coeff_inv, ite_eq_right (Nat.succ_ne_zero d), hf a]
             norm_num
           have hright : PowerSeries.coeff (d + 1) f₀⁻¹ =
               -1 * ∑ x ∈ Finset.antidiagonal (d + 1),
                 if x.2 < d + 1 then
                   PowerSeries.coeff x.1 f₀ * PowerSeries.coeff x.2 f₀⁻¹
                 else 0 := by
-            rw [PowerSeries.coeff_inv, if_neg (Nat.succ_ne_zero d), hf₀]
+            rw [PowerSeries.coeff_inv, ite_eq_right (Nat.succ_ne_zero d), hf₀]
             norm_num
           simp_rw [hleft, hright]
           refine tendsto_const_nhds.mul (tendsto_finsetSum _ fun x _ => ?_)
           by_cases hx : x.2 < d + 1
-          · simp only [if_pos hx]
+          · simp only [ite_eq_left hx]
             exact (hcoeff x.1).mul (ih x.2 hx)
-          · simp only [if_neg hx]
+          · simp only [ite_eq_right hx]
             exact tendsto_const_nhds
 
 /-- The `N`-factor binomial approximation to `exp (gamma X)`. -/

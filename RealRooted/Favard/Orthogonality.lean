@@ -271,14 +271,14 @@ theorem pairing_nondegenerate
     hrec.pairing.Nondegenerate := by
   have hO : hrec.pairing.iIsOrtho hrec.basis := by
     intro i j hij
-    simp only [Function.onFun, LinearMap.isOrtho_def, hrec.basis_apply]
+    simp only [Function.onFun, hrec.basis_apply]
     rw [pairing_apply_basis]
     simp [hij]
   apply (hO.nondegenerate_iff_not_isOrtho_basis_self
     hrec.pairing hrec.basis).2
   intro i
-  simpa only [LinearMap.BilinForm.isOrtho_def, hrec.basis_apply,
-    pairing_apply_basis, if_pos] using favardNormSq_ne_zero hβ i
+  simpa only [hrec.basis_apply,
+    pairing_apply_basis, ite_eq_left] using favardNormSq_ne_zero hβ i
 
 /-- A linear functional that vanishes on all positive-degree members of a
 Favard basis is uniquely determined by its value at `1`. -/
@@ -327,7 +327,7 @@ private theorem diagonalForm_posDef
     intro j hj
     by_cases hij : i = j
     · subst j
-      simp only [hrec.basis_apply, diagonalForm_apply_basis, if_pos, smul_eq_mul]
+      simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
       rw [← mul_assoc]
       exact mul_nonneg (mul_self_nonneg _) (favardNormSq_pos hβ i).le
     · simp [hrec.basis_apply, diagonalForm_apply_basis, hij]
@@ -345,11 +345,11 @@ private theorem diagonalForm_posDef
   · intro j hj
     by_cases hij : i = j
     · subst j
-      simp only [hrec.basis_apply, diagonalForm_apply_basis, if_pos, smul_eq_mul]
+      simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
       rw [← mul_assoc]
       exact mul_nonneg (mul_self_nonneg _) (favardNormSq_pos hβ i).le
     · simp [hrec.basis_apply, diagonalForm_apply_basis, hij]
-  · simp only [hrec.basis_apply, diagonalForm_apply_basis, if_pos, smul_eq_mul]
+  · simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
     rw [← mul_assoc]
     exact mul_pos (mul_self_pos.mpr hxi) (favardNormSq_pos hβ i)
 

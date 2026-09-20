@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Data.Real.Basic
+public import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
 
 public section

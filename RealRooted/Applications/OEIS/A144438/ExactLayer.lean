@@ -455,7 +455,7 @@ the old exact layer. -/
         lia
       change decoExactLayerFromStarts (n + 2) H.starts =
         decoNormalLayerStep (decoExactLayerFromStarts (n + 1) H.starts)
-      rw [decoExactLayerFromStarts, if_neg hlast]
+      rw [decoExactLayerFromStarts, ite_eq_right hlast]
 
 /-- The exact layer of an exceptional extension is the exceptional operator
 applied to the old exact layer. -/
@@ -465,7 +465,7 @@ applied to the old exact layer. -/
       decoExceptionalLayerStep (decoExactLayer H) := by
   change decoExactLayerFromStarts (n + 2) (insert (n + 3) H.starts) =
     decoExceptionalLayerStep (decoExactLayerFromStarts n H.starts)
-  rw [decoExactLayerFromStarts, if_pos (Finset.mem_insert_self _ _),
+  rw [decoExactLayerFromStarts, ite_eq_left (Finset.mem_insert_self _ _),
     Finset.erase_insert]
   intro hmem
   have := (DecoExceptionalHistory.mem_bounds H hmem).2

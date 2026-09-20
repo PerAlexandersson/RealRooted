@@ -1467,10 +1467,10 @@ private theorem whitneyClearColumnAux_spec {N : ℕ}
         rw [hsval]
         lia
       have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
-      rw [whitneyClearColumnAux, dif_pos htActive]
+      rw [whitneyClearColumnAux, dite_eq_left htActive]
       dsimp only
       by_cases hzero : B s.succ c = 0
-      · rw [if_pos hzero]
+      · rw [ite_eq_left hzero]
         refine ⟨hB, hBdet, hBprefix, ?_⟩
         intro i hi
         by_cases his : i = s.succ
@@ -1481,7 +1481,7 @@ private theorem whitneyClearColumnAux_spec {N : ℕ}
             lia
           rw [← hsval]
           exact lt_of_le_of_ne hle (fun h ↦ his (Fin.ext h.symm))
-      · rw [if_neg hzero]
+      · rw [ite_eq_right hzero]
         have htarget : 0 < B s.succ c :=
           lt_of_le_of_ne (hB.nonneg s.succ c) (Ne.symm hzero)
         have hpivot : 0 < B s.castSucc c := by
@@ -1574,17 +1574,17 @@ private theorem whitneyClearColumnLowerAux_spec {N : ℕ}
       have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
       have hclear : whitneyClearColumnAux A c (t + 1) =
           if B s.succ c = 0 then B else whitneyEliminateAt B s c := by
-        rw [whitneyClearColumnAux, dif_pos htActive]
+        rw [whitneyClearColumnAux, dite_eq_left htActive]
       have hlower : whitneyClearColumnLowerAux A c (t + 1) =
           if B s.succ c = 0 then L
           else L * Matrix.transvection s.succ s.castSucc
             (B s.succ c / B s.castSucc c) := by
-        rw [whitneyClearColumnLowerAux, dif_pos htActive]
+        rw [whitneyClearColumnLowerAux, dite_eq_left htActive]
       rw [hclear, hlower]
       by_cases hzero : B s.succ c = 0
-      · rw [if_pos hzero, if_pos hzero]
+      · rw [ite_eq_left hzero, ite_eq_left hzero]
         exact ⟨hL, hfactor⟩
-      · rw [if_neg hzero, if_neg hzero]
+      · rw [ite_eq_right hzero, ite_eq_right hzero]
         have htarget : 0 < B s.succ c :=
           lt_of_le_of_ne (hB.nonneg s.succ c) (Ne.symm hzero)
         have hpivot : 0 < B s.castSucc c := by
@@ -1626,11 +1626,11 @@ private theorem whitneyClearColumnLowerAux_prefix_block {N : ℕ}
       · let s : Fin N := ⟨N - (t + 1), by lia⟩
         let B := whitneyClearColumnAux A c t
         let L := whitneyClearColumnLowerAux A c t
-        rw [whitneyClearColumnLowerAux, dif_pos htActive]
+        rw [whitneyClearColumnLowerAux, dite_eq_left htActive]
         by_cases hzero : B s.succ c = 0
-        · rw [if_pos hzero]
+        · rw [ite_eq_left hzero]
           exact ih
-        · rw [if_neg hzero]
+        · rw [ite_eq_right hzero]
           have hcs : c.val < s.castSucc.val := by
             dsimp [s]
             lia
@@ -1657,7 +1657,7 @@ private theorem whitneyClearColumnLowerAux_prefix_block {N : ℕ}
             · rw [Matrix.mul_transvection_apply_of_ne
                 (i := s.succ) (j := s.castSucc) 0 j hj]
               exact ih.2 j
-      · rw [whitneyClearColumnLowerAux, dif_neg htActive]
+      · rw [whitneyClearColumnLowerAux, dite_eq_right htActive]
         exact ih
 
 private theorem whitneyClearColumnAux_preserves_upperZeros {N : ℕ}
@@ -1672,11 +1672,11 @@ private theorem whitneyClearColumnAux_preserves_upperZeros {N : ℕ}
       by_cases htActive : t < N - (c.val + 1)
       · let s : Fin N := ⟨N - (t + 1), by lia⟩
         let B := whitneyClearColumnAux A c t
-        rw [whitneyClearColumnAux, dif_pos htActive]
+        rw [whitneyClearColumnAux, dite_eq_left htActive]
         by_cases hzero : B s.succ c = 0
-        · rw [if_pos hzero]
+        · rw [ite_eq_left hzero]
           exact ih i j hij
-        · rw [if_neg hzero]
+        · rw [ite_eq_right hzero]
           by_cases his : i = s.succ
           · rw [his] at hij ⊢
             have htarget : B s.succ j = 0 := ih s.succ j hij
@@ -1690,7 +1690,7 @@ private theorem whitneyClearColumnAux_preserves_upperZeros {N : ℕ}
           · change whitneyEliminateAt B s c i j = 0
             rw [whitneyEliminateAt_apply_of_ne B s c i j his]
             exact ih i j hij
-      · rw [whitneyClearColumnAux, dif_neg htActive]
+      · rw [whitneyClearColumnAux, dite_eq_right htActive]
         exact ih i j hij
 
 private theorem whitneyClearColumnLowerAux_lowerTriangular {N : ℕ}
@@ -1707,11 +1707,11 @@ private theorem whitneyClearColumnLowerAux_lowerTriangular {N : ℕ}
       · let s : Fin N := ⟨N - (t + 1), by lia⟩
         let B := whitneyClearColumnAux A c t
         let L := whitneyClearColumnLowerAux A c t
-        rw [whitneyClearColumnLowerAux, dif_pos htActive]
+        rw [whitneyClearColumnLowerAux, dite_eq_left htActive]
         by_cases hzero : B s.succ c = 0
-        · rw [if_pos hzero]
+        · rw [ite_eq_left hzero]
           exact ih i j hij
-        · rw [if_neg hzero]
+        · rw [ite_eq_right hzero]
           by_cases hj : j = s.castSucc
           · rw [hj] at hij ⊢
             rw [Matrix.mul_transvection_apply_same
@@ -1723,7 +1723,7 @@ private theorem whitneyClearColumnLowerAux_lowerTriangular {N : ℕ}
           · rw [Matrix.mul_transvection_apply_of_ne
               (i := s.succ) (j := s.castSucc) i j hj]
             exact ih i j hij
-      · rw [whitneyClearColumnLowerAux, dif_neg htActive]
+      · rw [whitneyClearColumnLowerAux, dite_eq_right htActive]
         exact ih i j hij
 
 /-- One recursive Whitney cycle extends an upper-Hessenberg prefix by one
@@ -1977,10 +1977,10 @@ private theorem whitneyClearFirstAux_spec {N : ℕ}
         simp [s]
         lia
       have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
-      rw [whitneyClearFirstAux, dif_pos htN]
+      rw [whitneyClearFirstAux, dite_eq_left htN]
       dsimp only
       by_cases hzero : B s.succ 0 = 0
-      · rw [if_pos hzero]
+      · rw [ite_eq_left hzero]
         refine ⟨hB, hBdet, ?_⟩
         intro i hi
         by_cases his : i = s.succ
@@ -1993,7 +1993,7 @@ private theorem whitneyClearFirstAux_spec {N : ℕ}
           have hlt : s.succ.val < i.val :=
             lt_of_le_of_ne hle (fun h ↦ his (Fin.ext h.symm))
           rwa [hsval] at hlt
-      · rw [if_neg hzero]
+      · rw [ite_eq_right hzero]
         have htarget : 0 < B s.succ 0 :=
           lt_of_le_of_ne (hB.nonneg s.succ 0) (Ne.symm hzero)
         have hpivot : 0 < B s.castSucc 0 := by
@@ -2055,17 +2055,17 @@ private theorem whitneyClearLowerAux_spec {N : ℕ}
       have hBdetne : B.det ≠ 0 := by rw [hBdet]; exact hdet
       have hclear : whitneyClearFirstAux A (t + 1) =
           if B s.succ 0 = 0 then B else whitneyEliminateFirst B s := by
-        rw [whitneyClearFirstAux, dif_pos htN]
+        rw [whitneyClearFirstAux, dite_eq_left htN]
       have hlower : whitneyClearLowerAux A (t + 1) =
           if B s.succ 0 = 0 then L
           else L * Matrix.transvection s.succ s.castSucc
             (B s.succ 0 / B s.castSucc 0) := by
-        rw [whitneyClearLowerAux, dif_pos htN]
+        rw [whitneyClearLowerAux, dite_eq_left htN]
       rw [hclear, hlower]
       by_cases hzero : B s.succ 0 = 0
-      · rw [if_pos hzero, if_pos hzero]
+      · rw [ite_eq_left hzero, ite_eq_left hzero]
         exact ⟨hL, hfactor⟩
-      · rw [if_neg hzero, if_neg hzero]
+      · rw [ite_eq_right hzero, ite_eq_right hzero]
         have htarget : 0 < B s.succ 0 :=
           lt_of_le_of_ne (hB.nonneg s.succ 0) (Ne.symm hzero)
         have hpivot : 0 < B s.castSucc 0 := by
@@ -2117,9 +2117,9 @@ private theorem whitneyClearLowerAux_first_block {N : ℕ}
         dsimp [s] at this
         lia
       by_cases hzero : whitneyClearFirstAux A t s.succ 0 = 0
-      · rw [whitneyClearLowerAux, dif_pos htN, if_pos hzero]
+      · rw [whitneyClearLowerAux, dite_eq_left htN, ite_eq_left hzero]
         exact ⟨hcol, hrow⟩
-      · rw [whitneyClearLowerAux, dif_pos htN, if_neg hzero]
+      · rw [whitneyClearLowerAux, dite_eq_left htN, ite_eq_right hzero]
         let E := Matrix.transvection s.succ s.castSucc
           (whitneyClearFirstAux A t s.succ 0 /
             whitneyClearFirstAux A t s.castSucc 0)
@@ -2417,11 +2417,11 @@ private theorem whitneyClearLowerAux_unitLower {N : ℕ}
       · let s : Fin N := ⟨N - (t + 1), by lia⟩
         let B := whitneyClearFirstAux A t
         let L := whitneyClearLowerAux A t
-        rw [whitneyClearLowerAux, dif_pos htActive]
+        rw [whitneyClearLowerAux, dite_eq_left htActive]
         by_cases hzero : B s.succ 0 = 0
-        · rw [if_pos hzero]
+        · rw [ite_eq_left hzero]
           exact ih
-        · rw [if_neg hzero]
+        · rw [ite_eq_right hzero]
           constructor
           · intro i j hij
             by_cases hj : j = s.castSucc
@@ -2446,7 +2446,7 @@ private theorem whitneyClearLowerAux_unitLower {N : ℕ}
             · rw [Matrix.mul_transvection_apply_of_ne
                 (i := s.succ) (j := s.castSucc) i i hi]
               exact ih.2 i
-      · rw [whitneyClearLowerAux, dif_neg htActive]
+      · rw [whitneyClearLowerAux, dite_eq_right htActive]
         exact ih
 
 /-- Every diagonal entry of a nonsingular totally nonnegative real matrix is
@@ -2626,12 +2626,12 @@ private theorem whitneyClearColumnCycle_adjacent_pos {N : ℕ}
       let B := whitneyClearColumnAux A c t
       let L := whitneyClearColumnLowerAux A c t
       rw [whitneyClearColumnAux, whitneyClearColumnLowerAux,
-        dif_pos htActive, dif_pos htActive]
+        dite_eq_left htActive, dite_eq_left htActive]
       dsimp only
       by_cases hzero : B s.succ c = 0
-      · rw [if_pos hzero, if_pos hzero]
+      · rw [ite_eq_left hzero, ite_eq_left hzero]
         exact ih htActive.le
-      · rw [if_neg hzero, if_neg hzero]
+      · rw [ite_eq_right hzero, ite_eq_right hzero]
         let B' := whitneyEliminateAt B s c
         let ratio := B s.succ c / B s.castSucc c
         let E := Matrix.transvection s.succ s.castSucc ratio
@@ -2652,9 +2652,9 @@ private theorem whitneyClearColumnCycle_adjacent_pos {N : ℕ}
         obtain ⟨hB', hB'det, _, _⟩ :=
           whitneyClearColumnAux_spec A hA hdet c hprefix (t + 1) ht
         have hclear : whitneyClearColumnAux A c (t + 1) = B' := by
-          rw [whitneyClearColumnAux, dif_pos htActive]
+          rw [whitneyClearColumnAux, dite_eq_left htActive]
           dsimp only
-          rw [if_neg hzero]
+          rw [ite_eq_right hzero]
         have hB'TN : B'.IsTotallyNonneg := by
           rw [← hclear]
           exact hB'

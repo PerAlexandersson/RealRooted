@@ -207,7 +207,7 @@ theorem exists_outer_geometric_root_family_of_logConcave
     · simpa [hlo] using hs0sign
     · have hi_ne : i ≠ 0 := by lia
       have hloi : lo i = upperDominanceRadius p c i := by
-        simp only [hlo, if_neg hi_ne]
+        simp only [hlo, ite_eq_right hi_ne]
       rw [hloi]
       exact hsign_upper i hi0 (by lia)
   have hloup : ∀ i, i < J → lo i < lowerDominanceRadius p c (i + 1) := by
@@ -216,7 +216,7 @@ theorem exists_outer_geometric_root_family_of_logConcave
     · simpa [hlo] using hs0lt
     · have hi_ne : i ≠ 0 := by lia
       have hloi : lo i = upperDominanceRadius p c i := by
-        simp only [hlo, if_neg hi_ne]
+        simp only [hlo, ite_eq_right hi_ne]
       rw [hloi]
       exact upperDominanceRadius_lt_lowerDominanceRadius_succ
         (by linarith) hpos (by lia)
@@ -233,7 +233,7 @@ theorem exists_outer_geometric_root_family_of_logConcave
       linarith
     · have hi_ne : i ≠ 0 := by lia
       have hloi : lo i = upperDominanceRadius p c i := by
-        simp only [hlo, if_neg hi_ne]
+        simp only [hlo, ite_eq_right hi_ne]
       rw [hloi] at hxi
       exact lt_trans (upperDominanceRadius_pos hc0 hpos (by lia)) hxi
   · intro i hi
@@ -241,7 +241,7 @@ theorem exists_outer_geometric_root_family_of_logConcave
     obtain ⟨hxi1, -, -⟩ := hx (i + 1) hi
     have hi1_ne : i + 1 ≠ 0 := by lia
     have hloi1 : lo (i + 1) = upperDominanceRadius p c (i + 1) := by
-      simp only [hlo, if_neg hi1_ne]
+      simp only [hlo, ite_eq_right hi1_ne]
     rw [hloi1] at hxi1
     have hsep := hwidth (i + 1) (by lia) (by lia)
     nlinarith

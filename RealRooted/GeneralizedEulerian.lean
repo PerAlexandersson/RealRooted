@@ -99,7 +99,7 @@ lemma coeff_generalizedEulerian_succ (c : ℝ) (n k : ℕ) :
   · subst k
     norm_num [coeff_derivative]
     ring
-  · rw [if_pos (by lia : 2 ≤ k + 1), coeff_derivative]
+  · rw [ite_eq_left (by lia : 2 ≤ k + 1), coeff_derivative]
     rw [coeff_derivative]
     have hidx : k + 1 - 2 + 1 = k := by lia
     rw [hidx]

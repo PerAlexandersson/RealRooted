@@ -47,7 +47,7 @@ theorem coeff_laguerreRaisingStep (r : R) (p : R[X]) (k : ℕ) :
   | zero => simp [coeff_add, coeff_derivative]
   | succ k =>
       simp only [coeff_add, coeff_C_mul, coeff_X_mul,
-        coeff_derivative, Nat.succ_ne_zero, if_false,
+        coeff_derivative, Nat.succ_ne_zero, ite_false,
         Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one]
       ring_nf
 
@@ -59,8 +59,8 @@ theorem succ_mul_mul_coeff_generalizedLaguerre
         (generalizedLaguerre n α).coeff (k + 1) =
       (n - k : ℕ) * (generalizedLaguerre n α).coeff k := by
   rw [coeff_generalizedLaguerre,
-    if_pos (Nat.succ_le_iff.mpr hk), coeff_generalizedLaguerre,
-    if_pos hk.le]
+    ite_eq_left (Nat.succ_le_iff.mpr hk), coeff_generalizedLaguerre,
+    ite_eq_left hk.le]
   have hpoch :
       (ascPochhammer R (n - k)).eval (α + k + 1) =
         (α + k + 1) *
@@ -109,12 +109,12 @@ theorem generalizedLaguerre_differential_coeff
   · by_cases hkn : k = n
     · subst k
       rw [coeff_generalizedLaguerre,
-        if_neg (by lia : ¬n + 1 ≤ n)]
+        ite_eq_right (by lia : ¬n + 1 ≤ n)]
       simp
     · have hnk : n < k := lt_of_le_of_ne (Nat.le_of_not_gt hk) (Ne.symm hkn)
       rw [coeff_generalizedLaguerre,
-        if_neg (Nat.not_le.mpr (hnk.trans (Nat.lt_succ_self k))),
-        coeff_generalizedLaguerre, if_neg (Nat.not_le.mpr hnk)]
+        ite_eq_right (Nat.not_le.mpr (hnk.trans (Nat.lt_succ_self k))),
+        coeff_generalizedLaguerre, ite_eq_right (Nat.not_le.mpr hnk)]
       simp
 
 /-- The Laguerre differential operator in the sign-reversed normalization. -/
@@ -207,8 +207,8 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
   rw [coeff_laguerreRaisingStep]
   cases j with
   | zero =>
-      rw [coeff_generalizedLaguerre, if_pos (Nat.zero_le _),
-        coeff_generalizedLaguerre, if_pos (Nat.zero_le _)]
+      rw [coeff_generalizedLaguerre, ite_eq_left (Nat.zero_le _),
+        coeff_generalizedLaguerre, ite_eq_left (Nat.zero_le _)]
       simp only [Nat.choose_zero_right, Nat.cast_one, Nat.sub_zero,
         one_mul, Nat.cast_zero, add_zero]
       rw [ascPochhammer_succ_eval]
@@ -217,7 +217,7 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
         one_mul]
       ring_nf
   | succ k =>
-      simp only [Nat.succ_ne_zero, if_false, Nat.add_sub_cancel]
+      simp only [Nat.succ_ne_zero, ite_false, Nat.add_sub_cancel]
       rcases lt_trichotomy k n with hk | rfl | hk
       · have hpred :
           (ascPochhammer R (n - k)).eval (α + k + 1) =
@@ -251,9 +251,9 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
         change (((n.choose (k + 1)) * (k + 1) : ℕ) : R) =
           ((n.choose k * (n - k) : ℕ) : R) at hchoose
         push_cast at hchoose
-        rw [coeff_generalizedLaguerre, if_pos (by lia : k + 1 ≤ n + 1),
-          coeff_generalizedLaguerre, if_pos hk.le,
-          coeff_generalizedLaguerre, if_pos (Nat.succ_le_iff.mpr hk)]
+        rw [coeff_generalizedLaguerre, ite_eq_left (by lia : k + 1 ≤ n + 1),
+          coeff_generalizedLaguerre, ite_eq_left hk.le,
+          coeff_generalizedLaguerre, ite_eq_left (Nat.succ_le_iff.mpr hk)]
         rw [Nat.add_sub_add_right, Nat.choose_succ_succ, Nat.cast_add]
         norm_num only [Nat.cast_add, Nat.cast_one] at hchoose htarget hpred ⊢
         rw [htarget, hpred]
@@ -294,10 +294,10 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
               ((n : R) + α + 1 + ((k : R) + 1)) * (b * e) := by ring
       · simp [coeff_generalizedLaguerre]
       · rw [coeff_generalizedLaguerre,
-          if_neg (Nat.not_le.mpr (Nat.succ_lt_succ hk)),
-          coeff_generalizedLaguerre, if_neg (Nat.not_le.mpr hk),
+          ite_eq_right (Nat.not_le.mpr (Nat.succ_lt_succ hk)),
+          coeff_generalizedLaguerre, ite_eq_right (Nat.not_le.mpr hk),
           coeff_generalizedLaguerre,
-          if_neg (Nat.not_le.mpr (hk.trans k.lt_succ_self))]
+          ite_eq_right (Nat.not_le.mpr (hk.trans k.lt_succ_self))]
         simp
 
 /-- The second-derivative recurrence used by the generalized Laguerre
@@ -338,8 +338,8 @@ theorem derivative_generalizedLaguerre (n : ℕ) (α : R) :
   ext k
   rw [coeff_derivative, coeff_C_mul]
   by_cases hk : k ≤ n
-  · rw [coeff_generalizedLaguerre, if_pos (Nat.succ_le_succ hk),
-      coeff_generalizedLaguerre, if_pos hk]
+  · rw [coeff_generalizedLaguerre, ite_eq_left (Nat.succ_le_succ hk),
+      coeff_generalizedLaguerre, ite_eq_left hk]
     rw [Nat.add_sub_add_right]
     have hchoose := congrArg (Nat.castRingHom R)
       (Nat.add_one_mul_choose_eq n k)
@@ -357,8 +357,8 @@ theorem derivative_generalizedLaguerre (n : ℕ) (α : R) :
       _ = (n + 1 : R) * ((n.choose k : R) * e) := by ring
   · have hkn : n < k := Nat.lt_of_not_ge hk
     rw [coeff_generalizedLaguerre,
-      if_neg (Nat.not_le.mpr (Nat.succ_lt_succ hkn)),
-      coeff_generalizedLaguerre, if_neg hk]
+      ite_eq_right (Nat.not_le.mpr (Nat.succ_lt_succ hkn)),
+      coeff_generalizedLaguerre, ite_eq_right hk]
     simp
 
 end Polynomial

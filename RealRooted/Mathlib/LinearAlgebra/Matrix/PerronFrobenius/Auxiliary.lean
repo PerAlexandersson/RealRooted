@@ -88,7 +88,7 @@ theorem mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j
 theorem exists_pos_of_sum_one_of_nonneg {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
     (hsum : ∑ i, x i = 1) (hnonneg : ∀ i, 0 ≤ x i) : ∃ j, 0 < x j := by
   by_contra h
-  push_neg at h
+  push Not at h
   have h_all_zero : ∀ i, x i = 0 := by
     intro i
     exact le_antisymm (h i) (hnonneg i)
@@ -131,7 +131,7 @@ lemma card_gt_one_of_nonempty_ne {α : Type*} [Fintype α] [DecidableEq α] [Non
     have h_card_ne_one : Fintype.card α ≠ 1 := ne_of_gt h
     have : ∃ j, j ≠ i := by
       by_contra h_all_eq
-      push_neg at h_all_eq
+      push Not at h_all_eq
       have : ∀ x : α, x = i := h_all_eq
       have h_card_eq_one : Fintype.card α = 1 := by
         rw [Fintype.card_eq_one_iff]
@@ -169,7 +169,7 @@ theorem sum_pos_of_mem {α : Type*} {s : Finset α} {f : α → ℝ}
 theorem exists_mem_of_sum_pos {α : Type*} {s : Finset α} {f : α → ℝ}
     (h_pos : 0 < ∑ a ∈ s, f a) (h_nonneg : ∀ a ∈ s, 0 ≤ f a) :
     ∃ a ∈ s, 0 < f a := by
-  by_contra h; push_neg at h
+  by_contra h; push Not at h
   have h_zero : ∀ a ∈ s, f a = 0 := fun a ha => le_antisymm (h a ha) (h_nonneg a ha)
   have h_sum_zero : ∑ a ∈ s, f a = 0 := by rw [sum_eq_zero_iff_of_nonneg h_nonneg]; exact h_zero
   linarith
@@ -381,7 +381,7 @@ lemma sup'_le_sup'_of_le {α β : Type*} [SemilatticeSup α] {s t : Finset β}
 -- A non-zero function must be non-zero at some point.
 lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) : ∃ i, f i ≠ 0 := by
   by_contra hf
-  push_neg at hf
+  push Not at hf
   apply h
   ext x
   exact hf x
@@ -524,7 +524,7 @@ lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n] [Decidable
   simp [dotProduct]
   have h_exists_pos : ∃ i, 0 < v i := by
     by_contra h
-    push_neg at h
+    push Not at h
     have h_all_zero : ∀ i, v i = 0 := fun i =>
       le_antisymm (h i) (hv_nonneg i)
     have h_zero : v = 0 := funext h_all_zero

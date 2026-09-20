@@ -53,11 +53,11 @@ protected theorem IsPolyaFreqSeq.geometricScale
       simp only [Matrix.of_apply]
       rw [toeplitz_apply]
       by_cases hji : j ≤ i
-      · rw [if_pos hji, toeplitz_apply, if_pos hji, geometricScale,
+      · rw [ite_eq_left hji, toeplitz_apply, ite_eq_left hji, geometricScale,
           pow_sub₀ c hcne hji]
         simp only [inv_pow]
         ring
-      · rw [if_neg hji, toeplitz_apply, if_neg hji]
+      · rw [ite_eq_right hji, toeplitz_apply, ite_eq_right hji]
         ring
     rw [IsPolyaFreqSeq, htoeplitz]
     exact ha.scaleRowsCols (fun i => c ^ i) (fun j => (c⁻¹) ^ j)

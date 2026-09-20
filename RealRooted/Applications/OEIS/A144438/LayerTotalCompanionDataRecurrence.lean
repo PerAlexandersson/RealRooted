@@ -560,7 +560,7 @@ theorem decoBottomTotalCompanionWronskianCorrection_one (n : Nat) :
     MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
       (decoBottomTotal_isMultiaffine (n + 1)) 1
   unfold decoBottomTotalCompanionWronskianCorrection
-  simp only [if_pos]
+  simp only [ite_eq_left]
   rw [MvPolynomial.IsMultiaffine.coordinateWronskian_eq_specializeZero
       (decoBottomTotal_isMultiaffine (n + 1)) hRma 1,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars hR,
@@ -590,7 +590,7 @@ theorem decoBottomTotalCompanionWronskianCorrection_of_ne_one
         (decoBottomTotal (n + 1))
         (MvPolynomial.rename (fun j : Nat => j + 1) (decoBottomTotal n)) i := by
   unfold decoBottomTotalCompanionWronskianCorrection
-  simp only [if_neg hi, add_zero]
+  simp only [ite_eq_right hi, add_zero]
 
 /-- At rank zero, every correction in coordinates `2, 3, ...` vanishes. -/
 @[simp] theorem decoBottomTotalCompanionWronskianCorrection_zero_add_two

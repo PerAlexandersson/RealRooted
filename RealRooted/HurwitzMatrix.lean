@@ -40,7 +40,7 @@ theorem hurwitz_odd_row_apply (c : ℕ → ℝ) (i j : ℕ) :
     hurwitz c (2 * i + 1) j = if j ≤ i then c (2 * (i - j)) else 0 := by
   rw [hurwitz]
   simp only [Matrix.of_apply]
-  rw [if_neg (by lia : ¬ (2 * i + 1) % 2 = 0),
+  rw [ite_eq_right (by lia : ¬ (2 * i + 1) % 2 = 0),
     show (2 * i + 1) / 2 = i by lia, toeplitz_apply]
 
 /-- Every Hurwitz-matrix entry above the staircase vanishes. -/
@@ -48,9 +48,9 @@ theorem hurwitz_apply_eq_zero_of_lt (c : ℕ → ℝ) {i j : ℕ} (h : i < 2 * j
     hurwitz c i j = 0 := by
   rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
   · subst hm
-    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_neg (by lia)]
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, ite_eq_right (by lia)]
   · subst hm
-    rw [hurwitz_odd_row_apply, if_neg (by lia)]
+    rw [hurwitz_odd_row_apply, ite_eq_right (by lia)]
 
 theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
     hurwitz p.coeff (2 * i) j =
@@ -285,11 +285,11 @@ theorem hurwitz_apply_of_band (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
   rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
   · subst hm
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply,
-      if_pos (by lia : j ≤ m), if_pos (by lia : (2 * m) % 2 = 0)]
+      ite_eq_left (by lia : j ≤ m), ite_eq_left (by lia : (2 * m) % 2 = 0)]
     grind
   · subst hm
-    rw [hurwitz_odd_row_apply, if_pos (by lia : j ≤ m),
-      if_neg (by lia : ¬ (2 * m + 1) % 2 = 0)]
+    rw [hurwitz_odd_row_apply, ite_eq_left (by lia : j ≤ m),
+      ite_eq_right (by lia : ¬ (2 * m + 1) % 2 = 0)]
     grind
 
 /-- `StrictMono` for a two-element index vector. -/
@@ -1306,9 +1306,9 @@ theorem hurwitz_eq_toeplitz_firstColumn_submatrix (c : ℕ → ℝ) :
   ext i j
   simp only [Matrix.submatrix_apply, id_eq, toeplitz_apply]
   by_cases h : 2 * j ≤ i
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     simpa using hurwitz_col_shift_add c 0 j i (by grind)
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     exact hurwitz_apply_eq_zero_of_lt c (by lia)
 
 /-- If the first column of a Hurwitz matrix is a Pólya-frequency sequence, then
@@ -1339,13 +1339,13 @@ theorem hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg :
   funext k
   rcases Nat.even_or_odd k with ⟨m, hm⟩ | ⟨m, hm⟩
   · subst hm
-    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_pos (Nat.zero_le m)]
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, ite_eq_left (Nat.zero_le m)]
     rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
     simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
       Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
     lia
   · subst hm
-    rw [hurwitz_odd_row_apply, if_pos (Nat.zero_le m)]
+    rw [hurwitz_odd_row_apply, ite_eq_left (Nat.zero_le m)]
     rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
     simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
       Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
@@ -1427,12 +1427,12 @@ noncomputable def cexA : ℕ → ℝ :=
 theorem hurwitz_cexA_firstColumn (k : ℕ) : hurwitz cexA k 0 = cexFirstColumn k := by
   rcases Nat.even_or_odd k with ⟨m, hm⟩ | ⟨m, hm⟩
   · subst hm
-    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_pos (Nat.zero_le m),
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, ite_eq_left (Nat.zero_le m),
       Nat.sub_zero]
-    simp only [cexA, if_neg (show ¬ (2 * m + 1) % 2 = 0 by lia), Nat.add_sub_cancel]
+    simp only [cexA, ite_eq_right (show ¬ (2 * m + 1) % 2 = 0 by lia), Nat.add_sub_cancel]
   · subst hm
-    rw [hurwitz_odd_row_apply, if_pos (Nat.zero_le m), Nat.sub_zero]
-    simp only [cexA, if_pos (show (2 * m) % 2 = 0 by lia)]
+    rw [hurwitz_odd_row_apply, ite_eq_left (Nat.zero_le m), Nat.sub_zero]
+    simp only [cexA, ite_eq_left (show (2 * m) % 2 = 0 by lia)]
 
 /-- The Hurwitz matrix of the counterexample is totally nonnegative. -/
 theorem cexA_hurwitz_isTotallyNonneg : (hurwitz cexA).IsTotallyNonneg := by
@@ -1504,7 +1504,7 @@ theorem hurwitz_schurProduct_submatrix_eq_toeplitz_of_band
   simp only [Matrix.submatrix_apply, Matrix.of_apply]
   rw [hurwitz_eq_toeplitz_colZero a (hband i j),
     hurwitz_eq_toeplitz_colZero b (hband i j), toeplitz_apply, toeplitz_apply,
-    toeplitz_apply, if_pos (hband i j), if_pos (hband i j), if_pos (hband i j)]
+    toeplitz_apply, ite_eq_left (hband i j), ite_eq_left (hband i j), ite_eq_left (hband i j)]
 
 /-- Determinant form of the Toeplitz normal form: a fully in-band minor of the
 entrywise Hurwitz product has the same determinant as the corresponding
@@ -1648,9 +1648,9 @@ theorem toeplitz_colZeroProduct_submatrix_eq_hadamard
   ext i j
   simp only [Matrix.submatrix_apply, Matrix.of_apply, toeplitz_apply]
   by_cases h : 2 * cols j ≤ rows i
-  · rw [if_pos h, hurwitz_eq_toeplitz_colZero a h, hurwitz_eq_toeplitz_colZero b h]
-    simp only [toeplitz_apply, if_pos h]
-  · rw [if_neg h, hurwitz_apply_eq_zero_of_lt a (by lia), zero_mul]
+  · rw [ite_eq_left h, hurwitz_eq_toeplitz_colZero a h, hurwitz_eq_toeplitz_colZero b h]
+    simp only [toeplitz_apply, ite_eq_left h]
+  · rw [ite_eq_right h, hurwitz_apply_eq_zero_of_lt a (by lia), zero_mul]
 
 /-- The determinant of the Hadamard product of two `2 × 2` totally
 nonnegative matrices is nonnegative. -/
@@ -1726,14 +1726,14 @@ theorem toeplitz_colZeroProduct_apply_eq_hurwitz_mul (a b : ℕ → ℝ) (i j : 
   · subst hm
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply]
     by_cases h : j ≤ m
-    · rw [if_pos (by lia), if_pos h, show 2 * m - 2 * j = 2 * (m - j) by lia,
+    · rw [ite_eq_left (by lia), ite_eq_left h, show 2 * m - 2 * j = 2 * (m - j) by lia,
         hurwitz_even_row_apply, hurwitz_even_row_apply]
       simp
     · grind
   · subst hm
     rw [hurwitz_odd_row_apply]
     by_cases h : j ≤ m
-    · rw [if_pos (by lia), if_pos h, show 2 * m + 1 - 2 * j = 2 * (m - j) + 1 by lia,
+    · rw [ite_eq_left (by lia), ite_eq_left h, show 2 * m + 1 - 2 * j = 2 * (m - j) + 1 by lia,
         hurwitz_odd_row_apply, hurwitz_odd_row_apply]
       simp
     · grind
@@ -1912,8 +1912,8 @@ theorem cexOddZero_even_isPolyaFreqSeq :
     | m + 2 =>
         have hL : ((X - C (-1 : ℝ)).coeff (m + 2)) = 0 := by
           rw [coeff_sub, coeff_X, coeff_C,
-            if_neg (by lia : ¬ (1 : ℕ) = m + 2),
-            if_neg (by lia : ¬ m + 2 = 0), sub_zero]
+            ite_eq_right (by lia : ¬ (1 : ℕ) = m + 2),
+            ite_eq_right (by lia : ¬ m + 2 = 0), sub_zero]
         have hR : cexOddZero (2 * (m + 2)) = 0 := by
           simp only [cexOddZero]
           simp
@@ -1929,7 +1929,7 @@ theorem cexOddZero_hurwitz_isTotallyNonneg :
 /-- Column-`0` value of `hurwitz cexOddZero` at row `1` is `1`. -/
 theorem cexOddZero_col0_one : hurwitz cexOddZero 1 0 = 1 := by
   rw [show (1 : ℕ) = 2 * 0 + 1 from rfl, hurwitz_odd_row_apply,
-    if_pos (Nat.zero_le 0)]
+    ite_eq_left (Nat.zero_le 0)]
   simp [cexOddZero]
 
 /-- Column-`0` value of `hurwitz cexOddZero` at row `2` is `0`. -/
@@ -1940,7 +1940,7 @@ theorem cexOddZero_col0_two : hurwitz cexOddZero 2 0 = 0 := by
 /-- Column-`0` value of `hurwitz cexOddZero` at row `3` is `1`. -/
 theorem cexOddZero_col0_three : hurwitz cexOddZero 3 0 = 1 := by
   rw [show (3 : ℕ) = 2 * 1 + 1 from rfl, hurwitz_odd_row_apply,
-    if_pos (Nat.zero_le 1)]
+    ite_eq_left (Nat.zero_le 1)]
   simp [cexOddZero]
 
 /-- The column-`0` product Pólya-frequency leaf of GitHub issue #34 is false.

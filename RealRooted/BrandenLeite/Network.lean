@@ -112,7 +112,7 @@ private theorem networkPaths_self (n : ℕ) :
 private theorem networkPathsFrom_self (n : ℕ) :
     networkPathsFrom n n n = {Finset.univ} := by
   ext horizontalSteps
-  simp only [networkPathsFrom, le_refl, and_self, if_true, Finset.mem_filter,
+  simp only [networkPathsFrom, le_refl, and_self, ite_true, Finset.mem_filter,
     Finset.mem_powerset, Finset.mem_singleton]
   constructor
   · intro h
@@ -137,7 +137,7 @@ theorem networkPathSumFrom_eq_zero_of_lt_left {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) {n k j : ℕ} (hjk : j < k) :
     networkPathSumFrom weights n k j = 0 := by
   unfold networkPathSumFrom networkPathsFrom
-  rw [if_neg]
+  rw [ite_eq_right]
   · simp
   · exact fun h => (not_le_of_gt hjk h.1).elim
 
@@ -146,7 +146,7 @@ theorem networkPathSumFrom_eq_zero_of_lt_right {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) {n k j : ℕ} (hnj : n < j) :
     networkPathSumFrom weights n k j = 0 := by
   unfold networkPathSumFrom networkPathsFrom
-  rw [if_neg]
+  rw [ite_eq_right]
   · simp
   · exact fun h => (not_le_of_gt hnj h.2).elim
 
@@ -157,7 +157,7 @@ theorem networkPathSumFrom_zero_eq {R : Type*} [CommSemiring R]
   classical
   unfold networkPathSumFrom networkPathsFrom networkPathSum networkPaths
     networkPathWeightFrom networkPathWeight
-  simp only [Nat.zero_le, true_and, if_pos hj, Nat.sub_zero, zero_add]
+  simp only [Nat.zero_le, true_and, ite_eq_left hj, Nat.sub_zero, zero_add]
 
 /-- Starting in column zero recovers the ordinary path count, including when
 the target lies beyond its row and both sides vanish. -/
@@ -222,7 +222,7 @@ private theorem horizontalBefore_zero_insert_succ_map {n : ℕ} (s : Finset (Fin
   have hzero : (0 : Fin (n + 1)) ∉
       (s.map (Fin.succEmb n)).filter fun i => i < t.succ := by
     simp
-  rw [Finset.filter_insert, if_pos (Fin.succ_pos _)]
+  rw [Finset.filter_insert, ite_eq_left (Fin.succ_pos _)]
   rw [Finset.card_insert_of_notMem hzero]
   apply congrArg (fun u : ℕ => u + 1)
   rw [filter_succ_map_lt, Finset.card_map]
@@ -246,7 +246,7 @@ theorem networkPathWeight_congr_of_le_lt {R : Type*} [CommSemiring R]
   intro t _
   by_cases ht : t ∈ s
   · simp [ht]
-  · rw [if_neg ht, if_neg ht]
+  · rw [ite_eq_right ht, ite_eq_right ht]
     have hbefore := horizontalBefore_le s t
     exact h _ _ (by lia) (by lia)
 
@@ -283,7 +283,7 @@ theorem networkPathWeightFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
   intro t _
   by_cases ht : t ∈ s
   · simp [ht]
-  · rw [if_neg ht, if_neg ht]
+  · rw [ite_eq_right ht, ite_eq_right ht]
     have hbefore : horizontalBefore s t ≤ t.val := horizontalBefore_le s t
     have hsub : t.val - horizontalBefore s t ≤ n := by
       exact (Nat.sub_le _ _).trans (Nat.le_of_lt t.isLt)
@@ -308,7 +308,7 @@ private theorem networkPathWeightFrom_succ_map {R : Type*} [CommSemiring R]
   have hbefore_zero : horizontalBefore (s.map (Fin.succEmb length)) 0 = 0 := by
     unfold horizontalBefore
     simp
-  rw [if_neg hzero, hbefore_zero]
+  rw [ite_eq_right hzero, hbefore_zero]
   simp only [Fin.val_zero, Nat.zero_sub]
   congr 1
   apply Finset.prod_congr rfl
@@ -324,7 +324,7 @@ private theorem networkPathWeightFrom_succ_map {R : Type*} [CommSemiring R]
   · have hsucc : t.succ ∈ s.map (Fin.succEmb length) := hmem.mpr ht
     simp [ht, hsucc]
   · have hsucc : t.succ ∉ s.map (Fin.succEmb length) := fun h => ht (hmem.mp h)
-    rw [if_neg hsucc, if_neg ht, horizontalBefore_succ_map]
+    rw [ite_eq_right hsucc, ite_eq_right ht, horizontalBefore_succ_map]
     have hbefore : horizontalBefore s t ≤ t.val := horizontalBefore_le s t
     have hshift : t.succ.val - horizontalBefore s t =
         (t.val - horizontalBefore s t) + 1 := by
@@ -337,7 +337,7 @@ private theorem networkPathWeightFrom_zero_insert_succ_map {R : Type*} [CommSemi
       networkPathWeightFrom weights (n + 1) (k + 1) s := by
   unfold networkPathWeightFrom
   rw [Fin.prod_univ_succ]
-  rw [if_pos (by simp), one_mul]
+  rw [ite_eq_left (by simp), one_mul]
   apply Finset.prod_congr rfl
   intro t _
   have hmem : t.succ ∈ insert 0 (s.map (Fin.succEmb length)) ↔ t ∈ s := by
@@ -352,7 +352,7 @@ private theorem networkPathWeightFrom_zero_insert_succ_map {R : Type*} [CommSemi
   · have hsucc : t.succ ∈ insert 0 (s.map (Fin.succEmb length)) := hmem.mpr ht
     simp [ht, hsucc]
   · have hsucc : t.succ ∉ insert 0 (s.map (Fin.succEmb length)) := fun h => ht (hmem.mp h)
-    rw [if_neg hsucc, if_neg ht, horizontalBefore_zero_insert_succ_map]
+    rw [ite_eq_right hsucc, ite_eq_right ht, horizontalBefore_zero_insert_succ_map]
     have hshift : t.succ.val - (horizontalBefore s t + 1) =
         t.val - horizontalBefore s t := by
       rw [Fin.val_succ, Nat.succ_sub_succ]
@@ -385,7 +385,7 @@ private theorem networkPathsFrom_eq_powersetCard {n k j : ℕ} (hkj : k ≤ j)
     networkPathsFrom n k j =
       (Finset.univ : Finset (Fin (n - k))).powersetCard (j - k) := by
   unfold networkPathsFrom
-  rw [if_pos ⟨hkj, hjn⟩]
+  rw [ite_eq_left ⟨hkj, hjn⟩]
   ext s
   simp only [Finset.mem_filter, Finset.mem_powerset, Finset.mem_powersetCard]
 
@@ -396,7 +396,7 @@ private theorem networkPathsFrom_eq_powersetCard_of_le_left {n k j : ℕ}
   by_cases hjn : j ≤ n
   · exact networkPathsFrom_eq_powersetCard hkj hjn
   · ext s
-    rw [networkPathsFrom, if_neg (fun h => hjn h.2)]
+    rw [networkPathsFrom, ite_eq_right (fun h => hjn h.2)]
     simp only [Finset.mem_powersetCard]
     constructor
     · simp
@@ -486,7 +486,7 @@ theorem networkPathSumFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
   by_cases hkn : k ≤ n
   · unfold networkPathSumFrom networkPathsFrom networkPathSum networkPaths
     simp only [Nat.succ_sub_one]
-    rw [if_pos ⟨Nat.succ_le_succ (Nat.zero_le k), Nat.succ_le_succ hkn⟩]
+    rw [ite_eq_left ⟨Nat.succ_le_succ (Nat.zero_le k), Nat.succ_le_succ hkn⟩]
     apply Finset.sum_congr rfl
     intro s hs
     rw [networkPathWeightFrom_one_eq_networkShift]
@@ -612,7 +612,7 @@ theorem networkPathSumFrom_top {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) {n k : ℕ} (hkn : k ≤ n) :
     networkPathSumFrom weights n k n = 1 := by
   unfold networkPathSumFrom networkPathsFrom
-  rw [if_pos ⟨hkn, le_rfl⟩]
+  rw [ite_eq_left ⟨hkn, le_rfl⟩]
   rw [← Finset.powersetCard_eq_filter]
   rw [Finset.sum_eq_single (Finset.univ : Finset (Fin (n - k)))]
   · unfold networkPathWeightFrom

@@ -268,27 +268,27 @@ theorem weightedSmirnovEndingSummand_snoc {m n : ℕ}
       intro h
       have hlast := ((isSmirnovWord_snoc_iff _ _).mp h).2
       exact hlast (by simpa using hji)
-    rw [if_pos hji]
+    rw [ite_eq_left hji]
     simp [weightedSmirnovEndingSummand, hnot]
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     by_cases hword : IsSmirnovWord (n + 1) (Fin.snoc word j)
     · have hfull :
           IsSmirnovWord (n + 2) (Fin.snoc (Fin.snoc word j) i) :=
         (isSmirnovWord_snoc_iff _ _).mpr ⟨hword, by simpa using hji⟩
-      rw [weightedSmirnovEndingSummand, if_pos hfull,
-        weightedSmirnovEndingSummand, if_pos hword,
+      rw [weightedSmirnovEndingSummand, ite_eq_left hfull,
+        weightedSmirnovEndingSummand, ite_eq_left hword,
         smirnovWordWeight_snoc, smirnovDescentNumber_snoc]
       simp only [Fin.snoc_last]
       by_cases hij : i < j
-      · rw [if_pos hij, if_pos hij, pow_succ]
+      · rw [ite_eq_left hij, ite_eq_left hij, pow_succ]
         simp
         ring
-      · rw [if_neg hij, if_neg hij]
+      · rw [ite_eq_right hij, ite_eq_right hij]
         simp
         ring
     · rw [weightedSmirnovEndingSummand,
-        if_neg (fun h => hword ((isSmirnovWord_snoc_iff _ _).mp h).1),
-        weightedSmirnovEndingSummand, if_neg hword]
+        ite_eq_right (fun h => hword ((isSmirnovWord_snoc_iff _ _).mp h).1),
+        weightedSmirnovEndingSummand, ite_eq_right hword]
       simp
 
 /-- Last-letter recurrence for the refined weighted enumerators. -/
@@ -318,7 +318,7 @@ theorem weightedSmirnovEnding_succ {m : ℕ}
   simp_rw [weightedSmirnovEndingSummand_snoc]
   by_cases hji : j = i
   · simp [hji]
-  · simp only [if_neg hji]
+  · simp only [ite_eq_right hji]
     rw [weightedSmirnovEnding]
     rw [← Finset.mul_sum]
 

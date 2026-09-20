@@ -92,12 +92,12 @@ theorem continuous_coeff_affineLineRestriction_comp
       apply continuous_finsetSum
       intro x hx
       by_cases hx0 : x.2 = 0
-      · simp only [hx0, if_pos, Nat.zero_ne_one, if_false, add_zero]
+      · simp only [hx0, ite_eq_left, Nat.zero_ne_one, ite_false, add_zero]
         exact (hP' x.1).mul (ha i)
       · by_cases hx1 : x.2 = 1
-        · simp only [hx1, Nat.one_ne_zero, if_false, if_pos, zero_add]
+        · simp only [hx1, Nat.one_ne_zero, ite_false, ite_eq_left, zero_add]
           exact (hP' x.1).mul continuous_const
-        · simp only [hx0, hx1, if_false, zero_add, mul_zero]
+        · simp only [hx0, hx1, ite_false, zero_add, mul_zero]
           exact continuous_const
 
 /-- Restricting a homogeneous polynomial to a line through zero produces a

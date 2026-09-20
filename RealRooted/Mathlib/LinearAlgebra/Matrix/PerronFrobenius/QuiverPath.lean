@@ -547,7 +547,7 @@ lemma length_lt_card_of_isStrictlySimple [DecidableEq V] [Fintype V]
 lemma not_strictly_simple_iff_exists_repeated_vertex [DecidableEq V] {a b : V} {p : Path a b} :
     ¬IsStrictlySimple p ↔ ∃ v, v ∈ p.vertices ∧ p.vertices.count v ≥ 2 := by
   rw [IsStrictlySimple, List.nodup_iff_not_contains_dup]
-  push_neg
+  push Not
   simp only [List.ContainsDup]
   constructor
   · rintro ⟨v, hv⟩
@@ -964,7 +964,7 @@ lemma min_length_among_shorter_loops {a : V} {p : Path a a} (q r : Path a a)
   · right
     exact ⟨s, hs_eq, hs_pos, hs_shorter, by rwa [hs_eq]⟩
   · left
-    push_neg at h
+    push Not at h
     have h_min_le_q : min_len ≤ q.length :=
       Nat.find_min' (exists_positive_loop_shorter_than_p q h_q_pos h_q_shorter)
                     ⟨q, rfl, h_q_pos, h_q_shorter⟩

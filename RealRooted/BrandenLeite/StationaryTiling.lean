@@ -199,7 +199,7 @@ theorem coeff_rationalRodDenominatorSeries_singleton_succ
   by_cases hj : j = 0
   · subst j
     simp
-  · rw [PowerSeries.coeff_C, if_neg hj, if_neg hj]
+  · rw [PowerSeries.coeff_C, ite_eq_right hj, ite_eq_right hj]
     simp
 
 /-- The constant coefficient counts the all-monomer configuration. -/
@@ -270,7 +270,7 @@ theorem coeff_quadraticMarkedFactorSeries (j : ℕ) :
         Polynomial.coeff_C_mul, Polynomial.coeff_X,
         Polynomial.coeff_X_pow]
   · have hj4 : 4 ≤ j := by lia
-    rw [if_pos (by lia)]
+    rw [ite_eq_left (by lia)]
     have hs0 : j - 1 ≠ 0 := by lia
     have hs1 : j - 1 ≠ 1 := by lia
     have hs1' : 1 ≠ j - 1 := Ne.symm hs1

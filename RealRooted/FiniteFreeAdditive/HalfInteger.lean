@@ -54,8 +54,9 @@ theorem finiteFreeAdditiveConvolutionGamma_even_eq_generalized (n i j : ℕ)
       generalizedRectangularConvolutionGamma (-(1 / 2 : ℝ)) n i j := by
   rw [finiteFreeAdditiveConvolutionGamma_eq_descPochhammerRatio _ _ _ (by lia)]
   unfold generalizedRectangularConvolutionGamma
-  convert Polynomial.descPochhammerRatio_two_mul (n : ℝ) i j using 1 <;>
-    push_cast <;> ring_nf
+  convert Polynomial.descPochhammerRatio_two_mul (n : ℝ) i j using 1
+  push_cast
+  ring_nf
 
 /-- The odd finite-free additive kernel is the generalized rectangular
 kernel at shift `1 / 2`. -/

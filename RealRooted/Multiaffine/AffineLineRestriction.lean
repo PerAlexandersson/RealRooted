@@ -136,7 +136,7 @@ theorem derivative_realAffineLineRestriction
         intro i hi
         ring
       · rw [Finset.sum_eq_single j]
-        · simp only [map_one, mul_one, if_pos]
+        · simp only [map_one, mul_one, ite_eq_left]
           rw [mul_comm]
         · intro i hi hij
           simp [Ne.symm hij]

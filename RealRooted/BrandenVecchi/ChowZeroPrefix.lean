@@ -94,7 +94,7 @@ theorem toeplitz_scaledZeroPrefix_apply
       if j + N ≤ i then C * a (i - j - N) else 0 := by
   rw [toeplitz_apply]
   by_cases hji : j ≤ i
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     have hshift : N ≤ i - j ↔ j + N ≤ i := by lia
     simp only [scaledZeroPrefix, hshift]
   · have hshift : ¬j + N ≤ i := fun h => hji (by lia)
@@ -127,7 +127,7 @@ theorem chowPolynomial_scaledZeroPrefix_self
   · simp
   · intro k hk hk0
     have hkN : k ≤ N := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    rw [toeplitz_apply, if_pos hkN,
+    rw [toeplitz_apply, ite_eq_left hkN,
       scaledZeroPrefix_eq_zero_of_lt C N a (by lia)]
     simp
   · simp

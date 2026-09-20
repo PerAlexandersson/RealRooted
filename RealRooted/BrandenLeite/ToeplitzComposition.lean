@@ -69,7 +69,7 @@ theorem chainPolynomial_toeplitz_eq_compositionRow
     (fun j => by
       simp only [coeff_positivePartSeries_of_pos a (Nat.succ_pos _),
         Fin.revPerm_apply, toeplitz_apply]
-      rw [if_pos (by lia)]
+      rw [ite_eq_left (by lia)]
       have hsum := j.add_rev_cast
       have harg : m + 1 - (j.rev : ℕ) = (j : ℕ) + 1 := by
         calc

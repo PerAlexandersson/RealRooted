@@ -118,7 +118,7 @@ theorem literalWordWeakLeftPeakTerminalNonDescentRefined_succ
   simp only [Fin.snoc_last]
   by_cases hij : i ≤ j
   · have hji : ¬j < i := not_lt.mpr hij
-    simp only [if_pos hij, hji, not_false_eq_true, if_true]
+    simp only [ite_eq_left hij, hji, not_false_eq_true, ite_true]
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro w
@@ -143,7 +143,7 @@ theorem literalWordWeakLeftPeakTerminalDescentRefined_succ
   intro i
   simp only [Fin.snoc_last]
   by_cases hji : j < i
-  · simp only [if_pos hji, Finset.mul_sum]
+  · simp only [ite_eq_left hji, Finset.mul_sum]
     rw [← Finset.sum_add_distrib]
     apply Fintype.sum_congr
     intro w

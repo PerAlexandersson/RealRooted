@@ -8,7 +8,7 @@ module
 public import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
 
 public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Data.Real.Basic
+public import Mathlib.Basic.Real.Basic
 
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.NormNum

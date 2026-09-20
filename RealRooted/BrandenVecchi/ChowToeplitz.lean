@@ -81,7 +81,7 @@ theorem reflect_chowPolynomial_toeplitz (a : ℕ → R) (n : ℕ) :
   apply Finset.sum_congr rfl
   intro k hk
   have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  rw [RealRooted.toeplitz_apply, if_pos hkn]
+  rw [RealRooted.toeplitz_apply, ite_eq_left hkn]
   congr 1
   simpa [Nat.add_sub_of_le hkn] using
     Polynomial.reflect_add_right_of_reflect (n - k)

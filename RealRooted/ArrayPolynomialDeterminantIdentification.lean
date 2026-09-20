@@ -228,7 +228,7 @@ lemma arrayBandBaseFin_apply (N : ℕ) (i j : Fin (N + 1)) :
         omega
       have hrow1 : r + 1 = j.val + 1 := by omega
       have hinner : r ≠ j.val + 1 := by omega
-      simp only [if_neg hij, if_pos hsub, if_pos hrow1, if_neg hinner,
+      simp only [ite_eq_right hij, ite_eq_left hsub, ite_eq_left hrow1, ite_eq_right hinner,
         mul_zero, sub_zero]
       rw [show 0 - arrayUWeight (r + 2) - arrayVWeight (r + 2) =
         -(arrayUWeight (r + 2) + arrayVWeight (r + 2)) by ring]
@@ -248,21 +248,21 @@ lemma arrayBandBaseFin_apply (N : ℕ) (i j : Fin (N + 1)) :
         have hprod :
             arrayUWeight (r + 2) * arrayVWeight (r + 1) = betaC (r + 2) := by
           simpa using arrayUWeight_mul_arrayVWeight_pred (r + 2) (by omega)
-        simp only [if_neg hij, if_neg hsub, if_pos hsub2, if_neg hnot1,
-          if_pos hrow2, sub_zero, zero_sub]
+        simp only [ite_eq_right hij, ite_eq_right hsub, ite_eq_left hsub2, ite_eq_right hnot1,
+          ite_eq_left hrow2, sub_zero, zero_sub]
         rw [hratio, hprod]
         ring
       · by_cases hdiag : r + 1 = j.val
         · have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) = j := Fin.ext hdiag
-          simp only [if_pos hij, if_neg hsub, if_neg hsub2, sub_zero]
+          simp only [ite_eq_left hij, ite_eq_right hsub, ite_eq_right hsub2, sub_zero]
           ring
         · have hnot1 : r + 1 ≠ j.val + 1 := by omega
           have hnot2 : r + 1 ≠ j.val + 2 := by omega
           have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ j := by
             intro h
             exact hdiag (by simpa using congrArg Fin.val h)
-          simp only [if_neg hij, if_neg hsub, if_neg hsub2, if_neg hnot1,
-            if_neg hnot2, sub_zero, zero_sub]
+          simp only [ite_eq_right hij, ite_eq_right hsub, ite_eq_right hsub2, ite_eq_right hnot1,
+            ite_eq_right hnot2, sub_zero, zero_sub]
           ring
 
 lemma arrayBandBaseFin_det (N : ℕ) : (arrayBandBaseFin N).det = 1 := by
@@ -300,9 +300,9 @@ lemma arrayBandPolynomialMatrix_eq (N : ℕ) :
         · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
           simp only [Matrix.add_apply, map_apply, Matrix.smul_apply,
             upperBidiagonalFin_apply, smul_eq_mul,
-            lowerHessenbergTwo_apply, arrayBandBaseFin_apply, if_neg hij,
-            if_neg hsub, if_neg hsub2, if_neg hji, if_neg hsuper,
-            if_neg hval, map_zero, mul_zero, add_zero]
+            lowerHessenbergTwo_apply, arrayBandBaseFin_apply, ite_eq_right hij,
+            ite_eq_right hsub, ite_eq_right hsub2, ite_eq_right hji, ite_eq_right hsuper,
+            ite_eq_right hval, map_zero, mul_zero, add_zero]
 
 lemma arrayBandBaseFin_map_mul_arrayDetMatrix (N : ℕ) :
     (arrayBandBaseFin N).map Polynomial.C *
@@ -476,7 +476,7 @@ theorem arrayNormalizedDeterminant_eq_coefficientPolynomial (n : ℕ) :
 
 theorem coeff_arrayWeightedDeterminant (n k : ℕ) (hk : k ≤ n) :
     ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).coeff k = tArray n k := by
-  rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant, if_pos hk]
+  rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant, ite_eq_left hk]
   exact (tArray_eq_descFactorial_pow_three_mul n k hk).symm
 
 theorem arrayWeightedDeterminant_natDegree_le (n : ℕ) :
@@ -484,13 +484,13 @@ theorem arrayWeightedDeterminant_natDegree_le (n : ℕ) :
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro k hk
   rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant,
-    if_neg (Nat.not_le.mpr hk)]
+    ite_eq_right (Nat.not_le.mpr hk)]
   ring
 
 @[simp] theorem coeff_zero_arrayWeightedDeterminant (n : ℕ) :
     ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).coeff 0 = 1 := by
   rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant,
-    if_pos (Nat.zero_le n)]
+    ite_eq_left (Nat.zero_le n)]
   simp
 
 theorem arrayWeightedDeterminant_ne_zero (n : ℕ) :

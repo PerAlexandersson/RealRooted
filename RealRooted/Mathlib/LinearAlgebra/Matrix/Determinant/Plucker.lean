@@ -152,7 +152,7 @@ private theorem plucker_update_zero_selector
   · subst j
     simp [Fin.cycleRange_self]
   · rcases lt_or_gt_of_ne hj with hj | hj
-    · simp only [if_neg (Fin.ne_of_lt hj)]
+    · simp only [ite_eq_right (Fin.ne_of_lt hj)]
       rw [Fin.cycleRange_of_lt hj]
       congr 2
       apply Fin.ext
@@ -164,7 +164,7 @@ private theorem plucker_update_zero_selector
       rw [Fin.succAbove_of_castSucc_lt _ _ hlt]
       simp only [Fin.val_succ, Fin.val_castSucc]
       rw [Fin.val_add_one_of_lt (lt_of_lt_of_le hj b.le_last)]
-    · simp only [if_neg (Fin.ne_of_lt hj).symm]
+    · simp only [ite_eq_right (Fin.ne_of_lt hj).symm]
       rw [Fin.cycleRange_of_gt hj]
       congr 2
       apply Fin.ext
@@ -206,13 +206,13 @@ private theorem plucker_update_last_selector
   refine Fin.succAboveCases b ?_ (fun t => ?_) j
   · simp only [transpose_apply, Matrix.updateRow_apply, submatrix_apply]
     rw [hbase']
-    simp only [if_pos]
+    simp only [ite_eq_left]
     congr 2
     apply Fin.ext
     simp
   · simp only [transpose_apply, Matrix.updateRow_apply, submatrix_apply]
     rw [hsucc']
-    simp only [if_neg (Fin.succAbove_ne _ _)]
+    simp only [ite_eq_right (Fin.succAbove_ne _ _)]
     congr 2
     apply Fin.ext
     simp

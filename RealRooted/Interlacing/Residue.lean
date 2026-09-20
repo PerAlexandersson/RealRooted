@@ -47,11 +47,11 @@ theorem prod_sub_sign_pos (M : Multiset ℝ) (s : ℝ) (hs : s ∉ M) :
     have h_ih := ih h_s_notin_t
     set P := (t.map (fun r => s - r)).prod * (-1 : ℝ) ^ (t.countP (fun r => s < r))
     by_cases h_lt : s < a
-    · simp only [h_lt, if_true, pow_add, pow_one]
+    · simp only [h_lt, ite_true, pow_add, pow_one]
       have : (s - a) * (t.map (fun r ↦ s - r)).prod *
           ((-1 : ℝ) ^ t.countP (fun r ↦ s < r) * -1) = (a - s) * P := by ring
       simp_all
-    · simp only [h_lt, if_false, Nat.add_zero]
+    · simp only [h_lt, ite_false, Nat.add_zero]
       have h_as_lt : a < s := lt_of_le_of_ne (not_lt.mp h_lt) h_as_ne
       have : (s - a) * (t.map (fun r ↦ s - r)).prod *
           (-1 : ℝ) ^ t.countP (fun r ↦ s < r) = (s - a) * P := by ring

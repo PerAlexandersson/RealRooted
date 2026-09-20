@@ -267,7 +267,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
       letI : Nonempty (Set.powersetCard (Fin n) q) :=
         ⟨⟨rankPrefix n q,
           Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩⟩
-      simp only [R, if_neg hq1.ne']
+      simp only [R, ite_eq_right hq1.ne']
       exact perronRoot_pos_of_irreducible
         (hprim q hq1 hqr).isIrreducible (hprim q hq1 hqr).nonneg
   have hprodR : ∀ q, q ≤ r →
@@ -276,23 +276,23 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
     rcases Nat.eq_zero_or_pos q with rfl | hq1
     · simp [rankPrefix_zero, R]
     · rw [hkey q hq1 hqr]
-      simp [R, if_neg hq1.ne']
+      simp [R, ite_eq_right hq1.ne']
   let μ : Fin n → ℝ := fun i =>
     if hi : (i : ℕ) < r then R ((i : ℕ) + 1) / R (i : ℕ) else 0
   have hμpos : ∀ i : Fin n, (i : ℕ) < r → 0 < μ i := by
     intro i hi
-    simp only [μ, dif_pos hi]
+    simp only [μ, dite_eq_left hi]
     exact div_pos (hRpos _ hi) (hRpos _ hi.le)
   have hμzero : ∀ i : Fin n, r ≤ (i : ℕ) → μ i = 0 := by
     intro i hi
-    simp only [μ, dif_neg (Nat.not_lt.mpr hi)]
+    simp only [μ, dite_eq_right (Nat.not_lt.mpr hi)]
   have hμChead : ∀ i : Fin n, (i : ℕ) < r → μC i = (μ i : ℂ) := by
     intro i hi
     obtain ⟨hinsert, hnot⟩ := rankPrefix_succ (hi.trans_le hrn)
     have hnext := hprodR ((i : ℕ) + 1) hi
     have hprev := hprodR (i : ℕ) hi.le
     rw [hinsert, Finset.prod_insert hnot, hprev] at hnext
-    simp only [μ, dif_pos hi]
+    simp only [μ, dite_eq_left hi]
     push_cast
     exact (eq_div_iff (Complex.ofReal_ne_zero.mpr (hRpos _ hi.le).ne')).mpr hnext
   have hμCtail : ∀ i : Fin n, r ≤ (i : ℕ) → μC i = 0 := by

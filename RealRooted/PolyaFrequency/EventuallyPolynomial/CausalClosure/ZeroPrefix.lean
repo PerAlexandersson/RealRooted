@@ -42,9 +42,9 @@ theorem IsPolyaFreqSeq.causalFwdDiff_of_eventually_polynomial
   have haeq : a = fun n => if s ≤ n then b (n - s) else 0 := by
     funext m
     by_cases hsm : s ≤ m
-    · rw [if_pos hsm]
+    · rw [ite_eq_left hsm]
       simp [b, Nat.sub_add_cancel hsm]
-    · rw [if_neg hsm]
+    · rw [ite_eq_right hsm]
       exact hzero m (Nat.lt_of_not_ge hsm)
   rw [haeq, Function.causalFwdDiff_prefix]
   exact hdiffb.prefix_zeros s

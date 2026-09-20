@@ -331,7 +331,7 @@ theorem signedCollisionNumber_snoc {q p n : ℕ}
   simp only [signedCollisionNumber_succ]
   rw [collisionSet_snoc]
   by_cases h : w (Fin.last n) = x
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     have hdisjoint :
         Disjoint ((collisionSet w).map Fin.castSuccEmb) {Fin.last n} := by
       rw [Finset.disjoint_singleton_right]
@@ -339,7 +339,7 @@ theorem signedCollisionNumber_snoc {q p n : ℕ}
     rw [Finset.card_union_of_disjoint hdisjoint, Finset.card_map,
       Finset.card_singleton]
     simp [h]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp [h]
 
 /-- Appending a letter increments the descent number exactly when the new

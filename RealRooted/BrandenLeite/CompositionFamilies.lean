@@ -150,7 +150,7 @@ theorem coeff_binomialCompositionKernel_pow
       (Nat.choose (d * k) (n - k) : ℝ) := by
   rw [mk_binomialCompositionKernel, mul_pow, ← pow_mul]
   rw [PowerSeries.coeff_X_pow_mul']
-  rw [if_pos hkn]
+  rw [ite_eq_left hkn]
   have hcoe :
       ((1 + PowerSeries.X : PowerSeries ℝ) ^ (d * k)) =
         (((1 + X : ℝ[X]) ^ (d * k) : ℝ[X]) : PowerSeries ℝ) := by
@@ -179,8 +179,8 @@ theorem coeff_compositionRow_binomialCompositionKernel
       if k ≤ n then (Nat.choose (d * k) (n - k) : ℝ) else 0 := by
   rw [coeff_compositionRow (by simp [binomialCompositionKernel])]
   by_cases hkn : k ≤ n
-  · rw [if_pos hkn, coeff_binomialCompositionKernel_pow d n k hkn]
-  · rw [if_neg hkn,
+  · rw [ite_eq_left hkn, coeff_binomialCompositionKernel_pow d n k hkn]
+  · rw [ite_eq_right hkn,
       coeff_pow_eq_zero_of_lt
         (by simp [binomialCompositionKernel]) (Nat.lt_of_not_ge hkn)]
 
@@ -205,7 +205,7 @@ theorem binomialCompositionRow_exact_X_power
       (compositionRow
           (PowerSeries.mk (binomialCompositionKernel d)) n).coeff m ≠ 0 := by
     rw [coeff_compositionRow_binomialCompositionKernel,
-      if_pos hmle]
+      ite_eq_left hmle]
     have hsum : n ≤ m + d * m := by
       simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc,
         Nat.add_mul] using hnle
@@ -218,7 +218,7 @@ theorem binomialCompositionRow_exact_X_power
     intro k hk
     rw [coeff_compositionRow_binomialCompositionKernel]
     by_cases hkn : k ≤ n
-    · rw [if_pos hkn, Nat.cast_eq_zero,
+    · rw [ite_eq_left hkn, Nat.cast_eq_zero,
         Nat.choose_eq_zero_of_lt]
       have hprodlt : (d + 1) * k < n := by
         by_contra hnot
@@ -229,7 +229,7 @@ theorem binomialCompositionRow_exact_X_power
       rw [Nat.lt_sub_iff_add_lt]
       simpa [Nat.add_mul, Nat.add_comm, Nat.add_left_comm,
         Nat.add_assoc] using hprodlt
-    · rw [if_neg hkn]
+    · rw [ite_eq_right hkn]
   · intro hdvd
     have hz := (Polynomial.X_pow_dvd_iff.mp hdvd) m
       (Nat.lt_succ_self m)
@@ -287,7 +287,7 @@ theorem coeff_inversePowerCompositionKernel_pow
         ((PowerSeries.mk (inversePowerCompositionKernel e)) ^ k) =
       (Nat.choose (e * k - 1 + (n - k)) (e * k - 1) : ℝ) := by
   rw [mk_inversePowerCompositionKernel, mul_pow, ← pow_mul]
-  rw [PowerSeries.coeff_X_pow_mul', if_pos hkn]
+  rw [PowerSeries.coeff_X_pow_mul', ite_eq_left hkn]
   have hek : e * k = (e * k - 1) + 1 := by
     exact (Nat.sub_add_cancel
       (Nat.succ_le_iff.mpr (Nat.mul_pos (by lia) (by lia)))).symm
@@ -314,7 +314,7 @@ theorem compositionRow_inversePowerCompositionKernel
   by_cases hk0 : k = 0
   · subst k
     simp [inversePowerCompositionRowCoeff]
-  · rw [inversePowerCompositionRowCoeff, if_neg hk0,
+  · rw [inversePowerCompositionRowCoeff, ite_eq_right hk0,
       coeff_inversePowerCompositionKernel_pow he
         (Nat.one_le_iff_ne_zero.mpr hk0)
         (Nat.le_of_lt_succ (Finset.mem_range.mp hk))]

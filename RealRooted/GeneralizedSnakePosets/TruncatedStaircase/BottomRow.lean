@@ -506,7 +506,7 @@ theorem bottomRookExtension_card
     have hcol_add : a.2 + (c + 1) = b.2 + (c + 1) := by
       simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
-  rw [Finset.card_insert_eq_ite, if_neg hnot, Finset.card_image_of_injOn hinj]
+  rw [Finset.card_insert_eq_ite, ite_eq_right hnot, Finset.card_image_of_injOn hinj]
 
 /-- The bottom-row rook is not already present in a shifted valid remainder. -/
 theorem bottomRook_not_mem_unshiftColumnsAfter

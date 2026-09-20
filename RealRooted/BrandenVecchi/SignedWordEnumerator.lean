@@ -110,7 +110,10 @@ theorem signedWordEnumerator_congr {q p : ℕ}
 theorem signedWordEnumerator_zero {q p : ℕ}
     (weight : SignedLetter q p → R) :
     signedWordEnumerator weight 0 = 1 := by
-  simp [signedWordEnumerator, signedWords, IsSignedWord]
+  classical
+  have hwords : signedWords q p 0 = Finset.univ := by
+    exact Finset.filter_eq_self.mpr fun _ _ => trivial
+  simp [signedWordEnumerator, hwords]
 
 @[simp]
 theorem finiteSignedWordEnumerator_zero (xs ys : List R) :
@@ -233,7 +236,7 @@ theorem extendSignedLetterWeight_apply {q p q' p' : ℕ}
     (e : SignedLetter q p ↪ SignedLetter q' p')
     (weight : SignedLetter q p → R) (a : SignedLetter q p) :
     extendSignedLetterWeight e weight (e a) = weight a := by
-  rw [extendSignedLetterWeight, dif_pos ⟨a, rfl⟩]
+  rw [extendSignedLetterWeight, dite_eq_left ⟨a, rfl⟩]
   apply congrArg weight
   exact e.injective (Classical.choose_spec (show ∃ c, e c = e a from ⟨a, rfl⟩))
 
@@ -242,7 +245,7 @@ theorem extendSignedLetterWeight_eq_zero_of_not_mem_range
     (weight : SignedLetter q p → R) {b : SignedLetter q' p'}
     (hb : b ∉ Set.range e) :
     extendSignedLetterWeight e weight b = 0 := by
-  rw [extendSignedLetterWeight, dif_neg]
+  rw [extendSignedLetterWeight, dite_eq_right]
   simpa [Set.mem_range] using hb
 
 /-- Adding zero-weight letters along a sign-preserving order embedding does
@@ -332,7 +335,8 @@ def signedLetterExtend (q p r s : ℕ) :
     exact Nat.add_left_cancel (Fin.ext_iff.mp h)
   map_rel_iff' := by
     intro a b
-    simp
+    change r + a.val ≤ r + b.val ↔ a.val ≤ b.val
+    exact Nat.add_le_add_iff_left
 
 /-- The concrete alphabet extension preserves the negative block. -/
 theorem signedLetterExtend_isNegative_iff (q p r s : ℕ)
@@ -340,7 +344,8 @@ theorem signedLetterExtend_isNegative_iff (q p r s : ℕ)
     ((signedLetterExtend q p r s) a).IsNegative ↔ a.IsNegative := by
   rw [SignedLetter.isNegative_iff_val_lt,
     SignedLetter.isNegative_iff_val_lt]
-  simp [signedLetterExtend]
+  change r + a.val < r + q ↔ a.val < q
+  exact Nat.add_lt_add_iff_left
 
 /-- Adjoining zero-weight outer negative and positive letters leaves the
 enumerator unchanged. -/

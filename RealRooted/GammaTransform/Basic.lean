@@ -101,7 +101,7 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
 theorem gammaTransform_C_mul_X_pow {D i : ℕ} (a : ℝ)
     (hi : i ≤ D / 2) :
     gammaTransform D (C a * X ^ i) = C a * gammaBasisTerm D i := by
-  rw [C_mul_X_pow_eq_monomial, gammaTransform_monomial, if_pos hi]
+  rw [C_mul_X_pow_eq_monomial, gammaTransform_monomial, ite_eq_left hi]
 
 @[simp] lemma IdTransform_X_add_one :
     IdTransform 1 (X + 1 : ℝ[X]) = X + 1 := by

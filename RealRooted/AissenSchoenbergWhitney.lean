@@ -39,14 +39,14 @@ lemma toeplitz_tail_of_zero {a : ℕ → ℝ} (h0 : a 0 = 0) :
   ext i j
   simp only [toeplitz_apply, submatrix_apply, id_eq]
   by_cases hji : j ≤ i
-  · rw [if_pos hji, if_pos (by lia)]
+  · rw [ite_eq_left hji, ite_eq_left (by lia)]
     congr 1
     lia
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     by_cases hnext : j = i + 1
-    · rw [hnext, if_pos (by lia)]
+    · rw [hnext, ite_eq_left (by lia)]
       simp [h0]
-    · rw [if_neg (by lia)]
+    · rw [ite_eq_right (by lia)]
 
 /-- Deleting a zero first term preserves the Pólya-frequency property. -/
 protected theorem IsPolyaFreqSeq.tail_of_zero {a : ℕ → ℝ}
@@ -82,7 +82,7 @@ protected theorem IsPolyaFreqSeq.prefix_zeros {a : ℕ → ℝ}
     ext i j
     simp only [toeplitz_apply, submatrix_apply, id_eq]
     by_cases hji : j ≤ i
-    · rw [if_pos hji]
+    · rw [ite_eq_left hji]
       have hsub : s ≤ i - j ↔ j + s ≤ i := by lia
       simp [hsub]
       congr 1
@@ -178,33 +178,33 @@ lemma toeplitz_submatrix_eq_tridiagM {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (n 
   ext i j
   simp only [submatrix_apply, toeplitz_apply, tridiagM_apply]
   by_cases hle : (j : ℕ) ≤ (i : ℕ) + 1
-  · rw [if_pos hle]
+  · rw [ite_eq_left hle]
     rcases Nat.lt_trichotomy (j : ℕ) (i : ℕ) with hji | hji | hji
     · by_cases hnear : (i : ℕ) = (j : ℕ) + 1
       · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
         have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
-        rw [if_neg h1, if_neg h2, if_pos hnear]
+        rw [ite_eq_right h1, ite_eq_right h2, ite_eq_left hnear]
         have harg : (i : ℕ) + 1 - (j : ℕ) = 2 := by lia
         rw [harg]
       · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
         have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
-        rw [if_neg h1, if_neg h2, if_neg hnear]
+        rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right hnear]
         apply Polynomial.coeff_eq_zero_of_natDegree_lt
         lia
     · have h1 : (i : ℕ) = (j : ℕ) := hji.symm
-      rw [if_pos h1]
+      rw [ite_eq_left h1]
       have harg : (i : ℕ) + 1 - (j : ℕ) = 1 := by lia
       rw [harg]
     · have h2 : (j : ℕ) = (i : ℕ) + 1 := by lia
       have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
-      rw [if_neg h1, if_pos h2]
+      rw [ite_eq_right h1, ite_eq_left h2]
       have harg : (i : ℕ) + 1 - (j : ℕ) = 0 := by lia
       rw [harg]
-  · rw [if_neg hle]
+  · rw [ite_eq_right hle]
     have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
     have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
     have h3 : (i : ℕ) ≠ (j : ℕ) + 1 := by lia
-    rw [if_neg h1, if_neg h2, if_neg h3]
+    rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3]
 
 /-- Forward ASW discriminant bound in degree at most two.  If the coefficient
 sequence of `p` is Pólya-frequency and `p.natDegree ≤ 2`, then

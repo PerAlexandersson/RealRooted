@@ -293,13 +293,13 @@ theorem specializeAt_one_affineEulerCore
       ← Finset.sum_erase_add _ _ (Finset.mem_univ i)]
     simp only [specializeAt_mul, specializeAt_X,
       pderiv_specializeAt_self, mul_zero, add_zero]
-    simp only [if_true, map_one, one_mul]
+    simp only [ite_true, map_one, one_mul]
     congr 1
     apply Finset.sum_congr rfl
     intro j hj
     have hji : j ≠ i := Finset.ne_of_mem_erase hj
     have heji : e j ≠ e i := fun h => hji (he h)
-    rw [if_neg heji, pderiv_specializeAt_of_ne heji]
+    rw [ite_eq_right heji, pderiv_specializeAt_of_ne heji]
   have hderivs :
       specializeAt (e i) 1 (∑ j : ι, pderiv (e j) P) =
         (∑ j : ι, pderiv (e j) (specializeAt (e i) 1 P)) +

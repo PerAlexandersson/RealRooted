@@ -120,7 +120,8 @@ theorem prod_one_add_eq_sum (x : ℕ → K) (n : ℕ) (t : K) :
     rw [show ∏ i ∈ range n, (1 + x i * t) = ∏ i ∈ range n, (x i * t + 1) from
       Finset.prod_congr rfl (fun i _ => by ring), Finset.prod_add]
     exact Finset.sum_congr rfl (fun U _ => by simp)
-  rw [h1, Finset.powerset_card_disjiUnion, Finset.sum_disjiUnion]
+  rw [h1, Finset.powerset_card_disjiUnion]
+  erw [Finset.sum_disjiUnion]
   rw [card_range]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [esym_eq_sum, Finset.sum_mul]

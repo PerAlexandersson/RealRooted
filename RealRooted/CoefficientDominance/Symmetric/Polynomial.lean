@@ -22,7 +22,7 @@ theorem coeff_prod_one_add (x : ℕ → K) (n j : ℕ) :
       | zero => simp
       | succ i =>
           rw [Polynomial.coeff_one]
-          simp only [Nat.succ_ne_zero, if_false]
+          simp only [Nat.succ_ne_zero, ite_false]
           rw [Finset.powersetCard_eq_empty.mpr (by simp)]
           simp
   | succ n ih =>

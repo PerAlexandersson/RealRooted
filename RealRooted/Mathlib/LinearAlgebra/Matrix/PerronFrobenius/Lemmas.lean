@@ -122,7 +122,7 @@ lemma positive_mul_vec_pos [Fintype n]
     exact mul_nonneg (le_of_lt (hA_pos i j)) (hx_nonneg j)
   · have : ∃ k, 0 < x k := by
       by_contra h_all_nonpos
-      push_neg at h_all_nonpos
+      push Not at h_all_nonpos
       have h_zero : x = 0 := funext (fun j => le_antisymm (h_all_nonpos j) (hx_nonneg j))
       exact hx_ne_zero h_zero
     rcases this with ⟨k, hk_pos⟩

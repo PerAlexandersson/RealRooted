@@ -85,7 +85,7 @@ theorem Set.powersetCard.exists_orderEmb_comp_perm_eq_of_injective
   let ee : Fin q ≃ Set.range e := Equiv.ofInjective e e.injective
   let p : Equiv.Perm (Fin q) :=
     (Equiv.ofInjective f hf).trans
-      ((Equiv.setCongr hRange).trans ee.symm)
+      ((Set.equivOfEq hRange).trans ee.symm)
   refine ⟨s, p, ?_⟩
   intro i
   have hfi : f i ∈ Set.range e := hRange ▸ ⟨i, rfl⟩
@@ -165,7 +165,7 @@ theorem Set.powersetCard.sum_embedding_eq_sum_orderEmb_perm
     _ = ∑ s : Set.powersetCard I q, ∑ p : Equiv.Perm (Fin q),
         g (Set.powersetCard.orderEmbPermEquivEmbedding (s, p)) :=
       Fintype.sum_prod_type _
-    _ = _ := by simp [Set.powersetCard.orderEmbPermEquivEmbedding]
+    _ = _ := by rfl
 
 private theorem sum_function_eq_sum_embedding_of_zero_noninjective
     {q : ℕ} {I M : Type*} [Fintype I] [AddCommMonoid M]

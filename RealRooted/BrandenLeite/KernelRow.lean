@@ -40,7 +40,7 @@ theorem coeff_kernelRow {R : Type*} [CommSemiring R] {N : ℕ}
       simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
     · exact fun hnot => (hnot hq).elim
   · have hNq : ¬q < N + 1 := by simpa using hq
-    rw [if_neg hNq]
+    rw [ite_eq_right hNq]
     apply Finset.sum_eq_zero
     intro j hj
     have hjq : j ≠ q := by

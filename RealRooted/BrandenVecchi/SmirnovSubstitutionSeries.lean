@@ -176,7 +176,7 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
   intro word _
   rw [weightedSmirnovEndingSummand]
   by_cases hword : IsSmirnovWord (k + 1) (Fin.snoc word i)
-  · rw [if_pos hword]
+  · rw [ite_eq_left hword]
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
         (C (smirnovWordWeight weight (Fin.snoc word i)) *

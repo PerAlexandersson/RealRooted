@@ -1,5 +1,5 @@
 import Mathlib.Data.Fintype.Perm
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Algebra.MvPolynomial.Degrees
 import Mathlib.RingTheory.MvPolynomial.Basic
 import Mathlib.Tactic

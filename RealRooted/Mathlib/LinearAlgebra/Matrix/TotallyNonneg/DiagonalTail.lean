@@ -82,8 +82,8 @@ theorem IsTotallyNonneg.diagonalTail_fin
           ext i j
           have hiN : i.val < N := i.isLt.trans_le hMN
           have hjN : j.val < N := j.isLt.trans_le hMN
-          simp only [Matrix.submatrix_apply, diagonalTail, dif_pos hiN,
-            dif_pos hjN]
+          simp only [Matrix.submatrix_apply, diagonalTail, dite_eq_left hiN,
+            dite_eq_left hjN]
           rfl
         rw [heq]
         exact hA.submatrix (Fin.strictMono_castLE hMN)

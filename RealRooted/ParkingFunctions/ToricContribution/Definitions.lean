@@ -203,16 +203,16 @@ theorem rPolynomial_zero_eq_one_sub_X_mul_jPolynomial
   | succ k =>
       rw [coeff_rPolynomial, coeff_one_sub_X_mul_succ]
       by_cases hk : k < m
-      · rw [if_pos (by lia : k + 1 ≤ m), coeff_jPolynomial,
-          coeff_jPolynomial, if_pos hk]
+      · rw [ite_eq_left (by lia : k + 1 ≤ m), coeff_jPolynomial,
+          coeff_jPolynomial, ite_eq_left hk]
         by_cases hksucc : k + 1 < m
-        · rw [if_pos hksucc, rCoeff_offset_zero_succ]
+        · rw [ite_eq_left hksucc, rCoeff_offset_zero_succ]
         · have heq : k + 1 = m := by lia
-          rw [if_neg hksucc, rCoeff_offset_zero_succ, heq,
+          rw [ite_eq_right hksucc, rCoeff_offset_zero_succ, heq,
             jCoeff_self_eq_zero m ε hm, zero_sub]
-      · rw [if_neg (by lia : ¬k + 1 ≤ m), coeff_jPolynomial,
-          coeff_jPolynomial, if_neg (by lia : ¬k + 1 < m),
-          if_neg (by lia : ¬k < m), sub_zero]
+      · rw [ite_eq_right (by lia : ¬k + 1 ≤ m), coeff_jPolynomial,
+          coeff_jPolynomial, ite_eq_right (by lia : ¬k + 1 < m),
+          ite_eq_right (by lia : ¬k < m), sub_zero]
 
 theorem natDegree_rPolynomial_le (m ε d : ℕ) :
     (rPolynomial m ε d).natDegree ≤ m := by

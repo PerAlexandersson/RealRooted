@@ -113,7 +113,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       refine ⟨?_, ?_, ?_⟩
       · rintro (_ | m)
         · simp [simsun_zero]
-        · rw [simsun_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+        · rw [simsun_zero, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
       · simp [simsun_zero]
       · intro m hm
         rw [simsun_zero, coeff_one]
@@ -122,7 +122,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       refine ⟨?_, ?_, ?_⟩
       · rintro (_ | m)
         · simp [simsun_one]
-        · rw [simsun_one, coeff_one, if_neg (Nat.succ_ne_zero m)]
+        · rw [simsun_one, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
       · simp [simsun_one]
       · intro m hm
         rw [simsun_one, coeff_one]

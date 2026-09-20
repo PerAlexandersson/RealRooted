@@ -177,9 +177,9 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       aesop
     have hq_coeff0 : q2.coeff (g.natDegree - j - 1) = q1.coeff 2 := by
       rw [Polynomial.coeff_reverse]
-      rw [show q1.natDegree = g.natDegree - (j - 1) from ?_, revAt]
-      · simp +zetaDelta only [Function.Embedding.coeFn_mk, tsub_le_iff_right] at *
-        rw [if_pos (by lia)]
+      rw [show q1.natDegree = g.natDegree - (j - 1) from ?_, ← revAtFun_eq, revAtFun]
+      ·
+        rw [ite_eq_left (by lia)]
         rw [show g.natDegree - (j - 1) - (g.natDegree - j - 1) = 2 by lia]
       · have := iterate_derivative_rr hg (j - 1)
         aesop
@@ -201,7 +201,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       · have h_deg : g.natDegree - (j + 1 - 1) = (g.natDegree - (1 + (j + 1))) + 2 := by lia
         rw [h_deg]
         simp_all [add_comm]
-        simp [revAt]
+        simp [← revAtFun_eq, revAtFun]
         ring_nf
         grind
     · have := iterate_derivative_rr hg (j - 1)

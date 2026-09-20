@@ -140,7 +140,7 @@ theorem coeff_rectangularRightSlice_eq_zero_of_lt (m n : ℕ) (p : ℂ[X])
   rw [Polynomial.finsetSum_coeff]
   apply Finset.sum_eq_zero
   intro k hk
-  rw [Polynomial.coeff_monomial, if_neg]
+  rw [Polynomial.coeff_monomial, ite_eq_right]
   exact (hj.trans_le (Nat.le_add_right m k)).ne'
 
 theorem natDegree_rectangularRightSlice_le (m n : ℕ) (p : ℂ[X]) (x : ℂ) :

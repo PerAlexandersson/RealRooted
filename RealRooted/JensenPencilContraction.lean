@@ -142,7 +142,7 @@ theorem rootCountCompatible_jensen_translate
   · by_cases hs : x + eps ≤ 0
     · have hs_bound := hcount (x + eps)
       rw [LiuOppositeSigns.rootCountAtOrAbove_X_mul hB0 (x + eps),
-        if_pos hs] at hs_bound
+        ite_eq_left hs] at hs_bound
       simpa [hx] using hs_bound
     · have hs_pos : 0 < x + eps := lt_of_not_ge hs
       rw [hA.rootCountAtOrAbove_eq_zero_of_pos hs_pos,

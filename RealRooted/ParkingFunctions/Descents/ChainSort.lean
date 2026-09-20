@@ -44,7 +44,7 @@ theorem map_sortAlong_chain {n : ℕ} (l : List (Fin n)) (hl : l.Nodup)
   · intro j h₁ h₂
     have hjl : j < l.length := by simpa using h₁
     rw [List.getElem_map]
-    simp only [sortAlong, if_pos (List.getElem_mem hjl), hl.idxOf_getElem j hjl]
+    simp only [sortAlong, ite_eq_left (List.getElem_mem hjl), hl.idxOf_getElem j hjl]
     rw [List.getD_eq_getElem _ _ h₂]
 
 /-- The values on a sorted chain are weakly increasing. -/
@@ -77,7 +77,7 @@ theorem sortAlong_eq_self_of_pairwise {n : ℕ} (l : List (Fin n))
     sortAlong l f = f := by
   funext i
   by_cases hi : i ∈ l
-  · simp only [sortAlong, if_pos hi]
+  · simp only [sortAlong, ite_eq_left hi]
     rw [List.mergeSort_eq_self (r := (· ≤ ·)) hmono]
     rw [List.getD_eq_getElem]
     · rw [List.getElem_map]

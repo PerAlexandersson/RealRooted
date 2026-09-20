@@ -355,9 +355,8 @@ lemma findIdx_go_succ' {α : Type*} (p : α → Bool) (l : List α) (n : Nat) :
   | cons hd tl ih =>
     simp only [findIdx.go]
     by_cases h_p : p hd = true
-    · rw [bif_of_true h_p, bif_of_true h_p]
-    · have h_p_false : p hd = false := by rw [Bool.not_eq_true] at h_p; exact h_p
-      rw [bif_of_false h_p_false, bif_of_false h_p_false]
+    · rw [ite_eq_left h_p, ite_eq_left h_p]
+    · rw [ite_eq_right h_p, ite_eq_right h_p]
       exact ih (n+1)
 
 /-- Helper lemma: the findIdx.go function with accumulator 1 returns the result of findIdx plus 1 -/
@@ -380,7 +379,7 @@ lemma idxOf_cons_of_ne [DecidableEq α] {hd : α} {tl : List α} {x : α} (h_neq
   have h_eq_false : (hd == x) = false := by
     rw [beq_eq_false_iff_ne]
     exact h_neq
-  rw [bif_of_false h_eq_false]
+  simp only [h_eq_false, Bool.false_eq_true, ite_false]
   exact findIdx_go_succ (fun y => y == x) tl
 
 -- This helper lemma addresses many of the beq_iff_eq rewrite failures
@@ -420,7 +419,7 @@ lemma get_idxOf_of_mem {l : List α} {x : α} (h : x ∈ l) :
       have h_idx : idxOf hd (hd :: tl) = 0 := by
         dsimp [idxOf, findIdx]
         simp only [findIdx.go]
-        simp only [BEq.rfl, le_refl, zero_add, cond_true, Nat.eq_of_le_zero]
+        simp
       simp only [h_idx, get_eq_getElem, getElem_cons_zero]
     · simp only [mem_cons] at h
       cases h with
@@ -456,9 +455,7 @@ lemma idxOf_le_of_get_eq [DecidableEq α] {l : List α} {x : α} {i : Fin l.leng
       have : hd = x := by
         simp only [get_eq_getElem] at h
         exact h
-      rw [beq_iff_eq.mpr this]
-      simp only [cond_true]
-      exact Nat.zero_le 0
+      simp [this]
     | succ j =>
       dsimp only [idxOf, findIdx, length_cons, Fin.val_succ]
       simp only [findIdx.go]
@@ -664,25 +661,6 @@ is one greater than `findIdx` on the tail.
 -/
 lemma findIdx_cons_of_ne {p : α → Bool} {hd : α} {tl : List α} (h : p hd = false) :
     findIdx p (hd :: tl) = 1 + findIdx p tl := by
-  unfold findIdx
-  unfold findIdx.go
-  rw [h]
-  induction tl with
-  | nil =>
-    simp only [findIdx.go, zero_add, cond_false, add_zero]
-  | cons hd' tl' ih =>
-    simp only [findIdx.go, zero_add, Nat.reduceAdd, cond_false]
-    by_cases h' : p hd' = true
-    · simp only [h', cond_true, le_refl, Nat.eq_of_le_zero, add_zero]
-    · simp only [h', cond_false]
-      induction tl' with
-      | nil => simp only [findIdx.go, Nat.reduceAdd]
-      | cons a l ih' =>
-        simp [findIdx.go]
-        by_cases ha : p a = true
-        · simp only [ha, cond_true, Nat.reduceAdd]
-        · simp only [ha, cond_false]
-          rw [Nat.one_add]
-          exact findIdx_go_succ' p l 2
+  simp [List.findIdx_cons, h, Nat.add_comm]
 
 end List

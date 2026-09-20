@@ -8,7 +8,7 @@ module
 public import RealRooted.Favard.Recurrence
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 
 /-!

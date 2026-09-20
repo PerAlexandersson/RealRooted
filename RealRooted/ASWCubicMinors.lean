@@ -116,14 +116,14 @@ private lemma penultimate_succAbove_add_one (k : ℕ) (i : Fin (k + 1)) :
       aswGapRow (k + 1) i := by
   simp only [aswGapRow]
   by_cases hi : (i : ℕ) + 1 = k + 1
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     have hilast : i = Fin.last k := by
       ext
       simp only [Fin.val_last]
       lia
     rw [hilast, Fin.succAbove_castSucc_of_le _ _ (le_refl _)]
     simp
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     have hivallt : (i : ℕ) < k := by
       have := i.isLt
       lia
@@ -155,13 +155,13 @@ private lemma aswA_lastColumn_apply {R : Type*} [CommRing R] (u : ℕ → R) (k 
   simp only [aswShiftedToeplitzMatrix, Matrix.submatrix_apply,
     toeplitz_apply, Fin.val_last]
   by_cases hip : i = (Fin.last k).castSucc
-  · rw [if_pos hip, hip]
+  · rw [ite_eq_left hip, hip]
     simp
-  · rw [if_neg hip]
+  · rw [ite_eq_right hip]
     by_cases hil : i = Fin.last (k + 1)
-    · rw [if_pos hil, hil]
+    · rw [ite_eq_left hil, hil]
       simp
-    · rw [if_neg hil, if_neg]
+    · rw [ite_eq_right hil, ite_eq_right]
       have hivallt : (i : ℕ) < k := by
         have hnep : (i : ℕ) ≠ k := by
           intro h
@@ -210,7 +210,7 @@ theorem aswGapToeplitzMinor_identity {R : Type*} [CommRing R] (u : ℕ → R) (k
   rw [hsum] at hdet
   have hlastne : Fin.last (k + 1) ≠ (Fin.last k).castSucc :=
     (Fin.castSucc_ne_last _).symm
-  simp only [aswA_lastColumn_apply, if_neg hlastne, if_pos,
+  simp only [aswA_lastColumn_apply, ite_eq_right hlastne, ite_eq_left,
     aswA_last_cofactor, Fin.val_last] at hdet
   have heven : (-1 : R) ^ ((k + 1) + (k + 1)) = 1 := by
     rw [show (k + 1) + (k + 1) = 2 * (k + 1) by lia]

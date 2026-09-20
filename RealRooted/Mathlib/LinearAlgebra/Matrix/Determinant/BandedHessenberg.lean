@@ -160,7 +160,7 @@ private lemma bandedLowerHessenbergAntepenultimateCofactor_det
       x ^ 2 * (bandedLowerHessenberg d a b x n).det := by
   rw [det_eq_last_apply_mul_det_castSucc_of_above_eq_zero]
   · rw [bandedLowerHessenbergAntepenultimateCofactor_lastColumn]
-    simp only [if_pos]
+    simp only [ite_eq_left]
     change x *
       (bandedLowerHessenbergAntepenultimateInnerCofactor d a b x n).det = _
     rw [bandedLowerHessenbergAntepenultimateInnerCofactor_det]

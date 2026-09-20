@@ -61,7 +61,8 @@ theorem wordExponent_eq_toFinsupp_wordContent {n m : ℕ}
 theorem wordContent_relabelWord {n m : ℕ} (e : Equiv.Perm (Fin m))
     (w : Fin n → Fin m) :
     wordContent (relabelWord e w) = (wordContent w).map e := by
-  simp [wordContent, relabelWord, Function.comp_def]
+  simp only [wordContent, Multiset.map_map]
+  rfl
 
 /-- Mapping a word-content multiset by an alphabet permutation maps its
 multiplicity vector along the same permutation. -/

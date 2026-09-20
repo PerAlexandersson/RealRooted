@@ -99,7 +99,7 @@ theorem staircaseProd_below {q : K} (hq : 1 ≤ q) {g : ℕ → K} {n k : ℕ}
         = ∏ j ∈ range k, (q ^ (j + 1) - 1) :=
     Finset.prod_range_reflect (fun j => q ^ (j + 1) - 1) k
   rw [← hreflect]
-  refine Finset.prod_le_prod ?_ ?_
+  refine Finset.prod_le_prod₀ ?_ ?_
   · intro i hi
     have hnonneg : (1 : K) ≤ q ^ ((k - 1 - i) + 1) := one_le_pow₀ hq
     linarith
@@ -119,7 +119,7 @@ theorem staircaseProd_above {q : K} (hq : 1 ≤ q) {g : ℕ → K} {n k N : ℕ}
     staircaseProd q N
       ≤ ∏ j ∈ range N, (1 - g k / g (k + 1 + j)) := by
   unfold staircaseProd
-  refine Finset.prod_le_prod ?_ ?_
+  refine Finset.prod_le_prod₀ ?_ ?_
   · intro j _
     have hqpow : (1 : K) ≤ q ^ (j + 1) := one_le_pow₀ hq
     have hqpowPos : (0 : K) < q ^ (j + 1) :=

@@ -451,7 +451,7 @@ lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
     (hμ : μ ∈ spectrum ℝ A) : ‖μ‖₊ ≤ ‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
   have h_eigenvalue : ∃ v : n → ℝ, v ≠ 0 ∧ Matrix.mulVec A v = μ • v := by
     rw [spectrum.mem_iff, Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero] at hμ
-    push_neg at hμ
+    push Not at hμ
     have : Matrix.det (algebraMap ℝ (Matrix n n ℝ) μ - A) = 0 := hμ
     rw [Algebra.algebraMap_eq_smul_one, Matrix.det_eq_zero_iff_exists_nontrivial_ker] at this
     obtain ⟨v, hv_ne_zero, hv_ker⟩ := this
@@ -471,7 +471,7 @@ lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
 
 lemma spectralRadius_lt_top {A : Matrix n n ℝ} :
     spectralRadius ℝ A < ⊤ := by
-  rw [spectralRadius]
+  rw [spectralRadius_eq_of_unital]
   apply iSup_lt_iff.mpr
   use ‖(Matrix.toLin' A).toContinuousLinearMap‖₊ + 1
   constructor
@@ -535,6 +535,7 @@ lemma spectralRadius_le_nnnorm {𝕜 A : Type*} [NontriviallyNormedField 𝕜]
      [NormedField 𝕜] [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A] [NormOneClass A]
     (a : A) :
     spectralRadius 𝕜 a ≤ ↑‖a‖₊ := by
+  rw [spectralRadius_eq_of_unital]
   apply iSup_le
   intro μ
   apply iSup_le
@@ -552,11 +553,12 @@ omit [DecidableEq n] in
 /-- The spectral radii of a matrix and its transpose are equal. -/
 lemma spectralRadius_eq_spectralRadius_transpose [DecidableEq n] (A : Matrix n n ℝ) :
     spectralRadius ℝ A = spectralRadius ℝ Aᵀ := by
-  unfold spectralRadius
+  simp only [spectralRadius_eq_of_unital]
   rw [spectrum_eq_spectrum_transpose]
 
 lemma spectralRadius_le_opNorm (A : Matrix n n ℝ) :
     spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
+  rw [spectralRadius_eq_of_unital]
   apply iSup_le
   intro μ
   apply iSup_le
@@ -642,7 +644,7 @@ lemma support_nonempty_of_ne_zero {v : n → ℝ}
   have h_all_nonpos : ∀ i, v i ≤ 0 := by
     intro i
     by_contra hi_pos
-    push_neg at hi_pos
+    push Not at hi_pos
     have hi_in_support : i ∈ supportFinset v := by
       simp [supportFinset, Finset.mem_filter]
       exact hi_pos
@@ -664,7 +666,7 @@ lemma exists_pos_of_sum_pos {ι : Type*} [Fintype ι] {f : ι → ℝ}
     (h_nonneg : ∀ i, 0 ≤ f i) (h_sum_pos : 0 < ∑ i, f i) :
     ∃ i, 0 < f i := by
   by_contra h_not_exists
-  push_neg at h_not_exists
+  push Not at h_not_exists
   have h_all_zero : ∀ i, f i = 0 := by
     intro i
     exact le_antisymm (h_not_exists i) (h_nonneg i)

@@ -148,7 +148,7 @@ theorem shiftedJacobi_comp_neg_X_hasNonnegCoeffs (n : ℕ) {α β : ℝ}
   rw [show (-X : ℝ[X]) = C (-1) * X by simp]
   rw [Polynomial.comp_C_mul_X_coeff, coeff_shiftedJacobi]
   by_cases hk : k ≤ n
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     have hleft : 0 < Ring.choose (n + α) (n - k) := by
       apply Polynomial.ring_choose_pos
       rw [Nat.cast_sub hk]

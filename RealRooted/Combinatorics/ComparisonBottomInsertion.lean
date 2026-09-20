@@ -109,7 +109,7 @@ theorem comparisonBottomSupport_step_zero {w : List Nat}
       have ha := hpos a (by simp)
       rw [step_zero]
       simp only [raise, List.map_cons, comparisonBottomSupport]
-      rw [if_pos (by lia)]
+      rw [ite_eq_left (by lia)]
       change comparisonBottomSupport (raise (a :: w)) = _
       rw [comparisonBottomSupport_raise]
 
@@ -132,7 +132,7 @@ theorem comparisonBottomSupport_step_one_cons {a : Nat}
     comparisonBottomSupport (step 1 (a :: w)) =
       insert 1 ((comparisonBottomSupport w).map succEmbedding) := by
   rw [step_succ, step_zero]
-  rw [comparisonBottomSupport, if_neg (by
+  rw [comparisonBottomSupport, ite_eq_right (by
     have := hpos a (by simp)
     lia)]
   change insert 1 (comparisonBottomSupport (step 0 w)) = _
@@ -174,8 +174,8 @@ theorem comparisonBottomSupport_step_add_two_cons
   rw [show r + 2 = (r + 1) + 1 by lia, step_succ, step_succ]
   simp only [comparisonBottomSupport]
   by_cases hab : a < b
-  · rw [if_pos (by lia), if_pos hab]
-  · rw [if_neg (by lia), if_neg hab]
+  · rw [ite_eq_left (by lia), ite_eq_left hab]
+  · rw [ite_eq_right (by lia), ite_eq_right hab]
 
 /-- Monomial form of insertion after the first two positions. -/
 theorem comparisonBottomMonomial_step_add_two_cons
@@ -190,8 +190,8 @@ theorem comparisonBottomMonomial_step_add_two_cons
   rw [comparisonBottomMonomial,
     comparisonBottomSupport_step_add_two_cons]
   by_cases hab : a < b
-  · rw [if_pos hab, if_pos hab, comparisonBottomMonomial]
-  · rw [if_neg hab, if_neg hab]
+  · rw [ite_eq_left hab, ite_eq_left hab, comparisonBottomMonomial]
+  · rw [ite_eq_right hab, ite_eq_right hab]
     have hposTail : IsPositive (b :: w) := by
       intro x hx
       exact hpos x (by simp [hx])
@@ -215,8 +215,8 @@ theorem comparisonBottomMonomial_cons_cons
       else MvPolynomial.X b * comparisonBottomMonomial (b :: w) := by
   rw [comparisonBottomMonomial, comparisonBottomSupport]
   by_cases hab : a < b
-  · rw [if_pos hab, if_pos hab, comparisonBottomMonomial]
-  · rw [if_neg hab, if_neg hab]
+  · rw [ite_eq_left hab, ite_eq_left hab, comparisonBottomMonomial]
+  · rw [ite_eq_right hab, ite_eq_right hab]
     have htail : (b :: w).Nodup := (List.nodup_cons.mp hnodup).2
     rw [MvPolynomial.finsetMonomial_insert
       (head_not_mem_comparisonBottomSupport htail),
@@ -262,22 +262,22 @@ theorem positiveInsertionPolynomial_cons
             comparisonBottomMonomial
               (step (r.1 + 2) (a :: b :: w))) = _
       by_cases hab : a < b
-      · simp only [hab, if_pos, one_mul]
+      · simp only [hab, ite_eq_left, one_mul]
         rw [positiveInsertionPolynomial]
         congr 1
         apply Finset.sum_congr rfl
         intro r hr
         exact comparisonBottomMonomial_step_add_two_cons
           (R := R) hpos hnodup (by simpa using r.isLt) |>.trans
-            (if_pos hab)
-      · simp only [List.length_cons, if_neg hab]
+            (ite_eq_left hab)
+      · simp only [List.length_cons, ite_eq_right hab]
         rw [positiveInsertionPolynomial, Finset.mul_sum]
         congr 1
         apply Finset.sum_congr rfl
         intro r hr
         exact comparisonBottomMonomial_step_add_two_cons
           (R := R) hpos hnodup (by simpa using r.isLt) |>.trans
-            (if_neg hab)
+            (ite_eq_right hab)
 
 /-- The support normal form for the positive-slot insertion sum. -/
 noncomputable def comparisonBottomInsertionCore
@@ -306,7 +306,7 @@ theorem comparisonBottomInsertionCore_eq_pderiv
       MvPolynomial.X z : MvPolynomial Nat R) =
     MvPolynomial.pderiv x
       (∏ z ∈ comparisonBottomSupport w, MvPolynomial.X z)
-  rw [MvPolynomial.pderiv_finsetProd_X, if_pos hx]
+  rw [MvPolynomial.pderiv_finsetProd_X, ite_eq_left hx]
 
 @[simp] theorem comparisonBottomInsertionCore_singleton
     {R : Type*} [CommSemiring R] (a : Nat) :
@@ -329,9 +329,9 @@ theorem comparisonBottomInsertionCore_cons_cons
   have hcard := card_comparisonBottomSupport_le_length htail
   by_cases hab : a < b
   · rw [comparisonBottomInsertionCore]
-    rw [comparisonBottomSupport, if_pos hab]
+    rw [comparisonBottomSupport, ite_eq_left hab]
     rw [comparisonBottomInsertionCore]
-    simp only [hab, if_pos, one_mul]
+    simp only [hab, ite_eq_left, one_mul]
     have hdiff :
         (a :: b :: w).length -
             (comparisonBottomSupport (b :: w)).card =
@@ -341,13 +341,13 @@ theorem comparisonBottomInsertionCore_cons_cons
           (comparisonBottomSupport (b :: w)).card = _
       exact Nat.succ_sub hcard
     rw [hdiff, Nat.cast_add, Nat.cast_one, map_add]
-    rw [comparisonBottomMonomial_cons_cons hnodup, if_pos hab]
+    rw [comparisonBottomMonomial_cons_cons hnodup, ite_eq_left hab]
     simp only [map_one]
     ring
   · rw [comparisonBottomInsertionCore]
-    rw [comparisonBottomSupport, if_neg hab]
+    rw [comparisonBottomSupport, ite_eq_right hab]
     rw [comparisonBottomInsertionCore]
-    simp only [hab, if_false]
+    simp only [hab, ite_false]
     rw [Finset.card_insert_of_notMem hbnot]
     have hdiff :
         (a :: b :: w).length -
@@ -358,7 +358,7 @@ theorem comparisonBottomInsertionCore_cons_cons
           (comparisonBottomSupport (b :: w)).card.succ = _
       exact Nat.succ_sub_succ_eq_sub _ _
     rw [hdiff]
-    rw [comparisonBottomMonomial_cons_cons hnodup, if_neg hab]
+    rw [comparisonBottomMonomial_cons_cons hnodup, ite_eq_right hab]
     rw [Finset.sum_insert hbnot]
     simp only [Finset.erase_insert_eq_erase]
     rw [Finset.erase_eq_of_notMem hbnot]
@@ -456,12 +456,12 @@ theorem sum_nonOne_comparisonBottomMonomial_step
             (comparisonBottomMonomial (b :: w)) +
         (if a < b then 1 else MvPolynomial.X (b + 1)) *
           positiveInsertionPolynomial (b :: w) at hpositive
-  rw [if_pos hab, one_mul,
+  rw [ite_eq_left hab, one_mul,
     positiveInsertionPolynomial_eq_core htailPos htailNodup] at hpositive
   have hzero := comparisonBottomMonomial_step_zero (R := R) hpos
   have hone := comparisonBottomMonomial_step_one_cons (R := R) hpos
   have hmonomial := comparisonBottomMonomial_cons_cons (R := R) hnodup
-  rw [if_pos hab] at hmonomial
+  rw [ite_eq_left hab] at hmonomial
   change f 0 = MvPolynomial.rename succEmbedding
     (comparisonBottomMonomial (R := R) (a :: b :: w)) at hzero
   change f (1 : Fin ((a :: b :: w).length + 1)) =
@@ -556,14 +556,14 @@ theorem comparisonBottomSupport_exceptional_pair {w : List Nat}
       change a < b at hw
       rw [step_exceptional_pair]
       simp only [comparisonBottomSupport]
-      rw [if_pos (by lia), if_neg (by lia), if_pos (by lia)]
+      rw [ite_eq_left (by lia), ite_eq_right (by lia), ite_eq_left (by lia)]
       simp only [List.map_cons]
       change insert 2
           (if 2 < b + 2 then
             comparisonBottomSupport ((b + 2) :: w.map (fun x => x + 2))
           else insert (b + 2)
             (comparisonBottomSupport ((b + 2) :: w.map (fun x => x + 2)))) = _
-      rw [if_pos (by lia)]
+      rw [ite_eq_left (by lia)]
       have hmap :
           (b :: w).map (fun x => x + 2) = raise (raise (b :: w)) := by
         simp [raise, Nat.add_assoc]

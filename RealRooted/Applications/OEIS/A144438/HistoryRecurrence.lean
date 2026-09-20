@@ -219,7 +219,7 @@ theorem comparisonBottomInsertionCore_inverseWord_tail
     apply Finset.sum_congr rfl
     intro x hx
     unfold MvPolynomial.finsetMonomial
-    rw [MvPolynomial.pderiv_finsetProd_X, if_pos hx]
+    rw [MvPolynomial.pderiv_finsetProd_X, ite_eq_left hx]
   rw [comparisonBottomInsertionCore_eq_pderiv]
   unfold decoNormalBottomCore comparisonBottomMonomial
   rw [hsupport, hlength, hwordSupport]

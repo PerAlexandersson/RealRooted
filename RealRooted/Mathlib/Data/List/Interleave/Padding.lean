@@ -17,31 +17,31 @@ namespace List
 
 variable {α : Type*} {r : α → α → Prop} {l₁ l₂ : List α} {a : α}
 
-private lemma mem_interleave : ∀ (l₁ l₂ : List α) {x : α},
-    x ∈ l₁.interleave l₂ → x ∈ l₁ ∨ x ∈ l₂
+private lemma mem_interleaveRight : ∀ (l₁ l₂ : List α) {x : α},
+    x ∈ l₁.interleaveRight l₂ → x ∈ l₁ ∨ x ∈ l₂
   | _, [], _, h => by
     simp at h
   | l₁, a :: l₂, x, h => by
-    rw [interleave, mem_cons] at h
+    rw [interleaveRight, mem_cons] at h
     rcases h with rfl | h
     · exact Or.inr (by simp)
-    · rcases mem_interleave l₂ l₁ h with h | h
+    · rcases mem_interleaveRight l₂ l₁ h with h | h
       · exact Or.inr (mem_cons_of_mem _ h)
       · exact Or.inl h
   termination_by l₁ l₂ => l₁.length + l₂.length
 
-private lemma nil_interleave_singleton (a : α) : ([] : List α).interleave [a] = [a] := by
-  rw [interleave_cons, interleave_nil]
+private lemma nil_interleaveRight_singleton (a : α) : ([] : List α).interleaveRight [a] = [a] := by
+  rw [interleaveRight_cons, interleaveRight_nil]
 
 /-- Removing a final right-hand entry preserves an interleaving when the two
 remaining lists have equal length. -/
 lemma Interleaves.drop_right_of_length_eq
     (hlen : l₁.length = l₂.length) (h : Interleaves r l₁ (l₂ ++ [a])) :
     Interleaves r l₁ l₂ := by
-  rw [interleaves_iff_length_isChain_interleave] at h ⊢
+  rw [interleaves_iff_length_isChain_interleaveRight] at h ⊢
   obtain ⟨_, hchain⟩ := h
   refine ⟨Or.inl hlen, ?_⟩
-  rw [interleave_append_right_of_length_eq_length hlen] at hchain
+  rw [interleaveRight_append_right_of_length_eq_length hlen] at hchain
   exact (isChain_append.mp hchain).1
 
 /-- Removing a final left-hand entry preserves an interleaving when the right
@@ -49,10 +49,10 @@ list is one entry longer. -/
 lemma Interleaves.drop_left_of_length_add_one_eq
     (hlen : l₁.length + 1 = l₂.length) (h : Interleaves r (l₁ ++ [a]) l₂) :
     Interleaves r l₁ l₂ := by
-  rw [interleaves_iff_length_isChain_interleave] at h ⊢
+  rw [interleaves_iff_length_isChain_interleaveRight] at h ⊢
   obtain ⟨_, hchain⟩ := h
   refine ⟨Or.inr hlen, ?_⟩
-  rw [interleave_append_left_of_length_add_one_eq_length hlen] at hchain
+  rw [interleaveRight_append_left_of_length_add_one_eq_length hlen] at hchain
   exact (isChain_append.mp hchain).1
 
 /-- Appending an upper endpoint to the right-hand list preserves an
@@ -61,19 +61,19 @@ lemma Interleaves.append_right_of_length_eq
     (hlen : l₁.length = l₂.length) (h : Interleaves r l₁ l₂)
     (hupper : ∀ ⦃x⦄, x ∈ l₁ ∨ x ∈ l₂ → r x a) :
     Interleaves r l₁ (l₂ ++ [a]) := by
-  rw [interleaves_iff_length_isChain_interleave] at h ⊢
+  rw [interleaves_iff_length_isChain_interleaveRight] at h ⊢
   obtain ⟨_, hchain⟩ := h
   refine ⟨Or.inr (by simp [hlen]), ?_⟩
-  rw [interleave_append_right_of_length_eq_length hlen]
-  rw [nil_interleave_singleton]
+  rw [interleaveRight_append_right_of_length_eq_length hlen]
+  rw [nil_interleaveRight_singleton]
   rw [isChain_append]
   refine ⟨hchain, ?_, ?_⟩
   · exact IsChain.singleton _
   intro x hx y hy
   simp only [head?_cons, Option.mem_some_iff] at hy
   subst y
-  have hxmem : x ∈ l₁.interleave l₂ := mem_of_mem_getLast? hx
-  exact hupper (mem_interleave _ _ hxmem)
+  have hxmem : x ∈ l₁.interleaveRight l₂ := mem_of_mem_getLast? hx
+  exact hupper (mem_interleaveRight _ _ hxmem)
 
 /-- Appending an upper endpoint to the left-hand list preserves an
 interleaving when the right-hand list is one entry longer. -/
@@ -81,19 +81,19 @@ lemma Interleaves.append_left_of_length_add_one_eq
     (hlen : l₁.length + 1 = l₂.length) (h : Interleaves r l₁ l₂)
     (hupper : ∀ ⦃x⦄, x ∈ l₁ ∨ x ∈ l₂ → r x a) :
     Interleaves r (l₁ ++ [a]) l₂ := by
-  rw [interleaves_iff_length_isChain_interleave] at h ⊢
+  rw [interleaves_iff_length_isChain_interleaveRight] at h ⊢
   obtain ⟨_, hchain⟩ := h
   refine ⟨Or.inl (by simp [hlen]), ?_⟩
-  rw [interleave_append_left_of_length_add_one_eq_length hlen]
-  rw [nil_interleave_singleton]
+  rw [interleaveRight_append_left_of_length_add_one_eq_length hlen]
+  rw [nil_interleaveRight_singleton]
   rw [isChain_append]
   refine ⟨hchain, ?_, ?_⟩
   · exact IsChain.singleton _
   intro x hx y hy
   simp only [head?_cons, Option.mem_some_iff] at hy
   subst y
-  have hxmem : x ∈ l₁.interleave l₂ := mem_of_mem_getLast? hx
-  exact hupper (mem_interleave _ _ hxmem)
+  have hxmem : x ∈ l₁.interleaveRight l₂ := mem_of_mem_getLast? hx
+  exact hupper (mem_interleaveRight _ _ hxmem)
 
 /-- Equal end padding preserves an interleaving of equally long lists; one
 additional right-hand endpoint also preserves it. -/
@@ -230,7 +230,7 @@ private lemma interleaves_drop_replicate_of_lt_aux
       match k₁, k₂ with
       | 0, 0 => simpa using h
       | k₁ + 1, k₂ =>
-          have hlength := (interleaves_iff_length_isChain_interleave.mp h).1
+          have hlength := (interleaves_iff_length_isChain_interleaveRight.mp h).1
           simp only [length_append, length_replicate] at hlength
           rcases hlength with heq | hsucc
           · rw [show l₁ ++ List.replicate (k₁ + 1) a =
@@ -255,7 +255,7 @@ private lemma interleaves_drop_replicate_of_lt_aux
                 exact (not_interleaves_append_replicate_succ_left l₁ l₂ k₁ hlt₂
                   (by grind) (by simpa using h)).elim
       | 0, k₂ + 1 =>
-          have hlength := (interleaves_iff_length_isChain_interleave.mp h).1
+          have hlength := (interleaves_iff_length_isChain_interleaveRight.mp h).1
           simp only [length_append, length_replicate] at hlength
           rcases hlength with heq | hsucc
           · exact (not_interleaves_append_replicate_succ_right l₁ l₂ k₂ hlt₁

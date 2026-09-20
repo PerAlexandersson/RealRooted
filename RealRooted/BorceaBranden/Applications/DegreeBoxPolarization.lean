@@ -516,12 +516,12 @@ theorem sourceBlockPolarization_rename_mul_X_pow
         rename Sum.inr (_root_.RealRooted.polarization n (Polynomial.X ^ r)) := by
   unfold sourceBlockPolarization
   rw [Finset.sum_eq_single r]
-  · rw [sourceCoefficient_rename_mul_X_pow, if_pos rfl,
+  · rw [sourceCoefficient_rename_mul_X_pow, ite_eq_left rfl,
       _root_.RealRooted.polarization_X_pow hr]
     simp only [map_mul, rename_C]
     ring
   · intro k hk hkr
-    rw [sourceCoefficient_rename_mul_X_pow, if_neg hkr]
+    rw [sourceCoefficient_rename_mul_X_pow, ite_eq_right hkr]
     simp
   · intro hrange
     exact (hrange (by simpa [Finset.mem_range] using hr)).elim
@@ -561,7 +561,7 @@ theorem sourceCoefficient_symbol_sum {τ : Type*} (n r : ℕ)
       intro heq
       apply hne
       lia
-    rw [if_neg hnr]
+    rw [ite_eq_right hnr]
   · intro hnot
     exact (hnot (Finset.mem_range.mpr
       (Nat.lt_succ_of_le (Nat.sub_le n r)))).elim

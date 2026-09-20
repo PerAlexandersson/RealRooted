@@ -80,7 +80,7 @@ theorem weightedIndepPolyOn_coeff_zero {V : Type u} [DecidableEq V]
   · intro s hs hne
     have : s.card ≠ 0 := by simp_all
     have hnot : ¬ s.card ≤ 0 := by simp_all
-    rw [Polynomial.coeff_mul_X_pow', if_neg hnot]
+    rw [Polynomial.coeff_mul_X_pow', ite_eq_right hnot]
   · intro hnot
     simp [indepSetsOn] at hnot
 

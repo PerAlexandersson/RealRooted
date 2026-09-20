@@ -23,9 +23,9 @@ private theorem singleton_prefix_destutter'
   | cons b l ih =>
       rw [List.destutter'_cons]
       by_cases hab : R a b
-      · rw [if_pos hab]
+      · rw [ite_eq_left hab]
         exact ⟨l.destutter' R b, rfl⟩
-      · rw [if_neg hab]
+      · rw [ite_eq_right hab]
         exact ih a
 
 private theorem destutter'_prefix_append
@@ -39,10 +39,10 @@ private theorem destutter'_prefix_append
       simp only [List.cons_append]
       rw [List.destutter'_cons, List.destutter'_cons]
       by_cases hab : R a b
-      · rw [if_pos hab, if_pos hab]
+      · rw [ite_eq_left hab, ite_eq_left hab]
         rcases ih b with ⟨u, hu⟩
         exact ⟨u, by simpa using congrArg (List.cons a) hu⟩
-      · rw [if_neg hab, if_neg hab]
+      · rw [ite_eq_right hab, ite_eq_right hab]
         exact ih a
 
 private theorem destutter_prefix_append
@@ -79,7 +79,7 @@ private theorem getLast?_destutter'_ne
   | cons b l ih =>
       rw [List.destutter'_cons]
       by_cases hab : a ≠ b
-      · rw [if_pos hab]
+      · rw [ite_eq_left hab]
         calc
           (a :: l.destutter' (· ≠ ·) b).getLast? =
               (l.destutter' (· ≠ ·) b).getLast? :=
@@ -89,7 +89,7 @@ private theorem getLast?_destutter'_ne
             (getLast?_cons_eq_tail_of_ne_nil (by simp)).symm
       · have hab_eq : a = b := not_ne_iff.mp hab
         subst b
-        rw [if_neg (by simp)]
+        rw [ite_eq_right (by simp)]
         calc
           (l.destutter' (· ≠ ·) a).getLast? =
               (a :: l).getLast? := ih a
@@ -134,8 +134,8 @@ private theorem destutter'_append_cons_self_ne
   | cons c l ih =>
       simp only [cons_append, List.destutter'_cons]
       by_cases hbc : b ≠ c
-      · rw [if_pos hbc, if_pos hbc, ih c]
-      · rw [if_neg hbc, if_neg hbc, ih b]
+      · rw [ite_eq_left hbc, ite_eq_left hbc, ih c]
+      · rw [ite_eq_right hbc, ite_eq_right hbc, ih b]
 
 /-- Deleting one of two adjacent equal entries does not change disequality destuttering. -/
 theorem destutter_append_cons_self_ne

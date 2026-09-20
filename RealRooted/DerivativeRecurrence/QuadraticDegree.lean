@@ -230,12 +230,12 @@ lemma quadratic_derivative_scaled_shift_coeff_succ
       C 1 * P n + C (s + b * (n : K)) * (X * P n) by ring]
   simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
   by_cases hk : 1 ≤ k
-  · rw [if_pos (by lia : 2 ≤ k + 1)]
+  · rw [ite_eq_left (by lia : 2 ≤ k + 1)]
     push_cast
     have hkidx : k - 1 + 1 = k := by lia
     have hkcast : ((k - 1 : ℕ) : K) + 1 = (k : K) := by simp_all
     grind
-  · rw [if_neg (by lia : ¬ 2 ≤ k + 1)]
+  · rw [ite_eq_right (by lia : ¬ 2 ≤ k + 1)]
     have hk0 : k = 0 := by lia
     subst k
     grind
@@ -305,12 +305,12 @@ lemma quadratic_derivative_shift_coeff_succ
       C 1 * P n + C (s + (n : K)) * (X * P n) by ring]
   simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative, coeff_X_pow_mul']
   by_cases hk : 1 ≤ k
-  · rw [if_pos (by lia : 2 ≤ k + 1)]
+  · rw [ite_eq_left (by lia : 2 ≤ k + 1)]
     push_cast
     have hkidx : k - 1 + 1 = k := by lia
     have hkcast : ((k - 1 : ℕ) : K) + 1 = (k : K) := by simp_all
     grind
-  · rw [if_neg (by lia : ¬ 2 ≤ k + 1)]
+  · rw [ite_eq_right (by lia : ¬ 2 ≤ k + 1)]
     have hk0 : k = 0 := by lia
     subst k
     grind

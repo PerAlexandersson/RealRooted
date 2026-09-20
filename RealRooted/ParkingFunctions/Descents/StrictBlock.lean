@@ -111,7 +111,7 @@ theorem strictDecreasingWordEnumerator_zero_alphabet (k : ℕ) :
   cases k with
   | zero => simp
   | succ k =>
-      rw [if_neg (Nat.succ_ne_zero k)]
+      rw [ite_eq_right (Nat.succ_ne_zero k)]
       unfold MvPolynomial.esymm
       rw [(Finset.powersetCard_eq_empty).2]
       · simp

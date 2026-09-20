@@ -2,7 +2,7 @@ import Mathlib.Combinatorics.Digraph.Orientation
 import Mathlib.Data.Fintype.Order
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 /-!
 # Acyclic orientations and sink polynomials

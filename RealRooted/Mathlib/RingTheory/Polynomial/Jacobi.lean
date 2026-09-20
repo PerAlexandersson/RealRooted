@@ -196,8 +196,8 @@ theorem derivative_shiftedJacobi (n : ℕ) (α β : ℝ) :
   rw [coeff_derivative]
   simp only [coeff_C_mul]
   by_cases hk : k ≤ n
-  · rw [coeff_shiftedJacobi, if_pos (Nat.succ_le_succ hk),
-      coeff_shiftedJacobi, if_pos hk]
+  · rw [coeff_shiftedJacobi, ite_eq_left (Nat.succ_le_succ hk),
+      coeff_shiftedJacobi, ite_eq_left hk]
     have hr := succ_mul_choose_add (n + α + β + 2) k
     rw [show (n + 1 : ℕ) - (k + 1) = n - k by lia]
     norm_num only [Nat.cast_add, Nat.cast_one]
@@ -210,8 +210,8 @@ theorem derivative_shiftedJacobi (n : ℕ) (α β : ℝ) :
     linear_combination
       ((-1 : ℝ) ^ k * -1 * Ring.choose (n + (α + 1)) (n - k)) * hr
   · rw [coeff_shiftedJacobi,
-      if_neg (Nat.not_le.mpr (Nat.lt_succ_iff.mpr (Nat.lt_of_not_ge hk))),
-      coeff_shiftedJacobi, if_neg hk]
+      ite_eq_right (Nat.not_le.mpr (Nat.lt_succ_iff.mpr (Nat.lt_of_not_ge hk))),
+      coeff_shiftedJacobi, ite_eq_right hk]
     simp
 
 /-- Every iterated derivative of a shifted Jacobi polynomial is a nonzero
@@ -315,10 +315,10 @@ theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
   rw [coeff_shiftedJacobi n k α β, coeff_shiftedJacobi n k α (β + 1),
     coeff_shiftedJacobi (n - 1) k α (β + 1)]
   by_cases hk : k ≤ n
-  · rw [if_pos hk, if_pos hk]
+  · rw [ite_eq_left hk, ite_eq_left hk]
     by_cases hkn : k = n
     · subst k
-      rw [if_neg (by lia : ¬n ≤ n - 1)]
+      rw [ite_eq_right (by lia : ¬n ≤ n - 1)]
       cases n with
       | zero => contradiction
       | succ d =>
@@ -345,7 +345,7 @@ theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
           linear_combination
             ((-1 : ℝ) ^ (d + 1)) * hratio
     · have hk_pred : k ≤ n - 1 := by lia
-      rw [if_pos hk_pred]
+      rw [ite_eq_left hk_pred]
       have hleft := succ_mul_ringChoose (n + α) (n - 1 - k)
       rw [show n - 1 - k + 1 = n - k by lia] at hleft
       have hn_one : 1 ≤ n := by lia
@@ -377,9 +377,9 @@ theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
                 hleft +
               ((-1 : ℝ) ^ (d + 1) * Ring.choose (n + α) (n - (d + 1))) *
                 hright
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hk_pred : ¬k ≤ n - 1 := by lia
-    rw [if_neg hk_pred, if_neg hk]
+    rw [ite_eq_right hk_pred, ite_eq_right hk]
     simp
 
 /-- The unit shift in the first Jacobi parameter, obtained from the second
@@ -424,7 +424,7 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
       rw [show (n : ℝ) + α + 1 - 1 = n + α by ring] at hleft
       rw [show α + 1 + n = n + α + 1 by ring] at hright
       simp only [coeff_C_mul, coeff_sub, coeff_add]
-      simp only [coeff_shiftedJacobi, if_pos (Nat.zero_le n), pow_zero,
+      simp only [coeff_shiftedJacobi, ite_eq_left (Nat.zero_le n), pow_zero,
         Ring.choose_zero_right, Nat.sub_zero, one_mul]
       have hx2 : (X * shiftedJacobi n (α + 2) β).coeff 0 = 0 := by
         rw [coeff_zero_eq_eval_zero]
@@ -445,8 +445,8 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
       rcases lt_trichotomy k n with hk | rfl | hk
       · rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k,
           coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
-        rw [if_pos (Nat.succ_le_iff.mpr hk), if_pos hk.le,
-          if_pos (Nat.succ_le_iff.mpr hk), if_pos hk.le]
+        rw [ite_eq_left (Nat.succ_le_iff.mpr hk), ite_eq_left hk.le,
+          ite_eq_left (Nat.succ_le_iff.mpr hk), ite_eq_left hk.le]
         have hA0 := succ_mul_ringChoose (n + α + 1) (n - k - 1)
         rw [show n - k - 1 + 1 = n - k by lia,
           show (n : ℝ) + α + 1 - 1 = n + α by ring] at hA0
@@ -557,7 +557,7 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
             ((-1 : ℝ) ^ k * (α + 1)) * hterm1
       · rw [coeff_shiftedJacobi k (k + 1), coeff_shiftedJacobi k k,
           coeff_shiftedJacobi k (k + 1), coeff_shiftedJacobi k k]
-        rw [if_neg (by lia), if_pos le_rfl, if_neg (by lia), if_pos le_rfl]
+        rw [ite_eq_right (by lia), ite_eq_left le_rfl, ite_eq_right (by lia), ite_eq_left le_rfl]
         have hlead := sub_mul_ringChoose (2 * k + α + β + 2) k
         rw [show (2 : ℝ) * k + α + β + 2 - 1 = 2 * k + α + β + 1 by ring]
           at hlead
@@ -567,7 +567,8 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
         linear_combination (-((-1 : ℝ) ^ k)) * hlead
       · rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k,
           coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
-        rw [if_neg (by lia), if_neg (by lia), if_neg (by lia), if_neg (by lia)]
+        rw [ite_eq_right (by lia), ite_eq_right (by lia),
+          ite_eq_right (by lia), ite_eq_right (by lia)]
         ring
 
 /-- A degree-lowering relation for a unit increase in the first Jacobi
@@ -582,8 +583,8 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
   cases k with
   | zero =>
       simp only [coeff_add, coeff_C_mul, coeff_X_mul_zero,
-        coeff_shiftedJacobi, if_pos (Nat.zero_le (m + 1)),
-        if_pos (Nat.zero_le m), pow_zero, Ring.choose_zero_right,
+        coeff_shiftedJacobi, ite_eq_left (Nat.zero_le (m + 1)),
+        ite_eq_left (Nat.zero_le m), pow_zero, Ring.choose_zero_right,
         Nat.sub_zero, one_mul, mul_one, mul_zero, zero_add]
       have hchoose := succ_mul_ringChoose (m + 1 + α) m
       rw [show (m : ℝ) + 1 + α - 1 = m + α by ring] at hchoose
@@ -592,10 +593,10 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
   | succ k =>
       simp only [coeff_add, coeff_C_mul, coeff_X_mul]
       by_cases hk : k < m
-      · rw [coeff_shiftedJacobi m k, if_pos hk.le,
+      · rw [coeff_shiftedJacobi m k, ite_eq_left hk.le,
           coeff_shiftedJacobi (m + 1) (k + 1),
-          if_pos (by lia : k + 1 ≤ m + 1),
-          coeff_shiftedJacobi m (k + 1), if_pos (Nat.succ_le_iff.mpr hk)]
+          ite_eq_left (by lia : k + 1 ≤ m + 1),
+          coeff_shiftedJacobi m (k + 1), ite_eq_left (Nat.succ_le_iff.mpr hk)]
         have hAE := succ_mul_ringChoose (m + α + 1) (m - k - 1)
         rw [show m - k - 1 + 1 = m - k by lia,
           show (m : ℝ) + α + 1 - 1 = m + α by ring] at hAE
@@ -638,9 +639,9 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
         convert hclean using 1 <;> ring
       · by_cases hkm : k = m
         · subst k
-          rw [coeff_shiftedJacobi m m, if_pos le_rfl,
-            coeff_shiftedJacobi (m + 1) (m + 1), if_pos le_rfl,
-            coeff_shiftedJacobi m (m + 1), if_neg (by lia)]
+          rw [coeff_shiftedJacobi m m, ite_eq_left le_rfl,
+            coeff_shiftedJacobi (m + 1) (m + 1), ite_eq_left le_rfl,
+            coeff_shiftedJacobi m (m + 1), ite_eq_right (by lia)]
           have hchoose := succ_mul_ringChoose
             (2 * m + α + β + 2) m
           rw [show 2 * (m : ℝ) + α + β + 2 - 1 =
@@ -656,9 +657,9 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
           rw [pow_succ]
           linear_combination (-((-1 : ℝ) ^ m)) * hchoose
         · have hlarge : m < k := by lia
-          rw [coeff_shiftedJacobi m k, if_neg (by lia),
-            coeff_shiftedJacobi (m + 1) (k + 1), if_neg (by lia),
-            coeff_shiftedJacobi m (k + 1), if_neg (by lia)]
+          rw [coeff_shiftedJacobi m k, ite_eq_right (by lia),
+            coeff_shiftedJacobi (m + 1) (k + 1), ite_eq_right (by lia),
+            coeff_shiftedJacobi m (k + 1), ite_eq_right (by lia)]
           ring
 
 /-- The two-unit first-parameter endpoint relation in adjacent degrees. -/
@@ -697,7 +698,7 @@ private lemma coeff_succ_relation (n k : ℕ) (α β : ℝ) (hk : k < n) :
       -((n - k : ℕ) : ℝ) * (n + α + β + k + 1) *
         (shiftedJacobi n α β).coeff k := by
   rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
-  rw [if_pos hk.le, if_pos (Nat.succ_le_iff.mpr hk)]
+  rw [ite_eq_left hk.le, ite_eq_left (Nat.succ_le_iff.mpr hk)]
   have hfirst := succ_mul_choose_add (α + k + 1) (n - k - 1)
   have hsecond := succ_mul_choose_succ_add (n + α + β) k
   have hsub : n - k - 1 + 1 = n - k := by lia
@@ -762,8 +763,8 @@ theorem shiftedJacobi_differential_equation (n : ℕ) (α β : ℝ) :
     linear_combination hr
   · simp [coeff_shiftedJacobi]
   · rw [coeff_shiftedJacobi n (k + 1), coeff_shiftedJacobi n k]
-    rw [if_neg (Nat.not_le.mpr (hk.trans_le (Nat.le_succ k))),
-      if_neg (Nat.not_le.mpr hk)]
+    rw [ite_eq_right (Nat.not_le.mpr (hk.trans_le (Nat.le_succ k))),
+      ite_eq_right (Nat.not_le.mpr hk)]
     simp
 
 /-- The shifted Jacobi polynomial is an eigenvector of its differential
@@ -1002,8 +1003,8 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
   | zero =>
       simp only [coeff_add, coeff_sub, coeff_X_mul_zero, coeff_C_mul]
       dsimp only [f, g]
-      rw [coeff_shiftedJacobi, if_pos (Nat.zero_le n),
-        coeff_shiftedJacobi, if_pos (Nat.zero_le (n + 1))]
+      rw [coeff_shiftedJacobi, ite_eq_left (Nat.zero_le n),
+        coeff_shiftedJacobi, ite_eq_left (Nat.zero_le (n + 1))]
       norm_num only [Nat.cast_zero, pow_zero, Ring.choose_zero_right, mul_one,
         Nat.sub_zero, Nat.zero_add, Nat.cast_add, Nat.cast_one]
       have hchoose := succ_mul_choose_succ (n + α) n
@@ -1014,9 +1015,9 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
       push_cast
       dsimp only [f, g]
       by_cases hk : k + 1 ≤ n
-      · rw [coeff_shiftedJacobi, if_pos hk, coeff_shiftedJacobi,
-          if_pos (by lia : k ≤ n), coeff_shiftedJacobi,
-          if_pos (by lia : k + 1 ≤ n + 1)]
+      · rw [coeff_shiftedJacobi, ite_eq_left hk, coeff_shiftedJacobi,
+          ite_eq_left (by lia : k ≤ n), coeff_shiftedJacobi,
+          ite_eq_left (by lia : k + 1 ≤ n + 1)]
         have hfirst := succ_mul_ringChoose_same (n + α) (n - (k + 1))
         have hsecond := succ_mul_choose_succ_add (n + α + β) k
         have hpascal := Ring.choose_succ_succ (n + α) (n - (k + 1))
@@ -1051,9 +1052,9 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
       · by_cases hboundary : k + 1 = n + 1
         · have hkEq : k = n := by lia
           subst k
-          rw [coeff_shiftedJacobi, if_neg (by lia : ¬n + 1 ≤ n),
-            coeff_shiftedJacobi, if_pos le_rfl, coeff_shiftedJacobi,
-            if_pos le_rfl]
+          rw [coeff_shiftedJacobi, ite_eq_right (by lia : ¬n + 1 ≤ n),
+            coeff_shiftedJacobi, ite_eq_left le_rfl, coeff_shiftedJacobi,
+            ite_eq_left le_rfl]
           have hchoose := succ_mul_choose_succ_add (n + α + β) n
           norm_num only [Nat.cast_add, Nat.cast_one, Nat.sub_self,
             Ring.choose_zero_right, pow_succ, zero_mul, add_zero]
@@ -1063,9 +1064,9 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
           rw [htop]
           linear_combination ((-1 : ℝ) ^ n) * hchoose
         · have hlarge : n + 1 < k + 1 := by lia
-          rw [coeff_shiftedJacobi, if_neg (by lia : ¬k + 1 ≤ n),
-            coeff_shiftedJacobi, if_neg (by lia : ¬k ≤ n),
-            coeff_shiftedJacobi, if_neg (by lia : ¬k + 1 ≤ n + 1)]
+          rw [coeff_shiftedJacobi, ite_eq_right (by lia : ¬k + 1 ≤ n),
+            coeff_shiftedJacobi, ite_eq_right (by lia : ¬k ≤ n),
+            coeff_shiftedJacobi, ite_eq_right (by lia : ¬k + 1 ≤ n + 1)]
           ring
 
 private lemma coeff_shiftedJacobi_succ_degree
@@ -1074,7 +1075,7 @@ private lemma coeff_shiftedJacobi_succ_degree
         (shiftedJacobi (n + 1) α β).coeff k =
       (n + α + 1) * (n + α + β + k + 1) *
         (shiftedJacobi n α β).coeff k := by
-  rw [coeff_shiftedJacobi, if_pos (by lia), coeff_shiftedJacobi, if_pos hk]
+  rw [coeff_shiftedJacobi, ite_eq_left (by lia), coeff_shiftedJacobi, ite_eq_left hk]
   have hsub : n + 1 - k = n - k + 1 := by lia
   rw [hsub]
   have hfirst := succ_mul_choose_succ (n + α) (n - k)
@@ -1106,7 +1107,7 @@ private lemma coeff_shiftedJacobi_pred_degree
         (shiftedJacobi (n - 1) α β).coeff k =
       ((n - k : ℕ) : ℝ) * (n + α + β) *
         (shiftedJacobi n α β).coeff k := by
-  rw [coeff_shiftedJacobi, if_pos (by lia), coeff_shiftedJacobi, if_pos hk.le]
+  rw [coeff_shiftedJacobi, ite_eq_left (by lia), coeff_shiftedJacobi, ite_eq_left hk.le]
   have hfirst := succ_mul_choose_succ ((n - 1 : ℕ) + α) (n - 1 - k)
   have hsecond := sub_mul_choose_add_one ((n - 1 : ℕ) + α + β + k) k
   have hnksub : n - 1 - k + 1 = n - k := by lia
@@ -1327,7 +1328,7 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
       · have hkn : k = n := by lia
         subst k
         have hpredzero : (shiftedJacobi (n - 1) α β).coeff n = 0 := by
-          rw [coeff_shiftedJacobi, if_neg (by lia)]
+          rw [coeff_shiftedJacobi, ite_eq_right (by lia)]
         rw [hpredzero]
         simp only [mul_zero, sub_zero]
         have hupDen : (n + 1 - n : ℝ) = 1 := by ring
@@ -1353,8 +1354,8 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
         have hle_self : n ≤ n := le_rfl
         have hnle : ¬n + 1 ≤ n := by lia
         have hnle_pred : ¬n + 1 ≤ n - 1 := by lia
-        simp only [coeff_shiftedJacobi, if_pos hle_succ, if_pos hle_self,
-          if_neg hnle, if_neg hnle_pred]
+        simp only [coeff_shiftedJacobi, ite_eq_left hle_succ, ite_eq_left hle_self,
+          ite_eq_right hnle, ite_eq_right hnle_pred]
         simp only [Nat.sub_self, Ring.choose_zero_right, mul_one]
         have hlead := leading_choose_succ_degree n α β
         norm_num only [Nat.cast_add, Nat.cast_one]
@@ -1497,7 +1498,7 @@ theorem shiftedJacobiMonic_recurrence_of_two_le (n : ℕ) (α β : ℝ)
     C u * (X * shiftedJacobi n α β) + C v * shiftedJacobi n α β -
       C w * shiftedJacobi (n - 1) α β at hraw
   simp only [shiftedJacobiMonic, shiftedJacobiDiag, shiftedJacobiSubdiag,
-    if_neg (by lia : n ≠ 0), if_neg (by lia : n ≠ 1)]
+    ite_eq_right (by lia : n ≠ 0), ite_eq_right (by lia : n ≠ 1)]
   change C lUp⁻¹ * shiftedJacobi (n + 1) α β =
     (X - C a) * (C l⁻¹ * shiftedJacobi n α β) -
       C b * (C lDown⁻¹ * shiftedJacobi (n - 1) α β)
@@ -1542,18 +1543,18 @@ theorem shiftedJacobiMonic_recurrence_one (α β : ℝ)
     field_simp [h3, h4]
   have hraw0 :
       (shiftedJacobi 2 α β).coeff 0 = (α + 2) * (α + 1) / 2 := by
-    rw [coeff_shiftedJacobi, if_pos (by lia : 0 ≤ 2)]
+    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 0 ≤ 2)]
     rw [ring_choose_two]
     norm_num
     ring
   have hraw1 :
       (shiftedJacobi 2 α β).coeff 1 = -(α + 2) * (α + β + 3) := by
-    rw [coeff_shiftedJacobi, if_pos (by lia : 1 ≤ 2)]
+    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 1 ≤ 2)]
     norm_num [Ring.choose_one_right]
     ring
   have hraw2 :
       (shiftedJacobi 2 α β).coeff 2 = (α + β + 4) * (α + β + 3) / 2 := by
-    rw [coeff_shiftedJacobi, if_pos (by lia : 2 ≤ 2)]
+    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 2 ≤ 2)]
     rw [ring_choose_two]
     norm_num
     ring
@@ -1600,7 +1601,7 @@ theorem shiftedJacobiMonic_recurrence_one (α β : ℝ)
           2 * (α + 2) / (α + β + 4) := by
       field_simp [h2, h4]
       ring
-    rw [shiftedJacobiDiag, if_neg (by norm_num : (1 : ℕ) ≠ 0)]
+    rw [shiftedJacobiDiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0)]
     convert hdiag' using 1 ; ring
   have hconst :
       shiftedJacobiDiag 1 α β * ((α + 1) / (α + β + 2)) -
@@ -1609,7 +1610,7 @@ theorem shiftedJacobiMonic_recurrence_one (α β : ℝ)
     rw [show shiftedJacobiDiag 1 α β =
       2 * (α + 2) / (α + β + 4) - (α + 1) / (α + β + 2) by
         linarith [hdiag]]
-    rw [shiftedJacobiSubdiag, if_neg (by norm_num : (1 : ℕ) ≠ 0), if_pos rfl]
+    rw [shiftedJacobiSubdiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0), ite_eq_left rfl]
     change
       (2 * (α + 2) / (α + β + 4) - (α + 1) / (α + β + 2)) *
             ((α + 1) / (α + β + 2)) -
@@ -1649,13 +1650,13 @@ theorem shiftedJacobiSubdiag_pos (n : ℕ) {α β : ℝ}
     0 < shiftedJacobiSubdiag n α β := by
   by_cases hn1 : n = 1
   · subst n
-    rw [shiftedJacobiSubdiag, if_neg (by norm_num : (1 : ℕ) ≠ 0), if_pos rfl]
+    rw [shiftedJacobiSubdiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0), ite_eq_left rfl]
     have hα1 : 0 < 1 + α := by linarith
     have hβ1 : 0 < 1 + β := by linarith
     have hsum2 : 0 < α + β + 2 := by linarith
     have hsum3 : 0 < α + β + 3 := by linarith
     positivity
-  · rw [shiftedJacobiSubdiag, if_neg (by lia), if_neg hn1]
+  · rw [shiftedJacobiSubdiag, ite_eq_right (by lia), ite_eq_right hn1]
     have hnR : (2 : ℝ) ≤ n := by exact_mod_cast (by lia : 2 ≤ n)
     have hnα : 0 < (n : ℝ) + α := by linarith
     have hnβ : 0 < (n : ℝ) + β := by linarith

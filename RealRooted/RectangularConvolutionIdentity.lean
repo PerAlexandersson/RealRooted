@@ -110,8 +110,8 @@ private theorem rectangularDifferentialTerm
   rw [applyNegDifferential_C_mul_left,
     applyNegDifferential_C_mul_right,
     applyNegDifferential_sumBlockFactorization,
-    applyNegDifferential_esymm, if_pos hi,
-    applyNegDifferential_esymm, if_pos himk]
+    applyNegDifferential_esymm, ite_eq_left hi,
+    applyNegDifferential_esymm, ite_eq_left himk]
   simp only [Fintype.card_fin, map_mul, MvPolynomial.rename_C,
     map_nsmul]
   rw [show n + i - k = m + n + i - (m + k) by lia]
@@ -242,12 +242,12 @@ private theorem rectangularDifferentialTerm_diagonal_ite
           MvPolynomial.X 1 ^ (m + k - i)
       else 0 := by
   by_cases hi : i ≤ k
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     exact rectangularDifferentialTerm_diagonal_collected m n i k hi a b
-  · rw [if_neg hi, applyNegDifferential_C_mul_left,
+  · rw [ite_eq_right hi, applyNegDifferential_C_mul_left,
       applyNegDifferential_C_mul_right,
       applyNegDifferential_sumBlockFactorization,
-      applyNegDifferential_esymm, if_neg hi]
+      applyNegDifferential_esymm, ite_eq_right hi]
     simp
 
 private def reciprocalRectangularTerm

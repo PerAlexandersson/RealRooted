@@ -141,7 +141,7 @@ private theorem rootCount_band_monicSignedReciprocal
       card_roots_signedReciprocal_filter_ge hA hAdeg hA0.ne' hs]
     have hc := hcount (-s⁻¹)
     rw [LiuOppositeSigns.rootCountAtOrAbove_X_mul hBne (-s⁻¹),
-      if_pos (neg_nonpos.mpr (inv_nonneg.mpr hs.le))] at hc
+      ite_eq_left (neg_nonpos.mpr (inv_nonneg.mpr hs.le))] at hc
     unfold LiuOppositeSigns.rootCountAtOrAbove at hc
     rw [abs_le] at hc
     constructor

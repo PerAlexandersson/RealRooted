@@ -62,11 +62,13 @@ theorem IsTotallyNonneg.finRev {N : ℕ} {A : Matrix (Fin N) (Fin N) R}
     (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
 
 lemma IsTotallyNonneg.nonneg (hM : M.IsTotallyNonneg) (i j : ι) : 0 ≤ M i j := by
-  simpa using hM (rows := ![i]) (cols := ![j])
+  simpa only [Matrix.det_fin_one, Matrix.submatrix_apply, Matrix.cons_val_zero] using
+    hM (rows := ![i]) (cols := ![j]) (Subsingleton.strictMono _) (Subsingleton.strictMono _)
 
 lemma IsTotallyNonnegRect.nonneg {M : Matrix ι κ R}
     (hM : M.IsTotallyNonnegRect) (i : ι) (j : κ) : 0 ≤ M i j := by
-  simpa using hM (rows := ![i]) (cols := ![j])
+  simpa only [Matrix.det_fin_one, Matrix.submatrix_apply, Matrix.cons_val_zero] using
+    hM (rows := ![i]) (cols := ![j]) (Subsingleton.strictMono _) (Subsingleton.strictMono _)
 
 variable [IsStrictOrderedRing R]
 
@@ -124,10 +126,18 @@ protected lemma IsTotallyNonneg.scaleRowsCols {M : Matrix ι ι R}
         Matrix.of fun i j =>
           r (rows i) * (c (cols j) * (M.submatrix rows cols) i j) := by
     rfl
-  rw [hmatrix, Matrix.det_mul_column]
+  rw [hmatrix]
+  change 0 ≤ (Matrix.of fun i j => r (rows i) * (c (cols j) * M (rows i) (cols j))).det
+  have hrow :
+      (Matrix.of fun i j => r (rows i) * (c (cols j) * M (rows i) (cols j))).det =
+        (∏ i, r (rows i)) *
+          (Matrix.of fun i j => c (cols j) * M (rows i) (cols j)).det :=
+    Matrix.det_mul_column (fun i => r (rows i))
+      (Matrix.of fun i j => c (cols j) * M (rows i) (cols j))
+  rw [hrow]
   change 0 ≤ (∏ i, r (rows i)) *
     (Matrix.of fun i j => c (cols j) * (M.submatrix rows cols) i j).det
-  rw [Matrix.det_mul_row]
+  rw [Matrix.det_mul_row (fun j => c (cols j)) (M.submatrix rows cols)]
   exact mul_nonneg (Finset.prod_nonneg fun i _ => hr (rows i))
     (mul_nonneg (Finset.prod_nonneg fun j _ => hc (cols j))
       (hM hrows hcols))

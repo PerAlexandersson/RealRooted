@@ -25,7 +25,7 @@ theorem apolarEval_apolarTwist (n : Nat) (z : ℂ) (g : ℂ[X]) (w : ℂ) :
     (fun i ↦ (Nat.choose n i : ℂ) * g.coeff i * (-z) ^ i * w ^ (n - i)) (n + 1)]
   refine Finset.sum_congr rfl fun j hj ↦ ?_
   have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
-  rw [coeff_apolarTwist, if_pos hj']
+  rw [coeff_apolarTwist, ite_eq_left hj']
   have he : n + 1 - 1 - j = n - j := by simp [*]
   rw [he]
   have hnn : n - (n - j) = j := by lia
@@ -91,9 +91,9 @@ theorem eval_map_schurSzegoComp_eq_sum (n : Nat) (f p : ℝ[X])
   have hk' : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
   rw [coeff_map, coeff_schurSzegoComp_of_le hk']
   have hFk : (f.map Complex.ofRealHom).coeff k = (Nat.choose n k : ℂ) * F₀.coeff k := by
-    rw [← hF, coeff_binomialLift, if_pos hk']
+    rw [← hF, coeff_binomialLift, ite_eq_left hk']
   have hPk : (p.map Complex.ofRealHom).coeff k = (Nat.choose n k : ℂ) * P₀.coeff k := by
-    rw [← hP, coeff_binomialLift, if_pos hk']
+    rw [← hP, coeff_binomialLift, ite_eq_left hk']
   rw [coeff_map, Complex.ofRealHom_eq_coe] at hFk hPk
   have : (Nat.choose n k : ℂ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℂ) hk'
   rw [Complex.ofRealHom_eq_coe, Complex.ofReal_div, Complex.ofReal_mul]
@@ -103,9 +103,9 @@ theorem eval_map_schurSzegoComp_eq_sum (n : Nat) (f p : ℝ[X])
 theorem coeff_n_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
     (hF : binomialLift n F₀ = f) :
     (binomialLift n (apolarTwist n z F₀)).coeff n = f.coeff 0 := by
-  rw [coeff_binomialLift, if_pos (le_refl n), coeff_apolarTwist, if_pos (le_refl n)]
+  rw [coeff_binomialLift, ite_eq_left (le_refl n), coeff_apolarTwist, ite_eq_left (le_refl n)]
   simp only [Nat.sub_self, pow_zero, mul_one, Nat.choose_self, Nat.cast_one, one_mul]
-  rw [← hF, coeff_binomialLift, if_pos (Nat.zero_le n)]
+  rw [← hF, coeff_binomialLift, ite_eq_left (Nat.zero_le n)]
   simp
 
 theorem natDegree_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
@@ -183,10 +183,10 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
     exact Polynomial.leadingCoeff_ne_zero.mpr hf0
   have : F₀.coeff n = (f.map Complex.ofRealHom).coeff n := by
     have : (f.map Complex.ofRealHom).coeff n = (Nat.choose n n : ℂ) * F₀.coeff n := by
-      rw [← hF, coeff_binomialLift, if_pos (le_refl n)]
+      rw [← hF, coeff_binomialLift, ite_eq_left (le_refl n)]
     simp [*]
   have hcoeff0 : (binomialLift n (apolarTwist n z F₀)).coeff 0 ≠ 0 := by
-    rw [coeff_binomialLift, if_pos (Nat.zero_le n), coeff_apolarTwist, if_pos (Nat.zero_le n)]
+    rw [coeff_binomialLift, ite_eq_left (Nat.zero_le n), coeff_apolarTwist, ite_eq_left (Nat.zero_le n)]
     simp [*]
   have hwne : w ≠ 0 := by
     rintro rfl

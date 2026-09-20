@@ -35,7 +35,7 @@ theorem sum_hi_le {t : ℕ → ℝ} {N j : ℕ} (hpositive : ∀ k, k < N → 0 
   refine mul_le_mul_of_nonneg_left ?_ hj.le
   have hinjective : Set.InjOn (fun k => k - j) ((range N).filter (fun k => j < k)) := by
     intro a ha b hb heq
-    simp only [Finset.coe_filter, Set.mem_setOf_eq, mem_range] at ha hb
+    simp only [Finset.coe_filter, Set.mem_ofPred_eq, mem_range] at ha hb
     simp only at heq
     lia
   rw [← Finset.sum_image (fun a ha b hb h => hinjective ha hb h)]
@@ -68,7 +68,7 @@ theorem sum_lo_le {t : ℕ → ℝ} {N j : ℕ} (hpositive : ∀ k, k < N → 0 
   refine mul_le_mul_of_nonneg_left ?_ hmiddle.le
   have hinjective : Set.InjOn (fun k => j - k) ((range N).filter (fun k => k < j)) := by
     intro a ha b hb heq
-    simp only [Finset.coe_filter, Set.mem_setOf_eq, mem_range] at ha hb
+    simp only [Finset.coe_filter, Set.mem_ofPred_eq, mem_range] at ha hb
     simp only at heq
     lia
   rw [← Finset.sum_image (fun a ha b hb h => hinjective ha hb h)]

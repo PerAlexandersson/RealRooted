@@ -121,7 +121,7 @@ quadratic pair with positive leading coefficients.
 Given the roots `{a, b}` (`a ≤ b`) of `f` and `{c, d}` (`c ≤ d`) of `g`, with
 `f` and `g` forming a `PosComboRealRooted` pair, neither root pair lies entirely
 below the other: `a ≤ d` and `c ≤ b`. -/
-theorem posComboRealRooted_quadratic_roots_interleave
+theorem posComboRealRooted_quadratic_roots_interleaveRight
     {f g : ℝ[X]}
     (hf : f.Splits) (hg : g.Splits)
     (hfl : 0 < f.leadingCoeff) (hgl : 0 < g.leadingCoeff)

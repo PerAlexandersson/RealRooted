@@ -106,7 +106,7 @@ private theorem degreeOf_rightComplementMonomial_one_le
   intro i
   rw [degreeOf_le_iff]
   intro d hd
-  simp only [support_monomial, if_neg one_ne_zero,
+  simp only [support_monomial, ite_eq_right one_ne_zero,
     Finset.mem_singleton] at hd
   subst d
   by_cases hi : Sum.inr i ∈

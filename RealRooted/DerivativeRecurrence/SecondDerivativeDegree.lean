@@ -191,8 +191,8 @@ lemma second_derivative_family_coeff_one_nonneg
           C (b + b * (n : ℝ)) * (X * P n) by ring]
       simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_X_pow_mul',
         coeff_derivative]
-      rw [if_neg (by lia : ¬3 ≤ 1), if_neg (by lia : ¬2 ≤ 1),
-        if_neg (by lia : ¬2 ≤ 1),
+      rw [ite_eq_right (by lia : ¬3 ≤ 1), ite_eq_right (by lia : ¬2 ≤ 1),
+        ite_eq_right (by lia : ¬2 ≤ 1),
         second_derivative_family_coeff_zero P b h0 h1 hrec,
         second_derivative_family_coeff_zero P b h0 h1 hrec]
       have hprev :=

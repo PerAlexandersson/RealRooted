@@ -28,8 +28,8 @@ theorem tendsto_coeff_regularizedKernelRow
     Tendsto (fun m => (regularizedKernelRow G (H m) i).coeff q) atTop
       (𝓝 ((regularizedKernelRow G K i).coeff q)) := by
   by_cases hq : q < N + 1
-  · rw [coeff_regularizedKernelRow, if_pos hq]
-    simp_rw [coeff_regularizedKernelRow, if_pos hq]
+  · rw [coeff_regularizedKernelRow, ite_eq_left hq]
+    simp_rw [coeff_regularizedKernelRow, ite_eq_left hq]
     have hHmat : Tendsto H atTop (𝓝 K) := by
       exact tendsto_pi_nhds.mpr fun a => tendsto_pi_nhds.mpr (hH a)
     have hGHmat : Tendsto (fun m => G * H m) atTop (𝓝 (G * K)) :=

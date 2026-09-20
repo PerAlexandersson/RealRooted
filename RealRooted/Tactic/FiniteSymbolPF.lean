@@ -282,7 +282,7 @@ theorem finiteSymbol_dehomog (alpha beta : ℕ → ℝ) (d : ℕ) :
   simp only [finiteSymbol, bidiagonalJensenPencil, jensenPolynomial,
     MvPolynomial.eval₂_sum, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_add,
     MvPolynomial.eval₂_C, MvPolynomial.eval₂_X, MvPolynomial.eval₂_pow,
-    Fin.isValue, if_true, one_ne_zero, if_false, one_pow, mul_one,
+    Fin.isValue, ite_true, one_ne_zero, ite_false, one_pow, mul_one,
     ← Polynomial.C_mul_X_pow_eq_monomial, mul_add, add_mul, mul_assoc]
   rw [Finset.sum_add_distrib]
   congr 1
