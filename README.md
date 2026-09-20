@@ -26,7 +26,7 @@ goal is to extract stable, reusable components for eventual upstreaming.
 
 ## Build
 
-The project uses Lean 4 and Mathlib through Lake.
+The project uses Lean 4.34.0 and Mathlib v4.34.0 through Lake.
 
 ```bash
 lake exe cache get
