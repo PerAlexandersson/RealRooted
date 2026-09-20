@@ -100,13 +100,14 @@ theorem get_append_right {α : Type*} {l m : List α} {n : ℕ}
   | cons x xs ih =>
     simp only [List.length_cons, List.cons_append] at hl hn
     dsimp [get]
-    cases' n with n'
-    · exact (Nat.not_succ_le_zero _ hl).elim
-    have hℓ : xs.length ≤ n' := Nat.le_of_succ_le_succ hl
-    have hδ : n' < (xs ++ m).length := by simp_all only [List.length_append, List.get_eq_getElem,
-      List.getElem_append_right, implies_true, add_le_add_iff_right, add_lt_add_iff_right]
-    have IH := ih hℓ hδ
-    simpa [Nat.sub_sub] using IH
+    cases n with
+    | zero => exact (Nat.not_succ_le_zero _ hl).elim
+    | succ n' =>
+      have hℓ : xs.length ≤ n' := Nat.le_of_succ_le_succ hl
+      have hδ : n' < (xs ++ m).length := by simp_all only [List.length_append, List.get_eq_getElem,
+        List.getElem_append_right, implies_true, add_le_add_iff_right, add_lt_add_iff_right]
+      have IH := ih hℓ hδ
+      simpa [Nat.sub_sub] using IH
 
 variable {α : Type*} [DecidableEq α]
 
@@ -186,7 +187,7 @@ lemma mem_tail_of_count_ge_two [DecidableEq α] {x : α} {l : List α}
         simpa using this
 
 namespace Nat
-@[simp] lemma eq_of_le_zero {n : ℕ} (h : n ≤ 0) : n = 0 :=
+lemma eq_of_le_zero {n : ℕ} (h : n ≤ 0) : n = 0 :=
   le_antisymm h (Nat.zero_le _)
 end Nat
 
@@ -395,10 +396,10 @@ lemma mem_of_idxOf_lt_length {l : List α} {x : α} (h : idxOf x l < l.length) :
     dsimp [idxOf, findIdx, length] at h
     simp only [findIdx.go] at h
     by_cases h_eq : hd == x
-    · simp only [h_eq, le_refl, zero_add, Bool.cond_true, Nat.eq_of_le_zero, lt_add_iff_pos_left] at h
+    · simp only [h_eq, le_refl, zero_add] at h
       rw [beq_iff_eq] at h_eq
       simp only [h_eq, mem_cons, true_or]
-    · simp only [h_eq, zero_add, Bool.cond_false] at h
+    · simp only [h_eq, zero_add] at h
       have h_neq : hd ≠ x := by
         simp_all only [beq_iff_eq, ne_eq, not_false_eq_true]
       have h_tl : idxOf x tl < tl.length := by
@@ -460,9 +461,9 @@ lemma idxOf_le_of_get_eq [DecidableEq α] {l : List α} {x : α} {i : Fin l.leng
       dsimp only [idxOf, findIdx, length_cons, Fin.val_succ]
       simp only [findIdx.go]
       by_cases h_hd_eq : hd == x
-      · simp only [h_hd_eq, Bool.cond_true]
+      · simp only [h_hd_eq]
         exact Nat.zero_le j.val.succ
-      · simp only [h_hd_eq, Bool.cond_false]
+      · simp only [h_hd_eq]
         have h_tl : tl.get j = x := by
           simp only [get_eq_getElem] at h
           exact h
@@ -604,7 +605,7 @@ lemma get_not_mem_take {l : List α} (h_nodup : l.Nodup)
       cases i with
       | zero =>
           simp only [le_refl, take_zero, length_cons, Fin.zero_eta, get_eq_getElem, Fin.val_zero,
-            Nat.eq_of_le_zero, getElem_cons_zero, not_mem_nil, not_false_eq_true]
+            getElem_cons_zero, not_mem_nil, not_false_eq_true]
       | succ i' =>
           have h_bounds' : i' < tl.length := by
             simpa [List.length_cons] using Nat.lt_of_succ_lt_succ h_bounds

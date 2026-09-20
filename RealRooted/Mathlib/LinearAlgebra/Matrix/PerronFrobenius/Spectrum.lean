@@ -678,9 +678,9 @@ lemma exists_pos_of_sum_pos {ι : Type*} [Fintype ι] {f : ι → ℝ}
 /-- For a non-negative `a`, `a * b` is positive iff both `a` and `b` are positive. -/
 lemma mul_pos_iff_of_nonneg_left {a b : ℝ} (ha_nonneg : 0 ≤ a) :
     0 < a * b ↔ 0 < a ∧ 0 < b := by
-  refine' ⟨fun h_mul_pos => _, fun ⟨ha_pos, hb_pos⟩ => mul_pos ha_pos hb_pos⟩
+  refine ⟨fun h_mul_pos => _, fun ⟨ha_pos, hb_pos⟩ => mul_pos ha_pos hb_pos⟩
   have ha_pos : 0 < a := by
-    refine' lt_of_le_of_ne ha_nonneg fun ha_zero => _
+    refine lt_of_le_of_ne ha_nonneg fun ha_zero => _
     rw [ha_zero] at h_mul_pos
     subst ha_zero
     simp_all only [le_refl, zero_mul, lt_self_iff_false]

@@ -25,7 +25,7 @@ variable {f : α → ℝ} {K : Set α}
 section GeneralProof
 -- This section provides proofs that do not rely on first-countability.
 
-lemma upperSemicontinuousOn_iff_upperSemicontinuous {s : Set α}  :
+lemma upperSemicontinuousOn_iff_upperSemicontinuous {s : Set α} :
     UpperSemicontinuousOn f s ↔ UpperSemicontinuous (s.domRestrict f) := by
   constructor
   · intro h x c hc
