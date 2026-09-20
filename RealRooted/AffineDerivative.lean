@@ -299,7 +299,9 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have hcont :
         ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₁ := by
       refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
-      grind
+      left
+      change 1 - r₁ ≠ 0
+      linarith
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hfa : Filter.Tendsto φ (nhdsWithin r₁ (Set.Ioi r₁)) (nhds 0) := by
     have := hfa_eval.mul hfa_pow
@@ -314,7 +316,9 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have hcont :
         ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₂ := by
       refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
-      grind
+      left
+      change 1 - r₂ ≠ 0
+      linarith
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hfb : Filter.Tendsto φ (nhdsWithin r₂ (Set.Iio r₂)) (nhds 0) := by
     have := hfb_eval.mul hfb_pow
@@ -489,7 +493,7 @@ lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natDegree
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     by_cases hlt : r₁ < r₂
     · -- Distinct roots: use IVT root
-      simp only [dif_pos hlt]
+      simp only [dite_eq_left hlt]
       have hspec := (exists_affineDeriv_root_between_strict hc
         (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
         hlt
@@ -500,7 +504,7 @@ lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natDegree
       · exact ⟨hspec.1.le, hspec.2.1.le, ih.2⟩
     · -- Repeated root: s = r₁ = r₂
       have hr_eq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
-      simp only [dif_neg hlt]
+      simp only [dite_eq_right hlt]
       have hcount : 2 ≤ Multiset.count r₁ f.roots := by
         have : 2 ≤ Multiset.count r₁ (↑[r₁, r₁] : Multiset ℝ) := by simp
         exact le_trans this (Multiset.count_le_of_le r₁ (hr_eq ▸ hsub_pair))
@@ -643,7 +647,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
               rw [Multiset.cons_le_of_notMem hs_notin]
               lia
             · have hr_eq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
-              have hs : s = r₁ := dif_neg hlt
+              have hs : s = r₁ := dite_eq_right hlt
               rw [Multiset.le_iff_count]
               intro a
               rw [Multiset.count_cons]
@@ -676,10 +680,10 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
               (r₁ ::ₘ ↑(r₂ :: rest) : Multiset ℝ).count a
             rw [Multiset.count_cons, Multiset.count_cons]
             by_cases heq : a = s <;> by_cases hr₁a : a = r₁
-            · rw [if_pos heq, if_pos hr₁a]
+            · rw [ite_eq_left heq, ite_eq_left hr₁a]
               have hr_eq : r₁ = r₂ := by grind
               simp_all
-            · rw [if_pos heq, if_neg hr₁a]
+            · rw [ite_eq_left heq, ite_eq_right hr₁a]
               exfalso
               rcases ha with rfl | ha_tail
               · lia
@@ -697,7 +701,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
                     · exact List.rel_of_pairwise_cons hsorted_tail h
                   linarith
                 · lia
-            · rw [if_neg heq, if_pos hr₁a]
+            · rw [ite_eq_right heq, ite_eq_left hr₁a]
               by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
               · grind
               · have hlt : r₁ < r₂ := by lia
@@ -905,7 +909,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hss_count_r₁_le : (↑ss : Multiset ℝ).count r₁ + 1 ≤ m := by simp_all
     have h_u_ne : u ≠ r₁ := ne_of_gt hu_gt
     have hgmult_eq_ss : g.rootMultiplicity r₁ = (↑ss : Multiset ℝ).count r₁ := by
-      rw [← count_roots, hu_roots_eq, Multiset.count_cons, if_neg (by lia)]
+      rw [← count_roots, hu_roots_eq, Multiset.count_cons, ite_eq_right (by lia)]
       lia
     have hgmult_ge : m - 1 ≤ g.rootMultiplicity r₁ := by
       rw [hm_def]

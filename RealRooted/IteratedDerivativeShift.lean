@@ -1520,9 +1520,9 @@ lemma rootMultiplicity_TDeriv_le_one_of_not_isRoot
     have h2 : 2 ≤ (TDeriv eps p).rootMultiplicity a := by lia
     have hdvd := pow_rootMultiplicity_dvd (TDeriv eps p) a
     have hdvd2 : (X - C a) ^ 2 ∣ TDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
-    have hdvd1 : (X - C a) ^ 1 ∣ (TDeriv eps p).derivative :=
-      pow_one (X - C a) ▸ pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
-    rw [pow_one] at hdvd1
+    have hdvd1 : X - C a ∣ (TDeriv eps p).derivative := by
+      simpa only [Nat.reduceSub, pow_one] using
+        pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
     exact dvd_iff_isRoot.mp hdvd1
   -- Extract the two conditions
   have hpa : p.eval a ≠ 0 := ha
@@ -1587,9 +1587,9 @@ lemma rootMultiplicity_TDeriv_le_one_of_not_isRoot_all
     have h2 : 2 ≤ (TDeriv eps p).rootMultiplicity a := by lia
     have hdvd := pow_rootMultiplicity_dvd (TDeriv eps p) a
     have hdvd2 : (X - C a) ^ 2 ∣ TDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
-    have hdvd1 : (X - C a) ^ 1 ∣ (TDeriv eps p).derivative :=
-      pow_one (X - C a) ▸ pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
-    rw [pow_one] at hdvd1
+    have hdvd1 : X - C a ∣ (TDeriv eps p).derivative := by
+      simpa only [Nat.reduceSub, pow_one] using
+        pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
     exact dvd_iff_isRoot.mp hdvd1
   have hpa : p.eval a ≠ 0 := ha
   have hcond1 : p.eval a = eps * p.derivative.eval a := by

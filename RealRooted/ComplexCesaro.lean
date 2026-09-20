@@ -170,7 +170,6 @@ theorem norm_le_of_nonneg_conjugate_geometric
     · funext N
       rw [Function.comp_apply, ← hmean_cast]
       simp
-    · simp
   let weightedMean : ℕ → ℂ := fun N =>
     ((N + 1 : ℕ) : ℝ)⁻¹ •
       ∑ n ∈ range (N + 1), (y n : ℂ) * (starRingEnd ℂ w) ^ n

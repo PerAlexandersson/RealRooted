@@ -36,15 +36,6 @@ end SignType
 
 namespace List
 
-/-- The number of sign changes in a list, ignoring zero entries. -/
-def signVariations {R : Type*} [Zero R] [LinearOrder R] (l : List R) : ℕ :=
-  (((l.map SignType.sign).filter (· ≠ 0)).destutter (· ≠ ·)).length - 1
-
-@[simp]
-lemma signVariations_nil {R : Type*} [Zero R] [LinearOrder R] :
-    signVariations ([] : List R) = 0 := by
-  simp [signVariations]
-
 /-- A list has at most one fewer sign variation than its length. -/
 lemma signVariations_le_length_sub_one {R : Type*} [Zero R] [LinearOrder R]
     (l : List R) : l.signVariations ≤ l.length - 1 := by
@@ -116,11 +107,11 @@ lemma length_destutter'_replicate_le_two (a s : SignType) (n : ℕ) :
         (s :: replicate n s)).length ≤ 2
       rw [List.destutter'_cons]
       by_cases has : a ≠ s
-      · rw [if_pos has]
+      · rw [ite_eq_left has]
         simp [length_destutter'_replicate_signType]
       · have has_eq : a = s := of_not_not has
         subst a
-        rw [if_neg (by simp)]
+        rw [ite_eq_right (by simp)]
         rw [length_destutter'_replicate_signType s n]
         norm_num
 
@@ -135,10 +126,10 @@ lemma length_destutter'_append_replicate_le_succ (a s : SignType)
       simp only [List.cons_append]
       rw [List.destutter'_cons, List.destutter'_cons]
       by_cases hab : a ≠ b
-      · rw [if_pos hab, if_pos hab]
+      · rw [ite_eq_left hab, ite_eq_left hab]
         have h := ih b
         simpa [Nat.succ_eq_add_one, add_assoc] using Nat.succ_le_succ h
-      · rw [if_neg hab, if_neg hab]
+      · rw [ite_eq_right hab, ite_eq_right hab]
         exact ih a
 
 lemma length_destutter_append_replicate_le_succ (s : SignType)
@@ -273,13 +264,13 @@ lemma length_destutter'_map_neg_signType (s : SignType) (l : List SignType) :
       · have hneg : -s ≠ -t := by
           intro h
           exact hst (neg_inj.mp h)
-        rw [if_pos hneg, if_pos hst]
+        rw [ite_eq_left hneg, ite_eq_left hst]
         simp [ih]
       · have hst_eq : s = t := of_not_not hst
         have hneg : ¬ -s ≠ -t := by
           intro h
           exact h (by rw [hst_eq])
-        rw [if_neg hneg, if_neg hst]
+        rw [ite_eq_right hneg, ite_eq_right hst]
         exact ih s
 
 lemma length_destutter_map_neg_signType (l : List SignType) :
@@ -401,17 +392,6 @@ theorem List.signVariations_insert_between_opposite
       List.destutter_append_cons_cons_self_ne]
 
 namespace List
-
-private theorem filter_map_sign_filter_ne_zero (l : List SignType) :
-    ((l.filter (· ≠ 0)).map SignType.sign).filter (· ≠ 0) =
-      (l.map SignType.sign).filter (· ≠ 0) := by
-  have hsign : (SignType.sign : SignType → SignType) = id := funext SignType.sign_sign
-  simp [hsign]
-
-/-- Filtering zero signs does not change sign variations. -/
-theorem signVariations_filter_ne_zero (l : List SignType) :
-    (l.filter (· ≠ 0)).signVariations = l.signVariations := by
-  simp only [List.signVariations, filter_map_sign_filter_ne_zero]
 
 /-- One insertion at an interior nodal position.
 
@@ -584,8 +564,8 @@ theorem SignType.sign_ne_zero_and_ne_of_mul_neg
     SignType.sign a ≠ 0 ∧ SignType.sign b ≠ 0 ∧
       SignType.sign a ≠ SignType.sign b := by
   rcases (mul_neg_iff.mp h) with ⟨ha, hb⟩ | ⟨ha, hb⟩
-  · simp [SignType.sign, ha, hb, not_lt_of_ge hb.le]
-  · simp [SignType.sign, ha, hb, not_lt_of_ge ha.le]
+  · simp [sign_pos ha, sign_neg hb]
+  · simp [sign_neg ha, sign_pos hb]
 
 namespace Fin
 
@@ -605,8 +585,12 @@ theorem signVariations_eq_signList {n : ℕ} (x : Fin n → ℝ) :
 theorem filtered_signList_signVariations {n : ℕ} (x : Fin n → ℝ) :
     ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)).signVariations =
       Fin.signVariations x := by
-  simpa only [List.signVariations_filter_ne_zero] using
-    (Fin.signVariations_eq_signList x).symm
+  convert
+    (List.signVariations_filter_ne_zero (List.ofFn (SignType.sign ∘ x))).trans
+      (Fin.signVariations_eq_signList x).symm using 1
+  congr 2
+  funext s
+  simp
 
 /-- Perturbed signs at all interior coordinates and at the original nonzero
 endpoints.
@@ -747,7 +731,7 @@ theorem nodalInsertions_coreSigns_remove
     rw [List.getElem_ofFn hlenSource]
     change SignType.sign (x p) = 0
     rw [show p = k.succ.castSucc from rfl, hk]
-    norm_num [SignType.sign]
+    simp
   have hfilteredSource :
       ¬(fun z : SignType => decide (z ≠ 0))
         (List.ofFn (fun i => SignType.sign (x i)))[(p : ℕ)] := by
@@ -1001,8 +985,8 @@ theorem nodalPerturbationCoreSigns_eq_of_no_interior_zero
       [SignType.sign (x i)].filter (· ≠ 0) =
         if x i = 0 then [] else [SignType.sign (y i)] := by
     by_cases hi : x i = 0
-    · simp [hi, SignType.sign]
-    · rw [if_neg hi, List.filter_singleton]
+    · simp [hi]
+    · rw [ite_eq_right hi, List.filter_singleton]
       have hs := sign_ne_zero.mpr hi
       have hp : decide (SignType.sign (x i) ≠ 0) = true :=
         decide_eq_true hs
@@ -1795,7 +1779,7 @@ noncomputable def Fin.signBlockDecomposition
     change |c j| * coeff (Fin.signBlockIndex c j) = c j
     rw [show coeff (Fin.signBlockIndex c j) =
         (SignType.sign (c hex.choose) : ℝ) by
-      simp only [coeff, dif_pos hex],
+      simp only [coeff, dite_eq_left hex],
       ← Fin.sign_eq_of_signBlockIndex_eq c hj
         hex.choose_spec.1 hex.choose_spec.2.symm,
       abs_mul_sign]
